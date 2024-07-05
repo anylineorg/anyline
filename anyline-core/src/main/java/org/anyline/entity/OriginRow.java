@@ -30,8 +30,9 @@ public class OriginRow extends DataRow {
 
     public OriginRow() {
         String pk = keyAdapter.key(DEFAULT_PRIMARY_KEY);
+        primaryKeys.clear();
         if (null != pk) {
-            primaryKeys.add(DEFAULT_PRIMARY_KEY);
+            primaryKeys.add(pk);
         }
         parseKeyCase(keyCase);
         createTime = System.currentTimeMillis();

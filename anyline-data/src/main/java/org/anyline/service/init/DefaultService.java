@@ -1758,10 +1758,10 @@ public class DefaultService<E> implements AnylineService<E> {
 
     @Override
     public List<String> views(boolean greedy, Catalog catalog, Schema schema, String name, int types) {
-        LinkedHashMap<String, View> views = metadata.views(greedy, catalog, schema, name, types);
+        LinkedHashMap<String, View> tables = metadata.views(catalog, schema, name, types);
         List<String> list = new ArrayList<>();
-        for (View view : views.values()) {
-            list.add(view.getName());
+        for (Table table : tables.values()) {
+            list.add(table.getName());
         }
         return list;
     }
@@ -1769,9 +1769,9 @@ public class DefaultService<E> implements AnylineService<E> {
 
     @Override
     public List<String> masterTables(boolean greedy, Catalog catalog, Schema schema, String name, int types) {
-        LinkedHashMap<String, MasterTable> tables = metadata.masterTables(greedy, catalog, schema, name, types);
+        LinkedHashMap<String, MasterTable> tables = metadata.masterTables(catalog, schema, name, types);
         List<String> list = new ArrayList<>();
-        for (MasterTable table : tables.values()) {
+        for (Table table : tables.values()) {
             list.add(table.getName());
         }
         return list;
@@ -2070,8 +2070,9 @@ public class DefaultService<E> implements AnylineService<E> {
             return dao.ddl(table, init);
         }
 
+
         /* *****************************************************************************************************************
-         * 													VertexTable
+         * 													vertexTable
          * -----------------------------------------------------------------------------------------------------------------
          * boolean exists(VertexTable vertexTable)
          * LinkedHashMap<String, VertexTable> vertexTables(Catalog catalog, Schema schema, String name, int types)
@@ -2085,28 +2086,32 @@ public class DefaultService<E> implements AnylineService<E> {
          ******************************************************************************************************************/
 
         @Override
-        public boolean exists(boolean greedy, VertexTable meta) {
-            if (null != vertexTable(greedy, meta.getCatalog(), meta.getSchema(), meta.getName(), false)) {
+        public boolean exists(boolean greedy, VertexTable vertexTable) {
+            if (null != vertexTable(greedy, vertexTable.getCatalog(), vertexTable.getSchema(), vertexTable.getName(), false)) {
                 return true;
             }
             return false;
         }
 
         @Override
-        public <T extends VertexTable>  List<T> vertexTables(boolean greedy, Catalog catalog, Schema schema, String name, int types, int struct) {
+        public <T extends VertexTable>  List<T> vertexTables(boolean greedy, Catalog catalog, Schema schema, String name, int types, int struct, ConfigStore configs) {
             String[] ps = DataSourceUtil.parseRuntime(name);
             if(null != ps[0]) {
-                return ServiceProxy.service(ps[0]).metadata().vertexTables(greedy, catalog, schema, ps[1], types, struct);
+                return ServiceProxy.service(ps[0]).metadata().vertexTables(greedy, catalog, schema, ps[1], types, struct, configs);
             }
-            return dao.vertexTables(greedy, catalog, schema, name, types, struct);
+            return dao.vertexTables(greedy, catalog, schema, name, types, struct, configs);
         }
         @Override
-        public <T extends VertexTable>  LinkedHashMap<String, T> vertexTables(Catalog catalog, Schema schema, String name, int types, int struct) {
+        public <T extends VertexTable>  List<T> vertexTables(boolean greedy, Catalog catalog, Schema schema, String name, int types, int struct) {
+            return vertexTables(greedy, catalog, schema, name, types, struct, null);
+        }
+        @Override
+        public <T extends VertexTable>  LinkedHashMap<String, T> vertexTables(Catalog catalog, Schema schema, String name, int types, int struct, ConfigStore configs) {
             String[] ps = DataSourceUtil.parseRuntime(name);
             if(null != ps[0]) {
-                return ServiceProxy.service(ps[0]).metadata().vertexTables(catalog, schema, ps[1], types, struct);
+                return ServiceProxy.service(ps[0]).metadata().vertexTables(catalog, schema, ps[1], types, struct, configs);
             }
-            return dao.vertexTables(catalog, schema, name, types, struct);
+            return dao.vertexTables(catalog, schema, name, types, struct, configs);
         }
 
         private void struct(VertexTable vertexTable, int struct) {
@@ -2181,17 +2186,17 @@ public class DefaultService<E> implements AnylineService<E> {
         }
 
         @Override
-        public List<String> ddl(VertexTable meta, boolean init) {
-            String[] ps = DataSourceUtil.parseRuntime(meta);
+        public List<String> ddl(VertexTable vertexTable, boolean init) {
+            String[] ps = DataSourceUtil.parseRuntime(vertexTable);
             if(null != ps[0]) {
-                meta.setName(ps[1]);
-                return ServiceProxy.service(ps[0]).metadata().ddl(meta, init);
+                vertexTable.setName(ps[1]);
+                return ServiceProxy.service(ps[0]).metadata().ddl(vertexTable, init);
             }
-            return dao.ddl(meta, init);
+            return dao.ddl(vertexTable, init);
         }
 
         /* *****************************************************************************************************************
-         * 													EdgeTable
+         * 													edgeTable
          * -----------------------------------------------------------------------------------------------------------------
          * boolean exists(EdgeTable edgeTable)
          * LinkedHashMap<String, EdgeTable> edgeTables(Catalog catalog, Schema schema, String name, int types)
@@ -2205,28 +2210,32 @@ public class DefaultService<E> implements AnylineService<E> {
          ******************************************************************************************************************/
 
         @Override
-        public boolean exists(boolean greedy, EdgeTable meta) {
-            if (null != edgeTable(greedy, meta.getCatalog(), meta.getSchema(), meta.getName(), false)) {
+        public boolean exists(boolean greedy, EdgeTable edgeTable) {
+            if (null != edgeTable(greedy, edgeTable.getCatalog(), edgeTable.getSchema(), edgeTable.getName(), false)) {
                 return true;
             }
             return false;
         }
 
         @Override
-        public <T extends EdgeTable>  List<T> edgeTables(boolean greedy, Catalog catalog, Schema schema, String name, int types, int struct) {
+        public <T extends EdgeTable>  List<T> edgeTables(boolean greedy, Catalog catalog, Schema schema, String name, int types, int struct, ConfigStore configs) {
             String[] ps = DataSourceUtil.parseRuntime(name);
             if(null != ps[0]) {
-                return ServiceProxy.service(ps[0]).metadata().edgeTables(greedy, catalog, schema, ps[1], types, struct);
+                return ServiceProxy.service(ps[0]).metadata().edgeTables(greedy, catalog, schema, ps[1], types, struct, configs);
             }
-            return dao.edgeTables(greedy, catalog, schema, name, types, struct);
+            return dao.edgeTables(greedy, catalog, schema, name, types, struct, configs);
         }
         @Override
-        public <T extends EdgeTable>  LinkedHashMap<String, T> edgeTables(Catalog catalog, Schema schema, String name, int types, int struct) {
+        public <T extends EdgeTable>  List<T> edgeTables(boolean greedy, Catalog catalog, Schema schema, String name, int types, int struct) {
+            return edgeTables(greedy, catalog, schema, name, types, struct, null);
+        }
+        @Override
+        public <T extends EdgeTable>  LinkedHashMap<String, T> edgeTables(Catalog catalog, Schema schema, String name, int types, int struct, ConfigStore configs) {
             String[] ps = DataSourceUtil.parseRuntime(name);
             if(null != ps[0]) {
-                return ServiceProxy.service(ps[0]).metadata().edgeTables(catalog, schema, ps[1], types, struct);
+                return ServiceProxy.service(ps[0]).metadata().edgeTables(catalog, schema, ps[1], types, struct, configs);
             }
-            return dao.edgeTables(catalog, schema, name, types, struct);
+            return dao.edgeTables(catalog, schema, name, types, struct, configs);
         }
 
         private void struct(EdgeTable edgeTable, int struct) {
@@ -2301,13 +2310,13 @@ public class DefaultService<E> implements AnylineService<E> {
         }
 
         @Override
-        public List<String> ddl(EdgeTable meta, boolean init) {
-            String[] ps = DataSourceUtil.parseRuntime(meta);
+        public List<String> ddl(EdgeTable edgeTable, boolean init) {
+            String[] ps = DataSourceUtil.parseRuntime(edgeTable);
             if(null != ps[0]) {
-                meta.setName(ps[1]);
-                return ServiceProxy.service(ps[0]).metadata().ddl(meta, init);
+                edgeTable.setName(ps[1]);
+                return ServiceProxy.service(ps[0]).metadata().ddl(edgeTable, init);
             }
-            return dao.ddl(meta, init);
+            return dao.ddl(edgeTable, init);
         }
 
         /* *****************************************************************************************************************
@@ -2324,112 +2333,240 @@ public class DefaultService<E> implements AnylineService<E> {
          * View view(String name)
          ******************************************************************************************************************/
 
-
         @Override
         public boolean exists(boolean greedy, View view) {
-            if (null != view(greedy, view.getCatalog(), view.getSchema(), view.getName())) {
+            if (null != view(greedy, view.getCatalog(), view.getSchema(), view.getName(), false)) {
                 return true;
             }
             return false;
         }
 
         @Override
-        public <T extends View> List<T> views(boolean greedy, Catalog catalog, Schema schema, String name, int types) {
+        public <T extends View>  List<T> views(boolean greedy, Catalog catalog, Schema schema, String name, int types, int struct, ConfigStore configs) {
             String[] ps = DataSourceUtil.parseRuntime(name);
             if(null != ps[0]) {
-                return ServiceProxy.service(ps[0]).metadata().views(greedy, catalog, schema, ps[1], types);
+                return ServiceProxy.service(ps[0]).metadata().views(greedy, catalog, schema, ps[1], types, struct, configs);
             }
-            return dao.views(greedy, catalog, schema, name, types);
+            return dao.views(greedy, catalog, schema, name, types, struct, configs);
         }
-
         @Override
-        public <T extends View> LinkedHashMap<String, T> views(Catalog catalog, Schema schema, String name, int types) {
+        public <T extends View>  List<T> views(boolean greedy, Catalog catalog, Schema schema, String name, int types, int struct) {
+            return views(greedy, catalog, schema, name, types, struct, null);
+        }
+        @Override
+        public <T extends View>  LinkedHashMap<String, T> views(Catalog catalog, Schema schema, String name, int types, int struct, ConfigStore configs) {
             String[] ps = DataSourceUtil.parseRuntime(name);
             if(null != ps[0]) {
-                return ServiceProxy.service(ps[0]).metadata().views(catalog, schema, ps[1], types);
+                return ServiceProxy.service(ps[0]).metadata().views(catalog, schema, ps[1], types, struct, configs);
             }
-            return dao.views(catalog, schema, name, types);
+            return dao.views(catalog, schema, name, types, struct, configs);
         }
 
+        private void struct(View view, int struct) {
+            //是否查询详细结构(1列、2主键、4索引、8外键、16约束、128DDL等)
+            LinkedHashMap<String, Column> columns = view.getColumns();
+            if(Metadata.check(struct, Metadata.TYPE.COLUMN)) {
+                if(null == columns || columns.isEmpty()) {//上一步ddl是否加载过以下内容
+                    columns = columns(view);
+                    view.setColumns(columns);
+                    view.setTags(tags(view));
+                }
+            }
+
+            if(Metadata.check(struct, Metadata.TYPE.PRIMARY)) {
+                PrimaryKey pk = view.getPrimaryKey();
+                if(null == pk) {
+                    pk = primary(view);
+                    if (null != pk) {
+                        for (Column col : pk.getColumns().values()) {
+                            Column column = columns.get(col.getName().toUpperCase());
+                            if (null != column) {
+                                column.primary(true);
+                                BeanUtil.copyFieldValue(col, column);
+                            }
+                        }
+                    }
+                    view.setPrimaryKey(pk);
+                }
+            }
+            if(Metadata.check(struct, Metadata.TYPE.INDEX)) {
+                LinkedHashMap<String, Index> indexes = view.getIndexes();
+                if(null == indexes || indexes.isEmpty()) {
+                    view.setIndexes(indexes(view));
+                }
+            }
+            if(Metadata.check(struct, Metadata.TYPE.CONSTRAINT)) {
+                LinkedHashMap<String, Constraint> constraints = view.getConstraints();
+                if(null == constraints || constraints.isEmpty()) {
+                    view.setConstraints(constraints(view));
+                }
+            }
+            if(Metadata.check(struct, Metadata.TYPE.DDL)) {
+                if (null == view.ddl()) {
+                    ddl(view);
+                }
+            }
+
+        }
         @Override
-        public View view(boolean greedy, Catalog catalog, Schema schema, String name) {
+        public View view(boolean greedy, Catalog catalog, Schema schema, String name, int struct) {
             View view = null;
-            LinkedHashMap<String, View> views = views(greedy, catalog, schema, name, View.TYPE.NORMAL.value);
+            List<View> views = views(greedy, catalog, schema, name, View.TYPE.NORMAL.value);
+            if (!views.isEmpty()) {
+                view = views.get(0);
+                if(null != view && struct>0) {
+                    struct(view, struct);
+                }
+            }
+            return view;
+        }
+        @Override
+        public View view(Catalog catalog, Schema schema, String name, int struct) {
+            View view = null;
+            LinkedHashMap<String, View> views = views(catalog, schema, name, View.TYPE.NORMAL.value);
             if (!views.isEmpty()) {
                 view = views.values().iterator().next();
-                view.setColumns(columns(view));
-                ddl(view);
-                //view.setTags(tags(view));
-                //view.setIndexes(indexes(view));
+                if(null != view && struct > 0) {
+                    struct(view, struct);
+                }
             }
             return view;
         }
 
         @Override
-        public List<String> ddl(View view) {
-            String[] ps = DataSourceUtil.parseRuntime(view.getName());
+        public List<String> ddl(View view, boolean init) {
+            String[] ps = DataSourceUtil.parseRuntime(view);
             if(null != ps[0]) {
                 view.setName(ps[1]);
-                return ServiceProxy.service(ps[0]).metadata().ddl(view);
+                return ServiceProxy.service(ps[0]).metadata().ddl(view, init);
             }
-            return dao.ddl(view);
+            return dao.ddl(view, init);
         }
+
         /* *****************************************************************************************************************
-         * 													master table
+         * 													masterTable
          * -----------------------------------------------------------------------------------------------------------------
-         * boolean exists(MasterTable table)
+         * boolean exists(MasterTable masterTable)
          * LinkedHashMap<String, MasterTable> masterTables(Catalog catalog, Schema schema, String name, int types)
          * LinkedHashMap<String, MasterTable> masterTables(Schema schema, String name, int types)
          * LinkedHashMap<String, MasterTable> masterTables(String name, int types)
          * LinkedHashMap<String, MasterTable> masterTables(int types)
          * LinkedHashMap<String, MasterTable> masterTables()
-         * MasterTable mtable(Catalog catalog, Schema schema, String name)
-         * MasterTable mtable(Schema schema, String name)
-         * MasterTable mtable(String name)
+         * MasterTable masterTable(Catalog catalog, Schema schema, String name)
+         * MasterTable masterTable(Schema schema, String name)
+         * MasterTable masterTable(String name)
          ******************************************************************************************************************/
 
         @Override
-        public boolean exists(boolean greedy, MasterTable table) {
-            String[] ps = DataSourceUtil.parseRuntime(table);
-            if(null != ps[0]) {
-                table.setName(ps[1]);
-                return ServiceProxy.service(ps[0]).metadata().exists(greedy, table);
+        public boolean exists(boolean greedy, MasterTable masterTable) {
+            if (null != masterTable(greedy, masterTable.getCatalog(), masterTable.getSchema(), masterTable.getName(), false)) {
+                return true;
             }
-            MasterTable tab = mtable(greedy, table.getCatalog(), table.getSchema(), table.getName(), false);
-            return null != tab;
+            return false;
         }
 
         @Override
-        public <T extends MasterTable> LinkedHashMap<String, T> masterTables(boolean greedy, Catalog catalog, Schema schema, String name, int types) {
+        public <T extends MasterTable>  List<T> masterTables(boolean greedy, Catalog catalog, Schema schema, String name, int types, int struct, ConfigStore configs) {
             String[] ps = DataSourceUtil.parseRuntime(name);
             if(null != ps[0]) {
-                return ServiceProxy.service(ps[0]).metadata().masterTables(greedy, catalog, schema, ps[1], types);
+                return ServiceProxy.service(ps[0]).metadata().masterTables(greedy, catalog, schema, ps[1], types, struct, configs);
             }
-            return dao.masterTables(greedy, catalog, schema, name, types);
+            return dao.masterTables(greedy, catalog, schema, name, types, struct, configs);
         }
-
         @Override
-        public MasterTable mtable(boolean greedy, Catalog catalog, Schema schema, String name, boolean struct) {
-            LinkedHashMap<String, MasterTable> tables = masterTables(greedy, catalog, schema, name, MasterTable.TYPE.NORMAL.value);
-            if (tables.isEmpty()) {
-                return null;
-            }
-            MasterTable table = tables.values().iterator().next();
-            table.setColumns(columns(table));
-            table.setTags(tags(table));
-            table.setIndexes(indexes(table));
-            return table;
+        public <T extends MasterTable>  List<T> masterTables(boolean greedy, Catalog catalog, Schema schema, String name, int types, int struct) {
+            return masterTables(greedy, catalog, schema, name, types, struct, null);
         }
-
         @Override
-        public List<String> ddl(MasterTable table) {
-            String[] ps = DataSourceUtil.parseRuntime(table);
+        public <T extends MasterTable>  LinkedHashMap<String, T> masterTables(Catalog catalog, Schema schema, String name, int types, int struct, ConfigStore configs) {
+            String[] ps = DataSourceUtil.parseRuntime(name);
             if(null != ps[0]) {
-                table.setName(ps[1]);
-                return ServiceProxy.service(ps[0]).metadata().ddl(table);
+                return ServiceProxy.service(ps[0]).metadata().masterTables(catalog, schema, ps[1], types, struct, configs);
             }
-            return dao.ddl(table);
+            return dao.masterTables(catalog, schema, name, types, struct, configs);
         }
+
+        private void struct(MasterTable masterTable, int struct) {
+            //是否查询详细结构(1列、2主键、4索引、8外键、16约束、128DDL等)
+            LinkedHashMap<String, Column> columns = masterTable.getColumns();
+            if(Metadata.check(struct, Metadata.TYPE.COLUMN)) {
+                if(null == columns || columns.isEmpty()) {//上一步ddl是否加载过以下内容
+                    columns = columns(masterTable);
+                    masterTable.setColumns(columns);
+                    masterTable.setTags(tags(masterTable));
+                }
+            }
+
+            if(Metadata.check(struct, Metadata.TYPE.PRIMARY)) {
+                PrimaryKey pk = masterTable.getPrimaryKey();
+                if(null == pk) {
+                    pk = primary(masterTable);
+                    if (null != pk) {
+                        for (Column col : pk.getColumns().values()) {
+                            Column column = columns.get(col.getName().toUpperCase());
+                            if (null != column) {
+                                column.primary(true);
+                                BeanUtil.copyFieldValue(col, column);
+                            }
+                        }
+                    }
+                    masterTable.setPrimaryKey(pk);
+                }
+            }
+            if(Metadata.check(struct, Metadata.TYPE.INDEX)) {
+                LinkedHashMap<String, Index> indexes = masterTable.getIndexes();
+                if(null == indexes || indexes.isEmpty()) {
+                    masterTable.setIndexes(indexes(masterTable));
+                }
+            }
+            if(Metadata.check(struct, Metadata.TYPE.CONSTRAINT)) {
+                LinkedHashMap<String, Constraint> constraints = masterTable.getConstraints();
+                if(null == constraints || constraints.isEmpty()) {
+                    masterTable.setConstraints(constraints(masterTable));
+                }
+            }
+            if(Metadata.check(struct, Metadata.TYPE.DDL)) {
+                if (null == masterTable.ddl()) {
+                    ddl(masterTable);
+                }
+            }
+
+        }
+        @Override
+        public MasterTable masterTable(boolean greedy, Catalog catalog, Schema schema, String name, int struct) {
+            MasterTable masterTable = null;
+            List<MasterTable> masterTables = masterTables(greedy, catalog, schema, name, MasterTable.TYPE.NORMAL.value);
+            if (!masterTables.isEmpty()) {
+                masterTable = masterTables.get(0);
+                if(null != masterTable && struct>0) {
+                    struct(masterTable, struct);
+                }
+            }
+            return masterTable;
+        }
+        @Override
+        public MasterTable masterTable(Catalog catalog, Schema schema, String name, int struct) {
+            MasterTable masterTable = null;
+            LinkedHashMap<String, MasterTable> masterTables = masterTables(catalog, schema, name, MasterTable.TYPE.NORMAL.value);
+            if (!masterTables.isEmpty()) {
+                masterTable = masterTables.values().iterator().next();
+                if(null != masterTable && struct > 0) {
+                    struct(masterTable, struct);
+                }
+            }
+            return masterTable;
+        }
+
+        @Override
+        public List<String> ddl(MasterTable masterTable, boolean init) {
+            String[] ps = DataSourceUtil.parseRuntime(masterTable);
+            if(null != ps[0]) {
+                masterTable.setName(ps[1]);
+                return ServiceProxy.service(ps[0]).metadata().ddl(masterTable, init);
+            }
+            return dao.ddl(masterTable, init);
+        }
+
         /* *****************************************************************************************************************
          * 													partition  table
          * -----------------------------------------------------------------------------------------------------------------
@@ -2440,15 +2577,15 @@ public class DefaultService<E> implements AnylineService<E> {
          * LinkedHashMap<String, PartitionTable> partitionTables(int types)
          * LinkedHashMap<String, PartitionTable> partitionTables()
          * LinkedHashMap<String, PartitionTable> partitionTables(MasterTable master)
-         * PartitionTable ptable(Catalog catalog, Schema schema, String name)
-         * PartitionTable ptable(Schema schema, String name)
-         * PartitionTable ptable(String name)
+         * PartitionTable partitionTable(Catalog catalog, Schema schema, String name)
+         * PartitionTable partitionTable(Schema schema, String name)
+         * PartitionTable partitionTable(String name)
          ******************************************************************************************************************/
 
 
         @Override
         public boolean exists(boolean greedy, PartitionTable table) {
-            PartitionTable tab = ptable(greedy, table.getCatalog(), table.getSchema(), table.getMasterName(), table.getName());
+            PartitionTable tab = partitionTable(greedy, table.getCatalog(), table.getSchema(), table.getMasterName(), table.getName());
             return null != tab;
         }
 
@@ -2527,7 +2664,7 @@ public class DefaultService<E> implements AnylineService<E> {
         }
 
         @Override
-        public PartitionTable ptable(boolean greedy, MasterTable master, String name) {
+        public PartitionTable partitionTable(boolean greedy, MasterTable master, String name) {
             LinkedHashMap<String, PartitionTable> tables = partitionTables(greedy, master, name);
             if (tables.isEmpty()) {
                 return null;
@@ -3202,7 +3339,7 @@ public class DefaultService<E> implements AnylineService<E> {
             boolean result = false;
             CacheProxy.clear();
             try {
-                PartitionTable otable = metadata.ptable(table.getCatalog(), table.getSchema(), table.getMasterName(), table.getName());
+                PartitionTable otable = metadata.partitionTable(table.getCatalog(), table.getSchema(), table.getMasterName(), table.getName());
                 if (null != otable) {
                     otable.setUpdate(table, false, false);
                     result = alter(otable);

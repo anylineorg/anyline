@@ -3068,18 +3068,24 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		return defaultTableMetadataAdapter;
 	}
 
+
 	/* *****************************************************************************************************************
 	 * 													view
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * [调用入口]
-	 * <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types)
+	 * <T extends View> List<T> views(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, boolean struct)
+	 * <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, String types, boolean struct)
 	 * [命令合成]
-	 * List<Run> buildQueryViewsRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types)
+	 * List<Run> buildQueryViewsRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs)
+	 * List<Run> buildQueryViewsCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types)
 	 * [结果集封装]<br/>
 	 * <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> views, Catalog catalog, Schema schema, DataSet set)
+	 * <T extends View> List<T> views(DataRuntime runtime, int index, boolean create, List<T> views, Catalog catalog, Schema schema, DataSet set)
 	 * <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, boolean create, LinkedHashMap<String, T> views, Catalog catalog, Schema schema, String pattern, int types)
+	 * <T extends View> List<T> views(DataRuntime runtime, boolean create, List<T> views, Catalog catalog, Schema schema, String pattern, int types)
+	 * <T extends View> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> views, Catalog catalog, Schema schema, DataSet set)
 	 * [调用入口]
-	 * List<String> ddl(DataRuntime runtime, String random, View view)
+	 * List<String> ddl(DataRuntime runtime, String random, View view, boolean init)
 	 * [命令合成]
 	 * List<Run> buildQueryDdlsRun(DataRuntime runtime, View view)
 	 * [结果集封装]<br/>
@@ -3087,8 +3093,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 ******************************************************************************************************************/
 
 	/**
+	 *
 	 * view[调用入口]<br/>
-	 * 查询视图
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
@@ -3096,28 +3102,72 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
 	 * @param types  Metadata.TYPE.
+	 * @param struct 是否查询表结构
 	 * @return List
 	 * @param <T> View
 	 */
 	@Override
-	public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs) {
-		return super.views(runtime, random, greedy, catalog, schema, pattern, types, configs);
+	public <T extends View> List<T> views(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
+		return super.views(runtime, random, greedy, catalog, schema, pattern, types, struct, configs);
+	}
+	@Override
+	public <T extends View> List<T> views(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct) {
+		return super.views(runtime, random, greedy, catalog, schema, pattern, types, struct);
+	}
+
+	/**
+	 * view[结果集封装-子流程]<br/>
+	 * 查出所有key并以大写缓存 用来实现忽略大小写
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param catalog catalog
+	 * @param schema schema
+	 */
+	@Override
+	protected void viewMap(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, ConfigStore configs) {
+		super.viewMap(runtime, random, greedy, catalog, schema, configs);
+	}
+
+	@Override
+	public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
+		return super.views(runtime, random, catalog, schema, pattern, types, struct, configs);
+	}
+	@Override
+	public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct) {
+		return super.views(runtime, random, catalog, schema, pattern, types, struct);
 	}
 
 	/**
 	 * view[命令合成]<br/>
-	 * 查询视图
+	 * 查询表,不是查表中的数据
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types types Metadata.TYPE.
-	 * @return List
+	 * @param types  Metadata.TYPE.
+	 * @return String
+	 * @throws Exception Exception
 	 */
 	@Override
 	public List<Run> buildQueryViewsRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs) throws Exception {
 		return super.buildQueryViewsRun(runtime, greedy, catalog, schema, pattern, types, configs);
+	}
+
+	/**
+	 * view[命令合成]<br/>
+	 * 查询表备注
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param pattern 名称统配符或正则
+	 * @param types types Metadata.TYPE.
+	 * @return String
+	 * @throws Exception Exception
+	 */
+	@Override
+	public List<Run> buildQueryViewsCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
+		return super.buildQueryViewsCommentRun(runtime, catalog, schema, pattern, types);
 	}
 
 	/**
@@ -3139,10 +3189,10 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			views = new LinkedHashMap<>();
 		}
 		for(DataRow row:set) {
-			T view = null;
-			view = init(runtime, index, view, catalog, schema, row);
-			view = detail(runtime, index, view, catalog, schema, row);
-			views.put(view.getName().toUpperCase(), view);
+			T meta = null;
+			meta = init(runtime, index, meta, catalog, schema, row);
+			meta = detail(runtime, index, meta, catalog, schema, row);
+			views.put(meta.getName().toUpperCase(), meta);
 		}
 		return views;
 	}
@@ -3178,7 +3228,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 
 	/**
 	 * view[结果集封装]<br/>
-	 * 根据根据驱动内置接口补充
+	 * 根据驱动内置方法补充
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param views 上一步查询结果
@@ -3195,22 +3245,42 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	}
 
 	/**
+	 * view[结果集封装]<br/>
+	 * 根据驱动内置方法补充
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param views 上一步查询结果
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param pattern 名称统配符或正则
+	 * @param types types Metadata.TYPE.
+	 * @return views
+	 * @throws Exception 异常
+	 */
+	@Override
+	public <T extends View> List<T> views(DataRuntime runtime, boolean create, List<T> views, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
+		return worker.views(this, runtime, create, views, catalog, schema, pattern, types);
+	}
+
+	/**
+	 *
 	 * view[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param view 视图
+	 * @param view 表
+	 * @param init 是否还原初始状态 如自增状态
 	 * @return List
 	 */
 	@Override
-	public List<String> ddl(DataRuntime runtime, String random, View view) {
-		return super.ddl(runtime, random, view);
+	public List<String> ddl(DataRuntime runtime, String random, View view, boolean init) {
+		return super.ddl(runtime, random, view, init);
 	}
 
 	/**
 	 * view[命令合成]<br/>
-	 * 查询view DDL
+	 * 查询表DDL
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param view view
+	 * @param view 表
 	 * @return List
 	 */
 	@Override
@@ -3220,10 +3290,10 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 
 	/**
 	 * view[结果集封装]<br/>
-	 * 查询 view DDL
+	 * 查询表DDL
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
-	 * @param view view
+	 * @param view 表
 	 * @param ddls 上一步查询结果
 	 * @param set sql执行的结果集
 	 * @return List
@@ -3232,7 +3302,6 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	public List<String> ddl(DataRuntime runtime, int index, View view, List<String> ddls, DataSet set) {
 		return super.ddl(runtime, index, view, ddls, set);
 	}
-
 
 	/**
 	 * view[结果集封装]<br/>
@@ -3262,7 +3331,11 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		String name = row.getString(config.getNameRefers());
 
 		if(null == meta) {
-			meta = (T)new View();
+			if("VIEW".equals(row.getString(config.getTypeRefers()))) {
+				meta = (T)new View();
+			}else {
+				meta = (T)new View();
+			}
 		}
 		if(null != _catalog) {
 			_catalog = _catalog.trim();
@@ -3276,6 +3349,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		meta.setName(name);
 		return meta;
 	}
+
 
 	/**
 	 * view[结果集封装]<br/>
@@ -3319,27 +3393,31 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		return config;
 	}
 	/* *****************************************************************************************************************
-	 * 													master table
+	 * 													masterTable
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * [调用入口]
-	 * <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs)
+	 * <T extends MasterTable> List<T> masterTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, boolean struct)
+	 * <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, String types, boolean struct)
 	 * [命令合成]
-	 * List<Run> buildQueryMasterTablesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs)
+	 * List<Run> buildQueryMasterTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs)
+	 * List<Run> buildQueryMasterTablesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types)
 	 * [结果集封装]<br/>
-	 * <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set)
-	 * [结果集封装]<br/>
-	 * <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables,Catalog catalog, Schema schema, String pattern, int types)
+	 * <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> masterTables, Catalog catalog, Schema schema, DataSet set)
+	 * <T extends MasterTable> List<T> masterTables(DataRuntime runtime, int index, boolean create, List<T> masterTables, Catalog catalog, Schema schema, DataSet set)
+	 * <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> masterTables, Catalog catalog, Schema schema, String pattern, int types)
+	 * <T extends MasterTable> List<T> masterTables(DataRuntime runtime, boolean create, List<T> masterTables, Catalog catalog, Schema schema, String pattern, int types)
+	 * <T extends MasterTable> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> masterTables, Catalog catalog, Schema schema, DataSet set)
 	 * [调用入口]
-	 * List<String> ddl(DataRuntime runtime, String random, MasterTable table)
+	 * List<String> ddl(DataRuntime runtime, String random, MasterTable masterTable, boolean init)
 	 * [命令合成]
-	 * List<Run> buildQueryDdlsRun(DataRuntime runtime, MasterTable table)
+	 * List<Run> buildQueryDdlsRun(DataRuntime runtime, MasterTable masterTable)
 	 * [结果集封装]<br/>
-	 * List<String> ddl(DataRuntime runtime, int index, MasterTable table, List<String> ddls, DataSet set)
+	 * List<String> ddl(DataRuntime runtime, int index, MasterTable masterTable, List<String> ddls, DataSet set)
 	 ******************************************************************************************************************/
 
 	/**
-	 * master table[调用入口]<br/>
-	 * 查询主表
+	 *
+	 * masterTable[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
@@ -3347,100 +3425,212 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
 	 * @param types  Metadata.TYPE.
+	 * @param struct 是否查询表结构
 	 * @return List
 	 * @param <T> MasterTable
 	 */
 	@Override
-	public <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
-		return super.masterTables(runtime, random, greedy, catalog, schema, pattern, types);
+	public <T extends MasterTable> List<T> masterTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
+		return super.masterTables(runtime, random, greedy, catalog, schema, pattern, types, struct, configs);
+	}
+	@Override
+	public <T extends MasterTable> List<T> masterTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct) {
+		return super.masterTables(runtime, random, greedy, catalog, schema, pattern, types, struct);
 	}
 
 	/**
-	 * master table[命令合成]<br/>
-	 * 查询主表
+	 * masterTable[结果集封装-子流程]<br/>
+	 * 查出所有key并以大写缓存 用来实现忽略大小写
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param catalog catalog
+	 * @param schema schema
+	 */
+	@Override
+	protected void masterTableMap(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, ConfigStore configs) {
+		super.masterTableMap(runtime, random, greedy, catalog, schema, configs);
+	}
+
+	@Override
+	public <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
+		return super.masterTables(runtime, random, catalog, schema, pattern, types, struct, configs);
+	}
+	@Override
+	public <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct) {
+		return super.masterTables(runtime, random, catalog, schema, pattern, types, struct);
+	}
+
+	/**
+	 * masterTable[命令合成]<br/>
+	 * 查询表,不是查表中的数据
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param pattern 名称统配符或正则
+	 * @param types  Metadata.TYPE.
+	 * @return String
+	 * @throws Exception Exception
+	 */
+	@Override
+	public List<Run> buildQueryMasterTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs) throws Exception {
+		return super.buildQueryMasterTablesRun(runtime, greedy, catalog, schema, pattern, types, configs);
+	}
+
+	/**
+	 * masterTable[命令合成]<br/>
+	 * 查询表备注
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types types
+	 * @param types types Metadata.TYPE.
 	 * @return String
+	 * @throws Exception Exception
 	 */
 	@Override
-	public List<Run> buildQueryMasterTablesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) throws Exception {
-		return super.buildQueryMasterTablesRun(runtime, catalog, schema, pattern, types);
+	public List<Run> buildQueryMasterTablesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
+		return super.buildQueryMasterTablesCommentRun(runtime, catalog, schema, pattern, types);
 	}
 
 	/**
-	 * master table[结果集封装]<br/>
-	 *  根据查询结果集构造Table
+	 * masterTable[结果集封装]<br/>
+	 *  根据查询结果集构造MasterTable
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照 buildQueryMasterTablesRun返回顺序
+	 * @param index 第几条SQL 对照buildQueryMasterTablesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param catalog catalog
 	 * @param schema schema
-	 * @param tables 上一步查询结果
+	 * @param masterTables 上一步查询结果
 	 * @param set 查询结果集
-	 * @return tables
+	 * @return masterTables
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set) throws Exception {
-		return super.masterTables(runtime, index, create, tables, catalog, schema, set);
+	public <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> masterTables, Catalog catalog, Schema schema, DataSet set) throws Exception {
+		if(null == masterTables) {
+			masterTables = new LinkedHashMap<>();
+		}
+		for(DataRow row:set) {
+			T meta = null;
+			meta = init(runtime, index, meta, catalog, schema, row);
+			meta = detail(runtime, index, meta, catalog, schema, row);
+			masterTables.put(meta.getName().toUpperCase(), meta);
+		}
+		return masterTables;
 	}
 
 	/**
-	 * master table[结果集封装]<br/>
-	 * 根据根据驱动内置接口
+	 * masterTable[结果集封装]<br/>
+	 *  根据查询结果集构造MasterTable
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param index 第几条SQL 对照buildQueryMasterTablesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param catalog catalog
 	 * @param schema schema
-	 * @param tables 上一步查询结果
-	 * @return tables
+	 * @param masterTables 上一步查询结果
+	 * @param set 查询结果集
+	 * @return masterTables
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables,Catalog catalog, Schema schema, String pattern, int types) throws Exception {
-		return super.masterTables(runtime, create, tables, catalog, schema, pattern, types);
+	public <T extends MasterTable> List<T> masterTables(DataRuntime runtime, int index, boolean create, List<T> masterTables, Catalog catalog, Schema schema, DataSet set) throws Exception {
+		if(null == masterTables) {
+			masterTables = new ArrayList<>();
+		}
+		for(DataRow row:set) {
+			T masterTable = null;
+			masterTable = init(runtime, index, masterTable, catalog, schema, row);
+			if(null == search(masterTables, masterTable.getCatalog(), masterTable.getSchema(), masterTable.getName())) {
+				masterTables.add(masterTable);
+			}
+			detail(runtime, index, masterTable, catalog, schema, row);
+		}
+		return masterTables;
 	}
 
 	/**
-	 * master table[调用入口]<br/>
+	 *
+	 * masterTable[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param table MasterTable
+	 * @param masterTable 表
+	 * @param init 是否还原初始状态 如自增状态
 	 * @return List
 	 */
 	@Override
-	public List<String> ddl(DataRuntime runtime, String random, MasterTable table) {
-		return super.ddl(runtime, random, table);
+	public List<String> ddl(DataRuntime runtime, String random, MasterTable meta, boolean init) {
+		return super.ddl(runtime, random, meta, init);
 	}
 
 	/**
-	 * master table[命令合成]<br/>
-	 * 查询 MasterTable DDL
+	 * masterTable[命令合成]<br/>
+	 * 查询表DDL
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param table MasterTable
+	 * @param masterTable 表
 	 * @return List
 	 */
 	@Override
-	public List<Run> buildQueryDdlsRun(DataRuntime runtime, MasterTable table) throws Exception {
-		return super.buildQueryDdlsRun(runtime, table);
+	public List<Run> buildQueryDdlsRun(DataRuntime runtime, MasterTable masterTable) throws Exception {
+		return super.buildQueryDdlsRun(runtime, masterTable);
 	}
 
 	/**
-	 * master table[结果集封装]<br/>
-	 * 查询 MasterTable DDL
+	 * masterTable[结果集封装]<br/>
+	 * 查询表DDL
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
-	 * @param table MasterTable
+	 * @param masterTable 表
 	 * @param ddls 上一步查询结果
 	 * @param set sql执行的结果集
 	 * @return List
 	 */
 	@Override
-	public List<String> ddl(DataRuntime runtime, int index, MasterTable table, List<String> ddls, DataSet set) {
-		return super.ddl(runtime, index, table, ddls, set);
+	public List<String> ddl(DataRuntime runtime, int index, MasterTable masterTable, List<String> ddls, DataSet set) {
+		return super.ddl(runtime, index, masterTable, ddls, set);
+	}
+
+	/**
+	 * masterTable[结果集封装]<br/>
+	 * 根据查询结果封装MasterTable基础属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param index index
+	 * @param meta 上一步封装结果
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param row 查询结果集
+	 * @return MasterTable
+	 * @param <T> MasterTable
+	 */
+	public <T extends MasterTable> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row) {
+		if(null == meta) {
+			meta = (T)new MasterTable();
+		}
+		MasterTableMetadataAdapter config = masterTableMetadataAdapter(runtime);
+		String _catalog = row.getString(config.getCatalogRefers());
+		String _schema = row.getString(config.getSchemaRefers());
+		if(null == _catalog && null != catalog) {
+			_catalog = catalog.getName();
+		}
+		if(null == _schema && null != schema) {
+			_schema = schema.getName();
+		}
+		String name = row.getString(config.getNameRefers());
+
+		if(null == meta) {
+			meta = (T)new MasterTable();
+		}
+		if(null != _catalog) {
+			_catalog = _catalog.trim();
+		}
+		if(null != _schema) {
+			_schema = _schema.trim();
+		}
+		meta.setMetadata(row);
+		meta.setCatalog(_catalog);
+		meta.setSchema(_schema);
+		meta.setName(name);
+		return meta;
 	}
 	/* *****************************************************************************************************************
 	 * 													partition table
@@ -3640,8 +3830,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		}
 		Catalog catalog = table.getCatalog();
 		Schema schema = table.getSchema();
-
-		LinkedHashMap<String,T> columns = CacheProxy.columns(this, runtime.getKey(), table);
+		String key = CacheProxy.key(runtime, "table_columns", greedy, table);
+		LinkedHashMap<String,T> columns = CacheProxy.columns(key);
 		if(null != columns && !columns.isEmpty()) {
 			return columns;
 		}
@@ -3758,7 +3948,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			}
 		}
 		if(null != columns) {
-			CacheProxy.columns(this, runtime.getKey(), table, columns);
+			CacheProxy.cache(key, columns);
 		}else{
 			columns = new LinkedHashMap<>();
 		}
@@ -4187,72 +4377,84 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @return Tag
 	 * @param <T>  Tag
 	 */
-	@Override
 	public <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, String random, boolean greedy, Table table) {
-		if(null == table || BasicUtil.isEmpty(table.getName())) {
-			return new LinkedHashMap();
+		if (!greedy) {
+			checkSchema(runtime, table);
 		}
-		checkName(runtime, null, table);
-		LinkedHashMap<String,T> tags = CacheProxy.tags(this, runtime.getKey(), table);
+		Catalog catalog = table.getCatalog();
+		Schema schema = table.getSchema();
+		String key = CacheProxy.key(runtime, "table_tags", greedy, table);
+		LinkedHashMap<String,T> tags = CacheProxy.tags(key);
 		if(null != tags && !tags.isEmpty()) {
 			return tags;
 		}
-
 		long fr = System.currentTimeMillis();
 		if(null == random) {
 			random = random(runtime);
 		}
 		try {
-			if (!greedy) {
-				checkSchema(runtime, table);
-			}
-			Catalog catalog = table.getCatalog();
-			Schema schema = table.getSchema();
 
-			// 先根据系统表查询
+			int qty_total = 0;
+			int qty_dialect = 0; //优先根据系统表查询
+			int qty_metadata = 0; //再根据metadata解析
+			int qty_jdbc = 0; //根据驱动内置接口补充
+
+			// 1.优先根据系统表查询
 			try {
 				List<Run> runs = buildQueryTagsRun(runtime, table, false);
 				if (null != runs) {
 					int idx = 0;
-					for (Run run : runs) {
-						DataSet set = select(runtime, random, true, (String) null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+					for (Run run: runs) {
+						DataSet set = select(runtime, random, true, (String) null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run);
 						tags = tags(runtime, idx, true, table, tags, set);
 						idx++;
 					}
 				}
+				if(null != tags) {
+					qty_dialect = tags.size();
+					qty_total=tags.size();
+				}
 			} catch (Exception e) {
 				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
-					log.error("tags exception:", e);
-				}
-				if (ConfigTable.IS_LOG_SQL && log.isWarnEnabled()) {
-					log.warn("{}[tags][{}][catalog:{}][schema:{}][table:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, table, e.toString());
+					e.printStackTrace();
 				}
 			}
-			if (null == tags || tags.isEmpty()) {
-				// 根据驱动内置接口补充
-				try {
-					// isAutoIncrement isGenerated remark default
-					// 这一步会查出所有列(包括非tag列)
-					tags = tags(runtime, false, tags, table, null);
-				} catch (Exception e) {
-					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
-						log.error("tags exception:", e);
-					}
-				}
+			if (ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
+				log.info("{}[tags][catalog:{}][schema:{}][table:{}][total:{}][根据metadata解析:{}][根据系统表查询:{}][根据驱动内置接口补充:{}][执行耗时:{}]", random, catalog, schema, table, qty_total, qty_metadata, qty_dialect, qty_jdbc, DateUtil.format(System.currentTimeMillis() - fr));
+			}
 
-			}
-			if (ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
-				log.info("{}[tags][catalog:{}][schema:{}][table:{}][执行耗时:{}]", random, catalog, schema, table, DateUtil.format(System.currentTimeMillis() - fr));
+			if (ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
+				log.info("{}[tags][catalog:{}][schema:{}][table:{}][total:{}][根据metadata解析:{}][根据系统表查询:{}][根据根据驱动内置接口补充:{}][执行耗时:{}]", random, catalog, schema, table, qty_total, qty_metadata, qty_dialect, qty_jdbc, DateUtil.format(System.currentTimeMillis() - fr));
 			}
 		}catch (Exception e) {
 			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 				log.error("tags exception:", e);
+			}else{
+				log.error("{}[tags][result:fail][table:{}][msg:{}]", random, table, e.toString());
 			}
 		}
-		CacheProxy.tags(this, runtime.getKey(), table, tags);
+		if(null != tags) {
+			CacheProxy.cache(key, tags);
+		}else{
+			tags = new LinkedHashMap<>();
+		}
+		int index = 0;
+		for(Tag tag:tags.values()) {
+			if(null == tag.getPosition() || -1 == tag.getPosition()) {
+				tag.setPosition(index++);
+			}
+			if(tag.isAutoIncrement() != 1) {
+				tag.autoIncrement(false);
+			}
+			if(tag.isPrimaryKey() != 1) {
+				tag.setPrimary(false);
+			}
+			if(null == tag.getTable() && !greedy) {
+				tag.setTable(table);
+			}
+		}
 		return tags;
 	}
-
 	/**
 	 * tag[命令合成]<br/>
 	 * 查询表上的列

@@ -1838,7 +1838,6 @@ public class SinoDBAdapter extends InformixGenusAdapter implements JDBCAdapter {
      * 查询视图
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
-     * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
      * @param catalog catalog
      * @param schema schema
      * @param pattern 名称统配符或正则
@@ -1847,9 +1846,9 @@ public class SinoDBAdapter extends InformixGenusAdapter implements JDBCAdapter {
      * @param <T> View
      */
     @Override
-    public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs) {
-        return super.views(runtime, random, greedy, catalog, schema, pattern, types, configs);
-    }
+    public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
+		return super.views(runtime, random, catalog, schema, pattern, types, struct, configs);
+	}
     /**
      * view[命令合成]<br/>
      * 查询视图
@@ -1862,9 +1861,9 @@ public class SinoDBAdapter extends InformixGenusAdapter implements JDBCAdapter {
      * @return List
      */
     @Override
-    public List<Run> buildQueryViewsRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
-        return super.buildQueryViewsRun(runtime, greedy, catalog, schema, pattern, types);
-    }
+    public List<Run> buildQueryViewsRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs) throws Exception {
+		return super.buildQueryViewsRun(runtime, greedy, catalog, schema, pattern, types, configs);
+	}
 
     /**
      * view[结果集封装]<br/>
@@ -1909,9 +1908,9 @@ public class SinoDBAdapter extends InformixGenusAdapter implements JDBCAdapter {
      * @return List
      */
     @Override
-    public List<String> ddl(DataRuntime runtime, String random, View view) {
-        return super.ddl(runtime, random, view);
-    }
+    public List<String> ddl(DataRuntime runtime, String random, View view, boolean init) {
+		return super.ddl(runtime, random, view, init);
+	}
 
     /**
      * view[命令合成]<br/>
@@ -1945,7 +1944,7 @@ public class SinoDBAdapter extends InformixGenusAdapter implements JDBCAdapter {
      * [调用入口]
      * <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs)
      * [命令合成]
-     * List<Run> buildQueryMasterTablesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs)
+     * List<Run> buildQueryMasterTablesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs)
      * [结果集封装]<br/>
      * <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set)
      * [结果集封装]<br/>
@@ -1972,9 +1971,13 @@ public class SinoDBAdapter extends InformixGenusAdapter implements JDBCAdapter {
      * @param <T> MasterTable
      */
     @Override
-    public <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
-        return super.masterTables(runtime, random, greedy, catalog, schema, pattern, types);
-    }
+	public <T extends MasterTable> List<T> masterTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
+		return super.masterTables(runtime, random, greedy, catalog, schema, pattern, types, struct, configs);
+	}
+	@Override
+	public <T extends MasterTable> List<T> masterTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct) {
+		return super.masterTables(runtime, random, greedy, catalog, schema, pattern, types, struct);
+	}
     /**
      * master table[命令合成]<br/>
      * 查询主表
@@ -1986,9 +1989,9 @@ public class SinoDBAdapter extends InformixGenusAdapter implements JDBCAdapter {
      * @return String
      */
     @Override
-    public List<Run> buildQueryMasterTablesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) throws Exception {
-        return super.buildQueryMasterTablesRun(runtime, catalog, schema, pattern, types);
-    }
+    public List<Run> buildQueryMasterTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs) throws Exception {
+		return super.buildQueryMasterTablesRun(runtime, greedy, catalog, schema, pattern, types, configs);
+	}
 
     /**
      * master table[结果集封装]<br/>
@@ -2027,23 +2030,23 @@ public class SinoDBAdapter extends InformixGenusAdapter implements JDBCAdapter {
      * master table[调用入口]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
-     * @param table MasterTable
+     * @param meta MasterTable
      * @return List
      */
     @Override
-    public List<String> ddl(DataRuntime runtime, String random, MasterTable table) {
-        return super.ddl(runtime, random, table);
-    }
+    public List<String> ddl(DataRuntime runtime, String random, MasterTable meta, boolean init) {
+		return super.ddl(runtime, random, meta, init);
+	}
     /**
      * master table[命令合成]<br/>
      * 查询 MasterTable DDL
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param table MasterTable
+     * @param meta MasterTable
      * @return List
      */
     @Override
-    public List<Run> buildQueryDdlsRun(DataRuntime runtime, MasterTable table) throws Exception {
-        return super.buildQueryDdlsRun(runtime, table);
+    public List<Run> buildQueryDdlsRun(DataRuntime runtime, MasterTable meta) throws Exception {
+        return super.buildQueryDdlsRun(runtime, meta);
     }
     /**
      * master table[结果集封装]<br/>

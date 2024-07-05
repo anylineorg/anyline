@@ -1866,10 +1866,7 @@ public interface AnylineService<E>{
 		default boolean exists(Table table) {
 			return exists(false, table);
 		}
-		boolean exists(boolean greedy, View view);
-		default boolean exists(View view) {
-			return exists(false, view);
-		}
+
 		/**
 		 * tables
 		 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
@@ -2096,11 +2093,21 @@ public interface AnylineService<E>{
 		 ******************************************************************************************************************/
 
 		/**
+		 * 视图是否存在
+		 * @param view 视图 如果不提供视图名则根据data解析, 视图名可以事实前缀&lt;数据源名&gt;视图示切换数据源
+		 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
+		 * @return boolean
+		 */
+		boolean exists(boolean greedy, View view);
+		default boolean exists(View view) {
+			return exists(false, view);
+		}
+		/**
 		 * views
 		 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
 		 * @param catalog 对于MySQL, 则对应相应的数据库, 对于Oracle来说, 则是对应相应的数据库实例, 可以不填, 也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
 		 * @param schema 可以理解为数据库的登录名, 而对于Oracle也可以理解成对该数据库操作的所有者的登录名。对于Oracle要特别注意, 其登陆名必须是大写, 不然的话是无法获取到相应的数据, 而MySQL则不做强制要求。
-		 * @param name 一般情况下如果要获取所有的表的话, 可以直接设置为null, 如果设置为特定的表名称, 则返回该表的具体信息。
+		 * @param name 一般情况下如果要获取所有的视图的话, 可以直接设置为null, 如果设置为特定的视图名称, 则返回该视图的具体信息。
 		 * @param types Metadata.TYPE
 		 * @return views
 		 */
@@ -2234,7 +2241,7 @@ public interface AnylineService<E>{
 		 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
 		 * @param catalog 对于MySQL, 则对应相应的数据库, 对于Oracle来说, 则是对应相应的数据库实例, 可以不填, 也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
 		 * @param schema 可以理解为数据库的登录名, 而对于Oracle也可以理解成对该数据库操作的所有者的登录名。对于Oracle要特别注意, 其登陆名必须是大写, 不然的话是无法获取到相应的数据, 而MySQL则不做强制要求。
-		 * @param name 一般情况下如果要获取所有的表的话, 可以直接设置为null, 如果设置为特定的表名称, 则返回该表的具体信息。
+		 * @param name 一般情况下如果要获取所有的视图的话, 可以直接设置为null, 如果设置为特定的视图名称, 则返回该视图的具体信息。
 		 * @param struct 是否查询详细结构(1列、2主键、4索引、8外键、16约束、128DDL等)
 		 * @return View
 		 */
@@ -2300,7 +2307,7 @@ public interface AnylineService<E>{
 		}
 
 		/**
-		 * 表的创建SQL
+		 * 视图的创建SQL
 		 * @param view view
 		 * @param init 是否还原初始状态 默认false
 		 * @return ddl
@@ -2309,6 +2316,8 @@ public interface AnylineService<E>{
 		default List<String> ddl(View view) {
 			return ddl(view, false);
 		}
+
+
 
 		/* *****************************************************************************************************************
 		 * 													master table
@@ -2603,24 +2612,24 @@ public interface AnylineService<E>{
 			return partitionTables(false, master);
 		}
 
-		PartitionTable ptable(boolean greedy, MasterTable master, String name);
-		default PartitionTable ptable(boolean greedy, Catalog catalog, Schema schema, String master, String name) {
-			return ptable(greedy, new MasterTable(catalog, schema, master), name);
+		PartitionTable partitionTable(boolean greedy, MasterTable master, String name);
+		default PartitionTable partitionTable(boolean greedy, Catalog catalog, Schema schema, String master, String name) {
+			return partitionTable(greedy, new MasterTable(catalog, schema, master), name);
 		}
-		default PartitionTable ptable(boolean greedy, Schema schema, String master, String name) {
-			return ptable(greedy, new MasterTable(schema, master), name);
+		default PartitionTable partitionTable(boolean greedy, Schema schema, String master, String name) {
+			return partitionTable(greedy, new MasterTable(schema, master), name);
 		}
-		default PartitionTable ptable(boolean greedy, String master, String name) {
-			return ptable(greedy, new MasterTable(master), name);
+		default PartitionTable partitionTable(boolean greedy, String master, String name) {
+			return partitionTable(greedy, new MasterTable(master), name);
 		}
-		default PartitionTable ptable(Catalog catalog, Schema schema, String master, String name) {
-			return ptable(false, catalog, schema, master, name);
+		default PartitionTable partitionTable(Catalog catalog, Schema schema, String master, String name) {
+			return partitionTable(false, catalog, schema, master, name);
 		}
-		default PartitionTable ptable(Schema schema, String master, String name) {
-			return ptable(false, new MasterTable(schema, master), name);
+		default PartitionTable partitionTable(Schema schema, String master, String name) {
+			return partitionTable(false, new MasterTable(schema, master), name);
 		}
-		default PartitionTable ptable(String master, String name) {
-			return ptable(false, new MasterTable(master), name);
+		default PartitionTable partitionTable(String master, String name) {
+			return partitionTable(false, new MasterTable(master), name);
 		}
 
 		List<String> ddl(PartitionTable table);
@@ -2629,16 +2638,15 @@ public interface AnylineService<E>{
 		 **************************************************************************************************************/
 
 		/**
-		 * 点类型是否存在
-		 * @param meta 点类型 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+		 * 表是否存在
+		 * @param vertexTable 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 		 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
 		 * @return boolean
 		 */
-		boolean exists(boolean greedy, VertexTable meta);
-		default boolean exists(VertexTable meta) {
-			return exists(false, meta);
+		boolean exists(boolean greedy, VertexTable vertexTable);
+		default boolean exists(VertexTable vertexTable) {
+			return exists(false, vertexTable);
 		}
-
 		/**
 		 * vertexTables
 		 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
@@ -2856,9 +2864,19 @@ public interface AnylineService<E>{
 
 
 		/* *************************************************************************************************************
-		 * 													EdgeType
+		 * 													EdgeTable
 		 **************************************************************************************************************/
 
+		/**
+		 * 表是否存在
+		 * @param edgeTable 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+		 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
+		 * @return boolean
+		 */
+		boolean exists(boolean greedy, EdgeTable edgeTable);
+		default boolean exists(EdgeTable edgeTable) {
+			return exists(false, edgeTable);
+		}
 		/**
 		 * edgeTables
 		 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
@@ -3073,6 +3091,7 @@ public interface AnylineService<E>{
 		default List<String> ddl(EdgeTable edgeTable) {
 			return ddl(edgeTable, false);
 		}
+
 
 		/* *****************************************************************************************************************
 		 * 													column

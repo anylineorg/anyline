@@ -916,11 +916,11 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
         }
         if(Metadata.check(struct, Metadata.TYPE.COLUMN)) {
             //查询全部表结构 columns()内部已经给table.columns赋值
-            columns(runtime, random, greedy, catalog, schema, (List<Table>)tables);
+            columns(runtime, random, greedy, catalog, schema, tables);
         }
         if(Metadata.check(struct, Metadata.TYPE.INDEX)) {
             //查询全部表结构
-            indexes(runtime, random, greedy, (List<Table>)tables);
+            indexes(runtime, random, greedy, tables);
         }
         return tables;
     }

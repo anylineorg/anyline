@@ -10659,8 +10659,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		try {
 			List<Run> autos = checkAutoIncrement(runtime, null, meta, slice);
 			if(slice) {
-				//后面更新新会有重复设置列属性这里不需要add
-				//slices.addAll(autos);
+				slices.addAll(autos);
 			}else{
 				result = execute(runtime, random, meta, ACTION.DDL.TABLE_ALTER, autos) && result;
 				if(meta.swt() == ACTION.SWITCH.BREAK) {
@@ -10678,6 +10677,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			}else {
 				drop(runtime, src_primary);
 			}
+
 			src_primary = null;
 		}
 
@@ -10695,13 +10695,11 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 
 		//在alters执行完成后 添加主键 避免主键中存在alerts新添加的列
-		//TODO 但是如果 添加了新主键需要先删除旧主键
-		//TODO 如果DDL支持合并需要合成一个DDL
-		if(meta.getPrimaryKeySize() > 1) {//复合主键的单独添加
+		if(null != cur_primary) {//复合主键的单独添加
 			if(slice){
-				slices.addAll(buildAlterRun(runtime, src_primary, cur_primary, slice));
+				slices.addAll(buildAddRun(runtime, cur_primary, slice));
 			}else {
-				alter(runtime, meta, src_primary, cur_primary);
+				add(runtime, cur_primary);
 			}
 		}
 		List<Run> merges = merge(runtime, meta, slices);
@@ -10733,8 +10731,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 						//名称不存在的
 						add(runtime, index);
 					}else{
-						//有同名的
 						if(!index.equals(oindex)) {
+							if(oindex.isPrimary()){
+								continue;
+							}
 							oindex.execute(meta.execute());
 							oindex.setUpdate(index, false, false);
 							alter(runtime, oindex);

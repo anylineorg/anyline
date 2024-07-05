@@ -27,6 +27,7 @@ import org.anyline.metadata.graph.VertexTable;
 import org.anyline.util.encrypt.MD5Util;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -62,6 +63,22 @@ public class CacheProxy {
         if(null != configs){
             key.append(MD5Util.crypto(configs.json()));;
         }
+        return key.toString().toUpperCase();
+    }
+    public static String key(DataRuntime runtime, String flag, boolean greedy, Table table){
+        StringBuilder key = new StringBuilder();
+        key.append(runtime.datasource()).append("_").append(flag).append("_").append(greedy).append("_");
+        String name = table.getName();
+        String catalog = table.getCatalogName();
+        String schema = table.getSchemaName();
+        if(null != catalog){
+            key.append(catalog);
+        }
+        key.append("_");
+        if(null != schema){
+            key.append(schema);
+        }
+        key.append("_").append(name);
         return key.toString().toUpperCase();
     }
     public static String key(DataRuntime runtime, String flag, boolean greedy, Catalog catalog, Schema schema, String pattern){
@@ -109,6 +126,10 @@ public class CacheProxy {
     }
     public static  <T extends View> void views(String cache, List<T> view){
         caches.put(cache, view);
+    }
+
+    public static  void cache(String cache, Object value){
+        caches.put(cache, value);
     }
 
 /*
@@ -253,32 +274,13 @@ public class CacheProxy {
     }*/
 
 
-  /*  public static <T extends Column> LinkedHashMap<String, T> columns(DriverAdapter adapter, String datasource, Table table) {
-        if(null == table) {
-            return null;
-        }
-        LinkedHashMap<String, T> columns = null;
-        String cache = ConfigTable.getString("TABLE_METADATA_CACHE_KEY");
-        String key = datasource(datasource) + "_COLUMNS_" + key(adapter, table.getCatalog(), table.getSchema(), table);
-        key = key.toUpperCase();
-        if(null != provider && BasicUtil.isNotEmpty(cache) && !ConfigTable.IS_CACHE_DISABLED) {
-            CacheElement cacheElement = provider.get(cache, key);
-            if(null != cacheElement) {
-                columns = (LinkedHashMap<String, T>) cacheElement.getValue();
-            }
-        }else{
-            // 通过静态变量缓存
-            DataRow static_cache = cache_columns.get(key);
-            if(null != static_cache && (ConfigTable.TABLE_METADATA_CACHE_SECOND <0 || !static_cache.isExpire(ConfigTable.TABLE_METADATA_CACHE_SECOND*1000))) {
-                columns = (LinkedHashMap<String, T>) static_cache.get("keys");
-            }
-        }
-        if(null == columns) {
-            columns = new LinkedHashMap<>();
-        }
-        return columns;
+    public static <T extends Column> LinkedHashMap<String, T> columns(String key) {
+        return (LinkedHashMap<String, T>) caches.get(key);
     }
-*/
+    public static <T extends Tag> LinkedHashMap<String, T> tags(String key) {
+        return (LinkedHashMap<String, T>) caches.get(key);
+    }
+
 
    /* public static <T extends Column> void columns(DriverAdapter adapter, String datasource, Table table, LinkedHashMap<String, T> columns) {
         if(null == table) {

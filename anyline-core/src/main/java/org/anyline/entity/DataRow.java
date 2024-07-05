@@ -107,6 +107,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     public DataRow() {
         parseKeyCase(null);
         String pk = keyAdapter.key(DEFAULT_PRIMARY_KEY);
+        primaryKeys.clear();
         if (null != pk) {
             primaryKeys.add(pk);
         }

@@ -28,6 +28,8 @@ import org.anyline.metadata.*;
 import org.anyline.metadata.adapter.ColumnMetadataAdapter;
 import org.anyline.metadata.adapter.IndexMetadataAdapter;
 import org.anyline.metadata.adapter.PrimaryMetadataAdapter;
+import org.anyline.metadata.graph.EdgeTable;
+import org.anyline.metadata.graph.VertexTable;
 import org.anyline.metadata.type.TypeMetadata;
 
 import java.util.Collection;
@@ -1813,14 +1815,19 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
 	 * 													view
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * [调用入口]
-	 * <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types)
+	 * <T extends View> List<T> views(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, boolean struct)
+	 * <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, String types, boolean struct)
 	 * [命令合成]
-	 * List<Run> buildQueryViewsRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types)
+	 * List<Run> buildQueryViewsRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs)
+	 * List<Run> buildQueryViewsCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types)
 	 * [结果集封装]<br/>
 	 * <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> views, Catalog catalog, Schema schema, DataSet set)
+	 * <T extends View> List<T> views(DataRuntime runtime, int index, boolean create, List<T> views, Catalog catalog, Schema schema, DataSet set)
 	 * <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, boolean create, LinkedHashMap<String, T> views, Catalog catalog, Schema schema, String pattern, int types)
+	 * <T extends View> List<T> views(DataRuntime runtime, boolean create, List<T> views, Catalog catalog, Schema schema, String pattern, int types)
+	 * <T extends View> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> views, Catalog catalog, Schema schema, DataSet set)
 	 * [调用入口]
-	 * List<String> ddl(DataRuntime runtime, String random, View view)
+	 * List<String> ddl(DataRuntime runtime, String random, View view, boolean init)
 	 * [命令合成]
 	 * List<Run> buildQueryDdlsRun(DataRuntime runtime, View view)
 	 * [结果集封装]<br/>
@@ -1828,8 +1835,8 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
 	 ******************************************************************************************************************/
 
 	/**
+	 *
 	 * view[调用入口]<br/>
-	 * 查询视图
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
@@ -1837,28 +1844,68 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
 	 * @param types  Metadata.TYPE.
+	 * @param struct 是否查询视图结构
 	 * @return List
 	 * @param <T> View
 	 */
 	@Override
-	public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs) {
-		return super.views(runtime, random, catalog, schema, pattern, types, configs);
+	public <T extends View> List<T> views(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct) {
+		return super.views(runtime, random, greedy, catalog, schema, pattern, types, struct);
+	}
+
+	/**
+	 * view[结果集封装-子流程]<br/>
+	 * 查出所有key并以大写缓存 用来实现忽略大小写
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param catalog catalog
+	 * @param schema schema
+	 */
+	@Override
+	protected void viewMap(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, ConfigStore configs) {
+		super.viewMap(runtime, random, greedy, catalog, schema, configs);
+	}
+
+	@Override
+	public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
+		return super.views(runtime, random, catalog, schema, pattern, types, struct, configs);
+	}
+	@Override
+	public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct) {
+		return super.views(runtime, random, catalog, schema, pattern, types, struct);
 	}
 
 	/**
 	 * view[命令合成]<br/>
-	 * 查询视图
+	 * 查询视图,不是查视图中的数据
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types types Metadata.TYPE.
-	 * @return List
+	 * @param types  Metadata.TYPE.
+	 * @return String
+	 * @throws Exception Exception
 	 */
 	@Override
 	public List<Run> buildQueryViewsRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs) throws Exception {
 		return super.buildQueryViewsRun(runtime, greedy, catalog, schema, pattern, types, configs);
+	}
+
+	/**
+	 * view[命令合成]<br/>
+	 * 查询视图备注
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param pattern 名称统配符或正则
+	 * @param types types Metadata.TYPE.
+	 * @return String
+	 * @throws Exception Exception
+	 */
+	@Override
+	public List<Run> buildQueryViewsCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
+		return super.buildQueryViewsCommentRun(runtime, catalog, schema, pattern, types);
 	}
 
 	/**
@@ -1881,7 +1928,25 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
 
 	/**
 	 * view[结果集封装]<br/>
-	 * 根据根据驱动内置接口补充
+	 *  根据查询结果集构造View
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param index 第几条SQL 对照buildQueryViewsRun返回顺序
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param views 上一步查询结果
+	 * @param set 查询结果集
+	 * @return views
+	 * @throws Exception 异常
+	 */
+	@Override
+	public <T extends View> List<T> views(DataRuntime runtime, int index, boolean create, List<T> views, Catalog catalog, Schema schema, DataSet set) throws Exception {
+		return super.views(runtime, index, create, views, catalog, schema, set);
+	}
+
+	/**
+	 * view[结果集封装]<br/>
+	 * 根据驱动内置方法补充
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param views 上一步查询结果
@@ -1898,22 +1963,42 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
 	}
 
 	/**
+	 * view[结果集封装]<br/>
+	 * 根据驱动内置方法补充
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param views 上一步查询结果
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param pattern 名称统配符或正则
+	 * @param types types Metadata.TYPE.
+	 * @return views
+	 * @throws Exception 异常
+	 */
+	@Override
+	public <T extends View> List<T> views(DataRuntime runtime, boolean create, List<T> views, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
+		return super.views(runtime, create, views, catalog, schema, pattern, types);
+	}
+
+	/**
+	 *
 	 * view[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param view 视图
+	 * @param init 是否还原初始状态 如自增状态
 	 * @return List
 	 */
 	@Override
-	public List<String> ddl(DataRuntime runtime, String random, View view) {
-		return super.ddl(runtime, random, view);
+	public List<String> ddl(DataRuntime runtime, String random, View view, boolean init) {
+		return super.ddl(runtime, random, view, init);
 	}
 
 	/**
 	 * view[命令合成]<br/>
-	 * 查询view DDL
+	 * 查询视图DDL
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param view view
+	 * @param view 视图
 	 * @return List
 	 */
 	@Override
@@ -1923,10 +2008,10 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
 
 	/**
 	 * view[结果集封装]<br/>
-	 * 查询 view DDL
+	 * 查询视图DDL
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
-	 * @param view view
+	 * @param view 视图
 	 * @param ddls 上一步查询结果
 	 * @param set sql执行的结果集
 	 * @return List
@@ -1935,28 +2020,33 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
 	public List<String> ddl(DataRuntime runtime, int index, View view, List<String> ddls, DataSet set) {
 		return super.ddl(runtime, index, view, ddls, set);
 	}
+
 	/* *****************************************************************************************************************
-	 * 													master table
+	 * 													masterTable
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * [调用入口]
-	 * <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs)
+	 * <T extends MasterTable> List<T> masterTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, boolean struct)
+	 * <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, String types, boolean struct)
 	 * [命令合成]
-	 * List<Run> buildQueryMasterTablesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs)
+	 * List<Run> buildQueryMasterTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs)
+	 * List<Run> buildQueryMasterTablesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types)
 	 * [结果集封装]<br/>
-	 * <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set)
-	 * [结果集封装]<br/>
-	 * <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables,Catalog catalog, Schema schema, String pattern, int types)
+	 * <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> masterTables, Catalog catalog, Schema schema, DataSet set)
+	 * <T extends MasterTable> List<T> masterTables(DataRuntime runtime, int index, boolean create, List<T> masterTables, Catalog catalog, Schema schema, DataSet set)
+	 * <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> masterTables, Catalog catalog, Schema schema, String pattern, int types)
+	 * <T extends MasterTable> List<T> masterTables(DataRuntime runtime, boolean create, List<T> masterTables, Catalog catalog, Schema schema, String pattern, int types)
+	 * <T extends MasterTable> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> masterTables, Catalog catalog, Schema schema, DataSet set)
 	 * [调用入口]
-	 * List<String> ddl(DataRuntime runtime, String random, MasterTable table)
+	 * List<String> ddl(DataRuntime runtime, String random, MasterTable masterTable, boolean init)
 	 * [命令合成]
-	 * List<Run> buildQueryDdlsRun(DataRuntime runtime, MasterTable table)
+	 * List<Run> buildQueryDdlsRun(DataRuntime runtime, MasterTable masterTable)
 	 * [结果集封装]<br/>
-	 * List<String> ddl(DataRuntime runtime, int index, MasterTable table, List<String> ddls, DataSet set)
+	 * List<String> ddl(DataRuntime runtime, int index, MasterTable masterTable, List<String> ddls, DataSet set)
 	 ******************************************************************************************************************/
 
 	/**
-	 * master table[调用入口]<br/>
-	 * 查询主表
+	 *
+	 * masterTable[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
@@ -1964,100 +2054,603 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
 	 * @param types  Metadata.TYPE.
+	 * @param struct 是否查询表结构
 	 * @return List
 	 * @param <T> MasterTable
 	 */
 	@Override
-	public <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
-		return super.masterTables(runtime, random, catalog, schema, pattern, types);
+	public <T extends MasterTable> List<T> masterTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct) {
+		return super.masterTables(runtime, random, greedy, catalog, schema, pattern, types, struct);
 	}
 
 	/**
-	 * master table[命令合成]<br/>
-	 * 查询主表
+	 * masterTable[结果集封装-子流程]<br/>
+	 * 查出所有key并以大写缓存 用来实现忽略大小写
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param catalog catalog
+	 * @param schema schema
+	 */
+	@Override
+	protected void masterTableMap(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, ConfigStore configs) {
+		super.masterTableMap(runtime, random, greedy, catalog, schema, configs);
+	}
+
+	@Override
+	public <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
+		return super.masterTables(runtime, random, catalog, schema, pattern, types, struct, configs);
+	}
+	@Override
+	public <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct) {
+		return super.masterTables(runtime, random, catalog, schema, pattern, types, struct);
+	}
+
+	/**
+	 * masterTable[命令合成]<br/>
+	 * 查询表,不是查表中的数据
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param pattern 名称统配符或正则
+	 * @param types  Metadata.TYPE.
+	 * @return String
+	 * @throws Exception Exception
+	 */
+	@Override
+	public List<Run> buildQueryMasterTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs) throws Exception {
+		return super.buildQueryMasterTablesRun(runtime, greedy, catalog, schema, pattern, types, configs);
+	}
+
+	/**
+	 * masterTable[命令合成]<br/>
+	 * 查询表备注
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types types
+	 * @param types types Metadata.TYPE.
 	 * @return String
+	 * @throws Exception Exception
 	 */
 	@Override
-	public List<Run> buildQueryMasterTablesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) throws Exception {
-		return super.buildQueryMasterTablesRun(runtime, catalog, schema, pattern, types);
+	public List<Run> buildQueryMasterTablesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
+		return super.buildQueryMasterTablesCommentRun(runtime, catalog, schema, pattern, types);
 	}
 
 	/**
-	 * master table[结果集封装]<br/>
-	 *  根据查询结果集构造Table
+	 * masterTable[结果集封装]<br/>
+	 *  根据查询结果集构造MasterTable
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照 buildQueryMasterTablesRun返回顺序
+	 * @param index 第几条SQL 对照buildQueryMasterTablesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param catalog catalog
 	 * @param schema schema
-	 * @param tables 上一步查询结果
+	 * @param masterTables 上一步查询结果
 	 * @param set 查询结果集
-	 * @return tables
+	 * @return masterTables
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set) throws Exception {
-		return super.masterTables(runtime, index, create, tables, catalog, schema, set);
+	public <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> masterTables, Catalog catalog, Schema schema, DataSet set) throws Exception {
+		return super.masterTables(runtime, index, create, masterTables, catalog, schema, set);
 	}
 
 	/**
-	 * master table[结果集封装]<br/>
-	 * 根据根据驱动内置接口
+	 * masterTable[结果集封装]<br/>
+	 *  根据查询结果集构造MasterTable
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param index 第几条SQL 对照buildQueryMasterTablesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param catalog catalog
 	 * @param schema schema
-	 * @param tables 上一步查询结果
-	 * @return tables
+	 * @param masterTables 上一步查询结果
+	 * @param set 查询结果集
+	 * @return masterTables
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables,Catalog catalog, Schema schema, String pattern, int types) throws Exception {
-		return super.masterTables(runtime, create, tables, catalog, schema, pattern, types);
+	public <T extends MasterTable> List<T> masterTables(DataRuntime runtime, int index, boolean create, List<T> masterTables, Catalog catalog, Schema schema, DataSet set) throws Exception {
+		return super.masterTables(runtime, index, create, masterTables, catalog, schema, set);
 	}
 
 	/**
-	 * master table[调用入口]<br/>
+	 * masterTable[结果集封装]<br/>
+	 * 根据驱动内置方法补充
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param masterTables 上一步查询结果
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param pattern 名称统配符或正则
+	 * @param types types Metadata.TYPE.
+	 * @return masterTables
+	 * @throws Exception 异常
+	 */
+	@Override
+	public <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> masterTables, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
+		return super.masterTables(runtime, create, masterTables, catalog, schema, pattern, types);
+	}
+
+	/**
+	 * masterTable[结果集封装]<br/>
+	 * 根据驱动内置方法补充
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param masterTables 上一步查询结果
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param pattern 名称统配符或正则
+	 * @param types types Metadata.TYPE.
+	 * @return masterTables
+	 * @throws Exception 异常
+	 */
+	@Override
+	public <T extends MasterTable> List<T> masterTables(DataRuntime runtime, boolean create, List<T> masterTables, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
+		return super.masterTables(runtime, create, masterTables, catalog, schema, pattern, types);
+	}
+
+	/**
+	 *
+	 * masterTable[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param table MasterTable
+	 * @param masterTable 表
+	 * @param init 是否还原初始状态 如自增状态
 	 * @return List
 	 */
 	@Override
-	public List<String> ddl(DataRuntime runtime, String random, MasterTable table) {
-		return super.ddl(runtime, random, table);
+	public List<String> ddl(DataRuntime runtime, String random, MasterTable meta, boolean init) {
+		return super.ddl(runtime, random, meta, init);
 	}
 
 	/**
-	 * master table[命令合成]<br/>
-	 * 查询 MasterTable DDL
+	 * masterTable[命令合成]<br/>
+	 * 查询表DDL
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param table MasterTable
+	 * @param masterTable 表
 	 * @return List
 	 */
 	@Override
-	public List<Run> buildQueryDdlsRun(DataRuntime runtime, MasterTable table) throws Exception {
-		return super.buildQueryDdlsRun(runtime, table);
+	public List<Run> buildQueryDdlsRun(DataRuntime runtime, MasterTable masterTable) throws Exception {
+		return super.buildQueryDdlsRun(runtime, masterTable);
 	}
 
 	/**
-	 * master table[结果集封装]<br/>
-	 * 查询 MasterTable DDL
+	 * masterTable[结果集封装]<br/>
+	 * 查询表DDL
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
-	 * @param table MasterTable
+	 * @param masterTable 表
 	 * @param ddls 上一步查询结果
 	 * @param set sql执行的结果集
 	 * @return List
 	 */
 	@Override
-	public List<String> ddl(DataRuntime runtime, int index, MasterTable table, List<String> ddls, DataSet set) {
-		return super.ddl(runtime, index, table, ddls, set);
+	public List<String> ddl(DataRuntime runtime, int index, MasterTable masterTable, List<String> ddls, DataSet set) {
+		return super.ddl(runtime, index, masterTable, ddls, set);
+	}
+
+	/* *****************************************************************************************************************
+	 * 													edgeTable
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * [调用入口]
+	 * <T extends EdgeTable> List<T> edgeTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, boolean struct)
+	 * <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, String types, boolean struct)
+	 * [命令合成]
+	 * List<Run> buildQueryEdgeTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs)
+	 * List<Run> buildQueryEdgeTablesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types)
+	 * [结果集封装]<br/>
+	 * <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> edgeTables, Catalog catalog, Schema schema, DataSet set)
+	 * <T extends EdgeTable> List<T> edgeTables(DataRuntime runtime, int index, boolean create, List<T> edgeTables, Catalog catalog, Schema schema, DataSet set)
+	 * <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> edgeTables, Catalog catalog, Schema schema, String pattern, int types)
+	 * <T extends EdgeTable> List<T> edgeTables(DataRuntime runtime, boolean create, List<T> edgeTables, Catalog catalog, Schema schema, String pattern, int types)
+	 * <T extends EdgeTable> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> edgeTables, Catalog catalog, Schema schema, DataSet set)
+	 * [调用入口]
+	 * List<String> ddl(DataRuntime runtime, String random, EdgeTable edgeTable, boolean init)
+	 * [命令合成]
+	 * List<Run> buildQueryDdlsRun(DataRuntime runtime, EdgeTable edgeTable)
+	 * [结果集封装]<br/>
+	 * List<String> ddl(DataRuntime runtime, int index, EdgeTable edgeTable, List<String> ddls, DataSet set)
+	 ******************************************************************************************************************/
+
+	/**
+	 *
+	 * edgeTable[调用入口]<br/>
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param pattern 名称统配符或正则
+	 * @param types  Metadata.TYPE.
+	 * @param struct 是否查询表结构
+	 * @return List
+	 * @param <T> EdgeTable
+	 */
+	@Override
+	public <T extends EdgeTable> List<T> edgeTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct) {
+		return super.edgeTables(runtime, random, greedy, catalog, schema, pattern, types, struct);
+	}
+
+	/**
+	 * edgeTable[结果集封装-子流程]<br/>
+	 * 查出所有key并以大写缓存 用来实现忽略大小写
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param catalog catalog
+	 * @param schema schema
+	 */
+	@Override
+	protected void edgeTableMap(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, ConfigStore configs) {
+		super.edgeTableMap(runtime, random, greedy, catalog, schema, configs);
+	}
+
+	@Override
+	public <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
+		return super.edgeTables(runtime, random, catalog, schema, pattern, types, struct, configs);
+	}
+	@Override
+	public <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct) {
+		return super.edgeTables(runtime, random, catalog, schema, pattern, types, struct);
+	}
+
+	/**
+	 * edgeTable[命令合成]<br/>
+	 * 查询表,不是查表中的数据
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param pattern 名称统配符或正则
+	 * @param types  Metadata.TYPE.
+	 * @return String
+	 * @throws Exception Exception
+	 */
+	@Override
+	public List<Run> buildQueryEdgeTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs) throws Exception {
+		return super.buildQueryEdgeTablesRun(runtime, greedy, catalog, schema, pattern, types, configs);
+	}
+
+	/**
+	 * edgeTable[命令合成]<br/>
+	 * 查询表备注
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param pattern 名称统配符或正则
+	 * @param types types Metadata.TYPE.
+	 * @return String
+	 * @throws Exception Exception
+	 */
+	@Override
+	public List<Run> buildQueryEdgeTablesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
+		return super.buildQueryEdgeTablesCommentRun(runtime, catalog, schema, pattern, types);
+	}
+
+	/**
+	 * edgeTable[结果集封装]<br/>
+	 *  根据查询结果集构造EdgeTable
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param index 第几条SQL 对照buildQueryEdgeTablesRun返回顺序
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param edgeTables 上一步查询结果
+	 * @param set 查询结果集
+	 * @return edgeTables
+	 * @throws Exception 异常
+	 */
+	@Override
+	public <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> edgeTables, Catalog catalog, Schema schema, DataSet set) throws Exception {
+		return super.edgeTables(runtime, index, create, edgeTables, catalog, schema, set);
+	}
+
+	/**
+	 * edgeTable[结果集封装]<br/>
+	 *  根据查询结果集构造EdgeTable
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param index 第几条SQL 对照buildQueryEdgeTablesRun返回顺序
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param edgeTables 上一步查询结果
+	 * @param set 查询结果集
+	 * @return edgeTables
+	 * @throws Exception 异常
+	 */
+	@Override
+	public <T extends EdgeTable> List<T> edgeTables(DataRuntime runtime, int index, boolean create, List<T> edgeTables, Catalog catalog, Schema schema, DataSet set) throws Exception {
+		return super.edgeTables(runtime, index, create, edgeTables, catalog, schema, set);
+	}
+
+	/**
+	 * edgeTable[结果集封装]<br/>
+	 * 根据驱动内置方法补充
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param edgeTables 上一步查询结果
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param pattern 名称统配符或正则
+	 * @param types types Metadata.TYPE.
+	 * @return edgeTables
+	 * @throws Exception 异常
+	 */
+	@Override
+	public <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> edgeTables, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
+		return super.edgeTables(runtime, create, edgeTables, catalog, schema, pattern, types);
+	}
+
+	/**
+	 * edgeTable[结果集封装]<br/>
+	 * 根据驱动内置方法补充
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param edgeTables 上一步查询结果
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param pattern 名称统配符或正则
+	 * @param types types Metadata.TYPE.
+	 * @return edgeTables
+	 * @throws Exception 异常
+	 */
+	@Override
+	public <T extends EdgeTable> List<T> edgeTables(DataRuntime runtime, boolean create, List<T> edgeTables, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
+		return super.edgeTables(runtime, create, edgeTables, catalog, schema, pattern, types);
+	}
+
+
+	/**
+	 *
+	 * edgeTable[调用入口]<br/>
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param edgeTable 表
+	 * @param init 是否还原初始状态 如自增状态
+	 * @return List
+	 */
+	@Override
+	public List<String> ddl(DataRuntime runtime, String random, EdgeTable edgeTable, boolean init) {
+		return super.ddl(runtime, random, edgeTable, init);
+	}
+
+	/**
+	 * edgeTable[命令合成]<br/>
+	 * 查询表DDL
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param edgeTable 表
+	 * @return List
+	 */
+	@Override
+	public List<Run> buildQueryDdlsRun(DataRuntime runtime, EdgeTable edgeTable) throws Exception {
+		return super.buildQueryDdlsRun(runtime, edgeTable);
+	}
+
+	/**
+	 * edgeTable[结果集封装]<br/>
+	 * 查询表DDL
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
+	 * @param edgeTable 表
+	 * @param ddls 上一步查询结果
+	 * @param set sql执行的结果集
+	 * @return List
+	 */
+	@Override
+	public List<String> ddl(DataRuntime runtime, int index, EdgeTable edgeTable, List<String> ddls, DataSet set) {
+		return super.ddl(runtime, index, edgeTable, ddls, set);
+	}
+
+	/* *****************************************************************************************************************
+	 * 													vertexTable
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * [调用入口]
+	 * <T extends VertexTable> List<T> vertexTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, boolean struct)
+	 * <T extends VertexTable> LinkedHashMap<String, T> vertexTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, String types, boolean struct)
+	 * [命令合成]
+	 * List<Run> buildQueryVertexTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs)
+	 * List<Run> buildQueryVertexTablesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types)
+	 * [结果集封装]<br/>
+	 * <T extends VertexTable> LinkedHashMap<String, T> vertexTables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> vertexTables, Catalog catalog, Schema schema, DataSet set)
+	 * <T extends VertexTable> List<T> vertexTables(DataRuntime runtime, int index, boolean create, List<T> vertexTables, Catalog catalog, Schema schema, DataSet set)
+	 * <T extends VertexTable> LinkedHashMap<String, T> vertexTables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> vertexTables, Catalog catalog, Schema schema, String pattern, int types)
+	 * <T extends VertexTable> List<T> vertexTables(DataRuntime runtime, boolean create, List<T> vertexTables, Catalog catalog, Schema schema, String pattern, int types)
+	 * <T extends VertexTable> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> vertexTables, Catalog catalog, Schema schema, DataSet set)
+	 * [调用入口]
+	 * List<String> ddl(DataRuntime runtime, String random, VertexTable vertexTable, boolean init)
+	 * [命令合成]
+	 * List<Run> buildQueryDdlsRun(DataRuntime runtime, VertexTable vertexTable)
+	 * [结果集封装]<br/>
+	 * List<String> ddl(DataRuntime runtime, int index, VertexTable vertexTable, List<String> ddls, DataSet set)
+	 ******************************************************************************************************************/
+
+	/**
+	 *
+	 * vertexTable[调用入口]<br/>
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param pattern 名称统配符或正则
+	 * @param types  Metadata.TYPE.
+	 * @param struct 是否查询表结构
+	 * @return List
+	 * @param <T> VertexTable
+	 */
+	@Override
+	public <T extends VertexTable> List<T> vertexTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct) {
+		return super.vertexTables(runtime, random, greedy, catalog, schema, pattern, types, struct);
+	}
+
+	/**
+	 * vertexTable[结果集封装-子流程]<br/>
+	 * 查出所有key并以大写缓存 用来实现忽略大小写
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param catalog catalog
+	 * @param schema schema
+	 */
+	@Override
+	protected void vertexTableMap(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, ConfigStore configs) {
+		super.vertexTableMap(runtime, random, greedy, catalog, schema, configs);
+	}
+
+	@Override
+	public <T extends VertexTable> LinkedHashMap<String, T> vertexTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
+		return super.vertexTables(runtime, random, catalog, schema, pattern, types, struct, configs);
+	}
+	@Override
+	public <T extends VertexTable> LinkedHashMap<String, T> vertexTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct) {
+		return super.vertexTables(runtime, random, catalog, schema, pattern, types, struct);
+	}
+
+	/**
+	 * vertexTable[命令合成]<br/>
+	 * 查询表,不是查表中的数据
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param pattern 名称统配符或正则
+	 * @param types  Metadata.TYPE.
+	 * @return String
+	 * @throws Exception Exception
+	 */
+	@Override
+	public List<Run> buildQueryVertexTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs) throws Exception {
+		return super.buildQueryVertexTablesRun(runtime, greedy, catalog, schema, pattern, types, configs);
+	}
+
+	/**
+	 * vertexTable[命令合成]<br/>
+	 * 查询表备注
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param pattern 名称统配符或正则
+	 * @param types types Metadata.TYPE.
+	 * @return String
+	 * @throws Exception Exception
+	 */
+	@Override
+	public List<Run> buildQueryVertexTablesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
+		return super.buildQueryVertexTablesCommentRun(runtime, catalog, schema, pattern, types);
+	}
+
+	/**
+	 * vertexTable[结果集封装]<br/>
+	 *  根据查询结果集构造VertexTable
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param index 第几条SQL 对照buildQueryVertexTablesRun返回顺序
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param vertexTables 上一步查询结果
+	 * @param set 查询结果集
+	 * @return vertexTables
+	 * @throws Exception 异常
+	 */
+	@Override
+	public <T extends VertexTable> LinkedHashMap<String, T> vertexTables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> vertexTables, Catalog catalog, Schema schema, DataSet set) throws Exception {
+		return super.vertexTables(runtime, index, create, vertexTables, catalog, schema, set);
+	}
+
+	/**
+	 * vertexTable[结果集封装]<br/>
+	 *  根据查询结果集构造VertexTable
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param index 第几条SQL 对照buildQueryVertexTablesRun返回顺序
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param vertexTables 上一步查询结果
+	 * @param set 查询结果集
+	 * @return vertexTables
+	 * @throws Exception 异常
+	 */
+	@Override
+	public <T extends VertexTable> List<T> vertexTables(DataRuntime runtime, int index, boolean create, List<T> vertexTables, Catalog catalog, Schema schema, DataSet set) throws Exception {
+		return super.vertexTables(runtime, index, create, vertexTables, catalog, schema, set);
+	}
+
+	/**
+	 * vertexTable[结果集封装]<br/>
+	 * 根据驱动内置方法补充
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param vertexTables 上一步查询结果
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param pattern 名称统配符或正则
+	 * @param types types Metadata.TYPE.
+	 * @return vertexTables
+	 * @throws Exception 异常
+	 */
+	@Override
+	public <T extends VertexTable> LinkedHashMap<String, T> vertexTables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> vertexTables, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
+		return super.vertexTables(runtime, create, vertexTables, catalog, schema, pattern, types);
+	}
+
+	/**
+	 * vertexTable[结果集封装]<br/>
+	 * 根据驱动内置方法补充
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param vertexTables 上一步查询结果
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param pattern 名称统配符或正则
+	 * @param types types Metadata.TYPE.
+	 * @return vertexTables
+	 * @throws Exception 异常
+	 */
+	@Override
+	public <T extends VertexTable> List<T> vertexTables(DataRuntime runtime, boolean create, List<T> vertexTables, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
+		return super.vertexTables(runtime, create, vertexTables, catalog, schema, pattern, types);
+	}
+
+
+	/**
+	 *
+	 * vertexTable[调用入口]<br/>
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param vertexTable 表
+	 * @param init 是否还原初始状态 如自增状态
+	 * @return List
+	 */
+	@Override
+	public List<String> ddl(DataRuntime runtime, String random, VertexTable vertexTable, boolean init) {
+		return super.ddl(runtime, random, vertexTable, init);
+	}
+
+	/**
+	 * vertexTable[命令合成]<br/>
+	 * 查询表DDL
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param vertexTable 表
+	 * @return List
+	 */
+	@Override
+	public List<Run> buildQueryDdlsRun(DataRuntime runtime, VertexTable vertexTable) throws Exception {
+		return super.buildQueryDdlsRun(runtime, vertexTable);
+	}
+
+	/**
+	 * vertexTable[结果集封装]<br/>
+	 * 查询表DDL
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
+	 * @param vertexTable 表
+	 * @param ddls 上一步查询结果
+	 * @param set sql执行的结果集
+	 * @return List
+	 */
+	@Override
+	public List<String> ddl(DataRuntime runtime, int index, VertexTable vertexTable, List<String> ddls, DataSet set) {
+		return super.ddl(runtime, index, vertexTable, ddls, set);
 	}
 	/* *****************************************************************************************************************
 	 * 													partition table
