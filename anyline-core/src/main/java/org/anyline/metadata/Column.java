@@ -147,6 +147,7 @@ public class Column extends Metadata<Column> implements Serializable {
     protected Integer incrementSeed          =  1 ; // 自增起始值
     protected Integer incrementStep          =  1 ; // 自增增量
     protected int primary = -1                    ; // 是否主键
+    protected String primaryType                  ; // 主键类型 如BTREE
     protected int unique  = -1                    ; // 是否唯一
     protected int generated = -1                  ; // 是否generated
     protected Object defaultValue                 ; // 默认值
@@ -1274,6 +1275,40 @@ public class Column extends Metadata<Column> implements Serializable {
                 this.primary = 0 ;
             }
         }
+        return this;
+    }
+
+    public String getPrimaryType() {
+        return primaryType;
+    }
+
+    public void setPrimaryType(String primaryType) {
+        this.primaryType = primaryType;
+    }
+
+    public Column setPrimary(int primary, String type) {
+        setPrimary(primary);
+        this.primaryType = type;
+        return this;
+    }
+    public Column primary(int primary, String type) {
+        primary(primary);
+        this.primaryType = type;
+        return this;
+    }
+    public Column setPrimary(Boolean primary, String type) {
+        setPrimary(primary);
+        this.primaryType = type;
+        return this;
+    }
+    public Column setPrimaryKey(Boolean primary, String type) {
+        setPrimaryKey(primary);
+        this.primaryType = type;
+        return this;
+    }
+    public Column primary(Boolean primary, String type) {
+        primary(primary);
+        this.primaryType = type;
         return this;
     }
 

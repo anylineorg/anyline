@@ -871,6 +871,9 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
                         primaryKey.setTable(this);
                     }
                     primaryKey.addColumn(column);
+                    if(null != column.getPrimaryType()){
+                        primaryKey.setType(column.getPrimaryType());
+                    }
                 }
             }
         }
