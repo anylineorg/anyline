@@ -18,10 +18,7 @@
 
 package org.anyline.data.mongodb.adapter;
 
-import com.mongodb.client.FindIterable;
-import com.mongodb.client.ListCollectionNamesIterable;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.*;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Projections;
 import com.mongodb.client.model.Updates;
@@ -52,9 +49,11 @@ import org.anyline.exception.CommandUpdateException;
 import org.anyline.metadata.*;
 import org.anyline.metadata.adapter.ViewMetadataAdapter;
 import org.anyline.metadata.type.DatabaseType;
+import org.anyline.proxy.CacheProxy;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.proxy.InterceptorProxy;
 import org.anyline.util.*;
+import org.bson.Document;
 import org.bson.conversions.Bson;
 
 import java.lang.reflect.Field;
@@ -939,16 +938,42 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
      */
     @Override
     public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, Collection<? extends Table> tables) {
-        List<T> columns = new ArrayList<>();
+        List<T> list = new ArrayList<>();
         MongoRuntime rt = (MongoRuntime) runtime;
         MongoDatabase database = rt.getDatabase();
         for(Table table:tables){
-            MongoCollection collection = database.getCollection(table.getName());
-            if(null != collection){
-
+            String cache_key = CacheProxy.key(runtime, "collection_column", greedy, catalog, schema, table.getName());
+            LinkedHashMap<String, T> columns = CacheProxy.columns(cache_key);
+            if(null == columns || columns.isEmpty()){
+                MongoCollection collection = database.getCollection(table.getName());
+                if(null != collection){
+                    if(ConfigTable.CHECK_METADATA_SAMPLE > 0) {
+                        MongoCursor<Document> cursor = collection.find().limit(ConfigTable.CHECK_METADATA_SAMPLE).iterator();
+                        while (cursor.hasNext()){
+                            Document doc = cursor.next();
+                            Set<String> fields = doc.keySet();
+                            for(String field:fields){
+                                String up = field.toUpperCase();
+                                if(columns.containsKey(up)){
+                                    continue;
+                                }
+                                Object value = doc.get(field);
+                                if(null != value) {
+                                    String type = value.getClass().getSimpleName();
+                                    Column column = new Column(field, type);
+                                    columns.put(up, (T)column);
+                                    list.add((T)column);
+                                }
+                            }
+                        }
+                        CacheProxy.cache(cache_key, columns);
+                    }
+                }
+            }else{
+                list.addAll(columns.values());
             }
         }
-        return columns;
+        return list;
     }
     @Override
     public <T extends Metadata> void checkSchema(DataRuntime runtime, T meta) {
