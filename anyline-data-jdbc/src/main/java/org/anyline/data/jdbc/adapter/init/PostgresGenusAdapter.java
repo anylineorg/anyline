@@ -2965,8 +2965,8 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         builder.append("LEFT JOIN pg_class AS ci ON i.indexrelid = ci.oid\n");
         builder.append("LEFT JOIN pg_am AS am ON ci.relam = am.oid\n");
         builder.append("LEFT JOIN pg_attribute AS a ON a.attrelid = c.oid AND a.attnum = ANY(i.indkey)\n");
-        builder.append("LEFT JOIN pg_namespace ON c.relnamespace = pg_namespace.oid\n");
-        builder.append("LEFT JOIN pg_namespace ins ON ins.oid = c.relnamespace");
+        builder.append("LEFT JOIN pg_namespace ins ON ins.oid = c.relnamespace\n");
+        builder.append("WHERE 1=1 \n");
         return run;
     }
 
@@ -2985,6 +2985,8 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         adapter.setTypeRefer("INDEX_TYPE");
         adapter.setCheckPrimaryRefer("IS_PRIMARY");
         adapter.setCheckPrimaryValue("T");
+        adapter.setCheckUniqueRefer("IS_UNIQUE");
+        adapter.setCheckUniqueValue("T");
         adapter.setCatalogRefer("");
         //以下在detail中单独处理
         adapter.setColumnRefer("");

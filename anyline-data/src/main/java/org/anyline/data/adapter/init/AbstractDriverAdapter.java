@@ -9060,38 +9060,56 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			//是否主键
 			String[] chks = config.getCheckPrimaryRefers();
 			String[] vals = config.getCheckPrimaryValues();
-			if(null != chks && null != vals){
-				for(String chk:chks){
-					String value = row.getString(chk);
-					if(null != value){
-						for(String val:vals){
-							if(value.equalsIgnoreCase(val)){
-								meta.setPrimary(true);
-								return meta;
-							}
-						}
-					}
-				}
+			Boolean bol = parseBoolean(row, chks, vals);
+			if(null != bol){
+				meta.setPrimary(bol);
 			}
 			//是否唯一
 			chks = config.getCheckUniqueRefers();
 			vals = config.getCheckUniqueValues();
-			if(null != chks && null != vals){
-				for(String chk:chks){
-					String value = row.getString(chk);
-					if(null != value){
-						for(String val:vals){
-							if(value.equalsIgnoreCase(val)){
-								meta.setUnique(true);
-								return meta;
-							}
+			bol = parseBoolean(row, chks, vals);
+			if(null != bol){
+				meta.setUnique(bol);
+			}
+		}
+		return meta;
+	}
+
+	/**
+	 * parse boolean
+	 * @param row 结果集
+	 * @param cols 检测的我
+	 * @param vals 匹配true的值S(只要一项匹配就返回true)
+	 * @return boolean
+	 */
+	protected Boolean parseBoolean(DataRow row, String[] cols, String[] vals){
+		Boolean bol = null;
+		if(null != cols){
+			for(String col:cols){
+				Object value = row.get(col);
+				if(null == value){
+					continue;
+				}
+				if(value instanceof Boolean){
+					bol = BasicUtil.parseBoolean(value);
+				}else if(null != vals) {
+					String str = value.toString();
+					for (String val : vals) {
+						if (str.equalsIgnoreCase(val)) {
+							bol = true;
+							break;
 						}
 					}
 				}
+				if(null != bol){
+					break;
+				}
 			}
-
+			if(null == bol) {
+				bol = false;
+			}
 		}
-		return meta;
+		return bol;
 	}
 
 	/**
