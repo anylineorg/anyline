@@ -80,26 +80,26 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	/**
 	 * 根据差异生成SQL
 	 * @param differ differ
-	 * @return sqls
+	 * @return sql
 	 */
 	@Override
-	public List<Run> ddls(DataRuntime runtime, MetadataDiffer differ) {
+	public List<Run> ddl(DataRuntime runtime, MetadataDiffer differ) {
 		if(null == runtime) {
 			runtime = runtime();
 		}
-		return runtime.getAdapter().ddls(runtime, null, differ);
+		return runtime.getAdapter().ddl(runtime, null, differ);
 	}
 	/**
 	 * 根据差异生成SQL
 	 * @param differs differs
-	 * @return sqls
+	 * @return sql
 	 */
 	@Override
-	public List<Run> ddls(DataRuntime runtime, List<MetadataDiffer> differs) {
+	public List<Run> ddl(DataRuntime runtime, List<MetadataDiffer> differs) {
 		if(null == runtime) {
 			runtime = runtime();
 		}
-		return runtime.getAdapter().ddls(runtime, null, differs);
+		return runtime.getAdapter().ddl(runtime, null, differs);
 	}
 
 	/* *****************************************************************************************************************

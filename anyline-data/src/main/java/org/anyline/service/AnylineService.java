@@ -1754,13 +1754,14 @@ public interface AnylineService<E>{
 	 * @param differ differ
 	 * @return sqls
 	 */
-	List<Run> ddls(MetadataDiffer differ);
+	List<Run> ddl(MetadataDiffer differ);
 	/**
 	 * 根据差异生成SQL
 	 * @param differs differs
 	 * @return sqls
 	 */
-	List<Run> ddls(List<MetadataDiffer> differs);
+	List<Run> ddl(List<MetadataDiffer> differs);
+
 	/* *****************************************************************************************************************
 	 *
 	 * 													metadata

@@ -49,18 +49,18 @@ public interface AnylineDao<E>{
 	 * @param differ differ
 	 * @return sqls
 	 */
-	List<Run> ddls(DataRuntime runtime, MetadataDiffer differ);
-	default List<Run> ddls(MetadataDiffer differ) {
-		return ddls(runtime(), differ);
+	List<Run> ddl(DataRuntime runtime, MetadataDiffer differ);
+	default List<Run> ddl(MetadataDiffer differ) {
+		return ddl(runtime(), differ);
 	}
 	/**
 	 * 根据差异生成SQL
 	 * @param differs differs
 	 * @return sqls
 	 */
-	List<Run> ddls(DataRuntime runtime, List<MetadataDiffer> differs);
-	default List<Run> ddls(List<MetadataDiffer> differs) {
-		return ddls(runtime(), differs);
+	List<Run> ddl(DataRuntime runtime, List<MetadataDiffer> differs);
+	default List<Run> ddl(List<MetadataDiffer> differs) {
+		return ddl(runtime(), differs);
 	}
 	/* *****************************************************************************************************************
 	 *

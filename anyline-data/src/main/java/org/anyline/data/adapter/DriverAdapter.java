@@ -432,12 +432,22 @@ public interface DriverAdapter {
 			}
 		}
 	}
+
+
+	/**
+	 * 合关DDL片段
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 表
+	 * @param slices slices
+	 * @return list
+	 */
+	List<Run> merge(DataRuntime runtime, Table meta, List<Run> slices);
 	/**
 	 * 根据差异生成SQL
 	 * @param differ differ 需要保证表中有列信息
 	 * @return sqls
 	 */
-	default List<Run> ddls(DataRuntime runtime, String random, MetadataDiffer differ) {
+	default List<Run> ddl(DataRuntime runtime, String random, MetadataDiffer differ) {
 		List<Run> list = new ArrayList<>();
 		if(differ instanceof TablesDiffer) {
 			TablesDiffer df = (TablesDiffer) differ;
@@ -456,6 +466,7 @@ public interface DriverAdapter {
 			//修改表
 			for(TableDiffer dif:diffs.values()) {
 				try {
+					List<Run> slices = new ArrayList<>();
 					Table dest = dif.getDest();
 					Table origin = dif.getOrigin();
 					Table update = origin.clone();
@@ -483,7 +494,9 @@ public interface DriverAdapter {
 						columns.put(key, column);
 					}
 					update.setColumns(columns);
-					list.addAll(buildAlterRun(runtime, update));
+					slices.addAll(buildAlterRun(runtime, update));
+					List<Run> merges = merge(runtime, dest, slices);
+					list.addAll(merges);
 				}catch (Exception e) {
 					log.error("build ddl exception:", e);
 				}
@@ -526,35 +539,48 @@ public interface DriverAdapter {
 			TableDiffer df = (TableDiffer) differ;
 			ColumnsDiffer columnsDiffer = df.getColumnsDiffer();
 			IndexesDiffer indexesDiffer = df.getIndexesDiffer();
-			list.addAll(ddls(runtime, random, columnsDiffer));
-			list.addAll(ddls(runtime, random, indexesDiffer));
+			list.addAll(ddl(runtime, random, columnsDiffer));
+			list.addAll(ddl(runtime, random, indexesDiffer));
 		}else if(differ instanceof ColumnsDiffer) {
 			boolean slice = slice();
 			ColumnsDiffer df = (ColumnsDiffer) differ;
 			LinkedHashMap<String, Column> adds = df.getAdds();
 			LinkedHashMap<String, Column> drops = df.getDrops();
 			LinkedHashMap<String, Column> updates = df.getUpdates();
+			Table dest = null;
+			List<Run> slices = new ArrayList<>();
 			for(Column add:adds.values()) {
 				try {
-					list.addAll(buildAddRun(runtime, add, slice));
+					if(null == dest){
+						dest = add.getTable();
+					}
+					slices.addAll(buildAddRun(runtime, add, slice));
 				}catch (Exception e) {
 					log.error("build ddl exception:", e);
 				}
 			}
 			for(Column update:updates.values()) {
 				try {
-					list.addAll(buildAlterRun(runtime, update, slice));
+					if(null == dest){
+						dest = update.getTable();
+					}
+					slices.addAll(buildAlterRun(runtime, update, slice));
 				}catch (Exception e) {
 					log.error("build ddl exception:", e);
 				}
 			}
 			for(Column drop:drops.values()) {
 				try {
-					list.addAll(buildDropRun(runtime, drop, slice));
+					if(null == dest){
+						dest = drop.getTable();
+					}
+					slices.addAll(buildDropRun(runtime, drop, slice));
 				}catch (Exception e) {
 					log.error("build ddl exception:", e);
 				}
 			}
+			List<Run> merge = merge(runtime, dest, slices);
+			list.addAll(merge);
 		}else if(differ instanceof IndexesDiffer) {
 			IndexesDiffer df = (IndexesDiffer) differ;
 			LinkedHashMap<String, Index> adds = df.getAdds();
@@ -641,10 +667,10 @@ public interface DriverAdapter {
 	 * @param differs differs
 	 * @return sqls
 	 */
-	default List<Run> ddls(DataRuntime runtime, String random, List<MetadataDiffer> differs) {
+	default List<Run> ddl(DataRuntime runtime, String random, List<MetadataDiffer> differs) {
 		List<Run> list = new ArrayList<>();
 		for(MetadataDiffer differ:differs) {
-			list.addAll(ddls(runtime, random, differ));
+			list.addAll(ddl(runtime, random, differ));
 		}
 		return list;
 	}
@@ -4515,6 +4541,7 @@ public interface DriverAdapter {
 	 * @throws Exception DDL异常
 	 */
 	boolean create(DataRuntime runtime, Table meta) throws Exception;
+
 
 	/**
 	 * table[调用入口]<br/>

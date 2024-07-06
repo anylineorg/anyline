@@ -1516,8 +1516,8 @@ public class DefaultService<E> implements AnylineService<E> {
      * @return sqls
      */
     @Override
-    public List<Run> ddls(MetadataDiffer differ) {
-        return dao.ddls(differ);
+    public List<Run> ddl(MetadataDiffer differ) {
+        return dao.ddl(differ);
     }
     /**
      * 根据差异生成SQL
@@ -1525,8 +1525,8 @@ public class DefaultService<E> implements AnylineService<E> {
      * @return sqls
      */
     @Override
-    public List<Run> ddls(List<MetadataDiffer> differs) {
-        return dao.ddls(differs);
+    public List<Run> ddl(List<MetadataDiffer> differs) {
+        return dao.ddl(differs);
     }
     /**
      * 解析SQL中指定的主键table(col1, col2)&lt;pk1, pk2&gt;

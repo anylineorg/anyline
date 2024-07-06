@@ -1413,16 +1413,16 @@ public class ServiceProxy {
      * @param differ differ
      * @return sqls
      */
-    public static List<Run> ddls(MetadataDiffer differ) {
-        return service.ddls(differ);
+    public static List<Run> ddl(MetadataDiffer differ) {
+        return service.ddl(differ);
     }
     /**
      * 根据差异生成SQL
      * @param differs differs
      * @return sqls
      */
-    public static List<Run> ddls(List<MetadataDiffer> differs) {
-        return service.ddls(differs);
+    public static List<Run> ddl(List<MetadataDiffer> differs) {
+        return service.ddl(differs);
     }
 
 

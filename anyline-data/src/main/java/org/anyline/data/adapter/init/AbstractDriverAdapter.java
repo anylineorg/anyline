@@ -10554,10 +10554,19 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return runs;
 	}
+
+	/**
+	 * 合关DDL片段
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 表
+	 * @param slices slices
+	 * @return list
+	 */
+	@Override
 	public List<Run> merge(DataRuntime runtime, Table meta, List<Run> slices){
 		List<Run> runs = new ArrayList<>();
 		Run run = null;
-		if(!slices.isEmpty()){
+		if(null != slices && !slices.isEmpty()){
 			StringBuilder builder = null;
 			boolean first = true;
 			for(Run item:slices) {
@@ -10698,7 +10707,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 
 		//在alters执行完成后 添加主键 避免主键中存在alerts新添加的列
-		if(null != cur_primary) {//复合主键的单独添加
+		if(null != cur_primary && change_pk) {//复合主键的单独添加
 			if(slice){
 				slices.addAll(buildAddRun(runtime, cur_primary, slice));
 			}else {
