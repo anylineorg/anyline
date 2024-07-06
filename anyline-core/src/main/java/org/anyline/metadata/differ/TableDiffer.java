@@ -18,10 +18,7 @@
 
 package org.anyline.metadata.differ;
 
-import org.anyline.metadata.Column;
 import org.anyline.metadata.Table;
-
-import java.util.LinkedHashMap;
 
 /**
  * 表或列之间的对比结果
@@ -30,6 +27,7 @@ public class TableDiffer implements MetadataDiffer {
     private Table origin;
     private Table dest;
     private ColumnsDiffer columnsDiffer;
+    private PrimaryKeyDiffer primaryKeyDiffer;
     private IndexesDiffer indexesDiffer;
     //部分数据库的触发器 关联不到表
     private TriggersDiffer triggersDiffer;
@@ -54,11 +52,9 @@ public class TableDiffer implements MetadataDiffer {
         }
 
         TableDiffer differ = new TableDiffer(origin, dest);
-        LinkedHashMap<String, Column> originColumns = origin.getColumns();
-        LinkedHashMap<String, Column> destColumns = dest.getColumns();
 
-        differ.setColumnsDiffer(ColumnsDiffer.compare(originColumns, destColumns));
-
+        differ.setColumnsDiffer(ColumnsDiffer.compare(origin.getColumns(), dest.getColumns()));
+        differ.setPrimaryKeyDiffer(PrimaryKeyDiffer.compare(origin.getPrimaryKey(), dest.getPrimaryKey()));
         differ.setIndexesDiffer(IndexesDiffer.compare(origin.getIndexes(), dest.getIndexes()));
         return differ;
     }
@@ -69,6 +65,14 @@ public class TableDiffer implements MetadataDiffer {
 
     public void setColumnsDiffer(ColumnsDiffer columnsDiffer) {
         this.columnsDiffer = columnsDiffer;
+    }
+
+    public PrimaryKeyDiffer getPrimaryKeyDiffer() {
+        return primaryKeyDiffer;
+    }
+
+    public void setPrimaryKeyDiffer(PrimaryKeyDiffer primaryKeyDiffer) {
+        this.primaryKeyDiffer = primaryKeyDiffer;
     }
 
     public IndexesDiffer getIndexesDiffer() {

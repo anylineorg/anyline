@@ -46,6 +46,7 @@ import org.anyline.util.ConfigTable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.PipedReader;
 import java.util.*;
 
 /**
@@ -453,7 +454,7 @@ public interface DriverAdapter {
 			TablesDiffer df = (TablesDiffer) differ;
 			LinkedHashMap<String, Table> adds = df.getAdds();
 			LinkedHashMap<String, Table> drops = df.getDrops();
-			LinkedHashMap<String, Table> updates = df.getUpdates();//只统计哪些表需要修改
+			LinkedHashMap<String, Table> updates = df.getAlters();//只统计哪些表需要修改
 			LinkedHashMap<String, TableDiffer> diffs = df.getDiffers();//标记具体需要修改的内容
 			//添加表
 			for(Table add:adds.values()) {
@@ -475,7 +476,7 @@ public interface DriverAdapter {
 					}
 					ColumnsDiffer columns_dif = dif.getColumnsDiffer();
 					LinkedHashMap<String, Column> columns_adds = columns_dif.getAdds();
-					LinkedHashMap<String, Column> columns_updates = columns_dif.getUpdates();
+					LinkedHashMap<String, Column> columns_updates = columns_dif.getAlters();
 					LinkedHashMap<String, Column> columns_drops = columns_dif.getDrops();
 					LinkedHashMap<String, Column> columns = new LinkedHashMap<>();
 					for(String key:columns_adds.keySet()) {
@@ -494,6 +495,21 @@ public interface DriverAdapter {
 						columns.put(key, column);
 					}
 					update.setColumns(columns);
+
+					PrimaryKeyDiffer primary_dif = dif.getPrimaryKeyDiffer();
+					PrimaryKey primary_add = primary_dif.getAdd();
+					PrimaryKey primary_drop = primary_dif.getDrop();
+					PrimaryKey primary_alter = primary_dif.getAlter();
+					if(null != primary_add){
+						update.setPrimaryKey(primary_add);
+					}
+					if(null != primary_drop){
+						update.setPrimaryKey(primary_drop);
+					}
+					if(null != primary_alter){
+						update.setPrimaryKey(primary_alter);
+					}
+
 					slices.addAll(buildAlterRun(runtime, update));
 					List<Run> merges = merge(runtime, dest, slices);
 					list.addAll(merges);
@@ -513,7 +529,7 @@ public interface DriverAdapter {
 			ViewsDiffer df = (ViewsDiffer) differ;
 			LinkedHashMap<String, View> adds = df.getAdds();
 			LinkedHashMap<String, View> drops = df.getDrops();
-			LinkedHashMap<String, View> updates = df.getUpdates();
+			LinkedHashMap<String, View> updates = df.getAlters();
 			for(View add:adds.values()) {
 				try {
 					list.addAll(buildCreateRun(runtime, add));
@@ -546,7 +562,7 @@ public interface DriverAdapter {
 			ColumnsDiffer df = (ColumnsDiffer) differ;
 			LinkedHashMap<String, Column> adds = df.getAdds();
 			LinkedHashMap<String, Column> drops = df.getDrops();
-			LinkedHashMap<String, Column> updates = df.getUpdates();
+			LinkedHashMap<String, Column> updates = df.getAlters();
 			Table dest = null;
 			List<Run> slices = new ArrayList<>();
 			for(Column add:adds.values()) {
@@ -585,7 +601,7 @@ public interface DriverAdapter {
 			IndexesDiffer df = (IndexesDiffer) differ;
 			LinkedHashMap<String, Index> adds = df.getAdds();
 			LinkedHashMap<String, Index> drops = df.getDrops();
-			LinkedHashMap<String, Index> updates = df.getUpdates();
+			LinkedHashMap<String, Index> updates = df.getAlters();
 			for(Index add:adds.values()) {
 				try {
 					list.addAll(buildAddRun(runtime, add));
@@ -611,7 +627,7 @@ public interface DriverAdapter {
 			FunctionsDiffer df = (FunctionsDiffer) differ;
 			List<Function> adds = df.getAdds();
 			List<Function> drops = df.getDrops();
-			List<Function> updates = df.getUpdates();
+			List<Function> updates = df.getAlters();
 			for(Function add:adds) {
 				try {
 					list.addAll(buildCreateRun(runtime, add));

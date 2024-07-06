@@ -19,7 +19,6 @@
 package org.anyline.metadata.differ;
 
 import org.anyline.metadata.Function;
-import org.anyline.metadata.Function;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -31,10 +30,10 @@ import java.util.List;
 public class FunctionsDiffer implements MetadataDiffer {
     private List<Function> adds = new ArrayList<>();
     private List<Function> drops = new ArrayList<>();
-    private List<Function> updates = new ArrayList<>();
+    private List<Function> alters = new ArrayList<>();
 
     public boolean isEmpty() {
-        return adds.isEmpty() && drops.isEmpty() && updates.isEmpty();
+        return adds.isEmpty() && drops.isEmpty() && alters.isEmpty();
     }
     public static FunctionsDiffer compare(LinkedHashMap<String, Function> origins, LinkedHashMap<String, Function> dests) {
         FunctionsDiffer differ = new FunctionsDiffer();
@@ -68,7 +67,7 @@ public class FunctionsDiffer implements MetadataDiffer {
         }
         differ.setAdds(adds);
         differ.setDrops(drops);
-        differ.setUpdates(updates);
+        differ.setAlters(updates);
         return differ;
     }
 
@@ -88,11 +87,11 @@ public class FunctionsDiffer implements MetadataDiffer {
         this.drops = drops;
     }
 
-    public List<Function> getUpdates() {
-        return updates;
+    public List<Function> getAlters() {
+        return alters;
     }
 
-    public void setUpdates(List<Function> updates) {
-        this.updates = updates;
+    public void setAlters(List<Function> alters) {
+        this.alters = alters;
     }
 }

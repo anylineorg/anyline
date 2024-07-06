@@ -28,10 +28,10 @@ import java.util.LinkedHashMap;
 public class ViewsDiffer implements MetadataDiffer {
     private LinkedHashMap<String, View> adds = new LinkedHashMap<>();
     private LinkedHashMap<String, View> drops = new LinkedHashMap<>();
-    private LinkedHashMap<String, View> updates = new LinkedHashMap<>();
+    private LinkedHashMap<String, View> alters = new LinkedHashMap<>();
 
     public boolean isEmpty() {
-        return adds.isEmpty() && drops.isEmpty() && updates.isEmpty();
+        return adds.isEmpty() && drops.isEmpty() && alters.isEmpty();
     }
     public static ViewsDiffer compare(LinkedHashMap<String, View> origins, LinkedHashMap<String, View> dests) {
         ViewsDiffer differ = new ViewsDiffer();
@@ -65,7 +65,7 @@ public class ViewsDiffer implements MetadataDiffer {
         }
         differ.setAdds(adds);
         differ.setDrops(drops);
-        differ.setUpdates(updates);
+        differ.setAlters(updates);
         return differ;
     }
 
@@ -85,11 +85,11 @@ public class ViewsDiffer implements MetadataDiffer {
         this.drops = drops;
     }
 
-    public LinkedHashMap<String, View> getUpdates() {
-        return updates;
+    public LinkedHashMap<String, View> getAlters() {
+        return alters;
     }
 
-    public void setUpdates(LinkedHashMap<String, View> updates) {
-        this.updates = updates;
+    public void setAlters(LinkedHashMap<String, View> alters) {
+        this.alters = alters;
     }
 }

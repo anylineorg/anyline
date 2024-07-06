@@ -25,7 +25,7 @@ import java.util.LinkedHashMap;
 public class IndexesDiffer implements MetadataDiffer {
     private LinkedHashMap<String, Index> adds = new LinkedHashMap<>();
     private LinkedHashMap<String, Index> drops = new LinkedHashMap<>();
-    private LinkedHashMap<String, Index> updates = new LinkedHashMap<>();
+    private LinkedHashMap<String, Index> alters = new LinkedHashMap<>();
 
     public static IndexesDiffer compare(LinkedHashMap<String, Index> origins, LinkedHashMap<String, Index> dests) {
         IndexesDiffer differ = new IndexesDiffer();
@@ -41,7 +41,13 @@ public class IndexesDiffer implements MetadataDiffer {
         }
         for(String key:origins.keySet()) {
             Index origin = origins.get(key);
+            if(origin.isPrimary()){
+                continue;
+            }
             Index dest = dests.get(key);
+            if(dest.isPrimary()){
+                continue;
+            }
             if(null == dest) {
                 drops.put(key, origins.get(origin));
             }else {
@@ -58,12 +64,12 @@ public class IndexesDiffer implements MetadataDiffer {
         }
         differ.setAdds(adds);
         differ.setDrops(drops);
-        differ.setUpdates(updates);
+        differ.setAlters(updates);
         return differ;
     }
 
     public boolean isEmpty() {
-        return adds.isEmpty() && drops.isEmpty() && updates.isEmpty();
+        return adds.isEmpty() && drops.isEmpty() && alters.isEmpty();
     }
 
     public LinkedHashMap<String, Index> getAdds() {
@@ -82,11 +88,11 @@ public class IndexesDiffer implements MetadataDiffer {
         this.drops = drops;
     }
 
-    public LinkedHashMap<String, Index> getUpdates() {
-        return updates;
+    public LinkedHashMap<String, Index> getAlters() {
+        return alters;
     }
 
-    public void setUpdates(LinkedHashMap<String, Index> updates) {
-        this.updates = updates;
+    public void setAlters(LinkedHashMap<String, Index> alters) {
+        this.alters = alters;
     }
 }

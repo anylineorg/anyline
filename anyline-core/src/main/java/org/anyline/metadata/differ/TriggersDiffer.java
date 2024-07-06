@@ -28,10 +28,10 @@ import java.util.LinkedHashMap;
 public class TriggersDiffer implements MetadataDiffer {
     private LinkedHashMap<String, Trigger> adds = new LinkedHashMap<>();
     private LinkedHashMap<String, Trigger> drops = new LinkedHashMap<>();
-    private LinkedHashMap<String, Trigger> updates = new LinkedHashMap<>();
+    private LinkedHashMap<String, Trigger> alters = new LinkedHashMap<>();
 
     public boolean isEmpty() {
-        return adds.isEmpty() && drops.isEmpty() && updates.isEmpty();
+        return adds.isEmpty() && drops.isEmpty() && alters.isEmpty();
     }
     public static TriggersDiffer compare(LinkedHashMap<String, Trigger> origins, LinkedHashMap<String, Trigger> dests) {
         TriggersDiffer differ = new TriggersDiffer();
@@ -65,7 +65,7 @@ public class TriggersDiffer implements MetadataDiffer {
         }
         differ.setAdds(adds);
         differ.setDrops(drops);
-        differ.setUpdates(updates);
+        differ.setAlters(updates);
         return differ;
     }
 
@@ -85,11 +85,11 @@ public class TriggersDiffer implements MetadataDiffer {
         this.drops = drops;
     }
 
-    public LinkedHashMap<String, Trigger> getUpdates() {
-        return updates;
+    public LinkedHashMap<String, Trigger> getAlters() {
+        return alters;
     }
 
-    public void setUpdates(LinkedHashMap<String, Trigger> updates) {
-        this.updates = updates;
+    public void setAlters(LinkedHashMap<String, Trigger> alters) {
+        this.alters = alters;
     }
 }

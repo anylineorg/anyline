@@ -28,11 +28,11 @@ import java.util.LinkedHashMap;
 public class TablesDiffer implements MetadataDiffer {
     private LinkedHashMap<String, Table> adds = new LinkedHashMap<>();
     private LinkedHashMap<String, Table> drops = new LinkedHashMap<>();
-    private LinkedHashMap<String, Table> updates = new LinkedHashMap<>();
+    private LinkedHashMap<String, Table> alters = new LinkedHashMap<>();
     private LinkedHashMap<String, TableDiffer> differs =new LinkedHashMap<>();
 
     public boolean isEmpty() {
-        return adds.isEmpty() && drops.isEmpty() && updates.isEmpty();
+        return adds.isEmpty() && drops.isEmpty() && alters.isEmpty();
     }
     public static TablesDiffer compare(LinkedHashMap<String, Table> origins, LinkedHashMap<String, Table> dests) {
         return compare(origins, dests, true);
@@ -80,7 +80,7 @@ public class TablesDiffer implements MetadataDiffer {
         }
         differ.setAdds(adds);
         differ.setDrops(drops);
-        differ.setUpdates(updates);
+        differ.setAlters(updates);
         differ.setDiffers(differs);
         return differ;
     }
@@ -101,12 +101,12 @@ public class TablesDiffer implements MetadataDiffer {
         this.drops = drops;
     }
 
-    public LinkedHashMap<String, Table> getUpdates() {
-        return updates;
+    public LinkedHashMap<String, Table> getAlters() {
+        return alters;
     }
 
-    public void setUpdates(LinkedHashMap<String, Table> updates) {
-        this.updates = updates;
+    public void setAlters(LinkedHashMap<String, Table> alters) {
+        this.alters = alters;
     }
 
     public LinkedHashMap<String, TableDiffer> getDiffers() {
