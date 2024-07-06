@@ -8682,29 +8682,30 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 					idx++;
 				}
 			}
-
-			for(Table table:tables) {
-				Long tObjectId = table.getObjectId();
-				LinkedHashMap<String, Index> idxs = new LinkedHashMap<>();
-				table.setIndexes(idxs);
-				for(Index index:indexes) {
-					if(table.equals(index.getTable())) {
-						Catalog cCatalog = index.getCatalog();
-						Schema cSchema = index.getSchema();
-						Long cObjectId = index.getObjectId();
-						if(null != tObjectId && null != cObjectId && tObjectId == cObjectId) {
-							idxs.put(index.getName().toUpperCase(), index);
-						}else{
-							if(equals(cCatalog, index.getCatalog())
-									&& equals(cSchema, index.getSchema())
-									&& BasicUtil.equals(table.getName(), index.getTableName(), true)
-							) {
+			if(null != indexes) {
+				for (Table table : tables) {
+					Long tObjectId = table.getObjectId();
+					LinkedHashMap<String, Index> idxs = new LinkedHashMap<>();
+					table.setIndexes(idxs);
+					for (Index index : indexes) {
+						if (table.equals(index.getTable())) {
+							Catalog cCatalog = index.getCatalog();
+							Schema cSchema = index.getSchema();
+							Long cObjectId = index.getObjectId();
+							if (null != tObjectId && null != cObjectId && tObjectId == cObjectId) {
 								idxs.put(index.getName().toUpperCase(), index);
+							} else {
+								if (equals(cCatalog, index.getCatalog())
+										&& equals(cSchema, index.getSchema())
+										&& BasicUtil.equals(table.getName(), index.getTableName(), true)
+								) {
+									idxs.put(index.getName().toUpperCase(), index);
+								}
 							}
 						}
 					}
+					indexes.removeAll(idxs.values());
 				}
-				indexes.removeAll(idxs.values());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
