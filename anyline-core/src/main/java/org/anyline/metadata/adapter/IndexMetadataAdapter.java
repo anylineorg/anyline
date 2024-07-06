@@ -26,6 +26,10 @@ public class IndexMetadataAdapter extends AbstractMetadataAdapter {
      */
     private String[] columnOrderRefer;
     /**
+     * 索引类型BTREE等
+     */
+    private String[] typeRefer;
+    /**
      * 在主键或索引中的顺序
      */
     private String[] columnPositionRefer;
@@ -35,6 +39,23 @@ public class IndexMetadataAdapter extends AbstractMetadataAdapter {
     private String[] checkPrimaryRefer;
     private String[] checkPrimaryValue;
 
+    public String[] getTypeRefers() {
+        return typeRefer;
+    }
+
+    public IndexMetadataAdapter setTypeRefer(String[] typeRefer) {
+        this.typeRefer = typeRefer;
+        return this;
+    }
+
+    public IndexMetadataAdapter setTypeRefer(String typeRefer) {
+        if(BasicUtil.isNotEmpty(typeRefer)) {
+            this.typeRefer = typeRefer.split(",");
+        }else{
+            this.typeRefer = null;
+        }
+        return this;
+    }
     public String[] getColumnOrderRefers() {
         return columnOrderRefer;
     }
