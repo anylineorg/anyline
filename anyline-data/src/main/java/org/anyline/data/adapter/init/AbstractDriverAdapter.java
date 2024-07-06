@@ -9056,6 +9056,40 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			meta.setSchema(schema);
 			meta.setTable(table);
 			meta.setMetadata(row);
+
+			//是否主键
+			String[] chks = config.getCheckPrimaryRefers();
+			String[] vals = config.getCheckPrimaryValues();
+			if(null != chks && null != vals){
+				for(String chk:chks){
+					String value = row.getString(chk);
+					if(null != value){
+						for(String val:vals){
+							if(value.equalsIgnoreCase(val)){
+								meta.setPrimary(true);
+								return meta;
+							}
+						}
+					}
+				}
+			}
+			//是否唯一
+			chks = config.getCheckUniqueRefers();
+			vals = config.getCheckUniqueValues();
+			if(null != chks && null != vals){
+				for(String chk:chks){
+					String value = row.getString(chk);
+					if(null != value){
+						for(String val:vals){
+							if(value.equalsIgnoreCase(val)){
+								meta.setUnique(true);
+								return meta;
+							}
+						}
+					}
+				}
+			}
+
 		}
 		return meta;
 	}
@@ -9099,22 +9133,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				type = Order.TYPE.DESC;
 			}
 			meta.setOrder(column, type);
-		}
-		//是否主键
-		String[] chks = config.getCheckPrimaryRefers();
-		String[] vals = config.getCheckPrimaryValues();
-		if(null != chks && null != vals){
-			for(String chk:chks){
-				String value = row.getString(chk);
-				if(null != value){
-					for(String val:vals){
-						if(value.equalsIgnoreCase(val)){
-							meta.setPrimary(true);
-							return meta;
-						}
-					}
-				}
-			}
 		}
 		return meta;
 	}

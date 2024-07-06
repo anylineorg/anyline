@@ -26,10 +26,7 @@ import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
 import org.anyline.exception.NotSupportException;
 import org.anyline.metadata.*;
-import org.anyline.metadata.adapter.ColumnMetadataAdapter;
-import org.anyline.metadata.adapter.FunctionMetadataAdapter;
-import org.anyline.metadata.adapter.MetadataAdapterHolder;
-import org.anyline.metadata.adapter.PrimaryMetadataAdapter;
+import org.anyline.metadata.adapter.*;
 import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
@@ -2902,6 +2899,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
     public <T extends Index> LinkedHashMap<String, T> indexes(DataRuntime runtime, String random, Table table, String pattern) {
         return super.indexes(runtime, random, table, pattern);
     }
+
     /**
      * index[命令合成]<br/>
      * 查询表上的索引
@@ -2912,9 +2910,88 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public List<Run> buildQueryIndexesRun(DataRuntime runtime, Table table, String name) {
-        return super.buildQueryIndexesRun(runtime, table, name);
+        List<Run> runs = new ArrayList<>();
+        Run run = buildQueryIndexBody(runtime);
+        runs.add(run);
+        StringBuilder builder = run.getBuilder();
+        String schema = table.getSchemaName();
+        String tab = table.getName();
+        if(!empty(schema)) {
+            builder.append("AND ins.nspname = '").append(schema).append("'\n");
+        }
+        if(BasicUtil.isNotEmpty(tab)) {
+            builder.append("AND c.relname = '").append(tab).append("'\n");
+        }
+        if(BasicUtil.isNotEmpty(name)) {
+            builder.append("AND i.indexrelid = '").append(name).append("'::regclass\n");
+        }
+        return runs;
+    }
+    @Override
+    public List<Run> buildQueryIndexesRun(DataRuntime runtime, Collection<? extends Table> tables) {
+        List<Run> runs = new ArrayList<>();
+        Run run = buildQueryIndexBody(runtime);
+        runs.add(run);
+        StringBuilder builder = run.getBuilder();
+        Table table = null;
+        if(null != tables && !tables.isEmpty()){
+            table = tables.iterator().next();
+        }
+        String schema = table.getSchemaName();
+        String tab = table.getName();
+        if(!empty(schema)) {
+            builder.append("AND ins.nspname = '").append(schema).append("'\n");
+        }
+        List<String> names = Table.names(tables);
+        in(runtime, builder, "c.relname", names);
+        return runs;
+    }
+    protected Run buildQueryIndexBody(DataRuntime runtime){
+        Run run = new SimpleRun(runtime);
+        StringBuilder builder = run.getBuilder();
+        builder.append("SELECT \n");
+        builder.append("i.indkey AS COLUMN_POSITIONS,\n"); //列顺序(9 1 5)
+        builder.append("i.indoption AS COLUMN_ORDERS,\n"); //0:ASC 1:DESC
+        builder.append("c.relname AS TABLE_NAME,\n");
+        builder.append("ins.nspname as SCHEMA_NAME, \n");
+        builder.append("i.indexrelid::regclass as index_name,\n");
+        builder.append("am.amname AS index_type,\n");
+        builder.append("i.indisunique  as is_unique,\n");
+        builder.append("i.indisprimary as is_primary,\n");
+        builder.append("a.attnum as column_no,\n" ); //列编号 与 列顺序 合并出列位置 如这里的5 对应(9 1 5) 中的下标 2
+        builder.append("a.attname  as column_name \n");
+        builder.append("FROM pg_index AS i\n");
+        builder.append("LEFT JOIN pg_class AS c  ON i.indrelid = c.oid\n"); //
+        builder.append("LEFT JOIN pg_class AS ci ON i.indexrelid = ci.oid\n");
+        builder.append("LEFT JOIN pg_am AS am ON ci.relam = am.oid\n");
+        builder.append("LEFT JOIN pg_attribute AS a ON a.attrelid = c.oid AND a.attnum = ANY(i.indkey)\n");
+        builder.append("LEFT JOIN pg_namespace ON c.relnamespace = pg_namespace.oid\n");
+        builder.append("LEFT JOIN pg_namespace ins ON ins.oid = c.relnamespace");
+        return run;
     }
 
+    /**
+     * index[结构集封装-依据]<br/>
+     * 读取index元数据结果集的依据
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @return IndexMetadataAdapter
+     */
+    @Override
+    public IndexMetadataAdapter indexMetadataAdapter(DataRuntime runtime) {
+        IndexMetadataAdapter adapter =  super.indexMetadataAdapter(runtime);
+        adapter.setNameRefer("INDEX_NAME");
+        adapter.setTableRefer("TABLE_NAME");
+        adapter.setSchemaRefer("SCHEMA_NAME");
+        adapter.setTypeRefer("INDEX_TYPE");
+        adapter.setCheckPrimaryRefer("IS_PRIMARY");
+        adapter.setCheckPrimaryValue("T");
+        adapter.setCatalogRefer("");
+        //以下在detail中单独处理
+        adapter.setColumnRefer("");
+        adapter.setColumnOrderRefer("");
+        adapter.setColumnPositionRefer("");
+        return adapter;
+    }
     /**
      * index[结果集封装]<br/>
      *  根据查询结果集构造Index
@@ -2979,6 +3056,66 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         return super.indexes(runtime, create, indexes, table, unique, approximate);
     }
 
+    /**
+     * index[结构集封装]<br/>
+     * 根据查询结果集构造index基础属性(name, table, schema, catalog)
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param index 第几条查询SQL 对照 buildQueryIndexesRun 返回顺序
+     * @param meta 上一步封装结果
+     * @param table 表
+     * @param row sql查询结果
+     * @throws Exception 异常
+     */
+    @Override
+    public <T extends Index> T init(DataRuntime runtime, int index, T meta, Table table, DataRow row) throws Exception{
+        return super.init(runtime, index, meta, table, row);
+    }
+
+    /**
+     * index[结构集封装]<br/>
+     * 根据查询结果集构造index更多属性(column,order, position)
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param index 第几条查询SQL 对照 buildQueryIndexesRun 返回顺序
+     * @param meta 上一步封装结果
+     * @param table 表
+     * @param row sql查询结果
+     * @throws Exception 异常
+     */
+    @Override
+    public <T extends Index> T detail(DataRuntime runtime, int index, T meta, Table table, DataRow row) throws Exception{
+        meta = super.detail(runtime, index, meta, table, row);
+        IndexMetadataAdapter config = indexMetadataAdapter(runtime);
+        String columnName = row.getStringWithoutEmpty(config.getColumnRefers());
+        if(null == columnName) {
+            return meta;
+        }
+        columnName = columnName.replace("\"", "");
+        Column column = meta.getColumn(columnName.toUpperCase());
+        if(null == column) {
+            column = new Column();
+        }
+        List<String> positions = BeanUtil.array2list(row.getStringNvl("COLUMN_POSITIONS","").split(" "));//[9, 1, 5]
+        String no = row.getString("COLUMN_NO");
+        int position = positions.indexOf(no);
+        column.setPosition(position);
+        column.setName(columnName);
+        meta.addColumn(column);
+        meta.setPosition(column, position);
+
+        List<String> orders = BeanUtil.array2list(row.getStringNvl("COLUMN_ORDERS","").split(" "));//[0, 1, 1]  0:ASC 1:DESC
+        if(position >= 0){
+            String order = orders.get(position);
+            if(null != order) {
+                order = order.toUpperCase();
+                Order.TYPE type = Order.TYPE.ASC;
+                if(order.equals("1")) {
+                    type = Order.TYPE.DESC;
+                }
+                meta.setOrder(column, type);
+            }
+        }
+        return meta;
+    }
     /* *****************************************************************************************************************
      * 													constraint
      * -----------------------------------------------------------------------------------------------------------------

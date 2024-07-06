@@ -38,6 +38,11 @@ public class IndexMetadataAdapter extends AbstractMetadataAdapter {
      */
     private String[] checkPrimaryRefer;
     private String[] checkPrimaryValue;
+    /**
+     * 判断是否唯一索引
+     */
+    private String[] checkUniqueRefer;
+    private String[] checkUniqueValue;
 
     public String[] getTypeRefers() {
         return typeRefer;
@@ -141,6 +146,54 @@ public class IndexMetadataAdapter extends AbstractMetadataAdapter {
             this.checkPrimaryValue = checkPrimaryValue.split(",");
         }else{
             this.checkPrimaryValue = null;
+        }
+        return this;
+    }
+
+
+    public String[] getCheckUniqueRefers() {
+        return checkUniqueRefer;
+    }
+    public String getCheckUniqueRefer() {
+        if(null != checkUniqueRefer && checkUniqueRefer.length > 0) {
+            return checkUniqueRefer[0];
+        }
+        return null;
+    }
+
+    public IndexMetadataAdapter setCheckUniqueRefer(String[] checkUniqueRefer) {
+        this.checkUniqueRefer = checkUniqueRefer;
+        return this;
+    }
+    public IndexMetadataAdapter setCheckUniqueRefer(String checkUniqueRefer) {
+        if(BasicUtil.isNotEmpty(checkUniqueRefer)) {
+            this.checkUniqueRefer = checkUniqueRefer.split(",");
+        }else{
+            this.checkUniqueRefer = null;
+        }
+        return this;
+    }
+
+
+    public String[] getCheckUniqueValues() {
+        return checkUniqueValue;
+    }
+    public String getCheckUniqueValue() {
+        if(null != checkUniqueValue && checkUniqueValue.length > 0) {
+            return checkUniqueValue[0];
+        }
+        return null;
+    }
+
+    public IndexMetadataAdapter setCheckUniqueValue(String[] checkUniqueValue) {
+        this.checkUniqueValue = checkUniqueValue;
+        return this;
+    }
+    public IndexMetadataAdapter setCheckUniqueValue(String checkUniqueValue) {
+        if(BasicUtil.isNotEmpty(checkUniqueValue)) {
+            this.checkUniqueValue = checkUniqueValue.split(",");
+        }else{
+            this.checkUniqueValue = null;
         }
         return this;
     }
