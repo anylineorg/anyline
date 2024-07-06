@@ -45,21 +45,27 @@ public class IndexesDiffer implements MetadataDiffer {
                 continue;
             }
             Index dest = dests.get(key);
-            if(dest.isPrimary()){
+            if(null != dest && dest.isPrimary()){
                 continue;
             }
             if(null == dest) {
                 drops.put(key, origins.get(origin));
             }else {
                 if(!origin.equals(dest)) {
-                    origin.setUpdate(dest, false, false);
-                    updates.put(key, origin);
+                    if(!origin.isPrimary()) {
+                        origin.setUpdate(dest, false, false);
+                        updates.put(key, origin);
+                    }
                 }
             }
         }
         for(String key:dests.keySet()) {
             if(!origins.containsKey(key)) {
-                adds.put(key, dests.get(key));
+                Index index = dests.get(key);
+                if(index.isPrimary()){
+                    continue;
+                }
+                adds.put(key, index);
             }
         }
         differ.setAdds(adds);

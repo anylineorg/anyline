@@ -46,7 +46,6 @@ import org.anyline.util.ConfigTable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.PipedReader;
 import java.util.*;
 
 /**
@@ -443,12 +442,15 @@ public interface DriverAdapter {
 	 * @return list
 	 */
 	List<Run> merge(DataRuntime runtime, Table meta, List<Run> slices);
+	default List<Run> ddl(DataRuntime runtime, String random, MetadataDiffer differ) {
+		return ddl(runtime, random, differ, true);
+	}
 	/**
 	 * 根据差异生成SQL
 	 * @param differ differ 需要保证表中有列信息
 	 * @return sqls
 	 */
-	default List<Run> ddl(DataRuntime runtime, String random, MetadataDiffer differ) {
+	default List<Run> ddl(DataRuntime runtime, String random, MetadataDiffer differ, boolean merge) {
 		List<Run> list = new ArrayList<>();
 		if(differ instanceof TablesDiffer) {
 			TablesDiffer df = (TablesDiffer) differ;
@@ -475,7 +477,8 @@ public interface DriverAdapter {
 						update.setUpdate(dest, false, false);
 					}
 					ColumnsDiffer columns_dif = dif.getColumnsDiffer();
-					LinkedHashMap<String, Column> columns_adds = columns_dif.getAdds();
+					slices.addAll(ddl(runtime, random, columns_dif, false));
+					/*LinkedHashMap<String, Column> columns_adds = columns_dif.getAdds();
 					LinkedHashMap<String, Column> columns_updates = columns_dif.getAlters();
 					LinkedHashMap<String, Column> columns_drops = columns_dif.getDrops();
 					LinkedHashMap<String, Column> columns = new LinkedHashMap<>();
@@ -494,25 +497,18 @@ public interface DriverAdapter {
 						column.setAction(ACTION.DDL.COLUMN_DROP);
 						columns.put(key, column);
 					}
-					update.setColumns(columns);
+					update.setColumns(columns);*/
 
 					PrimaryKeyDiffer primary_dif = dif.getPrimaryKeyDiffer();
-					PrimaryKey primary_add = primary_dif.getAdd();
-					PrimaryKey primary_drop = primary_dif.getDrop();
-					PrimaryKey primary_alter = primary_dif.getAlter();
-					if(null != primary_add){
-						update.setPrimaryKey(primary_add);
-					}
-					if(null != primary_drop){
-						update.setPrimaryKey(primary_drop);
-					}
-					if(null != primary_alter){
-						update.setPrimaryKey(primary_alter);
-					}
+					slices.addAll(ddl(runtime, random, primary_dif, false));
 
-					slices.addAll(buildAlterRun(runtime, update));
-					List<Run> merges = merge(runtime, dest, slices);
-					list.addAll(merges);
+					//slices.addAll(buildAlterRun(runtime, update));
+					if(merge) {
+						List<Run> merges = merge(runtime, dest, slices);
+						list.addAll(merges);
+					}else{
+						list.addAll(slices);
+					}
 				}catch (Exception e) {
 					log.error("build ddl exception:", e);
 				}
@@ -557,6 +553,42 @@ public interface DriverAdapter {
 			IndexesDiffer indexesDiffer = df.getIndexesDiffer();
 			list.addAll(ddl(runtime, random, columnsDiffer));
 			list.addAll(ddl(runtime, random, indexesDiffer));
+		}else if(differ instanceof PrimaryKeyDiffer) {
+			PrimaryKeyDiffer df = (PrimaryKeyDiffer) differ;
+			Table table = null;
+			PrimaryKey add = df.getAdd();
+			PrimaryKey drop = df.getDrop();
+			PrimaryKey alter = df.getAlter();
+			boolean slice = slice();
+			List<Run> slices = new ArrayList<>();
+			try{
+				if(null != drop){
+					if(null == table){
+						table = drop.getTable();
+					}
+					slices.addAll(buildDropRun(runtime, drop, slice));
+				}
+				if(null != add){
+					if(null == table){
+						table = add.getTable();
+					}
+					slices.addAll(buildAddRun(runtime, add, slice));
+				}
+				if(null != alter){
+					if(null == table){
+						table = alter.getTable();
+					}
+					slices.addAll(buildAlterRun(runtime, alter, alter.getUpdate(), slice));
+				}
+				if(merge){
+					list.addAll(merge(runtime, table, slices));
+				}else{
+					list.addAll(slices);
+				}
+			}catch (Exception e){
+				log.error("build ddl exception:", e);
+			}
+
 		}else if(differ instanceof ColumnsDiffer) {
 			boolean slice = slice();
 			ColumnsDiffer df = (ColumnsDiffer) differ;
@@ -595,8 +627,11 @@ public interface DriverAdapter {
 					log.error("build ddl exception:", e);
 				}
 			}
-			List<Run> merge = merge(runtime, dest, slices);
-			list.addAll(merge);
+			if(merge) {
+				list.addAll(merge(runtime, dest, slices));
+			}else{
+				list.addAll(slices);
+			}
 		}else if(differ instanceof IndexesDiffer) {
 			IndexesDiffer df = (IndexesDiffer) differ;
 			LinkedHashMap<String, Index> adds = df.getAdds();
