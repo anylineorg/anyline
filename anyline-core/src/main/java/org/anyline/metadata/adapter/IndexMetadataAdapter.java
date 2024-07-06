@@ -29,6 +29,11 @@ public class IndexMetadataAdapter extends AbstractMetadataAdapter {
      * 在主键或索引中的顺序
      */
     private String[] columnPositionRefer;
+    /**
+     * 判断是否主键
+     */
+    private String[] checkPrimaryRefer;
+    private String[] checkPrimaryValue;
 
     public String[] getColumnOrderRefers() {
         return columnOrderRefer;
@@ -47,11 +52,12 @@ public class IndexMetadataAdapter extends AbstractMetadataAdapter {
         }
         return this;
     }
+
     public String[] getColumnPositionRefers() {
         return columnPositionRefer;
     }
     public String getColumnPositionRefer() {
-        if(null != columnOrderRefer || columnOrderRefer.length > 0) {
+        if(null != columnPositionRefer && columnPositionRefer.length > 0) {
             return columnPositionRefer[0];
         }
         return null;
@@ -66,6 +72,54 @@ public class IndexMetadataAdapter extends AbstractMetadataAdapter {
             this.columnPositionRefer = columnPositionRefer.split(",");
         }else{
             this.columnPositionRefer = null;
+        }
+        return this;
+    }
+
+
+    public String[] getCheckPrimaryRefers() {
+        return checkPrimaryRefer;
+    }
+    public String getCheckPrimaryRefer() {
+        if(null != checkPrimaryRefer && checkPrimaryRefer.length > 0) {
+            return checkPrimaryRefer[0];
+        }
+        return null;
+    }
+
+    public IndexMetadataAdapter setCheckPrimaryRefer(String[] checkPrimaryRefer) {
+        this.checkPrimaryRefer = checkPrimaryRefer;
+        return this;
+    }
+    public IndexMetadataAdapter setCheckPrimaryRefer(String checkPrimaryRefer) {
+        if(BasicUtil.isNotEmpty(checkPrimaryRefer)) {
+            this.checkPrimaryRefer = checkPrimaryRefer.split(",");
+        }else{
+            this.checkPrimaryRefer = null;
+        }
+        return this;
+    }
+
+
+    public String[] getCheckPrimaryValues() {
+        return checkPrimaryValue;
+    }
+    public String getCheckPrimaryValue() {
+        if(null != checkPrimaryValue && checkPrimaryValue.length > 0) {
+            return checkPrimaryValue[0];
+        }
+        return null;
+    }
+
+    public IndexMetadataAdapter setCheckPrimaryValue(String[] checkPrimaryValue) {
+        this.checkPrimaryValue = checkPrimaryValue;
+        return this;
+    }
+    public IndexMetadataAdapter setCheckPrimaryValue(String checkPrimaryValue) {
+        if(BasicUtil.isNotEmpty(checkPrimaryValue)) {
+            this.checkPrimaryValue = checkPrimaryValue.split(",");
+        }else{
+            this.checkPrimaryValue = null;
         }
         return this;
     }

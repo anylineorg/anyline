@@ -9100,6 +9100,22 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			}
 			meta.setOrder(column, type);
 		}
+		//是否主键
+		String[] chks = config.getCheckPrimaryRefers();
+		String[] vals = config.getCheckPrimaryValues();
+		if(null != chks && null != vals){
+			for(String chk:chks){
+				String value = row.getString(chk);
+				if(null != value){
+					for(String val:vals){
+						if(value.equalsIgnoreCase(val)){
+							meta.setPrimary(true);
+							return meta;
+						}
+					}
+				}
+			}
+		}
 		return meta;
 	}
 	/**

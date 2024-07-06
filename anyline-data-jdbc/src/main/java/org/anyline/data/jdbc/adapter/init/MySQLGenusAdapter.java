@@ -3025,6 +3025,8 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         adapter.setColumnRefer("COLUMN_NAME");
         adapter.setColumnOrderRefer("COLLATION");
         adapter.setColumnPositionRefer("SEQ_IN_INDEX");
+        adapter.setCheckPrimaryRefer("INDEX_NAME");
+        adapter.setCheckPrimaryValue("PRIMARY");
         adapter.setCatalogRefer("");
         return adapter;
     }
