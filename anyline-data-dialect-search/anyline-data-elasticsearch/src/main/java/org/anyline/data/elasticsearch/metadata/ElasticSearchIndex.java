@@ -21,6 +21,7 @@ import org.anyline.metadata.Table;
 import java.util.LinkedHashMap;
 
 public class ElasticSearchIndex extends Table {
+    protected String keyword = "index"            ;
     private Integer numberOfShards;
     private Integer numberOfReplicas;
     //index.store.type 后续版本会删除
@@ -71,6 +72,9 @@ public class ElasticSearchIndex extends Table {
             }
         }
         return map;
+    }
+    public String getKeyword() {
+        return keyword;
     }
 }
 /*
