@@ -123,8 +123,14 @@ public class ElasticSearchWorker implements DriverWorker {
 
     @Override
     public long update(DriverAdapter adapter, DataRuntime runtime, String random, Table dest, Object data, ConfigStore configs, Run run) throws Exception{
-
-        return 0;
+        long cnt = 0;
+        ElasticSearchRun r = (ElasticSearchRun)run;
+        String method = r.getMethod();
+        String endpoint = r.getEndpoint();
+        Request request = new Request(method, endpoint);
+        request.setJsonEntity(run.getFinalUpdate(false));
+        execute(client(runtime), request);
+        return cnt;
     }
 
     @Override
