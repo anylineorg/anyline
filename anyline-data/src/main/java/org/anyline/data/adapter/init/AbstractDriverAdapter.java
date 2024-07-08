@@ -1555,7 +1555,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			if(batch > 1 && !ConfigStore.IS_LOG_BATCH_SQL_PARAM(configs)) {
 				log.info("{}[action:{}][table:{}]{}", random, action, run.getTable(), run.log(ACTION.DML.UPDATE,ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
 			}else {
-				log.info("{}[action:update][table:{}]{}", random, run.getTable(), run.log(ACTION.DML.UPDATE,ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
+				log.info("{}[action:{}][table:{}]{}", random, action, run.getTable(), run.log(ACTION.DML.UPDATE,ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
 			}
 		}
 
@@ -1600,7 +1600,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				throw ex;
 			}
 			if (ConfigStore.IS_LOG_SQL_WHEN_ERROR(configs)) {
-				log.error("{}[{}][action:update][table:{}]{}", random, run.getTable(), LogUtil.format("更新异常:", 33) + e.toString(), run.log(ACTION.DML.UPDATE,ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
+				log.error("{}[{}][action:][table:{}]{}", random, action, run.getTable(), LogUtil.format("更新异常:", 33) + e.toString(), run.log(ACTION.DML.UPDATE,ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
 			}
 
 		}
