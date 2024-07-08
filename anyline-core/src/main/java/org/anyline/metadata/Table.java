@@ -19,6 +19,7 @@
 package org.anyline.metadata;
 
 import org.anyline.exception.AnylineException;
+import org.anyline.metadata.differ.MetadataDiffer;
 import org.anyline.metadata.differ.TableDiffer;
 import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.proxy.EntityAdapterProxy;
@@ -1228,8 +1229,14 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
         }
         return pks.equals(tpks);
     }
-    public TableDiffer compare(Table table) {
-        return TableDiffer.compare(this, table);
+    public TableDiffer compare(Table table, MetadataDiffer.DIRECT direct) {
+        Table direct_ = null;
+        if(direct == MetadataDiffer.DIRECT.DEST){
+            direct_ = table;
+        }else{
+            direct_ = this;
+        }
+        return TableDiffer.compare(this, table, direct_);
     }
     /**
      * 分桶方式及数量

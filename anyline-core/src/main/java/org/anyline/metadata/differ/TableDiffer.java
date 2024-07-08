@@ -23,7 +23,7 @@ import org.anyline.metadata.Table;
 /**
  * 表或列之间的对比结果
  */
-public class TableDiffer implements MetadataDiffer {
+public class TableDiffer extends AbstractDiffer {
     private Table origin;
     private Table dest;
     private ColumnsDiffer columnsDiffer;
@@ -36,6 +36,19 @@ public class TableDiffer implements MetadataDiffer {
         this.origin = origin;
         this.dest = dest;
     }
+    @Override
+    public MetadataDiffer setDirect(DIRECT direct) {
+        if(direct == DIRECT.ORIGIN){
+            this.direct = origin;
+        }else if(direct == DIRECT.DEST){
+            this.direct = dest;
+        }
+        if(null != columnsDiffer){
+            columnsDiffer.setDirect(this.direct);
+        }
+        return this;
+    }
+
     public boolean isEmpty() {
         if(null != columnsDiffer && !columnsDiffer.isEmpty()) {
             return false;
@@ -46,16 +59,23 @@ public class TableDiffer implements MetadataDiffer {
         return true;
     }
 
-    public static TableDiffer compare(Table origin, Table dest) {
+    public static TableDiffer compare(Table origin, Table dest, Table direct) {
         if(null == dest) {
             dest = new Table();
         }
-
+        if(null == direct){
+            if(null != origin){
+                direct = origin;
+            }else{
+                direct = dest;
+            }
+        }
         TableDiffer differ = new TableDiffer(origin, dest);
 
-        differ.setColumnsDiffer(ColumnsDiffer.compare(origin.getColumns(), dest.getColumns()));
-        differ.setPrimaryKeyDiffer(PrimaryKeyDiffer.compare(origin.getPrimaryKey(), dest.getPrimaryKey()));
-        differ.setIndexesDiffer(IndexesDiffer.compare(origin.getIndexes(), dest.getIndexes()));
+        differ.setColumnsDiffer(ColumnsDiffer.compare(origin.getColumns(), dest.getColumns(), direct));
+        differ.setPrimaryKeyDiffer(PrimaryKeyDiffer.compare(origin.getPrimaryKey(), dest.getPrimaryKey(), direct));
+        differ.setIndexesDiffer(IndexesDiffer.compare(origin.getIndexes(), dest.getIndexes(), direct));
+        differ.setDirect(direct);
         return differ;
     }
 

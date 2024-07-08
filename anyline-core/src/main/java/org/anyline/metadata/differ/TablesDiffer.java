@@ -25,17 +25,23 @@ import java.util.LinkedHashMap;
 /**
  * 表或列之间的对比结果
  */
-public class TablesDiffer implements MetadataDiffer {
-    private LinkedHashMap<String, Table> adds = new LinkedHashMap<>();
-    private LinkedHashMap<String, Table> drops = new LinkedHashMap<>();
-    private LinkedHashMap<String, Table> alters = new LinkedHashMap<>();
-    private LinkedHashMap<String, TableDiffer> differs =new LinkedHashMap<>();
+public class TablesDiffer extends AbstractDiffer {
+    private LinkedHashMap<String, Table> adds = new LinkedHashMap<>();              // 添加的表
+    private LinkedHashMap<String, Table> drops = new LinkedHashMap<>();             // 删除的表
+    private LinkedHashMap<String, Table> alters = new LinkedHashMap<>();            // 修改表(只记录修改的表名)
+    private LinkedHashMap<String, TableDiffer> differs =new LinkedHashMap<>();      // 具体修改内容(记录详细的修改明细，生成DDL需要根据这里)
 
     public boolean isEmpty() {
         return adds.isEmpty() && drops.isEmpty() && alters.isEmpty();
     }
+    public static TablesDiffer compare(LinkedHashMap<String, Table> origins, LinkedHashMap<String, Table> dests, DIRECT direct) {
+        return compare(origins, dests, direct, true);
+    }
+    public static TablesDiffer compare(LinkedHashMap<String, Table> origins, LinkedHashMap<String, Table> dests, boolean ignoreSchema) {
+        return compare(origins, dests, DIRECT.ORIGIN, ignoreSchema);
+    }
     public static TablesDiffer compare(LinkedHashMap<String, Table> origins, LinkedHashMap<String, Table> dests) {
-        return compare(origins, dests, true);
+        return compare(origins, dests, DIRECT.ORIGIN, true);
     }
 
     /**
@@ -45,11 +51,11 @@ public class TablesDiffer implements MetadataDiffer {
      * @param ignoreSchema 是否忽略 catalog schema
      * @return TablesDiffer
      */
-    public static TablesDiffer compare(LinkedHashMap<String, Table> origins, LinkedHashMap<String, Table> dests, boolean ignoreSchema) {
+    public static TablesDiffer compare(LinkedHashMap<String, Table> origins, LinkedHashMap<String, Table> dests, DIRECT direct, boolean ignoreSchema) {
         TablesDiffer differ = new TablesDiffer();
         LinkedHashMap<String, Table> adds = new LinkedHashMap<>();
         LinkedHashMap<String, Table> drops = new LinkedHashMap<>();
-        LinkedHashMap<String, Table> updates = new LinkedHashMap<>();
+        LinkedHashMap<String, Table> alters = new LinkedHashMap<>();
         LinkedHashMap<String, TableDiffer> differs =new LinkedHashMap<>();
         if(null == origins) {
             origins = new LinkedHashMap<>();
@@ -65,10 +71,10 @@ public class TablesDiffer implements MetadataDiffer {
                 drops.put(key, origin);
             }else {
                 //更新部分
-                TableDiffer dif = origin.compare(dest);
+                TableDiffer dif = origin.compare(dest, direct);
                 if(!dif.isEmpty()) {
                     origin.setUpdate(dest, false, false);
-                    updates.put(key, origin);
+                    alters.put(key, origin);
                     differs.put(key, dif);
                 }
             }
@@ -78,13 +84,23 @@ public class TablesDiffer implements MetadataDiffer {
                 adds.put(key, dests.get(key));
             }
         }
+        differ.setDirect(direct);
         differ.setAdds(adds);
         differ.setDrops(drops);
-        differ.setAlters(updates);
+        differ.setAlters(alters);
         differ.setDiffers(differs);
         return differ;
     }
 
+    @Override
+    public MetadataDiffer setDirect(DIRECT direct) {
+        if(null != differs){
+            for(TableDiffer differ:differs.values()){
+                differ.setDirect(direct);
+            }
+        }
+        return this;
+    }
     public LinkedHashMap<String, Table> getAdds() {
         return adds;
     }

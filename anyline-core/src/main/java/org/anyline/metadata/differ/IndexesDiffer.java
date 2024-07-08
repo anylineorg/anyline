@@ -19,15 +19,16 @@
 package org.anyline.metadata.differ;
 
 import org.anyline.metadata.Index;
+import org.anyline.metadata.Table;
 
 import java.util.LinkedHashMap;
 
-public class IndexesDiffer implements MetadataDiffer {
+public class IndexesDiffer extends AbstractDiffer {
     private LinkedHashMap<String, Index> adds = new LinkedHashMap<>();
     private LinkedHashMap<String, Index> drops = new LinkedHashMap<>();
     private LinkedHashMap<String, Index> alters = new LinkedHashMap<>();
 
-    public static IndexesDiffer compare(LinkedHashMap<String, Index> origins, LinkedHashMap<String, Index> dests) {
+    public static IndexesDiffer compare(LinkedHashMap<String, Index> origins, LinkedHashMap<String, Index> dests, Table direct) {
         IndexesDiffer differ = new IndexesDiffer();
         LinkedHashMap<String, Index> adds = new LinkedHashMap<>();
         LinkedHashMap<String, Index> drops = new LinkedHashMap<>();
@@ -68,6 +69,7 @@ public class IndexesDiffer implements MetadataDiffer {
                 adds.put(key, index);
             }
         }
+        differ.setDirect(direct);
         differ.setAdds(adds);
         differ.setDrops(drops);
         differ.setAlters(updates);

@@ -25,7 +25,7 @@ import java.util.LinkedHashMap;
 /**
  * 表或列之间的对比结果
  */
-public class ViewsDiffer implements MetadataDiffer {
+public class ViewsDiffer extends AbstractDiffer {
     private LinkedHashMap<String, View> adds = new LinkedHashMap<>();
     private LinkedHashMap<String, View> drops = new LinkedHashMap<>();
     private LinkedHashMap<String, View> alters = new LinkedHashMap<>();
@@ -33,7 +33,7 @@ public class ViewsDiffer implements MetadataDiffer {
     public boolean isEmpty() {
         return adds.isEmpty() && drops.isEmpty() && alters.isEmpty();
     }
-    public static ViewsDiffer compare(LinkedHashMap<String, View> origins, LinkedHashMap<String, View> dests) {
+    public static ViewsDiffer compare(LinkedHashMap<String, View> origins, LinkedHashMap<String, View> dests, DIRECT direct) {
         ViewsDiffer differ = new ViewsDiffer();
         LinkedHashMap<String, View> adds = new LinkedHashMap<>();
         LinkedHashMap<String, View> drops = new LinkedHashMap<>();

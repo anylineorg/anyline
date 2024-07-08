@@ -181,7 +181,7 @@ public enum DatabaseType implements Serializable {
         GeoMesa             	("GeoMesa"                          	, KEY_CASE.SRC	, 778	, null	, ""	, ""),
         GigaSpaces          	("GigaSpaces"                       	, KEY_CASE.SRC	, 813	, null	, "com.j_spaces.jdbc.driver.GDriver"	, "jdbc:gigaspaces:url:jini://{host}"),
         Giraph              	("Giraph"                           	, KEY_CASE.SRC	, 822	, null	, ""	, ""),
-        GoldenDB            	("中兴GoldenDB"                       	, KEY_CASE.SRC	, 900	, null	, "com.mysql.cj.jdbc.Driver"	, "jdbc:mysql://{host}:{port:3306}/{database}"),
+        GoldenDB            	("GoldenDB"                       	    , KEY_CASE.SRC	, 900	, null	, "com.goldendb.jdbc.Driver"	, "jdbc:goldendb://{host}:{port}/{database}"),
         GoogleBigQuery      	("Google BigQuery"                  	, KEY_CASE.SRC	, 980	, null	, ""	, ""),
         GoogleBigtable      	("Google Cloud Bigtable"            	, KEY_CASE.SRC	, 912	, null	, ""	, ""),
         GoogleDatastore     	("Google Cloud Datastore"           	, KEY_CASE.SRC	, 922	, null	, ""	, ""),

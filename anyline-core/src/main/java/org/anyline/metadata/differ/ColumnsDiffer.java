@@ -19,19 +19,20 @@
 package org.anyline.metadata.differ;
 
 import org.anyline.metadata.Column;
+import org.anyline.metadata.Table;
 
 import java.util.LinkedHashMap;
 
-public class ColumnsDiffer implements MetadataDiffer{
+public class ColumnsDiffer extends AbstractDiffer{
     private LinkedHashMap<String, Column> adds = new LinkedHashMap<>();
     private LinkedHashMap<String, Column> drops = new LinkedHashMap<>();
     private LinkedHashMap<String, Column> alters = new LinkedHashMap<>();
 
-    public static ColumnsDiffer compare(LinkedHashMap<String, Column> origins, LinkedHashMap<String, Column> dests) {
+    public static ColumnsDiffer compare(LinkedHashMap<String, Column> origins, LinkedHashMap<String, Column> dests, Table direct) {
         ColumnsDiffer differ = new ColumnsDiffer();
         LinkedHashMap<String, Column> adds = new LinkedHashMap<>();
         LinkedHashMap<String, Column> drops = new LinkedHashMap<>();
-        LinkedHashMap<String, Column> updates = new LinkedHashMap<>();
+        LinkedHashMap<String, Column> alters = new LinkedHashMap<>();
 
         if(null == origins) {
             origins = new LinkedHashMap<>();
@@ -49,7 +50,7 @@ public class ColumnsDiffer implements MetadataDiffer{
                 //不比较 catalog schema
                 if(!origin.equals(dest)) {
                     origin.setUpdate(dest, false, false);
-                    updates.put(key, origin);
+                    alters.put(key, origin);
                 }
             }
         }
@@ -58,9 +59,10 @@ public class ColumnsDiffer implements MetadataDiffer{
                 adds.put(key, dests.get(key));
             }
         }
+        differ.setDirect(direct);
         differ.setAdds(adds);
         differ.setDrops(drops);
-        differ.setAlters(updates);
+        differ.setAlters(alters);
         return differ;
     }
 

@@ -25,7 +25,7 @@ import java.util.LinkedHashMap;
 /**
  * 表或列之间的对比结果
  */
-public class ProceduresDiffer implements MetadataDiffer {
+public class ProceduresDiffer extends AbstractDiffer {
     private LinkedHashMap<String, Procedure> adds = new LinkedHashMap<>();
     private LinkedHashMap<String, Procedure> drops = new LinkedHashMap<>();
     private LinkedHashMap<String, Procedure> updates = new LinkedHashMap<>();

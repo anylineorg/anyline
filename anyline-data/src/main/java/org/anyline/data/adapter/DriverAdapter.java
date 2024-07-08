@@ -468,50 +468,7 @@ public interface DriverAdapter {
 			}
 			//修改表
 			for(TableDiffer dif:diffs.values()) {
-				try {
-					List<Run> slices = new ArrayList<>();
-					Table dest = dif.getDest();
-					Table origin = dif.getOrigin();
-					Table update = origin.clone();
-					if(null != update) {
-						update.setUpdate(dest, false, false);
-					}
-					ColumnsDiffer columns_dif = dif.getColumnsDiffer();
-					slices.addAll(ddl(runtime, random, columns_dif, false));
-					/*LinkedHashMap<String, Column> columns_adds = columns_dif.getAdds();
-					LinkedHashMap<String, Column> columns_updates = columns_dif.getAlters();
-					LinkedHashMap<String, Column> columns_drops = columns_dif.getDrops();
-					LinkedHashMap<String, Column> columns = new LinkedHashMap<>();
-					for(String key:columns_adds.keySet()) {
-						Column column = columns_adds.get(key);
-						column.setAction(ACTION.DDL.COLUMN_ADD);
-						columns.put(key, column);
-					}
-					for(String key:columns_updates.keySet()) {
-						Column column = columns_updates.get(key);
-						column.setAction(ACTION.DDL.COLUMN_ALTER);
-						columns.put(key, column);
-					}
-					for(String key:columns_drops.keySet()) {
-						Column column = columns_drops.get(key);
-						column.setAction(ACTION.DDL.COLUMN_DROP);
-						columns.put(key, column);
-					}
-					update.setColumns(columns);*/
-
-					PrimaryKeyDiffer primary_dif = dif.getPrimaryKeyDiffer();
-					slices.addAll(ddl(runtime, random, primary_dif, false));
-
-					//slices.addAll(buildAlterRun(runtime, update));
-					if(merge) {
-						List<Run> merges = merge(runtime, dest, slices);
-						list.addAll(merges);
-					}else{
-						list.addAll(slices);
-					}
-				}catch (Exception e) {
-					log.error("build ddl exception:", e);
-				}
+				list.addAll(ddl(runtime, random, dif, merge));
 			}
 			//删除表
 			for(Table drop:drops.values()) {
@@ -548,11 +505,35 @@ public interface DriverAdapter {
 				}
 			}
 		}else if(differ instanceof TableDiffer) {
-			TableDiffer df = (TableDiffer) differ;
-			ColumnsDiffer columnsDiffer = df.getColumnsDiffer();
-			IndexesDiffer indexesDiffer = df.getIndexesDiffer();
-			list.addAll(ddl(runtime, random, columnsDiffer));
-			list.addAll(ddl(runtime, random, indexesDiffer));
+			try {
+				TableDiffer dif = (TableDiffer) differ;
+				List<Run> slices = new ArrayList<>();
+				Table direct = dif.getDirect();
+				Table dest = dif.getDest();
+				Table origin = dif.getOrigin();
+				Table update = origin.clone();
+				if(null != update) {
+					update.setUpdate(dest, false, false);
+				}
+				ColumnsDiffer columns_dif = dif.getColumnsDiffer();
+				slices.addAll(ddl(runtime, random, columns_dif, false));
+
+				PrimaryKeyDiffer primary_dif = dif.getPrimaryKeyDiffer();
+				slices.addAll(ddl(runtime, random, primary_dif, false));
+
+				IndexesDiffer index_dif = dif.getIndexesDiffer();
+				slices.addAll(ddl(runtime, random, index_dif, false));
+
+				if(merge) {
+					//a.compare(b) > alter b
+					List<Run> merges = merge(runtime, direct, slices);
+					list.addAll(merges);
+				}else{
+					list.addAll(slices);
+				}
+			}catch (Exception e) {
+				log.error("build ddl exception:", e);
+			}
 		}else if(differ instanceof PrimaryKeyDiffer) {
 			PrimaryKeyDiffer df = (PrimaryKeyDiffer) differ;
 			Table table = null;
@@ -595,12 +576,12 @@ public interface DriverAdapter {
 			LinkedHashMap<String, Column> adds = df.getAdds();
 			LinkedHashMap<String, Column> drops = df.getDrops();
 			LinkedHashMap<String, Column> updates = df.getAlters();
-			Table dest = null;
+			Table direct = differ.getDirect();
 			List<Run> slices = new ArrayList<>();
 			for(Column add:adds.values()) {
 				try {
-					if(null == dest){
-						dest = add.getTable();
+					if(null == direct){
+						direct = add.getTable();
 					}
 					slices.addAll(buildAddRun(runtime, add, slice));
 				}catch (Exception e) {
@@ -609,8 +590,8 @@ public interface DriverAdapter {
 			}
 			for(Column update:updates.values()) {
 				try {
-					if(null == dest){
-						dest = update.getTable();
+					if(null == direct){
+						direct = update.getTable();
 					}
 					slices.addAll(buildAlterRun(runtime, update, slice));
 				}catch (Exception e) {
@@ -619,8 +600,8 @@ public interface DriverAdapter {
 			}
 			for(Column drop:drops.values()) {
 				try {
-					if(null == dest){
-						dest = drop.getTable();
+					if(null == direct){
+						direct = drop.getTable();
 					}
 					slices.addAll(buildDropRun(runtime, drop, slice));
 				}catch (Exception e) {
@@ -628,7 +609,7 @@ public interface DriverAdapter {
 				}
 			}
 			if(merge) {
-				list.addAll(merge(runtime, dest, slices));
+				list.addAll(merge(runtime, direct, slices));
 			}else{
 				list.addAll(slices);
 			}

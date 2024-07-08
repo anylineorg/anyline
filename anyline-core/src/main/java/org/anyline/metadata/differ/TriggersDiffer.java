@@ -25,7 +25,7 @@ import java.util.LinkedHashMap;
 /**
  * 表或列之间的对比结果
  */
-public class TriggersDiffer implements MetadataDiffer {
+public class TriggersDiffer extends AbstractDiffer {
     private LinkedHashMap<String, Trigger> adds = new LinkedHashMap<>();
     private LinkedHashMap<String, Trigger> drops = new LinkedHashMap<>();
     private LinkedHashMap<String, Trigger> alters = new LinkedHashMap<>();
@@ -33,7 +33,7 @@ public class TriggersDiffer implements MetadataDiffer {
     public boolean isEmpty() {
         return adds.isEmpty() && drops.isEmpty() && alters.isEmpty();
     }
-    public static TriggersDiffer compare(LinkedHashMap<String, Trigger> origins, LinkedHashMap<String, Trigger> dests) {
+    public static TriggersDiffer compare(LinkedHashMap<String, Trigger> origins, LinkedHashMap<String, Trigger> dests, DIRECT direct) {
         TriggersDiffer differ = new TriggersDiffer();
         LinkedHashMap<String, Trigger> adds = new LinkedHashMap<>();
         LinkedHashMap<String, Trigger> drops = new LinkedHashMap<>();

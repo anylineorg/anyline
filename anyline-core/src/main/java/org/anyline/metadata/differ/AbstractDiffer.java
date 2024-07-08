@@ -14,24 +14,26 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.metadata.differ;
 
 import org.anyline.metadata.Table;
 
-public interface MetadataDiffer {
-    /**
-     * ALTER DDL 使用于哪个表 默认作用于dest
-     * @param direct 表
-     * @return MetadataDiffer
-     */
-    MetadataDiffer setDirect(DIRECT direct);
-    MetadataDiffer setDirect(Table direct);
-    Table getDirect();
-    enum DIRECT{
-        //a.compare(b)
-        ORIGIN,  //源表 a
-        DEST     //目标表 b
-    };
+public abstract class AbstractDiffer implements MetadataDiffer{
+    protected Table direct;
+    @Override
+    public MetadataDiffer setDirect(DIRECT direct) {
+        return this;
+    }
+
+    @Override
+    public MetadataDiffer setDirect(Table direct) {
+        this.direct = direct;
+        return this;
+    }
+
+    @Override
+    public Table getDirect() {
+        return direct;
+    }
+
 }

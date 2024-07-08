@@ -27,7 +27,7 @@ import java.util.List;
 /**
  * 表或列之间的对比结果
  */
-public class FunctionsDiffer implements MetadataDiffer {
+public class FunctionsDiffer extends AbstractDiffer {
     private List<Function> adds = new ArrayList<>();
     private List<Function> drops = new ArrayList<>();
     private List<Function> alters = new ArrayList<>();
@@ -35,7 +35,7 @@ public class FunctionsDiffer implements MetadataDiffer {
     public boolean isEmpty() {
         return adds.isEmpty() && drops.isEmpty() && alters.isEmpty();
     }
-    public static FunctionsDiffer compare(LinkedHashMap<String, Function> origins, LinkedHashMap<String, Function> dests) {
+    public static FunctionsDiffer compare(LinkedHashMap<String, Function> origins, LinkedHashMap<String, Function> dests, DIRECT direct) {
         FunctionsDiffer differ = new FunctionsDiffer();
         List<Function> adds = new ArrayList<>();
         List<Function> drops = new ArrayList<>();
