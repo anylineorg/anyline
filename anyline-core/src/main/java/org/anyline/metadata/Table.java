@@ -1238,6 +1238,9 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
         }
         return TableDiffer.compare(this, table, direct_);
     }
+    public TableDiffer compare(Table table) {
+        return compare(table, MetadataDiffer.DIRECT.ORIGIN);
+    }
     /**
      * 分桶方式及数量
      */
