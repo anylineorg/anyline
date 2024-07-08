@@ -27,10 +27,12 @@ import org.anyline.data.elasticsearch.runtime.ElasticSearchRuntime;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.run.Run;
 import org.anyline.data.runtime.DataRuntime;
+import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.PageNavi;
 import org.anyline.metadata.*;
 import org.anyline.net.HttpResponse;
+import org.anyline.util.BasicUtil;
 import org.anyline.util.FileUtil;
 import org.elasticsearch.client.Request;
 import org.elasticsearch.client.Response;
@@ -91,6 +93,27 @@ public class ElasticSearchWorker implements DriverWorker {
     @Override
     public DataSet select(DriverAdapter adapter, DataRuntime runtime, String random, boolean system, ACTION.DML action, Table table, ConfigStore configs, Run run, String cmd, List<Object> values, LinkedHashMap<String, Column> columns) throws Exception {
         DataSet set = new DataSet();
+        ElasticSearchRun er = (ElasticSearchRun)run;
+        String method = er.getMethod();
+        String endpoint = er.getEndpoint();
+        Request request = new Request(
+                method,
+                endpoint);
+        HttpResponse response = execute(runtime, request);
+        String txt = response.getText();
+        if(txt.startsWith("{")){
+
+        }else{
+            String[] lines =txt.split("\n");
+            for(String line:lines) {
+                DataRow row = set.add();
+                String[] cols = BasicUtil.compress(line).split(" ");
+                int size = cols.length;
+                for(int i=0; i<size; i++){
+                    row.put(i+"", cols[i]);
+                }
+            }
+        }
         return set;
     }
 
@@ -144,10 +167,13 @@ public class ElasticSearchWorker implements DriverWorker {
 
         return 0;
     }
-    private RestClient client(DataRuntime runtime){
+    protected RestClient client(DataRuntime runtime){
         return ((ElasticSearchRuntime)runtime).client();
     }
-    private HttpResponse execute(RestClient client, Request request) throws Exception{
+    protected HttpResponse execute(DataRuntime runtime, Request request) throws Exception{
+        return execute(client(runtime), request);
+    }
+    protected HttpResponse execute(RestClient client, Request request) throws Exception{
         HttpResponse result = new HttpResponse();
         Response response = client.performRequest(request);
         //{"_index":"index_user","_id":"102","_version":3,"result":"updated","_shards":{"total":2,"successful":2,"failed":0},"_seq_no":9,"_primary_term":1}
