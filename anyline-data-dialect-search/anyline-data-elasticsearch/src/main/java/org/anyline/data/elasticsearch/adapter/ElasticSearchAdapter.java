@@ -3428,6 +3428,9 @@ public class ElasticSearchAdapter extends AbstractDriverAdapter implements Drive
         List<Run> runs = new ArrayList<>();
         ElasticSearchRun run = new ElasticSearchRun(runtime);
         run.action(ACTION.DDL.TABLE_CREATE);
+        run.setMethod("PUT");
+        run.setEndpoint("/"+meta.getName());
+        run.setTable(meta);
         runs.add(run);
         LinkedHashMap<String, Column> columns = meta.getColumns();
         for(Column column:columns.values()){
