@@ -4845,11 +4845,16 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public <T extends Table> List<T> tables(DataRuntime runtime, int index, boolean create, List<T> tables, Catalog catalog, Schema schema, DataSet set) throws Exception {
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Table> List<T> tables(DataRuntime runtime, int index, boolean create, List<T> tables, Catalog catalog, Schema schema, DataSet set)", 37));
-		}
 		if(null == tables) {
 			tables = new ArrayList<>();
+		}
+		for(DataRow row:set) {
+			T table = null;
+			table = init(runtime, index, table, catalog, schema, row);
+			if(null == search(tables, table.getCatalog(), table.getSchema(), table.getName())) {
+				tables.add(table);
+			}
+			detail(runtime, index, table, catalog, schema, row);
 		}
 		return tables;
 	}

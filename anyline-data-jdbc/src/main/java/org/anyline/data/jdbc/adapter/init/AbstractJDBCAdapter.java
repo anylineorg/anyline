@@ -2807,18 +2807,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 */
 	@Override
 	public <T extends Table> List<T> tables(DataRuntime runtime, int index, boolean create, List<T> tables, Catalog catalog, Schema schema, DataSet set) throws Exception {
-		if(null == tables) {
-			tables = new ArrayList<>();
-		}
-		for(DataRow row:set) {
-			T table = null;
-			table = init(runtime, index, table, catalog, schema, row);
-			if(null == search(tables, table.getCatalog(), table.getSchema(), table.getName())) {
-				tables.add(table);
-			}
-			detail(runtime, index, table, catalog, schema, row);
-		}
-		return tables;
+		return super.tables(runtime, index, create, tables, catalog, schema, set);
 	}
 
 	/**
