@@ -23,12 +23,16 @@ import org.anyline.annotation.Component;
 import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.adapter.init.AbstractDriverAdapter;
 import org.anyline.data.elasticsearch.metadata.ElasticSearchBuilder;
+import org.anyline.data.elasticsearch.metadata.ElasticSearchIndex;
 import org.anyline.data.elasticsearch.run.ElasticSearchRun;
 import org.anyline.data.param.ConfigStore;
+import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.RunPrepare;
+import org.anyline.data.prepare.auto.init.DefaultTextPrepare;
 import org.anyline.data.run.*;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
+import org.anyline.exception.CommandQueryException;
 import org.anyline.exception.NotSupportException;
 import org.anyline.metadata.*;
 import org.anyline.metadata.adapter.ViewMetadataAdapter;
@@ -36,9 +40,7 @@ import org.anyline.metadata.type.DatabaseType;
 import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.net.HttpResponse;
 import org.anyline.proxy.CacheProxy;
-import org.anyline.util.BasicUtil;
-import org.anyline.util.BeanUtil;
-import org.anyline.util.FileUtil;
+import org.anyline.util.*;
 import org.elasticsearch.client.Request;
 import org.elasticsearch.client.Response;
 import org.elasticsearch.client.RestClient;
@@ -716,9 +718,8 @@ public class ElasticSearchAdapter extends AbstractDriverAdapter implements Drive
      */
     @Override
     public DataSet select(DataRuntime runtime, String random, boolean system, Table table, ConfigStore configs, Run run) {
-        return super.select(runtime, random, system, table, configs, run);
+        return select(runtime, random, system, table, configs, (ElasticSearchRun) run);
     }
-
     /**
      * select [命令执行]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -1585,32 +1586,7 @@ public class ElasticSearchAdapter extends AbstractDriverAdapter implements Drive
 
     @Override
     public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
-        LinkedHashMap<String, T> tables = new LinkedHashMap<>();
-        RestClient client = client(runtime);
-        String method = "GET";
-        String endpoint = "_cat/indices";
-        Request request = new Request(
-                method,
-                endpoint);
-        HttpResponse response = exe(runtime, request);
-        if(response.getStatus() == 200 ||  response.getStatus() == 201) {
-            String txt =response.getText();
-            String[] lines =txt.split("\n");
-            for(String line:lines) {
-                String[] cols = BasicUtil.compress(line).split(" ");
-                if(cols.length>2) {
-                    T table = (T)new Table(cols[2]);
-                    tables.put(cols[2].toUpperCase(), table);
-                }
-            }
-        }
-        if(Metadata.check(struct, Metadata.TYPE.COLUMN)) {
-            for(Table table:tables.values()) {
-                LinkedHashMap<String, Column> columns = columns(runtime, random, false, table, false);
-                table.setColumns(columns);
-            }
-        }
-        return tables;
+        return super.tables(runtime, random, catalog, schema, pattern, types, struct, configs);
     }
 
     /**
@@ -1626,7 +1602,12 @@ public class ElasticSearchAdapter extends AbstractDriverAdapter implements Drive
      */
     @Override
     public List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs) throws Exception {
-        return super.buildQueryTablesRun(runtime, greedy, catalog, schema, pattern, types, configs);
+        List<Run> runs = new ArrayList<>();
+        ElasticSearchRun run = new ElasticSearchRun(runtime);
+        run.setMethod("GET");
+        run.setEndpoint("_cat/indices");
+        runs.add(run);
+        return runs;
     }
 
     /**
@@ -1682,7 +1663,11 @@ public class ElasticSearchAdapter extends AbstractDriverAdapter implements Drive
 
     @Override
     public <T extends Table> T init(DataRuntime runtime, int index, T table, Catalog catalog, Schema schema, DataRow row) {
-        return null;
+        if(null == table){
+            table = (T) new ElasticSearchIndex();
+        }
+        table.setName(row.getString("2"));
+        return table;
     }
 
     @Override
@@ -5883,4 +5868,65 @@ public class ElasticSearchAdapter extends AbstractDriverAdapter implements Drive
         return maps;
     }
 
+    public DataSet select(DataRuntime runtime, String random, boolean system, Table table, ConfigStore configs, ElasticSearchRun run) {
+        if(null == configs) {
+            configs = new DefaultConfigStore();
+        }
+        configs.add(run);
+        if(null == random) {
+            random = random(runtime);
+        }
+        if(log.isInfoEnabled() &&ConfigStore.IS_LOG_SQL(configs)) {
+            log.info("{}[action:select][method:{}][endpoint:{}]", random, run.getMethod(), run.getEndpoint());
+        }
+        DataSet set = new DataSet();
+        set.setTable(table);
+        boolean exe = configs.execute();
+        if(!exe) {
+            return set;
+        }
+        LinkedHashMap<String,Column> columns = new LinkedHashMap<>();
+        if(!system &&ConfigStore.IS_AUTO_CHECK_METADATA(configs) && null != table) {
+            columns = columns(runtime, random, false, table, false);
+        }
+        try{
+            final DataRuntime rt = runtime;
+            final boolean[] process = {false};
+            set = worker.select(this, runtime, random, system, ACTION.DML.SELECT, table, configs, run, null, null, columns);
+
+            LinkedHashMap<String,Column> metadatas = set.getMetadatas();
+            if(!system && metadatas.isEmpty() &&ConfigStore.IS_CHECK_EMPTY_SET_METADATA(configs)) {
+
+            }
+            boolean slow = false;
+            long SLOW_SQL_MILLIS = ConfigStore.SLOW_SQL_MILLIS(configs);
+            long times = configs.getLastExecuteTime();
+            if(SLOW_SQL_MILLIS > 0 && ConfigStore.IS_LOG_SLOW_SQL(configs) && times > SLOW_SQL_MILLIS) {
+                slow = true;
+                log.warn("{}[slow cmd][action:select][执行耗时:{}]{}", random, DateUtil.format(times), run.log(ACTION.DML.SELECT, ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
+                if(null != dmListener) {
+                    dmListener.slow(runtime, random, ACTION.DML.SELECT, null, null, null, null, true, set,times);
+                }
+
+            }
+            if(!slow && log.isInfoEnabled() && ConfigStore.IS_LOG_SQL_TIME(configs)) {
+                log.info("{}[action:select][执行耗时:{}]", random, DateUtil.format(times));
+                log.info("{}[action:select][封装耗时:{}][封装行数:{}]", random, DateUtil.format(configs.getLastPackageTime()), set.size());
+            }
+            set.setDatalink(runtime.datasource());
+        }catch(Exception e) {
+            if(ConfigStore.IS_PRINT_EXCEPTION_STACK_TRACE(configs)) {
+                e.printStackTrace();
+            }
+            if(ConfigStore.IS_LOG_SQL_WHEN_ERROR(configs)) {
+                log.error("{}[{}][action:select]{}", random, LogUtil.format("查询异常:", 33) + e.toString(), run.log(ACTION.DML.SELECT, ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
+            }
+            if(ConfigStore.IS_THROW_SQL_QUERY_EXCEPTION(configs)) {
+                CommandQueryException ex = new CommandQueryException("query异常:"+e.toString(),e);
+                throw ex;
+            }
+
+        }
+        return set;
+    }
 }
