@@ -32,7 +32,10 @@ import org.anyline.entity.DataSet;
 import org.anyline.entity.PageNavi;
 import org.anyline.metadata.*;
 import org.anyline.net.HttpResponse;
+import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.util.BasicUtil;
+import org.anyline.util.BeanUtil;
+import org.anyline.util.ConfigTable;
 import org.anyline.util.FileUtil;
 import org.elasticsearch.client.Request;
 import org.elasticsearch.client.Response;
@@ -99,7 +102,7 @@ public class ElasticSearchWorker implements DriverWorker {
         Request request = new Request(
                 method,
                 endpoint);
-        HttpResponse response = execute(runtime, request);
+        HttpResponse response = execute(random, runtime, request);
         String txt = response.getText();
         if(txt.startsWith("{")){
 
@@ -140,7 +143,30 @@ public class ElasticSearchWorker implements DriverWorker {
         String endpoint = r.getEndpoint();
         Request request = new Request(method, endpoint);
         request.setJsonEntity(run.getFinalUpdate(false));
-        execute(client(runtime), request);
+        //{"_index":"es_index_table","_id":"123","_version":2,"result":"updated","_shards":{"total":2,"successful":2,"failed":0},"_seq_no":2,"_primary_term":1}
+        HttpResponse response = execute(random, client(runtime), request);
+        if(null != response){
+            String txt = response.getText();
+            if(null != txt){
+                try{
+                    DataRow json = DataRow.parseJson(txt);
+                    String pv = json.getString("_id");
+                    if(null != pv){
+                        if(data instanceof DataRow){
+                            DataRow row = (DataRow)data;
+                            row.setPrimaryValue(pv);
+                        }else{
+                            String pk = EntityAdapterProxy.primaryKey(data.getClass(), true);
+                            if(null != pk){
+                                BeanUtil.setFieldValue(data, pk, pv);
+                            }
+                        }
+                    }
+                }catch (Exception e){
+                    log.error("插入数据异常", e);
+                }
+            }
+        }
         return cnt;
     }
 
@@ -152,7 +178,7 @@ public class ElasticSearchWorker implements DriverWorker {
         String endpoint = r.getEndpoint();
         Request request = new Request(method, endpoint);
         request.setJsonEntity(run.getFinalUpdate(false));
-        execute(client(runtime), request);
+        execute(random, client(runtime), request);
         return cnt;
     }
 
@@ -163,21 +189,22 @@ public class ElasticSearchWorker implements DriverWorker {
 
     @Override
     public long execute(DriverAdapter adapter, DataRuntime runtime, String random, ConfigStore configs, Run run) throws Exception{
-        String cmd = run.getFinalExecute();
-
-        return 0;
+        return update(adapter, runtime, random, null, null, configs, run);
     }
     protected RestClient client(DataRuntime runtime){
         return ((ElasticSearchRuntime)runtime).client();
     }
-    protected HttpResponse execute(DataRuntime runtime, Request request) throws Exception{
-        return execute(client(runtime), request);
+    protected HttpResponse execute(String random, DataRuntime runtime, Request request) throws Exception{
+        return execute(random, client(runtime), request);
     }
-    protected HttpResponse execute(RestClient client, Request request) throws Exception{
+    protected HttpResponse execute(String random, RestClient client, Request request) throws Exception{
         HttpResponse result = new HttpResponse();
         Response response = client.performRequest(request);
         //{"_index":"index_user","_id":"102","_version":3,"result":"updated","_shards":{"total":2,"successful":2,"failed":0},"_seq_no":9,"_primary_term":1}
         String content = FileUtil.read(response.getEntity().getContent()).toString();
+        if (ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
+            log.info("{}[response:{}]", random, content);
+        }
         result.setText(content);
         return result;
     }

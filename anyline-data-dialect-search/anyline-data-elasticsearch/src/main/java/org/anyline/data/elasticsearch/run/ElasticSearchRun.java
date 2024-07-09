@@ -51,7 +51,10 @@ public class ElasticSearchRun extends SimpleRun {
     public void setEndpoint(String endpoint) {
         this.endpoint = endpoint;
     }
-
+    public boolean isEmptyCondition(){
+        //不检测更新条件 直接POST
+        return false;
+    }
     public String log(ACTION.DML action, boolean placeholder) {
         StringBuilder builder = new StringBuilder();
         List<String> keys = null;

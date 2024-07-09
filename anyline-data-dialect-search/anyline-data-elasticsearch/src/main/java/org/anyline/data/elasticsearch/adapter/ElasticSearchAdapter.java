@@ -39,6 +39,7 @@ import org.anyline.metadata.type.DatabaseType;
 import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.net.HttpResponse;
 import org.anyline.proxy.CacheProxy;
+import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.util.*;
 import org.elasticsearch.client.Request;
 import org.elasticsearch.client.Response;
@@ -259,7 +260,25 @@ public class ElasticSearchAdapter extends AbstractDriverAdapter implements Drive
      */
     @Override
     protected Run createInsertRun(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns) {
-        return super.createInsertRun(runtime, dest, obj, configs, columns);
+        ElasticSearchRun run = new ElasticSearchRun(runtime);
+        run.action(ACTION.DML.INSERT);
+        run.setMethod("POST");
+        String endpoint = dest.getName()+"/_doc/"; // 有没有/后缀都可以
+        Object id = null;
+        if(obj instanceof DataRow) {
+            DataRow row = (DataRow)obj;
+            id = row.getPrimaryValue();
+            row.remove(row.getPrimaryKey());
+
+        }else{
+            id = EntityAdapterProxy.primaryKey(obj.getClass(), true);
+        }
+        if(BasicUtil.isNotEmpty(id)) {
+            endpoint += id;
+        }
+        run.setEndpoint(endpoint);
+        run.getBuilder().append(BeanUtil.object2json(obj));
+        return run;
     }
 
     /**
@@ -372,7 +391,7 @@ public class ElasticSearchAdapter extends AbstractDriverAdapter implements Drive
      */
     @Override
     public Run buildUpdateRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, List<String> columns) {
-        return super.buildUpdateRun(runtime, batch, dest, obj, configs, columns);
+        return createInsertRun(runtime, dest, obj, configs, columns);
     }
     @Override
     public Run buildUpdateRunFromEntity(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, LinkedHashMap<String, Column> columns) {
@@ -380,7 +399,7 @@ public class ElasticSearchAdapter extends AbstractDriverAdapter implements Drive
     }
     @Override
     public Run buildUpdateRunFromDataRow(DataRuntime runtime, Table dest, DataRow row, ConfigStore configs, LinkedHashMap<String,Column> columns) {
-        return super.buildUpdateRunFromDataRow(runtime, dest, row, configs, columns);
+        return createInsertRun(runtime, dest, row, configs, Column.names(columns));
     }
     @Override
     public Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, LinkedHashMap<String,Column> columns) {
@@ -1019,7 +1038,19 @@ public class ElasticSearchAdapter extends AbstractDriverAdapter implements Drive
      */
     @Override
     public Run buildDeleteRun(DataRuntime runtime, Table dest, ConfigStore configs, Object obj, String ... columns) {
-        return super.buildDeleteRun(runtime, dest, configs, obj, columns);
+        ElasticSearchRun run = new ElasticSearchRun(runtime);
+        run.setTable(dest);
+        run.action(ACTION.DML.DELETE);
+        run.setMethod("DELETE");
+        Object pv = null;
+        if(obj instanceof DataRow){
+            pv = ((DataRow)obj).getPrimaryValue();
+        }else{
+            String pk = EntityAdapterProxy.primaryKey(obj.getClass(), true);
+            pv = BeanUtil.getFieldValue(obj, pk);
+        }
+        run.setEndpoint(dest.getName() + "/_doc/" + pv);
+        return run;
     }
 
     /**
