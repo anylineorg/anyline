@@ -790,7 +790,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		long qty = runtime.getAdapter().delete(runtime, random, dest, configs, obj, columns);
 		if(qty > 0 && ConfigTable.ENTITY_FIELD_DELETE_DEPENDENCY > 0) {
-			if(!(obj instanceof DataRow)) {
+			if(!(obj instanceof DataRow) && !(obj instanceof Collection)) {
 				checkMany2ManyDependencyDelete(runtime, random, obj, ConfigTable.ENTITY_FIELD_DELETE_DEPENDENCY );
 				checkOne2ManyDependencyDelete(runtime, random, obj, ConfigTable.ENTITY_FIELD_DELETE_DEPENDENCY );
 			}

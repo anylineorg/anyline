@@ -1906,11 +1906,11 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * long delete(DataRuntime runtime, String random, Table table, ConfigStore configs, String... conditions)
 	 * long truncate(DataRuntime runtime, String random, Table table)
 	 * [命令合成]
-	 * Run buildDeleteRun(DataRuntime runtime, Table table, ConfigStore configs, Object obj, String ... columns)
-	 * Run buildDeleteRun(DataRuntime runtime, int batch, Table table, ConfigStore configs, String column, Object values)
+	 * List<Run> buildDeleteRun(DataRuntime runtime, Table table, ConfigStore configs, Object obj, String ... columns)
+	 * List<Run> buildDeleteRun(DataRuntime runtime, int batch, Table table, ConfigStore configs, String column, Object values)
 	 * List<Run> buildTruncateRun(DataRuntime runtime, Table table)
-	 * Run buildDeleteRunFromTable(DataRuntime runtime, int batch, Table table, ConfigStore configs, String column, Object values)
-	 * Run buildDeleteRunFromEntity(DataRuntime runtime, Table table, ConfigStore configs, Object obj, String ... columns)
+	 * List<Run> buildDeleteRunFromTable(DataRuntime runtime, int batch, Table table, ConfigStore configs, String column, Object values)
+	 * List<Run> buildDeleteRunFromEntity(DataRuntime runtime, Table table, ConfigStore configs, Object obj, String ... columns)
 	 * void fillDeleteRunContent(DataRuntime runtime, Run run)
 	 * [命令执行]
 	 * long delete(DataRuntime runtime, String random, ConfigStore configs, Run run)
@@ -1984,7 +1984,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	@Override
-	public Run buildDeleteRun(DataRuntime runtime, Table dest, ConfigStore configs, Object obj, String ... columns) {
+	public List<Run> buildDeleteRun(DataRuntime runtime, Table dest, ConfigStore configs, Object obj, String ... columns) {
 		return super.buildDeleteRun(runtime, dest, configs, obj, columns);
 	}
 
@@ -1998,7 +1998,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	@Override
-	public Run buildDeleteRun(DataRuntime runtime, int batch, Table table, ConfigStore configs, String key, Object values) {
+	public List<Run> buildDeleteRun(DataRuntime runtime, int batch, Table table, ConfigStore configs, String key, Object values) {
 		return super.buildDeleteRun(runtime, batch, table, configs, key, values);
 	}
 
@@ -2023,7 +2023,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	@Override
-	public Run buildDeleteRunFromTable(DataRuntime runtime, int batch, Table table, ConfigStore configs, String key, Object values) {
+	public List<Run> buildDeleteRunFromTable(DataRuntime runtime, int batch, Table table, ConfigStore configs, String key, Object values) {
+		List<Run> runs = new ArrayList<>();
 		if(null == table || null == key || null == values) {
 			return null;
 		}
@@ -2079,8 +2080,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 		}
 
 		run.setBuilder(builder);
-
-		return run;
+		runs.add(run);
+		return runs;
 	}
 
 	/**
@@ -2093,7 +2094,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	@Override
-	public Run buildDeleteRunFromEntity(DataRuntime runtime, Table table, ConfigStore configs, Object obj, String... columns) {
+	public List<Run> buildDeleteRunFromEntity(DataRuntime runtime, Table table, ConfigStore configs, Object obj, String... columns) {
+		List<Run> runs = new ArrayList<>();
 		TableRun run = new TableRun(runtime, table);
 		run.setFrom(2);
 		StringBuilder builder = new StringBuilder();
@@ -2137,8 +2139,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 			throw new CommandUpdateException("删除异常:删除条件为空,delete方法不支持删除整表操作.");
 		}
 		run.setBuilder(builder);
-
-		return run;
+		runs.add(run);
+		return runs;
 	}
 
 	/**

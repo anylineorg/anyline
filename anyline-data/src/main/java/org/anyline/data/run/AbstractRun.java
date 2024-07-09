@@ -1217,15 +1217,16 @@ public abstract class AbstractRun implements Run {
 		}
 		return result;
 	}
-	private String format(String sql) {
-		if(null != sql) {
-			sql = sql.replaceAll("\n ","\n\t")
+	@Override
+	public String format(String cmd) {
+		if(null != cmd) {
+			cmd = cmd.replaceAll("\n ","\n\t")
 					.replaceAll("\n\t\n","\n")
 					.replaceAll("\n{2,}","\n")
 					.replaceAll(" {2,}"," ")
 					.trim();
 		}
-		return sql;
+		return cmd;
 	}
 	public String log(ACTION.DML action, boolean placeholder) {
 		StringBuilder builder = new StringBuilder();

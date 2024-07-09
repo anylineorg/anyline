@@ -510,8 +510,17 @@ public interface AnylineDao<E>{
 	default long delete(DataRuntime runtime, String random, String dest, Object obj, String ... columns) {
 		return delete(runtime, random, dest, null, obj, columns);
 	}
+	default long delete(DataRuntime runtime, String random, String dest, Collection values) {
+		return delete(runtime, random, dest, null, values);
+	}
 	default long delete(String dest, Object obj, String ... columns) {
 		return delete(runtime(), null, dest, obj, columns);
+	}
+	default long delete(String dest, Collection values){
+		return delete(runtime(), null, dest, values);
+	}
+	default long delete(Table dest, Collection values){
+		return delete(runtime(), null, dest, values);
 	}
 	default long delete(DataRuntime runtime, String random, String table, ConfigStore configs, String ... conditions) {
 		return delete(runtime, random, new Table(table), configs, conditions);

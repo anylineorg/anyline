@@ -298,6 +298,21 @@ public class EntityAdapterProxy {
         }
         return new LinkedHashMap();
     }
+    public static Object primaryValue(Object obj, boolean simple) {
+        if(!ClassUtil.isWrapClass(obj) || obj instanceof String){
+            return obj;
+        }
+        List<EntityAdapter> list = getAdapters(obj.getClass());
+        for(EntityAdapter adapter:list) {
+            Map<String, Object> value = adapter.primaryValue(obj);
+            if(null != value && !value.isEmpty()) {
+                for(Object v:value.values()){
+                    return v;
+                }
+            }
+        }
+        return null;
+    }
     /**
      * 主键值
      * @param obj obj

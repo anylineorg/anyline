@@ -1693,15 +1693,15 @@ public interface DriverAdapter {
 	 * @param columns 删除条件的列或属性，根据columns取obj值并合成删除条件
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
-	Run buildDeleteRun(DataRuntime runtime, Table table, ConfigStore configs, Object obj, String ... columns);
-	default Run buildDeleteRun(DataRuntime runtime, String table, ConfigStore configs, Object obj, String ... columns) {
+	List<Run> buildDeleteRun(DataRuntime runtime, Table table, ConfigStore configs, Object obj, String ... columns);
+	default List<Run> buildDeleteRun(DataRuntime runtime, String table, ConfigStore configs, Object obj, String ... columns) {
 		return buildDeleteRun(runtime, new Table(table), configs, obj, columns);
 	}
 
-	default Run buildDeleteRun(DataRuntime runtime, Table table, ConfigStore configs) {
+	default List<Run> buildDeleteRun(DataRuntime runtime, Table table, ConfigStore configs) {
 		return buildDeleteRun(runtime,  table, configs, null, null);
 	}
-	default Run buildDeleteRun(DataRuntime runtime, String table, ConfigStore configs) {
+	default List<Run> buildDeleteRun(DataRuntime runtime, String table, ConfigStore configs) {
 		return buildDeleteRun(runtime,  new Table(table), configs, null, null);
 	}
 	/**
@@ -1713,8 +1713,8 @@ public interface DriverAdapter {
 	 * @param values values
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
-	Run buildDeleteRun(DataRuntime runtime, int batch, Table table, ConfigStore configs, String column, Object values);
-	default Run buildDeleteRun(DataRuntime runtime, int batch, String table, ConfigStore configs, String column, Object values) {
+	List<Run> buildDeleteRun(DataRuntime runtime, int batch, Table table, ConfigStore configs, String column, Object values);
+	default List<Run> buildDeleteRun(DataRuntime runtime, int batch, String table, ConfigStore configs, String column, Object values) {
 		return buildDeleteRun(runtime, batch, new Table(table), configs, column, values);
 	}
 
@@ -1738,8 +1738,8 @@ public interface DriverAdapter {
 	 * @param values values
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
-	Run buildDeleteRunFromTable(DataRuntime runtime, int batch, Table table, ConfigStore configs, String column, Object values);
-	default Run buildDeleteRunFromTable(DataRuntime runtime, int batch, String table, ConfigStore configs,String column, Object values) {
+	List<Run> buildDeleteRunFromTable(DataRuntime runtime, int batch, Table table, ConfigStore configs, String column, Object values);
+	default List<Run> buildDeleteRunFromTable(DataRuntime runtime, int batch, String table, ConfigStore configs,String column, Object values) {
 		return buildDeleteRunFromTable(runtime, batch, new Table(table), configs, column, values);
 	}
 
@@ -1752,8 +1752,8 @@ public interface DriverAdapter {
 	 * @param columns 删除条件的列或属性，根据columns取obj值并合成删除条件
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
-	Run buildDeleteRunFromEntity(DataRuntime runtime, Table table, ConfigStore configs, Object obj, String ... columns);
-	default Run buildDeleteRunFromEntity(DataRuntime runtime, String table, ConfigStore configs, Object obj, String ... columns) {
+	List<Run> buildDeleteRunFromEntity(DataRuntime runtime, Table table, ConfigStore configs, Object obj, String ... columns);
+	default List<Run> buildDeleteRunFromEntity(DataRuntime runtime, String table, ConfigStore configs, Object obj, String ... columns) {
 		return buildDeleteRunFromEntity(runtime, new Table(table), configs, obj, columns);
 	}
 
@@ -6664,6 +6664,12 @@ public interface DriverAdapter {
 	boolean convert(DataRuntime runtime, Catalog catalog, Schema schema, String table, RunValue run);
 	boolean convert(DataRuntime runtime, Table table, Run run);
 	boolean convert(DataRuntime runtime, ConfigStore configs, Run run);
+	default boolean convert(DataRuntime runtime, ConfigStore configs, List<Run> runs){
+		for(Run run:runs){
+			convert(runtime, configs, run);
+		}
+		return true;
+	}
 
 	/**
 	 * 数据类型转换

@@ -984,7 +984,8 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
         run.checkValid();
     }
     @Override
-    public Run buildDeleteRunFromTable(DataRuntime runtime, int batch, String table, ConfigStore configs,String key, Object values) {
+    public List<Run> buildDeleteRunFromTable(DataRuntime runtime, int batch, String table, ConfigStore configs,String key, Object values) {
+        List<Run> runs = new ArrayList<>();
         if(null == table || null == key || null == values) {
             return null;
         }
@@ -1019,11 +1020,12 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
         }
         run.addValues(Compare.IN, new Column(key), values, ConfigTable.IS_AUTO_SPLIT_ARRAY);
         run.setBuilder(builder);
-
-        return run;
+        runs.add(run);
+        return runs;
     }
     @Override
-    public Run buildDeleteRunFromEntity(DataRuntime runtime, Table dest, ConfigStore configs, Object obj, String ... columns) {
+    public List<Run> buildDeleteRunFromEntity(DataRuntime runtime, Table dest, ConfigStore configs, Object obj, String ... columns) {
+        List<Run> runs = new ArrayList<>();
         TableRun run = new TableRun(runtime, dest);
         run.setFrom(2);
         StringBuilder builder = new StringBuilder();
@@ -1068,8 +1070,8 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
         }
         builder.append(" DELETE d");
         run.setBuilder(builder);
-
-        return run;
+        runs.add(run);
+        return runs;
     }
 
 }

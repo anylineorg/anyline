@@ -292,7 +292,78 @@ public class ElasticSearchAdapter extends AbstractDriverAdapter implements Drive
      */
     @Override
     protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, List<String> columns) {
-        return super.createInsertRunFromCollection(runtime, batch, dest, list, configs, columns);
+        ElasticSearchRun run = new ElasticSearchRun(runtime);
+        run.action(ACTION.DML.INSERT);
+        run.setMethod("POST");
+        String endpoint = null;
+        String index_name = null;
+        if(null != dest){
+            index_name = dest.getName();
+        }
+        if(BasicUtil.isNotEmpty(index_name)){
+            endpoint = index_name+"/_bulk";
+        }else{
+            endpoint = "*/_bulk";
+        }
+        run.setEndpoint(endpoint);
+        StringBuilder builder = run.getBuilder();
+        for(Object item:list){
+            String item_index_name = null;
+            Object pv = null;
+            if(item instanceof DataRow) {
+                DataRow row = (DataRow)item;
+                item_index_name = row.getTableName();
+                pv = row.getPrimaryValue();
+            }else{
+                item_index_name = EntityAdapterProxy.table(item.getClass(), true);
+                pv = EntityAdapterProxy.primaryValue(item, true);
+            }
+            if(BasicUtil.isEmpty(item_index_name)){
+                item_index_name = index_name;
+            }
+            Map<String, Object> head = new HashMap<>();
+            Map<String, Object> head_property = new HashMap<>();
+            //{"index":{"_index":"index_user", "_id":"10011"}}
+            head.put("index", head_property);
+            if(BasicUtil.isNotEmpty(item_index_name)){
+                head_property.put("_index", item_index_name);
+            }
+            if(BasicUtil.isNotEmpty(pv)){
+                head_property.put("_id", pv);
+            }
+            Map<String, Object> map = BeanUtil.object2map(item);
+            map.remove("_id");
+            builder.append(BeanUtil.map2json(head)).append("\n");
+            builder.append(BeanUtil.map2json(map)).append("\n");
+        }
+        /*POST /your_index/_bulk
+{ "index" : { "_id" : "1" } }
+{ "field1" : "value1" }
+{ "index" : { "_id" : "2" } }
+{ "field1" : "value2" }
+
+
+#批量添加  也可以写上索引名 PUT index_user/_bulk
+PUT * /_bulk
+        {"index":{"_index":"index_user", "_id":"10011"}}
+        {"id":1001, "name":"a b", "age":20}
+        {"index":{"_index":"index_user", "_id":"10012"}}
+        {"id":1002, "name":"b c", "age":20}
+        {"index":{"_index":"index_user", "_id":"10013"}}
+        {"id":1003, "name":"c d", "age":30}
+
+#如果没有_id会自动生成随机值
+        PUT index_user/_bulk
+        {"index":{"_index":"index_user"}}
+        {"id":1001, "name":"a b", "age":20}
+        {"index":{"_index":"index_user", "_id":"10012"}}
+        {"id":1002, "name":"b c", "age":20}
+        {"index":{"_index":"index_user"}}
+        {"id":1003, "name":"c d", "age":30}
+
+
+*/
+        return run;
     }
 
     /**
@@ -959,11 +1030,11 @@ public class ElasticSearchAdapter extends AbstractDriverAdapter implements Drive
      * long delete(DataRuntime runtime, String random, String table, ConfigStore configs, String... conditions)
      * long truncate(DataRuntime runtime, String random, String table)
      * [命令合成]
-     * Run buildDeleteRun(DataRuntime runtime, String table, ConfigStore configs, Object obj, String ... columns)
-     * Run buildDeleteRun(DataRuntime runtime, int batch, String table, ConfigStore configs, String column, Object values)
+     * List<Run> buildDeleteRun(DataRuntime runtime, String table, ConfigStore configs, Object obj, String ... columns)
+     * List<Run> buildDeleteRun(DataRuntime runtime, int batch, String table, ConfigStore configs, String column, Object values)
      * List<Run> buildTruncateRun(DataRuntime runtime, String table)
-     * Run buildDeleteRunFromTable(DataRuntime runtime, int batch, String table, ConfigStore configs,String column, Object values)
-     * Run buildDeleteRunFromEntity(DataRuntime runtime, String table, ConfigStore configs, Object obj, String ... columns)
+     * List<Run> buildDeleteRunFromTable(DataRuntime runtime, int batch, String table, ConfigStore configs,String column, Object values)
+     * List<Run> buildDeleteRunFromEntity(DataRuntime runtime, String table, ConfigStore configs, Object obj, String ... columns)
      * void fillDeleteRunContent(DataRuntime runtime, Run run)
      * [命令执行]
      * long delete(DataRuntime runtime, String random, ConfigStore configs, Run run)
@@ -1037,20 +1108,37 @@ public class ElasticSearchAdapter extends AbstractDriverAdapter implements Drive
      * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
      */
     @Override
-    public Run buildDeleteRun(DataRuntime runtime, Table dest, ConfigStore configs, Object obj, String ... columns) {
+    public List<Run> buildDeleteRun(DataRuntime runtime, Table dest, ConfigStore configs, Object obj, String ... columns) {
+        List<Run> runs = new ArrayList<>();
         ElasticSearchRun run = new ElasticSearchRun(runtime);
         run.setTable(dest);
         run.action(ACTION.DML.DELETE);
-        run.setMethod("DELETE");
-        Object pv = null;
-        if(obj instanceof DataRow){
-            pv = ((DataRow)obj).getPrimaryValue();
+        if(obj instanceof Collection){
+            Collection list = (Collection) obj;
+            run.setMethod("POST");
+            run.setEndpoint(dest.getName() + "/_bulk");
+            StringBuilder builder = run.getBuilder();
+            for(Object item:list){
+                Object pv = null;
+                if(obj instanceof DataRow){
+                    pv = ((DataRow)obj).getPrimaryValue();
+                }else{
+                    pv = EntityAdapterProxy.primaryValue(item, true);
+                }
+                builder.append("{\"delete\":{\"_id\":\"").append(pv).append("\"}}\n");
+            }
         }else{
-            String pk = EntityAdapterProxy.primaryKey(obj.getClass(), true);
-            pv = BeanUtil.getFieldValue(obj, pk);
+            run.setMethod("DELETE");
+            Object pv = null;
+            if(obj instanceof DataRow){
+                pv = ((DataRow)obj).getPrimaryValue();
+            }else{
+                pv = EntityAdapterProxy.primaryValue(obj, true);
+            }
+            run.setEndpoint(dest.getName() + "/_doc/" + pv);
         }
-        run.setEndpoint(dest.getName() + "/_doc/" + pv);
-        return run;
+        runs.add(run);
+        return runs;
     }
 
     /**
@@ -1063,7 +1151,7 @@ public class ElasticSearchAdapter extends AbstractDriverAdapter implements Drive
      * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
      */
     @Override
-    public Run buildDeleteRun(DataRuntime runtime, int batch, String table, ConfigStore configs, String key, Object values) {
+    public List<Run> buildDeleteRun(DataRuntime runtime, int batch, String table, ConfigStore configs, String key, Object values) {
         return super.buildDeleteRun(runtime, batch, table, configs, key, values);
     }
 
@@ -1082,7 +1170,7 @@ public class ElasticSearchAdapter extends AbstractDriverAdapter implements Drive
      * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
      */
     @Override
-    public Run buildDeleteRunFromTable(DataRuntime runtime, int batch, Table table, ConfigStore configs, String column, Object values) {
+    public List<Run> buildDeleteRunFromTable(DataRuntime runtime, int batch, Table table, ConfigStore configs, String column, Object values) {
         return super.buildDeleteRunFromTable(runtime, batch, table, configs, column, values);
     }
 
@@ -1096,7 +1184,7 @@ public class ElasticSearchAdapter extends AbstractDriverAdapter implements Drive
      * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
      */
     @Override
-    public Run buildDeleteRunFromEntity(DataRuntime runtime, Table table, ConfigStore configs, Object obj, String... columns) {
+    public List<Run> buildDeleteRunFromEntity(DataRuntime runtime, Table table, ConfigStore configs, Object obj, String... columns) {
         return super.buildDeleteRunFromEntity(runtime, table, configs, obj, columns);
     }
 

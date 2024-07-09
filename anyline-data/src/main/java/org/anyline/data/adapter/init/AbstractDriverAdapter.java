@@ -3170,11 +3170,11 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * long delete(DataRuntime runtime, String random, String table, ConfigStore configs, String... conditions)
 	 * long truncate(DataRuntime runtime, String random, String table)
 	 * [命令合成]
-	 * Run buildDeleteRun(DataRuntime runtime, String table, ConfigStore configs, Object obj, String ... columns)
-	 * Run buildDeleteRun(DataRuntime runtime, int batch, String table, ConfigStore configs, String column, Object values)
+	 * List<Run> buildDeleteRun(DataRuntime runtime, String table, ConfigStore configs, Object obj, String ... columns)
+	 * List<Run> buildDeleteRun(DataRuntime runtime, int batch, String table, ConfigStore configs, String column, Object values)
 	 * List<Run> buildTruncateRun(DataRuntime runtime, String table)
-	 * Run buildDeleteRunFromTable(DataRuntime runtime, int batch, String table, ConfigStore configs,String column, Object values)
-	 * Run buildDeleteRunFromEntity(DataRuntime runtime, String table, ConfigStore configs, Object obj, String ... columns)
+	 * List<Run> buildDeleteRunFromTable(DataRuntime runtime, int batch, String table, ConfigStore configs,String column, Object values)
+	 * List<Run> buildDeleteRunFromEntity(DataRuntime runtime, String table, ConfigStore configs, Object obj, String ... columns)
 	 * void fillDeleteRunContent(DataRuntime runtime, Run run)
 	 * [命令执行]
 	 * long delete(DataRuntime runtime, String random, ConfigStore configs, Run run)
@@ -3192,6 +3192,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public <T> long deletes(DataRuntime runtime, String random, int batch, Table table, ConfigStore configs, String key, Collection<T> values) {
+		long result = -1;
 		if(null == random) {
 			random = random(runtime);
 		}
@@ -3205,14 +3206,20 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		if(swt == ACTION.SWITCH.BREAK) {
 			return -1;
 		}
-		Run run = buildDeleteRun(runtime, batch, table, configs, key, values);
-		if(!run.isValid()) {
-			if(log.isWarnEnabled() && ConfigStore.IS_LOG_SQL(configs)) {
-				log.warn("[valid:false][不具备执行条件][table:" +table+ "][thread:" + Thread.currentThread().getId() + "][ds:" + runtime.datasource() + "]");
+		List<Run> runs = buildDeleteRun(runtime, batch, table, configs, key, values);
+		for(Run run:runs){
+
+			if(!run.isValid()) {
+				if(log.isWarnEnabled() && ConfigStore.IS_LOG_SQL(configs)) {
+					log.warn("[valid:false][不具备执行条件][table:" +table+ "][thread:" + Thread.currentThread().getId() + "][ds:" + runtime.datasource() + "]");
+				}
+				continue;
 			}
-			return -1;
+			if(result == -1){
+				result = 1;
+			}
+			result += delete(runtime, random, configs, run);
 		}
-		long result = delete(runtime, random, configs, run);
 		return result;
 	}
 
@@ -3229,39 +3236,30 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	@Override
 	public long delete(DataRuntime runtime, String random, Table dest, ConfigStore configs, Object obj, String... columns) {
 		ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
-		long size = 0;
+		long size = -1;
 		if(null != obj) {
-			if(obj instanceof Collection) {
-				Collection list = (Collection) obj;
-				for(Object item:list) {
-					long qty = delete(runtime, random, dest, configs, item, columns);
-					//如果不执行会返回-1
-					if(qty > 0) {
-						size += qty;
-					}
-				}
-				if(log.isInfoEnabled()) {
-					log.info("[delete Collection][影响行数:{}]", LogUtil.format(size, 34));
-				}
-			}else{
-				swt = InterceptorProxy.prepareDelete(runtime, random, 0, dest, obj, columns);
-				if(swt == ACTION.SWITCH.BREAK) {
-					return -1;
-				}
-				if(null != dmListener) {
-					swt = dmListener.prepareDelete(runtime, random, 0, dest, obj, columns);
-				}
-				if(swt == ACTION.SWITCH.BREAK) {
-					return -1;
-				}
-				Run run = buildDeleteRun(runtime, dest, configs, obj, columns);
+			swt = InterceptorProxy.prepareDelete(runtime, random, 0, dest, obj, columns);
+			if(swt == ACTION.SWITCH.BREAK) {
+				return -1;
+			}
+			if(null != dmListener) {
+				swt = dmListener.prepareDelete(runtime, random, 0, dest, obj, columns);
+			}
+			if(swt == ACTION.SWITCH.BREAK) {
+				return -1;
+			}
+			List<Run> runs = buildDeleteRun(runtime, dest, configs, obj, columns);
+			for(Run run:runs){
 				if(!run.isValid()) {
 					if(log.isWarnEnabled() && ConfigStore.IS_LOG_SQL(configs)) {
 						log.warn("[valid:false][不具备执行条件][dest:" + dest + "][thread:" + Thread.currentThread().getId() + "][ds:" + runtime.datasource() + "]");
 					}
-					return -1;
+					continue;
 				}
-				size = delete(runtime, random, configs, run);
+				if(size == -1){
+					size = 0;
+				}
+				size += delete(runtime, random, configs, run);
 			}
 		}
 		return size;
@@ -3280,6 +3278,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public long delete(DataRuntime runtime, String random, Table table, ConfigStore configs, String... conditions) {
+		long result = -1;
 		ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
 		swt = InterceptorProxy.prepareDelete(runtime, random, 0, table, configs, conditions);
 		if(swt == ACTION.SWITCH.BREAK) {
@@ -3291,14 +3290,19 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		if(swt == ACTION.SWITCH.BREAK) {
 			return -1;
 		}
-		Run run = buildDeleteRun(runtime, table, configs, conditions);
-		if(!run.isValid()) {
-			if(log.isWarnEnabled() && ConfigStore.IS_LOG_SQL(configs)) {
-				log.warn("[valid:false][不具备执行条件][table:" + table + "][thread:" + Thread.currentThread().getId() + "][ds:" + runtime.datasource() + "]");
+		List<Run> runs = buildDeleteRun(runtime, table, configs, conditions);
+		for(Run run:runs){
+			if(!run.isValid()) {
+				if(log.isWarnEnabled() && ConfigStore.IS_LOG_SQL(configs)) {
+					log.warn("[valid:false][不具备执行条件][table:" + table + "][thread:" + Thread.currentThread().getId() + "][ds:" + runtime.datasource() + "]");
+				}
+				continue;
 			}
-			return -1;
+			if(result == -1){
+				result = 0;
+			}
+			result += delete(  runtime, random, configs, run);
 		}
-		long result = delete(  runtime, random, configs, run);
 		return result;
 	}
 
@@ -3329,11 +3333,18 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	@Override
-	public Run buildDeleteRun(DataRuntime runtime, Table dest, ConfigStore configs, Object obj, String ... columns) {
+	public List<Run> buildDeleteRun(DataRuntime runtime, Table dest, ConfigStore configs, Object obj, String ... columns) {
+		List<Run> runs = new ArrayList<>();
 		if(null == obj && (null == configs || configs.isEmptyCondition())) {
 			return null;
 		}
-		Run run = null;
+		if(obj instanceof Collection){
+			Collection list = (Collection) obj;
+			for(Object item:list){
+				runs.addAll(buildDeleteRun(runtime, dest, configs, item, columns));
+			}
+			return runs;
+		}
 		if(null == dest) {
 			dest = DataSourceUtil.parseDest(null, obj, configs);
 		}
@@ -3348,7 +3359,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			}
 		}
 		if(obj instanceof ConfigStore) {
-			run = new TableRun(runtime, dest);
+			Run run = new TableRun(runtime, dest);
 			RunPrepare prepare = new DefaultTablePrepare();
 			prepare.setDest(dest);
 			run.setPrepare(prepare);
@@ -3356,11 +3367,13 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			run.addCondition(columns);
 			run.init();
 			fillDeleteRunContent(runtime, run);
+			runs.add(run);
 		}else{
-			run = buildDeleteRunFromEntity(runtime, dest, configs, obj, columns);
+			runs = buildDeleteRunFromEntity(runtime, dest, configs, obj, columns);
 		}
-		convert(runtime, new DefaultConfigStore(), run);
-		return run;
+		convert(runtime, new DefaultConfigStore(), runs);
+
+		return runs;
 	}
 
 	/**
@@ -3373,10 +3386,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	@Override
-	public Run buildDeleteRun(DataRuntime runtime, int batch, Table table, ConfigStore configs, String key, Object values) {
-		Run run = buildDeleteRunFromTable(runtime, batch, table, configs, key, values);
-		convert(runtime, new DefaultConfigStore(), run);
-		return run;
+	public List<Run> buildDeleteRun(DataRuntime runtime, int batch, Table table, ConfigStore configs, String key, Object values) {
+		List<Run> runs = buildDeleteRunFromTable(runtime, batch, table, configs, key, values);
+		convert(runtime, new DefaultConfigStore(), runs);
+		return runs;
 	}
 
 	@Override
@@ -3400,9 +3413,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	@Override
-	public Run buildDeleteRunFromTable(DataRuntime runtime, int batch, Table table, ConfigStore configs, String column, Object values) {
+	public List<Run> buildDeleteRunFromTable(DataRuntime runtime, int batch, Table table, ConfigStore configs, String column, Object values) {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 Run buildDeleteRunFromTable(DataRuntime runtime, int batch, String table, ConfigStore configs,String column, Object values)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildDeleteRunFromTable(DataRuntime runtime, int batch, String table, ConfigStore configs,String column, Object values)", 37));
 		}
 		return null;
 	}
@@ -3417,9 +3430,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	@Override
-	public Run buildDeleteRunFromEntity(DataRuntime runtime, Table table, ConfigStore configs, Object obj, String... columns) {
+	public List<Run> buildDeleteRunFromEntity(DataRuntime runtime, Table table, ConfigStore configs, Object obj, String... columns) {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 Run buildDeleteRunFromEntity(DataRuntime runtime, String table, ConfigStore configs, Object obj, String... columns)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildDeleteRunFromEntity(DataRuntime runtime, String table, ConfigStore configs, Object obj, String... columns)", 37));
 		}
 		return null;
 	}

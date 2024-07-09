@@ -717,7 +717,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
     }
 
     @Override
-    public Run buildDeleteRunFromTable(DataRuntime runtime, int batch, String table, ConfigStore configs,String key, Object values) {
+    public List<Run> buildDeleteRunFromTable(DataRuntime runtime, int batch, String table, ConfigStore configs,String key, Object values) {
         if(null == key || null == values) {
             return null;
         }
@@ -737,7 +737,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
     }
 
     @Override
-    public Run buildDeleteRunFromEntity(DataRuntime runtime, Table dest, ConfigStore configs, Object obj, String... columns) {
+    public List<Run> buildDeleteRunFromEntity(DataRuntime runtime, Table dest, ConfigStore configs, Object obj, String... columns) {
         //没有configs条件的 才根据主键删除
         if(null == configs || configs.isEmptyCondition()) {
             if(null == columns || columns.length == 0) {
@@ -757,8 +757,8 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
 /* *****************************************************************************************************************
      * 													DELETE
      * -----------------------------------------------------------------------------------------------------------------
-     * Run buildDeleteRun(DataRuntime runtime, String table, ConfigStore configs, String key, Object values)
-     * Run buildDeleteRun(DataRuntime runtime, Table dest, Object obj, String ... columns)
+     * List<Run> buildDeleteRun(DataRuntime runtime, String table, ConfigStore configs, String key, Object values)
+     * List<Run> buildDeleteRun(DataRuntime runtime, Table dest, Object obj, String ... columns)
      * Run fillDeleteRunContent(DataRuntime runtime, Run run)
      *
      * protected Run buildDeleteRunFromTable(String table, String key, Object values)
@@ -766,7 +766,8 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
      ******************************************************************************************************************/
 
     @Override
-    public Run buildDeleteRun(DataRuntime runtime, Table dest, ConfigStore configs, Object obj, String ... columns) {
+    public List<Run> buildDeleteRun(DataRuntime runtime, Table dest, ConfigStore configs, Object obj, String ... columns) {
+        List<Run> runs = new ArrayList<>();
         if(null == obj && (null == configs || configs.isEmptyCondition())) {
             return null;
         }
@@ -793,14 +794,15 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
             run.addCondition(columns);
             run.init();
             fillDeleteRunContent(runtime, run);
+            runs.add(run);
         }else{
-            run = buildDeleteRunFromEntity(runtime, dest, configs, obj, columns);
+            runs = buildDeleteRunFromEntity(runtime, dest, configs, obj, columns);
         }
-        return run;
+        return runs;
     }
 
     @Override
-    public Run buildDeleteRun(DataRuntime runtime, int batch, Table table, ConfigStore configs, String column, Object values) {
+    public List<Run> buildDeleteRun(DataRuntime runtime, int batch, Table table, ConfigStore configs, String column, Object values) {
         return null;
     }
 
@@ -810,17 +812,19 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
     }
 
     @Override
-    public Run buildDeleteRunFromTable(DataRuntime runtime, int batch, Table table, ConfigStore configs, String column, Object values) {
+    public List<Run> buildDeleteRunFromTable(DataRuntime runtime, int batch, Table table, ConfigStore configs, String column, Object values) {
         return null;
     }
 
     @Override
-    public Run buildDeleteRun(DataRuntime runtime, Table table, ConfigStore configs) {
+    public List<Run> buildDeleteRun(DataRuntime runtime, Table table, ConfigStore configs) {
+        List<Run> runs = new ArrayList<>();
         TableRun run = new TableRun(runtime, table);
         run.setConfigs(configs);
         run.init();
         fillDeleteRunContent(runtime, run);
-        return run;
+        runs.add(run);
+        return runs;
     }
     /**
      * 构造删除主体

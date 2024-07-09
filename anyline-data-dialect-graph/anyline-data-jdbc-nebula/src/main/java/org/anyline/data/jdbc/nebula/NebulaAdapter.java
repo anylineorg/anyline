@@ -990,7 +990,7 @@ public class NebulaAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
         run.checkValid();
     }
     @Override
-    public Run buildDeleteRunFromTable(DataRuntime runtime, int batch, String table, ConfigStore configs,String key, Object values) {
+    public List<Run> buildDeleteRunFromTable(DataRuntime runtime, int batch, String table, ConfigStore configs,String key, Object values) {
         if(null == table || null == key || null == values) {
             return null;
         }
@@ -1029,7 +1029,7 @@ public class NebulaAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
         return run;
     }
 
-    public Run buildDeleteRunFromEntity(DataRuntime runtime, Table dest, Object obj, String ... columns) {
+    public List<Run> buildDeleteRunFromEntity(DataRuntime runtime, Table dest, Object obj, String ... columns) {
         TableRun run = new TableRun(runtime, dest);
         run.setFrom(2);
         StringBuilder builder = new StringBuilder();

@@ -226,6 +226,8 @@ public interface Run extends org.anyline.data.Run{
 	ACTION action();
 	void action(ACTION action);
 
+	String format(String cmd);
+
 	String log(ACTION.DML action, boolean placeholder);
 
 	Run setUnionAll(boolean all);

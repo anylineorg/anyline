@@ -1309,6 +1309,12 @@ public class ServiceProxy {
         return service.delete(table, kvs);
     }
 
+    public static long delete(Table table, Collection values){
+        return service.delete(table, values);
+    }
+    public static long delete(String table, Collection values){
+        return service.delete(table, values);
+    }
     /**
      * 根据一列的多个值删除多行
      * @param table 表

@@ -1278,6 +1278,23 @@ public class DefaultService<E> implements AnylineService<E> {
         return dao.delete(table, row);
     }
 
+    @Override
+    public long delete(Table table, Collection values) {
+        String[] ps = DataSourceUtil.parseRuntime(table);
+        if(null != ps[0]) {
+            return ServiceProxy.service(ps[0]).delete(ps[1], values);
+        }
+        return dao.delete(table, values);
+    }
+
+    @Override
+    public long delete(String table, Collection values) {
+        String[] ps = DataSourceUtil.parseRuntime(table);
+        if(null != ps[0]) {
+            return ServiceProxy.service(ps[0]).delete(ps[1], values);
+        }
+        return dao.delete(table, values);
+    }
 
     @Override
     public <T> long deletes(int batch, String table, String key, Collection<T> values) {

@@ -1130,6 +1130,9 @@ public class BeanUtil {
 		if(null == obj) {
 			return null;
 		}
+		if(obj instanceof Map){
+			return (Map<String, Object>)obj;
+		}
 		Map<String, Object> map = new HashMap<>();
 		List<Field> fields = ClassUtil.getFields(obj.getClass());
 		for(Field field:fields) {

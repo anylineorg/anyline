@@ -1532,7 +1532,8 @@ public interface AnylineService<E>{
 	 */
 	long delete(String table, String ... kvs);
 	long delete(Table table, String ... kvs);
-
+	long delete(Table table, Collection values);
+	long delete(String table, Collection values);
 	/**
 	 * 根据一列的多个值删除<br/>
 	 * 注意:为了避免整表删除, values必须提供否则会抛出异常<br/>

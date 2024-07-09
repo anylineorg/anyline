@@ -55,6 +55,11 @@ public class ElasticSearchRun extends SimpleRun {
         //不检测更新条件 直接POST
         return false;
     }
+    @Override
+    public String format(String cmd) {
+        //不要删除换行命令中有要求
+        return cmd;
+    }
     public String log(ACTION.DML action, boolean placeholder) {
         StringBuilder builder = new StringBuilder();
         List<String> keys = null;
