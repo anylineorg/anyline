@@ -1171,7 +1171,7 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
     }
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append(keyword).append(":");
+        builder.append(getKeyword()).append(":");
         if(null != catalog && BasicUtil.isNotEmpty(catalog.getName())) {
             builder.append(catalog.getName()).append(".");
         }

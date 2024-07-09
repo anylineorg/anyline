@@ -19,7 +19,6 @@
 package org.anyline.environment.boot.datasource;
 
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
-import org.springframework.boot.autoconfigure.mongo.MongoProperties;
 
 //不要加载 有些类没有
 //@Configuration("anyline.environment.boot.datasource")
@@ -94,7 +93,6 @@ public class DataSourceProperty extends DataSourceProperties {
      */
     private String authenticationDatabase;
 
-    private final MongoProperties.Gridfs gridfs = new MongoProperties.Gridfs();
 
     /**
      * Login user of the mongo server. Cannot be set with URI.
@@ -190,10 +188,6 @@ public class DataSourceProperty extends DataSourceProperties {
 
     public void setPort(Integer port) {
         this.port = port;
-    }
-
-    public MongoProperties.Gridfs getGridfs() {
-        return this.gridfs;
     }
 
     public Boolean isAutoIndexCreation() {

@@ -28,7 +28,6 @@ import org.anyline.data.elasticsearch.run.ElasticSearchRun;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.RunPrepare;
-import org.anyline.data.prepare.auto.init.DefaultTextPrepare;
 import org.anyline.data.run.*;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
@@ -1604,6 +1603,7 @@ public class ElasticSearchAdapter extends AbstractDriverAdapter implements Drive
     public List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs) throws Exception {
         List<Run> runs = new ArrayList<>();
         ElasticSearchRun run = new ElasticSearchRun(runtime);
+        run.action(ACTION.DML.SELECT);
         run.setMethod("GET");
         run.setEndpoint("_cat/indices");
         runs.add(run);
@@ -3282,19 +3282,16 @@ public class ElasticSearchAdapter extends AbstractDriverAdapter implements Drive
             return false;
         }
         boolean result = false;
-        String sql = run.getFinalUpdate();
         run.action(action);
-        if(BasicUtil.isNotEmpty(sql)) {
-            meta.addRun(run);
-            if(meta.execute()) {
-                try {
-                    update(runtime, random, (Table) null, null, null, run);
-                }finally {
-                    CacheProxy.clear();
-                }
+        meta.addRun(run);
+        if(meta.execute()) {
+            try {
+                update(runtime, random, (Table) null, null, null, run);
+            }finally {
+                CacheProxy.clear();
             }
-            result = true;
         }
+        result = true;
         return result;
     }
     /* *****************************************************************************************************************
@@ -3358,13 +3355,7 @@ public class ElasticSearchAdapter extends AbstractDriverAdapter implements Drive
 
     @Override
     public boolean drop(DataRuntime runtime, Table meta) throws Exception {
-        boolean result = false;
-        Request request = new Request("DELETE", meta.getName());
-        HttpResponse response = exe(runtime, request);
-        if(response.getStatus() == 200) {
-            result = true;
-        }
-        return result;
+        return super.drop(runtime, meta);
     }
 
     /**
@@ -3412,6 +3403,7 @@ public class ElasticSearchAdapter extends AbstractDriverAdapter implements Drive
     public List<Run> buildCreateRun(DataRuntime runtime, Table meta) throws Exception {
         List<Run> runs = new ArrayList<>();
         ElasticSearchRun run = new ElasticSearchRun(runtime);
+        run.setTable(meta);
         run.action(ACTION.DDL.TABLE_CREATE);
         run.setMethod("PUT");
         run.setEndpoint("/"+meta.getName());
@@ -3476,7 +3468,14 @@ public class ElasticSearchAdapter extends AbstractDriverAdapter implements Drive
      */
     @Override
     public List<Run> buildDropRun(DataRuntime runtime, Table meta) throws Exception {
-        return super.buildDropRun(runtime, meta);
+        List<Run> runs = new ArrayList<>();
+        ElasticSearchRun run = new ElasticSearchRun(runtime);
+        run.setTable(meta);
+        run.action(ACTION.DDL.TABLE_DROP);
+        run.setMethod("DELETE");
+        run.setEndpoint("/"+meta.getName());
+        runs.add(run);
+        return runs;
     }
 
     /**

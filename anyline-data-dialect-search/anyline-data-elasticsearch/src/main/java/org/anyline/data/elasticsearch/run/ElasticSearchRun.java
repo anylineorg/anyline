@@ -47,4 +47,13 @@ public class ElasticSearchRun extends SimpleRun {
     public void setEndpoint(String endpoint) {
         this.endpoint = endpoint;
     }
+
+    @Override
+    public boolean isEmpty(){
+        if(null != endpoint){
+            return false;
+        }
+        return true;
+    }
+
 }

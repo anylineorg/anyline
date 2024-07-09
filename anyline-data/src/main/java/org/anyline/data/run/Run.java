@@ -32,6 +32,7 @@ import java.util.List;
 
 public interface Run extends org.anyline.data.Run{
 	Run setRuntime(DataRuntime runtime);
+	boolean isEmpty();
 	void init();
 	DriverAdapter adapter();
 	/** 

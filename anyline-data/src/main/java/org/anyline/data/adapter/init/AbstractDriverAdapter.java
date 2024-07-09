@@ -1531,8 +1531,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			}
 			return -1;
 		}
-		String cmd = run.getFinalUpdate();
-		if(BasicUtil.isEmpty(cmd)) {
+		if(run.isEmpty()) {
 			log.warn("[不具备执行条件][dest:{}]", dest);
 			return -1;
 		}
@@ -1549,14 +1548,14 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			action = "batch " + action;
 		}
 		long fr = System.currentTimeMillis();
-
+		String keyword = "table";
+		Table table = run.getTable();
+		if(null != table){
+			keyword = table.getKeyword();
+		}
 		/*执行SQL*/
 		if (log.isInfoEnabled() &&ConfigStore.IS_LOG_SQL(configs)) {
-			if(batch > 1 && !ConfigStore.IS_LOG_BATCH_SQL_PARAM(configs)) {
-				log.info("{}[action:{}][table:{}]{}", random, action, run.getTable(), run.log(ACTION.DML.UPDATE,ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
-			}else {
-				log.info("{}[action:{}][table:{}]{}", random, action, run.getTable(), run.log(ACTION.DML.UPDATE,ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
-			}
+			log.info("{}[action:{}][{}:{}]{}", random, action, keyword, run.getTable(), run.log(ACTION.DML.UPDATE,ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
 		}
 
 		boolean exe = true;
@@ -1575,9 +1574,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			if(SLOW_SQL_MILLIS > 0 &&ConfigStore.IS_LOG_SLOW_SQL(configs)) {
 				if(millis > SLOW_SQL_MILLIS) {
 					slow = true;
-					log.warn("{}[slow cmd][action:{}][table:{}][执行耗时:{}]{}", random, action, run.getTable(), DateUtil.format(millis), run.log(ACTION.DML.UPDATE,ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
+					log.warn("{}[slow cmd][action:{}][{}:{}][执行耗时:{}]{}", random, action, keyword, run.getTable(), DateUtil.format(millis), run.log(ACTION.DML.UPDATE,ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
 					if(null != dmListener) {
-						dmListener.slow(runtime, random, ACTION.DML.UPDATE, run, cmd, values, null, true, result, millis);
+						dmListener.slow(runtime, random, ACTION.DML.UPDATE, run, run.getFinalUpdate(), values, null, true, result, millis);
 					}
 				}
 			}
@@ -1586,7 +1585,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				if(batch>1) {
 					qty = "约"+result;
 				}
-				log.info("{}[action:{}][table:{}][执行耗时:{}][影响行数:{}]", random, action, run.getTable(), DateUtil.format(millis), LogUtil.format(qty, 34));
+				log.info("{}[action:{}][{}:{}][执行耗时:{}][影响行数:{}]", random, action, keyword, run.getTable(), DateUtil.format(millis), LogUtil.format(qty, 34));
 			}
 
 		}catch(Exception e) {
@@ -1595,12 +1594,11 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			}
 			if (ConfigStore.IS_THROW_SQL_UPDATE_EXCEPTION(configs)) {
 				CommandUpdateException ex = new CommandUpdateException("update异常:" + e.toString(), e);
-				ex.setCmd(cmd);
 				ex.setValues(values);
 				throw ex;
 			}
 			if (ConfigStore.IS_LOG_SQL_WHEN_ERROR(configs)) {
-				log.error("{}[{}][action:][table:{}]{}", random, action, run.getTable(), LogUtil.format("更新异常:", 33) + e.toString(), run.log(ACTION.DML.UPDATE,ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
+				log.error("{}[{}][action:][{}:{}]{}", random, action, keyword, run.getTable(), LogUtil.format("更新异常:", 33) + e.toString(), run.log(ACTION.DML.UPDATE,ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
 			}
 
 		}

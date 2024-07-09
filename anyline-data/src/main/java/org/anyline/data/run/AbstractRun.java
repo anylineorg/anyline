@@ -103,6 +103,13 @@ public abstract class AbstractRun implements Run {
 		this.runtime = runtime;
 		return this;
 	}
+	@Override
+	public boolean isEmpty(){
+		if(null != builder && builder.length() > 0){
+			return false;
+		}
+		return true;
+	}
 
 	@Override
 	public void slice(boolean slice) {
