@@ -318,24 +318,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 */
 	@Override
 	public Run buildInsertRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, List<String> columns) {
-		Run run = null;
-		if(null == obj) {
-			return null;
-		}
-		if(null == dest) {
-			dest = DataSourceUtil.parseDest(null, obj, configs);
-		}
-
-		if(obj instanceof Collection) {
-			Collection list = (Collection) obj;
-			if(!list.isEmpty()) {
-				run = createInsertRunFromCollection(runtime, batch, dest, list, configs, columns);
-			}
-		}else {
-			run = createInsertRun(runtime, dest, obj, configs, columns);
-		}
-		convert(runtime, configs, run);
-		return run;
+		return super.buildInsertRun(runtime, batch, dest, obj, configs, columns);
 	}
 
 	/**
@@ -639,32 +622,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 */
 	@Override
 	protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, List<String> columns) {
-		Run run = new TableRun(runtime, dest);
-		run.setBatch(batch);
-		if(null == list || list.isEmpty()) {
-			throw new CommandException("空数据");
-		}
-		Object first = list.iterator().next();
-
-		if(BasicUtil.isEmpty(dest)) {
-			throw new CommandException("未指定表");
-		}
-		/*确定需要插入的列*/
-		LinkedHashMap<String, Column> cols = new LinkedHashMap<>();
-		for(Object item:list) {
-			cols.putAll(confirmInsertColumns(runtime, dest, item, configs, columns, true));
-			if(!ConfigTable.IS_CHECK_ALL_INSERT_COLUMN) {
-				break;
-			}
-		}
-		if(null == cols || cols.isEmpty()) {
-			throw new CommandException("未指定列(DataRow或Entity中没有需要插入的属性值)["+first.getClass().getName()+":"+BeanUtil.object2json(first)+"]");
-		}
-		run.setInsertColumns(cols);
-		run.setVol(cols.size());
-		fillInsertContent(runtime, run, dest, list, configs, cols);
-
-		return run;
+		return super.createInsertRunFromCollection(runtime, batch, dest, list, configs, columns);
 	}
 
 	/**

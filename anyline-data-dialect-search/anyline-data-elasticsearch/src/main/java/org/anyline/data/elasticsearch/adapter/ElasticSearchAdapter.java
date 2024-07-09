@@ -5889,8 +5889,6 @@ public class ElasticSearchAdapter extends AbstractDriverAdapter implements Drive
             columns = columns(runtime, random, false, table, false);
         }
         try{
-            final DataRuntime rt = runtime;
-            final boolean[] process = {false};
             set = worker.select(this, runtime, random, system, ACTION.DML.SELECT, table, configs, run, null, null, columns);
 
             LinkedHashMap<String,Column> metadatas = set.getMetadatas();
@@ -5918,10 +5916,10 @@ public class ElasticSearchAdapter extends AbstractDriverAdapter implements Drive
                 e.printStackTrace();
             }
             if(ConfigStore.IS_LOG_SQL_WHEN_ERROR(configs)) {
-                log.error("{}[{}][action:select]{}", random, LogUtil.format("查询异常:", 33) + e.toString(), run.log(ACTION.DML.SELECT, ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
+                log.error("{}[{}][action:select]{}", random, LogUtil.format("查询异常:", 33) + e, run.log(ACTION.DML.SELECT, ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
             }
             if(ConfigStore.IS_THROW_SQL_QUERY_EXCEPTION(configs)) {
-                CommandQueryException ex = new CommandQueryException("query异常:"+e.toString(),e);
+                CommandQueryException ex = new CommandQueryException("query异常:"+e,e);
                 throw ex;
             }
 

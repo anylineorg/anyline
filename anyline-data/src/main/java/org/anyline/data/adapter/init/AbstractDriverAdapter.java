@@ -49,6 +49,7 @@ import org.anyline.entity.*;
 import org.anyline.entity.generator.GeneratorConfig;
 import org.anyline.entity.generator.PrimaryGenerator;
 import org.anyline.exception.AnylineException;
+import org.anyline.exception.CommandException;
 import org.anyline.exception.CommandQueryException;
 import org.anyline.exception.CommandUpdateException;
 import org.anyline.metadata.*;
@@ -397,10 +398,24 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public Run buildInsertRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, List<String> columns) {
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 Run buildInsertRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, List<String> columns)", 37));
+		Run run = null;
+		if(null == obj) {
+			return null;
 		}
-		return null;
+		if(null == dest) {
+			dest = DataSourceUtil.parseDest(null, obj, configs);
+		}
+
+		if(obj instanceof Collection) {
+			Collection list = (Collection) obj;
+			if(!list.isEmpty()) {
+				run = createInsertRunFromCollection(runtime, batch, dest, list, configs, columns);
+			}
+		}else {
+			run = createInsertRun(runtime, dest, obj, configs, columns);
+		}
+		convert(runtime, configs, run);
+		return run;
 	}
 	@Override
 	public Run buildInsertRun(DataRuntime runtime, Table dest, RunPrepare prepare, ConfigStore configs, Object obj, String... conditions) {
@@ -657,10 +672,32 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, List<String> columns) {
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 Run createInsertRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, List<String> columns)", 37));
+		Run run = new TableRun(runtime, dest);
+		run.setBatch(batch);
+		if(null == list || list.isEmpty()) {
+			throw new CommandException("空数据");
 		}
-		return null;
+		Object first = list.iterator().next();
+
+		if(BasicUtil.isEmpty(dest)) {
+			throw new CommandException("未指定表");
+		}
+		/*确定需要插入的列*/
+		LinkedHashMap<String, Column> cols = new LinkedHashMap<>();
+		for(Object item:list) {
+			cols.putAll(confirmInsertColumns(runtime, dest, item, configs, columns, true));
+			if(!ConfigTable.IS_CHECK_ALL_INSERT_COLUMN) {
+				break;
+			}
+		}
+		if(null == cols || cols.isEmpty()) {
+			throw new CommandException("未指定列(DataRow或Entity中没有需要插入的属性值)["+first.getClass().getName()+":"+BeanUtil.object2json(first)+"]");
+		}
+		run.setInsertColumns(cols);
+		run.setVol(cols.size());
+		fillInsertContent(runtime, run, dest, list, configs, cols);
+
+		return run;
 	}
 
 	/**
@@ -1548,14 +1585,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			action = "batch " + action;
 		}
 		long fr = System.currentTimeMillis();
-		String keyword = "table";
-		Table table = run.getTable();
-		if(null != table){
-			keyword = table.getKeyword();
-		}
 		/*执行SQL*/
 		if (log.isInfoEnabled() &&ConfigStore.IS_LOG_SQL(configs)) {
-			log.info("{}[action:{}][{}:{}]{}", random, action, keyword, run.getTable(), run.log(ACTION.DML.UPDATE,ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
+			log.info("{}[action:{}][{}]{}", random, action, run.getTable(), run.log(ACTION.DML.UPDATE,ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
 		}
 
 		boolean exe = true;
@@ -1574,7 +1606,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			if(SLOW_SQL_MILLIS > 0 &&ConfigStore.IS_LOG_SLOW_SQL(configs)) {
 				if(millis > SLOW_SQL_MILLIS) {
 					slow = true;
-					log.warn("{}[slow cmd][action:{}][{}:{}][执行耗时:{}]{}", random, action, keyword, run.getTable(), DateUtil.format(millis), run.log(ACTION.DML.UPDATE,ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
+					log.warn("{}[slow cmd][action:{}][{}][执行耗时:{}]{}", random, action, run.getTable(), DateUtil.format(millis), run.log(ACTION.DML.UPDATE,ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
 					if(null != dmListener) {
 						dmListener.slow(runtime, random, ACTION.DML.UPDATE, run, run.getFinalUpdate(), values, null, true, result, millis);
 					}
@@ -1585,7 +1617,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				if(batch>1) {
 					qty = "约"+result;
 				}
-				log.info("{}[action:{}][{}:{}][执行耗时:{}][影响行数:{}]", random, action, keyword, run.getTable(), DateUtil.format(millis), LogUtil.format(qty, 34));
+				log.info("{}[action:{}][{}][执行耗时:{}][影响行数:{}]", random, action, run.getTable(), DateUtil.format(millis), LogUtil.format(qty, 34));
 			}
 
 		}catch(Exception e) {
@@ -1598,7 +1630,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				throw ex;
 			}
 			if (ConfigStore.IS_LOG_SQL_WHEN_ERROR(configs)) {
-				log.error("{}[{}][action:][{}:{}]{}", random, action, keyword, run.getTable(), LogUtil.format("更新异常:", 33) + e.toString(), run.log(ACTION.DML.UPDATE,ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
+				log.error("{}[{}][action:][{}]{}", random, action, run.getTable(), LogUtil.format("更新异常:", 33) + e.toString(), run.log(ACTION.DML.UPDATE,ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
 			}
 
 		}
