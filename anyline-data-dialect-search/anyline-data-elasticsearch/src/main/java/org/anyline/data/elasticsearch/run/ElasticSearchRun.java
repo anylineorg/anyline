@@ -18,6 +18,10 @@ package org.anyline.data.elasticsearch.run;
 
 import org.anyline.data.run.SimpleRun;
 import org.anyline.data.runtime.DataRuntime;
+import org.anyline.metadata.ACTION;
+import org.anyline.util.LogUtil;
+
+import java.util.List;
 
 public class ElasticSearchRun extends SimpleRun {
     private String method;
@@ -48,6 +52,42 @@ public class ElasticSearchRun extends SimpleRun {
         this.endpoint = endpoint;
     }
 
+    public String log(ACTION.DML action, boolean placeholder) {
+        StringBuilder builder = new StringBuilder();
+        List<String> keys = null;
+        builder.append("[method:").append(method).append("][endpoint:").append(endpoint).append("]");
+        String cmd = null;
+        if(action == ACTION.DML.SELECT) {
+            cmd = getFinalQuery(placeholder);
+        }else if(action == ACTION.DML.COUNT) {
+            cmd = getTotalQuery(placeholder);
+        }else if(action == ACTION.DML.UPDATE) {
+            keys = getUpdateColumns();
+            cmd = getFinalUpdate(placeholder);
+        }else if(action == ACTION.DML.INSERT) {
+            keys = getInsertColumns();
+            cmd = getFinalInsert(placeholder);
+        }else if(action == ACTION.DML.EXECUTE) {
+            cmd = getFinalExecute(placeholder);
+        }else if(action == ACTION.DML.DELETE) {
+            cmd = getFinalDelete(placeholder);
+        }else if(action == ACTION.DML.EXISTS) {
+            cmd = getFinalExists(placeholder);
+        }
+        if(null != cmd && cmd.length()>0) {
+            builder.append("[cmd:\n").append(cmd);
+            builder.append("\n]");
+        }
+        if(placeholder) {
+            List<Object> values = getValues();
+            if(null!= values && !values.isEmpty()) {
+                builder.append("\n[param:");
+                builder.append(LogUtil.param(keys, getValues()));
+                builder.append("];");
+            }
+        }
+        return builder.toString();
+    }
     @Override
     public boolean isEmpty(){
         if(null != endpoint){
