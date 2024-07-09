@@ -456,12 +456,12 @@ public class FTPUtil {
  
     /**  
      * 格式化路径.  
-     * @param srcPath 原路径. /xxx/xxx/xxx.yyy 或 X:/xxx/xxx/xxx.yy  
+     * @param origin 原路径. /xxx/xxx/xxx.yyy 或 X:/xxx/xxx/xxx.yy
      * @return list, 第一个是路径（/xxx/xxx/）, 第二个是文件名（xxx.yy）
      */   
-    public static List<String> formatPath(String srcPath) {
+    public static List<String> formatPath(String origin) {
         List<String> list = new ArrayList<>(2);
-        String repSrc = srcPath.replaceAll("\\\\","/");
+        String repSrc = origin.replaceAll("\\\\","/");
         int firstP = repSrc.indexOf("/");   
         int lastP = repSrc.lastIndexOf("/");   
         String fileName = lastP + 1 == repSrc.length() ? "" : repSrc.substring(lastP + 1);   

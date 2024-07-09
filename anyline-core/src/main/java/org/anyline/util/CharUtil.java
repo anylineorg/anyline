@@ -207,11 +207,11 @@ public class CharUtil {
 
 	/**
 	 * 首字母大写
-	 * @param src src
+	 * @param origin 原文
 	 * @return String
 	 */
-	public static String toUpperCaseHeader(String src) {
-		char[] cs=src.toCharArray();
+	public static String toUpperCaseHeader(String origin) {
+		char[] cs=origin.toCharArray();
 		cs[0] = Character.toUpperCase(cs[0]);
 		return String.valueOf(cs);
 	}

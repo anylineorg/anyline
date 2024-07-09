@@ -19,12 +19,12 @@
 package org.anyline.data.param;
 
 public class DefaultPrepare {
-    public static String[] split(String src, String split) {
-        if(null == src) {
+    public static String[] split(String origin, String split) {
+        if(null == origin) {
             return null;
         }
         if(null == split) {
-            if(src.contains("|")) {
+            if(origin.contains("|")) {
                 split = "|";
             }else{
                 split = ",";
@@ -34,9 +34,9 @@ public class DefaultPrepare {
         if("|".equals(split)) {
             split = "\\|";
         }
-        return src.split(split);
+        return origin.split(split);
     }
-    public static String[] split(String src) {
-        return split(src, null);
+    public static String[] split(String origin) {
+        return split(origin, null);
     }
 }

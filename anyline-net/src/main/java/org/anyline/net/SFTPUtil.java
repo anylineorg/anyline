@@ -17,17 +17,10 @@
 
 
 package org.anyline.net;
- 
- 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Vector;
 
+
+import com.jcraft.jsch.*;
+import com.jcraft.jsch.ChannelSftp.LsEntry;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.DateUtil;
@@ -35,14 +28,9 @@ import org.anyline.util.FileUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.jcraft.jsch.Channel;
-import com.jcraft.jsch.ChannelSftp;
-import com.jcraft.jsch.ChannelSftp.LsEntry;
-import com.jcraft.jsch.JSch;
-import com.jcraft.jsch.Session;
-import com.jcraft.jsch.SftpATTRS;
-import com.jcraft.jsch.SftpException;
-import com.jcraft.jsch.SftpProgressMonitor;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.*;
  
 public class SFTPUtil {
 	private static Logger log = LoggerFactory.getLogger(SFTPUtil.class);
@@ -401,7 +389,7 @@ class SFTPProgressMonitor implements SftpProgressMonitor {
 	} 
  
 	@Override 
-	public void init(int op, String src, String dest, long max) {
+	public void init(int op, String origin, String dest, long max) {
 		log.debug("开始下载.");
 	} 
 	public long getStartTime() {

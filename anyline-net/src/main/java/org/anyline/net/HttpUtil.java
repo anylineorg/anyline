@@ -709,18 +709,18 @@ public class HttpUtil {
 
 	/**
 	 * url参数编码
-	 * @param src 原文
+	 * @param origin 原文
 	 * @param enable 转换成是否可访问格式
 	 * @param cn 是否编译中文
 	 * @return String
 	 */
-	public static String encode(String src, boolean enable, boolean cn) {
-		String result = src;
+	public static String encode(String origin, boolean enable, boolean cn) {
+		String result = origin;
 		if(cn) {
 			try {
-				result = URLEncoder.encode(src, "UTF-8");
+				result = URLEncoder.encode(origin, "UTF-8");
 			}catch (Exception e) {
-				return src;
+				return origin;
 			}
 		}else{
 			result = result

@@ -672,23 +672,22 @@ public class ConfigParser {
 	/**
 	 * 加密
 	 *
-	 * @param src  src
-	 *            原文
+	 * @param origin  原文
 	 * @param type  type
 	 *            原文类型
 	 * @return 加密>插入版本号>添加前缀
 	 */
-	private static String encryptByType(String src, String type, boolean mix) {
+	private static String encryptByType(String origin, String type, boolean mix) {
 		String result = null;
-		if (null == src) {
+		if (null == origin) {
 			return null;
 		}
-		if(isEncrypt(src, type)) {
-			return src;
+		if(isEncrypt(origin, type)) {
+			return origin;
 		}
 		DESUtil des = DESUtil.getInstance(defaultDesKey.getKey(type));
 		try {
-			result = des.encrypt(src);
+			result = des.encrypt(origin);
 			result = insertDESVersion(result);
 			String pre = defaultDesKey.getPrefix(type);
 			if(mix && ENCRYPT_TYPE_VALUE.equals(type)) {
@@ -702,15 +701,15 @@ public class ConfigParser {
 		}
 		return result;
 	}
-	public static String encryptByType(String src, String type) {
-		return encryptByType(src, type, false);
+	public static String encryptByType(String origin, String type) {
+		return encryptByType(origin, type, false);
 	}
 
-	public static String encryptKey(String src) {
-		if (null == src) {
-			return src;
+	public static String encryptKey(String origin) {
+		if (null == origin) {
+			return origin;
 		}
-		return encryptByType(src, ENCRYPT_TYPE_KEY);
+		return encryptByType(origin, ENCRYPT_TYPE_KEY);
 	}
 
 	public static String encryptValue(String src, boolean mix) {
