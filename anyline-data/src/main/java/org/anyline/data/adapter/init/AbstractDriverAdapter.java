@@ -1772,7 +1772,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			}
 		}
 		if(ConfigStore.IS_LOG_SQL_WARN(configs)) {
-			log.info("[check column metadata][src:{}][result:{}]", columns.size(), result.size());
+			log.info("[check column metadata][origin:{}][result:{}]", columns.size(), result.size());
 		}
 		return result;
 	}
@@ -10623,7 +10623,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	@Override
 	public List<Run> merge(DataRuntime runtime, Table meta, List<Run> slices){
 		List<Run> runs = new ArrayList<>();
-		Run run = null;
+		Run merge = null;
 		if(null != slices && !slices.isEmpty()){
 			StringBuilder builder = null;
 			boolean first = true;
@@ -10638,12 +10638,11 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 						runs.add(item);
 						continue;
 					}
-					if(null == run){
-						run = new SimpleRun(runtime);
-						builder = run.getBuilder();
+					if(null == merge){
+						merge = new SimpleRun(runtime);
+						builder = merge.getBuilder();
 						builder.append("ALTER ").append(keyword(meta)).append(" ");
 						name(runtime, builder, meta);
-						runs.add(run);
 					}
 					builder.append("\n");
 					if(!first) {
@@ -10653,6 +10652,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 					builder.append(line);
 				}
 			}
+		}
+		if(null != merge){
+			//合并的最后执行(pg rename不支持合并 先安排)
+			runs.add(merge);
 		}
 		return runs;
 	}

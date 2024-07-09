@@ -4998,16 +4998,16 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
     public List<Run> buildRenameRun(DataRuntime runtime, Column meta, boolean slice) throws Exception {
         List<Run> runs = new ArrayList<>();
         Run run = new SimpleRun(runtime);
+        run.slice(false);
         runs.add(run);
         checkName(runtime, null, meta);
         StringBuilder builder = run.getBuilder();
-        if(!slice(slice)) {
-            Table table = meta.getTable(true);
-            builder.append("ALTER ").append(keyword(table)).append(" ");
-            name(runtime, builder, meta.getTable(true));
-        }else{
-            run.slice(slice);
-        }
+        //不支持 RENAME 与其他 DDL 合并
+
+        Table table = meta.getTable(true);
+        builder.append("ALTER ").append(keyword(table)).append(" ");
+        name(runtime, builder, meta.getTable(true));
+
         builder.append(" RENAME ");
         delimiter(builder, meta.getName());
         builder.append(" TO ");
