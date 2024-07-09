@@ -496,13 +496,14 @@ public class ElasticSearchAdapter extends AbstractDriverAdapter implements Drive
     }
     /**
      * 过滤掉表结构中不存在的列
+     * ES不检测
      * @param table 表
      * @param columns columns
      * @return List
      */
     @Override
     public LinkedHashMap<String, Column> checkMetadata(DataRuntime runtime, Table table, ConfigStore configs, LinkedHashMap<String, Column> columns) {
-        return super.checkMetadata(runtime, table, configs, columns);
+        return columns;
     }
 
     /* *****************************************************************************************************************

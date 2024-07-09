@@ -236,7 +236,17 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
         }
         return cnt;
     }
-
+    /**
+     * 过滤掉表结构中不存在的列
+     * MONGO不检测
+     * @param table 表
+     * @param columns columns
+     * @return List
+     */
+    @Override
+    public LinkedHashMap<String, Column> checkMetadata(DataRuntime runtime, Table table, ConfigStore configs, LinkedHashMap<String, Column> columns) {
+        return columns;
+    }
     /**
      * 创建查询SQL
      * @param prepare  构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
