@@ -225,9 +225,25 @@ public Run setPrepare(RunPrepare prepare) {
 		return valid;
 	}
 	public void appendGroup() {
+		if(null != configs) {
+			if (null == groupStore) {
+				groupStore = configs.getGroups();
+			}
+			if (BasicUtil.isEmpty(having)) {
+				having = configs.getHaving();
+			}
+		}
+
 		if(null != groupStore) {
 			builder.append(groupStore.getRunText(delimiterFr+delimiterTo));
-		} 
+		}
+		if(BasicUtil.isNotEmpty(having)) {
+			if(having.trim().toUpperCase().startsWith("HAVING")) {
+				builder.append(having);
+			}else {
+				builder.append(" HAVING ").append(having);
+			}
+		}
 	}
 
 	/** 
