@@ -94,7 +94,7 @@ public class ConvertProxy {
         }
         Object result = value;
         if(null != result && null != target) {
-            Class clazz = result.getClass();
+            Class<? extends Object> clazz = result.getClass();
             if(ClassUtil.isInSub(clazz, target)) {
                 return result;
             }
@@ -1428,13 +1428,13 @@ public class ConvertProxy {
         reg(new AbstractConvert(Double.class, Float.class) {
             @Override
             public Object exe(Object value, Object def) throws ConvertException {
-                return Float.valueOf(((Double)value).floatValue());
+                return Float.valueOf(value.toString());
             }
         });
         reg(new AbstractConvert(Double.class, float.class) {
             @Override
             public Object exe(Object value, Object def) throws ConvertException {
-                return ((Double)value).floatValue();
+                return Float.valueOf(value.toString()).floatValue();
             }
         });
         reg(new AbstractConvert(Double.class, Short.class) {
@@ -1542,19 +1542,19 @@ public class ConvertProxy {
         reg(new AbstractConvert(double.class, Float.class) {
             @Override
             public Object exe(Object value, Object def) throws ConvertException {
-                return Float.valueOf(Double.valueOf((double)value).floatValue());
+                return Float.valueOf(value.toString()).floatValue();
             }
         });
         reg(new AbstractConvert(double.class, float.class) {
             @Override
             public Object exe(Object value, Object def) throws ConvertException {
-                return Double.valueOf((double)value).floatValue();
+                return Double.valueOf(value.toString()).floatValue();
             }
         });
         reg(new AbstractConvert(double.class, Short.class) {
             @Override
             public Object exe(Object value, Object def) throws ConvertException {
-                return Short.valueOf(Double.valueOf((double)value).shortValue());
+                return Short.valueOf(Double.valueOf(value.toString()).shortValue());
             }
         });
         reg(new AbstractConvert(double.class, short.class) {
@@ -1566,13 +1566,13 @@ public class ConvertProxy {
         reg(new AbstractConvert(double.class, Byte.class) {
             @Override
             public Object exe(Object value, Object def) throws ConvertException {
-                return Byte.valueOf(Double.valueOf((double)value).byteValue());
+                return Byte.valueOf(Double.valueOf(value.toString()).byteValue());
             }
         });
         reg(new AbstractConvert(double.class, byte.class) {
             @Override
             public Object exe(Object value, Object def) throws ConvertException {
-                return Double.valueOf((double)value).byteValue();
+                return Double.valueOf(value.toString()).byteValue();
             }
         });
         reg(new AbstractConvert(double.class, Character.class) {
@@ -1650,13 +1650,13 @@ public class ConvertProxy {
         reg(new AbstractConvert(Float.class, Double.class) {
             @Override
             public Object exe(Object value, Object def) throws ConvertException {
-                return Double.valueOf(((Float)value).doubleValue());
+                return Double.valueOf(value.toString()).doubleValue();
             }
         });
         reg(new AbstractConvert(Float.class, double.class) {
             @Override
             public Object exe(Object value, Object def) throws ConvertException {
-                return ((Float)value).doubleValue();
+                return Double.valueOf(value.toString()).doubleValue();
             }
         });
         reg(new AbstractConvert(Float.class, float.class) {
@@ -1770,7 +1770,7 @@ public class ConvertProxy {
         reg(new AbstractConvert(float.class, double.class) {
             @Override
             public Object exe(Object value, Object def) throws ConvertException {
-                return Float.valueOf((float)value).doubleValue();
+                return Float.valueOf(value.toString()).doubleValue();
             }
         });
         reg(new AbstractConvert(float.class, Float.class) {
