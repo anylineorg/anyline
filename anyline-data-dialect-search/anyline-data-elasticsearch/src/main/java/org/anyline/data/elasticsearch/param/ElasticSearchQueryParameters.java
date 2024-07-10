@@ -16,11 +16,9 @@
 
 package org.anyline.data.elasticsearch.param;
 
-import org.anyline.data.param.init.DefaultConfigStore;
-
 import java.util.Date;
 
-public class ElasticSearchConfigStore extends DefaultConfigStore {
+public class ElasticSearchQueryParameters {
     protected Boolean allow_no_indices;
     protected Boolean allow_partial_search_results;
     protected String analyzer;
@@ -64,14 +62,4 @@ public class ElasticSearchConfigStore extends DefaultConfigStore {
     protected Object track_total_hits;
     protected Boolean typed_keys;
     protected Boolean version;
-
-    protected String body;
-
-    public String getBody() {
-        return body;
-    }
-
-    public void setBody(String body) {
-        this.body = body;
-    }
 }
