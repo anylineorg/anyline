@@ -304,6 +304,17 @@ public interface DataSourceHolder {
 	}
 
 	/**
+	 * 数据源是否存在
+	 * @param datasource 数据源key对应注册时的key
+	 * @return boolean
+	 */
+	static boolean exists(String datasource){
+		if(null != datasource){
+			return RuntimeHolder.keys().contains(datasource);
+		}
+		return false;
+	}
+	/**
 	 * 鸡数据源是否可用
 	 * @param datasource 数据源
 	 * @return boolean
