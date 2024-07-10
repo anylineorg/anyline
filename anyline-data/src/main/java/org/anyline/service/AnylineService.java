@@ -30,6 +30,7 @@ import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.run.Run;
+import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.transaction.TransactionDefine;
 import org.anyline.data.transaction.TransactionState;
 import org.anyline.entity.*;
@@ -62,6 +63,7 @@ public interface AnylineService<E>{
 	 */
 	String datasource();
 	DriverAdapter adapter();
+	DataRuntime runtime();
 
 	/**
 	 * 验证相关数据源是否正常,异常会被捕捉并返回false
