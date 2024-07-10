@@ -581,7 +581,7 @@ public abstract class AbstractRun implements Run {
 		return this; 
 	} 
 	@Override 
-	public void setOrders(String[] orders) {
+	public void setOrders(String ... orders) {
 		if(null != orders) {
 			for(String order:orders) {
 				order(order); 

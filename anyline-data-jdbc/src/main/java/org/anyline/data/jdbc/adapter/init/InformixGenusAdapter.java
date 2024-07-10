@@ -1813,6 +1813,9 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
         runs.add(run);
         StringBuilder builder = run.getBuilder();
         builder.append("SELECT * FROM SYSTABLES  WHERE TABID > 99 AND TABTYPE = 'T'");
+        if(null != configs){
+            run.setPageNavi(configs.getPageNavi());
+        }
         return runs;
     }
 
@@ -2433,7 +2436,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return sqls
      */
     @Override
-    public List<Run> buildQueryColumnsRun(DataRuntime runtime, Table table, boolean metadata) throws Exception {
+    public List<Run> buildQueryColumnsRun(DataRuntime runtime, Table table, boolean metadata, ConfigStore configs) throws Exception {
         List<Run> runs = new ArrayList<>();
         Catalog catalog = null;
         Schema schema = null;
@@ -2461,7 +2464,10 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
             if(BasicUtil.isNotEmpty(name)) {
                 builder.append(" AND F.TABNAME = '").append(name).append("'");
             }
-            builder.append("\nORDER BY F.TABNAME");
+            run.setOrders("F.TABNAME");
+            if(null != configs){
+                run.setPageNavi(configs.getPageNavi());
+            }
         }
         return runs;
     }
@@ -2475,7 +2481,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return sqls
      */
     @Override
-    public List<Run> buildQueryColumnsRun(DataRuntime runtime, Catalog catalog, Schema schema, Collection<? extends Table> tables, boolean metadata) throws Exception {
+    public List<Run> buildQueryColumnsRun(DataRuntime runtime, Catalog catalog, Schema schema, Collection<? extends Table> tables, boolean metadata, ConfigStore configs) throws Exception {
         List<Run> runs = new ArrayList<>();
         Table table = null;
         if(!tables.isEmpty()) {
@@ -2497,8 +2503,10 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
             builder.append(" AND F.OWNER = '").append(schema.getName()).append("'");
         }
         in(runtime, builder, "F.TABNAME", Table.names(tables));
-        builder.append("\nORDER BY F.TABNAME");
-
+        run.setOrders("F.TABNAME");
+        if(null != configs){
+            run.setPageNavi(configs.getPageNavi());
+        }
         return runs;
     }
     /**

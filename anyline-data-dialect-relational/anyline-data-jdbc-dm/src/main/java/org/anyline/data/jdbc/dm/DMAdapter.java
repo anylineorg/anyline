@@ -2373,7 +2373,7 @@ public class DMAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return sqls
 	 */
 	@Override
-	public List<Run> buildQueryColumnsRun(DataRuntime runtime, Table table, boolean metadata) throws Exception {
+	public List<Run> buildQueryColumnsRun(DataRuntime runtime, Table table, boolean metadata, ConfigStore configs) throws Exception {
 		List<Run> runs = new ArrayList<>();
 		Catalog catalog = null;
 		Schema schema = null;
@@ -2400,6 +2400,9 @@ public class DMAdapter extends OracleGenusAdapter implements JDBCAdapter {
 			if(!empty(schema)) {
 				builder.append(" AND M.OWNER = '").append(schema.getName()).append("'");
 			}
+			if(null != configs){
+				run.setPageNavi(configs.getPageNavi());
+			}
 			//builder.append("\nORDER BY M.TABLE_NAME");
 		}
 		return runs;
@@ -2416,8 +2419,8 @@ public class DMAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return runs
 	 */
 	@Override
-	public List<Run> buildQueryColumnsRun(DataRuntime runtime, Catalog catalog, Schema schema, Collection<? extends Table> tables, boolean metadata) throws Exception {
-		return super.buildQueryColumnsRun(runtime, catalog, schema, tables, metadata);
+	public List<Run> buildQueryColumnsRun(DataRuntime runtime, Catalog catalog, Schema schema, Collection<? extends Table> tables, boolean metadata, ConfigStore configs) throws Exception {
+		return super.buildQueryColumnsRun(runtime, catalog, schema, tables, metadata, configs);
 	}
 	/**
 	 * column[结果集封装]<br/>

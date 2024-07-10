@@ -1482,40 +1482,79 @@ public interface AnylineDao<E>{
 	 * @return LinkedHashMap
 	 * @param <T> Column
 	 */
-	<T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Table table, boolean primary);
-	default <T extends Column> LinkedHashMap<String, T> columns(boolean greedy, Table table) {
-		return columns(runtime(), null, greedy, table, ConfigTable.IS_METADATA_AUTO_CHECK_COLUMN_PRIMARY);
+	<T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Table table, boolean primary, ConfigStore configs);
+	default <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Table table, boolean primary){
+		return columns(runtime, random, greedy, table, primary, null);
 	}
-	default <T extends Column> LinkedHashMap<String, T> columns(boolean greedy, String table) {
-		return columns(greedy, new Table(table));
+	default <T extends Column> LinkedHashMap<String, T> columns(boolean greedy, Table table, ConfigStore configs) {
+		return columns(runtime(), null, greedy, table, ConfigTable.IS_METADATA_AUTO_CHECK_COLUMN_PRIMARY, configs);
+	}
+	default <T extends Column> LinkedHashMap<String, T> columns(boolean greedy, Table table) {
+		return columns(runtime(), null, greedy, table, ConfigTable.IS_METADATA_AUTO_CHECK_COLUMN_PRIMARY, null);
+	}
+	default <T extends Column> LinkedHashMap<String, T> columns(boolean greedy, String table, ConfigStore configs) {
+		return columns(greedy, new Table(table), configs);
 	}
 
+	default <T extends Column> LinkedHashMap<String, T> columns(boolean greedy, String table) {
+		return columns(greedy, new Table(table), null);
+	}
+
+	default <T extends Column> LinkedHashMap<String, T> columns(boolean greedy, Catalog catalog, Schema schema, String table, ConfigStore configs) {
+		return columns(greedy, new Table(catalog, schema, table), configs);
+	}
 	default <T extends Column> LinkedHashMap<String, T> columns(boolean greedy, Catalog catalog, Schema schema, String table) {
-		return columns(greedy, new Table(catalog, schema, table));
+		return columns(greedy, new Table(catalog, schema, table), null);
+	}
+	default <T extends Column> LinkedHashMap<String, T> columns(Table table, ConfigStore configs) {
+		return columns(false, table, configs);
 	}
 	default <T extends Column> LinkedHashMap<String, T> columns(Table table) {
-		return columns(false, table);
+		return columns(false, table, null);
+	}
+	default <T extends Column> LinkedHashMap<String, T> columns(String table, ConfigStore configs) {
+		return columns(false, table, configs);
 	}
 	default <T extends Column> LinkedHashMap<String, T> columns(String table) {
-		return columns(false, table);
+		return columns(false, table, null);
+	}
+	default <T extends Column> LinkedHashMap<String, T> columns(Catalog catalog, Schema schema, String table, ConfigStore configs) {
+		return columns(new Table(catalog, schema, table), configs);
 	}
 	default <T extends Column> LinkedHashMap<String, T> columns(Catalog catalog, Schema schema, String table) {
-		return columns(new Table(catalog, schema, table));
+		return columns(new Table(catalog, schema, table), null);
 	}
 
-	<T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema);
+	<T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, ConfigStore configs);
 
+	default <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema){
+		return columns(runtime, random, greedy,catalog, schema, null);
+	}
+
+	default <T extends Column> List<T> columns(boolean greedy, Catalog catalog, Schema schema, ConfigStore configs) {
+		return columns(runtime(), null, greedy, catalog, schema, configs);
+	}
 	default <T extends Column> List<T> columns(boolean greedy, Catalog catalog, Schema schema) {
-		return columns(runtime(), null, greedy, catalog, schema);
+		return columns(runtime(), null, greedy, catalog, schema, null);
+	}
+	default <T extends Column> List<T> columns(Catalog catalog, Schema schema, ConfigStore configs) {
+		return columns(false, catalog, schema, configs);
 	}
 	default <T extends Column> List<T> columns(Catalog catalog, Schema schema) {
-		return columns(false, catalog, schema);
+		return columns(false, catalog, schema, (ConfigStore) null);
+	}
+	default <T extends Column> List<T> columns(boolean greedy, ConfigStore configs) {
+		return columns(greedy, (Catalog) null, (Schema) null, configs);
 	}
 	default <T extends Column> List<T> columns(boolean greedy) {
-		return columns(greedy, null, null);
+		return columns(greedy, (Catalog) null, (Schema) null);
 	}
+	default <T extends Column> List<T> columns(ConfigStore configs) {
+		return columns(false, (Catalog) null, (Schema) null, configs);
+	}
+
 	default <T extends Column> List<T> columns() {
-		return columns(false, null, null);
+		return columns(false, (Catalog) null, (Schema) null);
 	}
 
 	/* *****************************************************************************************************************

@@ -1776,6 +1776,9 @@ public class MSSQLAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 			}
 			builder.append(")");
 		}
+		if(null != configs){
+			run.setPageNavi(configs.getPageNavi());
+		}
 		return runs;
 	}
 
@@ -2429,7 +2432,7 @@ public class MSSQLAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 * @return sqls
 	 */
 	@Override
-	public List<Run> buildQueryColumnsRun(DataRuntime runtime, Table table, boolean metadata) throws Exception {
+	public List<Run> buildQueryColumnsRun(DataRuntime runtime, Table table, boolean metadata, ConfigStore configs) throws Exception {
 		List<Run> runs = new ArrayList<>();
 		String catalog = null;
 		String schema = null;
@@ -2463,7 +2466,10 @@ public class MSSQLAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 			if (null != name) {
 				builder.append(" AND OBJECT_NAME(c.OBJECT_ID) ='").append(objectName(runtime, name)).append("'");
 			}
-			builder.append("\nORDER BY c.OBJECT_ID");
+			run.setOrders("c.OBJECT_ID");
+			if(null != configs) {
+				run.setPageNavi(configs.getPageNavi());
+			}
 
 			//没有注释
 			/*Run r = new SimpleRun(runtime);

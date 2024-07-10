@@ -22,6 +22,7 @@ package org.anyline.dao.init;
 import org.anyline.adapter.PersistenceAdapter;
 import org.anyline.annotation.Component;
 import org.anyline.dao.AnylineDao;
+import org.anyline.data.param.Config;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.RunPrepare;
@@ -1200,19 +1201,19 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * LinkedHashMap<String, Column> columns(Catalog catalog, Schema schema, String table)
 	 ******************************************************************************************************************/
 	@Override
-	public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Table table, boolean primary) {
+	public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Table table, boolean primary, ConfigStore configs) {
 		if(null == runtime) {
 			runtime = runtime();
 		}
-		return runtime.getAdapter().columns(runtime, random, greedy, table, primary);
+		return runtime.getAdapter().columns(runtime, random, greedy, table, primary, configs);
 	}
 
 	@Override
-	public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema) {
+	public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, ConfigStore configs) {
 		if(null == runtime) {
 			runtime = runtime();
 		}
-		return runtime.getAdapter().columns(runtime, random, greedy, catalog, schema);
+		return runtime.getAdapter().columns(runtime, random, greedy, catalog, schema, configs);
 
 	}
 

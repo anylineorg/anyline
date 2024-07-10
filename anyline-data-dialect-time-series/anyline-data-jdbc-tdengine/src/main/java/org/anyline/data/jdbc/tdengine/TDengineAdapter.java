@@ -1737,6 +1737,9 @@ public class TDengineAdapter extends AbstractJDBCAdapter implements JDBCAdapter 
 		if (BasicUtil.isNotEmpty(pattern)) {
 			builder.append( " AND TABLE_NAME LIKE '" + pattern + "'");
 		}
+		if(null != configs){
+			r.setPageNavi(configs.getPageNavi());
+		}
 		return runs;
 	}
 
@@ -2606,7 +2609,7 @@ public class TDengineAdapter extends AbstractJDBCAdapter implements JDBCAdapter 
 	 * @return sqls
 	 */
 	@Override
-	public List<Run> buildQueryColumnsRun(DataRuntime runtime, Table table, boolean metadata) throws Exception {
+	public List<Run> buildQueryColumnsRun(DataRuntime runtime, Table table, boolean metadata, ConfigStore configs) throws Exception {
 		List<Run> runs = new ArrayList<>();
 		Catalog catalog = null;
 		Schema schema = null;

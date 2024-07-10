@@ -1705,6 +1705,9 @@ public class SQLiteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 		if(BasicUtil.isNotEmpty(pattern)) {
 			builder.append(" AND name LIKE '").append(pattern).append("'");
 		}
+		if(null != configs){
+			run.setPageNavi(configs.getPageNavi());
+		}
 		runs.add(run);
 		return runs;
 	}
@@ -2366,7 +2369,7 @@ public class SQLiteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 * @return sqls
 	 */
 	@Override
-	public List<Run> buildQueryColumnsRun(DataRuntime runtime, Table table, boolean metadata) throws Exception {
+	public List<Run> buildQueryColumnsRun(DataRuntime runtime, Table table, boolean metadata, ConfigStore configs) throws Exception {
 		List<Run> runs = new ArrayList<>();
 		Run run = new SimpleRun(runtime);
 		StringBuilder builder = run.getBuilder();
@@ -2386,7 +2389,7 @@ public class SQLiteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 * @return runs
 	 */
 	@Override
-	public List<Run> buildQueryColumnsRun(DataRuntime runtime, Catalog catalog, Schema schema, Collection<? extends Table> tables, boolean metadata) throws Exception {
+	public List<Run> buildQueryColumnsRun(DataRuntime runtime, Catalog catalog, Schema schema, Collection<? extends Table> tables, boolean metadata, ConfigStore configs) throws Exception {
 		//TOTO 待实现
 		return new ArrayList<>();
 	}

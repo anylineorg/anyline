@@ -2754,17 +2754,17 @@ public class DefaultService<E> implements AnylineService<E> {
         }
 
         @Override
-        public <T extends Column> List<T> columns(boolean greedy, Catalog catalog, Schema schema) {
-           return dao.columns(greedy, catalog, schema);
+        public <T extends Column> List<T> columns(boolean greedy, Catalog catalog, Schema schema, ConfigStore configs) {
+           return dao.columns(greedy, catalog, schema, configs);
         }
         @Override
-        public <T extends Column> LinkedHashMap<String, T> columns(boolean greedy, Table table) {
+        public <T extends Column> LinkedHashMap<String, T> columns(boolean greedy, Table table, ConfigStore configs) {
             String[] ps = DataSourceUtil.parseRuntime(table);
             if(null != ps[0]) {
                 table.setName(ps[1]);
-                return ServiceProxy.service(ps[0]).metadata().columns(greedy, table);
+                return ServiceProxy.service(ps[0]).metadata().columns(greedy, table, configs);
             }
-            LinkedHashMap<String, T> columns = dao.columns(greedy, table);
+            LinkedHashMap<String, T> columns = dao.columns(greedy, table, configs);
             return columns;
         }
 

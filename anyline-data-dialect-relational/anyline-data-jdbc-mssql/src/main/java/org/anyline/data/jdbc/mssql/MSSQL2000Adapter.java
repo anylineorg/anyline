@@ -286,6 +286,9 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter {
 		if(!empty(schema)) {
 			builder.append(" AND SCHEMA_NAME(M.SCHEMA_ID) = '").append(schema.getName()).append("'");
 		}
+        if(null != configs){
+            run.setPageNavi(configs.getPageNavi());
+        }
         //SYS.TABLES 中没有视图不需要过滤视图
         return runs;
     }

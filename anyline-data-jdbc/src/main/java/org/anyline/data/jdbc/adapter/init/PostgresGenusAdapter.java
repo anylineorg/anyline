@@ -2393,7 +2393,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return sqls
      */
     @Override
-    public List<Run> buildQueryColumnsRun(DataRuntime runtime, Table table, boolean metadata) throws Exception {
+    public List<Run> buildQueryColumnsRun(DataRuntime runtime, Table table, boolean metadata, ConfigStore configs) throws Exception {
         List<Run> runs = new ArrayList<>();
         String catalog = null;
         String schema = null;
@@ -2427,7 +2427,10 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
             if(BasicUtil.isNotEmpty(name)) {
                 builder.append(" AND M.TABLE_NAME = '").append(name).append("'");
             }
-            builder.append("\nORDER BY M.TABLE_NAME");
+            run.setOrders("M.TABLE_NAME");
+            if(null != configs){
+                run.setPageNavi(configs.getPageNavi());
+            }
         }
         return runs;
     }
@@ -2440,7 +2443,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return sqls
      */
     @Override
-    public List<Run> buildQueryColumnsRun(DataRuntime runtime, Catalog catalog, Schema schema, Collection<? extends Table> tables, boolean metadata) throws Exception {
+    public List<Run> buildQueryColumnsRun(DataRuntime runtime, Catalog catalog, Schema schema, Collection<? extends Table> tables, boolean metadata, ConfigStore configs) throws Exception {
         List<Run> runs = new ArrayList<>();
         Table table = null;
         if(!tables.isEmpty()) {
@@ -2468,8 +2471,10 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
             builder.append(" AND M.TABLE_SCHEMA = '").append(schema.getName()).append("'");
         }
         in(runtime, builder, "M.TABLE_NAME", Table.names(tables));
-        builder.append("\nORDER BY M.TABLE_NAME");
-
+        run.setOrders("M.TABLE_NAME");
+        if(null != configs){
+            run.setPageNavi(configs.getPageNavi());
+        }
         return runs;
     }
     /**

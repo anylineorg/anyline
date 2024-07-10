@@ -3357,7 +3357,10 @@ public interface DriverAdapter {
 	 * @return Column
 	 * @param <T>  Column
 	 */
-	<T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Table table, boolean primary);
+	<T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Table table, boolean primary, ConfigStore configs);
+	default <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Table table, boolean primary){
+		return columns(runtime, random, greedy, table, primary, null);
+	}
 
 	/**
 	 * column[调用入口]<br/>(方法1)<br/>
@@ -3371,9 +3374,18 @@ public interface DriverAdapter {
 	 * @return List
 	 * @param <T> Column
 	 */
-	<T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, Table table);
+	<T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, Table table, ConfigStore configs);
+	default <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, Table table){
+		return columns(runtime, random, greedy, catalog, schema, table, null);
+	}
+	default <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String table, ConfigStore configs) {
+		return columns(runtime, random, greedy, catalog, schema, new Table(table), configs);
+	}
 	default <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String table) {
-		return columns(runtime, random, greedy, catalog, schema, new Table(table));
+		return columns(runtime, random, greedy, catalog, schema, new Table(table), null);
+	}
+	default <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, ConfigStore configs) {
+		return columns(runtime, random, greedy, catalog, schema,(Table)null, configs);
 	}
 	default <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema) {
 		return columns(runtime, random, greedy, catalog, schema,(Table)null);
@@ -3391,7 +3403,10 @@ public interface DriverAdapter {
 	 * @return List
 	 * @param <T> Column
 	 */
-	<T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, Collection<? extends Table> tables);
+	<T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, Collection<? extends Table> tables, ConfigStore configs);
+	default <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, Collection<? extends Table> tables){
+		return columns(runtime, random, greedy, catalog, schema, tables, null);
+	}
 	/**
 	 * column[调用入口]<br/>(方法3)<br/>
 	 * DatabaseMetaData
@@ -3402,7 +3417,10 @@ public interface DriverAdapter {
 	 * @return pattern 列名称通配符
 	 * @throws Exception 异常
 	 */
-	<T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, LinkedHashMap<String, T> columns, Table table, String pattern) throws Exception;
+	<T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, LinkedHashMap<String, T> columns, Table table, String pattern, ConfigStore configs) throws Exception;
+	default <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, LinkedHashMap<String, T> columns, Table table, String pattern) throws Exception{
+		return columns(runtime, create, columns, table, pattern, null);
+	}
 
 	/**
 	 * column[命令合成]<br/>(方法1)<br/>
@@ -3412,7 +3430,10 @@ public interface DriverAdapter {
 	 * @param metadata 是否根据metadata(true:SELECT * FROM T WHERE 1=0,false:查询系统表)
 	 * @return sqls
 	 */
-	List<Run> buildQueryColumnsRun(DataRuntime runtime, Table table, boolean metadata) throws Exception;
+	List<Run> buildQueryColumnsRun(DataRuntime runtime, Table table, boolean metadata, ConfigStore configs) throws Exception;
+	default List<Run> buildQueryColumnsRun(DataRuntime runtime, Table table, boolean metadata) throws Exception{
+		return buildQueryColumnsRun(runtime, table, metadata, null);
+	}
 
 	/**
 	 * column[命令合成]<br/>(方法1)<br/>
@@ -3424,7 +3445,10 @@ public interface DriverAdapter {
 	 * @param metadata 是否根据metadata(true:SELECT * FROM T WHERE 1=0,false:查询系统表)
 	 * @return runs
 	 */
-	List<Run> buildQueryColumnsRun(DataRuntime runtime, Catalog catalog, Schema schema, Collection<? extends Table> tables, boolean metadata) throws Exception;
+	List<Run> buildQueryColumnsRun(DataRuntime runtime, Catalog catalog, Schema schema, Collection<? extends Table> tables, boolean metadata, ConfigStore configs) throws Exception;
+	default List<Run> buildQueryColumnsRun(DataRuntime runtime, Catalog catalog, Schema schema, Collection<? extends Table> tables, boolean metadata) throws Exception{
+		return buildQueryColumnsRun(runtime, catalog, schema, tables, metadata, null);
+	}
 	/**
 	 * column[结果集封装]<br/>(方法1)<br/>
 	 * 根据系统表查询SQL获取表结构

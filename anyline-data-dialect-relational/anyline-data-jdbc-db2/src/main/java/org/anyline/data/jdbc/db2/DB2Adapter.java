@@ -1681,6 +1681,9 @@ public class DB2Adapter extends InformixGenusAdapter implements JDBCAdapter {
 		if(BasicUtil.isNotEmpty(pattern)) {
 			builder.append(" AND TABNAME LIKE '").append(pattern).append("'");
 		}
+		if(null != configs){
+			run.setPageNavi(configs.getPageNavi());
+		}
 		return runs;
 	}
 
@@ -2365,7 +2368,7 @@ public class DB2Adapter extends InformixGenusAdapter implements JDBCAdapter {
 	 * @return sqls
 	 */
 	@Override
-	public List<Run> buildQueryColumnsRun(DataRuntime runtime, Table table, boolean metadata) throws Exception {
+	public List<Run> buildQueryColumnsRun(DataRuntime runtime, Table table, boolean metadata, ConfigStore configs) throws Exception {
 		List<Run> runs = new ArrayList<>();
 		Run run = new SimpleRun(runtime);
 		runs.add(run);
@@ -2375,11 +2378,11 @@ public class DB2Adapter extends InformixGenusAdapter implements JDBCAdapter {
 			name(runtime, builder, table);
 			builder.append(" WHERE 1=0");
 		}else{
-			String catalog = null;
+			//String catalog = null;
 			String schema = null;
 			String name = null;
 			if(null != table) {
-				catalog = table.getCatalogName();
+				//catalog = table.getCatalogName();
 				schema = table.getSchemaName();
 				name = table.getName();
 			}
@@ -2393,7 +2396,10 @@ public class DB2Adapter extends InformixGenusAdapter implements JDBCAdapter {
 			if(null != name) {
 				builder.append(" AND TABNAME = '").append(objectName(runtime, name)).append("'");
 			}
-			builder.append("\nORDER BY TABNAME, COLNO");
+			run.setOrders("TABNAME", "COLNO");
+			if(null != configs){
+				run.setPageNavi(configs.getPageNavi());
+			}
 		}
 		return runs;
 	}

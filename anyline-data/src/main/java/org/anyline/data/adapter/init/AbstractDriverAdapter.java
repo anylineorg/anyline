@@ -7699,11 +7699,150 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return Column
 	 * @param <T>  Column
 	 */
-	public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Table table, boolean primary) {
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Table table, boolean primary)", 37));
+	public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Table table, boolean primary, ConfigStore configs) {
+		if (!greedy) {
+			checkSchema(runtime, table);
 		}
-		return new LinkedHashMap<>();
+		Catalog catalog = table.getCatalog();
+		Schema schema = table.getSchema();
+		String key = CacheProxy.key(runtime, "table_columns", greedy, table);
+		LinkedHashMap<String,T> columns = CacheProxy.columns(key);
+		if(null != columns && !columns.isEmpty()) {
+			return columns;
+		}
+		long fr = System.currentTimeMillis();
+		if(null == random) {
+			random = random(runtime);
+		}
+		try {
+
+			int qty_total = 0;
+			int qty_dialect = 0; //优先根据系统表查询
+			int qty_metadata = 0; //再根据metadata解析
+			int qty_jdbc = 0; //根据驱动内置接口补充
+
+			// 1.优先根据系统表查询
+			try {
+				List<Run> runs = buildQueryColumnsRun(runtime, table, false, configs);
+				if (null != runs) {
+					int idx = 0;
+					for (Run run: runs) {
+						DataSet set = select(runtime, random, true, (String) null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run);
+						columns = columns(runtime, idx, true, table, columns, set);
+						idx++;
+					}
+				}
+				if(null != columns) {
+					qty_dialect = columns.size();
+					qty_total=columns.size();
+				}
+			} catch (Exception e) {
+				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+					e.printStackTrace();
+				}
+				if(primary) {
+					e.printStackTrace();
+				} if (ConfigTable.IS_LOG_SQL && log.isWarnEnabled()) {
+					log.warn("{}[columns][{}][catalog:{}][schema:{}][table:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, table, e.toString());
+				}
+			}
+			// 2.根据驱动内置接口补充
+			// 再根据metadata解析 SELECT * FROM T WHERE 1=0
+			if (null == columns || columns.isEmpty()) {
+				try {
+					List<Run> runs = buildQueryColumnsRun(runtime, table, true);
+					if (null != runs) {
+						for (Run run  : runs) {
+							String sql = run.getFinalQuery();
+							if(BasicUtil.isNotEmpty(sql)) {
+								columns = worker.columns(this, runtime, true, columns, table, sql);
+							}
+						}
+					}
+				} catch (Exception e) {
+					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+						log.error("columns exception:", e);
+					}else {
+						if (ConfigTable.IS_LOG_SQL && log.isWarnEnabled()) {
+							log.warn("{}[columns][{}][catalog:{}][schema:{}][table:{}][msg:{}]", random, LogUtil.format("根据metadata解析失败", 33), catalog, schema, table, e.toString());
+						}
+					}
+				}
+				if(null != columns) {
+					qty_metadata = columns.size() - qty_dialect;
+					qty_total = columns.size();
+				}
+			}
+			if (ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
+				log.info("{}[columns][catalog:{}][schema:{}][table:{}][total:{}][根据metadata解析:{}][根据系统表查询:{}][根据驱动内置接口补充:{}][执行耗时:{}]", random, catalog, schema, table, qty_total, qty_metadata, qty_dialect, qty_jdbc, DateUtil.format(System.currentTimeMillis() - fr));
+			}
+
+			// 方法(3)根据根据驱动内置接口补充
+			if (null == columns || columns.isEmpty()) {
+				columns = worker.metadata(this, runtime, true, columns, table, null);
+
+				if(null != columns) {
+					qty_total = columns.size();
+					qty_jdbc = columns.size() - qty_metadata - qty_dialect;
+				}
+			}
+			if (ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
+				log.info("{}[columns][catalog:{}][schema:{}][table:{}][total:{}][根据metadata解析:{}][根据系统表查询:{}][根据根据驱动内置接口补充:{}][执行耗时:{}]", random, catalog, schema, table, qty_total, qty_metadata, qty_dialect, qty_jdbc, DateUtil.format(System.currentTimeMillis() - fr));
+			}
+			//检测主键
+			if(ConfigTable.IS_METADATA_AUTO_CHECK_COLUMN_PRIMARY) {
+				if (null != columns || !columns.isEmpty()) {
+					boolean exists = false;
+					for(Column column:columns.values()) {
+						if(column.isPrimaryKey() != -1) {
+							exists = true;
+							break;
+						}
+					}
+					if(!exists) {
+						PrimaryKey pk = primary(runtime, random, false, table);
+						if(null != pk) {
+							LinkedHashMap<String,Column> pks = pk.getColumns();
+							if(null != pks) {
+								for(String k:pks.keySet()) {
+									Column column = columns.get(k);
+									if(null != column) {
+										column.primary(true);
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}catch (Exception e) {
+			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+				log.error("columns exception:", e);
+			}else{
+				log.error("{}[columns][result:fail][table:{}][msg:{}]", random, table, e.toString());
+			}
+		}
+		if(null != columns) {
+			CacheProxy.cache(key, columns);
+		}else{
+			columns = new LinkedHashMap<>();
+		}
+		int index = 0;
+		for(Column column:columns.values()) {
+			if(null == column.getPosition() || -1 == column.getPosition()) {
+				column.setPosition(index++);
+			}
+			if(column.isAutoIncrement() != 1) {
+				column.autoIncrement(false);
+			}
+			if(column.isPrimaryKey() != 1) {
+				column.setPrimary(false);
+			}
+			if(null == column.getTable() && !greedy) {
+				column.setTable(table);
+			}
+		}
+		return columns;
 	}
 
 	/**
@@ -7718,10 +7857,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return List
 	 * @param <T> Column
 	 */
-	public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, Table table) {
+	public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, Table table, ConfigStore configs) {
 		List<Table> tables = new ArrayList<>();
 		tables.add(table);
-		return columns(runtime, random, greedy, catalog, schema, tables);
+		return columns(runtime, random, greedy, catalog, schema, tables, configs);
 	}
 
 	/**
@@ -7737,7 +7876,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param <T> Column
 	 */
 	@Override
-	public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, Collection<? extends Table> tables) {
+	public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, Collection<? extends Table> tables, ConfigStore configs) {
 		List<T> columns = new ArrayList<>();
 		long fr = System.currentTimeMillis();
 		if(null == random) {
@@ -7757,7 +7896,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		//根据系统表查询
 		try {
-			List<Run> runs = buildQueryColumnsRun(runtime, catalog, schema, tables, false);
+			List<Run> runs = buildQueryColumnsRun(runtime, catalog, schema, tables, false, configs);
 			if (null != runs) {
 				int idx = 0;
 				for (Run run: runs) {
@@ -7807,7 +7946,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, LinkedHashMap<String, T> columns, Table table, String pattern) throws Exception {
+	public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, LinkedHashMap<String, T> columns, Table table, String pattern, ConfigStore configs) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, LinkedHashMap<String, T> columns, Table table, String pattern)", 37));
 		}
@@ -7823,7 +7962,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return sqls
 	 */
 	@Override
-	public List<Run> buildQueryColumnsRun(DataRuntime runtime, Table table, boolean metadata) throws Exception {
+	public List<Run> buildQueryColumnsRun(DataRuntime runtime, Table table, boolean metadata, ConfigStore configs) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryColumnsRun(DataRuntime runtime, Table table, boolean metadata)", 37));
 		}
@@ -7841,7 +7980,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return runs
 	 */
 	@Override
-	public List<Run> buildQueryColumnsRun(DataRuntime runtime, Catalog catalog, Schema schema, Collection<? extends Table> tables, boolean metadata) throws Exception {
+	public List<Run> buildQueryColumnsRun(DataRuntime runtime, Catalog catalog, Schema schema, Collection<? extends Table> tables, boolean metadata, ConfigStore configs) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryColumnsRun(DataRuntime runtime, Catalog catalog, Schema schema, Collection<? extends Table> tables, boolean metadata)", 37));
 		}

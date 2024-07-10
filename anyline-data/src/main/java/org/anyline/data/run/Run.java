@@ -51,7 +51,7 @@ public interface Run extends org.anyline.data.Run{
 	Run group(String group);
  
 	void setOrderStore(OrderStore orders) ; 
-	void setOrders(String[] orders); 
+	void setOrders(String ... orders);
 	OrderStore getOrderStore() ; 
 	Run order(String order);
 

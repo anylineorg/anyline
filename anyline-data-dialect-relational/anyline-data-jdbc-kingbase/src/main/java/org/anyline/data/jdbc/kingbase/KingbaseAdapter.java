@@ -2362,8 +2362,8 @@ public class KingbaseAdapter extends PostgresGenusAdapter implements JDBCAdapter
 	 * @return sqls
 	 */
 	@Override
-	public List<Run> buildQueryColumnsRun(DataRuntime runtime, Table table, boolean metadata) throws Exception {
-		return super.buildQueryColumnsRun(runtime, table, metadata);
+	public List<Run> buildQueryColumnsRun(DataRuntime runtime, Table table, boolean metadata, ConfigStore configs) throws Exception {
+		return super.buildQueryColumnsRun(runtime, table, metadata, configs);
 	}
 
 	/**
@@ -2377,8 +2377,8 @@ public class KingbaseAdapter extends PostgresGenusAdapter implements JDBCAdapter
 	 * @return runs
 	 */
 	@Override
-	public List<Run> buildQueryColumnsRun(DataRuntime runtime, Catalog catalog, Schema schema, Collection<? extends Table> tables, boolean metadata) throws Exception {
-		return super.buildQueryColumnsRun(runtime, catalog, schema, tables, metadata);
+	public List<Run> buildQueryColumnsRun(DataRuntime runtime, Catalog catalog, Schema schema, Collection<? extends Table> tables, boolean metadata, ConfigStore configs) throws Exception {
+		return super.buildQueryColumnsRun(runtime, catalog, schema, tables, metadata, configs);
 	}
 	/**
 	 * column[结果集封装]<br/>

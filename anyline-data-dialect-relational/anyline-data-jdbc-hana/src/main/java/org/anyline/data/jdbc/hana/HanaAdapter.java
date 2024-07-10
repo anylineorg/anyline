@@ -1699,6 +1699,9 @@ public class HanaAdapter extends OracleGenusAdapter implements JDBCAdapter {
 				builder.append(" AND VIEW_NAME LIKE '").append(pattern).append("'");
 			}
 		}
+		if(null != configs){
+			run.setPageNavi(configs.getPageNavi());
+		}
 		return runs;
 	}
 
@@ -2372,7 +2375,7 @@ public class HanaAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return sqls
 	 */
 	@Override
-	public List<Run> buildQueryColumnsRun(DataRuntime runtime, Table table, boolean metadata) throws Exception {
+	public List<Run> buildQueryColumnsRun(DataRuntime runtime, Table table, boolean metadata, ConfigStore configs) throws Exception {
 		List<Run> runs = new ArrayList<>();
 		Run run = new SimpleRun(runtime);
 		String name = null;
@@ -2389,6 +2392,9 @@ public class HanaAdapter extends OracleGenusAdapter implements JDBCAdapter {
 			builder.append("SELECT * FROM "+keyword(table)+"_COLUMNS \n");
 			if (BasicUtil.isNotEmpty(name)) {
 				builder.append("WHERE "+keyword(table)+"_NAME = '").append(name).append("'");
+			}
+			if(null != configs){
+				run.setPageNavi(configs.getPageNavi());
 			}
 		}
 		return runs;

@@ -2265,8 +2265,8 @@ public class SinoDBAdapter extends InformixGenusAdapter implements JDBCAdapter {
      * @return sqls
      */
     @Override
-    public List<Run> buildQueryColumnsRun(DataRuntime runtime, Table table, boolean metadata) throws Exception {
-        return super.buildQueryColumnsRun(runtime, table, metadata);
+    public List<Run> buildQueryColumnsRun(DataRuntime runtime, Table table, boolean metadata, ConfigStore configs) throws Exception {
+        return super.buildQueryColumnsRun(runtime, table, metadata, configs);
     }
 
     /**

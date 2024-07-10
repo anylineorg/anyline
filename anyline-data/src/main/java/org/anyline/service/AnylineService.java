@@ -3133,21 +3133,39 @@ public interface AnylineService<E>{
 		 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
 		 * @return map
 		 */
-		<T extends Column> LinkedHashMap<String, T> columns(boolean greedy, Table table);
+		<T extends Column> LinkedHashMap<String, T> columns(boolean greedy, Table table, ConfigStore configs);
+		default <T extends Column> LinkedHashMap<String, T> columns(boolean greedy, Table table){
+			return columns(greedy, table, null);
+		}
+		default <T extends Column> LinkedHashMap<String, T> columns(boolean greedy, String table, ConfigStore configs) {
+			return columns(greedy, new Table(table), configs);
+		}
 		default <T extends Column> LinkedHashMap<String, T> columns(boolean greedy, String table) {
-			return columns(greedy, new Table(table));
+			return columns(greedy, new Table(table), null);
+		}
+		default <T extends Column> LinkedHashMap<String, T> columns(boolean greedy, Catalog catalog, Schema schema, String table, ConfigStore configs) {
+			return columns(greedy, new Table(catalog, schema, table), configs);
 		}
 		default <T extends Column> LinkedHashMap<String, T> columns(boolean greedy, Catalog catalog, Schema schema, String table) {
-			return columns(greedy, new Table(catalog, schema, table));
+			return columns(greedy, new Table(catalog, schema, table), null);
+		}
+		default <T extends Column> LinkedHashMap<String, T> columns(Table table, ConfigStore configs) {
+			return columns(false, table, configs);
 		}
 		default <T extends Column> LinkedHashMap<String, T> columns(Table table) {
-			return columns(false, table);
+			return columns(false, table, null);
+		}
+		default <T extends Column> LinkedHashMap<String, T> columns(String table, ConfigStore configs) {
+			return columns(false, new Table(table), configs);
 		}
 		default <T extends Column> LinkedHashMap<String, T> columns(String table) {
 			return columns(false, new Table(table));
 		}
+		default <T extends Column> LinkedHashMap<String, T> columns(Catalog catalog, Schema schema, String table, ConfigStore configs) {
+			return columns(false, new Table(catalog, schema, table), configs);
+		}
 		default <T extends Column> LinkedHashMap<String, T> columns(Catalog catalog, Schema schema, String table) {
-			return columns(false, new Table(catalog, schema, table));
+			return columns(false, new Table(catalog, schema, table), null);
 		}
 
 		/**
@@ -3157,15 +3175,27 @@ public interface AnylineService<E>{
 		 * @param schema schema
 		 * @return List
 		 */
-		<T extends Column> List<T> columns(boolean greedy, Catalog catalog, Schema schema);
+		<T extends Column> List<T> columns(boolean greedy, Catalog catalog, Schema schema, ConfigStore configs);
+		default <T extends Column> List<T> columns(boolean greedy, Catalog catalog, Schema schema){
+			return columns(greedy, catalog, schema, (ConfigStore) null);
+		}
+		default <T extends Column> List<T> columns(Catalog catalog, Schema schema, ConfigStore configs) {
+			return columns(false, catalog, schema, configs);
+		}
 		default <T extends Column> List<T> columns(Catalog catalog, Schema schema) {
-			return columns(false, catalog, schema);
+			return columns(false, catalog, schema, (ConfigStore) null);
+		}
+		default <T extends Column> List<T> columns(boolean greedy, ConfigStore configs) {
+			return columns(greedy, (Catalog) null, (Schema) null, configs);
 		}
 		default <T extends Column> List<T> columns(boolean greedy) {
-			return columns(greedy, null, null);
+			return columns(greedy, (Catalog) null, (Schema) null, (ConfigStore) null);
+		}
+		default <T extends Column> List<T> columns(ConfigStore configs) {
+			return columns(false, (Catalog) null, (Schema)null, configs);
 		}
 		default <T extends Column> List<T> columns() {
-			return columns(false, null, null);
+			return columns(false, (Catalog) null, (Schema)null, (ConfigStore) null);
 		}
 
 		/**

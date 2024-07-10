@@ -1686,6 +1686,10 @@ public class IgniteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 		}
 		if(BasicUtil.isNotEmpty(pattern)) {
 			builder.append(" AND TABLE_NAME LIKE '").append(objectName(runtime, pattern)).append("'");
+		}
+
+		if(null != configs){
+			run.setPageNavi(configs.getPageNavi());
 		}/*
 		if(BasicUtil.isNotEmpty(types)) {
 			String[] tmps = types.split(",");
@@ -2387,7 +2391,7 @@ public class IgniteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 * @return sqls
 	 */
 	@Override
-	public List<Run> buildQueryColumnsRun(DataRuntime runtime, Table table, boolean metadata) throws Exception {
+	public List<Run> buildQueryColumnsRun(DataRuntime runtime, Table table, boolean metadata, ConfigStore configs) throws Exception {
 		List<Run> runs = new ArrayList<>();
 		Catalog catalog = null;
 		Schema schema = null;
@@ -2412,7 +2416,10 @@ public class IgniteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 			if(BasicUtil.isNotEmpty(name)) {
 				builder.append(" AND TABLE_NAME = '").append(objectName(runtime, name)).append("'");
 			}
-			builder.append("\nORDER BY TABLE_NAME");
+			run.setOrders("TABLE_NAME");
+			if(null != configs){
+				run.setPageNavi(configs.getPageNavi());
+			}
 		}
 		return runs;
 	}
