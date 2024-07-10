@@ -3027,6 +3027,8 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         adapter.setColumnPositionRefer("SEQ_IN_INDEX");
         adapter.setCheckPrimaryRefer("INDEX_NAME");
         adapter.setCheckPrimaryValue("PRIMARY");
+        adapter.setCheckUniqueRefer("NON_UNIQUE");
+        adapter.setCheckUniqueValue("0");
         adapter.setCatalogRefer("");
         return adapter;
     }
@@ -3124,9 +3126,6 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         meta =  super.detail(runtime, index, meta, table, row);
         if(row.getBoolean("PRIMARY_KEY", false)) {
             meta.setPrimary(true);
-        }
-        if("0".equals(row.getString("NON_UNIQUE"))) {
-            meta.setUnique(true);
         }
         return meta;
     }
