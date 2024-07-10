@@ -1969,7 +1969,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         }
 
         if(BasicUtil.isNotEmpty(pattern)) {
-            builder.append(" AND TABLE_NAME = '").append(pattern).append("'");
+            builder.append(" AND TABLE_NAME LIKE '").append(pattern).append("'");
         }
         return runs;
     }
