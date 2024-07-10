@@ -1195,6 +1195,7 @@ public class BeanUtil {
 		if(null == obj) {
 			return null;
 		}
+
 		if(null == keys || keys.isEmpty()) {
 			if(obj instanceof Map) {
 				try {

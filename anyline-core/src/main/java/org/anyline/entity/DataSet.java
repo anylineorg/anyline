@@ -124,9 +124,26 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
                 if(obj instanceof DataRow) {
                     row = (DataRow)obj;
                 }else if(obj instanceof Collection) {
-                    row = DataRow.parseList((Collection)obj, fields);
+                    row = DataRow.parseList(KEY_CASE.SRC, (Collection)obj, fields);
                 }else {
                     row = DataRow.parse(obj, fields);
+                }
+                set.add(row);
+            }
+        }
+        return set;
+    }
+    public static DataSet parse(KEY_CASE keyCase, Collection<?> list, String ... fields) {
+        DataSet set = new DataSet();
+        if (null != list) {
+            for (Object obj : list) {
+                DataRow row = null;
+                if(obj instanceof DataRow) {
+                    row = (DataRow)obj;
+                }else if(obj instanceof Collection) {
+                    row = DataRow.parseList(keyCase, (Collection)obj, fields);
+                }else {
+                    row = DataRow.parse(keyCase, obj, fields);
                 }
                 set.add(row);
             }

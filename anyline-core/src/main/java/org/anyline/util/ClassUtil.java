@@ -760,12 +760,18 @@ public class ClassUtil {
 		}
 		return null;
 	}
+
+
+	/**
+	 * 根据属性获取 集合或数组的泛型类,如果不同Map类型 只返回class[0]
+	 * @param field 属性
+	 * @return Class
+	 */
 	public static Class[] getComponentClasses(Field field) {
 		Class[] array = new Class[2];
 		//数组
 		if(field.getType().isArray()) {
 			array[0] = field.getType().getComponentType();
-			array[1] = array[0];
 		}
 		//集合
 		Type gtype = field.getGenericType();
@@ -782,7 +788,6 @@ public class ClassUtil {
 			}
 		}else if(gtype instanceof Class) {
 			array[0] = (Class) gtype;
-			array[1] = array[0];
 		}
 		return array;
 	}

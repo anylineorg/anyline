@@ -190,9 +190,9 @@ public enum StandardTypeMetadata implements TypeMetadata {
                 if(null == target) {
                     JsonNode node = BeanUtil.JSON_MAPPER.readTree(value.toString());
                     if (node.isArray()) {
-                        value = DataSet.parseJson(node);
+                        value = DataSet.parseJson(KeyAdapter.KEY_CASE.SRC, node);
                     } else {
-                        value = DataRow.parseJson(node);
+                        value = DataRow.parseJson(KeyAdapter.KEY_CASE.SRC, node);
                     }
                 }else{
                     value = super.convert(value, target, def);
@@ -221,7 +221,7 @@ public enum StandardTypeMetadata implements TypeMetadata {
                         boolean isDataRow = true;
                         while (items.hasNext()) {
                             JsonNode item = items.next();
-                            Object row = DataRow.parseJsonObject(KeyAdapter.KEY_CASE.CONFIG, item);
+                            Object row = DataRow.parseJsonObject(KeyAdapter.KEY_CASE.SRC, item);
                             if(row instanceof DataRow) {
                             }else{
                                 isDataRow = false;
@@ -229,12 +229,12 @@ public enum StandardTypeMetadata implements TypeMetadata {
                             list.add(row);
                         }
                         if(isDataRow) {
-                            value = DataSet.parse(list);
+                            value = DataSet.parse(KeyAdapter.KEY_CASE.SRC, list);
                         }else{
                             value = list;
                         }
                     } else {
-                        value = DataRow.parseJson(node);
+                        value = DataRow.parseJson(KeyAdapter.KEY_CASE.SRC, node);
                     }
                 }
             }catch (Exception e) {

@@ -209,9 +209,9 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
      * @param fields 下标对应的属性(字段/key)名称, 如果不输入则以下标作为DataRow的key, 如果属性数量超出list长度, 取null值存入DataRow
      * @return DataRow
      */
-    public static DataRow parseList(DataRow row, Collection<?> list, String... fields) {
+    public static DataRow parseList(KEY_CASE keyCase, DataRow row, Collection<?> list, String... fields) {
         if(null == row) {
-            row = new DataRow();
+            row = new DataRow(keyCase);
         }
         if (null != list) {
 
@@ -236,8 +236,14 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return row;
     }
 
+    public static DataRow parseList(DataRow row, Collection<?> list, String... fields) {
+        return parseList(KEY_CASE.CONFIG, row, list, fields);
+    }
     public static DataRow parseList(Collection<?> list, String... fields) {
-        return parseList(null, list, fields);
+        return parseList(KEY_CASE.CONFIG, null, list, fields);
+    }
+    public static DataRow parseList(KEY_CASE keyCase, Collection<?> list, String... fields) {
+        return parseList(keyCase, null, list, fields);
     }
 
     public DataRow setKeyCase(KEY_CASE keyCase) {
