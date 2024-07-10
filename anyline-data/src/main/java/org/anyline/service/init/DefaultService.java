@@ -32,6 +32,7 @@ import org.anyline.data.prepare.auto.init.DefaultTablePrepare;
 import org.anyline.data.prepare.auto.init.DefaultTextPrepare;
 import org.anyline.data.prepare.init.DefaultSQLStore;
 import org.anyline.data.run.Run;
+import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.util.DataSourceUtil;
 import org.anyline.entity.*;
 import org.anyline.exception.AnylineException;
@@ -69,6 +70,11 @@ public class DefaultService<E> implements AnylineService<E> {
     @Override
     public DriverAdapter adapter() {
         return dao.runtime().getAdapter();
+    }
+
+    @Override
+    public DataRuntime runtime() {
+        return dao.runtime();
     }
 
     public AnylineDao getDao() {
