@@ -20,12 +20,21 @@ package org.anyline.data.elasticsearch.entity;
 
 import org.anyline.entity.OriginRow;
 
-public class ElasticSearchDataRow extends OriginRow {
-    public ElasticSearchDataRow() {
+public class ElasticSearchRow extends OriginRow {
+    private float score;
+    public ElasticSearchRow() {
         primaryKeys.clear();
         primaryKeys.add("_id");
         parseKeyCase(keyCase);
         createTime = System.currentTimeMillis();
         nanoTime = System.currentTimeMillis();
+    }
+
+    public float getScore() {
+        return score;
+    }
+
+    public void setScore(float score) {
+        this.score = score;
     }
 }

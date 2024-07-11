@@ -19,10 +19,8 @@
 package org.anyline.data.elasticsearch.runtime;
 
 import org.anyline.data.adapter.DriverAdapter;
-import org.anyline.data.adapter.DriverAdapterHolder;
-import org.anyline.data.elasticsearch.entity.ElasticSearchDataRow;
+import org.anyline.data.elasticsearch.entity.ElasticSearchRow;
 import org.anyline.data.runtime.DataRuntime;
-import org.anyline.data.runtime.RuntimeHolder;
 import org.anyline.data.runtime.init.AbstractRuntime;
 import org.anyline.util.ConfigTable;
 import org.elasticsearch.client.RestClient;
@@ -32,7 +30,7 @@ public class ElasticSearchRuntime extends AbstractRuntime implements DataRuntime
     protected RestClient client;
 
     public ElasticSearchRuntime() {
-        ConfigTable.DEFAULT_ELASTIC_SEARCH_ENTITY_CLASS = ElasticSearchDataRow.class;
+        ConfigTable.DEFAULT_ELASTIC_SEARCH_ENTITY_CLASS = ElasticSearchRow.class;
     }
 
     public Object getProcessor() {

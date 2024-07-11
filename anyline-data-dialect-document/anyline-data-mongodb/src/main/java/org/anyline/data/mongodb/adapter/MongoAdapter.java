@@ -28,7 +28,7 @@ import org.anyline.adapter.EntityAdapter;
 import org.anyline.annotation.Component;
 import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.adapter.init.AbstractDriverAdapter;
-import org.anyline.data.mongodb.entity.MongoDataRow;
+import org.anyline.data.mongodb.entity.MongoRow;
 import org.anyline.data.mongodb.run.MongoRun;
 import org.anyline.data.mongodb.runtime.MongoRuntime;
 import org.anyline.data.param.ConfigStore;
@@ -428,7 +428,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
             if(ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
                 log.info("{}[cmd:select][collection:{}][filter:{}]", random, run.getTableName(), bson);
             }
-            FindIterable<MongoDataRow> rows = database.getCollection(run.getTableName(), MongoDataRow.class).find(bson);
+            FindIterable<MongoRow> rows = database.getCollection(run.getTableName(), MongoRow.class).find(bson);
             List<Bson> fields = new ArrayList<>();
             List<String> queryColumns = run.getQueryColumns();
             //查询的列
@@ -447,7 +447,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
             if(null != navi) {
                 rows.skip((int)navi.getFirstRow()).limit(navi.getPageRows());
             }
-            for(MongoDataRow row:rows) {
+            for(MongoRow row:rows) {
                 set.add(row);
             }
             if(ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {

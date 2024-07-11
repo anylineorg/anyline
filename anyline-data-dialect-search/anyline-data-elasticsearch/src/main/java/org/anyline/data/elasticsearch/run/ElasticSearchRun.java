@@ -88,7 +88,7 @@ public class ElasticSearchRun extends TableRun implements Run {
         }else if(action == ACTION.DML.EXISTS) {
             cmd = getFinalExists(placeholder);
         }
-        if(null != cmd && cmd.length()>0) {
+        if(null != cmd && !cmd.isEmpty()) {
             builder.append("[cmd:\n").append(cmd);
             builder.append("\n]");
         }
