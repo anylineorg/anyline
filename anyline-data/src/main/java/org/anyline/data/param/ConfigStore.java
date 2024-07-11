@@ -711,6 +711,28 @@ public interface ConfigStore extends Cloneable{
 		return and(Compare.LIKE, var, value);
 	}
 
+
+
+
+	default ConfigStore match(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue) {
+		return and(swt, Compare.MATCH, id, var, value, overCondition, overValue);
+	}
+	default ConfigStore match(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue) {
+		return and(swt, Compare.MATCH, var, value, overCondition, overValue);
+	}
+	default ConfigStore match(String id, String var, Object value, boolean overCondition, boolean overValue) {
+		return and(Compare.MATCH, id, var, value, overCondition, overValue);
+	}
+	default ConfigStore match(String var, Object value, boolean overCondition, boolean overValue) {
+		return and(Compare.MATCH, var, value, overCondition, overValue);
+	}
+	default ConfigStore match(String var, Object value) {
+		return and(Compare.MATCH, var, value);
+	}
+
+
+
+
 	default ConfigStore likePrefix(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(swt, Compare.START_WITH, id, var, value, overCondition, overValue);
 	}
