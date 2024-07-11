@@ -5435,6 +5435,161 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
             return set;
         }
 
+
+        /**
+         * values中有一个存在于item中即可
+         * @param key item.key
+         * @param values values
+         * @return DataSet
+         * @param <T> T
+         */
+        public <T> DataSet findInSetOr(String key, T... values) {
+            return findInSetOr(DataSet.this, key, BeanUtil.array2list(values));
+        }
+
+        public <T> DataSet findInSetOr(String key, Collection<T> values) {
+            return findInSetOr(DataSet.this, key, values);
+        }
+
+        private <T> DataSet findInSetOr(DataSet src, String key, Collection<T> values) {
+            DataSet set = new DataSet();
+            if (null != values) {
+                for (DataRow row : src) {
+                    Map<String, String> map = value2map(row.get(key));
+                    for(T value:values){
+                        if(null != value){
+                            String k = value.toString();
+                            if(ignoreCase){
+                                k = k.toUpperCase();
+                            }
+                            if(map.containsKey(k)){
+                                set.add(row);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            set.copyProperty(src);
+            return set;
+        }
+
+
+        /**
+         * values中每一个都存在于item中才返回
+         * @param key item.key
+         * @param values values
+         * @return DataSet
+         * @param <T> T
+         */
+        public <T> DataSet findInSetAnd(String key, T... values) {
+            return findInSetAnd(DataSet.this, key, BeanUtil.array2list(values));
+        }
+
+        public <T> DataSet findInSetAnd(String key, Collection<T> values) {
+            return findInSetAnd(DataSet.this, key, values);
+        }
+
+        private <T> DataSet findInSetAnd(DataSet src, String key, Collection<T> values) {
+            DataSet set = new DataSet();
+            if (null != values) {
+                for (DataRow row : src) {
+                    Map<String, String> map = value2map(row.get(key));
+                    boolean chk = true;
+                    for(T value:values){
+                        if(null == value){
+                            chk = false;
+                            break;
+                        }
+                        String k = value.toString();
+                        if(ignoreCase){
+                            k = k.toUpperCase();
+                        }
+                        if(!map.containsKey(k)){
+                            chk = false;
+                            break;
+                        }
+                    }
+                    if(chk){
+                        set.add(row);
+                    }
+                }
+            }
+            set.copyProperty(src);
+            return set;
+        }
+
+        /**
+         * values中有一个存在于item中即可
+         * @param key item.key
+         * @param values values
+         * @return DataSet
+         * @param <T> T
+         */
+        public <T> DataSet findInSet(String key, T... values) {
+            return findInSet(DataSet.this, key, BeanUtil.array2list(values));
+        }
+
+        public <T> DataSet findInSet(String key, Collection<T> values) {
+            return findInSet(DataSet.this, key, values);
+        }
+
+        private <T> DataSet findInSet(DataSet src, String key, Collection<T> values) {
+            return findInSetOr(src, key, values);
+        }
+
+        /**
+         * 集合转换成map
+         * @param obj a,b,c 或 [a,b,c] 或map
+         * @return
+         */
+        private Map<String, String> value2map(Object obj){
+            Map<String, String> map = new HashMap<>();
+            if(null == obj){
+                return map;
+            }
+            if(obj instanceof String){
+                String[] tmps = obj.toString().split(",");
+                for(String tmp:tmps){
+                    if(null != tmp){
+                        String k = tmp.trim();
+                        if(ignoreCase){
+                            k = k.toUpperCase();
+                        }
+                        map.put(k, null);
+                    }
+                }
+            }else if(obj instanceof Collection){
+                Collection items = (Collection) obj;
+                for(Object item:items){
+                    String k = item.toString().trim();
+                    if(ignoreCase){
+                        k = k.toUpperCase();
+                    }
+                    map.put(k, null);
+                }
+            }else if(obj instanceof Map){
+                Map maps = (Map)obj;
+                for(Object key:maps.keySet()){
+                    String k = key.toString().trim();
+                    if(ignoreCase){
+                        k = k.toUpperCase();
+                    }
+                    map.put(k, null);
+                }
+            }else if(obj.getClass().isArray()) {
+                List<Object> items = BeanUtil.list(obj);
+                for(Object item:items){
+                    String k = item.toString().trim();
+                    if(ignoreCase){
+                        k = k.toUpperCase();
+                    }
+                    map.put(k, null);
+                }
+            }
+
+            return map;
+        }
         public DataSet isNull(String... keys) {
             return isNull(DataSet.this, keys);
         }
@@ -5803,6 +5958,12 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
                 set = startWith(key, string(values));
             }else if(compare == Compare.END_WITH) {
                 set = endWith(key, string(values));
+            }else if(compare == Compare.FIND_IN_SET){
+                set = findInSet(key, values);
+            }else if(compare == Compare.FIND_IN_SET_OR){
+                set = findInSetOr(key, values);
+            }else if(compare == Compare.FIND_IN_SET_AND){
+                set = findInSetAnd(key, values);
             }
             return set;
         }
