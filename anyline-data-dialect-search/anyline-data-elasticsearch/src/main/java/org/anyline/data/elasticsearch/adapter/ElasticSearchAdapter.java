@@ -817,10 +817,14 @@ PUT * /_bulk
             int cc = compare.getCode();
             if(cc == 10) {                                           //  EQUAL
                 row.put("term").put(column, value);
-            }else if(cc == 50 || cc == 999) {                        //  LIKE Compare.REGEX
+            }else if(cc == 999) {                                   //  Compare.REGEX
+                row.put("wildcard").put(column, value);
+            }else if(cc == 50) {                                    //  LIKE
                 row.put("wildcard").put(column, "*"+value+"*");
             }else if(cc == 51) {                                     //  START_WITH
+                row.put("wildcard").put(column, value+"*");
             }else if(cc == 52) {                                     //  END_WITH
+                row.put("wildcard").put(column, "*"+value);
             }else if(cc == 55) {                                     //  MATCH
                 if(column.contains(",")){
                     String[] cols = column.split(",");
