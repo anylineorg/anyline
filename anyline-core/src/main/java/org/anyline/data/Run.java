@@ -113,8 +113,7 @@ public interface Run {
     void setFrom(int from);
     boolean isSetValue(String condition, String variable);
     boolean isSetValue(String variable);
-    Object getFilter();
-    Object getUpdate();
+
     List<String> getQueryColumns();
 
     List<String> getExcludeColumns();

@@ -202,10 +202,6 @@ public interface Run extends org.anyline.data.Run{
 	Variable getVariable(String var);
 	List<Variable> getVariables();
 
-	void setFilter(Object filter);
-	Object getFilter();
-	void setUpdate(Object update);
-	Object getUpdate();
 	Run setQueryColumns(String ... columns);
 	Run setQueryColumns(List<String> columns);
 	List<String> getQueryColumns();

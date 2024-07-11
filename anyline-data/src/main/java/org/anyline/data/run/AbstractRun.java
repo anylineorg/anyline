@@ -59,8 +59,6 @@ public abstract class AbstractRun implements Run {
 	protected String having;
 	protected List<Variable> variables;
 
-	protected Object filter;
-	protected Object update;
 	protected Object value;
 
 	protected EMPTY_VALUE_SWITCH swt = EMPTY_VALUE_SWITCH.IGNORE;
@@ -1052,26 +1050,6 @@ public abstract class AbstractRun implements Run {
 	}
 	public List<Variable> getVariables() {
 		return variables;
-	}
-
-	@Override
-	public void setFilter(Object filter) {
-		this.filter = filter;
-	}
-
-	@Override
-	public Object getFilter() {
-		return filter;
-	}
-
-	@Override
-	public Object getUpdate() {
-		return update;
-	}
-
-	@Override
-	public void setUpdate(Object update) {
-		this.update = update;
 	}
 
 	@Override
