@@ -818,6 +818,7 @@ PUT * /_bulk
             if(cc == 10) {                                           //  EQUAL
                 row.put("term").put(column, value);
             }else if(cc == 50 || cc == 999) {                        //  LIKE Compare.REGEX
+                row.put("wildcard").put(column, "*"+value+"*");
             }else if(cc == 51) {                                     //  START_WITH
             }else if(cc == 52) {                                     //  END_WITH
             }else if(cc == 55) {                                     //  MATCH
