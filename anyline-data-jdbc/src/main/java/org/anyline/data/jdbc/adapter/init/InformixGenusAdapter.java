@@ -211,6 +211,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
             pks = first.getPrimaryColumns();
             columns.putAll(pks);
         }
+        boolean el = ConfigStore.IS_AUTO_CHECK_EL_VALUE(configs);
         boolean head = true;
         for(DataRow row:set) {
             builder.append("INSERT INTO ");
@@ -232,7 +233,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
                 }
                 //createPrimaryValue(row, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
             }
-            builder.append(insertValue(runtime, run, row, head,true, false, false,true, columns));
+            builder.append(insertValue(runtime, run, row, head,true, false, false,true, el, columns));
             builder.append(";");
             head = false;
         }
@@ -324,6 +325,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
         for(String seq:seqs.keySet()) {
             columns.remove(seq.toUpperCase());
         }
+        boolean el = ConfigStore.IS_AUTO_CHECK_EL_VALUE(configs);
         int row = 0;
         for(Object obj:list) {
 			/*if(obj instanceof DataRow) {
@@ -347,7 +349,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
                 builder.append("\n\tUNION ALL");
             }
             builder.append("\n\tSELECT ");
-            builder.append(insertValue(runtime, run, obj, row==0,true,true, true,false, columns));
+            builder.append(insertValue(runtime, run, obj, row==0,true,true, true,false, el, columns));
             builder.append(" FROM DUAL ");
             row ++;
         }

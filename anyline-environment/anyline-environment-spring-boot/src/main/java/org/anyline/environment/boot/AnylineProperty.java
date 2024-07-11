@@ -199,7 +199,11 @@ public class AnylineProperty {
     /**
      * 是否自动检测关键字
      */
-    protected boolean autoCheckKeyword                          = true;         ;   
+    protected boolean autoCheckKeyword                          = true;         ;
+    /**
+     * 是否自动检测el值
+     */
+    protected boolean autoCheckElValue                          = true;         ;
     /**
      * 是否开启 界定符的占位符
      */
@@ -663,6 +667,15 @@ public class AnylineProperty {
     public void setAutoCheckKeyword(boolean autoCheckKeyword) {
         this.autoCheckKeyword = autoCheckKeyword;
         ConfigTable.IS_AUTO_CHECK_KEYWORD = autoCheckKeyword;
+    }
+
+    public boolean isAutoCheckElValue() {
+        return autoCheckElValue;
+    }
+
+    public void setAutoCheckElValue(boolean autoCheckElValue) {
+        this.autoCheckElValue = autoCheckElValue;
+        ConfigTable.IS_AUTO_CHECK_EL_VALUE = autoCheckElValue;
     }
 
     public boolean isSqlDelimiterOpen() {

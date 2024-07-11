@@ -170,6 +170,7 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter {
             delimiter(builder, key);
         }
         builder.append(")");
+        boolean el = ConfigStore.IS_AUTO_CHECK_EL_VALUE(configs);
         int dataSize = set.size();
         for(int i=0; i<dataSize; i++) {
             DataRow row = set.getRow(i);
@@ -183,7 +184,7 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter {
                 //createPrimaryValue(row, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
             }
             builder.append("\n SELECT ");
-            builder.append(insertValue(runtime, run, row, i==0, true, true, false, false, columns));
+            builder.append(insertValue(runtime, run, row, i==0, true, true, false, false, el, columns));
             if(i<dataSize-1) {
                 //多行数据之间的分隔符
                 builder.append("\n UNION ALL ");
@@ -236,6 +237,7 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter {
         builder.append(")\n ");
         int dataSize = list.size();
         int idx = 0;
+        boolean el = ConfigTable.IS_AUTO_CHECK_EL_VALUE;
         for(Object obj:list) {
             builder.append("\n SELECT ");
            /* if(obj instanceof DataRow) {
@@ -250,7 +252,7 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter {
                     generator.create(obj, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
                     //createPrimaryValue(obj, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, null);
                 }
-            builder.append(insertValue(runtime, run, obj, idx==0,true, true, false, false, columns));
+            builder.append(insertValue(runtime, run, obj, idx==0,true, true, false, false, el, columns));
            // }
             if(idx<dataSize-1) {
                 //多行数据之间的分隔符

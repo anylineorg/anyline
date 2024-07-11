@@ -1906,6 +1906,16 @@ public interface ConfigStore extends Cloneable{
 	}
 
 	/**
+	 * 是否自动检测el值
+	 * @return boolean
+	 */
+	default boolean IS_AUTO_CHECK_EL_VALUE() {
+		return getBoolean("IS_AUTO_CHECK_EL_VALUE", ConfigTable.IS_AUTO_CHECK_EL_VALUE);
+	}
+	default ConfigStore IS_AUTO_CHECK_EL_VALUE(boolean value){
+		return config("IS_AUTO_CHECK_EL_VALUE", value);
+	}
+	/**
 	 * 查询返回空DataSet时，是否检测元数据信息
 	 * @return boolean
 	 */
@@ -2023,6 +2033,7 @@ public interface ConfigStore extends Cloneable{
 	default boolean IS_REPLACE_EMPTY_NULL() {
 		return getBoolean("IS_REPLACE_EMPTY_NULL", ConfigTable.IS_REPLACE_EMPTY_NULL);
 	}
+
 	default ConfigStore IS_REPLACE_EMPTY_NULL(boolean value) {
 		return config("IS_REPLACE_EMPTY_NULL", value);
 	}
@@ -2110,6 +2121,12 @@ public interface ConfigStore extends Cloneable{
 		return ConfigTable.IS_AUTO_CHECK_METADATA;
 	}
 
+	static boolean IS_AUTO_CHECK_EL_VALUE(ConfigStore configs){
+		if(null != configs){
+			return configs.IS_AUTO_CHECK_EL_VALUE();
+		}
+		return ConfigTable.IS_AUTO_CHECK_EL_VALUE;
+	}
 
 	/**
 	 * 查询返回空DataSet时，是否检测元数据信息

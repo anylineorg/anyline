@@ -6985,6 +6985,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         StringBuilder builder = new StringBuilder();
         builder.append(insertSelectHead(columns, sequens));
         boolean first = true;
+        boolean el = ConfigStore.IS_AUTO_CHECK_EL_VALUE(configs);
         boolean batch = run.getBatch() > 1;
         for(DataRow row:set) {
             if(row.hasPrimaryKeys() && null != generator) {
@@ -6997,7 +6998,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
                 builder.append("\n\tSELECT ");
             }
             //只添加占位值
-            builder.append(insertValue(runtime, run, row, first,true,true, true,false, columns));
+            builder.append(insertValue(runtime, run, row, first,true,true, true,false, el, columns));
             if(first || !batch) {
                 builder.append(" FROM DUAL ");
             }
@@ -7010,6 +7011,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         StringBuilder builder = new StringBuilder();
         builder.append(insertSelectHead(columns, sequens));
         boolean batch = run.getBatch() > 1;
+        boolean el = ConfigStore.IS_AUTO_CHECK_EL_VALUE(configs);
         boolean first = true;
         for(Object obj:list) {
             boolean create = EntityAdapterProxy.createPrimaryValue(obj, pks);
@@ -7023,7 +7025,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
                 builder.append("\n\tSELECT ");
             }
             //只添加占位值
-            builder.append(insertValue(runtime, run, obj, first,true,true, true,false, columns));
+            builder.append(insertValue(runtime, run, obj, first,true,true, true,false, el, columns));
             if(first || !batch) {
                 builder.append(" FROM DUAL ");
             }

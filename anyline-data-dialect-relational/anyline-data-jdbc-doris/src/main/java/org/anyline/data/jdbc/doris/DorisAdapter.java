@@ -5177,7 +5177,7 @@ public class DorisAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 					builder.append(value);
 				}
 			}else if(str.startsWith("${") && str.endsWith("}")) {
-				builder.append(str.substring(2, str.length()-1));
+				builder.append(str, 2, str.length()-1);
 			}else {
 				def = write(runtime, meta, def, false);
 				if(null == def) {

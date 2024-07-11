@@ -113,6 +113,7 @@ public class ConfigTable {
 	public static boolean IS_REPLACE_EMPTY_NULL							= true			;   // 是否把""替换成null
 	public static boolean IS_SQL_DELIMITER_OPEN 						= false			;	// 是否开启 界定符
 	public static boolean IS_AUTO_CHECK_KEYWORD							= false			;   // 自动检测关键字
+	public static boolean IS_AUTO_CHECK_EL_VALUE						= true			;   // 自动检测el值
 	public static boolean IS_SQL_DELIMITER_PLACEHOLDER_OPEN 			= false			;	// 是否开启 界定符的占位符(用来实现自定义SQL根据不同的数据库添加不同的界定符, 写SQL时统一写成SQL_DELIMITER_PLACEHOLDER)
 	public static String SQL_DELIMITER_PLACEHOLDER						= "`"			;	// 界定符的占位符
 	public static boolean IS_RETURN_EMPTY_STRING_REPLACE_NULL			= false			;  // DataRow.getString返回null时替换成""
@@ -1009,6 +1010,7 @@ public class ConfigTable {
 	public boolean IS_AUTO_CHECK_KEYWORD() {
 		return IS_AUTO_CHECK_KEYWORD;
 	}
+	public boolean IS_AUTO_CHECK_EL_VALUE(){return IS_AUTO_CHECK_EL_VALUE;}
 
 	public boolean  IS_SQL_DELIMITER_PLACEHOLDER_OPEN() {
 		return IS_SQL_DELIMITER_PLACEHOLDER_OPEN;

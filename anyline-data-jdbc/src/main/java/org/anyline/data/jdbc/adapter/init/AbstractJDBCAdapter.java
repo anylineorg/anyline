@@ -351,6 +351,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		delimiter(builder, Column.names(columns));
 		builder.append(") VALUES ");
 		int dataSize = set.size();
+		boolean el = ConfigStore.IS_AUTO_CHECK_EL_VALUE(configs);
 		for(int i=0; i<dataSize; i++) {
 			DataRow row = set.getRow(i);
 			if(null == row) {
@@ -362,7 +363,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 				}
 				//createPrimaryValue(row, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
 			}
-			builder.append(insertValue(runtime, run, row, i==0,true, true, false, true, columns));
+			builder.append(insertValue(runtime, run, row, i==0,true, true, false, true, el, columns));
 			if(batch <=1) {
 				if (i < dataSize - 1) {
 					//多行数据之间的分隔符
@@ -409,6 +410,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		builder.append("(");
 		delimiter(builder, Column.names(columns));
 		builder.append(") VALUES ");
+		boolean el = ConfigStore.IS_AUTO_CHECK_EL_VALUE(configs);
 		int dataSize = list.size();
 		int idx = 0;
 		for(Object obj:list) {
@@ -424,7 +426,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 				generator.create(obj, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
 				//createPrimaryValue(obj, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, null);
 			}
-			builder.append(insertValue(runtime, run, obj, idx ==0,true, true, false, true, columns));
+			builder.append(insertValue(runtime, run, obj, idx ==0,true, true, false, true, el, columns));
 			//}
 			if(idx<dataSize-1 && batch <= 1) {
 				//多行数据之间的分隔符
@@ -552,6 +554,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		}else{
 			replaceEmptyNull = ConfigStore.IS_REPLACE_EMPTY_NULL(configs);
 		}
+		boolean el = ConfigStore.IS_AUTO_CHECK_EL_VALUE(configs);
 		String head = insertHead(configs);
 		builder.append(head);//.append(parseTable(dest));
 		name(runtime, builder, dest);
@@ -580,7 +583,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			delimiter(builder, key);
 
 			//if (str.startsWith("${") && str.endsWith("}")) {
-			if (BasicUtil.checkEl(str)) {
+			if (el && BasicUtil.checkEl(str)) {
 				value = str.substring(2, str.length()-1);
 				valuesBuilder.append(value);
 			}else if(value instanceof SQL_BUILD_IN_VALUE) {
@@ -9265,8 +9268,9 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @param columns          需要插入的列
 	 * @param head          是否第一行，批量时如果不是第1条，不需要生成
 	 * @param child          是否在子查询中，子查询中不要用序列
+	 * @param el          是否检测el格式 ${now()} &gt; now()
 	 */
-	protected String insertValue(DataRuntime runtime, Run run, Object obj, boolean head, boolean child, boolean placeholder, boolean alias, boolean scope, LinkedHashMap<String,Column> columns) {
+	protected String insertValue(DataRuntime runtime, Run run, Object obj, boolean head, boolean child, boolean placeholder, boolean alias, boolean scope, boolean el, LinkedHashMap<String,Column> columns) {
 		boolean batch = run.getBatch() > 1;
 		StringBuilder builder = new StringBuilder();
 		if(scope && (!batch||head)) {
@@ -9300,7 +9304,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 				}else if(value instanceof String) {
 					String str = (String)value;
 					//if(str.startsWith("${") && str.endsWith("}")) {
-					if(BasicUtil.checkEl(str)) {
+					if(el && BasicUtil.checkEl(str)) {
 						src = true;
 						place = false;
 						value = str.substring(2, str.length()-1);
