@@ -29,7 +29,10 @@ import org.anyline.data.elasticsearch.param.ElasticSearchRequestBody;
 import org.anyline.data.elasticsearch.run.ElasticSearchRun;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.init.DefaultConfigStore;
+import org.anyline.data.prepare.Condition;
+import org.anyline.data.prepare.ConditionChain;
 import org.anyline.data.prepare.RunPrepare;
+import org.anyline.data.prepare.auto.AutoCondition;
 import org.anyline.data.run.*;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
@@ -760,7 +763,89 @@ PUT * /_bulk
     }
     @Override
     protected void fillQueryContent(DataRuntime runtime, TableRun run) {
-        super.fillQueryContent(runtime, run);
+        ElasticSearchRun r = (ElasticSearchRun)run;
+        ConditionChain chain = r.getConditionChain();
+
+        ElasticSearchRequestBody request = new ElasticSearchRequestBody();
+        List<Condition> conditions = chain.getConditions();
+
+        DataRow body = new DataRow(KeyAdapter.KEY_CASE.SRC);
+        ConfigStore configs = run.getConfigs();
+        if(null != configs){
+            PageNavi navi = configs.getPageNavi();
+            if(null != navi){
+                body.put("from", navi.getFirstRow());
+                body.put("size", navi.getPageRows());
+            }
+            List<String> columns = configs.columns();
+            if(null != columns && !columns.isEmpty()){
+                body.put("_source", columns);
+            }
+        }
+        DataRow query = body.put("query");
+        DataRow bool = query.put("bool");
+        DataSet musts = bool.puts("must");
+
+        for(Condition condition:conditions) {
+            if(condition instanceof AutoCondition) {
+                AutoCondition auto = (AutoCondition)condition;
+                //List<RunValue> values = condition.getRunValues();
+                List<Object> values = auto.getValues();
+                String column = condition.getId();
+                String join = condition.getJoin();
+                DataRow must = codition(auto.getCompare(), column, values);
+                if(null != must) {
+                    musts.add(must);
+                }
+            }
+        }
+        request.setJson(body.json());
+        r.getBuilder().append(body.json());
+    }
+    private DataRow codition(Compare compare, String column, List<Object> values) {
+        DataRow row = new OriginRow();
+        if(null != values && !values.isEmpty()) {
+            Object value = null;
+            boolean multiple = compare.isMultipleValue();
+            if (multiple) {
+                List<Object> list = new ArrayList<>();
+                list.addAll(values);
+                value = list;
+            } else {
+                value = values.get(0);
+            }
+            int cc = compare.getCode();
+            if(cc == 10) {                                           //  EQUAL
+                row.put("term").put(column, value);
+            }else if(cc == 50 || cc == 999) {                        //  LIKE Compare.REGEX
+            }else if(cc == 51) {                                     //  START_WITH
+            }else if(cc == 52) {                                     //  END_WITH
+            }else if(cc == 55) {                                     //  MATCH
+                if(column.contains(",")){
+                    String[] cols = column.split(",");
+                    row.put("multi_match").set("query", value).set("fields", cols);
+                }else{
+                    row.put("match").put(column, value);
+                }
+            }else if(cc == 20) {                                     //  GREAT
+            }else if(cc == 21) {                                     //  GREAT_EQUAL
+            }else if(cc == 30) {                                     //  LESS
+            }else if(cc == 31) {                                     //  LESS_EQUAL
+            }else if(cc == 40) {                                     //  IN
+                row.put("terms").put(column, value);
+            }else if(cc == 80) {                                     //  BETWEEN
+                if(values.size() > 1) {
+                    row.put("range").put(column).set("gte", values.get(0)).set("lte",values.get(1));
+                }
+            }else if(cc == 110) {                                    //  NOT EQUAL
+            }else if(cc == 140) {                                    //  NOT IN
+            }else if(cc == 150) {                                    //  NOT LIKE
+            }else if(cc == 151) {                                    //  NOT START_WITH
+            }else if(cc == 152) {                                    //  NOT END_WITH
+            }
+
+        }
+        return row;
     }
     /**
      * select[命令合成-子流程] <br/>
