@@ -116,7 +116,7 @@ public class Column extends Metadata<Column> implements Serializable {
         }
     }
     protected String keyword = "COLUMN"           ;
-    protected String originName                   ; // 原名 SELECT ID AS USER_ID FROM USER; originName=ID, name=USER_ID
+    protected String originName                   ; // 原名,只有查询时才会区分,添加列时用name即可 SELECT ID AS USER_ID FROM USER; originName=ID, name=USER_ID
     protected String typeName                     ; // 类型名称 varchar完整类型调用getFullType > varchar(10)
     protected String originType                   ; // 原始类型(未解析,交给具体的adapter解析)
     protected TypeMetadata typeMetadata           ;
