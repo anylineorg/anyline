@@ -29,6 +29,7 @@ import org.anyline.annotation.Component;
 import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.adapter.init.AbstractDriverAdapter;
 import org.anyline.data.mongodb.entity.MongoDataRow;
+import org.anyline.data.mongodb.run.MongoRun;
 import org.anyline.data.mongodb.runtime.MongoRuntime;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.init.DefaultConfigStore;
@@ -108,7 +109,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
 
     @Override
     protected Run createInsertRun(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns) {
-        Run run = new TableRun(runtime, dest);
+        Run run = new MongoRun(runtime, dest);
         PrimaryGenerator generator = checkPrimaryGenerator(type(), dest.getName());
         if(null != generator) {
             Object pv = BeanUtil.getFieldValue(obj, "_id");
@@ -133,7 +134,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
 
     @Override
     protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore confis, List<String> columns) {
-        Run run = new TableRun(runtime, dest);
+        Run run = new MongoRun(runtime, dest);
         PrimaryGenerator generator = checkPrimaryGenerator(type(), dest.getName());
         if(null != generator) {
             List<String> pk = new ArrayList<>();
@@ -257,24 +258,22 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
 
     @Override
     public Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions) {
-        Run run = null;
+        MongoRun run = null;
         if(prepare instanceof TablePrepare) {
-            run = new TableRun(runtime, prepare.getTableName());
+            run = new MongoRun(runtime, prepare.getTableName());
         }else{
             throw new RuntimeException("不支持查询的类型");
         }
-        if(null != run) {
-            run.setRuntime(runtime);
-            //如果是text类型 将解析文本并抽取出变量
-            run.setPrepare(prepare);
-            run.setConfigStore(configs);
-            run.addCondition(conditions);
-            if(run.checkValid()) {
-                //为变量赋值
-                run.init();
-                //构造最终的查询SQL
-                fillQueryContent(runtime, run);
-            }
+        run.setRuntime(runtime);
+        //如果是text类型 将解析文本并抽取出变量
+        run.setPrepare(prepare);
+        run.setConfigStore(configs);
+        run.addCondition(conditions);
+        if(run.checkValid()) {
+            //为变量赋值
+            run.init();
+            //构造最终的查询SQL
+            fillQueryContent(runtime, run);
         }
         return run;
     }
@@ -287,31 +286,32 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
 
     @Override
     protected void fillQueryContent(DataRuntime runtime, TableRun run) {
+        MongoRun r = (MongoRun)run;
         Bson bson = null;
-        ConditionChain chain = run.getConditionChain();
+        ConditionChain chain = r.getConditionChain();
         bson = parseCondition(bson, chain);
-        run.setFilter(bson);
+        r.setFilter(bson);
 
-        List<String> excludeColumns = run.getExcludeColumns();
+        List<String> excludeColumns = r.getExcludeColumns();
         if(null == excludeColumns || excludeColumns.isEmpty()) {
-            ConfigStore configs = run.getConfigs();
+            ConfigStore configs = r.getConfigs();
             if(null != configs) {
                 excludeColumns = configs.columns();
             }
         }
         if(null != excludeColumns && excludeColumns.size()>0) {
-            run.setExcludeColumns(excludeColumns);
+            r.setExcludeColumns(excludeColumns);
         }
 
-        List<String> queryColumns = run.getQueryColumns();
+        List<String> queryColumns = r.getQueryColumns();
         if(null == queryColumns || queryColumns.isEmpty()) {
-            ConfigStore configs = run.getConfigs();
+            ConfigStore configs = r.getConfigs();
             if(null != configs) {
                 queryColumns = configs.columns();
             }
         }
         if(null != queryColumns && queryColumns.size()>0) {
-            run.setQueryColumns(queryColumns);
+            r.setQueryColumns(queryColumns);
         }
     }
     private Bson parseCondition(Bson bson, Condition condition) {
@@ -412,6 +412,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
     }
     @Override
     public DataSet select(DataRuntime runtime, String random, boolean system, Table table, ConfigStore configs, Run run) {
+        MongoRun r = (MongoRun) run;
         long fr = System.currentTimeMillis();
         if(null == random) {
             random = random(runtime);
@@ -420,7 +421,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
         try{
             MongoRuntime rt = (MongoRuntime) runtime;
             MongoDatabase database = rt.getDatabase();
-            Bson bson = (Bson)run.getFilter();
+            Bson bson = r.getFilter();
             if(null == bson) {
                 bson = Filters.empty();
             }
@@ -476,9 +477,10 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
 
     @Override
     public long count(DataRuntime runtime, String random, Run run) {
+        MongoRun r = (MongoRun)run;
         MongoRuntime rt = (MongoRuntime) runtime;
         MongoDatabase database = rt.getDatabase();
-        Bson bson = (Bson)run.getFilter();
+        Bson bson = r.getFilter();
         if(null == bson) {
             bson = Filters.empty();
         }
@@ -495,14 +497,15 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
 
     @Override
     public long update(DataRuntime runtime, String random, Table dest, Object data, ConfigStore configs, Run run) {
+        MongoRun mr = (MongoRun)run;
         long result = -1;
         ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
         long fr = System.currentTimeMillis();
-        log.info("{}[action:update][collection:{}][update:{}][filter:{}]", random, run.getTableName(), run.getUpdate(), run.getFilter());
+        log.info("{}[action:update][collection:{}][update:{}][filter:{}]", random, run.getTableName(), mr.getUpdate(), mr.getFilter());
         MongoRuntime rt = (MongoRuntime) runtime;
         MongoDatabase database = rt.getDatabase();
         MongoCollection cons = database.getCollection(run.getTableName());
-        UpdateResult dr = cons.updateMany((Bson)run.getFilter(), (Bson)run.getUpdate());
+        UpdateResult dr = cons.updateMany(mr.getFilter(), mr.getUpdate());
         result = dr.getMatchedCount();
         long millis = System.currentTimeMillis() - fr;
         boolean slow = false;
@@ -564,7 +567,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
 
     @Override
     public Run buildUpdateRunFromEntity(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, LinkedHashMap<String, Column> columns) {
-        TableRun run = new TableRun(runtime, dest);
+        MongoRun run = new MongoRun(runtime, dest);
         run.setFrom(2);
         LinkedHashMap<String, Column> cols = new LinkedHashMap<>();
         List<String> primaryKeys = new ArrayList<>();
@@ -654,7 +657,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
 
     @Override
     public Run buildUpdateRunFromDataRow(DataRuntime runtime, Table dest, DataRow row, ConfigStore configs, LinkedHashMap<String,Column> columns) {
-        TableRun run = new TableRun(runtime, dest);
+        MongoRun run = new MongoRun(runtime, dest);
         run.setFrom(1);
 
         /*确定需要更新的列*/
@@ -786,7 +789,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
             }
         }
         if(obj instanceof ConfigStore) {
-            run = new TableRun(runtime, dest);
+            run = new MongoRun(runtime, dest);
             RunPrepare prepare = new DefaultTablePrepare();
             prepare.setDest(dest);
             run.setPrepare(prepare);
@@ -819,7 +822,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
     @Override
     public List<Run> buildDeleteRun(DataRuntime runtime, Table table, ConfigStore configs) {
         List<Run> runs = new ArrayList<>();
-        TableRun run = new TableRun(runtime, table);
+        TableRun run = new MongoRun(runtime, table);
         run.setConfigs(configs);
         run.init();
         fillDeleteRunContent(runtime, run);
@@ -842,10 +845,11 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
     }
 
     protected void fillDeleteRunContent(DataRuntime runtime, TableRun run) {
+        MongoRun mr = (MongoRun)run;
         Bson bson = null;
         ConditionChain chain = run.getConditionChain();
         bson = parseCondition(bson, chain);
-        run.setFilter(bson);
+        mr.setFilter(bson);
     }
 
 /**
@@ -856,6 +860,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
      */
 
     public long delete(DataRuntime runtime, String random, ConfigStore configs, Run run) {
+        MongoRun mr = (MongoRun) run;
         long result = -1;
         boolean cmd_success = false;
         ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
@@ -870,11 +875,11 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
         if(swt == ACTION.SWITCH.BREAK) {
             return -1;
         }
-        log.info("{}[action:delete][collection:{}][filter:{}]", random, run.getTableName(), run.getFilter());
+        log.info("{}[action:delete][collection:{}][filter:{}]", random, run.getTableName(), mr.getFilter());
         MongoRuntime rt = (MongoRuntime) runtime;
         MongoDatabase database = rt.getDatabase();
         MongoCollection cons = database.getCollection(run.getTableName());
-        DeleteResult dr = cons.deleteMany((Bson)run.getFilter());
+        DeleteResult dr = cons.deleteMany(mr.getFilter());
         result = dr.getDeletedCount();
         cmd_success = true;
         long millis = System.currentTimeMillis() - fr;
