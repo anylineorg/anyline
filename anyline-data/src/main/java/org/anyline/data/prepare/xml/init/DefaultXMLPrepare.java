@@ -37,6 +37,7 @@ import org.anyline.metadata.Schema;
 import org.anyline.metadata.Table;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
+import org.anyline.util.SQLUtil;
 import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
 
@@ -163,10 +164,10 @@ public class DefaultXMLPrepare extends AbstractRunPrepare implements XMLPrepare 
 					addVariable(var); 
 				}// end for 
 			}else{
-				// AND CD = ? 
-				List<String> idxKeys = RegularUtil.fetch(text, "\\?",Regular.MATCH_MODE.CONTAIN,0); 
-				if(BasicUtil.isNotEmpty(true,idxKeys)) {
-					for(int i=0; i<idxKeys.size(); i++) {
+				// AND CD = ?
+				int qty = SQLUtil.countPlaceholder(text);
+				if(qty > 0) {
+					for(int i=0; i<qty; i++) {
 						Variable var = new DefaultVariable();
 						var.setType(Variable.VAR_TYPE_INDEX);
 						var.setSwt(Compare.EMPTY_VALUE_SWITCH.NULL);

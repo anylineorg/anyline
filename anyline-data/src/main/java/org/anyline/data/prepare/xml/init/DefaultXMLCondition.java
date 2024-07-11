@@ -29,6 +29,7 @@ import org.anyline.entity.Compare;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
+import org.anyline.util.SQLUtil;
 import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
 
@@ -158,12 +159,12 @@ public class DefaultXMLCondition extends AbstractCondition implements Condition 
 					addVariable(var); 
 				} 
 			}else{
-				List<String> idxKeys = RegularUtil.fetch(text, "\\?",Regular.MATCH_MODE.CONTAIN,0); 
-				if(BasicUtil.isNotEmpty(true,idxKeys)) {
+				int qty = SQLUtil.countPlaceholder(text);
+				if(qty > 0) {
 					// 按下标区分变量 
 					this.setVariableType(VARIABLE_PLACEHOLDER_TYPE_INDEX); 
 					int varType = Variable.VAR_TYPE_INDEX;
-					for(int i=0; i<idxKeys.size(); i++) {
+					for(int i=0; i<qty; i++) {
 						Variable var = new DefaultVariable();
 						var.setType(varType); 
 						var.setKey(id); 

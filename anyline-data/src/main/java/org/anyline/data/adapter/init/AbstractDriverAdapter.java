@@ -2320,9 +2320,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				}// end for
 			}else{
 				// AND CD = ?
-				List<String> idxKeys = RegularUtil.fetch(text, "\\?", Regular.MATCH_MODE.CONTAIN, 0);
-				if(BasicUtil.isNotEmpty(true, idxKeys)) {
-					for(int i=0; i<idxKeys.size(); i++) {
+				int qty = SQLUtil.countPlaceholder(text);
+				if(qty > 0) {
+					for(int i=0; i<qty; i++) {
 						Variable var = new DefaultVariable();
 						var.setType(Variable.VAR_TYPE_INDEX);
 						var.setSwt(Compare.EMPTY_VALUE_SWITCH.NULL);

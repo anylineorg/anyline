@@ -20,12 +20,16 @@
 package org.anyline.util;
 
 import org.anyline.metadata.Metadata;
+import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashSet;
 import java.util.List;
 
 public class SQLUtil {
+	private static Logger log = LoggerFactory.getLogger(SQLUtil.class);
 
 	public static HashSet<String> keys = new HashSet<>();
 	static {
@@ -247,5 +251,30 @@ public class SQLUtil {
 			}
 		}
 		return true;
+	}
+
+	/**
+	 * 计算占位符数量
+	 * 注意过滤引号内的符号
+	 * @param txt 原文
+	 * @return int
+	 */
+	public static int countPlaceholder(String txt){
+		int qty = 0;
+		try {
+			String reg = "(?:'[^']*'|\"[^\"]*\")";
+			//先抽取单双引号内的符号
+			List<String> keys = RegularUtil.fetch(txt, reg, Regular.MATCH_MODE.CONTAIN, 0);
+			String tmp = BeanUtil.concat(keys);
+			keys = RegularUtil.fetch(tmp, "\\?", Regular.MATCH_MODE.CONTAIN, 0);
+			//计算引号内符号数量
+			qty = keys.size();
+			keys = RegularUtil.fetch(txt, "\\?", Regular.MATCH_MODE.CONTAIN, 0);
+			//全部符号数量 - 此号内符号数量
+			qty = keys.size() - qty;
+		}catch (Exception e){
+			log.warn("占位符正则表达式解析异常:", e);
+		}
+		return qty;
 	}
 } 
