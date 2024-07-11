@@ -22,6 +22,7 @@ import org.anyline.adapter.KeyAdapter;
 import org.anyline.annotation.Component;
 import org.anyline.data.adapter.DriverActuator;
 import org.anyline.data.adapter.DriverAdapter;
+import org.anyline.data.elasticsearch.entity.ElasticSearchDataRow;
 import org.anyline.data.elasticsearch.run.ElasticSearchRun;
 import org.anyline.data.elasticsearch.runtime.ElasticSearchRuntime;
 import org.anyline.data.param.ConfigStore;
@@ -115,8 +116,12 @@ public class ElasticSearchActuator implements DriverActuator {
             DataRow json = DataRow.parseJson(KeyAdapter.KEY_CASE.SRC, txt);
             DataSet hits = (DataSet)json.recursion("hits", "hits");
             for(DataRow hit:hits){
-                DataRow row = hit.getRow("_source");
-                row.put("_id", hit.getString("_id"));
+                DataRow row = new ElasticSearchDataRow();
+                DataRow source = hit.getRow("_source");
+                if(null != source){
+                    row.putAll(source);
+                }
+                row.put("_id", hit.get("_id"));
                 set.add(row);
             }
         }else{

@@ -420,7 +420,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
             return list;
         } else if (json.isObject()) {
             DataRow row = null;
-            if(null != obj && obj instanceof DataRow) {
+            if(obj instanceof DataRow) {
                 row = (DataRow)obj;
             }else{
                 row = new DataRow(keyCase);

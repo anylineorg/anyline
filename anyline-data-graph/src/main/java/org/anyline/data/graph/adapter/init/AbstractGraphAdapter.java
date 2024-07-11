@@ -1876,9 +1876,9 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 				}
 			}
 			if (!slow && log.isInfoEnabled() && ConfigStore.IS_LOG_SQL_TIME(configs)) {
-				String qty = ""+result;
+				String qty = "" + result;
 				if(batch>1) {
-					qty = "约"+result;
+					qty = "约" + result;
 				}
 				log.info("{}[action:{}][执行耗时:{}][影响行数:{}]", random, action, DateUtil.format(millis), LogUtil.format(qty, 34));
 			}
