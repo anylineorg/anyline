@@ -16,25 +16,31 @@
 
 package org.anyline.data.elasticsearch.run;
 
-import org.anyline.data.run.SimpleRun;
+import org.anyline.data.run.Run;
+import org.anyline.data.run.TableRun;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.metadata.ACTION;
+import org.anyline.metadata.Table;
 import org.anyline.util.LogUtil;
 
 import java.util.List;
 
-public class ElasticSearchRun extends SimpleRun {
+public class ElasticSearchRun extends TableRun implements Run {
     private String method;
     private String endpoint;
-    public ElasticSearchRun(DataRuntime runtime, String cmd){
-        super(runtime, cmd);
+
+    public ElasticSearchRun(DataRuntime runtime) {
+        super(runtime, (Table)null);
     }
-    public ElasticSearchRun(DataRuntime runtime){
-        super(runtime);
+
+    public ElasticSearchRun(DataRuntime runtime, String table) {
+        super(runtime, table);
     }
-    public ElasticSearchRun(DataRuntime runtime, StringBuilder builder){
-        super(runtime, builder);
+
+    public ElasticSearchRun(DataRuntime runtime, Table table) {
+        super(runtime, table);
     }
+
 
     public String getMethod() {
         return method;

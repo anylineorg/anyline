@@ -262,7 +262,7 @@ public class ElasticSearchAdapter extends AbstractDriverAdapter implements Drive
      */
     @Override
     protected Run createInsertRun(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns) {
-        ElasticSearchRun run = new ElasticSearchRun(runtime);
+        ElasticSearchRun run = new ElasticSearchRun(runtime, dest);
         run.action(ACTION.DML.INSERT);
         run.setMethod("POST");
         String endpoint = dest.getName()+"/_doc/"; // 有没有/后缀都可以
@@ -294,7 +294,7 @@ public class ElasticSearchAdapter extends AbstractDriverAdapter implements Drive
      */
     @Override
     protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, List<String> columns) {
-        ElasticSearchRun run = new ElasticSearchRun(runtime);
+        ElasticSearchRun run = new ElasticSearchRun(runtime, dest);
         run.action(ACTION.DML.INSERT);
         run.setMethod("POST");
         String endpoint = null;
@@ -710,7 +710,7 @@ PUT * /_bulk
      */
     @Override
     public Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions) {
-        ElasticSearchRun run = new ElasticSearchRun(runtime);
+        ElasticSearchRun run = new ElasticSearchRun(runtime, prepare.getTableName());
         run.setMethod("POST");
         String endpoint = null;
         String index_name = prepare.getTableName();
@@ -1129,7 +1129,7 @@ PUT * /_bulk
     @Override
     public List<Run> buildDeleteRun(DataRuntime runtime, Table dest, ConfigStore configs, Object obj, String ... columns) {
         List<Run> runs = new ArrayList<>();
-        ElasticSearchRun run = new ElasticSearchRun(runtime);
+        ElasticSearchRun run = new ElasticSearchRun(runtime, dest);
         run.setTable(dest);
         run.action(ACTION.DML.DELETE);
         if(obj instanceof Collection){
@@ -3541,7 +3541,7 @@ PUT * /_bulk
     @Override
     public List<Run> buildCreateRun(DataRuntime runtime, Table meta) throws Exception {
         List<Run> runs = new ArrayList<>();
-        ElasticSearchRun run = new ElasticSearchRun(runtime);
+        ElasticSearchRun run = new ElasticSearchRun(runtime, meta);
         run.setTable(meta);
         run.action(ACTION.DDL.TABLE_CREATE);
         run.setMethod("PUT");
@@ -3608,7 +3608,7 @@ PUT * /_bulk
     @Override
     public List<Run> buildDropRun(DataRuntime runtime, Table meta) throws Exception {
         List<Run> runs = new ArrayList<>();
-        ElasticSearchRun run = new ElasticSearchRun(runtime);
+        ElasticSearchRun run = new ElasticSearchRun(runtime, meta);
         run.setTable(meta);
         run.action(ACTION.DDL.TABLE_DROP);
         run.setMethod("DELETE");
