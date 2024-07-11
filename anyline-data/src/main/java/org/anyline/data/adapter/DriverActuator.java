@@ -33,8 +33,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public interface DriverWorker {
-    Logger log = LoggerFactory.getLogger(DriverWorker.class);
+public interface DriverActuator {
+    Logger log = LoggerFactory.getLogger(DriverActuator.class);
     /**
      * 根据类型注入到DriverAdapter中
      * @return Class

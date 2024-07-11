@@ -98,8 +98,8 @@ public interface DriverAdapter {
 	 * @return LinkedHashMap
 	 */
 	LinkedHashMap<String, TypeMetadata> alias();
-	void setWorker(DriverWorker worker);
-	DriverWorker getWorker();
+	void setActuator(DriverActuator actuator);
+	DriverActuator getActuator();
 	boolean supportCatalog();
 	boolean supportSchema();
 	void setListener(DDListener listener);

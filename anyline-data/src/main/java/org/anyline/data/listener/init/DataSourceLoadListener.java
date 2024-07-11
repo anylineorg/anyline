@@ -23,7 +23,7 @@ import org.anyline.bean.LoadListener;
 import org.anyline.cache.CacheProvider;
 import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.adapter.DriverAdapterHolder;
-import org.anyline.data.adapter.DriverWorker;
+import org.anyline.data.adapter.DriverActuator;
 import org.anyline.data.datasource.DataSourceLoader;
 import org.anyline.data.interceptor.*;
 import org.anyline.data.listener.DDListener;
@@ -59,7 +59,7 @@ public class DataSourceLoadListener implements LoadListener {
         DMListener dmListener = ConfigTable.environment().getBean(DMListener.class);
         DDListener ddListener = ConfigTable.environment().getBean(DDListener.class);
         Map<String, DriverAdapter> adapters = ConfigTable.environment().getBeans(DriverAdapter.class);
-        Map<String, DriverWorker> workers = ConfigTable.environment().getBeans(DriverWorker.class);
+        Map<String, DriverActuator> workers = ConfigTable.environment().getBeans(DriverActuator.class);
         Map<String, DataSourceLoader> loaders =ConfigTable.environment().getBeans(DataSourceLoader.class);
 
         //数据库操作适配器
@@ -91,17 +91,17 @@ public class DataSourceLoadListener implements LoadListener {
             adapters = ConfigTable.environment().getBeans(DriverAdapter.class);
         }
         if(null == workers || workers.isEmpty()) {
-            workers = ConfigTable.environment().getBeans(DriverWorker.class);
+            workers = ConfigTable.environment().getBeans(DriverActuator.class);
         }
         if(null != workers && null != adapters) {
-            for(DriverWorker worker:workers.values()) {
+            for(DriverActuator worker:workers.values()) {
                 Class clazz = worker.supportAdapterType();
                 for(DriverAdapter adapter:adapters.values()) {
                     if(ClassUtil.isInSub(adapter.getClass(), clazz)) {
-                        DriverWorker origin = adapter.getWorker();
+                        DriverActuator origin = adapter.getActuator();
                         //没有设置过worker 或原来的优先级更低
                         if(null == origin || origin.priority() < worker.priority()) {
-                            adapter.setWorker(worker);
+                            adapter.setActuator(worker);
                         }
                     }
                 }

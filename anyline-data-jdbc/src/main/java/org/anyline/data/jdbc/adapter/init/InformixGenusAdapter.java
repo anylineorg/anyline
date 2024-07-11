@@ -6409,7 +6409,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
         }
         builder.append(") M");
         try{
-            List<Map<String, Object>> maps = worker.maps(this, runtime, null, null, run);
+            List<Map<String, Object>> maps = actuator.maps(this, runtime, null, null, run);
             int i=0;
             for(Object obj:list) {
                 Object value = maps.get(i++).get("ID");

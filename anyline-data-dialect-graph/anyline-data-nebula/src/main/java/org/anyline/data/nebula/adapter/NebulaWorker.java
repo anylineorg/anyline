@@ -16,7 +16,7 @@
 
 
 
-package org.anyline.data.nebula.worker;
+package org.anyline.data.nebula.adapter;
 
 import com.vesoft.nebula.Vertex;
 import com.vesoft.nebula.client.graph.SessionPool;
@@ -24,11 +24,10 @@ import com.vesoft.nebula.client.graph.data.DateWrapper;
 import com.vesoft.nebula.client.graph.data.ResultSet;
 import com.vesoft.nebula.client.graph.data.ValueWrapper;
 import org.anyline.annotation.Component;
+import org.anyline.data.adapter.DriverActuator;
 import org.anyline.data.adapter.DriverAdapter;
-import org.anyline.data.adapter.DriverWorker;
 import org.anyline.data.handler.DataHandler;
 import org.anyline.data.handler.StreamHandler;
-import org.anyline.data.nebula.adapter.NebulaAdapter;
 import org.anyline.data.nebula.runtime.NebulaRuntime;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.run.Run;
@@ -47,8 +46,8 @@ import java.time.LocalDate;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-@Component("anyline.environment.data.driver.worker.nebula")
-public class NebulaWorker implements DriverWorker {
+@Component("anyline.environment.data.driver.actuator.nebula")
+public class NebulaWorker implements DriverActuator {
     @Override
     public Class<? extends DriverAdapter> supportAdapterType() {
         return NebulaAdapter.class;

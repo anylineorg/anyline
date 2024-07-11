@@ -602,7 +602,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
             return -1;
         }
         try {
-            cnt = worker.insert(this, runtime, random, data, configs, run, null, pks);
+            cnt = actuator.insert(this, runtime, random, data, configs, run, null, pks);
             millis = System.currentTimeMillis() - fr;
             boolean slow = false;
             long SLOW_SQL_MILLIS = ConfigStore.SLOW_SQL_MILLIS(configs);
@@ -914,7 +914,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
         }
         long millis = -1;
         try{
-            result = worker.update(this, runtime, random, dest, data, configs, run);
+            result = actuator.update(this, runtime, random, dest, data, configs, run);
 
             millis = System.currentTimeMillis() - fr;
             boolean slow = false;
@@ -1315,10 +1315,10 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
             columns = columns(runtime, random, false, table, false);
         }
         try{
-            set = worker.select(this, runtime, random, system, action, table, configs, run, cmd, values, columns);
+            set = actuator.select(this, runtime, random, system, action, table, configs, run, cmd, values, columns);
             long count = set.size();
             LinkedHashMap<String,Column> metadatas = set.getMetadatas();
-            if(!system && metadatas.isEmpty() && ConfigStore.IS_CHECK_EMPTY_SET_METADATA(configs)) {
+            if(!system && (null == metadatas || metadatas.isEmpty())&& ConfigStore.IS_CHECK_EMPTY_SET_METADATA(configs)) {
                 metadatas.putAll(metadata(runtime, new DefaultTextPrepare(cmd), false));
             }
             long time = System.currentTimeMillis() - fr;
@@ -1599,7 +1599,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
         }
         long millis = -1;
         try{
-            result = worker.execute(this, runtime, random, configs, run);
+            result = actuator.execute(this, runtime, random, configs, run);
             millis = System.currentTimeMillis() - fr;
             boolean slow = false;
             long SLOW_SQL_MILLIS = ConfigStore.SLOW_SQL_MILLIS(configs);

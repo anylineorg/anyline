@@ -359,8 +359,8 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
         }
         long millis = -1;
         try{
-            datasource = worker.getDataSource(this, runtime);
-            con = worker.getConnection(this, runtime, datasource);
+            datasource = actuator.getDataSource(this, runtime);
+            con = actuator.getConnection(this, runtime, datasource);
             PreparedStatement ps = con.prepareStatement(sql);
             int idx = 0;
             if (null != values) {
@@ -405,7 +405,7 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
                 }
             }
         }finally {
-            worker.releaseConnection(this, runtime, con, datasource);
+            actuator.releaseConnection(this, runtime, con, datasource);
         }
         return cnt;
     }

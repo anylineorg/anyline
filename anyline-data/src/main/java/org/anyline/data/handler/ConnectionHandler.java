@@ -18,9 +18,9 @@
 
 package org.anyline.data.handler;
 
-import org.anyline.data.adapter.DriverWorker;
+import org.anyline.data.adapter.DriverActuator;
 
 public interface ConnectionHandler {
     boolean close() throws Exception;
-    void setWorker(DriverWorker worker);
+    void setActuator(DriverActuator actuator);
 }

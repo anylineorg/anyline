@@ -64,7 +64,7 @@ public class XuGuAdapter extends OracleGenusAdapter implements JDBCAdapter {
 			Run run = new SimpleRun(runtime);
 			StringBuilder builder = run.getBuilder();
 			builder.append("show database_mode");
-			Map<String, Object> map = worker.map(this, runtime, null, null, run);
+			Map<String, Object> map = actuator.map(this, runtime, null, null, run);
 			if(null != map) {
 				return map.get("database_mode")+"";
 			}

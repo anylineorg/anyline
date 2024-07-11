@@ -18,7 +18,7 @@
 
 package org.anyline.data.jdbc.handler;
 
-import org.anyline.data.adapter.DriverWorker;
+import org.anyline.data.adapter.DriverActuator;
 import org.anyline.data.handler.ConnectionHandler;
 
 import javax.sql.DataSource;
@@ -27,14 +27,14 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 
 public class SimpleConnectionHandler implements ConnectionHandler {
-    private DriverWorker worker;
+    private DriverActuator actuator;
 
-    public DriverWorker getWorker() {
-        return worker;
+    public DriverActuator getActuator() {
+        return actuator;
     }
 
-    public void setWorker(DriverWorker worker) {
-        this.worker = worker;
+    public void setActuator(DriverActuator actuator) {
+        this.actuator = actuator;
     }
 
     private DataSource datasource;
@@ -92,7 +92,7 @@ public class SimpleConnectionHandler implements ConnectionHandler {
             statement.close();
         }
         if(null != connection) {
-            worker.releaseConnection(null, null, connection, datasource);
+            actuator.releaseConnection(null, null, connection, datasource);
         }
         return false;
     }

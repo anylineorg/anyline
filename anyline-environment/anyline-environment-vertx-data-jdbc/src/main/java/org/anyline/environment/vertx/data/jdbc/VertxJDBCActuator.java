@@ -21,7 +21,7 @@ package org.anyline.environment.vertx.data.jdbc;
 
 import io.vertx.core.cli.annotations.Name;
 import org.anyline.data.adapter.DriverAdapter;
-import org.anyline.data.adapter.DriverWorker;
+import org.anyline.data.adapter.DriverActuator;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.run.Run;
 import org.anyline.data.runtime.DataRuntime;
@@ -35,8 +35,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-@Name("anyline.environment.vertx.data.driver.worker.jdbc")
-public class VertxJDBCWorker implements DriverWorker {
+@Name("anyline.environment.vertx.data.driver.actuator.jdbc")
+public class VertxJDBCActuator implements DriverActuator {
     @Override
     public Class<? extends DriverAdapter> supportAdapterType() {
         return null;

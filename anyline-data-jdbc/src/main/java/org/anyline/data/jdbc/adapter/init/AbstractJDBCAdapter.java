@@ -30,7 +30,6 @@ import org.anyline.data.prepare.auto.TablePrepare;
 import org.anyline.data.prepare.auto.init.DefaultTextPrepare;
 import org.anyline.data.run.*;
 import org.anyline.data.runtime.DataRuntime;
-import org.anyline.data.util.DataSourceUtil;
 import org.anyline.entity.*;
 import org.anyline.entity.generator.PrimaryGenerator;
 import org.anyline.exception.CommandException;
@@ -941,7 +940,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 				dmListener.beforeQuery(runtime, random, procedure);
 			}
 			long fr = System.currentTimeMillis();
-			set = worker.querys(this, runtime, random, procedure, navi);
+			set = actuator.querys(this, runtime, random, procedure, navi);
 			millis = System.currentTimeMillis() - fr;
 			boolean slow = false;
 			long SLOW_SQL_MILLIS = ConfigTable.SLOW_SQL_MILLIS;
@@ -1589,7 +1588,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		}
 		long millis= -1;
 		try{
-			list = worker.execute(this, runtime, random, procedure, sql, inputs, outputs);
+			list = actuator.execute(this, runtime, random, procedure, sql, inputs, outputs);
 			cmd_success = true;
 			procedure.setResult(list);
 			result = true;
@@ -2035,7 +2034,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		try {
 			Run run = buildQueryRun(runtime, prepare, null, null);
 			String sql = run.getFinalQuery(false);
-			columns = worker.metadata(this, runtime, random, run, comment);
+			columns = actuator.metadata(this, runtime, random, run, comment);
 			if (ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
 				log.info("{}[action:metadata][执行耗时:{}]", random, DateUtil.format(System.currentTimeMillis() - fr));
 			}
@@ -2305,7 +2304,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 */
 	@Override
 	public String product(DataRuntime runtime, boolean create, String product) {
-		return worker.product(this, runtime, create, product);
+		return actuator.product(this, runtime, create, product);
 	}
 
 	/**
@@ -2334,7 +2333,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 */
 	@Override
 	public String version(DataRuntime runtime, boolean create, String version) {
-		return worker.version(this, runtime, create, version);
+		return actuator.version(this, runtime, create, version);
 	}
 	/* *****************************************************************************************************************
 	 * 													catalog
@@ -2785,7 +2784,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 */
 	@Override
 	public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
-		return worker.tables(this, runtime, create, tables, catalog, schema, pattern, types);
+		return actuator.tables(this, runtime, create, tables, catalog, schema, pattern, types);
 	}
 
 	/**
@@ -2803,7 +2802,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 */
 	@Override
 	public <T extends Table> List<T> tables(DataRuntime runtime, boolean create, List<T> tables, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
-		return worker.tables(this, runtime, create, tables, catalog, schema, pattern, types);
+		return actuator.tables(this, runtime, create, tables, catalog, schema, pattern, types);
 	}
 
 	/**
@@ -3190,7 +3189,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 */
 	@Override
 	public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, boolean create, LinkedHashMap<String, T> views, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
-		return worker.views(this, runtime, create, views, catalog, schema, pattern, types);
+		return actuator.views(this, runtime, create, views, catalog, schema, pattern, types);
 	}
 
 	/**
@@ -3208,7 +3207,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 */
 	@Override
 	public <T extends View> List<T> views(DataRuntime runtime, boolean create, List<T> views, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
-		return worker.views(this, runtime, create, views, catalog, schema, pattern, types);
+		return actuator.views(this, runtime, create, views, catalog, schema, pattern, types);
 	}
 
 	/**
@@ -3948,7 +3947,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 */
 	@Override
 	public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, LinkedHashMap<String, T> columns, Table table, String pattern) throws Exception {
-		return worker.metadata(this, runtime, create, columns, table, pattern);
+		return actuator.metadata(this, runtime, create, columns, table, pattern);
 	}
 
 	/**
@@ -4599,7 +4598,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 */
 	@Override
 	public <T extends Index> LinkedHashMap<String, T> indexes(DataRuntime runtime, boolean create, LinkedHashMap<String, T> indexes, Table table, boolean unique, boolean approximate) throws Exception {
-		return worker.indexes(this, runtime, create, indexes, table, unique, approximate);
+		return actuator.indexes(this, runtime, create, indexes, table, unique, approximate);
 	}
 
 	/**
@@ -9178,10 +9177,10 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		try{
 			final DataRuntime rt = runtime;
 			final boolean[] process = {false};
-			set = worker.select(this, runtime, random, system, action, table, configs, run, sql, values, columns);
+			set = actuator.select(this, runtime, random, system, action, table, configs, run, sql, values, columns);
 
 			LinkedHashMap<String,Column> metadatas = set.getMetadatas();
-			if(!system && metadatas.isEmpty() &&ConfigStore.IS_CHECK_EMPTY_SET_METADATA(configs)) {
+			if(!system && (null == metadatas || metadatas.isEmpty())&&ConfigStore.IS_CHECK_EMPTY_SET_METADATA(configs)) {
 				metadatas.putAll(metadata(runtime, new DefaultTextPrepare(sql), false));
 			}
 			boolean slow = false;
@@ -9220,17 +9219,17 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 
 	@Override
 	public <T extends Metadata> void checkSchema(DataRuntime runtime, DataSource datasource, T meta) {
-		worker.checkSchema(this, runtime, datasource, meta);
+		actuator.checkSchema(this, runtime, datasource, meta);
 	}
 
 	@Override
 	public <T extends Metadata> void checkSchema(DataRuntime runtime, Connection con, T meta) {
-		worker.checkSchema(this, runtime, con, meta);
+		actuator.checkSchema(this, runtime, con, meta);
 	}
 
 	@Override
 	public <T extends Metadata> void checkSchema(DataRuntime runtime, T meta) {
-		worker.checkSchema(this, runtime, meta);
+		actuator.checkSchema(this, runtime, meta);
 	}
 
 	public <T extends Column> T column(Catalog catalog, Schema schema, Table table, String name, List<T> columns) {

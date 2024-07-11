@@ -16,12 +16,12 @@
 
 
 
-package org.anyline.data.elasticsearch.worker;
+package org.anyline.data.elasticsearch.adapter;
 
+import org.anyline.adapter.KeyAdapter;
 import org.anyline.annotation.Component;
+import org.anyline.data.adapter.DriverActuator;
 import org.anyline.data.adapter.DriverAdapter;
-import org.anyline.data.adapter.DriverWorker;
-import org.anyline.data.elasticsearch.adapter.ElasticSearchAdapter;
 import org.anyline.data.elasticsearch.run.ElasticSearchRun;
 import org.anyline.data.elasticsearch.runtime.ElasticSearchRuntime;
 import org.anyline.data.param.ConfigStore;
@@ -47,8 +47,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-@Component("anyline.environment.data.driver.worker.elasticsearch")
-public class ElasticSearchWorker implements DriverWorker {
+@Component("anyline.environment.data.driver.actuator.elasticsearch")
+public class ElasticSearchActuator implements DriverActuator {
     @Override
     public Class<? extends DriverAdapter> supportAdapterType() {
         return ElasticSearchAdapter.class;
@@ -96,16 +96,29 @@ public class ElasticSearchWorker implements DriverWorker {
     @Override
     public DataSet select(DriverAdapter adapter, DataRuntime runtime, String random, boolean system, ACTION.DML action, Table table, ConfigStore configs, Run run, String cmd, List<Object> values, LinkedHashMap<String, Column> columns) throws Exception {
         DataSet set = new DataSet();
+        long fr = System.currentTimeMillis();
         ElasticSearchRun er = (ElasticSearchRun)run;
         String method = er.getMethod();
         String endpoint = er.getEndpoint();
         Request request = new Request(
                 method,
                 endpoint);
+        String body = run.getFinalQuery();
+        if(BasicUtil.isNotEmpty(body)){
+            request.setJsonEntity(body);
+        }
         HttpResponse response = execute(random, runtime, request);
+        configs.setLastExecuteTime(System.currentTimeMillis() - fr);
+        fr = System.currentTimeMillis();
         String txt = response.getText();
         if(txt.startsWith("{")){
-
+            DataRow json = DataRow.parseJson(KeyAdapter.KEY_CASE.SRC, txt);
+            DataSet hits = (DataSet)json.recursion("hits", "hits");
+            for(DataRow hit:hits){
+                DataRow row = hit.getRow("_source");
+                row.put("_id", hit.getString("_id"));
+                set.add(row);
+            }
         }else{
             String[] lines =txt.split("\n");
             for(String line:lines) {
@@ -117,6 +130,7 @@ public class ElasticSearchWorker implements DriverWorker {
                 }
             }
         }
+        configs.setLastPackageTime(System.currentTimeMillis() - fr);
         return set;
     }
 

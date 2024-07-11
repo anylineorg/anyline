@@ -24,6 +24,8 @@ import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.adapter.init.AbstractDriverAdapter;
 import org.anyline.data.elasticsearch.metadata.ElasticSearchBuilder;
 import org.anyline.data.elasticsearch.metadata.ElasticSearchIndex;
+import org.anyline.data.elasticsearch.param.ElasticSearchConfigStore;
+import org.anyline.data.elasticsearch.param.ElasticSearchRequestBody;
 import org.anyline.data.elasticsearch.run.ElasticSearchRun;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.init.DefaultConfigStore;
@@ -708,7 +710,24 @@ PUT * /_bulk
      */
     @Override
     public Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions) {
-        return super.buildQueryRun(runtime, prepare, configs, conditions);
+        ElasticSearchRun run = new ElasticSearchRun(runtime);
+        run.setMethod("POST");
+        String endpoint = null;
+        String index_name = prepare.getTableName();
+        if(BasicUtil.isNotEmpty(index_name)){
+            endpoint = "/" + index_name + "/_search";
+        }else{
+            endpoint = "/*/_search";
+        }
+        run.setEndpoint(endpoint);
+        if(configs instanceof ElasticSearchConfigStore){
+            ElasticSearchConfigStore cfg = (ElasticSearchConfigStore) configs;
+            ElasticSearchRequestBody body = cfg.getRequestBody();
+            if(BasicUtil.isNotEmpty(body)){
+                run.getBuilder().append(body.getJson());
+            }
+        }
+        return run;
     }
 
     /**
@@ -5996,7 +6015,8 @@ PUT * /_bulk
             random = random(runtime);
         }
         if(log.isInfoEnabled() &&ConfigStore.IS_LOG_SQL(configs)) {
-            log.info("{}[action:select][method:{}][endpoint:{}]", random, run.getMethod(), run.getEndpoint());
+            String body = run.getFinalQuery();
+            log.info("{}[action:select][method:{}][endpoint:{}][body:{}]", random, run.getMethod(), run.getEndpoint(), body);
         }
         DataSet set = new DataSet();
         set.setTable(table);
@@ -6009,10 +6029,10 @@ PUT * /_bulk
             columns = columns(runtime, random, false, table, false);
         }
         try{
-            set = worker.select(this, runtime, random, system, ACTION.DML.SELECT, table, configs, run, null, null, columns);
+            set = actuator.select(this, runtime, random, system, ACTION.DML.SELECT, table, configs, run, null, null, columns);
 
             LinkedHashMap<String,Column> metadatas = set.getMetadatas();
-            if(!system && metadatas.isEmpty() &&ConfigStore.IS_CHECK_EMPTY_SET_METADATA(configs)) {
+            if(!system && (null == metadatas || metadatas.isEmpty())&&ConfigStore.IS_CHECK_EMPTY_SET_METADATA(configs)) {
 
             }
             boolean slow = false;

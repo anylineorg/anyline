@@ -16,12 +16,11 @@
 
 
 
-package org.anyline.data.mongodb.worker;
+package org.anyline.data.mongodb.adapter;
 
 import org.anyline.annotation.Component;
+import org.anyline.data.adapter.DriverActuator;
 import org.anyline.data.adapter.DriverAdapter;
-import org.anyline.data.adapter.DriverWorker;
-import org.anyline.data.mongodb.adapter.MongoAdapter;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.run.Run;
 import org.anyline.data.runtime.DataRuntime;
@@ -35,8 +34,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-@Component("anyline.environment.data.driver.worker.mongo")
-public class MongoWorker implements DriverWorker {
+@Component("anyline.environment.data.driver.actuator.mongo")
+public class MongoActuator implements DriverActuator {
     @Override
     public Class<? extends DriverAdapter> supportAdapterType() {
         return MongoAdapter.class;

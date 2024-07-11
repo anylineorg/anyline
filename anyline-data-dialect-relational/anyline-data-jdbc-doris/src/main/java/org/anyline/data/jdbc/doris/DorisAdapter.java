@@ -5173,7 +5173,8 @@ public class DorisAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 			if(def instanceof SQL_BUILD_IN_VALUE) {
 				String value = value(runtime, meta, (SQL_BUILD_IN_VALUE)def);
 				if(null != value) {
-					builder.append("'").append(value).append("'");
+					//不需要引号
+					builder.append(value);
 				}
 			}else if(str.startsWith("${") && str.endsWith("}")) {
 				builder.append(str.substring(2, str.length()-1));
@@ -6676,6 +6677,14 @@ public class DorisAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public String value(DataRuntime runtime, Column column, SQL_BUILD_IN_VALUE value) {
-		return super.value(runtime, column, value);
+		if (value == SQL_BUILD_IN_VALUE.CURRENT_DATETIME) {
+			return "current_timestamp";
+		} else if (value == SQL_BUILD_IN_VALUE.CURRENT_DATE) {
+			return "curdate";
+		} else if (value == SQL_BUILD_IN_VALUE.CURRENT_TIME) {
+			return "current_time";
+		} else {
+			return value == SQL_BUILD_IN_VALUE.CURRENT_TIMESTAMP ? "current_timestamp" : null;
+		}
 	}
 }

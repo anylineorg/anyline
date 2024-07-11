@@ -23,7 +23,7 @@ import org.anyline.adapter.DataWriter;
 import org.anyline.adapter.EntityAdapter;
 import org.anyline.adapter.KeyAdapter;
 import org.anyline.data.adapter.DriverAdapter;
-import org.anyline.data.adapter.DriverWorker;
+import org.anyline.data.adapter.DriverActuator;
 import org.anyline.data.cache.PageLazyStore;
 import org.anyline.data.listener.DDListener;
 import org.anyline.data.listener.DMListener;
@@ -79,7 +79,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	protected DMListener dmListener;
 	protected DDListener ddListener;
 	protected PrimaryGenerator primaryGenerator;
-	protected DriverWorker worker;
+	protected DriverActuator actuator;
 
 	protected DMListener getListener() {
 		return dmListener;
@@ -133,12 +133,12 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	}
 
 	@Override
-	public void setWorker(DriverWorker worker) {
-		this.worker = worker;
+	public void setActuator(DriverActuator actuator) {
+		this.actuator = actuator;
 	}
 	@Override
-	public DriverWorker getWorker() {
-		return worker;
+	public DriverActuator getActuator() {
+		return actuator;
 	}
 	@Override
 	public String getDelimiterFr() {
@@ -763,7 +763,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			return -1;
 		}
 		try {
-			cnt = worker.insert(this, runtime, random, data, configs, run, generatedKey(), pks);
+			cnt = actuator.insert(this, runtime, random, data, configs, run, generatedKey(), pks);
 			millis = System.currentTimeMillis() - fr;
 			boolean slow = false;
 			long SLOW_SQL_MILLIS = ConfigStore.SLOW_SQL_MILLIS(configs);
@@ -1599,7 +1599,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		long millis = -1;
 		try{
-			result = worker.update(this, runtime, random, dest, data, configs, run);
+			result = actuator.update(this, runtime, random, dest, data, configs, run);
 			millis = System.currentTimeMillis() - fr;
 			boolean slow = false;
 			long SLOW_SQL_MILLIS = ConfigStore.SLOW_SQL_MILLIS(configs);
@@ -2552,7 +2552,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			return new ArrayList<>();
 		}
 		try{
-			maps = worker.maps(this, runtime, random, configs, run);
+			maps = actuator.maps(this, runtime, random, configs, run);
 			maps = process(runtime, maps);
 		}catch(Exception e) {
 			if(ConfigStore.IS_PRINT_EXCEPTION_STACK_TRACE(configs)) {
@@ -2599,7 +2599,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			return new HashMap<>();
 		}
 		try {
-			map = worker.map(this, runtime, random, configs, run);
+			map = actuator.map(this, runtime, random, configs, run);
 		}catch (Exception e) {
 			if(ConfigStore.IS_THROW_SQL_QUERY_EXCEPTION(configs)) {
 				throw new CommandQueryException("查询异常", e);
@@ -3027,7 +3027,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		long millis = -1;
 		try{
-			result = worker.execute(this, runtime, random, configs, run);
+			result = actuator.execute(this, runtime, random, configs, run);
 			millis = System.currentTimeMillis() - fr;
 			boolean slow = false;
 			long SLOW_SQL_MILLIS = ConfigStore.SLOW_SQL_MILLIS(configs);
@@ -7755,7 +7755,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 						for (Run run  : runs) {
 							String sql = run.getFinalQuery();
 							if(BasicUtil.isNotEmpty(sql)) {
-								columns = worker.columns(this, runtime, true, columns, table, sql);
+								columns = actuator.columns(this, runtime, true, columns, table, sql);
 							}
 						}
 					}
@@ -7779,7 +7779,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 
 			// 方法(3)根据根据驱动内置接口补充
 			if (null == columns || columns.isEmpty()) {
-				columns = worker.metadata(this, runtime, true, columns, table, null);
+				columns = actuator.metadata(this, runtime, true, columns, table, null);
 
 				if(null != columns) {
 					qty_total = columns.size();
