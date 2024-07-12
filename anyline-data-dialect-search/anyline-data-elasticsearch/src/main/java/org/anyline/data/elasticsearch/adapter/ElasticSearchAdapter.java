@@ -768,7 +768,6 @@ PUT * /_bulk
         ConditionChain chain = r.getConditionChain();
 
         ElasticSearchRequestBody request = new ElasticSearchRequestBody();
-        List<Condition> conditions = chain.getConditions();
 
         DataRow body = new DataRow(KeyAdapter.KEY_CASE.SRC);
         ConfigStore configs = run.getConfigs();
@@ -784,29 +783,34 @@ PUT * /_bulk
             }
         }
         DataRow query = body.put("query");
-        DataRow bool = query.put("bool");
-        DataSet musts = bool.puts("must");
-
-        for(Condition condition:conditions) {
-            if(condition instanceof AutoCondition) {
-                AutoCondition auto = (AutoCondition)condition;
-                //List<RunValue> values = condition.getRunValues();
-                List<Object> values = auto.getValues();
-                String column = condition.getId();
-                String join = condition.getJoin();
-               /* DataRow must = codition(auto.getCompare(), column, values);
-                if(null != must) {
-                    musts.add(must);
-                }*/
-            }
-        }
+        parseCondition(query, chain);
         request.setJson(body.json());
         r.getBuilder().append(body.json());
     }
-    private DataRow parseCondition(DataRow row, Condition condition){
+    private DataRow parseCondition(DataRow base, Condition condition){
+        DataRow row = null;
         if(condition instanceof ConditionChain) {
             ConditionChain chain = (ConditionChain)condition;
-            row = parseCondition(row, chain);
+            List<Condition> conditions = chain.getConditions();
+            if(null != conditions && !conditions.isEmpty()){
+                if(conditions.size() ==1){//只有一个条件
+                    parseCondition(base, conditions.get(0));
+                }else {
+                    row = base;
+                    DataRow bool = base.put("bool");
+                    DataSet set = null;
+                    Condition second = conditions.get(1);
+                    String join = second.getJoin().trim();
+                    if ("OR".equalsIgnoreCase(join)) {
+                        set = bool.puts("should");
+                    } else {
+                        set = bool.puts("must");
+                    }
+                    for (Condition item : conditions) {
+                        set.add(parseCondition(new OriginRow(), item));
+                    }
+                }
+            }
         }else{
             if(condition instanceof AutoCondition) {
                 AutoCondition auto = (AutoCondition)condition;
@@ -814,14 +818,7 @@ PUT * /_bulk
                 List<Object> values = auto.getValues();
                 String column = condition.getId();
                 String join = condition.getJoin();
-                DataRow filter = filter(auto.getCompare(), column, values);
-                if(null != filter) {
-                    if ("or".equalsIgnoreCase(join)) {
-                       // row = Filters.or(create);
-                    } else {
-                       // row = Filters.and(create);
-                    }
-                }
+                row = filter(auto.getCompare(), column, values);
             }
         }
         return row;

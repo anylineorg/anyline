@@ -211,7 +211,7 @@ public enum Compare {
         }
     },
     /**
-     * 搜索引擎 匹配
+     * 搜索引擎 匹配 多列时 生成 MULTI_MATCH
      */
     MATCH(55, "MATCH",""," ")		{
         public boolean compare(Object value, Object target) {
