@@ -248,7 +248,17 @@ public class DefaultConfigChain extends DefaultConfig implements ConfigChain {
 		for(Config config:configs) {
 			Condition condition = config.createAutoCondition(chain); 
 			if(null != condition) {
-				chain.addCondition(condition); 
+				if(condition instanceof ConditionChain){
+					ConditionChain itemChain = (ConditionChain) condition;
+					List<Condition> items = itemChain.getConditions();
+					if(items.size() == 1){
+						chain.addCondition(items.get(0));//只有一个条件的 去除多余()
+					}else if(items.size() > 1){
+						chain.addCondition(condition);
+					}
+				}else {
+					chain.addCondition(condition);
+				}
 			} 
 		}
 		chain.integrality(integrality);

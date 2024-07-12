@@ -69,8 +69,13 @@ public class TableRun extends AbstractRun implements Run {
 				//for(Condition condition:chain.getConditions()) {
 				//	addCondition(condition);
 				//}
-				addCondition(chain);
-			} 
+				if(this.conditionChain.getConditions().isEmpty()){
+					//去除最外一层多余()
+					this.conditionChain = chain;
+				}else{
+					addCondition(chain);
+				}
+			}
 			OrderStore orderStore = configs.getOrders();
 			if(null != orderStore) {
 				List<Order> orders = orderStore.getOrders(); 
