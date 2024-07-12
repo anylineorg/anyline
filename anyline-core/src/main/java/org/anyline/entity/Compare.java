@@ -225,6 +225,20 @@ public enum Compare {
         }
     },
     /**
+     * 搜索引擎 匹配
+     */
+    MATCH_PHRASE(56, "MATCH_PHRASE",""," ")		{
+        public boolean compare(Object value, Object target) {
+            if(null == target || null == value) {
+                return false;
+            }
+            return value.toString().toUpperCase().endsWith(target.toString().toUpperCase());
+        }
+        public boolean isMultipleValue() {
+            return false;
+        }
+    },
+    /**
      * 这个专用来实现所有列LIKE
      */
     LIKES(59, "like %?%",""," LIKE ")			{
