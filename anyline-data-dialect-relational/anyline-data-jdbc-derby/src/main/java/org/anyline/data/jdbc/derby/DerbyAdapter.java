@@ -2299,7 +2299,7 @@ public class DerbyAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param table 表
 	 * @param metadata 是否根据metadata(true:SELECT * FROM T WHERE 1=0,false:查询系统表)
-	 * @return sqls
+	 * @return runs
 	 */
 	@Override
 	public List<Run> buildQueryColumnsRun(DataRuntime runtime, Table table, boolean metadata, ConfigStore configs) throws Exception {
@@ -2502,7 +2502,7 @@ public class DerbyAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param table 表
 	 * @param metadata 是否需要根据metadata
-	 * @return sqls
+	 * @return runs
 	 */
 	@Override
 	public List<Run> buildQueryTagsRun(DataRuntime runtime, Table table, boolean metadata) throws Exception {
@@ -2572,7 +2572,7 @@ public class DerbyAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 * 查询表上的主键
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param table 表
-	 * @return sqls
+	 * @return runs
 	 */
 	@Override
 	public List<Run> buildQueryPrimaryRun(DataRuntime runtime, Table table) throws Exception {
@@ -2658,7 +2658,7 @@ public class DerbyAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 * 查询表上的外键
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param table 表
-	 * @return sqls
+	 * @return runs
 	 */
 	@Override
 	public List<Run> buildQueryForeignsRun(DataRuntime runtime, Table table) throws Exception {
@@ -2731,7 +2731,7 @@ public class DerbyAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param table 表
 	 * @param name 名称
-	 * @return sqls
+	 * @return runs
 	 */
 	@Override
 	public List<Run> buildQueryIndexesRun(DataRuntime runtime, Table table, String name) {
@@ -2897,7 +2897,7 @@ public class DerbyAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param table 表
 	 * @param pattern 名称通配符或正则
-	 * @return sqls
+	 * @return runs
 	 */
 	@Override
 	public List<Run> buildQueryConstraintsRun(DataRuntime runtime, Table table, Column column, String pattern) {
@@ -3053,7 +3053,7 @@ public class DerbyAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @return sqls
+	 * @return runs
 	 */
 	@Override
 	public List<Run> buildQueryProceduresRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) {
@@ -3204,7 +3204,7 @@ public class DerbyAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param name 名称统配符或正则
-	 * @return sqls
+	 * @return runs
 	 */
 	@Override
 	public List<Run> buildQueryFunctionsRun(DataRuntime runtime, Catalog catalog, Schema schema, String name) {
@@ -3357,7 +3357,7 @@ public class DerbyAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param name 名称统配符或正则
-	 * @return sqls
+	 * @return runs
 	 */
 	@Override
 	public List<Run> buildQuerySequencesRun(DataRuntime runtime, Catalog catalog, Schema schema, String name) {

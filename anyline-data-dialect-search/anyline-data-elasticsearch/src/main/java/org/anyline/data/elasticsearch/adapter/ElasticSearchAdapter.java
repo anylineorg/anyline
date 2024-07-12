@@ -24,7 +24,6 @@ import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.adapter.init.AbstractDriverAdapter;
 import org.anyline.data.elasticsearch.metadata.ElasticSearchBuilder;
 import org.anyline.data.elasticsearch.metadata.ElasticSearchIndex;
-import org.anyline.data.elasticsearch.param.ElasticSearchConfigStore;
 import org.anyline.data.elasticsearch.param.ElasticSearchRequestBody;
 import org.anyline.data.elasticsearch.run.ElasticSearchRun;
 import org.anyline.data.param.ConfigStore;
@@ -723,12 +722,14 @@ PUT * /_bulk
             endpoint = "/*/_search";
         }
         run.setEndpoint(endpoint);
-        if(configs instanceof ElasticSearchConfigStore){
-            ElasticSearchConfigStore cfg = (ElasticSearchConfigStore) configs;
-            ElasticSearchRequestBody body = cfg.getRequestBody();
-            if(BasicUtil.isNotEmpty(body)){
-                run.getBuilder().append(body.getJson());
-            }
+        run.setPrepare(prepare);
+        run.setConfigStore(configs);
+        run.addCondition(conditions);
+        if(run.checkValid()) {
+            //为变量赋值
+            run.init();
+            //构造最终的查询SQL
+            fillQueryContent(runtime, run);
         }
         return run;
     }
@@ -793,16 +794,39 @@ PUT * /_bulk
                 List<Object> values = auto.getValues();
                 String column = condition.getId();
                 String join = condition.getJoin();
-                DataRow must = codition(auto.getCompare(), column, values);
+               /* DataRow must = codition(auto.getCompare(), column, values);
                 if(null != must) {
                     musts.add(must);
-                }
+                }*/
             }
         }
         request.setJson(body.json());
         r.getBuilder().append(body.json());
     }
-    private DataRow codition(Compare compare, String column, List<Object> values) {
+    private DataRow parseCondition(DataRow row, Condition condition){
+        if(condition instanceof ConditionChain) {
+            ConditionChain chain = (ConditionChain)condition;
+            row = parseCondition(row, chain);
+        }else{
+            if(condition instanceof AutoCondition) {
+                AutoCondition auto = (AutoCondition)condition;
+                //List<RunValue> values = condition.getRunValues();
+                List<Object> values = auto.getValues();
+                String column = condition.getId();
+                String join = condition.getJoin();
+                DataRow filter = filter(auto.getCompare(), column, values);
+                if(null != filter) {
+                    if ("or".equalsIgnoreCase(join)) {
+                       // row = Filters.or(create);
+                    } else {
+                       // row = Filters.and(create);
+                    }
+                }
+            }
+        }
+        return row;
+    }
+    private DataRow filter(Compare compare, String column, List<Object> values) {
         DataRow row = new OriginRow();
         if(null != values && !values.isEmpty()) {
             Object value = null;
@@ -2498,11 +2522,11 @@ PUT * /_bulk
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param table 表
      * @param metadata 是否根据metadata(true:SELECT * FROM T WHERE 1=0,false:查询系统表)
-     * @return sqls
+     * @return runs
      */
     @Override
-    public List<Run> buildQueryColumnsRun(DataRuntime runtime, Table table, boolean metadata) throws Exception {
-        return super.buildQueryColumnsRun(runtime, table, metadata);
+    public List<Run> buildQueryColumnsRun(DataRuntime runtime, Table table, boolean metadata, ConfigStore configs) throws Exception {
+        return super.buildQueryColumnsRun(runtime, table, metadata, configs);
     }
 
     /**
