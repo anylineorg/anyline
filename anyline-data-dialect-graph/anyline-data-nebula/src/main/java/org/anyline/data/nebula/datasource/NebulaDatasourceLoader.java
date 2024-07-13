@@ -83,11 +83,6 @@ public class NebulaDataSourceLoader extends AbstractDataSourceLoader implements 
         }
         list.addAll(load("spring.datasource", loadDefault));
         list.addAll(load("anyline.datasource", loadDefault));
-        //TODO 项目指定一个前缀
-        Object def = ConfigTable.environment().getBean(DataRuntime.ANYLINE_SERVICE_BEAN_PREFIX+"default");
-        if(null == ConfigTable.environment().getBean("anyline.service") && null != def) {
-            ConfigTable.environment().regBean("anyline.service", def);
-        }
         return list;
     }
 
