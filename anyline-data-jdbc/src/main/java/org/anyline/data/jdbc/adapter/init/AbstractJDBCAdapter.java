@@ -6162,7 +6162,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		}
 		builder.append(" PARTITION OF ");
 		if(null == master) {
-			throw new SQLException("未提供 Master Table");
+			throw new CommandException("未提供 Master Table");
 		}
 		name(runtime, builder, master);
 		return builder;
@@ -6199,7 +6199,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		if(type == Table.Partition.TYPE.LIST) {
 			List<Object> list = partition.getValues();
 			if(null == list) {
-				throw new SQLException("未提供分区表枚举值(Partition.list)");
+				throw new CommandException("未提供分区表枚举值(Partition.list)");
 			}
 			builder.append(" IN(");
 			boolean first = true;
@@ -6219,7 +6219,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			Object from = partition.getMin();
 			Object to = partition.getMax();
 			if(BasicUtil.isEmpty(from) || BasicUtil.isEmpty(to)) {
-				throw new SQLException("未提供分区表范围值(Partition.from/to)");
+				throw new CommandException("未提供分区表范围值(Partition.from/to)");
 			}
 			builder.append(" FROM (");
 			if(from instanceof Number) {
@@ -6239,7 +6239,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		}else if(type == Table.Partition.TYPE.HASH) {
 			int modulus = partition.getModulus();
 			if(modulus == 0) {
-				throw new SQLException("未提供分区表MODULUS");
+				throw new CommandException("未提供分区表MODULUS");
 			}
 			builder.append(" WITH(MODULUS ").append(modulus).append(",REMAINDER ").append(partition.getRemainder()).append(")");
 		}
