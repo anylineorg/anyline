@@ -1137,45 +1137,50 @@ public class BeanUtil {
 		List<Field> fields = ClassUtil.getFields(obj.getClass());
 		for(Field field:fields) {
 			Object value = getFieldValue(obj, field);
-			if(!ClassUtil.isJavaType(value)){
+			if(null != value) {
 				//如果不是java基础类型需要继续转map
-				if(value instanceof Map){
+				if (value instanceof Map) {
 					//map的value转map
 					Map vmap = (Map) value;
-					for(Object k:vmap.keySet()){
+					Map<String, Object> valueMap = new HashMap<>();
+					for (Object k : vmap.keySet()) {
 						Object v = vmap.get(k);
-						if(!ClassUtil.isJavaType(v)) {
-							vmap.put(k, object2map(v));
-						}else{
-							vmap.put(k, v);
+						if (!ClassUtil.isJavaType(v)) {
+							valueMap.put(k.toString(), object2map(v));
+						} else {
+							valueMap.put(k.toString(), v);
 						}
 					}
-				}else if(value instanceof Collection){
+					value = valueMap;
+				} else if (value instanceof Collection) {
 					//集合条件转map
 					Collection arrays = (Collection) value;
 					List list = new ArrayList<>();
-					for(Object item:arrays){
-						if(!ClassUtil.isJavaType(item)) {
+					for (Object item : arrays) {
+						if (!ClassUtil.isJavaType(item)) {
 							list.add(object2map(item));
-						}else{
+						} else {
 							list.add(item);
 						}
 					}
 					value = list;
-				}else if(value.getClass().isArray()){
+				} else if (value.getClass().isArray()) {
 					List list = new ArrayList<>();
 					int len = Array.getLength(value);
 					for (int i = 0; i < len; i++) {
 						Object item = Array.get(value, i);
-						if(!ClassUtil.isJavaType(item)){
+						if (!ClassUtil.isJavaType(item)) {
 							item = object2map(item);
 						}
 						list.add(item);
 					}
 					value = list;
-				}else {
-					value = object2map(value);
+				} else {
+					if (!ClassUtil.isJavaType(value)) {
+						value = object2map(value);
+					}
 				}
+
 			}
 			/*if(null == value) {
 				value = "";
@@ -1205,8 +1210,14 @@ public class BeanUtil {
 					Map objmap = (Map)obj;
 					for (Object key:objmap.keySet()) {
 						Object value = objmap.get(key);
-						if(null != valueClass && null != value){
-							value = ConvertProxy.convert(value, valueClass, false);
+						if(null != value){
+							if(null != valueClass) {
+								value = ConvertProxy.convert(value, valueClass, false);
+							}else{
+								if (ClassUtil.isWrapClass(value) && !(value instanceof String)) {
+									value = object2map(value);
+								}
+							}
 						}
 						map.put(key, value);
 					}
@@ -2306,13 +2317,16 @@ public class BeanUtil {
 	 * @param map  map
 	 * @param recursion  是否递归检测集合map类型值的长度
 	 */
-	public static void clearEmpty(Map<String, Object> map, boolean recursion ) {
+	public static void clearEmpty(Map map, boolean recursion ) {
 		if(null == map) {
 			return;
 		}
 		List<String> keys = BasicUtil.getMapKeys(map);
 		for(String key:keys) {
 			Object value = map.get(key);
+			if(value instanceof Map){
+				clearEmpty((Map) value);
+			}
 			if(BasicUtil.isEmpty(recursion, value)) {
 				map.remove(key);
 			}
