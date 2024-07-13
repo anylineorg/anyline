@@ -89,6 +89,15 @@ public interface ConfigStore extends Cloneable{
 	String schemaName();
 	String catalogName();
 
+	Highlight getHighlight();
+
+	Highlight getHighlight(String field);
+
+	ConfigStore setHighlight(Highlight highlight);
+
+	ConfigStore addHighlight(String field, Highlight highlight);
+	ConfigStore addHighlight(String ... fields);
+
 	/**
 	 * 复制配置属性(不含查询条件)
 	 * @param configs  ConfigStore

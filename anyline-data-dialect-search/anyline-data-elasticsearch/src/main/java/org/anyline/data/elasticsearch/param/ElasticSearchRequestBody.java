@@ -16,6 +16,8 @@
 
 package org.anyline.data.elasticsearch.param;
 
+import org.anyline.data.param.Highlight;
+
 public class ElasticSearchRequestBody {
     protected Highlight highlight;
     protected String json;

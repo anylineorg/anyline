@@ -27,6 +27,7 @@ import org.anyline.data.elasticsearch.metadata.ElasticSearchIndex;
 import org.anyline.data.elasticsearch.param.ElasticSearchRequestBody;
 import org.anyline.data.elasticsearch.run.ElasticSearchRun;
 import org.anyline.data.param.ConfigStore;
+import org.anyline.data.param.Highlight;
 import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.Condition;
 import org.anyline.data.prepare.ConditionChain;
@@ -782,7 +783,26 @@ PUT * /_bulk
             if(null != columns && !columns.isEmpty()){
                 body.put("_source", columns);
             }
+            Highlight highlight = configs.getHighlight();
+            if(null != highlight){
+                LinkedHashMap<String, Highlight> fields = highlight.getFields();
+                LinkedHashMap<String, Map> fields_map = new LinkedHashMap<>();
+                Map map = BeanUtil.object2map(highlight);
+                BeanUtil.clearEmpty(map, true);
+                for(String field:fields.keySet()){
+                    //field有空的情况也需要保留
+                    Highlight field_highlight = fields.get(field);
+                    Map field_map = BeanUtil.object2map(field_highlight);
+                    BeanUtil.clearEmpty(field_map, true);
+                    fields_map.put(field,field_map);
+                }
+                if(!fields_map.isEmpty()){
+                    map.put("fields",fields_map);
+                }
+                body.put("highlight", map);
+            }
         }
+
         DataRow query = new OriginRow();
         parseCondition(query, chain);
         if(!query.isEmpty()) {

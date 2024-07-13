@@ -23,6 +23,7 @@ import org.anyline.data.handler.DataHandler;
 import org.anyline.data.param.Config;
 import org.anyline.data.param.ConfigChain;
 import org.anyline.data.param.ConfigStore;
+import org.anyline.data.param.Highlight;
 import org.anyline.data.prepare.Condition;
 import org.anyline.data.prepare.Group;
 import org.anyline.data.prepare.GroupStore;
@@ -69,6 +70,7 @@ public class DefaultConfigStore implements ConfigStore {
 	protected Schema schema					= null					;
 	protected Table table					= null					;
 	protected String join					= null					; // and or must must_not should filter
+	protected Highlight highlight;
 
 	public DataRow map(boolean empty) {
 		DataRow row = new OriginRow();
@@ -219,6 +221,37 @@ public class DefaultConfigStore implements ConfigStore {
 		return dest;
 	}
 
+	@Override
+	public Highlight getHighlight() {
+		return highlight;
+	}
+	@Override
+	public Highlight getHighlight(String field) {
+		if(null != highlight){
+			return highlight.getHighlight(field);
+		}
+		return null;
+	}
+	@Override
+	public ConfigStore addHighlight(String ... fields) {
+		if(null == this.highlight){
+			this.highlight = new Highlight();
+		}
+		this.highlight.addField(fields);
+		return this;
+	}
+	@Override
+	public ConfigStore setHighlight(Highlight highlight) {
+		this.highlight = highlight;
+		return this;
+	}@Override
+	public ConfigStore addHighlight(String field, Highlight highlight) {
+		if(null == this.highlight){
+			this.highlight = new Highlight();
+		}
+		this.highlight.addField(field, highlight);
+		return this;
+	}
 	@Override
 	public ConfigStore copyProperty(ConfigStore configs) {
 		if(null != configs) {
