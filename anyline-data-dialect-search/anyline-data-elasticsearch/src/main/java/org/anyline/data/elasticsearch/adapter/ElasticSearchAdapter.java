@@ -772,6 +772,7 @@ PUT * /_bulk
         DataRow body = new DataRow(KeyAdapter.KEY_CASE.SRC);
         ConfigStore configs = run.getConfigs();
         if(null != configs){
+            configs.autoCount(false); //不需要单独计算总行数
             PageNavi navi = configs.getPageNavi();
             if(null != navi){
                 body.put("from", navi.getFirstRow());
@@ -782,10 +783,28 @@ PUT * /_bulk
                 body.put("_source", columns);
             }
         }
-        DataRow query = body.put("query");
+        DataRow query = new OriginRow();
         parseCondition(query, chain);
-        request.setJson(body.json());
-        r.getBuilder().append(body.json());
+        if(!query.isEmpty()) {
+            body.put("query", query);
+        }
+        OrderStore orderStore = configs.getOrders();
+        if(null!= orderStore){
+            List<Order> orders = orderStore.getOrders();
+            if(null != orders && !orders.isEmpty()){
+                DataSet sorts = new DataSet();
+                body.put("sort", sorts);
+                for(Order order:orders){
+                    DataRow sort = new OriginRow();
+                    sort.put(order.getColumn()).put("order", order.getType().getCode().toLowerCase());
+                    sorts.add(sort);
+                }
+            }
+        }
+        if(!body.isEmpty()){
+            request.setJson(body.json());
+            r.getBuilder().append(body.json());
+        }
     }
     private DataRow parseCondition(DataRow base, Condition condition){
         DataRow row = null;
@@ -799,13 +818,17 @@ PUT * /_bulk
                     row = base;
                     DataRow bool = base.put("bool");
                     DataSet set = null;
-                    Condition second = conditions.get(1);
-                    String join = second.getJoin().trim();
-                    if ("OR".equalsIgnoreCase(join)) {
-                        set = bool.puts("should");
-                    } else {
-                        set = bool.puts("must");
+                    String join = chain.getJoin().trim();
+                    if(BasicUtil.isEmpty(join) || "AND".equalsIgnoreCase(join)){ //默认就是AND
+                        Condition second = conditions.get(1);
+                        join = second.getJoin().trim();
                     }
+                    if ("OR".equalsIgnoreCase(join)) {
+                        join ="should";
+                    } else if("AND".equalsIgnoreCase(join)){
+                        join= "must";
+                    }
+                    set = bool.puts(join);
                     for (Condition item : conditions) {
                         set.add(parseCondition(new OriginRow(), item));
                     }
@@ -839,7 +862,7 @@ PUT * /_bulk
             if(cc == 10) {                                           //  EQUAL
                 row.put("term").put(column, value);
             }else if(cc == 999) {                                   //  Compare.REGEX
-                row.put("wildcard").put(column, value);
+                row.put("regexp").put(column, value);
             }else if(cc == 50) {                                    //  LIKE
                 row.put("wildcard").put(column, "*"+value+"*");
             }else if(cc == 51) {                                     //  START_WITH

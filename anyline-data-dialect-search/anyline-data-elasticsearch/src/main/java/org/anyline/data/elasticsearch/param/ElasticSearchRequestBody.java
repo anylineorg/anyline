@@ -17,6 +17,7 @@
 package org.anyline.data.elasticsearch.param;
 
 public class ElasticSearchRequestBody {
+    protected Highlight highlight;
     protected String json;
     public ElasticSearchRequestBody(){
 
@@ -31,5 +32,13 @@ public class ElasticSearchRequestBody {
 
     public void setJson(String json) {
         this.json = json;
+    }
+
+    public Highlight getHighlight() {
+        return highlight;
+    }
+
+    public void setHighlight(Highlight highlight) {
+        this.highlight = highlight;
     }
 }

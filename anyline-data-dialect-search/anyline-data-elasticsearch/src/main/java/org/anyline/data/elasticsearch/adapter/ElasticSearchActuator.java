@@ -30,6 +30,7 @@ import org.anyline.data.run.Run;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
+import org.anyline.entity.DefaultPageNavi;
 import org.anyline.entity.PageNavi;
 import org.anyline.metadata.*;
 import org.anyline.net.HttpResponse;
@@ -114,15 +115,25 @@ public class ElasticSearchActuator implements DriverActuator {
         String txt = response.getText();
         if(txt.startsWith("{")){
             DataRow json = DataRow.parseJson(KeyAdapter.KEY_CASE.SRC, txt);
-            DataSet hits = (DataSet)json.recursion("hits", "hits");
-            for(DataRow hit:hits){
-                DataRow row = new ElasticSearchRow();
-                DataRow source = hit.getRow("_source");
-                if(null != source){
-                    row.putAll(source);
+            DataRow hits_ = json.getRow("hits");
+            if(null != hits_){
+                long total = BasicUtil.parseLong(hits_.recursion("total", "value"),0L);
+                PageNavi navi = configs.getPageNavi();
+                if(null == navi){
+                    navi = new DefaultPageNavi();
                 }
-                row.put("_id", hit.get("_id"));
-                set.add(row);
+                navi.setTotalRow(total);
+                set.setNavi(navi);
+                DataSet hits = hits_.getSet("hits");
+                for(DataRow hit:hits){
+                    DataRow row = new ElasticSearchRow();
+                    DataRow source = hit.getRow("_source");
+                    if(null != source){
+                        row.putAll(source);
+                    }
+                    row.put("_id", hit.get("_id"));
+                    set.add(row);
+                }
             }
         }else{
             String[] lines =txt.split("\n");

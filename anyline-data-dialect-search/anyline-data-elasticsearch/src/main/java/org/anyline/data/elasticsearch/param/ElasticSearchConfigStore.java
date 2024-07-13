@@ -19,6 +19,7 @@ package org.anyline.data.elasticsearch.param;
 import org.anyline.data.param.init.DefaultConfigStore;
 
 public class ElasticSearchConfigStore extends DefaultConfigStore {
+    protected Highlight highlight;
     protected ElasticSearchRequestBody requestBody;
 
     public ElasticSearchRequestBody getRequestBody() {
@@ -30,5 +31,13 @@ public class ElasticSearchConfigStore extends DefaultConfigStore {
     }
     public void setRequestBody(String json) {
         this.requestBody = new ElasticSearchRequestBody(json);
+    }
+
+    public Highlight getHighlight() {
+        return highlight;
+    }
+
+    public void setHighlight(Highlight highlight) {
+        this.highlight = highlight;
     }
 }
