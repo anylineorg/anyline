@@ -43,7 +43,7 @@ import java.util.*;
 public class DefaultConfigStore implements ConfigStore {
 	protected Class clazz										    ;
 	protected DataHandler handler								    ; // 流式读取时handler
-	protected ConfigChain chain										; // 条件集合
+	protected ConfigChain chain	= new DefaultConfigChain()			; // 条件集合
 	protected PageNavi navi											; // 分页参数
 	protected OrderStore orders										; // 排序依据
 	protected GroupStore groups;
@@ -68,6 +68,7 @@ public class DefaultConfigStore implements ConfigStore {
 	protected Catalog catalog				= null					;
 	protected Schema schema					= null					;
 	protected Table table					= null					;
+	protected String join					= null					; // and or must must_not should filter
 
 	public DataRow map(boolean empty) {
 		DataRow row = new OriginRow();
@@ -200,6 +201,15 @@ public class DefaultConfigStore implements ConfigStore {
 		return this;
 	}
 
+	@Override
+	public ConfigStore setJoin(String type) {
+		this.chain.setJoin(type);
+		return this;
+	}
+	@Override
+	public String getJoin(){
+		return chain.getJoin();
+	}
 	/**
 	 * 查询或操作的目标(表,存储过程, sql等)
 	 * @return String

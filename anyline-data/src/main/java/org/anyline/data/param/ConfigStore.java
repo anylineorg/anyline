@@ -101,8 +101,11 @@ public interface ConfigStore extends Cloneable{
 	 * @param type and(must) or(should)  must_not  filter
 	 * @return this
 	 */
+
 	ConfigStore setJoin(String type);
+
 	String getJoin();
+
 	/**
 	 * 查询或操作的目标(表,存储过程,sql等)
 	 * @return String
