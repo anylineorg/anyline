@@ -245,6 +245,7 @@ public class DefaultConfigChain extends DefaultConfig implements ConfigChain {
 	} 
 	public ConditionChain createAutoConditionChain() {
 		ConditionChain chain = new DefaultAutoConditionChain();
+		chain.setJoin(this.getJoin());
 		for(Config config:configs) {
 			Condition condition = config.createAutoCondition(chain); 
 			if(null != condition) {
