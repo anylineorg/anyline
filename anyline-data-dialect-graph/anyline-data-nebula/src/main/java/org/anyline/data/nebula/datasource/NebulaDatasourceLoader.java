@@ -14,68 +14,81 @@
  * limitations under the License.
  */
 
-/*
 
 
 package org.anyline.data.nebula.datasource;
 
+import com.vesoft.nebula.client.graph.SessionPool;
+import org.anyline.annotation.Component;
 import org.anyline.data.datasource.DataSourceHolder;
 import org.anyline.data.datasource.DataSourceLoader;
 import org.anyline.data.datasource.init.AbstractDataSourceLoader;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.anyline.data.runtime.DataRuntime;
+import org.anyline.data.util.DataSourceUtil;
+import org.anyline.util.BasicUtil;
+import org.anyline.util.ConfigTable;
 
 import java.util.ArrayList;
 import java.util.List;
 
-
+@Component("anyline.environment.data.datasource.loader.nebula")
 public class NebulaDataSourceLoader extends AbstractDataSourceLoader implements DataSourceLoader {
-    public static Logger log = LoggerFactory.getLogger(NebulaDataSourceLoader.class);
 
+    private final NebulaDataSourceHolder holder = NebulaDataSourceHolder.instance();
+
+    @Override
+    public DataSourceHolder holder() {
+        return holder;
+    }
     @Override
     public List<String> load() {
         List<String> list = new ArrayList<>();
-        boolean loadDefault = !DataSourceHolder.contains("default");
+        boolean loadDefault = true; //是否需要加载default
+        if(!ConfigTable.environment().containsBean(DataRuntime.ANYLINE_DATASOURCE_BEAN_PREFIX + ".default")) {
+            //如果还没有注册默认数据源
+            // 项目中可以提前注册好默认数据源 如通过@Configuration注解先执行注册 也可以在spring启动完成后覆盖默认数据源
+            SessionPool datasource = null;
+            DataRuntime runtime = null;
+
+            try{
+                datasource = ConfigTable.environment().getBean(SessionPool.class);
+            }catch (Exception e) {
+                runtime = null;
+            }
+            if(null != datasource) {
+                try {
+                    runtime =  holder().create("default", datasource, false);
+                    loadDefault = false;
+                }catch (Exception e) {
+                    runtime = null;
+                    log.error("加载Nebula数据源 异常:", e);
+                }
+            }
+
+            //有不支持通过connection返回获取连接信息的驱动，所以从配置文件中获取
+            if(null != runtime) {
+                String url = ConfigTable.environment().string( "spring.datasource.,anyline.datasource.", "url,uri");
+                runtime.setUrl(url);
+                if (BasicUtil.isNotEmpty(url)) {
+                    runtime.setAdapterKey(DataSourceUtil.parseAdapterKey(url));
+                }else{
+                    String adapterKey = ConfigTable.environment().string("spring.datasource.,anyline.datasource.", "adapter");
+                    if(BasicUtil.isNotEmpty(adapterKey)) {
+                        runtime.setAdapterKey(adapterKey);
+                    }
+                }
+            }
+        }else{
+            loadDefault = false;
+        }
         list.addAll(load("spring.datasource", loadDefault));
         list.addAll(load("anyline.datasource", loadDefault));
         //TODO 项目指定一个前缀
+        Object def = ConfigTable.environment().getBean(DataRuntime.ANYLINE_SERVICE_BEAN_PREFIX+"default");
+        if(null == ConfigTable.environment().getBean("anyline.service") && null != def) {
+            ConfigTable.environment().regBean("anyline.service", def);
+        }
         return list;
     }
 
-    //加载配置文件
-    private List<String> load(String head, boolean loadDefault) {
-        //加载成功的前缀 crm, sso
-        List<String> list = new ArrayList<>();
-        if(loadDefault) {
-            String def = NebulaDataSourceHolder.reg("default", head);
-            if (null != def) {
-                list.add(def);
-            }
-        }
-        //默认数据源
-        //多数据源
-        // 读取配置文件获取更多数据源 anyline.datasource.list
-        String prefixs = worker.string(null, head + ".list");
-        if(null == prefixs) {
-            //anyline.datasource-list
-            prefixs = worker.string(null,head + "-list");
-        }
-        if(null != prefixs) {
-            for (String prefix : prefixs.split(",")) {
-                // 多个数据源
-                try {
-                    //返回 datasource的bean id
-                    // sso, anyline.datasource.sso, env
-                    String ds = NebulaDataSourceHolder.reg(prefix, head + "." + prefix);
-                    if(null != ds) {
-                        list.add(ds);
-                    }
-                }catch (Exception e) {
-                    log.error("[注入数据源失败][type:nebula][key:{}][msg:{}]", prefix, e.toString());
-                }
-            }
-        }
-        return list;
-    }
 }
-*/
