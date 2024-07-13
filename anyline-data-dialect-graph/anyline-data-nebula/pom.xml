@@ -24,6 +24,7 @@
         <dependency>
             <groupId>com.vesoft</groupId>
             <artifactId>client</artifactId>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>

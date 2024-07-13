@@ -20,9 +20,7 @@ package org.anyline.data.nebula.runtime;
 
 import com.vesoft.nebula.client.graph.SessionPool;
 import org.anyline.data.adapter.DriverAdapter;
-import org.anyline.data.adapter.DriverAdapterHolder;
 import org.anyline.data.runtime.DataRuntime;
-import org.anyline.data.runtime.RuntimeHolder;
 import org.anyline.data.runtime.init.AbstractRuntime;
 
 public class NebulaRuntime extends AbstractRuntime implements DataRuntime {
@@ -50,9 +48,9 @@ public class NebulaRuntime extends AbstractRuntime implements DataRuntime {
         return null;
     }
 
-    public NebulaRuntime(String key, SessionPool client, DriverAdapter adapter) {
+    public NebulaRuntime(String key, SessionPool session, DriverAdapter adapter) {
         setKey(key);
-        setProcessor(client);
+        setProcessor(session);
         setAdapter(adapter);
     }
 

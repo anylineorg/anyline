@@ -26,15 +26,12 @@ import com.vesoft.nebula.client.graph.data.ValueWrapper;
 import org.anyline.annotation.Component;
 import org.anyline.data.adapter.DriverActuator;
 import org.anyline.data.adapter.DriverAdapter;
-import org.anyline.data.handler.DataHandler;
-import org.anyline.data.handler.StreamHandler;
 import org.anyline.data.nebula.runtime.NebulaRuntime;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.run.Run;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
-import org.anyline.entity.PageNavi;
 import org.anyline.entity.graph.GraphRow;
 import org.anyline.entity.graph.VertexRow;
 import org.anyline.exception.CommandUpdateException;
@@ -47,7 +44,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 @Component("anyline.environment.data.driver.actuator.nebula")
-public class NebulaWorker implements DriverActuator {
+public class NebulaActuator implements DriverActuator {
     @Override
     public Class<? extends DriverAdapter> supportAdapterType() {
         return NebulaAdapter.class;
@@ -219,21 +216,10 @@ public class NebulaWorker implements DriverActuator {
             }
             set.addRow(top);
         }
-
-        StreamHandler _handler = null;
-        if(null != configs) {
-            DataHandler handler = configs.handler();
-            if(handler instanceof StreamHandler) {
-                _handler = (StreamHandler) handler;
-            }
-        }
         return set;
     }
 
-    @Override
-    public DataSet querys(DriverAdapter adapter, DataRuntime runtime, String random, Procedure procedure, PageNavi navi) throws Exception{
-        return null;
-    }
+
 
     @Override
     public List<Map<String, Object>> maps(DriverAdapter adapter, DataRuntime runtime, String random, ConfigStore configs, Run run) throws Exception {
@@ -273,10 +259,7 @@ public class NebulaWorker implements DriverActuator {
         return 0;
     }
 
-    @Override
-    public List<Object> execute(DriverAdapter adapter, DataRuntime runtime, String random, Procedure procedure, String sql, List<Parameter> inputs, List<Parameter> outputs) throws Exception{
-        return null;
-    }
+    
 
     @Override
     public long execute(DriverAdapter adapter, DataRuntime runtime, String random, ConfigStore configs, Run run) throws Exception{
