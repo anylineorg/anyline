@@ -86,7 +86,9 @@ public interface DriverActuator {
      * @param navi 分页
      * @return DataSet
      */
-    DataSet querys(DriverAdapter adapter, DataRuntime runtime, String random, Procedure procedure, PageNavi navi) throws Exception;
+    default DataSet querys(DriverAdapter adapter, DataRuntime runtime, String random, Procedure procedure, PageNavi navi) throws Exception{
+        return null;
+    }
 
     /**
      * select [命令执行]<br/>
@@ -139,7 +141,9 @@ public interface DriverActuator {
      * @param random  random
      * @return 输出参数
      */
-    List<Object> execute(DriverAdapter adapter, DataRuntime runtime, String random, Procedure procedure, String sql, List<Parameter> inputs, List<Parameter> outputs) throws Exception;
+    default List<Object> execute(DriverAdapter adapter, DataRuntime runtime, String random, Procedure procedure, String sql, List<Parameter> inputs, List<Parameter> outputs) throws Exception{
+        return null;
+    }
     /**
      * execute [命令执行]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
