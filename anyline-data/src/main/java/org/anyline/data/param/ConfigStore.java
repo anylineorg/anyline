@@ -97,6 +97,13 @@ public interface ConfigStore extends Cloneable{
 	ConfigStore copyProperty(ConfigStore configs);
 
 	/**
+	 * 自动识别and|or 如果遇到ES比较复杂的条件可以主动设置
+	 * @param type and(must) or(should)  must_not  filter
+	 * @return this
+	 */
+	ConfigStore setJoin(String type);
+	String getJoin();
+	/**
 	 * 查询或操作的目标(表,存储过程,sql等)
 	 * @return String
 	 */
