@@ -87,6 +87,10 @@ public class DataSourceLoadListener implements LoadListener {
                 loader.load();
             }
         }
+        Object def = ConfigTable.environment().getBean(DataRuntime.ANYLINE_SERVICE_BEAN_PREFIX+"default");
+        if(null == ConfigTable.environment().getBean("anyline.service") && null != def) {
+            ConfigTable.environment().regBean("anyline.service", def);
+        }
         if(null == adapters || adapters.isEmpty()) {
             adapters = ConfigTable.environment().getBeans(DriverAdapter.class);
         }
