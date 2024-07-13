@@ -1880,6 +1880,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			log.warn(tmp);
 		}
 		navi = run.getPageNavi();
+		if(null == navi && null != configs){
+			navi = configs.getPageNavi();
+		}
 		long total = 0;
 		Boolean autoCount = false;
 		if (run.isValid()) {
