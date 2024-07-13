@@ -13712,6 +13712,11 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	public boolean add(DataRuntime runtime, Index meta) throws Exception {
 		ACTION.DDL action = ACTION.DDL.INDEX_ADD;
 		String random = random(runtime);
+		Index update = (Index)meta.getUpdate();
+		if(null != update){
+			//如果是修改 调用过来的  添加update
+			meta = update;
+		}
 		ACTION.SWITCH swt = InterceptorProxy.prepare(runtime, random, action, meta);
 		if(swt == ACTION.SWITCH.BREAK) {
 			return false;
