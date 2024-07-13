@@ -144,9 +144,9 @@ public class NebulaDataSourceHolder extends AbstractDataSourceHolder {
 				config.setMinSessionSize(minSessionSize);
 			}
 
-			SessionPool sessions = new SessionPool(config);
+			SessionPool pool = new SessionPool(config);
  			DataSourceHolder.params.put(key, params);
-			NebulaRuntimeHolder.instance().reg(key, sessions);
+			NebulaRuntimeHolder.instance().reg(key, pool);
 		} catch (Exception e) {
 			log.error("[注入数据源失败][type:nebula][key:{}][msg:{}]", key, e.toString());
 			log.error("注入数据源 异常:", e);

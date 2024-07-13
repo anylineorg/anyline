@@ -25,18 +25,18 @@ import org.anyline.data.runtime.init.AbstractRuntime;
 
 public class NebulaRuntime extends AbstractRuntime implements DataRuntime {
 
-    protected SessionPool session;
+    protected SessionPool pool;
     public NebulaRuntime() {
     }
 
 
     public void setProcessor(Object processor) {
         if(processor instanceof SessionPool) {
-            this.session = (SessionPool) processor;
+            this.pool = (SessionPool) processor;
         }
     }
     public SessionPool getSession() {
-        return session;
+        return pool;
     }
 
     @Override
@@ -48,27 +48,27 @@ public class NebulaRuntime extends AbstractRuntime implements DataRuntime {
         return null;
     }
 
-    public NebulaRuntime(String key, SessionPool session, DriverAdapter adapter) {
+    public NebulaRuntime(String key, SessionPool pool, DriverAdapter adapter) {
         setKey(key);
-        setProcessor(session);
+        setProcessor(pool);
         setAdapter(adapter);
     }
 
     public SessionPool session() {
-        return session;
+        return pool;
     }
 
     public String getFeature(boolean connection) {
         if(null == feature) {
-            if(null != session) {
-                feature = session.getClass().getName();
+            if(null != pool) {
+                feature = pool.getClass().getName();
             }
         }
         return feature;
     }
 
-    public void setSession(SessionPool session) {
-        this.session = session;
+    public void setSession(SessionPool pool) {
+        this.pool = pool;
     }
 
 }

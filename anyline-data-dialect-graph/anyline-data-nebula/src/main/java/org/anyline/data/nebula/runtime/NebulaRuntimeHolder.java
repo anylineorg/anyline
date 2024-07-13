@@ -81,22 +81,22 @@ public class NebulaRuntimeHolder extends AbstractRuntimeHolder {
         return null;
     }
 
-    public DataRuntime reg(String key, SessionPool session) {
+    public DataRuntime reg(String key, SessionPool pool) {
         String datasource_key = DataRuntime.ANYLINE_DATASOURCE_BEAN_PREFIX + key;
         log.info("[注入数据源][type:nebula][key:{}][bean:{}]", key, datasource_key);
-        ConfigTable.environment().regBean(datasource_key, session);
-        return reg(key, session, null);
+        ConfigTable.environment().regBean(datasource_key, pool);
+        return reg(key, pool, null);
     }
 
     /**
      * 注册运行环境
      * @param datasource 数据源前缀
-     * @param session SessionPool
+     * @param pool SessionPool
      * @param adapter adapter 可以为空 第一次执行时补齐
      */
-    public NebulaRuntime reg(String datasource, SessionPool session, NebulaAdapter adapter) {
+    public NebulaRuntime reg(String datasource, SessionPool pool, NebulaAdapter adapter) {
         log.debug("[create nebula runtime][key:{}]", datasource);
-        NebulaRuntime runtime = new NebulaRuntime(datasource, session, adapter);
+        NebulaRuntime runtime = new NebulaRuntime(datasource, pool, adapter);
         if(runtimes.containsKey(datasource)) {
             destroy(datasource);
         }
