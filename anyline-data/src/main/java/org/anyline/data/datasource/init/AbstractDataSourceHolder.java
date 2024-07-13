@@ -22,6 +22,7 @@ package org.anyline.data.datasource.init;
 
 import org.anyline.data.datasource.DataSourceHolder;
 import org.anyline.data.datasource.DataSourceKeyMap;
+import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 
@@ -40,6 +41,24 @@ public abstract class AbstractDataSourceHolder implements DataSourceHolder {
     }
     public static Object value(Map map, String keys) {
         return BeanUtil.value(map, keys, DataSourceKeyMap.maps, Object.class, null);
+    }
+
+    /**
+     * 依次从map、配置文件中取值
+     * @param prefix 配置文件前缀
+     * @param map map
+     * @param keys key多个以,分隔
+     * @param clazz 转换类型
+     * @param def 默认值
+     * @return T
+     * @param <T> T
+     */
+    public <T> T value(String prefix, Map map, String keys, Class<T> clazz, T def) {
+        T  result = BeanUtil.value(map, keys, DataSourceKeyMap.maps, clazz, def);
+        if(BasicUtil.isEmpty(result)){
+            result = value(prefix, keys, clazz, def);
+        }
+        return result;
     }
 
 }
