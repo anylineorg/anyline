@@ -150,10 +150,7 @@ public class ElasticSearchActuator implements DriverActuator {
         return set;
     }
 
-    @Override
-    public DataSet querys(DriverAdapter adapter, DataRuntime runtime, String random, Procedure procedure, PageNavi navi) throws Exception{
-        return null;
-    }
+    
 
     @Override
     public List<Map<String, Object>> maps(DriverAdapter adapter, DataRuntime runtime, String random, ConfigStore configs, Run run) throws Exception {
@@ -212,10 +209,7 @@ public class ElasticSearchActuator implements DriverActuator {
         return cnt;
     }
 
-    @Override
-    public List<Object> execute(DriverAdapter adapter, DataRuntime runtime, String random, Procedure procedure, String sql, List<Parameter> inputs, List<Parameter> outputs) throws Exception{
-        return null;
-    }
+    
 
     @Override
     public long execute(DriverAdapter adapter, DataRuntime runtime, String random, ConfigStore configs, Run run) throws Exception{
