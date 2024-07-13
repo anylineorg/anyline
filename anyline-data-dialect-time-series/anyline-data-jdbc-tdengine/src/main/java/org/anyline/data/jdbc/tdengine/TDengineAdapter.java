@@ -26,6 +26,7 @@ import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.run.*;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
+import org.anyline.exception.CommandException;
 import org.anyline.exception.NotSupportException;
 import org.anyline.metadata.*;
 import org.anyline.metadata.adapter.ColumnMetadataAdapter;
@@ -37,7 +38,6 @@ import org.anyline.util.BasicUtil;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.*;
 @Component("anyline.data.jdbc.adapter.tdengine")
 public class TDengineAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
@@ -4252,7 +4252,7 @@ public class TDengineAdapter extends AbstractJDBCAdapter implements JDBCAdapter 
 	public StringBuilder partitionOf(DataRuntime runtime, StringBuilder builder, Table meta) throws Exception {
 		String stable = meta.getMasterName();
 		if(BasicUtil.isEmpty(stable)) {
-			throw new SQLException("未指定主表");
+			throw new CommandException("未指定主表");
 		}
 		builder.append(" USING ");
 		delimiter(builder, stable);
