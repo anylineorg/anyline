@@ -41,10 +41,7 @@ import org.anyline.exception.NotSupportException;
 import org.anyline.exception.CommandQueryException;
 import org.anyline.exception.CommandUpdateException;
 import org.anyline.metadata.*;
-import org.anyline.metadata.adapter.ColumnMetadataAdapter;
-import org.anyline.metadata.adapter.IndexMetadataAdapter;
-import org.anyline.metadata.adapter.PrimaryMetadataAdapter;
-import org.anyline.metadata.adapter.ViewMetadataAdapter;
+import org.anyline.metadata.adapter.*;
 import org.anyline.metadata.graph.EdgeTable;
 import org.anyline.metadata.graph.GraphTable;
 import org.anyline.metadata.graph.VertexTable;
@@ -2396,17 +2393,26 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
     @Override
     public List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs) throws Exception {
         List<Run> runs = new ArrayList<>();
+        if(types == 1){
+            types = 32 + 64; //EDGE + VERTEX
+        }
         List<Type> list = Table.types(types);
         for(Type type:list) {
             Run run = new SimpleRun(runtime);
             StringBuilder builder = run.getBuilder();
             builder.append("SHOW ");
+            String k = null;
             if(type == Table.TYPE.EDGE) {
-                builder.append("EDGES");
+                k = "EDGES";
             }else if(type == Table.TYPE.VERTEX) {
-                builder.append("TAGS");
+                k = "TAGS";
             }
-            runs.add(run);
+            if(null != k){
+                builder.append(k);
+                runs.add(run);
+            }else{
+                throw new RuntimeException("表类型异常,仅支持(VERTEX,EDGE,NORMAL)");
+            }
         }
         return runs;
     }
@@ -2464,7 +2470,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
             tables = new ArrayList<>();
         }
         for(DataRow row:set) {
-            tables.add((T)new Table(row.getName()));
+            tables.add((T)new Table(row.getString("NAME")));
         }
         return tables;
     }
@@ -2582,6 +2588,21 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
         return super.ddl(runtime, index, table, ddls, set);
     }
 
+    protected static TableMetadataAdapter defaultTableMetadataAdapter;
+    static {
+        defaultTableMetadataAdapter = new TableMetadataAdapter();
+        defaultTableMetadataAdapter.setNameRefer("NAME");
+    }
+    /**
+     * table[结构集封装-依据]<br/>
+     * 读取table元数据结果集的依据
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @return TableMetadataAdapter
+     */
+    @Override
+    public TableMetadataAdapter tableMetadataAdapter(DataRuntime runtime) {
+        return defaultTableMetadataAdapter;
+    }
     /* *****************************************************************************************************************
      * 													VertexTable
      * -----------------------------------------------------------------------------------------------------------------
@@ -2684,7 +2705,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
             tables = new LinkedHashMap<>();
         }
         for(DataRow row:set) {
-            String name = row.getName();
+            String name = row.getString("NAME");
             tables.put(name.toUpperCase(), (T)new org.anyline.data.nebula.metadata.Tag(name));
         }
         return tables;
@@ -2709,7 +2730,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
             tables = new ArrayList<>();
         }
         for(DataRow row:set) {
-            String name = row.getName();
+            String name = row.getString("NAME");
             tables.add((T)new org.anyline.data.nebula.metadata.Tag(name));
         }
         return tables;
@@ -2860,7 +2881,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
      */
     @Override
     public <T extends EdgeTable> List<T> edgeTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
-        return super.edgeTables(runtime, random, greedy, catalog, schema, pattern, types, struct);
+        return super.edgeTables(runtime, random, greedy, catalog, schema, pattern, types, struct, configs);
     }
 
     public <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct) {
@@ -2923,7 +2944,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
             tables = new LinkedHashMap<>();
         }
         for(DataRow row:set) {
-            String name = row.getName();
+            String name = row.getString("NAME");
             tables.put(name.toUpperCase(), (T)new EdgeType(name));
         }
         return tables;
@@ -2948,7 +2969,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
             tables = new ArrayList<>();
         }
         for(DataRow row:set) {
-            String name = row.getName();
+            String name = row.getString("NAME");
             tables.add((T)new EdgeType(name));
         }
         return tables;

@@ -34,9 +34,9 @@ import org.anyline.data.util.DataSourceUtil;
 import org.anyline.entity.*;
 import org.anyline.entity.generator.PrimaryGenerator;
 import org.anyline.exception.CommandException;
-import org.anyline.exception.NotSupportException;
 import org.anyline.exception.CommandQueryException;
 import org.anyline.exception.CommandUpdateException;
+import org.anyline.exception.NotSupportException;
 import org.anyline.metadata.*;
 import org.anyline.metadata.adapter.ColumnMetadataAdapter;
 import org.anyline.metadata.adapter.IndexMetadataAdapter;
@@ -53,7 +53,6 @@ import org.anyline.util.*;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.*;
 
@@ -3257,7 +3256,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 */
 	@Override
 	public <T extends EdgeTable> List<T> edgeTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
-		return super.edgeTables(runtime, random, greedy, catalog, schema, pattern, types, struct);
+		return super.edgeTables(runtime, random, greedy, catalog, schema, pattern, types, struct, configs);
 	}
 
 	public <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct) {

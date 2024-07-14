@@ -69,7 +69,7 @@ public class NebulaDataSourceHolder extends AbstractDataSourceHolder {
 
 	@Override
 	public String create(String key, String prefix) {
-		return null;
+		return reg(key, prefix);
 	}
 
 	@Override
@@ -110,15 +110,33 @@ public class NebulaDataSourceHolder extends AbstractDataSourceHolder {
 				return null;
 			}
 
+			String adapter = value(prefix, params, "adapter", String.class, null);
+			//只解析nebula系列
+			if(!url.toLowerCase().startsWith("nebula:") && !"nebula".equalsIgnoreCase(adapter)) {
+				return null;
+			}
+
 			List<HostAddress> hosts = new ArrayList<>();
 			String[] urls = url.split(",");
+			String space = value(prefix, params, "space", String.class, null);
 			for(String item:urls){
 				String[] splits = item.split(":");
-				int point = BasicUtil.parseInt(splits[1], 9669);
-				HostAddress host = new HostAddress(splits[0], point);
+				String ip = splits[0];
+				//    nebula:localhost:9696/sso
+				if(ip.contains("nebula:")){
+					ip = ip.replace("nebula:", "");
+				}
+				String point_ = splits[1];
+				if(point_.contains("/")){
+					String[] tmps = point_.split("/");
+					point_ = tmps[0];
+					space = tmps[1];
+				}
+
+				int point = BasicUtil.parseInt(point_, 9669);
+				HostAddress host = new HostAddress(ip, point);
 				hosts.add(host);
 			}
-			String space = value(prefix, params, "space", String.class, null);
 			String user = value(prefix, params, "user", String.class, null);
 			String password = value(prefix, params, "password", String.class, null);
 
@@ -145,6 +163,9 @@ public class NebulaDataSourceHolder extends AbstractDataSourceHolder {
 			}
 
 			SessionPool pool = new SessionPool(config);
+			if (!pool.init()) {
+				throw new RuntimeException("Nebula连接池初始化失败");
+			}
 			DataSourceHolder.params.put(key, params);
 			NebulaRuntimeHolder.instance().reg(key, pool);
 		} catch (Exception e) {
