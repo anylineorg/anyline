@@ -10635,7 +10635,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				}
 				long millis = System.currentTimeMillis() - frs;
 				if(runs.size()>1 && ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
-					log.info("{}[action:{}][name:{}][cmds:{}][result:{}][执行耗时:{}]", random, action, meta.getName(), runs.size(), result, DateUtil.format(millis));
+					//如果有多个命令执行，再统计一次 合计时间
+					log.info("{}[action:{}][meta:{}][cmds:{}][result:{}][执行耗时:{}]", random, action, meta.getName(), runs.size(), result, DateUtil.format(millis));
 				}
 				swt = InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
 			}
