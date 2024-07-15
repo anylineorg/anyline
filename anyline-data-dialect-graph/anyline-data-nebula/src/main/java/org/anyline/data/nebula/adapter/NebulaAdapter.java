@@ -2470,7 +2470,12 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
             tables = new ArrayList<>();
         }
         for(DataRow row:set) {
-            tables.add((T)new Table(row.getString("NAME")));
+            String name = row.getString("NAME");
+            if(index == 0){
+                tables.add((T)new EdgeTable(name));
+            }else{
+                tables.add((T)new VertexTable(name));
+            }
         }
         return tables;
     }
