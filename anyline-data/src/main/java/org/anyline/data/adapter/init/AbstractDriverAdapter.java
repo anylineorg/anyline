@@ -3685,6 +3685,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 						databases = databases(runtime, idx++, true, databases, null, null, set);
 					}
 				}
+				if(databases.isEmpty()){
+					databases = getActuator().databases(this, runtime);
+				}
 			}catch (Exception e) {
 				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 					e.printStackTrace();
@@ -3728,6 +3731,12 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 					for(Run run:runs) {
 						DataSet set = select(runtime, random, true, (Table)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
 						databases = databases(runtime, idx++, true, databases, null, null, set);
+					}
+				}
+				if(databases.isEmpty()){
+					List<Database> list = getActuator().databases(this, runtime);
+					for(Database item:list){
+						databases.put(item.getName().toUpperCase(), item);
 					}
 				}
 			}catch (Exception e) {
