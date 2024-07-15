@@ -560,12 +560,18 @@ public class Metadata<T extends Metadata> {
         this.runs = run;
     }
     public void addRun(Run run) {
+        if(null != table){
+            table.addRun(run);
+        }
+        if(null != origin){
+            origin.addRun(run);
+            return;
+        }
         if(this.runs == null) {
             this.runs = new ArrayList<>();
         }
-        runs.add(run);
-        if(null != this.table){
-            this.table.addRun(run);
+        if(!runs.contains(run)) {
+            runs.add(run);
         }
     }
     public List<Run> runs() {
@@ -629,12 +635,16 @@ public class Metadata<T extends Metadata> {
     public T getUpdate() {
         return update;
     }
+    public T getOrigin() {
+        return origin;
+    }
     public T setUpdate(T update, boolean setmap, boolean getmap) {
         this.update = update;
         this.setmap = setmap;
         this.getmap = getmap;
         if(null != update) {
             update.update = null;
+            update.origin = this;
         }
         return (T)this;
     }
