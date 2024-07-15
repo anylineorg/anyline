@@ -44,6 +44,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
     private static final long serialVersionUID = 6443551515441660101L;
     protected static final Logger log = LoggerFactory.getLogger(DataSet.class);
     private LinkedHashMap<String, Column>  metadatas= null  ; // 数据类型相关(需要开启ConfigTable.IS_AUTO_CHECK_METADATA)
+    protected LinkedHashMap<String, Object> origin  = new LinkedHashMap<>() ; // 从数据库中查询的未处理的原始数据
     private Boolean override                        = null  ; //如果数据库中存在相同数据(根据主键判断)是否覆盖 true或false会检测数据库null不检测
     private boolean result                          = true  ; // 执行结果
     private String code                             = null  ; // code
@@ -224,6 +225,23 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
     }
     public DataSet setAttributes(DataRow attributes) {
         this.attributes = attributes;
+        return this;
+    }
+
+    public LinkedHashMap<String, Object> getOrigin() {
+        return this.origin;
+    }
+    public Object getOrigin(String key) {
+        if(null != origin) {
+            return origin.get(key);
+        }
+        return null;
+    }
+    public DataSet putOrigin(String key, Object value) {
+        if(null == origin) {
+            origin = new LinkedHashMap<>();
+        }
+        origin.put(key, value);
         return this;
     }
     public DataSet setMetadata(LinkedHashMap<String, Column> metadatas) {

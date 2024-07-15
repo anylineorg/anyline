@@ -612,6 +612,16 @@ public class Metadata<T extends Metadata> {
     }
 
     public boolean execute() {
+        if(null != table){
+            if(!table.execute()){
+                return false;
+            }
+        }
+        if(null != origin){
+            if(!origin.execute()){
+                return false;
+            }
+        }
         return execute;
     }
 
