@@ -17,7 +17,7 @@
  
 
 
-package org.anyline.data.jdbc.influxdb;
+package org.anyline.data.influxdb;
 
 import org.anyline.annotation.Component;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
