@@ -1587,7 +1587,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		long fr = System.currentTimeMillis();
 		/*执行SQL*/
 		if (log.isInfoEnabled() &&ConfigStore.IS_LOG_SQL(configs)) {
-			log.info("{}[action:{}][{}]{}", random, action, run.getTable(), run.log(ACTION.DML.UPDATE,ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
+			log.info("{}[action:{}]{}", random, action, run.log(ACTION.DML.UPDATE,ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
 		}
 
 		boolean exe = true;
