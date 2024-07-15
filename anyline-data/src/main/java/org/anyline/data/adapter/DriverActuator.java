@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -77,6 +78,22 @@ public interface DriverActuator {
      * @throws Exception 异常
      */
     String version(DriverAdapter adapter, DataRuntime runtime, boolean create, String version);
+
+    /**
+     * 数据库列表
+     * @param adapter adapter
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @return List
+     */
+    default List<Database> databases(DriverAdapter adapter, DataRuntime runtime) {
+        return new ArrayList<>();
+    }
+    default List<Catalog> catalogs(DriverAdapter adapter, DataRuntime runtime) {
+        return new ArrayList<>();
+    }
+    default List<Schema> schemas(DriverAdapter adapter, DataRuntime runtime) {
+        return new ArrayList<>();
+    }
     DataSet select(DriverAdapter adapter, DataRuntime runtime, String random, boolean system, ACTION.DML action, Table table, ConfigStore configs, Run run, String cmd, List<Object> values, LinkedHashMap<String,Column> columns) throws Exception;
     /**
      * query procedure [调用入口]<br/>
