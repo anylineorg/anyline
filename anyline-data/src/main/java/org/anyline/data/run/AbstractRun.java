@@ -1347,6 +1347,10 @@ public abstract class AbstractRun implements Run {
 	public Run full(Table table, String condition) {
 		return join(Join.TYPE.FULL, table, condition);
 	}
+
+	public String toString(){
+		return this.getClass().getSimpleName()+":"+builder.toString();
+	}
 }
  
  
