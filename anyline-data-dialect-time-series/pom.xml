@@ -14,7 +14,7 @@
 	<packaging>pom</packaging>
 
     <modules>
-		<module>anyline-data-jdbc-influxdb</module>
+		<module>anyline-data-influxdb</module>
 		<module>anyline-data-jdbc-tdengine</module>
     </modules>
 	<build>

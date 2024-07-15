@@ -11,7 +11,7 @@
     <relativePath>../../anyline-dependency/pom.xml</relativePath>
 </parent>
 
-<artifactId>anyline-data-jdbc-influxdb</artifactId>
+<artifactId>anyline-data-influxdb</artifactId>
 <packaging>jar</packaging>
 <name>anyline-data-jdbc-influxdb</name>
 <url>http://www.anyline.org/influxdb</url>
@@ -20,6 +20,11 @@
     <dependency>
         <groupId>org.anyline</groupId>
         <artifactId>anyline-data-jdbc</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>com.influxdb</groupId>
+        <artifactId>influxdb-client-java</artifactId>
+        <version>7.1.0</version>
     </dependency>
 </dependencies>
 </project>

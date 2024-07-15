@@ -57,7 +57,8 @@
 		<jdbc-iotdb.version>1.1.1</jdbc-iotdb.version>
 		<jdbc-voltdb.version>13.0.0</jdbc-voltdb.version>
 		<elasticsearch.version>8.7.0</elasticsearch.version>
-		<data-mongodb.version>5.1.0</data-mongodb.version>
+		<mongodb-client.version>5.1.0</mongodb-client.version>
+		<influxdb-client.version>7.1.0</influxdb-client.version>
 
 		<javax.mail.version>1.5.0-b01</javax.mail.version>
 		<fastjson.version>1.2.83</fastjson.version>
@@ -377,7 +378,7 @@
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
-				<artifactId>anyline-data-jdbc-influxdb</artifactId>
+				<artifactId>anyline-data-influxdb</artifactId>
 				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
@@ -789,17 +790,22 @@
 			<dependency>
 				<groupId>org.mongodb</groupId>
 				<artifactId>mongodb-driver-sync</artifactId>
-				<version>${data-mongodb.version}</version>
+				<version>${mongodb-client.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.influxdb</groupId>
+				<artifactId>influxdb-client-java</artifactId>
+				<version>${influxdb-client.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.mongodb</groupId>
 				<artifactId>bson</artifactId>
-				<version>${data-mongodb.version}</version>
+				<version>${mongodb-client.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.mongodb</groupId>
 				<artifactId>mongodb-driver-core</artifactId>
-				<version>${data-mongodb.version}</version>
+				<version>${mongodb-client.version}</version>
 			</dependency>
 
 			<dependency>
