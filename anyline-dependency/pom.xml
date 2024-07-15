@@ -58,7 +58,7 @@
 		<jdbc-voltdb.version>13.0.0</jdbc-voltdb.version>
 		<elasticsearch.version>8.7.0</elasticsearch.version>
 		<mongodb-client.version>5.1.0</mongodb-client.version>
-		<influxdb-client.version>7.1.0</influxdb-client.version>
+		<influxdb-client.version>5.0.0</influxdb-client.version>
 
 		<javax.mail.version>1.5.0-b01</javax.mail.version>
 		<fastjson.version>1.2.83</fastjson.version>

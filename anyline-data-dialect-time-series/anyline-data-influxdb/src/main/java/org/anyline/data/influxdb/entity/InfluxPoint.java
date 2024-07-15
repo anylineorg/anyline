@@ -16,14 +16,9 @@
 
 package org.anyline.data.influxdb.entity;
 
-import org.anyline.entity.OriginRow;
-
-public class InfluxPoint extends OriginRow {
-    public InfluxPoint() {
-        primaryKeys.clear();
-        primaryKeys.add("time");
-        parseKeyCase(keyCase);
-        createTime = System.currentTimeMillis();
-        nanoTime = System.currentTimeMillis();
+public class InfluxPoint extends InfluxRow {
+    public InfluxPoint(String measurement) {
+        super(measurement);
     }
+
 }

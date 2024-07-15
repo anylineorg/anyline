@@ -18,31 +18,25 @@ package org.anyline.data.influxdb.metadata;
 
 import org.anyline.metadata.Catalog;
 import org.anyline.metadata.Schema;
-import org.anyline.metadata.Table;
 
-public class Measurement extends Table {
-    protected String keyword = "measurement"            ;
-    public Measurement() {
+public class InfluxMeasurement extends InfluxTable {
+    public InfluxMeasurement() {
     }
-    public Measurement(String name) {
+    public InfluxMeasurement(String name) {
         super(name);
     }
 
-    public Measurement(String schema, String table) {
+    public InfluxMeasurement(String schema, String table) {
         super(schema, table);
     }
-    public Measurement(Schema schema, String table) {
+    public InfluxMeasurement(Schema schema, String table) {
         super(schema, table);
     }
-    public Measurement(String catalog, String schema, String name) {
+    public InfluxMeasurement(String catalog, String schema, String name) {
         super(catalog, schema, name);
     }
-    public Measurement(Catalog catalog, Schema schema, String name) {
+    public InfluxMeasurement(Catalog catalog, Schema schema, String name) {
         super(catalog, schema, name);
     }
 
-    @Override
-    public String getKeyword() {
-        return keyword;
-    }
 }
