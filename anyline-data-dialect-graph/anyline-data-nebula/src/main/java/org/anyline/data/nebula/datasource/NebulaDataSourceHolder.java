@@ -122,9 +122,9 @@ public class NebulaDataSourceHolder extends AbstractDataSourceHolder {
 			for(String item:urls){
 				String[] splits = item.split(":");
 				String ip = splits[0];
-				//    nebula:localhost:9696/sso
-				if(ip.contains("nebula:")){
-					ip = ip.replace("nebula:", "");
+				//    nebula://localhost:9696,localhost:9696/sso
+				if(ip.contains("nebula://")){
+					ip = ip.replace("nebula://", "");
 				}
 				String point_ = splits[1];
 				if(point_.contains("/")){
