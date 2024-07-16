@@ -19,6 +19,7 @@ package org.anyline.data.influxdb.entity;
 import com.influxdb.client.domain.WritePrecision;
 import com.influxdb.client.write.Point;
 import com.influxdb.client.write.PointSettings;
+import org.anyline.data.influxdb.metadata.InfluxMeasurement;
 import org.anyline.entity.OriginRow;
 
 import javax.annotation.Nonnull;
@@ -40,6 +41,16 @@ public class InfluxRow extends OriginRow {
         parseKeyCase(keyCase);
         createTime = System.currentTimeMillis();
         nanoTime = System.currentTimeMillis();
+        setTable(measurement);
+    }
+    public InfluxRow(InfluxMeasurement measurement) {
+        point = new Point(measurement.getName());
+        primaryKeys.clear();
+        primaryKeys.add("time");
+        parseKeyCase(keyCase);
+        createTime = System.currentTimeMillis();
+        nanoTime = System.currentTimeMillis();
+        setTable(measurement);
     }
     public Point point(){
         return this.point;

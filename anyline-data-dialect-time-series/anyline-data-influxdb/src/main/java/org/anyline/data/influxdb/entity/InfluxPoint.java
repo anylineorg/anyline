@@ -16,8 +16,13 @@
 
 package org.anyline.data.influxdb.entity;
 
+import org.anyline.data.influxdb.metadata.InfluxMeasurement;
+
 public class InfluxPoint extends InfluxRow {
     public InfluxPoint(String measurement) {
+        super(measurement);
+    }
+    public InfluxPoint(InfluxMeasurement measurement) {
         super(measurement);
     }
 

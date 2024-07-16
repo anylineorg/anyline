@@ -25,7 +25,10 @@ import com.influxdb.client.write.Point;
 import org.anyline.annotation.Component;
 import org.anyline.data.adapter.DriverActuator;
 import org.anyline.data.adapter.DriverAdapter;
+import org.anyline.data.influxdb.entity.InfluxPoint;
+import org.anyline.data.influxdb.entity.InfluxSet;
 import org.anyline.data.influxdb.metadata.InfluxBucket;
+import org.anyline.data.influxdb.metadata.InfluxMeasurement;
 import org.anyline.data.influxdb.run.InfluxRun;
 import org.anyline.data.influxdb.runtime.InfluxRuntime;
 import org.anyline.data.param.ConfigStore;
@@ -105,14 +108,40 @@ public class InfluxActuator implements DriverActuator {
     }
     @Override
     public DataSet select(DriverAdapter adapter, DataRuntime runtime, String random, boolean system, ACTION.DML action, Table table, ConfigStore configs, Run run, String cmd, List<Object> values, LinkedHashMap<String, Column> columns) throws Exception {
-        DataSet set = new DataSet();
+        InfluxSet set = new InfluxSet();
         InfluxRuntime rt = (InfluxRuntime)runtime;
         InfluxRun r = (InfluxRun)run;
         Map<String, String> header = new HashMap<>();
         header.put("Authorization","Token " + rt.token());
+        header.put("Accept", "application/csv");
         String url = r.url();
         String result = HttpUtil.get(header, url).getText();
-        System.out.println(result);
+
+        String[] lines = result.split("\n");
+        int len = lines.length;
+        if(len > 1){
+            String[] titles = lines[0].split(",");
+            int vol = titles.length;
+            Map<String, InfluxMeasurement> measurements = new HashMap<>();
+            for(int i=1; i<len; i++){
+                String[] cols = lines[i].split(",");
+                String table_name = cols[0];
+                InfluxMeasurement measurement = measurements.get(table_name);
+                if(null == measurement){
+                    measurement = new InfluxMeasurement(table_name);
+                    measurements.put(table_name, measurement);
+                }
+                InfluxPoint point = new InfluxPoint(measurement);
+                for(int c=2; c<vol; c++){
+                    String value = "";
+                    if(c < cols.length){
+                        value =cols[c];
+                    }
+                    point.put(titles[c], value);
+                }
+                set.add(point);
+            }
+        }
         return set;
     }
 
