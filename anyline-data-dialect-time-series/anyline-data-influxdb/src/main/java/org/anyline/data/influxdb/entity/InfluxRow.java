@@ -27,7 +27,12 @@ import java.time.Instant;
 import java.util.Map;
 
 public class InfluxRow extends OriginRow {
+    protected String bucket;
+    protected String org;
     protected Point point;
+    public InfluxRow(Point point){
+        this.point = point;
+    }
     public InfluxRow(String measurement) {
         point = new Point(measurement);
         primaryKeys.clear();
@@ -35,9 +40,24 @@ public class InfluxRow extends OriginRow {
         parseKeyCase(keyCase);
         createTime = System.currentTimeMillis();
         nanoTime = System.currentTimeMillis();
-        point = new Point("");
     }
-
+    public Point point(){
+        return this.point;
+    }
+    public InfluxRow bucket(String bucket){
+        this.bucket = bucket;
+        return this;
+    }
+    public String bucket(){
+        return this.bucket;
+    }
+    public InfluxRow org(String org){
+        this.org = org;
+        return this;
+    }
+    public String org(){
+        return this.org;
+    }
     @Nonnull
     public static InfluxRow measurement(@Nonnull String measurement) {
         return new InfluxRow(measurement);

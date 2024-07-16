@@ -7,6 +7,7 @@ public class InfluxConfigStore extends DefaultConfigStore {
     private String org;
     private String start;
     private String stop;
+    private String measurement;
 
     public InfluxConfigStore(){
         super();
@@ -43,5 +44,12 @@ public class InfluxConfigStore extends DefaultConfigStore {
     }
     public String bucket(){
         return bucket;
+    }
+    public InfluxConfigStore measurement(String measurement){
+        this.measurement = measurement;
+        return this;
+    }
+    public String measurement(){
+        return measurement;
     }
 }

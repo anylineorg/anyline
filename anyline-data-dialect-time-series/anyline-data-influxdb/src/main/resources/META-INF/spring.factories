@@ -1,1 +1,5 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=org.anyline.data.influxdb.InfluxAdapter
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+org.anyline.data.influxdb.adapter.InfluxAdapter,\
+org.anyline.data.influxdb.adapter.InfluxAdapter,\
+org.anyline.data.influxdb.adapter.InfluxActuator,\
+org.anyline.data.influxdb.datasource.InfluxDataSourceLoader

@@ -1,1 +1,3 @@
-org.anyline.data.influxdb.InfluxAdapter
+org.anyline.data.influxdb.adapter.InfluxAdapter
+org.anyline.data.influxdb.adapter.InfluxActuator
+org.anyline.data.influxdb.datasource.InfluxDataSourceLoader

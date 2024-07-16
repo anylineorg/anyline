@@ -19,11 +19,14 @@
 package org.anyline.data.influxdb.adapter;
 
 import com.influxdb.client.InfluxDBClient;
+import com.influxdb.client.WriteApiBlocking;
 import com.influxdb.client.domain.Bucket;
+import com.influxdb.client.write.Point;
 import org.anyline.annotation.Component;
 import org.anyline.data.adapter.DriverActuator;
 import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.influxdb.metadata.InfluxBucket;
+import org.anyline.data.influxdb.run.InfluxRun;
 import org.anyline.data.influxdb.runtime.InfluxRuntime;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.run.Run;
@@ -124,7 +127,14 @@ public class InfluxActuator implements DriverActuator {
     @Override
     public long insert(DriverAdapter adapter, DataRuntime runtime, String random, Object data, ConfigStore configs, Run run, String generatedKey, String[] pks) throws Exception{
         long cnt = -1;
-
+        InfluxDBClient client = client(runtime);
+        WriteApiBlocking api = client.getWriteApiBlocking();
+        InfluxRun r = (InfluxRun)run;
+        List<Point> points = r.points();
+        String bucket = r.bucket();
+        String org = r.org();
+        api.writePoints(bucket, org, points);
+        cnt = points.size();
         return cnt;
     }
 

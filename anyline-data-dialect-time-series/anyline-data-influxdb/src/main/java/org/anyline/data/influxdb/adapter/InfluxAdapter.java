@@ -18,11 +18,16 @@
 
 package org.anyline.data.influxdb.adapter;
 
-import org.anyline.adapter.EntityAdapter;
+import com.influxdb.client.write.Point;
 import org.anyline.adapter.KeyAdapter;
 import org.anyline.annotation.Component;
 import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.adapter.init.AbstractDriverAdapter;
+import org.anyline.data.influxdb.entity.InfluxRow;
+import org.anyline.data.influxdb.entity.InfluxSet;
+import org.anyline.data.influxdb.param.InfluxConfigStore;
+import org.anyline.data.influxdb.run.InfluxRun;
+import org.anyline.data.influxdb.runtime.InfluxRuntime;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.RunPrepare;
@@ -30,10 +35,6 @@ import org.anyline.data.prepare.auto.init.DefaultTextPrepare;
 import org.anyline.data.run.*;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
-import org.anyline.entity.generator.PrimaryGenerator;
-import org.anyline.entity.graph.EdgeRow;
-import org.anyline.entity.graph.VertexRow;
-import org.anyline.exception.CommandException;
 import org.anyline.exception.CommandQueryException;
 import org.anyline.exception.CommandUpdateException;
 import org.anyline.exception.NotSupportException;
@@ -45,12 +46,14 @@ import org.anyline.metadata.graph.VertexTable;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.proxy.CacheProxy;
-import org.anyline.proxy.EntityAdapterProxy;
-import org.anyline.util.*;
+import org.anyline.util.BasicUtil;
+import org.anyline.util.ConfigTable;
+import org.anyline.util.DateUtil;
+import org.anyline.util.LogUtil;
 
 import java.util.*;
 
-@Component("anyline.data.adapter.Influx")
+@Component("anyline.data.adapter.influx")
 public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapter {
     @Override
     public DatabaseType type() {
@@ -188,45 +191,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
     @Override
     public void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet set, ConfigStore configs, LinkedHashMap<String, Column> columns) {
         StringBuilder builder = run.getBuilder();
-        int batch = run.getBatch();
-        if(null == builder) {
-            builder = new StringBuilder();
-            run.setBuilder(builder);
-        }
-        LinkedHashMap<String, Column> pks = null;
-        checkName(runtime, null, dest);
-        PrimaryGenerator generator = checkPrimaryGenerator(type(), dest.getName());
-        if(null != generator) {
-            pks = set.getRow(0).getPrimaryColumns();
-            columns.putAll(pks);
-        }
-        //INSERT VERTEX t2 (name, age) VALUES "13":("n3", 12), "14":("n4", 8);
-        builder.append(insertHead(configs, dest, set.getRow(0)));
-        name(runtime, builder, dest);//.append(parseTable(dest));
-        builder.append("(");
-        delimiter(builder, Column.names(columns));
-        builder.append(") VALUES ");
-        int dataSize = set.size();
-        for(int i=0; i<dataSize; i++) {
-            DataRow row = set.getRow(i);
-            if(null == row) {
-                continue;
-            }
-            if(row.hasPrimaryKeys() && BasicUtil.isEmpty(row.getPrimaryValue())) {
-                if(null != generator) {
-                    generator.create(row, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), BeanUtil.getMapKeys(pks), null);
-                }
-                //createPrimaryValue(row, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
-            }
-            builder.append(insertValue(runtime, run, row, true, true, false, true, columns));
-            if(batch <=1) {
-                if (i < dataSize - 1) {
-                    //多行数据之间的分隔符
-                    builder.append(batchInsertSeparator());
-                }
-            }
-        }
-        builder.append(insertFoot(configs, columns));
+
     }
 
     /**
@@ -240,118 +205,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      */
     @Override
     public void fillInsertContent(DataRuntime runtime, Run run, Table dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns) {
-        StringBuilder builder = run.getBuilder();
-        int batch = run.getBatch();
-        if(null == builder) {
-            builder = new StringBuilder();
-            run.setBuilder(builder);
-        }
-        checkName(runtime, null, dest);
-        if(list instanceof DataSet) {
-            DataSet set = (DataSet) list;
-            this.fillInsertContent(runtime, run, dest, set, configs, columns);
-            return;
-        }
-        PrimaryGenerator generator = checkPrimaryGenerator(type(), dest.getName());
-        Object entity = list.iterator().next();
-        List<String> pks = null;
-        if(null != generator) {
-            columns.putAll(EntityAdapterProxy.primaryKeys(entity.getClass()));
-        }
-        Object first = list.iterator().next();
-        //INSERT VERTEX t2 (name, age) VALUES "13":("n3", 12), "14":("n4", 8);
-        builder.append(insertHead(configs, dest, first));
-        name(runtime, builder, dest);// .append(parseTable(dest));
-        builder.append("(");
-        delimiter(builder, Column.names(columns));
-        builder.append(") VALUES ");
-        int dataSize = list.size();
-        int idx = 0;
-        for(Object obj:list) {
-            boolean create = EntityAdapterProxy.createPrimaryValue(obj, Column.names(columns));
-            if(!create && null != generator) {
-                generator.create(obj, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
-            }
-            builder.append(insertValue(runtime, run, obj, true, true, false, true, columns));
-            if(idx<dataSize-1 && batch <= 1) {
-                //多行数据之间的分隔符
-                builder.append(batchInsertSeparator());
-            }
-            idx ++;
-        }
-        builder.append(insertFoot(configs, columns));
-    }
 
-    /**
-     * 生成insert sql的value部分,每个Entity(每行数据)调用一次
-     * (1,2,3)
-     * (?,?,?)
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param run           run
-     * @param obj           Entity或DataRow
-     * @param placeholder   是否使用占位符(批量操作时不要超出数量)
-     * @param scope         是否带(), 拼接在select后时不需要
-     * @param alias         是否添加别名
-     * @param columns          需要插入的列
-     * @param child          是否在子查询中，子查询中不要用序列
-     */
-    protected String insertValue(DataRuntime runtime, Run run, Object obj, boolean child, boolean placeholder, boolean alias, boolean scope, LinkedHashMap<String,Column> columns) {
-        //INSERT VERTEX t2 (name, age) VALUES "13":("n3", 12), "14":("n4", 8);
-        int batch = run.getBatch();
-        StringBuilder builder = new StringBuilder();
-        Object pv = EntityAdapter.getPrimaryValue(obj);
-        builder.append(" '").append(pv).append("':(");
-        int from = 1;
-        if(obj instanceof DataRow) {
-            from = 1;
-        }
-        run.setFrom(from);
-        boolean first = true;
-        for(Column column:columns.values()) {
-            boolean place = placeholder;
-            boolean src = false; //直接拼接 如${now()} ${序列}
-            String key = column.getName();
-            if (!first && batch<=1) {
-                builder.append(", ");
-            }
-            first = false;
-            Object value = null;
-            if(obj instanceof DataRow) {
-                value = BeanUtil.getFieldValue(obj, key);
-            }else if(obj instanceof Map) {
-                value = ((Map)obj).get(key);
-            }else{
-                value = BeanUtil.getFieldValue(obj, EntityAdapterProxy.field(obj.getClass(), key));
-            }
-            if(value != null) {
-                if(value instanceof SQL_BUILD_IN_VALUE) {
-                    place = false;
-                }else if(value instanceof String) {
-                    String str = (String)value;
-                    //if(str.startsWith("${") && str.endsWith("}")) {
-                    if(BasicUtil.checkEl(str)) {
-                        src = true;
-                        place = false;
-                        value = str.substring(2, str.length()-1);
-                        if (child && str.toUpperCase().contains(".NEXTVAL")) {
-                            value = null;
-                        }
-                    }else if("NULL".equals(str)) {
-                        value = null;
-                    }
-                }
-            }
-            if(src) {
-                builder.append(value);
-            }else {
-                builder.append(write(runtime, column, value, false));
-            }
-
-        }
-        if(scope && batch<=1) {
-            builder.append(")");
-        }
-        return builder.toString();
     }
 
     /**
@@ -426,97 +280,74 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      */
     @Override
     protected Run createInsertRun(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns) {
-        Run run = new TableRun(runtime, dest);
-        // List<Object> values = new ArrayList<Object>();
+        InfluxRuntime ir = (InfluxRuntime)runtime;
+        InfluxRun run = new InfluxRun(runtime);
         StringBuilder builder = run.getBuilder();
-        if(BasicUtil.isEmpty(dest)) {
-            throw new CommandException("未指定表");
+        StringBuilder cmd = new StringBuilder();
+        String bucket = null;
+        String org = null;
+        String measurement = null;
+        if(configs instanceof InfluxConfigStore){
+            InfluxConfigStore cfg = (InfluxConfigStore)configs;
+            bucket = cfg.bucket();
+            org = cfg.org();
+            measurement = cfg.measurement();
+        }
+        if(obj instanceof InfluxRow){
+            InfluxRow row =(InfluxRow)obj;
+            run.add(row.point());
+            if(BasicUtil.isEmpty(bucket)) {
+                bucket = row.bucket();
+            }
+            if(BasicUtil.isEmpty(org)) {
+                org = row.org();
+            }
+            cmd.append(row.point().toLineProtocol());
+        }else if(obj instanceof Collection){
+            List<Point> points = new ArrayList<>();
+            Collection set = (Collection)obj;
+            boolean first = true;
+            for(Object row:set){
+                if(row instanceof InfluxRow){
+                    InfluxRow r = (InfluxRow)row;
+                    if(first){
+                        if(BasicUtil.isEmpty(bucket)) {
+                            bucket = r.bucket();
+                        }
+                        if(BasicUtil.isEmpty(org)) {
+                            org = r.org();
+                        }
+                        first = false;
+                    }
+                    points.add(r.point());
+                }
+            }
+            run.points(points);
+            cmd.append("point(").append(set.size()).append(")");
         }
 
-        checkName(runtime, null, dest);
-        PrimaryGenerator generator = checkPrimaryGenerator(type(), dest.getName());
+        //InfluxSet.bucket
+        if(obj instanceof InfluxSet){
+            InfluxSet set = (InfluxSet)obj;
+            if(BasicUtil.isEmpty(bucket)) {
+                bucket = set.bucket();
+            }
+            if(BasicUtil.isEmpty(org)) {
+                org = set.org();
+            }
+        }
+        //注册数据源默认bucket
+        if(BasicUtil.isEmpty(bucket)) {
+            bucket = ir.bucket();
+        }
+        if(BasicUtil.isEmpty(org)) {
+            org = ir.org();
+        }
+        run.bucket(bucket);
+        run.org(org);
+        run.measurement(measurement);
 
-        int from = 1;
-        DataRow row = null;
-        if(obj instanceof Map) {
-            if(!(obj instanceof DataRow)) {
-                obj = new DataRow((Map) obj);
-            }
-        }
-        if(obj instanceof DataRow) {
-            row = (DataRow)obj;
-            if(row.hasPrimaryKeys() && null != generator) {
-                generator.create(row, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), null);
-                //createPrimaryValue(row, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), null);
-            }
-        }else{
-            from = 2;
-            boolean create = EntityAdapterProxy.createPrimaryValue(obj, columns);
-            LinkedHashMap<String, Column> pks = EntityAdapterProxy.primaryKeys(obj.getClass());
-            if(!create && null != generator) {
-                generator.create(obj, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
-                //createPrimaryValue(obj, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, null);
-            }
-        }
-        run.setFrom(from);
-        /*确定需要插入的列*/
-        LinkedHashMap<String, Column> cols = confirmInsertColumns(runtime, dest, obj, configs, columns, false);
-        if(null == cols || cols.isEmpty()) {
-            throw new CommandException("未指定列(DataRow或Entity中没有需要插入的属性值)["+obj.getClass().getName()+":"+ BeanUtil.object2json(obj)+"]");
-        }
-        boolean replaceEmptyNull = false;
-        if(obj instanceof DataRow) {
-            row = (DataRow)obj;
-            replaceEmptyNull = row.isReplaceEmptyNull();
-        }else{
-            replaceEmptyNull = ConfigStore.IS_REPLACE_EMPTY_NULL(configs);
-        }
-        //INSERT VERTEX t2 (name, age) VALUES "11":("n4", 15);
-        builder.append(insertHead(configs, dest, obj));
-        name(runtime, builder, dest);
-        builder.append("(");
-        delimiter(builder, Column.names(cols));
-        builder.append(")");
-        Object pv = EntityAdapter.getPrimaryValue(obj);
-        builder.append(" VALUES '").append(pv).append("':");
-        builder.append("(");
-        List<String> insertColumns = new ArrayList<>();
-        boolean first = true;
-        for(Column column:cols.values()) {
-            if(!first) {
-                builder.append(", ");
-            }
-            first = false;
-            String key = column.getName();
-            Object value = null;
-            if(!(obj instanceof Map) && EntityAdapterProxy.hasAdapter(obj.getClass())) {
-                value = BeanUtil.getFieldValue(obj, EntityAdapterProxy.field(obj.getClass(), key));
-            }else{
-                value = BeanUtil.getFieldValue(obj, key);
-            }
-
-            String str = null;
-            if(value instanceof String) {
-                str = (String)value;
-            }
-
-            //if (str.startsWith("${") && str.endsWith("}")) {
-            if (BasicUtil.checkEl(str)) {
-                value = str.substring(2, str.length()-1);
-                builder.append(value);
-            }else if(value instanceof SQL_BUILD_IN_VALUE) {
-                //内置函数值
-                value = value(runtime, null, (SQL_BUILD_IN_VALUE)value);
-                builder.append(value);
-            }else{
-                insertColumns.add(key);
-                //format(valuesBuilder, value);
-                builder.append(write(runtime, null, value, false));
-            }
-        }
-        builder.append(")");
-        builder.append(insertFoot(configs, cols));
-        run.setInsertColumns(insertColumns);
+        builder.append("insert ").append(org).append(".").append(bucket).append(",").append(cmd);
         return run;
     }
 
@@ -531,7 +362,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      */
     @Override
     protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, List<String> columns) {
-        return super.createInsertRunFromCollection(runtime, batch, dest, list, configs, columns);
+        return createInsertRun(runtime, dest, list, configs, columns);
     }
 
     /**
@@ -557,138 +388,9 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      */
     @Override
     public long insert(DataRuntime runtime, String random, Object data, ConfigStore configs, Run run, String[] pks) {
-        long cnt = 0;
-        int batch = run.getBatch();
-        String action = "insert";
-        if(batch > 1) {
-            action = "batch insert";
-        }
-        if(!run.isValid()) {
-            if(log.isWarnEnabled() && ConfigStore.IS_LOG_SQL(configs)) {
-                log.warn("[valid:false][action:{}][table:{}][不具备执行条件]", action, run.getTableName());
-            }
-            return -1;
-        }
-        String cmd = run.getFinalInsert();
-        if(BasicUtil.isEmpty(cmd)) {
-            log.warn("[不具备执行条件][action:{}][table:{}]", action, run.getTable());
-            return -1;
-        }
-        if(null != configs) {
-            configs.add(run);
-        }
-        List<Object> values = run.getValues();
-        long fr = System.currentTimeMillis();
-        /*执行命令*/
-        if (log.isInfoEnabled() && ConfigStore.IS_LOG_SQL(configs)) {
-            if(batch > 1 && !ConfigStore.IS_LOG_BATCH_SQL_PARAM(configs)) {
-                log.info("{}[action:{}][table:{}][cmd:\n{}\n]\n[param size:{}]", random, action, run.getTable(), cmd, values.size());
-            }else {
-                log.info("{}[action:{}]{}", random, action, run.log(ACTION.DML.INSERT, ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
-            }
-        }
-        long millis = -1;
-        boolean exe = true;
-        if(null != configs) {
-            exe = configs.execute();
-        }
-        if(!exe) {
-            return -1;
-        }
-        try {
-            cnt = actuator.insert(this, runtime, random, data, configs, run, null, pks);
-            millis = System.currentTimeMillis() - fr;
-            boolean slow = false;
-            long SLOW_SQL_MILLIS = ConfigStore.SLOW_SQL_MILLIS(configs);
-            if(SLOW_SQL_MILLIS > 0 && ConfigStore.IS_LOG_SLOW_SQL(configs)) {
-                if(millis > SLOW_SQL_MILLIS) {
-                    slow = true;
-                    log.warn("{}[slow cmd][action:{}][table:{}][执行耗时:{}]{}", random, action, run.getTable(), DateUtil.format(millis), run.log(ACTION.DML.INSERT,  ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
-                    if(null != dmListener) {
-                        dmListener.slow(runtime, random, ACTION.DML.INSERT, run, cmd, values, null, true, cnt, millis);
-                    }
-                }
-            }
-            if (!slow && log.isInfoEnabled() && ConfigStore.IS_LOG_SQL_TIME(configs)) {
-                String qty = LogUtil.format(cnt, 34);
-                if(batch > 1) {
-                    qty = LogUtil.format("约"+cnt, 34);
-                }
-                log.info("{}[action:{}][table:{}][执行耗时:{}][影响行数:{}]", random, action, run.getTable(), DateUtil.format(millis), qty);
-            }
-        }catch(Exception e) {
-            if(ConfigStore.IS_PRINT_EXCEPTION_STACK_TRACE(configs)) {
-                log.error("insert 异常:", e);
-            }
-            if(ConfigStore.IS_LOG_SQL_WHEN_ERROR(configs)) {
-                log.error("{}[{}][action:{}][table:{}]{}", random, LogUtil.format("插入异常:", 33)+e, action, run.getTable(), run.log(ACTION.DML.INSERT,  ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
-            }
-            if(ConfigStore.IS_THROW_SQL_UPDATE_EXCEPTION(configs)) {
-                CommandUpdateException ex = new CommandUpdateException("insert异常:"+e.toString(), e);
-                ex.setCmd(cmd);
-                ex.setValues(values);
-                throw ex;
-            }
-
-        }
-        return cnt;
+        return super.insert(runtime, random, data, configs, run, pks);
     }
 
-    public String insertHead(ConfigStore configs, Table table, Object value) {
-        StringBuilder builder = new StringBuilder();
-        builder.append("INSERT ");
-        Boolean override = null;
-        if(null != configs) {
-            override = configs.override();
-        }
-        if(table instanceof VertexTable || value instanceof VertexRow) {
-            builder.append("VERTEX ");
-        }else if(table instanceof EdgeTable || value instanceof EdgeRow) {
-            builder.append("EDGE ");
-        }
-        //如果数据存在 则不覆盖
-        if(null != override && !override) {
-            builder.append("IF NOT EXISTS ");
-        }
-        return builder.toString();
-    }
-    public String updateHead(DataRuntime runtime, ConfigStore configs, Table table, Object value) {
-        StringBuilder builder = new StringBuilder();
-        builder.append("UPDATE ");
-        Boolean override = null;
-        if(null != configs) {
-            override = configs.override();
-        }
-        if(table instanceof VertexTable || value instanceof VertexRow) {
-            builder.append("VERTEX ");
-        }else if(table instanceof EdgeTable || value instanceof EdgeRow) {
-            builder.append("EDGE ");
-        }
-        builder.append("ON ");
-        name(runtime, builder, table);
-        builder.append(" \"").append(EntityAdapter.getPrimaryValue(value)).append("\" ");
-        return builder.toString();
-    }
-
-    public String deleteHead(DataRuntime runtime, ConfigStore configs, Table table, Object value) {
-        StringBuilder builder = new StringBuilder();
-        builder.append("DELETE ");
-        if(table instanceof VertexTable || value instanceof VertexRow) {
-            builder.append("VERTEX ");
-        }else if(table instanceof EdgeTable || value instanceof EdgeRow) {
-            builder.append("EDGE ");
-        }
-        builder.append(" \"").append(EntityAdapter.getPrimaryValue(value)).append("\" ");
-        if(null != configs && configs.cascade()) {
-            builder.append("WITH ");
-            if(table instanceof VertexTable || value instanceof VertexRow) {
-                builder.append("EDGE");
-            }else if(table instanceof EdgeTable || value instanceof EdgeRow) {
-                builder.append("VERTEX");
-            }
-        }
-        return builder.toString();
-    }
     public String insertFoot(ConfigStore configs, LinkedHashMap<String, Column> columns) {
         return "";
     }
@@ -783,41 +485,6 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
 
         boolean replaceEmptyNull = row.isReplaceEmptyNull();
 
-        List<String> updateColumns = new ArrayList<>();
-        /*构造SQL*/
-        //UPDATE VERTEX ON player "player101" SET age = age + 2 WHEN name == "Tony Parker" YIELD name AS Name, age AS Age;
-        if(!cols.isEmpty()) {
-            builder.append(updateHead(runtime, configs, dest, row));
-            builder.append("SET ");
-            boolean first = true;
-            for(Column col:cols.values()) {
-                String key = col.getName();
-                Object value = row.get(key);
-                if(!first) {
-                    builder.append(",");
-                }
-                first = false;
-                if(BasicUtil.checkEl(value+"")) {
-                    String str = value.toString();
-                    value = str.substring(2, str.length()-1);
-                    delimiter(builder, key).append(" = ").append(value);
-                }else{
-                    delimiter(builder, key).append(" = ");
-                    if("NULL".equals(value)) {
-                        value = null;
-                    }else if("".equals(value) && replaceEmptyNull) {
-                        value = null;
-                    }
-                    updateColumns.add(key);
-                    builder.append(write(runtime, col, value, false));
-                }
-            }
-            //builder.append("\nWHERE 1=1").append(BR_TAB);
-            run.setConfigStore(configs);
-            run.init();
-            run.appendCondition(this, true, false);
-        }
-        run.setUpdateColumns(updateColumns);
         return run;
     }
     @Override
@@ -1763,12 +1430,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      */
     @Override
     public List<Run> buildDeleteRunFromEntity(DataRuntime runtime, Table table, ConfigStore configs, Object obj, String... columns) {
-        List<Run> runs = new ArrayList<>();
-        SimpleRun run = new SimpleRun(runtime);
-        StringBuilder builder = run.getBuilder();
-        builder.append(deleteHead(runtime, configs, table, obj));
-        runs.add(run);
-        return runs;
+        return new ArrayList<>();
     }
 
     /**
