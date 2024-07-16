@@ -722,7 +722,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return 影响行数
 	 */
 	public long insert(DataRuntime runtime, String random, Object data, ConfigStore configs, Run run, String[] pks) {
-
 		long cnt = 0;
 		int batch = run.getBatch();
 		String action = "insert";
@@ -736,7 +735,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			return -1;
 		}
 		String cmd = run.getFinalInsert();
-		if(BasicUtil.isEmpty(cmd)) {
+		if(run.isEmpty()) {
 			log.warn("[不具备执行条件][action:{}][table:{}]", action, run.getTable());
 			return -1;
 		}
