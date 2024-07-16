@@ -22,6 +22,7 @@ import com.influxdb.client.InfluxDBClientOptions;
 import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.datasource.DataSourceHolder;
 import org.anyline.data.datasource.init.AbstractDataSourceHolder;
+import org.anyline.data.influxdb.runtime.InfluxRuntime;
 import org.anyline.data.influxdb.runtime.InfluxRuntimeHolder;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.metadata.type.DatabaseType;
@@ -110,8 +111,8 @@ public class InfluxDataSourceHolder extends AbstractDataSourceHolder {
 				return null;
 			}
 
-			String org = value(prefix, params, "org,user,userName,username", String.class, null);
-			String token = value(prefix, params, "token,password", String.class, null);
+			String org = value(prefix, params, "org", String.class, null);
+			String token = value(prefix, params, "token", String.class, null);
 			String bucket = value(prefix, params, "bucket,database", String.class, null);
 			InfluxDBClientOptions.Builder  builder = InfluxDBClientOptions.builder()
 				.url(url)
@@ -124,7 +125,10 @@ public class InfluxDataSourceHolder extends AbstractDataSourceHolder {
 			}
 			InfluxDBClientOptions options = builder.build();
 			InfluxDBClient client = InfluxDBClientFactory.create(options);
-			InfluxRuntimeHolder.instance().reg(key, client);
+			InfluxRuntime runtime = (InfluxRuntime)InfluxRuntimeHolder.instance().reg(key, client);
+			runtime.bucket(bucket);
+			runtime.token(token);
+			runtime.org(org);
 		} catch (Exception e) {
 			log.error("[注入数据源失败][type:Influx][key:{}][msg:{}]", key, e.toString());
 			log.error("注入数据源 异常:", e);

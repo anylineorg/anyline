@@ -26,9 +26,32 @@ import org.anyline.data.runtime.init.AbstractRuntime;
 public class InfluxRuntime extends AbstractRuntime implements DataRuntime {
 
     protected InfluxDBClient client;
+    protected String bucket;
+    protected String org;
+    protected String token;
     public InfluxRuntime() {
     }
-
+    public String bucket(){
+        return bucket;
+    }
+    public String org(){
+        return org;
+    }
+    public String token(){
+        return token;
+    }
+    public InfluxRuntime token(String token){
+        this.token = token;
+        return this;
+    }
+    public InfluxRuntime org(String org){
+        this.org = org;
+        return this;
+    }
+    public InfluxRuntime bucket(String bucket){
+        this.bucket = bucket;
+        return this;
+    }
 
     public void setProcessor(Object processor) {
         if(processor instanceof InfluxDBClient) {
