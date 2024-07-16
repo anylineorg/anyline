@@ -29,6 +29,9 @@ public class InfluxRuntime extends AbstractRuntime implements DataRuntime {
     protected String bucket;
     protected String org;
     protected String token;
+    protected String user;
+    protected String password;
+
     public InfluxRuntime() {
     }
     public String bucket(){
@@ -40,6 +43,12 @@ public class InfluxRuntime extends AbstractRuntime implements DataRuntime {
     public String token(){
         return token;
     }
+    public String user(){
+        return user;
+    }
+    public String password(){
+        return password;
+    }
     public InfluxRuntime token(String token){
         this.token = token;
         return this;
@@ -50,6 +59,14 @@ public class InfluxRuntime extends AbstractRuntime implements DataRuntime {
     }
     public InfluxRuntime bucket(String bucket){
         this.bucket = bucket;
+        return this;
+    }
+    public InfluxRuntime password(String password){
+        this.password = password;
+        return this;
+    }
+    public InfluxRuntime user(String user){
+        this.user = user;
         return this;
     }
 

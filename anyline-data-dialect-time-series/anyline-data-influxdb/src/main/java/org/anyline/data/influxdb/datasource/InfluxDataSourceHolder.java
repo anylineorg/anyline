@@ -114,6 +114,8 @@ public class InfluxDataSourceHolder extends AbstractDataSourceHolder {
 			String org = value(prefix, params, "org", String.class, null);
 			String token = value(prefix, params, "token", String.class, null);
 			String bucket = value(prefix, params, "bucket,database", String.class, null);
+			String user = value(prefix, params, "user,username,userName", String.class, null);
+			String password = value(prefix, params, "password", String.class, null);
 			InfluxDBClientOptions.Builder  builder = InfluxDBClientOptions.builder()
 				.url(url)
 				.authenticateToken(token.toCharArray());
@@ -129,6 +131,8 @@ public class InfluxDataSourceHolder extends AbstractDataSourceHolder {
 			runtime.bucket(bucket);
 			runtime.token(token);
 			runtime.org(org);
+			runtime.user(user);
+			runtime.password(password);
 		} catch (Exception e) {
 			log.error("[注入数据源失败][type:Influx][key:{}][msg:{}]", key, e.toString());
 			log.error("注入数据源 异常:", e);
