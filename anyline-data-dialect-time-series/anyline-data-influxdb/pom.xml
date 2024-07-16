@@ -22,6 +22,10 @@
         <artifactId>anyline-data-jdbc</artifactId>
     </dependency>
     <dependency>
+        <groupId>org.anyline</groupId>
+        <artifactId>anyline-net</artifactId>
+    </dependency>
+    <dependency>
         <groupId>com.influxdb</groupId>
         <artifactId>influxdb-client-java</artifactId>
         <scope>provided</scope>

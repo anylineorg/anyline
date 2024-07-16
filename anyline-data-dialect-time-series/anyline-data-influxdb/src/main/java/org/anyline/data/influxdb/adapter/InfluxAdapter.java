@@ -31,7 +31,6 @@ import org.anyline.data.influxdb.runtime.InfluxRuntime;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.RunPrepare;
-import org.anyline.data.prepare.auto.init.DefaultTextPrepare;
 import org.anyline.data.run.*;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
@@ -45,6 +44,7 @@ import org.anyline.metadata.graph.GraphTable;
 import org.anyline.metadata.graph.VertexTable;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.metadata.type.TypeMetadata;
+import org.anyline.net.HttpUtil;
 import org.anyline.proxy.CacheProxy;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
@@ -436,7 +436,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      */
     @Override
     public long update(DataRuntime runtime, String random, int batch, Table dest, Object data, ConfigStore configs, List<String> columns) {
-        return super.update(runtime, random, batch, dest, data, configs, columns);
+        return -1;
     }
 
     /**
@@ -801,7 +801,42 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      */
     @Override
     public Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions) {
-        return super.buildQueryRun(runtime, prepare, configs, conditions);
+        InfluxRun run = new InfluxRun(runtime);
+        InfluxRuntime ir = (InfluxRuntime)runtime;
+        run.setPrepare(prepare);
+        init(runtime, run, configs, conditions);
+        run.setText(prepare.getText());
+
+        String bucket = null;
+        String org = null;
+        String measurement = null;
+        if(configs instanceof InfluxConfigStore){
+            InfluxConfigStore cfg = (InfluxConfigStore)configs;
+            bucket = cfg.bucket();
+            org = cfg.org();
+            measurement = cfg.measurement();
+        }
+
+        //注册数据源默认bucket
+        if(BasicUtil.isEmpty(bucket)) {
+            bucket = ir.bucket();
+        }
+        if(BasicUtil.isEmpty(org)) {
+            org = ir.org();
+        }
+        run.bucket(bucket);
+        run.org(org);
+        run.measurement(measurement);
+
+        String url = runtime.getUrl();
+        url = HttpUtil.mergePath(url, "/query");
+
+        url += "?db=" + bucket;
+        String sql = prepare.getText();
+        String encode = HttpUtil.encode(sql,false, true);
+        url += "&q="+encode;
+        run.url(url);
+        return run;
     }
 
     /**
@@ -931,23 +966,10 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
             ProcedureRun pr = (ProcedureRun)run;
             return querys(runtime, random, pr.getProcedure(), configs.getPageNavi());
         }
-        String cmd = run.getFinalQuery();
-        if(BasicUtil.isEmpty(cmd)) {
-            return new DataSet().setTable(table);
-        }
-        List<Object> values = run.getValues();
-        return select(runtime, random, system, ACTION.DML.SELECT, table, configs, run, cmd, values);
+        return select(runtime, random, system, ACTION.DML.SELECT, table, configs, run);
     }
 
-    protected DataSet select(DataRuntime runtime, String random, boolean system, ACTION.DML action, Table table, ConfigStore configs, Run run, String cmd, List<Object> values) {
-        if(BasicUtil.isEmpty(cmd)) {
-            if(ConfigStore.IS_THROW_SQL_QUERY_EXCEPTION(configs)) {
-                throw new CommandQueryException("未指定命令");
-            }else{
-                log.error("未指定命令");
-                return new DataSet().setTable(table);
-            }
-        }
+    protected DataSet select(DataRuntime runtime, String random, boolean system, ACTION.DML action, Table table, ConfigStore configs, Run run) {
 
         if(null != configs) {
             configs.add(run);
@@ -968,20 +990,10 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
         if(!exe) {
             return set;
         }
-        //根据这一步中的JDBC结果集检测类型不准确,如:实际POINT 返回 GEOMETRY 如果要求准确 需要开启到自动检测
-        //在DataRow中 如果检测到准确类型 JSON XML POINT 等 返回相应的类型,不返回byte[]（所以需要开启自动检测）
-        //Entity中 JSON XML POINT 等根据属性类型返回相应的类型（所以不需要开启自动检测）
-        LinkedHashMap<String,Column> columns = new LinkedHashMap<>();
-        if(!system &&ConfigStore.IS_AUTO_CHECK_METADATA(configs) && null != table) {
-            columns = columns(runtime, random, false, table, false);
-        }
+
         try{
-            set = actuator.select(this, runtime, random, system, action, table, configs, run, cmd, values, columns);
+            set = actuator.select(this, runtime, random, system, action, table, configs, run, null, null, null);
             long count = set.size();
-            LinkedHashMap<String,Column> metadatas = set.getMetadatas();
-            if(!system && (null == metadatas || metadatas.isEmpty())&& ConfigStore.IS_CHECK_EMPTY_SET_METADATA(configs)) {
-                metadatas.putAll(metadata(runtime, new DefaultTextPrepare(cmd), false));
-            }
             long time = System.currentTimeMillis() - fr;
             boolean slow = false;
             long SLOW_SQL_MILLIS = ConfigStore.SLOW_SQL_MILLIS(configs);
@@ -990,7 +1002,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
                 if(time > SLOW_SQL_MILLIS) {
                     log.warn("{}[slow cmd][action:select][执行耗时:{}]{}", random, DateUtil.format(time), run.log(ACTION.DML.SELECT, ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
                     if(null != dmListener) {
-                        dmListener.slow(runtime, random, ACTION.DML.SELECT, null, cmd, values, null, true, set,time);
+                        dmListener.slow(runtime, random, ACTION.DML.SELECT, null, null, null, null, true, set,time);
                     }
                 }
             }
@@ -1008,9 +1020,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
             }
             if(ConfigStore.IS_THROW_SQL_QUERY_EXCEPTION(configs)) {
                 CommandQueryException ex = new CommandQueryException("query异常:"+e.toString(),e);
-                ex.setCmd(cmd);
-                ex.setValues(values);
-                throw ex;
+                 throw ex;
             }
 
         }

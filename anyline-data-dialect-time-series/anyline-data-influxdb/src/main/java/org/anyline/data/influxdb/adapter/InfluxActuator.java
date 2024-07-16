@@ -33,13 +33,11 @@ import org.anyline.data.run.Run;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.DataSet;
 import org.anyline.metadata.*;
+import org.anyline.net.HttpUtil;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component("anyline.environment.data.driver.actuator.influxdb")
 public class InfluxActuator implements DriverActuator {
@@ -108,7 +106,13 @@ public class InfluxActuator implements DriverActuator {
     @Override
     public DataSet select(DriverAdapter adapter, DataRuntime runtime, String random, boolean system, ACTION.DML action, Table table, ConfigStore configs, Run run, String cmd, List<Object> values, LinkedHashMap<String, Column> columns) throws Exception {
         DataSet set = new DataSet();
-
+        InfluxRuntime rt = (InfluxRuntime)runtime;
+        InfluxRun r = (InfluxRun)run;
+        Map<String, String> header = new HashMap<>();
+        header.put("Authorization","Token " + rt.token());
+        String url = r.url();
+        String result = HttpUtil.get(header, url).getText();
+        System.out.println(result);
         return set;
     }
 

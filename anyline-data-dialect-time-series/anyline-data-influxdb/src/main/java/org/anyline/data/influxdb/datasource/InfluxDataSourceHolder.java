@@ -133,6 +133,7 @@ public class InfluxDataSourceHolder extends AbstractDataSourceHolder {
 			runtime.org(org);
 			runtime.user(user);
 			runtime.password(password);
+			runtime.setUrl(url);
 		} catch (Exception e) {
 			log.error("[注入数据源失败][type:Influx][key:{}][msg:{}]", key, e.toString());
 			log.error("注入数据源 异常:", e);

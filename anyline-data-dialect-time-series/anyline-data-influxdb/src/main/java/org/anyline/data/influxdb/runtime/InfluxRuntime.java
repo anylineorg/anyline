@@ -69,7 +69,6 @@ public class InfluxRuntime extends AbstractRuntime implements DataRuntime {
         this.user = user;
         return this;
     }
-
     public void setProcessor(Object processor) {
         if(processor instanceof InfluxDBClient) {
             this.client = (InfluxDBClient) processor;

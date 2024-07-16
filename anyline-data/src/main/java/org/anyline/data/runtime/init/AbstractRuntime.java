@@ -22,7 +22,6 @@ import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.adapter.DriverAdapterHolder;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.runtime.RuntimeHolder;
-import org.anyline.exception.NotFoundAdapterException;
 
 public class AbstractRuntime implements DataRuntime {
     /**
@@ -91,12 +90,12 @@ public class AbstractRuntime implements DataRuntime {
 
     @Override
     public void setUrl(String url) {
-
+        this.url = url;
     }
 
     @Override
     public String getUrl() {
-        return null;
+        return url;
     }
 
     public String getKey() {
