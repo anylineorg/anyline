@@ -111,7 +111,7 @@ public class ConfigTable {
 	public static boolean IS_CHECK_ALL_UPDATE_COLUMN					= false			;	// 更新集合时是否检测所有条目的列(默认只检测第一行)
 	public static String LIST2STRING_FORMAT								= "concat"		;	// List/Array转换成String后的格式 concat:A, B, C json:["A","B","C"]
 	public static boolean IS_REPLACE_EMPTY_NULL							= true			;   // 是否把""替换成null
-	public static boolean IS_SQL_DELIMITER_OPEN 						= false			;	// 是否开启 界定符
+	public static boolean IS_SQL_DELIMITER_OPEN 						= false			;	// 是否开启 界定符(注意开启后大部分数据库会区分大小写)
 	public static boolean IS_AUTO_CHECK_KEYWORD							= false			;   // 自动检测关键字
 	public static boolean IS_AUTO_CHECK_EL_VALUE						= true			;   // 自动检测el值
 	public static boolean IS_SQL_DELIMITER_PLACEHOLDER_OPEN 			= false			;	// 是否开启 界定符的占位符(用来实现自定义SQL根据不同的数据库添加不同的界定符, 写SQL时统一写成SQL_DELIMITER_PLACEHOLDER)
