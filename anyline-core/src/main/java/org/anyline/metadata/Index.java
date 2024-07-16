@@ -24,7 +24,7 @@ import org.anyline.util.BeanUtil;
 import java.io.Serializable;
 import java.util.LinkedHashMap;
 
-public class Index<M extends Index> extends Metadata<M> implements Serializable {
+public class Index<M extends Index> extends TableAffiliation<M> implements Serializable {
     protected String keyword = "INDEX"           ;
     protected String type;
     protected LinkedHashMap<String, Column> columns = new LinkedHashMap<>();

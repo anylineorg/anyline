@@ -112,7 +112,6 @@ public class Metadata<T extends Metadata> {
     protected String user                         ; // 所属用户
     protected Long objectId;
 
-    protected Table<?> table;
     protected String definition                   ; //view等创建SQL, column中 完整定义(不包含名称) 如果设置了define 生成SQL时 name define
 
     protected T origin;
@@ -141,7 +140,7 @@ public class Metadata<T extends Metadata> {
 
     public String getIdentity() {
         if(null == identity) {
-            identity = BasicUtil.nvl(getCatalogName(), "") + "_" + BasicUtil.nvl(getSchemaName(), "") + "_" + BasicUtil.nvl(getTableName(false), "") + "_" + BasicUtil.nvl(getName(), "") ;
+            identity = BasicUtil.nvl(getCatalogName(), "") + "_" + BasicUtil.nvl(getSchemaName(), "") + "_" + BasicUtil.nvl(getName(), "") ;
             identity = identity.toUpperCase();
             //identity = MD5Util.crypto(identity.toUpperCase());
         }
@@ -409,44 +408,6 @@ public class Metadata<T extends Metadata> {
         return (T)update;
     }
 
-    /**
-     * 相关表
-     * @param update 是否检测update
-     * @return table
-     */
-    public Table getTable(boolean update) {
-        if(update) {
-            if(null != table && null != table.getUpdate()) {
-                return (Table) table.getUpdate();
-            }
-        }
-        return table;
-    }
-
-    public Table getTable() {
-        return getTable(false);
-    }
-
-    public void setTable(Table table) {
-        this.table = table;
-    }
-
-    public String getTableName(boolean update) {
-        Table table = getTable(update);
-        if(null != table) {
-            return table.getName();
-        }
-        return null;
-    }
-
-    public String getTableName() {
-        return getTableName(false);
-    }
-    public T setTable(String table) {
-        this.table = new Table(table);
-        return (T)this;
-    }
-
     public LinkedHashMap<String, Object> getProperty() {
         if(getmap && null != update) {
             return update.getProperty();
@@ -512,9 +473,6 @@ public class Metadata<T extends Metadata> {
             this.ddls = new ArrayList<>();
         }
         ddls.add(ddl);
-        if(null != this.table){
-            this.table.addDdl(ddl);
-        }
     }
     public List<String> ddls() {
         return ddls;
@@ -560,9 +518,6 @@ public class Metadata<T extends Metadata> {
         this.runs = run;
     }
     public void addRun(Run run) {
-        if(null != table){
-            table.addRun(run);
-        }
         if(null != origin){
             origin.addRun(run);
             return;
@@ -612,11 +567,6 @@ public class Metadata<T extends Metadata> {
     }
 
     public boolean execute() {
-        if(null != table){
-            if(!table.execute()){
-                return false;
-            }
-        }
         if(null != origin){
             if(!origin.execute()){
                 return false;

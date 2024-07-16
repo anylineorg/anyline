@@ -23,7 +23,7 @@ import org.anyline.util.BeanUtil;
 
 import java.io.Serializable;
 import java.util.LinkedHashMap;
-public class Constraint<E extends Constraint> extends Metadata<E> implements Serializable {
+public class Constraint<E extends Constraint> extends TableAffiliation<E> implements Serializable {
     protected String keyword = "CONSTRAINT"           ;
     public enum TYPE{
         PRIMARY_KEY, UNIQUE, NOT_NULL, FOREIGN_KEY, CHECK, DEFAULT
