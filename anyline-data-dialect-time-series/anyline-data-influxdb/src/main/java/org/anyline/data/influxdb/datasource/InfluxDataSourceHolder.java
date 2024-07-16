@@ -110,7 +110,7 @@ public class InfluxDataSourceHolder extends AbstractDataSourceHolder {
 				return null;
 			}
 
-			String org = value(prefix, params, "org,user,userName", String.class, null);
+			String org = value(prefix, params, "org,user,userName,username", String.class, null);
 			String token = value(prefix, params, "token,password", String.class, null);
 			String bucket = value(prefix, params, "bucket,database", String.class, null);
 			InfluxDBClientOptions.Builder  builder = InfluxDBClientOptions.builder()
