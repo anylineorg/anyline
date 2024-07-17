@@ -2207,8 +2207,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions) {
-		Run run = null;
-		run = prepare.build(runtime);
+		Run run = initQueryRun(runtime, prepare);
 		init(runtime, run, configs, conditions);
 		List<Run> unions = run.getUnions();
 		if(null != unions) {
@@ -2375,23 +2374,15 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	@Override
 	public void fillQueryContent(DataRuntime runtime, Run run) {
 		if(null != run) {
-			if(run instanceof TableRun) {
-				TableRun r = (TableRun) run;
-				fillQueryContent(runtime, r);
-			}else if(run instanceof XMLRun) {
-				XMLRun r = (XMLRun) run;
-				fillQueryContent(runtime, r);
-			}else if(run instanceof TextRun) {
-				TextRun r = (TextRun) run;
-				fillQueryContent(runtime, r);
-			}
-			convert(runtime, run.getConfigs(), run);
+			fillQueryContent(runtime, run.getBuilder(), run);
 		}
 	}
 	/**
 	 * select[命令合成-子流程] <br/>
 	 * 构造查询主体
-	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param builder 有可能合个run合成一个 所以提供一个共用builder
+	 * @param run run
 	 */
 	@Override
 	public void fillQueryContent(DataRuntime runtime, StringBuilder builder, Run run) {
@@ -2410,22 +2401,29 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 	}
 	protected void fillQueryContent(DataRuntime runtime, XMLRun run) {
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 fillQueryContent(DataRuntime runtime, XMLRun run)", 37));
-		}
+		fillQueryContent(runtime, run.getBuilder(), run);
 	}
+	/**
+	 *
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param builder 有可能合个run合成一个 所以提供一个共用builder
+	 * @param run run
+	 */
 	protected void fillQueryContent(DataRuntime runtime, StringBuilder builder, XMLRun run) {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 fillQueryContent(DataRuntime runtime, XMLRun run)", 37));
 		}
 	}
 	protected void fillQueryContent(DataRuntime runtime, TextRun run) {
-		replaceVariable(runtime, run);
-		run.appendCondition(true);
-		run.appendGroup();
-		// appendOrderStore();
-		run.checkValid();
+		fillQueryContent(runtime, run.getBuilder(), run);
 	}
+
+	/**
+	 *
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param builder 有可能合个run合成一个 所以提供一个共用builder
+	 * @param run run
+	 */
 	protected void fillQueryContent(DataRuntime runtime, StringBuilder builder, TextRun run) {
 		replaceVariable(runtime, run);
 		run.appendCondition(true);
@@ -2434,10 +2432,14 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		run.checkValid();
 	}
 	protected void fillQueryContent(DataRuntime runtime, TableRun run) {
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 fillQueryContent(DataRuntime runtime, TableRun run)", 37));
-		}
+		fillQueryContent(runtime, run.getBuilder(), run);
 	}
+	/**
+	 *
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param builder 有可能合个run合成一个 所以提供一个共用builder
+	 * @param run run
+	 */
 	protected void fillQueryContent(DataRuntime runtime, StringBuilder builder, TableRun run) {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 fillQueryContent(DataRuntime runtime, TableRun run)", 37));
@@ -3060,7 +3062,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		RunPrepare prepare = run.getPrepare();
 		List<Variable> variables = run.getVariables();
 		String result = prepare.getText();
-		if(null != variables) {
+		if(supportPlaceholder() && null != variables) {
 			for(Variable var:variables) {
 				if(null == var) {
 					continue;

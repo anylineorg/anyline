@@ -102,6 +102,9 @@ public interface DriverAdapter {
 	DriverActuator getActuator();
 	boolean supportCatalog();
 	boolean supportSchema();
+	default boolean supportPlaceholder(){
+		return true;
+	}
 	void setListener(DDListener listener);
 	DDListener getDDListener();
 	void setListener(DMListener listener);
@@ -1314,7 +1317,9 @@ public interface DriverAdapter {
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions);
-
+	default Run initQueryRun(DataRuntime runtime, RunPrepare prepare){
+		return prepare.build(runtime);
+	}
 	/**
 	 * 解析文本中的占位符
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端

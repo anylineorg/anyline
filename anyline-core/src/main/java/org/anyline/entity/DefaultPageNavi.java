@@ -251,7 +251,7 @@ public class DefaultPageNavi implements PageNavi, Serializable, Cloneable {
 			return this;
 		} 
 		if(null == this.params) {
-			this.params = new HashMap<String, List<Object>>();
+			this.params = new LinkedHashMap<>();
 		} 
 		List<Object> values = params.get(key); 
 		if(null == values) {

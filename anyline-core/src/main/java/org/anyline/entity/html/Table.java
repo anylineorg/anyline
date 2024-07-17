@@ -29,9 +29,9 @@ public class Table {
     private String header = null; // 复杂的头表直接设置html
     private String footer = null;
     private boolean isOffset = false;//是否计算过偏移量(多次执行build, merge, offset等只计算一次, )
-    private Map<String, String> styles = new HashMap();
+    private Map<String, String> styles = new LinkedHashMap();
     private List<Integer> mergeRows = new ArrayList<>(); // 根据内容合并行依据
-    private Map<Integer, List<Integer>> refs = new HashMap<>(); //
+    private Map<Integer, List<Integer>> refs = new LinkedHashMap<>(); //
     private List<Integer[]> mergeCols = new ArrayList<>();//根据内容合并列, 开始列, 合并数量
     private Element src;
     private String widthUnit = "px";     // 默认长度单位 px pt cm/厘米

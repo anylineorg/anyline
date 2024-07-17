@@ -452,7 +452,7 @@ public class DownloadTask {
 	} 
 	public void addParam(String key, String value) {
 		if(null == params) {
-			params = new HashMap<String, Object>();
+			params = new LinkedHashMap<String, Object>();
 		} 
 		params.put(key, value);
 	} 

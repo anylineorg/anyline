@@ -952,7 +952,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
      */
     public DataSet distinct(String... keys) {
         DataSet result = new DataSet();
-        Map<String, String> chks = new HashMap<>();
+        Map<String, String> chks = new LinkedHashMap<>();
         String ks = "";
         for(String key:keys) {
             ks += "${"+key+"}";

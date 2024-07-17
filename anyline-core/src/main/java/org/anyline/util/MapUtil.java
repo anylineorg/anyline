@@ -40,7 +40,7 @@ public class MapUtil {
 		List<Map<String, Object>> result = new ArrayList<Map<String, Object>>();
 		if(null != list) {
 			for(Map<String, Object> obj:list) {
-				Map<String, Object> map = new HashMap<String, Object>();
+				Map<String, Object> map = new LinkedHashMap<>();
 				if(null !=keys) {
 					for(String key:keys) {
 						map.put(key, obj.get(key));
@@ -105,14 +105,14 @@ public class MapUtil {
 		return result;
 	}
 	public static Map<String, Object> extract(Map<String, Object> src, List<String> keys) {
-		Map<String, Object> map = new HashMap<>();
+		Map<String, Object> map = new LinkedHashMap<>();
 		for(String key:keys) {
 			map.put(key, src.get(key));
 		}
 		return map;
 	}
 	public static Map<String, Object> extract(Map<String, Object> src, String ... keys) {
-		Map<String, Object> map = new HashMap<>();
+		Map<String, Object> map = new LinkedHashMap<>();
 		for(String key:keys) {
 			map.put(key, src.get(key));
 		}
@@ -222,7 +222,7 @@ public class MapUtil {
 	}
 
 	public static List<Map<String, Object>> querys(Collection<Map<String, Object>> datas, int begin, int qty, String... params) {
-		Map<String, Object> kvs = new HashMap<>();
+		Map<String, Object> kvs = new LinkedHashMap<>();
 		int len = params.length;
 		int i = 0;
 		String srcFlagTag = "srcFlag"; // 参数含有{}的 在kvs中根据key值+tag 放入一个新的键值对
@@ -345,7 +345,7 @@ public class MapUtil {
 		Collection<Map<String, Object>> classValues =  distinct(datas, classKeys);  // [{年度:2010, 科目:数学}, {年度:2010, 科目:物理}, {年度:2011, 科目:数学}]
 		for (Map<String, Object> row : result) {
 			for (Map<String, Object> classValue : classValues) {
-				Map<String, Object> params = new HashMap<>();
+				Map<String, Object> params = new LinkedHashMap<>();
 				copy(params, row, pks);
 				copy(params, classValue);
 				Map<String, Object> valueRow = query(datas, params);
