@@ -246,7 +246,7 @@ public class BeanUtil {
 		if(null == field) {
 			return false;
 		}
-		if(null != obj &&Modifier.isStatic(field.getModifiers())) {
+		if(null != obj && Modifier.isStatic(field.getModifiers())) {
 			//对象不处理静态属性
 			return false;
 		}
@@ -594,7 +594,7 @@ public class BeanUtil {
 		if(null == obj) {
 			return null;
 		}
-		Map<String, Object> map = new HashMap<String, Object>();
+		Map<String, Object> map = new LinkedHashMap<String, Object>();
 		if(null == keys || keys.length ==0) {
 			if(obj instanceof Map) {
 				// map to map
@@ -720,7 +720,7 @@ public class BeanUtil {
 		if(list instanceof DataSet) {
 			return ((DataSet)list).getRows(params);
 		}
-		Map<String, String> kvs = new HashMap<String, String>();
+		Map<String, String> kvs = new LinkedHashMap<String, String>();
 		int len = params.length;
 		int i = 0;
 		while(i<len) {
@@ -786,7 +786,7 @@ public class BeanUtil {
 	 * @return Map
 	 */
 	public static Map<String, String> array2map(String ... params) {
-		Map<String, String> map = new HashMap<>();
+		Map<String, String> map = new LinkedHashMap<>();
 		int len = params.length;
 		int i = 0;
 		while (i < len) {
@@ -844,7 +844,7 @@ public class BeanUtil {
 					return (T)map;
 				}
 				if(clazz == Map.class) {
-					obj = (T)new HashMap<>();
+					obj = (T)new LinkedHashMap<>();
 				}else {
 					obj = (T) clazz.newInstance();
 				}
@@ -991,7 +991,7 @@ public class BeanUtil {
 		return object2json(map, include);
 	}
 	public static Map<String, Object> xml2map(String xml) {
-		Map<String, Object> map = new HashMap<String, Object>();
+		Map<String, Object> map = new LinkedHashMap<String, Object>();
 		Document document;
 		try {
 			document =  DocumentHelper.parseText(xml);
@@ -1126,14 +1126,14 @@ public class BeanUtil {
 	 * @param obj obj
 	 * @return map
 	 */
-	public static Map<String, Object> object2map(Object obj) {
+	public static Map<String, Object> object2map_bak(Object obj) {
 		if(null == obj) {
 			return null;
 		}
 		if(obj instanceof Map){
 			return (Map<String, Object>)obj;
 		}
-		Map<String, Object> map = new HashMap<>();
+		Map<String, Object> map = new LinkedHashMap<>();
 		List<Field> fields = ClassUtil.getFields(obj.getClass());
 		for(Field field:fields) {
 			Object value = getFieldValue(obj, field);
@@ -1142,7 +1142,7 @@ public class BeanUtil {
 				if (value instanceof Map) {
 					//map的value转map
 					Map vmap = (Map) value;
-					Map<String, Object> valueMap = new HashMap<>();
+					Map<String, Object> valueMap = new LinkedHashMap<>();
 					for (Object k : vmap.keySet()) {
 						Object v = vmap.get(k);
 						if (!ClassUtil.isJavaType(v)) {
@@ -1189,8 +1189,84 @@ public class BeanUtil {
 		}
 		return map;
 	}
+	private static Object object22map(Object obj){
+		if(null == obj){
+			return null;
+		}
+		if(obj instanceof Map){
+			Map result_map = new LinkedHashMap();
+			Map map = (Map)obj;
+			for(Object k:map.keySet()){
+				result_map.put(k, object22map(map.get(k)));
+			}
+			return result_map;
+		}else if(obj instanceof Collection){
+			Collection result_list = new ArrayList();
+			Collection list = (Collection) obj;
+			for(Object item:list){
+				result_list.add(object22map(item));
+			}
+			return result_list;
+		}else if (obj.getClass().isArray()) {
+			Collection result_list = new ArrayList();
+			int len = Array.getLength(obj);
+			for (int i = 0; i < len; i++) {
+				Object item = Array.get(obj, i);
+				result_list.add(object22map(item));
+			}
+			return result_list;
+		}
+		if(!ClassUtil.isJavaType(obj)){
+			Map<String, Object> result_map = new LinkedHashMap<>();
+			List<Field> fields = ClassUtil.getFields(obj.getClass());
+			for(Field field:fields) {
+				if (Modifier.isStatic(field.getModifiers())) {
+					continue;
+				}
+				Object value = getFieldValue(obj, field);
+				value = object22map(value);
+				result_map.put(field.getName(), value);
+			}
+		}
+		return obj;
+	}
+	public static Map<String, Object> object2map(Object obj) {
+		if(null == obj) {
+			return null;
+		}
+		if(ClassUtil.isPrimitiveClass(obj) || obj instanceof String){
+			return null;
+		}
+		if(obj instanceof Collection){
+			return null;
+		}
+		if(obj.getClass().isArray()){
+			return null;
+		}
+		Map<String, Object> map = new LinkedHashMap<>();
+		if(obj instanceof Map){
+			Map vmap = (Map) obj;
+			for(Object k:vmap.keySet()){
+				map.put(k.toString(), object22map(vmap.get(k)));
+			}
+			return map;
+		}
+		if(ClassUtil.isJavaType(obj)){
+			return null;
+		}
+
+		List<Field> fields = ClassUtil.getFields(obj.getClass());
+		for(Field field:fields) {
+			if(Modifier.isStatic(field.getModifiers())){
+				continue;
+			}
+			Object value = getFieldValue(obj, field);
+			map.put(field.getName(), object22map(value));
+		}
+		return map;
+	}
 	public static <K, V> Map<K, V> object2map(Object obj, List<K> keys) {
-		return object2map(new HashMap(), obj, keys, null);
+		return object2map(new LinkedHashMap(), obj, keys, null);
 	}
 
 	public static <K, V> Map<K, V> object2map(Map map, Object obj) {
@@ -1215,7 +1291,7 @@ public class BeanUtil {
 								value = ConvertProxy.convert(value, valueClass, false);
 							}else{
 								if (ClassUtil.isWrapClass(value) && !(value instanceof String)) {
-									value = object2map(value);
+									value = object22map(value);
 								}
 							}
 						}
@@ -1226,10 +1302,13 @@ public class BeanUtil {
 				}
 			}else{
 				if(null == map) {
-					map = new HashMap();
+					map = new LinkedHashMap();
 				}
 				List<Field> fields = ClassUtil.getFields(obj.getClass());
 				for(Field field:fields) {
+					if(Modifier.isStatic(field.getModifiers())){
+						continue;
+					}
 					Object value = getFieldValue(obj, field);
 					if(null != valueClass && null != value){
 						value = ConvertProxy.convert(value, valueClass, false);
@@ -1243,7 +1322,7 @@ public class BeanUtil {
 		}else {
 
 			if(null == map) {
-				map = new HashMap();
+				map = new LinkedHashMap();
 			}
 			if(obj instanceof Map) {
 				map=(Map)obj;
@@ -1268,7 +1347,7 @@ public class BeanUtil {
 		if(null != objs)
 			for(T obj:objs) {
 				if(obj instanceof Map) {
-					Map<String, Object> item = new HashMap<>();
+					Map<String, Object> item = new LinkedHashMap<>();
 					for(String key:keys) {
 						item.put(key, ((Map)obj).get(key));
 					}
@@ -1324,7 +1403,7 @@ public class BeanUtil {
 	 * @return Map
 	 */
 	public static Map<String, Object> param2map(String url, boolean empty, boolean decode, String charset) {
-		Map<String, Object> params = new HashMap<String, Object>();
+		Map<String, Object> params = new LinkedHashMap<>();
 		if(null != url) {
 			int index = url.indexOf("?");
 			if(index != -1) {
@@ -1423,7 +1502,7 @@ public class BeanUtil {
 		List<Map<String, Object>> result = new ArrayList<Map<String, Object>>();
 		if(null != list) {
 			for(Object obj:list) {
-				Map<String, Object> map = new HashMap<String, Object>();
+				Map<String, Object> map = new LinkedHashMap<String, Object>();
 				if(null !=keys) {
 					for(String key:keys) {
 						Object value = getFieldValue(obj, key);
@@ -2255,7 +2334,7 @@ public class BeanUtil {
 	 * @return Map
 	 */
 	public static Map<String, String> string2map(String str) {
-		Map<String, String> map = new HashMap<String, String>();
+		Map<String, String> map = new LinkedHashMap<String, String>();
 		if(BasicUtil.isNotEmpty(str)) {
 			//if(str.startsWith("${") && str.endsWith("}")) {
 			if(BasicUtil.checkEl(str)) {
@@ -2297,7 +2376,7 @@ public class BeanUtil {
 	}
 
 	public static Map<String, String> createMap(String... params) {
-		Map<String, String> result = new HashMap<>();
+		Map<String, String> result = new LinkedHashMap<>();
 		if (null != params) {
 			int size = params.length;
 			for (int i = 0; i < size - 1; i += 2) {
@@ -3265,7 +3344,7 @@ public class BeanUtil {
 	 * @param <V> v
 	 */
 	public static <K, V> Map<K, V> merge(Map<K, V> ... maps) {
-		Map<K, V> result = new HashMap<>();
+		Map<K, V> result = new LinkedHashMap<>();
 		if(null != maps) {
 			for(Map<K, V> map:maps) {
 				join(result, map, true);
@@ -3285,7 +3364,7 @@ public class BeanUtil {
 	 */
 	public static <K, V> Map<K, V>  join(Map<K,V> src, Map<K,V> copy, boolean over) {
 		if(null == src) {
-			src = new HashMap<K,V>();
+			src = new LinkedHashMap<K,V>();
 		}
 		if(null != copy) {
 			for(K key:copy.keySet()) {
@@ -3473,7 +3552,7 @@ public class BeanUtil {
 	}
 
 	public static <T> List<T> querys(Collection<T> datas, int begin, int qty, String... params) {
-		Map<String, Object> kvs = new HashMap<>();
+		Map<String, Object> kvs = new LinkedHashMap<>();
 		int len = params.length;
 		int i = 0;
 		String srcFlagTag = "srcFlag"; // 参数含有{}的 在kvs中根据key值+tag 放入一个新的键值对
@@ -3611,7 +3690,7 @@ public class BeanUtil {
 		List<Map<String,Object>> classValues = objects2maps(distinct(datas,classKeys),classKeys);  // [{年度:2010,科目:数学},{年度:2010,科目:物理},{年度:2011,科目:数学}]
 		for (Map<String,Object> row : result) {
 			for (Map<String,Object> classValue : classValues) {
-				Map<String,Object> params = new HashMap<>();
+				Map<String,Object> params = new LinkedHashMap<>();
 				copy(params, row, pks);
 				copy(params, classValue);
 				T valueRow = query(datas,params);
