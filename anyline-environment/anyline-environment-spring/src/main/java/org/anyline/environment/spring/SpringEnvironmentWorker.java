@@ -52,12 +52,12 @@ public class SpringEnvironmentWorker extends DefaultEnvironmentWorker implements
     public void setApplicationContext(ApplicationContext context) throws BeansException {
         this.context = context;
         factory = (DefaultListableBeanFactory) context.getAutowireCapableBeanFactory();
-        ConfigTable.setWorker(this);
+        ConfigTable.setEnvironment(this);
     }
 
     @Override
     public void setEnvironment(Environment environment) {
-        ConfigTable.setWorker(this);
+        ConfigTable.setEnvironment(this);
         this.environment = environment;
         Field[] fields = ConfigTable.class.getDeclaredFields();
         for(Field field:fields) {

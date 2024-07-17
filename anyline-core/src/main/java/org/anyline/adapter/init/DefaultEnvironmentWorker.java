@@ -49,7 +49,7 @@ public class DefaultEnvironmentWorker implements EnvironmentWorker {
         if(null == instance) {
             instance = new DefaultEnvironmentWorker();
         }
-        ConfigTable.setWorker(instance);
+        ConfigTable.setEnvironment(instance);
         if(null != config) {
             ConfigTable.parseEnvironment(FileUtil.read(config, StandardCharsets.UTF_8).toString(), config.getName());
         }
@@ -62,6 +62,9 @@ public class DefaultEnvironmentWorker implements EnvironmentWorker {
         Map<String, LoadListener> listeners = instance.getBeans(LoadListener.class);
         for(LoadListener listener:listeners.values()) {
             listener.start();
+        }
+        for(LoadListener listener:listeners.values()) {
+            listener.after();
         }
         return instance;
     }

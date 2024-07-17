@@ -20,10 +20,13 @@ package org.anyline.bean;
 
 public interface LoadListener {
     /**
-     * 1.上下文环境加初始化时(就是有了上下文对象时)调用一次
-     *  因为加载过程中有需要引用数据源的类(如果没有这次调用，依赖数据源的注解需要@Lazy)
-     * 2.上下文中所有实例完成注入后调用一次
-     * anyline需要等项目中的jdbc/datasource实例完成后 用来创建默认数据源的service
+     * 1.上下文环境加初始化时(就是有了上下文对象ConfigTable.work)调用一次
      */
     void start();
+    /**
+     * 2.上下文中所有实例完成注入后调用一次
+     * anyline需要等项目中的jdbc/datasource实例完成后 用来创建默认数据源的service
+     * 以及在DataSourceHolder实例加载完成前就调用了reg产生的缓存数据源 所以需要延迟加载
+     */
+    void after();
 }

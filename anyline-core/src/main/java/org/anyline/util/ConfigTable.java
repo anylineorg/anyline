@@ -42,7 +42,7 @@ import java.util.jar.JarFile;
 
 public class ConfigTable {
 	private static final Logger log = LoggerFactory.getLogger(ConfigTable.class);
-	public static EnvironmentWorker worker;
+	public static EnvironmentWorker environment;
 	private static boolean IS_LOG = false;
 	private static final Map<String, Long> listener_files = new Hashtable<>(); // 监听文件更新<文件名, 最后加载时间>
 	protected static String root;		// 项目根目录 如果是jar文件运行表示jar文件所在目录
@@ -186,15 +186,15 @@ public class ConfigTable {
 		debug();
 	}
 
-	public static void setWorker(EnvironmentWorker worker) {
-		ConfigTable.worker = worker;
+	public static void setEnvironment(EnvironmentWorker environment) {
+		ConfigTable.environment = environment;
 	}
 
 	public static EnvironmentWorker environment() {
-		if(null == worker) {
+		if(null == environment) {
 			log.error("未注入EnvironmentWorker,基础Java环境调用DefaultEnvironmentWorker.start(),其他环境添加依赖如:anyline-environment-spring-data-jdbc");
 		}
-		return worker;
+		return environment;
 	}
 	private synchronized static void listener() {
 		if(listener_running) {
@@ -712,8 +712,8 @@ public class ConfigTable {
 			init();
 		}
 		val = configs.get(key.toUpperCase().trim());
-		if(null == val && null != worker) {
-			val = worker.get(key);
+		if(null == val && null != environment) {
+			val = environment.get(key);
 		}
 		return val;
 	}

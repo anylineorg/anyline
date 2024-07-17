@@ -21,9 +21,9 @@ package org.anyline.data.listener.init;
 import org.anyline.annotation.Component;
 import org.anyline.bean.LoadListener;
 import org.anyline.cache.CacheProvider;
+import org.anyline.data.adapter.DriverActuator;
 import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.adapter.DriverAdapterHolder;
-import org.anyline.data.adapter.DriverActuator;
 import org.anyline.data.datasource.DataSourceLoader;
 import org.anyline.data.interceptor.*;
 import org.anyline.data.listener.DDListener;
@@ -111,8 +111,12 @@ public class DataSourceLoadListener implements LoadListener {
                 }
             }
         }
-        if(ConfigTable.environment().containsBean(DataRuntime.ANYLINE_SERVICE_BEAN_PREFIX+"default")) {
-            AnylineService service = ConfigTable.environment().getBean(DataRuntime.ANYLINE_SERVICE_BEAN_PREFIX+"default", AnylineService.class);
+    }
+
+    @Override
+    public void after() {
+        if(ConfigTable.environment().containsBean(DataRuntime.ANYLINE_SERVICE_BEAN_PREFIX + "default")) {
+            AnylineService service = ConfigTable.environment().getBean(DataRuntime.ANYLINE_SERVICE_BEAN_PREFIX + "default", AnylineService.class);
             if(null != service) {
                 ServiceProxy.init(service);
                 Map<String, AnylineService> services = ConfigTable.environment().getBeans(AnylineService.class);

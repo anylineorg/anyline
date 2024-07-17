@@ -37,17 +37,18 @@ import java.util.Map;
 @Component("anyline.environment.configuration.spring")
 public class SpringAutoConfiguration implements InitializingBean {
     private Map<String, LoadListener> listeners;
-    private boolean loadStatus = false;
+    private boolean loader_start_status = false;
+    private boolean loader_after_status = false;
     @Autowired
     public void setWorker(SpringEnvironmentWorker worker) {
-        ConfigTable.setWorker(worker);
-        listenerLoad();
-
+        ConfigTable.setEnvironment(worker);
+        loaderStart();
     }
+
     @Autowired(required = false)
     public void setListeners(Map<String, LoadListener> listeners) {
         this.listeners = listeners;
-        listenerLoad();
+        loaderStart();
     }
     //用户自定义数据类型转换器
     @Autowired(required = false)
@@ -84,16 +85,21 @@ public class SpringAutoConfiguration implements InitializingBean {
         }
         EntityAdapterProxy.setAdapters(adapters);
     }
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        listenerLoad();
-    }
-    private void listenerLoad() {
-        if(!loadStatus && null != listeners && null != ConfigTable.worker) {
+    private void loaderStart() {
+        if(!loader_start_status && null != listeners && null != ConfigTable.environment) {
+            loader_start_status = true;
             for (LoadListener listener : listeners.values()) {
                 listener.start();
             }
-            loadStatus = true;
+        }
+    }
+    @Override
+    public void afterPropertiesSet() {
+        if(!loader_after_status && null != listeners && null != ConfigTable.environment) {
+            loader_after_status = true;
+            for (LoadListener listener : listeners.values()) {
+                listener.after();
+            }
         }
     }
 }

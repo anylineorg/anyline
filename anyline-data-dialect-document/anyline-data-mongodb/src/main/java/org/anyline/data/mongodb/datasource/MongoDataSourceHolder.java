@@ -115,7 +115,7 @@ public class MongoDataSourceHolder extends AbstractDataSourceHolder implements D
             datasource = client.getDatabase(database);
         }
         if(datasource instanceof MongoDatabase) {
-            if(null != ConfigTable.worker) {
+            if(null != ConfigTable.environment) {
                 DataSourceHolder.check(key, override);
                 //创建事务管理器
                 regTransactionManager(key, client, (MongoDatabase) datasource, true);

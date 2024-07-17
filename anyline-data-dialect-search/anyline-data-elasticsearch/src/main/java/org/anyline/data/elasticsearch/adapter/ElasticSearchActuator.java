@@ -151,8 +151,6 @@ public class ElasticSearchActuator implements DriverActuator {
         return set;
     }
 
-    
-
     @Override
     public List<Map<String, Object>> maps(DriverAdapter adapter, DataRuntime runtime, String random, ConfigStore configs, Run run) throws Exception {
         return null;
@@ -209,8 +207,6 @@ public class ElasticSearchActuator implements DriverActuator {
         execute(random, client(runtime), request);
         return cnt;
     }
-
-    
 
     @Override
     public long execute(DriverAdapter adapter, DataRuntime runtime, String random, ConfigStore configs, Run run) throws Exception{

@@ -196,7 +196,7 @@ public class JDBCDataSourceHolder extends AbstractDataSourceHolder implements Da
     public DataRuntime runtime(String key, Object datasource, String database, DatabaseType type, DriverAdapter adapter, boolean override) throws Exception {
         DataRuntime runtime = null;
         if(datasource instanceof DataSource) {
-            if(null != ConfigTable.worker) {
+            if(null != ConfigTable.environment) {
                 DataSourceHolder.check(key, override);
                 //创建事务管理器
                 regTransactionManager(key, (DataSource)datasource);

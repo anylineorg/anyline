@@ -42,7 +42,7 @@ public class SolonEnvironmentWorker extends DefaultEnvironmentWorker implements 
         log.debug("solon environment start");
         SolonEnvironmentWorker.context = context;
         props = Solon.cfg();
-        ConfigTable.worker = this;
+        ConfigTable.environment = this;
         DefaultEnvironmentWorker.start();
         context.onEvent(AppLoadEndEvent.class, e->{
             log.debug("solon end event");

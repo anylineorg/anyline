@@ -2208,15 +2208,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	@Override
 	public Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions) {
 		Run run = null;
-		/*if(prepare instanceof TablePrepare) {
-			run = new TableRun(runtime, prepare.getTable());
-			//检测 likes
-			likes(runtime, prepare.getTable(), configs);
-		}else if(prepare instanceof XMLPrepare) {
-			run = new XMLRun();
-		}else if(prepare instanceof TextPrepare) {
-			run = new TextRun();
-		}*/
 		run = prepare.build(runtime);
 		init(runtime, run, configs, conditions);
 		List<Run> unions = run.getUnions();
