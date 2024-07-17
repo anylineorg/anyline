@@ -97,7 +97,7 @@ public interface DataSourceHolder {
 			}
 		}
 		if(instances.isEmpty()) {
-			log.warn("[没有可用的DataSourceHolder][有可能是pom中没有依赖anyline-environment-*或纯Java环境没有启动DefaultEnvironmentWorker.start()]");
+			log.warn("[没有可用的DataSourceHolder][有可能是上下文没有加载完成 或 pom中没有依赖anyline-environment-* 或 纯Java环境没有启动DefaultEnvironmentWorker.start()]");
 		}
 		return holder;
 	}
@@ -369,18 +369,7 @@ public interface DataSourceHolder {
 		return instance.validate(datasource);
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
 	/* *****************************************************************************************************************
 	 * create:[调用入口]<br/>注册数据源(用户或配置监听调用)
 	 * inject:创建并注入数据源
