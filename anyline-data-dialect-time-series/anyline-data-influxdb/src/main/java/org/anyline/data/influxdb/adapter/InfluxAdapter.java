@@ -26,7 +26,10 @@ import org.anyline.data.adapter.init.AbstractDriverAdapter;
 import org.anyline.data.influxdb.entity.InfluxRow;
 import org.anyline.data.influxdb.entity.InfluxSet;
 import org.anyline.data.influxdb.param.InfluxConfigStore;
+import org.anyline.data.influxdb.run.InfluxJsonRun;
 import org.anyline.data.influxdb.run.InfluxRun;
+import org.anyline.data.influxdb.run.InfluxSqlRun;
+import org.anyline.data.influxdb.run.InfluxVndRun;
 import org.anyline.data.influxdb.runtime.InfluxRuntime;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.init.DefaultConfigStore;
@@ -44,7 +47,6 @@ import org.anyline.metadata.graph.GraphTable;
 import org.anyline.metadata.graph.VertexTable;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.metadata.type.TypeMetadata;
-import org.anyline.net.HttpUtil;
 import org.anyline.proxy.CacheProxy;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
@@ -79,7 +81,10 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
     public boolean supportSchema() {
         return false;
     }
-
+    @Override
+    public boolean supportPlaceholder(){
+        return false;
+    }
     @Override
     public String name(Type type) {
         return null;
@@ -801,44 +806,26 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      */
     @Override
     public Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions) {
-        InfluxRun run = new InfluxRun(runtime);
-        InfluxRuntime ir = (InfluxRuntime)runtime;
+        return super.buildQueryRun(runtime, prepare, configs, conditions);
+    }
+    public Run initQueryRun(DataRuntime runtime, RunPrepare prepare){
+        Run run = null;
+        String text = prepare.getText();
+        if(null != text){
+            text = text.toLowerCase().trim();
+            if(text.startsWith("from")){
+                run = new InfluxVndRun(runtime);
+            }else if(text.startsWith("{")){
+                run = new InfluxJsonRun(runtime);
+            }else if(text.startsWith("select")){
+                run = new InfluxSqlRun(runtime);
+            }
+        }else{
+            run = new TableRun(runtime, prepare.getTable());
+        }
         run.setPrepare(prepare);
-        init(runtime, run, configs, conditions);
-        run.setText(prepare.getText());
-
-        String bucket = null;
-        String org = null;
-        String measurement = null;
-        if(configs instanceof InfluxConfigStore){
-            InfluxConfigStore cfg = (InfluxConfigStore)configs;
-            bucket = cfg.bucket();
-            org = cfg.org();
-            measurement = cfg.measurement();
-        }
-
-        //注册数据源默认bucket
-        if(BasicUtil.isEmpty(bucket)) {
-            bucket = ir.bucket();
-        }
-        if(BasicUtil.isEmpty(org)) {
-            org = ir.org();
-        }
-        run.bucket(bucket);
-        run.org(org);
-        run.measurement(measurement);
-
-        String url = runtime.getUrl();
-        url = HttpUtil.mergePath(url, "/query");
-
-        url += "?db=" + bucket;
-        String sql = prepare.getText();
-        String encode = HttpUtil.encode(sql,false, true);
-        url += "&q="+encode;
-        run.url(url);
         return run;
     }
-
     /**
      * 解析文本中的占位符
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -873,16 +860,54 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
      */
     @Override
-    public void fillQueryContent(DataRuntime runtime, Run run) {
-        super.fillQueryContent(runtime, run);
+    public void fillQueryContent(DataRuntime runtime, StringBuilder builder, Run run) {
+        super.fillQueryContent(runtime, builder, run);
     }
     @Override
-    protected void fillQueryContent(DataRuntime runtime, XMLRun run) {
-        super.fillQueryContent(runtime, run);
+    protected void fillQueryContent(DataRuntime runtime, StringBuilder builder, XMLRun run) {
+        super.fillQueryContent(runtime, builder, run);
     }
     @Override
-    protected void fillQueryContent(DataRuntime runtime, TextRun run) {
+    protected void fillQueryContent(DataRuntime runtime, StringBuilder builder, TextRun run) {
         super.fillQueryContent(runtime, run);
+        InfluxRuntime rt = (InfluxRuntime)runtime;
+        ConfigStore configs = run.getConfigs();
+        RunPrepare prepare = run.getPrepare();
+        String bucket = null;
+        String org = null;
+        String measurement = null;
+        if(configs instanceof InfluxConfigStore){
+            InfluxConfigStore cfg = (InfluxConfigStore)configs;
+            bucket = cfg.bucket();
+            org = cfg.org();
+            measurement = cfg.measurement();
+        }
+
+        //注册数据源默认bucket
+        if(BasicUtil.isEmpty(bucket)) {
+            bucket = rt.bucket();
+        }
+        if(BasicUtil.isEmpty(org)) {
+            org = rt.org();
+        }
+      /*  if(){
+
+        }
+
+
+        r.bucket(bucket);
+        r.org(org);
+        r.measurement(measurement);
+
+        String url = runtime.getUrl();
+        url = HttpUtil.mergePath(url, "/query");
+
+        url += "?db=" + bucket;
+        String text = prepare.getText();
+        String body = r.getFinalQuery(false);
+        String encode = HttpUtil.encode(text,false, true);
+        String api = url + "&q="+encode;
+        r.api(api);*/
     }
     @Override
     protected void fillQueryContent(DataRuntime runtime, TableRun run) {

@@ -30,8 +30,8 @@ public class InfluxRun extends SimpleRun {
     protected String org;
     protected String measurement;
     protected List<Point> points;
+    protected String api;
 
-    protected String url;
 
     @Override
     public boolean isEmpty(){
@@ -63,12 +63,12 @@ public class InfluxRun extends SimpleRun {
         return this.org;
     }
 
-    public InfluxRun url(String url){
-        this.url = url;
+    public InfluxRun api(String api){
+        this.api = api;
         return this;
     }
-    public String url(){
-        return url;
+    public String api(){
+        return api;
     }
     public String bucket(){
         return this.bucket;

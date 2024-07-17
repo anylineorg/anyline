@@ -114,8 +114,8 @@ public class InfluxActuator implements DriverActuator {
         Map<String, String> header = new HashMap<>();
         header.put("Authorization","Token " + rt.token());
         header.put("Accept", "application/csv");
-        String url = r.url();
-        String result = HttpUtil.get(header, url).getText();
+        String api = r.api();
+        String result = HttpUtil.get(header, api).getText();
 
         String[] lines = result.split("\n");
         int len = lines.length;

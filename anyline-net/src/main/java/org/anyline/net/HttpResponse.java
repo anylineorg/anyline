@@ -23,11 +23,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
- 
+import java.util.*;
+
 public class HttpResponse {
 	private static final Logger log = LoggerFactory.getLogger(HttpResponse.class);
 	private String url				;//URL 
@@ -40,8 +37,8 @@ public class HttpResponse {
 	private long lastModified		; // 最后修改时间毫秒
 	private String parser			; // 解析器CD
 	private String host				;
-	private Map<String, String> headers = new HashMap<String, String>();
-	private Map<String, HttpCookie> cookies = new HashMap<String, HttpCookie>();
+	private Map<String, String> headers = new LinkedHashMap<>();
+	private Map<String, HttpCookie> cookies = new LinkedHashMap<>();
 	private InputStream inputStream;
  
 	private Map<String, String> seed;
