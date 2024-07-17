@@ -19,7 +19,6 @@
 package org.anyline.data.influxdb.adapter;
 
 import com.influxdb.client.write.Point;
-import org.anyline.adapter.KeyAdapter;
 import org.anyline.annotation.Component;
 import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.adapter.init.AbstractDriverAdapter;
@@ -47,9 +46,9 @@ import org.anyline.metadata.graph.GraphTable;
 import org.anyline.metadata.graph.VertexTable;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.metadata.type.TypeMetadata;
+import org.anyline.net.HttpUtil;
 import org.anyline.proxy.CacheProxy;
 import org.anyline.util.BasicUtil;
-import org.anyline.util.ConfigTable;
 import org.anyline.util.DateUtil;
 import org.anyline.util.LogUtil;
 
@@ -706,7 +705,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * [命令合成]
      * Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions)
      * List<Run> buildQuerySequence(DataRuntime runtime, boolean next, String ... names)
-     * void fillQueryContent(DataRuntime runtime, Run run)
+     * Run fillQueryContent(DataRuntime runtime, Run run)
      * String mergeFinalQuery(DataRuntime runtime, Run run)
      * RunValue createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder)
      * Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder)
@@ -860,27 +859,70 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
      */
     @Override
-    public void fillQueryContent(DataRuntime runtime, StringBuilder builder, Run run) {
-        super.fillQueryContent(runtime, builder, run);
+    public Run fillQueryContent(DataRuntime runtime, StringBuilder builder, Run run) {
+        return super.fillQueryContent(runtime, builder, run);
     }
     @Override
-    protected void fillQueryContent(DataRuntime runtime, StringBuilder builder, XMLRun run) {
-        super.fillQueryContent(runtime, builder, run);
+    protected Run fillQueryContent(DataRuntime runtime, StringBuilder builder, XMLRun run) {
+        return super.fillQueryContent(runtime, builder, run);
     }
     @Override
-    protected void fillQueryContent(DataRuntime runtime, StringBuilder builder, TextRun run) {
-        super.fillQueryContent(runtime, run);
+    protected Run fillQueryContent(DataRuntime runtime, StringBuilder builder, TableRun run) {
+        InfluxSqlRun result = new InfluxSqlRun(runtime);
+        Table table = run.getTable();
+        String schema = table.getSchemaName();
+        String name = table.getName();
+        //bucket.table
+        if(name.contains(".")){
+            String[] tmps = name.split("\\.");
+            table.setName(tmps[1]);
+            result.bucket(tmps[0]);
+        }else if(BasicUtil.isNotEmpty(schema)){
+            result.bucket(schema);
+        }
+        table.setSchema((String)null);
+        //转换成sql run
+        super.fillQueryContent(runtime, builder, run);
+        result.setText(run.getBaseQuery(false));
+        result.setConfigs(run.getConfigs());
+        return fillQueryContent(runtime, result.getBuilder(), result);
+    }
+    @Override
+    protected Run fillQueryContent(DataRuntime runtime, StringBuilder builder, TextRun run) {
+        Run result = run;
+        if(run instanceof InfluxSqlRun){
+            result = fillQueryContent(runtime, builder, (InfluxSqlRun) run);
+        }else if(run instanceof InfluxJsonRun){
+            result = fillQueryContent(runtime, builder, (InfluxJsonRun) run);
+        }else if(run instanceof InfluxVndRun){
+            result = fillQueryContent(runtime, builder, (InfluxVndRun) run);
+        }
+        return result;
+    }
+    protected Run fillQueryContent(DataRuntime runtime, StringBuilder builder, InfluxJsonRun run) {
+        return run;
+    }
+    protected Run fillQueryContent(DataRuntime runtime, StringBuilder builder, InfluxVndRun run) {
+        return run;
+    }
+    protected Run fillQueryContent(DataRuntime runtime, StringBuilder builder, InfluxSqlRun run) {
+        Run result = super.fillQueryContent(runtime, builder, run);
         InfluxRuntime rt = (InfluxRuntime)runtime;
         ConfigStore configs = run.getConfigs();
-        RunPrepare prepare = run.getPrepare();
-        String bucket = null;
-        String org = null;
-        String measurement = null;
+        String bucket = run.bucket();
+        String org = run.org();
+        String measurement = run.measurement();
         if(configs instanceof InfluxConfigStore){
             InfluxConfigStore cfg = (InfluxConfigStore)configs;
-            bucket = cfg.bucket();
-            org = cfg.org();
-            measurement = cfg.measurement();
+            if(BasicUtil.isEmpty(bucket)) {
+                bucket = cfg.bucket();
+            }
+            if(BasicUtil.isEmpty(org)) {
+                org = cfg.org();
+            }
+            if(BasicUtil.isEmpty(measurement)) {
+                measurement = cfg.measurement();
+            }
         }
 
         //注册数据源默认bucket
@@ -890,28 +932,24 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
         if(BasicUtil.isEmpty(org)) {
             org = rt.org();
         }
-      /*  if(){
 
-        }
-
-
-        r.bucket(bucket);
-        r.org(org);
-        r.measurement(measurement);
+        run.bucket(bucket);
+        run.org(org);
+        run.measurement(measurement);
 
         String url = runtime.getUrl();
         url = HttpUtil.mergePath(url, "/query");
 
         url += "?db=" + bucket;
-        String text = prepare.getText();
-        String body = r.getFinalQuery(false);
+        String text = run.getFinalQuery(false);
         String encode = HttpUtil.encode(text,false, true);
         String api = url + "&q="+encode;
-        r.api(api);*/
+        run.api(api);
+        return result;
     }
     @Override
-    protected void fillQueryContent(DataRuntime runtime, TableRun run) {
-        super.fillQueryContent(runtime, run);
+    protected Run fillQueryContent(DataRuntime runtime, TableRun run) {
+        return super.fillQueryContent(runtime, run);
     }
 
     /**
@@ -923,7 +961,26 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      */
     @Override
     public String mergeFinalQuery(DataRuntime runtime, Run run) {
-        return super.mergeFinalQuery(runtime, run);
+        String sql = run.getBaseQuery();
+        String cols = run.getQueryColumn();
+        if(!"*".equals(cols)) {
+            String regex = "(?i)^select[\\s\\S]+from";
+            sql = sql.replaceAll(regex,"SELECT "+cols+" FROM ");
+        }
+        OrderStore orders = run.getOrderStore();
+        if(null != orders) {
+            sql += orders.getRunText(getDelimiterFr()+getDelimiterTo());
+        }
+        PageNavi navi = run.getPageNavi();
+        if(null != navi) {
+            long limit = navi.getLastRow() - navi.getFirstRow() + 1;
+            if(limit < 0) {
+                limit = 0;
+            }
+            sql += " LIMIT " + limit + " OFFSET " + navi.getFirstRow();
+        }
+        sql = compressCondition(runtime, sql);
+        return sql;
     }
 
     /**
@@ -2086,29 +2143,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      */
     @Override
     public List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs) throws Exception {
-        List<Run> runs = new ArrayList<>();
-        if(types == 1){
-            types = 32 + 64; //EDGE + VERTEX
-        }
-        List<Type> list = Table.types(types);
-        for(Type type:list) {
-            Run run = new SimpleRun(runtime);
-            StringBuilder builder = run.getBuilder();
-            builder.append("SHOW ");
-            String k = null;
-            if(type == Table.TYPE.EDGE) {
-                k = "EDGES";
-            }else if(type == Table.TYPE.VERTEX) {
-                k = "TAGS";
-            }
-            if(null != k){
-                builder.append(k);
-                runs.add(run);
-            }else{
-                throw new RuntimeException("表类型异常,仅支持(VERTEX,EDGE,NORMAL)");
-            }
-        }
-        return runs;
+        return super.buildQueryTablesRun(runtime, greedy, catalog, schema, pattern, types, configs);
     }
 
     /**
@@ -2160,18 +2195,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      */
     @Override
     public <T extends Table> List<T> tables(DataRuntime runtime, int index, boolean create, List<T> tables, Catalog catalog, Schema schema, DataSet set) throws Exception {
-        if(null == tables) {
-            tables = new ArrayList<>();
-        }
-        for(DataRow row:set) {
-            String name = row.getString("NAME");
-            if(index == 0){
-                tables.add((T)new EdgeTable(name));
-            }else{
-                tables.add((T)new VertexTable(name));
-            }
-        }
-        return tables;
+       return super.tables(runtime, index, create, tables, catalog, schema, set);
     }
 
     /**
@@ -2362,12 +2386,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      */
     @Override
     public List<Run> buildQueryVertexTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs) throws Exception {
-        List<Run> runs = new ArrayList<>();
-        Run run = new SimpleRun(runtime);
-        StringBuilder builder = run.getBuilder();
-        builder.append("SHOW TAGS");
-        runs.add(run);
-        return runs;
+        return super.buildQueryVertexTablesRun(runtime, greedy, catalog, schema, pattern, types, configs);
     }
 
     /**
@@ -2587,12 +2606,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      */
     @Override
     public List<Run> buildQueryEdgeTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs) throws Exception {
-        List<Run> runs = new ArrayList<>();
-        Run run = new SimpleRun(runtime);
-        StringBuilder builder = run.getBuilder();
-        builder.append("SHOW EDGES");
-        runs.add(run);
-        return runs;
+        return super.buildQueryEdgeTablesRun(runtime, greedy, catalog, schema, pattern, types, configs);
     }
 
     /**
@@ -3203,101 +3217,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      */
     @Override
     public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Table table, boolean primary) {
-        if (!greedy) {
-            checkSchema(runtime, table);
-        }
-        Catalog catalog = table.getCatalog();
-        Schema schema = table.getSchema();
-
-        String key = CacheProxy.key(runtime, "table_columns", greedy, table);
-        LinkedHashMap<String,T> columns = CacheProxy.columns(key);
-        if(null != columns && !columns.isEmpty()) {
-            return columns;
-        }
-        long fr = System.currentTimeMillis();
-        if(null == random) {
-            random = random(runtime);
-        }
-        try {
-
-            int qty_total = 0;
-            int qty_dialect = 0; //优先根据系统表查询
-            int qty_metadata = 0; //再根据metadata解析
-            int qty_jdbc = 0; //根据驱动内置接口补充
-
-            // 1.优先根据系统表查询
-            try {
-                List<Run> runs = buildQueryColumnsRun(runtime, table, false);
-                if (null != runs) {
-                    int idx = 0;
-                    for (Run run: runs) {
-                        DataSet set = select(runtime, random, true, (String) null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run);
-                        columns = columns(runtime, idx, true, table, columns, set);
-                        idx++;
-                    }
-                }
-                if(null != columns) {
-                    qty_dialect = columns.size();
-                    qty_total=columns.size();
-                }
-            } catch (Exception e) {
-                if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
-                    e.printStackTrace();
-                }
-                if(primary) {
-                    e.printStackTrace();
-                } if (ConfigTable.IS_LOG_SQL && log.isWarnEnabled()) {
-                    log.warn("{}[columns][{}][catalog:{}][schema:{}][table:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, table, e.toString());
-                }
-            }
-            //检测主键
-            if(ConfigTable.IS_METADATA_AUTO_CHECK_COLUMN_PRIMARY) {
-                if (null != columns || !columns.isEmpty()) {
-                    boolean exists = false;
-                    for(Column column:columns.values()) {
-                        if(column.isPrimaryKey() != -1) {
-                            exists = true;
-                            break;
-                        }
-                    }
-                    if(!exists) {
-                        PrimaryKey pk = primary(runtime, random, false, table);
-                        if(null != pk) {
-                            LinkedHashMap<String,Column> pks = pk.getColumns();
-                            if(null != pks) {
-                                for(String k:pks.keySet()) {
-                                    Column column = columns.get(k);
-                                    if(null != column) {
-                                        column.primary(true);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }catch (Exception e) {
-            if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
-                e.printStackTrace();
-            }else{
-                log.error("｛｝[columns][result:fail][table:{}][msg:{}]", random, table, e.toString());
-            }
-        }
-        if(null != columns) {
-            CacheProxy.cache(key, columns);
-        }else{
-            columns = new LinkedHashMap<>();
-        }
-        int index = 0;
-        for(Column column:columns.values()) {
-            if(null == column.getPosition() || -1 == column.getPosition()) {
-                column.setPosition(index++);
-            }
-            if(null == column.getTable() && !greedy) {
-                column.setTable(table);
-            }
-        }
-        return columns;
+        return super.columns(runtime, random, greedy, table, primary);
     }
 
     /**
@@ -7357,7 +7277,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
     }
     @Override
     public String conditionHead() {
-        return "WHEN";
+        return "WHERE";
     }
     /**
      * 比较运算符在不同数据库的区别
@@ -7370,9 +7290,6 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      */
     @Override
     public void formula(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Column metadata, Object value, boolean placeholder) {
-        if(compare == Compare.EQUAL) {
-            compare = Compare.EQUALS;
-        }
         super.formula(runtime, builder, column, compare, metadata, value, placeholder);
 
     }

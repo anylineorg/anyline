@@ -53,6 +53,7 @@ public class XMLRun extends AbstractRun implements Run {
 	public Run setPrepare(RunPrepare prepare) {
 		this.prepare = prepare;
 		this.table = prepare.getTable();
+		setText(prepare.getText());
 		copyParam(); 
 		return this; 
 	}

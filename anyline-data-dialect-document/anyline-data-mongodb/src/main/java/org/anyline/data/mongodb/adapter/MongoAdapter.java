@@ -285,7 +285,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
 
 
     @Override
-    protected void fillQueryContent(DataRuntime runtime, TableRun run) {
+    protected Run fillQueryContent(DataRuntime runtime, TableRun run) {
         MongoRun r = (MongoRun)run;
         Bson bson = null;
         ConditionChain chain = r.getConditionChain();
@@ -313,6 +313,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
         if(null != queryColumns && queryColumns.size()>0) {
             r.setQueryColumns(queryColumns);
         }
+        return r;
     }
     private Bson parseCondition(Bson bson, Condition condition) {
         if(condition instanceof ConditionChain) {

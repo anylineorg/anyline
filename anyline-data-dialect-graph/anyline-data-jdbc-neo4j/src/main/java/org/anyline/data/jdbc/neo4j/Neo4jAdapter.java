@@ -418,9 +418,9 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
      * StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder)
      * List<Map<String, Object>> process(DataRuntime runtime, List<Map<String, Object>> list)
      *
-     * protected void fillQueryContent(DataRuntime runtime, XMLRun run)
-     * protected void fillQueryContent(DataRuntime runtime, TextRun run)
-     * protected void fillQueryContent(DataRuntime runtime, TableRun run)
+     * protected Run fillQueryContent(DataRuntime runtime, XMLRun run)
+     * protected Run fillQueryContent(DataRuntime runtime, TextRun run)
+     * protected Run fillQueryContent(DataRuntime runtime, TableRun run)
      ******************************************************************************************************************/
 
     /**
@@ -597,13 +597,14 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
      * 生成基础查询主体
      * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
      */
-    protected void fillQueryContent(DataRuntime runtime, XMLRun run) {
+    protected Run fillQueryContent(DataRuntime runtime, XMLRun run) {
+        return run;
     }
     /**
      * 生成基础查询主体
      * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
      */
-    protected void fillQueryContent(DataRuntime runtime, TextRun run) {
+    protected Run fillQueryContent(DataRuntime runtime, TextRun run) {
         StringBuilder builder = run.getBuilder();
         RunPrepare prepare = run.getPrepare();
         List<Variable> variables = run.getVariables();
@@ -693,12 +694,13 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
         run.appendGroup();
         // appendOrderStore();
         run.checkValid();
+        return run;
     }
     /**
      * 生成基础查询主体
      * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
      */
-    protected void fillQueryContent(DataRuntime runtime, TableRun run) {
+    protected Run fillQueryContent(DataRuntime runtime, TableRun run) {
         StringBuilder builder = run.getBuilder();
         RunPrepare prepare =  run.getPrepare();
         String alias = prepare.getAlias();
@@ -713,59 +715,12 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
             name(runtime, builder, run.getTable());
         }
         builder.append(") ");
-        /*
-        List<String> columns = sql.getColumns();
-        if(null != columns && columns.size()>0) {
-            // 指定查询列
-            int size = columns.size();
-            for(int i=0; i<size; i++) {
-                String column = columns.get(i);
-                if(BasicUtil.isEmpty(column)) {
-                    continue;
-                }
-                if(column.startsWith("${") && column.endsWith("}")) {
-                    column = column.substring(2, column.length()-1);
-                    builder.append(column);
-                }else{
-                    if(column.toUpperCase().contains(" AS ") || column.contains("(") || column.contains(",")) {
-                        builder.append(column);
-                    }else if("*".equals(column)) {
-                        builder.append("*");
-                    }else{
-                        SQLUtil.delimiter(runtime, builder, column, delimiterFr, delimiterTo);
-                    }
-                }
-                if(i<size-1) {
-                    builder.append(",");
-                }
-            }
-            builder.append(JDBCAdapter.BR);
-        }else{
-            // 全部查询
-            builder.append("*");
-            builder.append(JDBCAdapter.BR);
-        }*/
-/*        List<Join> joins = prepare.getJoins();
-        if(null != joins) {
-            for (Join join:joins) {
-                builder.append(JDBCAdapter.BR_TAB).append(join.getType().getCode()).append(" ");
-                delimiter(builder, join.getName());
-                if(BasicUtil.isNotEmpty(join.getAlias())) {
-                    // builder.append(" AS ").append(join.getAlias());
-                    builder.append("  ").append(join.getAlias());
-                }
-                builder.append(" ON ").append(join.getCondition());
-            }
-        }
-
-       */
-        //builder.append(" WHERE 1=1 ");
         /*添加查询条件*/
-        // appendConfigStore();
         run.appendCondition(this, true, true);
         run.appendGroup();
         run.appendOrderStore();
         run.checkValid();
+        return run;
     }
 
     /* *****************************************************************************************************************

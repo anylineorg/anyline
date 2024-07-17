@@ -543,7 +543,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * [命令合成]
      * Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions)
      * List<Run> buildQuerySequence(DataRuntime runtime, boolean next, String ... names)
-     * void fillQueryContent(DataRuntime runtime, Run run)
+     * Run fillQueryContent(DataRuntime runtime, Run run)
      * String mergeFinalQuery(DataRuntime runtime, Run run)
      * RunValue createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder)
      * Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder)
@@ -662,20 +662,20 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
      */
     @Override
-    public void fillQueryContent(DataRuntime runtime, Run run) {
-        super.fillQueryContent(runtime, run);
+    public Run fillQueryContent(DataRuntime runtime, Run run) {
+        return super.fillQueryContent(runtime, run);
     }
     @Override
-    protected void fillQueryContent(DataRuntime runtime, XMLRun run) {
-        super.fillQueryContent(runtime, run);
+    protected Run fillQueryContent(DataRuntime runtime, XMLRun run) {
+        return super.fillQueryContent(runtime, run);
     }
     @Override
-    protected void fillQueryContent(DataRuntime runtime, TextRun run) {
-        super.fillQueryContent(runtime, run);
+    protected Run fillQueryContent(DataRuntime runtime, TextRun run) {
+        return super.fillQueryContent(runtime, run);
     }
     @Override
-    protected void fillQueryContent(DataRuntime runtime, TableRun run) {
-        super.fillQueryContent(runtime, run);
+    protected Run fillQueryContent(DataRuntime runtime, TableRun run) {
+        return super.fillQueryContent(runtime, run);
     }
     /**
      * select[命令合成-子流程] <br/>

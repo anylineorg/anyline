@@ -115,8 +115,13 @@ public class InfluxActuator implements DriverActuator {
         header.put("Authorization","Token " + rt.token());
         header.put("Accept", "application/csv");
         String api = r.api();
-        String result = HttpUtil.get(header, api).getText();
-
+        String method = r.method();
+        String result = null;
+        if("get".equalsIgnoreCase(method)){
+            result = HttpUtil.get(header, api).getText();
+        }else{
+            result = HttpUtil.post(header, api).getText();
+        }
         String[] lines = result.split("\n");
         int len = lines.length;
         if(len > 1){

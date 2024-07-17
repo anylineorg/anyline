@@ -1817,7 +1817,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * [命令合成]
 	 * Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions)
 	 * List<Run> buildQuerySequence(DataRuntime runtime, boolean next, String ... names)
-	 * void fillQueryContent(DataRuntime runtime, Run run)
+	 * Run fillQueryContent(DataRuntime runtime, Run run)
 	 * String mergeFinalQuery(DataRuntime runtime, Run run)
 	 * RunValue createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder)
 	 * Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder)
@@ -2217,7 +2217,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		if(run.checkValid()) {
 			//构造最终的查询SQL
-			fillQueryContent(runtime, run);
+			run = fillQueryContent(runtime, run);
 		}
 		return run;
 	}
@@ -2368,14 +2368,12 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 
 	/**
 	 * select[命令合成-子流程] <br/>
-	 * 构造查询主体
+	 * 构造查询主体, 中间过程有可能转换类型
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 */
 	@Override
-	public void fillQueryContent(DataRuntime runtime, Run run) {
-		if(null != run) {
-			fillQueryContent(runtime, run.getBuilder(), run);
-		}
+	public Run fillQueryContent(DataRuntime runtime, Run run) {
+		return fillQueryContent(runtime, run.getBuilder(), run);
 	}
 	/**
 	 * select[命令合成-子流程] <br/>
@@ -2385,23 +2383,21 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param run run
 	 */
 	@Override
-	public void fillQueryContent(DataRuntime runtime, StringBuilder builder, Run run) {
+	public Run fillQueryContent(DataRuntime runtime, StringBuilder builder, Run run) {
 		if(null != run) {
 			if(run instanceof TableRun) {
-				TableRun r = (TableRun) run;
-				fillQueryContent(runtime, builder, r);
+				run = fillQueryContent(runtime, builder, (TableRun) run);
 			}else if(run instanceof XMLRun) {
-				XMLRun r = (XMLRun) run;
-				fillQueryContent(runtime, builder, r);
+				run = fillQueryContent(runtime, builder, (XMLRun) run);
 			}else if(run instanceof TextRun) {
-				TextRun r = (TextRun) run;
-				fillQueryContent(runtime, builder, r);
+				run = fillQueryContent(runtime, builder, (TextRun) run);
 			}
 			convert(runtime, run.getConfigs(), run);
 		}
+		return run;
 	}
-	protected void fillQueryContent(DataRuntime runtime, XMLRun run) {
-		fillQueryContent(runtime, run.getBuilder(), run);
+	protected Run fillQueryContent(DataRuntime runtime, XMLRun run) {
+		return fillQueryContent(runtime, run.getBuilder(), run);
 	}
 	/**
 	 *
@@ -2409,13 +2405,14 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param builder 有可能合个run合成一个 所以提供一个共用builder
 	 * @param run run
 	 */
-	protected void fillQueryContent(DataRuntime runtime, StringBuilder builder, XMLRun run) {
+	protected Run fillQueryContent(DataRuntime runtime, StringBuilder builder, XMLRun run) {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 fillQueryContent(DataRuntime runtime, XMLRun run)", 37));
 		}
+		return run;
 	}
-	protected void fillQueryContent(DataRuntime runtime, TextRun run) {
-		fillQueryContent(runtime, run.getBuilder(), run);
+	protected Run fillQueryContent(DataRuntime runtime, TextRun run) {
+		return fillQueryContent(runtime, run.getBuilder(), run);
 	}
 
 	/**
@@ -2424,26 +2421,110 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param builder 有可能合个run合成一个 所以提供一个共用builder
 	 * @param run run
 	 */
-	protected void fillQueryContent(DataRuntime runtime, StringBuilder builder, TextRun run) {
+	protected Run fillQueryContent(DataRuntime runtime, StringBuilder builder, TextRun run) {
 		replaceVariable(runtime, run);
 		run.appendCondition(true);
 		run.appendGroup();
 		// appendOrderStore();
 		run.checkValid();
+		return run;
 	}
-	protected void fillQueryContent(DataRuntime runtime, TableRun run) {
-		fillQueryContent(runtime, run.getBuilder(), run);
+	protected Run fillQueryContent(DataRuntime runtime, TableRun run) {
+		return fillQueryContent(runtime, run.getBuilder(), run);
 	}
 	/**
-	 *
+	 * 有些非JDBC环境也需要用到SQL
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder 有可能合个run合成一个 所以提供一个共用builder
 	 * @param run run
 	 */
-	protected void fillQueryContent(DataRuntime runtime, StringBuilder builder, TableRun run) {
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 fillQueryContent(DataRuntime runtime, TableRun run)", 37));
+	protected Run fillQueryContent(DataRuntime runtime, StringBuilder builder, TableRun run) {
+		TablePrepare sql = (TablePrepare)run.getPrepare();
+		builder.append("SELECT ");
+		if(null != sql.getDistinct()) {
+			builder.append(sql.getDistinct());
 		}
+		builder.append(BR_TAB);
+		LinkedHashMap<String,Column> columns = sql.getColumns();
+		if(null == columns || columns.isEmpty()) {
+			ConfigStore configs = run.getConfigs();
+			if(null != configs) {
+				List<String> cols = configs.columns();
+				columns = new LinkedHashMap<>();
+				for(String col:cols) {
+					columns.put(col.toUpperCase(), new Column(col));
+				}
+			}
+		}
+		if(null != columns && !columns.isEmpty()) {
+			// 指定查询列
+			boolean first = true;
+			for(Column column:columns.values()) {
+				if(BasicUtil.isEmpty(column) || BasicUtil.isEmpty(column.getName())) {
+					continue;
+				}
+				if(!first) {
+					builder.append(",");
+				}
+				first = false;
+				String name = column.getName();
+				//if (column.startsWith("${") && column.endsWith("}")) {
+				if (BasicUtil.checkEl(name)) {
+					name = name.substring(2, name.length()-1);
+					builder.append(name);
+				}else{
+					if(name.contains("(") || name.contains(",")) {
+						builder.append(name);
+					}else if(name.toUpperCase().contains(" AS ")) {
+						int split = name.toUpperCase().indexOf(" AS ");
+						String tmp = name.substring(0, split).trim();
+						delimiter(builder, tmp);
+						builder.append(" ");
+						tmp = name.substring(split+4).trim();
+						delimiter(builder, tmp);
+					}else if("*".equals(name)) {
+						builder.append("*");
+					}else{
+						delimiter(builder, name);
+					}
+				}
+			}
+			builder.append(BR);
+		}else{
+			// 全部查询
+			builder.append("*");
+			builder.append(BR);
+		}
+		Table table = run.getTable();
+		builder.append("FROM").append(BR_TAB);
+		name(runtime, builder, table);
+		String alias = table.getAlias();
+		if(BasicUtil.isNotEmpty(alias)) {
+			builder.append(" ");
+			delimiter(builder, alias);
+		}
+		builder.append(BR);
+		List<Join> joins = sql.getJoins();
+		if(null != joins) {
+			for (Join join:joins) {
+				builder.append(BR_TAB).append(join.getType().getCode()).append(" ");
+				Table joinTable = join.getTable();
+				String joinTableAlias = joinTable.getAlias();
+				name(runtime, builder, joinTable);
+				if(BasicUtil.isNotEmpty(joinTableAlias)) {
+					builder.append("  ");
+					delimiter(builder, joinTableAlias);
+				}
+				builder.append(" ON ").append(join.getCondition());
+			}
+		}
+
+		//builder.append("\nWHERE 1=1\n\t");
+		/*添加查询条件*/
+		// appendConfigStore();
+		run.appendCondition(builder, this, true, true);
+		run.appendGroup(builder);
+		return run;
 	}
 
 	/**
@@ -3059,9 +3140,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 
 	protected void replaceVariable(DataRuntime runtime, TextRun run) {
 		StringBuilder builder = run.getBuilder();
-		RunPrepare prepare = run.getPrepare();
 		List<Variable> variables = run.getVariables();
-		String result = prepare.getText();
+		String result = run.getText();
 		if(supportPlaceholder() && null != variables) {
 			for(Variable var:variables) {
 				if(null == var) {

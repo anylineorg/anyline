@@ -35,7 +35,6 @@ import java.util.Collection;
 import java.util.List;
 
 public class TextRun extends AbstractRun implements Run {
-	private String text;
 
 	public TextRun() {
 		this.builder = new StringBuilder();
@@ -43,20 +42,11 @@ public class TextRun extends AbstractRun implements Run {
 		this.orderStore = new DefaultOrderStore();
 	}
 
-	public String getText() {
-		return text;
-	}
 
-	public void setText(String text) {
-		this.text = text;
-		parseText();
-	}
-
-
-public Run setPrepare(RunPrepare prepare) {
+	public Run setPrepare(RunPrepare prepare) {
 		this.prepare = prepare;
 		this.table = prepare.getTable();
-		parseText(); 
+		setText(prepare.getText());
 		return this; 
 	}
 	public void init() {
@@ -162,56 +152,8 @@ public Run setPrepare(RunPrepare prepare) {
 				this.pageNavi = navi; 
 			} 
 		}
-	} 
-	private void parseText() {
-		//放在adapter中解析 避免 MATCH (v:CRM_USER:HR_USER) RETURN v解析出占位符
-		/*
-		String text = prepare.getText();
-		if(null == text) {
-			return;
-		}
-		try{
-			int varType = -1;
-			Compare compare = Compare.EQUAL;
-
-			List<List<String>> keys = null;
-			int type = 0;
-			// AND CD = {CD} || CD LIKE '%{CD}%' || CD IN ({CD}) || CD = ${CD} || CD = #{CD}
-			//{CD} 用来兼容旧版本，新版本中不要用，避免与josn格式冲突
-			keys = RegularUtil.fetchs(text, RunPrepare.SQL_VAR_PLACEHOLDER_REGEX, Regular.MATCH_MODE.CONTAIN);
-			type = Variable.KEY_TYPE_SIGN_V2 ;
-			if(keys.isEmpty()) {
-				// AND CD = :CD || CD LIKE ':CD' || CD IN (:CD) || CD = ::CD
-				keys = RegularUtil.fetchs(text, RunPrepare.SQL_VAR_PLACEHOLDER_REGEX, Regular.MATCH_MODE.CONTAIN);
-				type = Variable.KEY_TYPE_SIGN_V1 ;
-			}
-			if(BasicUtil.isNotEmpty(true, keys)) {
-				// AND CD = :CD
-				for(int i=0; i<keys.size();i++) {
-					List<String> keyItem = keys.get(i);
-
-					Variable var = SyntaxHelper.buildVariable(type, keyItem.get(0), keyItem.get(1), keyItem.get(2), keyItem.get(3));
-					if(null == var) {
-						continue;
-					}
-					var.setSwt(EMPTY_VALUE_SWITCH.NULL);
-					addVariable(var);
-				}// end for
-			}else{
-				// AND CD = ?
-				List<String> idxKeys = RegularUtil.fetch(text, "\\?", Regular.MATCH_MODE.CONTAIN, 0);
-				if(BasicUtil.isNotEmpty(true, idxKeys)) {
-					for(int i=0; i<idxKeys.size(); i++) {
-						Variable var = new DefaultVariable();
-						var.setType(Variable.VAR_TYPE_INDEX);
-						var.setSwt(EMPTY_VALUE_SWITCH.NULL);
-						addVariable(var);
-					}
-				}
-			}
-		}catch(Exception e) {
-		}*/
 	}
+
 	public boolean checkValid() {
 		if(!valid) {
 			return false;

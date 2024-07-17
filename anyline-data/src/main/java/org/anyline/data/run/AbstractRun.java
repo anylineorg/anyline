@@ -48,6 +48,7 @@ public abstract class AbstractRun implements Run {
 	protected Catalog catalog;
 	protected Schema schema;
 	protected Table table;
+	protected String text;
 	protected List<String> keys;
 	protected List<RunValue> values = new ArrayList<>();
 	protected List<RunValue> batchValues;
@@ -162,6 +163,15 @@ public abstract class AbstractRun implements Run {
 		} 
 		 
 	}
+	public String getText() {
+		return text;
+	}
+
+	public Run setText(String text) {
+		this.text = text;
+		return this;
+	}
+
 	@Override
 	public Table getTable() {
 		return table;
@@ -281,6 +291,7 @@ public abstract class AbstractRun implements Run {
 		if(null != having) {
 			this.having = having;
 		}
+		setText(prepare.getText());
 		return this; 
 	}
 	@Override

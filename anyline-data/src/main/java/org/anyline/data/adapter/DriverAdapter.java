@@ -1346,12 +1346,14 @@ public interface DriverAdapter {
 	List<Run> buildQuerySequence(DataRuntime runtime, boolean next, String ... names);
 	/**
 	 * select[命令合成-子流程] <br/>
+	 * 中间过程有可能转换类型 如从TableRun转到TextRun
 	 * 填充 select 命令内容
 	 * 构造查询主体 拼接where group等(不含分页 ORDER)
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 */
-	void fillQueryContent(DataRuntime runtime, StringBuilder builder,  Run run);
-	void fillQueryContent(DataRuntime runtime, Run run);
+	Run fillQueryContent(DataRuntime runtime, StringBuilder builder,  Run run);
+
+	Run fillQueryContent(DataRuntime runtime, Run run);
 
 	/**
 	 * select[命令合成-子流程] <br/>
@@ -6681,7 +6683,7 @@ public interface DriverAdapter {
 
 /*
 	*//**
-	 * 数据类型转换
+	 * 参数值 数据类型转换
 	 * 子类先解析(有些同名的类型以子类为准)、失败后再调用默认转换
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param catalog catalog

@@ -31,7 +31,7 @@ public class InfluxRun extends SimpleRun {
     protected String measurement;
     protected List<Point> points;
     protected String api;
-
+    protected String method;
 
     @Override
     public boolean isEmpty(){
@@ -69,6 +69,13 @@ public class InfluxRun extends SimpleRun {
     }
     public String api(){
         return api;
+    }
+    public String method(){
+        return this.method;
+    }
+    public InfluxRun method(String method){
+        this.method = method;
+        return this;
     }
     public String bucket(){
         return this.bucket;

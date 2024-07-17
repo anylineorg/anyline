@@ -42,6 +42,8 @@ public interface Run {
     long getRows();
 
     Table getTable();
+    Run setText(String text);
+    String getText();
     Catalog getCatalog();
     Schema getSchema();
     String getTableName();
