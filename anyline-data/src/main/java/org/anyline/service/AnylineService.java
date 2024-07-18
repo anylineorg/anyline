@@ -458,6 +458,26 @@ public interface AnylineService<E>{
 	 * @return DataSet
 	 */
 	DataSet querys(String dest, ConfigStore configs, Object obj, String ... conditions);
+
+	/**
+	 * 有些数据库 不根据表查询 不需要提供表
+	 * @param configs		根据http等上下文构造查询条件
+	 * @param obj			根据obj的field/value构造查询条件
+	 * @param conditions	固定查询条件
+	 * @return DataSet
+	 */
+	default DataSet querys(ConfigStore configs, Object obj, String ... conditions){
+		return querys((String)null, configs, obj, conditions);
+	}
+	default DataSet querys(ConfigStore configs, String ... conditions){
+		return querys((String)null, configs, null, conditions);
+	}
+	/**
+	 * 根据ConfigStore查询条件 过滤DataSet条目
+	 * @param set DataSet
+	 * @param configs 包含查询条件
+	 * @return DataSet
+	 */
 	default DataSet querys(DataSet set, ConfigStore configs) {
 		if(null != configs) {
 			ConfigChain chain = configs.getConfigChain();
@@ -622,6 +642,12 @@ public interface AnylineService<E>{
 	}
 	DataRow query(RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions);
 	DataRow query(String dest, ConfigStore configs, Object obj, String ... conditions);
+	default DataRow query(ConfigStore configs, Object obj, String ... conditions){
+		return query((String)null, configs, obj, conditions);
+	}
+	default DataRow query(ConfigStore configs, String ... conditions){
+		return query((String)null, configs, null, conditions);
+	}
 	default DataRow query(String dest, Object obj, String ... conditions) {
 		return query(dest, null, obj, conditions);
 	}
@@ -689,6 +715,7 @@ public interface AnylineService<E>{
 	 * @param <T> T
 	 */
 	<T> EntitySet<T> selects(String dest, Class<T> clazz, ConfigStore configs, T entity, String ... conditions);
+
 	default <T> EntitySet<T> selects(String dest, Class<T> clazz, PageNavi navi, T entity, String ... conditions) {
 		ConfigStore configs = new DefaultConfigStore();
 		configs.setPageNavi(navi);
@@ -870,6 +897,12 @@ public interface AnylineService<E>{
 	 * @return List
 	 */
 	List<Map<String, Object>> maps(String dest, ConfigStore configs, Object obj, String ... conditions);
+	default List<Map<String, Object>> maps(ConfigStore configs, Object obj, String ... conditions){
+		return maps((String)null, configs, obj, conditions);
+	}
+	default List<Map<String, Object>> maps(ConfigStore configs, String ... conditions){
+		return maps((String)null, configs, null, conditions);
+	}
 	default void maps(String dest, DataHandler handler, Object obj, String ... conditions) {
 		ConfigStore configs = new DefaultConfigStore();
 		configs.handler(handler);
