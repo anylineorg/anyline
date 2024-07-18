@@ -562,7 +562,7 @@ public enum StandardTypeMetadata implements TypeMetadata {
             return TIME.write(value, def, placeholder);
         }
     }
-   , TIMESTAMP(CATEGORY.TIMESTAMP, "TIMESTAMP({S})", null, java.sql.Timestamp.class, 1, 1, 2, MySQL, PostgreSQL, ORACLE, HANA, Derby) {
+   , TIMESTAMP(CATEGORY.TIMESTAMP, "TIMESTAMP", "TIMESTAMP({S})", null, java.sql.Timestamp.class, 1, 1, 2, MySQL, PostgreSQL, ORACLE, HANA, Derby) {
         public Object write(Object value, Object def, boolean array, boolean placeholder) {
             return DATETIME.write(value, def, placeholder);
         }

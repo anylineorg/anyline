@@ -20,5 +20,6 @@
             <groupId>org.anyline</groupId>
             <artifactId>anyline-data-jdbc</artifactId>
         </dependency>
+
     </dependencies>
 </project>

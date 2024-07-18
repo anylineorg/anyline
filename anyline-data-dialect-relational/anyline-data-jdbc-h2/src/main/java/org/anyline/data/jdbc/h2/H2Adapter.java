@@ -1988,7 +1988,7 @@ public class H2Adapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
-		return super.masterTables(runtime, random, catalog, schema, pattern, types);
+		return super.masterTables(runtime, random, catalog, schema, pattern, types, struct, configs);
 	}
 
 	/**

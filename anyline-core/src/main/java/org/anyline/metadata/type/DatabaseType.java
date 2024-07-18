@@ -421,7 +421,7 @@ public enum DatabaseType implements Serializable {
         Table_Store         	("Alibaba Cloud Table Store"        	,KEY_CASE.SRC	,669	,null	,""	,""),
         Tajo                	("Tajo"                             	,KEY_CASE.SRC	,698	,null	,""	,""),
         Tarantool           	("Tarantool"                        	,KEY_CASE.SRC	,848	,null	,""	,""),
-        TDengine            	("TDengine"                         	,KEY_CASE.SRC	,882	,null	,"com.taosdata.jdbc.TSDBDriver"	,"jdbc:TAOS://{host}:{port:6030}/{database}"),
+        TDengine            	("TDengine"                         	,KEY_CASE.SRC	,882	,"TAOS-RS:,TAOS:"	,"com.taosdata.jdbc.TSDBDriver"	,"jdbc:TAOS://{host}:{port:6030}/{database}"),
         TDSQL               	("TDSQL for MySQL"                  	,KEY_CASE.SRC	,781	,null	,"com.mysql.jdbc.Driver"	,"jdbc:mysql://{host}:{port:3306}/{database}"),
         TeraData            	("Teradata"                         	,KEY_CASE.SRC	,979	,null	,"com.ncr.teradata.TeraDriver"	,"jdbc:teradata://{host}/DATABASE={database},DBS_PORT={port:1025}"),
         TerarkDB            	("TerarkDB"                         	,KEY_CASE.SRC	,641	,null	,""	,""),
