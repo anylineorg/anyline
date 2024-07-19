@@ -518,6 +518,12 @@ public class ServiceProxy {
     public static DataSet querys(String dest, ConfigStore configs, Object obj, String ... conditions) {
         return service.querys(dest, configs, obj, conditions);
     }
+    public static DataSet querys(ConfigStore configs, Object obj, String ... conditions) {
+        return service.querys(configs, obj, conditions);
+    }
+    public static DataSet querys(ConfigStore configs, String ... conditions) {
+        return service.querys(configs, conditions);
+    }
     public static DataSet querys(DataSet set, ConfigStore configs) {
         return service.querys(set, configs);
     }
@@ -545,6 +551,12 @@ public class ServiceProxy {
     }
     public static DataRow query(String dest, ConfigStore configs, Object obj, String ... conditions) {
         return service.query(dest, configs, obj, conditions);
+    }
+    public static DataRow query(ConfigStore configs, Object obj, String ... conditions) {
+        return service.query(configs, obj, conditions);
+    }
+    public static DataRow query(ConfigStore configs, String ... conditions) {
+        return service.query(configs, conditions);
     }
     public static DataRow query(String dest, Object obj, String ... conditions) {
         return service.query(dest, obj, conditions);
@@ -800,6 +812,12 @@ public class ServiceProxy {
      */
     public static List<Map<String, Object>> maps(String dest, ConfigStore configs, Object obj, String ... conditions) {
         return service.maps(dest, configs, conditions);
+    }
+    public static List<Map<String, Object>> maps(ConfigStore configs, Object obj, String ... conditions) {
+        return service.maps(configs, obj, conditions);
+    }
+    public static List<Map<String, Object>> maps(ConfigStore configs, String ... conditions) {
+        return service.maps(configs, conditions);
     }
     public static List<Map<String, Object>> maps(String dest, Object obj, String ... conditions) {
         return service.maps(dest, obj, conditions);

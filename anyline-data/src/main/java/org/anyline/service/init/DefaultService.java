@@ -1578,13 +1578,17 @@ public class DefaultService<E> implements AnylineService<E> {
     }
 
     protected RunPrepare createRunPrepare(Table table) {
-        if (table.getFullName() == null || table.getFullName().isEmpty()) {
-            throw new NullPointerException("表名不能为空");
+        if(null == table){
+            return new DefaultTablePrepare();
         }
         return createRunPrepare(table.getFullName());
     }
     protected RunPrepare createRunPrepare(String src) {
         RunPrepare prepare = null;
+        if(BasicUtil.isEmpty(src)){
+            //有些数据库不根据表查询可以为空
+            return new DefaultTablePrepare();
+        }
         src = src.trim();
         List<String> pks = new ArrayList<>();
         // 文本sql
