@@ -125,7 +125,7 @@ public class ConfigTable {
 	public static boolean IS_REMOVE_EMPTY_HTTP_KEY						= true			;   // DataRow row = entity("ID:id") 如果参数(如request)中未提供id参数时, row中是否清空ID属性
 	public static boolean IS_CACHE_DISABLED								= false			; 	// 是否禁用查询缓存
 	public static String DEFAULT_PRIMARY_KEY							= "ID"			;	// 默认主键
-	public static boolean IS_OPEN_TRANSACTION_MANAGER 					= true			;	// 是否需要提供事务管理器, 会根据数据源生成相应的事务管理器
+	public static boolean IS_OPEN_TRANSACTION_MANAGER 					= true			;	// 是否需要提供事务管理器, 会为每个数据源生成相应的事务管理器
 	public static boolean IS_OPEN_PRIMARY_TRANSACTION_MANAGER 			= false			;	// 是否需要设置一个主事务管理器, 多数据源时为注解事务指定一个事务管理器
 	public static String ALTER_COLUMN_TYPE_SUFFIX						= "___"			;	// ORACLE系修改数据类型过程中，需要中间列，这里指定中间列名称的后缀
 	public static int AFTER_ALTER_COLUMN_EXCEPTION_ACTION				= 1000			;   // DDL修改列异常后 -1：抛出异常 0:中断修改 1:删除列 n:总行数小于多少时更新值否则触发另一个监听

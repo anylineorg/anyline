@@ -1785,6 +1785,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		LinkedHashMap<String, Column> result = new LinkedHashMap<>();
 		LinkedHashMap<String, Column> metadatas = columns(runtime, null, false, table, false);
+		LinkedHashMap<String, Tag> tags = tags(runtime, null, false, table);
+		metadatas.putAll(tags);
 		if(!metadatas.isEmpty()) {
 			for (String key:columns.keySet()) {
 				if (metadatas.containsKey(key)) {

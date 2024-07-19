@@ -34,6 +34,8 @@ import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.transaction.TransactionDefine;
 import org.anyline.data.transaction.TransactionState;
 import org.anyline.entity.*;
+import org.anyline.entity.authorize.Privilege;
+import org.anyline.entity.authorize.User;
 import org.anyline.metadata.*;
 import org.anyline.metadata.differ.MetadataDiffer;
 import org.anyline.metadata.graph.EdgeTable;
@@ -3772,6 +3774,15 @@ public interface AnylineService<E>{
 		boolean alter(Sequence sequence) throws Exception;
 		boolean drop(Sequence sequence) throws Exception;
 		boolean rename(Sequence origin, String name) throws Exception;
+	}
+	interface Authorize {
+		/**
+		 * 创建用户
+		 * @param user 用户
+		 * @return boolean
+		 */
+		boolean create(User user);
+		boolean grant(User user, Privilege privilege);
 	}
 
 }
