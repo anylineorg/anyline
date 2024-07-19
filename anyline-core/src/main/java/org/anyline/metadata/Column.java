@@ -31,6 +31,17 @@ public class Column extends TableAffiliation<Column> implements Serializable {
 
     public static LinkedHashMap<TypeMetadata.CATEGORY, TypeMetadata.Config> typeCategoryConfigs = new LinkedHashMap<>();
 
+    public enum TYPE implements Type{
+        NORMAL(1),
+        TAG(2);
+        public final int value;
+        TYPE(int value) {
+            this.value = value;
+        }
+        public int value() {
+            return value;
+        }
+    }
     public enum Aggregation {
         MIN			            ("MIN"  			    , "最小"),
         MAX			            ("MAX"  			    , "最大"),

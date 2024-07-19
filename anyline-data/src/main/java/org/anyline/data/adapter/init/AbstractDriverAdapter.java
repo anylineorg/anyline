@@ -1785,6 +1785,11 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		LinkedHashMap<String, Column> result = new LinkedHashMap<>();
 		LinkedHashMap<String, Column> metadatas = columns(runtime, null, false, table, false);
+		try {
+			LinkedHashMap<String, Tag> tags = tags(runtime, null,false, table);
+			metadatas.putAll(tags);
+		}catch (Exception e){}
+		//tags(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tags, Table table, String pattern)
 		if(!metadatas.isEmpty()) {
 			for (String key:columns.keySet()) {
 				if (metadatas.containsKey(key)) {
@@ -2252,6 +2257,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 					Table table = run.getTable();
 					if(null != table && (null == joins || joins.isEmpty())) {//TODO 单表时再检测
 						LinkedHashMap<String, Column> metadatas = columns(runtime, null, false, table, false);
+						try {
+							LinkedHashMap<String, Tag> tags = tags(runtime, null,false, table);
+							metadatas.putAll(tags);
+						}catch (Exception e){}
 						//检测不存在的列
 						OrderStore orders = run.getOrderStore();
 						if (null != orders) {
