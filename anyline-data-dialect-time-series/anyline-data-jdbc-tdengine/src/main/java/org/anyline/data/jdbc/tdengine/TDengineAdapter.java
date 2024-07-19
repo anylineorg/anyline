@@ -29,9 +29,7 @@ import org.anyline.entity.*;
 import org.anyline.exception.CommandException;
 import org.anyline.exception.NotSupportException;
 import org.anyline.metadata.*;
-import org.anyline.metadata.adapter.ColumnMetadataAdapter;
-import org.anyline.metadata.adapter.IndexMetadataAdapter;
-import org.anyline.metadata.adapter.PrimaryMetadataAdapter;
+import org.anyline.metadata.adapter.*;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.util.BasicUtil;
@@ -1820,6 +1818,20 @@ public class TDengineAdapter extends AbstractJDBCAdapter implements JDBCAdapter 
 	}
 
 	/**
+	 * table[结构集封装-依据]<br/>
+	 * 读取table元数据结果集的依据
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return TableMetadataAdapter
+	 */
+	@Override
+	public TableMetadataAdapter tableMetadataAdapter(DataRuntime runtime) {
+		TableMetadataAdapter adapter = new TableMetadataAdapter();
+		adapter.setNameRefer("TABLE_NAME");
+		adapter.setCatalogRefer("DB_NAME");
+		adapter.setCommentRefer("TABLE_COMMENT");
+		return adapter;
+	}
+	/**
 	 * table[结果集封装]<br/>
 	 *  根据查询结果集构造Table
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -2185,6 +2197,21 @@ public class TDengineAdapter extends AbstractJDBCAdapter implements JDBCAdapter 
 		}
 		runs.add(new SimpleRun(runtime, sql));
 		return runs;
+	}
+
+	/**
+	 * masterTable[结构集封装-依据]<br/>
+	 * 读取masterTable元数据结果集的依据
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return MasterTableMetadataAdapter
+	 */
+	@Override
+	public MasterTableMetadataAdapter masterTableMetadataAdapter(DataRuntime runtime) {
+		MasterTableMetadataAdapter adapter = new MasterTableMetadataAdapter();
+		adapter.setNameRefer("STABLE_NAME");
+		adapter.setCatalogRefer("DB_NAME");
+		adapter.setCommentRefer("TABLE_COMMENT");
+		return adapter;
 	}
 
 	/**
@@ -4608,7 +4635,13 @@ public class TDengineAdapter extends AbstractJDBCAdapter implements JDBCAdapter 
 	 */
 	@Override
 	public List<Run> buildDropRun(DataRuntime runtime, MasterTable meta) throws Exception {
-		return super.buildDropRun(runtime, meta);
+		List<Run> runs = new ArrayList<>();
+		SimpleRun run = new SimpleRun(runtime);
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
+		builder.append("DROP STABLE IF EXISTS ");
+		name(runtime, builder, meta);
+		return runs;
 	}
 
 	/**
