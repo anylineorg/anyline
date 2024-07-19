@@ -3815,7 +3815,14 @@ public interface AnylineService<E>{
 		 * @return boolean
 		 */
 		boolean create(User user);
-		boolean grant(User user, Privilege privilege);
+
+		/**
+		 *  授权s
+		 * @param user 用户
+		 * @param privileges 权限
+		 * @return boolean
+		 */
+		boolean grant(User user, Privilege ... privileges);
 	}
 
 }
