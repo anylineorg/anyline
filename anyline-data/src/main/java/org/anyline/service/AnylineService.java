@@ -1518,6 +1518,12 @@ public interface AnylineService<E>{
 	 * @return 影响行数
 	 */
 	long delete(String dest, ConfigStore configs, String ... conditions);
+	default long delete(ConfigStore configs, String ... conditions){
+		return delete((String)null, configs, conditions);
+	}
+	default long delete(ConfigStore configs){
+		return delete((String)null, configs);
+	}
 	long delete(Table dest, ConfigStore configs, String ... conditions);
 	/**
 	 * 删除 根据columns列删除 可设置复合主键<br/>
@@ -3815,14 +3821,50 @@ public interface AnylineService<E>{
 		 * @return boolean
 		 */
 		boolean create(User user);
+		default boolean create(String name, String password){
+			return create(new User(name, password));
+		}
+		boolean rename(User origin, User update);
+		default boolean rename(String origin, String update){
+			return rename(new User(origin), new User(update));
+		}
+
+		boolean delete(User user);
+		default boolean delete(String user){
+			return delete(new User(user));
+		}
 
 		/**
-		 *  授权s
+		 *  授权
 		 * @param user 用户
 		 * @param privileges 权限
 		 * @return boolean
 		 */
 		boolean grant(User user, Privilege ... privileges);
+		default boolean grant(String user, Privilege ... privileges){
+			return grant(new User(user), privileges);
+		}
+
+		/**
+		 * 查询用户权限
+		 * @param user 用户
+		 * @return List
+		 */
+		List<Privilege> privileges(User user);
+		default List<Privilege> privileges(String user){
+			return privileges(new User(user));
+		}
+
+		/**
+		 * 撤销授权
+		 * @param user 用户
+		 * @param privileges 权限
+		 * @return boolean
+		 */
+		boolean revoke(User user, Privilege ... privileges);
+		default boolean revoke(String user, Privilege ... privileges){
+			return revoke(new User(user), privileges);
+		}
 	}
 
 }

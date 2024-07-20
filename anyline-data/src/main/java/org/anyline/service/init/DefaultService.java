@@ -30,6 +30,7 @@ import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.prepare.auto.init.DefaultTablePrepare;
 import org.anyline.data.prepare.auto.init.DefaultTextPrepare;
+import org.anyline.data.prepare.auto.init.SimplePrepare;
 import org.anyline.data.prepare.init.DefaultSQLStore;
 import org.anyline.data.run.Run;
 import org.anyline.data.runtime.DataRuntime;
@@ -69,7 +70,7 @@ public class DefaultService<E> implements AnylineService<E> {
 
     @Override
     public DriverAdapter adapter() {
-        return dao.runtime().getAdapter();
+        return dao.adapter();
     }
 
     @Override
@@ -1231,6 +1232,9 @@ public class DefaultService<E> implements AnylineService<E> {
         if (null == obj) {
             return 0;
         }
+        if(obj instanceof ConfigStore){
+            return delete((ConfigStore) obj, columns);
+        }
         if(!checkCondition(obj)) {
             return -1;
         }
@@ -1579,7 +1583,7 @@ public class DefaultService<E> implements AnylineService<E> {
 
     protected RunPrepare createRunPrepare(Table table) {
         if(null == table){
-            return new DefaultTablePrepare();
+            return new SimplePrepare();
         }
         return createRunPrepare(table.getFullName());
     }
@@ -1602,31 +1606,51 @@ public class DefaultService<E> implements AnylineService<E> {
             prepare = new DefaultTextPrepare(src);
         } else {
             Table table = DataSourceUtil.parseDest(src, null, null);
-            src = table.getText();
             String id = table.getId();
             pks = Column.names(table.primarys());
-            if (null != src && src.replace("\n","").replace("\r","").trim().matches("^[a-zA-Z]+\\s+.+")) {
-                //SELECT * FROM SSO_USER
-                //MATCH (e:CRM_USER:HR_USER) RETURN e
-                if (ConfigTable.isSQLDebug()) {
-                    log.debug("[解析SQL类型] [类型:JAVA定义] [src:{}]", src);
+            DriverAdapter adapter = adapter();
+            src = table.getText();
+            if(null != adapter){
+                prepare = adapter.buildRunPrepare(runtime(), src);
+            }
+            if(null == prepare){
+                if (null != id && RegularUtil.match(id, RunPrepare.XML_SQL_ID_STYLE)) {
+                    /* XML定义 */
+                    if (ConfigTable.isSQLDebug()) {
+                        log.debug("[解析SQL类型] [类型:XML定义] [src:{}]", src);
+                    }
+                    prepare = DefaultSQLStore.parseSQL(id);
+                    if (null == prepare) {
+                        log.error("[解析SQL类型][XML解析失败][src:{}]", src);
+                    }
                 }
-                prepare = new DefaultTextPrepare(src);
-            } else if (null != id && RegularUtil.match(id, RunPrepare.XML_SQL_ID_STYLE)) {
-                /* XML定义 */
-                if (ConfigTable.isSQLDebug()) {
-                    log.debug("[解析SQL类型] [类型:XML定义] [src:{}]", src);
+            }
+            if(null == prepare){
+                String chk = src;
+                if(null != chk){
+                    chk = chk.replace("\n","").replace("\r","").trim().toLowerCase();
                 }
-                prepare = DefaultSQLStore.parseSQL(id);
-                if (null == prepare) {
-                    log.error("[解析SQL类型][XML解析失败][src:{}]", src);
+                if(BasicUtil.isEmpty(chk) || chk.matches("^[a-z]+$") || chk.matches("^[a-z]+.*\\)$")){
+                    //USER
+                    //USER(ID,CODE)
+                    //USER(ID AS CODE, IFNULL(CODE, ID ) AS CODE)
+                    prepare = new DefaultTablePrepare(table);
+                    /* 自动生成 */
+                    if (ConfigTable.isSQLDebug()) {
+                        log.debug("[解析SQL类型] [类型:auto] [src:{}]", src);
+                    }
+                }else{
+                    //(null != chk && (chk.matches("^[a-z]+\\s+.+") || chk.startsWith("from(")))
+                    //SELECT * FROM SSO_USER
+                    //其他格式在adapter先解析出来 不要等到这一步 会跟SQL混淆
+                    //MATCH (e:CRM_USER:HR_USER) RETURN e
+                    //from(bucket: "test") |> range(start: 0) |> filter(fn: (r) => r._measurement == "device_test")
+                    prepare = new DefaultTextPrepare(src);
+                    if (ConfigTable.isSQLDebug()) {
+                        log.debug("[解析SQL类型] [类型:JAVA定义] [src:{}]", src);
+                    }
                 }
-            } else {
-                /* 自动生成 */
-                if (ConfigTable.isSQLDebug()) {
-                    log.debug("[解析SQL类型] [类型:auto] [src:{}]", src);
-                }
-                prepare = new DefaultTablePrepare(table);
+
             }
         }
         if (null != prepare && null != pks && !pks.isEmpty()) {
