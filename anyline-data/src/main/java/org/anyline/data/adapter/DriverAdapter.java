@@ -1767,6 +1767,14 @@ public interface DriverAdapter {
 		return buildDeleteRunFromEntity(runtime, new Table(table), configs, obj, columns);
 	}
 
+	default List<Run> buildDeleteRunFromConfig(DataRuntime runtime, ConfigStore configs){
+		Table table = configs.table();
+		if(null!= table && BasicUtil.isNotEmpty(table.getName())){
+			return buildDeleteRunFromTable(runtime, 1, table, configs, null, null);
+		}
+		return null;
+	}
+
 	/**
 	 * delete[命令合成-子流程]<br/>
 	 * 构造查询主体 拼接where group等(不含分页 ORDER)
