@@ -23,7 +23,9 @@ import org.anyline.metadata.ACTION;
 import org.anyline.util.LogUtil;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class InfluxRun extends SimpleRun {
     protected String bucket;
@@ -32,6 +34,8 @@ public class InfluxRun extends SimpleRun {
     protected List<Point> points;
     protected String api;
     protected String method;
+    protected String body;
+    protected Map<String, String> headers = new HashMap<>();
 
     @Override
     public boolean isEmpty(){
@@ -77,6 +81,20 @@ public class InfluxRun extends SimpleRun {
         this.method = method;
         return this;
     }
+    public Map<String, String> headers(){
+        return headers;
+    }
+    public InfluxRun header(String key, String value){
+        headers.put(key, value);
+        return this;
+    }
+    public String body(){
+        return this.body;
+    }
+    public InfluxRun body(String body){
+        this.body = body;
+        return this;
+    }
     public String bucket(){
         return this.bucket;
     }
@@ -112,10 +130,10 @@ public class InfluxRun extends SimpleRun {
     public String log(ACTION.DML action, boolean placeholder) {
         StringBuilder builder = new StringBuilder();
         List<String> keys = null;
-        builder.append("[org:").append(org).append("][bucket:").append(bucket).append("]");
+        builder.append("[org:").append(org).append("][bucket:").append(bucket).append("][api:").append(api).append("]");
         String cmd = null;
         if(action == ACTION.DML.SELECT) {
-            cmd = getFinalQuery(placeholder);
+            cmd = body;
         }else if(action == ACTION.DML.COUNT) {
             cmd = getTotalQuery(placeholder);
         }else if(action == ACTION.DML.UPDATE) {

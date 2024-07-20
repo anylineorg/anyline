@@ -22,7 +22,7 @@ package org.anyline.dao.init;
 import org.anyline.adapter.PersistenceAdapter;
 import org.anyline.annotation.Component;
 import org.anyline.dao.AnylineDao;
-import org.anyline.data.param.Config;
+import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.RunPrepare;
@@ -64,6 +64,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			runtime = RuntimeHolder.runtime();
 		}
 		return runtime;
+	}
+	public DriverAdapter adapter(){
+		return runtime().getAdapter();
 	}
 
 	public void setRuntime(DataRuntime runtime) {

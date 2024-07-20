@@ -1320,6 +1320,9 @@ public interface DriverAdapter {
 	default Run initQueryRun(DataRuntime runtime, RunPrepare prepare){
 		return prepare.build(runtime);
 	}
+	default RunPrepare buildRunPrepare(DataRuntime runtime, String text){
+		return null;
+	}
 	/**
 	 * 解析文本中的占位符
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端

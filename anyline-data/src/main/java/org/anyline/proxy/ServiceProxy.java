@@ -1278,6 +1278,12 @@ public class ServiceProxy {
     public static long delete(String table, ConfigStore configs, String ... conditions) {
         return service.delete(table, configs, conditions);
     }
+    public static long delete(ConfigStore configs, String ... conditions) {
+        return service.delete(configs, conditions);
+    }
+    public static long delete(ConfigStore configs) {
+        return service.delete(configs);
+    }
     public static long delete(Table dest, ConfigStore configs, String ... conditions) {
         return service().delete(dest, configs, conditions);
     }

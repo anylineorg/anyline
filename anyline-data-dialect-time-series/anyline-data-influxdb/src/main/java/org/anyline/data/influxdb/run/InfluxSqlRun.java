@@ -19,8 +19,17 @@ package org.anyline.data.influxdb.run;
 import org.anyline.data.runtime.DataRuntime;
 
 public class InfluxSqlRun extends InfluxRun{
-
-    public InfluxSqlRun(DataRuntime runtime) {
+    protected String sql;
+    public InfluxSqlRun(DataRuntime runtime, String sql) {
         super(runtime);
+        this.sql = sql;
+    }
+
+    public InfluxSqlRun sql(String sql){
+        this.sql = sql;
+        return this;
+    }
+    public String sql(){
+        return sql;
     }
 }

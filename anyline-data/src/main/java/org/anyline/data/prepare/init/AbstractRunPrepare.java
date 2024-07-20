@@ -38,6 +38,7 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 
 	protected static final Logger log     = LoggerFactory.getLogger(AbstractRunPrepare.class);
 	protected String id 										;
+	protected String text										;
 	protected ConditionChain chain								; // 查询条件
 	protected OrderStore orders									; // 排序
 	protected GroupStore groups									; // 分组条件
@@ -209,6 +210,7 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 
 	@Override
 	public RunPrepare setText(String text) {
+		this.text = text;
 		return this; 
 	} 
 	 

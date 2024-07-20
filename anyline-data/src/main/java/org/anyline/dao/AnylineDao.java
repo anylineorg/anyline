@@ -18,6 +18,7 @@
 
 package org.anyline.dao;
 
+import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.run.Run;
@@ -43,6 +44,7 @@ import java.util.Map;
 public interface AnylineDao<E>{
 	void setRuntime(DataRuntime runtime);
 	DataRuntime runtime();
+	DriverAdapter adapter();
 
 	/**
 	 * 根据差异生成SQL

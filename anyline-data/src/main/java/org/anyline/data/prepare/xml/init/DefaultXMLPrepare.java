@@ -45,8 +45,7 @@ import java.util.ArrayList;
 import java.util.List;
 public class DefaultXMLPrepare extends AbstractRunPrepare implements XMLPrepare {
 	/*解析XML*/ 
-	private String id; 
-	private String text;
+	private String id;
 	private boolean strict = true;	// 严格格式, true:不允许添加XML定义之外 的临时查询条件
 	private List<Variable> variables;
 	 

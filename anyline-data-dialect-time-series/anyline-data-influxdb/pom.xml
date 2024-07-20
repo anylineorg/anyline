@@ -22,6 +22,11 @@
         <artifactId>anyline-net</artifactId>
     </dependency>
     <dependency>
+        <groupId>org.apache.httpcomponents</groupId>
+        <artifactId>httpmime</artifactId>
+        <scope>provided</scope>
+    </dependency>
+    <dependency>
         <groupId>org.anyline</groupId>
         <artifactId>anyline-data</artifactId>
     </dependency>

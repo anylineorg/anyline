@@ -21,5 +21,7 @@ import org.anyline.data.runtime.DataRuntime;
 public class InfluxVndRun extends InfluxRun{
     public InfluxVndRun(DataRuntime runtime) {
         super(runtime);
+        this.method = "post";
+        header("Content-Type", "application/vnd.flux");
     }
 }

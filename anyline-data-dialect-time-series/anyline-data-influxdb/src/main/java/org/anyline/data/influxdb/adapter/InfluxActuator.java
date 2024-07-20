@@ -37,6 +37,8 @@ import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.DataSet;
 import org.anyline.metadata.*;
 import org.anyline.net.HttpUtil;
+import org.anyline.util.BasicUtil;
+import org.apache.http.entity.StringEntity;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -111,16 +113,22 @@ public class InfluxActuator implements DriverActuator {
         InfluxSet set = new InfluxSet();
         InfluxRuntime rt = (InfluxRuntime)runtime;
         InfluxRun r = (InfluxRun)run;
-        Map<String, String> header = new HashMap<>();
+        Map<String, String> header = r.headers();
         header.put("Authorization","Token " + rt.token());
         header.put("Accept", "application/csv");
         String api = r.api();
         String method = r.method();
+        String url = HttpUtil.createFullPath(rt.getUrl(), api);
         String result = null;
         if("get".equalsIgnoreCase(method)){
-            result = HttpUtil.get(header, api).getText();
+            result = HttpUtil.get(header, url).getText();
         }else{
-            result = HttpUtil.post(header, api).getText();
+            String body = r.body();
+            if(BasicUtil.isNotEmpty(body)) {
+                result = HttpUtil.post(header, url, new StringEntity(body)).getText();
+            }else{
+                result = HttpUtil.post(header, url).getText();
+            }
         }
         String[] lines = result.split("\n");
         int len = lines.length;
