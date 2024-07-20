@@ -21,6 +21,7 @@ package org.anyline.data.prepare;
 import org.anyline.data.run.RunValue;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;
+import org.anyline.util.SQLUtil;
 
 import java.util.List;
 import java.util.Map;
@@ -44,13 +45,7 @@ public interface Condition extends Cloneable{
 	default String getRunText(boolean connector, String prefix, DataRuntime runtime, boolean placeholder) {
 		String txt = getRunText(prefix, runtime, placeholder).trim();
 		if(!connector) {
-			txt = txt.trim();
-			String up = txt.toUpperCase();
-			if(up.startsWith("AND ") || up.startsWith("AND(")) {
-				txt = txt.substring(3);
-			}else if(up.startsWith("OR ") || up.startsWith("OR(")) {
-				txt = txt.substring(2);
-			}
+			txt = SQLUtil.trim(txt);
 		}
 		return txt;
 	}

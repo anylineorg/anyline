@@ -3438,7 +3438,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				dest = table;
 			}
 		}
-		if(obj instanceof ConfigStore) {
+		if(null == dest || BasicUtil.isEmpty(dest.getName())){
+			runs = buildDeleteRunFromConfig(runtime, configs);
+		}else if(obj instanceof ConfigStore) {
 			Run run = new TableRun(runtime, dest);
 			RunPrepare prepare = new DefaultTablePrepare();
 			prepare.setDest(dest);

@@ -26,6 +26,7 @@ import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
 import org.anyline.metadata.Table;
 import org.anyline.util.BasicUtil;
+import org.anyline.util.SQLUtil;
 
 import java.util.List;
 
@@ -151,13 +152,7 @@ public class TableRun extends AbstractRun implements Run {
 			emptyCondition = false;
 			if(first) {
 				builder.append("\n").append(adapter.conditionHead()).append(" ");
-				condition = condition.trim();
-				String up = condition.toUpperCase();
-				if(up.startsWith("AND ") || up.startsWith("AND(")) {
-					condition = condition.substring(3);
-				}else if(up.startsWith("OR ") || up.startsWith("OR(")) {
-					condition = condition.substring(2);
-				}
+				condition = SQLUtil.trim(condition);
 			}
 			builder.append(condition);
 		}

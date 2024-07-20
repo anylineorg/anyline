@@ -32,6 +32,7 @@ import org.anyline.data.influxdb.run.InfluxRun;
 import org.anyline.data.influxdb.run.InfluxSqlRun;
 import org.anyline.data.influxdb.run.InfluxVndRun;
 import org.anyline.data.influxdb.runtime.InfluxRuntime;
+import org.anyline.data.param.ConfigBuilder;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.RunPrepare;
@@ -54,6 +55,7 @@ import org.anyline.proxy.CacheProxy;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.DateUtil;
 import org.anyline.util.LogUtil;
+import org.anyline.util.SQLUtil;
 
 import java.util.*;
 
@@ -1571,6 +1573,54 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
     @Override
     public List<Run> buildDeleteRunFromEntity(DataRuntime runtime, Table table, ConfigStore configs, Object obj, String... columns) {
         return new ArrayList<>();
+    }
+    @Override
+    public List<Run> buildDeleteRunFromConfig(DataRuntime runtime, ConfigStore configs){
+        List<Run> runs = new ArrayList<>();
+        if(configs instanceof InfluxConfigStore){
+            InfluxRuntime rt = (InfluxRuntime)runtime;
+            InfluxConfigStore cfg = (InfluxConfigStore) configs;
+            String org = cfg.org();
+            String bucket = cfg.bucket();
+            String measurement = cfg.measurement();
+            if(null == org){
+                org = rt.org();
+            }
+            if(null == bucket){
+                bucket = rt.bucket();
+            }
+            InfluxJsonRun run = new InfluxJsonRun(runtime);
+            String api = "/api/v2/delete?org=" + org + "&bucket=" + bucket;
+            DataRow body = new OriginRow();
+            String start = cfg.start();
+            String stop = cfg.stop();
+            if(BasicUtil.isNotEmpty(start)){
+                body.put("start", start);
+            }
+            if(BasicUtil.isNotEmpty(stop)){
+                body.put("stop", stop);
+            }
+            if(BasicUtil.isNotEmpty(measurement)){
+                configs.and("_measurement", measurement);
+            }
+            String predicate = cfg.getRunText(runtime, false);
+            if(null!= predicate) {
+                predicate = SQLUtil.trim(predicate);
+                if (predicate.startsWith("(")) {
+                    predicate = predicate.substring(1, predicate.length() - 1);
+                }
+                predicate = predicate.replace("'", "\"");
+            }
+
+            body.put("predicate", predicate);
+            run.body(body.json());
+            run.org(org);
+            run.bucket(bucket);
+            run.api(api);
+            run.header("Content-type", "application/json");
+            runs.add(run);
+        }
+        return runs;
     }
 
     /**

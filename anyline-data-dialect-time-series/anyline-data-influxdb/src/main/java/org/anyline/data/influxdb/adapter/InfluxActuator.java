@@ -193,6 +193,24 @@ public class InfluxActuator implements DriverActuator {
 
     @Override
     public long execute(DriverAdapter adapter, DataRuntime runtime, String random, ConfigStore configs, Run run) throws Exception{
+        InfluxRuntime rt = (InfluxRuntime)runtime;
+        InfluxRun r = (InfluxRun)run;
+        Map<String, String> header = r.headers();
+        header.put("Authorization","Token " + rt.token());
+        String api = r.api();
+        String method = r.method();
+        String url = HttpUtil.createFullPath(rt.getUrl(), api);
+        String result = null;
+        if("get".equalsIgnoreCase(method)){
+            result = HttpUtil.get(header, url).getText();
+        }else{
+            String body = r.body();
+            if(BasicUtil.isNotEmpty(body)) {
+                result = HttpUtil.post(header, url, new StringEntity(body)).getText();
+            }else{
+                result = HttpUtil.post(header, url).getText();
+            }
+        }
         return 0;
     }
 }

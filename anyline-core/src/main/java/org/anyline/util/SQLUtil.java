@@ -277,4 +277,17 @@ public class SQLUtil {
 		}
 		return qty;
 	}
+	public static String trim(String condition){
+		if(null != condition){
+			condition = condition.trim();
+			String up = condition.toUpperCase();
+			if(up.startsWith("AND ") || up.startsWith("AND(")) {
+				condition = condition.substring(3);
+			}else if(up.startsWith("OR ") || up.startsWith("OR(")) {
+				condition = condition.substring(2);
+			}
+			condition = condition.trim();
+		}
+		return condition;
+	}
 } 

@@ -29,6 +29,7 @@ import org.anyline.data.prepare.auto.init.DefaultAutoConditionChain;
 import org.anyline.entity.*;
 import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;
 import org.anyline.util.BasicUtil;
+import org.anyline.util.SQLUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -209,13 +210,7 @@ public class TextRun extends AbstractRun implements Run {
 		if(!emptyCondition) {
 			if (!where) {
 				builder.append("\nWHERE ");
-				condition = condition.trim();
-				String up = condition.toUpperCase();
-				if (up.startsWith("AND ") || up.startsWith("AND(")) {
-					condition = condition.substring(3);
-				} else if (up.startsWith("OR ") || up.startsWith("OR(")) {
-					condition = condition.substring(2);
-				}
+				condition = SQLUtil.trim(condition);
 			}
 			builder.append(condition);
 		}
