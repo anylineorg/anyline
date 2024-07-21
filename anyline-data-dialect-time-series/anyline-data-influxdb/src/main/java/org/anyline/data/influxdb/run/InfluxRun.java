@@ -137,15 +137,14 @@ public class InfluxRun extends SimpleRun {
         }else if(action == ACTION.DML.COUNT) {
             cmd = getTotalQuery(placeholder);
         }else if(action == ACTION.DML.UPDATE) {
-            keys = getUpdateColumns();
-            cmd = getFinalUpdate(placeholder);
+            cmd = body;
         }else if(action == ACTION.DML.INSERT) {
             keys = getInsertColumns();
             cmd = getFinalInsert(placeholder);
         }else if(action == ACTION.DML.EXECUTE) {
-            cmd = getFinalExecute(placeholder);
+            cmd = body;
         }else if(action == ACTION.DML.DELETE) {
-            cmd = getFinalDelete(placeholder);
+            cmd = body;
         }else if(action == ACTION.DML.EXISTS) {
             cmd = getFinalExists(placeholder);
         }
