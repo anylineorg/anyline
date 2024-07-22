@@ -988,7 +988,6 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
         String body = run.body();
         if(null == body){
             //没有提供body根据configs构造
-            List<Config> conditions = configs(configs.getConfigChain());
             body = "from(bucket: \""+bucket+"\") ";
             if(BasicUtil.isNotEmpty(start) || BasicUtil.isNotEmpty(stop)){
                 body += "|> range(";
@@ -1004,6 +1003,10 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
                 }
                 body += ")";
             }
+            if(BasicUtil.isNotEmpty(measurement)){
+                configs.and("_measurement", measurement);
+            }
+            List<Config> conditions = configs(configs.getConfigChain());
             if(!conditions.isEmpty()) {
                 body += "|> filter(fn: (r) =>";
                 boolean first = true;
