@@ -1017,8 +1017,10 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
                 body += ")";
             }
         }
-        if(limit > 0 && !body.toLowerCase().matches(".*\\|>\\s*limit.*\\(.+")){
-            body += " |> limit(n:"+limit+")";
+        if(null != body) {
+            if (limit > 0 && !body.toLowerCase().matches(".*\\|>\\s*limit.*\\(.+")) {
+                body += " |> limit(n:" + limit + ")";
+            }
             run.body(body);
         }
         String api =  "/api/v2/query?org=" + org;

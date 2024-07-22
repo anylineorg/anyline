@@ -133,8 +133,12 @@ public class InfluxActuator implements DriverActuator {
             }
         }
         result = response.getText();
+        String alt = result;
+        if(response.getStatus() == 200){
+            alt = BasicUtil.ellipsis(200, alt);
+        }
 
-        log.info("[influx http api][action:{}][status:{}]",run.action(), response.getStatus());
+        log.info("[influx http api][action:{}][status:{}]{}", run.action(), response.getStatus(), alt);
         String[] lines = result.split("\n");
         int len = lines.length;
         if(len > 1){
