@@ -2224,6 +2224,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			//构造最终的查询SQL
 			run = fillQueryContent(runtime, run);
 		}
+
 		return run;
 	}
 	public void init(DataRuntime runtime, Run run, ConfigStore configs, String ... conditions) {

@@ -1318,7 +1318,11 @@ public interface DriverAdapter {
 	 */
 	Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions);
 	default Run initQueryRun(DataRuntime runtime, RunPrepare prepare){
-		return prepare.build(runtime);
+		Run run = prepare.build(runtime);
+		if(null != run && null == run.action()){
+			run.action(ACTION.DML.SELECT);
+		}
+		return run;
 	}
 	default RunPrepare buildRunPrepare(DataRuntime runtime, String text){
 		return null;

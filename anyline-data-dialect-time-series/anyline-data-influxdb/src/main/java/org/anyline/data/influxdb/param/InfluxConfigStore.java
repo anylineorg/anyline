@@ -17,6 +17,7 @@
 package org.anyline.data.influxdb.param;
 
 import org.anyline.data.param.init.DefaultConfigStore;
+import org.anyline.util.BasicUtil;
 
 public class InfluxConfigStore extends DefaultConfigStore {
     private String bucket;
@@ -68,4 +69,21 @@ public class InfluxConfigStore extends DefaultConfigStore {
     public String measurement(){
         return measurement;
     }
+    @Override
+    public boolean isEmptyCondition() {
+        if(null != chain && !chain.isEmpty()) {
+            return false;
+        }
+        if(null != measurement){
+            return false;
+        }
+        if(BasicUtil.isNotEmpty(start)){
+            return false;
+        }
+        if(BasicUtil.isNotEmpty(stop)){
+            return false;
+        }
+        return true;
+    }
+
 }

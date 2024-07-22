@@ -32,7 +32,9 @@ import org.anyline.data.influxdb.run.InfluxRun;
 import org.anyline.data.influxdb.run.InfluxSqlRun;
 import org.anyline.data.influxdb.run.InfluxVndRun;
 import org.anyline.data.influxdb.runtime.InfluxRuntime;
+import org.anyline.data.param.Config;
 import org.anyline.data.param.ConfigBuilder;
+import org.anyline.data.param.ConfigChain;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.RunPrepare;
@@ -849,6 +851,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
             }
         }
         run.setPrepare(prepare);
+        run.action(ACTION.DML.SELECT);
         return run;
     }
     /**
@@ -928,20 +931,52 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
     protected Run fillQueryContent(DataRuntime runtime, StringBuilder builder, InfluxJsonRun run) {
         return run;
     }
+
+    /**
+     * 提取所有合条不分层级
+     * Config
+     * @return
+     */
+    private List<Config> configs(ConfigChain chain){
+        List<Config> configs = new ArrayList<>();
+        List<Config> items = chain.getConfigs();
+        for(Config item:items){
+            if(item instanceof ConfigChain){
+                configs.addAll(configs((ConfigChain) item));
+            }else {
+                configs.add(item);
+            }
+        }
+        return configs;
+    }
     protected Run fillQueryContent(DataRuntime runtime, StringBuilder builder, InfluxVndRun run) {
         InfluxRuntime rt = (InfluxRuntime)runtime;
         ConfigStore configs = run.getConfigs();
         String org = run.org();
+        String bucket = run.bucket();
+        String start = null;
+        String stop = null;
+        String measurement = null;
         if(configs instanceof InfluxConfigStore){
             InfluxConfigStore cfg = (InfluxConfigStore)configs;
             if(BasicUtil.isEmpty(org)) {
                 org = cfg.org();
             }
+            if(BasicUtil.isEmpty(bucket)) {
+                bucket = cfg.bucket();
+            }
+            start = cfg.start();
+            stop = cfg.stop();
+            measurement = cfg.measurement();
+        }
+        if(BasicUtil.isEmpty(bucket)) {
+            bucket = rt.bucket();
         }
         if(BasicUtil.isEmpty(org)) {
             org = rt.org();
         }
         run.org(org);
+        run.bucket(bucket);
 
         long limit = -1;
         if(null != configs){
@@ -951,7 +986,38 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
             }
         }
         String body = run.body();
-        if(!body.toLowerCase().matches(".*\\|>\\s*limit.*\\(.+")){
+        if(null == body){
+            //没有提供body根据configs构造
+            List<Config> conditions = configs(configs.getConfigChain());
+            body = "from(bucket: \""+bucket+"\") ";
+            if(BasicUtil.isNotEmpty(start) || BasicUtil.isNotEmpty(stop)){
+                body += "|> range(";
+                if(BasicUtil.isNotEmpty(start)){
+                    body += "start:" + start;
+                    if(BasicUtil.isNotEmpty(stop)){
+                        body += ",";
+                    }
+                }
+
+                if(BasicUtil.isNotEmpty(stop)){
+                    body += "stop:" + stop;
+                }
+                body += ")";
+            }
+            if(!conditions.isEmpty()) {
+                body += "|> filter(fn: (r) =>";
+                boolean first = true;
+                for(Config condition:conditions){
+                    if(!first){
+                        body += " and ";
+                    }
+                    first = false;
+                    body += "r." + condition.getVariable() + "==\"" + condition.getValues().get(0) + "\"";
+                }
+                body += ")";
+            }
+        }
+        if(limit > 0 && !body.toLowerCase().matches(".*\\|>\\s*limit.*\\(.+")){
             body += " |> limit(n:"+limit+")";
             run.body(body);
         }

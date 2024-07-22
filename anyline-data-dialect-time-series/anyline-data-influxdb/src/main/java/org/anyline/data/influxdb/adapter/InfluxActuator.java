@@ -36,6 +36,7 @@ import org.anyline.data.run.Run;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.DataSet;
 import org.anyline.metadata.*;
+import org.anyline.net.HttpResponse;
 import org.anyline.net.HttpUtil;
 import org.anyline.util.BasicUtil;
 import org.apache.http.entity.StringEntity;
@@ -119,17 +120,21 @@ public class InfluxActuator implements DriverActuator {
         String api = r.api();
         String method = r.method();
         String url = HttpUtil.createFullPath(rt.getUrl(), api);
+        HttpResponse response = null;
         String result = null;
         if("get".equalsIgnoreCase(method)){
-            result = HttpUtil.get(header, url).getText();
+            response = HttpUtil.get(header, url);
         }else{
             String body = r.body();
             if(BasicUtil.isNotEmpty(body)) {
-                result = HttpUtil.post(header, url, new StringEntity(body)).getText();
+                response = HttpUtil.post(header, url, new StringEntity(body));
             }else{
-                result = HttpUtil.post(header, url).getText();
+                response = HttpUtil.post(header, url);
             }
         }
+        result = response.getText();
+
+        log.info("[influx http api][action:{}][status:{}]",run.action(), response.getStatus());
         String[] lines = result.split("\n");
         int len = lines.length;
         if(len > 1){
@@ -200,17 +205,19 @@ public class InfluxActuator implements DriverActuator {
         String api = r.api();
         String method = r.method();
         String url = HttpUtil.createFullPath(rt.getUrl(), api);
-        String result = null;
+
+        HttpResponse response = null;
         if("get".equalsIgnoreCase(method)){
-            result = HttpUtil.get(header, url).getText();
+            response = HttpUtil.get(header, url);
         }else{
             String body = r.body();
             if(BasicUtil.isNotEmpty(body)) {
-                result = HttpUtil.post(header, url, new StringEntity(body)).getText();
+                response = HttpUtil.post(header, url, new StringEntity(body));
             }else{
-                result = HttpUtil.post(header, url).getText();
+                response = HttpUtil.post(header, url);
             }
         }
+        log.info("[influx http api][action:{}][status:{}][response:{}]", run.action(), response.getStatus(), response.getText());
         return 0;
     }
 }
