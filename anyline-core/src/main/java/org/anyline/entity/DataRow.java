@@ -90,7 +90,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     protected Schema schema                                 = null                  ; // schema
     protected transient LinkedHashMap<String, Table> tables = new LinkedHashMap<>() ; // 数据来源表(图数据库可能来自多个表) //TODO 解析sql中多个表(未实现)
     protected DataRow attributes                            = null                  ; // 属性
-    protected DataRow tags                                  = null                  ; // 标签
+    protected LinkedHashMap<String, Object> tags            = null                  ; // 标签
     protected DataRow relations                             = null                  ; // 对外关系
     protected long createTime                               = 0                     ; // 创建时间(毫秒)
     protected long nanoTime                                 = 0                     ; // 创建时间(纳秒)
@@ -1713,15 +1713,15 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     }
     public DataRow tag(String key, Object value) {
         if(null == tags) {
-            tags = new DataRow();
+            tags = new LinkedHashMap<>();
         }
         tags.put(key, value);
         return this;
     }
 
-    public DataRow setTag(String key, Object value) {
+    public DataRow addTag(String key, Object value) {
         if(null == tags) {
-            tags = new DataRow();
+            tags = new LinkedHashMap<>();
         }
         tags.put(key, value);
         return this;
@@ -1729,21 +1729,21 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 
     public Object tag(String key) {
         if(null == tags) {
-            tags = new DataRow();
+            tags = new LinkedHashMap<>();
         }
         return tags.get(key);
     }
 
     public Object getTag(String key) {
         if(null == tags) {
-            tags = new DataRow();
+            tags = new LinkedHashMap<>();
         }
         return tags.get(key);
     }
 
-    public Map<String, Object> getTags() {
+    public LinkedHashMap<String, Object> getTags() {
         if(null == tags) {
-            tags = new DataRow();
+            tags = new LinkedHashMap<>();
         }
         return tags;
     }

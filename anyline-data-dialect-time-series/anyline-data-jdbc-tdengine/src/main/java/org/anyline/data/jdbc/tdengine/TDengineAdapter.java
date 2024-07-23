@@ -166,48 +166,6 @@ public class TDengineAdapter extends AbstractJDBCAdapter implements JDBCAdapter 
 
 
 	/**
-	 * 插入子表前 检测并创建子表
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
-	 * @param dest 表
-	 * @param configs ConfigStore
-	 */
-	@Override
-	public void fillInsertCreateTemplate(DataRuntime runtime, Run run, PartitionTable dest, ConfigStore configs){
-		StringBuilder builder = run.getBuilder();
-		if(dest instanceof TDenginePartitionTable){
-			TDenginePartitionTable part = (TDenginePartitionTable) dest;
-			Table master = part.getMaster();
-			LinkedHashMap<String, Object> tags = part.getUsingTags();
-			if(null != master && !tags.isEmpty()){
-				//INSERT INTO d21001 USING meters (groupId, typeId) TAGS (2, 1) VALUES
-				StringBuilder cols = new StringBuilder();
-				StringBuilder vals = new StringBuilder();
-				boolean first = true;
-				for(String key: tags.keySet()){
-					Object value = tags.get(key);
-					if(!first){
-						cols.append(",");
-						vals.append(",");
-					}
-					delimiter(cols, key);
-					if(value instanceof String){
-						vals.append("'");
-						vals.append(value);
-						vals.append("'");
-					}else{
-						vals.append(value);
-					}
-				}
-
-				builder.append(" USING ");
-				name(runtime, builder, master);
-				builder.append(cols);
-				builder.append(vals);
-			}
-		}
-	}
-	/**
 	 * insert [命令合成-子流程]<br/>
 	 * 确认需要插入的列
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
