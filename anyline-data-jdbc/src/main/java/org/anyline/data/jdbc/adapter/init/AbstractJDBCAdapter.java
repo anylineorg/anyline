@@ -347,13 +347,13 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		String head = insertHead(configs);
 		builder.append(head);
 		name(runtime, builder, dest);//.append(parseTable(dest));
-		builder.append("(");
-		delimiter(builder, Column.names(columns));
-		builder.append(")");
 		if(dest instanceof PartitionTable){
 			PartitionTable pt = (PartitionTable)dest;
 			fillInsertCreateTemplate(runtime, run, pt, configs);
 		}
+		builder.append("(");
+		delimiter(builder, Column.names(columns));
+		builder.append(")");
 		builder.append(" VALUES ");
 		int dataSize = set.size();
 		boolean el = ConfigStore.IS_AUTO_CHECK_EL_VALUE(configs);
@@ -412,9 +412,14 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		String head = insertHead(configs);
 		builder.append(head);//
 		name(runtime, builder, dest);// .append(parseTable(dest));
+		if(dest instanceof PartitionTable){
+			PartitionTable pt = (PartitionTable)dest;
+			fillInsertCreateTemplate(runtime, run, pt, configs);
+		}
 		builder.append("(");
 		delimiter(builder, Column.names(columns));
-		builder.append(") VALUES ");
+		builder.append(")");
+		builder.append(" VALUES ");
 		boolean el = ConfigStore.IS_AUTO_CHECK_EL_VALUE(configs);
 		int dataSize = list.size();
 		int idx = 0;

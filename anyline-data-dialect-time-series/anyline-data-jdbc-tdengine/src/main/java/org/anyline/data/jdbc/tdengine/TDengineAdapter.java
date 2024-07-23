@@ -21,7 +21,6 @@ package org.anyline.data.jdbc.tdengine;
 import org.anyline.annotation.Component;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.adapter.init.AbstractJDBCAdapter;
-import org.anyline.data.jdbc.tdengine.metadata.TDenginePartitionTable;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.run.*;
@@ -165,6 +164,53 @@ public class TDengineAdapter extends AbstractJDBCAdapter implements JDBCAdapter 
 
 
 
+	/**
+	 * 插入子表前 检测并创建子表
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @param dest 表
+	 * @param configs ConfigStore
+	 */
+	@Override
+	public void fillInsertCreateTemplate(DataRuntime runtime, Run run, PartitionTable dest, ConfigStore configs){
+		StringBuilder builder = run.getBuilder();
+		Table master = dest.getMaster();
+		LinkedHashMap<String, Tag> tags = dest.getTags();
+		if(null != master && !tags.isEmpty()){
+			StringBuilder cols = new StringBuilder();
+			StringBuilder vals = new StringBuilder();
+			boolean first = true;
+			for(Tag tag:tags.values()) {
+				String key = tag.getName();
+				Object value = tag.getValue();
+				if(BasicUtil.isEmpty(value)){
+					continue;
+				}
+				if(!first){
+					cols.append(",");
+					vals.append(",");
+				}
+				first = false;
+				delimiter(cols, key);
+				if(value instanceof String){
+					vals.append("'");
+					vals.append(value);
+					vals.append("'");
+				}else{
+					vals.append(value);
+				}
+			}
+			if(first){ //没有生成tags
+				return;
+			}
+			builder.append(" USING ");
+			name(runtime, builder, master);
+			builder.append("(").append(cols).append(")");
+			builder.append(" TAGS ");
+			builder.append("(").append(vals).append(")");
+		}
+
+	}
 	/**
 	 * insert [命令合成-子流程]<br/>
 	 * 确认需要插入的列
