@@ -349,7 +349,12 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		name(runtime, builder, dest);//.append(parseTable(dest));
 		builder.append("(");
 		delimiter(builder, Column.names(columns));
-		builder.append(") VALUES ");
+		builder.append(")");
+		if(dest instanceof PartitionTable){
+			PartitionTable pt = (PartitionTable)dest;
+			fillInsertCreateTemplate(runtime, run, pt, configs);
+		}
+		builder.append(" VALUES ");
 		int dataSize = set.size();
 		boolean el = ConfigStore.IS_AUTO_CHECK_EL_VALUE(configs);
 		for(int i=0; i<dataSize; i++) {

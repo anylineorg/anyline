@@ -457,6 +457,20 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 	}
 
+
+	/**
+	 * 插入子表前 检测并创建子表
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @param dest 表
+	 * @param configs ConfigStore
+	 */
+	@Override
+	public void fillInsertCreateTemplate(DataRuntime runtime, Run run, PartitionTable dest, ConfigStore configs){
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 void fillInsertCreateTemplate(DataRuntime runtime, Run run, PartitionTable dest, ConfigStore configs)", 37));
+		}
+	}
 	/**
 	 * insert [命令合成-子流程]<br/>
 	 * 确认需要插入的列
