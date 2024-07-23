@@ -67,6 +67,13 @@ public class ElasticSearchBuilder {
         if(BasicUtil.isNotEmpty(searchAnalyzer)) {
             map.put("search_analyzer", searchAnalyzer);
         }
+        //向量类型 维度
+        if(null != type && type.toLowerCase().contains("vector")) {
+            int dims = column.getPrecisionLength();
+            if (dims > 0) {
+                map.put("dims", dims);
+            }
+        }
         return map;
     }
 }
