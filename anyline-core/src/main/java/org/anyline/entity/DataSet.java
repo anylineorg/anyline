@@ -6142,7 +6142,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
             return DataSet.this;
         }
     }
-    public Select select = new Select();
-    public Format format = new Format();
-    public Parse parse = new Parse();
+    public transient Select select = new Select();
+    public transient Format format = new Format();
+    public transient Parse parse = new Parse();
 }
