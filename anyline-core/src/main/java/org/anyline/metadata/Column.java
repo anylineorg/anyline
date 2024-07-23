@@ -186,27 +186,28 @@ public class Column extends TableAffiliation<Column> implements Serializable {
     protected String analyzer                     ; // 分词器
     protected String searchAnalyzer               ; // 查询分词器
     protected Integer ignoreAbove                 ; // 可创建索引的最大词长度
-    private String coerce;
-    private String copyTo;
-    private String docValues;
-    private String dynamic;
-    private String eagerGlobalOrdinals;
-    private String enabled;
-    private String format;
-    private String ignoreMalformed;
-    private String indexOptions;
-    private String indexPhrases;
-    private String indexPrefixes;
-    private String meta;
-    private String fields;
-    private String normalizer;
-    private String norms;
-    private String nullValue;
-    private String positionIncrementGap;
-    private LinkedHashMap<String, Property> properties = new LinkedHashMap<>();
-    private String similarity;
-    private String subObjects;
-    private String termVector;
+    protected String coerce;
+    protected String copyTo;
+    protected String docValues;
+    protected String dynamic;
+    protected int dims                          ; // 向量类型 维度
+    protected String eagerGlobalOrdinals;
+    protected String enabled;
+    protected String format;
+    protected String ignoreMalformed;
+    protected String indexOptions;
+    protected String indexPhrases;
+    protected String indexPrefixes;
+    protected String meta;
+    protected String fields;
+    protected String normalizer;
+    protected String norms;
+    protected String nullValue;
+    protected String positionIncrementGap;
+    protected LinkedHashMap<String, Property> properties = new LinkedHashMap<>();
+    protected String similarity;
+    protected String subObjects;
+    protected String termVector;
     protected int parseLvl                      = 0;// 类型解析级别0:未解析 1:column解析 2:adapter解析
 
     public Column() {
