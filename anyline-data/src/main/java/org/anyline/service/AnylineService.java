@@ -1640,6 +1640,9 @@ public interface AnylineService<E>{
 	default List<String> tables(String name, int types) {
 		return tables((Catalog) null, null, name, types);
 	}
+	default List<String> tables(String name) {
+		return tables((Catalog) null, null, name, Table.TYPE.NORMAL.value);
+	}
 	default List<String> tables(int types) {
 		return tables((Catalog) null, null, null, types);
 	}
@@ -1984,6 +1987,9 @@ public interface AnylineService<E>{
 		default <T extends Table> LinkedHashMap<String, T> tables(String name, int types, boolean struct) {
 			return tables(null, null, name, types, struct);
 		}
+		default <T extends Table> LinkedHashMap<String, T> tables(String name) {
+			return tables(null, null, name, Table.TYPE.NORMAL.value, false);
+		}
 		default <T extends Table> LinkedHashMap<String, T> tables(int types, int struct) {
 			return tables(null, types, struct);
 		}
@@ -1991,7 +1997,7 @@ public interface AnylineService<E>{
 			return tables(null, types, struct);
 		}
 		default <T extends Table> LinkedHashMap<String, T> tables() {
-			return tables( Table.TYPE.NORMAL.value, false);
+			return tables(Table.TYPE.NORMAL.value, false);
 		}
 
 		default <T extends Table> LinkedHashMap<String, T> tables(int types, int struct, ConfigStore configs) {
@@ -2016,6 +2022,9 @@ public interface AnylineService<E>{
 		}
 		default <T extends Table> List<T> tables(boolean greedy, String name, int types) {
 			return tables(greedy, null, null, name, types, false);
+		}
+		default <T extends Table> List<T> tables(boolean greedy, String name) {
+			return tables(greedy, null, null, name, Table.TYPE.NORMAL.value, false);
 		}
 		default <T extends Table> List<T> tables(boolean greedy, int types) {
 			return tables(greedy, null, types, false);
