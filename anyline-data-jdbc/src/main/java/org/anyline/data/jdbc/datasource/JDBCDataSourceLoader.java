@@ -88,6 +88,11 @@ public class JDBCDataSourceLoader extends AbstractDataSourceLoader implements Da
         }
         list.addAll(load("spring.datasource", loadDefault));
         list.addAll(load("anyline.datasource", loadDefault));
+        //项目提供数据源前缀
+        String prefix = ConfigTable.environment().string("anyline.datasource,spring.datasource", "prefix");
+        if(BasicUtil.isNotEmpty(prefix)){
+            list.addAll(load(prefix, loadDefault));
+        }
         return list;
     }
 

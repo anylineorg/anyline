@@ -19,9 +19,11 @@
 package org.anyline.data.jdbc.runtime;
 
 import org.anyline.data.adapter.DriverAdapter;
+import org.anyline.data.adapter.DriverAdapterHolder;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.runtime.init.AbstractRuntime;
 import org.anyline.data.util.DataSourceUtil;
+import org.anyline.util.ConfigTable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,6 +55,22 @@ public class JDBCRuntime extends AbstractRuntime implements DataRuntime {
     }
 
     public String getFeature(boolean connection) {
+        boolean keep = DriverAdapterHolder.keepAdapter(getProcessor());
+        String feature = DriverAdapterHolder.feature(getProcessor());
+        String url = null;
+        String driver = null;
+        if(ConfigTable.KEEP_ADAPTER == 1) {
+            feature = this.feature;
+            url = this.url;
+            driver = this.driver;
+            keep = true;
+        }
+        if(!keep){
+            connection = true;
+            driver = null;
+            url = null;
+        }
+
         if(null == feature) {
             if(connection || null == driver || null == url) {
                 if (null != processor) {
@@ -60,11 +78,11 @@ public class JDBCRuntime extends AbstractRuntime implements DataRuntime {
                     try {
                         con = processor.getConnection();
                         DatabaseMetaData meta = con.getMetaData();
-                        String url = meta.getURL();
-                        if(null == adapterKey) {
+                        url = meta.getURL();
+                        if(null == adapterKey && ConfigTable.KEEP_ADAPTER == 1) {
                             adapterKey = DataSourceUtil.parseAdapterKey(url);
                         }
-                        feature = driver + "_" + meta.getDatabaseProductName().toLowerCase().replace(" ","") + "_" + url;
+                        feature = meta.getDatabaseProductName().toLowerCase().replace(" ","") + "_" + url;
                         if (null == version) {
                             version = meta.getDatabaseProductVersion();
                         }
@@ -79,12 +97,21 @@ public class JDBCRuntime extends AbstractRuntime implements DataRuntime {
                     }
                 }
             }else{
-                feature = driver + "_" + url;
+                feature = url;
+            }
+            if(null != driver) {
+                feature = driver + "_" + feature;
             }
         }
-        if(null == adapterKey) {
+        if(null == adapterKey && keep) {
             adapterKey = DataSourceUtil.parseAdapterKey(feature);
         }
+        if(keep){
+            this.feature = feature;
+            this.url = url;
+        }
+        setLastFeature(feature);
+
         return feature;
     }
 

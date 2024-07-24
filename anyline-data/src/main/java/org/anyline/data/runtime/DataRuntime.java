@@ -50,6 +50,15 @@ public interface DataRuntime {
 
     void setFeature(String feature) ;
 
+
+    /**
+     * 返回最后一次检测的数据库特征
+     * @return String
+     */
+    String getLastFeature() ;
+
+    void setLastFeature(String feature) ;
+
     /**
      * 返回数据库版本
      * @return String

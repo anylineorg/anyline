@@ -18,9 +18,11 @@
 
 package org.anyline.data.adapter;
 
+import org.anyline.data.datasource.DataSourceMonitor;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.exception.NotFoundAdapterException;
 import org.anyline.metadata.type.DatabaseType;
+import org.anyline.util.ConfigTable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,12 +36,33 @@ public class DriverAdapterHolder {
 	public static LinkedHashMap<DatabaseType, DriverAdapter> user_adapters = new LinkedHashMap<>();
 	private static HashSet<DriverAdapter> adapters = new HashSet<>();
 	private static HashSet<DatabaseType> supports = new HashSet<>();
-	private static List<DriverAdapterHolder> utils = new ArrayList<>();
+
+	private static DataSourceMonitor monitor;
 	public DriverAdapterHolder() {}
 	public static void reg(DatabaseType type, DriverAdapter adapter) {
 		user_adapters.put(type, adapter);
 	}
+	public static void setMonitor(DataSourceMonitor monitor) {
+		DriverAdapterHolder.monitor = monitor;
+	}
 
+	public static DataSourceMonitor getMonitor() {
+		return monitor;
+	}
+	public static boolean keepAdapter(Object datasource){
+		boolean keep = ConfigTable.KEEP_ADAPTER == 1;
+		if(ConfigTable.KEEP_ADAPTER == 2 && null != monitor){
+			keep = monitor.keepAdapter(datasource);
+		}
+		return keep;
+	}
+	public static String feature(Object datasource){
+		String feature = null;
+		if(ConfigTable.KEEP_ADAPTER == 2 && null != monitor){
+			feature = monitor.feature(datasource);
+		}
+		return feature;
+	}
 	/**
 	 * 获取支持数据库的适配器,注意有可能获取到多个
 	 * @param type 数据库类型
@@ -89,14 +112,15 @@ public class DriverAdapterHolder {
 	 * @return DriverAdapter
 	 */
 	public static DriverAdapter getAdapter(String datasource, DataRuntime runtime) {
+		boolean keep = keepAdapter(runtime.getProcessor());
 		//项目中只有一个适配器时直接返回
-		if(null != defaultAdapter) {
+		if(null != defaultAdapter && keep) {
 			return defaultAdapter;
 		}
-		if(adapters.size() == 1) {
+		if(adapters.size() == 1 && keep) {
 			defaultAdapter = adapters.iterator().next();
 			return defaultAdapter;
-		}else if(adapters.size() == 2) {
+		}else if(adapters.size() == 2 && keep) {
 			boolean common = false;
 			for (DriverAdapter adapter:adapters) {
 				if(adapter.getClass().getName().toLowerCase().contains("common")) {
@@ -113,17 +137,19 @@ public class DriverAdapterHolder {
 			}
 		}
 		DriverAdapter adapter = null;
+		String feature = runtime.getFeature();
+		String adapter_key = runtime.getAdapterKey();
 		try {
 			//执行两次匹配, 第一次失败后，会再匹配一次，第二次传入true
 			for (DriverAdapter item:adapters) {
-				if(item.match(runtime, false)) {
+				if(item.match(feature, adapter_key, false)) {
 					adapter = item;
 					break;
 				}
 			}
 			if(null == adapter) {
 				for (DriverAdapter item:adapters) {
-					if(item.match(runtime, true)) {
+					if(item.match(feature, adapter_key, true)) {
 						adapter = item;
 						break;
 					}
@@ -135,8 +161,8 @@ public class DriverAdapterHolder {
 		if(null == adapter) {
 			log.error("[检测数据库适配器][检测失败][可用适配器数量:{}][检测其他可用的适配器]", adapters.size());
 			throw new NotFoundAdapterException("检测数据库适配器失败");
-		}else{
-			log.info("[检测数据库适配器][数据源:{}][特征:{}][适配结果:{}]", datasource, runtime.getFeature(), adapter);
+		}else if(log.isDebugEnabled()){
+			log.debug("[检测数据库适配器][数据源:{}][特征:{}][适配结果:{}]", datasource, feature, adapter);
 		}
 		return adapter;
 	}

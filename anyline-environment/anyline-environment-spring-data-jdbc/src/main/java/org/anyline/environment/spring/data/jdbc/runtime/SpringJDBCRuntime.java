@@ -19,10 +19,12 @@
 package org.anyline.environment.spring.data.jdbc.runtime;
 
 import org.anyline.data.adapter.DriverAdapter;
+import org.anyline.data.adapter.DriverAdapterHolder;
+import org.anyline.data.jdbc.runtime.JDBCRuntime;
 import org.anyline.data.jdbc.runtime.JDBCRuntimeHolder;
 import org.anyline.data.runtime.DataRuntime;
-import org.anyline.data.runtime.init.AbstractRuntime;
 import org.anyline.data.util.DataSourceUtil;
+import org.anyline.util.ConfigTable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 
@@ -30,7 +32,7 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 
-public class SpringJDBCRuntime extends AbstractRuntime implements DataRuntime {
+public class SpringJDBCRuntime extends JDBCRuntime implements DataRuntime {
     protected JdbcTemplate processor;
 
     public SpringJDBCRuntime(String key, JdbcTemplate jdbc, DriverAdapter adapter) {
@@ -59,6 +61,22 @@ public class SpringJDBCRuntime extends AbstractRuntime implements DataRuntime {
     }
 
     public String getFeature(boolean connection) {
+        boolean keep = DriverAdapterHolder.keepAdapter(getProcessor());
+        String feature = DriverAdapterHolder.feature(getProcessor());
+        String url = null;
+        String driver = null;
+        if(ConfigTable.KEEP_ADAPTER == 1) {
+            feature = this.feature;
+            url = this.url;
+            driver = this.driver;
+            keep = true;
+        }
+        if(!keep){
+            connection = true;
+            driver = null;
+            url = null;
+        }
+
         if(null == feature) {
             if(connection || null == driver || null == url) {
                 JdbcTemplate jdbc = jdbc();
@@ -69,11 +87,11 @@ public class SpringJDBCRuntime extends AbstractRuntime implements DataRuntime {
                         datasource = jdbc.getDataSource();
                         con = DataSourceUtils.getConnection(datasource);
                         DatabaseMetaData meta = con.getMetaData();
-                        String url = meta.getURL();
+                        url = meta.getURL();
                         if(null == adapterKey) {
                             adapterKey = DataSourceUtil.parseAdapterKey(url);
                         }
-                        feature = driver + "_" + meta.getDatabaseProductName().toLowerCase().replace(" ","") + "_" + url;
+                        feature = meta.getDatabaseProductName().toLowerCase().replace(" ","") + "_" + url;
                         if (null == version) {
                             version = meta.getDatabaseProductVersion();
                         }
@@ -86,12 +104,21 @@ public class SpringJDBCRuntime extends AbstractRuntime implements DataRuntime {
                     }
                 }
             }else{
-                feature = driver + "_" + url;
+                feature = url;
+            }
+
+            if(null != driver) {
+                feature = driver + "_" + feature;
             }
         }
-        if(null == adapterKey) {
+        if(null == adapterKey && keep) {
             adapterKey = DataSourceUtil.parseAdapterKey(feature);
         }
+        if(keep){
+            this.feature = feature;
+            this.url = url;
+        }
+        setLastFeature(feature);
         return feature;
     }
 

@@ -25,6 +25,7 @@ import org.anyline.data.adapter.DriverActuator;
 import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.adapter.DriverAdapterHolder;
 import org.anyline.data.datasource.DataSourceLoader;
+import org.anyline.data.datasource.DataSourceMonitor;
 import org.anyline.data.interceptor.*;
 import org.anyline.data.listener.DDListener;
 import org.anyline.data.listener.DMListener;
@@ -61,7 +62,8 @@ public class DataSourceLoadListener implements LoadListener {
         Map<String, DriverAdapter> adapters = ConfigTable.environment().getBeans(DriverAdapter.class);
         Map<String, DriverActuator> workers = ConfigTable.environment().getBeans(DriverActuator.class);
         Map<String, DataSourceLoader> loaders =ConfigTable.environment().getBeans(DataSourceLoader.class);
-
+        DataSourceMonitor monitor = ConfigTable.environment().getBean(DataSourceMonitor.class);
+        DriverAdapterHolder.setMonitor(monitor);
         //数据库操作适配器
         if(null != adapters) {
             DriverAdapterHolder.setAdapters(adapters);

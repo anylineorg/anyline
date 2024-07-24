@@ -1396,6 +1396,9 @@ public class ServiceProxy {
     public static List<String> tables(String name, int types) {
         return service.tables(name, types);
     }
+    public static List<String> tables(String name) {
+        return service.tables(name);
+    }
     public static List<String> tables(int types) {
         return service.tables(types);
     }

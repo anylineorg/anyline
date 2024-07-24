@@ -234,7 +234,7 @@ public interface DriverAdapter {
 	/**
 	 * 验证运行环境与当前适配器是否匹配<br/>
 	 * 默认不连接只根据连接参数<br/>
-	 * 只有同一个库区分不同版本(如mmsql2000/mssql2005)或不同模式(如kingbase的oracle/pg模式)时才需要单独实现
+	 * 只有同一个库区分不同版本(如mssql2000/mssql2005)或不同模式(如KingBase的oracle/pg模式)时才需要单独实现
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param compensate 是否补偿匹配，第一次失败后，会再匹配一次，第二次传入true
 	 * @return boolean
@@ -251,17 +251,27 @@ public interface DriverAdapter {
 		List<String> keywords = type().keywords(); //关键字+jdbc-url前缀+驱动类
 		return match(feature, keywords, compensate);
 	}
+	default boolean match(String feature, String adapterKey, boolean compensate) {
+		if(BasicUtil.isNotEmpty(adapterKey)){
+			return matchByAdapter(adapterKey);
+		}
+		List<String> keywords = type().keywords(); //关键字+jdbc-url前缀+驱动类
+		return match(feature, keywords, compensate);
+	}
 	default boolean matchByAdapter(DataRuntime runtime) {
 		String config_adapter_key = runtime.getAdapterKey();
-		if(BasicUtil.isNotEmpty(config_adapter_key)) {
+		return matchByAdapter(config_adapter_key);
+	}
+	default boolean matchByAdapter(String key) {
+        if(BasicUtil.isNotEmpty(key)) {
 			String type = type().name();
 			//如果明确指定了adapter 不考虑其他特征
 			boolean result = false;
-			if(config_adapter_key.equalsIgnoreCase(type)) {
+			if(key.equalsIgnoreCase(type)) {
 				result = true;
 			}
 			if(ConfigTable.IS_LOG_ADAPTER_MATCH) {
-				log.info("[adapter match][result:{}][config adapter:{}][match adapter:{}]", result, config_adapter_key, type);
+				log.info("[adapter match][result:{}][config adapter:{}][match adapter:{}]", result, key, type);
 			}
 			return result;
 		}
