@@ -88,7 +88,7 @@ public class SpringJDBCRuntime extends JDBCRuntime implements DataRuntime {
                         con = DataSourceUtils.getConnection(datasource);
                         DatabaseMetaData meta = con.getMetaData();
                         url = meta.getURL();
-                        if(null == adapterKey) {
+                        if(null == adapterKey && ConfigTable.KEEP_ADAPTER == 1) {
                             adapterKey = DataSourceUtil.parseAdapterKey(url);
                         }
                         feature = meta.getDatabaseProductName().toLowerCase().replace(" ","") + "_" + url;

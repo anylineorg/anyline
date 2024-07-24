@@ -111,7 +111,6 @@ public class JDBCRuntime extends AbstractRuntime implements DataRuntime {
             this.url = url;
         }
         setLastFeature(feature);
-
         return feature;
     }
 
