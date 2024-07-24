@@ -11017,6 +11017,17 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		if(change_pk) {
 			meta.setChangePrimary(1);
 		}
+		//主动标记删除状态
+		if(null != cur_primary && cur_primary.isDrop()){
+			cur_primary.execute(meta.execute());
+			if(slice){
+				slices.addAll(buildDropRun(runtime, cur_primary, slice));
+			}else {
+				drop(runtime, cur_primary);
+			}
+			cur_primary = null;
+			change_pk = false;
+		}
 		//如果主键有更新 先删除主键 避免alters中把原主键列的非空取消时与主键约束冲突
 		try {
 			List<Run> autos = checkAutoIncrement(runtime, null, meta, slice);
@@ -11039,7 +11050,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			}else {
 				drop(runtime, src_primary);
 			}
-
 			src_primary = null;
 		}
 
@@ -11057,11 +11067,13 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 
 		//在alters执行完成后 添加主键 避免主键中存在alerts新添加的列
-		if(null != cur_primary && change_pk) {//复合主键的单独添加
-			if(slice){
-				slices.addAll(buildAddRun(runtime, cur_primary, slice));
-			}else {
-				add(runtime, cur_primary);
+		if(null != cur_primary) {//复合主键的单独添加
+			if(change_pk){
+				if(slice){
+					slices.addAll(buildAddRun(runtime, cur_primary, slice));
+				}else {
+					add(runtime, cur_primary);
+				}
 			}
 		}
 		List<Run> merges = merge(runtime, meta, slices);
