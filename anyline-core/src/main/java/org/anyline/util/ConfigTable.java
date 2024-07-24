@@ -67,6 +67,15 @@ public class ConfigTable {
 	public static Class DEFAULT_ELASTIC_SEARCH_ENTITY_CLASS				= DataRow.class ;
 	public static Class DEFAULT_NEO4J_ENTITY_CLASS						= DataRow.class ;
 	public static boolean IS_DEBUG 										= true			;	// DEBUG状态会输出更多日志
+	/**
+	 * 同一个数据源是否保持相同的adapter
+	 * 1: 全部保持
+	 * 0: 全部不保持 每次操作数据库都检测一次
+	 * 2: 由DataSourceMonitor接口实现
+	 * 如果项目中出现 一个数据源对应多类数据库的情况, 同时出现 一个数据源只对应一类数据库的情况 这时才需要设置为2或0
+	 * 这里设置了false后每个
+	 */
+	public static int KEEP_ADAPTER										= 1				;	// 同一个数据源是否保持相同的adapter
 	public static int  DEBUG_LVL										= 0				;   //
 	public static boolean IS_LOG_SQL									= true			;	// 执行SQL时是否输出日志
 	public static boolean IS_LOG_SLOW_SQL								= true			;	// 执行慢SQL时是否输出日志
