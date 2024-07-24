@@ -37,6 +37,8 @@ public class AbstractRuntime implements DataRuntime {
      * 用来匹配 DriverAdapter
      */
     protected String feature;
+
+    protected String lastFeature;
     /**
      * 运行环境版本 用来匹配 DriverAdapter
      */
@@ -64,10 +66,20 @@ public class AbstractRuntime implements DataRuntime {
     public String getFeature(boolean connection) {
         return null;
     }
-
+    @Override
     public void setFeature(String feature) {
         this.feature = feature;
     }
+
+    @Override
+    public String getLastFeature() {
+        return this.lastFeature;
+    }
+    @Override
+    public void setLastFeature(String feature) {
+        this.lastFeature = feature;
+    }
+
 
     @Override
     public String getVersion() {
@@ -137,10 +149,11 @@ public class AbstractRuntime implements DataRuntime {
     }
 
     public DriverAdapter getAdapter() {
-        if(null == adapter) {
+        boolean keep = DriverAdapterHolder.keepAdapter(getProcessor());
+        if(null == adapter || !keep) {
             String lockKey = (AbstractRuntime.class.getName() + "getAdapter" + key).intern();
             synchronized (lockKey) {
-                if(null == adapter) {
+                if(null == adapter || !keep) {
                     String datasource = key;
                     adapter = DriverAdapterHolder.getAdapter(datasource, this);
                 }
