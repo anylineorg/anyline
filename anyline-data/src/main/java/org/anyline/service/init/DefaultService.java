@@ -1632,7 +1632,7 @@ public class DefaultService<E> implements AnylineService<E> {
                     chk = chk.replace("\n","").replace("\r","").trim().toLowerCase()
                         .replaceAll("\\s+\\(","("); //user (id, name) > user(id, name)
                 }
-                if(BasicUtil.isEmpty(chk) || chk.matches("^[a-z]+$") || chk.matches("^[a-z]+\\(.*\\)$")){
+                if(BasicUtil.isEmpty(chk) || chk.matches("^\\S+$") || chk.matches("^\\S+\\(.*\\)$")){
                     //USER
                     //USER(ID,CODE)
                     //USER(ID AS CODE, IFNULL(CODE, ID ) AS CODE)
