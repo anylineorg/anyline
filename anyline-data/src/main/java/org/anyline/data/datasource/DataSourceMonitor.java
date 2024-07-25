@@ -18,6 +18,7 @@ package org.anyline.data.datasource;
 
 import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.runtime.DataRuntime;
+import org.anyline.exception.DataSourceUsingException;
 
 public interface DataSourceMonitor {
     /**
@@ -38,9 +39,10 @@ public interface DataSourceMonitor {
     /**
      * 释放占用资源,通常情况下不需要实现,上层方法会调用datasource.close()
      * @param datasource 数据源
-     * @return 1:当前方法内已释放 不需要上层继续操作 0:当前方法内未释放 需要上层继续操作
+     * @return  0:当前方法内未释放 需要上层继续操作  1:当前方法内已释放 不需要上层继续操作
+     * @throws DataSourceUsingException 数据源正在使用中
      */
-    default int release(Object datasource) {
+    default int release(Object datasource, boolean using) throws DataSourceUsingException {
         return 0;
     }
 
@@ -65,10 +67,10 @@ public interface DataSourceMonitor {
      * 上层方法完成adapter定位后调用,可以在这里缓存,下一次定位提供给adapter(Object datasource)
      * @param datasource 数据源
      * @param adapter DriverAdapter
-     * @return boolean 适配是否准确
+     * @return DriverAdapter 如果没有问题原样返回，如果有问题可以修正或返回null, 如果返回null上层方法会抛出adapter定位失败的异常
      */
-    default boolean after(DataRuntime runtime, Object datasource, DriverAdapter adapter) {
-        return true;
+    default DriverAdapter after(DataRuntime runtime, Object datasource, DriverAdapter adapter) {
+        return adapter;
     }
 
     /**
