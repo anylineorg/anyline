@@ -85,6 +85,12 @@ public class DriverAdapterHolder {
 		}
 		return feature;
 	}
+	public static DriverAdapter after(DataRuntime runtime, Object datasource, DriverAdapter adapter){
+		if(null != monitor){
+			return monitor.after(runtime, datasource, adapter);
+		}
+		return adapter;
+	}
 	/**
 	 * 获取支持数据库的适配器,注意有可能获取到多个
 	 * @param type 数据库类型
@@ -189,6 +195,9 @@ public class DriverAdapterHolder {
 			if(null != adapter && log.isDebugEnabled()){
 				log.debug("[检测数据库适配器][数据源:{}][特征:{}][适配结果:{}]", datasource, feature, adapter);
 			}
+		}
+		if(null != adapter){
+			adapter = after(runtime, runtime.getProcessor(), adapter);
 		}
 		if(null == adapter) {
 			log.error("[检测数据库适配器][检测失败][可用适配器数量:{}][检测其他可用的适配器]", adapters.size());

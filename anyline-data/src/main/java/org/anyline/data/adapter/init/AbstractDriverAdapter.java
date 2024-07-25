@@ -15370,7 +15370,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				}
 			}
 		}
-		RunValue rv = run.addValues(compare, column, value, split);
+		run.addValues(compare, column, value, split);
 		if(null != column) {
 			//value = convert(runtime, column, rv); //统一调用
 		}
