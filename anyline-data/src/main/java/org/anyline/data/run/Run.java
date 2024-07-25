@@ -101,9 +101,9 @@ public interface Run extends org.anyline.data.Run{
 	 * @param column  column
 	 * @param obj  obj
 	 * @param split 遇到集合/数组类型是否拆分处理
-	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
+	 * @return List 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值 ,如果是集合有可能 会返回多个
 	 */
-	RunValue addValues(Compare compare, Column column, Object obj, boolean split);
+	List<RunValue> addValues(Compare compare, Column column, Object obj, boolean split);
 
 	/**
 	 * 设置行数
