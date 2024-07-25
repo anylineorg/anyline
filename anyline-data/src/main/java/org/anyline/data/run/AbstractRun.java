@@ -88,7 +88,7 @@ public abstract class AbstractRun implements Run {
 
 	@Override
 	public boolean isEmptyCondition() {
-		return emptyCondition;
+		return emptyCondition && (null == values || values.isEmpty());
 	}
 
 	public DriverAdapter adapter() {
@@ -424,16 +424,25 @@ public abstract class AbstractRun implements Run {
 			values = new ArrayList<>();
 		}
 		values.add(run);
+		if(null != this.values  && !this.values .isEmpty()) {
+			emptyCondition = false;
+		}
 		return this;
 	}
 	public Run addValues(List<RunValue> values) {
 		for(RunValue value:values) {
 			addValues(value);
 		}
+		if(null != this.values  && !this.values .isEmpty()) {
+			emptyCondition = false;
+		}
 		return this;
 	}
 	public Run setRunValues(List<RunValue> values) {
 		this.values = values;
+		if(null != values && !values.isEmpty()) {
+			emptyCondition = false;
+		}
 		return this;
 	}
 	@Override
