@@ -37,6 +37,7 @@ import org.anyline.util.regular.RegularUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.Array;
 import java.util.*;
 
 public abstract class AbstractRun implements Run {
@@ -343,8 +344,8 @@ public abstract class AbstractRun implements Run {
 	 */
 	@SuppressWarnings({"rawtypes","unchecked" })
 	@Override
-	public RunValue addValues(Compare compare, Column column, Object obj, boolean split) {
-		RunValue rv = null;
+	public List<RunValue> addValues(Compare compare, Column column, Object obj, boolean split) {
+		List<RunValue> rvs = new ArrayList<>();
 		if(null != obj) {
 			// from:1-DataRow 2-Entity
 			if(split && (null == column || !column.isArray()) && getFrom() != 2) {
@@ -358,99 +359,58 @@ public abstract class AbstractRun implements Run {
 						}
 					}
 				}
-				if(obj.getClass().isArray()) {
-					if(obj instanceof Object[] && !json) {
-						Object[] list = (Object[]) obj;
+				if(!json){
+					if(obj.getClass().isArray()) {
+						if(obj instanceof byte[] || obj instanceof Byte[]) {
+							RunValue rv = new RunValue(column, obj);
+							rvs.add(rv);
+							addValues(rv);
+						}else{
+							int len = Array.getLength(obj);
+							for(int i=0; i<len; i++){
+								Object v = Array.get(obj, i);
+								RunValue rv = new RunValue(column, v);
+								rvs.add(rv);
+								addValues(rv);
+								if(Compare.EQUAL == compare) {
+									break;
+								}
+							}
+							//不要在最后添加new RunValue(column, obj); obj有可能是个数据库不支持的类型
+							if(len == 0){
+								RunValue rv = new RunValue(column, null);
+								addValues(rv);
+								rvs.add(rv);
+							}
+						}
+					}else if(obj instanceof Collection && !json) {
+						Collection list = (Collection)obj;
 						for(Object item:list) {
-							rv = new RunValue(column, item);
+							RunValue rv = new RunValue(column, item);
 							addValues(rv);
+							rvs.add(rv);
 							if(Compare.EQUAL == compare) {
 								break;
 							}
 						}
-					}else if(obj instanceof double[] && !json) {
-						double[] list = (double[]) obj;
-						for(double item:list) {
-							rv = new RunValue(column, item);
+						//不要在最后添加new RunValue(column, obj); obj有可能是个数据库不支持的类型
+						if(list.isEmpty()){
+							RunValue rv = new RunValue(column, null);
 							addValues(rv);
-							if(Compare.EQUAL == compare) {
-								break;
-							}
+							rvs.add(rv);
 						}
-					}else if(obj instanceof long[] && !json) {
-						long[] list = (long[]) obj;
-						for(long item:list) {
-							rv = new RunValue(column, item);
-							addValues(rv);
-							if(Compare.EQUAL == compare) {
-								break;
-							}
-						}
-					}else if(obj instanceof int[] && !json) {
-						int[] list = (int[]) obj;
-						for(int item:list) {
-							rv = new RunValue(column, item);
-							addValues(rv);
-							if(Compare.EQUAL == compare) {
-								break;
-							}
-						}
-					}else if(obj instanceof float[] && !json) {
-						float[] list = (float[]) obj;
-						for(float item:list) {
-							rv = new RunValue(column, item);
-							addValues(rv);
-							if(Compare.EQUAL == compare) {
-								break;
-							}
-						}
-					}else if(obj instanceof short[] && !json) {
-						short[] list = (short[]) obj;
-						for(short item:list) {
-							rv = new RunValue(column, item);
-							addValues(rv);
-							if(Compare.EQUAL == compare) {
-								break;
-							}
-						}
-					}else if(obj instanceof Object[] && !json) {
-						Object[] list = (Object[]) obj;
-						for(Object item:list) {
-							rv = new RunValue(column, item);
-							addValues(rv);
-							if(Compare.EQUAL == compare) {
-								break;
-							}
-						}
-					}else{
-						//byte[]等
-						rv = new RunValue(column, obj);
-						addValues(rv);
+
 					}
-				}else if(obj instanceof Collection && !json) {
-					Collection list = (Collection)obj;
-					for(Object item:list) {
-						rv = new RunValue(column, item);
-						addValues(rv);
-						if(Compare.EQUAL == compare) {
-							break;
-						}
-					}
-				}else{
-					rv = new RunValue(column, obj);
-					addValues(rv);
 				}
 			}
-			else{
-				rv = new RunValue(column, obj);
-				addValues(rv);
-			}
 
-		}else{
-			rv = new RunValue(column, obj);
-			addValues(rv);
 		}
-		return rv;
+		if(rvs.isEmpty()){
+			RunValue rv = new RunValue(column, obj);
+			addValues(rv);
+			rvs.add(rv);
+		}
+		return rvs;
 	}
 
 	/**
