@@ -2373,7 +2373,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
 	 * @param configs 过滤条件及相关配置
 	 * @param conditions  简单过滤条件
-	 * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
 	 */
 	public void init(DataRuntime runtime, Run run, ConfigStore configs, String ... conditions) {
 		if(null != run) {
@@ -3359,7 +3358,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * query [命令合成]<br/>
 	 * 替换占位符
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param random 用来标记同一组命令
 	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
 	 * @return 影响行数
 	 */
@@ -9547,7 +9545,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryIndexesRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param table 表
+	 * @param tables 表
 	 * @param indexes 上一步查询结果
 	 * @param set 查询结果集
 	 * @return indexes indexes
@@ -13046,7 +13044,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * column[命令合成-子流程]<br/>
 	 * 创建表完成后追加表备注,创建过程能添加备注的不需要实现与comment(DataRuntime runtime, StringBuilder builder, Table meta)二选一实现
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param column 列
+	 * @param meta 列
 	 * @param slice 是否只生成片段(不含alter table部分，用于DDL合并)
 	 * @return sql
 	 * @throws Exception 异常
@@ -15646,7 +15644,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 如 TO_DATE('')
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder builder
-	 * @param row DataRow 或 Entity
+	 * @param obj Object
 	 * @param key 列名
 	 */
 	@Override
@@ -15684,7 +15682,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param table 表
-	 * @param run  值
+	 * @param value  值
 	 * @return boolean 返回false表示转换失败 如果有多个 adapter 则交给adapter继续转换
 	 */
 	@Override
@@ -15783,7 +15781,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 数据类型转换
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param columns 列
-	 * @param run 值
+	 * @param value 值
 	 * @return boolean 返回false表示转换失败 如果有多个adapter 则交给adapter继续转换
 	 */
 	@Override
