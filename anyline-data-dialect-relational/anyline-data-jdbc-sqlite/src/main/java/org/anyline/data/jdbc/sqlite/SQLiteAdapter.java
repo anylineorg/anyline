@@ -163,7 +163,7 @@ public class SQLiteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param obj 需要插入的数据
 	 * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
-	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
+	 * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
 	 */
 	@Override
 	public Run buildInsertRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, List<String> columns) {
@@ -174,7 +174,7 @@ public class SQLiteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 * insert [命令合成-子流程]<br/>
 	 * 填充inset命令内容(创建批量INSERT RunPrepare)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
 	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param set 需要插入的数据集合
 	 * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
@@ -188,7 +188,7 @@ public class SQLiteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 * insert [命令合成-子流程]<br/>
 	 * 填充inset命令内容(创建批量INSERT RunPrepare)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
 	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param list 需要插入的数据集合
 	 * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
@@ -265,7 +265,7 @@ public class SQLiteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param obj 数据
 	 * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
-	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
+	 * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
 	 */
 	@Override
 	protected Run createInsertRun(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns) {
@@ -279,7 +279,7 @@ public class SQLiteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param list 对象集合
 	 * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
-	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
+	 * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
 	 */
 	@Override
 	protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, List<String> columns) {
@@ -303,7 +303,7 @@ public class SQLiteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param data data
-	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
 	 * @param pks 需要返回的主键
 	 * @return 影响行数
 	 */
@@ -377,7 +377,7 @@ public class SQLiteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 *
 	 *        以上执行完后,如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
 	 *        则把执行结果与表结构对比,删除表中没有的列<br/>
-	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
+	 * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
 	 */
 	@Override
 	public Run buildUpdateRun(DataRuntime runtime, int batch, String dest, Object obj, ConfigStore configs, List<String> columns) {
@@ -433,7 +433,7 @@ public class SQLiteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 * @param random 用来标记同一组命令
 	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param data 数据
-	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
 	 * @return 影响行数
 	 */
 	@Override
@@ -492,7 +492,7 @@ public class SQLiteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 
 	/**
 	 * 是否是可以接收数组类型的值
-	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
 	 * @param key key
 	 * @return boolean
 	 */
@@ -591,7 +591,7 @@ public class SQLiteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param clazz entity class
 	 * @param table table
-	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
 	 * @return EntitySet
 	 * @param <T> entity.class
 	 *
@@ -623,7 +623,7 @@ public class SQLiteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
 	 * @param configs 过滤条件及相关配置
 	 * @param conditions  简单过滤条件
-	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
+	 * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
 	 */
 	@Override
 	public Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions) {
@@ -645,7 +645,7 @@ public class SQLiteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	/**
 	 * select[命令合成-子流程] <br/>
 	 * 构造查询主体
-	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
 	 */
 	@Override
 	public Run fillQueryContent(DataRuntime runtime, Run run) {
@@ -668,7 +668,7 @@ public class SQLiteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 * select[命令合成-子流程] <br/>
 	 * 合成最终 select 命令 包含分页 排序
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
 	 * @return String
 	 */
 	@Override
@@ -727,7 +727,7 @@ public class SQLiteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 * @param random 用来标记同一组命令
 	 * @param system 系统表不检测列属性
 	 * @param table 表
-	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
 	 * @return DataSet
 	 */
 	@Override
@@ -739,7 +739,7 @@ public class SQLiteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 * select [命令执行]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
 	 * @return maps
 	 */
 	@Override
@@ -751,7 +751,7 @@ public class SQLiteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 * select [命令执行]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
 	 * @return map
 	 */
 	@Override
@@ -812,7 +812,7 @@ public class SQLiteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 * count [命令合成]<br/>
 	 * 合成最终 select count 命令
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
 	 * @return String
 	 */
 	@Override
@@ -824,7 +824,7 @@ public class SQLiteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 * count [命令执行]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
 	 * @return long
 	 */
 	@Override
@@ -909,7 +909,7 @@ public class SQLiteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
 	 * @param configs 查询条件及相关设置
 	 * @param conditions  简单过滤条件
-	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
+	 * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
 	 */
 	@Override
 	public Run buildExecuteRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions) {
@@ -932,7 +932,7 @@ public class SQLiteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 * execute [命令合成-子流程]<br/>
 	 * 填充 execute 命令内容
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
 	 */
 	@Override
 	public void fillExecuteContent(DataRuntime runtime, Run run) {
@@ -943,7 +943,7 @@ public class SQLiteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 * execute [命令执行]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
 	 * @return 影响行数
 	 */
 	@Override
@@ -1035,7 +1035,7 @@ public class SQLiteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param obj entity或DataRow
 	 * @param columns 删除条件的列或属性，根据columns取obj值并合成删除条件
-	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
+	 * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
 	 */
 	@Override
 	public List<Run> buildDeleteRun(DataRuntime runtime, Table dest, ConfigStore configs, Object obj, String ... columns) {
@@ -1049,7 +1049,7 @@ public class SQLiteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 * @param table 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param key 根据属性解析出列
 	 * @param values values
-	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
+	 * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
 	 */
 	@Override
 	public List<Run> buildDeleteRun(DataRuntime runtime, int batch, String table, ConfigStore configs, String key, Object values) {
@@ -1068,7 +1068,7 @@ public class SQLiteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 * @param table 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param column 列
 	 * @param values values
-	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
+	 * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
 	 */
 	@Override
 	public List<Run> buildDeleteRunFromTable(DataRuntime runtime, int batch, Table table, ConfigStore configs, String column, Object values) {
@@ -1082,7 +1082,7 @@ public class SQLiteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 * @param table 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源 如果为空 可以根据obj解析
 	 * @param obj entity或DataRow
 	 * @param columns 删除条件的列或属性，根据columns取obj值并合成删除条件
-	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
+	 * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
 	 */
 	@Override
 	public List<Run> buildDeleteRunFromEntity(DataRuntime runtime, Table table, ConfigStore configs, Object obj, String... columns) {
@@ -1092,7 +1092,7 @@ public class SQLiteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	/**
 	 * delete[命令合成-子流程]<br/>
 	 * 构造查询主体 拼接where group等(不含分页 ORDER)
-	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
 	 */
 	@Override
 	public void fillDeleteRunContent(DataRuntime runtime, Run run) {
@@ -1104,7 +1104,7 @@ public class SQLiteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param configs 查询条件及相关设置
-	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
 	 * @return 影响行数
 	 */
 	@Override
@@ -3614,7 +3614,7 @@ public class SQLiteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 * @param random 用来标记同一组命令
 	 * @param meta Metadata(表,列等)
 	 * @param action 执行命令
-	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
 	 * @return boolean
 	 */
 	@Override

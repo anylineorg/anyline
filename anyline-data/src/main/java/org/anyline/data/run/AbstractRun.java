@@ -340,7 +340,7 @@ public abstract class AbstractRun implements Run {
 	 * @param obj  obj
 	 * @param column  column
 	 * @param split  遇到集合/数组类型是否拆分处理(DataRow 并且Column不是数组类型)
-	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
+	 * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
 	 */
 	@SuppressWarnings({"rawtypes","unchecked" })
 	@Override
@@ -416,7 +416,7 @@ public abstract class AbstractRun implements Run {
 	/**
 	 * 添加参数值
 	 * @param run  run
-	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
+	 * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
 	 */
 	@SuppressWarnings({"rawtypes","unchecked" })
 	public Run addValues(RunValue run) {
@@ -866,7 +866,7 @@ public abstract class AbstractRun implements Run {
 	/**
 	 * 添加条件
 	 * @param conditions  简单过滤条件 ORDER GROUP 等
-	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
+	 * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
 	 */
 	@Override
 	public Run addCondition(String ... conditions) {

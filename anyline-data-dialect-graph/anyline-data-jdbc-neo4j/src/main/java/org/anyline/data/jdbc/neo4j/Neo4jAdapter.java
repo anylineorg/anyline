@@ -95,7 +95,7 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
      * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
      * @param obj 实体
      * @param columns 需要抛入的列 如果不指定  则根据实体属性解析
-     * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
+     * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
      */
     @Override
     public Run buildInsertRun(DataRuntime runtime, int batch, Table dest, Object obj, List<String> columns) {
@@ -106,7 +106,7 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
      * 根据DataSet创建批量INSERT RunPrepare
      * CREATE (:Dept{name:1}), (:Dept{name:2}), (:Dept{name:3})
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+     * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
      * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
      * @param set 集合
      * @param columns 需插入的列
@@ -144,7 +144,7 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
      * 根据Collection创建批量INSERT
      * create(:Dept{name:1}), (:Dept{name:2}), (:Dept{name:3})
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+     * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
      * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
      * @param list 集合
      * @param columns 需插入的列
@@ -186,7 +186,7 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
      * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
      * @param obj obj
      * @param columns 需要插入或更新的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
-     * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
+     * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
      */
     @Override
     protected Run createInsertRun(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns) {
@@ -230,7 +230,7 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
      * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
      * @param list 对象集合
      * @param columns 需要插入的列, 如果不指定则全部插入
-     * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
+     * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
      */
     @Override
     protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, List<String> columns) {
@@ -262,7 +262,7 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
     /**
      * 生成insert sql的value部分, 每个Entity(每行数据)调用一次
      * (:User{name:'ZH', age:20})
-     * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+     * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
      * @param obj Entity或DataRow
      * @param columns 需要插入的列
      */
@@ -328,7 +328,7 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param data data
-     * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+     * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
      * @return int
      */
     @Override
@@ -595,14 +595,14 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 
     /**
      * 生成基础查询主体
-     * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+     * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
      */
     protected Run fillQueryContent(DataRuntime runtime, XMLRun run) {
         return run;
     }
     /**
      * 生成基础查询主体
-     * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+     * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
      */
     protected Run fillQueryContent(DataRuntime runtime, TextRun run) {
         StringBuilder builder = run.getBuilder();
@@ -698,7 +698,7 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
     }
     /**
      * 生成基础查询主体
-     * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+     * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
      */
     protected Run fillQueryContent(DataRuntime runtime, TableRun run) {
         StringBuilder builder = run.getBuilder();

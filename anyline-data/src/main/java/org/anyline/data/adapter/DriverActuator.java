@@ -111,7 +111,7 @@ public interface DriverActuator {
      * select [命令执行]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
-     * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+     * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
      * @return maps
      */
     List<Map<String, Object>> maps(DriverAdapter adapter, DataRuntime runtime, String random, ConfigStore configs, Run run) throws Exception;
@@ -120,7 +120,7 @@ public interface DriverActuator {
      * select [命令执行]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
-     * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+     * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
      * @return map
      */
     Map<String, Object> map(DriverAdapter adapter, DataRuntime runtime, String random, ConfigStore configs, Run run) throws Exception;
@@ -132,7 +132,7 @@ public interface DriverActuator {
      * @param random 用来标记同一组命令
      * @param data 插入数量
      * @param configs ConfigStore
-     * @param run Run
+     * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
      * @param generatedKey 执行insert后返回自增主键的key
      * @param pks
      * @return long
@@ -146,7 +146,7 @@ public interface DriverActuator {
      * @param random 用来标记同一组命令
      * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
      * @param data 数据
-     * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+     * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
      * @return 影响行数
      */
     long update(DriverAdapter adapter, DataRuntime runtime, String random, Table dest, Object data, ConfigStore configs, Run run) throws Exception;
@@ -165,7 +165,7 @@ public interface DriverActuator {
      * execute [命令执行]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
-     * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+     * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
      * @return 影响行数
      */
     long execute(DriverAdapter adapter, DataRuntime runtime, String random, ConfigStore configs, Run run) throws Exception;
@@ -173,7 +173,7 @@ public interface DriverActuator {
     /**
      * 根据结果集对象获取列结构,如果有表名应该调用metadata().columns(table);或metadata().table(table).getColumns()
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+     * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
      * @param comment 是否需要查询列注释
      * @return LinkedHashMap
      */

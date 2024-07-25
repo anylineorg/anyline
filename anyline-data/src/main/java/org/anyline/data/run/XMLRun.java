@@ -453,7 +453,7 @@ public class XMLRun extends AbstractRun implements Run {
 	 * @param variable  列名|变量key
 	 * @param value  值
 	 * @param compare 比较方式
-	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
+	 * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
 	 */
 	@Override
 	public Run setConditionValue(EMPTY_VALUE_SWITCH swt, Compare compare, String prefix, String variable, Object value) {
@@ -614,7 +614,7 @@ public class XMLRun extends AbstractRun implements Run {
 	 * @param prefix  condition.id
 	 * @param variable variable
 	 * @param value value
-	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
+	 * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
 	 */
 	public Run addCondition(String prefix, String variable, Object value) {
 		if(null != variables && BasicUtil.isEmpty(variable)) {

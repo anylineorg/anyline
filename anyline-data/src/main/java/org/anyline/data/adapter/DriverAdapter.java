@@ -819,7 +819,7 @@ public interface DriverAdapter {
 	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param prepare 查询
 	 * @param configs 过滤条件及相关配置
-	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
+	 * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
 	 */
 	Run buildInsertRun(DataRuntime runtime, Table dest, RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions);
 	/**
@@ -829,7 +829,7 @@ public interface DriverAdapter {
 	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param obj 需要插入的数据
 	 * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
-	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
+	 * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
 	 */
 	Run buildInsertRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, List<String> columns);
 	default Run buildInsertRun(DataRuntime runtime, int batch, Table dest, Object obj, List<String> columns) {
@@ -868,7 +868,7 @@ public interface DriverAdapter {
 	 * insert [命令合成-子流程]<br/>
 	 * 填充inset命令内容(创建批量INSERT RunPrepare)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
 	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param list 需要插入的数据集合
 	 * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
@@ -882,7 +882,7 @@ public interface DriverAdapter {
 	 * insert [命令合成-子流程]<br/>
 	 * 填充inset命令内容(创建批量INSERT RunPrepare)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
 	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param set 需要插入的数据集合
 	 * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
@@ -896,7 +896,7 @@ public interface DriverAdapter {
 	 * insert [命令合成-子流程]<br/>
 	 * 填充inset命令内容(创建批量INSERT RunPrepare)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
 	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param list 需要插入的数据集合
 	 * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
@@ -912,7 +912,7 @@ public interface DriverAdapter {
 	 * insert [命令合成-子流程]<br/>
 	 * 填充inset命令内容(创建批量INSERT RunPrepare)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
 	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param set 需要插入的数据集合
 	 * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
@@ -927,7 +927,7 @@ public interface DriverAdapter {
 	/**
 	 * 插入子表前 检测并创建子表
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
 	 * @param dest 表
 	 * @param configs ConfigStore
 	 */
@@ -988,7 +988,7 @@ public interface DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param data data
-	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
 	 * @param pks 需要返回的主键
 	 * @return 影响行数
 	 */
@@ -1136,9 +1136,17 @@ public interface DriverAdapter {
 	 *
 	 *        以上执行完后,如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
 	 *        则把执行结果与表结构对比,删除表中没有的列<br/>
-	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
+	 * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
 	 */
 	Run buildUpdateRun(DataRuntime runtime, int btch, Table dest, Object obj, ConfigStore configs, List<String> columns);
+
+	/**
+	 *
+	 * update [命令合成]<br/>
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
+	 * @return Run
+	 */
 	Run buildUpdateRunLimit(DataRuntime runtime, Run run);
 	default Run buildUpdateRun(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns) {
 		return buildUpdateRun(runtime, 0, dest, obj, configs, columns);
@@ -1164,10 +1172,41 @@ public interface DriverAdapter {
 	default Run buildUpdateRun(DataRuntime runtime, Object obj, String ... columns) {
 		return buildUpdateRun(runtime, DataSourceUtil.parseDest(null, obj, null), obj, null, BeanUtil.array2list(columns));
 	}
+
+	/**
+	 *
+	 * update [命令合成]<br/>
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param obj Entity或DtaRow
+	 * @param configs 更新条件
+	 * @param columns 需要插入或更新的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
+	 * @return Run
+	 */
 	Run buildUpdateRunFromEntity(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, LinkedHashMap<String, Column> columns);
 
+	/**
+	 *
+	 * update [命令合成]<br/>
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param row DtaRow
+	 * @param configs 更新条件
+	 * @param columns 需要插入或更新的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
+	 * @return Run
+	 */
 	Run buildUpdateRunFromDataRow(DataRuntime runtime, Table dest, DataRow row, ConfigStore configs, LinkedHashMap<String,Column> columns);
 
+	/**
+	 *
+	 * update [命令合成]<br/>
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param list Collection
+	 * @param configs 更新条件
+	 * @param columns 需要插入或更新的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
+	 * @return Run
+	 */
 	Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, LinkedHashMap<String,Column> columns);
 
 	default Run buildUpdateRun(DataRuntime runtime, int batch, String dest, Object obj, ConfigStore configs, List<String> columns) {
@@ -1199,6 +1238,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 确认需要更新的列
+	 * @param dest 表
 	 * @param row DataRow
 	 * @param configs 更新条件
 	 * @param columns 需要插入或更新的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
@@ -1219,6 +1259,29 @@ public interface DriverAdapter {
 	 * @return List
 	 */
 	LinkedHashMap<String,Column> confirmUpdateColumns(DataRuntime runtime, Table dest, DataRow row, ConfigStore configs, List<String> columns);
+
+	 /**
+	 * 确认需要更新的列
+	 * @param dest 表
+	 * @param obj Object
+	 * @param configs 更新条件
+	 * @param columns 需要插入或更新的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
+	 *                列可以加前缀<br/>
+	 *                +:表示必须更新<br/>
+	 *                -:表示必须不更新<br/>
+	 *                ?:根据是否有值<br/>
+	 *
+	 *        如果没有提供columns,长度为0也算没有提供<br/>
+	 *        则解析obj(遍历所有的属性工Key)获取insert列<br/>
+	 *
+	 *        如果提供了columns则根据columns获取insert列<br/>
+	 *
+	 *        但是columns中出现了添加前缀列,则解析完columns后,继续解析obj<br/>
+	 *
+	 *        以上执行完后,如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
+	 *        则把执行结果与表结构对比,删除表中没有的列<br/>
+	 * @return List
+	 */
 	LinkedHashMap<String,Column> confirmUpdateColumns(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns);
 	default LinkedHashMap<String,Column> confirmUpdateColumns(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, List<String> columns) {
 		return confirmUpdateColumns(runtime, DataSourceUtil.parseDest(dest, row, configs), row, configs, columns);
@@ -1233,7 +1296,7 @@ public interface DriverAdapter {
 	 * @param random 用来标记同一组命令
 	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param data 数据
-	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
 	 * @return 影响行数
 	 */
 	long update(DataRuntime runtime, String random, Table dest, Object data, ConfigStore configs, Run run);
@@ -1333,7 +1396,7 @@ public interface DriverAdapter {
 	 * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
 	 * @param configs 过滤条件及相关配置
 	 * @param conditions  简单过滤条件
-	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
+	 * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
 	 */
 	Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions);
 	default Run initQueryRun(DataRuntime runtime, RunPrepare prepare){
@@ -1349,7 +1412,7 @@ public interface DriverAdapter {
 	/**
 	 * 解析文本中的占位符
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param run run
+	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
 	 */
 	void parseText(DataRuntime runtime, TextRun run);
 
@@ -1367,7 +1430,7 @@ public interface DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param next  是否生成返回下一个序列 false:cur true:next
 	 * @param names 存储过程名称s
-	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
+	 * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
 	 */
 	List<Run> buildQuerySequence(DataRuntime runtime, boolean next, String ... names);
 	/**
@@ -1375,7 +1438,7 @@ public interface DriverAdapter {
 	 * 中间过程有可能转换类型 如从TableRun转到TextRun
 	 * 填充 select 命令内容
 	 * 构造查询主体 拼接where group等(不含分页 ORDER)
-	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
 	 */
 	Run fillQueryContent(DataRuntime runtime, StringBuilder builder,  Run run);
 
@@ -1385,7 +1448,7 @@ public interface DriverAdapter {
 	 * select[命令合成-子流程] <br/>
 	 * 合成最终 select 命令 包含分页 排序
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
 	 * @return String
 	 */
 	String mergeFinalQuery(DataRuntime runtime, Run run);
@@ -1461,7 +1524,7 @@ public interface DriverAdapter {
 	 * @param random 用来标记同一组命令
 	 * @param system 系统表不检测列属性
 	 * @param table 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
-	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
 	 * @return DataSet
 	 */
 	DataSet select(DataRuntime runtime, String random, boolean system, Table table, ConfigStore configs, Run run);
@@ -1473,7 +1536,7 @@ public interface DriverAdapter {
 	 * select [命令执行]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
 	 * @return maps
 	 */
 	List<Map<String,Object>> maps(DataRuntime runtime, String random, ConfigStore configs, Run run);
@@ -1481,7 +1544,7 @@ public interface DriverAdapter {
 	 * select [命令执行]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
 	 * @return map
 	 */
 	Map<String,Object> map(DataRuntime runtime, String random, ConfigStore configs, Run run) ;
@@ -1522,7 +1585,7 @@ public interface DriverAdapter {
 	 * count [命令执行]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
 	 * @return long
 	 */
 	long count(DataRuntime runtime, String random, Run run);
@@ -1531,7 +1594,7 @@ public interface DriverAdapter {
 	/**
 	 * 合成最终 select count 命令
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
 	 * @return String
 	 */
 	String mergeFinalTotal(DataRuntime runtime, Run run);
@@ -1555,7 +1618,7 @@ public interface DriverAdapter {
 	 * exists [命令合成]<br/>
 	 * 合成最终 exists 命令
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
 	 * @return String
 	 */
 	String mergeFinalExists(DataRuntime runtime, Run run);
@@ -1591,14 +1654,14 @@ public interface DriverAdapter {
 	 * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
 	 * @param configs 查询条件及相关设置
 	 * @param conditions  简单过滤条件
-	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
+	 * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
 	 */
 	Run buildExecuteRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions);
 
 	/**
 	 * 填充 execute 命令内容
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
 	 */
 	void fillExecuteContent(DataRuntime runtime, Run run);
 
@@ -1606,7 +1669,7 @@ public interface DriverAdapter {
 	 * execute [命令执行]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
 	 * @return 影响行数
 	 */
 	long execute(DataRuntime runtime, String random, ConfigStore configs, Run run) ;
@@ -1724,7 +1787,7 @@ public interface DriverAdapter {
 	 * @param table 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param obj entity或DataRow
 	 * @param columns 删除条件的列或属性，根据columns取obj值并合成删除条件
-	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
+	 * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
 	 */
 	List<Run> buildDeleteRun(DataRuntime runtime, Table table, ConfigStore configs, Object obj, String ... columns);
 	default List<Run> buildDeleteRun(DataRuntime runtime, String table, ConfigStore configs, Object obj, String ... columns) {
@@ -1744,7 +1807,7 @@ public interface DriverAdapter {
 	 * @param table 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param column 列
 	 * @param values values
-	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
+	 * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
 	 */
 	List<Run> buildDeleteRun(DataRuntime runtime, int batch, Table table, ConfigStore configs, String column, Object values);
 	default List<Run> buildDeleteRun(DataRuntime runtime, int batch, String table, ConfigStore configs, String column, Object values) {
@@ -1755,7 +1818,7 @@ public interface DriverAdapter {
 	 * truncate[命令合成]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param table 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
-	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
+	 * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
 	 */
 	List<Run> buildTruncateRun(DataRuntime runtime, Table table);
 	default List<Run> buildTruncateRun(DataRuntime runtime, String table) {
@@ -1769,7 +1832,7 @@ public interface DriverAdapter {
 	 * @param table 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param column 列
 	 * @param values values
-	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
+	 * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
 	 */
 	List<Run> buildDeleteRunFromTable(DataRuntime runtime, int batch, Table table, ConfigStore configs, String column, Object values);
 	default List<Run> buildDeleteRunFromTable(DataRuntime runtime, int batch, String table, ConfigStore configs,String column, Object values) {
@@ -1783,7 +1846,7 @@ public interface DriverAdapter {
 	 * @param table 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源 如果为空 可以根据obj解析
 	 * @param obj entity或DataRow
 	 * @param columns 删除条件的列或属性，根据columns取obj值并合成删除条件
-	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
+	 * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
 	 */
 	List<Run> buildDeleteRunFromEntity(DataRuntime runtime, Table table, ConfigStore configs, Object obj, String ... columns);
 	default List<Run> buildDeleteRunFromEntity(DataRuntime runtime, String table, ConfigStore configs, Object obj, String ... columns) {
@@ -1801,7 +1864,7 @@ public interface DriverAdapter {
 	/**
 	 * delete[命令合成-子流程]<br/>
 	 * 构造查询主体 拼接where group等(不含分页 ORDER)
-	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
 	 */
 	void fillDeleteRunContent(DataRuntime runtime, Run run);
 	/**
@@ -1810,7 +1873,7 @@ public interface DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param configs 查询条件及相关设置
-	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
 	 * @return 影响行数
 	 */
 	long delete(DataRuntime runtime, String random, ConfigStore configs, Run run);
@@ -4615,7 +4678,7 @@ public interface DriverAdapter {
 	 * @param random 用来标记同一组命令
 	 * @param meta Metadata(表,列等)
 	 * @param action 执行命令
-	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
 	 * @return boolean
 	 */
 	boolean execute(DataRuntime runtime, String random, Metadata meta, ACTION.DDL action, Run run);
@@ -6714,9 +6777,7 @@ public interface DriverAdapter {
 	 ******************************************************************************************************************/
 	StringBuilder name(DataRuntime runtime, StringBuilder builder, Metadata meta);
 	StringBuilder name(DataRuntime runtime, StringBuilder builder, Column meta);
-
-/*
-	*//**
+	/**
 	 * 参数值 数据类型转换
 	 * 子类先解析(有些同名的类型以子类为准)、失败后再调用默认转换
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端

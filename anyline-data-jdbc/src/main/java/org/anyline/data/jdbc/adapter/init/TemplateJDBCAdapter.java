@@ -20,9 +20,8 @@ package org.anyline.data.jdbc.adapter.init;
 
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.runtime.DataRuntime;
-import org.anyline.metadata.Metadata;
 import org.anyline.metadata.Column;
-import org.anyline.metadata.type.TypeMetadata;
+import org.anyline.metadata.Metadata;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -63,7 +62,7 @@ public abstract class TemplateJDBCAdapter extends AbstractJDBCAdapter {
      * 													复制过程
      * 1.添加TypeMetadataAlias
      * 2.如果有类型转换需要添加writer reader
-     * 3.放工以上注释
+     * 3.放开以上注释
      * 4.复制TemplateAdapter到这里
      *
      *  ***************************************************************************************************************/
@@ -120,41 +119,6 @@ public abstract class TemplateJDBCAdapter extends AbstractJDBCAdapter {
 		return super.correctSchemaFromJDBC(catalog, schema);
 	}
 
-    /**
-     * column[结果集封装]<br/>(方法1)<br/>
-     * 元数据长度列
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param meta TypeMetadata
-     * @return String
-     */
-    @Override
-    public String columnMetadataLengthRefer(DataRuntime runtime, TypeMetadata meta) {
-        return super.columnMetadataLengthRefer(runtime, meta);
-    }
-
-    /**
-     * column[结果集封装]<br/>(方法1)<br/>
-     * 元数据数字有效位数列
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param meta TypeMetadata
-     * @return String
-     */
-    @Override
-    public String columnMetadataPrecisionRefer(DataRuntime runtime, TypeMetadata meta) {
-        return super.columnMetadataPrecisionRefer(runtime, meta);
-    }
-
-    /**
-     * column[结果集封装]<br/>(方法1)<br/>
-     * 元数据数字小数位数列
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param meta TypeMetadata
-     * @return String
-     */
-    @Override
-    public String columnMetadataScaleRefer(DataRuntime runtime, TypeMetadata meta) {
-        return super.columnMetadataScaleRefer(runtime, meta);
-    }
     public String insertFoot(ConfigStore configs, LinkedHashMap<String, Column> columns) {
         return super.insertFoot(configs, columns);
     }

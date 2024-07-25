@@ -42,7 +42,7 @@ public interface Run extends org.anyline.data.Run{
 	 * @param variable  		列名|变量key
 	 * @param value  			值
 	 * @param compare 			比较方式
-	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
+	 * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
 	 */
 	Run setConditionValue(EMPTY_VALUE_SWITCH swt, Compare compare, String prefix, String variable, Object value);
 	void setGroupStore(GroupStore groups) ;
@@ -73,7 +73,7 @@ public interface Run extends org.anyline.data.Run{
 	 * @param var 列名
 	 * @param value 值 
 	 * @param compare 比较方式 
-	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
+	 * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
 	 */
 	Run addCondition(EMPTY_VALUE_SWITCH swt, Compare compare, String prefix, String var, Object value);
 	Run setConditionChain(ConditionChain chain);
@@ -81,7 +81,7 @@ public interface Run extends org.anyline.data.Run{
 	/**
 	 * 添加条件
 	 * @param conditions  简单过滤条件、ORDER、GROUP、HAVING 等
-	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
+	 * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
 	 */
 	Run addCondition(String ... conditions);
 	Run addCondition(Condition condition);
@@ -101,7 +101,7 @@ public interface Run extends org.anyline.data.Run{
 	 * @param column  column
 	 * @param obj  obj
 	 * @param split 遇到集合/数组类型是否拆分处理
-	 * @return List 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值 ,如果是集合有可能 会返回多个
+	 * @return List 最终执行命令 如JDBC环境中的 SQL 与 参数值 ,如果是集合有可能 会返回多个
 	 */
 	List<RunValue> addValues(Compare compare, Column column, Object obj, boolean split);
 

@@ -135,7 +135,7 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter {
      * 根据DataSet创建批量INSERT RunPrepare
      * 2000版本单独处理  insert into tab(nm) select 1 union all select 2
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+     * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
      * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
      * @param set 集合
      * @param columns 需插入的列
@@ -196,7 +196,7 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter {
      * 根据Collection创建批量INSERT RunPrepare
      * 2000版本单独处理  insert into tab(nm) select 1 union all select 2
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+     * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
      * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
      * @param list 集合
      * @param columns 需插入的列

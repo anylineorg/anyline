@@ -33,7 +33,7 @@ public interface XMLPrepare extends RunPrepare{
 	/** 
 	 * 设置SQL 主体文本 
 	 * @param text  text
-	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
+	 * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
 	 */ 
 	public RunPrepare setText(String text) ;
 	public String getText(); 
@@ -41,7 +41,7 @@ public interface XMLPrepare extends RunPrepare{
 	/** 
 	 * 添加静态文本查询条件 
 	 * @param condition condition
-	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
+	 * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
 	 */ 
 	public RunPrepare addCondition(String condition) ;
  
@@ -55,7 +55,7 @@ public interface XMLPrepare extends RunPrepare{
 	 * @param condition  列名|查询条件ID
 	 * @param variable  变量key
 	 * @param value  值
-	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
+	 * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
 	 */ 
 	public RunPrepare setConditionValue(String condition, String variable, Object value);
 	/* *********************************************************************************************************************************** 

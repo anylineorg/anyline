@@ -104,7 +104,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
      * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
      * @param obj 数据
      * @param columns 需要插入的列
-     * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
+     * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
      */
 
     @Override
@@ -129,7 +129,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
      * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
      * @param list 对象集合
      * @param columns 需要插入的列, 如果不指定则全部插入
-     * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
+     * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
      */
 
     @Override
@@ -156,7 +156,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param data entity|DataRow|DataSet
-     * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+     * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
      * @param pks pks
      * @return int 影响行数
      */
@@ -253,7 +253,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
      * @param prepare  构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
      * @param configs 过滤条件及相关配置
      * @param conditions 简单过滤条件
-     * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
+     * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
      */
 
     @Override
@@ -832,7 +832,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
     }
     /**
      * 构造删除主体
-     * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+     * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
      * */
 
     @Override
@@ -856,7 +856,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
 /**
      * 执行删除
      * @param runtime DataRuntime
-     * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+     * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
      * @return int
      */
 

@@ -61,7 +61,7 @@ public abstract class DefaultAutoPrepare extends AbstractRunPrepare implements A
 	 * 设置数据源
 	 * table(c1, c2)[pk1, pk2]
 	 * @param table 表
-	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
+	 * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
 	 */
 	public RunPrepare setDest(String table) {
 		if(null == table) {
@@ -90,7 +90,7 @@ public abstract class DefaultAutoPrepare extends AbstractRunPrepare implements A
 	 * @param column  列名
 	 * @param value 值
 	 * @param compare  比较方式
-	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
+	 * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
 	 */
 	public RunPrepare addCondition(Compare.EMPTY_VALUE_SWITCH swt, Compare compare, String column, Object value) {
 		if(null == chain) {

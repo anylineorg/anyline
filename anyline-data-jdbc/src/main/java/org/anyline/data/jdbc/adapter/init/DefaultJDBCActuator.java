@@ -388,7 +388,7 @@ public class DefaultJDBCActuator implements DriverActuator {
      * select [命令执行]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
-     * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+     * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
      * @return maps
      */
     @Override
@@ -493,7 +493,7 @@ public class DefaultJDBCActuator implements DriverActuator {
      * select [命令执行]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
-     * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+     * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
      * @return map
      */
     @Override
@@ -838,7 +838,7 @@ public class DefaultJDBCActuator implements DriverActuator {
      * execute [命令执行]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
-     * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+     * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
      * @return 影响行数
      */
     public long execute(DriverAdapter adapter, DataRuntime runtime, String random, ConfigStore configs, Run run) throws Exception{

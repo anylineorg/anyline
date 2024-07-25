@@ -160,6 +160,11 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			}
 		}
 	}
+	/**
+	 * 对应的兼容模式，有些数据库会兼容oracle或pg,需要分别提供两个JDBCAdapter或者直接依赖oracle/pg的adapter
+	 * 参考DefaultJDBCAdapterUtil定位adapter的方法
+	 * @return DatabaseType
+	 */
 	public DatabaseType compatible() {
 		return null;
 	}
@@ -244,6 +249,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	public TypeMetadata.Config reg(String type, TypeMetadata.Config config) {
 		return MetadataAdapterHolder.reg(type(), type, config);
 	}
+
 	/* *****************************************************************************************************************
 	 *
 	 * 													DML
@@ -394,7 +400,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param obj 需要插入的数据
 	 * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
-	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
+	 * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
 	 */
 	@Override
 	public Run buildInsertRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, List<String> columns) {
@@ -417,6 +423,17 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		convert(runtime, configs, run);
 		return run;
 	}
+
+
+	/**
+	 * insert [命令合成]<br/>
+	 * 填充inset命令内容(创建批量INSERT RunPrepare)
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param prepare 查询
+	 * @param configs 过滤条件及相关配置
+	 * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
+	 */
 	@Override
 	public Run buildInsertRun(DataRuntime runtime, Table dest, RunPrepare prepare, ConfigStore configs, Object obj, String... conditions) {
 		if(log.isDebugEnabled()) {
@@ -429,7 +446,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * insert [命令合成-子流程]<br/>
 	 * 填充inset命令内容(创建批量INSERT RunPrepare)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
 	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param set 需要插入的数据集合
 	 * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
@@ -445,7 +462,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * insert [命令合成-子流程]<br/>
 	 * 填充inset命令内容(创建批量INSERT RunPrepare)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
 	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param list 需要插入的数据集合
 	 * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
@@ -461,7 +478,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	/**
 	 * 插入子表前 检测并创建子表
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
 	 * @param dest 表
 	 * @param configs ConfigStore
 	 */
@@ -667,7 +684,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param obj 数据
 	 * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
-	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
+	 * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
 	 */
 	protected Run createInsertRun(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns) {
 		if(log.isDebugEnabled()) {
@@ -683,7 +700,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param list 对象集合
 	 * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
-	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
+	 * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
 	 */
 	protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, List<String> columns) {
 		Run run = new TableRun(runtime, dest);
@@ -731,7 +748,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param data data
-	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
 	 * @param pks 需要返回的主键
 	 * @return 影响行数
 	 */
@@ -988,7 +1005,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 *
 	 *        以上执行完后,如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
 	 *        则把执行结果与表结构对比,删除表中没有的列<br/>
-	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
+	 * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
 	 */
 	@Override
 	public Run buildUpdateRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, List<String> columns) {
@@ -1020,9 +1037,28 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		buildUpdateRunLimit(runtime, run);
 		return run;
 	}
+
+	/**
+	 *
+	 * update [命令合成]<br/>
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
+	 * @return Run
+	 */
 	public Run buildUpdateRunLimit(DataRuntime runtime, Run run){
 		return run;
 	}
+
+	/**
+	 *
+	 * update [命令合成]<br/>
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param obj Entity或DtaRow
+	 * @param configs 更新条件
+	 * @param columns 需要插入或更新的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
+	 * @return Run
+	 */
 	@Override
 	public Run buildUpdateRunFromEntity(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, LinkedHashMap<String, Column> columns) {
 		TableRun run = new TableRun(runtime, dest);
@@ -1144,6 +1180,17 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 
 		return run;
 	}
+
+	/**
+	 *
+	 * update [命令合成]<br/>
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param row DtaRow
+	 * @param configs 更新条件
+	 * @param columns 需要插入或更新的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
+	 * @return Run
+	 */
 	@Override
 	public Run buildUpdateRunFromDataRow(DataRuntime runtime, Table dest, DataRow row, ConfigStore configs, LinkedHashMap<String, Column> columns) {
 		//注意columns中可能含 +-号
@@ -1237,6 +1284,17 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		run.setUpdateColumns(updateColumns);
 		return run;
 	}
+
+	/**
+	 *
+	 * update [命令合成]<br/>
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param list Collection
+	 * @param configs 更新条件
+	 * @param columns 需要插入或更新的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
+	 * @return Run
+	 */
 	@Override
 	public Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns) {
 		TableRun run = new TableRun(runtime, dest);
@@ -1357,8 +1415,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	}
 
 	/**
-	 * update [命令合成-子流程]<br/>
 	 * 确认需要更新的列
+	 * @param dest 表
 	 * @param row DataRow
 	 * @param configs 更新条件
 	 * @param columns 需要插入或更新的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
@@ -1468,6 +1526,29 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		cols = checkMetadata(runtime, dest, configs, cols);
 		return cols;
 	}
+
+	/**
+	 * 确认需要更新的列
+	 * @param dest 表
+	 * @param obj Object
+	 * @param configs 更新条件
+	 * @param columns 需要插入或更新的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
+	 *                列可以加前缀<br/>
+	 *                +:表示必须更新<br/>
+	 *                -:表示必须不更新<br/>
+	 *                ?:根据是否有值<br/>
+	 *
+	 *        如果没有提供columns,长度为0也算没有提供<br/>
+	 *        则解析obj(遍历所有的属性工Key)获取insert列<br/>
+	 *
+	 *        如果提供了columns则根据columns获取insert列<br/>
+	 *
+	 *        但是columns中出现了添加前缀列,则解析完columns后,继续解析obj<br/>
+	 *
+	 *        以上执行完后,如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
+	 *        则把执行结果与表结构对比,删除表中没有的列<br/>
+	 * @return List
+	 */
 	public LinkedHashMap<String, Column> confirmUpdateColumns(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns) {
 		LinkedHashMap<String, Column> cols = null;/*确定需要更新的列*/
 		if(null == obj) {
@@ -1570,7 +1651,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param random 用来标记同一组命令
 	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param data 数据
-	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
 	 * @return 影响行数
 	 */
 	public long update(DataRuntime runtime, String random, Table dest, Object data, ConfigStore configs, Run run) {
@@ -1701,11 +1782,31 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return saveObject(runtime, random, dest, data, configs, columns);
 	}
 
+	/**
+	 *
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param dest 表
+	 * @param data 保存的数据
+	 * @param configs ConfigStore
+	 * @param columns 指定列
+	 * @return long 影响行数
+	 */
 	protected long saveCollection(DataRuntime runtime, String random, Table dest, Collection<?> data, ConfigStore configs, List<String> columns) {
 		long cnt = 0;
 		//List<Run> runs = buildInsertRun(runtime, random, batch, dest, data, columns);
 		return cnt;
 	}
+	/**
+	 *
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param dest 表
+	 * @param data 保存的数据
+	 * @param configs ConfigStore
+	 * @param columns 指定列
+	 * @return long 影响行数
+	 */
 	protected long saveObject(DataRuntime runtime, String random, Table dest, Object data, ConfigStore configs, List<String> columns) {
 		if(null == data) {
 			return 0;
@@ -1740,6 +1841,17 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return 0;
 	}
+
+	/**
+	 * 有主键值的情况下 检测覆盖
+	 * @param obj Object
+	 * @return boolean
+	 * null:正常执行update<br/>
+	 * true或false:检测数据库中是否存在<br/>
+	 * 如果数据库中存在匹配的数据<br/>
+	 * true:执行更新<br/>
+	 * false:跳过更新<br/>
+	 */
 	protected Boolean checkOverride(Object obj) {
 		Boolean result = null;
 		if(null != obj && obj instanceof DataRow) {
@@ -1747,6 +1859,12 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return result;
 	}
+
+	/**
+	 * 检测主键值
+	 * @param obj Object
+	 * @return Map
+	 */
 	protected Map<String, Object> checkPv(Object obj) {
 		Map<String, Object> pvs = new HashMap<>();
 		if(null != obj && obj instanceof DataRow) {
@@ -1761,7 +1879,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 
 	/**
 	 * 是否是可以接收数组类型的值
-	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
 	 * @param key key
 	 * @return boolean
 	 */
@@ -1777,6 +1895,11 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return false;
 	}
 
+	/**
+	 * 是否支持集合值
+	 * @param column Column 根据column的数据类型
+	 * @return boolean
+	 */
 	protected boolean isMultipleValue(Column column) {
 		if(null != column) {
 			String type = column.getTypeName().toUpperCase();
@@ -1844,7 +1967,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * [命令执行]
 	 * DataSet select(DataRuntime runtime, String random, boolean system, String table, ConfigStore configs, Run run)
 	 * List<Map<String, Object>> maps(DataRuntime runtime, String random, ConfigStore configs, Run run)
-	 * Map<String, Object> map(DataRuntime runtime, String random, ConfigStore configs, Run run) 
+	 * Map<String, Object> map(DataRuntime runtime, String random, ConfigStore configs, Run run)
 	 * DataRow sequence(DataRuntime runtime, String random, boolean next, String ... names)
 	 * List<Map<String, Object>> process(DataRuntime runtime, List<Map<String, Object>> list)
 	 ******************************************************************************************************************/
@@ -2110,7 +2233,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param clazz entity class
 	 * @param table table
-	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
 	 * @return EntitySet
 	 * @param <T> entity.class
 	 *
@@ -2219,10 +2342,11 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	/**
 	 * select[命令合成]<br/> 最终可执行命令<br/>
 	 * 创建查询SQL
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
 	 * @param configs 过滤条件及相关配置
 	 * @param conditions  简单过滤条件
-	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
+	 * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
 	 */
 	@Override
 	public Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions) {
@@ -2241,6 +2365,16 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 
 		return run;
 	}
+
+	/**
+	 * query run初始化,检测占位符、忽略不存在的列等
+	 * select[命令合成]<br/>
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
+	 * @param configs 过滤条件及相关配置
+	 * @param conditions  简单过滤条件
+	 * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
+	 */
 	public void init(DataRuntime runtime, Run run, ConfigStore configs, String ... conditions) {
 		if(null != run) {
 			RunPrepare prepare = run.getPrepare();
@@ -2295,7 +2429,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	/**
 	 * 解析文本中的占位符
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param run run
+	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
 	 */
 	public void parseText(DataRuntime runtime, TextRun run) {
 		String text = run.getPrepare().getText();
@@ -2389,7 +2523,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	/**
 	 * select[命令合成-子流程] <br/>
 	 * 构造查询主体, 中间过程有可能转换类型
-	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
 	 */
 	@Override
 	public Run fillQueryContent(DataRuntime runtime, Run run) {
@@ -2400,7 +2534,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 构造查询主体
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder 有可能合个run合成一个 所以提供一个共用builder
-	 * @param run run
+	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
 	 */
 	@Override
 	public Run fillQueryContent(DataRuntime runtime, StringBuilder builder, Run run) {
@@ -2416,6 +2550,12 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return run;
 	}
+	/**
+	 * select[命令合成-子流程] <br/>
+	 * 构造查询主体
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param run XMLRun
+	 */
 	protected Run fillQueryContent(DataRuntime runtime, XMLRun run) {
 		return fillQueryContent(runtime, run.getBuilder(), run);
 	}
@@ -2423,7 +2563,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 *
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder 有可能合个run合成一个 所以提供一个共用builder
-	 * @param run run
+	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
 	 */
 	protected Run fillQueryContent(DataRuntime runtime, StringBuilder builder, XMLRun run) {
 		if(log.isDebugEnabled()) {
@@ -2431,6 +2571,12 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return run;
 	}
+	/**
+	 * select[命令合成-子流程] <br/>
+	 * 构造查询主体
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param run TextRun
+	 */
 	protected Run fillQueryContent(DataRuntime runtime, TextRun run) {
 		return fillQueryContent(runtime, run.getBuilder(), run);
 	}
@@ -2439,7 +2585,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 *
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder 有可能合个run合成一个 所以提供一个共用builder
-	 * @param run run
+	 * @param run TextRun
 	 */
 	protected Run fillQueryContent(DataRuntime runtime, StringBuilder builder, TextRun run) {
 		replaceVariable(runtime, run);
@@ -2449,6 +2595,12 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		run.checkValid();
 		return run;
 	}
+
+	/**
+	 *
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param run TextRun
+	 */
 	protected Run fillQueryContent(DataRuntime runtime, TableRun run) {
 		return fillQueryContent(runtime, run.getBuilder(), run);
 	}
@@ -2456,7 +2608,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 有些非JDBC环境也需要用到SQL
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder 有可能合个run合成一个 所以提供一个共用builder
-	 * @param run run
+	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
 	 */
 	protected Run fillQueryContent(DataRuntime runtime, StringBuilder builder, TableRun run) {
 		TablePrepare sql = (TablePrepare)run.getPrepare();
@@ -2551,7 +2703,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * select[命令合成-子流程] <br/>
 	 * 合成最终 select 命令 包含分页 排序
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
 	 * @return String
 	 */
 	@Override
@@ -2600,7 +2752,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param random 用来标记同一组命令
 	 * @param system 系统表不检测列属性
 	 * @param table 表
-	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
 	 * @return DataSet
 	 */
 	@Override
@@ -2615,7 +2767,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * select [命令执行]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
 	 * @return maps
 	 */
 	@Override
@@ -2672,7 +2824,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * select [命令执行]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
 	 * @return map
 	 */
 	@Override
@@ -2822,7 +2974,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * count [命令合成]<br/>
 	 * 合成最终 select count 命令
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
 	 * @return String
 	 */
 	@Override
@@ -2837,7 +2989,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * count [命令执行]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
 	 * @return long
 	 */
 	@Override
@@ -2871,6 +3023,12 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return false;
 	}
+	/**
+	 * exists [命令合成]<br/>
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
+	 * @return String
+	 */
 	@Override
 	public String mergeFinalExists(DataRuntime runtime, Run run) {
 		if(log.isDebugEnabled()) {
@@ -2890,7 +3048,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * Run buildExecuteRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions)
 	 * void fillExecuteContent(DataRuntime runtime, Run run)
 	 * [命令执行]
-	 * long execute(DataRuntime runtime, String random, ConfigStore configs, Run run) 
+	 * long execute(DataRuntime runtime, String random, ConfigStore configs, Run run)
 	 ******************************************************************************************************************/
 
 	/**
@@ -2944,6 +3102,16 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return result;
 	}
 
+	/**
+	 * execute [调用入口]<br/>
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param batch 批量执行每批最多数量
+	 * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
+	 * @param configs 查询条件及相关设置
+	 * @param values  values
+	 * @return 影响行数
+	 */
 	@Override
 	public long execute(DataRuntime runtime, String random, int batch, ConfigStore configs, RunPrepare prepare, Collection<Object> values) {
 		if(null == random) {
@@ -2985,6 +3153,17 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return execute(runtime, random, configs, run);
 	}
 
+	/**
+	 * execute [调用入口]<br/>
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param batch 批量执行每批最多数量
+	 * @param vol 批量执行每行参数数量
+	 * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
+	 * @param configs 查询条件及相关设置
+	 * @param values  values
+	 * @return 影响行数
+	 */
 	@Override
 	public long execute(DataRuntime runtime, String random, int batch, int vol, ConfigStore configs, RunPrepare prepare, Collection<Object> values) {
 		if(null == random) {
@@ -3018,7 +3197,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
 	 * @param configs 查询条件及相关设置
 	 * @param conditions  简单过滤条件
-	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
+	 * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
 	 */
 	@Override
 	public Run buildExecuteRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions) {
@@ -3044,17 +3223,35 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return run;
 	}
+	/**
+	 * execute [命令合成]<br/>
+	 * 填充execute命令
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param run XMLRun
+	 */
 	protected void fillExecuteContent(DataRuntime runtime, XMLRun run) {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 fillExecuteContent(DataRuntime runtime, XMLRun run)", 37));
 		}
 	}
+	/**
+	 * execute [命令合成]<br/>
+	 * 填充execute命令
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param run XMLRun
+	 */
 	protected void fillExecuteContent(DataRuntime runtime, TextRun run) {
 		replaceVariable(runtime, run);
 		run.appendCondition(true);
 		run.appendGroup();
 		run.checkValid();
 	}
+	/**
+	 * execute [命令合成]<br/>
+	 * 填充execute命令
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param run XMLRun
+	 */
 	protected void fillExecuteContent(DataRuntime runtime, TableRun run) {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 fillExecuteContent(DataRuntime runtime, TextRun run)", 37));
@@ -3065,7 +3262,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * execute [命令合成-子流程]<br/>
 	 * 填充 execute 命令内容
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
 	 */
 	@Override
 	public void fillExecuteContent(DataRuntime runtime, Run run) {
@@ -3087,7 +3284,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * execute [命令执行]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
 	 * @return 影响行数
 	 */
 	@Override
@@ -3158,6 +3355,14 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return result;
 	}
 
+	/**
+	 * query [命令合成]<br/>
+	 * 替换占位符
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
+	 * @return 影响行数
+	 */
 	protected void replaceVariable(DataRuntime runtime, TextRun run) {
 		StringBuilder builder = run.getBuilder();
 		List<Variable> variables = run.getVariables();
@@ -3425,7 +3630,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param obj entity或DataRow
 	 * @param columns 删除条件的列或属性，根据columns取obj值并合成删除条件
-	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
+	 * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
 	 */
 	@Override
 	public List<Run> buildDeleteRun(DataRuntime runtime, Table dest, ConfigStore configs, Object obj, String ... columns) {
@@ -3480,7 +3685,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param table 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param key 列
 	 * @param values values
-	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
+	 * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
 	 */
 	@Override
 	public List<Run> buildDeleteRun(DataRuntime runtime, int batch, Table table, ConfigStore configs, String key, Object values) {
@@ -3489,6 +3694,14 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return runs;
 	}
 
+
+	/**
+	 * delete[命令合成]<br/>
+	 * 合成 where column in (values)
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param table 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
+	 */
 	@Override
 	public List<Run> buildTruncateRun(DataRuntime runtime, Table table) {
 		List<Run> runs = new ArrayList<>();
@@ -3507,7 +3720,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param table 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param column 列
 	 * @param values values
-	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
+	 * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
 	 */
 	@Override
 	public List<Run> buildDeleteRunFromTable(DataRuntime runtime, int batch, Table table, ConfigStore configs, String column, Object values) {
@@ -3524,7 +3737,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param table 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源 如果为空 可以根据obj解析
 	 * @param obj entity或DataRow
 	 * @param columns 删除条件的列或属性，根据columns取obj值并合成删除条件
-	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
+	 * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
 	 */
 	@Override
 	public List<Run> buildDeleteRunFromEntity(DataRuntime runtime, Table table, ConfigStore configs, Object obj, String... columns) {
@@ -3537,7 +3750,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	/**
 	 * delete[命令合成-子流程]<br/>
 	 * 构造查询主体 拼接where group等(不含分页 ORDER)
-	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
 	 */
 	@Override
 	public void fillDeleteRunContent(DataRuntime runtime, Run run) {
@@ -3551,7 +3764,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param configs 查询条件及相关设置
-	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
 	 * @return 影响行数
 	 */
 	@Override
@@ -3932,6 +4145,17 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return new LinkedHashMap<>();
 	}
+
+	/**
+	 * database[结果集封装]<br/>
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param databases 上一步查询结果
+	 * @param set 查询结果集
+	 * @return List
+	 * @throws Exception
+	 */
 	@Override
 	public List<Database> databases(DataRuntime runtime, int index, boolean create, List<Database> databases, Catalog catalog, Schema schema, DataSet set) throws Exception {
 		if(log.isDebugEnabled()) {
@@ -4258,6 +4482,17 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return new LinkedHashMap<>();
 	}
+	/**
+	 * catalog[结果集封装]<br/>
+	 * 根据查询结果集构造 Database
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param catalogs 上一步查询结果
+	 * @param set 查询结果集
+	 * @return databases
+	 * @throws Exception 异常
+	 */
 	@Override
 	public List<Catalog> catalogs(DataRuntime runtime, int index, boolean create, List<Catalog> catalogs, Catalog catalog, Schema schema, DataSet set) throws Exception {
 		if(log.isDebugEnabled()) {
@@ -4548,6 +4783,17 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return new LinkedHashMap<>();
 	}
+	/**
+	 * schema[结果集封装]<br/>
+	 * 根据查询结果集构造 Schema
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param schemas 上一步查询结果
+	 * @param set 查询结果集
+	 * @return databases
+	 * @throws Exception 异常
+	 */
 	@Override
 	public List<Schema> schemas(DataRuntime runtime, int index, boolean create, List<Schema> schemas, Catalog catalog, Schema schema, DataSet set) throws Exception {
 		if(log.isDebugEnabled()) {
@@ -4908,6 +5154,14 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 
 	}
 
+	/**
+	 * table[结果集封装-子流程]<br/>
+	 * 查出所有key并以大写缓存 用来实现忽略大小写
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param catalog catalog
+	 * @param schema schema
+	 */
 	public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
 		LinkedHashMap<String, T> tables = new LinkedHashMap<>();
 		List<T> list = tables(runtime, random, false, catalog, schema, pattern, types, struct, configs);
@@ -5516,6 +5770,15 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 
 	}
 
+
+	/**
+	 * vertexTable[结果集封装-子流程]<br/>
+	 * 查出所有key并以大写缓存 用来实现忽略大小写
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param catalog catalog
+	 * @param schema schema
+	 */
 	public <T extends VertexTable> LinkedHashMap<String, T> vertexTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
 		LinkedHashMap<String, T> vertexTables = new LinkedHashMap<>();
 		List<T> list = vertexTables(runtime, random, false, catalog, schema, pattern, types, struct, configs);
@@ -5707,7 +5970,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return new VertexTableMetadataAdapter();
 	}
-	
+
 	/**
 	 *
 	 * vertexTable[调用入口]<br/>
@@ -6073,6 +6336,14 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 
 	}
 
+	/**
+	 * edgeTable[结果集封装-子流程]<br/>
+	 * 查出所有key并以大写缓存 用来实现忽略大小写
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param catalog catalog
+	 * @param schema schema
+	 */
 	public <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
 		LinkedHashMap<String, T> edgeTables = new LinkedHashMap<>();
 		List<T> list = edgeTables(runtime, random, false, catalog, schema, pattern, types, struct, configs);
@@ -6264,7 +6535,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return new EdgeTableMetadataAdapter();
 	}
-	
+
 
 	/**
 	 *
@@ -6631,6 +6902,14 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 
 	}
 
+	/**
+	 * view[结果集封装-子流程]<br/>
+	 * 查出所有key并以大写缓存 用来实现忽略大小写
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param catalog catalog
+	 * @param schema schema
+	 */
 	public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
 		LinkedHashMap<String, T> views = new LinkedHashMap<>();
 		List<T> list = views(runtime, random, false, catalog, schema, pattern, types, struct, configs);
@@ -7188,6 +7467,14 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 
 	}
 
+	/**
+	 * masterTable[结果集封装-子流程]<br/>
+	 * 查出所有key并以大写缓存 用来实现忽略大小写
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param catalog catalog
+	 * @param schema schema
+	 */
 	public <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
 		LinkedHashMap<String, T> masterTables = new LinkedHashMap<>();
 		List<T> list = masterTables(runtime, random, false, catalog, schema, pattern, types, struct, configs);
@@ -9008,7 +9295,17 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return indexes;
 	}
-
+	/**
+	 *
+	 * index[调用入口]<br/>
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
+	 * @param table 表
+	 * @param pattern 索引名称
+	 * @return  LinkedHashMap
+	 * @param <T> Index
+	 */
 	public <T extends Index> List<T> indexes(DataRuntime runtime, String random, boolean greedy, Table table, String pattern) {
 		List<T> indexes = null;
 		if(null == table) {
@@ -9154,6 +9451,13 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return new ArrayList<>();
 	}
+	/**
+	 * index[命令合成]<br/>
+	 * 查询表上的索引
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param tables 表
+	 * @return runs
+	 */
 	@Override
 	public List<Run> buildQueryIndexesRun(DataRuntime runtime, Collection<? extends Table> tables) {
 		if(log.isDebugEnabled()) {
@@ -9236,6 +9540,19 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return indexes;
 	}
+
+	/**
+	 * index[结果集封装]<br/>
+	 *  根据查询结果集构造Index
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param index 第几条查询SQL 对照 buildQueryIndexesRun 返回顺序
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param table 表
+	 * @param indexes 上一步查询结果
+	 * @param set 查询结果集
+	 * @return indexes indexes
+	 * @throws Exception 异常
+	 */
 	public <T extends Index> List<T> indexes(DataRuntime runtime, int index, boolean create, Collection<? extends Table> tables, List<T> indexes, DataSet set) throws Exception {
 		if(null == indexes) {
 			indexes = new ArrayList<>();
@@ -10695,7 +11012,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param random 用来标记同一组命令
 	 * @param meta Metadata(表,列等)
 	 * @param action 执行命令
-	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
 	 * @return boolean
 	 */
 	public boolean execute(DataRuntime runtime, String random, Metadata meta, ACTION.DDL action, Run run) {
@@ -10710,7 +11027,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param random 用来标记同一组命令
 	 * @param meta Metadata(表,列等)
 	 * @param action 执行命令
-	 * @param runs 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @param runs 最终待执行的命令和参数(如JDBC环境中的SQL)
 	 * @return boolean
 	 */
 	public boolean execute(DataRuntime runtime, String random, Metadata meta, ACTION.DDL action, List<Run> runs) {
@@ -10948,7 +11265,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return runs;
 	}
-	
+
 	/**
 	 * table[调用入口]<br/>
 	 * 修改表,执行的命令通过meta.ddls()返回
@@ -12730,12 +13047,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 创建表完成后追加表备注,创建过程能添加备注的不需要实现与comment(DataRuntime runtime, StringBuilder builder, Table meta)二选一实现
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param column 列
-	 * @return sql
-	 * @throws Exception 异常
-	 */
-	/**
-	 * 创建表完成后追加表备注,创建过程能添加备注的不需要实现与comment(DataRuntime runtime, StringBuilder builder, Table meta)二选一实现
-	 * @param meta 列
+	 * @param slice 是否只生成片段(不含alter table部分，用于DDL合并)
 	 * @return sql
 	 * @throws Exception 异常
 	 */
@@ -12752,6 +13064,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 取消自增
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 列
+	 * @param slice 是否只生成片段(不含alter table部分，用于DDL合并)
 	 * @return sql
 	 * @throws Exception 异常
 	 */
@@ -13754,15 +14067,11 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	/**
 	 * foreign[命令合成]<br/>
 	 * 修改外键
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 外键
 	 * @return List
 	 */
 
-	/**
-	 * 添加外键
-	 * @param meta 外键
-	 * @return List
-	 */
 	public List<Run> buildAlterRun(DataRuntime runtime, ForeignKey meta) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildAlterRun(DataRuntime runtime, ForeignKey meta)", 37));
@@ -14928,6 +15237,12 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * protected Object value(List<String> keys, String key, ResultSet set) throws Exception
 	 ******************************************************************************************************************/
 
+	/**
+	 * 检测针对表的主键生成器
+	 * @param type 数据库类型
+	 * @param table 表
+	 * @return PrimaryGenerator
+	 */
 	protected PrimaryGenerator checkPrimaryGenerator(DatabaseType type, String table) {
 		table = table.replace(getDelimiterFr(), "").replace(getDelimiterTo(), "");
 		//针对当前表的生成器
@@ -14982,6 +15297,12 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return typeMetadata;
 	}
+
+	/**
+	 * 数据类型拼写兼容
+	 * @param name name
+	 * @return spell
+	 */
 	public TypeMetadata spell(String name) {
 		TypeMetadata typeMetadata = alias.get(name.toUpperCase());
 		if(null == typeMetadata || TypeMetadata.NONE == typeMetadata) {//拼写兼容  下划线空格兼容
@@ -15004,6 +15325,12 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		tmp.setTypeName(type, false);
 		return typeMetadata(runtime, tmp);
 	}
+
+	/**
+	 * 合成完整名称
+	 * @param meta 合成完整名称
+	 * @return String
+	 */
 	public String name(Metadata meta) {
 		StringBuilder builder = new StringBuilder();
 		String catalog = meta.getCatalogName();
@@ -15040,6 +15367,12 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		delimiter(builder, name);
 		return builder;
 	}
+	/**
+	 * 拼接完整列名
+	 * @param builder builder
+	 * @param meta Column
+	 * @return StringBuilder
+	 */
 	@Override
 	public StringBuilder name(DataRuntime runtime, StringBuilder builder, Column meta) {
 		if(null != meta) {
@@ -15047,9 +15380,22 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return builder;
 	}
+
+	/**
+	 * 拼接界定符
+	 * @param builder StringBuilder
+	 * @param src 原文
+	 * @return StringBuilder
+	 */
 	public StringBuilder delimiter(StringBuilder builder, String src) {
 		return SQLUtil.delimiter(builder, src, getDelimiterFr(), getDelimiterTo());
 	}
+	/**
+	 * 拼接界定符
+	 * @param builder StringBuilder
+	 * @param list 原文
+	 * @return StringBuilder
+	 */
 	public StringBuilder delimiter(StringBuilder builder, List<String> list) {
 		String fr = getDelimiterFr();
 		String to = getDelimiterTo();
@@ -15063,17 +15409,13 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return builder;
 	}
-	/*
-	//column.name不需要catalog等前缀
-	public StringBuilder delimiter(StringBuilder builder, Column src) {
-		if(null != src) {
-			String name = src.getName();
-			if(BasicUtil.isNotEmpty(name)) {
-				SQLUtil.delimiter(builder, name, getDelimiterFr(), getDelimiterTo());
-			}
-		}
-		return builder;
-	}*/
+
+	/**
+	 * 是否是boolean列
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param column 列
+	 * @return boolean
+	 */
 	@Override
 	public boolean isBooleanColumn(DataRuntime runtime, Column column) {
 		String clazz = column.getClassName();
@@ -15139,6 +15481,15 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return false;
 	}
 
+	/**
+	 * 是否是字符类型
+	 * 决定值是否需要加单引号
+	 * number boolean 返回false
+	 * 其他返回true
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param column 列
+	 * @return boolean
+	 */
 	@Override
 	public boolean isCharColumn(DataRuntime runtime, Column column) {
 		return !isNumberColumn(runtime, column) && !isBooleanColumn(runtime, column);
@@ -15155,24 +15506,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return null;
 	}
 
-	/**
-/*
-	public Table parseTable(String table) {
-		if(null == table) {
-			return null;
-		}
-		table = table.replace(getDelimiterFr(), "").replace(getDelimiterTo(), "");
-		table = DataSourceUtil.parseDest(table, null, null).dest();
-		if(table.contains(".")) {
-			String tmps[] = table.split("\\.");
-			table = SQLUtil.delimiter(tmps[0],getDelimiterFr(), getDelimiterTo())
-					+ "."
-					+ SQLUtil.delimiter(tmps[1],getDelimiterFr(), getDelimiterTo());
-		}else{
-			table = SQLUtil.delimiter(table,getDelimiterFr(), getDelimiterTo());
-		}
-		return table;
-	}*/
 
 	/**
 	 * 写入数据库前类型转换<br/>
@@ -15306,7 +15639,16 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return result;
 	}
-
+	/**
+	 * 在不检测数据库结构时才生效,否则会被convert代替
+	 * 生成value格式 主要确定是否需要单引号  或  类型转换
+	 * 有些数据库不提供默认的 隐式转换 需要显示的把String转换成相应的数据类型
+	 * 如 TO_DATE('')
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param builder builder
+	 * @param row DataRow 或 Entity
+	 * @param key 列名
+	 */
 	@Override
 	public void value(DataRuntime runtime, StringBuilder builder, Object obj, String key) {
 		Object value = null;
@@ -15335,6 +15677,16 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			builder.append("null");
 		}
 	}
+	/**
+	 * 参数值 数据类型转换
+	 * 子类先解析(有些同名的类型以子类为准)、失败后再调用默认转换
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param table 表
+	 * @param run  值
+	 * @return boolean 返回false表示转换失败 如果有多个 adapter 则交给adapter继续转换
+	 */
 	@Override
 	public boolean convert(DataRuntime runtime, Catalog catalog, Schema schema, String table, RunValue value) {
 		boolean result = false;
@@ -15349,7 +15701,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 
 	/**
 	 * 设置参数值,主要根据数据类型格执行式化，如对象,list,map等插入json列
-	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
 	 * @param compare 比较方式 默认 equal 多个值默认 in
 	 * @param column 列
 	 * @param value value
@@ -15375,6 +15727,15 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			//value = convert(runtime, column, rv); //统一调用
 		}
 	}
+
+	/**
+	 * 参数值 数据类型转换
+	 * 子类先解析(有些同名的类型以子类为准)、失败后再调用默认转换
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param configs ConfigStore
+	 * @param run  值
+	 * @return boolean 返回false表示转换失败 如果有多个 adapter 则交给adapter继续转换
+	 */
 	@Override
 	public boolean convert(DataRuntime runtime, ConfigStore configs, Run run) {
 		boolean result = false;
@@ -15383,6 +15744,15 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return result;
 	}
+
+	/**
+	 * 参数值 数据类型转换
+	 * 子类先解析(有些同名的类型以子类为准)、失败后再调用默认转换
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param table Table
+	 * @param run  run
+	 * @return boolean 返回false表示转换失败 如果有多个 adapter 则交给adapter继续转换
+	 */
 	@Override
 	public boolean convert(DataRuntime runtime, Table table, Run run) {
 		boolean result = false;
@@ -15408,6 +15778,14 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return result;
 	}
+
+	/**
+	 * 数据类型转换
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param columns 列
+	 * @param run 值
+	 * @return boolean 返回false表示转换失败 如果有多个adapter 则交给adapter继续转换
+	 */
 	@Override
 	public boolean convert(DataRuntime runtime, Map<String,Column> columns, RunValue value) {
 		boolean result = false;
@@ -15425,7 +15803,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 根据数据库列属性 类型转换(一般是在更新数据库时调用)
 	 * 子类先解析(有些同名的类型以子类为准)、失败后再到这里解析
 	 * @param metadata 列
-	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)Value
+	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)Value
 	 * @return boolean 是否完成类型转换,决定下一步是否继续
 	 */
 	@Override
@@ -15454,6 +15832,14 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return false;
 	}
+
+	/**
+	 * 数据类型转换,没有提供column的根据value类型
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param metadata 列
+	 * @param value 值
+	 * @return Object
+	 */
 	@Override
 	public Object convert(DataRuntime runtime, Column metadata, Object value) {
 		if(null == value) {
@@ -15476,12 +15862,20 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return value;
 	}
+
+	/**
+	 * 数据类型转换,没有提供column的根据value类型
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 数据类型
+	 * @param value 值
+	 * @return Object
+	 */
 	@Override
-	public Object convert(DataRuntime runtime, TypeMetadata columnType, Object value) {
-		if(null == columnType) {
+	public Object convert(DataRuntime runtime, TypeMetadata meta, Object value) {
+		if(null == meta) {
 			return value;
 		}
-		String typeName = columnType.getName();
+		String typeName = meta.getName();
 
 		boolean parseJson = false;
 		if(null != typeName && !(value instanceof String)) {
@@ -15495,21 +15889,21 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			}
 		}
 		if(!parseJson) {
-			if (null != columnType) {
-				DataWriter writer = writer(columnType);
+			if (null != meta) {
+				DataWriter writer = writer(meta);
 				if(null == writer) {
-					writer = writer(columnType.getCategory());
+					writer = writer(meta.getCategory());
 				}
 				if(null != writer) {
-					value = writer.write(value, true, columnType);
+					value = writer.write(value, true, meta);
 				}else {
-					Class transfer = columnType.transfer();
-					Class compatible = columnType.compatible();
+					Class transfer = meta.transfer();
+					Class compatible = meta.compatible();
 					if (null != transfer) {
-						value = ConvertProxy.convert(value, transfer, columnType.isArray());
+						value = ConvertProxy.convert(value, transfer, meta.isArray());
 					}
 					if (null != compatible) {
-						value = ConvertProxy.convert(value, compatible, columnType.isArray());
+						value = ConvertProxy.convert(value, compatible, meta.isArray());
 					}
 				}
 			}
@@ -15517,6 +15911,12 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return value;
 	}
 
+	/**
+	 * 对象名称格式化(大小写转换)，在查询系统表时需要
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param name name
+	 * @return String
+	 */
 	@Override
 	public String objectName(DataRuntime runtime, String name) {
 		KeyAdapter.KEY_CASE keyCase = type().nameCase();
@@ -15526,12 +15926,41 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return name;
 	}
 
-	protected String random(DataRuntime runtime) {
-		StringBuilder builder = new StringBuilder();
-		builder.append("[cmd:").append(System.currentTimeMillis()).append("-").append(BasicUtil.getRandomNumberString(8))
-				.append("][thread:")
-				.append(Thread.currentThread().getId()).append("][ds:").append(runtime.datasource()).append("]");
-		return builder.toString();
+	/**
+	 *
+	 * 根据 catalog, schema, name检测tables集合中是否存在
+	 * @param list metas
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param name name
+	 * @return 如果存在则返回Table 不存在则返回null
+	 * @param <T> Table
+	 */
+	@Override
+	public <T extends Metadata> T search(List<T> list, Catalog catalog, Schema schema, String name) {
+		if(null != list) {
+			for(T meta:list) {
+				if(equals(catalog, meta.getCatalog())
+						&& equals(schema, meta.getSchema())
+						&& BasicUtil.equalsIgnoreCase(meta.getName(),name)
+				) {
+					return meta;
+				}
+			}
+		}
+		return Metadata.match(list, catalog, schema, name);
+	}
+
+	public <T extends Metadata> T search(List<T> list, String catalog, String schema, String name) {
+		return Metadata.match(list, catalog, schema, name);
+	}
+
+	public <T extends Metadata> T search(List<T> list, String catalog, String name) {
+		return Metadata.match(list, catalog, name);
+	}
+
+	public <T extends Metadata> T search(List<T> list, String name) {
+		return Metadata.match(list, name);
 	}
 
 	//A.ID,A.COOE,A.NAME
@@ -15586,41 +16015,13 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return builder.toString();
 	}
 
-	/**
-	 *
-	 * 根据 catalog, schema, name检测tables集合中是否存在
-	 * @param list metas
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param name name
-	 * @return 如果存在则返回Table 不存在则返回null
-	 * @param <T> Table
-	 */
-	@Override
-	public <T extends Metadata> T search(List<T> list, Catalog catalog, Schema schema, String name) {
-		if(null != list) {
-			for(T meta:list) {
-				if(equals(catalog, meta.getCatalog())
-						&& equals(schema, meta.getSchema())
-						&& BasicUtil.equalsIgnoreCase(meta.getName(),name)
-				) {
-					return meta;
-				}
-			}
-		}
-		return Metadata.match(list, catalog, schema, name);
-	}
 
-	public <T extends Metadata> T search(List<T> list, String catalog, String schema, String name) {
-		return Metadata.match(list, catalog, schema, name);
-	}
-
-	public <T extends Metadata> T search(List<T> list, String catalog, String name) {
-		return Metadata.match(list, catalog, name);
-	}
-
-	public <T extends Metadata> T search(List<T> list, String name) {
-		return Metadata.match(list, name);
+	protected String random(DataRuntime runtime) {
+		StringBuilder builder = new StringBuilder();
+		builder.append("[cmd:").append(System.currentTimeMillis()).append("-").append(BasicUtil.getRandomNumberString(8))
+			.append("][thread:")
+			.append(Thread.currentThread().getId()).append("][ds:").append(runtime.datasource()).append("]");
+		return builder.toString();
 	}
 
 }

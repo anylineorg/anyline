@@ -177,7 +177,7 @@ public interface DMListener {
      
      * @param runtime  包含数据源(key)、适配器、JDBCTemplate、dao
      * @param random 用来标记同一组SQL、执行结构、参数等
-     * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+     * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
      * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
      * @param obj 更新内容
      * @param columns 需要更新的列
@@ -191,7 +191,7 @@ public interface DMListener {
      
      * @param runtime  包含数据源(key)、适配器、JDBCTemplate、dao
      * @param random 用来标记同一组SQL、执行结构、参数等
-     * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+     * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
      * @param count 影响行数
      * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
      * @param obj 更新内容

@@ -696,7 +696,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @param random 用来标记同一组命令
 	 * @param table 查询表结构时使用
 	 * @param system 系统表不查询表结构
-	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
 	 * @return DataSet
 	 */
 	protected DataSet select(DataRuntime runtime, String random, boolean system, String table, ConfigStore configs, Run run) {
