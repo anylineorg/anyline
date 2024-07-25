@@ -49,6 +49,15 @@ public class DriverAdapterHolder {
 	public static DataSourceMonitor getMonitor() {
 		return monitor;
 	}
+
+
+	/**
+	 * 同一个数据源是否保持同一个adapter<br/>
+	 * 这里通常根据类型判断 如HikariDataSource DruidDataSource<br/>
+	 * 针对同一个数据源对应多个不同类型数据库时才需要返回false(如一些动态数据源类型)<br/>
+	 * @param datasource 数据源
+	 * @return boolean false:每次操作都会检测一次adapter true:同一数据源使用同一个adapter
+	 */
 	public static boolean keepAdapter(Object datasource){
 		boolean keep = ConfigTable.KEEP_ADAPTER == 1;
 		if(ConfigTable.KEEP_ADAPTER == 2 && null != monitor){
@@ -56,6 +65,19 @@ public class DriverAdapterHolder {
 		}
 		return keep;
 	}
+	public static DriverAdapter getAdapterByMonitor(Object datasource){
+		DriverAdapter adapter = null;
+		if(null != monitor){
+			adapter = monitor.adapter(datasource);
+		}
+		return adapter;
+	}
+
+	/**
+	 * 数据源特征 默认不需要实现  由上层方法自动提取一般会通过 driver_产品名_url 合成
+	 * @param datasource 数据源
+	 * @return String 返回null由上层自动提取
+	 */
 	public static String feature(Object datasource){
 		String feature = null;
 		if(ConfigTable.KEEP_ADAPTER == 2 && null != monitor){
@@ -107,6 +129,11 @@ public class DriverAdapterHolder {
 
 	/**
 	 * 定位适配器
+	 * 过程:
+	 * 1.检测环境中是否只有1个adapter,如果是直接返回
+	 * 2.检测环境中是否只有2个adapter并且包含1个common,如果是直接返回非common的adapter
+	 * 3.根据项目实现的DataSourceMonitor接口adapter(Object datasource)定位adapter
+	 * 4.检测
 	 * @param datasource 数据源名称(配置文件中的key)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @return DriverAdapter
@@ -114,13 +141,13 @@ public class DriverAdapterHolder {
 	public static DriverAdapter getAdapter(String datasource, DataRuntime runtime) {
 		boolean keep = keepAdapter(runtime.getProcessor());
 		//项目中只有一个适配器时直接返回
-		if(null != defaultAdapter && keep) {
+		if(null != defaultAdapter) {
 			return defaultAdapter;
 		}
-		if(adapters.size() == 1 && keep) {
+		if(adapters.size() == 1) {
 			defaultAdapter = adapters.iterator().next();
 			return defaultAdapter;
-		}else if(adapters.size() == 2 && keep) {
+		}else if(adapters.size() == 2) {
 			boolean common = false;
 			for (DriverAdapter adapter:adapters) {
 				if(adapter.getClass().getName().toLowerCase().contains("common")) {
@@ -136,33 +163,36 @@ public class DriverAdapterHolder {
 				}
 			}
 		}
-		DriverAdapter adapter = null;
-		String feature = runtime.getFeature();
-		String adapter_key = runtime.getAdapterKey();
-		try {
-			//执行两次匹配, 第一次失败后，会再匹配一次，第二次传入true
-			for (DriverAdapter item:adapters) {
-				if(item.match(feature, adapter_key, false)) {
-					adapter = item;
-					break;
-				}
-			}
-			if(null == adapter) {
+		DriverAdapter adapter = getAdapterByMonitor(runtime.getProcessor());
+		if(null == adapter){
+			String feature = runtime.getFeature();
+			String adapter_key = runtime.getAdapterKey();
+			try {
+				//执行两次匹配, 第一次失败后，会再匹配一次，第二次传入true
 				for (DriverAdapter item:adapters) {
-					if(item.match(feature, adapter_key, true)) {
+					if(item.match(feature, adapter_key, false)) {
 						adapter = item;
 						break;
 					}
 				}
+				if(null == adapter) {
+					for (DriverAdapter item:adapters) {
+						if(item.match(feature, adapter_key, true)) {
+							adapter = item;
+							break;
+						}
+					}
+				}
+			} catch (Exception e) {
+				log.error("检测适配器 异常:", e);
 			}
-		} catch (Exception e) {
-			log.error("检测适配器 异常:", e);
+			if(null != adapter && log.isDebugEnabled()){
+				log.debug("[检测数据库适配器][数据源:{}][特征:{}][适配结果:{}]", datasource, feature, adapter);
+			}
 		}
 		if(null == adapter) {
 			log.error("[检测数据库适配器][检测失败][可用适配器数量:{}][检测其他可用的适配器]", adapters.size());
 			throw new NotFoundAdapterException("检测数据库适配器失败");
-		}else if(log.isDebugEnabled()){
-			log.debug("[检测数据库适配器][数据源:{}][特征:{}][适配结果:{}]", datasource, feature, adapter);
 		}
 		return adapter;
 	}

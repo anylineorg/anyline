@@ -16,6 +16,9 @@
 
 package org.anyline.data.datasource;
 
+import org.anyline.data.adapter.DriverAdapter;
+import org.anyline.data.runtime.DataRuntime;
+
 public interface DataSourceMonitor {
     /**
      * 数据源是否正被使用<br/>
@@ -23,7 +26,8 @@ public interface DataSourceMonitor {
      * 需要在项目中实现,在注销和覆盖数据源时会调用当前方法，如果数据源正在使用会根据情况抛出异常或忽略注销<br/>
      * 通常情况下是检测活动中的连接数量
      * @param datasource 数据源 一般会是一个连接池实例<br/>
-     *                   如 HikariDataSource DruidDataSource<br/>
+     *                   如 HikariDataSource.getHikariPoolMXBean().getActiveConnections()<br/>
+     *                   DruidDataSource.getActiveCount()<br/>
      *                   其他类型参考相应DataRuntime.getProcessor()的返回值 如ElasticSearchRuntime.client(org.elasticsearch.client.RestClient)
      * @return true:使用中
      */
@@ -47,6 +51,24 @@ public interface DataSourceMonitor {
      */
     default String feature(Object datasource) {
         return null;
+    }
+
+    /**
+     * 根据数据源定位adapter,如果实现了这个方法就不需要实现feature
+     * @param datasource 数据源
+     * @return String 返回null由上层自动提取
+     */
+    default DriverAdapter adapter(Object datasource) {
+        return null;
+    }
+    /**
+     * 上层方法完成adapter定位后调用,可以在这里缓存,下一次定位提供给adapter(Object datasource)
+     * @param datasource 数据源
+     * @param adapter DriverAdapter
+     * @return boolean 适配是否准确
+     */
+    default boolean after(DataRuntime runtime, Object datasource, DriverAdapter adapter) {
+        return true;
     }
 
     /**
