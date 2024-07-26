@@ -148,6 +148,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	public String getDelimiterTo() {
 		return this.delimiterTo;
 	}
+	@Override
 	public void setDelimiter(String delimiter) {
 		if(BasicUtil.isNotEmpty(delimiter)) {
 			delimiter = delimiter.replaceAll("\\s","");
@@ -165,6 +166,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 参考DefaultJDBCAdapterUtil定位adapter的方法
 	 * @return DatabaseType
 	 */
+	@Override
 	public DatabaseType compatible() {
 		return null;
 	}
@@ -198,6 +200,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.OTHER, new TypeMetadata.Config( 1, 1, 1));
 	}
 
+	@Override
 	public LinkedHashMap<String, TypeMetadata> alias() {
 		return alias;
 	}
@@ -752,6 +755,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param pks 需要返回的主键
 	 * @return 影响行数
 	 */
+	@Override
 	public long insert(DataRuntime runtime, String random, Object data, ConfigStore configs, Run run, String[] pks) {
 		long cnt = 0;
 		int batch = run.getBatch();
@@ -837,6 +841,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param configs configs中也可能禁用返回
 	 * @return boolean
 	 */
+	@Override
 	public boolean supportKeyHolder(DataRuntime runtime, ConfigStore configs) {
 		if(null != configs && !configs.supportKeyHolder()) {
 			return false;
@@ -850,6 +855,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param configs configs中也可能禁用返回
 	 * @return keys
 	 */
+	@Override
 	public List<String> keyHolders(DataRuntime runtime, ConfigStore configs) {
 		if(null != configs) {
 			return configs.keyHolders();
@@ -1045,6 +1051,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
 	 * @return Run
 	 */
+	@Override
 	public Run buildUpdateRunLimit(DataRuntime runtime, Run run){
 		return run;
 	}
@@ -1549,6 +1556,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 *        则把执行结果与表结构对比,删除表中没有的列<br/>
 	 * @return List
 	 */
+	@Override
 	public LinkedHashMap<String, Column> confirmUpdateColumns(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns) {
 		LinkedHashMap<String, Column> cols = null;/*确定需要更新的列*/
 		if(null == obj) {
@@ -1654,6 +1662,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
 	 * @return 影响行数
 	 */
+	@Override
 	public long update(DataRuntime runtime, String random, Table dest, Object data, ConfigStore configs, Run run) {
 		long result = 0;
 		if(!run.isValid()) {
@@ -2430,6 +2439,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
 	 */
+	@Override
 	public void parseText(DataRuntime runtime, TextRun run) {
 		String text = run.getPrepare().getText();
 		if(null == text) {
@@ -2512,6 +2522,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param names 序列名
 	 * @return String
 	 */
+	@Override
 	public List<Run> buildQuerySequence(DataRuntime runtime, boolean next, String ... names) {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQuerySequence(DataRuntime runtime, boolean next, String ... names)", 37));
@@ -2924,6 +2935,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param conditions  简单过滤条件
 	 * @return long
 	 */
+	@Override
 	public long count(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
 		long count = -1;
 		Long fr = System.currentTimeMillis();
@@ -3877,6 +3889,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param random 用来标记同一组命令
 	 * @return String
 	 */
+	@Override
 	public String product(DataRuntime runtime, String random) {
 		if(null == random) {
 			random = random(runtime);
@@ -3924,6 +3937,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param random 用来标记同一组命令
 	 * @return String
 	 */
+	@Override
 	public String version(DataRuntime runtime, String random) {
 		if(null == random) {
 			random = random(runtime);
@@ -4826,6 +4840,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return databases
 	 * @throws Exception 异常
 	 */
+	@Override
 	public List<Schema> schemas(DataRuntime runtime, boolean create, List<Schema> schemas) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Schema> schemas(DataRuntime runtime, boolean create, List<Schema> schemas)", 37));
@@ -4879,6 +4894,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return T
 	 * @throws Exception 如果区分不出来的抛出异常
 	 */
+	@Override
 	public <T extends Metadata> T checkName(DataRuntime runtime, String random, T meta) throws RuntimeException{
 		if(null == meta) {
 			return null;
@@ -5160,6 +5176,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 */
+	@Override
 	public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
 		LinkedHashMap<String, T> tables = new LinkedHashMap<>();
 		List<T> list = tables(runtime, random, false, catalog, schema, pattern, types, struct, configs);
@@ -5200,6 +5217,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return String
 	 * @throws Exception Exception
 	 */
+	@Override
 	public List<Run> buildQueryTablesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryTablesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types)", 37));
@@ -5369,6 +5387,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return tables
 	 * @throws Exception 异常
 	 */
+	@Override
 	public <T extends Table> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set) throws Exception {
 		if(null == tables) {
 			tables = new LinkedHashMap<>();
@@ -5777,6 +5796,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 */
+	@Override
 	public <T extends VertexTable> LinkedHashMap<String, T> vertexTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
 		LinkedHashMap<String, T> vertexTables = new LinkedHashMap<>();
 		List<T> list = vertexTables(runtime, random, false, catalog, schema, pattern, types, struct, configs);
@@ -5817,6 +5837,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return String
 	 * @throws Exception Exception
 	 */
+	@Override
 	public List<Run> buildQueryVertexTablesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryVertexTablesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types)", 37));
@@ -6342,6 +6363,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 */
+	@Override
 	public <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
 		LinkedHashMap<String, T> edgeTables = new LinkedHashMap<>();
 		List<T> list = edgeTables(runtime, random, false, catalog, schema, pattern, types, struct, configs);
@@ -6382,6 +6404,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return String
 	 * @throws Exception Exception
 	 */
+	@Override
 	public List<Run> buildQueryEdgeTablesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryEdgeTablesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types)", 37));
@@ -6908,6 +6931,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 */
+	@Override
 	public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
 		LinkedHashMap<String, T> views = new LinkedHashMap<>();
 		List<T> list = views(runtime, random, false, catalog, schema, pattern, types, struct, configs);
@@ -6948,6 +6972,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return String
 	 * @throws Exception Exception
 	 */
+	@Override
 	public List<Run> buildQueryViewsCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryViewsCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types)", 37));
@@ -7473,6 +7498,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 */
+	@Override
 	public <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
 		LinkedHashMap<String, T> masterTables = new LinkedHashMap<>();
 		List<T> list = masterTables(runtime, random, false, catalog, schema, pattern, types, struct, configs);
@@ -7513,6 +7539,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return String
 	 * @throws Exception Exception
 	 */
+	@Override
 	public List<Run> buildQueryMasterTablesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryMasterTablesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types)", 37));
@@ -7804,6 +7831,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return List
 	 * @param <T> MasterTable
 	 */
+	@Override
 	public <T extends PartitionTable> LinkedHashMap<String,T> partitionTables(DataRuntime runtime, String random, boolean greedy, MasterTable master, Map<String, Object> tags, String pattern) {
 		LinkedHashMap<String,T> tables = new LinkedHashMap<>();
 		if(null == random) {
@@ -7926,6 +7954,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return tables
 	 * @throws Exception 异常
 	 */
+	@Override
 	public <T extends PartitionTable> LinkedHashMap<String, T> partitionTables(DataRuntime runtime, int total, int index, boolean create, MasterTable master, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 LinkedHashMap<String, PartitionTable> partitionTables(DataRuntime runtime, int total, int index, boolean create, MasterTable table, Catalog catalog, Schema schema, LinkedHashMap<String, PartitionTable> tables, Catalog catalog, Schema schema, DataSet set)", 37));
@@ -7966,6 +7995,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param table PartitionTable
 	 * @return List
 	 */
+	@Override
 	public List<String> ddl(DataRuntime runtime, String random, PartitionTable table) {
 		List<String> list = new ArrayList<>();
 		if(null == random) {
@@ -8090,6 +8120,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return Column
 	 * @param <T>  Column
 	 */
+	@Override
 	public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Table table, boolean primary, ConfigStore configs) {
 		if (!greedy) {
 			checkSchema(runtime, table);
@@ -8248,6 +8279,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return List
 	 * @param <T> Column
 	 */
+	@Override
 	public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, Table table, ConfigStore configs) {
 		List<Table> tables = new ArrayList<>();
 		tables.add(table);
@@ -8390,6 +8422,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return columns
 	 * @throws Exception 异常
 	 */
+	@Override
 	public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> columns, DataSet set) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> columns, DataSet set)", 37));
@@ -8869,6 +8902,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return Tag
 	 * @param <T>  Tag
 	 */
+	@Override
 	public <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, String random, boolean greedy, Table table) {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, String random, boolean greedy, Table table)", 37));
@@ -8992,6 +9026,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param table 表
 	 * @return PrimaryKey
 	 */
+	@Override
 	public PrimaryKey primary(DataRuntime runtime, String random, boolean greedy, Table table) {
 		PrimaryKey primary = null;
 		if(!greedy) {
@@ -9244,6 +9279,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return  LinkedHashMap
 	 * @param <T> Index
 	 */
+	@Override
 	public <T extends Index> List<T> indexes(DataRuntime runtime, String random, boolean greedy, Collection<? extends Table> tables) {
 		List<T> indexes = null;
 		if(null == random) {
@@ -9304,6 +9340,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return  LinkedHashMap
 	 * @param <T> Index
 	 */
+	@Override
 	public <T extends Index> List<T> indexes(DataRuntime runtime, String random, boolean greedy, Table table, String pattern) {
 		List<T> indexes = null;
 		if(null == table) {
@@ -9358,6 +9395,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return  LinkedHashMap
 	 * @param <T> Index
 	 */
+	@Override
 	public <T extends Index> LinkedHashMap<String, T> indexes(DataRuntime runtime, String random, Table table, String pattern) {
 		LinkedHashMap<String,T> indexes = null;
 		if(null == table) {
@@ -9551,6 +9589,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return indexes indexes
 	 * @throws Exception 异常
 	 */
+	@Override
 	public <T extends Index> List<T> indexes(DataRuntime runtime, int index, boolean create, Collection<? extends Table> tables, List<T> indexes, DataSet set) throws Exception {
 		if(null == indexes) {
 			indexes = new ArrayList<>();
@@ -9798,6 +9837,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return  LinkedHashMap
 	 * @param <T> Index
 	 */
+	@Override
 	public <T extends Constraint> List<T> constraints(DataRuntime runtime, String random, boolean greedy, Table table, String pattern) {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Constraint> List<T> constraints(DataRuntime runtime, String random, boolean greedy, Table table, String pattern)", 37));
@@ -9816,6 +9856,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return  LinkedHashMap
 	 * @param <T> Index
 	 */
+	@Override
 	public <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, String random, Table table, Column column, String pattern) {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, String random, Table table, Column column, String pattern)", 37));
@@ -9953,6 +9994,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return  LinkedHashMap
 	 * @param <T> Index
 	 */
+	@Override
 	public <T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, String random, boolean greedy, Table table, List<Trigger.EVENT> events) {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, String random, boolean greedy, Table table, List<Trigger.EVENT> events)", 37));
@@ -10077,6 +10119,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return  LinkedHashMap
 	 * @param <T> Index
 	 */
+	@Override
 	public <T extends Procedure> List<T> procedures(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern) {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Procedure> ArrayList<T> procedures(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern)", 37));
@@ -10095,6 +10138,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return  LinkedHashMap
 	 * @param <T> Index
 	 */
+	@Override
 	public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern) {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern)", 37));
@@ -10130,6 +10174,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return LinkedHashMap
 	 * @throws Exception 异常
 	 */
+	@Override
 	public <T extends Procedure> List<T> procedures(DataRuntime runtime, int index, boolean create, List<T> procedures, DataSet set) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Procedure> List<T> procedures(DataRuntime runtime, int index, boolean create, List<T> procedures, DataSet set)", 37));
@@ -10148,6 +10193,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return LinkedHashMap
 	 * @throws Exception 异常
 	 */
+	@Override
 	public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> procedures, DataSet set) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> procedures, DataSet set)", 37));
@@ -10197,6 +10243,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param procedure Procedure
 	 * @return ddl
 	 */
+	@Override
 	public List<String> ddl(DataRuntime runtime, String random, Procedure procedure) {
 		List<String> list = new ArrayList<>();
 		if(null == random) {
@@ -10345,6 +10392,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return  LinkedHashMap
 	 * @param <T> Index
 	 */
+	@Override
 	public <T extends Function> List<T> functions(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern) {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> <T extends Function> List<T> functions(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern)", 37));
@@ -10363,6 +10411,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return  LinkedHashMap
 	 * @param <T> Index
 	 */
+	@Override
 	public <T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern) {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> <T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern)", 37));
@@ -10379,6 +10428,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param pattern 名称统配符或正则
 	 * @return sqls
 	 */
+	@Override
 	public List<Run> buildQueryFunctionsRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryFunctionsRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern)", 37));
@@ -10397,6 +10447,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return LinkedHashMap
 	 * @throws Exception 异常
 	 */
+	@Override
 	public <T extends Function> List<T> functions(DataRuntime runtime, int index, boolean create, List<T> functions, Catalog catalog, Schema schema, DataSet set) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Function> List<T> functions(DataRuntime runtime, int index, boolean create, List<T> functions, Catalog catalog, Schema schema, DataSet set)", 37));
@@ -10415,6 +10466,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return LinkedHashMap
 	 * @throws Exception 异常
 	 */
+	@Override
 	public <T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> functions, Catalog catalog, Schema schema, DataSet set) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> functions, Catalog catalog, Schema schema, DataSet set)", 37));
@@ -10464,6 +10516,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param meta Function
 	 * @return ddl
 	 */
+	@Override
 	public List<String> ddl(DataRuntime runtime, String random, Function meta) {
 		List<String> list = new ArrayList<>();
 		if(null == random) {
@@ -10620,6 +10673,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return  LinkedHashMap
 	 * @param <T> Index
 	 */
+	@Override
 	public <T extends Sequence> List<T> sequences(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern) {
 
 		if(null == random) {
@@ -10669,6 +10723,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return  LinkedHashMap
 	 * @param <T> Index
 	 */
+	@Override
 	public <T extends Sequence> LinkedHashMap<String, T> sequences(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern) {
 
 		if(null == random) {
@@ -10716,6 +10771,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param pattern 名称统配符或正则
 	 * @return sqls
 	 */
+	@Override
 	public List<Run> buildQuerySequencesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQuerySequencesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern)", 37));
@@ -10734,6 +10790,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return LinkedHashMap
 	 * @throws Exception 异常
 	 */
+	@Override
 	public <T extends Sequence> List<T> sequences(DataRuntime runtime, int index, boolean create, List<T> sequences, DataSet set) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Sequence> List<T> sequences(DataRuntime runtime, int index, boolean create, List<T> sequences, DataSet set)", 37));
@@ -10752,6 +10809,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return LinkedHashMap
 	 * @throws Exception 异常
 	 */
+	@Override
 	public <T extends Sequence> LinkedHashMap<String, T> sequences(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> sequences, DataSet set) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Sequence> LinkedHashMap<String, T> sequences(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> sequences, DataSet set)", 37));
@@ -10801,6 +10859,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param meta Sequence
 	 * @return ddl
 	 */
+	@Override
 	public List<String> ddl(DataRuntime runtime, String random, Sequence meta) {
 		List<String> list = new ArrayList<>();
 		if(null == random) {
@@ -11013,6 +11072,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
 	 * @return boolean
 	 */
+	@Override
 	public boolean execute(DataRuntime runtime, String random, Metadata meta, ACTION.DDL action, Run run) {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 boolean execute(DataRuntime runtime, String random, Metadata meta, ACTION.DDL action, Run run)", 37));
@@ -11028,6 +11088,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runs 最终待执行的命令和参数(如JDBC环境中的SQL)
 	 * @return boolean
 	 */
+	@Override
 	public boolean execute(DataRuntime runtime, String random, Metadata meta, ACTION.DDL action, List<Run> runs) {
 		boolean result = true;
 		int idx = 0;
@@ -11093,6 +11154,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return boolean 是否执行成功
 	 * @throws Exception DDL异常
 	 */
+	@Override
 	public boolean create(DataRuntime runtime, Table meta) throws Exception {
 		ACTION.DDL action = ACTION.DDL.TABLE_CREATE;
 		String random = random(runtime);
@@ -11272,6 +11334,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return boolean 是否执行成功
 	 * @throws Exception DDL异常
 	 */
+	@Override
 	public boolean alter(DataRuntime runtime, Table meta) throws Exception {
 		boolean result = true;
 		List<Run> runs = new ArrayList<>();
@@ -11443,6 +11506,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return boolean 是否执行成功
 	 * @throws Exception DDL异常
 	 */
+	@Override
 	public boolean drop(DataRuntime runtime, Table meta) throws Exception {
 		ACTION.DDL action = ACTION.DDL.TABLE_DROP;
 		String random = random(runtime);
@@ -11484,6 +11548,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param meta 表
 	 * @return String
 	 */
+	@Override
 	public String keyword(Metadata meta) {
 		return meta.getKeyword();
 	}
@@ -11518,6 +11583,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
+	@Override
 	public List<Run> buildAlterRun(DataRuntime runtime, Table meta) throws Exception {
 		if(null != meta) {
 			return buildAlterRun(runtime, meta, meta.columns());
@@ -11534,6 +11600,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param columns 列
 	 * @return List
 	 */
+	@Override
 	public List<Run> buildAlterRun(DataRuntime runtime, Table meta, Collection<Column> columns, boolean slice) throws Exception {
 		List<Run> runs = new ArrayList<>();
 		for(Column column:columns) {
@@ -11939,6 +12006,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return boolean 是否执行成功
 	 * @throws Exception DDL异常
 	 */
+	@Override
 	public boolean create(DataRuntime runtime, View meta) throws Exception {
 		ACTION.DDL action = ACTION.DDL.VIEW_CREATE;
 		String random = random(runtime);
@@ -11959,6 +12027,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return boolean 是否执行成功
 	 * @throws Exception DDL异常
 	 */
+	@Override
 	public boolean alter(DataRuntime runtime, View meta) throws Exception {
 		ACTION.DDL action = ACTION.DDL.VIEW_ALTER;
 		String random = random(runtime);
@@ -11979,6 +12048,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return boolean 是否执行成功
 	 * @throws Exception DDL异常
 	 */
+	@Override
 	public boolean drop(DataRuntime runtime, View meta) throws Exception {
 		ACTION.DDL action = ACTION.DDL.VIEW_DROP;
 		String random = random(runtime);
@@ -12000,6 +12070,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return boolean 是否执行成功
 	 * @throws Exception DDL异常
 	 */
+	@Override
 	public boolean rename(DataRuntime runtime, View origin, String name) throws Exception {
 		ACTION.DDL action = ACTION.DDL.VIEW_RENAME;
 		String random = random(runtime);
@@ -12203,6 +12274,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return boolean 是否执行成功
 	 * @throws Exception DDL异常
 	 */
+	@Override
 	public boolean create(DataRuntime runtime, MasterTable meta) throws Exception {
 		ACTION.DDL action = ACTION.DDL.MASTER_TABLE_CREATE;
 		String random = random(runtime);
@@ -12223,6 +12295,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return boolean 是否执行成功
 	 * @throws Exception DDL异常
 	 */
+	@Override
 	public boolean alter(DataRuntime runtime, MasterTable meta) throws Exception {
 		ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
 		String random = random(runtime);
@@ -12314,6 +12387,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return boolean 是否执行成功
 	 * @throws Exception DDL异常
 	 */
+	@Override
 	public boolean drop(DataRuntime runtime, MasterTable meta) throws Exception {
 		ACTION.DDL action = ACTION.DDL.MASTER_TABLE_DROP;
 		String random = random(runtime);
@@ -12335,6 +12409,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return boolean 是否执行成功
 	 * @throws Exception DDL异常
 	 */
+	@Override
 	public boolean rename(DataRuntime runtime, MasterTable origin, String name) throws Exception {
 		ACTION.DDL action = ACTION.DDL.MASTER_TABLE_RENAME;
 		String random = random(runtime);
@@ -12472,6 +12547,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return boolean 是否执行成功
 	 * @throws Exception DDL异常
 	 */
+	@Override
 	public boolean create(DataRuntime runtime, PartitionTable meta) throws Exception {
 		ACTION.DDL action = ACTION.DDL.PARTITION_TABLE_CREATE;
 		String random = random(runtime);
@@ -12492,6 +12568,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return boolean 是否执行成功
 	 * @throws Exception DDL异常
 	 */
+	@Override
 	public boolean alter(DataRuntime runtime, PartitionTable meta) throws Exception {
 		ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
 		String random = random(runtime);
@@ -12576,6 +12653,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return boolean 是否执行成功
 	 * @throws Exception DDL异常
 	 */
+	@Override
 	public boolean rename(DataRuntime runtime, PartitionTable origin, String name) throws Exception {
 		ACTION.DDL action = ACTION.DDL.PARTITION_TABLE_RENAME;
 		origin.setNewName(name);
@@ -12738,6 +12816,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return boolean 是否执行成功
 	 * @throws Exception DDL异常
 	 */
+	@Override
 	public boolean add(DataRuntime runtime, Column meta) throws Exception {
 		ACTION.DDL action = ACTION.DDL.COLUMN_ADD;
 		String random = random(runtime);
@@ -12759,6 +12838,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return boolean 是否执行成功
 	 * @throws Exception DDL异常
 	 */
+	@Override
 	public boolean alter(DataRuntime runtime, Table table, Column meta, boolean trigger) throws Exception {
 		boolean result = false;
 		ACTION.DDL action = ACTION.DDL.COLUMN_ALTER;
@@ -12809,6 +12889,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return boolean 是否执行成功
 	 * @throws Exception DDL异常
 	 */
+	@Override
 	public boolean alter(DataRuntime runtime, Column meta) throws Exception {
 		Table table = meta.getTable(true);
 		if(null == table) {
@@ -12834,6 +12915,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return boolean 是否执行成功
 	 * @throws Exception DDL异常
 	 */
+	@Override
 	public boolean drop(DataRuntime runtime, Column meta) throws Exception {
 		boolean result = false;
 		ACTION.DDL action = ACTION.DDL.COLUMN_DROP;
@@ -12856,6 +12938,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return boolean 是否执行成功
 	 * @throws Exception DDL异常
 	 */
+	@Override
 	public boolean rename(DataRuntime runtime, Column origin, String name) throws Exception {
 		ACTION.DDL action = ACTION.DDL.COLUMN_RENAME;
 		String random = random(runtime);
@@ -12969,6 +13052,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param meta 列
 	 * @return String
 	 */
+	@Override
 	public StringBuilder addColumnGuide(DataRuntime runtime, StringBuilder builder, Column meta) {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 StringBuilder addColumnGuide(DataRuntime runtime, StringBuilder builder, Column meta)", 37));
@@ -12985,6 +13069,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param meta 列
 	 * @return String
 	 */
+	@Override
 	public StringBuilder dropColumnGuide(DataRuntime runtime, StringBuilder builder, Column meta) {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 StringBuilder dropColumnGuide(DataRuntime runtime, StringBuilder builder, Column meta)", 37));
@@ -13066,6 +13151,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
+	@Override
 	public List<Run> buildDropAutoIncrement(DataRuntime runtime, Column meta, boolean slice) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildDropAutoIncrement(DataRuntime runtime, Column meta)", 37));
@@ -13467,6 +13553,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return 是否执行成功
 	 * @throws Exception 异常
 	 */
+	@Override
 	public boolean add(DataRuntime runtime, Tag meta) throws Exception {
 		ACTION.DDL action = ACTION.DDL.TAG_ADD;
 		String random = random(runtime);
@@ -13489,6 +13576,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return 是否执行成功
 	 * @throws Exception 异常
 	 */
+	@Override
 	public boolean alter(DataRuntime runtime, Table table, Tag meta, boolean trigger) throws Exception {
 		boolean result = false;
 		ACTION.DDL action = ACTION.DDL.TAG_ALTER;
@@ -13533,6 +13621,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return 是否执行成功
 	 * @throws Exception 异常
 	 */
+	@Override
 	public boolean alter(DataRuntime runtime, Tag meta) throws Exception {
 		Table table = meta.getTable(true);
 		if(null == table) {
@@ -13558,6 +13647,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return 是否执行成功
 	 * @throws Exception 异常
 	 */
+	@Override
 	public boolean drop(DataRuntime runtime, Tag meta) throws Exception {
 		ACTION.DDL action = ACTION.DDL.TAG_DROP;
 		String random = random(runtime);
@@ -13579,6 +13669,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return 是否执行成功
 	 * @throws Exception 异常
 	 */
+	@Override
 	public boolean rename(DataRuntime runtime, Tag origin, String name) throws Exception {
 		ACTION.DDL action = ACTION.DDL.TAG_RENAME;
 		String random = random(runtime);
@@ -13759,6 +13850,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return 是否执行成功
 	 * @throws Exception 异常
 	 */
+	@Override
 	public boolean add(DataRuntime runtime, PrimaryKey meta) throws Exception {
 		ACTION.DDL action = ACTION.DDL.PRIMARY_ADD;
 		String random = random(runtime);
@@ -13779,6 +13871,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return 是否执行成功
 	 * @throws Exception 异常
 	 */
+	@Override
 	public boolean alter(DataRuntime runtime, PrimaryKey meta) throws Exception {
 		Table table = meta.getTable(true);
 		if(null == table) {
@@ -13806,6 +13899,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return 是否执行成功
 	 * @throws Exception 异常
 	 */
+	@Override
 	public boolean alter(DataRuntime runtime, Table table, PrimaryKey origin, PrimaryKey meta) throws Exception {
 		ACTION.DDL action = ACTION.DDL.PRIMARY_ALTER;
 		String random = random(runtime);
@@ -13826,6 +13920,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return 是否执行成功
 	 * @throws Exception 异常
 	 */
+	@Override
 	public boolean drop(DataRuntime runtime, PrimaryKey meta) throws Exception {
 		ACTION.DDL action = ACTION.DDL.PRIMARY_DROP;
 		String random = random(runtime);
@@ -13847,6 +13942,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return 是否执行成功
 	 * @throws Exception 异常
 	 */
+	@Override
 	public boolean rename(DataRuntime runtime, PrimaryKey origin, String name) throws Exception {
 		ACTION.DDL action = ACTION.DDL.PRIMARY_RENAME;
 		String random = random(runtime);
@@ -13949,6 +14045,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return 是否执行成功
 	 * @throws Exception 异常
 	 */
+	@Override
 	public boolean add(DataRuntime runtime, ForeignKey meta) throws Exception {
 		ACTION.DDL action = ACTION.DDL.FOREIGN_ADD;
 		String random = random(runtime);
@@ -13969,6 +14066,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return 是否执行成功
 	 * @throws Exception 异常
 	 */
+	@Override
 	public boolean alter(DataRuntime runtime, ForeignKey meta) throws Exception {
 		Table table = meta.getTable(true);
 		if(null == table) {
@@ -13994,6 +14092,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return 是否执行成功
 	 * @throws Exception 异常
 	 */
+	@Override
 	public boolean alter(DataRuntime runtime, Table table, ForeignKey meta) throws Exception {
 		ACTION.DDL action = ACTION.DDL.TRIGGER_ALTER;
 		String random = random(runtime);
@@ -14014,6 +14113,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return 是否执行成功
 	 * @throws Exception 异常
 	 */
+	@Override
 	public boolean drop(DataRuntime runtime, ForeignKey meta) throws Exception {
 		ACTION.DDL action = ACTION.DDL.FOREIGN_DROP;
 		String random = random(runtime);
@@ -14035,6 +14135,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return 是否执行成功
 	 * @throws Exception 异常
 	 */
+	@Override
 	public boolean rename(DataRuntime runtime, ForeignKey origin, String name) throws Exception {
 		ACTION.DDL action = ACTION.DDL.FOREIGN_RENAME;
 		String random = random(runtime);
@@ -14055,6 +14156,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param meta 外键
 	 * @return String
 	 */
+	@Override
 	public List<Run> buildAddRun(DataRuntime runtime, ForeignKey meta) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildAddRun(DataRuntime runtime, ForeignKey meta)", 37));
@@ -14084,6 +14186,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param meta 外键
 	 * @return String
 	 */
+	@Override
 	public List<Run> buildDropRun(DataRuntime runtime, ForeignKey meta) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildDropRun(DataRuntime runtime, ForeignKey meta) ", 37));
@@ -14099,6 +14202,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param meta 外键
 	 * @return String
 	 */
+	@Override
 	public List<Run> buildRenameRun(DataRuntime runtime, ForeignKey meta) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildRenameRun(DataRuntime runtime, ForeignKey meta) ", 37));
@@ -14132,6 +14236,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return 是否执行成功
 	 * @throws Exception 异常
 	 */
+	@Override
 	public boolean add(DataRuntime runtime, Index meta) throws Exception {
 		ACTION.DDL action = ACTION.DDL.INDEX_ADD;
 		String random = random(runtime);
@@ -14157,6 +14262,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return 是否执行成功
 	 * @throws Exception 异常
 	 */
+	@Override
 	public boolean alter(DataRuntime runtime, Index meta) throws Exception {
 		Table table = meta.getTable(true);
 		if(null == table) {
@@ -14182,6 +14288,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return 是否执行成功
 	 * @throws Exception 异常
 	 */
+	@Override
 	public boolean alter(DataRuntime runtime, Table table, Index meta) throws Exception {
 		ACTION.DDL action = ACTION.DDL.INDEX_ALTER;
 		String random = random(runtime);
@@ -14202,6 +14309,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return 是否执行成功
 	 * @throws Exception 异常
 	 */
+	@Override
 	public boolean drop(DataRuntime runtime, Index meta) throws Exception {
 		ACTION.DDL action = ACTION.DDL.INDEX_DROP;
 		String random = random(runtime);
@@ -14223,6 +14331,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return 是否执行成功
 	 * @throws Exception 异常
 	 */
+	@Override
 	public boolean rename(DataRuntime runtime, Index origin, String name) throws Exception {
 		ACTION.DDL action = ACTION.DDL.INDEX_RENAME;
 		String random = random(runtime);
@@ -14330,6 +14439,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param builder builder
 	 * @return StringBuilder
 	 */
+	@Override
 	public StringBuilder type(DataRuntime runtime, StringBuilder builder, Index meta) {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 StringBuilder type(DataRuntime runtime, StringBuilder builder, Index meta)", 37));
@@ -14345,6 +14455,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param builder builder
 	 * @return StringBuilder
 	 */
+	@Override
 	public StringBuilder property(DataRuntime runtime, StringBuilder builder, Index meta) {
 		return builder;
 	}
@@ -14357,6 +14468,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param builder builder
 	 * @return StringBuilder
 	 */
+	@Override
 	public StringBuilder comment(DataRuntime runtime, StringBuilder builder, Index meta) {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 StringBuilder comment(DataRuntime runtime, StringBuilder builder, Index meta)", 37));
@@ -14403,6 +14515,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return 是否执行成功
 	 * @throws Exception 异常
 	 */
+	@Override
 	public boolean add(DataRuntime runtime, Constraint meta) throws Exception {
 		ACTION.DDL action = ACTION.DDL.CONSTRAINT_ADD;
 		String random = random(runtime);
@@ -14423,6 +14536,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return 是否执行成功
 	 * @throws Exception 异常
 	 */
+	@Override
 	public boolean alter(DataRuntime runtime, Constraint meta) throws Exception {
 		Table table = meta.getTable(true);
 		if(null == table) {
@@ -14448,6 +14562,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return 是否执行成功
 	 * @throws Exception 异常
 	 */
+	@Override
 	public boolean alter(DataRuntime runtime, Table table, Constraint meta) throws Exception {
 		ACTION.DDL action = ACTION.DDL.CONSTRAINT_ALTER;
 		String random = random(runtime);
@@ -14468,6 +14583,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return 是否执行成功
 	 * @throws Exception 异常
 	 */
+	@Override
 	public boolean drop(DataRuntime runtime, Constraint meta) throws Exception {
 		ACTION.DDL action = ACTION.DDL.CONSTRAINT_DROP;
 		String random = random(runtime);
@@ -14489,6 +14605,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return 是否执行成功
 	 * @throws Exception 异常
 	 */
+	@Override
 	public boolean rename(DataRuntime runtime, Constraint origin, String name) throws Exception {
 		ACTION.DDL action = ACTION.DDL.CONSTRAINT_RENAME;
 		String random = random(runtime);
@@ -14526,6 +14643,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param meta 约束
 	 * @return List
 	 */
+	@Override
 	public List<Run> buildAlterRun(DataRuntime runtime, Constraint meta) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildAlterRun(DataRuntime runtime, Constraint meta)", 37));
@@ -14556,6 +14674,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param meta 约束
 	 * @return String
 	 */
+	@Override
 	public List<Run> buildRenameRun(DataRuntime runtime, Constraint meta) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildRenameRun(DataRuntime runtime, Constraint meta)", 37));
@@ -14580,6 +14699,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return 是否执行成功
 	 * @throws Exception 异常
 	 */
+	@Override
 	public boolean add(DataRuntime runtime, Trigger meta) throws Exception {
 		boolean result = false;
 		ACTION.DDL action = ACTION.DDL.TRIGGER_ADD;
@@ -14601,6 +14721,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return 是否执行成功
 	 * @throws Exception 异常
 	 */
+	@Override
 	public boolean alter(DataRuntime runtime, Trigger meta) throws Exception {
 		ACTION.DDL action = ACTION.DDL.TRIGGER_ALTER;
 		String random = random(runtime);
@@ -14621,6 +14742,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return 是否执行成功
 	 * @throws Exception 异常
 	 */
+	@Override
 	public boolean drop(DataRuntime runtime, Trigger meta) throws Exception {
 		ACTION.DDL action = ACTION.DDL.TRIGGER_DROP;
 		String random = random(runtime);
@@ -14642,6 +14764,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return 是否执行成功
 	 * @throws Exception 异常
 	 */
+	@Override
 	public boolean rename(DataRuntime runtime, Trigger origin, String name) throws Exception {
 		ACTION.DDL action = ACTION.DDL.TRIGGER_RENAME;
 		String random = random(runtime);
@@ -14725,6 +14848,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param builder builder
 	 * @return StringBuilder
 	 */
+	@Override
 	public StringBuilder each(DataRuntime runtime, StringBuilder builder, Trigger meta) {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 StringBuilder each(DataRuntime runtime, StringBuilder builder, Trigger meta)", 37));
@@ -14757,6 +14881,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return 是否执行成功
 	 * @throws Exception 异常
 	 */
+	@Override
 	public boolean create(DataRuntime runtime, Procedure meta) throws Exception {
 		ACTION.DDL action = ACTION.DDL.PRIMARY_ADD;
 		String random = random(runtime);
@@ -14777,6 +14902,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return 是否执行成功
 	 * @throws Exception 异常
 	 */
+	@Override
 	public boolean alter(DataRuntime runtime, Procedure meta) throws Exception {
 		ACTION.DDL action = ACTION.DDL.PROCEDURE_ALTER;
 		String random = random(runtime);
@@ -14797,6 +14923,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return 是否执行成功
 	 * @throws Exception 异常
 	 */
+	@Override
 	public boolean drop(DataRuntime runtime, Procedure meta) throws Exception {
 		ACTION.DDL action = ACTION.DDL.PROCEDURE_DROP;
 		String random = random(runtime);
@@ -14818,6 +14945,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return 是否执行成功
 	 * @throws Exception 异常
 	 */
+	@Override
 	public boolean rename(DataRuntime runtime, Procedure origin, String name) throws Exception {
 		ACTION.DDL action = ACTION.DDL.PROCEDURE_RENAME;
 		origin.setNewName(name);
@@ -14838,6 +14966,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param meta 存储过程
 	 * @return String
 	 */
+	@Override
 	public List<Run> buildCreateRun(DataRuntime runtime, Procedure meta) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildCreateRun(DataRuntime runtime, Procedure meta)", 37));
@@ -14853,6 +14982,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param meta 存储过程
 	 * @return List
 	 */
+	@Override
 	public List<Run> buildAlterRun(DataRuntime runtime, Procedure meta) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildAlterRun(DataRuntime runtime, Procedure meta)", 37));
@@ -14867,6 +14997,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param meta 存储过程
 	 * @return String
 	 */
+	@Override
 	public List<Run> buildDropRun(DataRuntime runtime, Procedure meta) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildDropRun(DataRuntime runtime, Procedure meta)", 37));
@@ -14882,6 +15013,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param meta 存储过程
 	 * @return String
 	 */
+	@Override
 	public List<Run> buildRenameRun(DataRuntime runtime, Procedure meta) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildRenameRun(DataRuntime runtime, Procedure meta)", 37));
@@ -14896,6 +15028,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param builder builder
 	 * @param parameter parameter
 	 */
+	@Override
 	public StringBuilder parameter(DataRuntime runtime, StringBuilder builder, Parameter parameter) {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 StringBuilder parameter(DataRuntime runtime, StringBuilder builder, Parameter parameter)", 37));
@@ -14926,6 +15059,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return 是否执行成功
 	 * @throws Exception 异常
 	 */
+	@Override
 	public boolean create(DataRuntime runtime, Function meta) throws Exception {
 		ACTION.DDL action = ACTION.DDL.FUNCTION_CREATE;
 		String random = random(runtime);
@@ -14946,6 +15080,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return 是否执行成功
 	 * @throws Exception 异常
 	 */
+	@Override
 	public boolean alter(DataRuntime runtime, Function meta) throws Exception {
 		String random = random(runtime);
 		ACTION.DDL action = ACTION.DDL.FUNCTION_ALTER;
@@ -14966,6 +15101,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return 是否执行成功
 	 * @throws Exception 异常
 	 */
+	@Override
 	public boolean drop(DataRuntime runtime, Function meta) throws Exception {
 		String random = random(runtime);
 		ACTION.DDL action = ACTION.DDL.FUNCTION_DROP;
@@ -14988,6 +15124,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return 是否执行成功
 	 * @throws Exception 异常
 	 */
+	@Override
 	public boolean rename(DataRuntime runtime, Function origin, String name) throws Exception {
 		ACTION.DDL action = ACTION.DDL.FUNCTION_RENAME;
 		String random = random(runtime);
@@ -15009,6 +15146,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param meta 函数
 	 * @return String
 	 */
+	@Override
 	public List<Run> buildCreateRun(DataRuntime runtime, Function meta) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildCreateRun(DataRuntime runtime, Function meta)", 37));
@@ -15024,6 +15162,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param meta 函数
 	 * @return List
 	 */
+	@Override
 	public List<Run> buildAlterRun(DataRuntime runtime, Function meta) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildAlterRun(DataRuntime runtime, Function meta)", 37));
@@ -15037,6 +15176,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param meta 函数
 	 * @return String
 	 */
+	@Override
 	public List<Run> buildDropRun(DataRuntime runtime, Function meta) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildDropRun(DataRuntime runtime, Function meta)", 37));
@@ -15052,6 +15192,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param meta 函数
 	 * @return String
 	 */
+	@Override
 	public List<Run> buildRenameRun(DataRuntime runtime, Function meta) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildRenameRun(DataRuntime runtime, Function meta)", 37));
@@ -15082,6 +15223,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return 是否执行成功
 	 * @throws Exception 异常
 	 */
+	@Override
 	public boolean create(DataRuntime runtime, Sequence meta) throws Exception {
 		ACTION.DDL action = ACTION.DDL.SEQUENCE_CREATE;
 		String random = random(runtime);
@@ -15102,6 +15244,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return 是否执行成功
 	 * @throws Exception 异常
 	 */
+	@Override
 	public boolean alter(DataRuntime runtime, Sequence meta) throws Exception {
 		String random = random(runtime);
 		ACTION.DDL action = ACTION.DDL.SEQUENCE_ALTER;
@@ -15122,6 +15265,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return 是否执行成功
 	 * @throws Exception 异常
 	 */
+	@Override
 	public boolean drop(DataRuntime runtime, Sequence meta) throws Exception {
 		boolean result = false;
 		String random = random(runtime);
@@ -15145,6 +15289,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return 是否执行成功
 	 * @throws Exception 异常
 	 */
+	@Override
 	public boolean rename(DataRuntime runtime, Sequence origin, String name) throws Exception {
 		ACTION.DDL action = ACTION.DDL.SEQUENCE_RENAME;
 		String random = random(runtime);
@@ -15166,6 +15311,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param meta 序列
 	 * @return String
 	 */
+	@Override
 	public List<Run> buildCreateRun(DataRuntime runtime, Sequence meta) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildCreateRun(DataRuntime runtime, Sequence meta)", 37));
@@ -15181,6 +15327,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param meta 序列
 	 * @return List
 	 */
+	@Override
 	public List<Run> buildAlterRun(DataRuntime runtime, Sequence meta) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildAlterRun(DataRuntime runtime, Sequence meta)", 37));
@@ -15194,6 +15341,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param meta 序列
 	 * @return String
 	 */
+	@Override
 	public List<Run> buildDropRun(DataRuntime runtime, Sequence meta) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildDropRun(DataRuntime runtime, Sequence meta)", 37));
@@ -15209,6 +15357,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param meta 序列
 	 * @return String
 	 */
+	@Override
 	public List<Run> buildRenameRun(DataRuntime runtime, Sequence meta) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildRenameRun(DataRuntime runtime, Sequence meta)", 37));
@@ -15220,7 +15369,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 													common
 	 *------------------------------------------------------------------------------------------------------------------
 	 * boolean isBooleanColumn(DataRuntime runtime, Column column)
-	 *  boolean isNumberColumn(DataRuntime runtime, Column column)
+	 * boolean isNumberColumn(DataRuntime runtime, Column column)
 	 * boolean isCharColumn(DataRuntime runtime, Column column)
 	 * String value(DataRuntime runtime, Column column, SQL_BUILD_IN_VALUE value)
 	 * String type(String type)
@@ -15234,6 +15383,40 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * protected Object value(List<String> keys, String key, ResultSet set, Object def) throws Exception
 	 * protected Object value(List<String> keys, String key, ResultSet set) throws Exception
 	 ******************************************************************************************************************/
+
+	/**
+	 * 转换成相应数据库类型<br/>
+	 * 把编码时输入的数据类型如(long)转换成具体数据库中对应的数据类型<br/>
+	 * 同时解析长度、有效位数、精度<br/>
+	 * 如有些数据库中用bigint有些数据库中有long
+	 * @param meta 列
+	 * @return 具体数据库中对应的数据类型
+	 */
+	@Override
+	public TypeMetadata typeMetadata(DataRuntime runtime, Column meta) {
+		TypeMetadata typeMetadata = meta.getTypeMetadata();
+		if(null == typeMetadata || TypeMetadata.NONE == typeMetadata || meta.getParseLvl() < 2 || type() != meta.getDatabase()) {
+			typeMetadata = TypeMetadata.parse(type(), meta, alias, spells);
+			meta.setDatabase(type());
+			meta.setParseLvl(2);
+		}
+		return typeMetadata;
+	}
+	/**
+	 * 转换成相应数据库类型<br/>
+	 * 把编码时输入的数据类型如(long)转换成具体数据库中对应的数据类型，如有些数据库中用bigint有些数据库中有long
+	 * @param type 编码时输入的类型
+	 * @return 具体数据库中对应的数据类型
+	 */
+	@Override
+	public TypeMetadata typeMetadata(DataRuntime runtime, String type) {
+		if(null == type) {
+			return null;
+		}
+		Column tmp = new Column();
+		tmp.setTypeName(type, false);
+		return typeMetadata(runtime, tmp);
+	}
 
 	/**
 	 * 检测针对表的主键生成器
@@ -15278,25 +15461,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	}
 
 	/**
-	 * 转换成相应数据库类型<br/>
-	 * 把编码时输入的数据类型如(long)转换成具体数据库中对应的数据类型<br/>
-	 * 同时解析长度、有效位数、精度<br/>
-	 * 如有些数据库中用bigint有些数据库中有long
-	 * @param meta 列
-	 * @return 具体数据库中对应的数据类型
-	 */
-	@Override
-	public TypeMetadata typeMetadata(DataRuntime runtime, Column meta) {
-		TypeMetadata typeMetadata = meta.getTypeMetadata();
-		if(null == typeMetadata || TypeMetadata.NONE == typeMetadata || meta.getParseLvl() < 2 || type() != meta.getDatabase()) {
-			typeMetadata = TypeMetadata.parse(type(), meta, alias, spells);
-			meta.setDatabase(type());
-			meta.setParseLvl(2);
-		}
-		return typeMetadata;
-	}
-
-	/**
 	 * 数据类型拼写兼容
 	 * @param name name
 	 * @return spell
@@ -15308,22 +15472,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return typeMetadata;
 	}
-	/**
-	 * 转换成相应数据库类型<br/>
-	 * 把编码时输入的数据类型如(long)转换成具体数据库中对应的数据类型，如有些数据库中用bigint有些数据库中有long
-	 * @param type 编码时输入的类型
-	 * @return 具体数据库中对应的数据类型
-	 */
-	@Override
-	public TypeMetadata typeMetadata(DataRuntime runtime, String type) {
-		if(null == type) {
-			return null;
-		}
-		Column tmp = new Column();
-		tmp.setTypeName(type, false);
-		return typeMetadata(runtime, tmp);
-	}
-
 	/**
 	 * 合成完整名称
 	 * @param meta 合成完整名称
