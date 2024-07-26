@@ -24,6 +24,7 @@ import org.anyline.metadata.differ.TableDiffer;
 import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.util.BasicUtil;
+import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 
 import java.io.Serializable;
@@ -53,7 +54,6 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
             types.put(type.value, type);
         }
     }
-
     public static Map<Integer, Type> types() {
         return types;
     }
@@ -1154,6 +1154,39 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
         return this;
     }
 
+    public Map<String, Object> map(){
+        clearPropertyTable();
+        return BeanUtil.object2map(this);
+    }
+    public String json(){
+        clearPropertyTable();
+        return BeanUtil.object2json(this);
+    }
+    public void clearPropertyTable(){
+        if(null != columns){
+            for(Column column:columns.values()){
+                column.setTable((Table)null);
+            }
+        }
+        if(null != tags){
+            for(Tag tag:tags.values()){
+                tag.setTable((Table)null);
+            }
+        }
+        if(null != indexes){
+            for(Index index:indexes.values()){
+                index.setTable((Table)null);
+            }
+        }
+        if(null != constraints){
+            for(Constraint constraint:constraints.values()){
+                constraint.setTable((Table)null);
+            }
+        }
+        if(null != primaryKey){
+            primaryKey.setTable((Table)null);
+        }
+    }
     /**
      * 列排序
      * @param nullFirst 未设置位置(setPosition)的列是否排在最前
@@ -1332,6 +1365,7 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
             }
             return this;
         }
+
     }
     public static class Key{
         public enum TYPE {

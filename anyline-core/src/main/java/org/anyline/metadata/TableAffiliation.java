@@ -24,7 +24,7 @@ import java.util.ArrayList;
 
 public class TableAffiliation<E extends TableAffiliation> extends Metadata<E> implements Serializable {
 
-    protected Table<?> table;
+    protected transient Table<?> table;
 
     public String getIdentity() {
         if(null == identity) {
