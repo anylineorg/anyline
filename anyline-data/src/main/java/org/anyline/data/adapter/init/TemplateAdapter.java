@@ -41,6 +41,41 @@ import java.util.Map;
  */
 
 public abstract class TemplateAdapter extends AbstractDriverAdapter {
+	/* *****************************************************************************************************************
+	 *
+	 * 													DML
+	 *
+	 * =================================================================================================================
+	 * INSERT			: 插入
+	 * UPDATE			: 更新
+	 * SAVE				: 根据情况插入或更新
+	 * QUERY			: 查询(RunPrepare/XML/TABLE/VIEW/PROCEDURE)
+	 * EXISTS			: 是否存在
+	 * COUNT			: 统计
+	 * EXECUTE			: 执行(原生SQL及存储过程)
+	 * DELETE			: 删除
+	 *
+	 ******************************************************************************************************************/
+
+	/* *****************************************************************************************************************
+	 * 													INSERT
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * [调用入口]
+	 * long insert(DataRuntime runtime, String random, int batch, Table dest, Object data, ConfigStore configs, List<String> columns)
+	 * [命令合成]
+	 * public Run buildInsertRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, List<String> columns)
+	 * public void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet set, ConfigStore configs, LinkedHashMap<String, Column> columns)
+	 * public void fillInsertContent(DataRuntime runtime, Run run, Table dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns)
+	 * public LinkedHashMap<String, Column> confirmInsertColumns(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns, boolean batch)
+	 * public String batchInsertSeparator()
+	 * public boolean supportInsertPlaceholder()
+	 * protected Run createInsertRun(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns)
+	 * protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, List<String> columns)
+	 * public String generatedKey()
+	 * [命令执行]
+	 * long insert(DataRuntime runtime, String random, Object data, ConfigStore configs, Run run, String[] pks);
+	 ******************************************************************************************************************/
+
 	/**
 	 * insert [调用入口]<br/>
 	 * 执行前根据主键生成器补充主键值,执行完成后会补齐自增主键值
@@ -290,6 +325,21 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
 		return super.keyHolders(runtime, configs);
 	}
 
+	/* *****************************************************************************************************************
+	 * 													UPDATE
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * [调用入口]
+	 * long update(DataRuntime runtime, String random, int batch, Table dest, Object data, ConfigStore configs, List<String> columns)
+	 * [命令合成]
+	 * Run buildUpdateRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, List<String> columns)
+	 * Run buildUpdateRunFromEntity(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, LinkedHashMap<String, Column> columns)
+	 * Run buildUpdateRunFromDataRow(DataRuntime runtime, Table dest, DataRow row, ConfigStore configs, LinkedHashMap<String, Column> columns)
+	 * Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns)
+	 * LinkedHashMap<String, Column> confirmUpdateColumns(DataRuntime runtime, Table dest, DataRow row, ConfigStore configs, List<String> columns)
+	 * LinkedHashMap<String, Column> confirmUpdateColumns(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns)
+	 * [命令执行]
+	 * long update(DataRuntime runtime, String random, Table dest, Object data, ConfigStore configs, Run run)
+	 ******************************************************************************************************************/
 	/**
 	 * UPDATE [调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -591,6 +641,30 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
 		return super.checkMetadata(runtime, table, configs, columns);
 	}
 
+	/* *****************************************************************************************************************
+	 * 													QUERY
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * [调用入口]
+	 * DataSet querys(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
+	 * DataSet querys(DataRuntime runtime, String random, Procedure procedure, PageNavi navi)
+	 * <T> EntitySet<T> selects(DataRuntime runtime, String random, RunPrepare prepare, Class<T> clazz, ConfigStore configs, String... conditions)
+	 * List<Map<String, Object>> maps(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
+	 * [命令合成]
+	 * Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions)
+	 * List<Run> buildQuerySequence(DataRuntime runtime, boolean next, String ... names)
+	 * Run fillQueryContent(DataRuntime runtime, Run run)
+	 * String mergeFinalQuery(DataRuntime runtime, Run run)
+	 * RunValue createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder)
+	 * Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder)
+	 * StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder)
+	 * [命令执行]
+	 * DataSet select(DataRuntime runtime, String random, boolean system, String table, ConfigStore configs, Run run)
+	 * List<Map<String, Object>> maps(DataRuntime runtime, String random, ConfigStore configs, Run run)
+	 * Map<String, Object> map(DataRuntime runtime, String random, ConfigStore configs, Run run)
+	 * DataRow sequence(DataRuntime runtime, String random, boolean next, String ... names)
+	 * List<Map<String, Object>> process(DataRuntime runtime, List<Map<String, Object>> list)
+	 ******************************************************************************************************************/
+
 	/**
 	 * query [调用入口]<br/>
 	 * <br/>
@@ -689,7 +763,6 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
 	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
 	 * @param configs 过滤条件及相关配置
 	 * @param conditions  简单过滤条件
-	 * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
 	 */
 	@Override
 	public void init(DataRuntime runtime, Run run, ConfigStore configs, String ... conditions) {
@@ -908,6 +981,16 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
 		return super.process(runtime, list);
 	}
 
+	/* *****************************************************************************************************************
+	 * 													COUNT
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * [调用入口]
+	 * long count(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
+	 * [命令合成]
+	 * String mergeFinalTotal(DataRuntime runtime, Run run)
+	 * [命令执行]
+	 * long count(DataRuntime runtime, String random, Run run)
+	 ******************************************************************************************************************/
 	/**
 	 * count [调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -946,6 +1029,13 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
 		return super.count(runtime, random, run);
 	}
 
+	/* *****************************************************************************************************************
+	 * 													EXISTS
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * boolean exists(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
+	 * String mergeFinalExists(DataRuntime runtime, Run run)
+	 ******************************************************************************************************************/
+
 	/**
 	 * exists [调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -970,6 +1060,20 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
 	public String mergeFinalExists(DataRuntime runtime, Run run) {
 		return super.mergeFinalExists(runtime, run);
 	}
+
+	/* *****************************************************************************************************************
+	 * 													EXECUTE
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * [调用入口]
+	 * long execute(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
+	 * long execute(DataRuntime runtime, String random, int batch, ConfigStore configs, RunPrepare prepare, Collection<Object> values)
+	 * boolean execute(DataRuntime runtime, String random, Procedure procedure)
+	 * [命令合成]
+	 * Run buildExecuteRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions)
+	 * void fillExecuteContent(DataRuntime runtime, Run run)
+	 * [命令执行]
+	 * long execute(DataRuntime runtime, String random, ConfigStore configs, Run run)
+	 ******************************************************************************************************************/
 
 	/**
 	 * execute [调用入口]<br/>
@@ -1102,7 +1206,6 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
 	 * query [命令合成]<br/>
 	 * 替换占位符
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param random 用来标记同一组命令
 	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
 	 * @return 影响行数
 	 */
@@ -1111,6 +1214,24 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
 		super.replaceVariable(runtime, run);
 	}
 
+	/* *****************************************************************************************************************
+	 * 													DELETE
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * [调用入口]
+	 * <T> long deletes(DataRuntime runtime, String random, int batch, String table, ConfigStore configs, String column, Collection<T> values)
+	 * long delete(DataRuntime runtime, String random, String table, ConfigStore configs, Object obj, String... columns)
+	 * long delete(DataRuntime runtime, String random, String table, ConfigStore configs, String... conditions)
+	 * long truncate(DataRuntime runtime, String random, String table)
+	 * [命令合成]
+	 * List<Run> buildDeleteRun(DataRuntime runtime, String table, ConfigStore configs, Object obj, String ... columns)
+	 * List<Run> buildDeleteRun(DataRuntime runtime, int batch, String table, ConfigStore configs, String column, Object values)
+	 * List<Run> buildTruncateRun(DataRuntime runtime, String table)
+	 * List<Run> buildDeleteRunFromTable(DataRuntime runtime, int batch, String table, ConfigStore configs,String column, Object values)
+	 * List<Run> buildDeleteRunFromEntity(DataRuntime runtime, String table, ConfigStore configs, Object obj, String ... columns)
+	 * void fillDeleteRunContent(DataRuntime runtime, Run run)
+	 * [命令执行]
+	 * long delete(DataRuntime runtime, String random, ConfigStore configs, Run run)
+	 ******************************************************************************************************************/
 	/**
 	 * delete [调用入口]<br/>
 	 * <br/>
@@ -1261,6 +1382,64 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
 		return super.delete(runtime, random, configs, run);
 	}
 
+	/* *****************************************************************************************************************
+	 *
+	 * 													metadata
+	 *
+	 * =================================================================================================================
+	 * database			: 数据库(catalog, schema)
+	 * table			: 表
+	 * master table		: 主表
+	 * partition table	: 分区表
+	 * column			: 列
+	 * tag				: 标签
+	 * primary key      : 主键
+	 * foreign key		: 外键
+	 * index			: 索引
+	 * constraint		: 约束
+	 * trigger		    : 触发器
+	 * procedure        : 存储过程
+	 * function         : 函数
+	 ******************************************************************************************************************/
+
+	/* *****************************************************************************************************************
+	 * 													database
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * [调用入口]
+	 * String version(DataRuntime runtime, String random)
+	 * String product(DataRuntime runtime, String random)
+	 * Database database(DataRuntime runtime, String random)
+	 * LinkedHashMap<String, Database> databases(DataRuntime runtime, String random, String name)
+	 * List<Database> databases(DataRuntime runtime, String random, boolean greedy, String name)
+	 * Database database(DataRuntime runtime, String random, String name)
+	 * Database database(DataRuntime runtime, String random)
+	 * String String product(DataRuntime runtime, String random);
+	 * String String version(DataRuntime runtime, String random);
+	 * [命令合成]
+	 * List<Run> buildQueryProductRun(DataRuntime runtime)
+	 * List<Run> buildQueryVersionRun(DataRuntime runtime)
+	 * List<Run> buildQueryDatabasesRun(DataRuntime runtime, boolean greedy, String name)
+	 * List<Run> buildQueryDatabaseRun(DataRuntime runtime, boolean greedy, String name)
+	 * List<Run> buildQueryProductRun(DataRuntime runtime, boolean greedy, String name)
+	 * List<Run> buildQueryVersionRun(DataRuntime runtime, boolean greedy, String name)
+	 * List<Run> buildQueryDatabaseRun(DataRuntime runtime)
+	 * [结果集封装]<br/>
+	 * LinkedHashMap<String, Database> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Database> databases, Catalog catalog, Schema schema, DataSet set)
+	 * List<Database> databases(DataRuntime runtime, int index, boolean create, List<Database> databases, Catalog catalog, Schema schema, DataSet set)
+	 * Database database(DataRuntime runtime, boolean create, Database dataase, DataSet set)
+	 * Database database(DataRuntime runtime, boolean create, Database dataase)
+	 * String product(DataRuntime runtime, boolean create, Database product, DataSet set)
+	 * String product(DataRuntime runtime, boolean create, String product)
+	 * String version(DataRuntime runtime, int index, boolean create, String version, DataSet set)
+	 * String version(DataRuntime runtime, boolean create, String version)
+	 * Catalog catalog(DataRuntime runtime, boolean create, Catalog catalog, DataSet set)
+	 * Catalog catalog(DataRuntime runtime, boolean create, Catalog catalog)
+	 * Schema schema(DataRuntime runtime, boolean create, Schema schema, DataSet set)
+	 * Schema schema(DataRuntime runtime, boolean create, Schema schema)
+	 * Database database(DataRuntime runtime, boolean create, Database dataase)
+	 * String product(DataRuntime runtime, int index, boolean create, String product, DataSet set)
+	 * String product(DataRuntime runtime, boolean create, String product)
+	 ******************************************************************************************************************/
 	/**
 	 * database[调用入口]<br/>
 	 * 当前数据库
@@ -1490,6 +1669,24 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
 		return super.version(runtime, create, version);
 	}
 
+	/* *****************************************************************************************************************
+	 * 													catalog
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * [调用入口]
+	 * LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, String random, String name)
+	 * List<Catalog> catalogs(DataRuntime runtime, String random, boolean greedy, String name)
+	 * [命令合成]
+	 * List<Run> buildQueryCatalogsRun(DataRuntime runtime, boolean greedy, String name)
+	 * [结果集封装]<br/>
+	 * LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Catalog> catalogs, DataSet set)
+	 * List<Catalog> catalogs(DataRuntime runtime, int index, boolean create, List<Catalog> catalogs, DataSet set)
+	 * LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, boolean create, LinkedHashMap<String, Catalog> catalogs)
+	 * List<Catalog> catalogs(DataRuntime runtime, boolean create, List<Catalog> catalogs)
+	 *
+	 * Catalog catalog(DataRuntime runtime, int index, boolean create, Catalog catalog, DataSet set)
+	 * Catalog catalog(DataRuntime runtime, int index, boolean create, Catalog catalog)
+	 ******************************************************************************************************************/
+
 	/**
 	 * catalog[调用入口]<br/>
 	 * 当前Catalog
@@ -1641,6 +1838,21 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
 	public Catalog catalog(DataRuntime runtime, boolean create, Catalog catalog) throws Exception {
 		return super.catalog(runtime, create, catalog);
 	}
+
+	/* *****************************************************************************************************************
+	 * 													schema
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * [调用入口]
+	 * LinkedHashMap<String, Schema> schemas(DataRuntime runtime, String random, Catalog catalog, String name)
+	 * List<Schema> schemas(DataRuntime runtime, String random, boolean greedy, Catalog catalog, String name)
+	 * [命令合成]
+	 * List<Run> buildQuerySchemasRun(DataRuntime runtime, boolean greedy, Catalog catalog, String name)
+	 * [结果集封装]<br/>
+	 * LinkedHashMap<String, Schema> schemas(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Schema> schemas, Catalog catalog, Schema schema, DataSet set)
+	 * List<Schema> schemas(DataRuntime runtime, int index, boolean create, List<Schema> schemas, Catalog catalog, Schema schema, DataSet set)
+	 * Schema schema(DataRuntime runtime, int index, boolean create, Schema schema, DataSet set)
+	 * Schema schema(DataRuntime runtime, int index, boolean create, Schema schema)
+	 ******************************************************************************************************************/
 
 	/**
 	 * schema[调用入口]<br/>
@@ -1811,6 +2023,28 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
 		return super.checkName(runtime, random, meta);
 	}
 
+	/* *****************************************************************************************************************
+	 * 													table
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * [调用入口]
+	 * <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, boolean struct)
+	 * <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, String types, boolean struct)
+	 * [命令合成]
+	 * List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs)
+	 * List<Run> buildQueryTablesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types)
+	 * [结果集封装]<br/>
+	 * <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set)
+	 * <T extends Table> List<T> tables(DataRuntime runtime, int index, boolean create, List<T> tables, Catalog catalog, Schema schema, DataSet set)
+	 * <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, String pattern, int types)
+	 * <T extends Table> List<T> tables(DataRuntime runtime, boolean create, List<T> tables, Catalog catalog, Schema schema, String pattern, int types)
+	 * <T extends Table> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set)
+	 * [调用入口]
+	 * List<String> ddl(DataRuntime runtime, String random, Table table, boolean init)
+	 * [命令合成]
+	 * List<Run> buildQueryDdlsRun(DataRuntime runtime, Table table)
+	 * [结果集封装]<br/>
+	 * List<String> ddl(DataRuntime runtime, int index, Table table, List<String> ddls, DataSet set)
+	 ******************************************************************************************************************/
 	/**
 	 *
 	 * table[调用入口]<br/>
@@ -2080,6 +2314,28 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
 		return super.ddl(runtime, index, table, ddls, set);
 	}
 
+	/* *****************************************************************************************************************
+	 * 													vertexTable
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * [调用入口]
+	 * <T extends VertexTable> List<T> vertexTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, boolean struct)
+	 * <T extends VertexTable> LinkedHashMap<String, T> vertexTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, String types, boolean struct)
+	 * [命令合成]
+	 * List<Run> buildQueryVertexTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs)
+	 * List<Run> buildQueryVertexTablesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types)
+	 * [结果集封装]<br/>
+	 * <T extends VertexTable> LinkedHashMap<String, T> vertexTables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> vertexTables, Catalog catalog, Schema schema, DataSet set)
+	 * <T extends VertexTable> List<T> vertexTables(DataRuntime runtime, int index, boolean create, List<T> vertexTables, Catalog catalog, Schema schema, DataSet set)
+	 * <T extends VertexTable> LinkedHashMap<String, T> vertexTables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> vertexTables, Catalog catalog, Schema schema, String pattern, int types)
+	 * <T extends VertexTable> List<T> vertexTables(DataRuntime runtime, boolean create, List<T> vertexTables, Catalog catalog, Schema schema, String pattern, int types)
+	 * <T extends VertexTable> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> vertexTables, Catalog catalog, Schema schema, DataSet set)
+	 * [调用入口]
+	 * List<String> ddl(DataRuntime runtime, String random, VertexTable vertexTable, boolean init)
+	 * [命令合成]
+	 * List<Run> buildQueryDdlsRun(DataRuntime runtime, VertexTable vertexTable)
+	 * [结果集封装]<br/>
+	 * List<String> ddl(DataRuntime runtime, int index, VertexTable vertexTable, List<String> ddls, DataSet set)
+	 ******************************************************************************************************************/
 	/**
 	 *
 	 * vertexTable[调用入口]<br/>
@@ -2313,6 +2569,28 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
 		return super.ddl(runtime, index, vertexTable, ddls, set);
 	}
 
+	/* *****************************************************************************************************************
+	 * 													EdgeTable
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * [调用入口]
+	 * <T extends EdgeTable> List<T> edgeTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, boolean struct)
+	 * <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, String types, boolean struct)
+	 * [命令合成]
+	 * List<Run> buildQueryEdgeTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs)
+	 * List<Run> buildQueryEdgeTablesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types)
+	 * [结果集封装]<br/>
+	 * <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> edgeTables, Catalog catalog, Schema schema, DataSet set)
+	 * <T extends EdgeTable> List<T> edgeTables(DataRuntime runtime, int index, boolean create, List<T> edgeTables, Catalog catalog, Schema schema, DataSet set)
+	 * <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> edgeTables, Catalog catalog, Schema schema, String pattern, int types)
+	 * <T extends EdgeTable> List<T> edgeTables(DataRuntime runtime, boolean create, List<T> edgeTables, Catalog catalog, Schema schema, String pattern, int types)
+	 * <T extends EdgeTable> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> edgeTables, Catalog catalog, Schema schema, DataSet set)
+	 * [调用入口]
+	 * List<String> ddl(DataRuntime runtime, String random, EdgeTable meta, boolean init)
+	 * [命令合成]
+	 * List<Run> buildQueryDdlsRun(DataRuntime runtime, EdgeTable meta)
+	 * [结果集封装]<br/>
+	 * List<String> ddl(DataRuntime runtime, int index, EdgeTable meta, List<String> ddls, DataSet set)
+	 ******************************************************************************************************************/
 	/**
 	 *
 	 * edgeTable[调用入口]<br/>
@@ -2546,6 +2824,28 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
 		return super.ddl(runtime, index, meta, ddls, set);
 	}
 
+	/* *****************************************************************************************************************
+	 * 													view
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * [调用入口]
+	 * <T extends View> List<T> views(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, boolean struct)
+	 * <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, String types, boolean struct)
+	 * [命令合成]
+	 * List<Run> buildQueryViewsRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs)
+	 * List<Run> buildQueryViewsCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types)
+	 * [结果集封装]<br/>
+	 * <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> views, Catalog catalog, Schema schema, DataSet set)
+	 * <T extends View> List<T> views(DataRuntime runtime, int index, boolean create, List<T> views, Catalog catalog, Schema schema, DataSet set)
+	 * <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, boolean create, LinkedHashMap<String, T> views, Catalog catalog, Schema schema, String pattern, int types)
+	 * <T extends View> List<T> views(DataRuntime runtime, boolean create, List<T> views, Catalog catalog, Schema schema, String pattern, int types)
+	 * <T extends View> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> views, Catalog catalog, Schema schema, DataSet set)
+	 * [调用入口]
+	 * List<String> ddl(DataRuntime runtime, String random, View view, boolean init)
+	 * [命令合成]
+	 * List<Run> buildQueryDdlsRun(DataRuntime runtime, View view)
+	 * [结果集封装]<br/>
+	 * List<String> ddl(DataRuntime runtime, int index, View view, List<String> ddls, DataSet set)
+	 ******************************************************************************************************************/
 	/**
 	 *
 	 * view[调用入口]<br/>
@@ -2779,6 +3079,28 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
 		return super.ddl(runtime, index, view, ddls, set);
 	}
 
+	/* *****************************************************************************************************************
+	 * 													masterTable
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * [调用入口]
+	 * <T extends MasterTable> List<T> masterTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, boolean struct)
+	 * <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, String types, boolean struct)
+	 * [命令合成]
+	 * List<Run> buildQueryMasterTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs)
+	 * List<Run> buildQueryMasterTablesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types)
+	 * [结果集封装]<br/>
+	 * <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> masterTables, Catalog catalog, Schema schema, DataSet set)
+	 * <T extends MasterTable> List<T> masterTables(DataRuntime runtime, int index, boolean create, List<T> masterTables, Catalog catalog, Schema schema, DataSet set)
+	 * <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> masterTables, Catalog catalog, Schema schema, String pattern, int types)
+	 * <T extends MasterTable> List<T> masterTables(DataRuntime runtime, boolean create, List<T> masterTables, Catalog catalog, Schema schema, String pattern, int types)
+	 * <T extends MasterTable> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> masterTables, Catalog catalog, Schema schema, DataSet set)
+	 * [调用入口]
+	 * List<String> ddl(DataRuntime runtime, String random, MasterTable masterTable, boolean init)
+	 * [命令合成]
+	 * List<Run> buildQueryDdlsRun(DataRuntime runtime, MasterTable masterTable)
+	 * [结果集封装]<br/>
+	 * List<String> ddl(DataRuntime runtime, int index, MasterTable masterTable, List<String> ddls, DataSet set)
+	 ******************************************************************************************************************/
 	/**
 	 *
 	 * masterTable[调用入口]<br/>
@@ -3012,6 +3334,25 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
 		return super.ddl(runtime, index, masterTable, ddls, set);
 	}
 
+	/* *****************************************************************************************************************
+	 * 													partition table
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * [调用入口]
+	 * <T extends PartitionTable> LinkedHashMap<String,T> partitionTables(DataRuntime runtime, String random, boolean greedy, MasterTable master, Map<String, Object> tags, String pattern)
+	 * [命令合成]
+	 * List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types)
+	 * List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Table master, Map<String,Object> tags, String pattern)
+	 * List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Table master, Map<String,Object> tags)
+	 * [结果集封装]<br/>
+	 * <T extends PartitionTable> LinkedHashMap<String, T> partitionTables(DataRuntime runtime, int total, int index, boolean create, MasterTable master, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set)
+	 * <T extends PartitionTable> LinkedHashMap<String,T> partitionTables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, MasterTable master)
+	 * [调用入口]
+	 * List<String> ddl(DataRuntime runtime, String random, PartitionTable table)
+	 * [命令合成]
+	 * List<Run> buildQueryDdlsRun(DataRuntime runtime, PartitionTable table)
+	 * [结果集封装]<br/>
+	 * List<String> ddl(DataRuntime runtime, int index, PartitionTable table, List<String> ddls, DataSet set)
+	 ******************************************************************************************************************/
 	/**
 	 * partition table[调用入口]<br/>
 	 * 查询主表
@@ -3188,6 +3529,20 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
 	public <T extends PartitionTable> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row) {
 		return super.detail(runtime, index, meta, catalog, schema, row);
 	}
+
+	/* *****************************************************************************************************************
+	 * 													column
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * [调用入口]
+	 * <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Table table, boolean primary);
+	 * <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String table);
+	 * [命令合成]
+	 * List<Run> buildQueryColumnsRun(DataRuntime runtime, Table table, boolean metadata) throws Exception;
+	 * [结果集封装]<br/>
+	 * <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> columns, DataSet set) throws Exception;
+	 * <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, Table table, List<T> columns, DataSet set) throws Exception;
+	 * <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, LinkedHashMap<String, T> columns, Table table, String pattern) throws Exception;
+	 ******************************************************************************************************************/
 
 	/**
 	 * column[调用入口]<br/>
@@ -3466,6 +3821,18 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
 		return super.columnMetadataIgnoreScale(runtime, meta);
 	}
 
+	/* *****************************************************************************************************************
+	 * 													tag
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * [调用入口]
+	 * <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, String random, boolean greedy, Table table)
+	 * [命令合成]
+	 * List<Run> buildQueryTagsRun(DataRuntime runtime, Table table, boolean metadata)
+	 * [结果集封装]<br/>
+	 * <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> tags, DataSet set)
+	 * <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tags, Table table, String pattern)
+	 ******************************************************************************************************************/
+
 	/**
 	 * tag[调用入口]<br/>
 	 * 查询表结构
@@ -3557,6 +3924,17 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
 		return super.detail(runtime, index, meta, catalog, schema, row);
 	}
 
+	/* *****************************************************************************************************************
+	 * 													primary
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * [调用入口]
+	 * PrimaryKey primary(DataRuntime runtime, String random, boolean greedy, Table table)
+	 * [命令合成]
+	 * List<Run> buildQueryPrimaryRun(DataRuntime runtime, Table table) throws Exception
+	 * [结构集封装]
+	 * <T extends PrimaryKey> T init(DataRuntime runtime, int index, T primary, Table table, DataSet set)
+	 * PrimaryKey primary(DataRuntime runtime, Table table)
+	 ******************************************************************************************************************/
 	/**
 	 * primary[调用入口]<br/>
 	 * 查询主键
@@ -3632,6 +4010,17 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
 		return super.primary(runtime, table);
 	}
 
+	/* *****************************************************************************************************************
+	 * 													foreign
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * [调用入口]
+	 * <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, String random, boolean greedy, Table table);
+	 * [命令合成]
+	 * List<Run> buildQueryForeignsRun(DataRuntime runtime, Table table) throws Exception;
+	 * [结构集封装]
+	 * <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, int index, Table table, LinkedHashMap<String, T> foreigns, DataSet set) throws Exception;
+	 ******************************************************************************************************************/
+
 	/**
 	 * foreign[调用入口]<br/>
 	 * 查询外键
@@ -3703,6 +4092,20 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
 		return super.detail(runtime, index, meta, table, row);
 	}
 
+	/* *****************************************************************************************************************
+	 * 													index
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * [调用入口]
+	 * <T extends Index> List<T> indexes(DataRuntime runtime, String random, boolean greedy, Table table, String pattern)
+	 * <T extends Index> LinkedHashMap<String, T> indexes(DataRuntime runtime, String random, Table table, String pattern)
+	 * [命令合成]
+	 * List<Run> buildQueryIndexesRun(DataRuntime runtime, Table table, String name)
+	 * [结果集封装]<br/>
+	 * <T extends Index> List<T> indexes(DataRuntime runtime, int index, boolean create, Table table, List<T> indexes, DataSet set)
+	 * <T extends Index> LinkedHashMap<String, T> indexes(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> indexes, DataSet set)
+	 * <T extends Index> List< T> indexes(DataRuntime runtime, boolean create, List<T> indexes, Table table, boolean unique, boolean approximate)
+	 * <T extends Index> LinkedHashMap<String, T> indexes(DataRuntime runtime, boolean create, LinkedHashMap<String, T> indexes, Table table, boolean unique, boolean approximate)
+	 ******************************************************************************************************************/
 	/**
 	 *
 	 * index[调用入口]<br/>
@@ -3814,7 +4217,7 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryIndexesRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param table 表
+	 * @param tables 表
 	 * @param indexes 上一步查询结果
 	 * @param set 查询结果集
 	 * @return indexes indexes
@@ -3910,6 +4313,18 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
 		return super.indexMetadataAdapter(runtime);
 	}
 
+	/* *****************************************************************************************************************
+	 * 													constraint
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * [调用入口]
+	 * <T extends Constraint> List<T> constraints(DataRuntime runtime, String random, boolean greedy, Table table, String pattern);
+	 * <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, String random, Table table, Column column, String pattern);
+	 * [命令合成]
+	 * List<Run> buildQueryConstraintsRun(DataRuntime runtime, Table table, Column column, String pattern) ;
+	 * [结果集封装]<br/>
+	 * <T extends Constraint> List<T> constraints(DataRuntime runtime, int index, boolean create, Table table, List<T> constraints, DataSet set) throws Exception;
+	 * <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, int index, boolean create, Table table, Column column, LinkedHashMap<String, T> constraints, DataSet set) throws Exception;
+	 ******************************************************************************************************************/
 	/**
 	 *
 	 * constraint[调用入口]<br/>
@@ -4029,6 +4444,16 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
 		return super.constraintMetadataAdapter(runtime);
 	}
 
+	/* *****************************************************************************************************************
+	 * 													trigger
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * [调用入口]
+	 * <T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, String random, boolean greedy, Table table, List<Trigger.EVENT> events)
+	 * [命令合成]
+	 * List<Run> buildQueryTriggersRun(DataRuntime runtime, Table table, List<Trigger.EVENT> events)
+	 * [结果集封装]<br/>
+	 * <T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> triggers, DataSet set)
+	 ******************************************************************************************************************/
 	/**
 	 *
 	 * trigger[调用入口]<br/>
@@ -4114,6 +4539,26 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
 		return super.triggerMetadataAdapter(runtime);
 	}
 
+	/* *****************************************************************************************************************
+	 * 													procedure
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * [调用入口]
+	 * <T extends Procedure> List<T> procedures(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern);
+	 * <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern);
+	 * [命令合成]
+	 * List<Run> buildQueryProceduresRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) ;
+	 * [结果集封装]<br/>
+	 * <T extends Procedure> List<T> procedures(DataRuntime runtime, int index, boolean create, List<T> procedures, DataSet set) throws Exception;
+	 * <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> procedures, DataSet set) throws Exception;
+	 * <T extends Procedure> List<T> procedures(DataRuntime runtime, boolean create, List<T> procedures)
+	 * <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, boolean create, LinkedHashMap<String, T> procedures) throws Exception;
+	 * [调用入口]
+	 * List<String> ddl(DataRuntime runtime, String random, Procedure procedure);
+	 * [命令合成]
+	 * List<Run> buildQueryDdlsRun(DataRuntime runtime, Procedure procedure) throws Exception;
+	 * [结果集封装]<br/>
+	 * List<String> ddl(DataRuntime runtime, int index, Procedure procedure, List<String> ddls, DataSet set);
+	 ******************************************************************************************************************/
 	/**
 	 *
 	 * procedure[调用入口]<br/>
@@ -4301,6 +4746,26 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
 		return super.procedureMetadataAdapter(runtime);
 	}
 
+	/* *****************************************************************************************************************
+	 * 													function
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * [调用入口]
+	 * <T extends Function> List<T> functions(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern);
+	 * <T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern);
+	 * [命令合成]
+	 * List<Run> buildQueryFunctionsRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) ;
+	 * [结果集封装]<br/>
+	 * <T extends Function> List<T> functions(DataRuntime runtime, int index, boolean create, List<T> functions, Catalog catalog, Schema schema, DataSet set) throws Exception;
+	 * <T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> functions, Catalog catalog, Schema schema, DataSet set) throws Exception;
+	 * <T extends Function> List<T> functions(DataRuntime runtime, boolean create, List<T> functions)
+	 * <T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, boolean create, LinkedHashMap<String, T> functions)
+	 * [调用入口]
+	 * List<String> ddl(DataRuntime runtime, String random, Function function);
+	 * [命令合成]
+	 * List<Run> buildQueryDdlsRun(DataRuntime runtime, Function function) throws Exception;
+	 * [结果集封装]<br/>
+	 * List<String> ddl(DataRuntime runtime, int index, Function function, List<String> ddls, DataSet set)
+	 ******************************************************************************************************************/
 	/**
 	 *
 	 * function[调用入口]<br/>
@@ -4487,6 +4952,26 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
 		return super.functionMetadataAdapter(runtime);
 	}
 
+	/* *****************************************************************************************************************
+	 * 													sequence
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * [调用入口]
+	 * <T extends Sequence> List<T> sequences(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern);
+	 * <T extends Sequence> LinkedHashMap<String, T> sequences(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern);
+	 * [命令合成]
+	 * List<Run> buildQuerySequencesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) ;
+	 * [结果集封装]<br/>
+	 * <T extends Sequence> List<T> sequences(DataRuntime runtime, int index, boolean create, List<T> sequences, DataSet set) throws Exception;
+	 * <T extends Sequence> LinkedHashMap<String, T> sequences(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> sequences, DataSet set) throws Exception;
+	 * <T extends Sequence> List<T> sequences(DataRuntime runtime, boolean create, List<T> sequences)
+	 * <T extends Sequence> LinkedHashMap<String, T> sequences(DataRuntime runtime, boolean create, LinkedHashMap<String, T> sequences)
+	 * [调用入口]
+	 * List<String> ddl(DataRuntime runtime, String random, Sequence sequence);
+	 * [命令合成]
+	 * List<Run> buildQueryDdlsRun(DataRuntime runtime, Sequence sequence) throws Exception;
+	 * [结果集封装]<br/>
+	 * List<String> ddl(DataRuntime runtime, int index, Sequence sequence, List<String> ddls, DataSet set)
+	 ******************************************************************************************************************/
 	/**
 	 *
 	 * sequence[调用入口]<br/>
@@ -4713,6 +5198,26 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
 		return super.database(databases, name);
 	}
 
+	/* *****************************************************************************************************************
+	 *
+	 * 													DDL
+	 *
+	 * =================================================================================================================
+	 * database			: 数据库
+	 * table			: 表
+	 * master table		: 主表
+	 * partition table	: 分区表
+	 * column			: 列
+	 * tag				: 标签
+	 * primary key      : 主键
+	 * foreign key		: 外键
+	 * index			: 索引
+	 * constraint		: 约束
+	 * trigger		    : 触发器
+	 * procedure        : 存储过程
+	 * function         : 函数
+	 ******************************************************************************************************************/
+
 	/**
 	 * ddl [执行命令]
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -4741,6 +5246,30 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
 		return super.execute(runtime, random, meta, action, runs);
 	}
 
+	/* *****************************************************************************************************************
+	 * 													table
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * [调用入口]
+	 * boolean create(DataRuntime runtime, Table meta)
+	 * boolean alter(DataRuntime runtime, Table meta)
+	 * boolean drop(DataRuntime runtime, Table meta)
+	 * boolean rename(DataRuntime runtime, Table origin, String name)
+	 * [命令合成]
+	 * List<Run> buildCreateRun(DataRuntime runtime, Table meta)
+	 * List<Run> buildAlterRun(DataRuntime runtime, Table meta)
+	 * List<Run> buildAlterRun(DataRuntime runtime, Table meta, Collection<Column> columns)
+	 * List<Run> buildRenameRun(DataRuntime runtime, Table meta)
+	 * List<Run> buildDropRun(DataRuntime runtime, Table meta)
+	 * [命令合成-子流程]
+	 * List<Run> buildAppendCommentRun(DataRuntime runtime, Table table)
+	 * List<Run> buildChangeCommentRun(DataRuntime runtime, Table table)
+	 * StringBuilder checkTableExists(DataRuntime runtime, StringBuilder builder, boolean exists)
+	 * StringBuilder primary(DataRuntime runtime, StringBuilder builder, Table table)
+	 * time runtime, StringBuilder builder, Table table)
+	 * StringBuilder comment(DataRuntime runtime, StringBuilder builder, Table table)
+	 * StringBuilder partitionBy(DataRuntime runtime, StringBuilder builder, Table table)
+	 * StringBuilder partitionOf(DataRuntime runtime, StringBuilder builder, Table table)
+	 ******************************************************************************************************************/
 	/**
 	 * table[调用入口]<br/>
 	 * 创建表,执行的命令通过meta.ddls()返回
@@ -5178,6 +5707,25 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
 		return super.inherit(runtime, builder, meta);
 	}
 
+	/* *****************************************************************************************************************
+	 * 													view
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * [调用入口]
+	 * boolean create(DataRuntime runtime, View view) throws Exception;
+	 * boolean alter(DataRuntime runtime, View view) throws Exception;
+	 * boolean drop(DataRuntime runtime, View view) throws Exception;
+	 * boolean rename(DataRuntime runtime, View origin, String name) throws Exception;
+	 * [命令合成]
+	 * List<Run> buildCreateRun(DataRuntime runtime, View view) throws Exception;
+	 * List<Run> buildAlterRun(DataRuntime runtime, View view) throws Exception;
+	 * List<Run> buildRenameRun(DataRuntime runtime, View view) throws Exception;
+	 * List<Run> buildDropRun(DataRuntime runtime, View view) throws Exception;
+	 * [命令合成-子流程]
+	 * List<Run> buildAppendCommentRun(DataRuntime runtime, View view) throws Exception;
+	 * List<Run> buildChangeCommentRun(DataRuntime runtime, View view) throws Exception;
+	 * StringBuilder checkViewExists(DataRuntime runtime, StringBuilder builder, boolean exists);
+	 * StringBuilder comment(DataRuntime runtime, StringBuilder builder, View view);
+	 ******************************************************************************************************************/
 	/**
 	 * view[调用入口]<br/>
 	 * 创建视图,执行的命令通过meta.ddls()返回
@@ -5365,6 +5913,24 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
 		return super.comment(runtime, builder, meta);
 	}
 
+	/* *****************************************************************************************************************
+	 * 													MasterTable
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * [调用入口]
+	 * boolean create(DataRuntime runtime, MasterTable meta)
+	 * boolean alter(DataRuntime runtime, MasterTable meta)
+	 * boolean drop(DataRuntime runtime, MasterTable meta)
+	 * boolean rename(DataRuntime runtime, MasterTable origin, String name)
+	 * [命令合成]
+	 * List<Run> buildCreateRun(DataRuntime runtime, MasterTable table)
+	 * List<Run> buildDropRun(DataRuntime runtime, MasterTable table)
+	 * [命令合成-子流程]
+	 * List<Run> buildAlterRun(DataRuntime runtime, MasterTable table)
+	 * List<Run> buildRenameRun(DataRuntime runtime, MasterTable table)
+	 * List<Run> buildAppendCommentRun(DataRuntime runtime, MasterTable table)
+	 * List<Run> buildChangeCommentRun(DataRuntime runtime, MasterTable table)
+	 ******************************************************************************************************************/
+
 	/**
 	 * master table[调用入口]<br/>
 	 * 创建主表,执行的命令通过meta.ddls()返回
@@ -5495,6 +6061,25 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
 	public List<Run> buildChangeCommentRun(DataRuntime runtime, MasterTable meta) throws Exception {
 		return super.buildChangeCommentRun(runtime, meta);
 	}
+
+	/* *****************************************************************************************************************
+	 * 													partition table
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * [调用入口]
+	 * boolean create(DataRuntime runtime, PartitionTable meta) throws Exception;
+	 * boolean alter(DataRuntime runtime, PartitionTable meta) throws Exception;
+	 * boolean drop(DataRuntime runtime, PartitionTable meta) throws Exception;
+	 * boolean rename(DataRuntime runtime, PartitionTable origin, String name) throws Exception;
+	 * [命令合成]
+	 * List<Run> buildCreateRun(DataRuntime runtime, PartitionTable table) throws Exception;
+	 * List<Run> buildAppendCommentRun(DataRuntime runtime, PartitionTable table) throws Exception;
+	 * List<Run> buildAlterRun(DataRuntime runtime, PartitionTable table) throws Exception;
+	 * List<Run> buildDropRun(DataRuntime runtime, PartitionTable table) throws Exception;
+	 * List<Run> buildRenameRun(DataRuntime runtime, PartitionTable table) throws Exception;
+	 * [命令合成-子流程]
+	 * List<Run> buildChangeCommentRun(DataRuntime runtime, PartitionTable table) throws Exception;
+	 *
+	 ******************************************************************************************************************/
 
 	/**
 	 * partition table[调用入口]<br/>
@@ -5627,6 +6212,51 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
 	public List<Run> buildChangeCommentRun(DataRuntime runtime, PartitionTable meta) throws Exception {
 		return super.buildChangeCommentRun(runtime, meta);
 	}
+
+	/* *****************************************************************************************************************
+	 * 													column
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * [调用入口]
+	 * boolean add(DataRuntime runtime, Column meta)
+	 * boolean alter(DataRuntime runtime, Table table, Column meta, boolean trigger)
+	 * boolean alter(DataRuntime runtime, Column meta)
+	 * boolean drop(DataRuntime runtime, Column meta)
+	 * boolean rename(DataRuntime runtime, Column origin, String name)
+	 * [命令合成]
+	 * List<Run> buildAddRun(DataRuntime runtime, Column column, boolean slice)
+	 * List<Run> buildAddRun(DataRuntime runtime, Column column)
+	 * List<Run> buildAlterRun(DataRuntime runtime, Column column, boolean slice)
+	 * List<Run> buildAlterRun(DataRuntime runtime, Column column)
+	 * List<Run> buildDropRun(DataRuntime runtime, Column column, boolean slice)
+	 * List<Run> buildDropRun(DataRuntime runtime, Column column)
+	 * List<Run> buildRenameRun(DataRuntime runtime, Column column)
+	 * [命令合成-子流程]
+	 * List<Run> buildChangeTypeRun(DataRuntime runtime, Column column)
+	 * String alterColumnKeyword(DataRuntime runtime)
+	 * StringBuilder addColumnGuide(DataRuntime runtime, StringBuilder builder, Column column)
+	 * StringBuilder dropColumnGuide(DataRuntime runtime, StringBuilder builder, Column column)
+	 * List<Run> buildChangeDefaultRun(DataRuntime runtime, Column column)
+	 * List<Run> buildChangeNullableRun(DataRuntime runtime, Column column)
+	 * List<Run> buildChangeCommentRun(DataRuntime runtime, Column column)
+	 * List<Run> buildAppendCommentRun(DataRuntime runtime, Column column)
+	 * List<Run> buildDropAutoIncrement(DataRuntime runtime, Column column)
+	 * StringBuilder define(DataRuntime runtime, StringBuilder builder, Column meta, ACTION.DDL action)
+	 * StringBuilder type(DataRuntime runtime, StringBuilder builder, Column column)
+	 * StringBuilder type(DataRuntime runtime, StringBuilder builder, Column column, String type, int ignorePrecision, boolean ignoreScale)
+	 * int ignorePrecision(DataRuntime runtime, Column column)
+	 * int ignoreScale(DataRuntime runtime, Column column)
+	 * Boolean checkIgnorePrecision(DataRuntime runtime, String datatype)
+	 * int checkIgnoreScale(DataRuntime runtime, String datatype)
+	 * StringBuilder nullable(DataRuntime runtime, StringBuilder builder, Column meta, ACTION.DDL action)
+	 * StringBuilder charset(DataRuntime runtime, StringBuilder builder, Column column)
+	 * StringBuilder defaultValue(DataRuntime runtime, StringBuilder builder, Column column)
+	 * StringBuilder primary(DataRuntime runtime, StringBuilder builder, Column column)
+	 * StringBuilder increment(DataRuntime runtime, StringBuilder builder, Column column)
+	 * StringBuilder onupdate(DataRuntime runtime, StringBuilder builder, Column column)
+	 * StringBuilder position(DataRuntime runtime, StringBuilder builder, Column column)
+	 * StringBuilder comment(DataRuntime runtime, StringBuilder builder, Column column)
+	 * StringBuilder checkColumnExists(DataRuntime runtime, StringBuilder builder, boolean exists)
+	 ******************************************************************************************************************/
 
 	/**
 	 * column[调用入口]<br/>
@@ -5843,7 +6473,7 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
 	 * column[命令合成-子流程]<br/>
 	 * 创建表完成后追加表备注,创建过程能添加备注的不需要实现与comment(DataRuntime runtime, StringBuilder builder, Table meta)二选一实现
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param column 列
+	 * @param meta 列
 	 * @param slice 是否只生成片段(不含alter table部分，用于DDL合并)
 	 * @return sql
 	 * @throws Exception 异常
@@ -6092,6 +6722,27 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
 		return super.comment(runtime, builder, meta);
 	}
 
+	/* *****************************************************************************************************************
+	 * 													tag
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * [调用入口]
+	 * boolean add(DataRuntime runtime, Tag meta)
+	 * boolean alter(DataRuntime runtime, Table table, Tag meta, boolean trigger)
+	 * boolean alter(DataRuntime runtime, Tag meta)
+	 * boolean drop(DataRuntime runtime, Tag meta)
+	 * boolean rename(DataRuntime runtime, Tag origin, String name)
+	 * [命令合成]
+	 * List<Run> buildAddRun(DataRuntime runtime, Tag tag)
+	 * List<Run> buildAlterRun(DataRuntime runtime, Tag tag)
+	 * List<Run> buildDropRun(DataRuntime runtime, Tag tag)
+	 * List<Run> buildRenameRun(DataRuntime runtime, Tag tag)
+	 * List<Run> buildChangeDefaultRun(DataRuntime runtime, Tag tag)
+	 * List<Run> buildChangeNullableRun(DataRuntime runtime, Tag tag)
+	 * List<Run> buildChangeCommentRun(DataRuntime runtime, Tag tag)
+	 * List<Run> buildChangeTypeRun(DataRuntime runtime, Tag tag)
+	 * StringBuilder checkTagExists(DataRuntime runtime, StringBuilder builder, boolean exists)
+	 ******************************************************************************************************************/
+
 	/**
 	 * tag[调用入口]<br/>
 	 * 添加标签
@@ -6275,6 +6926,22 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
 		return super.checkTagExists(runtime, builder, exists);
 	}
 
+	/* *****************************************************************************************************************
+	 * 													primary
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * [调用入口]
+	 * boolean add(DataRuntime runtime, PrimaryKey meta)
+	 * boolean alter(DataRuntime runtime, PrimaryKey meta)
+	 * boolean alter(DataRuntime runtime, Table table, PrimaryKey meta)
+	 * boolean drop(DataRuntime runtime, PrimaryKey meta)
+	 * boolean rename(DataRuntime runtime, PrimaryKey origin, String name)
+	 * [命令合成]
+	 * List<Run> buildAddRun(DataRuntime runtime, PrimaryKey primary)
+	 * List<Run> buildAlterRun(DataRuntime runtime, PrimaryKey primary)
+	 * List<Run> buildDropRun(DataRuntime runtime, PrimaryKey primary)
+	 * List<Run> buildRenameRun(DataRuntime runtime, PrimaryKey primary)
+	 ******************************************************************************************************************/
+
 	/**
 	 * primary[调用入口]<br/>
 	 * 添加主键
@@ -6396,6 +7063,22 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
 		return super.buildRenameRun(runtime, meta);
 	}
 
+	/* *****************************************************************************************************************
+	 * 													foreign
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * [调用入口]
+	 * boolean add(DataRuntime runtime, ForeignKey meta)
+	 * boolean alter(DataRuntime runtime, ForeignKey meta)
+	 * boolean alter(DataRuntime runtime, Table table, ForeignKey meta)
+	 * boolean drop(DataRuntime runtime, ForeignKey meta)
+	 * boolean rename(DataRuntime runtime, ForeignKey origin, String name)
+	 * [命令合成]
+	 * List<Run> buildAddRun(DataRuntime runtime, ForeignKey meta)
+	 * List<Run> buildAlterRun(DataRuntime runtime, ForeignKey meta)
+	 * List<Run> buildDropRun(DataRuntime runtime, ForeignKey meta)
+	 * List<Run> buildRenameRun(DataRuntime runtime, ForeignKey meta)
+	 ******************************************************************************************************************/
+
 	/**
 	 * foreign[调用入口]
 	 * 添加外键
@@ -6511,6 +7194,25 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
 	public List<Run> buildRenameRun(DataRuntime runtime, ForeignKey meta) throws Exception {
 		return super.buildRenameRun(runtime, meta);
 	}
+
+	/* *****************************************************************************************************************
+	 * 													index
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * [调用入口]
+	 * boolean add(DataRuntime runtime, Index meta)
+	 * boolean alter(DataRuntime runtime, Index meta)
+	 * boolean alter(DataRuntime runtime, Table table, Index meta)
+	 * boolean drop(DataRuntime runtime, Index meta)
+	 * boolean rename(DataRuntime runtime, Index origin, String name)
+	 * [命令合成]
+	 * List<Run> buildAppendIndexRun(DataRuntime runtime, Table meta)
+	 * List<Run> buildAlterRun(DataRuntime runtime, Index meta)
+	 * List<Run> buildDropRun(DataRuntime runtime, Index meta)
+	 * List<Run> buildRenameRun(DataRuntime runtime, Index meta)
+	 * [命令合成-子流程]
+	 * StringBuilder type(DataRuntime runtime, StringBuilder builder, Index meta)
+	 * StringBuilder comment(DataRuntime runtime, StringBuilder builder, Index meta)
+	 ******************************************************************************************************************/
 
 	/**
 	 * index[调用入口]<br/>
@@ -6693,6 +7395,22 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
 		return super.checkIndexExists(runtime, builder, exists);
 	}
 
+	/* *****************************************************************************************************************
+	 * 													constraint
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * [调用入口]
+	 * boolean add(DataRuntime runtime, Constraint meta)
+	 * boolean alter(DataRuntime runtime, Constraint meta)
+	 * boolean alter(DataRuntime runtime, Table table, Constraint meta)
+	 * boolean drop(DataRuntime runtime, Constraint meta)
+	 * boolean rename(DataRuntime runtime, Constraint origin, String name)
+	 * [命令合成]
+	 * List<Run> buildAddRun(DataRuntime runtime, Constraint meta)
+	 * List<Run> buildAlterRun(DataRuntime runtime, Constraint meta)
+	 * List<Run> buildDropRun(DataRuntime runtime, Constraint meta)
+	 * List<Run> buildRenameRun(DataRuntime runtime, Constraint meta)
+	 ******************************************************************************************************************/
+
 	/**
 	 * constraint[调用入口]<br/>
 	 * 添加约束
@@ -6808,6 +7526,15 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
 	public List<Run> buildRenameRun(DataRuntime runtime, Constraint meta) throws Exception {
 		return super.buildRenameRun(runtime, meta);
 	}
+
+	/* *****************************************************************************************************************
+	 * 													trigger
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * List<Run> buildCreateRun(DataRuntime runtime, Trigger trigger) throws Exception
+	 * List<Run> buildAlterRun(DataRuntime runtime, Trigger trigger) throws Exception;
+	 * List<Run> buildDropRun(DataRuntime runtime, Trigger trigger) throws Exception;
+	 * List<Run> buildRenameRun(DataRuntime runtime, Trigger trigger) throws Exception;
+	 ******************************************************************************************************************/
 
 	/**
 	 * trigger[调用入口]<br/>
@@ -6925,6 +7652,23 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
 		return super.each(runtime, builder, meta);
 	}
 
+	/* *****************************************************************************************************************
+	 * 													procedure
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * [调用入口]
+	 * boolean create(DataRuntime runtime, Procedure meta)
+	 * boolean alter(DataRuntime runtime, Procedure meta)
+	 * boolean drop(DataRuntime runtime, Procedure meta)
+	 * boolean rename(DataRuntime runtime, Procedure origin, String name)
+	 * [命令合成]
+	 * List<Run> buildCreateRun(DataRuntime runtime, Procedure meta)
+	 * List<Run> buildAlterRun(DataRuntime runtime, Procedure meta)
+	 * List<Run> buildDropRun(DataRuntime runtime, Procedure meta)
+	 * List<Run> buildRenameRun(DataRuntime runtime, Procedure meta)
+	 * [命令合成-子流程]
+	 * StringBuilder parameter(DataRuntime runtime, StringBuilder builder, Parameter parameter)
+	 ******************************************************************************************************************/
+
 	/**
 	 * procedure[调用入口]<br/>
 	 * 添加存储过程
@@ -7040,6 +7784,21 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
 		return super.parameter(runtime, builder, parameter);
 	}
 
+	/* *****************************************************************************************************************
+	 * 													function
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * [调用入口]
+	 * boolean create(DataRuntime runtime, Function meta)
+	 * boolean alter(DataRuntime runtime, Function meta)
+	 * boolean drop(DataRuntime runtime, Function meta)
+	 * boolean rename(DataRuntime runtime, Function origin, String name)
+	 * [命令合成]
+	 * List<Run> buildCreateRun(DataRuntime runtime, Function function)
+	 * List<Run> buildAlterRun(DataRuntime runtime, Function function)
+	 * List<Run> buildDropRun(DataRuntime runtime, Function function)
+	 * List<Run> buildRenameRun(DataRuntime runtime, Function function)
+	 ******************************************************************************************************************/
+
 	/**
 	 * function[调用入口]
 	 * 添加函数
@@ -7141,6 +7900,21 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
 	public List<Run> buildRenameRun(DataRuntime runtime, Function meta) throws Exception {
 		return super.buildRenameRun(runtime, meta);
 	}
+
+	/* *****************************************************************************************************************
+	 * 													sequence
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * [调用入口]
+	 * boolean create(DataRuntime runtime, Sequence meta)
+	 * boolean alter(DataRuntime runtime, Sequence meta)
+	 * boolean drop(DataRuntime runtime, Sequence meta)
+	 * boolean rename(DataRuntime runtime, Sequence origin, String name)
+	 * [命令合成]
+	 * List<Run> buildCreateRun(DataRuntime runtime, Sequence sequence)
+	 * List<Run> buildAlterRun(DataRuntime runtime, Sequence sequence)
+	 * List<Run> buildDropRun(DataRuntime runtime, Sequence sequence)
+	 * List<Run> buildRenameRun(DataRuntime runtime, Sequence sequence)
+	 ******************************************************************************************************************/
 
 	/**
 	 * sequence[调用入口]
@@ -7244,16 +8018,25 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
 		return super.buildRenameRun(runtime, meta);
 	}
 
-	/**
-	 * 检测针对表的主键生成器
-	 * @param type 数据库类型
-	 * @param table 表
-	 * @return PrimaryGenerator
-	 */
-	@Override
-	protected PrimaryGenerator checkPrimaryGenerator(DatabaseType type, String table) {
-		return super.checkPrimaryGenerator(type, table);
-	}
+	/* *****************************************************************************************************************
+	 *
+	 * 													common
+	 *------------------------------------------------------------------------------------------------------------------
+	 * boolean isBooleanColumn(DataRuntime runtime, Column column)
+	 * boolean isNumberColumn(DataRuntime runtime, Column column)
+	 * boolean isCharColumn(DataRuntime runtime, Column column)
+	 * String value(DataRuntime runtime, Column column, SQL_BUILD_IN_VALUE value)
+	 * String type(String type)
+	 * String type2class(String type)
+	 *
+	 * protected String string(List<String> keys, String key, ResultSet set, String def) throws Exception
+	 * protected String string(List<String> keys, String key, ResultSet set) throws Exception
+	 * protected Integer integer(List<String> keys, String key, ResultSet set, Integer def) throws Exception
+	 * protected Boolean bool(List<String> keys, String key, ResultSet set, Boolean def) throws Exception
+	 * protected Boolean bool(List<String> keys, String key, ResultSet set, int def) throws Exception
+	 * protected Object value(List<String> keys, String key, ResultSet set, Object def) throws Exception
+	 * protected Object value(List<String> keys, String key, ResultSet set) throws Exception
+	 ******************************************************************************************************************/
 
 	/**
 	 * 转换成相应数据库类型<br/>
@@ -7269,16 +8052,6 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
 	}
 
 	/**
-	 * 数据类型拼写兼容
-	 * @param name name
-	 * @return spell
-	 */
-	@Override
-	public TypeMetadata spell(String name) {
-		return super.spell(name);
-	}
-
-	/**
 	 * 转换成相应数据库类型<br/>
 	 * 把编码时输入的数据类型如(long)转换成具体数据库中对应的数据类型，如有些数据库中用bigint有些数据库中有long
 	 * @param type 编码时输入的类型
@@ -7287,6 +8060,27 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
 	@Override
 	public TypeMetadata typeMetadata(DataRuntime runtime, String type) {
 		return super.typeMetadata(runtime, type);
+	}
+
+	/**
+	 * 检测针对表的主键生成器
+	 * @param type 数据库类型
+	 * @param table 表
+	 * @return PrimaryGenerator
+	 */
+	@Override
+	protected PrimaryGenerator checkPrimaryGenerator(DatabaseType type, String table) {
+		return super.checkPrimaryGenerator(type, table);
+	}
+
+	/**
+	 * 数据类型拼写兼容
+	 * @param name name
+	 * @return spell
+	 */
+	@Override
+	public TypeMetadata spell(String name) {
+		return super.spell(name);
 	}
 
 	/**
@@ -7429,7 +8223,7 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
 	 * 如 TO_DATE('')
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder builder
-	 * @param row DataRow 或 Entity
+	 * @param obj Object
 	 * @param key 列名
 	 */
 	@Override
@@ -7444,7 +8238,7 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param table 表
-	 * @param run  值
+	 * @param value  值
 	 * @return boolean 返回false表示转换失败 如果有多个 adapter 则交给adapter继续转换
 	 */
 	@Override
@@ -7494,7 +8288,7 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
 	 * 数据类型转换
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param columns 列
-	 * @param run 值
+	 * @param value 值
 	 * @return boolean 返回false表示转换失败 如果有多个adapter 则交给adapter继续转换
 	 */
 	@Override
@@ -7563,7 +8357,5 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
 	public <T extends Metadata> T search(List<T> list, Catalog catalog, Schema schema, String name) {
 		return super.search(list, catalog, schema, name);
 	}
-
-
 
 }
