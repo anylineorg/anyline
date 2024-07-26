@@ -25,6 +25,8 @@ import org.anyline.bean.init.DefaultValueReference;
 import org.anyline.dao.AnylineDao;
 import org.anyline.dao.init.DefaultDao;
 import org.anyline.data.adapter.DriverAdapter;
+import org.anyline.data.adapter.DriverAdapterHolder;
+import org.anyline.data.datasource.DataSourceMonitor;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.runtime.RuntimeHolder;
@@ -132,14 +134,25 @@ public class JDBCRuntimeHolder extends AbstractRuntimeHolder implements RuntimeH
         return runtime;
     }
     public boolean destroy(String key) {
+        int close = 0;
+        DataSourceMonitor monitor = DriverAdapterHolder.getMonitor();
+        if(null != monitor){
+            JDBCRuntime runtime = (JDBCRuntime)runtimes.get(key);
+            if(null != runtime){
+                //这一步有可能抛出 异常
+                close = monitor.destroy(key, runtime.getDataSource());
+            }
+        }
+
         try {
             runtimes.remove(key);
             ConfigTable.environment().destroyBean(DataRuntime.ANYLINE_SERVICE_BEAN_PREFIX +  key);
             ConfigTable.environment().destroyBean(DataRuntime.ANYLINE_DAO_BEAN_PREFIX +  key);
             ConfigTable.environment().destroyBean(DataRuntime.ANYLINE_TRANSACTION_BEAN_PREFIX +  key);
             ConfigTable.environment().destroyBean(DataRuntime.ANYLINE_JDBC_TEMPLATE_BEAN_PREFIX +  key);
-
-            close(DataRuntime.ANYLINE_DATASOURCE_BEAN_PREFIX + key);
+            if(close == 0) {
+                close(DataRuntime.ANYLINE_DATASOURCE_BEAN_PREFIX + key);
+            }
             ConfigTable.environment().destroyBean(DataRuntime.ANYLINE_DATASOURCE_BEAN_PREFIX + key);
             log.warn("[注销数据源及相关资源][key:{}]", key);
             //从当前数据源复制的 子源一块注销

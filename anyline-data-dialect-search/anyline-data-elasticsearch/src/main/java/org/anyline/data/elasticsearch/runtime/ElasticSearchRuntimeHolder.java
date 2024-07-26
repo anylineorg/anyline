@@ -22,6 +22,8 @@ import org.anyline.bean.BeanDefine;
 import org.anyline.bean.init.DefaultBeanDefine;
 import org.anyline.dao.init.DefaultDao;
 import org.anyline.data.adapter.DriverAdapter;
+import org.anyline.data.adapter.DriverAdapterHolder;
+import org.anyline.data.datasource.DataSourceMonitor;
 import org.anyline.data.elasticsearch.adapter.ElasticSearchAdapter;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.runtime.RuntimeHolder;
@@ -30,6 +32,7 @@ import org.anyline.service.init.DefaultService;
 import org.anyline.util.ConfigTable;
 import org.elasticsearch.client.RestClient;
 
+import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -119,6 +122,16 @@ public class ElasticSearchRuntimeHolder extends AbstractRuntimeHolder {
     }
 
     public boolean destroy(String key) {
+
+        int close = 0;
+        DataSourceMonitor monitor = DriverAdapterHolder.getMonitor();
+        if(null != monitor){
+            ElasticSearchRuntime runtime = (ElasticSearchRuntime) runtimes.get(key);
+            if(null != runtime){
+                //这一步有可能抛出 异常
+                close = monitor.destroy(key, runtime.getProcessor());
+            }
+        }
         try {
             runtimes.remove(key);
             ConfigTable.environment().destroyBean(DataRuntime.ANYLINE_SERVICE_BEAN_PREFIX +  key);

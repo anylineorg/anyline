@@ -26,23 +26,29 @@ public interface DataSourceMonitor {
      * 注意 有些动态数源中可能连接多个数据源 需要遍历检测<br/>
      * 需要在项目中实现,在注销和覆盖数据源时会调用当前方法，如果数据源正在使用会根据情况抛出异常或忽略注销<br/>
      * 通常情况下是检测活动中的连接数量
+     * @param key 数据源名称
      * @param datasource 数据源 一般会是一个连接池实例<br/>
      *                   如 HikariDataSource.getHikariPoolMXBean().getActiveConnections()<br/>
      *                   DruidDataSource.getActiveCount()<br/>
      *                   其他类型参考相应DataRuntime.getProcessor()的返回值 如ElasticSearchRuntime.client(org.elasticsearch.client.RestClient)
      * @return true:使用中
      */
-    default boolean using(Object datasource) {
+    default boolean using(String key, Object datasource) {
         return false;
     }
 
     /**
-     * 释放占用资源,通常情况下不需要实现,上层方法会调用datasource.close()
+     * 注销数据源之前会调用
+     * @param key 数据源名称
      * @param datasource 数据源
-     * @return  0:当前方法内未释放 需要上层继续操作  1:当前方法内已释放 不需要上层继续操作
-     * @throws DataSourceUsingException 数据源正在使用中
+     * @return  0:当前方法内未释放 需要上层继续操作,如调用datasource.close()  1:当前方法内已释放 不需要上层继续操作
+     * @throws DataSourceUsingException 如果抛出异常，上层方法会抛出异常并中断注销
      */
-    default int release(Object datasource, boolean using) throws DataSourceUsingException {
+    default int destroy(String key, Object datasource) throws DataSourceUsingException {
+        if(using(key, datasource)){
+            throw new DataSourceUsingException(key, datasource);
+        }
+        //可以在这里释放相关资源 并返回 1
         return 0;
     }
 
