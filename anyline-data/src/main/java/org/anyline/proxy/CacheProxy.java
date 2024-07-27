@@ -24,6 +24,7 @@ import org.anyline.data.runtime.DataRuntime;
 import org.anyline.metadata.*;
 import org.anyline.metadata.graph.EdgeTable;
 import org.anyline.metadata.graph.VertexTable;
+import org.anyline.util.ConfigTable;
 import org.anyline.util.encrypt.MD5Util;
 
 import java.util.HashMap;
@@ -33,10 +34,40 @@ import java.util.Map;
 
 public class CacheProxy {
 
+    private static final ThreadLocal<Map<String, Object>> thread_caches = new ThreadLocal<>();
+    private static final ThreadLocal<Map<String, String>> thread_names = new ThreadLocal<>();
+    private static Map<String, Object> caches = new HashMap<>();
+    private static Map<String, String> names = new HashMap<>();
     public static CacheProvider provider;
     public CacheProxy() {}
     public static void init(CacheProvider provider) {
         CacheProxy.provider = provider;
+    }
+    private static Map<String, Object> caches(){
+        Map<String, Object> result = null;
+        if(ConfigTable.METADATA_CACHE_SCOPE == 9){
+            result = thread_caches.get();
+            if(null == result){
+                result = new HashMap<>();
+                thread_caches.set(result);
+            }
+        }else if(ConfigTable.METADATA_CACHE_SCOPE == 1){
+            result = caches;
+        }
+        return result;
+    }
+    private static Map<String, String> names(){
+        Map<String, String> result = null;
+        if(ConfigTable.METADATA_CACHE_SCOPE == 9){
+            result = thread_names.get();
+            if(null == result){
+                result = new HashMap<>();
+                thread_names.set(result);
+            }
+        }else if(ConfigTable.METADATA_CACHE_SCOPE == 1){
+            result = names;
+        }
+        return result;
     }
 /*
 
@@ -46,8 +77,6 @@ public class CacheProxy {
     private static Map<String, DataRow> cache_view_maps = new HashMap<>();
 */
 
-    private static Map<String, Object> caches = new HashMap<>();
-    private static Map<String, String> names = new HashMap<>();
 
     public static String key(DataRuntime runtime, String flag, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs){
         StringBuilder key = new StringBuilder();
@@ -95,41 +124,41 @@ public class CacheProxy {
         return key.toString().toUpperCase();
     }
     public static String name(String key) {
-        return names.get(key.toUpperCase());
+        return names().get(key.toUpperCase());
     }
     public static void name(String key, String origin) {
-        names.put(key.toUpperCase(), origin);
+        names().put(key.toUpperCase(), origin);
     }
     public static  <T extends Table> List<T> tables(String cache){
-        List<T> tables = (List<T>)caches.get(cache);
+        List<T> tables = (List<T>)caches().get(cache);
         return tables;
     }
     public static  <T extends MasterTable> List<T> masterTables(String cache){
-        List<T> tables = (List<T>)caches.get(cache);
+        List<T> tables = (List<T>)caches().get(cache);
         return tables;
     }
     public static  <T extends EdgeTable> List<T> edgeTables(String cache){
-        List<T> tables = (List<T>)caches.get(cache);
+        List<T> tables = (List<T>)caches().get(cache);
         return tables;
     }
     public static  <T extends VertexTable> List<T> vertexTables(String cache){
-        List<T> tables = (List<T>)caches.get(cache);
+        List<T> tables = (List<T>)caches().get(cache);
         return tables;
     }
     public static  <T extends Table> void tables(String cache, List<T> tables){
-        caches.put(cache, tables);
+        caches().put(cache, tables);
     }
 
     public static  <T extends View> List<T> views(String cache){
-        List<T> view = (List<T>)caches.get(cache);
+        List<T> view = (List<T>)caches().get(cache);
         return view;
     }
     public static  <T extends View> void views(String cache, List<T> view){
-        caches.put(cache, view);
+        caches().put(cache, view);
     }
 
     public static  void cache(String cache, Object value){
-        caches.put(cache, value);
+        caches().put(cache, value);
     }
 
 /*
@@ -275,10 +304,10 @@ public class CacheProxy {
 
 
     public static <T extends Column> LinkedHashMap<String, T> columns(String key) {
-        return (LinkedHashMap<String, T>) caches.get(key);
+        return (LinkedHashMap<String, T>) caches().get(key);
     }
     public static <T extends Tag> LinkedHashMap<String, T> tags(String key) {
-        return (LinkedHashMap<String, T>) caches.get(key);
+        return (LinkedHashMap<String, T>) caches().get(key);
     }
 
 
@@ -286,7 +315,7 @@ public class CacheProxy {
         if(null == table) {
             return;
         }
-        String cache = ConfigTable.getString("TABLE_METADATA_CACHE_KEY");
+        String cache = ConfigTable.getString("METADATA_CACHE_KEY");
         String key = datasource(datasource) + "_COLUMNS_" + key(adapter, table.getCatalog(), table.getSchema(), table);
         key = key.toUpperCase();
         if(null != provider && BasicUtil.isNotEmpty(cache) && !ConfigTable.IS_CACHE_DISABLED) {
@@ -300,7 +329,7 @@ public class CacheProxy {
 
     public static void clear() {/*
         if(null != provider && !ConfigTable.IS_CACHE_DISABLED) {
-            String cache = ConfigTable.TABLE_METADATA_CACHE_KEY;
+            String cache = ConfigTable.METADATA_CACHE_KEY;
             if(BasicUtil.isNotEmpty(cache)) {
                 provider.clear(cache);
             }
@@ -308,8 +337,8 @@ public class CacheProxy {
             cache_columns.clear();
         }*/
 
-        caches.clear();
-        names.clear();
+        caches().clear();
+        names().clear();
     }
 
 }

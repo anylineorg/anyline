@@ -128,6 +128,9 @@ public class ConfigTable {
 	public static boolean IS_RETURN_EMPTY_STRING_REPLACE_NULL			= false			;  // DataRow.getString返回null时替换成""
 	public static boolean IS_RETURN_EMPTY_INSTANCE_REPLACE_NULL			= false			;	// service.query() DataSet.getRow()返回null时, 是否替换成new DataRow(), new Entity()
 	public static boolean IS_AUTO_CHECK_METADATA						= false			; 	// insert update 时是否自动检测表结构(删除表中不存在的属性,转换数据类型)以及查询条件中的数据类型
+	public static int METADATA_CACHE_SCOPE								= 9				;   // 0:不缓存 1:当前线程 9:整个应用
+	public static String METADATA_CACHE_KEY								= ""			;	// 表结构缓存key
+	public static int METADATA_CACHE_SECOND								= 3600*24		;	// 表结构缓存时间(没有设置缓存key的情况下生效)(-1:表示永不失效)
 	public static int CHECK_METADATA_SAMPLE								= 1000			;   // 检测元数据的样本数量(-1:全部 0:不检测)(mongo当前版本中没有提供元数据查询方法)
 	public static boolean IS_CHECK_EMPTY_SET_METADATA					= false			;   // 查询返回空DataSet时，是否检测元数据信息
 	public static boolean IS_DISABLED_DEFAULT_ENTITY_ADAPTER			= false			; 	// 禁用默认的entity adapter
@@ -160,8 +163,6 @@ public class ConfigTable {
 	// 0{"HR_USER":{"name":"n22","id":22},"CRM_USER":{"name":"n22","id":22}}
 	// 1{"HR_USER.name":"n22","HR_USER.id":22,"CRM_USER.name":"n22","CRM_USER.id":22}}
 	public static String HTTP_PARAM_KEY_CASE							= "camel"		;	// http参数格式 camel:小驼峰 Camel:大驼峰 lower:小写 upper:大写  service.column2param会把 USER_NAME 转成userName
-	public static String TABLE_METADATA_CACHE_KEY						= ""			;	// 表结构缓存key
-	public static int TABLE_METADATA_CACHE_SECOND						= 3600*24		;	// 表结构缓存时间(没有设置缓存key的情况下生效)(-1:表示永不失效)
 	public static String MIX_DEFAULT_SEED								= "al"			;   // MixUti.mix默认seed
 	public static String EL_ATTRIBUTE_PREFIX							= "al"			;
 
@@ -1181,12 +1182,12 @@ public class ConfigTable {
 		return HTTP_PARAM_KEY_CASE;
 	}
 
-	public String TABLE_METADATA_CACHE_KEY() {
-		return TABLE_METADATA_CACHE_KEY;
+	public String METADATA_CACHE_KEY() {
+		return METADATA_CACHE_KEY;
 	}
 
-	public int TABLE_METADATA_CACHE_SECOND() {
-		return TABLE_METADATA_CACHE_SECOND;
+	public int METADATA_CACHE_SECOND() {
+		return METADATA_CACHE_SECOND;
 	}
 
 	public String MIX_DEFAULT_SEED() {

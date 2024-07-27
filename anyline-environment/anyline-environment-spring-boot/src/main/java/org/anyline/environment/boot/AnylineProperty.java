@@ -846,7 +846,7 @@ public class AnylineProperty {
 
     public void setTableMetadataCacheKey(String tableMetadataCacheKey) {
         this.tableMetadataCacheKey = tableMetadataCacheKey;
-        ConfigTable.TABLE_METADATA_CACHE_KEY = tableMetadataCacheKey;
+        ConfigTable.METADATA_CACHE_KEY = tableMetadataCacheKey;
     }
 
     public int getTableMetadataCacheSecond() {
@@ -855,7 +855,7 @@ public class AnylineProperty {
 
     public void setTableMetadataCacheSecond(int tableMetadataCacheSecond) {
         this.tableMetadataCacheSecond = tableMetadataCacheSecond;
-        ConfigTable.TABLE_METADATA_CACHE_SECOND = tableMetadataCacheSecond;
+        ConfigTable.METADATA_CACHE_SECOND = tableMetadataCacheSecond;
     }
 
     public String getSqlDelimiterPlaceholder() {

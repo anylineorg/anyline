@@ -77,7 +77,7 @@
 	<property key="HTTP_SUCCESS_CODE">200</property>
 
 	<!--获取表结构的缓存KEY-->
-	<property key="TABLE_METADATA_CACHE_KEY">static_1800</property>
+	<property key="METADATA_CACHE_KEY">static_1800</property>
 	<!--
 		http参数格式camel:小驼峰 Camel:大驼峰 lower:小写 upper:大写
 		在entity()中会用到如果数据库列表中有下划线会按以下格式转换
