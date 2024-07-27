@@ -71,11 +71,11 @@ public enum OracleGenusTypeMetadataAlias implements TypeMetadataAlias {
 	DATE_NANOS                    ("date_nanos"                     ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	CLICKHOUSE_DATE32             ("Date32"                         ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	DATERANGE                     ("DATERANGE"                      ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
-	CLICKHOUSE_DATETIME64         ("DateTime"                       ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
-	DATETIME                      ("DATETIME"                       ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
-	DATETIME_WITH_TIME_ZONE       ("DATETIME WITH TIME ZONE"        ,StandardTypeMetadata.NONE                          ,   1,   1,   2),
-	DATETIME2                     ("DATETIME2"                      ,StandardTypeMetadata.DATETIME                      , "DATETIME"                       , "DATETIME({S})"                       , null   , null   , null   ,   1,   1,   2),
-	DATETIMEOFFSET                ("DATETIMEOFFSET"                 ,StandardTypeMetadata.DATETIME                      , "DATETIME"                       , "DATETIME({S})"                       , null   , null   , null   ,   1,   1,   2),
+	CLICKHOUSE_DATETIME64         ("DateTime"                       ,StandardTypeMetadata.TIMESTAMP                     , "TIMESTAMP"                      , "TIMESTAMP({S}) "                     , null   , null   , null   ,   1,   2,   1),
+	DATETIME                      ("DATETIME"                       ,StandardTypeMetadata.TIMESTAMP                     , "TIMESTAMP"                      , "TIMESTAMP({S}) "                     , null   , null   , null   ,   1,   2,   1),
+	DATETIME_WITH_TIME_ZONE       ("DATETIME WITH TIME ZONE"        ,StandardTypeMetadata.TIMESTAMP_WITH_TIME_ZONE      , "TIMESTAMP WITH TIME ZONE"       , "TIMESTAMP({S}) WITH TIME ZONE"       , null   , null   , null   ,   1,   1,   2),
+	DATETIME2                     ("DATETIME2"                      ,StandardTypeMetadata.TIMESTAMP                     , "TIMESTAMP"                      , "TIMESTAMP({S}) "                     , null   , null   , null   ,   1,   1,   2),
+	DATETIMEOFFSET                ("DATETIMEOFFSET"                 ,StandardTypeMetadata.TIMESTAMP                     , "TIMESTAMP"                      , "TIMESTAMP({S}) "                     , null   , null   , null   ,   1,   1,   2),
 	DEC                           ("DEC"                            ,StandardTypeMetadata.DECIMAL                       ,   1,   0,   0),
 	DECFLOAT                      ("DECFLOAT"                       ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	DECIMAL                       ("DECIMAL"                        ,StandardTypeMetadata.NUMBER                        ,   1,   2,   2),
@@ -220,14 +220,14 @@ public enum OracleGenusTypeMetadataAlias implements TypeMetadataAlias {
 	SIMPLE_FLOAT                  ("SIMPLE_FLOAT"                   ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	SIMPLE_INTEGER                ("SIMPLE_INTEGER"                 ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	SIMPLEAGGREGATEFUNCTION       ("SimpleAggregateFunction"        ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
-	SMALLDATETIME                 ("SMALLDATETIME"                  ,StandardTypeMetadata.DATETIME                      , "DATETIME"                       , "DATETIME({S})"                       , null   , null   , null   ,   1,   1,   2),
+	SMALLDATETIME                 ("SMALLDATETIME"                  ,StandardTypeMetadata.TIMESTAMP                     , "TIMESTAMP"                      , "TIMESTAMP({S}) "                     , null   , null   , null   ,   1,   1,   2),
 	SMALLDECIMAL                  ("SMALLDECIMAL"                   ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	SMALLFLOAT                    ("SMALLFLOAT"                     ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	SMALLINT                      ("SMALLINT"                       ,StandardTypeMetadata.NUMBER                        ,   1,   2,   2),
 	SMALLMONEY                    ("SMALLMONEY"                     ,StandardTypeMetadata.NUMBER                        ,   1,   2,   2),
 	SMALLSERIAL                   ("SMALLSERIAL"                    ,StandardTypeMetadata.NUMBER                        ,   1,   2,   2),
 	SPARSE_VECTOR                 ("sparse_vector"                  ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
-	SQL_DATETIMEOFFSET            ("SQL_DATETIMEOFFSET"             ,StandardTypeMetadata.DATETIME                      , "DATETIME"                       , "DATETIME({S})"                       , null   , null   , null   ,   1,   1,   2),
+	SQL_DATETIMEOFFSET            ("SQL_DATETIMEOFFSET"             ,StandardTypeMetadata.TIMESTAMP                     , "TIMESTAMP"                      , "TIMESTAMP({S}) "                     , null   , null   , null   ,   1,   1,   2),
 	SQL_VARIANT                   ("SQL_VARIANT"                    ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	ST_GEOMETRY                   ("ST_GEOMETRY"                    ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	ST_POINT                      ("ST_POINT"                       ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
@@ -238,17 +238,17 @@ public enum OracleGenusTypeMetadataAlias implements TypeMetadataAlias {
 	SYSNAME                       ("SYSNAME"                        ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	TEXT                          ("TEXT"                           ,StandardTypeMetadata.CLOB                          ,   1,   1,   1),
 	TID                           ("TID"                            ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
-	TIME                          ("TIME"                           ,StandardTypeMetadata.TIMESTAMP                     ,   1,   1,   2),
-	TIME_TZ_UNCONSTRAINED         ("TIME TZ UNCONSTRAINED"          ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
-	TIME_WITH_TIME_ZONE           ("TIME WITH TIME ZONE"            ,StandardTypeMetadata.TIME_WITH_TIME_ZONE           ,   1,   1,   1),
-	TIME_WITH_ZONE                ("TIME WITH TIME ZONE"            ,StandardTypeMetadata.TIME_WITH_TIME_ZONE           ,   1,   1,   1),
+	TIME                          ("TIME"                           ,StandardTypeMetadata.TIMESTAMP                     , "TIMESTAMP"                      , "TIMESTAMP({S}) "                     , null   , null   , null   ,   1,   1,   2),
+	TIME_TZ_UNCONSTRAINED         ("TIME TZ UNCONSTRAINED"          ,StandardTypeMetadata.TIMESTAMP_WITH_TIME_ZONE      , "TIMESTAMP WITH TIME ZONE"       , "TIMESTAMP({S}) WITH TIME ZONE"       , null   , null   , null   ,   1,   1,   2),
+	TIME_WITH_TIME_ZONE           ("TIME WITH TIME ZONE"            ,StandardTypeMetadata.TIME_WITH_TIME_ZONE           , "TIMESTAMP WITH TIME ZONE"       , "TIMESTAMP({S}) WITH TIME ZONE"       , null   , null   , null   ,   1,   1,   1),
+	TIME_WITH_ZONE                ("TIME WITH TIME ZONE"            ,StandardTypeMetadata.TIME_WITH_TIME_ZONE           , "TIMESTAMP WITH TIME ZONE"       , "TIMESTAMP({S}) WITH TIME ZONE"       , null   , null   , null   ,   1,   1,   1),
 	TIME_WITHOUT_TIME_ZONE        ("TIME WITHOUT TIME ZONE"         ,StandardTypeMetadata.TIME_WITHOUT_TIME_ZONE        , "TIMESTAMP"                      , "TIMESTAMP({S}) "                     , null   , null   , null   ,   1,   1,   1),
 	TIME_WITHOUT_ZONE             ("TIME WITHOUT TIME ZONE"         ,StandardTypeMetadata.TIME_WITHOUT_TIME_ZONE        , "TIMESTAMP"                      , "TIMESTAMP({S}) "                     , null   , null   , null   ,   1,   1,   1),
-	TIME_UNCONSTRAINED            ("TIME_UNCONSTRAINED"             ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
+	TIME_UNCONSTRAINED            ("TIME_UNCONSTRAINED"             ,StandardTypeMetadata.TIMESTAMP                     , "TIMESTAMP"                      , "TIMESTAMP({S}) "                     , null   , null   , null   ,   1,   2,   1),
 	TIMESTAMP_WITHOUT_TIME_ZONE   ("TIMESTAMP WITHOUT TIME ZONE"    ,StandardTypeMetadata.TIMESTAMP_WITHOUT_TIME_ZONE   , "TIMESTAMP"                      , "TIMESTAMP({S}) "                     , null   , null   , null   ,   1,   2,   1),
 	TIMESTAMP_WITHOUT_ZONE        ("TIMESTAMP WITHOUT TIME ZONE"    ,StandardTypeMetadata.TIMESTAMP_WITHOUT_TIME_ZONE   , "TIMESTAMP"                      , "TIMESTAMP({S}) "                     , null   , null   , null   ,   1,   2,   1),
 	TIMESTAMPTZ                   ("TIMESTAMPTZ"                    ,StandardTypeMetadata.TIMESTAMP_WITH_TIME_ZONE      , "TIMESTAMP WITH TIME ZONE"       , "TIMESTAMP({S}) WITH TIME ZONE"       , null   , null   , null   ,   1,   1,   2),
-	TIMEZ                         ("TIMEZ"                          ,StandardTypeMetadata.TIMESTAMP                     ,   1,   1,   2),
+	TIMEZ                         ("TIMEZ"                          ,StandardTypeMetadata.TIMESTAMP_WITH_TIME_ZONE      , "TIMESTAMP WITH TIME ZONE"       , "TIMESTAMP({S}) WITH TIME ZONE"       , null   , null   , null   ,   1,   1,   2),
 	TINYBLOB                      ("TINYBLOB"                       ,StandardTypeMetadata.BLOB                          ,   1,   1,   1),
 	TINYINT                       ("TINYINT"                        ,StandardTypeMetadata.NUMBER                        ,   1,   2,   2),
 	TINYTEXT                      ("TINYTEXT"                       ,StandardTypeMetadata.CLOB                          ,   1,   1,   1),
@@ -290,7 +290,7 @@ public enum OracleGenusTypeMetadataAlias implements TypeMetadataAlias {
 	private String scaleRefer                ; // 读取元数据依据-小数位数
 	private TypeMetadata.Config config       ; // 集成元数据读写配置
 
-	OracleGenusTypeMetadataAlias(String input, TypeMetadata standard, String meta, String formula, String lengthRefer, String precisionRefer, String scaleRefer, int ignoreLength, int ignorePrecision, int ignoreScale) {
+	OracleGenusTypeMetadataAlias(String input, TypeMetadata standard, String meta, String formula, String lengthRefer, String precisionRefer, String scaleRefer, int ignoreLength, int ignorePrecision, int ignoreScale){
 		this.input = input;
 		this.standard = standard;
 		this.meta = meta;
@@ -303,34 +303,34 @@ public enum OracleGenusTypeMetadataAlias implements TypeMetadataAlias {
 		this.ignoreScale = ignoreScale;
 	}
 
-	OracleGenusTypeMetadataAlias(String input, TypeMetadata standard, String lengthRefer, String precisionRefer, String scaleRefer, int ignoreLength, int ignorePrecision, int ignoreScale) {
+	OracleGenusTypeMetadataAlias(String input, TypeMetadata standard, String lengthRefer, String precisionRefer, String scaleRefer, int ignoreLength, int ignorePrecision, int ignoreScale){
 		this(input, standard, null , null, lengthRefer, precisionRefer, scaleRefer, ignoreLength, ignorePrecision, ignoreScale);
 	}
 
-	OracleGenusTypeMetadataAlias(String input, TypeMetadata standard, String meta, String formula, int ignoreLength, int ignorePrecision, int ignoreScale) {
+	OracleGenusTypeMetadataAlias(String input, TypeMetadata standard, String meta, String formula, int ignoreLength, int ignorePrecision, int ignoreScale){
 		this(input, standard, meta, formula, null, null, null, ignoreLength, ignorePrecision, ignoreScale);
 	}
 
-	OracleGenusTypeMetadataAlias(String input, TypeMetadata standard, int ignoreLength, int ignorePrecision, int ignoreScale) {
+	OracleGenusTypeMetadataAlias(String input, TypeMetadata standard, int ignoreLength, int ignorePrecision, int ignoreScale){
 		this(input, standard, null, null, null, ignoreLength, ignorePrecision, ignoreScale);
 	}
 
-	OracleGenusTypeMetadataAlias(TypeMetadata standard, String lengthRefer, String precisionRefer, String scaleRefer, int ignoreLength, int ignorePrecision, int ignoreScale) {
+	OracleGenusTypeMetadataAlias(TypeMetadata standard, String lengthRefer, String precisionRefer, String scaleRefer, int ignoreLength, int ignorePrecision, int ignoreScale){
 		this(null, standard, lengthRefer, precisionRefer, scaleRefer, ignoreLength, ignorePrecision, ignoreScale);
 	}
 
-	OracleGenusTypeMetadataAlias(String input, TypeMetadata standard) {
+	OracleGenusTypeMetadataAlias(String input, TypeMetadata standard){
 		this.input = input;
 		this.standard = standard;
 	}
 
-	OracleGenusTypeMetadataAlias(TypeMetadata standard) {
+	OracleGenusTypeMetadataAlias(TypeMetadata standard){
 		this.standard = standard;
 	}
 
 	@Override
-	public String input() {
-		if(null == input) {
+	public String input(){
+		if(null == input){
 			input = name();
 		}
 		return input;
@@ -343,7 +343,7 @@ public enum OracleGenusTypeMetadataAlias implements TypeMetadataAlias {
 
 	@Override
 	public TypeMetadata.Config config() {
-		if(null == config) {
+		if(null == config){
 			config = new TypeMetadata.Config();
 			if(null != meta) {
 				config.setMeta(meta);

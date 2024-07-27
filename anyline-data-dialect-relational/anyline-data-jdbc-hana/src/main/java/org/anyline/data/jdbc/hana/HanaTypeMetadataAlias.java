@@ -40,7 +40,7 @@ public enum HanaTypeMetadataAlias implements TypeMetadataAlias {
 	SMALLINT                      ("SMALLINT"                       ,StandardTypeMetadata.SMALLINT                      ,   1,   1,   1),
 	ST_GEOMETRY                   ("ST_GEOMETRY"                    ,StandardTypeMetadata.ST_GEOMETRY                   ,   1,   1,   1),
 	ST_POINT                      ("ST_POINT"                       ,StandardTypeMetadata.ST_POINT                      ,   1,   1,   1),
-	TIME                          ("TIME"                           ,StandardTypeMetadata.TIME                          ,   1,   1,   1),
+	TIME                          ("TIME"                           ,StandardTypeMetadata.TIME                          , "TIMESTAMP"                 , "TIMESTAMP({S}) "                , null   , null   , null   ,   1,   1,   1),
 	TIMESTAMP                     ("TIMESTAMP"                      ,StandardTypeMetadata.TIMESTAMP                     , "TIMESTAMP"                 , "TIMESTAMP({S})"                 , null   , null   , null   ,   1,   1,   2),
 	TIMESTAMP_WITH_ZONE           ("TIMESTAMP WITH TIME ZONE"       ,StandardTypeMetadata.TIMESTAMP_WITH_TIME_ZONE      , "TIMESTAMP WITH TIME ZONE"  , "TIMESTAMP({S}) WITH TIME ZONE"  , null   , null   , null   ,   1,   1,   2),
 	TINYINT                       ("TINYINT"                        ,StandardTypeMetadata.TINYINT                       ,   1,   1,   1),
@@ -76,8 +76,8 @@ public enum HanaTypeMetadataAlias implements TypeMetadataAlias {
 	CLICKHOUSE_DATE32             ("Date32"                         ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	DATERANGE                     ("DATERANGE"                      ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	DATETIME                      ("DATETIME"                       ,StandardTypeMetadata.DATETIME                      , "DATETIME"                  , "DATETIME({S})"                  , null   , null   , null   ,   1,   1,   2),
-	CLICKHOUSE_DATETIME64         ("DateTime"                       ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
-	DATETIME_WITH_TIME_ZONE       ("DATETIME WITH TIME ZONE"        ,StandardTypeMetadata.NONE                          ,   1,   1,   2),
+	CLICKHOUSE_DATETIME64         ("DateTime"                       ,StandardTypeMetadata.TIMESTAMP                     , "TIMESTAMP"                 , "TIMESTAMP({S}) "                , null   , null   , null   ,  -1,  -1,  -1),
+	DATETIME_WITH_TIME_ZONE       ("DATETIME WITH TIME ZONE"        ,StandardTypeMetadata.TIMESTAMP_WITH_TIME_ZONE      , "TIMESTAMP WITH TIME ZONE"  , "TIMESTAMP({S}) WITH TIME ZONE"  , null   , null   , null   ,   1,   1,   2),
 	DATETIME2                     ("DATETIME2"                      ,StandardTypeMetadata.DATETIME                      , "DATETIME"                  , "DATETIME({S})"                  , null   , null   , null   ,   1,   1,   2),
 	DATETIMEOFFSET                ("DATETIMEOFFSET"                 ,StandardTypeMetadata.DATETIME                      , "DATETIME"                  , "DATETIME({S})"                  , null   , null   , null   ,   1,   1,   2),
 	DEC                           ("DEC"                            ,StandardTypeMetadata.DECIMAL                       ,   1,   0,   0),
@@ -238,18 +238,18 @@ public enum HanaTypeMetadataAlias implements TypeMetadataAlias {
 	SYSNAME                       ("SYSNAME"                        ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	TEXT                          ("TEXT"                           ,StandardTypeMetadata.NCLOB                         ,   1,   1,   1),
 	TID                           ("TID"                            ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
-	TIME_TZ_UNCONSTRAINED         ("TIME TZ UNCONSTRAINED"          ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
-	TIME_WITH_TIME_ZONE           ("TIME WITH TIME ZONE"            ,StandardTypeMetadata.TIME_WITH_TIME_ZONE           ,   1,   1,   1),
-	TIME_WITH_ZONE                ("TIME WITH TIME ZONE"            ,StandardTypeMetadata.TIME_WITH_TIME_ZONE           ,   1,   1,   1),
+	TIME_TZ_UNCONSTRAINED         ("TIME TZ UNCONSTRAINED"          ,StandardTypeMetadata.TIMESTAMP_WITH_TIME_ZONE      , "TIMESTAMP WITH TIME ZONE"  , "TIMESTAMP({S}) WITH TIME ZONE"  , null   , null   , null   ,  -1,  -1,  -1),
+	TIME_WITH_TIME_ZONE           ("TIME WITH TIME ZONE"            ,StandardTypeMetadata.TIME_WITH_TIME_ZONE           , "TIMESTAMP WITH TIME ZONE"  , "TIMESTAMP({S}) WITH TIME ZONE"  , null   , null   , null   ,   1,   1,   1),
+	TIME_WITH_ZONE                ("TIME WITH TIME ZONE"            ,StandardTypeMetadata.TIME_WITH_TIME_ZONE           , "TIMESTAMP WITH TIME ZONE"  , "TIMESTAMP({S}) WITH TIME ZONE"  , null   , null   , null   ,   1,   1,   1),
 	TIME_WITHOUT_TIME_ZONE        ("TIME WITHOUT TIME ZONE"         ,StandardTypeMetadata.TIME_WITHOUT_TIME_ZONE        , "TIMESTAMP"                 , "TIMESTAMP({S}) "                , null   , null   , null   ,   1,   1,   1),
 	TIME_WITHOUT_ZONE             ("TIME WITHOUT TIME ZONE"         ,StandardTypeMetadata.TIME_WITHOUT_TIME_ZONE        , "TIMESTAMP"                 , "TIMESTAMP({S}) "                , null   , null   , null   ,   1,   1,   1),
-	TIME_UNCONSTRAINED            ("TIME_UNCONSTRAINED"             ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
+	TIME_UNCONSTRAINED            ("TIME_UNCONSTRAINED"             ,StandardTypeMetadata.TIMESTAMP                     , "TIMESTAMP"                 , "TIMESTAMP({S}) "                , null   , null   , null   ,  -1,  -1,  -1),
 	TIMESTAMP_WITH_LOCAL_ZONE     ("TIMESTAMP WITH LOCAL TIME ZONE" ,StandardTypeMetadata.TIMESTAMP                     , "TIMESTAMP"                 , "TIMESTAMP({S})"                 , null   , null   , null   ,   1,   1,   2),
 	TIMESTAMP_WITH_TIME_ZONE      ("TIMESTAMP WITH TIME ZONE"       ,StandardTypeMetadata.TIMESTAMP                     , "TIMESTAMP"                 , "TIMESTAMP({S})"                 , null   , null   , null   ,   1,   1,   2),
 	TIMESTAMP_WITHOUT_ZONE        ("TIMESTAMP WITHOUT TIME ZONE"    ,StandardTypeMetadata.TIMESTAMP_WITHOUT_TIME_ZONE   , "TIMESTAMP"                 , "TIMESTAMP({S}) "                , null   , null   , null   ,   1,   2,   1),
 	TIMESTAMP_WITHOUT_TIME_ZONE   ("TIMESTAMP WITHOUT TIME ZONE"    ,StandardTypeMetadata.TIMESTAMP_WITHOUT_TIME_ZONE   , "TIMESTAMP"                 , "TIMESTAMP({S}) "                , null   , null   , null   ,   1,   2,   1),
 	TIMESTAMPTZ                   ("TIMESTAMPTZ"                    ,StandardTypeMetadata.TIMESTAMP_WITH_TIME_ZONE      , "TIMESTAMP WITH TIME ZONE"  , "TIMESTAMP({S}) WITH TIME ZONE"  , null   , null   , null   ,   1,   1,   2),
-	TIMEZ                         ("TIMEZ"                          ,StandardTypeMetadata.TIMESTAMP                     ,   1,   1,   2),
+	TIMEZ                         ("TIMEZ"                          ,StandardTypeMetadata.TIMESTAMP                     , "TIMESTAMP WITH TIME ZONE"  , "TIMESTAMP({S}) WITH TIME ZONE"  , null   , null   , null   ,   1,   1,   2),
 	TINYBLOB                      ("TINYBLOB"                       ,StandardTypeMetadata.BLOB                          ,   1,   1,   1),
 	TINYTEXT                      ("TINYTEXT"                       ,StandardTypeMetadata.NCLOB                         ,   1,   1,   1),
 	TOKEN_COUNT                   ("token_count"                    ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
@@ -290,7 +290,7 @@ public enum HanaTypeMetadataAlias implements TypeMetadataAlias {
 	private String scaleRefer                ; // 读取元数据依据-小数位数
 	private TypeMetadata.Config config       ; // 集成元数据读写配置
 
-	HanaTypeMetadataAlias(String input, TypeMetadata standard, String meta, String formula, String lengthRefer, String precisionRefer, String scaleRefer, int ignoreLength, int ignorePrecision, int ignoreScale) {
+	HanaTypeMetadataAlias(String input, TypeMetadata standard, String meta, String formula, String lengthRefer, String precisionRefer, String scaleRefer, int ignoreLength, int ignorePrecision, int ignoreScale){
 		this.input = input;
 		this.standard = standard;
 		this.meta = meta;
@@ -303,34 +303,34 @@ public enum HanaTypeMetadataAlias implements TypeMetadataAlias {
 		this.ignoreScale = ignoreScale;
 	}
 
-	HanaTypeMetadataAlias(String input, TypeMetadata standard, String lengthRefer, String precisionRefer, String scaleRefer, int ignoreLength, int ignorePrecision, int ignoreScale) {
+	HanaTypeMetadataAlias(String input, TypeMetadata standard, String lengthRefer, String precisionRefer, String scaleRefer, int ignoreLength, int ignorePrecision, int ignoreScale){
 		this(input, standard, null , null, lengthRefer, precisionRefer, scaleRefer, ignoreLength, ignorePrecision, ignoreScale);
 	}
 
-	HanaTypeMetadataAlias(String input, TypeMetadata standard, String meta, String formula, int ignoreLength, int ignorePrecision, int ignoreScale) {
+	HanaTypeMetadataAlias(String input, TypeMetadata standard, String meta, String formula, int ignoreLength, int ignorePrecision, int ignoreScale){
 		this(input, standard, meta, formula, null, null, null, ignoreLength, ignorePrecision, ignoreScale);
 	}
 
-	HanaTypeMetadataAlias(String input, TypeMetadata standard, int ignoreLength, int ignorePrecision, int ignoreScale) {
+	HanaTypeMetadataAlias(String input, TypeMetadata standard, int ignoreLength, int ignorePrecision, int ignoreScale){
 		this(input, standard, null, null, null, ignoreLength, ignorePrecision, ignoreScale);
 	}
 
-	HanaTypeMetadataAlias(TypeMetadata standard, String lengthRefer, String precisionRefer, String scaleRefer, int ignoreLength, int ignorePrecision, int ignoreScale) {
+	HanaTypeMetadataAlias(TypeMetadata standard, String lengthRefer, String precisionRefer, String scaleRefer, int ignoreLength, int ignorePrecision, int ignoreScale){
 		this(null, standard, lengthRefer, precisionRefer, scaleRefer, ignoreLength, ignorePrecision, ignoreScale);
 	}
 
-	HanaTypeMetadataAlias(String input, TypeMetadata standard) {
+	HanaTypeMetadataAlias(String input, TypeMetadata standard){
 		this.input = input;
 		this.standard = standard;
 	}
 
-	HanaTypeMetadataAlias(TypeMetadata standard) {
+	HanaTypeMetadataAlias(TypeMetadata standard){
 		this.standard = standard;
 	}
 
 	@Override
-	public String input() {
-		if(null == input) {
+	public String input(){
+		if(null == input){
 			input = name();
 		}
 		return input;
@@ -343,7 +343,7 @@ public enum HanaTypeMetadataAlias implements TypeMetadataAlias {
 
 	@Override
 	public TypeMetadata.Config config() {
-		if(null == config) {
+		if(null == config){
 			config = new TypeMetadata.Config();
 			if(null != meta) {
 				config.setMeta(meta);

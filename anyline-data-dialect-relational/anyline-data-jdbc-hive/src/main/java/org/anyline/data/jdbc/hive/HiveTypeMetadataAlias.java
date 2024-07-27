@@ -290,7 +290,7 @@ public enum HiveTypeMetadataAlias implements TypeMetadataAlias {
 	private String scaleRefer                ; // 读取元数据依据-小数位数
 	private TypeMetadata.Config config       ; // 集成元数据读写配置
 
-	HiveTypeMetadataAlias(String input, TypeMetadata standard, String meta, String formula, String lengthRefer, String precisionRefer, String scaleRefer, int ignoreLength, int ignorePrecision, int ignoreScale) {
+	HiveTypeMetadataAlias(String input, TypeMetadata standard, String meta, String formula, String lengthRefer, String precisionRefer, String scaleRefer, int ignoreLength, int ignorePrecision, int ignoreScale){
 		this.input = input;
 		this.standard = standard;
 		this.meta = meta;
@@ -303,34 +303,34 @@ public enum HiveTypeMetadataAlias implements TypeMetadataAlias {
 		this.ignoreScale = ignoreScale;
 	}
 
-	HiveTypeMetadataAlias(String input, TypeMetadata standard, String lengthRefer, String precisionRefer, String scaleRefer, int ignoreLength, int ignorePrecision, int ignoreScale) {
+	HiveTypeMetadataAlias(String input, TypeMetadata standard, String lengthRefer, String precisionRefer, String scaleRefer, int ignoreLength, int ignorePrecision, int ignoreScale){
 		this(input, standard, null , null, lengthRefer, precisionRefer, scaleRefer, ignoreLength, ignorePrecision, ignoreScale);
 	}
 
-	HiveTypeMetadataAlias(String input, TypeMetadata standard, String meta, String formula, int ignoreLength, int ignorePrecision, int ignoreScale) {
+	HiveTypeMetadataAlias(String input, TypeMetadata standard, String meta, String formula, int ignoreLength, int ignorePrecision, int ignoreScale){
 		this(input, standard, meta, formula, null, null, null, ignoreLength, ignorePrecision, ignoreScale);
 	}
 
-	HiveTypeMetadataAlias(String input, TypeMetadata standard, int ignoreLength, int ignorePrecision, int ignoreScale) {
+	HiveTypeMetadataAlias(String input, TypeMetadata standard, int ignoreLength, int ignorePrecision, int ignoreScale){
 		this(input, standard, null, null, null, ignoreLength, ignorePrecision, ignoreScale);
 	}
 
-	HiveTypeMetadataAlias(TypeMetadata standard, String lengthRefer, String precisionRefer, String scaleRefer, int ignoreLength, int ignorePrecision, int ignoreScale) {
+	HiveTypeMetadataAlias(TypeMetadata standard, String lengthRefer, String precisionRefer, String scaleRefer, int ignoreLength, int ignorePrecision, int ignoreScale){
 		this(null, standard, lengthRefer, precisionRefer, scaleRefer, ignoreLength, ignorePrecision, ignoreScale);
 	}
 
-	HiveTypeMetadataAlias(String input, TypeMetadata standard) {
+	HiveTypeMetadataAlias(String input, TypeMetadata standard){
 		this.input = input;
 		this.standard = standard;
 	}
 
-	HiveTypeMetadataAlias(TypeMetadata standard) {
+	HiveTypeMetadataAlias(TypeMetadata standard){
 		this.standard = standard;
 	}
 
 	@Override
-	public String input() {
-		if(null == input) {
+	public String input(){
+		if(null == input){
 			input = name();
 		}
 		return input;
@@ -343,7 +343,7 @@ public enum HiveTypeMetadataAlias implements TypeMetadataAlias {
 
 	@Override
 	public TypeMetadata.Config config() {
-		if(null == config) {
+		if(null == config){
 			config = new TypeMetadata.Config();
 			if(null != meta) {
 				config.setMeta(meta);
