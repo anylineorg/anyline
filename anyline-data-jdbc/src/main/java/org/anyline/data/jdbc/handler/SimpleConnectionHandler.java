@@ -84,7 +84,7 @@ public class SimpleConnectionHandler implements ConnectionHandler {
     }
 
     @Override
-    public boolean close()  throws Exception{
+    public boolean close()  throws Exception {
         if(null != result && !result.isClosed()) {
             result.close();
         }

@@ -103,7 +103,7 @@ public interface DriverActuator {
      * @param navi 分页
      * @return DataSet
      */
-    default DataSet querys(DriverAdapter adapter, DataRuntime runtime, String random, Procedure procedure, PageNavi navi) throws Exception{
+    default DataSet querys(DriverAdapter adapter, DataRuntime runtime, String random, Procedure procedure, PageNavi navi) throws Exception {
         return null;
     }
 
@@ -158,7 +158,7 @@ public interface DriverActuator {
      * @param random  random
      * @return 输出参数
      */
-    default List<Object> execute(DriverAdapter adapter, DataRuntime runtime, String random, Procedure procedure, String sql, List<Parameter> inputs, List<Parameter> outputs) throws Exception{
+    default List<Object> execute(DriverAdapter adapter, DataRuntime runtime, String random, Procedure procedure, String sql, List<Parameter> inputs, List<Parameter> outputs) throws Exception {
         return null;
     }
     /**
@@ -212,7 +212,7 @@ public interface DriverActuator {
      * @return tables
      * @throws Exception 异常
      */
-    default <T extends Table> List<T> tables(DriverAdapter adapter, DataRuntime runtime, boolean create, List<T> tables,  Catalog catalog, Schema schema, String pattern, int types) throws Exception{
+    default <T extends Table> List<T> tables(DriverAdapter adapter, DataRuntime runtime, boolean create, List<T> tables,  Catalog catalog, Schema schema, String pattern, int types) throws Exception {
         return tables;
     }
     /**
@@ -245,7 +245,7 @@ public interface DriverActuator {
      * @return tables
      * @throws Exception 异常
      */
-    default <T extends Table> List<T> views(DriverAdapter adapter, DataRuntime runtime, boolean create, List<T> views, Catalog catalog, Schema schema, String pattern, int types) throws Exception{
+    default <T extends Table> List<T> views(DriverAdapter adapter, DataRuntime runtime, boolean create, List<T> views, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
         return views;
     }
 
@@ -260,7 +260,7 @@ public interface DriverActuator {
      * @return columns
      * @param <T> Column
      */
-    default <T extends Column> LinkedHashMap<String, T> columns(DriverAdapter adapter, DataRuntime runtime, boolean create, LinkedHashMap<String, T> columns, Table table, String cmd) throws Exception{
+    default <T extends Column> LinkedHashMap<String, T> columns(DriverAdapter adapter, DataRuntime runtime, boolean create, LinkedHashMap<String, T> columns, Table table, String cmd) throws Exception {
         return columns;
     }
     /**
@@ -273,7 +273,7 @@ public interface DriverActuator {
      * @return columns
      * @param <T> Column
      */
-    default <T extends Column> LinkedHashMap<String, T> metadata(DriverAdapter adapter, DataRuntime runtime, boolean create, LinkedHashMap<String, T> columns, Table table, String pattern) throws Exception{
+    default <T extends Column> LinkedHashMap<String, T> metadata(DriverAdapter adapter, DataRuntime runtime, boolean create, LinkedHashMap<String, T> columns, Table table, String pattern) throws Exception {
         return new LinkedHashMap<>();
     }
 
@@ -288,7 +288,7 @@ public interface DriverActuator {
      * @return indexes indexes
      * @throws Exception 异常
      */
-    default <T extends Index> LinkedHashMap<String, T> indexes(DriverAdapter adapter, DataRuntime runtime, boolean create, LinkedHashMap<String, T> indexes, Table table, boolean unique, boolean approximate) throws Exception{
+    default <T extends Index> LinkedHashMap<String, T> indexes(DriverAdapter adapter, DataRuntime runtime, boolean create, LinkedHashMap<String, T> indexes, Table table, boolean unique, boolean approximate) throws Exception {
         return new LinkedHashMap<>();
     }
 }

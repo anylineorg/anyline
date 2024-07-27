@@ -22,6 +22,7 @@ import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.adapter.DriverAdapterHolder;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.runtime.RuntimeHolder;
+import org.anyline.util.ConfigTable;
 
 public class AbstractRuntime implements DataRuntime {
     /**
@@ -135,7 +136,9 @@ public class AbstractRuntime implements DataRuntime {
 
     @Override
     public void setCatalog(String catalog) {
-        this.catalog = catalog;
+        if(ConfigTable.KEEP_ADAPTER == 1) {
+            this.catalog = catalog;
+        }
     }
 
     @Override
@@ -145,7 +148,9 @@ public class AbstractRuntime implements DataRuntime {
 
     @Override
     public void setSchema(String schema) {
-        this.schema = schema;
+        if(ConfigTable.KEEP_ADAPTER == 1) {
+            this.schema = schema;
+        }
     }
 
     public DriverAdapter getAdapter() {

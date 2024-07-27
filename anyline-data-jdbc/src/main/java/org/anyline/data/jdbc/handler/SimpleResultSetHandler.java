@@ -77,7 +77,7 @@ public class SimpleResultSetHandler implements ResultSetHandler {
         }
         return true;
     }
-    public LinkedHashMap<String, Object> map() throws Exception{
+    public LinkedHashMap<String, Object> map() throws Exception {
         LinkedHashMap<String,Object> map = null;
         if(null != result && !result.isClosed()) {
             if (result.next()) {
@@ -91,7 +91,7 @@ public class SimpleResultSetHandler implements ResultSetHandler {
         }
         return map;
     }
-    public DataRow row() throws Exception{
+    public DataRow row() throws Exception {
         Map<String, Object> map = map();
         if(null != map) {
             return new DataRow(map);
@@ -101,7 +101,7 @@ public class SimpleResultSetHandler implements ResultSetHandler {
     public ResultSet result() {
         return result;
     }
-    public void close() throws Exception{
+    public void close() throws Exception {
         handler.close();
         result = null;
     }

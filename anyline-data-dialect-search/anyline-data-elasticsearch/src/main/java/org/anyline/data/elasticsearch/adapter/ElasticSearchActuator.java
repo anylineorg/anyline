@@ -157,12 +157,12 @@ public class ElasticSearchActuator implements DriverActuator {
     }
 
     @Override
-    public Map<String, Object> map(DriverAdapter adapter, DataRuntime runtime, String random, ConfigStore configs, Run run) throws Exception{
+    public Map<String, Object> map(DriverAdapter adapter, DataRuntime runtime, String random, ConfigStore configs, Run run) throws Exception {
         return null;
     }
 
     @Override
-    public long insert(DriverAdapter adapter, DataRuntime runtime, String random, Object data, ConfigStore configs, Run run, String generatedKey, String[] pks) throws Exception{
+    public long insert(DriverAdapter adapter, DataRuntime runtime, String random, Object data, ConfigStore configs, Run run, String generatedKey, String[] pks) throws Exception {
         long cnt = 0;
         ElasticSearchRun r = (ElasticSearchRun)run;
         String method = r.getMethod();
@@ -197,7 +197,7 @@ public class ElasticSearchActuator implements DriverActuator {
     }
 
     @Override
-    public long update(DriverAdapter adapter, DataRuntime runtime, String random, Table dest, Object data, ConfigStore configs, Run run) throws Exception{
+    public long update(DriverAdapter adapter, DataRuntime runtime, String random, Table dest, Object data, ConfigStore configs, Run run) throws Exception {
         long cnt = 0;
         ElasticSearchRun r = (ElasticSearchRun)run;
         String method = r.getMethod();
@@ -209,16 +209,16 @@ public class ElasticSearchActuator implements DriverActuator {
     }
 
     @Override
-    public long execute(DriverAdapter adapter, DataRuntime runtime, String random, ConfigStore configs, Run run) throws Exception{
+    public long execute(DriverAdapter adapter, DataRuntime runtime, String random, ConfigStore configs, Run run) throws Exception {
         return update(adapter, runtime, random, null, null, configs, run);
     }
     protected RestClient client(DataRuntime runtime){
         return ((ElasticSearchRuntime)runtime).client();
     }
-    protected HttpResponse execute(String random, DataRuntime runtime, Request request) throws Exception{
+    protected HttpResponse execute(String random, DataRuntime runtime, Request request) throws Exception {
         return execute(random, client(runtime), request);
     }
-    protected HttpResponse execute(String random, RestClient client, Request request) throws Exception{
+    protected HttpResponse execute(String random, RestClient client, Request request) throws Exception {
         HttpResponse result = new HttpResponse();
         Response response = client.performRequest(request);
         //{"_index":"index_user","_id":"102","_version":3,"result":"updated","_shards":{"total":2,"successful":2,"failed":0},"_seq_no":9,"_primary_term":1}

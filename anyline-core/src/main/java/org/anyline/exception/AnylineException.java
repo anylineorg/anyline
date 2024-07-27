@@ -18,7 +18,7 @@
 
 package org.anyline.exception;
 
-public class AnylineException extends RuntimeException{
+public class AnylineException extends RuntimeException {
     private Exception src;
     private int status;
     private String code;

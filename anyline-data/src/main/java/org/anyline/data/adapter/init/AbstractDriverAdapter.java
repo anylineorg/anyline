@@ -46,6 +46,8 @@ import org.anyline.data.run.*;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.util.DataSourceUtil;
 import org.anyline.entity.*;
+import org.anyline.entity.authorize.Privilege;
+import org.anyline.entity.authorize.User;
 import org.anyline.entity.generator.GeneratorConfig;
 import org.anyline.entity.generator.PrimaryGenerator;
 import org.anyline.exception.AnylineException;
@@ -69,6 +71,7 @@ import org.anyline.util.regular.RegularUtil;
 
 import java.lang.reflect.Field;
 import java.util.*;
+
 
 /**
  * SQL生成 子类主要实现与分页相关的SQL 以及delimiter
@@ -4895,7 +4898,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 如果区分不出来的抛出异常
 	 */
 	@Override
-	public <T extends Metadata> T checkName(DataRuntime runtime, String random, T meta) throws RuntimeException{
+	public <T extends Metadata> T checkName(DataRuntime runtime, String random, T meta) throws RuntimeException {
 		if(null == meta) {
 			return null;
 		}
@@ -9670,7 +9673,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Index> T init(DataRuntime runtime, int index, T meta, Table table, DataRow row) throws Exception{
+	public <T extends Index> T init(DataRuntime runtime, int index, T meta, Table table, DataRow row) throws Exception {
 		IndexMetadataAdapter config = indexMetadataAdapter(runtime);
 		String name = row.getString(config.getNameRefers());
 		if(null == meta) {
@@ -9770,7 +9773,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Index> T detail(DataRuntime runtime, int index, T meta, Table table, DataRow row) throws Exception{
+	public <T extends Index> T detail(DataRuntime runtime, int index, T meta, Table table, DataRow row) throws Exception {
 		IndexMetadataAdapter config = indexMetadataAdapter(runtime);
 		//oracle中取了两列COLUMN_EXPRESSION,COLUMN_NAME("NAME",SYS_NC00009$)
 		String columnName = row.getStringWithoutEmpty(config.getColumnRefers());
@@ -11122,6 +11125,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return result;
 	}
+
 	/* *****************************************************************************************************************
 	 * 													table
 	 * -----------------------------------------------------------------------------------------------------------------
@@ -15361,6 +15365,452 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	public List<Run> buildRenameRun(DataRuntime runtime, Sequence meta) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildRenameRun(DataRuntime runtime, Sequence meta)", 37));
+		}
+		return new ArrayList<>();
+	}
+
+
+	/* *****************************************************************************************************************
+	 *
+	 * 													Authorize
+	 *
+	 * =================================================================================================================
+	 * user			: 用户
+	 * grant		: 授权
+	 * privilege	: 权限
+	 ******************************************************************************************************************/
+
+
+	/**
+	 * 执行命令
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param meta Metadata(表,列等)
+	 * @param action 执行命令
+	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
+	 * @return boolean
+	 */
+	@Override
+	public boolean execute(DataRuntime runtime, String random, Metadata meta, ACTION.Authorize action, Run run) {
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 boolean execute(DataRuntime runtime, String random, Metadata meta, ACTION.Authorize action, Run run)", 37));
+		}
+		return false;
+	}
+	@Override
+	public boolean execute(DataRuntime runtime, String random, Metadata meta, ACTION.Authorize action, List<Run> runs) {
+		boolean result = true;
+		int idx = 0;
+		long frs = System.currentTimeMillis();
+		for (Run run : runs) {
+			result = execute(runtime, random + "[index:" + idx++ + "]", meta, action, run) && result;
+		}
+		long millis = System.currentTimeMillis() - frs;
+		if(runs.size()>1 && ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
+			//如果有多个命令执行，再统计一次 合计时间
+			log.info("{}[action:{}][meta:{}][cmds:{}][result:{}][执行耗时:{}]", random, action, meta.getName(), runs.size(), result, DateUtil.format(millis));
+		}
+		return result;
+	}
+
+	/* *****************************************************************************************************************
+	 * 													user
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * boolean create(DataRuntime runtime, User user) throws Exception
+	 * boolean rename(DataRuntime runtime, User origin, User update) throws Exception;
+	 * boolean delete(DataRuntime runtime, User user) throws Exception
+	 * List<User> users(Catalog catalog, Schema schema, String pattern) throws Exception
+	 * List<Run> buildQueryUsersRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) throws Exception
+	 * <T extends User> List<T> users(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, List<T> users, DataSet set) throws Exception
+	 * <T extends User> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row)
+	 * <T extends User> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row)
+	 ******************************************************************************************************************/
+
+	/**
+	 * user[调用入口]<br/>
+	 * 创建用户
+	 * @param user 用户
+	 * @return boolean
+	 */
+	@Override
+	public boolean create(DataRuntime runtime, User user) throws Exception {
+		boolean result = false;
+		String random = random(runtime);
+		ACTION.Authorize action = ACTION.Authorize.USER_CREATE;
+		List<Run> runs = buildCreateRun(runtime, user);
+		return execute(runtime, random, user, action, runs);
+	}
+
+	/**
+	 * user[调用入口]<br/>
+	 * 用户重命名
+	 * @param origin 原名
+	 * @param update 新名
+	 * @return boolean
+	 */
+	@Override
+	public boolean rename(DataRuntime runtime, User origin, User update) throws Exception {
+		boolean result = false;
+		String random = random(runtime);
+		ACTION.Authorize action = ACTION.Authorize.USER_RENAME;
+		List<Run> runs = buildRenameRun(runtime, origin, update);
+		return execute(runtime, random, origin, action, runs);
+	}
+
+	/**
+	 * user[调用入口]<br/>
+	 * 删除用户
+	 * @param user 用户
+	 * @return boolean
+	 */
+	@Override
+	public boolean delete(DataRuntime runtime, User user) throws Exception {
+		boolean result = false;
+		String random = random(runtime);
+		ACTION.Authorize action = ACTION.Authorize.USER_DELETE;
+		List<Run> runs = buildDeleteRun(runtime, user);
+		return execute(runtime, random, user, action, runs);
+	}
+
+	/**
+	 * user[调用入口]<br/>
+	 * 查询用户
+	 * @param catalog Catalog
+	 * @param schema Schema
+	 * @param pattern 用户名
+	 * @return List
+	 */
+	@Override
+	public List<User> users(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) throws Exception {
+		List<User> users = null;
+		return users;
+	}
+
+	/**
+	 * user[命令合成]<br/>
+	 * 创建用户
+	 * @param user 用户
+	 * @return List
+	 */
+	@Override
+	public List<Run> buildCreateRun(DataRuntime runtime, User user) throws Exception {
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildCreateRun(DataRuntime runtime, User user)", 37));
+		}
+		return new ArrayList<>();
+	}
+	/**
+	 * user[命令合成]<br/>
+	 * 用户重命名
+	 * @param origin 原名
+	 * @param update 新名
+	 * @return List
+	 */
+	@Override
+	public List<Run> buildRenameRun(DataRuntime runtime, User origin, User update) throws Exception {
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildRenameRun(DataRuntime runtime, User origin, User update)", 37));
+		}
+		return new ArrayList<>();
+	}
+
+	/**
+	 * user[命令合成]<br/>
+	 * 删除用户
+	 * @param user 用户
+	 * @return List
+	 */
+	@Override
+	public List<Run> buildDeleteRun(DataRuntime runtime, User user) throws Exception {
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildDeleteRun(DataRuntime runtime, User user)", 37));
+		}
+		return new ArrayList<>();
+	}
+
+	/**
+	 * user[命令合成]<br/>
+	 * 查询用户
+	 * @param pattern 用户名
+	 * @return List
+	 */
+	@Override
+	public List<Run> buildQueryUsersRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) throws Exception {
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryUsersRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern)", 37));
+		}
+		return new ArrayList<>();
+	}
+	/**
+	 * user[结果集封装]<br/>
+	 * 根据查询结果集构造 user
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param index 第几条查询SQL 对照 buildQueryUserssRun 返回顺序
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param users 上一步查询结果
+	 * @param set 查询结果集
+	 * @return List
+	 * @throws Exception 异常
+	 */
+	@Override
+	public <T extends User> List<T> users(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, List<T> users, DataSet set) throws Exception {
+		if(null == users){
+			users = new ArrayList<>();
+		}
+		for(DataRow row:set) {
+			T meta = null;
+			meta = init(runtime, index, meta, catalog, schema, row);
+			meta = detail(runtime, index, meta, catalog, schema, row);
+			users.add(meta);
+		}
+		return users;
+	}
+
+	/**
+	 * user[结果集封装]<br/>
+	 * 根据查询结果封装 user 对象,只封装catalog,schema,name等基础属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 上一步封装结果
+	 * @param catalog catalogF
+	 * @param schema schema
+	 * @param row 查询结果集
+	 * @return User
+	 */
+	@Override
+	public <T extends User> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row) {
+		return meta;
+	}
+	/**
+	 * user[结果集封装]<br/>
+	 * 根据查询结果封装 user 对象,更多属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 上一步封装结果
+	 * @param row 查询结果集
+	 * @return User
+	 */
+	@Override
+	public <T extends User> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row) {
+		return meta;
+	}
+
+	/**
+	 * user [结构集封装-依据]<br/>
+	 * 读取 user 元数据结果集的依据
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return UserMetadataAdapter
+	 */
+	@Override
+	public UserMetadataAdapter userMetadataAdapter(DataRuntime runtime) {
+		UserMetadataAdapter adapter = new UserMetadataAdapter();
+		return adapter;
+	}
+
+
+	/* *****************************************************************************************************************
+	 * 													privilege
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * List<Privilege> privileges(DataRuntime runtime, User user)
+	 * List<Run> buildQueryPrivilegesRun(DataRuntime runtime, User user) throws Exception
+	 * <T extends Privilege> List<T> privileges(DataRuntime runtime, int index, boolean create, User user, List<T> privileges, DataSet set) throws Exception
+	 * <T extends Privilege> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, User user, DataRow row)
+	 * <T extends Privilege> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row)
+	 * PrivilegeMetadataAdapter privilegeMetadataAdapter(DataRuntime runtime)
+	 ******************************************************************************************************************/
+
+	/**
+	 * privilege[调用入口]<br/>
+	 * 查询用户权限
+	 * @param user 用户
+	 * @return List
+	 */
+	@Override
+	public List<Privilege> privileges(DataRuntime runtime, User user) throws Exception {
+		String random = random(runtime);
+		List<Privilege> privileges = new ArrayList<>();
+		try{
+			long fr = System.currentTimeMillis();
+			// 根据系统表查询
+			try{
+				List<Run> runs = buildQueryPrivilegesRun(runtime, user);
+				if(null != runs) {
+					int idx = 0;
+					for(Run run:runs) {
+						DataSet set = select(runtime, random, true, (Table)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+						privileges = privileges(runtime, idx++, true, user, privileges, set);
+					}
+				}
+			}catch (Exception e) {
+				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+					e.printStackTrace();
+				}else if (ConfigTable.IS_LOG_SQL && log.isWarnEnabled()) {
+					log.warn("{}[privileges][{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), e.toString());
+				}
+			}
+			if (ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
+				log.info("{}[privileges][result:{}][执行耗时:{}]", random, privileges.size(), DateUtil.format(System.currentTimeMillis() - fr));
+			}
+		}catch (Exception e) {
+			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+				e.printStackTrace();
+			}else{
+				log.error("[privileges][result:fail][msg:{}]", e.toString());
+			}
+		}
+		return privileges;
+	}
+
+
+	/**
+	 * privilege[命令合成]<br/>
+	 * 查询用户权限
+	 * @param user 用户
+	 * @return List
+	 */
+	@Override
+	public List<Run> buildQueryPrivilegesRun(DataRuntime runtime, User user) throws Exception {
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryPrivilegesRun(DataRuntime runtime, User user)", 37));
+		}
+		return new ArrayList<>();
+	}
+
+
+
+	/**
+	 * privilege[结果集封装]<br/>
+	 * 根据查询结果集构造 Trigger
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param user 用户
+	 * @param privileges 上一步查询结果
+	 * @param set 查询结果集
+	 * @return List
+	 * @throws Exception 异常
+	 */
+	@Override
+	public <T extends Privilege> List<T> privileges(DataRuntime runtime, int index, boolean create, User user, List<T> privileges, DataSet set) throws Exception {
+		if(null == privileges){
+			privileges = new ArrayList<>();
+		}
+		for(DataRow row:set) {
+			T meta = null;
+			meta = init(runtime, index, meta, user, row);
+			meta = detail(runtime, index, meta, user, row);
+			privileges.add(meta);
+		}
+		return privileges;
+	}
+
+	/**
+	 * privilege[结果集封装]<br/>
+	 * 根据查询结果封装Privilege对象,只封装catalog,schema,name等基础属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 上一步封装结果
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param user 用户
+	 * @param row 查询结果集
+	 * @return Privilege
+	 */
+	@Override
+	public <T extends Privilege> T init(DataRuntime runtime, int index, T meta, User user, DataRow row) {
+		return meta;
+	}
+	/**
+	 * privilege[结果集封装]<br/>
+	 * 根据查询结果封装Privilege对象,更多属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 上一步封装结果
+	 * @param row 查询结果集
+	 * @return Privilege
+	 */
+	@Override
+	public <T extends Privilege> T detail(DataRuntime runtime, int index, T meta, User user, DataRow row) {
+		return meta;
+	}
+
+	/**
+	 * privilege[结构集封装-依据]<br/>
+	 * 读取 Privilege 元数据结果集的依据
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return PrivilegeMetadataAdapter
+	 */
+	@Override
+	public PrivilegeMetadataAdapter privilegeMetadataAdapter(DataRuntime runtime) {
+		PrivilegeMetadataAdapter adapter = new PrivilegeMetadataAdapter();
+		return adapter;
+	}
+
+	/* *****************************************************************************************************************
+	 * 													grant
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * boolean grant(DataRuntime runtime, User user, Privilege... privileges)  throws Exception
+	 * List<Run> buildGrantRun(DataRuntime runtime, User user, Privilege... privileges) throws Exception
+	 * boolean revoke(DataRuntime runtime, User user, Privilege ... privileges) throws Exception	 *
+	 ******************************************************************************************************************/
+	/**
+	 * privilege[调用入口]<br/>
+	 * 授权
+	 * @param user 用户
+	 * @param privileges 权限
+	 * @return boolean
+	 */
+	@Override
+	public boolean grant(DataRuntime runtime, User user, Privilege... privileges)  throws Exception {
+		boolean result = false;
+		String random = random(runtime);
+		ACTION.Authorize action = ACTION.Authorize.GRANT;
+		List<Run> runs = buildGrantRun(runtime, user);
+		return execute(runtime, random, user, action, runs);
+	}
+
+
+	/**
+	 * grant[命令合成]<br/>
+	 * 授权
+	 * @param user 用户
+	 * @param privileges 权限
+	 * @return List
+	 */
+	@Override
+	public List<Run> buildGrantRun(DataRuntime runtime, User user, Privilege... privileges) throws Exception {
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 buildGrantRun(DataRuntime runtime, User user, Privilege... privileges)", 37));
+		}
+		return new ArrayList<>();
+	}
+	/**
+	 * revoke[调用入口]<br/>
+	 * 撤销授权
+	 * @param user 用户
+	 * @param privileges 权限
+	 * @return boolean
+	 */
+	@Override
+	public boolean revoke(DataRuntime runtime, User user, Privilege ... privileges) throws Exception {
+		boolean result = false;
+		String random = random(runtime);
+		ACTION.Authorize action = ACTION.Authorize.REVOKE;
+		List<Run> runs = buildRevokeRun(runtime, user);
+		return execute(runtime, random, user, action, runs);
+	}
+
+
+
+	/**
+	 * revoke[命令合成]<br/>
+	 * 撤销授权
+	 * @param user 用户
+	 * @param privileges 权限
+	 * @return List
+	 */
+	@Override
+	public List<Run> buildRevokeRun(DataRuntime runtime, User user, Privilege ... privileges) throws Exception {
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 buildRevokeRun(DataRuntime runtime, User user, Privilege ... privileges)", 37));
 		}
 		return new ArrayList<>();
 	}

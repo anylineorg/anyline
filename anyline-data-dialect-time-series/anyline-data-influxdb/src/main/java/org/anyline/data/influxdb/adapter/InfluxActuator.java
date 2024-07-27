@@ -175,12 +175,12 @@ public class InfluxActuator implements DriverActuator {
     }
 
     @Override
-    public Map<String, Object> map(DriverAdapter adapter, DataRuntime runtime, String random, ConfigStore configs, Run run) throws Exception{
+    public Map<String, Object> map(DriverAdapter adapter, DataRuntime runtime, String random, ConfigStore configs, Run run) throws Exception {
         return null;
     }
 
     @Override
-    public long insert(DriverAdapter adapter, DataRuntime runtime, String random, Object data, ConfigStore configs, Run run, String generatedKey, String[] pks) throws Exception{
+    public long insert(DriverAdapter adapter, DataRuntime runtime, String random, Object data, ConfigStore configs, Run run, String generatedKey, String[] pks) throws Exception {
         long cnt = -1;
         InfluxDBClient client = client(runtime);
         WriteApiBlocking api = client.getWriteApiBlocking();
@@ -194,14 +194,14 @@ public class InfluxActuator implements DriverActuator {
     }
 
     @Override
-    public long update(DriverAdapter adapter, DataRuntime runtime, String random, Table dest, Object data, ConfigStore configs, Run run) throws Exception{
+    public long update(DriverAdapter adapter, DataRuntime runtime, String random, Table dest, Object data, ConfigStore configs, Run run) throws Exception {
         return 0;
     }
 
     
 
     @Override
-    public long execute(DriverAdapter adapter, DataRuntime runtime, String random, ConfigStore configs, Run run) throws Exception{
+    public long execute(DriverAdapter adapter, DataRuntime runtime, String random, ConfigStore configs, Run run) throws Exception {
         InfluxRuntime rt = (InfluxRuntime)runtime;
         InfluxRun r = (InfluxRun)run;
         Map<String, String> header = r.headers();

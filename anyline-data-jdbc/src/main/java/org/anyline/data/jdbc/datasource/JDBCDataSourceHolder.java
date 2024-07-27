@@ -179,13 +179,17 @@ public class JDBCDataSourceHolder extends AbstractDataSourceHolder implements Da
                     if(BasicUtil.isEmpty(catalog)) {
                         catalog = org.anyline.data.util.DataSourceUtil.parseCatalog(url);
                     }
-                    runtime.setCatalog(catalog);
+                    if(ConfigTable.KEEP_ADAPTER == 1) {
+                        runtime.setCatalog(catalog);
+                    }
 
                     String schema = param.get("schema")+"";
                     if(BasicUtil.isEmpty(schema)) {
                         schema = org.anyline.data.util.DataSourceUtil.parseSchema(url);
                     }
-                    runtime.setSchema(schema);
+                    if(ConfigTable.KEEP_ADAPTER == 1) {
+                        runtime.setSchema(schema);
+                    }
                 }
             }
         }

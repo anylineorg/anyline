@@ -77,10 +77,10 @@ public class DESUtil {
 		} 
 		return instance; 
 	} 
-	protected DESUtil() throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException{
+	protected DESUtil() throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException {
 		this(DEFAULT_SECRET_KEY); 
 	} 
-	protected DESUtil(String key) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException{
+	protected DESUtil(String key) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException {
 
 		//Security.addProvider(new SunJCE());
 		java.security.Security.getProvider("SunJCE");
@@ -102,10 +102,10 @@ public class DESUtil {
 	 * @throws BadPaddingException  BadPaddingException
 	 * @throws IllegalBlockSizeException  BadPaddingException
 	 */ 
-	private byte[] encrypt(byte[] bytes) throws BadPaddingException, IllegalBlockSizeException{
+	private byte[] encrypt(byte[] bytes) throws BadPaddingException, IllegalBlockSizeException {
 		return encryptCipher.doFinal(bytes);
 	} 
-	public String encrypt(String str) throws BadPaddingException, IllegalBlockSizeException{
+	public String encrypt(String str) throws BadPaddingException, IllegalBlockSizeException {
 		if(null == str || ignores.contains(str)) {
 			return str;
 		}
@@ -120,7 +120,7 @@ public class DESUtil {
 	 * @throws BadPaddingException  BadPaddingException
 	 * @throws IllegalBlockSizeException  IllegalBlockSizeException
 	 */ 
-	private byte[] decrypt(byte[] bytes) throws BadPaddingException, IllegalBlockSizeException{
+	private byte[] decrypt(byte[] bytes) throws BadPaddingException, IllegalBlockSizeException {
 		return decryptCipher.doFinal(bytes);
 	}
 
@@ -150,7 +150,7 @@ public class DESUtil {
 	 * @throws BadPaddingException BadPaddingException
 	 * @throws UnsupportedEncodingException UnsupportedEncodingException
 	 */
-	public String decrypt(String str)throws IllegalBlockSizeException, BadPaddingException, UnsupportedEncodingException{
+	public String decrypt(String str)throws IllegalBlockSizeException, BadPaddingException, UnsupportedEncodingException {
 		if(null == str || ignores.contains(str)) {
 			return str;
 		}
@@ -167,7 +167,7 @@ public class DESUtil {
 	 * @throws BadPaddingException BadPaddingException
 	 * @throws IllegalBlockSizeException  IllegalBlockSizeException
 	 */ 
-	public static void encrypt(Collection<?> list, String ... keys) throws BadPaddingException, IllegalBlockSizeException{
+	public static void encrypt(Collection<?> list, String ... keys) throws BadPaddingException, IllegalBlockSizeException {
 		if(null == keys || null == list) {
 			return; 
 		} 
@@ -183,7 +183,7 @@ public class DESUtil {
 	 * @throws IllegalBlockSizeException  IllegalBlockSizeException
 	 */ 
 	@SuppressWarnings({"rawtypes","unchecked" })
-	public static void encrypt(Object obj, String ... keys) throws BadPaddingException, IllegalBlockSizeException{
+	public static void encrypt(Object obj, String ... keys) throws BadPaddingException, IllegalBlockSizeException {
 		if(null == keys || null == obj) {
 			return; 
 		} 

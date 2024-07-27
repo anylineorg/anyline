@@ -135,13 +135,17 @@ public class SpringJDBCDataSourceHolder extends JDBCDataSourceHolder {
 					if(BasicUtil.isEmpty(catalog)) {
 						catalog = DataSourceUtil.parseCatalog(url);
 					}
-					runtime.setCatalog(catalog);
+					if(ConfigTable.KEEP_ADAPTER == 1) {
+						runtime.setCatalog(catalog);
+					}
 
 					String schema = param.get("schema")+"";
 					if(BasicUtil.isEmpty(schema)) {
 						schema = DataSourceUtil.parseSchema(url);
 					}
-					runtime.setSchema(schema);
+					if(ConfigTable.KEEP_ADAPTER == 1) {
+						runtime.setSchema(schema);
+					}
 				}
 			}
 		}
@@ -191,15 +195,15 @@ public class SpringJDBCDataSourceHolder extends JDBCDataSourceHolder {
 	 * @param datasource 数据源名称
 	 * @return boolean
 	 */
-	public boolean validate(String datasource) throws Exception{
+	public boolean validate(String datasource) throws Exception {
 		DataRuntime runtime = RuntimeHolder.runtime(datasource);
 		return validate(runtime);
 	}
 
-	public boolean validate(JdbcTemplate jdbc) throws Exception{
+	public boolean validate(JdbcTemplate jdbc) throws Exception {
 		return validate(jdbc.getDataSource());
 	}
-	public boolean validate(DataSource datasource) throws Exception{
+	public boolean validate(DataSource datasource) throws Exception {
 		Connection con = null;
 		try{
 			con = DataSourceUtils.getConnection(datasource);
@@ -210,7 +214,7 @@ public class SpringJDBCDataSourceHolder extends JDBCDataSourceHolder {
 		}
 		return true;
 	}
-	public boolean validate(DataRuntime runtime) throws Exception{
+	public boolean validate(DataRuntime runtime) throws Exception {
 		JdbcTemplate jdbc = (JdbcTemplate) runtime.getProcessor();
 		return validate(jdbc);
 	}

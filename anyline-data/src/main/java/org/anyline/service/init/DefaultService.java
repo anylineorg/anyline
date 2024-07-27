@@ -36,6 +36,8 @@ import org.anyline.data.run.Run;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.util.DataSourceUtil;
 import org.anyline.entity.*;
+import org.anyline.entity.authorize.Privilege;
+import org.anyline.entity.authorize.User;
 import org.anyline.exception.AnylineException;
 import org.anyline.metadata.*;
 import org.anyline.metadata.differ.MetadataDiffer;
@@ -1893,6 +1895,10 @@ public class DefaultService<E> implements AnylineService<E> {
     @Override
     public DDLService ddl() {
         return ddl;
+    }
+    @Override
+    public AuthorizeService authorize() {
+        return authorize;
     }
 
     /* *****************************************************************************************************************
@@ -4028,6 +4034,92 @@ public class DefaultService<E> implements AnylineService<E> {
         public boolean rename(Sequence origin, String name) throws Exception {
             boolean result = dao.rename(origin, name);
             return result;
+        }
+    };
+
+    /* *****************************************************************************************************************
+     *
+     * 													Authorize
+     *
+     * =================================================================================================================
+     * user			: 用户
+     * grant		: 授权
+     * privilege	: 权限
+     ******************************************************************************************************************/
+    public AuthorizeService authorize = new AuthorizeService(){
+
+        /**
+         * 创建用户
+         * @param user 用户
+         * @return boolean
+         */
+        @Override
+        public boolean create(User user) throws Exception {
+            return dao.create(user);
+        }
+
+        /**
+         * 查询用户
+         * @param ctalog Catalog
+         * @param schema Schema
+         * @param pattern 用户名
+         * @return List
+         */
+        @Override
+        public List<User> users(Catalog catalog, Schema schema, String pattern) throws Exception{
+            return dao.users(catalog, schema, pattern);
+        }
+        /**
+         * 用户重命名
+         * @param origin 原名
+         * @param update 新名
+         * @return boolean
+         */
+        @Override
+        public boolean rename(User origin, User update) throws Exception {
+            return dao.rename(origin, update);
+        }
+
+        /**
+         * 删除用户
+         * @param user 用户
+         * @return boolean
+         */
+        @Override
+        public boolean delete(User user) throws Exception {
+            return dao.delete(user);
+        }
+
+        /**
+         * 授权
+         * @param user 用户
+         * @param privileges 权限
+         * @return boolean
+         */
+        @Override
+        public boolean grant(User user, Privilege... privileges) throws Exception {
+            return dao.grant(user, privileges);
+        }
+
+        /**
+         * 查询用户权限
+         * @param user 用户
+         * @return List
+         */
+        @Override
+        public List<Privilege> privileges(User user) throws Exception {
+            return dao.privileges(user);
+        }
+
+        /**
+         * 撤销授权
+         * @param user 用户
+         * @param privileges 权限
+         * @return boolean
+         */
+        @Override
+        public boolean revoke(User user, Privilege... privileges) throws Exception {
+            return dao.revoke(user, privileges);
         }
     };
 }

@@ -33,6 +33,8 @@ import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.runtime.RuntimeHolder;
 import org.anyline.data.util.DataSourceUtil;
 import org.anyline.entity.*;
+import org.anyline.entity.authorize.Privilege;
+import org.anyline.entity.authorize.User;
 import org.anyline.metadata.*;
 import org.anyline.metadata.differ.MetadataDiffer;
 import org.anyline.metadata.graph.EdgeTable;
@@ -1921,6 +1923,99 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		DataRuntime runtime = runtime();
 		return runtime.getAdapter().rename(runtime, origin, name);
 	}
+
+	/* *****************************************************************************************************************
+	 *
+	 * 													Authorize
+	 *
+	 * =================================================================================================================
+	 * user			: 用户
+	 * grant		: 授权
+	 * privilege	: 权限
+	 ******************************************************************************************************************/
+
+	/**
+	 * 创建用户
+	 * @param user 用户
+	 * @return boolean
+	 */
+	@Override
+	public boolean create(User user) throws Exception {
+		DataRuntime runtime = runtime();
+		return runtime.getAdapter().create(runtime, user);
+	}
+
+
+	/**
+	 * 查询用户
+	 * @param catalog Catalog
+	 * @param schema Schema
+	 * @param pattern 用户名
+	 * @return List
+	 */
+	@Override
+	public List<User> users(Catalog catalog, Schema schema, String pattern) throws Exception{
+		DataRuntime runtime = runtime();
+		return runtime.getAdapter().users(runtime, catalog, schema, pattern);
+	}
+	/**
+	 * 用户重命名
+	 * @param origin 原名
+	 * @param update 新名
+	 * @return boolean
+	 */
+	@Override
+	public boolean rename(User origin, User update) throws Exception {
+		DataRuntime runtime = runtime();
+		return runtime.getAdapter().rename(runtime, origin, update);
+	}
+
+
+	/**
+	 * 删除用户
+	 * @param user 用户
+	 * @return boolean
+	 */
+	@Override
+	public boolean delete(User user) throws Exception {
+		DataRuntime runtime = runtime();
+		return runtime.getAdapter().delete(runtime, user);
+	}
+
+	/**
+	 * 授权
+	 * @param user 用户
+	 * @param privileges 权限
+	 * @return boolean
+	 */
+	@Override
+	public boolean grant(User user, Privilege... privileges) throws Exception {
+		DataRuntime runtime = runtime();
+		return runtime.getAdapter().grant(runtime, user, privileges);
+	}
+	/**
+	 * 查询用户权限
+	 * @param user 用户
+	 * @return List
+	 */
+	@Override
+	public List<Privilege> privileges(User user) throws Exception {
+		DataRuntime runtime = runtime();
+		return runtime.getAdapter().privileges(runtime, user);
+	}
+
+	/**
+	 * 撤销授权
+	 * @param user 用户
+	 * @param privileges 权限
+	 * @return boolean
+	 */
+	@Override
+	public boolean revoke(User user, Privilege ... privileges) throws Exception {
+		DataRuntime runtime = runtime();
+		return runtime.getAdapter().revoke(runtime, user, privileges);
+	}
+
 	/* *****************************************************************************************************************
 	 *
 	 * 													common

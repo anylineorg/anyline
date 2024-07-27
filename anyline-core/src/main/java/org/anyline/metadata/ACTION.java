@@ -117,6 +117,14 @@ public interface ACTION {
             return this.title;
         }
     }
+    enum Authorize implements ACTION{
+        USER_CREATE,
+        USER_RENAME,
+        USER_DELETE,
+        GRANT,
+        REVOKE,
+        PROCEDURE
+    }
 
     /*
      * before1

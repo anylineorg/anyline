@@ -28,6 +28,8 @@ import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.EntitySet;
 import org.anyline.entity.PageNavi;
+import org.anyline.entity.authorize.Privilege;
+import org.anyline.entity.authorize.User;
 import org.anyline.metadata.*;
 import org.anyline.metadata.differ.MetadataDiffer;
 import org.anyline.metadata.graph.EdgeTable;
@@ -1910,4 +1912,138 @@ public interface AnylineDao<E>{
 	boolean alter(Sequence sequence) throws Exception;
 	boolean drop(Sequence sequence) throws Exception;
 	boolean rename(Sequence origin, String name) throws Exception;
+
+	/* *****************************************************************************************************************
+	 *
+	 * 													Authorize
+	 *
+	 * =================================================================================================================
+	 * user			: 用户
+	 * grant		: 授权
+	 * privilege	: 权限
+	 ******************************************************************************************************************/
+
+	/**
+	 * 创建用户
+	 * @param user 用户
+	 * @return boolean
+	 */
+	boolean create(User user) throws Exception;
+
+	/**
+	 * 创建用户
+	 * @param name 用户名
+	 * @param password 密码
+	 * @return boolean
+	 */
+	default boolean create(String name, String password) throws Exception {
+		return create(new User(name, password));
+	}
+
+	/**
+	 * 用户重命名
+	 * @param origin 原名
+	 * @param update 新名
+	 * @return boolean
+	 */
+	boolean rename(User origin, User update) throws Exception;
+
+	/**
+	 * 用户重命名
+	 * @param origin 原名
+	 * @param update 新名
+	 * @return boolean
+	 */
+	default boolean rename(String origin, String update) throws Exception {
+		return rename(new User(origin), new User(update));
+	}
+
+	/**
+	 * 查询用户
+	 * @param catalog Catalog
+	 * @param schema Schema
+	 * @param pattern 用户名
+	 * @return List
+	 */
+	List<User> users(Catalog catalog, Schema schema, String pattern) throws Exception;
+	/**
+	 * 查询用户
+	 * @return List
+	 */
+	default List<User> users() throws Exception {
+		return users(null, null, null);
+	}
+	/**
+	 * 查询用户
+	 * @param pattern 用户名
+	 * @return List
+	 */
+	default List<User> users(String pattern) throws Exception {
+		return users(null, null, pattern);
+	}
+	/**
+	 * 删除用户
+	 * @param user 用户
+	 * @return boolean
+	 */
+	boolean delete(User user) throws Exception;
+	/**
+	 * 删除用户
+	 * @param user 用户名
+	 * @return boolean
+	 */
+	default boolean delete(String user) throws Exception {
+		return delete(new User(user));
+	}
+
+	/**
+	 * 授权
+	 * @param user 用户
+	 * @param privileges 权限
+	 * @return boolean
+	 */
+	boolean grant(User user, Privilege... privileges) throws Exception;
+	/**
+	 * 授权
+	 * @param user 用户
+	 * @param privileges 权限
+	 * @return boolean
+	 */
+	default boolean grant(String user, Privilege ... privileges) throws Exception {
+		return grant(new User(user), privileges);
+	}
+
+	/**
+	 * 查询用户权限
+	 * @param user 用户
+	 * @return List
+	 */
+	List<Privilege> privileges(User user) throws Exception;
+
+	/**
+	 * 查询用户权限
+	 * @param user 用户
+	 * @return List
+	 */
+	default List<Privilege> privileges(String user) throws Exception {
+		return privileges(new User(user));
+	}
+
+	/**
+	 * 撤销授权
+	 * @param user 用户
+	 * @param privileges 权限
+	 * @return boolean
+	 */
+	boolean revoke(User user, Privilege ... privileges) throws Exception;
+
+	/**
+	 * 撤销授权
+	 * @param user 用户
+	 * @param privileges 权限
+	 * @return boolean
+	 */
+	default boolean revoke(String user, Privilege ... privileges) throws Exception {
+		return revoke(new User(user), privileges);
+	}
 } 

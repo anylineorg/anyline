@@ -40,7 +40,7 @@ public interface RuntimeHolder {
      * @throws Exception 异常 Exception
      */
     DataRuntime temporary(Object datasource, String database, DriverAdapter adapter) throws Exception;
-   static boolean destroy(String datasource) throws Exception{
+   static boolean destroy(String datasource) throws Exception {
        DataRuntime runtime = RuntimeHolder.runtime(datasource);
        if(null != runtime) {
            return runtime.destroy();

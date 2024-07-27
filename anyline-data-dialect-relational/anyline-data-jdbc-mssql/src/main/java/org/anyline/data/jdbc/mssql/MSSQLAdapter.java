@@ -3048,7 +3048,7 @@ public class MSSQLAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Index> T init(DataRuntime runtime, int index, T meta, Table table, DataRow row) throws Exception{
+	public <T extends Index> T init(DataRuntime runtime, int index, T meta, Table table, DataRow row) throws Exception {
 		return super.init(runtime, index, meta, table, row);
 	}
 
@@ -3063,7 +3063,7 @@ public class MSSQLAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Index> T detail(DataRuntime runtime, int index, T meta, Table table, DataRow row) throws Exception{
+	public <T extends Index> T detail(DataRuntime runtime, int index, T meta, Table table, DataRow row) throws Exception {
 		return super.detail(runtime, index, meta, table, row);
 	}
 	/**
@@ -4080,7 +4080,7 @@ public class MSSQLAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public List<Run> buildAddCommentRun(DataRuntime runtime, Table table) throws Exception{
+	public List<Run> buildAddCommentRun(DataRuntime runtime, Table table) throws Exception {
 		return buildAppendCommentRun(runtime, table);
 	}
 	/**
@@ -6754,12 +6754,16 @@ public class MSSQLAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 				if (empty(meta.getCatalog())) {
 					catalog = con.getCatalog();
 					meta.setCatalog(catalog);
-					runtime.setCatalog(catalog);
+					if(ConfigTable.KEEP_ADAPTER == 1) {
+						runtime.setCatalog(catalog);
+					}
 				}
 				if (empty(meta.getSchema())) {
 					schema = con.getSchema();
 					meta.setSchema(schema);
-					runtime.setSchema(schema);
+					if(ConfigTable.KEEP_ADAPTER == 1) {
+						runtime.setSchema(schema);
+					}
 				}
 			} catch (Exception e) {
 			}

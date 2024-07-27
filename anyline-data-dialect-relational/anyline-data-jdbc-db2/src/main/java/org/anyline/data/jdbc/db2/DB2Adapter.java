@@ -2896,7 +2896,7 @@ public class DB2Adapter extends InformixGenusAdapter implements JDBCAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Index> T init(DataRuntime runtime, int index, T meta, Table table, DataRow row) throws Exception{
+	public <T extends Index> T init(DataRuntime runtime, int index, T meta, Table table, DataRow row) throws Exception {
 		return super.init(runtime, index, meta, table, row);
 	}
 
@@ -2911,7 +2911,7 @@ public class DB2Adapter extends InformixGenusAdapter implements JDBCAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Index> T detail(DataRuntime runtime, int index, T meta, Table table, DataRow row) throws Exception{
+	public <T extends Index> T detail(DataRuntime runtime, int index, T meta, Table table, DataRow row) throws Exception {
 		return super.detail(runtime, index, meta, table, row);
 	}
 	/**

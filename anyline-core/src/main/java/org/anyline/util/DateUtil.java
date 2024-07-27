@@ -920,7 +920,7 @@ public class DateUtil {
 	 * @param format  format
 	 * @return Date
 	 */
-	public static Date parse(String date, String format) throws RuntimeException{
+	public static Date parse(String date, String format) throws RuntimeException {
 		DateTimeFormatter formatter = null;
 		if(null != format || format.length()==0) {
 			formatter = DateTimeFormatter.ofPattern(format);
@@ -979,7 +979,7 @@ public class DateUtil {
 		Date date = new Date(value.getTime());
 		return date;
 	}
-	public static Date parse(Object value) throws RuntimeException{
+	public static Date parse(Object value) throws RuntimeException {
 		Date date = null;
 		if(null != value) {
 			if(value.getClass() == Date.class) {
@@ -1037,7 +1037,7 @@ public class DateUtil {
 	 * @param value 日期
 	 * @return Date
 	 */
-	public static Date parse(String value) throws RuntimeException{
+	public static Date parse(String value) throws RuntimeException {
 		if (BasicUtil.isEmpty(value)) {
 			return null;
 		}

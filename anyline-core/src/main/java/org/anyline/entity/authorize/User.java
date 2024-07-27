@@ -16,8 +16,9 @@
 
 package org.anyline.entity.authorize;
 
-public class User {
-    private String name;
+import org.anyline.metadata.Metadata;
+
+public class User extends Metadata<User> {
     private String password;
     private String host;
     public User(){
@@ -30,14 +31,6 @@ public class User {
         this.name = name;
         this.password = password;
     }
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getPassword() {
         return password;
     }

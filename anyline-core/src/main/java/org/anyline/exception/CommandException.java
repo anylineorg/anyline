@@ -23,7 +23,7 @@ import org.anyline.metadata.type.DatabaseType;
 
 import java.util.List;
 
-public class CommandException extends RuntimeException{
+public class CommandException extends RuntimeException {
 	protected DatabaseType database;
 	protected String datasource;
 	protected Exception src;

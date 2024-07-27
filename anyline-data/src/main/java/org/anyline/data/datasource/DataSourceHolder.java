@@ -56,10 +56,6 @@ public interface DataSourceHolder {
 	 */
 	Map<String, Object> caches = new HashMap<>();
 
-	/**
-	 * 数据源对应的数据库类型
-	 */
-	Map<String, DatabaseType> types = new HashMap<>();
 
 	/**
 	 * 驱动类型与holder对应关系
@@ -183,7 +179,7 @@ public interface DataSourceHolder {
 	 * @return DataSource
 	 * @throws Exception 异常 Exception
 	 */
-	static String reg(String key, DatabaseType type, String url, String user, String password) throws Exception{
+	static String reg(String key, DatabaseType type, String url, String user, String password) throws Exception {
 		DataSourceHolder instance = instance(type);
 		if(null == instance) {
 			instance = instance(url);
@@ -194,7 +190,7 @@ public interface DataSourceHolder {
 		return null;
 	}
 
-	static String reg(String key, Map<String, Object> param) throws Exception{
+	static String reg(String key, Map<String, Object> param) throws Exception {
 		return reg(key, param, true);
 	}
 
@@ -253,7 +249,7 @@ public interface DataSourceHolder {
 	static DataRuntime reg(String key, Object datasource, DatabaseType type) throws Exception {
 		return reg(key, datasource, null, type, null,true);
 	}
-	static boolean destroy(String datasource) throws Exception{
+	static boolean destroy(String datasource) throws Exception {
 		return RuntimeHolder.destroy(datasource);
 	}
 	/**
@@ -289,10 +285,11 @@ public interface DataSourceHolder {
 	 * @return 数据库类型
 	 */
 	static DatabaseType dialect(String datasource) {
-		return types.get(datasource);
+		return ServiceProxy.service(datasource).metadata().type();
 	}
-	static void dialect(String datasource, DatabaseType type) {
-		types.put(datasource, type);
+
+	static DatabaseType dialect() {
+		return ServiceProxy.service().metadata().type();
 	}
 
 	/**
@@ -431,7 +428,7 @@ public interface DataSourceHolder {
 	String create(String key, String prefix);
 	DataSource create(String key, Connection connection, boolean override);
 
-	default String create(String key, Map<String, Object> param) throws Exception{
+	default String create(String key, Map<String, Object> param) throws Exception {
 		return create(key, param, true);
 	}
 
@@ -469,7 +466,7 @@ public interface DataSourceHolder {
 	 * @return boolean
 	 * @throws Exception 不可用时抛出异常
 	 */
-	default boolean validate(String datasource) throws Exception{
+	default boolean validate(String datasource) throws Exception {
 		DataRuntime runtime = RuntimeHolder.runtime(datasource);
 		return validate(runtime);
 	}
@@ -479,7 +476,7 @@ public interface DataSourceHolder {
 	 * @return boolean
 	 * @throws Exception 不可用时抛出异常
 	 */
-	default boolean validate() throws Exception{
+	default boolean validate() throws Exception {
 		return validate(RuntimeHolder.runtime());
 	}
 	/**
@@ -567,7 +564,7 @@ public interface DataSourceHolder {
 	 */
 	String runtime(String key, String datasource, boolean override) throws Exception;
 	DataRuntime runtime(String key, Object datasource, String database, DatabaseType type, DriverAdapter adapter, boolean override) throws Exception;
-	default DataRuntime runtime(String key, Object datasource, boolean override) throws Exception{
+	default DataRuntime runtime(String key, Object datasource, boolean override) throws Exception {
 		return runtime(key, datasource, null, null, null, override);
 	}
 	/**

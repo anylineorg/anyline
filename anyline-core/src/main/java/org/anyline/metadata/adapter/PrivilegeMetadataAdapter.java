@@ -14,19 +14,9 @@
  * limitations under the License.
  */
 
-package org.anyline.entity.authorize;
 
-import org.anyline.metadata.Metadata;
 
-public class Privilege extends Metadata<User> {
-    private String tables;
+package org.anyline.metadata.adapter;
 
-    public Privilege(){}
-    public String getTables() {
-        return tables;
-    }
-
-    public void setTables(String tables) {
-        this.tables = tables;
-    }
+public class PrivilegeMetadataAdapter extends AbstractMetadataAdapter {
 }

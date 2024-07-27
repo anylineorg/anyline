@@ -2533,7 +2533,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @return T
 	 * @throws Exception 如果区分不出来的抛出异常
 	 */
-	public <T extends Metadata> T checkName(DataRuntime runtime, String random, T meta) throws RuntimeException{
+	public <T extends Metadata> T checkName(DataRuntime runtime, String random, T meta) throws RuntimeException {
 		if(null == meta) {
 			return null;
 		}
@@ -4542,7 +4542,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Index> T init(DataRuntime runtime, int index, T meta, Table table, DataRow row) throws Exception{
+	public <T extends Index> T init(DataRuntime runtime, int index, T meta, Table table, DataRow row) throws Exception {
 		return super.init(runtime, index, meta, table, row);
 	}
 
@@ -4557,7 +4557,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Index> T detail(DataRuntime runtime, int index, T meta, Table table, DataRow row) throws Exception{
+	public <T extends Index> T detail(DataRuntime runtime, int index, T meta, Table table, DataRow row) throws Exception {
 		return super.detail(runtime, index, meta, table, row);
 	}
 	/**
@@ -9066,11 +9066,17 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		delimiter(builder, meta.getUpdate().getName());
 		return runs;
 	}
-/***********************************************************************************************************************
- *
- * 													JDBC
- *
- **********************************************************************************************************************/
+
+	@Override
+	public List<Run> buildQueryUsersRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) throws Exception {
+		return null;
+	}
+
+	/***********************************************************************************************************************
+	 *
+	 * 													JDBC
+	 *
+	 **********************************************************************************************************************/
 
 	protected DataSet select(DataRuntime runtime, String random, boolean system, ACTION.DML action, Table table, ConfigStore configs, Run run, String sql, List<Object> values) {
 		if(null == configs) {

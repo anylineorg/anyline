@@ -31,6 +31,8 @@ import org.anyline.data.run.TextRun;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.util.DataSourceUtil;
 import org.anyline.entity.*;
+import org.anyline.entity.authorize.Privilege;
+import org.anyline.entity.authorize.User;
 import org.anyline.entity.generator.PrimaryGenerator;
 import org.anyline.exception.NotSupportException;
 import org.anyline.metadata.*;
@@ -1476,7 +1478,7 @@ public interface DriverAdapter {
 	 * @param value value
 	 * @return value
 	 */
-	default Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder) throws NotSupportException{
+	default Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder) throws NotSupportException {
 		throw new NotSupportException("不支持");
 	}
 	/**
@@ -1490,7 +1492,7 @@ public interface DriverAdapter {
 	 * @param value value
 	 * @return value
 	 */
-	default Object createConditionJsonContains(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder) throws NotSupportException{
+	default Object createConditionJsonContains(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder) throws NotSupportException {
 		throw new NotSupportException("不支持");
 	}
 	/**
@@ -1504,7 +1506,7 @@ public interface DriverAdapter {
 	 * @param value value
 	 * @return value
 	 */
-	default Object createConditionJsonContainsPath(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder) throws NotSupportException{
+	default Object createConditionJsonContainsPath(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder) throws NotSupportException {
 		throw new NotSupportException("不支持");
 	}
 	/**
@@ -1921,7 +1923,9 @@ public interface DriverAdapter {
 				meta.setCatalog(catalog);
 			}
 			if (overrideRuntime || BasicUtil.isEmpty(runtime.getCatalog())) {
-				runtime.setCatalog(catalog);;
+				if(ConfigTable.KEEP_ADAPTER == 1) {
+					runtime.setCatalog(catalog);
+				}
 			}
 		}else{
 			meta.setCatalog((Catalog) null);
@@ -1932,7 +1936,9 @@ public interface DriverAdapter {
 				meta.setSchema(schema);
 			}
 			if (overrideRuntime || BasicUtil.isEmpty(runtime.getSchema())) {
-				runtime.setSchema(schema);
+				if(ConfigTable.KEEP_ADAPTER == 1) {
+					runtime.setSchema(schema);
+				}
 			}
 		}else{
 			meta.setSchema((Schema) null);
@@ -3522,7 +3528,7 @@ public interface DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	<T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, LinkedHashMap<String, T> columns, Table table, String pattern, ConfigStore configs) throws Exception;
-	default <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, LinkedHashMap<String, T> columns, Table table, String pattern) throws Exception{
+	default <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, LinkedHashMap<String, T> columns, Table table, String pattern) throws Exception {
 		return columns(runtime, create, columns, table, pattern, null);
 	}
 
@@ -3535,7 +3541,7 @@ public interface DriverAdapter {
 	 * @return sqls
 	 */
 	List<Run> buildQueryColumnsRun(DataRuntime runtime, Table table, boolean metadata, ConfigStore configs) throws Exception;
-	default List<Run> buildQueryColumnsRun(DataRuntime runtime, Table table, boolean metadata) throws Exception{
+	default List<Run> buildQueryColumnsRun(DataRuntime runtime, Table table, boolean metadata) throws Exception {
 		return buildQueryColumnsRun(runtime, table, metadata, null);
 	}
 
@@ -3550,7 +3556,7 @@ public interface DriverAdapter {
 	 * @return runs
 	 */
 	List<Run> buildQueryColumnsRun(DataRuntime runtime, Catalog catalog, Schema schema, Collection<? extends Table> tables, boolean metadata, ConfigStore configs) throws Exception;
-	default List<Run> buildQueryColumnsRun(DataRuntime runtime, Catalog catalog, Schema schema, Collection<? extends Table> tables, boolean metadata) throws Exception{
+	default List<Run> buildQueryColumnsRun(DataRuntime runtime, Catalog catalog, Schema schema, Collection<? extends Table> tables, boolean metadata) throws Exception {
 		return buildQueryColumnsRun(runtime, catalog, schema, tables, metadata, null);
 	}
 	/**
@@ -4780,7 +4786,7 @@ public interface DriverAdapter {
 	 * @return List
 	 */
 	List<Run> buildAlterRun(DataRuntime runtime, Table meta, Collection<Column> columns, boolean slice) throws Exception;
-	default List<Run> buildAlterRun(DataRuntime runtime, Table meta, Collection<Column> columns) throws Exception{
+	default List<Run> buildAlterRun(DataRuntime runtime, Table meta, Collection<Column> columns) throws Exception {
 		return buildAlterRun(runtime, meta, columns, false);
 	}
 
@@ -4841,7 +4847,7 @@ public interface DriverAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	default List<Run> buildAddCommentRun(DataRuntime runtime, Table table) throws Exception{
+	default List<Run> buildAddCommentRun(DataRuntime runtime, Table table) throws Exception {
 		return buildChangeCommentRun(runtime, table);
 	}
 	/**
@@ -5493,7 +5499,7 @@ public interface DriverAdapter {
 	 * @return String
 	 */
 	List<Run> buildChangeTypeRun(DataRuntime runtime, Column column, boolean slice) throws Exception;
-	default List<Run> buildChangeTypeRun(DataRuntime runtime, Column column) throws Exception{
+	default List<Run> buildChangeTypeRun(DataRuntime runtime, Column column) throws Exception {
 		return buildChangeTypeRun(runtime, column, false);
 	}
 
@@ -6033,7 +6039,7 @@ public interface DriverAdapter {
 	 * @return List
 	 */
 	List<Run> buildAlterRun(DataRuntime runtime, PrimaryKey origin, PrimaryKey meta, boolean slice) throws Exception;
-	default List<Run> buildAlterRun(DataRuntime runtime, PrimaryKey origin, PrimaryKey meta) throws Exception{
+	default List<Run> buildAlterRun(DataRuntime runtime, PrimaryKey origin, PrimaryKey meta) throws Exception {
 		return buildAlterRun(runtime, origin, meta, false);
 	}
 	default List<Run> buildAlterRun(DataRuntime runtime, PrimaryKey meta) throws Exception {
@@ -6770,6 +6776,356 @@ public interface DriverAdapter {
 	 * @return String
 	 */
 	List<Run> buildRenameRun(DataRuntime runtime, Sequence meta) throws Exception;
+
+
+	/* *****************************************************************************************************************
+	 *
+	 * 													Authorize
+	 *
+	 * =================================================================================================================
+	 * user			: 用户
+	 * grant		: 授权
+	 * privilege	: 权限
+	 ******************************************************************************************************************/
+
+	/**
+	 * 执行命令
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param meta Metadata(表,列等)
+	 * @param action 执行命令
+	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
+	 * @return boolean
+	 */
+	boolean execute(DataRuntime runtime, String random, Metadata meta, ACTION.Authorize action, Run run);
+	boolean execute(DataRuntime runtime, String random, Metadata meta, ACTION.Authorize action, List<Run> runs);
+
+	/* *****************************************************************************************************************
+	 * 													user
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * boolean create(DataRuntime runtime, User user) throws Exception
+	 * boolean rename(DataRuntime runtime, User origin, User update) throws Exception;
+	 * boolean delete(DataRuntime runtime, User user) throws Exception
+	 * List<User> users(Catalog catalog, Schema schema, String pattern) throws Exception
+	 * List<Run> buildQueryUsersRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) throws Exception
+	 * <T extends User> List<T> users(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, List<T> users, DataSet set) throws Exception
+	 * <T extends User> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row)
+	 * <T extends User> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row)
+	 ******************************************************************************************************************/
+
+	/**
+	 * user[调用入口]<br/>
+	 * 创建用户
+	 * @param user 用户
+	 * @return boolean
+	 */
+	boolean create(DataRuntime runtime, User user) throws Exception;
+
+	/**
+	 * user[调用入口]<br/>
+	 * 创建用户
+	 * @param name 用户名
+	 * @param password 密码
+	 * @return boolean
+	 */
+	default boolean create(DataRuntime runtime, String name, String password) throws Exception {
+		return create(runtime, new User(name, password));
+	}
+
+	/**
+	 * user[调用入口]<br/>
+	 * 用户重命名
+	 * @param origin 原名
+	 * @param update 新名
+	 * @return boolean
+	 */
+	boolean rename(DataRuntime runtime, User origin, User update) throws Exception;
+
+	/**
+	 * user[调用入口]<br/>
+	 * 用户重命名
+	 * @param origin 原名
+	 * @param update 新名
+	 * @return boolean
+	 */
+	default boolean rename(DataRuntime runtime, String origin, String update)  throws Exception {
+		return rename(runtime, new User(origin), new User(update));
+	}
+
+	/**
+	 * user[调用入口]<br/>
+	 * 删除用户
+	 * @param user 用户
+	 * @return boolean
+	 */
+	boolean delete(DataRuntime runtime, User user) throws Exception;
+	/**
+	 * user[调用入口]<br/>
+	 * 删除用户
+	 * @param user 用户名
+	 * @return boolean
+	 */
+	default boolean delete(DataRuntime runtime, String user)  throws Exception {
+		return delete(runtime, new User(user));
+	}
+
+	/**
+	 * user[调用入口]<br/>
+	 * 查询用户
+	 * @param catalog Catalog
+	 * @param schema Schema
+	 * @param pattern 用户名
+	 * @return List
+	 */
+	List<User> users(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) throws Exception;
+
+	/**
+	 * user[调用入口]<br/>
+	 * 查询用户
+	 * @return List
+	 */
+	default List<User> users(DataRuntime runtime) throws Exception {
+		return users(runtime, null, null, null);
+	}
+	/**
+	 * user[调用入口]<br/>
+	 * 查询用户
+	 * @param pattern 用户名
+	 * @return List
+	 */
+	default List<User> users(DataRuntime runtime, String pattern) throws Exception {
+		return users(runtime, null, null, pattern);
+	}
+
+	/**
+	 * user[命令合成]<br/>
+	 * 创建用户
+	 * @param user 用户
+	 * @return List
+	 */
+	List<Run> buildCreateRun(DataRuntime runtime, User user) throws Exception;
+	/**
+	 * user[命令合成]<br/>
+	 * 用户重命名
+	 * @param origin 原名
+	 * @param update 新名
+	 * @return List
+	 */
+	List<Run> buildRenameRun(DataRuntime runtime, User origin, User update) throws Exception;
+
+	/**
+	 * user[命令合成]<br/>
+	 * 删除用户
+	 * @param user 用户
+	 * @return List
+	 */
+	List<Run> buildDeleteRun(DataRuntime runtime, User user) throws Exception;
+
+	/**
+	 * user[命令合成]<br/>
+	 * 查询用户
+	 * @param pattern 用户名
+	 * @return List
+	 */
+	List<Run> buildQueryUsersRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) throws Exception;
+	/**
+	 * user[结果集封装]<br/>
+	 * 根据查询结果集构造 user
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param index 第几条查询SQL 对照 buildQueryUserssRun 返回顺序
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param users 上一步查询结果
+	 * @param set 查询结果集
+	 * @return List
+	 * @throws Exception 异常
+	 */
+	<T extends User> List<T> users(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, List<T> users, DataSet set) throws Exception;
+
+	/**
+	 * user[结果集封装]<br/>
+	 * 根据查询结果封装 user 对象,只封装catalog,schema,name等基础属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 上一步封装结果
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param row 查询结果集
+	 * @return User
+	 */
+	<T extends User> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row);
+	/**
+	 * user[结果集封装]<br/>
+	 * 根据查询结果封装 user 对象,更多属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 上一步封装结果
+	 * @param row 查询结果集
+	 * @return User
+	 */
+	<T extends User> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row);
+
+	/**
+	 * user [结构集封装-依据]<br/>
+	 * 读取 user 元数据结果集的依据
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return UserMetadataAdapter
+	 */
+	UserMetadataAdapter userMetadataAdapter(DataRuntime runtime);
+
+
+	/* *****************************************************************************************************************
+	 * 													privilege
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * List<Privilege> privileges(DataRuntime runtime, User user)
+	 * List<Run> buildQueryPrivilegesRun(DataRuntime runtime, User user) throws Exception
+	 * <T extends Privilege> List<T> privileges(DataRuntime runtime, int index, boolean create, User user, List<T> privileges, DataSet set) throws Exception
+	 * <T extends Privilege> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, User user, DataRow row)
+	 * <T extends Privilege> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row)
+	 * PrivilegeMetadataAdapter privilegeMetadataAdapter(DataRuntime runtime)
+	 ******************************************************************************************************************/
+
+	/**
+	 * privilege[调用入口]<br/>
+	 * 查询用户权限
+	 * @param user 用户
+	 * @return List
+	 */
+	List<Privilege> privileges(DataRuntime runtime, User user) throws Exception;
+
+	/**
+	 * privilege[调用入口]<br/>
+	 * 查询用户权限
+	 * @param user 用户
+	 * @return List
+	 */
+	default List<Privilege> privileges(DataRuntime runtime, String user) throws Exception {
+		return privileges(runtime, new User(user));
+	}
+
+
+	/**
+	 * privilege[命令合成]<br/>
+	 * 查询用户权限
+	 * @param user 用户
+	 * @return List
+	 */
+	List<Run> buildQueryPrivilegesRun(DataRuntime runtime, User user) throws Exception;
+
+
+
+
+	/**
+	 * privilege[结果集封装]<br/>
+	 * 根据查询结果集构造 Trigger
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param user 用户
+	 * @param privileges 上一步查询结果
+	 * @param set 查询结果集
+	 * @return List
+	 * @throws Exception 异常
+	 */
+	<T extends Privilege> List<T> privileges(DataRuntime runtime, int index, boolean create, User user, List<T> privileges, DataSet set) throws Exception;
+
+	/**
+	 * privilege[结果集封装]<br/>
+	 * 根据查询结果封装Privilege对象,只封装catalog,schema,name等基础属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 上一步封装结果
+	 * @param user 用户
+	 * @param row 查询结果集
+	 * @return Privilege
+	 */
+	<T extends Privilege> T init(DataRuntime runtime, int index, T meta, User user, DataRow row);
+	/**
+	 * privilege[结果集封装]<br/>
+	 * 根据查询结果封装Privilege对象,更多属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 上一步封装结果
+	 * @param row 查询结果集
+	 * @return Privilege
+	 */
+	<T extends Privilege> T detail(DataRuntime runtime, int index, T meta, User user, DataRow row);
+
+	/**
+	 * privilege[结构集封装-依据]<br/>
+	 * 读取 Privilege 元数据结果集的依据
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return PrivilegeMetadataAdapter
+	 */
+	PrivilegeMetadataAdapter privilegeMetadataAdapter(DataRuntime runtime);
+
+
+
+
+	/* *****************************************************************************************************************
+	 * 													grant
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * boolean grant(DataRuntime runtime, User user, Privilege... privileges)  throws Exception
+	 * List<Run> buildGrantRun(DataRuntime runtime, User user, Privilege... privileges) throws Exception
+	 * boolean revoke(DataRuntime runtime, User user, Privilege ... privileges) throws Exception	 *
+	 ******************************************************************************************************************/
+
+
+	/**
+	 * privilege[调用入口]<br/>
+	 * 授权
+	 * @param user 用户
+	 * @param privileges 权限
+	 * @return boolean
+	 */
+	boolean grant(DataRuntime runtime, User user, Privilege... privileges)  throws Exception;
+	/**
+	 * privilege[调用入口]<br/>
+	 * 授权
+	 * @param user 用户
+	 * @param privileges 权限
+	 * @return boolean
+	 */
+	default boolean grant(DataRuntime runtime, String user, Privilege ... privileges) throws Exception {
+		return grant(runtime, new User(user), privileges);
+	}
+
+	/**
+	 * grant[命令合成]<br/>
+	 * 授权
+	 * @param user 用户
+	 * @param privileges 权限
+	 * @return List
+	 */
+	List<Run> buildGrantRun(DataRuntime runtime, User user, Privilege... privileges) throws Exception;
+	/**
+	 * privilege[调用入口]<br/>
+	 * 撤销授权
+	 * @param user 用户
+	 * @param privileges 权限
+	 * @return boolean
+	 */
+	boolean revoke(DataRuntime runtime, User user, Privilege ... privileges) throws Exception;
+
+	/**
+	 * privilege[调用入口]<br/>
+	 * 撤销授权
+	 * @param user 用户
+	 * @param privileges 权限
+	 * @return boolean
+	 */
+	default boolean revoke(DataRuntime runtime, String user, Privilege ... privileges) throws Exception {
+		return revoke(runtime, new User(user), privileges);
+	}
+
+
+	/**
+	 * privilege[命令合成]<br/>
+	 * 撤销授权
+	 * @param user 用户
+	 * @param privileges 权限
+	 * @return List
+	 */
+	List<Run> buildRevokeRun(DataRuntime runtime, User user, Privilege ... privileges) throws Exception;
+
+
 	/* *****************************************************************************************************************
 	 *
 	 * 													common

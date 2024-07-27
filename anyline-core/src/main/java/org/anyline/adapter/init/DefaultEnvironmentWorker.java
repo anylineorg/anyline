@@ -71,7 +71,7 @@ public class DefaultEnvironmentWorker implements EnvironmentWorker {
     public static EnvironmentWorker start() {
         return start(null);
     }
-    public static void loadBean() throws Exception{
+    public static void loadBean() throws Exception {
         //加载当前jar中的配置文件
         //file:/D:/jA.jar!/org/anyline/util/
         String path = Objects.requireNonNull(ConfigTable.class.getResource("")).getPath();
@@ -194,7 +194,7 @@ public class DefaultEnvironmentWorker implements EnvironmentWorker {
      * @param object object
      * @throws Exception Exception
      */
-    public static void autowired(Object object) throws Exception{
+    public static void autowired(Object object) throws Exception {
         Class clazz = object.getClass();
         //属性赋值
         List<Field> fields = ClassUtil.getFields(clazz, false, false);

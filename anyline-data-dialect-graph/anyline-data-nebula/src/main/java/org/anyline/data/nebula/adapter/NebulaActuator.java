@@ -230,12 +230,12 @@ public class NebulaActuator implements DriverActuator {
     }
 
     @Override
-    public Map<String, Object> map(DriverAdapter adapter, DataRuntime runtime, String random, ConfigStore configs, Run run) throws Exception{
+    public Map<String, Object> map(DriverAdapter adapter, DataRuntime runtime, String random, ConfigStore configs, Run run) throws Exception {
         return null;
     }
 
     @Override
-    public long insert(DriverAdapter adapter, DataRuntime runtime, String random, Object data, ConfigStore configs, Run run, String generatedKey, String[] pks) throws Exception{
+    public long insert(DriverAdapter adapter, DataRuntime runtime, String random, Object data, ConfigStore configs, Run run, String generatedKey, String[] pks) throws Exception {
         long cnt = -1;
         SessionPool session = session(runtime);
         if(null == session) {
@@ -251,7 +251,7 @@ public class NebulaActuator implements DriverActuator {
     }
 
     @Override
-    public long update(DriverAdapter adapter, DataRuntime runtime, String random, Table dest, Object data, ConfigStore configs, Run run) throws Exception{
+    public long update(DriverAdapter adapter, DataRuntime runtime, String random, Table dest, Object data, ConfigStore configs, Run run) throws Exception {
         SessionPool session = session(runtime);
         String cmd = run.getBuilder().toString();
         ResultSet rs = session.execute(cmd);
@@ -265,7 +265,7 @@ public class NebulaActuator implements DriverActuator {
     
 
     @Override
-    public long execute(DriverAdapter adapter, DataRuntime runtime, String random, ConfigStore configs, Run run) throws Exception{
+    public long execute(DriverAdapter adapter, DataRuntime runtime, String random, ConfigStore configs, Run run) throws Exception {
         String cmd = run.getFinalExecute();
         SessionPool session = session(runtime);
         ResultSet rs = session.execute(cmd);

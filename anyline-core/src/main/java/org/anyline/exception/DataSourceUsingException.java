@@ -16,7 +16,7 @@
 
 package org.anyline.exception;
 
-public class DataSourceUsingException extends AbstractRuntimeException{
+public class DataSourceUsingException extends AbstractRuntimeException {
     private String key;
     private Object datasource;
     public DataSourceUsingException(){
