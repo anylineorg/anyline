@@ -61,7 +61,7 @@ public class DriverAdapterHolder {
 	public static boolean keepAdapter(DataRuntime runtime,Object datasource){
 		boolean keep = ConfigTable.KEEP_ADAPTER == 1;
 		if(ConfigTable.KEEP_ADAPTER == 2 && null != monitor){
-			keep = monitor.keepAdapter(runtime,datasource);
+			keep = monitor.keepAdapter(runtime, datasource);
 		}
 		return keep;
 	}
@@ -151,7 +151,6 @@ public class DriverAdapterHolder {
 	 * @return DriverAdapter
 	 */
 	public static DriverAdapter getAdapter(String datasource, DataRuntime runtime) {
-		boolean keep = keepAdapter(runtime.getProcessor());
 		//项目中只有一个适配器时直接返回
 		if(null != defaultAdapter) {
 			return defaultAdapter;
@@ -175,7 +174,7 @@ public class DriverAdapterHolder {
 				}
 			}
 		}
-		DriverAdapter adapter = getAdapterByMonitor(runtime.getProcessor());
+		DriverAdapter adapter = getAdapterByMonitor(runtime, runtime.getProcessor());
 		if(null == adapter){
 			String feature = runtime.getFeature();
 			String adapter_key = runtime.getAdapterKey();

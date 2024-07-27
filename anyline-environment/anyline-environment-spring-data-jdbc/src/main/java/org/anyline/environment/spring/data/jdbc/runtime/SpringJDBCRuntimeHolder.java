@@ -27,7 +27,6 @@ import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.adapter.DriverAdapterHolder;
 import org.anyline.data.datasource.DataSourceMonitor;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
-import org.anyline.data.jdbc.runtime.JDBCRuntime;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.runtime.RuntimeHolder;
 import org.anyline.data.runtime.init.AbstractRuntimeHolder;
@@ -154,7 +153,7 @@ public class SpringJDBCRuntimeHolder extends AbstractRuntimeHolder implements Ru
             SpringJDBCRuntime runtime = (SpringJDBCRuntime)runtimes.get(key);
             if(null != runtime){
                 //这一步有可能抛出 异常
-                close = monitor.destroy(key, runtime.getDataSource());
+                close = monitor.destroy(runtime, key, runtime.getDataSource());
             }
         }
         try {

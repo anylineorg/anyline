@@ -140,7 +140,7 @@ public class JDBCRuntimeHolder extends AbstractRuntimeHolder implements RuntimeH
             JDBCRuntime runtime = (JDBCRuntime)runtimes.get(key);
             if(null != runtime){
                 //这一步有可能抛出 异常
-                close = monitor.destroy(key, runtime.getDataSource());
+                close = monitor.destroy(runtime, key, runtime.getDataSource());
             }
         }
 
