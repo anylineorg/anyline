@@ -43,7 +43,7 @@ public class CacheProxy {
         CacheProxy.provider = provider;
     }
     private static OriginRow caches(){
-        OriginRow result = null;
+        OriginRow result = new OriginRow();
         if(ConfigTable.METADATA_CACHE_SCOPE == 1){
             result = thread_caches.get();
             if(null == result){
@@ -59,7 +59,7 @@ public class CacheProxy {
         return result;
     }
     private static OriginRow names(){
-        OriginRow result = null;
+        OriginRow result = new OriginRow();
         if(ConfigTable.METADATA_CACHE_SCOPE == 1){
             result = thread_names.get();
             if(null == result){
