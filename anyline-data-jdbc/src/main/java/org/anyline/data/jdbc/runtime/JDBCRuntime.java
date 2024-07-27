@@ -55,8 +55,8 @@ public class JDBCRuntime extends AbstractRuntime implements DataRuntime {
     }
 
     public String getFeature(boolean connection) {
-        boolean keep = DriverAdapterHolder.keepAdapter(getProcessor());
-        String feature = DriverAdapterHolder.feature(getProcessor());
+        boolean keep = DriverAdapterHolder.keepAdapter(this, getProcessor());
+        String feature = DriverAdapterHolder.feature(this, getProcessor());
         String url = null;
         String driver = null;
         if(ConfigTable.KEEP_ADAPTER == 1) {

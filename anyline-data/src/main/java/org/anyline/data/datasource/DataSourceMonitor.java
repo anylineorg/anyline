@@ -33,7 +33,7 @@ public interface DataSourceMonitor {
      *                   其他类型参考相应DataRuntime.getProcessor()的返回值 如ElasticSearchRuntime.client(org.elasticsearch.client.RestClient)
      * @return true:使用中
      */
-    default boolean using(String key, Object datasource) {
+    default boolean using(DataRuntime runtime, String key, Object datasource) {
         return false;
     }
 
@@ -44,8 +44,8 @@ public interface DataSourceMonitor {
      * @return  0:当前方法内未释放 需要上层继续操作,如调用datasource.close()  1:当前方法内已释放 不需要上层继续操作
      * @throws DataSourceUsingException 如果抛出异常，上层方法会抛出异常并中断注销
      */
-    default int destroy(String key, Object datasource) throws DataSourceUsingException {
-        if(using(key, datasource)){
+    default int destroy(DataRuntime runtime, String key, Object datasource) throws DataSourceUsingException {
+        if(using(runtime, key, datasource)){
             throw new DataSourceUsingException(key, datasource);
         }
         //可以在这里释放相关资源 并返回 1
@@ -57,8 +57,17 @@ public interface DataSourceMonitor {
      * @param datasource 数据源
      * @return String 返回null由上层自动提取
      */
-    default String feature(Object datasource) {
+    default String feature(DataRuntime runtime,Object datasource) {
         return null;
+    }
+
+    /**
+     * 数据源唯一标识 如果不实现则默认feature
+     * @param datasource 数据源
+     * @return String 返回null由上层自动提取
+     */
+    default String key(DataRuntime runtime, Object datasource) {
+        return feature(runtime,datasource);
     }
 
     /**
@@ -66,7 +75,7 @@ public interface DataSourceMonitor {
      * @param datasource 数据源
      * @return String 返回null由上层自动提取
      */
-    default DriverAdapter adapter(Object datasource) {
+    default DriverAdapter adapter(DataRuntime runtime, Object datasource) {
         return null;
     }
     /**
@@ -86,7 +95,7 @@ public interface DataSourceMonitor {
      * @param datasource 数据源
      * @return boolean false:每次操作都会检测一次adapter true:同一数据源使用同一个adapter
      */
-    default boolean keepAdapter(Object datasource) {
+    default boolean keepAdapter(DataRuntime runtime, Object datasource) {
         return true;
     }
 }

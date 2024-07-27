@@ -58,17 +58,17 @@ public class DriverAdapterHolder {
 	 * @param datasource 数据源
 	 * @return boolean false:每次操作都会检测一次adapter true:同一数据源使用同一个adapter
 	 */
-	public static boolean keepAdapter(Object datasource){
+	public static boolean keepAdapter(DataRuntime runtime,Object datasource){
 		boolean keep = ConfigTable.KEEP_ADAPTER == 1;
 		if(ConfigTable.KEEP_ADAPTER == 2 && null != monitor){
-			keep = monitor.keepAdapter(datasource);
+			keep = monitor.keepAdapter(runtime,datasource);
 		}
 		return keep;
 	}
-	public static DriverAdapter getAdapterByMonitor(Object datasource){
+	public static DriverAdapter getAdapterByMonitor(DataRuntime runtime, Object datasource){
 		DriverAdapter adapter = null;
 		if(null != monitor){
-			adapter = monitor.adapter(datasource);
+			adapter = monitor.adapter(runtime, datasource);
 		}
 		return adapter;
 	}
@@ -78,10 +78,10 @@ public class DriverAdapterHolder {
 	 * @param datasource 数据源
 	 * @return String 返回null由上层自动提取
 	 */
-	public static String feature(Object datasource){
+	public static String feature(DataRuntime runtime, Object datasource){
 		String feature = null;
 		if(ConfigTable.KEEP_ADAPTER == 2 && null != monitor){
-			feature = monitor.feature(datasource);
+			feature = monitor.feature(runtime, datasource);
 		}
 		return feature;
 	}
@@ -90,6 +90,12 @@ public class DriverAdapterHolder {
 			return monitor.after(runtime, datasource, adapter);
 		}
 		return adapter;
+	}
+	public static String key(DataRuntime runtime, Object datasource){
+		if(null != monitor){
+			return monitor.key(runtime, datasource);
+		}
+		return null;
 	}
 	/**
 	 * 获取支持数据库的适配器,注意有可能获取到多个
