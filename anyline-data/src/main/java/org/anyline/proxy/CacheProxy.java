@@ -21,51 +21,56 @@ package org.anyline.proxy;
 import org.anyline.cache.CacheProvider;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.runtime.DataRuntime;
+import org.anyline.entity.OriginRow;
 import org.anyline.metadata.*;
 import org.anyline.metadata.graph.EdgeTable;
 import org.anyline.metadata.graph.VertexTable;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.encrypt.MD5Util;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 public class CacheProxy {
 
-    private static final ThreadLocal<Map<String, Object>> thread_caches = new ThreadLocal<>();
-    private static final ThreadLocal<Map<String, String>> thread_names = new ThreadLocal<>();
-    private static Map<String, Object> caches = new HashMap<>();
-    private static Map<String, String> names = new HashMap<>();
+    private static final ThreadLocal<OriginRow> thread_caches = new ThreadLocal<>();
+    private static final ThreadLocal<OriginRow> thread_names = new ThreadLocal<>();
+    private static OriginRow application_caches = new OriginRow();
+    private static OriginRow application_names = new OriginRow();
     public static CacheProvider provider;
     public CacheProxy() {}
     public static void init(CacheProvider provider) {
         CacheProxy.provider = provider;
     }
-    private static Map<String, Object> caches(){
-        Map<String, Object> result = null;
-        if(ConfigTable.METADATA_CACHE_SCOPE == 9){
+    private static OriginRow caches(){
+        OriginRow result = null;
+        if(ConfigTable.METADATA_CACHE_SCOPE == 1){
             result = thread_caches.get();
             if(null == result){
-                result = new HashMap<>();
+                result = new OriginRow();
                 thread_caches.set(result);
             }
-        }else if(ConfigTable.METADATA_CACHE_SCOPE == 1){
-            result = caches;
+        }else if(ConfigTable.METADATA_CACHE_SCOPE == 9){
+            if(application_caches.isExpire(ConfigTable.METADATA_CACHE_SECOND*1000)){
+                application_caches = new OriginRow();
+            }
+            result = application_caches;
         }
         return result;
     }
-    private static Map<String, String> names(){
-        Map<String, String> result = null;
-        if(ConfigTable.METADATA_CACHE_SCOPE == 9){
+    private static OriginRow names(){
+        OriginRow result = null;
+        if(ConfigTable.METADATA_CACHE_SCOPE == 1){
             result = thread_names.get();
             if(null == result){
-                result = new HashMap<>();
+                result = new OriginRow();
                 thread_names.set(result);
             }
-        }else if(ConfigTable.METADATA_CACHE_SCOPE == 1){
-            result = names;
+        }else if(ConfigTable.METADATA_CACHE_SCOPE == 9){
+            if(application_names.isExpire(ConfigTable.METADATA_CACHE_SECOND*1000)){
+                application_names = new OriginRow();
+            }
+            result = application_names;
         }
         return result;
     }
@@ -124,7 +129,7 @@ public class CacheProxy {
         return key.toString().toUpperCase();
     }
     public static String name(String key) {
-        return names().get(key.toUpperCase());
+        return names().getString(key.toUpperCase());
     }
     public static void name(String key, String origin) {
         names().put(key.toUpperCase(), origin);
