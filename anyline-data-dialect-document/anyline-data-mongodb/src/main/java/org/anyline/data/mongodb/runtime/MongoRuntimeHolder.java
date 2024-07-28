@@ -130,7 +130,7 @@ public class MongoRuntimeHolder extends AbstractRuntimeHolder implements Runtime
             MongoRuntime runtime = (MongoRuntime) runtimes.get(key);
             if(null != runtime){
                 //这一步有可能抛出 异常
-                close = monitor.destroy(key, runtime.client());
+                close = monitor.destroy(runtime, key, runtime.client());
             }
         }
         try {
