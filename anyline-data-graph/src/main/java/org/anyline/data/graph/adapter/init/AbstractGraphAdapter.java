@@ -2266,7 +2266,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param databases 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return LinkedHashMap
 	 * @throws Exception
@@ -2428,7 +2428,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param catalogs 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return databases
 	 * @throws Exception 异常
@@ -2444,7 +2444,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param catalogs 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return databases
 	 * @throws Exception 异常
@@ -2459,7 +2459,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * 根据驱动内置接口补充 catalog
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param catalogs 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @return databases
 	 * @throws Exception 异常
 	 */
@@ -2473,7 +2473,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * 根据驱动内置接口补充 catalog
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param catalogs 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @return catalogs
 	 * @throws Exception 异常
 	 */
@@ -2577,7 +2577,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param schemas 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return databases
 	 * @throws Exception 异常
@@ -2688,8 +2688,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types  Metadata.TYPE.
-	 * @param struct 是否查询表结构
+	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
+	 * @param struct 查询的属性 参考Metadata.TYPE 多个属性相加算出总和 true:表示查询全部
 	 * @return List
 	 * @param <T> Table
 	 */
@@ -2744,7 +2744,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types types Metadata.TYPE.
+	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return String
 	 * @throws Exception Exception
 	 */
@@ -2755,13 +2755,13 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 
 	/**
 	 * table[结果集封装]<br/>
-	 *  根据查询结果集构造Table
+	 * 根据查询结果集构造Table
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照buildQueryTablesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param catalog catalog
 	 * @param schema schema
-	 * @param tables 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return tables
 	 * @throws Exception 异常
@@ -2782,13 +2782,13 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 
 	/**
 	 * table[结果集封装]<br/>
-	 *  根据查询结果集构造Table
+	 * 根据查询结果集构造Table
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照buildQueryTablesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param catalog catalog
 	 * @param schema schema
-	 * @param tables 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return tables
 	 * @throws Exception 异常
@@ -2841,7 +2841,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
 	 * @param table 表
-	 * @param ddls 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set sql执行的结果集
 	 * @return List
 	 */
@@ -2912,7 +2912,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
 	 * @param view view
-	 * @param ddls 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set sql执行的结果集
 	 * @return List
 	 */
@@ -2925,50 +2925,50 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * 													VertexTable
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * [调用入口]
-	 * <T extends VertexTable> List<T> vertexTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, boolean struct)
-	 * <T extends VertexTable> LinkedHashMap<String, T> vertexTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, String types, boolean struct)
+	 * <T extends VertexTable> List<T> vertexs(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, boolean struct)
+	 * <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, String types, boolean struct)
 	 * [命令合成]
 	 * List<Run> buildQueryVertexTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types)
 	 * List<Run> buildQueryVertexTablesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types)
 	 * [结果集封装]<br/>
-	 * <T extends VertexTable> LinkedHashMap<String, T> vertexTables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> vertexTables, Catalog catalog, Schema schema, DataSet set)
-	 * <T extends VertexTable> List<T> vertexTables(DataRuntime runtime, int index, boolean create, List<T> vertexTables, Catalog catalog, Schema schema, DataSet set)
-	 * <T extends VertexTable> LinkedHashMap<String, T> vertexTables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> vertexTables, Catalog catalog, Schema schema, String pattern, int types)
-	 * <T extends VertexTable> List<T> vertexTables(DataRuntime runtime, boolean create, List<T> vertexTables, Catalog catalog, Schema schema, String pattern, int types)
-	 * <T extends VertexTable> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> vertexTables, Catalog catalog, Schema schema, DataSet set)
+	 * <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> vertexs, Catalog catalog, Schema schema, DataSet set)
+	 * <T extends VertexTable> List<T> vertexs(DataRuntime runtime, int index, boolean create, List<T> vertexs, Catalog catalog, Schema schema, DataSet set)
+	 * <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, boolean create, LinkedHashMap<String, T> vertexs, Catalog catalog, Schema schema, String pattern, int types)
+	 * <T extends VertexTable> List<T> vertexs(DataRuntime runtime, boolean create, List<T> vertexs, Catalog catalog, Schema schema, String pattern, int types)
+	 * <T extends VertexTable> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> vertexs, Catalog catalog, Schema schema, DataSet set)
 	 * [调用入口]
-	 * List<String> ddl(DataRuntime runtime, String random, VertexTable vertexTable, boolean init)
+	 * List<String> ddl(DataRuntime runtime, String random, VertexTable vertex, boolean init)
 	 * [命令合成]
-	 * List<Run> buildQueryDdlsRun(DataRuntime runtime, VertexTable vertexTable)
+	 * List<Run> buildQueryDdlsRun(DataRuntime runtime, VertexTable vertex)
 	 * [结果集封装]<br/>
-	 * List<String> ddl(DataRuntime runtime, int index, VertexTable vertexTable, List<String> ddls, DataSet set)
+	 * List<String> ddl(DataRuntime runtime, int index, VertexTable vertex, List<String> ddls, DataSet set)
 	 ******************************************************************************************************************/
 
 	/**
 	 *
-	 * vertexTable[调用入口]<br/>
+	 * vertex[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types  Metadata.TYPE.
-	 * @param struct 是否查询表结构
+	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
+	 * @param struct 查询的属性 参考Metadata.TYPE 多个属性相加算出总和 true:表示查询全部
 	 * @return List
 	 * @param <T> VertexTable
 	 */
 	@Override
-	public <T extends VertexTable> List<T> vertexTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct) {
-		return super.vertexTables(runtime, random, greedy, catalog, schema, pattern, types, struct);
+	public <T extends VertexTable> List<T> vertexs(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct) {
+		return super.vertexs(runtime, random, greedy, catalog, schema, pattern, types, struct);
 	}
 
-	public <T extends VertexTable> LinkedHashMap<String, T> vertexTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct) {
-		return super.vertexTables(runtime, random, catalog, schema, pattern, types, struct);
+	public <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct) {
+		return super.vertexs(runtime, random, catalog, schema, pattern, types, struct);
 	}
 
 	/**
-	 * vertexTable[命令合成]<br/>
+	 * vertex[命令合成]<br/>
 	 * 查询表,不是查表中的数据
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
@@ -2985,13 +2985,13 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	}
 
 	/**
-	 * vertexTable[命令合成]<br/>
+	 * vertex[命令合成]<br/>
 	 * 查询表备注
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types types Metadata.TYPE.
+	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return String
 	 * @throws Exception Exception
 	 */
@@ -3000,80 +3000,80 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	}
 
 	/**
-	 * vertexTable[结果集封装]<br/>
+	 * vertex[结果集封装]<br/>
 	 *  根据查询结果集构造VertexTable
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照buildQueryVertexTablesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param catalog catalog
 	 * @param schema schema
-	 * @param tables 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
-	 * @return vertexTables
+	 * @return vertexs
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends VertexTable> LinkedHashMap<String, T> vertexTables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set) throws Exception {
-		return super.vertexTables(runtime, index, create, tables, catalog, schema, set);
+	public <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set) throws Exception {
+		return super.vertexs(runtime, index, create, tables, catalog, schema, set);
 	}
 
 	/**
-	 * vertexTable[结果集封装]<br/>
+	 * vertex[结果集封装]<br/>
 	 *  根据查询结果集构造VertexTable
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照buildQueryVertexTablesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param catalog catalog
 	 * @param schema schema
-	 * @param tables 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
-	 * @return vertexTables
+	 * @return vertexs
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends VertexTable> List<T> vertexTables(DataRuntime runtime, int index, boolean create, List<T> tables, Catalog catalog, Schema schema, DataSet set) throws Exception {
-		return super.vertexTables(runtime, index, create, tables, catalog, schema, set);
+	public <T extends VertexTable> List<T> vertexs(DataRuntime runtime, int index, boolean create, List<T> tables, Catalog catalog, Schema schema, DataSet set) throws Exception {
+		return super.vertexs(runtime, index, create, tables, catalog, schema, set);
 	}
 
 	/**
-	 * vertexTable[结果集封装]<br/>
+	 * vertex[结果集封装]<br/>
 	 * 根据驱动内置方法补充
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param tables 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types types Metadata.TYPE.
-	 * @return vertexTables
+	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
+	 * @return vertexs
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends VertexTable> LinkedHashMap<String, T> vertexTables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
-		return super.vertexTables(runtime, create, tables, catalog, schema, pattern, types);
+	public <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
+		return super.vertexs(runtime, create, tables, catalog, schema, pattern, types);
 	}
 
 	/**
-	 * vertexTable[结果集封装]<br/>
+	 * vertex[结果集封装]<br/>
 	 * 根据驱动内置方法补充
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param tables 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types types Metadata.TYPE.
-	 * @return vertexTables
+	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
+	 * @return vertexs
 	 * @throws Exception 异常
 	 * @param <T> VertexTable
 	 */
 	@Override
-	public <T extends VertexTable> List<T> vertexTables(DataRuntime runtime, boolean create, List<T> tables, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
-		return super.vertexTables(runtime, create, tables, catalog, schema, pattern, types);
+	public <T extends VertexTable> List<T> vertexs(DataRuntime runtime, boolean create, List<T> tables, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
+		return super.vertexs(runtime, create, tables, catalog, schema, pattern, types);
 	}
 
 	/**
-	 * vertexTable[结果集封装]<br/>
+	 * vertex[结果集封装]<br/>
 	 * 根据查询结果封装VertexTable对象,只封装catalog,schema,name等基础属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 上一步封装结果
@@ -3088,7 +3088,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 		return init(runtime, index, meta, catalog, schema, row);
 	}
 	/**
-	 * vertexTable[结果集封装]<br/>
+	 * vertex[结果集封装]<br/>
 	 * 根据查询结果封装VertexTable对象,更多属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 上一步封装结果
@@ -3102,7 +3102,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	}
 	/**
 	 *
-	 * vertexTable[调用入口]<br/>
+	 * vertex[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param meta 表
@@ -3115,7 +3115,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	}
 
 	/**
-	 * vertexTable[命令合成]<br/>
+	 * vertex[命令合成]<br/>
 	 * 查询表DDL
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 表
@@ -3127,12 +3127,12 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	}
 
 	/**
-	 * vertexTable[结果集封装]<br/>
+	 * vertex[结果集封装]<br/>
 	 * 查询表DDL
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
 	 * @param meta 表
-	 * @param ddls 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set sql执行的结果集
 	 * @return List
 	 */
@@ -3145,50 +3145,50 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * 													EdgeTable
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * [调用入口]
-	 * <T extends EdgeTable> List<T> edgeTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, boolean struct)
-	 * <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, String types, boolean struct)
+	 * <T extends EdgeTable> List<T> edges(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, boolean struct)
+	 * <T extends EdgeTable> LinkedHashMap<String, T> edges(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, String types, boolean struct)
 	 * [命令合成]
-	 * List<Run> buildQueryEdgeTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types)
-	 * List<Run> buildQueryEdgeTablesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types)
+	 * List<Run> buildQueryEdgesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types)
+	 * List<Run> buildQueryEdgesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types)
 	 * [结果集封装]<br/>
-	 * <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> edgeTables, Catalog catalog, Schema schema, DataSet set)
-	 * <T extends EdgeTable> List<T> edgeTables(DataRuntime runtime, int index, boolean create, List<T> edgeTables, Catalog catalog, Schema schema, DataSet set)
-	 * <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> edgeTables, Catalog catalog, Schema schema, String pattern, int types)
-	 * <T extends EdgeTable> List<T> edgeTables(DataRuntime runtime, boolean create, List<T> edgeTables, Catalog catalog, Schema schema, String pattern, int types)
-	 * <T extends EdgeTable> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> edgeTables, Catalog catalog, Schema schema, DataSet set)
+	 * <T extends EdgeTable> LinkedHashMap<String, T> edges(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> edges, Catalog catalog, Schema schema, DataSet set)
+	 * <T extends EdgeTable> List<T> edges(DataRuntime runtime, int index, boolean create, List<T> edges, Catalog catalog, Schema schema, DataSet set)
+	 * <T extends EdgeTable> LinkedHashMap<String, T> edges(DataRuntime runtime, boolean create, LinkedHashMap<String, T> edges, Catalog catalog, Schema schema, String pattern, int types)
+	 * <T extends EdgeTable> List<T> edges(DataRuntime runtime, boolean create, List<T> edges, Catalog catalog, Schema schema, String pattern, int types)
+	 * <T extends EdgeTable> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> edges, Catalog catalog, Schema schema, DataSet set)
 	 * [调用入口]
-	 * List<String> ddl(DataRuntime runtime, String random, EdgeTable edgeTable, boolean init)
+	 * List<String> ddl(DataRuntime runtime, String random, EdgeTable edge, boolean init)
 	 * [命令合成]
-	 * List<Run> buildQueryDdlsRun(DataRuntime runtime, EdgeTable edgeTable)
+	 * List<Run> buildQueryDdlsRun(DataRuntime runtime, EdgeTable edge)
 	 * [结果集封装]<br/>
-	 * List<String> ddl(DataRuntime runtime, int index, EdgeTable edgeTable, List<String> ddls, DataSet set)
+	 * List<String> ddl(DataRuntime runtime, int index, EdgeTable edge, List<String> ddls, DataSet set)
 	 ******************************************************************************************************************/
 
 	/**
 	 *
-	 * edgeTable[调用入口]<br/>
+	 * edge[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types  Metadata.TYPE.
-	 * @param struct 是否查询表结构
+	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
+	 * @param struct 查询的属性 参考Metadata.TYPE 多个属性相加算出总和 true:表示查询全部
 	 * @return List
 	 * @param <T> EdgeTable
 	 */
 	@Override
-	public <T extends EdgeTable> List<T> edgeTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
-		return super.edgeTables(runtime, random, greedy, catalog, schema, pattern, types, struct, configs);
+	public <T extends EdgeTable> List<T> edges(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
+		return super.edges(runtime, random, greedy, catalog, schema, pattern, types, struct, configs);
 	}
 
-	public <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct) {
-		return super.edgeTables(runtime, random, catalog, schema, pattern, types, struct);
+	public <T extends EdgeTable> LinkedHashMap<String, T> edges(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct) {
+		return super.edges(runtime, random, catalog, schema, pattern, types, struct);
 	}
 
 	/**
-	 * edgeTable[命令合成]<br/>
+	 * edge[命令合成]<br/>
 	 * 查询表,不是查表中的数据
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
@@ -3200,100 +3200,100 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @throws Exception Exception
 	 */
 	@Override
-	public List<Run> buildQueryEdgeTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs) throws Exception {
-		return super.buildQueryEdgeTablesRun(runtime, greedy, catalog, schema, pattern, types, configs);
+	public List<Run> buildQueryEdgesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs) throws Exception {
+		return super.buildQueryEdgesRun(runtime, greedy, catalog, schema, pattern, types, configs);
 	}
 
 	/**
-	 * edgeTable[命令合成]<br/>
+	 * edge[命令合成]<br/>
 	 * 查询表备注
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types types Metadata.TYPE.
+	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return String
 	 * @throws Exception Exception
 	 */
-	public List<Run> buildQueryEdgeTablesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
-		return super.buildQueryEdgeTablesCommentRun(runtime, catalog, schema, pattern, types);
+	public List<Run> buildQueryEdgesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
+		return super.buildQueryEdgesCommentRun(runtime, catalog, schema, pattern, types);
 	}
 
 	/**
-	 * edgeTable[结果集封装]<br/>
+	 * edge[结果集封装]<br/>
 	 *  根据查询结果集构造EdgeTable
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照buildQueryEdgeTablesRun返回顺序
+	 * @param index 第几条SQL 对照buildQueryEdgesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param catalog catalog
 	 * @param schema schema
-	 * @param tables 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
-	 * @return edgeTables
+	 * @return edges
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set) throws Exception {
-		return super.edgeTables(runtime, index, create, tables, catalog, schema, set);
+	public <T extends EdgeTable> LinkedHashMap<String, T> edges(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set) throws Exception {
+		return super.edges(runtime, index, create, tables, catalog, schema, set);
 	}
 
 	/**
-	 * edgeTable[结果集封装]<br/>
+	 * edge[结果集封装]<br/>
 	 *  根据查询结果集构造EdgeTable
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照buildQueryEdgeTablesRun返回顺序
+	 * @param index 第几条SQL 对照buildQueryEdgesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param catalog catalog
 	 * @param schema schema
-	 * @param tables 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
-	 * @return edgeTables
+	 * @return edges
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends EdgeTable> List<T> edgeTables(DataRuntime runtime, int index, boolean create, List<T> tables, Catalog catalog, Schema schema, DataSet set) throws Exception {
-		return super.edgeTables(runtime, index, create, tables, catalog, schema, set);
+	public <T extends EdgeTable> List<T> edges(DataRuntime runtime, int index, boolean create, List<T> tables, Catalog catalog, Schema schema, DataSet set) throws Exception {
+		return super.edges(runtime, index, create, tables, catalog, schema, set);
 	}
 
 	/**
-	 * edgeTable[结果集封装]<br/>
+	 * edge[结果集封装]<br/>
 	 * 根据驱动内置方法补充
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param tables 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types types Metadata.TYPE.
-	 * @return edgeTables
+	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
+	 * @return edges
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
-		return super.edgeTables(runtime, create, tables, catalog, schema, pattern, types);
+	public <T extends EdgeTable> LinkedHashMap<String, T> edges(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
+		return super.edges(runtime, create, tables, catalog, schema, pattern, types);
 	}
 
 	/**
-	 * edgeTable[结果集封装]<br/>
+	 * edge[结果集封装]<br/>
 	 * 根据驱动内置方法补充
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param tables 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types types Metadata.TYPE.
-	 * @return edgeTables
+	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
+	 * @return edges
 	 * @throws Exception 异常
 	 * @param <T> EdgeTable
 	 */
 	@Override
-	public <T extends EdgeTable> List<T> edgeTables(DataRuntime runtime, boolean create, List<T> tables, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
-		return super.edgeTables(runtime, create, tables, catalog, schema, pattern, types);
+	public <T extends EdgeTable> List<T> edges(DataRuntime runtime, boolean create, List<T> tables, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
+		return super.edges(runtime, create, tables, catalog, schema, pattern, types);
 	}
 
 	/**
-	 * edgeTable[结果集封装]<br/>
+	 * edge[结果集封装]<br/>
 	 * 根据查询结果封装EdgeTable对象,只封装catalog,schema,name等基础属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 上一步封装结果
@@ -3308,7 +3308,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 		return super.init(runtime, index, meta, catalog, schema, row);
 	}
 	/**
-	 * edgeTable[结果集封装]<br/>
+	 * edge[结果集封装]<br/>
 	 * 根据查询结果封装EdgeTable对象,更多属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 上一步封装结果
@@ -3322,7 +3322,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	}
 	/**
 	 *
-	 * edgeTable[调用入口]<br/>
+	 * edge[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param meta 表
@@ -3335,7 +3335,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	}
 
 	/**
-	 * edgeTable[命令合成]<br/>
+	 * edge[命令合成]<br/>
 	 * 查询表DDL
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 表
@@ -3347,12 +3347,12 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	}
 
 	/**
-	 * edgeTable[结果集封装]<br/>
+	 * edge[结果集封装]<br/>
 	 * 查询表DDL
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
 	 * @param meta 表
-	 * @param ddls 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set sql执行的结果集
 	 * @return List
 	 */
@@ -3365,13 +3365,13 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * 													master table
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * [调用入口]
-	 * <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs)
+	 * <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs)
 	 * [命令合成]
 	 * List<Run> buildQueryMasterTablesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs)
 	 * [结果集封装]<br/>
-	 * <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set)
+	 * <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set)
 	 * [结果集封装]<br/>
-	 * <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables,Catalog catalog, Schema schema, String pattern, int types)
+	 * <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables,Catalog catalog, Schema schema, String pattern, int types)
 	 * [调用入口]
 	 * List<String> ddl(DataRuntime runtime, String random, MasterTable table)
 	 * [命令合成]
@@ -3393,8 +3393,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param <T> MasterTable
 	 */
 	@Override
-	public <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
-		return super.masterTables(runtime, random, catalog, schema, pattern, types, struct, configs);
+	public <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
+		return super.masters(runtime, random, catalog, schema, pattern, types, struct, configs);
 	}
 
 	/**
@@ -3414,20 +3414,20 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 
 	/**
 	 * master table[结果集封装]<br/>
-	 *  根据查询结果集构造Table
+	 * 根据查询结果集构造Table
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryMasterTablesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param catalog catalog
 	 * @param schema schema
-	 * @param tables 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return tables
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set) throws Exception {
-		return super.masterTables(runtime, index, create, tables, catalog, schema, set);
+	public <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set) throws Exception {
+		return super.masters(runtime, index, create, tables, catalog, schema, set);
 	}
 
 	/**
@@ -3437,13 +3437,13 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param catalog catalog
 	 * @param schema schema
-	 * @param tables 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @return tables
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables,Catalog catalog, Schema schema, String pattern, int types) throws Exception {
-		return super.masterTables(runtime, create, tables, catalog, schema, pattern, types);
+	public <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables,Catalog catalog, Schema schema, String pattern, int types) throws Exception {
+		return super.masters(runtime, create, tables, catalog, schema, pattern, types);
 	}
 
 	/**
@@ -3476,7 +3476,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
 	 * @param table MasterTable
-	 * @param ddls 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set sql执行的结果集
 	 * @return List
 	 */
@@ -3488,14 +3488,14 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * 													partition table
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * [调用入口]
-	 * <T extends PartitionTable> LinkedHashMap<String,T> partitionTables(DataRuntime runtime, String random, boolean greedy, MasterTable master, Map<String, Object> tags, String pattern)
+	 * <T extends PartitionTable> LinkedHashMap<String,T> partitions(DataRuntime runtime, String random, boolean greedy, MasterTable master, Map<String, Object> tags, String pattern)
 	 * [命令合成]
 	 * List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types)
 	 * List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Table master, Map<String,Object> tags, String pattern)
 	 * List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Table master, Map<String,Object> tags)
 	 * [结果集封装]<br/>
-	 * <T extends PartitionTable> LinkedHashMap<String, T> partitionTables(DataRuntime runtime, int total, int index, boolean create, MasterTable master, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set)
-	 * <T extends PartitionTable> LinkedHashMap<String,T> partitionTables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, MasterTable master)
+	 * <T extends PartitionTable> LinkedHashMap<String, T> partitions(DataRuntime runtime, int total, int index, boolean create, MasterTable master, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set)
+	 * <T extends PartitionTable> LinkedHashMap<String,T> partitions(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, MasterTable master)
 	 * [调用入口]
 	 * List<String> ddl(DataRuntime runtime, String random, PartitionTable table)
 	 * [命令合成]
@@ -3515,8 +3515,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param <T> MasterTable
 	 */
 	@Override
-	public <T extends PartitionTable> LinkedHashMap<String,T> partitionTables(DataRuntime runtime, String random, boolean greedy, MasterTable master, Map<String, Object> tags, String pattern) {
-		return super.partitionTables(runtime, random, greedy, master, tags, pattern);
+	public <T extends PartitionTable> LinkedHashMap<String,T> partitions(DataRuntime runtime, String random, boolean greedy, MasterTable master, Map<String, Object> tags, String pattern) {
+		return super.partitions(runtime, random, greedy, master, tags, pattern);
 	}
 
 	/**
@@ -3578,7 +3578,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 
 	/**
 	 * partition table[结果集封装]<br/>
-	 *  根据查询结果集构造Table
+	 * 根据查询结果集构造Table
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param total 合计SQL数量
 	 * @param index 第几条SQL 对照 buildQueryMasterTablesRun返回顺序
@@ -3586,14 +3586,14 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param master 主表
 	 * @param catalog catalog
 	 * @param schema schema
-	 * @param tables 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return tables
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends PartitionTable> LinkedHashMap<String, T> partitionTables(DataRuntime runtime, int total, int index, boolean create, MasterTable master, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set) throws Exception {
-		return super.partitionTables(runtime, total, index, create, master, tables, catalog, schema, set);
+	public <T extends PartitionTable> LinkedHashMap<String, T> partitions(DataRuntime runtime, int total, int index, boolean create, MasterTable master, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set) throws Exception {
+		return super.partitions(runtime, total, index, create, master, tables, catalog, schema, set);
 	}
 
 	/**
@@ -3604,13 +3604,13 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param master 主表
 	 * @param catalog catalog
 	 * @param schema schema
-	 * @param tables 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @return tables
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends PartitionTable> LinkedHashMap<String,T> partitionTables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, MasterTable master) throws Exception {
-		return super.partitionTables(runtime, create, tables, catalog, schema, master);
+	public <T extends PartitionTable> LinkedHashMap<String,T> partitions(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, MasterTable master) throws Exception {
+		return super.partitions(runtime, create, tables, catalog, schema, master);
 	}
 
 	/**
@@ -3643,7 +3643,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
 	 * @param table MasterTable
-	 * @param ddls 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set sql执行的结果集
 	 * @return List
 	 */
@@ -3837,7 +3837,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param index 第几条SQL 对照 buildQueryColumnsRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
-	 * @param columns 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return tags tags
 	 * @throws Exception 异常
@@ -3881,7 +3881,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param index 第几条SQL 对照 buildQueryColumnsRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param tables 表
-	 * @param columns 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set 系统表查询SQL结果集
 	 * @return columns
 	 * @throws Exception 异常
@@ -3964,7 +3964,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param index 第几条查询SQL 对照 buildQueryTagsRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
-	 * @param tags 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return tags
 	 * @throws Exception 异常
@@ -3981,7 +3981,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
-	 * @param tags 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param pattern 名称统配符或正则
 	 * @return tags
 	 * @throws Exception 异常
@@ -4146,7 +4146,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryForeignsRun 返回顺序
 	 * @param table 表
-	 * @param foreigns 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set sql查询结果
 	 * @throws Exception 异常
 	 */
@@ -4224,7 +4224,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param index 第几条查询SQL 对照 buildQueryIndexesRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
-	 * @param indexes 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return indexes indexes
 	 * @throws Exception 异常
@@ -4241,7 +4241,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param index 第几条查询SQL 对照 buildQueryIndexesRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
-	 * @param indexes 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return indexes indexes
 	 * @throws Exception 异常
@@ -4465,7 +4465,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
-	 * @param constraints 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set DataSet
 	 * @return constraints constraints
 	 * @throws Exception 异常
@@ -4483,7 +4483,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
 	 * @param column 列
-	 * @param constraints 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set DataSet
 	 * @return constraints constraints
 	 * @throws Exception 异常
@@ -4564,7 +4564,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
-	 * @param triggers 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return LinkedHashMap
 	 * @throws Exception 异常
@@ -4706,7 +4706,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param procedures 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return LinkedHashMap
 	 * @throws Exception 异常
@@ -4721,7 +4721,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * 根据驱动内置接口补充 Procedure
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param procedures 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @return List
 	 * @throws Exception 异常
 	 */
@@ -4735,7 +4735,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * 根据驱动内置接口补充 Procedure
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param procedures 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @return LinkedHashMap
 	 * @throws Exception 异常
 	 */
@@ -4775,7 +4775,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
 	 * @param procedure Procedure
-	 * @param ddls 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return List
 	 */
@@ -4916,7 +4916,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param functions 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return LinkedHashMap
 	 * @throws Exception 异常
@@ -4932,7 +4932,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param functions 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return LinkedHashMap
 	 * @throws Exception 异常
@@ -4947,7 +4947,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * 根据驱动内置接口补充 Function
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param functions 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @return LinkedHashMap
 	 * @throws Exception 异常
 	 */
@@ -4987,7 +4987,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
 	 * @param function Function
-	 * @param ddls 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return List
 	 */
@@ -5069,7 +5069,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param sequences 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return LinkedHashMap
 	 * @throws Exception 异常
@@ -5085,7 +5085,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param sequences 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return LinkedHashMap
 	 * @throws Exception 异常
@@ -5100,7 +5100,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * 根据驱动内置接口补充 Sequence
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param sequences 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @return LinkedHashMap
 	 * @throws Exception 异常
 	 */
@@ -5140,7 +5140,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
 	 * @param sequence Sequence
-	 * @param ddls 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return List
 	 */

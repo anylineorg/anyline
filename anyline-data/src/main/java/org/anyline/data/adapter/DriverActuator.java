@@ -187,11 +187,11 @@ public interface DriverActuator {
      * 根据驱动内置方法补充
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param tables 上一步查询结果
+     * @param previous 上一步查询结果
      * @param catalog catalog
      * @param schema schema
      * @param pattern 名称统配符或正则
-     * @param types types Metadata.TYPE.
+     * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
      * @return tables
      * @throws Exception 异常
      */
@@ -204,11 +204,11 @@ public interface DriverActuator {
      * 根据驱动内置方法补充
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param tables 上一步查询结果
+     * @param previous 上一步查询结果
      * @param catalog catalog
      * @param schema schema
      * @param pattern 名称统配符或正则
-     * @param types types Metadata.TYPE.
+     * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
      * @return tables
      * @throws Exception 异常
      */
@@ -220,11 +220,11 @@ public interface DriverActuator {
      * 根据驱动内置方法补充
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param views 上一步查询结果
+     * @param previous 上一步查询结果
      * @param catalog catalog
      * @param schema schema
      * @param pattern 名称统配符或正则
-     * @param types types Metadata.TYPE.
+     * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
      * @return tables
      * @throws Exception 异常
      */
@@ -237,11 +237,11 @@ public interface DriverActuator {
      * 根据驱动内置方法补充
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param views 上一步查询结果
+     * @param previous 上一步查询结果
      * @param catalog catalog
      * @param schema schema
      * @param pattern 名称统配符或正则
-     * @param types types Metadata.TYPE.
+     * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
      * @return tables
      * @throws Exception 异常
      */
@@ -254,7 +254,7 @@ public interface DriverActuator {
      * @param adapter DriverAdapter
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param columns 上一步查询结果
+     * @param previous 上一步查询结果
      * @param table 表
      * @param cmd sql
      * @return columns
@@ -268,7 +268,7 @@ public interface DriverActuator {
      * @param adapter DriverAdapter
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param columns 上一步查询结果
+     * @param previous 上一步查询结果
      * @param table 表
      * @return columns
      * @param <T> Column

@@ -32,6 +32,7 @@ import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.util.DataSourceUtil;
 import org.anyline.entity.*;
 import org.anyline.entity.authorize.Privilege;
+import org.anyline.entity.authorize.Role;
 import org.anyline.entity.authorize.User;
 import org.anyline.entity.generator.PrimaryGenerator;
 import org.anyline.exception.NotSupportException;
@@ -2106,7 +2107,7 @@ public interface DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param databases 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return databases
 	 * @throws Exception 异常
@@ -2194,7 +2195,7 @@ public interface DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param catalogs 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return catalogs
 	 * @throws Exception 异常
@@ -2207,7 +2208,7 @@ public interface DriverAdapter {
 	 * 根据驱动内置接口补充 catalog
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param catalogs 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @return catalogs
 	 * @throws Exception 异常
 	 */
@@ -2218,7 +2219,7 @@ public interface DriverAdapter {
 	 * 根据驱动内置接口补充 catalog
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param catalogs 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @return catalogs
 	 * @throws Exception 异常
 	 */
@@ -2315,7 +2316,7 @@ public interface DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param schemas 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return schemas
 	 * @throws Exception 异常
@@ -2328,7 +2329,7 @@ public interface DriverAdapter {
 	 * 根据驱动内置接口补充 schema
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param schemas 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @return schemas
 	 * @throws Exception 异常
 	 */
@@ -2338,7 +2339,7 @@ public interface DriverAdapter {
 	 * 根据驱动内置接口补充 schema
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param schemas 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @return schemas
 	 * @throws Exception 异常
 	 */
@@ -2389,12 +2390,29 @@ public interface DriverAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types  Metadata.TYPE.
-	 * @param struct 是否查询表结构
+	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
+	 * @param struct 查询的属性 参考Metadata.TYPE 多个属性相加算出总和 true:表示查询全部
 	 * @return List
 	 * @param <T> Table
 	 */
-	<T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs);
+	<T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Table query, int types, int struct, ConfigStore configs);
+	/**
+	 * table[调用入口]<br/>
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param pattern 名称统配符或正则
+	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
+	 * @param struct 查询的属性 参考Metadata.TYPE 多个属性相加算出总和 true:表示查询全部
+	 * @return List
+	 * @param <T> Table
+	 */
+	default <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
+		Table query = new Table(catalog, schema, pattern);
+		return tables(runtime, random, greedy, query, types, struct, configs);
+	}
 	default <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct){
 		return tables(runtime, random, greedy, catalog, schema, pattern, types, struct, null);
 	}
@@ -2411,7 +2429,11 @@ public interface DriverAdapter {
 	default <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types) {
 		return tables(runtime, random, greedy, catalog, schema, pattern, types, false);
 	}
-	<T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs);
+	<T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Table query, int types, int struct, ConfigStore configs);
+	default <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
+		Table query = new Table(catalog, schema, pattern);
+		return tables(runtime, random, query, types, struct, configs);
+	}
 	default <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct){
 		return tables(runtime, random, catalog, schema, pattern, types, struct, null);
 	}
@@ -2441,8 +2463,24 @@ public interface DriverAdapter {
 	 * @return String
 	 * @throws Exception Exception
 	 */
-	List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs) throws Exception;
+	List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Table query, int types, ConfigStore configs) throws Exception;
 
+	/**
+	 * table[命令合成]<br/>
+	 * 查询表,不是查表中的数据
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param pattern 名称统配符或正则
+	 * @param types  Metadata.TYPE.
+	 * @return String
+	 * @throws Exception Exception
+	 */
+	default List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs) throws Exception {
+		Table query = new Table(catalog, schema, pattern);
+		return buildQueryTablesRun(runtime, greedy, catalog, schema, pattern, types, configs);
+	}
 	/**
 	 * table[命令合成]<br/>
 	 * 查询表备注
@@ -2450,55 +2488,128 @@ public interface DriverAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types types Metadata.TYPE.
+	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return String
 	 * @throws Exception Exception
 	 */
-	List<Run> buildQueryTablesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types) throws Exception;
+	List<Run> buildQueryTablesCommentRun(DataRuntime runtime, Table query, int types) throws Exception;
+	/**
+	 * table[命令合成]<br/>
+	 * 查询表备注
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param pattern 名称统配符或正则
+	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
+	 * @return String
+	 * @throws Exception Exception
+	 */
+	default List<Run> buildQueryTablesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
+		Table query = new Table(catalog, schema, pattern);
+		return buildQueryTablesCommentRun(runtime, query, types);
+	}
 	/**
 	 * table[结果集封装]<br/>
-	 *  根据查询结果集构造Table
+	 * 根据查询结果集构造Table
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param index 第几条SQL 对照buildQueryTablesRun返回顺序
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param query 查询条件 根据metadata属性
+	 * @param previous 上一步查询结果
+	 * @param set 查询结果集
+	 * @return tables
+	 * @throws Exception 异常
+	 */
+	<T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Table query, DataSet set) throws Exception;
+	/**
+	 * table[结果集封装]<br/>
+	 * 根据查询结果集构造Table
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照buildQueryTablesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param catalog catalog
 	 * @param schema schema
-	 * @param tables 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return tables
 	 * @throws Exception 异常
 	 */
-	<T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set) throws Exception;
-	<T extends Table> List<T> tables(DataRuntime runtime, int index, boolean create, List<T> tables, Catalog catalog, Schema schema, DataSet set) throws Exception;
+	default <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Catalog catalog, Schema schema, DataSet set) throws Exception {
+		Table query = new Table();
+		query.setCatalog(catalog);
+		query.setSchema(schema);
+		return tables(runtime, index, create, previous, query, set);
+	}
+	<T extends Table> List<T> tables(DataRuntime runtime, int index, boolean create, List<T> previous, Table query, DataSet set) throws Exception;
+	default <T extends Table> List<T> tables(DataRuntime runtime, int index, boolean create, List<T> previous, Catalog catalog, Schema schema, DataSet set) throws Exception {
+		Table query = new Table();
+		query.setCatalog(catalog);
+		query.setSchema(schema);
+		return tables(runtime, index, create, previous, query, set);
+	}
 
 	/**
 	 * table[结果集封装]<br/>
 	 * 根据驱动内置方法补充
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param tables 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types types Metadata.TYPE.
+	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return tables
 	 * @throws Exception 异常
 	 */
-	<T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, String pattern, int types) throws Exception;
+	<T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Table query, int types) throws Exception;
 	/**
 	 * table[结果集封装]<br/>
 	 * 根据驱动内置方法补充
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param tables 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types types Metadata.TYPE.
+	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return tables
 	 * @throws Exception 异常
 	 */
-	<T extends Table> List<T> tables(DataRuntime runtime, boolean create, List<T> tables, Catalog catalog, Schema schema, String pattern, int types) throws Exception;
+	default <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
+		Table query = new Table(catalog, schema, pattern);
+		return tables(runtime, create, previous, query, types);
+	}
+	/**
+	 * table[结果集封装]<br/>
+	 * 根据驱动内置方法补充
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param previous 上一步查询结果
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param pattern 名称统配符或正则
+	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
+	 * @return tables
+	 * @throws Exception 异常
+	 */
+	<T extends Table> List<T> tables(DataRuntime runtime, boolean create, List<T> previous, Table query, int types) throws Exception;
+	/**
+	 * table[结果集封装]<br/>
+	 * 根据驱动内置方法补充
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param previous 上一步查询结果
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param pattern 名称统配符或正则
+	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
+	 * @return tables
+	 * @throws Exception 异常
+	 */
+	default <T extends Table> List<T> tables(DataRuntime runtime, boolean create, List<T> previous, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
+		Table query = new Table(catalog, schema, pattern);
+		return tables(runtime, create, previous, query, types);
+	}
 
 	/**
 	 * table[结果集封装]<br/>
@@ -2508,13 +2619,39 @@ public interface DriverAdapter {
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param catalog catalog
 	 * @param schema schema
-	 * @param tables 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return tables
 	 * @throws Exception 异常
 	 */
-	<T extends Table> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set) throws Exception;
-	<T extends Table> List<T> comments(DataRuntime runtime, int index, boolean create, List<T> tables, Catalog catalog, Schema schema, DataSet set) throws Exception;
+	<T extends Table> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Table query, DataSet set) throws Exception;
+
+	/**
+	 * table[结果集封装]<br/>
+	 * 表备注
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param index 第几条SQL 对照buildQueryTablesRun返回顺序
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param previous 上一步查询结果
+	 * @param set 查询结果集
+	 * @return tables
+	 * @throws Exception 异常
+	 */
+	default <T extends Table> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Catalog catalog, Schema schema, DataSet set) throws Exception {
+		Table query = new Table();
+		query.setCatalog(catalog);
+		query.setSchema(schema);
+		return comments(runtime, index, create, previous, query, set);
+	}
+	<T extends Table> List<T> comments(DataRuntime runtime, int index, boolean create, List<T> previous, Table query, DataSet set) throws Exception;
+	default <T extends Table> List<T> comments(DataRuntime runtime, int index, boolean create, List<T> previous, Catalog catalog, Schema schema, DataSet set) throws Exception {
+		Table query = new Table();
+		query.setCatalog(catalog);
+		query.setSchema(schema);
+		return comments(runtime, index, create, previous, query, set);
+	}
 
 	/**
 	 * 查询表创建SQL
@@ -2542,7 +2679,7 @@ public interface DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
 	 * @param table 表
-	 * @param ddls 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set sql执行的结果集
 	 * @return List
 	 */
@@ -2558,7 +2695,23 @@ public interface DriverAdapter {
 	 * @param row 查询结果集
 	 * @return Table
 	 */
-	<T extends Table> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row);
+	<T extends Table> T init(DataRuntime runtime, int index, T meta, Table query, DataRow row);
+	/**
+	 * table[结果集封装]<br/>
+	 * 根据查询结果封装Table对象,只封装catalog,schema,name等基础属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 上一步封装结果
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param row 查询结果集
+	 * @return Table
+	 */
+	default <T extends Table> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row) {
+		Table query = new Table();
+		query.setCatalog(catalog);
+		query.setSchema(schema);
+		return init(runtime, index, meta, query, row);
+	}
 	/**
 	 * table[结果集封装]<br/>
 	 * 根据查询结果封装Table对象,更多属性
@@ -2567,7 +2720,21 @@ public interface DriverAdapter {
 	 * @param row 查询结果集
 	 * @return Table
 	 */
-	<T extends Table> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row);
+	<T extends Table> T detail(DataRuntime runtime, int index, T meta, Table query, DataRow row);
+	/**
+	 * table[结果集封装]<br/>
+	 * 根据查询结果封装Table对象,更多属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 上一步封装结果
+	 * @param row 查询结果集
+	 * @return Table
+	 */
+	default <T extends Table> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row) {
+		Table query = new Table();
+		query.setCatalog(catalog);
+		query.setSchema(schema);
+		return detail(runtime, index, meta, query, row);
+	}
 
 	/**
 	 * table[结构集封装-依据]<br/>
@@ -2578,58 +2745,79 @@ public interface DriverAdapter {
 	TableMetadataAdapter tableMetadataAdapter(DataRuntime runtime);
 
 	/* *****************************************************************************************************************
-	 * 													vertexTable
+	 * 													vertex
 	 ******************************************************************************************************************/
 	/**
-	 * vertexTable[调用入口]<br/>
+	 * vertex[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types  Metadata.TYPE.
-	 * @param struct 是否查询表结构
+	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
+	 * @param struct 查询的属性 参考Metadata.TYPE 多个属性相加算出总和 true:表示查询全部
 	 * @return List
 	 * @param <T> VertexTable
 	 */
-	<T extends VertexTable> List<T> vertexTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs);
-	default <T extends VertexTable> List<T> vertexTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct){
-		return vertexTables(runtime, random, greedy, catalog, schema, pattern, types, struct, null);
+	<T extends VertexTable> List<T> vertexs(DataRuntime runtime, String random, boolean greedy, VertexTable query, int types, int struct, ConfigStore configs);
+	/**
+	 * vertex[调用入口]<br/>
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param pattern 名称统配符或正则
+	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
+	 * @param struct 查询的属性 参考Metadata.TYPE 多个属性相加算出总和 true:表示查询全部
+	 * @return List
+	 * @param <T> VertexTable
+	 */
+	default <T extends VertexTable> List<T> vertexs(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
+		VertexTable query = new VertexTable(catalog, schema, pattern);
+		return vertexs(runtime, random, greedy, query, types, struct, configs);
 	}
-	default <T extends VertexTable> List<T> vertexTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, boolean struct, ConfigStore configs) {
+	default <T extends VertexTable> List<T> vertexs(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct){
+		return vertexs(runtime, random, greedy, catalog, schema, pattern, types, struct, null);
+	}
+	default <T extends VertexTable> List<T> vertexs(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, boolean struct, ConfigStore configs) {
 		int structs = 0;
 		if(struct) {
 			structs = 32767;
 		}
-		return vertexTables(runtime, random, greedy, catalog, schema, pattern, types, structs, configs);
+		return vertexs(runtime, random, greedy, catalog, schema, pattern, types, structs, configs);
 	}
-	default <T extends VertexTable> List<T> vertexTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, boolean struct) {
-		return vertexTables(runtime, random, greedy, catalog, schema, pattern, types, struct, null);
+	default <T extends VertexTable> List<T> vertexs(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, boolean struct) {
+		return vertexs(runtime, random, greedy, catalog, schema, pattern, types, struct, null);
 	}
-	default <T extends VertexTable> List<T> vertexTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types) {
-		return vertexTables(runtime, random, greedy, catalog, schema, pattern, types, false);
+	default <T extends VertexTable> List<T> vertexs(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types) {
+		return vertexs(runtime, random, greedy, catalog, schema, pattern, types, false);
 	}
-	<T extends VertexTable> LinkedHashMap<String, T> vertexTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs);
-	default <T extends VertexTable> LinkedHashMap<String, T> vertexTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct){
-		return vertexTables(runtime, random, catalog, schema, pattern, types, struct, null);
+	<T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, String random, VertexTable query, int types, int struct, ConfigStore configs);
+	default <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
+		VertexTable query = new VertexTable(catalog, schema, pattern);
+		return vertexs(runtime, random, query, types, struct, configs);
 	}
-	default <T extends VertexTable> LinkedHashMap<String, T> vertexTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, boolean struct, ConfigStore configs) {
+	default <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct){
+		return vertexs(runtime, random, catalog, schema, pattern, types, struct, null);
+	}
+	default <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, boolean struct, ConfigStore configs) {
 		int structs = 0;
 		if(struct) {
 			structs = 32767;
 		}
-		return vertexTables(runtime, random, catalog, schema, pattern, types, structs, configs);
+		return vertexs(runtime, random, catalog, schema, pattern, types, structs, configs);
 	}
-	default <T extends VertexTable> LinkedHashMap<String, T> vertexTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, boolean struct) {
-		return vertexTables(runtime, random, catalog, schema, pattern, types, struct, null);
+	default <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, boolean struct) {
+		return vertexs(runtime, random, catalog, schema, pattern, types, struct, null);
 	}
-	default <T extends VertexTable> LinkedHashMap<String, T> vertexTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types) {
-		return vertexTables(runtime, random, catalog, schema, pattern, types, false);
+	default <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types) {
+		return vertexs(runtime, random, catalog, schema, pattern, types, false);
 	}
 
 	/**
-	 * vertexTable[命令合成]<br/>
+	 * vertex[命令合成]<br/>
 	 * 查询表,不是查表中的数据
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
@@ -2640,99 +2828,190 @@ public interface DriverAdapter {
 	 * @return String
 	 * @throws Exception Exception
 	 */
-	List<Run> buildQueryVertexTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs) throws Exception;
+	List<Run> buildQueryVertexTablesRun(DataRuntime runtime, boolean greedy, VertexTable query, int types, ConfigStore configs) throws Exception;
+	/**
+	 * vertex[命令合成]<br/>
+	 * 查询表,不是查表中的数据
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param pattern 名称统配符或正则
+	 * @param types  Metadata.TYPE.
+	 * @return String
+	 * @throws Exception Exception
+	 */
+	default List<Run> buildQueryVertexTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs) throws Exception {
+		VertexTable query = new VertexTable(catalog, schema, pattern);
+		return buildQueryVertexTablesRun(runtime, greedy, query, types, configs);
+	}
 
 	/**
-	 * vertexTable[命令合成]<br/>
+	 * vertex[命令合成]<br/>
 	 * 查询表备注
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types types Metadata.TYPE.
+	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return String
 	 * @throws Exception Exception
 	 */
-	List<Run> buildQueryVertexTablesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types) throws Exception;
+	List<Run> buildQueryVertexTablesCommentRun(DataRuntime runtime, VertexTable query, int types) throws Exception;
 	/**
-	 * vertexTable[结果集封装]<br/>
+	 * vertex[命令合成]<br/>
+	 * 查询表备注
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param pattern 名称统配符或正则
+	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
+	 * @return String
+	 * @throws Exception Exception
+	 */
+	default List<Run> buildQueryVertexTablesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
+		VertexTable query = new VertexTable(catalog, schema, pattern);
+		return buildQueryVertexTablesCommentRun(runtime, query, types);
+	}
+	/**
+	 * vertex[结果集封装]<br/>
 	 *  根据查询结果集构造VertexTable
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照buildQueryVertexTablesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param catalog catalog
 	 * @param schema schema
-	 * @param vertexTables 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
-	 * @return vertexTables
+	 * @return vertexs
 	 * @throws Exception 异常
 	 */
-	<T extends VertexTable> LinkedHashMap<String, T> vertexTables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> vertexTables, Catalog catalog, Schema schema, DataSet set) throws Exception;
-	<T extends VertexTable> List<T> vertexTables(DataRuntime runtime, int index, boolean create, List<T> vertexTables, Catalog catalog, Schema schema, DataSet set) throws Exception;
+	<T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, VertexTable query, DataSet set) throws Exception;
+	/**
+	 * vertex[结果集封装]<br/>
+	 *  根据查询结果集构造VertexTable
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param index 第几条SQL 对照buildQueryVertexTablesRun返回顺序
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param previous 上一步查询结果
+	 * @param set 查询结果集
+	 * @return vertexs
+	 * @throws Exception 异常
+	 */
+	default <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Catalog catalog, Schema schema, DataSet set) throws Exception {
+		VertexTable query = new VertexTable();
+		query.setCatalog(catalog);
+		query.setSchema(schema);
+		return vertexs(runtime, index, create, previous, query, set);
+	}
+	<T extends VertexTable> List<T> vertexs(DataRuntime runtime, int index, boolean create, List<T> previous, VertexTable query, DataSet set) throws Exception;
+	default <T extends VertexTable> List<T> vertexs(DataRuntime runtime, int index, boolean create, List<T> previous, Catalog catalog, Schema schema, DataSet set) throws Exception {
+		VertexTable query = new VertexTable();
+		query.setCatalog(catalog);
+		query.setSchema(schema);
+		return vertexs(runtime, index, create, previous, query, set);
+	}
 
 	/**
-	 * vertexTable[结果集封装]<br/>
+	 * vertex[结果集封装]<br/>
 	 * 根据驱动内置方法补充
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param vertexTables 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types types Metadata.TYPE.
-	 * @return vertexTables
+	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
+	 * @return vertexs
 	 * @throws Exception 异常
 	 */
-	<T extends VertexTable> LinkedHashMap<String, T> vertexTables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> vertexTables, Catalog catalog, Schema schema, String pattern, int types) throws Exception;
+	<T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, VertexTable query, int types) throws Exception;
+
 	/**
-	 * vertexTable[结果集封装]<br/>
+	 * vertex[结果集封装]<br/>
 	 * 根据驱动内置方法补充
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param vertexTables 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types types Metadata.TYPE.
-	 * @return vertexTables
+	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
+	 * @return vertexs
 	 * @throws Exception 异常
 	 */
-	<T extends VertexTable> List<T> vertexTables(DataRuntime runtime, boolean create, List<T> vertexTables, Catalog catalog, Schema schema, String pattern, int types) throws Exception;
+	default <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
+		VertexTable query = new VertexTable(catalog, schema, pattern);
+		return vertexs(runtime, create, previous, query, types);
+	}
+	/**
+	 * vertex[结果集封装]<br/>
+	 * 根据驱动内置方法补充
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param previous 上一步查询结果
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param pattern 名称统配符或正则
+	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
+	 * @return vertexs
+	 * @throws Exception 异常
+	 */
+	<T extends VertexTable> List<T> vertexs(DataRuntime runtime, boolean create, List<T> previous, VertexTable query, int types) throws Exception;
+	/**
+	 * vertex[结果集封装]<br/>
+	 * 根据驱动内置方法补充
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param previous 上一步查询结果
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param pattern 名称统配符或正则
+	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
+	 * @return vertexs
+	 * @throws Exception 异常
+	 */
+	default <T extends VertexTable> List<T> vertexs(DataRuntime runtime, boolean create, List<T> previous, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
+		VertexTable query = new VertexTable(catalog, schema, pattern);
+		return vertexs(runtime, create, previous, query, types);
+	}
 
 	/**
 	 * 查询表创建SQL
-	 * vertexTable[调用入口]<br/>
+	 * vertex[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param vertexTable 表
+	 * @param vertex 表
 	 * @param init 是否还原初始状态 如自增状态
 	 * @return List
 	 */
-	List<String> ddl(DataRuntime runtime, String random, VertexTable vertexTable, boolean init);
+	List<String> ddl(DataRuntime runtime, String random, VertexTable vertex, boolean init);
 
 	/**
-	 * vertexTable[命令合成]<br/>
+	 * vertex[命令合成]<br/>
 	 * 查询表DDL
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param vertexTable 表
+	 * @param vertex 表
 	 * @return List
 	 */
-	List<Run> buildQueryDdlsRun(DataRuntime runtime, VertexTable vertexTable) throws Exception;
+	List<Run> buildQueryDdlsRun(DataRuntime runtime, VertexTable vertex) throws Exception;
 
 	/**
-	 * vertexTable[结果集封装]<br/>
+	 * vertex[结果集封装]<br/>
 	 * 查询表DDL
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
-	 * @param vertexTable 表
-	 * @param ddls 上一步查询结果
+	 * @param vertex 表
+	 * @param previous 上一步查询结果
 	 * @param set sql执行的结果集
 	 * @return List
 	 */
-	List<String> ddl(DataRuntime runtime, int index, VertexTable vertexTable, List<String> ddls, DataSet set);
+	List<String> ddl(DataRuntime runtime, int index, VertexTable vertex, List<String> ddls, DataSet set);
 
 	/**
-	 * vertexTable[结果集封装]<br/>
+	 * vertex[结果集封装]<br/>
 	 * 根据查询结果封装VertexTable对象,只封装catalog,schema,name等基础属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 上一步封装结果
@@ -2741,78 +3020,129 @@ public interface DriverAdapter {
 	 * @param row 查询结果集
 	 * @return VertexTable
 	 */
-	<T extends VertexTable> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row);
+	<T extends VertexTable> T init(DataRuntime runtime, int index, T meta, VertexTable query, DataRow row);
 	/**
-	 * vertexTable[结果集封装]<br/>
+	 * vertex[结果集封装]<br/>
+	 * 根据查询结果封装VertexTable对象,只封装catalog,schema,name等基础属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 上一步封装结果
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param row 查询结果集
+	 * @return VertexTable
+	 */
+	default <T extends VertexTable> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row) {
+		VertexTable query = new VertexTable();
+		query.setCatalog(catalog);
+		query.setSchema(schema);
+		return init(runtime, index, meta, query, row);
+	}
+	/**
+	 * vertex[结果集封装]<br/>
 	 * 根据查询结果封装VertexTable对象,更多属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 上一步封装结果
 	 * @param row 查询结果集
 	 * @return VertexTable
 	 */
-	<T extends VertexTable> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row);
+	<T extends VertexTable> T detail(DataRuntime runtime, int index, T meta, VertexTable query, DataRow row);
+	/**
+	 * vertex[结果集封装]<br/>
+	 * 根据查询结果封装VertexTable对象,更多属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 上一步封装结果
+	 * @param row 查询结果集
+	 * @return VertexTable
+	 */
+	default <T extends VertexTable> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row) {
+		VertexTable query = new VertexTable();
+		query.setCatalog(catalog);
+		query.setSchema(schema);
+		return detail(runtime, index, meta, query, row);
+	}
 
 	/**
-	 * vertexTable[结构集封装-依据]<br/>
-	 * 读取vertexTable元数据结果集的依据
+	 * vertex[结构集封装-依据]<br/>
+	 * 读取vertex元数据结果集的依据
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @return VertexTableMetadataAdapter
 	 */
-	VertexTableMetadataAdapter vertexTableMetadataAdapter(DataRuntime runtime);
+	VertexMetadataAdapter vertexMetadataAdapter(DataRuntime runtime);
 	/* *****************************************************************************************************************
-	 * 													edgeTable
+	 * 													edge
 	 ******************************************************************************************************************/
 
 	/**
-	 * edgeTable[调用入口]<br/>
+	 * edge[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types  Metadata.TYPE.
-	 * @param struct 是否查询表结构
+	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
+	 * @param struct 查询的属性 参考Metadata.TYPE 多个属性相加算出总和 true:表示查询全部
 	 * @return List
 	 * @param <T> EdgeTable
 	 */
-	<T extends EdgeTable> List<T> edgeTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs);
-	default <T extends EdgeTable> List<T> edgeTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct){
-		return edgeTables(runtime, random, greedy, catalog, schema, pattern, types, struct, null);
+	<T extends EdgeTable> List<T> edges(DataRuntime runtime, String random, boolean greedy, EdgeTable query, int types, int struct, ConfigStore configs);
+	/**
+	 * edge[调用入口]<br/>
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param pattern 名称统配符或正则
+	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
+	 * @param struct 查询的属性 参考Metadata.TYPE 多个属性相加算出总和 true:表示查询全部
+	 * @return List
+	 * @param <T> EdgeTable
+	 */
+	default <T extends EdgeTable> List<T> edges(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
+		EdgeTable query = new EdgeTable(catalog, schema, pattern);
+		return edges(runtime, random, greedy, query, types, struct, configs);
 	}
-	default <T extends EdgeTable> List<T> edgeTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, boolean struct, ConfigStore configs) {
+	default <T extends EdgeTable> List<T> edges(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct){
+		return edges(runtime, random, greedy, catalog, schema, pattern, types, struct, null);
+	}
+	default <T extends EdgeTable> List<T> edges(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, boolean struct, ConfigStore configs) {
 		int structs = 0;
 		if(struct) {
 			structs = 32767;
 		}
-		return edgeTables(runtime, random, greedy, catalog, schema, pattern, types, structs, configs);
+		return edges(runtime, random, greedy, catalog, schema, pattern, types, structs, configs);
 	}
-	default <T extends EdgeTable> List<T> edgeTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, boolean struct) {
-		return edgeTables(runtime, random, greedy, catalog, schema, pattern, types, struct, null);
+	default <T extends EdgeTable> List<T> edges(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, boolean struct) {
+		return edges(runtime, random, greedy, catalog, schema, pattern, types, struct, null);
 	}
-	default <T extends EdgeTable> List<T> edgeTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types) {
-		return edgeTables(runtime, random, greedy, catalog, schema, pattern, types, false);
+	default <T extends EdgeTable> List<T> edges(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types) {
+		return edges(runtime, random, greedy, catalog, schema, pattern, types, false);
 	}
-	<T extends EdgeTable> LinkedHashMap<String, T> edgeTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs);
-	default <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct){
-		return edgeTables(runtime, random, catalog, schema, pattern, types, struct, null);
+	<T extends EdgeTable> LinkedHashMap<String, T> edges(DataRuntime runtime, String random, EdgeTable query, int types, int struct, ConfigStore configs);
+	default <T extends EdgeTable> LinkedHashMap<String, T> edges(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
+		EdgeTable query = new EdgeTable(catalog, schema, pattern);
+		return edges(runtime, random, query, types, struct, configs);
 	}
-	default <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, boolean struct, ConfigStore configs) {
+	default <T extends EdgeTable> LinkedHashMap<String, T> edges(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct){
+		return edges(runtime, random, catalog, schema, pattern, types, struct, null);
+	}
+	default <T extends EdgeTable> LinkedHashMap<String, T> edges(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, boolean struct, ConfigStore configs) {
 		int structs = 0;
 		if(struct) {
 			structs = 32767;
 		}
-		return edgeTables(runtime, random, catalog, schema, pattern, types, structs, configs);
+		return edges(runtime, random, catalog, schema, pattern, types, structs, configs);
 	}
-	default <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, boolean struct) {
-		return edgeTables(runtime, random, catalog, schema, pattern, types, struct, null);
+	default <T extends EdgeTable> LinkedHashMap<String, T> edges(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, boolean struct) {
+		return edges(runtime, random, catalog, schema, pattern, types, struct, null);
 	}
-	default <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types) {
-		return edgeTables(runtime, random, catalog, schema, pattern, types, false);
+	default <T extends EdgeTable> LinkedHashMap<String, T> edges(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types) {
+		return edges(runtime, random, catalog, schema, pattern, types, false);
 	}
 
 	/**
-	 * edgeTable[命令合成]<br/>
+	 * edge[命令合成]<br/>
 	 * 查询表,不是查表中的数据
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
@@ -2823,99 +3153,190 @@ public interface DriverAdapter {
 	 * @return String
 	 * @throws Exception Exception
 	 */
-	List<Run> buildQueryEdgeTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs) throws Exception;
+	List<Run> buildQueryEdgesRun(DataRuntime runtime, boolean greedy, EdgeTable query, int types, ConfigStore configs) throws Exception;
+	/**
+	 * edge[命令合成]<br/>
+	 * 查询表,不是查表中的数据
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param pattern 名称统配符或正则
+	 * @param types  Metadata.TYPE.
+	 * @return String
+	 * @throws Exception Exception
+	 */
+	default List<Run> buildQueryEdgesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs) throws Exception {
+		EdgeTable query = new EdgeTable(catalog, schema, pattern);
+		return buildQueryEdgesRun(runtime, greedy, query, types, configs);
+	}
 
 	/**
-	 * edgeTable[命令合成]<br/>
+	 * edge[命令合成]<br/>
 	 * 查询表备注
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types types Metadata.TYPE.
+	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return String
 	 * @throws Exception Exception
 	 */
-	List<Run> buildQueryEdgeTablesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types) throws Exception;
+	List<Run> buildQueryEdgesCommentRun(DataRuntime runtime, EdgeTable query, int types) throws Exception;
 	/**
-	 * edgeTable[结果集封装]<br/>
+	 * edge[命令合成]<br/>
+	 * 查询表备注
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param pattern 名称统配符或正则
+	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
+	 * @return String
+	 * @throws Exception Exception
+	 */
+	default List<Run> buildQueryEdgesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
+		EdgeTable query = new EdgeTable(catalog, schema, pattern);
+		return buildQueryEdgesCommentRun(runtime, query, types);
+	}
+	/**
+	 * edge[结果集封装]<br/>
 	 *  根据查询结果集构造EdgeTable
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照buildQueryEdgeTablesRun返回顺序
+	 * @param index 第几条SQL 对照buildQueryEdgesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param catalog catalog
 	 * @param schema schema
-	 * @param edgeTables 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
-	 * @return edgeTables
+	 * @return edges
 	 * @throws Exception 异常
 	 */
-	<T extends EdgeTable> LinkedHashMap<String, T> edgeTables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> edgeTables, Catalog catalog, Schema schema, DataSet set) throws Exception;
-	<T extends EdgeTable> List<T> edgeTables(DataRuntime runtime, int index, boolean create, List<T> edgeTables, Catalog catalog, Schema schema, DataSet set) throws Exception;
+	<T extends EdgeTable> LinkedHashMap<String, T> edges(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, EdgeTable query, DataSet set) throws Exception;
+	/**
+	 * edge[结果集封装]<br/>
+	 *  根据查询结果集构造EdgeTable
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param index 第几条SQL 对照buildQueryEdgesRun返回顺序
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param previous 上一步查询结果
+	 * @param set 查询结果集
+	 * @return edges
+	 * @throws Exception 异常
+	 */
+	default <T extends EdgeTable> LinkedHashMap<String, T> edges(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Catalog catalog, Schema schema, DataSet set) throws Exception {
+		EdgeTable query = new EdgeTable();
+		query.setCatalog(catalog);
+		query.setSchema(schema);
+		return edges(runtime, index, create, previous, query, set);
+	}
+	<T extends EdgeTable> List<T> edges(DataRuntime runtime, int index, boolean create, List<T> previous, EdgeTable query, DataSet set) throws Exception;
+	default <T extends EdgeTable> List<T> edges(DataRuntime runtime, int index, boolean create, List<T> previous, Catalog catalog, Schema schema, DataSet set) throws Exception {
+		EdgeTable query = new EdgeTable();
+		query.setCatalog(catalog);
+		query.setSchema(schema);
+		return edges(runtime, index, create, previous, query, set);
+	}
 
 	/**
-	 * edgeTable[结果集封装]<br/>
+	 * edge[结果集封装]<br/>
 	 * 根据驱动内置方法补充
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param edgeTables 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types types Metadata.TYPE.
-	 * @return edgeTables
+	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
+	 * @return edges
 	 * @throws Exception 异常
 	 */
-	<T extends EdgeTable> LinkedHashMap<String, T> edgeTables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> edgeTables, Catalog catalog, Schema schema, String pattern, int types) throws Exception;
+	<T extends EdgeTable> LinkedHashMap<String, T> edges(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, EdgeTable query, int types) throws Exception;
+
 	/**
-	 * edgeTable[结果集封装]<br/>
+	 * edge[结果集封装]<br/>
 	 * 根据驱动内置方法补充
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param edgeTables 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types types Metadata.TYPE.
-	 * @return edgeTables
+	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
+	 * @return edges
 	 * @throws Exception 异常
 	 */
-	<T extends EdgeTable> List<T> edgeTables(DataRuntime runtime, boolean create, List<T> edgeTables, Catalog catalog, Schema schema, String pattern, int types) throws Exception;
+	default <T extends EdgeTable> LinkedHashMap<String, T> edges(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
+		EdgeTable query = new EdgeTable(catalog, schema, pattern);
+		return edges(runtime, create, previous, query, types);
+	}
+	/**
+	 * edge[结果集封装]<br/>
+	 * 根据驱动内置方法补充
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param previous 上一步查询结果
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param pattern 名称统配符或正则
+	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
+	 * @return edges
+	 * @throws Exception 异常
+	 */
+	<T extends EdgeTable> List<T> edges(DataRuntime runtime, boolean create, List<T> previous, EdgeTable query, int types) throws Exception;
+	/**
+	 * edge[结果集封装]<br/>
+	 * 根据驱动内置方法补充
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param previous 上一步查询结果
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param pattern 名称统配符或正则
+	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
+	 * @return edges
+	 * @throws Exception 异常
+	 */
+	default <T extends EdgeTable> List<T> edges(DataRuntime runtime, boolean create, List<T> previous, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
+		EdgeTable query = new EdgeTable(catalog, schema, pattern);
+		return edges(runtime, create, previous, query, types);
+	}
 
 	/**
 	 * 查询表创建SQL
-	 * edgeTable[调用入口]<br/>
+	 * edge[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param edgeTable 表
+	 * @param edge 表
 	 * @param init 是否还原初始状态 如自增状态
 	 * @return List
 	 */
-	List<String> ddl(DataRuntime runtime, String random, EdgeTable edgeTable, boolean init);
+	List<String> ddl(DataRuntime runtime, String random, EdgeTable edge, boolean init);
 
 	/**
-	 * edgeTable[命令合成]<br/>
+	 * edge[命令合成]<br/>
 	 * 查询表DDL
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param edgeTable 表
+	 * @param edge 表
 	 * @return List
 	 */
-	List<Run> buildQueryDdlsRun(DataRuntime runtime, EdgeTable edgeTable) throws Exception;
+	List<Run> buildQueryDdlsRun(DataRuntime runtime, EdgeTable edge) throws Exception;
 
 	/**
-	 * edgeTable[结果集封装]<br/>
+	 * edge[结果集封装]<br/>
 	 * 查询表DDL
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
-	 * @param edgeTable 表
-	 * @param ddls 上一步查询结果
+	 * @param edge 表
+	 * @param previous 上一步查询结果
 	 * @param set sql执行的结果集
 	 * @return List
 	 */
-	List<String> ddl(DataRuntime runtime, int index, EdgeTable edgeTable, List<String> ddls, DataSet set);
+	List<String> ddl(DataRuntime runtime, int index, EdgeTable edge, List<String> ddls, DataSet set);
 
 	/**
-	 * edgeTable[结果集封装]<br/>
+	 * edge[结果集封装]<br/>
 	 * 根据查询结果封装EdgeTable对象,只封装catalog,schema,name等基础属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 上一步封装结果
@@ -2924,24 +3345,55 @@ public interface DriverAdapter {
 	 * @param row 查询结果集
 	 * @return EdgeTable
 	 */
-	<T extends EdgeTable> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row);
+	<T extends EdgeTable> T init(DataRuntime runtime, int index, T meta, EdgeTable query, DataRow row);
+
 	/**
-	 * edgeTable[结果集封装]<br/>
+	 * edge[结果集封装]<br/>
+	 * 根据查询结果封装EdgeTable对象,只封装catalog,schema,name等基础属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 上一步封装结果
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param row 查询结果集
+	 * @return EdgeTable
+	 */
+	default <T extends EdgeTable> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row) {
+		EdgeTable query = new EdgeTable();
+		query.setCatalog(catalog);
+		query.setSchema(schema);
+		return init(runtime, index, meta, query, row);
+	}
+	/**
+	 * edge[结果集封装]<br/>
 	 * 根据查询结果封装EdgeTable对象,更多属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 上一步封装结果
 	 * @param row 查询结果集
 	 * @return EdgeTable
 	 */
-	<T extends EdgeTable> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row);
+	<T extends EdgeTable> T detail(DataRuntime runtime, int index, T meta, EdgeTable query, DataRow row);
+	/**
+	 * edge[结果集封装]<br/>
+	 * 根据查询结果封装EdgeTable对象,更多属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 上一步封装结果
+	 * @param row 查询结果集
+	 * @return EdgeTable
+	 */
+	default <T extends EdgeTable> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row) {
+		EdgeTable query = new EdgeTable();
+		query.setCatalog(catalog);
+		query.setSchema(schema);
+		return detail(runtime, index, meta, query, row);
+	}
 
 	/**
-	 * edgeTable[结构集封装-依据]<br/>
-	 * 读取edgeTable元数据结果集的依据
+	 * edge[结构集封装-依据]<br/>
+	 * 读取edge元数据结果集的依据
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @return EdgeTableMetadataAdapter
 	 */
-	EdgeTableMetadataAdapter edgeTableMetadataAdapter(DataRuntime runtime);
+	EdgeMetadataAdapter edgeMetadataAdapter(DataRuntime runtime);
 
 	/* *****************************************************************************************************************
 	 * 													view
@@ -2960,7 +3412,24 @@ public interface DriverAdapter {
 	 * @return List
 	 * @param <T> View
 	 */
-	<T extends View> List<T> views(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs);
+	<T extends View> List<T> views(DataRuntime runtime, String random, boolean greedy, View query, int types, int struct, ConfigStore configs);
+	/**
+	 * view[调用入口]<br/>
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param pattern 名称统配符或正则
+	 * @param types  Metadata.TYPE.
+	 * @param struct 是否查询视图结构
+	 * @return List
+	 * @param <T> View
+	 */
+	default <T extends View> List<T> views(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
+		View query = new View(catalog, schema, pattern);
+		return views(runtime, random, greedy, catalog, schema, pattern, types, struct, configs);
+	}
 	default <T extends View> List<T> views(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct){
 		return views(runtime, random, greedy, catalog, schema, pattern, types, struct, null);
 	}
@@ -2977,7 +3446,11 @@ public interface DriverAdapter {
 	default <T extends View> List<T> views(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types) {
 		return views(runtime, random, greedy, catalog, schema, pattern, types, false);
 	}
-	<T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs);
+	<T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, View query, int types, int struct, ConfigStore configs);
+	default <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
+		View query = new View(catalog, schema, pattern);
+		return views(runtime, random, query, types, struct, configs);
+	}
 	default <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct){
 		return views(runtime, random, catalog, schema, pattern, types, struct, null);
 	}
@@ -3007,7 +3480,24 @@ public interface DriverAdapter {
 	 * @return String
 	 * @throws Exception Exception
 	 */
-	List<Run> buildQueryViewsRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs) throws Exception;
+	List<Run> buildQueryViewsRun(DataRuntime runtime, boolean greedy, View query, int types, ConfigStore configs) throws Exception;
+
+	/**
+	 * view[命令合成]<br/>
+	 * 查询视图,不是查视图中的数据
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param pattern 名称统配符或正则
+	 * @param types  Metadata.TYPE.
+	 * @return String
+	 * @throws Exception Exception
+	 */
+	default List<Run> buildQueryViewsRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs) throws Exception {
+		View query = new View(catalog, schema, pattern);
+		return buildQueryViewsRun(runtime, greedy, query, types, configs);
+	}
 
 	/**
 	 * view[命令合成]<br/>
@@ -3016,11 +3506,26 @@ public interface DriverAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types types Metadata.TYPE.
+	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return String
 	 * @throws Exception Exception
 	 */
-	List<Run> buildQueryViewsCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types) throws Exception;
+	List<Run> buildQueryViewsCommentRun(DataRuntime runtime, View query, int types) throws Exception;
+	/**
+	 * view[命令合成]<br/>
+	 * 查询视图备注
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param pattern 名称统配符或正则
+	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
+	 * @return String
+	 * @throws Exception Exception
+	 */
+	default List<Run> buildQueryViewsCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
+		View query = new View(catalog, schema, pattern);
+		return buildQueryViewsCommentRun(runtime, query, types);
+	}
 	/**
 	 * view[结果集封装]<br/>
 	 *  根据查询结果集构造View
@@ -3029,42 +3534,101 @@ public interface DriverAdapter {
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param catalog catalog
 	 * @param schema schema
-	 * @param views 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return views
 	 * @throws Exception 异常
 	 */
-	<T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> views, Catalog catalog, Schema schema, DataSet set) throws Exception;
-	<T extends View> List<T> views(DataRuntime runtime, int index, boolean create, List<T> views, Catalog catalog, Schema schema, DataSet set) throws Exception;
+	<T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, View query, DataSet set) throws Exception;
+	/**
+	 * view[结果集封装]<br/>
+	 *  根据查询结果集构造View
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param index 第几条SQL 对照buildQueryViewsRun返回顺序
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param previous 上一步查询结果
+	 * @param set 查询结果集
+	 * @return views
+	 * @throws Exception 异常
+	 */
+	default <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Catalog catalog, Schema schema, DataSet set) throws Exception {
+		View query = new View();
+		query.setCatalog(catalog);
+		query.setSchema(schema);
+		return views(runtime, index, create, previous, query ,set);
+	}
+	<T extends View> List<T> views(DataRuntime runtime, int index, boolean create, List<T> previous, View query, DataSet set) throws Exception;
+	default <T extends View> List<T> views(DataRuntime runtime, int index, boolean create, List<T> previous, Catalog catalog, Schema schema, DataSet set) throws Exception {
+		View query = new View();
+		query.setCatalog(catalog);
+		query.setSchema(schema);
+		return views(runtime, index, create, previous, query ,set);
+	}
 
 	/**
 	 * view[结果集封装]<br/>
 	 * 根据驱动内置方法补充
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param views 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types types Metadata.TYPE.
+	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return views
 	 * @throws Exception 异常
 	 */
-	<T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, boolean create, LinkedHashMap<String, T> views, Catalog catalog, Schema schema, String pattern, int types) throws Exception;
+	<T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, View query, int types) throws Exception;
 	/**
 	 * view[结果集封装]<br/>
 	 * 根据驱动内置方法补充
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param views 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types types Metadata.TYPE.
+	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return views
 	 * @throws Exception 异常
 	 */
-	<T extends View> List<T> views(DataRuntime runtime, boolean create, List<T> views, Catalog catalog, Schema schema, String pattern, int types) throws Exception;
+	default <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
+		View query = new View(catalog, schema, pattern);
+		return views(runtime, create, previous, query, types);
+	}
+	/**
+	 * view[结果集封装]<br/>
+	 * 根据驱动内置方法补充
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param previous 上一步查询结果
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param pattern 名称统配符或正则
+	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
+	 * @return views
+	 * @throws Exception 异常
+	 */
+	<T extends View> List<T> views(DataRuntime runtime, boolean create, List<T> previous, View query, int types) throws Exception;
+	/**
+	 * view[结果集封装]<br/>
+	 * 根据驱动内置方法补充
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param previous 上一步查询结果
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param pattern 名称统配符或正则
+	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
+	 * @return views
+	 * @throws Exception 异常
+	 */
+	default <T extends View> List<T> views(DataRuntime runtime, boolean create, List<T> previous, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
+		View query = new View(catalog, schema, pattern);
+		return views(runtime, create, previous, query, types);
+	}
 
 	/**
 	 * 查询视图创建SQL
@@ -3092,7 +3656,7 @@ public interface DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
 	 * @param view 视图
-	 * @param ddls 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set sql执行的结果集
 	 * @return List
 	 */
@@ -3108,7 +3672,23 @@ public interface DriverAdapter {
 	 * @param row 查询结果集
 	 * @return View
 	 */
-	<T extends View> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row);
+	<T extends View> T init(DataRuntime runtime, int index, T meta, View query, DataRow row);
+	/**
+	 * view[结果集封装]<br/>
+	 * 根据查询结果封装View对象,只封装catalog,schema,name等基础属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 上一步封装结果
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param row 查询结果集
+	 * @return View
+	 */
+	default <T extends View> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row) {
+		View query = new View();
+		query.setCatalog(catalog);
+		query.setSchema(schema);
+		return init(runtime, index, meta, query, row);
+	}
 	/**
 	 * view[结果集封装]<br/>
 	 * 根据查询结果封装View对象,更多属性
@@ -3117,7 +3697,21 @@ public interface DriverAdapter {
 	 * @param row 查询结果集
 	 * @return View
 	 */
-	<T extends View> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row);
+	<T extends View> T detail(DataRuntime runtime, int index, T meta, View query, DataRow row);
+	/**
+	 * view[结果集封装]<br/>
+	 * 根据查询结果封装View对象,更多属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 上一步封装结果
+	 * @param row 查询结果集
+	 * @return View
+	 */
+	default <T extends View> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row) {
+		View query = new View();
+		query.setCatalog(catalog);
+		query.setSchema(schema);
+		return detail(runtime, index, meta, query, row);
+	}
 
 	/**
 	 * view[结构集封装-依据]<br/>
@@ -3131,55 +3725,77 @@ public interface DriverAdapter {
 	 ******************************************************************************************************************/
 
 	/**
-	 * masterTable[调用入口]<br/>
+	 * master[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types  Metadata.TYPE.
-	 * @param struct 是否查询表结构
+	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
+	 * @param struct 查询的属性 参考Metadata.TYPE 多个属性相加算出总和 true:表示查询全部
 	 * @return List
 	 * @param <T> MasterTable
 	 */
-	<T extends MasterTable> List<T> masterTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs);
-	default <T extends MasterTable> List<T> masterTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct){
-		return masterTables(runtime, random, greedy, catalog, schema, pattern, types, struct, null);
+	<T extends MasterTable> List<T> masters(DataRuntime runtime, String random, boolean greedy, MasterTable query, int types, int struct, ConfigStore configs);
+	/**
+	 * master[调用入口]<br/>
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param pattern 名称统配符或正则
+	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
+	 * @param struct 查询的属性 参考Metadata.TYPE 多个属性相加算出总和 true:表示查询全部
+	 * @return List
+	 * @param <T> MasterTable
+	 */
+	default <T extends MasterTable> List<T> masters(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
+		MasterTable query = new MasterTable(catalog, schema, pattern);
+		return masters(runtime, random, greedy, query, types, struct, configs);
 	}
-	default <T extends MasterTable> List<T> masterTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, boolean struct, ConfigStore configs) {
+
+	default <T extends MasterTable> List<T> masters(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct){
+		return masters(runtime, random, greedy, catalog, schema, pattern, types, struct, null);
+	}
+	default <T extends MasterTable> List<T> masters(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, boolean struct, ConfigStore configs) {
 		int structs = 0;
 		if(struct) {
 			structs = 32767;
 		}
-		return masterTables(runtime, random, greedy, catalog, schema, pattern, types, structs, configs);
+		return masters(runtime, random, greedy, catalog, schema, pattern, types, structs, configs);
 	}
-	default <T extends MasterTable> List<T> masterTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, boolean struct) {
-		return masterTables(runtime, random, greedy, catalog, schema, pattern, types, struct, null);
+	default <T extends MasterTable> List<T> masters(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, boolean struct) {
+		return masters(runtime, random, greedy, catalog, schema, pattern, types, struct, null);
 	}
-	default <T extends MasterTable> List<T> masterTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types) {
-		return masterTables(runtime, random, greedy, catalog, schema, pattern, types, false);
+	default <T extends MasterTable> List<T> masters(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types) {
+		return masters(runtime, random, greedy, catalog, schema, pattern, types, false);
 	}
-	<T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs);
-	default <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct){
-		return masterTables(runtime, random, catalog, schema, pattern, types, struct, null);
+	<T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, String random, MasterTable query, int types, int struct, ConfigStore configs);
+	default <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
+		MasterTable query = new MasterTable(catalog, schema, pattern);
+		return masters(runtime, random, query, types, struct, configs);
 	}
-	default <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, boolean struct, ConfigStore configs) {
+	default <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct){
+		return masters(runtime, random, catalog, schema, pattern, types, struct, null);
+	}
+	default <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, boolean struct, ConfigStore configs) {
 		int structs = 0;
 		if(struct) {
 			structs = 32767;
 		}
-		return masterTables(runtime, random, catalog, schema, pattern, types, structs, configs);
+		return masters(runtime, random, catalog, schema, pattern, types, structs, configs);
 	}
-	default <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, boolean struct) {
-		return masterTables(runtime, random, catalog, schema, pattern, types, struct, null);
+	default <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, boolean struct) {
+		return masters(runtime, random, catalog, schema, pattern, types, struct, null);
 	}
-	default <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types) {
-		return masterTables(runtime, random, catalog, schema, pattern, types, false);
+	default <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types) {
+		return masters(runtime, random, catalog, schema, pattern, types, false);
 	}
 
 	/**
-	 * masterTable[命令合成]<br/>
+	 * master[命令合成]<br/>
 	 * 查询表,不是查表中的数据
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
@@ -3190,99 +3806,190 @@ public interface DriverAdapter {
 	 * @return String
 	 * @throws Exception Exception
 	 */
-	List<Run> buildQueryMasterTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs) throws Exception;
+	List<Run> buildQueryMasterTablesRun(DataRuntime runtime, boolean greedy, MasterTable query, int types, ConfigStore configs) throws Exception;
+	/**
+	 * master[命令合成]<br/>
+	 * 查询表,不是查表中的数据
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param pattern 名称统配符或正则
+	 * @param types  Metadata.TYPE.
+	 * @return String
+	 * @throws Exception Exception
+	 */
+	default List<Run> buildQueryMasterTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs) throws Exception {
+		MasterTable query = new MasterTable(catalog, schema, pattern);
+		return buildQueryMasterTablesRun(runtime, greedy, query, types, configs);
+	}
 
 	/**
-	 * masterTable[命令合成]<br/>
+	 * master[命令合成]<br/>
 	 * 查询表备注
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types types Metadata.TYPE.
+	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return String
 	 * @throws Exception Exception
 	 */
-	List<Run> buildQueryMasterTablesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types) throws Exception;
+	List<Run> buildQueryMasterTablesCommentRun(DataRuntime runtime, MasterTable query, int types) throws Exception;
 	/**
-	 * masterTable[结果集封装]<br/>
+	 * master[命令合成]<br/>
+	 * 查询表备注
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param pattern 名称统配符或正则
+	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
+	 * @return String
+	 * @throws Exception Exception
+	 */
+	default List<Run> buildQueryMasterTablesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
+		MasterTable query = new MasterTable(catalog, schema, pattern);
+		return buildQueryMasterTablesCommentRun(runtime, query, types);
+	}
+	/**
+	 * master[结果集封装]<br/>
 	 *  根据查询结果集构造MasterTable
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照buildQueryMasterTablesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param catalog catalog
 	 * @param schema schema
-	 * @param masterTables 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
-	 * @return masterTables
+	 * @return masters
 	 * @throws Exception 异常
 	 */
-	<T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> masterTables, Catalog catalog, Schema schema, DataSet set) throws Exception;
-	<T extends MasterTable> List<T> masterTables(DataRuntime runtime, int index, boolean create, List<T> masterTables, Catalog catalog, Schema schema, DataSet set) throws Exception;
+	<T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, MasterTable query, DataSet set) throws Exception;
+	/**
+	 * master[结果集封装]<br/>
+	 *  根据查询结果集构造MasterTable
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param index 第几条SQL 对照buildQueryMasterTablesRun返回顺序
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param previous 上一步查询结果
+	 * @param set 查询结果集
+	 * @return masters
+	 * @throws Exception 异常
+	 */
+	default <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Catalog catalog, Schema schema, DataSet set) throws Exception {
+		MasterTable query = new MasterTable();
+		query.setCatalog(catalog);
+		query.setSchema(schema);
+		return masters(runtime, index, create, previous, query, set);
+	}
+	<T extends MasterTable> List<T> masters(DataRuntime runtime, int index, boolean create, List<T> previous, MasterTable query, DataSet set) throws Exception;
+	default <T extends MasterTable> List<T> masters(DataRuntime runtime, int index, boolean create, List<T> previous, Catalog catalog, Schema schema, DataSet set) throws Exception {
+		MasterTable query = new MasterTable();
+		query.setCatalog(catalog);
+		query.setSchema(schema);
+		return masters(runtime, index, create, previous, query, set);
+	}
 
 	/**
-	 * masterTable[结果集封装]<br/>
+	 * master[结果集封装]<br/>
 	 * 根据驱动内置方法补充
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param masterTables 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types types Metadata.TYPE.
-	 * @return masterTables
+	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
+	 * @return masters
 	 * @throws Exception 异常
 	 */
-	<T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> masterTables, Catalog catalog, Schema schema, String pattern, int types) throws Exception;
+	<T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, MasterTable query, int types) throws Exception;
+
 	/**
-	 * masterTable[结果集封装]<br/>
+	 * master[结果集封装]<br/>
 	 * 根据驱动内置方法补充
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param masterTables 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types types Metadata.TYPE.
-	 * @return masterTables
+	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
+	 * @return masters
 	 * @throws Exception 异常
 	 */
-	<T extends MasterTable> List<T> masterTables(DataRuntime runtime, boolean create, List<T> masterTables, Catalog catalog, Schema schema, String pattern, int types) throws Exception;
+	default <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
+		MasterTable query = new MasterTable(catalog, schema, pattern);
+		return masters(runtime, create, previous, query, types);
+	}
+	/**
+	 * master[结果集封装]<br/>
+	 * 根据驱动内置方法补充
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param previous 上一步查询结果
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param pattern 名称统配符或正则
+	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
+	 * @return masters
+	 * @throws Exception 异常
+	 */
+	<T extends MasterTable> List<T> masters(DataRuntime runtime, boolean create, List<T> previous, MasterTable query, int types) throws Exception;
+	/**
+	 * master[结果集封装]<br/>
+	 * 根据驱动内置方法补充
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param previous 上一步查询结果
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param pattern 名称统配符或正则
+	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
+	 * @return masters
+	 * @throws Exception 异常
+	 */
+	default <T extends MasterTable> List<T> masters(DataRuntime runtime, boolean create, List<T> previous, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
+		MasterTable query = new MasterTable(catalog, schema, pattern);
+		return masters(runtime, create, previous, query, types);
+	}
 
 	/**
 	 * 查询表创建SQL
-	 * masterTable[调用入口]<br/>
+	 * master[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param masterTable 表
+	 * @param master 表
 	 * @param init 是否还原初始状态 如自增状态
 	 * @return List
 	 */
-	List<String> ddl(DataRuntime runtime, String random, MasterTable masterTable, boolean init);
+	List<String> ddl(DataRuntime runtime, String random, MasterTable master, boolean init);
 
 	/**
-	 * masterTable[命令合成]<br/>
+	 * master[命令合成]<br/>
 	 * 查询表DDL
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param masterTable 表
+	 * @param master 表
 	 * @return List
 	 */
-	List<Run> buildQueryDdlsRun(DataRuntime runtime, MasterTable masterTable) throws Exception;
+	List<Run> buildQueryDdlsRun(DataRuntime runtime, MasterTable master) throws Exception;
 
 	/**
-	 * masterTable[结果集封装]<br/>
+	 * master[结果集封装]<br/>
 	 * 查询表DDL
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
-	 * @param masterTable 表
-	 * @param ddls 上一步查询结果
+	 * @param master 表
+	 * @param previous 上一步查询结果
 	 * @param set sql执行的结果集
 	 * @return List
 	 */
-	List<String> ddl(DataRuntime runtime, int index, MasterTable masterTable, List<String> ddls, DataSet set);
+	List<String> ddl(DataRuntime runtime, int index, MasterTable master, List<String> ddls, DataSet set);
 
 	/**
-	 * masterTable[结果集封装]<br/>
+	 * master[结果集封装]<br/>
 	 * 根据查询结果封装MasterTable对象,只封装catalog,schema,name等基础属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 上一步封装结果
@@ -3291,24 +3998,54 @@ public interface DriverAdapter {
 	 * @param row 查询结果集
 	 * @return MasterTable
 	 */
-	<T extends MasterTable> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row);
+	<T extends MasterTable> T init(DataRuntime runtime, int index, T meta, MasterTable query, DataRow row);
 	/**
-	 * masterTable[结果集封装]<br/>
+	 * master[结果集封装]<br/>
+	 * 根据查询结果封装MasterTable对象,只封装catalog,schema,name等基础属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 上一步封装结果
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param row 查询结果集
+	 * @return MasterTable
+	 */
+	default <T extends MasterTable> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row) {
+		MasterTable query = new MasterTable();
+		query.setCatalog(catalog);
+		query.setSchema(schema);
+		return init(runtime, index, meta, query, row);
+	}
+	/**
+	 * master[结果集封装]<br/>
 	 * 根据查询结果封装MasterTable对象,更多属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 上一步封装结果
 	 * @param row 查询结果集
 	 * @return MasterTable
 	 */
-	<T extends MasterTable> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row);
+	<T extends MasterTable> T detail(DataRuntime runtime, int index, T meta, MasterTable query, DataRow row);
+	/**
+	 * master[结果集封装]<br/>
+	 * 根据查询结果封装MasterTable对象,更多属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 上一步封装结果
+	 * @param row 查询结果集
+	 * @return MasterTable
+	 */
+	default <T extends MasterTable> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row) {
+		MasterTable query = new MasterTable();
+		query.setCatalog(catalog);
+		query.setSchema(schema);
+		return detail(runtime, index, meta, query, row);
+	}
 
 	/**
-	 * masterTable[结构集封装-依据]<br/>
-	 * 读取masterTable元数据结果集的依据
+	 * master[结构集封装-依据]<br/>
+	 * 读取master元数据结果集的依据
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @return MasterTableMetadataAdapter
 	 */
-	MasterTableMetadataAdapter masterTableMetadataAdapter(DataRuntime runtime);
+	MasterTableMetadataAdapter masterMetadataAdapter(DataRuntime runtime);
 	/* *****************************************************************************************************************
 	 * 													partition table
 	 ******************************************************************************************************************/
@@ -3324,7 +4061,36 @@ public interface DriverAdapter {
 	 * @return List
 	 * @param <T> MasterTable
 	 */
-	<T extends PartitionTable> LinkedHashMap<String,T> partitionTables(DataRuntime runtime, String random, boolean greedy, MasterTable master, Map<String, Object> tags, String pattern);
+	<T extends PartitionTable> LinkedHashMap<String,T> partitions(DataRuntime runtime, String random, boolean greedy, PartitionTable query);
+	/**
+	 * partition table[调用入口]<br/>
+	 * 查询主表
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
+	 * @param master 主表
+	 * @param pattern 名称统配符或正则
+	 * @return List
+	 * @param <T> MasterTable
+	 */
+	default <T extends PartitionTable> LinkedHashMap<String,T> partitions(DataRuntime runtime, String random, boolean greedy, MasterTable master, Map<String, Object> tags, String pattern) {
+		PartitionTable query = new PartitionTable();
+		query.setMaster(master);
+		if(null != tags){
+			for(String key:tags.keySet()){
+				Tag tag = null;
+				Object value = tags.get(key);
+				if(value instanceof Tag){
+					tag = (Tag)value;
+				}else{
+					tag = new Tag(key, value);
+				}
+				query.addTag(tag);
+			}
+		}
+		query.setName(pattern);
+		return partitions(runtime, random, greedy, query);
+	}
 
 	/**
 	 * partition table[命令合成]<br/>
@@ -3336,7 +4102,21 @@ public interface DriverAdapter {
 	 * @param types yPartitionTable.TYPE.
 	 * @return String
 	 */
-	List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types) throws Exception;
+	List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, PartitionTable query, int types) throws Exception;
+	/**
+	 * partition table[命令合成]<br/>
+	 * 查询分区表
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param pattern 名称统配符或正则
+	 * @param types yPartitionTable.TYPE.
+	 * @return String
+	 */
+	default List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
+		PartitionTable query = new PartitionTable(catalog, schema, pattern);
+		return buildQueryPartitionTablesRun(runtime, query, types);
+	}
 	/**
 	 * partition table[命令合成]<br/>
 	 * 根据主表查询分区表
@@ -3347,7 +4127,35 @@ public interface DriverAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Table master, Map<String,Object> tags, String pattern) throws Exception;
+	List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, PartitionTable query) throws Exception;
+	/**
+	 * partition table[命令合成]<br/>
+	 * 根据主表查询分区表
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param master 主表
+	 * @param tags 标签名+标签值
+	 * @param pattern 名称统配符或正则
+	 * @return sql
+	 * @throws Exception 异常
+	 */
+	default List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Table master, Map<String,Object> tags, String pattern) throws Exception {
+		PartitionTable query = new PartitionTable();
+		query.setMaster(master);
+		if(null != tags){
+			for(String key:tags.keySet()){
+				Tag tag = null;
+				Object value = tags.get(key);
+				if(value instanceof Tag){
+					tag = (Tag)value;
+				}else{
+					tag = new Tag(key, value);
+				}
+				query.addTag(tag);
+			}
+		}
+		query.setName(pattern);
+		return buildQueryPartitionTablesRun(runtime, query);
+	}
 	/**
 	 * partition table[命令合成]<br/>
 	 * 根据主表查询分区表
@@ -3357,7 +4165,23 @@ public interface DriverAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Table master, Map<String,Object> tags) throws Exception;
+	default List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Table master, Map<String,Object> tags) throws Exception {
+		PartitionTable query = new PartitionTable();
+		query.setMaster(master);
+		if(null != tags){
+			for(String key:tags.keySet()){
+				Tag tag = null;
+				Object value = tags.get(key);
+				if(value instanceof Tag){
+					tag = (Tag)value;
+				}else{
+					tag = new Tag(key, value);
+				}
+				query.addTag(tag);
+			}
+		};
+		return buildQueryPartitionTablesRun(runtime, query);
+	}
 	/**
 	 * partition table[命令合成]<br/>
 	 * 根据主表查询分区表
@@ -3366,11 +4190,15 @@ public interface DriverAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Table master) throws Exception;
+	default List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Table master) throws Exception {
+		PartitionTable query = new PartitionTable();
+		query.setMaster(master);
+		return buildQueryPartitionTablesRun(runtime, query);
+	}
 
 	/**
 	 * partition table[结果集封装]<br/>
-	 *  根据查询结果集构造Table
+	 * 根据查询结果集构造Table
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param total 合计SQL数量
 	 * @param index 第几条SQL 对照 buildQueryMasterTablesRun返回顺序
@@ -3378,12 +4206,35 @@ public interface DriverAdapter {
 	 * @param master 主表
 	 * @param catalog catalog
 	 * @param schema schema
-	 * @param tables 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return tables
 	 * @throws Exception 异常
 	 */
-	<T extends PartitionTable> LinkedHashMap<String, T> partitionTables(DataRuntime runtime, int total, int index, boolean create, MasterTable master, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set) throws Exception;
+	<T extends PartitionTable> LinkedHashMap<String, T> partitions(DataRuntime runtime, int total, int index, boolean create, LinkedHashMap<String, T> tables, PartitionTable query, DataSet set) throws Exception;
+
+	/**
+	 * partition table[结果集封装]<br/>
+	 * 根据查询结果集构造Table
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param total 合计SQL数量
+	 * @param index 第几条SQL 对照 buildQueryMasterTablesRun返回顺序
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param master 主表
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param previous 上一步查询结果
+	 * @param set 查询结果集
+	 * @return tables
+	 * @throws Exception 异常
+	 */
+	default <T extends PartitionTable> LinkedHashMap<String, T> partitions(DataRuntime runtime, int total, int index, boolean create, MasterTable master, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set) throws Exception {
+		PartitionTable query = new PartitionTable();
+		query.setMaster(master);
+		query.setCatalog(catalog);
+		query.setSchema(schema);
+		return partitions(runtime, total, index, create, tables, query, set);
+	}
 
 	/**
 	 * partition table[结果集封装]<br/>
@@ -3393,11 +4244,30 @@ public interface DriverAdapter {
 	 * @param master 主表
 	 * @param catalog catalog
 	 * @param schema schema
-	 * @param tables 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @return tables
 	 * @throws Exception 异常
 	 */
-	<T extends PartitionTable> LinkedHashMap<String,T> partitionTables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, MasterTable master) throws Exception;
+	<T extends PartitionTable> LinkedHashMap<String,T> partitions(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, PartitionTable query) throws Exception;
+	/**
+	 * partition table[结果集封装]<br/>
+	 * 根据根据驱动内置接口
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param master 主表
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param previous 上一步查询结果
+	 * @return tables
+	 * @throws Exception 异常
+	 */
+	default <T extends PartitionTable> LinkedHashMap<String,T> partitions(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, MasterTable master) throws Exception {
+		PartitionTable query = new PartitionTable();
+		query.setMaster(master);
+		query.setCatalog(catalog);
+		query.setSchema(schema);
+		return partitions(runtime, create, tables, query);
+	}
 	/**
 	 * partition table[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -3422,7 +4292,7 @@ public interface DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
 	 * @param table MasterTable
-	 * @param ddls 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set sql执行的结果集
 	 * @return List
 	 */
@@ -3438,7 +4308,23 @@ public interface DriverAdapter {
 	 * @param row 查询结果集
 	 * @return PartitionTable
 	 */
-	<T extends PartitionTable> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row);
+	<T extends PartitionTable> T init(DataRuntime runtime, int index, T meta, PartitionTable query, DataRow row);
+	/**
+	 * partition table[结果集封装]<br/>
+	 * 根据查询结果封装PartitionTable对象,只封装catalog,schema,name等基础属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 上一步封装结果
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param row 查询结果集
+	 * @return PartitionTable
+	 */
+	default <T extends PartitionTable> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row) {
+		PartitionTable query = new PartitionTable();
+		query.setCatalog(catalog);
+		query.setSchema(schema);
+		return init(runtime, index, meta, query, row);
+	}
 	/**
 	 * partition table[结果集封装]<br/>
 	 * 根据查询结果封装PartitionTable对象,更多属性
@@ -3447,7 +4333,21 @@ public interface DriverAdapter {
 	 * @param row 查询结果集
 	 * @return PartitionTable
 	 */
-	<T extends PartitionTable> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row);
+	<T extends PartitionTable> T detail(DataRuntime runtime, int index, T meta, PartitionTable query, DataRow row);
+	/**
+	 * partition table[结果集封装]<br/>
+	 * 根据查询结果封装PartitionTable对象,更多属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 上一步封装结果
+	 * @param row 查询结果集
+	 * @return PartitionTable
+	 */
+	default <T extends PartitionTable> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row) {
+		PartitionTable query = new PartitionTable();
+		query.setCatalog(catalog);
+		query.setSchema(schema);
+		return detail(runtime, index, meta, query, row);
+	}
 	/* *****************************************************************************************************************
 	 * 													column
 	 * 获取表的几种方法和场景
@@ -3567,7 +4467,7 @@ public interface DriverAdapter {
 	 * @param index 第几条SQL 对照 buildQueryColumnsRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
-	 * @param columns 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set 系统表查询SQL结果集
 	 * @return columns
 	 * @throws Exception 异常
@@ -3582,7 +4482,7 @@ public interface DriverAdapter {
 	 * @param index 第几条SQL 对照 buildQueryColumnsRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
-	 * @param columns 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set 系统表查询SQL结果集
 	 * @return columns
 	 * @throws Exception 异常
@@ -3597,7 +4497,7 @@ public interface DriverAdapter {
 	 * @param index 第几条SQL 对照 buildQueryColumnsRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param tables 表
-	 * @param columns 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set 系统表查询SQL结果集
 	 * @return columns
 	 * @throws Exception 异常
@@ -3772,7 +4672,7 @@ public interface DriverAdapter {
 	 * @param index 第几条查询SQL 对照 buildQueryTagsRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
-	 * @param tags 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return tags
 	 * @throws Exception 异常
@@ -3786,7 +4686,7 @@ public interface DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
-	 * @param tags 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param pattern 名称统配符或正则
 	 * @return tags
 	 * @throws Exception 异常
@@ -3907,7 +4807,7 @@ public interface DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryForeignsRun 返回顺序
 	 * @param table 表
-	 * @param foreigns 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set sql查询结果
 	 * @throws Exception 异常
 	 */
@@ -3983,7 +4883,7 @@ public interface DriverAdapter {
 	 * @param index 第几条查询SQL 对照 buildQueryIndexesRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
-	 * @param indexes 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return indexes indexes
 	 * @throws Exception 异常
@@ -4092,7 +4992,7 @@ public interface DriverAdapter {
 	 * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
-	 * @param constraints 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return constraints constraints
 	 * @throws Exception 异常
@@ -4107,7 +5007,7 @@ public interface DriverAdapter {
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
 	 * @param column 列
-	 * @param constraints 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return constraints constraints
 	 * @throws Exception 异常
@@ -4174,7 +5074,7 @@ public interface DriverAdapter {
 	 * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
-	 * @param triggers 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return LinkedHashMap
 	 * @throws Exception 异常
@@ -4255,7 +5155,7 @@ public interface DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param procedures 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return LinkedHashMap
 	 * @throws Exception 异常
@@ -4267,7 +5167,7 @@ public interface DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param procedures 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return LinkedHashMap
 	 * @throws Exception 异常
@@ -4279,7 +5179,7 @@ public interface DriverAdapter {
 	 * 根据驱动内置接口补充 Procedure
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param procedures 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @return LinkedHashMap
 	 * @throws Exception 异常
 	 */
@@ -4289,7 +5189,7 @@ public interface DriverAdapter {
 	 * 根据驱动内置接口补充 Procedure
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param procedures 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @return LinkedHashMap
 	 * @throws Exception 异常
 	 */
@@ -4317,7 +5217,7 @@ public interface DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
 	 * @param procedure Procedure
-	 * @param ddls 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return List
 	 */
@@ -4395,7 +5295,7 @@ public interface DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param functions 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return LinkedHashMap
 	 * @throws Exception 异常
@@ -4408,7 +5308,7 @@ public interface DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param functions 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return LinkedHashMap
 	 * @throws Exception 异常
@@ -4420,7 +5320,7 @@ public interface DriverAdapter {
 	 * 根据驱动内置接口补充 Function
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param functions 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @return LinkedHashMap
 	 * @throws Exception 异常
 	 */
@@ -4431,7 +5331,7 @@ public interface DriverAdapter {
 	 * 根据驱动内置接口补充 Function
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param functions 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @return LinkedHashMap
 	 * @throws Exception 异常
 	 */
@@ -4459,7 +5359,7 @@ public interface DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
 	 * @param function Function
-	 * @param ddls 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return List
 	 */
@@ -4538,7 +5438,7 @@ public interface DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param sequences 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return LinkedHashMap
 	 * @throws Exception 异常
@@ -4551,7 +5451,7 @@ public interface DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param sequences 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return LinkedHashMap
 	 * @throws Exception 异常
@@ -4563,7 +5463,7 @@ public interface DriverAdapter {
 	 * 根据驱动内置接口补充 Sequence
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param sequences 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @return LinkedHashMap
 	 * @throws Exception 异常
 	 */
@@ -4574,7 +5474,7 @@ public interface DriverAdapter {
 	 * 根据驱动内置接口补充 Sequence
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param sequences 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @return LinkedHashMap
 	 * @throws Exception 异常
 	 */
@@ -4602,7 +5502,7 @@ public interface DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
 	 * @param sequence Sequence
-	 * @param ddls 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return List
 	 */
@@ -6783,6 +7683,7 @@ public interface DriverAdapter {
 	 * 													Authorize
 	 *
 	 * =================================================================================================================
+	 * role			: 角色
 	 * user			: 用户
 	 * grant		: 授权
 	 * privilege	: 权限
@@ -6799,6 +7700,164 @@ public interface DriverAdapter {
 	 */
 	boolean execute(DataRuntime runtime, String random, Metadata meta, ACTION.Authorize action, Run run);
 	boolean execute(DataRuntime runtime, String random, Metadata meta, ACTION.Authorize action, List<Run> runs);
+
+	/* *****************************************************************************************************************
+	 * 													role
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * boolean create(DataRuntime runtime, Role role) throws Exception
+	 * boolean rename(DataRuntime runtime, Role origin, Role update) throws Exception;
+	 * boolean delete(DataRuntime runtime, Role role) throws Exception
+	 * List<Role> roles(Catalog catalog, Schema schema, String pattern) throws Exception
+	 * List<Run> buildQueryRolesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) throws Exception
+	 * <T extends Role> List<T> roles(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, List<T> roles, DataSet set) throws Exception
+	 * <T extends Role> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row)
+	 * <T extends Role> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row)
+	 ******************************************************************************************************************/
+
+	/**
+	 * role[调用入口]<br/>
+	 * 创建角色
+	 * @param role 角色
+	 * @return boolean
+	 */
+	boolean create(DataRuntime runtime, Role role) throws Exception;
+
+
+	/**
+	 * role[调用入口]<br/>
+	 * 角色重命名
+	 * @param origin 原名
+	 * @param update 新名
+	 * @return boolean
+	 */
+	boolean rename(DataRuntime runtime, Role origin, Role update) throws Exception;
+
+
+	/**
+	 * role[调用入口]<br/>
+	 * 删除角色
+	 * @param role 角色
+	 * @return boolean
+	 */
+	boolean delete(DataRuntime runtime, Role role) throws Exception;
+
+	/**
+	 * role[调用入口]<br/>
+	 * 查询角色
+	 * @param catalog Catalog
+	 * @param schema Schema
+	 * @param pattern 角色名
+	 * @return List
+	 */
+	List<Role> roles(DataRuntime runtime, Role query) throws Exception;
+	/**
+	 * role[调用入口]<br/>
+	 * 查询角色
+	 * @param catalog Catalog
+	 * @param schema Schema
+	 * @param pattern 角色名
+	 * @return List
+	 */
+	default List<Role> roles(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) throws Exception {
+		Role query = new Role();
+		query.setCatalog(catalog);
+		query.setSchema(schema);
+		query.setName(pattern);
+		return roles(runtime, query);
+	}
+
+	/**
+	 * role[调用入口]<br/>
+	 * 查询角色
+	 * @return List
+	 */
+	default List<Role> roles(DataRuntime runtime) throws Exception {
+		return roles(runtime, null, null, null);
+	}
+	/**
+	 * role[调用入口]<br/>
+	 * 查询角色
+	 * @param pattern 角色名
+	 * @return List
+	 */
+	default List<Role> roles(DataRuntime runtime, String pattern) throws Exception {
+		return roles(runtime, null, null, pattern);
+	}
+
+	/**
+	 * role[命令合成]<br/>
+	 * 创建角色
+	 * @param role 角色
+	 * @return List
+	 */
+	List<Run> buildCreateRun(DataRuntime runtime, Role role) throws Exception;
+	/**
+	 * role[命令合成]<br/>
+	 * 角色重命名
+	 * @param origin 原名
+	 * @param update 新名
+	 * @return List
+	 */
+	List<Run> buildRenameRun(DataRuntime runtime, Role origin, Role update) throws Exception;
+
+	/**
+	 * role[命令合成]<br/>
+	 * 删除角色
+	 * @param role 角色
+	 * @return List
+	 */
+	List<Run> buildDeleteRun(DataRuntime runtime, Role role) throws Exception;
+
+	/**
+	 * role[命令合成]<br/>
+	 * 查询角色
+	 * @param pattern 角色名
+	 * @return List
+	 */
+	List<Run> buildQueryRolesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) throws Exception;
+	/**
+	 * role[结果集封装]<br/>
+	 * 根据查询结果集构造 role
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param index 第几条查询SQL 对照 buildQueryRolessRun 返回顺序
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param previous 上一步查询结果
+	 * @param set 查询结果集
+	 * @return List
+	 * @throws Exception 异常
+	 */
+	<T extends Role> List<T> roles(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, List<T> roles, DataSet set) throws Exception;
+
+	/**
+	 * role[结果集封装]<br/>
+	 * 根据查询结果封装 role 对象,只封装catalog,schema,name等基础属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 上一步封装结果
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param row 查询结果集
+	 * @return Role
+	 */
+	<T extends Role> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row);
+	/**
+	 * role[结果集封装]<br/>
+	 * 根据查询结果封装 role 对象,更多属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 上一步封装结果
+	 * @param row 查询结果集
+	 * @return Role
+	 */
+	<T extends Role> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row);
+
+	/**
+	 * role [结构集封装-依据]<br/>
+	 * 读取 role 元数据结果集的依据
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return RoleMetadataAdapter
+	 */
+	RoleMetadataAdapter roleMetadataAdapter(DataRuntime runtime);
 
 	/* *****************************************************************************************************************
 	 * 													user
@@ -6872,12 +7931,25 @@ public interface DriverAdapter {
 	/**
 	 * user[调用入口]<br/>
 	 * 查询用户
+	 * @param query 查询条件 根据metadata属性
+	 * @return List
+	 */
+	List<User> users(DataRuntime runtime, User query) throws Exception;
+	/**
+	 * user[调用入口]<br/>
+	 * 查询用户
 	 * @param catalog Catalog
 	 * @param schema Schema
 	 * @param pattern 用户名
 	 * @return List
 	 */
-	List<User> users(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) throws Exception;
+	default List<User> users(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) throws Exception {
+		User query = new User();
+		query.setCatalog(catalog);
+		query.setSchema(schema);
+		query.setName(pattern);
+		return users(runtime, query);
+	}
 
 	/**
 	 * user[调用入口]<br/>
@@ -6936,7 +8008,7 @@ public interface DriverAdapter {
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param catalog catalog
 	 * @param schema schema
-	 * @param users 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return List
 	 * @throws Exception 异常
@@ -6987,10 +8059,21 @@ public interface DriverAdapter {
 	/**
 	 * privilege[调用入口]<br/>
 	 * 查询用户权限
+	 * @param query 查询条件 根据metadata属性
+	 * @return List
+	 */
+	List<Privilege> privileges(DataRuntime runtime, Privilege query) throws Exception;
+	/**
+	 * privilege[调用入口]<br/>
+	 * 查询用户权限
 	 * @param user 用户
 	 * @return List
 	 */
-	List<Privilege> privileges(DataRuntime runtime, User user) throws Exception;
+	default List<Privilege> privileges(DataRuntime runtime, User user) throws Exception {
+		Privilege query = new Privilege();
+		query.setUser(user);
+		return privileges(runtime, query);
+	}
 
 	/**
 	 * privilege[调用入口]<br/>
@@ -7021,7 +8104,7 @@ public interface DriverAdapter {
 	 * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param user 用户
-	 * @param privileges 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return List
 	 * @throws Exception 异常

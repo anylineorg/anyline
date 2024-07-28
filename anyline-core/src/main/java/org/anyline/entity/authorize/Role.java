@@ -14,9 +14,14 @@
  * limitations under the License.
  */
 
+package org.anyline.entity.authorize;
 
+import org.anyline.metadata.Metadata;
 
-package org.anyline.metadata.adapter;
+public class Role extends Metadata<Role> {
 
-public class VertexTableMetadataAdapter extends AbstractMetadataAdapter {
+    public Role(){}
+    public Role(String name){
+        this.name = name;
+    }
 }

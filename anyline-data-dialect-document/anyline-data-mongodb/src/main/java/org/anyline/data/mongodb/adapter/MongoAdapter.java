@@ -920,8 +920,8 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
      * @param catalog catalog
      * @param schema schema
      * @param pattern 名称统配符或正则
-     * @param types  Metadata.TYPE.
-     * @param struct 是否查询表结构
+     * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
+     * @param struct 查询的属性 参考Metadata.TYPE 多个属性相加算出总和 true:表示查询全部
      * @return List
      * @param <T> Table
      */

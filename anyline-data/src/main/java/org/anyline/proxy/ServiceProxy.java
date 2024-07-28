@@ -1406,20 +1406,20 @@ public class ServiceProxy {
         return service.tables();
     }
 
-    public static List<String> masterTables(Catalog catalog, Schema schema, String name, int types) {
-        return service.masterTables(catalog, schema, name, types);
+    public static List<String> masters(Catalog catalog, Schema schema, String name, int types) {
+        return service.masters(catalog, schema, name, types);
     }
-    public static List<String> masterTables(Schema schema, String name, int types) {
-        return service.masterTables(schema, name, types);
+    public static List<String> masters(Schema schema, String name, int types) {
+        return service.masters(schema, name, types);
     }
-    public static List<String> masterTables(String name, int types) {
-        return service.masterTables(name, types);
+    public static List<String> masters(String name, int types) {
+        return service.masters(name, types);
     }
-    public static List<String> masterTables(int types) {
-        return service.masterTables(types);
+    public static List<String> masters(int types) {
+        return service.masters(types);
     }
-    public static List<String> masterTables() {
-        return service.masterTables();
+    public static List<String> masters() {
+        return service.masters();
     }
 
     public static List<String> columns(Table table) {

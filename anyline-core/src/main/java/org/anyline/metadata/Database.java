@@ -70,9 +70,6 @@ public class Database extends Metadata<Database> implements Serializable {
         return this.keyword;
     }
 
-    public String getUser() {
-        return user;
-    }
 
     public void setUser(String user) {
         this.user = user;

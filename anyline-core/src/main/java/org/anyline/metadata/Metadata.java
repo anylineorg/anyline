@@ -20,6 +20,7 @@ package org.anyline.metadata;
 
 import org.anyline.data.Run;
 import org.anyline.entity.DataRow;
+import org.anyline.entity.authorize.User;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
@@ -109,7 +110,7 @@ public class Metadata<T extends Metadata> {
     protected boolean execute = true              ; // DDL是否立即执行, false:只创建SQL不执行可以通过ddls()返回生成的SQL
     protected String text;
     protected String id;
-    protected String user                         ; // 所属用户
+    protected User user                         ; // 所属用户
     protected Long objectId;
 
     protected String definition                   ; //view等创建SQL, column中 完整定义(不包含名称) 如果设置了define 生成SQL时 name define
@@ -281,12 +282,15 @@ public class Metadata<T extends Metadata> {
         return (T)this;
     }
 
-    public String getUser() {
+    public User getUser() {
         return user;
     }
 
-    public void setUser(String user) {
+    public void setUser(User user) {
         this.user = user;
+    }
+    public void setUser(String user) {
+        this.user = new User(user);
     }
 
     public Date getCheckSchemaTime() {

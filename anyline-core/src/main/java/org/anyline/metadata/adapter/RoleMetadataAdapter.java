@@ -18,5 +18,5 @@
 
 package org.anyline.metadata.adapter;
 
-public class EdgeTableMetadataAdapter extends AbstractMetadataAdapter {
+public class RoleMetadataAdapter extends AbstractMetadataAdapter {
 }

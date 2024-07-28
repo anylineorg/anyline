@@ -24,11 +24,11 @@ import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.run.*;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
+import org.anyline.entity.authorize.Privilege;
+import org.anyline.entity.authorize.User;
 import org.anyline.exception.NotSupportException;
 import org.anyline.metadata.*;
-import org.anyline.metadata.adapter.ColumnMetadataAdapter;
-import org.anyline.metadata.adapter.IndexMetadataAdapter;
-import org.anyline.metadata.adapter.MetadataAdapterHolder;
+import org.anyline.metadata.adapter.*;
 import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.regular.RegularUtil;
@@ -1359,7 +1359,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
      * @param create 上一步没有查到的, 这一步是否需要新创建
-     * @param databases 上一步查询结果
+     * @param previous 上一步查询结果
      * @param set 查询结果集
      * @return LinkedHashMap
      * @throws Exception Exception
@@ -1529,7 +1529,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
      * @param create 上一步没有查到的, 这一步是否需要新创建
-     * @param catalogs 上一步查询结果
+     * @param previous 上一步查询结果
      * @param set 查询结果集
      * @return databases
      * @throws Exception 异常
@@ -1544,7 +1544,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
      * @param create 上一步没有查到的, 这一步是否需要新创建
-     * @param catalogs 上一步查询结果
+     * @param previous 上一步查询结果
      * @param set 查询结果集
      * @return databases
      * @throws Exception 异常
@@ -1558,7 +1558,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * 根据驱动内置接口补充 catalog
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param create 上一步没有查到的, 这一步是否需要新创建
-     * @param catalogs 上一步查询结果
+     * @param previous 上一步查询结果
      * @return databases
      * @throws Exception 异常
      */
@@ -1572,7 +1572,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * 根据驱动内置接口补充 catalog
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param create 上一步没有查到的, 这一步是否需要新创建
-     * @param catalogs 上一步查询结果
+     * @param previous 上一步查询结果
      * @return databases
      * @throws Exception 异常
      */
@@ -1692,7 +1692,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
      * @param create 上一步没有查到的, 这一步是否需要新创建
-     * @param schemas 上一步查询结果
+     * @param previous 上一步查询结果
      * @param set 查询结果集
      * @return databases
      * @throws Exception 异常
@@ -1776,8 +1776,8 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @param catalog catalog
      * @param schema schema
      * @param pattern 名称统配符或正则
-     * @param types  Metadata.TYPE.
-     * @param struct 是否查询表结构
+	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
+	 * @param struct 查询的属性 参考Metadata.TYPE 多个属性相加算出总和 true:表示查询全部
      * @return List
      * @param <T> Table
      */
@@ -1861,7 +1861,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @param catalog catalog
      * @param schema schema
      * @param pattern 名称统配符或正则
-     * @param types types Metadata.TYPE.
+     * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
      * @return String
      */
     @Override
@@ -1871,13 +1871,13 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
 
     /**
      * table[结果集封装]<br/>
-     *  根据查询结果集构造Table
+     * 根据查询结果集构造Table
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条SQL 对照buildQueryTablesRun返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param catalog catalog
      * @param schema schema
-     * @param tables 上一步查询结果
+     * @param previous 上一步查询结果
      * @param set 查询结果集
      * @return tables
      * @throws Exception 异常
@@ -1891,13 +1891,13 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
 
     /**
      * table[结果集封装]<br/>
-     *  根据查询结果集构造Table
+     * 根据查询结果集构造Table
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条SQL 对照buildQueryTablesRun返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param catalog catalog
      * @param schema schema
-     * @param tables 上一步查询结果
+     * @param previous 上一步查询结果
      * @param set 查询结果集
      * @return tables
      * @throws Exception 异常
@@ -1913,11 +1913,11 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * 根据驱动内置方法补充
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param tables 上一步查询结果
+     * @param previous 上一步查询结果
      * @param catalog catalog
      * @param schema schema
      * @param pattern 名称统配符或正则
-     * @param types types Metadata.TYPE.
+     * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
      * @return tables
      * @throws Exception 异常
      */
@@ -1932,11 +1932,11 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * 根据驱动内置方法补充
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param tables 上一步查询结果
+     * @param previous 上一步查询结果
      * @param catalog catalog
      * @param schema schema
      * @param pattern 名称统配符或正则
-     * @param types types Metadata.TYPE.
+     * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
      * @return tables
      * @throws Exception 异常
      */
@@ -1953,7 +1953,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param catalog catalog
      * @param schema schema
-     * @param tables 上一步查询结果
+     * @param previous 上一步查询结果
      * @param set 查询结果集
      * @return tables
      * @throws Exception 异常
@@ -1971,7 +1971,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param catalog catalog
      * @param schema schema
-     * @param tables 上一步查询结果
+     * @param previous 上一步查询结果
      * @param set 查询结果集
      * @return tables
      * @throws Exception 异常
@@ -2019,7 +2019,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
      * @param table 表
-     * @param ddls 上一步查询结果
+     * @param previous 上一步查询结果
      * @param set sql执行的结果集
      * @return List
      */
@@ -2085,7 +2085,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @param catalog catalog
      * @param schema schema
      * @param pattern 名称统配符或正则
-     * @param types types Metadata.TYPE.
+     * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
      * @return List
      */
     @Override
@@ -2117,7 +2117,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param catalog catalog
      * @param schema schema
-     * @param views 上一步查询结果
+     * @param previous 上一步查询结果
      * @param set 查询结果集
      * @return views
      * @throws Exception 异常
@@ -2147,11 +2147,11 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * 根据根据驱动内置接口补充
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param views 上一步查询结果
+     * @param previous 上一步查询结果
      * @param catalog catalog
      * @param schema schema
      * @param pattern 名称统配符或正则
-     * @param types types Metadata.TYPE.
+     * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
      * @return views
      * @throws Exception 异常
      */
@@ -2196,7 +2196,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
      * @param view view
-     * @param ddls 上一步查询结果
+     * @param previous 上一步查询结果
      * @param set sql执行的结果集
      * @return List
      */
@@ -2215,13 +2215,13 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * 													master table
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
-     * <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs)
+     * <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs)
      * [命令合成]
      * List<Run> buildQueryMasterTablesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs)
      * [结果集封装]<br/>
-     * <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set)
+     * <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set)
      * [结果集封装]<br/>
-     * <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables,Catalog catalog, Schema schema, String pattern, int types)
+     * <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables,Catalog catalog, Schema schema, String pattern, int types)
      * [调用入口]
      * List<String> ddl(DataRuntime runtime, String random, MasterTable table)
      * [命令合成]
@@ -2244,12 +2244,12 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> MasterTable
      */
     @Override
-	public <T extends MasterTable> List<T> masterTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
-		return super.masterTables(runtime, random, greedy, catalog, schema, pattern, types, struct, configs);
+	public <T extends MasterTable> List<T> masters(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
+		return super.masters(runtime, random, greedy, catalog, schema, pattern, types, struct, configs);
 	}
 	@Override
-	public <T extends MasterTable> List<T> masterTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct) {
-		return super.masterTables(runtime, random, greedy, catalog, schema, pattern, types, struct);
+	public <T extends MasterTable> List<T> masters(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct) {
+		return super.masters(runtime, random, greedy, catalog, schema, pattern, types, struct);
 	}
     /**
      * master table[命令合成]<br/>
@@ -2268,20 +2268,20 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
 
     /**
      * master table[结果集封装]<br/>
-     *  根据查询结果集构造Table
+     * 根据查询结果集构造Table
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条SQL 对照 buildQueryMasterTablesRun返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param catalog catalog
      * @param schema schema
-     * @param tables 上一步查询结果
+     * @param previous 上一步查询结果
      * @param set 查询结果集
      * @return tables
      * @throws Exception 异常
      */
     @Override
-    public <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set) throws Exception {
-        return super.masterTables(runtime, index, create, tables, catalog, schema, set);
+    public <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set) throws Exception {
+        return super.masters(runtime, index, create, tables, catalog, schema, set);
     }
     /**
      * master table[结果集封装]<br/>
@@ -2290,13 +2290,13 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param catalog catalog
      * @param schema schema
-     * @param tables 上一步查询结果
+     * @param previous 上一步查询结果
      * @return tables
      * @throws Exception 异常
      */
     @Override
-    public <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables,Catalog catalog, Schema schema, String pattern, int types) throws Exception {
-        return super.masterTables(runtime, create, tables, catalog, schema, pattern, types);
+    public <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables,Catalog catalog, Schema schema, String pattern, int types) throws Exception {
+        return super.masters(runtime, create, tables, catalog, schema, pattern, types);
     }
 
     /**
@@ -2327,7 +2327,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
      * @param table MasterTable
-     * @param ddls 上一步查询结果
+     * @param previous 上一步查询结果
      * @param set sql执行的结果集
      * @return List
      */
@@ -2339,14 +2339,14 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * 													partition table
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
-     * <T extends PartitionTable> LinkedHashMap<String,T> partitionTables(DataRuntime runtime, String random, boolean greedy, MasterTable master, Map<String, Object> tags, String pattern)
+     * <T extends PartitionTable> LinkedHashMap<String,T> partitions(DataRuntime runtime, String random, boolean greedy, MasterTable master, Map<String, Object> tags, String pattern)
      * [命令合成]
      * List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types)
      * List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Table master, Map<String,Object> tags, String pattern)
      * List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Table master, Map<String,Object> tags)
      * [结果集封装]<br/>
-     * <T extends PartitionTable> LinkedHashMap<String, T> partitionTables(DataRuntime runtime, int total, int index, boolean create, MasterTable master, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set)
-     * <T extends PartitionTable> LinkedHashMap<String,T> partitionTables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, MasterTable master)
+     * <T extends PartitionTable> LinkedHashMap<String, T> partitions(DataRuntime runtime, int total, int index, boolean create, MasterTable master, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set)
+     * <T extends PartitionTable> LinkedHashMap<String,T> partitions(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, MasterTable master)
      * [调用入口]
      * List<String> ddl(DataRuntime runtime, String random, PartitionTable table)
      * [命令合成]
@@ -2366,8 +2366,8 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> MasterTable
      */
     @Override
-    public <T extends PartitionTable> LinkedHashMap<String,T> partitionTables(DataRuntime runtime, String random, boolean greedy, MasterTable master, Map<String, Object> tags, String pattern) {
-        return super.partitionTables(runtime, random, greedy, master, tags, pattern);
+    public <T extends PartitionTable> LinkedHashMap<String,T> partitions(DataRuntime runtime, String random, boolean greedy, MasterTable master, Map<String, Object> tags, String pattern) {
+        return super.partitions(runtime, random, greedy, master, tags, pattern);
     }
 
     /**
@@ -2413,7 +2413,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     }
     /**
      * partition table[结果集封装]<br/>
-     *  根据查询结果集构造Table
+     * 根据查询结果集构造Table
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param total 合计SQL数量
      * @param index 第几条SQL 对照 buildQueryMasterTablesRun返回顺序
@@ -2421,14 +2421,14 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @param master 主表
      * @param catalog catalog
      * @param schema schema
-     * @param tables 上一步查询结果
+     * @param previous 上一步查询结果
      * @param set 查询结果集
      * @return tables
      * @throws Exception 异常
      */
     @Override
-    public <T extends PartitionTable> LinkedHashMap<String, T> partitionTables(DataRuntime runtime, int total, int index, boolean create, MasterTable master, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set) throws Exception {
-        return super.partitionTables(runtime, total, index, create, master, tables, catalog, schema, set);
+    public <T extends PartitionTable> LinkedHashMap<String, T> partitions(DataRuntime runtime, int total, int index, boolean create, MasterTable master, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set) throws Exception {
+        return super.partitions(runtime, total, index, create, master, tables, catalog, schema, set);
     }
     /**
      * partition table[结果集封装]<br/>
@@ -2438,13 +2438,13 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @param master 主表
      * @param catalog catalog
      * @param schema schema
-     * @param tables 上一步查询结果
+     * @param previous 上一步查询结果
      * @return tables
      * @throws Exception 异常
      */
     @Override
-    public <T extends PartitionTable> LinkedHashMap<String,T> partitionTables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, MasterTable master) throws Exception {
-        return super.partitionTables(runtime, create, tables, catalog, schema, master);
+    public <T extends PartitionTable> LinkedHashMap<String,T> partitions(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, MasterTable master) throws Exception {
+        return super.partitions(runtime, create, tables, catalog, schema, master);
     }
     /**
      * partition table[调用入口]<br/>
@@ -2476,7 +2476,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
      * @param table MasterTable
-     * @param ddls 上一步查询结果
+     * @param previous 上一步查询结果
      * @param set sql执行的结果集
      * @return List
      */
@@ -2620,7 +2620,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @param index 第几条SQL 对照 buildQueryColumnsRun返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param table 表
-     * @param columns 上一步查询结果
+     * @param previous 上一步查询结果
      * @param set 查询结果集
      * @return tags tags
      * @throws Exception 异常
@@ -2642,7 +2642,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param table 表
-     * @param columns 上一步查询结果
+     * @param previous 上一步查询结果
      * @param pattern 名称
      * @throws Exception 异常
      */
@@ -2748,7 +2748,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @param index 第几条查询SQL 对照 buildQueryTagsRun返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param table 表
-     * @param tags 上一步查询结果
+     * @param previous 上一步查询结果
      * @param set 查询结果集
      * @return tags
      * @throws Exception 异常
@@ -2764,7 +2764,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param table 表
-     * @param tags 上一步查询结果
+     * @param previous 上一步查询结果
      * @param pattern 名称统配符或正则
      * @return tags
      * @throws Exception 异常
@@ -2894,7 +2894,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条查询SQL 对照 buildQueryForeignsRun 返回顺序
      * @param table 表
-     * @param foreigns 上一步查询结果
+     * @param previous 上一步查询结果
      * @param set sql查询结果
      * @throws Exception 异常
      */
@@ -3049,7 +3049,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @param index 第几条查询SQL 对照 buildQueryIndexesRun 返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param table 表
-     * @param indexes 上一步查询结果
+     * @param previous 上一步查询结果
      * @param set 查询结果集
      * @return indexes indexes
      * @throws Exception 异常
@@ -3065,7 +3065,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @param index 第几条查询SQL 对照 buildQueryIndexesRun 返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param table 表
-     * @param indexes 上一步查询结果
+     * @param previous 上一步查询结果
      * @param set 查询结果集
      * @return indexes indexes
      * @throws Exception 异常
@@ -3202,7 +3202,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param table 表
-     * @param constraints 上一步查询结果
+     * @param previous 上一步查询结果
      * @param set DataSet
      * @return constraints constraints
      * @throws Exception 异常
@@ -3220,7 +3220,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param table 表
      * @param column 列
-     * @param constraints 上一步查询结果
+     * @param previous 上一步查询结果
      * @param set DataSet
      * @return constraints constraints
      * @throws Exception 异常
@@ -3301,7 +3301,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param table 表
-     * @param triggers 上一步查询结果
+     * @param previous 上一步查询结果
      * @param set 查询结果集
      * @return LinkedHashMap
      * @throws Exception 异常
@@ -3424,7 +3424,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param procedures 上一步查询结果
+     * @param previous 上一步查询结果
      * @param set 查询结果集
      * @return LinkedHashMap
      * @throws Exception 异常
@@ -3449,7 +3449,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * 根据驱动内置接口补充 Procedure
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param procedures 上一步查询结果
+     * @param previous 上一步查询结果
      * @return List
      * @throws Exception 异常
      */
@@ -3463,7 +3463,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * 根据驱动内置接口补充 Procedure
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param procedures 上一步查询结果
+     * @param previous 上一步查询结果
      * @return LinkedHashMap
      * @throws Exception 异常
      */
@@ -3507,7 +3507,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
      * @param procedure Procedure
-     * @param ddls 上一步查询结果
+     * @param previous 上一步查询结果
      * @param set 查询结果集
      * @return List
      */
@@ -3605,7 +3605,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param functions 上一步查询结果
+     * @param previous 上一步查询结果
      * @param set 查询结果集
      * @return LinkedHashMap
      * @throws Exception 异常
@@ -3620,7 +3620,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param functions 上一步查询结果
+     * @param previous 上一步查询结果
      * @param set 查询结果集
      * @return LinkedHashMap
      * @throws Exception 异常
@@ -3645,7 +3645,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * 根据驱动内置接口补充 Function
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param functions 上一步查询结果
+     * @param previous 上一步查询结果
      * @return LinkedHashMap
      * @throws Exception 异常
      */
@@ -3690,7 +3690,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
      * @param function Function
-     * @param ddls 上一步查询结果
+     * @param previous 上一步查询结果
      * @param set 查询结果集
      * @return List
      */
@@ -3777,7 +3777,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param sequences 上一步查询结果
+     * @param previous 上一步查询结果
      * @param set 查询结果集
      * @return LinkedHashMap
      * @throws Exception 异常
@@ -3792,7 +3792,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param sequences 上一步查询结果
+     * @param previous 上一步查询结果
      * @param set 查询结果集
      * @return LinkedHashMap
      * @throws Exception 异常
@@ -3807,7 +3807,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * 根据驱动内置接口补充 Sequence
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param sequences 上一步查询结果
+     * @param previous 上一步查询结果
      * @return LinkedHashMap
      * @throws Exception 异常
      */
@@ -3846,7 +3846,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
      * @param sequence Sequence
-     * @param ddls 上一步查询结果
+     * @param previous 上一步查询结果
      * @param set 查询结果集
      * @return List
      */
@@ -6694,6 +6694,355 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         log.warn("MySQL不支持 rename Sequence("+meta.getName()+")");
         return new ArrayList<>();
     }
+
+
+    /* *****************************************************************************************************************
+     *
+     * 													Authorize
+     *
+     * =================================================================================================================
+     * user			: 用户
+     * grant		: 授权
+     * privilege	: 权限
+     ******************************************************************************************************************/
+
+
+    /**
+     * 执行命令
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param random 用来标记同一组命令
+     * @param meta Metadata(表,列等)
+     * @param action 执行命令
+     * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
+     * @return boolean
+     */
+    @Override
+    public boolean execute(DataRuntime runtime, String random, Metadata meta, ACTION.Authorize action, Run run) {
+        return super.execute(runtime, random, meta, action, run);
+    }
+
+    /* *****************************************************************************************************************
+     * 													user
+     * -----------------------------------------------------------------------------------------------------------------
+     * boolean create(DataRuntime runtime, User user) throws Exception
+     * boolean rename(DataRuntime runtime, User origin, User update) throws Exception;
+     * boolean delete(DataRuntime runtime, User user) throws Exception
+     * List<User> users(Catalog catalog, Schema schema, String pattern) throws Exception
+     * List<Run> buildQueryUsersRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) throws Exception
+     * <T extends User> List<T> users(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, List<T> users, DataSet set) throws Exception
+     * <T extends User> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row)
+     * <T extends User> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row)
+     ******************************************************************************************************************/
+
+    /**
+     * user[调用入口]<br/>
+     * 创建用户
+     * @param user 用户
+     * @return boolean
+     */
+    @Override
+    public boolean create(DataRuntime runtime, User user) throws Exception {
+        return super.create(runtime, user);
+    }
+
+    /**
+     * user[调用入口]<br/>
+     * 用户重命名
+     * @param origin 原名
+     * @param update 新名
+     * @return boolean
+     */
+    @Override
+    public boolean rename(DataRuntime runtime, User origin, User update) throws Exception {
+        return super.rename(runtime, origin, update);
+    }
+
+    /**
+     * user[调用入口]<br/>
+     * 删除用户
+     * @param user 用户
+     * @return boolean
+     */
+    @Override
+    public boolean delete(DataRuntime runtime, User user) throws Exception {
+        return super.delete(runtime, user);
+    }
+
+    /**
+     * user[调用入口]<br/>
+     * 查询用户
+     * @param catalog Catalog
+     * @param schema Schema
+     * @param pattern 用户名
+     * @return List
+     */
+    @Override
+    public List<User> users(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) throws Exception {
+        return super.users(runtime, catalog, schema, pattern);
+    }
+
+    /**
+     * user[命令合成]<br/>
+     * 创建用户
+     * @param user 用户
+     * @return List
+     */
+    @Override
+    public List<Run> buildCreateRun(DataRuntime runtime, User user) throws Exception {
+        return super.buildCreateRun(runtime, user);
+    }
+
+    /**
+     * user[命令合成]<br/>
+     * 用户重命名
+     * @param origin 原名
+     * @param update 新名
+     * @return List
+     */
+    @Override
+    public List<Run> buildRenameRun(DataRuntime runtime, User origin, User update) throws Exception {
+        return super.buildRenameRun(runtime, origin, update);
+    }
+
+    /**
+     * user[命令合成]<br/>
+     * 删除用户
+     * @param user 用户
+     * @return List
+     */
+    @Override
+    public List<Run> buildDeleteRun(DataRuntime runtime, User user) throws Exception {
+        return super.buildDeleteRun(runtime, user);
+    }
+
+    /**
+     * user[命令合成]<br/>
+     * 查询用户
+     * @param pattern 用户名
+     * @return List
+     */
+    @Override
+    public List<Run> buildQueryUsersRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) throws Exception {
+        List<Run> runs = new ArrayList<>();
+        SimpleRun run = new SimpleRun(runtime);
+        runs.add(run);
+        StringBuilder builder = run.getBuilder();
+        builder.append("SELECT * FROM mysql.user");
+        if(BasicUtil.isNotEmpty(pattern)){
+            builder.append(" WHERE user LIKE '%").append(pattern).append("%'");
+        }
+        return runs;
+    }
+
+    /**
+     * user[结果集封装]<br/>
+     * 根据查询结果集构造 user
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param index 第几条查询SQL 对照 buildQueryUserssRun 返回顺序
+     * @param create 上一步没有查到的,这一步是否需要新创建
+     * @param catalog catalog
+     * @param schema schema
+     * @param previous 上一步查询结果
+     * @param set 查询结果集
+     * @return List
+     * @throws Exception 异常
+     */
+    @Override
+    public <T extends User> List<T> users(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, List<T> users, DataSet set) throws Exception {
+        return super.users(runtime, index, create, catalog, schema, users, set);
+    }
+
+    /**
+     * user[结果集封装]<br/>
+     * 根据查询结果封装 user 对象,只封装catalog,schema,name等基础属性
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta 上一步封装结果
+     * @param catalog catalogF
+     * @param schema schema
+     * @param row 查询结果集
+     * @return User
+     */
+    @Override
+    public <T extends User> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row) {
+        UserMetadataAdapter adapter = userMetadataAdapter(runtime);
+        if(null == meta){
+            meta = (T) new User();
+        }
+        meta.setHost(row.getString(adapter.getHostRefers()));
+        meta.setName(row.getString(adapter.getNameRefers()));
+        return meta;
+    }
+
+    /**
+     * user[结果集封装]<br/>
+     * 根据查询结果封装 user 对象,更多属性
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta 上一步封装结果
+     * @param row 查询结果集
+     * @return User
+     */
+    @Override
+    public <T extends User> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row) {
+        return super.detail(runtime, index, meta, catalog, schema, row);
+    }
+
+    /**
+     * user [结构集封装-依据]<br/>
+     * 读取 user 元数据结果集的依据
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @return UserMetadataAdapter
+     */
+    @Override
+    public UserMetadataAdapter userMetadataAdapter(DataRuntime runtime) {
+        UserMetadataAdapter adapter = new UserMetadataAdapter();
+        adapter.setHostRefer("host");
+        adapter.setNameRefer("user");
+        return adapter;
+    }
+
+    /* *****************************************************************************************************************
+     * 													privilege
+     * -----------------------------------------------------------------------------------------------------------------
+     * List<Privilege> privileges(DataRuntime runtime, User user)
+     * List<Run> buildQueryPrivilegesRun(DataRuntime runtime, User user) throws Exception
+     * <T extends Privilege> List<T> privileges(DataRuntime runtime, int index, boolean create, User user, List<T> privileges, DataSet set) throws Exception
+     * <T extends Privilege> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, User user, DataRow row)
+     * <T extends Privilege> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row)
+     * PrivilegeMetadataAdapter privilegeMetadataAdapter(DataRuntime runtime)
+     ******************************************************************************************************************/
+
+    /**
+     * privilege[调用入口]<br/>
+     * 查询用户权限
+     * @param user 用户
+     * @return List
+     */
+    @Override
+    public List<Privilege> privileges(DataRuntime runtime, User user) throws Exception {
+        return super.privileges(runtime, user);
+    }
+
+    /**
+     * privilege[命令合成]<br/>
+     * 查询用户权限
+     * @param user 用户
+     * @return List
+     */
+    @Override
+    public List<Run> buildQueryPrivilegesRun(DataRuntime runtime, User user) throws Exception {
+        return super.buildQueryPrivilegesRun(runtime, user);
+    }
+
+    /**
+     * privilege[结果集封装]<br/>
+     * 根据查询结果集构造 Trigger
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
+     * @param create 上一步没有查到的,这一步是否需要新创建
+     * @param user 用户
+     * @param previous 上一步查询结果
+     * @param set 查询结果集
+     * @return List
+     * @throws Exception 异常
+     */
+    @Override
+    public <T extends Privilege> List<T> privileges(DataRuntime runtime, int index, boolean create, User user, List<T> privileges, DataSet set) throws Exception {
+        return super.privileges(runtime, index, create, user, privileges, set);
+    }
+
+    /**
+     * privilege[结果集封装]<br/>
+     * 根据查询结果封装Privilege对象,只封装catalog,schema,name等基础属性
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta 上一步封装结果
+     * @param user 用户
+     * @param row 查询结果集
+     * @return Privilege
+     */
+    @Override
+    public <T extends Privilege> T init(DataRuntime runtime, int index, T meta, User user, DataRow row) {
+        return super.init(runtime, index, meta, user, row);
+    }
+
+    /**
+     * privilege[结果集封装]<br/>
+     * 根据查询结果封装Privilege对象,更多属性
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta 上一步封装结果
+     * @param row 查询结果集
+     * @return Privilege
+     */
+    @Override
+    public <T extends Privilege> T detail(DataRuntime runtime, int index, T meta, User user, DataRow row) {
+        return super.detail(runtime, index, meta, user, row);
+    }
+
+    /**
+     * privilege[结构集封装-依据]<br/>
+     * 读取 Privilege 元数据结果集的依据
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @return PrivilegeMetadataAdapter
+     */
+    @Override
+    public PrivilegeMetadataAdapter privilegeMetadataAdapter(DataRuntime runtime) {
+        return super.privilegeMetadataAdapter(runtime);
+    }
+
+    /* *****************************************************************************************************************
+     * 													grant
+     * -----------------------------------------------------------------------------------------------------------------
+     * boolean grant(DataRuntime runtime, User user, Privilege... privileges)  throws Exception
+     * List<Run> buildGrantRun(DataRuntime runtime, User user, Privilege... privileges) throws Exception
+     * boolean revoke(DataRuntime runtime, User user, Privilege ... privileges) throws Exception	 *
+     ******************************************************************************************************************/
+    /**
+     * privilege[调用入口]<br/>
+     * 授权
+     * @param user 用户
+     * @param privileges 权限
+     * @return boolean
+     */
+    @Override
+    public boolean grant(DataRuntime runtime, User user, Privilege... privileges)  throws Exception {
+        return super.grant(runtime, user, privileges);
+    }
+
+    /**
+     * grant[命令合成]<br/>
+     * 授权
+     * @param user 用户
+     * @param privileges 权限
+     * @return List
+     */
+    @Override
+    public List<Run> buildGrantRun(DataRuntime runtime, User user, Privilege... privileges) throws Exception {
+        return super.buildGrantRun(runtime, user, privileges);
+    }
+
+    /**
+     * revoke[调用入口]<br/>
+     * 撤销授权
+     * @param user 用户
+     * @param privileges 权限
+     * @return boolean
+     */
+    @Override
+    public boolean revoke(DataRuntime runtime, User user, Privilege ... privileges) throws Exception {
+        return super.revoke(runtime, user, privileges);
+    }
+
+    /**
+     * revoke[命令合成]<br/>
+     * 撤销授权
+     * @param user 用户
+     * @param privileges 权限
+     * @return List
+     */
+    @Override
+    public List<Run> buildRevokeRun(DataRuntime runtime, User user, Privilege ... privileges) throws Exception {
+        return super.buildRevokeRun(runtime, user, privileges);
+    }
+
     /* *****************************************************************************************************************
      *
      * 														JDBC

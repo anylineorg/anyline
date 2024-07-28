@@ -138,15 +138,15 @@ public class CacheProxy {
         List<T> tables = (List<T>)caches().get(cache);
         return tables;
     }
-    public static  <T extends MasterTable> List<T> masterTables(String cache){
+    public static  <T extends MasterTable> List<T> masters(String cache){
         List<T> tables = (List<T>)caches().get(cache);
         return tables;
     }
-    public static  <T extends EdgeTable> List<T> edgeTables(String cache){
+    public static  <T extends EdgeTable> List<T> edges(String cache){
         List<T> tables = (List<T>)caches().get(cache);
         return tables;
     }
-    public static  <T extends VertexTable> List<T> vertexTables(String cache){
+    public static  <T extends VertexTable> List<T> vertexs(String cache){
         List<T> tables = (List<T>)caches().get(cache);
         return tables;
     }

@@ -1292,7 +1292,7 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
 	 * @param create 上一步没有查到的, 这一步是否需要新创建
-	 * @param databases 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return LinkedHashMap
 	 * @throws Exception
@@ -1454,7 +1454,7 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
 	 * @param create 上一步没有查到的, 这一步是否需要新创建
-	 * @param catalogs 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return databases
 	 * @throws Exception 异常
@@ -1470,7 +1470,7 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
 	 * @param create 上一步没有查到的, 这一步是否需要新创建
-	 * @param catalogs 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return databases
 	 * @throws Exception 异常
@@ -1485,7 +1485,7 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * 根据驱动内置接口补充 catalog
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的, 这一步是否需要新创建
-	 * @param catalogs 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @return databases
 	 * @throws Exception 异常
 	 */
@@ -1499,7 +1499,7 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * 根据驱动内置接口补充 catalog
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的, 这一步是否需要新创建
-	 * @param catalogs 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @return catalogs
 	 * @throws Exception 异常
 	 */
@@ -1598,7 +1598,7 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
 	 * @param create 上一步没有查到的, 这一步是否需要新创建
-	 * @param schemas 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return databases
 	 * @throws Exception 异常
@@ -1674,8 +1674,8 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types  Metadata.TYPE.
-	 * @param struct 是否查询表结构
+	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
+	 * @param struct 查询的属性 参考Metadata.TYPE 多个属性相加算出总和 true:表示查询全部
 	 * @return List
 	 * @param <T> Table
 	 */
@@ -1734,7 +1734,7 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types types Metadata.TYPE.
+	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return String
 	 * @throws Exception Exception
 	 */
@@ -1749,13 +1749,13 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter {
 
 	/**
 	 * table[结果集封装]<br/>
-	 *  根据查询结果集构造Table
+	 * 根据查询结果集构造Table
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照buildQueryTablesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param catalog catalog
 	 * @param schema schema
-	 * @param tables 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return tables
 	 * @throws Exception 异常
@@ -1767,13 +1767,13 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter {
 
 	/**
 	 * table[结果集封装]<br/>
-	 *  根据查询结果集构造Table
+	 * 根据查询结果集构造Table
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照buildQueryTablesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param catalog catalog
 	 * @param schema schema
-	 * @param tables 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return tables
 	 * @throws Exception 异常
@@ -1788,11 +1788,11 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * 根据驱动内置方法补充
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param tables 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types types Metadata.TYPE.
+	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return tables
 	 * @throws Exception 异常
 	 */
@@ -1806,11 +1806,11 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * 根据驱动内置方法补充
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param tables 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types types Metadata.TYPE.
+	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return tables
 	 * @throws Exception 异常
 	 */
@@ -1827,7 +1827,7 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param catalog catalog
 	 * @param schema schema
-	 * @param tables 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return tables
 	 * @throws Exception 异常
@@ -1845,7 +1845,7 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param catalog catalog
 	 * @param schema schema
-	 * @param tables 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return tables
 	 * @throws Exception 异常
@@ -1887,7 +1887,7 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
 	 * @param table 表
-	 * @param ddls 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set sql执行的结果集
 	 * @return List
 	 */
@@ -1943,7 +1943,7 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types types Metadata.TYPE.
+	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return List
 	 */
 	@Override
@@ -1959,7 +1959,7 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param catalog catalog
 	 * @param schema schema
-	 * @param views 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return views
 	 * @throws Exception 异常
@@ -1974,11 +1974,11 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * 根据根据驱动内置接口补充
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param views 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types types Metadata.TYPE.
+	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return views
 	 * @throws Exception 异常
 	 */
@@ -2017,7 +2017,7 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
 	 * @param view view
-	 * @param ddls 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set sql执行的结果集
 	 * @return List
 	 */
@@ -2029,13 +2029,13 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * 													master table
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * [调用入口]
-	 * <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs)
+	 * <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs)
 	 * [命令合成]
 	 * List<Run> buildQueryMasterTablesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs)
 	 * [结果集封装]<br/>
-	 * <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set)
+	 * <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set)
 	 * [结果集封装]<br/>
-	 * <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables,Catalog catalog, Schema schema, String pattern, int types)
+	 * <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables,Catalog catalog, Schema schema, String pattern, int types)
 	 * [调用入口]
 	 * List<String> ddl(DataRuntime runtime, String random, MasterTable table)
 	 * [命令合成]
@@ -2057,8 +2057,8 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @param <T> MasterTable
 	 */
 	@Override
-	public <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
-		return super.masterTables(runtime, random, catalog, schema, pattern, types, struct, configs);
+	public <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
+		return super.masters(runtime, random, catalog, schema, pattern, types, struct, configs);
 	}
 
 	/**
@@ -2078,20 +2078,20 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter {
 
 	/**
 	 * master table[结果集封装]<br/>
-	 *  根据查询结果集构造Table
+	 * 根据查询结果集构造Table
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryMasterTablesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param catalog catalog
 	 * @param schema schema
-	 * @param tables 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return tables
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set) throws Exception {
-		return super.masterTables(runtime, index, create, tables, catalog, schema, set);
+	public <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set) throws Exception {
+		return super.masters(runtime, index, create, tables, catalog, schema, set);
 	}
 
 	/**
@@ -2101,13 +2101,13 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param catalog catalog
 	 * @param schema schema
-	 * @param tables 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @return tables
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables,Catalog catalog, Schema schema, String pattern, int types) throws Exception {
-		return super.masterTables(runtime, create, tables, catalog, schema, pattern, types);
+	public <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables,Catalog catalog, Schema schema, String pattern, int types) throws Exception {
+		return super.masters(runtime, create, tables, catalog, schema, pattern, types);
 	}
 
 	/**
@@ -2140,7 +2140,7 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
 	 * @param table MasterTable
-	 * @param ddls 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set sql执行的结果集
 	 * @return List
 	 */
@@ -2152,14 +2152,14 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * 													partition table
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * [调用入口]
-	 * <T extends PartitionTable> LinkedHashMap<String,T> partitionTables(DataRuntime runtime, String random, boolean greedy, MasterTable master, Map<String, Object> tags, String pattern)
+	 * <T extends PartitionTable> LinkedHashMap<String,T> partitions(DataRuntime runtime, String random, boolean greedy, MasterTable master, Map<String, Object> tags, String pattern)
 	 * [命令合成]
 	 * List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types)
 	 * List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Table master, Map<String,Object> tags, String pattern)
 	 * List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Table master, Map<String,Object> tags)
 	 * [结果集封装]<br/>
-	 * <T extends PartitionTable> LinkedHashMap<String, T> partitionTables(DataRuntime runtime, int total, int index, boolean create, MasterTable master, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set)
-	 * <T extends PartitionTable> LinkedHashMap<String,T> partitionTables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, MasterTable master)
+	 * <T extends PartitionTable> LinkedHashMap<String, T> partitions(DataRuntime runtime, int total, int index, boolean create, MasterTable master, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set)
+	 * <T extends PartitionTable> LinkedHashMap<String,T> partitions(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, MasterTable master)
 	 * [调用入口]
 	 * List<String> ddl(DataRuntime runtime, String random, PartitionTable table)
 	 * [命令合成]
@@ -2179,8 +2179,8 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @param <T> MasterTable
 	 */
 	@Override
-	public <T extends PartitionTable> LinkedHashMap<String,T> partitionTables(DataRuntime runtime, String random, boolean greedy, MasterTable master, Map<String, Object> tags, String pattern) {
-		return super.partitionTables(runtime, random, greedy, master, tags, pattern);
+	public <T extends PartitionTable> LinkedHashMap<String,T> partitions(DataRuntime runtime, String random, boolean greedy, MasterTable master, Map<String, Object> tags, String pattern) {
+		return super.partitions(runtime, random, greedy, master, tags, pattern);
 	}
 
 	/**
@@ -2242,7 +2242,7 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter {
 
 	/**
 	 * partition table[结果集封装]<br/>
-	 *  根据查询结果集构造Table
+	 * 根据查询结果集构造Table
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param total 合计SQL数量
 	 * @param index 第几条SQL 对照 buildQueryMasterTablesRun返回顺序
@@ -2250,14 +2250,14 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @param master 主表
 	 * @param catalog catalog
 	 * @param schema schema
-	 * @param tables 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return tables
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends PartitionTable> LinkedHashMap<String, T> partitionTables(DataRuntime runtime, int total, int index, boolean create, MasterTable master, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set) throws Exception {
-		return super.partitionTables(runtime, total, index, create, master, tables, catalog, schema, set);
+	public <T extends PartitionTable> LinkedHashMap<String, T> partitions(DataRuntime runtime, int total, int index, boolean create, MasterTable master, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set) throws Exception {
+		return super.partitions(runtime, total, index, create, master, tables, catalog, schema, set);
 	}
 
 	/**
@@ -2268,13 +2268,13 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @param master 主表
 	 * @param catalog catalog
 	 * @param schema schema
-	 * @param tables 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @return tables
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends PartitionTable> LinkedHashMap<String,T> partitionTables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, MasterTable master) throws Exception {
-		return super.partitionTables(runtime, create, tables, catalog, schema, master);
+	public <T extends PartitionTable> LinkedHashMap<String,T> partitions(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, MasterTable master) throws Exception {
+		return super.partitions(runtime, create, tables, catalog, schema, master);
 	}
 
 	/**
@@ -2307,7 +2307,7 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
 	 * @param table MasterTable
-	 * @param ddls 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set sql执行的结果集
 	 * @return List
 	 */
@@ -2401,7 +2401,7 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @param index 第几条SQL 对照 buildQueryColumnsRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
-	 * @param columns 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return tags tags
 	 * @throws Exception 异常
@@ -2423,7 +2423,7 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @param index 第几条SQL 对照 buildQueryColumnsRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param tables 表
-	 * @param columns 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set 系统表查询SQL结果集
 	 * @return columns
 	 * @throws Exception 异常
@@ -2590,7 +2590,7 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @param index 第几条查询SQL 对照 buildQueryTagsRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
-	 * @param tags 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return tags
 	 * @throws Exception 异常
@@ -2607,7 +2607,7 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
-	 * @param tags 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param pattern 名称统配符或正则
 	 * @return tags
 	 * @throws Exception 异常
@@ -2744,7 +2744,7 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryForeignsRun 返回顺序
 	 * @param table 表
-	 * @param foreigns 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set sql查询结果
 	 * @throws Exception 异常
 	 */
@@ -2822,7 +2822,7 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @param index 第几条查询SQL 对照 buildQueryIndexesRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
-	 * @param indexes 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return indexes indexes
 	 * @throws Exception 异常
@@ -2839,7 +2839,7 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @param index 第几条查询SQL 对照 buildQueryIndexesRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
-	 * @param indexes 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return indexes indexes
 	 * @throws Exception 异常
@@ -2984,7 +2984,7 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
-	 * @param constraints 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set DataSet
 	 * @return constraints constraints
 	 * @throws Exception 异常
@@ -3002,7 +3002,7 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
 	 * @param column 列
-	 * @param constraints 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set DataSet
 	 * @return constraints constraints
 	 * @throws Exception 异常
@@ -3057,7 +3057,7 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
-	 * @param triggers 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return LinkedHashMap
 	 * @throws Exception 异常
@@ -3139,7 +3139,7 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param procedures 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return LinkedHashMap
 	 * @throws Exception 异常
@@ -3154,7 +3154,7 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * 根据驱动内置接口补充 Procedure
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param procedures 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @return List
 	 * @throws Exception 异常
 	 */
@@ -3168,7 +3168,7 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * 根据驱动内置接口补充 Procedure
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param procedures 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @return LinkedHashMap
 	 * @throws Exception 异常
 	 */
@@ -3208,7 +3208,7 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
 	 * @param procedure Procedure
-	 * @param ddls 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return List
 	 */
@@ -3290,7 +3290,7 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param functions 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return LinkedHashMap
 	 * @throws Exception 异常
@@ -3306,7 +3306,7 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param functions 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return LinkedHashMap
 	 * @throws Exception 异常
@@ -3321,7 +3321,7 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * 根据驱动内置接口补充 Function
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param functions 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @return LinkedHashMap
 	 * @throws Exception 异常
 	 */
@@ -3361,7 +3361,7 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
 	 * @param function Function
-	 * @param ddls 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return List
 	 */
@@ -3443,7 +3443,7 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param sequences 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return LinkedHashMap
 	 * @throws Exception 异常
@@ -3459,7 +3459,7 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param sequences 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return LinkedHashMap
 	 * @throws Exception 异常
@@ -3474,7 +3474,7 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * 根据驱动内置接口补充 Sequence
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param sequences 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @return LinkedHashMap
 	 * @throws Exception 异常
 	 */
@@ -3514,7 +3514,7 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
 	 * @param sequence Sequence
-	 * @param ddls 上一步查询结果
+	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return List
 	 */
