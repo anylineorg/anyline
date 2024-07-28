@@ -128,7 +128,7 @@ public class InfluxRuntimeHolder extends AbstractRuntimeHolder {
             InfluxRuntime runtime = (InfluxRuntime) runtimes.get(key);
             if(null != runtime){
                 //这一步有可能抛出 异常
-                close = monitor.destroy(key, runtime.getProcessor());
+                close = monitor.destroy(runtime, key, runtime.getProcessor());
             }
         }
         try {

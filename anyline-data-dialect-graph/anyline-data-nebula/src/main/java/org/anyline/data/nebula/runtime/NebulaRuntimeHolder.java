@@ -127,7 +127,7 @@ public class NebulaRuntimeHolder extends AbstractRuntimeHolder {
             NebulaRuntime runtime = (NebulaRuntime) runtimes.get(key);
             if(null != runtime){
                 //这一步有可能抛出 异常
-                close = monitor.destroy(key, runtime.getSession());
+                close = monitor.destroy(runtime, key, runtime.getSession());
             }
         }
         try {
