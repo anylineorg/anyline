@@ -195,8 +195,8 @@ public interface DriverActuator {
      * @return tables
      * @throws Exception 异常
      */
-    default <T extends Table> LinkedHashMap<String, T> tables(DriverAdapter adapter, DataRuntime runtime, boolean create,  LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
-        return tables;
+    default <T extends Table> LinkedHashMap<String, T> tables(DriverAdapter adapter, DataRuntime runtime, boolean create,  LinkedHashMap<String, T> previous, Table query, int types) throws Exception {
+        return previous;
     }
 
     /**
@@ -212,8 +212,8 @@ public interface DriverActuator {
      * @return tables
      * @throws Exception 异常
      */
-    default <T extends Table> List<T> tables(DriverAdapter adapter, DataRuntime runtime, boolean create, List<T> tables,  Catalog catalog, Schema schema, String pattern, int types) throws Exception {
-        return tables;
+    default <T extends Table> List<T> tables(DriverAdapter adapter, DataRuntime runtime, boolean create, List<T> previous, Table query, int types) throws Exception {
+        return previous;
     }
     /**
      * view[结果集封装]<br/>
@@ -228,7 +228,7 @@ public interface DriverActuator {
      * @return tables
      * @throws Exception 异常
      */
-    default <T extends View> LinkedHashMap<String, T> views(DriverAdapter adapter, DataRuntime runtime, boolean create,  LinkedHashMap<String, T> views, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
+    default <T extends View> LinkedHashMap<String, T> views(DriverAdapter adapter, DataRuntime runtime, boolean create,  LinkedHashMap<String, T> views, View query, int types) throws Exception {
         return views;
     }
 
@@ -245,7 +245,7 @@ public interface DriverActuator {
      * @return tables
      * @throws Exception 异常
      */
-    default <T extends Table> List<T> views(DriverAdapter adapter, DataRuntime runtime, boolean create, List<T> views, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
+    default <T extends Table> List<T> views(DriverAdapter adapter, DataRuntime runtime, boolean create, List<T> views, View query, int types) throws Exception {
         return views;
     }
 
@@ -269,11 +269,11 @@ public interface DriverActuator {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param previous 上一步查询结果
-     * @param table 表
+     * @param query 查询条件
      * @return columns
      * @param <T> Column
      */
-    default <T extends Column> LinkedHashMap<String, T> metadata(DriverAdapter adapter, DataRuntime runtime, boolean create, LinkedHashMap<String, T> columns, Table table, String pattern) throws Exception {
+    default <T extends Column> LinkedHashMap<String, T> metadata(DriverAdapter adapter, DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Column query) throws Exception {
         return new LinkedHashMap<>();
     }
 
@@ -282,13 +282,11 @@ public interface DriverActuator {
      * 根据驱动内置元数据接口查询索引
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param table 表
-     * @param unique 是否唯一
-     * @param approximate 索引允许结果反映近似值
-     * @return indexes indexes
+     * @param query 查询条件
+     * @param previous 上一步查询结果
      * @throws Exception 异常
      */
-    default <T extends Index> LinkedHashMap<String, T> indexes(DriverAdapter adapter, DataRuntime runtime, boolean create, LinkedHashMap<String, T> indexes, Table table, boolean unique, boolean approximate) throws Exception {
+    default <T extends Index> LinkedHashMap<String, T> indexes(DriverAdapter adapter, DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Index query) throws Exception {
         return new LinkedHashMap<>();
     }
 }

@@ -90,13 +90,9 @@ public class CassandraAdapter extends AbstractJDBCAdapter implements JDBCAdapter
         return sql;
     }
 
-    @Override
-    public List<Run> buildQueryDatabaseRun(DataRuntime runtime, boolean greedy) throws Exception {
-        return null;
-    }
 
     @Override
-    public LinkedHashMap<String, Database> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Database> databases, Catalog catalog, Schema schema, DataSet set) throws Exception {
+    public LinkedHashMap<String, Database> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Database> previous, Database query, DataSet set) throws Exception {
         return null;
     }
 

@@ -92,6 +92,14 @@ public class Trigger extends TableAffiliation<Trigger> implements Serializable {
         }
         return this;
     }
+    public Trigger setEvent(List<EVENT> events) {
+        if(setmap && null != update) {
+            ((Trigger)update).setEvent(events);
+            return this;
+        }
+        this.events = events;
+        return this;
+    }
     public Trigger addEvent(String ... events) {
         if(setmap && null != update) {
             ((Trigger)update).addEvent(events);

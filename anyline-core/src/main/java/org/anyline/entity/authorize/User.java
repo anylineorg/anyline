@@ -16,7 +16,10 @@
 
 package org.anyline.entity.authorize;
 
+import org.anyline.metadata.Catalog;
 import org.anyline.metadata.Metadata;
+import org.anyline.metadata.Schema;
+import org.apache.oro.util.Cache;
 
 public class User extends Metadata<User> {
     private String password;
@@ -25,6 +28,11 @@ public class User extends Metadata<User> {
 
     }
     public User(String name){
+        this.name = name;
+    }
+    public User(Catalog catalog, Schema schema, String name){
+        this.catalog = catalog;
+        this.schema = schema;
         this.name = name;
     }
     public User(String name, String password){

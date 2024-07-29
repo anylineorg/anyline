@@ -22,6 +22,9 @@ public class Privilege extends Metadata<User> {
     private String tables;
 
     public Privilege(){}
+    public Privilege(User user){
+        this.user = user;
+    }
     public String getTables() {
         return tables;
     }

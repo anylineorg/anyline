@@ -40,6 +40,7 @@ import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 
 import javax.sql.DataSource;
+import javax.xml.crypto.Data;
 import java.sql.Connection;
 import java.util.*;
 
@@ -1342,35 +1343,36 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
-     * @param name 名称统配符或正则
+     * @param query 查询条件
      * @return LinkedHashMap
      */
     @Override
-    public List<Database> databases(DataRuntime runtime, String random, boolean greedy, String name) {
-        return super.databases(runtime, random, greedy, name);
+    public List<Database> databases(DataRuntime runtime, String random, boolean greedy, Database query) {
+        return super.databases(runtime, random, greedy, query);
     }
     /**
      * database[调用入口]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
-     * @param name 名称统配符或正则
+     * @param query 查询条件
      * @return LinkedHashMap
      */
     @Override
-    public LinkedHashMap<String, Database> databases(DataRuntime runtime, String random, String name) {
-        return super.databases(runtime, random, name);
+    public LinkedHashMap<String, Database> databases(DataRuntime runtime, String random, Database query) {
+        return super.databases(runtime, random, query);
     }
     /**
      * database[命令合成]<br/>
      * 查询全部数据库
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param name 名称统配符或正则
+     * @param query 查询条件
      * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
      * @return sqls
      * @throws Exception 异常
      */
     @Override
-    public List<Run> buildQueryDatabasesRun(DataRuntime runtime, boolean greedy, String name) throws Exception {
+    public List<Run> buildQueryDatabasesRun(DataRuntime runtime, boolean greedy, Database query) throws Exception {
+        String name = query.getName();
         List<Run> runs = new ArrayList<>();
         Run run = new SimpleRun(runtime);
         runs.add(run);
@@ -1389,7 +1391,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @throws Exception Exception
      */
     @Override
-    public LinkedHashMap<String, Database> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Database> databases, Catalog catalog, Schema schema, DataSet set) throws Exception {
+    public LinkedHashMap<String, Database> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Database> previous, Database query, DataSet set) throws Exception {
         if(null == databases) {
             databases = new LinkedHashMap<>();
         }
@@ -1401,8 +1403,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         return databases;
     }
     @Override
-    public List<Database> databases(DataRuntime runtime, int index, boolean create, List<Database> databases, Catalog catalog, Schema schema, DataSet set) throws Exception {
-        return super.databases(runtime, index, create, databases, catalog, schema, set);
+    public List<Database> databases(DataRuntime runtime, int index, boolean create, List<Database> previous, Database query, DataSet set) throws Exception {
+        return super.databases(runtime, index, create, previous, query, set);
     }
 	/**
 	 * database[结果集封装]<br/>
@@ -1510,37 +1512,37 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * catalog[调用入口]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
-     * @param name 名称统配符或正则
+     * @param query 查询条件
      * @return LinkedHashMap
      */
     @Override
-    public LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, String random, String name) {
-        return super.catalogs(runtime, random, name);
+    public LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, String random, Catalog query) {
+        return super.catalogs(runtime, random, query);
     }
     /**
      * catalog[调用入口]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
-     * @param name 名称统配符或正则
+     * @param query 查询条件
      * @return LinkedHashMap
      */
     @Override
-    public List<Catalog> catalogs(DataRuntime runtime, String random, boolean greedy, String name) {
-        return super.catalogs(runtime, random, greedy, name);
+    public List<Catalog> catalogs(DataRuntime runtime, String random, boolean greedy, Catalog query) {
+        return super.catalogs(runtime, random, greedy, query);
     }
 
     /**
      * catalog[命令合成]<br/>
      * 查询全部数据库
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param name 名称统配符或正则
+     * @param query 查询条件
      * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
      * @return sqls
      * @throws Exception 异常
      */
     @Override
-    public List<Run> buildQueryCatalogsRun(DataRuntime runtime, boolean greedy, String name) throws Exception {
-        return super.buildQueryCatalogsRun(runtime, greedy, name);
+    public List<Run> buildQueryCatalogsRun(DataRuntime runtime, boolean greedy, Catalog query) throws Exception {
+        return super.buildQueryCatalogsRun(runtime, greedy, query);
     }
     /**
      * catalog[结果集封装]<br/>
@@ -1554,8 +1556,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @throws Exception 异常
      */
     @Override
-    public LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Catalog> catalogs, Catalog catalog, Schema schema, DataSet set) throws Exception {
-        return super.catalogs(runtime, index, create, catalogs, catalog, schema, set);
+    public LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Catalog> previous, Catalog query, DataSet set) throws Exception {
+        return super.catalogs(runtime, index, create, previous, query, set);
     }
     /**
      * catalog[结果集封装]<br/>
@@ -1569,8 +1571,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @throws Exception 异常
      */
     @Override
-    public List<Catalog> catalogs(DataRuntime runtime, int index, boolean create, List<Catalog> catalogs, Catalog catalog, Schema schema, DataSet set) throws Exception {
-        return super.catalogs(runtime, index, create, catalogs, catalog, schema, set);
+    public List<Catalog> catalogs(DataRuntime runtime, int index, boolean create, List<Catalog> previous, Catalog query, DataSet set) throws Exception {
+        return super.catalogs(runtime, index, create, previous, query, set);
     }
 	/**
      * catalog[结果集封装]<br/>
@@ -1582,8 +1584,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @throws Exception 异常
      */
     @Override
-    public LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, boolean create, LinkedHashMap<String, Catalog> catalogs) throws Exception {
-        return super.catalogs(runtime, create, catalogs);
+    public LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, boolean create, LinkedHashMap<String, Catalog> previous) throws Exception {
+        return super.catalogs(runtime, create, previous);
     }
 
     /**
@@ -1596,8 +1598,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @throws Exception 异常
      */
     @Override
-    public List<Catalog> catalogs(DataRuntime runtime, boolean create, List<Catalog> catalogs) throws Exception {
-        return super.catalogs(runtime, create, catalogs);
+    public List<Catalog> catalogs(DataRuntime runtime, boolean create, List<Catalog> previous) throws Exception {
+        return super.catalogs(runtime, create, previous);
     }
 	/**
 	 * catalog[结果集封装]<br/>
@@ -1605,14 +1607,14 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
 	 * @param create 上一步没有查到的, 这一步是否需要新创建
-	 * @param catalog 上一步查询结果
+	 * @param previou 上一步查询结果
 	 * @param set 查询结果集
 	 * @return Catalog
 	 * @throws Exception 异常
 	 */
 	@Override
-	public Catalog catalog(DataRuntime runtime, int index, boolean create, Catalog catalog, DataSet set) throws Exception {
-		return super.catalog(runtime, index, create, catalog, set);
+	public Catalog catalog(DataRuntime runtime, int index, boolean create, Catalog previou, DataSet set) throws Exception {
+		return super.catalog(runtime, index, create, previou, set);
 	}
 
 	/**
@@ -1620,13 +1622,13 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
 	 * 当前catalog 根据驱动内置接口补充
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的, 这一步是否需要新创建
-	 * @param catalog 上一步查询结果
+	 * @param previou 上一步查询结果
 	 * @return Catalog
 	 * @throws Exception 异常
 	 */
 	@Override
-	public Catalog catalog(DataRuntime runtime, boolean create, Catalog catalog) throws Exception {
-		return super.catalog(runtime, create, catalog);
+	public Catalog catalog(DataRuntime runtime, boolean create, Catalog previou) throws Exception {
+		return super.catalog(runtime, create, previou);
 	}
 
     /* *****************************************************************************************************************
@@ -1699,25 +1701,23 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * schema[调用入口]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
-     * @param catalog catalog
-     * @param name 名称统配符或正则
+     * @param query 查询条件
      * @return LinkedHashMap
      */
     @Override
-    public LinkedHashMap<String, Schema> schemas(DataRuntime runtime, String random, Catalog catalog, String name) {
-        return super.schemas(runtime, random, catalog, name);
+    public LinkedHashMap<String, Schema> schemas(DataRuntime runtime, String random, Schema query) {
+        return super.schemas(runtime, random, query);
     }
     /**
      * schema[调用入口]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
-     * @param catalog catalog
-     * @param name 名称统配符或正则
+     * @param query 查询条件
      * @return LinkedHashMap
      */
     @Override
-    public List<Schema> schemas(DataRuntime runtime, String random, boolean greedy, Catalog catalog, String name) {
-        return super.schemas(runtime, random, greedy, catalog, name);
+    public List<Schema> schemas(DataRuntime runtime, String random, boolean greedy, Schema query) {
+        return super.schemas(runtime, random, greedy, query);
     }
 
     /**
@@ -1746,14 +1746,14 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * catalog[命令合成]<br/>
      * 查询全部数据库
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param name 名称统配符或正则
+     * @param query 查询条件
      * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
      * @return sqls
      * @throws Exception 异常
      */
     @Override
-    public List<Run> buildQuerySchemasRun(DataRuntime runtime, boolean greedy, Catalog catalog, String name) throws Exception {
-        return super.buildQuerySchemasRun(runtime, greedy, catalog, name);
+    public List<Run> buildQuerySchemasRun(DataRuntime runtime, boolean greedy, Schema query) throws Exception {
+        return super.buildQuerySchemasRun(runtime, greedy, query);
     }
     /**
      * schema[结果集封装]<br/>
@@ -1767,12 +1767,12 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @throws Exception 异常
      */
     @Override
-    public LinkedHashMap<String, Schema> schemas(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Schema> schemas, Catalog catalog, Schema schema, DataSet set) throws Exception {
-        return super.schemas(runtime, index, create, schemas, catalog, schema, set);
+    public LinkedHashMap<String, Schema> schemas(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Schema> previous, Schema query, DataSet set) throws Exception {
+        return super.schemas(runtime, index, create, previous, query, set);
     }
     @Override
-    public List<Schema> schemas(DataRuntime runtime, int index, boolean create, List<Schema> schemas, Catalog catalog, Schema schema, DataSet set) throws Exception {
-        return super.schemas(runtime, index, create, schemas, catalog, schema, set);
+    public List<Schema> schemas(DataRuntime runtime, int index, boolean create, List<Schema> previous, Schema query, DataSet set) throws Exception {
+        return super.schemas(runtime, index, create, previous, query, set);
     }
 
 	/**
@@ -1781,14 +1781,14 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQuerySchemaRun 返回顺序
 	 * @param create 上一步没有查到的, 这一步是否需要新创建
-	 * @param schema 上一步查询结果
+	 * @param previou 上一步查询结果
 	 * @param set 查询结果集
 	 * @return schema
 	 * @throws Exception 异常
 	 */
 	@Override
-	public Schema schema(DataRuntime runtime, int index, boolean create, Schema schema, DataSet set) throws Exception {
-		return super.schema(runtime, index, create, schema, set);
+	public Schema schema(DataRuntime runtime, int index, boolean create, Schema previou, DataSet set) throws Exception {
+		return super.schema(runtime, index, create, previou, set);
 	}
 
 	/**
@@ -1796,13 +1796,13 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
 	 * 当前schema 根据驱动内置接口补充
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的, 这一步是否需要新创建
-	 * @param schema 上一步查询结果
+	 * @param previou 上一步查询结果
 	 * @return schema
 	 * @throws Exception 异常
 	 */
 	@Override
-	public Schema schema(DataRuntime runtime, boolean create, Schema schema) throws Exception {
-		return super.schema(runtime, create, schema);
+	public Schema schema(DataRuntime runtime, boolean create, Schema previou) throws Exception {
+		return super.schema(runtime, create, previou);
 	}
 
     /* *****************************************************************************************************************
@@ -1843,8 +1843,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> Table
      */
     @Override
-    public <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct) {
-        return super.tables(runtime, random, greedy, catalog, schema, pattern, types, struct);
+    public <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Table query, int types, int struct) {
+        return super.tables(runtime, random, greedy, query, types, struct);
     }
 
     /**
@@ -1856,13 +1856,13 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @param schema schema
      */
     @Override
-    protected void tableMap(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, ConfigStore configs) {
-        super.tableMap(runtime, random, greedy, catalog, schema, configs);
+    protected void tableMap(DataRuntime runtime, String random, boolean greedy, Table query, ConfigStore configs) {
+        super.tableMap(runtime, random, greedy, query, configs);
     }
 
     @Override
-    public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct) {
-        return super.tables(runtime, random, catalog, schema, pattern, types, struct);
+    public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Table query, int types, int struct) {
+        return super.tables(runtime, random, query, types, struct);
     }
 
     /**
@@ -1870,14 +1870,15 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * 查询表,不是查表中的数据
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
-     * @param catalog catalog
-     * @param schema schema
-     * @param pattern 名称统配符或正则
+     * @param query 查询条件
      * @param types  Metadata.TYPE.
      * @return String
      */
     @Override
-    public List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs) throws Exception {
+    public List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Table query, int types, ConfigStore configs) throws Exception {
+        Catalog catalog = query.getCatalog();
+        Schema schema = query.getSchema();
+        String pattern = query.getName();
         /*
 		ALL_TABLES：当前登录用户可见的所有表
 		DBA_TABLES：数据库中所有表
@@ -1927,7 +1928,10 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public List<Run> buildQueryTablesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
+    public List<Run> buildQueryTablesCommentRun(DataRuntime runtime, Table query, int types) throws Exception {
+        Catalog catalog = query.getCatalog();
+        Schema schema = query.getSchema();
+        String pattern = query.getName();
         List<Run> runs = new ArrayList<>();
         Run run = new SimpleRun(runtime);
         runs.add(run);
@@ -1956,8 +1960,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set) throws Exception {
-        return super.tables(runtime, index, create, tables, catalog, schema, set);
+    public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Table query, DataSet set) throws Exception {
+        return super.tables(runtime, index, create, previous, query, set);
     }
 
     /**
@@ -1974,8 +1978,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends Table> List<T> tables(DataRuntime runtime, int index, boolean create, List<T> tables, Catalog catalog, Schema schema, DataSet set) throws Exception {
-        return super.tables(runtime, index, create, tables, catalog, schema, set);
+    public <T extends Table> List<T> tables(DataRuntime runtime, int index, boolean create, List<T> previous, Table query, DataSet set) throws Exception {
+        return super.tables(runtime, index, create, previous, query, set);
     }
     /**
      * table[结果集封装]<br/>
@@ -1992,8 +1996,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      */
 
     @Override
-    public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
-        return super.tables(runtime, create, tables, catalog, schema, pattern, types);
+    public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Table query, int types) throws Exception {
+        return super.tables(runtime, create, previous, query, types);
     }
 
     /**
@@ -2010,8 +2014,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends Table> List<T> tables(DataRuntime runtime, boolean create, List<T> tables, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
-        return super.tables(runtime, create, tables, catalog, schema, pattern, types);
+    public <T extends Table> List<T> tables(DataRuntime runtime, boolean create, List<T> previous, Table query, int types) throws Exception {
+        return super.tables(runtime, create, previous, query, types);
     }
 
     /**
@@ -2028,8 +2032,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends Table> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set) throws Exception {
-        return super.comments(runtime, index, create, tables, catalog, schema, set);
+    public <T extends Table> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Table query, DataSet set) throws Exception {
+        return super.comments(runtime, index, create, previous, query, set);
     }
 
     /**
@@ -2046,8 +2050,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends Table> List<T> comments(DataRuntime runtime, int index, boolean create, List<T> tables, Catalog catalog, Schema schema, DataSet set) throws Exception {
-        return super.comments(runtime, index, create, tables, catalog, schema, set);
+    public <T extends Table> List<T> comments(DataRuntime runtime, int index, boolean create, List<T> previous, Table query, DataSet set) throws Exception {
+        return super.comments(runtime, index, create, previous, query, set);
     }
 
     /**
@@ -2122,8 +2126,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> View
      */
     @Override
-    public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
-		return super.views(runtime, random, catalog, schema, pattern, types, struct, configs);
+    public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, View query, int types, int struct, ConfigStore configs) {
+		return super.views(runtime, random, query, types, struct, configs);
 	}
     /**
      * view[命令合成]<br/>
@@ -2137,8 +2141,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return List
      */
     @Override
-    public List<Run> buildQueryViewsRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs) throws Exception {
-        return buildQueryTablesRun(runtime, greedy, catalog, schema, pattern, types, configs);
+    public List<Run> buildQueryViewsRun(DataRuntime runtime, boolean greedy, View query, int types, ConfigStore configs) throws Exception {
+        return buildQueryTablesRun(runtime, greedy, query, types, configs);
     }
 
     /**
@@ -2155,7 +2159,9 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> views, Catalog catalog, Schema schema, DataSet set) throws Exception {
+    public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> views, View query, DataSet set) throws Exception {
+        Catalog catalog = query.getCatalog();
+        Schema schema = query.getSchema();
         if(null == views) {
             views = new LinkedHashMap<>();
         }
@@ -2189,8 +2195,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, boolean create, LinkedHashMap<String, T> views, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
-        return super.views(runtime, create, views, catalog, schema, pattern, types);
+    public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, View query, int types) throws Exception {
+        return super.views(runtime, create, previous, query, types);
     }
 
     /**
@@ -2264,12 +2270,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> MasterTable
      */
     @Override
-	public <T extends MasterTable> List<T> masters(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
-		return super.masters(runtime, random, greedy, catalog, schema, pattern, types, struct, configs);
-	}
-	@Override
-	public <T extends MasterTable> List<T> masters(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct) {
-		return super.masters(runtime, random, greedy, catalog, schema, pattern, types, struct);
+	public <T extends MasterTable> List<T> masters(DataRuntime runtime, String random, boolean greedy, MasterTable query, int types, int struct, ConfigStore configs) {
+		return super.masters(runtime, random, greedy, query, types, struct, configs);
 	}
     /**
      * master table[命令合成]<br/>
@@ -2282,8 +2284,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public List<Run> buildQueryMasterTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs) throws Exception {
-		return super.buildQueryMasterTablesRun(runtime, greedy, catalog, schema, pattern, types, configs);
+    public List<Run> buildQueryMasterTablesRun(DataRuntime runtime, boolean greedy, MasterTable query, int types, ConfigStore configs) throws Exception {
+		return super.buildQueryMasterTablesRun(runtime, greedy, query, types, configs);
 	}
 
     /**
@@ -2300,8 +2302,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set) throws Exception {
-        return super.masters(runtime, index, create, tables, catalog, schema, set);
+    public <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, MasterTable query, DataSet set) throws Exception {
+        return super.masters(runtime, index, create, tables, query, set);
     }
     /**
      * master table[结果集封装]<br/>
@@ -2315,8 +2317,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables,Catalog catalog, Schema schema, String pattern, int types) throws Exception {
-        return super.masters(runtime, create, tables, catalog, schema, pattern, types);
+    public <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, MasterTable query, int types) throws Exception {
+        return super.masters(runtime, create, tables, query, types);
     }
 
     /**
@@ -2362,8 +2364,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * <T extends PartitionTable> LinkedHashMap<String,T> partitions(DataRuntime runtime, String random, boolean greedy, MasterTable master, Map<String, Object> tags, String pattern)
      * [命令合成]
      * List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types)
-     * List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Table master, Map<String,Object> tags, String pattern)
-     * List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Table master, Map<String,Object> tags)
+     * List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Table master, Map<String, Tag> tags, String pattern)
+     * List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Table master, Map<String, Tag> tags)
      * [结果集封装]<br/>
      * <T extends PartitionTable> LinkedHashMap<String, T> partitions(DataRuntime runtime, int total, int index, boolean create, MasterTable master, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set)
      * <T extends PartitionTable> LinkedHashMap<String,T> partitions(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, MasterTable master)
@@ -2386,8 +2388,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> MasterTable
      */
     @Override
-    public <T extends PartitionTable> LinkedHashMap<String,T> partitions(DataRuntime runtime, String random, boolean greedy, MasterTable master, Map<String, Object> tags, String pattern) {
-        return super.partitions(runtime, random, greedy, master, tags, pattern);
+    public <T extends PartitionTable> LinkedHashMap<String,T> partitions(DataRuntime runtime, String random, boolean greedy, PartitionTable query) {
+        return super.partitions(runtime, random, greedy, query);
     }
 
     /**
@@ -2401,35 +2403,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
-        return super.buildQueryPartitionTablesRun(runtime, catalog, schema, pattern, types);
-    }
-    /**
-     * partition table[命令合成]<br/>
-     * 根据主表查询分区表
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param master 主表
-     * @param tags 标签名+标签值
-     * @param name 名称统配符或正则
-     * @return sql
-     * @throws Exception 异常
-     */
-    @Override
-    public List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Table master, Map<String,Object> tags, String name) throws Exception {
-        return super.buildQueryPartitionTablesRun(runtime, master, tags, name);
-    }
-    /**
-     * partition table[命令合成]<br/>
-     * 根据主表查询分区表
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param master 主表
-     * @param tags 标签名+标签值
-     * @return sql
-     * @throws Exception 异常
-     */
-    @Override
-    public List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Table master, Map<String,Object> tags) throws Exception {
-        return super.buildQueryPartitionTablesRun(runtime, master, tags);
+    public List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, PartitionTable query, int types) throws Exception {
+        return super.buildQueryPartitionTablesRun(runtime, query, types);
     }
     /**
      * partition table[结果集封装]<br/>
@@ -2447,8 +2422,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends PartitionTable> LinkedHashMap<String, T> partitions(DataRuntime runtime, int total, int index, boolean create, MasterTable master, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set) throws Exception {
-        return super.partitions(runtime, total, index, create, master, tables, catalog, schema, set);
+    public <T extends PartitionTable> LinkedHashMap<String, T> partitions(DataRuntime runtime, int total, int index, boolean create, LinkedHashMap<String, T> previous, PartitionTable query, DataSet set) throws Exception {
+        return super.partitions(runtime, total, index, create, previous, query, set);
     }
     /**
      * partition table[结果集封装]<br/>
@@ -2463,8 +2438,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends PartitionTable> LinkedHashMap<String,T> partitions(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, MasterTable master) throws Exception {
-        return super.partitions(runtime, create, tables, catalog, schema, master);
+    public <T extends PartitionTable> LinkedHashMap<String,T> partitions(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, PartitionTable query) throws Exception {
+        return super.partitions(runtime, create, previous, query);
     }
     /**
      * partition table[调用入口]<br/>
@@ -2513,8 +2488,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * [命令合成]
      * List<Run> buildQueryColumnsRun(DataRuntime runtime, Table table, boolean metadata) throws Exception;
      * [结果集封装]<br/>
-     * <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> columns, DataSet set) throws Exception;
-     * <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, Table table, List<T> columns, DataSet set) throws Exception;
+     * <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Table table, Column query, DataSet set) throws Exception;
+     * <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, List<T> previous, Column query, DataSet set) throws Exception;
      * <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, LinkedHashMap<String, T> columns, Table table, String pattern) throws Exception;
      ******************************************************************************************************************/
     /**
@@ -2529,8 +2504,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @param <T>  Column
      */
     @Override
-    public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Table table, boolean primary) {
-        return super.columns(runtime, random, greedy, table, primary);
+    public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Column query, boolean primary) {
+        return super.columns(runtime, random, greedy, query, primary);
     }
 
     /**
@@ -2558,7 +2533,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return sqls
      */
     @Override
-    public List<Run> buildQueryColumnsRun(DataRuntime runtime, Table table, boolean metadata, ConfigStore configs) throws Exception {
+    public List<Run> buildQueryColumnsRun(DataRuntime runtime,  boolean metadata, Column query, ConfigStore configs) throws Exception {
         List<Run> runs = new ArrayList<>();
         Catalog catalog = null;
         Schema schema = null;
@@ -2601,7 +2576,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return sqls
      */
     @Override
-    public List<Run> buildQueryColumnsRun(DataRuntime runtime, Catalog catalog, Schema schema, Collection<? extends Table> tables, boolean metadata, ConfigStore configs) throws Exception {
+    public List<Run> buildQueryColumnsRun(DataRuntime runtime, boolean metadata, Collection<? extends Table> tables, Column query, ConfigStore configs) throws Exception {
         List<Run> runs = new ArrayList<>();
         Table table = null;
         if(!tables.isEmpty()) {
@@ -2643,12 +2618,12 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> columns, DataSet set) throws Exception {
+    public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Table table, Column query, DataSet set) throws Exception {
         set.removeColumn("CHARACTER_SET_NAME");
         return super.columns(runtime, index, create, table, columns, set);
     }
     @Override
-    public <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, Table table, List<T> columns, DataSet set) throws Exception {
+    public <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, List<T> previous, Column query, DataSet set) throws Exception {
         return super.columns(runtime, index, create, table, columns, set);
     }
 
@@ -2811,8 +2786,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return PrimaryKey
      */
     @Override
-    public PrimaryKey primary(DataRuntime runtime, String random, boolean greedy, Table table) {
-        return super.primary(runtime, random, greedy, table);
+    public PrimaryKey primary(DataRuntime runtime, String random, boolean greedy, PrimaryKey query) {
+        return super.primary(runtime, random, greedy, query);
     }
 
     /**
@@ -2823,7 +2798,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return sqls
      */
     @Override
-    public List<Run> buildQueryPrimaryRun(DataRuntime runtime, Table table) throws Exception {
+    public List<Run> buildQueryPrimaryRun(DataRuntime runtime, PrimaryKey query) throws Exception {
+        Table table = query.getTable();
         List<Run> runs = new ArrayList<>();
         Run run = new SimpleRun(runtime);
         runs.add(run);
@@ -2848,8 +2824,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends PrimaryKey> T init(DataRuntime runtime, int index, T primary, Table table, DataSet set) throws Exception {
-        return super.init(runtime, index, primary, table, set);
+    public <T extends PrimaryKey> T init(DataRuntime runtime, int index, T primary, PrimaryKey query, DataSet set) throws Exception {
+        return super.init(runtime, index, primary, query, set);
     }
 
     /**
@@ -2862,8 +2838,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends PrimaryKey> T detail(DataRuntime runtime, int index, T primary, Table table, DataSet set) throws Exception {
-        return super.detail(runtime, index, primary, table, set);
+    public <T extends PrimaryKey> T detail(DataRuntime runtime, int index, T primary, PrimaryKey query, DataSet set) throws Exception {
+        return super.detail(runtime, index, primary, query, set);
     }
 
     /**
@@ -2886,8 +2862,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
     }
 
     @Override
-    public PrimaryKey primary(DataRuntime runtime, Table table) throws Exception {
-        return super.primary(runtime, table);
+    public PrimaryKey primary(DataRuntime runtime, PrimaryKey query) throws Exception {
+        return super.primary(runtime, query);
     }
 
     /* *****************************************************************************************************************
@@ -2911,8 +2887,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return PrimaryKey
      */
     @Override
-    public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, String random, boolean greedy, Table table) {
-        return super.foreigns(runtime, random, greedy, table);
+    public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, String random, boolean greedy, ForeignKey query) {
+        return super.foreigns(runtime, random, greedy, query);
     }
     /**
      * foreign[命令合成]<br/>
@@ -2922,7 +2898,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return sqls
      */
     @Override
-    public List<Run> buildQueryForeignsRun(DataRuntime runtime, Table table) throws Exception {
+    public List<Run> buildQueryForeignsRun(DataRuntime runtime, ForeignKey query) throws Exception {
+        Table table = query.getTable();
         List<Run> runs = new ArrayList<>();
         Run run = new SimpleRun(runtime);
         runs.add(run);
@@ -2951,19 +2928,20 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, int index, Table table, LinkedHashMap<String, T> foreigns, DataSet set) throws Exception {
-        if(null == foreigns) {
-            foreigns = new LinkedHashMap<>();
+    public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, int index, LinkedHashMap<String, T> previous, ForeignKey query, DataSet set) throws Exception {
+        Table table = query.getTable();
+        if(null == previous) {
+            previous = new LinkedHashMap<>();
         }
         for(DataRow row:set) {
             String name = row.getString("CONSTRAINT_NAME");
-            T foreign = foreigns.get(name.toUpperCase());
+            T foreign = previous.get(name.toUpperCase());
             if(null == foreign) {
                 foreign = (T)new ForeignKey();
                 foreign.setName(name);
                 foreign.setTable(row.getString("TABLE_NAME"));
                 foreign.setReference(row.getString("REFERENCED_TABLE_NAME"));
-                foreigns.put(name.toUpperCase(), foreign);
+                previous.put(name.toUpperCase(), foreign);
             }
             Table refTable = new Table(row.getString("REFERENCED_CATALOG_NAME"), row.getString("REFERENCED_SCHEMA_NAME"), row.getString("REFERENCED_TABLE_NAME"));
             Column reference = new Column(row.getString("REFERENCED_COLUMN_NAME"));
@@ -2971,7 +2949,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
             foreign.addColumn(new Column(row.getString("COLUMN_NAME")).setReference(reference).setPosition(row.getInt("ORDINAL_POSITION", 0)));
 
         }
-        return foreigns;
+        return previous;
     }
 
     /* *****************************************************************************************************************
@@ -3000,8 +2978,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> Index
      */
     @Override
-    public <T extends Index> List<T> indexes(DataRuntime runtime, String random, boolean greedy, Table table, String pattern) {
-        return super.indexes(runtime, random, greedy, table, pattern);
+    public <T extends Index> List<T> indexes(DataRuntime runtime, String random, boolean greedy, Index query) {
+        return super.indexes(runtime, random, greedy, query);
     }
     /**
      *
@@ -3014,8 +2992,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> Index
      */
     @Override
-    public <T extends Index> LinkedHashMap<String, T> indexes(DataRuntime runtime, String random, Table table, String pattern) {
-        return super.indexes(runtime, random, table, pattern);
+    public <T extends Index> LinkedHashMap<String, T> indexes(DataRuntime runtime, String random, Index query) {
+        return super.indexes(runtime, random, query);
     }
     /**
      * index[命令合成]<br/>
@@ -3026,7 +3004,9 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return sqls
      */
     @Override
-    public List<Run> buildQueryIndexesRun(DataRuntime runtime, Table table, String name) {
+    public List<Run> buildQueryIndexesRun(DataRuntime runtime, Index query) {
+        Table table = query.getTable();
+        String name = query.getName();
         List<Run> runs = new ArrayList<>();
         Run run = buildQueryIndexBody(runtime);
         runs.add(run);
@@ -3103,9 +3083,9 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends Index> LinkedHashMap<String, T> indexes(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> indexes, DataSet set) throws Exception {
-        return super.indexes(runtime, index, create, table, indexes, set);
-    }
+    public <T extends Index> LinkedHashMap<String, T> indexes(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Index query, DataSet set) throws Exception {
+		return super.indexes(runtime, index, create, previous, query, set);
+	}
     /**
      * index[结果集封装]<br/>
      *  根据查询结果集构造Index
@@ -3119,7 +3099,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends Index> List<T> indexes(DataRuntime runtime, int index, boolean create, Table table, List<T> indexes, DataSet set) throws Exception {
+    public <T extends Index> List<T> indexes(DataRuntime runtime, int index, boolean create, List<T> indexes, Index query, DataSet set) throws Exception {
         if(null == indexes) {
             indexes = new ArrayList<>();
         }
@@ -3138,9 +3118,9 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends Index> List<T> indexes(DataRuntime runtime, boolean create, List<T> indexes, Table table, boolean unique, boolean approximate) throws Exception {
-        return super.indexes(runtime, create, indexes, table, unique, approximate);
-    }
+    public <T extends Index> List<T> indexes(DataRuntime runtime, boolean create, List<T> previous, Index query) throws Exception {
+		return super.indexes(runtime, create, previous, query);
+	}
     /**
      * index[结果集封装]<br/>
      * 根据驱动内置接口
@@ -3153,9 +3133,9 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends Index> LinkedHashMap<String, T> indexes(DataRuntime runtime, boolean create, LinkedHashMap<String, T> indexes, Table table, boolean unique, boolean approximate) throws Exception {
-        return super.indexes(runtime, create, indexes, table, unique, approximate);
-    }
+    public <T extends Index> LinkedHashMap<String, T> indexes(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Index query) throws Exception {
+		return super.indexes(runtime, create, previous, query);
+	}
 
     /**
      * index[结构集封装]<br/>
@@ -3168,9 +3148,9 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends Index> T init(DataRuntime runtime, int index, T meta, Table table, DataRow row) throws Exception {
-        return super.init(runtime, index, meta, table, row);
-    }
+    public <T extends Index> T init(DataRuntime runtime, int index, T meta, Index query, DataRow row) throws Exception {
+		return super.init(runtime, index, meta, query, row);
+	}
 
     /**
      * index[结构集封装]<br/>
@@ -3183,9 +3163,9 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends Index> T detail(DataRuntime runtime, int index, T meta, Table table, DataRow row) throws Exception {
-        return super.detail(runtime, index, meta, table, row);
-    }
+    public <T extends Index> T detail(DataRuntime runtime, int index, T meta, Index query, DataRow row) throws Exception {
+		return super.detail(runtime, index, meta, query, row);
+	}
     /* *****************************************************************************************************************
      * 													constraint
      * -----------------------------------------------------------------------------------------------------------------
@@ -3210,9 +3190,9 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> Index
      */
     @Override
-    public <T extends Constraint> List<T> constraints(DataRuntime runtime, String random, boolean greedy, Table table, String pattern) {
-        return super.constraints(runtime, random, greedy, table, pattern);
-    }
+    public <T extends Constraint> List<T> constraints(DataRuntime runtime, String random, boolean greedy, Constraint query) {
+		return super.constraints(runtime, random, greedy, query);
+	}
     /**
      *
      * constraint[调用入口]<br/>
@@ -3274,9 +3254,9 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends Constraint> List<T> constraints(DataRuntime runtime, int index, boolean create, Table table, List<T> constraints, DataSet set) throws Exception {
-        return super.constraints(runtime, index, create, table, constraints, set);
-    }
+    public <T extends Constraint> List<T> constraints(DataRuntime runtime, int index, boolean create, List<T> previous, Constraint query, DataSet set) throws Exception {
+		return super.constraints(runtime, index, create, previous, query, set);
+	}
     /**
      * constraint[结果集封装]<br/>
      * 根据查询结果集构造Constraint
@@ -3350,9 +3330,9 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return  LinkedHashMap
      * @param <T> Index
      */
-    public <T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, String random, boolean greedy, Table table, List<Trigger.EVENT> events) {
-        return super.triggers(runtime, random, greedy, table, events);
-    }
+    public <T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, String random, boolean greedy, Trigger query) {
+		return super.triggers(runtime, random, greedy, query);
+	}
     /**
      * trigger[命令合成]<br/>
      * 查询表上的 Trigger
@@ -3361,7 +3341,9 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @param events 事件 INSERT|UPDATE|DELETE
      * @return sqls
      */
-    public List<Run> buildQueryTriggersRun(DataRuntime runtime, Table table, List<Trigger.EVENT> events) {
+    public List<Run> buildQueryTriggersRun(DataRuntime runtime, Trigger query) {
+        Table table = query.getTable();
+        List<Trigger.EVENT> events = query.getEvents();
         List<Run> runs = new ArrayList<>();
         Run run = new SimpleRun(runtime);
         runs.add(run);
@@ -3402,13 +3384,14 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return LinkedHashMap
      * @throws Exception 异常
      */
-    public <T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> triggers, DataSet set) throws Exception {
-        if(null == triggers) {
-            triggers = new LinkedHashMap<>();
+    public <T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Trigger query, DataSet set) throws Exception {
+        Table table = query.getTable();
+        if(null == previous) {
+            previous = new LinkedHashMap<>();
         }
         for(DataRow row:set) {
             String name = row.getString("TRIGGER_NAME");
-            T trigger = triggers.get(name.toUpperCase());
+            T trigger = previous.get(name.toUpperCase());
             if(null == trigger) {
                 trigger = (T)new Trigger();
             }
@@ -3432,10 +3415,10 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
             }
             trigger.setDefinition(row.getString("TRIGGER_BODY"));
 
-            triggers.put(name.toUpperCase(), trigger);
+            previous.put(name.toUpperCase(), trigger);
 
         }
-        return triggers;
+        return previous;
     }
 
     /* *****************************************************************************************************************
@@ -3471,8 +3454,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> Index
      */
     @Override
-    public <T extends Procedure> List<T> procedures(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern) {
-        return super.procedures(runtime, random, greedy, catalog, schema, pattern);
+    public <T extends Procedure> List<T> procedures(DataRuntime runtime, String random, boolean greedy, Procedure query) {
+        return super.procedures(runtime, random, greedy, query);
     }
     /**
      *
@@ -3486,9 +3469,9 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> Index
      */
     @Override
-    public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern) {
-        return super.procedures(runtime, random, catalog, schema, pattern);
-    }
+    public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, String random, Procedure query) {
+		return super.procedures(runtime, random, query);
+	}
     /**
      * procedure[命令合成]<br/>
      * 查询表上的 Trigger
@@ -3499,9 +3482,9 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return sqls
      */
     @Override
-    public List<Run> buildQueryProceduresRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) {
-        return super.buildQueryProceduresRun(runtime, catalog, schema, pattern);
-    }
+    public List<Run> buildQueryProceduresRun(DataRuntime runtime, Procedure query) {
+		return super.buildQueryProceduresRun(runtime, query);
+	}
     /**
      * procedure[结果集封装]<br/>
      * 根据查询结果集构造 Trigger
@@ -3542,8 +3525,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, boolean create, LinkedHashMap<String, T> procedures) throws Exception {
-        return super.procedures(runtime, create, procedures);
+    public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous) throws Exception {
+        return super.procedures(runtime, create, previous);
     }
     /**
      *
@@ -3617,9 +3600,9 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> Index
      */
     @Override
-    public <T extends Function> List<T> functions(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern) {
-        return super.functions(runtime, random, greedy, catalog, schema, pattern);
-    }
+    public <T extends Function> List<T> functions(DataRuntime runtime, String random, boolean greedy, Function query) {
+		return super.functions(runtime, random, greedy, query);
+	}
     /**
      *
      * function[调用入口]<br/>
@@ -3632,9 +3615,9 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> Index
      */
     @Override
-    public <T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern) {
-        return super.functions(runtime, random, catalog, schema, pattern);
-    }
+    public <T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, String random, Function query) {
+		return super.functions(runtime, random, query);
+	}
     /**
      * function[命令合成]<br/>
      * 查询表上的 Trigger
@@ -3645,8 +3628,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return sqls
      */
     @Override
-    public List<Run> buildQueryFunctionsRun(DataRuntime runtime, Catalog catalog, Schema schema, String name) {
-        return super.buildQueryFunctionsRun(runtime, catalog, schema, name);
+    public List<Run> buildQueryFunctionsRun(DataRuntime runtime, Function query) {
+        return super.buildQueryFunctionsRun(runtime, query);
     }
 
     /**
@@ -3661,8 +3644,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends Function> List<T> functions(DataRuntime runtime, int index, boolean create, List<T> functions, Catalog catalog, Schema schema, DataSet set) throws Exception {
-        return super.functions(runtime, index, create, functions, catalog, schema, set);
+    public <T extends Function> List<T> functions(DataRuntime runtime, int index, boolean create, List<T> previous, Function query, DataSet set) throws Exception {
+        return super.functions(runtime, index, create, previous, query, set);
     }
     /**
      * function[结果集封装]<br/>
@@ -3676,8 +3659,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> functions, Catalog catalog, Schema schema, DataSet set) throws Exception {
-        return super.functions(runtime, index, create, functions, catalog, schema, set);
+    public <T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Function query, DataSet set) throws Exception {
+        return super.functions(runtime, index, create, previous, query, set);
     }
 
     /**
@@ -3766,8 +3749,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> Index
      */
     @Override
-    public <T extends Sequence> List<T> sequences(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern) {
-        return super.sequences(runtime, random, greedy, catalog, schema, pattern);
+    public <T extends Sequence> List<T> sequences(DataRuntime runtime, String random, boolean greedy, Sequence query) {
+        return super.sequences(runtime, random, greedy, query);
     }
     /**
      *
@@ -3781,8 +3764,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> Index
      */
     @Override
-    public <T extends Sequence> LinkedHashMap<String, T> sequences(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern) {
-        return super.sequences(runtime, random, catalog, schema, pattern);
+    public <T extends Sequence> LinkedHashMap<String, T> sequences(DataRuntime runtime, String random, Sequence query) {
+        return super.sequences(runtime, random, query);
     }
     /**
      * sequence[命令合成]<br/>
@@ -3794,7 +3777,9 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return sqls
      */
     @Override
-    public List<Run> buildQuerySequencesRun(DataRuntime runtime, Catalog catalog, Schema schema, String name) {
+    public List<Run> buildQuerySequencesRun(DataRuntime runtime, Sequence query) {
+        Schema schema = query.getSchema();
+        String name = query.getName();
         List<Run> runs = new ArrayList<>();
         Run run = new SimpleRun(runtime);
         runs.add(run);
@@ -4091,17 +4076,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         return super.rename(runtime, origin, name);
     }
 
-    /**
-     * table[命令合成-子流程]<br/>
-     * 部分数据库在创建主表时用主表关键字(默认)，部分数据库普通表主表子表都用table，部分数据库用collection、timeseries等
-     * @param meta 表
-     * @return String
-     */
-    @Override
-    public String keyword(Metadata meta)
-{
-        return meta.getKeyword();
-    }
+    
 
     /**
      * table[命令合成]<br/>

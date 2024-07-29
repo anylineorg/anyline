@@ -16,12 +16,20 @@
 
 package org.anyline.entity.authorize;
 
+import org.anyline.metadata.Catalog;
 import org.anyline.metadata.Metadata;
+import org.anyline.metadata.Schema;
+import org.apache.oro.util.Cache;
 
 public class Role extends Metadata<Role> {
 
     public Role(){}
     public Role(String name){
+        this.name = name;
+    }
+    public Role(Catalog catalog, Schema schema, String name){
+        this.catalog = catalog;
+        this.schema = schema;
         this.name = name;
     }
 }

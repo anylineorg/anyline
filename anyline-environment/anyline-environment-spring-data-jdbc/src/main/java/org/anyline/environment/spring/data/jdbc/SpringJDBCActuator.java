@@ -987,7 +987,7 @@ public class SpringJDBCActuator implements DriverActuator {
      * @return views
      * @throws Exception 异常
      */
-    public <T extends View> LinkedHashMap<String, T> views(DriverAdapter adapter, DataRuntime runtime, boolean create,  LinkedHashMap<String, T> views, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
+    public <T extends View> LinkedHashMap<String, T> views(DriverAdapter adapter, DataRuntime runtime, boolean create,  LinkedHashMap<String, T> views, View query, int types) throws Exception {
         DataSource ds = null;
         Connection con = null;
         try {
@@ -1031,7 +1031,7 @@ public class SpringJDBCActuator implements DriverActuator {
      * @return views
      * @throws Exception 异常
      */
-    public <T extends Table> List<T> views(DriverAdapter adapter, DataRuntime runtime, boolean create, List<T> views, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
+    public <T extends Table> List<T> views(DriverAdapter adapter, DataRuntime runtime, boolean create, List<T> views, View query, int types) throws Exception {
 
         return views;
     }

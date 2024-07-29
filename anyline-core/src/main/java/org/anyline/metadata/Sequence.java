@@ -35,6 +35,11 @@ public class Sequence extends Metadata<Sequence> implements Serializable {
 
     public Sequence() {
     }
+    public Sequence(Catalog catalog, Schema schema, String name) {
+        this.catalog = catalog;
+        this.schema = schema;
+        setName(name);
+    }
     public Sequence(String name) {
         setName(name);
     }

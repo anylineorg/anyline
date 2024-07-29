@@ -26,16 +26,16 @@ import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.prepare.auto.AutoPrepare;
-import org.anyline.data.prepare.auto.TablePrepare;
 import org.anyline.data.prepare.auto.init.DefaultTextPrepare;
 import org.anyline.data.run.*;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
+import org.anyline.entity.authorize.User;
 import org.anyline.entity.generator.PrimaryGenerator;
 import org.anyline.exception.CommandException;
-import org.anyline.exception.NotSupportException;
 import org.anyline.exception.CommandQueryException;
 import org.anyline.exception.CommandUpdateException;
+import org.anyline.exception.NotSupportException;
 import org.anyline.metadata.*;
 import org.anyline.metadata.adapter.*;
 import org.anyline.metadata.type.DatabaseType;
@@ -49,7 +49,6 @@ import org.anyline.util.regular.RegularUtil;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.*;
 
 /**
@@ -2104,8 +2103,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @return LinkedHashMap
 	 */
 	@Override
-	public List<Database> databases(DataRuntime runtime, String random, boolean greedy, String name) {
-		return super.databases(runtime, random, greedy, name);
+	public List<Database> databases(DataRuntime runtime, String random, boolean greedy, Database query) {
+		return super.databases(runtime, random, greedy, query);
 	}
 
 	/**
@@ -2116,8 +2115,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @return LinkedHashMap
 	 */
 	@Override
-	public LinkedHashMap<String, Database> databases(DataRuntime runtime, String random, String name) {
-		return super.databases(runtime, random, name);
+	public LinkedHashMap<String, Database> databases(DataRuntime runtime, String random, Database query) {
+		return super.databases(runtime, random, query);
 	}
 
 	/**
@@ -2154,8 +2153,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @throws Exception 异常
 	 */
 	@Override
-	public List<Run> buildQueryDatabasesRun(DataRuntime runtime, boolean greedy, String name) throws Exception {
-		return super.buildQueryDatabasesRun(runtime, greedy, name);
+	public List<Run> buildQueryDatabasesRun(DataRuntime runtime, boolean greedy, Database query) throws Exception {
+		return super.buildQueryDatabasesRun(runtime, greedy, query);
 	}
 
 	/**
@@ -2169,12 +2168,12 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @throws Exception
 	 */
 	@Override
-	public LinkedHashMap<String, Database> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Database> databases, Catalog catalog, Schema schema, DataSet set) throws Exception {
-		return super.databases(runtime, index, create, databases, catalog, schema, set);
+	public LinkedHashMap<String, Database> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Database> previous, Database query, DataSet set) throws Exception {
+		return super.databases(runtime, index, create, previous, query, set);
 	}
 	@Override
-	public List<Database> databases(DataRuntime runtime, int index, boolean create, List<Database> databases, Catalog catalog, Schema schema, DataSet set) throws Exception {
-		return super.databases(runtime, index, create, databases, catalog, schema, set);
+	public List<Database> databases(DataRuntime runtime, int index, boolean create, List<Database> previous, Database query, DataSet set) throws Exception {
+		return super.databases(runtime, index, create, previous, query, set);
 	}
 
 	
@@ -2289,8 +2288,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @return LinkedHashMap
 	 */
 	@Override
-	public LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, String random, String name) {
-		return super.catalogs(runtime, random, name);
+	public LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, String random, Catalog query) {
+		return super.catalogs(runtime, random, query);
 	}
 
 	/**
@@ -2301,8 +2300,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @return LinkedHashMap
 	 */
 	@Override
-	public List<Catalog> catalogs(DataRuntime runtime, String random, boolean greedy, String name) {
-		return super.catalogs(runtime, random, greedy, name);
+	public List<Catalog> catalogs(DataRuntime runtime, String random, boolean greedy, Catalog query) {
+		return super.catalogs(runtime, random, greedy, query);
 	}
 
 	/**
@@ -2315,8 +2314,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @throws Exception 异常
 	 */
 	@Override
-	public List<Run> buildQueryCatalogsRun(DataRuntime runtime, boolean greedy, String name) throws Exception {
-		return super.buildQueryCatalogsRun(runtime, greedy, name);
+	public List<Run> buildQueryCatalogsRun(DataRuntime runtime, boolean greedy, Catalog query) throws Exception {
+		return super.buildQueryCatalogsRun(runtime, greedy, query);
 	}
 
 	/**
@@ -2331,24 +2330,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @throws Exception 异常
 	 */
 	@Override
-	public LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Catalog> catalogs, Catalog catalog, Schema schema, DataSet set) throws Exception {
-		return super.catalogs(runtime, index, create, catalogs, catalog, schema, set);
-	}
-
-	/**
-	 * catalog[结果集封装]<br/>
-	 * 根据查询结果集构造 Database
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
-	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param previous 上一步查询结果
-	 * @param set 查询结果集
-	 * @return databases
-	 * @throws Exception 异常
-	 */
-	@Override
-	public List<Catalog> catalogs(DataRuntime runtime, int index, boolean create, List<Catalog> catalogs, Catalog catalog, Schema schema, DataSet set) throws Exception {
-		return super.catalogs(runtime, index, create, catalogs, catalog, schema, set);
+	public List<Catalog> catalogs(DataRuntime runtime, int index, boolean create, List<Catalog> previous, Catalog query, DataSet set) throws Exception {
+		return super.catalogs(runtime, index, create, previous, query, set);
 	}
 
 	/**
@@ -2361,8 +2344,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @throws Exception 异常
 	 */
 	@Override
-	public LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, boolean create, LinkedHashMap<String, Catalog> catalogs) throws Exception {
-		return super.catalogs(runtime, create, catalogs);
+	public LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, boolean create, LinkedHashMap<String, Catalog> previous) throws Exception {
+		return super.catalogs(runtime, create, previous);
 	}
 
 	/**
@@ -2375,8 +2358,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @throws Exception 异常
 	 */
 	@Override
-	public List<Catalog> catalogs(DataRuntime runtime, boolean create, List<Catalog> catalogs) throws Exception {
-		return super.catalogs(runtime, create, catalogs);
+	public List<Catalog> catalogs(DataRuntime runtime, boolean create, List<Catalog> previous) throws Exception {
+		return super.catalogs(runtime, create, previous);
 	}
 
 	/**
@@ -2385,14 +2368,14 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param catalog 上一步查询结果
+	 * @param previou 上一步查询结果
 	 * @param set 查询结果集
 	 * @return Catalog
 	 * @throws Exception 异常
 	 */
 	@Override
-	public Catalog catalog(DataRuntime runtime, int index, boolean create, Catalog catalog, DataSet set) throws Exception {
-		return super.catalog(runtime, index, create, catalog, set);
+	public Catalog catalog(DataRuntime runtime, int index, boolean create, Catalog previou, DataSet set) throws Exception {
+		return super.catalog(runtime, index, create, previou, set);
 	}
 
 	/**
@@ -2400,7 +2383,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * 当前catalog 根据驱动内置接口补充
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param catalog 上一步查询结果
+	 * @param previou 上一步查询结果
 	 * @return Catalog
 	 * @throws Exception 异常
 	 */
@@ -2437,8 +2420,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @return LinkedHashMap
 	 */
 	@Override
-	public LinkedHashMap<String, Schema> schemas(DataRuntime runtime, String random, Catalog catalog, String name) {
-		return super.schemas(runtime, random, catalog, name);
+	public LinkedHashMap<String, Schema> schemas(DataRuntime runtime, String random, Schema query) {
+		return super.schemas(runtime, random, query);
 	}
 
 	/**
@@ -2450,8 +2433,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @return LinkedHashMap
 	 */
 	@Override
-	public List<Schema> schemas(DataRuntime runtime, String random, boolean greedy, Catalog catalog, String name) {
-		return super.schemas(runtime, random, greedy, catalog, name);
+	public List<Schema> schemas(DataRuntime runtime, String random, boolean greedy, Schema query) {
+		return super.schemas(runtime, random, greedy, query);
 	}
 
 	/**
@@ -2464,8 +2447,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @throws Exception 异常
 	 */
 	@Override
-	public List<Run> buildQuerySchemasRun(DataRuntime runtime, boolean greedy, Catalog catalog, String name) throws Exception {
-		return super.buildQuerySchemasRun(runtime, greedy, catalog, name);
+	public List<Run> buildQuerySchemasRun(DataRuntime runtime, boolean greedy, Schema query) throws Exception {
+		return super.buildQuerySchemasRun(runtime, greedy, query);
 	}
 
 	/**
@@ -2480,12 +2463,12 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @throws Exception 异常
 	 */
 	@Override
-	public LinkedHashMap<String, Schema> schemas(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Schema> schemas, Catalog catalog, Schema schema, DataSet set) throws Exception {
-		return super.schemas(runtime, index, create, schemas, catalog, schema, set);
+	public LinkedHashMap<String, Schema> schemas(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Schema> previous, Schema query, DataSet set) throws Exception {
+		return super.schemas(runtime, index, create, previous, query, set);
 	}
 	@Override
-	public List<Schema> schemas(DataRuntime runtime, int index, boolean create, List<Schema> schemas, Catalog catalog, Schema schema, DataSet set) throws Exception {
-		return super.schemas(runtime, index, create, schemas, catalog, schema, set);
+	public List<Schema> schemas(DataRuntime runtime, int index, boolean create, List<Schema> previous, Schema query, DataSet set) throws Exception {
+		return super.schemas(runtime, index, create, previous, query, set);
 	}
 
 	/**
@@ -2494,14 +2477,14 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQuerySchemaRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param schema 上一步查询结果
+	 * @param previou 上一步查询结果
 	 * @param set 查询结果集
 	 * @return schema
 	 * @throws Exception 异常
 	 */
 	@Override
-	public Schema schema(DataRuntime runtime, int index, boolean create, Schema schema, DataSet set) throws Exception {
-		return super.schema(runtime, index, create, schema, set);
+	public Schema schema(DataRuntime runtime, int index, boolean create, Schema previou, DataSet set) throws Exception {
+		return super.schema(runtime, index, create, previou, set);
 	}
 
 	/**
@@ -2509,7 +2492,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * 当前schema 根据驱动内置接口补充
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param schema 上一步查询结果
+	 * @param previou 上一步查询结果
 	 * @return schema
 	 * @throws Exception 异常
 	 */
@@ -2591,12 +2574,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @param <T> Table
 	 */
 	@Override
-	public <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
-		return super.tables(runtime, random, greedy, catalog, schema, pattern, types, struct, configs);
-	}
-	@Override
-	public <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct) {
-		return super.tables(runtime, random, greedy, catalog, schema, pattern, types, struct);
+	public <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Table query, int types, int struct, ConfigStore configs) {
+		return super.tables(runtime, random, greedy, query, types, struct, configs);
 	}
 
 	/**
@@ -2608,17 +2587,11 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @param schema schema
 	 */
 	@Override
-	protected void tableMap(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, ConfigStore configs) {
-		super.tableMap(runtime, random, greedy, catalog, schema, configs);
+	protected void tableMap(DataRuntime runtime, String random, boolean greedy, Table query, ConfigStore configs) {
+		super.tableMap(runtime, random, greedy, query, configs);
 	}
-
-	@Override
-	public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
-		return super.tables(runtime, random, catalog, schema, pattern, types, struct, configs);
-	}
-	@Override
-	public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct) {
-		return super.tables(runtime, random, catalog, schema, pattern, types, struct);
+public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Table query, int types, int struct, ConfigStore configs) {
+		return super.tables(runtime, random, query, types, struct, configs);
 	}
 
 	/**
@@ -2634,8 +2607,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @throws Exception Exception
 	 */
 	@Override
-	public List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs) throws Exception {
-		return super.buildQueryTablesRun(runtime, greedy, catalog, schema, pattern, types, configs);
+	public List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Table query, int types, ConfigStore configs) throws Exception {
+		return super.buildQueryTablesRun(runtime, greedy, query, types, configs);
 	}
 
 	/**
@@ -2650,8 +2623,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @throws Exception Exception
 	 */
 	@Override
-	public List<Run> buildQueryTablesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
-		return super.buildQueryTablesCommentRun(runtime, catalog, schema, pattern, types);
+	public List<Run> buildQueryTablesCommentRun(DataRuntime runtime, Table query, int types) throws Exception {
+		return super.buildQueryTablesCommentRun(runtime, query, types);
 	}
 
 	/**
@@ -2668,7 +2641,9 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set) throws Exception {
+	public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, Table query, DataSet set) throws Exception {
+		Catalog catalog = query.getCatalog();
+		Schema schema = query.getSchema();
 		if(null == tables) {
 			tables = new LinkedHashMap<>();
 		}
@@ -2695,8 +2670,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Table> List<T> tables(DataRuntime runtime, int index, boolean create, List<T> tables, Catalog catalog, Schema schema, DataSet set) throws Exception {
-		return super.tables(runtime, index, create, tables, catalog, schema, set);
+	public <T extends Table> List<T> tables(DataRuntime runtime, int index, boolean create, List<T> tables, Table query, DataSet set) throws Exception {
+		return super.tables(runtime, index, create, tables, query, set);
 	}
 
 	/**
@@ -2713,8 +2688,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
-		return actuator.tables(this, runtime, create, tables, catalog, schema, pattern, types);
+	public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Table query, int types) throws Exception {
+		return actuator.tables(this, runtime, create, tables, query, types);
 	}
 
 	/**
@@ -2731,8 +2706,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Table> List<T> tables(DataRuntime runtime, boolean create, List<T> tables, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
-		return actuator.tables(this, runtime, create, tables, catalog, schema, pattern, types);
+	public <T extends Table> List<T> tables(DataRuntime runtime, boolean create, List<T> tables, Table query, int types) throws Exception {
+		return actuator.tables(this, runtime, create, tables, query, types);
 	}
 
 	/**
@@ -2749,21 +2724,21 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Table> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set) throws Exception {
-		if(null == tables) {
-			tables = new LinkedHashMap<>();
+	public <T extends Table> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Table query, DataSet set) throws Exception {
+		if(null == previous) {
+			previous = new LinkedHashMap<>();
 		}
 		for(DataRow row:set) {
 			String name = row.getString("TABLE_NAME");
 			String comment = row.getString("TABLE_COMMENT");
 			if(null != name && null != comment) {
-				Table table = tables.get(name.toUpperCase());
+				Table table = previous.get(name.toUpperCase());
 				if(null != table) {
 					table.setComment(comment);
 				}
 			}
 		}
-		return tables;
+		return previous;
 	}
 
 	/**
@@ -2780,9 +2755,11 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Table> List<T> comments(DataRuntime runtime, int index, boolean create, List<T> tables, Catalog catalog, Schema schema, DataSet set) throws Exception {
-		if(null == tables) {
-			tables = new ArrayList<>();
+	public <T extends Table> List<T> comments(DataRuntime runtime, int index, boolean create, List<T> previous, Table query, DataSet set) throws Exception {
+		Catalog catalog = query.getCatalog();
+		Schema schema = query.getSchema();
+		if(null == previous) {
+			previous = new ArrayList<>();
 		}
 		for(DataRow row:set) {
 			String name = row.getString("TABLE_NAME");
@@ -2795,7 +2772,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			}
 
 			boolean contains = true;
-			T table = search(tables, catalog, schema, name);
+			T table = search(previous, catalog, schema, name);
 			if (null == table) {
 				if (create) {
 					table = (T) new Table(catalog, schema, name);
@@ -2806,10 +2783,10 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			}
 			table.setComment(comment);
 			if (!contains) {
-				tables.add(table);
+				previous.add(table);
 			}
 		}
-		return tables;
+		return previous;
 	}
 
 	/**
@@ -2865,7 +2842,9 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @return Table
 	 * @param <T> Table
 	 */
-	public <T extends Table> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row) {
+	public <T extends Table> T init(DataRuntime runtime, int index, T meta, Table query, DataRow row) {
+		Catalog catalog = query.getCatalog();
+		Schema schema = query.getSchema();
 		if(null == meta) {
 			meta = (T)new Table();
 		}
@@ -2909,7 +2888,9 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @return Table
 	 */
 	@Override
-	public <T extends Table> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row) {
+	public <T extends Table> T detail(DataRuntime runtime, int index, T meta, Table query, DataRow row) {
+		Catalog catalog = query.getCatalog();
+		Schema schema = query.getSchema();
 		TableMetadataAdapter tableMetadataAdapter = tableMetadataAdapter(runtime);
 		meta.setObjectId(row.getLong("OBJECT_ID", (Long)null));
 		meta.setEngine(row.getString("ENGINE"));
@@ -2985,13 +2966,10 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @param <T> View
 	 */
 	@Override
-	public <T extends View> List<T> views(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
-		return super.views(runtime, random, greedy, catalog, schema, pattern, types, struct, configs);
+	public <T extends View> List<T> views(DataRuntime runtime, String random, boolean greedy, View query, int types, int struct, ConfigStore configs) {
+		return super.views(runtime, random, greedy, query, types, struct, configs);
 	}
-	@Override
-	public <T extends View> List<T> views(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct) {
-		return super.views(runtime, random, greedy, catalog, schema, pattern, types, struct);
-	}
+	
 
 	/**
 	 * view[结果集封装-子流程]<br/>
@@ -3007,12 +2985,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	}
 
 	@Override
-	public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
-		return super.views(runtime, random, catalog, schema, pattern, types, struct, configs);
-	}
-	@Override
-	public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct) {
-		return super.views(runtime, random, catalog, schema, pattern, types, struct);
+	public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, View query, int types, int struct, ConfigStore configs) {
+		return super.views(runtime, random, query, types, struct, configs);
 	}
 
 	/**
@@ -3028,8 +3002,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @throws Exception Exception
 	 */
 	@Override
-	public List<Run> buildQueryViewsRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs) throws Exception {
-		return super.buildQueryViewsRun(runtime, greedy, catalog, schema, pattern, types, configs);
+	public List<Run> buildQueryViewsRun(DataRuntime runtime, boolean greedy, View query, int types, ConfigStore configs) throws Exception {
+		return super.buildQueryViewsRun(runtime, greedy, query, types, configs);
 	}
 
 	/**
@@ -3044,8 +3018,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @throws Exception Exception
 	 */
 	@Override
-	public List<Run> buildQueryViewsCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
-		return super.buildQueryViewsCommentRun(runtime, catalog, schema, pattern, types);
+	public List<Run> buildQueryViewsCommentRun(DataRuntime runtime, View query, int types) throws Exception {
+		return super.buildQueryViewsCommentRun(runtime, query, types);
 	}
 
 	/**
@@ -3062,14 +3036,14 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> views, Catalog catalog, Schema schema, DataSet set) throws Exception {
+	public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> views, View query, DataSet set) throws Exception {
 		if(null == views) {
 			views = new LinkedHashMap<>();
 		}
 		for(DataRow row:set) {
 			T meta = null;
-			meta = init(runtime, index, meta, catalog, schema, row);
-			meta = detail(runtime, index, meta, catalog, schema, row);
+			meta = init(runtime, index, meta, query, row);
+			meta = detail(runtime, index, meta, query, row);
 			views.put(meta.getName().toUpperCase(), meta);
 		}
 		return views;
@@ -3089,17 +3063,17 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends View> List<T> views(DataRuntime runtime, int index, boolean create, List<T> views, Catalog catalog, Schema schema, DataSet set) throws Exception {
+	public <T extends View> List<T> views(DataRuntime runtime, int index, boolean create, List<T> views, View query, DataSet set) throws Exception {
 		if(null == views) {
 			views = new ArrayList<>();
 		}
 		for(DataRow row:set) {
 			T view = null;
-			view = init(runtime, index, view, catalog, schema, row);
+			view = init(runtime, index, view, query, row);
 			if(null == search(views, view.getCatalog(), view.getSchema(), view.getName())) {
 				views.add(view);
 			}
-			detail(runtime, index, view, catalog, schema, row);
+			detail(runtime, index, view, query, row);
 		}
 		return views;
 	}
@@ -3118,8 +3092,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, boolean create, LinkedHashMap<String, T> views, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
-		return actuator.views(this, runtime, create, views, catalog, schema, pattern, types);
+	public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, boolean create, LinkedHashMap<String, T> views, View query, int types) throws Exception {
+		return actuator.views(this, runtime, create, views, query, types);
 	}
 
 	/**
@@ -3136,8 +3110,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends View> List<T> views(DataRuntime runtime, boolean create, List<T> views, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
-		return actuator.views(this, runtime, create, views, catalog, schema, pattern, types);
+	public <T extends View> List<T> views(DataRuntime runtime, boolean create, List<T> views, View query, int types) throws Exception {
+		return actuator.views(this, runtime, create, views, query, types);
 	}
 
 	/**
@@ -3193,7 +3167,9 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @return View
 	 * @param <T> View
 	 */
-	public <T extends View> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row) {
+	public <T extends View> T init(DataRuntime runtime, int index, T meta, View query, DataRow row) {
+		Catalog catalog = query.getCatalog();
+		Schema schema = query.getSchema();
 		if(null == meta) {
 			meta = (T)new View();
 		}
@@ -3238,7 +3214,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @return View
 	 */
 	@Override
-	public <T extends View> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row) {
+	public <T extends View> T detail(DataRuntime runtime, int index, T meta, View query, DataRow row) {
 		meta.setObjectId(row.getLong("OBJECT_ID", (Long)null));
 		meta.setEngine(row.getString("ENGINE"));
 		meta.setComment(row.getString("VIEW_COMMENT","TABLE_COMMENT","COMMENTS","COMMENT"));
@@ -3308,12 +3284,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @param <T> MasterTable
 	 */
 	@Override
-	public <T extends MasterTable> List<T> masters(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
-		return super.masters(runtime, random, greedy, catalog, schema, pattern, types, struct, configs);
-	}
-	@Override
-	public <T extends MasterTable> List<T> masters(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct) {
-		return super.masters(runtime, random, greedy, catalog, schema, pattern, types, struct);
+	public <T extends MasterTable> List<T> masters(DataRuntime runtime, String random, boolean greedy, MasterTable query, int types, int struct, ConfigStore configs) {
+		return super.masters(runtime, random, greedy, query, types, struct, configs);
 	}
 
 	/**
@@ -3325,17 +3297,13 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @param schema schema
 	 */
 	@Override
-	protected void masterMap(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, ConfigStore configs) {
-		super.masterMap(runtime, random, greedy, catalog, schema, configs);
+	protected void masterMap(DataRuntime runtime, String random, boolean greedy, MasterTable query, ConfigStore configs) {
+		super.masterMap(runtime, random, greedy, query, configs);
 	}
 
 	@Override
-	public <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
-		return super.masters(runtime, random, catalog, schema, pattern, types, struct, configs);
-	}
-	@Override
-	public <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct) {
-		return super.masters(runtime, random, catalog, schema, pattern, types, struct);
+	public <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, String random, MasterTable query, int types, int struct, ConfigStore configs) {
+		return super.masters(runtime, random, query, types, struct, configs);
 	}
 
 	/**
@@ -3351,8 +3319,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @throws Exception Exception
 	 */
 	@Override
-	public List<Run> buildQueryMasterTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs) throws Exception {
-		return super.buildQueryMasterTablesRun(runtime, greedy, catalog, schema, pattern, types, configs);
+	public List<Run> buildQueryMasterTablesRun(DataRuntime runtime, boolean greedy, MasterTable query, int types, ConfigStore configs) throws Exception {
+		return super.buildQueryMasterTablesRun(runtime, greedy, query, types, configs);
 	}
 
 	/**
@@ -3367,8 +3335,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @throws Exception Exception
 	 */
 	@Override
-	public List<Run> buildQueryMasterTablesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
-		return super.buildQueryMasterTablesCommentRun(runtime, catalog, schema, pattern, types);
+	public List<Run> buildQueryMasterTablesCommentRun(DataRuntime runtime, MasterTable query, int types) throws Exception {
+		return super.buildQueryMasterTablesCommentRun(runtime, query, types);
 	}
 
 	/**
@@ -3385,14 +3353,14 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> masters, Catalog catalog, Schema schema, DataSet set) throws Exception {
+	public <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> masters, MasterTable query, DataSet set) throws Exception {
 		if(null == masters) {
 			masters = new LinkedHashMap<>();
 		}
 		for(DataRow row:set) {
 			T meta = null;
-			meta = init(runtime, index, meta, catalog, schema, row);
-			meta = detail(runtime, index, meta, catalog, schema, row);
+			meta = init(runtime, index, meta, query, row);
+			meta = detail(runtime, index, meta, query, row);
 			masters.put(meta.getName().toUpperCase(), meta);
 		}
 		return masters;
@@ -3412,19 +3380,21 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends MasterTable> List<T> masters(DataRuntime runtime, int index, boolean create, List<T> masters, Catalog catalog, Schema schema, DataSet set) throws Exception {
-		if(null == masters) {
-			masters = new ArrayList<>();
+	public <T extends MasterTable> List<T> masters(DataRuntime runtime, int index, boolean create, List<T> previous, MasterTable query, DataSet set) throws Exception {
+		Catalog catalog = query.getCatalog();
+		Schema schema = query.getSchema();
+		if(null == previous) {
+			previous = new ArrayList<>();
 		}
 		for(DataRow row:set) {
 			T master = null;
 			master = init(runtime, index, master, catalog, schema, row);
-			if(null == search(masters, master.getCatalog(), master.getSchema(), master.getName())) {
-				masters.add(master);
+			if(null == search(previous, master.getCatalog(), master.getSchema(), master.getName())) {
+				previous.add(master);
 			}
 			detail(runtime, index, master, catalog, schema, row);
 		}
-		return masters;
+		return previous;
 	}
 
 	/**
@@ -3480,7 +3450,9 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @return MasterTable
 	 * @param <T> MasterTable
 	 */
-	public <T extends MasterTable> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row) {
+	public <T extends MasterTable> T init(DataRuntime runtime, int index, T meta, MasterTable query, DataRow row) {
+		Catalog catalog = query.getCatalog();
+		Schema schema = query.getSchema();
 		if(null == meta) {
 			meta = (T)new MasterTable();
 		}
@@ -3517,8 +3489,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * <T extends PartitionTable> LinkedHashMap<String,T> partitions(DataRuntime runtime, String random, boolean greedy, MasterTable master, Map<String, Object> tags, String pattern)
 	 * [命令合成]
 	 * List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types)
-	 * List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Table master, Map<String,Object> tags, String pattern)
-	 * List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Table master, Map<String,Object> tags)
+	 * List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Table master, Map<String, Tag> tags, String pattern)
+	 * List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Table master, Map<String, Tag> tags)
 	 * [结果集封装]<br/>
 	 * <T extends PartitionTable> LinkedHashMap<String, T> partitions(DataRuntime runtime, int total, int index, boolean create, MasterTable master, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set)
 	 * <T extends PartitionTable> LinkedHashMap<String,T> partitions(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, MasterTable master)
@@ -3541,8 +3513,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @param <T> MasterTable
 	 */
 	@Override
-	public <T extends PartitionTable> LinkedHashMap<String,T> partitions(DataRuntime runtime, String random, boolean greedy, MasterTable master, Map<String, Object> tags, String pattern) {
-		return super.partitions(runtime, random, greedy, master, tags, pattern);
+	public <T extends PartitionTable> LinkedHashMap<String,T> partitions(DataRuntime runtime, String random, boolean greedy, PartitionTable query) {
+		return super.partitions(runtime, random, greedy, query);
 	}
 
 	/**
@@ -3556,51 +3528,10 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
-		return super.buildQueryPartitionTablesRun(runtime, catalog, schema, pattern, types);
+	public List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, PartitionTable query, int types) throws Exception {
+		return super.buildQueryPartitionTablesRun(runtime, query, types);
 	}
 
-	/**
-	 * partition table[命令合成]<br/>
-	 * 根据主表查询分区表
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param master 主表
-	 * @param tags 标签名+标签值
-	 * @param name 名称统配符或正则
-	 * @return sql
-	 * @throws Exception 异常
-	 */
-	@Override
-	public List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Table master, Map<String,Object> tags, String name) throws Exception {
-		return super.buildQueryPartitionTablesRun(runtime, master, tags, name);
-	}
-
-	/**
-	 * partition table[命令合成]<br/>
-	 * 根据主表查询分区表
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param master 主表
-	 * @param tags 标签名+标签值
-	 * @return sql
-	 * @throws Exception 异常
-	 */
-	@Override
-	public List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Table master, Map<String,Object> tags) throws Exception {
-		return super.buildQueryPartitionTablesRun(runtime, master, tags);
-	}
-
-	/**
-	 * partition table[命令合成]<br/>
-	 * 根据主表查询分区表
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param master 主表=
-	 * @return sql
-	 * @throws Exception 异常
-	 */
-	@Override
-	public List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Table master) throws Exception {
-		return super.buildQueryPartitionTablesRun(runtime, master);
-	}
 
 	/**
 	 * partition table[结果集封装]<br/>
@@ -3618,8 +3549,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends PartitionTable> LinkedHashMap<String, T> partitions(DataRuntime runtime, int total, int index, boolean create, MasterTable master, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set) throws Exception {
-		return super.partitions(runtime, total, index, create, master, tables, catalog, schema, set);
+	public <T extends PartitionTable> LinkedHashMap<String, T> partitions(DataRuntime runtime, int total, int index, boolean create, LinkedHashMap<String, T> previous, PartitionTable query, DataSet set) throws Exception {
+		return super.partitions(runtime, total, index, create, previous, query, set);
 	}
 
 	/**
@@ -3635,8 +3566,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends PartitionTable> LinkedHashMap<String,T> partitions(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, MasterTable master) throws Exception {
-		return super.partitions(runtime, create, tables, catalog, schema, master);
+	public <T extends PartitionTable> LinkedHashMap<String,T> partitions(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, PartitionTable query) throws Exception {
+		return super.partitions(runtime, create, previous, query);
 	}
 
 	/**
@@ -3686,8 +3617,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * [命令合成]
 	 * List<Run> buildQueryColumnsRun(DataRuntime runtime, Table table, boolean metadata) throws Exception;
 	 * [结果集封装]<br/>
-	 * <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> columns, DataSet set) throws Exception;
-	 * <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, Table table, List<T> columns, DataSet set) throws Exception;
+	 * <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Table table, Column query, DataSet set) throws Exception;
+	 * <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, List<T> previous, Column query, DataSet set) throws Exception;
 	 * <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, LinkedHashMap<String, T> columns, Table table, String pattern) throws Exception;
 	 ******************************************************************************************************************/
 	/**
@@ -3702,26 +3633,11 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @param <T>  Column
 	 */
 	@Override
-	public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Table table, boolean primary, ConfigStore configs) {
-		return super.columns(runtime, random, greedy, table, primary, configs);
+	public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Column query, boolean primary, ConfigStore configs) {
+		return super.columns(runtime, random, greedy, query, primary, configs);
 	}
 
-	/**
-	 * column[调用入口]<br/>
-	 * 查询列
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param random 用来标记同一组命令
-	 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param table 查询全部表时 输入null
-	 * @return List
-	 * @param <T> Column
-	 */
-	@Override
-	public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, Table table) {
-		return super.columns(runtime, random, greedy, catalog, schema, table);
-	}
+	
 
 	/**
 	 * column[命令合成]<br/>
@@ -3732,7 +3648,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @return runs
 	 */
 	@Override
-	public List<Run> buildQueryColumnsRun(DataRuntime runtime, Table table, boolean metadata, ConfigStore configs) throws Exception {
+	public List<Run> buildQueryColumnsRun(DataRuntime runtime,  boolean metadata, Column query, ConfigStore configs) throws Exception {
+		Table table = query.getTable();
 		List<Run> runs = new ArrayList<>();
 		Catalog catalog = null;
 		Schema schema = null;
@@ -3764,8 +3681,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @return runs
 	 */
 	@Override
-	public List<Run> buildQueryColumnsRun(DataRuntime runtime, Catalog catalog, Schema schema, Collection<? extends Table> tables, boolean metadata, ConfigStore configs) throws Exception {
-		return super.buildQueryColumnsRun(runtime, catalog, schema, tables, metadata, configs);
+	public List<Run> buildQueryColumnsRun(DataRuntime runtime, boolean metadata, Collection<? extends Table> tables, Column query, ConfigStore configs) throws Exception {
+		return super.buildQueryColumnsRun(runtime, metadata, tables, query, configs);
 	}
 	/**
 	 * column[结果集封装]<br/>
@@ -3780,34 +3697,35 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> columns, DataSet set) throws Exception {
-		if(null == columns) {
-			columns = new LinkedHashMap<>();
+	public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Table table, Column query, DataSet set) throws Exception {
+		if(null == previous) {
+			previous = new LinkedHashMap<>();
 		}
 		for(DataRow row:set) {
 			T column = null;
 			column = init(runtime, index, column, table, row);
 			if(null != column) {
 				column = detail(runtime, index, column, null, null, row);
-				columns.put(column.getName().toUpperCase(), column);
+				previous.put(column.getName().toUpperCase(), column);
 			}
 		}
-		return columns;
+		return previous;
 	}
 	@Override
-	public <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, Table table, List<T> columns, DataSet set) throws Exception {
-		if(null == columns) {
-			columns = new ArrayList<>();
+	public <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, List<T> previous, Column query, DataSet set) throws Exception {
+		Table table = query.getTable();
+		if(null == previous) {
+			previous = new ArrayList<>();
 		}
 		for(DataRow row:set) {
 			T column = null;
 			column = init(runtime, index, column, table, row);
-			if(null == Metadata.match(column, columns)) {
-				columns.add(column);
+			if(null == Metadata.match(column, previous)) {
+				previous.add(column);
 			}
 			detail(runtime, index, column, null, null, row);
 		}
-		return columns;
+		return previous;
 	}
 
 	/**
@@ -3824,9 +3742,9 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, Collection<? extends Table> tables, List<T> columns, DataSet set) throws Exception {
-		if(null == columns) {
-			columns = new ArrayList<>();
+	public <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create,  List<T> previous, Collection<? extends Table> tables, Column query, DataSet set) throws Exception {
+		if(null == previous) {
+			previous = new ArrayList<>();
 		}
 		Map<String,Table> tbls = new HashMap<>();
 		for(Table table:tables) {
@@ -3834,9 +3752,9 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		}
 		for(DataRow row:set) {
 			T meta = null;
-			meta = init(runtime, index, meta, null, row);
-			if(null == Metadata.match(meta, columns)) {
-				columns.add(meta);
+			meta = init(runtime, index, meta, query, row);
+			if(null == Metadata.match(meta, previous)) {
+				previous.add(meta);
 			}
 			detail(runtime, index, meta, null, null,  row);
 			String tableName = meta.getTableName();
@@ -3847,7 +3765,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 				}
 			}
 		}
-		return columns;
+		return previous;
 	}
 	/**
 	 * column[调用入口]<br/>(方法1)<br/>
@@ -3876,8 +3794,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, LinkedHashMap<String, T> columns, Table table, String pattern) throws Exception {
-		return actuator.metadata(this, runtime, create, columns, table, pattern);
+	public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, LinkedHashMap<String, T> columns, Column query) throws Exception {
+		return actuator.metadata(this, runtime, create, columns, query);
 	}
 
 	/**
@@ -4258,8 +4176,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @return PrimaryKey
 	 */
 	@Override
-	public PrimaryKey primary(DataRuntime runtime, String random, boolean greedy, Table table) {
-		return super.primary(runtime, random, greedy, table);
+	public PrimaryKey primary(DataRuntime runtime, String random, boolean greedy, PrimaryKey query) {
+		return super.primary(runtime, random, greedy, query);
 	}
 
 	/**
@@ -4270,8 +4188,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @return runs
 	 */
 	@Override
-	public List<Run> buildQueryPrimaryRun(DataRuntime runtime, Table table) throws Exception {
-		return super.buildQueryPrimaryRun(runtime, table);
+	public List<Run> buildQueryPrimaryRun(DataRuntime runtime, PrimaryKey query) throws Exception {
+		return super.buildQueryPrimaryRun(runtime, query);
 	}
 
 	/**
@@ -4284,7 +4202,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends PrimaryKey> T init(DataRuntime runtime, int index, T primary, Table table, DataSet set) throws Exception {
+	public <T extends PrimaryKey> T init(DataRuntime runtime, int index, T primary, PrimaryKey query, DataSet set) throws Exception {
+		Table table = query.getTable();
 		PrimaryMetadataAdapter config = primaryMetadataAdapter(runtime);
 		for(DataRow row:set) {
 			if(null == primary) {
@@ -4325,8 +4244,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends PrimaryKey> T detail(DataRuntime runtime, int index, T primary, Table table, DataSet set) throws Exception {
-		return super.detail(runtime, index, primary, table, set);
+	public <T extends PrimaryKey> T detail(DataRuntime runtime, int index, T primary, PrimaryKey query, DataSet set) throws Exception {
+		return super.detail(runtime, index, primary, query, set);
 	}
 
 	/**
@@ -4348,8 +4267,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @throws Exception 异常
 	 */
 	@Override
-	public PrimaryKey primary(DataRuntime runtime, Table table) throws Exception {
-		return super.primary(runtime, table);
+	public PrimaryKey primary(DataRuntime runtime, PrimaryKey query) throws Exception {
+		return super.primary(runtime, query);
 	}
 	/* *****************************************************************************************************************
 	 * 													foreign
@@ -4372,8 +4291,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @return PrimaryKey
 	 */
 	@Override
-	public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, String random, boolean greedy, Table table) {
-		return super.foreigns(runtime, random, greedy,table);
+	public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, String random, boolean greedy, ForeignKey query) {
+		return super.foreigns(runtime, random, greedy, query);
 	}
 
 	/**
@@ -4384,8 +4303,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @return runs
 	 */
 	@Override
-	public List<Run> buildQueryForeignsRun(DataRuntime runtime, Table table) throws Exception {
-		return super.buildQueryForeignsRun(runtime, table);
+	public List<Run> buildQueryForeignsRun(DataRuntime runtime, ForeignKey query) throws Exception {
+		return super.buildQueryForeignsRun(runtime, query);
 	}
 
 	/**
@@ -4399,8 +4318,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, int index, Table table, LinkedHashMap<String, T> foreigns, DataSet set) throws Exception {
-		return super.foreigns(runtime, index, table, foreigns, set);
+	public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, int index, Table table, LinkedHashMap<String, T> previous, ForeignKey query, DataSet set) throws Exception {
+		return super.foreigns(runtime, index, table, previous, query, set);
 	}
 
 	/* *****************************************************************************************************************
@@ -4429,8 +4348,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @param <T> Index
 	 */
 	@Override
-	public <T extends Index> List<T> indexes(DataRuntime runtime, String random, boolean greedy, Table table, String pattern) {
-		return super.indexes(runtime, random, greedy, table, pattern);
+	public <T extends Index> List<T> indexes(DataRuntime runtime, String random, boolean greedy, Index query) {
+		return super.indexes(runtime, random, greedy, query);
 	}
 
 	/**
@@ -4444,8 +4363,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @param <T> Index
 	 */
 	@Override
-	public <T extends Index> LinkedHashMap<String, T> indexes(DataRuntime runtime, String random, Table table, String pattern) {
-		return super.indexes(runtime, random, table, pattern);
+	public <T extends Index> LinkedHashMap<String, T> indexes(DataRuntime runtime, String random, Index query) {
+		return super.indexes(runtime, random, query);
 	}
 
 	/**
@@ -4457,8 +4376,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @return runs
 	 */
 	@Override
-	public List<Run> buildQueryIndexesRun(DataRuntime runtime, Table table, String name) {
-		return super.buildQueryIndexesRun(runtime, table, name);
+	public List<Run> buildQueryIndexesRun(DataRuntime runtime, Index query) {
+		return super.buildQueryIndexesRun(runtime, query);
 	}
 	@Override
 	public List<Run> buildQueryIndexesRun(DataRuntime runtime, Collection<? extends Table> tables) {
@@ -4478,8 +4397,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Index> LinkedHashMap<String, T> indexes(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> indexes, DataSet set) throws Exception {
-		return super.indexes(runtime, index, create, table, indexes, set);
+	public <T extends Index> LinkedHashMap<String, T> indexes(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Index query, DataSet set) throws Exception {
+		return super.indexes(runtime, index, create, previous, query, set);
 	}
 
 	/**
@@ -4495,8 +4414,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Index> List<T> indexes(DataRuntime runtime, int index, boolean create, Table table, List<T> indexes, DataSet set) throws Exception {
-		return super.indexes(runtime, index, create, table, indexes, set);
+	public <T extends Index> List<T> indexes(DataRuntime runtime, int index, boolean create, List<T> previous, Index query, DataSet set) throws Exception {
+		return super.indexes(runtime, index, create, previous, query, set);
 	}
 
 	/**
@@ -4511,8 +4430,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Index> List<T> indexes(DataRuntime runtime, boolean create, List<T> indexes, Table table, boolean unique, boolean approximate) throws Exception {
-		return super.indexes(runtime, create, indexes, table, unique, approximate);
+	public <T extends Index> List<T> indexes(DataRuntime runtime, boolean create, List<T> previous, Index query) throws Exception {
+		return super.indexes(runtime, create, previous, query);
 	}
 
 	/**
@@ -4527,8 +4446,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Index> LinkedHashMap<String, T> indexes(DataRuntime runtime, boolean create, LinkedHashMap<String, T> indexes, Table table, boolean unique, boolean approximate) throws Exception {
-		return actuator.indexes(this, runtime, create, indexes, table, unique, approximate);
+	public <T extends Index> LinkedHashMap<String, T> indexes(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Index query) throws Exception {
+		return actuator.indexes(this, runtime, create, previous, query);
 	}
 
 	/**
@@ -4542,8 +4461,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Index> T init(DataRuntime runtime, int index, T meta, Table table, DataRow row) throws Exception {
-		return super.init(runtime, index, meta, table, row);
+	public <T extends Index> T init(DataRuntime runtime, int index, T meta, Index query, DataRow row) throws Exception {
+		return super.init(runtime, index, meta, query, row);
 	}
 
 	/**
@@ -4557,8 +4476,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Index> T detail(DataRuntime runtime, int index, T meta, Table table, DataRow row) throws Exception {
-		return super.detail(runtime, index, meta, table, row);
+	public <T extends Index> T detail(DataRuntime runtime, int index, T meta, Index query, DataRow row) throws Exception {
+		return super.detail(runtime, index, meta, query, row);
 	}
 	/**
 	 * index[结构集封装-依据]<br/>
@@ -4601,7 +4520,9 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @param <T> Index
 	 */
 	@Override
-	public <T extends Constraint> List<T> constraints(DataRuntime runtime, String random, boolean greedy, Table table, String pattern) {
+	public <T extends Constraint> List<T> constraints(DataRuntime runtime, String random, boolean greedy, Constraint query) {
+		Table table = query.getTable();
+		String pattern = query.getName();
 		List<T> constraints = null;
 		if(null == table) {
 			table = new Table();
@@ -4642,7 +4563,9 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @param <T> Index
 	 */
 	@Override
-	public <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, String random, Table table, Column column, String pattern) {
+	public <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, String random, Constraint query) {
+		Table table = query.getTable();
+		String pattern = query.getName();
 		LinkedHashMap<String, T> constraints = null;
 		if(null == table) {
 			table = new Table();
@@ -4657,7 +4580,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			for(Run run:runs) {
 				DataSet set = select(runtime, random, true, (String)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
 				try {
-					constraints = constraints(runtime, idx, true, table, column, constraints, set);
+					constraints = constraints(runtime, idx, true, constraints, query, set);
 				}catch (Exception e) {
 					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 						e.printStackTrace();
@@ -4717,8 +4640,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Constraint> List<T> constraints(DataRuntime runtime, int index, boolean create, Table table, List<T> constraints, DataSet set) throws Exception {
-		return super.constraints(runtime, index, create, table, constraints, set);
+	public <T extends Constraint> List<T> constraints(DataRuntime runtime, int index, boolean create, List<T> previous, Constraint query, DataSet set) throws Exception {
+		return super.constraints(runtime, index, create, previous, query, set);
 	}
 
 	/**
@@ -4735,19 +4658,20 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, int index, boolean create, Table table, Column column, LinkedHashMap<String, T> constraints, DataSet set) throws Exception {
-		if(null == constraints) {
-			constraints = new LinkedHashMap<>();
+	public <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Constraint query, DataSet set) throws Exception {
+		Table table = query.getTable();
+		if(null == previous) {
+			previous = new LinkedHashMap<>();
 		}
 		for(DataRow row:set) {
 			String name = row.getString("CONSTRAINT_NAME");
 			if(null == name) {
 				continue;
 			}
-			T constraint = constraints.get(name.toUpperCase());
+			T constraint = previous.get(name.toUpperCase());
 			if(null == constraint && create) {
 				constraint = (T)new Constraint();
-				constraints.put(name.toUpperCase(), constraint);
+				previous.put(name.toUpperCase(), constraint);
 			};
 
 			String catalog = row.getString("CONSTRAINT_CATALOG");
@@ -4762,7 +4686,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			constraint.setType(row.getString("CONSTRAINT_TYPE"));
 
 		}
-		return constraints;
+		return previous;
 	}
 
 	/* *****************************************************************************************************************
@@ -4787,8 +4711,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @return  LinkedHashMap
 	 * @param <T> Index
 	 */
-	public <T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, String random, boolean greedy, Table table, List<Trigger.EVENT> events) {
-		return super.triggers(runtime, random, greedy, table, events);
+	public <T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, String random, boolean greedy, Trigger query) {
+		return super.triggers(runtime, random, greedy, query);
 	}
 
 	/**
@@ -4799,8 +4723,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @param events 事件 INSERT|UPDATE|DELETE
 	 * @return sqls
 	 */
-	public List<Run> buildQueryTriggersRun(DataRuntime runtime, Table table, List<Trigger.EVENT> events) {
-		return super.buildQueryTriggersRun(runtime, table, events);
+	public List<Run> buildQueryTriggersRun(DataRuntime runtime, Trigger query) {
+		return super.buildQueryTriggersRun(runtime, query);
 	}
 
 	/**
@@ -4815,8 +4739,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @return LinkedHashMap
 	 * @throws Exception 异常
 	 */
-	public <T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> triggers, DataSet set) throws Exception {
-		return super.triggers(runtime, index, create, table, triggers, set);
+	public <T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Trigger query, DataSet set) throws Exception {
+		return super.triggers(runtime, index, create, previous, query, set);
 	}
 
 	/* *****************************************************************************************************************
@@ -4852,7 +4776,10 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @param <T> Index
 	 */
 	@Override
-	public <T extends Procedure> List<T> procedures(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern) {
+	public <T extends Procedure> List<T> procedures(DataRuntime runtime, String random, boolean greedy, Procedure query) {
+		Catalog catalog = query.getCatalog();
+		Schema schema = query.getSchema();
+		String pattern = query.getName();
 		List<T> procedures = new ArrayList<>();
 		if(null == random) {
 			random = random(runtime);
@@ -4874,7 +4801,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			for(Run run:runs) {
 				DataSet set = select(runtime, random, true, (String)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
 				try {
-					procedures = procedures(runtime, idx, true, procedures, set);
+					procedures = procedures(runtime, idx, true, procedures, query, set);
 				}catch (Exception e) {
 					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 						e.printStackTrace();
@@ -4898,7 +4825,10 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @param <T> Index
 	 */
 	@Override
-	public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern) {
+	public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, String random, Procedure query) {
+		Catalog catalog = query.getCatalog();
+		Schema schema = query.getSchema();
+		String pattern = query.getName();
 		LinkedHashMap<String,T> procedures = new LinkedHashMap<>();
 		if(null == random) {
 			random = random(runtime);
@@ -4920,7 +4850,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			for(Run run:runs) {
 				DataSet set = select(runtime, random, true, (String)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
 				try {
-					procedures = procedures(runtime, idx, true, procedures, set);
+					procedures = procedures(runtime, idx, true, procedures, query, set);
 				}catch (Exception e) {
 					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 						e.printStackTrace();
@@ -4942,8 +4872,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @return runs
 	 */
 	@Override
-	public List<Run> buildQueryProceduresRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) {
-		return super.buildQueryProceduresRun(runtime, catalog, schema, pattern);
+	public List<Run> buildQueryProceduresRun(DataRuntime runtime, Procedure query) {
+		return super.buildQueryProceduresRun(runtime, query);
 	}
 
 	/**
@@ -4958,8 +4888,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> procedures, DataSet set) throws Exception {
-		return super.procedures(runtime, index, create, procedures, set);
+	public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Procedure query, DataSet set) throws Exception {
+		return super.procedures(runtime, index, create, previous, query, set);
 	}
 
 	/**
@@ -4972,8 +4902,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Procedure> List<T> procedures(DataRuntime runtime, boolean create, List<T> procedures) throws Exception {
-		return super.procedures(runtime, create, procedures);
+	public <T extends Procedure> List<T> procedures(DataRuntime runtime, boolean create, List<T> previous, Procedure query) throws Exception {
+		return super.procedures(runtime, create, previous, query);
 	}
 
 	/**
@@ -4986,8 +4916,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, boolean create, LinkedHashMap<String, T> procedures) throws Exception {
-		return super.procedures(runtime, create, procedures);
+	public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Procedure query) throws Exception {
+		return super.procedures(runtime, create, previous, query);
 	}
 
 	/**
@@ -5063,7 +4993,10 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @param <T> Index
 	 */
 	@Override
-	public <T extends Function> List<T> functions(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern) {
+	public <T extends Function> List<T> functions(DataRuntime runtime, String random, boolean greedy, Function query) {
+		Catalog catalog = query.getCatalog();
+		Schema schema = query.getSchema();
+		String pattern = query.getName();
 		List<T> functions = new ArrayList<>();
 		if(null == random) {
 			random = random(runtime);
@@ -5109,7 +5042,10 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @param <T> Index
 	 */
 	@Override
-	public <T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern) {
+	public <T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, String random, Function query) {
+		Catalog catalog = query.getCatalog();
+		Schema schema = query.getSchema();
+		String pattern = query.getName();
 		LinkedHashMap<String,T> functions = new LinkedHashMap<>();
 		if(null == random) {
 			random = random(runtime);
@@ -5152,8 +5088,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @return runs
 	 */
 	@Override
-	public List<Run> buildQueryFunctionsRun(DataRuntime runtime, Catalog catalog, Schema schema, String name) {
-		return super.buildQueryFunctionsRun(runtime, catalog, schema, name);
+	public List<Run> buildQueryFunctionsRun(DataRuntime runtime, Function query) {
+		return super.buildQueryFunctionsRun(runtime, query);
 	}
 
 	/**
@@ -5168,19 +5104,19 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Function> List<T> functions(DataRuntime runtime, int index, boolean create, List<T> functions, Catalog catalog, Schema schema, DataSet set) throws Exception {
-		if(null == functions) {
-			functions = new ArrayList<>();
+	public <T extends Function> List<T> functions(DataRuntime runtime, int index, boolean create, List<T> previous, Function query, DataSet set) throws Exception {
+		if(null == previous) {
+			previous = new ArrayList<>();
 		}
 		for(DataRow row:set) {
 			T meta = null;
-			meta = init(runtime, index, meta, catalog, schema, row);
-			if(null == search(functions, meta.getCatalog(), meta.getSchema(), meta.getName())) {
-				functions.add(meta);
+			meta = init(runtime, index, meta, query, row);
+			if(null == search(previous, meta.getCatalog(), meta.getSchema(), meta.getName())) {
+				previous.add(meta);
 			}
-			detail(runtime, index, meta, catalog, schema, row);
+			detail(runtime, index, meta, query, row);
 		}
-		return functions;
+		return previous;
 	}
 //public <T extends Table> List<T> tables(DataRuntime runtime, int index, boolean create, List<T> tables, Catalog catalog, Schema schema, DataSet set) throws Exception {
 	/**
@@ -5195,17 +5131,17 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> functions, Catalog catalog, Schema schema, DataSet set) throws Exception {
-		if(null == functions) {
-			functions = new LinkedHashMap<>();
+	public <T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Function query, DataSet set) throws Exception {
+		if(null == previous) {
+			previous = new LinkedHashMap<>();
 		}
 		for(DataRow row:set) {
 			T meta = null;
-			meta = init(runtime, index, meta, catalog, schema, row);
-			meta = detail(runtime, index, meta, catalog, schema, row);
-			functions.put(meta.getName().toUpperCase(), meta);
+			meta = init(runtime, index, meta, query, row);
+			meta = detail(runtime, index, meta, query, row);
+			previous.put(meta.getName().toUpperCase(), meta);
 		}
-		return functions;
+		return previous;
 	}
 
 	/**
@@ -5218,8 +5154,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Function> List<T> functions(DataRuntime runtime, boolean create, List<T> functions) throws Exception {
-		return super.functions(runtime, create, functions);
+	public <T extends Function> List<T> functions(DataRuntime runtime, boolean create, List<T> previous, Function query) throws Exception {
+		return super.functions(runtime, create, previous, query);
 	}
 
 	/**
@@ -5295,8 +5231,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @param <T> Index
 	 */
 	@Override
-	public <T extends Sequence> List<T> sequences(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern) {
-		return super.sequences(runtime, random, greedy, catalog, schema, pattern);
+	public <T extends Sequence> List<T> sequences(DataRuntime runtime, String random, boolean greedy, Sequence query) {
+		return super.sequences(runtime, random, greedy, query);
 	}
 
 	/**
@@ -5311,8 +5247,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @param <T> Index
 	 */
 	@Override
-	public <T extends Sequence> LinkedHashMap<String, T> sequences(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern) {
-		return super.sequences(runtime, random, catalog, schema, pattern);
+	public <T extends Sequence> LinkedHashMap<String, T> sequences(DataRuntime runtime, String random, Sequence query) {
+		return super.sequences(runtime, random, query);
 	}
 
 	/**
@@ -5325,8 +5261,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @return runs
 	 */
 	@Override
-	public List<Run> buildQuerySequencesRun(DataRuntime runtime, Catalog catalog, Schema schema, String name) {
-		return super.buildQuerySequencesRun(runtime, catalog, schema, name);
+	public List<Run> buildQuerySequencesRun(DataRuntime runtime, Sequence query) {
+		return super.buildQuerySequencesRun(runtime, query);
 	}
 
 	/**
@@ -5341,8 +5277,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Sequence> List<T> sequences(DataRuntime runtime, int index, boolean create, List<T> sequences, DataSet set) throws Exception {
-		return super.sequences(runtime, index, create, sequences, set);
+	public <T extends Sequence> List<T> sequences(DataRuntime runtime, int index, boolean create, List<T> previous, Sequence query, DataSet set) throws Exception {
+		return super.sequences(runtime, index, create, previous, query, set);
 	}
 
 	/**
@@ -5357,8 +5293,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Sequence> LinkedHashMap<String, T> sequences(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> sequences, DataSet set) throws Exception {
-		return super.sequences(runtime, index, create, sequences, set);
+	public <T extends Sequence> LinkedHashMap<String, T> sequences(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Sequence query, DataSet set) throws Exception {
+		return super.sequences(runtime, index, create, previous, query, set);
 	}
 
 	/**
@@ -5371,8 +5307,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Sequence> List<T> sequences(DataRuntime runtime, boolean create, List<T> sequences) throws Exception {
-		return super.sequences(runtime, create, sequences);
+	public <T extends Sequence> List<T> sequences(DataRuntime runtime, boolean create, List<T> sequences, Sequence query) throws Exception {
+		return super.sequences(runtime, create, sequences, query);
 	}
 
 	/**
@@ -5599,17 +5535,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		return super.rename(runtime, origin, name);
 	}
 
-	/**
-	 * table[命令合成-子流程]<br/>
-	 * 部分数据库在创建主表时用主表关键字(默认)，部分数据库普通表主表子表都用table，部分数据库用collection、timeseries等
-	 * @param meta 表
-	 * @return String
-	 */
-	@Override
-	public String keyword(Metadata meta)
-{
-		return super.keyword(meta);
-	}
+
 
 	/**
 	 * table[命令合成]<br/>
@@ -9068,8 +8994,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	}
 
 	@Override
-	public List<Run> buildQueryUsersRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) throws Exception {
-		return null;
+	public List<Run> buildQueryUsersRun(DataRuntime runtime, User query) throws Exception {
+		return super.buildQueryUsersRun(runtime, query);
 	}
 
 	/***********************************************************************************************************************

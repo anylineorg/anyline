@@ -265,14 +265,15 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter {
 
     /**
      * 查询表
-     * @param catalog catalog
-     * @param schema schema
-     * @param pattern 名称统配符或正则
+     * @param query 查询条件
      * @param types types
      * @return String
      */
     @Override
-    public List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs) throws Exception {
+    public List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Table query, int types, ConfigStore configs) throws Exception {
+        Catalog catalog = query.getCatalog();
+        Schema schema = query.getSchema();
+        String pattern = query.getName();
         List<Run> runs = new ArrayList<>();
         Run run = new SimpleRun(runtime);
         runs.add(run);

@@ -25,7 +25,12 @@ import java.util.List;
 public class Function extends Metadata<Function> implements Serializable {
     protected String keyword = "FUNCTION"           ;
     protected List<Parameter> parameters = new ArrayList<>();
-
+    public Function(){}
+    public Function(Catalog catalog, Schema schema, String name){
+        this.catalog = catalog;
+        this.schema = schema;
+        this.name = name;
+    }
     public List<Parameter> getParameters() {
         if(getmap && null != update) {
             return update.parameters;

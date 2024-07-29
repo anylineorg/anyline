@@ -2207,8 +2207,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return LinkedHashMap
 	 */
 	@Override
-	public List<Database> databases(DataRuntime runtime, String random, boolean greedy, String name) {
-		return super.databases(runtime, random, greedy, name);
+	public List<Database> databases(DataRuntime runtime, String random, boolean greedy, Database query) {
+		return super.databases(runtime, random, greedy, query);
 	}
 
 	/**
@@ -2219,8 +2219,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return LinkedHashMap
 	 */
 	@Override
-	public LinkedHashMap<String, Database> databases(DataRuntime runtime, String random, String name) {
-		return super.databases(runtime, random, name);
+	public LinkedHashMap<String, Database> databases(DataRuntime runtime, String random, Database query) {
+		return super.databases(runtime, random, query);
 	}
 
 	/**
@@ -2251,14 +2251,14 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * database[命令合成]<br/>
 	 * 查询全部数据库
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param name 名称统配符或正则
+	 * @param query 查询条件
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
 	 * @return sqls
 	 * @throws Exception 异常
 	 */
 	@Override
-	public List<Run> buildQueryDatabasesRun(DataRuntime runtime, boolean greedy, String name) throws Exception {
-		return super.buildQueryDatabasesRun(runtime, greedy, name);
+	public List<Run> buildQueryDatabasesRun(DataRuntime runtime, boolean greedy, Database query) throws Exception {
+		return super.buildQueryDatabasesRun(runtime, greedy, query);
 	}
 
 	/**
@@ -2272,12 +2272,12 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @throws Exception
 	 */
 	@Override
-	public LinkedHashMap<String, Database> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Database> databases, Catalog catalog, Schema schema, DataSet set) throws Exception {
-		return super.databases(runtime, index, create, databases, catalog, schema, set);
+	public LinkedHashMap<String, Database> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Database> previous, Database query, DataSet set) throws Exception {
+		return super.databases(runtime, index, create, previous, query, set);
 	}
 	@Override
-	public List<Database> databases(DataRuntime runtime, int index, boolean create, List<Database> databases, Catalog catalog, Schema schema, DataSet set) throws Exception {
-		return super.databases(runtime, index, create, databases, catalog, schema, set);
+	public List<Database> databases(DataRuntime runtime, int index, boolean create, List<Database> databases, Database query, DataSet set) throws Exception {
+		return super.databases(runtime, index, create, databases, query, set);
 	}
 
 
@@ -2392,8 +2392,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return LinkedHashMap
 	 */
 	@Override
-	public LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, String random, String name) {
-		return super.catalogs(runtime, random, name);
+	public LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, String random, Catalog query) {
+		return super.catalogs(runtime, random, query);
 	}
 
 	/**
@@ -2404,8 +2404,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return LinkedHashMap
 	 */
 	@Override
-	public List<Catalog> catalogs(DataRuntime runtime, String random, boolean greedy, String name) {
-		return super.catalogs(runtime, random, greedy, name);
+	public List<Catalog> catalogs(DataRuntime runtime, String random, boolean greedy, Catalog query) {
+		return super.catalogs(runtime, random, greedy, query);
 	}
 
 	/**
@@ -2418,8 +2418,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public List<Run> buildQueryCatalogsRun(DataRuntime runtime, boolean greedy, String name) throws Exception {
-		return super.buildQueryCatalogsRun(runtime, greedy, name);
+	public List<Run> buildQueryCatalogsRun(DataRuntime runtime, boolean greedy, Catalog query) throws Exception {
+		return super.buildQueryCatalogsRun(runtime, greedy, query);
 	}
 
 	/**
@@ -2434,24 +2434,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Catalog> catalogs, Catalog catalog, Schema schema, DataSet set) throws Exception {
-		return super.catalogs(runtime, index, create, catalogs, catalog, schema, set);
-	}
-
-	/**
-	 * catalog[结果集封装]<br/>
-	 * 根据查询结果集构造 Database
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
-	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param previous 上一步查询结果
-	 * @param set 查询结果集
-	 * @return databases
-	 * @throws Exception 异常
-	 */
-	@Override
-	public List<Catalog> catalogs(DataRuntime runtime, int index, boolean create, List<Catalog> catalogs, Catalog catalog, Schema schema, DataSet set) throws Exception {
-		return super.catalogs(runtime, index, create, catalogs, catalog, schema, set);
+	public List<Catalog> catalogs(DataRuntime runtime, int index, boolean create, List<Catalog> previous, Catalog query, DataSet set) throws Exception {
+		return super.catalogs(runtime, index, create, previous, query, set);
 	}
 
 	/**
@@ -2464,8 +2448,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, boolean create, LinkedHashMap<String, Catalog> catalogs) throws Exception {
-		return super.catalogs(runtime, create, catalogs);
+	public LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, boolean create, LinkedHashMap<String, Catalog> previous) throws Exception {
+		return super.catalogs(runtime, create, previous);
 	}
 
 	/**
@@ -2478,8 +2462,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public List<Catalog> catalogs(DataRuntime runtime, boolean create, List<Catalog> catalogs) throws Exception {
-		return super.catalogs(runtime, create, catalogs);
+	public List<Catalog> catalogs(DataRuntime runtime, boolean create, List<Catalog> previous) throws Exception {
+		return super.catalogs(runtime, create, previous);
 	}
 
 	/**
@@ -2488,14 +2472,14 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param catalog 上一步查询结果
+	 * @param previou 上一步查询结果
 	 * @param set 查询结果集
 	 * @return Catalog
 	 * @throws Exception 异常
 	 */
 	@Override
-	public Catalog catalog(DataRuntime runtime, int index, boolean create, Catalog catalog, DataSet set) throws Exception {
-		return super.catalog(runtime, index, create, catalog, set);
+	public Catalog catalog(DataRuntime runtime, int index, boolean create, Catalog previou, DataSet set) throws Exception {
+		return super.catalog(runtime, index, create, previou, set);
 	}
 
 	/**
@@ -2503,18 +2487,18 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * 当前catalog 根据驱动内置接口补充
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param catalog 上一步查询结果
+	 * @param previou 上一步查询结果
 	 * @return Catalog
 	 * @throws Exception 异常
 	 */
 	@Override
-	public Catalog catalog(DataRuntime runtime, boolean create, Catalog catalog) throws Exception {
-		if(null == catalog) {
+	public Catalog catalog(DataRuntime runtime, boolean create, Catalog previou) throws Exception {
+		if(null == previou) {
 			Table table = new Table();
 			checkSchema(runtime, table);
-			catalog = table.getCatalog();
+			previou = table.getCatalog();
 		}
-		return catalog;
+		return previou;
 	}
 
 	/* *****************************************************************************************************************
@@ -2540,8 +2524,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return LinkedHashMap
 	 */
 	@Override
-	public LinkedHashMap<String, Schema> schemas(DataRuntime runtime, String random, Catalog catalog, String name) {
-		return super.schemas(runtime, random, catalog, name);
+	public LinkedHashMap<String, Schema> schemas(DataRuntime runtime, String random, Schema query) {
+		return super.schemas(runtime, random, query);
 	}
 
 	/**
@@ -2553,8 +2537,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return LinkedHashMap
 	 */
 	@Override
-	public List<Schema> schemas(DataRuntime runtime, String random, boolean greedy, Catalog catalog, String name) {
-		return super.schemas(runtime, random, greedy, catalog, name);
+	public List<Schema> schemas(DataRuntime runtime, String random, boolean greedy, Schema query) {
+		return super.schemas(runtime, random, greedy, query);
 	}
 
 	/**
@@ -2567,8 +2551,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public List<Run> buildQuerySchemasRun(DataRuntime runtime, boolean greedy, Catalog catalog, String name) throws Exception {
-		return super.buildQuerySchemasRun(runtime, greedy, catalog, name);
+	public List<Run> buildQuerySchemasRun(DataRuntime runtime, boolean greedy, Schema query) throws Exception {
+		return super.buildQuerySchemasRun(runtime, greedy, query);
 	}
 
 	/**
@@ -2583,12 +2567,12 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public LinkedHashMap<String, Schema> schemas(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Schema> schemas, Catalog catalog, Schema schema, DataSet set) throws Exception {
-		return super.schemas(runtime, index, create, schemas, catalog, schema, set);
+	public LinkedHashMap<String, Schema> schemas(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Schema> previous, Schema query, DataSet set) throws Exception {
+		return super.schemas(runtime, index, create, previous, query, set);
 	}
 	@Override
-	public List<Schema> schemas(DataRuntime runtime, int index, boolean create, List<Schema> schemas, Catalog catalog, Schema schema, DataSet set) throws Exception {
-		return super.schemas(runtime, index, create, schemas, catalog, schema, set);
+	public List<Schema> schemas(DataRuntime runtime, int index, boolean create, List<Schema> previous, Schema query, DataSet set) throws Exception {
+		return super.schemas(runtime, index, create, previous, query, set);
 	}
 
 	/**
@@ -2597,14 +2581,14 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQuerySchemaRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param schema 上一步查询结果
+	 * @param previou 上一步查询结果
 	 * @param set 查询结果集
 	 * @return schema
 	 * @throws Exception 异常
 	 */
 	@Override
-	public Schema schema(DataRuntime runtime, int index, boolean create, Schema schema, DataSet set) throws Exception {
-		return super.schema(runtime, index, create, schema, set);
+	public Schema schema(DataRuntime runtime, int index, boolean create, Schema previou, DataSet set) throws Exception {
+		return super.schema(runtime, index, create, previou, set);
 	}
 
 	/**
@@ -2612,18 +2596,18 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * 当前schema 根据驱动内置接口补充
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param schema 上一步查询结果
+	 * @param previou 上一步查询结果
 	 * @return schema
 	 * @throws Exception 异常
 	 */
 	@Override
-	public Schema schema(DataRuntime runtime, boolean create, Schema schema) throws Exception {
-		if(null == schema) {
+	public Schema schema(DataRuntime runtime, boolean create, Schema previou) throws Exception {
+		if(null == previou) {
 			Table table = new Table();
 			checkSchema(runtime, table);
-			schema = table.getSchema();
+			previou = table.getSchema();
 		}
-		return schema;
+		return previou;
 	}
 
 	/**
@@ -2685,17 +2669,15 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param pattern 名称统配符或正则
+	 * @param query 查询条件
 	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @param struct 查询的属性 参考Metadata.TYPE 多个属性相加算出总和 true:表示查询全部
 	 * @return List
 	 * @param <T> Table
 	 */
 	@Override
-	public <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct) {
-		return super.tables(runtime, random, greedy, catalog, schema, pattern, types, struct);
+	public <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Table query, int types, int struct, ConfigStore configs) {
+		return super.tables(runtime, random, greedy, query, types, struct, configs);
 	}
 
 	/**
@@ -2703,54 +2685,30 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * 查出所有key并以大写缓存 用来实现忽略大小写
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param catalog catalog
-	 * @param schema schema
+     * @param query 查询条件
 	 */
 	@Override
-	protected void tableMap(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, ConfigStore configs) {
-		super.tableMap(runtime, random, greedy, catalog, schema, configs);
+	protected void tableMap(DataRuntime runtime, String random, boolean greedy, Table query, ConfigStore configs) {
+		super.tableMap(runtime, random, greedy, query, configs);
 	}
 
 	@Override
-	public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
-		return super.tables(runtime, random, catalog, schema, pattern, types, struct, configs);
-	}
-	@Override
-	public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct) {
-		return super.tables(runtime, random, catalog, schema, pattern, types, struct);
-	}
-
-	/**
-	 * table[命令合成]<br/>
-	 * 查询表,不是查表中的数据
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param pattern 名称统配符或正则
-	 * @param types  Metadata.TYPE.
-	 * @return String
-	 * @throws Exception Exception
-	 */
-	@Override
-	public List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs) throws Exception {
-		return super.buildQueryTablesRun(runtime, greedy, catalog, schema, pattern, types, configs);
+	public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Table query, int types, int struct, ConfigStore configs) {
+		return super.tables(runtime, random, query, types, struct, configs);
 	}
 
 	/**
 	 * table[命令合成]<br/>
 	 * 查询表备注
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param pattern 名称统配符或正则
+	 * @param query 查询条件
 	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return String
 	 * @throws Exception Exception
 	 */
 	@Override
-	public List<Run> buildQueryTablesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
-		return super.buildQueryTablesCommentRun(runtime, catalog, schema, pattern, types);
+	public List<Run> buildQueryTablesCommentRun(DataRuntime runtime, Table query, int types) throws Exception {
+		return super.buildQueryTablesCommentRun(runtime, query, types);
 	}
 
 	/**
@@ -2759,25 +2717,26 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照buildQueryTablesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param catalog catalog
-	 * @param schema schema
+     * @param query 查询条件
 	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return tables
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set) throws Exception {
-		if(null == tables) {
-			tables = new LinkedHashMap<>();
+	public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Table query, DataSet set) throws Exception {
+		Catalog catalog = query.getCatalog();
+		Schema schema = query.getSchema();
+		if(null == previous) {
+			previous = new LinkedHashMap<>();
 		}
 		for(DataRow row:set) {
 			T table = null;
 			table = init(runtime, index, table, catalog, schema, row);
 			table = detail(runtime, index, table, catalog, schema, row);
-			tables.put(table.getName().toUpperCase(), table);
+			previous.put(table.getName().toUpperCase(), table);
 		}
-		return tables;
+		return previous;
 	}
 
 	/**
@@ -2786,27 +2745,26 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照buildQueryTablesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param catalog catalog
-	 * @param schema schema
+     * @param query 查询条件
 	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return tables
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Table> List<T> tables(DataRuntime runtime, int index, boolean create, List<T> tables, Catalog catalog, Schema schema, DataSet set) throws Exception {
-		if(null == tables) {
-			tables = new ArrayList<>();
+	public <T extends Table> List<T> tables(DataRuntime runtime, int index, boolean create, List<T> previous, Table query, DataSet set) throws Exception {
+		if(null == previous) {
+			previous = new ArrayList<>();
 		}
 		for(DataRow row:set) {
 			T table = null;
-			table = init(runtime, index, table, catalog, schema, row);
-			if(null == search(tables, table.getCatalog(), table.getSchema(), table.getName())) {
-				tables.add(table);
+			table = init(runtime, index, table, query, row);
+			if(null == search(previous, table.getCatalog(), table.getSchema(), table.getName())) {
+				previous.add(table);
 			}
-			detail(runtime, index, table, catalog, schema, row);
+			detail(runtime, index, table, query, row);
 		}
-		return tables;
+		return previous;
 	}
 
 	/**
@@ -2841,7 +2799,6 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
 	 * @param table 表
-	 * @param previous 上一步查询结果
 	 * @param set sql执行的结果集
 	 * @return List
 	 */
@@ -2856,13 +2813,12 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index index
 	 * @param meta 上一步封装结果
-	 * @param catalog catalog
-	 * @param schema schema
+     * @param query 查询条件
 	 * @param row 查询结果集
 	 * @return Table
 	 * @param <T> Table
 	 */
-	public <T extends Table> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row) {
+	public <T extends Table> T init(DataRuntime runtime, int index, T meta, Table query, DataRow row) {
 		return meta;
 	}
 
@@ -2874,7 +2830,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param row 查询结果集
 	 * @return Table
 	 */
-	public <T extends Table> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row) {
+	public <T extends Table> T detail(DataRuntime runtime, int index, T meta, Table query, DataRow row) {
 		return meta;
 	}
 	protected void init(Table table, ResultSet set, Map<String,Integer> keys) {
@@ -2912,7 +2868,6 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
 	 * @param view view
-	 * @param previous 上一步查询结果
 	 * @param set sql执行的结果集
 	 * @return List
 	 */
@@ -2950,21 +2905,19 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param pattern 名称统配符或正则
+     * @param query 查询条件
 	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @param struct 查询的属性 参考Metadata.TYPE 多个属性相加算出总和 true:表示查询全部
 	 * @return List
 	 * @param <T> VertexTable
 	 */
 	@Override
-	public <T extends VertexTable> List<T> vertexs(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct) {
-		return super.vertexs(runtime, random, greedy, catalog, schema, pattern, types, struct);
+	public <T extends VertexTable> List<T> vertexs(DataRuntime runtime, String random, boolean greedy, VertexTable query, int types, int struct, ConfigStore configs) {
+		return super.vertexs(runtime, random, greedy, query, types, struct, configs);
 	}
 
-	public <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct) {
-		return super.vertexs(runtime, random, catalog, schema, pattern, types, struct);
+	public <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, String random, VertexTable query, int types, int struct, ConfigStore configs) {
+		return super.vertexs(runtime, random, query, types, struct, configs);
 	}
 
 	/**
@@ -2972,31 +2925,27 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * 查询表,不是查表中的数据
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param pattern 名称统配符或正则
+     * @param query 查询条件
 	 * @param types  Metadata.TYPE.
 	 * @return String
 	 * @throws Exception Exception
 	 */
 	@Override
-	public List<Run> buildQueryVertexTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs) throws Exception {
-		return super.buildQueryVertexTablesRun(runtime, greedy, catalog, schema, pattern, types, configs);
+	public List<Run> buildQueryVertexTablesRun(DataRuntime runtime, boolean greedy, VertexTable query, int types, ConfigStore configs) throws Exception {
+		return super.buildQueryVertexTablesRun(runtime, greedy, query, types, configs);
 	}
 
 	/**
 	 * vertex[命令合成]<br/>
 	 * 查询表备注
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param pattern 名称统配符或正则
+     * @param query 查询条件
 	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return String
 	 * @throws Exception Exception
 	 */
-	public List<Run> buildQueryVertexTablesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
-		return super.buildQueryVertexTablesCommentRun(runtime, catalog, schema, pattern, types);
+	public List<Run> buildQueryVertexTablesCommentRun(DataRuntime runtime, VertexTable query, int types) throws Exception {
+		return super.buildQueryVertexTablesCommentRun(runtime, query, types);
 	}
 
 	/**
@@ -3005,16 +2954,15 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照buildQueryVertexTablesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param catalog catalog
-	 * @param schema schema
+     * @param query 查询条件
 	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return vertexs
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set) throws Exception {
-		return super.vertexs(runtime, index, create, tables, catalog, schema, set);
+	public <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, VertexTable query, DataSet set) throws Exception {
+		return super.vertexs(runtime, index, create, previous, query, set);
 	}
 
 	/**
@@ -3023,16 +2971,15 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照buildQueryVertexTablesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param catalog catalog
-	 * @param schema schema
+     * @param query 查询条件
 	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return vertexs
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends VertexTable> List<T> vertexs(DataRuntime runtime, int index, boolean create, List<T> tables, Catalog catalog, Schema schema, DataSet set) throws Exception {
-		return super.vertexs(runtime, index, create, tables, catalog, schema, set);
+	public <T extends VertexTable> List<T> vertexs(DataRuntime runtime, int index, boolean create, List<T> previous, VertexTable query, DataSet set) throws Exception {
+		return super.vertexs(runtime, index, create, previous, query, set);
 	}
 
 	/**
@@ -3041,16 +2988,14 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param previous 上一步查询结果
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param pattern 名称统配符或正则
+     * @param query 查询条件
 	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return vertexs
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
-		return super.vertexs(runtime, create, tables, catalog, schema, pattern, types);
+	public <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, VertexTable query, int types) throws Exception {
+		return super.vertexs(runtime, create, previous, query, types);
 	}
 
 	/**
@@ -3059,17 +3004,15 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param previous 上一步查询结果
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param pattern 名称统配符或正则
+     * @param query 查询条件
 	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return vertexs
 	 * @throws Exception 异常
 	 * @param <T> VertexTable
 	 */
 	@Override
-	public <T extends VertexTable> List<T> vertexs(DataRuntime runtime, boolean create, List<T> tables, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
-		return super.vertexs(runtime, create, tables, catalog, schema, pattern, types);
+	public <T extends VertexTable> List<T> vertexs(DataRuntime runtime, boolean create, List<T> previous, VertexTable query, int types) throws Exception {
+		return super.vertexs(runtime, create, previous, query, types);
 	}
 
 	/**
@@ -3077,15 +3020,14 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * 根据查询结果封装VertexTable对象,只封装catalog,schema,name等基础属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 上一步封装结果
-	 * @param catalog catalog
-	 * @param schema schema
+     * @param query 查询条件
 	 * @param row 查询结果集
 	 * @return VertexTable
 	 * @param <T> VertexTable
 	 */
 	@Override
-	public <T extends VertexTable> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row) {
-		return init(runtime, index, meta, catalog, schema, row);
+	public <T extends VertexTable> T init(DataRuntime runtime, int index, T meta, VertexTable query, DataRow row) {
+		return init(runtime, index, meta, query, row);
 	}
 	/**
 	 * vertex[结果集封装]<br/>
@@ -3097,8 +3039,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param <T> VertexTable
 	 */
 	@Override
-	public <T extends VertexTable> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row) {
-		return detail(runtime, index, meta, catalog, schema, row);
+	public <T extends VertexTable> T detail(DataRuntime runtime, int index, T meta, VertexTable query, DataRow row) {
+		return detail(runtime, index, meta, query, row);
 	}
 	/**
 	 *
@@ -3132,7 +3074,6 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
 	 * @param meta 表
-	 * @param previous 上一步查询结果
 	 * @param set sql执行的结果集
 	 * @return List
 	 */
@@ -3170,21 +3111,19 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param pattern 名称统配符或正则
+     * @param query 查询条件
 	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @param struct 查询的属性 参考Metadata.TYPE 多个属性相加算出总和 true:表示查询全部
 	 * @return List
 	 * @param <T> EdgeTable
 	 */
 	@Override
-	public <T extends EdgeTable> List<T> edges(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
-		return super.edges(runtime, random, greedy, catalog, schema, pattern, types, struct, configs);
+	public <T extends EdgeTable> List<T> edges(DataRuntime runtime, String random, boolean greedy, EdgeTable query, int types, int struct, ConfigStore configs) {
+		return super.edges(runtime, random, greedy, query, types, struct, configs);
 	}
 
-	public <T extends EdgeTable> LinkedHashMap<String, T> edges(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct) {
-		return super.edges(runtime, random, catalog, schema, pattern, types, struct);
+	public <T extends EdgeTable> LinkedHashMap<String, T> edges(DataRuntime runtime, String random, EdgeTable query, int types, int struct) {
+		return super.edges(runtime, random, query, types, struct);
 	}
 
 	/**
@@ -3192,31 +3131,27 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * 查询表,不是查表中的数据
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param pattern 名称统配符或正则
+     * @param query 查询条件
 	 * @param types  Metadata.TYPE.
 	 * @return String
 	 * @throws Exception Exception
 	 */
 	@Override
-	public List<Run> buildQueryEdgesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs) throws Exception {
-		return super.buildQueryEdgesRun(runtime, greedy, catalog, schema, pattern, types, configs);
+	public List<Run> buildQueryEdgesRun(DataRuntime runtime, boolean greedy, EdgeTable query, int types, ConfigStore configs) throws Exception {
+		return super.buildQueryEdgesRun(runtime, greedy, query, types, configs);
 	}
 
 	/**
 	 * edge[命令合成]<br/>
 	 * 查询表备注
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param pattern 名称统配符或正则
+     * @param query 查询条件
 	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return String
 	 * @throws Exception Exception
 	 */
-	public List<Run> buildQueryEdgesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
-		return super.buildQueryEdgesCommentRun(runtime, catalog, schema, pattern, types);
+	public List<Run> buildQueryEdgesCommentRun(DataRuntime runtime, EdgeTable query, int types) throws Exception {
+		return super.buildQueryEdgesCommentRun(runtime, query, types);
 	}
 
 	/**
@@ -3225,16 +3160,15 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照buildQueryEdgesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param catalog catalog
-	 * @param schema schema
+     * @param query 查询条件
 	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return edges
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends EdgeTable> LinkedHashMap<String, T> edges(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set) throws Exception {
-		return super.edges(runtime, index, create, tables, catalog, schema, set);
+	public <T extends EdgeTable> LinkedHashMap<String, T> edges(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tablpreviouses, EdgeTable query, DataSet set) throws Exception {
+		return super.edges(runtime, index, create, previous, query, set);
 	}
 
 	/**
@@ -3243,16 +3177,15 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照buildQueryEdgesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param catalog catalog
-	 * @param schema schema
+     * @param query 查询条件
 	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return edges
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends EdgeTable> List<T> edges(DataRuntime runtime, int index, boolean create, List<T> tables, Catalog catalog, Schema schema, DataSet set) throws Exception {
-		return super.edges(runtime, index, create, tables, catalog, schema, set);
+	public <T extends EdgeTable> List<T> edges(DataRuntime runtime, int index, boolean create, List<T> previous, EdgeTable query, DataSet set) throws Exception {
+		return super.edges(runtime, index, create, previous, query, set);
 	}
 
 	/**
@@ -3261,16 +3194,14 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param previous 上一步查询结果
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param pattern 名称统配符或正则
+     * @param query 查询条件
 	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return edges
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends EdgeTable> LinkedHashMap<String, T> edges(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
-		return super.edges(runtime, create, tables, catalog, schema, pattern, types);
+	public <T extends EdgeTable> LinkedHashMap<String, T> edges(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, EdgeTable query, int types) throws Exception {
+		return super.edges(runtime, create, previous, query, types);
 	}
 
 	/**
@@ -3279,17 +3210,15 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param previous 上一步查询结果
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param pattern 名称统配符或正则
+     * @param query 查询条件
 	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return edges
 	 * @throws Exception 异常
 	 * @param <T> EdgeTable
 	 */
 	@Override
-	public <T extends EdgeTable> List<T> edges(DataRuntime runtime, boolean create, List<T> tables, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
-		return super.edges(runtime, create, tables, catalog, schema, pattern, types);
+	public <T extends EdgeTable> List<T> edges(DataRuntime runtime, boolean create, List<T> previous, EdgeTable query, int types) throws Exception {
+		return super.edges(runtime, create, previous, query, types);
 	}
 
 	/**
@@ -3297,15 +3226,14 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * 根据查询结果封装EdgeTable对象,只封装catalog,schema,name等基础属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 上一步封装结果
-	 * @param catalog catalog
-	 * @param schema schema
+     * @param query 查询条件
 	 * @param row 查询结果集
 	 * @return EdgeTable
 	 * @param <T> EdgeTable
 	 */
 	@Override
-	public <T extends EdgeTable> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row) {
-		return super.init(runtime, index, meta, catalog, schema, row);
+	public <T extends EdgeTable> T init(DataRuntime runtime, int index, T meta, EdgeTable query, DataRow row) {
+		return super.init(runtime, index, meta, query, row);
 	}
 	/**
 	 * edge[结果集封装]<br/>
@@ -3317,8 +3245,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param <T> EdgeTable
 	 */
 	@Override
-	public <T extends EdgeTable> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row) {
-		return super.detail(runtime, index, meta, catalog, schema, row);
+	public <T extends EdgeTable> T detail(DataRuntime runtime, int index, T meta, EdgeTable query, DataRow row) {
+		return super.detail(runtime, index, meta, query, row);
 	}
 	/**
 	 *
@@ -3352,7 +3280,6 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
 	 * @param meta 表
-	 * @param previous 上一步查询结果
 	 * @param set sql执行的结果集
 	 * @return List
 	 */
@@ -3385,31 +3312,27 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * 查询主表
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param pattern 名称统配符或正则
+     * @param query 查询条件
 	 * @param types  Metadata.TYPE.
 	 * @return List
 	 * @param <T> MasterTable
 	 */
 	@Override
-	public <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
-		return super.masters(runtime, random, catalog, schema, pattern, types, struct, configs);
+	public <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, String random, MasterTable query, int types, int struct, ConfigStore configs) {
+		return super.masters(runtime, random, query, types, struct, configs);
 	}
 
 	/**
 	 * master table[命令合成]<br/>
 	 * 查询主表
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param pattern 名称统配符或正则
+     * @param query 查询条件
 	 * @param types types
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildQueryMasterTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs) throws Exception {
-		return super.buildQueryMasterTablesRun(runtime, greedy, catalog, schema, pattern, types,  configs);
+	public List<Run> buildQueryMasterTablesRun(DataRuntime runtime, boolean greedy, MasterTable query, int types, ConfigStore configs) throws Exception {
+		return super.buildQueryMasterTablesRun(runtime, greedy, query, types,  configs);
 	}
 
 	/**
@@ -3418,16 +3341,15 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryMasterTablesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param catalog catalog
-	 * @param schema schema
+     * @param query 查询条件
 	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return tables
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set) throws Exception {
-		return super.masters(runtime, index, create, tables, catalog, schema, set);
+	public <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, MasterTable query, DataSet set) throws Exception {
+		return super.masters(runtime, index, create, previous, query, set);
 	}
 
 	/**
@@ -3435,15 +3357,14 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * 根据根据驱动内置接口
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param catalog catalog
-	 * @param schema schema
+     * @param query 查询条件
 	 * @param previous 上一步查询结果
 	 * @return tables
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables,Catalog catalog, Schema schema, String pattern, int types) throws Exception {
-		return super.masters(runtime, create, tables, catalog, schema, pattern, types);
+	public <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, MasterTable query, int types) throws Exception {
+		return super.masters(runtime, create, previous, query, types);
 	}
 
 	/**
@@ -3476,7 +3397,6 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
 	 * @param table MasterTable
-	 * @param previous 上一步查询结果
 	 * @param set sql执行的结果集
 	 * @return List
 	 */
@@ -3491,8 +3411,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * <T extends PartitionTable> LinkedHashMap<String,T> partitions(DataRuntime runtime, String random, boolean greedy, MasterTable master, Map<String, Object> tags, String pattern)
 	 * [命令合成]
 	 * List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types)
-	 * List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Table master, Map<String,Object> tags, String pattern)
-	 * List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Table master, Map<String,Object> tags)
+	 * List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Table master, Map<String, Tag> tags, String pattern)
+	 * List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Table master, Map<String, Tag> tags)
 	 * [结果集封装]<br/>
 	 * <T extends PartitionTable> LinkedHashMap<String, T> partitions(DataRuntime runtime, int total, int index, boolean create, MasterTable master, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set)
 	 * <T extends PartitionTable> LinkedHashMap<String,T> partitions(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, MasterTable master)
@@ -3509,72 +3429,28 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
-	 * @param master 主表
-	 * @param pattern 名称统配符或正则
+     * @param query 查询条件
 	 * @return List
 	 * @param <T> MasterTable
 	 */
 	@Override
-	public <T extends PartitionTable> LinkedHashMap<String,T> partitions(DataRuntime runtime, String random, boolean greedy, MasterTable master, Map<String, Object> tags, String pattern) {
-		return super.partitions(runtime, random, greedy, master, tags, pattern);
+	public <T extends PartitionTable> LinkedHashMap<String,T> partitions(DataRuntime runtime, String random, boolean greedy, PartitionTable query) {
+		return super.partitions(runtime, random, greedy, query);
 	}
 
 	/**
 	 * partition table[命令合成]<br/>
 	 * 查询分区表
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param pattern 名称统配符或正则
+     * @param query 查询条件
 	 * @param types types
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
-		return super.buildQueryPartitionTablesRun(runtime, catalog, schema, pattern, types);
+	public List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, PartitionTable query, int types) throws Exception {
+		return super.buildQueryPartitionTablesRun(runtime, query, types);
 	}
 
-	/**
-	 * partition table[命令合成]<br/>
-	 * 根据主表查询分区表
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param master 主表
-	 * @param tags 标签名+标签值
-	 * @param name 名称统配符或正则
-	 * @return sql
-	 * @throws Exception 异常
-	 */
-	@Override
-	public List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Table master, Map<String,Object> tags, String name) throws Exception {
-		return super.buildQueryPartitionTablesRun(runtime, master, tags, name);
-	}
-
-	/**
-	 * partition table[命令合成]<br/>
-	 * 根据主表查询分区表
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param master 主表
-	 * @param tags 标签名+标签值
-	 * @return sql
-	 * @throws Exception 异常
-	 */
-	@Override
-	public List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Table master, Map<String,Object> tags) throws Exception {
-		return super.buildQueryPartitionTablesRun(runtime, master, tags);
-	}
-
-	/**
-	 * partition table[命令合成]<br/>
-	 * 根据主表查询分区表
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param master 主表=
-	 * @return sql
-	 * @throws Exception 异常
-	 */
-	@Override
-	public List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Table master) throws Exception {
-		return super.buildQueryPartitionTablesRun(runtime, master);
-	}
 
 	/**
 	 * partition table[结果集封装]<br/>
@@ -3583,17 +3459,15 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param total 合计SQL数量
 	 * @param index 第几条SQL 对照 buildQueryMasterTablesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param master 主表
-	 * @param catalog catalog
-	 * @param schema schema
+     * @param query 查询条件
 	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return tables
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends PartitionTable> LinkedHashMap<String, T> partitions(DataRuntime runtime, int total, int index, boolean create, MasterTable master, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set) throws Exception {
-		return super.partitions(runtime, total, index, create, master, tables, catalog, schema, set);
+	public <T extends PartitionTable> LinkedHashMap<String, T> partitions(DataRuntime runtime, int total, int index, boolean create, PartitionTable query, DataSet set) throws Exception {
+		return super.partitions(runtime, total, index, create, query, set);
 	}
 
 	/**
@@ -3601,16 +3475,14 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * 根据根据驱动内置接口
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param master 主表
-	 * @param catalog catalog
-	 * @param schema schema
+     * @param query 查询条件
 	 * @param previous 上一步查询结果
 	 * @return tables
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends PartitionTable> LinkedHashMap<String,T> partitions(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, MasterTable master) throws Exception {
-		return super.partitions(runtime, create, tables, catalog, schema, master);
+	public <T extends PartitionTable> LinkedHashMap<String,T> partitions(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, PartitionTable query) throws Exception {
+		return super.partitions(runtime, create, previous, query);
 	}
 
 	/**
@@ -3660,8 +3532,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * [命令合成]
 	 * List<Run> buildQueryColumnsRun(DataRuntime runtime, Table table, boolean metadata) throws Exception;
 	 * [结果集封装]<br/>
-	 * <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> columns, DataSet set) throws Exception;
-	 * <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, Table table, List<T> columns, DataSet set) throws Exception;
+	 * <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Table table, Column query, DataSet set) throws Exception;
+	 * <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, List<T> previous, Column query, DataSet set) throws Exception;
 	 * <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, LinkedHashMap<String, T> columns, Table table, String pattern) throws Exception;
 	 ******************************************************************************************************************/
 	/**
@@ -3676,7 +3548,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param <T>  Column
 	 */
 	@Override
-	public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Table table, boolean primary) {
+	public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Column query, boolean primary, ConfigStore configs) {
+		Table table = query.getTable();
 		if (!greedy) {
 			checkSchema(runtime, table);
 		}
@@ -3785,22 +3658,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 		return columns;
 	}
 
-	/**
-	 * column[调用入口]<br/>
-	 * 查询列
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param random 用来标记同一组命令
-	 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param table 查询全部表时 输入null
-	 * @return List
-	 * @param <T> Column
-	 */
-	@Override
-	public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, Table table) {
-		return super.columns(runtime, random, greedy, catalog, schema, table);
-	}
+	
 
 	/**
 	 * column[命令合成]<br/>
@@ -3820,15 +3678,14 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * column[命令合成]<br/>(方法1)<br/>
 	 * 查询多个表的列
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param catalog catalog
-	 * @param schema schema
+     * @param query 查询条件
 	 * @param tables 表
 	 * @param metadata 是否根据metadata(true:SELECT * FROM T WHERE 1=0,false:查询系统表)
 	 * @return runs
 	 */
 	@Override
-	public List<Run> buildQueryColumnsRun(DataRuntime runtime, Catalog catalog, Schema schema, Collection<? extends Table> tables, boolean metadata, ConfigStore configs) throws Exception {
-		return super.buildQueryColumnsRun(runtime, catalog, schema, tables, metadata, configs);
+	public List<Run> buildQueryColumnsRun(DataRuntime runtime, boolean metadata, Collection<? extends Table> tables, Column query, ConfigStore configs) throws Exception {
+		return super.buildQueryColumnsRun(runtime, metadata, tables, query, configs);
 	}
 	/**
 	 * column[结果集封装]<br/>
@@ -3843,7 +3700,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> columns, DataSet set) throws Exception {
+	public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Table table, Column query, DataSet set) throws Exception {
 		if(null == columns) {
 			columns = new LinkedHashMap<>();
 		}
@@ -3858,7 +3715,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 		return columns;
 	}
 	@Override
-	public <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, Table table, List<T> columns, DataSet set) throws Exception {
+	public <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, List<T> previous, Column query, DataSet set) throws Exception {
 		if(null == columns) {
 			columns = new ArrayList<>();
 		}
@@ -3881,13 +3738,12 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param index 第几条SQL 对照 buildQueryColumnsRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param tables 表
-	 * @param previous 上一步查询结果
 	 * @param set 系统表查询SQL结果集
 	 * @return columns
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, Collection<? extends Table> tables, List<T> columns, DataSet set) throws Exception {
+	public <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create,  List<T> previous, Collection<? extends Table> tables, Column query, DataSet set) throws Exception {
 		if(null == columns) {
 			columns = new ArrayList<>();
 		}
@@ -3918,15 +3774,14 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
-	 * @param catalog catalog
-	 * @param schema schema
+     * @param query 查询条件
 	 * @param tables 表
 	 * @return List
 	 * @param <T> Column
 	 */
 	@Override
-	public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, Collection<? extends Table> tables) {
-		return super.columns(runtime, random, greedy, catalog, schema, tables);
+	public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, Collection<? extends Table> tables, ConfigStore configs) {
+		return super.columns(runtime, random, greedy, catalog, schema, tables, configs);
 	}
 
 	/**
@@ -4011,8 +3866,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return PrimaryKey
 	 */
 	@Override
-	public PrimaryKey primary(DataRuntime runtime, String random, boolean greedy, Table table) {
-		return super.primary(runtime, random, greedy, table);
+	public PrimaryKey primary(DataRuntime runtime, String random, boolean greedy, PrimaryKey query){
+		return super.primary(runtime, random, greedy, query);
 	}
 
 	/**
@@ -4023,8 +3878,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return runs
 	 */
 	@Override
-	public List<Run> buildQueryPrimaryRun(DataRuntime runtime, Table table) throws Exception {
-		return super.buildQueryPrimaryRun(runtime, table);
+	public List<Run> buildQueryPrimaryRun(DataRuntime runtime, PrimaryKey query) throws Exception {
+		return super.buildQueryPrimaryRun(runtime, query);
 	}
 
 	/**
@@ -4037,7 +3892,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends PrimaryKey> T init(DataRuntime runtime, int index, T primary, Table table, DataSet set) throws Exception {
+	public <T extends PrimaryKey> T init(DataRuntime runtime, int index, T primary, PrimaryKey query, DataSet set) throws Exception {
+		Table table = query.getTable();
 		PrimaryMetadataAdapter config = primaryMetadataAdapter(runtime);
 		for(DataRow row:set) {
 			if(null == primary) {
@@ -4077,8 +3933,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends PrimaryKey> T detail(DataRuntime runtime, int index, T primary, Table table, DataSet set) throws Exception {
-		return super.detail(runtime, index, primary, table, set);
+	public <T extends PrimaryKey> T detail(DataRuntime runtime, int index, T primary, PrimaryKey query, DataSet set) throws Exception {
+		return super.detail(runtime, index, primary, query, set);
 	}
 
 	/**
@@ -4100,8 +3956,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public PrimaryKey primary(DataRuntime runtime, Table table) throws Exception {
-		return super.primary(runtime, table);
+	public PrimaryKey primary(DataRuntime runtime, PrimaryKey query) throws Exception {
+		return super.primary(runtime, query);
 	}
 	/* *****************************************************************************************************************
 	 * 													foreign
@@ -4124,8 +3980,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return PrimaryKey
 	 */
 	@Override
-	public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, String random, boolean greedy, Table table) {
-		return super.foreigns(runtime, random, greedy,table);
+	public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, String random, boolean greedy, ForeignKey query) {
+		return super.foreigns(runtime, random, greedy, query);
 	}
 
 	/**
@@ -4136,8 +3992,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return runs
 	 */
 	@Override
-	public List<Run> buildQueryForeignsRun(DataRuntime runtime, Table table) throws Exception {
-		return super.buildQueryForeignsRun(runtime, table);
+	public List<Run> buildQueryForeignsRun(DataRuntime runtime, ForeignKey query) throws Exception {
+		return super.buildQueryForeignsRun(runtime, query);
 	}
 
 	/**
@@ -4151,8 +4007,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, int index, Table table, LinkedHashMap<String, T> foreigns, DataSet set) throws Exception {
-		return super.foreigns(runtime, index, table, foreigns, set);
+	public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, int index, Table table, LinkedHashMap<String, T> previous, ForeignKey query, DataSet set) throws Exception {
+		return super.foreigns(runtime, index, table, previous, query, set);
 	}
 
 	/* *****************************************************************************************************************
@@ -4181,8 +4037,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param <T> Index
 	 */
 	@Override
-	public <T extends Index> List<T> indexes(DataRuntime runtime, String random, boolean greedy, Table table, String pattern) {
-		return super.indexes(runtime, random, greedy, table, pattern);
+	public <T extends Index> List<T> indexes(DataRuntime runtime, String random, boolean greedy, Index query) {
+		return super.indexes(runtime, random, greedy, query);
 	}
 
 	/**
@@ -4196,8 +4052,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param <T> Index
 	 */
 	@Override
-	public <T extends Index> LinkedHashMap<String, T> indexes(DataRuntime runtime, String random, Table table, String pattern) {
-		return super.indexes(runtime, random, table, pattern);
+	public <T extends Index> LinkedHashMap<String, T> indexes(DataRuntime runtime, String random, Index query) {
+		return super.indexes(runtime, random, query);
 	}
 
 	/**
@@ -4209,8 +4065,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return runs
 	 */
 	@Override
-	public List<Run> buildQueryIndexesRun(DataRuntime runtime, Table table, String name) {
-		return super.buildQueryIndexesRun(runtime, table, name);
+	public List<Run> buildQueryIndexesRun(DataRuntime runtime, Index query) {
+		return super.buildQueryIndexesRun(runtime, query);
 	}
 	@Override
 	public List<Run> buildQueryIndexesRun(DataRuntime runtime, Collection<? extends Table> tables) {
@@ -4230,8 +4086,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Index> LinkedHashMap<String, T> indexes(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> indexes, DataSet set) throws Exception {
-		return super.indexes(runtime, index, create, table, indexes, set);
+	public <T extends Index> LinkedHashMap<String, T> indexes(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Index query, DataSet set) throws Exception {
+		return super.indexes(runtime, index, create, previous, query, set);
 	}
 
 	/**
@@ -4247,8 +4103,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Index> List<T> indexes(DataRuntime runtime, int index, boolean create, Table table, List<T> indexes, DataSet set) throws Exception {
-		return super.indexes(runtime, index, create, table, indexes, set);
+	public <T extends Index> List<T> indexes(DataRuntime runtime, int index, boolean create, List<T> previous, Index query, DataSet set) throws Exception {
+		return super.indexes(runtime, index, create, previous, query, set);
 	}
 
 	/**
@@ -4263,8 +4119,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Index> List<T> indexes(DataRuntime runtime, boolean create, List<T> indexes, Table table, boolean unique, boolean approximate) throws Exception {
-		return super.indexes(runtime, create, indexes, table, unique, approximate);
+	public <T extends Index> List<T> indexes(DataRuntime runtime, boolean create, List<T> previous, Index query) throws Exception {
+		return super.indexes(runtime, create, previous, query);
 	}
 
 	/**
@@ -4279,7 +4135,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Index> LinkedHashMap<String, T> indexes(DataRuntime runtime, boolean create, LinkedHashMap<String, T> indexes, Table table, boolean unique, boolean approximate) throws Exception {
+	public <T extends Index> LinkedHashMap<String, T> indexes(DataRuntime runtime, boolean create, LinkedHashMap<String, T> indexes, Index query) throws Exception {
 		DataSource datasource = null;
 		Connection con = null;
 		if(null == indexes) {
@@ -4299,8 +4155,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Index> T init(DataRuntime runtime, int index, T meta, Table table, DataRow row) throws Exception {
-		return super.init(runtime, index, meta, table, row);
+	public <T extends Index> T init(DataRuntime runtime, int index, T meta, Index query, DataRow row) throws Exception {
+		return super.init(runtime, index, meta, query, row);
 	}
 
 	/**
@@ -4314,8 +4170,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Index> T detail(DataRuntime runtime, int index, T meta, Table table, DataRow row) throws Exception {
-		return super.detail(runtime, index, meta, table, row);
+	public <T extends Index> T detail(DataRuntime runtime, int index, T meta, Index query, DataRow row) throws Exception {
+		return super.detail(runtime, index, meta, query, row);
 	}
 	/**
 	 * index[结构集封装-依据]<br/>
@@ -4355,7 +4211,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param <T> Index
 	 */
 	@Override
-	public <T extends Constraint> List<T> constraints(DataRuntime runtime, String random, boolean greedy, Table table, String pattern) {
+	public <T extends Constraint> List<T> constraints(DataRuntime runtime, String random, boolean greedy, Constraint query, String pattern) {
+		Table table = query.getTable();
 		List<T> constraints = null;
 		if(null == table) {
 			table = new Table();
@@ -4396,7 +4253,10 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param <T> Index
 	 */
 	@Override
-	public <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, String random, Table table, Column column, String pattern) {
+	public <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, String random, Constraint query) {
+		Table table = query.getTable();
+		LinkedHashMap<String, Column>  columns = query.getColumns();
+		String pattern = query.getName();
 		LinkedHashMap<String, T> constraints = null;
 		if(null == table) {
 			table = new Table();
@@ -4411,7 +4271,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 			for(Run run:runs) {
 				DataSet set = select(runtime, random, true, (String)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
 				try {
-					constraints = constraints(runtime, idx, true, table, column, constraints, set);
+					constraints = constraints(runtime, idx, true, table, columns, constraints, set);
 				}catch (Exception e) {
 					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 						e.printStackTrace();
@@ -4471,8 +4331,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Constraint> List<T> constraints(DataRuntime runtime, int index, boolean create, Table table, List<T> constraints, DataSet set) throws Exception {
-		return super.constraints(runtime, index, create, table, constraints, set);
+	public <T extends Constraint> List<T> constraints(DataRuntime runtime, int index, boolean create, List<T> previous, Constraint query, DataSet set) throws Exception {
+		return super.constraints(runtime, index, create, previous, query, set);
 	}
 
 	/**
@@ -4489,19 +4349,20 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, int index, boolean create, Table table, Column column, LinkedHashMap<String, T> constraints, DataSet set) throws Exception {
-		if(null == constraints) {
-			constraints = new LinkedHashMap<>();
+	public <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Constraint query, DataSet set) throws Exception {
+		Table table = query.getTable();
+		if(null == previous) {
+			previous = new LinkedHashMap<>();
 		}
 		for(DataRow row:set) {
 			String name = row.getString("CONSTRAINT_NAME");
 			if(null == name) {
 				continue;
 			}
-			T constraint = constraints.get(name.toUpperCase());
+			T constraint = previous.get(name.toUpperCase());
 			if(null == constraint && create) {
 				constraint = (T)new Constraint();
-				constraints.put(name.toUpperCase(), constraint);
+				previous.put(name.toUpperCase(), constraint);
 			};
 
 			String catalog = row.getString("CONSTRAINT_CATALOG");
@@ -4516,7 +4377,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 			constraint.setType(row.getString("CONSTRAINT_TYPE"));
 
 		}
-		return constraints;
+		return previous;
 	}
 
 	/* *****************************************************************************************************************
@@ -4536,13 +4397,11 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
-	 * @param table 表
-	 * @param events 事件 INSERT|UPDATE|DELETE
 	 * @return  LinkedHashMap
 	 * @param <T> Index
 	 */
-	public <T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, String random, boolean greedy, Table table, List<Trigger.EVENT> events) {
-		return super.triggers(runtime, random, greedy, table, events);
+	public <T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, String random, boolean greedy, Trigger query) {
+		return super.triggers(runtime, random, greedy, query);
 	}
 
 	/**
@@ -4553,8 +4412,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param events 事件 INSERT|UPDATE|DELETE
 	 * @return sqls
 	 */
-	public List<Run> buildQueryTriggersRun(DataRuntime runtime, Table table, List<Trigger.EVENT> events) {
-		return super.buildQueryTriggersRun(runtime, table, events);
+	public List<Run> buildQueryTriggersRun(DataRuntime runtime, Trigger query) {
+		return super.buildQueryTriggersRun(runtime, query);
 	}
 
 	/**
@@ -4569,8 +4428,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return LinkedHashMap
 	 * @throws Exception 异常
 	 */
-	public <T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> triggers, DataSet set) throws Exception {
-		return super.triggers(runtime, index, create, table, triggers, set);
+	public <T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> previous, Trigger query, DataSet set) throws Exception {
+		return super.triggers(runtime, index, create, table, previous, query, set);
 	}
 
 	/* *****************************************************************************************************************
@@ -4599,14 +4458,15 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param pattern 名称统配符或正则
+     * @param query 查询条件
 	 * @return  LinkedHashMap
 	 * @param <T> Index
 	 */
 	@Override
-	public <T extends Procedure> List<T> procedures(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern) {
+	public <T extends Procedure> List<T> procedures(DataRuntime runtime, String random, boolean greedy, Procedure query) {
+		Catalog catalog = query.getCatalog();
+		Schema schema = query.getSchema();
+		String pattern = query.getName();
 		List<T> procedures = new ArrayList<>();
 		if(null == random) {
 			random = random(runtime);
@@ -4628,7 +4488,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 			for(Run run:runs) {
 				DataSet set = select(runtime, random, true, (String)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
 				try {
-					procedures = procedures(runtime, idx, true, procedures, set);
+					procedures = procedures(runtime, idx, true, procedures, query, set);
 				}catch (Exception e) {
 					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 						e.printStackTrace();
@@ -4645,14 +4505,15 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * procedure[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param pattern 名称统配符或正则
+     * @param query 查询条件
 	 * @return  LinkedHashMap
 	 * @param <T> Index
 	 */
 	@Override
-	public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern) {
+	public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, String random, Procedure query) {
+		Catalog catalog = query.getCatalog();
+		Schema schema = query.getSchema();
+		String pattern = query.getName();
 		LinkedHashMap<String,T> procedures = new LinkedHashMap<>();
 		if(null == random) {
 			random = random(runtime);
@@ -4674,7 +4535,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 			for(Run run:runs) {
 				DataSet set = select(runtime, random, true, (String)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
 				try {
-					procedures = procedures(runtime, idx, true, procedures, set);
+					procedures = procedures(runtime, idx, true, procedures, query, set);
 				}catch (Exception e) {
 					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 						e.printStackTrace();
@@ -4690,14 +4551,12 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * procedure[命令合成]<br/>
 	 * 查询表上的 Trigger
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param pattern 名称统配符或正则
+     * @param query 查询条件
 	 * @return runs
 	 */
 	@Override
-	public List<Run> buildQueryProceduresRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) {
-		return super.buildQueryProceduresRun(runtime, catalog, schema, pattern);
+	public List<Run> buildQueryProceduresRun(DataRuntime runtime, Procedure query) {
+		return super.buildQueryProceduresRun(runtime, query);
 	}
 
 	/**
@@ -4712,8 +4571,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> procedures, DataSet set) throws Exception {
-		return super.procedures(runtime, index, create, procedures, set);
+	public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Procedure query, DataSet set) throws Exception {
+		return super.procedures(runtime, index, create, previous, query, set);
 	}
 
 	/**
@@ -4726,8 +4585,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Procedure> List<T> procedures(DataRuntime runtime, boolean create, List<T> procedures) throws Exception {
-		return super.procedures(runtime, create, procedures);
+	public <T extends Procedure> List<T> procedures(DataRuntime runtime, boolean create, List<T> previous, Procedure query) throws Exception {
+		return super.procedures(runtime, create, previous, query);
 	}
 
 	/**
@@ -4740,8 +4599,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, boolean create, LinkedHashMap<String, T> procedures) throws Exception {
-		return super.procedures(runtime, create, procedures);
+	public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Procedure query) throws Exception {
+		return super.procedures(runtime, create, previous, query);
 	}
 
 	/**
@@ -4775,7 +4634,6 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
 	 * @param procedure Procedure
-	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return List
 	 */
@@ -4810,14 +4668,15 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param pattern 名称统配符或正则
+     * @param query 查询条件
 	 * @return  LinkedHashMap
 	 * @param <T> Index
 	 */
 	@Override
-	public <T extends Function> List<T> functions(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern) {
+	public <T extends Function> List<T> functions(DataRuntime runtime, String random, boolean greedy, Function query) {
+		Catalog catalog = query.getCatalog();
+		Schema schema = query.getSchema();
+		String pattern = query.getName();
 		List<T> functions = new ArrayList<>();
 		if(null == random) {
 			random = random(runtime);
@@ -4856,14 +4715,15 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * function[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param pattern 名称统配符或正则
+     * @param query 查询条件
 	 * @return  LinkedHashMap
 	 * @param <T> Index
 	 */
 	@Override
-	public <T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern) {
+	public <T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, String random, Function query) {
+		Catalog catalog = query.getCatalog();
+		Schema schema = query.getSchema();
+		String pattern = query.getName();
 		LinkedHashMap<String,T> functions = new LinkedHashMap<>();
 		if(null == random) {
 			random = random(runtime);
@@ -4900,14 +4760,13 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * function[命令合成]<br/>
 	 * 查询表上的 Trigger
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param catalog catalog
-	 * @param schema schema
+     * @param query 查询条件
 	 * @param name 名称统配符或正则
 	 * @return runs
 	 */
 	@Override
-	public List<Run> buildQueryFunctionsRun(DataRuntime runtime, Catalog catalog, Schema schema, String name) {
-		return super.buildQueryFunctionsRun(runtime, catalog, schema, name);
+	public List<Run> buildQueryFunctionsRun(DataRuntime runtime, Function query) {
+		return super.buildQueryFunctionsRun(runtime, query);
 	}
 
 	/**
@@ -4922,8 +4781,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Function> List<T> functions(DataRuntime runtime, int index, boolean create, List<T> functions, Catalog catalog, Schema schema, DataSet set) throws Exception {
-		return super.functions(runtime, index, create, functions, catalog, schema, set);
+	public <T extends Function> List<T> functions(DataRuntime runtime, int index, boolean create, List<T> previous, Function query, DataSet set) throws Exception {
+		return super.functions(runtime, index, create, previous, query, set);
 	}
 
 	/**
@@ -4938,8 +4797,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> functions, Catalog catalog, Schema schema, DataSet set) throws Exception {
-		return super.functions(runtime, index, create, functions, catalog, schema, set);
+	public <T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Function query, DataSet set) throws Exception {
+		return super.functions(runtime, index, create, previous, query, set);
 	}
 
 	/**
@@ -4952,8 +4811,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Function> List<T> functions(DataRuntime runtime, boolean create, List<T> functions) throws Exception {
-		return super.functions(runtime, create, functions);
+	public <T extends Function> List<T> functions(DataRuntime runtime, boolean create, List<T> previous, Function query) throws Exception {
+		return super.functions(runtime, create, previous, query);
 	}
 
 	/**
@@ -4987,7 +4846,6 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
 	 * @param function Function
-	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return List
 	 */
@@ -5022,15 +4880,13 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param pattern 名称统配符或正则
+     * @param query 查询条件
 	 * @return  LinkedHashMap
 	 * @param <T> Index
 	 */
 	@Override
-	public <T extends Sequence> List<T> sequences(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern) {
-		return super.sequences(runtime, random, greedy, catalog, schema, pattern);
+	public <T extends Sequence> List<T> sequences(DataRuntime runtime, String random, boolean greedy, Sequence query) {
+		return super.sequences(runtime, random, greedy, query);
 	}
 
 	/**
@@ -5038,29 +4894,26 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * sequence[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param pattern 名称统配符或正则
+     * @param query 查询条件
 	 * @return  LinkedHashMap
 	 * @param <T> Index
 	 */
 	@Override
-	public <T extends Sequence> LinkedHashMap<String, T> sequences(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern) {
-		return super.sequences(runtime, random, catalog, schema, pattern);
+	public <T extends Sequence> LinkedHashMap<String, T> sequences(DataRuntime runtime, String random, Sequence query) {
+		return super.sequences(runtime, random, query);
 	}
 
 	/**
 	 * sequence[命令合成]<br/>
 	 * 查询表上的 Trigger
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param catalog catalog
-	 * @param schema schema
+     * @param query 查询条件
 	 * @param name 名称统配符或正则
 	 * @return runs
 	 */
 	@Override
-	public List<Run> buildQuerySequencesRun(DataRuntime runtime, Catalog catalog, Schema schema, String name) {
-		return super.buildQuerySequencesRun(runtime, catalog, schema, name);
+	public List<Run> buildQuerySequencesRun(DataRuntime runtime, Sequence query) {
+		return super.buildQuerySequencesRun(runtime, query);
 	}
 
 	/**
@@ -5075,8 +4928,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Sequence> List<T> sequences(DataRuntime runtime, int index, boolean create, List<T> sequences, DataSet set) throws Exception {
-		return super.sequences(runtime, index, create, sequences, set);
+	public <T extends Sequence> List<T> sequences(DataRuntime runtime, int index, boolean create, List<T> previous, Sequence query, DataSet set) throws Exception {
+		return super.sequences(runtime, index, create, previous, query, set);
 	}
 
 	/**
@@ -5091,8 +4944,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Sequence> LinkedHashMap<String, T> sequences(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> sequences, DataSet set) throws Exception {
-		return super.sequences(runtime, index, create, sequences, set);
+	public <T extends Sequence> LinkedHashMap<String, T> sequences(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Sequence query, DataSet set) throws Exception {
+		return super.sequences(runtime, index, create, previous, query, set);
 	}
 
 	/**
@@ -5105,8 +4958,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Sequence> List<T> sequences(DataRuntime runtime, boolean create, List<T> sequences) throws Exception {
-		return super.sequences(runtime, create, sequences);
+	public <T extends Sequence> List<T> sequences(DataRuntime runtime, boolean create, List<T> previous, Sequence query) throws Exception {
+		return super.sequences(runtime, create, previous, query);
 	}
 
 	/**
@@ -5139,14 +4992,13 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * 查询 Sequence DDL
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
-	 * @param sequence Sequence
-	 * @param previous 上一步查询结果
+	 * @param previou 上一步查询结果
 	 * @param set 查询结果集
 	 * @return List
 	 */
 	@Override
-	public List<String> ddl(DataRuntime runtime, int index, Sequence sequence, List<String> ddls, DataSet set) {
-		return super.ddl(runtime, index, sequence, ddls, set);
+	public List<String> ddl(DataRuntime runtime, int index, Sequence previou, List<String> ddls, DataSet set) {
+		return super.ddl(runtime, index, previou, ddls, set);
 	}
 
 	/* *****************************************************************************************************************
@@ -5157,8 +5009,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 *
 	 * 根据 catalog, schema, name检测tables集合中是否存在
 	 * @param metas metas
-	 * @param catalog catalog
-	 * @param schema schema
+	 * @param catalog Catalog
+	 * @param schema Schema
 	 * @param name name
 	 * @return 如果存在则返回Table 不存在则返回null
 	 * @param <T> Table
@@ -5333,16 +5185,6 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 		return super.rename(runtime, origin, name);
 	}
 
-	/**
-	 * table[命令合成-子流程]<br/>
-	 * 部分数据库在创建主表时用主表关键字(默认)，部分数据库普通表主表子表都用table，部分数据库用collection、timeseries等
-	 * @param meta 表
-	 * @return String
-	 */
-	@Override
-	public String keyword(Metadata meta) {
-		return super.keyword(meta);
-	}
 
 	/**
 	 * table[命令合成]<br/>

@@ -900,15 +900,13 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
      * 查询表,不是查表中的数据
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
-     * @param catalog catalog
-     * @param schema schema
-     * @param pattern 名称统配符或正则
+     * @param query 查询条件
      * @param types  Metadata.TYPE.
      * @return String
      * @throws Exception Exception
      */
     @Override
-    public List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs) throws Exception {
+    public List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Table query, int types, ConfigStore configs) throws Exception {
         return new ArrayList<>();
     }
 
@@ -917,15 +915,16 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
-     * @param catalog catalog
-     * @param schema schema
-     * @param pattern 名称统配符或正则
+     * @param query 查询条件
      * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
      * @param struct 查询的属性 参考Metadata.TYPE 多个属性相加算出总和 true:表示查询全部
      * @return List
      * @param <T> Table
      */
-    public <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs){
+    public <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Table query, int types, int struct, ConfigStore configs){
+        Catalog catalog = query.getCatalog();
+        Schema schema = query.getSchema();
+        String pattern = query.getName();
         List<T> tables = new ArrayList<>();
         MongoRuntime rt = (MongoRuntime) runtime;
         MongoDatabase database = rt.getDatabase();
@@ -935,7 +934,10 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
         }
         if(Metadata.check(struct, Metadata.TYPE.COLUMN)) {
             //查询全部表结构 columns()内部已经给table.columns赋值
-            columns(runtime, random, greedy, catalog, schema, tables);
+            Column column_query = new Column();
+            column_query.setCatalog(catalog);
+            column_query.setSchema(schema);
+            columns(runtime, random, greedy, tables, column_query);
         }
         if(Metadata.check(struct, Metadata.TYPE.INDEX)) {
             //查询全部表结构
@@ -950,14 +952,15 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
-     * @param catalog catalog
-     * @param schema schema
+     * @param query 查询条件
      * @param tables 表
      * @return List
      * @param <T> Column
      */
     @Override
-    public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, Collection<? extends Table> tables) {
+    public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Collection<? extends Table> tables, Column query, ConfigStore configs) {
+        Catalog catalog = query.getCatalog();
+        Schema schema = query.getSchema();
         List<T> list = new ArrayList<>();
         MongoRuntime rt = (MongoRuntime) runtime;
         MongoDatabase database = rt.getDatabase();
