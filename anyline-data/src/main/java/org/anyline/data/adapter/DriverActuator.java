@@ -260,8 +260,8 @@ public interface DriverActuator {
      * @return columns
      * @param <T> Column
      */
-    default <T extends Column> LinkedHashMap<String, T> columns(DriverAdapter adapter, DataRuntime runtime, boolean create, LinkedHashMap<String, T> columns, Table table, String cmd) throws Exception {
-        return columns;
+    default <T extends Column> LinkedHashMap<String, T> columns(DriverAdapter adapter, DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Table table, String cmd) throws Exception {
+        return previous;
     }
     /**
      * 根方法(3)根据根据驱动内置元数据接口补充表结构

@@ -8750,7 +8750,7 @@ public interface DriverAdapter {
 	 * @param row 查询结果集
 	 * @return User
 	 */
-	<T extends User> T detail(DataRuntime runtime, int index, T meta, User user, DataRow row);
+	<T extends User> T detail(DataRuntime runtime, int index, T meta, User query, DataRow row);
 	/**
 	 * user[结果集封装]<br/>
 	 * 根据查询结果封装 user 对象,更多属性
