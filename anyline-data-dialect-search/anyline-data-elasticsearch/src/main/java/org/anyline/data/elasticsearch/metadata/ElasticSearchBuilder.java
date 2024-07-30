@@ -73,7 +73,7 @@ public class ElasticSearchBuilder {
             if(null == dims || dims == 0) {
                 dims = column.getPrecisionLength();
             }
-            if (dims > 0) {
+            if (null != dims && dims > 0) {
                 map.put("dims", dims);
             }
         }

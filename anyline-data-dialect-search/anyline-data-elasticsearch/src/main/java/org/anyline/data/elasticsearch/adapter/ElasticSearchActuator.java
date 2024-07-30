@@ -224,7 +224,11 @@ public class ElasticSearchActuator implements DriverActuator {
         //{"_index":"index_user","_id":"102","_version":3,"result":"updated","_shards":{"total":2,"successful":2,"failed":0},"_seq_no":9,"_primary_term":1}
         String content = FileUtil.read(response.getEntity().getContent()).toString();
         if (ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-            log.info("{}[response:{}...]", random, BasicUtil.cut(content,0, 200));
+            if(content.contains("\"errors\":true")){
+                log.info("{}[response:{}]", random,content);
+            }else {
+                log.warn("{}[response:{}...]", random, BasicUtil.cut(content, 0, 500));
+            }
         }
         result.setText(content);
         return result;
