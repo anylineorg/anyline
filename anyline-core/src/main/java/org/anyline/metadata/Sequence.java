@@ -47,9 +47,7 @@ public class Sequence extends Metadata<Sequence> implements Serializable {
         this.name = name;
         this.next = next;
     }
-    public String getName() {
-        return name;
-    }
+
     public String sql() {
         if(next) {
             return name + "." + "NEXTVAL";

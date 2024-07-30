@@ -47,7 +47,7 @@ public class Constraint<E extends Constraint> extends TableAffiliation<E> implem
         setName(name);
         setType(type);
     }
-    public String getName() {
+    public String createName() {
         if(null == name) {
             name = "constraint_";
             if(null != columns) {

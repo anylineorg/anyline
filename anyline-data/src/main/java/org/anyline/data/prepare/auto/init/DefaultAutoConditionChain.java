@@ -27,6 +27,7 @@ import org.anyline.data.run.RunValue;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.Compare;
 import org.anyline.util.BasicUtil;
+import org.anyline.util.SQLUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,8 +47,18 @@ public class DefaultAutoConditionChain extends AbstractConditionChain implements
 		}
 		this.integrality(chain.integrality());
 	}
+	private static String TAB = "\t";
+	private static String BR = "\n";
+	private void tab(int lvl, boolean br, StringBuilder builder){
+		if(br){
+			builder.append(BR);
+		}
+		for(int i=0; i<lvl; i++){
+			builder.append(TAB);
+		}
+	}
 	@Override
-	public String getRunText(String prefix, DataRuntime runtime, boolean placeholder) {
+	public String getRunText(int lvl, String prefix, DataRuntime runtime, boolean placeholder) {
 		runValues = new ArrayList<>();
 		int size = conditions.size();
 		int active = 0; //有效条件
@@ -61,7 +72,7 @@ public class DefaultAutoConditionChain extends AbstractConditionChain implements
 			if(null == condition || condition.isVariableSlave()) {
 				continue;
 			}
-			txt = condition.getRunText(prefix, runtime, placeholder);
+			txt = condition.getRunText(lvl+1, prefix, runtime, placeholder);
 			if(BasicUtil.isEmpty(txt)) {
 				continue;
 			}
@@ -73,21 +84,13 @@ public class DefaultAutoConditionChain extends AbstractConditionChain implements
 					|| condition.getSwt() == Compare.EMPTY_VALUE_SWITCH.NULL
 					|| condition.getSwt() == Compare.EMPTY_VALUE_SWITCH.SRC
 			) {
-				// condition instanceof ConditionChain
-				//是否需要跟前面的条件 隔离，前面所有条件加到()中
-				/*if(condition.apart() && subBuilder.length() >1) {
-					String up = subBuilder.toString().toUpperCase();
-					if(up.contains("AND") || up.contains("OR")) {
-						subBuilder.insert(0, "(").append(")");
-					}
-				}*/
-				// if(i>0 /*&& !condition.isContainer()*/) {
 
+				txt = SQLUtil.trim(txt);
 				if(joinSize>0) {
-					String chk = txt.toLowerCase().trim().replace("\n"," ").replace("\t"," ").trim();
-					if(!chk.startsWith("and ") && !chk.startsWith("or ") && !chk.startsWith("and(") && !chk.startsWith("or(")) {
-						subBuilder.append(condition.getJoin());
+					if(txt.startsWith("(")){
+						tab(lvl+1, true, subBuilder);
 					}
+					subBuilder.append(condition.getJoin());
 				}
 				if(subBuilder.length() > 0 && !txt.startsWith(" ") && !txt.startsWith("(")) {
 					subBuilder.append(" ");
@@ -107,14 +110,16 @@ public class DefaultAutoConditionChain extends AbstractConditionChain implements
 			}else{
 				builder.append("\n\t");
 			}
-			String sub = subBuilder.toString().trim();
+			/*String sub = subBuilder.toString().trim();
 			String chk = sub.toUpperCase().replaceAll("\\s"," ");
 			if(chk.startsWith("AND(") || chk.startsWith("AND ")) {
 				sub = sub.substring(3).trim();
 			}
 			if(chk.startsWith("OR(") || chk.startsWith("OR ")) {
 				sub = sub.substring(2).trim();
-			}
+			}*/
+			String sub = SQLUtil.trim(subBuilder.toString());
+
 			//子串有没有()
 			/*boolean pack = sub.startsWith("(") && sub.endsWith(")");
 			if(!pack && integrality) {

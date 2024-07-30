@@ -197,7 +197,7 @@ public class DefaultXMLCondition extends AbstractCondition implements Condition 
 	}
 
 	@Override
-	public String getRunText(String prefix, DataRuntime runtime, boolean placeholder) {
+	public String getRunText(int lvl, String prefix, DataRuntime runtime, boolean placeholder) {
 		String result = text; 
 		runValues = new ArrayList<>();
 		if(null == variables) {

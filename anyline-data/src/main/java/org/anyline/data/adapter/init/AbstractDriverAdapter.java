@@ -3986,7 +3986,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @return LinkedHashMap
 	 */
 	@Override
@@ -4035,7 +4035,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * database[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @return LinkedHashMap
 	 */
 	@Override
@@ -4117,7 +4117,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * database[命令合成]<br/>
 	 * 查询全部数据库
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
 	 * @return sqls
 	 * @throws Exception 异常
@@ -4348,7 +4348,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * catalog[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @return LinkedHashMap
 	 */
 	@Override
@@ -4394,7 +4394,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * catalog[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @return LinkedHashMap
 	 */
 	@Override
@@ -4455,7 +4455,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * catalog[命令合成]<br/>
 	 * 查询全部catalog
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
 	 * @return sqls
 	 * @throws Exception 异常
@@ -4649,7 +4649,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * schema[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @return LinkedHashMap
 	 */
 	@Override
@@ -4696,7 +4696,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * schema[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @return LinkedHashMap
 	 */
 	@Override
@@ -4758,7 +4758,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * catalog[命令合成]<br/>
 	 * 查询全部数据库
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
 	 * @return sqls
 	 * @throws Exception 异常
@@ -4924,7 +4924,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * [调用入口]
 	 * List<String> ddl(DataRuntime runtime, String random, Table table, boolean init)
 	 * [命令合成]
-	 * List<Run> buildQueryDdlsRun(DataRuntime runtime, Table table)
+	 * List<Run> buildQueryDdlRun(DataRuntime runtime, Table table)
 	 * [结果集封装]<br/>
 	 * List<String> ddl(DataRuntime runtime, int index, Table table, List<String> ddls, DataSet set)
 	 ******************************************************************************************************************/
@@ -4934,7 +4934,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @param struct 查询的属性 参考Metadata.TYPE 多个属性相加算出总和 true:表示查询全部
 	 * @return List
@@ -5116,7 +5116,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 查出所有key并以大写缓存 用来实现忽略大小写
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 */
 	protected void tableMap(DataRuntime runtime, String random, boolean greedy, Table query, ConfigStore configs) {
 		Catalog catalog = query.getCatalog();
@@ -5171,7 +5171,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 查出所有key并以大写缓存 用来实现忽略大小写
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param query 查询条件
+	 * @param query 查询条件 根据metadata属性
 	 */
 	@Override
 	public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Table query, int types, int struct, ConfigStore configs) {
@@ -5188,7 +5188,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 查询表,不是查表中的数据
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return String
 	 * @throws Exception Exception
@@ -5205,7 +5205,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * table[命令合成]<br/>
 	 * 查询表备注
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param query query
+     * @param query 查询条件 根据metadata属性
 	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return String
 	 * @throws Exception Exception
@@ -5224,7 +5224,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照buildQueryTablesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param query query
+     * @param query 查询条件 根据metadata属性
 	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return tables
@@ -5247,7 +5247,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照buildQueryTablesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param query query
+     * @param query 查询条件 根据metadata属性
 	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return tables
@@ -5275,7 +5275,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param previous 上一步查询结果
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return tables
 	 * @throws Exception 异常
@@ -5297,7 +5297,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param previous 上一步查询结果
-     * @param query query
+     * @param query 查询条件 根据metadata属性
 	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return tables
 	 * @throws Exception 异常
@@ -5319,7 +5319,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 根据查询结果封装Table对象,只封装catalog,schema,name等基础属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 上一步封装结果
-     * @param query query
+     * @param query 查询条件 根据metadata属性
 	 * @param row 查询结果集
 	 * @return Table
 	 * @param <T> Table
@@ -5366,7 +5366,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照buildQueryTablesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param query query
+     * @param query 查询条件 根据metadata属性
 	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return tables
@@ -5389,7 +5389,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照buildQueryTablesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return tables
@@ -5423,7 +5423,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		try {
 			long fr = System.currentTimeMillis();
-			List<Run> runs = buildQueryDdlsRun(runtime, table);
+			List<Run> runs = buildQueryDdlRun(runtime, table);
 			if (null != runs && runs.size()>0) {
 				//直接查询DDL
 				int idx = 0;
@@ -5485,10 +5485,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<Run> buildQueryDdlsRun(DataRuntime runtime, Table table) throws Exception {
+	public List<Run> buildQueryDdlRun(DataRuntime runtime, Table table) throws Exception {
 		//有支持直接查询DDL的在子类中实现
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryDdlsRun(DataRuntime runtime, Table table)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryDdlRun(DataRuntime runtime, Table table)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -5497,7 +5497,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * table[结果集封装]<br/>
 	 * 查询表DDL
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
+	 * @param index 第几条SQL 对照 buildQueryDdlRun 返回顺序
 	 * @param table 表
 	 * @param set sql执行的结果集
 	 * @return List
@@ -5532,7 +5532,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * [调用入口]
 	 * List<String> ddl(DataRuntime runtime, String random, VertexTable vertex, boolean init)
 	 * [命令合成]
-	 * List<Run> buildQueryDdlsRun(DataRuntime runtime, VertexTable vertex)
+	 * List<Run> buildQueryDdlRun(DataRuntime runtime, VertexTable vertex)
 	 * [结果集封装]<br/>
 	 * List<String> ddl(DataRuntime runtime, int index, VertexTable vertex, List<String> ddls, DataSet set)
 	 ******************************************************************************************************************/
@@ -5542,7 +5542,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
-     * @param query query
+     * @param query 查询条件 根据metadata属性
 	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @param struct 查询的属性 参考Metadata.TYPE 多个属性相加算出总和 true:表示查询全部
 	 * @return List
@@ -5779,7 +5779,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 查出所有key并以大写缓存 用来实现忽略大小写
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-     * @param query query
+     * @param query 查询条件 根据metadata属性
 	 */
 	@Override
 	public <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, String random, VertexTable query, int types, int struct, ConfigStore configs) {
@@ -5796,7 +5796,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 查询表,不是查表中的数据
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
-     * @param query query
+     * @param query 查询条件 根据metadata属性
 	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return String
 	 * @throws Exception Exception
@@ -5813,7 +5813,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * vertex[命令合成]<br/>
 	 * 查询表备注
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param query query
+     * @param query 查询条件 根据metadata属性
 	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return String
 	 * @throws Exception Exception
@@ -5832,7 +5832,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照buildQueryVertexTablesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param query query
+     * @param query 查询条件 根据metadata属性
 	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return vertexs
@@ -5855,7 +5855,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照buildQueryVertexTablesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param query query
+     * @param query 查询条件 根据metadata属性
 	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return vertexs
@@ -5878,7 +5878,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param previous 上一步查询结果
-     * @param query query
+     * @param query 查询条件 根据metadata属性
 	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return vertexs
 	 * @throws Exception 异常
@@ -5900,7 +5900,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param previous 上一步查询结果
-     * @param query query
+     * @param query 查询条件 根据metadata属性
 	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return vertexs
 	 * @throws Exception 异常
@@ -5922,7 +5922,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 根据查询结果封装VertexTable对象,只封装catalog,schema,name等基础属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 上一步封装结果
-     * @param query query
+     * @param query 查询条件 根据metadata属性
 	 * @param row 查询结果集
 	 * @return VertexTable
 	 * @param <T> VertexTable
@@ -5981,7 +5981,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		try {
 			long fr = System.currentTimeMillis();
-			List<Run> runs = buildQueryDdlsRun(runtime, vertex);
+			List<Run> runs = buildQueryDdlRun(runtime, vertex);
 			if (null != runs && runs.size()>0) {
 				//直接查询DDL
 				int idx = 0;
@@ -6043,10 +6043,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<Run> buildQueryDdlsRun(DataRuntime runtime, VertexTable vertex) throws Exception {
+	public List<Run> buildQueryDdlRun(DataRuntime runtime, VertexTable vertex) throws Exception {
 		//有支持直接查询DDL的在子类中实现
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryDdlsRun(DataRuntime runtime, VertexTable vertex)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryDdlRun(DataRuntime runtime, VertexTable vertex)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -6055,7 +6055,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * vertex[结果集封装]<br/>
 	 * 查询表DDL
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
+	 * @param index 第几条SQL 对照 buildQueryDdlRun 返回顺序
 	 * @param vertex 表
 	 * @param set sql执行的结果集
 	 * @return List
@@ -6090,7 +6090,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * [调用入口]
 	 * List<String> ddl(DataRuntime runtime, String random, EdgeTable meta, boolean init)
 	 * [命令合成]
-	 * List<Run> buildQueryDdlsRun(DataRuntime runtime, EdgeTable meta)
+	 * List<Run> buildQueryDdlRun(DataRuntime runtime, EdgeTable meta)
 	 * [结果集封装]<br/>
 	 * List<String> ddl(DataRuntime runtime, int index, EdgeTable meta, List<String> ddls, DataSet set)
 	 ******************************************************************************************************************/
@@ -6100,7 +6100,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
-     * @param query query
+     * @param query 查询条件 根据metadata属性
 	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @param struct 查询的属性 参考Metadata.TYPE 多个属性相加算出总和 true:表示查询全部
 	 * @return List
@@ -6337,7 +6337,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 查出所有key并以大写缓存 用来实现忽略大小写
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-     * @param query query
+     * @param query 查询条件 根据metadata属性
 	 */
 	@Override
 	public <T extends EdgeTable> LinkedHashMap<String, T> edges(DataRuntime runtime, String random, EdgeTable query, int types, int struct, ConfigStore configs) {
@@ -6354,7 +6354,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 查询表,不是查表中的数据
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
-     * @param query query
+     * @param query 查询条件 根据metadata属性
 	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return String
 	 * @throws Exception Exception
@@ -6371,7 +6371,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * edge[命令合成]<br/>
 	 * 查询表备注
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param query query
+     * @param query 查询条件 根据metadata属性
 	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return String
 	 * @throws Exception Exception
@@ -6390,7 +6390,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照buildQueryEdgesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param query query
+     * @param query 查询条件 根据metadata属性
 	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return edges
@@ -6413,7 +6413,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照buildQueryEdgesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param query query
+     * @param query 查询条件 根据metadata属性
 	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return edges
@@ -6436,7 +6436,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param previous 上一步查询结果
-     * @param query query
+     * @param query 查询条件 根据metadata属性
 	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return edges
 	 * @throws Exception 异常
@@ -6458,7 +6458,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param previous 上一步查询结果
-     * @param query query
+     * @param query 查询条件 根据metadata属性
 	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return edges
 	 * @throws Exception 异常
@@ -6480,7 +6480,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 根据查询结果封装EdgeTable对象,只封装catalog,schema,name等基础属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 上一步封装结果
-     * @param query query
+     * @param query 查询条件 根据metadata属性
 	 * @param row 查询结果集
 	 * @return EdgeTable
 	 * @param <T> EdgeTable
@@ -6540,7 +6540,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		try {
 			long fr = System.currentTimeMillis();
-			List<Run> runs = buildQueryDdlsRun(runtime, meta);
+			List<Run> runs = buildQueryDdlRun(runtime, meta);
 			if (null != runs && runs.size()>0) {
 				//直接查询DDL
 				int idx = 0;
@@ -6602,10 +6602,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<Run> buildQueryDdlsRun(DataRuntime runtime, EdgeTable meta) throws Exception {
+	public List<Run> buildQueryDdlRun(DataRuntime runtime, EdgeTable meta) throws Exception {
 		//有支持直接查询DDL的在子类中实现
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryDdlsRun(DataRuntime runtime, EdgeTable meta)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryDdlRun(DataRuntime runtime, EdgeTable meta)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -6614,7 +6614,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * edge[结果集封装]<br/>
 	 * 查询表DDL
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
+	 * @param index 第几条SQL 对照 buildQueryDdlRun 返回顺序
 	 * @param meta 表
 	 * @param set sql执行的结果集
 	 * @return List
@@ -6649,7 +6649,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * [调用入口]
 	 * List<String> ddl(DataRuntime runtime, String random, View view, boolean init)
 	 * [命令合成]
-	 * List<Run> buildQueryDdlsRun(DataRuntime runtime, View view)
+	 * List<Run> buildQueryDdlRun(DataRuntime runtime, View view)
 	 * [结果集封装]<br/>
 	 * List<String> ddl(DataRuntime runtime, int index, View view, List<String> ddls, DataSet set)
 	 ******************************************************************************************************************/
@@ -6659,7 +6659,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
-     * @param query query
+     * @param query 查询条件 根据metadata属性
 	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @param struct 查询的属性 参考Metadata.TYPE 多个属性相加算出总和 true:表示查询全部
 	 * @return List
@@ -6896,7 +6896,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 查出所有key并以大写缓存 用来实现忽略大小写
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-     * @param query query
+     * @param query 查询条件 根据metadata属性
 	 */
 	@Override
 	public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, View query, int types, int struct, ConfigStore configs) {
@@ -6913,7 +6913,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 查询视图,不是查视图中的数据
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
-     * @param query query
+     * @param query 查询条件 根据metadata属性
 	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return String
 	 * @throws Exception Exception
@@ -6930,7 +6930,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * view[命令合成]<br/>
 	 * 查询视图备注
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param query query
+     * @param query 查询条件 根据metadata属性
 	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return String
 	 * @throws Exception Exception
@@ -6949,7 +6949,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照buildQueryViewsRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return views
@@ -6972,7 +6972,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照buildQueryViewsRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param query query
+     * @param query 查询条件 根据metadata属性
 	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return views
@@ -6995,7 +6995,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param previous 上一步查询结果
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return views
 	 * @throws Exception 异常
@@ -7017,7 +7017,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param previous 上一步查询结果
-     * @param query query
+     * @param query 查询条件 根据metadata属性
 	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return views
 	 * @throws Exception 异常
@@ -7039,7 +7039,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 根据查询结果封装View对象,只封装catalog,schema,name等基础属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 上一步封装结果
-     * @param query query
+     * @param query 查询条件 根据metadata属性
 	 * @param row 查询结果集
 	 * @return View
 	 * @param <T> View
@@ -7098,7 +7098,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		try {
 			long fr = System.currentTimeMillis();
-			List<Run> runs = buildQueryDdlsRun(runtime, view);
+			List<Run> runs = buildQueryDdlRun(runtime, view);
 			if (null != runs && runs.size()>0) {
 				//直接查询DDL
 				int idx = 0;
@@ -7160,10 +7160,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<Run> buildQueryDdlsRun(DataRuntime runtime, View view) throws Exception {
+	public List<Run> buildQueryDdlRun(DataRuntime runtime, View view) throws Exception {
 		//有支持直接查询DDL的在子类中实现
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryDdlsRun(DataRuntime runtime, View view)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryDdlRun(DataRuntime runtime, View view)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -7172,7 +7172,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * view[结果集封装]<br/>
 	 * 查询视图DDL
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
+	 * @param index 第几条SQL 对照 buildQueryDdlRun 返回顺序
 	 * @param view 视图
 	 * @param set sql执行的结果集
 	 * @return List
@@ -7207,7 +7207,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * [调用入口]
 	 * List<String> ddl(DataRuntime runtime, String random, MasterTable master, boolean init)
 	 * [命令合成]
-	 * List<Run> buildQueryDdlsRun(DataRuntime runtime, MasterTable master)
+	 * List<Run> buildQueryDdlRun(DataRuntime runtime, MasterTable master)
 	 * [结果集封装]<br/>
 	 * List<String> ddl(DataRuntime runtime, int index, MasterTable master, List<String> ddls, DataSet set)
 	 ******************************************************************************************************************/
@@ -7217,7 +7217,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
-     * @param query query
+     * @param query 查询条件 根据metadata属性
 	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @param struct 查询的属性 参考Metadata.TYPE 多个属性相加算出总和 true:表示查询全部
 	 * @return List
@@ -7400,7 +7400,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 查出所有key并以大写缓存 用来实现忽略大小写
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-     * @param query query
+     * @param query 查询条件 根据metadata属性
 	 */
 	protected void masterMap(DataRuntime runtime, String random, boolean greedy, MasterTable query, ConfigStore configs) {
 		Catalog catalog = query.getCatalog();
@@ -7455,7 +7455,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 查出所有key并以大写缓存 用来实现忽略大小写
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-     * @param query query
+     * @param query 查询条件 根据metadata属性
 	 */
 	@Override
 	public <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, String random, MasterTable query, int types, int struct, ConfigStore configs) {
@@ -7472,7 +7472,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 查询表,不是查表中的数据
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
-     * @param query query
+     * @param query 查询条件 根据metadata属性
 	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return String
 	 * @throws Exception Exception
@@ -7489,7 +7489,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * master[命令合成]<br/>
 	 * 查询表备注
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param query query
+     * @param query 查询条件 根据metadata属性
 	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return String
 	 * @throws Exception Exception
@@ -7508,7 +7508,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照buildQueryMasterTablesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param query query
+     * @param query 查询条件 根据metadata属性
 	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return masters
@@ -7531,7 +7531,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照buildQueryMasterTablesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param query query
+     * @param query 查询条件 根据metadata属性
 	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return masters
@@ -7554,7 +7554,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param previous 上一步查询结果
-     * @param query query
+     * @param query 查询条件 根据metadata属性
 	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return masters
 	 * @throws Exception 异常
@@ -7576,7 +7576,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param previous 上一步查询结果
-     * @param query query
+     * @param query 查询条件 根据metadata属性
 	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return masters
 	 * @throws Exception 异常
@@ -7598,7 +7598,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 根据查询结果封装MasterTable对象,只封装catalog,schema,name等基础属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 上一步封装结果
-     * @param query query
+     * @param query 查询条件 根据metadata属性
 	 * @param row 查询结果集
 	 * @return MasterTable
 	 * @param <T> MasterTable
@@ -7658,7 +7658,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		try {
 			long fr = System.currentTimeMillis();
-			List<Run> runs = buildQueryDdlsRun(runtime, meta);
+			List<Run> runs = buildQueryDdlRun(runtime, meta);
 			if (null != runs && runs.size()>0) {
 				//直接查询DDL
 				int idx = 0;
@@ -7720,10 +7720,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<Run> buildQueryDdlsRun(DataRuntime runtime, MasterTable master) throws Exception {
+	public List<Run> buildQueryDdlRun(DataRuntime runtime, MasterTable master) throws Exception {
 		//有支持直接查询DDL的在子类中实现
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryDdlsRun(DataRuntime runtime, MasterTable master)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryDdlRun(DataRuntime runtime, MasterTable master)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -7732,7 +7732,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * master[结果集封装]<br/>
 	 * 查询表DDL
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
+	 * @param index 第几条SQL 对照 buildQueryDdlRun 返回顺序
 	 * @param master 表
 	 * @param set sql执行的结果集
 	 * @return List
@@ -7763,7 +7763,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * [调用入口]
 	 * List<String> ddl(DataRuntime runtime, String random, PartitionTable table)
 	 * [命令合成]
-	 * List<Run> buildQueryDdlsRun(DataRuntime runtime, PartitionTable table)
+	 * List<Run> buildQueryDdlRun(DataRuntime runtime, PartitionTable table)
 	 * [结果集封装]<br/>
 	 * List<String> ddl(DataRuntime runtime, int index, PartitionTable table, List<String> ddls, DataSet set)
 	 ******************************************************************************************************************/
@@ -7773,7 +7773,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @return List
 	 * @param <T> MasterTable
 	 */
@@ -7824,7 +7824,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * partition table[命令合成]<br/>
 	 * 查询分区表
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return String
 	 */
@@ -7844,7 +7844,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param total 合计SQL数量
 	 * @param index 第几条SQL 对照 buildQueryMasterTablesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return tables
@@ -7866,7 +7866,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 根据根据驱动内置接口
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @param previous 上一步查询结果
 	 * @return tables
 	 * @throws Exception 异常
@@ -7897,7 +7897,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		try {
 			long fr = System.currentTimeMillis();
-			List<Run> runs = buildQueryDdlsRun(runtime, table);
+			List<Run> runs = buildQueryDdlRun(runtime, table);
 			if (null != runs) {
 				int idx = 0;
 				for (Run run : runs) {
@@ -7927,10 +7927,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<Run> buildQueryDdlsRun(DataRuntime runtime, PartitionTable table) throws Exception {
+	public List<Run> buildQueryDdlRun(DataRuntime runtime, PartitionTable table) throws Exception {
 		List<Run> runs = new ArrayList<>();
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryDdlsRun(DataRuntime runtime, PartitionTable table)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryDdlRun(DataRuntime runtime, PartitionTable table)", 37));
 		}
 		return runs;
 	}
@@ -7939,7 +7939,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * partition table[结果集封装]<br/>
 	 * 查询 MasterTable DDL
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
+	 * @param index 第几条SQL 对照 buildQueryDdlRun 返回顺序
 	 * @param table MasterTable
 	 * @param set sql执行的结果集
 	 * @return List
@@ -7960,7 +7960,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 根据查询结果封装PartitionTable对象,只封装catalog,schema,name等基础属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 上一步封装结果
-     * @param query query
+     * @param query 查询条件 根据metadata属性
 	 * @param row 查询结果集
 	 * @return PartitionTable
 	 */
@@ -8168,7 +8168,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @param tables 表
 	 * @return List
 	 * @param <T> Column
@@ -8241,7 +8241,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * column[命令合成]<br/>
 	 * 查询表上的列
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @param metadata 是否根据metadata(true:SELECT * FROM T WHERE 1=0,false:查询系统表)
 	 * @return runs
 	 */
@@ -8257,7 +8257,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * column[命令合成]<br/>(方法1)<br/>
 	 * 查询多个表的列
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @param tables 表
 	 * @param metadata 是否根据metadata(true:SELECT * FROM T WHERE 1=0,false:查询系统表)
 	 * @return runs
@@ -8297,7 +8297,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryColumnsRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @param previous 上一步查询结果
 	 * @param set 系统表查询SQL结果集
 	 * @return columns
@@ -8336,7 +8336,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * <br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 上一步封装结果
-     * @param query query
+     * @param query 查询条件 根据metadata属性
 	 * @param row 系统表查询SQL结果集
 	 * @param <T> Column
 	 */
@@ -8815,7 +8815,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 解析JDBC get columns结果
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @return tags
 	 * @throws Exception 异常
 	 */
@@ -8881,7 +8881,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @return PrimaryKey
 	 */
 	@Override
@@ -8927,7 +8927,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * primary[命令合成]<br/>
 	 * 查询表上的主键
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @return runs
 	 */
 	@Override
@@ -8942,7 +8942,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * primary[结构集封装]<br/>
 	 * 根据查询结果集构造PrimaryKey基础属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param query query
+     * @param query 查询条件 根据metadata属性
 	 * @param set sql查询结果
 	 * @throws Exception 异常
 	 */
@@ -8958,7 +8958,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * primary[结构集封装]<br/>
 	 * 根据查询结果集构造PrimaryKey更多属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param query query
+     * @param query 查询条件 根据metadata属性
 	 * @param set sql查询结果
 	 * @throws Exception 异常
 	 */
@@ -8987,7 +8987,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * primary[结构集封装]<br/>
 	 *  根据驱动内置接口补充PrimaryKey
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @throws Exception 异常
 	 */
 	@Override
@@ -9015,7 +9015,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @return PrimaryKey
 	 */
 	@Override
@@ -9050,7 +9050,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * foreign[命令合成]<br/>
 	 * 查询表上的外键
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @return runs
 	 */
 	@Override
@@ -9066,7 +9066,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 *  根据查询结果集构造PrimaryKey
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryForeignsRun 返回顺序
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @param previous 上一步查询结果
 	 * @param set sql查询结果
 	 * @throws Exception 异常
@@ -9085,7 +9085,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryIndexesRun 返回顺序
 	 * @param meta 上一步封装结果
-     * @param query query
+     * @param query 查询条件 根据metadata属性
 	 * @param row sql查询结果
 	 * @throws Exception 异常
 	 */
@@ -9103,7 +9103,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryIndexesRun 返回顺序
 	 * @param meta 上一步封装结果
-     * @param query query
+     * @param query 查询条件 根据metadata属性
 	 * @param row sql查询结果
 	 * @throws Exception 异常
 	 */
@@ -9195,7 +9195,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
-     * @param query query
+     * @param query 查询条件 根据metadata属性
 	 * @return  LinkedHashMap
 	 * @param <T> Index
 	 */
@@ -9251,7 +9251,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * index[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @return  LinkedHashMap
 	 * @param <T> Index
 	 */
@@ -9338,7 +9338,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * index[命令合成]<br/>
 	 * 查询表上的索引
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @return runs
 	 */
 	@Override
@@ -9368,7 +9368,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryIndexesRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param query query
+     * @param query 查询条件 根据metadata属性
 	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return indexes indexes
@@ -9407,7 +9407,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryIndexesRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param query query
+     * @param query 查询条件 根据metadata属性
 	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return indexes indexes
@@ -9483,7 +9483,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 根据驱动内置接口
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param query query
+     * @param query 查询条件 根据metadata属性
 	 * @return indexes indexes
 	 * @throws Exception 异常
 	 */
@@ -9503,7 +9503,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 根据驱动内置接口
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param query query
+     * @param query 查询条件 根据metadata属性
 	 * @return indexes indexes
 	 * @throws Exception 异常
 	 */
@@ -9524,7 +9524,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryIndexesRun 返回顺序
 	 * @param meta 上一步封装结果
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @param row sql查询结果
 	 * @throws Exception 异常
 	 */
@@ -9625,7 +9625,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryIndexesRun 返回顺序
 	 * @param meta 上一步封装结果
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @param row sql查询结果
 	 * @throws Exception 异常
 	 */
@@ -9693,7 +9693,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @return  LinkedHashMap
 	 * @param <T> Index
 	 */
@@ -9710,7 +9710,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * constraint[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-     * @param query query
+     * @param query 查询条件 根据metadata属性
 	 * @return  LinkedHashMap
 	 * @param <T> Index
 	 */
@@ -9726,7 +9726,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * constraint[命令合成]<br/>
 	 * 查询表上的约束
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @return runs
 	 */
 	@Override
@@ -9742,7 +9742,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @param previous 上一步查询结果
 	 * @param set DataSet
 	 * @return constraints constraints
@@ -9765,7 +9765,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param query query
+     * @param query 查询条件 根据metadata属性
 	 * @param previous 上一步查询结果
 	 * @param set DataSet
 	 * @return constraints constraints
@@ -9787,7 +9787,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 根据查询结果封装Constraint对象,只封装catalog,schema,name等基础属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 上一步封装结果
-     * @param query query
+     * @param query 查询条件 根据metadata属性
 	 * @param row 查询结果集
 	 * @return Constraint
 	 */
@@ -9843,7 +9843,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
-     * @param query query
+     * @param query 查询条件 根据metadata属性
 	 * @return  LinkedHashMap
 	 * @param <T> Index
 	 */
@@ -9859,7 +9859,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * trigger[命令合成]<br/>
 	 * 查询表上的 Trigger
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param query query
+     * @param query 查询条件 根据metadata属性
 	 * @return runs
 	 */
 	@Override
@@ -9876,7 +9876,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param query query
+     * @param query 查询条件 根据metadata属性
 	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return LinkedHashMap
@@ -9898,7 +9898,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 根据查询结果封装trigger对象,只封装catalog,schema,name等基础属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 上一步封装结果
-     * @param query query
+     * @param query 查询条件 根据metadata属性
 	 * @param row 查询结果集
 	 * @return Trigger
 	 */
@@ -9954,7 +9954,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * [调用入口]
 	 * List<String> ddl(DataRuntime runtime, String random, Procedure procedure);
 	 * [命令合成]
-	 * List<Run> buildQueryDdlsRun(DataRuntime runtime, Procedure procedure) throws Exception;
+	 * List<Run> buildQueryDdlRun(DataRuntime runtime, Procedure procedure) throws Exception;
 	 * [结果集封装]<br/>
 	 * List<String> ddl(DataRuntime runtime, int index, Procedure procedure, List<String> ddls, DataSet set);
 	 ******************************************************************************************************************/
@@ -9964,7 +9964,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @return  LinkedHashMap
 	 * @param <T> Index
 	 */
@@ -9981,7 +9981,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * procedure[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @return  LinkedHashMap
 	 * @param <T> Index
 	 */
@@ -9997,7 +9997,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * procedure[命令合成]<br/>
 	 * 查询表上的 Trigger
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param query query
+     * @param query 查询条件 根据metadata属性
 	 * @return sqls
 	 */
 
@@ -10096,7 +10096,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		try {
 			long fr = System.currentTimeMillis();
-			List<Run> runs = buildQueryDdlsRun(runtime, procedure);
+			List<Run> runs = buildQueryDdlRun(runtime, procedure);
 			if (null != runs && runs.size()>0) {
 				//直接查询DDL
 				int idx = 0;
@@ -10133,10 +10133,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<Run> buildQueryDdlsRun(DataRuntime runtime, Procedure procedure) throws Exception {
+	public List<Run> buildQueryDdlRun(DataRuntime runtime, Procedure procedure) throws Exception {
 		List<Run> runs = new ArrayList<>();
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryDdlsRun(DataRuntime runtime, Procedure procedure)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryDdlRun(DataRuntime runtime, Procedure procedure)", 37));
 		}
 		return runs;
 	}
@@ -10145,7 +10145,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * procedure[结果集封装]<br/>
 	 * 查询 Procedure DDL
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
+	 * @param index 第几条SQL 对照 buildQueryDdlRun 返回顺序
 	 * @param procedure Procedure
 	 * @param set 查询结果集
 	 * @return List
@@ -10163,7 +10163,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 根据查询结果封装procedure对象,只封装catalog,schema,name等基础属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 上一步封装结果
-     * @param query query
+     * @param query 查询条件 根据metadata属性
 	 * @param row 查询结果集
 	 * @return Procedure
 	 */
@@ -10219,7 +10219,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * [调用入口]
 	 * List<String> ddl(DataRuntime runtime, String random, Function function);
 	 * [命令合成]
-	 * List<Run> buildQueryDdlsRun(DataRuntime runtime, Function function) throws Exception;
+	 * List<Run> buildQueryDdlRun(DataRuntime runtime, Function function) throws Exception;
 	 * [结果集封装]<br/>
 	 * List<String> ddl(DataRuntime runtime, int index, Function function, List<String> ddls, DataSet set)
 	 ******************************************************************************************************************/
@@ -10229,7 +10229,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @return  LinkedHashMap
 	 * @param <T> Index
 	 */
@@ -10246,7 +10246,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * function[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @return  LinkedHashMap
 	 * @param <T> Index
 	 */
@@ -10262,7 +10262,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * function[命令合成]<br/>
 	 * 查询表上的 Function
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param query query
+     * @param query 查询条件 根据metadata属性
 	 * @return sqls
 	 */
 	@Override
@@ -10361,7 +10361,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		try {
 			long fr = System.currentTimeMillis();
-			List<Run> runs = buildQueryDdlsRun(runtime, meta);
+			List<Run> runs = buildQueryDdlRun(runtime, meta);
 			if (null != runs && runs.size()>0) {
 				//直接查询DDL
 				int idx = 0;
@@ -10397,10 +10397,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<Run> buildQueryDdlsRun(DataRuntime runtime, Function meta) throws Exception {
+	public List<Run> buildQueryDdlRun(DataRuntime runtime, Function meta) throws Exception {
 		List<Run> runs = new ArrayList<>();
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryDdlsRun(DataRuntime runtime, Function meta)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryDdlRun(DataRuntime runtime, Function meta)", 37));
 		}
 		return runs;
 	}
@@ -10409,7 +10409,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * function[结果集封装]<br/>
 	 * 查询 Function DDL
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
+	 * @param index 第几条SQL 对照 buildQueryDdlRun 返回顺序
 	 * @param function Function
 	 * @param set 查询结果集
 	 * @return List
@@ -10430,7 +10430,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 根据查询结果封装function对象,只封装catalog,schema,name等基础属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 上一步封装结果
-     * @param query query
+     * @param query 查询条件 根据metadata属性
 	 * @param row 查询结果集
 	 * @return Function
 	 */
@@ -10492,7 +10492,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * [调用入口]
 	 * List<String> ddl(DataRuntime runtime, String random, Sequence sequence);
 	 * [命令合成]
-	 * List<Run> buildQueryDdlsRun(DataRuntime runtime, Sequence sequence) throws Exception;
+	 * List<Run> buildQueryDdlRun(DataRuntime runtime, Sequence sequence) throws Exception;
 	 * [结果集封装]<br/>
 	 * List<String> ddl(DataRuntime runtime, int index, Sequence sequence, List<String> ddls, DataSet set)
 	 ******************************************************************************************************************/
@@ -10502,7 +10502,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @return  LinkedHashMap
 	 * @param <T> Index
 	 */
@@ -10550,7 +10550,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * sequence[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @return  LinkedHashMap
 	 * @param <T> Index
 	 */
@@ -10597,7 +10597,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * sequence[命令合成]<br/>
 	 * 查询表上的 Sequence
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param query query
+     * @param query 查询条件 根据metadata属性
 	 * @return sqls
 	 */
 	@Override
@@ -10696,7 +10696,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		try {
 			long fr = System.currentTimeMillis();
-			List<Run> runs = buildQueryDdlsRun(runtime, meta);
+			List<Run> runs = buildQueryDdlRun(runtime, meta);
 			if (null != runs && runs.size()>0) {
 				//直接查询DDL
 				int idx = 0;
@@ -10732,10 +10732,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<Run> buildQueryDdlsRun(DataRuntime runtime, Sequence meta) throws Exception {
+	public List<Run> buildQueryDdlRun(DataRuntime runtime, Sequence meta) throws Exception {
 		List<Run> runs = new ArrayList<>();
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryDdlsRun(DataRuntime runtime, Sequence meta)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryDdlRun(DataRuntime runtime, Sequence meta)", 37));
 		}
 		return runs;
 	}
@@ -10744,7 +10744,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * sequence[结果集封装]<br/>
 	 * 查询 Sequence DDL
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
+	 * @param index 第几条SQL 对照 buildQueryDdlRun 返回顺序
 	 * @param sequence Sequence
 	 * @param set 查询结果集
 	 * @return List
@@ -10765,7 +10765,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 根据查询结果封装sequence对象,只封装catalog,schema,name等基础属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 上一步封装结果
-     * @param query query
+     * @param query 查询条件 根据metadata属性
 	 * @param row 查询结果集
 	 * @return Sequence
 	 */
@@ -15288,7 +15288,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	/**
 	 * role[调用入口]<br/>
 	 * 查询角色
-	 * @param query 查询条件
+	 * @param query 查询条件 根据metadata属性
 	 * @return List
 	 */
 	@Override
@@ -15332,7 +15332,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	/**
 	 * role[命令合成]<br/>
 	 * 查询角色
-	 * @param query 查询条件
+	 * @param query 查询条件 根据metadata属性
 	 * @return List
 	 */
 	@Override
@@ -15345,7 +15345,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 根据查询结果集构造 role
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryRolessRun 返回顺序
-	 * @param query 查询条件
+	 * @param query 查询条件 根据metadata属性
 	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return List
@@ -15361,7 +15361,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 根据查询结果封装 role 对象,只封装catalog,schema,name等基础属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 上一步封装结果
-	 * @param query 查询条件
+	 * @param query 查询条件 根据metadata属性
 	 * @param row 查询结果集
 	 * @return Role
 	 */
@@ -15513,7 +15513,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	/**
 	 * user[命令合成]<br/>
 	 * 查询用户
-	 * @param query 查询条件
+	 * @param query 查询条件 根据metadata属性
 	 * @return List
 	 */
 	@Override
@@ -15530,7 +15530,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryUserssRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param query 查询条件
+	 * @param query 查询条件 根据metadata属性
 	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return List
@@ -15555,7 +15555,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 根据查询结果封装 user 对象,只封装catalog,schema,name等基础属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 上一步封装结果
-	 * @param query 查询条件
+	 * @param query 查询条件 根据metadata属性
 	 * @param row 查询结果集
 	 * @return User
 	 */
@@ -15648,7 +15648,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	/**
 	 * privilege[命令合成]<br/>
 	 * 查询用户权限
-	 * @param query 查询条件
+	 * @param query 查询条件 根据metadata属性
 	 * @return List
 	 */
 	@Override
@@ -15666,7 +15666,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param query 查询条件
+	 * @param query 查询条件 根据metadata属性
 	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return List
@@ -15691,7 +15691,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 根据查询结果封装Privilege对象,只封装catalog,schema,name等基础属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 上一步封装结果
-	 * @param query 查询条件
+	 * @param query 查询条件 根据metadata属性
 	 * @param row 查询结果集
 	 * @return Privilege
 	 */

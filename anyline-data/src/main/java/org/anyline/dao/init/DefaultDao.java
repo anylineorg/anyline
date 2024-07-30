@@ -963,7 +963,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	/**
 	 * tables
 	 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @param struct 查询的属性 参考Metadata.TYPE 多个属性相加算出总和
 	 * @return List
@@ -997,7 +997,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	/**
 	 * vertexs
 	 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @param struct 查询的属性 参考Metadata.TYPE 多个属性相加算出总和
 	 * @return List
@@ -1030,7 +1030,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	/**
 	 * edges
 	 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @param struct 查询的属性 参考Metadata.TYPE 多个属性相加算出总和
 	 * @return List
@@ -1105,7 +1105,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	/**
 	 * views
 	 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @param struct 查询的属性 参考Metadata.TYPE 多个属性相加算出总和
 	 * @return List
@@ -1144,7 +1144,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	/**
 	 * masters
 	 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @param struct 查询的属性 参考Metadata.TYPE 多个属性相加算出总和
 	 * @return List
@@ -2078,7 +2078,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 ******************************************************************************************************************/
 	/**
 	 * 查询用户权限
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @return List
 	 */
 	@Override

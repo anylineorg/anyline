@@ -882,7 +882,7 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
             for(Index index: indexes.values()) {
                 if(index.isPrimary()) {
                     primaryKey = new PrimaryKey();
-                    primaryKey.setName(index.getName());
+                    primaryKey.setName(index.createName());
                     primaryKey.setTable(this);
                     primaryKey.setColumns(index.getColumns());
                 }

@@ -253,7 +253,10 @@ public class DefaultConfigChain extends DefaultConfig implements ConfigChain {
 					ConditionChain itemChain = (ConditionChain) condition;
 					List<Condition> items = itemChain.getConditions();
 					if(items.size() == 1){
-						chain.addCondition(items.get(0));//只有一个条件的 去除多余()
+						//只有一个条件的 去除多余() 但join需要用外层的
+						Condition first = items.get(0);
+						first.setJoin(itemChain.getJoin());
+						chain.addCondition(first);
 					}else if(items.size() > 1){
 						chain.addCondition(condition);
 					}

@@ -2220,7 +2220,7 @@ public interface AnylineDao<E>{
 
 	/**
 	 * 查询用户权限
-	 * @param query query 查询条件
+	 * @param query 查询条件 根据metadata属性
 	 * @return List
 	 */
 	List<Privilege> privileges(Privilege query) throws Exception;

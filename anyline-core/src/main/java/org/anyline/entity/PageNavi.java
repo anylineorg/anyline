@@ -220,7 +220,7 @@ public interface PageNavi extends Serializable, Cloneable{
 	 * @param auto 是否自动
 	 * @return this
 	 */
-	PageNavi autoCount(boolean auto);
+	PageNavi autoCount(Boolean auto);
 	Boolean autoCount();
 
 	PageNavi clone();

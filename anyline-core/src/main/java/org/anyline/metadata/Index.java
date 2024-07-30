@@ -126,7 +126,7 @@ public class Index<M extends Index> extends TableAffiliation<M> implements Seria
         return addColumn(new Column(column));
     }
 
-    public String getName() {
+    public String createName() {
         if(null == name) {
             name = "index_";
             if(null != columns) {

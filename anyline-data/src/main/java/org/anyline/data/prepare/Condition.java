@@ -49,7 +49,10 @@ public interface Condition extends Cloneable{
 		}
 		return txt;
 	}
-	String getRunText(String prefix, DataRuntime runtime, boolean placeholder);
+	String getRunText(int lvl, String prefix, DataRuntime runtime, boolean placeholder);
+	default String getRunText(String prefix, DataRuntime runtime, boolean placeholder) {
+		return getRunText(0, prefix, runtime, placeholder);
+	}
 
 	/**
 	 * 静态SQL

@@ -101,7 +101,7 @@ public class DefaultAutoCondition extends AbstractCondition implements AutoCondi
 	 * @return String
 	 */
 	@Override
-	public String getRunText(String prefix, DataRuntime runtime, boolean placeholder) {
+	public String getRunText(int lvl, String prefix, DataRuntime runtime, boolean placeholder) {
 		runValues = new ArrayList<>();
 		String text = "";
 		if(this.variableType == Condition.VARIABLE_PLACEHOLDER_TYPE_NONE) {//没有变量

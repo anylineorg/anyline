@@ -1173,7 +1173,7 @@ public class TiDBAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @return LinkedHashMap
 	 */
 	@Override
@@ -1185,7 +1185,7 @@ public class TiDBAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 	 * database[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @return LinkedHashMap
 	 */
 	@Override
@@ -1221,7 +1221,7 @@ public class TiDBAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 	 * database[命令合成]<br/>
 	 * 查询全部数据库
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
 	 * @return sqls
 	 * @throws Exception 异常
@@ -1358,7 +1358,7 @@ public class TiDBAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 	 * catalog[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @return LinkedHashMap
 	 */
 	@Override
@@ -1370,7 +1370,7 @@ public class TiDBAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 	 * catalog[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @return LinkedHashMap
 	 */
 	@Override
@@ -1382,7 +1382,7 @@ public class TiDBAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 	 * catalog[命令合成]<br/>
 	 * 查询全部数据库
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
 	 * @return sqls
 	 * @throws Exception 异常
@@ -1484,7 +1484,7 @@ public class TiDBAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 	 * schema[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @return LinkedHashMap
 	 */
 	@Override
@@ -1496,7 +1496,7 @@ public class TiDBAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 	 * schema[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @return LinkedHashMap
 	 */
 	@Override
@@ -1508,7 +1508,7 @@ public class TiDBAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 	 * catalog[命令合成]<br/>
 	 * 查询全部数据库
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
 	 * @return sqls
 	 * @throws Exception 异常
@@ -1586,7 +1586,7 @@ public class TiDBAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 	 * [调用入口]
 	 * List<String> ddl(DataRuntime runtime, String random, Table table, boolean init)
 	 * [命令合成]
-	 * List<Run> buildQueryDdlsRun(DataRuntime runtime, Table table)
+	 * List<Run> buildQueryDdlRun(DataRuntime runtime, Table table)
 	 * [结果集封装]<br/>
 	 * List<String> ddl(DataRuntime runtime, int index, Table table, List<String> ddls, DataSet set)
 	 ******************************************************************************************************************/
@@ -1597,7 +1597,7 @@ public class TiDBAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @param struct 查询的属性 参考Metadata.TYPE 多个属性相加算出总和 true:表示查询全部
 	 * @return List
@@ -1613,7 +1613,7 @@ public class TiDBAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 	 * 查出所有key并以大写缓存 用来实现忽略大小写
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 */
 	@Override
 	protected void tableMap(DataRuntime runtime, String random, boolean greedy, Table query, ConfigStore configs) {
@@ -1628,7 +1628,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * 查询表,不是查表中的数据
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return String
 	 * @throws Exception Exception
@@ -1642,7 +1642,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * table[命令合成]<br/>
 	 * 查询表备注
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return String
 	 * @throws Exception Exception
@@ -1658,7 +1658,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照buildQueryTablesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return tables
@@ -1675,7 +1675,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照buildQueryTablesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return tables
@@ -1692,7 +1692,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param previous 上一步查询结果
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return tables
 	 * @throws Exception 异常
@@ -1708,7 +1708,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param previous 上一步查询结果
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return tables
 	 * @throws Exception 异常
@@ -1724,7 +1724,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照buildQueryTablesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return tables
@@ -1741,7 +1741,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照buildQueryTablesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return tables
@@ -1774,15 +1774,15 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @return List
 	 */
 	@Override
-	public List<Run> buildQueryDdlsRun(DataRuntime runtime, Table table) throws Exception {
-		return super.buildQueryDdlsRun(runtime, table);
+	public List<Run> buildQueryDdlRun(DataRuntime runtime, Table table) throws Exception {
+		return super.buildQueryDdlRun(runtime, table);
 	}
 
 	/**
 	 * table[结果集封装]<br/>
 	 * 查询表DDL
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
+	 * @param index 第几条SQL 对照 buildQueryDdlRun 返回顺序
 	 * @param table 表
 	 * @param set sql执行的结果集
 	 * @return List
@@ -1805,7 +1805,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * [调用入口]
 	 * List<String> ddl(DataRuntime runtime, String random, View view)
 	 * [命令合成]
-	 * List<Run> buildQueryDdlsRun(DataRuntime runtime, View view)
+	 * List<Run> buildQueryDdlRun(DataRuntime runtime, View view)
 	 * [结果集封装]<br/>
 	 * List<String> ddl(DataRuntime runtime, int index, View view, List<String> ddls, DataSet set)
 	 ******************************************************************************************************************/
@@ -1815,7 +1815,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * 查询视图
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return List
 	 * @param <T> View
@@ -1830,7 +1830,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * 查询视图
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return List
 	 */
@@ -1845,7 +1845,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照buildQueryViewsRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return views
@@ -1862,7 +1862,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param previous 上一步查询结果
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return views
 	 * @throws Exception 异常
@@ -1892,15 +1892,15 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @return List
 	 */
 	@Override
-	public List<Run> buildQueryDdlsRun(DataRuntime runtime, View view) throws Exception {
-		return super.buildQueryDdlsRun(runtime, view);
+	public List<Run> buildQueryDdlRun(DataRuntime runtime, View view) throws Exception {
+		return super.buildQueryDdlRun(runtime, view);
 	}
 
 	/**
 	 * view[结果集封装]<br/>
 	 * 查询 view DDL
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
+	 * @param index 第几条SQL 对照 buildQueryDdlRun 返回顺序
 	 * @param view view
 	 * @param set sql执行的结果集
 	 * @return List
@@ -1923,7 +1923,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * [调用入口]
 	 * List<String> ddl(DataRuntime runtime, String random, MasterTable table)
 	 * [命令合成]
-	 * List<Run> buildQueryDdlsRun(DataRuntime runtime, MasterTable table)
+	 * List<Run> buildQueryDdlRun(DataRuntime runtime, MasterTable table)
 	 * [结果集封装]<br/>
 	 * List<String> ddl(DataRuntime runtime, int index, MasterTable table, List<String> ddls, DataSet set)
 	 ******************************************************************************************************************/
@@ -1933,7 +1933,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * 查询主表
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return List
 	 * @param <T> MasterTable
@@ -1947,7 +1947,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * master table[命令合成]<br/>
 	 * 查询主表
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return String
 	 */
@@ -1962,7 +1962,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryMasterTablesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return tables
@@ -1978,7 +1978,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * 根据根据驱动内置接口
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @param previous 上一步查询结果
 	 * @return tables
 	 * @throws Exception 异常
@@ -2008,15 +2008,15 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @return List
 	 */
 	@Override
-	public List<Run> buildQueryDdlsRun(DataRuntime runtime, MasterTable table) throws Exception {
-		return super.buildQueryDdlsRun(runtime, table);
+	public List<Run> buildQueryDdlRun(DataRuntime runtime, MasterTable table) throws Exception {
+		return super.buildQueryDdlRun(runtime, table);
 	}
 
 	/**
 	 * master table[结果集封装]<br/>
 	 * 查询 MasterTable DDL
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
+	 * @param index 第几条SQL 对照 buildQueryDdlRun 返回顺序
 	 * @param table MasterTable
 	 * @param set sql执行的结果集
 	 * @return List
@@ -2040,7 +2040,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * [调用入口]
 	 * List<String> ddl(DataRuntime runtime, String random, PartitionTable table)
 	 * [命令合成]
-	 * List<Run> buildQueryDdlsRun(DataRuntime runtime, PartitionTable table)
+	 * List<Run> buildQueryDdlRun(DataRuntime runtime, PartitionTable table)
 	 * [结果集封装]<br/>
 	 * List<String> ddl(DataRuntime runtime, int index, PartitionTable table, List<String> ddls, DataSet set)
 	 ******************************************************************************************************************/
@@ -2050,7 +2050,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @return List
 	 * @param <T> MasterTable
 	 */
@@ -2063,7 +2063,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * partition table[命令合成]<br/>
 	 * 查询分区表
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return String
 	 */
@@ -2080,7 +2080,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @param total 合计SQL数量
 	 * @param index 第几条SQL 对照 buildQueryMasterTablesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return tables
@@ -2096,7 +2096,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * 根据根据驱动内置接口
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @param previous 上一步查询结果
 	 * @return tables
 	 * @throws Exception 异常
@@ -2126,15 +2126,15 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @return List
 	 */
 	@Override
-	public List<Run> buildQueryDdlsRun(DataRuntime runtime, PartitionTable table) throws Exception {
-		return super.buildQueryDdlsRun(runtime, table);
+	public List<Run> buildQueryDdlRun(DataRuntime runtime, PartitionTable table) throws Exception {
+		return super.buildQueryDdlRun(runtime, table);
 	}
 
 	/**
 	 * partition table[结果集封装]<br/>
 	 * 查询 MasterTable DDL
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
+	 * @param index 第几条SQL 对照 buildQueryDdlRun 返回顺序
 	 * @param table MasterTable
 	 * @param set sql执行的结果集
 	 * @return List
@@ -2178,7 +2178,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * column[命令合成]<br/>
 	 * 查询表上的列
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @param metadata 是否根据metadata(true:SELECT * FROM T WHERE 1=0,false:查询系统表)
 	 * @return runs
 	 */
@@ -2191,7 +2191,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * column[命令合成]<br/>(方法1)<br/>
 	 * 查询多个表的列
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @param tables 表
 	 * @param metadata 是否根据metadata(true:SELECT * FROM T WHERE 1=0,false:查询系统表)
 	 * @return runs
@@ -2245,7 +2245,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @param tables 表
 	 * @return List
 	 * @param <T> Column
@@ -2260,7 +2260,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * 解析JDBC get columns结果
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @return previous 上一步查询结果
 	 * @throws Exception 异常
 	 */
@@ -2410,7 +2410,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * 解析JDBC get columns结果
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @return tags
 	 * @throws Exception 异常
 	 */
@@ -2435,7 +2435,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @return PrimaryKey
 	 */
 	@Override
@@ -2447,7 +2447,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * primary[命令合成]<br/>
 	 * 查询表上的主键
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @return runs
 	 */
 	@Override
@@ -2460,7 +2460,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * 根据查询结果集构造PrimaryKey基础属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryIndexesRun 返回顺序
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @param set sql查询结果
 	 * @throws Exception 异常
 	 */
@@ -2474,7 +2474,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * 根据查询结果集构造PrimaryKey更多属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryIndexesRun 返回顺序
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @param set sql查询结果
 	 * @throws Exception 异常
 	 */
@@ -2496,7 +2496,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * primary[结构集封装]<br/>
 	 *  根据驱动内置接口补充PrimaryKey
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @throws Exception 异常
 	 */
 	@Override
@@ -2520,7 +2520,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @return PrimaryKey
 	 */
 	@Override
@@ -2532,7 +2532,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * foreign[命令合成]<br/>
 	 * 查询表上的外键
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @return runs
 	 */
 	@Override
@@ -2545,7 +2545,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 *  根据查询结果集构造PrimaryKey
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryForeignsRun 返回顺序
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @param previous 上一步查询结果
 	 * @param set sql查询结果
 	 * @throws Exception 异常
@@ -2575,7 +2575,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @return  LinkedHashMap
 	 * @param <T> Index
 	 */
@@ -2589,7 +2589,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * index[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @return  LinkedHashMap
 	 * @param <T> Index
 	 */
@@ -2602,7 +2602,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * index[命令合成]<br/>
 	 * 查询表上的索引
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @return runs
 	 */
 	@Override
@@ -2620,7 +2620,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryIndexesRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return indexes indexes
@@ -2637,7 +2637,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryIndexesRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return indexes indexes
@@ -2653,7 +2653,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * 根据驱动内置接口
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @return indexes indexes
 	 * @throws Exception 异常
 	 */
@@ -2667,7 +2667,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * 根据驱动内置接口
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @return indexes indexes
 	 * @throws Exception 异常
 	 */
@@ -2682,7 +2682,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryIndexesRun 返回顺序
 	 * @param meta 上一步封装结果
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @param row sql查询结果
 	 * @throws Exception 异常
 	 */
@@ -2697,7 +2697,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryIndexesRun 返回顺序
 	 * @param meta 上一步封装结果
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @param row sql查询结果
 	 * @throws Exception 异常
 	 */
@@ -2733,7 +2733,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @return  LinkedHashMap
 	 * @param <T> Index
 	 */
@@ -2762,7 +2762,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * constraint[命令合成]<br/>
 	 * 查询表上的约束
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @return runs
 	 */
 	@Override
@@ -2776,7 +2776,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @param previous 上一步查询结果
 	 * @param set DataSet
 	 * @return constraints constraints
@@ -2793,7 +2793,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @param previous 上一步查询结果
 	 * @param set DataSet
 	 * @return constraints constraints
@@ -2821,7 +2821,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @return  LinkedHashMap
 	 * @param <T> Index
 	 */
@@ -2833,7 +2833,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * trigger[命令合成]<br/>
 	 * 查询表上的 Trigger
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @return sqls
 	 */
 	public List<Run> buildQueryTriggersRun(DataRuntime runtime, Trigger query) {
@@ -2846,7 +2846,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return LinkedHashMap
@@ -2872,7 +2872,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * [调用入口]
 	 * List<String> ddl(DataRuntime runtime, String random, Procedure procedure);
 	 * [命令合成]
-	 * List<Run> buildQueryDdlsRun(DataRuntime runtime, Procedure procedure) throws Exception;
+	 * List<Run> buildQueryDdlRun(DataRuntime runtime, Procedure procedure) throws Exception;
 	 * [结果集封装]<br/>
 	 * List<String> ddl(DataRuntime runtime, int index, Procedure procedure, List<String> ddls, DataSet set);
 	 ******************************************************************************************************************/
@@ -2882,7 +2882,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @return  LinkedHashMap
 	 * @param <T> Index
 	 */
@@ -2896,7 +2896,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * procedure[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @return  LinkedHashMap
 	 * @param <T> Index
 	 */
@@ -2909,7 +2909,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * procedure[命令合成]<br/>
 	 * 查询表上的 Trigger
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @return runs
 	 */
 	@Override
@@ -2982,15 +2982,15 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @return List
 	 */
 	@Override
-	public List<Run> buildQueryDdlsRun(DataRuntime runtime, Procedure procedure) throws Exception {
-		return super.buildQueryDdlsRun(runtime, procedure);
+	public List<Run> buildQueryDdlRun(DataRuntime runtime, Procedure procedure) throws Exception {
+		return super.buildQueryDdlRun(runtime, procedure);
 	}
 
 	/**
 	 * procedure[结果集封装]<br/>
 	 * 查询 Procedure DDL
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
+	 * @param index 第几条SQL 对照 buildQueryDdlRun 返回顺序
 	 * @param procedure Procedure
 	 * @param set 查询结果集
 	 * @return List
@@ -3016,7 +3016,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * [调用入口]
 	 * List<String> ddl(DataRuntime runtime, String random, Function function);
 	 * [命令合成]
-	 * List<Run> buildQueryDdlsRun(DataRuntime runtime, Function function) throws Exception;
+	 * List<Run> buildQueryDdlRun(DataRuntime runtime, Function function) throws Exception;
 	 * [结果集封装]<br/>
 	 * List<String> ddl(DataRuntime runtime, int index, Function function, List<String> ddls, DataSet set)
 	 ******************************************************************************************************************/
@@ -3026,7 +3026,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @return  LinkedHashMap
 	 * @param <T> Index
 	 */
@@ -3040,7 +3040,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * function[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @return  LinkedHashMap
 	 * @param <T> Index
 	 */
@@ -3053,7 +3053,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * function[命令合成]<br/>
 	 * 查询表上的 Trigger
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @return runs
 	 */
 	@Override
@@ -3128,15 +3128,15 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @return List
 	 */
 	@Override
-	public List<Run> buildQueryDdlsRun(DataRuntime runtime, Function meta) throws Exception {
-		return super.buildQueryDdlsRun(runtime, meta);
+	public List<Run> buildQueryDdlRun(DataRuntime runtime, Function meta) throws Exception {
+		return super.buildQueryDdlRun(runtime, meta);
 	}
 
 	/**
 	 * function[结果集封装]<br/>
 	 * 查询 Function DDL
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
+	 * @param index 第几条SQL 对照 buildQueryDdlRun 返回顺序
 	 * @param function Function
 	 * @param set 查询结果集
 	 * @return List
@@ -3162,7 +3162,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * [调用入口]
 	 * List<String> ddl(DataRuntime runtime, String random, Sequence sequence);
 	 * [命令合成]
-	 * List<Run> buildQueryDdlsRun(DataRuntime runtime, Sequence sequence) throws Exception;
+	 * List<Run> buildQueryDdlRun(DataRuntime runtime, Sequence sequence) throws Exception;
 	 * [结果集封装]<br/>
 	 * List<String> ddl(DataRuntime runtime, int index, Sequence sequence, List<String> ddls, DataSet set)
 	 ******************************************************************************************************************/
@@ -3172,7 +3172,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @return  LinkedHashMap
 	 * @param <T> Index
 	 */
@@ -3186,7 +3186,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * sequence[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @return  LinkedHashMap
 	 * @param <T> Index
 	 */
@@ -3199,7 +3199,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * sequence[命令合成]<br/>
 	 * 查询表上的 Trigger
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param query query
+	 * @param query 查询条件 根据metadata属性
 	 * @return runs
 	 */
 	@Override
@@ -3274,15 +3274,15 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @return List
 	 */
 	@Override
-	public List<Run> buildQueryDdlsRun(DataRuntime runtime, Sequence meta) throws Exception {
-		return super.buildQueryDdlsRun(runtime, meta);
+	public List<Run> buildQueryDdlRun(DataRuntime runtime, Sequence meta) throws Exception {
+		return super.buildQueryDdlRun(runtime, meta);
 	}
 
 	/**
 	 * sequence[结果集封装]<br/>
 	 * 查询 Sequence DDL
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
+	 * @param index 第几条SQL 对照 buildQueryDdlRun 返回顺序
 	 * @param sequence Sequence
 	 * @param set 查询结果集
 	 * @return List
