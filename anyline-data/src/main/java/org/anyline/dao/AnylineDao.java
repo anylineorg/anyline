@@ -1629,8 +1629,14 @@ public interface AnylineDao<E>{
 	default <T extends Column> LinkedHashMap<String, T> columns(Catalog catalog, Schema schema, String table) {
 		return columns(new Table(catalog, schema, table), null);
 	}
+	<T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Column query, ConfigStore configs);
 
-	<T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, ConfigStore configs);
+	default <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, ConfigStore configs) {
+		Column query = new Column();
+		query.setCatalog(catalog);
+		query.setSchema(schema);
+		return columns(runtime, random, greedy, query, configs);
+	}
 
 	default <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema){
 		return columns(runtime, random, greedy,catalog, schema, null);

@@ -1366,15 +1366,15 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public LinkedHashMap<String, Database> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Database> previous, Database query, DataSet set) throws Exception {
-        if(null == databases) {
-            databases = new LinkedHashMap<>();
+        if(null == previous) {
+            previous = new LinkedHashMap<>();
         }
         for(DataRow row:set) {
             Database database = new Database();
             database.setName(row.getString("DATABASE"));
-            databases.put(database.getName().toUpperCase(), database);
+            previous.put(database.getName().toUpperCase(), database);
         }
-        return databases;
+        return previous;
     }
     @Override
     public List<Database> databases(DataRuntime runtime, int index, boolean create, List<Database> previous, Database query, DataSet set) throws Exception {
@@ -1698,16 +1698,16 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @throws Exception 异常
      */
     @Override
-    public LinkedHashMap<String, Schema> schemas(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Schema> schemas, Catalog catalog, Schema schema, DataSet set) throws Exception {
-        if(null == schemas) {
-            schemas = new LinkedHashMap<>();
+    public LinkedHashMap<String, Schema> schemas(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Schema> previous, Schema query, DataSet set) throws Exception {
+        if(null == previous) {
+            previous = new LinkedHashMap<>();
         }
         for(DataRow row:set) {
             Schema meta = new Schema();
             meta.setName(row.getString("DATABASE"));
-            schemas.put(meta.getName().toUpperCase(), meta);
+            previous.put(meta.getName().toUpperCase(), meta);
         }
-        return schemas;
+        return previous;
     }
     @Override
     public List<Schema> schemas(DataRuntime runtime, int index, boolean create, List<Schema> previous, Schema query, DataSet set) throws Exception {
@@ -2485,8 +2485,8 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @param <T>  Column
      */
     @Override
-    public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Column query, boolean primary, ConfigStore configs) {
-        return super.columns(runtime, random, greedy, query, primary, configs);
+    public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Table table, Column query, boolean primary, ConfigStore configs) {
+        return super.columns(runtime, random, greedy, table, query, primary, configs);
     }
  
     /**
@@ -2596,21 +2596,6 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, List<T> previous, Column query, DataSet set) throws Exception {
         set.removeColumn("TABLE_CATALOG");
         return super.columns(runtime, index, create, previous, query, set);
-    }
-
-    /**
-     * column[结果集封装]<br/>
-     * 解析JDBC get columns结果
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param table 表
-     * @param previous 上一步查询结果
-     * @param pattern 名称
-     * @throws Exception 异常
-     */
-    @Override
-    public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, LinkedHashMap<String, T> columns, Table table, String pattern) throws Exception {
-        return super.columns(runtime, create, columns, table, pattern);
     }
 
     /**
@@ -2732,8 +2717,8 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tags, Table table, String pattern) throws Exception {
-        return super.tags(runtime, create, tags, table, pattern);
+    public <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Tag query) throws Exception {
+        return super.tags(runtime, create, previous, query);
     }
 
     /* *****************************************************************************************************************
@@ -2752,7 +2737,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
-     * @param table 表
+     * @param query 查询条件
      * @return PrimaryKey
      */
     @Override
@@ -2764,7 +2749,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * primary[命令合成]<br/>
      * 查询表上的主键
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param table 表
+     * @param query 查询条件
      * @return sqls
      */
     @Override
@@ -2785,7 +2770,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      *  根据查询结果集构造PrimaryKey
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条查询SQL 对照 buildQueryIndexesRun 返回顺序
-     * @param table 表
+     * @param query 查询条件
      * @param set sql查询结果
      * @throws Exception 异常
      */
@@ -3159,9 +3144,9 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return sqls
      */
     @Override
-    public List<Run> buildQueryConstraintsRun(DataRuntime runtime, Table table, Column column, String pattern) {
-        return super.buildQueryConstraintsRun(runtime, table, column, pattern);
-    }
+    public List<Run> buildQueryConstraintsRun(DataRuntime runtime, Constraint query) {
+		return super.buildQueryConstraintsRun(runtime, query);
+	}
 
     /**
      * constraint[结果集封装]<br/>
@@ -3194,9 +3179,9 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, int index, boolean create, Table table, Column column, LinkedHashMap<String, T> constraints, DataSet set) throws Exception {
+    public <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Constraint query, DataSet set) throws Exception {
         set.removeColumn("CONSTRAINT_CATALOG");
-        return super.constraints(runtime, index, create, table, column, constraints, set);
+        return super.constraints(runtime, index, create, previous, query, set);
     }
 
     /* *****************************************************************************************************************
@@ -3404,7 +3389,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> procedures, DataSet set) throws Exception {
+    public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> procedures, Procedure query, DataSet set) throws Exception {
         if(null == procedures) {
             procedures = new LinkedHashMap<>();
         }
@@ -3428,8 +3413,8 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends Procedure> List<T> procedures(DataRuntime runtime, boolean create, List<T> procedures) throws Exception {
-        return super.procedures(runtime, create, procedures);
+    public <T extends Procedure> List<T> procedures(DataRuntime runtime, boolean create, List<T> previous, Procedure query) throws Exception {
+        return super.procedures(runtime, create, previous, query);
     }
 
     /**
@@ -3442,8 +3427,8 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous) throws Exception {
-        return super.procedures(runtime, create, previous);
+    public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Procedure query) throws Exception {
+        return super.procedures(runtime, create, previous, query);
     }
     /**
      *
@@ -3759,8 +3744,8 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends Sequence> List<T> sequences(DataRuntime runtime, int index, boolean create, List<T> sequences, DataSet set) throws Exception {
-        return super.sequences(runtime, index, create, sequences, set);
+    public <T extends Sequence> List<T> sequences(DataRuntime runtime, int index, boolean create, List<T> previous, Sequence query, DataSet set) throws Exception {
+        return super.sequences(runtime, index, create, previous, query, set);
     }
     /**
      * sequence[结果集封装]<br/>
@@ -3774,8 +3759,8 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends Sequence> LinkedHashMap<String, T> sequences(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> sequences, DataSet set) throws Exception {
-        return super.sequences(runtime, index, create, sequences, set);
+    public <T extends Sequence> LinkedHashMap<String, T> sequences(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Sequence query, DataSet set) throws Exception {
+        return super.sequences(runtime, index, create, previous, query, set);
     }
 
     /**
@@ -3788,8 +3773,8 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends Sequence> List<T> sequences(DataRuntime runtime, boolean create, List<T> sequences) throws Exception {
-        return super.sequences(runtime, create, sequences);
+    public <T extends Sequence> List<T> sequences(DataRuntime runtime, boolean create, List<T> previous, Sequence query) throws Exception {
+        return super.sequences(runtime, create, previous, query);
     }
 
     /**

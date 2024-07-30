@@ -898,7 +898,11 @@ public class SpringJDBCActuator implements DriverActuator {
      * @return tables
      * @throws Exception 异常
      */
-    public <T extends Table> LinkedHashMap<String, T> tables(DriverAdapter adapter, DataRuntime runtime, boolean create,  LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
+    @Override
+    public <T extends Table> LinkedHashMap<String, T> tables(DriverAdapter adapter, DataRuntime runtime, boolean create,  LinkedHashMap<String, T> tables, Table query, int types) throws Exception {
+        Catalog catalog = query.getCatalog();
+        Schema schema = query.getSchema();
+        String pattern = query.getName();
         DataSource ds = null;
         Connection con = null;
         try{
@@ -942,7 +946,11 @@ public class SpringJDBCActuator implements DriverActuator {
      * @return tables
      * @throws Exception 异常
      */
-    public <T extends Table> List<T> tables(DriverAdapter adapter, DataRuntime runtime, boolean create, List<T> tables,  Catalog catalog, Schema schema, String pattern, int types) throws Exception {
+    @Override
+    public <T extends Table> List<T> tables(DriverAdapter adapter, DataRuntime runtime, boolean create, List<T> tables,  Table query, int types) throws Exception {
+        Catalog catalog = query.getCatalog();
+        Schema schema = query.getSchema();
+        String pattern = query.getName();
         DataSource ds = null;
         Connection con = null;
         try{
@@ -987,7 +995,11 @@ public class SpringJDBCActuator implements DriverActuator {
      * @return views
      * @throws Exception 异常
      */
+    @Override
     public <T extends View> LinkedHashMap<String, T> views(DriverAdapter adapter, DataRuntime runtime, boolean create,  LinkedHashMap<String, T> views, View query, int types) throws Exception {
+        Catalog catalog = query.getCatalog();
+        Schema schema = query.getSchema();
+        String pattern = query.getName();
         DataSource ds = null;
         Connection con = null;
         try {
@@ -1023,16 +1035,13 @@ public class SpringJDBCActuator implements DriverActuator {
      * 根据驱动内置方法补充
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param previous 上一步查询结果
-     * @param catalog catalog
-     * @param schema schema
-     * @param pattern 名称统配符或正则
+     * @param query query
      * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
      * @return views
      * @throws Exception 异常
      */
+    @Override
     public <T extends Table> List<T> views(DriverAdapter adapter, DataRuntime runtime, boolean create, List<T> views, View query, int types) throws Exception {
-
         return views;
     }
 
@@ -1047,10 +1056,11 @@ public class SpringJDBCActuator implements DriverActuator {
      * @return columns
      * @param <T> Column
      */
-    public <T extends Column> LinkedHashMap<String, T> columns(DriverAdapter adapter, DataRuntime runtime, boolean create, LinkedHashMap<String, T> columns, Table table, String sql) throws Exception {
+    @Override
+    public <T extends Column> LinkedHashMap<String, T> columns(DriverAdapter adapter, DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Table table, String sql) throws Exception {
         SqlRowSet set = jdbc(runtime).queryForRowSet(sql);
-        columns = SpringJDBCUtil.columns(adapter, runtime, true, columns, table, set);
-        return columns;
+        previous = SpringJDBCUtil.columns(adapter, runtime, true, previous, table, set);
+        return previous;
     }
     /**
      * 根方法(3)根据根据驱动内置元数据接口补充表结构
@@ -1062,7 +1072,10 @@ public class SpringJDBCActuator implements DriverActuator {
      * @return columns
      * @param <T> Column
      */
-    public <T extends Column> LinkedHashMap<String, T> metadata(DriverAdapter adapter, DataRuntime runtime, boolean create, LinkedHashMap<String, T> columns, Table table, String pattern) throws Exception {
+    @Override
+    public <T extends Column> LinkedHashMap<String, T> metadata(DriverAdapter adapter, DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Column query) throws Exception {
+        Table table = query.getTable();
+        String pattern = query.getName();
         DataSource ds = null;
         Connection con = null;
         DatabaseMetaData metadata = null;
@@ -1070,7 +1083,7 @@ public class SpringJDBCActuator implements DriverActuator {
             ds = jdbc(runtime).getDataSource();
             con = DataSourceUtils.getConnection(ds);
             metadata = con.getMetaData();
-            columns = org.anyline.data.jdbc.util.JDBCUtil.metadata(adapter, runtime, true, columns, metadata, table, pattern);
+            previous = org.anyline.data.jdbc.util.JDBCUtil.metadata(adapter, runtime, true, previous, metadata, table, pattern);
         } catch (Exception e) {
             if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
                 e.printStackTrace();
@@ -1080,7 +1093,7 @@ public class SpringJDBCActuator implements DriverActuator {
                 DataSourceUtils.releaseConnection(con, ds);
             }
         }
-        return columns;
+        return previous;
     }
 
     /**
@@ -1088,13 +1101,15 @@ public class SpringJDBCActuator implements DriverActuator {
      * 根据驱动内置接口
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param table 表
-     * @param unique 是否唯一
-     * @param approximate 索引允许结果反映近似值
+     * @param query 查询条件
      * @return indexes indexes
      * @throws Exception 异常
      */
-    public <T extends Index> LinkedHashMap<String, T> indexes(DriverAdapter adapter, DataRuntime runtime, boolean create, LinkedHashMap<String, T> indexes, Table table, boolean unique, boolean approximate) throws Exception {
+    @Override
+    public <T extends Index> LinkedHashMap<String, T> indexes(DriverAdapter adapter, DataRuntime runtime, boolean create, LinkedHashMap<String, T> indexes, Index query) throws Exception {
+        Table table = query.getTable();
+        boolean unique = query.isUnique();
+        boolean approximate = query.isApproximate();
         DataSource ds = null;
         Connection con = null;
         if(null == indexes) {

@@ -1243,15 +1243,15 @@ public class IgniteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public LinkedHashMap<String, Database> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Database> previous, Database query, DataSet set) throws Exception {
-		if(null == databases) {
-			databases = new LinkedHashMap<>();
+		if(null == previous) {
+			previous = new LinkedHashMap<>();
 		}
 		for(DataRow row:set) {
 			Database database = new Database();
 			database.setName(row.getString("DATABASE"));
-			databases.put(database.getName().toUpperCase(), database);
+			previous.put(database.getName().toUpperCase(), database);
 		}
-		return databases;
+		return previous;
 	}
 	@Override
 	public List<Database> databases(DataRuntime runtime, int index, boolean create, List<Database> previous, Database query, DataSet set) throws Exception {
@@ -2216,8 +2216,8 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends PartitionTable> LinkedHashMap<String, T> partitions(DataRuntime runtime, int total, int index, boolean create, PartitionTable query, DataSet set) throws Exception {
-		return super.partitions(runtime, total, index, create, query, set);
+	public <T extends PartitionTable> LinkedHashMap<String, T> partitions(DataRuntime runtime, int total, int index, boolean create, LinkedHashMap<String, T> previous, PartitionTable query, DataSet set) throws Exception {
+		return super.partitions(runtime, total, index, create, previous, query, set);
 	}
 
 	/**
@@ -2300,8 +2300,8 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @param <T>  Column
 	 */
 	@Override
-	public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Column query, boolean primary) {
-		return super.columns(runtime, random, greedy, query, primary);
+	public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Table table, Column query, boolean primary, ConfigStore configs) {
+		return super.columns(runtime, random, greedy, table, query, primary, configs);
 	}
 
 	
@@ -2319,6 +2319,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		List<Run> runs = new ArrayList<>();
 		Catalog catalog = null;
 		Schema schema = null;
+		Table table = query.getTable();
 		String name = null;
 		if(null != table) {
 			name = table.getName();
@@ -2362,15 +2363,15 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 */
 	@Override
 	public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Table table, Column query, DataSet set) throws Exception {
-		return super.columns(runtime, index, create, table, columns, set);
+		return super.columns(runtime, index, create, previous, table, query, set);
 	}
 	@Override
 	public <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, List<T> previous, Column query, DataSet set) throws Exception {
-		columns = super.columns(runtime, index, create, table, columns, set);
-		for(Column column:columns) {
+		previous = super.columns(runtime, index, create, previous, query, set);
+		for(Column column:previous) {
 			column.setCatalog((Catalog)null);
 		}
-		return columns;
+		return previous;
 	}
 
 	/**
@@ -2384,8 +2385,8 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, LinkedHashMap<String, T> columns, Table table, String pattern) throws Exception {
-		return super.columns(runtime, create, columns, table, pattern);
+	public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Column query) throws Exception {
+		return super.columns(runtime, create, previous, query);
 	}
 
 	/**
@@ -2536,8 +2537,8 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tags, Table table, String pattern) throws Exception {
-		return super.tags(runtime, create, tags, table, pattern);
+	public <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tags, Tag query) throws Exception {
+		return super.tags(runtime, create, tags, query);
 	}
 
 	/* *****************************************************************************************************************
@@ -2681,8 +2682,8 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, int index, Table table, LinkedHashMap<String, T> previous, ForeignKey query, DataSet set) throws Exception {
-		return super.foreigns(runtime, index, table, previous, query, set);
+	public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, int index, LinkedHashMap<String, T> previous, ForeignKey query, DataSet set) throws Exception {
+		return super.foreigns(runtime, index, previous, query, set);
 	}
 
 	/* *****************************************************************************************************************
@@ -2961,8 +2962,8 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @return runs
 	 */
 	@Override
-	public List<Run> buildQueryConstraintsRun(DataRuntime runtime, Table table, Column column, String pattern) {
-		return super.buildQueryConstraintsRun(runtime, table, column, pattern);
+	public List<Run> buildQueryConstraintsRun(DataRuntime runtime, Constraint query) {
+		return super.buildQueryConstraintsRun(runtime, query);
 	}
 
 	/**
@@ -2996,8 +2997,8 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, int index, boolean create, Table table, Column column, LinkedHashMap<String, T> constraints, DataSet set) throws Exception {
-		return super.constraints(runtime, index, create, table, column, constraints, set);
+	public <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Constraint query, DataSet set) throws Exception {
+		return super.constraints(runtime, index, create, previous, query, set);
 	}
 
 	/* *****************************************************************************************************************
@@ -3036,6 +3037,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 */
 	public List<Run> buildQueryTriggersRun(DataRuntime runtime, Trigger query) {
 		Table table = query.getTable();
+		List<Trigger.EVENT> events = query.getEvents();
 		List<Run> runs = new ArrayList<>();
 		Run run = new SimpleRun(runtime);
 		runs.add(run);
@@ -3208,7 +3210,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> procedures, DataSet set) throws Exception {
+	public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> procedures, Procedure query, DataSet set) throws Exception {
 		if(null == procedures) {
 			procedures = new LinkedHashMap<>();
 		}

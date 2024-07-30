@@ -1403,8 +1403,8 @@ public class MySQLAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Catalog> previous, Catalog catalog, Schema schema, DataSet set) throws Exception {
-		return super.catalogs(runtime, index, create, previous, catalog, schema, set);
+	public LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Catalog> previous, Catalog query, DataSet set) throws Exception {
+		return super.catalogs(runtime, index, create, previous, query, set);
 	}
 
 	/**
@@ -1622,7 +1622,7 @@ public class MySQLAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Table query, int types, int struct, ConfigStore configs) {
-		return super.tables(runtime, random, greedy, catalog, schema, pattern, types, struct, configs);
+		return super.tables(runtime, random, greedy, query, types, struct, configs);
 	}
 
 	/**
@@ -1643,10 +1643,6 @@ public class MySQLAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 		return super.tables(runtime, random, query, types, struct, configs);
 	}
 
-	@Override
-	public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Table query, int types, int struct, ConfigStore configs) {
-		return super.tables(runtime, random, query, types, struct, configs);
-	}
 
 	/**
 	 * table[命令合成]<br/>
@@ -2145,8 +2141,8 @@ public class MySQLAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends PartitionTable> LinkedHashMap<String, T> partitions(DataRuntime runtime, int total, int index, boolean create, PartitionTable query, DataSet set) throws Exception {
-		return super.partitions(runtime, total, index, create, query, set);
+	public <T extends PartitionTable> LinkedHashMap<String, T> partitions(DataRuntime runtime, int total, int index, boolean create, LinkedHashMap<String, T> previous, PartitionTable query, DataSet set) throws Exception {
+		return super.partitions(runtime, total, index, create, previous, query, set);
 	}
 
 	/**
@@ -2229,8 +2225,8 @@ public class MySQLAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 	 * @param <T>  Column
 	 */
 	@Override
-	public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Column query, boolean primary) {
-		return super.columns(runtime, random, greedy, query, primary);
+	public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Table table, Column query, boolean primary, ConfigStore configs) {
+		return super.columns(runtime, random, greedy, table, query, primary, configs);
 	}
 
 	
@@ -2245,7 +2241,7 @@ public class MySQLAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public List<Run> buildQueryColumnsRun(DataRuntime runtime,  boolean metadata, Column query, ConfigStore configs) throws Exception {
-		return super.buildQueryColumnsRun(runtime, table, metadata, configs);
+		return super.buildQueryColumnsRun(runtime, metadata, query, configs);
 	}
 
 	/**
@@ -2276,11 +2272,11 @@ public class MySQLAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Table table, Column query, DataSet set) throws Exception {
-		return super.columns(runtime, index, create, table, columns, set);
+		return super.columns(runtime, index, create, previous, table, query, set);
 	}
 	@Override
 	public <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, List<T> previous, Column query, DataSet set) throws Exception {
-		return super.columns(runtime, index, create, table, columns, set);
+		return super.columns(runtime, index, create, previous, query, set);
 	}
 
 	/**
@@ -2298,7 +2294,7 @@ public class MySQLAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create,  List<T> previous, Collection<? extends Table> tables, Column query, DataSet set) throws Exception {
-		return super.columns(runtime, index, create, tables, columns, set);
+		return super.columns(runtime, index, create, previous, tables, query, set);
 	}
 
 	/**
@@ -2314,8 +2310,8 @@ public class MySQLAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 	 * @param <T> Column
 	 */
 	@Override
-	public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, Collection<? extends Table> tables, ConfigStore configs) {
-		return super.columns(runtime, random, greedy, catalog, schema, tables, configs);
+	public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Collection<? extends Table> tables, Column query, ConfigStore configs) {
+		return super.columns(runtime, random, greedy, tables, query, configs);
 	}
 
 	/**
@@ -2329,8 +2325,8 @@ public class MySQLAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, LinkedHashMap<String, T> columns, Table table, String pattern) throws Exception {
-		return super.columns(runtime, create, columns, table, pattern);
+	public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Column query) throws Exception {
+		return super.columns(runtime, create, previous, query);
 	}
 
 	/**
@@ -2481,8 +2477,8 @@ public class MySQLAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tags, Table table, String pattern) throws Exception {
-		return super.tags(runtime, create, tags, table, pattern);
+	public <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tags, Tag query) throws Exception {
+		return super.tags(runtime, create, tags, query);
 	}
 
 	/* *****************************************************************************************************************
@@ -2617,8 +2613,8 @@ public class MySQLAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, int index, Table table, LinkedHashMap<String, T> previous, ForeignKey query, DataSet set) throws Exception {
-		return super.foreigns(runtime, index, table, previous, query, set);
+	public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, int index, LinkedHashMap<String, T> previous, ForeignKey query, DataSet set) throws Exception {
+		return super.foreigns(runtime, index, previous, query, set);
 	}
 
 	/* *****************************************************************************************************************
@@ -2841,8 +2837,8 @@ public class MySQLAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 	 * @return runs
 	 */
 	@Override
-	public List<Run> buildQueryConstraintsRun(DataRuntime runtime, Table table, Column column, String pattern) {
-		return super.buildQueryConstraintsRun(runtime, table, column, pattern);
+	public List<Run> buildQueryConstraintsRun(DataRuntime runtime, Constraint query) {
+		return super.buildQueryConstraintsRun(runtime, query);
 	}
 
 	/**
@@ -2876,8 +2872,8 @@ public class MySQLAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, int index, boolean create, Table table, Column column, LinkedHashMap<String, T> constraints, DataSet set) throws Exception {
-		return super.constraints(runtime, index, create, table, column, constraints, set);
+	public <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Constraint query, DataSet set) throws Exception {
+		return super.constraints(runtime, index, create, previous, query, set);
 	}
 
 	/* *****************************************************************************************************************

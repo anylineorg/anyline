@@ -8251,6 +8251,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	}
 
 
+
 	/**
 	 * column[调用入口]<br/>(方法1)<br/>
 	 * 查询多个表列，并分配到每个表中，需要保持所有表的catalog,schema相同
@@ -8913,7 +8914,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tags, Table table, String pattern) throws Exception {
+	public <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tags, Tag query) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tags, Table table, String pattern)", 37));
 		}
@@ -9834,13 +9835,12 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return runs
 	 */
 	@Override
-	public List<Run> buildQueryConstraintsRun(DataRuntime runtime, Table table, Column column, String pattern) {
+	public List<Run> buildQueryConstraintsRun(DataRuntime runtime, Constraint query) {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryConstraintsRun(DataRuntime runtime, Table table, Column column, String pattern)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryConstraintsRun(DataRuntime runtime, Constraint query)", 37));
 		}
 		return new ArrayList<>();
 	}
-
 	/**
 	 * constraint[结果集封装]<br/>
 	 * 根据查询结果集构造Constraint

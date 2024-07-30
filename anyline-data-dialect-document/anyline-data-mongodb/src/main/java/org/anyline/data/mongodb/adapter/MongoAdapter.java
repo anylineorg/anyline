@@ -998,6 +998,22 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
         }
         return list;
     }
+
+    @Override
+    public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, LinkedHashMap<String, T> columns, Column query) throws Exception {
+        return null;
+    }
+
+    @Override
+    public <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tags, Tag query) throws Exception {
+        return null;
+    }
+
+    @Override
+    public List<Run> buildQueryConstraintsRun(DataRuntime runtime, Constraint query) {
+        return null;
+    }
+
     @Override
     public <T extends Metadata> void checkSchema(DataRuntime runtime, T meta) {
 

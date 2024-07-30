@@ -1407,7 +1407,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public LinkedHashMap<String, Database> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Database> previous, Database query, DataSet set) throws Exception {
-        return super.databases(runtime, index, create, databases, catalog, schema, set);
+        return super.databases(runtime, index, create, previous, query, set);
     }
     @Override
     public List<Database> databases(DataRuntime runtime, int index, boolean create, List<Database> previous, Database query, DataSet set) throws Exception {
@@ -1772,8 +1772,8 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> Table
      */
     @Override
-    public <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Table query, int types, int struct) {
-        return super.tables(runtime, random, greedy, query, types, struct);
+    public <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Table query, int types, int struct, ConfigStore configs) {
+        return super.tables(runtime, random, greedy, query, types, struct, configs);
     }
 
     /**
@@ -1790,8 +1790,8 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     }
 
     @Override
-    public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Table query, int types, int struct) {
-        return super.tables(runtime, random, query, types, struct);
+    public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Table query, int types, int struct, ConfigStore configs) {
+        return super.tables(runtime, random, query, types, struct, configs);
     }
 
     /**
@@ -2141,10 +2141,6 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public <T extends MasterTable> List<T> masters(DataRuntime runtime, String random, boolean greedy, MasterTable query, int types, int struct, ConfigStore configs) {
         return super.masters(runtime, random, greedy, query, types, struct, configs);
     }
-    @Override
-    public <T extends MasterTable> List<T> masters(DataRuntime runtime, String random, boolean greedy, MasterTable query, String pattern, int types, int struct) {
-        return super.masters(runtime, random, greedy, query, types, struct);
-    }
     /**
      * master table[命令合成]<br/>
      * 查询主表
@@ -2375,8 +2371,8 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @param <T>  Column
      */
     @Override
-    public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Column query, boolean primary) {
-        return super.columns(runtime, random, greedy, query, primary);
+    public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Table table, Column query, boolean primary, ConfigStore configs) {
+        return super.columns(runtime, random, greedy, table, query, primary, configs);
     }
 
     /**
@@ -2392,8 +2388,8 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> Column
      */
     @Override
-    public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, Table table) {
-        return super.columns(runtime, random, greedy, catalog, schema, table);
+     public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Column query, ConfigStore configs) {
+        return super.columns(runtime, random, greedy, query, configs);
     }
     /**
      * column[命令合成]<br/>
@@ -2409,6 +2405,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
         Catalog catalog = null;
         Schema schema = null;
         String name = null;
+        Table table = query.getTable();
         if(null != table) {
             name = table.getName();
             catalog = table.getCatalog();
@@ -2450,6 +2447,8 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public List<Run> buildQueryColumnsRun(DataRuntime runtime, boolean metadata, Collection<? extends Table> tables, Column query, ConfigStore configs) throws Exception {
+        Catalog catalog = query.getCatalog();
+        Schema schema = query.getSchema();
         List<Run> runs = new ArrayList<>();
         Table table = null;
         if(!tables.isEmpty()) {
@@ -2491,40 +2490,41 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Table table, Column query, DataSet set) throws Exception {
-        if(null == columns) {
-            columns = new LinkedHashMap<>();
+        if(null == previous) {
+            previous = new LinkedHashMap<>();
         }
         for(DataRow row:set) {
             String name = row.getString("COLUMN_NAME","COLNAME");
-            T column = columns.get(name.toUpperCase());
+            T column = previous.get(name.toUpperCase());
             if(null == column) {
                 column = (T)new Column();
             }
             column.setName(name);
             init(runtime, index, column, table, row);
-            columns.put(name.toUpperCase(), column);
+            previous.put(name.toUpperCase(), column);
         }
-        return columns;
+        return previous;
     }
     @Override
     public <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, List<T> previous, Column query, DataSet set) throws Exception {
-        if(null == columns) {
-            columns = new ArrayList<>();
+        Table table = query.getTable();
+        if(null == previous) {
+            previous = new ArrayList<>();
         }
         for(DataRow row:set) {
             String name = row.getString("COLNAME");
             T tmp = (T)new Column();
             tmp.setName(name);
             init(runtime, index, tmp, table, row);
-            T column = Metadata.match(tmp, columns);
+            T column = Metadata.match(tmp, previous);
             if(null == column) {
                 column = (T) new Column();
                 column.setName(name);
                 init(runtime, index, column, table, row);
-                columns.add(column);
+                previous.add(column);
             }
         }
-        return columns;
+        return previous;
     }
 
     /**
@@ -2587,8 +2587,8 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, LinkedHashMap<String, T> columns, Table table, String pattern) throws Exception {
-        return super.columns(runtime, create, columns, table, pattern);
+    public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Column query) throws Exception {
+        return super.columns(runtime, create, previous, query);
     }
 
     /* *****************************************************************************************************************
@@ -2659,8 +2659,8 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tags, Table table, String pattern) throws Exception {
-        return super.tags(runtime, create, tags, table, pattern);
+    public <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Tag query) throws Exception {
+        return super.tags(runtime, create, previous, query);
     }
 
     /* *****************************************************************************************************************
@@ -2679,7 +2679,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
-     * @param table 表
+     * @param query 查询条件
      * @return PrimaryKey
      */
     @Override
@@ -2691,7 +2691,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * primary[命令合成]<br/>
      * 查询表上的主键
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param table 表
+     * @param query 查询条件
      * @return sqls
      */
     @Override
@@ -2720,7 +2720,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      *  根据查询结果集构造PrimaryKey
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条查询SQL 对照 buildQueryIndexesRun 返回顺序
-     * @param table 表
+     * @param query 查询条件
      * @param set sql查询结果
      * @throws Exception 异常
      */
@@ -2790,8 +2790,8 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @throws Exception 异常
      */
     @Override
-	public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, int index, Table table, LinkedHashMap<String, T> previous, ForeignKey query, DataSet set) throws Exception {
-		return super.foreigns(runtime, index, table, previous, query, set);
+	public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, int index, LinkedHashMap<String, T> previous, ForeignKey query, DataSet set) throws Exception {
+		return super.foreigns(runtime, index, previous, query, set);
 	}
 
     /* *****************************************************************************************************************
@@ -2966,9 +2966,9 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return sqls
      */
     @Override
-    public List<Run> buildQueryConstraintsRun(DataRuntime runtime, Table table, Column column, String pattern) {
-        return super.buildQueryConstraintsRun(runtime, table, column, pattern);
-    }
+    public List<Run> buildQueryConstraintsRun(DataRuntime runtime, Constraint query) {
+		return super.buildQueryConstraintsRun(runtime, query);
+	}
 
     /**
      * constraint[结果集封装]<br/>
@@ -3000,8 +3000,8 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, int index, boolean create, Table table, Column column, LinkedHashMap<String, T> constraints, DataSet set) throws Exception {
-        return super.constraints(runtime, index, create, table, column, constraints, set);
+    public <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Constraint query, DataSet set) throws Exception {
+        return super.constraints(runtime, index, create, previous, query, set);
     }
 
     /* *****************************************************************************************************************
@@ -3132,8 +3132,8 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> procedures, DataSet set) throws Exception {
-        return super.procedures(runtime, index, create, procedures, set);
+    public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Procedure query, DataSet set) throws Exception {
+        return super.procedures(runtime, index, create, previous, query, set);
     }
 
     /**
@@ -3146,8 +3146,8 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends Procedure> List<T> procedures(DataRuntime runtime, boolean create, List<T> procedures) throws Exception {
-        return super.procedures(runtime, create, procedures);
+    public <T extends Procedure> List<T> procedures(DataRuntime runtime, boolean create, List<T> previous, Procedure query) throws Exception {
+        return super.procedures(runtime, create, previous, query);
     }
 
     /**
@@ -3160,8 +3160,8 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous) throws Exception {
-        return super.procedures(runtime, create, previous);
+    public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Procedure query) throws Exception {
+        return super.procedures(runtime, create, previous, query);
     }
     /**
      *
@@ -3308,8 +3308,8 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends Function> List<T> functions(DataRuntime runtime, boolean create, List<T> functions) throws Exception {
-        return super.functions(runtime, create, functions);
+    public <T extends Function> List<T> functions(DataRuntime runtime, boolean create, List<T> previous, Function query) throws Exception {
+        return super.functions(runtime, create, previous, query);
     }
 
     /**
@@ -3428,8 +3428,8 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends Sequence> List<T> sequences(DataRuntime runtime, int index, boolean create, List<T> sequences, DataSet set) throws Exception {
-        return super.sequences(runtime, index, create, sequences, set);
+    public <T extends Sequence> List<T> sequences(DataRuntime runtime, int index, boolean create, List<T> previous, Sequence query, DataSet set) throws Exception {
+        return super.sequences(runtime, index, create, previous, query, set);
     }
     /**
      * sequence[结果集封装]<br/>
@@ -3443,8 +3443,8 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends Sequence> LinkedHashMap<String, T> sequences(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> sequences, DataSet set) throws Exception {
-        return super.sequences(runtime, index, create, sequences, set);
+    public <T extends Sequence> LinkedHashMap<String, T> sequences(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Sequence query, DataSet set) throws Exception {
+        return super.sequences(runtime, index, create, previous, query, set);
     }
 
     /**
@@ -3457,8 +3457,8 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends Sequence> List<T> sequences(DataRuntime runtime, boolean create, List<T> sequences) throws Exception {
-        return super.sequences(runtime, create, sequences);
+    public <T extends Sequence> List<T> sequences(DataRuntime runtime, boolean create, List<T> previous, Sequence query) throws Exception {
+        return super.sequences(runtime, create, previous, query);
     }
 
     /**

@@ -1220,11 +1220,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	}
 
 	@Override
-	public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, ConfigStore configs) {
+	public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Column query, ConfigStore configs) {
 		if(null == runtime) {
 			runtime = runtime();
 		}
-		return runtime.getAdapter().columns(runtime, random, greedy, catalog, schema, configs);
+		return runtime.getAdapter().columns(runtime, random, greedy, query, configs);
 
 	}
 

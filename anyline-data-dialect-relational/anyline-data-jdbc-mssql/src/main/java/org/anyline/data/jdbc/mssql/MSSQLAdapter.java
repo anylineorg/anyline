@@ -1311,15 +1311,15 @@ public class MSSQLAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public LinkedHashMap<String, Database> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Database> previous, Database query, DataSet set) throws Exception {
-		if(null == databases) {
-			databases = new LinkedHashMap<>();
+		if(null == previous) {
+			previous = new LinkedHashMap<>();
 		}
 		for(DataRow row:set) {
 			Database database = new Database();
 			database.setName(row.getString("NAME"));
-			databases.put(database.getName().toUpperCase(), database);
+			previous.put(database.getName().toUpperCase(), database);
 		}
-		return databases;
+		return previous;
 	}
 	@Override
 	public List<Database> databases(DataRuntime runtime, int index, boolean create, List<Database> previous, Database query, DataSet set) throws Exception {
@@ -2258,8 +2258,8 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends PartitionTable> LinkedHashMap<String, T> partitions(DataRuntime runtime, int total, int index, boolean create, PartitionTable query, DataSet set) throws Exception {
-		return super.partitions(runtime, total, index, create, query, set);
+	public <T extends PartitionTable> LinkedHashMap<String, T> partitions(DataRuntime runtime, int total, int index, boolean create, LinkedHashMap<String, T> previous, PartitionTable query, DataSet set) throws Exception {
+		return super.partitions(runtime, total, index, create, previous, query, set);
 	}
 
 	/**
@@ -2342,8 +2342,8 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @param <T>  Column
 	 */
 	@Override
-	public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Column query, boolean primary) {
-		return super.columns(runtime, random, greedy, query, primary);
+	public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Table table, Column query, boolean primary, ConfigStore configs) {
+		return super.columns(runtime, random, greedy, table, query, primary, configs);
 	}
 
 	
@@ -2362,6 +2362,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		String catalog = null;
 		String schema = null;
 		String name = null;
+		Table table = query.getTable();
 		if(null != table) {
 			name = table.getName();
 			catalog = table.getCatalogName();
@@ -2430,11 +2431,11 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 */
 	@Override
 	public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Table table, Column query, DataSet set) throws Exception {
-		return super.columns(runtime, index, create, table, columns, set);
+		return super.columns(runtime, index, create, previous, table, query, set);
 	}
 	@Override
 	public <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, List<T> previous, Column query, DataSet set) throws Exception {
-		return super.columns(runtime, index, create, table, columns, set);
+		return super.columns(runtime, index, create, previous, query, set);
 	}
 
 	/**
@@ -2452,7 +2453,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 */
 	@Override
 	public <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create,  List<T> previous, Collection<? extends Table> tables, Column query, DataSet set) throws Exception {
-		return super.columns(runtime, index, create, tables, columns, set);
+		return super.columns(runtime, index, create, previous, tables, query, set);
 	}
 
 	/**
@@ -2468,8 +2469,8 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @param <T> Column
 	 */
 	@Override
-	public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, Collection<? extends Table> tables, ConfigStore configs) {
-		return super.columns(runtime, random, greedy, catalog, schema, tables, configs);
+	public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Collection<? extends Table> tables, Column query, ConfigStore configs) {
+		return super.columns(runtime, random, greedy, tables, query, configs);
 	}
 
 	/**
@@ -2483,8 +2484,8 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, LinkedHashMap<String, T> columns, Table table, String pattern) throws Exception {
-		return super.columns(runtime, create, columns, table, pattern);
+	public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Column query) throws Exception {
+		return super.columns(runtime, create, previous, query);
 	}
 
 	/**
@@ -2635,8 +2636,8 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tags, Table table, String pattern) throws Exception {
-		return super.tags(runtime, create, tags, table, pattern);
+	public <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tags, Tag query) throws Exception {
+		return super.tags(runtime, create, tags, query);
 	}
 
 	/* *****************************************************************************************************************
@@ -3057,8 +3058,8 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @return runs
 	 */
 	@Override
-	public List<Run> buildQueryConstraintsRun(DataRuntime runtime, Table table, Column column, String pattern) {
-		return super.buildQueryConstraintsRun(runtime, table, column, pattern);
+	public List<Run> buildQueryConstraintsRun(DataRuntime runtime, Constraint query) {
+		return super.buildQueryConstraintsRun(runtime, query);
 	}
 
 	/**
@@ -3092,8 +3093,8 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, int index, boolean create, Table table, Column column, LinkedHashMap<String, T> constraints, DataSet set) throws Exception {
-		return super.constraints(runtime, index, create, table, column, constraints, set);
+	public <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Constraint query, DataSet set) throws Exception {
+		return super.constraints(runtime, index, create, previous, query, set);
 	}
 
 	/* *****************************************************************************************************************
@@ -3175,12 +3176,12 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 */
 	public <T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Trigger query, DataSet set) throws Exception {
 		Table table = query.getTable();
-		if(null == triggers) {
-			triggers = new LinkedHashMap<>();
+		if(null == previous) {
+			previous = new LinkedHashMap<>();
 		}
 		for(DataRow row:set) {
 			String name = row.getString("NAME");
-			T trigger = triggers.get(name.toUpperCase());
+			T trigger = previous.get(name.toUpperCase());
 			if(null == trigger) {
 				trigger = (T)new Trigger();
 			}
@@ -3206,10 +3207,10 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 			}*/
 			//trigger.setDefinition(row.getString("ACTION_STATEMENT"));
 
-			triggers.put(name.toUpperCase(), trigger);
+			previous.put(name.toUpperCase(), trigger);
 
 		}
-		return triggers;
+		return previous;
 	}
 
 	/* *****************************************************************************************************************

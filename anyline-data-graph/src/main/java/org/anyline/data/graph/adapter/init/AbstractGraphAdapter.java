@@ -3122,8 +3122,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 		return super.edges(runtime, random, greedy, query, types, struct, configs);
 	}
 
-	public <T extends EdgeTable> LinkedHashMap<String, T> edges(DataRuntime runtime, String random, EdgeTable query, int types, int struct) {
-		return super.edges(runtime, random, query, types, struct);
+	public <T extends EdgeTable> LinkedHashMap<String, T> edges(DataRuntime runtime, String random, EdgeTable query, int types, int struct, ConfigStore configs) {
+		return super.edges(runtime, random, query, types, struct, configs);
 	}
 
 	/**
@@ -3167,7 +3167,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends EdgeTable> LinkedHashMap<String, T> edges(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tablpreviouses, EdgeTable query, DataSet set) throws Exception {
+	public <T extends EdgeTable> LinkedHashMap<String, T> edges(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, EdgeTable query, DataSet set) throws Exception {
 		return super.edges(runtime, index, create, previous, query, set);
 	}
 
@@ -3466,8 +3466,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends PartitionTable> LinkedHashMap<String, T> partitions(DataRuntime runtime, int total, int index, boolean create, PartitionTable query, DataSet set) throws Exception {
-		return super.partitions(runtime, total, index, create, query, set);
+	public <T extends PartitionTable> LinkedHashMap<String, T> partitions(DataRuntime runtime, int total, int index, boolean create, LinkedHashMap<String, T> previous, PartitionTable query, DataSet set) throws Exception {
+		return super.partitions(runtime, total, index, create, previous, query, set);
 	}
 
 	/**
@@ -3548,8 +3548,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param <T>  Column
 	 */
 	@Override
-	public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Column query, boolean primary, ConfigStore configs) {
-		Table table = query.getTable();
+	public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Table table, Column query, boolean primary, ConfigStore configs) {
 		if (!greedy) {
 			checkSchema(runtime, table);
 		}
@@ -3574,12 +3573,12 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 
 			// 1.优先根据系统表查询
 			try {
-				List<Run> runs = buildQueryColumnsRun(runtime, table, false);
+				List<Run> runs = buildQueryColumnsRun(runtime, greedy, query, configs);
 				if (null != runs) {
 					int idx = 0;
 					for (Run run: runs) {
 						DataSet set = select(runtime, random, true, (String) null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run);
-						columns = columns(runtime, idx, true, table, columns, set);
+						columns = columns(runtime, idx, true, columns, table, query, set);
 						idx++;
 					}
 				}
@@ -3658,21 +3657,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 		return columns;
 	}
 
-	
 
-	/**
-	 * column[命令合成]<br/>
-	 * 查询表上的列
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param table 表
-	 * @param metadata 是否根据metadata(true:SELECT * FROM T WHERE 1=0,false:查询系统表)
-	 * @return runs
-	 */
-	@Override
-	public List<Run> buildQueryColumnsRun(DataRuntime runtime, Table table, boolean metadata) throws Exception {
-		List<Run> runs = new ArrayList<>();
-		return runs;
-	}
 
 	/**
 	 * column[命令合成]<br/>(方法1)<br/>
@@ -3701,33 +3686,33 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 */
 	@Override
 	public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Table table, Column query, DataSet set) throws Exception {
-		if(null == columns) {
-			columns = new LinkedHashMap<>();
+		if(null == previous) {
+			previous = new LinkedHashMap<>();
 		}
 		for(DataRow row:set) {
 			T column = null;
 			column = init(runtime, index, column, table, row);
 			if(null != column) {
 				column = detail(runtime, index, column, null, null, row);
-				columns.put(column.getName().toUpperCase(), column);
+				previous.put(column.getName().toUpperCase(), column);
 			}
 		}
-		return columns;
+		return previous;
 	}
 	@Override
 	public <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, List<T> previous, Column query, DataSet set) throws Exception {
-		if(null == columns) {
-			columns = new ArrayList<>();
+		if(null == previous) {
+			previous = new ArrayList<>();
 		}
 		for(DataRow row:set) {
 			T column = null;
-			column = init(runtime, index, column, table, row);
-			if(null == Metadata.match(column, columns)) {
-				columns.add(column);
+			column = init(runtime, index, column, query, row);
+			if(null == Metadata.match(column, previous)) {
+				previous.add(column);
 			}
 			detail(runtime, index, column, null, null, row);
 		}
-		return columns;
+		return previous;
 	}
 
 	/**
@@ -3744,8 +3729,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 */
 	@Override
 	public <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create,  List<T> previous, Collection<? extends Table> tables, Column query, DataSet set) throws Exception {
-		if(null == columns) {
-			columns = new ArrayList<>();
+		if(null == previous) {
+			previous = new ArrayList<>();
 		}
 		Map<String,Table> tbls = new HashMap<>();
 		for(Table table:tables) {
@@ -3753,9 +3738,9 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 		}
 		for(DataRow row:set) {
 			T column = null;
-			column = init(runtime, index, column, null, row);
-			if(null == Metadata.match(column, columns)) {
-				columns.add(column);
+			column = init(runtime, index, column, query, row);
+			if(null == Metadata.match(column, previous)) {
+				previous.add(column);
 			}
 			detail(runtime, index, column, null, null, row);
 			String tableName = column.getTableName();
@@ -3766,7 +3751,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 				}
 			}
 		}
-		return columns;
+		return previous;
 	}
 	/**
 	 * column[调用入口]<br/>(方法1)<br/>
@@ -3780,8 +3765,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param <T> Column
 	 */
 	@Override
-	public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, Collection<? extends Table> tables, ConfigStore configs) {
-		return super.columns(runtime, random, greedy, catalog, schema, tables, configs);
+	public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Collection<? extends Table> tables, Column query, ConfigStore configs) {
+		return super.columns(runtime, random, greedy, tables, query, configs);
 	}
 
 	/**
@@ -3842,8 +3827,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tags, Table table, String pattern) throws Exception {
-		return super.tags(runtime, create, tags, table, pattern);
+	public <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tags, Tag query) throws Exception {
+		return super.tags(runtime, create, tags, query);
 	}
 
 	/* *****************************************************************************************************************
@@ -4007,8 +3992,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, int index, Table table, LinkedHashMap<String, T> previous, ForeignKey query, DataSet set) throws Exception {
-		return super.foreigns(runtime, index, table, previous, query, set);
+	public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, int index, LinkedHashMap<String, T> previous, ForeignKey query, DataSet set) throws Exception {
+		return super.foreigns(runtime, index, previous, query, set);
 	}
 
 	/* *****************************************************************************************************************
@@ -4211,7 +4196,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param <T> Index
 	 */
 	@Override
-	public <T extends Constraint> List<T> constraints(DataRuntime runtime, String random, boolean greedy, Constraint query, String pattern) {
+	public <T extends Constraint> List<T> constraints(DataRuntime runtime, String random, boolean greedy, Constraint query) {
 		Table table = query.getTable();
 		List<T> constraints = null;
 		if(null == table) {
@@ -4223,7 +4208,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 		if(!greedy) {
 			checkSchema(runtime, table);
 		}
-		List<Run> runs = buildQueryConstraintsRun(runtime, table, null, pattern);
+		List<Run> runs = buildQueryConstraintsRun(runtime, query);
 		if(null != runs) {
 			int idx = 0;
 			for(Run run:runs) {
@@ -4292,7 +4277,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return runs
 	 */
 	@Override
-	public List<Run> buildQueryConstraintsRun(DataRuntime runtime, Table table, Column column, String pattern) {
+	public List<Run> buildQueryConstraintsRun(DataRuntime runtime, Constraint query) {
+		Table table = query.getTable();
 		List<Run> runs = new ArrayList<>();
 		Run run = new SimpleRun(runtime);
 		runs.add(run);
@@ -4429,7 +4415,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @throws Exception 异常
 	 */
 	public <T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> previous, Trigger query, DataSet set) throws Exception {
-		return super.triggers(runtime, index, create, table, previous, query, set);
+		return previous;
 	}
 
 	/* *****************************************************************************************************************

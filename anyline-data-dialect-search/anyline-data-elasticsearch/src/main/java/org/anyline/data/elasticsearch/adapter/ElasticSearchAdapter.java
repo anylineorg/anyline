@@ -2426,8 +2426,7 @@ PUT * /_bulk
      * @param <T>  Column
      */
     @Override
-    public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Column query, boolean primary) {
-        Table table = query.getTable();
+    public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Table table, Column query, boolean primary, ConfigStore configs) {
         LinkedHashMap<String, T> columns = new LinkedHashMap<>();
         RestClient client = client(runtime);
         String method = "GET";
@@ -2473,11 +2472,11 @@ PUT * /_bulk
      */
     @Override
     public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Table table, Column query, DataSet set) throws Exception {
-        return super.columns(runtime, index, create, table, columns, set);
+        return super.columns(runtime, index, create, previous, table, query, set);
     }
     @Override
     public <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, List<T> previous, Column query, DataSet set) throws Exception {
-        return super.columns(runtime, index, create, table, columns, set);
+        return super.columns(runtime, index, create, previous, query, set);
     }
 
     /**
@@ -2491,8 +2490,8 @@ PUT * /_bulk
      * @throws Exception 异常
      */
     @Override
-    public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, LinkedHashMap<String, T> columns, Table table, String pattern) throws Exception {
-        return super.columns(runtime, create, columns, table, pattern);
+    public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Column query)  throws Exception {
+        return previous;
     }
 
     /* *****************************************************************************************************************
@@ -2563,8 +2562,8 @@ PUT * /_bulk
      * @throws Exception 异常
      */
     @Override
-    public <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tags, Table table, String pattern) throws Exception {
-        return super.tags(runtime, create, tags, table, pattern);
+    public <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Tag query) throws Exception {
+        return super.tags(runtime, create, previous, query);
     }
 
     /* *****************************************************************************************************************
@@ -2583,7 +2582,7 @@ PUT * /_bulk
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
-     * @param table 表
+     * @param query 查询条件
      * @return PrimaryKey
      */
     @Override
@@ -2595,7 +2594,7 @@ PUT * /_bulk
      * primary[命令合成]<br/>
      * 查询表上的主键
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param table 表
+     * @param query 查询条件
      * @return sqls
      */
     @Override
@@ -2608,7 +2607,7 @@ PUT * /_bulk
      *  根据查询结果集构造PrimaryKey
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条查询SQL 对照 buildQueryIndexesRun 返回顺序
-     * @param table 表
+     * @param query 查询条件
      * @param set sql查询结果
      * @throws Exception 异常
      */
@@ -2634,12 +2633,13 @@ PUT * /_bulk
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
-     * @param table 表
-     * @return PrimaryKey
+     * @param query 查询条件
+     * @param set sql查询结果
+     * @throws Exception 异常
      */
     @Override
-    public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, String random, boolean greedy, ForeignKey query) {
-        return super.foreigns(runtime, random, greedy, query);
+    public <T extends PrimaryKey> T detail(DataRuntime runtime, int index, T primary, PrimaryKey query, DataSet set) throws Exception {
+        return super.detail(runtime, index, primary, query, set);
     }
     /**
      * foreign[命令合成]<br/>
@@ -2663,8 +2663,8 @@ PUT * /_bulk
      * @throws Exception 异常
      */
     @Override
-	public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, int index, Table table, LinkedHashMap<String, T> previous, ForeignKey query, DataSet set) throws Exception {
-		return super.foreigns(runtime, index, table, previous, query, set);
+	public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, int index, LinkedHashMap<String, T> previous, ForeignKey query, DataSet set) throws Exception {
+		return super.foreigns(runtime, index, previous, query, set);
 	}
 
     /* *****************************************************************************************************************
@@ -2830,6 +2830,7 @@ PUT * /_bulk
         return super.constraints(runtime, random, table, column, pattern);
     }
 
+
     /**
      * constraint[命令合成]<br/>
      * 查询表上的约束
@@ -2839,9 +2840,9 @@ PUT * /_bulk
      * @return sqls
      */
     @Override
-    public List<Run> buildQueryConstraintsRun(DataRuntime runtime, Table table, Column column, String pattern) {
-        return super.buildQueryConstraintsRun(runtime, table, column, pattern);
-    }
+    public List<Run> buildQueryConstraintsRun(DataRuntime runtime, Constraint query) {
+		return super.buildQueryConstraintsRun(runtime, query);
+	}
 
     /**
      * constraint[结果集封装]<br/>
@@ -2873,8 +2874,8 @@ PUT * /_bulk
      * @throws Exception 异常
      */
     @Override
-    public <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, int index, boolean create, Table table, Column column, LinkedHashMap<String, T> constraints, DataSet set) throws Exception {
-        return super.constraints(runtime, index, create, table, column, constraints, set);
+    public <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Constraint query, DataSet set) throws Exception {
+        return super.constraints(runtime, index, create, previous, query, set);
     }
 
     /* *****************************************************************************************************************
@@ -2999,8 +3000,8 @@ PUT * /_bulk
      * @throws Exception 异常
      */
     @Override
-    public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> procedures, DataSet set) throws Exception {
-        return super.procedures(runtime, index, create, procedures, set);
+    public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Procedure query, DataSet set) throws Exception {
+        return super.procedures(runtime, index, create, previous, query, set);
     }
 
     /**
@@ -3013,8 +3014,8 @@ PUT * /_bulk
      * @throws Exception 异常
      */
     @Override
-    public <T extends Procedure> List<T> procedures(DataRuntime runtime, boolean create, List<T> procedures) throws Exception {
-        return super.procedures(runtime, create, procedures);
+    public <T extends Procedure> List<T> procedures(DataRuntime runtime, boolean create, List<T> previous, Procedure query) throws Exception {
+        return super.procedures(runtime, create, previous, query);
     }
 
     /**
@@ -3027,8 +3028,8 @@ PUT * /_bulk
      * @throws Exception 异常
      */
     @Override
-    public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous) throws Exception {
-        return super.procedures(runtime, create, previous);
+    public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Procedure query) throws Exception {
+        return super.procedures(runtime, create, previous, query);
     }
     /**
      *
@@ -3170,8 +3171,8 @@ PUT * /_bulk
      * @throws Exception 异常
      */
     @Override
-    public <T extends Function> List<T> functions(DataRuntime runtime, boolean create, List<T> functions) throws Exception {
-        return super.functions(runtime, create, functions);
+    public <T extends Function> List<T> functions(DataRuntime runtime, boolean create, List<T> previous, Function query) throws Exception {
+        return super.functions(runtime, create, previous, query);
     }
 
     /**
@@ -3285,8 +3286,8 @@ PUT * /_bulk
      * @throws Exception 异常
      */
     @Override
-    public <T extends Sequence> List<T> sequences(DataRuntime runtime, int index, boolean create, List<T> sequences, DataSet set) throws Exception {
-        return super.sequences(runtime, index, create, sequences, set);
+    public <T extends Sequence> List<T> sequences(DataRuntime runtime, int index, boolean create, List<T> previous, Sequence query, DataSet set) throws Exception {
+        return super.sequences(runtime, index, create, previous, query, set);
     }
     /**
      * sequence[结果集封装]<br/>
@@ -3300,8 +3301,8 @@ PUT * /_bulk
      * @throws Exception 异常
      */
     @Override
-    public <T extends Sequence> LinkedHashMap<String, T> sequences(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> sequences, DataSet set) throws Exception {
-        return super.sequences(runtime, index, create, sequences, set);
+    public <T extends Sequence> LinkedHashMap<String, T> sequences(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Sequence query, DataSet set) throws Exception {
+        return super.sequences(runtime, index, create, previous, query, set);
     }
 
     /**
@@ -3314,8 +3315,8 @@ PUT * /_bulk
      * @throws Exception 异常
      */
     @Override
-    public <T extends Sequence> List<T> sequences(DataRuntime runtime, boolean create, List<T> sequences) throws Exception {
-        return super.sequences(runtime, create, sequences);
+    public <T extends Sequence> List<T> sequences(DataRuntime runtime, boolean create, List<T> previous, Sequence query) throws Exception {
+        return super.sequences(runtime, create, previous, query);
     }
 
     /**

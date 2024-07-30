@@ -32,6 +32,7 @@ public class Index<M extends Index> extends TableAffiliation<M> implements Seria
     protected boolean cluster     ; // 是否聚簇索引
     protected boolean fulltext    ;
     protected boolean spatial     ;
+    protected boolean approximate ; //索引允许结果反映近似值
     protected LinkedHashMap<String, Integer> positions = new LinkedHashMap<>();
     protected LinkedHashMap<String, Order.TYPE> orders = new LinkedHashMap<>();
 
@@ -144,6 +145,15 @@ public class Index<M extends Index> extends TableAffiliation<M> implements Seria
         }
         return null;
     }
+
+    public boolean isApproximate() {
+        return approximate;
+    }
+
+    public void setApproximate(boolean approximate) {
+        this.approximate = approximate;
+    }
+
     public LinkedHashMap<String, Column> getColumns() {
         return columns;
     }

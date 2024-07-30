@@ -3633,11 +3633,39 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @param <T>  Column
 	 */
 	@Override
-	public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Column query, boolean primary, ConfigStore configs) {
-		return super.columns(runtime, random, greedy, query, primary, configs);
+	public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Table table, Column query, boolean primary, ConfigStore configs) {
+		return super.columns(runtime, random, greedy, table, query, primary, configs);
 	}
 
-	
+	/**
+	 * column[调用入口]<br/>(方法1)<br/>
+	 * 查询多个表列，并分配到每个表中，需要保持所有表的catalog,schema相同
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
+	 * @param query 查询条件
+	 * @param tables 表
+	 * @return List
+	 * @param <T> Column
+	 */
+	@Override
+	public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Collection<? extends Table> tables, Column query, ConfigStore configs) {
+		return super.columns(runtime, random, greedy, tables, query, configs);
+	}
+
+	/**
+	 * column[结果集封装]<br/>
+	 * 解析JDBC get columns结果
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @return previous 上一步查询结果
+	 * @param query 查询条件
+	 * @throws Exception 异常
+	 */
+	@Override
+	public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Column query) throws Exception {
+		return actuator.metadata(this, runtime, create, previous, query);
+	}
 
 	/**
 	 * column[命令合成]<br/>
@@ -3766,36 +3794,6 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 			}
 		}
 		return previous;
-	}
-	/**
-	 * column[调用入口]<br/>(方法1)<br/>
-	 * 查询多个表列，并分配到每个表中，需要保持所有表的catalog,schema相同
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param random 用来标记同一组命令
-	 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param tables 表
-	 * @return List
-	 * @param <T> Column
-	 */
-	@Override
-	public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, Collection<? extends Table> tables, ConfigStore configs) {
-		return super.columns(runtime, random, greedy, catalog, schema, tables, configs);
-	}
-	/**
-	 * column[结果集封装]<br/>
-	 * 解析JDBC get columns结果
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param table 表
-	 * @return columns 上一步查询结果
-	 * @param pattern 名称
-	 * @throws Exception 异常
-	 */
-	@Override
-	public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, LinkedHashMap<String, T> columns, Column query) throws Exception {
-		return actuator.metadata(this, runtime, create, columns, query);
 	}
 
 	/**
@@ -4152,8 +4150,8 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tags, Table table, String pattern) throws Exception {
-		return super.tags(runtime, create, tags, table, pattern);
+	public <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tags, Tag query) throws Exception {
+		return super.tags(runtime, create, tags, query);
 	}
 
 	/* *****************************************************************************************************************
@@ -4318,8 +4316,8 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, int index, Table table, LinkedHashMap<String, T> previous, ForeignKey query, DataSet set) throws Exception {
-		return super.foreigns(runtime, index, table, previous, query, set);
+	public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, int index, LinkedHashMap<String, T> previous, ForeignKey query, DataSet set) throws Exception {
+		return super.foreigns(runtime, index, previous, query, set);
 	}
 
 	/* *****************************************************************************************************************
@@ -4592,6 +4590,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		return constraints;
 	}
 
+
 	/**
 	 * constraint[命令合成]<br/>
 	 * 查询表上的约束
@@ -4601,7 +4600,10 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @return runs
 	 */
 	@Override
-	public List<Run> buildQueryConstraintsRun(DataRuntime runtime, Table table, Column column, String pattern) {
+	public List<Run> buildQueryConstraintsRun(DataRuntime runtime, Constraint query) {
+		Table table = query.getTable();
+		LinkedHashMap<String, Column>  columns = query.getColumns();
+		String pattern = query.getName();
 		List<Run> runs = new ArrayList<>();
 		Run run = new SimpleRun(runtime);
 		runs.add(run);

@@ -1957,7 +1957,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
      */
     @Override
     public LinkedHashMap<String, Database> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Database> previous, Database query, DataSet set) throws Exception {
-        return super.databases(runtime, index, create, databases, catalog, schema, set);
+        return super.databases(runtime, index, create, previous, query, set);
     }
     @Override
     public List<Database> databases(DataRuntime runtime, int index, boolean create, List<Database> previous, Database query, DataSet set) throws Exception {
@@ -2336,13 +2336,21 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
      * @param <T> Table
      */
     @Override
-    public <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Table query, int types, int struct) {
+    public <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Table query, int types, int struct, ConfigStore configs) {
         List<T> tables = new ArrayList<>();
-        List<VertexTable> vertexs = vertexs(runtime, random, greedy, query, types, struct);
+        VertexTable vertex = new VertexTable();
+        vertex.setName(query.getName());
+        vertex.setCatalog(query.getCatalog());
+        vertex.setSchema(query.getSchema());
+        List<VertexTable> vertexs = vertexs(runtime, random, greedy, vertex, types, struct, configs);
         for(VertexTable table:vertexs) {
             tables.add((T)table);
         }
-        List<EdgeTable> edges = edges(runtime, random, greedy, query, types, struct);
+        EdgeTable edge = new EdgeTable();
+        edge.setName(query.getName());
+        edge.setCatalog(query.getCatalog());
+        edge.setSchema(query.getSchema());
+        List<EdgeTable> edges = edges(runtime, random, greedy, edge, types, struct, configs);
         for(EdgeTable table:edges) {
             tables.add((T)table);
         }
@@ -2363,13 +2371,24 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
     }
 
     @Override
-    public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Table query, int types, int struct) {
+    public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Table query, int types, int struct, ConfigStore configs) {
         LinkedHashMap<String, T> tables = new LinkedHashMap<>();
-        LinkedHashMap<String, VertexTable> vertexs = vertexs(runtime, random, query, types, struct);
+
+        VertexTable vertex = new VertexTable();
+        vertex.setName(query.getName());
+        vertex.setCatalog(query.getCatalog());
+        vertex.setSchema(query.getSchema());
+
+        LinkedHashMap<String, VertexTable> vertexs = vertexs(runtime, random, vertex, types, struct, configs);
         for(VertexTable table:vertexs.values()) {
             tables.put(table.getName().toUpperCase(), (T)table);
         }
-        LinkedHashMap<String, EdgeTable> edges = edges(runtime, random, query, types, struct);
+
+        EdgeTable edge = new EdgeTable();
+        edge.setName(query.getName());
+        edge.setCatalog(query.getCatalog());
+        edge.setSchema(query.getSchema());
+        LinkedHashMap<String, EdgeTable> edges = edges(runtime, random, edge, types, struct, configs);
         for(EdgeTable table:edges.values()) {
             tables.put(table.getName().toUpperCase(), (T)table);
         }
@@ -2645,12 +2664,12 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
      * @param <T> VertexTable
      */
     @Override
-    public <T extends VertexTable> List<T> vertexs(DataRuntime runtime, String random, boolean greedy, VertexTable query, int types, int struct) {
-        return super.vertexs(runtime, random, greedy, query, types, struct);
+    public <T extends VertexTable> List<T> vertexs(DataRuntime runtime, String random, boolean greedy, VertexTable query, int types, int struct, ConfigStore configs) {
+        return super.vertexs(runtime, random, greedy, query, types, struct, configs);
     }
 
-    public <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, String random, VertexTable query, int types, int struct) {
-        return super.vertexs(runtime, random, query, types, struct);
+    public <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, String random, VertexTable query, int types, int struct, ConfigStore configs) {
+        return super.vertexs(runtime, random, query, types, struct, configs);
     }
 
     /**
@@ -2888,8 +2907,9 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
         return super.edges(runtime, random, greedy, query, types, struct, configs);
     }
 
-    public <T extends EdgeTable> LinkedHashMap<String, T> edges(DataRuntime runtime, String random, EdgeTable query, int types, int struct) {
-        return super.edges(runtime, random, query, types, struct);
+    @Override
+    public <T extends EdgeTable> LinkedHashMap<String, T> edges(DataRuntime runtime, String random, EdgeTable query, int types, int struct, ConfigStore configs) {
+        return super.edges(runtime, random, query, types, struct, configs);
     }
 
     /**
@@ -2993,8 +3013,8 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
      * @throws Exception 异常
      */
     @Override
-    public <T extends EdgeTable> LinkedHashMap<String, T> edges(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, EdgeTable query, int types) throws Exception {
-        return super.edges(runtime, create, tables, catalog, schema, pattern, types);
+    public <T extends EdgeTable> LinkedHashMap<String, T> edges(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, EdgeTable query, int types) throws Exception {
+        return super.edges(runtime, create, previous, query, types);
     }
 
     /**
@@ -3012,8 +3032,8 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
      * @param <T> EdgeTable
      */
     @Override
-    public <T extends EdgeTable> List<T> edges(DataRuntime runtime, boolean create, List<T> tables, EdgeTable query, int types) throws Exception {
-        return super.edges(runtime, create, tables, catalog, schema, pattern, types);
+    public <T extends EdgeTable> List<T> edges(DataRuntime runtime, boolean create, List<T> previous, EdgeTable query, int types) throws Exception {
+        return super.edges(runtime, create, previous, query, types);
     }
 
     /**
@@ -3029,7 +3049,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
      */
     @Override
     public <T extends EdgeTable> T init(DataRuntime runtime, int index, T meta, EdgeTable query, DataRow row) {
-        return super.init(runtime, index, meta, catalog, schema, row);
+        return super.init(runtime, index, meta, query, row);
     }
     /**
      * edge[结果集封装]<br/>
@@ -3490,8 +3510,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
      * @param <T>  Column
      */
     @Override
-    public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Column query, boolean primary) {
-        Table table = query.getTable();
+    public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Table table, Column query, boolean primary, ConfigStore configs) {
         if (!greedy) {
             checkSchema(runtime, table);
         }
@@ -3516,12 +3535,12 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
 
             // 1.优先根据系统表查询
             try {
-                List<Run> runs = buildQueryColumnsRun(runtime, table, false);
+                List<Run> runs = buildQueryColumnsRun(runtime, greedy, query, configs);
                 if (null != runs) {
                     int idx = 0;
                     for (Run run: runs) {
                         DataSet set = select(runtime, random, true, (String) null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run);
-                        columns = columns(runtime, idx, true, table, columns, set);
+                        columns = columns(runtime, idx, true, columns, table, query, set);
                         idx++;
                     }
                 }
@@ -3602,8 +3621,8 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
      * @param <T> Column
      */
     @Override
-    public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, Table table) {
-        return super.columns(runtime, random, greedy, catalog, schema, table);
+     public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Column query, ConfigStore configs) {
+        return super.columns(runtime, random, greedy, query, configs);
     }
 
     /**
@@ -3615,7 +3634,8 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
      * @return sqls
      */
     @Override
-    public List<Run> buildQueryColumnsRun(DataRuntime runtime, Table table, boolean metadata) throws Exception {
+    public List<Run> buildQueryColumnsRun(DataRuntime runtime,  boolean metadata, Column query, ConfigStore configs) throws Exception {
+        Table table = query.getTable();
         List<Run> runs = new ArrayList<>();
         Run run = new SimpleRun(runtime);
         StringBuilder builder = run.getBuilder();
@@ -3640,8 +3660,8 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
      */
     @Override
     public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Table table, Column query, DataSet set) throws Exception {
-        if(null == columns) {
-            columns = new LinkedHashMap<>();
+        if(null == previous) {
+            previous = new LinkedHashMap<>();
         }
         for(DataRow row:set) {
             //| Field  | Type     | Null  | Default | Comment |
@@ -3652,14 +3672,14 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
             column.setNullable(row.getBoolean("Null"));
             column.setDefaultValue(row.get("Default"));
             column.setComment(row.getString("Comment"));
-            columns.put(name.toUpperCase(), (T)column);
+            previous.put(name.toUpperCase(), (T)column);
         }
-        return columns;
+        return previous;
     }
     @Override
     public <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, List<T> previous, Column query, DataSet set) throws Exception {
-        if(null == columns) {
-            columns = new ArrayList<>();
+        if(null == previous) {
+            previous = new ArrayList<>();
         }
         for(DataRow row:set) {
             //| Field  | Type     | Null  | Default | Comment |
@@ -3670,9 +3690,9 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
             column.setNullable(row.getBoolean("Null"));
             column.setDefaultValue(row.get("Default"));
             column.setComment(row.getString("Comment"));
-            columns.add((T)column);
+            previous.add((T)column);
         }
-        return columns;
+        return previous;
     }
 
     /**
@@ -3686,8 +3706,8 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
      * @throws Exception 异常
      */
     @Override
-    public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, LinkedHashMap<String, T> columns, Table table, String pattern) throws Exception {
-        return super.columns(runtime, create, columns, table, pattern);
+    public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Column query) throws Exception {
+        return previous;
     }
 
     /**
@@ -3838,8 +3858,8 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
      * @throws Exception 异常
      */
     @Override
-    public <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tags, Table table, String pattern) throws Exception {
-        return super.tags(runtime, create, tags, table, pattern);
+    public <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Tag query) throws Exception {
+        return super.tags(runtime, create, previous, query);
     }
 
     /* *****************************************************************************************************************
@@ -3858,7 +3878,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
-     * @param table 表
+     * @param query 查询条件
      * @return PrimaryKey
      */
     @Override
@@ -3870,7 +3890,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
      * primary[命令合成]<br/>
      * 查询表上的主键
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param table 表
+     * @param query 查询条件
      * @return sqls
      */
     @Override
@@ -3883,7 +3903,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
      * 根据查询结果集构造PrimaryKey基础属性
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条查询SQL 对照 buildQueryIndexesRun 返回顺序
-     * @param table 表
+     * @param query 查询条件
      * @param set sql查询结果
      * @throws Exception 异常
      */
@@ -3974,8 +3994,8 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
      * @throws Exception 异常
      */
     @Override
-	public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, int index, Table table, LinkedHashMap<String, T> previous, ForeignKey query, DataSet set) throws Exception {
-		return super.foreigns(runtime, index, table, previous, query, set);
+	public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, int index, LinkedHashMap<String, T> previous, ForeignKey query, DataSet set) throws Exception {
+		return super.foreigns(runtime, index, previous, query, set);
 	}
 
     /* *****************************************************************************************************************
@@ -4231,6 +4251,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
         return new LinkedHashMap<>();
     }
 
+
     /**
      * constraint[命令合成]<br/>
      * 查询表上的约束
@@ -4240,9 +4261,9 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
      * @return sqls
      */
     @Override
-    public List<Run> buildQueryConstraintsRun(DataRuntime runtime, Table table, Column column, String pattern) {
-        return new ArrayList<>();
-    }
+    public List<Run> buildQueryConstraintsRun(DataRuntime runtime, Constraint query) {
+		return super.buildQueryConstraintsRun(runtime, query);
+	}
 
     /**
      * constraint[结果集封装]<br/>
@@ -4275,7 +4296,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
      * @throws Exception 异常
      */
     @Override
-    public <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, int index, boolean create, Table table, Column column, LinkedHashMap<String, T> constraints, DataSet set) throws Exception {
+    public <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> constraints, Constraint query, DataSet set) throws Exception {
         return new LinkedHashMap<>();
     }
 
@@ -4412,7 +4433,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
      * @throws Exception 异常
      */
     @Override
-    public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> procedures, DataSet set) throws Exception {
+    public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> procedures, Procedure query, DataSet set) throws Exception {
         return new LinkedHashMap<>();
     }
 
@@ -4426,7 +4447,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
      * @throws Exception 异常
      */
     @Override
-    public <T extends Procedure> List<T> procedures(DataRuntime runtime, boolean create, List<T> procedures) throws Exception {
+    public <T extends Procedure> List<T> procedures(DataRuntime runtime, boolean create, List<T> previous,  Procedure query) throws Exception {
         return new ArrayList<>();
     }
 
@@ -4440,7 +4461,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
      * @throws Exception 异常
      */
     @Override
-    public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, boolean create, LinkedHashMap<String, T> procedures) throws Exception {
+    public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Procedure query) throws Exception {
         return new LinkedHashMap<>();
     }
 
@@ -4593,7 +4614,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
      * @throws Exception 异常
      */
     @Override
-    public <T extends Function> List<T> functions(DataRuntime runtime, boolean create, List<T> functions) throws Exception {
+    public <T extends Function> List<T> functions(DataRuntime runtime, boolean create, List<T> previous, Function query) throws Exception {
         return new ArrayList<>();
     }
 
@@ -4716,7 +4737,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
      * @throws Exception 异常
      */
     @Override
-    public <T extends Sequence> List<T> sequences(DataRuntime runtime, int index, boolean create, List<T> sequences, DataSet set) throws Exception {
+    public <T extends Sequence> List<T> sequences(DataRuntime runtime, int index, boolean create, List<T> sequences, Sequence query, DataSet set) throws Exception {
         return new ArrayList<>();
     }
 
@@ -4732,7 +4753,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
      * @throws Exception 异常
      */
     @Override
-    public <T extends Sequence> LinkedHashMap<String, T> sequences(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> sequences, DataSet set) throws Exception {
+    public <T extends Sequence> LinkedHashMap<String, T> sequences(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> sequences, Sequence query, DataSet set) throws Exception {
         return new LinkedHashMap<>();
     }
 
@@ -4746,7 +4767,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
      * @throws Exception 异常
      */
     @Override
-    public <T extends Sequence> List<T> sequences(DataRuntime runtime, boolean create, List<T> sequences) throws Exception {
+    public <T extends Sequence> List<T> sequences(DataRuntime runtime, boolean create, List<T> sequences, Sequence query) throws Exception {
         return new ArrayList<>();
     }
 

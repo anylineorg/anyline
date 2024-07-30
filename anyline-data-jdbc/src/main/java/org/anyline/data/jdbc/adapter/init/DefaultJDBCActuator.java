@@ -961,15 +961,16 @@ public class DefaultJDBCActuator implements DriverActuator {
      * 根据驱动内置方法补充
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param previous 上一步查询结果
-     * @param catalog catalog
-     * @param schema schema
-     * @param pattern 名称统配符或正则
+     * @param query query
      * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
      * @return tables
      * @throws Exception 异常
      */
-    public <T extends Table> LinkedHashMap<String, T> tables(DriverAdapter adapter, DataRuntime runtime, boolean create,  LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
+    @Override
+    public <T extends Table> LinkedHashMap<String, T> tables(DriverAdapter adapter, DataRuntime runtime, boolean create,  LinkedHashMap<String, T> previous, Table query, int types) throws Exception {
+        Catalog catalog = query.getCatalog();
+        Schema schema = query.getSchema();
+        String pattern = query.getName();
         DataSource datasource = null;
         Connection con = null;
         try{
@@ -990,11 +991,11 @@ public class DefaultJDBCActuator implements DriverActuator {
             String[] tmp = adapter.correctSchemaFromJDBC(catalogName, schemaName);
             String[] tps = BeanUtil.list2array(adapter.names(Table.types(types)));
             ResultSet set = dbmd.getTables(tmp[0], tmp[1], pattern, tps);
-            tables = JDBCUtil.tables(adapter, runtime, create, tables, set);
+            previous = JDBCUtil.tables(adapter, runtime, create, previous, set);
         }finally {
             releaseConnection(adapter, runtime, con, datasource);
         }
-        return tables;
+        return previous;
     }
 
     /**
@@ -1003,14 +1004,16 @@ public class DefaultJDBCActuator implements DriverActuator {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param previous 上一步查询结果
-     * @param catalog catalog
-     * @param schema schema
-     * @param pattern 名称统配符或正则
+     * @param query query
      * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
      * @return tables
      * @throws Exception 异常
      */
-    public <T extends Table> List<T> tables(DriverAdapter adapter, DataRuntime runtime, boolean create, List<T> tables,  Catalog catalog, Schema schema, String pattern, int types) throws Exception {
+    @Override
+    public <T extends Table> List<T> tables(DriverAdapter adapter, DataRuntime runtime, boolean create, List<T> previous,  Table query, int types) throws Exception {
+        Catalog catalog = query.getCatalog();
+        Schema schema = query.getSchema();
+        String pattern = query.getName();
         DataSource datasource = null;
         Connection con = null;
         try{
@@ -1032,11 +1035,11 @@ public class DefaultJDBCActuator implements DriverActuator {
             String[] tmp = adapter.correctSchemaFromJDBC(catalogName, schemaName);
             String[] tps = BeanUtil.list2array(adapter.names(Table.types(types)));
             ResultSet set = dbmd.getTables(tmp[0], tmp[1], pattern, tps);
-            tables = JDBCUtil.tables(adapter, runtime, create, tables, set);
+            previous = JDBCUtil.tables(adapter, runtime, create, previous, set);
         }finally {
             releaseConnection(adapter, runtime, con, datasource);
         }
-        return tables;
+        return previous;
     }
 
     /**
@@ -1045,14 +1048,16 @@ public class DefaultJDBCActuator implements DriverActuator {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param previous 上一步查询结果
-     * @param catalog catalog
-     * @param schema schema
-     * @param pattern 名称统配符或正则
+     * @param query query
      * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
      * @return views
      * @throws Exception 异常
      */
-    public <T extends View> LinkedHashMap<String, T> views(DriverAdapter adapter, DataRuntime runtime, boolean create,  LinkedHashMap<String, T> views, View query, int types) throws Exception {
+    @Override
+    public <T extends View> LinkedHashMap<String, T> views(DriverAdapter adapter, DataRuntime runtime, boolean create,  LinkedHashMap<String, T> previous, View query, int types) throws Exception {
+        Catalog catalog = query.getCatalog();
+        Schema schema = query.getSchema();
+        String pattern = query.getName();
         DataSource datasource = null;
         Connection con = null;
         try{
@@ -1073,11 +1078,11 @@ public class DefaultJDBCActuator implements DriverActuator {
             }
             String[] tmp = adapter.correctSchemaFromJDBC(catalogName, schemaName);
             ResultSet set = dbmd.getTables(tmp[0], tmp[1], pattern, new String[]{"VIEW"});
-            views = JDBCUtil.views(adapter, runtime, create, views, set);
+            previous = JDBCUtil.views(adapter, runtime, create, previous, set);
         }finally {
             releaseConnection(adapter, runtime, con, datasource);
         }
-        return views;
+        return previous;
     }
 
     /**
@@ -1086,16 +1091,15 @@ public class DefaultJDBCActuator implements DriverActuator {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param previous 上一步查询结果
-     * @param catalog catalog
-     * @param schema schema
-     * @param pattern 名称统配符或正则
+     * @param query query
      * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
      * @return views
      * @throws Exception 异常
      */
-    public <T extends Table> List<T> views(DriverAdapter adapter, DataRuntime runtime, boolean create, List<T> views, View query, int types) throws Exception {
+    @Override
+    public <T extends Table> List<T> views(DriverAdapter adapter, DataRuntime runtime, boolean create, List<T> previous, View query, int types) throws Exception {
 
-        return views;
+        return previous;
     }
 
     /**
@@ -1109,21 +1113,23 @@ public class DefaultJDBCActuator implements DriverActuator {
      * @return columns
      * @param <T> Column
      */
-    public <T extends Column> LinkedHashMap<String, T> columns(DriverAdapter adapter, DataRuntime runtime, boolean create, LinkedHashMap<String, T> columns, Table table, String sql) throws Exception {
-
-        return columns;
+    @Override
+    public <T extends Column> LinkedHashMap<String, T> columns(DriverAdapter adapter, DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Table table, String sql) throws Exception {
+        return previous;
     }
     /**
      * 根方法(3)根据根据驱动内置元数据接口补充表结构
      * @param adapter DriverAdapter
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param previous 上一步查询结果
-     * @param table 表
+     * @param query query
      * @return columns
      * @param <T> Column
      */
-    public <T extends Column> LinkedHashMap<String, T> metadata(DriverAdapter adapter, DataRuntime runtime, boolean create, LinkedHashMap<String, T> columns, Table table, String pattern) throws Exception {
+    @Override
+    public <T extends Column> LinkedHashMap<String, T> metadata(DriverAdapter adapter, DataRuntime runtime, boolean create, LinkedHashMap<String, T> columns, Column query) throws Exception {
+        Table table = query.getTable();
+        String pattern = query.getName();
         DataSource ds = null;
         Connection con = null;
         DatabaseMetaData metadata = null;
@@ -1147,13 +1153,15 @@ public class DefaultJDBCActuator implements DriverActuator {
      * 根据驱动内置接口
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param table 表
-     * @param unique 是否唯一
-     * @param approximate 索引允许结果反映近似值
+     * @param query 查询条件
      * @return indexes indexes
      * @throws Exception 异常
      */
-    public <T extends Index> LinkedHashMap<String, T> indexes(DriverAdapter adapter, DataRuntime runtime, boolean create, LinkedHashMap<String, T> indexes, Table table, boolean unique, boolean approximate) throws Exception {
+    @Override
+    public <T extends Index> LinkedHashMap<String, T> indexes(DriverAdapter adapter, DataRuntime runtime, boolean create, LinkedHashMap<String, T> indexes, Index query) throws Exception {
+        Table table = query.getTable();
+        boolean unique = query.isUnique();
+        boolean approximate = query.isApproximate();
         DataSource ds = null;
         Connection con = null;
         if(null == indexes) {
