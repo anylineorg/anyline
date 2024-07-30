@@ -270,7 +270,7 @@ public enum GBase8sTypeMetadataAlias implements TypeMetadataAlias {
 	UUID                          ("UUID"                           ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	VARBINARY                     ("VARBINARY"                      ,StandardTypeMetadata.BLOB                          ,   1,   1,   1),
 	VARBIT                        ("VARBIT"                         ,StandardTypeMetadata.BLOB                          ,   1,   1,   1),
-	VARCHAR2                      ("VARCHAR2"                       ,StandardTypeMetadata.VARCHAR                       ,   0,   1,   1),
+	VARCHAR2                      ("VARCHAR2"                       ,StandardTypeMetadata.VARCHAR2                      ,   0,   1,   1),
 	VARCHARBYTE                   ("VARCHARBYTE"                    ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	VERSION                       ("version"                        ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	XID                           ("XID"                            ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
