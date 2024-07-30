@@ -69,7 +69,10 @@ public class ElasticSearchBuilder {
         }
         //向量类型 维度
         if(null != type && type.toLowerCase().contains("vector")) {
-            int dims = column.getPrecisionLength();
+            Integer dims = column.getDims();
+            if(null == dims || dims == 0) {
+                dims = column.getPrecisionLength();
+            }
             if (dims > 0) {
                 map.put("dims", dims);
             }
