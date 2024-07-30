@@ -64,21 +64,21 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 
     /* *****************************************************************************************************************
      *
-     * 													DML
+     *                                                     DML
      *
      * =================================================================================================================
-     * INSERT			: 插入
-     * UPDATE			: 更新
-     * QUERY			: 查询(RunPrepare/XML/TABLE/VIEW/PROCEDURE)
-     * EXISTS			: 是否存在
-     * COUNT			: 统计
-     * EXECUTE			: 执行(原生SQL及存储过程)
-     * DELETE			: 删除
-     * COMMON			：其他通用
+     * INSERT            : 插入
+     * UPDATE            : 更新
+     * QUERY            : 查询(RunPrepare/XML/TABLE/VIEW/PROCEDURE)
+     * EXISTS            : 是否存在
+     * COUNT            : 统计
+     * EXECUTE            : 执行(原生SQL及存储过程)
+     * DELETE            : 删除
+     * COMMON            ：其他通用
      ******************************************************************************************************************/
 
     /* *****************************************************************************************************************
-     * 													INSERT
+     *                                                     INSERT
      * -----------------------------------------------------------------------------------------------------------------
      * Run buildInsertRun(DataRuntime runtime, String dest, Object obj, LinkedHashMap<String, Column> columns)
      * void createInsertContent(DataRuntime runtime, Run run, String dest, DataSet set, LinkedHashMap<String, Column> columns)
@@ -411,7 +411,7 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
     }
 
     /* *****************************************************************************************************************
-     * 													QUERY
+     *                                                     QUERY
      * -----------------------------------------------------------------------------------------------------------------
      * String mergeFinalQuery(DataRuntime runtime, Run run)
      * StringBuilder createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare)
@@ -724,7 +724,7 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
     }
 
     /* *****************************************************************************************************************
-     * 													COUNT
+     *                                                     COUNT
      * -----------------------------------------------------------------------------------------------------------------
      * String mergeFinalTotal(DataRuntime runtime, Run run)
      ******************************************************************************************************************/
@@ -741,7 +741,7 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
     }
 
     /* *****************************************************************************************************************
-     * 													EXISTS
+     *                                                     EXISTS
      * -----------------------------------------------------------------------------------------------------------------
      * String mergeFinalExists(DataRuntime runtime, Run run)
      ******************************************************************************************************************/
@@ -752,7 +752,7 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
     }
 
     /* *****************************************************************************************************************
-     * 													UPDATE
+     *                                                     UPDATE
      * -----------------------------------------------------------------------------------------------------------------
      * protected Run buildUpdateRunFromEntity(String dest, Object obj, ConfigStore configs, List<String> columns)
      * protected Run buildUpdateRunFromDataRow(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, List<String> columns)

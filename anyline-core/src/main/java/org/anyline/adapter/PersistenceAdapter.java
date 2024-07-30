@@ -101,7 +101,7 @@ public class PersistenceAdapter {
                 }
             }
         }
-        join.itemClass = ClassUtil.getComponentClass(field);	//Department
+        join.itemClass = ClassUtil.getComponentClass(field);    //Department
         if(!ClassUtil.isPrimitiveClass(join.itemClass) && String.class != join.itemClass) {
             //List<Department> departments;
             Table table = EntityAdapterProxy.table(join.itemClass);

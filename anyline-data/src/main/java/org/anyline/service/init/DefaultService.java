@@ -4057,7 +4057,7 @@ public class DefaultService<E> implements AnylineService<E> {
         /**
          * 查询用户
          * @param ctalog Catalog
-         * @param schema Schema
+         * @param schema 可以理解为数据库的登录名, 而对于Oracle也可以理解成对该数据库操作的所有者的登录名。对于Oracle要特别注意, 其登陆名必须是大写, 不然的话是无法获取到相应的数据, 而MySQL则不做强制要求。
          * @param pattern 用户名
          * @return List
          */

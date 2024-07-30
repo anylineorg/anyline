@@ -101,22 +101,22 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
     }
     /* *****************************************************************************************************************
      *
-     * 													DML
+     *                                                     DML
      *
      * =================================================================================================================
-     * INSERT			: 插入
-     * UPDATE			: 更新
-     * SAVE				: 根据情况插入或更新
-     * QUERY			: 查询(RunPrepare/XML/TABLE/VIEW/PROCEDURE)
-     * EXISTS			: 是否存在
-     * COUNT			: 统计
-     * EXECUTE			: 执行(原生SQL及存储过程)
-     * DELETE			: 删除
+     * INSERT            : 插入
+     * UPDATE            : 更新
+     * SAVE                : 根据情况插入或更新
+     * QUERY            : 查询(RunPrepare/XML/TABLE/VIEW/PROCEDURE)
+     * EXISTS            : 是否存在
+     * COUNT            : 统计
+     * EXECUTE            : 执行(原生SQL及存储过程)
+     * DELETE            : 删除
      *
      ******************************************************************************************************************/
 
     /* *****************************************************************************************************************
-     * 													INSERT
+     *                                                     INSERT
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * long insert(DataRuntime runtime, String random, int batch, String dest, Object data, ConfigStore configs, List<String> columns)
@@ -320,7 +320,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
     
 
     /* *****************************************************************************************************************
-     * 													UPDATE
+     *                                                     UPDATE
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * long update(DataRuntime runtime, String random, int batch, String dest, Object data, ConfigStore configs, List<String> columns)
@@ -520,7 +520,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
     }
 
     /* *****************************************************************************************************************
-     * 													QUERY
+     *                                                     QUERY
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * DataSet querys(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
@@ -799,7 +799,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
     }
 
     /* *****************************************************************************************************************
-     * 													COUNT
+     *                                                     COUNT
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * long count(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
@@ -846,7 +846,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
     }
 
     /* *****************************************************************************************************************
-     * 													EXISTS
+     *                                                     EXISTS
      * -----------------------------------------------------------------------------------------------------------------
      * boolean exists(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
      * String mergeFinalExists(DataRuntime runtime, Run run)
@@ -871,7 +871,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
     }
 
     /* *****************************************************************************************************************
-     * 													EXECUTE
+     *                                                     EXECUTE
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * long execute(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
@@ -962,7 +962,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
     }
 
     /* *****************************************************************************************************************
-     * 													DELETE
+     *                                                     DELETE
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * <T> long deletes(DataRuntime runtime, String random, int batch, String table, ConfigStore configs, String column, Collection<T> values)
@@ -1124,26 +1124,26 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
 
     /* *****************************************************************************************************************
      *
-     * 													metadata
+     *                                                     metadata
      *
      * =================================================================================================================
-     * database			: 数据库(catalog, schema)
-     * table			: 表
-     * master table		: 主表
-     * partition table	: 分区表
-     * column			: 列
-     * tag				: 标签
+     * database            : 数据库(catalog, schema)
+     * table            : 表
+     * master table        : 主表
+     * partition table    : 分区表
+     * column            : 列
+     * tag                : 标签
      * primary key      : 主键
-     * foreign key		: 外键
-     * index			: 索引
-     * constraint		: 约束
-     * trigger		    : 触发器
+     * foreign key        : 外键
+     * index            : 索引
+     * constraint        : 约束
+     * trigger            : 触发器
      * procedure        : 存储过程
      * function         : 函数
      ******************************************************************************************************************/
 
     /* *****************************************************************************************************************
-     * 													database
+     *                                                     database
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * LinkedHashMap<String, Database> databases(DataRuntime runtime, String random, String name)
@@ -1279,95 +1279,95 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
     public List<Database> databases(DataRuntime runtime, int index, boolean create, List<Database> previous, Database query, DataSet set) throws Exception {
         return super.databases(runtime, index, create, previous, query, set);
     }
-	/**
-	 * database[结果集封装]<br/>
-	 * 当前database 根据查询结果集
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
-	 * @param create 上一步没有查到的, 这一步是否需要新创建
-	 * @param database 上一步查询结果
-	 * @param set 查询结果集
-	 * @return database
-	 * @throws Exception 异常
-	 */
-	@Override
-	public Database database(DataRuntime runtime, int index, boolean create, Database database, DataSet set) throws Exception {
-		return super.database(runtime, index, create, database, set);
-	}
+    /**
+     * database[结果集封装]<br/>
+     * 当前database 根据查询结果集
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
+     * @param create 上一步没有查到的, 这一步是否需要新创建
+     * @param database 上一步查询结果
+     * @param set 查询结果集
+     * @return database
+     * @throws Exception 异常
+     */
+    @Override
+    public Database database(DataRuntime runtime, int index, boolean create, Database database, DataSet set) throws Exception {
+        return super.database(runtime, index, create, database, set);
+    }
 
-	/**
-	 * database[结果集封装]<br/>
-	 * 当前database 根据驱动内置接口补充
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param create 上一步没有查到的, 这一步是否需要新创建
-	 * @param database 上一步查询结果
-	 * @return database
-	 * @throws Exception 异常
-	 */
-	@Override
-	public Database database(DataRuntime runtime, boolean create, Database database) throws Exception {
-		return super.database(runtime, create, database);
-	}
+    /**
+     * database[结果集封装]<br/>
+     * 当前database 根据驱动内置接口补充
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param create 上一步没有查到的, 这一步是否需要新创建
+     * @param database 上一步查询结果
+     * @return database
+     * @throws Exception 异常
+     */
+    @Override
+    public Database database(DataRuntime runtime, boolean create, Database database) throws Exception {
+        return super.database(runtime, create, database);
+    }
 
-	/**
-	 * database[结果集封装]<br/>
-	 * 根据查询结果集构造 product
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param create 上一步没有查到的, 这一步是否需要新创建
-	 * @param product 上一步查询结果
-	 * @param set 查询结果集
-	 * @return product
-	 * @throws Exception 异常
-	 */
-	@Override
-	public String product(DataRuntime runtime, int index, boolean create, String product, DataSet set) {
-		return super.product(runtime, index, create, product, set);
-	}
+    /**
+     * database[结果集封装]<br/>
+     * 根据查询结果集构造 product
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param create 上一步没有查到的, 这一步是否需要新创建
+     * @param product 上一步查询结果
+     * @param set 查询结果集
+     * @return product
+     * @throws Exception 异常
+     */
+    @Override
+    public String product(DataRuntime runtime, int index, boolean create, String product, DataSet set) {
+        return super.product(runtime, index, create, product, set);
+    }
 
-	/**
-	 * database[结果集封装]<br/>
-	 * 根据JDBC内置接口 product
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param create 上一步没有查到的, 这一步是否需要新创建
-	 * @param product 上一步查询结果
-	 * @return product
-	 * @throws Exception 异常
-	 */
-	@Override
-	public String product(DataRuntime runtime, boolean create, String product) {
-		return super.product(runtime, create, product);
-	}
+    /**
+     * database[结果集封装]<br/>
+     * 根据JDBC内置接口 product
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param create 上一步没有查到的, 这一步是否需要新创建
+     * @param product 上一步查询结果
+     * @return product
+     * @throws Exception 异常
+     */
+    @Override
+    public String product(DataRuntime runtime, boolean create, String product) {
+        return super.product(runtime, create, product);
+    }
 
-	/**
-	 * database[结果集封装]<br/>
-	 * 根据查询结果集构造 version
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param create 上一步没有查到的, 这一步是否需要新创建
-	 * @param version 上一步查询结果
-	 * @param set 查询结果集
-	 * @return version
-	 * @throws Exception 异常
-	 */
-	@Override
-	public String version(DataRuntime runtime, int index, boolean create, String version, DataSet set) {
-		return super.version(runtime, index, create, version, set);
-	}
+    /**
+     * database[结果集封装]<br/>
+     * 根据查询结果集构造 version
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param create 上一步没有查到的, 这一步是否需要新创建
+     * @param version 上一步查询结果
+     * @param set 查询结果集
+     * @return version
+     * @throws Exception 异常
+     */
+    @Override
+    public String version(DataRuntime runtime, int index, boolean create, String version, DataSet set) {
+        return super.version(runtime, index, create, version, set);
+    }
 
-	/**
-	 * database[结果集封装]<br/>
-	 * 根据JDBC内置接口 version
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param create 上一步没有查到的, 这一步是否需要新创建
-	 * @param version 上一步查询结果
-	 * @return version
-	 * @throws Exception 异常
-	 */
-	@Override
-	public String version(DataRuntime runtime, boolean create, String version) {
-		return super.version(runtime, create, version);
-	}
+    /**
+     * database[结果集封装]<br/>
+     * 根据JDBC内置接口 version
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param create 上一步没有查到的, 这一步是否需要新创建
+     * @param version 上一步查询结果
+     * @return version
+     * @throws Exception 异常
+     */
+    @Override
+    public String version(DataRuntime runtime, boolean create, String version) {
+        return super.version(runtime, create, version);
+    }
     /* *****************************************************************************************************************
-     * 													catalog
+     *                                                     catalog
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, String random, String name)
@@ -1447,7 +1447,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
     public List<Catalog> catalogs(DataRuntime runtime, int index, boolean create, List<Catalog> previous, Catalog query, DataSet set) throws Exception {
         return super.catalogs(runtime, index, create, previous, query, set);
     }
-	/**
+    /**
      * catalog[结果集封装]<br/>
      * 根据驱动内置接口补充 catalog
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -1474,66 +1474,66 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
     public List<Catalog> catalogs(DataRuntime runtime, boolean create, List<Catalog> previous) throws Exception {
         return super.catalogs(runtime, create, previous);
     }
-	/**
-	 * catalog[结果集封装]<br/>
-	 * 当前catalog 根据查询结果集
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
-	 * @param create 上一步没有查到的, 这一步是否需要新创建
-	 * @param previou 上一步查询结果
-	 * @param set 查询结果集
-	 * @return Catalog
-	 * @throws Exception 异常
-	 */
-	@Override
-	public Catalog catalog(DataRuntime runtime, int index, boolean create, Catalog previou, DataSet set) throws Exception {
-		return super.catalog(runtime, index, create, previou, set);
-	}
+    /**
+     * catalog[结果集封装]<br/>
+     * 当前catalog 根据查询结果集
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
+     * @param create 上一步没有查到的, 这一步是否需要新创建
+     * @param meta 上一步查询结果
+     * @param set 查询结果集
+     * @return Catalog
+     * @throws Exception 异常
+     */
+    @Override
+    public Catalog catalog(DataRuntime runtime, int index, boolean create, Catalog meta, DataSet set) throws Exception {
+        return super.catalog(runtime, index, create, meta, set);
+    }
 
-	/**
-	 * catalog[结果集封装]<br/>
-	 * 当前catalog 根据驱动内置接口补充
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param create 上一步没有查到的, 这一步是否需要新创建
-	 * @param previou 上一步查询结果
-	 * @return Catalog
-	 * @throws Exception 异常
-	 */
-	@Override
-	public Catalog catalog(DataRuntime runtime, boolean create, Catalog previou) throws Exception {
-		return super.catalog(runtime, create, previou);
-	}
+    /**
+     * catalog[结果集封装]<br/>
+     * 当前catalog 根据驱动内置接口补充
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param create 上一步没有查到的, 这一步是否需要新创建
+     * @param meta 上一步查询结果
+     * @return Catalog
+     * @throws Exception 异常
+     */
+    @Override
+    public Catalog catalog(DataRuntime runtime, boolean create, Catalog meta) throws Exception {
+        return super.catalog(runtime, create, meta);
+    }
 
     /* *****************************************************************************************************************
-     * 													schema
+     *                                                     schema
      * -----------------------------------------------------------------------------------------------------------------
-	 * [调用入口]
-	 * LinkedHashMap<String, Database> databases(DataRuntime runtime, String random, String name)
-	 * List<Database> databases(DataRuntime runtime, String random, boolean greedy, String name)
-	 * Database database(DataRuntime runtime, String random, String name)
-	 * Database database(DataRuntime runtime, String random)
-	 * String String product(DataRuntime runtime, String random);
-	 * String String version(DataRuntime runtime, String random);
-	 * [命令合成]
-	 * List<Run> buildQueryDatabasesRun(DataRuntime runtime, boolean greedy, String name)
-	 * List<Run> buildQueryDatabaseRun(DataRuntime runtime, boolean greedy, String name)
-	 * List<Run> buildQueryProductRun(DataRuntime runtime, boolean greedy, String name)
-	 * List<Run> buildQueryVersionRun(DataRuntime runtime, boolean greedy, String name)
-	 * [结果集封装]<br/>
-	 * LinkedHashMap<String, Database> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Database> databases, Catalog catalog, Schema schema, DataSet set)
-	 * List<Database> databases(DataRuntime runtime, int index, boolean create, List<Database> databases, Catalog catalog, Schema schema, DataSet set)
-	 * Database database(DataRuntime runtime, boolean create, Database dataase, DataSet set)
-	 * Database database(DataRuntime runtime, boolean create, Database dataase)
-	 * String product(DataRuntime runtime, boolean create, Database product, DataSet set)
-	 * String product(DataRuntime runtime, boolean create, String product)
-	 * String version(DataRuntime runtime, int index, boolean create, String version, DataSet set)
-	 * String version(DataRuntime runtime, boolean create, String version)
-	 * Catalog catalog(DataRuntime runtime, boolean create, Catalog catalog, DataSet set)
-	 * Catalog catalog(DataRuntime runtime, boolean create, Catalog catalog)
-	 * Schema schema(DataRuntime runtime, boolean create, Schema schema, DataSet set)
-	 * Schema schema(DataRuntime runtime, boolean create, Schema schema)
-	 * Database database(DataRuntime runtime, boolean create, Database dataase)
-	 ******************************************************************************************************************/
+     * [调用入口]
+     * LinkedHashMap<String, Database> databases(DataRuntime runtime, String random, String name)
+     * List<Database> databases(DataRuntime runtime, String random, boolean greedy, String name)
+     * Database database(DataRuntime runtime, String random, String name)
+     * Database database(DataRuntime runtime, String random)
+     * String String product(DataRuntime runtime, String random);
+     * String String version(DataRuntime runtime, String random);
+     * [命令合成]
+     * List<Run> buildQueryDatabasesRun(DataRuntime runtime, boolean greedy, String name)
+     * List<Run> buildQueryDatabaseRun(DataRuntime runtime, boolean greedy, String name)
+     * List<Run> buildQueryProductRun(DataRuntime runtime, boolean greedy, String name)
+     * List<Run> buildQueryVersionRun(DataRuntime runtime, boolean greedy, String name)
+     * [结果集封装]<br/>
+     * LinkedHashMap<String, Database> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Database> databases, Catalog catalog, Schema schema, DataSet set)
+     * List<Database> databases(DataRuntime runtime, int index, boolean create, List<Database> databases, Catalog catalog, Schema schema, DataSet set)
+     * Database database(DataRuntime runtime, boolean create, Database dataase, DataSet set)
+     * Database database(DataRuntime runtime, boolean create, Database dataase)
+     * String product(DataRuntime runtime, boolean create, Database product, DataSet set)
+     * String product(DataRuntime runtime, boolean create, String product)
+     * String version(DataRuntime runtime, int index, boolean create, String version, DataSet set)
+     * String version(DataRuntime runtime, boolean create, String version)
+     * Catalog catalog(DataRuntime runtime, boolean create, Catalog catalog, DataSet set)
+     * Catalog catalog(DataRuntime runtime, boolean create, Catalog catalog)
+     * Schema schema(DataRuntime runtime, boolean create, Schema schema, DataSet set)
+     * Schema schema(DataRuntime runtime, boolean create, Schema schema)
+     * Database database(DataRuntime runtime, boolean create, Database dataase)
+     ******************************************************************************************************************/
     /**
      * schema[调用入口]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -1590,38 +1590,38 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         return super.schemas(runtime, index, create, previous, query, set);
     }
 
-	/**
-	 * schema[结果集封装]<br/>
-	 * 当前schema 根据查询结果集
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照 buildQuerySchemaRun 返回顺序
-	 * @param create 上一步没有查到的, 这一步是否需要新创建
-	 * @param previou 上一步查询结果
-	 * @param set 查询结果集
-	 * @return schema
-	 * @throws Exception 异常
-	 */
-	@Override
-	public Schema schema(DataRuntime runtime, int index, boolean create, Schema previou, DataSet set) throws Exception {
-		return super.schema(runtime, index, create, previou, set);
-	}
+    /**
+     * schema[结果集封装]<br/>
+     * 当前schema 根据查询结果集
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param index 第几条SQL 对照 buildQuerySchemaRun 返回顺序
+     * @param create 上一步没有查到的, 这一步是否需要新创建
+     * @param meta 上一步查询结果
+     * @param set 查询结果集
+     * @return schema
+     * @throws Exception 异常
+     */
+    @Override
+    public Schema schema(DataRuntime runtime, int index, boolean create, Schema meta, DataSet set) throws Exception {
+        return super.schema(runtime, index, create, meta, set);
+    }
 
-	/**
-	 * schema[结果集封装]<br/>
-	 * 当前schema 根据驱动内置接口补充
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param create 上一步没有查到的, 这一步是否需要新创建
-	 * @param previou 上一步查询结果
-	 * @return schema
-	 * @throws Exception 异常
-	 */
-	@Override
-	public Schema schema(DataRuntime runtime, boolean create, Schema previou) throws Exception {
-		return super.schema(runtime, create, previou);
-	}
+    /**
+     * schema[结果集封装]<br/>
+     * 当前schema 根据驱动内置接口补充
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param create 上一步没有查到的, 这一步是否需要新创建
+     * @param meta 上一步查询结果
+     * @return schema
+     * @throws Exception 异常
+     */
+    @Override
+    public Schema schema(DataRuntime runtime, boolean create, Schema meta) throws Exception {
+        return super.schema(runtime, create, meta);
+    }
 
     /* *****************************************************************************************************************
-     * 													table
+     *                                                     table
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, boolean struct)
@@ -1650,8 +1650,8 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @param random 用来标记同一组命令
      * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
      * @param query 查询条件
-	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
-	 * @param struct 查询的属性 参考Metadata.TYPE 多个属性相加算出总和 true:表示查询全部
+     * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
+     * @param struct 查询的属性 参考Metadata.TYPE 多个属性相加算出总和 true:表示查询全部
      * @return List
      * @param <T> Table
      */
@@ -1683,7 +1683,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
      * @param query 查询条件
-     * @param types  Metadata.TYPE.
+     * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
      * @return String
      */
     @Override
@@ -1887,7 +1887,6 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
      * @param table 表
-     * @param previous 上一步查询结果
      * @param set sql执行的结果集
      * @return List
      */
@@ -1897,7 +1896,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
     }
 
     /* *****************************************************************************************************************
-     * 													view
+     *                                                     view
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types)
@@ -1920,14 +1919,14 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param query 查询条件
-     * @param types  Metadata.TYPE.
+     * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
      * @return List
      * @param <T> View
      */
     @Override
     public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, View query, int types, int struct, ConfigStore configs) {
-		return super.views(runtime, random, query, types, struct, configs);
-	}
+        return super.views(runtime, random, query, types, struct, configs);
+    }
     /**
      * view[命令合成]<br/>
      * 查询视图
@@ -1977,8 +1976,8 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> views, View query, DataSet set) throws Exception {
-        return super.views(runtime, index, create, views, query, set);
+    public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, View query, DataSet set) throws Exception {
+        return super.views(runtime, index, create, previous, query, set);
     }
     /**
      * view[结果集封装]<br/>
@@ -2005,8 +2004,8 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public List<String> ddl(DataRuntime runtime, String random, View view, boolean init) {
-		return super.ddl(runtime, random, view, init);
-	}
+        return super.ddl(runtime, random, view, init);
+    }
 
     /**
      * view[命令合成]<br/>
@@ -2026,7 +2025,6 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
      * @param view view
-     * @param previous 上一步查询结果
      * @param set sql执行的结果集
      * @return List
      */
@@ -2035,7 +2033,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         return super.ddl(runtime, index, view, ddls, set);
     }
     /* *****************************************************************************************************************
-     * 													master table
+     *                                                     master table
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs)
@@ -2060,26 +2058,26 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @param random 用来标记同一组命令
      * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
      * @param query 查询条件
-     * @param types  Metadata.TYPE.
+     * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
      * @return List
      * @param <T> MasterTable
      */
     @Override
-	public <T extends MasterTable> List<T> masters(DataRuntime runtime, String random, boolean greedy, MasterTable query, int types, int struct, ConfigStore configs) {
-		return super.masters(runtime, random, greedy, query, types, struct, configs);
-	}
+    public <T extends MasterTable> List<T> masters(DataRuntime runtime, String random, boolean greedy, MasterTable query, int types, int struct, ConfigStore configs) {
+        return super.masters(runtime, random, greedy, query, types, struct, configs);
+    }
     /**
      * master table[命令合成]<br/>
      * 查询主表
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param query 查询条件
-     * @param types types
+     * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
      * @return String
      */
     @Override
     public List<Run> buildQueryMasterTablesRun(DataRuntime runtime, boolean greedy, MasterTable query, int types, ConfigStore configs) throws Exception {
-		return super.buildQueryMasterTablesRun(runtime, greedy, query, types, configs);
-	}
+        return super.buildQueryMasterTablesRun(runtime, greedy, query, types, configs);
+    }
 
     /**
      * master table[结果集封装]<br/>
@@ -2121,8 +2119,8 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public List<String> ddl(DataRuntime runtime, String random, MasterTable meta, boolean init) {
-		return super.ddl(runtime, random, meta, init);
-	}
+        return super.ddl(runtime, random, meta, init);
+    }
     /**
      * master table[命令合成]<br/>
      * 查询 MasterTable DDL
@@ -2148,7 +2146,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         return super.ddl(runtime, index, table, ddls, set);
     }
     /* *****************************************************************************************************************
-     * 													partition table
+     *                                                     partition table
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * <T extends PartitionTable> LinkedHashMap<String,T> partitions(DataRuntime runtime, String random, boolean greedy, MasterTable master, Map<String, Object> tags, String pattern)
@@ -2172,8 +2170,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
-     * @param master 主表
-     * @param pattern 名称统配符或正则
+     * @param query query
      * @return List
      * @param <T> MasterTable
      */
@@ -2223,7 +2220,6 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @param total 合计SQL数量
      * @param index 第几条SQL 对照 buildQueryMasterTablesRun返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param master 主表
      * @param query 查询条件
      * @param previous 上一步查询结果
      * @param set 查询结果集
@@ -2239,7 +2235,6 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * 根据根据驱动内置接口
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param master 主表
      * @param query 查询条件
      * @param previous 上一步查询结果
      * @return tables
@@ -2279,7 +2274,6 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
      * @param table MasterTable
-     * @param previous 上一步查询结果
      * @param set sql执行的结果集
      * @return List
      */
@@ -2288,7 +2282,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         return super.ddl(runtime, index, table, ddls, set);
     }
     /* *****************************************************************************************************************
-     * 													column
+     *                                                     column
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Table table, boolean primary);
@@ -2323,7 +2317,6 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @param random 用来标记同一组命令
      * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
      * @param query 查询条件
-     * @param table 查询全部表时 输入null
      * @return List
      * @param <T> Column
      */
@@ -2335,7 +2328,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * column[命令合成]<br/>
      * 查询表上的列
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param table 表
+     * @param query query
      * @param metadata 是否根据metadata(true:SELECT * FROM T WHERE 1=0,false:查询系统表)
      * @return sqls
      */
@@ -2454,9 +2447,8 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * 解析JDBC get columns结果
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param table 表
+     * @param query query
      * @param previous 上一步查询结果
-     * @param pattern 名称
      * @throws Exception 异常
      */
     @Override
@@ -2550,7 +2542,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
     }
 
     /* *****************************************************************************************************************
-     * 													tag
+     *                                                     tag
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, String random, boolean greedy, Table table)
@@ -2601,8 +2593,8 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> tags, DataSet set) throws Exception {
-        return super.tags(runtime, index, create, table, tags, set);
+    public <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> previous, DataSet set) throws Exception {
+        return super.tags(runtime, index, create, table, previous, set);
     }
     /**
      *
@@ -2610,9 +2602,8 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * 解析JDBC get columns结果
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param table 表
+     * @param query query
      * @param previous 上一步查询结果
-     * @param pattern 名称统配符或正则
      * @return tags
      * @throws Exception 异常
      */
@@ -2622,7 +2613,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
     }
 
     /* *****************************************************************************************************************
-     * 													primary
+     *                                                     primary
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * PrimaryKey primary(DataRuntime runtime, String random, boolean greedy, Table table)
@@ -2660,7 +2651,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         runs.add(run);
         checkName(runtime, null, table);
         StringBuilder builder = run.getBuilder();
-        //test_pk_pkey	| p	| {2,1}	| 	PRIMARY KEY (id, name)
+        //test_pk_pkey    | p    | {2,1}    |     PRIMARY KEY (id, name)
         builder.append("SELECT  m.conname, pg_get_constraintdef(m.oid, true) AS define\n");
         builder.append("FROM pg_constraint m \n");
         builder.append("LEFT JOIN pg_namespace ns ON m.connamespace = ns.oid \n");
@@ -2688,8 +2679,8 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         if(set.size()>0) {
             DataRow row = set.getRow(0);
             primary = (T)new PrimaryKey();
-            //conname 	    |contype	|conkey |  define
-            //test_pk_pkey	| p			| {2,1}	| 	PRIMARY KEY (id, name)
+            //conname         |contype    |conkey |  define
+            //test_pk_pkey    | p            | {2,1}    |     PRIMARY KEY (id, name)
             primary.setName(row.getString("CONNAME"));
             String define = row.getString("DEFINE");
             String[] cols = RegularUtil.cut(define, "(",")").split(",");
@@ -2707,7 +2698,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * 根据查询结果集构造PrimaryKey更多属性
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条查询SQL 对照 buildQueryIndexesRun 返回顺序
-     * @param table 表
+     * @param query query
      * @param set sql查询结果
      * @throws Exception 异常
      */
@@ -2727,7 +2718,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
     }
 
     /* *****************************************************************************************************************
-     * 													foreign
+     *                                                     foreign
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, String random, boolean greedy, Table table);
@@ -2743,7 +2734,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
-     * @param table 表
+     * @param query query
      * @return PrimaryKey
      */
     @Override
@@ -2754,7 +2745,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * foreign[命令合成]<br/>
      * 查询表上的外键
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param table 表
+     * @param query query
      * @return sqls
      */
     @Override
@@ -2784,7 +2775,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      *  根据查询结果集构造PrimaryKey
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条查询SQL 对照 buildQueryForeignsRun 返回顺序
-     * @param table 表
+     * @param query query
      * @param previous 上一步查询结果
      * @param set sql查询结果
      * @throws Exception 异常
@@ -2815,7 +2806,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
     }
 
     /* *****************************************************************************************************************
-     * 													index
+     *                                                     index
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * <T extends Index> List<T> indexes(DataRuntime runtime, String random, boolean greedy, Table table, String pattern)
@@ -2834,8 +2825,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
-     * @param table 表
-     * @param pattern 名称统配符或正则
+     * @param query query
      * @return  LinkedHashMap
      * @param <T> Index
      */
@@ -2966,8 +2956,8 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public <T extends Index> LinkedHashMap<String, T> indexes(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Index query, DataSet set) throws Exception {
-		return super.indexes(runtime, index, create, previous, query, set);
-	}
+        return super.indexes(runtime, index, create, previous, query, set);
+    }
     /**
      * index[结果集封装]<br/>
      *  根据查询结果集构造Index
@@ -2982,8 +2972,8 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public <T extends Index> List<T> indexes(DataRuntime runtime, int index, boolean create, List<T> previous, Index query, DataSet set) throws Exception {
-		return super.indexes(runtime, index, create, previous, query, set);
-	}
+        return super.indexes(runtime, index, create, previous, query, set);
+    }
 
     /**
      * index[结果集封装]<br/>
@@ -2996,8 +2986,8 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public <T extends Index> List<T> indexes(DataRuntime runtime, boolean create, List<T> previous, Index query) throws Exception {
-		return super.indexes(runtime, create, previous, query);
-	}
+        return super.indexes(runtime, create, previous, query);
+    }
     /**
      * index[结果集封装]<br/>
      * 根据驱动内置接口
@@ -3009,8 +2999,8 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public <T extends Index> LinkedHashMap<String, T> indexes(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Index query) throws Exception {
-		return super.indexes(runtime, create, previous, query);
-	}
+        return super.indexes(runtime, create, previous, query);
+    }
 
     /**
      * index[结构集封装]<br/>
@@ -3024,8 +3014,8 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public <T extends Index> T init(DataRuntime runtime, int index, T meta, Index query, DataRow row) throws Exception {
-		return super.init(runtime, index, meta, query, row);
-	}
+        return super.init(runtime, index, meta, query, row);
+    }
 
     /**
      * index[结构集封装]<br/>
@@ -3074,7 +3064,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         return meta;
     }
     /* *****************************************************************************************************************
-     * 													constraint
+     *                                                     constraint
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * <T extends Constraint> List<T> constraints(DataRuntime runtime, String random, boolean greedy, Table table, String pattern);
@@ -3097,8 +3087,8 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public <T extends Constraint> List<T> constraints(DataRuntime runtime, String random, boolean greedy, Constraint query) {
-		return super.constraints(runtime, random, greedy, query);
-	}
+        return super.constraints(runtime, random, greedy, query);
+    }
     /**
      *
      * constraint[调用入口]<br/>
@@ -3119,14 +3109,13 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * constraint[命令合成]<br/>
      * 查询表上的约束
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param table 表
-     * @param pattern 名称通配符或正则
+     * @param query query
      * @return sqls
      */
     @Override
     public List<Run> buildQueryConstraintsRun(DataRuntime runtime, Constraint query) {
-		return super.buildQueryConstraintsRun(runtime, query);
-	}
+        return super.buildQueryConstraintsRun(runtime, query);
+    }
 
     /**
      * constraint[结果集封装]<br/>
@@ -3142,8 +3131,8 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public <T extends Constraint> List<T> constraints(DataRuntime runtime, int index, boolean create, List<T> previous, Constraint query, DataSet set) throws Exception {
-		return super.constraints(runtime, index, create, previous, query, set);
-	}
+        return super.constraints(runtime, index, create, previous, query, set);
+    }
     /**
      * constraint[结果集封装]<br/>
      * 根据查询结果集构造Constraint
@@ -3162,7 +3151,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
     }
 
     /* *****************************************************************************************************************
-     * 													trigger
+     *                                                     trigger
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * <T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, String random, boolean greedy, Table table, List<Trigger.EVENT> events)
@@ -3178,20 +3167,18 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
-     * @param table 表
-     * @param events 事件 INSERT|UPDATE|DELETE
+     * @param query query
      * @return  LinkedHashMap
      * @param <T> Index
      */
     public <T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, String random, boolean greedy, Trigger query) {
-		return super.triggers(runtime, random, greedy, query);
-	}
+        return super.triggers(runtime, random, greedy, query);
+    }
     /**
      * trigger[命令合成]<br/>
      * 查询表上的 Trigger
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param table 表
-     * @param events 事件 INSERT|UPDATE|DELETE
+     * @param query query
      * @return sqls
      */
     public List<Run> buildQueryTriggersRun(DataRuntime runtime, Trigger query) {
@@ -3232,7 +3219,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param table 表
+     * @param query query
      * @param previous 上一步查询结果
      * @param set 查询结果集
      * @return LinkedHashMap
@@ -3278,7 +3265,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
     }
 
     /* *****************************************************************************************************************
-     * 													procedure
+     *                                                     procedure
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * <T extends Procedure> List<T> procedures(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern);
@@ -3322,8 +3309,8 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, String random, Procedure query) {
-		return super.procedures(runtime, random, query);
-	}
+        return super.procedures(runtime, random, query);
+    }
     /**
      * procedure[命令合成]<br/>
      * 查询表上的 Trigger
@@ -3333,8 +3320,8 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public List<Run> buildQueryProceduresRun(DataRuntime runtime, Procedure query) {
-		return super.buildQueryProceduresRun(runtime, query);
-	}
+        return super.buildQueryProceduresRun(runtime, query);
+    }
     /**
      * procedure[结果集封装]<br/>
      * 根据查询结果集构造 Trigger
@@ -3408,7 +3395,6 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
      * @param procedure Procedure
-     * @param previous 上一步查询结果
      * @param set 查询结果集
      * @return List
      */
@@ -3418,7 +3404,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
     }
 
     /* *****************************************************************************************************************
-     * 													function
+     *                                                     function
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * <T extends Function> List<T> functions(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern);
@@ -3449,8 +3435,8 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public <T extends Function> List<T> functions(DataRuntime runtime, String random, boolean greedy, Function query) {
-		return super.functions(runtime, random, greedy, query);
-	}
+        return super.functions(runtime, random, greedy, query);
+    }
     /**
      *
      * function[调用入口]<br/>
@@ -3462,14 +3448,13 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public <T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, String random, Function query) {
-		return super.functions(runtime, random, query);
-	}
+        return super.functions(runtime, random, query);
+    }
     /**
      * function[命令合成]<br/>
      * 查询表上的 Trigger
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param query 查询条件
-     * @param name 名称统配符或正则
      * @return sqls
      */
     @Override
@@ -3481,18 +3466,18 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         runs.add(run);
         StringBuilder builder = run.getBuilder();
         builder.append("SELECT\n")
-                .append("	P.*,\n")
-                .append("	N.NSPNAME AS SCHEMA_NAME,\n")
-                .append("	TYP.TYPNAME AS RETTYPE,\n")
-                .append("	OBJ_DESCRIPTION ( P.OID ) AS COMMENT,\n")
-                .append("	PG_GET_USERBYID ( P.PROOWNER ) AS OWNER_NAME,\n")
-                .append("	TYP.TYPNAME AS TYPE_NAME,\n")
-                .append("	TYPNS.NSPNAME AS RETTYPESCHEMA\n")
+                .append("    P.*,\n")
+                .append("    N.NSPNAME AS SCHEMA_NAME,\n")
+                .append("    TYP.TYPNAME AS RETTYPE,\n")
+                .append("    OBJ_DESCRIPTION ( P.OID ) AS COMMENT,\n")
+                .append("    PG_GET_USERBYID ( P.PROOWNER ) AS OWNER_NAME,\n")
+                .append("    TYP.TYPNAME AS TYPE_NAME,\n")
+                .append("    TYPNS.NSPNAME AS RETTYPESCHEMA\n")
                 .append("FROM\n")
-                .append("	PG_PROC P \n")
-                .append("	LEFT JOIN PG_TYPE TYP ON TYP.OID = P.PRORETTYPE\n")
-                .append("	LEFT JOIN PG_NAMESPACE TYPNS ON TYPNS.OID = TYP.TYPNAMESPACE\n")
-                .append("	LEFT JOIN PG_NAMESPACE N ON N.OID = P.PRONAMESPACE \n")
+                .append("    PG_PROC P \n")
+                .append("    LEFT JOIN PG_TYPE TYP ON TYP.OID = P.PRORETTYPE\n")
+                .append("    LEFT JOIN PG_NAMESPACE TYPNS ON TYPNS.OID = TYP.TYPNAMESPACE\n")
+                .append("    LEFT JOIN PG_NAMESPACE N ON N.OID = P.PRONAMESPACE \n")
                 .append("WHERE P.PROKIND <> 'a' \n");
 
         if(!empty(schema)) {
@@ -3579,7 +3564,6 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
      * @param function Function
-     * @param previous 上一步查询结果
      * @param set 查询结果集
      * @return List
      */
@@ -3629,7 +3613,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         return adapter;
     }
     /* *****************************************************************************************************************
-     * 													sequence
+     *                                                     sequence
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * <T extends Sequence> List<T> sequences(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern);
@@ -3680,7 +3664,6 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * 查询表上的 Trigger
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param query 查询条件
-     * @param name 名称统配符或正则
      * @return sqls
      */
     @Override
@@ -3725,16 +3708,16 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends Sequence> List<T> sequences(DataRuntime runtime, int index, boolean create, List<T> sequences, Sequence query, DataSet set) throws Exception {
-        if(null == sequences) {
-            sequences = new ArrayList<>();
+    public <T extends Sequence> List<T> sequences(DataRuntime runtime, int index, boolean create, List<T> previous, Sequence query, DataSet set) throws Exception {
+        if(null == previous) {
+            previous = new ArrayList<>();
         }
         for(DataRow row:set) {
             String name = row.getString("SEQUENCE_NAME");
             Sequence sequence = new Sequence(name);
-            sequences.add((T)init(sequence, row));
+            previous.add((T)init(sequence, row));
         }
-        return sequences;
+        return previous;
     }
     /**
      * sequence[结果集封装]<br/>
@@ -3748,16 +3731,16 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends Sequence> LinkedHashMap<String, T> sequences(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> sequences, Sequence query, DataSet set) throws Exception {
-        if(null == sequences) {
-            sequences = new LinkedHashMap<>();
+    public <T extends Sequence> LinkedHashMap<String, T> sequences(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Sequence query, DataSet set) throws Exception {
+        if(null == previous) {
+            previous = new LinkedHashMap<>();
         }
         for(DataRow row:set) {
             String name = row.getString("SEQUENCE_NAME");
-            Sequence sequence = sequences.get(name.toUpperCase());
-            sequences.put(name.toUpperCase(), (T)init(sequence, row));
+            Sequence sequence = previous.get(name.toUpperCase());
+            previous.put(name.toUpperCase(), (T)init(sequence, row));
         }
-        return sequences;
+        return previous;
     }
     protected Sequence init(Sequence sequence, DataRow row) {
         if(null == sequence) {
@@ -3820,7 +3803,6 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
      * @param sequence Sequence
-     * @param previous 上一步查询结果
      * @param set 查询结果集
      * @return List
      */
@@ -3830,14 +3812,15 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
     }
 
     /* *****************************************************************************************************************
-     * 													common
+     *                                                     common
      * ----------------------------------------------------------------------------------------------------------------
      */
     /**
      *
      * 根据 catalog, schema, name检测tables集合中是否存在
      * @param metas metas
-     * @param query 查询条件
+     * @param catalog 对于MySQL, 则对应相应的数据库, 对于Oracle来说, 则是对应相应的数据库实例, 可以不填, 也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
+     * @param schema 可以理解为数据库的登录名, 而对于Oracle也可以理解成对该数据库操作的所有者的登录名。对于Oracle要特别注意, 其登陆名必须是大写, 不然的话是无法获取到相应的数据, 而MySQL则不做强制要求。
      * @param name name
      * @return 如果存在则返回Table 不存在则返回null
      * @param <T> Table
@@ -3851,7 +3834,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      *
      * 根据 catalog, name检测schemas集合中是否存在
      * @param schemas schemas
-     * @param catalog catalog
+     * @param catalog 对于MySQL, 则对应相应的数据库, 对于Oracle来说, 则是对应相应的数据库实例, 可以不填, 也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
      * @param name name
      * @return 如果存在则返回 Schema 不存在则返回null
      * @param <T> Table
@@ -3887,20 +3870,20 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
     }
     /* *****************************************************************************************************************
      *
-     * 													DDL
+     *                                                     DDL
      *
      * =================================================================================================================
-     * database			: 数据库
-     * table			: 表
-     * master table		: 主表
-     * partition table	: 分区表
-     * column			: 列
-     * tag				: 标签
+     * database            : 数据库
+     * table            : 表
+     * master table        : 主表
+     * partition table    : 分区表
+     * column            : 列
+     * tag                : 标签
      * primary key      : 主键
-     * foreign key		: 外键
-     * index			: 索引
-     * constraint		: 约束
-     * trigger		    : 触发器
+     * foreign key        : 外键
+     * index            : 索引
+     * constraint        : 约束
+     * trigger            : 触发器
      * procedure        : 存储过程
      * function         : 函数
      ******************************************************************************************************************/
@@ -3925,7 +3908,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         return super.execute(runtime, random, meta, action, run);
     }
     /* *****************************************************************************************************************
-     * 													table
+     *                                                     table
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * boolean create(DataRuntime runtime, Table meta)
@@ -4267,7 +4250,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
     }
 
     /* *****************************************************************************************************************
-     * 													view
+     *                                                     view
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * boolean create(DataRuntime runtime, View view) throws Exception;
@@ -4479,7 +4462,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
     }
 
     /* *****************************************************************************************************************
-     * 													MasterTable
+     *                                                     MasterTable
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * boolean create(DataRuntime runtime, MasterTable meta)
@@ -4628,7 +4611,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
     }
 
     /* *****************************************************************************************************************
-     * 													partition table
+     *                                                     partition table
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * boolean create(DataRuntime runtime, PartitionTable meta) throws Exception;
@@ -4778,7 +4761,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
     }
 
     /* *****************************************************************************************************************
-     * 													column
+     *                                                     column
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * boolean add(DataRuntime runtime, Column meta)
@@ -5367,7 +5350,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
     }
 
     /* *****************************************************************************************************************
-     * 													tag
+     *                                                     tag
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * boolean add(DataRuntime runtime, Tag meta)
@@ -5569,7 +5552,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
     }
 
     /* *****************************************************************************************************************
-     * 													primary
+     *                                                     primary
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * boolean add(DataRuntime runtime, PrimaryKey meta)
@@ -5730,7 +5713,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
     }
 
     /* *****************************************************************************************************************
-     * 													foreign
+     *                                                     foreign
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * boolean add(DataRuntime runtime, ForeignKey meta)
@@ -5864,7 +5847,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         return super.buildRenameRun(runtime, meta);
     }
     /* *****************************************************************************************************************
-     * 													index
+     *                                                     index
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * boolean add(DataRuntime runtime, Index meta)
@@ -6030,7 +6013,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         return super.comment(runtime, builder, meta);
     }
     /* *****************************************************************************************************************
-     * 													constraint
+     *                                                     constraint
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * boolean add(DataRuntime runtime, Constraint meta)
@@ -6161,7 +6144,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
     }
 
     /* *****************************************************************************************************************
-     * 													trigger
+     *                                                     trigger
      * -----------------------------------------------------------------------------------------------------------------
      * List<Run> buildCreateRun(DataRuntime runtime, Trigger trigger) throws Exception
      * List<Run> buildAlterRun(DataRuntime runtime, Trigger trigger) throws Exception;
@@ -6284,7 +6267,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
     }
 
     /* *****************************************************************************************************************
-     * 													procedure
+     *                                                     procedure
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * boolean create(DataRuntime runtime, Procedure meta)
@@ -6415,7 +6398,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
     }
 
     /* *****************************************************************************************************************
-     * 													function
+     *                                                     function
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * boolean create(DataRuntime runtime, Function meta)
@@ -6532,7 +6515,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
     }
 
     /* *****************************************************************************************************************
-     * 													sequence
+     *                                                     sequence
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * boolean create(DataRuntime runtime, Sequence meta)
@@ -6650,7 +6633,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
 
     /* *****************************************************************************************************************
      *
-     * 														JDBC
+     *                                                         JDBC
      *
      *  ***************************************************************************************************************/
 
@@ -6669,49 +6652,49 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @param meta Metadata
      * @param <T> Metadata
      */
-	@Override
+    @Override
     public <T extends Metadata> void checkSchema(DataRuntime runtime, T meta) {
         super.checkSchema(runtime, meta);
     }
 
-	/**
-	 * 识别根据jdbc返回的catalog与schema,部分数据库(如mysql)系统表与jdbc标准可能不一致根据实际情况处理<br/>
-	 * 注意一定不要处理从SQL中返回的，应该在SQL中处理好
-	 * @param meta Metadata
-	 * @param catalog catalog
-	 * @param schema schema
+    /**
+     * 识别根据jdbc返回的catalog与schema,部分数据库(如mysql)系统表与jdbc标准可能不一致根据实际情况处理<br/>
+     * 注意一定不要处理从SQL中返回的，应该在SQL中处理好
+     * @param meta Metadata
+     * @param catalog 对于MySQL, 则对应相应的数据库, 对于Oracle来说, 则是对应相应的数据库实例, 可以不填, 也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
+     * @param schema 可以理解为数据库的登录名, 而对于Oracle也可以理解成对该数据库操作的所有者的登录名。对于Oracle要特别注意, 其登陆名必须是大写, 不然的话是无法获取到相应的数据, 而MySQL则不做强制要求。
      * @param overrideMeta 如果meta中有值，是否覆盖
      * @param overrideRuntime 如果runtime中有值，是否覆盖，注意结果集中可能跨多个schema，所以一般不要覆盖runtime,从con获取的可以覆盖ResultSet中获取的不要覆盖
-	 * @param <T> Metadata
-	 */
-	@Override
+     * @param <T> Metadata
+     */
+    @Override
     public <T extends Metadata> void correctSchemaFromJDBC(DataRuntime runtime, T meta, String catalog, String schema, boolean overrideRuntime, boolean overrideMeta) {
         super.correctSchemaFromJDBC(runtime, meta, catalog, schema, overrideRuntime, overrideMeta);
     }
 
-	/**
-	 * 识别根据jdbc返回的catalog与schema,部分数据库(如mysql)系统表与jdbc标准可能不一致根据实际情况处理<br/>
-	 * 注意一定不要处理从SQL中返回的，应该在SQL中处理好
-	 * @param meta Metadata
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param <T> Metadata
-	 */
-	@Override
-	public <T extends Metadata> void correctSchemaFromJDBC(DataRuntime runtime, T meta, String catalog, String schema) {
-		correctSchemaFromJDBC(runtime, meta, catalog, schema, false, true);
-	}
+    /**
+     * 识别根据jdbc返回的catalog与schema,部分数据库(如mysql)系统表与jdbc标准可能不一致根据实际情况处理<br/>
+     * 注意一定不要处理从SQL中返回的，应该在SQL中处理好
+     * @param meta Metadata
+     * @param catalog 对于MySQL, 则对应相应的数据库, 对于Oracle来说, 则是对应相应的数据库实例, 可以不填, 也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
+     * @param schema 可以理解为数据库的登录名, 而对于Oracle也可以理解成对该数据库操作的所有者的登录名。对于Oracle要特别注意, 其登陆名必须是大写, 不然的话是无法获取到相应的数据, 而MySQL则不做强制要求。
+     * @param <T> Metadata
+     */
+    @Override
+    public <T extends Metadata> void correctSchemaFromJDBC(DataRuntime runtime, T meta, String catalog, String schema) {
+        correctSchemaFromJDBC(runtime, meta, catalog, schema, false, true);
+    }
 
-	/**
-	 * 在调用jdbc接口前处理业务中的catalog,schema,部分数据库(如mysql)业务系统与dbc标准可能不一致根据实际情况处理<br/>
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @return String[]
-	 */
-	@Override
-	public String[] correctSchemaFromJDBC(String catalog, String schema) {
-		return super.correctSchemaFromJDBC(catalog, schema);
-	}
+    /**
+     * 在调用jdbc接口前处理业务中的catalog,schema,部分数据库(如mysql)业务系统与dbc标准可能不一致根据实际情况处理<br/>
+     * @param catalog 对于MySQL, 则对应相应的数据库, 对于Oracle来说, 则是对应相应的数据库实例, 可以不填, 也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
+     * @param schema 可以理解为数据库的登录名, 而对于Oracle也可以理解成对该数据库操作的所有者的登录名。对于Oracle要特别注意, 其登陆名必须是大写, 不然的话是无法获取到相应的数据, 而MySQL则不做强制要求。
+     * @return String[]
+     */
+    @Override
+    public String[] correctSchemaFromJDBC(String catalog, String schema) {
+        return super.correctSchemaFromJDBC(catalog, schema);
+    }
    
 
     /**

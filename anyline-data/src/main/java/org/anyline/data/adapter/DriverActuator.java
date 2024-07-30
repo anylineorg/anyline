@@ -188,9 +188,7 @@ public interface DriverActuator {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param previous 上一步查询结果
-     * @param catalog catalog
-     * @param schema schema
-     * @param pattern 名称统配符或正则
+     * @param query query
      * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
      * @return tables
      * @throws Exception 异常
@@ -205,9 +203,7 @@ public interface DriverActuator {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param previous 上一步查询结果
-     * @param catalog catalog
-     * @param schema schema
-     * @param pattern 名称统配符或正则
+     * @param query query
      * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
      * @return tables
      * @throws Exception 异常
@@ -221,15 +217,13 @@ public interface DriverActuator {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param previous 上一步查询结果
-     * @param catalog catalog
-     * @param schema schema
-     * @param pattern 名称统配符或正则
+     * @param query query
      * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
      * @return tables
      * @throws Exception 异常
      */
-    default <T extends View> LinkedHashMap<String, T> views(DriverAdapter adapter, DataRuntime runtime, boolean create,  LinkedHashMap<String, T> views, View query, int types) throws Exception {
-        return views;
+    default <T extends View> LinkedHashMap<String, T> views(DriverAdapter adapter, DataRuntime runtime, boolean create,  LinkedHashMap<String, T> previous, View query, int types) throws Exception {
+        return previous;
     }
 
     /**
@@ -238,15 +232,13 @@ public interface DriverActuator {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param previous 上一步查询结果
-     * @param catalog catalog
-     * @param schema schema
-     * @param pattern 名称统配符或正则
+     * @param query query
      * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
      * @return tables
      * @throws Exception 异常
      */
-    default <T extends Table> List<T> views(DriverAdapter adapter, DataRuntime runtime, boolean create, List<T> views, View query, int types) throws Exception {
-        return views;
+    default <T extends Table> List<T> views(DriverAdapter adapter, DataRuntime runtime, boolean create, List<T> previous, View query, int types) throws Exception {
+        return previous;
     }
 
     /**

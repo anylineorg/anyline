@@ -891,15 +891,13 @@ public class SpringJDBCActuator implements DriverActuator {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param previous 上一步查询结果
-     * @param catalog catalog
-     * @param schema schema
-     * @param pattern 名称统配符或正则
+     * @param query query
      * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
      * @return tables
      * @throws Exception 异常
      */
     @Override
-    public <T extends Table> LinkedHashMap<String, T> tables(DriverAdapter adapter, DataRuntime runtime, boolean create,  LinkedHashMap<String, T> tables, Table query, int types) throws Exception {
+    public <T extends Table> LinkedHashMap<String, T> tables(DriverAdapter adapter, DataRuntime runtime, boolean create,  LinkedHashMap<String, T> previous, Table query, int types) throws Exception {
         Catalog catalog = query.getCatalog();
         Schema schema = query.getSchema();
         String pattern = query.getName();
@@ -924,13 +922,13 @@ public class SpringJDBCActuator implements DriverActuator {
             String[] tmp = adapter.correctSchemaFromJDBC(catalogName, schemaName);
             String[] tps = BeanUtil.list2array(adapter.names(Table.types(types)));
             ResultSet set = dbmd.getTables(tmp[0], tmp[1], pattern, tps);
-            tables = org.anyline.data.jdbc.util.JDBCUtil.tables(adapter, runtime, create, tables, set);
+            previous = org.anyline.data.jdbc.util.JDBCUtil.tables(adapter, runtime, create, previous, set);
         }finally {
             if(null != con && !DataSourceUtils.isConnectionTransactional(con, ds)) {
                 DataSourceUtils.releaseConnection(con, ds);
             }
         }
-        return tables;
+        return previous;
     }
 
     /**
@@ -939,15 +937,13 @@ public class SpringJDBCActuator implements DriverActuator {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param previous 上一步查询结果
-     * @param catalog catalog
-     * @param schema schema
-     * @param pattern 名称统配符或正则
+     * @param query query
      * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
      * @return tables
      * @throws Exception 异常
      */
     @Override
-    public <T extends Table> List<T> tables(DriverAdapter adapter, DataRuntime runtime, boolean create, List<T> tables,  Table query, int types) throws Exception {
+    public <T extends Table> List<T> tables(DriverAdapter adapter, DataRuntime runtime, boolean create, List<T> previous,  Table query, int types) throws Exception {
         Catalog catalog = query.getCatalog();
         Schema schema = query.getSchema();
         String pattern = query.getName();
@@ -973,13 +969,13 @@ public class SpringJDBCActuator implements DriverActuator {
             String[] tmp = adapter.correctSchemaFromJDBC(catalogName, schemaName);
             String[] tps = BeanUtil.list2array(adapter.names(Table.types(types)));
             ResultSet set = dbmd.getTables(tmp[0], tmp[1], pattern, tps);
-            tables = org.anyline.data.jdbc.util.JDBCUtil.tables(adapter, runtime, create, tables, set);
+            previous = org.anyline.data.jdbc.util.JDBCUtil.tables(adapter, runtime, create, previous, set);
         }finally {
             if(null != con && !DataSourceUtils.isConnectionTransactional(con, ds)) {
                 DataSourceUtils.releaseConnection(con, ds);
             }
         }
-        return tables;
+        return previous;
     }
 
     /**
@@ -988,15 +984,13 @@ public class SpringJDBCActuator implements DriverActuator {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param previous 上一步查询结果
-     * @param catalog catalog
-     * @param schema schema
-     * @param pattern 名称统配符或正则
+     * @param query query
      * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
      * @return views
      * @throws Exception 异常
      */
     @Override
-    public <T extends View> LinkedHashMap<String, T> views(DriverAdapter adapter, DataRuntime runtime, boolean create,  LinkedHashMap<String, T> views, View query, int types) throws Exception {
+    public <T extends View> LinkedHashMap<String, T> views(DriverAdapter adapter, DataRuntime runtime, boolean create,  LinkedHashMap<String, T> previous, View query, int types) throws Exception {
         Catalog catalog = query.getCatalog();
         Schema schema = query.getSchema();
         String pattern = query.getName();
@@ -1021,13 +1015,13 @@ public class SpringJDBCActuator implements DriverActuator {
             }
             String[] tmp = adapter.correctSchemaFromJDBC(catalogName, schemaName);
             ResultSet set = dbmd.getTables(tmp[0], tmp[1], pattern, new String[]{"VIEW"});
-            views = org.anyline.data.jdbc.util.JDBCUtil.views(adapter, runtime, create, views, set);
+            previous = org.anyline.data.jdbc.util.JDBCUtil.views(adapter, runtime, create, previous, set);
         }finally {
             if(null != con && !DataSourceUtils.isConnectionTransactional(con, ds)) {
                 DataSourceUtils.releaseConnection(con, ds);
             }
         }
-        return views;
+        return previous;
     }
 
     /**
@@ -1068,7 +1062,7 @@ public class SpringJDBCActuator implements DriverActuator {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param previous 上一步查询结果
-     * @param table 表
+     * @param query query
      * @return columns
      * @param <T> Column
      */

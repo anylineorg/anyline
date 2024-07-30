@@ -759,7 +759,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
 
 
 /* *****************************************************************************************************************
-     * 													DELETE
+     *                                                     DELETE
      * -----------------------------------------------------------------------------------------------------------------
      * List<Run> buildDeleteRun(DataRuntime runtime, String table, ConfigStore configs, String key, Object values)
      * List<Run> buildDeleteRun(DataRuntime runtime, Table dest, Object obj, String ... columns)
@@ -901,7 +901,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
      * @param query 查询条件
-     * @param types  Metadata.TYPE.
+     * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
      * @return String
      * @throws Exception Exception
      */

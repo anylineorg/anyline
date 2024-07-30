@@ -1176,7 +1176,7 @@ public class GBaseAdapter extends InformixGenusAdapter implements JDBCAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
-	 * @param name 名称统配符或正则
+	 * @param query query
 	 * @return LinkedHashMap
 	 */
 	@Override
@@ -1188,7 +1188,7 @@ public class GBaseAdapter extends InformixGenusAdapter implements JDBCAdapter {
 	 * database[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param name 名称统配符或正则
+	 * @param query query
 	 * @return LinkedHashMap
 	 */
 	@Override
@@ -1224,7 +1224,7 @@ public class GBaseAdapter extends InformixGenusAdapter implements JDBCAdapter {
 	 * database[命令合成]<br/>
 	 * 查询全部数据库
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param name 名称统配符或正则
+	 * @param query query
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
 	 * @return sqls
 	 * @throws Exception 异常
@@ -1361,7 +1361,7 @@ public class GBaseAdapter extends InformixGenusAdapter implements JDBCAdapter {
 	 * catalog[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param name 名称统配符或正则
+	 * @param query query
 	 * @return LinkedHashMap
 	 */
 	@Override
@@ -1373,7 +1373,7 @@ public class GBaseAdapter extends InformixGenusAdapter implements JDBCAdapter {
 	 * catalog[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param name 名称统配符或正则
+	 * @param query query
 	 * @return LinkedHashMap
 	 */
 	@Override
@@ -1385,7 +1385,7 @@ public class GBaseAdapter extends InformixGenusAdapter implements JDBCAdapter {
 	 * catalog[命令合成]<br/>
 	 * 查询全部数据库
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param name 名称统配符或正则
+	 * @param query query
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
 	 * @return sqls
 	 * @throws Exception 异常
@@ -1445,14 +1445,14 @@ public class GBaseAdapter extends InformixGenusAdapter implements JDBCAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param previou 上一步查询结果
+	 * @param meta 上一步查询结果
 	 * @param set 查询结果集
 	 * @return Catalog
 	 * @throws Exception 异常
 	 */
 	@Override
-	public Catalog catalog(DataRuntime runtime, int index, boolean create, Catalog previou, DataSet set) throws Exception {
-		return super.catalog(runtime, index, create, previou, set);
+	public Catalog catalog(DataRuntime runtime, int index, boolean create, Catalog meta, DataSet set) throws Exception {
+		return super.catalog(runtime, index, create, meta, set);
 	}
 
 	/**
@@ -1460,13 +1460,13 @@ public class GBaseAdapter extends InformixGenusAdapter implements JDBCAdapter {
 	 * 当前catalog 根据驱动内置接口补充
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param previou 上一步查询结果
+	 * @param meta 上一步查询结果
 	 * @return Catalog
 	 * @throws Exception 异常
 	 */
 	@Override
-	public Catalog catalog(DataRuntime runtime, boolean create, Catalog previou) throws Exception {
-		return super.catalog(runtime, create, previou);
+	public Catalog catalog(DataRuntime runtime, boolean create, Catalog meta) throws Exception {
+		return super.catalog(runtime, create, meta);
 	}
 
 	/* *****************************************************************************************************************
@@ -1487,8 +1487,7 @@ public class GBaseAdapter extends InformixGenusAdapter implements JDBCAdapter {
 	 * schema[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param catalog catalog
-	 * @param name 名称统配符或正则
+	 * @param query query
 	 * @return LinkedHashMap
 	 */
 	@Override
@@ -1500,8 +1499,7 @@ public class GBaseAdapter extends InformixGenusAdapter implements JDBCAdapter {
 	 * schema[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param catalog catalog
-	 * @param name 名称统配符或正则
+	 * @param query query
 	 * @return LinkedHashMap
 	 */
 	@Override
@@ -1513,7 +1511,7 @@ public class GBaseAdapter extends InformixGenusAdapter implements JDBCAdapter {
 	 * catalog[命令合成]<br/>
 	 * 查询全部数据库
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param name 名称统配符或正则
+	 * @param query query
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
 	 * @return sqls
 	 * @throws Exception 异常
@@ -1549,14 +1547,14 @@ public class GBaseAdapter extends InformixGenusAdapter implements JDBCAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQuerySchemaRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param previou 上一步查询结果
+	 * @param meta 上一步查询结果
 	 * @param set 查询结果集
 	 * @return schema
 	 * @throws Exception 异常
 	 */
 	@Override
-	public Schema schema(DataRuntime runtime, int index, boolean create, Schema previou, DataSet set) throws Exception {
-		return super.schema(runtime, index, create, previou, set);
+	public Schema schema(DataRuntime runtime, int index, boolean create, Schema meta, DataSet set) throws Exception {
+		return super.schema(runtime, index, create, meta, set);
 	}
 
 	/**
@@ -1564,13 +1562,13 @@ public class GBaseAdapter extends InformixGenusAdapter implements JDBCAdapter {
 	 * 当前schema 根据驱动内置接口补充
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param previou 上一步查询结果
+	 * @param meta 上一步查询结果
 	 * @return schema
 	 * @throws Exception 异常
 	 */
 	@Override
-	public Schema schema(DataRuntime runtime, boolean create, Schema previou) throws Exception {
-		return super.schema(runtime, create, previou);
+	public Schema schema(DataRuntime runtime, boolean create, Schema meta) throws Exception {
+		return super.schema(runtime, create, meta);
 	}
 
 	/* *****************************************************************************************************************
@@ -1602,9 +1600,7 @@ public class GBaseAdapter extends InformixGenusAdapter implements JDBCAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param pattern 名称统配符或正则
+	 * @param query query
 	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @param struct 查询的属性 参考Metadata.TYPE 多个属性相加算出总和 true:表示查询全部
 	 * @return List
@@ -1620,8 +1616,7 @@ public class GBaseAdapter extends InformixGenusAdapter implements JDBCAdapter {
 	 * 查出所有key并以大写缓存 用来实现忽略大小写
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param catalog catalog
-	 * @param schema schema
+	 * @param query query
 	 */
 	@Override
 	protected void tableMap(DataRuntime runtime, String random, boolean greedy, Table query, ConfigStore configs) {
@@ -1636,10 +1631,8 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * 查询表,不是查表中的数据
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param pattern 名称统配符或正则
-	 * @param types  Metadata.TYPE.
+	 * @param query query
+	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return String
 	 * @throws Exception Exception
 	 */
@@ -1652,9 +1645,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * table[命令合成]<br/>
 	 * 查询表备注
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param pattern 名称统配符或正则
+	 * @param query query
 	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return String
 	 * @throws Exception Exception
@@ -1670,8 +1661,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照buildQueryTablesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param catalog catalog
-	 * @param schema schema
+	 * @param query query
 	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return tables
@@ -1688,16 +1678,15 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照buildQueryTablesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param catalog catalog
-	 * @param schema schema
+	 * @param query query
 	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return tables
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Table> List<T> tables(DataRuntime runtime, int index, boolean create, List<T> tables, Table query, DataSet set) throws Exception {
-		return super.tables(runtime, index, create, tables, query, set);
+	public <T extends Table> List<T> tables(DataRuntime runtime, int index, boolean create, List<T> previous, Table query, DataSet set) throws Exception {
+		return super.tables(runtime, index, create, previous, query, set);
 	}
 
 	/**
@@ -1706,16 +1695,14 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param previous 上一步查询结果
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param pattern 名称统配符或正则
+	 * @param query query
 	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return tables
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Table query, int types) throws Exception {
-		return super.tables(runtime, create, tables, query, types);
+	public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Table query, int types) throws Exception {
+		return super.tables(runtime, create, previous, query, types);
 	}
 
 	/**
@@ -1724,16 +1711,14 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param previous 上一步查询结果
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param pattern 名称统配符或正则
+	 * @param query query
 	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return tables
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Table> List<T> tables(DataRuntime runtime, boolean create, List<T> tables, Table query, int types) throws Exception {
-		return super.tables(runtime, create, tables, query, types);
+	public <T extends Table> List<T> tables(DataRuntime runtime, boolean create, List<T> previous, Table query, int types) throws Exception {
+		return super.tables(runtime, create, previous, query, types);
 	}
 
 	/**
@@ -1742,8 +1727,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照buildQueryTablesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param catalog catalog
-	 * @param schema schema
+	 * @param query query
 	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return tables
@@ -1760,8 +1744,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照buildQueryTablesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param catalog catalog
-	 * @param schema schema
+	 * @param query query
 	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return tables
@@ -1804,7 +1787,6 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
 	 * @param table 表
-	 * @param previous 上一步查询结果
 	 * @param set sql执行的结果集
 	 * @return List
 	 */
@@ -1836,10 +1818,8 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * 查询视图
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param pattern 名称统配符或正则
-	 * @param types  Metadata.TYPE.
+	 * @param query query
+	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return List
 	 * @param <T> View
 	 */
@@ -1853,9 +1833,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * 查询视图
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param pattern 名称统配符或正则
+	 * @param query query
 	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return List
 	 */
@@ -1870,16 +1848,15 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照buildQueryViewsRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param catalog catalog
-	 * @param schema schema
+	 * @param query query
 	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return views
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> views, View query, DataSet set) throws Exception {
-		return super.views(runtime, index, create, views, query, set);
+	public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, View query, DataSet set) throws Exception {
+		return super.views(runtime, index, create, previous, query, set);
 	}
 
 	/**
@@ -1888,16 +1865,14 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param previous 上一步查询结果
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param pattern 名称统配符或正则
+	 * @param query query
 	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return views
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, boolean create, LinkedHashMap<String, T> views, View query, int types) throws Exception {
-		return super.views(runtime, create, views, query, types);
+	public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, View query, int types) throws Exception {
+		return super.views(runtime, create, previous, query, types);
 	}
 
 	/**
@@ -1930,7 +1905,6 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
 	 * @param view view
-	 * @param previous 上一步查询结果
 	 * @param set sql执行的结果集
 	 * @return List
 	 */
@@ -1962,10 +1936,8 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * 查询主表
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param pattern 名称统配符或正则
-	 * @param types  Metadata.TYPE.
+	 * @param query query
+	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return List
 	 * @param <T> MasterTable
 	 */
@@ -1978,10 +1950,8 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * master table[命令合成]<br/>
 	 * 查询主表
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param pattern 名称统配符或正则
-	 * @param types types
+	 * @param query query
+	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return String
 	 */
 	@Override
@@ -1995,8 +1965,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryMasterTablesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param catalog catalog
-	 * @param schema schema
+	 * @param query query
 	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return tables
@@ -2012,8 +1981,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * 根据根据驱动内置接口
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param catalog catalog
-	 * @param schema schema
+	 * @param query query
 	 * @param previous 上一步查询结果
 	 * @return tables
 	 * @throws Exception 异常
@@ -2053,7 +2021,6 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
 	 * @param table MasterTable
-	 * @param previous 上一步查询结果
 	 * @param set sql执行的结果集
 	 * @return List
 	 */
@@ -2086,8 +2053,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
-	 * @param master 主表
-	 * @param pattern 名称统配符或正则
+	 * @param query query
 	 * @return List
 	 * @param <T> MasterTable
 	 */
@@ -2100,10 +2066,8 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * partition table[命令合成]<br/>
 	 * 查询分区表
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param pattern 名称统配符或正则
-	 * @param types types
+	 * @param query query
+	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return String
 	 */
 	@Override
@@ -2119,9 +2083,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @param total 合计SQL数量
 	 * @param index 第几条SQL 对照 buildQueryMasterTablesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param master 主表
-	 * @param catalog catalog
-	 * @param schema schema
+	 * @param query query
 	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return tables
@@ -2137,9 +2099,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * 根据根据驱动内置接口
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param master 主表
-	 * @param catalog catalog
-	 * @param schema schema
+	 * @param query query
 	 * @param previous 上一步查询结果
 	 * @return tables
 	 * @throws Exception 异常
@@ -2179,7 +2139,6 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
 	 * @param table MasterTable
-	 * @param previous 上一步查询结果
 	 * @param set sql执行的结果集
 	 * @return List
 	 */
@@ -2222,7 +2181,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * column[命令合成]<br/>
 	 * 查询表上的列
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param table 表
+	 * @param query query
 	 * @param metadata 是否根据metadata(true:SELECT * FROM T WHERE 1=0,false:查询系统表)
 	 * @return runs
 	 */
@@ -2235,8 +2194,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * column[命令合成]<br/>(方法1)<br/>
 	 * 查询多个表的列
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param catalog catalog
-	 * @param schema schema
+	 * @param query query
 	 * @param tables 表
 	 * @param metadata 是否根据metadata(true:SELECT * FROM T WHERE 1=0,false:查询系统表)
 	 * @return runs
@@ -2290,8 +2248,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
-	 * @param catalog catalog
-	 * @param schema schema
+	 * @param query query
 	 * @param tables 表
 	 * @return List
 	 * @param <T> Column
@@ -2306,9 +2263,8 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * 解析JDBC get columns结果
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param table 表
-	 * @return columns 上一步查询结果
-	 * @param pattern 名称
+	 * @param query query
+	 * @return previous 上一步查询结果
 	 * @throws Exception 异常
 	 */
 	@Override
@@ -2447,8 +2403,8 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> tags, DataSet set) throws Exception {
-		return super.tags(runtime, index, create, table, tags, set);
+	public <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> previous, DataSet set) throws Exception {
+		return super.tags(runtime, index, create, table, previous, set);
 	}
 
 	/**
@@ -2457,9 +2413,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * 解析JDBC get columns结果
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param table 表
-	 * @param previous 上一步查询结果
-	 * @param pattern 名称统配符或正则
+	 * @param query query
 	 * @return tags
 	 * @throws Exception 异常
 	 */
@@ -2484,7 +2438,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
-	 * @param table 表
+	 * @param query query
 	 * @return PrimaryKey
 	 */
 	@Override
@@ -2496,7 +2450,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * primary[命令合成]<br/>
 	 * 查询表上的主键
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param table 表
+	 * @param query query
 	 * @return runs
 	 */
 	@Override
@@ -2509,7 +2463,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * 根据查询结果集构造PrimaryKey基础属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryIndexesRun 返回顺序
-	 * @param table 表
+	 * @param query query
 	 * @param set sql查询结果
 	 * @throws Exception 异常
 	 */
@@ -2523,7 +2477,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * 根据查询结果集构造PrimaryKey更多属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryIndexesRun 返回顺序
-	 * @param table 表
+	 * @param query query
 	 * @param set sql查询结果
 	 * @throws Exception 异常
 	 */
@@ -2545,7 +2499,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * primary[结构集封装]<br/>
 	 *  根据驱动内置接口补充PrimaryKey
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param table 表
+	 * @param query query
 	 * @throws Exception 异常
 	 */
 	@Override
@@ -2569,7 +2523,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
-	 * @param table 表
+	 * @param query query
 	 * @return PrimaryKey
 	 */
 	@Override
@@ -2581,7 +2535,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * foreign[命令合成]<br/>
 	 * 查询表上的外键
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param table 表
+	 * @param query query
 	 * @return runs
 	 */
 	@Override
@@ -2594,7 +2548,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 *  根据查询结果集构造PrimaryKey
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryForeignsRun 返回顺序
-	 * @param table 表
+	 * @param query query
 	 * @param previous 上一步查询结果
 	 * @param set sql查询结果
 	 * @throws Exception 异常
@@ -2624,8 +2578,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
-	 * @param table 表
-	 * @param pattern 名称统配符或正则
+	 * @param query query
 	 * @return  LinkedHashMap
 	 * @param <T> Index
 	 */
@@ -2639,8 +2592,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * index[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param table 表
-	 * @param pattern 名称统配符或正则
+	 * @param query query
 	 * @return  LinkedHashMap
 	 * @param <T> Index
 	 */
@@ -2653,8 +2605,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * index[命令合成]<br/>
 	 * 查询表上的索引
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param table 表
-	 * @param name 名称
+	 * @param query query
 	 * @return runs
 	 */
 	@Override
@@ -2672,7 +2623,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryIndexesRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param table 表
+	 * @param query query
 	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return indexes indexes
@@ -2689,7 +2640,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryIndexesRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param table 表
+	 * @param query query
 	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return indexes indexes
@@ -2705,9 +2656,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * 根据驱动内置接口
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param table 表
-	 * @param unique 是否唯一
-	 * @param approximate 索引允许结果反映近似值
+	 * @param query query
 	 * @return indexes indexes
 	 * @throws Exception 异常
 	 */
@@ -2721,9 +2670,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * 根据驱动内置接口
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param table 表
-	 * @param unique 是否唯一
-	 * @param approximate 索引允许结果反映近似值
+	 * @param query query
 	 * @return indexes indexes
 	 * @throws Exception 异常
 	 */
@@ -2738,7 +2685,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryIndexesRun 返回顺序
 	 * @param meta 上一步封装结果
-	 * @param table 表
+	 * @param query query
 	 * @param row sql查询结果
 	 * @throws Exception 异常
 	 */
@@ -2753,7 +2700,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryIndexesRun 返回顺序
 	 * @param meta 上一步封装结果
-	 * @param table 表
+	 * @param query query
 	 * @param row sql查询结果
 	 * @throws Exception 异常
 	 */
@@ -2789,8 +2736,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
-	 * @param table 表
-	 * @param pattern 名称统配符或正则
+	 * @param query query
 	 * @return  LinkedHashMap
 	 * @param <T> Index
 	 */
@@ -2819,8 +2765,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * constraint[命令合成]<br/>
 	 * 查询表上的约束
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param table 表
-	 * @param pattern 名称通配符或正则
+	 * @param query query
 	 * @return runs
 	 */
 	@Override
@@ -2834,7 +2779,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param table 表
+	 * @param query query
 	 * @param previous 上一步查询结果
 	 * @param set DataSet
 	 * @return constraints constraints
@@ -2851,8 +2796,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param table 表
-	 * @param column 列
+	 * @param query query
 	 * @param previous 上一步查询结果
 	 * @param set DataSet
 	 * @return constraints constraints
@@ -2880,8 +2824,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
-	 * @param table 表
-	 * @param events 事件 INSERT|UPDATE|DELETE
+	 * @param query query
 	 * @return  LinkedHashMap
 	 * @param <T> Index
 	 */
@@ -2893,8 +2836,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * trigger[命令合成]<br/>
 	 * 查询表上的 Trigger
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param table 表
-	 * @param events 事件 INSERT|UPDATE|DELETE
+	 * @param query query
 	 * @return sqls
 	 */
 	public List<Run> buildQueryTriggersRun(DataRuntime runtime, Trigger query) {
@@ -2907,7 +2849,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param table 表
+	 * @param query query
 	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return LinkedHashMap
@@ -2943,9 +2885,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param pattern 名称统配符或正则
+	 * @param query query
 	 * @return  LinkedHashMap
 	 * @param <T> Index
 	 */
@@ -2959,9 +2899,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * procedure[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param pattern 名称统配符或正则
+	 * @param query query
 	 * @return  LinkedHashMap
 	 * @param <T> Index
 	 */
@@ -2974,9 +2912,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * procedure[命令合成]<br/>
 	 * 查询表上的 Trigger
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param pattern 名称统配符或正则
+	 * @param query query
 	 * @return runs
 	 */
 	@Override
@@ -3059,7 +2995,6 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
 	 * @param procedure Procedure
-	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return List
 	 */
@@ -3094,9 +3029,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param pattern 名称统配符或正则
+	 * @param query query
 	 * @return  LinkedHashMap
 	 * @param <T> Index
 	 */
@@ -3110,9 +3043,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * function[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param pattern 名称统配符或正则
+	 * @param query query
 	 * @return  LinkedHashMap
 	 * @param <T> Index
 	 */
@@ -3125,9 +3056,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * function[命令合成]<br/>
 	 * 查询表上的 Trigger
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param name 名称统配符或正则
+	 * @param query query
 	 * @return runs
 	 */
 	@Override
@@ -3212,7 +3141,6 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
 	 * @param function Function
-	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return List
 	 */
@@ -3247,9 +3175,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param pattern 名称统配符或正则
+	 * @param query query
 	 * @return  LinkedHashMap
 	 * @param <T> Index
 	 */
@@ -3263,9 +3189,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * sequence[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param pattern 名称统配符或正则
+	 * @param query query
 	 * @return  LinkedHashMap
 	 * @param <T> Index
 	 */
@@ -3278,9 +3202,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * sequence[命令合成]<br/>
 	 * 查询表上的 Trigger
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param name 名称统配符或正则
+	 * @param query query
 	 * @return runs
 	 */
 	@Override
@@ -3330,8 +3252,8 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Sequence> List<T> sequences(DataRuntime runtime, boolean create, List<T> sequences, Sequence query) throws Exception {
-		return super.sequences(runtime, create, sequences, query);
+	public <T extends Sequence> List<T> sequences(DataRuntime runtime, boolean create, List<T> previous, Sequence query) throws Exception {
+		return super.sequences(runtime, create, previous, query);
 	}
 
 	/**
@@ -3365,7 +3287,6 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
 	 * @param sequence Sequence
-	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return List
 	 */
@@ -3382,8 +3303,8 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 *
 	 * 根据 catalog, schema, name检测tables集合中是否存在
 	 * @param metas metas
-	 * @param catalog catalog
-	 * @param schema schema
+	 * @param catalog 对于MySQL, 则对应相应的数据库, 对于Oracle来说, 则是对应相应的数据库实例, 可以不填, 也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
+	 * @param schema 可以理解为数据库的登录名, 而对于Oracle也可以理解成对该数据库操作的所有者的登录名。对于Oracle要特别注意, 其登陆名必须是大写, 不然的话是无法获取到相应的数据, 而MySQL则不做强制要求。
 	 * @param name name
 	 * @return 如果存在则返回Table 不存在则返回null
 	 * @param <T> Table
@@ -3397,7 +3318,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 *
 	 * 根据 catalog, name检测schemas集合中是否存在
 	 * @param schemas schemas
-	 * @param catalog catalog
+	 * @param catalog 对于MySQL, 则对应相应的数据库, 对于Oracle来说, 则是对应相应的数据库实例, 可以不填, 也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
 	 * @param name name
 	 * @return 如果存在则返回 Schema 不存在则返回null
 	 * @param <T> Table
@@ -6180,8 +6101,8 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * 识别根据jdbc返回的catalog与schema,部分数据库(如mysql)系统表与jdbc标准可能不一致根据实际情况处理<br/>
 	 * 注意一定不要处理从SQL中返回的，应该在SQL中处理好
 	 * @param meta Metadata
-	 * @param catalog catalog
-	 * @param schema schema
+	 * @param catalog 对于MySQL, 则对应相应的数据库, 对于Oracle来说, 则是对应相应的数据库实例, 可以不填, 也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
+	 * @param schema 可以理解为数据库的登录名, 而对于Oracle也可以理解成对该数据库操作的所有者的登录名。对于Oracle要特别注意, 其登陆名必须是大写, 不然的话是无法获取到相应的数据, 而MySQL则不做强制要求。
      * @param overrideMeta 如果meta中有值，是否覆盖
      * @param overrideRuntime 如果runtime中有值，是否覆盖，注意结果集中可能跨多个schema，所以一般不要覆盖runtime,从con获取的可以覆盖ResultSet中获取的不要覆盖
 	 * @param <T> Metadata
@@ -6195,8 +6116,8 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * 识别根据jdbc返回的catalog与schema,部分数据库(如mysql)系统表与jdbc标准可能不一致根据实际情况处理<br/>
 	 * 注意一定不要处理从SQL中返回的，应该在SQL中处理好
 	 * @param meta Metadata
-	 * @param catalog catalog
-	 * @param schema schema
+	 * @param catalog 对于MySQL, 则对应相应的数据库, 对于Oracle来说, 则是对应相应的数据库实例, 可以不填, 也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
+	 * @param schema 可以理解为数据库的登录名, 而对于Oracle也可以理解成对该数据库操作的所有者的登录名。对于Oracle要特别注意, 其登陆名必须是大写, 不然的话是无法获取到相应的数据, 而MySQL则不做强制要求。
 	 * @param <T> Metadata
 	 */
 	@Override
@@ -6206,8 +6127,8 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 
 	/**
 	 * 在调用jdbc接口前处理业务中的catalog,schema,部分数据库(如mysql)业务系统与dbc标准可能不一致根据实际情况处理<br/>
-	 * @param catalog catalog
-	 * @param schema schema
+	 * @param catalog 对于MySQL, 则对应相应的数据库, 对于Oracle来说, 则是对应相应的数据库实例, 可以不填, 也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
+	 * @param schema 可以理解为数据库的登录名, 而对于Oracle也可以理解成对该数据库操作的所有者的登录名。对于Oracle要特别注意, 其登陆名必须是大写, 不然的话是无法获取到相应的数据, 而MySQL则不做强制要求。
 	 * @return String[]
 	 */
 	@Override

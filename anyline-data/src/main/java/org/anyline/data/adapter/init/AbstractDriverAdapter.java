@@ -80,3537 +80,3536 @@ import java.util.*;
 
 public abstract class AbstractDriverAdapter implements DriverAdapter {
 
-	protected DMListener dmListener;
-	protected DDListener ddListener;
-	protected PrimaryGenerator primaryGenerator;
-	protected DriverActuator actuator;
+    protected DMListener dmListener;
+    protected DDListener ddListener;
+    protected PrimaryGenerator primaryGenerator;
+    protected DriverActuator actuator;
 
-	protected DMListener getListener() {
-		return dmListener;
-	}
+    protected DMListener getListener() {
+        return dmListener;
+    }
 
-	public void setListener(DMListener listener) {
-		this.dmListener = listener;
-	}
-	public DMListener getDMListener() {
-		return this.dmListener;
-	}
-	public void setListener(DDListener listener) {
-		this.ddListener = listener;
-	}
-	public DDListener getDDListener() {
-		return this.ddListener;
-	}
-	public void setGenerator(PrimaryGenerator generator) {
-		this.primaryGenerator = generator;
-	}
-	public PrimaryGenerator getPrimaryGenerator() {
-		return primaryGenerator;
-	}
-	protected String delimiterFr = "";
-	protected String delimiterTo = "";
-	//拼写兼容 下划线空格兼容
-	protected static Map<String, String> spells = new HashMap<>();
+    public void setListener(DMListener listener) {
+        this.dmListener = listener;
+    }
+    public DMListener getDMListener() {
+        return this.dmListener;
+    }
+    public void setListener(DDListener listener) {
+        this.ddListener = listener;
+    }
+    public DDListener getDDListener() {
+        return this.ddListener;
+    }
+    public void setGenerator(PrimaryGenerator generator) {
+        this.primaryGenerator = generator;
+    }
+    public PrimaryGenerator getPrimaryGenerator() {
+        return primaryGenerator;
+    }
+    protected String delimiterFr = "";
+    protected String delimiterTo = "";
+    //拼写兼容 下划线空格兼容
+    protected static Map<String, String> spells = new HashMap<>();
 
-	//根据名称定位数据类型
-	protected LinkedHashMap<String, TypeMetadata> alias = new LinkedHashMap();
-
-
-	static {
-		for(StandardTypeMetadata type: StandardTypeMetadata.values()) {
-			String name = type.name().toUpperCase();//变量名
-			String standard = type.getName().toUpperCase(); //标准SQL类型名
-			spells.put(name, standard);
-			if(name.contains(" ")) {
-				spells.put(name.replace(" ", "_"), standard);
-			}
-			if(name.contains("_")) {
-				spells.put(name.replace("_", " "), standard);
-			}
-			if(standard.contains(" ")) {
-				spells.put(standard.replace(" ", "_"), standard);
-			}
-			if(standard.contains("_")) {
-				spells.put(standard.replace("_", " "), standard);
-			}
-		}
-	}
-
-	@Override
-	public void setActuator(DriverActuator actuator) {
-		this.actuator = actuator;
-	}
-	@Override
-	public DriverActuator getActuator() {
-		return actuator;
-	}
-	@Override
-	public String getDelimiterFr() {
-		return this.delimiterFr;
-	}
-	@Override
-	public String getDelimiterTo() {
-		return this.delimiterTo;
-	}
-	@Override
-	public void setDelimiter(String delimiter) {
-		if(BasicUtil.isNotEmpty(delimiter)) {
-			delimiter = delimiter.replaceAll("\\s","");
-			if(delimiter.length() == 1) {
-				this.delimiterFr = delimiter;
-				this.delimiterTo = delimiter;
-			}else{
-				this.delimiterFr = delimiter.substring(0,1);
-				this.delimiterTo = delimiter.substring(1,2);
-			}
-		}
-	}
-	/**
-	 * 对应的兼容模式，有些数据库会兼容oracle或pg,需要分别提供两个JDBCAdapter或者直接依赖oracle/pg的adapter
-	 * 参考DefaultJDBCAdapterUtil定位adapter的方法
-	 * @return DatabaseType
-	 */
-	@Override
-	public DatabaseType compatible() {
-		return null;
-	}
-	public AbstractDriverAdapter() {
-		//当前数据库支持的数据类型,子类根据情况覆盖
-		for(StandardTypeMetadata type: StandardTypeMetadata.values()) {
-			reg(type, type.config());
-			List<DatabaseType> dbs = type.databaseTypes();
-			for(DatabaseType db:dbs) {
-				if(db == this.type()) {
-					//column type支持当前db
-					alias(type.getName(), type);
-					alias(type.name(), type);
-					break;
-				}
-			}
-		}
-		MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.CHAR, new TypeMetadata.Config(0, 1, 1));
-		MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.TEXT, new TypeMetadata.Config(1, 1, 1));
-		MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.BOOLEAN, new TypeMetadata.Config( 1,1, 1));
-		MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.BYTES, new TypeMetadata.Config(0, 1, 1));
-		MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.BLOB, new TypeMetadata.Config(1,1,1));
-		MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.INT, new TypeMetadata.Config(1, 1, 1));
-		MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.FLOAT, new TypeMetadata.Config(1, 0, 0));
-		MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.DATE, new TypeMetadata.Config(1, 1, 1));
-		MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.TIME, new TypeMetadata.Config(1, 1, 1));
-		MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.DATETIME, new TypeMetadata.Config( 1, 1, 1));
-		MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.TIMESTAMP, new TypeMetadata.Config(1, 1, 1));
-		MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.COLLECTION, new TypeMetadata.Config(1, 1, 1));
-		MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.GEOMETRY, new TypeMetadata.Config(1, 1, 1));
-		MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.OTHER, new TypeMetadata.Config( 1, 1, 1));
-	}
-
-	@Override
-	public LinkedHashMap<String, TypeMetadata> alias() {
-		return alias;
-	}
-
-	/**
-	 * 注册数据类型别名(包含对应的标准类型、length/precision/scale等配置)
-	 * @param alias 数据类型别名
-	 * @return Config
-	 */
-	@Override
-	public TypeMetadata.Config reg(TypeMetadataAlias alias) {
-		TypeMetadata standard = alias.standard();
-		if(standard == StandardTypeMetadata.NONE) {
-			return null;
-		}
-		alias(alias.input(), standard);										//根据别名
-		alias(standard.getName(), standard);										//根据实现SQL数据类型名称
-		TypeMetadata.Config config = alias.config();
-		reg(alias.input(), config);
-		reg(alias.standard(), config);
-		return config;
-	}
-	protected void alias(String key, TypeMetadata value) {
-		if(null != key && null != value && TypeMetadata.NONE != value) {
-			this.alias.put(key, value);
-			this.alias.put(key.replace("_", " "), value);
-			this.alias.put(key.replace(" ", "_"), value);
-		}
-	}
-	/**
-	 * 注册数据类型配置
-	 * 要从配置项中取出每个属性检测合并,不要整个覆盖
-	 * @param type 数据类型
-	 * @param config 配置项
-	 * @return Config
-	 */
-	@Override
-	public TypeMetadata.Config reg(TypeMetadata type, TypeMetadata.Config config) {
-		return MetadataAdapterHolder.reg(type(), type, config);
-	}
-	/**
-	 * 注册数据类型配置
-	 * 要从配置项中取出每个属性检测合并,不要整个覆盖
-	 * @param type 类型名称或别名
-	 * @param config 配置项
-	 * @return TypeMetadata.Config
-	 */
-	@Override
-	public TypeMetadata.Config reg(String type, TypeMetadata.Config config) {
-		return MetadataAdapterHolder.reg(type(), type, config);
-	}
-
-	/* *****************************************************************************************************************
-	 *
-	 * 													DML
-	 *
-	 * =================================================================================================================
-	 * INSERT			: 插入
-	 * UPDATE			: 更新
-	 * SAVE				: 根据情况插入或更新
-	 * QUERY			: 查询(RunPrepare/XML/TABLE/VIEW/PROCEDURE)
-	 * EXISTS			: 是否存在
-	 * COUNT			: 统计
-	 * EXECUTE			: 执行(原生SQL及存储过程)
-	 * DELETE			: 删除
-	 *
-	 ******************************************************************************************************************/
-
-	/* *****************************************************************************************************************
-	 * 													INSERT
-	 * -----------------------------------------------------------------------------------------------------------------
-	 * [调用入口]
-	 * long insert(DataRuntime runtime, String random, int batch, Table dest, Object data, ConfigStore configs, List<String> columns)
-	 * [命令合成]
-	 * public Run buildInsertRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, List<String> columns)
-	 * public void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet set, ConfigStore configs, LinkedHashMap<String, Column> columns)
-	 * public void fillInsertContent(DataRuntime runtime, Run run, Table dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns)
-	 * public LinkedHashMap<String, Column> confirmInsertColumns(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns, boolean batch)
-	 * public String batchInsertSeparator()
-	 * public boolean supportInsertPlaceholder()
-	 * protected Run createInsertRun(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns)
-	 * protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, List<String> columns)
-	 * public String generatedKey()
-	 * [命令执行]
-	 * long insert(DataRuntime runtime, String random, Object data, ConfigStore configs, Run run, String[] pks);
-	 ******************************************************************************************************************/
-
-	/**
-	 * insert [调用入口]<br/>
-	 * 执行前根据主键生成器补充主键值,执行完成后会补齐自增主键值
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param random 用来标记同一组命令
-	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
-	 * @param data 需要插入入的数据
-	 * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
-	 *                列可以加前缀<br/>
-	 *                +:表示必须插入<br/>
-	 *                -:表示必须不插入<br/>
-	 *                ?:根据是否有值<br/>
-	 *
-	 *        如果没有提供columns,长度为0也算没有提供<br/>
-	 *        则解析obj(遍历所有的属性工Key)获取insert列<br/>
-	 *
-	 *        如果提供了columns则根据columns获取insert列<br/>
-	 *
-	 *        但是columns中出现了添加前缀列,则解析完columns后,继续解析obj<br/>
-	 *
-	 *        以上执行完后,如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
-	 *        则把执行结果与表结构对比,删除表中没有的列<br/>
-	 * @return 影响行数
-	 */
-	@Override
-	public long insert(DataRuntime runtime, String random, int batch, Table dest, Object data, ConfigStore configs, List<String> columns) {
-		if(null == random) {
-			random = random(runtime);
-		}
-		ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
-		boolean cmd_success = false;
-		swt = InterceptorProxy.prepareInsert(runtime, random, batch, dest, data, columns);
-		if(swt == ACTION.SWITCH.BREAK) {
-			return -1;
-		}
-		if(null != dmListener) {
-			swt = dmListener.prepareInsert(runtime, random, batch, dest, data, columns);
-		}
-		if(swt == ACTION.SWITCH.BREAK) {
-			return -1;
-		}
-		if(null != data && data instanceof DataSet) {
-			DataSet set = (DataSet)data;
-			Map<String, Object> tags = set.getTags();
-			if(null != tags && tags.size()>0) {
-				LinkedHashMap<String, PartitionTable> partitions = partitions(runtime, random, false, new MasterTable(dest), tags, null);
-				if(partitions.size() != 1) {
-					String msg = "分区表定位异常,主表:" + dest + ",标签:" + BeanUtil.map2json(tags) + ",分区表:" + BeanUtil.object2json(partitions.keySet());
-					if(ConfigStore.IS_THROW_SQL_UPDATE_EXCEPTION(configs)) {
-						throw new CommandUpdateException(msg);
-					}else{
-						log.error(msg);
-						return -1;
-					}
-				}
-				dest = partitions.values().iterator().next();
-			}
-		}
-		Run run = buildInsertRun(runtime, batch, dest, data, configs, columns);
-		//提前设置好columns,到了adapter中需要手动检测缓存
-		if(ConfigStore.IS_AUTO_CHECK_METADATA(configs)) {
-			dest.setColumns(columns(runtime, random, false, dest, false));
-		}
-		if(null == run) {
-			return 0;
-		}
-
-		long cnt = 0;
-		long fr = System.currentTimeMillis();
-		long millis = -1;
-
-		swt = InterceptorProxy.beforeInsert(runtime, random, run, dest, data, columns);
-		if(swt == ACTION.SWITCH.BREAK) {
-			return -1;
-		}
-		if(null != dmListener) {
-			swt = dmListener.beforeInsert(runtime, random, run, dest, data, columns);
-		}
-		if(swt == ACTION.SWITCH.BREAK) {
-			return -1;
-		}
-		cnt = insert(runtime, random, data, configs, run, null);
-		if (null != dmListener) {
-			dmListener.afterInsert(runtime, random, run, cnt, dest, data, columns, cmd_success, cnt, millis);
-		}
-		InterceptorProxy.afterInsert(runtime, random, run, dest, data, columns, cmd_success, cnt, System.currentTimeMillis() - fr);
-		return cnt;
-	}
-
-	/**
-	 * insert into table select * from table
-	 * 与query参数一致
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param dest 插入表
-	 * @param prepare 查询表
-	 * @param configs 查询条件及相关配置
-	 * @param obj 查询条件
-	 * @param conditions 查询条件
-	 * @return 影响行数
-	 */
-	@Override
-	public long insert(DataRuntime runtime, String random, Table dest, RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions) {
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 long insert(DataRuntime runtime, String random, Table dest, RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions)", 37));
-		}
-		return 0;
-	}
-
-	/**
-	 * insert [命令合成]<br/>
-	 * 填充inset命令内容(创建批量INSERT RunPrepare)
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
-	 * @param obj 需要插入的数据
-	 * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
-	 * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
-	 */
-	@Override
-	public Run buildInsertRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, List<String> columns) {
-		Run run = null;
-		if(null == obj) {
-			return null;
-		}
-		if(null == dest) {
-			dest = DataSourceUtil.parseDest(null, obj, configs);
-		}
-
-		if(obj instanceof Collection) {
-			Collection list = (Collection) obj;
-			if(!list.isEmpty()) {
-				run = createInsertRunFromCollection(runtime, batch, dest, list, configs, columns);
-			}
-		}else {
-			run = createInsertRun(runtime, dest, obj, configs, columns);
-		}
-		convert(runtime, configs, run);
-		return run;
-	}
+    //根据名称定位数据类型
+    protected LinkedHashMap<String, TypeMetadata> alias = new LinkedHashMap();
 
 
-	/**
-	 * insert [命令合成]<br/>
-	 * 填充inset命令内容(创建批量INSERT RunPrepare)
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
-	 * @param prepare 查询
-	 * @param configs 过滤条件及相关配置
-	 * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
-	 */
-	@Override
-	public Run buildInsertRun(DataRuntime runtime, Table dest, RunPrepare prepare, ConfigStore configs, Object obj, String... conditions) {
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 Run buildInsertRun(DataRuntime runtime, Table dest, RunPrepare prepare, ConfigStore configs, Object obj, String... conditions)", 37));
-		}
-		return null;
-	}
+    static {
+        for(StandardTypeMetadata type: StandardTypeMetadata.values()) {
+            String name = type.name().toUpperCase();//变量名
+            String standard = type.getName().toUpperCase(); //标准SQL类型名
+            spells.put(name, standard);
+            if(name.contains(" ")) {
+                spells.put(name.replace(" ", "_"), standard);
+            }
+            if(name.contains("_")) {
+                spells.put(name.replace("_", " "), standard);
+            }
+            if(standard.contains(" ")) {
+                spells.put(standard.replace(" ", "_"), standard);
+            }
+            if(standard.contains("_")) {
+                spells.put(standard.replace("_", " "), standard);
+            }
+        }
+    }
 
-	/**
-	 * insert [命令合成-子流程]<br/>
-	 * 填充inset命令内容(创建批量INSERT RunPrepare)
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
-	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
-	 * @param set 需要插入的数据集合
-	 * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
-	 */
-	@Override
-	public void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet set, ConfigStore configs, LinkedHashMap<String, Column> columns) {
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet set, ConfigStore configs, LinkedHashMap<String, Column> columns)", 37));
-		}
-	}
+    @Override
+    public void setActuator(DriverActuator actuator) {
+        this.actuator = actuator;
+    }
+    @Override
+    public DriverActuator getActuator() {
+        return actuator;
+    }
+    @Override
+    public String getDelimiterFr() {
+        return this.delimiterFr;
+    }
+    @Override
+    public String getDelimiterTo() {
+        return this.delimiterTo;
+    }
+    @Override
+    public void setDelimiter(String delimiter) {
+        if(BasicUtil.isNotEmpty(delimiter)) {
+            delimiter = delimiter.replaceAll("\\s","");
+            if(delimiter.length() == 1) {
+                this.delimiterFr = delimiter;
+                this.delimiterTo = delimiter;
+            }else{
+                this.delimiterFr = delimiter.substring(0,1);
+                this.delimiterTo = delimiter.substring(1,2);
+            }
+        }
+    }
+    /**
+     * 对应的兼容模式，有些数据库会兼容oracle或pg,需要分别提供两个JDBCAdapter或者直接依赖oracle/pg的adapter
+     * 参考DefaultJDBCAdapterUtil定位adapter的方法
+     * @return DatabaseType
+     */
+    @Override
+    public DatabaseType compatible() {
+        return null;
+    }
+    public AbstractDriverAdapter() {
+        //当前数据库支持的数据类型,子类根据情况覆盖
+        for(StandardTypeMetadata type: StandardTypeMetadata.values()) {
+            reg(type, type.config());
+            List<DatabaseType> dbs = type.databaseTypes();
+            for(DatabaseType db:dbs) {
+                if(db == this.type()) {
+                    //column type支持当前db
+                    alias(type.getName(), type);
+                    alias(type.name(), type);
+                    break;
+                }
+            }
+        }
+        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.CHAR, new TypeMetadata.Config(0, 1, 1));
+        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.TEXT, new TypeMetadata.Config(1, 1, 1));
+        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.BOOLEAN, new TypeMetadata.Config( 1,1, 1));
+        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.BYTES, new TypeMetadata.Config(0, 1, 1));
+        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.BLOB, new TypeMetadata.Config(1,1,1));
+        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.INT, new TypeMetadata.Config(1, 1, 1));
+        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.FLOAT, new TypeMetadata.Config(1, 0, 0));
+        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.DATE, new TypeMetadata.Config(1, 1, 1));
+        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.TIME, new TypeMetadata.Config(1, 1, 1));
+        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.DATETIME, new TypeMetadata.Config( 1, 1, 1));
+        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.TIMESTAMP, new TypeMetadata.Config(1, 1, 1));
+        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.COLLECTION, new TypeMetadata.Config(1, 1, 1));
+        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.GEOMETRY, new TypeMetadata.Config(1, 1, 1));
+        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.OTHER, new TypeMetadata.Config( 1, 1, 1));
+    }
 
-	/**
-	 * insert [命令合成-子流程]<br/>
-	 * 填充inset命令内容(创建批量INSERT RunPrepare)
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
-	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
-	 * @param list 需要插入的数据集合
-	 * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
-	 */
-	@Override
-	public void fillInsertContent(DataRuntime runtime, Run run, Table dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns) {
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 void fillInsertContent(DataRuntime runtime, Run run, Table dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns)", 37));
-		}
-	}
+    @Override
+    public LinkedHashMap<String, TypeMetadata> alias() {
+        return alias;
+    }
+
+    /**
+     * 注册数据类型别名(包含对应的标准类型、length/precision/scale等配置)
+     * @param alias 数据类型别名
+     * @return Config
+     */
+    @Override
+    public TypeMetadata.Config reg(TypeMetadataAlias alias) {
+        TypeMetadata standard = alias.standard();
+        if(standard == StandardTypeMetadata.NONE) {
+            return null;
+        }
+        alias(alias.input(), standard);                                        //根据别名
+        alias(standard.getName(), standard);                                        //根据实现SQL数据类型名称
+        TypeMetadata.Config config = alias.config();
+        reg(alias.input(), config);
+        reg(alias.standard(), config);
+        return config;
+    }
+    protected void alias(String key, TypeMetadata value) {
+        if(null != key && null != value && TypeMetadata.NONE != value) {
+            this.alias.put(key, value);
+            this.alias.put(key.replace("_", " "), value);
+            this.alias.put(key.replace(" ", "_"), value);
+        }
+    }
+    /**
+     * 注册数据类型配置
+     * 要从配置项中取出每个属性检测合并,不要整个覆盖
+     * @param type 数据类型
+     * @param config 配置项
+     * @return Config
+     */
+    @Override
+    public TypeMetadata.Config reg(TypeMetadata type, TypeMetadata.Config config) {
+        return MetadataAdapterHolder.reg(type(), type, config);
+    }
+    /**
+     * 注册数据类型配置
+     * 要从配置项中取出每个属性检测合并,不要整个覆盖
+     * @param type 类型名称或别名
+     * @param config 配置项
+     * @return TypeMetadata.Config
+     */
+    @Override
+    public TypeMetadata.Config reg(String type, TypeMetadata.Config config) {
+        return MetadataAdapterHolder.reg(type(), type, config);
+    }
+
+    /* *****************************************************************************************************************
+     *
+     *                                                     DML
+     *
+     * =================================================================================================================
+     * INSERT            : 插入
+     * UPDATE            : 更新
+     * SAVE                : 根据情况插入或更新
+     * QUERY            : 查询(RunPrepare/XML/TABLE/VIEW/PROCEDURE)
+     * EXISTS            : 是否存在
+     * COUNT            : 统计
+     * EXECUTE            : 执行(原生SQL及存储过程)
+     * DELETE            : 删除
+     *
+     ******************************************************************************************************************/
+
+    /* *****************************************************************************************************************
+     *                                                     INSERT
+     * -----------------------------------------------------------------------------------------------------------------
+     * [调用入口]
+     * long insert(DataRuntime runtime, String random, int batch, Table dest, Object data, ConfigStore configs, List<String> columns)
+     * [命令合成]
+     * public Run buildInsertRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, List<String> columns)
+     * public void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet set, ConfigStore configs, LinkedHashMap<String, Column> columns)
+     * public void fillInsertContent(DataRuntime runtime, Run run, Table dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns)
+     * public LinkedHashMap<String, Column> confirmInsertColumns(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns, boolean batch)
+     * public String batchInsertSeparator()
+     * public boolean supportInsertPlaceholder()
+     * protected Run createInsertRun(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns)
+     * protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, List<String> columns)
+     * public String generatedKey()
+     * [命令执行]
+     * long insert(DataRuntime runtime, String random, Object data, ConfigStore configs, Run run, String[] pks);
+     ******************************************************************************************************************/
+
+    /**
+     * insert [调用入口]<br/>
+     * 执行前根据主键生成器补充主键值,执行完成后会补齐自增主键值
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param random 用来标记同一组命令
+     * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+     * @param data 需要插入入的数据
+     * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
+     *                列可以加前缀<br/>
+     *                +:表示必须插入<br/>
+     *                -:表示必须不插入<br/>
+     *                ?:根据是否有值<br/>
+     *
+     *        如果没有提供columns,长度为0也算没有提供<br/>
+     *        则解析obj(遍历所有的属性工Key)获取insert列<br/>
+     *
+     *        如果提供了columns则根据columns获取insert列<br/>
+     *
+     *        但是columns中出现了添加前缀列,则解析完columns后,继续解析obj<br/>
+     *
+     *        以上执行完后,如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
+     *        则把执行结果与表结构对比,删除表中没有的列<br/>
+     * @return 影响行数
+     */
+    @Override
+    public long insert(DataRuntime runtime, String random, int batch, Table dest, Object data, ConfigStore configs, List<String> columns) {
+        if(null == random) {
+            random = random(runtime);
+        }
+        ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
+        boolean cmd_success = false;
+        swt = InterceptorProxy.prepareInsert(runtime, random, batch, dest, data, columns);
+        if(swt == ACTION.SWITCH.BREAK) {
+            return -1;
+        }
+        if(null != dmListener) {
+            swt = dmListener.prepareInsert(runtime, random, batch, dest, data, columns);
+        }
+        if(swt == ACTION.SWITCH.BREAK) {
+            return -1;
+        }
+        if(null != data && data instanceof DataSet) {
+            DataSet set = (DataSet)data;
+            Map<String, Object> tags = set.getTags();
+            if(null != tags && tags.size()>0) {
+                LinkedHashMap<String, PartitionTable> partitions = partitions(runtime, random, false, new MasterTable(dest), tags, null);
+                if(partitions.size() != 1) {
+                    String msg = "分区表定位异常,主表:" + dest + ",标签:" + BeanUtil.map2json(tags) + ",分区表:" + BeanUtil.object2json(partitions.keySet());
+                    if(ConfigStore.IS_THROW_SQL_UPDATE_EXCEPTION(configs)) {
+                        throw new CommandUpdateException(msg);
+                    }else{
+                        log.error(msg);
+                        return -1;
+                    }
+                }
+                dest = partitions.values().iterator().next();
+            }
+        }
+        Run run = buildInsertRun(runtime, batch, dest, data, configs, columns);
+        //提前设置好columns,到了adapter中需要手动检测缓存
+        if(ConfigStore.IS_AUTO_CHECK_METADATA(configs)) {
+            dest.setColumns(columns(runtime, random, false, dest, false));
+        }
+        if(null == run) {
+            return 0;
+        }
+
+        long cnt = 0;
+        long fr = System.currentTimeMillis();
+        long millis = -1;
+
+        swt = InterceptorProxy.beforeInsert(runtime, random, run, dest, data, columns);
+        if(swt == ACTION.SWITCH.BREAK) {
+            return -1;
+        }
+        if(null != dmListener) {
+            swt = dmListener.beforeInsert(runtime, random, run, dest, data, columns);
+        }
+        if(swt == ACTION.SWITCH.BREAK) {
+            return -1;
+        }
+        cnt = insert(runtime, random, data, configs, run, null);
+        if (null != dmListener) {
+            dmListener.afterInsert(runtime, random, run, cnt, dest, data, columns, cmd_success, cnt, millis);
+        }
+        InterceptorProxy.afterInsert(runtime, random, run, dest, data, columns, cmd_success, cnt, System.currentTimeMillis() - fr);
+        return cnt;
+    }
+
+    /**
+     * insert into table select * from table
+     * 与query参数一致
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param dest 插入表
+     * @param prepare 查询表
+     * @param configs 查询条件及相关配置
+     * @param obj 查询条件
+     * @param conditions 查询条件
+     * @return 影响行数
+     */
+    @Override
+    public long insert(DataRuntime runtime, String random, Table dest, RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions) {
+        if(log.isDebugEnabled()) {
+            log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 long insert(DataRuntime runtime, String random, Table dest, RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions)", 37));
+        }
+        return 0;
+    }
+
+    /**
+     * insert [命令合成]<br/>
+     * 填充inset命令内容(创建批量INSERT RunPrepare)
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+     * @param obj 需要插入的数据
+     * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
+     * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
+     */
+    @Override
+    public Run buildInsertRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, List<String> columns) {
+        Run run = null;
+        if(null == obj) {
+            return null;
+        }
+        if(null == dest) {
+            dest = DataSourceUtil.parseDest(null, obj, configs);
+        }
+
+        if(obj instanceof Collection) {
+            Collection list = (Collection) obj;
+            if(!list.isEmpty()) {
+                run = createInsertRunFromCollection(runtime, batch, dest, list, configs, columns);
+            }
+        }else {
+            run = createInsertRun(runtime, dest, obj, configs, columns);
+        }
+        convert(runtime, configs, run);
+        return run;
+    }
 
 
-	/**
-	 * 插入子表前 检测并创建子表
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
-	 * @param dest 表
-	 * @param configs ConfigStore
-	 */
-	@Override
-	public void fillInsertCreateTemplate(DataRuntime runtime, Run run, PartitionTable dest, ConfigStore configs){
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 void fillInsertCreateTemplate(DataRuntime runtime, Run run, PartitionTable dest, ConfigStore configs)", 37));
-		}
-	}
-	/**
-	 * insert [命令合成-子流程]<br/>
-	 * 确认需要插入的列
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
-	 * @param obj  Entity或DataRow
-	 * @param batch  是否批量，批量时不检测值是否为空
-	 * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
-	 *                列可以加前缀<br/>
-	 *                +:表示必须插入<br/>
-	 *                -:表示必须不插入<br/>
-	 *                ?:根据是否有值<br/>
-	 *
-	 *        如果没有提供columns,长度为0也算没有提供<br/>
-	 *        则解析obj(遍历所有的属性工Key)获取insert列<br/>
-	 *
-	 *        如果提供了columns则根据columns获取insert列<br/>
-	 *
-	 *        但是columns中出现了添加前缀列,则解析完columns后,继续解析obj<br/>
-	 *
-	 *        以上执行完后,如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
-	 *        则把执行结果与表结构对比,删除表中没有的列<br/>
-	 * @return List
-	 */
-	@Override
-	public LinkedHashMap<String, Column> confirmInsertColumns(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns, boolean batch) {
-		LinkedHashMap<String, Column> cols = new LinkedHashMap<>();/*确定需要插入的列*/
-		if(null == obj) {
-			return new LinkedHashMap<>();
-		}
-		if(obj instanceof Map && !(obj instanceof DataRow)) {
-			obj = new DataRow(KeyAdapter.KEY_CASE.SRC, (Map)obj);
-		}
-		LinkedHashMap<String, Column> mastKeys = new LinkedHashMap<>();		// 必须插入列
-		List<String> ignores = new ArrayList<>();		// 必须不插入列
-		List<String> factKeys = new ArrayList<>();		// 根据是否空值
+    /**
+     * insert [命令合成]<br/>
+     * 填充inset命令内容(创建批量INSERT RunPrepare)
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+     * @param prepare 查询
+     * @param configs 过滤条件及相关配置
+     * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
+     */
+    @Override
+    public Run buildInsertRun(DataRuntime runtime, Table dest, RunPrepare prepare, ConfigStore configs, Object obj, String... conditions) {
+        if(log.isDebugEnabled()) {
+            log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 Run buildInsertRun(DataRuntime runtime, Table dest, RunPrepare prepare, ConfigStore configs, Object obj, String... conditions)", 37));
+        }
+        return null;
+    }
 
-		boolean each = true;//是否需要从row中查找列
-		if(null != columns && columns.size()>0) {
-			each = false;
-			cols = new LinkedHashMap<>();
-			for(String column:columns) {
-				if(BasicUtil.isEmpty(column)) {
-					continue;
-				}
-				if(column.startsWith("+")) {
-					column = column.substring(1);
-					mastKeys.put(column.toUpperCase(), new Column(column));
-					each = true;
-				}else if(column.startsWith("-")) {
-					column = column.substring(1);
-					ignores.add(column);
-					each = true;
-				}else if(column.startsWith("?")) {
-					column = column.substring(1);
-					factKeys.add(column);
-					each = true;
-				}
-				cols.put(column.toUpperCase(), new Column(column));
-			}
-		}
-		if(each) {
-			// 是否插入null及""列
-			boolean isInsertNullColumn =  false;
-			boolean isInsertEmptyColumn = false;
-			DataRow row = null;
-			if(obj instanceof DataRow) {
-				row = (DataRow)obj;
-				mastKeys.putAll(row.getUpdateColumns(true));
+    /**
+     * insert [命令合成-子流程]<br/>
+     * 填充inset命令内容(创建批量INSERT RunPrepare)
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
+     * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+     * @param set 需要插入的数据集合
+     * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
+     */
+    @Override
+    public void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet set, ConfigStore configs, LinkedHashMap<String, Column> columns) {
+        if(log.isDebugEnabled()) {
+            log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet set, ConfigStore configs, LinkedHashMap<String, Column> columns)", 37));
+        }
+    }
 
-				ignores.addAll(row.getIgnoreUpdateColumns());
-				cols = row.getColumns();
+    /**
+     * insert [命令合成-子流程]<br/>
+     * 填充inset命令内容(创建批量INSERT RunPrepare)
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
+     * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+     * @param list 需要插入的数据集合
+     * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
+     */
+    @Override
+    public void fillInsertContent(DataRuntime runtime, Run run, Table dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns) {
+        if(log.isDebugEnabled()) {
+            log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 void fillInsertContent(DataRuntime runtime, Run run, Table dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns)", 37));
+        }
+    }
 
-				isInsertNullColumn = row.isInsertNullColumn();
-				isInsertEmptyColumn = row.isInsertEmptyColumn();
 
-			}else{
-				isInsertNullColumn = ConfigStore.IS_INSERT_NULL_FIELD(configs);
-				isInsertEmptyColumn = ConfigStore.IS_INSERT_EMPTY_FIELD(configs);
-				if(EntityAdapterProxy.hasAdapter(obj.getClass())) {
-					cols.putAll(EntityAdapterProxy.columns(obj.getClass(), EntityAdapter.MODE.INSERT));
-				}else {
-					cols = new LinkedHashMap<>();
-					List<Field> fields = ClassUtil.getFields(obj.getClass(), false, false);
-					for (Field field : fields) {
-						Class clazz = field.getType();
-						if (clazz == String.class || clazz == Date.class || ClassUtil.isPrimitiveClass(clazz)) {
-							cols.put(field.getName().toUpperCase(), new Column(field.getName()));
-						}
-					}
-				}
-			}
-			if(batch) {
-				isInsertNullColumn = true;
-				isInsertEmptyColumn = true;
-			}
+    /**
+     * 插入子表前 检测并创建子表
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
+     * @param dest 表
+     * @param configs ConfigStore
+     */
+    @Override
+    public void fillInsertCreateTemplate(DataRuntime runtime, Run run, PartitionTable dest, ConfigStore configs){
+        if(log.isDebugEnabled()) {
+            log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 void fillInsertCreateTemplate(DataRuntime runtime, Run run, PartitionTable dest, ConfigStore configs)", 37));
+        }
+    }
+    /**
+     * insert [命令合成-子流程]<br/>
+     * 确认需要插入的列
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+     * @param obj  Entity或DataRow
+     * @param batch  是否批量，批量时不检测值是否为空
+     * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
+     *                列可以加前缀<br/>
+     *                +:表示必须插入<br/>
+     *                -:表示必须不插入<br/>
+     *                ?:根据是否有值<br/>
+     *
+     *        如果没有提供columns,长度为0也算没有提供<br/>
+     *        则解析obj(遍历所有的属性工Key)获取insert列<br/>
+     *
+     *        如果提供了columns则根据columns获取insert列<br/>
+     *
+     *        但是columns中出现了添加前缀列,则解析完columns后,继续解析obj<br/>
+     *
+     *        以上执行完后,如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
+     *        则把执行结果与表结构对比,删除表中没有的列<br/>
+     * @return List
+     */
+    @Override
+    public LinkedHashMap<String, Column> confirmInsertColumns(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns, boolean batch) {
+        LinkedHashMap<String, Column> cols = new LinkedHashMap<>();/*确定需要插入的列*/
+        if(null == obj) {
+            return new LinkedHashMap<>();
+        }
+        if(obj instanceof Map && !(obj instanceof DataRow)) {
+            obj = new DataRow(KeyAdapter.KEY_CASE.SRC, (Map)obj);
+        }
+        LinkedHashMap<String, Column> mastKeys = new LinkedHashMap<>();        // 必须插入列
+        List<String> ignores = new ArrayList<>();        // 必须不插入列
+        List<String> factKeys = new ArrayList<>();        // 根据是否空值
 
-			if(log.isDebugEnabled()) {
-				log.debug("[confirm insert columns][columns:{}]", cols);
-			}
-			BeanUtil.removeAll(ignores, columns);
-			for(String ignore:ignores) {
-				cols.remove(ignore.toUpperCase());
-			}
-			if(log.isDebugEnabled()) {
-				log.debug("[confirm insert columns][ignores:{}]", ignores);
-			}
-			List<String> keys = Column.names(cols);
-			for(String key:keys) {
-				if(mastKeys.containsKey(key.toUpperCase())) {
-					// 必须插入
-					continue;
-				}
-				Object value = null;
-				if(!(obj instanceof Map) && EntityAdapterProxy.hasAdapter(obj.getClass())) {
-					value = BeanUtil.getFieldValue(obj, EntityAdapterProxy.field(obj.getClass(), key));
-				}else{
-					value = BeanUtil.getFieldValue(obj, key);
-				}
+        boolean each = true;//是否需要从row中查找列
+        if(null != columns && columns.size()>0) {
+            each = false;
+            cols = new LinkedHashMap<>();
+            for(String column:columns) {
+                if(BasicUtil.isEmpty(column)) {
+                    continue;
+                }
+                if(column.startsWith("+")) {
+                    column = column.substring(1);
+                    mastKeys.put(column.toUpperCase(), new Column(column));
+                    each = true;
+                }else if(column.startsWith("-")) {
+                    column = column.substring(1);
+                    ignores.add(column);
+                    each = true;
+                }else if(column.startsWith("?")) {
+                    column = column.substring(1);
+                    factKeys.add(column);
+                    each = true;
+                }
+                cols.put(column.toUpperCase(), new Column(column));
+            }
+        }
+        if(each) {
+            // 是否插入null及""列
+            boolean isInsertNullColumn =  false;
+            boolean isInsertEmptyColumn = false;
+            DataRow row = null;
+            if(obj instanceof DataRow) {
+                row = (DataRow)obj;
+                mastKeys.putAll(row.getUpdateColumns(true));
 
-				if(null == value) {
-					if(factKeys.contains(key)) {
-						cols.remove(key);
-						continue;
-					}
-					if(!isInsertNullColumn) {
-						cols.remove(key);
-						continue;
-					}
-				}else if(BasicUtil.isEmpty(true, value)) {
-					if(factKeys.contains(key)) {
-						cols.remove(key);
-						continue;
-					}
-					if(!isInsertEmptyColumn) {
-						cols.remove(key);
-						continue;
-					}
-				}
+                ignores.addAll(row.getIgnoreUpdateColumns());
+                cols = row.getColumns();
 
-			}
-		}
-		if(log.isDebugEnabled()) {
-			log.debug("[confirm insert columns][result:{}]", cols);
-		}
-		cols = checkMetadata(runtime, dest, configs, cols);
- 		return cols;
-	}
+                isInsertNullColumn = row.isInsertNullColumn();
+                isInsertEmptyColumn = row.isInsertEmptyColumn();
 
-	/**
-	 * insert [命令合成-子流程]<br/>
-	 * 批量插入数据时,多行数据之间分隔符
-	 * @return String
-	 */
-	@Override
-	public String batchInsertSeparator() {
-		return ",";
-	}
+            }else{
+                isInsertNullColumn = ConfigStore.IS_INSERT_NULL_FIELD(configs);
+                isInsertEmptyColumn = ConfigStore.IS_INSERT_EMPTY_FIELD(configs);
+                if(EntityAdapterProxy.hasAdapter(obj.getClass())) {
+                    cols.putAll(EntityAdapterProxy.columns(obj.getClass(), EntityAdapter.MODE.INSERT));
+                }else {
+                    cols = new LinkedHashMap<>();
+                    List<Field> fields = ClassUtil.getFields(obj.getClass(), false, false);
+                    for (Field field : fields) {
+                        Class clazz = field.getType();
+                        if (clazz == String.class || clazz == Date.class || ClassUtil.isPrimitiveClass(clazz)) {
+                            cols.put(field.getName().toUpperCase(), new Column(field.getName()));
+                        }
+                    }
+                }
+            }
+            if(batch) {
+                isInsertNullColumn = true;
+                isInsertEmptyColumn = true;
+            }
 
-	/**
-	 * insert [命令合成-子流程]<br/>
-	 * 插入数据时是否支持占位符
-	 * @return boolean
-	 */
-	@Override
-	public boolean supportInsertPlaceholder() {
-		return true;
-	}
+            if(log.isDebugEnabled()) {
+                log.debug("[confirm insert columns][columns:{}]", cols);
+            }
+            BeanUtil.removeAll(ignores, columns);
+            for(String ignore:ignores) {
+                cols.remove(ignore.toUpperCase());
+            }
+            if(log.isDebugEnabled()) {
+                log.debug("[confirm insert columns][ignores:{}]", ignores);
+            }
+            List<String> keys = Column.names(cols);
+            for(String key:keys) {
+                if(mastKeys.containsKey(key.toUpperCase())) {
+                    // 必须插入
+                    continue;
+                }
+                Object value = null;
+                if(!(obj instanceof Map) && EntityAdapterProxy.hasAdapter(obj.getClass())) {
+                    value = BeanUtil.getFieldValue(obj, EntityAdapterProxy.field(obj.getClass(), key));
+                }else{
+                    value = BeanUtil.getFieldValue(obj, key);
+                }
 
-	/**
-	 * insert [命令合成-子流程]<br/>
-	 * 设置主键值
-	 * @param obj obj
-	 * @param value value
-	 */
-	protected void setPrimaryValue(Object obj, Object value) {
-		if(null == obj) {
-			return;
-		}
-		if(obj instanceof DataRow) {
-			DataRow row = (DataRow)obj;
-			row.setPrimaryValue(value);
-		}else{
-			Column key = EntityAdapterProxy.primaryKey(obj.getClass());
-			Field field = EntityAdapterProxy.field(obj.getClass(), key);
-			BeanUtil.setFieldValue(obj, field, value);
-		}
-	}
+                if(null == value) {
+                    if(factKeys.contains(key)) {
+                        cols.remove(key);
+                        continue;
+                    }
+                    if(!isInsertNullColumn) {
+                        cols.remove(key);
+                        continue;
+                    }
+                }else if(BasicUtil.isEmpty(true, value)) {
+                    if(factKeys.contains(key)) {
+                        cols.remove(key);
+                        continue;
+                    }
+                    if(!isInsertEmptyColumn) {
+                        cols.remove(key);
+                        continue;
+                    }
+                }
 
-	/**
-	 * insert [命令合成-子流程]<br/>
-	 * 根据entity创建 INSERT RunPrepare由buildInsertRun调用
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
-	 * @param obj 数据
-	 * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
-	 * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
-	 */
-	protected Run createInsertRun(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns) {
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 Run createInsertRun(DataRuntime runtime, Table dest, Object obj, List<String> columns)", 37));
-		}
-		return null;
-	}
+            }
+        }
+        if(log.isDebugEnabled()) {
+            log.debug("[confirm insert columns][result:{}]", cols);
+        }
+        cols = checkMetadata(runtime, dest, configs, cols);
+         return cols;
+    }
 
-	/**
-	 * insert [命令合成-子流程]<br/>
-	 * 根据collection创建 INSERT RunPrepare由buildInsertRun调用
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
-	 * @param list 对象集合
-	 * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
-	 * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
-	 */
-	protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, List<String> columns) {
-		Run run = new TableRun(runtime, dest);
-		run.setBatch(batch);
-		if(null == list || list.isEmpty()) {
-			throw new CommandException("空数据");
-		}
-		Object first = list.iterator().next();
+    /**
+     * insert [命令合成-子流程]<br/>
+     * 批量插入数据时,多行数据之间分隔符
+     * @return String
+     */
+    @Override
+    public String batchInsertSeparator() {
+        return ",";
+    }
 
-		if(BasicUtil.isEmpty(dest)) {
-			throw new CommandException("未指定表");
-		}
-		/*确定需要插入的列*/
-		LinkedHashMap<String, Column> cols = new LinkedHashMap<>();
-		for(Object item:list) {
-			cols.putAll(confirmInsertColumns(runtime, dest, item, configs, columns, true));
-			if(!ConfigTable.IS_CHECK_ALL_INSERT_COLUMN) {
-				break;
-			}
-		}
-		if(null == cols || cols.isEmpty()) {
-			throw new CommandException("未指定列(DataRow或Entity中没有需要插入的属性值)["+first.getClass().getName()+":"+BeanUtil.object2json(first)+"]");
-		}
-		run.setInsertColumns(cols);
-		run.setVol(cols.size());
-		fillInsertContent(runtime, run, dest, list, configs, cols);
+    /**
+     * insert [命令合成-子流程]<br/>
+     * 插入数据时是否支持占位符
+     * @return boolean
+     */
+    @Override
+    public boolean supportInsertPlaceholder() {
+        return true;
+    }
 
-		return run;
-	}
+    /**
+     * insert [命令合成-子流程]<br/>
+     * 设置主键值
+     * @param obj obj
+     * @param value value
+     */
+    protected void setPrimaryValue(Object obj, Object value) {
+        if(null == obj) {
+            return;
+        }
+        if(obj instanceof DataRow) {
+            DataRow row = (DataRow)obj;
+            row.setPrimaryValue(value);
+        }else{
+            Column key = EntityAdapterProxy.primaryKey(obj.getClass());
+            Field field = EntityAdapterProxy.field(obj.getClass(), key);
+            BeanUtil.setFieldValue(obj, field, value);
+        }
+    }
 
-	/**
-	 * insert [after]<br/>
-	 * 执行insert后返回自增主键的key
-	 * @return String
-	 */
-	@Override
-	public String generatedKey() {
-		return null;
-	}
+    /**
+     * insert [命令合成-子流程]<br/>
+     * 根据entity创建 INSERT RunPrepare由buildInsertRun调用
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+     * @param obj 数据
+     * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
+     * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
+     */
+    protected Run createInsertRun(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns) {
+        if(log.isDebugEnabled()) {
+            log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 Run createInsertRun(DataRuntime runtime, Table dest, Object obj, List<String> columns)", 37));
+        }
+        return null;
+    }
 
-	/**
-	 * insert [命令执行]
-	 * <br/>
-	 * 执行完成后会补齐自增主键值
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param random 用来标记同一组命令
-	 * @param data data
-	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
-	 * @param pks 需要返回的主键
-	 * @return 影响行数
-	 */
-	@Override
-	public long insert(DataRuntime runtime, String random, Object data, ConfigStore configs, Run run, String[] pks) {
-		long cnt = 0;
-		int batch = run.getBatch();
-		String action = "insert";
-		if(batch > 1) {
-			action = "batch insert";
-		}
-		if(!run.isValid()) {
-			if(log.isWarnEnabled() && ConfigStore.IS_LOG_SQL(configs)) {
-				log.warn("[valid:false][action:{}][table:{}][不具备执行条件]", action, run.getTableName());
-			}
-			return -1;
-		}
-		String cmd = run.getFinalInsert();
-		if(run.isEmpty()) {
-			log.warn("[不具备执行条件][action:{}][table:{}]", action, run.getTable());
-			return -1;
-		}
-		if(null != configs) {
-			configs.add(run);
-		}
-		List<Object> values = run.getValues();
-		long fr = System.currentTimeMillis();
-		/*执行SQL*/
-		if (log.isInfoEnabled() && ConfigStore.IS_LOG_SQL(configs)) {
-			if(batch > 1 && !ConfigStore.IS_LOG_BATCH_SQL_PARAM(configs)) {
-				log.info("{}[action:{}][table:{}][cmd:\n{}\n]\n[param size:{}]", random, action, run.getTable(), cmd, values.size());
-			}else {
-				log.info("{}[action:{}]{}", random, action, run.log(ACTION.DML.INSERT, ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
-			}
-		}
-		long millis = -1;
+    /**
+     * insert [命令合成-子流程]<br/>
+     * 根据collection创建 INSERT RunPrepare由buildInsertRun调用
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+     * @param list 对象集合
+     * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
+     * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
+     */
+    protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, List<String> columns) {
+        Run run = new TableRun(runtime, dest);
+        run.setBatch(batch);
+        if(null == list || list.isEmpty()) {
+            throw new CommandException("空数据");
+        }
+        Object first = list.iterator().next();
 
-		boolean exe = true;
-		if(null != configs) {
-			exe = configs.execute();
-		}
-		if(!exe) {
-			return -1;
-		}
-		try {
-			cnt = actuator.insert(this, runtime, random, data, configs, run, generatedKey(), pks);
-			millis = System.currentTimeMillis() - fr;
-			boolean slow = false;
-			long SLOW_SQL_MILLIS = ConfigStore.SLOW_SQL_MILLIS(configs);
-			if(SLOW_SQL_MILLIS > 0 && ConfigStore.IS_LOG_SLOW_SQL(configs)) {
-				if(millis > SLOW_SQL_MILLIS) {
-					slow = true;
-					log.warn("{}[slow cmd][action:{}][table:{}][执行耗时:{}]{}", random, action, run.getTable(), DateUtil.format(millis), run.log(ACTION.DML.INSERT, ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
-					if(null != dmListener) {
-						dmListener.slow(runtime, random, ACTION.DML.INSERT, run, cmd, values, null, true, cnt, millis);
-					}
-				}
-			}
-			if (!slow && log.isInfoEnabled() && ConfigStore.IS_LOG_SQL_TIME(configs)) {
-				String qty = LogUtil.format(cnt, 34);
-				if(batch > 1) {
-					qty = LogUtil.format("约"+cnt, 34);
-				}
-				log.info("{}[action:{}][table:{}][执行耗时:{}][影响行数:{}]", random, action, run.getTable(), DateUtil.format(millis), qty);
-			}
-		}catch(Exception e) {
-			if(ConfigStore.IS_PRINT_EXCEPTION_STACK_TRACE(configs)) {
-				log.error("insert 异常:", e);
-			}
-			if(ConfigStore.IS_LOG_SQL_WHEN_ERROR(configs)) {
-				log.error("{}[{}][action:{}][table:{}]{}", random, LogUtil.format("插入异常:", 33)+e, action, run.getTable(), run.log(ACTION.DML.INSERT,ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
-			}
-			if(ConfigStore.IS_THROW_SQL_UPDATE_EXCEPTION(configs)) {
-				CommandUpdateException ex = new CommandUpdateException("insert异常:"+e.toString(), e);
-				ex.setCmd(cmd);
-				ex.setValues(values);
-				throw ex;
-			}
+        if(BasicUtil.isEmpty(dest)) {
+            throw new CommandException("未指定表");
+        }
+        /*确定需要插入的列*/
+        LinkedHashMap<String, Column> cols = new LinkedHashMap<>();
+        for(Object item:list) {
+            cols.putAll(confirmInsertColumns(runtime, dest, item, configs, columns, true));
+            if(!ConfigTable.IS_CHECK_ALL_INSERT_COLUMN) {
+                break;
+            }
+        }
+        if(null == cols || cols.isEmpty()) {
+            throw new CommandException("未指定列(DataRow或Entity中没有需要插入的属性值)["+first.getClass().getName()+":"+BeanUtil.object2json(first)+"]");
+        }
+        run.setInsertColumns(cols);
+        run.setVol(cols.size());
+        fillInsertContent(runtime, run, dest, list, configs, cols);
 
-		}
-		return cnt;
-	}
+        return run;
+    }
 
-	/**
-	 * 是否支持返回自增主键值
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param configs configs中也可能禁用返回
-	 * @return boolean
-	 */
-	@Override
-	public boolean supportKeyHolder(DataRuntime runtime, ConfigStore configs) {
-		if(null != configs && !configs.supportKeyHolder()) {
-			return false;
-		}
-		return true;
-	}
+    /**
+     * insert [after]<br/>
+     * 执行insert后返回自增主键的key
+     * @return String
+     */
+    @Override
+    public String generatedKey() {
+        return null;
+    }
 
-	/**
-	 * 自增主键值keys
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param configs configs中也可能禁用返回
-	 * @return keys
-	 */
-	@Override
-	public List<String> keyHolders(DataRuntime runtime, ConfigStore configs) {
-		if(null != configs) {
-			return configs.keyHolders();
-		}
-		return new ArrayList<>();
-	}
-	/* *****************************************************************************************************************
-	 * 													UPDATE
-	 * -----------------------------------------------------------------------------------------------------------------
-	 * [调用入口]
-	 * long update(DataRuntime runtime, String random, int batch, Table dest, Object data, ConfigStore configs, List<String> columns)
-	 * [命令合成]
-	 * Run buildUpdateRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, List<String> columns)
-	 * Run buildUpdateRunFromEntity(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, LinkedHashMap<String, Column> columns)
-	 * Run buildUpdateRunFromDataRow(DataRuntime runtime, Table dest, DataRow row, ConfigStore configs, LinkedHashMap<String, Column> columns)
-	 * Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns)
-	 * LinkedHashMap<String, Column> confirmUpdateColumns(DataRuntime runtime, Table dest, DataRow row, ConfigStore configs, List<String> columns)
-	 * LinkedHashMap<String, Column> confirmUpdateColumns(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns)
-	 * [命令执行]
-	 * long update(DataRuntime runtime, String random, Table dest, Object data, ConfigStore configs, Run run)
-	 ******************************************************************************************************************/
-	/**
-	 * UPDATE [调用入口]<br/>
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param random 用来标记同一组命令
-	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
-	 * @param data 数据
-	 * @param configs 条件
-	 * @param columns 需要插入或更新的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
-	 *                列可以加前缀<br/>
-	 *                +:表示必须更新<br/>
-	 *                -:表示必须不更新<br/>
-	 *                ?:根据是否有值<br/>
-	 *
-	 *        如果没有提供columns,长度为0也算没有提供<br/>
-	 *        则解析obj(遍历所有的属性工Key)获取insert列<br/>
-	 *
-	 *        如果提供了columns则根据columns获取insert列<br/>
-	 *
-	 *        但是columns中出现了添加前缀列,则解析完columns后,继续解析obj<br/>
-	 *
-	 *        以上执行完后,如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
-	 *        则把执行结果与表结构对比,删除表中没有的列<br/>
-	 * @return 影响行数
-	 */
-	@Override
-	public long update(DataRuntime runtime, String random, int batch, Table dest, Object data, ConfigStore configs, List<String> columns) {
-		ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
-		boolean cmd_success = false;
-		if(null == random) {
-			random = random(runtime);
-		}
-		swt = InterceptorProxy.prepareUpdate(runtime, random, batch, dest, data, configs, columns);
-		if(swt == ACTION.SWITCH.BREAK) {
-			return -1;
-		}
-		if(null != dmListener) {
-			swt = dmListener.prepareUpdate(runtime, random, batch, dest, data, configs, columns);
-		}
-		if(swt == ACTION.SWITCH.BREAK) {
-			return -1;
-		}
-		if(null == data) {
-			if(ConfigStore.IS_THROW_SQL_UPDATE_EXCEPTION(configs)) {
-				throw new CommandUpdateException("更新空数据");
-			}else{
-				log.error("更新空数据");
-			}
-		}
-		long result = 0;
-		if(data instanceof Collection) {
-			if(batch <= 1) {
-				Collection list = (Collection) data;
-				for (Object item : list) {
-					ConfigStore cfg = new DefaultConfigStore();
-					cfg.copyProperty(configs);
-					cfg.and(configs);
-					result += update(runtime, random, 0, dest, item, cfg, columns);
-				}
-				return result;
-			}
-		}
+    /**
+     * insert [命令执行]
+     * <br/>
+     * 执行完成后会补齐自增主键值
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param random 用来标记同一组命令
+     * @param data data
+     * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
+     * @param pks 需要返回的主键
+     * @return 影响行数
+     */
+    @Override
+    public long insert(DataRuntime runtime, String random, Object data, ConfigStore configs, Run run, String[] pks) {
+        long cnt = 0;
+        int batch = run.getBatch();
+        String action = "insert";
+        if(batch > 1) {
+            action = "batch insert";
+        }
+        if(!run.isValid()) {
+            if(log.isWarnEnabled() && ConfigStore.IS_LOG_SQL(configs)) {
+                log.warn("[valid:false][action:{}][table:{}][不具备执行条件]", action, run.getTableName());
+            }
+            return -1;
+        }
+        String cmd = run.getFinalInsert();
+        if(run.isEmpty()) {
+            log.warn("[不具备执行条件][action:{}][table:{}]", action, run.getTable());
+            return -1;
+        }
+        if(null != configs) {
+            configs.add(run);
+        }
+        List<Object> values = run.getValues();
+        long fr = System.currentTimeMillis();
+        /*执行SQL*/
+        if (log.isInfoEnabled() && ConfigStore.IS_LOG_SQL(configs)) {
+            if(batch > 1 && !ConfigStore.IS_LOG_BATCH_SQL_PARAM(configs)) {
+                log.info("{}[action:{}][table:{}][cmd:\n{}\n]\n[param size:{}]", random, action, run.getTable(), cmd, values.size());
+            }else {
+                log.info("{}[action:{}]{}", random, action, run.log(ACTION.DML.INSERT, ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
+            }
+        }
+        long millis = -1;
 
-		Run run = buildUpdateRun(runtime, batch, dest, data, configs, columns);
+        boolean exe = true;
+        if(null != configs) {
+            exe = configs.execute();
+        }
+        if(!exe) {
+            return -1;
+        }
+        try {
+            cnt = actuator.insert(this, runtime, random, data, configs, run, generatedKey(), pks);
+            millis = System.currentTimeMillis() - fr;
+            boolean slow = false;
+            long SLOW_SQL_MILLIS = ConfigStore.SLOW_SQL_MILLIS(configs);
+            if(SLOW_SQL_MILLIS > 0 && ConfigStore.IS_LOG_SLOW_SQL(configs)) {
+                if(millis > SLOW_SQL_MILLIS) {
+                    slow = true;
+                    log.warn("{}[slow cmd][action:{}][table:{}][执行耗时:{}]{}", random, action, run.getTable(), DateUtil.format(millis), run.log(ACTION.DML.INSERT, ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
+                    if(null != dmListener) {
+                        dmListener.slow(runtime, random, ACTION.DML.INSERT, run, cmd, values, null, true, cnt, millis);
+                    }
+                }
+            }
+            if (!slow && log.isInfoEnabled() && ConfigStore.IS_LOG_SQL_TIME(configs)) {
+                String qty = LogUtil.format(cnt, 34);
+                if(batch > 1) {
+                    qty = LogUtil.format("约"+cnt, 34);
+                }
+                log.info("{}[action:{}][table:{}][执行耗时:{}][影响行数:{}]", random, action, run.getTable(), DateUtil.format(millis), qty);
+            }
+        }catch(Exception e) {
+            if(ConfigStore.IS_PRINT_EXCEPTION_STACK_TRACE(configs)) {
+                log.error("insert 异常:", e);
+            }
+            if(ConfigStore.IS_LOG_SQL_WHEN_ERROR(configs)) {
+                log.error("{}[{}][action:{}][table:{}]{}", random, LogUtil.format("插入异常:", 33)+e, action, run.getTable(), run.log(ACTION.DML.INSERT,ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
+            }
+            if(ConfigStore.IS_THROW_SQL_UPDATE_EXCEPTION(configs)) {
+                CommandUpdateException ex = new CommandUpdateException("insert异常:"+e.toString(), e);
+                ex.setCmd(cmd);
+                ex.setValues(values);
+                throw ex;
+            }
 
-		if(run.isEmptyCondition()) {
-			if(log.isWarnEnabled() && ConfigStore.IS_LOG_SQL(configs)) {
-				log.warn("[valid:false][没有更新条件][dest:"+dest+"]");
-			}
-			return -1;
-		}
+        }
+        return cnt;
+    }
 
-		//提前设置好columns,到了adapter中需要手动检测缓存
-		if(ConfigStore.IS_AUTO_CHECK_METADATA(configs)) {
-			dest.setColumns(columns(runtime, null, false, dest, false));
-		}
-		if(!run.isValid()) {
-			if(log.isWarnEnabled() && ConfigStore.IS_LOG_SQL(configs)) {
-				log.warn("[valid:false][不具备执行条件][dest:"+dest+"]");
-			}
-			return -1;
-		}
-		//String sql = run.getFinalUpdate();
-		/*if(BasicUtil.isEmpty(sql)) {
-			log.warn("[不具备更新条件][dest:{}]", dest);
-			return -1;
-		}
-		List<Object> values = run.getValues();*/
-		long fr = System.currentTimeMillis();
-		/*执行SQL*/
-		/*if (ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-			log.info("{}[cmd:\n{}\n]\n[param:{}]", random, sql, LogUtil.param(values));
-		}*/
-		long millis = -1;
-		swt = InterceptorProxy.beforeUpdate(runtime, random, run, dest, data, configs, columns);
-		if (swt == ACTION.SWITCH.BREAK) {
-			return -1;
-		}
-		if (null != dmListener) {
-			swt = dmListener.beforeUpdate(runtime, random, run, dest, data, columns);
-		}
-		if (swt == ACTION.SWITCH.BREAK) {
-			return -1;
-		}
-		result = update(runtime, random, dest, data, configs, run);
-		cmd_success = true;
-		millis = System.currentTimeMillis() - fr;
-		if (null != dmListener) {
-			dmListener.afterUpdate(runtime, random, run, result, dest, data, columns, cmd_success, result, millis);
-		}
-		InterceptorProxy.afterUpdate(runtime, random, run, dest, data, configs, columns, cmd_success, result, System.currentTimeMillis() - fr);
-		return result;
-	}
+    /**
+     * 是否支持返回自增主键值
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param configs configs中也可能禁用返回
+     * @return boolean
+     */
+    @Override
+    public boolean supportKeyHolder(DataRuntime runtime, ConfigStore configs) {
+        if(null != configs && !configs.supportKeyHolder()) {
+            return false;
+        }
+        return true;
+    }
 
-	/**
-	 * update [命令合成]<br/>
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
-	 * @param obj Entity或DtaRow
-	 * @param configs 更新条件
-	 * @param columns 需要插入或更新的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
-	 *                列可以加前缀<br/>
-	 *                +:表示必须更新<br/>
-	 *                -:表示必须不更新<br/>
-	 *                ?:根据是否有值<br/>
-	 *
-	 *        如果没有提供columns,长度为0也算没有提供<br/>
-	 *        则解析obj(遍历所有的属性工Key)获取insert列<br/>
-	 *
-	 *        如果提供了columns则根据columns获取insert列<br/>
-	 *
-	 *        但是columns中出现了添加前缀列,则解析完columns后,继续解析obj<br/>
-	 *
-	 *        以上执行完后,如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
-	 *        则把执行结果与表结构对比,删除表中没有的列<br/>
-	 * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
-	 */
-	@Override
-	public Run buildUpdateRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, List<String> columns) {
-		Run run = null;
-		if(null == obj) {
-			return null;
-		}
-		if(null == dest) {
-			dest = DataSourceUtil.parseDest(null, obj, configs);
-		}
-		LinkedHashMap<String, Column> cols = new LinkedHashMap<>();
-		if(null != columns) {
-			for(String column:columns) {
-				cols.put(column.toUpperCase(), new Column(column));
-			}
-		}
-		if(obj instanceof DataRow) {
-		}else if(obj instanceof Map) {
-			obj = new DataRow((Map)obj);
-		}
-		if(obj instanceof Collection) {
-			run = buildUpdateRunFromCollection(runtime, batch, dest, (Collection)obj, configs, cols);
-		}else if(obj instanceof DataRow) {
-			run = buildUpdateRunFromDataRow(runtime, dest, (DataRow)obj, configs, cols);
-		}else{
-			run = buildUpdateRunFromEntity(runtime, dest, obj, configs, cols);
-		}
-		convert(runtime, configs, run);
-		buildUpdateRunLimit(runtime, run);
-		return run;
-	}
+    /**
+     * 自增主键值keys
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param configs configs中也可能禁用返回
+     * @return keys
+     */
+    @Override
+    public List<String> keyHolders(DataRuntime runtime, ConfigStore configs) {
+        if(null != configs) {
+            return configs.keyHolders();
+        }
+        return new ArrayList<>();
+    }
+    /* *****************************************************************************************************************
+     *                                                     UPDATE
+     * -----------------------------------------------------------------------------------------------------------------
+     * [调用入口]
+     * long update(DataRuntime runtime, String random, int batch, Table dest, Object data, ConfigStore configs, List<String> columns)
+     * [命令合成]
+     * Run buildUpdateRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, List<String> columns)
+     * Run buildUpdateRunFromEntity(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, LinkedHashMap<String, Column> columns)
+     * Run buildUpdateRunFromDataRow(DataRuntime runtime, Table dest, DataRow row, ConfigStore configs, LinkedHashMap<String, Column> columns)
+     * Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns)
+     * LinkedHashMap<String, Column> confirmUpdateColumns(DataRuntime runtime, Table dest, DataRow row, ConfigStore configs, List<String> columns)
+     * LinkedHashMap<String, Column> confirmUpdateColumns(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns)
+     * [命令执行]
+     * long update(DataRuntime runtime, String random, Table dest, Object data, ConfigStore configs, Run run)
+     ******************************************************************************************************************/
+    /**
+     * UPDATE [调用入口]<br/>
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param random 用来标记同一组命令
+     * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+     * @param data 数据
+     * @param configs 条件
+     * @param columns 需要插入或更新的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
+     *                列可以加前缀<br/>
+     *                +:表示必须更新<br/>
+     *                -:表示必须不更新<br/>
+     *                ?:根据是否有值<br/>
+     *
+     *        如果没有提供columns,长度为0也算没有提供<br/>
+     *        则解析obj(遍历所有的属性工Key)获取insert列<br/>
+     *
+     *        如果提供了columns则根据columns获取insert列<br/>
+     *
+     *        但是columns中出现了添加前缀列,则解析完columns后,继续解析obj<br/>
+     *
+     *        以上执行完后,如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
+     *        则把执行结果与表结构对比,删除表中没有的列<br/>
+     * @return 影响行数
+     */
+    @Override
+    public long update(DataRuntime runtime, String random, int batch, Table dest, Object data, ConfigStore configs, List<String> columns) {
+        ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
+        boolean cmd_success = false;
+        if(null == random) {
+            random = random(runtime);
+        }
+        swt = InterceptorProxy.prepareUpdate(runtime, random, batch, dest, data, configs, columns);
+        if(swt == ACTION.SWITCH.BREAK) {
+            return -1;
+        }
+        if(null != dmListener) {
+            swt = dmListener.prepareUpdate(runtime, random, batch, dest, data, configs, columns);
+        }
+        if(swt == ACTION.SWITCH.BREAK) {
+            return -1;
+        }
+        if(null == data) {
+            if(ConfigStore.IS_THROW_SQL_UPDATE_EXCEPTION(configs)) {
+                throw new CommandUpdateException("更新空数据");
+            }else{
+                log.error("更新空数据");
+            }
+        }
+        long result = 0;
+        if(data instanceof Collection) {
+            if(batch <= 1) {
+                Collection list = (Collection) data;
+                for (Object item : list) {
+                    ConfigStore cfg = new DefaultConfigStore();
+                    cfg.copyProperty(configs);
+                    cfg.and(configs);
+                    result += update(runtime, random, 0, dest, item, cfg, columns);
+                }
+                return result;
+            }
+        }
 
-	/**
-	 *
-	 * update [命令合成]<br/>
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
-	 * @return Run
-	 */
-	@Override
-	public Run buildUpdateRunLimit(DataRuntime runtime, Run run){
-		return run;
-	}
+        Run run = buildUpdateRun(runtime, batch, dest, data, configs, columns);
 
-	/**
-	 *
-	 * update [命令合成]<br/>
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
-	 * @param obj Entity或DtaRow
-	 * @param configs 更新条件
-	 * @param columns 需要插入或更新的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
-	 * @return Run
-	 */
-	@Override
-	public Run buildUpdateRunFromEntity(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, LinkedHashMap<String, Column> columns) {
-		TableRun run = new TableRun(runtime, dest);
-		run.setFrom(2);
-		StringBuilder builder = run.getBuilder();
-		// List<Object> values = new ArrayList<Object>();
-		List<String> list = new ArrayList<>();
-		for(Column column:columns.values()) {
-			list.add(column.getName());
-		}
-		LinkedHashMap<String, Column> cols = confirmUpdateColumns(runtime, dest, obj, configs, list);
+        if(run.isEmptyCondition()) {
+            if(log.isWarnEnabled() && ConfigStore.IS_LOG_SQL(configs)) {
+                log.warn("[valid:false][没有更新条件][dest:"+dest+"]");
+            }
+            return -1;
+        }
 
-		if(null == configs) {
-			configs = new DefaultConfigStore();
-		}
-		List<String> primaryKeys = configs.keys();
-		if(primaryKeys.isEmpty()) {
-			if (EntityAdapterProxy.hasAdapter(obj.getClass())) {
-				primaryKeys.addAll(EntityAdapterProxy.primaryKeys(obj.getClass()).keySet());
-			} else {
-				primaryKeys = new ArrayList<>();
-				primaryKeys.add(DataRow.DEFAULT_PRIMARY_KEY);
-			}
-		}
-		/*if(primaryKeys.isEmpty()) {
-			throw new SQLUpdateException("[更新异常][更新条件为空, update方法不支持更新整表操作]");
-		}*/
-		// 不更新主键 除非显示指定
-		LinkedHashMap<String, Column> configColumns = configs.getColumns();
-		for(String pk:primaryKeys) {
-			pk = pk.toUpperCase();
-			if(!columns.containsKey(pk) && !columns.containsKey("+"+pk) && !configColumns.containsKey(pk)) {
-				cols.remove(pk.toUpperCase());
-			}
-		}
-		//不更新默认主键  除非显示指定
-		String defaultPk = DataRow.DEFAULT_PRIMARY_KEY.toUpperCase();
-		if(!columns.containsKey(defaultPk) && !columns.containsKey("+"+defaultPk) && !configColumns.containsKey(defaultPk)) {
-			cols.remove(DataRow.DEFAULT_PRIMARY_KEY.toUpperCase());
-		}
-		boolean isReplaceEmptyNull = ConfigStore.IS_REPLACE_EMPTY_NULL(configs);
-		cols = checkMetadata(runtime, dest, configs, cols);
+        //提前设置好columns,到了adapter中需要手动检测缓存
+        if(ConfigStore.IS_AUTO_CHECK_METADATA(configs)) {
+            dest.setColumns(columns(runtime, null, false, dest, false));
+        }
+        if(!run.isValid()) {
+            if(log.isWarnEnabled() && ConfigStore.IS_LOG_SQL(configs)) {
+                log.warn("[valid:false][不具备执行条件][dest:"+dest+"]");
+            }
+            return -1;
+        }
+        //String sql = run.getFinalUpdate();
+        /*if(BasicUtil.isEmpty(sql)) {
+            log.warn("[不具备更新条件][dest:{}]", dest);
+            return -1;
+        }
+        List<Object> values = run.getValues();*/
+        long fr = System.currentTimeMillis();
+        /*执行SQL*/
+        /*if (ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
+            log.info("{}[cmd:\n{}\n]\n[param:{}]", random, sql, LogUtil.param(values));
+        }*/
+        long millis = -1;
+        swt = InterceptorProxy.beforeUpdate(runtime, random, run, dest, data, configs, columns);
+        if (swt == ACTION.SWITCH.BREAK) {
+            return -1;
+        }
+        if (null != dmListener) {
+            swt = dmListener.beforeUpdate(runtime, random, run, dest, data, columns);
+        }
+        if (swt == ACTION.SWITCH.BREAK) {
+            return -1;
+        }
+        result = update(runtime, random, dest, data, configs, run);
+        cmd_success = true;
+        millis = System.currentTimeMillis() - fr;
+        if (null != dmListener) {
+            dmListener.afterUpdate(runtime, random, run, result, dest, data, columns, cmd_success, result, millis);
+        }
+        InterceptorProxy.afterUpdate(runtime, random, run, dest, data, configs, columns, cmd_success, result, System.currentTimeMillis() - fr);
+        return result;
+    }
 
-		List<String> updateColumns = new ArrayList<>();
-		/*构造SQL*/
-		if(!cols.isEmpty()) {
-			builder.append("UPDATE ");
-			name(runtime, builder, dest);
-			builder.append(" SET").append(BR_TAB);
-			boolean first = true;
-			for(Column column:cols.values()) {
-				String key = column.getName();
-				Object value = null;
-				if(EntityAdapterProxy.hasAdapter(obj.getClass())) {
-					Field field = EntityAdapterProxy.field(obj.getClass(), key);
-					value = BeanUtil.getFieldValue(obj, field);
-				}else {
-					value = BeanUtil.getFieldValue(obj, key);
-				}
-				//if(null != value && value.toString().startsWith("${") && value.toString().endsWith("}")) {
-				if(BasicUtil.checkEl(value+"")) {
-					String str = value.toString();
-					value = str.substring(2, str.length()-1);
+    /**
+     * update [命令合成]<br/>
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+     * @param obj Entity或DtaRow
+     * @param configs 更新条件
+     * @param columns 需要插入或更新的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
+     *                列可以加前缀<br/>
+     *                +:表示必须更新<br/>
+     *                -:表示必须不更新<br/>
+     *                ?:根据是否有值<br/>
+     *
+     *        如果没有提供columns,长度为0也算没有提供<br/>
+     *        则解析obj(遍历所有的属性工Key)获取insert列<br/>
+     *
+     *        如果提供了columns则根据columns获取insert列<br/>
+     *
+     *        但是columns中出现了添加前缀列,则解析完columns后,继续解析obj<br/>
+     *
+     *        以上执行完后,如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
+     *        则把执行结果与表结构对比,删除表中没有的列<br/>
+     * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
+     */
+    @Override
+    public Run buildUpdateRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, List<String> columns) {
+        Run run = null;
+        if(null == obj) {
+            return null;
+        }
+        if(null == dest) {
+            dest = DataSourceUtil.parseDest(null, obj, configs);
+        }
+        LinkedHashMap<String, Column> cols = new LinkedHashMap<>();
+        if(null != columns) {
+            for(String column:columns) {
+                cols.put(column.toUpperCase(), new Column(column));
+            }
+        }
+        if(obj instanceof DataRow) {
+        }else if(obj instanceof Map) {
+            obj = new DataRow((Map)obj);
+        }
+        if(obj instanceof Collection) {
+            run = buildUpdateRunFromCollection(runtime, batch, dest, (Collection)obj, configs, cols);
+        }else if(obj instanceof DataRow) {
+            run = buildUpdateRunFromDataRow(runtime, dest, (DataRow)obj, configs, cols);
+        }else{
+            run = buildUpdateRunFromEntity(runtime, dest, obj, configs, cols);
+        }
+        convert(runtime, configs, run);
+        buildUpdateRunLimit(runtime, run);
+        return run;
+    }
 
-					if(!first) {
-						builder.append(",");
-					}
-					delimiter(builder, key).append(" = ").append(value).append(BR_TAB);
-					first = false;
-				}else{
-					if("NULL".equals(value)) {
-						value = null;
-					}else if("".equals(value) && isReplaceEmptyNull) {
-						value = null;
-					}
-					boolean chk = true;
+    /**
+     *
+     * update [命令合成]<br/>
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
+     * @return Run
+     */
+    @Override
+    public Run buildUpdateRunLimit(DataRuntime runtime, Run run){
+        return run;
+    }
+
+    /**
+     *
+     * update [命令合成]<br/>
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+     * @param obj Entity或DtaRow
+     * @param configs 更新条件
+     * @param columns 需要插入或更新的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
+     * @return Run
+     */
+    @Override
+    public Run buildUpdateRunFromEntity(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, LinkedHashMap<String, Column> columns) {
+        TableRun run = new TableRun(runtime, dest);
+        run.setFrom(2);
+        StringBuilder builder = run.getBuilder();
+        // List<Object> values = new ArrayList<Object>();
+        List<String> list = new ArrayList<>();
+        for(Column column:columns.values()) {
+            list.add(column.getName());
+        }
+        LinkedHashMap<String, Column> cols = confirmUpdateColumns(runtime, dest, obj, configs, list);
+
+        if(null == configs) {
+            configs = new DefaultConfigStore();
+        }
+        List<String> primaryKeys = configs.keys();
+        if(primaryKeys.isEmpty()) {
+            if (EntityAdapterProxy.hasAdapter(obj.getClass())) {
+                primaryKeys.addAll(EntityAdapterProxy.primaryKeys(obj.getClass()).keySet());
+            } else {
+                primaryKeys = new ArrayList<>();
+                primaryKeys.add(DataRow.DEFAULT_PRIMARY_KEY);
+            }
+        }
+        /*if(primaryKeys.isEmpty()) {
+            throw new SQLUpdateException("[更新异常][更新条件为空, update方法不支持更新整表操作]");
+        }*/
+        // 不更新主键 除非显示指定
+        LinkedHashMap<String, Column> configColumns = configs.getColumns();
+        for(String pk:primaryKeys) {
+            pk = pk.toUpperCase();
+            if(!columns.containsKey(pk) && !columns.containsKey("+"+pk) && !configColumns.containsKey(pk)) {
+                cols.remove(pk.toUpperCase());
+            }
+        }
+        //不更新默认主键  除非显示指定
+        String defaultPk = DataRow.DEFAULT_PRIMARY_KEY.toUpperCase();
+        if(!columns.containsKey(defaultPk) && !columns.containsKey("+"+defaultPk) && !configColumns.containsKey(defaultPk)) {
+            cols.remove(DataRow.DEFAULT_PRIMARY_KEY.toUpperCase());
+        }
+        boolean isReplaceEmptyNull = ConfigStore.IS_REPLACE_EMPTY_NULL(configs);
+        cols = checkMetadata(runtime, dest, configs, cols);
+
+        List<String> updateColumns = new ArrayList<>();
+        /*构造SQL*/
+        if(!cols.isEmpty()) {
+            builder.append("UPDATE ");
+            name(runtime, builder, dest);
+            builder.append(" SET").append(BR_TAB);
+            boolean first = true;
+            for(Column column:cols.values()) {
+                String key = column.getName();
+                Object value = null;
+                if(EntityAdapterProxy.hasAdapter(obj.getClass())) {
+                    Field field = EntityAdapterProxy.field(obj.getClass(), key);
+                    value = BeanUtil.getFieldValue(obj, field);
+                }else {
+                    value = BeanUtil.getFieldValue(obj, key);
+                }
+                //if(null != value && value.toString().startsWith("${") && value.toString().endsWith("}")) {
+                if(BasicUtil.checkEl(value+"")) {
+                    String str = value.toString();
+                    value = str.substring(2, str.length()-1);
+
+                    if(!first) {
+                        builder.append(",");
+                    }
+                    delimiter(builder, key).append(" = ").append(value).append(BR_TAB);
+                    first = false;
+                }else{
+                    if("NULL".equals(value)) {
+                        value = null;
+                    }else if("".equals(value) && isReplaceEmptyNull) {
+                        value = null;
+                    }
+                    boolean chk = true;
                    /* if(null == value) {
                         if(!IS_UPDATE_NULL_FIELD(configs)) {
                             chk = false;
                         }
                     }else */if("".equals(value)) {
-						if(!ConfigStore.IS_UPDATE_EMPTY_FIELD(configs)) {
-							chk = false;
-						}
-					}
-					if(chk) {
-						if(!first) {
-							builder.append(",");
-						}
-						first = false;
-						delimiter(builder, key).append(" = ?").append(BR_TAB);
-						updateColumns.add(key);
-						Compare compare = Compare.EQUAL;
-						if(isMultipleValue(runtime, run, key)) {
-							compare = Compare.IN;
-						}
-						addRunValue(runtime, run, compare, column, value);
-					}
-				}
-			}
-			builder.append(BR);
-			if(configs.isEmptyCondition()) {
-				for (String pk : primaryKeys) {
-					if (EntityAdapterProxy.hasAdapter(obj.getClass())) {
-						Field field = EntityAdapterProxy.field(obj.getClass(), pk);
-						configs.and(Compare.EMPTY_VALUE_SWITCH.SRC, pk, BeanUtil.getFieldValue(obj, field));
-					} else {
-						configs.and(Compare.EMPTY_VALUE_SWITCH.SRC, pk, BeanUtil.getFieldValue(obj, pk));
-					}
-				}
-			}
+                        if(!ConfigStore.IS_UPDATE_EMPTY_FIELD(configs)) {
+                            chk = false;
+                        }
+                    }
+                    if(chk) {
+                        if(!first) {
+                            builder.append(",");
+                        }
+                        first = false;
+                        delimiter(builder, key).append(" = ?").append(BR_TAB);
+                        updateColumns.add(key);
+                        Compare compare = Compare.EQUAL;
+                        if(isMultipleValue(runtime, run, key)) {
+                            compare = Compare.IN;
+                        }
+                        addRunValue(runtime, run, compare, column, value);
+                    }
+                }
+            }
+            builder.append(BR);
+            if(configs.isEmptyCondition()) {
+                for (String pk : primaryKeys) {
+                    if (EntityAdapterProxy.hasAdapter(obj.getClass())) {
+                        Field field = EntityAdapterProxy.field(obj.getClass(), pk);
+                        configs.and(Compare.EMPTY_VALUE_SWITCH.SRC, pk, BeanUtil.getFieldValue(obj, field));
+                    } else {
+                        configs.and(Compare.EMPTY_VALUE_SWITCH.SRC, pk, BeanUtil.getFieldValue(obj, pk));
+                    }
+                }
+            }
 
-			//builder.append("\nWHERE 1=1").append(BR_TAB);
-			run.setConfigStore(configs);
-			run.init();
-			run.appendCondition(this, true, true);
-		}
-		run.setUpdateColumns(updateColumns);
+            //builder.append("\nWHERE 1=1").append(BR_TAB);
+            run.setConfigStore(configs);
+            run.init();
+            run.appendCondition(this, true, true);
+        }
+        run.setUpdateColumns(updateColumns);
 
-		return run;
-	}
+        return run;
+    }
 
-	/**
-	 *
-	 * update [命令合成]<br/>
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
-	 * @param row DtaRow
-	 * @param configs 更新条件
-	 * @param columns 需要插入或更新的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
-	 * @return Run
-	 */
-	@Override
-	public Run buildUpdateRunFromDataRow(DataRuntime runtime, Table dest, DataRow row, ConfigStore configs, LinkedHashMap<String, Column> columns) {
-		//注意columns中可能含 +-号
-		TableRun run = new TableRun(runtime, dest);
-		run.setFrom(1);
-		StringBuilder builder = run.getBuilder();
+    /**
+     *
+     * update [命令合成]<br/>
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+     * @param row DtaRow
+     * @param configs 更新条件
+     * @param columns 需要插入或更新的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
+     * @return Run
+     */
+    @Override
+    public Run buildUpdateRunFromDataRow(DataRuntime runtime, Table dest, DataRow row, ConfigStore configs, LinkedHashMap<String, Column> columns) {
+        //注意columns中可能含 +-号
+        TableRun run = new TableRun(runtime, dest);
+        run.setFrom(1);
+        StringBuilder builder = run.getBuilder();
 
-		// List<Object> values = new ArrayList<Object>();
-		/*确定需要更新的列*/
-		LinkedHashMap<String, Column> cols = confirmUpdateColumns(runtime, dest, row, configs, Column.names(columns));
+        // List<Object> values = new ArrayList<Object>();
+        /*确定需要更新的列*/
+        LinkedHashMap<String, Column> cols = confirmUpdateColumns(runtime, dest, row, configs, Column.names(columns));
 
-		if(null == configs) {
-			configs = new DefaultConfigStore();
-		}
-		List<String> primaryKeys = configs.keys();
-		if(primaryKeys.isEmpty()) {
-			primaryKeys.addAll(row.getPrimaryKeys());
-		}
-		if(primaryKeys.isEmpty()) {
-			throw new CommandUpdateException("[更新异常][更新条件为空, update方法不支持更新整表操作]");
-		}
-		if(configs.isEmptyCondition()) {
-			//没有其他条件时添加 主键作条件
-			for (String pk : primaryKeys) {
-				Object pv = row.get(pk);
-				pv = convert(runtime, cols.get(pk.toUpperCase()), pv); //统一调用
-				if (null != pv) {
-					configs.and(Compare.EMPTY_VALUE_SWITCH.SRC, pk, pv);
-				}
+        if(null == configs) {
+            configs = new DefaultConfigStore();
+        }
+        List<String> primaryKeys = configs.keys();
+        if(primaryKeys.isEmpty()) {
+            primaryKeys.addAll(row.getPrimaryKeys());
+        }
+        if(primaryKeys.isEmpty()) {
+            throw new CommandUpdateException("[更新异常][更新条件为空, update方法不支持更新整表操作]");
+        }
+        if(configs.isEmptyCondition()) {
+            //没有其他条件时添加 主键作条件
+            for (String pk : primaryKeys) {
+                Object pv = row.get(pk);
+                pv = convert(runtime, cols.get(pk.toUpperCase()), pv); //统一调用
+                if (null != pv) {
+                    configs.and(Compare.EMPTY_VALUE_SWITCH.SRC, pk, pv);
+                }
                 /*builder.append(" AND ");
                 delimiter(builder, pk).append(" = ?");
                 updateColumns.add(pk);
                 addRunValue(runtime, run, Compare.EQUAL, new Column(pk), row.get(pk));*/
-			}
-		}
-
-		// 不更新主键 除非显示指定
-		LinkedHashMap<String, Column> configColumns = configs.getColumns();
-		for(String pk:primaryKeys) {
-			pk = pk.toUpperCase();
-			if(!columns.containsKey(pk) && !columns.containsKey("+"+pk) && !configColumns.containsKey(pk)) {
-				cols.remove(pk.toUpperCase());
-			}
-		}
-		//不更新默认主键  除非显示指定
-		String defaultPk = DataRow.DEFAULT_PRIMARY_KEY.toUpperCase();
-		if(!columns.containsKey(defaultPk) && !columns.containsKey("+"+defaultPk) && !configColumns.containsKey(defaultPk)) {
-			cols.remove(DataRow.DEFAULT_PRIMARY_KEY.toUpperCase());
-		}
-
-		boolean replaceEmptyNull = row.isReplaceEmptyNull();
-
-		List<String> updateColumns = new ArrayList<>();
-		/*构造SQL*/
-
-		if(!cols.isEmpty()) {
-			builder.append("UPDATE ");
-			name(runtime, builder, dest);
-			builder.append(" SET").append(BR_TAB);
-			boolean first = true;
-			for(Column col:cols.values()) {
-				String key = col.getName();
-				Object value = row.get(key);
-				if(!first) {
-					builder.append(",");
-				}
-				first = false;
-				//if(null != value && value.toString().startsWith("${") && value.toString().endsWith("}") ) {
-				if(BasicUtil.checkEl(value+"")) {
-					String str = value.toString();
-					value = str.substring(2, str.length()-1);
-					delimiter(builder, key).append(" = ").append(value).append(BR_TAB);
-				}else{
-					delimiter(builder, key).append(" = ?").append(BR_TAB);
-					if("NULL".equals(value)) {
-						value = null;
-					}else if("".equals(value) && replaceEmptyNull) {
-						value = null;
-					}
-					updateColumns.add(key);
-					Compare compare = Compare.EQUAL;
-					addRunValue(runtime, run, compare, col, value);
-				}
-			}
-			builder.append(BR);
-			//builder.append("\nWHERE 1=1").append(BR_TAB);
-			run.setConfigStore(configs);
-			run.init();
-			run.appendCondition(this, true, true);
-		}
-		run.setUpdateColumns(updateColumns);
-		return run;
-	}
-
-	/**
-	 *
-	 * update [命令合成]<br/>
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
-	 * @param list Collection
-	 * @param configs 更新条件
-	 * @param columns 需要插入或更新的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
-	 * @return Run
-	 */
-	@Override
-	public Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns) {
-		TableRun run = new TableRun(runtime, dest);
-		run.setFrom(1);
-		if (null == list || list.isEmpty()) {
-			return run;
-		}
-		if(null == configs) {
-			configs = new DefaultConfigStore();
-		}
-
-		LinkedHashMap<String, Column> cols = new LinkedHashMap<>();
-		List<String> primaryKeys = new ArrayList<>();
-
-		boolean replaceEmptyNull = false;
-		for(Object item:list) {
-			if(item instanceof DataRow) {
-				DataRow row = (DataRow)item;
-				primaryKeys = row.getPrimaryKeys();
-				cols.putAll(confirmUpdateColumns(runtime, dest, row, configs, Column.names(columns)));
-				replaceEmptyNull = row.isReplaceEmptyNull();
-			}else{
-				List<String> ll = new ArrayList<>();
-				for(Column column:columns.values()) {
-					ll.add(column.getName());
-				}
-				cols.putAll(confirmUpdateColumns(runtime, dest, item, configs, ll));
-				if(EntityAdapterProxy.hasAdapter(item.getClass())) {
-					primaryKeys.addAll(EntityAdapterProxy.primaryKeys(item.getClass()).keySet());
-				}else{
-					primaryKeys = new ArrayList<>();
-					primaryKeys.add(DataRow.DEFAULT_PRIMARY_KEY);
-				}
-				replaceEmptyNull = ConfigStore.IS_REPLACE_EMPTY_NULL(configs);
-			}
-			if(!ConfigTable.IS_CHECK_ALL_UPDATE_COLUMN) {
-				break;
-			}
-		}
-		cols = checkMetadata(runtime, dest, configs, cols);
-		StringBuilder builder = run.getBuilder();
-		List<String> keys = configs.keys();
-		if(!keys.isEmpty()) {
-			primaryKeys = keys;
-		}
-		if(primaryKeys.isEmpty()) {
-			throw new CommandUpdateException("[更新异常][更新条件为空, update方法不支持更新整表操作]");
-		}
-		LinkedHashMap<String, Column> configColumns = configs.getColumns();
-		// 不更新主键 除非显示指定
-		for(String pk:primaryKeys) {
-			pk = pk.toUpperCase();
-			if(!columns.containsKey(pk) && !columns.containsKey("+"+pk) && !configColumns.containsKey(pk)) {
-				cols.remove(pk.toUpperCase());
-			}
-		}
-		//不更新默认主键  除非显示指定
-		String defaultPk = DataRow.DEFAULT_PRIMARY_KEY.toUpperCase();
-		if(!columns.containsKey(defaultPk) && !columns.containsKey("+"+defaultPk)&& !configColumns.containsKey(defaultPk)) {
-			cols.remove(DataRow.DEFAULT_PRIMARY_KEY.toUpperCase());
-		}
-		List<String> updateColumns = new ArrayList<>();
-		/*构造SQL*/
-
-		if(!cols.isEmpty()) {
-			builder.append("UPDATE ");
-			name(runtime, builder, dest);
-			builder.append(" SET ");
-			boolean start = true;
-			for(Column col:cols.values()) {
-				String key = col.getName();
-				if(!start) {
-					builder.append(",");
-				}
-				start = false;
-				builder.append(key);
-				builder.append(" = ?");
-			}
-			start = true;
-			for (String pk : primaryKeys) {
-				if(start) {
-					builder.append(" WHERE ");
-				}else {
-					builder.append(" AND ");
-				}
-				delimiter(builder, pk).append(" = ?");
-				start = false;
-			}
-		}
-		run.setUpdateColumns(updateColumns);
-		List<RunValue> values = new ArrayList<>();
-		for(Object item:list) {
-			for(Column col:cols.values()) {
-				String key = col.getName();
-				Object value = BeanUtil.getFieldValue(item, key);
-				//if(null != value && value.toString().startsWith("${") && value.toString().endsWith("}") ) {
-				if(BasicUtil.checkEl(value+"")) {
-					String str = value.toString();
-					value = str.substring(2, str.length()-1);
-				}else{
-					if("NULL".equals(value)) {
-						value = null;
-					}else if("".equals(value) && replaceEmptyNull) {
-						value = null;
-					}
-				}
-				values.add(new RunValue(key, value));
-			}
-
-			for (String pk : primaryKeys) {
-				values.add(new RunValue(pk, BeanUtil.getFieldValue(item, pk)));
-			}
-		}
-		run.setBatch(batch);
-		run.setVol(cols.size() + primaryKeys.size());
-		run.setRunValues(values);
-		return run;
-	}
-
-	/**
-	 * 确认需要更新的列
-	 * @param dest 表
-	 * @param row DataRow
-	 * @param configs 更新条件
-	 * @param columns 需要插入或更新的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
-	 *                列可以加前缀<br/>
-	 *                +:表示必须更新<br/>
-	 *                -:表示必须不更新<br/>
-	 *                ?:根据是否有值<br/>
-	 *
-	 *        如果没有提供columns,长度为0也算没有提供<br/>
-	 *        则解析obj(遍历所有的属性工Key)获取insert列<br/>
-	 *
-	 *        如果提供了columns则根据columns获取insert列<br/>
-	 *
-	 *        但是columns中出现了添加前缀列,则解析完columns后,继续解析obj<br/>
-	 *
-	 *        以上执行完后,如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
-	 *        则把执行结果与表结构对比,删除表中没有的列<br/>
-	 * @return List
-	 */
-	@Override
-	public LinkedHashMap<String, Column> confirmUpdateColumns(DataRuntime runtime, Table dest, DataRow row, ConfigStore configs, List<String> columns) {
-		LinkedHashMap<String, Column> cols = null;/*确定需要更新的列*/
-		if(null == row) {
-			return new LinkedHashMap<>();
-		}
-		boolean each = true;//是否需要从row中查找列
-		List<String> conditions = new ArrayList<>()							; // 更新条件
-		if(null == columns || columns.isEmpty()) {
-			if(null != configs) {
-				columns = configs.columns();
-			}
-		}
-		LinkedHashMap<String, Column> masters = row.getUpdateColumns(true)		; // 必须更新列
-		List<String> ignores = BeanUtil.copy(row.getIgnoreUpdateColumns())	; // 必须不更新列
-		List<String> factKeys = new ArrayList<>()							; // 根据是否空值
-		BeanUtil.removeAll(ignores, columns);
-		if(null != configs) {
-			BeanUtil.removeAll(configs.excludes(), columns);
-		}
-		if(null != columns && columns.size()>0) {
-			each = false;
-			cols = new LinkedHashMap<>();
-			for(String column:columns) {
-				if(BasicUtil.isEmpty(column)) {
-					continue;
-				}
-				if(column.startsWith("+")) {
-					column = column.substring(1);
-					masters.put(column.toUpperCase(), new Column(column));
-					each = true;
-				}else if(column.startsWith("-")) {
-					column = column.substring(1);
-					ignores.add(column);
-					each = true;
-				}else if(column.startsWith("?")) {
-					column = column.substring(1);
-					factKeys.add(column);
-					each = true;
-				}
-				cols.put(column.toUpperCase(), new Column(column));
-			}
-		}else if(null != masters && masters.size()>0) {
-			each = false;
-			cols = masters;
-		}
-		if(each) {
-			cols = row.getUpdateColumns(true);
-			cols.putAll(masters);
-			// 是否更新null及""列
-			boolean isUpdateNullColumn = row.isUpdateNullColumn();
-			boolean isUpdateEmptyColumn = row.isUpdateEmptyColumn();
-			List<String> keys = Column.names(cols);
-			for(String key:keys) {
-				if(masters.containsKey(key)) {
-					// 必须更新
-					continue;
-				}
-
-				Object value = row.get(key);
-				if(null == value) {
-					if(factKeys.contains(key)) {
-						cols.remove(key.toUpperCase());
-						continue;
-					}
-					if(!isUpdateNullColumn) {
-						cols.remove(key.toUpperCase());
-						continue;
-					}
-				}else if("".equals(value.toString().trim())) {
-					if(factKeys.contains(key)) {
-						cols.remove(key.toUpperCase());
-						continue;
-					}
-					if(!isUpdateEmptyColumn) {
-						cols.remove(key.toUpperCase());
-						continue;
-					}
-				}
-
-			}
-		}
-		if(null != ignores) {
-			for(String ignore:ignores) {
-				cols.remove(ignore.toUpperCase());
-			}
-		}
-		cols = checkMetadata(runtime, dest, configs, cols);
-		return cols;
-	}
-
-	/**
-	 * 确认需要更新的列
-	 * @param dest 表
-	 * @param obj Object
-	 * @param configs 更新条件
-	 * @param columns 需要插入或更新的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
-	 *                列可以加前缀<br/>
-	 *                +:表示必须更新<br/>
-	 *                -:表示必须不更新<br/>
-	 *                ?:根据是否有值<br/>
-	 *
-	 *        如果没有提供columns,长度为0也算没有提供<br/>
-	 *        则解析obj(遍历所有的属性工Key)获取insert列<br/>
-	 *
-	 *        如果提供了columns则根据columns获取insert列<br/>
-	 *
-	 *        但是columns中出现了添加前缀列,则解析完columns后,继续解析obj<br/>
-	 *
-	 *        以上执行完后,如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
-	 *        则把执行结果与表结构对比,删除表中没有的列<br/>
-	 * @return List
-	 */
-	@Override
-	public LinkedHashMap<String, Column> confirmUpdateColumns(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns) {
-		LinkedHashMap<String, Column> cols = null;/*确定需要更新的列*/
-		if(null == obj) {
-			return new LinkedHashMap<>();
-		}
-
-		if(obj instanceof Map && !(obj instanceof DataRow)) {
-			obj = new DataRow(KeyAdapter.KEY_CASE.SRC, (Map)obj);
-		}
-		boolean each = true;//是否需要从row中查找列
-		List<String> conditions = new ArrayList<>()							; // 更新条件
-		LinkedHashMap<String, Column> masters = new LinkedHashMap<>()		; // 必须更新列
-		List<String> ignores = new ArrayList<>()	; // 必须不更新列
-		List<String> factKeys = new ArrayList<>()							; // 根据是否空值
-		BeanUtil.removeAll(ignores, columns);
-
-		if(null != columns && columns.size()>0) {
-			each = false;
-			cols = new LinkedHashMap<>();
-			for(String column:columns) {
-				if(BasicUtil.isEmpty(column)) {
-					continue;
-				}
-				if(column.startsWith("+")) {
-					column = column.substring(1);
-					masters.put(column.toUpperCase(), new Column(column));
-					each = true;
-				}else if(column.startsWith("-")) {
-					column = column.substring(1);
-					ignores.add(column);
-					each = true;
-				}else if(column.startsWith("?")) {
-					column = column.substring(1);
-					factKeys.add(column);
-					each = true;
-				}
-				cols.put(column.toUpperCase(), new Column(column));
-			}
-		}else if(null != masters && masters.size()>0) {
-			each = false;
-			cols = masters;
-		}
-		if(each) {
-			// 是否更新null及""列
-			boolean isUpdateNullColumn = ConfigStore.IS_UPDATE_NULL_FIELD(configs);
-			boolean isUpdateEmptyColumn = ConfigStore.IS_UPDATE_EMPTY_FIELD(configs);
-			cols = new LinkedHashMap<>();
-			if(obj instanceof DataRow) {
-				DataRow row = (DataRow)obj;
-				masters.putAll(row.getUpdateColumns(true));
-				ignores.addAll(row.getIgnoreUpdateColumns());
-				cols = row.getColumns();
-				isUpdateNullColumn = row.isUpdateNullColumn();
-				isUpdateEmptyColumn = row.isUpdateEmptyColumn();
-			} else {
-				cols.putAll(EntityAdapterProxy.columns(obj.getClass(), EntityAdapter.MODE.UPDATE)); ;
-			}
-			cols.putAll(masters);
-			List<String> keys = Column.names(cols);
-			for(String key:keys) {
-				if(masters.containsKey(key)) {
-					// 必须更新
-					continue;
-				}
-				Object value = BeanUtil.getFieldValue(obj, key);
-				if(null == value) {
-					if(factKeys.contains(key)) {
-						cols.remove(key.toUpperCase());
-						continue;
-					}
-					if(!isUpdateNullColumn) {
-						cols.remove(key.toUpperCase());
-						continue;
-					}
-				}else if("".equals(value.toString().trim())) {
-					if(factKeys.contains(key)) {
-						cols.remove(key.toUpperCase());
-						continue;
-					}
-					if(!isUpdateEmptyColumn) {
-						cols.remove(key.toUpperCase());
-						continue;
-					}
-				}
-
-			}
-		}
-		if(null != ignores) {
-			for(String ignore:ignores) {
-				cols.remove(ignore.toUpperCase());
-			}
-		}
-		cols = checkMetadata(runtime, dest, configs, cols);
-		return cols;
-	}
-
-	/**
-	 * update [命令执行]<br/>
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param random 用来标记同一组命令
-	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
-	 * @param data 数据
-	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
-	 * @return 影响行数
-	 */
-	@Override
-	public long update(DataRuntime runtime, String random, Table dest, Object data, ConfigStore configs, Run run) {
-		long result = 0;
-		if(!run.isValid()) {
-			if(log.isWarnEnabled() &&ConfigStore.IS_LOG_SQL(configs)) {
-				log.warn("[valid:false][不具备执行条件][dest:"+dest+"]");
-			}
-			return -1;
-		}
-		if(run.isEmpty()) {
-			log.warn("[不具备执行条件][dest:{}]", dest);
-			return -1;
-		}
-		if(null != configs) {
-			configs.add(run);
-		}
-		List<Object> values = run.getValues();
-		int batch = run.getBatch();
-		String action = null;
-		if(null != run.action()){
-			action = run.action().toString();
-		}
-		if(batch > 1) {
-			action = "batch " + action;
-		}
-		long fr = System.currentTimeMillis();
-		/*执行SQL*/
-		if (log.isInfoEnabled() &&ConfigStore.IS_LOG_SQL(configs)) {
-			log.info("{}[action:{}]{}", random, action, run.log(ACTION.DML.UPDATE,ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
-		}
-
-		boolean exe = true;
-		if(null != configs) {
-			exe = configs.execute();
-		}
-		if(!exe) {
-			return -1;
-		}
-		long millis = -1;
-		try{
-			result = actuator.update(this, runtime, random, dest, data, configs, run);
-			millis = System.currentTimeMillis() - fr;
-			boolean slow = false;
-			long SLOW_SQL_MILLIS = ConfigStore.SLOW_SQL_MILLIS(configs);
-			if(SLOW_SQL_MILLIS > 0 &&ConfigStore.IS_LOG_SLOW_SQL(configs)) {
-				if(millis > SLOW_SQL_MILLIS) {
-					slow = true;
-					log.warn("{}[slow cmd][action:{}][{}][执行耗时:{}]{}", random, action, run.getTable(), DateUtil.format(millis), run.log(ACTION.DML.UPDATE,ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
-					if(null != dmListener) {
-						dmListener.slow(runtime, random, ACTION.DML.UPDATE, run, run.getFinalUpdate(), values, null, true, result, millis);
-					}
-				}
-			}
-			if (!slow && log.isInfoEnabled() &&ConfigStore.IS_LOG_SQL_TIME(configs)) {
-				String qty = result+"";
-				if(batch>1) {
-					qty = "约"+result;
-				}
-				log.info("{}[action:{}][{}][执行耗时:{}][影响行数:{}]", random, action, run.getTable(), DateUtil.format(millis), LogUtil.format(qty, 34));
-			}
-
-		}catch(Exception e) {
-			if (ConfigStore.IS_PRINT_EXCEPTION_STACK_TRACE(configs)) {
-				log.error("update 异常:", e);
-			}
-			if (ConfigStore.IS_THROW_SQL_UPDATE_EXCEPTION(configs)) {
-				CommandUpdateException ex = new CommandUpdateException("update异常:" + e.toString(), e);
-				ex.setValues(values);
-				throw ex;
-			}
-			if (ConfigStore.IS_LOG_SQL_WHEN_ERROR(configs)) {
-				log.error("{}[{}][action:][{}]{}", random, action, run.getTable(), LogUtil.format("更新异常:", 33) + e.toString(), run.log(ACTION.DML.UPDATE,ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
-			}
-
-		}
-		return result;
-	}
-
-	/**
-	 * save [调用入口]<br/>
-	 * <br/>
-	 * 根据是否有主键值确认insert | update<br/>
-	 * 执行完成后会补齐自增主键值
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param random 用来标记同一组命令
-	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
-	 * @param data 数据
-	 * @param configs 更新条件
-	 * @param columns 需要插入或更新的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
-	 *                列可以加前缀<br/>
-	 *                +:表示必须更新<br/>
-	 *                -:表示必须不更新<br/>
-	 *                ?:根据是否有值<br/>
-	 *
-	 *        如果没有提供columns,长度为0也算没有提供<br/>
-	 *        则解析obj(遍历所有的属性工Key)获取insert列<br/>
-	 *
-	 *        如果提供了columns则根据columns获取insert列<br/>
-	 *
-	 *        但是columns中出现了添加前缀列,则解析完columns后,继续解析obj<br/>
-	 *
-	 *        以上执行完后,如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
-	 *        则把执行结果与表结构对比,删除表中没有的列<br/>
-	 * @return 影响行数
-	 */
-	@Override
-	public long save(DataRuntime runtime, String random, Table dest, Object data, ConfigStore configs, List<String> columns) {
-		if(null == random) {
-			random = random(runtime);
-		}
-		if(null == data) {
-			if(ConfigStore.IS_THROW_SQL_UPDATE_EXCEPTION(configs)) {
-				throw new CommandUpdateException("save空数据");
-			}else {
-				log.error("save空数据");
-				return -1;
-			}
-		}
-		if(data instanceof Collection) {
-			Collection<?> items = (Collection<?>)data;
-			long cnt = 0;
-			for (Object item : items) {
-				cnt += save(runtime, random, dest, item, configs, columns);
-			}
-			return cnt;
-		}
-		return saveObject(runtime, random, dest, data, configs, columns);
-	}
-
-	/**
-	 *
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param random 用来标记同一组命令
-	 * @param dest 表
-	 * @param data 保存的数据
-	 * @param configs ConfigStore
-	 * @param columns 指定列
-	 * @return long 影响行数
-	 */
-	protected long saveCollection(DataRuntime runtime, String random, Table dest, Collection<?> data, ConfigStore configs, List<String> columns) {
-		long cnt = 0;
-		//List<Run> runs = buildInsertRun(runtime, random, batch, dest, data, columns);
-		return cnt;
-	}
-	/**
-	 *
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param random 用来标记同一组命令
-	 * @param dest 表
-	 * @param data 保存的数据
-	 * @param configs ConfigStore
-	 * @param columns 指定列
-	 * @return long 影响行数
-	 */
-	protected long saveObject(DataRuntime runtime, String random, Table dest, Object data, ConfigStore configs, List<String> columns) {
-		if(null == data) {
-			return 0;
-		}
-		boolean isNew = BeanUtil.checkIsNew(data);
-		if(isNew) {
-			return insert(runtime, random, 0, dest, data, configs, columns);
-		}else{
-			//是否覆盖(null:不检测直接执行update有可能影响行数=0)
-			Boolean override = checkOverride(data);
-			ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
-			if(null != override) {
-				RunPrepare prepare = new DefaultTablePrepare(dest);
-				Map<String, Object> pvs = checkPv(data);
-				ConfigStore stores = new DefaultConfigStore();
-				for(String k:pvs.keySet()) {
-					stores.and(k, pvs.get(k));
-				}
-				boolean exists = exists(runtime, random, prepare, stores);
-				if(exists) {
-					if(override) {
-						return update(runtime, random, dest, data, configs, columns);
-					}else{
-						log.warn("[跳过更新][数据已存在:{}({})]", dest, BeanUtil.map2json(pvs));
-					}
-				}else{
-					return insert(runtime, random, 0, dest, data, configs, columns);
-				}
-			}else{
-				return update(runtime, random, dest, data, configs, columns);
-			}
-		}
-		return 0;
-	}
-
-	/**
-	 * 有主键值的情况下 检测覆盖
-	 * @param obj Object
-	 * @return boolean
-	 * null:正常执行update<br/>
-	 * true或false:检测数据库中是否存在<br/>
-	 * 如果数据库中存在匹配的数据<br/>
-	 * true:执行更新<br/>
-	 * false:跳过更新<br/>
-	 */
-	protected Boolean checkOverride(Object obj) {
-		Boolean result = null;
-		if(null != obj && obj instanceof DataRow) {
-			result = ((DataRow)obj).getOverride();
-		}
-		return result;
-	}
-
-	/**
-	 * 检测主键值
-	 * @param obj Object
-	 * @return Map
-	 */
-	protected Map<String, Object> checkPv(Object obj) {
-		Map<String, Object> pvs = new HashMap<>();
-		if(null != obj && obj instanceof DataRow) {
-			DataRow row = (DataRow) obj;
-			List<String> ks = row.getPrimaryKeys();
-			for(String k:ks) {
-				pvs.put(k, row.get(k));
-			}
-		}
-		return pvs;
-	}
-
-	/**
-	 * 是否是可以接收数组类型的值
-	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
-	 * @param key key
-	 * @return boolean
-	 */
-	protected boolean isMultipleValue(DataRuntime runtime, TableRun run, String key) {
-		Table table = run.getTable();
-		if (null != table) {
-			LinkedHashMap<String, Column> columns = columns(runtime, null, false, table, false);
-			if(null != columns) {
-				Column column = columns.get(key.toUpperCase());
-				return isMultipleValue(column);
-			}
-		}
-		return false;
-	}
-
-	/**
-	 * 是否支持集合值
-	 * @param column Column 根据column的数据类型
-	 * @return boolean
-	 */
-	protected boolean isMultipleValue(Column column) {
-		if(null != column) {
-			String type = column.getTypeName().toUpperCase();
-			if(type.contains("POINT") || type.contains("GEOMETRY") || type.contains("POLYGON")) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	/**
-	 * 过滤掉表结构中不存在的列
-	 * @param table 表
-	 * @param columns columns
-	 * @return List
-	 */
-	public LinkedHashMap<String, Column> checkMetadata(DataRuntime runtime, Table table, ConfigStore configs, LinkedHashMap<String, Column> columns) {
-		if(!ConfigStore.IS_AUTO_CHECK_METADATA(configs)) {
-			return columns;
-		}
-		LinkedHashMap<String, Column> result = new LinkedHashMap<>();
-		LinkedHashMap<String, Column> metadatas = columns(runtime, null, false, table, false);
-		try {
-			LinkedHashMap<String, Tag> tags = tags(runtime, null,false, table);
-			metadatas.putAll(tags);
-		}catch (Exception e){}
-		//tags(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tags, Table table, String pattern)
-		if(!metadatas.isEmpty()) {
-			for (String key:columns.keySet()) {
-				if (metadatas.containsKey(key)) {
-					result.put(key, metadatas.get(key));
-				} else {
-					if(ConfigStore.IS_LOG_SQL_WARN(configs)) {
-						log.warn("[{}][column:{}.{}][insert/update忽略当前列名]", LogUtil.format("列名检测不存在", 33), table, key);
-					}
-				}
-			}
-		}else{
-			if(ConfigStore.IS_LOG_SQL_WARN(configs)) {
-				log.warn("[{}][table:{}][忽略列名检测]", LogUtil.format("表结构检测失败(检查表名是否存在)", 33), table);
-			}
-		}
-		if(ConfigStore.IS_LOG_SQL_WARN(configs)) {
-			log.info("[check column metadata][origin:{}][result:{}]", columns.size(), result.size());
-		}
-		return result;
-	}
-
-	/* *****************************************************************************************************************
-	 * 													QUERY
-	 * -----------------------------------------------------------------------------------------------------------------
-	 * [调用入口]
-	 * DataSet querys(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
-	 * DataSet querys(DataRuntime runtime, String random, Procedure procedure, PageNavi navi)
-	 * <T> EntitySet<T> selects(DataRuntime runtime, String random, RunPrepare prepare, Class<T> clazz, ConfigStore configs, String... conditions)
-	 * List<Map<String, Object>> maps(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
-	 * [命令合成]
-	 * Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions)
-	 * List<Run> buildQuerySequence(DataRuntime runtime, boolean next, String ... names)
-	 * Run fillQueryContent(DataRuntime runtime, Run run)
-	 * String mergeFinalQuery(DataRuntime runtime, Run run)
-	 * RunValue createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder)
-	 * Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder)
-	 * StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder)
-	 * [命令执行]
-	 * DataSet select(DataRuntime runtime, String random, boolean system, String table, ConfigStore configs, Run run)
-	 * List<Map<String, Object>> maps(DataRuntime runtime, String random, ConfigStore configs, Run run)
-	 * Map<String, Object> map(DataRuntime runtime, String random, ConfigStore configs, Run run)
-	 * DataRow sequence(DataRuntime runtime, String random, boolean next, String ... names)
-	 * List<Map<String, Object>> process(DataRuntime runtime, List<Map<String, Object>> list)
-	 ******************************************************************************************************************/
-
-	/**
-	 * query [调用入口]<br/>
-	 * <br/>
-	 * 返回DataSet中包含元数据信息，如果性能有要求换成maps
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param random 用来标记同一组命令
-	 * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
-	 * @param configs 过滤条件及相关配置
-	 * @param conditions  简单过滤条件
-	 * @return DataSet
-	 */
-	@Override
-	public DataSet querys(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
-		DataSet set = null;
-		Long fr = 0L;
-		boolean cmd_success = false;
-		Run run = null;
-		PageNavi navi = null;
-
-		if(null == random) {
-			random = random(runtime);
-		}
-		ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
-		if (null != dmListener) {
-			swt = dmListener.prepareQuery(runtime, random, prepare, configs, conditions);
-		}
-		if(swt == ACTION.SWITCH.BREAK) {
-			return new DataSet().setTable(prepare.getTable());
-		}
-		//query拦截
-		swt = InterceptorProxy.prepareQuery(runtime, random, prepare, configs, conditions);
-		if(swt == ACTION.SWITCH.BREAK) {
-			return new DataSet().setTable(prepare.getTable());
-		}
-
-		run = buildQueryRun(runtime, prepare, configs, conditions);
-
-		if (log.isWarnEnabled() && ConfigStore.IS_LOG_SQL(configs) && !run.isValid()) {
-			String tmp = "[valid:false][不具备执行条件]";
-			String src = "";
-			if (prepare instanceof TablePrepare) {
-				src = prepare.getTableName();
-			} else {
-				src = prepare.getText();
-			}
-			tmp += "[RunPrepare:" + ConfigParser.createSQLSign(false, false, src, configs, conditions) + "][thread:" + Thread.currentThread().getId() + "][ds:" + runtime.datasource() + "]";
-			log.warn(tmp);
-		}
-		navi = run.getPageNavi();
-		if(null == navi && null != configs){
-			navi = configs.getPageNavi();
-		}
-		long total = 0;
-		Boolean autoCount = false;
-		if (run.isValid()) {
-			if (null != navi) {
-				autoCount = navi.autoCount();//未设置或true时查询总数
-				if(null == autoCount) {
-					autoCount = true;
-				}
-				if(autoCount) {
-					if (null != dmListener) {
-						dmListener.beforeTotal(runtime, random, run);
-					}
-					fr = System.currentTimeMillis();
-					if (navi.getCalType() == 1 && navi.getLastRow() == 0) {
-						// 第一条 query中设置的标识(只查一行)
-						total = 1;
-					} else {
-						// 未计数(总数 )
-						if (navi.getTotalRow() == 0) {
-							total = count(runtime, random, run);
-							navi.setTotalRow(total);
-						} else {
-							total = navi.getTotalRow();
-						}
-					}
-					if (null != dmListener) {
-						dmListener.afterTotal(runtime, random, run, true, total, System.currentTimeMillis() - fr);
-					}
-					if (log.isInfoEnabled() && ConfigStore.IS_LOG_SQL(configs)) {
-						log.info("[查询记录总数][行数:{}]", total);
-					}
-				}
-			}
-		}
-		fr = System.currentTimeMillis();
-		if (run.isValid()) {
-			if(null == navi || total > 0 || !autoCount) {
-				if(null != dmListener) {
-					dmListener.beforeQuery(runtime, random, run, total);
-				}
-				swt = InterceptorProxy.beforeQuery(runtime, random, run, navi);
-				if(swt == ACTION.SWITCH.BREAK) {
-					return new DataSet().setTable(prepare.getTable());
-				}
-				set = select(runtime, random, false, prepare.getTable(), configs, run);
-				cmd_success = true;
-			}else{
-				if(null != configs) {
-					configs.add(run);
-				}
-				set = new DataSet().setTable(prepare.getTable());
-				if(ConfigStore.IS_CHECK_EMPTY_SET_METADATA(configs)) {
-					set.setMetadata(metadata(runtime, prepare, false));
-				}
-			}
-		} else {
-			set = new DataSet().setTable(prepare.getTable());
-		}
-
-		set.setDest(prepare.getDest());
-		set.setNavi(navi);
-		if (null != navi && navi.isLazy()) {
-			navi.setDataSize(set.size());
-			PageLazyStore.setTotal(navi.getLazyKey(), navi.getTotalRow());
-		}
-
-		if(null != dmListener) {
-			dmListener.afterQuery(runtime, random, run, cmd_success, set, System.currentTimeMillis() - fr);
-		}
-		InterceptorProxy.afterQuery(runtime, random, run, cmd_success, set, navi, System.currentTimeMillis() - fr);
-		return set;
-	}
-
-	/**
-	 * query procedure [调用入口]<br/>
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param random 用来标记同一组命令
-	 * @param procedure 存储过程
-	 * @param navi 分页
-	 * @return DataSet
-	 */
-	@Override
-	public DataSet querys(DataRuntime runtime, String random, Procedure procedure, PageNavi navi) {
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 DataSet querys(DataRuntime runtime, String random, Procedure procedure, PageNavi navi)", 37));
-		}
-		return new DataSet();
-	}
-
-	/**
-	 * query [调用入口]<br/>
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param random 用来标记同一组命令
-	 * @param clazz 类
-	 * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
-	 * @param configs 过滤条件及相关配置
-	 * @param conditions  简单过滤条件
-	 * @return EntitySet
-	 * @param <T> Entity
-	 */
-	@Override
-	public <T> EntitySet<T> selects(DataRuntime runtime, String random, RunPrepare prepare, Class<T> clazz, ConfigStore configs, String ... conditions) {
-		if(null == prepare) {
-			prepare = new DefaultTablePrepare();
-		}
-		EntitySet<T> list = null;
-		Long fr = System.currentTimeMillis();
-		Run run = null;
-		boolean cmd_success = false;
-		PageNavi navi = null;
-
-		ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
-		if (null != dmListener) {
-			swt = dmListener.prepareQuery(runtime, random, prepare, configs, conditions);
-		}
-		if(swt == ACTION.SWITCH.BREAK) {
-			return new EntitySet();
-		}
-		swt = InterceptorProxy.prepareQuery(runtime, random, prepare, configs, conditions);
-		if(swt == ACTION.SWITCH.BREAK) {
-			return new EntitySet();
-		}
-
-		if(BasicUtil.isEmpty(prepare.getDest())) {
-			//text xml格式的 不检测表名，避免一下步根据表名检测表结构
-			if(prepare instanceof TextPrepare || prepare instanceof XMLPrepare) {
-			}else {
-				prepare.setDest(EntityAdapterProxy.table(clazz, true));
-			}
-		}
-
-		run = buildQueryRun(runtime, prepare, configs, conditions);
-		if (log.isWarnEnabled() && ConfigStore.IS_LOG_SQL(configs) && !run.isValid()) {
-			String tmp = "[valid:false][不具备执行条件]";
-			tmp += "[RunPrepare:" + ConfigParser.createSQLSign(false, false, clazz.getName(), configs, conditions) + "][thread:" + Thread.currentThread().getId() + "][ds:" + runtime.datasource() + "]";
-			log.warn(tmp);
-		}
-		navi = run.getPageNavi();
-		long total = 0;
-		Boolean autoCount = false;
-		if (run.isValid()) {
-			if (null != navi) {
-				autoCount = navi.autoCount();//未设置或true时查询总数
-				if(null == autoCount) {
-					autoCount = true;
-				}
-				if(autoCount) {
-					if (null != dmListener) {
-						dmListener.beforeTotal(runtime, random, run);
-					}
-					fr = System.currentTimeMillis();
-					if (navi.getCalType() == 1 && navi.getLastRow() == 0) {
-						// 第一条 query中设置的标识(只查一行)
-						total = 1;
-					}  else {
-						// 未计数(总数 )
-						if (navi.getTotalRow() == 0) {
-							total = count(runtime, random, run);
-							navi.setTotalRow(total);
-						} else {
-							total = navi.getTotalRow();
-						}
-					}
-					if (null != dmListener) {
-						dmListener.afterTotal(runtime, random, run, true, total, System.currentTimeMillis() - fr);
-					}
-				}
-			}
-			if (log.isInfoEnabled() && ConfigStore.IS_LOG_SQL(configs)) {
-				log.info("[查询记录总数][行数:{}]", total);
-			}
-		}
-		fr = System.currentTimeMillis();
-		if (run.isValid()) {
-			if(null == navi || !autoCount || total > 0) {
-				swt = InterceptorProxy.beforeQuery(runtime, random, run, navi);
-				if(swt == ACTION.SWITCH.BREAK) {
-					return new EntitySet();
-				}
-				if (null != dmListener) {
-					dmListener.beforeQuery(runtime, random, run, total);
-				}
-				fr = System.currentTimeMillis();
-				list = select(runtime, random, clazz, run.getTable(), configs, run);
-				cmd_success = false;
-			}else{
-				list = new EntitySet<>();
-			}
-		} else {
-			list = new EntitySet<>();
-		}
-		list.setNavi(navi);
-		if (null != navi && navi.isLazy()) {
-			PageLazyStore.setTotal(navi.getLazyKey(), navi.getTotalRow());
-		}
-
-		if (null != dmListener) {
-			dmListener.afterQuery(runtime, random, run, cmd_success, list, System.currentTimeMillis() - fr);
-		}
-		InterceptorProxy.afterQuery(runtime, random, run, cmd_success, list, navi, System.currentTimeMillis() - fr);
-		return list;
-	}
-
-	/**
-	 * select [命令执行-子流程]<br/>
-	 * DataRow转换成Entity
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param clazz entity class
-	 * @param table table
-	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
-	 * @return EntitySet
-	 * @param <T> entity.class
-	 *
-	 */
-	protected <T> EntitySet<T> select(DataRuntime runtime, String random, Class<T> clazz, Table table, ConfigStore configs, Run run) {
-		EntitySet<T> set = new EntitySet<>();
-		if(null == random) {
-			random = random(runtime);
-		}
-		if(null != configs) {
-			configs.entityClass(clazz);
-		}
-		DataSet rows = select(runtime, random, false, table, configs, run);
-		for(DataRow row:rows) {
-			T entity = null;
-			if(EntityAdapterProxy.hasAdapter(clazz)) {
-				//jdbc adapter需要参与 或者metadata里添加colun type
-				entity = EntityAdapterProxy.entity(clazz, row, null);
-			}else{
-				entity = row.entity(clazz);
-			}
-			set.add(entity);
-		}
-
-		return set;
-	}
-
-	/**
-	 * query [调用入口]<br/>
-	 * <br/>
-	 * 对性能有要求的场景调用，返回java原生map集合,结果中不包含元数据信息
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param random 用来标记同一组命令
-	 * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
-	 * @param configs 过滤条件及相关配置
-	 * @param conditions  简单过滤条件
-	 * @return maps 返回map集合
-	 */
-	@Override
-	public List<Map<String, Object>> maps(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
-		List<Map<String, Object>> maps = null;
-		ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
-		boolean cmd_success = false;
-		Run run = null;
-		if(null == random) {
-			random = random(runtime);
-		}
-		//query拦截
-		swt = InterceptorProxy.prepareQuery(runtime, random, prepare, configs, conditions);
-		if(swt == ACTION.SWITCH.BREAK) {
-			return new ArrayList<>();
-		}
-
-		if (null != dmListener) {
-			swt = dmListener.prepareQuery(runtime, random, prepare, configs, conditions);
-		}
-		if(swt == ACTION.SWITCH.BREAK) {
-			return new ArrayList<>();
-		}
-		run = buildQueryRun(runtime, prepare, configs, conditions);
-		Long fr = System.currentTimeMillis();
-		if (log.isWarnEnabled() && ConfigStore.IS_LOG_SQL(configs) && !run.isValid()) {
-			String tmp = "[valid:false][不具备执行条件]";
-			String src = "";
-			if (prepare instanceof TablePrepare) {
-				src = prepare.getTableName();
-			} else {
-				src = prepare.getText();
-			}
-			tmp += "[RunPrepare:" + ConfigParser.createSQLSign(false, false, src, configs, conditions) + "][thread:" + Thread.currentThread().getId() + "][ds:" + runtime.datasource() + "]";
-			log.warn(tmp);
-		}
-		if (run.isValid()) {
-			swt = InterceptorProxy.beforeQuery(runtime, random, run, null);
-			if(swt == ACTION.SWITCH.BREAK) {
-				return new ArrayList<>();
-			}
-			if (null != dmListener) {
-				dmListener.beforeQuery(runtime, random, run, -1);
-			}
-			if(null != configs) {
-				PageNavi navi = configs.getPageNavi();
-				if(null != navi) {
-					Boolean autoCount = navi.autoCount();
-					if (null != autoCount && autoCount) {
-						long total = count(runtime, random, run);
-						navi.setTotalRow(total);
-					}
-				}
-
-			}
-
-			maps = maps(runtime, random, configs, run);
-			cmd_success = true;
-		} else {
-			maps = new ArrayList<>();
-		}
-
-		if (null != dmListener) {
-			dmListener.afterQuery(runtime, random, run, cmd_success, maps, System.currentTimeMillis() - fr);
-		}
-		InterceptorProxy.afterQuery(runtime, random, run, cmd_success, maps, null, System.currentTimeMillis() - fr);
-		return maps;
-	}
-
-	/**
-	 * select[命令合成]<br/> 最终可执行命令<br/>
-	 * 创建查询SQL
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
-	 * @param configs 过滤条件及相关配置
-	 * @param conditions  简单过滤条件
-	 * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
-	 */
-	@Override
-	public Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions) {
-		Run run = initQueryRun(runtime, prepare);
-		init(runtime, run, configs, conditions);
-		List<Run> unions = run.getUnions();
-		if(null != unions) {
-			for(Run union:unions) {
-				init(runtime, union, configs, conditions);
-			}
-		}
-		if(run.checkValid()) {
-			//构造最终的查询SQL
-			run = fillQueryContent(runtime, run);
-		}
-
-		return run;
-	}
-
-	/**
-	 * query run初始化,检测占位符、忽略不存在的列等
-	 * select[命令合成]<br/>
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
-	 * @param configs 过滤条件及相关配置
-	 * @param conditions  简单过滤条件
-	 */
-	public void init(DataRuntime runtime, Run run, ConfigStore configs, String ... conditions) {
-		if(null != run) {
-			RunPrepare prepare = run.getPrepare();
-			if(prepare instanceof TablePrepare) {
-				likes(runtime, prepare.getTable(), configs);
-			}
-			//如果是text类型 将解析文本并抽取出变量
-			if(run instanceof TextRun) {
-				parseText(runtime, (TextRun)run);
-			}
-			run.addConfigStore(configs);
-			configs = run.getConfigs();
-			//先把configs中的占位值取出
-			if(null != configs) {
-				List<Object> statics = configs.getStaticValues();
-				for (Object item : statics) {
-					run.addValue(new RunValue("none", item));
-				}
-			}
-
-			run.addCondition(conditions);
-
-			if(run.checkValid()) {
-				//为变量赋值 run.condition赋值
-				run.init();
-				//检测不存在的列
-				if(ConfigStore.IS_AUTO_CHECK_METADATA(configs)) {
-					List<Join> joins = prepare.getJoins();
-					Table table = run.getTable();
-					if(null != table && (null == joins || joins.isEmpty())) {//TODO 单表时再检测
-						LinkedHashMap<String, Column> metadatas = columns(runtime, null, false, table, false);
-						//检测不存在的列
-						OrderStore orders = run.getOrderStore();
-						if (null != orders) {
-							orders.filter(metadatas);
-						}
-						if(null != prepare) {
-							prepare.filter(metadatas);
-						}
-						ConditionChain chain = run.getConditionChain();
-						if(null != chain) {
-							chain.filter(metadatas);
-						}
-						if(null != configs) {
-							configs.filter(metadatas);
-						}
-					}
-				}
-			}
-		}
-	}
-	/**
-	 * 解析文本中的占位符
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
-	 */
-	@Override
-	public void parseText(DataRuntime runtime, TextRun run) {
-		String text = run.getPrepare().getText();
-		if(null == text) {
-			return;
-		}
-		try{
-			int varType = -1;
-			Compare compare = Compare.EQUAL;
-
-			List<List<String>> keys = null;
-			int type = 0;
-			// AND CD = {CD} || CD LIKE '%{CD}%' || CD IN ({CD}) || CD = ${CD} || CD = #{CD}
-			//{CD} 用来兼容旧版本，新版本中不要用，避免与josn格式冲突
-			keys = RegularUtil.fetchs(text, RunPrepare.SQL_VAR_PLACEHOLDER_REGEX, Regular.MATCH_MODE.CONTAIN);
-			type = Variable.KEY_TYPE_SIGN_V2 ;
-			//::KEY 格式的占位符解析,在PG环境中会与 ::INT8 格式冲突 需要禁用
-			if(keys.isEmpty() && ConfigTable.IS_ENABLE_PLACEHOLDER_REGEX_EXT && supportSqlVarPlaceholderRegexExt(runtime)) {
-				// AND CD = :CD || CD LIKE ':CD' || CD IN (:CD) || CD = ::CD
-				keys = RegularUtil.fetchs(text, RunPrepare.SQL_VAR_PLACEHOLDER_REGEX_EXT, Regular.MATCH_MODE.CONTAIN);
-				type = Variable.KEY_TYPE_SIGN_V1 ;
-			}
-			if(BasicUtil.isNotEmpty(true, keys)) {
-				// AND CD = :CD
-				for(int i=0; i<keys.size();i++) {
-					List<String> keyItem = keys.get(i);
-
-					Variable var = SyntaxHelper.buildVariable(type, keyItem.get(0), keyItem.get(1), keyItem.get(2), keyItem.get(3));
-					if(null == var) {
-						continue;
-					}
-					var.setSwt(Compare.EMPTY_VALUE_SWITCH.NULL);
-					run.addVariable(var);
-				}// end for
-			}else{
-				// AND CD = ?
-				int qty = SQLUtil.countPlaceholder(text);
-				if(qty > 0) {
-					for(int i=0; i<qty; i++) {
-						Variable var = new DefaultVariable();
-						var.setType(Variable.VAR_TYPE_INDEX);
-						var.setSwt(Compare.EMPTY_VALUE_SWITCH.NULL);
-						run.addVariable(var);
-					}
-				}
-			}
-		}catch(Exception e) {
-			log.error("parse text exception:", e);
-		}
-	}
-	private void likes(DataRuntime runtime, Table table, ConfigStore configs) {
-		if(null == table || null == configs) {
-			return;
-		}
-		List<Config> list = configs.getConfigChain().getConfigs();
-		for(Config config:list) {
-			if(config.getCompare() == Compare.LIKES) {
-				LinkedHashMap<String, Column> colums = columns(runtime, null, false, table, false);
-				list.remove(config);
-				ConfigStore ors = new DefaultConfigStore();
-				List<Object> values = config.getValues();
-				Object value = null;
-				if(null != values && !values.isEmpty()) {
-					value = values.get(0);
-				}
-				for(Column column:colums.values()) {
-					TypeMetadata tm = column.getTypeMetadata();
-					if(null != tm && tm.getCategoryGroup() == TypeMetadata.CATEGORY_GROUP.STRING) {
-						ors.or(Compare.LIKE, column.getName(), value);
-					}
-				}
-				configs.and(ors);
-				break;
-			}
-		}
-	}
-
-	/**
-	 * 查询序列cur 或 next value
-	 * @param next  是否生成返回下一个序列 false:cur true:next
-	 * @param names 序列名
-	 * @return String
-	 */
-	@Override
-	public List<Run> buildQuerySequence(DataRuntime runtime, boolean next, String ... names) {
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQuerySequence(DataRuntime runtime, boolean next, String ... names)", 37));
-		}
-		return new ArrayList<>();
-	}
-
-	/**
-	 * select[命令合成-子流程] <br/>
-	 * 构造查询主体, 中间过程有可能转换类型
-	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
-	 */
-	@Override
-	public Run fillQueryContent(DataRuntime runtime, Run run) {
-		return fillQueryContent(runtime, run.getBuilder(), run);
-	}
-	/**
-	 * select[命令合成-子流程] <br/>
-	 * 构造查询主体
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param builder 有可能合个run合成一个 所以提供一个共用builder
-	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
-	 */
-	@Override
-	public Run fillQueryContent(DataRuntime runtime, StringBuilder builder, Run run) {
-		if(null != run) {
-			if(run instanceof TableRun) {
-				run = fillQueryContent(runtime, builder, (TableRun) run);
-			}else if(run instanceof XMLRun) {
-				run = fillQueryContent(runtime, builder, (XMLRun) run);
-			}else if(run instanceof TextRun) {
-				run = fillQueryContent(runtime, builder, (TextRun) run);
-			}
-			convert(runtime, run.getConfigs(), run);
-		}
-		return run;
-	}
-	/**
-	 * select[命令合成-子流程] <br/>
-	 * 构造查询主体
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param run XMLRun
-	 */
-	protected Run fillQueryContent(DataRuntime runtime, XMLRun run) {
-		return fillQueryContent(runtime, run.getBuilder(), run);
-	}
-	/**
-	 *
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param builder 有可能合个run合成一个 所以提供一个共用builder
-	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
-	 */
-	protected Run fillQueryContent(DataRuntime runtime, StringBuilder builder, XMLRun run) {
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 fillQueryContent(DataRuntime runtime, XMLRun run)", 37));
-		}
-		return run;
-	}
-	/**
-	 * select[命令合成-子流程] <br/>
-	 * 构造查询主体
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param run TextRun
-	 */
-	protected Run fillQueryContent(DataRuntime runtime, TextRun run) {
-		return fillQueryContent(runtime, run.getBuilder(), run);
-	}
-
-	/**
-	 *
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param builder 有可能合个run合成一个 所以提供一个共用builder
-	 * @param run TextRun
-	 */
-	protected Run fillQueryContent(DataRuntime runtime, StringBuilder builder, TextRun run) {
-		replaceVariable(runtime, run);
-		run.appendCondition(true);
-		run.appendGroup();
-		// appendOrderStore();
-		run.checkValid();
-		return run;
-	}
-
-	/**
-	 *
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param run TextRun
-	 */
-	protected Run fillQueryContent(DataRuntime runtime, TableRun run) {
-		return fillQueryContent(runtime, run.getBuilder(), run);
-	}
-	/**
-	 * 有些非JDBC环境也需要用到SQL
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param builder 有可能合个run合成一个 所以提供一个共用builder
-	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
-	 */
-	protected Run fillQueryContent(DataRuntime runtime, StringBuilder builder, TableRun run) {
-		TablePrepare sql = (TablePrepare)run.getPrepare();
-		builder.append("SELECT ");
-		if(null != sql.getDistinct()) {
-			builder.append(sql.getDistinct());
-		}
-		builder.append(BR_TAB);
-		LinkedHashMap<String,Column> columns = sql.getColumns();
-		if(null == columns || columns.isEmpty()) {
-			ConfigStore configs = run.getConfigs();
-			if(null != configs) {
-				List<String> cols = configs.columns();
-				columns = new LinkedHashMap<>();
-				for(String col:cols) {
-					columns.put(col.toUpperCase(), new Column(col));
-				}
-			}
-		}
-		if(null != columns && !columns.isEmpty()) {
-			// 指定查询列
-			boolean first = true;
-			for(Column column:columns.values()) {
-				if(BasicUtil.isEmpty(column) || BasicUtil.isEmpty(column.getName())) {
-					continue;
-				}
-				if(!first) {
-					builder.append(",");
-				}
-				first = false;
-				String name = column.getName();
-				//if (column.startsWith("${") && column.endsWith("}")) {
-				if (BasicUtil.checkEl(name)) {
-					name = name.substring(2, name.length()-1);
-					builder.append(name);
-				}else{
-					if(name.contains("(") || name.contains(",")) {
-						builder.append(name);
-					}else if(name.toUpperCase().contains(" AS ")) {
-						int split = name.toUpperCase().indexOf(" AS ");
-						String tmp = name.substring(0, split).trim();
-						delimiter(builder, tmp);
-						builder.append(" ");
-						tmp = name.substring(split+4).trim();
-						delimiter(builder, tmp);
-					}else if("*".equals(name)) {
-						builder.append("*");
-					}else{
-						delimiter(builder, name);
-					}
-				}
-			}
-			builder.append(BR);
-		}else{
-			// 全部查询
-			builder.append("*");
-			builder.append(BR);
-		}
-		Table table = run.getTable();
-		builder.append("FROM").append(BR_TAB);
-		name(runtime, builder, table);
-		String alias = table.getAlias();
-		if(BasicUtil.isNotEmpty(alias)) {
-			builder.append(" ");
-			delimiter(builder, alias);
-		}
-		builder.append(BR);
-		List<Join> joins = sql.getJoins();
-		if(null != joins) {
-			for (Join join:joins) {
-				builder.append(BR_TAB).append(join.getType().getCode()).append(" ");
-				Table joinTable = join.getTable();
-				String joinTableAlias = joinTable.getAlias();
-				name(runtime, builder, joinTable);
-				if(BasicUtil.isNotEmpty(joinTableAlias)) {
-					builder.append("  ");
-					delimiter(builder, joinTableAlias);
-				}
-				builder.append(" ON ").append(join.getCondition());
-			}
-		}
-
-		//builder.append("\nWHERE 1=1\n\t");
-		/*添加查询条件*/
-		// appendConfigStore();
-		run.appendCondition(builder, this, true, true);
-		run.appendGroup(builder);
-		return run;
-	}
-
-	/**
-	 * select[命令合成-子流程] <br/>
-	 * 合成最终 select 命令 包含分页 排序
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
-	 * @return String
-	 */
-	@Override
-	public String mergeFinalQuery(DataRuntime runtime, Run run) {
-		return run.getBaseQuery();
-	}
-
-	/**
-	 * select[命令合成-子流程] <br/>
-	 * 构造 LIKE 查询条件
-	 * 如果不需要占位符 返回null  否则原样返回value
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param builder builder
-	 * @param compare 比较方式 默认 equal 多个值默认 in
-	 * @param value value
-	 * @return value 有占位符时返回占位值，没有占位符返回null
-	 */
-	@Override
-	public RunValue createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder) {
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 RunValue createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder)", 37));
-		}
-		return null;
-	}
-
-	/**
-	 * select[命令合成-子流程] <br/>
-	 * 构造(NOT) IN 查询条件
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param builder builder
-	 * @param compare 比较方式 默认 equal 多个值默认 in
-	 * @param value value
-	 * @return builder
-	 */
-	@Override
-	public StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder) {
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder)", 37));
-		}
-		return null;
-	}
-
-	/**
-	 * select [命令执行]<br/>
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param random 用来标记同一组命令
-	 * @param system 系统表不检测列属性
-	 * @param table 表
-	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
-	 * @return DataSet
-	 */
-	@Override
-	public DataSet select(DataRuntime runtime, String random, boolean system, Table table, ConfigStore configs, Run run) {
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 DataSet select(DataRuntime runtime, String random, boolean system, String table, ConfigStore configs, Run run)", 37));
-		}
-		return new DataSet().setTable(table);
-	}
-
-	/**
-	 * select [命令执行]<br/>
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param random 用来标记同一组命令
-	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
-	 * @return maps
-	 */
-	@Override
-	public List<Map<String, Object>> maps(DataRuntime runtime, String random, ConfigStore configs, Run run) {
-		List<Map<String, Object>> maps = null;
-		if(null == random) {
-			random = random(runtime);
-		}
-		if(null != configs) {
-			configs.add(run);
-		}
-		String sql = run.getFinalQuery();
-		List<Object> values = run.getValues();
-		if(BasicUtil.isEmpty(sql)) {
-			if(ConfigStore.IS_THROW_SQL_QUERY_EXCEPTION(configs)) {
-				throw new CommandQueryException("未指定命令");
-			}else{
-				log.error("未指定命令");
-				return new ArrayList<>();
-			}
-		}
-		if(log.isInfoEnabled() &&ConfigStore.IS_LOG_SQL(configs)) {
-			log.info("{}[action:select]{}", random, run.log(ACTION.DML.SELECT,ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
-		}
-		boolean exe = true;
-		if(null != configs) {
-			exe = configs.execute();
-		}
-		if(!exe) {
-			return new ArrayList<>();
-		}
-		try{
-			maps = actuator.maps(this, runtime, random, configs, run);
-			maps = process(runtime, maps);
-		}catch(Exception e) {
-			if(ConfigStore.IS_PRINT_EXCEPTION_STACK_TRACE(configs)) {
-				log.error("maps 异常:", e);
-			}
-			if(ConfigStore.IS_LOG_SQL_WHEN_ERROR(configs)) {
-				log.error("{}[{}][action:select]{}", random, LogUtil.format("查询异常:", 33) + e.toString(), run.log(ACTION.DML.SELECT,ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
-			}
-			if(ConfigStore.IS_THROW_SQL_QUERY_EXCEPTION(configs)) {
-				CommandQueryException ex = new CommandQueryException("query异常:"+e.toString(), e);
-				ex.setCmd(sql);
-				ex.setValues(values);
-				throw ex;
-			}
-
-		}
-		return maps;
-	}
-
-	/**
-	 * select [命令执行]<br/>
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param random 用来标记同一组命令
-	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
-	 * @return map
-	 */
-	@Override
-	public Map<String, Object> map(DataRuntime runtime, String random, ConfigStore configs, Run run) {
-		Map<String, Object> map = null;
-		String sql = run.getFinalExists();
-		List<Object> values = run.getValues();
-		if(null != configs) {
-			configs.add(run);
-		}
-		long fr = System.currentTimeMillis();
-		if (log.isInfoEnabled() &&ConfigStore.IS_LOG_SQL(configs)) {
-			log.info("{}[action:select]{}", random, run.log(ACTION.DML.EXISTS,ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
-		}
-		boolean exe = true;
-		if(null != configs) {
-			exe = configs.execute();
-		}
-		if(!exe) {
-			return new HashMap<>();
-		}
-		try {
-			map = actuator.map(this, runtime, random, configs, run);
-		}catch (Exception e) {
-			if(ConfigStore.IS_THROW_SQL_QUERY_EXCEPTION(configs)) {
-				throw new CommandQueryException("查询异常", e);
-			}
-			if (ConfigStore.IS_LOG_SQL_WHEN_ERROR(configs)) {
-				if(ConfigStore.IS_PRINT_EXCEPTION_STACK_TRACE(configs)) {
-					e.printStackTrace();
-				}
-				log.error("{}[{}][action:select][cmd:\n{}\n]\n[param:{}]", random, LogUtil.format("查询异常:", 33)+e, sql, LogUtil.param(values));
-			}
-		}
-		//}
-		Long millis = System.currentTimeMillis() - fr;
-		boolean slow = false;
-		long SLOW_SQL_MILLIS = ConfigStore.SLOW_SQL_MILLIS(configs);
-		if(SLOW_SQL_MILLIS > 0 &&ConfigStore.IS_LOG_SLOW_SQL(configs)) {
-			if(millis > SLOW_SQL_MILLIS) {
-				slow = true;
-				log.warn("{}[slow cmd][action:exists][执行耗时:{}][cmd:\n{}\n]\n[param:{}]", random, DateUtil.format(millis), sql, LogUtil.param(values));
-				if(null != dmListener) {
-					dmListener.slow(runtime, random, ACTION.DML.EXISTS, run, sql, values, null, true, map, millis);
-				}
-			}
-		}
-		if (!slow && log.isInfoEnabled() &&ConfigStore.IS_LOG_SQL_TIME(configs)) {
-			log.info("{}[action:select][执行耗时:{}][封装行数:{}]", random, DateUtil.format(millis), LogUtil.format(map == null ?0:1, 34));
-		}
-		return map;
-	}
-
-	/**
-	 * select [命令执行]<br/>
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param random 用来标记同一组命令
-	 * @param next 是否查下一个序列值
-	 * @param names 存储过程名称s
-	 * @return DataRow 保存序列查询结果 以存储过程name作为key
-	 */
-	@Override
-	public DataRow sequence(DataRuntime runtime, String random, boolean next, String ... names) {
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 DataRow sequence(DataRuntime runtime, String random, boolean next, String ... names)", 37));
-		}
-		return null;
-	}
-
-	/**
-	 * select [结果集封装-子流程]<br/>
-	 * JDBC执行完成后的结果处理
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param list JDBC执行返回的结果集
-	 * @return  maps
-	 */
-	@Override
-	public List<Map<String, Object>> process(DataRuntime runtime, List<Map<String, Object>> list) {
-		return list;
-	}
-
-	/* *****************************************************************************************************************
-	 * 													COUNT
-	 * -----------------------------------------------------------------------------------------------------------------
-	 * [调用入口]
-	 * long count(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
-	 * [命令合成]
-	 * String mergeFinalTotal(DataRuntime runtime, Run run)
-	 * [命令执行]
-	 * long count(DataRuntime runtime, String random, Run run)
-	 ******************************************************************************************************************/
-	/**
-	 * count [调用入口]<br/>
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param random 用来标记同一组命令
-	 * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
-	 * @param configs 过滤条件及相关配置
-	 * @param conditions  简单过滤条件
-	 * @return long
-	 */
-	@Override
-	public long count(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
-		long count = -1;
-		Long fr = System.currentTimeMillis();
-		Run run = null;
-		if(null == random) {
-			random = random(runtime);
-		}
-
-		boolean cmd_success = false;
-
-		ACTION.SWITCH swt = InterceptorProxy.prepareCount(runtime, random, prepare, configs, conditions);
-		if(swt == ACTION.SWITCH.BREAK) {
-			return -1;
-		}
-		if (null != dmListener) {
-			swt = dmListener.prepareQuery(runtime, random, prepare, configs, conditions);
-		}
-		if(swt == ACTION.SWITCH.BREAK) {
-			return -1;
-		}
-		run = buildQueryRun(runtime, prepare, configs, conditions);
-		if(!run.isValid()) {
-			if(log.isWarnEnabled() && ConfigStore.IS_LOG_SQL(configs)) {
-				log.warn("[valid:false][不具备执行条件][RunPrepare:" + ConfigParser.createSQLSign(false, false, prepare.getTableName(), configs, conditions) + "][thread:" + Thread.currentThread().getId() + "][ds:" + runtime.datasource() + "]");
-			}
-			return -1;
-		}
-		if (null != dmListener) {
-			dmListener.beforeCount(runtime, random, run);
-		}
-		swt = InterceptorProxy.beforeCount(runtime, random, run);
-		if(swt == ACTION.SWITCH.BREAK) {
-			return -1;
-		}
-		fr = System.currentTimeMillis();
-		count = count(runtime, random, run);
-		cmd_success = true;
-
-		if(null != dmListener) {
-			dmListener.afterCount(runtime, random, run, cmd_success, count, System.currentTimeMillis() - fr);
-		}
-		InterceptorProxy.afterCount(runtime, random, run, cmd_success, count, System.currentTimeMillis() - fr);
-		return count;
-	}
-
-	/**
-	 * count [命令合成]<br/>
-	 * 合成最终 select count 命令
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
-	 * @return String
-	 */
-	@Override
-	public String mergeFinalTotal(DataRuntime runtime, Run run) {
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 String mergeFinalTotal(DataRuntime runtime, Run run)", 37));
-		}
-		return null;
-	}
-
-	/**
-	 * count [命令执行]<br/>
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param random 用来标记同一组命令
-	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
-	 * @return long
-	 */
-	@Override
-	public long count(DataRuntime runtime, String random, Run run) {
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 long count(DataRuntime runtime, String random, Run run)", 37));
-		}
-		return -1;
-	}
-
-	/* *****************************************************************************************************************
-	 * 													EXISTS
-	 * -----------------------------------------------------------------------------------------------------------------
-	 * boolean exists(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
-	 * String mergeFinalExists(DataRuntime runtime, Run run)
-	 ******************************************************************************************************************/
-
-	/**
-	 * exists [调用入口]<br/>
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param random 用来标记同一组命令
-	 * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
-	 * @param configs 查询条件及相关设置
-	 * @param conditions  简单过滤条件
-	 * @return boolean
-	 */
-	@Override
-	public boolean exists(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现  exists(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)", 37));
-		}
-		return false;
-	}
-	/**
-	 * exists [命令合成]<br/>
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
-	 * @return String
-	 */
-	@Override
-	public String mergeFinalExists(DataRuntime runtime, Run run) {
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 String mergeFinalExists(DataRuntime runtime, Run run)", 37));
-		}
-		return null;
-	}
-
-	/* *****************************************************************************************************************
-	 * 													EXECUTE
-	 * -----------------------------------------------------------------------------------------------------------------
-	 * [调用入口]
-	 * long execute(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
-	 * long execute(DataRuntime runtime, String random, int batch, ConfigStore configs, RunPrepare prepare, Collection<Object> values)
-	 * boolean execute(DataRuntime runtime, String random, Procedure procedure)
-	 * [命令合成]
-	 * Run buildExecuteRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions)
-	 * void fillExecuteContent(DataRuntime runtime, Run run)
-	 * [命令执行]
-	 * long execute(DataRuntime runtime, String random, ConfigStore configs, Run run)
-	 ******************************************************************************************************************/
-
-	/**
-	 * execute [调用入口]<br/>
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param random 用来标记同一组命令
-	 * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
-	 * @param configs 查询条件及相关设置
-	 * @param conditions  简单过滤条件
-	 * @return 影响行数
-	 */
-	@Override
-	public long execute(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
-		long result = -1;
-		boolean cmd_success = false;
-		ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
-		if(null == random) {
-			random = random(runtime);
-		}
-		swt = InterceptorProxy.prepareExecute(runtime, random, prepare, configs, conditions);
-		if(swt == ACTION.SWITCH.BREAK) {
-			return -1;
-		}
-
-		Run run = buildExecuteRun(runtime,  prepare, configs, conditions);
-		if(!run.isValid()) {
-			if(log.isWarnEnabled() && ConfigStore.IS_LOG_SQL(configs)) {
-				log.warn("[valid:false][不具备执行条件][RunPrepare:" + ConfigParser.createSQLSign(false, false, prepare.getTableName(), configs, conditions) + "][thread:" + Thread.currentThread().getId() + "][ds:" + runtime.datasource() + "]");
-			}
-			return -1;
-		}
-		long fr = System.currentTimeMillis();
-
-		long millis = -1;
-		swt = InterceptorProxy.beforeExecute(runtime, random, run);
-		if(swt == ACTION.SWITCH.BREAK) {
-			return -1;
-		}
-		if(null != dmListener) {
-			swt = dmListener.beforeExecute(runtime, random, run);
-		}
-		if(swt == ACTION.SWITCH.BREAK) {
-			return -1;
-		}
-		result = execute(runtime, random, configs, run);
-		cmd_success = true;
-		if (null != dmListener) {
-			dmListener.afterExecute(runtime, random, run, cmd_success, result, millis);
-		}
-		InterceptorProxy.afterExecute(runtime, random, run, cmd_success, result, System.currentTimeMillis()-fr);
-		return result;
-	}
-
-	/**
-	 * execute [调用入口]<br/>
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param random 用来标记同一组命令
-	 * @param batch 批量执行每批最多数量
-	 * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
-	 * @param configs 查询条件及相关设置
-	 * @param values  values
-	 * @return 影响行数
-	 */
-	@Override
-	public long execute(DataRuntime runtime, String random, int batch, ConfigStore configs, RunPrepare prepare, Collection<Object> values) {
-		if(null == random) {
-			random = random(runtime);
-		}
-		prepare.setBatch(batch);
-		Run run = buildExecuteRun(runtime, prepare, configs);
-		if(null != values && !values.isEmpty()) {
-			Object first = values.iterator().next();
-			if (first instanceof Collection) {
-				//?下标占位
-				List<Object> list = new ArrayList<>();
-				int vol = 0;
-				for (Object item : values) {
-					Collection col = (Collection) item;
-					list.addAll(col);
-					vol = col.size();
-				}
-				run.setValues(null, list);
-				run.setVol(vol);
-			} else {
-				//${} #{}占位
-				List<Object> list = new ArrayList<>();
-				List<Variable> vars = run.getVariables();
-				List<String> keys = new ArrayList<>();
-				run.setVol(vars.size());
-				for (Variable var : vars) {
-					keys.add(var.getKey());
-				}
-				for (Object item : values) {
-					for (String key : keys) {
-						Object value = BeanUtil.getFieldValue(item, key);
-						list.add(value);
-					}
-				}
-				run.setValues(null, list);
-			}
-		}
-		return execute(runtime, random, configs, run);
-	}
-
-	/**
-	 * execute [调用入口]<br/>
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param random 用来标记同一组命令
-	 * @param batch 批量执行每批最多数量
-	 * @param vol 批量执行每行参数数量
-	 * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
-	 * @param configs 查询条件及相关设置
-	 * @param values  values
-	 * @return 影响行数
-	 */
-	@Override
-	public long execute(DataRuntime runtime, String random, int batch, int vol, ConfigStore configs, RunPrepare prepare, Collection<Object> values) {
-		if(null == random) {
-			random = random(runtime);
-		}
-		prepare.setBatch(batch);
-		Run run = buildExecuteRun(runtime, prepare, configs);
-		run.setVol(vol);
-		run.setValues(null, values);
+            }
+        }
+
+        // 不更新主键 除非显示指定
+        LinkedHashMap<String, Column> configColumns = configs.getColumns();
+        for(String pk:primaryKeys) {
+            pk = pk.toUpperCase();
+            if(!columns.containsKey(pk) && !columns.containsKey("+"+pk) && !configColumns.containsKey(pk)) {
+                cols.remove(pk.toUpperCase());
+            }
+        }
+        //不更新默认主键  除非显示指定
+        String defaultPk = DataRow.DEFAULT_PRIMARY_KEY.toUpperCase();
+        if(!columns.containsKey(defaultPk) && !columns.containsKey("+"+defaultPk) && !configColumns.containsKey(defaultPk)) {
+            cols.remove(DataRow.DEFAULT_PRIMARY_KEY.toUpperCase());
+        }
+
+        boolean replaceEmptyNull = row.isReplaceEmptyNull();
+
+        List<String> updateColumns = new ArrayList<>();
+        /*构造SQL*/
+
+        if(!cols.isEmpty()) {
+            builder.append("UPDATE ");
+            name(runtime, builder, dest);
+            builder.append(" SET").append(BR_TAB);
+            boolean first = true;
+            for(Column col:cols.values()) {
+                String key = col.getName();
+                Object value = row.get(key);
+                if(!first) {
+                    builder.append(",");
+                }
+                first = false;
+                //if(null != value && value.toString().startsWith("${") && value.toString().endsWith("}") ) {
+                if(BasicUtil.checkEl(value+"")) {
+                    String str = value.toString();
+                    value = str.substring(2, str.length()-1);
+                    delimiter(builder, key).append(" = ").append(value).append(BR_TAB);
+                }else{
+                    delimiter(builder, key).append(" = ?").append(BR_TAB);
+                    if("NULL".equals(value)) {
+                        value = null;
+                    }else if("".equals(value) && replaceEmptyNull) {
+                        value = null;
+                    }
+                    updateColumns.add(key);
+                    Compare compare = Compare.EQUAL;
+                    addRunValue(runtime, run, compare, col, value);
+                }
+            }
+            builder.append(BR);
+            //builder.append("\nWHERE 1=1").append(BR_TAB);
+            run.setConfigStore(configs);
+            run.init();
+            run.appendCondition(this, true, true);
+        }
+        run.setUpdateColumns(updateColumns);
+        return run;
+    }
+
+    /**
+     *
+     * update [命令合成]<br/>
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+     * @param list Collection
+     * @param configs 更新条件
+     * @param columns 需要插入或更新的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
+     * @return Run
+     */
+    @Override
+    public Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns) {
+        TableRun run = new TableRun(runtime, dest);
+        run.setFrom(1);
+        if (null == list || list.isEmpty()) {
+            return run;
+        }
+        if(null == configs) {
+            configs = new DefaultConfigStore();
+        }
+
+        LinkedHashMap<String, Column> cols = new LinkedHashMap<>();
+        List<String> primaryKeys = new ArrayList<>();
+
+        boolean replaceEmptyNull = false;
+        for(Object item:list) {
+            if(item instanceof DataRow) {
+                DataRow row = (DataRow)item;
+                primaryKeys = row.getPrimaryKeys();
+                cols.putAll(confirmUpdateColumns(runtime, dest, row, configs, Column.names(columns)));
+                replaceEmptyNull = row.isReplaceEmptyNull();
+            }else{
+                List<String> ll = new ArrayList<>();
+                for(Column column:columns.values()) {
+                    ll.add(column.getName());
+                }
+                cols.putAll(confirmUpdateColumns(runtime, dest, item, configs, ll));
+                if(EntityAdapterProxy.hasAdapter(item.getClass())) {
+                    primaryKeys.addAll(EntityAdapterProxy.primaryKeys(item.getClass()).keySet());
+                }else{
+                    primaryKeys = new ArrayList<>();
+                    primaryKeys.add(DataRow.DEFAULT_PRIMARY_KEY);
+                }
+                replaceEmptyNull = ConfigStore.IS_REPLACE_EMPTY_NULL(configs);
+            }
+            if(!ConfigTable.IS_CHECK_ALL_UPDATE_COLUMN) {
+                break;
+            }
+        }
+        cols = checkMetadata(runtime, dest, configs, cols);
+        StringBuilder builder = run.getBuilder();
+        List<String> keys = configs.keys();
+        if(!keys.isEmpty()) {
+            primaryKeys = keys;
+        }
+        if(primaryKeys.isEmpty()) {
+            throw new CommandUpdateException("[更新异常][更新条件为空, update方法不支持更新整表操作]");
+        }
+        LinkedHashMap<String, Column> configColumns = configs.getColumns();
+        // 不更新主键 除非显示指定
+        for(String pk:primaryKeys) {
+            pk = pk.toUpperCase();
+            if(!columns.containsKey(pk) && !columns.containsKey("+"+pk) && !configColumns.containsKey(pk)) {
+                cols.remove(pk.toUpperCase());
+            }
+        }
+        //不更新默认主键  除非显示指定
+        String defaultPk = DataRow.DEFAULT_PRIMARY_KEY.toUpperCase();
+        if(!columns.containsKey(defaultPk) && !columns.containsKey("+"+defaultPk)&& !configColumns.containsKey(defaultPk)) {
+            cols.remove(DataRow.DEFAULT_PRIMARY_KEY.toUpperCase());
+        }
+        List<String> updateColumns = new ArrayList<>();
+        /*构造SQL*/
+
+        if(!cols.isEmpty()) {
+            builder.append("UPDATE ");
+            name(runtime, builder, dest);
+            builder.append(" SET ");
+            boolean start = true;
+            for(Column col:cols.values()) {
+                String key = col.getName();
+                if(!start) {
+                    builder.append(",");
+                }
+                start = false;
+                builder.append(key);
+                builder.append(" = ?");
+            }
+            start = true;
+            for (String pk : primaryKeys) {
+                if(start) {
+                    builder.append(" WHERE ");
+                }else {
+                    builder.append(" AND ");
+                }
+                delimiter(builder, pk).append(" = ?");
+                start = false;
+            }
+        }
+        run.setUpdateColumns(updateColumns);
+        List<RunValue> values = new ArrayList<>();
+        for(Object item:list) {
+            for(Column col:cols.values()) {
+                String key = col.getName();
+                Object value = BeanUtil.getFieldValue(item, key);
+                //if(null != value && value.toString().startsWith("${") && value.toString().endsWith("}") ) {
+                if(BasicUtil.checkEl(value+"")) {
+                    String str = value.toString();
+                    value = str.substring(2, str.length()-1);
+                }else{
+                    if("NULL".equals(value)) {
+                        value = null;
+                    }else if("".equals(value) && replaceEmptyNull) {
+                        value = null;
+                    }
+                }
+                values.add(new RunValue(key, value));
+            }
+
+            for (String pk : primaryKeys) {
+                values.add(new RunValue(pk, BeanUtil.getFieldValue(item, pk)));
+            }
+        }
+        run.setBatch(batch);
+        run.setVol(cols.size() + primaryKeys.size());
+        run.setRunValues(values);
+        return run;
+    }
+
+    /**
+     * 确认需要更新的列
+     * @param dest 表
+     * @param row DataRow
+     * @param configs 更新条件
+     * @param columns 需要插入或更新的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
+     *                列可以加前缀<br/>
+     *                +:表示必须更新<br/>
+     *                -:表示必须不更新<br/>
+     *                ?:根据是否有值<br/>
+     *
+     *        如果没有提供columns,长度为0也算没有提供<br/>
+     *        则解析obj(遍历所有的属性工Key)获取insert列<br/>
+     *
+     *        如果提供了columns则根据columns获取insert列<br/>
+     *
+     *        但是columns中出现了添加前缀列,则解析完columns后,继续解析obj<br/>
+     *
+     *        以上执行完后,如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
+     *        则把执行结果与表结构对比,删除表中没有的列<br/>
+     * @return List
+     */
+    @Override
+    public LinkedHashMap<String, Column> confirmUpdateColumns(DataRuntime runtime, Table dest, DataRow row, ConfigStore configs, List<String> columns) {
+        LinkedHashMap<String, Column> cols = null;/*确定需要更新的列*/
+        if(null == row) {
+            return new LinkedHashMap<>();
+        }
+        boolean each = true;//是否需要从row中查找列
+        List<String> conditions = new ArrayList<>()                            ; // 更新条件
+        if(null == columns || columns.isEmpty()) {
+            if(null != configs) {
+                columns = configs.columns();
+            }
+        }
+        LinkedHashMap<String, Column> masters = row.getUpdateColumns(true)        ; // 必须更新列
+        List<String> ignores = BeanUtil.copy(row.getIgnoreUpdateColumns())    ; // 必须不更新列
+        List<String> factKeys = new ArrayList<>()                            ; // 根据是否空值
+        BeanUtil.removeAll(ignores, columns);
+        if(null != configs) {
+            BeanUtil.removeAll(configs.excludes(), columns);
+        }
+        if(null != columns && columns.size()>0) {
+            each = false;
+            cols = new LinkedHashMap<>();
+            for(String column:columns) {
+                if(BasicUtil.isEmpty(column)) {
+                    continue;
+                }
+                if(column.startsWith("+")) {
+                    column = column.substring(1);
+                    masters.put(column.toUpperCase(), new Column(column));
+                    each = true;
+                }else if(column.startsWith("-")) {
+                    column = column.substring(1);
+                    ignores.add(column);
+                    each = true;
+                }else if(column.startsWith("?")) {
+                    column = column.substring(1);
+                    factKeys.add(column);
+                    each = true;
+                }
+                cols.put(column.toUpperCase(), new Column(column));
+            }
+        }else if(null != masters && masters.size()>0) {
+            each = false;
+            cols = masters;
+        }
+        if(each) {
+            cols = row.getUpdateColumns(true);
+            cols.putAll(masters);
+            // 是否更新null及""列
+            boolean isUpdateNullColumn = row.isUpdateNullColumn();
+            boolean isUpdateEmptyColumn = row.isUpdateEmptyColumn();
+            List<String> keys = Column.names(cols);
+            for(String key:keys) {
+                if(masters.containsKey(key)) {
+                    // 必须更新
+                    continue;
+                }
+
+                Object value = row.get(key);
+                if(null == value) {
+                    if(factKeys.contains(key)) {
+                        cols.remove(key.toUpperCase());
+                        continue;
+                    }
+                    if(!isUpdateNullColumn) {
+                        cols.remove(key.toUpperCase());
+                        continue;
+                    }
+                }else if("".equals(value.toString().trim())) {
+                    if(factKeys.contains(key)) {
+                        cols.remove(key.toUpperCase());
+                        continue;
+                    }
+                    if(!isUpdateEmptyColumn) {
+                        cols.remove(key.toUpperCase());
+                        continue;
+                    }
+                }
+
+            }
+        }
+        if(null != ignores) {
+            for(String ignore:ignores) {
+                cols.remove(ignore.toUpperCase());
+            }
+        }
+        cols = checkMetadata(runtime, dest, configs, cols);
+        return cols;
+    }
+
+    /**
+     * 确认需要更新的列
+     * @param dest 表
+     * @param obj Object
+     * @param configs 更新条件
+     * @param columns 需要插入或更新的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
+     *                列可以加前缀<br/>
+     *                +:表示必须更新<br/>
+     *                -:表示必须不更新<br/>
+     *                ?:根据是否有值<br/>
+     *
+     *        如果没有提供columns,长度为0也算没有提供<br/>
+     *        则解析obj(遍历所有的属性工Key)获取insert列<br/>
+     *
+     *        如果提供了columns则根据columns获取insert列<br/>
+     *
+     *        但是columns中出现了添加前缀列,则解析完columns后,继续解析obj<br/>
+     *
+     *        以上执行完后,如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
+     *        则把执行结果与表结构对比,删除表中没有的列<br/>
+     * @return List
+     */
+    @Override
+    public LinkedHashMap<String, Column> confirmUpdateColumns(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns) {
+        LinkedHashMap<String, Column> cols = null;/*确定需要更新的列*/
+        if(null == obj) {
+            return new LinkedHashMap<>();
+        }
+
+        if(obj instanceof Map && !(obj instanceof DataRow)) {
+            obj = new DataRow(KeyAdapter.KEY_CASE.SRC, (Map)obj);
+        }
+        boolean each = true;//是否需要从row中查找列
+        List<String> conditions = new ArrayList<>()                            ; // 更新条件
+        LinkedHashMap<String, Column> masters = new LinkedHashMap<>()        ; // 必须更新列
+        List<String> ignores = new ArrayList<>()    ; // 必须不更新列
+        List<String> factKeys = new ArrayList<>()                            ; // 根据是否空值
+        BeanUtil.removeAll(ignores, columns);
+
+        if(null != columns && columns.size()>0) {
+            each = false;
+            cols = new LinkedHashMap<>();
+            for(String column:columns) {
+                if(BasicUtil.isEmpty(column)) {
+                    continue;
+                }
+                if(column.startsWith("+")) {
+                    column = column.substring(1);
+                    masters.put(column.toUpperCase(), new Column(column));
+                    each = true;
+                }else if(column.startsWith("-")) {
+                    column = column.substring(1);
+                    ignores.add(column);
+                    each = true;
+                }else if(column.startsWith("?")) {
+                    column = column.substring(1);
+                    factKeys.add(column);
+                    each = true;
+                }
+                cols.put(column.toUpperCase(), new Column(column));
+            }
+        }else if(null != masters && masters.size()>0) {
+            each = false;
+            cols = masters;
+        }
+        if(each) {
+            // 是否更新null及""列
+            boolean isUpdateNullColumn = ConfigStore.IS_UPDATE_NULL_FIELD(configs);
+            boolean isUpdateEmptyColumn = ConfigStore.IS_UPDATE_EMPTY_FIELD(configs);
+            cols = new LinkedHashMap<>();
+            if(obj instanceof DataRow) {
+                DataRow row = (DataRow)obj;
+                masters.putAll(row.getUpdateColumns(true));
+                ignores.addAll(row.getIgnoreUpdateColumns());
+                cols = row.getColumns();
+                isUpdateNullColumn = row.isUpdateNullColumn();
+                isUpdateEmptyColumn = row.isUpdateEmptyColumn();
+            } else {
+                cols.putAll(EntityAdapterProxy.columns(obj.getClass(), EntityAdapter.MODE.UPDATE)); ;
+            }
+            cols.putAll(masters);
+            List<String> keys = Column.names(cols);
+            for(String key:keys) {
+                if(masters.containsKey(key)) {
+                    // 必须更新
+                    continue;
+                }
+                Object value = BeanUtil.getFieldValue(obj, key);
+                if(null == value) {
+                    if(factKeys.contains(key)) {
+                        cols.remove(key.toUpperCase());
+                        continue;
+                    }
+                    if(!isUpdateNullColumn) {
+                        cols.remove(key.toUpperCase());
+                        continue;
+                    }
+                }else if("".equals(value.toString().trim())) {
+                    if(factKeys.contains(key)) {
+                        cols.remove(key.toUpperCase());
+                        continue;
+                    }
+                    if(!isUpdateEmptyColumn) {
+                        cols.remove(key.toUpperCase());
+                        continue;
+                    }
+                }
+
+            }
+        }
+        if(null != ignores) {
+            for(String ignore:ignores) {
+                cols.remove(ignore.toUpperCase());
+            }
+        }
+        cols = checkMetadata(runtime, dest, configs, cols);
+        return cols;
+    }
+
+    /**
+     * update [命令执行]<br/>
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param random 用来标记同一组命令
+     * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+     * @param data 数据
+     * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
+     * @return 影响行数
+     */
+    @Override
+    public long update(DataRuntime runtime, String random, Table dest, Object data, ConfigStore configs, Run run) {
+        long result = 0;
+        if(!run.isValid()) {
+            if(log.isWarnEnabled() &&ConfigStore.IS_LOG_SQL(configs)) {
+                log.warn("[valid:false][不具备执行条件][dest:"+dest+"]");
+            }
+            return -1;
+        }
+        if(run.isEmpty()) {
+            log.warn("[不具备执行条件][dest:{}]", dest);
+            return -1;
+        }
+        if(null != configs) {
+            configs.add(run);
+        }
+        List<Object> values = run.getValues();
+        int batch = run.getBatch();
+        String action = null;
+        if(null != run.action()){
+            action = run.action().toString();
+        }
+        if(batch > 1) {
+            action = "batch " + action;
+        }
+        long fr = System.currentTimeMillis();
+        /*执行SQL*/
+        if (log.isInfoEnabled() &&ConfigStore.IS_LOG_SQL(configs)) {
+            log.info("{}[action:{}]{}", random, action, run.log(ACTION.DML.UPDATE,ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
+        }
+
+        boolean exe = true;
+        if(null != configs) {
+            exe = configs.execute();
+        }
+        if(!exe) {
+            return -1;
+        }
+        long millis = -1;
+        try{
+            result = actuator.update(this, runtime, random, dest, data, configs, run);
+            millis = System.currentTimeMillis() - fr;
+            boolean slow = false;
+            long SLOW_SQL_MILLIS = ConfigStore.SLOW_SQL_MILLIS(configs);
+            if(SLOW_SQL_MILLIS > 0 &&ConfigStore.IS_LOG_SLOW_SQL(configs)) {
+                if(millis > SLOW_SQL_MILLIS) {
+                    slow = true;
+                    log.warn("{}[slow cmd][action:{}][{}][执行耗时:{}]{}", random, action, run.getTable(), DateUtil.format(millis), run.log(ACTION.DML.UPDATE,ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
+                    if(null != dmListener) {
+                        dmListener.slow(runtime, random, ACTION.DML.UPDATE, run, run.getFinalUpdate(), values, null, true, result, millis);
+                    }
+                }
+            }
+            if (!slow && log.isInfoEnabled() &&ConfigStore.IS_LOG_SQL_TIME(configs)) {
+                String qty = result+"";
+                if(batch>1) {
+                    qty = "约"+result;
+                }
+                log.info("{}[action:{}][{}][执行耗时:{}][影响行数:{}]", random, action, run.getTable(), DateUtil.format(millis), LogUtil.format(qty, 34));
+            }
+
+        }catch(Exception e) {
+            if (ConfigStore.IS_PRINT_EXCEPTION_STACK_TRACE(configs)) {
+                log.error("update 异常:", e);
+            }
+            if (ConfigStore.IS_THROW_SQL_UPDATE_EXCEPTION(configs)) {
+                CommandUpdateException ex = new CommandUpdateException("update异常:" + e.toString(), e);
+                ex.setValues(values);
+                throw ex;
+            }
+            if (ConfigStore.IS_LOG_SQL_WHEN_ERROR(configs)) {
+                log.error("{}[{}][action:][{}]{}", random, action, run.getTable(), LogUtil.format("更新异常:", 33) + e.toString(), run.log(ACTION.DML.UPDATE,ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
+            }
+
+        }
+        return result;
+    }
+
+    /**
+     * save [调用入口]<br/>
+     * <br/>
+     * 根据是否有主键值确认insert | update<br/>
+     * 执行完成后会补齐自增主键值
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param random 用来标记同一组命令
+     * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+     * @param data 数据
+     * @param configs 更新条件
+     * @param columns 需要插入或更新的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
+     *                列可以加前缀<br/>
+     *                +:表示必须更新<br/>
+     *                -:表示必须不更新<br/>
+     *                ?:根据是否有值<br/>
+     *
+     *        如果没有提供columns,长度为0也算没有提供<br/>
+     *        则解析obj(遍历所有的属性工Key)获取insert列<br/>
+     *
+     *        如果提供了columns则根据columns获取insert列<br/>
+     *
+     *        但是columns中出现了添加前缀列,则解析完columns后,继续解析obj<br/>
+     *
+     *        以上执行完后,如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
+     *        则把执行结果与表结构对比,删除表中没有的列<br/>
+     * @return 影响行数
+     */
+    @Override
+    public long save(DataRuntime runtime, String random, Table dest, Object data, ConfigStore configs, List<String> columns) {
+        if(null == random) {
+            random = random(runtime);
+        }
+        if(null == data) {
+            if(ConfigStore.IS_THROW_SQL_UPDATE_EXCEPTION(configs)) {
+                throw new CommandUpdateException("save空数据");
+            }else {
+                log.error("save空数据");
+                return -1;
+            }
+        }
+        if(data instanceof Collection) {
+            Collection<?> items = (Collection<?>)data;
+            long cnt = 0;
+            for (Object item : items) {
+                cnt += save(runtime, random, dest, item, configs, columns);
+            }
+            return cnt;
+        }
+        return saveObject(runtime, random, dest, data, configs, columns);
+    }
+
+    /**
+     *
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param random 用来标记同一组命令
+     * @param dest 表
+     * @param data 保存的数据
+     * @param configs ConfigStore
+     * @param columns 指定列
+     * @return long 影响行数
+     */
+    protected long saveCollection(DataRuntime runtime, String random, Table dest, Collection<?> data, ConfigStore configs, List<String> columns) {
+        long cnt = 0;
+        //List<Run> runs = buildInsertRun(runtime, random, batch, dest, data, columns);
+        return cnt;
+    }
+    /**
+     *
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param random 用来标记同一组命令
+     * @param dest 表
+     * @param data 保存的数据
+     * @param configs ConfigStore
+     * @param columns 指定列
+     * @return long 影响行数
+     */
+    protected long saveObject(DataRuntime runtime, String random, Table dest, Object data, ConfigStore configs, List<String> columns) {
+        if(null == data) {
+            return 0;
+        }
+        boolean isNew = BeanUtil.checkIsNew(data);
+        if(isNew) {
+            return insert(runtime, random, 0, dest, data, configs, columns);
+        }else{
+            //是否覆盖(null:不检测直接执行update有可能影响行数=0)
+            Boolean override = checkOverride(data);
+            ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
+            if(null != override) {
+                RunPrepare prepare = new DefaultTablePrepare(dest);
+                Map<String, Object> pvs = checkPv(data);
+                ConfigStore stores = new DefaultConfigStore();
+                for(String k:pvs.keySet()) {
+                    stores.and(k, pvs.get(k));
+                }
+                boolean exists = exists(runtime, random, prepare, stores);
+                if(exists) {
+                    if(override) {
+                        return update(runtime, random, dest, data, configs, columns);
+                    }else{
+                        log.warn("[跳过更新][数据已存在:{}({})]", dest, BeanUtil.map2json(pvs));
+                    }
+                }else{
+                    return insert(runtime, random, 0, dest, data, configs, columns);
+                }
+            }else{
+                return update(runtime, random, dest, data, configs, columns);
+            }
+        }
+        return 0;
+    }
+
+    /**
+     * 有主键值的情况下 检测覆盖
+     * @param obj Object
+     * @return boolean
+     * null:正常执行update<br/>
+     * true或false:检测数据库中是否存在<br/>
+     * 如果数据库中存在匹配的数据<br/>
+     * true:执行更新<br/>
+     * false:跳过更新<br/>
+     */
+    protected Boolean checkOverride(Object obj) {
+        Boolean result = null;
+        if(null != obj && obj instanceof DataRow) {
+            result = ((DataRow)obj).getOverride();
+        }
+        return result;
+    }
+
+    /**
+     * 检测主键值
+     * @param obj Object
+     * @return Map
+     */
+    protected Map<String, Object> checkPv(Object obj) {
+        Map<String, Object> pvs = new HashMap<>();
+        if(null != obj && obj instanceof DataRow) {
+            DataRow row = (DataRow) obj;
+            List<String> ks = row.getPrimaryKeys();
+            for(String k:ks) {
+                pvs.put(k, row.get(k));
+            }
+        }
+        return pvs;
+    }
+
+    /**
+     * 是否是可以接收数组类型的值
+     * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
+     * @param key key
+     * @return boolean
+     */
+    protected boolean isMultipleValue(DataRuntime runtime, TableRun run, String key) {
+        Table table = run.getTable();
+        if (null != table) {
+            LinkedHashMap<String, Column> columns = columns(runtime, null, false, table, false);
+            if(null != columns) {
+                Column column = columns.get(key.toUpperCase());
+                return isMultipleValue(column);
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 是否支持集合值
+     * @param column Column 根据column的数据类型
+     * @return boolean
+     */
+    protected boolean isMultipleValue(Column column) {
+        if(null != column) {
+            String type = column.getTypeName().toUpperCase();
+            if(type.contains("POINT") || type.contains("GEOMETRY") || type.contains("POLYGON")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 过滤掉表结构中不存在的列
+     * @param table 表
+     * @param columns columns
+     * @return List
+     */
+    public LinkedHashMap<String, Column> checkMetadata(DataRuntime runtime, Table table, ConfigStore configs, LinkedHashMap<String, Column> columns) {
+        if(!ConfigStore.IS_AUTO_CHECK_METADATA(configs)) {
+            return columns;
+        }
+        LinkedHashMap<String, Column> result = new LinkedHashMap<>();
+        LinkedHashMap<String, Column> metadatas = columns(runtime, null, false, table, false);
+        try {
+            LinkedHashMap<String, Tag> tags = tags(runtime, null,false, table);
+            metadatas.putAll(tags);
+        }catch (Exception e){}
+        //tags(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tags, Table table, String pattern)
+        if(!metadatas.isEmpty()) {
+            for (String key:columns.keySet()) {
+                if (metadatas.containsKey(key)) {
+                    result.put(key, metadatas.get(key));
+                } else {
+                    if(ConfigStore.IS_LOG_SQL_WARN(configs)) {
+                        log.warn("[{}][column:{}.{}][insert/update忽略当前列名]", LogUtil.format("列名检测不存在", 33), table, key);
+                    }
+                }
+            }
+        }else{
+            if(ConfigStore.IS_LOG_SQL_WARN(configs)) {
+                log.warn("[{}][table:{}][忽略列名检测]", LogUtil.format("表结构检测失败(检查表名是否存在)", 33), table);
+            }
+        }
+        if(ConfigStore.IS_LOG_SQL_WARN(configs)) {
+            log.info("[check column metadata][origin:{}][result:{}]", columns.size(), result.size());
+        }
+        return result;
+    }
+
+    /* *****************************************************************************************************************
+     *                                                     QUERY
+     * -----------------------------------------------------------------------------------------------------------------
+     * [调用入口]
+     * DataSet querys(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
+     * DataSet querys(DataRuntime runtime, String random, Procedure procedure, PageNavi navi)
+     * <T> EntitySet<T> selects(DataRuntime runtime, String random, RunPrepare prepare, Class<T> clazz, ConfigStore configs, String... conditions)
+     * List<Map<String, Object>> maps(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
+     * [命令合成]
+     * Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions)
+     * List<Run> buildQuerySequence(DataRuntime runtime, boolean next, String ... names)
+     * Run fillQueryContent(DataRuntime runtime, Run run)
+     * String mergeFinalQuery(DataRuntime runtime, Run run)
+     * RunValue createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder)
+     * Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder)
+     * StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder)
+     * [命令执行]
+     * DataSet select(DataRuntime runtime, String random, boolean system, String table, ConfigStore configs, Run run)
+     * List<Map<String, Object>> maps(DataRuntime runtime, String random, ConfigStore configs, Run run)
+     * Map<String, Object> map(DataRuntime runtime, String random, ConfigStore configs, Run run)
+     * DataRow sequence(DataRuntime runtime, String random, boolean next, String ... names)
+     * List<Map<String, Object>> process(DataRuntime runtime, List<Map<String, Object>> list)
+     ******************************************************************************************************************/
+
+    /**
+     * query [调用入口]<br/>
+     * <br/>
+     * 返回DataSet中包含元数据信息，如果性能有要求换成maps
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param random 用来标记同一组命令
+     * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
+     * @param configs 过滤条件及相关配置
+     * @param conditions  简单过滤条件
+     * @return DataSet
+     */
+    @Override
+    public DataSet querys(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
+        DataSet set = null;
+        Long fr = 0L;
+        boolean cmd_success = false;
+        Run run = null;
+        PageNavi navi = null;
+
+        if(null == random) {
+            random = random(runtime);
+        }
+        ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
+        if (null != dmListener) {
+            swt = dmListener.prepareQuery(runtime, random, prepare, configs, conditions);
+        }
+        if(swt == ACTION.SWITCH.BREAK) {
+            return new DataSet().setTable(prepare.getTable());
+        }
+        //query拦截
+        swt = InterceptorProxy.prepareQuery(runtime, random, prepare, configs, conditions);
+        if(swt == ACTION.SWITCH.BREAK) {
+            return new DataSet().setTable(prepare.getTable());
+        }
+
+        run = buildQueryRun(runtime, prepare, configs, conditions);
+
+        if (log.isWarnEnabled() && ConfigStore.IS_LOG_SQL(configs) && !run.isValid()) {
+            String tmp = "[valid:false][不具备执行条件]";
+            String src = "";
+            if (prepare instanceof TablePrepare) {
+                src = prepare.getTableName();
+            } else {
+                src = prepare.getText();
+            }
+            tmp += "[RunPrepare:" + ConfigParser.createSQLSign(false, false, src, configs, conditions) + "][thread:" + Thread.currentThread().getId() + "][ds:" + runtime.datasource() + "]";
+            log.warn(tmp);
+        }
+        navi = run.getPageNavi();
+        if(null == navi && null != configs){
+            navi = configs.getPageNavi();
+        }
+        long total = 0;
+        Boolean autoCount = false;
+        if (run.isValid()) {
+            if (null != navi) {
+                autoCount = navi.autoCount();//未设置或true时查询总数
+                if(null == autoCount) {
+                    autoCount = true;
+                }
+                if(autoCount) {
+                    if (null != dmListener) {
+                        dmListener.beforeTotal(runtime, random, run);
+                    }
+                    fr = System.currentTimeMillis();
+                    if (navi.getCalType() == 1 && navi.getLastRow() == 0) {
+                        // 第一条 query中设置的标识(只查一行)
+                        total = 1;
+                    } else {
+                        // 未计数(总数 )
+                        if (navi.getTotalRow() == 0) {
+                            total = count(runtime, random, run);
+                            navi.setTotalRow(total);
+                        } else {
+                            total = navi.getTotalRow();
+                        }
+                    }
+                    if (null != dmListener) {
+                        dmListener.afterTotal(runtime, random, run, true, total, System.currentTimeMillis() - fr);
+                    }
+                    if (log.isInfoEnabled() && ConfigStore.IS_LOG_SQL(configs)) {
+                        log.info("[查询记录总数][行数:{}]", total);
+                    }
+                }
+            }
+        }
+        fr = System.currentTimeMillis();
+        if (run.isValid()) {
+            if(null == navi || total > 0 || !autoCount) {
+                if(null != dmListener) {
+                    dmListener.beforeQuery(runtime, random, run, total);
+                }
+                swt = InterceptorProxy.beforeQuery(runtime, random, run, navi);
+                if(swt == ACTION.SWITCH.BREAK) {
+                    return new DataSet().setTable(prepare.getTable());
+                }
+                set = select(runtime, random, false, prepare.getTable(), configs, run);
+                cmd_success = true;
+            }else{
+                if(null != configs) {
+                    configs.add(run);
+                }
+                set = new DataSet().setTable(prepare.getTable());
+                if(ConfigStore.IS_CHECK_EMPTY_SET_METADATA(configs)) {
+                    set.setMetadata(metadata(runtime, prepare, false));
+                }
+            }
+        } else {
+            set = new DataSet().setTable(prepare.getTable());
+        }
+
+        set.setDest(prepare.getDest());
+        set.setNavi(navi);
+        if (null != navi && navi.isLazy()) {
+            navi.setDataSize(set.size());
+            PageLazyStore.setTotal(navi.getLazyKey(), navi.getTotalRow());
+        }
+
+        if(null != dmListener) {
+            dmListener.afterQuery(runtime, random, run, cmd_success, set, System.currentTimeMillis() - fr);
+        }
+        InterceptorProxy.afterQuery(runtime, random, run, cmd_success, set, navi, System.currentTimeMillis() - fr);
+        return set;
+    }
+
+    /**
+     * query procedure [调用入口]<br/>
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param random 用来标记同一组命令
+     * @param procedure 存储过程
+     * @param navi 分页
+     * @return DataSet
+     */
+    @Override
+    public DataSet querys(DataRuntime runtime, String random, Procedure procedure, PageNavi navi) {
+        if(log.isDebugEnabled()) {
+            log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 DataSet querys(DataRuntime runtime, String random, Procedure procedure, PageNavi navi)", 37));
+        }
+        return new DataSet();
+    }
+
+    /**
+     * query [调用入口]<br/>
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param random 用来标记同一组命令
+     * @param clazz 类
+     * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
+     * @param configs 过滤条件及相关配置
+     * @param conditions  简单过滤条件
+     * @return EntitySet
+     * @param <T> Entity
+     */
+    @Override
+    public <T> EntitySet<T> selects(DataRuntime runtime, String random, RunPrepare prepare, Class<T> clazz, ConfigStore configs, String ... conditions) {
+        if(null == prepare) {
+            prepare = new DefaultTablePrepare();
+        }
+        EntitySet<T> list = null;
+        Long fr = System.currentTimeMillis();
+        Run run = null;
+        boolean cmd_success = false;
+        PageNavi navi = null;
+
+        ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
+        if (null != dmListener) {
+            swt = dmListener.prepareQuery(runtime, random, prepare, configs, conditions);
+        }
+        if(swt == ACTION.SWITCH.BREAK) {
+            return new EntitySet();
+        }
+        swt = InterceptorProxy.prepareQuery(runtime, random, prepare, configs, conditions);
+        if(swt == ACTION.SWITCH.BREAK) {
+            return new EntitySet();
+        }
+
+        if(BasicUtil.isEmpty(prepare.getDest())) {
+            //text xml格式的 不检测表名，避免一下步根据表名检测表结构
+            if(prepare instanceof TextPrepare || prepare instanceof XMLPrepare) {
+            }else {
+                prepare.setDest(EntityAdapterProxy.table(clazz, true));
+            }
+        }
+
+        run = buildQueryRun(runtime, prepare, configs, conditions);
+        if (log.isWarnEnabled() && ConfigStore.IS_LOG_SQL(configs) && !run.isValid()) {
+            String tmp = "[valid:false][不具备执行条件]";
+            tmp += "[RunPrepare:" + ConfigParser.createSQLSign(false, false, clazz.getName(), configs, conditions) + "][thread:" + Thread.currentThread().getId() + "][ds:" + runtime.datasource() + "]";
+            log.warn(tmp);
+        }
+        navi = run.getPageNavi();
+        long total = 0;
+        Boolean autoCount = false;
+        if (run.isValid()) {
+            if (null != navi) {
+                autoCount = navi.autoCount();//未设置或true时查询总数
+                if(null == autoCount) {
+                    autoCount = true;
+                }
+                if(autoCount) {
+                    if (null != dmListener) {
+                        dmListener.beforeTotal(runtime, random, run);
+                    }
+                    fr = System.currentTimeMillis();
+                    if (navi.getCalType() == 1 && navi.getLastRow() == 0) {
+                        // 第一条 query中设置的标识(只查一行)
+                        total = 1;
+                    }  else {
+                        // 未计数(总数 )
+                        if (navi.getTotalRow() == 0) {
+                            total = count(runtime, random, run);
+                            navi.setTotalRow(total);
+                        } else {
+                            total = navi.getTotalRow();
+                        }
+                    }
+                    if (null != dmListener) {
+                        dmListener.afterTotal(runtime, random, run, true, total, System.currentTimeMillis() - fr);
+                    }
+                }
+            }
+            if (log.isInfoEnabled() && ConfigStore.IS_LOG_SQL(configs)) {
+                log.info("[查询记录总数][行数:{}]", total);
+            }
+        }
+        fr = System.currentTimeMillis();
+        if (run.isValid()) {
+            if(null == navi || !autoCount || total > 0) {
+                swt = InterceptorProxy.beforeQuery(runtime, random, run, navi);
+                if(swt == ACTION.SWITCH.BREAK) {
+                    return new EntitySet();
+                }
+                if (null != dmListener) {
+                    dmListener.beforeQuery(runtime, random, run, total);
+                }
+                fr = System.currentTimeMillis();
+                list = select(runtime, random, clazz, run.getTable(), configs, run);
+                cmd_success = false;
+            }else{
+                list = new EntitySet<>();
+            }
+        } else {
+            list = new EntitySet<>();
+        }
+        list.setNavi(navi);
+        if (null != navi && navi.isLazy()) {
+            PageLazyStore.setTotal(navi.getLazyKey(), navi.getTotalRow());
+        }
+
+        if (null != dmListener) {
+            dmListener.afterQuery(runtime, random, run, cmd_success, list, System.currentTimeMillis() - fr);
+        }
+        InterceptorProxy.afterQuery(runtime, random, run, cmd_success, list, navi, System.currentTimeMillis() - fr);
+        return list;
+    }
+
+    /**
+     * select [命令执行-子流程]<br/>
+     * DataRow转换成Entity
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param clazz entity class
+     * @param table table
+     * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
+     * @return EntitySet
+     * @param <T> entity.class
+     *
+     */
+    protected <T> EntitySet<T> select(DataRuntime runtime, String random, Class<T> clazz, Table table, ConfigStore configs, Run run) {
+        EntitySet<T> set = new EntitySet<>();
+        if(null == random) {
+            random = random(runtime);
+        }
+        if(null != configs) {
+            configs.entityClass(clazz);
+        }
+        DataSet rows = select(runtime, random, false, table, configs, run);
+        for(DataRow row:rows) {
+            T entity = null;
+            if(EntityAdapterProxy.hasAdapter(clazz)) {
+                //jdbc adapter需要参与 或者metadata里添加colun type
+                entity = EntityAdapterProxy.entity(clazz, row, null);
+            }else{
+                entity = row.entity(clazz);
+            }
+            set.add(entity);
+        }
+
+        return set;
+    }
+
+    /**
+     * query [调用入口]<br/>
+     * <br/>
+     * 对性能有要求的场景调用，返回java原生map集合,结果中不包含元数据信息
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param random 用来标记同一组命令
+     * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
+     * @param configs 过滤条件及相关配置
+     * @param conditions  简单过滤条件
+     * @return maps 返回map集合
+     */
+    @Override
+    public List<Map<String, Object>> maps(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
+        List<Map<String, Object>> maps = null;
+        ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
+        boolean cmd_success = false;
+        Run run = null;
+        if(null == random) {
+            random = random(runtime);
+        }
+        //query拦截
+        swt = InterceptorProxy.prepareQuery(runtime, random, prepare, configs, conditions);
+        if(swt == ACTION.SWITCH.BREAK) {
+            return new ArrayList<>();
+        }
+
+        if (null != dmListener) {
+            swt = dmListener.prepareQuery(runtime, random, prepare, configs, conditions);
+        }
+        if(swt == ACTION.SWITCH.BREAK) {
+            return new ArrayList<>();
+        }
+        run = buildQueryRun(runtime, prepare, configs, conditions);
+        Long fr = System.currentTimeMillis();
+        if (log.isWarnEnabled() && ConfigStore.IS_LOG_SQL(configs) && !run.isValid()) {
+            String tmp = "[valid:false][不具备执行条件]";
+            String src = "";
+            if (prepare instanceof TablePrepare) {
+                src = prepare.getTableName();
+            } else {
+                src = prepare.getText();
+            }
+            tmp += "[RunPrepare:" + ConfigParser.createSQLSign(false, false, src, configs, conditions) + "][thread:" + Thread.currentThread().getId() + "][ds:" + runtime.datasource() + "]";
+            log.warn(tmp);
+        }
+        if (run.isValid()) {
+            swt = InterceptorProxy.beforeQuery(runtime, random, run, null);
+            if(swt == ACTION.SWITCH.BREAK) {
+                return new ArrayList<>();
+            }
+            if (null != dmListener) {
+                dmListener.beforeQuery(runtime, random, run, -1);
+            }
+            if(null != configs) {
+                PageNavi navi = configs.getPageNavi();
+                if(null != navi) {
+                    Boolean autoCount = navi.autoCount();
+                    if (null != autoCount && autoCount) {
+                        long total = count(runtime, random, run);
+                        navi.setTotalRow(total);
+                    }
+                }
+
+            }
+
+            maps = maps(runtime, random, configs, run);
+            cmd_success = true;
+        } else {
+            maps = new ArrayList<>();
+        }
+
+        if (null != dmListener) {
+            dmListener.afterQuery(runtime, random, run, cmd_success, maps, System.currentTimeMillis() - fr);
+        }
+        InterceptorProxy.afterQuery(runtime, random, run, cmd_success, maps, null, System.currentTimeMillis() - fr);
+        return maps;
+    }
+
+    /**
+     * select[命令合成]<br/> 最终可执行命令<br/>
+     * 创建查询SQL
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
+     * @param configs 过滤条件及相关配置
+     * @param conditions  简单过滤条件
+     * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
+     */
+    @Override
+    public Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions) {
+        Run run = initQueryRun(runtime, prepare);
+        init(runtime, run, configs, conditions);
+        List<Run> unions = run.getUnions();
+        if(null != unions) {
+            for(Run union:unions) {
+                init(runtime, union, configs, conditions);
+            }
+        }
+        if(run.checkValid()) {
+            //构造最终的查询SQL
+            run = fillQueryContent(runtime, run);
+        }
+
+        return run;
+    }
+
+    /**
+     * query run初始化,检测占位符、忽略不存在的列等
+     * select[命令合成]<br/>
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
+     * @param configs 过滤条件及相关配置
+     * @param conditions  简单过滤条件
+     */
+    public void init(DataRuntime runtime, Run run, ConfigStore configs, String ... conditions) {
+        if(null != run) {
+            RunPrepare prepare = run.getPrepare();
+            if(prepare instanceof TablePrepare) {
+                likes(runtime, prepare.getTable(), configs);
+            }
+            //如果是text类型 将解析文本并抽取出变量
+            if(run instanceof TextRun) {
+                parseText(runtime, (TextRun)run);
+            }
+            run.addConfigStore(configs);
+            configs = run.getConfigs();
+            //先把configs中的占位值取出
+            if(null != configs) {
+                List<Object> statics = configs.getStaticValues();
+                for (Object item : statics) {
+                    run.addValue(new RunValue("none", item));
+                }
+            }
+
+            run.addCondition(conditions);
+
+            if(run.checkValid()) {
+                //为变量赋值 run.condition赋值
+                run.init();
+                //检测不存在的列
+                if(ConfigStore.IS_AUTO_CHECK_METADATA(configs)) {
+                    List<Join> joins = prepare.getJoins();
+                    Table table = run.getTable();
+                    if(null != table && (null == joins || joins.isEmpty())) {//TODO 单表时再检测
+                        LinkedHashMap<String, Column> metadatas = columns(runtime, null, false, table, false);
+                        //检测不存在的列
+                        OrderStore orders = run.getOrderStore();
+                        if (null != orders) {
+                            orders.filter(metadatas);
+                        }
+                        if(null != prepare) {
+                            prepare.filter(metadatas);
+                        }
+                        ConditionChain chain = run.getConditionChain();
+                        if(null != chain) {
+                            chain.filter(metadatas);
+                        }
+                        if(null != configs) {
+                            configs.filter(metadatas);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    /**
+     * 解析文本中的占位符
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
+     */
+    @Override
+    public void parseText(DataRuntime runtime, TextRun run) {
+        String text = run.getPrepare().getText();
+        if(null == text) {
+            return;
+        }
+        try{
+            int varType = -1;
+            Compare compare = Compare.EQUAL;
+
+            List<List<String>> keys = null;
+            int type = 0;
+            // AND CD = {CD} || CD LIKE '%{CD}%' || CD IN ({CD}) || CD = ${CD} || CD = #{CD}
+            //{CD} 用来兼容旧版本，新版本中不要用，避免与josn格式冲突
+            keys = RegularUtil.fetchs(text, RunPrepare.SQL_VAR_PLACEHOLDER_REGEX, Regular.MATCH_MODE.CONTAIN);
+            type = Variable.KEY_TYPE_SIGN_V2 ;
+            //::KEY 格式的占位符解析,在PG环境中会与 ::INT8 格式冲突 需要禁用
+            if(keys.isEmpty() && ConfigTable.IS_ENABLE_PLACEHOLDER_REGEX_EXT && supportSqlVarPlaceholderRegexExt(runtime)) {
+                // AND CD = :CD || CD LIKE ':CD' || CD IN (:CD) || CD = ::CD
+                keys = RegularUtil.fetchs(text, RunPrepare.SQL_VAR_PLACEHOLDER_REGEX_EXT, Regular.MATCH_MODE.CONTAIN);
+                type = Variable.KEY_TYPE_SIGN_V1 ;
+            }
+            if(BasicUtil.isNotEmpty(true, keys)) {
+                // AND CD = :CD
+                for(int i=0; i<keys.size();i++) {
+                    List<String> keyItem = keys.get(i);
+
+                    Variable var = SyntaxHelper.buildVariable(type, keyItem.get(0), keyItem.get(1), keyItem.get(2), keyItem.get(3));
+                    if(null == var) {
+                        continue;
+                    }
+                    var.setSwt(Compare.EMPTY_VALUE_SWITCH.NULL);
+                    run.addVariable(var);
+                }// end for
+            }else{
+                // AND CD = ?
+                int qty = SQLUtil.countPlaceholder(text);
+                if(qty > 0) {
+                    for(int i=0; i<qty; i++) {
+                        Variable var = new DefaultVariable();
+                        var.setType(Variable.VAR_TYPE_INDEX);
+                        var.setSwt(Compare.EMPTY_VALUE_SWITCH.NULL);
+                        run.addVariable(var);
+                    }
+                }
+            }
+        }catch(Exception e) {
+            log.error("parse text exception:", e);
+        }
+    }
+    private void likes(DataRuntime runtime, Table table, ConfigStore configs) {
+        if(null == table || null == configs) {
+            return;
+        }
+        List<Config> list = configs.getConfigChain().getConfigs();
+        for(Config config:list) {
+            if(config.getCompare() == Compare.LIKES) {
+                LinkedHashMap<String, Column> colums = columns(runtime, null, false, table, false);
+                list.remove(config);
+                ConfigStore ors = new DefaultConfigStore();
+                List<Object> values = config.getValues();
+                Object value = null;
+                if(null != values && !values.isEmpty()) {
+                    value = values.get(0);
+                }
+                for(Column column:colums.values()) {
+                    TypeMetadata tm = column.getTypeMetadata();
+                    if(null != tm && tm.getCategoryGroup() == TypeMetadata.CATEGORY_GROUP.STRING) {
+                        ors.or(Compare.LIKE, column.getName(), value);
+                    }
+                }
+                configs.and(ors);
+                break;
+            }
+        }
+    }
+
+    /**
+     * 查询序列cur 或 next value
+     * @param next  是否生成返回下一个序列 false:cur true:next
+     * @param names 序列名
+     * @return String
+     */
+    @Override
+    public List<Run> buildQuerySequence(DataRuntime runtime, boolean next, String ... names) {
+        if(log.isDebugEnabled()) {
+            log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQuerySequence(DataRuntime runtime, boolean next, String ... names)", 37));
+        }
+        return new ArrayList<>();
+    }
+
+    /**
+     * select[命令合成-子流程] <br/>
+     * 构造查询主体, 中间过程有可能转换类型
+     * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
+     */
+    @Override
+    public Run fillQueryContent(DataRuntime runtime, Run run) {
+        return fillQueryContent(runtime, run.getBuilder(), run);
+    }
+    /**
+     * select[命令合成-子流程] <br/>
+     * 构造查询主体
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param builder 有可能合个run合成一个 所以提供一个共用builder
+     * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
+     */
+    @Override
+    public Run fillQueryContent(DataRuntime runtime, StringBuilder builder, Run run) {
+        if(null != run) {
+            if(run instanceof TableRun) {
+                run = fillQueryContent(runtime, builder, (TableRun) run);
+            }else if(run instanceof XMLRun) {
+                run = fillQueryContent(runtime, builder, (XMLRun) run);
+            }else if(run instanceof TextRun) {
+                run = fillQueryContent(runtime, builder, (TextRun) run);
+            }
+            convert(runtime, run.getConfigs(), run);
+        }
+        return run;
+    }
+    /**
+     * select[命令合成-子流程] <br/>
+     * 构造查询主体
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param run XMLRun
+     */
+    protected Run fillQueryContent(DataRuntime runtime, XMLRun run) {
+        return fillQueryContent(runtime, run.getBuilder(), run);
+    }
+    /**
+     *
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param builder 有可能合个run合成一个 所以提供一个共用builder
+     * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
+     */
+    protected Run fillQueryContent(DataRuntime runtime, StringBuilder builder, XMLRun run) {
+        if(log.isDebugEnabled()) {
+            log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 fillQueryContent(DataRuntime runtime, XMLRun run)", 37));
+        }
+        return run;
+    }
+    /**
+     * select[命令合成-子流程] <br/>
+     * 构造查询主体
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param run TextRun
+     */
+    protected Run fillQueryContent(DataRuntime runtime, TextRun run) {
+        return fillQueryContent(runtime, run.getBuilder(), run);
+    }
+
+    /**
+     *
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param builder 有可能合个run合成一个 所以提供一个共用builder
+     * @param run TextRun
+     */
+    protected Run fillQueryContent(DataRuntime runtime, StringBuilder builder, TextRun run) {
+        replaceVariable(runtime, run);
+        run.appendCondition(true);
+        run.appendGroup();
+        // appendOrderStore();
+        run.checkValid();
+        return run;
+    }
+
+    /**
+     *
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param run TextRun
+     */
+    protected Run fillQueryContent(DataRuntime runtime, TableRun run) {
+        return fillQueryContent(runtime, run.getBuilder(), run);
+    }
+    /**
+     * 有些非JDBC环境也需要用到SQL
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param builder 有可能合个run合成一个 所以提供一个共用builder
+     * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
+     */
+    protected Run fillQueryContent(DataRuntime runtime, StringBuilder builder, TableRun run) {
+        TablePrepare sql = (TablePrepare)run.getPrepare();
+        builder.append("SELECT ");
+        if(null != sql.getDistinct()) {
+            builder.append(sql.getDistinct());
+        }
+        builder.append(BR_TAB);
+        LinkedHashMap<String,Column> columns = sql.getColumns();
+        if(null == columns || columns.isEmpty()) {
+            ConfigStore configs = run.getConfigs();
+            if(null != configs) {
+                List<String> cols = configs.columns();
+                columns = new LinkedHashMap<>();
+                for(String col:cols) {
+                    columns.put(col.toUpperCase(), new Column(col));
+                }
+            }
+        }
+        if(null != columns && !columns.isEmpty()) {
+            // 指定查询列
+            boolean first = true;
+            for(Column column:columns.values()) {
+                if(BasicUtil.isEmpty(column) || BasicUtil.isEmpty(column.getName())) {
+                    continue;
+                }
+                if(!first) {
+                    builder.append(",");
+                }
+                first = false;
+                String name = column.getName();
+                //if (column.startsWith("${") && column.endsWith("}")) {
+                if (BasicUtil.checkEl(name)) {
+                    name = name.substring(2, name.length()-1);
+                    builder.append(name);
+                }else{
+                    if(name.contains("(") || name.contains(",")) {
+                        builder.append(name);
+                    }else if(name.toUpperCase().contains(" AS ")) {
+                        int split = name.toUpperCase().indexOf(" AS ");
+                        String tmp = name.substring(0, split).trim();
+                        delimiter(builder, tmp);
+                        builder.append(" ");
+                        tmp = name.substring(split+4).trim();
+                        delimiter(builder, tmp);
+                    }else if("*".equals(name)) {
+                        builder.append("*");
+                    }else{
+                        delimiter(builder, name);
+                    }
+                }
+            }
+            builder.append(BR);
+        }else{
+            // 全部查询
+            builder.append("*");
+            builder.append(BR);
+        }
+        Table table = run.getTable();
+        builder.append("FROM").append(BR_TAB);
+        name(runtime, builder, table);
+        String alias = table.getAlias();
+        if(BasicUtil.isNotEmpty(alias)) {
+            builder.append(" ");
+            delimiter(builder, alias);
+        }
+        builder.append(BR);
+        List<Join> joins = sql.getJoins();
+        if(null != joins) {
+            for (Join join:joins) {
+                builder.append(BR_TAB).append(join.getType().getCode()).append(" ");
+                Table joinTable = join.getTable();
+                String joinTableAlias = joinTable.getAlias();
+                name(runtime, builder, joinTable);
+                if(BasicUtil.isNotEmpty(joinTableAlias)) {
+                    builder.append("  ");
+                    delimiter(builder, joinTableAlias);
+                }
+                builder.append(" ON ").append(join.getCondition());
+            }
+        }
+
+        //builder.append("\nWHERE 1=1\n\t");
+        /*添加查询条件*/
+        // appendConfigStore();
+        run.appendCondition(builder, this, true, true);
+        run.appendGroup(builder);
+        return run;
+    }
+
+    /**
+     * select[命令合成-子流程] <br/>
+     * 合成最终 select 命令 包含分页 排序
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
+     * @return String
+     */
+    @Override
+    public String mergeFinalQuery(DataRuntime runtime, Run run) {
+        return run.getBaseQuery();
+    }
+
+    /**
+     * select[命令合成-子流程] <br/>
+     * 构造 LIKE 查询条件
+     * 如果不需要占位符 返回null  否则原样返回value
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param builder builder
+     * @param compare 比较方式 默认 equal 多个值默认 in
+     * @param value value
+     * @return value 有占位符时返回占位值，没有占位符返回null
+     */
+    @Override
+    public RunValue createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder) {
+        if(log.isDebugEnabled()) {
+            log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 RunValue createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder)", 37));
+        }
+        return null;
+    }
+
+    /**
+     * select[命令合成-子流程] <br/>
+     * 构造(NOT) IN 查询条件
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param builder builder
+     * @param compare 比较方式 默认 equal 多个值默认 in
+     * @param value value
+     * @return builder
+     */
+    @Override
+    public StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder) {
+        if(log.isDebugEnabled()) {
+            log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder)", 37));
+        }
+        return null;
+    }
+
+    /**
+     * select [命令执行]<br/>
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param random 用来标记同一组命令
+     * @param system 系统表不检测列属性
+     * @param table 表
+     * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
+     * @return DataSet
+     */
+    @Override
+    public DataSet select(DataRuntime runtime, String random, boolean system, Table table, ConfigStore configs, Run run) {
+        if(log.isDebugEnabled()) {
+            log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 DataSet select(DataRuntime runtime, String random, boolean system, String table, ConfigStore configs, Run run)", 37));
+        }
+        return new DataSet().setTable(table);
+    }
+
+    /**
+     * select [命令执行]<br/>
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param random 用来标记同一组命令
+     * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
+     * @return maps
+     */
+    @Override
+    public List<Map<String, Object>> maps(DataRuntime runtime, String random, ConfigStore configs, Run run) {
+        List<Map<String, Object>> maps = null;
+        if(null == random) {
+            random = random(runtime);
+        }
+        if(null != configs) {
+            configs.add(run);
+        }
+        String sql = run.getFinalQuery();
+        List<Object> values = run.getValues();
+        if(BasicUtil.isEmpty(sql)) {
+            if(ConfigStore.IS_THROW_SQL_QUERY_EXCEPTION(configs)) {
+                throw new CommandQueryException("未指定命令");
+            }else{
+                log.error("未指定命令");
+                return new ArrayList<>();
+            }
+        }
+        if(log.isInfoEnabled() &&ConfigStore.IS_LOG_SQL(configs)) {
+            log.info("{}[action:select]{}", random, run.log(ACTION.DML.SELECT,ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
+        }
+        boolean exe = true;
+        if(null != configs) {
+            exe = configs.execute();
+        }
+        if(!exe) {
+            return new ArrayList<>();
+        }
+        try{
+            maps = actuator.maps(this, runtime, random, configs, run);
+            maps = process(runtime, maps);
+        }catch(Exception e) {
+            if(ConfigStore.IS_PRINT_EXCEPTION_STACK_TRACE(configs)) {
+                log.error("maps 异常:", e);
+            }
+            if(ConfigStore.IS_LOG_SQL_WHEN_ERROR(configs)) {
+                log.error("{}[{}][action:select]{}", random, LogUtil.format("查询异常:", 33) + e.toString(), run.log(ACTION.DML.SELECT,ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
+            }
+            if(ConfigStore.IS_THROW_SQL_QUERY_EXCEPTION(configs)) {
+                CommandQueryException ex = new CommandQueryException("query异常:"+e.toString(), e);
+                ex.setCmd(sql);
+                ex.setValues(values);
+                throw ex;
+            }
+
+        }
+        return maps;
+    }
+
+    /**
+     * select [命令执行]<br/>
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param random 用来标记同一组命令
+     * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
+     * @return map
+     */
+    @Override
+    public Map<String, Object> map(DataRuntime runtime, String random, ConfigStore configs, Run run) {
+        Map<String, Object> map = null;
+        String sql = run.getFinalExists();
+        List<Object> values = run.getValues();
+        if(null != configs) {
+            configs.add(run);
+        }
+        long fr = System.currentTimeMillis();
+        if (log.isInfoEnabled() &&ConfigStore.IS_LOG_SQL(configs)) {
+            log.info("{}[action:select]{}", random, run.log(ACTION.DML.EXISTS,ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
+        }
+        boolean exe = true;
+        if(null != configs) {
+            exe = configs.execute();
+        }
+        if(!exe) {
+            return new HashMap<>();
+        }
+        try {
+            map = actuator.map(this, runtime, random, configs, run);
+        }catch (Exception e) {
+            if(ConfigStore.IS_THROW_SQL_QUERY_EXCEPTION(configs)) {
+                throw new CommandQueryException("查询异常", e);
+            }
+            if (ConfigStore.IS_LOG_SQL_WHEN_ERROR(configs)) {
+                if(ConfigStore.IS_PRINT_EXCEPTION_STACK_TRACE(configs)) {
+                    e.printStackTrace();
+                }
+                log.error("{}[{}][action:select][cmd:\n{}\n]\n[param:{}]", random, LogUtil.format("查询异常:", 33)+e, sql, LogUtil.param(values));
+            }
+        }
+        //}
+        Long millis = System.currentTimeMillis() - fr;
+        boolean slow = false;
+        long SLOW_SQL_MILLIS = ConfigStore.SLOW_SQL_MILLIS(configs);
+        if(SLOW_SQL_MILLIS > 0 &&ConfigStore.IS_LOG_SLOW_SQL(configs)) {
+            if(millis > SLOW_SQL_MILLIS) {
+                slow = true;
+                log.warn("{}[slow cmd][action:exists][执行耗时:{}][cmd:\n{}\n]\n[param:{}]", random, DateUtil.format(millis), sql, LogUtil.param(values));
+                if(null != dmListener) {
+                    dmListener.slow(runtime, random, ACTION.DML.EXISTS, run, sql, values, null, true, map, millis);
+                }
+            }
+        }
+        if (!slow && log.isInfoEnabled() &&ConfigStore.IS_LOG_SQL_TIME(configs)) {
+            log.info("{}[action:select][执行耗时:{}][封装行数:{}]", random, DateUtil.format(millis), LogUtil.format(map == null ?0:1, 34));
+        }
+        return map;
+    }
+
+    /**
+     * select [命令执行]<br/>
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param random 用来标记同一组命令
+     * @param next 是否查下一个序列值
+     * @param names 存储过程名称s
+     * @return DataRow 保存序列查询结果 以存储过程name作为key
+     */
+    @Override
+    public DataRow sequence(DataRuntime runtime, String random, boolean next, String ... names) {
+        if(log.isDebugEnabled()) {
+            log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 DataRow sequence(DataRuntime runtime, String random, boolean next, String ... names)", 37));
+        }
+        return null;
+    }
+
+    /**
+     * select [结果集封装-子流程]<br/>
+     * JDBC执行完成后的结果处理
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param list JDBC执行返回的结果集
+     * @return  maps
+     */
+    @Override
+    public List<Map<String, Object>> process(DataRuntime runtime, List<Map<String, Object>> list) {
+        return list;
+    }
+
+    /* *****************************************************************************************************************
+     *                                                     COUNT
+     * -----------------------------------------------------------------------------------------------------------------
+     * [调用入口]
+     * long count(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
+     * [命令合成]
+     * String mergeFinalTotal(DataRuntime runtime, Run run)
+     * [命令执行]
+     * long count(DataRuntime runtime, String random, Run run)
+     ******************************************************************************************************************/
+    /**
+     * count [调用入口]<br/>
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param random 用来标记同一组命令
+     * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
+     * @param configs 过滤条件及相关配置
+     * @param conditions  简单过滤条件
+     * @return long
+     */
+    @Override
+    public long count(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
+        long count = -1;
+        Long fr = System.currentTimeMillis();
+        Run run = null;
+        if(null == random) {
+            random = random(runtime);
+        }
+
+        boolean cmd_success = false;
+
+        ACTION.SWITCH swt = InterceptorProxy.prepareCount(runtime, random, prepare, configs, conditions);
+        if(swt == ACTION.SWITCH.BREAK) {
+            return -1;
+        }
+        if (null != dmListener) {
+            swt = dmListener.prepareQuery(runtime, random, prepare, configs, conditions);
+        }
+        if(swt == ACTION.SWITCH.BREAK) {
+            return -1;
+        }
+        run = buildQueryRun(runtime, prepare, configs, conditions);
+        if(!run.isValid()) {
+            if(log.isWarnEnabled() && ConfigStore.IS_LOG_SQL(configs)) {
+                log.warn("[valid:false][不具备执行条件][RunPrepare:" + ConfigParser.createSQLSign(false, false, prepare.getTableName(), configs, conditions) + "][thread:" + Thread.currentThread().getId() + "][ds:" + runtime.datasource() + "]");
+            }
+            return -1;
+        }
+        if (null != dmListener) {
+            dmListener.beforeCount(runtime, random, run);
+        }
+        swt = InterceptorProxy.beforeCount(runtime, random, run);
+        if(swt == ACTION.SWITCH.BREAK) {
+            return -1;
+        }
+        fr = System.currentTimeMillis();
+        count = count(runtime, random, run);
+        cmd_success = true;
+
+        if(null != dmListener) {
+            dmListener.afterCount(runtime, random, run, cmd_success, count, System.currentTimeMillis() - fr);
+        }
+        InterceptorProxy.afterCount(runtime, random, run, cmd_success, count, System.currentTimeMillis() - fr);
+        return count;
+    }
+
+    /**
+     * count [命令合成]<br/>
+     * 合成最终 select count 命令
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
+     * @return String
+     */
+    @Override
+    public String mergeFinalTotal(DataRuntime runtime, Run run) {
+        if(log.isDebugEnabled()) {
+            log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 String mergeFinalTotal(DataRuntime runtime, Run run)", 37));
+        }
+        return null;
+    }
+
+    /**
+     * count [命令执行]<br/>
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param random 用来标记同一组命令
+     * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
+     * @return long
+     */
+    @Override
+    public long count(DataRuntime runtime, String random, Run run) {
+        if(log.isDebugEnabled()) {
+            log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 long count(DataRuntime runtime, String random, Run run)", 37));
+        }
+        return -1;
+    }
+
+    /* *****************************************************************************************************************
+     *                                                     EXISTS
+     * -----------------------------------------------------------------------------------------------------------------
+     * boolean exists(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
+     * String mergeFinalExists(DataRuntime runtime, Run run)
+     ******************************************************************************************************************/
+
+    /**
+     * exists [调用入口]<br/>
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param random 用来标记同一组命令
+     * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
+     * @param configs 查询条件及相关设置
+     * @param conditions  简单过滤条件
+     * @return boolean
+     */
+    @Override
+    public boolean exists(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
+        if(log.isDebugEnabled()) {
+            log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现  exists(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)", 37));
+        }
+        return false;
+    }
+    /**
+     * exists [命令合成]<br/>
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
+     * @return String
+     */
+    @Override
+    public String mergeFinalExists(DataRuntime runtime, Run run) {
+        if(log.isDebugEnabled()) {
+            log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 String mergeFinalExists(DataRuntime runtime, Run run)", 37));
+        }
+        return null;
+    }
+
+    /* *****************************************************************************************************************
+     *                                                     EXECUTE
+     * -----------------------------------------------------------------------------------------------------------------
+     * [调用入口]
+     * long execute(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
+     * long execute(DataRuntime runtime, String random, int batch, ConfigStore configs, RunPrepare prepare, Collection<Object> values)
+     * boolean execute(DataRuntime runtime, String random, Procedure procedure)
+     * [命令合成]
+     * Run buildExecuteRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions)
+     * void fillExecuteContent(DataRuntime runtime, Run run)
+     * [命令执行]
+     * long execute(DataRuntime runtime, String random, ConfigStore configs, Run run)
+     ******************************************************************************************************************/
+
+    /**
+     * execute [调用入口]<br/>
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param random 用来标记同一组命令
+     * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
+     * @param configs 查询条件及相关设置
+     * @param conditions  简单过滤条件
+     * @return 影响行数
+     */
+    @Override
+    public long execute(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
+        long result = -1;
+        boolean cmd_success = false;
+        ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
+        if(null == random) {
+            random = random(runtime);
+        }
+        swt = InterceptorProxy.prepareExecute(runtime, random, prepare, configs, conditions);
+        if(swt == ACTION.SWITCH.BREAK) {
+            return -1;
+        }
+
+        Run run = buildExecuteRun(runtime,  prepare, configs, conditions);
+        if(!run.isValid()) {
+            if(log.isWarnEnabled() && ConfigStore.IS_LOG_SQL(configs)) {
+                log.warn("[valid:false][不具备执行条件][RunPrepare:" + ConfigParser.createSQLSign(false, false, prepare.getTableName(), configs, conditions) + "][thread:" + Thread.currentThread().getId() + "][ds:" + runtime.datasource() + "]");
+            }
+            return -1;
+        }
+        long fr = System.currentTimeMillis();
+
+        long millis = -1;
+        swt = InterceptorProxy.beforeExecute(runtime, random, run);
+        if(swt == ACTION.SWITCH.BREAK) {
+            return -1;
+        }
+        if(null != dmListener) {
+            swt = dmListener.beforeExecute(runtime, random, run);
+        }
+        if(swt == ACTION.SWITCH.BREAK) {
+            return -1;
+        }
+        result = execute(runtime, random, configs, run);
+        cmd_success = true;
+        if (null != dmListener) {
+            dmListener.afterExecute(runtime, random, run, cmd_success, result, millis);
+        }
+        InterceptorProxy.afterExecute(runtime, random, run, cmd_success, result, System.currentTimeMillis()-fr);
+        return result;
+    }
+
+    /**
+     * execute [调用入口]<br/>
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param random 用来标记同一组命令
+     * @param batch 批量执行每批最多数量
+     * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
+     * @param configs 查询条件及相关设置
+     * @param values  values
+     * @return 影响行数
+     */
+    @Override
+    public long execute(DataRuntime runtime, String random, int batch, ConfigStore configs, RunPrepare prepare, Collection<Object> values) {
+        if(null == random) {
+            random = random(runtime);
+        }
+        prepare.setBatch(batch);
+        Run run = buildExecuteRun(runtime, prepare, configs);
+        if(null != values && !values.isEmpty()) {
+            Object first = values.iterator().next();
+            if (first instanceof Collection) {
+                //?下标占位
+                List<Object> list = new ArrayList<>();
+                int vol = 0;
+                for (Object item : values) {
+                    Collection col = (Collection) item;
+                    list.addAll(col);
+                    vol = col.size();
+                }
+                run.setValues(null, list);
+                run.setVol(vol);
+            } else {
+                //${} #{}占位
+                List<Object> list = new ArrayList<>();
+                List<Variable> vars = run.getVariables();
+                List<String> keys = new ArrayList<>();
+                run.setVol(vars.size());
+                for (Variable var : vars) {
+                    keys.add(var.getKey());
+                }
+                for (Object item : values) {
+                    for (String key : keys) {
+                        Object value = BeanUtil.getFieldValue(item, key);
+                        list.add(value);
+                    }
+                }
+                run.setValues(null, list);
+            }
+        }
         return execute(runtime, random, configs, run);
-	}
-	/**
-	 * procedure [命令执行]<br/>
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param procedure 存储过程
-	 * @param random  random
-	 * @return 影响行数
-	 */
-	@Override
-	public boolean execute(DataRuntime runtime, String random, Procedure procedure) {
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 boolean execute(DataRuntime runtime, String random, Procedure procedure)", 37));
-		}
-		return false;
-	}
+    }
 
-	/**
-	 * execute [命令合成]<br/>
-	 * 创建执行SQL
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
-	 * @param configs 查询条件及相关设置
-	 * @param conditions  简单过滤条件
-	 * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
-	 */
-	@Override
-	public Run buildExecuteRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions) {
-		Run run = null;
-		if(prepare instanceof XMLPrepare) {
-			run = new XMLRun();
-		}else if(prepare instanceof TextPrepare) {
-			run = new TextRun();
-		}
-		if(null != run) {
-			run.setBatch(prepare.getBatch());
-			run.setRuntime(runtime);
-			run.setPrepare(prepare);
-			if(run instanceof TextRun) {
-				parseText(runtime, (TextRun)run);
-			}
-			run.setConfigStore(configs);
-			run.addCondition(conditions);
-			run.init(); //
-			//构造最终的执行SQL
-			//fillQueryContent(runtime, run);
-			fillExecuteContent(runtime, run);
-		}
-		return run;
-	}
-	/**
-	 * execute [命令合成]<br/>
-	 * 填充execute命令
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param run XMLRun
-	 */
-	protected void fillExecuteContent(DataRuntime runtime, XMLRun run) {
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 fillExecuteContent(DataRuntime runtime, XMLRun run)", 37));
-		}
-	}
-	/**
-	 * execute [命令合成]<br/>
-	 * 填充execute命令
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param run XMLRun
-	 */
-	protected void fillExecuteContent(DataRuntime runtime, TextRun run) {
-		replaceVariable(runtime, run);
-		run.appendCondition(true);
-		run.appendGroup();
-		run.checkValid();
-	}
-	/**
-	 * execute [命令合成]<br/>
-	 * 填充execute命令
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param run XMLRun
-	 */
-	protected void fillExecuteContent(DataRuntime runtime, TableRun run) {
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 fillExecuteContent(DataRuntime runtime, TextRun run)", 37));
-		}
-	}
+    /**
+     * execute [调用入口]<br/>
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param random 用来标记同一组命令
+     * @param batch 批量执行每批最多数量
+     * @param vol 批量执行每行参数数量
+     * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
+     * @param configs 查询条件及相关设置
+     * @param values  values
+     * @return 影响行数
+     */
+    @Override
+    public long execute(DataRuntime runtime, String random, int batch, int vol, ConfigStore configs, RunPrepare prepare, Collection<Object> values) {
+        if(null == random) {
+            random = random(runtime);
+        }
+        prepare.setBatch(batch);
+        Run run = buildExecuteRun(runtime, prepare, configs);
+        run.setVol(vol);
+        run.setValues(null, values);
+        return execute(runtime, random, configs, run);
+    }
+    /**
+     * procedure [命令执行]<br/>
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param procedure 存储过程
+     * @param random  random
+     * @return 影响行数
+     */
+    @Override
+    public boolean execute(DataRuntime runtime, String random, Procedure procedure) {
+        if(log.isDebugEnabled()) {
+            log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 boolean execute(DataRuntime runtime, String random, Procedure procedure)", 37));
+        }
+        return false;
+    }
 
-	/**
-	 * execute [命令合成-子流程]<br/>
-	 * 填充 execute 命令内容
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
-	 */
-	@Override
-	public void fillExecuteContent(DataRuntime runtime, Run run) {
-		if(null != run) {
-			if(run instanceof TableRun) {
-				TableRun r = (TableRun) run;
-				fillExecuteContent(runtime, r);
-			}else if(run instanceof XMLRun) {
-				XMLRun r = (XMLRun) run;
-				fillExecuteContent(runtime, r);
-			}else if(run instanceof TextRun) {
-				TextRun r = (TextRun) run;
-				fillExecuteContent(runtime, r);
-			}
-		}
-	}
+    /**
+     * execute [命令合成]<br/>
+     * 创建执行SQL
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
+     * @param configs 查询条件及相关设置
+     * @param conditions  简单过滤条件
+     * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
+     */
+    @Override
+    public Run buildExecuteRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions) {
+        Run run = null;
+        if(prepare instanceof XMLPrepare) {
+            run = new XMLRun();
+        }else if(prepare instanceof TextPrepare) {
+            run = new TextRun();
+        }
+        if(null != run) {
+            run.setBatch(prepare.getBatch());
+            run.setRuntime(runtime);
+            run.setPrepare(prepare);
+            if(run instanceof TextRun) {
+                parseText(runtime, (TextRun)run);
+            }
+            run.setConfigStore(configs);
+            run.addCondition(conditions);
+            run.init(); //
+            //构造最终的执行SQL
+            //fillQueryContent(runtime, run);
+            fillExecuteContent(runtime, run);
+        }
+        return run;
+    }
+    /**
+     * execute [命令合成]<br/>
+     * 填充execute命令
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param run XMLRun
+     */
+    protected void fillExecuteContent(DataRuntime runtime, XMLRun run) {
+        if(log.isDebugEnabled()) {
+            log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 fillExecuteContent(DataRuntime runtime, XMLRun run)", 37));
+        }
+    }
+    /**
+     * execute [命令合成]<br/>
+     * 填充execute命令
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param run XMLRun
+     */
+    protected void fillExecuteContent(DataRuntime runtime, TextRun run) {
+        replaceVariable(runtime, run);
+        run.appendCondition(true);
+        run.appendGroup();
+        run.checkValid();
+    }
+    /**
+     * execute [命令合成]<br/>
+     * 填充execute命令
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param run XMLRun
+     */
+    protected void fillExecuteContent(DataRuntime runtime, TableRun run) {
+        if(log.isDebugEnabled()) {
+            log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 fillExecuteContent(DataRuntime runtime, TextRun run)", 37));
+        }
+    }
 
-	/**
-	 * execute [命令执行]<br/>
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param random 用来标记同一组命令
-	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
-	 * @return 影响行数
-	 */
-	@Override
-	public long execute(DataRuntime runtime, String random, ConfigStore configs, Run run) {
-		long result = -1;
-		if(null == random) {
-			random = random(runtime);
-		}
-		String sql = run.getFinalExecute();
-		List<Object> values = run.getValues();
-		long fr = System.currentTimeMillis();
-		int batch = run.getBatch();
-		String action = "execute";
-		if(batch > 1) {
-			action = "batch execute";
-		}
-		if(log.isInfoEnabled() &&ConfigStore.IS_LOG_SQL(configs)) {
-			if(batch >1 && !ConfigStore.IS_LOG_BATCH_SQL_PARAM(configs)) {
-				log.info("{}[action:{}][cmd:\n{}\n]\n[param size:{}]", random, action, sql, values.size());
-			}else {
-				log.info("{}[action:{}]{}", random, action, run.log(ACTION.DML.EXECUTE,ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
-			}
-		}
-		if(null != configs) {
-			configs.add(run);
-		}
-		boolean exe = true;
-		if(null != configs) {
-			exe = configs.execute();
-		}
-		if(!exe) {
-			return -1;
-		}
-		long millis = -1;
-		try{
-			result = actuator.execute(this, runtime, random, configs, run);
-			millis = System.currentTimeMillis() - fr;
-			boolean slow = false;
-			long SLOW_SQL_MILLIS = ConfigStore.SLOW_SQL_MILLIS(configs);
-			if(SLOW_SQL_MILLIS > 0 &&ConfigStore.IS_LOG_SLOW_SQL(configs)) {
-				if(millis > SLOW_SQL_MILLIS) {
-					slow = true;
-					log.warn("{}[slow cmd][action:{}][执行耗时:{}][cmd:\n{}\n]\n[param:{}]", random, action, DateUtil.format(millis), sql, LogUtil.param(values));
-					if(null != dmListener) {
-						dmListener.slow(runtime, random, ACTION.DML.EXECUTE, run, sql, values, null, true, result, millis);
-					}
-				}
-			}
-			if (!slow && log.isInfoEnabled() &&ConfigStore.IS_LOG_SQL_TIME(configs)) {
-				String qty = ""+result;
-				if(batch>1) {
-					qty = "约"+result;
-				}
-				log.info("{}[action:{}][执行耗时:{}][影响行数:{}]", random, action, DateUtil.format(millis), LogUtil.format(qty, 34));
-			}
-		}catch(Exception e) {
-			if(ConfigStore.IS_PRINT_EXCEPTION_STACK_TRACE(configs)) {
-				log.error("execute exception:",e);
-			}
-			if(ConfigStore.IS_LOG_SQL_WHEN_ERROR(configs)) {
-				log.error("{}[{}][action:{}]{}", random, LogUtil.format("命令执行异常:", 33)+e, action, run.log(ACTION.DML.EXECUTE,ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
-			}
-			if(ConfigStore.IS_THROW_SQL_UPDATE_EXCEPTION(configs)) {
-				throw new CommandUpdateException("命令执行异常", e);
-			}
+    /**
+     * execute [命令合成-子流程]<br/>
+     * 填充 execute 命令内容
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
+     */
+    @Override
+    public void fillExecuteContent(DataRuntime runtime, Run run) {
+        if(null != run) {
+            if(run instanceof TableRun) {
+                TableRun r = (TableRun) run;
+                fillExecuteContent(runtime, r);
+            }else if(run instanceof XMLRun) {
+                XMLRun r = (XMLRun) run;
+                fillExecuteContent(runtime, r);
+            }else if(run instanceof TextRun) {
+                TextRun r = (TextRun) run;
+                fillExecuteContent(runtime, r);
+            }
+        }
+    }
 
-		}
-		return result;
-	}
+    /**
+     * execute [命令执行]<br/>
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param random 用来标记同一组命令
+     * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
+     * @return 影响行数
+     */
+    @Override
+    public long execute(DataRuntime runtime, String random, ConfigStore configs, Run run) {
+        long result = -1;
+        if(null == random) {
+            random = random(runtime);
+        }
+        String sql = run.getFinalExecute();
+        List<Object> values = run.getValues();
+        long fr = System.currentTimeMillis();
+        int batch = run.getBatch();
+        String action = "execute";
+        if(batch > 1) {
+            action = "batch execute";
+        }
+        if(log.isInfoEnabled() &&ConfigStore.IS_LOG_SQL(configs)) {
+            if(batch >1 && !ConfigStore.IS_LOG_BATCH_SQL_PARAM(configs)) {
+                log.info("{}[action:{}][cmd:\n{}\n]\n[param size:{}]", random, action, sql, values.size());
+            }else {
+                log.info("{}[action:{}]{}", random, action, run.log(ACTION.DML.EXECUTE,ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
+            }
+        }
+        if(null != configs) {
+            configs.add(run);
+        }
+        boolean exe = true;
+        if(null != configs) {
+            exe = configs.execute();
+        }
+        if(!exe) {
+            return -1;
+        }
+        long millis = -1;
+        try{
+            result = actuator.execute(this, runtime, random, configs, run);
+            millis = System.currentTimeMillis() - fr;
+            boolean slow = false;
+            long SLOW_SQL_MILLIS = ConfigStore.SLOW_SQL_MILLIS(configs);
+            if(SLOW_SQL_MILLIS > 0 &&ConfigStore.IS_LOG_SLOW_SQL(configs)) {
+                if(millis > SLOW_SQL_MILLIS) {
+                    slow = true;
+                    log.warn("{}[slow cmd][action:{}][执行耗时:{}][cmd:\n{}\n]\n[param:{}]", random, action, DateUtil.format(millis), sql, LogUtil.param(values));
+                    if(null != dmListener) {
+                        dmListener.slow(runtime, random, ACTION.DML.EXECUTE, run, sql, values, null, true, result, millis);
+                    }
+                }
+            }
+            if (!slow && log.isInfoEnabled() &&ConfigStore.IS_LOG_SQL_TIME(configs)) {
+                String qty = ""+result;
+                if(batch>1) {
+                    qty = "约"+result;
+                }
+                log.info("{}[action:{}][执行耗时:{}][影响行数:{}]", random, action, DateUtil.format(millis), LogUtil.format(qty, 34));
+            }
+        }catch(Exception e) {
+            if(ConfigStore.IS_PRINT_EXCEPTION_STACK_TRACE(configs)) {
+                log.error("execute exception:",e);
+            }
+            if(ConfigStore.IS_LOG_SQL_WHEN_ERROR(configs)) {
+                log.error("{}[{}][action:{}]{}", random, LogUtil.format("命令执行异常:", 33)+e, action, run.log(ACTION.DML.EXECUTE,ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
+            }
+            if(ConfigStore.IS_THROW_SQL_UPDATE_EXCEPTION(configs)) {
+                throw new CommandUpdateException("命令执行异常", e);
+            }
 
-	/**
-	 * query [命令合成]<br/>
-	 * 替换占位符
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
-	 * @return 影响行数
-	 */
-	protected void replaceVariable(DataRuntime runtime, TextRun run) {
-		StringBuilder builder = run.getBuilder();
-		List<Variable> variables = run.getVariables();
-		String result = run.getText();
-		if(supportPlaceholder() && null != variables) {
-			for(Variable var:variables) {
-				if(null == var) {
-					continue;
-				}
-				if(var.getType() == Variable.VAR_TYPE_REPLACE) {
-					// CD = ::CD
-					List<Object> values = var.getValues();
-					String value = null;
-					if(BasicUtil.isNotEmpty(true, values)) {
-						if(var.getCompare() == Compare.IN) {
-							value = BeanUtil.concat(BeanUtil.wrap(values, "'"));
-						}else {
-							value = values.get(0).toString();
-						}
-					}
-					if(null != value) {
-						result = result.replace(var.getFullKey(), value);
-					}else{
-						result = result.replace(var.getFullKey(), "NULL");
-					}
-				}
-			}
-			for(Variable var:variables) {
-				if(null == var) {
-					continue;
-				}
-				if(var.getType() == Variable.VAR_TYPE_KEY_REPLACE) {
-					// CD = ':CD'
-					List<Object> values = var.getValues();
-					String value = null;
-					if(BasicUtil.isNotEmpty(true, values)) {
-						if(var.getCompare() == Compare.IN) {
-							value = BeanUtil.concat(BeanUtil.wrap(values, "'"));
-						}else {
-							value = values.get(0).toString();
-						}
-					}
-					if(null != value) {
-						result = result.replace(var.getFullKey(), value);
-					}else{
-						result = result.replace(var.getFullKey(), "");
-					}
-				}
-			}
-			for(Variable var:variables) {
-				if(null == var) {
-					continue;
-				}
-				if(var.getType() == Variable.VAR_TYPE_KEY) {
-					// CD = :CD
-					List<Object> varValues = var.getValues();
-					if(run.getBatch() >1) {//批量执行时在下一步提供值
-						result = result.replace(var.getFullKey(), "?");
-					}else if(BasicUtil.isNotEmpty(true, varValues)) {
-						if(var.getCompare() == Compare.IN) {
-							// 多个值IN
-							String replaceDst = "";
-							for(Object tmp:varValues) {
-								replaceDst += " ?";
-							}
-							addRunValue(runtime, run, Compare.IN, new Column(var.getKey()), varValues);
-							replaceDst = replaceDst.trim().replace(" ",",");
-							result = result.replace(var.getFullKey(), replaceDst);
-						}else{
-							// 单个值
-							result = result.replace(var.getFullKey(), "?");
-							addRunValue(runtime, run, Compare.EQUAL, new Column(var.getKey()), varValues.get(0));
-						}
-					}else{
-						//没有提供参数值
-						result = result.replace(var.getFullKey(), "NULL");
-					}
-				}
-			}
-			// 添加其他变量值
-			for(Variable var:variables) {
-				if(null == var) {
-					continue;
-				}
-				// CD = ?
-				if(var.getType() == Variable.VAR_TYPE_INDEX) {
-					List<Object> varValues = var.getValues();
-					Object value = null;
-					if(BasicUtil.isNotEmpty(true, varValues)) {
-						value = varValues.get(0);
-					}
-					addRunValue(runtime, run, Compare.EQUAL, new Column(var.getKey()), value);
-				}
-			}
-		}
+        }
+        return result;
+    }
 
-		builder.append(result);
-	}
-	/* *****************************************************************************************************************
-	 * 													DELETE
-	 * -----------------------------------------------------------------------------------------------------------------
-	 * [调用入口]
-	 * <T> long deletes(DataRuntime runtime, String random, int batch, String table, ConfigStore configs, String column, Collection<T> values)
-	 * long delete(DataRuntime runtime, String random, String table, ConfigStore configs, Object obj, String... columns)
-	 * long delete(DataRuntime runtime, String random, String table, ConfigStore configs, String... conditions)
-	 * long truncate(DataRuntime runtime, String random, String table)
-	 * [命令合成]
-	 * List<Run> buildDeleteRun(DataRuntime runtime, String table, ConfigStore configs, Object obj, String ... columns)
-	 * List<Run> buildDeleteRun(DataRuntime runtime, int batch, String table, ConfigStore configs, String column, Object values)
-	 * List<Run> buildTruncateRun(DataRuntime runtime, String table)
-	 * List<Run> buildDeleteRunFromTable(DataRuntime runtime, int batch, String table, ConfigStore configs,String column, Object values)
-	 * List<Run> buildDeleteRunFromEntity(DataRuntime runtime, String table, ConfigStore configs, Object obj, String ... columns)
-	 * void fillDeleteRunContent(DataRuntime runtime, Run run)
-	 * [命令执行]
-	 * long delete(DataRuntime runtime, String random, ConfigStore configs, Run run)
-	 ******************************************************************************************************************/
-	/**
-	 * delete [调用入口]<br/>
-	 * <br/>
-	 * 合成 where column in (values)
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param random 用来标记同一组命令
-	 * @param table 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
-	 * @param values 列对应的值
-	 * @return 影响行数
-	 * @param <T> T
-	 */
-	@Override
-	public <T> long deletes(DataRuntime runtime, String random, int batch, Table table, ConfigStore configs, String key, Collection<T> values) {
-		long result = -1;
-		if(null == random) {
-			random = random(runtime);
-		}
-		ACTION.SWITCH swt = InterceptorProxy.prepareDelete(runtime, random, batch, table, key, values);
-		if(swt == ACTION.SWITCH.BREAK) {
-			return -1;
-		}
-		if(null != dmListener) {
-			swt = dmListener.prepareDelete(runtime, random, batch, table, key, values);
-		}
-		if(swt == ACTION.SWITCH.BREAK) {
-			return -1;
-		}
-		List<Run> runs = buildDeleteRun(runtime, batch, table, configs, key, values);
-		for(Run run:runs){
+    /**
+     * query [命令合成]<br/>
+     * 替换占位符
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
+     */
+    protected void replaceVariable(DataRuntime runtime, TextRun run) {
+        StringBuilder builder = run.getBuilder();
+        List<Variable> variables = run.getVariables();
+        String result = run.getText();
+        if(supportPlaceholder() && null != variables) {
+            for(Variable var:variables) {
+                if(null == var) {
+                    continue;
+                }
+                if(var.getType() == Variable.VAR_TYPE_REPLACE) {
+                    // CD = ::CD
+                    List<Object> values = var.getValues();
+                    String value = null;
+                    if(BasicUtil.isNotEmpty(true, values)) {
+                        if(var.getCompare() == Compare.IN) {
+                            value = BeanUtil.concat(BeanUtil.wrap(values, "'"));
+                        }else {
+                            value = values.get(0).toString();
+                        }
+                    }
+                    if(null != value) {
+                        result = result.replace(var.getFullKey(), value);
+                    }else{
+                        result = result.replace(var.getFullKey(), "NULL");
+                    }
+                }
+            }
+            for(Variable var:variables) {
+                if(null == var) {
+                    continue;
+                }
+                if(var.getType() == Variable.VAR_TYPE_KEY_REPLACE) {
+                    // CD = ':CD'
+                    List<Object> values = var.getValues();
+                    String value = null;
+                    if(BasicUtil.isNotEmpty(true, values)) {
+                        if(var.getCompare() == Compare.IN) {
+                            value = BeanUtil.concat(BeanUtil.wrap(values, "'"));
+                        }else {
+                            value = values.get(0).toString();
+                        }
+                    }
+                    if(null != value) {
+                        result = result.replace(var.getFullKey(), value);
+                    }else{
+                        result = result.replace(var.getFullKey(), "");
+                    }
+                }
+            }
+            for(Variable var:variables) {
+                if(null == var) {
+                    continue;
+                }
+                if(var.getType() == Variable.VAR_TYPE_KEY) {
+                    // CD = :CD
+                    List<Object> varValues = var.getValues();
+                    if(run.getBatch() >1) {//批量执行时在下一步提供值
+                        result = result.replace(var.getFullKey(), "?");
+                    }else if(BasicUtil.isNotEmpty(true, varValues)) {
+                        if(var.getCompare() == Compare.IN) {
+                            // 多个值IN
+                            String replaceDst = "";
+                            for(Object tmp:varValues) {
+                                replaceDst += " ?";
+                            }
+                            addRunValue(runtime, run, Compare.IN, new Column(var.getKey()), varValues);
+                            replaceDst = replaceDst.trim().replace(" ",",");
+                            result = result.replace(var.getFullKey(), replaceDst);
+                        }else{
+                            // 单个值
+                            result = result.replace(var.getFullKey(), "?");
+                            addRunValue(runtime, run, Compare.EQUAL, new Column(var.getKey()), varValues.get(0));
+                        }
+                    }else{
+                        //没有提供参数值
+                        result = result.replace(var.getFullKey(), "NULL");
+                    }
+                }
+            }
+            // 添加其他变量值
+            for(Variable var:variables) {
+                if(null == var) {
+                    continue;
+                }
+                // CD = ?
+                if(var.getType() == Variable.VAR_TYPE_INDEX) {
+                    List<Object> varValues = var.getValues();
+                    Object value = null;
+                    if(BasicUtil.isNotEmpty(true, varValues)) {
+                        value = varValues.get(0);
+                    }
+                    addRunValue(runtime, run, Compare.EQUAL, new Column(var.getKey()), value);
+                }
+            }
+        }
 
-			if(!run.isValid()) {
-				if(log.isWarnEnabled() && ConfigStore.IS_LOG_SQL(configs)) {
-					log.warn("[valid:false][不具备执行条件][table:" +table+ "][thread:" + Thread.currentThread().getId() + "][ds:" + runtime.datasource() + "]");
-				}
-				continue;
-			}
-			if(result == -1){
-				result = 1;
-			}
-			result += delete(runtime, random, configs, run);
-		}
-		return result;
-	}
+        builder.append(result);
+    }
+    /* *****************************************************************************************************************
+     *                                                     DELETE
+     * -----------------------------------------------------------------------------------------------------------------
+     * [调用入口]
+     * <T> long deletes(DataRuntime runtime, String random, int batch, String table, ConfigStore configs, String column, Collection<T> values)
+     * long delete(DataRuntime runtime, String random, String table, ConfigStore configs, Object obj, String... columns)
+     * long delete(DataRuntime runtime, String random, String table, ConfigStore configs, String... conditions)
+     * long truncate(DataRuntime runtime, String random, String table)
+     * [命令合成]
+     * List<Run> buildDeleteRun(DataRuntime runtime, String table, ConfigStore configs, Object obj, String ... columns)
+     * List<Run> buildDeleteRun(DataRuntime runtime, int batch, String table, ConfigStore configs, String column, Object values)
+     * List<Run> buildTruncateRun(DataRuntime runtime, String table)
+     * List<Run> buildDeleteRunFromTable(DataRuntime runtime, int batch, String table, ConfigStore configs,String column, Object values)
+     * List<Run> buildDeleteRunFromEntity(DataRuntime runtime, String table, ConfigStore configs, Object obj, String ... columns)
+     * void fillDeleteRunContent(DataRuntime runtime, Run run)
+     * [命令执行]
+     * long delete(DataRuntime runtime, String random, ConfigStore configs, Run run)
+     ******************************************************************************************************************/
+    /**
+     * delete [调用入口]<br/>
+     * <br/>
+     * 合成 where column in (values)
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param random 用来标记同一组命令
+     * @param table 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+     * @param values 列对应的值
+     * @return 影响行数
+     * @param <T> T
+     */
+    @Override
+    public <T> long deletes(DataRuntime runtime, String random, int batch, Table table, ConfigStore configs, String key, Collection<T> values) {
+        long result = -1;
+        if(null == random) {
+            random = random(runtime);
+        }
+        ACTION.SWITCH swt = InterceptorProxy.prepareDelete(runtime, random, batch, table, key, values);
+        if(swt == ACTION.SWITCH.BREAK) {
+            return -1;
+        }
+        if(null != dmListener) {
+            swt = dmListener.prepareDelete(runtime, random, batch, table, key, values);
+        }
+        if(swt == ACTION.SWITCH.BREAK) {
+            return -1;
+        }
+        List<Run> runs = buildDeleteRun(runtime, batch, table, configs, key, values);
+        for(Run run:runs){
 
-	/**
-	 * delete [调用入口]<br/>
-	 * <br/>
-	 * 合成 where k1 = v1 and k2 = v2
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param random 用来标记同一组命令
-	 * @param obj entity或DataRow
-	 * @param columns 删除条件的列或属性，根据columns取obj值并合成删除条件
-	 * @return 影响行数
-	 */
-	@Override
-	public long delete(DataRuntime runtime, String random, Table dest, ConfigStore configs, Object obj, String... columns) {
-		ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
-		long size = -1;
-		if(null != obj) {
-			swt = InterceptorProxy.prepareDelete(runtime, random, 0, dest, obj, columns);
-			if(swt == ACTION.SWITCH.BREAK) {
-				return -1;
-			}
-			if(null != dmListener) {
-				swt = dmListener.prepareDelete(runtime, random, 0, dest, obj, columns);
-			}
-			if(swt == ACTION.SWITCH.BREAK) {
-				return -1;
-			}
-			List<Run> runs = buildDeleteRun(runtime, dest, configs, obj, columns);
-			for(Run run:runs){
-				if(!run.isValid()) {
-					if(log.isWarnEnabled() && ConfigStore.IS_LOG_SQL(configs)) {
-						log.warn("[valid:false][不具备执行条件][dest:" + dest + "][thread:" + Thread.currentThread().getId() + "][ds:" + runtime.datasource() + "]");
-					}
-					continue;
-				}
-				if(size == -1){
-					size = 0;
-				}
-				size += delete(runtime, random, configs, run);
-			}
-		}
-		return size;
-	}
+            if(!run.isValid()) {
+                if(log.isWarnEnabled() && ConfigStore.IS_LOG_SQL(configs)) {
+                    log.warn("[valid:false][不具备执行条件][table:" +table+ "][thread:" + Thread.currentThread().getId() + "][ds:" + runtime.datasource() + "]");
+                }
+                continue;
+            }
+            if(result == -1){
+                result = 1;
+            }
+            result += delete(runtime, random, configs, run);
+        }
+        return result;
+    }
 
-	/**
-	 * delete [调用入口]<br/>
-	 * <br/>
-	 * 根据configs和conditions过滤条件
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param random 用来标记同一组命令
-	 * @param table 表
-	 * @param configs 查询条件及相关设置
-	 * @param conditions  简单过滤条件
-	 * @return 影响行数
-	 */
-	@Override
-	public long delete(DataRuntime runtime, String random, Table table, ConfigStore configs, String... conditions) {
-		long result = -1;
-		ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
-		swt = InterceptorProxy.prepareDelete(runtime, random, 0, table, configs, conditions);
-		if(swt == ACTION.SWITCH.BREAK) {
-			return -1;
-		}
-		if(null != dmListener) {
-			swt = dmListener.prepareDelete(runtime, random, 0, table, configs, conditions);
-		}
-		if(swt == ACTION.SWITCH.BREAK) {
-			return -1;
-		}
-		List<Run> runs = buildDeleteRun(runtime, table, configs, conditions);
-		for(Run run:runs){
-			if(!run.isValid()) {
-				if(log.isWarnEnabled() && ConfigStore.IS_LOG_SQL(configs)) {
-					log.warn("[valid:false][不具备执行条件][table:" + table + "][thread:" + Thread.currentThread().getId() + "][ds:" + runtime.datasource() + "]");
-				}
-				continue;
+    /**
+     * delete [调用入口]<br/>
+     * <br/>
+     * 合成 where k1 = v1 and k2 = v2
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param random 用来标记同一组命令
+     * @param obj entity或DataRow
+     * @param columns 删除条件的列或属性，根据columns取obj值并合成删除条件
+     * @return 影响行数
+     */
+    @Override
+    public long delete(DataRuntime runtime, String random, Table dest, ConfigStore configs, Object obj, String... columns) {
+        ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
+        long size = -1;
+        if(null != obj) {
+            swt = InterceptorProxy.prepareDelete(runtime, random, 0, dest, obj, columns);
+            if(swt == ACTION.SWITCH.BREAK) {
+                return -1;
+            }
+            if(null != dmListener) {
+                swt = dmListener.prepareDelete(runtime, random, 0, dest, obj, columns);
+            }
+            if(swt == ACTION.SWITCH.BREAK) {
+                return -1;
+            }
+            List<Run> runs = buildDeleteRun(runtime, dest, configs, obj, columns);
+            for(Run run:runs){
+                if(!run.isValid()) {
+                    if(log.isWarnEnabled() && ConfigStore.IS_LOG_SQL(configs)) {
+                        log.warn("[valid:false][不具备执行条件][dest:" + dest + "][thread:" + Thread.currentThread().getId() + "][ds:" + runtime.datasource() + "]");
+                    }
+                    continue;
+                }
+                if(size == -1){
+                    size = 0;
+                }
+                size += delete(runtime, random, configs, run);
+            }
+        }
+        return size;
+    }
+
+    /**
+     * delete [调用入口]<br/>
+     * <br/>
+     * 根据configs和conditions过滤条件
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param random 用来标记同一组命令
+     * @param table 表
+     * @param configs 查询条件及相关设置
+     * @param conditions  简单过滤条件
+     * @return 影响行数
+     */
+    @Override
+    public long delete(DataRuntime runtime, String random, Table table, ConfigStore configs, String... conditions) {
+        long result = -1;
+        ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
+        swt = InterceptorProxy.prepareDelete(runtime, random, 0, table, configs, conditions);
+        if(swt == ACTION.SWITCH.BREAK) {
+            return -1;
+        }
+        if(null != dmListener) {
+            swt = dmListener.prepareDelete(runtime, random, 0, table, configs, conditions);
+        }
+        if(swt == ACTION.SWITCH.BREAK) {
+            return -1;
+        }
+        List<Run> runs = buildDeleteRun(runtime, table, configs, conditions);
+        for(Run run:runs){
+            if(!run.isValid()) {
+                if(log.isWarnEnabled() && ConfigStore.IS_LOG_SQL(configs)) {
+                    log.warn("[valid:false][不具备执行条件][table:" + table + "][thread:" + Thread.currentThread().getId() + "][ds:" + runtime.datasource() + "]");
+                }
+        		continue;
 			}
 			if(result == -1){
 				result = 0;
@@ -3987,7 +3986,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
-	 * @param name 名称统配符或正则
+	 * @param query query
 	 * @return LinkedHashMap
 	 */
 	@Override
@@ -4036,7 +4035,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * database[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param name 名称统配符或正则
+	 * @param query query
 	 * @return LinkedHashMap
 	 */
 	@Override
@@ -4118,7 +4117,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * database[命令合成]<br/>
 	 * 查询全部数据库
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param name 名称统配符或正则
+	 * @param query query
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
 	 * @return sqls
 	 * @throws Exception 异常
@@ -4349,7 +4348,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * catalog[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param name 名称统配符或正则
+	 * @param query query
 	 * @return LinkedHashMap
 	 */
 	@Override
@@ -4395,7 +4394,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * catalog[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param name 名称统配符或正则
+	 * @param query query
 	 * @return LinkedHashMap
 	 */
 	@Override
@@ -4456,7 +4455,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * catalog[命令合成]<br/>
 	 * 查询全部catalog
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param name 名称统配符或正则
+	 * @param query query
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
 	 * @return sqls
 	 * @throws Exception 异常
@@ -4546,15 +4545,15 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param previou 上一步查询结果
+	 * @param meta 上一步查询结果
 	 * @param set 查询结果集
 	 * @return Catalog
 	 * @throws Exception 异常
 	 */
 	@Override
-	public Catalog catalog(DataRuntime runtime, int index, boolean create, Catalog previou, DataSet set) throws Exception {
+	public Catalog catalog(DataRuntime runtime, int index, boolean create, Catalog meta, DataSet set) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 Catalog catalog(DataRuntime runtime, int index, boolean create, Catalog previou, DataSet set)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 Catalog catalog(DataRuntime runtime, int index, boolean create, Catalog meta, DataSet set)", 37));
 		}
 		return null;
 	}
@@ -4564,14 +4563,14 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 当前catalog 根据驱动内置接口补充
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param previou 上一步查询结果
+	 * @param meta 上一步查询结果
 	 * @return Catalog
 	 * @throws Exception 异常
 	 */
 	@Override
-	public Catalog catalog(DataRuntime runtime, boolean create, Catalog previou) throws Exception {
+	public Catalog catalog(DataRuntime runtime, boolean create, Catalog meta) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 Catalog catalog(DataRuntime runtime, boolean create, Catalog previou)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 Catalog catalog(DataRuntime runtime, boolean create, Catalog meta)", 37));
 		}
 		return null;
 	}
@@ -4650,8 +4649,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * schema[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param catalog catalog
-	 * @param name 名称统配符或正则
+	 * @param query query
 	 * @return LinkedHashMap
 	 */
 	@Override
@@ -4698,8 +4696,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * schema[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param catalog catalog
-	 * @param name 名称统配符或正则
+	 * @param query query
 	 * @return LinkedHashMap
 	 */
 	@Override
@@ -4761,7 +4758,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * catalog[命令合成]<br/>
 	 * 查询全部数据库
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param name 名称统配符或正则
+	 * @param query query
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
 	 * @return sqls
 	 * @throws Exception 异常
@@ -4851,15 +4848,15 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQuerySchemaRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param previou 上一步查询结果
+	 * @param meta 上一步查询结果
 	 * @param set 查询结果集
 	 * @return schema
 	 * @throws Exception 异常
 	 */
 	@Override
-	public Schema schema(DataRuntime runtime, int index, boolean create, Schema previou, DataSet set) throws Exception {
+	public Schema schema(DataRuntime runtime, int index, boolean create, Schema meta, DataSet set) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 Schema schema(DataRuntime runtime, int index, boolean create, Schema previou, DataSet set)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 Schema schema(DataRuntime runtime, int index, boolean create, Schema meta, DataSet set)", 37));
 		}
 		return null;
 	}
@@ -4869,14 +4866,14 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 当前schema 根据驱动内置接口补充
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param previou 上一步查询结果
+	 * @param meta 上一步查询结果
 	 * @return schema
 	 * @throws Exception 异常
 	 */
 	@Override
-	public Schema schema(DataRuntime runtime, boolean create, Schema previou) throws Exception {
+	public Schema schema(DataRuntime runtime, boolean create, Schema meta) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 Schema schema(DataRuntime runtime, boolean create, Schema previou)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 Schema schema(DataRuntime runtime, boolean create, Schema meta)", 37));
 		}
 		return null;
 	}
@@ -4937,9 +4934,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param pattern 名称统配符或正则
+	 * @param query query
 	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @param struct 查询的属性 参考Metadata.TYPE 多个属性相加算出总和 true:表示查询全部
 	 * @return List
@@ -5121,8 +5116,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 查出所有key并以大写缓存 用来实现忽略大小写
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param catalog catalog
-	 * @param schema schema
+	 * @param query query
 	 */
 	protected void tableMap(DataRuntime runtime, String random, boolean greedy, Table query, ConfigStore configs) {
 		Catalog catalog = query.getCatalog();
@@ -5194,10 +5188,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 查询表,不是查表中的数据
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param pattern 名称统配符或正则
-	 * @param types  Metadata.TYPE.
+	 * @param query query
+	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return String
 	 * @throws Exception Exception
 	 */
@@ -5213,9 +5205,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * table[命令合成]<br/>
 	 * 查询表备注
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param pattern 名称统配符或正则
+     * @param query query
 	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return String
 	 * @throws Exception Exception
@@ -5234,22 +5224,21 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照buildQueryTablesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param catalog catalog
-	 * @param schema schema
+     * @param query query
 	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return tables
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, Table query, DataSet set) throws Exception {
+	public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Table query, DataSet set) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, Table query, DataSet set)", 37));
 		}
-		if(null == tables) {
-			tables = new LinkedHashMap<>();
+		if(null == previous) {
+            previous = new LinkedHashMap<>();
 		}
-		return tables;
+		return previous;
 	}
 
 	/**
@@ -5258,8 +5247,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照buildQueryTablesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param catalog catalog
-	 * @param schema schema
+     * @param query query
 	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return tables
@@ -5287,22 +5275,20 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param previous 上一步查询结果
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param pattern 名称统配符或正则
+	 * @param query query
 	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return tables
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Table query, int types) throws Exception {
+	public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Table query, int types) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Table query, int types)", 37));
 		}
-		if(null == tables) {
-			tables = new LinkedHashMap<>();
+		if(null == previous) {
+            previous = new LinkedHashMap<>();
 		}
-		return tables;
+		return previous;
 	}
 
 	/**
@@ -5311,23 +5297,21 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param previous 上一步查询结果
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param pattern 名称统配符或正则
+     * @param query query
 	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return tables
 	 * @throws Exception 异常
 	 * @param <T> Table
 	 */
 	@Override
-	public <T extends Table> List<T> tables(DataRuntime runtime, boolean create, List<T> tables, Table query, int types) throws Exception {
+	public <T extends Table> List<T> tables(DataRuntime runtime, boolean create, List<T> previous, Table query, int types) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Table> List<T> tables(DataRuntime runtime, boolean create, List<T> tables, Table query, int types)", 37));
 		}
-		if(null == tables) {
-			tables = new ArrayList<>();
+		if(null == previous) {
+            previous = new ArrayList<>();
 		}
-		return tables;
+		return previous;
 	}
 
 	/**
@@ -5335,8 +5319,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 根据查询结果封装Table对象,只封装catalog,schema,name等基础属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 上一步封装结果
-	 * @param catalog catalog
-	 * @param schema schema
+     * @param query query
 	 * @param row 查询结果集
 	 * @return Table
 	 * @param <T> Table
@@ -5383,22 +5366,21 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照buildQueryTablesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param catalog catalog
-	 * @param schema schema
+     * @param query query
 	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return tables
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Table> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, Table query, DataSet set) throws Exception {
-		if(null == tables) {
-			tables = new LinkedHashMap<>();
+	public <T extends Table> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Table query, DataSet set) throws Exception {
+		if(null == previous) {
+            previous = new LinkedHashMap<>();
 		}
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Table> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, Table query, DataSet set)", 37));
 		}
-		return tables;
+		return previous;
 	}
 
 	/**
@@ -5407,8 +5389,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照buildQueryTablesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param catalog catalog
-	 * @param schema schema
+	 * @param query query
 	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return tables
@@ -5518,7 +5499,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
 	 * @param table 表
-	 * @param previous 上一步查询结果
 	 * @param set sql执行的结果集
 	 * @return List
 	 */
@@ -5562,9 +5542,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param pattern 名称统配符或正则
+     * @param query query
 	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @param struct 查询的属性 参考Metadata.TYPE 多个属性相加算出总和 true:表示查询全部
 	 * @return List
@@ -5746,8 +5724,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 查出所有key并以大写缓存 用来实现忽略大小写
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param catalog catalog
-	 * @param schema schema
+	 * @param catalog 对于MySQL, 则对应相应的数据库, 对于Oracle来说, 则是对应相应的数据库实例, 可以不填, 也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
+	 * @param schema 可以理解为数据库的登录名, 而对于Oracle也可以理解成对该数据库操作的所有者的登录名。对于Oracle要特别注意, 其登陆名必须是大写, 不然的话是无法获取到相应的数据, 而MySQL则不做强制要求。
 	 */
 	protected void vertexMap(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, ConfigStore configs) {
 		//Map<String, String> names = CacheProxy.names(this, catalog, schema);
@@ -5801,8 +5779,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 查出所有key并以大写缓存 用来实现忽略大小写
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param catalog catalog
-	 * @param schema schema
+     * @param query query
 	 */
 	@Override
 	public <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, String random, VertexTable query, int types, int struct, ConfigStore configs) {
@@ -5819,10 +5796,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 查询表,不是查表中的数据
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param pattern 名称统配符或正则
-	 * @param types  Metadata.TYPE.
+     * @param query query
+	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return String
 	 * @throws Exception Exception
 	 */
@@ -5838,9 +5813,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * vertex[命令合成]<br/>
 	 * 查询表备注
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param pattern 名称统配符或正则
+     * @param query query
 	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return String
 	 * @throws Exception Exception
@@ -5859,22 +5832,21 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照buildQueryVertexTablesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param catalog catalog
-	 * @param schema schema
+     * @param query query
 	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return vertexs
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> vertexs, VertexTable query, DataSet set) throws Exception {
+	public <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, VertexTable query, DataSet set) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> vertexs, VertexTable query, DataSet set)", 37));
 		}
-		if(null == vertexs) {
-			vertexs = new LinkedHashMap<>();
+		if(null == previous) {
+            previous = new LinkedHashMap<>();
 		}
-		return vertexs;
+		return previous;
 	}
 
 	/**
@@ -5883,22 +5855,21 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照buildQueryVertexTablesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param catalog catalog
-	 * @param schema schema
+     * @param query query
 	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return vertexs
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends VertexTable> List<T> vertexs(DataRuntime runtime, int index, boolean create, List<T> vertexs, VertexTable query, DataSet set) throws Exception {
+	public <T extends VertexTable> List<T> vertexs(DataRuntime runtime, int index, boolean create, List<T> previous, VertexTable query, DataSet set) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends VertexTable> List<T> vertexs(DataRuntime runtime, int index, boolean create, List<T> vertexs, VertexTable query, DataSet set)", 37));
 		}
-		if(null == vertexs) {
-			vertexs = new ArrayList<>();
+		if(null == previous) {
+            previous = new ArrayList<>();
 		}
-		return vertexs;
+		return previous;
 	}
 
 	/**
@@ -5907,22 +5878,20 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param previous 上一步查询结果
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param pattern 名称统配符或正则
+     * @param query query
 	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return vertexs
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, boolean create, LinkedHashMap<String, T> vertexs, VertexTable query, int types) throws Exception {
+	public <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, VertexTable query, int types) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, boolean create, LinkedHashMap<String, T> vertexs, VertexTable query, int types)", 37));
 		}
-		if(null == vertexs) {
-			vertexs = new LinkedHashMap<>();
+		if(null == previous) {
+            previous = new LinkedHashMap<>();
 		}
-		return vertexs;
+		return previous;
 	}
 
 	/**
@@ -5931,23 +5900,21 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param previous 上一步查询结果
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param pattern 名称统配符或正则
+     * @param query query
 	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return vertexs
 	 * @throws Exception 异常
 	 * @param <T> VertexTable
 	 */
 	@Override
-	public <T extends VertexTable> List<T> vertexs(DataRuntime runtime, boolean create, List<T> vertexs, VertexTable query, int types) throws Exception {
+	public <T extends VertexTable> List<T> vertexs(DataRuntime runtime, boolean create, List<T> previous, VertexTable query, int types) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends VertexTable> List<T> vertexs(DataRuntime runtime, boolean create, List<T> vertexs, VertexTable query, int types)", 37));
 		}
-		if(null == vertexs) {
-			vertexs = new ArrayList<>();
+		if(null == previous) {
+            previous = new ArrayList<>();
 		}
-		return vertexs;
+		return previous;
 	}
 
 	/**
@@ -5955,8 +5922,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 根据查询结果封装VertexTable对象,只封装catalog,schema,name等基础属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 上一步封装结果
-	 * @param catalog catalog
-	 * @param schema schema
+     * @param query query
 	 * @param row 查询结果集
 	 * @return VertexTable
 	 * @param <T> VertexTable
@@ -6091,7 +6057,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
 	 * @param vertex 表
-	 * @param previous 上一步查询结果
 	 * @param set sql执行的结果集
 	 * @return List
 	 */
@@ -6135,9 +6100,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param pattern 名称统配符或正则
+     * @param query query
 	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @param struct 查询的属性 参考Metadata.TYPE 多个属性相加算出总和 true:表示查询全部
 	 * @return List
@@ -6320,8 +6283,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 查出所有key并以大写缓存 用来实现忽略大小写
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param catalog catalog
-	 * @param schema schema
+	 * @param catalog 对于MySQL, 则对应相应的数据库, 对于Oracle来说, 则是对应相应的数据库实例, 可以不填, 也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
+	 * @param schema 可以理解为数据库的登录名, 而对于Oracle也可以理解成对该数据库操作的所有者的登录名。对于Oracle要特别注意, 其登陆名必须是大写, 不然的话是无法获取到相应的数据, 而MySQL则不做强制要求。
 	 */
 	protected void edgeMap(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, ConfigStore configs) {
 		//Map<String, String> names = CacheProxy.names(this, catalog, schema);
@@ -6374,8 +6337,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 查出所有key并以大写缓存 用来实现忽略大小写
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param catalog catalog
-	 * @param schema schema
+     * @param query query
 	 */
 	@Override
 	public <T extends EdgeTable> LinkedHashMap<String, T> edges(DataRuntime runtime, String random, EdgeTable query, int types, int struct, ConfigStore configs) {
@@ -6392,10 +6354,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 查询表,不是查表中的数据
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param pattern 名称统配符或正则
-	 * @param types  Metadata.TYPE.
+     * @param query query
+	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return String
 	 * @throws Exception Exception
 	 */
@@ -6411,9 +6371,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * edge[命令合成]<br/>
 	 * 查询表备注
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param pattern 名称统配符或正则
+     * @param query query
 	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return String
 	 * @throws Exception Exception
@@ -6432,22 +6390,21 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照buildQueryEdgesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param catalog catalog
-	 * @param schema schema
+     * @param query query
 	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return edges
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends EdgeTable> LinkedHashMap<String, T> edges(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> edges, EdgeTable query, DataSet set) throws Exception {
+	public <T extends EdgeTable> LinkedHashMap<String, T> edges(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, EdgeTable query, DataSet set) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends EdgeTable> LinkedHashMap<String, T> edges(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> edges, EdgeTable query, DataSet set)", 37));
 		}
-		if(null == edges) {
-			edges = new LinkedHashMap<>();
+		if(null == previous) {
+            previous = new LinkedHashMap<>();
 		}
-		return edges;
+		return previous;
 	}
 
 	/**
@@ -6456,22 +6413,21 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照buildQueryEdgesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param catalog catalog
-	 * @param schema schema
+     * @param query query
 	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return edges
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends EdgeTable> List<T> edges(DataRuntime runtime, int index, boolean create, List<T> edges, EdgeTable query, DataSet set) throws Exception {
+	public <T extends EdgeTable> List<T> edges(DataRuntime runtime, int index, boolean create, List<T> previous, EdgeTable query, DataSet set) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends EdgeTable> List<T> edges(DataRuntime runtime, int index, boolean create, List<T> edges, EdgeTable query, DataSet set)", 37));
 		}
-		if(null == edges) {
-			edges = new ArrayList<>();
+		if(null == previous) {
+            previous = new ArrayList<>();
 		}
-		return edges;
+		return previous;
 	}
 
 	/**
@@ -6480,22 +6436,20 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param previous 上一步查询结果
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param pattern 名称统配符或正则
+     * @param query query
 	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return edges
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends EdgeTable> LinkedHashMap<String, T> edges(DataRuntime runtime, boolean create, LinkedHashMap<String, T> edges, EdgeTable query, int types) throws Exception {
+	public <T extends EdgeTable> LinkedHashMap<String, T> edges(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, EdgeTable query, int types) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends EdgeTable> LinkedHashMap<String, T> edges(DataRuntime runtime, boolean create, LinkedHashMap<String, T> edges, EdgeTable query, int types)", 37));
 		}
-		if(null == edges) {
-			edges = new LinkedHashMap<>();
+		if(null == previous) {
+            previous = new LinkedHashMap<>();
 		}
-		return edges;
+		return previous;
 	}
 
 	/**
@@ -6504,23 +6458,21 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param previous 上一步查询结果
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param pattern 名称统配符或正则
+     * @param query query
 	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return edges
 	 * @throws Exception 异常
 	 * @param <T> EdgeTable
 	 */
 	@Override
-	public <T extends EdgeTable> List<T> edges(DataRuntime runtime, boolean create, List<T> edges, EdgeTable query, int types) throws Exception {
+	public <T extends EdgeTable> List<T> edges(DataRuntime runtime, boolean create, List<T> previous, EdgeTable query, int types) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends EdgeTable> List<T> edges(DataRuntime runtime, boolean create, List<T> edges, EdgeTable query, int types)", 37));
 		}
-		if(null == edges) {
-			edges = new ArrayList<>();
+		if(null == previous) {
+            previous = new ArrayList<>();
 		}
-		return edges;
+		return previous;
 	}
 
 	/**
@@ -6528,8 +6480,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 根据查询结果封装EdgeTable对象,只封装catalog,schema,name等基础属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 上一步封装结果
-	 * @param catalog catalog
-	 * @param schema schema
+     * @param query query
 	 * @param row 查询结果集
 	 * @return EdgeTable
 	 * @param <T> EdgeTable
@@ -6665,7 +6616,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
 	 * @param meta 表
-	 * @param previous 上一步查询结果
 	 * @param set sql执行的结果集
 	 * @return List
 	 */
@@ -6709,11 +6659,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param pattern 名称统配符或正则
-	 * @param types  Metadata.TYPE.
-	 * @param struct 是否查询视图结构
+     * @param query query
+	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
+	 * @param struct 查询的属性 参考Metadata.TYPE 多个属性相加算出总和 true:表示查询全部
 	 * @return List
 	 * @param <T> View
 	 */
@@ -6894,8 +6842,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 查出所有key并以大写缓存 用来实现忽略大小写
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param catalog catalog
-	 * @param schema schema
+	 * @param catalog 对于MySQL, 则对应相应的数据库, 对于Oracle来说, 则是对应相应的数据库实例, 可以不填, 也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
+	 * @param schema 可以理解为数据库的登录名, 而对于Oracle也可以理解成对该数据库操作的所有者的登录名。对于Oracle要特别注意, 其登陆名必须是大写, 不然的话是无法获取到相应的数据, 而MySQL则不做强制要求。
 	 */
 	protected void viewMap(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, ConfigStore configs) {
 		//Map<String, String> names = CacheProxy.names(this, catalog, schema);
@@ -6948,8 +6896,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 查出所有key并以大写缓存 用来实现忽略大小写
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param catalog catalog
-	 * @param schema schema
+     * @param query query
 	 */
 	@Override
 	public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, View query, int types, int struct, ConfigStore configs) {
@@ -6966,10 +6913,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 查询视图,不是查视图中的数据
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param pattern 名称统配符或正则
-	 * @param types  Metadata.TYPE.
+     * @param query query
+	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return String
 	 * @throws Exception Exception
 	 */
@@ -6985,9 +6930,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * view[命令合成]<br/>
 	 * 查询视图备注
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param pattern 名称统配符或正则
+     * @param query query
 	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return String
 	 * @throws Exception Exception
@@ -7006,22 +6949,21 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照buildQueryViewsRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param catalog catalog
-	 * @param schema schema
+	 * @param query query
 	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return views
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> views, View query, DataSet set) throws Exception {
+	public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, View query, DataSet set) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> views, View query, DataSet set)", 37));
 		}
-		if(null == views) {
-			views = new LinkedHashMap<>();
+		if(null == previous) {
+            previous = new LinkedHashMap<>();
 		}
-		return views;
+		return previous;
 	}
 
 	/**
@@ -7030,22 +6972,21 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照buildQueryViewsRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param catalog catalog
-	 * @param schema schema
+     * @param query query
 	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return views
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends View> List<T> views(DataRuntime runtime, int index, boolean create, List<T> views, View query, DataSet set) throws Exception {
+	public <T extends View> List<T> views(DataRuntime runtime, int index, boolean create, List<T> previous, View query, DataSet set) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends View> List<T> views(DataRuntime runtime, int index, boolean create, List<T> views, View query, DataSet set)", 37));
 		}
-		if(null == views) {
-			views = new ArrayList<>();
+		if(null == previous) {
+            previous = new ArrayList<>();
 		}
-		return views;
+		return previous;
 	}
 
 	/**
@@ -7054,22 +6995,20 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param previous 上一步查询结果
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param pattern 名称统配符或正则
+	 * @param query query
 	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return views
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, boolean create, LinkedHashMap<String, T> views, View query, int types) throws Exception {
+	public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, View query, int types) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, boolean create, LinkedHashMap<String, T> views, View query, int types)", 37));
 		}
-		if(null == views) {
-			views = new LinkedHashMap<>();
+		if(null == previous) {
+            previous = new LinkedHashMap<>();
 		}
-		return views;
+		return previous;
 	}
 
 	/**
@@ -7078,23 +7017,21 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param previous 上一步查询结果
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param pattern 名称统配符或正则
+     * @param query query
 	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return views
 	 * @throws Exception 异常
 	 * @param <T> View
 	 */
 	@Override
-	public <T extends View> List<T> views(DataRuntime runtime, boolean create, List<T> views, View query, int types) throws Exception {
+	public <T extends View> List<T> views(DataRuntime runtime, boolean create, List<T> previous, View query, int types) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends View> List<T> views(DataRuntime runtime, boolean create, List<T> views, View query, int types)", 37));
 		}
-		if(null == views) {
-			views = new ArrayList<>();
+		if(null == previous) {
+            previous = new ArrayList<>();
 		}
-		return views;
+		return previous;
 	}
 
 	/**
@@ -7102,8 +7039,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 根据查询结果封装View对象,只封装catalog,schema,name等基础属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 上一步封装结果
-	 * @param catalog catalog
-	 * @param schema schema
+     * @param query query
 	 * @param row 查询结果集
 	 * @return View
 	 * @param <T> View
@@ -7238,7 +7174,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
 	 * @param view 视图
-	 * @param previous 上一步查询结果
 	 * @param set sql执行的结果集
 	 * @return List
 	 */
@@ -7282,9 +7217,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param pattern 名称统配符或正则
+     * @param query query
 	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @param struct 查询的属性 参考Metadata.TYPE 多个属性相加算出总和 true:表示查询全部
 	 * @return List
@@ -7467,8 +7400,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 查出所有key并以大写缓存 用来实现忽略大小写
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param catalog catalog
-	 * @param schema schema
+     * @param query query
 	 */
 	protected void masterMap(DataRuntime runtime, String random, boolean greedy, MasterTable query, ConfigStore configs) {
 		Catalog catalog = query.getCatalog();
@@ -7523,8 +7455,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 查出所有key并以大写缓存 用来实现忽略大小写
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param catalog catalog
-	 * @param schema schema
+     * @param query query
 	 */
 	@Override
 	public <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, String random, MasterTable query, int types, int struct, ConfigStore configs) {
@@ -7541,10 +7472,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 查询表,不是查表中的数据
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param pattern 名称统配符或正则
-	 * @param types  Metadata.TYPE.
+     * @param query query
+	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return String
 	 * @throws Exception Exception
 	 */
@@ -7560,9 +7489,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * master[命令合成]<br/>
 	 * 查询表备注
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param pattern 名称统配符或正则
+     * @param query query
 	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return String
 	 * @throws Exception Exception
@@ -7581,8 +7508,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照buildQueryMasterTablesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param catalog catalog
-	 * @param schema schema
+     * @param query query
 	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return masters
@@ -7605,8 +7531,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照buildQueryMasterTablesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param catalog catalog
-	 * @param schema schema
+     * @param query query
 	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return masters
@@ -7629,22 +7554,20 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param previous 上一步查询结果
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param pattern 名称统配符或正则
+     * @param query query
 	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return masters
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, boolean create, LinkedHashMap<String, T> masters, MasterTable query, int types) throws Exception {
+	public <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, MasterTable query, int types) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, boolean create, LinkedHashMap<String, T> masters, MasterTable query, int types)", 37));
 		}
-		if(null == masters) {
-			masters = new LinkedHashMap<>();
+		if(null == previous) {
+            previous = new LinkedHashMap<>();
 		}
-		return masters;
+		return previous;
 	}
 
 	/**
@@ -7653,23 +7576,21 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param previous 上一步查询结果
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param pattern 名称统配符或正则
+     * @param query query
 	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return masters
 	 * @throws Exception 异常
 	 * @param <T> MasterTable
 	 */
 	@Override
-	public <T extends MasterTable> List<T> masters(DataRuntime runtime, boolean create, List<T> masters, MasterTable query, int types) throws Exception {
+	public <T extends MasterTable> List<T> masters(DataRuntime runtime, boolean create, List<T> previous, MasterTable query, int types) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends MasterTable> List<T> masters(DataRuntime runtime, boolean create, List<T> masters, MasterTable query, int types)", 37));
 		}
-		if(null == masters) {
-			masters = new ArrayList<>();
+		if(null == previous) {
+            previous = new ArrayList<>();
 		}
-		return masters;
+		return previous;
 	}
 
 	/**
@@ -7677,14 +7598,13 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 根据查询结果封装MasterTable对象,只封装catalog,schema,name等基础属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 上一步封装结果
-	 * @param catalog catalog
-	 * @param schema schema
+     * @param query query
 	 * @param row 查询结果集
 	 * @return MasterTable
 	 * @param <T> MasterTable
 	 */
 	@Override
-	public <T extends MasterTable> T init(DataRuntime runtime, int index, T meta, MasterTable table, DataRow row) {
+	public <T extends MasterTable> T init(DataRuntime runtime, int index, T meta, MasterTable query, DataRow row) {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends MasterTable> T init(DataRuntime runtime, int index, T meta, MasterTable query, DataRow row)", 37));
 		}
@@ -7814,7 +7734,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
 	 * @param master 表
-	 * @param previous 上一步查询结果
 	 * @param set sql执行的结果集
 	 * @return List
 	 */
@@ -7854,8 +7773,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
-	 * @param master 主表
-	 * @param pattern 名称统配符或正则
+	 * @param query query
 	 * @return List
 	 * @param <T> MasterTable
 	 */
@@ -7906,10 +7824,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * partition table[命令合成]<br/>
 	 * 查询分区表
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param pattern 名称统配符或正则
-	 * @param types types
+	 * @param query query
+	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
 	 * @return String
 	 */
 	@Override
@@ -7928,9 +7844,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param total 合计SQL数量
 	 * @param index 第几条SQL 对照 buildQueryMasterTablesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param master 主表
-	 * @param catalog catalog
-	 * @param schema schema
+	 * @param query query
 	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return tables
@@ -7952,9 +7866,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 根据根据驱动内置接口
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param master 主表
-	 * @param catalog catalog
-	 * @param schema schema
+	 * @param query query
 	 * @param previous 上一步查询结果
 	 * @return tables
 	 * @throws Exception 异常
@@ -8029,7 +7941,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
 	 * @param table MasterTable
-	 * @param previous 上一步查询结果
 	 * @param set sql执行的结果集
 	 * @return List
 	 */
@@ -8049,8 +7960,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 根据查询结果封装PartitionTable对象,只封装catalog,schema,name等基础属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 上一步封装结果
-	 * @param catalog catalog
-	 * @param schema schema
+     * @param query query
 	 * @param row 查询结果集
 	 * @return PartitionTable
 	 */
@@ -8258,8 +8168,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
-	 * @param catalog catalog
-	 * @param schema schema
+	 * @param query query
 	 * @param tables 表
 	 * @return List
 	 * @param <T> Column
@@ -8332,7 +8241,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * column[命令合成]<br/>
 	 * 查询表上的列
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param table 表
+	 * @param query query
 	 * @param metadata 是否根据metadata(true:SELECT * FROM T WHERE 1=0,false:查询系统表)
 	 * @return runs
 	 */
@@ -8348,8 +8257,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * column[命令合成]<br/>(方法1)<br/>
 	 * 查询多个表的列
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param catalog catalog
-	 * @param schema schema
+	 * @param query query
 	 * @param tables 表
 	 * @param metadata 是否根据metadata(true:SELECT * FROM T WHERE 1=0,false:查询系统表)
 	 * @return runs
@@ -8389,7 +8297,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryColumnsRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param table 表
+	 * @param query query
 	 * @param previous 上一步查询结果
 	 * @param set 系统表查询SQL结果集
 	 * @return columns
@@ -8428,7 +8336,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * <br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 上一步封装结果
-	 * @param table 表
+     * @param query query
 	 * @param row 系统表查询SQL结果集
 	 * @param <T> Column
 	 */
@@ -8891,14 +8799,14 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> tags, DataSet set) throws Exception {
+	public <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> previous, DataSet set) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> tags, DataSet set)", 37));
 		}
-		if(null == tags) {
-			tags = new LinkedHashMap<>();
+		if(null == previous) {
+            previous = new LinkedHashMap<>();
 		}
-		return tags;
+		return previous;
 	}
 
 	/**
@@ -8907,9 +8815,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 解析JDBC get columns结果
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param table 表
-	 * @param previous 上一步查询结果
-	 * @param pattern 名称统配符或正则
+	 * @param query query
 	 * @return tags
 	 * @throws Exception 异常
 	 */
@@ -8975,7 +8881,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
-	 * @param table 表
+	 * @param query query
 	 * @return PrimaryKey
 	 */
 	@Override
@@ -9021,7 +8927,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * primary[命令合成]<br/>
 	 * 查询表上的主键
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param table 表
+	 * @param query query
 	 * @return runs
 	 */
 	@Override
@@ -9036,7 +8942,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * primary[结构集封装]<br/>
 	 * 根据查询结果集构造PrimaryKey基础属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param table 表
+     * @param query query
 	 * @param set sql查询结果
 	 * @throws Exception 异常
 	 */
@@ -9052,7 +8958,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * primary[结构集封装]<br/>
 	 * 根据查询结果集构造PrimaryKey更多属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param table 表
+     * @param query query
 	 * @param set sql查询结果
 	 * @throws Exception 异常
 	 */
@@ -9081,7 +8987,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * primary[结构集封装]<br/>
 	 *  根据驱动内置接口补充PrimaryKey
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param table 表
+	 * @param query query
 	 * @throws Exception 异常
 	 */
 	@Override
@@ -9109,7 +9015,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
-	 * @param table 表
+	 * @param query query
 	 * @return PrimaryKey
 	 */
 	@Override
@@ -9144,7 +9050,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * foreign[命令合成]<br/>
 	 * 查询表上的外键
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param table 表
+	 * @param query query
 	 * @return runs
 	 */
 	@Override
@@ -9160,7 +9066,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 *  根据查询结果集构造PrimaryKey
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryForeignsRun 返回顺序
-	 * @param table 表
+	 * @param query query
 	 * @param previous 上一步查询结果
 	 * @param set sql查询结果
 	 * @throws Exception 异常
@@ -9179,7 +9085,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryIndexesRun 返回顺序
 	 * @param meta 上一步封装结果
-	 * @param table 表
+     * @param query query
 	 * @param row sql查询结果
 	 * @throws Exception 异常
 	 */
@@ -9197,7 +9103,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryIndexesRun 返回顺序
 	 * @param meta 上一步封装结果
-	 * @param table 表
+     * @param query query
 	 * @param row sql查询结果
 	 * @throws Exception 异常
 	 */
@@ -9289,8 +9195,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
-	 * @param table 表
-	 * @param pattern 索引名称
+     * @param query query
 	 * @return  LinkedHashMap
 	 * @param <T> Index
 	 */
@@ -9346,8 +9251,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * index[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param table 表
-	 * @param pattern 名称统配符或正则
+	 * @param query query
 	 * @return  LinkedHashMap
 	 * @param <T> Index
 	 */
@@ -9434,8 +9338,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * index[命令合成]<br/>
 	 * 查询表上的索引
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param table 表
-	 * @param name 名称
+	 * @param query query
 	 * @return runs
 	 */
 	@Override
@@ -9465,17 +9368,17 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryIndexesRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param table 表
+     * @param query query
 	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return indexes indexes
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Index> LinkedHashMap<String, T> indexes(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> indexes, Index query, DataSet set) throws Exception {
+	public <T extends Index> LinkedHashMap<String, T> indexes(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Index query, DataSet set) throws Exception {
 		Table table = query.getTable();
-		if(null == indexes) {
-			indexes = new LinkedHashMap<>();
+		if(null == previous) {
+            previous = new LinkedHashMap<>();
 		}
 		IndexMetadataAdapter config = indexMetadataAdapter(runtime);
 		for(DataRow row:set) {
@@ -9483,7 +9386,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			if(null == name) {
 				continue;
 			}
-			T meta = indexes.get(name.toUpperCase());
+			T meta = previous.get(name.toUpperCase());
 			meta = init(runtime, index, meta, query, row);
 			if(null != table) {
 				if (!table.getName().equalsIgnoreCase(meta.getTableName())) {
@@ -9492,10 +9395,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			}
 			meta = detail(runtime, index, meta, query, row);
 			if(null != meta) {
-				indexes.put(meta.getName().toUpperCase(), meta);
+                previous.put(meta.getName().toUpperCase(), meta);
 			}
 		}
-		return indexes;
+		return previous;
 	}
 
 	/**
@@ -9504,17 +9407,17 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryIndexesRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param table 表
+     * @param query query
 	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return indexes indexes
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Index> List<T> indexes(DataRuntime runtime, int index, boolean create, List<T> indexes, Index query, DataSet set) throws Exception {
+	public <T extends Index> List<T> indexes(DataRuntime runtime, int index, boolean create, List<T> previous, Index query, DataSet set) throws Exception {
 		Table table = query.getTable();
-		if(null == indexes) {
-			indexes = new ArrayList<>();
+		if(null == previous) {
+            previous = new ArrayList<>();
 		}
 		IndexMetadataAdapter config = indexMetadataAdapter(runtime);
 		for(DataRow row:set) {
@@ -9531,10 +9434,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			}
 			meta = detail(runtime, index, meta, table, row);
 			if(null != meta) {
-				indexes.add(meta);
+                previous.add(meta);
 			}
 		}
-		return indexes;
+		return previous;
 	}
 
 	/**
@@ -9580,9 +9483,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 根据驱动内置接口
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param table 表
-	 * @param unique 是否唯一
-	 * @param approximate 索引允许结果反映近似值
+     * @param query query
 	 * @return indexes indexes
 	 * @throws Exception 异常
 	 */
@@ -9602,9 +9503,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 根据驱动内置接口
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param table 表
-	 * @param unique 是否唯一
-	 * @param approximate 索引允许结果反映近似值
+     * @param query query
 	 * @return indexes indexes
 	 * @throws Exception 异常
 	 */
@@ -9625,7 +9524,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryIndexesRun 返回顺序
 	 * @param meta 上一步封装结果
-	 * @param table 表
+	 * @param query query
 	 * @param row sql查询结果
 	 * @throws Exception 异常
 	 */
@@ -9726,7 +9625,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryIndexesRun 返回顺序
 	 * @param meta 上一步封装结果
-	 * @param table 表
+	 * @param query query
 	 * @param row sql查询结果
 	 * @throws Exception 异常
 	 */
@@ -9794,8 +9693,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
-	 * @param table 表
-	 * @param pattern 名称统配符或正则
+	 * @param query query
 	 * @return  LinkedHashMap
 	 * @param <T> Index
 	 */
@@ -9812,9 +9710,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * constraint[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param table 表
-	 * @param column 列
-	 * @param pattern 名称统配符或正则
+     * @param query query
 	 * @return  LinkedHashMap
 	 * @param <T> Index
 	 */
@@ -9830,8 +9726,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * constraint[命令合成]<br/>
 	 * 查询表上的约束
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param table 表
-	 * @param pattern 名称通配符或正则
+	 * @param query query
 	 * @return runs
 	 */
 	@Override
@@ -9847,7 +9742,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param table 表
+	 * @param query query
 	 * @param previous 上一步查询结果
 	 * @param set DataSet
 	 * @return constraints constraints
@@ -9870,8 +9765,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param table 表
-	 * @param column 列
+     * @param query query
 	 * @param previous 上一步查询结果
 	 * @param set DataSet
 	 * @return constraints constraints
@@ -9893,8 +9787,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 根据查询结果封装Constraint对象,只封装catalog,schema,name等基础属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 上一步封装结果
-	 * @param catalog catalog
-	 * @param schema schema
+     * @param query query
 	 * @param row 查询结果集
 	 * @return Constraint
 	 */
@@ -9950,8 +9843,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
-	 * @param table 表
-	 * @param events 事件 INSERT|UPDATE|DELETE
+     * @param query query
 	 * @return  LinkedHashMap
 	 * @param <T> Index
 	 */
@@ -9967,8 +9859,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * trigger[命令合成]<br/>
 	 * 查询表上的 Trigger
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param table 表
-	 * @param events 事件 INSERT|UPDATE|DELETE
+     * @param query query
 	 * @return runs
 	 */
 	@Override
@@ -9985,7 +9876,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param table 表
+     * @param query query
 	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return LinkedHashMap
@@ -10007,8 +9898,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 根据查询结果封装trigger对象,只封装catalog,schema,name等基础属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 上一步封装结果
-	 * @param catalog catalog
-	 * @param schema schema
+     * @param query query
 	 * @param row 查询结果集
 	 * @return Trigger
 	 */
@@ -10074,9 +9964,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param pattern 名称统配符或正则
+	 * @param query query
 	 * @return  LinkedHashMap
 	 * @param <T> Index
 	 */
@@ -10093,9 +9981,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * procedure[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param pattern 名称统配符或正则
+	 * @param query query
 	 * @return  LinkedHashMap
 	 * @param <T> Index
 	 */
@@ -10111,9 +9997,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * procedure[命令合成]<br/>
 	 * 查询表上的 Trigger
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param pattern 名称统配符或正则
+     * @param query query
 	 * @return sqls
 	 */
 
@@ -10136,7 +10020,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Procedure> List<T> procedures(DataRuntime runtime, int index, boolean create, List<T> procedures, Procedure query, DataSet set) throws Exception {
+	public <T extends Procedure> List<T> procedures(DataRuntime runtime, int index, boolean create, List<T> previous, Procedure query, DataSet set) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Procedure> List<T> procedures(DataRuntime runtime, int index, boolean create, List<T> procedures, DataSet set)", 37));
 		}
@@ -10155,7 +10039,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> procedures, Procedure query, DataSet set) throws Exception {
+	public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Procedure query, DataSet set) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> procedures, DataSet set)", 37));
 		}
@@ -10172,7 +10056,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Procedure> List<T> procedures(DataRuntime runtime, boolean create, List<T> procedures, Procedure query) throws Exception {
+	public <T extends Procedure> List<T> procedures(DataRuntime runtime, boolean create, List<T> previous, Procedure query) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Procedure> List<T> procedures(DataRuntime runtime, int index, boolean create, List<T> procedures, DataSet set)", 37));
 		}
@@ -10189,7 +10073,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, boolean create, LinkedHashMap<String, T> procedures, Procedure query) throws Exception {
+	public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Procedure query) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> procedures, DataSet set)", 37));
 		}
@@ -10263,7 +10147,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
 	 * @param procedure Procedure
-	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return List
 	 */
@@ -10280,8 +10163,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 根据查询结果封装procedure对象,只封装catalog,schema,name等基础属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 上一步封装结果
-	 * @param catalog catalog
-	 * @param schema schema
+     * @param query query
 	 * @param row 查询结果集
 	 * @return Procedure
 	 */
@@ -10347,9 +10229,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param pattern 名称统配符或正则
+	 * @param query query
 	 * @return  LinkedHashMap
 	 * @param <T> Index
 	 */
@@ -10366,9 +10246,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * function[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param pattern 名称统配符或正则
+	 * @param query query
 	 * @return  LinkedHashMap
 	 * @param <T> Index
 	 */
@@ -10384,9 +10262,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * function[命令合成]<br/>
 	 * 查询表上的 Function
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param pattern 名称统配符或正则
+     * @param query query
 	 * @return sqls
 	 */
 	@Override
@@ -10535,7 +10411,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
 	 * @param function Function
-	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return List
 	 */
@@ -10555,8 +10430,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 根据查询结果封装function对象,只封装catalog,schema,name等基础属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 上一步封装结果
-	 * @param catalog catalog
-	 * @param schema schema
+     * @param query query
 	 * @param row 查询结果集
 	 * @return Function
 	 */
@@ -10628,9 +10502,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param pattern 名称统配符或正则
+	 * @param query query
 	 * @return  LinkedHashMap
 	 * @param <T> Index
 	 */
@@ -10678,9 +10550,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * sequence[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param pattern 名称统配符或正则
+	 * @param query query
 	 * @return  LinkedHashMap
 	 * @param <T> Index
 	 */
@@ -10727,9 +10597,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * sequence[命令合成]<br/>
 	 * 查询表上的 Sequence
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param pattern 名称统配符或正则
+     * @param query query
 	 * @return sqls
 	 */
 	@Override
@@ -10878,7 +10746,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
 	 * @param sequence Sequence
-	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return List
 	 */
@@ -10898,8 +10765,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 根据查询结果封装sequence对象,只封装catalog,schema,name等基础属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 上一步封装结果
-	 * @param catalog catalog
-	 * @param schema schema
+     * @param query query
 	 * @param row 查询结果集
 	 * @return Sequence
 	 */
@@ -10949,7 +10815,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 *
 	 * 根据 catalog, name检测schemas集合中是否存在
 	 * @param schemas schemas
-	 * @param catalog catalog
+	 * @param catalog 对于MySQL, 则对应相应的数据库, 对于Oracle来说, 则是对应相应的数据库实例, 可以不填, 也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
 	 * @param name name
 	 * @return 如果存在则返回 Schema 不存在则返回null
 	 * @param <T> Table
@@ -16399,8 +16265,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 参数值 数据类型转换
 	 * 子类先解析(有些同名的类型以子类为准)、失败后再调用默认转换
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param catalog catalog
-	 * @param schema schema
+	 * @param catalog 对于MySQL, 则对应相应的数据库, 对于Oracle来说, 则是对应相应的数据库实例, 可以不填, 也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
+	 * @param schema 可以理解为数据库的登录名, 而对于Oracle也可以理解成对该数据库操作的所有者的登录名。对于Oracle要特别注意, 其登陆名必须是大写, 不然的话是无法获取到相应的数据, 而MySQL则不做强制要求。
 	 * @param table 表
 	 * @param value  值
 	 * @return boolean 返回false表示转换失败 如果有多个 adapter 则交给adapter继续转换
@@ -16648,8 +16514,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 *
 	 * 根据 catalog, schema, name检测tables集合中是否存在
 	 * @param list metas
-	 * @param catalog catalog
-	 * @param schema schema
+	 * @param catalog 对于MySQL, 则对应相应的数据库, 对于Oracle来说, 则是对应相应的数据库实例, 可以不填, 也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
+	 * @param schema 可以理解为数据库的登录名, 而对于Oracle也可以理解成对该数据库操作的所有者的登录名。对于Oracle要特别注意, 其登陆名必须是大写, 不然的话是无法获取到相应的数据, 而MySQL则不做强制要求。
 	 * @param name name
 	 * @return 如果存在则返回Table 不存在则返回null
 	 * @param <T> Table

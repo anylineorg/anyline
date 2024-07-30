@@ -40,11 +40,11 @@ public abstract class TemplateJDBCAdapter extends AbstractJDBCAdapter {
         delimiterTo = "`";
         for(MySQLTypeMetadataAlias alias:MySQLTypeMetadataAlias.values()) {
             reg(alias);
-			alias(alias.name(), alias.standard());
+            alias(alias.name(), alias.standard());
         }
         for (MySQLTypeMetadataAlias alias: MySQLTypeMetadataAlias.values()) {
-			reg(alias);
-			alias(alias.name(), alias.standard());
+            reg(alias);
+            alias(alias.name(), alias.standard());
         }
         for(MySQLWriter writer: MySQLWriter.values()) {
             reg(writer.supports(), writer.writer());
@@ -59,7 +59,7 @@ public abstract class TemplateJDBCAdapter extends AbstractJDBCAdapter {
 
     /* *****************************************************************************************************************
      *
-     * 													复制过程
+     *                                                     复制过程
      * 1.添加TypeMetadataAlias
      * 2.如果有类型转换需要添加writer reader
      * 3.放开以上注释
@@ -69,7 +69,7 @@ public abstract class TemplateJDBCAdapter extends AbstractJDBCAdapter {
 
     /* *****************************************************************************************************************
      *
-     * 														JDBC
+     *                                                         JDBC
      *
      *  ***************************************************************************************************************/
 
@@ -88,36 +88,36 @@ public abstract class TemplateJDBCAdapter extends AbstractJDBCAdapter {
      * @param meta Metadata
      * @param <T> Metadata
      */
-	@Override
+    @Override
     public <T extends Metadata> void checkSchema(DataRuntime runtime, T meta) {
         super.checkSchema(runtime, meta);
     }
 
-	/**
-	 * 识别根据jdbc返回的catalog与schema, 部分数据库(如mysql)系统表与jdbc标准可能不一致根据实际情况处理<br/>
-	 * 注意一定不要处理从SQL中返回的，应该在SQL中处理好
-	 * @param meta Metadata
-	 * @param catalog catalog
-	 * @param schema schema
+    /**
+     * 识别根据jdbc返回的catalog与schema, 部分数据库(如mysql)系统表与jdbc标准可能不一致根据实际情况处理<br/>
+     * 注意一定不要处理从SQL中返回的，应该在SQL中处理好
+     * @param meta Metadata
+     * @param catalog 对于MySQL, 则对应相应的数据库, 对于Oracle来说, 则是对应相应的数据库实例, 可以不填, 也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
+     * @param schema 可以理解为数据库的登录名, 而对于Oracle也可以理解成对该数据库操作的所有者的登录名。对于Oracle要特别注意, 其登陆名必须是大写, 不然的话是无法获取到相应的数据, 而MySQL则不做强制要求。
      * @param overrideMeta 如果meta中有值，是否覆盖
      * @param overrideRuntime 如果runtime中有值，是否覆盖，注意结果集中可能跨多个schema，所以一般不要覆盖runtime,从con获取的可以覆盖ResultSet中获取的不要覆盖
-	 * @param <T> Metadata
-	 */
-	@Override
+     * @param <T> Metadata
+     */
+    @Override
     public <T extends Metadata> void correctSchemaFromJDBC(DataRuntime runtime, T meta, String catalog, String schema, boolean overrideRuntime, boolean overrideMeta) {
         super.correctSchemaFromJDBC(runtime, meta, catalog, schema, overrideRuntime, overrideMeta);
     }
 
-	/**
-	 * 在调用jdbc接口前处理业务中的catalog, schema, 部分数据库(如mysql)业务系统与dbc标准可能不一致根据实际情况处理<br/>
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @return String[]
-	 */
-	@Override
-	public String[] correctSchemaFromJDBC(String catalog, String schema) {
-		return super.correctSchemaFromJDBC(catalog, schema);
-	}
+    /**
+     * 在调用jdbc接口前处理业务中的catalog, schema, 部分数据库(如mysql)业务系统与dbc标准可能不一致根据实际情况处理<br/>
+     * @param catalog 对于MySQL, 则对应相应的数据库, 对于Oracle来说, 则是对应相应的数据库实例, 可以不填, 也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
+     * @param schema 可以理解为数据库的登录名, 而对于Oracle也可以理解成对该数据库操作的所有者的登录名。对于Oracle要特别注意, 其登陆名必须是大写, 不然的话是无法获取到相应的数据, 而MySQL则不做强制要求。
+     * @return String[]
+     */
+    @Override
+    public String[] correctSchemaFromJDBC(String catalog, String schema) {
+        return super.correctSchemaFromJDBC(catalog, schema);
+    }
 
     public String insertFoot(ConfigStore configs, LinkedHashMap<String, Column> columns) {
         return super.insertFoot(configs, columns);
@@ -153,7 +153,7 @@ public abstract class TemplateJDBCAdapter extends AbstractJDBCAdapter {
     }
     /* *****************************************************************************************************************
      *
-     * 														具体数据库
+     *                                                         具体数据库
      *
      *  ***************************************************************************************************************/
 }

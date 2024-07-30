@@ -113,22 +113,22 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
 
     /* *****************************************************************************************************************
      *
-     * 													DML
+     *                                                     DML
      *
      * =================================================================================================================
-     * INSERT			: 插入
-     * UPDATE			: 更新
-     * SAVE				: 根据情况插入或更新
-     * QUERY			: 查询(RunPrepare/XML/TABLE/VIEW/PROCEDURE)
-     * EXISTS			: 是否存在
-     * COUNT			: 统计
-     * EXECUTE			: 执行(原生SQL及存储过程)
-     * DELETE			: 删除
+     * INSERT            : 插入
+     * UPDATE            : 更新
+     * SAVE                : 根据情况插入或更新
+     * QUERY            : 查询(RunPrepare/XML/TABLE/VIEW/PROCEDURE)
+     * EXISTS            : 是否存在
+     * COUNT            : 统计
+     * EXECUTE            : 执行(原生SQL及存储过程)
+     * DELETE            : 删除
      *
      ******************************************************************************************************************/
 
     /* *****************************************************************************************************************
-     * 													INSERT
+     *                                                     INSERT
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * long insert(DataRuntime runtime, String random, int batch, Table dest, Object data, ConfigStore configs, List<String> columns)
@@ -407,7 +407,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
     }
 
     /* *****************************************************************************************************************
-     * 													UPDATE
+     *                                                     UPDATE
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * long update(DataRuntime runtime, String random, int batch, Table dest, Object data, ConfigStore configs, List<String> columns)
@@ -702,7 +702,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
     }
 
     /* *****************************************************************************************************************
-     * 													QUERY
+     *                                                     QUERY
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * DataSet querys(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
@@ -1279,7 +1279,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
     }
 
     /* *****************************************************************************************************************
-     * 													COUNT
+     *                                                     COUNT
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * long count(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
@@ -1327,7 +1327,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
     }
 
     /* *****************************************************************************************************************
-     * 													EXISTS
+     *                                                     EXISTS
      * -----------------------------------------------------------------------------------------------------------------
      * boolean exists(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
      * String mergeFinalExists(DataRuntime runtime, Run run)
@@ -1352,7 +1352,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
     }
 
     /* *****************************************************************************************************************
-     * 													EXECUTE
+     *                                                     EXECUTE
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * long execute(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
@@ -1509,7 +1509,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
     }
 
     /* *****************************************************************************************************************
-     * 													DELETE
+     *                                                     DELETE
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * <T> long deletes(DataRuntime runtime, String random, int batch, String table, ConfigStore configs, String column, Collection<T> values)
@@ -1719,26 +1719,26 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
 
     /* *****************************************************************************************************************
      *
-     * 													metadata
+     *                                                     metadata
      *
      * =================================================================================================================
-     * database			: 数据库(catalog, schema)
-     * table			: 表
-     * master table		: 主表
-     * partition table	: 分区表
-     * column			: 列
-     * tag				: 标签
+     * database            : 数据库(catalog, schema)
+     * table            : 表
+     * master table        : 主表
+     * partition table    : 分区表
+     * column            : 列
+     * tag                : 标签
      * primary key      : 主键
-     * foreign key		: 外键
-     * index			: 索引
-     * constraint		: 约束
-     * trigger		    : 触发器
+     * foreign key        : 外键
+     * index            : 索引
+     * constraint        : 约束
+     * trigger            : 触发器
      * procedure        : 存储过程
      * function         : 函数
      ******************************************************************************************************************/
 
     /* *****************************************************************************************************************
-     * 													database
+     *                                                     database
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * LinkedHashMap<String, Database> databases(DataRuntime runtime, String random, String name)
@@ -1973,7 +1973,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
     }
 
     /* *****************************************************************************************************************
-     * 													catalog
+     *                                                     catalog
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, String random, String name)
@@ -2092,14 +2092,14 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param previou 上一步查询结果
+     * @param meta 上一步查询结果
      * @param set 查询结果集
      * @return Catalog
      * @throws Exception 异常
      */
     @Override
-    public Catalog catalog(DataRuntime runtime, int index, boolean create, Catalog catalog, DataSet set) throws Exception {
-        return super.catalog(runtime, index, create, catalog, set);
+    public Catalog catalog(DataRuntime runtime, int index, boolean create, Catalog meta, DataSet set) throws Exception {
+        return super.catalog(runtime, index, create, meta, set);
     }
 
     /**
@@ -2107,17 +2107,17 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * 当前catalog 根据驱动内置接口补充
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param previou 上一步查询结果
+     * @param meta 上一步查询结果
      * @return Catalog
      * @throws Exception 异常
      */
     @Override
-    public Catalog catalog(DataRuntime runtime, boolean create, Catalog catalog) throws Exception {
-        return super.catalog(runtime, create, catalog);
+    public Catalog catalog(DataRuntime runtime, boolean create, Catalog meta) throws Exception {
+        return super.catalog(runtime, create, meta);
     }
 
     /* *****************************************************************************************************************
-     * 													schema
+     *                                                     schema
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * LinkedHashMap<String, Schema> schemas(DataRuntime runtime, String random, Catalog catalog, String name)
@@ -2194,14 +2194,14 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条SQL 对照 buildQuerySchemaRun 返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param previou 上一步查询结果
+     * @param meta 上一步查询结果
      * @param set 查询结果集
      * @return schema
      * @throws Exception 异常
      */
     @Override
-    public Schema schema(DataRuntime runtime, int index, boolean create, Schema schema, DataSet set) throws Exception {
-        return super.schema(runtime, index, create, schema, set);
+    public Schema schema(DataRuntime runtime, int index, boolean create, Schema meta, DataSet set) throws Exception {
+        return super.schema(runtime, index, create, meta, set);
     }
 
     /**
@@ -2209,17 +2209,17 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * 当前schema 根据驱动内置接口补充
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param previou 上一步查询结果
+     * @param meta 上一步查询结果
      * @return schema
      * @throws Exception 异常
      */
     @Override
-    public Schema schema(DataRuntime runtime, boolean create, Schema schema) throws Exception {
-        return super.schema(runtime, create, schema);
+    public Schema schema(DataRuntime runtime, boolean create, Schema meta) throws Exception {
+        return super.schema(runtime, create, meta);
     }
 
     /* *****************************************************************************************************************
-     * 													table
+     *                                                     table
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, boolean struct)
@@ -2247,9 +2247,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
-     * @param catalog catalog
-     * @param schema schema
-     * @param pattern 名称统配符或正则
+     * @param query query
      * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
      * @param struct 查询的属性 参考Metadata.TYPE 多个属性相加算出总和 true:表示查询全部
      * @return List
@@ -2266,8 +2264,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * 查出所有key并以大写缓存 用来实现忽略大小写
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
-     * @param catalog catalog
-     * @param schema schema
+     * @param query query
      */
     @Override
     protected void tableMap(DataRuntime runtime, String random, boolean greedy, Table query, ConfigStore configs) {
@@ -2286,7 +2283,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
      * @param query 查询条件
-     * @param types  Metadata.TYPE.
+     * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
      * @return String
      * @throws Exception Exception
      */
@@ -2299,9 +2296,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * table[命令合成]<br/>
      * 查询表备注
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param catalog catalog
-     * @param schema schema
-     * @param pattern 名称统配符或正则
+     * @param query query
      * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
      * @return String
      * @throws Exception Exception
@@ -2317,8 +2312,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条SQL 对照buildQueryTablesRun返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param catalog catalog
-     * @param schema schema
+     * @param query query
      * @param previous 上一步查询结果
      * @param set 查询结果集
      * @return tables
@@ -2335,8 +2329,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条SQL 对照buildQueryTablesRun返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param catalog catalog
-     * @param schema schema
+     * @param query query
      * @param previous 上一步查询结果
      * @param set 查询结果集
      * @return tables
@@ -2353,9 +2346,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param previous 上一步查询结果
-     * @param catalog catalog
-     * @param schema schema
-     * @param pattern 名称统配符或正则
+     * @param query query
      * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
      * @return tables
      * @throws Exception 异常
@@ -2371,9 +2362,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param previous 上一步查询结果
-     * @param catalog catalog
-     * @param schema schema
-     * @param pattern 名称统配符或正则
+     * @param query query
      * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
      * @return tables
      * @throws Exception 异常
@@ -2389,8 +2378,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条SQL 对照buildQueryTablesRun返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param catalog catalog
-     * @param schema schema
+     * @param query query
      * @param previous 上一步查询结果
      * @param set 查询结果集
      * @return tables
@@ -2407,8 +2395,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条SQL 对照buildQueryTablesRun返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param catalog catalog
-     * @param schema schema
+     * @param query query
      * @param previous 上一步查询结果
      * @param set 查询结果集
      * @return tables
@@ -2451,7 +2438,6 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
      * @param table 表
-     * @param previous 上一步查询结果
      * @param set sql执行的结果集
      * @return List
      */
@@ -2476,7 +2462,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
         return defaultTableMetadataAdapter;
     }
     /* *****************************************************************************************************************
-     * 													VertexTable
+     *                                                     VertexTable
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * <T extends VertexTable> List<T> vertexs(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, boolean struct)
@@ -2504,9 +2490,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
-     * @param catalog catalog
-     * @param schema schema
-     * @param pattern 名称统配符或正则
+     * @param query query
      * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
      * @param struct 查询的属性 参考Metadata.TYPE 多个属性相加算出总和 true:表示查询全部
      * @return List
@@ -2526,10 +2510,8 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * 查询表,不是查表中的数据
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
-     * @param catalog catalog
-     * @param schema schema
-     * @param pattern 名称统配符或正则
-     * @param types  Metadata.TYPE.
+     * @param query query
+     * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
      * @return String
      * @throws Exception Exception
      */
@@ -2542,9 +2524,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * vertex[命令合成]<br/>
      * 查询表备注
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param catalog catalog
-     * @param schema schema
-     * @param pattern 名称统配符或正则
+     * @param query query
      * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
      * @return String
      * @throws Exception Exception
@@ -2559,16 +2539,15 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条SQL 对照buildQueryVertexTablesRun返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param catalog catalog
-     * @param schema schema
+     * @param query query
      * @param previous 上一步查询结果
      * @param set 查询结果集
      * @return vertexs
      * @throws Exception 异常
      */
     @Override
-    public <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, VertexTable query, DataSet set) throws Exception {
-        return tables;
+    public <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, VertexTable query, DataSet set) throws Exception {
+        return previous;
     }
 
     /**
@@ -2577,16 +2556,15 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条SQL 对照buildQueryVertexTablesRun返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param catalog catalog
-     * @param schema schema
+     * @param query query
      * @param previous 上一步查询结果
      * @param set 查询结果集
      * @return vertexs
      * @throws Exception 异常
      */
     @Override
-    public <T extends VertexTable> List<T> vertexs(DataRuntime runtime, int index, boolean create, List<T> tables, VertexTable query, DataSet set) throws Exception {
-        return tables;
+    public <T extends VertexTable> List<T> vertexs(DataRuntime runtime, int index, boolean create, List<T> previous, VertexTable query, DataSet set) throws Exception {
+        return previous;
     }
 
     /**
@@ -2595,16 +2573,14 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param previous 上一步查询结果
-     * @param catalog catalog
-     * @param schema schema
-     * @param pattern 名称统配符或正则
+     * @param query query
      * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
      * @return vertexs
      * @throws Exception 异常
      */
     @Override
-    public <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, VertexTable query, int types) throws Exception {
-        return super.vertexs(runtime, create, tables, query, types);
+    public <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, VertexTable query, int types) throws Exception {
+        return super.vertexs(runtime, create, previous, query, types);
     }
 
     /**
@@ -2613,17 +2589,15 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param previous 上一步查询结果
-     * @param catalog catalog
-     * @param schema schema
-     * @param pattern 名称统配符或正则
+     * @param query query
      * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
      * @return vertexs
      * @throws Exception 异常
      * @param <T> VertexTable
      */
     @Override
-    public <T extends VertexTable> List<T> vertexs(DataRuntime runtime, boolean create, List<T> tables, VertexTable query, int types) throws Exception {
-        return super.vertexs(runtime, create, tables, query, types);
+    public <T extends VertexTable> List<T> vertexs(DataRuntime runtime, boolean create, List<T> previous, VertexTable query, int types) throws Exception {
+        return super.vertexs(runtime, create, previous, query, types);
     }
 
     /**
@@ -2631,8 +2605,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * 根据查询结果封装VertexTable对象,只封装catalog,schema,name等基础属性
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param meta 上一步封装结果
-     * @param catalog catalog
-     * @param schema schema
+     * @param query query
      * @param row 查询结果集
      * @return VertexTable
      * @param <T> VertexTable
@@ -2686,7 +2659,6 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
      * @param meta 表
-     * @param previous 上一步查询结果
      * @param set sql执行的结果集
      * @return List
      */
@@ -2696,7 +2668,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
     }
 
     /* *****************************************************************************************************************
-     * 													EdgeTable
+     *                                                     EdgeTable
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * <T extends EdgeTable> List<T> edges(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, boolean struct)
@@ -2724,9 +2696,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
-     * @param catalog catalog
-     * @param schema schema
-     * @param pattern 名称统配符或正则
+     * @param query query
      * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
      * @param struct 查询的属性 参考Metadata.TYPE 多个属性相加算出总和 true:表示查询全部
      * @return List
@@ -2746,10 +2716,8 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * 查询表,不是查表中的数据
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
-     * @param catalog catalog
-     * @param schema schema
-     * @param pattern 名称统配符或正则
-     * @param types  Metadata.TYPE.
+     * @param query query
+     * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
      * @return String
      * @throws Exception Exception
      */
@@ -2762,9 +2730,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * edge[命令合成]<br/>
      * 查询表备注
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param catalog catalog
-     * @param schema schema
-     * @param pattern 名称统配符或正则
+     * @param query query
      * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
      * @return String
      * @throws Exception Exception
@@ -2779,16 +2745,15 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条SQL 对照buildQueryEdgesRun返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param catalog catalog
-     * @param schema schema
+     * @param query query
      * @param previous 上一步查询结果
      * @param set 查询结果集
      * @return edges
      * @throws Exception 异常
      */
     @Override
-    public <T extends EdgeTable> LinkedHashMap<String, T> edges(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, EdgeTable query, DataSet set) throws Exception {
-        return tables;
+    public <T extends EdgeTable> LinkedHashMap<String, T> edges(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, EdgeTable query, DataSet set) throws Exception {
+        return previous;
     }
 
     /**
@@ -2797,16 +2762,15 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条SQL 对照buildQueryEdgesRun返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param catalog catalog
-     * @param schema schema
+     * @param query query
      * @param previous 上一步查询结果
      * @param set 查询结果集
      * @return edges
      * @throws Exception 异常
      */
     @Override
-    public <T extends EdgeTable> List<T> edges(DataRuntime runtime, int index, boolean create, List<T> tables, EdgeTable query, DataSet set) throws Exception {
-        return tables;
+    public <T extends EdgeTable> List<T> edges(DataRuntime runtime, int index, boolean create, List<T> previous, EdgeTable query, DataSet set) throws Exception {
+        return previous;
     }
 
     /**
@@ -2815,16 +2779,14 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param previous 上一步查询结果
-     * @param catalog catalog
-     * @param schema schema
-     * @param pattern 名称统配符或正则
+     * @param query query
      * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
      * @return edges
      * @throws Exception 异常
      */
     @Override
-    public <T extends EdgeTable> LinkedHashMap<String, T> edges(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, EdgeTable query, int types) throws Exception {
-        return super.edges(runtime, create, tables, query, types);
+    public <T extends EdgeTable> LinkedHashMap<String, T> edges(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, EdgeTable query, int types) throws Exception {
+        return super.edges(runtime, create, previous, query, types);
     }
 
     /**
@@ -2833,17 +2795,15 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param previous 上一步查询结果
-     * @param catalog catalog
-     * @param schema schema
-     * @param pattern 名称统配符或正则
+     * @param query query
      * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
      * @return edges
      * @throws Exception 异常
      * @param <T> EdgeTable
      */
     @Override
-    public <T extends EdgeTable> List<T> edges(DataRuntime runtime, boolean create, List<T> tables, EdgeTable query, int types) throws Exception {
-        return super.edges(runtime, create, tables, query, types);
+    public <T extends EdgeTable> List<T> edges(DataRuntime runtime, boolean create, List<T> previous, EdgeTable query, int types) throws Exception {
+        return super.edges(runtime, create, previous, query, types);
     }
 
     /**
@@ -2851,8 +2811,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * 根据查询结果封装EdgeTable对象,只封装catalog,schema,name等基础属性
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param meta 上一步封装结果
-     * @param catalog catalog
-     * @param schema schema
+     * @param query query
      * @param row 查询结果集
      * @return EdgeTable
      * @param <T> EdgeTable
@@ -2915,7 +2874,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
     }
 
     /* *****************************************************************************************************************
-     * 													view
+     *                                                     view
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types)
@@ -2937,33 +2896,29 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * 查询视图
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
-     * @param catalog catalog
-     * @param schema schema
-     * @param pattern 名称统配符或正则
-     * @param types  Metadata.TYPE.
+     * @param query query
+     * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
      * @return List
      * @param <T> View
      */
     @Override
     public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, View query, int types, int struct, ConfigStore configs) {
-		return super.views(runtime, random, query, types, struct, configs);
-	}
+        return super.views(runtime, random, query, types, struct, configs);
+    }
 
     /**
      * view[命令合成]<br/>
      * 查询视图
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
-     * @param catalog catalog
-     * @param schema schema
-     * @param pattern 名称统配符或正则
+     * @param query query
      * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
      * @return List
      */
     @Override
     public List<Run> buildQueryViewsRun(DataRuntime runtime, boolean greedy, View query, int types, ConfigStore configs) throws Exception {
-		return super.buildQueryViewsRun(runtime, greedy, query, types, configs);
-	}
+        return super.buildQueryViewsRun(runtime, greedy, query, types, configs);
+    }
 
     /**
      * view[结果集封装]<br/>
@@ -2971,16 +2926,15 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条SQL 对照buildQueryViewsRun返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param catalog catalog
-     * @param schema schema
+     * @param query query
      * @param previous 上一步查询结果
      * @param set 查询结果集
      * @return views
      * @throws Exception 异常
      */
     @Override
-    public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> views, View query, DataSet set) throws Exception {
-        return super.views(runtime, index, create, views, query, set);
+    public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, View query, DataSet set) throws Exception {
+        return super.views(runtime, index, create, previous, query, set);
     }
 
     /**
@@ -2989,9 +2943,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param previous 上一步查询结果
-     * @param catalog catalog
-     * @param schema schema
-     * @param pattern 名称统配符或正则
+     * @param query query
      * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
      * @return views
      * @throws Exception 异常
@@ -3010,8 +2962,8 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      */
     @Override
     public List<String> ddl(DataRuntime runtime, String random, View view, boolean init) {
-		return super.ddl(runtime, random, view, init);
-	}
+        return super.ddl(runtime, random, view, init);
+    }
 
     /**
      * view[命令合成]<br/>
@@ -3031,7 +2983,6 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
      * @param view view
-     * @param previous 上一步查询结果
      * @param set sql执行的结果集
      * @return List
      */
@@ -3045,7 +2996,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
         return null;
     }
     /* *****************************************************************************************************************
-     * 													master table
+     *                                                     master table
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs)
@@ -3069,32 +3020,28 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
-     * @param catalog catalog
-     * @param schema schema
-     * @param pattern 名称统配符或正则
-     * @param types  Metadata.TYPE.
+     * @param query query
+     * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
      * @return List
      * @param <T> MasterTable
      */
     @Override
-	public <T extends MasterTable> List<T> masters(DataRuntime runtime, String random, boolean greedy, MasterTable query, int types, int struct, ConfigStore configs) {
-		return super.masters(runtime, random, greedy, query, types, struct, configs);
-	}
+    public <T extends MasterTable> List<T> masters(DataRuntime runtime, String random, boolean greedy, MasterTable query, int types, int struct, ConfigStore configs) {
+        return super.masters(runtime, random, greedy, query, types, struct, configs);
+    }
 
     /**
      * master table[命令合成]<br/>
      * 查询主表
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param catalog catalog
-     * @param schema schema
-     * @param pattern 名称统配符或正则
-     * @param types types
+     * @param query query
+     * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
      * @return String
      */
     @Override
     public List<Run> buildQueryMasterTablesRun(DataRuntime runtime, boolean greedy, MasterTable query, int types, ConfigStore configs) throws Exception {
-		return super.buildQueryMasterTablesRun(runtime, greedy, query, types, configs);
-	}
+        return super.buildQueryMasterTablesRun(runtime, greedy, query, types, configs);
+    }
 
     /**
      * master table[结果集封装]<br/>
@@ -3102,16 +3049,15 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条SQL 对照 buildQueryMasterTablesRun返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param catalog catalog
-     * @param schema schema
+     * @param query query
      * @param previous 上一步查询结果
      * @param set 查询结果集
      * @return tables
      * @throws Exception 异常
      */
     @Override
-    public <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, MasterTable query, DataSet set) throws Exception {
-        return super.masters(runtime, index, create, tables, query, set);
+    public <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, MasterTable query, DataSet set) throws Exception {
+        return super.masters(runtime, index, create, previous, query, set);
     }
 
     /**
@@ -3119,15 +3065,14 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * 根据根据驱动内置接口
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param catalog catalog
-     * @param schema schema
+     * @param query query
      * @param previous 上一步查询结果
      * @return tables
      * @throws Exception 异常
      */
     @Override
-    public <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, MasterTable query, int types) throws Exception {
-        return super.masters(runtime, create, tables, query, types);
+    public <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, MasterTable query, int types) throws Exception {
+        return super.masters(runtime, create, previous, query, types);
     }
 
     /**
@@ -3139,8 +3084,8 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      */
     @Override
     public List<String> ddl(DataRuntime runtime, String random, MasterTable meta, boolean init) {
-		return super.ddl(runtime, random, meta, init);
-	}
+        return super.ddl(runtime, random, meta, init);
+    }
 
     /**
      * master table[命令合成]<br/>
@@ -3160,7 +3105,6 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
      * @param table MasterTable
-     * @param previous 上一步查询结果
      * @param set sql执行的结果集
      * @return List
      */
@@ -3169,7 +3113,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
         return super.ddl(runtime, index, table, ddls, set);
     }
     /* *****************************************************************************************************************
-     * 													partition table
+     *                                                     partition table
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * <T extends PartitionTable> LinkedHashMap<String,T> partitions(DataRuntime runtime, String random, boolean greedy, MasterTable master, Map<String, Object> tags, String pattern)
@@ -3193,8 +3137,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
-     * @param master 主表
-     * @param pattern 名称统配符或正则
+     * @param query query
      * @return List
      * @param <T> MasterTable
      */
@@ -3207,10 +3150,8 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * partition table[命令合成]<br/>
      * 查询分区表
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param catalog catalog
-     * @param schema schema
-     * @param pattern 名称统配符或正则
-     * @param types types
+     * @param query query
+     * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
      * @return String
      */
     @Override
@@ -3227,9 +3168,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @param total 合计SQL数量
      * @param index 第几条SQL 对照 buildQueryMasterTablesRun返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param master 主表
-     * @param catalog catalog
-     * @param schema schema
+     * @param query query
      * @param previous 上一步查询结果
      * @param set 查询结果集
      * @return tables
@@ -3245,9 +3184,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * 根据根据驱动内置接口
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param master 主表
-     * @param catalog catalog
-     * @param schema schema
+     * @param query query
      * @param previous 上一步查询结果
      * @return tables
      * @throws Exception 异常
@@ -3287,7 +3224,6 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
      * @param table MasterTable
-     * @param previous 上一步查询结果
      * @param set sql执行的结果集
      * @return List
      */
@@ -3296,7 +3232,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
         return super.ddl(runtime, index, table, ddls, set);
     }
     /* *****************************************************************************************************************
-     * 													column
+     *                                                     column
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Table table, boolean primary);
@@ -3329,7 +3265,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * column[命令合成]<br/>
      * 查询表上的列
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param table 表
+     * @param query query
      * @param metadata 是否根据metadata(true:SELECT * FROM T WHERE 1=0,false:查询系统表)
      * @return sqls
      */
@@ -3400,9 +3336,8 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * 解析JDBC get columns结果
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param table 表
-     * @return columns 上一步查询结果
-     * @param pattern 名称
+     * @param query query
+     * @return previous 上一步查询结果
      * @throws Exception 异常
      */
     @Override
@@ -3415,7 +3350,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * 列基础属性
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param meta 上一步封装结果
-     * @param table 表
+     * @param query query
      * @param row 系统表查询SQL结果集
      * @param <T> Column
      */
@@ -3489,7 +3424,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
     }
 
     /* *****************************************************************************************************************
-     * 													tag
+     *                                                     tag
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, String random, boolean greedy, Table table)
@@ -3541,8 +3476,8 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @throws Exception 异常
      */
     @Override
-    public <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> tags, DataSet set) throws Exception {
-        return super.tags(runtime, index, create, table, tags, set);
+    public <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> previous, DataSet set) throws Exception {
+        return super.tags(runtime, index, create, table, previous, set);
     }
 
     /**
@@ -3551,9 +3486,8 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * 解析JDBC get columns结果
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param table 表
+     * @param query query
      * @param previous 上一步查询结果
-     * @param pattern 名称统配符或正则
      * @return tags
      * @throws Exception 异常
      */
@@ -3563,7 +3497,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
     }
 
     /* *****************************************************************************************************************
-     * 													primary
+     *                                                     primary
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * PrimaryKey primary(DataRuntime runtime, String random, boolean greedy, Table table)
@@ -3617,7 +3551,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * 根据查询结果集构造PrimaryKey更多属性
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条查询SQL 对照 buildQueryIndexesRun 返回顺序
-     * @param table 表
+     * @param query query
      * @param set sql查询结果
      * @throws Exception 异常
      */
@@ -3639,7 +3573,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * primary[结构集封装]<br/>
      *  根据驱动内置接口补充PrimaryKey
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param table 表
+     * @param query query
      * @throws Exception 异常
      */
     @Override
@@ -3647,7 +3581,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
         return super.primary(runtime, query);
     }
     /* *****************************************************************************************************************
-     * 													foreign
+     *                                                     foreign
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, String random, boolean greedy, Table table);
@@ -3663,7 +3597,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
-     * @param table 表
+     * @param query query
      * @return PrimaryKey
      */
     @Override
@@ -3675,31 +3609,31 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * foreign[命令合成]<br/>
      * 查询表上的外键
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param table 表
+     * @param query query
      * @return sqls
      */
     @Override
     public List<Run> buildQueryForeignsRun(DataRuntime runtime, ForeignKey query) throws Exception {
-		return super.buildQueryForeignsRun(runtime, query);
-	}
+        return super.buildQueryForeignsRun(runtime, query);
+    }
 
     /**
      * foreign[结构集封装]<br/>
      *  根据查询结果集构造PrimaryKey
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条查询SQL 对照 buildQueryForeignsRun 返回顺序
-     * @param table 表
+     * @param query query
      * @param previous 上一步查询结果
      * @param set sql查询结果
      * @throws Exception 异常
      */
     @Override
-	public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, int index, LinkedHashMap<String, T> previous, ForeignKey query, DataSet set) throws Exception {
-		return super.foreigns(runtime, index, previous, query, set);
-	}
+    public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, int index, LinkedHashMap<String, T> previous, ForeignKey query, DataSet set) throws Exception {
+        return super.foreigns(runtime, index, previous, query, set);
+    }
 
     /* *****************************************************************************************************************
-     * 													index
+     *                                                     index
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * <T extends Index> List<T> indexes(DataRuntime runtime, String random, boolean greedy, Table table, String pattern)
@@ -3718,8 +3652,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
-     * @param table 表
-     * @param pattern 名称统配符或正则
+     * @param query query
      * @return  LinkedHashMap
      * @param <T> Index
      */
@@ -3733,8 +3666,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * index[调用入口]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
-     * @param table 表
-     * @param pattern 名称统配符或正则
+     * @param query query
      * @return  LinkedHashMap
      * @param <T> Index
      */
@@ -3747,8 +3679,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * index[命令合成]<br/>
      * 查询表上的索引
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param table 表
-     * @param name 名称
+     * @param query query
      * @return sqls
      */
     @Override
@@ -3789,17 +3720,17 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条查询SQL 对照 buildQueryIndexesRun 返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param table 表
+     * @param query query
      * @param previous 上一步查询结果
      * @param set 查询结果集
      * @return indexes indexes
      * @throws Exception 异常
      */
     @Override
-    public <T extends Index> LinkedHashMap<String, T> indexes(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> indexes, Index query, DataSet set) throws Exception {
+    public <T extends Index> LinkedHashMap<String, T> indexes(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Index query, DataSet set) throws Exception {
         Table table = query.getTable();
-        if(null == indexes) {
-            indexes = new LinkedHashMap<>();
+        if(null == previous) {
+            previous = new LinkedHashMap<>();
         }
         IndexMetadataAdapter config = indexMetadataAdapter(runtime);
         for(DataRow row:set) {
@@ -3807,7 +3738,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
             if(null == name) {
                 continue;
             }
-            T meta = indexes.get(name.toUpperCase());
+            T meta = previous.get(name.toUpperCase());
             meta = init(runtime, index, meta, table, row);
             if(null != table) {
                 if (!table.getName().equalsIgnoreCase(meta.getTableName())) {
@@ -3816,10 +3747,10 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
             }
             meta = detail(runtime, index, meta, table, row);
             if(null != meta) {
-                indexes.put(meta.getName().toUpperCase(), meta);
+                previous.put(meta.getName().toUpperCase(), meta);
             }
         }
-        return indexes;
+        return previous;
     }
 
     /**
@@ -3828,7 +3759,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条查询SQL 对照 buildQueryIndexesRun 返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param table 表
+     * @param query query
      * @param previous 上一步查询结果
      * @param set 查询结果集
      * @return indexes indexes
@@ -3836,43 +3767,39 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      */
     @Override
     public <T extends Index> List<T> indexes(DataRuntime runtime, int index, boolean create, List<T> previous, Index query, DataSet set) throws Exception {
-		return super.indexes(runtime, index, create, previous, query, set);
-	}
+        return super.indexes(runtime, index, create, previous, query, set);
+    }
 
     /**
      * index[结果集封装]<br/>
      * 根据驱动内置接口
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param table 表
-     * @param unique 是否唯一
-     * @param approximate 索引允许结果反映近似值
+     * @param query query
      * @return indexes indexes
      * @throws Exception 异常
      */
     @Override
     public <T extends Index> List<T> indexes(DataRuntime runtime, boolean create, List<T> previous, Index query) throws Exception {
-		return super.indexes(runtime, create, previous, query);
-	}
+        return super.indexes(runtime, create, previous, query);
+    }
 
     /**
      * index[结果集封装]<br/>
      * 根据驱动内置接口
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param table 表
-     * @param unique 是否唯一
-     * @param approximate 索引允许结果反映近似值
+     * @param query query
      * @return indexes indexes
      * @throws Exception 异常
      */
     @Override
     public <T extends Index> LinkedHashMap<String, T> indexes(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Index query) throws Exception {
-		return super.indexes(runtime, create, previous, query);
-	}
+        return super.indexes(runtime, create, previous, query);
+    }
 
     /* *****************************************************************************************************************
-     * 													constraint
+     *                                                     constraint
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * <T extends Constraint> List<T> constraints(DataRuntime runtime, String random, boolean greedy, Table table, String pattern);
@@ -3889,8 +3816,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
-     * @param table 表
-     * @param pattern 名称统配符或正则
+     * @param query query
      * @return  LinkedHashMap
      * @param <T> Index
      */
@@ -3920,14 +3846,13 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * constraint[命令合成]<br/>
      * 查询表上的约束
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param table 表
-     * @param pattern 名称通配符或正则
+     * @param query query
      * @return sqls
      */
     @Override
     public List<Run> buildQueryConstraintsRun(DataRuntime runtime, Constraint query) {
-		return super.buildQueryConstraintsRun(runtime, query);
-	}
+        return super.buildQueryConstraintsRun(runtime, query);
+    }
 
     /**
      * constraint[结果集封装]<br/>
@@ -3935,14 +3860,14 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param table 表
+     * @param query query
      * @param previous 上一步查询结果
      * @param set DataSet
      * @return constraints constraints
      * @throws Exception 异常
      */
     @Override
-    public <T extends Constraint> List<T> constraints(DataRuntime runtime, int index, boolean create, List<T> constraints, Constraint query, DataSet set) throws Exception {
+    public <T extends Constraint> List<T> constraints(DataRuntime runtime, int index, boolean create, List<T> previous, Constraint query, DataSet set) throws Exception {
         return new ArrayList<>();
     }
 
@@ -3952,20 +3877,19 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param table 表
-     * @param column 列
+     * @param query query
      * @param previous 上一步查询结果
      * @param set DataSet
      * @return constraints constraints
      * @throws Exception 异常
      */
     @Override
-    public <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> constraints, Constraint query, DataSet set) throws Exception {
+    public <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Constraint query, DataSet set) throws Exception {
         return new LinkedHashMap<>();
     }
 
     /* *****************************************************************************************************************
-     * 													trigger
+     *                                                     trigger
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * <T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, String random, boolean greedy, Table table, List<Trigger.EVENT> events)
@@ -3981,8 +3905,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
-     * @param table 表
-     * @param events 事件 INSERT|UPDATE|DELETE
+     * @param query query
      * @return  LinkedHashMap
      * @param <T> Index
      */
@@ -3994,8 +3917,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * trigger[命令合成]<br/>
      * 查询表上的 Trigger
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param table 表
-     * @param events 事件 INSERT|UPDATE|DELETE
+     * @param query query
      * @return sqls
      */
     public List<Run> buildQueryTriggersRun(DataRuntime runtime, Trigger query) {
@@ -4008,7 +3930,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param table 表
+     * @param query query
      * @param previous 上一步查询结果
      * @param set 查询结果集
      * @return LinkedHashMap
@@ -4019,7 +3941,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
     }
 
     /* *****************************************************************************************************************
-     * 													procedure
+     *                                                     procedure
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * <T extends Procedure> List<T> procedures(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern);
@@ -4044,9 +3966,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
-     * @param catalog catalog
-     * @param schema schema
-     * @param pattern 名称统配符或正则
+     * @param query query
      * @return  LinkedHashMap
      * @param <T> Index
      */
@@ -4060,30 +3980,26 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * procedure[调用入口]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
-     * @param catalog catalog
-     * @param schema schema
-     * @param pattern 名称统配符或正则
+     * @param query query
      * @return  LinkedHashMap
      * @param <T> Index
      */
     @Override
     public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, String random, Procedure query) {
-		return super.procedures(runtime, random, query);
-	}
+        return super.procedures(runtime, random, query);
+    }
 
     /**
      * procedure[命令合成]<br/>
      * 查询表上的 Trigger
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param catalog catalog
-     * @param schema schema
-     * @param pattern 名称统配符或正则
+     * @param query query
      * @return sqls
      */
     @Override
     public List<Run> buildQueryProceduresRun(DataRuntime runtime, Procedure query) {
-		return super.buildQueryProceduresRun(runtime, query);
-	}
+        return super.buildQueryProceduresRun(runtime, query);
+    }
 
     /**
      * procedure[结果集封装]<br/>
@@ -4097,7 +4013,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @throws Exception 异常
      */
     @Override
-    public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> procedures, Procedure query, DataSet set) throws Exception {
+    public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Procedure query, DataSet set) throws Exception {
         return new LinkedHashMap<>();
     }
 
@@ -4160,7 +4076,6 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
      * @param procedure Procedure
-     * @param previous 上一步查询结果
      * @param set 查询结果集
      * @return List
      */
@@ -4170,7 +4085,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
     }
 
     /* *****************************************************************************************************************
-     * 													function
+     *                                                     function
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * <T extends Function> List<T> functions(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern);
@@ -4195,40 +4110,34 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
-     * @param catalog catalog
-     * @param schema schema
-     * @param pattern 名称统配符或正则
+     * @param query query
      * @return  LinkedHashMap
      * @param <T> Index
      */
     @Override
     public <T extends Function> List<T> functions(DataRuntime runtime, String random, boolean greedy, Function query) {
-		return super.functions(runtime, random, greedy, query);
-	}
+        return super.functions(runtime, random, greedy, query);
+    }
 
     /**
      *
      * function[调用入口]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
-     * @param catalog catalog
-     * @param schema schema
-     * @param pattern 名称统配符或正则
+     * @param query query
      * @return  LinkedHashMap
      * @param <T> Index
      */
     @Override
     public <T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, String random, Function query) {
-		return super.functions(runtime, random, query);
-	}
+        return super.functions(runtime, random, query);
+    }
 
     /**
      * function[命令合成]<br/>
      * 查询表上的 Trigger
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param catalog catalog
-     * @param schema schema
-     * @param name 名称统配符或正则
+     * @param query query
      * @return sqls
      */
     @Override
@@ -4313,7 +4222,6 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
      * @param function Function
-     * @param previous 上一步查询结果
      * @param set 查询结果集
      * @return List
      */
@@ -4323,7 +4231,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
     }
 
     /* *****************************************************************************************************************
-     * 													sequence
+     *                                                     sequence
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * <T extends Sequence> List<T> sequences(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern);
@@ -4348,9 +4256,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
-     * @param catalog catalog
-     * @param schema schema
-     * @param pattern 名称统配符或正则
+     * @param query query
      * @return  LinkedHashMap
      * @param <T> Index
      */
@@ -4364,9 +4270,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * sequence[调用入口]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
-     * @param catalog catalog
-     * @param schema schema
-     * @param pattern 名称统配符或正则
+     * @param query query
      * @return  LinkedHashMap
      * @param <T> Index
      */
@@ -4379,15 +4283,13 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * sequence[命令合成]<br/>
      * 查询表上的 Trigger
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param catalog catalog
-     * @param schema schema
-     * @param name 名称统配符或正则
+     * @param query query
      * @return sqls
      */
     @Override
     public List<Run> buildQuerySequencesRun(DataRuntime runtime, Sequence query) {
-		return super.buildQuerySequencesRun(runtime, query);
-	}
+        return super.buildQuerySequencesRun(runtime, query);
+    }
 
     /**
      * sequence[结果集封装]<br/>
@@ -4417,7 +4319,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @throws Exception 异常
      */
     @Override
-    public <T extends Sequence> LinkedHashMap<String, T> sequences(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> sequences, Sequence query, DataSet set) throws Exception {
+    public <T extends Sequence> LinkedHashMap<String, T> sequences(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Sequence query, DataSet set) throws Exception {
         return new LinkedHashMap<>();
     }
 
@@ -4466,7 +4368,6 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
      * @param sequence Sequence
-     * @param previous 上一步查询结果
      * @param set 查询结果集
      * @return List
      */
@@ -4476,15 +4377,15 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
     }
 
     /* *****************************************************************************************************************
-     * 													common
+     *                                                     common
      * ----------------------------------------------------------------------------------------------------------------
      */
     /**
      *
      * 根据 catalog, schema, name检测tables集合中是否存在
      * @param metas metas
-     * @param catalog catalog
-     * @param schema schema
+     * @param catalog 对于MySQL, 则对应相应的数据库, 对于Oracle来说, 则是对应相应的数据库实例, 可以不填, 也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
+     * @param schema 可以理解为数据库的登录名, 而对于Oracle也可以理解成对该数据库操作的所有者的登录名。对于Oracle要特别注意, 其登陆名必须是大写, 不然的话是无法获取到相应的数据, 而MySQL则不做强制要求。
      * @param name name
      * @return 如果存在则返回Table 不存在则返回null
      * @param <T> Table
@@ -4498,7 +4399,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      *
      * 根据 catalog, name检测schemas集合中是否存在
      * @param schemas schemas
-     * @param catalog catalog
+     * @param catalog 对于MySQL, 则对应相应的数据库, 对于Oracle来说, 则是对应相应的数据库实例, 可以不填, 也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
      * @param name name
      * @return 如果存在则返回 Schema 不存在则返回null
      * @param <T> Table
@@ -4535,20 +4436,20 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
     }
     /* *****************************************************************************************************************
      *
-     * 													DDL
+     *                                                     DDL
      *
      * =================================================================================================================
-     * database			: 数据库
-     * table			: 表
-     * master table		: 主表
-     * partition table	: 分区表
-     * column			: 列
-     * tag				: 标签
+     * database            : 数据库
+     * table            : 表
+     * master table        : 主表
+     * partition table    : 分区表
+     * column            : 列
+     * tag                : 标签
      * primary key      : 主键
-     * foreign key		: 外键
-     * index			: 索引
-     * constraint		: 约束
-     * trigger		    : 触发器
+     * foreign key        : 外键
+     * index            : 索引
+     * constraint        : 约束
+     * trigger            : 触发器
      * procedure        : 存储过程
      * function         : 函数
      ******************************************************************************************************************/
@@ -4583,7 +4484,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
         return result;
     }
     /* *****************************************************************************************************************
-     * 													table
+     *                                                     table
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * boolean create(DataRuntime runtime, Table meta)
@@ -5054,7 +4955,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
     }
 
     /* *****************************************************************************************************************
-     * 													view
+     *                                                     view
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * boolean create(DataRuntime runtime, View view) throws Exception;
@@ -5260,7 +5161,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
     }
 
     /* *****************************************************************************************************************
-     * 													MasterTable
+     *                                                     MasterTable
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * boolean create(DataRuntime runtime, MasterTable meta)
@@ -5409,7 +5310,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
     }
 
     /* *****************************************************************************************************************
-     * 													partition table
+     *                                                     partition table
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * boolean create(DataRuntime runtime, PartitionTable meta) throws Exception;
@@ -5559,7 +5460,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
     }
 
     /* *****************************************************************************************************************
-     * 													column
+     *                                                     column
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * boolean add(DataRuntime runtime, Column meta)
@@ -5855,20 +5756,20 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
     public StringBuilder define(DataRuntime runtime, StringBuilder builder, Column meta, ACTION.DDL action) {
         // <prop_name> <data_type> [NULL | NOT NULL] [DEFAULT <default_value>] [COMMENT '<comment>']
        String define = meta.getDefinition();
-		if(BasicUtil.isNotEmpty(define)) {
-			builder.append(" ").append(define);
-			return builder;
-		}
-		// 数据类型
-		type(runtime, builder, meta);
+        if(BasicUtil.isNotEmpty(define)) {
+            builder.append(" ").append(define);
+            return builder;
+        }
+        // 数据类型
+        type(runtime, builder, meta);
         // 非空
         nullable(runtime, builder, meta, action);
-		// 默认值
-		defaultValue(runtime, builder, meta);
-		// 备注
-		comment(runtime, builder, meta);
+        // 默认值
+        defaultValue(runtime, builder, meta);
+        // 备注
+        comment(runtime, builder, meta);
 
-		return builder;
+        return builder;
     }
 
     /**
@@ -6056,7 +5957,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
     }
 
     /* *****************************************************************************************************************
-     * 													tag
+     *                                                     tag
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * boolean add(DataRuntime runtime, Tag meta)
@@ -6260,7 +6161,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
     }
 
     /* *****************************************************************************************************************
-     * 													primary
+     *                                                     primary
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * boolean add(DataRuntime runtime, PrimaryKey meta)
@@ -6409,7 +6310,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
     }
 
     /* *****************************************************************************************************************
-     * 													foreign
+     *                                                     foreign
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * boolean add(DataRuntime runtime, ForeignKey meta)
@@ -6544,7 +6445,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
         return super.buildRenameRun(runtime, meta);
     }
     /* *****************************************************************************************************************
-     * 													index
+     *                                                     index
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * boolean add(DataRuntime runtime, Index meta)
@@ -6746,7 +6647,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
         return builder;
     }
     /* *****************************************************************************************************************
-     * 													constraint
+     *                                                     constraint
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * boolean add(DataRuntime runtime, Constraint meta)
@@ -6878,7 +6779,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
     }
 
     /* *****************************************************************************************************************
-     * 													trigger
+     *                                                     trigger
      * -----------------------------------------------------------------------------------------------------------------
      * List<Run> buildCreateRun(DataRuntime runtime, Trigger trigger) throws Exception
      * List<Run> buildAlterRun(DataRuntime runtime, Trigger trigger) throws Exception;
@@ -7003,7 +6904,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
     }
 
     /* *****************************************************************************************************************
-     * 													procedure
+     *                                                     procedure
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * boolean create(DataRuntime runtime, Procedure meta)
@@ -7135,7 +7036,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
     }
 
     /* *****************************************************************************************************************
-     * 													function
+     *                                                     function
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * boolean create(DataRuntime runtime, Function meta)
@@ -7252,7 +7153,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
     }
 
     /* *****************************************************************************************************************
-     * 													sequence
+     *                                                     sequence
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * boolean create(DataRuntime runtime, Sequence meta)

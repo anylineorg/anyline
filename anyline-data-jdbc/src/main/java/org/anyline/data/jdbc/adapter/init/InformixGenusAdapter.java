@@ -87,22 +87,22 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
 
     /* *****************************************************************************************************************
      *
-     * 													DML
+     *                                                     DML
      *
      * =================================================================================================================
-     * INSERT			: 插入
-     * UPDATE			: 更新
-     * SAVE				: 根据情况插入或更新
-     * QUERY			: 查询(RunPrepare/XML/TABLE/VIEW/PROCEDURE)
-     * EXISTS			: 是否存在
-     * COUNT			: 统计
-     * EXECUTE			: 执行(原生SQL及存储过程)
-     * DELETE			: 删除
+     * INSERT            : 插入
+     * UPDATE            : 更新
+     * SAVE                : 根据情况插入或更新
+     * QUERY            : 查询(RunPrepare/XML/TABLE/VIEW/PROCEDURE)
+     * EXISTS            : 是否存在
+     * COUNT            : 统计
+     * EXECUTE            : 执行(原生SQL及存储过程)
+     * DELETE            : 删除
      *
      ******************************************************************************************************************/
 
     /* *****************************************************************************************************************
-     * 													INSERT
+     *                                                     INSERT
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * long insert(DataRuntime runtime, String random, int batch, String dest, Object data, ConfigStore configs, List<String> columns)
@@ -167,9 +167,9 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * 有序列时 只支持插入同一张表
      * INSERT INTO CRM_USER(ID, NAME)
      *  SELECT gloable_seq.nextval  AS ID , M.* FROM (
-     * 		SELECT  'A1' AS NM FROM  DUAL
-     * 		UNION ALL SELECT    'A2' FROM DUAL
-     * 		UNION ALL SELECT    'A3' FROM DUAL
+     *         SELECT  'A1' AS NM FROM  DUAL
+     *         UNION ALL SELECT    'A2' FROM DUAL
+     *         UNION ALL SELECT    'A3' FROM DUAL
      * ) M
      * 填充inset命令内容(创建批量INSERT RunPrepare)
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -328,16 +328,16 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
         boolean el = ConfigStore.IS_AUTO_CHECK_EL_VALUE(configs);
         int row = 0;
         for(Object obj:list) {
-			/*if(obj instanceof DataRow) {
-				DataRow row = (DataRow)obj;
-				if (row.hasPrimaryKeys() && null != primaryGenerator && BasicUtil.isEmpty(row.getPrimaryValue())) {
-					String pk = row.getPrimaryKey();
-					if (null == pk) {
-						pk = ConfigTable.DEFAULT_PRIMARY_KEY;
-					}
-					createPrimaryValue(row, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), null);
-				}
-			}else{*/
+            /*if(obj instanceof DataRow) {
+                DataRow row = (DataRow)obj;
+                if (row.hasPrimaryKeys() && null != primaryGenerator && BasicUtil.isEmpty(row.getPrimaryValue())) {
+                    String pk = row.getPrimaryKey();
+                    if (null == pk) {
+                        pk = ConfigTable.DEFAULT_PRIMARY_KEY;
+                    }
+                    createPrimaryValue(row, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), null);
+                }
+            }else{*/
             boolean create = EntityAdapterProxy.createPrimaryValue(obj, Column.names(pks));
             if(!create && null != generator) {
                 generator.create(obj, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), Column.names(pks), null);
@@ -469,7 +469,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     }
 
     /* *****************************************************************************************************************
-     * 													UPDATE
+     *                                                     UPDATE
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * long update(DataRuntime runtime, String random, int batch, String dest, Object data, ConfigStore configs, List<String> columns)
@@ -669,7 +669,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     }
 
     /* *****************************************************************************************************************
-     * 													QUERY
+     *                                                     QUERY
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * DataSet querys(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
@@ -929,7 +929,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     }
 
     /* *****************************************************************************************************************
-     * 													COUNT
+     *                                                     COUNT
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * long count(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
@@ -976,7 +976,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     }
 
     /* *****************************************************************************************************************
-     * 													EXISTS
+     *                                                     EXISTS
      * -----------------------------------------------------------------------------------------------------------------
      * boolean exists(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
      * String mergeFinalExists(DataRuntime runtime, Run run)
@@ -1003,7 +1003,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     }
 
     /* *****************************************************************************************************************
-     * 													EXECUTE
+     *                                                     EXECUTE
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * long execute(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
@@ -1094,7 +1094,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     }
 
     /* *****************************************************************************************************************
-     * 													DELETE
+     *                                                     DELETE
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * <T> long deletes(DataRuntime runtime, String random, int batch, String table, ConfigStore configs, String column, Collection<T> values)
@@ -1256,26 +1256,26 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
 
     /* *****************************************************************************************************************
      *
-     * 													metadata
+     *                                                     metadata
      *
      * =================================================================================================================
-     * database			: 数据库(catalog, schema)
-     * table			: 表
-     * master table		: 主表
-     * partition table	: 分区表
-     * column			: 列
-     * tag				: 标签
+     * database            : 数据库(catalog, schema)
+     * table            : 表
+     * master table        : 主表
+     * partition table    : 分区表
+     * column            : 列
+     * tag                : 标签
      * primary key      : 主键
-     * foreign key		: 外键
-     * index			: 索引
-     * constraint		: 约束
-     * trigger		    : 触发器
+     * foreign key        : 外键
+     * index            : 索引
+     * constraint        : 约束
+     * trigger            : 触发器
      * procedure        : 存储过程
      * function         : 函数
      ******************************************************************************************************************/
 
     /* *****************************************************************************************************************
-     * 													database
+     *                                                     database
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * LinkedHashMap<String, Database> databases(DataRuntime runtime, String random, String name)
@@ -1498,7 +1498,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     }
 
     /* *****************************************************************************************************************
-     * 													catalog
+     *                                                     catalog
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, String random, String name)
@@ -1579,7 +1579,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public List<Catalog> catalogs(DataRuntime runtime, int index, boolean create, List<Catalog> previous, Catalog query, DataSet set) throws Exception {
         return super.catalogs(runtime, index, create, previous, query, set);
     }
-	/**
+    /**
      * catalog[结果集封装]<br/>
      * 根据驱动内置接口补充 catalog
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -1612,31 +1612,31 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param previou 上一步查询结果
+     * @param meta 上一步查询结果
      * @param set 查询结果集
      * @return Catalog
      * @throws Exception 异常
      */
     @Override
-    public Catalog catalog(DataRuntime runtime, int index, boolean create, Catalog catalog, DataSet set) throws Exception {
-        return super.catalog(runtime, index, create, catalog, set);
+    public Catalog catalog(DataRuntime runtime, int index, boolean create, Catalog meta, DataSet set) throws Exception {
+        return super.catalog(runtime, index, create, meta, set);
     }
     /**
      * catalog[结果集封装]<br/>
      * 当前catalog 根据驱动内置接口补充
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param previou 上一步查询结果
+     * @param meta 上一步查询结果
      * @return Catalog
      * @throws Exception 异常
      */
     @Override
-    public Catalog catalog(DataRuntime runtime, boolean create, Catalog catalog) throws Exception {
-        return super.catalog(runtime, create, catalog);
+    public Catalog catalog(DataRuntime runtime, boolean create, Catalog meta) throws Exception {
+        return super.catalog(runtime, create, meta);
     }
 
     /* *****************************************************************************************************************
-     * 													schema
+     *                                                     schema
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * LinkedHashMap<String, Schema> schemas(DataRuntime runtime, String random, Catalog catalog, String name)
@@ -1710,14 +1710,14 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条SQL 对照 buildQuerySchemaRun 返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param previou 上一步查询结果
+     * @param meta 上一步查询结果
      * @param set 查询结果集
      * @return schema
      * @throws Exception 异常
      */
     @Override
-    public Schema schema(DataRuntime runtime, int index, boolean create, Schema schema, DataSet set) throws Exception {
-        return super.schema(runtime, index, create, schema, set);
+    public Schema schema(DataRuntime runtime, int index, boolean create, Schema meta, DataSet set) throws Exception {
+        return super.schema(runtime, index, create, meta, set);
     }
 
     /**
@@ -1725,17 +1725,17 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * 当前schema 根据驱动内置接口补充
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param previou 上一步查询结果
+     * @param meta 上一步查询结果
      * @return schema
      * @throws Exception 异常
      */
     @Override
-    public Schema schema(DataRuntime runtime, boolean create, Schema schema) throws Exception {
-        return super.schema(runtime, create, schema);
+    public Schema schema(DataRuntime runtime, boolean create, Schema meta) throws Exception {
+        return super.schema(runtime, create, meta);
     }
 
     /* *****************************************************************************************************************
-     * 													table
+     *                                                     table
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, boolean struct)
@@ -1763,11 +1763,9 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
-     * @param catalog catalog
-     * @param schema schema
-     * @param pattern 名称统配符或正则
-	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
-	 * @param struct 查询的属性 参考Metadata.TYPE 多个属性相加算出总和 true:表示查询全部
+     * @param query query
+     * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
+     * @param struct 查询的属性 参考Metadata.TYPE 多个属性相加算出总和 true:表示查询全部
      * @return List
      * @param <T> Table
      */
@@ -1781,8 +1779,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * 查出所有key并以大写缓存 用来实现忽略大小写
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
-     * @param catalog catalog
-     * @param schema schema
+     * @param query query
      */
     @Override
     protected void tableMap(DataRuntime runtime, String random, boolean greedy, Table query, ConfigStore configs) {
@@ -1799,7 +1796,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * 查询表,不是查表中的数据
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
-     * @param types  Metadata.TYPE.
+     * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
      * @return String
      * @throws Exception Exception
      */
@@ -1820,9 +1817,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * table[命令合成]<br/>
      * 查询表备注
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param catalog catalog
-     * @param schema schema
-     * @param pattern 名称统配符或正则
+     * @param query query
      * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
      * @return String
      * @throws Exception Exception
@@ -1838,8 +1833,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条SQL 对照buildQueryTablesRun返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param catalog catalog
-     * @param schema schema
+     * @param query query
      * @param previous 上一步查询结果
      * @param set 查询结果集
      * @return tables
@@ -1856,8 +1850,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条SQL 对照buildQueryTablesRun返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param catalog catalog
-     * @param schema schema
+     * @param query query
      * @param previous 上一步查询结果
      * @param set 查询结果集
      * @return tables
@@ -1873,9 +1866,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param previous 上一步查询结果
-     * @param catalog catalog
-     * @param schema schema
-     * @param pattern 名称统配符或正则
+     * @param query query
      * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
      * @return tables
      * @throws Exception 异常
@@ -1892,9 +1883,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param previous 上一步查询结果
-     * @param catalog catalog
-     * @param schema schema
-     * @param pattern 名称统配符或正则
+     * @param query query
      * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
      * @return tables
      * @throws Exception 异常
@@ -1910,8 +1899,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条SQL 对照buildQueryTablesRun返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param catalog catalog
-     * @param schema schema
+     * @param query query
      * @param previous 上一步查询结果
      * @param set 查询结果集
      * @return tables
@@ -1928,8 +1916,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条SQL 对照buildQueryTablesRun返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param catalog catalog
-     * @param schema schema
+     * @param query query
      * @param previous 上一步查询结果
      * @param set 查询结果集
      * @return tables
@@ -1972,7 +1959,6 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
      * @param table 表
-     * @param previous 上一步查询结果
      * @param set sql执行的结果集
      * @return List
      */
@@ -1982,7 +1968,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     }
 
     /* *****************************************************************************************************************
-     * 													view
+     *                                                     view
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types)
@@ -2005,10 +1991,8 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
-     * @param catalog catalog
-     * @param schema schema
-     * @param pattern 名称统配符或正则
-     * @param types  Metadata.TYPE.
+     * @param query query
+     * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
      * @return List
      * @param <T> View
      */
@@ -2021,16 +2005,14 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * 查询视图
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
-     * @param catalog catalog
-     * @param schema schema
-     * @param pattern 名称统配符或正则
+     * @param query query
      * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
      * @return List
      */
     @Override
     public List<Run> buildQueryViewsRun(DataRuntime runtime, boolean greedy, View query, int types, ConfigStore configs) throws Exception {
-		return super.buildQueryViewsRun(runtime, greedy, query, types, configs);
-	}
+        return super.buildQueryViewsRun(runtime, greedy, query, types, configs);
+    }
 
     /**
      * view[结果集封装]<br/>
@@ -2038,16 +2020,15 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条SQL 对照buildQueryViewsRun返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param catalog catalog
-     * @param schema schema
+     * @param query query
      * @param previous 上一步查询结果
      * @param set 查询结果集
      * @return views
      * @throws Exception 异常
      */
     @Override
-    public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> views, View query, DataSet set) throws Exception {
-        return super.views(runtime, index, create, views, query, set);
+    public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, View query, DataSet set) throws Exception {
+        return super.views(runtime, index, create, previous, query, set);
     }
     /**
      * view[结果集封装]<br/>
@@ -2055,16 +2036,14 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param previous 上一步查询结果
-     * @param catalog catalog
-     * @param schema schema
-     * @param pattern 名称统配符或正则
+     * @param query query
      * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
      * @return views
      * @throws Exception 异常
      */
     @Override
-    public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, boolean create, LinkedHashMap<String, T> views, View query, int types) throws Exception {
-        return super.views(runtime, create, views, query, types);
+    public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, View query, int types) throws Exception {
+        return super.views(runtime, create, previous, query, types);
     }
 
     /**
@@ -2076,8 +2055,8 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public List<String> ddl(DataRuntime runtime, String random, View view, boolean init) {
-		return super.ddl(runtime, random, view, init);
-	}
+        return super.ddl(runtime, random, view, init);
+    }
 
     /**
      * view[命令合成]<br/>
@@ -2105,7 +2084,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
         return super.ddl(runtime, index, view, ddls, set);
     }
     /* *****************************************************************************************************************
-     * 													master table
+     *                                                     master table
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs)
@@ -2129,11 +2108,9 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
-     * @param catalog catalog
-     * @param schema schema
-     * @param pattern 名称统配符或正则
-	 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
-	 * @param struct 查询的属性 参考Metadata.TYPE 多个属性相加算出总和 true:表示查询全部
+     * @param query query
+     * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
+     * @param struct 查询的属性 参考Metadata.TYPE 多个属性相加算出总和 true:表示查询全部
      * @return List
      * @param <T> MasterTable
      */
@@ -2145,16 +2122,14 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * master table[命令合成]<br/>
      * 查询主表
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param catalog catalog
-     * @param schema schema
-     * @param pattern 名称统配符或正则
-     * @param types types
+     * @param query query
+     * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
      * @return String
      */
     @Override
     public List<Run> buildQueryMasterTablesRun(DataRuntime runtime, boolean greedy, MasterTable query, int types, ConfigStore configs) throws Exception {
-		return super.buildQueryMasterTablesRun(runtime, greedy, query, types, configs);
-	}
+        return super.buildQueryMasterTablesRun(runtime, greedy, query, types, configs);
+    }
 
     /**
      * master table[结果集封装]<br/>
@@ -2162,31 +2137,29 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条SQL 对照 buildQueryMasterTablesRun返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param catalog catalog
-     * @param schema schema
+     * @param query query
      * @param previous 上一步查询结果
      * @param set 查询结果集
      * @return tables
      * @throws Exception 异常
      */
     @Override
-    public <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, MasterTable query, DataSet set) throws Exception {
-        return super.masters(runtime, index, create, tables, query, set);
+    public <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, MasterTable query, DataSet set) throws Exception {
+        return super.masters(runtime, index, create, previous, query, set);
     }
     /**
      * master table[结果集封装]<br/>
      * 根据根据驱动内置接口
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param catalog catalog
-     * @param schema schema
+     * @param query query
      * @param previous 上一步查询结果
      * @return tables
      * @throws Exception 异常
      */
     @Override
-    public <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, MasterTable query, int types) throws Exception {
-        return super.masters(runtime, create, tables, query, types);
+    public <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, MasterTable query, int types) throws Exception {
+        return super.masters(runtime, create, previous, query, types);
     }
 
     /**
@@ -2198,8 +2171,8 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public List<String> ddl(DataRuntime runtime, String random, MasterTable meta, boolean init) {
-		return super.ddl(runtime, random, meta, init);
-	}
+        return super.ddl(runtime, random, meta, init);
+    }
     /**
      * master table[命令合成]<br/>
      * 查询 MasterTable DDL
@@ -2225,7 +2198,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
         return super.ddl(runtime, index, table, ddls, set);
     }
     /* *****************************************************************************************************************
-     * 													partition table
+     *                                                     partition table
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * <T extends PartitionTable> LinkedHashMap<String,T> partitions(DataRuntime runtime, String random, boolean greedy, MasterTable master, Map<String, Object> tags, String pattern)
@@ -2249,8 +2222,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
-     * @param master 主表
-     * @param pattern 名称统配符或正则
+     * @param query query
      * @return List
      * @param <T> MasterTable
      */
@@ -2263,10 +2235,8 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * partition table[命令合成]<br/>
      * 查询分区表
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param catalog catalog
-     * @param schema schema
-     * @param pattern 名称统配符或正则
-     * @param types types
+     * @param query query
+     * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
      * @return String
      */
     @Override
@@ -2280,9 +2250,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @param total 合计SQL数量
      * @param index 第几条SQL 对照 buildQueryMasterTablesRun返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param master 主表
-     * @param catalog catalog
-     * @param schema schema
+     * @param query query
      * @param previous 上一步查询结果
      * @param set 查询结果集
      * @return tables
@@ -2297,9 +2265,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * 根据根据驱动内置接口
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param master 主表
-     * @param catalog catalog
-     * @param schema schema
+     * @param query query
      * @param previous 上一步查询结果
      * @return tables
      * @throws Exception 异常
@@ -2338,7 +2304,6 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
      * @param table MasterTable
-     * @param previous 上一步查询结果
      * @param set sql执行的结果集
      * @return List
      */
@@ -2347,7 +2312,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
         return super.ddl(runtime, index, table, ddls, set);
     }
     /* *****************************************************************************************************************
-     * 													column
+     *                                                     column
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Table table, boolean primary);
@@ -2381,9 +2346,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
-     * @param catalog catalog
-     * @param schema schema
-     * @param table 查询全部表时 输入null
+     * @param query query
      * @return List
      * @param <T> Column
      */
@@ -2395,7 +2358,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * column[命令合成]<br/>
      * 查询表上的列
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param table 表
+     * @param query query
      * @param metadata 是否根据metadata(true:SELECT * FROM T WHERE 1=0,false:查询系统表)
      * @return sqls
      */
@@ -2581,9 +2544,8 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * 解析JDBC get columns结果
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param table 表
+     * @param query query
      * @param previous 上一步查询结果
-     * @param pattern 名称
      * @throws Exception 异常
      */
     @Override
@@ -2592,7 +2554,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     }
 
     /* *****************************************************************************************************************
-     * 													tag
+     *                                                     tag
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, String random, boolean greedy, Table table)
@@ -2643,8 +2605,8 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> tags, DataSet set) throws Exception {
-        return super.tags(runtime, index, create, table, tags, set);
+    public <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> previous, DataSet set) throws Exception {
+        return super.tags(runtime, index, create, table, previous, set);
     }
     /**
      *
@@ -2652,9 +2614,8 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * 解析JDBC get columns结果
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param table 表
+     * @param query query
      * @param previous 上一步查询结果
-     * @param pattern 名称统配符或正则
      * @return tags
      * @throws Exception 异常
      */
@@ -2664,7 +2625,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     }
 
     /* *****************************************************************************************************************
-     * 													primary
+     *                                                     primary
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * PrimaryKey primary(DataRuntime runtime, String random, boolean greedy, Table table)
@@ -2745,7 +2706,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     }
 
     /* *****************************************************************************************************************
-     * 													foreign
+     *                                                     foreign
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, String random, boolean greedy, Table table);
@@ -2761,7 +2722,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
-     * @param table 表
+     * @param query query
      * @return PrimaryKey
      */
     @Override
@@ -2772,30 +2733,30 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * foreign[命令合成]<br/>
      * 查询表上的外键
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param table 表
+     * @param query query
      * @return sqls
      */
     @Override
     public List<Run> buildQueryForeignsRun(DataRuntime runtime, ForeignKey query) throws Exception {
-		return super.buildQueryForeignsRun(runtime, query);
-	}
+        return super.buildQueryForeignsRun(runtime, query);
+    }
     /**
      * foreign[结构集封装]<br/>
      *  根据查询结果集构造PrimaryKey
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条查询SQL 对照 buildQueryForeignsRun 返回顺序
-     * @param table 表
+     * @param query query
      * @param previous 上一步查询结果
      * @param set sql查询结果
      * @throws Exception 异常
      */
     @Override
-	public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, int index, LinkedHashMap<String, T> previous, ForeignKey query, DataSet set) throws Exception {
-		return super.foreigns(runtime, index, previous, query, set);
-	}
+    public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, int index, LinkedHashMap<String, T> previous, ForeignKey query, DataSet set) throws Exception {
+        return super.foreigns(runtime, index, previous, query, set);
+    }
 
     /* *****************************************************************************************************************
-     * 													index
+     *                                                     index
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * <T extends Index> List<T> indexes(DataRuntime runtime, String random, boolean greedy, Table table, String pattern)
@@ -2814,8 +2775,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
-     * @param table 表
-     * @param pattern 名称统配符或正则
+     * @param query query
      * @return  LinkedHashMap
      * @param <T> Index
      */
@@ -2828,8 +2788,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * index[调用入口]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
-     * @param table 表
-     * @param pattern 名称统配符或正则
+     * @param query query
      * @return  LinkedHashMap
      * @param <T> Index
      */
@@ -2841,8 +2800,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * index[命令合成]<br/>
      * 查询表上的索引
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param table 表
-     * @param name 名称
+     * @param query query
      * @return sqls
      */
     @Override
@@ -2856,7 +2814,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条查询SQL 对照 buildQueryIndexesRun 返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param table 表
+     * @param query query
      * @param previous 上一步查询结果
      * @param set 查询结果集
      * @return indexes indexes
@@ -2864,15 +2822,15 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public <T extends Index> LinkedHashMap<String, T> indexes(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Index query, DataSet set) throws Exception {
-		return super.indexes(runtime, index, create, previous, query, set);
-	}
+        return super.indexes(runtime, index, create, previous, query, set);
+    }
     /**
      * index[结果集封装]<br/>
      *  根据查询结果集构造Index
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条查询SQL 对照 buildQueryIndexesRun 返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param table 表
+     * @param query query
      * @param previous 上一步查询结果
      * @param set 查询结果集
      * @return indexes indexes
@@ -2880,42 +2838,38 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public <T extends Index> List<T> indexes(DataRuntime runtime, int index, boolean create, List<T> previous, Index query, DataSet set) throws Exception {
-		return super.indexes(runtime, index, create, previous, query, set);
-	}
+        return super.indexes(runtime, index, create, previous, query, set);
+    }
 
     /**
      * index[结果集封装]<br/>
      * 根据驱动内置接口
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param table 表
-     * @param unique 是否唯一
-     * @param approximate 索引允许结果反映近似值
+     * @param query query
      * @return indexes indexes
      * @throws Exception 异常
      */
     @Override
     public <T extends Index> List<T> indexes(DataRuntime runtime, boolean create, List<T> previous, Index query) throws Exception {
-		return super.indexes(runtime, create, previous, query);
-	}
+        return super.indexes(runtime, create, previous, query);
+    }
     /**
      * index[结果集封装]<br/>
      * 根据驱动内置接口
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param table 表
-     * @param unique 是否唯一
-     * @param approximate 索引允许结果反映近似值
+     * @param query query
      * @return indexes indexes
      * @throws Exception 异常
      */
     @Override
     public <T extends Index> LinkedHashMap<String, T> indexes(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Index query) throws Exception {
-		return super.indexes(runtime, create, previous, query);
-	}
+        return super.indexes(runtime, create, previous, query);
+    }
 
     /* *****************************************************************************************************************
-     * 													constraint
+     *                                                     constraint
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * <T extends Constraint> List<T> constraints(DataRuntime runtime, String random, boolean greedy, Table table, String pattern);
@@ -2932,15 +2886,14 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
-     * @param table 表
-     * @param pattern 名称统配符或正则
+     * @param query query
      * @return  LinkedHashMap
      * @param <T> Index
      */
     @Override
     public <T extends Constraint> List<T> constraints(DataRuntime runtime, String random, boolean greedy, Constraint query) {
-		return super.constraints(runtime, random, greedy, query);
-	}
+        return super.constraints(runtime, random, greedy, query);
+    }
     /**
      *
      * constraint[调用入口]<br/>
@@ -2961,14 +2914,13 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * constraint[命令合成]<br/>
      * 查询表上的约束
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param table 表
-     * @param pattern 名称通配符或正则
+     * @param query query
      * @return sqls
      */
     @Override
     public List<Run> buildQueryConstraintsRun(DataRuntime runtime, Constraint query) {
-		return super.buildQueryConstraintsRun(runtime, query);
-	}
+        return super.buildQueryConstraintsRun(runtime, query);
+    }
 
     /**
      * constraint[结果集封装]<br/>
@@ -2976,7 +2928,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param table 表
+     * @param query query
      * @param previous 上一步查询结果
      * @param set DataSet
      * @return constraints constraints
@@ -2984,16 +2936,15 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public <T extends Constraint> List<T> constraints(DataRuntime runtime, int index, boolean create, List<T> previous, Constraint query, DataSet set) throws Exception {
-		return super.constraints(runtime, index, create, previous, query, set);
-	}
+        return super.constraints(runtime, index, create, previous, query, set);
+    }
     /**
      * constraint[结果集封装]<br/>
      * 根据查询结果集构造Constraint
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param table 表
-     * @param column 列
+     * @param query query
      * @param previous 上一步查询结果
      * @param set DataSet
      * @return constraints constraints
@@ -3005,7 +2956,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     }
 
     /* *****************************************************************************************************************
-     * 													trigger
+     *                                                     trigger
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * <T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, String random, boolean greedy, Table table, List<Trigger.EVENT> events)
@@ -3021,43 +2972,41 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
-     * @param table 表
-     * @param events 事件 INSERT|UPDATE|DELETE
+     * @param query query
      * @return  LinkedHashMap
      * @param <T> Index
      */
     public <T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, String random, boolean greedy, Trigger query) {
-		return super.triggers(runtime, random, greedy, query);
-	}
+        return super.triggers(runtime, random, greedy, query);
+    }
     /**
      * trigger[命令合成]<br/>
      * 查询表上的 Trigger
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param table 表
-     * @param events 事件 INSERT|UPDATE|DELETE
+     * @param query query
      * @return sqls
      */
     public List<Run> buildQueryTriggersRun(DataRuntime runtime, Trigger query) {
-		return super.buildQueryTriggersRun(runtime, query);
-	}
+        return super.buildQueryTriggersRun(runtime, query);
+    }
     /**
      * trigger[结果集封装]<br/>
      * 根据查询结果集构造 Trigger
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param table 表
+     * @param query query
      * @param previous 上一步查询结果
      * @param set 查询结果集
      * @return LinkedHashMap
      * @throws Exception 异常
      */
     public <T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Trigger query, DataSet set) throws Exception {
-		return super.triggers(runtime, index, create, previous, query, set);
-	}
+        return super.triggers(runtime, index, create, previous, query, set);
+    }
 
     /* *****************************************************************************************************************
-     * 													procedure
+     *                                                     procedure
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * <T extends Procedure> List<T> procedures(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern);
@@ -3082,9 +3031,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
-     * @param catalog catalog
-     * @param schema schema
-     * @param pattern 名称统配符或正则
+     * @param query query
      * @return  LinkedHashMap
      * @param <T> Index
      */
@@ -3097,29 +3044,25 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * procedure[调用入口]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
-     * @param catalog catalog
-     * @param schema schema
-     * @param pattern 名称统配符或正则
+     * @param query query
      * @return  LinkedHashMap
      * @param <T> Index
      */
     @Override
     public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, String random, Procedure query) {
-		return super.procedures(runtime, random, query);
-	}
+        return super.procedures(runtime, random, query);
+    }
     /**
      * procedure[命令合成]<br/>
      * 查询表上的 Trigger
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param catalog catalog
-     * @param schema schema
-     * @param pattern 名称统配符或正则
+     * @param query query
      * @return sqls
      */
     @Override
     public List<Run> buildQueryProceduresRun(DataRuntime runtime, Procedure query) {
-		return super.buildQueryProceduresRun(runtime, query);
-	}
+        return super.buildQueryProceduresRun(runtime, query);
+    }
     /**
      * procedure[结果集封装]<br/>
      * 根据查询结果集构造 Trigger
@@ -3193,7 +3136,6 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
      * @param procedure Procedure
-     * @param previous 上一步查询结果
      * @param set 查询结果集
      * @return List
      */
@@ -3203,7 +3145,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     }
 
     /* *****************************************************************************************************************
-     * 													function
+     *                                                     function
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * <T extends Function> List<T> functions(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern);
@@ -3228,38 +3170,32 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
-     * @param catalog catalog
-     * @param schema schema
-     * @param pattern 名称统配符或正则
+     * @param query query
      * @return  LinkedHashMap
      * @param <T> Index
      */
     @Override
     public <T extends Function> List<T> functions(DataRuntime runtime, String random, boolean greedy, Function query) {
-		return super.functions(runtime, random, greedy, query);
-	}
+        return super.functions(runtime, random, greedy, query);
+    }
     /**
      *
      * function[调用入口]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
-     * @param catalog catalog
-     * @param schema schema
-     * @param pattern 名称统配符或正则
+     * @param query query
      * @return  LinkedHashMap
      * @param <T> Index
      */
     @Override
     public <T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, String random, Function query) {
-		return super.functions(runtime, random, query);
-	}
+        return super.functions(runtime, random, query);
+    }
     /**
      * function[命令合成]<br/>
      * 查询表上的 Trigger
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param catalog catalog
-     * @param schema schema
-     * @param name 名称统配符或正则
+     * @param query query
      * @return sqls
      */
     @Override
@@ -3342,7 +3278,6 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
      * @param function Function
-     * @param previous 上一步查询结果
      * @param set 查询结果集
      * @return List
      */
@@ -3352,7 +3287,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     }
 
     /* *****************************************************************************************************************
-     * 													sequence
+     *                                                     sequence
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * <T extends Sequence> List<T> sequences(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern);
@@ -3377,9 +3312,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
-     * @param catalog catalog
-     * @param schema schema
-     * @param pattern 名称统配符或正则
+     * @param query query
      * @return  LinkedHashMap
      * @param <T> Index
      */
@@ -3392,9 +3325,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * sequence[调用入口]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
-     * @param catalog catalog
-     * @param schema schema
-     * @param pattern 名称统配符或正则
+     * @param query query
      * @return  LinkedHashMap
      * @param <T> Index
      */
@@ -3406,15 +3337,13 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * sequence[命令合成]<br/>
      * 查询表上的 Trigger
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param catalog catalog
-     * @param schema schema
-     * @param name 名称统配符或正则
+     * @param query query
      * @return sqls
      */
     @Override
     public List<Run> buildQuerySequencesRun(DataRuntime runtime, Sequence query) {
-		return super.buildQuerySequencesRun(runtime, query);
-	}
+        return super.buildQuerySequencesRun(runtime, query);
+    }
 
     /**
      * sequence[结果集封装]<br/>
@@ -3491,7 +3420,6 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
      * @param sequence Sequence
-     * @param previous 上一步查询结果
      * @param set 查询结果集
      * @return List
      */
@@ -3501,15 +3429,15 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     }
 
     /* *****************************************************************************************************************
-     * 													common
+     *                                                     common
      * ----------------------------------------------------------------------------------------------------------------
      */
     /**
      *
      * 根据 catalog, schema, name检测tables集合中是否存在
      * @param metas metas
-     * @param catalog catalog
-     * @param schema schema
+     * @param catalog 对于MySQL, 则对应相应的数据库, 对于Oracle来说, 则是对应相应的数据库实例, 可以不填, 也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
+     * @param schema 可以理解为数据库的登录名, 而对于Oracle也可以理解成对该数据库操作的所有者的登录名。对于Oracle要特别注意, 其登陆名必须是大写, 不然的话是无法获取到相应的数据, 而MySQL则不做强制要求。
      * @param name name
      * @return 如果存在则返回Table 不存在则返回null
      * @param <T> Table
@@ -3523,7 +3451,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      *
      * 根据 catalog, name检测schemas集合中是否存在
      * @param schemas schemas
-     * @param catalog catalog
+     * @param catalog 对于MySQL, 则对应相应的数据库, 对于Oracle来说, 则是对应相应的数据库实例, 可以不填, 也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
      * @param name name
      * @return 如果存在则返回 Schema 不存在则返回null
      * @param <T> Table
@@ -3559,20 +3487,20 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     }
     /* *****************************************************************************************************************
      *
-     * 													DDL
+     *                                                     DDL
      *
      * =================================================================================================================
-     * database			: 数据库
-     * table			: 表
-     * master table		: 主表
-     * partition table	: 分区表
-     * column			: 列
-     * tag				: 标签
+     * database            : 数据库
+     * table            : 表
+     * master table        : 主表
+     * partition table    : 分区表
+     * column            : 列
+     * tag                : 标签
      * primary key      : 主键
-     * foreign key		: 外键
-     * index			: 索引
-     * constraint		: 约束
-     * trigger		    : 触发器
+     * foreign key        : 外键
+     * index            : 索引
+     * constraint        : 约束
+     * trigger            : 触发器
      * procedure        : 存储过程
      * function         : 函数
      ******************************************************************************************************************/
@@ -3591,7 +3519,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
         return super.execute(runtime, random, meta, action, run);
     }
     /* *****************************************************************************************************************
-     * 													table
+     *                                                     table
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * boolean create(DataRuntime runtime, Table meta)
@@ -3939,7 +3867,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     }
 
     /* *****************************************************************************************************************
-     * 													view
+     *                                                     view
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * boolean create(DataRuntime runtime, View view) throws Exception;
@@ -4115,7 +4043,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     }
 
     /* *****************************************************************************************************************
-     * 													MasterTable
+     *                                                     MasterTable
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * boolean create(DataRuntime runtime, MasterTable meta)
@@ -4262,7 +4190,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     }
 
     /* *****************************************************************************************************************
-     * 													partition table
+     *                                                     partition table
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * boolean create(DataRuntime runtime, PartitionTable meta) throws Exception;
@@ -4409,7 +4337,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     }
 
     /* *****************************************************************************************************************
-     * 													column
+     *                                                     column
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * boolean add(DataRuntime runtime, Column meta)
@@ -4917,7 +4845,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     }
 
     /* *****************************************************************************************************************
-     * 													tag
+     *                                                     tag
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * boolean add(DataRuntime runtime, Tag meta)
@@ -5119,7 +5047,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     }
 
     /* *****************************************************************************************************************
-     * 													primary
+     *                                                     primary
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * boolean add(DataRuntime runtime, PrimaryKey meta)
@@ -5283,7 +5211,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     }
 
     /* *****************************************************************************************************************
-     * 													foreign
+     *                                                     foreign
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * boolean add(DataRuntime runtime, ForeignKey meta)
@@ -5417,7 +5345,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
         return super.buildRenameRun(runtime, meta);
     }
     /* *****************************************************************************************************************
-     * 													index
+     *                                                     index
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * boolean add(DataRuntime runtime, Index meta)
@@ -5584,7 +5512,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
         return super.comment(runtime, builder, meta);
     }
     /* *****************************************************************************************************************
-     * 													constraint
+     *                                                     constraint
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * boolean add(DataRuntime runtime, Constraint meta)
@@ -5715,7 +5643,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     }
 
     /* *****************************************************************************************************************
-     * 													trigger
+     *                                                     trigger
      * -----------------------------------------------------------------------------------------------------------------
      * List<Run> buildCreateRun(DataRuntime runtime, Trigger trigger) throws Exception
      * List<Run> buildAlterRun(DataRuntime runtime, Trigger trigger) throws Exception;
@@ -5838,7 +5766,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     }
 
     /* *****************************************************************************************************************
-     * 													procedure
+     *                                                     procedure
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * boolean create(DataRuntime runtime, Procedure meta)
@@ -5969,7 +5897,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     }
 
     /* *****************************************************************************************************************
-     * 													function
+     *                                                     function
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * boolean create(DataRuntime runtime, Function meta)
@@ -6086,7 +6014,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     }
 
     /* *****************************************************************************************************************
-     * 													sequence
+     *                                                     sequence
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * boolean create(DataRuntime runtime, Sequence meta)
@@ -6204,7 +6132,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
 
     /* *****************************************************************************************************************
      *
-     * 														JDBC
+     *                                                         JDBC
      *
      *  ***************************************************************************************************************/
 
@@ -6232,8 +6160,8 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * 识别根据jdbc返回的catalog与schema,部分数据库(如mysql)系统表与jdbc标准可能不一致根据实际情况处理<br/>
      * 注意一定不要处理从SQL中返回的，应该在SQL中处理好
      * @param meta Metadata
-     * @param catalog catalog
-     * @param schema schema
+     * @param catalog 对于MySQL, 则对应相应的数据库, 对于Oracle来说, 则是对应相应的数据库实例, 可以不填, 也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
+     * @param schema 可以理解为数据库的登录名, 而对于Oracle也可以理解成对该数据库操作的所有者的登录名。对于Oracle要特别注意, 其登陆名必须是大写, 不然的话是无法获取到相应的数据, 而MySQL则不做强制要求。
      * @param overrideMeta 如果meta中有值，是否覆盖
      * @param overrideRuntime 如果runtime中有值，是否覆盖，注意结果集中可能跨多个schema，所以一般不要覆盖runtime,从con获取的可以覆盖ResultSet中获取的不要覆盖
      * @param <T> Metadata
@@ -6248,8 +6176,8 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     }
     /**
      * 在调用jdbc接口前处理业务中的catalog,schema,部分数据库(如mysql)业务系统与dbc标准可能不一致根据实际情况处理<br/>
-     * @param catalog catalog
-     * @param schema schema
+     * @param catalog 对于MySQL, 则对应相应的数据库, 对于Oracle来说, 则是对应相应的数据库实例, 可以不填, 也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
+     * @param schema 可以理解为数据库的登录名, 而对于Oracle也可以理解成对该数据库操作的所有者的登录名。对于Oracle要特别注意, 其登陆名必须是大写, 不然的话是无法获取到相应的数据, 而MySQL则不做强制要求。
      * @return String[]
      */
     @Override
@@ -6352,7 +6280,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     }
     /* *****************************************************************************************************************
      *
-     * 														具体数据库
+     *                                                         具体数据库
      *
      *  ***************************************************************************************************************/
 
