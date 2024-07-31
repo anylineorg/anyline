@@ -66,7 +66,8 @@ public class ServiceProxy {
     }
 
     public static AnylineService service() {
-        return service("default");
+        AnylineService service = service("default");
+        return service;
     }
     public static AnylineService service(String key) {
         if(null == key) {

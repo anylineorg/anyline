@@ -547,6 +547,10 @@ public class BeanUtil {
 	}
 	@SuppressWarnings("rawtypes")
 	public static Object getFieldValue(Object obj, String field, boolean recursion) {
+		return getFieldValue(obj, field, recursion, true);
+	}
+	@SuppressWarnings("rawtypes")
+	public static Object getFieldValue(Object obj, String field, boolean recursion, boolean ignoreCase) {
 		if(null == obj) {
 			return null;
 		}
@@ -561,11 +565,19 @@ public class BeanUtil {
 			Field f = ClassUtil.getField((Class)obj, field, recursion);
 			value = getFieldValue(obj, f);
 		}else{
+			//属性与列表一致
 			Field f = ClassUtil.getField(obj.getClass(), field, recursion);
 			if(null == f) {
+				//列名转驼峰
 				f = ClassUtil.getField(obj.getClass(), camel(field), recursion);
 			}
-			value = getFieldValue(obj, f);
+			if(null == f){
+				//忽略大小写 及 其他符号
+				f = ClassUtil.getField(obj.getClass(), camel(field), recursion, ignoreCase);
+			}
+			if(null != f) {
+				value = getFieldValue(obj, f);
+			}
 		}
 		return value;
 

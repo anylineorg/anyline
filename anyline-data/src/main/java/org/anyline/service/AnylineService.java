@@ -2018,6 +2018,9 @@ public interface AnylineService<E>{
 		default <T extends Table> LinkedHashMap<String, T> tables() {
 			return tables(Table.TYPE.NORMAL.value, false);
 		}
+		default <T extends Table> LinkedHashMap<String, T> tables(Schema schema) {
+			return tables(new Catalog(), schema, null, Table.TYPE.NORMAL.value, false);
+		}
 
 		default <T extends Table> LinkedHashMap<String, T> tables(int types, int struct, ConfigStore configs) {
 			return tables(null, null, null, types, struct, configs);

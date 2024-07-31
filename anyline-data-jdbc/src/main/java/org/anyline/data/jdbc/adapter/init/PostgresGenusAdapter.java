@@ -1568,7 +1568,17 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public List<Run> buildQuerySchemasRun(DataRuntime runtime, boolean greedy, Schema query) throws Exception {
-        return super.buildQuerySchemasRun(runtime, greedy, query);
+        List<Run> runs = new ArrayList<>();
+        SimpleRun run = new SimpleRun(runtime);
+        StringBuilder builder = run.getBuilder();
+        builder.append("SELECT * FROM information_schema.schemata");
+        if(null != query){
+            if(null != query.getCatalogName()){
+                builder.append(" WHERE catalog_name = '").append(query.getCatalogName()).append("'");
+            }
+        }
+        runs.add(run);
+        return runs;
     }
     /**
      * schema[结果集封装]<br/>
@@ -3029,8 +3039,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public <T extends Index> T detail(DataRuntime runtime, int index, T meta, Index query, DataRow row) throws Exception {
-        Table table = query.getTable();
-        meta = super.detail(runtime, index, meta, table, row);
+        meta = super.detail(runtime, index, meta, query, row);
         IndexMetadataAdapter config = indexMetadataAdapter(runtime);
         String columnName = row.getStringWithoutEmpty(config.getColumnRefers());
         if(null == columnName) {

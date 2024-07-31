@@ -804,7 +804,7 @@ PUT * /_bulk
         }
 
         DataRow query = new OriginRow();
-        parseCondition(query, chain);
+        query = parseCondition(query, chain);
         if(!query.isEmpty()) {
             body.put("query", query);
         }

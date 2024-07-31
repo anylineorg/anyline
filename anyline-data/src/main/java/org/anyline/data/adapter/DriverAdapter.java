@@ -1977,6 +1977,18 @@ public interface DriverAdapter {
      * @return LinkedHashMap
      */
     LinkedHashMap<String,Column> metadata(DataRuntime runtime, RunPrepare prepare, boolean comment);
+
+    /**
+     * 检测name,name中可能包含catalog.schema.name<br/>
+     * 如果有一项或三项，在父类中解析<br/>
+     * 如果只有两项，需要根据不同数据库区分出最前一项是catalog还是schema，如果区分不出来的抛出异常
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param random 用来标记同一组命令
+     * @param meta 表,视图等
+     * @return T
+     * @throws Exception 如果区分不出来的抛出异常
+     */
+    <T extends Metadata> T checkName(DataRuntime runtime, String random, T meta) throws Exception;
     /* *****************************************************************************************************************
      *                                                     database
      ******************************************************************************************************************/
@@ -2147,7 +2159,33 @@ public interface DriverAdapter {
      * @throws Exception 异常
      */
     Database database(DataRuntime runtime, boolean create, Database meta) throws Exception;
+    /**
+     * database[结构集封装-依据]<br/>
+     * 读取 database 元数据结果集的依据
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @return DatabaseMetadataAdapter
+     */
+    DatabaseMetadataAdapter databaseMetadataAdapter(DataRuntime runtime);
+    /**
+     * schema[结果集封装]<br/>
+     * 根据查询结果封装 schema 对象,只封装catalog,schema,name等基础属性
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta 上一步封装结果
+     * @param query 查询条件 根据metadata属性
+     * @param row 查询结果集
+     * @return Database
+     */
+    <T extends Database> T init(DataRuntime runtime, int index, T meta, Database query, DataRow row);
 
+    /**
+     * database[结果集封装]<br/>
+     * 根据查询结果封装 database 对象,更多属性
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta 上一步封装结果
+     * @param row 查询结果集
+     * @return Table
+     */
+    <T extends Database> T detail(DataRuntime runtime, int index, T meta, Database query, DataRow row);
     /* *****************************************************************************************************************
      *                                                     catalog
      ******************************************************************************************************************/
@@ -2275,6 +2313,34 @@ public interface DriverAdapter {
      * @throws Exception 异常
      */
     Catalog catalog(DataRuntime runtime, boolean create, Catalog meta) throws Exception;
+
+    /**
+     * catalog[结构集封装-依据]<br/>
+     * 读取 catalog 元数据结果集的依据
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @return CatalogMetadataAdapter
+     */
+    CatalogMetadataAdapter catalogMetadataAdapter(DataRuntime runtime);
+    /**
+     * catalog[结果集封装]<br/>
+     * 根据查询结果封装 catalog 对象,只封装catalog,schema,name等基础属性
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta 上一步封装结果
+     * @param query 查询条件 根据metadata属性
+     * @param row 查询结果集
+     * @return Catalog
+     */
+    <T extends Catalog> T init(DataRuntime runtime, int index, T meta, Catalog query, DataRow row);
+
+    /**
+     * catalog[结果集封装]<br/>
+     * 根据查询结果封装 catalog 对象,更多属性
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta 上一步封装结果
+     * @param row 查询结果集
+     * @return Table
+     */
+    <T extends Catalog> T detail(DataRuntime runtime, int index, T meta, Catalog query, DataRow row);
 
     /* *****************************************************************************************************************
      *                                                     schema
@@ -2449,16 +2515,32 @@ public interface DriverAdapter {
     Schema schema(DataRuntime runtime, boolean create, Schema schema) throws Exception;
 
     /**
-     * 检测name,name中可能包含catalog.schema.name<br/>
-     * 如果有一项或三项，在父类中解析<br/>
-     * 如果只有两项，需要根据不同数据库区分出最前一项是catalog还是schema，如果区分不出来的抛出异常
+     * schema[结构集封装-依据]<br/>
+     * 读取 schema 元数据结果集的依据
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param random 用来标记同一组命令
-     * @param meta 表,视图等
-     * @return T
-     * @throws Exception 如果区分不出来的抛出异常
+     * @return SchemaMetadataAdapter
      */
-    <T extends Metadata> T checkName(DataRuntime runtime, String random, T meta) throws Exception;
+    SchemaMetadataAdapter schemaMetadataAdapter(DataRuntime runtime);
+    /**
+     * schema[结果集封装]<br/>
+     * 根据查询结果封装 schema 对象,只封装catalog,schema,name等基础属性
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta 上一步封装结果
+     * @param query 查询条件 根据metadata属性
+     * @param row 查询结果集
+     * @return Schema
+     */
+    <T extends Schema> T init(DataRuntime runtime, int index, T meta, Schema query, DataRow row);
+
+    /**
+     * schema[结果集封装]<br/>
+     * 根据查询结果封装 schema 对象,更多属性
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta 上一步封装结果
+     * @param row 查询结果集
+     * @return Table
+     */
+    <T extends Schema> T detail(DataRuntime runtime, int index, T meta, Schema query, DataRow row);
     /* *****************************************************************************************************************
      *                                                     table
      ******************************************************************************************************************/

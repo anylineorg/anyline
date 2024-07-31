@@ -52,6 +52,7 @@ public class ElasticSearchBuilder {
         Boolean store = column.getStore();
         String analyzer = column.getAnalyzer();
         String searchAnalyzer = column.getSearchAnalyzer();
+        String similarity = column.getSimilarity(); //相似度算法
         if(BasicUtil.isNotEmpty(type)) {
             map.put("type", type);
         }
@@ -76,6 +77,9 @@ public class ElasticSearchBuilder {
             if (null != dims && dims > 0) {
                 map.put("dims", dims);
             }
+        }
+        if(BasicUtil.isNotEmpty(similarity)){
+            map.put("similarity", similarity);
         }
         return map;
     }

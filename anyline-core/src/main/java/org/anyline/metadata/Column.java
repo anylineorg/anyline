@@ -205,7 +205,7 @@ public class Column extends TableAffiliation<Column> implements Serializable {
     protected String nullValue;
     protected String positionIncrementGap;
     protected LinkedHashMap<String, Property> properties = new LinkedHashMap<>();
-    protected String similarity;
+    protected String similarity                 ; // 相似度算法 如l2_norm dot_product cosine max_inner_product
     protected String subObjects;
     protected String termVector;
     protected int parseLvl                      = 0;// 类型解析级别0:未解析 1:column解析 2:adapter解析

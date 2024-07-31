@@ -4271,6 +4271,42 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return null;
 	}
+    /**
+     * database[结构集封装-依据]<br/>
+     * 读取 database 元数据结果集的依据
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @return DatabaseMetadataAdapter
+     */
+    @Override
+    public DatabaseMetadataAdapter databaseMetadataAdapter(DataRuntime runtime) {
+        return null;
+    }
+    /**
+     * schema[结果集封装]<br/>
+     * 根据查询结果封装 schema 对象,只封装catalog,schema,name等基础属性
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta 上一步封装结果
+     * @param query 查询条件 根据metadata属性
+     * @param row 查询结果集
+     * @return Database
+     */
+    @Override
+    public <T extends Database> T init(DataRuntime runtime, int index, T meta, Database query, DataRow row) {
+        return meta;
+    }
+
+    /**
+     * database[结果集封装]<br/>
+     * 根据查询结果封装 database 对象,更多属性
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta 上一步封装结果
+     * @param row 查询结果集
+     * @return Table
+     */
+    @Override
+    public <T extends Database> T detail(DataRuntime runtime, int index, T meta, Database query, DataRow row) {
+        return meta;
+    }
 	/* *****************************************************************************************************************
 	 * 													catalog
 	 * -----------------------------------------------------------------------------------------------------------------
@@ -4575,6 +4611,42 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return null;
 	}
 
+    /**
+     * catalog[结构集封装-依据]<br/>
+     * 读取 catalog 元数据结果集的依据
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @return CatalogMetadataAdapter
+     */
+    @Override
+    public CatalogMetadataAdapter catalogMetadataAdapter(DataRuntime runtime) {
+        return null;
+    }
+    /**
+     * catalog[结果集封装]<br/>
+     * 根据查询结果封装 catalog 对象,只封装catalog,schema,name等基础属性
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta 上一步封装结果
+     * @param query 查询条件 根据metadata属性
+     * @param row 查询结果集
+     * @return Catalog
+     */
+    @Override
+    public <T extends Catalog> T init(DataRuntime runtime, int index, T meta, Catalog query, DataRow row) {
+        return meta;
+    }
+
+    /**
+     * catalog[结果集封装]<br/>
+     * 根据查询结果封装 catalog 对象,更多属性
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta 上一步封装结果
+     * @param row 查询结果集
+     * @return Table
+     */
+    @Override
+    public <T extends Catalog> T detail(DataRuntime runtime, int index, T meta, Catalog query, DataRow row) {
+        return meta;
+    }
 	/* *****************************************************************************************************************
 	 * 													schema
 	 * -----------------------------------------------------------------------------------------------------------------
@@ -4906,6 +4978,43 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return meta;
 	}
+
+    /**
+     * schema[结构集封装-依据]<br/>
+     * 读取 schema 元数据结果集的依据
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @return SchemaMetadataAdapter
+     */
+    @Override
+    public SchemaMetadataAdapter schemaMetadataAdapter(DataRuntime runtime) {
+        return null;
+    }
+    /**
+     * schema[结果集封装]<br/>
+     * 根据查询结果封装 schema 对象,只封装catalog,schema,name等基础属性
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta 上一步封装结果
+     * @param query 查询条件 根据metadata属性
+     * @param row 查询结果集
+     * @return Schema
+     */
+    @Override
+    public  <T extends Schema> T init(DataRuntime runtime, int index, T meta, Schema query, DataRow row) {
+        return meta;
+    }
+
+    /**
+     * schema[结果集封装]<br/>
+     * 根据查询结果封装 schema 对象,更多属性
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta 上一步封装结果
+     * @param row 查询结果集
+     * @return Table
+     */
+    @Override
+    public <T extends Schema> T detail(DataRuntime runtime, int index, T meta, Schema query, DataRow row) {
+        return meta;
+    }
 	/* *****************************************************************************************************************
 	 * 													table
 	 * -----------------------------------------------------------------------------------------------------------------

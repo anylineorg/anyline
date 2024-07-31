@@ -498,6 +498,19 @@ public class ClassUtil {
 		return getMethod(clazz, name, false, parameterTypes);
 	}
 	public static Field getField(Class<?> clazz, String name, boolean recursion) {
+		return getField(clazz, name, recursion, false);
+	}
+
+	/**
+	 * 根据名称获取属性
+	 * @param clazz 类
+	 * @param name 属性名
+	 * @param recursion 是否递归父类
+	 * @param ignoreCase 是否忽略大小写及其他符号
+	 * @return Field
+	 */
+
+	public static Field getField(Class<?> clazz, String name, boolean recursion, boolean ignoreCase) {
 		Field field = null;
 		try{
 			field = clazz.getField(name);
@@ -509,16 +522,36 @@ public class ClassUtil {
 
 			}
 		}
+		//忽略大小写及其他符号
+		if(null == field && ignoreCase){
+			name = name.replace("_", "");
+			Field[] fields = clazz.getFields();
+			for(Field item:fields) {
+				if(name.equalsIgnoreCase(item.getName().replace("_",""))){
+					field = item;
+					break;
+				}
+			}
+			if(null == field){
+				fields = clazz.getDeclaredFields();
+				for(Field item:fields) {
+					if(name.equalsIgnoreCase(item.getName().replace("_",""))){
+						field = item;
+						break;
+					}
+				}
+			}
+		}
+
 		// 递归父类
 		if(null == field && recursion) {
 			clazz = clazz.getSuperclass();
 			if(null != clazz) {
-				field = getField(clazz, name);
+				field = getField(clazz, name, recursion, ignoreCase);
 			}
 		}
 		return field;
 	}
-
 	/**
 	 * 根据名称过滤属性
 	 * @param fields 属性s
