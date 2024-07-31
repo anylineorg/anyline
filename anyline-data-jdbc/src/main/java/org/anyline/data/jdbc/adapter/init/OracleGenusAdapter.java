@@ -18,7 +18,6 @@
 
 package org.anyline.data.jdbc.adapter.init;
 
-import com.sun.xml.internal.ws.api.databinding.MetadataReader;
 import org.anyline.data.jdbc.adapter.init.alias.OracleGenusTypeMetadataAlias;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.init.DefaultConfigStore;
@@ -66,19 +65,39 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
             reg(alias);
             alias(alias.name(), alias.standard());
         }
-        FieldRefer refer = new FieldRefer();
-        refer.setRefer("name", "COLUMN_NAME");
-        refer.setRefer("Catalog", "");//忽略
-        refer.setRefer("schema", "OWNER");
-        refer.setRefer("Table", "TABLE_NAME");
-        refer.setRefer("Nullable", "NULLABLE");
-        refer.setRefer("Charset", "");//忽略
-        refer.setRefer("Collate", "");//忽略
-        refer.setRefer("DataType", "DATA_TYPE");
-        refer.setRefer("Position", "COLUMN_ID");
-        refer.setRefer("Comment", "COLUMN_COMMENT");//SQL组装
-        refer.setRefer("Default", "DATA_DEFAULT");
-        refer(Column.class, refer);
+        FieldRefer columnRefer = new FieldRefer(Column.class);
+        columnRefer.setRefer("name", "COLUMN_NAME");
+        columnRefer.setRefer("Catalog", "");//忽略
+        columnRefer.setRefer("schema", "OWNER");
+        columnRefer.setRefer("Table", "TABLE_NAME");
+        columnRefer.setRefer("Nullable", "NULLABLE");
+        columnRefer.setRefer("Charset", "");//忽略
+        columnRefer.setRefer("Collate", "");//忽略
+        columnRefer.setRefer("DataType", "DATA_TYPE");
+        columnRefer.setRefer("Position", "COLUMN_ID");
+        columnRefer.setRefer("Comment", "COLUMN_COMMENT");//SQL组装
+        columnRefer.setRefer("Default", "DATA_DEFAULT");
+        reg(columnRefer);
+
+        FieldRefer primaryRefer = new FieldRefer(PrimaryKey.class);
+        primaryRefer.setRefer("name", "CONSTRAINT_NAME");
+        primaryRefer.setRefer("Catalog", (String)null);
+        primaryRefer.setRefer("schema", "OWNER");
+        primaryRefer.setRefer("Table", "TABLE_NAME");
+        primaryRefer.setRefer("column", "COLUMN_NAME");
+        primaryRefer.setRefer("ColumnPosition", "POSITION");
+        primaryRefer.setRefer("ColumnOrder", (String)null);
+        reg(primaryRefer);
+
+        FieldRefer indexRefer = new FieldRefer(Index.class);
+        indexRefer.setRefer("name", "INDEX_NAME");
+        indexRefer.setRefer("Table", "TABLE_NAME");
+        indexRefer.setRefer("schema", "INDEX_OWNER");
+        indexRefer.setRefer("Catalog", "");
+        indexRefer.setRefer("column", "COLUMN_EXPRESSION,COLUMN_NAME");
+        indexRefer.setRefer("ColumnOrder", "DESCEND");
+        indexRefer.setRefer("ColumnPosition", "COLUMN_POSITION");
+        reg(indexRefer);
     }
 
     @Override
@@ -2868,26 +2887,6 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
     public <T extends PrimaryKey> T detail(DataRuntime runtime, int index, T primary, PrimaryKey query, DataSet set) throws Exception {
         return super.detail(runtime, index, primary, query, set);
     }
-
-    /**
-     * primary[结构集封装-依据]<br/>
-     * 读取primary key元数据结果集的依据
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @return PrimaryMetadataAdapter
-     */
-    @Override
-    public PrimaryKey.MetadataAdapter primaryMetadataAdapter(DataRuntime runtime) {
-        PrimaryKey.MetadataAdapter config = super.primaryMetadataAdapter(runtime);
-        config.setRefer("name", "CONSTRAINT_NAME");
-        config.setRefer("Catalog", (String)null);
-        config.setRefer("schema", "OWNER");
-        config.setRefer("Table", "TABLE_NAME");
-        config.setRefer("column", "COLUMN_NAME");
-        config.setRefer("ColumnPosition", "POSITION");
-        config.setRefer("ColumnOrder", (String)null);
-        return config;
-    }
-
     @Override
     public PrimaryKey primary(DataRuntime runtime, PrimaryKey query) throws Exception {
         return super.primary(runtime, query);
@@ -3075,24 +3074,6 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         builder.append("ON M.INDEX_OWNER = F.INDEX_OWNER AND M.INDEX_NAME = F.INDEX_NAME AND M.COLUMN_POSITION = F.COLUMN_POSITION\n");
         builder.append("WHERE 1=1\n");
         return run;
-    }
-    /**
-     * index[结构集封装-依据]<br/>
-     * 读取index元数据结果集的依据
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @return Index.MetadataAdapter
-     */
-    @Override
-    public Index.MetadataAdapter indexMetadataAdapter(DataRuntime runtime) {
-        Index.MetadataAdapter adapter =  super.indexMetadataAdapter(runtime);
-        adapter.setRefer("name", "INDEX_NAME");
-        adapter.setRefer("Table", "TABLE_NAME");
-        adapter.setRefer("schema", "INDEX_OWNER");
-        adapter.setRefer("Catalog", "");
-        adapter.setRefer("column", "COLUMN_EXPRESSION,COLUMN_NAME");
-        adapter.setRefer("ColumnOrder", "DESCEND");
-        adapter.setRefer("ColumnPosition", "COLUMN_POSITION");
-        return adapter;
     }
     /**
      * index[结果集封装]<br/>

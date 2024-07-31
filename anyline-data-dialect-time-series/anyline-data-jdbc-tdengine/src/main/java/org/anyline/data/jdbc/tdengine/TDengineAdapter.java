@@ -29,7 +29,7 @@ import org.anyline.entity.*;
 import org.anyline.exception.CommandException;
 import org.anyline.exception.NotSupportException;
 import org.anyline.metadata.*;
-import org.anyline.metadata.adapter.*;
+import org.anyline.metadata.adapter.FieldRefer;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.util.BasicUtil;
@@ -52,6 +52,17 @@ public class TDengineAdapter extends AbstractJDBCAdapter implements JDBCAdapter 
             reg(alias);
             alias(alias.name(), alias.standard());
         }
+        FieldRefer tableRefer = new FieldRefer(Table.class);
+        tableRefer.setRefer("name", "TABLE_NAME");
+        tableRefer.setRefer("Catalog", "DB_NAME");
+        tableRefer.setRefer("Comment", "TABLE_COMMENT");
+        reg(tableRefer);
+
+        FieldRefer masterRefer = new FieldRefer(MasterTable.class);
+        masterRefer.setRefer("name", "STABLE_NAME");
+        masterRefer.setRefer("Catalog", "DB_NAME");
+        masterRefer.setRefer("Comment", "TABLE_COMMENT");
+        reg(masterRefer);
     }
 
     private String delimiter;
@@ -1895,20 +1906,6 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
     }
 
     /**
-     * table[结构集封装-依据]<br/>
-     * 读取table元数据结果集的依据
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @return Table.MetadataAdapter
-     */
-    @Override
-    public Table.MetadataAdapter tableMetadataAdapter(DataRuntime runtime) {
-        Table.MetadataAdapter adapter = new Table.MetadataAdapter();
-        adapter.setRefer("name", "TABLE_NAME");
-        adapter.setRefer("Catalog", "DB_NAME");
-        adapter.setRefer("Comment", "TABLE_COMMENT");
-        return adapter;
-    }
-    /**
      * table[结果集封装]<br/>
      * 根据查询结果集构造Table
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -2257,21 +2254,6 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         }
         runs.add(new SimpleRun(runtime, sql));
         return runs;
-    }
-
-    /**
-     * master[结构集封装-依据]<br/>
-     * 读取master元数据结果集的依据
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @return MasterTable.MetadataAdapter
-     */
-    @Override
-    public MasterTable.MetadataAdapter masterMetadataAdapter(DataRuntime runtime) {
-        MasterTable.MetadataAdapter adapter = new MasterTable.MetadataAdapter();
-        adapter.setRefer("name", "STABLE_NAME");
-        adapter.setRefer("Catalog", "DB_NAME");
-        adapter.setRefer("Comment", "TABLE_COMMENT");
-        return adapter;
     }
 
     /**
@@ -2789,16 +2771,6 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         return super.detail(runtime, index, meta, catalog, schema, row);
     }
 
-    /**
-     * column[结构集封装-依据]<br/>
-     * 读取column元数据结果集的依据
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @return ColumnMetadataAdapter
-     */
-    @Override
-    public TypeMetadata.Refer dataTypeMetadataRefer(DataRuntime runtime) {
-        return super.dataTypeMetadataRefer(runtime);
-    }
 
     /**
      * column[结果集封装]<br/>(方法1)<br/>
@@ -3044,18 +3016,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
     @Override
     public <T extends PrimaryKey> T detail(DataRuntime runtime, int index, T primary, PrimaryKey query, DataSet set) throws Exception {
         return super.detail(runtime, index, primary, query, set);
-    }
-    /**
-     * primary[结构集封装-依据]<br/>
-     * 读取primary key元数据结果集的依据
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @return PrimaryMetadataAdapter
-     */
-    @Override
-    public PrimaryKey.MetadataAdapter primaryMetadataAdapter(DataRuntime runtime) {
-        return super.primaryMetadataAdapter(runtime);
-    }
-    /**
+    }    /**
      * primary[结构集封装]<br/>
      *  根据驱动内置接口补充PrimaryKey
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -3267,16 +3228,6 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
     @Override
     public <T extends Index> T detail(DataRuntime runtime, int index, T meta, Index query, DataRow row) throws Exception {
         return super.detail(runtime, index, meta, query, row);
-    }
-    /**
-     * index[结构集封装-依据]<br/>
-     * 读取index元数据结果集的依据
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @return Index.MetadataAdapter
-     */
-    @Override
-    public Index.MetadataAdapter indexMetadataAdapter(DataRuntime runtime) {
-        return super.indexMetadataAdapter(runtime);
     }
     /* *****************************************************************************************************************
      *                                                     constraint

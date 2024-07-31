@@ -28,6 +28,7 @@ import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
 import org.anyline.exception.NotSupportException;
 import org.anyline.metadata.*;
+import org.anyline.metadata.adapter.FieldRefer;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.util.BasicUtil;
@@ -50,6 +51,15 @@ public class IgniteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
             reg(alias);
             alias(alias.name(), alias.standard());
         }
+        FieldRefer indexRefer = new FieldRefer(Index.class);
+        indexRefer.setRefer("name", "INDEX_NAME");
+        indexRefer.setRefer("schema", "SCHEMA_NAME");
+        indexRefer.setRefer("Table", "TABLE_NAME");
+        indexRefer.setRefer("Comment", "INDEX_COMMENT");
+        indexRefer.setRefer("Type", "INDEX_TYPE");
+        indexRefer.setRefer("column", "COLUMN_NAME");
+        indexRefer.setRefer("ColumnPosition", "ORDINAL_POSITION");
+        reg(indexRefer);
     }
     
     private String delimiter;
@@ -2428,16 +2438,6 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         return super.detail(runtime, index, meta, catalog, schema, row);
     }
 
-    /**
-     * column[结构集封装-依据]<br/>
-     * 读取column元数据结果集的依据
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @return ColumnMetadataAdapter
-     */
-    @Override
-    public TypeMetadata.Refer dataTypeMetadataRefer(DataRuntime runtime) {
-        return super.dataTypeMetadataRefer(runtime);
-    }
 
     /**
      * column[结果集封装]<br/>(方法1)<br/>
@@ -2620,18 +2620,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
     @Override
     public <T extends PrimaryKey> T detail(DataRuntime runtime, int index, T primary, PrimaryKey query, DataSet set) throws Exception {
         return super.detail(runtime, index, primary, query, set);
-    }
-    /**
-     * primary[结构集封装-依据]<br/>
-     * 读取primary key元数据结果集的依据
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @return PrimaryMetadataAdapter
-     */
-    @Override
-    public PrimaryKey.MetadataAdapter primaryMetadataAdapter(DataRuntime runtime) {
-        return super.primaryMetadataAdapter(runtime);
-    }
-    /**
+    }    /**
      * primary[结构集封装]<br/>
      *  根据驱动内置接口补充PrimaryKey
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -2794,24 +2783,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         in(runtime, builder, "TABLE_NAME", names);
         return runs;
     }
-    /**
-     * index[结构集封装-依据]<br/>
-     * 读取index元数据结果集的依据
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @return Index.MetadataAdapter
-     */
-    @Override
-    public Index.MetadataAdapter indexMetadataAdapter(DataRuntime runtime) {
-        Index.MetadataAdapter adapter = super.indexMetadataAdapter(runtime);
-        adapter.setRefer("name", "INDEX_NAME");
-        adapter.setRefer("schema", "SCHEMA_NAME");
-        adapter.setRefer("Table", "TABLE_NAME");
-        adapter.setRefer("Comment", "INDEX_COMMENT");
-        adapter.setRefer("Type", "INDEX_TYPE");
-        adapter.setRefer("column", "COLUMN_NAME");
-        adapter.setRefer("ColumnPosition", "ORDINAL_POSITION");
-        return adapter;
-    }
+
     /**
      * index[结果集封装]<br/>
      *  根据查询结果集构造Index

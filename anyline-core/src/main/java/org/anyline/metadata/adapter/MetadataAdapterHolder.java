@@ -29,16 +29,16 @@ public class MetadataAdapterHolder {
     /**
      * 具体数据库 数据类型-配置
      */
-    private static LinkedHashMap<DatabaseType, LinkedHashMap<TypeMetadata, TypeMetadata.Refer>> typeConfigs = new LinkedHashMap<>();
+    private static LinkedHashMap<DatabaseType, LinkedHashMap<TypeMetadata, TypeMetadata.Refer>> typeRefers = new LinkedHashMap<>();
     /**
      * 具体数据库 数据类型名称-配置
      * 数据类型 与 数据类型名称 的区别:如ORACLE_FLOAT,FLOAT 这两个对象的name都是float所以会相互覆盖
      */
-    private static LinkedHashMap<DatabaseType, LinkedHashMap<String, TypeMetadata.Refer>> typeNameConfigs = new LinkedHashMap<>();
+    private static LinkedHashMap<DatabaseType, LinkedHashMap<String, TypeMetadata.Refer>> typeNameRefers = new LinkedHashMap<>();
     /**
      * 具体数据库 数据类型大类-配置
      */
-    private static LinkedHashMap<DatabaseType, LinkedHashMap<TypeMetadata.CATEGORY, TypeMetadata.Refer>> typeCategoryConfigs = new LinkedHashMap<>();
+    private static LinkedHashMap<DatabaseType, LinkedHashMap<TypeMetadata.CATEGORY, TypeMetadata.Refer>> typeCategoryRefers = new LinkedHashMap<>();
 
     static {
         reg(DatabaseType.COMMON, org.anyline.metadata.type.TypeMetadata.CATEGORY.CHAR, new TypeMetadata.Refer( 0, 1, 1));
@@ -65,17 +65,17 @@ public class MetadataAdapterHolder {
      * @return Config
      */
     public static TypeMetadata.Refer reg(DatabaseType database, TypeMetadata type, TypeMetadata.Refer config) {
-        LinkedHashMap<TypeMetadata, TypeMetadata.Refer> configs = typeConfigs.get(database);
-        if(null == configs) {
-            configs = new LinkedHashMap<>();
-            typeConfigs.put(database, configs);
+        LinkedHashMap<TypeMetadata, TypeMetadata.Refer> refers = typeRefers.get(database);
+        if(null == refers) {
+            refers = new LinkedHashMap<>();
+            typeRefers.put(database, refers);
         }
-        TypeMetadata.Refer src = configs.get(type);
+        TypeMetadata.Refer src = refers.get(type);
         if(null == src) {
             src = new TypeMetadata.Refer();
         }
         src.merge(config);
-        configs.put(type, src);
+        refers.put(type, src);
 
         String name = type.getName();
         reg(database, name, config);
@@ -90,17 +90,17 @@ public class MetadataAdapterHolder {
      * @return Config
      */
     public static TypeMetadata.Refer reg(DatabaseType database, String type, TypeMetadata.Refer config) {
-        LinkedHashMap<String, TypeMetadata.Refer> configs = typeNameConfigs.get(database);
-        if(null == configs) {
-            configs = new LinkedHashMap<>();
-            typeNameConfigs.put(database, configs);
+        LinkedHashMap<String, TypeMetadata.Refer> refers = typeNameRefers.get(database);
+        if(null == refers) {
+            refers = new LinkedHashMap<>();
+            typeNameRefers.put(database, refers);
         }
-        TypeMetadata.Refer src = configs.get(type.toUpperCase());
+        TypeMetadata.Refer src = refers.get(type.toUpperCase());
         if(null == src) {
             src = new TypeMetadata.Refer();
         }
         src.merge(config);
-        configs.put(type.toUpperCase(), src);
+        refers.put(type.toUpperCase(), src);
         return src;
     }
 
@@ -113,18 +113,18 @@ public class MetadataAdapterHolder {
      * @return Config
      */
     public static TypeMetadata.Refer reg(DatabaseType database, TypeMetadata.CATEGORY category, TypeMetadata.Refer config) {
-        LinkedHashMap<TypeMetadata.CATEGORY, TypeMetadata.Refer> configs = typeCategoryConfigs.get(database);
-        if(null == configs) {
-            configs = new LinkedHashMap<>();
-            typeCategoryConfigs.put(database, configs);
+        LinkedHashMap<TypeMetadata.CATEGORY, TypeMetadata.Refer> refers = typeCategoryRefers.get(database);
+        if(null == refers) {
+            refers = new LinkedHashMap<>();
+            typeCategoryRefers.put(database, refers);
         }
-        TypeMetadata.Refer src = configs.get(category);
+        TypeMetadata.Refer src = refers.get(category);
         if(null == src) {
             src = config;
         }else{
             src.merge(config);
         }
-        configs.put(category, src);
+        refers.put(category, src);
         return src;
     }
 
@@ -137,9 +137,9 @@ public class MetadataAdapterHolder {
     public static TypeMetadata.Refer get(DatabaseType database, TypeMetadata type) {
         TypeMetadata.Refer config = null;
         if(null != type) {
-            LinkedHashMap<TypeMetadata, TypeMetadata.Refer> configs = typeConfigs.get(database);
-            if (null != configs) {
-                config = configs.get(type);
+            LinkedHashMap<TypeMetadata, TypeMetadata.Refer> refers = typeRefers.get(database);
+            if (null != refers) {
+                config = refers.get(type);
             }
         }
         return config;
@@ -153,9 +153,9 @@ public class MetadataAdapterHolder {
     public static TypeMetadata.Refer get(DatabaseType database, String type) {
         TypeMetadata.Refer config = null;
         if(null != type) {
-            LinkedHashMap<String, TypeMetadata.Refer> configs = typeNameConfigs.get(database);
-            if (null != configs) {
-                config = configs.get(type.toUpperCase());
+            LinkedHashMap<String, TypeMetadata.Refer> refers = typeNameRefers.get(database);
+            if (null != refers) {
+                config = refers.get(type.toUpperCase());
             }
         }
         return config;
@@ -169,15 +169,15 @@ public class MetadataAdapterHolder {
     public static TypeMetadata.Refer get(DatabaseType database, TypeMetadata.CATEGORY category) {
         TypeMetadata.Refer config = null;
         if(null != category) {
-            LinkedHashMap<TypeMetadata.CATEGORY, TypeMetadata.Refer> configs = typeCategoryConfigs.get(database);
-            if (null != configs) {
-                config = configs.get(category);
+            LinkedHashMap<TypeMetadata.CATEGORY, TypeMetadata.Refer> refers = typeCategoryRefers.get(database);
+            if (null != refers) {
+                config = refers.get(category);
             }
         }
         if(null == config) {
-            LinkedHashMap<TypeMetadata.CATEGORY, TypeMetadata.Refer> configs = typeCategoryConfigs.get(DatabaseType.NONE);
-            if (null != configs) {
-                config = configs.get(category);
+            LinkedHashMap<TypeMetadata.CATEGORY, TypeMetadata.Refer> refers = typeCategoryRefers.get(DatabaseType.NONE);
+            if (null != refers) {
+                config = refers.get(category);
             }
         }
         return config;

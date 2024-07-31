@@ -45,6 +45,7 @@ import org.anyline.exception.CommandQueryException;
 import org.anyline.exception.CommandUpdateException;
 import org.anyline.exception.NotSupportException;
 import org.anyline.metadata.*;
+import org.anyline.metadata.adapter.FieldRefer;
 import org.anyline.metadata.graph.EdgeTable;
 import org.anyline.metadata.graph.GraphTable;
 import org.anyline.metadata.graph.VertexTable;
@@ -66,12 +67,16 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
         return DatabaseType.InfluxDB;
     }
     public InfluxAdapter() {
+        super();
         delimiterFr = "`";
         delimiterTo = "`";
         for (InfluxTypeMetadataAlias alias: InfluxTypeMetadataAlias.values()) {
             reg(alias);
             alias(alias.name(), alias.standard());
         }
+        FieldRefer tableRefer = new FieldRefer(Table.class);
+        tableRefer.setRefer("name", "NAME");
+        reg(tableRefer);
     }
     
     private String delimiter;
@@ -2499,21 +2504,6 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
         return super.ddl(runtime, index, table, ddls, set);
     }
 
-    protected static Table.MetadataAdapter defaultTableMetadataAdapter;
-    static {
-        defaultTableMetadataAdapter = new Table.MetadataAdapter();
-        defaultTableMetadataAdapter.setRefer("name", "NAME");
-    }
-    /**
-     * table[结构集封装-依据]<br/>
-     * 读取table元数据结果集的依据
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @return Table.MetadataAdapter
-     */
-    @Override
-    public Table.MetadataAdapter tableMetadataAdapter(DataRuntime runtime) {
-        return defaultTableMetadataAdapter;
-    }
     /* *****************************************************************************************************************
      *                                                     VertexTable
      * -----------------------------------------------------------------------------------------------------------------
@@ -3044,10 +3034,6 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
         return super.ddl(runtime, index, view, ddls, set);
     }
 
-    @Override
-    public View.MetadataAdapter viewMetadataAdapter(DataRuntime runtime) {
-        return null;
-    }
     /* *****************************************************************************************************************
      *                                                     master table
      * -----------------------------------------------------------------------------------------------------------------
@@ -3426,16 +3412,6 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
         return super.detail(runtime, index, meta, query, row);
     }
 
-    /**
-     * column[结构集封装-依据]<br/>
-     * 读取column元数据结果集的依据
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @return ColumnMetadataAdapter
-     */
-    @Override
-    public TypeMetadata.Refer dataTypeMetadataRefer(DataRuntime runtime) {
-        return super.dataTypeMetadataRefer(runtime);
-    }
 
     /**
      * column[结果集封装]<br/>(方法1)<br/>
@@ -3611,18 +3587,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
     @Override
     public <T extends PrimaryKey> T detail(DataRuntime runtime, int index, T primary, PrimaryKey query, DataSet set) throws Exception {
         return super.detail(runtime, index, primary, query, set);
-    }
-    /**
-     * primary[结构集封装-依据]<br/>
-     * 读取primary key元数据结果集的依据
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @return PrimaryMetadataAdapter
-     */
-    @Override
-    public PrimaryKey.MetadataAdapter primaryMetadataAdapter(DataRuntime runtime) {
-        return super.primaryMetadataAdapter(runtime);
-    }
-    /**
+    }    /**
      * primary[结构集封装]<br/>
      *  根据驱动内置接口补充PrimaryKey
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -3755,17 +3720,6 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
         }
         return runs;
     }
-    /**
-     * index[结构集封装-依据]<br/>
-     * 读取index元数据结果集的依据
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @return Index.MetadataAdapter
-     */
-    @Override
-    public Index.MetadataAdapter indexMetadataAdapter(DataRuntime runtime) {
-        Index.MetadataAdapter adapter = super.indexMetadataAdapter(runtime);
-        return adapter;
-    }
 
     /**
      * index[结果集封装]<br/>
@@ -3785,7 +3739,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
         if(null == previous) {
             previous = new LinkedHashMap<>();
         }
-        MetadataRefer refer = refer(runtime, Index.class);
+        FieldRefer refer = refer(runtime, Index.class);
         for(DataRow row:set) {
             String name = row.getString(refer.getRefers("name"));
             if(null == name) {
@@ -5863,8 +5817,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
             }
             typeName = type.getName();
         }
-        TypeMetadata.Refer adapter = dataTypeMetadataRefer(runtime, type);
-        TypeMetadata.Refer config = adapter.getTypeConfig();
+        TypeMetadata.Refer config = dataTypeMetadataRefer(runtime, type);
         ignoreLength = config.ignoreLength();
         ignorePrecision = config.ignorePrecision();
         ignoreScale = config.ignoreScale();

@@ -2249,10 +2249,6 @@ PUT * /_bulk
         return super.ddl(runtime, index, view, ddls, set);
     }
 
-    @Override
-    public View.MetadataAdapter viewMetadataAdapter(DataRuntime runtime) {
-        return null;
-    }
     /* *****************************************************************************************************************
      *                                                     master table
      * -----------------------------------------------------------------------------------------------------------------

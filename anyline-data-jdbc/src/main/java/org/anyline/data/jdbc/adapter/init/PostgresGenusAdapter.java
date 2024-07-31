@@ -59,6 +59,46 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
             reg(alias);
             alias(alias.name(), alias.standard());
         }
+
+
+        FieldRefer functionRefer = new FieldRefer(Function.class);
+        functionRefer.setRefer("name", "proname");
+        functionRefer.setRefer("schema", "schema_name");
+        functionRefer.setRefer("Comment", "comment");
+        functionRefer.setRefer("Define","prosrc");
+        reg(functionRefer);
+
+
+        FieldRefer columnRefer = new FieldRefer(Column.class);
+        columnRefer.setRefer("name", "COLUMN_NAME");
+        columnRefer.setRefer("Catalog", "TABLE_CATALOG");
+        columnRefer.setRefer("schema", "TABLE_SCHEMA");
+        columnRefer.setRefer("Table", "TABLE_NAME");
+        columnRefer.setRefer("Nullable", "IS_NULLABLE");
+        //adapter.setRefer("Charset", "");
+        //adapter.setRefer("Collate", "");
+        columnRefer.setRefer("DataType", "DATA_TYPE,FULL_TYPE");
+        columnRefer.setRefer("Position", "ORDINAL_POSITION");
+        columnRefer.setRefer("Comment", "COLUMN_COMMENT");//SQL组装
+        columnRefer.setRefer("Default", "COLUMN_DEFAULT");
+        reg(columnRefer);
+
+        FieldRefer indexRefer = new FieldRefer(Index.class);
+        indexRefer.setRefer("name", "INDEX_NAME");
+        indexRefer.setRefer("Table", "TABLE_NAME");
+        indexRefer.setRefer("schema", "SCHEMA_NAME");
+        indexRefer.setRefer("Type", "INDEX_TYPE");
+        indexRefer.setRefer("CheckPrimary","IS_PRIMARY");
+        indexRefer.setRefer("CheckPrimaryValue","T");
+        indexRefer.setRefer("CheckUnique", "IS_UNIQUE");
+        indexRefer.setRefer("CheckUniqueValue", "T");
+        indexRefer.setRefer("Catalog", "");
+        //以下在detail中单独处理
+        indexRefer.setRefer("column", "");
+        indexRefer.setRefer("ColumnOrder", "");
+        indexRefer.setRefer("ColumnPosition", "");
+        reg(indexRefer);
+
     }
     @Override
     public boolean supportCatalog() {
@@ -83,22 +123,6 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         return types.get(type);
     }
 
-    private TypeMetadata.Refer defaultColumnMetadataAdapter = defaultColumnMetadataAdapter();
-    public TypeMetadata.Refer defaultColumnMetadataAdapter() {
-        TypeMetadata.Refer adapter = new TypeMetadata.Refer();
-        adapter.setRefer("name", "COLUMN_NAME");
-        adapter.setRefer("Catalog", "TABLE_CATALOG");
-        adapter.setRefer("schema", "TABLE_SCHEMA");
-        adapter.setRefer("Table", "TABLE_NAME");
-        adapter.setRefer("Nullable", "IS_NULLABLE");
-        //adapter.setRefer("Charset", "");
-        //adapter.setRefer("Collate", "");
-        adapter.setRefer("DataType", "DATA_TYPE,FULL_TYPE");
-        adapter.setRefer("Position", "ORDINAL_POSITION");
-        adapter.setRefer("Comment", "COLUMN_COMMENT");//SQL组装
-        adapter.setRefer("Default", "COLUMN_DEFAULT");
-        return adapter;
-    }
     /* *****************************************************************************************************************
      *
      *                                                     DML
@@ -2611,17 +2635,6 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
 
     /**
      * column[结构集封装-依据]<br/>
-     * 读取column元数据结果集的依据
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @return ColumnMetadataAdapter
-     */
-    @Override
-    public TypeMetadata.Refer dataTypeMetadataRefer(DataRuntime runtime) {
-        return defaultColumnMetadataAdapter;
-    }
-
-    /**
-     * column[结构集封装-依据]<br/>
      * 读取column元数据结果集的依据(需要区分数据类型)
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param meta 具体数据类型,length/precisoin/scale三个属性需要根据数据类型覆盖通用配置
@@ -2797,17 +2810,6 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
     public <T extends PrimaryKey> T detail(DataRuntime runtime, int index, T primary, PrimaryKey query, DataSet set) throws Exception {
         return super.detail(runtime, index, primary, query, set);
     }
-    /**
-     * primary[结构集封装-依据]<br/>
-     * 读取primary key元数据结果集的依据
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @return PrimaryMetadataAdapter
-     */
-    @Override
-    public PrimaryKey.MetadataAdapter primaryMetadataAdapter(DataRuntime runtime) {
-        return super.primaryMetadataAdapter(runtime);
-    }
-
     /* *****************************************************************************************************************
      *                                                     foreign
      * -----------------------------------------------------------------------------------------------------------------
@@ -3010,30 +3012,6 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
     }
 
     /**
-     * index[结构集封装-依据]<br/>
-     * 读取index元数据结果集的依据
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @return Index.MetadataAdapter
-     */
-    @Override
-    public Index.MetadataAdapter indexMetadataAdapter(DataRuntime runtime) {
-        Index.MetadataAdapter adapter =  super.indexMetadataAdapter(runtime);
-        adapter.setRefer("name", "INDEX_NAME");
-        adapter.setRefer("Table", "TABLE_NAME");
-        adapter.setRefer("schema", "SCHEMA_NAME");
-        adapter.setRefer("Type", "INDEX_TYPE");
-        adapter.setCheckPrimaryRefer("IS_PRIMARY");
-        adapter.setCheckPrimaryValue("T");
-        adapter.setCheckUniqueRefer("IS_UNIQUE");
-        adapter.setCheckUniqueValue("T");
-        adapter.setRefer("Catalog", "");
-        //以下在detail中单独处理
-        adapter.setRefer("column", "");
-        adapter.setRefer("ColumnOrder", "");
-        adapter.setRefer("ColumnPosition", "");
-        return adapter;
-    }
-    /**
      * index[结果集封装]<br/>
      *  根据查询结果集构造Index
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -3122,7 +3100,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
     public <T extends Index> T detail(DataRuntime runtime, int index, T meta, Index query, DataRow row) throws Exception {
         meta = super.detail(runtime, index, meta, query, row);
         FieldRefer refer = refer(runtime, Index.class);
-        String columnName = row.getStringWithoutEmpty(config.getColumnRefers());
+        String columnName = row.getStringWithoutEmpty(refer.getRefers("Column"));
         if(null == columnName) {
             return meta;
         }
@@ -3686,21 +3664,6 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
     @Override
     public <T extends Function> T detail(DataRuntime runtime, int index, T meta, Function query, DataRow row) {
         return super.detail(runtime, index, meta, query, row);
-    }
-    /**
-     * function[结构集封装-依据]<br/>
-     * 读取 function 元数据结果集的依据
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @return FunctionMetadataAdapter
-     */
-    @Override
-    public Function.MetadataAdapter functionMetadataAdapter(DataRuntime runtime) {
-        Function.MetadataAdapter adapter = new Function.MetadataAdapter();
-        adapter.setRefer("name", "proname");
-        adapter.setRefer("schema", "schema_name");
-        adapter.setRefer("Comment", "comment");
-        adapter.setDefineRefer("prosrc");
-        return adapter;
     }
     /* *****************************************************************************************************************
      *                                                     sequence

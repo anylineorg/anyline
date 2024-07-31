@@ -2390,16 +2390,6 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
         return super.detail(runtime, index, meta, catalog, schema, row);
     }
 
-    /**
-     * column[结构集封装-依据]<br/>
-     * 读取column元数据结果集的依据
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @return ColumnMetadataAdapter
-     */
-    @Override
-    public TypeMetadata.Refer dataTypeMetadataRefer(DataRuntime runtime) {
-        return super.dataTypeMetadataRefer(runtime);
-    }
 
     /**
      * column[结果集封装]<br/>(方法1)<br/>
@@ -2574,17 +2564,6 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
     @Override
     public <T extends PrimaryKey> T detail(DataRuntime runtime, int index, T primary, PrimaryKey query, DataSet set) throws Exception {
         return super.detail(runtime, index, primary, query, set);
-    }
-
-    /**
-     * primary[结构集封装-依据]<br/>
-     * 读取primary key元数据结果集的依据
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @return PrimaryMetadataAdapter
-     */
-    @Override
-    public PrimaryKey.MetadataAdapter primaryMetadataAdapter(DataRuntime runtime) {
-        return super.primaryMetadataAdapter(runtime);
     }
     /**
      * primary[结构集封装]<br/>
@@ -2798,16 +2777,6 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
     @Override
     public <T extends Index> T detail(DataRuntime runtime, int index, T meta, Index query, DataRow row) throws Exception {
         return super.detail(runtime, index, meta, query, row);
-    }
-    /**
-     * index[结构集封装-依据]<br/>
-     * 读取index元数据结果集的依据
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @return Index.MetadataAdapter
-     */
-    @Override
-    public Index.MetadataAdapter indexMetadataAdapter(DataRuntime runtime) {
-        return super.indexMetadataAdapter(runtime);
     }
     /* *****************************************************************************************************************
      *                                                     constraint

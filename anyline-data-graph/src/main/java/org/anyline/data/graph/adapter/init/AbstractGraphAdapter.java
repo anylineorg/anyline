@@ -38,6 +38,7 @@ import org.anyline.exception.CommandQueryException;
 import org.anyline.exception.CommandUpdateException;
 import org.anyline.exception.NotSupportException;
 import org.anyline.metadata.*;
+import org.anyline.metadata.adapter.FieldRefer;
 import org.anyline.metadata.graph.EdgeTable;
 import org.anyline.metadata.graph.VertexTable;
 import org.anyline.metadata.type.DatabaseType;
@@ -57,6 +58,12 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 
     public AbstractGraphAdapter() {
         super();
+
+        FieldRefer indexRefer = new FieldRefer(Index.class);
+        indexRefer.setRefer("name", "Index Name");
+        indexRefer.setRefer("Table", "By Tag,By Edge");
+        indexRefer.setRefer("column", "Columns");
+        reg(indexRefer);
     }
     @Override
     public DatabaseType type() {
@@ -3871,7 +3878,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
     @Override
     public <T extends PrimaryKey> T init(DataRuntime runtime, int index, T primary, PrimaryKey query, DataSet set) throws Exception {
         Table table = query.getTable();
-        PrimaryKey.MetadataAdapter config = primaryMetadataAdapter(runtime);
+        FieldRefer refer = refer(runtime, PrimaryKey.class);
         for(DataRow row:set) {
             if(null == primary) {
                 primary = (T)new PrimaryKey();
@@ -3881,7 +3888,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
                 }
                 primary.setTable(table);
             }
-            String col = row.getString(config.getColumnRefers());
+            String col = row.getString(refer.getRefers("Column"));
             if(BasicUtil.isEmpty(col)) {
                 throw new Exception("主键相关列名异常,请检查buildQueryPrimaryRun与primaryMetadataColumn");
             }
@@ -4134,20 +4141,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
     public <T extends Index> T detail(DataRuntime runtime, int index, T meta, Index query, DataRow row) throws Exception {
         return super.detail(runtime, index, meta, query, row);
     }
-    /**
-     * index[结构集封装-依据]<br/>
-     * 读取index元数据结果集的依据
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @return Index.MetadataAdapter
-     */
-    @Override
-    public Index.MetadataAdapter indexMetadataAdapter(DataRuntime runtime) {
-        Index.MetadataAdapter adapter =  super.indexMetadataAdapter(runtime);
-        adapter.setRefer("name", "Index Name");
-        adapter.setRefer("Table", "By Tag,By Edge");
-        adapter.setRefer("column", "Columns");
-        return adapter;
-    }
+
     /* *****************************************************************************************************************
      *                                                     constraint
      * -----------------------------------------------------------------------------------------------------------------
@@ -6708,8 +6702,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 			}
 			typeName = type.getName();
 		}
-		TypeMetadata.Refer adapter = dataTypeMetadataRefer(runtime, type);
-		TypeMetadata.Refer config = adapter.getTypeConfig();
+
+		TypeMetadata.Refer config = dataTypeMetadataRefer(runtime, type);
 		ignoreLength = config.ignoreLength();
 		ignorePrecision = config.ignorePrecision();
 		ignoreScale = config.ignoreScale();

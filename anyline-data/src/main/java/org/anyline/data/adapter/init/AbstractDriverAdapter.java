@@ -112,9 +112,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
     //拼写兼容 下划线空格兼容
     protected static Map<String, String> spells = new HashMap<>();
 
+    protected Map<Class<?>, FieldRefer> refers = new HashMap<>();
     //根据名称定位数据类型
     protected LinkedHashMap<String, TypeMetadata> alias = new LinkedHashMap();
-    protected LinkedHashMap<String, FieldRefer> refers = new LinkedHashMap();
 
     static {
         for(StandardTypeMetadata type: StandardTypeMetadata.values()) {
@@ -204,14 +204,14 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.OTHER, new TypeMetadata.Refer( 1, 1, 1));
 
 
-        FieldRefer tableRefer = new FieldRefer();
+        FieldRefer tableRefer = new FieldRefer(Table.class);
         tableRefer.setRefer("name", "TABLE_NAME,NAME,TABNAME");
         tableRefer.setRefer("catalog", "TABLE_CATALOG");
         tableRefer.setRefer("schema", "TABLE_SCHEMA,TABSCHEMA,SCHEMA_NAME");
         tableRefer.setRefer("comment", "TABLE_COMMENT,COMMENTS,COMMENT");
-        refer(Table.class, tableRefer);
+        reg(tableRefer);
 
-        FieldRefer columnRefer = new FieldRefer();
+        FieldRefer columnRefer = new FieldRefer(Column.class);
         columnRefer.setRefer("name","COLUMN_NAME,COLNAME");
         columnRefer.setRefer("catalog","TABLE_CATALOG");
         columnRefer.setRefer("schema","TABLE_SCHEMA,TABSCHEMA,SCHEMA_NAME,OWNER");
@@ -223,15 +223,15 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         columnRefer.setRefer("Position", "ORDINAL_POSITION,COLNO,POSITION");
         columnRefer.setRefer("Comment" ,"COLUMN_COMMENT,COMMENTS,REMARKS");
         columnRefer.setRefer("Default", "COLUMN_DEFAULT,DATA_DEFAULT,DEFAULT,DEFAULT_VALUE,DEFAULT_DEFINITION");
-        refer(Column.class, columnRefer);
+        reg(columnRefer);
 
-        FieldRefer viewRefer = new FieldRefer();
+        FieldRefer viewRefer = new FieldRefer(View.class);
         viewRefer.setRefer("Name","VIEW_NAME,TABLE_NAME,NAME,TABNAME");
         viewRefer.setRefer("Catalog","VIEW_CATALOG,TABLE_CATALOG");
         viewRefer.setRefer("Schema","VIEW_SCHEMA,TABLE_SCHEMA,TABSCHEMA,SCHEMA_NAME");
-        refer(View.class, viewRefer);
+        reg(viewRefer);
 
-        FieldRefer indexRefer = new FieldRefer();
+        FieldRefer indexRefer = new FieldRefer(Index.class);
 
         indexRefer.setRefer("Name","INDEX_NAME");
         indexRefer.setRefer("Table","TABLE_NAME");
@@ -239,9 +239,22 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         indexRefer.setRefer("column", "COLUMN_NAME");
         indexRefer.setRefer("ColumnOrder", "COLLATION");
         indexRefer.setRefer("ColumnPosition", "SEQ_IN_INDEX");
-        refer(Index.class, indexRefer);
+        reg(indexRefer);
     }
 
+    @Override
+    public FieldRefer refer(DataRuntime runtime, Class<?> type) {
+        FieldRefer refer = refers.get(type);
+        if(null == refer){
+            refer = new FieldRefer(type);
+        }
+        return refer;
+    }
+    @Override
+    public void reg(FieldRefer refer) {
+        Class<?> metadata = refer.metadata();
+        refers.put(metadata, refer);
+    }
     @Override
     public LinkedHashMap<String, TypeMetadata> alias() {
         return alias;
@@ -8520,13 +8533,11 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		//5.具体数据库实现的MetadataAdapter
 		if(null == result) {
-			FieldRefer refer = refer(runtime, Column.class);
-			if(null != refer) {
-				config = refer.getTypeConfig();
-				if(null != config) {
-					result = config.getLengthRefer();
-				}
-			}
+            config = dataTypeMetadataRefer(runtime, meta);
+            if(null != config) {
+                result = config.getLengthRefer();
+            }
+
 		}
 		return result;
 	}
@@ -8571,13 +8582,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		//5.具体数据库实现的MetadataAdapter
 		if(null == result) {
-			FieldRefer refer = refer(runtime, Column.class);
-			if(null != refer) {
-				config = refer.getTypeConfig();
-				if(null != config) {
-					result = config.getPrecisionRefer();
-				}
-			}
+            config = dataTypeMetadataRefer(runtime, meta);
+            if(null != config) {
+                result = config.getPrecisionRefer();
+            }
 		}
 		return result;
 	}
@@ -8629,13 +8637,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		//5.具体数据库实现的MetadataAdapter
 		if(null == result) {
-			FieldRefer refer = refer(runtime, Column.class);
-			if(null != refer) {
-				config = refer.getTypeConfig();
-				if(null != config) {
-					result = config.getScaleRefer();
-				}
-			}
+            config = dataTypeMetadataRefer(runtime, meta);
+            if(null != config) {
+                result = config.getScaleRefer();
+            }
 		}
 		return result;
 	}
@@ -8690,13 +8695,11 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		//5.具体数据库实现的MetadataAdapter
 		if(-1 == result) {
-			FieldRefer refer = refer(runtime, Column.class);
-			if(null != refer) {
-				config = refer.getTypeConfig();
-				if(null != config) {
-					result = config.ignoreLength();
-				}
-			}
+            config = dataTypeMetadataRefer(runtime, meta);
+            if(null != config) {
+                result = config.ignoreLength();
+            }
+
 		}
 		return result;
 	}
@@ -8751,13 +8754,11 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		//5.具体数据库实现的MetadataAdapter
 		if(-1 == result) {
-			FieldRefer refer = refer(runtime, Column.class);
-			if(null != refer) {
-				config = refer.getTypeConfig();
-				if(null != config) {
-					result = config.ignorePrecision();
-				}
-			}
+            config = dataTypeMetadataRefer(runtime, meta);
+            if(null != config) {
+                result = config.ignorePrecision();
+            }
+
 		}
 		return result;
 	}
@@ -8812,13 +8813,11 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		//5.具体数据库实现的MetadataAdapter
 		if(-1 == result) {
-            FieldRefer refer = refer(runtime, Column.class);
-			if(null != refer) {
-				config = refer.getTypeConfig();
-				if(null != config) {
-					result = config.ignoreScale();
-				}
-			}
+            config = dataTypeMetadataRefer(runtime, meta);
+            if(null != config) {
+                result = config.ignoreScale();
+            }
+
 		}
 		return result;
 	}
@@ -9636,14 +9635,14 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 
 			//是否主键
 			String[] chks = refer.getRefers("CheckPrimary");
-			String[] vals = refer.getCheckPrimaryValues();
+			String[] vals = refer.getRefers("CheckPrimaryValue");
 			Boolean bol = parseBoolean(row, chks, vals);
 			if(null != bol){
 				meta.setPrimary(bol);
 			}
 			//是否唯一
 			chks = refer.getRefers("CheckUnique");
-			vals = refer.getCheckUniqueValues();
+			vals = refer.getRefers("CheckUniqueValue");
 			bol = parseBoolean(row, chks, vals);
 			if(null != bol){
 				meta.setUnique(bol);

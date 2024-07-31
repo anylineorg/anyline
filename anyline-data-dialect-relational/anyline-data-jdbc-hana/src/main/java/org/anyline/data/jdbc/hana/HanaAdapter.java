@@ -2383,17 +2383,6 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	}
 
 	/**
-	 * column[结构集封装-依据]<br/>
-	 * 读取column元数据结果集的依据
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @return ColumnMetadataAdapter
-	 */
-	@Override
-	public TypeMetadata.Refer dataTypeMetadataRefer(DataRuntime runtime) {
-		return super.dataTypeMetadataRefer(runtime);
-	}
-
-	/**
 	 * column[结果集封装]<br/>(方法1)<br/>
 	 * 元数据数字有效位数列<br/>
 	 * 不直接调用 用来覆盖dataTypeMetadataRefer(DataRuntime runtime, TypeMetadata meta)
@@ -2782,16 +2771,6 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	@Override
 	public <T extends Index> T detail(DataRuntime runtime, int index, T meta, Index query, DataRow row) throws Exception {
 		return super.detail(runtime, index, meta, query, row);
-	}
-	/**
-	 * index[结构集封装-依据]<br/>
-	 * 读取index元数据结果集的依据
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @return Index.MetadataAdapter
-	 */
-	@Override
-	public Index.MetadataAdapter indexMetadataAdapter(DataRuntime runtime) {
-		return super.indexMetadataAdapter(runtime);
 	}
 	/* *****************************************************************************************************************
 	 * 													constraint

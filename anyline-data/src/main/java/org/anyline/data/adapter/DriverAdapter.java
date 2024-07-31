@@ -1909,7 +1909,7 @@ public interface DriverAdapter {
      * @return MetadataRefer
      */
     FieldRefer refer(DataRuntime runtime, Class<?> type);
-    void refer(Class<?> type, FieldRefer refer);
+    void reg(FieldRefer refer);
 
     /**
      * 根据运行环境识别 catalog与schema

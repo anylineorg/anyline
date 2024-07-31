@@ -57,6 +57,39 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
             reg(alias);
             alias(alias.name(), alias.standard());
         }
+
+        FieldRefer indexRefer = new FieldRefer(Index.class);
+        indexRefer.setRefer("name", "INDEX_NAME");
+        indexRefer.setRefer("Table", "TABLE_NAME");
+        indexRefer.setRefer("schema", "TABLE_SCHEMA");
+        indexRefer.setRefer("column", "COLUMN_NAME");
+        indexRefer.setRefer("ColumnOrder", "COLLATION");
+        indexRefer.setRefer("ColumnPosition", "SEQ_IN_INDEX");
+        indexRefer.setRefer("CheckPrimary", "INDEX_NAME");
+        indexRefer.setRefer("CheckPrimaryValue","PRIMARY");
+        indexRefer.setRefer("CheckUnique", "NON_UNIQUE");
+        indexRefer.setRefer("CheckUniqueValue", "0");
+        indexRefer.setRefer("Catalog", "");
+        reg(indexRefer);
+
+        FieldRefer columnRefer = new FieldRefer(Column.class);
+        columnRefer.setRefer("name", "COLUMN_NAME");
+        columnRefer.setRefer("Catalog", "");//忽略
+        columnRefer.setRefer("schema", "TABLE_SCHEMA");
+        columnRefer.setRefer("Table", "TABLE_NAME");
+        columnRefer.setRefer("Nullable", "IS_NULLABLE");
+        columnRefer.setRefer("Charset", "CHARACTER_SET_NAME");
+        columnRefer.setRefer("Collate", "COLLATION_NAME");
+        columnRefer.setRefer("DataType", "COLUMN_TYPE");
+        columnRefer.setRefer("Position", "ORDINAL_POSITION");
+        columnRefer.setRefer("Comment", "COLUMN_COMMENT");
+        columnRefer.setRefer("Default", "COLUMN_DEFAULT");
+        reg(columnRefer);
+
+        FieldRefer userRefer = new FieldRefer(User.class);
+        userRefer.setRefer("Host", "host");
+        userRefer.setRefer("name", "user");
+        reg(userRefer);
     }
     @Override
     public boolean supportCatalog() {
@@ -81,22 +114,6 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         return types.get(type);
     }
 
-    private TypeMetadata.Refer defaultColumnMetadataAdapter = defaultColumnMetadataAdapter();
-    public TypeMetadata.Refer defaultColumnMetadataAdapter() {
-        TypeMetadata.Refer adapter = new TypeMetadata.Refer();
-        adapter.setRefer("name", "COLUMN_NAME");
-        adapter.setRefer("Catalog", "");//忽略
-        adapter.setRefer("schema", "TABLE_SCHEMA");
-        adapter.setRefer("Table", "TABLE_NAME");
-        adapter.setRefer("Nullable", "IS_NULLABLE");
-        adapter.setRefer("Charset", "CHARACTER_SET_NAME");
-        adapter.setRefer("Collate", "COLLATION_NAME");
-        adapter.setRefer("DataType", "COLUMN_TYPE");
-        adapter.setRefer("Position", "ORDINAL_POSITION");
-        adapter.setRefer("Comment", "COLUMN_COMMENT");
-        adapter.setRefer("Default", "COLUMN_DEFAULT");
-        return adapter;
-    }
     /* *****************************************************************************************************************
      *
      *                                                     DML
@@ -2669,18 +2686,6 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public <T extends Column> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row) {
         return super.detail(runtime, index, meta, catalog, schema, row);
     }
-
-    /**
-     * column[结构集封装-依据]<br/>
-     * 读取column元数据结果集的依据
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @return ColumnMetadataAdapter
-     */
-    @Override
-    public TypeMetadata.Refer dataTypeMetadataRefer(DataRuntime runtime) {
-        return defaultColumnMetadataAdapter;
-    }
-
     /**
      * column[结构集封装-依据]<br/>
      * 读取column元数据结果集的依据(需要区分数据类型)
@@ -3012,28 +3017,6 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         in(runtime, builder, "TABLE_NAME", names);
         builder.append("ORDER BY TABLE_NAME, SEQ_IN_INDEX");
         return runs;
-    }
-    /**
-     * index[结构集封装-依据]<br/>
-     * 读取index元数据结果集的依据
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @return Index.MetadataAdapter
-     */
-    @Override
-    public Index.MetadataAdapter indexMetadataAdapter(DataRuntime runtime) {
-        Index.MetadataAdapter adapter =  super.indexMetadataAdapter(runtime);
-        adapter.setRefer("name", "INDEX_NAME");
-        adapter.setRefer("Table", "TABLE_NAME");
-        adapter.setRefer("schema", "TABLE_SCHEMA");
-        adapter.setRefer("column", "COLUMN_NAME");
-        adapter.setRefer("ColumnOrder", "COLLATION");
-        adapter.setRefer("ColumnPosition", "SEQ_IN_INDEX");
-        adapter.setCheckPrimaryRefer("INDEX_NAME");
-        adapter.setCheckPrimaryValue("PRIMARY");
-        adapter.setCheckUniqueRefer("NON_UNIQUE");
-        adapter.setCheckUniqueValue("0");
-        adapter.setRefer("Catalog", "");
-        return adapter;
     }
     /**
      * index[结果集封装]<br/>
@@ -6822,12 +6805,12 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public <T extends User> T init(DataRuntime runtime, int index, T meta, User query, DataRow row) {
-        User.MetadataAdapter adapter = userMetadataAdapter(runtime);
+        FieldRefer refer = refer(runtime, User.class);
         if(null == meta){
             meta = (T) new User();
         }
-        meta.setHost(row.getString(adapter.getHostRefers()));
-        meta.setName(row.getString(adapter.getNameRefers()));
+        meta.setHost(row.getString(refer.getRefers("Host")));
+        meta.setName(row.getString(refer.getRefers("Name")));
         return meta;
     }
 
@@ -6844,19 +6827,6 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         return super.detail(runtime, index, meta, query, row);
     }
 
-    /**
-     * user [结构集封装-依据]<br/>
-     * 读取 user 元数据结果集的依据
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @return UserMetadataAdapter
-     */
-    @Override
-    public User.MetadataAdapter userMetadataAdapter(DataRuntime runtime) {
-        User.MetadataAdapter adapter = new User.MetadataAdapter();
-        adapter.setHostRefer("host");
-        adapter.setRefer("name", "user");
-        return adapter;
-    }
 
     /* *****************************************************************************************************************
      *                                                     privilege
@@ -6935,16 +6905,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         return super.detail(runtime, index, meta, query, row);
     }
 
-    /**
-     * privilege[结构集封装-依据]<br/>
-     * 读取 Privilege 元数据结果集的依据
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @return PrivilegeMetadataAdapter
-     */
-    @Override
-    public Privilege.MetadataAdapter privilegeMetadataAdapter(DataRuntime runtime) {
-        return super.privilegeMetadataAdapter(runtime);
-    }
+
 
     /* *****************************************************************************************************************
      *                                                     grant

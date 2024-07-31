@@ -1024,10 +1024,6 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
         return null;
     }
 
-    @Override
-    public View.MetadataAdapter viewMetadataAdapter(DataRuntime runtime) {
-        return null;
-    }
 
     @Override
     public String concat(DataRuntime runtime, String... args) {

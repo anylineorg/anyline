@@ -29,6 +29,7 @@ import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
 import org.anyline.exception.NotSupportException;
 import org.anyline.metadata.*;
+import org.anyline.metadata.adapter.FieldRefer;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.util.BasicUtil;
@@ -64,6 +65,15 @@ public class DMAdapter extends OracleGenusAdapter implements JDBCAdapter {
 		for(DMReader reader: DMReader.values()) {
 			reg(reader.supports(), reader.reader());
 		}
+
+		FieldRefer indexRefer = new FieldRefer(Index.class);
+		indexRefer.setRefer("schema", "INDEX_OWNER");
+		indexRefer.setRefer("name", "INDEX_NAME");
+		indexRefer.setRefer("Table", "TABLE_NAME");
+		indexRefer.setRefer("column", "COLUMN_NAME");
+		indexRefer.setRefer("ColumnPosition", "COLUMN_POSITION");
+		indexRefer.setRefer("ColumnOrder", "DESCEND");
+		reg(indexRefer);
 	}
 
 	/* *****************************************************************************************************************
@@ -2421,17 +2431,6 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	}
 
 	/**
-	 * column[结构集封装-依据]<br/>
-	 * 读取column元数据结果集的依据
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @return ColumnMetadataAdapter
-	 */
-	@Override
-	public TypeMetadata.Refer dataTypeMetadataRefer(DataRuntime runtime) {
-		return super.dataTypeMetadataRefer(runtime);
-	}
-
-	/**
 	 * column[结果集封装]<br/>(方法1)<br/>
 	 * 元数据数字有效位数列<br/>
 	 * 不直接调用 用来覆盖dataTypeMetadataRefer(DataRuntime runtime, TypeMetadata meta)
@@ -2607,16 +2606,6 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	}
 
 	/**
-	 * primary[结构集封装-依据]<br/>
-	 * 读取primary key元数据结果集的依据
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @return PrimaryMetadataAdapter
-	 */
-	@Override
-	public PrimaryKey.MetadataAdapter primaryMetadataAdapter(DataRuntime runtime) {
-		return super.primaryMetadataAdapter(runtime);
-	}
-	/**
 	 * primary[结构集封装]<br/>
 	 *  根据驱动内置接口补充PrimaryKey
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -2784,24 +2773,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 
 		return runs;
 	}
-	/**
-	 * index[结构集封装-依据]<br/>
-	 * 读取index元数据结果集的依据
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @return Index.MetadataAdapter
-	 */
-	@Override
-	public Index.MetadataAdapter indexMetadataAdapter(DataRuntime runtime) {
-		//{"INDEX_OWNER":"SYS","INDEX_NAME":"SYSINDEXSYSOBJECTS","TABLE_OWNER":"SYS","TABLE_NAME":"SYSOBJECTS","COLUMN_NAME":"NAME","COLUMN_POSITION":3,"COLUMN_LENGTH":128,"CHAR_LENGTH":128,"DESCEND":"ASC"}
-		Index.MetadataAdapter adapter =  super.indexMetadataAdapter(runtime);
-		adapter.setRefer("schema", "INDEX_OWNER");
-		adapter.setRefer("name", "INDEX_NAME");
-		adapter.setRefer("Table", "TABLE_NAME");
-		adapter.setRefer("column", "COLUMN_NAME");
-		adapter.setRefer("ColumnPosition", "COLUMN_POSITION");
-		adapter.setRefer("ColumnOrder", "DESCEND");
-		return adapter;
-	}
+
 	/**
 	 * index[结果集封装]<br/>
 	 *  根据查询结果集构造Index

@@ -1914,6 +1914,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
         return super.delete(runtime, random, configs, run);
     }
 
+
     /* *****************************************************************************************************************
      *
      *                                                     metadata
@@ -6892,7 +6893,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 			typeName = type.getName();
 		}
 		FieldRefer refer = refer(runtime, Column.class);
-		TypeMetadata.Refer trefer = dataTypeMetadataRefer(runtime, type)
+		TypeMetadata.Refer trefer = dataTypeMetadataRefer(runtime, type);
 		ignoreLength = trefer.ignoreLength();
 		ignorePrecision = trefer.ignorePrecision();
 		ignoreScale = trefer.ignoreScale();

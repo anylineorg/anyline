@@ -29,6 +29,7 @@ import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
 import org.anyline.exception.NotSupportException;
 import org.anyline.metadata.*;
+import org.anyline.metadata.adapter.FieldRefer;
 import org.anyline.metadata.adapter.MetadataAdapterHolder;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.metadata.type.TypeMetadata;
@@ -37,6 +38,7 @@ import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 
 import javax.sql.DataSource;
+import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.util.*;
 
@@ -77,6 +79,16 @@ public class MSSQLAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
         MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.COLLECTION, new TypeMetadata.Refer("max_length", null, null, 1, 1, 1));
         MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.GEOMETRY, new TypeMetadata.Refer("max_length", null, null, 1, 1, 1));
         MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.OTHER, new TypeMetadata.Refer("max_length", null, null, 1, 1, 1));
+
+
+        FieldRefer primaryRefer = new FieldRefer(PrimaryKey.class);
+        primaryRefer.setRefer("name", "CONSTRAINT_NAME");
+        primaryRefer.setRefer("Catalog", "TABLE_CATALOG");
+        primaryRefer.setRefer("schema", "TABLE_SCHEMA");
+        primaryRefer.setRefer("Table", "TABLE_NAME");
+        primaryRefer.setRefer("column", "COLUMN_NAME");
+        primaryRefer.setRefer("ColumnPosition", "ORDINAL_POSITION");
+        reg(primaryRefer);
     }
 
     /**
@@ -2525,16 +2537,6 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         return super.detail(runtime, index, meta, catalog, schema, row);
     }
 
-    /**
-     * column[结构集封装-依据]<br/>
-     * 读取column元数据结果集的依据
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @return ColumnMetadataAdapter
-     */
-    @Override
-    public TypeMetadata.Refer dataTypeMetadataRefer(DataRuntime runtime) {
-        return super.dataTypeMetadataRefer(runtime);
-    }
 
     /**
      * column[结果集封装]<br/>(方法1)<br/>
@@ -2731,24 +2733,6 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
     @Override
     public <T extends PrimaryKey> T detail(DataRuntime runtime, int index, T primary, PrimaryKey query, DataSet set) throws Exception {
         return super.detail(runtime, index, primary, query, set);
-    }
-
-    /**
-     * primary[结构集封装-依据]<br/>
-     * 读取primary key元数据结果集的依据
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @return PrimaryMetadataAdapter
-     */
-    @Override
-    public PrimaryKey.MetadataAdapter primaryMetadataAdapter(DataRuntime runtime) {
-        PrimaryKey.MetadataAdapter config = super.primaryMetadataAdapter(runtime);
-        config.setRefer("name", "CONSTRAINT_NAME");
-        config.setRefer("Catalog", "TABLE_CATALOG");
-        config.setRefer("schema", "TABLE_SCHEMA");
-        config.setRefer("Table", "TABLE_NAME");
-        config.setRefer("column", "COLUMN_NAME");
-        config.setRefer("ColumnPosition", "ORDINAL_POSITION");
-        return config;
     }
 
     /**
@@ -2994,16 +2978,6 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
     @Override
     public <T extends Index> T detail(DataRuntime runtime, int index, T meta, Index query, DataRow row) throws Exception {
         return super.detail(runtime, index, meta, query, row);
-    }
-    /**
-     * index[结构集封装-依据]<br/>
-     * 读取index元数据结果集的依据
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @return Index.MetadataAdapter
-     */
-    @Override
-    public Index.MetadataAdapter indexMetadataAdapter(DataRuntime runtime) {
-        return super.indexMetadataAdapter(runtime);
     }
     /* *****************************************************************************************************************
      *                                                     constraint

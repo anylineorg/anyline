@@ -5123,9 +5123,9 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
         private DataSet equals(DataSet src, String key, Object value) {
             DataSet set = new DataSet();
             value = BeanUtil.first(value);
-            String tmpValue;
+            Object tmpValue;
             for (DataRow row : src) {
-                tmpValue = row.getString(key);
+                tmpValue = row.get(key);
                 if (ignoreNull) {
                     if (null == tmpValue || null == value) {
                         continue;
@@ -5139,14 +5139,25 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
 
                 if (null != tmpValue) {
                     boolean chk = false;
+                    boolean tmpNumber = BasicUtil.isNumber(tmpValue);
                     if (ignoreCase) {
                         if(null == value) {
                             chk = false;
                         }else {
-                            chk = tmpValue.equalsIgnoreCase(value.toString());
+                            boolean valueNumber = BasicUtil.isNumber(value);
+                            if(valueNumber && tmpNumber){
+                                chk = new BigDecimal(tmpValue.toString()).compareTo(new BigDecimal(value.toString())) == 0;
+                            }else {
+                                chk = tmpValue.toString().equalsIgnoreCase(value.toString());
+                            }
                         }
                     } else {
-                        chk = tmpValue.equals(value);
+                        boolean valueNumber = BasicUtil.isNumber(value);
+                        if(valueNumber && tmpNumber){
+                            chk = new BigDecimal(tmpValue.toString()).compareTo(new BigDecimal(value.toString())) == 0;
+                        }else {
+                            chk = tmpValue.equals(value);
+                        }
                     }
                     if (chk) {
                         set.add(row);

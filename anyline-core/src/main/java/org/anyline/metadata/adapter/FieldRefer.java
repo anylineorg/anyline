@@ -28,20 +28,26 @@ import java.util.Map;
  */
 public class FieldRefer {
     private Map<String, String[]> map = new HashMap<>();
-
+    private final Class<?> metadata;
+    public FieldRefer(Class<?> metadata){
+        this.metadata = metadata;
+    }
+    public Class<?> metadata(){
+        return metadata;
+    }
     public String[] getRefers(String field) {
-        return map.get(field);
+        return map.get(field.toUpperCase());
     }
 
     public String getRefer(String field) {
-        String[] refers = map.get(field);
+        String[] refers = map.get(field.toUpperCase());
         if(null != refers && refers.length > 0) {
             return refers[0];
         }
         return null;
     }
     public FieldRefer setRefer(String field, String[] refers) {
-        map.put(field, refers);
+        map.put(field.toUpperCase(), refers);
         return this;
     }
     public FieldRefer setRefer(String field, String refer) {
@@ -51,7 +57,7 @@ public class FieldRefer {
         }else{
             refers = null;
         }
-        map.put(field, refers);
+        map.put(field.toUpperCase(), refers);
         return this;
     }
 

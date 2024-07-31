@@ -30,6 +30,7 @@ import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
 import org.anyline.exception.NotSupportException;
 import org.anyline.metadata.*;
+import org.anyline.metadata.adapter.FieldRefer;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.util.BasicUtil;
@@ -52,6 +53,20 @@ public class DB2Adapter extends InformixGenusAdapter implements JDBCAdapter {
 			reg(alias);
 			alias(alias.name(), alias.standard());
 		}
+		FieldRefer tableRefer = new FieldRefer(Table.class);
+		tableRefer.setRefer("name", "TABNAME");
+		tableRefer.setRefer("Catalog", "");
+		tableRefer.setRefer("schema", "TABSCHEMA");
+		reg(tableRefer);
+
+		FieldRefer columnRefer = new FieldRefer(Column.class);
+		columnRefer.setRefer("name", "COLNAME");
+		columnRefer.setRefer("Catalog", "");
+		columnRefer.setRefer("schema", "TABSCEHMA");
+		columnRefer.setRefer("Position", "COLNO");
+		columnRefer.setRefer("Table", "TABNAME");
+		columnRefer.setRefer("Type", "TYPENAME");
+		reg(columnRefer);
 	}
 	
 	private String delimiter;
@@ -1855,20 +1870,6 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		return super.detail(runtime, index, meta, query, row);
 	}
 
-	/**
-	 * table[结构集封装-依据]<br/>
-	 * 读取table元数据结果集的依据
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @return Table.MetadataAdapter
-	 */
-	@Override
-	public Table.MetadataAdapter tableMetadataAdapter(DataRuntime runtime) {
-		Table.MetadataAdapter config = new Table.MetadataAdapter();
-		config.setRefer("name", "TABNAME");
-		config.setRefer("Catalog", "");
-		config.setRefer("schema", "TABSCHEMA");
-		return config;
-	}
 	/* *****************************************************************************************************************
 	 * 													view
 	 * -----------------------------------------------------------------------------------------------------------------
@@ -2416,27 +2417,6 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	}
 
 	/**
-	 * column[结构集封装-依据]<br/>
-	 * 读取column元数据结果集的依据
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @return ColumnMetadataAdapter
-	 */
-	@Override
-	public TypeMetadata.Refer dataTypeMetadataRefer(DataRuntime runtime) {
-		TypeMetadata.Refer adapter = new TypeMetadata.Refer();
-		adapter.setRefer("name", "COLNAME");
-		adapter.setRefer("Catalog", "");
-		adapter.setRefer("schema", "TABSCEHMA");
-		adapter.setRefer("Position", "COLNO");
-		adapter.setRefer("Table", "TABNAME");
-		adapter.setRefer("Type", "TYPENAME");
-		TypeMetadata.Refer config = new TypeMetadata.Refer();
-		config.setPrecisionRefer("LENGTH");
-		config.setScaleRefer("SCALE");
-		adapter.setTypeConfig(config);
-		return adapter;
-	}
-	/**
 	 * column[结果集封装]<br/>(方法1)<br/>
 	 * 元数据数字有效位数列<br/>
 	 * 不直接调用 用来覆盖dataTypeMetadataRefer(DataRuntime runtime, TypeMetadata meta)
@@ -2473,6 +2453,21 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	@Override
 	public String columnMetadataScaleRefer(DataRuntime runtime, TypeMetadata meta) {
 		return super.columnMetadataScaleRefer(runtime, meta);
+	}
+
+	/**
+	 * column[结构集封装-依据]<br/>
+	 * 读取column元数据结果集的依据，主要在dataTypeMetadataRefer(DataRuntime runtime)基础上补充length/precision/sacle相关
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 具体数据类型,length/precisoin/scale三个属性需要根据数据类型覆盖通用配置
+	 * @return ColumnMetadataAdapter
+	 */
+	@Override
+	public TypeMetadata.Refer dataTypeMetadataRefer(DataRuntime runtime, TypeMetadata meta) {
+		TypeMetadata.Refer refer = super.dataTypeMetadataRefer(runtime, meta);
+		refer.setPrecisionRefer("LENGTH");
+		refer.setScaleRefer("SCALE");
+		return refer;
 	}
 
 	/* *****************************************************************************************************************
@@ -2796,16 +2791,6 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	@Override
 	public <T extends Index> T detail(DataRuntime runtime, int index, T meta, Index query, DataRow row) throws Exception {
 		return super.detail(runtime, index, meta, query, row);
-	}
-	/**
-	 * index[结构集封装-依据]<br/>
-	 * 读取index元数据结果集的依据
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @return Index.MetadataAdapter
-	 */
-	@Override
-	public Index.MetadataAdapter indexMetadataAdapter(DataRuntime runtime) {
-		return super.indexMetadataAdapter(runtime);
 	}
 	/* *****************************************************************************************************************
 	 * 													constraint
