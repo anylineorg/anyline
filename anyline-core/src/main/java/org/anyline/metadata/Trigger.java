@@ -18,6 +18,8 @@
 
 package org.anyline.metadata;
 
+import org.anyline.metadata.adapter.MetadataRefer;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -126,4 +128,5 @@ public class Trigger extends TableAffiliation<Trigger> implements Serializable {
         clone.events.addAll(this.events);
         return clone;
     }
+
 }

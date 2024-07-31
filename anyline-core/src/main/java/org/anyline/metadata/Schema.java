@@ -18,6 +18,7 @@
 
 package org.anyline.metadata;
 
+import org.anyline.metadata.adapter.MetadataRefer;
 import org.anyline.util.BasicUtil;
 
 import java.io.Serializable;
@@ -61,4 +62,5 @@ public class Schema extends Metadata<Schema> implements Serializable {
     public String getKeyword() {
         return this.keyword;
     }
+
 }

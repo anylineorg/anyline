@@ -287,7 +287,7 @@ public enum ElasticSearchTypeMetadataAlias implements TypeMetadataAlias {
 	private String lengthRefer               ; // 读取元数据依据-长度
 	private String precisionRefer            ; // 读取元数据依据-有效位数
 	private String scaleRefer                ; // 读取元数据依据-小数位数
-	private TypeMetadata.Config config       ; // 集成元数据读写配置
+	private TypeMetadata.Refer config       ; // 集成元数据读写配置
 
 	ElasticSearchTypeMetadataAlias(String input, TypeMetadata standard, String meta, String formula, String lengthRefer, String precisionRefer, String scaleRefer, int ignoreLength, int ignorePrecision, int ignoreScale){
 		this.input = input;
@@ -341,9 +341,9 @@ public enum ElasticSearchTypeMetadataAlias implements TypeMetadataAlias {
 	}
 
 	@Override
-	public TypeMetadata.Config config() {
+	public TypeMetadata.Refer config() {
 		if(null == config){
-			config = new TypeMetadata.Config();
+			config = new TypeMetadata.Refer();
 			if(null != meta) {
 				config.setMeta(meta);
 			}

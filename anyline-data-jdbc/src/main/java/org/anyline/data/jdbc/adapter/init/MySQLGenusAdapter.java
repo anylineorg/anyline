@@ -38,20 +38,20 @@ import java.util.*;
 public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public MySQLGenusAdapter() {
         super();
-        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.CHAR, new TypeMetadata.Config("CHARACTER_MAXIMUM_LENGTH", null, null, 0, 1, 1));
-        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.TEXT, new TypeMetadata.Config("CHARACTER_MAXIMUM_LENGTH", null, null, 1, 1, 1));
-        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.BOOLEAN, new TypeMetadata.Config("CHARACTER_MAXIMUM_LENGTH", null, null, 1,1, 1));
-        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.BYTES, new TypeMetadata.Config("CHARACTER_MAXIMUM_LENGTH", null, null, 0, 1, 1));
-        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.BLOB, new TypeMetadata.Config("CHARACTER_MAXIMUM_LENGTH", null, null, 1,1,1));
-        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.INT, new TypeMetadata.Config("CHARACTER_MAXIMUM_LENGTH", "NUMERIC_PRECISION", null, 1, 1, 1));
-        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.FLOAT, new TypeMetadata.Config("CHARACTER_MAXIMUM_LENGTH", "NUMERIC_PRECISION", "NUMERIC_SCALE", 1, 2, 2));
-        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.DATE, new TypeMetadata.Config("CHARACTER_MAXIMUM_LENGTH", null, null, 1, 1, 1));
-        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.TIME, new TypeMetadata.Config("CHARACTER_MAXIMUM_LENGTH", null, null, 1, 1, 1));
-        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.DATETIME, new TypeMetadata.Config("CHARACTER_MAXIMUM_LENGTH", null, null, 1, 1, 1));
-        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.TIMESTAMP, new TypeMetadata.Config("CHARACTER_MAXIMUM_LENGTH", null, null, 1, 1, 1));
-        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.COLLECTION, new TypeMetadata.Config("CHARACTER_MAXIMUM_LENGTH", null, null, 1, 1, 1));
-        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.GEOMETRY, new TypeMetadata.Config("CHARACTER_MAXIMUM_LENGTH", null, null, 1, 1, 1));
-        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.OTHER, new TypeMetadata.Config("CHARACTER_MAXIMUM_LENGTH", null, null, 1, 1, 1));
+        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.CHAR, new TypeMetadata.Refer("CHARACTER_MAXIMUM_LENGTH", null, null, 0, 1, 1));
+        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.TEXT, new TypeMetadata.Refer("CHARACTER_MAXIMUM_LENGTH", null, null, 1, 1, 1));
+        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.BOOLEAN, new TypeMetadata.Refer("CHARACTER_MAXIMUM_LENGTH", null, null, 1,1, 1));
+        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.BYTES, new TypeMetadata.Refer("CHARACTER_MAXIMUM_LENGTH", null, null, 0, 1, 1));
+        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.BLOB, new TypeMetadata.Refer("CHARACTER_MAXIMUM_LENGTH", null, null, 1,1,1));
+        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.INT, new TypeMetadata.Refer("CHARACTER_MAXIMUM_LENGTH", "NUMERIC_PRECISION", null, 1, 1, 1));
+        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.FLOAT, new TypeMetadata.Refer("CHARACTER_MAXIMUM_LENGTH", "NUMERIC_PRECISION", "NUMERIC_SCALE", 1, 2, 2));
+        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.DATE, new TypeMetadata.Refer("CHARACTER_MAXIMUM_LENGTH", null, null, 1, 1, 1));
+        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.TIME, new TypeMetadata.Refer("CHARACTER_MAXIMUM_LENGTH", null, null, 1, 1, 1));
+        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.DATETIME, new TypeMetadata.Refer("CHARACTER_MAXIMUM_LENGTH", null, null, 1, 1, 1));
+        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.TIMESTAMP, new TypeMetadata.Refer("CHARACTER_MAXIMUM_LENGTH", null, null, 1, 1, 1));
+        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.COLLECTION, new TypeMetadata.Refer("CHARACTER_MAXIMUM_LENGTH", null, null, 1, 1, 1));
+        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.GEOMETRY, new TypeMetadata.Refer("CHARACTER_MAXIMUM_LENGTH", null, null, 1, 1, 1));
+        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.OTHER, new TypeMetadata.Refer("CHARACTER_MAXIMUM_LENGTH", null, null, 1, 1, 1));
 
         for(MySQLGenusTypeMetadataAlias alias:MySQLGenusTypeMetadataAlias.values()) {
             reg(alias);
@@ -81,18 +81,18 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         return types.get(type);
     }
 
-    private ColumnMetadataAdapter defaultColumnMetadataAdapter = defaultColumnMetadataAdapter();
-    public ColumnMetadataAdapter defaultColumnMetadataAdapter() {
-        ColumnMetadataAdapter adapter = new ColumnMetadataAdapter();
-        adapter.setNameRefer("COLUMN_NAME");
-        adapter.setCatalogRefer("");//忽略
-        adapter.setSchemaRefer("TABLE_SCHEMA");
-        adapter.setTableRefer("TABLE_NAME");
+    private Column.MetadataAdapter defaultColumnMetadataAdapter = defaultColumnMetadataAdapter();
+    public Column.MetadataAdapter defaultColumnMetadataAdapter() {
+        Column.MetadataAdapter adapter = new Column.MetadataAdapter();
+        adapter.setRefer("name", "COLUMN_NAME");
+        adapter.setRefer("Catalog", "");//忽略
+        adapter.setRefer("schema", "TABLE_SCHEMA");
+        adapter.setRefer("Table", "TABLE_NAME");
         adapter.setNullableRefer("IS_NULLABLE");
         adapter.setCharsetRefer("CHARACTER_SET_NAME");
         adapter.setCollateRefer("COLLATION_NAME");
         adapter.setDataTypeRefer("COLUMN_TYPE");
-        adapter.setPositionRefer("ORDINAL_POSITION");
+        adapter.setRefer("Position", "ORDINAL_POSITION");
         adapter.setCommentRefer("COLUMN_COMMENT");
         adapter.setDefaultRefer("COLUMN_DEFAULT");
         return adapter;
@@ -1472,6 +1472,43 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public String version(DataRuntime runtime, boolean create, String version) {
         return super.version(runtime, create, version);
     }
+
+    /**
+     * database[结构集封装-依据]<br/>
+     * 读取 database 元数据结果集的依据
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @return DatabaseMetadataAdapter
+     */
+    @Override
+    public Database.MetadataAdapter databaseMetadataAdapter(DataRuntime runtime) {
+        return super.databaseMetadataAdapter(runtime);
+    }
+    /**
+     * schema[结果集封装]<br/>
+     * 根据查询结果封装 schema 对象,只封装catalog,schema,name等基础属性
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta 上一步封装结果
+     * @param query 查询条件 根据metadata属性
+     * @param row 查询结果集
+     * @return Database
+     */
+    @Override
+    public <T extends Database> T init(DataRuntime runtime, int index, T meta, Database query, DataRow row) {
+        return super.init(runtime, index, meta, query, row);
+    }
+
+    /**
+     * database[结果集封装]<br/>
+     * 根据查询结果封装 database 对象,更多属性
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta 上一步封装结果
+     * @param row 查询结果集
+     * @return Table
+     */
+    @Override
+    public <T extends Database> T detail(DataRuntime runtime, int index, T meta, Database query, DataRow row) {
+        return super.detail(runtime, index, meta, query, row);
+    }
     /* *****************************************************************************************************************
      *                                                     catalog
      * -----------------------------------------------------------------------------------------------------------------
@@ -1610,6 +1647,42 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         return super.catalog(runtime, create, meta);
     }
 
+    /**
+     * catalog[结构集封装-依据]<br/>
+     * 读取 catalog 元数据结果集的依据
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @return CatalogMetadataAdapter
+     */
+    @Override
+    public Catalog.MetadataAdapter catalogMetadataAdapter(DataRuntime runtime) {
+        return super.catalogMetadataAdapter(runtime);
+    }
+    /**
+     * catalog[结果集封装]<br/>
+     * 根据查询结果封装 catalog 对象,只封装catalog,schema,name等基础属性
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta 上一步封装结果
+     * @param query 查询条件 根据metadata属性
+     * @param row 查询结果集
+     * @return Catalog
+     */
+    @Override
+    public <T extends Catalog> T init(DataRuntime runtime, int index, T meta, Catalog query, DataRow row) {
+        return super.init(runtime, index, meta, query, row);
+    }
+
+    /**
+     * catalog[结果集封装]<br/>
+     * 根据查询结果封装 catalog 对象,更多属性
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta 上一步封装结果
+     * @param row 查询结果集
+     * @return Table
+     */
+    @Override
+    public <T extends Catalog> T detail(DataRuntime runtime, int index, T meta, Catalog query, DataRow row) {
+        return super.detail(runtime, index, meta, query, row);
+    }
     /* *****************************************************************************************************************
      *                                                     schema
      * -----------------------------------------------------------------------------------------------------------------
@@ -1744,6 +1817,42 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         return super.schema(runtime, create, meta);
     }
 
+    /**
+     * schema[结构集封装-依据]<br/>
+     * 读取 schema 元数据结果集的依据
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @return SchemaMetadataAdapter
+     */
+    @Override
+    public Schema.MetadataAdapter schemaMetadataAdapter(DataRuntime runtime) {
+        return super.schemaMetadataAdapter(runtime);
+    }
+    /**
+     * schema[结果集封装]<br/>
+     * 根据查询结果封装 schema 对象,只封装catalog,schema,name等基础属性
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta 上一步封装结果
+     * @param query 查询条件 根据metadata属性
+     * @param row 查询结果集
+     * @return Schema
+     */
+    @Override
+    public  <T extends Schema> T init(DataRuntime runtime, int index, T meta, Schema query, DataRow row) {
+        return super.init(runtime, index, meta, query, row);
+    }
+
+    /**
+     * schema[结果集封装]<br/>
+     * 根据查询结果封装 schema 对象,更多属性
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta 上一步封装结果
+     * @param row 查询结果集
+     * @return Table
+     */
+    @Override
+    public <T extends Schema> T detail(DataRuntime runtime, int index, T meta, Schema query, DataRow row) {
+        return super.detail(runtime, index, meta, query, row);
+    }
     /* *****************************************************************************************************************
      *                                                     table
      * -----------------------------------------------------------------------------------------------------------------
@@ -2596,7 +2705,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return ColumnMetadataAdapter
      */
     @Override
-    public ColumnMetadataAdapter columnMetadataAdapter(DataRuntime runtime) {
+    public Column.MetadataAdapter columnMetadataRefer(DataRuntime runtime) {
         return defaultColumnMetadataAdapter;
     }
 
@@ -2608,8 +2717,8 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return ColumnMetadataAdapter
      */
     @Override
-    public ColumnMetadataAdapter columnMetadataAdapter(DataRuntime runtime, TypeMetadata meta) {
-        return super.columnMetadataAdapter(runtime, meta);
+    public Column.MetadataAdapter columnMetadataRefer(DataRuntime runtime, TypeMetadata meta) {
+        return super.columnMetadataRefer(runtime, meta);
     }
 
     /* *****************************************************************************************************************
@@ -2936,22 +3045,22 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * index[结构集封装-依据]<br/>
      * 读取index元数据结果集的依据
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @return IndexMetadataAdapter
+     * @return Index.MetadataAdapter
      */
     @Override
-    public IndexMetadataAdapter indexMetadataAdapter(DataRuntime runtime) {
-        IndexMetadataAdapter adapter =  super.indexMetadataAdapter(runtime);
-        adapter.setNameRefer("INDEX_NAME");
-        adapter.setTableRefer("TABLE_NAME");
-        adapter.setSchemaRefer("TABLE_SCHEMA");
-        adapter.setColumnRefer("COLUMN_NAME");
-        adapter.setColumnOrderRefer("COLLATION");
-        adapter.setColumnPositionRefer("SEQ_IN_INDEX");
+    public Index.MetadataAdapter indexMetadataAdapter(DataRuntime runtime) {
+        Index.MetadataAdapter adapter =  super.indexMetadataAdapter(runtime);
+        adapter.setRefer("name", "INDEX_NAME");
+        adapter.setRefer("Table", "TABLE_NAME");
+        adapter.setRefer("schema", "TABLE_SCHEMA");
+        adapter.setRefer("column", "COLUMN_NAME");
+        adapter.setRefer("ColumnOrder", "COLLATION");
+        adapter.setRefer("ColumnPosition", "SEQ_IN_INDEX");
         adapter.setCheckPrimaryRefer("INDEX_NAME");
         adapter.setCheckPrimaryValue("PRIMARY");
         adapter.setCheckUniqueRefer("NON_UNIQUE");
         adapter.setCheckUniqueValue("0");
-        adapter.setCatalogRefer("");
+        adapter.setRefer("Catalog", "");
         return adapter;
     }
     /**
@@ -6741,7 +6850,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public <T extends User> T init(DataRuntime runtime, int index, T meta, User query, DataRow row) {
-        UserMetadataAdapter adapter = userMetadataAdapter(runtime);
+        User.MetadataAdapter adapter = userMetadataAdapter(runtime);
         if(null == meta){
             meta = (T) new User();
         }
@@ -6770,10 +6879,10 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return UserMetadataAdapter
      */
     @Override
-    public UserMetadataAdapter userMetadataAdapter(DataRuntime runtime) {
-        UserMetadataAdapter adapter = new UserMetadataAdapter();
+    public User.MetadataAdapter userMetadataAdapter(DataRuntime runtime) {
+        User.MetadataAdapter adapter = new User.MetadataAdapter();
         adapter.setHostRefer("host");
-        adapter.setNameRefer("user");
+        adapter.setRefer("name", "user");
         return adapter;
     }
 
@@ -6785,7 +6894,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * <T extends Privilege> List<T> privileges(DataRuntime runtime, int index, boolean create, User user, List<T> privileges, DataSet set) throws Exception
      * <T extends Privilege> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, User user, DataRow row)
      * <T extends Privilege> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row)
-     * PrivilegeMetadataAdapter privilegeMetadataAdapter(DataRuntime runtime)
+     * Privilege.MetadataAdapter privilegeMetadataAdapter(DataRuntime runtime)
      ******************************************************************************************************************/
 
     /**
@@ -6861,7 +6970,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return PrivilegeMetadataAdapter
      */
     @Override
-    public PrivilegeMetadataAdapter privilegeMetadataAdapter(DataRuntime runtime) {
+    public Privilege.MetadataAdapter privilegeMetadataAdapter(DataRuntime runtime) {
         return super.privilegeMetadataAdapter(runtime);
     }
 

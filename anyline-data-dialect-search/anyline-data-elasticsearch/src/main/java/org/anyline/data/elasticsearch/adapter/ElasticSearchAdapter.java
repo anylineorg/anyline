@@ -39,7 +39,6 @@ import org.anyline.entity.*;
 import org.anyline.exception.CommandQueryException;
 import org.anyline.exception.NotSupportException;
 import org.anyline.metadata.*;
-import org.anyline.metadata.adapter.ViewMetadataAdapter;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.net.HttpResponse;
@@ -82,7 +81,7 @@ public class ElasticSearchAdapter extends AbstractDriverAdapter implements Drive
         super();
         for (ElasticSearchTypeMetadataAlias alias : ElasticSearchTypeMetadataAlias.values()) {
             this.alias.put(alias.name(), alias.standard());
-            TypeMetadata.Config config = alias.config();
+            TypeMetadata.Refer config = alias.config();
             reg(alias.name(), config);
             reg(alias.standard(), config);
         }
@@ -1566,7 +1565,43 @@ PUT * /_bulk
     public String version(DataRuntime runtime, boolean create, String version) {
         return super.version(runtime, create, version);
     }
-    /* *****************************************************************************************************************
+
+    /**
+     * database[结构集封装-依据]<br/>
+     * 读取 database 元数据结果集的依据
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @return DatabaseMetadataAdapter
+     */
+    @Override
+    public Database.MetadataAdapter databaseMetadataAdapter(DataRuntime runtime) {
+        return super.databaseMetadataAdapter(runtime);
+    }
+    /**
+     * schema[结果集封装]<br/>
+     * 根据查询结果封装 schema 对象,只封装catalog,schema,name等基础属性
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta 上一步封装结果
+     * @param query 查询条件 根据metadata属性
+     * @param row 查询结果集
+     * @return Database
+     */
+    @Override
+    public <T extends Database> T init(DataRuntime runtime, int index, T meta, Database query, DataRow row) {
+        return super.init(runtime, index, meta, query, row);
+    }
+
+    /**
+     * database[结果集封装]<br/>
+     * 根据查询结果封装 database 对象,更多属性
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta 上一步封装结果
+     * @param row 查询结果集
+     * @return Table
+     */
+    @Override
+    public <T extends Database> T detail(DataRuntime runtime, int index, T meta, Database query, DataRow row) {
+        return super.detail(runtime, index, meta, query, row);
+    }/* *****************************************************************************************************************
      *                                                     catalog
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
@@ -1704,6 +1739,42 @@ PUT * /_bulk
         return super.catalog(runtime, create, meta);
     }
 
+    /**
+     * catalog[结构集封装-依据]<br/>
+     * 读取 catalog 元数据结果集的依据
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @return CatalogMetadataAdapter
+     */
+    @Override
+    public Catalog.MetadataAdapter catalogMetadataAdapter(DataRuntime runtime) {
+        return super.catalogMetadataAdapter(runtime);
+    }
+    /**
+     * catalog[结果集封装]<br/>
+     * 根据查询结果封装 catalog 对象,只封装catalog,schema,name等基础属性
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta 上一步封装结果
+     * @param query 查询条件 根据metadata属性
+     * @param row 查询结果集
+     * @return Catalog
+     */
+    @Override
+    public <T extends Catalog> T init(DataRuntime runtime, int index, T meta, Catalog query, DataRow row) {
+        return super.init(runtime, index, meta, query, row);
+    }
+
+    /**
+     * catalog[结果集封装]<br/>
+     * 根据查询结果封装 catalog 对象,更多属性
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta 上一步封装结果
+     * @param row 查询结果集
+     * @return Table
+     */
+    @Override
+    public <T extends Catalog> T detail(DataRuntime runtime, int index, T meta, Catalog query, DataRow row) {
+        return super.detail(runtime, index, meta, query, row);
+    }
     /* *****************************************************************************************************************
      *                                                     schema
      * -----------------------------------------------------------------------------------------------------------------
@@ -1818,6 +1889,43 @@ PUT * /_bulk
     @Override
     public Schema schema(DataRuntime runtime, boolean create, Schema meta) throws Exception {
         return super.schema(runtime, create, meta);
+    }
+
+    /**
+     * schema[结构集封装-依据]<br/>
+     * 读取 schema 元数据结果集的依据
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @return SchemaMetadataAdapter
+     */
+    @Override
+    public Schema.MetadataAdapter schemaMetadataAdapter(DataRuntime runtime) {
+        return super.schemaMetadataAdapter(runtime);
+    }
+    /**
+     * schema[结果集封装]<br/>
+     * 根据查询结果封装 schema 对象,只封装catalog,schema,name等基础属性
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta 上一步封装结果
+     * @param query 查询条件 根据metadata属性
+     * @param row 查询结果集
+     * @return Schema
+     */
+    @Override
+    public  <T extends Schema> T init(DataRuntime runtime, int index, T meta, Schema query, DataRow row) {
+        return super.init(runtime, index, meta, query, row);
+    }
+
+    /**
+     * schema[结果集封装]<br/>
+     * 根据查询结果封装 schema 对象,更多属性
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta 上一步封装结果
+     * @param row 查询结果集
+     * @return Table
+     */
+    @Override
+    public <T extends Schema> T detail(DataRuntime runtime, int index, T meta, Schema query, DataRow row) {
+        return super.detail(runtime, index, meta, query, row);
     }
 
     /* *****************************************************************************************************************
@@ -2170,7 +2278,7 @@ PUT * /_bulk
     }
 
     @Override
-    public ViewMetadataAdapter viewMetadataAdapter(DataRuntime runtime) {
+    public View.MetadataAdapter viewMetadataAdapter(DataRuntime runtime) {
         return null;
     }
     /* *****************************************************************************************************************

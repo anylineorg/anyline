@@ -861,7 +861,7 @@ public enum StandardTypeMetadata implements TypeMetadata {
     private final int ignorePrecision;
     private final int ignoreScale;
     private boolean array;
-    private TypeMetadata.Config config;
+    private Refer config;
     StandardTypeMetadata(CATEGORY category, String name, String formula, TypeMetadata origin, Class transfer, Class compatible, int ignoreLength, int ignorePrecision, int ignoreScale, DatabaseType ... dbs) {
         this.category = category;
         if(null != origin) {
@@ -1032,9 +1032,9 @@ public enum StandardTypeMetadata implements TypeMetadata {
     }
 
     @Override
-    public TypeMetadata.Config config() {
+    public Refer config() {
         if(null == config) {
-            config = new TypeMetadata.Config();
+            config = new Refer();
             config.setIgnoreLength(ignoreLength).setIgnorePrecision(ignorePrecision).setIgnoreScale(ignoreScale);
         }
         return config;

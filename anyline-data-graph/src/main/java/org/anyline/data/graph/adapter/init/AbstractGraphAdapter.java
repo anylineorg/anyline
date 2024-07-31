@@ -38,9 +38,6 @@ import org.anyline.exception.CommandQueryException;
 import org.anyline.exception.CommandUpdateException;
 import org.anyline.exception.NotSupportException;
 import org.anyline.metadata.*;
-import org.anyline.metadata.adapter.ColumnMetadataAdapter;
-import org.anyline.metadata.adapter.IndexMetadataAdapter;
-import org.anyline.metadata.adapter.PrimaryMetadataAdapter;
 import org.anyline.metadata.graph.EdgeTable;
 import org.anyline.metadata.graph.VertexTable;
 import org.anyline.metadata.type.DatabaseType;
@@ -3874,13 +3871,13 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
     @Override
     public <T extends PrimaryKey> T init(DataRuntime runtime, int index, T primary, PrimaryKey query, DataSet set) throws Exception {
         Table table = query.getTable();
-        PrimaryMetadataAdapter config = primaryMetadataAdapter(runtime);
+        PrimaryKey.MetadataAdapter config = primaryMetadataAdapter(runtime);
         for(DataRow row:set) {
             if(null == primary) {
                 primary = (T)new PrimaryKey();
-                primary.setName(row.getString(config.getNameRefers()));
+                primary.setName(row.getString(refer.getRefers("name")));
                 if(null == table) {
-                    table = new Table(row.getString(config.getCatalogRefers()), row.getString(config.getSchemaRefers()), row.getString(config.getTableRefer()));
+                    table = new Table(row.getString(refer.getRefers("Catalog")), row.getString(refer.getRefers("Schema")), row.getString(refer.getRefers("table")));
                 }
                 primary.setTable(table);
             }
@@ -3893,9 +3890,9 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
                 column = new Column(col);
             }
             column.setTable(table);
-            String position = row.getString(config.getColumnPositionRefers());
+            String position = row.getString(refer.getRefers("column"));
             primary.setPosition(column, BasicUtil.parseInt(position, 0));
-            String order = row.getString(config.getColumnOrderRefers());
+            String order = row.getString(refer.getRefers("ColumnOrder"));
             if(BasicUtil.isNotEmpty(order)) {
                 column.setOrder(order);
             }
@@ -3924,8 +3921,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
      * @return PrimaryMetadataAdapter
      */
     @Override
-    public PrimaryMetadataAdapter primaryMetadataAdapter(DataRuntime runtime) {
-        return new PrimaryMetadataAdapter();
+    public PrimaryKey.MetadataAdapter primaryMetadataAdapter(DataRuntime runtime) {
+        return new PrimaryKey.MetadataAdapter();
     }
 
     /**
@@ -4150,14 +4147,14 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
      * index[结构集封装-依据]<br/>
      * 读取index元数据结果集的依据
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @return IndexMetadataAdapter
+     * @return Index.MetadataAdapter
      */
     @Override
-    public IndexMetadataAdapter indexMetadataAdapter(DataRuntime runtime) {
-        IndexMetadataAdapter adapter =  super.indexMetadataAdapter(runtime);
-        adapter.setNameRefer("Index Name");
-        adapter.setTableRefer("By Tag,By Edge");
-        adapter.setColumnRefer("Columns");
+    public Index.MetadataAdapter indexMetadataAdapter(DataRuntime runtime) {
+        Index.MetadataAdapter adapter =  super.indexMetadataAdapter(runtime);
+        adapter.setRefer("name", "Index Name");
+        adapter.setRefer("Table", "By Tag,By Edge");
+        adapter.setRefer("column", "Columns");
         return adapter;
     }
     /* *****************************************************************************************************************
@@ -6720,8 +6717,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 			}
 			typeName = type.getName();
 		}
-		ColumnMetadataAdapter adapter = columnMetadataAdapter(runtime, type);
-		TypeMetadata.Config config = adapter.getTypeConfig();
+		Column.MetadataAdapter adapter = columnMetadataRefer(runtime, type);
+		TypeMetadata.Refer config = adapter.getTypeConfig();
 		ignoreLength = config.ignoreLength();
 		ignorePrecision = config.ignorePrecision();
 		ignoreScale = config.ignoreScale();

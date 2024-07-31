@@ -30,9 +30,6 @@ import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
 import org.anyline.exception.NotSupportException;
 import org.anyline.metadata.*;
-import org.anyline.metadata.adapter.ColumnMetadataAdapter;
-import org.anyline.metadata.adapter.IndexMetadataAdapter;
-import org.anyline.metadata.adapter.PrimaryMetadataAdapter;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.metadata.type.TypeMetadata;
 
@@ -2322,14 +2319,14 @@ public class MySQLAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 	 * @return ColumnMetadataAdapter
 	 */
 	@Override
-	public ColumnMetadataAdapter columnMetadataAdapter(DataRuntime runtime) {
-		return super.columnMetadataAdapter(runtime);
+	public Column.MetadataAdapter columnMetadataRefer(DataRuntime runtime) {
+		return super.columnMetadataRefer(runtime);
 	}
 
 	/**
 	 * column[结果集封装]<br/>(方法1)<br/>
 	 * 元数据数字有效位数列<br/>
-	 * 不直接调用 用来覆盖columnMetadataAdapter(DataRuntime runtime, TypeMetadata meta)
+	 * 不直接调用 用来覆盖columnMetadataRefer(DataRuntime runtime, TypeMetadata meta)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta TypeMetadata
 	 * @return String
@@ -2342,7 +2339,7 @@ public class MySQLAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 	/**
 	 * column[结果集封装]<br/>(方法1)<br/>
 	 * 元数据长度列<br/>
-	 * 不直接调用 用来覆盖columnMetadataAdapter(DataRuntime runtime, TypeMetadata meta)
+	 * 不直接调用 用来覆盖columnMetadataRefer(DataRuntime runtime, TypeMetadata meta)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta TypeMetadata
 	 * @return String
@@ -2355,7 +2352,7 @@ public class MySQLAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 	/**
 	 * column[结果集封装]<br/>(方法1)<br/>
 	 * 元数据数字有效位数列<br/>
-	 * 不直接调用 用来覆盖columnMetadataAdapter(DataRuntime runtime, TypeMetadata meta)
+	 * 不直接调用 用来覆盖columnMetadataRefer(DataRuntime runtime, TypeMetadata meta)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta TypeMetadata
 	 * @return String
@@ -2507,7 +2504,7 @@ public class MySQLAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 	 * @return PrimaryMetadataAdapter
 	 */
 	@Override
-	public PrimaryMetadataAdapter primaryMetadataAdapter(DataRuntime runtime) {
+	public PrimaryKey.MetadataAdapter primaryMetadataAdapter(DataRuntime runtime) {
 		return super.primaryMetadataAdapter(runtime);
 	}
 	/**
@@ -2727,10 +2724,10 @@ public class MySQLAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 	 * index[结构集封装-依据]<br/>
 	 * 读取index元数据结果集的依据
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @return IndexMetadataAdapter
+	 * @return Index.MetadataAdapter
 	 */
 	@Override
-	public IndexMetadataAdapter indexMetadataAdapter(DataRuntime runtime) {
+	public Index.MetadataAdapter indexMetadataAdapter(DataRuntime runtime) {
 		return super.indexMetadataAdapter(runtime);
 	}
 	/* *****************************************************************************************************************

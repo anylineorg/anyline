@@ -18,6 +18,8 @@
 
 package org.anyline.metadata;
 
+import org.anyline.metadata.adapter.MetadataRefer;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -61,4 +63,5 @@ public class Function extends Metadata<Function> implements Serializable {
 
         return copy;
     }
+
 }

@@ -40,20 +40,20 @@ import java.util.*;
 public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
     public PostgresGenusAdapter() {
         super();
-        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.CHAR, new TypeMetadata.Config("CHARACTER_MAXIMUM_LENGTH", null, null, 0, 1, 1));
-        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.TEXT, new TypeMetadata.Config("CHARACTER_MAXIMUM_LENGTH", null, null, 1, 1, 1));
-        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.BOOLEAN, new TypeMetadata.Config("CHARACTER_MAXIMUM_LENGTH", null, null, 1,1, 1));
-        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.BYTES, new TypeMetadata.Config("CHARACTER_MAXIMUM_LENGTH", null, null, 0, 1, 1));
-        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.BLOB, new TypeMetadata.Config("CHARACTER_MAXIMUM_LENGTH", null, null, 1,1,1));
-        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.INT, new TypeMetadata.Config("CHARACTER_MAXIMUM_LENGTH", "NUMERIC_PRECISION", null, 1, 1, 1));
-        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.FLOAT, new TypeMetadata.Config("CHARACTER_MAXIMUM_LENGTH", "NUMERIC_PRECISION", "NUMERIC_SCALE", 1, 0, 0));
-        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.DATE, new TypeMetadata.Config("CHARACTER_MAXIMUM_LENGTH", null, "DATETIME_PRECISION", 1, 1, 1));
-        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.TIME, new TypeMetadata.Config("CHARACTER_MAXIMUM_LENGTH", null, "DATETIME_PRECISION", 1, 1, 2));
-        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.DATETIME, new TypeMetadata.Config("CHARACTER_MAXIMUM_LENGTH", null, "DATETIME_PRECISION", 1, 1, 2));
-        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.TIMESTAMP, new TypeMetadata.Config("CHARACTER_MAXIMUM_LENGTH", null, "DATETIME_PRECISION", 1, 1, 2));
-        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.COLLECTION, new TypeMetadata.Config("CHARACTER_MAXIMUM_LENGTH", null, null, 1, 1, 1));
-        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.GEOMETRY, new TypeMetadata.Config("CHARACTER_MAXIMUM_LENGTH", null, null, 1, 1, 1));
-        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.OTHER, new TypeMetadata.Config("CHARACTER_MAXIMUM_LENGTH", null, null, 1, 1, 1));
+        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.CHAR, new TypeMetadata.Refer("CHARACTER_MAXIMUM_LENGTH", null, null, 0, 1, 1));
+        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.TEXT, new TypeMetadata.Refer("CHARACTER_MAXIMUM_LENGTH", null, null, 1, 1, 1));
+        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.BOOLEAN, new TypeMetadata.Refer("CHARACTER_MAXIMUM_LENGTH", null, null, 1,1, 1));
+        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.BYTES, new TypeMetadata.Refer("CHARACTER_MAXIMUM_LENGTH", null, null, 0, 1, 1));
+        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.BLOB, new TypeMetadata.Refer("CHARACTER_MAXIMUM_LENGTH", null, null, 1,1,1));
+        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.INT, new TypeMetadata.Refer("CHARACTER_MAXIMUM_LENGTH", "NUMERIC_PRECISION", null, 1, 1, 1));
+        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.FLOAT, new TypeMetadata.Refer("CHARACTER_MAXIMUM_LENGTH", "NUMERIC_PRECISION", "NUMERIC_SCALE", 1, 0, 0));
+        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.DATE, new TypeMetadata.Refer("CHARACTER_MAXIMUM_LENGTH", null, "DATETIME_PRECISION", 1, 1, 1));
+        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.TIME, new TypeMetadata.Refer("CHARACTER_MAXIMUM_LENGTH", null, "DATETIME_PRECISION", 1, 1, 2));
+        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.DATETIME, new TypeMetadata.Refer("CHARACTER_MAXIMUM_LENGTH", null, "DATETIME_PRECISION", 1, 1, 2));
+        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.TIMESTAMP, new TypeMetadata.Refer("CHARACTER_MAXIMUM_LENGTH", null, "DATETIME_PRECISION", 1, 1, 2));
+        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.COLLECTION, new TypeMetadata.Refer("CHARACTER_MAXIMUM_LENGTH", null, null, 1, 1, 1));
+        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.GEOMETRY, new TypeMetadata.Refer("CHARACTER_MAXIMUM_LENGTH", null, null, 1, 1, 1));
+        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.OTHER, new TypeMetadata.Refer("CHARACTER_MAXIMUM_LENGTH", null, null, 1, 1, 1));
 
         for(PostgresGenusTypeMetadataAlias alias: PostgresGenusTypeMetadataAlias.values()) {
             reg(alias);
@@ -83,18 +83,18 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         return types.get(type);
     }
 
-    private ColumnMetadataAdapter defaultColumnMetadataAdapter = defaultColumnMetadataAdapter();
-    public ColumnMetadataAdapter defaultColumnMetadataAdapter() {
-        ColumnMetadataAdapter adapter = new ColumnMetadataAdapter();
-        adapter.setNameRefer("COLUMN_NAME");
-        adapter.setCatalogRefer("TABLE_CATALOG");
-        adapter.setSchemaRefer("TABLE_SCHEMA");
-        adapter.setTableRefer("TABLE_NAME");
+    private Column.MetadataAdapter defaultColumnMetadataAdapter = defaultColumnMetadataAdapter();
+    public Column.MetadataAdapter defaultColumnMetadataAdapter() {
+        Column.MetadataAdapter adapter = new Column.MetadataAdapter();
+        adapter.setRefer("name", "COLUMN_NAME");
+        adapter.setRefer("Catalog", "TABLE_CATALOG");
+        adapter.setRefer("schema", "TABLE_SCHEMA");
+        adapter.setRefer("Table", "TABLE_NAME");
         adapter.setNullableRefer("IS_NULLABLE");
         //adapter.setCharsetRefer("");
         //adapter.setCollateRefer("");
         adapter.setDataTypeRefer("DATA_TYPE,FULL_TYPE");
-        adapter.setPositionRefer("ORDINAL_POSITION");
+        adapter.setRefer("Position", "ORDINAL_POSITION");
         adapter.setCommentRefer("COLUMN_COMMENT");//SQL组装
         adapter.setDefaultRefer("COLUMN_DEFAULT");
         return adapter;
@@ -1366,7 +1366,43 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
     public String version(DataRuntime runtime, boolean create, String version) {
         return super.version(runtime, create, version);
     }
-    /* *****************************************************************************************************************
+
+    /**
+     * database[结构集封装-依据]<br/>
+     * 读取 database 元数据结果集的依据
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @return DatabaseMetadataAdapter
+     */
+    @Override
+    public Database.MetadataAdapter databaseMetadataAdapter(DataRuntime runtime) {
+        return super.databaseMetadataAdapter(runtime);
+    }
+    /**
+     * schema[结果集封装]<br/>
+     * 根据查询结果封装 schema 对象,只封装catalog,schema,name等基础属性
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta 上一步封装结果
+     * @param query 查询条件 根据metadata属性
+     * @param row 查询结果集
+     * @return Database
+     */
+    @Override
+    public <T extends Database> T init(DataRuntime runtime, int index, T meta, Database query, DataRow row) {
+        return super.init(runtime, index, meta, query, row);
+    }
+
+    /**
+     * database[结果集封装]<br/>
+     * 根据查询结果封装 database 对象,更多属性
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta 上一步封装结果
+     * @param row 查询结果集
+     * @return Table
+     */
+    @Override
+    public <T extends Database> T detail(DataRuntime runtime, int index, T meta, Database query, DataRow row) {
+        return super.detail(runtime, index, meta, query, row);
+    }/* *****************************************************************************************************************
      *                                                     catalog
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
@@ -1504,6 +1540,42 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         return super.catalog(runtime, create, meta);
     }
 
+    /**
+     * catalog[结构集封装-依据]<br/>
+     * 读取 catalog 元数据结果集的依据
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @return CatalogMetadataAdapter
+     */
+    @Override
+    public Catalog.MetadataAdapter catalogMetadataAdapter(DataRuntime runtime) {
+        return super.catalogMetadataAdapter(runtime);
+    }
+    /**
+     * catalog[结果集封装]<br/>
+     * 根据查询结果封装 catalog 对象,只封装catalog,schema,name等基础属性
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta 上一步封装结果
+     * @param query 查询条件 根据metadata属性
+     * @param row 查询结果集
+     * @return Catalog
+     */
+    @Override
+    public <T extends Catalog> T init(DataRuntime runtime, int index, T meta, Catalog query, DataRow row) {
+        return super.init(runtime, index, meta, query, row);
+    }
+
+    /**
+     * catalog[结果集封装]<br/>
+     * 根据查询结果封装 catalog 对象,更多属性
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta 上一步封装结果
+     * @param row 查询结果集
+     * @return Table
+     */
+    @Override
+    public <T extends Catalog> T detail(DataRuntime runtime, int index, T meta, Catalog query, DataRow row) {
+        return super.detail(runtime, index, meta, query, row);
+    }
     /* *****************************************************************************************************************
      *                                                     schema
      * -----------------------------------------------------------------------------------------------------------------
@@ -1628,6 +1700,43 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
     @Override
     public Schema schema(DataRuntime runtime, boolean create, Schema meta) throws Exception {
         return super.schema(runtime, create, meta);
+    }
+
+    /**
+     * schema[结构集封装-依据]<br/>
+     * 读取 schema 元数据结果集的依据
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @return SchemaMetadataAdapter
+     */
+    @Override
+    public Schema.MetadataAdapter schemaMetadataAdapter(DataRuntime runtime) {
+        return super.schemaMetadataAdapter(runtime);
+    }
+    /**
+     * schema[结果集封装]<br/>
+     * 根据查询结果封装 schema 对象,只封装catalog,schema,name等基础属性
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta 上一步封装结果
+     * @param query 查询条件 根据metadata属性
+     * @param row 查询结果集
+     * @return Schema
+     */
+    @Override
+    public  <T extends Schema> T init(DataRuntime runtime, int index, T meta, Schema query, DataRow row) {
+        return super.init(runtime, index, meta, query, row);
+    }
+
+    /**
+     * schema[结果集封装]<br/>
+     * 根据查询结果封装 schema 对象,更多属性
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta 上一步封装结果
+     * @param row 查询结果集
+     * @return Table
+     */
+    @Override
+    public <T extends Schema> T detail(DataRuntime runtime, int index, T meta, Schema query, DataRow row) {
+        return super.detail(runtime, index, meta, query, row);
     }
 
     /* *****************************************************************************************************************
@@ -2535,7 +2644,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return ColumnMetadataAdapter
      */
     @Override
-    public ColumnMetadataAdapter columnMetadataAdapter(DataRuntime runtime) {
+    public Column.MetadataAdapter columnMetadataRefer(DataRuntime runtime) {
         return defaultColumnMetadataAdapter;
     }
 
@@ -2547,8 +2656,8 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return ColumnMetadataAdapter
      */
     @Override
-    public ColumnMetadataAdapter columnMetadataAdapter(DataRuntime runtime, TypeMetadata meta) {
-        return super.columnMetadataAdapter(runtime, meta);
+    public Column.MetadataAdapter columnMetadataRefer(DataRuntime runtime, TypeMetadata meta) {
+        return super.columnMetadataRefer(runtime, meta);
     }
 
     /* *****************************************************************************************************************
@@ -2723,7 +2832,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return PrimaryMetadataAdapter
      */
     @Override
-    public PrimaryMetadataAdapter primaryMetadataAdapter(DataRuntime runtime) {
+    public PrimaryKey.MetadataAdapter primaryMetadataAdapter(DataRuntime runtime) {
         return super.primaryMetadataAdapter(runtime);
     }
 
@@ -2932,24 +3041,24 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * index[结构集封装-依据]<br/>
      * 读取index元数据结果集的依据
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @return IndexMetadataAdapter
+     * @return Index.MetadataAdapter
      */
     @Override
-    public IndexMetadataAdapter indexMetadataAdapter(DataRuntime runtime) {
-        IndexMetadataAdapter adapter =  super.indexMetadataAdapter(runtime);
-        adapter.setNameRefer("INDEX_NAME");
-        adapter.setTableRefer("TABLE_NAME");
-        adapter.setSchemaRefer("SCHEMA_NAME");
-        adapter.setTypeRefer("INDEX_TYPE");
+    public Index.MetadataAdapter indexMetadataAdapter(DataRuntime runtime) {
+        Index.MetadataAdapter adapter =  super.indexMetadataAdapter(runtime);
+        adapter.setRefer("name", "INDEX_NAME");
+        adapter.setRefer("Table", "TABLE_NAME");
+        adapter.setRefer("schema", "SCHEMA_NAME");
+        adapter.setRefer("Type", "INDEX_TYPE");
         adapter.setCheckPrimaryRefer("IS_PRIMARY");
         adapter.setCheckPrimaryValue("T");
         adapter.setCheckUniqueRefer("IS_UNIQUE");
         adapter.setCheckUniqueValue("T");
-        adapter.setCatalogRefer("");
+        adapter.setRefer("Catalog", "");
         //以下在detail中单独处理
-        adapter.setColumnRefer("");
-        adapter.setColumnOrderRefer("");
-        adapter.setColumnPositionRefer("");
+        adapter.setRefer("column", "");
+        adapter.setRefer("ColumnOrder", "");
+        adapter.setRefer("ColumnPosition", "");
         return adapter;
     }
     /**
@@ -3040,7 +3149,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
     @Override
     public <T extends Index> T detail(DataRuntime runtime, int index, T meta, Index query, DataRow row) throws Exception {
         meta = super.detail(runtime, index, meta, query, row);
-        IndexMetadataAdapter config = indexMetadataAdapter(runtime);
+        MetadataRefer refer = refer(runtime, Index.class);
         String columnName = row.getStringWithoutEmpty(config.getColumnRefers());
         if(null == columnName) {
             return meta;
@@ -3613,10 +3722,10 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return FunctionMetadataAdapter
      */
     @Override
-    public FunctionMetadataAdapter functionMetadataAdapter(DataRuntime runtime) {
-        FunctionMetadataAdapter adapter = new FunctionMetadataAdapter();
-        adapter.setNameRefer("proname");
-        adapter.setSchemaRefer("schema_name");
+    public Function.MetadataAdapter functionMetadataAdapter(DataRuntime runtime) {
+        Function.MetadataAdapter adapter = new Function.MetadataAdapter();
+        adapter.setRefer("name", "proname");
+        adapter.setRefer("schema", "schema_name");
         adapter.setCommentRefer("comment");
         adapter.setDefineRefer("prosrc");
         return adapter;

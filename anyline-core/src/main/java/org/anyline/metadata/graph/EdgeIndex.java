@@ -19,6 +19,7 @@
 package org.anyline.metadata.graph;
 
 import org.anyline.metadata.Table;
+import org.anyline.metadata.adapter.MetadataRefer;
 
 public class EdgeIndex extends GraphIndex {
 
@@ -34,4 +35,5 @@ public class EdgeIndex extends GraphIndex {
     public EdgeIndex(Table table, String name) {
         super(table, name);
     }
+
 }

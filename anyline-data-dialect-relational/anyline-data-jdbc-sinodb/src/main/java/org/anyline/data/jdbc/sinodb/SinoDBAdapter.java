@@ -53,25 +53,25 @@ public class SinoDBAdapter extends InformixGenusAdapter implements JDBCAdapter {
         delimiterTo = "\"";
         for (SinoDBTypeMetadataAlias alias : SinoDBTypeMetadataAlias.values()) {
             this.alias.put(alias.name(), alias.standard());
-            TypeMetadata.Config config = alias.config();
+            TypeMetadata.Refer config = alias.config();
             reg(alias.name(), config);
             reg(alias.standard(), config);
         }
 
-        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.CHAR, new TypeMetadata.Config("DATA_LENGTH", null, null, 0, 1, 1));
-        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.TEXT, new TypeMetadata.Config("DATA_LENGTH", null, null, 0, 1, 1));
-        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.BOOLEAN, new TypeMetadata.Config("DATA_LENGTH", null, null, 1,1, 1));
-        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.BYTES, new TypeMetadata.Config("DATA_LENGTH", null, null, 0, 1, 1));
-        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.BLOB, new TypeMetadata.Config("DATA_LENGTH", null, null, 1,1,1));
-        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.INT, new TypeMetadata.Config("DATA_LENGTH", "DATA_PRECISION", null, 1, 1, 1));
-        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.FLOAT, new TypeMetadata.Config("DATA_LENGTH", "DATA_PRECISION", "DATA_SCALE", 1, 0, 0));
-        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.DATE, new TypeMetadata.Config("DATA_LENGTH", null, null, 1, 1, 1));
-        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.TIME, new TypeMetadata.Config("DATA_LENGTH", null, null, 1, 1, 1));
-        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.DATETIME, new TypeMetadata.Config("DATA_LENGTH", null, null, 1, 1, 1));
-        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.TIMESTAMP, new TypeMetadata.Config("DATA_LENGTH", null, null, 1, 1, 1));
-        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.COLLECTION, new TypeMetadata.Config("DATA_LENGTH", null, null, 1, 1, 1));
-        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.GEOMETRY, new TypeMetadata.Config("DATA_LENGTH", null, null, 1, 1, 1));
-        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.OTHER, new TypeMetadata.Config("DATA_LENGTH", null, null, 1, 1, 1));
+        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.CHAR, new TypeMetadata.Refer("DATA_LENGTH", null, null, 0, 1, 1));
+        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.TEXT, new TypeMetadata.Refer("DATA_LENGTH", null, null, 0, 1, 1));
+        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.BOOLEAN, new TypeMetadata.Refer("DATA_LENGTH", null, null, 1,1, 1));
+        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.BYTES, new TypeMetadata.Refer("DATA_LENGTH", null, null, 0, 1, 1));
+        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.BLOB, new TypeMetadata.Refer("DATA_LENGTH", null, null, 1,1,1));
+        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.INT, new TypeMetadata.Refer("DATA_LENGTH", "DATA_PRECISION", null, 1, 1, 1));
+        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.FLOAT, new TypeMetadata.Refer("DATA_LENGTH", "DATA_PRECISION", "DATA_SCALE", 1, 0, 0));
+        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.DATE, new TypeMetadata.Refer("DATA_LENGTH", null, null, 1, 1, 1));
+        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.TIME, new TypeMetadata.Refer("DATA_LENGTH", null, null, 1, 1, 1));
+        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.DATETIME, new TypeMetadata.Refer("DATA_LENGTH", null, null, 1, 1, 1));
+        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.TIMESTAMP, new TypeMetadata.Refer("DATA_LENGTH", null, null, 1, 1, 1));
+        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.COLLECTION, new TypeMetadata.Refer("DATA_LENGTH", null, null, 1, 1, 1));
+        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.GEOMETRY, new TypeMetadata.Refer("DATA_LENGTH", null, null, 1, 1, 1));
+        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.OTHER, new TypeMetadata.Refer("DATA_LENGTH", null, null, 1, 1, 1));
     }
 
     /* *****************************************************************************************************************
@@ -1472,6 +1472,42 @@ public class SinoDBAdapter extends InformixGenusAdapter implements JDBCAdapter {
         return super.catalog(runtime, create, meta);
     }
 
+    /**
+     * catalog[结构集封装-依据]<br/>
+     * 读取 catalog 元数据结果集的依据
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @return CatalogMetadataAdapter
+     */
+    @Override
+    public Catalog.MetadataAdapter catalogMetadataAdapter(DataRuntime runtime) {
+        return super.catalogMetadataAdapter(runtime);
+    }
+    /**
+     * catalog[结果集封装]<br/>
+     * 根据查询结果封装 catalog 对象,只封装catalog,schema,name等基础属性
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta 上一步封装结果
+     * @param query 查询条件 根据metadata属性
+     * @param row 查询结果集
+     * @return Catalog
+     */
+    @Override
+    public <T extends Catalog> T init(DataRuntime runtime, int index, T meta, Catalog query, DataRow row) {
+        return super.init(runtime, index, meta, query, row);
+    }
+
+    /**
+     * catalog[结果集封装]<br/>
+     * 根据查询结果封装 catalog 对象,更多属性
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta 上一步封装结果
+     * @param row 查询结果集
+     * @return Table
+     */
+    @Override
+    public <T extends Catalog> T detail(DataRuntime runtime, int index, T meta, Catalog query, DataRow row) {
+        return super.detail(runtime, index, meta, query, row);
+    }
     /* *****************************************************************************************************************
      * 													schema
      * -----------------------------------------------------------------------------------------------------------------
@@ -1569,6 +1605,43 @@ public class SinoDBAdapter extends InformixGenusAdapter implements JDBCAdapter {
     @Override
     public Schema schema(DataRuntime runtime, boolean create, Schema meta) throws Exception {
         return super.schema(runtime, create, meta);
+    }
+
+    /**
+     * schema[结构集封装-依据]<br/>
+     * 读取 schema 元数据结果集的依据
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @return SchemaMetadataAdapter
+     */
+    @Override
+    public Schema.MetadataAdapter schemaMetadataAdapter(DataRuntime runtime) {
+        return super.schemaMetadataAdapter(runtime);
+    }
+    /**
+     * schema[结果集封装]<br/>
+     * 根据查询结果封装 schema 对象,只封装catalog,schema,name等基础属性
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta 上一步封装结果
+     * @param query 查询条件 根据metadata属性
+     * @param row 查询结果集
+     * @return Schema
+     */
+    @Override
+    public  <T extends Schema> T init(DataRuntime runtime, int index, T meta, Schema query, DataRow row) {
+        return super.init(runtime, index, meta, query, row);
+    }
+
+    /**
+     * schema[结果集封装]<br/>
+     * 根据查询结果封装 schema 对象,更多属性
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta 上一步封装结果
+     * @param row 查询结果集
+     * @return Table
+     */
+    @Override
+    public <T extends Schema> T detail(DataRuntime runtime, int index, T meta, Schema query, DataRow row) {
+        return super.detail(runtime, index, meta, query, row);
     }
 
     /* *****************************************************************************************************************

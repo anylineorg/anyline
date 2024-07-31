@@ -18,6 +18,8 @@
 
 package org.anyline.metadata;
 
+import org.anyline.metadata.adapter.MetadataRefer;
+
 import java.io.Serializable;
 
 public class PartitionTable extends Table<PartitionTable> implements Serializable {
@@ -44,4 +46,5 @@ public class PartitionTable extends Table<PartitionTable> implements Serializabl
     public String toString() {
         return this.keyword+":"+name;
     }
+
 }

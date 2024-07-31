@@ -48,7 +48,6 @@ import org.anyline.entity.generator.PrimaryGenerator;
 import org.anyline.exception.CommandQueryException;
 import org.anyline.exception.CommandUpdateException;
 import org.anyline.metadata.*;
-import org.anyline.metadata.adapter.ViewMetadataAdapter;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.proxy.CacheProxy;
 import org.anyline.proxy.EntityAdapterProxy;
@@ -1026,7 +1025,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
     }
 
     @Override
-    public ViewMetadataAdapter viewMetadataAdapter(DataRuntime runtime) {
+    public View.MetadataAdapter viewMetadataAdapter(DataRuntime runtime) {
         return null;
     }
 

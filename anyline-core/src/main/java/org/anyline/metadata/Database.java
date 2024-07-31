@@ -18,6 +18,8 @@
 
 package org.anyline.metadata;
 
+import org.anyline.metadata.adapter.MetadataRefer;
+
 import java.io.Serializable;
 
 public class Database extends Metadata<Database> implements Serializable {
@@ -74,4 +76,5 @@ public class Database extends Metadata<Database> implements Serializable {
     public void setUser(String user) {
         this.user = user;
     }
+
 }

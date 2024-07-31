@@ -18,6 +18,8 @@
 
 package org.anyline.metadata;
 
+import org.anyline.metadata.adapter.MetadataRefer;
+
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -76,5 +78,6 @@ public class View extends Table<View> implements Serializable {
     public String toString() {
         return this.keyword+":"+name;
     }
+
 
 }

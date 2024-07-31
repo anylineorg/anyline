@@ -29,9 +29,6 @@ import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
 import org.anyline.exception.NotSupportException;
 import org.anyline.metadata.*;
-import org.anyline.metadata.adapter.ColumnMetadataAdapter;
-import org.anyline.metadata.adapter.IndexMetadataAdapter;
-import org.anyline.metadata.adapter.PrimaryMetadataAdapter;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.util.BasicUtil;
@@ -2288,7 +2285,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 			builder.append(" WHERE 1=0");
 		}else{
 			builder.append("SELECT M.*, F.COMMENTS AS COLUMN_COMMENT FROM ALL_TAB_COLUMNS M \n");
-			//不要从ALL_COL_COMMENTS中查
+			//不要从 ALL_COL_COMMENTS 中查
 			builder.append("LEFT JOIN USER_COL_COMMENTS F ON M.TABLE_NAME = F.TABLE_NAME AND M.COLUMN_NAME = F.COLUMN_NAME AND M.OWNER = F.OWNER\n");
 			builder.append("WHERE 1=1\n");
 			if (BasicUtil.isNotEmpty(name)) {
@@ -2430,14 +2427,14 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @return ColumnMetadataAdapter
 	 */
 	@Override
-	public ColumnMetadataAdapter columnMetadataAdapter(DataRuntime runtime) {
-		return super.columnMetadataAdapter(runtime);
+	public Column.MetadataAdapter columnMetadataRefer(DataRuntime runtime) {
+		return super.columnMetadataRefer(runtime);
 	}
 
 	/**
 	 * column[结果集封装]<br/>(方法1)<br/>
 	 * 元数据数字有效位数列<br/>
-	 * 不直接调用 用来覆盖columnMetadataAdapter(DataRuntime runtime, TypeMetadata meta)
+	 * 不直接调用 用来覆盖columnMetadataRefer(DataRuntime runtime, TypeMetadata meta)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta TypeMetadata
 	 * @return String
@@ -2450,7 +2447,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	/**
 	 * column[结果集封装]<br/>(方法1)<br/>
 	 * 元数据长度列<br/>
-	 * 不直接调用 用来覆盖columnMetadataAdapter(DataRuntime runtime, TypeMetadata meta)
+	 * 不直接调用 用来覆盖columnMetadataRefer(DataRuntime runtime, TypeMetadata meta)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta TypeMetadata
 	 * @return String
@@ -2463,7 +2460,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	/**
 	 * column[结果集封装]<br/>(方法1)<br/>
 	 * 元数据数字有效位数列<br/>
-	 * 不直接调用 用来覆盖columnMetadataAdapter(DataRuntime runtime, TypeMetadata meta)
+	 * 不直接调用 用来覆盖columnMetadataRefer(DataRuntime runtime, TypeMetadata meta)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta TypeMetadata
 	 * @return String
@@ -2616,7 +2613,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @return PrimaryMetadataAdapter
 	 */
 	@Override
-	public PrimaryMetadataAdapter primaryMetadataAdapter(DataRuntime runtime) {
+	public PrimaryKey.MetadataAdapter primaryMetadataAdapter(DataRuntime runtime) {
 		return super.primaryMetadataAdapter(runtime);
 	}
 	/**
@@ -2791,18 +2788,18 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * index[结构集封装-依据]<br/>
 	 * 读取index元数据结果集的依据
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @return IndexMetadataAdapter
+	 * @return Index.MetadataAdapter
 	 */
 	@Override
-	public IndexMetadataAdapter indexMetadataAdapter(DataRuntime runtime) {
+	public Index.MetadataAdapter indexMetadataAdapter(DataRuntime runtime) {
 		//{"INDEX_OWNER":"SYS","INDEX_NAME":"SYSINDEXSYSOBJECTS","TABLE_OWNER":"SYS","TABLE_NAME":"SYSOBJECTS","COLUMN_NAME":"NAME","COLUMN_POSITION":3,"COLUMN_LENGTH":128,"CHAR_LENGTH":128,"DESCEND":"ASC"}
-		IndexMetadataAdapter adapter =  super.indexMetadataAdapter(runtime);
-		adapter.setSchemaRefer("INDEX_OWNER");
-		adapter.setNameRefer("INDEX_NAME");
-		adapter.setTableRefer("TABLE_NAME");
-		adapter.setColumnRefer("COLUMN_NAME");
-		adapter.setColumnPositionRefer("COLUMN_POSITION");
-		adapter.setColumnOrderRefer("DESCEND");
+		Index.MetadataAdapter adapter =  super.indexMetadataAdapter(runtime);
+		adapter.setRefer("schema", "INDEX_OWNER");
+		adapter.setRefer("name", "INDEX_NAME");
+		adapter.setRefer("Table", "TABLE_NAME");
+		adapter.setRefer("column", "COLUMN_NAME");
+		adapter.setRefer("ColumnPosition", "COLUMN_POSITION");
+		adapter.setRefer("ColumnOrder", "DESCEND");
 		return adapter;
 	}
 	/**

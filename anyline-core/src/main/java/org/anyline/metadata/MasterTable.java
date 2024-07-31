@@ -19,6 +19,7 @@
 package org.anyline.metadata;
 
 import org.anyline.entity.DataRow;
+import org.anyline.metadata.adapter.MetadataRefer;
 import org.anyline.util.BeanUtil;
 
 import java.io.Serializable;
@@ -116,4 +117,5 @@ public class MasterTable extends Table<MasterTable> implements Serializable {
     public String toString() {
         return this.keyword+":"+name;
     }
+
 }

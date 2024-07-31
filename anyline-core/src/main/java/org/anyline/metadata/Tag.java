@@ -18,6 +18,7 @@
 
 package org.anyline.metadata;
 
+import org.anyline.metadata.adapter.MetadataRefer;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 
@@ -101,4 +102,5 @@ public class Tag extends Column implements Serializable {
     public String getKeyword() {
         return this.keyword;
     }
+
 }

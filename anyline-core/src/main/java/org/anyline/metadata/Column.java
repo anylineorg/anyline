@@ -29,7 +29,7 @@ import java.util.*;
 
 public class Column extends TableAffiliation<Column> implements Serializable {
 
-    public static LinkedHashMap<TypeMetadata.CATEGORY, TypeMetadata.Config> typeCategoryConfigs = new LinkedHashMap<>();
+    public static LinkedHashMap<TypeMetadata.CATEGORY, TypeMetadata.Refer> typeCategoryConfigs = new LinkedHashMap<>();
 
     public enum TYPE implements Type{
         NORMAL(1),
@@ -757,7 +757,7 @@ public class Column extends TableAffiliation<Column> implements Serializable {
     public String getFullType(DatabaseType database) {
         return getFullType(database, null);
     }
-    public String getFullType(DatabaseType database, TypeMetadata.Config config) {
+    public String getFullType(DatabaseType database, TypeMetadata.Refer config) {
         if(getmap && null != update) {
             return update.getFullType(database);
         }

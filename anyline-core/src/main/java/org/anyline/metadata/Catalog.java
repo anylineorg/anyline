@@ -17,6 +17,7 @@
 
 package org.anyline.metadata;
 
+import org.anyline.metadata.adapter.MetadataRefer;
 import org.anyline.util.BasicUtil;
 
 import java.io.Serializable;
@@ -48,4 +49,5 @@ public class Catalog extends Metadata<Catalog> implements Serializable {
         }
         return BasicUtil.equals(this.name, catalog.getName(), ignoreCase);
     }
+
 }

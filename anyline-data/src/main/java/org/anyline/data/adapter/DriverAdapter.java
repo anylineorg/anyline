@@ -216,7 +216,7 @@ public interface DriverAdapter {
      * @param alias 数据类型别名
      * @return Config
      */
-    TypeMetadata.Config reg(TypeMetadataAlias alias);
+    TypeMetadata.Refer reg(TypeMetadataAlias alias);
     /**
      * 注册数据类型配置<br/>
      * 要从配置项中取出每个属性检测合并,不要整个覆盖<br/>
@@ -225,7 +225,7 @@ public interface DriverAdapter {
      * @param config 配置项
      * @return Config
      */
-    TypeMetadata.Config reg(String type, TypeMetadata.Config config);
+    TypeMetadata.Refer reg(String type, TypeMetadata.Refer config);
     /**
      * 注册数据类型配置<br/>
      * 要从配置项中取出每个属性检测合并,不要整个覆盖<br/>
@@ -234,7 +234,7 @@ public interface DriverAdapter {
      * @param config 配置项
      * @return Config
      */
-    TypeMetadata.Config reg(TypeMetadata type, TypeMetadata.Config config);
+    TypeMetadata.Refer reg(TypeMetadata type, TypeMetadata.Refer config);
     /**
      * 验证运行环境与当前适配器是否匹配<br/>
      * 默认不连接只根据连接参数<br/>
@@ -1902,6 +1902,16 @@ public interface DriverAdapter {
      ******************************************************************************************************************/
 
     /**
+     * 元数据[结构集封装-依据]<br/>
+     * 读取元数据结果集的依据(元数据属性与数据库列的对应关系)
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param type Table Column等元数据类
+     * @return MetadataRefer
+     */
+    MetadataRefer refer(DataRuntime runtime, Class<?> type);
+    void refer(Class<?> type, MetadataRefer refer);
+
+    /**
      * 根据运行环境识别 catalog与schema
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param meta Metadata
@@ -2160,13 +2170,6 @@ public interface DriverAdapter {
      */
     Database database(DataRuntime runtime, boolean create, Database meta) throws Exception;
     /**
-     * database[结构集封装-依据]<br/>
-     * 读取 database 元数据结果集的依据
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @return DatabaseMetadataAdapter
-     */
-    DatabaseMetadataAdapter databaseMetadataAdapter(DataRuntime runtime);
-    /**
      * schema[结果集封装]<br/>
      * 根据查询结果封装 schema 对象,只封装catalog,schema,name等基础属性
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -2314,13 +2317,6 @@ public interface DriverAdapter {
      */
     Catalog catalog(DataRuntime runtime, boolean create, Catalog meta) throws Exception;
 
-    /**
-     * catalog[结构集封装-依据]<br/>
-     * 读取 catalog 元数据结果集的依据
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @return CatalogMetadataAdapter
-     */
-    CatalogMetadataAdapter catalogMetadataAdapter(DataRuntime runtime);
     /**
      * catalog[结果集封装]<br/>
      * 根据查询结果封装 catalog 对象,只封装catalog,schema,name等基础属性
@@ -2514,13 +2510,6 @@ public interface DriverAdapter {
      */
     Schema schema(DataRuntime runtime, boolean create, Schema schema) throws Exception;
 
-    /**
-     * schema[结构集封装-依据]<br/>
-     * 读取 schema 元数据结果集的依据
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @return SchemaMetadataAdapter
-     */
-    SchemaMetadataAdapter schemaMetadataAdapter(DataRuntime runtime);
     /**
      * schema[结果集封装]<br/>
      * 根据查询结果封装 schema 对象,只封装catalog,schema,name等基础属性
@@ -2885,13 +2874,6 @@ public interface DriverAdapter {
         return detail(runtime, index, meta, query, row);
     }
 
-    /**
-     * table[结构集封装-依据]<br/>
-     * 读取table元数据结果集的依据
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @return TableMetadataAdapter
-     */
-    TableMetadataAdapter tableMetadataAdapter(DataRuntime runtime);
 
     /* *****************************************************************************************************************
      *                                                     vertex
@@ -3197,13 +3179,6 @@ public interface DriverAdapter {
         return detail(runtime, index, meta, query, row);
     }
 
-    /**
-     * vertex[结构集封装-依据]<br/>
-     * 读取vertex元数据结果集的依据
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @return VertexTableMetadataAdapter
-     */
-    VertexMetadataAdapter vertexMetadataAdapter(DataRuntime runtime);
     /* *****************************************************************************************************************
      *                                                     edge
      ******************************************************************************************************************/
@@ -3510,13 +3485,6 @@ public interface DriverAdapter {
         return detail(runtime, index, meta, query, row);
     }
 
-    /**
-     * edge[结构集封装-依据]<br/>
-     * 读取edge元数据结果集的依据
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @return EdgeTableMetadataAdapter
-     */
-    EdgeMetadataAdapter edgeMetadataAdapter(DataRuntime runtime);
 
     /* *****************************************************************************************************************
      *                                                     view
@@ -3823,13 +3791,6 @@ public interface DriverAdapter {
         return detail(runtime, index, meta, query, row);
     }
 
-    /**
-     * view[结构集封装-依据]<br/>
-     * 读取view元数据结果集的依据
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @return ViewMetadataAdapter
-     */
-    ViewMetadataAdapter viewMetadataAdapter(DataRuntime runtime);
     /* *****************************************************************************************************************
      *                                                     master table
      ******************************************************************************************************************/
@@ -4136,13 +4097,6 @@ public interface DriverAdapter {
         return detail(runtime, index, meta, query, row);
     }
 
-    /**
-     * master[结构集封装-依据]<br/>
-     * 读取master元数据结果集的依据
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @return MasterTableMetadataAdapter
-     */
-    MasterTableMetadataAdapter masterMetadataAdapter(DataRuntime runtime);
     /* *****************************************************************************************************************
      *                                                     partition table
      ******************************************************************************************************************/
@@ -4588,26 +4542,19 @@ public interface DriverAdapter {
 
     /**
      * column[结构集封装-依据]<br/>
-     * 读取column元数据结果集的依据，主要返回column属性与查询结集之间的对应关系
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @return ColumnMetadataAdapter
-     */
-    ColumnMetadataAdapter columnMetadataAdapter(DataRuntime runtime);
-    /**
-     * column[结构集封装-依据]<br/>
-     * 读取column元数据结果集的依据，主要在columnMetadataAdapter(DataRuntime runtime)项目上补充length/precision/sacle相关
+     * 读取column元数据结果集的依据，主要在columnMetadataRefer(DataRuntime runtime)基础上补充length/precision/sacle相关
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param meta 具体数据类型,length/precisoin/scale三个属性需要根据数据类型覆盖通用配置
      * @return ColumnMetadataAdapter
      */
-    default ColumnMetadataAdapter columnMetadataAdapter(DataRuntime runtime, TypeMetadata meta) {
-        ColumnMetadataAdapter adapter = columnMetadataAdapter(runtime);
+    default Column.MetadataAdapter columnMetadataRefer(DataRuntime runtime, TypeMetadata meta) {
+        MetadataRefer refer = refer(runtime, Column.class);
         if(null == adapter) {
-            adapter = new ColumnMetadataAdapter();
+            adapter = new Column.MetadataAdapter();
         }
-        TypeMetadata.Config config = adapter.getTypeConfig();
+        TypeMetadata.Refer config = adapter.getTypeConfig();
         if(null == config) {
-            config = new TypeMetadata.Config();
+            config = new TypeMetadata.Refer();
         }
         //长度列
         String columnMetadataLengthRefer = columnMetadataLengthRefer(runtime, meta);
@@ -4643,7 +4590,7 @@ public interface DriverAdapter {
     /**
      * column[结果集封装]<br/>(方法1)<br/>
      * 元数据长度列<br/>
-     * 不直接调用 用来覆盖columnMetadataAdapter(DataRuntime runtime, TypeMetadata meta)
+     * 不直接调用 用来覆盖columnMetadataRefer(DataRuntime runtime, TypeMetadata meta)
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param meta TypeMetadata
      * @return String
@@ -4653,7 +4600,7 @@ public interface DriverAdapter {
     /**
      * column[结果集封装]<br/>(方法1)<br/>
      * 元数据数字有效位数列<br/>
-     * 不直接调用 用来覆盖columnMetadataAdapter(DataRuntime runtime, TypeMetadata meta)
+     * 不直接调用 用来覆盖columnMetadataRefer(DataRuntime runtime, TypeMetadata meta)
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param meta TypeMetadata
      * @return String
@@ -4663,7 +4610,7 @@ public interface DriverAdapter {
     /**
      * column[结果集封装]<br/>(方法1)<br/>
      * 元数据数字小数位数列<br/>
-     * 不直接调用 用来覆盖columnMetadataAdapter(DataRuntime runtime, TypeMetadata meta)
+     * 不直接调用 用来覆盖columnMetadataRefer(DataRuntime runtime, TypeMetadata meta)
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param meta TypeMetadata
      * @return String
@@ -4673,7 +4620,7 @@ public interface DriverAdapter {
     /**
      * column[结果集封装]<br/>(方法1)<br/>
      * 是否忽略长度<br/>
-     * 不直接调用 用来覆盖columnMetadataAdapter(DataRuntime runtime, TypeMetadata meta)
+     * 不直接调用 用来覆盖columnMetadataRefer(DataRuntime runtime, TypeMetadata meta)
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param meta TypeMetadata
      * @return String
@@ -4683,7 +4630,7 @@ public interface DriverAdapter {
     /**
      * column[结果集封装]<br/>(方法1)<br/>
      * 是否忽略有效位数<br/>
-     * 不直接调用 用来覆盖columnMetadataAdapter(DataRuntime runtime, TypeMetadata meta)
+     * 不直接调用 用来覆盖columnMetadataRefer(DataRuntime runtime, TypeMetadata meta)
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param meta TypeMetadata
      * @return String
@@ -4693,7 +4640,7 @@ public interface DriverAdapter {
     /**
      * column[结果集封装]<br/>(方法1)<br/>
      * 是否忽略小数位数<br/>
-     * 不直接调用 用来覆盖columnMetadataAdapter(DataRuntime runtime, TypeMetadata meta)
+     * 不直接调用 用来覆盖columnMetadataRefer(DataRuntime runtime, TypeMetadata meta)
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param meta TypeMetadata
      * @return String
@@ -4876,13 +4823,6 @@ public interface DriverAdapter {
         query.setTable(table);
         return detail(runtime, index, meta, query, set);
     }
-    /**
-     * primary[结构集封装-依据]<br/>
-     * 读取primary key元数据结果集的依据
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @return PrimaryMetadataAdapter
-     */
-    PrimaryMetadataAdapter primaryMetadataAdapter(DataRuntime runtime);
     /**
      * primary[结构集封装]<br/>
      *  根据驱动内置接口补充PrimaryKey
@@ -5266,13 +5206,6 @@ public interface DriverAdapter {
         query.setTable(table);
         return detail(runtime, index, meta, query, row);
     }
-    /**
-     * index[结构集封装-依据]<br/>
-     * 读取index元数据结果集的依据
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @return IndexMetadataAdapter
-     */
-    IndexMetadataAdapter indexMetadataAdapter(DataRuntime runtime);
     /* *****************************************************************************************************************
      *                                                     constraint
      ******************************************************************************************************************/
@@ -5473,13 +5406,6 @@ public interface DriverAdapter {
 		return detail(runtime, index, meta, query, row);
 	}
 
-	/**
-	 * catalog[结构集封装-依据]<br/>
-	 * 读取catalog元数据结果集的依据
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @return IndexMetadataAdapter
-	 */
-	ConstraintMetadataAdapter constraintMetadataAdapter(DataRuntime runtime);
 
 	/* *****************************************************************************************************************
 	 * 													trigger
@@ -5616,13 +5542,6 @@ public interface DriverAdapter {
 		return detail(runtime, index, meta, query, row);
 	}
 
-	/**
-	 * trigger[结构集封装-依据]<br/>
-	 * 读取 trigger 元数据结果集的依据
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @return IndexMetadataAdapter
-	 */
-	TriggerMetadataAdapter triggerMetadataAdapter(DataRuntime runtime);
 
 	/* *****************************************************************************************************************
 	 * 													procedure
@@ -5827,13 +5746,6 @@ public interface DriverAdapter {
 		meta.setSchema(schema);
 		return detail(runtime, index, meta, catalog, schema, row);
 	}
-	/**
-	 * procedure[结构集封装-依据]<br/>
-	 * 读取 procedure 元数据结果集的依据
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @return ProcedureMetadataAdapter
-	 */
-	ProcedureMetadataAdapter procedureMetadataAdapter(DataRuntime runtime);
 	/* *****************************************************************************************************************
 	 * 													function
 	 ******************************************************************************************************************/
@@ -6060,13 +5972,6 @@ public interface DriverAdapter {
 	default <T extends Function> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row) {
 		return detail(runtime, index, meta, new Function(catalog, schema, null), row);
 	}
-	/**
-	 * function[结构集封装-依据]<br/>
-	 * 读取 function 元数据结果集的依据
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @return FunctionMetadataAdapter
-	 */
-	FunctionMetadataAdapter functionMetadataAdapter(DataRuntime runtime);
 
 	/* *****************************************************************************************************************
 	 * 													sequence
@@ -6261,13 +6166,6 @@ public interface DriverAdapter {
 	default <T extends Sequence> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row) {
 		return detail(runtime, index, meta, new Sequence(catalog, schema, null), row);
 	}
-	/**
-	 * sequence[结构集封装-依据]<br/>
-	 * 读取 sequence 元数据结果集的依据
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @return SequenceMetadataAdapter
-	 */
-	SequenceMetadataAdapter sequenceMetadataAdapter(DataRuntime runtime);
 
 	/* *****************************************************************************************************************
 	 *
@@ -7250,7 +7148,7 @@ public interface DriverAdapter {
 	/**
 	 * column[命令合成-子流程]<br/>
 	 * 定义列:是否忽略有长度<br/>
-	 * 不直接调用 用来覆盖columnMetadataAdapter(DataRuntime runtime, TypeMetadata meta)
+	 * 不直接调用 用来覆盖columnMetadataRefer(DataRuntime runtime, TypeMetadata meta)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param type 数据类型
 	 * @return boolean
@@ -7259,7 +7157,7 @@ public interface DriverAdapter {
 	/**
 	 * column[命令合成-子流程]<br/>
 	 * 定义列:是否忽略有效位数<br/>
-	 * 不直接调用 用来覆盖columnMetadataAdapter(DataRuntime runtime, TypeMetadata meta)
+	 * 不直接调用 用来覆盖columnMetadataRefer(DataRuntime runtime, TypeMetadata meta)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param type TypeMetadata
 	 * @return boolean
@@ -7268,7 +7166,7 @@ public interface DriverAdapter {
 	/**
 	 * column[命令合成-子流程]<br/>
 	 * 定义列:定义列:是否忽略小数位<br/>
-	 * 不直接调用 用来覆盖columnMetadataAdapter(DataRuntime runtime, TypeMetadata meta)
+	 * 不直接调用 用来覆盖columnMetadataRefer(DataRuntime runtime, TypeMetadata meta)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param type TypeMetadata
 	 * @return boolean
@@ -8628,14 +8526,6 @@ public interface DriverAdapter {
 		return detail(runtime, index, meta, new Role(catalog, schema, null), row);
 	}
 
-	/**
-	 * role [结构集封装-依据]<br/>
-	 * 读取 role 元数据结果集的依据
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @return RoleMetadataAdapter
-	 */
-	RoleMetadataAdapter roleMetadataAdapter(DataRuntime runtime);
-
 	/* *****************************************************************************************************************
 	 * 													user
 	 * -----------------------------------------------------------------------------------------------------------------
@@ -8860,13 +8750,6 @@ public interface DriverAdapter {
 		return detail(runtime, index, meta, new User(catalog, schema, null), row);
 	}
 
-	/**
-	 * user [结构集封装-依据]<br/>
-	 * 读取 user 元数据结果集的依据
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @return UserMetadataAdapter
-	 */
-	UserMetadataAdapter userMetadataAdapter(DataRuntime runtime);
 
 
 	/* *****************************************************************************************************************
@@ -8877,7 +8760,7 @@ public interface DriverAdapter {
 	 * <T extends Privilege> List<T> privileges(DataRuntime runtime, int index, boolean create, User user, List<T> privileges, DataSet set) throws Exception
 	 * <T extends Privilege> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, User user, DataRow row)
 	 * <T extends Privilege> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row)
-	 * PrivilegeMetadataAdapter privilegeMetadataAdapter(DataRuntime runtime)
+	 * Privilege.MetadataAdapter privilegeMetadataAdapter(DataRuntime runtime)
 	 ******************************************************************************************************************/
 
 	/**
@@ -9001,18 +8884,6 @@ public interface DriverAdapter {
 	default <T extends Privilege> T detail(DataRuntime runtime, int index, T meta, User user, DataRow row) {
 		return detail(runtime, index, meta, new Privilege(user), row);
 	}
-
-	/**
-	 * privilege[结构集封装-依据]<br/>
-	 * 读取 Privilege 元数据结果集的依据
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @return PrivilegeMetadataAdapter
-	 */
-	PrivilegeMetadataAdapter privilegeMetadataAdapter(DataRuntime runtime);
-
-
-
-
 	/* *****************************************************************************************************************
 	 * 													grant
 	 * -----------------------------------------------------------------------------------------------------------------

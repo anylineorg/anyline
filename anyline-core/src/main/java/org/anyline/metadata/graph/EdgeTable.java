@@ -20,6 +20,7 @@ package org.anyline.metadata.graph;
 
 import org.anyline.metadata.Catalog;
 import org.anyline.metadata.Schema;
+import org.anyline.metadata.adapter.MetadataRefer;
 
 import java.io.Serializable;
 
@@ -43,4 +44,5 @@ public class EdgeTable extends GraphTable implements Serializable {
     public EdgeTable(Catalog catalog, Schema schema, String name) {
         super(catalog, schema, name);
     }
+
 }

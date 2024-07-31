@@ -19,6 +19,7 @@
 package org.anyline.metadata;
 
 import org.anyline.entity.Order;
+import org.anyline.metadata.adapter.MetadataRefer;
 import org.anyline.util.BeanUtil;
 
 import java.io.Serializable;
@@ -189,4 +190,6 @@ public class Constraint<E extends Constraint> extends TableAffiliation<E> implem
         copy.columns = cols;
         return copy;
     }
+
+
 }

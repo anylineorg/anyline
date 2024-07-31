@@ -18,6 +18,8 @@
 
 package org.anyline.metadata;
 
+import org.anyline.metadata.adapter.MetadataRefer;
+
 import java.io.Serializable;
 import java.util.LinkedHashMap;
 public class ForeignKey extends Constraint<ForeignKey> implements Serializable {
@@ -140,4 +142,5 @@ public class ForeignKey extends Constraint<ForeignKey> implements Serializable {
         copy.columns = cols;
         return copy;
     }
+
 }

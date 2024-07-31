@@ -37,7 +37,7 @@ import org.anyline.exception.CommandQueryException;
 import org.anyline.exception.CommandUpdateException;
 import org.anyline.exception.NotSupportException;
 import org.anyline.metadata.*;
-import org.anyline.metadata.adapter.*;
+import org.anyline.metadata.adapter.MetadataRefer;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.proxy.CacheProxy;
@@ -112,22 +112,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
         return super.match(feature, keywords, compensate);
     }
 
-    private ColumnMetadataAdapter defaultColumnMetadataAdapter = defaultColumnMetadataAdapter();
-    public ColumnMetadataAdapter defaultColumnMetadataAdapter() {
-        ColumnMetadataAdapter adapter = new ColumnMetadataAdapter();
-        adapter.setNameRefer("COLUMN_NAME,COLNAME");
-        adapter.setCatalogRefer("TABLE_CATALOG");
-        adapter.setSchemaRefer("TABLE_SCHEMA,TABSCHEMA,SCHEMA_NAME,OWNER");
-        adapter.setTableRefer("TABLE_NAME,TABNAME");
-        adapter.setNullableRefer("IS_NULLABLE,NULLABLE,NULLS");
-        adapter.setCharsetRefer("CHARACTER_SET_NAME");
-        adapter.setCollateRefer("COLLATION_NAME");
-        adapter.setDataTypeRefer("FULL_TYPE,DATA_TYPE,TYPE_NAME,TYPENAME,DATA_TYPE_NAME,UDT_NAME,DATA_TYPE,TYPENAME,DATA_TYPE_NAME");
-        adapter.setPositionRefer("ORDINAL_POSITION,COLNO,POSITION");
-        adapter.setCommentRefer("COLUMN_COMMENT,COMMENTS,REMARKS");
-        adapter.setDefaultRefer("COLUMN_DEFAULT,DATA_DEFAULT,DEFAULT,DEFAULT_VALUE,DEFAULT_DEFINITION");
-        return adapter;
-    }
+
     /* *****************************************************************************************************************
      *
      *                                                     DML
@@ -2823,40 +2808,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
      * @param <T> Table
      */
     public <T extends Table> T init(DataRuntime runtime, int index, T meta, Table query, DataRow row) {
-        Catalog catalog = query.getCatalog();
-        Schema schema = query.getSchema();
-        if(null == meta) {
-            meta = (T)new Table();
-        }
-        TableMetadataAdapter config = tableMetadataAdapter(runtime);
-        String _catalog = row.getString(config.getCatalogRefers());
-        String _schema = row.getString(config.getSchemaRefers());
-        if(null == _catalog && null != catalog) {
-            _catalog = catalog.getName();
-        }
-        if(null == _schema && null != schema) {
-            _schema = schema.getName();
-        }
-        String name = row.getString(config.getNameRefers());
-
-        if(null == meta) {
-            if("VIEW".equals(row.getString(config.getTypeRefers()))) {
-                meta = (T)new View();
-            }else {
-                meta = (T)new Table();
-            }
-        }
-        if(null != _catalog) {
-            _catalog = _catalog.trim();
-        }
-        if(null != _schema) {
-            _schema = _schema.trim();
-        }
-        meta.setMetadata(row);
-        meta.setCatalog(_catalog);
-        meta.setSchema(_schema);
-        meta.setName(name);
-        return meta;
+        return super.init(runtime, index, meta, query, row);
     }
 
     /**
@@ -2869,12 +2821,10 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
      */
     @Override
     public <T extends Table> T detail(DataRuntime runtime, int index, T meta, Table query, DataRow row) {
-        Catalog catalog = query.getCatalog();
-        Schema schema = query.getSchema();
-        TableMetadataAdapter tableMetadataAdapter = tableMetadataAdapter(runtime);
+        MetadataRefer refer = refer(runtime, Table.class);
         meta.setObjectId(row.getLong("OBJECT_ID", (Long)null));
         meta.setEngine(row.getString("ENGINE"));
-        meta.setComment(row.getString(tableMetadataAdapter.getCommentRefers()));
+        meta.setComment(row.getString(refer.getRefers("Comment")));
         meta.setDataRows(row.getLong("TABLE_ROWS", (Long)null));
         meta.setCollate(row.getString("TABLE_COLLATION"));
         meta.setDataLength(row.getLong("DATA_LENGTH", (Long)null));
@@ -2887,24 +2837,6 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         meta.setEngine(row.getString("ENGINE"));
         meta.setTemporary(row.getBoolean("IS_TEMPORARY", false));
         return meta;
-    }
-    protected static TableMetadataAdapter defaultTableMetadataAdapter;
-    static {
-        defaultTableMetadataAdapter = new TableMetadataAdapter();
-        defaultTableMetadataAdapter.setNameRefer("TABLE_NAME,NAME,TABNAME");
-        defaultTableMetadataAdapter.setCatalogRefer("TABLE_CATALOG");
-        defaultTableMetadataAdapter.setSchemaRefer("TABLE_SCHEMA,TABSCHEMA,SCHEMA_NAME");
-        defaultTableMetadataAdapter.setCommentRefer("TABLE_COMMENT,COMMENTS,COMMENT");
-    }
-    /**
-     * table[结构集封装-依据]<br/>
-     * 读取table元数据结果集的依据
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @return TableMetadataAdapter
-     */
-    @Override
-    public TableMetadataAdapter tableMetadataAdapter(DataRuntime runtime) {
-        return defaultTableMetadataAdapter;
     }
 
 
@@ -3138,19 +3070,19 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         if(null == meta) {
             meta = (T)new View();
         }
-        ViewMetadataAdapter config = viewMetadataAdapter(runtime);
-        String _catalog = row.getString(config.getCatalogRefers());
-        String _schema = row.getString(config.getSchemaRefers());
+        MetadataRefer refer = refer(runtime, View.class);
+        String _catalog = row.getString(refer.getRefers("Catalog"));
+        String _schema = row.getString(refer.getRefers("Schema"));
         if(null == _catalog && null != catalog) {
             _catalog = catalog.getName();
         }
         if(null == _schema && null != schema) {
             _schema = schema.getName();
         }
-        String name = row.getString(config.getNameRefers());
+        String name = row.getString(refer.getRefers("name"));
 
         if(null == meta) {
-            if("VIEW".equals(row.getString(config.getTypeRefers()))) {
+            if("VIEW".equals(row.getString(refer.getRefers("Type")))) {
                 meta = (T)new View();
             }else {
                 meta = (T)new View();
@@ -3197,20 +3129,6 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         return meta;
     }
 
-    /**
-     * view[结构集封装-依据]<br/>
-     * 读取view元数据结果集的依据
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @return ViewMetadataAdapter
-     */
-    @Override
-    public ViewMetadataAdapter viewMetadataAdapter(DataRuntime runtime) {
-        ViewMetadataAdapter config = new ViewMetadataAdapter();
-        config.setNameRefer("VIEW_NAME,TABLE_NAME,NAME,TABNAME");
-        config.setCatalogRefer("VIEW_CATALOG,TABLE_CATALOG");
-        config.setSchemaRefer("VIEW_SCHEMA,TABLE_SCHEMA,TABSCHEMA,SCHEMA_NAME");
-        return config;
-    }
     /* *****************************************************************************************************************
      *                                                     master
      * -----------------------------------------------------------------------------------------------------------------
@@ -3409,16 +3327,16 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         if(null == meta) {
             meta = (T)new MasterTable();
         }
-        MasterTableMetadataAdapter config = masterMetadataAdapter(runtime);
-        String _catalog = row.getString(config.getCatalogRefers());
-        String _schema = row.getString(config.getSchemaRefers());
+        MetadataRefer refer = refer(runtime, Table.class);
+        String _catalog = row.getString(refer.getRefers("catalog"));
+        String _schema = row.getString(refer.getRefers("schema"));
         if(null == _catalog && null != catalog) {
             _catalog = catalog.getName();
         }
         if(null == _schema && null != schema) {
             _schema = schema.getName();
         }
-        String name = row.getString(config.getNameRefers());
+        String name = row.getString(refer.getRefers("name"));
 
         if(null == meta) {
             meta = (T)new MasterTable();
@@ -3752,9 +3670,9 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
             meta = (T)new Column();
         }
         //属性在查询结果中对应的列(通用)
-        ColumnMetadataAdapter config = columnMetadataAdapter(runtime);
-        String catalog = row.getString(config.getCatalogRefers());
-        String schema = row.getString(config.getSchemaRefers());//"TABLE_SCHEMA","TABSCHEMA","SCHEMA_NAME","OWNER"
+        MetadataRefer refer = refer(runtime, Column.class);
+        String catalog = row.getString(refer.getRefers("Catalog"));
+        String schema = row.getString(refer.getRefers("Schema"));//"TABLE_SCHEMA","TABSCHEMA","SCHEMA_NAME","OWNER"
         schema = BasicUtil.evl(schema, meta.getSchemaName());
         //如果上一步没有提供table有可能是查所有表的列,column单独创建自己的table对象
         if(null != table) {
@@ -3779,13 +3697,13 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         if(null != table) {//查询全部表
             meta.setTable(table);
         }else {
-            String tableName = row.getString(config.getTableRefers());
+            String tableName = row.getString(refer.getRefers("Table"));
             table = new Table(BasicUtil.evl(tableName, meta.getTableName(true), tableName));
             table.setCatalog(catalog);
             table.setSchema(schema);
             meta.setTable(table);
         }
-        String name = row.getString(config.getNameRefers());
+        String name = row.getString(refer.getRefers("name"));
         meta.setName(name);
         meta.setMetadata(row);
         return meta;
@@ -3806,15 +3724,15 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         }
 
         //属性在查询结果中对应的列(通用)
-        ColumnMetadataAdapter adapter = columnMetadataAdapter(runtime);
+        MetadataRefer refer = refer(runtime, Column.class);
 
         if(null == meta.getPosition()) {
             try {
-                meta.setPosition(row.getInt(adapter.getPositionRefers()));
+                meta.setPosition(row.getInt(refer.getRefers("Position")));
             }catch (Exception ignored) {}
         }
-        meta.setComment(BasicUtil.evl(row.getString(adapter.getCommentRefers()), meta.getComment()));
-        String type = row.getString(adapter.getDataTypeRefers());
+        meta.setComment(BasicUtil.evl(row.getString(refer.getRefers("Comment")), meta.getComment()));
+        String type = row.getString(refer.getRefers("DataType"));
         /*if(null != type) {
             type = type.replace("character varying","VARCHAR");
         }*/
@@ -3828,9 +3746,9 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         meta.setOriginType(BasicUtil.evl(type, meta.getTypeName()));
         TypeMetadata typeMetadata = typeMetadata(runtime, meta);
         //属性在查询结果中对应的列(区分数据类型)
-        adapter = columnMetadataAdapter(runtime, typeMetadata);
-        TypeMetadata.Config config = adapter.getTypeConfig();
-        String def = BasicUtil.evl(row.get(adapter.getDefaultRefers()), meta.getDefaultValue())+"";
+        adapter = columnMetadataRefer(runtime, typeMetadata);
+        TypeMetadata.Refer config = adapter.getTypeConfig();
+        String def = BasicUtil.evl(row.get(refer.getRefers("Default")), meta.getDefaultValue())+"";
         def = def.trim();//oracle 会取出\t\n
         if(BasicUtil.isNotEmpty(def)) {
             while(def.startsWith("(") && def.endsWith(")")) {
@@ -3878,7 +3796,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         //非空
         if(-1 == meta.isNullable()) {
             try {
-                meta.nullable(row.getBoolean(adapter.getNullableRefers()));//"IS_NULLABLE","NULLABLE","NULLS"
+                meta.nullable(row.getBoolean(refer.getRefers("Nullable")));//"IS_NULLABLE","NULLABLE","NULLS"
             }catch (Exception ignored) {}
         }
         //oracle中decimal(18,9) data_length == 22 DATA_PRECISION=18
@@ -3918,26 +3836,17 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         }catch (Exception ignored) {}
 
         if(null == meta.getCharset()) {
-            meta.setCharset(row.getString(adapter.getCharsetRefers()));//"CHARACTER_SET_NAME"
+            meta.setCharset(row.getString(refer.getRefers("Charset")));//"CHARACTER_SET_NAME"
         }
         if(null == meta.getCollate()) {
-            meta.setCollate(row.getString(adapter.getCollateRefers()));//COLLATION_NAME
+            meta.setCollate(row.getString(refer.getRefers("Collate")));//COLLATION_NAME
         }
         if(null == meta.getTypeMetadata()) {
             typeMetadata(runtime, meta);
         }
         return meta;
     }
-    /**
-     * column[结构集封装-依据]<br/>
-     * 读取column元数据结果集的依据
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @return ColumnMetadataAdapter
-     */
-    @Override
-    public ColumnMetadataAdapter columnMetadataAdapter(DataRuntime runtime) {
-        return defaultColumnMetadataAdapter;
-    }
+    
 
     /**
      * column[结构集封装-依据]<br/>
@@ -3947,8 +3856,8 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
      * @return ColumnMetadataAdapter
      */
     @Override
-    public ColumnMetadataAdapter columnMetadataAdapter(DataRuntime runtime, TypeMetadata meta) {
-        return super.columnMetadataAdapter(runtime, meta);
+    public Column.MetadataAdapter columnMetadataRefer(DataRuntime runtime, TypeMetadata meta) {
+        return super.columnMetadataRefer(runtime, meta);
     }
 
     /* *****************************************************************************************************************
@@ -4144,18 +4053,18 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
     @Override
     public <T extends PrimaryKey> T init(DataRuntime runtime, int index, T primary, PrimaryKey query, DataSet set) throws Exception {
         Table table = query.getTable();
-        PrimaryMetadataAdapter config = primaryMetadataAdapter(runtime);
+        MetadataRefer refer = refer(runtime, PrimaryKey.class);
         for(DataRow row:set) {
             if(null == primary) {
                 primary = (T)new PrimaryKey();
-                primary.setName(row.getString(config.getNameRefers()));
+                primary.setName(row.getString(refer.getRefers("name")));
                 if(null == table) {
-                    table = new Table(row.getString(config.getCatalogRefers()), row.getString(config.getSchemaRefers()), row.getString(config.getTableRefer()));
+                    table = new Table(row.getString(refer.getRefers("Catalog")), row.getString(refer.getRefers("Schema")), row.getString(refer.getRefers("table")));
                 }
                 primary.setTable(table);
                 primary.setMetadata(row);
             }
-            String col = row.getString(config.getColumnRefers());
+            String col = row.getString(refer.getRefers("Column"));
             if(BasicUtil.isEmpty(col)) {
                 throw new Exception("主键相关列名异常,请检查buildQueryPrimaryRun与primaryMetadataColumn");
             }
@@ -4164,9 +4073,9 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
                 column = new Column(col);
             }
             column.setTable(table);
-            String position = row.getString(config.getColumnPositionRefers());
+            String position = row.getString(refer.getRefers("column"));
             primary.setPosition(column, BasicUtil.parseInt(position, 0));
-            String order = row.getString(config.getColumnOrderRefers());
+            String order = row.getString(refer.getRefers("ColumnOrder"));
             if(BasicUtil.isNotEmpty(order)) {
                 column.setOrder(order);
             }
@@ -4195,8 +4104,8 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
      * @return PrimaryMetadataAdapter
      */
     @Override
-    public PrimaryMetadataAdapter primaryMetadataAdapter(DataRuntime runtime) {
-        return new PrimaryMetadataAdapter();
+    public PrimaryKey.MetadataAdapter primaryMetadataAdapter(DataRuntime runtime) {
+        return new PrimaryKey.MetadataAdapter();
     }
 
     /**
@@ -4412,23 +4321,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
     public <T extends Index> T detail(DataRuntime runtime, int index, T meta, Index query, DataRow row) throws Exception {
         return super.detail(runtime, index, meta, query, row);
     }
-    /**
-     * index[结构集封装-依据]<br/>
-     * 读取index元数据结果集的依据
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @return IndexMetadataAdapter
-     */
-    @Override
-    public IndexMetadataAdapter indexMetadataAdapter(DataRuntime runtime) {
-        IndexMetadataAdapter adapter =  super.indexMetadataAdapter(runtime);
-        adapter.setNameRefer("INDEX_NAME");
-        adapter.setTableRefer("TABLE_NAME");
-        adapter.setSchemaRefer("TABLE_SCHEMA");
-        adapter.setColumnRefer("COLUMN_NAME");
-        adapter.setColumnOrderRefer("COLLATION");
-        adapter.setColumnPositionRefer("SEQ_IN_INDEX");
-        return adapter;
-    }
+
     /* *****************************************************************************************************************
      *                                                     constraint
      * -----------------------------------------------------------------------------------------------------------------
@@ -7020,8 +6913,8 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 			}
 			typeName = type.getName();
 		}
-		ColumnMetadataAdapter adapter = columnMetadataAdapter(runtime, type);
-		TypeMetadata.Config config = adapter.getTypeConfig();
+		MetadataRefer refer = refer(runtime, Column.class);
+		TypeMetadata.Refer config = adapter.getTypeConfig();
 		ignoreLength = config.ignoreLength();
 		ignorePrecision = config.ignorePrecision();
 		ignoreScale = config.ignoreScale();
@@ -8631,8 +8524,8 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		TypeMetadata type = parameter.getColumnType();
 		Column column = new Column();
 		column.setTypeMetadata(type);
-		ColumnMetadataAdapter adapter = columnMetadataAdapter(runtime, type);
-		TypeMetadata.Config config = adapter.getTypeConfig();
+		Column.MetadataAdapter adapter = columnMetadataRefer(runtime, type);
+		TypeMetadata.Refer config = adapter.getTypeConfig();
 		int ignoreLength= config.ignoreLength();
 		int ignorePrecision= config.ignorePrecision();
 		int ignoreScale = config.ignoreScale();

@@ -19,7 +19,7 @@ package org.anyline.entity.authorize;
 import org.anyline.metadata.Catalog;
 import org.anyline.metadata.Metadata;
 import org.anyline.metadata.Schema;
-import org.apache.oro.util.Cache;
+import org.anyline.metadata.adapter.MetadataRefer;
 
 public class Role extends Metadata<Role> {
 
@@ -32,4 +32,6 @@ public class Role extends Metadata<Role> {
         this.schema = schema;
         this.name = name;
     }
+
+
 }

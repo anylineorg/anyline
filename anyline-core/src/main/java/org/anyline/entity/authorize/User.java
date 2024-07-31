@@ -19,7 +19,8 @@ package org.anyline.entity.authorize;
 import org.anyline.metadata.Catalog;
 import org.anyline.metadata.Metadata;
 import org.anyline.metadata.Schema;
-import org.apache.oro.util.Cache;
+import org.anyline.metadata.adapter.MetadataRefer;
+import org.anyline.util.BasicUtil;
 
 public class User extends Metadata<User> {
     private String password;
@@ -54,4 +55,5 @@ public class User extends Metadata<User> {
     public void setHost(String host) {
         this.host = host;
     }
+
 }

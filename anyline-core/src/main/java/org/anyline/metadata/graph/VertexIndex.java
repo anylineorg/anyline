@@ -19,6 +19,7 @@
 package org.anyline.metadata.graph;
 
 import org.anyline.metadata.Table;
+import org.anyline.metadata.adapter.MetadataRefer;
 
 public class VertexIndex extends GraphIndex {
 
@@ -34,4 +35,5 @@ public class VertexIndex extends GraphIndex {
     public VertexIndex(Table table, String name) {
         super(table, name);
     }
+
 }

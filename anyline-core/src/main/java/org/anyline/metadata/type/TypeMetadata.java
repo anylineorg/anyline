@@ -61,7 +61,7 @@ public interface TypeMetadata {
         private final int ignorePrecision;
 
         private final int ignoreScale;
-        private TypeMetadata.Config config;
+        private Refer config;
         CATEGORY(CATEGORY_GROUP group, int ignoreLength, int ignorePrecision, int ignoreScale) {
             this.group = group;
             this.ignoreLength = ignoreLength;
@@ -72,9 +72,9 @@ public interface TypeMetadata {
             return group;
         }
 
-        public TypeMetadata.Config config() {
+        public Refer config() {
             if(null == config) {
-                config = new TypeMetadata.Config();
+                config = new Refer();
                 config.setIgnoreLength(ignoreLength).setIgnorePrecision(ignorePrecision).setIgnoreScale(ignoreScale);
             }
             return config;
@@ -206,8 +206,8 @@ public interface TypeMetadata {
             return null;
         }
         @Override
-        public Config config() {
-            return new TypeMetadata.Config();
+        public Refer config() {
+            return new Refer();
         }
     };
     //不识别的类型 原样输出
@@ -248,8 +248,8 @@ public interface TypeMetadata {
         }
 
         @Override
-        public Config config() {
-            return new TypeMetadata.Config();
+        public Refer config() {
+            return new Refer();
         }
 
         @Override
@@ -339,7 +339,7 @@ public interface TypeMetadata {
         return false;
     }
     void setArray(boolean array);
-    TypeMetadata.Config config();
+    Refer config();
     /**
      * 写入数据库或查询条件时的类型
      * @return Class
@@ -379,7 +379,7 @@ public interface TypeMetadata {
     }
     Object write(Object value, Object def, boolean array, boolean placeholder);
 
-    class Config {
+    class Refer {
         /**
          * SQL 数据类型(用来比较数据类型是否相同) INTERVAL DAY　TO HOUR
          * 不提供则根据NAME 生成
@@ -415,8 +415,8 @@ public interface TypeMetadata {
          * 如果需要取多列以,分隔
          */
         private String[] scaleRefers;
-        public Config() {}
-        public Config(String meta, String formula, String lengthRefer, String precisionRefer, String scaleRefer, int ignoreLength, int ignorePrecision, int ignoreScale) {
+        public Refer() {}
+        public Refer(String meta, String formula, String lengthRefer, String precisionRefer, String scaleRefer, int ignoreLength, int ignorePrecision, int ignoreScale) {
             setMeta(meta);
             setFormula(formula);
             setLengthRefer(lengthRefer);
@@ -426,7 +426,7 @@ public interface TypeMetadata {
             this.ignorePrecision = ignorePrecision;
             this.ignoreScale = ignoreScale;
         }
-        public Config(String lengthRefer, String precisionRefer, String scaleRefer, int ignoreLength, int ignorePrecision, int ignoreScale) {
+        public Refer(String lengthRefer, String precisionRefer, String scaleRefer, int ignoreLength, int ignorePrecision, int ignoreScale) {
             setLengthRefer(lengthRefer);
             setScaleRefer(scaleRefer);
             setPrecisionRefer(precisionRefer);
@@ -434,13 +434,13 @@ public interface TypeMetadata {
             this.ignorePrecision = ignorePrecision;
             this.ignoreScale = ignoreScale;
         }
-        public Config(String lengthRefer, String precisionRefer, String scaleRefer) {
+        public Refer(String lengthRefer, String precisionRefer, String scaleRefer) {
             setLengthRefer(lengthRefer);
             setScaleRefer(scaleRefer);
             setPrecisionRefer(precisionRefer);
         }
 
-        public Config(int ignoreLength, int ignorePrecision, int ignoreScale) {
+        public Refer(int ignoreLength, int ignorePrecision, int ignoreScale) {
             this.ignoreLength = ignoreLength;
             this.ignorePrecision = ignorePrecision;
             this.ignoreScale = ignoreScale;
@@ -449,7 +449,7 @@ public interface TypeMetadata {
             return ignoreLength;
         }
 
-        public Config setIgnoreLength(int ignoreLength) {
+        public Refer setIgnoreLength(int ignoreLength) {
             this.ignoreLength = ignoreLength;
             return this;
         }
@@ -458,7 +458,7 @@ public interface TypeMetadata {
             return ignorePrecision;
         }
 
-        public Config setIgnorePrecision(int ignorePrecision) {
+        public Refer setIgnorePrecision(int ignorePrecision) {
             this.ignorePrecision = ignorePrecision;
             return this;
         }
@@ -467,7 +467,7 @@ public interface TypeMetadata {
             return ignoreScale;
         }
 
-        public Config setIgnoreScale(int ignoreScale) {
+        public Refer setIgnoreScale(int ignoreScale) {
             this.ignoreScale = ignoreScale;
             return this;
         }
@@ -482,12 +482,12 @@ public interface TypeMetadata {
             return null;
         }
 
-        public Config setLengthRefers(String[] lengthRefers) {
+        public Refer setLengthRefers(String[] lengthRefers) {
             this.lengthRefers = lengthRefers;
             return this;
         }
 
-        public Config setLengthRefer(String lengthRefer) {
+        public Refer setLengthRefer(String lengthRefer) {
             if(BasicUtil.isNotEmpty(lengthRefer)) {
                 this.lengthRefers = lengthRefer.split(",");
             } else {
@@ -506,12 +506,12 @@ public interface TypeMetadata {
             }
             return null;
         }
-        public Config setPrecisionRefers(String[] precisionRefers) {
+        public Refer setPrecisionRefers(String[] precisionRefers) {
             this.precisionRefers = precisionRefers;
             return this;
         }
 
-        public Config setPrecisionRefer(String precisionRefer) {
+        public Refer setPrecisionRefer(String precisionRefer) {
             if(BasicUtil.isNotEmpty(precisionRefer)) {
                 this.precisionRefers = precisionRefer.split(",");
             } else {
@@ -529,12 +529,12 @@ public interface TypeMetadata {
             }
             return null;
         }
-        public Config setScaleRefers(String[] scaleRefers) {
+        public Refer setScaleRefers(String[] scaleRefers) {
             this.scaleRefers = scaleRefers;
             return this;
         }
 
-        public Config setScaleRefer(String scaleRefer) {
+        public Refer setScaleRefer(String scaleRefer) {
             if(BasicUtil.isNotEmpty(scaleRefer)) {
                 this.scaleRefers = scaleRefer.split(",");
             } else {
@@ -565,7 +565,7 @@ public interface TypeMetadata {
          * @param copy 复本
          * @return Config
          */
-        public Config merge(Config copy) {
+        public Refer merge(Refer copy) {
             if(null != copy) {
                 String meta = copy.getMeta();
                 String formula = copy.getFormula();

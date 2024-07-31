@@ -19,6 +19,8 @@
 package org.anyline.metadata;
 
 import org.anyline.entity.Order;
+import org.anyline.metadata.adapter.MetadataRefer;
+import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 
 import java.io.Serializable;
@@ -249,4 +251,5 @@ public class Index<M extends Index> extends TableAffiliation<M> implements Seria
         String index_define = BeanUtil.concat(index.getColumns().values(),"name",",", false, true) + ":" + index.action;
         return this_define.equalsIgnoreCase(index_define);
     }
+
 }

@@ -29,10 +29,7 @@ import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
 import org.anyline.exception.NotSupportException;
 import org.anyline.metadata.*;
-import org.anyline.metadata.adapter.ColumnMetadataAdapter;
-import org.anyline.metadata.adapter.IndexMetadataAdapter;
 import org.anyline.metadata.adapter.MetadataAdapterHolder;
-import org.anyline.metadata.adapter.PrimaryMetadataAdapter;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.metadata.type.init.StandardTypeMetadata;
@@ -66,20 +63,20 @@ public class MSSQLAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
             alias(alias.name(), alias.standard());
         }
 
-        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.CHAR, new TypeMetadata.Config("max_length", null, null, 0, 1, 1));
-        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.TEXT, new TypeMetadata.Config("max_length", null, null, 1, 1, 1));
-        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.BOOLEAN, new TypeMetadata.Config("max_length", null, null, 1,1, 1));
-        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.BYTES, new TypeMetadata.Config("max_length", null, null, 0, 1, 1));
-        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.BLOB, new TypeMetadata.Config("max_length", null, null, 1,1,1));
-        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.INT, new TypeMetadata.Config("max_length", "PRECISION", null, 1, 1, 1));
-        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.FLOAT, new TypeMetadata.Config("max_length", "PRECISION", "SCALE", 1, 0, 0));
-        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.DATE, new TypeMetadata.Config("max_length", null, null, 1, 1, 1));
-        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.TIME, new TypeMetadata.Config("max_length", null, null, 1, 1, 1));
-        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.DATETIME, new TypeMetadata.Config("max_length", null, null, 1, 1, 1));
-        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.TIMESTAMP, new TypeMetadata.Config("max_length", null, null, 1, 1, 1));
-        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.COLLECTION, new TypeMetadata.Config("max_length", null, null, 1, 1, 1));
-        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.GEOMETRY, new TypeMetadata.Config("max_length", null, null, 1, 1, 1));
-        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.OTHER, new TypeMetadata.Config("max_length", null, null, 1, 1, 1));
+        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.CHAR, new TypeMetadata.Refer("max_length", null, null, 0, 1, 1));
+        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.TEXT, new TypeMetadata.Refer("max_length", null, null, 1, 1, 1));
+        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.BOOLEAN, new TypeMetadata.Refer("max_length", null, null, 1,1, 1));
+        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.BYTES, new TypeMetadata.Refer("max_length", null, null, 0, 1, 1));
+        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.BLOB, new TypeMetadata.Refer("max_length", null, null, 1,1,1));
+        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.INT, new TypeMetadata.Refer("max_length", "PRECISION", null, 1, 1, 1));
+        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.FLOAT, new TypeMetadata.Refer("max_length", "PRECISION", "SCALE", 1, 0, 0));
+        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.DATE, new TypeMetadata.Refer("max_length", null, null, 1, 1, 1));
+        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.TIME, new TypeMetadata.Refer("max_length", null, null, 1, 1, 1));
+        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.DATETIME, new TypeMetadata.Refer("max_length", null, null, 1, 1, 1));
+        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.TIMESTAMP, new TypeMetadata.Refer("max_length", null, null, 1, 1, 1));
+        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.COLLECTION, new TypeMetadata.Refer("max_length", null, null, 1, 1, 1));
+        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.GEOMETRY, new TypeMetadata.Refer("max_length", null, null, 1, 1, 1));
+        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.OTHER, new TypeMetadata.Refer("max_length", null, null, 1, 1, 1));
     }
 
     /**
@@ -1542,6 +1539,42 @@ public class MSSQLAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
         return super.catalog(runtime, create, meta);
     }
 
+    /**
+     * catalog[结构集封装-依据]<br/>
+     * 读取 catalog 元数据结果集的依据
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @return CatalogMetadataAdapter
+     */
+    @Override
+    public Catalog.MetadataAdapter catalogMetadataAdapter(DataRuntime runtime) {
+        return super.catalogMetadataAdapter(runtime);
+    }
+    /**
+     * catalog[结果集封装]<br/>
+     * 根据查询结果封装 catalog 对象,只封装catalog,schema,name等基础属性
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta 上一步封装结果
+     * @param query 查询条件 根据metadata属性
+     * @param row 查询结果集
+     * @return Catalog
+     */
+    @Override
+    public <T extends Catalog> T init(DataRuntime runtime, int index, T meta, Catalog query, DataRow row) {
+        return super.init(runtime, index, meta, query, row);
+    }
+
+    /**
+     * catalog[结果集封装]<br/>
+     * 根据查询结果封装 catalog 对象,更多属性
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta 上一步封装结果
+     * @param row 查询结果集
+     * @return Table
+     */
+    @Override
+    public <T extends Catalog> T detail(DataRuntime runtime, int index, T meta, Catalog query, DataRow row) {
+        return super.detail(runtime, index, meta, query, row);
+    }
     /* *****************************************************************************************************************
      *                                                     schema
      * -----------------------------------------------------------------------------------------------------------------
@@ -1642,6 +1675,43 @@ public class MSSQLAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
     @Override
     public Schema schema(DataRuntime runtime, boolean create, Schema meta) throws Exception {
         return super.schema(runtime, create, meta);
+    }
+
+    /**
+     * schema[结构集封装-依据]<br/>
+     * 读取 schema 元数据结果集的依据
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @return SchemaMetadataAdapter
+     */
+    @Override
+    public Schema.MetadataAdapter schemaMetadataAdapter(DataRuntime runtime) {
+        return super.schemaMetadataAdapter(runtime);
+    }
+    /**
+     * schema[结果集封装]<br/>
+     * 根据查询结果封装 schema 对象,只封装catalog,schema,name等基础属性
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta 上一步封装结果
+     * @param query 查询条件 根据metadata属性
+     * @param row 查询结果集
+     * @return Schema
+     */
+    @Override
+    public  <T extends Schema> T init(DataRuntime runtime, int index, T meta, Schema query, DataRow row) {
+        return super.init(runtime, index, meta, query, row);
+    }
+
+    /**
+     * schema[结果集封装]<br/>
+     * 根据查询结果封装 schema 对象,更多属性
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta 上一步封装结果
+     * @param row 查询结果集
+     * @return Table
+     */
+    @Override
+    public <T extends Schema> T detail(DataRuntime runtime, int index, T meta, Schema query, DataRow row) {
+        return super.detail(runtime, index, meta, query, row);
     }
 
     /* *****************************************************************************************************************
@@ -2480,14 +2550,14 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
      * @return ColumnMetadataAdapter
      */
     @Override
-    public ColumnMetadataAdapter columnMetadataAdapter(DataRuntime runtime) {
-        return super.columnMetadataAdapter(runtime);
+    public Column.MetadataAdapter columnMetadataRefer(DataRuntime runtime) {
+        return super.columnMetadataRefer(runtime);
     }
 
     /**
      * column[结果集封装]<br/>(方法1)<br/>
      * 元数据数字有效位数列<br/>
-     * 不直接调用 用来覆盖columnMetadataAdapter(DataRuntime runtime, TypeMetadata meta)
+     * 不直接调用 用来覆盖columnMetadataRefer(DataRuntime runtime, TypeMetadata meta)
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param meta TypeMetadata
      * @return String
@@ -2500,7 +2570,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
     /**
      * column[结果集封装]<br/>(方法1)<br/>
      * 元数据长度列<br/>
-     * 不直接调用 用来覆盖columnMetadataAdapter(DataRuntime runtime, TypeMetadata meta)
+     * 不直接调用 用来覆盖columnMetadataRefer(DataRuntime runtime, TypeMetadata meta)
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param meta TypeMetadata
      * @return String
@@ -2513,7 +2583,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
     /**
      * column[结果集封装]<br/>(方法1)<br/>
      * 元数据数字有效位数列<br/>
-     * 不直接调用 用来覆盖columnMetadataAdapter(DataRuntime runtime, TypeMetadata meta)
+     * 不直接调用 用来覆盖columnMetadataRefer(DataRuntime runtime, TypeMetadata meta)
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param meta TypeMetadata
      * @return String
@@ -2688,14 +2758,14 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
      * @return PrimaryMetadataAdapter
      */
     @Override
-    public PrimaryMetadataAdapter primaryMetadataAdapter(DataRuntime runtime) {
-        PrimaryMetadataAdapter config = super.primaryMetadataAdapter(runtime);
-        config.setNameRefer("CONSTRAINT_NAME");
-        config.setCatalogRefer("TABLE_CATALOG");
-        config.setSchemaRefer("TABLE_SCHEMA");
-        config.setTableRefer("TABLE_NAME");
-        config.setColumnRefer("COLUMN_NAME");
-        config.setColumnPositionRefer("ORDINAL_POSITION");
+    public PrimaryKey.MetadataAdapter primaryMetadataAdapter(DataRuntime runtime) {
+        PrimaryKey.MetadataAdapter config = super.primaryMetadataAdapter(runtime);
+        config.setRefer("name", "CONSTRAINT_NAME");
+        config.setRefer("Catalog", "TABLE_CATALOG");
+        config.setRefer("schema", "TABLE_SCHEMA");
+        config.setRefer("Table", "TABLE_NAME");
+        config.setRefer("column", "COLUMN_NAME");
+        config.setRefer("ColumnPosition", "ORDINAL_POSITION");
         return config;
     }
 
@@ -2947,10 +3017,10 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
      * index[结构集封装-依据]<br/>
      * 读取index元数据结果集的依据
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @return IndexMetadataAdapter
+     * @return Index.MetadataAdapter
      */
     @Override
-    public IndexMetadataAdapter indexMetadataAdapter(DataRuntime runtime) {
+    public Index.MetadataAdapter indexMetadataAdapter(DataRuntime runtime) {
         return super.indexMetadataAdapter(runtime);
     }
     /* *****************************************************************************************************************

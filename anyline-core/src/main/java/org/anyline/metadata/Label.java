@@ -18,6 +18,8 @@
 
 package org.anyline.metadata;
 
+import org.anyline.metadata.adapter.MetadataRefer;
+
 import java.io.Serializable;
 
 public class Label extends Table<Label> implements Serializable {
@@ -51,4 +53,5 @@ public class Label extends Table<Label> implements Serializable {
     public String toString() {
         return this.keyword+":"+name;
     }
+
 }

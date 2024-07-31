@@ -29,32 +29,32 @@ public class MetadataAdapterHolder {
     /**
      * 具体数据库 数据类型-配置
      */
-    private static LinkedHashMap<DatabaseType, LinkedHashMap<TypeMetadata, TypeMetadata.Config>> typeConfigs = new LinkedHashMap<>();
+    private static LinkedHashMap<DatabaseType, LinkedHashMap<TypeMetadata, TypeMetadata.Refer>> typeConfigs = new LinkedHashMap<>();
     /**
      * 具体数据库 数据类型名称-配置
      * 数据类型 与 数据类型名称 的区别:如ORACLE_FLOAT,FLOAT 这两个对象的name都是float所以会相互覆盖
      */
-    private static LinkedHashMap<DatabaseType, LinkedHashMap<String, TypeMetadata.Config>> typeNameConfigs = new LinkedHashMap<>();
+    private static LinkedHashMap<DatabaseType, LinkedHashMap<String, TypeMetadata.Refer>> typeNameConfigs = new LinkedHashMap<>();
     /**
      * 具体数据库 数据类型大类-配置
      */
-    private static LinkedHashMap<DatabaseType, LinkedHashMap<TypeMetadata.CATEGORY, TypeMetadata.Config>> typeCategoryConfigs = new LinkedHashMap<>();
+    private static LinkedHashMap<DatabaseType, LinkedHashMap<TypeMetadata.CATEGORY, TypeMetadata.Refer>> typeCategoryConfigs = new LinkedHashMap<>();
 
     static {
-        reg(DatabaseType.COMMON, org.anyline.metadata.type.TypeMetadata.CATEGORY.CHAR, new TypeMetadata.Config( 0, 1, 1));
-        reg(DatabaseType.COMMON, TypeMetadata.CATEGORY.TEXT, new TypeMetadata.Config(1, 1, 1));
-        reg(DatabaseType.COMMON, TypeMetadata.CATEGORY.BOOLEAN, new TypeMetadata.Config(1,1, 1));
-        reg(DatabaseType.COMMON, TypeMetadata.CATEGORY.BYTES, new TypeMetadata.Config(0, 1, 1));
-        reg(DatabaseType.COMMON, TypeMetadata.CATEGORY.BLOB, new TypeMetadata.Config(1,1,1));
-        reg(DatabaseType.COMMON, TypeMetadata.CATEGORY.INT, new TypeMetadata.Config(1, 1, 1));
-        reg(DatabaseType.COMMON, TypeMetadata.CATEGORY.FLOAT, new TypeMetadata.Config(1, 0, 0));
-        reg(DatabaseType.COMMON, TypeMetadata.CATEGORY.DATE, new TypeMetadata.Config(1, 1, 1));
-        reg(DatabaseType.COMMON, TypeMetadata.CATEGORY.TIME, new TypeMetadata.Config(1, 1, 1));
-        reg(DatabaseType.COMMON, TypeMetadata.CATEGORY.DATETIME, new TypeMetadata.Config(1, 1, 1));
-        reg(DatabaseType.COMMON, TypeMetadata.CATEGORY.TIMESTAMP, new TypeMetadata.Config(1, 1, 1));
-        reg(DatabaseType.COMMON, TypeMetadata.CATEGORY.COLLECTION, new TypeMetadata.Config(1, 1, 1));
-        reg(DatabaseType.COMMON, TypeMetadata.CATEGORY.GEOMETRY, new TypeMetadata.Config(1, 1, 1));
-        reg(DatabaseType.COMMON, TypeMetadata.CATEGORY.OTHER, new TypeMetadata.Config(1, 1, 1));
+        reg(DatabaseType.COMMON, org.anyline.metadata.type.TypeMetadata.CATEGORY.CHAR, new TypeMetadata.Refer( 0, 1, 1));
+        reg(DatabaseType.COMMON, TypeMetadata.CATEGORY.TEXT, new TypeMetadata.Refer(1, 1, 1));
+        reg(DatabaseType.COMMON, TypeMetadata.CATEGORY.BOOLEAN, new TypeMetadata.Refer(1,1, 1));
+        reg(DatabaseType.COMMON, TypeMetadata.CATEGORY.BYTES, new TypeMetadata.Refer(0, 1, 1));
+        reg(DatabaseType.COMMON, TypeMetadata.CATEGORY.BLOB, new TypeMetadata.Refer(1,1,1));
+        reg(DatabaseType.COMMON, TypeMetadata.CATEGORY.INT, new TypeMetadata.Refer(1, 1, 1));
+        reg(DatabaseType.COMMON, TypeMetadata.CATEGORY.FLOAT, new TypeMetadata.Refer(1, 0, 0));
+        reg(DatabaseType.COMMON, TypeMetadata.CATEGORY.DATE, new TypeMetadata.Refer(1, 1, 1));
+        reg(DatabaseType.COMMON, TypeMetadata.CATEGORY.TIME, new TypeMetadata.Refer(1, 1, 1));
+        reg(DatabaseType.COMMON, TypeMetadata.CATEGORY.DATETIME, new TypeMetadata.Refer(1, 1, 1));
+        reg(DatabaseType.COMMON, TypeMetadata.CATEGORY.TIMESTAMP, new TypeMetadata.Refer(1, 1, 1));
+        reg(DatabaseType.COMMON, TypeMetadata.CATEGORY.COLLECTION, new TypeMetadata.Refer(1, 1, 1));
+        reg(DatabaseType.COMMON, TypeMetadata.CATEGORY.GEOMETRY, new TypeMetadata.Refer(1, 1, 1));
+        reg(DatabaseType.COMMON, TypeMetadata.CATEGORY.OTHER, new TypeMetadata.Refer(1, 1, 1));
     }
     /**
      * 注册数据类型配置
@@ -64,15 +64,15 @@ public class MetadataAdapterHolder {
      * @param config 配置项
      * @return Config
      */
-    public static TypeMetadata.Config reg(DatabaseType database, TypeMetadata type, TypeMetadata.Config config) {
-        LinkedHashMap<TypeMetadata, TypeMetadata.Config> configs = typeConfigs.get(database);
+    public static TypeMetadata.Refer reg(DatabaseType database, TypeMetadata type, TypeMetadata.Refer config) {
+        LinkedHashMap<TypeMetadata, TypeMetadata.Refer> configs = typeConfigs.get(database);
         if(null == configs) {
             configs = new LinkedHashMap<>();
             typeConfigs.put(database, configs);
         }
-        TypeMetadata.Config src = configs.get(type);
+        TypeMetadata.Refer src = configs.get(type);
         if(null == src) {
-            src = new TypeMetadata.Config();
+            src = new TypeMetadata.Refer();
         }
         src.merge(config);
         configs.put(type, src);
@@ -89,15 +89,15 @@ public class MetadataAdapterHolder {
      * @param config 配置项
      * @return Config
      */
-    public static TypeMetadata.Config reg(DatabaseType database, String type, TypeMetadata.Config config) {
-        LinkedHashMap<String, TypeMetadata.Config> configs = typeNameConfigs.get(database);
+    public static TypeMetadata.Refer reg(DatabaseType database, String type, TypeMetadata.Refer config) {
+        LinkedHashMap<String, TypeMetadata.Refer> configs = typeNameConfigs.get(database);
         if(null == configs) {
             configs = new LinkedHashMap<>();
             typeNameConfigs.put(database, configs);
         }
-        TypeMetadata.Config src = configs.get(type.toUpperCase());
+        TypeMetadata.Refer src = configs.get(type.toUpperCase());
         if(null == src) {
-            src = new TypeMetadata.Config();
+            src = new TypeMetadata.Refer();
         }
         src.merge(config);
         configs.put(type.toUpperCase(), src);
@@ -112,13 +112,13 @@ public class MetadataAdapterHolder {
      * @param config 配置项
      * @return Config
      */
-    public static TypeMetadata.Config reg(DatabaseType database, TypeMetadata.CATEGORY category, TypeMetadata.Config config) {
-        LinkedHashMap<TypeMetadata.CATEGORY, TypeMetadata.Config> configs = typeCategoryConfigs.get(database);
+    public static TypeMetadata.Refer reg(DatabaseType database, TypeMetadata.CATEGORY category, TypeMetadata.Refer config) {
+        LinkedHashMap<TypeMetadata.CATEGORY, TypeMetadata.Refer> configs = typeCategoryConfigs.get(database);
         if(null == configs) {
             configs = new LinkedHashMap<>();
             typeCategoryConfigs.put(database, configs);
         }
-        TypeMetadata.Config src = configs.get(category);
+        TypeMetadata.Refer src = configs.get(category);
         if(null == src) {
             src = config;
         }else{
@@ -134,10 +134,10 @@ public class MetadataAdapterHolder {
      * @param type 数据类型
      * @return config
      */
-    public static TypeMetadata.Config get(DatabaseType database, TypeMetadata type) {
-        TypeMetadata.Config config = null;
+    public static TypeMetadata.Refer get(DatabaseType database, TypeMetadata type) {
+        TypeMetadata.Refer config = null;
         if(null != type) {
-            LinkedHashMap<TypeMetadata, TypeMetadata.Config> configs = typeConfigs.get(database);
+            LinkedHashMap<TypeMetadata, TypeMetadata.Refer> configs = typeConfigs.get(database);
             if (null != configs) {
                 config = configs.get(type);
             }
@@ -150,10 +150,10 @@ public class MetadataAdapterHolder {
      * @param type 数据类型名称
      * @return config
      */
-    public static TypeMetadata.Config get(DatabaseType database, String type) {
-        TypeMetadata.Config config = null;
+    public static TypeMetadata.Refer get(DatabaseType database, String type) {
+        TypeMetadata.Refer config = null;
         if(null != type) {
-            LinkedHashMap<String, TypeMetadata.Config> configs = typeNameConfigs.get(database);
+            LinkedHashMap<String, TypeMetadata.Refer> configs = typeNameConfigs.get(database);
             if (null != configs) {
                 config = configs.get(type.toUpperCase());
             }
@@ -166,16 +166,16 @@ public class MetadataAdapterHolder {
      * @param category 数据类型大类
      * @return config
      */
-    public static TypeMetadata.Config get(DatabaseType database, TypeMetadata.CATEGORY category) {
-        TypeMetadata.Config config = null;
+    public static TypeMetadata.Refer get(DatabaseType database, TypeMetadata.CATEGORY category) {
+        TypeMetadata.Refer config = null;
         if(null != category) {
-            LinkedHashMap<TypeMetadata.CATEGORY, TypeMetadata.Config> configs = typeCategoryConfigs.get(database);
+            LinkedHashMap<TypeMetadata.CATEGORY, TypeMetadata.Refer> configs = typeCategoryConfigs.get(database);
             if (null != configs) {
                 config = configs.get(category);
             }
         }
         if(null == config) {
-            LinkedHashMap<TypeMetadata.CATEGORY, TypeMetadata.Config> configs = typeCategoryConfigs.get(DatabaseType.NONE);
+            LinkedHashMap<TypeMetadata.CATEGORY, TypeMetadata.Refer> configs = typeCategoryConfigs.get(DatabaseType.NONE);
             if (null != configs) {
                 config = configs.get(category);
             }
@@ -200,7 +200,7 @@ public class MetadataAdapterHolder {
 		4.配置类-数据类型大类
 		 */
         //1.配置类 数据类型
-        TypeMetadata.Config config = MetadataAdapterHolder.get(database, type);
+        TypeMetadata.Refer config = MetadataAdapterHolder.get(database, type);
         if(null != config) {
             result = config.ignoreLength();
         }
@@ -243,7 +243,7 @@ public class MetadataAdapterHolder {
 		4.配置类-数据类型大类
 		 */
         //1.配置类 数据类型
-        TypeMetadata.Config config = MetadataAdapterHolder.get(database, type);
+        TypeMetadata.Refer config = MetadataAdapterHolder.get(database, type);
         if(null != config) {
             result = config.ignorePrecision();
         }
@@ -286,7 +286,7 @@ public class MetadataAdapterHolder {
 		4.配置类-数据类型大类
 		 */
         //1.配置类 数据类型
-        TypeMetadata.Config config = MetadataAdapterHolder.get(database, type);
+        TypeMetadata.Refer config = MetadataAdapterHolder.get(database, type);
         if(null != config) {
             result = config.ignoreScale();
         }
@@ -329,7 +329,7 @@ public class MetadataAdapterHolder {
 		4.配置类-数据类型大类
 		 */
         //1.配置类 数据类型
-        TypeMetadata.Config config = MetadataAdapterHolder.get(database, type);
+        TypeMetadata.Refer config = MetadataAdapterHolder.get(database, type);
         if(null != config) {
             result = config.getFormula();
         }
@@ -373,7 +373,7 @@ public class MetadataAdapterHolder {
 		4.配置类-数据类型大类
 		 */
         //1.配置类 数据类型
-        TypeMetadata.Config config = MetadataAdapterHolder.get(database, type);
+        TypeMetadata.Refer config = MetadataAdapterHolder.get(database, type);
         if(null != config) {
             result = config.getMeta();
         }

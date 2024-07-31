@@ -30,9 +30,6 @@ import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
 import org.anyline.exception.NotSupportException;
 import org.anyline.metadata.*;
-import org.anyline.metadata.adapter.ColumnMetadataAdapter;
-import org.anyline.metadata.adapter.IndexMetadataAdapter;
-import org.anyline.metadata.adapter.TableMetadataAdapter;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.util.BasicUtil;
@@ -1862,14 +1859,14 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * table[结构集封装-依据]<br/>
 	 * 读取table元数据结果集的依据
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @return TableMetadataAdapter
+	 * @return Table.MetadataAdapter
 	 */
 	@Override
-	public TableMetadataAdapter tableMetadataAdapter(DataRuntime runtime) {
-		TableMetadataAdapter config = new TableMetadataAdapter();
-		config.setNameRefer("TABNAME");
-		config.setCatalogRefer("");
-		config.setSchemaRefer("TABSCHEMA");
+	public Table.MetadataAdapter tableMetadataAdapter(DataRuntime runtime) {
+		Table.MetadataAdapter config = new Table.MetadataAdapter();
+		config.setRefer("name", "TABNAME");
+		config.setRefer("Catalog", "");
+		config.setRefer("schema", "TABSCHEMA");
 		return config;
 	}
 	/* *****************************************************************************************************************
@@ -2425,15 +2422,15 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @return ColumnMetadataAdapter
 	 */
 	@Override
-	public ColumnMetadataAdapter columnMetadataAdapter(DataRuntime runtime) {
-		ColumnMetadataAdapter adapter = new ColumnMetadataAdapter();
-		adapter.setNameRefer("COLNAME");
-		adapter.setCatalogRefer("");
-		adapter.setSchemaRefer("TABSCEHMA");
-		adapter.setPositionRefer("COLNO");
-		adapter.setTableRefer("TABNAME");
-		adapter.setTypeRefer("TYPENAME");
-		TypeMetadata.Config config = new TypeMetadata.Config();
+	public Column.MetadataAdapter columnMetadataRefer(DataRuntime runtime) {
+		Column.MetadataAdapter adapter = new Column.MetadataAdapter();
+		adapter.setRefer("name", "COLNAME");
+		adapter.setRefer("Catalog", "");
+		adapter.setRefer("schema", "TABSCEHMA");
+		adapter.setRefer("Position", "COLNO");
+		adapter.setRefer("Table", "TABNAME");
+		adapter.setRefer("Type", "TYPENAME");
+		TypeMetadata.Refer config = new TypeMetadata.Refer();
 		config.setPrecisionRefer("LENGTH");
 		config.setScaleRefer("SCALE");
 		adapter.setTypeConfig(config);
@@ -2442,7 +2439,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	/**
 	 * column[结果集封装]<br/>(方法1)<br/>
 	 * 元数据数字有效位数列<br/>
-	 * 不直接调用 用来覆盖columnMetadataAdapter(DataRuntime runtime, TypeMetadata meta)
+	 * 不直接调用 用来覆盖columnMetadataRefer(DataRuntime runtime, TypeMetadata meta)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta TypeMetadata
 	 * @return String
@@ -2455,7 +2452,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	/**
 	 * column[结果集封装]<br/>(方法1)<br/>
 	 * 元数据长度列<br/>
-	 * 不直接调用 用来覆盖columnMetadataAdapter(DataRuntime runtime, TypeMetadata meta)
+	 * 不直接调用 用来覆盖columnMetadataRefer(DataRuntime runtime, TypeMetadata meta)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta TypeMetadata
 	 * @return String
@@ -2468,7 +2465,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	/**
 	 * column[结果集封装]<br/>(方法1)<br/>
 	 * 元数据数字有效位数列<br/>
-	 * 不直接调用 用来覆盖columnMetadataAdapter(DataRuntime runtime, TypeMetadata meta)
+	 * 不直接调用 用来覆盖columnMetadataRefer(DataRuntime runtime, TypeMetadata meta)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta TypeMetadata
 	 * @return String
@@ -2804,10 +2801,10 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * index[结构集封装-依据]<br/>
 	 * 读取index元数据结果集的依据
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @return IndexMetadataAdapter
+	 * @return Index.MetadataAdapter
 	 */
 	@Override
-	public IndexMetadataAdapter indexMetadataAdapter(DataRuntime runtime) {
+	public Index.MetadataAdapter indexMetadataAdapter(DataRuntime runtime) {
 		return super.indexMetadataAdapter(runtime);
 	}
 	/* *****************************************************************************************************************
