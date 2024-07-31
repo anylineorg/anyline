@@ -18,8 +18,6 @@
 
 package org.anyline.metadata;
 
-import org.anyline.metadata.adapter.MetadataRefer;
-
 import java.io.Serializable;
 
 public class ParentTable extends Table implements Serializable {

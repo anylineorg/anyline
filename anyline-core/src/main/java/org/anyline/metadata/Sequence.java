@@ -18,8 +18,6 @@
 
 package org.anyline.metadata;
 
-import org.anyline.metadata.adapter.MetadataRefer;
-
 import java.io.Serializable;
 
 public class Sequence extends Metadata<Sequence> implements Serializable {

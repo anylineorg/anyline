@@ -1908,8 +1908,8 @@ public interface DriverAdapter {
      * @param type Table Column等元数据类
      * @return MetadataRefer
      */
-    MetadataRefer refer(DataRuntime runtime, Class<?> type);
-    void refer(Class<?> type, MetadataRefer refer);
+    FieldRefer refer(DataRuntime runtime, Class<?> type);
+    void refer(Class<?> type, FieldRefer refer);
 
     /**
      * 根据运行环境识别 catalog与schema
@@ -4542,55 +4542,47 @@ public interface DriverAdapter {
 
     /**
      * column[结构集封装-依据]<br/>
-     * 读取column元数据结果集的依据，主要在columnMetadataRefer(DataRuntime runtime)基础上补充length/precision/sacle相关
+     * 读取column元数据结果集的依据，主要在dataTypeMetadataRefer(DataRuntime runtime)基础上补充length/precision/sacle相关
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param meta 具体数据类型,length/precisoin/scale三个属性需要根据数据类型覆盖通用配置
      * @return ColumnMetadataAdapter
      */
-    default Column.MetadataAdapter columnMetadataRefer(DataRuntime runtime, TypeMetadata meta) {
-        MetadataRefer refer = refer(runtime, Column.class);
-        if(null == adapter) {
-            adapter = new Column.MetadataAdapter();
-        }
-        TypeMetadata.Refer config = adapter.getTypeConfig();
-        if(null == config) {
-            config = new TypeMetadata.Refer();
-        }
+    default TypeMetadata.Refer dataTypeMetadataRefer(DataRuntime runtime, TypeMetadata meta) {
+        TypeMetadata.Refer refer = new TypeMetadata.Refer();
         //长度列
         String columnMetadataLengthRefer = columnMetadataLengthRefer(runtime, meta);
         if(null != columnMetadataLengthRefer) {
-            config.setLengthRefer(columnMetadataLengthRefer);
+            refer.setLengthRefer(columnMetadataLengthRefer);
         }
         //有效位数列
         String columnMetadataPrecisionRefer = columnMetadataPrecisionRefer(runtime, meta);
         if(null != columnMetadataPrecisionRefer) {
-            config.setPrecisionRefer(columnMetadataPrecisionRefer);
+            refer.setPrecisionRefer(columnMetadataPrecisionRefer);
         }
         //小数位数列
         String columnMetadataScaleRefer = columnMetadataScaleRefer(runtime, meta);
         if(null != columnMetadataScaleRefer) {
-            config.setScaleRefer(columnMetadataScaleRefer);
+            refer.setScaleRefer(columnMetadataScaleRefer);
         }
         int ignoreLength = ignoreLength(runtime, meta);
         if(-1 != ignoreLength) {
-            config.setIgnoreLength(ignoreLength);
+            refer.setIgnoreLength(ignoreLength);
         }
         int ignorePrecision = ignorePrecision(runtime, meta);
         if(-1 != ignorePrecision) {
-            config.setIgnorePrecision(ignorePrecision);
+            refer.setIgnorePrecision(ignorePrecision);
         }
         int ignoreScale = ignoreScale(runtime, meta);
         if(-1 != ignoreScale) {
-            config.setIgnoreScale(ignoreScale);
+            refer.setIgnoreScale(ignoreScale);
         }
-        adapter.setTypeConfig(config);
-        return adapter;
+        return refer;
     }
 
     /**
      * column[结果集封装]<br/>(方法1)<br/>
      * 元数据长度列<br/>
-     * 不直接调用 用来覆盖columnMetadataRefer(DataRuntime runtime, TypeMetadata meta)
+     * 不直接调用 用来覆盖dataTypeMetadataRefer(DataRuntime runtime, TypeMetadata meta)
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param meta TypeMetadata
      * @return String
@@ -4600,7 +4592,7 @@ public interface DriverAdapter {
     /**
      * column[结果集封装]<br/>(方法1)<br/>
      * 元数据数字有效位数列<br/>
-     * 不直接调用 用来覆盖columnMetadataRefer(DataRuntime runtime, TypeMetadata meta)
+     * 不直接调用 用来覆盖dataTypeMetadataRefer(DataRuntime runtime, TypeMetadata meta)
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param meta TypeMetadata
      * @return String
@@ -4610,7 +4602,7 @@ public interface DriverAdapter {
     /**
      * column[结果集封装]<br/>(方法1)<br/>
      * 元数据数字小数位数列<br/>
-     * 不直接调用 用来覆盖columnMetadataRefer(DataRuntime runtime, TypeMetadata meta)
+     * 不直接调用 用来覆盖dataTypeMetadataRefer(DataRuntime runtime, TypeMetadata meta)
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param meta TypeMetadata
      * @return String
@@ -4620,7 +4612,7 @@ public interface DriverAdapter {
     /**
      * column[结果集封装]<br/>(方法1)<br/>
      * 是否忽略长度<br/>
-     * 不直接调用 用来覆盖columnMetadataRefer(DataRuntime runtime, TypeMetadata meta)
+     * 不直接调用 用来覆盖dataTypeMetadataRefer(DataRuntime runtime, TypeMetadata meta)
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param meta TypeMetadata
      * @return String
@@ -4630,7 +4622,7 @@ public interface DriverAdapter {
     /**
      * column[结果集封装]<br/>(方法1)<br/>
      * 是否忽略有效位数<br/>
-     * 不直接调用 用来覆盖columnMetadataRefer(DataRuntime runtime, TypeMetadata meta)
+     * 不直接调用 用来覆盖dataTypeMetadataRefer(DataRuntime runtime, TypeMetadata meta)
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param meta TypeMetadata
      * @return String
@@ -4640,7 +4632,7 @@ public interface DriverAdapter {
     /**
      * column[结果集封装]<br/>(方法1)<br/>
      * 是否忽略小数位数<br/>
-     * 不直接调用 用来覆盖columnMetadataRefer(DataRuntime runtime, TypeMetadata meta)
+     * 不直接调用 用来覆盖dataTypeMetadataRefer(DataRuntime runtime, TypeMetadata meta)
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param meta TypeMetadata
      * @return String
@@ -7148,7 +7140,7 @@ public interface DriverAdapter {
 	/**
 	 * column[命令合成-子流程]<br/>
 	 * 定义列:是否忽略有长度<br/>
-	 * 不直接调用 用来覆盖columnMetadataRefer(DataRuntime runtime, TypeMetadata meta)
+	 * 不直接调用 用来覆盖dataTypeMetadataRefer(DataRuntime runtime, TypeMetadata meta)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param type 数据类型
 	 * @return boolean
@@ -7157,7 +7149,7 @@ public interface DriverAdapter {
 	/**
 	 * column[命令合成-子流程]<br/>
 	 * 定义列:是否忽略有效位数<br/>
-	 * 不直接调用 用来覆盖columnMetadataRefer(DataRuntime runtime, TypeMetadata meta)
+	 * 不直接调用 用来覆盖dataTypeMetadataRefer(DataRuntime runtime, TypeMetadata meta)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param type TypeMetadata
 	 * @return boolean
@@ -7166,7 +7158,7 @@ public interface DriverAdapter {
 	/**
 	 * column[命令合成-子流程]<br/>
 	 * 定义列:定义列:是否忽略小数位<br/>
-	 * 不直接调用 用来覆盖columnMetadataRefer(DataRuntime runtime, TypeMetadata meta)
+	 * 不直接调用 用来覆盖dataTypeMetadataRefer(DataRuntime runtime, TypeMetadata meta)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param type TypeMetadata
 	 * @return boolean

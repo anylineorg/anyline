@@ -20,7 +20,6 @@ package org.anyline.metadata.graph;
 
 import org.anyline.metadata.Catalog;
 import org.anyline.metadata.Schema;
-import org.anyline.metadata.adapter.MetadataRefer;
 
 import java.io.Serializable;
 

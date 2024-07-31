@@ -64,13 +64,13 @@ public class SQLiteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	}
 
 
-	private Column.MetadataAdapter defaultColumnMetadataAdapter = defaultColumnMetadataAdapter();
-	public Column.MetadataAdapter defaultColumnMetadataAdapter() {
-		Column.MetadataAdapter adapter = new Column.MetadataAdapter();
+	private TypeMetadata.Refer defaultColumnMetadataAdapter = defaultColumnMetadataAdapter();
+	public TypeMetadata.Refer defaultColumnMetadataAdapter() {
+		TypeMetadata.Refer adapter = new TypeMetadata.Refer();
 		adapter.setRefer("name", "NAME");
-		adapter.setNullableRefer("NOTNULL");
-		adapter.setDataTypeRefer("TYPE");
-		adapter.setDefaultRefer("DFLT_VALUE");
+		adapter.setRefer("Nullable", "NOTNULL");
+		adapter.setRefer("DataType", "TYPE");
+		adapter.setRefer("Default", "DFLT_VALUE");
 		return adapter;
 	}
 	protected static Table.MetadataAdapter defaultTableMetadataAdapter;
@@ -2373,13 +2373,13 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @return ColumnMetadataAdapter
 	 */
 	@Override
-	public Column.MetadataAdapter columnMetadataRefer(DataRuntime runtime) {
+	public TypeMetadata.Refer dataTypeMetadataRefer(DataRuntime runtime) {
 		return defaultColumnMetadataAdapter;
 	}
 	/**
 	 * column[结果集封装]<br/>(方法1)<br/>
 	 * 元数据数字有效位数列<br/>
-	 * 不直接调用 用来覆盖columnMetadataRefer(DataRuntime runtime, TypeMetadata meta)
+	 * 不直接调用 用来覆盖dataTypeMetadataRefer(DataRuntime runtime, TypeMetadata meta)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta TypeMetadata
 	 * @return String
@@ -2392,7 +2392,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	/**
 	 * column[结果集封装]<br/>(方法1)<br/>
 	 * 元数据长度列<br/>
-	 * 不直接调用 用来覆盖columnMetadataRefer(DataRuntime runtime, TypeMetadata meta)
+	 * 不直接调用 用来覆盖dataTypeMetadataRefer(DataRuntime runtime, TypeMetadata meta)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta TypeMetadata
 	 * @return String
@@ -2405,7 +2405,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	/**
 	 * column[结果集封装]<br/>(方法1)<br/>
 	 * 元数据数字有效位数列<br/>
-	 * 不直接调用 用来覆盖columnMetadataRefer(DataRuntime runtime, TypeMetadata meta)
+	 * 不直接调用 用来覆盖dataTypeMetadataRefer(DataRuntime runtime, TypeMetadata meta)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta TypeMetadata
 	 * @return String

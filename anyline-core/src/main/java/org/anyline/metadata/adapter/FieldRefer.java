@@ -26,7 +26,7 @@ import java.util.Map;
 /**
  * 读取元数据结果集依据(列名)
  */
-public class MetadataRefer {
+public class FieldRefer {
     private Map<String, String[]> map = new HashMap<>();
 
     public String[] getRefers(String field) {
@@ -40,11 +40,11 @@ public class MetadataRefer {
         }
         return null;
     }
-    public MetadataRefer setRefer(String field, String[] refers) {
+    public FieldRefer setRefer(String field, String[] refers) {
         map.put(field, refers);
         return this;
     }
-    public MetadataRefer setRefer(String field, String refer) {
+    public FieldRefer setRefer(String field, String refer) {
         String[] refers = null;
         if(BasicUtil.isNotEmpty(refer)) {
             refers = refer.split(",");

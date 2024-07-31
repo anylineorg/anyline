@@ -19,8 +19,6 @@ package org.anyline.entity.authorize;
 import org.anyline.metadata.Catalog;
 import org.anyline.metadata.Metadata;
 import org.anyline.metadata.Schema;
-import org.anyline.metadata.adapter.MetadataRefer;
-import org.anyline.util.BasicUtil;
 
 public class User extends Metadata<User> {
     private String password;

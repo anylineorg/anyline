@@ -19,7 +19,6 @@ package org.anyline.entity.authorize;
 import org.anyline.metadata.Catalog;
 import org.anyline.metadata.Metadata;
 import org.anyline.metadata.Schema;
-import org.anyline.metadata.adapter.MetadataRefer;
 
 public class Role extends Metadata<Role> {
 

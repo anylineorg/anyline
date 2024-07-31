@@ -83,20 +83,20 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         return types.get(type);
     }
 
-    private Column.MetadataAdapter defaultColumnMetadataAdapter = defaultColumnMetadataAdapter();
-    public Column.MetadataAdapter defaultColumnMetadataAdapter() {
-        Column.MetadataAdapter adapter = new Column.MetadataAdapter();
+    private TypeMetadata.Refer defaultColumnMetadataAdapter = defaultColumnMetadataAdapter();
+    public TypeMetadata.Refer defaultColumnMetadataAdapter() {
+        TypeMetadata.Refer adapter = new TypeMetadata.Refer();
         adapter.setRefer("name", "COLUMN_NAME");
         adapter.setRefer("Catalog", "TABLE_CATALOG");
         adapter.setRefer("schema", "TABLE_SCHEMA");
         adapter.setRefer("Table", "TABLE_NAME");
-        adapter.setNullableRefer("IS_NULLABLE");
-        //adapter.setCharsetRefer("");
-        //adapter.setCollateRefer("");
-        adapter.setDataTypeRefer("DATA_TYPE,FULL_TYPE");
+        adapter.setRefer("Nullable", "IS_NULLABLE");
+        //adapter.setRefer("Charset", "");
+        //adapter.setRefer("Collate", "");
+        adapter.setRefer("DataType", "DATA_TYPE,FULL_TYPE");
         adapter.setRefer("Position", "ORDINAL_POSITION");
-        adapter.setCommentRefer("COLUMN_COMMENT");//SQL组装
-        adapter.setDefaultRefer("COLUMN_DEFAULT");
+        adapter.setRefer("Comment", "COLUMN_COMMENT");//SQL组装
+        adapter.setRefer("Default", "COLUMN_DEFAULT");
         return adapter;
     }
     /* *****************************************************************************************************************
@@ -1368,16 +1368,6 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
     }
 
     /**
-     * database[结构集封装-依据]<br/>
-     * 读取 database 元数据结果集的依据
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @return DatabaseMetadataAdapter
-     */
-    @Override
-    public Database.MetadataAdapter databaseMetadataAdapter(DataRuntime runtime) {
-        return super.databaseMetadataAdapter(runtime);
-    }
-    /**
      * schema[结果集封装]<br/>
      * 根据查询结果封装 schema 对象,只封装catalog,schema,name等基础属性
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -1540,16 +1530,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         return super.catalog(runtime, create, meta);
     }
 
-    /**
-     * catalog[结构集封装-依据]<br/>
-     * 读取 catalog 元数据结果集的依据
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @return CatalogMetadataAdapter
-     */
-    @Override
-    public Catalog.MetadataAdapter catalogMetadataAdapter(DataRuntime runtime) {
-        return super.catalogMetadataAdapter(runtime);
-    }
+
     /**
      * catalog[结果集封装]<br/>
      * 根据查询结果封装 catalog 对象,只封装catalog,schema,name等基础属性
@@ -1702,16 +1683,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         return super.schema(runtime, create, meta);
     }
 
-    /**
-     * schema[结构集封装-依据]<br/>
-     * 读取 schema 元数据结果集的依据
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @return SchemaMetadataAdapter
-     */
-    @Override
-    public Schema.MetadataAdapter schemaMetadataAdapter(DataRuntime runtime) {
-        return super.schemaMetadataAdapter(runtime);
-    }
+
     /**
      * schema[结果集封装]<br/>
      * 根据查询结果封装 schema 对象,只封装catalog,schema,name等基础属性
@@ -2644,7 +2616,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return ColumnMetadataAdapter
      */
     @Override
-    public Column.MetadataAdapter columnMetadataRefer(DataRuntime runtime) {
+    public TypeMetadata.Refer dataTypeMetadataRefer(DataRuntime runtime) {
         return defaultColumnMetadataAdapter;
     }
 
@@ -2656,8 +2628,8 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return ColumnMetadataAdapter
      */
     @Override
-    public Column.MetadataAdapter columnMetadataRefer(DataRuntime runtime, TypeMetadata meta) {
-        return super.columnMetadataRefer(runtime, meta);
+    public TypeMetadata.Refer dataTypeMetadataRefer(DataRuntime runtime, TypeMetadata meta) {
+        return super.dataTypeMetadataRefer(runtime, meta);
     }
 
     /* *****************************************************************************************************************
@@ -3149,7 +3121,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
     @Override
     public <T extends Index> T detail(DataRuntime runtime, int index, T meta, Index query, DataRow row) throws Exception {
         meta = super.detail(runtime, index, meta, query, row);
-        MetadataRefer refer = refer(runtime, Index.class);
+        FieldRefer refer = refer(runtime, Index.class);
         String columnName = row.getStringWithoutEmpty(config.getColumnRefers());
         if(null == columnName) {
             return meta;
@@ -3726,7 +3698,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         Function.MetadataAdapter adapter = new Function.MetadataAdapter();
         adapter.setRefer("name", "proname");
         adapter.setRefer("schema", "schema_name");
-        adapter.setCommentRefer("comment");
+        adapter.setRefer("Comment", "comment");
         adapter.setDefineRefer("prosrc");
         return adapter;
     }

@@ -3914,16 +3914,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
         return super.detail(runtime, index, primary, query, set);
     }
 
-    /**
-     * primary[结构集封装-依据]<br/>
-     * 读取primary key元数据结果集的依据
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @return PrimaryMetadataAdapter
-     */
-    @Override
-    public PrimaryKey.MetadataAdapter primaryMetadataAdapter(DataRuntime runtime) {
-        return new PrimaryKey.MetadataAdapter();
-    }
+   
 
     /**
      * primary[结构集封装]<br/>
@@ -6717,7 +6708,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 			}
 			typeName = type.getName();
 		}
-		Column.MetadataAdapter adapter = columnMetadataRefer(runtime, type);
+		TypeMetadata.Refer adapter = dataTypeMetadataRefer(runtime, type);
 		TypeMetadata.Refer config = adapter.getTypeConfig();
 		ignoreLength = config.ignoreLength();
 		ignorePrecision = config.ignorePrecision();

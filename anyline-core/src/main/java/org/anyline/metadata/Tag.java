@@ -18,7 +18,6 @@
 
 package org.anyline.metadata;
 
-import org.anyline.metadata.adapter.MetadataRefer;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 

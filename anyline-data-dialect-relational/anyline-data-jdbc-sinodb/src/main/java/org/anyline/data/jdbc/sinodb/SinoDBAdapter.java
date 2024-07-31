@@ -1472,16 +1472,7 @@ public class SinoDBAdapter extends InformixGenusAdapter implements JDBCAdapter {
         return super.catalog(runtime, create, meta);
     }
 
-    /**
-     * catalog[结构集封装-依据]<br/>
-     * 读取 catalog 元数据结果集的依据
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @return CatalogMetadataAdapter
-     */
-    @Override
-    public Catalog.MetadataAdapter catalogMetadataAdapter(DataRuntime runtime) {
-        return super.catalogMetadataAdapter(runtime);
-    }
+
     /**
      * catalog[结果集封装]<br/>
      * 根据查询结果封装 catalog 对象,只封装catalog,schema,name等基础属性
@@ -1607,16 +1598,7 @@ public class SinoDBAdapter extends InformixGenusAdapter implements JDBCAdapter {
         return super.schema(runtime, create, meta);
     }
 
-    /**
-     * schema[结构集封装-依据]<br/>
-     * 读取 schema 元数据结果集的依据
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @return SchemaMetadataAdapter
-     */
-    @Override
-    public Schema.MetadataAdapter schemaMetadataAdapter(DataRuntime runtime) {
-        return super.schemaMetadataAdapter(runtime);
-    }
+
     /**
      * schema[结果集封装]<br/>
      * 根据查询结果封装 schema 对象,只封装catalog,schema,name等基础属性

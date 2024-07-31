@@ -37,7 +37,7 @@ import org.anyline.exception.CommandQueryException;
 import org.anyline.exception.CommandUpdateException;
 import org.anyline.exception.NotSupportException;
 import org.anyline.metadata.*;
-import org.anyline.metadata.adapter.MetadataRefer;
+import org.anyline.metadata.adapter.FieldRefer;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.proxy.CacheProxy;
@@ -2821,7 +2821,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
      */
     @Override
     public <T extends Table> T detail(DataRuntime runtime, int index, T meta, Table query, DataRow row) {
-        MetadataRefer refer = refer(runtime, Table.class);
+        FieldRefer refer = refer(runtime, Table.class);
         meta.setObjectId(row.getLong("OBJECT_ID", (Long)null));
         meta.setEngine(row.getString("ENGINE"));
         meta.setComment(row.getString(refer.getRefers("Comment")));
@@ -3070,7 +3070,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         if(null == meta) {
             meta = (T)new View();
         }
-        MetadataRefer refer = refer(runtime, View.class);
+        FieldRefer refer = refer(runtime, View.class);
         String _catalog = row.getString(refer.getRefers("Catalog"));
         String _schema = row.getString(refer.getRefers("Schema"));
         if(null == _catalog && null != catalog) {
@@ -3327,7 +3327,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         if(null == meta) {
             meta = (T)new MasterTable();
         }
-        MetadataRefer refer = refer(runtime, Table.class);
+        FieldRefer refer = refer(runtime, Table.class);
         String _catalog = row.getString(refer.getRefers("catalog"));
         String _schema = row.getString(refer.getRefers("schema"));
         if(null == _catalog && null != catalog) {
@@ -3670,7 +3670,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
             meta = (T)new Column();
         }
         //属性在查询结果中对应的列(通用)
-        MetadataRefer refer = refer(runtime, Column.class);
+        FieldRefer refer = refer(runtime, Column.class);
         String catalog = row.getString(refer.getRefers("Catalog"));
         String schema = row.getString(refer.getRefers("Schema"));//"TABLE_SCHEMA","TABSCHEMA","SCHEMA_NAME","OWNER"
         schema = BasicUtil.evl(schema, meta.getSchemaName());
@@ -3724,7 +3724,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         }
 
         //属性在查询结果中对应的列(通用)
-        MetadataRefer refer = refer(runtime, Column.class);
+        FieldRefer refer = refer(runtime, Column.class);
 
         if(null == meta.getPosition()) {
             try {
@@ -3746,8 +3746,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         meta.setOriginType(BasicUtil.evl(type, meta.getTypeName()));
         TypeMetadata typeMetadata = typeMetadata(runtime, meta);
         //属性在查询结果中对应的列(区分数据类型)
-        adapter = columnMetadataRefer(runtime, typeMetadata);
-        TypeMetadata.Refer config = adapter.getTypeConfig();
+        TypeMetadata.Refer trefer = dataTypeMetadataRefer(runtime, typeMetadata);
         String def = BasicUtil.evl(row.get(refer.getRefers("Default")), meta.getDefaultValue())+"";
         def = def.trim();//oracle 会取出\t\n
         if(BasicUtil.isNotEmpty(def)) {
@@ -3801,7 +3800,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         }
         //oracle中decimal(18,9) data_length == 22 DATA_PRECISION=18
         try {
-            Integer len = row.getInt(null, config.getLengthRefers());
+            Integer len = row.getInt(null, trefer.getLengthRefers());
             /*if(null == len) {
                 len = row.getInt("NUMERIC_PRECISION","PRECISION","DATA_PRECISION");
                 if (null == len || len == 0) {
@@ -3815,7 +3814,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
             meta.setLength(len);
         }catch (Exception ignored) {}
         try{
-            Integer precision = row.getInt(null, config.getPrecisionRefers());
+            Integer precision = row.getInt(null, trefer.getPrecisionRefers());
             /*if(null == precision) {
                 precision = row.getInt("NUMERIC_PRECISION","PRECISION","DATA_PRECISION");
             }*/
@@ -3828,7 +3827,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 
         }
         try {
-            Integer scale = row.getInt(null, config.getScaleRefers());
+            Integer scale = row.getInt(null, trefer.getScaleRefers());
             /*if(null == scale) {
                 scale = row.getInt("NUMERIC_SCALE", "SCALE", "DATA_SCALE");
             }*/
@@ -3847,18 +3846,6 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         return meta;
     }
     
-
-    /**
-     * column[结构集封装-依据]<br/>
-     * 读取column元数据结果集的依据(需要区分数据类型)
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param meta 具体数据类型,length/precisoin/scale三个属性需要根据数据类型覆盖通用配置
-     * @return ColumnMetadataAdapter
-     */
-    @Override
-    public Column.MetadataAdapter columnMetadataRefer(DataRuntime runtime, TypeMetadata meta) {
-        return super.columnMetadataRefer(runtime, meta);
-    }
 
     /* *****************************************************************************************************************
      *                                                     tag
@@ -4053,7 +4040,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
     @Override
     public <T extends PrimaryKey> T init(DataRuntime runtime, int index, T primary, PrimaryKey query, DataSet set) throws Exception {
         Table table = query.getTable();
-        MetadataRefer refer = refer(runtime, PrimaryKey.class);
+        FieldRefer refer = refer(runtime, PrimaryKey.class);
         for(DataRow row:set) {
             if(null == primary) {
                 primary = (T)new PrimaryKey();
@@ -4097,16 +4084,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         return super.detail(runtime, index, primary, query, set);
     }
 
-    /**
-     * primary[结构集封装-依据]<br/>
-     * 读取primary key元数据结果集的依据
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @return PrimaryMetadataAdapter
-     */
-    @Override
-    public PrimaryKey.MetadataAdapter primaryMetadataAdapter(DataRuntime runtime) {
-        return new PrimaryKey.MetadataAdapter();
-    }
+
 
     /**
      * primary[结构集封装]<br/>
@@ -6913,11 +6891,11 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 			}
 			typeName = type.getName();
 		}
-		MetadataRefer refer = refer(runtime, Column.class);
-		TypeMetadata.Refer config = adapter.getTypeConfig();
-		ignoreLength = config.ignoreLength();
-		ignorePrecision = config.ignorePrecision();
-		ignoreScale = config.ignoreScale();
+		FieldRefer refer = refer(runtime, Column.class);
+		TypeMetadata.Refer trefer = dataTypeMetadataRefer(runtime, type)
+		ignoreLength = trefer.ignoreLength();
+		ignorePrecision = trefer.ignorePrecision();
+		ignoreScale = trefer.ignoreScale();
 		return type(runtime, builder, meta, typeName, ignoreLength, ignorePrecision, ignoreScale);
 	}
 
@@ -8524,8 +8502,8 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		TypeMetadata type = parameter.getColumnType();
 		Column column = new Column();
 		column.setTypeMetadata(type);
-		Column.MetadataAdapter adapter = columnMetadataRefer(runtime, type);
-		TypeMetadata.Refer config = adapter.getTypeConfig();
+		TypeMetadata.Refer adapter = dataTypeMetadataRefer(runtime, type);
+		TypeMetadata.Refer config = dataTypeMetadataRefer(runtime, type);
 		int ignoreLength= config.ignoreLength();
 		int ignorePrecision= config.ignorePrecision();
 		int ignoreScale = config.ignoreScale();

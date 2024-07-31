@@ -2422,8 +2422,8 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @return ColumnMetadataAdapter
 	 */
 	@Override
-	public Column.MetadataAdapter columnMetadataRefer(DataRuntime runtime) {
-		Column.MetadataAdapter adapter = new Column.MetadataAdapter();
+	public TypeMetadata.Refer dataTypeMetadataRefer(DataRuntime runtime) {
+		TypeMetadata.Refer adapter = new TypeMetadata.Refer();
 		adapter.setRefer("name", "COLNAME");
 		adapter.setRefer("Catalog", "");
 		adapter.setRefer("schema", "TABSCEHMA");
@@ -2439,7 +2439,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	/**
 	 * column[结果集封装]<br/>(方法1)<br/>
 	 * 元数据数字有效位数列<br/>
-	 * 不直接调用 用来覆盖columnMetadataRefer(DataRuntime runtime, TypeMetadata meta)
+	 * 不直接调用 用来覆盖dataTypeMetadataRefer(DataRuntime runtime, TypeMetadata meta)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta TypeMetadata
 	 * @return String
@@ -2452,7 +2452,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	/**
 	 * column[结果集封装]<br/>(方法1)<br/>
 	 * 元数据长度列<br/>
-	 * 不直接调用 用来覆盖columnMetadataRefer(DataRuntime runtime, TypeMetadata meta)
+	 * 不直接调用 用来覆盖dataTypeMetadataRefer(DataRuntime runtime, TypeMetadata meta)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta TypeMetadata
 	 * @return String
@@ -2465,7 +2465,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	/**
 	 * column[结果集封装]<br/>(方法1)<br/>
 	 * 元数据数字有效位数列<br/>
-	 * 不直接调用 用来覆盖columnMetadataRefer(DataRuntime runtime, TypeMetadata meta)
+	 * 不直接调用 用来覆盖dataTypeMetadataRefer(DataRuntime runtime, TypeMetadata meta)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta TypeMetadata
 	 * @return String

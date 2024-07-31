@@ -19,7 +19,6 @@
 package org.anyline.metadata;
 
 import org.anyline.entity.PageNavi;
-import org.anyline.metadata.adapter.MetadataRefer;
 
 import java.io.Serializable;
 import java.util.ArrayList;

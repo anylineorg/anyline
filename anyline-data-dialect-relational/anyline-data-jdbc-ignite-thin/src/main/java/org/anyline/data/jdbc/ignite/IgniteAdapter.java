@@ -1475,16 +1475,7 @@ public class IgniteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
         return super.catalog(runtime, create, meta);
     }
 
-    /**
-     * catalog[结构集封装-依据]<br/>
-     * 读取 catalog 元数据结果集的依据
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @return CatalogMetadataAdapter
-     */
-    @Override
-    public Catalog.MetadataAdapter catalogMetadataAdapter(DataRuntime runtime) {
-        return super.catalogMetadataAdapter(runtime);
-    }
+
     /**
      * catalog[结果集封装]<br/>
      * 根据查询结果封装 catalog 对象,只封装catalog,schema,name等基础属性
@@ -1613,16 +1604,7 @@ public class IgniteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
         return super.schema(runtime, create, meta);
     }
 
-    /**
-     * schema[结构集封装-依据]<br/>
-     * 读取 schema 元数据结果集的依据
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @return SchemaMetadataAdapter
-     */
-    @Override
-    public Schema.MetadataAdapter schemaMetadataAdapter(DataRuntime runtime) {
-        return super.schemaMetadataAdapter(runtime);
-    }
+
     /**
      * schema[结果集封装]<br/>
      * 根据查询结果封装 schema 对象,只封装catalog,schema,name等基础属性
@@ -2453,14 +2435,14 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
      * @return ColumnMetadataAdapter
      */
     @Override
-    public Column.MetadataAdapter columnMetadataRefer(DataRuntime runtime) {
-        return super.columnMetadataRefer(runtime);
+    public TypeMetadata.Refer dataTypeMetadataRefer(DataRuntime runtime) {
+        return super.dataTypeMetadataRefer(runtime);
     }
 
     /**
      * column[结果集封装]<br/>(方法1)<br/>
      * 元数据数字有效位数列<br/>
-     * 不直接调用 用来覆盖columnMetadataRefer(DataRuntime runtime, TypeMetadata meta)
+     * 不直接调用 用来覆盖dataTypeMetadataRefer(DataRuntime runtime, TypeMetadata meta)
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param meta TypeMetadata
      * @return String
@@ -2473,7 +2455,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
     /**
      * column[结果集封装]<br/>(方法1)<br/>
      * 元数据长度列<br/>
-     * 不直接调用 用来覆盖columnMetadataRefer(DataRuntime runtime, TypeMetadata meta)
+     * 不直接调用 用来覆盖dataTypeMetadataRefer(DataRuntime runtime, TypeMetadata meta)
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param meta TypeMetadata
      * @return String
@@ -2486,7 +2468,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
     /**
      * column[结果集封装]<br/>(方法1)<br/>
      * 元数据数字有效位数列<br/>
-     * 不直接调用 用来覆盖columnMetadataRefer(DataRuntime runtime, TypeMetadata meta)
+     * 不直接调用 用来覆盖dataTypeMetadataRefer(DataRuntime runtime, TypeMetadata meta)
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param meta TypeMetadata
      * @return String
@@ -2824,7 +2806,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         adapter.setRefer("name", "INDEX_NAME");
         adapter.setRefer("schema", "SCHEMA_NAME");
         adapter.setRefer("Table", "TABLE_NAME");
-        adapter.setCommentRefer("INDEX_COMMENT");
+        adapter.setRefer("Comment", "INDEX_COMMENT");
         adapter.setRefer("Type", "INDEX_TYPE");
         adapter.setRefer("column", "COLUMN_NAME");
         adapter.setRefer("ColumnPosition", "ORDINAL_POSITION");

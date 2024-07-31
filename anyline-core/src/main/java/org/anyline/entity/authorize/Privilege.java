@@ -17,7 +17,6 @@
 package org.anyline.entity.authorize;
 
 import org.anyline.metadata.Metadata;
-import org.anyline.metadata.adapter.MetadataRefer;
 
 public class Privilege extends Metadata<User> {
     private String tables;

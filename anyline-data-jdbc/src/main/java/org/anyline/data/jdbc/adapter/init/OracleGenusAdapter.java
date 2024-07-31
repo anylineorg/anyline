@@ -18,6 +18,7 @@
 
 package org.anyline.data.jdbc.adapter.init;
 
+import com.sun.xml.internal.ws.api.databinding.MetadataReader;
 import org.anyline.data.jdbc.adapter.init.alias.OracleGenusTypeMetadataAlias;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.init.DefaultConfigStore;
@@ -29,6 +30,7 @@ import org.anyline.entity.*;
 import org.anyline.entity.generator.PrimaryGenerator;
 import org.anyline.exception.NotSupportException;
 import org.anyline.metadata.*;
+import org.anyline.metadata.adapter.FieldRefer;
 import org.anyline.metadata.adapter.MetadataAdapterHolder;
 import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.proxy.EntityAdapterProxy;
@@ -64,6 +66,19 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
             reg(alias);
             alias(alias.name(), alias.standard());
         }
+        FieldRefer refer = new FieldRefer();
+        refer.setRefer("name", "COLUMN_NAME");
+        refer.setRefer("Catalog", "");//忽略
+        refer.setRefer("schema", "OWNER");
+        refer.setRefer("Table", "TABLE_NAME");
+        refer.setRefer("Nullable", "NULLABLE");
+        refer.setRefer("Charset", "");//忽略
+        refer.setRefer("Collate", "");//忽略
+        refer.setRefer("DataType", "DATA_TYPE");
+        refer.setRefer("Position", "COLUMN_ID");
+        refer.setRefer("Comment", "COLUMN_COMMENT");//SQL组装
+        refer.setRefer("Default", "DATA_DEFAULT");
+        refer(Column.class, refer);
     }
 
     @Override
@@ -89,22 +104,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         return types.get(type);
     }
 
-    private Column.MetadataAdapter defaultColumnMetadataAdapter = defaultColumnMetadataAdapter();
-    public Column.MetadataAdapter defaultColumnMetadataAdapter() {
-        Column.MetadataAdapter adapter = new Column.MetadataAdapter();
-        adapter.setRefer("name", "COLUMN_NAME");
-        adapter.setRefer("Catalog", "");//忽略
-        adapter.setRefer("schema", "OWNER");
-        adapter.setRefer("Table", "TABLE_NAME");
-        adapter.setNullableRefer("NULLABLE");
-        adapter.setCharsetRefer("");//忽略
-        adapter.setCollateRefer("");//忽略
-        adapter.setDataTypeRefer("DATA_TYPE");
-        adapter.setRefer("Position", "COLUMN_ID");
-        adapter.setCommentRefer("COLUMN_COMMENT");//SQL组装
-        adapter.setDefaultRefer("DATA_DEFAULT");
-        return adapter;
-    }
+
     /* *****************************************************************************************************************
      *
      *                                                     DML
@@ -1491,16 +1491,6 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
     }
 
     /**
-     * database[结构集封装-依据]<br/>
-     * 读取 database 元数据结果集的依据
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @return DatabaseMetadataAdapter
-     */
-    @Override
-    public Database.MetadataAdapter databaseMetadataAdapter(DataRuntime runtime) {
-        return super.databaseMetadataAdapter(runtime);
-    }
-    /**
      * schema[结果集封装]<br/>
      * 根据查询结果封装 schema 对象,只封装catalog,schema,name等基础属性
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -1663,16 +1653,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         return super.catalog(runtime, create, meta);
     }
 
-    /**
-     * catalog[结构集封装-依据]<br/>
-     * 读取 catalog 元数据结果集的依据
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @return CatalogMetadataAdapter
-     */
-    @Override
-    public Catalog.MetadataAdapter catalogMetadataAdapter(DataRuntime runtime) {
-        return super.catalogMetadataAdapter(runtime);
-    }
+
     /**
      * catalog[结果集封装]<br/>
      * 根据查询结果封装 catalog 对象,只封装catalog,schema,name等基础属性
@@ -1873,16 +1854,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         return super.schema(runtime, create, meta);
     }
 
-    /**
-     * schema[结构集封装-依据]<br/>
-     * 读取 schema 元数据结果集的依据
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @return SchemaMetadataAdapter
-     */
-    @Override
-    public Schema.MetadataAdapter schemaMetadataAdapter(DataRuntime runtime) {
-        return super.schemaMetadataAdapter(runtime);
-    }
+
     /**
      * schema[结果集封装]<br/>
      * 根据查询结果封装 schema 对象,只封装catalog,schema,name等基础属性
@@ -2740,25 +2712,14 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
 
     /**
      * column[结构集封装-依据]<br/>
-     * 读取column元数据结果集的依据
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @return ColumnMetadataAdapter
-     */
-    @Override
-    public Column.MetadataAdapter columnMetadataRefer(DataRuntime runtime) {
-        return defaultColumnMetadataAdapter;
-    }
-
-    /**
-     * column[结构集封装-依据]<br/>
      * 读取column元数据结果集的依据(需要区分数据类型)
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param meta 具体数据类型,length/precisoin/scale三个属性需要根据数据类型覆盖通用配置
      * @return ColumnMetadataAdapter
      */
     @Override
-    public Column.MetadataAdapter columnMetadataRefer(DataRuntime runtime, TypeMetadata meta) {
-        return super.columnMetadataRefer(runtime, meta);
+    public TypeMetadata.Refer dataTypeMetadataRefer(DataRuntime runtime, TypeMetadata meta) {
+        return super.dataTypeMetadataRefer(runtime, meta);
     }
 
     /* *****************************************************************************************************************
