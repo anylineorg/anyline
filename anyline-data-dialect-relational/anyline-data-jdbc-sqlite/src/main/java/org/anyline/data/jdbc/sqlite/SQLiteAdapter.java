@@ -2356,40 +2356,43 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	/**
 	 * column[结果集封装]<br/>(方法1)<br/>
 	 * 元数据数字有效位数列<br/>
-	 * 不直接调用 用来覆盖dataTypeMetadataRefer(DataRuntime runtime, TypeMetadata meta)
+	 * 不直接调用 用来覆盖dataTypeMetadataRefer(DataRuntime runtime, TypeMetadata meta)<br/>
+	 * 注意父类中会根据具体数据库和数据类型(alias,category) 确定refer 如果父类没有设置 再用子类中统一的默认值
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta TypeMetadata
 	 * @return String
 	 */
 	@Override
-	public String columnMetadataLengthRefer(DataRuntime runtime, TypeMetadata meta) {
-		return super.columnMetadataLengthRefer(runtime, meta);
+	public String columnFieldLengthRefer(DataRuntime runtime, TypeMetadata meta) {
+		return super.columnFieldLengthRefer(runtime, meta);
 	}
 
 	/**
 	 * column[结果集封装]<br/>(方法1)<br/>
 	 * 元数据长度列<br/>
-	 * 不直接调用 用来覆盖dataTypeMetadataRefer(DataRuntime runtime, TypeMetadata meta)
+	 * 不直接调用 用来覆盖dataTypeMetadataRefer(DataRuntime runtime, TypeMetadata meta)<br/>
+	 * 注意父类中会根据具体数据库和数据类型(alias,category) 确定refer 如果父类没有设置 再用子类中统一的默认值
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta TypeMetadata
 	 * @return String
 	 */
 	@Override
-	public String columnMetadataPrecisionRefer(DataRuntime runtime, TypeMetadata meta) {
-		return super.columnMetadataPrecisionRefer(runtime, meta);
+	public String columnFieldPrecisionRefer(DataRuntime runtime, TypeMetadata meta) {
+		return super.columnFieldPrecisionRefer(runtime, meta);
 	}
 
 	/**
 	 * column[结果集封装]<br/>(方法1)<br/>
 	 * 元数据数字有效位数列<br/>
-	 * 不直接调用 用来覆盖dataTypeMetadataRefer(DataRuntime runtime, TypeMetadata meta)
+	 * 不直接调用 用来覆盖dataTypeMetadataRefer(DataRuntime runtime, TypeMetadata meta)<br/>
+	 * 注意父类中会根据具体数据库和数据类型(alias,category) 确定refer 如果父类没有设置 再用子类中统一的默认值
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta TypeMetadata
 	 * @return String
 	 */
 	@Override
-	public String columnMetadataScaleRefer(DataRuntime runtime, TypeMetadata meta) {
-		return super.columnMetadataScaleRefer(runtime, meta);
+	public String columnFieldScaleRefer(DataRuntime runtime, TypeMetadata meta) {
+		return super.columnFieldScaleRefer(runtime, meta);
 	}
 
 	/* *****************************************************************************************************************

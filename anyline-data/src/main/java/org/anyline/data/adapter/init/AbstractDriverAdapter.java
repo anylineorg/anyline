@@ -253,7 +253,12 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
     @Override
     public void reg(FieldRefer refer) {
         Class<?> metadata = refer.metadata();
-        refers.put(metadata, refer);
+        FieldRefer cur = refers.get(metadata);
+        if(null != cur){
+            cur.copy(refer);
+        }else {
+            refers.put(metadata, refer);
+        }
     }
     @Override
     public LinkedHashMap<String, TypeMetadata> alias() {
@@ -8489,13 +8494,14 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	/**
 	 * column[结果集封装]<br/>(方法1)<br/>
 	 * 元数据数字有效位数列<br/>
-	 * 不直接调用 用来覆盖dataTypeMetadataRefer(DataRuntime runtime, TypeMetadata meta)
+	 * 不直接调用 用来覆盖dataTypeMetadataRefer(DataRuntime runtime, TypeMetadata meta)<br/>
+	 * 注意父类中会根据具体数据库和数据类型(alias,category) 确定refer 如果父类没有设置 再用子类中统一的默认值
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta TypeMetadata
 	 * @return String
 	 */
 	@Override
-	public String columnMetadataLengthRefer(DataRuntime runtime, TypeMetadata meta) {
+	public String columnFieldLengthRefer(DataRuntime runtime, TypeMetadata meta) {
 		if(null == meta) {
 			return null;
 		}
@@ -8533,7 +8539,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		//5.具体数据库实现的MetadataAdapter
 		if(null == result) {
-            config = dataTypeMetadataRefer(runtime, meta);
+            //config = dataTypeMetadataRefer(runtime, meta);
             if(null != config) {
                 result = config.getLengthRefer();
             }
@@ -8545,13 +8551,14 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	/**
 	 * column[结果集封装]<br/>(方法1)<br/>
 	 * 元数据长度列<br/>
-	 * 不直接调用 用来覆盖dataTypeMetadataRefer(DataRuntime runtime, TypeMetadata meta)
+	 * 不直接调用 用来覆盖dataTypeMetadataRefer(DataRuntime runtime, TypeMetadata meta)<br/>
+	 * 注意父类中会根据具体数据库和数据类型(alias,category) 确定refer 如果父类没有设置 再用子类中统一的默认值
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta TypeMetadata
 	 * @return String
 	 */
 	@Override
-	public String columnMetadataPrecisionRefer(DataRuntime runtime, TypeMetadata meta) {
+	public String columnFieldPrecisionRefer(DataRuntime runtime, TypeMetadata meta) {
 		if(null == meta) {
 			return null;
 		}
@@ -8582,7 +8589,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		//5.具体数据库实现的MetadataAdapter
 		if(null == result) {
-            config = dataTypeMetadataRefer(runtime, meta);
+            //config = dataTypeMetadataRefer(runtime, meta);
             if(null != config) {
                 result = config.getPrecisionRefer();
             }
@@ -8593,13 +8600,14 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	/**
 	 * column[结果集封装]<br/>(方法1)<br/>
 	 * 元数据数字有效位数列<br/>
-	 * 不直接调用 用来覆盖dataTypeMetadataRefer(DataRuntime runtime, TypeMetadata meta)
+	 * 不直接调用 用来覆盖dataTypeMetadataRefer(DataRuntime runtime, TypeMetadata meta)<br/>
+	 * 注意父类中会根据具体数据库和数据类型(alias,category) 确定refer 如果父类没有设置 再用子类中统一的默认值
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta TypeMetadata
 	 * @return String
 	 */
 	@Override
-	public String columnMetadataScaleRefer(DataRuntime runtime, TypeMetadata meta) {
+	public String columnFieldScaleRefer(DataRuntime runtime, TypeMetadata meta) {
 		if(null == meta) {
 			return null;
 		}
@@ -8637,7 +8645,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		//5.具体数据库实现的MetadataAdapter
 		if(null == result) {
-            config = dataTypeMetadataRefer(runtime, meta);
+           // config = dataTypeMetadataRefer(runtime, meta);
             if(null != config) {
                 result = config.getScaleRefer();
             }
@@ -8648,7 +8656,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	/**
 	 * column[结果集封装]<br/>(方法1)<br/>
 	 * 是否忽略长度<br/>
-	 * 不直接调用 用来覆盖dataTypeMetadataRefer(DataRuntime runtime, TypeMetadata meta)
+	 * 不直接调用 用来覆盖dataTypeMetadataRefer(DataRuntime runtime, TypeMetadata meta)<br/>
+	 * 注意父类中会根据具体数据库和数据类型(alias,category) 确定refer 如果父类没有设置 再用子类中统一的默认值
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta TypeMetadata
 	 * @return String
@@ -8695,7 +8704,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		//5.具体数据库实现的MetadataAdapter
 		if(-1 == result) {
-            config = dataTypeMetadataRefer(runtime, meta);
+            //config = dataTypeMetadataRefer(runtime, meta);
             if(null != config) {
                 result = config.ignoreLength();
             }
@@ -8707,7 +8716,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	/**
 	 * column[结果集封装]<br/>(方法1)<br/>
 	 * 是否忽略有效位数<br/>
-	 * 不直接调用 用来覆盖dataTypeMetadataRefer(DataRuntime runtime, TypeMetadata meta)
+	 * 不直接调用 用来覆盖dataTypeMetadataRefer(DataRuntime runtime, TypeMetadata meta)<br/>
+	 * 注意父类中会根据具体数据库和数据类型(alias,category) 确定refer 如果父类没有设置 再用子类中统一的默认值
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta TypeMetadata
 	 * @return String
@@ -8754,7 +8764,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		//5.具体数据库实现的MetadataAdapter
 		if(-1 == result) {
-            config = dataTypeMetadataRefer(runtime, meta);
+            //config = dataTypeMetadataRefer(runtime, meta);
             if(null != config) {
                 result = config.ignorePrecision();
             }
@@ -8766,7 +8776,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	/**
 	 * column[结果集封装]<br/>(方法1)<br/>
 	 * 是否忽略小数位<br/>
-	 * 不直接调用 用来覆盖dataTypeMetadataRefer(DataRuntime runtime, TypeMetadata meta)
+	 * 不直接调用 用来覆盖dataTypeMetadataRefer(DataRuntime runtime, TypeMetadata meta)<br/>
+	 * 注意父类中会根据具体数据库和数据类型(alias,category) 确定refer 如果父类没有设置 再用子类中统一的默认值
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta TypeMetadata
 	 * @return String
@@ -8813,7 +8824,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		//5.具体数据库实现的MetadataAdapter
 		if(-1 == result) {
-            config = dataTypeMetadataRefer(runtime, meta);
+            //config = dataTypeMetadataRefer(runtime, meta);
             if(null != config) {
                 result = config.ignoreScale();
             }
@@ -13092,7 +13103,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	/**
 	 * column[命令合成-子流程]<br/>
 	 * 定义列:是否忽略有长度<br/>
-	 * 不直接调用 用来覆盖dataTypeMetadataRefer(DataRuntime runtime, TypeMetadata meta)
+	 * 不直接调用 用来覆盖dataTypeMetadataRefer(DataRuntime runtime, TypeMetadata meta)<br/>
+	 * 注意父类中会根据具体数据库和数据类型(alias,category) 确定refer 如果父类没有设置 再用子类中统一的默认值
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param type 数据类型
 	 * @return boolean
@@ -13105,7 +13117,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	/**
 	 * column[命令合成-子流程]<br/>
 	 * 定义列:是否忽略有效位数<br/>
-	 * 不直接调用 用来覆盖dataTypeMetadataRefer(DataRuntime runtime, TypeMetadata meta)
+	 * 不直接调用 用来覆盖dataTypeMetadataRefer(DataRuntime runtime, TypeMetadata meta)<br/>
+	 * 注意父类中会根据具体数据库和数据类型(alias,category) 确定refer 如果父类没有设置 再用子类中统一的默认值
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param type TypeMetadata
 	 * @return boolean
@@ -13118,7 +13131,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	/**
 	 * column[命令合成-子流程]<br/>
 	 * 定义列:定义列:是否忽略小数位<br/>
-	 * 不直接调用 用来覆盖dataTypeMetadataRefer(DataRuntime runtime, TypeMetadata meta)
+	 * 不直接调用 用来覆盖dataTypeMetadataRefer(DataRuntime runtime, TypeMetadata meta)<br/>
+	 * 注意父类中会根据具体数据库和数据类型(alias,category) 确定refer 如果父类没有设置 再用子类中统一的默认值
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param type TypeMetadata
 	 * @return boolean

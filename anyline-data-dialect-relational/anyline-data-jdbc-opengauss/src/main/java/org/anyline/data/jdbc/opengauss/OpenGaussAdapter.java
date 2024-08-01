@@ -2383,8 +2383,8 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
      * @return String
      */
     @Override
-    public String columnMetadataLengthRefer(DataRuntime runtime, TypeMetadata meta) {
-        return super.columnMetadataLengthRefer(runtime, meta);
+    public String columnFieldLengthRefer(DataRuntime runtime, TypeMetadata meta) {
+        return super.columnFieldLengthRefer(runtime, meta);
     }
 
     /**
@@ -2396,8 +2396,8 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
      * @return String
      */
     @Override
-    public String columnMetadataPrecisionRefer(DataRuntime runtime, TypeMetadata meta) {
-        return super.columnMetadataPrecisionRefer(runtime, meta);
+    public String columnFieldPrecisionRefer(DataRuntime runtime, TypeMetadata meta) {
+        return super.columnFieldPrecisionRefer(runtime, meta);
     }
 
     /**
@@ -2409,8 +2409,8 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
      * @return String
      */
     @Override
-    public String columnMetadataScaleRefer(DataRuntime runtime, TypeMetadata meta) {
-        return super.columnMetadataScaleRefer(runtime, meta);
+    public String columnFieldScaleRefer(DataRuntime runtime, TypeMetadata meta) {
+        return super.columnFieldScaleRefer(runtime, meta);
     }
 
     /* *****************************************************************************************************************

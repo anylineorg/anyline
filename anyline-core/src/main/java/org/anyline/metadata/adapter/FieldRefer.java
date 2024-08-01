@@ -60,5 +60,11 @@ public class FieldRefer {
         map.put(field.toUpperCase(), refers);
         return this;
     }
+    public FieldRefer copy(FieldRefer copy){
+        if(null != copy){
+            map.putAll(copy.map);
+        }
+        return this;
+    }
 
 }
