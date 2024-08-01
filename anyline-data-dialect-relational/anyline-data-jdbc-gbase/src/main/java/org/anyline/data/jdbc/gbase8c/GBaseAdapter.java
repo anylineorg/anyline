@@ -31,6 +31,7 @@ import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
 import org.anyline.exception.NotSupportException;
 import org.anyline.metadata.*;
+import org.anyline.metadata.refer.MetadataFieldRefer;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.metadata.type.TypeMetadata;
 
@@ -1231,6 +1232,15 @@ public class GBaseAdapter extends PostgresGenusAdapter implements JDBCAdapter {
 
 	/**
 	 * database[结果集封装]<br/>
+	 * database 属性与结果集对应关系
+	 * @return MetadataFieldRefer
+	 */
+	@Override
+	public MetadataFieldRefer buildDatabaseFieldRefer() {
+		return super.buildDatabaseFieldRefer();
+	}
+	/**
+	 * database[结果集封装]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
@@ -1391,6 +1401,15 @@ public class GBaseAdapter extends PostgresGenusAdapter implements JDBCAdapter {
 	}
 
 	/**
+	 * Catalog[结果集封装]<br/>
+	 * Catalog 属性与结果集对应关系
+	 * @return MetadataFieldRefer
+	 */
+	@Override
+	public MetadataFieldRefer buildCatalogFieldRefer() {
+		return super.buildCatalogFieldRefer();
+	}
+	/**
 	 * catalog[结果集封装]<br/>
 	 * 根据查询结果集构造 Database
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -1517,6 +1536,15 @@ public class GBaseAdapter extends PostgresGenusAdapter implements JDBCAdapter {
 	}
 
 	/**
+	 * Schema[结果集封装]<br/>
+	 * Schema 属性与结果集对应关系
+	 * @return MetadataFieldRefer
+	 */
+	@Override
+	public MetadataFieldRefer buildSchemaFieldRefer() {
+		return super.buildSchemaFieldRefer();
+	}
+	/**
 	 * schema[结果集封装]<br/>
 	 * 根据查询结果集构造 Database
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -1636,6 +1664,15 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		return super.buildQueryTablesRun(runtime, greedy, query, types, configs);
 	}
 
+	/**
+	 * Table[结果集封装]<br/>
+	 * Table 属性与结果集对应关系
+	 * @return MetadataFieldRefer
+	 */
+	@Override
+	public MetadataFieldRefer buildTableFieldRefer() {
+		return super.buildTableFieldRefer();
+	}
 	/**
 	 * table[命令合成]<br/>
 	 * 查询表备注
@@ -1838,6 +1875,15 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	}
 
 	/**
+	 * View[结果集封装]<br/>
+	 * View 属性与结果集对应关系
+	 * @return MetadataFieldRefer
+	 */
+	@Override
+	public MetadataFieldRefer buildViewFieldRefer() {
+		return super.buildViewFieldRefer();
+	}
+	/**
 	 * view[结果集封装]<br/>
 	 *  根据查询结果集构造View
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -1954,6 +2000,15 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		return super.buildQueryMasterTablesRun(runtime, greedy, query, types,  configs);
 	}
 
+	/**
+	 * master[结果集封装]<br/>
+	 * MasterTable 属性与结果集对应关系
+	 * @return MetadataFieldRefer
+	 */
+	@Override
+	public MetadataFieldRefer buildMasterTableFieldRefer() {
+		return super.buildMasterTableFieldRefer();
+	}
 	/**
 	 * master table[结果集封装]<br/>
 	 * 根据查询结果集构造Table
@@ -2197,6 +2252,15 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	@Override
 	public List<Run> buildQueryColumnsRun(DataRuntime runtime, boolean metadata, Collection<? extends Table> tables, Column query, ConfigStore configs) throws Exception {
 		return super.buildQueryColumnsRun(runtime, metadata, tables, query, configs);
+	}
+	/**
+	 * Column[结果集封装]<br/>
+	 * Column 属性与结果集对应关系
+	 * @return MetadataFieldRefer
+	 */
+	@Override
+	public MetadataFieldRefer buildColumnFieldRefer() {
+		return super.buildColumnFieldRefer();
 	}
 	/**
 	 * column[结果集封装]<br/>
@@ -2446,6 +2510,15 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	}
 
 	/**
+	 * primary[结果集封装]<br/>
+	 * PrimaryKey 属性与结果集对应关系
+	 * @return MetadataFieldRefer
+	 */
+	@Override
+	public MetadataFieldRefer buildPrimaryKeyFieldRefer() {
+		return super.buildPrimaryKeyFieldRefer();
+	}
+	/**
 	 * primary[结构集封装]<br/>
 	 * 根据查询结果集构造PrimaryKey基础属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -2594,6 +2667,15 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		return super.buildQueryIndexesRun(runtime, tables);
 	}
 
+	/**
+	 * Index[结果集封装]<br/>
+	 * Index 属性与结果集对应关系
+	 * @return MetadataFieldRefer
+	 */
+	@Override
+	public MetadataFieldRefer buildIndexFieldRefer() {
+		return super.buildIndexFieldRefer();
+	}
 	/**
 	 * index[结果集封装]<br/>
 	 *  根据查询结果集构造Index
@@ -3031,6 +3113,15 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		return super.buildQueryFunctionsRun(runtime, query);
 	}
 
+	/**
+	 * Function[结果集封装]<br/>
+	 * Function 属性与结果集对应关系
+	 * @return MetadataFieldRefer
+	 */
+	@Override
+	public MetadataFieldRefer buildFunctionFieldRefer() {
+		return super.buildFunctionFieldRefer();
+	}
 	/**
 	 * function[结果集封装]<br/>
 	 * 根据查询结果集构造 Trigger

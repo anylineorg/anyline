@@ -39,6 +39,7 @@ import org.anyline.entity.*;
 import org.anyline.exception.CommandQueryException;
 import org.anyline.exception.NotSupportException;
 import org.anyline.metadata.*;
+import org.anyline.metadata.refer.MetadataFieldRefer;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.net.HttpResponse;
@@ -1462,6 +1463,15 @@ PUT * /_bulk
     }
     /**
      * database[结果集封装]<br/>
+     * database 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer buildDatabaseFieldRefer() {
+        return super.buildDatabaseFieldRefer();
+    }
+    /**
+     * database[结果集封装]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
@@ -1643,6 +1653,15 @@ PUT * /_bulk
         return super.buildQueryCatalogsRun(runtime, greedy, query);
     }
     /**
+     * Catalog[结果集封装]<br/>
+     * Catalog 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer buildCatalogFieldRefer() {
+        return super.buildCatalogFieldRefer();
+    }
+    /**
      * catalog[结果集封装]<br/>
      * 根据查询结果集构造 Database
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -1822,6 +1841,16 @@ PUT * /_bulk
     public List<Run> buildQuerySchemasRun(DataRuntime runtime, boolean greedy, Schema query) throws Exception {
         return super.buildQuerySchemasRun(runtime, greedy, query);
     }
+
+    /**
+     * Schema[结果集封装]<br/>
+     * Schema 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer buildSchemaFieldRefer() {
+        return super.buildSchemaFieldRefer();
+    }
     /**
      * schema[结果集封装]<br/>
      * 根据查询结果集构造 Database
@@ -1977,6 +2006,15 @@ PUT * /_bulk
         return runs;
     }
 
+    /**
+     * Table[结果集封装]<br/>
+     * Table 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer buildTableFieldRefer() {
+        return super.buildTableFieldRefer();
+    }
 
     /**
      * table[结果集封装]<br/>
@@ -2180,6 +2218,15 @@ PUT * /_bulk
     }
 
     /**
+     * View[结果集封装]<br/>
+     * View 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer buildViewFieldRefer() {
+        return super.buildViewFieldRefer();
+    }
+    /**
      * view[结果集封装]<br/>
      *  根据查询结果集构造View
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -2296,6 +2343,15 @@ PUT * /_bulk
         return super.buildQueryMasterTablesRun(runtime, greedy, query, types, configs);
     }
 
+    /**
+     * master[结果集封装]<br/>
+     * MasterTable 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer buildMasterTableFieldRefer() {
+        return super.buildMasterTableFieldRefer();
+    }
     /**
      * master table[结果集封装]<br/>
      * 根据查询结果集构造Table
@@ -2676,6 +2732,15 @@ PUT * /_bulk
     }
 
     /**
+     * primary[结果集封装]<br/>
+     * PrimaryKey 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer buildPrimaryKeyFieldRefer() {
+        return super.buildPrimaryKeyFieldRefer();
+    }
+    /**
      * primary[结构集封装]<br/>
      *  根据查询结果集构造PrimaryKey
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -2793,6 +2858,15 @@ PUT * /_bulk
         return super.buildQueryIndexesRun(runtime, query);
     }
 
+    /**
+     * Index[结果集封装]<br/>
+     * Index 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer buildIndexFieldRefer() {
+        return super.buildIndexFieldRefer();
+    }
     /**
      * index[结果集封装]<br/>
      *  根据查询结果集构造Index
@@ -3189,6 +3263,15 @@ PUT * /_bulk
         return super.buildQueryFunctionsRun(runtime, query);
     }
 
+    /**
+     * Function[结果集封装]<br/>
+     * Function 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer buildFunctionFieldRefer() {
+        return super.buildFunctionFieldRefer();
+    }
     /**
      * function[结果集封装]<br/>
      * 根据查询结果集构造 Trigger

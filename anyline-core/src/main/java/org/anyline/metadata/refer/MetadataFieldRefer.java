@@ -26,11 +26,15 @@ import java.util.Map;
 /**
  * 读取元数据结果集依据(元数据属性与列名对应关系)
  */
-public class FieldRefer {
+public class MetadataFieldRefer {
     private Map<String, String[]> map = new HashMap<>();
     private final Class<?> metadata;
-    public FieldRefer(Class<?> metadata){
+    public MetadataFieldRefer(Class<?> metadata){
         this.metadata = metadata;
+    }
+    public MetadataFieldRefer(Class<?> metadata, String name){
+        this.metadata = metadata;
+        setRefer("name", name);
     }
     public Class<?> metadata(){
         return metadata;
@@ -46,11 +50,11 @@ public class FieldRefer {
         }
         return null;
     }
-    public FieldRefer setRefer(String field, String[] refers) {
+    public MetadataFieldRefer setRefer(String field, String[] refers) {
         map.put(field.toUpperCase(), refers);
         return this;
     }
-    public FieldRefer setRefer(String field, String refer) {
+    public MetadataFieldRefer setRefer(String field, String refer) {
         String[] refers = null;
         if(BasicUtil.isNotEmpty(refer)) {
             refers = refer.split(",");
@@ -60,7 +64,7 @@ public class FieldRefer {
         map.put(field.toUpperCase(), refers);
         return this;
     }
-    public FieldRefer copy(FieldRefer copy){
+    public MetadataFieldRefer copy(MetadataFieldRefer copy){
         if(null != copy){
             map.putAll(copy.map);
         }

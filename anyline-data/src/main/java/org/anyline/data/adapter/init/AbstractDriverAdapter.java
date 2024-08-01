@@ -112,7 +112,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
     //拼写兼容 下划线空格兼容
     protected static Map<String, String> spells = new HashMap<>();
 
-    protected Map<Class<?>, FieldRefer> refers = new HashMap<>();
+    protected Map<Class<?>, MetadataFieldRefer> refers = new HashMap<>();
     //根据名称定位数据类型
     protected LinkedHashMap<String, TypeMetadata> alias = new LinkedHashMap();
 
@@ -204,56 +204,30 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         MetadataReferHolder.reg(type(), TypeMetadata.CATEGORY.OTHER, new TypeMetadata.Refer( 1, 1, 1));
 
 
-        FieldRefer tableRefer = new FieldRefer(Table.class);
-        tableRefer.setRefer("name", "TABLE_NAME,NAME,TABNAME");
-        tableRefer.setRefer("catalog", "TABLE_CATALOG");
-        tableRefer.setRefer("schema", "TABLE_SCHEMA,TABSCHEMA,SCHEMA_NAME");
-        tableRefer.setRefer("comment", "TABLE_COMMENT,COMMENTS,COMMENT");
-        reg(tableRefer);
-
-        FieldRefer columnRefer = new FieldRefer(Column.class);
-        columnRefer.setRefer("name","COLUMN_NAME,COLNAME");
-        columnRefer.setRefer("catalog","TABLE_CATALOG");
-        columnRefer.setRefer("schema","TABLE_SCHEMA,TABSCHEMA,SCHEMA_NAME,OWNER");
-        columnRefer.setRefer("table","TABLE_NAME,TABNAME");
-        columnRefer.setRefer("nullable","IS_NULLABLE,NULLABLE,NULLS");
-        columnRefer.setRefer("charset", "CHARACTER_SET_NAME");
-        columnRefer.setRefer("Collate", "COLLATION_NAME");
-        columnRefer.setRefer("DataType", "FULL_TYPE,DATA_TYPE,TYPE_NAME,TYPENAME,DATA_TYPE_NAME,UDT_NAME,DATA_TYPE,TYPENAME,DATA_TYPE_NAME");
-        columnRefer.setRefer("Position", "ORDINAL_POSITION,COLNO,POSITION");
-        columnRefer.setRefer("Comment" ,"COLUMN_COMMENT,COMMENTS,REMARKS");
-        columnRefer.setRefer("Default", "COLUMN_DEFAULT,DATA_DEFAULT,DEFAULT,DEFAULT_VALUE,DEFAULT_DEFINITION");
-        reg(columnRefer);
-
-        FieldRefer viewRefer = new FieldRefer(View.class);
-        viewRefer.setRefer("Name","VIEW_NAME,TABLE_NAME,NAME,TABNAME");
-        viewRefer.setRefer("Catalog","VIEW_CATALOG,TABLE_CATALOG");
-        viewRefer.setRefer("Schema","VIEW_SCHEMA,TABLE_SCHEMA,TABSCHEMA,SCHEMA_NAME");
-        reg(viewRefer);
-
-        FieldRefer indexRefer = new FieldRefer(Index.class);
-
-        indexRefer.setRefer("Name","INDEX_NAME");
-        indexRefer.setRefer("Table","TABLE_NAME");
-        indexRefer.setRefer("schema", "TABLE_SCHEMA");
-        indexRefer.setRefer("column", "COLUMN_NAME");
-        indexRefer.setRefer("ColumnOrder", "COLLATION");
-        indexRefer.setRefer("ColumnPosition", "SEQ_IN_INDEX");
-        reg(indexRefer);
+        reg(buildCatalogFieldRefer());
+        reg(buildSchemaFieldRefer());
+        reg(buildDatabaseFieldRefer());
+        reg(buildTableFieldRefer());
+        reg(buildMasterTableFieldRefer());
+        reg(buildColumnFieldRefer());
+        reg(buildViewFieldRefer());
+        reg(buildPrimaryKeyFieldRefer());
+        reg(buildIndexFieldRefer());
+        reg(buildUserFieldRefer());
     }
 
     @Override
-    public FieldRefer refer(DataRuntime runtime, Class<?> type) {
-        FieldRefer refer = refers.get(type);
+    public MetadataFieldRefer refer(DataRuntime runtime, Class<?> type) {
+        MetadataFieldRefer refer = refers.get(type);
         if(null == refer){
-            refer = new FieldRefer(type);
+            refer = new MetadataFieldRefer(type);
         }
         return refer;
     }
     @Override
-    public void reg(FieldRefer refer) {
+    public void reg(MetadataFieldRefer refer) {
         Class<?> metadata = refer.metadata();
-        FieldRefer cur = refers.get(metadata);
+        MetadataFieldRefer cur = refers.get(metadata);
         if(null != cur){
             cur.copy(refer);
         }else {
@@ -4185,6 +4159,15 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return new ArrayList<>();
 	}
+    /**
+     * database[结果集封装]<br/>
+     * database 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer buildDatabaseFieldRefer() {
+        return new MetadataFieldRefer(Database.class);
+    }
 
 	/**
 	 * database[结果集封装]<br/>
@@ -4198,29 +4181,42 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public <T extends Database> LinkedHashMap<String, T> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Database query, DataSet set) throws Exception {
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 LinkedHashMap<String, Database> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Database> databases, Catalog catalog, Schema schema, DataSet set)", 37));
-		}
+        if(null == previous) {
+            previous = new LinkedHashMap<>();
+        }
+        for(DataRow row:set) {
+            T meta = null;
+            meta = init(runtime, index, meta, query, row);
+            meta = detail(runtime, index, meta, query, row);
+            previous.put(meta.getName().toUpperCase(), meta);
+        }
         return previous;
-	}
+    }
 
-	/**
-	 * database[结果集封装]<br/>
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
-	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param previous 上一步查询结果
-	 * @param set 查询结果集
-	 * @return List
-	 * @throws Exception
-	 */
-	@Override
-	public <T extends Database> List<T> databases(DataRuntime runtime, int index, boolean create, List<T> previous, Database query, DataSet set) throws Exception {
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Database> databases(DataRuntime runtime, int index, boolean create, List<Database> databases, Catalog catalog, Schema schema, DataSet set)", 37));
-		}
+    /**
+     * database[结果集封装]<br/>
+     *
+     * @param runtime  运行环境主要包含驱动适配器 数据源或客户端
+     * @param index    第几条SQL 对照 buildQueryDatabaseRun 返回顺序
+     * @param create   上一步没有查到的,这一步是否需要新创建
+     * @param previous 上一步查询结果
+     * @param set      查询结果集
+     * @return List
+     * @throws Exception
+     */
+    @Override
+    public <T extends Database> List<T> databases(DataRuntime runtime, int index, boolean create, List<T> previous, Database query, DataSet set) throws Exception {
+        if (null == previous) {
+            previous = new ArrayList<>();
+        }
+        for (DataRow row : set) {
+            T meta = null;
+            meta = init(runtime, index, meta, query, row);
+            meta = detail(runtime, index, meta, query, row);
+            previous.add(meta);
+        }
         return previous;
-	}
+    }
 
 	/**
 	 * database[结果集封装]<br/>
@@ -4338,6 +4334,13 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      */
     @Override
     public <T extends Database> T init(DataRuntime runtime, int index, T meta, Database query, DataRow row) {
+        if(null == meta) {
+            meta = (T)new Database();
+        }
+        MetadataFieldRefer refer = refer(runtime, Database.class);
+        meta.setMetadata(row);
+        meta.setName(row.getString(refer.getRefers("name")));
+        meta.setUser(row.getString(refer.getRefers("user")));
         return meta;
     }
 
@@ -4550,6 +4553,15 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return new ArrayList<>();
 	}
 
+    /**
+     * Catalog[结果集封装]<br/>
+     * Catalog 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer buildCatalogFieldRefer() {
+        return new MetadataFieldRefer(Catalog.class);
+    }
 	/**
 	 * catalog[结果集封装]<br/>
 	 * 根据查询结果集构造 Database
@@ -4571,6 +4583,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         for(DataRow row:set) {
             T meta = null;
             meta = init(runtime, index, meta, query, row);
+            if(null == meta || meta.isEmpty()){
+                continue;
+            }
             meta = detail(runtime, index, meta, query, row);
             previous.put(meta.getName().toUpperCase(), meta);
         }
@@ -4589,9 +4604,18 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public <T extends Catalog> List<T> catalogs(DataRuntime runtime, int index, boolean create, List<T> previous, Catalog query, DataSet set) throws Exception {
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Catalog> List<T> catalogs(DataRuntime runtime, int index, boolean create, List<T> previous, Catalog query, DataSet set)", 37));
-		}
+        if(null == previous) {
+            previous = new ArrayList<>();
+        }
+        for(DataRow row:set) {
+            T meta = null;
+            meta = init(runtime, index, meta, query, row);
+            if(null == meta || meta.isEmpty()){
+                continue;
+            }
+            meta = detail(runtime, index, meta, query, row);
+            previous.add(meta);
+        }
         return previous;
 	}
 
@@ -4680,7 +4704,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         if(null == meta) {
             meta = (T)new Catalog();
         }
-        FieldRefer refer = refer(runtime, Catalog.class);
+        MetadataFieldRefer refer = refer(runtime, Catalog.class);
         String name = row.getString(refer.getRefers("name"));
         meta.setMetadata(row);
         meta.setName(name);
@@ -4895,6 +4919,15 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return new ArrayList<>();
 	}
 
+    /**
+     * Schema[结果集封装]<br/>
+     * Schema 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer buildSchemaFieldRefer() {
+        return new MetadataFieldRefer(Schema.class);
+    }
 	/**
 	 * schema[结果集封装]<br/>
 	 * 根据查询结果集构造 Schema
@@ -4934,10 +4967,16 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public <T extends Schema> List<T> schemas(DataRuntime runtime, int index, boolean create, List<T> previous, Schema query, DataSet set) throws Exception {
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Schema> List<T> schemas(DataRuntime runtime, int index, boolean create, List<T> previous, Schema query, DataSet set)", 37));
-		}
-		return previous;
+        if(null == previous) {
+            previous = new ArrayList<>();
+        }
+        for(DataRow row:set) {
+            T meta = null;
+            meta = init(runtime, index, meta, query, row);
+            meta = detail(runtime, index, meta, query, row);
+            previous.add(meta);
+        }
+        return previous;
 	}
 
 	/**
@@ -5054,7 +5093,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         if(null == meta) {
             meta = (T)new Schema();
         }
-        FieldRefer refer = refer(runtime, Schema.class);
+        MetadataFieldRefer refer = refer(runtime, Schema.class);
         String _catalog = row.getString(refer.getRefers("Catalog"));
         if(null == _catalog && null != catalog) {
             _catalog = catalog.getName();
@@ -5377,6 +5416,20 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return new ArrayList<>();
 	}
 
+    /**
+     * Table[结果集封装]<br/>
+     * Table 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer buildTableFieldRefer() {
+        MetadataFieldRefer refer = new MetadataFieldRefer(Table.class);
+        refer.setRefer("name", "TABLE_NAME,NAME,TABNAME");
+        refer.setRefer("catalog", "TABLE_CATALOG");
+        refer.setRefer("schema", "TABLE_SCHEMA,TABSCHEMA,SCHEMA_NAME");
+        refer.setRefer("comment", "TABLE_COMMENT,COMMENTS,COMMENT");
+        return refer;
+    }
 	/**
 	 * table[命令合成]<br/>
 	 * 查询表备注
@@ -5512,7 +5565,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         if(null == meta) {
             meta = (T)new Table();
         }
-        FieldRefer refer = refer(runtime, Table.class);
+        MetadataFieldRefer refer = refer(runtime, Table.class);
         String _catalog = row.getString(refer.getRefers("catalog"));
         String _schema = row.getString(refer.getRefers("catalog"));
         if(null == _catalog && null != catalog) {
@@ -7098,6 +7151,19 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return new ArrayList<>();
 	}
 
+    /**
+     * View[结果集封装]<br/>
+     * View 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer buildViewFieldRefer() {
+        MetadataFieldRefer refer = new MetadataFieldRefer(View.class);
+        refer.setRefer("Name","VIEW_NAME,TABLE_NAME,NAME,TABNAME");
+        refer.setRefer("Catalog","VIEW_CATALOG,TABLE_CATALOG");
+        refer.setRefer("Schema","VIEW_SCHEMA,TABLE_SCHEMA,TABSCHEMA,SCHEMA_NAME");
+        return refer;
+    }
 	/**
 	 * view[命令合成]<br/>
 	 * 查询视图备注
@@ -7644,6 +7710,15 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return new ArrayList<>();
 	}
 
+    /**
+     * master[结果集封装]<br/>
+     * MasterTable 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer buildMasterTableFieldRefer() {
+        return new MetadataFieldRefer(MasterTable.class);
+    }
 	/**
 	 * master[命令合成]<br/>
 	 * 查询表备注
@@ -8415,6 +8490,27 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return new ArrayList<>();
 	}
+    /**
+     * Column[结果集封装]<br/>
+     * Column 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer buildColumnFieldRefer() {
+        MetadataFieldRefer refer = new MetadataFieldRefer(Column.class);
+        refer.setRefer("name","COLUMN_NAME,COLNAME");
+        refer.setRefer("catalog","TABLE_CATALOG");
+        refer.setRefer("schema","TABLE_SCHEMA,TABSCHEMA,SCHEMA_NAME,OWNER");
+        refer.setRefer("table","TABLE_NAME,TABNAME");
+        refer.setRefer("nullable","IS_NULLABLE,NULLABLE,NULLS");
+        refer.setRefer("charset", "CHARACTER_SET_NAME");
+        refer.setRefer("Collate", "COLLATION_NAME");
+        refer.setRefer("DataType", "FULL_TYPE,DATA_TYPE,TYPE_NAME,TYPENAME,DATA_TYPE_NAME,UDT_NAME,DATA_TYPE,TYPENAME,DATA_TYPE_NAME");
+        refer.setRefer("Position", "ORDINAL_POSITION,COLNO,POSITION");
+        refer.setRefer("Comment" ,"COLUMN_COMMENT,COMMENTS,REMARKS");
+        refer.setRefer("Default", "COLUMN_DEFAULT,DATA_DEFAULT,DEFAULT,DEFAULT_VALUE,DEFAULT_DEFINITION");
+        return refer;
+    }
 	/**
 	 * column[结果集封装]<br/>(方法1)<br/>
 	 * 根据系统表查询SQL获取表结构
@@ -9052,6 +9148,15 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return new ArrayList<>();
 	}
 
+    /**
+     * primary[结果集封装]<br/>
+     * PrimaryKey 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer buildPrimaryKeyFieldRefer() {
+        return new MetadataFieldRefer(PrimaryKey.class);
+    }
 	/**
 	 * primary[结构集封装]<br/>
 	 * 根据查询结果集构造PrimaryKey基础属性
@@ -9463,6 +9568,23 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return new ArrayList<>();
 	}
+
+    /**
+     * Index[结果集封装]<br/>
+     * Index 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer buildIndexFieldRefer() {
+        MetadataFieldRefer refer = new MetadataFieldRefer(Index.class);
+        refer.setRefer("Name","INDEX_NAME");
+        refer.setRefer("Table","TABLE_NAME");
+        refer.setRefer("schema", "TABLE_SCHEMA");
+        refer.setRefer("column", "COLUMN_NAME");
+        refer.setRefer("ColumnOrder", "COLLATION");
+        refer.setRefer("ColumnPosition", "SEQ_IN_INDEX");
+        return refer;
+    }
 	/**
 	 * index[结果集封装]<br/>
 	 *  根据查询结果集构造Index
@@ -9481,7 +9603,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		if(null == previous) {
             previous = new LinkedHashMap<>();
 		}
-		FieldRefer refer = refer(runtime, Index.class);
+		MetadataFieldRefer refer = refer(runtime, Index.class);
 		for(DataRow row:set) {
 			String name = row.getString(refer.getRefers("name"));
 			if(null == name) {
@@ -9520,7 +9642,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		if(null == previous) {
             previous = new ArrayList<>();
 		}
-        FieldRefer refer = refer(runtime, Index.class);
+        MetadataFieldRefer refer = refer(runtime, Index.class);
 		for(DataRow row:set) {
 			String name = row.getString(refer.getRefers("Name"));
 			if(null == name) {
@@ -9632,7 +9754,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	@Override
 	public <T extends Index> T init(DataRuntime runtime, int index, T meta, Index query, DataRow row) throws Exception {
 		Table table = query.getTable();
-		FieldRefer refer = refer(runtime, Index.class);
+		MetadataFieldRefer refer = refer(runtime, Index.class);
 		String name = row.getString(refer.getRefers("name"));
 		if(null == meta) {
 			meta = (T)new Index();
@@ -9733,7 +9855,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	@Override
 	public <T extends Index> T detail(DataRuntime runtime, int index, T meta, Index query, DataRow row) throws Exception {
 		Table table = query.getTable();
-        FieldRefer refer = refer(runtime, Index.class);
+        MetadataFieldRefer refer = refer(runtime, Index.class);
 		//oracle中取了两列COLUMN_EXPRESSION,COLUMN_NAME("NAME",SYS_NC00009$)
 		String columnName = row.getStringWithoutEmpty(refer.getRefers("column"));
 		if(null == columnName) {
@@ -10322,6 +10444,16 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return new ArrayList<>();
 	}
 
+    /**
+     * Function[结果集封装]<br/>
+     * Function 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer buildFunctionFieldRefer() {
+        return new MetadataFieldRefer(Function.class);
+    }
+
 	/**
 	 * function[结果集封装]<br/>
 	 * 根据查询结果集构造 Function
@@ -10485,7 +10617,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public <T extends Function> T init(DataRuntime runtime, int index, T meta, Function query, DataRow row) {
-        FieldRefer refer = refer(runtime, Function.class);
+        MetadataFieldRefer refer = refer(runtime, Function.class);
 		if(null == meta) {
 			meta = (T)new Function();
 		}
@@ -15539,6 +15671,15 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return new ArrayList<>();
 	}
 
+    /**
+     * User[结果集封装]<br/>
+     * User 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer buildUserFieldRefer() {
+        return new MetadataFieldRefer(User.class);
+    }
 	/**
 	 * user[结果集封装]<br/>
 	 * 根据查询结果集构造 user

@@ -1908,8 +1908,8 @@ public interface DriverAdapter {
      * @param type Table Column等元数据类
      * @return MetadataRefer
      */
-    FieldRefer refer(DataRuntime runtime, Class<?> type);
-    void reg(FieldRefer refer);
+    MetadataFieldRefer refer(DataRuntime runtime, Class<?> type);
+    void reg(MetadataFieldRefer refer);
 
     /**
      * 根据运行环境识别 catalog与schema
@@ -2093,6 +2093,12 @@ public interface DriverAdapter {
 
     /**
      * database[结果集封装]<br/>
+     * database 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    MetadataFieldRefer buildDatabaseFieldRefer();
+    /**
+     * database[结果集封装]<br/>
      * 根据查询结果集构造 product
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param create 上一步没有查到的,这一步是否需要新创建
@@ -2189,6 +2195,7 @@ public interface DriverAdapter {
      * @return Table
      */
     <T extends Database> T detail(DataRuntime runtime, int index, T meta, Database query, DataRow row);
+
     /* *****************************************************************************************************************
      *                                                     catalog
      ******************************************************************************************************************/
@@ -2258,6 +2265,12 @@ public interface DriverAdapter {
         return buildQueryCatalogsRun(runtime, false, new Catalog());
     }
 
+    /**
+     * Catalog[结果集封装]<br/>
+     * Catalog 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    MetadataFieldRefer buildCatalogFieldRefer();
     /**
      * catalog[结果集封装]<br/>
      * 根据查询结果集构造 catalog
@@ -2431,6 +2444,12 @@ public interface DriverAdapter {
         return buildQuerySchemasRun(runtime, false, catalog,null);
     }
 
+    /**
+     * Schema[结果集封装]<br/>
+     * Schema 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    MetadataFieldRefer buildSchemaFieldRefer();
     /**
      * schema[结果集封装]<br/>
      * 根据查询结果集构造 schema
@@ -2628,6 +2647,14 @@ public interface DriverAdapter {
         Table query = new Table(catalog, schema, pattern);
         return buildQueryTablesRun(runtime, greedy, query, types, configs);
     }
+
+    /**
+     * Table[结果集封装]<br/>
+     * Table 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    MetadataFieldRefer buildTableFieldRefer();
+
     /**
      * table[命令合成]<br/>
      * 查询表备注
@@ -3587,6 +3614,12 @@ public interface DriverAdapter {
     }
 
     /**
+     * View[结果集封装]<br/>
+     * View 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    MetadataFieldRefer buildViewFieldRefer();
+    /**
      * view[命令合成]<br/>
      * 查询视图备注
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -3891,6 +3924,12 @@ public interface DriverAdapter {
         return buildQueryMasterTablesRun(runtime, greedy, query, types, configs);
     }
 
+    /**
+     * master[结果集封装]<br/>
+     * MasterTable 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    MetadataFieldRefer buildMasterTableFieldRefer();
     /**
      * master[命令合成]<br/>
      * 查询表备注
@@ -4466,6 +4505,13 @@ public interface DriverAdapter {
      */
     List<Run> buildQueryColumnsRun(DataRuntime runtime, boolean metadata, Collection<? extends Table> tables, Column query, ConfigStore configs) throws Exception;
 
+
+    /**
+     * Column[结果集封装]<br/>
+     * Column 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    MetadataFieldRefer buildColumnFieldRefer();
     /**
      * column[结果集封装]<br/>(方法1)<br/>
      * 根据系统表查询SQL获取表结构
@@ -4762,6 +4808,12 @@ public interface DriverAdapter {
     }
 
     /**
+     * primary[结果集封装]<br/>
+     * PrimaryKey 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    MetadataFieldRefer buildPrimaryKeyFieldRefer();
+    /**
      * primary[结构集封装]<br/>
      * 根据查询结果集构造PrimaryKey基础属性
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -5050,6 +5102,12 @@ public interface DriverAdapter {
     }
     List<Run> buildQueryIndexesRun(DataRuntime runtime, Collection<? extends Table> tables);
 
+    /**
+     * Index[结果集封装]<br/>
+     * Index 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    MetadataFieldRefer buildIndexFieldRefer();
     /**
      * index[结果集封装]<br/>
      *  根据查询结果集构造Index
@@ -5815,6 +5873,12 @@ public interface DriverAdapter {
 		return buildQueryFunctionsRun(runtime, query);
 	}
 
+    /**
+     * Function[结果集封装]<br/>
+     * Function 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    MetadataFieldRefer buildFunctionFieldRefer();
 	/**
 	 * function[结果集封装]<br/>
 	 * 根据查询结果集构造 Function
@@ -8671,6 +8735,14 @@ public interface DriverAdapter {
 	default List<Run> buildQueryUsersRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) throws Exception {
 		return buildQueryUsersRun(runtime, new User(catalog, schema, pattern));
 	}
+
+    /**
+     * User[结果集封装]<br/>
+     * User 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    MetadataFieldRefer buildUserFieldRefer();
+
 	/**
 	 * user[结果集封装]<br/>
 	 * 根据查询结果集构造 user

@@ -33,6 +33,7 @@ import org.anyline.metadata.Catalog;
 import org.anyline.metadata.Column;
 import org.anyline.metadata.Schema;
 import org.anyline.metadata.Table;
+import org.anyline.metadata.refer.MetadataFieldRefer;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
@@ -294,6 +295,16 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter {
         }
         //SYS.TABLES 中没有视图不需要过滤视图
         return runs;
+    }
+
+    /**
+     * Table[结果集封装]<br/>
+     * Table 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer buildTableFieldRefer() {
+        return super.buildTableFieldRefer();
     }
     /**
      * 创建表完成后追加表备注, 创建过程能添加备注的不需要实现与comment(DataRuntime runtime, StringBuilder builder, Table meta)二选一实现

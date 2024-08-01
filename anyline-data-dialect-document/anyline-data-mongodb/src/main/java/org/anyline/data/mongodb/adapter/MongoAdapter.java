@@ -48,6 +48,7 @@ import org.anyline.entity.generator.PrimaryGenerator;
 import org.anyline.exception.CommandQueryException;
 import org.anyline.exception.CommandUpdateException;
 import org.anyline.metadata.*;
+import org.anyline.metadata.refer.MetadataFieldRefer;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.proxy.CacheProxy;
 import org.anyline.proxy.EntityAdapterProxy;
@@ -909,6 +910,15 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
         return new ArrayList<>();
     }
 
+    /**
+     * Table[结果集封装]<br/>
+     * Table 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer buildTableFieldRefer() {
+        return super.buildTableFieldRefer();
+    }
     /**
      * table[调用入口]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端

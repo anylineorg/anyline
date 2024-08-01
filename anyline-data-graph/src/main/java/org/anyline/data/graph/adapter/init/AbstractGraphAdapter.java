@@ -38,7 +38,7 @@ import org.anyline.exception.CommandQueryException;
 import org.anyline.exception.CommandUpdateException;
 import org.anyline.exception.NotSupportException;
 import org.anyline.metadata.*;
-import org.anyline.metadata.refer.FieldRefer;
+import org.anyline.metadata.refer.MetadataFieldRefer;
 import org.anyline.metadata.graph.EdgeTable;
 import org.anyline.metadata.graph.VertexTable;
 import org.anyline.metadata.type.DatabaseType;
@@ -58,12 +58,6 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 
     public AbstractGraphAdapter() {
         super();
-
-        FieldRefer indexRefer = new FieldRefer(Index.class);
-        indexRefer.setRefer("name", "Index Name");
-        indexRefer.setRefer("Table", "By Tag,By Edge");
-        indexRefer.setRefer("column", "Columns");
-        reg(indexRefer);
     }
     @Override
     public DatabaseType type() {
@@ -2264,6 +2258,15 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
     public List<Run> buildQueryDatabasesRun(DataRuntime runtime, boolean greedy, Database query) throws Exception {
         return super.buildQueryDatabasesRun(runtime, greedy, query);
     }
+    /**
+     * database[结果集封装]<br/>
+     * database 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer buildDatabaseFieldRefer() {
+        return super.buildDatabaseFieldRefer();
+    }
 
     /**
      * database[结果集封装]<br/>
@@ -2280,10 +2283,9 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
         return super.databases(runtime, index, create, previous, query, set);
     }
     @Override
-    public <T extends Database> List<T> databases(DataRuntime runtime, int index, boolean create, List<T> databases, Database query, DataSet set) throws Exception {
-        return super.databases(runtime, index, create, databases, query, set);
+    public <T extends Database> List<T> databases(DataRuntime runtime, int index, boolean create, List<T> previous, Database query, DataSet set) throws Exception {
+        return super.databases(runtime, index, create, previous, query, set);
     }
-
 
     /**
      * database[结果集封装]<br/>
@@ -2427,6 +2429,16 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
     }
 
     /**
+     * Catalog[结果集封装]<br/>
+     * Catalog 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer buildCatalogFieldRefer() {
+        return super.buildCatalogFieldRefer();
+    }
+
+    /**
      * catalog[结果集封装]<br/>
      * 根据查询结果集构造 Database
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -2557,6 +2569,15 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
         return super.buildQuerySchemasRun(runtime, greedy, query);
     }
 
+    /**
+     * Schema[结果集封装]<br/>
+     * Schema 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer buildSchemaFieldRefer() {
+        return super.buildSchemaFieldRefer();
+    }
     /**
      * schema[结果集封装]<br/>
      * 根据查询结果集构造 Database
@@ -3338,6 +3359,15 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
     }
 
     /**
+     * master[结果集封装]<br/>
+     * MasterTable 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer buildMasterTableFieldRefer() {
+        return super.buildMasterTableFieldRefer();
+    }
+    /**
      * master table[结果集封装]<br/>
      * 根据查询结果集构造Table
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -3867,6 +3897,15 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
     }
 
     /**
+     * primary[结果集封装]<br/>
+     * PrimaryKey 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer buildPrimaryKeyFieldRefer() {
+        return super.buildPrimaryKeyFieldRefer();
+    }
+    /**
      * primary[结构集封装]<br/>
      * 根据查询结果集构造PrimaryKey基础属性
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -3878,7 +3917,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
     @Override
     public <T extends PrimaryKey> T init(DataRuntime runtime, int index, T primary, PrimaryKey query, DataSet set) throws Exception {
         Table table = query.getTable();
-        FieldRefer refer = refer(runtime, PrimaryKey.class);
+        MetadataFieldRefer refer = refer(runtime, PrimaryKey.class);
         for(DataRow row:set) {
             if(null == primary) {
                 primary = (T)new PrimaryKey();
@@ -4045,6 +4084,19 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
         return super.buildQueryIndexesRun(runtime, tables);
     }
 
+    /**
+     * Index[结果集封装]<br/>
+     * Index 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer buildIndexFieldRefer() {
+        MetadataFieldRefer refer = new MetadataFieldRefer(Index.class);
+        refer.setRefer("name", "Index Name");
+        refer.setRefer("Table", "By Tag,By Edge");
+        refer.setRefer("column", "Columns");
+        return refer;
+    }
     /**
      * index[结果集封装]<br/>
      *  根据查询结果集构造Index
@@ -4718,6 +4770,15 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 		return super.buildQueryFunctionsRun(runtime, query);
 	}
 
+    /**
+     * Function[结果集封装]<br/>
+     * Function 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer buildFunctionFieldRefer() {
+        return super.buildFunctionFieldRefer();
+    }
 	/**
 	 * function[结果集封装]<br/>
 	 * 根据查询结果集构造 Trigger

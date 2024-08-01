@@ -29,7 +29,7 @@ import org.anyline.entity.*;
 import org.anyline.entity.generator.PrimaryGenerator;
 import org.anyline.exception.NotSupportException;
 import org.anyline.metadata.*;
-import org.anyline.metadata.refer.FieldRefer;
+import org.anyline.metadata.refer.MetadataFieldRefer;
 import org.anyline.metadata.refer.MetadataReferHolder;
 import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.proxy.EntityAdapterProxy;
@@ -65,39 +65,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
             reg(alias);
             alias(alias.name(), alias.standard());
         }
-        FieldRefer columnRefer = new FieldRefer(Column.class);
-        columnRefer.setRefer("name", "COLUMN_NAME");
-        columnRefer.setRefer("Catalog", "");//忽略
-        columnRefer.setRefer("schema", "OWNER");
-        columnRefer.setRefer("Table", "TABLE_NAME");
-        columnRefer.setRefer("Nullable", "NULLABLE");
-        columnRefer.setRefer("Charset", "");//忽略
-        columnRefer.setRefer("Collate", "");//忽略
-        columnRefer.setRefer("DataType", "DATA_TYPE");
-        columnRefer.setRefer("Position", "COLUMN_ID");
-        columnRefer.setRefer("Comment", "COLUMN_COMMENT");//SQL组装
-        columnRefer.setRefer("Default", "DATA_DEFAULT");
-        reg(columnRefer);
 
-        FieldRefer primaryRefer = new FieldRefer(PrimaryKey.class);
-        primaryRefer.setRefer("name", "CONSTRAINT_NAME");
-        primaryRefer.setRefer("Catalog", (String)null);
-        primaryRefer.setRefer("schema", "OWNER");
-        primaryRefer.setRefer("Table", "TABLE_NAME");
-        primaryRefer.setRefer("column", "COLUMN_NAME");
-        primaryRefer.setRefer("ColumnPosition", "POSITION");
-        primaryRefer.setRefer("ColumnOrder", (String)null);
-        reg(primaryRefer);
-
-        FieldRefer indexRefer = new FieldRefer(Index.class);
-        indexRefer.setRefer("name", "INDEX_NAME");
-        indexRefer.setRefer("Table", "TABLE_NAME");
-        indexRefer.setRefer("schema", "INDEX_OWNER");
-        indexRefer.setRefer("Catalog", "");
-        indexRefer.setRefer("column", "COLUMN_EXPRESSION,COLUMN_NAME");
-        indexRefer.setRefer("ColumnOrder", "DESCEND");
-        indexRefer.setRefer("ColumnPosition", "COLUMN_POSITION");
-        reg(indexRefer);
     }
 
     @Override
@@ -1397,6 +1365,17 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
     }
     /**
      * database[结果集封装]<br/>
+     * database 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer buildDatabaseFieldRefer() {
+        MetadataFieldRefer refer = new MetadataFieldRefer(Database.class);
+        refer.setRefer("name", "DATABASE_NAME");
+        return refer;
+    }
+    /**
+     * database[结果集封装]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
      * @param create 上一步没有查到的, 这一步是否需要新创建
@@ -1407,15 +1386,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public <T extends Database> LinkedHashMap<String, T> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Database query, DataSet set) throws Exception {
-        if(null == previous) {
-            previous = new LinkedHashMap<>();
-        }
-        for(DataRow row:set) {
-            T database = (T)new Database();
-            database.setName(row.getString("DATABASE_NAME"));
-            previous.put(database.getName().toUpperCase(), database);
-        }
-        return previous;
+       return super.databases(runtime, index, create, previous, query, set);
     }
     @Override
     public <T extends Database> List<T> databases(DataRuntime runtime, int index, boolean create, List<T> previous, Database query, DataSet set) throws Exception {
@@ -1584,6 +1555,16 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
     @Override
     public List<Run> buildQueryCatalogsRun(DataRuntime runtime, boolean greedy, Catalog query) throws Exception {
         return super.buildQueryCatalogsRun(runtime, greedy, query);
+    }
+
+    /**
+     * Catalog[结果集封装]<br/>
+     * Catalog 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer buildCatalogFieldRefer() {
+        return super.buildCatalogFieldRefer();
     }
     /**
      * catalog[结果集封装]<br/>
@@ -1823,6 +1804,16 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
     public List<Run> buildQuerySchemasRun(DataRuntime runtime, boolean greedy, Schema query) throws Exception {
         return super.buildQuerySchemasRun(runtime, greedy, query);
     }
+
+    /**
+     * Schema[结果集封装]<br/>
+     * Schema 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer buildSchemaFieldRefer() {
+        return super.buildSchemaFieldRefer();
+    }
     /**
      * schema[结果集封装]<br/>
      * 根据查询结果集构造 Database
@@ -2010,6 +2001,15 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         return runs;
     }
 
+    /**
+     * Table[结果集封装]<br/>
+     * Table 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer buildTableFieldRefer() {
+        return super.buildTableFieldRefer();
+    }
     /**
      * table[命令合成]<br/>
      * 查询表备注
@@ -2224,6 +2224,15 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
     }
 
     /**
+     * View[结果集封装]<br/>
+     * View 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer buildViewFieldRefer() {
+        return super.buildViewFieldRefer();
+    }
+    /**
      * view[结果集封装]<br/>
      *  根据查询结果集构造View
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -2358,6 +2367,15 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         return super.buildQueryMasterTablesRun(runtime, greedy, query, types, configs);
     }
 
+    /**
+     * master[结果集封装]<br/>
+     * MasterTable 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer buildMasterTableFieldRefer() {
+        return super.buildMasterTableFieldRefer();
+    }
     /**
      * master table[结果集封装]<br/>
      * 根据查询结果集构造Table
@@ -2665,6 +2683,27 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
     }
 
     /**
+     * Column[结果集封装]<br/>
+     * Column 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer buildColumnFieldRefer() {
+        MetadataFieldRefer refer = new MetadataFieldRefer(Column.class);
+        refer.setRefer("name", "COLUMN_NAME");
+        refer.setRefer("Catalog", "");//忽略
+        refer.setRefer("schema", "OWNER");
+        refer.setRefer("Table", "TABLE_NAME");
+        refer.setRefer("Nullable", "NULLABLE");
+        refer.setRefer("Charset", "");//忽略
+        refer.setRefer("Collate", "");//忽略
+        refer.setRefer("DataType", "DATA_TYPE");
+        refer.setRefer("Position", "COLUMN_ID");
+        refer.setRefer("Comment", "COLUMN_COMMENT");//SQL组装
+        refer.setRefer("Default", "DATA_DEFAULT");
+        return refer;
+    }
+    /**
      * column[结果集封装]<br/>
      *  根据查询结果集构造Tag
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -2860,6 +2899,23 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         return runs;
     }
 
+    /**
+     * primary[结果集封装]<br/>
+     * PrimaryKey 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer buildPrimaryKeyFieldRefer() {
+        MetadataFieldRefer refer = new MetadataFieldRefer(PrimaryKey.class);
+        refer.setRefer("name", "CONSTRAINT_NAME");
+        refer.setRefer("Catalog", (String)null);
+        refer.setRefer("schema", "OWNER");
+        refer.setRefer("Table", "TABLE_NAME");
+        refer.setRefer("column", "COLUMN_NAME");
+        refer.setRefer("ColumnPosition", "POSITION");
+        refer.setRefer("ColumnOrder", (String)null);
+        return refer;
+    }
     /**
      * primary[结构集封装]<br/>
      * 根据查询结果集构造PrimaryKey基础属性
@@ -3074,6 +3130,23 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         builder.append("ON M.INDEX_OWNER = F.INDEX_OWNER AND M.INDEX_NAME = F.INDEX_NAME AND M.COLUMN_POSITION = F.COLUMN_POSITION\n");
         builder.append("WHERE 1=1\n");
         return run;
+    }
+    /**
+     * Index[结果集封装]<br/>
+     * Index 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer buildIndexFieldRefer() {
+        MetadataFieldRefer refer = new MetadataFieldRefer(Index.class);
+        refer.setRefer("name", "INDEX_NAME");
+        refer.setRefer("Table", "TABLE_NAME");
+        refer.setRefer("schema", "INDEX_OWNER");
+        refer.setRefer("Catalog", "");
+        refer.setRefer("column", "COLUMN_EXPRESSION,COLUMN_NAME");
+        refer.setRefer("ColumnOrder", "DESCEND");
+        refer.setRefer("ColumnPosition", "COLUMN_POSITION");
+        return refer;
     }
     /**
      * index[结果集封装]<br/>
@@ -3617,6 +3690,15 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         return super.buildQueryFunctionsRun(runtime, query);
     }
 
+    /**
+     * Function[结果集封装]<br/>
+     * Function 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer buildFunctionFieldRefer() {
+        return super.buildFunctionFieldRefer();
+    }
     /**
      * function[结果集封装]<br/>
      * 根据查询结果集构造 Trigger

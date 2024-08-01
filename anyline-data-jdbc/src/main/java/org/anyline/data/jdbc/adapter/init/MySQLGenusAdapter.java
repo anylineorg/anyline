@@ -58,38 +58,6 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
             alias(alias.name(), alias.standard());
         }
 
-        FieldRefer indexRefer = new FieldRefer(Index.class);
-        indexRefer.setRefer("name", "INDEX_NAME");
-        indexRefer.setRefer("Table", "TABLE_NAME");
-        indexRefer.setRefer("schema", "TABLE_SCHEMA");
-        indexRefer.setRefer("column", "COLUMN_NAME");
-        indexRefer.setRefer("ColumnOrder", "COLLATION");
-        indexRefer.setRefer("ColumnPosition", "SEQ_IN_INDEX");
-        indexRefer.setRefer("CheckPrimary", "INDEX_NAME");
-        indexRefer.setRefer("CheckPrimaryValue","PRIMARY");
-        indexRefer.setRefer("CheckUnique", "NON_UNIQUE");
-        indexRefer.setRefer("CheckUniqueValue", "0");
-        indexRefer.setRefer("Catalog", "");
-        reg(indexRefer);
-
-        FieldRefer columnRefer = new FieldRefer(Column.class);
-        columnRefer.setRefer("name", "COLUMN_NAME");
-        columnRefer.setRefer("Catalog", "");//忽略
-        columnRefer.setRefer("schema", "TABLE_SCHEMA");
-        columnRefer.setRefer("Table", "TABLE_NAME");
-        columnRefer.setRefer("Nullable", "IS_NULLABLE");
-        columnRefer.setRefer("Charset", "CHARACTER_SET_NAME");
-        columnRefer.setRefer("Collate", "COLLATION_NAME");
-        columnRefer.setRefer("DataType", "COLUMN_TYPE");
-        columnRefer.setRefer("Position", "ORDINAL_POSITION");
-        columnRefer.setRefer("Comment", "COLUMN_COMMENT");
-        columnRefer.setRefer("Default", "COLUMN_DEFAULT");
-        reg(columnRefer);
-
-        FieldRefer userRefer = new FieldRefer(User.class);
-        userRefer.setRefer("Host", "host");
-        userRefer.setRefer("name", "user");
-        reg(userRefer);
     }
     @Override
     public boolean supportCatalog() {
@@ -1373,6 +1341,16 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     }
     /**
      * database[结果集封装]<br/>
+     * database 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer buildDatabaseFieldRefer() {
+        MetadataFieldRefer refer = new MetadataFieldRefer(Database.class, "DATABASE");
+        return refer;
+    }
+    /**
+     * database[结果集封装]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
      * @param create 上一步没有查到的, 这一步是否需要新创建
@@ -1383,15 +1361,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public <T extends Database> LinkedHashMap<String, T> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Database query, DataSet set) throws Exception {
-        if(null == previous) {
-            previous = new LinkedHashMap<>();
-        }
-        for(DataRow row:set) {
-            T database = (T)new Database();
-            database.setName(row.getString("DATABASE"));
-            previous.put(database.getName().toUpperCase(), database);
-        }
-        return previous;
+        return super.databases(runtime, index, create, previous, query, set);
     }
     @Override
     public <T extends Database> List<T> databases(DataRuntime runtime, int index, boolean create, List<T> previous, Database query, DataSet set) throws Exception {
@@ -1566,6 +1536,16 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     @Override
     public List<Run> buildQueryCatalogsRun(DataRuntime runtime, boolean greedy, Catalog query) throws Exception {
         return super.buildQueryCatalogsRun(runtime, greedy, query);
+    }
+
+    /**
+     * Catalog[结果集封装]<br/>
+     * Catalog 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer buildCatalogFieldRefer() {
+        return super.buildCatalogFieldRefer();
     }
     /**
      * catalog[结果集封装]<br/>
@@ -1757,6 +1737,16 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         }
         return runs;
     }
+
+    /**
+     * Schema[结果集封装]<br/>
+     * Schema 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer buildSchemaFieldRefer() {
+        return new MetadataFieldRefer(Schema.class, "DATABASE");
+    }
     /**
      * schema[结果集封装]<br/>
      * 根据查询结果集构造 Database
@@ -1770,15 +1760,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public <T extends Schema> LinkedHashMap<String, T> schemas(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Schema query, DataSet set) throws Exception {
-        if(null == previous) {
-            previous = new LinkedHashMap<>();
-        }
-        for(DataRow row:set) {
-            T meta = (T)new Schema();
-            meta.setName(row.getString("DATABASE"));
-            previous.put(meta.getName().toUpperCase(), meta);
-        }
-        return previous;
+        return super.schemas(runtime, index, create, previous, query, set);
     }
     @Override
     public <T extends Schema> List<T> schemas(DataRuntime runtime, int index, boolean create, List<T> previous, Schema query, DataSet set) throws Exception {
@@ -1950,6 +1932,15 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         return runs;
     }
 
+    /**
+     * Table[结果集封装]<br/>
+     * Table 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer buildTableFieldRefer() {
+        return super.buildTableFieldRefer();
+    }
     /**
      * table[命令合成]<br/>
      * 查询表备注
@@ -2195,6 +2186,15 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     }
 
     /**
+     * View[结果集封装]<br/>
+     * View 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer buildViewFieldRefer() {
+        return super.buildViewFieldRefer();
+    }
+    /**
      * view[结果集封装]<br/>
      *  根据查询结果集构造View
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -2341,6 +2341,15 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         return super.buildQueryMasterTablesRun(runtime, greedy, query, types, configs);
     }
 
+    /**
+     * master[结果集封装]<br/>
+     * MasterTable 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer buildMasterTableFieldRefer() {
+        return super.buildMasterTableFieldRefer();
+    }
     /**
      * master table[结果集封装]<br/>
      * 根据查询结果集构造Table
@@ -2596,6 +2605,27 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     }
 
     /**
+     * Column[结果集封装]<br/>
+     * Column 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer buildColumnFieldRefer() {
+        MetadataFieldRefer refer = new MetadataFieldRefer(Column.class);
+        refer.setRefer("name", "COLUMN_NAME");
+        refer.setRefer("Catalog", "");//忽略
+        refer.setRefer("schema", "TABLE_SCHEMA");
+        refer.setRefer("Table", "TABLE_NAME");
+        refer.setRefer("Nullable", "IS_NULLABLE");
+        refer.setRefer("Charset", "CHARACTER_SET_NAME");
+        refer.setRefer("Collate", "COLLATION_NAME");
+        refer.setRefer("DataType", "COLUMN_TYPE");
+        refer.setRefer("Position", "ORDINAL_POSITION");
+        refer.setRefer("Comment", "COLUMN_COMMENT");
+        refer.setRefer("Default", "COLUMN_DEFAULT");
+        return refer;
+    }
+    /**
      * column[命令合成]<br/>
      * 查询表上的列
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -2809,10 +2839,18 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         StringBuilder builder = run.getBuilder();
         builder.append("SHOW INDEX FROM ");
         name(runtime, builder, table);
-
         return runs;
     }
 
+    /**
+     * primary[结果集封装]<br/>
+     * PrimaryKey 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer buildPrimaryKeyFieldRefer() {
+        return super.buildPrimaryKeyFieldRefer();
+    }
     /**
      * primary[结构集封装]<br/>
      *  根据查询结果集构造PrimaryKey
@@ -3017,6 +3055,27 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         in(runtime, builder, "TABLE_NAME", names);
         builder.append("ORDER BY TABLE_NAME, SEQ_IN_INDEX");
         return runs;
+    }
+    /**
+     * Index[结果集封装]<br/>
+     * Index 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer buildIndexFieldRefer() {
+        MetadataFieldRefer refer = new MetadataFieldRefer(Index.class);
+        refer.setRefer("name", "INDEX_NAME");
+        refer.setRefer("Table", "TABLE_NAME");
+        refer.setRefer("schema", "TABLE_SCHEMA");
+        refer.setRefer("column", "COLUMN_NAME");
+        refer.setRefer("ColumnOrder", "COLLATION");
+        refer.setRefer("ColumnPosition", "SEQ_IN_INDEX");
+        refer.setRefer("CheckPrimary", "INDEX_NAME");
+        refer.setRefer("CheckPrimaryValue","PRIMARY");
+        refer.setRefer("CheckUnique", "NON_UNIQUE");
+        refer.setRefer("CheckUniqueValue", "0");
+        refer.setRefer("Catalog", "");
+        return refer;
     }
     /**
      * index[结果集封装]<br/>
@@ -3561,6 +3620,15 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         return runs;
     }
 
+    /**
+     * Function[结果集封装]<br/>
+     * Function 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer buildFunctionFieldRefer() {
+        return super.buildFunctionFieldRefer();
+    }
     /**
      * function[结果集封装]<br/>
      * 根据查询结果集构造 Trigger
@@ -6778,6 +6846,18 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     }
 
     /**
+     * User[结果集封装]<br/>
+     * User 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer buildUserFieldRefer() {
+        MetadataFieldRefer refer = new MetadataFieldRefer(User.class);
+        refer.setRefer("Host", "host");
+        refer.setRefer("name", "user");
+        return refer;
+    }
+    /**
      * user[结果集封装]<br/>
      * 根据查询结果集构造 user
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -6805,7 +6885,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public <T extends User> T init(DataRuntime runtime, int index, T meta, User query, DataRow row) {
-        FieldRefer refer = refer(runtime, User.class);
+        MetadataFieldRefer refer = refer(runtime, User.class);
         if(null == meta){
             meta = (T) new User();
         }
