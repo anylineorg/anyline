@@ -92,7 +92,7 @@ public class CassandraAdapter extends AbstractJDBCAdapter implements JDBCAdapter
 
 
     @Override
-    public LinkedHashMap<String, Database> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Database> previous, Database query, DataSet set) throws Exception {
+    public <T extends Database> LinkedHashMap<String, T> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Database query, DataSet set) throws Exception {
         return null;
     }
 

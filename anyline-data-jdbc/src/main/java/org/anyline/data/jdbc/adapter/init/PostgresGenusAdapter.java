@@ -59,7 +59,14 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
             reg(alias);
             alias(alias.name(), alias.standard());
         }
+        FieldRefer catalogRefer = new FieldRefer(Catalog.class);
+        catalogRefer.setRefer("name", "datname");
+        reg(catalogRefer);
 
+        FieldRefer schemaRefer = new FieldRefer(Schema.class);
+        schemaRefer.setRefer("name", "schema_name");
+        schemaRefer.setRefer("Catalog", "catalog_name");
+        reg(schemaRefer);
 
         FieldRefer functionRefer = new FieldRefer(Function.class);
         functionRefer.setRefer("name", "proname");
@@ -93,7 +100,6 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         indexRefer.setRefer("CheckUnique", "IS_UNIQUE");
         indexRefer.setRefer("CheckUniqueValue", "T");
         indexRefer.setRefer("Catalog", "");
-        //以下在detail中单独处理
         indexRefer.setRefer("column", "");
         indexRefer.setRefer("ColumnOrder", "");
         indexRefer.setRefer("ColumnPosition", "");
@@ -1170,8 +1176,8 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      *                                                     database
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
-     * LinkedHashMap<String, Database> databases(DataRuntime runtime, String random, String name)
-     * List<Database> databases(DataRuntime runtime, String random, boolean greedy, String name)
+     * <T extends Database> LinkedHashMap<String, T> databases(DataRuntime runtime, String random, String name)
+     * <T extends Database> List<T> databases(DataRuntime runtime, String random, boolean greedy, String name)
      * Database database(DataRuntime runtime, String random, String name)
      * Database database(DataRuntime runtime, String random)
      * String String product(DataRuntime runtime, String random);
@@ -1241,7 +1247,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return LinkedHashMap
      */
     @Override
-    public List<Database> databases(DataRuntime runtime, String random, boolean greedy, Database query) {
+    public <T extends Database> List<T> databases(DataRuntime runtime, String random, boolean greedy, Database query) {
         return super.databases(runtime, random, greedy, query);
     }
     /**
@@ -1252,7 +1258,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return LinkedHashMap
      */
     @Override
-    public LinkedHashMap<String, Database> databases(DataRuntime runtime, String random, Database query) {
+    public <T extends Database> LinkedHashMap<String, T> databases(DataRuntime runtime, String random, Database query) {
         return super.databases(runtime, random, query);
     }
     /**
@@ -1288,19 +1294,19 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @throws Exception Exception
      */
     @Override
-    public LinkedHashMap<String, Database> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Database> previous, Database query, DataSet set) throws Exception {
+    public <T extends Database> LinkedHashMap<String, T> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Database query, DataSet set) throws Exception {
         if(null == previous) {
             previous = new LinkedHashMap<>();
         }
         for(DataRow row:set) {
-            Database database = new Database();
+            T database = (T)new Database();
             database.setName(row.getString("DATNAME"));
             previous.put(database.getName().toUpperCase(), database);
         }
         return previous;
     }
     @Override
-    public List<Database> databases(DataRuntime runtime, int index, boolean create, List<Database> previous, Database query, DataSet set) throws Exception {
+    public <T extends Database> List<T> databases(DataRuntime runtime, int index, boolean create, List<T> previous, Database query, DataSet set) throws Exception {
         return super.databases(runtime, index, create, previous, query, set);
     }
     /**
@@ -1420,8 +1426,8 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      *                                                     catalog
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
-     * LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, String random, String name)
-     * List<Catalog> catalogs(DataRuntime runtime, String random, boolean greedy, String name)
+     * <T extends Catalog> LinkedHashMap<String, T> catalogs(DataRuntime runtime, String random, String name)
+     * <T extends Catalog> List<T> catalogs(DataRuntime runtime, String random, boolean greedy, String name)
      * [命令合成]
      * List<Run> buildQueryCatalogsRun(DataRuntime runtime, boolean greedy, String name)
      * [结果集封装]<br/>
@@ -1439,7 +1445,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return LinkedHashMap
      */
     @Override
-    public LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, String random, Catalog query) {
+    public <T extends Catalog> LinkedHashMap<String, T> catalogs(DataRuntime runtime, String random, Catalog query) {
         return super.catalogs(runtime, random, query);
     }
     /**
@@ -1450,7 +1456,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return LinkedHashMap
      */
     @Override
-    public List<Catalog> catalogs(DataRuntime runtime, String random, boolean greedy, Catalog query) {
+    public <T extends Catalog> List<T> catalogs(DataRuntime runtime, String random, boolean greedy, Catalog query) {
         return super.catalogs(runtime, random, greedy, query);
     }
 
@@ -1465,7 +1471,17 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public List<Run> buildQueryCatalogsRun(DataRuntime runtime, boolean greedy, Catalog query) throws Exception {
-        return super.buildQueryCatalogsRun(runtime, greedy, query);
+        List<Run> runs = new ArrayList<>();
+        SimpleRun run = new SimpleRun(runtime);
+        StringBuilder builder = run.getBuilder();
+        builder.append("SELECT * FROM pg_stat_database");
+        if(null != query){
+            if(null != query.getName()){
+                builder.append(" WHERE datname LIKE '").append(query.getName()).append("'");
+            }
+        }
+        runs.add(run);
+        return runs;
     }
     /**
      * catalog[结果集封装]<br/>
@@ -1479,7 +1495,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @throws Exception 异常
      */
     @Override
-    public LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Catalog> previous, Catalog query, DataSet set) throws Exception {
+    public <T extends Catalog> LinkedHashMap<String, T> catalogs(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Catalog query, DataSet set) throws Exception {
         return super.catalogs(runtime, index, create, previous, query, set);
     }
     /**
@@ -1494,7 +1510,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @throws Exception 异常
      */
     @Override
-    public List<Catalog> catalogs(DataRuntime runtime, int index, boolean create, List<Catalog> previous, Catalog query, DataSet set) throws Exception {
+    public <T extends Catalog> List<T> catalogs(DataRuntime runtime, int index, boolean create, List<T> previous, Catalog query, DataSet set) throws Exception {
         return super.catalogs(runtime, index, create, previous, query, set);
     }
     /**
@@ -1507,7 +1523,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @throws Exception 异常
      */
     @Override
-    public LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, boolean create, LinkedHashMap<String, Catalog> previous) throws Exception {
+    public <T extends Catalog> LinkedHashMap<String, T> catalogs(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous) throws Exception {
         return super.catalogs(runtime, create, previous);
     }
 
@@ -1521,7 +1537,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @throws Exception 异常
      */
     @Override
-    public List<Catalog> catalogs(DataRuntime runtime, boolean create, List<Catalog> previous) throws Exception {
+    public <T extends Catalog> List<T> catalogs(DataRuntime runtime, boolean create, List<T> previous) throws Exception {
         return super.catalogs(runtime, create, previous);
     }
     /**
@@ -1585,8 +1601,8 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      *                                                     schema
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
-     * LinkedHashMap<String, Database> databases(DataRuntime runtime, String random, String name)
-     * List<Database> databases(DataRuntime runtime, String random, boolean greedy, String name)
+     * <T extends Database> LinkedHashMap<String, T> databases(DataRuntime runtime, String random, String name)
+     * <T extends Database> List<T> databases(DataRuntime runtime, String random, boolean greedy, String name)
      * Database database(DataRuntime runtime, String random, String name)
      * Database database(DataRuntime runtime, String random)
      * String String product(DataRuntime runtime, String random);
@@ -1619,7 +1635,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return LinkedHashMap
      */
     @Override
-    public LinkedHashMap<String, Schema> schemas(DataRuntime runtime, String random, Schema query) {
+    public <T extends Schema> LinkedHashMap<String, T> schemas(DataRuntime runtime, String random, Schema query) {
         return super.schemas(runtime, random, query);
     }
     /**
@@ -1630,7 +1646,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return LinkedHashMap
      */
     @Override
-    public List<Schema> schemas(DataRuntime runtime, String random, boolean greedy, Schema query) {
+    public <T extends Schema> List<T> schemas(DataRuntime runtime, String random, boolean greedy, Schema query) {
         return super.schemas(runtime, random, greedy, query);
     }
 
@@ -1669,11 +1685,11 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @throws Exception 异常
      */
     @Override
-    public LinkedHashMap<String, Schema> schemas(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Schema> previous, Schema query, DataSet set) throws Exception {
+    public <T extends Schema> LinkedHashMap<String, T> schemas(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Schema query, DataSet set) throws Exception {
         return super.schemas(runtime, index, create, previous, query, set);
     }
     @Override
-    public List<Schema> schemas(DataRuntime runtime, int index, boolean create, List<Schema> previous, Schema query, DataSet set) throws Exception {
+    public <T extends Schema> List<T> schemas(DataRuntime runtime, int index, boolean create, List<T> previous, Schema query, DataSet set) throws Exception {
         return super.schemas(runtime, index, create, previous, query, set);
     }
 

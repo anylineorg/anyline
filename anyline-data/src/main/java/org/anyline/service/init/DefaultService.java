@@ -1960,11 +1960,11 @@ public class DefaultService<E> implements AnylineService<E> {
             return dao.database();
         }
         @Override
-        public LinkedHashMap<String, Database> databases(String name) {
+        public <T extends Database> LinkedHashMap<String, Database> databases(String name) {
             return dao.databases(name);
         }
         @Override
-        public List<Database> databases(boolean greedy, String name) {
+        public <T extends Database> List<T> databases(boolean greedy, String name) {
             return dao.databases(greedy, name);
         }
         @Override
@@ -1981,20 +1981,20 @@ public class DefaultService<E> implements AnylineService<E> {
             return dao.catalog();
         }
         @Override
-        public LinkedHashMap<String, Catalog> catalogs(String name) {
+        public <T extends Catalog> LinkedHashMap<String, T> catalogs(String name) {
             return dao.catalogs(name);
         }
         @Override
-        public List<Catalog> catalogs(boolean greedy, String name) {
+        public <T extends Catalog> List<T> catalogs(boolean greedy, String name) {
             return dao.catalogs(greedy, name);
         }
         /* *****************************************************************************************************************
          * 													schema
          * -----------------------------------------------------------------------------------------------------------------
-         * LinkedHashMap<String, Schema> schemas(Catalog catalog, String name)
+         * <T extends Schema> LinkedHashMap<String, T> schemas(Catalog catalog, String name)
          ******************************************************************************************************************/
         @Override
-        public LinkedHashMap<String, Schema> schemas(Catalog catalog, String name) {
+        public <T extends Schema> LinkedHashMap<String, T> schemas(Catalog catalog, String name) {
             return dao.schemas(catalog, name);
         }
         @Override
@@ -2002,7 +2002,7 @@ public class DefaultService<E> implements AnylineService<E> {
             return dao.schema();
         }
         @Override
-        public List<Schema> schemas(boolean greedy, Catalog catalog, String name) {
+        public <T extends Schema> List<T> schemas(boolean greedy, Catalog catalog, String name) {
             return dao.schemas(greedy, catalog, name);
         }
 

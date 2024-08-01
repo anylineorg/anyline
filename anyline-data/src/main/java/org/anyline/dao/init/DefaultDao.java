@@ -886,14 +886,14 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		return runtime.getAdapter().database(runtime, random);
 	}
 	@Override
-	public LinkedHashMap<String, Database> databases(DataRuntime runtime, String random, String name) {
+	public <T extends Database> LinkedHashMap<String, T> databases(DataRuntime runtime, String random, String name) {
 		if(null == runtime) {
 			runtime = runtime();
 		}
 		return runtime.getAdapter().databases(runtime, random, name);
 	}
 	@Override
-	public List<Database> databases(DataRuntime runtime, String random, boolean greedy, String name) {
+	public <T extends Database> List<T> databases(DataRuntime runtime, String random, boolean greedy, String name) {
 		if(null == runtime) {
 			runtime = runtime();
 		}
@@ -916,21 +916,21 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		return runtime.getAdapter().catalog(runtime, random);
 	}
 	@Override
-	public LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, String random, String name) {
+	public <T extends Catalog> LinkedHashMap<String, T> catalogs(DataRuntime runtime, String random, String name) {
 		if(null == runtime) {
 			runtime = runtime();
 		}
 		return runtime.getAdapter().catalogs(runtime, random, name);
 	}
 	@Override
-	public List<Catalog> catalogs(DataRuntime runtime, String random, boolean greedy, String name) {
+	public <T extends Catalog> List<T> catalogs(DataRuntime runtime, String random, boolean greedy, String name) {
 		if(null == runtime) {
 			runtime = runtime();
 		}
 		return runtime.getAdapter().catalogs(runtime, random, greedy, name);
 	}
 	@Override
-	public LinkedHashMap<String, Schema> schemas(DataRuntime runtime, String random, Catalog catalog, String name) {
+	public <T extends Schema> LinkedHashMap<String, T> schemas(DataRuntime runtime, String random, Catalog catalog, String name) {
 		if(null == runtime) {
 			runtime = runtime();
 		}
@@ -944,7 +944,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		return runtime.getAdapter().schema(runtime, random);
 	}
 	@Override
-	public List<Schema> schemas(DataRuntime runtime, String random, boolean greedy, Catalog catalog, String name) {
+	public <T extends Schema> List<T> schemas(DataRuntime runtime, String random, boolean greedy, Catalog catalog, String name) {
 		if(null == runtime) {
 			runtime = runtime();
 		}

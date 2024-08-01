@@ -1855,12 +1855,12 @@ public interface AnylineService<E>{
 		 * 查询全部数据库
 		 * @return databases
 		 */
-		LinkedHashMap<String, Database> databases(String name);
+		<T extends Database> LinkedHashMap<String, Database> databases(String name);
 		default LinkedHashMap<String, Database> databases() {
 			return databases(null);
 		}
-		List<Database> databases(boolean greedy, String name);
-		default List<Database> databases(boolean greedy) {
+		<T extends Database> List<T> databases(boolean greedy, String name);
+		default <T extends Database> List<T> databases(boolean greedy) {
 			return databases(greedy, null);
 		}
 		Database database(String name);
@@ -1869,11 +1869,11 @@ public interface AnylineService<E>{
 		 * 													catalog
 		 **************************************************************************************************************/
 		Catalog catalog();
-		LinkedHashMap<String, Catalog> catalogs(String name);
+		<T extends Catalog> LinkedHashMap<String, T> catalogs(String name);
 		default LinkedHashMap<String, Catalog> catalogs() {
 			return catalogs(null);
 		}
-		List<Catalog> catalogs(boolean greedy, String name);
+		<T extends Catalog> List<T> catalogs(boolean greedy, String name);
 		default List<Catalog> catalogs(boolean greedy) {
 			return catalogs(greedy, null);
 		}
@@ -1882,7 +1882,7 @@ public interface AnylineService<E>{
 		 * 													schema
 		 **************************************************************************************************************/
 		Schema schema();
-		LinkedHashMap<String, Schema> schemas(Catalog catalog, String name);
+		<T extends Schema> LinkedHashMap<String, T> schemas(Catalog catalog, String name);
 		default LinkedHashMap<String, Schema> schemas(Catalog catalog) {
 			return schemas(catalog, null);
 		}
@@ -1892,7 +1892,7 @@ public interface AnylineService<E>{
 		default LinkedHashMap<String, Schema> schemas(String name) {
 			return schemas(null, name);
 		}
-		List<Schema> schemas(boolean greedy, Catalog catalog, String name);
+		<T extends Schema> List<T> schemas(boolean greedy, Catalog catalog, String name);
 		default List<Schema> schemas(boolean greedy) {
 			return schemas(greedy, null, null);
 		}

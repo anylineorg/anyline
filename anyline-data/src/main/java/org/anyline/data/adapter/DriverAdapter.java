@@ -2036,12 +2036,12 @@ public interface DriverAdapter {
      * @param query 查询条件 根据metadata属性
      * @return LinkedHashMap
      */
-    LinkedHashMap<String, Database> databases(DataRuntime runtime, String random, Database query);
-    default LinkedHashMap<String, Database> databases(DataRuntime runtime, String random, String pattern) {
+    <T extends Database> LinkedHashMap<String, T> databases(DataRuntime runtime, String random, Database query);
+    default <T extends Database> LinkedHashMap<String, T> databases(DataRuntime runtime, String random, String pattern) {
         return databases(runtime, random, new Database(pattern));
     }
-    List<Database> databases(DataRuntime runtime, String random, boolean greedy, Database query);
-    default List<Database> databases(DataRuntime runtime, String random, boolean greedy, String pattern) {
+    <T extends Database> List<T> databases(DataRuntime runtime, String random, boolean greedy, Database query);
+    default <T extends Database> List<T> databases(DataRuntime runtime, String random, boolean greedy, String pattern) {
         return databases(runtime, random, greedy, new Database(pattern));
     }
     default Database database(DataRuntime runtime, String random, String pattern) {
@@ -2144,8 +2144,8 @@ public interface DriverAdapter {
      * @return databases
      * @throws Exception 异常
      */
-    LinkedHashMap<String, Database> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Database> previous, Database query, DataSet set) throws Exception;
-    List<Database> databases(DataRuntime runtime, int index, boolean create, List<Database> previous, Database query, DataSet set) throws Exception;
+    <T extends Database> LinkedHashMap<String, T> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Database query, DataSet set) throws Exception;
+    <T extends Database> List<T> databases(DataRuntime runtime, int index, boolean create, List<T> previous, Database query, DataSet set) throws Exception;
 
     /**
      * database[结果集封装]<br/>
@@ -2208,12 +2208,12 @@ public interface DriverAdapter {
      * @param query 查询条件 根据metadata属性
      * @return LinkedHashMap
      */
-    LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, String random, Catalog query);
-    default LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, String random, String name) {
+    <T extends Catalog> LinkedHashMap<String, T> catalogs(DataRuntime runtime, String random, Catalog query);
+    default <T extends Catalog> LinkedHashMap<String, T> catalogs(DataRuntime runtime, String random, String name) {
         return catalogs(runtime, random, new Catalog(name));
     }
-    List<Catalog> catalogs(DataRuntime runtime, String random, boolean greedy, Catalog query);
-    default List<Catalog> catalogs(DataRuntime runtime, String random, boolean greedy, String name) {
+    <T extends Catalog> List<T> catalogs(DataRuntime runtime, String random, boolean greedy, Catalog query);
+    default <T extends Catalog> List<T> catalogs(DataRuntime runtime, String random, boolean greedy, String name) {
         return catalogs(runtime, random, greedy, new Catalog(name));
     }
     default Catalog catalog(DataRuntime runtime, String random, String name) {
@@ -2269,8 +2269,8 @@ public interface DriverAdapter {
      * @return catalogs
      * @throws Exception 异常
      */
-    LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Catalog> previous, Catalog query, DataSet set) throws Exception;
-    List<Catalog> catalogs(DataRuntime runtime, int index, boolean create, List<Catalog> previous, Catalog query, DataSet set) throws Exception;
+    <T extends Catalog> LinkedHashMap<String, T> catalogs(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Catalog query, DataSet set) throws Exception;
+    <T extends Catalog> List<T> catalogs(DataRuntime runtime, int index, boolean create, List<T> previous, Catalog query, DataSet set) throws Exception;
 
     /**
      * catalog[结果集封装]<br/>
@@ -2281,7 +2281,7 @@ public interface DriverAdapter {
      * @return catalogs
      * @throws Exception 异常
      */
-    LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, boolean create, LinkedHashMap<String, Catalog> previous) throws Exception;
+    <T extends Catalog> LinkedHashMap<String, T> catalogs(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous) throws Exception;
 
     /**
      * catalog[结果集封装]<br/>
@@ -2292,7 +2292,7 @@ public interface DriverAdapter {
      * @return catalogs
      * @throws Exception 异常
      */
-    List<Catalog> catalogs(DataRuntime runtime, boolean create, List<Catalog> previous) throws Exception;
+    <T extends Catalog> List<T> catalogs(DataRuntime runtime, boolean create, List<T> previous) throws Exception;
 
     /**
      * catalog[结果集封装]<br/>
@@ -2356,7 +2356,7 @@ public interface DriverAdapter {
      * @param query 查询条件 根据metadata属性
      * @return LinkedHashMap
      */
-    LinkedHashMap<String, Schema> schemas(DataRuntime runtime, String random, Schema query);
+    <T extends Schema> LinkedHashMap<String, T> schemas(DataRuntime runtime, String random, Schema query);
     /**
      * schema[调用入口]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -2365,22 +2365,22 @@ public interface DriverAdapter {
      * @param name 名称统配符或正则
      * @return LinkedHashMap
      */
-    default LinkedHashMap<String, Schema> schemas(DataRuntime runtime, String random, Catalog catalog, String name) {
+    default <T extends Schema> LinkedHashMap<String, T> schemas(DataRuntime runtime, String random, Catalog catalog, String name) {
         Schema query = new Schema(name);
         query.setCatalog(catalog);
         return schemas(runtime, random, query);
     }
 
-    default LinkedHashMap<String, Schema> schemas(DataRuntime runtime, String random, String name) {
+    default <T extends Schema> LinkedHashMap<String, T> schemas(DataRuntime runtime, String random, String name) {
         return schemas(runtime, random, null, name);
     }
-    List<Schema> schemas(DataRuntime runtime, String random, boolean greedy, Schema query);
-    default List<Schema> schemas(DataRuntime runtime, String random, boolean greedy, Catalog catalog, String name) {
+    <T extends Schema> List<T> schemas(DataRuntime runtime, String random, boolean greedy, Schema query);
+    default <T extends Schema> List<T> schemas(DataRuntime runtime, String random, boolean greedy, Catalog catalog, String name) {
         Schema query = new Schema(name);
         query.setCatalog(catalog);
         return schemas(runtime, random, greedy, query);
     }
-    default List<Schema> schemas(DataRuntime runtime, String random, boolean greedy, String name) {
+    default <T extends Schema> List<T> schemas(DataRuntime runtime, String random, boolean greedy, String name) {
         return schemas(runtime, random, greedy, null, name);
     }
     default Schema schema(DataRuntime runtime, String random, Catalog catalog, String name) {
@@ -2442,7 +2442,7 @@ public interface DriverAdapter {
      * @return schemas
      * @throws Exception 异常
      */
-    LinkedHashMap<String, Schema> schemas(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Schema> previous, Schema query, DataSet set) throws Exception;
+    <T extends Schema> LinkedHashMap<String, T> schemas(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Schema query, DataSet set) throws Exception;
 
     /**
      * schema[结果集封装]<br/>
@@ -2455,13 +2455,13 @@ public interface DriverAdapter {
      * @return schemas
      * @throws Exception 异常
      */
-    default LinkedHashMap<String, Schema> schemas(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Schema> previous, Catalog catalog, DataSet set) throws Exception {
+    default <T extends Schema> LinkedHashMap<String, T> schemas(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Catalog catalog, DataSet set) throws Exception {
         Schema query = new Schema();
         query.setCatalog(catalog);
         return schemas(runtime, index, create, previous, query, set);
     }
-    List<Schema> schemas(DataRuntime runtime, int index, boolean create, List<Schema> previous, Schema query, DataSet set) throws Exception;
-    default List<Schema> schemas(DataRuntime runtime, int index, boolean create, List<Schema> previous, Catalog catalog, DataSet set) throws Exception {
+    <T extends Schema> List<T> schemas(DataRuntime runtime, int index, boolean create, List<T> previous, Schema query, DataSet set) throws Exception;
+    default <T extends Schema> List<T> schemas(DataRuntime runtime, int index, boolean create, List<T> previous, Catalog catalog, DataSet set) throws Exception {
         Schema query = new Schema();
         query.setCatalog(catalog);
         return schemas(runtime, index, create, previous, query, set);
@@ -2476,7 +2476,7 @@ public interface DriverAdapter {
      * @return schemas
      * @throws Exception 异常
      */
-    LinkedHashMap<String, Schema> schemas(DataRuntime runtime, boolean create, LinkedHashMap<String, Schema> previous, Schema query) throws Exception;
+    <T extends Schema> LinkedHashMap<String, T> schemas(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Schema query) throws Exception;
     /**
      * schema[结果集封装]<br/>
      * 根据驱动内置接口补充 schema
@@ -2486,7 +2486,7 @@ public interface DriverAdapter {
      * @return schemas
      * @throws Exception 异常
      */
-    List<Schema> schemas(DataRuntime runtime, boolean create, List<Schema> previous, Schema query) throws Exception;
+    <T extends Schema> List<T> schemas(DataRuntime runtime, boolean create, List<T> previous, Schema query) throws Exception;
 
     /**
      * schema[结果集封装]<br/>

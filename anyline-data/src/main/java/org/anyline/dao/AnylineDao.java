@@ -641,13 +641,13 @@ public interface AnylineDao<E>{
 	default Database database() {
 		return database(runtime(), null);
 	}
-	LinkedHashMap<String, Database> databases(DataRuntime runtime, String random, String name);
-	default LinkedHashMap<String, Database> databases(String name) {
+	<T extends Database> LinkedHashMap<String, T> databases(DataRuntime runtime, String random, String name);
+	default <T extends Database> LinkedHashMap<String, Database> databases(String name) {
 		return databases(runtime(), null, name);
 	}
 
-	List<Database> databases(DataRuntime runtime, String random, boolean greedy, String name);
-	default List<Database> databases(boolean greedy, String name) {
+	<T extends Database> List<T> databases(DataRuntime runtime, String random, boolean greedy, String name);
+	default <T extends Database> List<T> databases(boolean greedy, String name) {
 		return databases(runtime(), null, greedy, name);
 	}
 	Database database(DataRuntime runtime, String random, String name);
@@ -662,12 +662,12 @@ public interface AnylineDao<E>{
 	default Catalog catalog() {
 		return catalog(runtime(), null);
 	}
-	LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, String random, String name);
-	default LinkedHashMap<String, Catalog> catalogs(String name) {
+	<T extends Catalog> LinkedHashMap<String, T> catalogs(DataRuntime runtime, String random, String name);
+	default <T extends Catalog> LinkedHashMap<String, T> catalogs(String name) {
 		return catalogs(runtime(), null, name);
 	}
-	List<Catalog> catalogs(DataRuntime runtime, String random, boolean greedy, String name);
-	default List<Catalog> catalogs(boolean greedy, String name) {
+	<T extends Catalog> List<T> catalogs(DataRuntime runtime, String random, boolean greedy, String name);
+	default <T extends Catalog> List<T> catalogs(boolean greedy, String name) {
 		return catalogs(runtime(), null, greedy, name);
 	}
 
@@ -678,13 +678,13 @@ public interface AnylineDao<E>{
 	default Schema schema() {
 		return schema(runtime(), null);
 	}
-	LinkedHashMap<String, Schema> schemas(DataRuntime runtime, String random, Catalog catalog, String name);
-	default LinkedHashMap<String, Schema> schemas(Catalog catalog, String name) {
+	<T extends Schema> LinkedHashMap<String, T> schemas(DataRuntime runtime, String random, Catalog catalog, String name);
+	default <T extends Schema> LinkedHashMap<String, T> schemas(Catalog catalog, String name) {
 		return schemas(runtime(), null, catalog, name);
 	}
 
-	List<Schema> schemas(DataRuntime runtime, String random, boolean greedy, Catalog catalog, String name);
-	default List<Schema> schemas(boolean greedy, Catalog catalog, String name) {
+	<T extends Schema> List<T> schemas(DataRuntime runtime, String random, boolean greedy, Catalog catalog, String name);
+	default <T extends Schema> List<T> schemas(boolean greedy, Catalog catalog, String name) {
 		return schemas(runtime(), null, greedy, catalog, name);
 	}
 

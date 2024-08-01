@@ -1107,8 +1107,8 @@ public class IgniteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
      *                                                     database
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
-     * LinkedHashMap<String, Database> databases(DataRuntime runtime, String random, String name)
-     * List<Database> databases(DataRuntime runtime, String random, boolean greedy, String name)
+     * <T extends Database> LinkedHashMap<String, T> databases(DataRuntime runtime, String random, String name)
+     * <T extends Database> List<T> databases(DataRuntime runtime, String random, boolean greedy, String name)
      * Database database(DataRuntime runtime, String random, String name)
      * Database database(DataRuntime runtime, String random)
      * String String product(DataRuntime runtime, String random);
@@ -1177,7 +1177,7 @@ public class IgniteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
      * @return LinkedHashMap
      */
     @Override
-    public List<Database> databases(DataRuntime runtime, String random, boolean greedy, Database query) {
+    public <T extends Database> List<T> databases(DataRuntime runtime, String random, boolean greedy, Database query) {
         return super.databases(runtime, random, greedy, query);
     }
 
@@ -1189,7 +1189,7 @@ public class IgniteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
      * @return LinkedHashMap
      */
     @Override
-    public LinkedHashMap<String, Database> databases(DataRuntime runtime, String random, Database query) {
+    public <T extends Database> LinkedHashMap<String, T> databases(DataRuntime runtime, String random, Database query) {
         return super.databases(runtime, random, query);
     }
 
@@ -1248,19 +1248,19 @@ public class IgniteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
      * @throws Exception
      */
     @Override
-    public LinkedHashMap<String, Database> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Database> previous, Database query, DataSet set) throws Exception {
+    public <T extends Database> LinkedHashMap<String, T> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Database query, DataSet set) throws Exception {
         if(null == previous) {
             previous = new LinkedHashMap<>();
         }
         for(DataRow row:set) {
-            Database database = new Database();
+            T database = (T)new Database();
             database.setName(row.getString("DATABASE"));
             previous.put(database.getName().toUpperCase(), database);
         }
         return previous;
     }
     @Override
-    public List<Database> databases(DataRuntime runtime, int index, boolean create, List<Database> previous, Database query, DataSet set) throws Exception {
+    public <T extends Database> List<T> databases(DataRuntime runtime, int index, boolean create, List<T> previous, Database query, DataSet set) throws Exception {
         return super.databases(runtime, index, create, previous, query, set);
     }
 
@@ -1361,8 +1361,8 @@ public class IgniteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
      *                                                     catalog
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
-     * LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, String random, String name)
-     * List<Catalog> catalogs(DataRuntime runtime, String random, boolean greedy, String name)
+     * <T extends Catalog> LinkedHashMap<String, T> catalogs(DataRuntime runtime, String random, String name)
+     * <T extends Catalog> List<T> catalogs(DataRuntime runtime, String random, boolean greedy, String name)
      * [命令合成]
      * List<Run> buildQueryCatalogsRun(DataRuntime runtime, boolean greedy, String name)
      * [结果集封装]<br/>
@@ -1381,7 +1381,7 @@ public class IgniteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
      * @return LinkedHashMap
      */
     @Override
-    public LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, String random, Catalog query) {
+    public <T extends Catalog> LinkedHashMap<String, T> catalogs(DataRuntime runtime, String random, Catalog query) {
         return super.catalogs(runtime, random, query);
     }
 
@@ -1393,7 +1393,7 @@ public class IgniteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
      * @return LinkedHashMap
      */
     @Override
-    public List<Catalog> catalogs(DataRuntime runtime, String random, boolean greedy, Catalog query) {
+    public <T extends Catalog> List<T> catalogs(DataRuntime runtime, String random, boolean greedy, Catalog query) {
         return super.catalogs(runtime, random, greedy, query);
     }
 
@@ -1423,7 +1423,7 @@ public class IgniteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
      * @throws Exception 异常
      */
     @Override
-    public List<Catalog> catalogs(DataRuntime runtime, int index, boolean create, List<Catalog> previous, Catalog query, DataSet set) throws Exception {
+    public <T extends Catalog> List<T> catalogs(DataRuntime runtime, int index, boolean create, List<T> previous, Catalog query, DataSet set) throws Exception {
         return super.catalogs(runtime, index, create, previous, query, set);
     }
 
@@ -1437,7 +1437,7 @@ public class IgniteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
      * @throws Exception 异常
      */
     @Override
-    public LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, boolean create, LinkedHashMap<String, Catalog> previous) throws Exception {
+    public <T extends Catalog> LinkedHashMap<String, T> catalogs(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous) throws Exception {
         return super.catalogs(runtime, create, previous);
     }
 
@@ -1451,7 +1451,7 @@ public class IgniteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
      * @throws Exception 异常
      */
     @Override
-    public List<Catalog> catalogs(DataRuntime runtime, boolean create, List<Catalog> previous) throws Exception {
+    public <T extends Catalog> List<T> catalogs(DataRuntime runtime, boolean create, List<T> previous) throws Exception {
         return super.catalogs(runtime, create, previous);
     }
 
@@ -1516,8 +1516,8 @@ public class IgniteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
      *                                                     schema
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
-     * LinkedHashMap<String, Schema> schemas(DataRuntime runtime, String random, Catalog catalog, String name)
-     * List<Schema> schemas(DataRuntime runtime, String random, boolean greedy, Catalog catalog, String name)
+     * <T extends Schema> LinkedHashMap<String, T> schemas(DataRuntime runtime, String random, Catalog catalog, String name)
+     * <T extends Schema> List<T> schemas(DataRuntime runtime, String random, boolean greedy, Catalog catalog, String name)
      * [命令合成]
      * List<Run> buildQuerySchemasRun(DataRuntime runtime, boolean greedy, Catalog catalog, String name)
      * [结果集封装]<br/>
@@ -1534,7 +1534,7 @@ public class IgniteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
      * @return LinkedHashMap
      */
     @Override
-    public LinkedHashMap<String, Schema> schemas(DataRuntime runtime, String random, Schema query) {
+    public <T extends Schema> LinkedHashMap<String, T> schemas(DataRuntime runtime, String random, Schema query) {
         return super.schemas(runtime, random, query);
     }
 
@@ -1546,7 +1546,7 @@ public class IgniteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
      * @return LinkedHashMap
      */
     @Override
-    public List<Schema> schemas(DataRuntime runtime, String random, boolean greedy, Schema query) {
+    public <T extends Schema> List<T> schemas(DataRuntime runtime, String random, boolean greedy, Schema query) {
         return super.schemas(runtime, random, greedy, query);
     }
 
@@ -1576,11 +1576,11 @@ public class IgniteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
      * @throws Exception 异常
      */
     @Override
-    public LinkedHashMap<String, Schema> schemas(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Schema> previous, Schema query, DataSet set) throws Exception {
+    public <T extends Schema> LinkedHashMap<String, T> schemas(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Schema query, DataSet set) throws Exception {
         return super.schemas(runtime, index, create, previous, query, set);
     }
     @Override
-    public List<Schema> schemas(DataRuntime runtime, int index, boolean create, List<Schema> previous, Schema query, DataSet set) throws Exception {
+    public <T extends Schema> List<T> schemas(DataRuntime runtime, int index, boolean create, List<T> previous, Schema query, DataSet set) throws Exception {
         return super.schemas(runtime, index, create, previous, query, set);
     }
 
