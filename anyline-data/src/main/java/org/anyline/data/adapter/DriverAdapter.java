@@ -38,7 +38,7 @@ import org.anyline.entity.authorize.User;
 import org.anyline.entity.generator.PrimaryGenerator;
 import org.anyline.exception.NotSupportException;
 import org.anyline.metadata.*;
-import org.anyline.metadata.adapter.*;
+import org.anyline.metadata.refer.*;
 import org.anyline.metadata.differ.*;
 import org.anyline.metadata.graph.EdgeTable;
 import org.anyline.metadata.graph.VertexTable;

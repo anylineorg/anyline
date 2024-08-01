@@ -16,7 +16,7 @@
 
 
 
-package org.anyline.metadata.adapter;
+package org.anyline.metadata.refer;
 
 import org.anyline.util.BasicUtil;
 
@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 读取元数据结果集依据(列名)
+ * 读取元数据结果集依据(元数据属性与列名对应关系)
  */
 public class FieldRefer {
     private Map<String, String[]> map = new HashMap<>();

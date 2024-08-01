@@ -19,7 +19,7 @@
 package org.anyline.metadata.type;
 
 import org.anyline.metadata.Column;
-import org.anyline.metadata.adapter.MetadataAdapterHolder;
+import org.anyline.metadata.refer.MetadataReferHolder;
 import org.anyline.metadata.type.init.StandardTypeMetadata;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.regular.RegularUtil;
@@ -784,9 +784,9 @@ public interface TypeMetadata {
         }
         meta.setOriginType(originType);
         meta.setArray(array);
-        int ignoreLength = MetadataAdapterHolder.ignoreLength(database, typeMetadata);
-        int ignorePrecision = MetadataAdapterHolder.ignorePrecision(database, typeMetadata);
-        int ignoreScale = MetadataAdapterHolder.ignoreScale(database, typeMetadata);
+        int ignoreLength = MetadataReferHolder.ignoreLength(database, typeMetadata);
+        int ignorePrecision = MetadataReferHolder.ignorePrecision(database, typeMetadata);
+        int ignoreScale = MetadataReferHolder.ignoreScale(database, typeMetadata);
 
         if(null != precision && precision > 0) {
             //指定了长度或有效位数

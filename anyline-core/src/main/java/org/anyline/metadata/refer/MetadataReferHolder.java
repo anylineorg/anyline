@@ -16,14 +16,14 @@
 
 
 
-package org.anyline.metadata.adapter;
+package org.anyline.metadata.refer;
 
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.metadata.type.TypeMetadata;
 
 import java.util.LinkedHashMap;
 
-public class MetadataAdapterHolder {
+public class MetadataReferHolder {
 
     //读取元数据时对应的列(如长度、小数位对应的列)
     /**
@@ -200,14 +200,14 @@ public class MetadataAdapterHolder {
 		4.配置类-数据类型大类
 		 */
         //1.配置类 数据类型
-        TypeMetadata.Refer config = MetadataAdapterHolder.get(database, type);
+        TypeMetadata.Refer config = MetadataReferHolder.get(database, type);
         if(null != config) {
             result = config.ignoreLength();
         }
         //2.配置类-数据类型名称
         if(result == -1) {
             //根据数据类型名称
-            config = MetadataAdapterHolder.get(database, type.getName());
+            config = MetadataReferHolder.get(database, type.getName());
             if(null != config) {
                 result = config.ignoreLength();
             }
@@ -218,7 +218,7 @@ public class MetadataAdapterHolder {
         }
         //4.配置类-数据类型大类
         if(result ==-1) {
-            config = MetadataAdapterHolder.get(database, type.getCategory());
+            config = MetadataReferHolder.get(database, type.getCategory());
             if(null != config) {
                 result = config.ignoreLength();
             }
@@ -243,14 +243,14 @@ public class MetadataAdapterHolder {
 		4.配置类-数据类型大类
 		 */
         //1.配置类 数据类型
-        TypeMetadata.Refer config = MetadataAdapterHolder.get(database, type);
+        TypeMetadata.Refer config = MetadataReferHolder.get(database, type);
         if(null != config) {
             result = config.ignorePrecision();
         }
         //2.配置类-数据类型名称
         if(result == -1) {
             //根据数据类型名称
-            config = MetadataAdapterHolder.get(database, type.getName());
+            config = MetadataReferHolder.get(database, type.getName());
             if(null != config) {
                 result = config.ignorePrecision();
             }
@@ -261,7 +261,7 @@ public class MetadataAdapterHolder {
         }
         //4.配置类-数据类型大类
         if(result ==-1) {
-            config = MetadataAdapterHolder.get(database, type.getCategory());
+            config = MetadataReferHolder.get(database, type.getCategory());
             if(null != config) {
                 result = config.ignorePrecision();
             }
@@ -286,14 +286,14 @@ public class MetadataAdapterHolder {
 		4.配置类-数据类型大类
 		 */
         //1.配置类 数据类型
-        TypeMetadata.Refer config = MetadataAdapterHolder.get(database, type);
+        TypeMetadata.Refer config = MetadataReferHolder.get(database, type);
         if(null != config) {
             result = config.ignoreScale();
         }
         //2.配置类-数据类型名称
         if(result == -1) {
             //根据数据类型名称
-            config = MetadataAdapterHolder.get(database, type.getName());
+            config = MetadataReferHolder.get(database, type.getName());
             if(null != config) {
                 result = config.ignoreScale();
             }
@@ -304,7 +304,7 @@ public class MetadataAdapterHolder {
         }
         //4.配置类-数据类型大类
         if(result ==-1) {
-            config = MetadataAdapterHolder.get(database, type.getCategory());
+            config = MetadataReferHolder.get(database, type.getCategory());
             if(null != config) {
                 result = config.ignoreScale();
             }
@@ -329,14 +329,14 @@ public class MetadataAdapterHolder {
 		4.配置类-数据类型大类
 		 */
         //1.配置类 数据类型
-        TypeMetadata.Refer config = MetadataAdapterHolder.get(database, type);
+        TypeMetadata.Refer config = MetadataReferHolder.get(database, type);
         if(null != config) {
             result = config.getFormula();
         }
         //2.配置类-数据类型名称
         if(null == result) {
             //根据数据类型名称
-            config = MetadataAdapterHolder.get(database, type.getName());
+            config = MetadataReferHolder.get(database, type.getName());
             if(null != config) {
                 result = config.getFormula();
             }
@@ -347,7 +347,7 @@ public class MetadataAdapterHolder {
         }
         //4.配置类-数据类型大类
         if(null == result) {
-            config = MetadataAdapterHolder.get(database, type.getCategory());
+            config = MetadataReferHolder.get(database, type.getCategory());
             if(null != config) {
                 result = config.getFormula();
             }
@@ -373,14 +373,14 @@ public class MetadataAdapterHolder {
 		4.配置类-数据类型大类
 		 */
         //1.配置类 数据类型
-        TypeMetadata.Refer config = MetadataAdapterHolder.get(database, type);
+        TypeMetadata.Refer config = MetadataReferHolder.get(database, type);
         if(null != config) {
             result = config.getMeta();
         }
         //2.配置类-数据类型名称
         if(null == result) {
             //根据数据类型名称
-            config = MetadataAdapterHolder.get(database, type.getName());
+            config = MetadataReferHolder.get(database, type.getName());
             if(null != config) {
                 result = config.getMeta();
             }
@@ -391,7 +391,7 @@ public class MetadataAdapterHolder {
         }
         //4.配置类-数据类型大类
         if(null == result) {
-            config = MetadataAdapterHolder.get(database, type.getCategory());
+            config = MetadataReferHolder.get(database, type.getCategory());
             if(null != config) {
                 result = config.getMeta();
             }

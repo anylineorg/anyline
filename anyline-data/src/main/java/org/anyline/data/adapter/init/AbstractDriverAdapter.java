@@ -56,7 +56,7 @@ import org.anyline.exception.CommandException;
 import org.anyline.exception.CommandQueryException;
 import org.anyline.exception.CommandUpdateException;
 import org.anyline.metadata.*;
-import org.anyline.metadata.adapter.*;
+import org.anyline.metadata.refer.*;
 import org.anyline.metadata.graph.EdgeTable;
 import org.anyline.metadata.graph.VertexTable;
 import org.anyline.metadata.type.DatabaseType;
@@ -188,20 +188,20 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 }
             }
         }
-        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.CHAR, new TypeMetadata.Refer(0, 1, 1));
-        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.TEXT, new TypeMetadata.Refer(1, 1, 1));
-        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.BOOLEAN, new TypeMetadata.Refer( 1,1, 1));
-        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.BYTES, new TypeMetadata.Refer(0, 1, 1));
-        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.BLOB, new TypeMetadata.Refer(1,1,1));
-        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.INT, new TypeMetadata.Refer(1, 1, 1));
-        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.FLOAT, new TypeMetadata.Refer(1, 0, 0));
-        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.DATE, new TypeMetadata.Refer(1, 1, 1));
-        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.TIME, new TypeMetadata.Refer(1, 1, 1));
-        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.DATETIME, new TypeMetadata.Refer( 1, 1, 1));
-        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.TIMESTAMP, new TypeMetadata.Refer(1, 1, 1));
-        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.COLLECTION, new TypeMetadata.Refer(1, 1, 1));
-        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.GEOMETRY, new TypeMetadata.Refer(1, 1, 1));
-        MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.OTHER, new TypeMetadata.Refer( 1, 1, 1));
+        MetadataReferHolder.reg(type(), TypeMetadata.CATEGORY.CHAR, new TypeMetadata.Refer(0, 1, 1));
+        MetadataReferHolder.reg(type(), TypeMetadata.CATEGORY.TEXT, new TypeMetadata.Refer(1, 1, 1));
+        MetadataReferHolder.reg(type(), TypeMetadata.CATEGORY.BOOLEAN, new TypeMetadata.Refer( 1,1, 1));
+        MetadataReferHolder.reg(type(), TypeMetadata.CATEGORY.BYTES, new TypeMetadata.Refer(0, 1, 1));
+        MetadataReferHolder.reg(type(), TypeMetadata.CATEGORY.BLOB, new TypeMetadata.Refer(1,1,1));
+        MetadataReferHolder.reg(type(), TypeMetadata.CATEGORY.INT, new TypeMetadata.Refer(1, 1, 1));
+        MetadataReferHolder.reg(type(), TypeMetadata.CATEGORY.FLOAT, new TypeMetadata.Refer(1, 0, 0));
+        MetadataReferHolder.reg(type(), TypeMetadata.CATEGORY.DATE, new TypeMetadata.Refer(1, 1, 1));
+        MetadataReferHolder.reg(type(), TypeMetadata.CATEGORY.TIME, new TypeMetadata.Refer(1, 1, 1));
+        MetadataReferHolder.reg(type(), TypeMetadata.CATEGORY.DATETIME, new TypeMetadata.Refer( 1, 1, 1));
+        MetadataReferHolder.reg(type(), TypeMetadata.CATEGORY.TIMESTAMP, new TypeMetadata.Refer(1, 1, 1));
+        MetadataReferHolder.reg(type(), TypeMetadata.CATEGORY.COLLECTION, new TypeMetadata.Refer(1, 1, 1));
+        MetadataReferHolder.reg(type(), TypeMetadata.CATEGORY.GEOMETRY, new TypeMetadata.Refer(1, 1, 1));
+        MetadataReferHolder.reg(type(), TypeMetadata.CATEGORY.OTHER, new TypeMetadata.Refer( 1, 1, 1));
 
 
         FieldRefer tableRefer = new FieldRefer(Table.class);
@@ -299,7 +299,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      */
     @Override
     public TypeMetadata.Refer reg(TypeMetadata type, TypeMetadata.Refer config) {
-        return MetadataAdapterHolder.reg(type(), type, config);
+        return MetadataReferHolder.reg(type(), type, config);
     }
     /**
      * 注册数据类型配置
@@ -310,7 +310,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      */
     @Override
     public TypeMetadata.Refer reg(String type, TypeMetadata.Refer config) {
-        return MetadataAdapterHolder.reg(type(), type, config);
+        return MetadataReferHolder.reg(type(), type, config);
     }
 
     /* *****************************************************************************************************************
@@ -8515,7 +8515,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		 */
 
 		//1.配置类 数据类型
-		TypeMetadata.Refer config = MetadataAdapterHolder.get(type(), meta);
+		TypeMetadata.Refer config = MetadataReferHolder.get(type(), meta);
 		if(null != config) {
 			result = config.getLengthRefer();
 		}
@@ -8523,7 +8523,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		//2.配置类-数据类型名称
 		if(null == result) {
 			//根据数据类型名称
-			config = MetadataAdapterHolder.get(type(), meta.getName());
+			config = MetadataReferHolder.get(type(), meta.getName());
 			if(null != config) {
 				result = config.getLengthRefer();
 			}
@@ -8532,7 +8532,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 
 		//4.配置类-数据类型大类
 		if(null == result) {
-			config = MetadataAdapterHolder.get(type(), meta.getCategory());
+			config = MetadataReferHolder.get(type(), meta.getCategory());
 			if(null != config) {
 				result = config.getLengthRefer();
 			}
@@ -8565,7 +8565,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		String result = null;
 
 		//1.配置类 数据类型
-		TypeMetadata.Refer config = MetadataAdapterHolder.get(type(), meta);
+		TypeMetadata.Refer config = MetadataReferHolder.get(type(), meta);
 		if(null != config) {
 			result = config.getPrecisionRefer();
 		}
@@ -8573,7 +8573,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		//2.配置类-数据类型名称
 		if(null == result) {
 			//根据数据类型名称
-			config = MetadataAdapterHolder.get(type(), meta.getName());
+			config = MetadataReferHolder.get(type(), meta.getName());
 			if(null != config) {
 				result = config.getPrecisionRefer();
 			}
@@ -8582,7 +8582,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 
 		//4.配置类-数据类型大类
 		if(null == result) {
-			config = MetadataAdapterHolder.get(type(), meta.getCategory());
+			config = MetadataReferHolder.get(type(), meta.getCategory());
 			if(null != config) {
 				result = config.getPrecisionRefer();
 			}
@@ -8621,7 +8621,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		 */
 
 		//1.配置类 数据类型
-		TypeMetadata.Refer config = MetadataAdapterHolder.get(type(), meta);
+		TypeMetadata.Refer config = MetadataReferHolder.get(type(), meta);
 		if(null != config) {
 			result = config.getScaleRefer();
 		}
@@ -8629,7 +8629,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		//2.配置类-数据类型名称
 		if(null == result) {
 			//根据数据类型名称
-			config = MetadataAdapterHolder.get(type(), meta.getName());
+			config = MetadataReferHolder.get(type(), meta.getName());
 			if(null != config) {
 				result = config.getScaleRefer();
 			}
@@ -8638,7 +8638,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 
 		//4.配置类-数据类型大类
 		if(null == result) {
-			config = MetadataAdapterHolder.get(type(), meta.getCategory());
+			config = MetadataReferHolder.get(type(), meta.getCategory());
 			if(null != config) {
 				result = config.getScaleRefer();
 			}
@@ -8678,7 +8678,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		 */
 
 		//1.配置类 数据类型
-		TypeMetadata.Refer config = MetadataAdapterHolder.get(type(), meta);
+		TypeMetadata.Refer config = MetadataReferHolder.get(type(), meta);
 		if(null != config) {
 			result = config.ignoreLength();
 		}
@@ -8686,7 +8686,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		//2.配置类-数据类型名称
 		if(-1 == result) {
 			//根据数据类型名称
-			config = MetadataAdapterHolder.get(type(), meta.getName());
+			config = MetadataReferHolder.get(type(), meta.getName());
 			if(null != config) {
 				result = config.ignoreLength();
 			}
@@ -8697,7 +8697,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		//4.配置类-数据类型大类
 		if(-1 == result) {
-			config = MetadataAdapterHolder.get(type(), meta.getCategory());
+			config = MetadataReferHolder.get(type(), meta.getCategory());
 			if(null != config) {
 				result = config.ignoreLength();
 			}
@@ -8738,7 +8738,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		 */
 
 		//1.配置类 数据类型
-		TypeMetadata.Refer config = MetadataAdapterHolder.get(type(), meta);
+		TypeMetadata.Refer config = MetadataReferHolder.get(type(), meta);
 		if(null != config) {
 			result = config.ignorePrecision();
 		}
@@ -8746,7 +8746,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		//2.配置类-数据类型名称
 		if(-1 == result) {
 			//根据数据类型名称
-			config = MetadataAdapterHolder.get(type(), meta.getName());
+			config = MetadataReferHolder.get(type(), meta.getName());
 			if(null != config) {
 				result = config.ignorePrecision();
 			}
@@ -8757,7 +8757,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		//4.配置类-数据类型大类
 		if(-1 == result) {
-			config = MetadataAdapterHolder.get(type(), meta.getCategory());
+			config = MetadataReferHolder.get(type(), meta.getCategory());
 			if(null != config) {
 				result = config.ignorePrecision();
 			}
@@ -8798,7 +8798,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		 */
 
 		//1.配置类 数据类型
-		TypeMetadata.Refer config = MetadataAdapterHolder.get(type(), meta);
+		TypeMetadata.Refer config = MetadataReferHolder.get(type(), meta);
 		if(null != config) {
 			result = config.ignoreScale();
 		}
@@ -8806,7 +8806,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		//2.配置类-数据类型名称
 		if(-1 == result) {
 			//根据数据类型名称
-			config = MetadataAdapterHolder.get(type(), meta.getName());
+			config = MetadataReferHolder.get(type(), meta.getName());
 			if(null != config) {
 				result = config.ignoreScale();
 			}
@@ -8817,7 +8817,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		//4.配置类-数据类型大类
 		if(-1 == result) {
-			config = MetadataAdapterHolder.get(type(), meta.getCategory());
+			config = MetadataReferHolder.get(type(), meta.getCategory());
 			if(null != config) {
 				result = config.ignoreScale();
 			}
@@ -13111,7 +13111,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public int ignoreLength(DataRuntime runtime, TypeMetadata type) {
-		return MetadataAdapterHolder.ignoreLength(type(), type);
+		return MetadataReferHolder.ignoreLength(type(), type);
 	}
 
 	/**
@@ -13125,7 +13125,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public int ignorePrecision(DataRuntime runtime, TypeMetadata type) {
-		return MetadataAdapterHolder.ignorePrecision(type(), type);
+		return MetadataReferHolder.ignorePrecision(type(), type);
 	}
 
 	/**
@@ -13139,7 +13139,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 */
     @Override
     public int ignoreScale(DataRuntime runtime, TypeMetadata type) {
-		return MetadataAdapterHolder.ignoreScale(type(), type);
+		return MetadataReferHolder.ignoreScale(type(), type);
     }
 
 	/**

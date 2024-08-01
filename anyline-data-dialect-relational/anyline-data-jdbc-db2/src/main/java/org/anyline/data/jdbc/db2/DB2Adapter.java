@@ -30,7 +30,7 @@ import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
 import org.anyline.exception.NotSupportException;
 import org.anyline.metadata.*;
-import org.anyline.metadata.adapter.FieldRefer;
+import org.anyline.metadata.refer.FieldRefer;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.util.BasicUtil;
@@ -2403,6 +2403,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		meta.setLength(len);
 		meta.setPrecision(len);
 		int scale = row.getInt("SCALE",0);
+		meta.setScale(scale);
 		if(null == meta.getTypeMetadata()) {
 			typeMetadata(runtime, meta);
 		}

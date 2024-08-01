@@ -18,7 +18,7 @@
 
 package org.anyline.metadata;
 
-import org.anyline.metadata.adapter.MetadataAdapterHolder;
+import org.anyline.metadata.refer.MetadataReferHolder;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.metadata.type.JavaType;
 import org.anyline.metadata.type.TypeMetadata;
@@ -1757,14 +1757,14 @@ public class Column extends TableAffiliation<Column> implements Serializable {
     }
     public int ignoreScale(DatabaseType database) {
         if(null != typeMetadata) {
-            return MetadataAdapterHolder.ignoreScale(database, typeMetadata);
+            return MetadataReferHolder.ignoreScale(database, typeMetadata);
         }else{
             return ignoreScale();
         }
     }
     public String formula(DatabaseType database) {
         if(null != typeMetadata) {
-            return MetadataAdapterHolder.formula(database, typeMetadata);
+            return MetadataReferHolder.formula(database, typeMetadata);
         }else{
             return null;
         }
@@ -1786,7 +1786,7 @@ public class Column extends TableAffiliation<Column> implements Serializable {
     }
     public int ignoreLength(DatabaseType database) {
         if(null != typeMetadata) {
-            return MetadataAdapterHolder.ignoreLength(database, typeMetadata);
+            return MetadataReferHolder.ignoreLength(database, typeMetadata);
         }else{
             return ignoreLength();
         }
@@ -1809,7 +1809,7 @@ public class Column extends TableAffiliation<Column> implements Serializable {
 
     public int ignorePrecision(DatabaseType database) {
         if(null != typeMetadata) {
-            return MetadataAdapterHolder.ignorePrecision(database, typeMetadata);
+            return MetadataReferHolder.ignorePrecision(database, typeMetadata);
         }else{
             return ignorePrecision();
         }
