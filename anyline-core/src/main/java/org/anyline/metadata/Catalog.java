@@ -29,12 +29,6 @@ public class Catalog extends Metadata<Catalog> implements Serializable {
     public Catalog(String name) {
         this.name = name;
     }
-    public boolean isEmpty() {
-        if(null == name || name.trim().isEmpty()) {
-            return true;
-        }
-        return false;
-    }
 
     public String getKeyword() {
         return this.keyword;

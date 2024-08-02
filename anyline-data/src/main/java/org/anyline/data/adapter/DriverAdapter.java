@@ -2982,7 +2982,7 @@ public interface DriverAdapter {
      * @return String
      * @throws Exception Exception
      */
-    List<Run> buildQueryVertexTablesRun(DataRuntime runtime, boolean greedy, VertexTable query, int types, ConfigStore configs) throws Exception;
+    List<Run> buildQueryVertexsRun(DataRuntime runtime, boolean greedy, VertexTable query, int types, ConfigStore configs) throws Exception;
     /**
      * vertex[命令合成]<br/>
      * 查询表,不是查表中的数据
@@ -2995,10 +2995,18 @@ public interface DriverAdapter {
      * @return String
      * @throws Exception Exception
      */
-    default List<Run> buildQueryVertexTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs) throws Exception {
+    default List<Run> buildQueryVertexsRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs) throws Exception {
         VertexTable query = new VertexTable(catalog, schema, pattern);
-        return buildQueryVertexTablesRun(runtime, greedy, query, types, configs);
+        return buildQueryVertexsRun(runtime, greedy, query, types, configs);
     }
+
+    /**
+     * vertex[结果集封装]<br/>
+     * vertex 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    MetadataFieldRefer buildVertexFieldRefer();
+
 
     /**
      * vertex[命令合成]<br/>
@@ -3009,7 +3017,7 @@ public interface DriverAdapter {
      * @return String
      * @throws Exception Exception
      */
-    List<Run> buildQueryVertexTablesCommentRun(DataRuntime runtime, VertexTable query, int types) throws Exception;
+    List<Run> buildQueryVertexsCommentRun(DataRuntime runtime, VertexTable query, int types) throws Exception;
     /**
      * vertex[命令合成]<br/>
      * 查询表备注
@@ -3021,15 +3029,16 @@ public interface DriverAdapter {
      * @return String
      * @throws Exception Exception
      */
-    default List<Run> buildQueryVertexTablesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
+    default List<Run> buildQueryVertexsCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
         VertexTable query = new VertexTable(catalog, schema, pattern);
-        return buildQueryVertexTablesCommentRun(runtime, query, types);
+        return buildQueryVertexsCommentRun(runtime, query, types);
     }
+
     /**
      * vertex[结果集封装]<br/>
      *  根据查询结果集构造VertexTable
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条SQL 对照buildQueryVertexTablesRun返回顺序
+     * @param index 第几条SQL 对照buildQueryVertexsRun返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param query 查询条件 根据metadata属性
      * @param previous 上一步查询结果
@@ -3042,7 +3051,7 @@ public interface DriverAdapter {
      * vertex[结果集封装]<br/>
      *  根据查询结果集构造VertexTable
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条SQL 对照buildQueryVertexTablesRun返回顺序
+     * @param index 第几条SQL 对照buildQueryVertexsRun返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param catalog 对于MySQL, 则对应相应的数据库, 对于Oracle来说, 则是对应相应的数据库实例, 可以不填, 也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
      * @param schema 可以理解为数据库的登录名, 而对于Oracle也可以理解成对该数据库操作的所有者的登录名。对于Oracle要特别注意, 其登陆名必须是大写, 不然的话是无法获取到相应的数据, 而MySQL则不做强制要求。
@@ -3304,6 +3313,13 @@ public interface DriverAdapter {
         EdgeTable query = new EdgeTable(catalog, schema, pattern);
         return buildQueryEdgesRun(runtime, greedy, query, types, configs);
     }
+
+    /**
+     * master[结果集封装]<br/>
+     * MasterTable 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    MetadataFieldRefer buildEdgeFieldRefer();
 
     /**
      * edge[命令合成]<br/>
@@ -4189,7 +4205,7 @@ public interface DriverAdapter {
      * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
      * @return String
      */
-    List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, PartitionTable query, int types) throws Exception;
+    List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, boolean greedy,  PartitionTable query, int types) throws Exception;
     /**
      * partition table[命令合成]<br/>
      * 查询分区表
@@ -4200,9 +4216,9 @@ public interface DriverAdapter {
      * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
      * @return String
      */
-    default List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
+    default List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, boolean greedy,  Catalog catalog, Schema schema, String pattern, int types) throws Exception {
         PartitionTable query = new PartitionTable(catalog, schema, pattern);
-        return buildQueryPartitionTablesRun(runtime, query, types);
+        return buildQueryPartitionTablesRun(runtime, greedy, query, types);
     }
     /**
      * partition table[命令合成]<br/>
@@ -4212,8 +4228,8 @@ public interface DriverAdapter {
      * @return sql
      * @throws Exception 异常
      */
-    default List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, PartitionTable query) throws Exception {
-        return buildQueryPartitionTablesRun(runtime, query, 1);
+    default List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, boolean greedy,  PartitionTable query) throws Exception {
+        return buildQueryPartitionTablesRun(runtime, greedy, query, 1);
     }
     /**
      * partition table[命令合成]<br/>
@@ -4225,7 +4241,7 @@ public interface DriverAdapter {
      * @return sql
      * @throws Exception 异常
      */
-    default List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Table master, Map<String, Tag> tags, String pattern) throws Exception {
+    default List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, boolean greedy,  Table master, Map<String, Tag> tags, String pattern) throws Exception {
         PartitionTable query = new PartitionTable();
         query.setMaster(master);
         if(null != tags){
@@ -4241,7 +4257,7 @@ public interface DriverAdapter {
             }
         }
         query.setName(pattern);
-        return buildQueryPartitionTablesRun(runtime, query);
+        return buildQueryPartitionTablesRun(runtime, greedy, query);
     }
     /**
      * partition table[命令合成]<br/>
@@ -4252,7 +4268,7 @@ public interface DriverAdapter {
      * @return sql
      * @throws Exception 异常
      */
-    default List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Table master, Map<String, Tag> tags) throws Exception {
+    default List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, boolean greedy,  Table master, Map<String, Tag> tags) throws Exception {
         PartitionTable query = new PartitionTable();
         query.setMaster(master);
         if(null != tags){
@@ -4267,7 +4283,7 @@ public interface DriverAdapter {
                 query.addTag(tag);
             }
         };
-        return buildQueryPartitionTablesRun(runtime, query);
+        return buildQueryPartitionTablesRun(runtime, greedy, query);
     }
     /**
      * partition table[命令合成]<br/>
@@ -4277,11 +4293,18 @@ public interface DriverAdapter {
      * @return sql
      * @throws Exception 异常
      */
-    default List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Table master) throws Exception {
+    default List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, boolean greedy,  Table master) throws Exception {
         PartitionTable query = new PartitionTable();
         query.setMaster(master);
-        return buildQueryPartitionTablesRun(runtime, query);
+        return buildQueryPartitionTablesRun(runtime, greedy, query);
     }
+
+    /**
+     * partition table[结果集封装]<br/>
+     * PartitionTable 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    MetadataFieldRefer buildPartitionTableFieldRefer();
 
     /**
      * partition table[结果集封装]<br/>
@@ -4695,20 +4718,32 @@ public interface DriverAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
-     * @param table 表
+     * @param query 查询条件 根据metadata属性
      * @return Tag
      * @param <T>  Tag
      */
-    <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, String random, boolean greedy, Table table);
+    <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, String random, boolean greedy, Table table, Tag query);
+    default <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, String random, boolean greedy, Table table) {
+        Tag query = new Tag();
+        query.setTable(table);
+        return tags(runtime, random, greedy, table, query);
+    }
     /**
      * tag[命令合成]<br/>
      * 查询表上的列
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param table 表
-     * @param metadata 是否需要根据metadata
+     * @param query 查询条件 根据mdtadata属性
      * @return runs
      */
-    List<Run> buildQueryTagsRun(DataRuntime runtime, Table table, boolean metadata) throws Exception;
+    List<Run> buildQueryTagsRun(DataRuntime runtime, boolean greedy, Tag query) throws Exception;
+
+    /**
+     * tag[结果集封装]<br/>
+     * tag 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    MetadataFieldRefer buildTagFieldRefer();
+
 
     /**
      * tag[结果集封装]<br/>
@@ -4721,7 +4756,7 @@ public interface DriverAdapter {
      * @return tags
      * @throws Exception 异常
      */
-    <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> tags, DataSet set) throws Exception;
+    <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Tag query, DataSet set) throws Exception;
 
     /**
      *
@@ -4793,7 +4828,7 @@ public interface DriverAdapter {
      * @param query 查询条件 根据metadata属性
      * @return runs
      */
-    List<Run> buildQueryPrimaryRun(DataRuntime runtime, PrimaryKey query) throws Exception;
+    List<Run> buildQueryPrimaryRun(DataRuntime runtime, boolean greedy,  PrimaryKey query) throws Exception;
     /**
      * primary[命令合成]<br/>
      * 查询表上的主键
@@ -4801,10 +4836,10 @@ public interface DriverAdapter {
      * @param table 表
      * @return runs
      */
-    default List<Run> buildQueryPrimaryRun(DataRuntime runtime, Table table) throws Exception {
+    default List<Run> buildQueryPrimaryRun(DataRuntime runtime, boolean greedy,  Table table) throws Exception {
         PrimaryKey query = new PrimaryKey();
         query.setTable(table);
-        return buildQueryPrimaryRun(runtime, query);
+        return buildQueryPrimaryRun(runtime, greedy, query);
     }
 
     /**
@@ -4923,7 +4958,7 @@ public interface DriverAdapter {
      * @param query 查询条件 根据metadata属性
      * @return runs
      */
-    List<Run> buildQueryForeignsRun(DataRuntime runtime, ForeignKey query) throws Exception;
+    List<Run> buildQueryForeignsRun(DataRuntime runtime, boolean greedy,  ForeignKey query) throws Exception;
     /**
      * foreign[命令合成]<br/>
      * 查询表上的外键
@@ -4931,11 +4966,18 @@ public interface DriverAdapter {
      * @param table 表
      * @return runs
      */
-    default List<Run> buildQueryForeignsRun(DataRuntime runtime, Table table) throws Exception {
+    default List<Run> buildQueryForeignsRun(DataRuntime runtime, boolean greedy,  Table table) throws Exception {
         ForeignKey query = new ForeignKey();
         query.setTable(table);
-        return buildQueryForeignsRun(runtime, query);
+        return buildQueryForeignsRun(runtime, greedy, query);
     }
+
+    /**
+     * foreign[结果集封装]<br/>
+     * ForeignKey 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    MetadataFieldRefer buildForeignKeyFieldRefer();
 
     /**
      * foreign[结构集封装]<br/>
@@ -5085,7 +5127,7 @@ public interface DriverAdapter {
      * @param query 查询条件 根据metadata属性
      * @return runs
      */
-    List<Run> buildQueryIndexesRun(DataRuntime runtime, Index query);
+    List<Run> buildQueryIndexesRun(DataRuntime runtime, boolean greedy,  Index query);
     /**
      * index[命令合成]<br/>
      * 查询表上的索引
@@ -5094,13 +5136,13 @@ public interface DriverAdapter {
      * @param pattern 名称
      * @return runs
      */
-    default List<Run> buildQueryIndexesRun(DataRuntime runtime, Table table, String pattern) {
+    default List<Run> buildQueryIndexesRun(DataRuntime runtime, boolean greedy,  Table table, String pattern) {
         Index query = new Index();
         query.setTable(table);
         query.setName(pattern);
-        return buildQueryIndexesRun(runtime, query);
+        return buildQueryIndexesRun(runtime, greedy, query);
     }
-    List<Run> buildQueryIndexesRun(DataRuntime runtime, Collection<? extends Table> tables);
+    List<Run> buildQueryIndexesRun(DataRuntime runtime, boolean greedy,  Collection<? extends Table> tables);
 
     /**
      * Index[结果集封装]<br/>
@@ -5325,7 +5367,7 @@ public interface DriverAdapter {
      * @param query 查询条件 根据metadata属性
      * @return runs
      */
-    List<Run> buildQueryConstraintsRun(DataRuntime runtime, Constraint query);
+    List<Run> buildQueryConstraintsRun(DataRuntime runtime, boolean greedy, Constraint query);
     /**
      * constraint[命令合成]<br/>
      * 查询表上的约束
@@ -5334,15 +5376,24 @@ public interface DriverAdapter {
      * @param pattern 名称通配符或正则
      * @return runs
      */
-    default List<Run> buildQueryConstraintsRun(DataRuntime runtime, Table table, Column column, String pattern) {
+    default List<Run> buildQueryConstraintsRun(DataRuntime runtime, boolean greedy, Table table, Column column, String pattern) {
         Constraint query = new Constraint();
         query.setTable(table);
         query.setName(pattern);
         if(null != column) {
             query.addColumn(column);
         }
-        return buildQueryConstraintsRun(runtime, query);
+        return buildQueryConstraintsRun(runtime, greedy, query);
     }
+
+    /**
+     * constraint[结果集封装]<br/>
+     * Constraint 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    MetadataFieldRefer buildConstraintFieldRefer();
+
+
     /**
      * constraint[结果集封装]<br/>
      *  根据查询结果集构造Constraint
@@ -5495,7 +5546,7 @@ public interface DriverAdapter {
 	 * @param query 查询条件 根据metadata属性
 	 * @return runs
 	 */
-	List<Run> buildQueryTriggersRun(DataRuntime runtime, Trigger query) ;
+	List<Run> buildQueryTriggersRun(DataRuntime runtime, boolean greedy, Trigger query) ;
 	/**
 	 * trigger[命令合成]<br/>
 	 * 查询表上的 Trigger
@@ -5504,13 +5555,23 @@ public interface DriverAdapter {
 	 * @param events 事件 INSERT|UPDATE|DELETE
 	 * @return runs
 	 */
-	default List<Run> buildQueryTriggersRun(DataRuntime runtime, Table table, List<Trigger.EVENT> events) {
+	default List<Run> buildQueryTriggersRun(DataRuntime runtime, boolean greedy, Table table, List<Trigger.EVENT> events) {
 		Trigger query = new Trigger();
 		query.setTable(table);
 		query.setEvent(events);
-		return buildQueryTriggersRun(runtime, query);
+		return buildQueryTriggersRun(runtime, greedy, query);
 	}
-	/**
+
+
+    /**
+     * trigger[结果集封装]<br/>
+     * Trigger 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    MetadataFieldRefer buildTriggerFieldRefer();
+
+
+    /**
 	 * trigger[结果集封装]<br/>
 	 * 根据查询结果集构造 Trigger
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -5659,7 +5720,7 @@ public interface DriverAdapter {
 	 * @param query 查询条件 根据metadata属性
 	 * @return runs
 	 */
-	List<Run> buildQueryProceduresRun(DataRuntime runtime, Procedure query);
+	List<Run> buildQueryProceduresRun(DataRuntime runtime, boolean greedy, Procedure query);
 	/**
 	 * procedure[命令合成]<br/>
 	 * 查询表上的 Procedure
@@ -5669,12 +5730,19 @@ public interface DriverAdapter {
 	 * @param pattern 名称统配符或正则
 	 * @return runs
 	 */
-	default List<Run> buildQueryProceduresRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) {
+	default List<Run> buildQueryProceduresRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern) {
 		Procedure query = new Procedure();
 		query.setCatalog(catalog);
 		query.setSchema(schema);
-		return buildQueryProceduresRun(runtime, query);
+		return buildQueryProceduresRun(runtime, greedy, query);
 	}
+
+    /**
+     * procedure[结果集封装]<br/>
+     * Procedure 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    MetadataFieldRefer buildProcedureFieldRefer();
 
 	/**
 	 * procedure[结果集封装]<br/>
@@ -6102,6 +6170,13 @@ public interface DriverAdapter {
 	default List<Run> buildQuerySequencesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) {
 		return buildQuerySequencesRun(runtime, new Sequence(catalog, schema, pattern));
 	}
+
+    /**
+     * sequence[结果集封装]<br/>
+     * Sequence 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    MetadataFieldRefer buildSequenceFieldRefer();
 
 	/**
 	 * sequence[结果集封装]<br/>
@@ -8512,7 +8587,15 @@ public interface DriverAdapter {
 	default List<Run> buildQueryRolesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) throws Exception {
 		return buildQueryRolesRun(runtime, new Role(catalog, schema, pattern));
 	}
-	/**
+
+    /**
+     * role[结果集封装]<br/>
+     * Role 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    MetadataFieldRefer buildRoleFieldRefer();
+
+    /**
 	 * role[结果集封装]<br/>
 	 * 根据查询结果集构造 role
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -8737,7 +8820,7 @@ public interface DriverAdapter {
 	}
 
     /**
-     * User[结果集封装]<br/>
+     * user[结果集封装]<br/>
      * User 属性与结果集对应关系
      * @return MetadataFieldRefer
      */
@@ -8877,6 +8960,13 @@ public interface DriverAdapter {
 	default List<Run> buildQueryPrivilegesRun(DataRuntime runtime, User user) throws Exception {
 		return buildQueryPrivilegesRun(runtime, new Privilege(user));
 	}
+
+    /**
+     * privilege[结果集封装]<br/>
+     * Privilege 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    MetadataFieldRefer buildPrivilegeFieldRefer();
 
 	/**
 	 * privilege[结果集封装]<br/>

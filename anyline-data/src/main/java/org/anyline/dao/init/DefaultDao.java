@@ -1226,7 +1226,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * LinkedHashMap<String, Tag> tags(Catalog catalog, Schema schema, String table)
 	 ******************************************************************************************************************/
 	@Override
-	public <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, String random, boolean greedy, Table table) {
+	public <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, String random, boolean greedy, Table table, Tag query) {
 		if(null == runtime) {
 			runtime = runtime();
 		}
@@ -1256,7 +1256,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	/* *****************************************************************************************************************
 	 * 													foreign
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<Run> buildQueryForeignsRun(DataRuntime runtime, Table table) throws Exception
+	 * List<Run> buildQueryForeignsRun(DataRuntime runtime, boolean greedy,  Table table) throws Exception
 	 * <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, int index, Table table, LinkedHashMap<String, T> foreigns, DataSet set) throws Exception
 	 ******************************************************************************************************************/
 	@Override

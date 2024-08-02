@@ -1019,7 +1019,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
     }
 
     @Override
-    public List<Run> buildQueryConstraintsRun(DataRuntime runtime, Constraint query) {
+    public List<Run> buildQueryConstraintsRun(DataRuntime runtime, boolean greedy, Constraint query) {
         return null;
     }
 

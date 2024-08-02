@@ -2922,7 +2922,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
         map.put("rows", rows);
         map.put("success", result);
         if(null != navi) {
-            Map<String,Object> navi_ = new HashMap<String,Object>();
+            Map<String,Object> navi_ = new HashMap<>();
             navi_.put("page", navi.getCurPage());
             navi_.put("pages", navi.getTotalPage());
             navi_.put("rows", navi.getTotalRow());

@@ -219,6 +219,13 @@ public class Metadata<T extends Metadata> {
         }
     }
 
+    public boolean isEmpty() {
+        if(null == name || name.trim().isEmpty()) {
+            return true;
+        }
+        return false;
+    }
+
     public DatabaseType getDatabase() {
         return database;
     }

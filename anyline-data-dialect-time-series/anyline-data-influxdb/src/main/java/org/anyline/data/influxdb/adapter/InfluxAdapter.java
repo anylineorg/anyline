@@ -2546,8 +2546,8 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * <T extends VertexTable> List<T> vertexs(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, boolean struct)
      * <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, String types, boolean struct)
      * [命令合成]
-     * List<Run> buildQueryVertexTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types)
-     * List<Run> buildQueryVertexTablesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types)
+     * List<Run> buildQueryVertexsRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types)
+     * List<Run> buildQueryVertexsCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types)
      * [结果集封装]<br/>
      * <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> vertexs, Catalog catalog, Schema schema, DataSet set)
      * <T extends VertexTable> List<T> vertexs(DataRuntime runtime, int index, boolean create, List<T> vertexs, Catalog catalog, Schema schema, DataSet set)
@@ -2594,8 +2594,8 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @throws Exception Exception
      */
     @Override
-    public List<Run> buildQueryVertexTablesRun(DataRuntime runtime, boolean greedy, VertexTable query, int types, ConfigStore configs) throws Exception {
-        return super.buildQueryVertexTablesRun(runtime, greedy, query, types, configs);
+    public List<Run> buildQueryVertexsRun(DataRuntime runtime, boolean greedy, VertexTable query, int types, ConfigStore configs) throws Exception {
+        return super.buildQueryVertexsRun(runtime, greedy, query, types, configs);
     }
 
     /**
@@ -2607,15 +2607,15 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @return String
      * @throws Exception Exception
      */
-    public List<Run> buildQueryVertexTablesCommentRun(DataRuntime runtime, VertexTable query, int types) throws Exception {
-        return super.buildQueryVertexTablesCommentRun(runtime, query, types);
+    public List<Run> buildQueryVertexsCommentRun(DataRuntime runtime, VertexTable query, int types) throws Exception {
+        return super.buildQueryVertexsCommentRun(runtime, query, types);
     }
 
     /**
      * vertex[结果集封装]<br/>
      *  根据查询结果集构造VertexTable
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条SQL 对照buildQueryVertexTablesRun返回顺序
+     * @param index 第几条SQL 对照buildQueryVertexsRun返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param query 查询条件 根据metadata属性
      * @param previous 上一步查询结果
@@ -2632,7 +2632,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * vertex[结果集封装]<br/>
      *  根据查询结果集构造VertexTable
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条SQL 对照buildQueryVertexTablesRun返回顺序
+     * @param index 第几条SQL 对照buildQueryVertexsRun返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param query 查询条件 根据metadata属性
      * @param previous 上一步查询结果
@@ -3210,9 +3210,9 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * [调用入口]
      * <T extends PartitionTable> LinkedHashMap<String,T> partitions(DataRuntime runtime, String random, boolean greedy, MasterTable master, Map<String, Object> tags, String pattern)
      * [命令合成]
-     * List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types)
-     * List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Table master, Map<String, Tag> tags, String pattern)
-     * List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Table master, Map<String, Tag> tags)
+     * List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, boolean greedy,  Catalog catalog, Schema schema, String pattern, int types)
+     * List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, boolean greedy,  Table master, Map<String, Tag> tags, String pattern)
+     * List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, boolean greedy,  Table master, Map<String, Tag> tags)
      * [结果集封装]<br/>
      * <T extends PartitionTable> LinkedHashMap<String, T> partitions(DataRuntime runtime, int total, int index, boolean create, MasterTable master, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set)
      * <T extends PartitionTable> LinkedHashMap<String,T> partitions(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, MasterTable master)
@@ -3247,8 +3247,8 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @return String
      */
     @Override
-    public List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, PartitionTable query, int types) throws Exception {
-        return super.buildQueryPartitionTablesRun(runtime, query, types);
+    public List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, boolean greedy,  PartitionTable query, int types) throws Exception {
+        return super.buildQueryPartitionTablesRun(runtime, greedy, query, types);
     }
 
 
@@ -3518,11 +3518,11 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      *                                                     tag
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
-     * <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, String random, boolean greedy, Table table)
+     * <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, String random, boolean greedy, Table table, Tag query)
      * [命令合成]
-     * List<Run> buildQueryTagsRun(DataRuntime runtime, Table table, boolean metadata)
+     * List<Run> buildQueryTagsRun(DataRuntime runtime, boolean greedy, Tag query)
      * [结果集封装]<br/>
-     * <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> tags, DataSet set)
+     * <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Tag query, DataSet set)
      * <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tags, Table table, String pattern)
      ******************************************************************************************************************/
 
@@ -3532,26 +3532,25 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
-     * @param table 表
+     * @param query 查询条件 根据metadata属性
      * @return Tag
      * @param <T>  Tag
      */
     @Override
-    public <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, String random, boolean greedy, Table table) {
-        return super.tags(runtime, random, greedy, table);
+    public <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, String random, boolean greedy, Table table, Tag query) {
+        return super.tags(runtime, random, greedy, table, query);
     }
 
     /**
      * tag[命令合成]<br/>
      * 查询表上的列
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param table 表
-     * @param metadata 是否需要根据metadata
+     * @param query 查询条件 根据mdtadata属性
      * @return runs
      */
     @Override
-    public List<Run> buildQueryTagsRun(DataRuntime runtime, Table table, boolean metadata) throws Exception {
-        return super.buildQueryTagsRun(runtime, table, metadata);
+    public List<Run> buildQueryTagsRun(DataRuntime runtime, boolean greedy, Tag query) throws Exception {
+        return super.buildQueryTagsRun(runtime, greedy, query);
     }
 
     /**
@@ -3560,15 +3559,14 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条查询SQL 对照 buildQueryTagsRun返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param table 表
      * @param previous 上一步查询结果
      * @param set 查询结果集
      * @return tags
      * @throws Exception 异常
      */
     @Override
-    public <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> previous, DataSet set) throws Exception {
-        return super.tags(runtime, index, create, table, previous, set);
+    public <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Tag query, DataSet set) throws Exception {
+        return super.tags(runtime, index, create, previous, query, set);
     }
 
     /**
@@ -3593,7 +3591,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * [调用入口]
      * PrimaryKey primary(DataRuntime runtime, String random, boolean greedy, Table table)
      * [命令合成]
-     * List<Run> buildQueryPrimaryRun(DataRuntime runtime, Table table) throws Exception
+     * List<Run> buildQueryPrimaryRun(DataRuntime runtime, boolean greedy,  Table table) throws Exception
      * [结构集封装]
      * <T extends PrimaryKey> T init(DataRuntime runtime, int index, T primary, Table table, DataSet set)
      ******************************************************************************************************************/
@@ -3619,8 +3617,8 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @return runs
      */
     @Override
-    public List<Run> buildQueryPrimaryRun(DataRuntime runtime, PrimaryKey query) throws Exception {
-        return super.buildQueryPrimaryRun(runtime, query);
+    public List<Run> buildQueryPrimaryRun(DataRuntime runtime, boolean greedy,  PrimaryKey query) throws Exception {
+        return super.buildQueryPrimaryRun(runtime, greedy, query);
     }
 
     /**
@@ -3675,7 +3673,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * [调用入口]
      * <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, String random, boolean greedy, Table table);
      * [命令合成]
-     * List<Run> buildQueryForeignsRun(DataRuntime runtime, Table table) throws Exception;
+     * List<Run> buildQueryForeignsRun(DataRuntime runtime, boolean greedy,  Table table) throws Exception;
      * [结构集封装]
      * <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, int index, Table table, LinkedHashMap<String, T> foreigns, DataSet set) throws Exception;
      ******************************************************************************************************************/
@@ -3702,8 +3700,8 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @return runs
      */
     @Override
-    public List<Run> buildQueryForeignsRun(DataRuntime runtime, ForeignKey query) throws Exception {
-        return super.buildQueryForeignsRun(runtime, query);
+    public List<Run> buildQueryForeignsRun(DataRuntime runtime, boolean greedy,  ForeignKey query) throws Exception {
+        return super.buildQueryForeignsRun(runtime, greedy, query);
     }
 
     /**
@@ -3721,6 +3719,35 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
         return super.foreigns(runtime, index, previous, query, set);
     }
 
+    /**
+     * foreign[结构集封装]<br/>
+     * 根据查询结果集构造ForeignKey基础属性
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param index 第几条查询SQL 对照 buildQueryIndexesRun 返回顺序
+     * @param meta 上一步封装结果
+     * @param query 查询条件 根据metadata属性
+     * @param row sql查询结果
+     * @throws Exception 异常
+     */
+    @Override
+    public <T extends ForeignKey> T init(DataRuntime runtime, int index, T meta, ForeignKey query, DataRow row) throws Exception {
+        return super.init(runtime, index, meta, query, row);
+    }
+
+    /**
+     * foreign[结构集封装]<br/>
+     * 根据查询结果集构造ForeignKey更多属性
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param index 第几条查询SQL 对照 buildQueryIndexesRun 返回顺序
+     * @param meta 上一步封装结果
+     * @param query 查询条件 根据metadata属性
+     * @param row sql查询结果
+     * @throws Exception 异常
+     */
+    @Override
+    public <T extends ForeignKey> T detail(DataRuntime runtime, int index, T meta, ForeignKey query, DataRow row) throws Exception {
+        return super.detail(runtime, index, meta, query, row);
+    }
     /* *****************************************************************************************************************
      *                                                     index
      * -----------------------------------------------------------------------------------------------------------------
@@ -3728,7 +3755,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * <T extends Index> List<T> indexes(DataRuntime runtime, String random, boolean greedy, Table table, String pattern)
      * <T extends Index> LinkedHashMap<T, Index> indexes(DataRuntime runtime, String random, Table table, String pattern)
      * [命令合成]
-     * List<Run> buildQueryIndexesRun(DataRuntime runtime, Table table, String name)
+     * List<Run> buildQueryIndexesRun(DataRuntime runtime, boolean greedy,  Table table, String name)
      * [结果集封装]<br/>
      * <T extends Index> List<T> indexes(DataRuntime runtime, int index, boolean create, Table table, List<T> indexes, DataSet set)
      * <T extends Index> LinkedHashMap<String, T> indexes(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> indexes, DataSet set)
@@ -3772,7 +3799,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @return runs
      */
     @Override
-    public List<Run> buildQueryIndexesRun(DataRuntime runtime, Index query) {
+    public List<Run> buildQueryIndexesRun(DataRuntime runtime, boolean greedy,  Index query) {
         Table table = query.getTable();
         List<Run> runs = new ArrayList<>();
         Run run = new SimpleRun(runtime);
@@ -3784,10 +3811,12 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
         return runs;
     }
     @Override
-    public List<Run> buildQueryIndexesRun(DataRuntime runtime, Collection<? extends Table> tables) {
+    public List<Run> buildQueryIndexesRun(DataRuntime runtime, boolean greedy,  Collection<? extends Table> tables) {
         List<Run> runs = new ArrayList<>();
         for(Table table:tables){
-            runs.addAll(buildQueryIndexesRun(runtime, table, null));
+            Index query = new Index();
+            query.setTable(table);;
+            runs.addAll(buildQueryIndexesRun(runtime, greedy, query));
         }
         return runs;
     }
@@ -3892,7 +3921,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * <T extends Constraint> List<T> constraints(DataRuntime runtime, String random, boolean greedy, Table table, String pattern);
      * <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, String random, Table table, Column column, String pattern);
      * [命令合成]
-     * List<Run> buildQueryConstraintsRun(DataRuntime runtime, Table table, Column column, String pattern) ;
+     * List<Run> buildQueryConstraintsRun(DataRuntime runtime, boolean greedy, Table table, Column column, String pattern) ;
      * [结果集封装]<br/>
      * <T extends Constraint> List<T> constraints(DataRuntime runtime, int index, boolean create, Table table, List<T> constraints, DataSet set) throws Exception;
      * <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, int index, boolean create, Table table, Column column, LinkedHashMap<String, T> constraints, DataSet set) throws Exception;
@@ -3937,8 +3966,8 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @return runs
      */
     @Override
-    public List<Run> buildQueryConstraintsRun(DataRuntime runtime, Constraint query) {
-        return super.buildQueryConstraintsRun(runtime, query);
+    public List<Run> buildQueryConstraintsRun(DataRuntime runtime, boolean greedy, Constraint query) {
+        return super.buildQueryConstraintsRun(runtime, greedy, query);
     }
 
     /**
@@ -3981,7 +4010,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * [调用入口]
      * <T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, String random, boolean greedy, Table table, List<Trigger.EVENT> events)
      * [命令合成]
-     * List<Run> buildQueryTriggersRun(DataRuntime runtime, Table table, List<Trigger.EVENT> events)
+     * List<Run> buildQueryTriggersRun(DataRuntime runtime, boolean greedy, Table table, List<Trigger.EVENT> events)
      * [结果集封装]<br/>
      * <T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> triggers, DataSet set)
      ******************************************************************************************************************/
@@ -4007,7 +4036,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @param query 查询条件 根据metadata属性
      * @return runs
      */
-    public List<Run> buildQueryTriggersRun(DataRuntime runtime, Trigger query) {
+    public List<Run> buildQueryTriggersRun(DataRuntime runtime, boolean greedy, Trigger query) {
         return new ArrayList<>();
     }
 
@@ -4034,7 +4063,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * <T extends Procedure> List<T> procedures(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern);
      * <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern);
      * [命令合成]
-     * List<Run> buildQueryProceduresRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) ;
+     * List<Run> buildQueryProceduresRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern) ;
      * [结果集封装]<br/>
      * <T extends Procedure> List<T> procedures(DataRuntime runtime, int index, boolean create, List<T> procedures, DataSet set) throws Exception;
      * <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> procedures, DataSet set) throws Exception;
@@ -4084,8 +4113,8 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @return runs
      */
     @Override
-    public List<Run> buildQueryProceduresRun(DataRuntime runtime, Procedure query) {
-        return super.buildQueryProceduresRun(runtime, query);
+    public List<Run> buildQueryProceduresRun(DataRuntime runtime, boolean greedy, Procedure query) {
+        return super.buildQueryProceduresRun(runtime, greedy, query);
     }
 
     /**

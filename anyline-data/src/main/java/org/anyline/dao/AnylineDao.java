@@ -1671,7 +1671,12 @@ public interface AnylineDao<E>{
 	/* *****************************************************************************************************************
 	 * 													tag
 	 ******************************************************************************************************************/
-	<T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, String random, boolean greedy, Table table);
+	<T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, String random, boolean greedy, Table table, Tag query);
+	default <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, String random, boolean greedy, Table table) {
+		Tag query = new Tag();
+		query.setTable(table);
+		return tags(runtime, random, greedy, table, query);
+	}
 	default <T extends Tag> LinkedHashMap<String, T> tags(boolean greedy, String table) {
 		return tags(runtime(), null, greedy, new Table(table));
 	}
