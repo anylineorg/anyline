@@ -465,7 +465,7 @@ public interface DriverAdapter {
     /**
      * 根据差异生成SQL
      * @param differ differ 需要保证表中有列信息
-     * @return sqls
+     * @return runs
      */
     default List<Run> ddl(DataRuntime runtime, String random, MetadataDiffer differ, boolean merge) {
         List<Run> list = new ArrayList<>();
@@ -714,7 +714,7 @@ public interface DriverAdapter {
     /**
      * 根据差异生成SQL
      * @param differs differs
-     * @return sqls
+     * @return runs
      */
     default List<Run> ddl(DataRuntime runtime, String random, List<MetadataDiffer> differs) {
         List<Run> list = new ArrayList<>();
@@ -2056,7 +2056,7 @@ public interface DriverAdapter {
      * database[命令合成]<br/>
      * 查询当前数据源 数据库产品说明(产品名称+版本号)
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @return sqls
+     * @return runs
      * @throws Exception 异常
      */
     List<Run> buildQueryProductRun(DataRuntime runtime) throws Exception;
@@ -2064,7 +2064,7 @@ public interface DriverAdapter {
      * database[命令合成]<br/>
      * 查询当前数据源 数据库版本 版本号比较复杂 不是全数字
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @return sqls
+     * @return runs
      * @throws Exception 异常
      */
     List<Run> buildQueryVersionRun(DataRuntime runtime) throws Exception;
@@ -2074,7 +2074,7 @@ public interface DriverAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param query 查询条件 根据metadata属性
      * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
-     * @return sqls
+     * @return runs
      * @throws Exception 异常
      */
     List<Run> buildQueryDatabasesRun(DataRuntime runtime, boolean greedy, Database query) throws Exception;
@@ -2235,7 +2235,7 @@ public interface DriverAdapter {
      * catalog[命令合成]<br/>
      * 查询当前catalog
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @return sqls
+     * @return runs
      * @throws Exception 异常
      */
     List<Run> buildQueryCatalogRun(DataRuntime runtime, String random) throws Exception;
@@ -2245,7 +2245,7 @@ public interface DriverAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param query 查询条件 根据metadata属性
      * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
-     * @return sqls
+     * @return runs
      * @throws Exception 异常
      */
     List<Run> buildQueryCatalogsRun(DataRuntime runtime, boolean greedy, Catalog query) throws Exception;
@@ -2255,7 +2255,7 @@ public interface DriverAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param name 名称统配符或正则
      * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
-     * @return sqls
+     * @return runs
      * @throws Exception 异常
      */
     default List<Run> buildQueryCatalogsRun(DataRuntime runtime, boolean greedy, String name) throws Exception {
@@ -2408,7 +2408,7 @@ public interface DriverAdapter {
      * schema[命令合成]<br/>
      * 查询当前schema
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @return sqls
+     * @return runs
      * @throws Exception 异常
      */
     List<Run> buildQuerySchemaRun(DataRuntime runtime, String random) throws Exception;
@@ -2418,7 +2418,7 @@ public interface DriverAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param query 查询条件 根据metadata属性
      * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
-     * @return sqls
+     * @return runs
      * @throws Exception 异常
      */
     List<Run> buildQuerySchemasRun(DataRuntime runtime, boolean greedy, Schema query) throws Exception;
@@ -2429,7 +2429,7 @@ public interface DriverAdapter {
      * @param catalog 对于MySQL, 则对应相应的数据库, 对于Oracle来说, 则是对应相应的数据库实例, 可以不填, 也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
      * @param name 名称统配符或正则
      * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
-     * @return sqls
+     * @return runs
      * @throws Exception 异常
      */
     default List<Run> buildQuerySchemasRun(DataRuntime runtime, boolean greedy, Catalog catalog, String name) throws Exception {
@@ -4489,7 +4489,7 @@ public interface DriverAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param query 查询条件 根据metadata属性
      * @param metadata 是否根据metadata(true:SELECT * FROM T WHERE 1=0,false:查询系统表)
-     * @return sqls
+     * @return runs
      */
     List<Run> buildQueryColumnsRun(DataRuntime runtime, boolean metadata, Column query, ConfigStore configs) throws Exception;
 
@@ -4706,7 +4706,7 @@ public interface DriverAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param table 表
      * @param metadata 是否需要根据metadata
-     * @return sqls
+     * @return runs
      */
     List<Run> buildQueryTagsRun(DataRuntime runtime, Table table, boolean metadata) throws Exception;
 
@@ -4791,7 +4791,7 @@ public interface DriverAdapter {
      * 查询表上的主键
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param query 查询条件 根据metadata属性
-     * @return sqls
+     * @return runs
      */
     List<Run> buildQueryPrimaryRun(DataRuntime runtime, PrimaryKey query) throws Exception;
     /**
@@ -4799,7 +4799,7 @@ public interface DriverAdapter {
      * 查询表上的主键
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param table 表
-     * @return sqls
+     * @return runs
      */
     default List<Run> buildQueryPrimaryRun(DataRuntime runtime, Table table) throws Exception {
         PrimaryKey query = new PrimaryKey();
@@ -4921,7 +4921,7 @@ public interface DriverAdapter {
      * 查询表上的外键
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param query 查询条件 根据metadata属性
-     * @return sqls
+     * @return runs
      */
     List<Run> buildQueryForeignsRun(DataRuntime runtime, ForeignKey query) throws Exception;
     /**
@@ -4929,7 +4929,7 @@ public interface DriverAdapter {
      * 查询表上的外键
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param table 表
-     * @return sqls
+     * @return runs
      */
     default List<Run> buildQueryForeignsRun(DataRuntime runtime, Table table) throws Exception {
         ForeignKey query = new ForeignKey();
@@ -5083,7 +5083,7 @@ public interface DriverAdapter {
      * 查询表上的索引
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param query 查询条件 根据metadata属性
-     * @return sqls
+     * @return runs
      */
     List<Run> buildQueryIndexesRun(DataRuntime runtime, Index query);
     /**
@@ -5092,7 +5092,7 @@ public interface DriverAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param table 表
      * @param pattern 名称
-     * @return sqls
+     * @return runs
      */
     default List<Run> buildQueryIndexesRun(DataRuntime runtime, Table table, String pattern) {
         Index query = new Index();
@@ -5323,7 +5323,7 @@ public interface DriverAdapter {
      * 查询表上的约束
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param query 查询条件 根据metadata属性
-     * @return sqls
+     * @return runs
      */
     List<Run> buildQueryConstraintsRun(DataRuntime runtime, Constraint query);
     /**
@@ -5332,7 +5332,7 @@ public interface DriverAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param table 表
      * @param pattern 名称通配符或正则
-     * @return sqls
+     * @return runs
      */
     default List<Run> buildQueryConstraintsRun(DataRuntime runtime, Table table, Column column, String pattern) {
         Constraint query = new Constraint();
@@ -5493,7 +5493,7 @@ public interface DriverAdapter {
 	 * 查询表上的 Trigger
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param query 查询条件 根据metadata属性
-	 * @return sqls
+	 * @return runs
 	 */
 	List<Run> buildQueryTriggersRun(DataRuntime runtime, Trigger query) ;
 	/**
@@ -5502,7 +5502,7 @@ public interface DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param table 表
 	 * @param events 事件 INSERT|UPDATE|DELETE
-	 * @return sqls
+	 * @return runs
 	 */
 	default List<Run> buildQueryTriggersRun(DataRuntime runtime, Table table, List<Trigger.EVENT> events) {
 		Trigger query = new Trigger();
@@ -5657,7 +5657,7 @@ public interface DriverAdapter {
 	 * 查询表上的 Procedure
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param query 查询条件 根据metadata属性
-	 * @return sqls
+	 * @return runs
 	 */
 	List<Run> buildQueryProceduresRun(DataRuntime runtime, Procedure query);
 	/**
@@ -5667,7 +5667,7 @@ public interface DriverAdapter {
 	 * @param catalog 对于MySQL, 则对应相应的数据库, 对于Oracle来说, 则是对应相应的数据库实例, 可以不填, 也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
 	 * @param schema 可以理解为数据库的登录名, 而对于Oracle也可以理解成对该数据库操作的所有者的登录名。对于Oracle要特别注意, 其登陆名必须是大写, 不然的话是无法获取到相应的数据, 而MySQL则不做强制要求。
 	 * @param pattern 名称统配符或正则
-	 * @return sqls
+	 * @return runs
 	 */
 	default List<Run> buildQueryProceduresRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) {
 		Procedure query = new Procedure();
@@ -5856,7 +5856,7 @@ public interface DriverAdapter {
 	 * 查询表上的 Function
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param query 查询条件 根据metadata属性
-	 * @return sqls
+	 * @return runs
 	 */
 	List<Run> buildQueryFunctionsRun(DataRuntime runtime, Function query) ;
 	/**
@@ -5866,7 +5866,7 @@ public interface DriverAdapter {
 	 * @param catalog 对于MySQL, 则对应相应的数据库, 对于Oracle来说, 则是对应相应的数据库实例, 可以不填, 也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
 	 * @param schema 可以理解为数据库的登录名, 而对于Oracle也可以理解成对该数据库操作的所有者的登录名。对于Oracle要特别注意, 其登陆名必须是大写, 不然的话是无法获取到相应的数据, 而MySQL则不做强制要求。
 	 * @param pattern 名称统配符或正则
-	 * @return sqls
+	 * @return runs
 	 */
 	default List<Run> buildQueryFunctionsRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) {
 		Function query = new Function(catalog, schema, pattern);
@@ -6087,7 +6087,7 @@ public interface DriverAdapter {
 	 * 查询表上的 Sequence
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param query 查询条件 根据metadata属性
-	 * @return sqls
+	 * @return runs
 	 */
 	List<Run> buildQuerySequencesRun(DataRuntime runtime, Sequence query) ;
 	/**
@@ -6097,7 +6097,7 @@ public interface DriverAdapter {
 	 * @param catalog 对于MySQL, 则对应相应的数据库, 对于Oracle来说, 则是对应相应的数据库实例, 可以不填, 也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
 	 * @param schema 可以理解为数据库的登录名, 而对于Oracle也可以理解成对该数据库操作的所有者的登录名。对于Oracle要特别注意, 其登陆名必须是大写, 不然的话是无法获取到相应的数据, 而MySQL则不做强制要求。
 	 * @param pattern 名称统配符或正则
-	 * @return sqls
+	 * @return runs
 	 */
 	default List<Run> buildQuerySequencesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) {
 		return buildQuerySequencesRun(runtime, new Sequence(catalog, schema, pattern));

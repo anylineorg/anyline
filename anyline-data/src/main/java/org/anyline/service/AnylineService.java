@@ -1801,13 +1801,13 @@ public interface AnylineService<E>{
 	/**
 	 * 根据差异生成SQL
 	 * @param differ differ
-	 * @return sqls
+	 * @return runs
 	 */
 	List<Run> ddl(MetadataDiffer differ);
 	/**
 	 * 根据差异生成SQL
 	 * @param differs differs
-	 * @return sqls
+	 * @return runs
 	 */
 	List<Run> ddl(List<MetadataDiffer> differs);
 

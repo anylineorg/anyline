@@ -1445,7 +1445,7 @@ public class ServiceProxy {
     /**
      * 根据差异生成SQL
      * @param differ differ
-     * @return sqls
+     * @return runs
      */
     public static List<Run> ddl(MetadataDiffer differ) {
         return service.ddl(differ);
@@ -1453,7 +1453,7 @@ public class ServiceProxy {
     /**
      * 根据差异生成SQL
      * @param differs differs
-     * @return sqls
+     * @return runs
      */
     public static List<Run> ddl(List<MetadataDiffer> differs) {
         return service.ddl(differs);

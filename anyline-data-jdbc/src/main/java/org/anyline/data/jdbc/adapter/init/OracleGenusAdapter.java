@@ -1350,7 +1350,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param query 查询条件 根据metadata属性
      * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
-     * @return sqls
+     * @return runs
      * @throws Exception 异常
      */
     @Override
@@ -1549,7 +1549,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param query 查询条件 根据metadata属性
      * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
-     * @return sqls
+     * @return runs
      * @throws Exception 异常
      */
     @Override
@@ -1773,7 +1773,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * database[命令合成]<br/>
      * 查询当前数据源 数据库产品说明(产品名称+版本号)
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @return sqls
+     * @return runs
      * @throws Exception 异常
      */
     @Override
@@ -1784,7 +1784,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * database[命令合成]<br/>
      * 查询当前数据源 数据库版本 版本号比较复杂 不是全数字
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @return sqls
+     * @return runs
      * @throws Exception 异常
      */
     @Override
@@ -1797,7 +1797,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param query 查询条件 根据metadata属性
      * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
-     * @return sqls
+     * @return runs
      * @throws Exception 异常
      */
     @Override
@@ -2605,7 +2605,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param query 查询条件 根据metadata属性
      * @param metadata 是否根据metadata(true:SELECT * FROM T WHERE 1=0, false:查询系统表)
-     * @return sqls
+     * @return runs
      */
     @Override
     public List<Run> buildQueryColumnsRun(DataRuntime runtime,  boolean metadata, Column query, ConfigStore configs) throws Exception {
@@ -2649,7 +2649,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param tables 表
      * @param metadata 是否根据metadata(true:SELECT * FROM T WHERE 1=0, false:查询系统表)
-     * @return sqls
+     * @return runs
      */
     @Override
     public List<Run> buildQueryColumnsRun(DataRuntime runtime, boolean metadata, Collection<? extends Table> tables, Column query, ConfigStore configs) throws Exception {
@@ -2812,7 +2812,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param table 表
      * @param metadata 是否需要根据metadata
-     * @return sqls
+     * @return runs
      */
     @Override
     public List<Run> buildQueryTagsRun(DataRuntime runtime, Table table, boolean metadata) throws Exception {
@@ -2880,7 +2880,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * 查询表上的主键
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param query 查询条件 根据metadata属性
-     * @return sqls
+     * @return runs
      */
     @Override
     public List<Run> buildQueryPrimaryRun(DataRuntime runtime, PrimaryKey query) throws Exception {
@@ -2977,7 +2977,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * 查询表上的外键
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param query 查询条件 根据metadata属性
-     * @return sqls
+     * @return runs
      */
     @Override
     public List<Run> buildQueryForeignsRun(DataRuntime runtime, ForeignKey query) throws Exception {
@@ -3080,7 +3080,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * 查询表上的索引
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param query 查询条件 根据metadata属性
-     * @return sqls
+     * @return runs
      */
     @Override
     public List<Run> buildQueryIndexesRun(DataRuntime runtime, Index query) {
@@ -3287,7 +3287,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * 查询表上的约束
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param query 查询条件 根据metadata属性
-     * @return sqls
+     * @return runs
      */
     @Override
     public List<Run> buildQueryConstraintsRun(DataRuntime runtime, Constraint query) {
@@ -3410,7 +3410,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * 查询表上的 Trigger
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param query 查询条件 根据metadata属性
-     * @return sqls
+     * @return runs
      */
     public List<Run> buildQueryTriggersRun(DataRuntime runtime, Trigger query) {
         Table table = query.getTable();
@@ -3544,7 +3544,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * 查询表上的 Trigger
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param query 查询条件 根据metadata属性
-     * @return sqls
+     * @return runs
      */
     @Override
     public List<Run> buildQueryProceduresRun(DataRuntime runtime, Procedure query) {
@@ -3683,7 +3683,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * 查询表上的 Trigger
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param query 查询条件 根据metadata属性
-     * @return sqls
+     * @return runs
      */
     @Override
     public List<Run> buildQueryFunctionsRun(DataRuntime runtime, Function query) {
@@ -3834,7 +3834,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * 查询表上的 Trigger
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param query 查询条件 根据metadata属性
-     * @return sqls
+     * @return runs
      */
     @Override
     public List<Run> buildQuerySequencesRun(DataRuntime runtime, Sequence query) {

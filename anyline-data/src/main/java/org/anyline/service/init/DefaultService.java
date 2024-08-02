@@ -1543,7 +1543,7 @@ public class DefaultService<E> implements AnylineService<E> {
     /**
      * 根据差异生成SQL
      * @param differ differ
-     * @return sqls
+     * @return runs
      */
     @Override
     public List<Run> ddl(MetadataDiffer differ) {
@@ -1552,7 +1552,7 @@ public class DefaultService<E> implements AnylineService<E> {
     /**
      * 根据差异生成SQL
      * @param differs differs
-     * @return sqls
+     * @return runs
      */
     @Override
     public List<Run> ddl(List<MetadataDiffer> differs) {

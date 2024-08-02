@@ -1238,7 +1238,7 @@ public class KingbaseAdapter extends PostgresGenusAdapter implements JDBCAdapter
 	 * database[命令合成]<br/>
 	 * 查询当前数据源 数据库产品说明(产品名称+版本号)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @return sqls
+	 * @return runs
 	 * @throws Exception 异常
 	 */
 	@Override
@@ -1250,7 +1250,7 @@ public class KingbaseAdapter extends PostgresGenusAdapter implements JDBCAdapter
 	 * database[命令合成]<br/>
 	 * 查询当前数据源 数据库版本 版本号比较复杂 不是全数字
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @return sqls
+	 * @return runs
 	 * @throws Exception 异常
 	 */
 	@Override
@@ -1264,7 +1264,7 @@ public class KingbaseAdapter extends PostgresGenusAdapter implements JDBCAdapter
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param query 查询条件 根据metadata属性
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
-	 * @return sqls
+	 * @return runs
 	 * @throws Exception 异常
 	 */
 	@Override
@@ -1440,7 +1440,7 @@ public class KingbaseAdapter extends PostgresGenusAdapter implements JDBCAdapter
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param query 查询条件 根据metadata属性
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
-	 * @return sqls
+	 * @return runs
 	 * @throws Exception 异常
 	 */
 	@Override
@@ -1591,7 +1591,7 @@ public class KingbaseAdapter extends PostgresGenusAdapter implements JDBCAdapter
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param query 查询条件 根据metadata属性
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
-	 * @return sqls
+	 * @return runs
 	 * @throws Exception 异常
 	 */
 	@Override
@@ -2950,7 +2950,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * 查询表上的 Trigger
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param query 查询条件 根据metadata属性
-	 * @return sqls
+	 * @return runs
 	 */
 	public List<Run> buildQueryTriggersRun(DataRuntime runtime, Trigger query) {
 		return super.buildQueryTriggersRun(runtime, query);
