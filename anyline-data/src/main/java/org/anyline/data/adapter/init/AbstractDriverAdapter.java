@@ -9901,7 +9901,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			if(null == name) {
 				continue;
 			}
-			T meta = (T)new Index(name.toUpperCase());
+			T meta = search(previous, name);
 			meta = init(runtime, index, meta, table, row);
 			if(null != table) {
 				if (!table.getName().equalsIgnoreCase(meta.getTableName())) {
@@ -9933,12 +9933,17 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		if(null == previous) {
 			previous = new ArrayList<>();
 		}
+        MetadataFieldRefer refer = refer(runtime, Index.class);
 		Map<String,Table> tbls = new HashMap<>();
 		for(Table table:tables) {
 			tbls.put(table.getName().toUpperCase(), table);
 		}
 		for(DataRow row:set) {
-			T meta = null;
+            String name = row.getString(refer.getRefers("Name"));
+            if(null == name) {
+                continue;
+            }
+			T meta = search(previous, name);
 			meta = init(runtime, index, meta, query, row);
 			if(null == Metadata.match(meta, previous)) {
 				previous.add(meta);
@@ -10061,7 +10066,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	/**
 	 * parse boolean
 	 * @param row 结果集
-	 * @param cols 检测的我
+	 * @param cols 检测的列
 	 * @param vals 匹配true的值S(只要一项匹配就返回true)
 	 * @return boolean
 	 */
@@ -10163,10 +10168,43 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public <T extends Constraint> List<T> constraints(DataRuntime runtime, String random, boolean greedy, Constraint query) {
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Constraint> List<T> constraints(DataRuntime runtime, String random, boolean greedy, Constraint query)", 37));
-		}
-		return new ArrayList<>();
+
+        Catalog catalog = query.getCatalog();
+        String name = query.getName();
+        if(null == random) {
+            random = random(runtime);
+        }
+        List<T> list = new ArrayList<>();
+        try{
+            long fr = System.currentTimeMillis();
+            // 根据系统表查询
+            try{
+                List<Run> runs = buildQueryConstraintsRun(runtime, greedy, query);
+                if(null != runs) {
+                    int idx = 0;
+                    for(Run run:runs) {
+                        DataSet set = select(runtime, random, true, (Table)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+                        list = constraints(runtime, idx++, true, list, query, set);
+                    }
+                }
+            }catch (Exception e) {
+                if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+                    e.printStackTrace();
+                }else if (ConfigTable.IS_LOG_SQL && log.isWarnEnabled()) {
+                    log.warn("{}[constraints][{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), e.toString());
+                }
+            }
+            if (ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
+                log.info("{}[constraints][result:{}][执行耗时:{}]", random, list.size(), DateUtil.format(System.currentTimeMillis() - fr));
+            }
+        }catch (Exception e) {
+            if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+                e.printStackTrace();
+            }else{
+                log.error("[constraints][result:fail][msg:{}]", e.toString());
+            }
+        }
+        return list;
 	}
 
 	/**
@@ -10180,10 +10218,42 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, String random, Constraint query) {
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, String random, Constraint query)", 37));
-		}
-		return new LinkedHashMap<>();
+        Catalog catalog = query.getCatalog();
+        String name = query.getName();
+        if(null == random) {
+            random = random(runtime);
+        }
+        LinkedHashMap<String, T> map = new LinkedHashMap<>();
+        try{
+            long fr = System.currentTimeMillis();
+            // 根据系统表查询
+            try{
+                List<Run> runs = buildQueryConstraintsRun(runtime, false, query);
+                if(null != runs) {
+                    int idx = 0;
+                    for(Run run:runs) {
+                        DataSet set = select(runtime, random, true, (Table)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+                        map = constraints(runtime, idx++, true, map, query, set);
+                    }
+                }
+            }catch (Exception e) {
+                if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+                    e.printStackTrace();
+                }else if (ConfigTable.IS_LOG_SQL && log.isWarnEnabled()) {
+                    log.warn("{}[constraints][{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), e.toString());
+                }
+            }
+            if (ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
+                log.info("{}[constraints][result:{}][执行耗时:{}]", random, map.size(), DateUtil.format(System.currentTimeMillis() - fr));
+            }
+        }catch (Exception e) {
+            if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+                e.printStackTrace();
+            }else{
+                log.error("[constraints][result:fail][msg:{}]", e.toString());
+            }
+        }
+        return map;
 	}
 
 	/**
@@ -10208,7 +10278,12 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      */
     @Override
     public MetadataFieldRefer buildConstraintFieldRefer() {
-        return new MetadataFieldRefer(Constraint.class);
+        MetadataFieldRefer refer = new MetadataFieldRefer(Constraint.class);
+        refer.setRefer("name", "CONSTRAINT_NAME");
+        refer.setRefer("schema", "CONSTRAINT_CATALOG");
+        refer.setRefer("table", "TABLE_NAME");
+        refer.setRefer("type", "CONSTRAINT_TYPE");
+        return refer;
     }
 
 
@@ -10226,13 +10301,23 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public <T extends Constraint> List<T> constraints(DataRuntime runtime, int index, boolean create, List<T> previous, Constraint query, DataSet set) throws Exception {
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Constraint> List<T> constraints(DataRuntime runtime, int index, boolean create, List<T> previous, Constraint query, DataSet set)", 37));
-		}
-		if(null == previous) {
-			previous = new ArrayList<>();
-		}
-		return previous;
+        if(null == previous) {
+            previous = new ArrayList<>();
+        }
+        MetadataFieldRefer refer = refer(runtime, Constraint.class);
+        for(DataRow row:set) {
+            String name = row.getString(refer.getRefers("Name"));
+            if(null == name) {
+                continue;
+            }
+            T meta = search(previous, name);
+            meta = init(runtime, index, meta, query, row);
+            if(null == Metadata.match(meta, previous)) {
+                previous.add(meta);
+            }
+            detail(runtime, index, meta, query, row);
+        }
+        return previous;
 	}
 
 	/**
@@ -10253,28 +10338,23 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         if(null == previous) {
             previous = new LinkedHashMap<>();
         }
+        MetadataFieldRefer refer = refer(runtime, Constraint.class);
         for(DataRow row:set) {
-            String name = row.getString("CONSTRAINT_NAME");
+            String name = row.getString(refer.getRefers("name"));
             if(null == name) {
                 continue;
             }
-            T constraint = previous.get(name.toUpperCase());
-            if(null == constraint && create) {
-                constraint = (T)new Constraint();
-                previous.put(name.toUpperCase(), constraint);
-            };
-
-            String catalog = row.getString("CONSTRAINT_CATALOG");
-            String schema = row.getString("CONSTRAINT_SCHEMA");
-            constraint.setCatalog(catalog);
-            constraint.setSchema(schema);
-            if(null == table) {
-                table = new Table(catalog, schema, row.getString("TABLE_NAME"));
+            T meta = previous.get(name.toUpperCase());
+            meta = init(runtime, index, meta, query, row);
+            if(null != table) {
+                if (!table.getName().equalsIgnoreCase(meta.getTableName())) {
+                    continue;
+                }
             }
-            constraint.setTable(table);
-            constraint.setName(name);
-            constraint.setType(row.getString("CONSTRAINT_TYPE"));
-
+            meta = detail(runtime, index, meta, query, row);
+            if(null != meta) {
+                previous.put(meta.getName().toUpperCase(), meta);
+            }
         }
         return previous;
 	}
@@ -10290,9 +10370,26 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public <T extends Constraint> T init(DataRuntime runtime, int index, T meta, Constraint query, DataRow row) {
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Constraint> T init(DataRuntime runtime, int index, T meta, Constraint query, DataRow row)", 37));
-		}
+        if(null == meta){
+            meta = (T)new Constraint<>();
+        }
+        MetadataFieldRefer refer = refer(runtime, Constraint.class);
+        String name = row.getString(refer.getRefers("name"));
+        if(null == name) {
+            return meta;
+        }
+        String catalog = row.getString(refer.getRefers("catalog"));
+        String schema = row.getString(refer.getRefers("schema"));
+        meta.setCatalog(catalog);
+        meta.setSchema(schema);
+        Table table = query.getTable();
+        if(null == table) {
+            table = new Table(catalog, schema, row.getString(refer.getRefers("table")));
+        }
+        meta.setTable(table);
+        meta.setName(name);
+        meta.setType(row.getString(refer.getRefers("type")));
+
 		return meta;
 	}
 	/**
@@ -10332,10 +10429,42 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public <T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, String random, boolean greedy, Trigger query) {
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, String random, boolean greedy, Trigger query)", 37));
-		}
-		return new LinkedHashMap<>();
+        Catalog catalog = query.getCatalog();
+        String name = query.getName();
+        if(null == random) {
+            random = random(runtime);
+        }
+        LinkedHashMap<String, T> map = new LinkedHashMap<>();
+        try{
+            long fr = System.currentTimeMillis();
+            // 根据系统表查询
+            try{
+                List<Run> runs = buildQueryTriggersRun(runtime, greedy, query);
+                if(null != runs) {
+                    int idx = 0;
+                    for(Run run:runs) {
+                        DataSet set = select(runtime, random, true, (Table)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+                        map = triggers(runtime, idx++, true, map, query, set);
+                    }
+                }
+            }catch (Exception e) {
+                if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+                    e.printStackTrace();
+                }else if (ConfigTable.IS_LOG_SQL && log.isWarnEnabled()) {
+                    log.warn("{}[triggers][{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), e.toString());
+                }
+            }
+            if (ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
+                log.info("{}[triggers][result:{}][执行耗时:{}]", random, map.size(), DateUtil.format(System.currentTimeMillis() - fr));
+            }
+        }catch (Exception e) {
+            if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+                e.printStackTrace();
+            }else{
+                log.error("[triggers][result:fail][msg:{}]", e.toString());
+            }
+        }
+        return map;
 	}
 
 	/**
@@ -15854,7 +15983,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * boolean create(DataRuntime runtime, Role role) throws Exception
 	 * boolean rename(DataRuntime runtime, Role origin, Role update) throws Exception;
 	 * boolean delete(DataRuntime runtime, Role role) throws Exception
-	 * List<Role> roles(Catalog catalog, Schema schema, String pattern) throws Exception
+	 * <T extends Role> List<T> roles(Catalog catalog, Schema schema, String pattern) throws Exception
 	 * List<Run> buildQueryRolesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) throws Exception
 	 * <T extends Role> List<T> roles(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, List<T> roles, DataSet set) throws Exception
 	 * <T extends Role> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row)
@@ -15913,8 +16042,41 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<Role> roles(DataRuntime runtime, Role query) throws Exception {
-		return null;
+	public <T extends Role> List<T> roles(DataRuntime runtime, String random, boolean greedy, Role query) throws Exception {
+        if(null == random) {
+            random = random(runtime);
+        }
+        List<T> list = new ArrayList<>();
+        try{
+            long fr = System.currentTimeMillis();
+            // 根据系统表查询
+            try{
+                List<Run> runs = buildQueryRolesRun(runtime, greedy, query);
+                if(null != runs) {
+                    int idx = 0;
+                    for(Run run:runs) {
+                        DataSet set = select(runtime, random, true, (Table)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+                        list = roles(runtime, idx++, true, list, query, set);
+                    }
+                }
+            }catch (Exception e) {
+                if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+                    e.printStackTrace();
+                }else if (ConfigTable.IS_LOG_SQL && log.isWarnEnabled()) {
+                    log.warn("{}[roles][{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), e.toString());
+                }
+            }
+            if (ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
+                log.info("{}[roles][result:{}][执行耗时:{}]", random, list.size(), DateUtil.format(System.currentTimeMillis() - fr));
+            }
+        }catch (Exception e) {
+            if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+                e.printStackTrace();
+            }else{
+                log.error("[roles][result:fail][msg:{}]", e.toString());
+            }
+        }
+        return list;
 	}
 
 	/**
@@ -15957,7 +16119,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<Run> buildQueryRolesRun(DataRuntime runtime, Role query) throws Exception {
+	public List<Run> buildQueryRolesRun(DataRuntime runtime, boolean greedy, Role query) throws Exception {
 		return null;
 	}
 
@@ -15985,6 +16147,15 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public <T extends Role> List<T> roles(DataRuntime runtime, int index, boolean create, List<T> previous, Role query, DataSet set) throws Exception {
+        if (null == previous) {
+            previous = new ArrayList<>();
+        }
+        for (DataRow row : set) {
+            T meta = null;
+            meta = init(runtime, index, meta, query, row);
+            meta = detail(runtime, index, meta, query, row);
+            previous.add(meta);
+        }
         return previous;
 	}
 
@@ -15999,7 +16170,13 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public <T extends Role> T init(DataRuntime runtime, int index, T meta, Role query, DataRow row) {
-		return meta;
+        if(null == meta) {
+            meta = (T)new Role();
+        }
+        MetadataFieldRefer refer = refer(runtime, Role.class);
+        meta.setMetadata(row);
+        meta.setName(row.getString(refer.getRefers("name")));
+        return meta;
 	}
 
 
@@ -16085,9 +16262,41 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<User> users(DataRuntime runtime, User query) throws Exception {
-		List<User> users = null;
-		return users;
+	public <T extends User> List<T> users(DataRuntime runtime, String random, boolean greedy, User query) throws Exception {
+        if(null == random) {
+            random = random(runtime);
+        }
+        List<T> list = new ArrayList<>();
+        try{
+            long fr = System.currentTimeMillis();
+            // 根据系统表查询
+            try{
+                List<Run> runs = buildQueryUsersRun(runtime, greedy, query);
+                if(null != runs) {
+                    int idx = 0;
+                    for(Run run:runs) {
+                        DataSet set = select(runtime, random, true, (Table)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+                        list = users(runtime, idx++, true, list, query, set);
+                    }
+                }
+            }catch (Exception e) {
+                if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+                    e.printStackTrace();
+                }else if (ConfigTable.IS_LOG_SQL && log.isWarnEnabled()) {
+                    log.warn("{}[users][{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), e.toString());
+                }
+            }
+            if (ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
+                log.info("{}[users][result:{}][执行耗时:{}]", random, list.size(), DateUtil.format(System.currentTimeMillis() - fr));
+            }
+        }catch (Exception e) {
+            if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+                e.printStackTrace();
+            }else{
+                log.error("[users][result:fail][msg:{}]", e.toString());
+            }
+        }
+        return list;
 	}
 
 	/**
@@ -16139,7 +16348,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<Run> buildQueryUsersRun(DataRuntime runtime, User query) throws Exception {
+	public List<Run> buildQueryUsersRun(DataRuntime runtime, boolean greedy, User query) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryUsersRun(DataRuntime runtime, User query)", 37));
 		}
@@ -16213,7 +16422,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	/* *****************************************************************************************************************
 	 * 													privilege
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<Privilege> privileges(DataRuntime runtime, User user)
+	 * <T extends Privilege> List<T> privileges(DataRuntime runtime, User user)
 	 * List<Run> buildQueryPrivilegesRun(DataRuntime runtime, User user) throws Exception
 	 * <T extends Privilege> List<T> privileges(DataRuntime runtime, int index, boolean create, User user, List<T> privileges, DataSet set) throws Exception
 	 * <T extends Privilege> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, User user, DataRow row)
@@ -16228,20 +16437,22 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<Privilege> privileges(DataRuntime runtime, Privilege query) throws Exception {
+	public <T extends Privilege> List<T> privileges(DataRuntime runtime, String random, boolean greedy, Privilege query) throws Exception {
 		User user = query.getUser();
-		String random = random(runtime);
-		List<Privilege> privileges = new ArrayList<>();
+        if(null == random) {
+            random = random(runtime);
+        }
+		List<T> list = new ArrayList<>();
 		try{
 			long fr = System.currentTimeMillis();
 			// 根据系统表查询
 			try{
-				List<Run> runs = buildQueryPrivilegesRun(runtime, user);
+				List<Run> runs = buildQueryPrivilegesRun(runtime, greedy, query);
 				if(null != runs) {
 					int idx = 0;
 					for(Run run:runs) {
 						DataSet set = select(runtime, random, true, (Table)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
-						privileges = privileges(runtime, idx++, true, privileges, query, set);
+                        list = privileges(runtime, idx++, true, list, query, set);
 					}
 				}
 			}catch (Exception e) {
@@ -16252,7 +16463,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				}
 			}
 			if (ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
-				log.info("{}[privileges][result:{}][执行耗时:{}]", random, privileges.size(), DateUtil.format(System.currentTimeMillis() - fr));
+				log.info("{}[privileges][result:{}][执行耗时:{}]", random, list.size(), DateUtil.format(System.currentTimeMillis() - fr));
 			}
 		}catch (Exception e) {
 			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
@@ -16261,7 +16472,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				log.error("[privileges][result:fail][msg:{}]", e.toString());
 			}
 		}
-		return privileges;
+		return list;
 	}
 
 	/**
@@ -16271,7 +16482,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<Run> buildQueryPrivilegesRun(DataRuntime runtime, Privilege query) throws Exception {
+	public List<Run> buildQueryPrivilegesRun(DataRuntime runtime, boolean regreedy, Privilege query) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryPrivilegesRun(DataRuntime runtime, Privilege query)", 37));
 		}
@@ -16327,7 +16538,13 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public <T extends Privilege> T init(DataRuntime runtime, int index, T meta, Privilege query, DataRow row) {
-		return meta;
+        if(null == meta) {
+            meta = (T)new Privilege();
+        }
+        MetadataFieldRefer refer = refer(runtime, Procedure.class);
+        meta.setMetadata(row);
+        meta.setName(row.getString(refer.getRefers("name")));
+        return meta;
 	}
 
 	/**

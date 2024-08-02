@@ -1935,7 +1935,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * 													role
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * boolean create(Role role) throws Exception
-	 * List<Role> roles(Role query) throws Exception
+	 * <T extends Role> List<T> roles(Role query) throws Exception
 	 * boolean rename(Role origin, Role update) throws Exception
 	 * boolean delete(Role role) throws Exception
 	 ******************************************************************************************************************/
@@ -1956,9 +1956,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @return List
 	 */
 	@Override
-	public List<Role> roles(Role query) throws Exception {
-		DataRuntime runtime = runtime();
-		return runtime.getAdapter().roles(runtime, query);
+	public <T extends Role> List<T> roles(DataRuntime runtime, String random, boolean greedy, Role query) throws Exception {
+		if(null == runtime) {
+			runtime = runtime();
+		}
+		return runtime.getAdapter().roles(runtime, random, greedy, query);
 	}
 
 	/**
@@ -1987,7 +1989,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * 													user
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * boolean create(User user) throws Exception
-	 * List<Role> roles(User query) throws Exception
+	 * <T extends Role> List<T> roles(User query) throws Exception
 	 * boolean rename(User origin, Role update) throws Exception
 	 * boolean delete(User user) throws Exception
 	 ******************************************************************************************************************/
@@ -2010,21 +2012,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @return List
 	 */
 	@Override
-	public List<User> users(User query) throws Exception{
-		DataRuntime runtime = runtime();
-		return runtime.getAdapter().users(runtime, query);
-	}
-	/**
-	 * 查询用户
-	 * @param catalog 对于MySQL, 则对应相应的数据库, 对于Oracle来说, 则是对应相应的数据库实例, 可以不填, 也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
-	 * @param schema 可以理解为数据库的登录名, 而对于Oracle也可以理解成对该数据库操作的所有者的登录名。对于Oracle要特别注意, 其登陆名必须是大写, 不然的话是无法获取到相应的数据, 而MySQL则不做强制要求。
-	 * @param pattern 用户名
-	 * @return List
-	 */
-	@Override
-	public List<User> users(Catalog catalog, Schema schema, String pattern) throws Exception{
-		DataRuntime runtime = runtime();
-		return runtime.getAdapter().users(runtime, catalog, schema, pattern);
+	public List<User> users(DataRuntime runtime, String random, boolean greedy, User query) throws Exception{
+		return runtime.getAdapter().users(runtime, random, greedy, query);
 	}
 	/**
 	 * 用户重命名
@@ -2082,9 +2071,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @return List
 	 */
 	@Override
-	public List<Privilege> privileges(Privilege query) throws Exception {
-		DataRuntime runtime = runtime();
-		return runtime.getAdapter().privileges(runtime, query);
+	public List<Privilege> privileges(DataRuntime runtime, String random, boolean greedy,Privilege query) throws Exception {
+		return runtime.getAdapter().privileges(runtime, random, greedy, query);
 	}
 
 	/**

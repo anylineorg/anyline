@@ -2039,7 +2039,7 @@ public interface AnylineDao<E>{
 	 * 													role
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * boolean create(Role role) throws Exception
-	 * List<Role> roles(Role query) throws Exception
+	 * <T extends Role> List<T> roles(Role query) throws Exception
 	 * boolean rename(Role origin, Role update) throws Exception
 	 * boolean delete(Role role) throws Exception
 	 ******************************************************************************************************************/
@@ -2055,7 +2055,15 @@ public interface AnylineDao<E>{
 	 * @param query 查询条件 根据metadata属性
 	 * @return List
 	 */
-	List<Role> roles(Role query) throws Exception;
+	<T extends Role> List<T> roles(DataRuntime runtime, String random, boolean greedy, Role query) throws Exception;
+	/**
+	 * 查询角色
+	 * @param query 查询条件 根据metadata属性
+	 * @return List
+	 */
+	default <T extends Role> List<T> roles(Role query) throws Exception {
+		return roles(runtime(), null, false, query);
+	}
 	/**
 	 * 查询角色
 	 * @param catalog 对于MySQL, 则对应相应的数据库, 对于Oracle来说, 则是对应相应的数据库实例, 可以不填, 也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
@@ -2063,7 +2071,7 @@ public interface AnylineDao<E>{
 	 * @param pattern 角色名
 	 * @return List
 	 */
-	default List<Role> roles(Catalog catalog, Schema schema, String pattern) throws Exception{
+	default <T extends Role> List<T> roles(Catalog catalog, Schema schema, String pattern) throws Exception{
 		Role query = new Role();
 		query.setCatalog(catalog);
 		query.setSchema(schema);
@@ -2074,7 +2082,7 @@ public interface AnylineDao<E>{
 	 * 查询角色
 	 * @return List
 	 */
-	default List<Role> roles() throws Exception {
+	default <T extends Role> List<T> roles() throws Exception {
 		return roles(new Role());
 	}
 
@@ -2100,7 +2108,7 @@ public interface AnylineDao<E>{
 	 * 													user
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * boolean create(User user) throws Exception
-	 * List<Role> roles(User query) throws Exception
+	 * <T extends Role> List<T> roles(User query) throws Exception
 	 * boolean rename(User origin, Role update) throws Exception
 	 * boolean delete(User user) throws Exception
 	 ******************************************************************************************************************/
@@ -2144,7 +2152,15 @@ public interface AnylineDao<E>{
 	 * @param query 查询条件 根据metadata属性
 	 * @return List
 	 */
-	List<User> users(User query) throws Exception;
+	<T extends User> List<T> users(DataRuntime runtime, String random, boolean greedy, User query) throws Exception;
+	/**
+	 * 查询用户
+	 * @param query 查询条件 根据metadata属性
+	 * @return List
+	 */
+	default List<User> users(User query) throws Exception {
+		return users(runtime(), null, false, query);
+	}
 	/**
 	 * 查询用户
 	 * @param catalog 对于MySQL, 则对应相应的数据库, 对于Oracle来说, 则是对应相应的数据库实例, 可以不填, 也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
@@ -2228,7 +2244,15 @@ public interface AnylineDao<E>{
 	 * @param query 查询条件 根据metadata属性
 	 * @return List
 	 */
-	List<Privilege> privileges(Privilege query) throws Exception;
+	<T extends Privilege> List<T> privileges(DataRuntime runtime, String random, boolean greedy, Privilege query) throws Exception;
+	/**
+	 * 查询用户权限
+	 * @param query 查询条件 根据metadata属性
+	 * @return List
+	 */
+	default List<Privilege> privileges(Privilege query) throws Exception {
+		return privileges(runtime(), null, false, query);
+	}
 	/**
 	 * 查询用户权限
 	 * @param user 用户

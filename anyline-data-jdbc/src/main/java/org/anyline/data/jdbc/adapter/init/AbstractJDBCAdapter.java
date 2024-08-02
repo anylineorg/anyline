@@ -8763,8 +8763,8 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	}
 
 	@Override
-	public List<Run> buildQueryUsersRun(DataRuntime runtime, User query) throws Exception {
-		return super.buildQueryUsersRun(runtime, query);
+	public List<Run> buildQueryUsersRun(DataRuntime runtime, boolean greedy, User query) throws Exception {
+		return super.buildQueryUsersRun(runtime, greedy, query);
 	}
 
 	/***********************************************************************************************************************

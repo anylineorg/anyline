@@ -4751,7 +4751,6 @@ public interface DriverAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条查询SQL 对照 buildQueryTagsRun返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
-     * @param table 表
      * @param set 查询结果集
      * @return tags
      * @throws Exception 异常
@@ -8472,7 +8471,7 @@ public interface DriverAdapter {
 	 * boolean create(DataRuntime runtime, Role role) throws Exception
 	 * boolean rename(DataRuntime runtime, Role origin, Role update) throws Exception;
 	 * boolean delete(DataRuntime runtime, Role role) throws Exception
-	 * List<Role> roles(Catalog catalog, Schema schema, String pattern) throws Exception
+	 * <T extends Role> List<T> roles(Catalog catalog, Schema schema, String pattern) throws Exception
 	 * List<Run> buildQueryRolesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) throws Exception
 	 * <T extends Role> List<T> roles(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, List<T> roles, DataSet set) throws Exception
 	 * <T extends Role> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row)
@@ -8512,7 +8511,7 @@ public interface DriverAdapter {
 	 * @param query 查询条件 根据metadata属性
 	 * @return List
 	 */
-	List<Role> roles(DataRuntime runtime, Role query) throws Exception;
+    <T extends Role> List<T> roles(DataRuntime runtime, String random, boolean greedy, Role query) throws Exception;
 	/**
 	 * role[调用入口]<br/>
 	 * 查询角色
@@ -8521,12 +8520,12 @@ public interface DriverAdapter {
 	 * @param pattern 角色名
 	 * @return List
 	 */
-	default List<Role> roles(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) throws Exception {
+	default <T extends Role> List<T> roles(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern) throws Exception {
 		Role query = new Role();
 		query.setCatalog(catalog);
 		query.setSchema(schema);
 		query.setName(pattern);
-		return roles(runtime, query);
+		return roles(runtime, random, greedy, query);
 	}
 
 	/**
@@ -8534,8 +8533,8 @@ public interface DriverAdapter {
 	 * 查询角色
 	 * @return List
 	 */
-	default List<Role> roles(DataRuntime runtime) throws Exception {
-		return roles(runtime, null, null, null);
+	default <T extends Role> List<T> roles(DataRuntime runtime, String random, boolean greedy) throws Exception {
+		return roles(runtime, random, greedy, null, null, null);
 	}
 	/**
 	 * role[调用入口]<br/>
@@ -8543,8 +8542,8 @@ public interface DriverAdapter {
 	 * @param pattern 角色名
 	 * @return List
 	 */
-	default List<Role> roles(DataRuntime runtime, String pattern) throws Exception {
-		return roles(runtime, null, null, pattern);
+	default <T extends Role> List<T> roles(DataRuntime runtime, String random, boolean greedy, String pattern) throws Exception {
+		return roles(runtime, random, greedy,null, null, pattern);
 	}
 
 	/**
@@ -8577,15 +8576,15 @@ public interface DriverAdapter {
 	 * @param query 查询条件 根据metadata属性
 	 * @return List
 	 */
-	List<Run> buildQueryRolesRun(DataRuntime runtime, Role query) throws Exception;
+	List<Run> buildQueryRolesRun(DataRuntime runtime, boolean greedy, Role query) throws Exception;
 	/**
 	 * role[命令合成]<br/>
 	 * 查询角色
 	 * @param pattern 角色名
 	 * @return List
 	 */
-	default List<Run> buildQueryRolesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) throws Exception {
-		return buildQueryRolesRun(runtime, new Role(catalog, schema, pattern));
+	default List<Run> buildQueryRolesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern) throws Exception {
+		return buildQueryRolesRun(runtime, greedy, new Role(catalog, schema, pattern));
 	}
 
     /**
@@ -8743,7 +8742,7 @@ public interface DriverAdapter {
 	 * @param query 查询条件 根据metadata属性
 	 * @return List
 	 */
-	List<User> users(DataRuntime runtime, User query) throws Exception;
+	<T extends User> List<T> users(DataRuntime runtime, String random, boolean greedy, User query) throws Exception;
 	/**
 	 * user[调用入口]<br/>
 	 * 查询用户
@@ -8752,12 +8751,12 @@ public interface DriverAdapter {
 	 * @param pattern 用户名
 	 * @return List
 	 */
-	default List<User> users(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) throws Exception {
+	default <T extends User> List<T> users(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern) throws Exception {
 		User query = new User();
 		query.setCatalog(catalog);
 		query.setSchema(schema);
 		query.setName(pattern);
-		return users(runtime, query);
+		return users(runtime, random, greedy, query);
 	}
 
 	/**
@@ -8765,8 +8764,8 @@ public interface DriverAdapter {
 	 * 查询用户
 	 * @return List
 	 */
-	default List<User> users(DataRuntime runtime) throws Exception {
-		return users(runtime, null, null, null);
+	default List<User> users(DataRuntime runtime, String random, boolean greedy) throws Exception {
+		return users(runtime, random, greedy, null, null, null);
 	}
 	/**
 	 * user[调用入口]<br/>
@@ -8774,8 +8773,8 @@ public interface DriverAdapter {
 	 * @param pattern 用户名
 	 * @return List
 	 */
-	default List<User> users(DataRuntime runtime, String pattern) throws Exception {
-		return users(runtime, null, null, pattern);
+	default <T extends User> List<T> users(DataRuntime runtime, String random, boolean greedy, String pattern) throws Exception {
+		return users(runtime, random, greedy,null, null, pattern);
 	}
 
 	/**
@@ -8808,15 +8807,15 @@ public interface DriverAdapter {
 	 * @param query 查询条件 根据metadata属性
 	 * @return List
 	 */
-	List<Run> buildQueryUsersRun(DataRuntime runtime, User query) throws Exception;
+	List<Run> buildQueryUsersRun(DataRuntime runtime, boolean greedy, User query) throws Exception;
 	/**
 	 * user[命令合成]<br/>
 	 * 查询用户
 	 * @param pattern 用户名
 	 * @return List
 	 */
-	default List<Run> buildQueryUsersRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) throws Exception {
-		return buildQueryUsersRun(runtime, new User(catalog, schema, pattern));
+	default List<Run> buildQueryUsersRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern) throws Exception {
+		return buildQueryUsersRun(runtime, greedy, new User(catalog, schema, pattern));
 	}
 
     /**
@@ -8905,7 +8904,7 @@ public interface DriverAdapter {
 	/* *****************************************************************************************************************
 	 * 													privilege
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<Privilege> privileges(DataRuntime runtime, User user)
+	 * <T extends Privilege> List<T> privileges(DataRuntime runtime, User user)
 	 * List<Run> buildQueryPrivilegesRun(DataRuntime runtime, User user) throws Exception
 	 * <T extends Privilege> List<T> privileges(DataRuntime runtime, int index, boolean create, User user, List<T> privileges, DataSet set) throws Exception
 	 * <T extends Privilege> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, User user, DataRow row)
@@ -8919,17 +8918,17 @@ public interface DriverAdapter {
 	 * @param query 查询条件 根据metadata属性
 	 * @return List
 	 */
-	List<Privilege> privileges(DataRuntime runtime, Privilege query) throws Exception;
+	<T extends Privilege> List<T> privileges(DataRuntime runtime, String random, boolean greedy, Privilege query) throws Exception;
 	/**
 	 * privilege[调用入口]<br/>
 	 * 查询用户权限
 	 * @param user 用户
 	 * @return List
 	 */
-	default List<Privilege> privileges(DataRuntime runtime, User user) throws Exception {
+	default <T extends Privilege> List<T> privileges(DataRuntime runtime, String random, boolean greedy, User user) throws Exception {
 		Privilege query = new Privilege();
 		query.setUser(user);
-		return privileges(runtime, query);
+		return privileges(runtime, random, greedy, query);
 	}
 
 	/**
@@ -8938,8 +8937,8 @@ public interface DriverAdapter {
 	 * @param user 用户
 	 * @return List
 	 */
-	default List<Privilege> privileges(DataRuntime runtime, String user) throws Exception {
-		return privileges(runtime, new User(user));
+	default <T extends Privilege> List<T> privileges(DataRuntime runtime, String random, boolean greedy, String user) throws Exception {
+		return privileges(runtime, random, greedy, new User(user));
 	}
 
 
@@ -8949,7 +8948,7 @@ public interface DriverAdapter {
 	 * @param query 查询条件 根据metadata属性
 	 * @return List
 	 */
-	List<Run> buildQueryPrivilegesRun(DataRuntime runtime, Privilege query) throws Exception;
+	List<Run> buildQueryPrivilegesRun(DataRuntime runtime, boolean greedy, Privilege query) throws Exception;
 
 	/**
 	 * privilege[命令合成]<br/>
@@ -8957,8 +8956,8 @@ public interface DriverAdapter {
 	 * @param user 用户
 	 * @return List
 	 */
-	default List<Run> buildQueryPrivilegesRun(DataRuntime runtime, User user) throws Exception {
-		return buildQueryPrivilegesRun(runtime, new Privilege(user));
+	default List<Run> buildQueryPrivilegesRun(DataRuntime runtime, boolean greedy, User user) throws Exception {
+		return buildQueryPrivilegesRun(runtime, greedy, new Privilege(user));
 	}
 
     /**

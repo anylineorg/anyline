@@ -6814,8 +6814,8 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return List
      */
     @Override
-    public List<User> users(DataRuntime runtime, User query) throws Exception {
-        return super.users(runtime, query);
+    public <T extends User> List<T> users(DataRuntime runtime, String random, boolean greedy, User query) throws Exception {
+        return super.users(runtime, random, greedy, query);
     }
 
     /**
@@ -6859,7 +6859,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return List
      */
     @Override
-    public List<Run> buildQueryUsersRun(DataRuntime runtime, User query) throws Exception {
+    public List<Run> buildQueryUsersRun(DataRuntime runtime, boolean greedy, User query) throws Exception {
         String pattern = query.getName();
         List<Run> runs = new ArrayList<>();
         SimpleRun run = new SimpleRun(runtime);
@@ -6938,7 +6938,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     /* *****************************************************************************************************************
      *                                                     privilege
      * -----------------------------------------------------------------------------------------------------------------
-     * List<Privilege> privileges(DataRuntime runtime, User user)
+     * <T extends Privilege> List<T> privileges(DataRuntime runtime, User user)
      * List<Run> buildQueryPrivilegesRun(DataRuntime runtime, User user) throws Exception
      * <T extends Privilege> List<T> privileges(DataRuntime runtime, int index, boolean create, User user, List<T> privileges, DataSet set) throws Exception
      * <T extends Privilege> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, User user, DataRow row)
@@ -6953,8 +6953,8 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return List
      */
     @Override
-    public List<Privilege> privileges(DataRuntime runtime, Privilege query) throws Exception {
-        return super.privileges(runtime, query);
+    public <T extends Privilege> List<T> privileges(DataRuntime runtime, String random, boolean greedy, Privilege query) throws Exception {
+        return super.privileges(runtime, random, greedy, query);
     }
 
     /**
@@ -6964,8 +6964,8 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return List
      */
     @Override
-    public List<Run> buildQueryPrivilegesRun(DataRuntime runtime, Privilege query) throws Exception {
-        return super.buildQueryPrivilegesRun(runtime, query);
+    public List<Run> buildQueryPrivilegesRun(DataRuntime runtime, boolean greedy, Privilege query) throws Exception {
+        return super.buildQueryPrivilegesRun(runtime, greedy, query);
     }
 
     /**

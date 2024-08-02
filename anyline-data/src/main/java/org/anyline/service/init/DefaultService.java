@@ -3990,7 +3990,7 @@ public class DefaultService<E> implements AnylineService<E> {
          * 													role
          * -----------------------------------------------------------------------------------------------------------------
          * boolean create(Role role) throws Exception
-         * List<Role> roles(Role query) throws Exception
+         * <T extends Role> List<T> roles(Role query) throws Exception
          * boolean rename(Role origin, Role update) throws Exception
          * boolean delete(Role role) throws Exception
          ******************************************************************************************************************/
@@ -4010,7 +4010,7 @@ public class DefaultService<E> implements AnylineService<E> {
          * @return List
          */
         @Override
-        public List<Role> roles(Role query) throws Exception {
+        public <T extends Role> List<T> roles(Role query) throws Exception {
             return dao.roles(query);
         }
         /**
@@ -4040,7 +4040,7 @@ public class DefaultService<E> implements AnylineService<E> {
          * 													user
          * -----------------------------------------------------------------------------------------------------------------
          * boolean create(User user) throws Exception
-         * List<Role> roles(User query) throws Exception
+         * <T extends Role> List<T> roles(User query) throws Exception
          * boolean rename(User origin, Role update) throws Exception
          * boolean delete(User user) throws Exception
          ******************************************************************************************************************/
