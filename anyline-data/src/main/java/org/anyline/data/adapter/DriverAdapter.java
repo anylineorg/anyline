@@ -4469,10 +4469,14 @@ public interface DriverAdapter {
      */
     <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Table table, Column query, boolean primary, ConfigStore configs);
     default <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Table table, boolean primary, ConfigStore configs) {
-        return columns(runtime, random, greedy, table, new Column(), primary, configs);
+        Column query = new Column();
+        query.setTable(table);
+        return columns(runtime, random, greedy, table, query, primary, configs);
     }
     default <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Table table, boolean primary) {
-        return columns(runtime, random, greedy, table, new Column(), primary, new DefaultConfigStore());
+        Column query = new Column();
+        query.setTable(table);
+        return columns(runtime, random, greedy, table, query, primary, new DefaultConfigStore());
     }
 
     /**

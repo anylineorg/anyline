@@ -2110,6 +2110,12 @@ public interface ConfigStore extends Cloneable{
 	default int MERGE_GRAPH_QUERY_RESULT_TABLE() {
 		return getInt("MERGE_GRAPH_QUERY_RESULT_TABLE", ConfigTable.MERGE_GRAPH_QUERY_RESULT_TABLE);
 	}
+	default ConfigStore IS_ENABLE_PLACEHOLDER_REGEX_EXT(boolean s) {
+		return config("IS_ENABLE_PLACEHOLDER_REGEX_EXT", s);
+	}
+	default boolean IS_ENABLE_PLACEHOLDER_REGEX_EXT() {
+		return getBoolean("IS_ENABLE_PLACEHOLDER_REGEX_EXT", ConfigTable.IS_ENABLE_PLACEHOLDER_REGEX_EXT);
+	}
 	/**
 	 * 关闭所有SQL日志
 	 * @return ConfigStore
@@ -2400,6 +2406,12 @@ public interface ConfigStore extends Cloneable{
 			return configs.MERGE_GRAPH_QUERY_RESULT_TABLE();
 		}
 		return ConfigTable.MERGE_GRAPH_QUERY_RESULT_TABLE;
+	}
+	static boolean IS_ENABLE_PLACEHOLDER_REGEX_EXT(ConfigStore configs){
+		if(null != configs){
+			return configs.IS_ENABLE_PLACEHOLDER_REGEX_EXT();
+		}
+		return ConfigTable.IS_ENABLE_PLACEHOLDER_REGEX_EXT;
 	}
 } 
  

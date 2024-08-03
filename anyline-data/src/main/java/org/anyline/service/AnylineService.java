@@ -1746,10 +1746,10 @@ public interface AnylineService<E>{
 		return tags(false, new Table(catalog, schema, table));
 	}
 
-	public boolean save(Table table) throws Exception;
-	public boolean save(Column column) throws Exception ;
-	public boolean drop(Table table) throws Exception;
-	public boolean drop(Column column) throws Exception;
+	boolean save(Table table) throws Exception;
+	boolean save(Column column) throws Exception ;
+	boolean drop(Table table) throws Exception;
+	boolean drop(Column column) throws Exception;
 
 	DDLService ddl();
 	MetaDataService metadata();
@@ -3380,13 +3380,13 @@ public interface AnylineService<E>{
 			return columns(greedy, new Table(catalog, schema, table), configs);
 		}
 		default <T extends Column> LinkedHashMap<String, T> columns(boolean greedy, Catalog catalog, Schema schema, String table) {
-			return columns(greedy, new Table(catalog, schema, table), null);
+			return columns(greedy, new Table(catalog, schema, table), new DefaultConfigStore());
 		}
 		default <T extends Column> LinkedHashMap<String, T> columns(Table table, ConfigStore configs) {
 			return columns(false, table, configs);
 		}
 		default <T extends Column> LinkedHashMap<String, T> columns(Table table) {
-			return columns(false, table, null);
+			return columns(false, table, new DefaultConfigStore());
 		}
 		default <T extends Column> LinkedHashMap<String, T> columns(String table, ConfigStore configs) {
 			return columns(false, new Table(table), configs);
@@ -3398,7 +3398,7 @@ public interface AnylineService<E>{
 			return columns(false, new Table(catalog, schema, table), configs);
 		}
 		default <T extends Column> LinkedHashMap<String, T> columns(Catalog catalog, Schema schema, String table) {
-			return columns(false, new Table(catalog, schema, table), null);
+			return columns(false, new Table(catalog, schema, table), new DefaultConfigStore());
 		}
 
 		/**

@@ -109,4 +109,17 @@ public class TableAffiliation<E extends TableAffiliation> extends Metadata<E> im
         return (E)this;
     }
 
+    public Catalog getCatalog() {
+        if(null == catalog && null != table){
+            catalog = table.getCatalog();
+        }
+        return catalog;
+    }
+    public Schema getSchema() {
+        if(null == schema && null != table){
+            schema = table.getSchema();
+        }
+        return schema;
+    }
+
 }

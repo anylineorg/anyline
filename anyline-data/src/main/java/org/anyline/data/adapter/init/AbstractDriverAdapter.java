@@ -2424,11 +2424,11 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             if(prepare instanceof TablePrepare) {
                 likes(runtime, prepare.getTable(), configs);
             }
+            run.addConfigStore(configs);
             //如果是text类型 将解析文本并抽取出变量
             if(run instanceof TextRun) {
                 parseText(runtime, (TextRun)run);
             }
-            run.addConfigStore(configs);
             configs = run.getConfigs();
             //先把configs中的占位值取出
             if(null != configs) {
@@ -2494,8 +2494,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             //{CD} 用来兼容旧版本，新版本中不要用，避免与josn格式冲突
             keys = RegularUtil.fetchs(text, RunPrepare.SQL_VAR_PLACEHOLDER_REGEX, Regular.MATCH_MODE.CONTAIN);
             type = Variable.KEY_TYPE_SIGN_V2 ;
+
             //::KEY 格式的占位符解析,在PG环境中会与 ::INT8 格式冲突 需要禁用
-            if(keys.isEmpty() && ConfigTable.IS_ENABLE_PLACEHOLDER_REGEX_EXT && supportSqlVarPlaceholderRegexExt(runtime)) {
+            if(keys.isEmpty() && ConfigStore.IS_ENABLE_PLACEHOLDER_REGEX_EXT(run.getConfigs()) && supportSqlVarPlaceholderRegexExt(runtime)) {
                 // AND CD = :CD || CD LIKE ':CD' || CD IN (:CD) || CD = ::CD
                 keys = RegularUtil.fetchs(text, RunPrepare.SQL_VAR_PLACEHOLDER_REGEX_EXT, Regular.MATCH_MODE.CONTAIN);
                 type = Variable.KEY_TYPE_SIGN_V1 ;
@@ -3258,13 +3259,13 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             run = new TextRun();
         }
         if(null != run) {
+            run.setConfigStore(configs);
             run.setBatch(prepare.getBatch());
             run.setRuntime(runtime);
             run.setPrepare(prepare);
             if(run instanceof TextRun) {
                 parseText(runtime, (TextRun)run);
             }
-            run.setConfigStore(configs);
             run.addCondition(conditions);
             run.init(); //
             //构造最终的执行SQL
@@ -4809,17 +4810,18 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return schema;
 	}
     public DataSet selectMetadata(DataRuntime runtime, String random, Run run) {
-        ConfigStore configs = null;
+        ConfigStore configs = run.getConfigs();
+        if(null == configs){
+            configs = new DefaultConfigStore();
+            run.setConfigStore(configs);
+        }
+        configs.keyCase(KeyAdapter.KEY_CASE.PUT_UPPER);
+        configs.IS_ENABLE_PLACEHOLDER_REGEX_EXT(false);
         if(run instanceof SimpleRun){
             String text = run.getBuilder().toString();
-            configs = run.getConfigs();
             RunPrepare prepare = new DefaultTextPrepare(text);
             run = buildQueryRun(runtime, prepare, configs);
         }
-        if(null == configs){
-            configs = new DefaultConfigStore();
-        }
-        configs.keyCase(KeyAdapter.KEY_CASE.PUT_UPPER);
         DataSet set = select(runtime, random, true, (Table)null, configs, run);
         return set;
     }
@@ -5196,45 +5198,29 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		if(null == random) {
 			random = random(runtime);
 		}
-		Catalog catalog = query.getCatalog();
-		Schema schema = query.getSchema();
-		String pattern = query.getName();
 		try{
 			long fr = System.currentTimeMillis();
-			Table search = new Table();
-			if(
-				(supportCatalog() && empty(catalog))    //支持catalog 但catalog为空
-				|| (supportSchema() && empty(schema))	//支持schema 但schema为空
-			) {
-				Table tmp = new Table();
-				if(!greedy) { //非贪婪模式下 检测当前catalog schema
-					checkSchema(runtime, tmp);
-				}
-				if(supportCatalog() && empty(catalog)) {
-					catalog = tmp.getCatalog();
-				}
-				if(supportSchema() && empty(schema)) {
-					schema = tmp.getSchema();
-				}
-			}
+            if(!greedy){
+                checkSchema(runtime, query);
+            }
+            Catalog catalog = query.getCatalog();
+            Schema schema = query.getSchema();
+            String pattern = query.getName();
 			String caches_key = CacheProxy.key(runtime, "tables", greedy, catalog, schema, pattern, types, configs);
 			list = CacheProxy.tables(caches_key);
 			if(null != list && !list.isEmpty()){
 				return list;
 			}
-			String cache_key = CacheProxy.key(runtime, "table", greedy, catalog, schema, pattern);
+			String cache_key = CacheProxy.key(runtime, "table_name_map", greedy, catalog, schema, pattern);
 			String origin = CacheProxy.name(cache_key);
 			if(null == origin && ConfigTable.IS_METADATA_IGNORE_CASE) {
 				//先查出所有key并以大写缓存 用来实现忽略大小写
 				tableMap(runtime, random, greedy, query, null);
 				origin = CacheProxy.name(cache_key);
 			}
-			if(null == origin) {
-				origin = pattern;
+			if(null != origin) {
+                query.setName(origin);
 			}
-			search.setName(origin);
-			search.setCatalog(catalog);
-			search.setSchema(schema);
 			PageNavi navi = null;
 			if(null == configs){
 				configs = new DefaultConfigStore();
@@ -5242,7 +5228,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			navi = configs.getPageNavi();
 			// 根据系统表查询
 			try{
-				List<Run> runs = buildQueryTablesRun(runtime, greedy, catalog, schema, origin, types, configs);
+				List<Run> runs = buildQueryTablesRun(runtime, greedy, query, types, configs);
 				if(null != runs) {
 					int idx = 0;
 					for(Run run:runs) {
@@ -5392,7 +5378,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 						DataSet set = selectMetadata(runtime, random, run);
 						tables = tables(runtime, idx++, true, tables, catalog, schema, set);
 						for(Table table:tables){
-							String cache_key = CacheProxy.key(runtime, "table", greedy, catalog, schema, table.getName());
+							String cache_key = CacheProxy.key(runtime, "table_name_map", greedy, catalog, schema, table.getName());
 							CacheProxy.name(cache_key, table.getName());
 						}
 						sys = true;
@@ -5405,7 +5391,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				try {
 					tables = tables(runtime, true, tables, catalog, schema, null, Table.TYPE.NORMAL.value);
 					for(Table table:tables){
-						String cache_key = CacheProxy.key(runtime, "table", greedy, catalog, schema, table.getName());
+						String cache_key = CacheProxy.key(runtime, "table_name_map", greedy, catalog, schema, table.getName());
 						CacheProxy.name(cache_key, table.getName());
 					}
 				}catch (Exception e) {
@@ -7012,7 +6998,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			if(null != list && !list.isEmpty()){
 				return list;
 			}
-			String cache_key = CacheProxy.key(runtime, "view", greedy, catalog, schema, pattern);
+			String cache_key = CacheProxy.key(runtime, "view_name_map", greedy, catalog, schema, pattern);
 			String origin = CacheProxy.name(cache_key);
 			if(null == origin && ConfigTable.IS_METADATA_IGNORE_CASE) {
 				//先查出所有key并以大写缓存 用来实现忽略大小写
@@ -7181,7 +7167,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 					DataSet set = selectMetadata(runtime, random, run);
 					views = views(runtime, idx++, true, views, catalog, schema, set);
 					for(View view:views){
-						String cache_key = CacheProxy.key(runtime, "view", greedy, catalog, schema, view.getName());
+						String cache_key = CacheProxy.key(runtime, "view_name_map", greedy, catalog, schema, view.getName());
 						CacheProxy.name(cache_key, view.getName());
 					}
 					sys = true;
@@ -7194,7 +7180,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			try {
 				views = views(runtime, true, views, catalog, schema, null, View.TYPE.NORMAL.value);
 				for(View view:views){
-					String cache_key = CacheProxy.key(runtime, "view", greedy, catalog, schema, view.getName());
+					String cache_key = CacheProxy.key(runtime, "view_name_map", greedy, catalog, schema, view.getName());
 					CacheProxy.name(cache_key, view.getName());
 				}
 			}catch (Exception e) {
@@ -8166,7 +8152,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public <T extends PartitionTable> LinkedHashMap<String,T> partitions(DataRuntime runtime, String random, boolean greedy, PartitionTable query) {
-		MasterTable master = (MasterTable) query.getMaster();
+        if(!greedy){
+            checkSchema(runtime, query);
+        }
+        MasterTable master = (MasterTable) query.getMaster();
 		Map<String, Tag> tags = query.getTags();
 		String pattern = query.getName();
 		LinkedHashMap<String,T> tables = new LinkedHashMap<>();
@@ -8177,9 +8166,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			long fr = System.currentTimeMillis();
 			// 根据系统表查询
 			try{
-                if(!greedy){
-                    checkSchema(runtime, query);
-                }
 				List<Run> runs = buildQueryPartitionTablesRun(runtime, greedy, query);
 				if(null != runs) {
 					int idx = 0;
@@ -8423,12 +8409,17 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Table table, Column query, boolean primary, ConfigStore configs) {
-		query.setTable(table);
-		if (!greedy) {
-			checkSchema(runtime, table);
-		}
-		Catalog catalog = table.getCatalog();
-		Schema schema = table.getSchema();
+        if(null != table) {
+            query.setTable(table);
+        }
+        if(null == configs){
+            configs = new DefaultConfigStore();
+        }
+        if(!greedy){
+            checkSchema(runtime, query);
+        }
+		Catalog catalog = query.getCatalog();
+		Schema schema = query.getSchema();
 		String key = CacheProxy.key(runtime, "table_columns", greedy, table);
 		LinkedHashMap<String,T> columns = CacheProxy.columns(key);
 		if(null != columns && !columns.isEmpty()) {
@@ -8584,6 +8575,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Collection<? extends Table> tables, Column query, ConfigStore configs) {
+        if(!greedy){
+            checkSchema(runtime, query);
+        }
 		Catalog catalog = query.getCatalog();
 		Schema schema = query.getSchema();
 		List<T> columns = new ArrayList<>();

@@ -20,6 +20,7 @@ package org.anyline.dao;
 
 import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.param.ConfigStore;
+import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.run.Run;
 import org.anyline.data.runtime.DataRuntime;
@@ -1595,7 +1596,7 @@ public interface AnylineDao<E>{
 		return columns(runtime(), null, greedy, table, ConfigTable.IS_METADATA_AUTO_CHECK_COLUMN_PRIMARY, configs);
 	}
 	default <T extends Column> LinkedHashMap<String, T> columns(boolean greedy, Table table) {
-		return columns(runtime(), null, greedy, table, ConfigTable.IS_METADATA_AUTO_CHECK_COLUMN_PRIMARY, null);
+		return columns(runtime(), null, greedy, table, ConfigTable.IS_METADATA_AUTO_CHECK_COLUMN_PRIMARY, new DefaultConfigStore());
 	}
 	default <T extends Column> LinkedHashMap<String, T> columns(boolean greedy, String table, ConfigStore configs) {
 		return columns(greedy, new Table(table), configs);
@@ -1609,25 +1610,25 @@ public interface AnylineDao<E>{
 		return columns(greedy, new Table(catalog, schema, table), configs);
 	}
 	default <T extends Column> LinkedHashMap<String, T> columns(boolean greedy, Catalog catalog, Schema schema, String table) {
-		return columns(greedy, new Table(catalog, schema, table), null);
+		return columns(greedy, new Table(catalog, schema, table), new DefaultConfigStore());
 	}
 	default <T extends Column> LinkedHashMap<String, T> columns(Table table, ConfigStore configs) {
 		return columns(false, table, configs);
 	}
 	default <T extends Column> LinkedHashMap<String, T> columns(Table table) {
-		return columns(false, table, null);
+		return columns(false, table, new DefaultConfigStore());
 	}
 	default <T extends Column> LinkedHashMap<String, T> columns(String table, ConfigStore configs) {
 		return columns(false, table, configs);
 	}
 	default <T extends Column> LinkedHashMap<String, T> columns(String table) {
-		return columns(false, table, null);
+		return columns(false, table, new DefaultConfigStore());
 	}
 	default <T extends Column> LinkedHashMap<String, T> columns(Catalog catalog, Schema schema, String table, ConfigStore configs) {
 		return columns(new Table(catalog, schema, table), configs);
 	}
 	default <T extends Column> LinkedHashMap<String, T> columns(Catalog catalog, Schema schema, String table) {
-		return columns(new Table(catalog, schema, table), null);
+		return columns(new Table(catalog, schema, table), new DefaultConfigStore());
 	}
 	<T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Column query, ConfigStore configs);
 

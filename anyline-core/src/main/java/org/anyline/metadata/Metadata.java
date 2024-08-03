@@ -245,6 +245,7 @@ public class Metadata<T extends Metadata> {
         return catalog;
     }
     public String getCatalogName() {
+        catalog = getCatalog();
         if(null == catalog) {
             return null;
         }
@@ -270,6 +271,7 @@ public class Metadata<T extends Metadata> {
     }
 
     public String getSchemaName() {
+        schema = getSchema();
         if(null == schema) {
             return null;
         }

@@ -2478,7 +2478,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
             builder.append("LEFT JOIN PG_CLASS FC ON FC.RELNAME = M.TABLE_NAME\n");
             builder.append("LEFT JOIN PG_ATTRIBUTE FA ON FA.ATTNAME = M.COLUMN_NAME AND FA.ATTRELID = FC.OID\n");
             builder.append("LEFT JOIN PG_DESCRIPTION FD ON FD.OBJOID = FC.OID AND FD.OBJSUBID = M.ORDINAL_POSITION");
-            configs.and("M.TABLE_CATALOG", query.getCatalog());
+            configs.and("M.TABLE_CATALOG", query.getCatalogName());
             configs.and("M.TABLE_SCHEMA", query.getSchemaName());
             configs.like("M.TABLE_NAME", query.getName());
             configs.order("M.TABLE_NAME");
@@ -3009,7 +3009,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         StringBuilder builder = run.getBuilder();
         ConfigStore configs = run.getConfigs();
         configs.and("ins.nspname", query.getSchemaName());
-        configs.and("c.relname", query.getTable());
+        configs.and("c.relname", query.getTableName());
         if(BasicUtil.isNotEmpty(name)) {
             configs.and("AND i.indexrelid = '"+name+"'::regclass");
         }
