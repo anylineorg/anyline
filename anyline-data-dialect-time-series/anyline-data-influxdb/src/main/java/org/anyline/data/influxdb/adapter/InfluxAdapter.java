@@ -3799,7 +3799,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @return runs
      */
     @Override
-    public List<Run> buildQueryIndexesRun(DataRuntime runtime, boolean greedy,  Index query) {
+    public List<Run> buildQueryIndexesRun(DataRuntime runtime, boolean greedy, Index query) {
         Table table = query.getTable();
         List<Run> runs = new ArrayList<>();
         Run run = new SimpleRun(runtime);
@@ -3844,29 +3844,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      */
     @Override
     public <T extends Index> LinkedHashMap<String, T> indexes(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Index query, DataSet set) throws Exception {
-        Table table = query.getTable();
-        if(null == previous) {
-            previous = new LinkedHashMap<>();
-        }
-        MetadataFieldRefer refer = refer(runtime, Index.class);
-        for(DataRow row:set) {
-            String name = row.getString(refer.getRefers("name"));
-            if(null == name) {
-                continue;
-            }
-            T meta = previous.get(name.toUpperCase());
-            meta = init(runtime, index, meta, table, row);
-            if(null != table) {
-                if (!table.getName().equalsIgnoreCase(meta.getTableName())) {
-                    continue;
-                }
-            }
-            meta = detail(runtime, index, meta, table, row);
-            if(null != meta) {
-                previous.put(meta.getName().toUpperCase(), meta);
-            }
-        }
-        return previous;
+        return super.indexes(runtime, index, create, previous, query, set);
     }
 
     /**

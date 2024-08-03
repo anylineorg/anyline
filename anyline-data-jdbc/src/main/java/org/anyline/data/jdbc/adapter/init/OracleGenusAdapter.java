@@ -2020,20 +2020,14 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public List<Run> buildQueryTablesCommentRun(DataRuntime runtime, Table query, int types) throws Exception {
-        Catalog catalog = query.getCatalog();
-        Schema schema = query.getSchema();
-        String pattern = query.getName();
         List<Run> runs = new ArrayList<>();
         Run run = new SimpleRun(runtime);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
-        builder.append("SELECT * FROM ALL_TAB_COMMENTS WHERE 1=1 \n");
-        if(!empty(schema)) {
-            builder.append(" AND OWNER = '").append(schema.getName()).append("'");
-        }
-        if(BasicUtil.isNotEmpty(pattern)) {
-            builder.append(" AND TABLE_NAME LIKE '").append(pattern).append("'");
-        }
+        ConfigStore configs = run.getConfigs();
+        builder.append("SELECT * FROM ALL_TAB_COMMENTS");
+        configs.and("OWNER", query.getSchemaName());
+        configs.like("TABLE_NAME", query.getName());
         return runs;
     }
 
@@ -3110,7 +3104,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return runs
      */
     @Override
-    public List<Run> buildQueryIndexesRun(DataRuntime runtime, boolean greedy,  Index query) {
+    public List<Run> buildQueryIndexesRun(DataRuntime runtime, boolean greedy, Index query) {
         Table table = query.getTable();
         String name = query.getName();
         List<Run> runs = new ArrayList<>();
@@ -3318,26 +3312,14 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public List<Run> buildQueryConstraintsRun(DataRuntime runtime, boolean greedy, Constraint query) {
-        String catalog = query.getCatalogName();
-        String schema = query.getSchemaName();
-        Table table = query.getTable();
         List<Run> runs = new ArrayList<>();
         Run run = new SimpleRun(runtime);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
-        builder.append("SELECT * FROM USER_CONSTRAINTS WHERE 1=1");
-        String tab = null;
-        if(null != table) {
-            catalog = table.getCatalogName();
-            schema = table.getSchemaName();
-            tab = table.getName();
-        }
-        if(!empty(schema)) {
-            builder.append(" AND OWNER = '").append(schema).append("'");
-        }
-        if(BasicUtil.isNotEmpty(tab)) {
-            builder.append(" AND TABLE_NAME = '").append(tab).append("'");
-        }
+        ConfigStore configs = run.getConfigs();
+        builder.append("SELECT * FROM USER_CONSTRAINTS");
+        configs.and("OWNER", query.getSchemaName());
+        configs.and("TABLE_NAME", query.getTableName());
         return runs;
     }
 
@@ -3440,34 +3422,16 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return runs
      */
     public List<Run> buildQueryTriggersRun(DataRuntime runtime, boolean greedy, Trigger query) {
-        Table table = query.getTable();
-        List<Trigger.EVENT> events = query.getEvents();
         List<Run> runs = new ArrayList<>();
         Run run = new SimpleRun(runtime);
         runs.add(run);
+        List<Trigger.EVENT> events = query.getEvents();
         StringBuilder builder = run.getBuilder();
-        builder.append("SELECT * FROM USER_TRIGGERS WHERE 1=1");
-        if(null != table) {
-            Schema schema = table.getSchema();
-            String tableName = table.getName();
-            if(BasicUtil.isNotEmpty(schema)) {
-                builder.append(" AND TABLE_OWNER = '").append(schema).append("'");
-            }
-            if(BasicUtil.isNotEmpty(tableName)) {
-                builder.append(" AND TABLE_NAME = '").append(tableName).append("'");
-            }
-        }
-        if(null != events && !events.isEmpty()) {
-            builder.append(" AND(");
-            boolean first = true;
-            for(Trigger.EVENT event:events) {
-                if(!first) {
-                    builder.append(" OR ");
-                }
-                builder.append("TRIGGERING_EVENT ='").append(event);
-            }
-            builder.append(")");
-        }
+        ConfigStore configs = run.getConfigs();
+        builder.append("SELECT * FROM USER_TRIGGERS");
+        configs.and("TABLE_OWNER", query.getSchemaName());
+        configs.and("TABLE_NAME", query.getTableName());
+        configs.in("TRIGGERING_EVENT", events);
         return runs;
     }
     /**
@@ -3865,19 +3829,14 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public List<Run> buildQuerySequencesRun(DataRuntime runtime, boolean greedy, Sequence query) {
-        Schema schema = query.getSchema();
-        String name = query.getName();
         List<Run> runs = new ArrayList<>();
         Run run = new SimpleRun(runtime);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
-        builder.append("SELECT * FROM all_sequences WHERE 1=1\n");
-        if(!empty(schema)) {
-            builder.append(" AND SEQUENCE_OWNER = '").append(schema.getName()).append("'");
-        }
-        if(BasicUtil.isNotEmpty(name)) {
-            builder.append(" AND SEQUENCE_NAME = '").append(name).append("'");
-        }
+        ConfigStore configs = run.getConfigs();
+        builder.append("SELECT * FROM all_sequences");
+        configs.and("SEQUENCE_OWNER", query.getSchemaName());
+        configs.like("SEQUENCE_NAME", query.getName());
         return runs;
     }
 

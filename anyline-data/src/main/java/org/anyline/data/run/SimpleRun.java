@@ -18,6 +18,8 @@
 
 package org.anyline.data.run;
 
+import org.anyline.data.param.ConfigStore;
+import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.runtime.DataRuntime;
 
 import java.util.ArrayList;
@@ -25,14 +27,21 @@ import java.util.ArrayList;
 public class SimpleRun extends TextRun implements Run {
     public SimpleRun(DataRuntime runtime) {
         this.runtime = runtime;
+        this.configs = new DefaultConfigStore();
+    }
+    public SimpleRun(DataRuntime runtime, ConfigStore configs) {
+        this.runtime = runtime;
+        this.configs = configs;
     }
     public SimpleRun(DataRuntime runtime, StringBuilder builder) {
         this.runtime = runtime;
         this.builder = builder;
+        this.configs = new DefaultConfigStore();
     }
     public SimpleRun(DataRuntime runtime, String sql) {
         this.runtime = runtime;
         this.builder.append(sql);
+        this.configs = new DefaultConfigStore();
     }
     public String getFinalQuery() {
         return builder.toString();

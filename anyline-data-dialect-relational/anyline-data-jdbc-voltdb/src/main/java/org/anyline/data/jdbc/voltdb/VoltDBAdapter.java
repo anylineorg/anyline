@@ -2668,7 +2668,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @return runs
 	 */
 	@Override
-	public List<Run> buildQueryIndexesRun(DataRuntime runtime, boolean greedy,  Index query) {
+	public List<Run> buildQueryIndexesRun(DataRuntime runtime, boolean greedy, Index query) {
 		List<Run> runs = new ArrayList<>();
 		Run run = new ProcedureRun(runtime, new Procedure("@SystemCatalog").addInput( "INDEXINFO", Types.VARCHAR));
 		runs.add(run);

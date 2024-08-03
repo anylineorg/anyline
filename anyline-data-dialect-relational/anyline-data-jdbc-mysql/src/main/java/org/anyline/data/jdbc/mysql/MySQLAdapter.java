@@ -2675,7 +2675,7 @@ public class MySQLAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 	 * @return runs
 	 */
 	@Override
-	public List<Run> buildQueryIndexesRun(DataRuntime runtime, boolean greedy,  Index query) {
+	public List<Run> buildQueryIndexesRun(DataRuntime runtime, boolean greedy, Index query) {
 		return super.buildQueryIndexesRun(runtime, greedy, query);
 	}
 	@Override

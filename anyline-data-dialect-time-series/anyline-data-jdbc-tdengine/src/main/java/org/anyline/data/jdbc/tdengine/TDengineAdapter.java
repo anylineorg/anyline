@@ -2283,14 +2283,12 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         }
         runs.add(new SimpleRun(runtime, sql));
 
-        sql = "SELECT * FROM INFORMATION_SCHEMA.INS_STABLES WHERE 1=1 ";
-        if (!empty(catalog)) {
-            sql += " AND DB_NAME = '" + catalog.getName() + "'";
-        }
-        if (BasicUtil.isNotEmpty(pattern)) {
-            sql += " AND STABLE_NAME LIKE '" + pattern + "'";
-        }
-        runs.add(new SimpleRun(runtime, sql));
+        SimpleRun run = new SimpleRun(runtime, configs);
+        StringBuilder builder = run.getBuilder();
+        builder.append("SELECT * FROM INFORMATION_SCHEMA.INS_STABLES");
+        configs.and("DB_NAME", query.getCatalogName());
+        configs.like("STABLE_NAME", query.getName());
+        runs.add(run);
         return runs;
     }
 
@@ -3220,7 +3218,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
      * @return runs
      */
     @Override
-    public List<Run> buildQueryIndexesRun(DataRuntime runtime, boolean greedy,  Index query) {
+    public List<Run> buildQueryIndexesRun(DataRuntime runtime, boolean greedy, Index query) {
         return super.buildQueryIndexesRun(runtime, greedy, query);
     }
     @Override

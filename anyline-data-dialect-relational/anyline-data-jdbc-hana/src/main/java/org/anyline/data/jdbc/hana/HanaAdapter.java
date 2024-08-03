@@ -1672,23 +1672,15 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 */
 	@Override
 	public List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Table query, int types, ConfigStore configs) throws Exception {
-		Catalog catalog = query.getCatalog();
-		Schema schema = query.getSchema();
-		String pattern = query.getName();
 		List<Run> runs = new ArrayList<>();
-		Run run = new SimpleRun(runtime);
+		Run run = new SimpleRun(runtime, configs);
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();
-		builder.append("SELECT SCHEMA_NAME, TABLE_NAME, COMMENTS, 'TABLE' AS TABLE_TYPE FROM public.tables WHERE 1=1");
+		builder.append("SELECT SCHEMA_NAME, TABLE_NAME, COMMENTS, 'TABLE' AS TABLE_TYPE FROM public.tables");
+		configs.and("SCHEMA_NAME", query.getSchemaName());
+		configs.like("TABLE_NAME", query.getName());
 
-		if(!empty(schema)) {
-			builder.append(" AND SCHEMA_NAME = '").append(schema.getName()).append("'");
-		}
-		if(BasicUtil.isNotEmpty(pattern)) {
-			builder.append(" AND TABLE_NAME LIKE '").append(pattern).append("'");
-		}
-
-		if((types & 2) == 2) {
+		/*if((types & 2) == 2) {
 			builder.append("UNION ALL \n");
 			builder.append("SELECT SCHEMA_NAME, VIEW_NAME, COMMENTS, 'VIEW' AS TABLE_TYPE FROM public.views WHERE 1=1");
 
@@ -1698,10 +1690,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 			if(BasicUtil.isNotEmpty(pattern)) {
 				builder.append(" AND VIEW_NAME LIKE '").append(pattern).append("'");
 			}
-		}
-		if(null != configs){
-			run.setPageNavi(configs.getPageNavi());
-		}
+		} */
 		return runs;
 	}
 
@@ -1912,21 +1901,13 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 */
 	@Override
 	public List<Run> buildQueryViewsRun(DataRuntime runtime, boolean greedy, View query, int types, ConfigStore configs) throws Exception {
-		Catalog catalog = query.getCatalog();
-		Schema schema = query.getSchema();
-		String pattern = query.getName();
 		List<Run> runs = new ArrayList<>();
-		Run run = new SimpleRun(runtime);
+		Run run = new SimpleRun(runtime, configs);
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();
-		builder.append("SELECT * FROM  public.views WHERE 1=1");
-
-		if(!empty(schema)) {
-			builder.append(" AND SCHEMA_NAME = '").append(schema.getName()).append("'");
-		}
-		if(BasicUtil.isNotEmpty(pattern)) {
-			builder.append(" AND VIEW_NAME LIKE '").append(pattern).append("'");
-		}
+		builder.append("SELECT * FROM  public.views");
+		configs.and("SCHEMA_NAME", query.getSchemaName());
+		configs.like("VIEW_NAME LIKE", query.getName())
 		return runs;
 	}
 
@@ -2748,7 +2729,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @return runs
 	 */
 	@Override
-	public List<Run> buildQueryIndexesRun(DataRuntime runtime, boolean greedy,  Index query) {
+	public List<Run> buildQueryIndexesRun(DataRuntime runtime, boolean greedy, Index query) {
 		return super.buildQueryIndexesRun(runtime, greedy, query);
 	}
 	@Override

@@ -2977,19 +2977,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
      */
     @Override
     public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, View query, DataSet set) throws Exception {
-        if(null == previous) {
-            previous = new LinkedHashMap<>();
-        }
-        for(DataRow row:set) {
-            T meta = null;
-            meta = init(runtime, index, meta, query, row);
-            if(null == meta || meta.isEmpty()){
-                continue;
-            }
-            meta = detail(runtime, index, meta, query, row);
-            previous.put(meta.getName().toUpperCase(), meta);
-        }
-        return previous;
+        return super.views(runtime, index, create, previous, query, set);
     }
 
     /**
@@ -3004,19 +2992,8 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
      * @throws Exception 异常
      */
     @Override
-    public <T extends View> List<T> views(DataRuntime runtime, int index, boolean create, List<T> views, View query, DataSet set) throws Exception {
-        if(null == views) {
-            views = new ArrayList<>();
-        }
-        for(DataRow row:set) {
-            T view = null;
-            view = init(runtime, index, view, query, row);
-            if(null == search(views, view.getCatalog(), view.getSchema(), view.getName())) {
-                views.add(view);
-            }
-            detail(runtime, index, view, query, row);
-        }
-        return views;
+    public <T extends View> List<T> views(DataRuntime runtime, int index, boolean create, List<T> previous, View query, DataSet set) throws Exception {
+        return super.views(runtime, index, create, previous, query, set);
     }
 
     /**
@@ -3596,29 +3573,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
      */
     @Override
     public <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create,  List<T> previous, Collection<? extends Table> tables, Column query, DataSet set) throws Exception {
-        if(null == previous) {
-            previous = new ArrayList<>();
-        }
-        Map<String,Table> tbls = new HashMap<>();
-        for(Table table:tables) {
-            tbls.put(table.getName().toUpperCase(), table);
-        }
-        for(DataRow row:set) {
-            T meta = null;
-            meta = init(runtime, index, meta, query, row);
-            if(null == Metadata.match(meta, previous)) {
-                previous.add(meta);
-            }
-            detail(runtime, index, meta, query,  row);
-            String tableName = meta.getTableName();
-            if(null != tableName) {
-                Table table = tbls.get(tableName.toUpperCase());
-                if(null != table) {
-                    table.addColumn(meta);
-                }
-            }
-        }
-        return previous;
+        return super.columns(runtime, index, create, previous, tables, query, set);
     }
 
     /**
@@ -3662,7 +3617,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         if(null != table) {//查询全部表
             meta.setTable(table);
         }else {
-            String tableName = row.getString(refer.getRefers("Table"));
+            String tableName = row.getString(refer.getRefers("table"));
             table = new Table(BasicUtil.evl(tableName, meta.getTableName(true), tableName));
             table.setCatalog(catalog);
             table.setSchema(schema);
@@ -4174,7 +4129,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
      * @return runs
      */
     @Override
-    public List<Run> buildQueryIndexesRun(DataRuntime runtime, boolean greedy,  Index query) {
+    public List<Run> buildQueryIndexesRun(DataRuntime runtime, boolean greedy, Index query) {
         return super.buildQueryIndexesRun(runtime, greedy, query);
     }
     @Override
@@ -4336,29 +4291,15 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	public List<Run> buildQueryConstraintsRun(DataRuntime runtime, boolean greedy, Constraint query) {
 		Table table = query.getTable();
 		LinkedHashMap<String, Column>  columns = query.getColumns();
-		String pattern = query.getName();
 		List<Run> runs = new ArrayList<>();
 		Run run = new SimpleRun(runtime);
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();
-		builder.append("SELECT * FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS WHERE 1=1");
-		String catalog = null;
-		String schema = null;
-		String tab = null;
-		if(null != table) {
-			catalog = table.getCatalogName();
-			schema = table.getSchemaName();
-			tab = table.getName();
-		}
-		if(BasicUtil.isNotEmpty(catalog)) {
-			builder.append(" AND CONSTRAINT_CATALOG = '").append(catalog).append("'");
-		}
-		if(!empty(schema)) {
-			builder.append(" AND CONSTRAINT_SCHEMA = '").append(schema).append("'");
-		}
-		if(BasicUtil.isNotEmpty(tab)) {
-			builder.append(" AND TABLE_NAME = '").append(tab).append("'");
-		}
+        ConfigStore configs = run.getConfigs();
+		builder.append("SELECT * FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS");
+        configs.and("CONSTRAINT_CATALOG", query.getCatalogName());
+        configs.and("CONSTRAINT_SCHEMA", query.getSchemaName());
+        configs.and("TABLE_NAME", query.getTableName());
 		return runs;
 	}
 

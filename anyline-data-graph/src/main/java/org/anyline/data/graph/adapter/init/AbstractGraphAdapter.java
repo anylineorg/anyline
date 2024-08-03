@@ -4104,7 +4104,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
      * @return runs
      */
     @Override
-    public List<Run> buildQueryIndexesRun(DataRuntime runtime, boolean greedy,  Index query) {
+    public List<Run> buildQueryIndexesRun(DataRuntime runtime, boolean greedy, Index query) {
         return super.buildQueryIndexesRun(runtime, greedy, query);
     }
     @Override
@@ -4246,33 +4246,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
      */
     @Override
     public <T extends Constraint> List<T> constraints(DataRuntime runtime, String random, boolean greedy, Constraint query) {
-        Table table = query.getTable();
-        List<T> constraints = null;
-        if(null == table) {
-            table = new Table();
-        }
-        if(null == random) {
-            random = random(runtime);
-        }
-        if(!greedy) {
-            checkSchema(runtime, table);
-        }
-        List<Run> runs = buildQueryConstraintsRun(runtime, greedy, query);
-        if(null != runs) {
-            int idx = 0;
-            for(Run run:runs) {
-                DataSet set = select(runtime, random, true, (String)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
-                try {
-                    constraints = constraints(runtime, idx, true, table, constraints, set);
-                }catch (Exception e) {
-                    if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
-                        e.printStackTrace();
-                    }
-                }
-                idx ++;
-            }
-        }
-        return constraints;
+        return super.constraints(runtime, random, greedy, query);
     }
 
     /**
@@ -4286,33 +4260,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
      */
     @Override
     public <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, String random, Constraint query) {
-        Table table = query.getTable();
-        LinkedHashMap<String, Column>  columns = query.getColumns();
-        String pattern = query.getName();
-        LinkedHashMap<String, T> constraints = null;
-        if(null == table) {
-            table = new Table();
-        }
-        if(null == random) {
-            random = random(runtime);
-        }
-        checkSchema(runtime, table);
-        List<Run> runs = buildQueryConstraintsRun(runtime, false, query);
-        if(null != runs) {
-            int idx = 0;
-            for(Run run:runs) {
-                DataSet set = select(runtime, random, true, (String)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
-                try {
-                    constraints = constraints(runtime, idx, true, table, columns, constraints, set);
-                }catch (Exception e) {
-                    if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
-                        e.printStackTrace();
-                    }
-                }
-                idx ++;
-            }
-        }
-        return constraints;
+        return super.constraints(runtime, random, query);
     }
 
     /**
@@ -4324,30 +4272,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
      */
     @Override
     public List<Run> buildQueryConstraintsRun(DataRuntime runtime, boolean greedy, Constraint query) {
-        Table table = query.getTable();
-        List<Run> runs = new ArrayList<>();
-        Run run = new SimpleRun(runtime);
-        runs.add(run);
-        StringBuilder builder = run.getBuilder();
-        builder.append("SELECT * FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS WHERE 1=1");
-        String catalog = null;
-        String schema = null;
-        String tab = null;
-        if(null != table) {
-            catalog = table.getCatalogName();
-            schema = table.getSchemaName();
-            tab = table.getName();
-        }
-        if(BasicUtil.isNotEmpty(catalog)) {
-            builder.append(" AND CONSTRAINT_CATALOG = '").append(catalog).append("'");
-        }
-        if(!empty(schema)) {
-            builder.append(" AND CONSTRAINT_SCHEMA = '").append(schema).append("'");
-        }
-        if(BasicUtil.isNotEmpty(tab)) {
-            builder.append(" AND TABLE_NAME = '").append(tab).append("'");
-        }
-        return runs;
+        return super.buildQueryConstraintsRun(runtime, greedy, query);
     }
 
     /**
@@ -4494,40 +4419,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
      */
     @Override
     public <T extends Procedure> List<T> procedures(DataRuntime runtime, String random, boolean greedy, Procedure query) {
-        Catalog catalog = query.getCatalog();
-        Schema schema = query.getSchema();
-        String pattern = query.getName();
-        List<T> procedures = new ArrayList<>();
-        if(null == random) {
-            random = random(runtime);
-        }
-
-        if(null == catalog || null == schema || BasicUtil.isEmpty(catalog.getName()) || BasicUtil.isEmpty(schema.getName()) ) {
-            Table tmp = new Table();
-            checkSchema(runtime, tmp);
-            if(null == catalog || BasicUtil.isEmpty(catalog.getName())) {
-                catalog = tmp.getCatalog();
-            }
-            if(null == schema || BasicUtil.isEmpty(schema.getName())) {
-                schema = tmp.getSchema();
-            }
-        }
-        List<Run> runs = buildQueryProceduresRun(runtime, greedy, query);
-        if(null != runs) {
-            int idx = 0;
-            for(Run run:runs) {
-                DataSet set = select(runtime, random, true, (String)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
-                try {
-                    procedures = procedures(runtime, idx, true, procedures, query, set);
-                }catch (Exception e) {
-                    if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
-                        e.printStackTrace();
-                    }
-                }
-                idx ++;
-            }
-        }
-        return procedures;
+        return super.procedures(runtime, random, greedy, query);
     }
 
     /**
@@ -4541,40 +4433,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
      */
     @Override
     public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, String random, Procedure query) {
-        Catalog catalog = query.getCatalog();
-        Schema schema = query.getSchema();
-        String pattern = query.getName();
-        LinkedHashMap<String,T> procedures = new LinkedHashMap<>();
-        if(null == random) {
-            random = random(runtime);
-        }
-
-        if(null == catalog || null == schema || BasicUtil.isEmpty(catalog.getName()) || BasicUtil.isEmpty(schema.getName()) ) {
-            Table tmp = new Table();
-            checkSchema(runtime, tmp);
-            if(null == catalog || BasicUtil.isEmpty(catalog.getName())) {
-                catalog = tmp.getCatalog();
-            }
-            if(null == schema || BasicUtil.isEmpty(schema.getName())) {
-                schema = tmp.getSchema();
-            }
-        }
-        List<Run> runs = buildQueryProceduresRun(runtime, false, query);
-        if(null != runs) {
-            int idx = 0;
-            for(Run run:runs) {
-                DataSet set = select(runtime, random, true, (String)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
-                try {
-                    procedures = procedures(runtime, idx, true, procedures, query, set);
-                }catch (Exception e) {
-                    if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
-                        e.printStackTrace();
-                    }
-                }
-                idx ++;
-            }
-        }
-        return procedures;
+        return super.procedures(runtime, random, query);
     }
 
     /**

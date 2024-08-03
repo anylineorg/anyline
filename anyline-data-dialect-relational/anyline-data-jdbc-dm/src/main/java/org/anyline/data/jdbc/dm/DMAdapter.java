@@ -1576,7 +1576,10 @@ public class DMAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public MetadataFieldRefer initSchemaFieldRefer() {
-		return super.initSchemaFieldRefer();
+		MetadataFieldRefer refer = new MetadataFieldRefer(Schema.class);
+		refer.setRefer("name", "schema_name");
+		refer.setRefer("user", "user_name");
+		return refer;
 	}
 	/**
 	 * schema[结果集封装]<br/>
@@ -1591,37 +1594,11 @@ public class DMAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public <T extends Schema> LinkedHashMap<String, T> schemas(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Schema query, DataSet set) throws Exception {
-		if(null == previous) {
-			previous = new LinkedHashMap<>();
-		}
-		for(DataRow row:set) {
-			String name = row.getString("schema_name");
-			String user = row.getString("user_name");
-			if(null != name) {
-				T meta = (T)new Schema();
-				meta.setName(name);
-				meta.setUser(user);
-				previous.put(name.toUpperCase(), meta);
-			}
-		}
-		return previous;
+		return super.schemas(runtime, index, create, previous, query, set);
 	}
 	@Override
 	public <T extends Schema> List<T> schemas(DataRuntime runtime, int index, boolean create, List<T> previous, Schema query, DataSet set) throws Exception {
-		if(null == previous) {
-			previous = new ArrayList<>();
-		}
-		for(DataRow row:set) {
-			String name = row.getString("schema_name");
-			String user = row.getString("user_name");
-			if(null != name) {
-				T meta = (T)new Schema();
-				meta.setName(name);
-				meta.setUser(user);
-				previous.add(meta);
-			}
-		}
-		return previous;
+		return super.schemas(runtime, index, create, previous, query, set);
 	}
 
 	/**
@@ -2297,37 +2274,20 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 */
 	@Override
 	public List<Run> buildQueryColumnsRun(DataRuntime runtime,  boolean metadata, Column query, ConfigStore configs) throws Exception {
-		Table table = query.getTable();
 		List<Run> runs = new ArrayList<>();
-		Catalog catalog = null;
-		Schema schema = null;
-		String name = null;
-		if(null != table) {
-			name = table.getName();
-			schema = table.getSchema();
-		}
-		Run run = new SimpleRun(runtime);
+		Run run = new SimpleRun(runtime, configs);
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();
 		if(metadata) {
 			builder.append("SELECT * FROM ");
-			name(runtime, builder, table);
+			name(runtime, builder, query.getTable());
 			builder.append(" WHERE 1=0");
 		}else{
 			builder.append("SELECT M.*, F.COMMENTS AS COLUMN_COMMENT FROM ALL_TAB_COLUMNS M \n");
 			//不要从 ALL_COL_COMMENTS 中查
-			builder.append("LEFT JOIN USER_COL_COMMENTS F ON M.TABLE_NAME = F.TABLE_NAME AND M.COLUMN_NAME = F.COLUMN_NAME AND M.OWNER = F.OWNER\n");
-			builder.append("WHERE 1=1\n");
-			if (BasicUtil.isNotEmpty(name)) {
-				builder.append("AND M.TABLE_NAME = '").append(name).append("'");
-			}
-			if(!empty(schema)) {
-				builder.append(" AND M.OWNER = '").append(schema.getName()).append("'");
-			}
-			if(null != configs){
-				run.setPageNavi(configs.getPageNavi());
-			}
-			//builder.append("\nORDER BY M.TABLE_NAME");
+			builder.append("LEFT JOIN USER_COL_COMMENTS F ON M.TABLE_NAME = F.TABLE_NAME AND M.COLUMN_NAME = F.COLUMN_NAME AND M.OWNER = F.OWNER");
+			configs.and("M.TABLE_NAME", query.getTableName());
+			configs.and("M.OWNER", query.getSchemaName());
 		}
 		return runs;
 	}
@@ -2759,7 +2719,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @return runs
 	 */
 	@Override
-	public List<Run> buildQueryIndexesRun(DataRuntime runtime, boolean greedy,  Index query) {
+	public List<Run> buildQueryIndexesRun(DataRuntime runtime, boolean greedy, Index query) {
 		Table table = query.getTable();
 		String name = query.getName();
 		List<Run> runs = new ArrayList<>();
@@ -2803,13 +2763,12 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		Run run = new SimpleRun(runtime);
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();
-		builder.append("SELECT * FROM dba_ind_columns WHERE 1=1\n");
+		ConfigStore configs = run.getConfigs();
+		builder.append("SELECT * FROM dba_ind_columns");
 		String schema = table.getSchemaName();
-		if(!empty(schema)) {
-			builder.append(" AND INDEX_OWNER = '").append(schema).append("'\n");
-		}
+		configs.and("INDEX_OWNER", schema);
 		List<String> names = Table.names(tables);
-		in(runtime, builder, "TABLE_NAME", names);
+		configs.in("TABLE_NAME", names);
 
 		return runs;
 	}

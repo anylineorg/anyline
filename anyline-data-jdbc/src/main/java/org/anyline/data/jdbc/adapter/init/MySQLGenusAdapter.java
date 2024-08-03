@@ -1725,7 +1725,6 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public List<Run> buildQuerySchemasRun(DataRuntime runtime, boolean greedy, Schema query) throws Exception {
-        Catalog catalog = query.getCatalog();
         String name = query.getName();
         List<Run> runs = new ArrayList<>();
         Run run = new SimpleRun(runtime);
@@ -1892,43 +1891,22 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Table query, int types, ConfigStore configs) throws Exception {
-        Catalog catalog = query.getCatalog();
-        Schema schema = query.getSchema();
-        String pattern = query.getName();
         List<Run> runs = new ArrayList<>();
-        Run run = new SimpleRun(runtime);
+        Run run = new SimpleRun(runtime, configs);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
-
-        builder.append("SELECT * FROM information_schema.TABLES WHERE 1=1 ");
+        builder.append("SELECT * FROM information_schema.TABLES");
         // 8.0版本中 这个表中 TABLE_CATALOG = def  TABLE_SCHEMA = 数据库名
         /*if(BasicUtil.isNotEmpty(catalog)) {
             builder.append(" AND TABLE_SCHEMA = '").append(catalog.getName()).append("'");
         }*/
-        if(!empty(schema)) {
-            builder.append(" AND TABLE_SCHEMA = '").append(schema.getName()).append("'");
-        }
-        if(BasicUtil.isNotEmpty(pattern)) {
-            builder.append(" AND TABLE_NAME LIKE '").append(objectName(runtime, pattern)).append("'");
-        }
+        configs.and("TABLE_SCHEMA", query.getSchemaName());
+        configs.like("TABLE_NAME", objectName(runtime, query.getName()));
         List<String> tps = names(Table.types(types));
-        if(null != tps && !tps.isEmpty()) {;
-            builder.append(" AND TABLE_TYPE IN(");
-            boolean first = true;
-            for(String tmp:tps) {
-                if(!first) {
-                    builder.append(",");
-                }
-                builder.append("'").append(tmp).append("'");
-                first = false;
-            }
-            builder.append(")");
-        }else {
-            builder.append(" AND TABLE_TYPE IN ('BASE TABLE','TABLE')");
+        if(tps.isEmpty()){
+            tps.add("BASE TABLE");
         }
-        if(null != configs){
-            run.setPageNavi(configs.getPageNavi());
-        }
+        configs.in("TABLE_TYPE", tps);
         return runs;
     }
 
@@ -2162,26 +2140,17 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public List<Run> buildQueryViewsRun(DataRuntime runtime, boolean greedy, View query, int types, ConfigStore configs) throws Exception {
-
-        Catalog catalog = query.getCatalog();
-        Schema schema = query.getSchema();
-        String pattern = query.getName();
         List<Run> runs = new ArrayList<>();
-        Run run = new SimpleRun(runtime);
+        Run run = new SimpleRun(runtime, configs);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
-
-        builder.append("SELECT * FROM information_schema.VIEWS WHERE 1=1 ");
+        builder.append("SELECT * FROM information_schema.VIEWS");
         // 8.0版本中 这个视图中 TABLE_CATALOG = def  TABLE_SCHEMA = 数据库名
         /*if(BasicUtil.isNotEmpty(catalog)) {
             builder.append(" AND TABLE_SCHEMA = '").append(catalog).append("'");
         }*/
-        if(!empty(schema)) {
-            builder.append(" AND TABLE_SCHEMA = '").append(schema.getName()).append("'");
-        }
-        if(BasicUtil.isNotEmpty(pattern)) {
-            builder.append(" AND TABLE_NAME LIKE '").append(objectName(runtime, pattern)).append("'");
-        }
+        configs.and("TABLE_SCHEMA", query.getSchemaName());
+        configs.like("TABLE_NAME", query.getName());
         return runs;
     }
 
@@ -2192,7 +2161,11 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public MetadataFieldRefer initViewFieldRefer() {
-        return super.initViewFieldRefer();
+        MetadataFieldRefer refer = new MetadataFieldRefer(View.class);
+        refer.setRefer("name", "TABLE_NAME");
+        refer.setRefer("schema", "TABLE_SCHEMA");
+        refer.setRefer("definition","VIEW_DEFINITION");
+        return refer;
     }
     /**
      * view[结果集封装]<br/>
@@ -2208,25 +2181,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, View query, DataSet set) throws Exception {
-        Catalog catalog = query.getCatalog();
-        Schema schema = query.getSchema();
-        if(null == previous) {
-            previous = new LinkedHashMap<>();
-        }
-        for(DataRow row:set) {
-            String name = row.getString("TABLE_NAME");
-            T view = previous.get(name.toUpperCase());
-            if(null == view) {
-                view = (T)new View();
-            }
-            //String catalogName = row.getString("TABLE_CATALOG");
-            String schemaName = row.getString("TABLE_SCHEMA");
-            view.setSchema(schemaName);
-            view.setName(name);
-            view.setDefinition(row.getString("VIEW_DEFINITION"));
-            previous.put(name.toUpperCase(), view);
-        }
-        return previous;
+        return super.views(runtime, index, create, previous, query, set);
     }
     /**
      * view[结果集封装]<br/>
@@ -2570,15 +2525,8 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     @Override
     public List<Run> buildQueryColumnsRun(DataRuntime runtime,  boolean metadata, Column query, ConfigStore configs) throws Exception {
         List<Run> runs = new ArrayList<>();
-        Schema schema = null;
-        String name = null;
         Table table = query.getTable();
-        if(null != table) {
-            checkName(runtime, null, table);
-            name = table.getName();
-            schema = table.getSchema();
-        }
-        Run run = new SimpleRun(runtime);
+        Run run = new SimpleRun(runtime, configs);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
         if(metadata) {
@@ -2586,20 +2534,11 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
             name(runtime, builder, table);
             builder.append(" WHERE 1=0");
         }else{
-            builder.append("SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE 1=1 ");
-            /*if(BasicUtil.isNotEmpty(catalog)) {
-                builder.append(" AND TABLE_CATALOG = '").append(catalog).append("'");
-            }*/
-            if(!empty(schema)) {
-                builder.append(" AND TABLE_SCHEMA = '").append(schema.getName()).append("'");
-            }
-            if(BasicUtil.isNotEmpty(name)) {
-                builder.append(" AND TABLE_NAME = '").append(objectName(runtime, name)).append("'");
-            }
-            run.setOrders("TABLE_NAME", "ORDINAL_POSITION");
-            if(null != configs){
-                run.setPageNavi(configs.getPageNavi());
-            }
+            builder.append("SELECT * FROM INFORMATION_SCHEMA.COLUMNS");
+            //mysql忽略catalog
+            configs.and("TABLE_SCHEMA", query.getSchemaName());
+            configs.and("TABLE_NAME", objectName(runtime, query.getTableName()));
+            configs.order("TABLE_NAME").order("ORDINAL_POSITION");
         }
         return runs;
     }
@@ -2645,24 +2584,19 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
             checkName(runtime, null, table);
             schema = table.getSchema();
         }
-        Run run = new SimpleRun(runtime);
+        Run run = new SimpleRun(runtime, configs);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
-        builder.append("SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE 1=1 ");
+        builder.append("SELECT * FROM INFORMATION_SCHEMA.COLUMNS");
         /*if(BasicUtil.isNotEmpty(catalog)) {
             builder.append(" AND TABLE_CATALOG = '").append(catalog).append("'");
         }*/
         if(!empty(schema)) {
-            builder.append(" AND TABLE_SCHEMA = '").append(schema.getName()).append("'");
+            configs.and("TABLE_SCHEMA", schema.getName());
         }
         List<String> names = Table.names(tables);
-        in(runtime, builder, "TABLE_NAME", names);
-
-        run.setOrders("TABLE_NAME", "ORDINAL_POSITION");
-        if(null != configs){
-            run.setPageNavi(configs.getPageNavi());
-        }
-
+        configs.in("TABLE_NAME", names);
+        configs.order("TABLE_NAME").order("ORDINAL_POSITION");
         return runs;
     }
 
@@ -3035,7 +2969,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return runs
      */
     @Override
-    public List<Run> buildQueryIndexesRun(DataRuntime runtime, boolean greedy,  Index query) {
+    public List<Run> buildQueryIndexesRun(DataRuntime runtime, boolean greedy, Index query) {
         Table table = query.getTable();
         String name = query.getName();
         List<Run> runs = new ArrayList<>();
@@ -3318,35 +3252,16 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return runs
      */
     public List<Run> buildQueryTriggersRun(DataRuntime runtime, boolean greedy, Trigger query) {
-        Table table = query.getTable();
         List<Trigger.EVENT> events = query.getEvents();
         List<Run> runs = new ArrayList<>();
         Run run = new SimpleRun(runtime);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
-        builder.append("SELECT * FROM INFORMATION_SCHEMA.TRIGGERS WHERE 1=1");
-        if(null != table) {
-            checkName(runtime, null, table);
-            Schema schema = table.getSchema();
-            String name = table.getName();
-            if(BasicUtil.isNotEmpty(schema)) {
-                builder.append(" AND TRIGGER_SCHEMA = '").append(schema).append("'");
-            }
-            if(BasicUtil.isNotEmpty(name)) {
-                builder.append(" AND EVENT_OBJECT_TABLE = '").append(name).append("'");
-            }
-        }
-        if(null != events && !events.isEmpty()) {
-            builder.append(" AND(");
-            boolean first = true;
-            for(Trigger.EVENT event:events) {
-                if(!first) {
-                    builder.append(" OR ");
-                }
-                builder.append("EVENT_MANIPULATION ='").append(event);
-            }
-            builder.append(")");
-        }
+        ConfigStore configs = run.getConfigs();
+        builder.append("SELECT * FROM INFORMATION_SCHEMA.TRIGGERS");
+        configs.and("TRIGGER_SCHEMA", query.getSchemaName());
+        configs.and("EVENT_OBJECT_TABLE", query.getTableName());
+        configs.in("EVENT_MANIPULATION", events);
         return runs;
     }
     /**

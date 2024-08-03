@@ -2420,21 +2420,12 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
     @Override
     public List<Run> buildQueryColumnsRun(DataRuntime runtime,  boolean metadata, Column query, ConfigStore configs) throws Exception {
         List<Run> runs = new ArrayList<>();
-        String catalog = null;
-        String schema = null;
-        String name = null;
-        Table table = query.getTable();
-        if(null != table) {
-            name = table.getName();
-            catalog = table.getCatalogName();
-            schema = table.getSchemaName();
-        }
-        Run run = new SimpleRun(runtime);
+        Run run = new SimpleRun(runtime, configs);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
         if(metadata) {
             builder.append("SELECT * FROM ");
-            name(runtime, builder, table);
+            name(runtime, builder, query.getTable());
             builder.append(" WHERE 1=0");
         }else{
             builder.append("SELECT FTT.TABLE_CATALOG AS CATALOG_NAME, C.NAME AS COLUMN_NAME, SCHEMA_NAME(FT.SCHEMA_ID) AS SCHEMA_NAME, B.VALUE COLUMN_COMMENT, OBJECT_NAME(c.OBJECT_ID) AS TABLE_NAME,TYPE_NAME(user_type_id) AS TYPE_NAME, OBJECT_DEFINITION(c.default_object_id) AS DEFAULT_DEFINITION,OBJECT_NAME(C.default_object_id) AS DEFAULT_CONSTRAINT,C.* \n");
@@ -2443,37 +2434,10 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
             //表catalog(库名)
             builder.append("LEFT JOIN INFORMATION_SCHEMA.TABLES AS FTT ON OBJECT_ID(FTT.TABLE_CATALOG+'.'+FTT.TABLE_SCHEMA+'.'+FTT.TABLE_NAME) = C.OBJECT_ID\n");
             builder.append("LEFT JOIN SYS.EXTENDED_PROPERTIES B ON B.MAJOR_ID = c.OBJECT_ID AND B.MINOR_ID = C.COLUMN_ID\n");
-            builder.append("WHERE 1=1 \n");
-            if(BasicUtil.isNotEmpty(catalog)) {
-                builder.append(" AND FTT.TABLE_CATALOG = '").append(catalog).append("'");
-            }
-            if(!empty(schema)) {
-                builder.append(" AND SCHEMA_NAME(FT.SCHEMA_ID) = '").append(schema).append("'");
-            }
-            if (null != name) {
-                builder.append(" AND OBJECT_NAME(c.OBJECT_ID) ='").append(objectName(runtime, name)).append("'");
-            }
-            run.setOrders("c.OBJECT_ID");
-            if(null != configs) {
-                run.setPageNavi(configs.getPageNavi());
-            }
-
-            //没有注释
-            /*Run r = new SimpleRun(runtime);
-            runs.add(r);
-            builder = r.getBuilder();
-
-            builder.append("SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE 1=1 \n");
-            if (null != name) {
-                builder.append(" AND TABLE_NAME ='").append(objectName(runtime, name)).append("'");
-            }
-            if (null != catalog) {
-                builder.append(" AND TABLE_CATALOG ='").append(objectName(runtime, catalog)).append("'");
-            }
-            if (null != name) {
-                builder.append(" AND TABLE_SCHEMA ='").append(objectName(runtime, schema)).append("'");
-            }
-            builder.append("\nORDER BY TABLE_NAME");*/
+            configs.and("TABLE_CATALOG", query.getCatalogName());
+            configs.and("SCHEMA_NAME(FT.SCHEMA_ID)", query.getSchemaName());
+            configs.and("OBJECT_NAME(c.OBJECT_ID)", objectName(runtime, query.getTableName()));
+            configs.order("c.OBJECT_ID");
         }
         return runs;
     }
@@ -2970,7 +2934,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
      * @return runs
      */
     @Override
-    public List<Run> buildQueryIndexesRun(DataRuntime runtime, boolean greedy,  Index query) {
+    public List<Run> buildQueryIndexesRun(DataRuntime runtime, boolean greedy, Index query) {
         return super.buildQueryIndexesRun(runtime, greedy, query);
     }
     @Override
@@ -3200,33 +3164,13 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
      * @return runs
      */
     public List<Run> buildQueryTriggersRun(DataRuntime runtime, boolean greedy, Trigger query) {
-        Table table = query.getTable();
         List<Run> runs = new ArrayList<>();
         Run run = new SimpleRun(runtime);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
-        builder.append("SELECT object_name(parent_id) AS TABLE_NAME,* FROM SYS.TRIGGERS WHERE 1=1");
-        if(null != table) {
-            Schema schema = table.getSchema();
-            String name = table.getName();
-            /*if(BasicUtil.isNotEmpty(schema)) {
-                builder.append(" AND TRIGGER_SCHEMA = '").append(schema).append("'");
-            }*/
-            if(BasicUtil.isNotEmpty(name)) {
-                builder.append(" AND object_name(parent_id) = '").append(name).append("'");
-            }
-        }/*
-        if(null != events && events.size()>0) {
-            builder.append(" AND(");
-            boolean first = true;
-            for(Trigger.EVENT event:events) {
-                if(!first) {
-                    builder.append(" OR ");
-                }
-                builder.append("EVENT_MANIPULATION ='").append(event);
-            }
-            builder.append(")");
-        }*/
+        ConfigStore configs = run.getConfigs();
+        builder.append("SELECT object_name(parent_id) AS TABLE_NAME,* FROM SYS.TRIGGERS");
+        configs.and("object_name(parent_id)", query.getTableName());
         return runs;
     }
 

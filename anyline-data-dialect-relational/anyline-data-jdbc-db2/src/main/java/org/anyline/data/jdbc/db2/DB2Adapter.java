@@ -2325,20 +2325,18 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 				schema = table.getSchemaName();
 				name = table.getName();
 			}
-			builder.append("SELECT * FROM SYSCAT.COLUMNS WHERE 1=1 ");
+			builder.append("SELECT * FROM SYSCAT.COLUMNS");
 			/*if(BasicUtil.isNotEmpty(catalog)) {
 				builder.append(" AND TABLE_CATALOG = '").append(catalog).append("'");
 			}*/
 			if(!empty(schema)) {
-				builder.append(" AND TABSCHEMA = '").append(schema).append("'");
+				configs.and("TABSCHEMA", schema);
 			}
 			if(null != name) {
-				builder.append(" AND TABNAME = '").append(objectName(runtime, name)).append("'");
+				configs.and("TABNAME", objectName(runtime, name));
 			}
 			run.setOrders("TABNAME", "COLNO");
-			if(null != configs){
-				run.setPageNavi(configs.getPageNavi());
-			}
+			run.setConfigStore(configs);
 		}
 		return runs;
 	}
@@ -2769,7 +2767,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @return runs
 	 */
 	@Override
-	public List<Run> buildQueryIndexesRun(DataRuntime runtime, boolean greedy,  Index query) {
+	public List<Run> buildQueryIndexesRun(DataRuntime runtime, boolean greedy, Index query) {
 		return super.buildQueryIndexesRun(runtime, greedy, query);
 	}
 	@Override

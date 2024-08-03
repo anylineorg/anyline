@@ -1723,21 +1723,13 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         Schema schema = query.getSchema();
         String pattern = query.getName();
         List<Run> runs = new ArrayList<>();
-        Run run = new SimpleRun(runtime);
+        Run run = new SimpleRun(runtime, configs);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
-
-        builder.append("SELECT * FROM sys.TABLES WHERE 1=1 ");
-        if(!empty(schema)) {
-            builder.append(" AND SCHEMA_NAME = '").append(schema.getName()).append("'");
-        }
-        if(BasicUtil.isNotEmpty(pattern)) {
-            builder.append(" AND TABLE_NAME LIKE '").append(objectName(runtime, pattern)).append("'");
-        }
-
-        if(null != configs){
-            run.setPageNavi(configs.getPageNavi());
-        }/*
+        builder.append("SELECT * FROM sys.TABLES");
+        configs.and("SCHEMA_NAME", query.getSchemaName());
+        configs.like("TABLE_NAME", query.getName());
+        /*
         if(BasicUtil.isNotEmpty(types)) {
             String[] tmps = types.split(",");
             builder.append(" AND TABLE_TYPE IN(");
@@ -1978,17 +1970,13 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         Schema schema = query.getSchema();
         String pattern = query.getName();
         List<Run> runs = new ArrayList<>();
-        Run run = new SimpleRun(runtime);
+        Run run = new SimpleRun(runtime, configs);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
 
-        builder.append("SELECT * FROM sys.VIEWS WHERE 1=1 ");
-        if(!empty(schema)) {
-            builder.append(" AND SCHEMA_NAME = '").append(schema.getName()).append("'");
-        }
-        if(BasicUtil.isNotEmpty(pattern)) {
-            builder.append(" AND TABLE_NAME LIKE '").append(objectName(runtime, pattern)).append("'");
-        }
+        builder.append("SELECT * FROM sys.VIEWS");
+        configs.and("SCHEMA_NAME", query.getSchemaName());
+        configs.like("TABLE_NAME", query.getName());
         return runs;
     }
 
@@ -2817,26 +2805,18 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
      * @return runs
      */
     @Override
-    public List<Run> buildQueryIndexesRun(DataRuntime runtime, boolean greedy,  Index query) {
+    public List<Run> buildQueryIndexesRun(DataRuntime runtime, boolean greedy, Index query) {
         Table table = query.getTable();
         String name = query.getName();
         List<Run> runs = new ArrayList<>();
         Run run = new SimpleRun(runtime);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
-        builder.append("SELECT * FROM SYS.INDEXES\n");
-        builder.append("WHERE 1=1\n");
-        if(null != table) {
-            if (null != table.getSchema()) {
-                builder.append("AND SCHEMA_NAME='").append(table.getSchemaName()).append("'\n");
-            }
-            if (null != table.getName()) {
-                builder.append("AND TABLE_NAME='").append(objectName(runtime, table.getName())).append("'\n");
-            }
-        }
-        if(BasicUtil.isNotEmpty(name)) {
-            builder.append("AND INDEX_NAME='").append(name).append("'\n");
-        }
+        ConfigStore configs = run.getConfigs();
+        builder.append("SELECT * FROM SYS.INDEXES");
+        configs.and("SCHEMA_NAME", query.getSchemaName());
+        configs.and("TABLE_NAME", objectName(runtime, query.getTableName()));
+        configs.like("INDEX_NAME", query.getName());
         return runs;
     }
 
@@ -2846,23 +2826,17 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         Run run = new SimpleRun(runtime);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
+        ConfigStore configs = run.getConfigs();
         builder.append("SELECT * FROM SYS.INDEXES\n");
-        builder.append("WHERE 1=1\n");
         Table table = null;
         if(null != tables && !tables.isEmpty()){
             table = tables.iterator().next();
         }
         if(null != table) {
-            if (null != table.getSchema()) {
-                builder.append("AND SCHEMA_NAME='").append(table.getSchemaName()).append("'\n");
-            }
-            if (null != table.getName()) {
-                builder.append("AND TABLE_NAME='").append(objectName(runtime, table.getName())).append("'\n");
-            }
+            configs.and("SCHEMA_NAME", table.getSchemaName());
         }
-
         List<String> names = Table.names(tables);
-        in(runtime, builder, "TABLE_NAME", names);
+        configs.in("TABLE_NAME", names);
         return runs;
     }
 
@@ -3104,34 +3078,16 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
      * @return runs
      */
     public List<Run> buildQueryTriggersRun(DataRuntime runtime, boolean greedy, Trigger query) {
-        Table table = query.getTable();
         List<Trigger.EVENT> events = query.getEvents();
         List<Run> runs = new ArrayList<>();
         Run run = new SimpleRun(runtime);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
-        builder.append("SELECT * FROM INFORMATION_SCHEMA.TRIGGERS WHERE 1=1");
-        if(null != table) {
-            String schema = table.getSchemaName();
-            String name = table.getName();
-            if(!empty(schema)) {
-                builder.append(" AND TRIGGER_SCHEMA = '").append(schema).append("'");
-            }
-            if(BasicUtil.isNotEmpty(name)) {
-                builder.append(" AND EVENT_OBJECT_TABLE = '").append(name).append("'");
-            }
-        }
-        if(null != events && !events.isEmpty()) {
-            builder.append(" AND(");
-            boolean first = true;
-            for(Trigger.EVENT event:events) {
-                if(!first) {
-                    builder.append(" OR ");
-                }
-                builder.append("EVENT_MANIPULATION ='").append(event);
-            }
-            builder.append(")");
-        }
+        ConfigStore configs = run.getConfigs();
+        builder.append("SELECT * FROM INFORMATION_SCHEMA.TRIGGERS");
+        configs.and("TRIGGER_SCHEMA", query.getSchemaName());
+        configs.and("EVENT_OBJECT_TABLE", query.getTableName());
+        configs.in("EVENT_MANIPULATION", events);
         return runs;
     }
 

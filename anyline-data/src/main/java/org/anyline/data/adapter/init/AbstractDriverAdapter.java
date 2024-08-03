@@ -70,6 +70,7 @@ import org.anyline.util.*;
 import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
 
+import javax.swing.text.DefaultTextUI;
 import java.lang.reflect.Field;
 import java.util.*;
 
@@ -2443,7 +2444,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 //为变量赋值 run.condition赋值
                 run.init();
                 //检测不存在的列
-                if(ConfigStore.IS_AUTO_CHECK_METADATA(configs)) {
+                if(ConfigStore.IS_AUTO_CHECK_METADATA(configs) && null != prepare) {
                     List<Join> joins = prepare.getJoins();
                     Table table = run.getTable();
                     if(null != table && (null == joins || joins.isEmpty())) {//TODO 单表时再检测
@@ -2475,7 +2476,11 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      */
     @Override
     public void parseText(DataRuntime runtime, TextRun run) {
-        String text = run.getPrepare().getText();
+        RunPrepare prepare = run.getPrepare();
+        if(null == prepare){
+            return;
+        }
+        String text = prepare.getText();
         if(null == text) {
             return;
         }
@@ -3410,7 +3415,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         StringBuilder builder = run.getBuilder();
         List<Variable> variables = run.getVariables();
         String result = run.getText();
-        if(supportPlaceholder() && null != variables) {
+        if(null != result && supportPlaceholder() && null != variables) {
             for(Variable var:variables) {
                 if(null == var) {
                     continue;
@@ -3501,8 +3506,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 }
             }
         }
-
-        builder.append(result);
+        if(null != result) {
+            builder.append(result);
+        }
     }
     /* *****************************************************************************************************************
      *                                                     DELETE
@@ -3936,7 +3942,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				if (null != runs) {
 					int idx = 0;
 					for(Run run:runs) {
-						DataSet set = select(runtime, random, true, (Table) null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+						DataSet set = selectMetadata(runtime, random, run);
 						product = product(runtime, idx++, true, product, set);
 					}
 				}
@@ -3984,7 +3990,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				if (null != runs) {
 					int idx = 0;
 					for(Run run:runs) {
-						DataSet set = select(runtime, random, true, (Table)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+                        DataSet set = selectMetadata(runtime, random, run);
 						version = version(runtime, idx++, true, version, set);
 					}
 				}
@@ -4037,7 +4043,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				if(null != runs) {
 					int idx = 0;
 					for(Run run:runs) {
-						DataSet set = select(runtime, random, true, (Table)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+						DataSet set = selectMetadata(runtime, random, run);
 						databases = databases(runtime, idx++, true, databases, query, set);
 					}
 				}
@@ -4086,7 +4092,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				if(null != runs) {
 					int idx = 0;
 					for(Run run:runs) {
-						DataSet set = select(runtime, random, true, (Table)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+						DataSet set = selectMetadata(runtime, random, run);
 						databases = databases(runtime, idx++, true, databases, query, set);
 					}
 				}
@@ -4404,7 +4410,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				if(null != runs) {
 					int idx = 0;
 					for(Run run:runs) {
-						DataSet set = select(runtime, random, true, (Table)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+						DataSet set = selectMetadata(runtime, random, run);
 						catalog = catalog(runtime, idx++, true, catalog, set);
 					}
 				}
@@ -4459,7 +4465,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				if(null != runs) {
 					int idx = 0;
 					for(Run run:runs) {
-						DataSet set = select(runtime, random, true, (Table)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+						DataSet set = selectMetadata(runtime, random, run);
 						catalogs = catalogs(runtime, idx++, true, catalogs, query, set);
 					}
 				}
@@ -4507,7 +4513,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				if(null != runs) {
 					int idx = 0;
 					for(Run run:runs) {
-						DataSet set = select(runtime, random, true, (Table)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+						DataSet set = selectMetadata(runtime, random, run);
 						catalogs = catalogs(runtime, idx++, true, catalogs, query, set);
 					}
 				}
@@ -4769,7 +4775,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				if(null != runs) {
 					int idx = 0;
 					for(Run run:runs) {
-						DataSet set = select(runtime, random, true, (Table)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+						DataSet set = selectMetadata(runtime, random, run);
 						schema = schema(runtime, idx++, true, schema, set);
 					}
 				}
@@ -4802,7 +4808,21 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return schema;
 	}
-
+    public DataSet selectMetadata(DataRuntime runtime, String random, Run run) {
+        ConfigStore configs = null;
+        if(run instanceof SimpleRun){
+            String text = run.getBuilder().toString();
+            configs = run.getConfigs();
+            RunPrepare prepare = new DefaultTextPrepare(text);
+            run = buildQueryRun(runtime, prepare, configs);
+        }
+        if(null == configs){
+            configs = new DefaultConfigStore();
+        }
+        configs.keyCase(KeyAdapter.KEY_CASE.PUT_UPPER);
+        DataSet set = select(runtime, random, true, (Table)null, configs, run);
+        return set;
+    }
 	/**
 	 * schema[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -4824,7 +4844,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				if(null != runs) {
 					int idx = 0;
 					for(Run run:runs) {
-						DataSet set = select(runtime, random, true, (Table)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+						DataSet set = selectMetadata(runtime, random, run);
 						schemas = schemas(runtime, idx++, true, schemas, query, set);
 					}
 				}
@@ -4872,7 +4892,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				if(null != runs) {
 					int idx = 0;
 					for(Run run:runs) {
-						DataSet set = select(runtime, random, true, (Table)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+						DataSet set = selectMetadata(runtime, random, run);
 						schemas = schemas(runtime, idx++, true, schemas, query, set);
 					}
 				}
@@ -5114,10 +5134,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             _catalog = catalog.getName();
         }
         String name = row.getString(refer.getRefers("Name"));
-
         if(null != _catalog) {
             _catalog = _catalog.trim();
         }
+        meta.setUser(row.getString(refer.getRefers("user")));
         meta.setMetadata(row);
         meta.setCatalog(_catalog);
         meta.setName(name);
@@ -5230,7 +5250,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 							run.setPageNavi(navi);
 							mergeFinalQuery(runtime, run);
 						}
-						DataSet set = select(runtime, random, true, (String)null, configs.keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+						DataSet set = selectMetadata(runtime, random, run);
 						list = tables(runtime, idx++, true, list, catalog, schema, set);
 						if(null != navi){
 							//分页只查一次
@@ -5286,7 +5306,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 								run.setPageNavi(navi);
 								//mergeFinalQuery(runtime, run);
 							}
-							DataSet set = select(runtime, random, true, (String) null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+							DataSet set = selectMetadata(runtime, random, run);
 							list = comments(runtime, idx++, true, list, catalog, schema, set);
 							if(null != navi){
 								break;
@@ -5369,7 +5389,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				if (null != runs && !runs.isEmpty()) {
 					int idx = 0;
 					for (Run run : runs) {
-						DataSet set = select(runtime, random, true, (String) null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+						DataSet set = selectMetadata(runtime, random, run);
 						tables = tables(runtime, idx++, true, tables, catalog, schema, set);
 						for(Table table:tables){
 							String cache_key = CacheProxy.key(runtime, "table", greedy, catalog, schema, table.getName());
@@ -5702,7 +5722,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				int idx = 0;
 				for (Run run : runs) {
 					//不要传table,这里的table用来查询表结构
-					DataSet set = select(runtime, random, true, (Table)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+					DataSet set = selectMetadata(runtime, random, run);
 					list = ddl(runtime, idx++, table, list, set);
 				}
 				table.setDdls(list);
@@ -5881,7 +5901,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 							run.setPageNavi(navi);
 							mergeFinalQuery(runtime, run);
 						}
-						DataSet set = select(runtime, random, true, (String)null, configs.keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+						DataSet set = selectMetadata(runtime, random, run);
 						list = vertexs(runtime, idx++, true, list, catalog, schema, set);
 						if(null != navi){
 							//分页只查一次
@@ -5937,7 +5957,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 								run.setPageNavi(navi);
 								//mergeFinalQuery(runtime, run);
 							}
-							DataSet set = select(runtime, random, true, (String) null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+							DataSet set = selectMetadata(runtime, random, run);
 							list = comments(runtime, idx++, true, list, catalog, schema, set);
 							if(null != navi){
 								break;
@@ -6019,7 +6039,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			if (null != runs && !runs.isEmpty()) {
 				int idx = 0;
 				for (Run run : runs) {
-					DataSet set = select(runtime, random, true, (String) null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+					DataSet set = selectMetadata(runtime, random, run);
 					vertexs = vertexs(runtime, idx++, true, vertexs, catalog, schema, set);
 					for(VertexTable vertex:vertexs){
 						String cache_key = CacheProxy.key(runtime, "vertex", greedy, catalog, schema, vertex.getName());
@@ -6234,8 +6254,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				//直接查询DDL
 				int idx = 0;
 				for (Run run : runs) {
-					//不要传vertex,这里的vertex用来查询表结构
-					DataSet set = select(runtime, random, true, (VertexTable)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+                    DataSet set = selectMetadata(runtime, random, run);
 					list = ddl(runtime, idx++, vertex, list, set);
 				}
 				vertex.setDdls(list);
@@ -6452,7 +6471,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 							run.setPageNavi(navi);
 							mergeFinalQuery(runtime, run);
 						}
-						DataSet set = select(runtime, random, true, (String)null, configs.keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+						DataSet set = selectMetadata(runtime, random, run);
 						list = edges(runtime, idx++, true, list, catalog, schema, set);
 						if(null != navi){
 							//分页只查一次
@@ -6508,7 +6527,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 								run.setPageNavi(navi);
 								//mergeFinalQuery(runtime, run);
 							}
-							DataSet set = select(runtime, random, true, (String) null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+							DataSet set = selectMetadata(runtime, random, run);
 							list = comments(runtime, idx++, true, list, catalog, schema, set);
 							if(null != navi){
 								break;
@@ -6590,7 +6609,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			if (null != runs && !runs.isEmpty()) {
 				int idx = 0;
 				for (Run run : runs) {
-					DataSet set = select(runtime, random, true, (String) null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+					DataSet set = selectMetadata(runtime, random, run);
 					edges = edges(runtime, idx++, true, edges, catalog, schema, set);
 					for(EdgeTable item:edges){
 						String cache_key = CacheProxy.key(runtime, "edge", greedy, catalog, schema, item.getName());
@@ -6841,8 +6860,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				//直接查询DDL
 				int idx = 0;
 				for (Run run : runs) {
-					//不要传edge,这里的edge用来查询表结构
-					DataSet set = select(runtime, random, true, (EdgeTable)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+                    DataSet set = selectMetadata(runtime, random, run);
 					list = ddl(runtime, idx++, meta, list, set);
 				}
 				meta.setDdls(list);
@@ -7022,7 +7040,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 							run.setPageNavi(navi);
 							mergeFinalQuery(runtime, run);
 						}
-						DataSet set = select(runtime, random, true, (String)null, configs.keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+						DataSet set = selectMetadata(runtime, random, run);
 						list = views(runtime, idx++, true, list, catalog, schema, set);
 						if(null != navi){
 							//分页只查一次
@@ -7078,7 +7096,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 								run.setPageNavi(navi);
 								//mergeFinalQuery(runtime, run);
 							}
-							DataSet set = select(runtime, random, true, (String) null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+							DataSet set = selectMetadata(runtime, random, run);
 							list = comments(runtime, idx++, true, list, catalog, schema, set);
 							if(null != navi){
 								break;
@@ -7160,7 +7178,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			if (null != runs && !runs.isEmpty()) {
 				int idx = 0;
 				for (Run run : runs) {
-					DataSet set = select(runtime, random, true, (String) null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+					DataSet set = selectMetadata(runtime, random, run);
 					views = views(runtime, idx++, true, views, catalog, schema, set);
 					for(View view:views){
 						String cache_key = CacheProxy.key(runtime, "view", greedy, catalog, schema, view.getName());
@@ -7384,11 +7402,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         String name = row.getString(refer.getRefers("name"));
 
         if(null == meta) {
-            if("VIEW".equals(row.getString(refer.getRefers("Type")))) {
-                meta = (T)new View();
-            }else {
-                meta = (T)new View();
-            }
+            meta = (T)new View();
         }
         if(null != _catalog) {
             _catalog = _catalog.trim();
@@ -7400,6 +7414,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         meta.setCatalog(_catalog);
         meta.setSchema(_schema);
         meta.setName(name);
+        meta.setDefinition(row.getString(refer.getRefers("Definition")));
         return meta;
 	}
 	/**
@@ -7441,8 +7456,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				//直接查询DDL
 				int idx = 0;
 				for (Run run : runs) {
-					//不要传view,这里的view用来查询视图结构
-					DataSet set = select(runtime, random, true, (View)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+                    DataSet set = selectMetadata(runtime, random, run);
 					list = ddl(runtime, idx++, view, list, set);
 				}
 				view.setDdls(list);
@@ -7622,7 +7636,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 							run.setPageNavi(navi);
 							mergeFinalQuery(runtime, run);
 						}
-						DataSet set = select(runtime, random, true, (String)null, configs.keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+						DataSet set = selectMetadata(runtime, random, run);
 						list = masters(runtime, idx++, true, list, catalog, schema, set);
 						if(null != navi){
 							//分页只查一次
@@ -7678,7 +7692,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 								run.setPageNavi(navi);
 								//mergeFinalQuery(runtime, run);
 							}
-							DataSet set = select(runtime, random, true, (String) null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+							DataSet set = selectMetadata(runtime, random, run);
 							list = comments(runtime, idx++, true, list, catalog, schema, set);
 							if(null != navi){
 								break;
@@ -7761,7 +7775,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			if (null != runs && !runs.isEmpty()) {
 				int idx = 0;
 				for (Run run : runs) {
-					DataSet set = select(runtime, random, true, (String) null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+					DataSet set = selectMetadata(runtime, random, run);
 					masters = masters(runtime, idx++, true, masters, catalog, schema, set);
 					for(MasterTable master:masters){
 						String cache_key = CacheProxy.key(runtime, "master", greedy, catalog, schema, master.getName());
@@ -8037,7 +8051,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				int idx = 0;
 				for (Run run : runs) {
 					//不要传master,这里的master用来查询表结构
-					DataSet set = select(runtime, random, true, (MasterTable)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+					DataSet set = selectMetadata(runtime, random, run);
 					list = ddl(runtime, idx++, meta, list, set);
 				}
 				meta.setDdls(list);
@@ -8171,7 +8185,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 					int idx = 0;
 					int total = runs.size();
 					for(Run run:runs) {
-						DataSet set = select(runtime, random, false, (String)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+						DataSet set = selectMetadata(runtime, random, run);
 						tables = partitions(runtime, total, idx++, true, master, tables, master.getCatalog(), master.getSchema(), set);
 					}
 				}
@@ -8293,7 +8307,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			if (null != runs) {
 				int idx = 0;
 				for (Run run : runs) {
-					DataSet set = select(runtime, random, true, (Table)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+					DataSet set = selectMetadata(runtime, random, run);
 					list = ddl(runtime, idx++, table, list, set);
 				}
 				table.setDdls(list);
@@ -8437,7 +8451,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				if (null != runs) {
 					int idx = 0;
 					for (Run run: runs) {
-						DataSet set = select(runtime, random, true, (String) null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run);
+						DataSet set = selectMetadata(runtime, random, run);
 						columns = columns(runtime, idx, true, columns, table, query, set);
 						idx++;
 					}
@@ -8595,7 +8609,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			if (null != runs) {
 				int idx = 0;
 				for (Run run: runs) {
-					DataSet set = select(runtime, random, true, (String) null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run);
+					DataSet set = selectMetadata(runtime, random, run);
 					columns = columns(runtime, idx, true, columns, query, set);
 					idx++;
 				}
@@ -8759,9 +8773,28 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create,  List<T> previous, Collection<? extends Table> tables, Column query, DataSet set) throws Exception {
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create,  List<T> previous, Collection<? extends Table> tables, Column query, DataSet set)", 37));
-		}
+        if(null == previous) {
+            previous = new ArrayList<>();
+        }
+        Map<String,Table> tbls = new HashMap<>();
+        for(Table table:tables) {
+            tbls.put(table.getName().toUpperCase(), table);
+        }
+        for(DataRow row:set) {
+            T meta = null;
+            meta = init(runtime, index, meta, query, row);
+            if(null == Metadata.match(meta, previous)) {
+                previous.add(meta);
+            }
+            detail(runtime, index, meta, query,  row);
+            String tableName = meta.getTableName();
+            if(null != tableName) {
+                Table table = tbls.get(tableName.toUpperCase());
+                if(null != table) {
+                    table.addColumn(meta);
+                }
+            }
+        }
         return previous;
 	}
 	/**
@@ -9317,7 +9350,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			if(null != runs) {
 				int idx = 0;
 				for(Run run:runs) {
-					DataSet set = select(runtime, random, false, (String)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+					DataSet set = selectMetadata(runtime, random, run);
 					primary = init(runtime, idx, primary, query, set);
 					primary = detail(runtime, idx, primary, query, set);
 					idx ++;
@@ -9466,7 +9499,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			if(null != runs) {
 				int idx = 0;
 				for(Run run:runs) {
-					DataSet set = select(runtime, random, true, (String)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+					DataSet set = selectMetadata(runtime, random, run);
 					foreigns = foreigns(runtime, idx, table, foreigns, set);
 					idx++;
 				}
@@ -9607,7 +9640,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			if (null != runs) {
 				int idx = 0;
 				for (Run run: runs) {
-					DataSet set = select(runtime, random, true, (String) null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run);
+					DataSet set = selectMetadata(runtime, random, run);
                     list = indexes(runtime, idx, true, tables, list, new Index(), set);
 					idx++;
 				}
@@ -9672,7 +9705,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		if(null != runs) {
 			int idx = 0;
 			for(Run run:runs) {
-				DataSet set = select(runtime, random, true, (String)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+				DataSet set = selectMetadata(runtime, random, run);
 				try {
                     list = indexes(runtime, idx, true, table, list, set);
 				}catch (Exception e) {
@@ -9729,7 +9762,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		if(null != runs) {
 			int idx = 0;
 			for(Run run:runs) {
-				DataSet set = select(runtime, random, true, (String)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+				DataSet set = selectMetadata(runtime, random, run);
 				try {
                     map = indexes(runtime, idx, true, table, map, set);
 				}catch (Exception e) {
@@ -9797,7 +9830,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return runs
 	 */
 	@Override
-	public List<Run> buildQueryIndexesRun(DataRuntime runtime, boolean greedy,  Index query) {
+	public List<Run> buildQueryIndexesRun(DataRuntime runtime, boolean greedy, Index query) {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryIndexesRun(DataRuntime runtime, boolean greedy,  Index query)", 37));
 		}
@@ -10192,7 +10225,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 if(null != runs) {
                     int idx = 0;
                     for(Run run:runs) {
-                        DataSet set = select(runtime, random, true, (Table)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+                        DataSet set = selectMetadata(runtime, random, run);
                         list = constraints(runtime, idx++, true, list, query, set);
                     }
                 }
@@ -10239,7 +10272,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 if(null != runs) {
                     int idx = 0;
                     for(Run run:runs) {
-                        DataSet set = select(runtime, random, true, (Table)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+                        DataSet set = selectMetadata(runtime, random, run);
                         map = constraints(runtime, idx++, true, map, query, set);
                     }
                 }
@@ -10468,7 +10501,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 if(null != runs) {
                     int idx = 0;
                     for(Run run:runs) {
-                        DataSet set = select(runtime, random, true, (Table)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+                        DataSet set = selectMetadata(runtime, random, run);
                         map = triggers(runtime, idx++, true, map, query, set);
                     }
                 }
@@ -10630,7 +10663,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 if(null != runs) {
                     int idx = 0;
                     for(Run run:runs) {
-                        DataSet set = select(runtime, random, true, (Table)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+                        DataSet set = selectMetadata(runtime, random, run);
                         list = procedures(runtime, idx++, true, list, query, set);
                     }
                 }
@@ -10677,7 +10710,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 if(null != runs) {
                     int idx = 0;
                     for(Run run:runs) {
-                        DataSet set = select(runtime, random, true, (Table)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+                        DataSet set = selectMetadata(runtime, random, run);
                         map = procedures(runtime, idx++, true, map, query, set);
                     }
                 }
@@ -10837,7 +10870,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				int idx = 0;
 				for (Run run : runs) {
 					//不要传table,这里的table用来查询表结构
-					DataSet set = select(runtime, random, true, (Table)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+					DataSet set = selectMetadata(runtime, random, run);
 					list = ddl(runtime, idx++, procedure, list, set);
 				}
 				if(!list.isEmpty()) {
@@ -10975,7 +11008,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 if(null != runs) {
                     int idx = 0;
                     for(Run run:runs) {
-                        DataSet set = select(runtime, random, true, (Table)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+                        DataSet set = selectMetadata(runtime, random, run);
                         list = functions(runtime, idx++, true, list, query, set);
                     }
                 }
@@ -11022,7 +11055,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 if(null != runs) {
                     int idx = 0;
                     for(Run run:runs) {
-                        DataSet set = select(runtime, random, true, (Table)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+                        DataSet set = selectMetadata(runtime, random, run);
                         map = functions(runtime, idx++, true, map, query, set);
                     }
                 }
@@ -11183,7 +11216,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				int idx = 0;
 				for (Run run : runs) {
 					//不要传table,这里的table用来查询表结构
-					DataSet set = select(runtime, random, true, (Table)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+					DataSet set = selectMetadata(runtime, random, run);
 					list = ddl(runtime, idx++, meta, list, set);
 				}
 				if(!list.isEmpty()) {
@@ -11327,7 +11360,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				if(null != runs) {
 					int idx = 0;
 					for(Run run:runs) {
-						DataSet set = select(runtime, random, true, (Table)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+						DataSet set = selectMetadata(runtime, random, run);
                         list = sequences(runtime, idx++, true, list, query, set);
 					}
 				}
@@ -11374,7 +11407,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				if(null != runs) {
 					int idx = 0;
 					for(Run run:runs) {
-						DataSet set = select(runtime, random, true, (Table)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+						DataSet set = selectMetadata(runtime, random, run);
                         maps = sequences(runtime, idx++, true, maps, new Sequence(), set);
 					}
 				}
@@ -11533,7 +11566,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				int idx = 0;
 				for (Run run : runs) {
 					//不要传table,这里的table用来查询表结构
-					DataSet set = select(runtime, random, true, (Table)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+					DataSet set = selectMetadata(runtime, random, run);
 					list = ddl(runtime, idx++, meta, list, set);
 				}
 				if(!list.isEmpty()) {
@@ -16131,7 +16164,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 if(null != runs) {
                     int idx = 0;
                     for(Run run:runs) {
-                        DataSet set = select(runtime, random, true, (Table)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+                        DataSet set = selectMetadata(runtime, random, run);
                         list = roles(runtime, idx++, true, list, query, set);
                     }
                 }
@@ -16369,7 +16402,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 if(null != runs) {
                     int idx = 0;
                     for(Run run:runs) {
-                        DataSet set = select(runtime, random, true, (Table)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+                        DataSet set = selectMetadata(runtime, random, run);
                         list = users(runtime, idx++, true, list, query, set);
                     }
                 }
@@ -16555,7 +16588,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				if(null != runs) {
 					int idx = 0;
 					for(Run run:runs) {
-						DataSet set = select(runtime, random, true, (Table)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+						DataSet set = selectMetadata(runtime, random, run);
                         list = privileges(runtime, idx++, true, list, query, set);
 					}
 				}

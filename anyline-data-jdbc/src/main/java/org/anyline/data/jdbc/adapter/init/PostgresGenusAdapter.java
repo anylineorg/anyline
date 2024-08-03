@@ -26,7 +26,8 @@ import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
 import org.anyline.exception.NotSupportException;
 import org.anyline.metadata.*;
-import org.anyline.metadata.refer.*;
+import org.anyline.metadata.refer.MetadataFieldRefer;
+import org.anyline.metadata.refer.MetadataReferHolder;
 import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
@@ -1636,9 +1637,10 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         SimpleRun run = new SimpleRun(runtime);
         StringBuilder builder = run.getBuilder();
         builder.append("SELECT * FROM information_schema.schemata");
+        ConfigStore configs = run.getConfigs();
         if(null != query){
             if(null != query.getCatalogName()){
-                builder.append(" WHERE catalog_name = '").append(query.getCatalogName()).append("'");
+                configs.and("catalog_name", query.getCatalogName());
             }
         }
         runs.add(run);
@@ -2062,28 +2064,14 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public List<Run> buildQueryViewsRun(DataRuntime runtime, boolean greedy, View query, int types, ConfigStore configs) throws Exception {
-
-        Catalog catalog = query.getCatalog();
-        Schema schema = query.getSchema();
-        String pattern = query.getName();
         List<Run> runs = new ArrayList<>();
-        Run run = new SimpleRun(runtime);
+        Run run = new SimpleRun(runtime, configs);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
-        String catalogName = null;
-        String schemaName = null;
-        builder.append("SELECT * FROM INFORMATION_SCHEMA.VIEWS WHERE 1=1 ");
-        if(BasicUtil.isNotEmpty(catalogName)) {
-            builder.append(" AND TABLE_CATALOG = '").append(catalogName).append("'");
-        }
-
-        if(BasicUtil.isNotEmpty(schemaName)) {
-            builder.append(" AND TABLE_SCHEMA = '").append(schemaName).append("'");
-        }
-
-        if(BasicUtil.isNotEmpty(pattern)) {
-            builder.append(" AND TABLE_NAME LIKE '").append(pattern).append("'");
-        }
+        builder.append("SELECT * FROM INFORMATION_SCHEMA.VIEWS");
+        configs.and("TABLE_CATALOG", query.getCatalogName());
+        configs.and("TABLE_SCHEMA", query.getSchemaName());
+        configs.like("TABLE_NAME", query.getName());
         return runs;
     }
 
@@ -2476,44 +2464,24 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public List<Run> buildQueryColumnsRun(DataRuntime runtime,  boolean metadata, Column query, ConfigStore configs) throws Exception {
-        Table table = query.getTable();
         List<Run> runs = new ArrayList<>();
-        String catalog = null;
-        String schema = null;
-        String name = null;
-        checkName(runtime, null, table);
-        if(null != table) {
-            name = table.getName();
-            catalog = table.getCatalogName();
-            schema = table.getSchemaName();
-        }
-        Run run = new SimpleRun(runtime);
+        Run run = new SimpleRun(runtime, configs);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
         if(metadata) {
             builder.append("SELECT * FROM ");
-            name(runtime, builder, table);
+            name(runtime, builder, query.getTable());
             builder.append(" WHERE 1=0");
         }else{
             builder.append("SELECT M.*,pg_catalog.format_type ( FA.ATTTYPID, FA.ATTTYPMOD ) AS FULL_TYPE,FD.DESCRIPTION AS COLUMN_COMMENT \n");
             builder.append("FROM INFORMATION_SCHEMA.COLUMNS M\n");
             builder.append("LEFT JOIN PG_CLASS FC ON FC.RELNAME = M.TABLE_NAME\n");
             builder.append("LEFT JOIN PG_ATTRIBUTE FA ON FA.ATTNAME = M.COLUMN_NAME AND FA.ATTRELID = FC.OID\n");
-            builder.append("LEFT JOIN PG_DESCRIPTION FD ON FD.OBJOID = FC.OID AND FD.OBJSUBID = M.ORDINAL_POSITION\n");
-            builder.append("WHERE 1 = 1\n");
-            if(BasicUtil.isNotEmpty(catalog)) {
-                builder.append(" AND M.TABLE_CATALOG = '").append(catalog).append("'");
-            }
-            if(!empty(schema)) {
-                builder.append(" AND M.TABLE_SCHEMA = '").append(schema).append("'");
-            }
-            if(BasicUtil.isNotEmpty(name)) {
-                builder.append(" AND M.TABLE_NAME = '").append(name).append("'");
-            }
-            run.setOrders("M.TABLE_NAME");
-            if(null != configs){
-                run.setPageNavi(configs.getPageNavi());
-            }
+            builder.append("LEFT JOIN PG_DESCRIPTION FD ON FD.OBJOID = FC.OID AND FD.OBJSUBID = M.ORDINAL_POSITION");
+            configs.and("M.TABLE_CATALOG", query.getCatalog());
+            configs.and("M.TABLE_SCHEMA", query.getSchemaName());
+            configs.like("M.TABLE_NAME", query.getName());
+            configs.order("M.TABLE_NAME");
         }
         return runs;
     }
@@ -2560,7 +2528,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
             catalog = table.getCatalog();
             schema = table.getSchema();
         }
-        Run run = new SimpleRun(runtime);
+        Run run = new SimpleRun(runtime, configs);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
 
@@ -3032,23 +3000,18 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return runs
      */
     @Override
-    public List<Run> buildQueryIndexesRun(DataRuntime runtime, boolean greedy,  Index query) {
+    public List<Run> buildQueryIndexesRun(DataRuntime runtime, boolean greedy, Index query) {
         Table table = query.getTable();
         String name = query.getName();
         List<Run> runs = new ArrayList<>();
         Run run = buildQueryIndexBody(runtime);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
-        String schema = table.getSchemaName();
-        String tab = table.getName();
-        if(!empty(schema)) {
-            builder.append("AND ins.nspname = '").append(schema).append("'\n");
-        }
-        if(BasicUtil.isNotEmpty(tab)) {
-            builder.append("AND c.relname = '").append(tab).append("'\n");
-        }
+        ConfigStore configs = run.getConfigs();
+        configs.and("ins.nspname", query.getSchemaName());
+        configs.and("c.relname", query.getTable());
         if(BasicUtil.isNotEmpty(name)) {
-            builder.append("AND i.indexrelid = '").append(name).append("'::regclass\n");
+            configs.and("AND i.indexrelid = '"+name+"'::regclass");
         }
         return runs;
     }
@@ -3058,17 +3021,14 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         Run run = buildQueryIndexBody(runtime);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
-        Table table = null;
+        ConfigStore configs = run.getConfigs();
         if(null != tables && !tables.isEmpty()){
-            table = tables.iterator().next();
+            Table table = tables.iterator().next();
+            configs.and("ins.nspname", table.getSchemaName());
         }
-        String schema = table.getSchemaName();
-        String tab = table.getName();
-        if(!empty(schema)) {
-            builder.append("AND ins.nspname = '").append(schema).append("'\n");
-        }
+
         List<String> names = Table.names(tables);
-        in(runtime, builder, "c.relname", names);
+        configs.in("c.relname", names);
         return runs;
     }
     protected Run buildQueryIndexBody(DataRuntime runtime){
@@ -3091,7 +3051,6 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         builder.append("LEFT JOIN pg_am AS am ON ci.relam = am.oid\n");
         builder.append("LEFT JOIN pg_attribute AS a ON a.attrelid = c.oid AND a.attnum = ANY(i.indkey)\n");
         builder.append("LEFT JOIN pg_namespace ins ON ins.oid = c.relnamespace\n");
-        builder.append("WHERE 1=1 \n");
         return run;
     }
 
@@ -3362,29 +3321,11 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         Run run = new SimpleRun(runtime);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
-        builder.append("SELECT * FROM INFORMATION_SCHEMA.TRIGGERS WHERE 1=1");
-        if(null != table) {
-            checkName(runtime, null, table);
-            Schema schema = table.getSchema();
-            String name = table.getName();
-            if(BasicUtil.isNotEmpty(schema)) {
-                builder.append(" AND TRIGGER_SCHEMA = '").append(schema).append("'");
-            }
-            if(BasicUtil.isNotEmpty(name)) {
-                builder.append(" AND EVENT_OBJECT_TABLE = '").append(name).append("'");
-            }
-        }
-        if(null != events && !events.isEmpty()) {
-            builder.append(" AND(");
-            boolean first = true;
-            for(Trigger.EVENT event:events) {
-                if(!first) {
-                    builder.append(" OR ");
-                }
-                builder.append("EVENT_MANIPULATION ='").append(event);
-            }
-            builder.append(")");
-        }
+        ConfigStore configs = run.getConfigs();
+        builder.append("SELECT * FROM INFORMATION_SCHEMA.TRIGGERS");
+        configs.and("TRIGGER_SCHEMA", query.getSchemaName());
+        configs.and("EVENT_OBJECT_TABLE", query.getTableName());
+        configs.in("EVENT_MANIPULATION", events);
         return runs;
     }
     /**
@@ -3841,31 +3782,15 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public List<Run> buildQuerySequencesRun(DataRuntime runtime, boolean greedy, Sequence query) {
-        Catalog catalog = query.getCatalog();
-        Schema schema = query.getSchema();
-        String name = query.getName();
         List<Run> runs = new ArrayList<>();
         Run run = new SimpleRun(runtime);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
-        String catalogName = null;
-        String schemaName = null;
-        if(null != catalog) {
-            catalogName = catalog.getName();
-        }
-        if(null != schema) {
-            schemaName = schema.getName();
-        }
-        builder.append("SELECT * FROM INFORMATION_SCHEMA.SEQUENCES WHERE 1=1\n");
-        if(BasicUtil.isNotEmpty(catalogName)) {
-            builder.append(" AND SEQUENCE_CATALOG = '").append(catalogName).append("'");
-        }
-        if(BasicUtil.isNotEmpty(schemaName)) {
-            builder.append(" AND SEQUENCE_SCHEMA = '").append(schemaName).append("'");
-        }
-        if(BasicUtil.isNotEmpty(name)) {
-            builder.append(" AND SEQUENCE_NAME = '").append(name).append("'");
-        }
+        ConfigStore configs = run.getConfigs();
+        builder.append("SELECT * FROM INFORMATION_SCHEMA.SEQUENCES");
+        configs.and("SEQUENCE_CATALOG", query.getCatalogName());
+        configs.and("SEQUENCE_SCHEMA", query.getSchemaName());
+        configs.like("SEQUENCE_NAME", query.getName());
         return runs;
     }
 
