@@ -135,25 +135,15 @@ public class ConvertProxy {
                     }
                 }else if(value.getClass().isArray()) {
                     //数组[基础类型] > String
-                    Class component = ClassUtil.getComponentClass(value);
-                    Object[] list = null;
-                    if(component == String.class) {
-                       list = (String[]) value;
-                    }else if(component == int.class) {
-                        list = BeanUtil.int2Integer((int[])value);
-                    }else if(component == double.class) {
-                        list = BeanUtil.double2Double((double[])value);
-                    }else if(component == long.class) {
-                        list = BeanUtil.long2Long((long[])value);
-                    }else if(component == float.class) {
-                        list = BeanUtil.float2Float((float[])value);
+                    int len = Array.getLength(value);
+                    List<Object> list = new ArrayList<>();
+                    for (int i = 0; i < len; i++) {
+                        list.add(Array.get(array, i));
                     }
-                    if(null != list) {
-                        if ("concat".equalsIgnoreCase(ConfigTable.LIST2STRING_FORMAT)) {
-                            return BeanUtil.concat(list);
-                        } else if ("json".equalsIgnoreCase(ConfigTable.LIST2STRING_FORMAT)) {
-                            return BeanUtil.object2json(list);
-                        }
+                    if ("concat".equalsIgnoreCase(ConfigTable.LIST2STRING_FORMAT)) {
+                        return BeanUtil.concat(list);
+                    } else if ("json".equalsIgnoreCase(ConfigTable.LIST2STRING_FORMAT)) {
+                        return BeanUtil.object2json(list);
                     }
                 }else if(value instanceof Map) {
                     Map map = (Map)value;

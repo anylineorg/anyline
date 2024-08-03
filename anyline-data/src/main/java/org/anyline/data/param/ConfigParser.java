@@ -34,6 +34,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.util.*;
 
@@ -402,10 +403,10 @@ public class ConfigParser {
 										list.add(item);
 									}
 								}
-								if(v instanceof Object[]) {
-									Object[] tmps = (Object[]) v;
-									for(Object tmp:tmps) {
-										list.add(tmp);
+								if(v.getClass().isArray()) {
+									int len = Array.getLength(v);
+									for(int i=0; i<len; i++) {
+										list.add(Array.get(v, i));
 									}
 								}else{
 									list.add(v);

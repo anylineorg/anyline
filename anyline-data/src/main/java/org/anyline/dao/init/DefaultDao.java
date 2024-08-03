@@ -51,6 +51,7 @@ import org.anyline.util.ConfigTable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.util.*;
 
@@ -303,9 +304,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 							joinpk = joinpc.getName();
 						}
 						if(fv.getClass().isArray()) {
-							Object[] objs = (Object[])fv;
-							for(Object item:objs) {
-								fvs.add(EntityAdapterProxy.primaryValue(item).get(joinpk.toUpperCase()));
+							int len = Array.getLength(fv);
+							for(int i=0; i<len; i++) {
+								fvs.add(EntityAdapterProxy.primaryValue(Array.get(fv, i)).get(joinpk.toUpperCase()));
 							}
 						}else if(fv instanceof Collection) {
 							Collection objs = (Collection) fv;
@@ -398,8 +399,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					}
 					Collection items = new ArrayList();
 					if(fv.getClass().isArray()) {
-						Object[] objs = (Object[])fv;
-						for(Object item:objs) {
+						int len = Array.getLength(fv);
+						for(int i=0; i<len; i++) {
+							Object item = Array.get(fv, i);
 							BeanUtil.setFieldValue(item, join.joinField, pv);
 							items.add(item);
 						}

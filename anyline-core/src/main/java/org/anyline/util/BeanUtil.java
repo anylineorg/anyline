@@ -221,9 +221,9 @@ public class BeanUtil {
 
 		//TODO 注意int double float long等基础无包装类型
 		if(v.getClass().isArray()) {
-			Object[] list = (Object[])v;
-			for(Object item:list) {
-				result.add(ConvertProxy.convert(item, component, false));
+			int len = Array.getLength(v);
+			for(int i=0; i<len; i++) {
+				result.add(ConvertProxy.convert(Array.get(v, i), component, false));
 			}
 		}else if(v instanceof Collection) {
 			Collection list = (Collection) v;
@@ -3246,6 +3246,20 @@ public class BeanUtil {
 						}
 					}
 				}
+			}
+		}
+		return list;
+	}
+	public static List<Object> object2list(Object array){
+		List<Object> list = new ArrayList<>();
+		if(null != array){
+			if(array.getClass().isArray()){
+				int len = Array.getLength(array);
+				for (int i = 0; i < len; i++) {
+					list.add(Array.get(array, i));
+				}
+			}else{
+				list.add(array);
 			}
 		}
 		return list;

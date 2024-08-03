@@ -398,9 +398,10 @@ public class ClassUtil {
 				}
 				try {
 					Object value = method.invoke(an);
-					if (value instanceof Object[]) {
-						Object values[] = (Object[]) value;
-						for (Object v : values) {
+					if (null != value && value.getClass().isArray()) {
+						int len = Array.getLength(value);
+						for (int i=0; i<len; i++) {
+							Object v = Array.get(value, i);
 							list.add(v);
 							if(qty >0 && list.size()>=qty) {
 								return list;

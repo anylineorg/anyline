@@ -35,10 +35,10 @@ import org.anyline.entity.*;
 import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;
 import org.anyline.metadata.*;
 import org.anyline.util.BasicUtil;
-import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.encrypt.DESUtil;
 
+import java.lang.reflect.Array;
 import java.util.*;
 
 public class DefaultConfigStore implements ConfigStore {
@@ -1194,15 +1194,22 @@ public class DefaultConfigStore implements ConfigStore {
 	}
 
 	private Object value(Object value) {
-		if(value instanceof Object[]) {
-			value = BeanUtil.array2list((Object[])value);
-		}
-		if(value instanceof List) {
-			List list = (List)value;
-			if(list.isEmpty()) {
-				value = null;
-			}else if(list.size() ==1) {
-				value = list.get(0);
+		if(null != value) {
+			if (value.getClass().isArray()) {
+				int len = Array.getLength(value);
+				List<Object> list = new ArrayList<>();
+				for(int i=0; i<len; i++){
+					list.add(Array.get(value, i));
+				}
+				value = list;
+			}
+			if (value instanceof Collection) {
+				Collection list = (Collection) value;
+				if (list.isEmpty()) {
+					value = null;
+				} else if (list.size() == 1) {
+					value = list.iterator().next();
+				}
 			}
 		}
 		return value;

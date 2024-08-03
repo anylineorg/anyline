@@ -33,6 +33,7 @@ import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.regular.RegularUtil;
 
+import java.lang.reflect.Array;
 import java.util.*;
 
 public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
@@ -707,10 +708,10 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
                 for(Object col:cols) {
                     values.add(col);
                 }
-            }else if(value instanceof Object[]) {
-                Object[] array = (Object[]) value;
-                for(Object obj:array) {
-                    values.add(obj);
+            }else if(value.getClass().isArray()) {
+                int len = Array.getLength(value);
+                for(int i=0; i<len; i++){
+                    values.add(Array.get(value, i));
                 }
             }else{
                 values.add(value);

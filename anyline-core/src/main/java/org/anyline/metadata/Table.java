@@ -28,6 +28,7 @@ import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 
 import java.io.Serializable;
+import java.lang.reflect.Array;
 import java.util.*;
 
 public class Table<E extends Table> extends Metadata<E> implements Serializable {
@@ -1542,10 +1543,10 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
                     for(Object con:cons) {
                         addValues(con);
                     }
-                }else if(item instanceof Object[]) {
-                    Object[] objs = (Object[]) item;
-                    for(Object obj:objs) {
-                        addValues(obj);
+                }else if(null != item && item.getClass().isArray()) {
+                    int len = Array.getLength(item);
+                    for(int i=0; i<len; i++){
+                        addValues(Array.get(item, i));
                     }
                 }else {
                     values.add(item);

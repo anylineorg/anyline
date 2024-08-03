@@ -31,6 +31,7 @@ import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 
+import java.lang.reflect.Array;
 import java.util.*;
 
 /**
@@ -1599,9 +1600,9 @@ public interface ConfigStore extends Cloneable{
 				if(col.size()>1) {
 					compare = Compare.IN;
 				}
-			}else if(value instanceof Object[]) {
-				Object[] array = (Object[])value;
-				if(array.length > 1) {
+			}else if(value.getClass().isArray()) {
+				int len = Array.getLength(value);
+				if(len > 1) {
 					compare = Compare.IN;
 				}
 			}

@@ -35,6 +35,7 @@ import org.anyline.util.BeanUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.Array;
 import java.util.*;
 
 public class DefaultConfig implements Config {
@@ -180,10 +181,10 @@ public class DefaultConfig implements Config {
 				for(Object item:list) {
 					addValue(item);
 				}
-			}else if(value instanceof Object[]) {
-				Object[] tmps = (Object[]) value;
-				for(Object tmp:tmps) {
-					addValue(tmp);
+			}else if(value.getClass().isArray()) {
+				int len = Array.getLength(value);
+				for(int i=0; i<len; i++) {
+					addValue(Array.get(value, i));
 				}
 			}else{
 				values.add(value);
