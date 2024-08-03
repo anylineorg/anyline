@@ -134,7 +134,7 @@ public class DefaultJDBCActuator implements DriverActuator {
     public <T extends Metadata> void checkSchema(DriverAdapter adapter, DataRuntime runtime, T meta) {
         if(null != meta) {
             String catalog = meta.getCatalogName();
-            if(null== catalog) {
+            if(null == catalog) {
                 catalog = runtime.getCatalog();
             }
             String schema = meta.getSchemaName();

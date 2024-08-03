@@ -4704,40 +4704,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
      */
     @Override
     public <T extends Function> List<T> functions(DataRuntime runtime, String random, boolean greedy, Function query) {
-        Catalog catalog = query.getCatalog();
-        Schema schema = query.getSchema();
-        String pattern = query.getName();
-        List<T> functions = new ArrayList<>();
-        if(null == random) {
-            random = random(runtime);
-        }
-
-        if(null == catalog || null == schema || BasicUtil.isEmpty(catalog.getName()) || BasicUtil.isEmpty(schema.getName()) ) {
-            Table tmp = new Table();
-    		checkSchema(runtime, tmp);
-			if(null == catalog || BasicUtil.isEmpty(catalog.getName())) {
-				catalog = tmp.getCatalog();
-			}
-			if(null == schema || BasicUtil.isEmpty(schema.getName())) {
-				schema = tmp.getSchema();
-			}
-		}
-		List<Run> runs = buildQueryFunctionsRun(runtime, catalog, schema, pattern);
-		if(null != runs) {
-			int idx = 0;
-			for(Run run:runs) {
-				DataSet set = select(runtime, random, true, (String)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
-				try {
-					functions = functions(runtime, idx, true, functions, catalog, schema, set);
-				}catch (Exception e) {
-					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
-						e.printStackTrace();
-					}
-				}
-				idx ++;
-			}
-		}
-		return functions;
+        return super.functions(runtime, random, greedy, query);
 	}
 
 	/**
@@ -4751,39 +4718,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 */
 	@Override
 	public <T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, String random, Function query) {
-		Catalog catalog = query.getCatalog();
-		Schema schema = query.getSchema();
-		String pattern = query.getName();
-		LinkedHashMap<String,T> functions = new LinkedHashMap<>();
-		if(null == random) {
-			random = random(runtime);
-		}
-		if(null == catalog || null == schema || BasicUtil.isEmpty(catalog.getName()) || BasicUtil.isEmpty(schema.getName()) ) {
-			Table tmp = new Table();
-			checkSchema(runtime, tmp);
-			if(null == catalog || BasicUtil.isEmpty(catalog.getName())) {
-				catalog = tmp.getCatalog();
-			}
-			if(null == schema || BasicUtil.isEmpty(schema.getName())) {
-				schema = tmp.getSchema();
-			}
-		}
-		List<Run> runs = buildQueryFunctionsRun(runtime, catalog, schema, pattern);
-		if(null != runs) {
-			int idx = 0;
-			for(Run run:runs) {
-				DataSet set = select(runtime, random, true, (String)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
-				try {
-					functions = functions(runtime, idx, true, functions, catalog, schema, set);
-				}catch (Exception e) {
-					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
-						e.printStackTrace();
-					}
-				}
-				idx ++;
-			}
-		}
-		return functions;
+        return super.functions(runtime, random, query);
 	}
 
 	/**
@@ -4794,8 +4729,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return runs
 	 */
 	@Override
-	public List<Run> buildQueryFunctionsRun(DataRuntime runtime, Function query) {
-		return super.buildQueryFunctionsRun(runtime, query);
+	public List<Run> buildQueryFunctionsRun(DataRuntime runtime, boolean greedy, Function query) {
+		return super.buildQueryFunctionsRun(runtime, greedy, query);
 	}
 
     /**
@@ -4949,8 +4884,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return runs
 	 */
 	@Override
-	public List<Run> buildQuerySequencesRun(DataRuntime runtime, Sequence query) {
-		return super.buildQuerySequencesRun(runtime, query);
+	public List<Run> buildQuerySequencesRun(DataRuntime runtime, boolean greedy, Sequence query) {
+		return super.buildQuerySequencesRun(runtime, greedy, query);
 	}
 
 	/**

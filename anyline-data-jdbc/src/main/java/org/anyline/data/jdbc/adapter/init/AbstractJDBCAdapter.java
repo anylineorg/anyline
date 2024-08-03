@@ -4307,34 +4307,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
      */
     @Override
     public <T extends Constraint> List<T> constraints(DataRuntime runtime, String random, boolean greedy, Constraint query) {
-        Table table = query.getTable();
-        String pattern = query.getName();
-        List<T> constraints = null;
-    	if(null == table) {
-			table = new Table();
-		}
-		if(null == random) {
-			random = random(runtime);
-		}
-		if(!greedy) {
-			checkSchema(runtime, table);
-		}
-		List<Run> runs = buildQueryConstraintsRun(runtime, greedy, query);
-		if(null != runs) {
-			int idx = 0;
-			for(Run run:runs) {
-				DataSet set = select(runtime, random, true, (String)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
-				try {
-					constraints = constraints(runtime, idx, true, table, constraints, set);
-				}catch (Exception e) {
-					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
-						log.error("constraints exception:", e);
-					}
-				}
-				idx ++;
-			}
-		}
-		return constraints;
+        return super.constraints(runtime, random, greedy, query);
 	}
 
 	/**
@@ -4348,32 +4321,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 */
 	@Override
 	public <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, String random, Constraint query) {
-		Table table = query.getTable();
-		String pattern = query.getName();
-		LinkedHashMap<String, T> constraints = null;
-		if(null == table) {
-			table = new Table();
-		}
-		if(null == random) {
-			random = random(runtime);
-		}
-		checkSchema(runtime, table);
-		List<Run> runs = buildQueryConstraintsRun(runtime, false, query);
-		if(null != runs) {
-			int idx = 0;
-			for(Run run:runs) {
-				DataSet set = select(runtime, random, true, (String)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
-				try {
-					constraints = constraints(runtime, idx, true, constraints, query, set);
-				}catch (Exception e) {
-					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
-						e.printStackTrace();
-					}
-				}
-				idx ++;
-			}
-		}
-		return constraints;
+		return super.constraints(runtime, random, query);
 	}
 
 
@@ -4414,6 +4362,20 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		return runs;
 	}
 
+    /**
+     * constraint[结果集封装]<br/>
+     * Constraint 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer initConstraintFieldRefer() {
+        MetadataFieldRefer refer = new MetadataFieldRefer(Constraint.class);
+        refer.setRefer("name", "CONSTRAINT_NAME");
+        refer.setRefer("schema", "CONSTRAINT_CATALOG");
+        refer.setRefer("table", "TABLE_NAME");
+        refer.setRefer("type", "CONSTRAINT_TYPE");
+        return refer;
+    }
 	/**
 	 * constraint[结果集封装]<br/>
 	 * 根据查询结果集构造Constraint
@@ -4445,34 +4407,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 */
 	@Override
 	public <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Constraint query, DataSet set) throws Exception {
-		Table table = query.getTable();
-		if(null == previous) {
-			previous = new LinkedHashMap<>();
-		}
-		for(DataRow row:set) {
-			String name = row.getString("CONSTRAINT_NAME");
-			if(null == name) {
-				continue;
-			}
-			T constraint = previous.get(name.toUpperCase());
-			if(null == constraint && create) {
-				constraint = (T)new Constraint();
-				previous.put(name.toUpperCase(), constraint);
-			};
-
-			String catalog = row.getString("CONSTRAINT_CATALOG");
-			String schema = row.getString("CONSTRAINT_SCHEMA");
-			constraint.setCatalog(catalog);
-			constraint.setSchema(schema);
-			if(null == table) {
-				table = new Table(catalog, schema, row.getString("TABLE_NAME"));
-			}
-			constraint.setTable(table);
-			constraint.setName(name);
-			constraint.setType(row.getString("CONSTRAINT_TYPE"));
-
-		}
-		return previous;
+		return super.constraints(runtime, index, create, previous, query, set);
 	}
 
 	/* *****************************************************************************************************************
@@ -4559,40 +4494,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 */
 	@Override
 	public <T extends Procedure> List<T> procedures(DataRuntime runtime, String random, boolean greedy, Procedure query) {
-		Catalog catalog = query.getCatalog();
-		Schema schema = query.getSchema();
-		String pattern = query.getName();
-		List<T> procedures = new ArrayList<>();
-		if(null == random) {
-			random = random(runtime);
-		}
-
-		if(null == catalog || null == schema || BasicUtil.isEmpty(catalog.getName()) || BasicUtil.isEmpty(schema.getName()) ) {
-			Table tmp = new Table();
-			checkSchema(runtime, tmp);
-			if(null == catalog || BasicUtil.isEmpty(catalog.getName())) {
-				catalog = tmp.getCatalog();
-			}
-			if(null == schema || BasicUtil.isEmpty(schema.getName())) {
-				schema = tmp.getSchema();
-			}
-		}
-		List<Run> runs = buildQueryProceduresRun(runtime, greedy, query);
-		if(null != runs) {
-			int idx = 0;
-			for(Run run:runs) {
-				DataSet set = select(runtime, random, true, (String)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
-				try {
-					procedures = procedures(runtime, idx, true, procedures, query, set);
-				}catch (Exception e) {
-					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
-						e.printStackTrace();
-					}
-				}
-				idx ++;
-			}
-		}
-		return procedures;
+        return super.procedures(runtime, random, greedy, query);
 	}
 
 	/**
@@ -4606,40 +4508,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 */
 	@Override
 	public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, String random, Procedure query) {
-		Catalog catalog = query.getCatalog();
-		Schema schema = query.getSchema();
-		String pattern = query.getName();
-		LinkedHashMap<String,T> procedures = new LinkedHashMap<>();
-		if(null == random) {
-			random = random(runtime);
-		}
-
-		if(null == catalog || null == schema || BasicUtil.isEmpty(catalog.getName()) || BasicUtil.isEmpty(schema.getName()) ) {
-			Table tmp = new Table();
-			checkSchema(runtime, tmp);
-			if(null == catalog || BasicUtil.isEmpty(catalog.getName())) {
-				catalog = tmp.getCatalog();
-			}
-			if(null == schema || BasicUtil.isEmpty(schema.getName())) {
-				schema = tmp.getSchema();
-			}
-		}
-		List<Run> runs = buildQueryProceduresRun(runtime, false, query);
-		if(null != runs) {
-			int idx = 0;
-			for(Run run:runs) {
-				DataSet set = select(runtime, random, true, (String)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
-				try {
-					procedures = procedures(runtime, idx, true, procedures, query, set);
-				}catch (Exception e) {
-					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
-						e.printStackTrace();
-					}
-				}
-				idx ++;
-			}
-		}
-		return procedures;
+        return super.procedures(runtime, random, query);
 	}
 
 	/**
@@ -4769,40 +4638,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 */
 	@Override
 	public <T extends Function> List<T> functions(DataRuntime runtime, String random, boolean greedy, Function query) {
-		Catalog catalog = query.getCatalog();
-		Schema schema = query.getSchema();
-		String pattern = query.getName();
-		List<T> functions = new ArrayList<>();
-		if(null == random) {
-			random = random(runtime);
-		}
-
-		if(null == catalog || null == schema || BasicUtil.isEmpty(catalog.getName()) || BasicUtil.isEmpty(schema.getName()) ) {
-			Table tmp = new Table();
-			checkSchema(runtime, tmp);
-			if(null == catalog || BasicUtil.isEmpty(catalog.getName())) {
-				catalog = tmp.getCatalog();
-			}
-			if(null == schema || BasicUtil.isEmpty(schema.getName())) {
-				schema = tmp.getSchema();
-			}
-		}
-		List<Run> runs = buildQueryFunctionsRun(runtime, catalog, schema, pattern);
-		if(null != runs) {
-			int idx = 0;
-			for(Run run:runs) {
-				DataSet set = select(runtime, random, true, (String)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
-				try {
-					functions = functions(runtime, idx, true, functions, catalog, schema, set);
-				}catch (Exception e) {
-					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
-						e.printStackTrace();
-					}
-				}
-				idx ++;
-			}
-		}
-		return functions;
+		return super.functions(runtime, random, greedy, query);
 	}
 
 	/**
@@ -4816,39 +4652,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 */
 	@Override
 	public <T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, String random, Function query) {
-		Catalog catalog = query.getCatalog();
-		Schema schema = query.getSchema();
-		String pattern = query.getName();
-		LinkedHashMap<String,T> functions = new LinkedHashMap<>();
-		if(null == random) {
-			random = random(runtime);
-		}
-		if(null == catalog || null == schema || BasicUtil.isEmpty(catalog.getName()) || BasicUtil.isEmpty(schema.getName()) ) {
-			Table tmp = new Table();
-			checkSchema(runtime, tmp);
-			if(null == catalog || BasicUtil.isEmpty(catalog.getName())) {
-				catalog = tmp.getCatalog();
-			}
-			if(null == schema || BasicUtil.isEmpty(schema.getName())) {
-				schema = tmp.getSchema();
-			}
-		}
-		List<Run> runs = buildQueryFunctionsRun(runtime, catalog, schema, pattern);
-		if(null != runs) {
-			int idx = 0;
-			for(Run run:runs) {
-				DataSet set = select(runtime, random, true, (String)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
-				try {
-					functions = functions(runtime, idx, true, functions, catalog, schema, set);
-				}catch (Exception e) {
-					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
-						e.printStackTrace();
-					}
-				}
-				idx ++;
-			}
-		}
-		return functions;
+        return super.functions(runtime, random, query);
 	}
 
 	/**
@@ -4859,8 +4663,8 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @return runs
 	 */
 	@Override
-	public List<Run> buildQueryFunctionsRun(DataRuntime runtime, Function query) {
-		return super.buildQueryFunctionsRun(runtime, query);
+	public List<Run> buildQueryFunctionsRun(DataRuntime runtime, boolean greedy, Function query) {
+		return super.buildQueryFunctionsRun(runtime, greedy, query);
 	}
 
     /**
@@ -4885,18 +4689,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 */
 	@Override
 	public <T extends Function> List<T> functions(DataRuntime runtime, int index, boolean create, List<T> previous, Function query, DataSet set) throws Exception {
-		if(null == previous) {
-			previous = new ArrayList<>();
-		}
-		for(DataRow row:set) {
-			T meta = null;
-			meta = init(runtime, index, meta, query, row);
-			if(null == search(previous, meta.getCatalog(), meta.getSchema(), meta.getName())) {
-				previous.add(meta);
-			}
-			detail(runtime, index, meta, query, row);
-		}
-		return previous;
+        return super.functions(runtime, index, create, previous, query, set);
 	}
 //public <T extends Table> List<T> tables(DataRuntime runtime, int index, boolean create, List<T> tables, Catalog catalog, Schema schema, DataSet set) throws Exception {
 	/**
@@ -4912,16 +4705,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 */
 	@Override
 	public <T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Function query, DataSet set) throws Exception {
-		if(null == previous) {
-			previous = new LinkedHashMap<>();
-		}
-		for(DataRow row:set) {
-			T meta = null;
-			meta = init(runtime, index, meta, query, row);
-			meta = detail(runtime, index, meta, query, row);
-			previous.put(meta.getName().toUpperCase(), meta);
-		}
-		return previous;
+		return super.functions(runtime, index, create, previous, query, set);
 	}
 
 	/**
@@ -5034,8 +4818,8 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @return runs
 	 */
 	@Override
-	public List<Run> buildQuerySequencesRun(DataRuntime runtime, Sequence query) {
-		return super.buildQuerySequencesRun(runtime, query);
+	public List<Run> buildQuerySequencesRun(DataRuntime runtime, boolean greedy, Sequence query) {
+		return super.buildQuerySequencesRun(runtime, greedy, query);
 	}
 
 	/**

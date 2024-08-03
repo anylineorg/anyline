@@ -5925,7 +5925,7 @@ public interface DriverAdapter {
 	 * @param query 查询条件 根据metadata属性
 	 * @return runs
 	 */
-	List<Run> buildQueryFunctionsRun(DataRuntime runtime, Function query) ;
+	List<Run> buildQueryFunctionsRun(DataRuntime runtime, boolean greedy, Function query) ;
 	/**
 	 * function[命令合成]<br/>
 	 * 查询表上的 Function
@@ -5935,9 +5935,9 @@ public interface DriverAdapter {
 	 * @param pattern 名称统配符或正则
 	 * @return runs
 	 */
-	default List<Run> buildQueryFunctionsRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) {
+	default List<Run> buildQueryFunctionsRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern) {
 		Function query = new Function(catalog, schema, pattern);
-		return buildQueryFunctionsRun(runtime, query);
+		return buildQueryFunctionsRun(runtime, greedy, query);
 	}
 
     /**
@@ -6156,7 +6156,7 @@ public interface DriverAdapter {
 	 * @param query 查询条件 根据metadata属性
 	 * @return runs
 	 */
-	List<Run> buildQuerySequencesRun(DataRuntime runtime, Sequence query) ;
+	List<Run> buildQuerySequencesRun(DataRuntime runtime, boolean greedy, Sequence query) ;
 	/**
 	 * sequence[命令合成]<br/>
 	 * 查询表上的 Sequence
@@ -6166,8 +6166,8 @@ public interface DriverAdapter {
 	 * @param pattern 名称统配符或正则
 	 * @return runs
 	 */
-	default List<Run> buildQuerySequencesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) {
-		return buildQuerySequencesRun(runtime, new Sequence(catalog, schema, pattern));
+	default List<Run> buildQuerySequencesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern) {
+		return buildQuerySequencesRun(runtime, greedy, new Sequence(catalog, schema, pattern));
 	}
 
     /**

@@ -3713,8 +3713,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return runs
      */
     @Override
-    public List<Run> buildQueryFunctionsRun(DataRuntime runtime, Function query) {
-        return super.buildQueryFunctionsRun(runtime, query);
+    public List<Run> buildQueryFunctionsRun(DataRuntime runtime, boolean greedy, Function query) {
+        return super.buildQueryFunctionsRun(runtime, greedy, query);
     }
 
     /**
@@ -3864,7 +3864,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return runs
      */
     @Override
-    public List<Run> buildQuerySequencesRun(DataRuntime runtime, Sequence query) {
+    public List<Run> buildQuerySequencesRun(DataRuntime runtime, boolean greedy, Sequence query) {
         Schema schema = query.getSchema();
         String name = query.getName();
         List<Run> runs = new ArrayList<>();

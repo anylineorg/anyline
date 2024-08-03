@@ -3632,7 +3632,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return runs
      */
     @Override
-    public List<Run> buildQueryFunctionsRun(DataRuntime runtime, Function query) {
+    public List<Run> buildQueryFunctionsRun(DataRuntime runtime, boolean greedy, Function query) {
         Schema schema = query.getSchema();
         String name = query.getName();
         List<Run> runs = new ArrayList<>();
@@ -3840,7 +3840,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return runs
      */
     @Override
-    public List<Run> buildQuerySequencesRun(DataRuntime runtime, Sequence query) {
+    public List<Run> buildQuerySequencesRun(DataRuntime runtime, boolean greedy, Sequence query) {
         Catalog catalog = query.getCatalog();
         Schema schema = query.getSchema();
         String name = query.getName();

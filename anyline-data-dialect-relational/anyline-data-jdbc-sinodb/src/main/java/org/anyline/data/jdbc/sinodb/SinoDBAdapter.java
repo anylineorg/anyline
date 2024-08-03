@@ -2982,8 +2982,8 @@ public class SinoDBAdapter extends InformixGenusAdapter implements JDBCAdapter {
      * @return runs
      */
     @Override
-    public List<Run> buildQueryFunctionsRun(DataRuntime runtime, Function query) {
-        return super.buildQueryFunctionsRun(runtime, query);
+    public List<Run> buildQueryFunctionsRun(DataRuntime runtime, boolean greedy, Function query) {
+        return super.buildQueryFunctionsRun(runtime, greedy, query);
     }
 
     /**
@@ -3133,8 +3133,8 @@ public class SinoDBAdapter extends InformixGenusAdapter implements JDBCAdapter {
      * @return runs
      */
     @Override
-    public List<Run> buildQuerySequencesRun(DataRuntime runtime, Sequence query) {
-		return super.buildQuerySequencesRun(runtime, query);
+    public List<Run> buildQuerySequencesRun(DataRuntime runtime, boolean greedy, Sequence query) {
+		return super.buildQuerySequencesRun(runtime, greedy, query);
 	}
 
     /**

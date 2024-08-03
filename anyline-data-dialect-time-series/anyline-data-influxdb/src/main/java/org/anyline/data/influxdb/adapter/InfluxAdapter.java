@@ -4257,7 +4257,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @return runs
      */
     @Override
-    public List<Run> buildQueryFunctionsRun(DataRuntime runtime, Function query) {
+    public List<Run> buildQueryFunctionsRun(DataRuntime runtime, boolean greedy, Function query) {
         return new ArrayList<>();
     }
 
@@ -4412,8 +4412,8 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @return runs
      */
     @Override
-    public List<Run> buildQuerySequencesRun(DataRuntime runtime, Sequence query) {
-        return super.buildQuerySequencesRun(runtime, query);
+    public List<Run> buildQuerySequencesRun(DataRuntime runtime, boolean greedy, Sequence query) {
+        return super.buildQuerySequencesRun(runtime, greedy, query);
     }
 
     /**

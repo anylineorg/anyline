@@ -4030,6 +4030,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			long fr = System.currentTimeMillis();
 			// 根据系统表查询
 			try{
+                if(!greedy){
+                    checkSchema(runtime, query);
+                }
 				List<Run> runs = buildQueryDatabasesRun(runtime, greedy, name);
 				if(null != runs) {
 					int idx = 0;
@@ -4444,7 +4447,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public <T extends Catalog> LinkedHashMap<String, T> catalogs(DataRuntime runtime, String random, Catalog query) {
-		String name = query.getName();
 		if(null == random) {
 			random = random(runtime);
 		}
@@ -4453,7 +4455,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			long fr = System.currentTimeMillis();
 			// 根据系统表查询
 			try{
-				List<Run> runs = buildQueryCatalogsRun(runtime, false, name);
+				List<Run> runs = buildQueryCatalogsRun(runtime, false, query);
 				if(null != runs) {
 					int idx = 0;
 					for(Run run:runs) {
@@ -4490,7 +4492,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public <T extends Catalog> List<T> catalogs(DataRuntime runtime, String random, boolean greedy, Catalog query) {
-		String name = query.getName();
 		if(null == random) {
 			random = random(runtime);
 		}
@@ -4499,7 +4500,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			long fr = System.currentTimeMillis();
 			// 根据系统表查询
 			try{
-				List<Run> runs = buildQueryCatalogsRun(runtime, greedy, name);
+                if(!greedy){
+                    checkSchema(runtime, query);
+                }
+				List<Run> runs = buildQueryCatalogsRun(runtime, greedy, query);
 				if(null != runs) {
 					int idx = 0;
 					for(Run run:runs) {
@@ -4808,8 +4812,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public <T extends Schema> LinkedHashMap<String, T> schemas(DataRuntime runtime, String random, Schema query) {
-		Catalog catalog = query.getCatalog();
-		String name = query.getName();
 		if(null == random) {
 			random = random(runtime);
 		}
@@ -4818,7 +4820,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			long fr = System.currentTimeMillis();
 			// 根据系统表查询
 			try{
-				List<Run> runs = buildQuerySchemasRun(runtime, false, catalog, name);
+				List<Run> runs = buildQuerySchemasRun(runtime, false, query);
 				if(null != runs) {
 					int idx = 0;
 					for(Run run:runs) {
@@ -4855,8 +4857,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public <T extends Schema> List<T> schemas(DataRuntime runtime, String random, boolean greedy, Schema query) {
-		Catalog catalog = query.getCatalog();
-		String name = query.getName();
 		if(null == random) {
 			random = random(runtime);
 		}
@@ -4865,7 +4865,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			long fr = System.currentTimeMillis();
 			// 根据系统表查询
 			try{
-				List<Run> runs = buildQuerySchemasRun(runtime, greedy, catalog, name);
+                if(!greedy){
+                    checkSchema(runtime, query);
+                }
+				List<Run> runs = buildQuerySchemasRun(runtime, greedy, query);
 				if(null != runs) {
 					int idx = 0;
 					for(Run run:runs) {
@@ -8160,6 +8163,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			long fr = System.currentTimeMillis();
 			// 根据系统表查询
 			try{
+                if(!greedy){
+                    checkSchema(runtime, query);
+                }
 				List<Run> runs = buildQueryPartitionTablesRun(runtime, greedy, query);
 				if(null != runs) {
 					int idx = 0;
@@ -9299,28 +9305,21 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public PrimaryKey primary(DataRuntime runtime, String random, boolean greedy, PrimaryKey query) {
-		Table table = query.getTable();
 		PrimaryKey primary = null;
-		if(!greedy) {
-			checkSchema(runtime, table);
-		}
-		String tab = table.getName();
-		Catalog catalog = table.getCatalog();
-		Schema schema = table.getSchema();
 		if(null == random) {
 			random = random(runtime);
 		}
 		try{
+            if(!greedy){
+                checkSchema(runtime, query);
+            }
 			List<Run> runs = buildQueryPrimaryRun(runtime, greedy, query);
 			if(null != runs) {
 				int idx = 0;
 				for(Run run:runs) {
 					DataSet set = select(runtime, random, false, (String)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
-					primary = init(runtime, idx, primary, table, set);
-					primary = detail(runtime, idx, primary, table, set);
-					if(null != primary) {
-						primary.setTable(table);
-					}
+					primary = init(runtime, idx, primary, query, set);
+					primary = detail(runtime, idx, primary, query, set);
 					idx ++;
 				}
 			}
@@ -9329,10 +9328,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				e.printStackTrace();
 			}
 			if (ConfigTable.IS_LOG_SQL && log.isWarnEnabled()) {
-				log.warn("{}[primary][{}][catalog:{}][schema:{}][table:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败",33), catalog, schema, table, e.toString());
+				log.warn("{}[primary][{}][table:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败",33), query.getTable(), e.toString());
 			}
 		}
-		table.setPrimaryKey(primary);
 		return primary;
 	}
 
@@ -9460,10 +9458,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		if(null == random) {
 			random = random(runtime);
 		}
-		if(!greedy) {
-			checkSchema(runtime, table);
-		}
 		try {
+            if(!greedy){
+                checkSchema(runtime, query);
+            }
 			List<Run> runs = buildQueryForeignsRun(runtime, greedy, query);
 			if(null != runs) {
 				int idx = 0;
@@ -9667,9 +9665,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		if(null == random) {
 			random = random(runtime);
 		}
-		if(!greedy) {
-			checkSchema(runtime, table);
-		}
+        if(!greedy){
+            checkSchema(runtime, query);
+        }
 		List<Run> runs = buildQueryIndexesRun(runtime, greedy, query);
 		if(null != runs) {
 			int idx = 0;
@@ -10187,6 +10185,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             long fr = System.currentTimeMillis();
             // 根据系统表查询
             try{
+                if(!greedy){
+                    checkSchema(runtime, query);
+                }
                 List<Run> runs = buildQueryConstraintsRun(runtime, greedy, query);
                 if(null != runs) {
                     int idx = 0;
@@ -10451,8 +10452,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public <T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, String random, boolean greedy, Trigger query) {
-        Catalog catalog = query.getCatalog();
-        String name = query.getName();
+
         if(null == random) {
             random = random(runtime);
         }
@@ -10461,6 +10461,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             long fr = System.currentTimeMillis();
             // 根据系统表查询
             try{
+                if(!greedy){
+                    checkSchema(runtime, query);
+                }
                 List<Run> runs = buildQueryTriggersRun(runtime, greedy, query);
                 if(null != runs) {
                     int idx = 0;
@@ -10620,6 +10623,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             long fr = System.currentTimeMillis();
             // 根据系统表查询
             try{
+                if(!greedy){
+                    checkSchema(runtime, query);
+                }
                 List<Run> runs = buildQueryProceduresRun(runtime, greedy, query);
                 if(null != runs) {
                     int idx = 0;
@@ -10929,7 +10935,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * <T extends Function> List<T> functions(DataRuntime runtime, String random, boolean greedy, Function query);
 	 * <T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, String random, Function query);
 	 * [命令合成]
-	 * List<Run> buildQueryFunctionsRun(DataRuntime runtime, Function query) ;
+	 * List<Run> buildQueryFunctionsRun(DataRuntime runtime, boolean greedy, Function query) ;
 	 * [结果集封装]<br/>
 	 * <T extends Function> List<T> functions(DataRuntime runtime, int index, boolean create, List<T> functions, Catalog catalog, Schema schema, DataSet set) throws Exception;
 	 * <T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> functions, Catalog catalog, Schema schema, DataSet set) throws Exception;
@@ -10962,7 +10968,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             long fr = System.currentTimeMillis();
             // 根据系统表查询
             try{
-                List<Run> runs = buildQueryFunctionsRun(runtime, query);
+                if(!greedy){
+                    checkSchema(runtime, query);
+                }
+                List<Run> runs = buildQueryFunctionsRun(runtime, greedy, query);
                 if(null != runs) {
                     int idx = 0;
                     for(Run run:runs) {
@@ -11001,10 +11010,40 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public <T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, String random, Function query) {
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> <T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, String random, Function query)", 37));
-		}
-		return new LinkedHashMap<>();
+        if(null == random) {
+            random = random(runtime);
+        }
+        LinkedHashMap<String, T> map = new LinkedHashMap<>();
+        try{
+            long fr = System.currentTimeMillis();
+            // 根据系统表查询
+            try{
+                List<Run> runs = buildQueryFunctionsRun(runtime, false, query);
+                if(null != runs) {
+                    int idx = 0;
+                    for(Run run:runs) {
+                        DataSet set = select(runtime, random, true, (Table)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+                        map = functions(runtime, idx++, true, map, query, set);
+                    }
+                }
+            }catch (Exception e) {
+                if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+                    e.printStackTrace();
+                }else if (ConfigTable.IS_LOG_SQL && log.isWarnEnabled()) {
+                    log.warn("{}[functions][{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), e.toString());
+                }
+            }
+            if (ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
+                log.info("{}[functions][result:{}][执行耗时:{}]", random, map.size(), DateUtil.format(System.currentTimeMillis() - fr));
+            }
+        }catch (Exception e) {
+            if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+                e.printStackTrace();
+            }else{
+                log.error("[functions][result:fail][msg:{}]", e.toString());
+            }
+        }
+        return map;
 	}
 
 	/**
@@ -11015,9 +11054,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return runs
 	 */
 	@Override
-	public List<Run> buildQueryFunctionsRun(DataRuntime runtime, Function query) {
+	public List<Run> buildQueryFunctionsRun(DataRuntime runtime, boolean greedy, Function query) {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryFunctionsRun(DataRuntime runtime, Function query)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryFunctionsRun(DataRuntime runtime, boolean greedy, Function query)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -11248,7 +11287,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * <T extends Sequence> List<T> sequences(DataRuntime runtime, String random, boolean greedy, Sequence query);
 	 * <T extends Sequence> LinkedHashMap<String, T> sequences(DataRuntime runtime, String random, Sequence query);
 	 * [命令合成]
-	 * List<Run> buildQuerySequencesRun(DataRuntime runtime, Sequence query) ;
+	 * List<Run> buildQuerySequencesRun(DataRuntime runtime, boolean greedy, Sequence query) ;
 	 * [结果集封装]<br/>
 	 * <T extends Sequence> List<T> sequences(DataRuntime runtime, int index, boolean create, List<T> sequences, DataSet set) throws Exception;
 	 * <T extends Sequence> LinkedHashMap<String, T> sequences(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> sequences, DataSet set) throws Exception;
@@ -11281,7 +11320,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			long fr = System.currentTimeMillis();
 			// 根据系统表查询
 			try{
-				List<Run> runs = buildQuerySequencesRun(runtime, query);
+                if(!greedy){
+                    checkSchema(runtime, query);
+                }
+				List<Run> runs = buildQuerySequencesRun(runtime, greedy, query);
 				if(null != runs) {
 					int idx = 0;
 					for(Run run:runs) {
@@ -11328,7 +11370,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			long fr = System.currentTimeMillis();
 			// 根据系统表查询
 			try{
-				List<Run> runs = buildQuerySequencesRun(runtime, query);
+				List<Run> runs = buildQuerySequencesRun(runtime, false, query);
 				if(null != runs) {
 					int idx = 0;
 					for(Run run:runs) {
@@ -11364,9 +11406,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return runs
 	 */
 	@Override
-	public List<Run> buildQuerySequencesRun(DataRuntime runtime, Sequence query) {
+	public List<Run> buildQuerySequencesRun(DataRuntime runtime, boolean greedy, Sequence query) {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQuerySequencesRun(DataRuntime runtime, Sequence query)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQuerySequencesRun(DataRuntime runtime, boolean greedy, Sequence query)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -16082,6 +16124,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             long fr = System.currentTimeMillis();
             // 根据系统表查询
             try{
+                if(!greedy){
+                    checkSchema(runtime, query);
+                }
                 List<Run> runs = buildQueryRolesRun(runtime, greedy, query);
                 if(null != runs) {
                     int idx = 0;
@@ -16317,6 +16362,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             long fr = System.currentTimeMillis();
             // 根据系统表查询
             try{
+                if(!greedy){
+                    checkSchema(runtime, query);
+                }
                 List<Run> runs = buildQueryUsersRun(runtime, greedy, query);
                 if(null != runs) {
                     int idx = 0;
@@ -16500,6 +16548,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			long fr = System.currentTimeMillis();
 			// 根据系统表查询
 			try{
+                if(!greedy){
+                    checkSchema(runtime, query);
+                }
 				List<Run> runs = buildQueryPrivilegesRun(runtime, greedy, query);
 				if(null != runs) {
 					int idx = 0;

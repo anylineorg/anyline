@@ -3166,7 +3166,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @return runs
 	 */
 	@Override
-	public List<Run> buildQueryFunctionsRun(DataRuntime runtime, Function query) {
+	public List<Run> buildQueryFunctionsRun(DataRuntime runtime, boolean greedy, Function query) {
 		//TOTO 待实现
 		return new ArrayList<>();
 	}
@@ -3323,7 +3323,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @return runs
 	 */
 	@Override
-	public List<Run> buildQuerySequencesRun(DataRuntime runtime, Sequence query) {
+	public List<Run> buildQuerySequencesRun(DataRuntime runtime, boolean greedy, Sequence query) {
 		//TOTO 待实现
 		return new ArrayList<>();
 	}
