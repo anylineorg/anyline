@@ -203,11 +203,9 @@ public class TextRun extends AbstractRun implements Run {
 		String txt = builder.toString();
 
 		String condition = conditionChain.getRunText(null, runtime, placeholder);
-		if(!condition.isEmpty()) {
-			emptyCondition = false;
-		}
 		boolean where = endWithWhere(txt);
-		if(!emptyCondition) {
+		if(BasicUtil.isNotEmpty(condition)) {
+			emptyCondition = false;
 			if (!where) {
 				builder.append("\nWHERE ");
 				condition = SQLUtil.trim(condition);

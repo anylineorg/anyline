@@ -4276,6 +4276,8 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
             name = primary.getName();
         }else{
             pks = meta.primarys();
+        }
+        if(BasicUtil.isEmpty(name)){
             name = "pk_" + meta.getName();
         }
         if(!pks.isEmpty()) {

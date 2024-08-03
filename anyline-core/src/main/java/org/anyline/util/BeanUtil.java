@@ -2865,6 +2865,9 @@ public class BeanUtil {
 	 * @return String
 	 */
 	public static String camel(String key, boolean hold) {
+		if(null == key){
+			return key;
+		}
 		if(!key.contains("-") && !key.contains("_")) {
 			return key;
 		}
@@ -2893,6 +2896,9 @@ public class BeanUtil {
 	 * @return String
 	 */
 	public static String Camel(String key, boolean hold) {
+		if(null == key){
+			return key;
+		}
 		if(!key.contains("-") && !key.contains("_")) {
 			return key;
 		}

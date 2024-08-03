@@ -4507,7 +4507,7 @@ public interface DriverAdapter {
      */
     <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Collection<? extends Table> tables, Column query, ConfigStore configs);
     default <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Collection<? extends Table> tables, Column query){
-        return columns(runtime, random, greedy, tables, query, null);
+        return columns(runtime, random, greedy, tables, query, new DefaultConfigStore());
     }
 
     /**

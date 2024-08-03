@@ -22,8 +22,8 @@ import org.anyline.adapter.DataReader;
 import org.anyline.adapter.DataWriter;
 import org.anyline.adapter.EntityAdapter;
 import org.anyline.adapter.KeyAdapter;
-import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.adapter.DriverActuator;
+import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.cache.PageLazyStore;
 import org.anyline.data.listener.DDListener;
 import org.anyline.data.listener.DMListener;
@@ -56,9 +56,10 @@ import org.anyline.exception.CommandException;
 import org.anyline.exception.CommandQueryException;
 import org.anyline.exception.CommandUpdateException;
 import org.anyline.metadata.*;
-import org.anyline.metadata.refer.*;
 import org.anyline.metadata.graph.EdgeTable;
 import org.anyline.metadata.graph.VertexTable;
+import org.anyline.metadata.refer.MetadataFieldRefer;
+import org.anyline.metadata.refer.MetadataReferHolder;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.metadata.type.init.StandardTypeMetadata;
@@ -70,7 +71,7 @@ import org.anyline.util.*;
 import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
 
-import javax.swing.text.DefaultTextUI;
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.util.*;
 
@@ -3183,7 +3184,20 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 }
                 run.setValues(null, list);
                 run.setVol(vol);
-            } else {
+            } else if(first.getClass().isArray()){
+                //?下标占位
+                List<Object> list = new ArrayList<>();
+                int vol = 0;
+                int len = Array.getLength(first);
+                for (Object item : values) {
+                    for (int i = 0; i < len; i++) {
+                        Object value = Array.get(item, i);
+                        list.add(value);
+                    }
+                }
+                run.setValues(null, list);
+                run.setVol(len);
+            }else {
                 //${} #{}占位
                 List<Object> list = new ArrayList<>();
                 List<Variable> vars = run.getVariables();
@@ -5215,7 +5229,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			String origin = CacheProxy.name(cache_key);
 			if(null == origin && ConfigTable.IS_METADATA_IGNORE_CASE) {
 				//先查出所有key并以大写缓存 用来实现忽略大小写
-				tableMap(runtime, random, greedy, query, null);
+				tableMap(runtime, random, greedy, query, new DefaultConfigStore());
 				origin = CacheProxy.name(cache_key);
 			}
 			if(null != origin) {
@@ -5371,7 +5385,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			}
 			try {
 				//缓存 不需要configs条件及分页
-				List<Run> runs =buildQueryTablesRun(runtime, greedy, catalog, schema, null, Table.TYPE.NORMAL.value, null);
+				List<Run> runs = buildQueryTablesRun(runtime, greedy, catalog, schema, null, Table.TYPE.NORMAL.value, new DefaultConfigStore());
 				if (null != runs && !runs.isEmpty()) {
 					int idx = 0;
 					for (Run run : runs) {
@@ -6021,7 +6035,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		try {
 			//缓存 不需要configs条件及分页
-			List<Run> runs =buildQueryVertexsRun(runtime, greedy, catalog, schema, null, VertexTable.TYPE.NORMAL.value, null);
+			List<Run> runs =buildQueryVertexsRun(runtime, greedy, catalog, schema, null, VertexTable.TYPE.NORMAL.value, new DefaultConfigStore());
 			if (null != runs && !runs.isEmpty()) {
 				int idx = 0;
 				for (Run run : runs) {
@@ -6591,7 +6605,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		try {
 			//缓存 不需要configs条件及分页
-			List<Run> runs =buildQueryEdgesRun(runtime, greedy, catalog, schema, null, EdgeTable.TYPE.NORMAL.value, null);
+			List<Run> runs =buildQueryEdgesRun(runtime, greedy, catalog, schema, null, EdgeTable.TYPE.NORMAL.value, new DefaultConfigStore());
 			if (null != runs && !runs.isEmpty()) {
 				int idx = 0;
 				for (Run run : runs) {
@@ -7160,7 +7174,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		try {
 			//缓存 不需要configs条件及分页
-			List<Run> runs =buildQueryViewsRun(runtime, greedy, catalog, schema, null, View.TYPE.NORMAL.value, null);
+			List<Run> runs =buildQueryViewsRun(runtime, greedy, catalog, schema, null, View.TYPE.NORMAL.value, new DefaultConfigStore());
 			if (null != runs && !runs.isEmpty()) {
 				int idx = 0;
 				for (Run run : runs) {
@@ -7757,7 +7771,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		try {
 			//缓存 不需要configs条件及分页
-			List<Run> runs =buildQueryMasterTablesRun(runtime, greedy, catalog, schema, null, MasterTable.TYPE.NORMAL.value, null);
+			List<Run> runs =buildQueryMasterTablesRun(runtime, greedy, catalog, schema, null, MasterTable.TYPE.NORMAL.value, new DefaultConfigStore());
 			if (null != runs && !runs.isEmpty()) {
 				int idx = 0;
 				for (Run run : runs) {
@@ -9749,7 +9763,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			random = random(runtime);
 		}
 
-		checkSchema(runtime, table);
+		checkSchema(runtime, query);
 
 		List<Run> runs = buildQueryIndexesRun(runtime, false, query);
 
@@ -9801,7 +9815,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			if (null == pk) {
 				pk = primary(runtime, random, false, table);
 			}
-			if (null != pk) {
+			if (null != pk && !pk.isEmpty()) {
 				Index index = map.get(pk.getName().toUpperCase());
 				if (null != index) {
 					index.setPrimary(true);
