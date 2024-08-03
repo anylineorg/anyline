@@ -1555,7 +1555,7 @@ public class BeanUtil {
 		List<T> result = new ArrayList<T>();
 		if(null != list) {
 			for(T obj:list) {
-				if(null == keys || keys.size()==0) {
+				if(null == keys || keys.isEmpty()) {
 					if(!result.contains(obj)) {
 						result.add(obj);
 					}
@@ -3268,7 +3268,7 @@ public class BeanUtil {
 	 */
 	public static <T> List<List<T>> descartes(List<List<T>> lists) {
 		List<List<T>> result = new ArrayList<List<T>>();
-		if(null == lists || lists.size()==0) {
+		if(null == lists || lists.isEmpty()) {
 			return result;
 		}
 		List<T> st = lists.get(0);
@@ -3549,7 +3549,7 @@ public class BeanUtil {
 	}
 	public static <T> T query(Collection<T> datas, Map<String,Object> kvs) {
 		List<T> list = querys(datas,0,1, kvs);
-		if(list.size()>0) {
+		if(!list.isEmpty()) {
 			return list.get(0);
 		}
 		return null;

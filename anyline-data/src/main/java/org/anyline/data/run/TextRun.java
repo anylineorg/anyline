@@ -197,7 +197,7 @@ public class TextRun extends AbstractRun implements Run {
 			return; 
 		} 
 		List<Condition> cons = conditionChain.getConditions(); 
-		if(null == cons || cons.size()==0) {
+		if(null == cons || cons.isEmpty()) {
 			return; 
 		} 
 		String txt = builder.toString();

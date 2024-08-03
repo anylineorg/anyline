@@ -3693,7 +3693,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
                 //如果是数组 取第0个，不支持多维数组
                 if(result instanceof Collection) {
                     Collection list = (Collection) result;
-                    if(list.size()>0) {
+                    if(!list.isEmpty()) {
                         result = list.iterator().next();
                     }
                 }

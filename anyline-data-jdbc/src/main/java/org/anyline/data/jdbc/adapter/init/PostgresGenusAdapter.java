@@ -1245,7 +1245,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return MetadataFieldRefer
      */
     @Override
-    public MetadataFieldRefer buildDatabaseFieldRefer() {
+    public MetadataFieldRefer initDatabaseFieldRefer() {
         MetadataFieldRefer refer = new MetadataFieldRefer(Database.class);
         refer.setRefer("name", "DATNAME");
         return refer;
@@ -1449,7 +1449,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return MetadataFieldRefer
      */
     @Override
-    public MetadataFieldRefer buildCatalogFieldRefer() {
+    public MetadataFieldRefer initCatalogFieldRefer() {
         MetadataFieldRefer refer = new MetadataFieldRefer(Catalog.class);
         refer.setRefer("name", "datname");
         return refer;
@@ -1651,7 +1651,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return MetadataFieldRefer
      */
     @Override
-    public MetadataFieldRefer buildSchemaFieldRefer() {
+    public MetadataFieldRefer initSchemaFieldRefer() {
         MetadataFieldRefer refer = new MetadataFieldRefer(Schema.class);
         refer.setRefer("name", "schema_name");
         refer.setRefer("Catalog", "catalog_name");
@@ -1863,8 +1863,8 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return MetadataFieldRefer
      */
     @Override
-    public MetadataFieldRefer buildTableFieldRefer() {
-        return super.buildTableFieldRefer();
+    public MetadataFieldRefer initTableFieldRefer() {
+        return super.initTableFieldRefer();
     }
     /**
      * table[命令合成]<br/>
@@ -2093,8 +2093,8 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return MetadataFieldRefer
      */
     @Override
-    public MetadataFieldRefer buildViewFieldRefer() {
-        return super.buildViewFieldRefer();
+    public MetadataFieldRefer initViewFieldRefer() {
+        return super.initViewFieldRefer();
     }
     /**
      * view[结果集封装]<br/>
@@ -2218,8 +2218,8 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return MetadataFieldRefer
      */
     @Override
-    public MetadataFieldRefer buildMasterTableFieldRefer() {
-        return super.buildMasterTableFieldRefer();
+    public MetadataFieldRefer initMasterTableFieldRefer() {
+        return super.initMasterTableFieldRefer();
     }
     /**
      * master table[结果集封装]<br/>
@@ -2524,7 +2524,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return MetadataFieldRefer
      */
     @Override
-    public MetadataFieldRefer buildColumnFieldRefer() {
+    public MetadataFieldRefer initColumnFieldRefer() {
         MetadataFieldRefer refer = new MetadataFieldRefer(Column.class);
         refer.setRefer("name", "COLUMN_NAME");
         refer.setRefer("Catalog", "TABLE_CATALOG");
@@ -2820,8 +2820,8 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return MetadataFieldRefer
      */
     @Override
-    public MetadataFieldRefer buildPrimaryKeyFieldRefer() {
-        return super.buildPrimaryKeyFieldRefer();
+    public MetadataFieldRefer initPrimaryKeyFieldRefer() {
+        return super.initPrimaryKeyFieldRefer();
     }
     /**
      * primary[结构集封装]<br/>
@@ -2835,7 +2835,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
     @Override
     public <T extends PrimaryKey> T init(DataRuntime runtime, int index, T primary, PrimaryKey query, DataSet set) throws Exception {
         Table table = query.getTable();
-        if(set.size()>0) {
+        if(!set.isEmpty()) {
             DataRow row = set.getRow(0);
             primary = (T)new PrimaryKey();
             //conname         |contype    |conkey |  define
@@ -3101,7 +3101,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return MetadataFieldRefer
      */
     @Override
-    public MetadataFieldRefer buildIndexFieldRefer() {
+    public MetadataFieldRefer initIndexFieldRefer() {
         MetadataFieldRefer refer = new MetadataFieldRefer(Index.class);
         refer.setRefer("name", "INDEX_NAME");
         refer.setRefer("Table", "TABLE_NAME");
@@ -3365,16 +3365,16 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         builder.append("SELECT * FROM INFORMATION_SCHEMA.TRIGGERS WHERE 1=1");
         if(null != table) {
             checkName(runtime, null, table);
-            Schema schemae = table.getSchema();
+            Schema schema = table.getSchema();
             String name = table.getName();
-            if(BasicUtil.isNotEmpty(schemae)) {
-                builder.append(" AND TRIGGER_SCHEMA = '").append(schemae).append("'");
+            if(BasicUtil.isNotEmpty(schema)) {
+                builder.append(" AND TRIGGER_SCHEMA = '").append(schema).append("'");
             }
             if(BasicUtil.isNotEmpty(name)) {
                 builder.append(" AND EVENT_OBJECT_TABLE = '").append(name).append("'");
             }
         }
-        if(null != events && events.size()>0) {
+        if(null != events && !events.isEmpty()) {
             builder.append(" AND(");
             boolean first = true;
             for(Trigger.EVENT event:events) {
@@ -3669,7 +3669,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return MetadataFieldRefer
      */
     @Override
-    public MetadataFieldRefer buildFunctionFieldRefer() {
+    public MetadataFieldRefer initFunctionFieldRefer() {
         MetadataFieldRefer refer = new MetadataFieldRefer(Function.class);
         refer.setRefer("name", "proname");
         refer.setRefer("schema", "schema_name");

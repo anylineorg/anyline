@@ -342,7 +342,7 @@ public class ConfigParser {
 	}
 	public static Object getValue(Map<String,Object> values, ParseResult parser) {
 		List<Object> list = getValues(values, parser);
-		if(null != list && list.size()>0) {
+		if(null != list && !list.isEmpty()) {
 			return list.get(0);
 		}
 		return null;
@@ -432,7 +432,7 @@ public class ConfigParser {
 		}
 		if(BasicUtil.isEmpty(true, list)) {
 			List<Object> defs = getDefValues(values, parser);
-			if(defs.size()>0) {
+			if(!defs.isEmpty()) {
 				list = defs;
 			}
 		}
@@ -1093,7 +1093,7 @@ public class ConfigParser {
 	public static Object getRuntimeValue(Map<String,Object> values, String key, boolean keyEncrypt, boolean valueEncrypt) {
 		String result = "";
 		List<Object> list = getRuntimeValues(values, key, keyEncrypt, valueEncrypt);
-		if(null != list && list.size()>0) {
+		if(null != list && !list.isEmpty()) {
 			result = (String)list.get(0);
 		}
 		return result;

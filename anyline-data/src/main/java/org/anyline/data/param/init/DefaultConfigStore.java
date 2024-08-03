@@ -693,7 +693,7 @@ public class DefaultConfigStore implements ConfigStore {
 		Config conf = null;
 		if(overCondition) {
 			olds = chain.getConfigs(prefix, var, compare);
-			if(olds.size()>0) {
+			if(!olds.isEmpty()) {
 				conf = olds.get(0);
 				//相同参数只留一个 如 id = 1 and id = 2 and id = 3
 				//只留下id = 1 下一步有可能把值1覆盖
@@ -859,7 +859,7 @@ public class DefaultConfigStore implements ConfigStore {
 		Config conf = null;
 		if(overCondition) {
 			olds = chain.getConfigs(prefix, var, compare);
-			if(olds.size()>0) {
+			if(!olds.isEmpty()) {
 				conf = olds.get(0);
 				//相同参数只留一个 如 id = 1 and id = 2 and id = 3
 				//只留下id = 1 下一步有可能把值1覆盖
@@ -1022,7 +1022,7 @@ public class DefaultConfigStore implements ConfigStore {
 		Config conf = null;
 		if(overCondition) {
 			olds = chain.getConfigs(prefix, var, compare);
-			if(olds.size()>0) {
+			if(!olds.isEmpty()) {
 				conf = olds.get(0);
 				//相同参数只留一个 如 id = 1 or id = 2 or id = 3
 				//只留下id = 1 下一步有可能把值1覆盖
@@ -1031,7 +1031,7 @@ public class DefaultConfigStore implements ConfigStore {
 			}
 		}
 		// 如果当前没有其他条件
-		if(configs.size()==0) {
+		if(configs.isEmpty()) {
 			and(swt, compare, prefix, var, value, overCondition, overValue);
 		}else{
 			int compareCode = compare.getCode();
@@ -1117,7 +1117,7 @@ public class DefaultConfigStore implements ConfigStore {
 		Config conf = null;
 		if(overCondition) {
 			olds = chain.getConfigs(prefix, var, compare);
-			if(olds.size()>0) {
+			if(!olds.isEmpty()) {
 				conf = olds.get(0);
 				//相同参数只留一个 如 id = 1 or id = 2 or id = 3
 				//只留下id = 1 下一步有可能把值1覆盖

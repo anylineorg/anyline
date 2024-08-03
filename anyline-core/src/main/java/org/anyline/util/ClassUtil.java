@@ -636,7 +636,7 @@ public class ClassUtil {
 	 */
 	public static Annotation getFieldAnnotation(Field field, String ... names) {
 		List<Annotation> list = getFieldAnnotations(field, names);
-		if(list.size()>0) {
+		if(!list.isEmpty()) {
 			return list.get(0);
 		}
 		return null;

@@ -118,7 +118,7 @@ public class DefaultConfigChain extends DefaultConfig implements ConfigChain {
 	}
 	public Config getConfig(String id, String var) {
 		List<Config> list = getConfigs(id, var);
-		if(list.size()>0) {
+		if(!list.isEmpty()) {
 			return list.get(0);
 		}
 		return null;
@@ -190,7 +190,7 @@ public class DefaultConfigChain extends DefaultConfig implements ConfigChain {
 			return null;
 		}
 		List<Config> list = getConfigs(prefix, var, type);
-		if(list.size()>0) {
+		if(!list.isEmpty()) {
 			return list.get(0);
 		}
 		return null;

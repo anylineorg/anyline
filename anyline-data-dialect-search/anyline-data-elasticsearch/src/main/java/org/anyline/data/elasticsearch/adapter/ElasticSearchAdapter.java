@@ -1467,8 +1467,8 @@ PUT * /_bulk
      * @return MetadataFieldRefer
      */
     @Override
-    public MetadataFieldRefer buildDatabaseFieldRefer() {
-        return super.buildDatabaseFieldRefer();
+    public MetadataFieldRefer initDatabaseFieldRefer() {
+        return super.initDatabaseFieldRefer();
     }
     /**
      * database[结果集封装]<br/>
@@ -1658,8 +1658,8 @@ PUT * /_bulk
      * @return MetadataFieldRefer
      */
     @Override
-    public MetadataFieldRefer buildCatalogFieldRefer() {
-        return super.buildCatalogFieldRefer();
+    public MetadataFieldRefer initCatalogFieldRefer() {
+        return super.initCatalogFieldRefer();
     }
     /**
      * catalog[结果集封装]<br/>
@@ -1848,8 +1848,8 @@ PUT * /_bulk
      * @return MetadataFieldRefer
      */
     @Override
-    public MetadataFieldRefer buildSchemaFieldRefer() {
-        return super.buildSchemaFieldRefer();
+    public MetadataFieldRefer initSchemaFieldRefer() {
+        return super.initSchemaFieldRefer();
     }
     /**
      * schema[结果集封装]<br/>
@@ -2012,8 +2012,8 @@ PUT * /_bulk
      * @return MetadataFieldRefer
      */
     @Override
-    public MetadataFieldRefer buildTableFieldRefer() {
-        return super.buildTableFieldRefer();
+    public MetadataFieldRefer initTableFieldRefer() {
+        return super.initTableFieldRefer();
     }
 
     /**
@@ -2223,8 +2223,8 @@ PUT * /_bulk
      * @return MetadataFieldRefer
      */
     @Override
-    public MetadataFieldRefer buildViewFieldRefer() {
-        return super.buildViewFieldRefer();
+    public MetadataFieldRefer initViewFieldRefer() {
+        return super.initViewFieldRefer();
     }
     /**
      * view[结果集封装]<br/>
@@ -2349,8 +2349,8 @@ PUT * /_bulk
      * @return MetadataFieldRefer
      */
     @Override
-    public MetadataFieldRefer buildMasterTableFieldRefer() {
-        return super.buildMasterTableFieldRefer();
+    public MetadataFieldRefer initMasterTableFieldRefer() {
+        return super.initMasterTableFieldRefer();
     }
     /**
      * master table[结果集封装]<br/>
@@ -2735,8 +2735,8 @@ PUT * /_bulk
      * @return MetadataFieldRefer
      */
     @Override
-    public MetadataFieldRefer buildPrimaryKeyFieldRefer() {
-        return super.buildPrimaryKeyFieldRefer();
+    public MetadataFieldRefer initPrimaryKeyFieldRefer() {
+        return super.initPrimaryKeyFieldRefer();
     }
     /**
      * primary[结构集封装]<br/>
@@ -2891,8 +2891,8 @@ PUT * /_bulk
      * @return MetadataFieldRefer
      */
     @Override
-    public MetadataFieldRefer buildIndexFieldRefer() {
-        return super.buildIndexFieldRefer();
+    public MetadataFieldRefer initIndexFieldRefer() {
+        return super.initIndexFieldRefer();
     }
     /**
      * index[结果集封装]<br/>
@@ -3296,8 +3296,8 @@ PUT * /_bulk
      * @return MetadataFieldRefer
      */
     @Override
-    public MetadataFieldRefer buildFunctionFieldRefer() {
-        return super.buildFunctionFieldRefer();
+    public MetadataFieldRefer initFunctionFieldRefer() {
+        return super.initFunctionFieldRefer();
     }
     /**
      * function[结果集封装]<br/>
@@ -6150,7 +6150,7 @@ PUT * /_bulk
                 if(null != highlight) {
                     for(String key:highlight.keySet()) {
                         List vals = highlight.getList(key);
-                        if(null != vals && vals.size()>0) {
+                        if(null != vals && !vals.isEmpty()) {
                             item.put(key, vals.get(0));
                         }
                     }

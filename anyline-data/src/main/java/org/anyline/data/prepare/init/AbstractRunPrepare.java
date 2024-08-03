@@ -322,7 +322,7 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 	}
 	public String getPrimaryKey() {
 		List<String> keys = getPrimaryKeys();
-		if(null != keys && keys.size()>0) {
+		if(null != keys && !keys.isEmpty()) {
 			return keys.get(0); 
 		}
 		return null;
@@ -333,7 +333,7 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 	 * @return boolean
 	 */
 	public boolean hasPrimaryKeys() {
-		if(null != primaryKeys && primaryKeys.size()>0) {
+		if(null != primaryKeys && !primaryKeys.isEmpty()) {
 			return true;
 		}else{
 			return false;

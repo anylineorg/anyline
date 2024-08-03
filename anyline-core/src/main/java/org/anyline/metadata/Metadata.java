@@ -466,7 +466,7 @@ public class Metadata<T extends Metadata> {
         return false;
     }
     public String getDdl() {
-        if(null != ddls && ddls.size()>0) {
+        if(null != ddls && !ddls.isEmpty()) {
             return ddls.get(0);
         }
         return null;
@@ -496,26 +496,26 @@ public class Metadata<T extends Metadata> {
     }
 
     public String ddl() {
-        if(null != ddls && ddls.size()>0) {
+        if(null != ddls && !ddls.isEmpty()) {
             return ddls.get(0);
         }
         return null;
     }
     public String ddl(boolean init) {
-        if(null != ddls && ddls.size()>0) {
+        if(null != ddls && !ddls.isEmpty()) {
             return ddls.get(0);
         }
         return null;
     }
     public String getDdl(boolean init) {
-        if(null != ddls && ddls.size()>0) {
+        if(null != ddls && !ddls.isEmpty()) {
             return ddls.get(0);
         }
         return null;
     }
 
     public Run getRun() {
-        if(null != runs && runs.size()>0) {
+        if(null != runs && !runs.isEmpty()) {
             return runs.get(0);
         }
         return null;
@@ -551,19 +551,19 @@ public class Metadata<T extends Metadata> {
     }
 
     public Run run() {
-        if(null != runs && runs.size()>0) {
+        if(null != runs && !runs.isEmpty()) {
             return runs.get(0);
         }
         return null;
     }
     public Run run(boolean init) {
-        if(null != runs && runs.size()>0) {
+        if(null != runs && !runs.isEmpty()) {
             return runs.get(0);
         }
         return null;
     }
     public Run getRun(boolean init) {
-        if(null != runs && runs.size()>0) {
+        if(null != runs && !runs.isEmpty()) {
             return runs.get(0);
         }
         return null;

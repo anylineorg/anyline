@@ -1402,8 +1402,8 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return MetadataFieldRefer
      */
     @Override
-    public MetadataFieldRefer buildDatabaseFieldRefer() {
-        return super.buildDatabaseFieldRefer();
+    public MetadataFieldRefer initDatabaseFieldRefer() {
+        return super.initDatabaseFieldRefer();
     }
     /**
      * database[结果集封装]<br/>
@@ -1566,8 +1566,8 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return MetadataFieldRefer
      */
     @Override
-    public MetadataFieldRefer buildCatalogFieldRefer() {
-        return super.buildCatalogFieldRefer();
+    public MetadataFieldRefer initCatalogFieldRefer() {
+        return super.initCatalogFieldRefer();
     }
     /**
      * catalog[结果集封装]<br/>
@@ -1739,8 +1739,8 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return MetadataFieldRefer
      */
     @Override
-    public MetadataFieldRefer buildSchemaFieldRefer() {
-        return super.buildSchemaFieldRefer();
+    public MetadataFieldRefer initSchemaFieldRefer() {
+        return super.initSchemaFieldRefer();
     }
     /**
      * schema[结果集封装]<br/>
@@ -1904,8 +1904,8 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return MetadataFieldRefer
      */
     @Override
-    public MetadataFieldRefer buildTableFieldRefer() {
-        return super.buildTableFieldRefer();
+    public MetadataFieldRefer initTableFieldRefer() {
+        return super.initTableFieldRefer();
     }
     /**
      * table[命令合成]<br/>
@@ -2114,8 +2114,8 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return MetadataFieldRefer
      */
     @Override
-    public MetadataFieldRefer buildViewFieldRefer() {
-        return super.buildViewFieldRefer();
+    public MetadataFieldRefer initViewFieldRefer() {
+        return super.initViewFieldRefer();
     }
     /**
      * view[结果集封装]<br/>
@@ -2240,8 +2240,8 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return MetadataFieldRefer
      */
     @Override
-    public MetadataFieldRefer buildMasterTableFieldRefer() {
-        return super.buildMasterTableFieldRefer();
+    public MetadataFieldRefer initMasterTableFieldRefer() {
+        return super.initMasterTableFieldRefer();
     }
     /**
      * master table[结果集封装]<br/>
@@ -2556,8 +2556,8 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return MetadataFieldRefer
      */
     @Override
-    public MetadataFieldRefer buildColumnFieldRefer() {
-        return super.buildColumnFieldRefer();
+    public MetadataFieldRefer initColumnFieldRefer() {
+        return super.initColumnFieldRefer();
     }
     /**
      * column[结果集封装]<br/>
@@ -2800,8 +2800,8 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return MetadataFieldRefer
      */
     @Override
-    public MetadataFieldRefer buildPrimaryKeyFieldRefer() {
-        return super.buildPrimaryKeyFieldRefer();
+    public MetadataFieldRefer initPrimaryKeyFieldRefer() {
+        return super.initPrimaryKeyFieldRefer();
     }
     /**
      * primary[结构集封装]<br/>
@@ -2970,8 +2970,8 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return MetadataFieldRefer
      */
     @Override
-    public MetadataFieldRefer buildIndexFieldRefer() {
-        return super.buildIndexFieldRefer();
+    public MetadataFieldRefer initIndexFieldRefer() {
+        return super.initIndexFieldRefer();
     }
     /**
      * index[结果集封装]<br/>
@@ -3374,8 +3374,8 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return MetadataFieldRefer
      */
     @Override
-    public MetadataFieldRefer buildFunctionFieldRefer() {
-        return super.buildFunctionFieldRefer();
+    public MetadataFieldRefer initFunctionFieldRefer() {
+        return super.initFunctionFieldRefer();
     }
     /**
      * function[结果集封装]<br/>

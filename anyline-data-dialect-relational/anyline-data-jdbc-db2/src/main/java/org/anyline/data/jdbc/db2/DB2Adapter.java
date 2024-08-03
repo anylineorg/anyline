@@ -1233,8 +1233,8 @@ public class DB2Adapter extends InformixGenusAdapter implements JDBCAdapter {
 	 * @return MetadataFieldRefer
 	 */
 	@Override
-	public MetadataFieldRefer buildDatabaseFieldRefer() {
-		return super.buildDatabaseFieldRefer();
+	public MetadataFieldRefer initDatabaseFieldRefer() {
+		return super.initDatabaseFieldRefer();
 	}
 
 	/**
@@ -1403,8 +1403,8 @@ public class DB2Adapter extends InformixGenusAdapter implements JDBCAdapter {
 	 * @return MetadataFieldRefer
 	 */
 	@Override
-	public MetadataFieldRefer buildCatalogFieldRefer() {
-		return super.buildCatalogFieldRefer();
+	public MetadataFieldRefer initCatalogFieldRefer() {
+		return super.initCatalogFieldRefer();
 	}
 
 	/**
@@ -1555,8 +1555,8 @@ public class DB2Adapter extends InformixGenusAdapter implements JDBCAdapter {
 	 * @return MetadataFieldRefer
 	 */
 	@Override
-	public MetadataFieldRefer buildSchemaFieldRefer() {
-		return super.buildSchemaFieldRefer();
+	public MetadataFieldRefer initSchemaFieldRefer() {
+		return super.initSchemaFieldRefer();
 	}
 	/**
 	 * schema[结果集封装]<br/>
@@ -1709,7 +1709,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @return MetadataFieldRefer
 	 */
 	@Override
-	public MetadataFieldRefer buildTableFieldRefer() {
+	public MetadataFieldRefer initTableFieldRefer() {
 		MetadataFieldRefer refer = new MetadataFieldRefer(Table.class);
 		refer.setRefer("name", "TABNAME");
 		refer.setRefer("Catalog", "");
@@ -1950,8 +1950,8 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @return MetadataFieldRefer
 	 */
 	@Override
-	public MetadataFieldRefer buildViewFieldRefer() {
-		return super.buildViewFieldRefer();
+	public MetadataFieldRefer initViewFieldRefer() {
+		return super.initViewFieldRefer();
 	}
 	/**
 	 * view[结果集封装]<br/>
@@ -2076,8 +2076,8 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @return MetadataFieldRefer
 	 */
 	@Override
-	public MetadataFieldRefer buildMasterTableFieldRefer() {
-		return super.buildMasterTableFieldRefer();
+	public MetadataFieldRefer initMasterTableFieldRefer() {
+		return super.initMasterTableFieldRefer();
 	}
 	/**
 	 * master table[结果集封装]<br/>
@@ -2349,7 +2349,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @return MetadataFieldRefer
 	 */
 	@Override
-	public MetadataFieldRefer buildColumnFieldRefer() {
+	public MetadataFieldRefer initColumnFieldRefer() {
 		MetadataFieldRefer refer = new MetadataFieldRefer(Column.class);
 		refer.setRefer("name", "COLNAME");
 		refer.setRefer("Catalog", "");
@@ -2584,7 +2584,6 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryTagsRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param table 表
 	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return tags
@@ -2664,8 +2663,8 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @return MetadataFieldRefer
 	 */
 	@Override
-	public MetadataFieldRefer buildPrimaryKeyFieldRefer() {
-		return super.buildPrimaryKeyFieldRefer();
+	public MetadataFieldRefer initPrimaryKeyFieldRefer() {
+		return super.initPrimaryKeyFieldRefer();
 	}
 	/* *****************************************************************************************************************
 	 * 													foreign
@@ -2784,8 +2783,8 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @return MetadataFieldRefer
 	 */
 	@Override
-	public MetadataFieldRefer buildIndexFieldRefer() {
-		return super.buildIndexFieldRefer();
+	public MetadataFieldRefer initIndexFieldRefer() {
+		return super.initIndexFieldRefer();
 	}
 	/**
 	 * index[结果集封装]<br/>
@@ -3230,8 +3229,8 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @return MetadataFieldRefer
 	 */
 	@Override
-	public MetadataFieldRefer buildFunctionFieldRefer() {
-		return super.buildFunctionFieldRefer();
+	public MetadataFieldRefer initFunctionFieldRefer() {
+		return super.initFunctionFieldRefer();
 	}
 	/**
 	 * function[结果集封装]<br/>

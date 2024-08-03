@@ -174,7 +174,7 @@ public class Table {
      * @return table table
      */
     public Table insertRows(int index, int qty) {
-        if(trs.size()>0) {
+        if(!trs.isEmpty()) {
             Tr template = null;
             if(index >0 && index< trs.size()-1) {
                 template = getTr(index-1);
@@ -186,7 +186,7 @@ public class Table {
         return this;
     }
     public Table insertRows(Tr template, int index, int qty) {
-        if(trs.size()>0) {
+        if(!trs.isEmpty()) {
             if(null == template) {
                 template = trs.get(trs.size()-1);
             }

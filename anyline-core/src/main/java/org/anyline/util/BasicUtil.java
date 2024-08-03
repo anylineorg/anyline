@@ -1171,7 +1171,7 @@ public class BasicUtil {
 				result = v2.toString().equals(v1.toString());
 			}else{
 				// v2非基础类型
-				if(null != properties2 && properties2.size()>0) {
+				if(null != properties2 && !properties2.isEmpty()) {
 					v2 = BeanUtil.getFieldValue(v2, properties2.get(0))+"";
 				}
 				result = v2.toString().equals(v1.toString());
@@ -1180,7 +1180,7 @@ public class BasicUtil {
 			// v1非基础类型
 			if(v2 instanceof String || v2 instanceof Number || v2 instanceof Boolean || v2 instanceof Date) {
 				// v2基础类型
-				if(null != properties1 && properties1.size()>0) {
+				if(null != properties1 && !properties1.isEmpty()) {
 					v1 = BeanUtil.getFieldValue(v1, properties1.get(0))+"";
 				}
 				result = v2.toString().equals(v1.toString());

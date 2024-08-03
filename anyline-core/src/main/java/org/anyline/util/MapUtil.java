@@ -91,7 +91,7 @@ public class MapUtil {
 		List<Map<String, Object>> result = new ArrayList<Map<String, Object>>();
 		if(null != list) {
 			for(Map<String, Object> obj:list) {
-				if(null == keys || keys.size()==0) {
+				if(null == keys || keys.isEmpty()) {
 					if(!result.contains(obj)) {
 						result.add(extract(obj, keys));
 					}
@@ -207,7 +207,7 @@ public class MapUtil {
 	}
 	public static Map<String, Object> query(Collection<Map<String, Object>> datas, Map<String, Object> kvs) {
 		List<Map<String, Object>> list = querys(datas, 0, 1, kvs);
-		if(list.size()>0) {
+		if(!list.isEmpty()) {
 			return list.get(0);
 		}
 		return null;

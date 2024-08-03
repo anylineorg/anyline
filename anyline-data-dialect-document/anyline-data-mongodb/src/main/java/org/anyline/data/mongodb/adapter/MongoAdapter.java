@@ -299,7 +299,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
                 excludeColumns = configs.columns();
             }
         }
-        if(null != excludeColumns && excludeColumns.size()>0) {
+        if(null != excludeColumns && !excludeColumns.isEmpty()) {
             r.setExcludeColumns(excludeColumns);
         }
 
@@ -310,7 +310,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
                 queryColumns = configs.columns();
             }
         }
-        if(null != queryColumns && queryColumns.size()>0) {
+        if(null != queryColumns && !queryColumns.isEmpty()) {
             r.setQueryColumns(queryColumns);
         }
         return r;
@@ -433,15 +433,15 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
             List<Bson> fields = new ArrayList<>();
             List<String> queryColumns = run.getQueryColumns();
             //查询的列
-            if(null != queryColumns && queryColumns.size()>0) {
+            if(null != queryColumns && !queryColumns.isEmpty()) {
                 fields.add(Projections.include(queryColumns));
             }
             //不查询的列
             List<String> excludeColumn = run.getExcludeColumns();
-            if(null != excludeColumn && excludeColumn.size()>0) {
+            if(null != excludeColumn && !excludeColumn.isEmpty()) {
                 fields.add(Projections.exclude(excludeColumn));
             }
-            if(fields.size() > 0) {
+            if(!fields.isEmpty()) {
                 rows.projection(Projections.fields(fields));
             }
             PageNavi navi = run.getPageNavi();
@@ -572,7 +572,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
         run.setFrom(2);
         LinkedHashMap<String, Column> cols = new LinkedHashMap<>();
         List<String> primaryKeys = new ArrayList<>();
-        if(null != columns && columns.size() >0 ) {
+        if(null != columns && !columns.isEmpty()) {
             cols = columns;
         }else{
             cols.putAll(EntityAdapterProxy.columns(obj.getClass(), EntityAdapter.MODE.UPDATE)); ;
@@ -916,8 +916,8 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
      * @return MetadataFieldRefer
      */
     @Override
-    public MetadataFieldRefer buildTableFieldRefer() {
-        return super.buildTableFieldRefer();
+    public MetadataFieldRefer initTableFieldRefer() {
+        return super.initTableFieldRefer();
     }
     /**
      * table[调用入口]<br/>

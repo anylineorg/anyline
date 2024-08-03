@@ -1303,7 +1303,7 @@ public class MSSQLAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
      * @return MetadataFieldRefer
      */
     @Override
-    public MetadataFieldRefer buildDatabaseFieldRefer() {
+    public MetadataFieldRefer initDatabaseFieldRefer() {
         MetadataFieldRefer refer = new MetadataFieldRefer(Database.class);
         refer.setRefer("name", "NAME");
         return refer;
@@ -1476,8 +1476,8 @@ public class MSSQLAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
      * @return MetadataFieldRefer
      */
     @Override
-    public MetadataFieldRefer buildCatalogFieldRefer() {
-        return super.buildCatalogFieldRefer();
+    public MetadataFieldRefer initCatalogFieldRefer() {
+        return super.initCatalogFieldRefer();
     }
     /**
      * catalog[结果集封装]<br/>
@@ -1638,8 +1638,8 @@ public class MSSQLAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
      * @return MetadataFieldRefer
      */
     @Override
-    public MetadataFieldRefer buildSchemaFieldRefer() {
-        return super.buildSchemaFieldRefer();
+    public MetadataFieldRefer initSchemaFieldRefer() {
+        return super.initSchemaFieldRefer();
     }
     /**
      * schema[结果集封装]<br/>
@@ -1838,8 +1838,8 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
      * @return MetadataFieldRefer
      */
     @Override
-    public MetadataFieldRefer buildTableFieldRefer() {
-        return super.buildTableFieldRefer();
+    public MetadataFieldRefer initTableFieldRefer() {
+        return super.initTableFieldRefer();
     }
     /**
      * table[命令合成]<br/>
@@ -2062,8 +2062,8 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
      * @return MetadataFieldRefer
      */
     @Override
-    public MetadataFieldRefer buildViewFieldRefer() {
-        return super.buildViewFieldRefer();
+    public MetadataFieldRefer initViewFieldRefer() {
+        return super.initViewFieldRefer();
     }
     /**
      * view[结果集封装]<br/>
@@ -2188,8 +2188,8 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
      * @return MetadataFieldRefer
      */
     @Override
-    public MetadataFieldRefer buildMasterTableFieldRefer() {
-        return super.buildMasterTableFieldRefer();
+    public MetadataFieldRefer initMasterTableFieldRefer() {
+        return super.initMasterTableFieldRefer();
     }
     /**
      * master table[结果集封装]<br/>
@@ -2484,8 +2484,8 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
      * @return MetadataFieldRefer
      */
     @Override
-    public MetadataFieldRefer buildColumnFieldRefer() {
-        return super.buildColumnFieldRefer();
+    public MetadataFieldRefer initColumnFieldRefer() {
+        return super.initColumnFieldRefer();
     }
     /**
      * column[结果集封装]<br/>
@@ -2758,7 +2758,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
      * @return MetadataFieldRefer
      */
     @Override
-    public MetadataFieldRefer buildPrimaryKeyFieldRefer() {
+    public MetadataFieldRefer initPrimaryKeyFieldRefer() {
         MetadataFieldRefer refer = new MetadataFieldRefer(PrimaryKey.class);
         refer.setRefer("name", "CONSTRAINT_NAME");
         refer.setRefer("Catalog", "TABLE_CATALOG");
@@ -2984,8 +2984,8 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
      * @return MetadataFieldRefer
      */
     @Override
-    public MetadataFieldRefer buildIndexFieldRefer() {
-        return super.buildIndexFieldRefer();
+    public MetadataFieldRefer initIndexFieldRefer() {
+        return super.initIndexFieldRefer();
     }
     /**
      * index[结果集封装]<br/>
@@ -3209,8 +3209,8 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         if(null != table) {
             Schema schema = table.getSchema();
             String name = table.getName();
-            /*if(BasicUtil.isNotEmpty(schemae)) {
-                builder.append(" AND TRIGGER_SCHEMA = '").append(schemae).append("'");
+            /*if(BasicUtil.isNotEmpty(schema)) {
+                builder.append(" AND TRIGGER_SCHEMA = '").append(schema).append("'");
             }*/
             if(BasicUtil.isNotEmpty(name)) {
                 builder.append(" AND object_name(parent_id) = '").append(name).append("'");
@@ -3457,8 +3457,8 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
      * @return MetadataFieldRefer
      */
     @Override
-    public MetadataFieldRefer buildFunctionFieldRefer() {
-        return super.buildFunctionFieldRefer();
+    public MetadataFieldRefer initFunctionFieldRefer() {
+        return super.initFunctionFieldRefer();
     }
     /**
      * function[结果集封装]<br/>

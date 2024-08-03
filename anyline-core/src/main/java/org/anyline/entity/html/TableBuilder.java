@@ -209,7 +209,7 @@ public class TableBuilder {
                 table.addTr(tr);
             }
         }
-        if(null != headers && headers.size() >0) {
+        if(null != headers && !headers.isEmpty()) {
             Tr tr = new Tr();
             int size = headers.size();
             for(int i=0; i<size; i++) {

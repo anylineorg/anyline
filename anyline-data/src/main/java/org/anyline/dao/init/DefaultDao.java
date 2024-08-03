@@ -427,7 +427,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 	protected <T> void checkMany2ManyDependencyQuery(DataRuntime runtime, String random, EntitySet<T> set, int dependency) {
 		//ManyToMany
-		if(set.size()==0 || dependency <= 0) {
+		if(set.isEmpty() || dependency <= 0) {
 			return;
 		}
 		dependency --;

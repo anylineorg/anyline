@@ -1345,7 +1345,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return MetadataFieldRefer
      */
     @Override
-    public MetadataFieldRefer buildDatabaseFieldRefer() {
+    public MetadataFieldRefer initDatabaseFieldRefer() {
         MetadataFieldRefer refer = new MetadataFieldRefer(Database.class, "DATABASE");
         return refer;
     }
@@ -1544,8 +1544,8 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return MetadataFieldRefer
      */
     @Override
-    public MetadataFieldRefer buildCatalogFieldRefer() {
-        return super.buildCatalogFieldRefer();
+    public MetadataFieldRefer initCatalogFieldRefer() {
+        return super.initCatalogFieldRefer();
     }
     /**
      * catalog[结果集封装]<br/>
@@ -1744,7 +1744,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return MetadataFieldRefer
      */
     @Override
-    public MetadataFieldRefer buildSchemaFieldRefer() {
+    public MetadataFieldRefer initSchemaFieldRefer() {
         return new MetadataFieldRefer(Schema.class, "DATABASE");
     }
     /**
@@ -1938,8 +1938,8 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return MetadataFieldRefer
      */
     @Override
-    public MetadataFieldRefer buildTableFieldRefer() {
-        return super.buildTableFieldRefer();
+    public MetadataFieldRefer initTableFieldRefer() {
+        return super.initTableFieldRefer();
     }
     /**
      * table[命令合成]<br/>
@@ -2191,8 +2191,8 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return MetadataFieldRefer
      */
     @Override
-    public MetadataFieldRefer buildViewFieldRefer() {
-        return super.buildViewFieldRefer();
+    public MetadataFieldRefer initViewFieldRefer() {
+        return super.initViewFieldRefer();
     }
     /**
      * view[结果集封装]<br/>
@@ -2347,8 +2347,8 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return MetadataFieldRefer
      */
     @Override
-    public MetadataFieldRefer buildMasterTableFieldRefer() {
-        return super.buildMasterTableFieldRefer();
+    public MetadataFieldRefer initMasterTableFieldRefer() {
+        return super.initMasterTableFieldRefer();
     }
     /**
      * master table[结果集封装]<br/>
@@ -2610,7 +2610,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return MetadataFieldRefer
      */
     @Override
-    public MetadataFieldRefer buildColumnFieldRefer() {
+    public MetadataFieldRefer initColumnFieldRefer() {
         MetadataFieldRefer refer = new MetadataFieldRefer(Column.class);
         refer.setRefer("name", "COLUMN_NAME");
         refer.setRefer("Catalog", "");//忽略
@@ -2846,8 +2846,8 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return MetadataFieldRefer
      */
     @Override
-    public MetadataFieldRefer buildPrimaryKeyFieldRefer() {
-        return super.buildPrimaryKeyFieldRefer();
+    public MetadataFieldRefer initPrimaryKeyFieldRefer() {
+        return super.initPrimaryKeyFieldRefer();
     }
     /**
      * primary[结构集封装]<br/>
@@ -3089,7 +3089,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return MetadataFieldRefer
      */
     @Override
-    public MetadataFieldRefer buildIndexFieldRefer() {
+    public MetadataFieldRefer initIndexFieldRefer() {
         MetadataFieldRefer refer = new MetadataFieldRefer(Index.class);
         refer.setRefer("name", "INDEX_NAME");
         refer.setRefer("Table", "TABLE_NAME");
@@ -3327,16 +3327,16 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         builder.append("SELECT * FROM INFORMATION_SCHEMA.TRIGGERS WHERE 1=1");
         if(null != table) {
             checkName(runtime, null, table);
-            Schema schemae = table.getSchema();
+            Schema schema = table.getSchema();
             String name = table.getName();
-            if(BasicUtil.isNotEmpty(schemae)) {
-                builder.append(" AND TRIGGER_SCHEMA = '").append(schemae).append("'");
+            if(BasicUtil.isNotEmpty(schema)) {
+                builder.append(" AND TRIGGER_SCHEMA = '").append(schema).append("'");
             }
             if(BasicUtil.isNotEmpty(name)) {
                 builder.append(" AND EVENT_OBJECT_TABLE = '").append(name).append("'");
             }
         }
-        if(null != events && events.size()>0) {
+        if(null != events && !events.isEmpty()) {
             builder.append(" AND(");
             boolean first = true;
             for(Trigger.EVENT event:events) {
@@ -3653,8 +3653,8 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return MetadataFieldRefer
      */
     @Override
-    public MetadataFieldRefer buildFunctionFieldRefer() {
-        return super.buildFunctionFieldRefer();
+    public MetadataFieldRefer initFunctionFieldRefer() {
+        return super.initFunctionFieldRefer();
     }
     /**
      * function[结果集封装]<br/>
@@ -6878,7 +6878,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return MetadataFieldRefer
      */
     @Override
-    public MetadataFieldRefer buildUserFieldRefer() {
+    public MetadataFieldRefer initUserFieldRefer() {
         MetadataFieldRefer refer = new MetadataFieldRefer(User.class);
         refer.setRefer("Host", "host");
         refer.setRefer("name", "user");

@@ -111,7 +111,7 @@ public class DataSourceUtil {
             table = parseDest(row.getDest(), configs);
         }else if(obj instanceof DataSet) {
             DataSet set = (DataSet)obj;
-            if(set.size()>0) {
+            if(!set.isEmpty()) {
                 table = parseDest(set.getRow(0).getDest(), configs);
             }
         } else if (obj instanceof Collection) {

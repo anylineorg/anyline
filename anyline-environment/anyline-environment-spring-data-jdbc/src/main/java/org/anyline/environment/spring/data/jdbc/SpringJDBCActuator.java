@@ -262,7 +262,7 @@ public class SpringJDBCActuator implements DriverActuator {
             //end stream handler
         }else {
             fr = System.currentTimeMillis();
-            if(null != values && values.size()>0) {
+            if(null != values && !values.isEmpty()) {
                 jdbc.query(sql, values.toArray(), new RowCallbackHandler() {
                     @Override
                     public void processRow(ResultSet rs) throws SQLException {
@@ -596,7 +596,7 @@ public class SpringJDBCActuator implements DriverActuator {
                 return false;
             }
             List<Map<String,Object>> keys = keyholder.getKeyList();
-            if(null == generatedKey && keys.size()>0) {
+            if(null == generatedKey && !keys.isEmpty()) {
                 Map<String,Object> key = keys.get(0);
                 generatedKey = key.keySet().iterator().next();
             }

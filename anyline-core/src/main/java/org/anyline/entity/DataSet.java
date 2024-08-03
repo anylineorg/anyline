@@ -4677,7 +4677,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
      * @return LinkedHashMap
      */
     public Map map() {
-        if(null != rows && rows.size() >0) {
+        if(null != rows && !rows.isEmpty()) {
             List<String> keys = rows.get(0).keys();
             if(keys.size()>1) {
                 return map(keys.get(0), keys.get(1));
@@ -4706,7 +4706,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
      * @return DataRow
      */
     public DataRow row(int key, int value) {
-        if(null != rows && rows.size() >0) {
+        if(null != rows && !rows.isEmpty()) {
             List<String> keys = rows.get(0).keys();
             if(keys.size()>key && keys.size()>value) {
                 return row(keys.get(key), keys.get(value));
@@ -4719,7 +4719,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
      * @return DataRow
      */
     public DataRow row() {
-        if(null != rows && rows.size() >0) {
+        if(null != rows && !rows.isEmpty()) {
             List<String> keys = rows.get(0).keys();
             if(keys.size()>1) {
                 return row(keys.get(0), keys.get(1));

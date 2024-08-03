@@ -444,7 +444,7 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
         }
         builder.append(" RETURN ");
         LinkedHashMap<String, Column> columns = prepare.getColumns();
-        if(null != columns && columns.size()>0) {
+        if(null != columns && !columns.isEmpty()) {
             // 指定查询列
             boolean first = true;
             for(Column column:columns.values()) {
@@ -767,7 +767,7 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
         // List<Object> values = new ArrayList<Object>();
         LinkedHashMap<String, Column> keys = new LinkedHashMap<>();
         LinkedHashMap<String, Column> primaryKeys = new LinkedHashMap<>();
-        if(null != columns && columns.size() >0 ) {
+        if(null != columns && !columns.isEmpty()) {
             keys = columns;
         }else{
             keys.putAll(EntityAdapterProxy.columns(obj.getClass(), EntityAdapter.MODE.UPDATE));

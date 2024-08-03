@@ -2096,7 +2096,7 @@ public interface DriverAdapter {
      * database 属性与结果集对应关系
      * @return MetadataFieldRefer
      */
-    MetadataFieldRefer buildDatabaseFieldRefer();
+    MetadataFieldRefer initDatabaseFieldRefer();
     /**
      * database[结果集封装]<br/>
      * 根据查询结果集构造 product
@@ -2270,7 +2270,7 @@ public interface DriverAdapter {
      * Catalog 属性与结果集对应关系
      * @return MetadataFieldRefer
      */
-    MetadataFieldRefer buildCatalogFieldRefer();
+    MetadataFieldRefer initCatalogFieldRefer();
     /**
      * catalog[结果集封装]<br/>
      * 根据查询结果集构造 catalog
@@ -2449,7 +2449,7 @@ public interface DriverAdapter {
      * Schema 属性与结果集对应关系
      * @return MetadataFieldRefer
      */
-    MetadataFieldRefer buildSchemaFieldRefer();
+    MetadataFieldRefer initSchemaFieldRefer();
     /**
      * schema[结果集封装]<br/>
      * 根据查询结果集构造 schema
@@ -2653,7 +2653,7 @@ public interface DriverAdapter {
      * Table 属性与结果集对应关系
      * @return MetadataFieldRefer
      */
-    MetadataFieldRefer buildTableFieldRefer();
+    MetadataFieldRefer initTableFieldRefer();
 
     /**
      * table[命令合成]<br/>
@@ -3005,7 +3005,7 @@ public interface DriverAdapter {
      * vertex 属性与结果集对应关系
      * @return MetadataFieldRefer
      */
-    MetadataFieldRefer buildVertexFieldRefer();
+    MetadataFieldRefer initVertexFieldRefer();
 
 
     /**
@@ -3319,7 +3319,7 @@ public interface DriverAdapter {
      * MasterTable 属性与结果集对应关系
      * @return MetadataFieldRefer
      */
-    MetadataFieldRefer buildEdgeFieldRefer();
+    MetadataFieldRefer initEdgeFieldRefer();
 
     /**
      * edge[命令合成]<br/>
@@ -3634,7 +3634,7 @@ public interface DriverAdapter {
      * View 属性与结果集对应关系
      * @return MetadataFieldRefer
      */
-    MetadataFieldRefer buildViewFieldRefer();
+    MetadataFieldRefer initViewFieldRefer();
     /**
      * view[命令合成]<br/>
      * 查询视图备注
@@ -3945,7 +3945,7 @@ public interface DriverAdapter {
      * MasterTable 属性与结果集对应关系
      * @return MetadataFieldRefer
      */
-    MetadataFieldRefer buildMasterTableFieldRefer();
+    MetadataFieldRefer initMasterTableFieldRefer();
     /**
      * master[命令合成]<br/>
      * 查询表备注
@@ -4304,7 +4304,7 @@ public interface DriverAdapter {
      * PartitionTable 属性与结果集对应关系
      * @return MetadataFieldRefer
      */
-    MetadataFieldRefer buildPartitionTableFieldRefer();
+    MetadataFieldRefer initPartitionTableFieldRefer();
 
     /**
      * partition table[结果集封装]<br/>
@@ -4534,7 +4534,7 @@ public interface DriverAdapter {
      * Column 属性与结果集对应关系
      * @return MetadataFieldRefer
      */
-    MetadataFieldRefer buildColumnFieldRefer();
+    MetadataFieldRefer initColumnFieldRefer();
     /**
      * column[结果集封装]<br/>(方法1)<br/>
      * 根据系统表查询SQL获取表结构
@@ -4742,7 +4742,7 @@ public interface DriverAdapter {
      * tag 属性与结果集对应关系
      * @return MetadataFieldRefer
      */
-    MetadataFieldRefer buildTagFieldRefer();
+    MetadataFieldRefer initTagFieldRefer();
 
 
     /**
@@ -4846,7 +4846,7 @@ public interface DriverAdapter {
      * PrimaryKey 属性与结果集对应关系
      * @return MetadataFieldRefer
      */
-    MetadataFieldRefer buildPrimaryKeyFieldRefer();
+    MetadataFieldRefer initPrimaryKeyFieldRefer();
     /**
      * primary[结构集封装]<br/>
      * 根据查询结果集构造PrimaryKey基础属性
@@ -4976,7 +4976,7 @@ public interface DriverAdapter {
      * ForeignKey 属性与结果集对应关系
      * @return MetadataFieldRefer
      */
-    MetadataFieldRefer buildForeignKeyFieldRefer();
+    MetadataFieldRefer initForeignKeyFieldRefer();
 
     /**
      * foreign[结构集封装]<br/>
@@ -5148,7 +5148,7 @@ public interface DriverAdapter {
      * Index 属性与结果集对应关系
      * @return MetadataFieldRefer
      */
-    MetadataFieldRefer buildIndexFieldRefer();
+    MetadataFieldRefer initIndexFieldRefer();
     /**
      * index[结果集封装]<br/>
      *  根据查询结果集构造Index
@@ -5390,7 +5390,7 @@ public interface DriverAdapter {
      * Constraint 属性与结果集对应关系
      * @return MetadataFieldRefer
      */
-    MetadataFieldRefer buildConstraintFieldRefer();
+    MetadataFieldRefer initConstraintFieldRefer();
 
 
     /**
@@ -5567,7 +5567,7 @@ public interface DriverAdapter {
      * Trigger 属性与结果集对应关系
      * @return MetadataFieldRefer
      */
-    MetadataFieldRefer buildTriggerFieldRefer();
+    MetadataFieldRefer initTriggerFieldRefer();
 
 
     /**
@@ -5741,7 +5741,7 @@ public interface DriverAdapter {
      * Procedure 属性与结果集对应关系
      * @return MetadataFieldRefer
      */
-    MetadataFieldRefer buildProcedureFieldRefer();
+    MetadataFieldRefer initProcedureFieldRefer();
 
 	/**
 	 * procedure[结果集封装]<br/>
@@ -5945,7 +5945,7 @@ public interface DriverAdapter {
      * Function 属性与结果集对应关系
      * @return MetadataFieldRefer
      */
-    MetadataFieldRefer buildFunctionFieldRefer();
+    MetadataFieldRefer initFunctionFieldRefer();
 	/**
 	 * function[结果集封装]<br/>
 	 * 根据查询结果集构造 Function
@@ -6175,7 +6175,7 @@ public interface DriverAdapter {
      * Sequence 属性与结果集对应关系
      * @return MetadataFieldRefer
      */
-    MetadataFieldRefer buildSequenceFieldRefer();
+    MetadataFieldRefer initSequenceFieldRefer();
 
 	/**
 	 * sequence[结果集封装]<br/>
@@ -8592,7 +8592,7 @@ public interface DriverAdapter {
      * Role 属性与结果集对应关系
      * @return MetadataFieldRefer
      */
-    MetadataFieldRefer buildRoleFieldRefer();
+    MetadataFieldRefer initRoleFieldRefer();
 
     /**
 	 * role[结果集封装]<br/>
@@ -8823,7 +8823,7 @@ public interface DriverAdapter {
      * User 属性与结果集对应关系
      * @return MetadataFieldRefer
      */
-    MetadataFieldRefer buildUserFieldRefer();
+    MetadataFieldRefer initUserFieldRefer();
 
 	/**
 	 * user[结果集封装]<br/>
@@ -8965,7 +8965,7 @@ public interface DriverAdapter {
      * Privilege 属性与结果集对应关系
      * @return MetadataFieldRefer
      */
-    MetadataFieldRefer buildPrivilegeFieldRefer();
+    MetadataFieldRefer initPrivilegeFieldRefer();
 
 	/**
 	 * privilege[结果集封装]<br/>

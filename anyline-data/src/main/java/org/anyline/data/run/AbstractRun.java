@@ -1124,7 +1124,7 @@ public abstract class AbstractRun implements Run {
 		String result = "*";
 		if(null != prepare) {
 			List<String> cols = prepare.getFetchKeys();
-			if(null != cols && cols.size()>0) {
+			if(null != cols && !cols.isEmpty()) {
 				result = null;
 				for(String col:cols) {
 					if(null == result) {

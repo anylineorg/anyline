@@ -1369,7 +1369,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return MetadataFieldRefer
      */
     @Override
-    public MetadataFieldRefer buildDatabaseFieldRefer() {
+    public MetadataFieldRefer initDatabaseFieldRefer() {
         MetadataFieldRefer refer = new MetadataFieldRefer(Database.class);
         refer.setRefer("name", "DATABASE_NAME");
         return refer;
@@ -1563,8 +1563,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return MetadataFieldRefer
      */
     @Override
-    public MetadataFieldRefer buildCatalogFieldRefer() {
-        return super.buildCatalogFieldRefer();
+    public MetadataFieldRefer initCatalogFieldRefer() {
+        return super.initCatalogFieldRefer();
     }
     /**
      * catalog[结果集封装]<br/>
@@ -1811,8 +1811,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return MetadataFieldRefer
      */
     @Override
-    public MetadataFieldRefer buildSchemaFieldRefer() {
-        return super.buildSchemaFieldRefer();
+    public MetadataFieldRefer initSchemaFieldRefer() {
+        return super.initSchemaFieldRefer();
     }
     /**
      * schema[结果集封装]<br/>
@@ -2007,8 +2007,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return MetadataFieldRefer
      */
     @Override
-    public MetadataFieldRefer buildTableFieldRefer() {
-        return super.buildTableFieldRefer();
+    public MetadataFieldRefer initTableFieldRefer() {
+        return super.initTableFieldRefer();
     }
     /**
      * table[命令合成]<br/>
@@ -2229,8 +2229,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return MetadataFieldRefer
      */
     @Override
-    public MetadataFieldRefer buildViewFieldRefer() {
-        return super.buildViewFieldRefer();
+    public MetadataFieldRefer initViewFieldRefer() {
+        return super.initViewFieldRefer();
     }
     /**
      * view[结果集封装]<br/>
@@ -2373,8 +2373,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return MetadataFieldRefer
      */
     @Override
-    public MetadataFieldRefer buildMasterTableFieldRefer() {
-        return super.buildMasterTableFieldRefer();
+    public MetadataFieldRefer initMasterTableFieldRefer() {
+        return super.initMasterTableFieldRefer();
     }
     /**
      * master table[结果集封装]<br/>
@@ -2688,7 +2688,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return MetadataFieldRefer
      */
     @Override
-    public MetadataFieldRefer buildColumnFieldRefer() {
+    public MetadataFieldRefer initColumnFieldRefer() {
         MetadataFieldRefer refer = new MetadataFieldRefer(Column.class);
         refer.setRefer("name", "COLUMN_NAME");
         refer.setRefer("Catalog", "");//忽略
@@ -2903,7 +2903,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return MetadataFieldRefer
      */
     @Override
-    public MetadataFieldRefer buildPrimaryKeyFieldRefer() {
+    public MetadataFieldRefer initPrimaryKeyFieldRefer() {
         MetadataFieldRefer refer = new MetadataFieldRefer(PrimaryKey.class);
         refer.setRefer("name", "CONSTRAINT_NAME");
         refer.setRefer("Catalog", (String)null);
@@ -3164,7 +3164,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return MetadataFieldRefer
      */
     @Override
-    public MetadataFieldRefer buildIndexFieldRefer() {
+    public MetadataFieldRefer initIndexFieldRefer() {
         MetadataFieldRefer refer = new MetadataFieldRefer(Index.class);
         refer.setRefer("name", "INDEX_NAME");
         refer.setRefer("Table", "TABLE_NAME");
@@ -3448,16 +3448,16 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         StringBuilder builder = run.getBuilder();
         builder.append("SELECT * FROM USER_TRIGGERS WHERE 1=1");
         if(null != table) {
-            Schema schemae = table.getSchema();
+            Schema schema = table.getSchema();
             String tableName = table.getName();
-            if(BasicUtil.isNotEmpty(schemae)) {
-                builder.append(" AND TABLE_OWNER = '").append(schemae).append("'");
+            if(BasicUtil.isNotEmpty(schema)) {
+                builder.append(" AND TABLE_OWNER = '").append(schema).append("'");
             }
             if(BasicUtil.isNotEmpty(tableName)) {
                 builder.append(" AND TABLE_NAME = '").append(tableName).append("'");
             }
         }
-        if(null != events && events.size()>0) {
+        if(null != events && !events.isEmpty()) {
             builder.append(" AND(");
             boolean first = true;
             for(Trigger.EVENT event:events) {
@@ -3723,8 +3723,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return MetadataFieldRefer
      */
     @Override
-    public MetadataFieldRefer buildFunctionFieldRefer() {
-        return super.buildFunctionFieldRefer();
+    public MetadataFieldRefer initFunctionFieldRefer() {
+        return super.initFunctionFieldRefer();
     }
     /**
      * function[结果集封装]<br/>

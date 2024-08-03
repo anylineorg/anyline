@@ -524,7 +524,7 @@ public class RegularUtil {
 
 	public static String fetchUrl(String src) throws Exception {
 		List<String> urls = fetchUrls(src);
-		if(null != urls && urls.size()>0) {
+		if(null != urls && !urls.isEmpty()) {
 			return urls.get(0);
 		}
 		return null;
@@ -536,7 +536,7 @@ public class RegularUtil {
 	}
 	public static String fetchNumber(String src) throws Exception {
 		List<String> numbers = fetchNumbers(src);
-		if(null != numbers && numbers.size()>0) {
+		if(null != numbers && !numbers.isEmpty()) {
 			return numbers.get(0);
 		}
 		return null;
@@ -677,7 +677,7 @@ public class RegularUtil {
 	public static List<String> fetchAttribute(String txt, String attribute) {
 		List<String> result = new ArrayList<>();
 		List<List<String>> list = fetchAttributeList(txt, attribute);
-		if(list.size() >0) {
+		if(!list.isEmpty()) {
 			result = list.get(0);
 		}
 		return result;
@@ -708,7 +708,7 @@ public class RegularUtil {
 	 */
 	public static String fetchAttributeValue(String txt, String attribute) {
 		List<String> values = fetchAttributeValues(txt, attribute);
-		if(values.size()>0) {
+		if(!values.isEmpty()) {
 			return values.get(0);
 		}else{
 			return null;
