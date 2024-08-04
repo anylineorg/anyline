@@ -824,6 +824,7 @@ public enum StandardTypeMetadata implements TypeMetadata {
     , ALIAS(CATEGORY.NONE, "alias", null, null, 1, 1, 1, ElasticSearch)
     , COMPLETION(CATEGORY.NONE, "completion", null, null, 1, 1, 1, ElasticSearch)
     , DENSE_VECTOR(CATEGORY.NONE, "dense_vector", null, null, 1, 1, 1, ElasticSearch)
+    , VECTOR(CATEGORY.NONE, "vector", null, null, 1, 0, 1)
     , FLATTENED(CATEGORY.NONE, "flattened", null, null, 1, 1, 1, ElasticSearch)
     , JOIN(CATEGORY.NONE, "join", null, null, 1, 1, 1, ElasticSearch)
     , GEO_POINT(CATEGORY.NONE, "geo_point", null, null, 1, 1, 1, ElasticSearch)

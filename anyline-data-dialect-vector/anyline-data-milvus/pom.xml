@@ -13,5 +13,11 @@
     <packaging>jar</packaging>
     <name>anyline-data-milvus</name>
     <url>http://www.anyline.org/milvus</url>
-
+    <dependencies>
+        <dependency>
+            <groupId>io.milvus</groupId>
+            <artifactId>milvus-sdk-java</artifactId>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
 </project>
