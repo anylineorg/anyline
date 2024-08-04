@@ -29,5 +29,5 @@ public interface TypeMetadataAlias {
      * @return TypeMetadata
      */
     TypeMetadata standard();
-    TypeMetadata.Refer config();
+    TypeMetadata.Refer refer();
 }

@@ -61,10 +61,10 @@ public class MetadataReferHolder {
      * 要从配置项中取出每个属性检测合并,不要整个覆盖
      * @param database 数据库类型
      * @param type 数据类型
-     * @param config 配置项
+     * @param refer 配置项
      * @return Config
      */
-    public static TypeMetadata.Refer reg(DatabaseType database, TypeMetadata type, TypeMetadata.Refer config) {
+    public static TypeMetadata.Refer reg(DatabaseType database, TypeMetadata type, TypeMetadata.Refer refer) {
         LinkedHashMap<TypeMetadata, TypeMetadata.Refer> refers = typeRefers.get(database);
         if(null == refers) {
             refers = new LinkedHashMap<>();
@@ -74,11 +74,11 @@ public class MetadataReferHolder {
         if(null == src) {
             src = new TypeMetadata.Refer();
         }
-        src.merge(config);
+        src.merge(refer);
         refers.put(type, src);
 
         String name = type.getName();
-        reg(database, name, config);
+        reg(database, name, refer);
         return src;
     }
     /**
@@ -86,10 +86,10 @@ public class MetadataReferHolder {
      * 要从配置项中取出每个属性检测合并,不要整个覆盖
      * @param database 数据库类型
      * @param type 类型名称或别名
-     * @param config 配置项
+     * @param refer 配置项
      * @return Config
      */
-    public static TypeMetadata.Refer reg(DatabaseType database, String type, TypeMetadata.Refer config) {
+    public static TypeMetadata.Refer reg(DatabaseType database, String type, TypeMetadata.Refer refer) {
         LinkedHashMap<String, TypeMetadata.Refer> refers = typeNameRefers.get(database);
         if(null == refers) {
             refers = new LinkedHashMap<>();
@@ -99,7 +99,7 @@ public class MetadataReferHolder {
         if(null == src) {
             src = new TypeMetadata.Refer();
         }
-        src.merge(config);
+        src.merge(refer);
         refers.put(type.toUpperCase(), src);
         return src;
     }
@@ -109,10 +109,10 @@ public class MetadataReferHolder {
      * 要从配置项中取出每个属性检测合并,不要整个覆盖
      * @param database 数据库类型
      * @param category 数据类型大类
-     * @param config 配置项
+     * @param refer 配置项
      * @return Config
      */
-    public static TypeMetadata.Refer reg(DatabaseType database, TypeMetadata.CATEGORY category, TypeMetadata.Refer config) {
+    public static TypeMetadata.Refer reg(DatabaseType database, TypeMetadata.CATEGORY category, TypeMetadata.Refer refer) {
         LinkedHashMap<TypeMetadata.CATEGORY, TypeMetadata.Refer> refers = typeCategoryRefers.get(database);
         if(null == refers) {
             refers = new LinkedHashMap<>();
@@ -120,9 +120,9 @@ public class MetadataReferHolder {
         }
         TypeMetadata.Refer src = refers.get(category);
         if(null == src) {
-            src = config;
+            src = refer;
         }else{
-            src.merge(config);
+            src.merge(refer);
         }
         refers.put(category, src);
         return src;

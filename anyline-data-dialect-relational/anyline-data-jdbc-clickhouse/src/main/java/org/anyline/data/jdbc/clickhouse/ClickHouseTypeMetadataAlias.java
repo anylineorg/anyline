@@ -250,8 +250,8 @@ public enum ClickHouseTypeMetadataAlias implements TypeMetadataAlias {
 	TID                           ("TID"                            ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	TIME                          ("TIME"                           ,StandardTypeMetadata.DATETIME                      , "DATETIME"   , "DATETIME({S})" , null   , null   , null   ,   1,   1,   2),
 	TIME_TZ_UNCONSTRAINED         ("TIME TZ UNCONSTRAINED"          ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
-	TIME_WITH_ZONE                ("TIME WITH TIME ZONE"            ,StandardTypeMetadata.TIME_WITH_TIME_ZONE           ,   1,   1,   1),
 	TIME_WITH_TIME_ZONE           ("TIME WITH TIME ZONE"            ,StandardTypeMetadata.TIME_WITH_TIME_ZONE           ,   1,   1,   1),
+	TIME_WITH_ZONE                ("TIME WITH TIME ZONE"            ,StandardTypeMetadata.TIME_WITH_TIME_ZONE           ,   1,   1,   1),
 	TIME_WITHOUT_TIME_ZONE        ("TIME WITHOUT TIME ZONE"         ,StandardTypeMetadata.TIME_WITHOUT_TIME_ZONE        ,   1,   1,   1),
 	TIME_WITHOUT_ZONE             ("TIME WITHOUT TIME ZONE"         ,StandardTypeMetadata.TIME_WITHOUT_TIME_ZONE        ,   1,   1,   1),
 	TIME_UNCONSTRAINED            ("TIME_UNCONSTRAINED"             ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
@@ -286,6 +286,7 @@ public enum ClickHouseTypeMetadataAlias implements TypeMetadataAlias {
 	VARCHAR                       ("VARCHAR"                        ,StandardTypeMetadata.STRING                        ,   1,   1,   1),
 	VARCHAR2                      ("VARCHAR2"                       ,StandardTypeMetadata.STRING                        ,   1,   1,   1),
 	VARCHARBYTE                   ("VARCHARBYTE"                    ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
+	VECTOR                        ("VECTOR"                         ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	VERSION                       ("version"                        ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	XID                           ("XID"                            ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	XML                           ("XML"                            ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
@@ -302,7 +303,7 @@ public enum ClickHouseTypeMetadataAlias implements TypeMetadataAlias {
 	private String lengthRefer               ; // 读取元数据依据-长度
 	private String precisionRefer            ; // 读取元数据依据-有效位数
 	private String scaleRefer                ; // 读取元数据依据-小数位数
-	private TypeMetadata.Refer config       ; // 集成元数据读写配置
+	private TypeMetadata.Refer refer       ; // 集成元数据读写配置
 
 	ClickHouseTypeMetadataAlias(String input, TypeMetadata standard, String meta, String formula, String lengthRefer, String precisionRefer, String scaleRefer, int ignoreLength, int ignorePrecision, int ignoreScale){
 		this.input = input;
@@ -356,34 +357,34 @@ public enum ClickHouseTypeMetadataAlias implements TypeMetadataAlias {
 	}
 
 	@Override
-	public TypeMetadata.Refer config() {
-		if(null == config){
-			config = new TypeMetadata.Refer();
+	public TypeMetadata.Refer refer() {
+		if(null == refer){
+			refer = new TypeMetadata.Refer();
 			if(null != meta) {
-				config.setMeta(meta);
+				refer.setMeta(meta);
 			}
 			if(null != formula) {
-				config.setFormula(formula);
+				refer.setFormula(formula);
 			}
 			if(null != lengthRefer) {
-				config.setLengthRefer(lengthRefer);
+				refer.setLengthRefer(lengthRefer);
 			}
 			if(null != precisionRefer) {
-				config.setPrecisionRefer(precisionRefer);
+				refer.setPrecisionRefer(precisionRefer);
 			}
 			if(null != scaleRefer) {
-				config.setScaleRefer(scaleRefer);
+				refer.setScaleRefer(scaleRefer);
 			}
 			if(-1 != ignoreLength) {
-				config.setIgnoreLength(ignoreLength);
+				refer.setIgnoreLength(ignoreLength);
 			}
 			if(-1 != ignorePrecision) {
-				config.setIgnorePrecision(ignorePrecision);
+				refer.setIgnorePrecision(ignorePrecision);
 			}
 			if(-1 != ignoreScale) {
-				config.setIgnoreScale(ignoreScale);
+				refer.setIgnoreScale(ignoreScale);
 			}
 		}
-		return config;
+		return refer;
 	}
 }

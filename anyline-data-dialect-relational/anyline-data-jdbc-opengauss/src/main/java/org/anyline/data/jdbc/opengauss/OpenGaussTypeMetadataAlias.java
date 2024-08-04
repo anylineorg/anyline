@@ -56,8 +56,8 @@ public enum OpenGaussTypeMetadataAlias implements TypeMetadataAlias {
 	TIME                          ("TIME"                           ,StandardTypeMetadata.TIME                          ,   1,   1,   1),
 	TIMESTAMP                     ("TIMESTAMP"                      ,StandardTypeMetadata.TIMESTAMP                     , "TIMESTAMP"                      , "TIMESTAMP({S})"                      , null   , null   , null   ,   1,   1,   2),
 	TIMESTAMP_WITH_LOCAL_ZONE     ("TIMESTAMP WITH LOCAL TIME ZONE" ,StandardTypeMetadata.TIMESTAMP_WITH_LOCAL_ZONE     , "TIMESTAMP WITH LOCAL TIME ZONE" , "TIMESTAMP({S}) WITH LOCAL TIME ZONE" , null   , null   , null   ,   1,   2,   1),
-	TIMESTAMP_WITH_TIME_ZONE      ("TIMESTAMP WITH TIME ZONE"       ,StandardTypeMetadata.TIMESTAMP_WITH_TIME_ZONE      , "TIMESTAMP WITH TIME ZONE"       , "TIMESTAMP({S}) WITH TIME ZONE"       , null   , null   , null   ,   1,   2,   1),
 	TIMESTAMP_WITH_ZONE           ("TIMESTAMP WITH TIME ZONE"       ,StandardTypeMetadata.TIMESTAMP_WITH_TIME_ZONE      , "TIMESTAMP WITH TIME ZONE"       , "TIMESTAMP({S}) WITH TIME ZONE"       , null   , null   , null   ,   1,   1,   2),
+	TIMESTAMP_WITH_TIME_ZONE      ("TIMESTAMP WITH TIME ZONE"       ,StandardTypeMetadata.TIMESTAMP_WITH_TIME_ZONE      , "TIMESTAMP WITH TIME ZONE"       , "TIMESTAMP({S}) WITH TIME ZONE"       , null   , null   , null   ,   1,   2,   1),
 	TIMESTAMPTZ                   ("TIMESTAMPTZ"                    ,StandardTypeMetadata.TIMESTAMPTZ                   , "TIMESTAMP WITH TIME ZONE"       , "TIMESTAMP({S}) WITH TIME ZONE"       , null   , null   , null   ,   1,   1,   1),
 	TIMEZ                         ("TIMEZ"                          ,StandardTypeMetadata.TIMEZ                         ,   1,   1,   1),
 	TSQUERY                       ("TSQUERY"                        ,StandardTypeMetadata.TSQUERY                       ,   1,   1,   1),
@@ -66,6 +66,7 @@ public enum OpenGaussTypeMetadataAlias implements TypeMetadataAlias {
 	UUID                          ("UUID"                           ,StandardTypeMetadata.UUID                          ,   1,   1,   1),
 	VARBIT                        ("VARBIT"                         ,StandardTypeMetadata.VARBIT                        ,   1,   1,   1),
 	VARCHAR                       ("VARCHAR"                        ,StandardTypeMetadata.VARCHAR                       ,   0,   1,   1),
+	VECTOR                        ("VECTOR"                         ,StandardTypeMetadata.VECTOR                        ,   1,   0,   1),
 	XML                           ("XML"                            ,StandardTypeMetadata.XML                           ,   1,   1,   1),
 	ACLITEM                       ("ACLITEM"                        ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	AGG_STATE                     ("AGG_STATE"                      ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
@@ -94,8 +95,8 @@ public enum OpenGaussTypeMetadataAlias implements TypeMetadataAlias {
 	DATE_NANOS                    ("date_nanos"                     ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	CLICKHOUSE_DATE32             ("Date32"                         ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	DATERANGE                     ("DATERANGE"                      ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
-	DATETIME                      ("DATETIME"                       ,StandardTypeMetadata.TIMESTAMP                     ,   1,   1,   2),
 	CLICKHOUSE_DATETIME64         ("DateTime"                       ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
+	DATETIME                      ("DATETIME"                       ,StandardTypeMetadata.TIMESTAMP                     ,   1,   1,   2),
 	DATETIME_WITH_TIME_ZONE       ("DATETIME WITH TIME ZONE"        ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	DATETIME2                     ("DATETIME2"                      ,StandardTypeMetadata.TIMESTAMP                     ,   1,   1,   2),
 	DATETIMEOFFSET                ("DATETIMEOFFSET"                 ,StandardTypeMetadata.TIMESTAMP                     ,   1,   1,   2),
@@ -105,7 +106,7 @@ public enum OpenGaussTypeMetadataAlias implements TypeMetadataAlias {
 	CLICKHOUSE_DECIMAL256         ("Decimal256"                     ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	CLICKHOUSE_DECIMAL32          ("Decimal32"                      ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	CLICKHOUSE_DECIMAL64          ("Decimal64"                      ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
-	DENSE_VECTOR                  ("dense_vector"                   ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
+	DENSE_VECTOR                  ("dense_vector"                   ,StandardTypeMetadata.VECTOR                        ,  -1,  -1,  -1),
 	DOUBLE                        ("DOUBLE"                         ,StandardTypeMetadata.DECIMAL                       ,   1,   0,   0),
 	DOUBLE_PRECISION              ("DOUBLE PRECISION"               ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	DSINTERVAL                    ("DSINTERVAL"                     ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
@@ -123,7 +124,7 @@ public enum OpenGaussTypeMetadataAlias implements TypeMetadataAlias {
 	GEOGRAPHY_POINT               ("GEOGRAPHY_POINT"                ,StandardTypeMetadata.POINT                         ,   1,   1,   1),
 	GEOMETRY                      ("GEOMETRY"                       ,StandardTypeMetadata.GEOMETRY                      ,  -1,  -1,  -1),
 	GEOMETRYCOLLECTION            ("GEOMETRYCOLLECTION"             ,StandardTypeMetadata.GEOMETRYCOLLECTION            ,  -1,  -1,  -1),
-	GTSVECTOR                     ("GTSVECTOR"                      ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
+	GTSVECTOR                     ("GTSVECTOR"                      ,StandardTypeMetadata.VECTOR                        ,  -1,  -1,  -1),
 	GUID                          ("GUID"                           ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	HALF_FLOAT                    ("half_float"                     ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	HIERARCHYID                   ("HIERARCHYID"                    ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
@@ -131,17 +132,17 @@ public enum OpenGaussTypeMetadataAlias implements TypeMetadataAlias {
 	HLL                           ("HLL"                            ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	IMAGE                         ("IMAGE"                          ,StandardTypeMetadata.BYTEA                         ,   1,   1,   1),
 	INT                           ("INT"                            ,StandardTypeMetadata.INT4                          ,   1,   1,   1),
-	CLICKHOUSE_INT128             ("Int128"                         ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	INT128                        ("INT128"                         ,StandardTypeMetadata.BIGINT                        ,   1,   1,   1),
-	CLICKHOUSE_INT16              ("Int16"                          ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
+	CLICKHOUSE_INT128             ("Int128"                         ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	INT16                         ("INT16"                          ,StandardTypeMetadata.BIGINT                        ,   1,   1,   1),
+	CLICKHOUSE_INT16              ("Int16"                          ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	CLICKHOUSE_INT256             ("Int256"                         ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	INT256                        ("INT256"                         ,StandardTypeMetadata.NUMBER                        ,   1,   2,   2),
 	CLICKHOUSE_INT32              ("Int32"                          ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	INT32                         ("INT32"                          ,StandardTypeMetadata.BIGINT                        ,   1,   1,   1),
 	INT4RANGE                     ("INT4RANGE"                      ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
-	CLICKHOUSE_INT64              ("Int64"                          ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	INT64                         ("INT64"                          ,StandardTypeMetadata.BIGINT                        ,   1,   1,   1),
+	CLICKHOUSE_INT64              ("Int64"                          ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	CLICKHOUSE_INT8               ("Int8"                           ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	INT8RANGE                     ("INT8RANGE"                      ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	INTEGER                       ("INTEGER"                        ,StandardTypeMetadata.INT4                          ,   1,   1,   1),
@@ -235,7 +236,7 @@ public enum OpenGaussTypeMetadataAlias implements TypeMetadataAlias {
 	SMALLFLOAT                    ("SMALLFLOAT"                     ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	SMALLINT                      ("SMALLINT"                       ,StandardTypeMetadata.INT2                          ,   1,   1,   1),
 	SMALLMONEY                    ("SMALLMONEY"                     ,StandardTypeMetadata.DECIMAL                       ,   1,   0,   0),
-	SPARSE_VECTOR                 ("sparse_vector"                  ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
+	SPARSE_VECTOR                 ("sparse_vector"                  ,StandardTypeMetadata.VECTOR                        ,  -1,  -1,  -1),
 	SQL_DATETIMEOFFSET            ("SQL_DATETIMEOFFSET"             ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	SQL_VARIANT                   ("SQL_VARIANT"                    ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	ST_GEOMETRY                   ("ST_GEOMETRY"                    ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
@@ -249,11 +250,11 @@ public enum OpenGaussTypeMetadataAlias implements TypeMetadataAlias {
 	TIME_TZ_UNCONSTRAINED         ("TIME TZ UNCONSTRAINED"          ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	TIME_WITH_ZONE                ("TIME WITH TIME ZONE"            ,StandardTypeMetadata.TIME_WITH_TIME_ZONE           ,   1,   1,   1),
 	TIME_WITH_TIME_ZONE           ("TIME WITH TIME ZONE"            ,StandardTypeMetadata.TIME_WITH_TIME_ZONE           ,   1,   1,   1),
-	TIME_WITHOUT_ZONE             ("TIME WITHOUT TIME ZONE"         ,StandardTypeMetadata.TIME_WITHOUT_TIME_ZONE        ,   1,   1,   1),
 	TIME_WITHOUT_TIME_ZONE        ("TIME WITHOUT TIME ZONE"         ,StandardTypeMetadata.TIME_WITHOUT_TIME_ZONE        ,   1,   1,   1),
+	TIME_WITHOUT_ZONE             ("TIME WITHOUT TIME ZONE"         ,StandardTypeMetadata.TIME_WITHOUT_TIME_ZONE        ,   1,   1,   1),
 	TIME_UNCONSTRAINED            ("TIME_UNCONSTRAINED"             ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
-	TIMESTAMP_WITHOUT_TIME_ZONE   ("TIMESTAMP WITHOUT TIME ZONE"    ,StandardTypeMetadata.TIMESTAMP_WITHOUT_TIME_ZONE   , "TIMESTAMP WITHOUT TIME ZONE"    , "TIMESTAMP({S}) WITHOUT TIME ZONE"    , null   , null   , null   ,   1,   2,   1),
 	TIMESTAMP_WITHOUT_ZONE        ("TIMESTAMP WITHOUT TIME ZONE"    ,StandardTypeMetadata.TIMESTAMP_WITHOUT_TIME_ZONE   , "TIMESTAMP WITHOUT TIME ZONE"    , "TIMESTAMP({S}) WITHOUT TIME ZONE"    , null   , null   , null   ,   1,   2,   1),
+	TIMESTAMP_WITHOUT_TIME_ZONE   ("TIMESTAMP WITHOUT TIME ZONE"    ,StandardTypeMetadata.TIMESTAMP_WITHOUT_TIME_ZONE   , "TIMESTAMP WITHOUT TIME ZONE"    , "TIMESTAMP({S}) WITHOUT TIME ZONE"    , null   , null   , null   ,   1,   2,   1),
 	TINYBLOB                      ("TINYBLOB"                       ,StandardTypeMetadata.BYTEA                         ,   1,   1,   1),
 	TINYINT                       ("TINYINT"                        ,StandardTypeMetadata.INT2                          ,   1,   1,   1),
 	TINYTEXT                      ("TINYTEXT"                       ,StandardTypeMetadata.TEXT                          ,   1,   1,   1),
@@ -288,7 +289,7 @@ public enum OpenGaussTypeMetadataAlias implements TypeMetadataAlias {
 	private String lengthRefer               ; // 读取元数据依据-长度
 	private String precisionRefer            ; // 读取元数据依据-有效位数
 	private String scaleRefer                ; // 读取元数据依据-小数位数
-	private TypeMetadata.Refer config       ; // 集成元数据读写配置
+	private TypeMetadata.Refer refer       ; // 集成元数据读写配置
 
 	OpenGaussTypeMetadataAlias(String input, TypeMetadata standard, String meta, String formula, String lengthRefer, String precisionRefer, String scaleRefer, int ignoreLength, int ignorePrecision, int ignoreScale){
 		this.input = input;
@@ -342,34 +343,34 @@ public enum OpenGaussTypeMetadataAlias implements TypeMetadataAlias {
 	}
 
 	@Override
-	public TypeMetadata.Refer config() {
-		if(null == config){
-			config = new TypeMetadata.Refer();
+	public TypeMetadata.Refer refer() {
+		if(null == refer){
+			refer = new TypeMetadata.Refer();
 			if(null != meta) {
-				config.setMeta(meta);
+				refer.setMeta(meta);
 			}
 			if(null != formula) {
-				config.setFormula(formula);
+				refer.setFormula(formula);
 			}
 			if(null != lengthRefer) {
-				config.setLengthRefer(lengthRefer);
+				refer.setLengthRefer(lengthRefer);
 			}
 			if(null != precisionRefer) {
-				config.setPrecisionRefer(precisionRefer);
+				refer.setPrecisionRefer(precisionRefer);
 			}
 			if(null != scaleRefer) {
-				config.setScaleRefer(scaleRefer);
+				refer.setScaleRefer(scaleRefer);
 			}
 			if(-1 != ignoreLength) {
-				config.setIgnoreLength(ignoreLength);
+				refer.setIgnoreLength(ignoreLength);
 			}
 			if(-1 != ignorePrecision) {
-				config.setIgnorePrecision(ignorePrecision);
+				refer.setIgnorePrecision(ignorePrecision);
 			}
 			if(-1 != ignoreScale) {
-				config.setIgnoreScale(ignoreScale);
+				refer.setIgnoreScale(ignoreScale);
 			}
 		}
-		return config;
+		return refer;
 	}
 }

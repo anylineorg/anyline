@@ -272,6 +272,7 @@ public enum HiveTypeMetadataAlias implements TypeMetadataAlias {
 	VARBIT                        ("VARBIT"                         ,StandardTypeMetadata.BINARY                        ,   0,   1,   1),
 	VARCHAR2                      ("VARCHAR2"                       ,StandardTypeMetadata.VARCHAR                       ,   0,   1,   1),
 	VARCHARBYTE                   ("VARCHARBYTE"                    ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
+	VECTOR                        ("VECTOR"                         ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	VERSION                       ("version"                        ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	XID                           ("XID"                            ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	XML                           ("XML"                            ,StandardTypeMetadata.STRING                        ,   1,   1,   1),
@@ -288,7 +289,7 @@ public enum HiveTypeMetadataAlias implements TypeMetadataAlias {
 	private String lengthRefer               ; // 读取元数据依据-长度
 	private String precisionRefer            ; // 读取元数据依据-有效位数
 	private String scaleRefer                ; // 读取元数据依据-小数位数
-	private TypeMetadata.Refer config       ; // 集成元数据读写配置
+	private TypeMetadata.Refer refer       ; // 集成元数据读写配置
 
 	HiveTypeMetadataAlias(String input, TypeMetadata standard, String meta, String formula, String lengthRefer, String precisionRefer, String scaleRefer, int ignoreLength, int ignorePrecision, int ignoreScale){
 		this.input = input;
@@ -342,34 +343,34 @@ public enum HiveTypeMetadataAlias implements TypeMetadataAlias {
 	}
 
 	@Override
-	public TypeMetadata.Refer config() {
-		if(null == config){
-			config = new TypeMetadata.Refer();
+	public TypeMetadata.Refer refer() {
+		if(null == refer){
+			refer = new TypeMetadata.Refer();
 			if(null != meta) {
-				config.setMeta(meta);
+				refer.setMeta(meta);
 			}
 			if(null != formula) {
-				config.setFormula(formula);
+				refer.setFormula(formula);
 			}
 			if(null != lengthRefer) {
-				config.setLengthRefer(lengthRefer);
+				refer.setLengthRefer(lengthRefer);
 			}
 			if(null != precisionRefer) {
-				config.setPrecisionRefer(precisionRefer);
+				refer.setPrecisionRefer(precisionRefer);
 			}
 			if(null != scaleRefer) {
-				config.setScaleRefer(scaleRefer);
+				refer.setScaleRefer(scaleRefer);
 			}
 			if(-1 != ignoreLength) {
-				config.setIgnoreLength(ignoreLength);
+				refer.setIgnoreLength(ignoreLength);
 			}
 			if(-1 != ignorePrecision) {
-				config.setIgnorePrecision(ignorePrecision);
+				refer.setIgnorePrecision(ignorePrecision);
 			}
 			if(-1 != ignoreScale) {
-				config.setIgnoreScale(ignoreScale);
+				refer.setIgnoreScale(ignoreScale);
 			}
 		}
-		return config;
+		return refer;
 	}
 }

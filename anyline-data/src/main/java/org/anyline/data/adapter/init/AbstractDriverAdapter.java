@@ -255,10 +255,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         }
         alias(alias.input(), standard);                                        //根据别名
         alias(standard.getName(), standard);                                        //根据实现SQL数据类型名称
-        TypeMetadata.Refer config = alias.config();
-        reg(alias.input(), config);
-        reg(alias.standard(), config);
-        return config;
+        TypeMetadata.Refer refer = alias.refer();
+        reg(alias.input(), refer);
+        reg(alias.standard(), refer);
+        return refer;
     }
     protected void alias(String key, TypeMetadata value) {
         if(null != key && null != value && TypeMetadata.NONE != value) {

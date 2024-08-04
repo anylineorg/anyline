@@ -245,8 +245,8 @@ public enum ElasticSearchTypeMetadataAlias implements TypeMetadataAlias {
 	TIMESTAMP_WITH_LOCAL_ZONE     ("TIMESTAMP WITH LOCAL TIME ZONE" ,StandardTypeMetadata.DATE                      , "date"          , "date"          , null   , null   , null   ,   1,   1,   1),
 	TIMESTAMP_WITH_TIME_ZONE      ("TIMESTAMP WITH TIME ZONE"       ,StandardTypeMetadata.DATE                      , "date"          , "date"          , null   , null   , null   ,   1,   1,   1),
 	TIMESTAMP_WITH_ZONE           ("TIMESTAMP WITH TIME ZONE"       ,StandardTypeMetadata.DATE                      , "date"          , "date"          , null   , null   , null   ,   1,   1,   1),
-	TIMESTAMP_WITHOUT_ZONE        ("TIMESTAMP WITHOUT TIME ZONE"    ,StandardTypeMetadata.DATE                      , "date"          , "date"          , null   , null   , null   ,   1,   1,   1),
 	TIMESTAMP_WITHOUT_TIME_ZONE   ("TIMESTAMP WITHOUT TIME ZONE"    ,StandardTypeMetadata.DATE                      , "date"          , "date"          , null   , null   , null   ,   1,   1,   1),
+	TIMESTAMP_WITHOUT_ZONE        ("TIMESTAMP WITHOUT TIME ZONE"    ,StandardTypeMetadata.DATE                      , "date"          , "date"          , null   , null   , null   ,   1,   1,   1),
 	TIMESTAMPTZ                   ("TIMESTAMPTZ"                    ,StandardTypeMetadata.NONE                      ,   1,  -1,  -1),
 	TIMEZ                         ("TIMEZ"                          ,StandardTypeMetadata.DATE                      , "date"          , "date"          , null   , null   , null   ,   1,   1,   1),
 	TINYBLOB                      ("TINYBLOB"                       ,StandardTypeMetadata.BINARY                    , "binary"        , "binary"        , null   , null   , null   ,   0,   1,   1),
@@ -272,6 +272,7 @@ public enum ElasticSearchTypeMetadataAlias implements TypeMetadataAlias {
 	VARCHAR                       ("VARCHAR"                        ,StandardTypeMetadata.TEXT                      , "text"          , "text"          , null   , null   , null   ,   1,   1,   1),
 	VARCHAR2                      ("VARCHAR2"                       ,StandardTypeMetadata.TEXT                      , "text"          , "text"          , null   , null   , null   ,   1,   1,   1),
 	VARCHARBYTE                   ("VARCHARBYTE"                    ,StandardTypeMetadata.NONE                      ,  -1,  -1,  -1),
+	VECTOR                        ("VECTOR"                         ,StandardTypeMetadata.DENSE_VECTOR              ,  -1,  -1,  -1),
 	XID                           ("XID"                            ,StandardTypeMetadata.NONE                      ,  -1,  -1,  -1),
 	XML                           ("XML"                            ,StandardTypeMetadata.NONE                      ,  -1,  -1,  -1),
 	YEAR                          ("YEAR"                           ,StandardTypeMetadata.DATE                      , "date"          , "date"          , null   , null   , null   ,   1,   1,   1),
@@ -287,7 +288,7 @@ public enum ElasticSearchTypeMetadataAlias implements TypeMetadataAlias {
 	private String lengthRefer               ; // 读取元数据依据-长度
 	private String precisionRefer            ; // 读取元数据依据-有效位数
 	private String scaleRefer                ; // 读取元数据依据-小数位数
-	private TypeMetadata.Refer config       ; // 集成元数据读写配置
+	private TypeMetadata.Refer refer       ; // 集成元数据读写配置
 
 	ElasticSearchTypeMetadataAlias(String input, TypeMetadata standard, String meta, String formula, String lengthRefer, String precisionRefer, String scaleRefer, int ignoreLength, int ignorePrecision, int ignoreScale){
 		this.input = input;
@@ -341,34 +342,34 @@ public enum ElasticSearchTypeMetadataAlias implements TypeMetadataAlias {
 	}
 
 	@Override
-	public TypeMetadata.Refer config() {
-		if(null == config){
-			config = new TypeMetadata.Refer();
+	public TypeMetadata.Refer refer() {
+		if(null == refer){
+			refer = new TypeMetadata.Refer();
 			if(null != meta) {
-				config.setMeta(meta);
+				refer.setMeta(meta);
 			}
 			if(null != formula) {
-				config.setFormula(formula);
+				refer.setFormula(formula);
 			}
 			if(null != lengthRefer) {
-				config.setLengthRefer(lengthRefer);
+				refer.setLengthRefer(lengthRefer);
 			}
 			if(null != precisionRefer) {
-				config.setPrecisionRefer(precisionRefer);
+				refer.setPrecisionRefer(precisionRefer);
 			}
 			if(null != scaleRefer) {
-				config.setScaleRefer(scaleRefer);
+				refer.setScaleRefer(scaleRefer);
 			}
 			if(-1 != ignoreLength) {
-				config.setIgnoreLength(ignoreLength);
+				refer.setIgnoreLength(ignoreLength);
 			}
 			if(-1 != ignorePrecision) {
-				config.setIgnorePrecision(ignorePrecision);
+				refer.setIgnorePrecision(ignorePrecision);
 			}
 			if(-1 != ignoreScale) {
-				config.setIgnoreScale(ignoreScale);
+				refer.setIgnoreScale(ignoreScale);
 			}
 		}
-		return config;
+		return refer;
 	}
 }

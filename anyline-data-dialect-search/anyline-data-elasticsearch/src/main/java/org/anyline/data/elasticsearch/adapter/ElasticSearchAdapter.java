@@ -82,9 +82,9 @@ public class ElasticSearchAdapter extends AbstractDriverAdapter implements Drive
         super();
         for (ElasticSearchTypeMetadataAlias alias : ElasticSearchTypeMetadataAlias.values()) {
             this.alias.put(alias.name(), alias.standard());
-            TypeMetadata.Refer config = alias.config();
-            reg(alias.name(), config);
-            reg(alias.standard(), config);
+            TypeMetadata.Refer refer = alias.refer();
+            reg(alias.name(), refer);
+            reg(alias.standard(), refer);
         }
     }
 
