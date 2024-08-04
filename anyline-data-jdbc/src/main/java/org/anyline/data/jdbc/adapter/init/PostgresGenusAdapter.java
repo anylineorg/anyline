@@ -2499,8 +2499,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         refer.setRefer("schema", "TABLE_SCHEMA");
         refer.setRefer("Table", "TABLE_NAME");
         refer.setRefer("Nullable", "IS_NULLABLE");
-        //refer.setRefer("Charset", "");
-        //refer.setRefer("Collate", "");
+
         refer.setRefer("data_type", "DATA_TYPE,FULL_TYPE");
         refer.setRefer("Position", "ORDINAL_POSITION");
         refer.setRefer("Comment", "COLUMN_COMMENT");//SQL组装
