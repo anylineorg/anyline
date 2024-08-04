@@ -2656,6 +2656,12 @@ public interface DriverAdapter {
     MetadataFieldRefer initTableFieldRefer();
 
     /**
+     * Table[结果集封装]<br/>
+     * TableComment 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    MetadataFieldRefer initTableCommentFieldRefer();
+    /**
      * table[命令合成]<br/>
      * 查询表备注
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端

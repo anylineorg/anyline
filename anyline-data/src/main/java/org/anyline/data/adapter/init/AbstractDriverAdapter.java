@@ -210,6 +210,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         reg(initSchemaFieldRefer());
         reg(initDatabaseFieldRefer());
         reg(initTableFieldRefer());
+        reg(initTableCommentFieldRefer());
         reg(initMasterTableFieldRefer());
         reg(initColumnFieldRefer());
         reg(initViewFieldRefer());
@@ -5465,6 +5466,21 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         refer.setRefer("comment", "TABLE_COMMENT,COMMENTS,COMMENT");
         return refer;
     }
+
+    /**
+     * Table[结果集封装]<br/>
+     * TableComment 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer initTableCommentFieldRefer() {
+        MetadataFieldRefer refer = new MetadataFieldRefer(TableComment.class);
+        refer.setRefer("value", "TABLE_COMMENT");
+        refer.setRefer("table", "TABLE_NAME");
+        refer.setRefer("catalog", "TABLE_CATALOG");
+        refer.setRefer("schema", "TABLE_SCHEMA");
+        return refer;
+    }
 	/**
 	 * table[命令合成]<br/>
 	 * 查询表备注
@@ -5647,10 +5663,21 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public <T extends Table> T detail(DataRuntime runtime, int index, T meta, Table query, DataRow row) {
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Table> T detail(DataRuntime runtime, int index, T meta, Table query, DataRow row)", 37));
-		}
-		return meta;
+        MetadataFieldRefer refer = refer(runtime, Table.class);
+        meta.setObjectId(getLong(row, refer, "object"));
+        meta.setComment(getString(row, refer, "comment"));
+        meta.setDataRows(getLong(row, refer, "rows"));
+        meta.setCollate(getString(row, refer, "collation"));
+        meta.setDataLength(getLong(row, refer, "length"));
+        meta.setDataFree(getLong(row, refer, "free"));
+        meta.setIncrement(getLong(row, refer, "Increment"));
+        meta.setIndexLength(getLong(row, refer, "index_length"));
+        meta.setCreateTime(getDate(row, refer, "create_time"));
+        meta.setUpdateTime(getDate(row, refer, "update_time"));
+        meta.setType(getString(row, refer, "type"));
+        meta.setEngine(getString(row, refer, "engine"));
+        meta.setTemporary(getBoolean(row, refer, "temporary", false));
+        return meta;
 	}
 
 	/**
@@ -5667,13 +5694,21 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public <T extends Table> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Table query, DataSet set) throws Exception {
-		if(null == previous) {
+        if(null == previous) {
             previous = new LinkedHashMap<>();
-		}
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Table> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, Table query, DataSet set)", 37));
-		}
-		return previous;
+        }
+        MetadataFieldRefer refer = new MetadataFieldRefer(TableComment.class);
+        for(DataRow row:set) {
+            String tab = getString(row, refer, "table");
+            String comment = getString(row, refer, "value");
+            if(null != tab && null != comment) {
+                Table table = previous.get(tab.toUpperCase());
+                if(null != table) {
+                    table.setComment(comment);
+                }
+            }
+        }
+        return previous;
 	}
 
 	/**
@@ -5690,13 +5725,40 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public <T extends Table> List<T> comments(DataRuntime runtime, int index, boolean create, List<T> previous, Table query, DataSet set) throws Exception {
-		if(null == previous) {
-			previous = new ArrayList<>();
-		}
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现  <T extends Table> List<T> comments(DataRuntime runtime, int index, boolean create, List<T> previous, Table query, DataSet set)", 37));
-		}
-		return previous;
+        Catalog catalog = query.getCatalog();
+        Schema schema = query.getSchema();
+        if(null == previous) {
+            previous = new ArrayList<>();
+        }
+        MetadataFieldRefer refer = new MetadataFieldRefer(TableComment.class);
+        for(DataRow row:set) {
+            String tab = getString(row, refer, "table");
+            String comment = getString(row, refer, "value");
+            String catlog_ = getString(row, refer, "catalog");
+            String schema_ = getString(row, refer, "schema");
+            if(null == catalog && BasicUtil.isNotEmpty(catlog_)) {
+                catalog = new Catalog(catlog_);
+            }
+            if(null == schema && BasicUtil.isNotEmpty(schema_)) {
+                schema = new Schema(schema_);
+            }
+
+            boolean contains = true;
+            T table = search(previous, catalog, schema, tab);
+            if (null == table) {
+                if (create) {
+                    table = (T) new Table(catalog, schema, tab);
+                    contains = false;
+                } else {
+                    continue;
+                }
+            }
+            table.setComment(comment);
+            if (!contains) {
+                previous.add(table);
+            }
+        }
+        return previous;
 	}
 
 	/**
@@ -16798,6 +16860,62 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * protected Object value(List<String> keys, String key, ResultSet set) throws Exception
 	 ******************************************************************************************************************/
 
+    protected String getString(DataRow row, MetadataFieldRefer refer, String key){
+        String result = null;
+        String[] keys = refer.getRefers(key);
+        if(null != keys && keys.length > 0){
+            result = row.getString(keys);
+        }
+        return result;
+    }
+
+    protected Boolean getBoolean(DataRow row, MetadataFieldRefer refer, String key, Boolean def){
+        Boolean result = null;
+        try{
+            String[] keys = refer.getRefers(key);
+            if(null != keys && keys.length > 0){
+                result = row.getBoolean(keys);
+            }
+        }catch (Exception ignore){}
+        if(null == result){
+            result = def;
+        }
+        return result;
+    }
+    protected Date getDate(DataRow row, MetadataFieldRefer refer, String key, Date def){
+        Date result = null;
+        try{
+            String[] keys = refer.getRefers(key);
+            if(null != keys && keys.length > 0){
+                result = row.getDate(keys);
+            }
+        }catch (Exception ignore){}
+        if(null == result){
+            result = def;
+        }
+        return result;
+    }
+
+    protected Date getDate(DataRow row, MetadataFieldRefer refer, String key){
+        return getDate(row, refer, key, null);
+    }
+    protected Long getLong(DataRow row, MetadataFieldRefer refer, String key, Long def){
+        Long result = null;
+        try{
+            String[] keys = refer.getRefers(key);
+            if(null != keys && keys.length > 0){
+                result = row.getLong(keys);
+            }
+        }catch (Exception ignore){}
+        if(null == result){
+            result = def;
+        }
+        return result;
+    }
+
+    protected Long getLong(DataRow row, MetadataFieldRefer refer, String key){
+        return getLong(row, refer, key, null);
+    }
 	/**
 	 * 转换成相应数据库类型<br/>
 	 * 把编码时输入的数据类型如(long)转换成具体数据库中对应的数据类型<br/>

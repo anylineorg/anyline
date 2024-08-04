@@ -2719,20 +2719,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
      */
     @Override
     public <T extends Table> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Table query, DataSet set) throws Exception {
-        if(null == previous) {
-            previous = new LinkedHashMap<>();
-        }
-        for(DataRow row:set) {
-            String name = row.getString("TABLE_NAME");
-            String comment = row.getString("TABLE_COMMENT");
-            if(null != name && null != comment) {
-                Table table = previous.get(name.toUpperCase());
-                if(null != table) {
-                    table.setComment(comment);
-                }
-            }
-        }
-        return previous;
+        return super.comments(runtime, index, create, previous, query, set);
     }
 
     /**
@@ -2749,37 +2736,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
      */
     @Override
     public <T extends Table> List<T> comments(DataRuntime runtime, int index, boolean create, List<T> previous, Table query, DataSet set) throws Exception {
-        Catalog catalog = query.getCatalog();
-        Schema schema = query.getSchema();
-        if(null == previous) {
-            previous = new ArrayList<>();
-        }
-        for(DataRow row:set) {
-            String name = row.getString("TABLE_NAME");
-            String comment = row.getString("TABLE_COMMENT");
-            if(null == catalog && row.isNotEmpty("TABLE_CATALOG")) {
-                catalog = new Catalog(row.getString("TABLE_CATALOG"));
-            }
-            if(null == schema && row.isNotEmpty("TABLE_SCHEMA")) {
-                schema = new Schema(row.getString("TABLE_SCHEMA"));
-            }
-
-            boolean contains = true;
-            T table = search(previous, catalog, schema, name);
-            if (null == table) {
-                if (create) {
-                    table = (T) new Table(catalog, schema, name);
-                    contains = false;
-                } else {
-                    continue;
-                }
-            }
-            table.setComment(comment);
-            if (!contains) {
-                previous.add(table);
-            }
-        }
-        return previous;
+        return super.comments(runtime, index, create, previous, query, set);
     }
 
     /**
@@ -2847,25 +2804,8 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
      */
     @Override
     public <T extends Table> T detail(DataRuntime runtime, int index, T meta, Table query, DataRow row) {
-        MetadataFieldRefer refer = refer(runtime, Table.class);
-        meta.setObjectId(row.getLong("OBJECT_ID", (Long)null));
-        meta.setEngine(row.getString("ENGINE"));
-        meta.setComment(row.getString(refer.getRefers("Comment")));
-        meta.setDataRows(row.getLong("TABLE_ROWS", (Long)null));
-        meta.setCollate(row.getString("TABLE_COLLATION"));
-        meta.setDataLength(row.getLong("DATA_LENGTH", (Long)null));
-        meta.setDataFree(row.getLong("DATA_FREE", (Long)null));
-        meta.setIncrement(row.getLong("AUTO_INCREMENT", (Long)null));
-        meta.setIndexLength(row.getLong("INDEX_LENGTH", (Long)null));
-        meta.setCreateTime(row.getDate("CREATE_TIME", (Date)null));
-        meta.setUpdateTime(row.getDate("UPDATE_TIME", (Date)null));
-        meta.setType(row.getString("TABLE_TYPE"));
-        meta.setEngine(row.getString("ENGINE"));
-        meta.setTemporary(row.getBoolean("IS_TEMPORARY", false));
-        return meta;
+        return super.detail(runtime, index, meta, query, row);
     }
-
-
     /* *****************************************************************************************************************
      *                                                     view
      * -----------------------------------------------------------------------------------------------------------------
@@ -3094,21 +3034,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
      */
     @Override
     public <T extends View> T detail(DataRuntime runtime, int index, T meta, View query, DataRow row) {
-        meta.setObjectId(row.getLong("OBJECT_ID", (Long)null));
-        meta.setEngine(row.getString("ENGINE"));
-        meta.setComment(row.getString("VIEW_COMMENT","TABLE_COMMENT","COMMENTS","COMMENT"));
-        meta.setDataRows(row.getLong("TABLE_ROWS", (Long)null));
-        meta.setCollate(row.getString("TABLE_COLLATION"));
-        meta.setDataLength(row.getLong("DATA_LENGTH", (Long)null));
-        meta.setDataFree(row.getLong("DATA_FREE", (Long)null));
-        meta.setIncrement(row.getLong("AUTO_INCREMENT", (Long)null));
-        meta.setIndexLength(row.getLong("INDEX_LENGTH", (Long)null));
-        meta.setCreateTime(row.getDate("CREATE_TIME", (Date)null));
-        meta.setUpdateTime(row.getDate("UPDATE_TIME", (Date)null));
-        meta.setType(row.getString("TABLE_TYPE"));
-        meta.setEngine(row.getString("ENGINE"));
-        meta.setDefinition(row.getString("VIEW_DEFINITION"));
-        return meta;
+        return super.detail(runtime, index, meta, query, row);
     }
 
     /* *****************************************************************************************************************
@@ -4289,18 +4215,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 */
 	@Override
 	public List<Run> buildQueryConstraintsRun(DataRuntime runtime, boolean greedy, Constraint query) {
-		Table table = query.getTable();
-		LinkedHashMap<String, Column>  columns = query.getColumns();
-		List<Run> runs = new ArrayList<>();
-		Run run = new SimpleRun(runtime);
-		runs.add(run);
-		StringBuilder builder = run.getBuilder();
-        ConfigStore configs = run.getConfigs();
-		builder.append("SELECT * FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS");
-        configs.and("CONSTRAINT_CATALOG", query.getCatalogName());
-        configs.and("CONSTRAINT_SCHEMA", query.getSchemaName());
-        configs.and("TABLE_NAME", query.getTableName());
-		return runs;
+		return super.buildQueryConstraintsRun(runtime, greedy, query);
 	}
 
     /**
@@ -4310,12 +4225,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
      */
     @Override
     public MetadataFieldRefer initConstraintFieldRefer() {
-        MetadataFieldRefer refer = new MetadataFieldRefer(Constraint.class);
-        refer.setRefer("name", "CONSTRAINT_NAME");
-        refer.setRefer("schema", "CONSTRAINT_CATALOG");
-        refer.setRefer("table", "TABLE_NAME");
-        refer.setRefer("type", "CONSTRAINT_TYPE");
-        return refer;
+        return super.initConstraintFieldRefer();
     }
 	/**
 	 * constraint[结果集封装]<br/>

@@ -1918,7 +1918,36 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public MetadataFieldRefer initTableFieldRefer() {
+        MetadataFieldRefer refer = new MetadataFieldRefer(Table.class);
+        refer.setRefer("name", "TABLE_NAME");
+        refer.setRefer("schema", "TABLE_SCHEMA");
+        refer.setRefer("type", "TABLE_TYPE");
+        refer.setRefer("engine", "ENGINE");
+        refer.setRefer("object", "OBJECT_ID");
+        refer.setRefer("rows", "TABLE_ROWS");
+        refer.setRefer("collation", "TABLE_COLLATION");
+        refer.setRefer("length", "DATA_LENGTH");
+        refer.setRefer("free", "DATA_FREE");
+        refer.setRefer("increment", "AUTO_INCREMENT");
+        refer.setRefer("index_length", "INDEX_LENGTH");
+        refer.setRefer("create_time", "CREATE_TIME");
+        refer.setRefer("update_time", "UPDATE_TIME");
+        refer.setRefer("temporary", "IS_TEMPORARY");
         return super.initTableFieldRefer();
+    }
+    /**
+     * Table[结果集封装]<br/>
+     * TableComment 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer initTableCommentFieldRefer() {
+        MetadataFieldRefer refer = new MetadataFieldRefer(TableComment.class);
+        refer.setRefer("value", "TABLE_COMMENT");
+        refer.setRefer("table", "TABLE_NAME");
+        refer.setRefer("catalog", "TABLE_CATALOG");
+        refer.setRefer("schema", "TABLE_SCHEMA");
+        return refer;
     }
     /**
      * table[命令合成]<br/>
@@ -3183,9 +3212,34 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public List<Run> buildQueryConstraintsRun(DataRuntime runtime, boolean greedy, Constraint query) {
-        return super.buildQueryConstraintsRun(runtime, greedy, query);
+        Table table = query.getTable();
+        LinkedHashMap<String, Column>  columns = query.getColumns();
+        List<Run> runs = new ArrayList<>();
+        Run run = new SimpleRun(runtime);
+        runs.add(run);
+        StringBuilder builder = run.getBuilder();
+        ConfigStore configs = run.getConfigs();
+        builder.append("SELECT * FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS");
+        configs.and("CONSTRAINT_CATALOG", query.getCatalogName());
+        configs.and("CONSTRAINT_SCHEMA", query.getSchemaName());
+        configs.and("TABLE_NAME", query.getTableName());
+        return runs;
     }
 
+    /**
+     * constraint[结果集封装]<br/>
+     * Constraint 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer initConstraintFieldRefer() {
+        MetadataFieldRefer refer = new MetadataFieldRefer(Constraint.class);
+        refer.setRefer("name", "CONSTRAINT_NAME");
+        refer.setRefer("schema", "CONSTRAINT_CATALOG");
+        refer.setRefer("table", "TABLE_NAME");
+        refer.setRefer("type", "CONSTRAINT_TYPE");
+        return refer;
+    }
     /**
      * constraint[结果集封装]<br/>
      * 根据查询结果集构造Constraint

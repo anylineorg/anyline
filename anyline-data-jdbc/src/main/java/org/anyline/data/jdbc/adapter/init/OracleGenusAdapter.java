@@ -2008,7 +2008,12 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public MetadataFieldRefer initTableFieldRefer() {
-        return super.initTableFieldRefer();
+        MetadataFieldRefer refer = new MetadataFieldRefer(Table.class);
+        refer.setRefer("name", "TABLE_NAME");
+        refer.setRefer("type", "TABLE_TYPE");
+        refer.setRefer("schema", "TABLE_SCHEMA");
+        refer.setRefer("comment", "COMMENTS");
+        return refer;
     }
     /**
      * table[命令合成]<br/>
