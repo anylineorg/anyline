@@ -2696,7 +2696,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         refer.setRefer("Nullable", "NULLABLE");
         refer.setRefer("Charset", "");//忽略
         refer.setRefer("Collate", "");//忽略
-        refer.setRefer("DataType", "DATA_TYPE");
+        refer.setRefer("data_type", "DATA_TYPE");
         refer.setRefer("Position", "COLUMN_ID");
         refer.setRefer("Comment", "COLUMN_COMMENT");//SQL组装
         refer.setRefer("Default", "DATA_DEFAULT");
@@ -2909,8 +2909,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         refer.setRefer("schema", "OWNER");
         refer.setRefer("Table", "TABLE_NAME");
         refer.setRefer("column", "COLUMN_NAME");
-        refer.setRefer("ColumnPosition", "POSITION");
-        refer.setRefer("ColumnOrder", (String)null);
+        refer.setRefer("column_position", "POSITION");
+        refer.setRefer("column_order", (String)null);
         return refer;
     }
     /**
@@ -3170,8 +3170,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         refer.setRefer("schema", "INDEX_OWNER");
         refer.setRefer("Catalog", "");
         refer.setRefer("column", "COLUMN_EXPRESSION,COLUMN_NAME");
-        refer.setRefer("ColumnOrder", "DESCEND");
-        refer.setRefer("ColumnPosition", "COLUMN_POSITION");
+        refer.setRefer("column_order", "DESCEND");
+        refer.setRefer("column_position", "COLUMN_POSITION");
         return refer;
     }
     /**

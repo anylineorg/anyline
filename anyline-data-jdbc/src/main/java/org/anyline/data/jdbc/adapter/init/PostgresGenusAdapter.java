@@ -2501,10 +2501,13 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         refer.setRefer("Nullable", "IS_NULLABLE");
         //refer.setRefer("Charset", "");
         //refer.setRefer("Collate", "");
-        refer.setRefer("DataType", "DATA_TYPE,FULL_TYPE");
+        refer.setRefer("data_type", "DATA_TYPE,FULL_TYPE");
         refer.setRefer("Position", "ORDINAL_POSITION");
         refer.setRefer("Comment", "COLUMN_COMMENT");//SQL组装
         refer.setRefer("Default", "COLUMN_DEFAULT");
+
+        refer.setRefer("autoincrement_check", "COLUMN_DEFAULT");
+        refer.setRefer("autoincrement_check_value", ".*nextval.*");
         return refer;
     }
     /**
@@ -3066,14 +3069,14 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         refer.setRefer("Table", "TABLE_NAME");
         refer.setRefer("schema", "SCHEMA_NAME");
         refer.setRefer("Type", "INDEX_TYPE");
-        refer.setRefer("CheckPrimary","IS_PRIMARY");
-        refer.setRefer("CheckPrimaryValue","T");
-        refer.setRefer("CheckUnique", "IS_UNIQUE");
-        refer.setRefer("CheckUniqueValue", "T");
+        refer.setRefer("primary_check","IS_PRIMARY");
+        refer.setRefer("primary_check_value","T");
+        refer.setRefer("unique_check", "IS_UNIQUE");
+        refer.setRefer("unique_check_value", "T");
         refer.setRefer("Catalog", "");
         refer.setRefer("column", "");
-        refer.setRefer("ColumnOrder", "");
-        refer.setRefer("ColumnPosition", "");
+        refer.setRefer("column_order", "");
+        refer.setRefer("column_position", "");
         return refer;
     }
     /**

@@ -2582,16 +2582,25 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public MetadataFieldRefer initColumnFieldRefer() {
         MetadataFieldRefer refer = new MetadataFieldRefer(Column.class);
         refer.setRefer("name", "COLUMN_NAME");
-        refer.setRefer("Catalog", "");//忽略
+        refer.setRefer("catalog", "");//忽略
         refer.setRefer("schema", "TABLE_SCHEMA");
-        refer.setRefer("Table", "TABLE_NAME");
-        refer.setRefer("Nullable", "IS_NULLABLE");
-        refer.setRefer("Charset", "CHARACTER_SET_NAME");
-        refer.setRefer("Collate", "COLLATION_NAME");
-        refer.setRefer("DataType", "COLUMN_TYPE");
-        refer.setRefer("Position", "ORDINAL_POSITION");
-        refer.setRefer("Comment", "COLUMN_COMMENT");
-        refer.setRefer("Default", "COLUMN_DEFAULT");
+        refer.setRefer("table", "TABLE_NAME");
+        refer.setRefer("nullable", "IS_NULLABLE");
+        refer.setRefer("charset", "CHARACTER_SET_NAME");
+        refer.setRefer("collate", "COLLATION_NAME");
+        refer.setRefer("data_type", "COLUMN_TYPE");
+        refer.setRefer("position", "ORDINAL_POSITION");
+        refer.setRefer("comment", "COLUMN_COMMENT");
+        refer.setRefer("default", "COLUMN_DEFAULT");
+
+        refer.setRefer("autoincrement_check", "EXTRA");
+        refer.setRefer("autoincrement_check_value", "auto_increment");
+
+        refer.setRefer("onupdate_check", "EXTRA");
+        refer.setRefer("onupdate_check_value", ".*on update.*");
+
+        refer.setRefer("primary_check","COLUMN_KEY");
+        refer.setRefer("primary_check_value","PRI");
         return refer;
     }
     /**
@@ -3059,12 +3068,12 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         refer.setRefer("Table", "TABLE_NAME");
         refer.setRefer("schema", "TABLE_SCHEMA");
         refer.setRefer("column", "COLUMN_NAME");
-        refer.setRefer("ColumnOrder", "COLLATION");
-        refer.setRefer("ColumnPosition", "SEQ_IN_INDEX");
-        refer.setRefer("CheckPrimary", "INDEX_NAME");
-        refer.setRefer("CheckPrimaryValue","PRIMARY");
-        refer.setRefer("CheckUnique", "NON_UNIQUE");
-        refer.setRefer("CheckUniqueValue", "0");
+        refer.setRefer("column_order", "COLLATION");
+        refer.setRefer("column_position", "SEQ_IN_INDEX");
+        refer.setRefer("primary_check", "INDEX_NAME");
+        refer.setRefer("primary_check_value","PRIMARY");
+        refer.setRefer("unique_check", "NON_UNIQUE");
+        refer.setRefer("unique_check_value", "0");
         refer.setRefer("Catalog", "");
         return refer;
     }

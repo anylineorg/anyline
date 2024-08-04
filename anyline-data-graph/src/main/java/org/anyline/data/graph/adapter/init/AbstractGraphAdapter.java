@@ -3937,7 +3937,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
             column.setTable(table);
             String position = row.getString(refer.getRefers("column"));
             primary.setPosition(column, BasicUtil.parseInt(position, 0));
-            String order = row.getString(refer.getRefers("ColumnOrder"));
+            String order = row.getString(refer.getRefers("column_order"));
             if(BasicUtil.isNotEmpty(order)) {
                 column.setOrder(order);
             }

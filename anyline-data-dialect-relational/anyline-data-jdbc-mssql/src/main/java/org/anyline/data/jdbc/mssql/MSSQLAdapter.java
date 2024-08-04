@@ -2449,7 +2449,18 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
      */
     @Override
     public MetadataFieldRefer initColumnFieldRefer() {
-        return super.initColumnFieldRefer();
+        MetadataFieldRefer refer = new MetadataFieldRefer(Column.class);
+        refer.setRefer("name", "COLUMN_NAME");
+        refer.setRefer("catalog", "CATALOG_NAME");
+        refer.setRefer("schema", "SCHEMA_NAME");
+        refer.setRefer("table", "TABLE_NAME");
+        refer.setRefer("nullable", "IS_NULLABLE");
+        refer.setRefer("data_type", "TYPE_NAME");
+        refer.setRefer("position", "COLUMN_ID");
+        refer.setRefer("comment", "COLUMN_COMMENT");
+        refer.setRefer("autoincrement_check", "IS_IDENTITY");
+        refer.setRefer("autoincrement_check_value", "true");
+        return refer;
     }
     /**
      * column[结果集封装]<br/>
@@ -2729,7 +2740,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         refer.setRefer("schema", "TABLE_SCHEMA");
         refer.setRefer("Table", "TABLE_NAME");
         refer.setRefer("column", "COLUMN_NAME");
-        refer.setRefer("ColumnPosition", "ORDINAL_POSITION");
+        refer.setRefer("column_position", "ORDINAL_POSITION");
         return refer;
     }
     /**

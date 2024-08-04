@@ -3574,12 +3574,10 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         MetadataFieldRefer refer = refer(runtime, Column.class);
 
         if(null == meta.getPosition()) {
-            try {
-                meta.setPosition(row.getInt(refer.getRefers("Position")));
-            }catch (Exception ignored) {}
+            meta.setPosition(getInt(row, refer, "Position", null));
         }
-        meta.setComment(BasicUtil.evl(row.getString(refer.getRefers("Comment")), meta.getComment()));
-        String type = row.getString(refer.getRefers("DataType"));
+        meta.setComment(getString(row, refer, "Comment", meta.getComment()));
+        String type = getString(row, refer, "type");
         /*if(null != type) {
             type = type.replace("character varying","VARCHAR");
         }*/
@@ -3594,7 +3592,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         TypeMetadata typeMetadata = typeMetadata(runtime, meta);
         //属性在查询结果中对应的列(区分数据类型)
         TypeMetadata.Refer trefer = dataTypeMetadataRefer(runtime, typeMetadata);
-        String def = BasicUtil.evl(row.get(refer.getRefers("Default")), meta.getDefaultValue())+"";
+        String def = getString(row, refer, "default", meta.getDefaultValue()+"");
         def = def.trim();//oracle 会取出\t\n
         if(BasicUtil.isNotEmpty(def)) {
             while(def.startsWith("(") && def.endsWith(")")) {
@@ -3608,32 +3606,28 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         //默认值约束
         meta.setDefaultConstraint(row.getString("DEFAULT_CONSTRAINT"));
         if(-1 == meta.isAutoIncrement()) {
-            meta.autoIncrement(row.getBoolean("IS_IDENTITY", null));
-        }
-        if(-1 == meta.isAutoIncrement()) {
             meta.autoIncrement(row.getBoolean("IS_AUTOINCREMENT", null));
         }
         if(-1 == meta.isAutoIncrement()) {
             meta.autoIncrement(row.getBoolean("IDENTITY", null));
         }
         if(-1 == meta.isAutoIncrement()) {
-            if(row.getStringNvl("EXTRA").toLowerCase().contains("auto_increment")) {
+            //mysql pg mssql 已合并
+            Boolean autoincrement = matchBoolean(row, refer, "autoincrement_check", "autoincrement_check_value");
+            if(null != autoincrement && autoincrement) {
                 meta.autoIncrement(true);
             }
         }
         //mysql中的on update
-        if(row.getStringNvl("EXTRA").toLowerCase().contains("on update")) {
-            meta.setOnUpdate(true);
+        Boolean onupdate = matchBoolean(row, refer, "onupdate_check", "onupdate_check_value");
+        if(null != onupdate) {
+            meta.setOnUpdate(onupdate);
         }
-        String defaultValue = meta.getDefaultValue()+"";
-        if(defaultValue.toLowerCase().contains("nextval")) {
-            meta.autoIncrement(true);
-        }
-        meta.setObjectId(row.getLong("OBJECT_ID", (Long)null));
-        //主键
-        String column_key = row.getString("COLUMN_KEY");
-        if("PRI".equals(column_key)) {
-            meta.primary(1);
+        meta.setObjectId(getLong(row, refer, "object", null));
+        //主键 mysql已合并
+        Boolean primary = matchBoolean(row, refer, "primary_check", "primary_check_value");
+        if(null != primary && primary){
+            meta.setPrimary(1);
         }
         if(row.getBoolean("PK", Boolean.FALSE)) {
             meta.primary(1);
@@ -3642,7 +3636,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         //非空
         if(-1 == meta.isNullable()) {
             try {
-                meta.nullable(row.getBoolean(refer.getRefers("Nullable")));//"IS_NULLABLE","NULLABLE","NULLS"
+                meta.nullable(getBoolean(row, refer, "nullable", null));//"IS_NULLABLE","NULLABLE","NULLS"
             }catch (Exception ignored) {}
         }
         //oracle中decimal(18,9) data_length == 22 DATA_PRECISION=18
@@ -3682,10 +3676,10 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         }catch (Exception ignored) {}
 
         if(null == meta.getCharset()) {
-            meta.setCharset(row.getString(refer.getRefers("Charset")));//"CHARACTER_SET_NAME"
+            meta.setCharset(getString(row, refer, "charset"));//"CHARACTER_SET_NAME"
         }
         if(null == meta.getCollate()) {
-            meta.setCollate(row.getString(refer.getRefers("Collate")));//COLLATION_NAME
+            meta.setCollate(getString(row, refer, "collate"));//COLLATION_NAME
         }
         if(null == meta.getTypeMetadata()) {
             typeMetadata(runtime, meta);

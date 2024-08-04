@@ -8763,7 +8763,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         refer.setRefer("nullable","IS_NULLABLE,NULLABLE,NULLS");
         refer.setRefer("charset", "CHARACTER_SET_NAME");
         refer.setRefer("Collate", "COLLATION_NAME");
-        refer.setRefer("DataType", "FULL_TYPE,DATA_TYPE,TYPE_NAME,TYPENAME,DATA_TYPE_NAME,UDT_NAME,DATA_TYPE,TYPENAME,DATA_TYPE_NAME");
+        refer.setRefer("data_type", "FULL_TYPE,DATA_TYPE,TYPE_NAME,TYPENAME,DATA_TYPE_NAME,UDT_NAME,DATA_TYPE,TYPENAME,DATA_TYPE_NAME");
         refer.setRefer("Position", "ORDINAL_POSITION,COLNO,POSITION");
         refer.setRefer("Comment" ,"COLUMN_COMMENT,COMMENTS,REMARKS");
         refer.setRefer("Default", "COLUMN_DEFAULT,DATA_DEFAULT,DEFAULT,DEFAULT_VALUE,DEFAULT_DEFINITION");
@@ -9494,7 +9494,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             column.setTable(table);
             String position = row.getString(refer.getRefers("column"));
             meta.setPosition(column, BasicUtil.parseInt(position, 0));
-            String order = row.getString(refer.getRefers("ColumnOrder"));
+            String order = row.getString(refer.getRefers("column_order"));
             if(BasicUtil.isNotEmpty(order)) {
                 column.setOrder(order);
             }
@@ -9933,8 +9933,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         refer.setRefer("Table","TABLE_NAME");
         refer.setRefer("schema", "TABLE_SCHEMA");
         refer.setRefer("column", "COLUMN_NAME");
-        refer.setRefer("ColumnOrder", "COLLATION");
-        refer.setRefer("ColumnPosition", "SEQ_IN_INDEX");
+        refer.setRefer("column_order", "COLLATION");
+        refer.setRefer("column_position", "SEQ_IN_INDEX");
         return refer;
     }
 	/**
@@ -10160,58 +10160,21 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			meta.setMetadata(row);
 
 			//是否主键
-			String[] chks = refer.getRefers("CheckPrimary");
-			String[] vals = refer.getRefers("CheckPrimaryValue");
-			Boolean bol = parseBoolean(row, chks, vals);
+			String[] chks = refer.getRefers("primary_check");
+			String[] vals = refer.getRefers("primary_check_value");
+			Boolean bol = matchBoolean(row, chks, vals);
 			if(null != bol){
 				meta.setPrimary(bol);
 			}
 			//是否唯一
-			chks = refer.getRefers("CheckUnique");
-			vals = refer.getRefers("CheckUniqueValue");
-			bol = parseBoolean(row, chks, vals);
+			chks = refer.getRefers("unique_check");
+			vals = refer.getRefers("unique_check_value");
+			bol = matchBoolean(row, chks, vals);
 			if(null != bol){
 				meta.setUnique(bol);
 			}
 		}
 		return meta;
-	}
-
-	/**
-	 * parse boolean
-	 * @param row 结果集
-	 * @param cols 检测的列
-	 * @param vals 匹配true的值S(只要一项匹配就返回true)
-	 * @return boolean
-	 */
-	protected Boolean parseBoolean(DataRow row, String[] cols, String[] vals){
-		Boolean bol = null;
-		if(null != cols){
-			for(String col:cols){
-				Object value = row.get(col);
-				if(null == value){
-					continue;
-				}
-				if(value instanceof Boolean){
-					bol = BasicUtil.parseBoolean(value);
-				}else if(null != vals) {
-					String str = value.toString();
-					for (String val : vals) {
-						if (str.equalsIgnoreCase(val)) {
-							bol = true;
-							break;
-						}
-					}
-				}
-				if(null != bol){
-					break;
-				}
-			}
-			if(null == bol) {
-				bol = false;
-			}
-		}
-		return bol;
 	}
 
 	/**
@@ -10238,13 +10201,13 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		column.setName(columnName);
 		meta.addColumn(column);
-		Integer position = row.getInt(refer.getRefers("ColumnPosition"));
+		Integer position = row.getInt(refer.getRefers("column_position"));
 		if(null == position) {
 			position = 0;
 		}
 		column.setPosition(position);
 		meta.setPosition(column, position);
-		String order = row.getString(refer.getRefers("ColumnOrder"));
+		String order = row.getString(refer.getRefers("column_order"));
 		if(null != order) {
 			order = order.toUpperCase();
 			Order.TYPE type = Order.TYPE.ASC;
@@ -16860,15 +16823,21 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * protected Object value(List<String> keys, String key, ResultSet set) throws Exception
 	 ******************************************************************************************************************/
 
-    protected String getString(DataRow row, MetadataFieldRefer refer, String key){
+    protected String getString(DataRow row, MetadataFieldRefer refer, String key, String def){
         String result = null;
         String[] keys = refer.getRefers(key);
         if(null != keys && keys.length > 0){
             result = row.getString(keys);
         }
+        if(null == result){
+            result = def;
+        }
         return result;
     }
 
+    protected String getString(DataRow row, MetadataFieldRefer refer, String key){
+        return getString(row, refer, key, null);
+    }
     protected Boolean getBoolean(DataRow row, MetadataFieldRefer refer, String key, Boolean def){
         Boolean result = null;
         try{
@@ -16916,7 +16885,66 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
     protected Long getLong(DataRow row, MetadataFieldRefer refer, String key){
         return getLong(row, refer, key, null);
     }
-	/**
+    protected Integer getInt(DataRow row, MetadataFieldRefer refer, String key, Integer def){
+        Integer result = null;
+        try{
+            String[] keys = refer.getRefers(key);
+            if(null != keys && keys.length > 0){
+                result = row.getInt(keys);
+            }
+        }catch (Exception ignore){}
+        if(null == result){
+            result = def;
+        }
+        return result;
+    }
+
+    protected Integer getInt(DataRow row, MetadataFieldRefer refer, String key){
+        return getInt(row, refer, key, null);
+    }
+    protected Boolean matchBoolean(DataRow row, MetadataFieldRefer refer, String key, String value) {
+        String[] cols = refer.getRefers(key);
+        String[] vals = refer.getRefers(value);
+        return matchBoolean(row, cols, vals);
+    }
+    /**
+     * parse boolean
+     * @param row 结果集
+     * @param cols 检测的列
+     * @param vals 匹配true的值S(只要一项匹配就返回true)
+     * @return boolean
+     */
+    protected Boolean matchBoolean(DataRow row, String[] cols, String[] vals){
+        Boolean bol = null;
+        if(null != cols){
+            for(String col:cols){
+                Object value = row.get(col);
+                if(null == value){
+                    continue;
+                }
+                if(value instanceof Boolean){
+                    bol = (Boolean)value;
+                }else if(null != vals) {
+                    String str = value.toString();
+                    for (String val : vals) {
+                        if (str.matches(val)) {
+                            bol = true;
+                            break;
+                        }
+                    }
+                }
+                if(null != bol){
+                    break;
+                }
+            }
+            if(null == bol) {
+                bol = false;
+            }
+        }
+        return bol;
+    }
+
+    /**
 	 * 转换成相应数据库类型<br/>
 	 * 把编码时输入的数据类型如(long)转换成具体数据库中对应的数据类型<br/>
 	 * 同时解析长度、有效位数、精度<br/>

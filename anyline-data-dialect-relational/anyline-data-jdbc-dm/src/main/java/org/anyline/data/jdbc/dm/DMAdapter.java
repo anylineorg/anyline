@@ -2785,8 +2785,8 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		refer.setRefer("name", "INDEX_NAME");
 		refer.setRefer("Table", "TABLE_NAME");
 		refer.setRefer("column", "COLUMN_NAME");
-		refer.setRefer("ColumnPosition", "COLUMN_POSITION");
-		refer.setRefer("ColumnOrder", "DESCEND");
+		refer.setRefer("column_position", "COLUMN_POSITION");
+		refer.setRefer("column_order", "DESCEND");
 		return refer;
 	}
 	/**

@@ -2854,7 +2854,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         refer.setRefer("Comment", "INDEX_COMMENT");
         refer.setRefer("Type", "INDEX_TYPE");
         refer.setRefer("column", "COLUMN_NAME");
-        refer.setRefer("ColumnPosition", "ORDINAL_POSITION");
+        refer.setRefer("column_position", "ORDINAL_POSITION");
         return refer;
     }
     /**
