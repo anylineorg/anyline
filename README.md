@@ -1,6 +1,6 @@
 8.7.2后分离了多个环境(Spring/Solon/Vertx)比之前的版本多一个依赖  
 ***具体参考***[【8.7.2更新】](http://doc.anyline.org/aa/2f_3951)  ***详细说明请参考:*** [【官网】](http://doc.anyline.org/)  
-开发测试环境请使用[【8.7.2-20240423】](http://doc.anyline.org/aa/aa_3702)版本 语法测试请参考[【各数据库模拟环境】](http://run.anyline.org/)       
+开发测试环境请使用[【8.7.2-SNAPSHOT】](http://doc.anyline.org/aa/aa_3702)版本 语法测试请参考[【各数据库模拟环境】](http://run.anyline.org/)       
 发版务必到[【中央库】](https://mvnrepository.com/artifact/org.anyline/anyline-core)找一个正式版本，不要把SNAPSHOT版本发到生产环境  
 关于多数据源，请先阅读   
 [【三种方式注册数据源】](http://doc.anyline.org/aa/a9_3451)
