@@ -46,6 +46,7 @@
 		<module>anyline-data-jdbc-rethinkdb</module>
 		<module>anyline-data-jdbc-sinodb</module>						<!--星瑞格-->
 		<module>anyline-data-jdbc-sqlite</module>
+		<module>anyline-data-jdbc-starrocks</module>
 		<module>anyline-data-jdbc-sybase</module>
 		<module>anyline-data-jdbc-tidb</module>
 		<module>anyline-data-jdbc-voltdb</module>

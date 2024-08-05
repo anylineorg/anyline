@@ -15,6 +15,10 @@
 
     <modules>
         <module>anyline-data-milvus</module>
+		<module>anyline-data-pinecone</module>
+		<module>anyline-data-weaviate</module>
+		<module>anyline-data-chroma</module>
+		<module>anyline-data-qdrant</module>
     </modules>
 	<build>
 		<plugins>
