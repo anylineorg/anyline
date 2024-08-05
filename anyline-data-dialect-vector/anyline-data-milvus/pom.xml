@@ -15,6 +15,10 @@
     <url>http://www.anyline.org/milvus</url>
     <dependencies>
         <dependency>
+            <groupId>org.anyline</groupId>
+            <artifactId>anyline-data</artifactId>
+        </dependency>
+        <dependency>
             <groupId>io.milvus</groupId>
             <artifactId>milvus-sdk-java</artifactId>
             <scope>provided</scope>
