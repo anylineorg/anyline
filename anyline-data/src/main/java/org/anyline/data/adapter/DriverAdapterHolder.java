@@ -176,7 +176,7 @@ public class DriverAdapterHolder {
 		}
 		DriverAdapter adapter = getAdapterByMonitor(runtime, runtime.getProcessor());
 		if(null == adapter){
-			String feature = runtime.getFeature();
+			String feature = runtime.getFeature(false);
 			String adapter_key = runtime.getAdapterKey();
 			try {
 				//执行两次匹配, 第一次失败后，会再匹配一次，第二次传入true
@@ -187,6 +187,7 @@ public class DriverAdapterHolder {
 					}
 				}
 				if(null == adapter) {
+					feature = runtime.getFeature(true);
 					for (DriverAdapter item:adapters) {
 						if(item.match(feature, adapter_key, true)) {
 							adapter = item;

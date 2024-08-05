@@ -4274,7 +4274,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public List<Run> buildChangeCommentRun(DataRuntime runtime, Table meta) throws Exception {
-        return super.buildChangeCommentRun(runtime, meta);
+        return buildAppendCommentRun(runtime, meta);
     }
 
     /**
