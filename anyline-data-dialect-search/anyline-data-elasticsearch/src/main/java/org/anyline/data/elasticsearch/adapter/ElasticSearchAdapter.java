@@ -869,8 +869,7 @@ PUT * /_bulk
         DataRow row = new OriginRow();
         if(null != values && !values.isEmpty()) {
             Object value = null;
-            boolean multiple = compare.isMultipleValue();
-            if (multiple) {
+            if (compare.valueCount() > 1) {
                 List<Object> list = new ArrayList<>();
                 list.addAll(values);
                 value = list;

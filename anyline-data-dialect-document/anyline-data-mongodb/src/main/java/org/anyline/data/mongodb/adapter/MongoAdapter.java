@@ -363,8 +363,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
         Bson bson = null;
         if(null != values && !values.isEmpty()) {
             Object value = null;
-            boolean multiple = compare.isMultipleValue();
-            if (multiple) {
+            if (compare.valueCount() >1) {
                 List<Object> list = new ArrayList<>();
 
                 /*  for (RunValue rv : values) {

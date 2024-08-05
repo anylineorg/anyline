@@ -271,8 +271,16 @@ public class DefaultConfig implements Config {
  
 	public boolean isEmpty() {
 		EMPTY_VALUE_SWITCH sw = null;
+		int compare = 10;
 		if(null != parser) {
 			sw = parser.getSwt();
+			compare = parser.getCompare().getCode();
+		}
+		if(compare == 90 || compare == 91 || compare == 190 || compare == 191){
+			//IS NULL IS EMPTY
+			if(BasicUtil.isNotEmpty(parser.getVar())){
+				return false;
+			}
 		}
 		if(sw == EMPTY_VALUE_SWITCH.NULL || sw == EMPTY_VALUE_SWITCH.SRC) {
 			return false;

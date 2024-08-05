@@ -34,8 +34,8 @@ public enum Compare {
         }
 
         @Override
-        public boolean isMultipleValue() {
-            return false;
+        public int valueCount() {
+            return 1;
         }
     },
     //根据参数格式判断
@@ -46,8 +46,8 @@ public enum Compare {
         }
 
         @Override
-        public boolean isMultipleValue() {
-            return false;
+        public int valueCount() {
+            return 1;
         }
     },
     EQUAL(10, "等于","eq"," = ? ")			{
@@ -61,8 +61,8 @@ public enum Compare {
             }
             return target.toString().equalsIgnoreCase(value.toString());
         }
-        public boolean isMultipleValue() {
-            return false;
+        public int valueCount() {
+            return 1;
         }
     },
     EQUALS(11, "等于","eq"," == ? ")			{
@@ -76,8 +76,8 @@ public enum Compare {
             }
             return target.toString().equalsIgnoreCase(value.toString());
         }
-        public boolean isMultipleValue() {
-            return false;
+        public int valueCount() {
+            return 1;
         }
     },
     GREAT(20, "大于","gt"," > ? ")			{
@@ -91,8 +91,8 @@ public enum Compare {
                 return false;
             }
         }
-        public boolean isMultipleValue() {
-            return false;
+        public int valueCount() {
+            return 1;
         }
     },
     GREAT_EQUAL(21, "大于等于","gte"," >= ? ")		{
@@ -102,8 +102,8 @@ public enum Compare {
             }
             return new BigDecimal(value.toString()).compareTo(new BigDecimal(target.toString())) >= 0;
         }
-        public boolean isMultipleValue() {
-            return false;
+        public int valueCount() {
+            return 1;
         }
     },
     LESS(30, "小于","lt"," < ? ")			{
@@ -117,8 +117,8 @@ public enum Compare {
                 return false;
             }
         }
-        public boolean isMultipleValue() {
-            return false;
+        public int valueCount() {
+            return 1;
         }
     },
     LESS_EQUAL(31, "小于等于","lte"," <= ? ")		{
@@ -132,8 +132,8 @@ public enum Compare {
                 return false;
             }
         }
-        public boolean isMultipleValue() {
-            return false;
+        public int valueCount() {
+            return 1;
         }
     },
     IN(40, "in","in"," IN ")				{
@@ -148,8 +148,8 @@ public enum Compare {
             }
             return false;
         }
-        public boolean isMultipleValue() {
-            return true;
+        public int valueCount() {
+            return 9;
         }
     },
     LIKE(50, "like %?%",""," LIKE ")			{
@@ -159,8 +159,8 @@ public enum Compare {
             }
             return value.toString().toUpperCase().contains(target.toString().toUpperCase());
         }
-        public boolean isMultipleValue() {
-            return false;
+        public int valueCount() {
+            return 1;
         }
     },
     LIKE_PREFIX(51, "like ?%",""," LIKE ")		{
@@ -170,8 +170,8 @@ public enum Compare {
             }
             return value.toString().toUpperCase().startsWith(target.toString().toUpperCase());
         }
-        public boolean isMultipleValue() {
-            return false;
+        public int valueCount() {
+            return 1;
         }
     },
     START_WITH(51, "like ?%",""," LIKE ")		{
@@ -184,8 +184,8 @@ public enum Compare {
             }
             return value.toString().toUpperCase().startsWith(target.toString().toUpperCase());
         }
-        public boolean isMultipleValue() {
-            return false;
+        public int valueCount() {
+            return 1;
         }
     },
     LIKE_SUFFIX(52, "like %?",""," LIKE ")		{
@@ -195,8 +195,8 @@ public enum Compare {
             }
             return value.toString().toUpperCase().endsWith(target.toString().toUpperCase());
         }
-        public boolean isMultipleValue() {
-            return false;
+        public int valueCount() {
+            return 1;
         }
     },
     END_WITH(52, "like %?",""," LIKE ")		{
@@ -206,8 +206,8 @@ public enum Compare {
             }
             return value.toString().toUpperCase().endsWith(target.toString().toUpperCase());
         }
-        public boolean isMultipleValue() {
-            return false;
+        public int valueCount() {
+            return 1;
         }
     },
     /**
@@ -220,8 +220,8 @@ public enum Compare {
             }
             return value.toString().toUpperCase().endsWith(target.toString().toUpperCase());
         }
-        public boolean isMultipleValue() {
-            return false;
+        public int valueCount() {
+            return 1;
         }
     },
     /**
@@ -234,8 +234,8 @@ public enum Compare {
             }
             return value.toString().toUpperCase().endsWith(target.toString().toUpperCase());
         }
-        public boolean isMultipleValue() {
-            return false;
+        public int valueCount() {
+            return 1;
         }
     },
     /**
@@ -248,8 +248,8 @@ public enum Compare {
             }
             return value.toString().toUpperCase().contains(target.toString().toUpperCase());
         }
-        public boolean isMultipleValue() {
-            return false;
+        public int valueCount() {
+            return 1;
         }
     },
     FIND_IN_SET(60, "find in set",""," FIND_IN_SET ") { // = FIND_IN_SET_OR
@@ -260,8 +260,8 @@ public enum Compare {
             String[] arrays = target.toString().split(",");
             return BeanUtil.array2list(arrays).contains(value);
         }
-        public boolean isMultipleValue() {
-            return true;
+        public int valueCount() {
+            return 9;
         }
     },
     FIND_IN_SET_OR(61, "find in set",""," FIND_IN_SET ") {
@@ -272,8 +272,8 @@ public enum Compare {
             String[] arrays = target.toString().split(",");
             return BeanUtil.array2list(arrays).contains(value);
         }
-        public boolean isMultipleValue() {
-            return true;
+        public int valueCount() {
+            return 9;
         }
     },
     FIND_IN_SET_AND(62, "find in set",""," FIND_IN_SET ") {
@@ -284,38 +284,38 @@ public enum Compare {
             String[] arrays = target.toString().split(",");
             return BeanUtil.array2list(arrays).contains(value);
         }
-        public boolean isMultipleValue() {
-            return true;
+        public int valueCount() {
+            return 9;
         }
     },
     JSON_CONTAINS(71, "json_contains", "", " JSON_CONTAINS ") {
         //json_contains(JSON_COLUMN,'"VIP"','$.name')
-        public boolean isMultipleValue() {
-            return false;
+        public int valueCount() {
+            return 1;
         }
     },
     JSON_CONTAINS_PATH_OR(75, "json_contains_path", "", " JSON_CONTAINS_PATH ") {
         //ONE 包含1个即可
-        public boolean isMultipleValue() {
-            return true;
+        public int valueCount() {
+            return 9;
         }
     },
     JSON_CONTAINS_PATH_ONE(75, "json_contains_path", "", " JSON_CONTAINS_PATH ") {
         //ONE 包含1个即可
-        public boolean isMultipleValue() {
-            return true;
+        public int valueCount() {
+            return 9;
         }
     },
     JSON_CONTAINS_PATH_AND(76, "json_contains_path", "", " JSON_CONTAINS_PATH ") {
         //ALL 必须包含全部
-        public boolean isMultipleValue() {
-            return true;
+        public int valueCount() {
+            return 9;
         }
     },
     JSON_CONTAINS_PATH_ALL(76, "json_contains_path", "", " JSON_CONTAINS_PATH ") {
         //ALL 必须包含全部
-        public boolean isMultipleValue() {
-            return true;
+        public int valueCount() {
+            return 9;
         }
     },
     BETWEEN(80, "区间",""," BETWEEN ? AND ? ")			{
@@ -345,8 +345,8 @@ public enum Compare {
             }
             return false;
         }
-        public boolean isMultipleValue() {
-            return true;
+        public int valueCount() {
+            return 2;
         }
     },
     NULL(90, "空",""," IS NULL ")			{
@@ -356,8 +356,8 @@ public enum Compare {
             }
             return false;
         }
-        public boolean isMultipleValue() {
-            return false;
+        public int valueCount() {
+            return 0;
         }
     },
     EMPTY(91, "空",""," IS EMPTY ")			{
@@ -367,8 +367,8 @@ public enum Compare {
             }
             return false;
         }
-        public boolean isMultipleValue() {
-            return false;
+        public int valueCount() {
+            return 0;
         }
     },
     NOT_EQUAL(110, "不等于","nin"," != ? ")		{
@@ -378,8 +378,8 @@ public enum Compare {
             }
             return !value.toString().toUpperCase().equals(target.toString().toUpperCase());
         }
-        public boolean isMultipleValue() {
-            return false;
+        public int valueCount() {
+            return 1;
         }
     },
     NOT_IN(140, "不包含","nin"," NOT IN ")			{
@@ -393,8 +393,8 @@ public enum Compare {
             }
             return false;
         }
-        public boolean isMultipleValue() {
-            return true;
+        public int valueCount() {
+            return 9;
         }
     },
     NOT_LIKE(150, "NOT LIKE %?%",""," NOT LIKE ")				{
@@ -408,8 +408,8 @@ public enum Compare {
             }
             return false;
         }
-        public boolean isMultipleValue() {
-            return true;
+        public int valueCount() {
+            return 1;
         }
     },
     NOT_LIKE_PREFIX(151, "NOT LIKE ?%",""," NOT LIKE ")			{
@@ -423,8 +423,8 @@ public enum Compare {
             }
             return false;
         }
-        public boolean isMultipleValue() {
-            return true;
+        public int valueCount() {
+            return 1;
         }
     },
     NOT_START_WITH(151, "NOT LIKE ?%",""," NOT LIKE ")				{
@@ -438,8 +438,8 @@ public enum Compare {
             }
             return false;
         }
-        public boolean isMultipleValue() {
-            return true;
+        public int valueCount() {
+            return 1;
         }
     },
     NOT_LIKE_SUFFIX(152, "NOT LIKE %?",""," NOT LIKE ")			{
@@ -453,8 +453,8 @@ public enum Compare {
             }
             return false;
         }
-        public boolean isMultipleValue() {
-            return true;
+        public int valueCount() {
+            return 1;
         }
     },
     NOT_END_WITH(152, "NOT LIKE %?",""," NOT LIKE ")			{
@@ -468,8 +468,8 @@ public enum Compare {
             }
             return false;
         }
-        public boolean isMultipleValue() {
-            return true;
+        public int valueCount() {
+            return 1;
         }
     },
     NOT_NULL(190, "非空",""," IS NOT NULL ")			{
@@ -479,8 +479,8 @@ public enum Compare {
             }
             return true;
         }
-        public boolean isMultipleValue() {
-            return false;
+        public int valueCount() {
+            return 0;
         }
     },
     NOT_EMPTY(191, "非空",""," IS NOT EMPTY ")			{
@@ -490,8 +490,8 @@ public enum Compare {
             }
             return true;
         }
-        public boolean isMultipleValue() {
-            return false;
+        public int valueCount() {
+            return 0;
         }
     },
     //正则表达式，注意不是每个数据库都支持
@@ -506,8 +506,8 @@ public enum Compare {
             }
             return false;
         }
-        public boolean isMultipleValue() {
-            return false;
+        public int valueCount() {
+            return 1;
         }
     };
 
@@ -533,10 +533,12 @@ public enum Compare {
     }
 
     /**
-     * 是否支持多个值
+     * 支持参数数量 0:没有参数 IS NULL/IS EMPTY 1:一个参数 2:两个参数 BETWEEN 9:多个参数  IN()
      * @return boolean
      */
-    public abstract boolean isMultipleValue();
+    public abstract int valueCount();
+    //public abstract boolean isMultipleValue();
+
     public String formula() {
         return formula;
     }
