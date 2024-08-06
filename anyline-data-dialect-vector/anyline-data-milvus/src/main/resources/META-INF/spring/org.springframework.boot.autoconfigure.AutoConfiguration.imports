@@ -1,1 +1,3 @@
-org.anyline.data.milvus.MilvusAdapter
+org.anyline.data.milvus.adapter.MilvusAdapter
+org.anyline.data.milvus.datasource.MilvusDataSourceLoader
+org.anyline.data.milvus.datasource.MilvusDataSourceHolder

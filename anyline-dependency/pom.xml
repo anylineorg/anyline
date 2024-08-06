@@ -416,16 +416,6 @@
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
-				<artifactId>anyline-data-mongodb</artifactId>
-				<version>${anyline.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.anyline</groupId>
-				<artifactId>anyline-data-elasticsearch</artifactId>
-				<version>${anyline.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.anyline</groupId>
 				<artifactId>anyline-data-jdbc-mssql</artifactId>
 				<version>${anyline.version}</version>
 			</dependency>
@@ -447,11 +437,6 @@
 			<dependency>
 				<groupId>org.anyline</groupId>
 				<artifactId>anyline-data-jdbc-nebula</artifactId>
-				<version>${anyline.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.anyline</groupId>
-				<artifactId>anyline-data-nebula</artifactId>
 				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
@@ -577,6 +562,46 @@
 			<dependency>
 				<groupId>org.anyline</groupId>
 				<artifactId>anyline-data-jdbc-yidb</artifactId>
+				<version>${anyline.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
+				<artifactId>anyline-data-nebula</artifactId>
+				<version>${anyline.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
+				<artifactId>anyline-data-mongodb</artifactId>
+				<version>${anyline.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
+				<artifactId>anyline-data-elasticsearch</artifactId>
+				<version>${anyline.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
+				<artifactId>anyline-data-chroma</artifactId>
+				<version>${anyline.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
+				<artifactId>anyline-data-milvus</artifactId>
+				<version>${anyline.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
+				<artifactId>anyline-data-pinecone</artifactId>
+				<version>${anyline.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
+				<artifactId>anyline-data-qdrant</artifactId>
+				<version>${anyline.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
+				<artifactId>anyline-data-weaviate</artifactId>
 				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
