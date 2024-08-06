@@ -847,6 +847,7 @@ public class Column extends TableAffiliation<Column> implements Serializable {
             result = result.replace("{L}", length+"");
             result = result.replace("{P}", precision+"");
             result = result.replace("{S}", scale+"");
+            result = result.replace("(0)", "");
             result = result.replace("(null)","");
         }else if(null != type) {
             StringBuilder builder = new StringBuilder();
@@ -855,6 +856,7 @@ public class Column extends TableAffiliation<Column> implements Serializable {
                 result = result.replace("{L}", length + "");
                 result = result.replace("{P}", precision + "");
                 result = result.replace("{S}", scale + "");
+                result = result.replace("(0)", "");
                 result = result.replace("(null)", "");
             }else {
                 builder.append(type);
