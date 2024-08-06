@@ -32,5 +32,4 @@ public class Role extends Metadata<Role> {
         this.name = name;
     }
 
-
 }

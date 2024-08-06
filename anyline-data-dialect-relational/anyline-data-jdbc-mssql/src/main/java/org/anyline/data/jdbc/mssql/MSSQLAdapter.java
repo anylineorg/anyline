@@ -1305,7 +1305,7 @@ public class MSSQLAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
     @Override
     public MetadataFieldRefer initDatabaseFieldRefer() {
         MetadataFieldRefer refer = new MetadataFieldRefer(Database.class);
-        refer.setRefer("name", "NAME");
+        refer.setRefer(Database.FIELD_NAME, "NAME");
         return refer;
     }
 
@@ -2450,16 +2450,16 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
     @Override
     public MetadataFieldRefer initColumnFieldRefer() {
         MetadataFieldRefer refer = new MetadataFieldRefer(Column.class);
-        refer.setRefer("name", "COLUMN_NAME");
-        refer.setRefer("catalog", "CATALOG_NAME");
-        refer.setRefer("schema", "SCHEMA_NAME");
-        refer.setRefer("table", "TABLE_NAME");
-        refer.setRefer("nullable", "IS_NULLABLE");
-        refer.setRefer("data_type", "TYPE_NAME");
-        refer.setRefer("position", "COLUMN_ID");
-        refer.setRefer("comment", "COLUMN_COMMENT");
-        refer.setRefer("autoincrement_check", "IS_IDENTITY");
-        refer.setRefer("autoincrement_check_value", "true");
+        refer.setRefer(Column.FIELD_NAME, "COLUMN_NAME");
+        refer.setRefer(Column.FIELD_CATALOG, "CATALOG_NAME");
+        refer.setRefer(Column.FIELD_SCHEMA, "SCHEMA_NAME");
+        refer.setRefer(Column.FIELD_TABLE, "TABLE_NAME");
+        refer.setRefer(Column.FIELD_NULLABLE, "IS_NULLABLE");
+        refer.setRefer(Column.FIELD_TYPE, "TYPE_NAME");
+        refer.setRefer(Column.FIELD_POSITION, "COLUMN_ID");
+        refer.setRefer(Column.FIELD_COMMENT, "COLUMN_COMMENT");
+        refer.setRefer(Column.FIELD_AUTO_INCREMENT_CHECK, "IS_IDENTITY");
+        refer.setRefer(Column.FIELD_AUTO_INCREMENT_CHECK_VALUE, "true");
         return refer;
     }
     /**
@@ -2735,12 +2735,12 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
     @Override
     public MetadataFieldRefer initPrimaryKeyFieldRefer() {
         MetadataFieldRefer refer = new MetadataFieldRefer(PrimaryKey.class);
-        refer.setRefer("name", "CONSTRAINT_NAME");
-        refer.setRefer("Catalog", "TABLE_CATALOG");
-        refer.setRefer("schema", "TABLE_SCHEMA");
-        refer.setRefer("Table", "TABLE_NAME");
-        refer.setRefer("column", "COLUMN_NAME");
-        refer.setRefer("column_position", "ORDINAL_POSITION");
+        refer.setRefer(PrimaryKey.FIELD_NAME, "CONSTRAINT_NAME");
+        refer.setRefer(PrimaryKey.FIELD_CATALOG, "TABLE_CATALOG");
+        refer.setRefer(PrimaryKey.FIELD_SCHEMA, "TABLE_SCHEMA");
+        refer.setRefer(PrimaryKey.FIELD_TABLE, "TABLE_NAME");
+        refer.setRefer(PrimaryKey.FIELD_COLUMN, "COLUMN_NAME");
+        refer.setRefer(PrimaryKey.FIELD_POSITION, "ORDINAL_POSITION");
         return refer;
     }
     /**

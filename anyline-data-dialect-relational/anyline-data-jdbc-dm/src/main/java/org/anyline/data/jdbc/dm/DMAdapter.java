@@ -1248,7 +1248,7 @@ public class DMAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	@Override
 	public MetadataFieldRefer initDatabaseFieldRefer() {
 		MetadataFieldRefer refer = new MetadataFieldRefer(Database.class, "DATABASE");
-		refer.setRefer("user", "user_name");
+		refer.setRefer(Database.field_user(), "user_name");
 		return refer;
 	}
 
@@ -1577,8 +1577,8 @@ public class DMAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	@Override
 	public MetadataFieldRefer initSchemaFieldRefer() {
 		MetadataFieldRefer refer = new MetadataFieldRefer(Schema.class);
-		refer.setRefer("name", "schema_name");
-		refer.setRefer("user", "user_name");
+		refer.setRefer(Schema.FIELD_NAME, "schema_name");
+		refer.setRefer(Schema.FIELD_USER, "user_name");
 		return refer;
 	}
 	/**
@@ -2781,12 +2781,12 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	@Override
 	public MetadataFieldRefer initIndexFieldRefer() {
 		MetadataFieldRefer refer = new MetadataFieldRefer(Index.class);
-		refer.setRefer("schema", "INDEX_OWNER");
-		refer.setRefer("name", "INDEX_NAME");
-		refer.setRefer("Table", "TABLE_NAME");
-		refer.setRefer("column", "COLUMN_NAME");
-		refer.setRefer("column_position", "COLUMN_POSITION");
-		refer.setRefer("column_order", "DESCEND");
+		refer.setRefer(Index.FIELD_SCHEMA, "INDEX_OWNER");
+		refer.setRefer(Index.FIELD_NAME, "INDEX_NAME");
+		refer.setRefer(Index.FIELD_TABLE, "TABLE_NAME");
+		refer.setRefer(Index.FIELD_COLUMN, "COLUMN_NAME");
+		refer.setRefer(Index.FIELD_POSITION, "COLUMN_POSITION");
+		refer.setRefer(Index.FIELD_ORDER, "DESCEND");
 		return refer;
 	}
 	/**

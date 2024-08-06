@@ -141,4 +141,7 @@ public class ForeignKey extends Constraint<ForeignKey> implements Serializable {
         return copy;
     }
 
+/* ********************************* field refer ********************************** */
+    public static final String FIELD_KEYWORD                       = "KEYWORD";
+    public static final String FIELD_REFERENCE                     = "REFERENCE";
 }

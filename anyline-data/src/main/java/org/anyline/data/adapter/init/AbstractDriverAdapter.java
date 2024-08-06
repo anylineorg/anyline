@@ -4370,8 +4370,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         }
         MetadataFieldRefer refer = refer(runtime, Database.class);
         meta.setMetadata(row);
-        meta.setName(row.getString(refer.getRefers("name")));
-        meta.setUser(row.getString(refer.getRefers("user")));
+        meta.setName(row.getString(refer.getRefers(Database.FIELD_NAME)));
+        meta.setUser(row.getString(refer.getRefers(Database.FIELD_USER)));
         return meta;
     }
 
@@ -4737,7 +4737,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             meta = (T)new Catalog();
         }
         MetadataFieldRefer refer = refer(runtime, Catalog.class);
-        String name = row.getString(refer.getRefers("name"));
+        String name = row.getString(refer.getRefers(Catalog.FIELD_NAME));
         meta.setMetadata(row);
         meta.setName(name);
         return meta;
@@ -5146,15 +5146,15 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             meta = (T)new Schema();
         }
         MetadataFieldRefer refer = refer(runtime, Schema.class);
-        String _catalog = row.getString(refer.getRefers("Catalog"));
+        String _catalog = row.getString(refer.getRefers(Schema.FIELD_CATALOG));
         if(null == _catalog && null != catalog) {
             _catalog = catalog.getName();
         }
-        String name = row.getString(refer.getRefers("Name"));
+        String name = row.getString(refer.getRefers(Schema.FIELD_NAME));
         if(null != _catalog) {
             _catalog = _catalog.trim();
         }
-        meta.setUser(row.getString(refer.getRefers("user")));
+        meta.setUser(row.getString(refer.getRefers(Schema.FIELD_USER)));
         meta.setMetadata(row);
         meta.setCatalog(_catalog);
         meta.setName(name);
@@ -5460,10 +5460,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
     @Override
     public MetadataFieldRefer initTableFieldRefer() {
         MetadataFieldRefer refer = new MetadataFieldRefer(Table.class);
-        refer.setRefer("name", "TABLE_NAME,NAME,TABNAME");
-        refer.setRefer("catalog", "TABLE_CATALOG");
-        refer.setRefer("schema", "TABLE_SCHEMA,TABSCHEMA,SCHEMA_NAME");
-        refer.setRefer("comment", "TABLE_COMMENT,COMMENTS,COMMENT");
+        refer.setRefer(Table.FIELD_NAME, "TABLE_NAME,NAME,TABNAME");
+        refer.setRefer(Table.FIELD_CATALOG, "TABLE_CATALOG");
+        refer.setRefer(Table.FIELD_SCHEMA, "TABLE_SCHEMA,TABSCHEMA,SCHEMA_NAME");
+        refer.setRefer(Table.FIELD_COMMENT, "TABLE_COMMENT,COMMENTS,COMMENT");
         return refer;
     }
 
@@ -5475,10 +5475,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
     @Override
     public MetadataFieldRefer initTableCommentFieldRefer() {
         MetadataFieldRefer refer = new MetadataFieldRefer(TableComment.class);
-        refer.setRefer("value", "TABLE_COMMENT");
-        refer.setRefer("table", "TABLE_NAME");
-        refer.setRefer("catalog", "TABLE_CATALOG");
-        refer.setRefer("schema", "TABLE_SCHEMA");
+        refer.setRefer(TableComment.FIELD_VALUE, "TABLE_COMMENT");
+        refer.setRefer(TableComment.FIELD_TABLE,  "TABLE_NAME");
+        refer.setRefer(TableComment.FIELD_CATALOG, "TABLE_CATALOG");
+        refer.setRefer(TableComment.FIELD_SCHEMA, "TABLE_SCHEMA");
         return refer;
     }
 	/**
@@ -5623,18 +5623,18 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             meta = (T)new Table();
         }
         MetadataFieldRefer refer = refer(runtime, Table.class);
-        String _catalog = row.getString(refer.getRefers("catalog"));
-        String _schema = row.getString(refer.getRefers("schema"));
+        String _catalog = getString(row, refer, Table.FIELD_CATALOG);
+        String _schema = getString(row, refer, Table.FIELD_SCHEMA);
         if(null == _catalog && null != catalog) {
             _catalog = catalog.getName();
         }
         if(null == _schema && null != schema) {
             _schema = schema.getName();
         }
-        String name = row.getString(refer.getRefers("name"));
+        String name = getString(row, refer, Table.FIELD_NAME);
 
         if(null == meta) {
-            if("VIEW".equals(row.getString(refer.getRefers("type")))) {
+            if("VIEW".equals(getString(row, refer, Table.FIELD_TYPE))) {
                 meta = (T)new View();
             }else {
                 meta = (T)new Table();
@@ -6417,7 +6417,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         }
         MetadataFieldRefer refer = refer(runtime, VertexTable.class);
         meta.setMetadata(row);
-        meta.setName(row.getString(refer.getRefers("name")));
+        meta.setName(getString(row, refer, VertexTable.FIELD_NAME));
+
         return meta;
     }
     /**
@@ -6880,7 +6881,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         }
         MetadataFieldRefer refer = refer(runtime, EdgeTable.class);
         meta.setMetadata(row);
-        meta.setName(row.getString(refer.getRefers("name")));
+        meta.setName(getString(row, refer, EdgeTable.FIELD_NAME));
         return meta;
 	}
 	/**
@@ -7310,9 +7311,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
     @Override
     public MetadataFieldRefer initViewFieldRefer() {
         MetadataFieldRefer refer = new MetadataFieldRefer(View.class);
-        refer.setRefer("Name","VIEW_NAME,TABLE_NAME,NAME,TABNAME");
-        refer.setRefer("Catalog","VIEW_CATALOG,TABLE_CATALOG");
-        refer.setRefer("Schema","VIEW_SCHEMA,TABLE_SCHEMA,TABSCHEMA,SCHEMA_NAME");
+        refer.setRefer(View.FIELD_NAME, "VIEW_NAME,TABLE_NAME,NAME,TABNAME");
+        refer.setRefer(View.FIELD_CATALOG, "VIEW_CATALOG,TABLE_CATALOG");
+        refer.setRefer(View.FIELD_SCHEMA, "VIEW_SCHEMA,TABLE_SCHEMA,TABSCHEMA,SCHEMA_NAME");
         return refer;
     }
 	/**
@@ -7453,16 +7454,15 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             meta = (T)new View();
         }
         MetadataFieldRefer refer = refer(runtime, View.class);
-        String _catalog = row.getString(refer.getRefers("Catalog"));
-        String _schema = row.getString(refer.getRefers("Schema"));
+        String _catalog = getString(row, refer, View.FIELD_CATALOG);
+        String _schema =getString(row, refer, View.FIELD_SCHEMA);
         if(null == _catalog && null != catalog) {
             _catalog = catalog.getName();
         }
         if(null == _schema && null != schema) {
             _schema = schema.getName();
         }
-        String name = row.getString(refer.getRefers("name"));
-
+        String name = getString(row, refer, View.FIELD_NAME);
         if(null == meta) {
             meta = (T)new View();
         }
@@ -7476,7 +7476,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         meta.setCatalog(_catalog);
         meta.setSchema(_schema);
         meta.setName(name);
-        meta.setDefinition(row.getString(refer.getRefers("Definition")));
+        meta.setDefinition(getString(row, refer, View.FIELD_DEFINITION));
         return meta;
 	}
 	/**
@@ -8047,15 +8047,15 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             meta = (T)new MasterTable();
         }
         MetadataFieldRefer refer = refer(runtime, MasterTable.class);
-        String _catalog = row.getString(refer.getRefers("catalog"));
-        String _schema = row.getString(refer.getRefers("schema"));
+        String _catalog = getString(row, refer, MasterTable.FIELD_CATALOG);
+        String _schema = getString(row, refer, MasterTable.FIELD_SCHEMA);
         if(null == _catalog && null != catalog) {
             _catalog = catalog.getName();
         }
         if(null == _schema && null != schema) {
             _schema = schema.getName();
         }
-        String name = row.getString(refer.getRefers("name"));
+        String name = getString(row, refer, MasterTable.FIELD_NAME);
 
         if(null == meta) {
             meta = (T)new MasterTable();
@@ -8439,7 +8439,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         }
         MetadataFieldRefer refer = refer(runtime, PartitionTable.class);
         meta.setMetadata(row);
-        meta.setName(row.getString(refer.getRefers("name")));
+        meta.setName(getString(row, refer, PartitionTable.FIELD_NAME));
         return meta;
 	}
 	/**
@@ -8756,17 +8756,17 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
     @Override
     public MetadataFieldRefer initColumnFieldRefer() {
         MetadataFieldRefer refer = new MetadataFieldRefer(Column.class);
-        refer.setRefer("name","COLUMN_NAME,COLNAME");
-        refer.setRefer("catalog","TABLE_CATALOG");
-        refer.setRefer("schema","TABLE_SCHEMA,TABSCHEMA,SCHEMA_NAME,OWNER");
-        refer.setRefer("table","TABLE_NAME,TABNAME");
-        refer.setRefer("nullable","IS_NULLABLE,NULLABLE,NULLS");
-        refer.setRefer("charset", "CHARACTER_SET_NAME");
-        refer.setRefer("Collate", "COLLATION_NAME");
-        refer.setRefer("data_type", "FULL_TYPE,DATA_TYPE,TYPE_NAME,TYPENAME,DATA_TYPE_NAME,UDT_NAME,DATA_TYPE,TYPENAME,DATA_TYPE_NAME");
-        refer.setRefer("Position", "ORDINAL_POSITION,COLNO,POSITION");
-        refer.setRefer("Comment" ,"COLUMN_COMMENT,COMMENTS,REMARKS");
-        refer.setRefer("Default", "COLUMN_DEFAULT,DATA_DEFAULT,DEFAULT,DEFAULT_VALUE,DEFAULT_DEFINITION");
+        refer.setRefer(Column.FIELD_NAME, "COLUMN_NAME,COLNAME");
+        refer.setRefer(Column.FIELD_CATALOG,"TABLE_CATALOG");
+        refer.setRefer(Column.FIELD_SCHEMA,"TABLE_SCHEMA,TABSCHEMA,SCHEMA_NAME,OWNER");
+        refer.setRefer(Column.FIELD_TABLE,"TABLE_NAME,TABNAME");
+        refer.setRefer(Column.FIELD_NULLABLE,"IS_NULLABLE,NULLABLE,NULLS");
+        refer.setRefer(Column.FIELD_CHARSET, "CHARACTER_SET_NAME");
+        refer.setRefer(Column.FIELD_COLLATE, "COLLATION_NAME");
+        refer.setRefer(Column.FIELD_TYPE_NAME, "FULL_TYPE,DATA_TYPE,TYPE_NAME,TYPENAME,DATA_TYPE_NAME,UDT_NAME,DATA_TYPE,TYPENAME,DATA_TYPE_NAME");
+        refer.setRefer(Column.FIELD_POSITION, "ORDINAL_POSITION,COLNO,POSITION");
+        refer.setRefer(Column.FIELD_COMMENT ,"COLUMN_COMMENT,COMMENTS,REMARKS");
+        refer.setRefer(Column.FIELD_DEFAULT_VALUE, "COLUMN_DEFAULT,DATA_DEFAULT,DEFAULT,DEFAULT_VALUE,DEFAULT_DEFINITION");
         return refer;
     }
 	/**
@@ -9366,7 +9366,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         }
         MetadataFieldRefer refer = refer(runtime, Tag.class);
         meta.setMetadata(row);
-        meta.setName(row.getString(refer.getRefers("name")));
+        meta.setName(getString(row, refer, Table.FIELD_NAME));
         return meta;
 	}
 
@@ -9476,14 +9476,16 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         for(DataRow row:set) {
             if(null == meta) {
                 meta = (T)new PrimaryKey();
-                meta.setName(row.getString(refer.getRefers("name")));
+                meta.setName(getString(row, refer, PrimaryKey.FIELD_NAME));
                 if(null == table) {
-                    table = new Table(row.getString(refer.getRefers("Catalog")), row.getString(refer.getRefers("Schema")), row.getString(refer.getRefers("table")));
+                    table = new Table(getString(row, refer, PrimaryKey.FIELD_CATALOG)
+                            ,getString(row, refer, PrimaryKey.FIELD_SCHEMA)
+                            ,getString(row, refer, PrimaryKey.FIELD_TABLE));
                 }
                 meta.setTable(table);
                 meta.setMetadata(row);
             }
-            String col = row.getString(refer.getRefers("Column"));
+            String col = getString(row, refer, PrimaryKey.FIELD_COLUMN);
             if(BasicUtil.isEmpty(col)) {
                 throw new Exception("主键相关列名异常,请检查buildQueryPrimaryRun与primaryMetadataColumn");
             }
@@ -9492,9 +9494,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 column = new Column(col);
             }
             column.setTable(table);
-            String position = row.getString(refer.getRefers("column"));
+            String position = getString(row, refer, PrimaryKey.FIELD_POSITION);
             meta.setPosition(column, BasicUtil.parseInt(position, 0));
-            String order = row.getString(refer.getRefers("column_order"));
+            String order = getString(row, refer, PrimaryKey.FIELD_ORDER);
             if(BasicUtil.isNotEmpty(order)) {
                 column.setOrder(order);
             }
@@ -9650,9 +9652,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         if(null == meta) {
             meta = (T)new ForeignKey();
         }
-        MetadataFieldRefer refer = refer(runtime, Database.class);
+        MetadataFieldRefer refer = refer(runtime, ForeignKey.class);
         meta.setMetadata(row);
-        meta.setName(row.getString(refer.getRefers("name")));
+        meta.setName(getString(row, refer, ForeignKey.FIELD_NAME));
         return meta;
 	}
 
@@ -9929,12 +9931,12 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
     @Override
     public MetadataFieldRefer initIndexFieldRefer() {
         MetadataFieldRefer refer = new MetadataFieldRefer(Index.class);
-        refer.setRefer("Name","INDEX_NAME");
-        refer.setRefer("Table","TABLE_NAME");
-        refer.setRefer("schema", "TABLE_SCHEMA");
-        refer.setRefer("column", "COLUMN_NAME");
-        refer.setRefer("column_order", "COLLATION");
-        refer.setRefer("column_position", "SEQ_IN_INDEX");
+        refer.setRefer(Index.FIELD_NAME,"INDEX_NAME");
+        refer.setRefer(Index.FIELD_TABLE,"TABLE_NAME");
+        refer.setRefer(Index.FIELD_SCHEMA, "TABLE_SCHEMA");
+        refer.setRefer(Index.FIELD_COLUMN, "COLUMN_NAME");
+        refer.setRefer(Index.FIELD_ORDER, "COLLATION");
+        refer.setRefer(Index.FIELD_POSITION, "SEQ_IN_INDEX");
         return refer;
     }
 	/**
@@ -9957,7 +9959,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		MetadataFieldRefer refer = refer(runtime, Index.class);
 		for(DataRow row:set) {
-			String name = row.getString(refer.getRefers("name"));
+			String name = getString(row, refer, Index.FIELD_NAME);
 			if(null == name) {
 				continue;
 			}
@@ -10001,7 +10003,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
         MetadataFieldRefer refer = refer(runtime, Index.class);
 		for(DataRow row:set) {
-			String name = row.getString(refer.getRefers("Name"));
+			String name = getString(row, refer, Index.FIELD_NAME);
 			if(null == name) {
 				continue;
 			}
@@ -10048,7 +10050,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			tbls.put(table.getName().toUpperCase(), table);
 		}
 		for(DataRow row:set) {
-            String name = row.getString(refer.getRefers("Name"));
+            String name = getString(row, refer, Index.FIELD_NAME);
             if(null == name) {
                 continue;
             }
@@ -10127,13 +10129,13 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	public <T extends Index> T init(DataRuntime runtime, int index, T meta, Index query, DataRow row) throws Exception {
 		Table table = query.getTable();
 		MetadataFieldRefer refer = refer(runtime, Index.class);
-		String name = row.getString(refer.getRefers("name"));
+		String name = getString(row, refer, Index.FIELD_NAME);
 		if(null == meta) {
 			meta = (T)new Index();
 			meta.setName(name);
 			Catalog catalog = null;
 			Schema schema = null;
-			String catalogName = row.getString(refer.getRefers("Catalog"));
+			String catalogName = getString(row, refer, Index.FIELD_CATALOG);
 			if(BasicUtil.isNotEmpty(catalogName)) {
 				catalog = new Catalog(catalogName);
 			}else{
@@ -10141,7 +10143,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 					catalog = table.getCatalog();
 				}
 			}
-			String schemaName = row.getString(refer.getRefers("Schema"));
+			String schemaName = getString(row, refer, Index.FIELD_SCHEMA);
 			if(BasicUtil.isNotEmpty(schemaName)) {
 				schema = new Schema(schemaName);
 			}else{
@@ -10151,7 +10153,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			}
 
 			if(null == table) {
-				String tableName = row.getString(refer.getRefers("Table"));
+				String tableName = getString(row, refer, Index.FIELD_TABLE);
 				table = new Table(catalog, schema, tableName);
 			}
 			meta.setCatalog(catalog);
@@ -10160,15 +10162,15 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			meta.setMetadata(row);
 
 			//是否主键
-			String[] chks = refer.getRefers("primary_check");
-			String[] vals = refer.getRefers("primary_check_value");
+			String[] chks = refer.getRefers(Index.FIELD_PRIMARY_CHECK);
+			String[] vals = refer.getRefers(Index.FIELD_PRIMARY_CHECK_VALUE);
 			Boolean bol = matchBoolean(row, chks, vals);
 			if(null != bol){
 				meta.setPrimary(bol);
 			}
 			//是否唯一
-			chks = refer.getRefers("unique_check");
-			vals = refer.getRefers("unique_check_value");
+			chks = refer.getRefers(Index.FIELD_UNIQUE_CHECK);
+			vals = refer.getRefers(Index.FIELD_UNIQUE_CHECK_VALUE);
 			bol = matchBoolean(row, chks, vals);
 			if(null != bol){
 				meta.setUnique(bol);
@@ -10190,7 +10192,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	@Override
 	public <T extends Index> T detail(DataRuntime runtime, int index, T meta, Index query, DataRow row) throws Exception {
         MetadataFieldRefer refer = refer(runtime, Index.class);
-		String columnName = row.getStringWithoutEmpty(refer.getRefers("column"));
+		String columnName = row.getStringWithoutEmpty(refer.getRefers(Index.FIELD_COLUMN));
 		if(null == columnName) {
 			return meta;
 		}
@@ -10201,13 +10203,13 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		column.setName(columnName);
 		meta.addColumn(column);
-		Integer position = row.getInt(refer.getRefers("column_position"));
+		Integer position = getInt(row, refer, Index.FIELD_POSITION);
 		if(null == position) {
 			position = 0;
 		}
 		column.setPosition(position);
 		meta.setPosition(column, position);
-		String order = row.getString(refer.getRefers("column_order"));
+		String order = getString(row, refer, Index.FIELD_ORDER);
 		if(null != order) {
 			order = order.toUpperCase();
 			Order.TYPE type = Order.TYPE.ASC;
@@ -10352,10 +10354,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
     @Override
     public MetadataFieldRefer initConstraintFieldRefer() {
         MetadataFieldRefer refer = new MetadataFieldRefer(Constraint.class);
-        refer.setRefer("name", "CONSTRAINT_NAME");
-        refer.setRefer("schema", "CONSTRAINT_CATALOG");
-        refer.setRefer("table", "TABLE_NAME");
-        refer.setRefer("type", "CONSTRAINT_TYPE");
+        refer.setRefer(Constraint.FIELD_NAME, "CONSTRAINT_NAME");
+        refer.setRefer(Constraint.FIELD_SCHEMA, "CONSTRAINT_CATALOG");
+        refer.setRefer(Constraint.FIELD_TABLE, "TABLE_NAME");
+        refer.setRefer(Constraint.FIELD_TYPE, "CONSTRAINT_TYPE");
         return refer;
     }
 
@@ -10380,7 +10382,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         MetadataFieldRefer refer = refer(runtime, Constraint.class);
         Table table = query.getTable();
         for(DataRow row:set) {
-            String name = row.getString(refer.getRefers("Name"));
+            String name = getString(row, refer, Constraint.FIELD_NAME);
             if(null == name) {
                 continue;
             }
@@ -10424,7 +10426,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         }
         MetadataFieldRefer refer = refer(runtime, Constraint.class);
         for(DataRow row:set) {
-            String name = row.getString(refer.getRefers("name"));
+            String name = getString(row, refer, Constraint.FIELD_NAME);
             if(null == name) {
                 continue;
             }
@@ -10463,21 +10465,21 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             meta = (T)new Constraint<>();
         }
         MetadataFieldRefer refer = refer(runtime, Constraint.class);
-        String name = row.getString(refer.getRefers("name"));
+        String name = getString(row, refer, Constraint.FIELD_NAME);
         if(null == name) {
             return meta;
         }
-        String catalog = row.getString(refer.getRefers("catalog"));
-        String schema = row.getString(refer.getRefers("schema"));
+        String catalog =  getString(row, refer, Constraint.FIELD_CATALOG);
+        String schema =  getString(row, refer, Constraint.FIELD_SCHEMA);
         meta.setCatalog(catalog);
         meta.setSchema(schema);
         Table table = query.getTable();
         if(null == table) {
-            table = new Table(catalog, schema, row.getString(refer.getRefers("table")));
+            table = new Table(catalog, schema, getString(row, refer, Constraint.FIELD_TABLE));
         }
         meta.setTable(table);
         meta.setName(name);
-        meta.setType(row.getString(refer.getRefers("type")));
+        meta.setType(getString(row, refer, Constraint.FIELD_TYPE));
 
 		return meta;
 	}
@@ -10629,7 +10631,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         Table table = query.getTable();
         MetadataFieldRefer refer = refer(runtime, Database.class);
         meta.setMetadata(row);
-        meta.setName(row.getString(refer.getRefers("name")));
+        meta.setName(getString(row, refer, Trigger.FIELD_NAME));
         meta.setTable(table);
         return meta;
 	}
@@ -10975,7 +10977,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         }
         MetadataFieldRefer refer = refer(runtime, Procedure.class);
         meta.setMetadata(row);
-        meta.setName(row.getString(refer.getRefers("name")));
+        meta.setName(getString(roiw, refer, Procedure.FIELD_NAME));
         return meta;
 	}
 	/**
@@ -11323,10 +11325,11 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			meta = (T)new Function();
 		}
 		if(null != refer) {
-			meta.setName(row.getString(refer.getRefers("Name")));
-			meta.setSchema(row.getString(refer.getRefers("Schema")));
-			meta.setComment(row.getString(refer.getRefers("Comment")));
-			meta.setDefinition(row.getString(refer.getRefers("Define")));
+			meta.setName(getString(row, refer, Function.FIELD_NAME));
+            meta.setCatalog(getString(row, refer, Function.FIELD_CATALOG));
+            meta.setSchema(getString(row, refer, Function.FIELD_SCHEMA));
+			meta.setComment(getString(row, refer, Function.FIELD_COMMENT));
+			meta.setDefinition(getString(row, refer, Function.FIELD_DEFINITION));
 		}
 		return meta;
 	}
@@ -11673,7 +11676,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         }
         MetadataFieldRefer refer = refer(runtime, Database.class);
         meta.setMetadata(row);
-        meta.setName(row.getString(refer.getRefers("name")));
+        meta.setName(getString(row, refer, Sequence.FIELD_NAME));
         return meta;
 	}
 	/**
@@ -16332,7 +16335,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         }
         MetadataFieldRefer refer = refer(runtime, Role.class);
         meta.setMetadata(row);
-        meta.setName(row.getString(refer.getRefers("name")));
+        meta.setName(getString(row, refer, Role.FIELD_NAME));
         return meta;
 	}
 
@@ -16566,8 +16569,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         }
         MetadataFieldRefer refer = refer(runtime, Procedure.class);
         meta.setMetadata(row);
-        meta.setName(row.getString(refer.getRefers("name")));
-        meta.setHost(row.getString(refer.getRefers("host")));
+        meta.setName(row.getString(refer.getRefers(User.FIELD_NAME)));
+        meta.setHost(row.getString(refer.getRefers(User.FIELD_HOST)));
         return meta;
 	}
 
@@ -16713,7 +16716,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         }
         MetadataFieldRefer refer = refer(runtime, Procedure.class);
         meta.setMetadata(row);
-        meta.setName(row.getString(refer.getRefers("name")));
+        meta.setName(row.getString(refer.getRefers(Procedure.FIELD_NAME)));
         return meta;
 	}
 

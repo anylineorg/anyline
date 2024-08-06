@@ -148,4 +148,22 @@ public class Sequence extends Metadata<Sequence> implements Serializable {
         this.cycle = cycle;
     }
 
+/* ********************************* field refer ********************************** */
+    public static final String FIELD_KEYWORD                       = "KEYWORD";
+    public static final String FIELD_NAME                          = "NAME";
+    public static final String FIELD_MIN                           = "MIN";
+    public static final String FIELD_MAX                           = "MAX";
+    public static final String FIELD_LAST                          = "LAST";
+    public static final String FIELD_NEXT                          = "NEXT";
+    public static final String FIELD_NEXT_CHECK                    = "NEXT_CHECK";
+    public static final String FIELD_NEXT_CHECK_VALUE              = "NEXT_CHECK_VALUE";
+    public static final String FIELD_START                         = "START";
+    public static final String FIELD_INCREMENT                     = "INCREMENT";
+    public static final String FIELD_CACHE                         = "CACHE";
+    public static final String FIELD_CYCLE                         = "CYCLE";
+    public static final String FIELD_CYCLE_CHECK                   = "CYCLE_CHECK";
+    public static final String FIELD_CYCLE_CHECK_VALUE             = "CYCLE_CHECK_VALUE";
+    public static final String FIELD_FETCH_VALUE_BEFORE_INSERT     = "FETCH_VALUE_BEFORE_INSERT";
+    public static final String FIELD_FETCH_VALUE_BEFORE_INSERT_CHECK = "FETCH_VALUE_BEFORE_INSERT_CHECK";
+    public static final String FIELD_FETCH_VALUE_BEFORE_INSERT_CHECK_VALUE = "FETCH_VALUE_BEFORE_INSERT_CHECK_VALUE";
 }

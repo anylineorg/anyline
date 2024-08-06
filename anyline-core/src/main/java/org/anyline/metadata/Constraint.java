@@ -190,5 +190,10 @@ public class Constraint<E extends Constraint> extends TableAffiliation<E> implem
         return copy;
     }
 
-
+/* ********************************* field refer ********************************** */
+    public static final String FIELD_KEYWORD                       = "KEYWORD";
+    public static final String FIELD_TYPE                          = "TYPE";
+    public static final String FIELD_COLUMN                        = "COLUMN";
+    public static final String FIELD_POSITION                      = "POSITION";
+    public static final String FIELD_ORDER                         = "ORDER";
 }

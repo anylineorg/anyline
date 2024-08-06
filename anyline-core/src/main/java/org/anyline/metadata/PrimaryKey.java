@@ -41,4 +41,7 @@ public class PrimaryKey extends Index<PrimaryKey> implements Serializable {
     public String getKeyword() {
         return this.keyword;
     }
+
+/* ********************************* field refer ********************************** */
+    public static final String FIELD_KEYWORD                       = "KEYWORD";
 }

@@ -1711,9 +1711,9 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	@Override
 	public MetadataFieldRefer initTableFieldRefer() {
 		MetadataFieldRefer refer = new MetadataFieldRefer(Table.class);
-		refer.setRefer("name", "TABNAME");
-		refer.setRefer("Catalog", "");
-		refer.setRefer("schema", "TABSCHEMA");
+		refer.setRefer(Table.FIELD_NAME, "TABNAME");
+		refer.setRefer(Table.FIELD_CATALOG, "");
+		refer.setRefer(Table.FIELD_SCHEMA, "TABSCHEMA");
 		return refer;
 	}
 	/**
@@ -2349,12 +2349,12 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	@Override
 	public MetadataFieldRefer initColumnFieldRefer() {
 		MetadataFieldRefer refer = new MetadataFieldRefer(Column.class);
-		refer.setRefer("name", "COLNAME");
-		refer.setRefer("Catalog", "");
-		refer.setRefer("schema", "TABSCEHMA");
-		refer.setRefer("Position", "COLNO");
-		refer.setRefer("Table", "TABNAME");
-		refer.setRefer("Type", "TYPENAME");
+		refer.setRefer(Column.FIELD_NAME, "COLNAME");
+		refer.setRefer(Column.FIELD_CATALOG, "");
+		refer.setRefer(Column.FIELD_SCHEMA, "TABSCEHMA");
+		refer.setRefer(Column.FIELD_POSITION, "COLNO");
+		refer.setRefer(Column.FIELD_TABLE, "TABNAME");
+		refer.setRefer(Column.FIELD_TYPE_NAME, "TYPENAME");
 		return refer;
 	}
 	/**

@@ -1919,20 +1919,20 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     @Override
     public MetadataFieldRefer initTableFieldRefer() {
         MetadataFieldRefer refer = new MetadataFieldRefer(Table.class);
-        refer.setRefer("name", "TABLE_NAME");
-        refer.setRefer("schema", "TABLE_SCHEMA");
-        refer.setRefer("type", "TABLE_TYPE");
-        refer.setRefer("engine", "ENGINE");
-        refer.setRefer("object", "OBJECT_ID");
-        refer.setRefer("rows", "TABLE_ROWS");
-        refer.setRefer("collation", "TABLE_COLLATION");
-        refer.setRefer("length", "DATA_LENGTH");
-        refer.setRefer("free", "DATA_FREE");
-        refer.setRefer("increment", "AUTO_INCREMENT");
-        refer.setRefer("index_length", "INDEX_LENGTH");
-        refer.setRefer("create_time", "CREATE_TIME");
-        refer.setRefer("update_time", "UPDATE_TIME");
-        refer.setRefer("temporary", "IS_TEMPORARY");
+        refer.setRefer(Table.FIELD_NAME,  "TABLE_NAME");
+        refer.setRefer(Table.FIELD_SCHEMA, "TABLE_SCHEMA");
+        refer.setRefer(Table.FIELD_TYPE, "TABLE_TYPE");
+        refer.setRefer(Table.FIELD_ENGINE, "ENGINE");
+        refer.setRefer(Table.FIELD_OBJECT_ID, "OBJECT_ID");
+        refer.setRefer(Table.FIELD_DATA_ROWS, "TABLE_ROWS");
+        refer.setRefer(Table.FIELD_COLLATE, "TABLE_COLLATION");
+        refer.setRefer(Table.FIELD_DATA_LENGTH, "DATA_LENGTH");
+        refer.setRefer(Table.FIELD_DATA_FREE, "DATA_FREE");
+        refer.setRefer(Table.FIELD_INCREMENT, "AUTO_INCREMENT");
+        refer.setRefer(Table.FIELD_INDEX_LENGTH, "INDEX_LENGTH");
+        refer.setRefer(Table.FIELD_CREATE_TIME, "CREATE_TIME");
+        refer.setRefer(Table.FIELD_UPDATE_TIME, "UPDATE_TIME");
+        refer.setRefer(Table.FIELD_TEMPORARY, "IS_TEMPORARY");
         return super.initTableFieldRefer();
     }
     /**
@@ -1943,10 +1943,10 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     @Override
     public MetadataFieldRefer initTableCommentFieldRefer() {
         MetadataFieldRefer refer = new MetadataFieldRefer(TableComment.class);
-        refer.setRefer("value", "TABLE_COMMENT");
-        refer.setRefer("table", "TABLE_NAME");
-        refer.setRefer("catalog", "TABLE_CATALOG");
-        refer.setRefer("schema", "TABLE_SCHEMA");
+        refer.setRefer(TableComment.FIELD_VALUE, "TABLE_COMMENT");
+        refer.setRefer(TableComment.FIELD_TABLE, "TABLE_NAME");
+        refer.setRefer(TableComment.FIELD_CATALOG, "TABLE_CATALOG");
+        refer.setRefer(TableComment.FIELD_SCHEMA, "TABLE_SCHEMA");
         return refer;
     }
     /**
@@ -2192,9 +2192,9 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     @Override
     public MetadataFieldRefer initViewFieldRefer() {
         MetadataFieldRefer refer = new MetadataFieldRefer(View.class);
-        refer.setRefer("name", "TABLE_NAME");
-        refer.setRefer("schema", "TABLE_SCHEMA");
-        refer.setRefer("definition","VIEW_DEFINITION");
+        refer.setRefer(View.FIELD_NAME, "TABLE_NAME");
+        refer.setRefer(View.FIELD_SCHEMA, "TABLE_SCHEMA");
+        refer.setRefer(View.FIELD_DEFINITION,"VIEW_DEFINITION");
         return refer;
     }
     /**
@@ -2581,26 +2581,26 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     @Override
     public MetadataFieldRefer initColumnFieldRefer() {
         MetadataFieldRefer refer = new MetadataFieldRefer(Column.class);
-        refer.setRefer("name", "COLUMN_NAME");
-        refer.setRefer("catalog", "");//忽略
-        refer.setRefer("schema", "TABLE_SCHEMA");
-        refer.setRefer("table", "TABLE_NAME");
-        refer.setRefer("nullable", "IS_NULLABLE");
-        refer.setRefer("charset", "CHARACTER_SET_NAME");
-        refer.setRefer("collate", "COLLATION_NAME");
-        refer.setRefer("data_type", "COLUMN_TYPE");
-        refer.setRefer("position", "ORDINAL_POSITION");
-        refer.setRefer("comment", "COLUMN_COMMENT");
-        refer.setRefer("default", "COLUMN_DEFAULT");
+        refer.setRefer(Column.FIELD_NAME, "COLUMN_NAME");
+        refer.setRefer(Column.FIELD_CATALOG, "");//忽略
+        refer.setRefer(Column.FIELD_SCHEMA, "TABLE_SCHEMA");
+        refer.setRefer(Column.FIELD_TABLE, "TABLE_NAME");
+        refer.setRefer(Column.FIELD_NULLABLE, "IS_NULLABLE");
+        refer.setRefer(Column.FIELD_CHARSET, "CHARACTER_SET_NAME");
+        refer.setRefer(Column.FIELD_COLLATE, "COLLATION_NAME");
+        refer.setRefer(Column.FIELD_TYPE_NAME, "COLUMN_TYPE");
+        refer.setRefer(Column.FIELD_POSITION, "ORDINAL_POSITION");
+        refer.setRefer(Column.FIELD_COMMENT, "COLUMN_COMMENT");
+        refer.setRefer(Column.FIELD_DEFAULT_VALUE, "COLUMN_DEFAULT");
 
-        refer.setRefer("autoincrement_check", "EXTRA");
-        refer.setRefer("autoincrement_check_value", "auto_increment");
+        refer.setRefer(Column.FIELD_AUTO_INCREMENT_CHECK, "EXTRA");
+        refer.setRefer(Column.FIELD_AUTO_INCREMENT_CHECK_VALUE, "auto_increment");
 
-        refer.setRefer("onupdate_check", "EXTRA");
-        refer.setRefer("onupdate_check_value", ".*on update.*");
+        refer.setRefer(Column.FIELD_ON_UPDATE_CHECK, "EXTRA");
+        refer.setRefer(Column.FIELD_ON_UPDATE+"_VALUE", ".*on update.*");
 
-        refer.setRefer("primary_check","COLUMN_KEY");
-        refer.setRefer("primary_check_value","PRI");
+        refer.setRefer(Column.FIELD_PRIMARY_CHECK,"COLUMN_KEY");
+        refer.setRefer(Column.FIELD_PRIMARY_CHECK_VALUE,"PRI");
         return refer;
     }
     /**
@@ -3064,17 +3064,17 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     @Override
     public MetadataFieldRefer initIndexFieldRefer() {
         MetadataFieldRefer refer = new MetadataFieldRefer(Index.class);
-        refer.setRefer("name", "INDEX_NAME");
-        refer.setRefer("Table", "TABLE_NAME");
-        refer.setRefer("schema", "TABLE_SCHEMA");
-        refer.setRefer("column", "COLUMN_NAME");
-        refer.setRefer("column_order", "COLLATION");
-        refer.setRefer("column_position", "SEQ_IN_INDEX");
-        refer.setRefer("primary_check", "INDEX_NAME");
-        refer.setRefer("primary_check_value","PRIMARY");
-        refer.setRefer("unique_check", "NON_UNIQUE");
-        refer.setRefer("unique_check_value", "0");
-        refer.setRefer("Catalog", "");
+        refer.setRefer(Index.FIELD_NAME, "INDEX_NAME");
+        refer.setRefer(Index.FIELD_TABLE, "TABLE_NAME");
+        refer.setRefer(Index.FIELD_SCHEMA, "TABLE_SCHEMA");
+        refer.setRefer(Index.FIELD_COLUMN, "COLUMN_NAME");
+        refer.setRefer(Index.FIELD_ORDER, "COLLATION"); //A:ASC
+        refer.setRefer(Index.FIELD_POSITION, "SEQ_IN_INDEX");
+        refer.setRefer(Index.FIELD_PRIMARY_CHECK, "INDEX_NAME");
+        refer.setRefer(Index.FIELD_PRIMARY_CHECK_VALUE,"PRIMARY");
+        refer.setRefer(Index.FIELD_UNIQUE_CHECK, "NON_UNIQUE");
+        refer.setRefer(Index.FIELD_UNIQUE_CHECK_VALUE, "0");
+        refer.setRefer(Index.FIELD_CATALOG, "");
         return refer;
     }
     /**
@@ -3243,10 +3243,10 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     @Override
     public MetadataFieldRefer initConstraintFieldRefer() {
         MetadataFieldRefer refer = new MetadataFieldRefer(Constraint.class);
-        refer.setRefer("name", "CONSTRAINT_NAME");
-        refer.setRefer("schema", "CONSTRAINT_CATALOG");
-        refer.setRefer("table", "TABLE_NAME");
-        refer.setRefer("type", "CONSTRAINT_TYPE");
+        refer.setRefer(Constraint.FIELD_NAME, "CONSTRAINT_NAME");
+        refer.setRefer(Constraint.FIELD_SCHEMA, "CONSTRAINT_CATALOG");
+        refer.setRefer(Constraint.FIELD_TABLE, "TABLE_NAME");
+        refer.setRefer(Constraint.FIELD_TYPE, "CONSTRAINT_TYPE");
         return refer;
     }
     /**
@@ -6859,8 +6859,8 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     @Override
     public MetadataFieldRefer initUserFieldRefer() {
         MetadataFieldRefer refer = new MetadataFieldRefer(User.class);
-        refer.setRefer("Host", "host");
-        refer.setRefer("name", "user");
+        refer.setRefer(User.FIELD_HOST, "host");
+        refer.setRefer(User.FIELD_NAME, "user");
         return refer;
     }
     /**
@@ -6895,8 +6895,8 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         if(null == meta){
             meta = (T) new User();
         }
-        meta.setHost(row.getString(refer.getRefers("Host")));
-        meta.setName(row.getString(refer.getRefers("Name")));
+        meta.setHost(row.getString(refer.getRefers(User.FIELD_HOST)));
+        meta.setName(row.getString(refer.getRefers(User.FIELD_NAME)));
         return meta;
     }
 

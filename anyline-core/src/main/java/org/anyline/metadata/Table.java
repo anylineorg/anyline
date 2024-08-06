@@ -1690,4 +1690,45 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
             }
         }
     }
+
+/* ********************************* field refer ********************************** */
+    public static final String FIELD_TYPES                         = "TYPES";
+    public static final String FIELD_KEYWORD                       = "KEYWORD";
+    public static final String FIELD_PARTITION                     = "PARTITION";
+    public static final String FIELD_TYPE                          = "TYPE";
+    public static final String FIELD_SRID                          = "SRID";
+    public static final String FIELD_TYPE_CAT                      = "TYPE_CAT";
+    public static final String FIELD_TYPE_SCHEMA                   = "TYPE_SCHEMA";
+    public static final String FIELD_TYPE_NAME                     = "TYPE_NAME";
+    public static final String FIELD_SELF_REFERENCING_COLUMN       = "SELF_REFERENCING_COLUMN";
+    public static final String FIELD_REF_GENERATION                = "REF_GENERATION";
+    public static final String FIELD_ENGINE                        = "ENGINE";
+    public static final String FIELD_ENGINE_PARAMETERS             = "ENGINE_PARAMETERS";
+    public static final String FIELD_CHARSET                       = "CHARSET";
+    public static final String FIELD_COLLATE                       = "COLLATE";
+    public static final String FIELD_TTL                           = "TTL";
+    public static final String FIELD_CREATE_TIME                   = "CREATE_TIME";
+    public static final String FIELD_UPDATE_TIME                   = "UPDATE_TIME";
+    public static final String FIELD_DATA_ROWS                     = "DATA_ROWS";
+    public static final String FIELD_DATA_LENGTH                   = "DATA_LENGTH";
+    public static final String FIELD_INCREMENT                     = "INCREMENT";
+    public static final String FIELD_DATA_FREE                     = "DATA_FREE";
+    public static final String FIELD_INDEX_LENGTH                  = "INDEX_LENGTH";
+    public static final String FIELD_TEMPORARY                     = "TEMPORARY";
+    public static final String FIELD_METADATA_SCAN                 = "METADATA_SCAN";
+    public static final String FIELD_CHANGE_PRIMARY                = "CHANGE_PRIMARY";
+    public static final String FIELD_MATERIALIZE                   = "MATERIALIZE";
+    public static final String FIELD_KEY                           = "KEY";
+    public static final String FIELD_DISTRIBUTION                  = "DISTRIBUTION";
+    public static final String FIELD_PRIMARY_KEY                   = "PRIMARY_KEY";
+    public static final String FIELD_COLUMN                        = "COLUMN";
+    public static final String FIELD_TAG                           = "TAG";
+    public static final String FIELD_INDEXE                        = "INDEXE";
+    public static final String FIELD_CONSTRAINT                    = "CONSTRAINT";
+    public static final String FIELD_SORT                          = "SORT";
+    public static final String FIELD_SORT_CHECK                    = "SORT_CHECK";
+    public static final String FIELD_SORT_CHECK_VALUE              = "SORT_CHECK_VALUE";
+    public static final String FIELD_AUTO_DROP_COLUMN              = "AUTO_DROP_COLUMN";
+    public static final String FIELD_AUTO_DROP_COLUMN_CHECK        = "AUTO_DROP_COLUMN_CHECK";
+    public static final String FIELD_AUTO_DROP_COLUMN_CHECK_VALUE  = "AUTO_DROP_COLUMN_CHECK_VALUE";
 }

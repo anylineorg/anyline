@@ -43,4 +43,6 @@ public class Catalog extends Metadata<Catalog> implements Serializable {
         return BasicUtil.equals(this.name, catalog.getName(), ignoreCase);
     }
 
+/* ********************************* field refer ********************************** */
+    public static final String FIELD_KEYWORD                       = "KEYWORD";
 }

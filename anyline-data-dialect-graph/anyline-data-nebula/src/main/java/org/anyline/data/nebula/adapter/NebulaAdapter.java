@@ -2524,7 +2524,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
     @Override
     public MetadataFieldRefer initTableFieldRefer() {
         MetadataFieldRefer refer = new MetadataFieldRefer(Table.class);
-        refer.setRefer("name", "NAME");
+        refer.setRefer(Table.FIELD_NAME, "NAME");
         return refer;
     }
     /**
@@ -4124,9 +4124,9 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
     @Override
     public MetadataFieldRefer initIndexFieldRefer() {
         MetadataFieldRefer refer = new MetadataFieldRefer(Index.class);
-        refer.setRefer("name", "Index Name");
-        refer.setRefer("Table", "By Tag,By Edge");
-        refer.setRefer("column", "Columns");
+        refer.setRefer(Index.FIELD_NAME, "Index Name");
+        refer.setRefer(Index.FIELD_TABLE, "By Tag,By Edge");
+        refer.setRefer(Index.FIELD_COLUMN, "Columns");
         return refer;
     }
     /**

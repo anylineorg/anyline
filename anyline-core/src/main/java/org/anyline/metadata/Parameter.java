@@ -103,4 +103,17 @@ public class Parameter extends Metadata<Parameter> implements Serializable {
         return "{value:"+value+", type:"+type+"}";
     }
 
+/* ********************************* field refer ********************************** */
+    public static final String FIELD_INPUT                         = "INPUT";
+    public static final String FIELD_INPUT_CHECK                   = "INPUT_CHECK";
+    public static final String FIELD_INPUT_CHECK_VALUE             = "INPUT_CHECK_VALUE";
+    public static final String FIELD_OUTPUT                        = "OUTPUT";
+    public static final String FIELD_OUTPUT_CHECK                  = "OUTPUT_CHECK";
+    public static final String FIELD_OUTPUT_CHECK_VALUE            = "OUTPUT_CHECK_VALUE";
+    public static final String FIELD_LENGTH                        = "LENGTH";
+    public static final String FIELD_PRECISION                     = "PRECISION";
+    public static final String FIELD_SCALE                         = "SCALE";
+    public static final String FIELD_VALUE                         = "VALUE";
+    public static final String FIELD_COLUMN_TYPE                   = "COLUMN_TYPE";
+    public static final String FIELD_TYPE                          = "TYPE";
 }

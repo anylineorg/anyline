@@ -75,4 +75,11 @@ public class Database extends Metadata<Database> implements Serializable {
         this.user = user;
     }
 
+/* ********************************* field refer ********************************** */
+    public static final String FIELD_KEYWORD                       = "KEYWORD";
+    public static final String FIELD_CHARSET                       = "CHARSET";
+    public static final String FIELD_COLLATE                       = "COLLATE";
+    public static final String FIELD_FILE_PATH                     = "FILE_PATH";
+    public static final String FIELD_LOG_PATH                      = "LOG_PATH";
+    public static final String FIELD_USER                          = "USER";
 }

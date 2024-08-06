@@ -127,4 +127,11 @@ public class Trigger extends TableAffiliation<Trigger> implements Serializable {
         return clone;
     }
 
+/* ********************************* field refer ********************************** */
+    public static final String FIELD_KEYWORD                       = "KEYWORD";
+    public static final String FIELD_TIME                          = "TIME";
+    public static final String FIELD_EVENT                         = "EVENT";
+    public static final String FIELD_EACH                          = "EACH";
+    public static final String FIELD_EACH_CHECK                    = "EACH_CHECK";
+    public static final String FIELD_EACH_CHECK_VALUE              = "EACH_CHECK_VALUE";
 }

@@ -122,4 +122,6 @@ public class TableAffiliation<E extends TableAffiliation> extends Metadata<E> im
         return schema;
     }
 
+/* ********************************* field refer ********************************** */
+    public static final String FIELD_TABLE                         = "TABLE";
 }

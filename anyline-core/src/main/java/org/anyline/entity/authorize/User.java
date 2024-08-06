@@ -54,4 +54,9 @@ public class User extends Metadata<User> {
         this.host = host;
     }
 
+    /* ********************************* field refer ********************************** */
+    public static final String FIELD_HOST = "HOST";
+
+    public static final String FIELD_PASSWORD = "PASSWORD";
+
 }

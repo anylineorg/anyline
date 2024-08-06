@@ -102,4 +102,6 @@ public class Tag extends Column implements Serializable {
         return this.keyword;
     }
 
+/* ********************************* field refer ********************************** */
+    public static final String FIELD_KEYWORD                       = "KEYWORD";
 }

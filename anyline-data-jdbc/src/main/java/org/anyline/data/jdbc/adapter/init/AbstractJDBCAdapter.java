@@ -3517,8 +3517,8 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         Table table = query.getTable();
         //属性在查询结果中对应的列(通用)
         MetadataFieldRefer refer = refer(runtime, Column.class);
-        String catalog = row.getString(refer.getRefers("Catalog"));
-        String schema = row.getString(refer.getRefers("Schema"));//"TABLE_SCHEMA","TABSCHEMA","SCHEMA_NAME","OWNER"
+        String catalog = row.getString(refer.getRefers(Column.FIELD_CATALOG));
+        String schema = row.getString(refer.getRefers(Column.FIELD_SCHEMA));//"TABLE_SCHEMA","TABSCHEMA","SCHEMA_NAME","OWNER"
         schema = BasicUtil.evl(schema, meta.getSchemaName());
         //如果上一步没有提供table有可能是查所有表的列,column单独创建自己的table对象
         if(null != table) {
@@ -3543,13 +3543,13 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         if(null != table) {//查询全部表
             meta.setTable(table);
         }else {
-            String tableName = row.getString(refer.getRefers("table"));
+            String tableName = row.getString(refer.getRefers(Column.FIELD_TABLE));
             table = new Table(BasicUtil.evl(tableName, meta.getTableName(true), tableName));
             table.setCatalog(catalog);
             table.setSchema(schema);
             meta.setTable(table);
         }
-        String name = row.getString(refer.getRefers("name"));
+        String name = row.getString(refer.getRefers(Column.FIELD_NAME));
         meta.setName(name);
         meta.setMetadata(row);
         return meta;
@@ -3574,10 +3574,10 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         MetadataFieldRefer refer = refer(runtime, Column.class);
 
         if(null == meta.getPosition()) {
-            meta.setPosition(getInt(row, refer, "Position", null));
+            meta.setPosition(getInt(row, refer, Column.FIELD_POSITION, null));
         }
-        meta.setComment(getString(row, refer, "Comment", meta.getComment()));
-        String type = getString(row, refer, "data_type");
+        meta.setComment(getString(row, refer, Column.FIELD_COMMENT, meta.getComment()));
+        String type = getString(row, refer, Column.FIELD_TYPE_NAME);
         /*if(null != type) {
             type = type.replace("character varying","VARCHAR");
         }*/
@@ -3592,7 +3592,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         TypeMetadata typeMetadata = typeMetadata(runtime, meta);
         //属性在查询结果中对应的列(区分数据类型)
         TypeMetadata.Refer trefer = dataTypeMetadataRefer(runtime, typeMetadata);
-        String def = getString(row, refer, "default", meta.getDefaultValue()+"");
+        String def = getString(row, refer, Column.FIELD_DEFAULT_VALUE, meta.getDefaultValue()+"");
         def = def.trim();//oracle 会取出\t\n
         if(BasicUtil.isNotEmpty(def)) {
             while(def.startsWith("(") && def.endsWith(")")) {

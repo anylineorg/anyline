@@ -1248,7 +1248,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
     @Override
     public MetadataFieldRefer initDatabaseFieldRefer() {
         MetadataFieldRefer refer = new MetadataFieldRefer(Database.class);
-        refer.setRefer("name", "DATNAME");
+        refer.setRefer(Database.FIELD_NAME, "DATNAME");
         return refer;
     }
     /**
@@ -1452,7 +1452,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
     @Override
     public MetadataFieldRefer initCatalogFieldRefer() {
         MetadataFieldRefer refer = new MetadataFieldRefer(Catalog.class);
-        refer.setRefer("name", "datname");
+        refer.setRefer(Catalog.FIELD_NAME, "datname");
         return refer;
     }
     /**
@@ -1655,8 +1655,8 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
     @Override
     public MetadataFieldRefer initSchemaFieldRefer() {
         MetadataFieldRefer refer = new MetadataFieldRefer(Schema.class);
-        refer.setRefer("name", "schema_name");
-        refer.setRefer("Catalog", "catalog_name");
+        refer.setRefer(Schema.FIELD_NAME, "schema_name");
+        refer.setRefer(Schema.FIELD_CATALOG, "catalog_name");
         return refer;
     }
     /**
@@ -2494,19 +2494,19 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
     @Override
     public MetadataFieldRefer initColumnFieldRefer() {
         MetadataFieldRefer refer = new MetadataFieldRefer(Column.class);
-        refer.setRefer("name", "COLUMN_NAME");
-        refer.setRefer("Catalog", "TABLE_CATALOG");
-        refer.setRefer("schema", "TABLE_SCHEMA");
-        refer.setRefer("Table", "TABLE_NAME");
-        refer.setRefer("Nullable", "IS_NULLABLE");
+        refer.setRefer(Column.FIELD_NAME, "COLUMN_NAME");
+        refer.setRefer(Column.FIELD_CATALOG, "TABLE_CATALOG");
+        refer.setRefer(Column.FIELD_SCHEMA, "TABLE_SCHEMA");
+        refer.setRefer(Column.FIELD_TABLE,  "TABLE_NAME");
+        refer.setRefer(Column.FIELD_NULLABLE, "IS_NULLABLE");
 
-        refer.setRefer("data_type", "UDT_NAME,FULL_TYPE"); //不用DATA_TYPE
-        refer.setRefer("Position", "ORDINAL_POSITION");
-        refer.setRefer("Comment", "COLUMN_COMMENT");//SQL组装
-        refer.setRefer("Default", "COLUMN_DEFAULT");
+        refer.setRefer(Column.FIELD_TYPE,  "UDT_NAME,FULL_TYPE"); //不用DATA_TYPE
+        refer.setRefer(Column.FIELD_POSITION, "ORDINAL_POSITION");
+        refer.setRefer(Column.FIELD_COMMENT, "COLUMN_COMMENT");//SQL组装
+        refer.setRefer(Column.FIELD_DEFAULT_VALUE , "COLUMN_DEFAULT");
 
-        refer.setRefer("autoincrement_check", "COLUMN_DEFAULT");
-        refer.setRefer("autoincrement_check_value", ".*nextval.*");
+        refer.setRefer(Column.FIELD_AUTO_INCREMENT_CHECK, "COLUMN_DEFAULT");
+        refer.setRefer(Column.FIELD_AUTO_INCREMENT_CHECK_VALUE, ".*nextval.*");
         return refer;
     }
     /**
@@ -3063,18 +3063,18 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
     @Override
     public MetadataFieldRefer initIndexFieldRefer() {
         MetadataFieldRefer refer = new MetadataFieldRefer(Index.class);
-        refer.setRefer("name", "INDEX_NAME");
-        refer.setRefer("Table", "TABLE_NAME");
-        refer.setRefer("schema", "SCHEMA_NAME");
-        refer.setRefer("Type", "INDEX_TYPE");
-        refer.setRefer("primary_check","IS_PRIMARY");
-        refer.setRefer("primary_check_value","T");
-        refer.setRefer("unique_check", "IS_UNIQUE");
-        refer.setRefer("unique_check_value", "T");
-        refer.setRefer("Catalog", "");
-        refer.setRefer("column", "");
-        refer.setRefer("column_order", "");
-        refer.setRefer("column_position", "");
+        refer.setRefer(Index.FIELD_NAME, "INDEX_NAME");
+        refer.setRefer(Index.FIELD_TABLE, "TABLE_NAME");
+        refer.setRefer(Index.FIELD_SCHEMA, "SCHEMA_NAME");
+        refer.setRefer(Index.FIELD_TYPE, "INDEX_TYPE");
+        refer.setRefer(Index.FIELD_PRIMARY_CHECK,"IS_PRIMARY");
+        refer.setRefer(Index.FIELD_PRIMARY_CHECK_VALUE,"T");
+        refer.setRefer(Index.FIELD_UNIQUE_CHECK, "IS_UNIQUE");
+        refer.setRefer(Index.FIELD_UNIQUE_CHECK_VALUE, "T");
+        refer.setRefer(Index.FIELD_CATALOG, "");
+        refer.setRefer(Index.FIELD_COLUMN, "column_name");
+        refer.setRefer(Index.FIELD_ORDER, "COLUMN_ORDERS");
+        refer.setRefer(Index.FIELD_POSITION, "COLUMN_POSITIONS");
         return refer;
     }
     /**
@@ -3166,7 +3166,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
     public <T extends Index> T detail(DataRuntime runtime, int index, T meta, Index query, DataRow row) throws Exception {
         meta = super.detail(runtime, index, meta, query, row);
         MetadataFieldRefer refer = refer(runtime, Index.class);
-        String columnName = row.getStringWithoutEmpty(refer.getRefers("Column"));
+        String columnName = row.getStringWithoutEmpty(refer.getRefers(Index.FIELD_COLUMN));
         if(null == columnName) {
             return meta;
         }
@@ -3175,7 +3175,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         if(null == column) {
             column = new Column();
         }
-        List<String> positions = BeanUtil.array2list(row.getStringNvl("COLUMN_POSITIONS","").split(" "));//[9, 1, 5]
+        List<String> positions = BeanUtil.array2list(row.getStringNvl(Index.FIELD_POSITION,"").split(" "));//[9, 1, 5]
         String no = row.getString("COLUMN_NO");
         int position = positions.indexOf(no);
         column.setPosition(position);
@@ -3183,7 +3183,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         meta.addColumn(column);
         meta.setPosition(column, position);
 
-        List<String> orders = BeanUtil.array2list(row.getStringNvl("COLUMN_ORDERS","").split(" "));//[0, 1, 1]  0:ASC 1:DESC
+        List<String> orders = BeanUtil.array2list(row.getStringNvl(Index.FIELD_ORDER,"").split(" "));//[0, 1, 1]  0:ASC 1:DESC
         if(position >= 0){
             String order = orders.get(position);
             if(null != order) {
@@ -3613,10 +3613,10 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
     @Override
     public MetadataFieldRefer initFunctionFieldRefer() {
         MetadataFieldRefer refer = new MetadataFieldRefer(Function.class);
-        refer.setRefer("name", "proname");
-        refer.setRefer("schema", "schema_name");
-        refer.setRefer("Comment", "comment");
-        refer.setRefer("Define","prosrc");
+        refer.setRefer(Function.FIELD_NAME, "proname");
+        refer.setRefer(Function.FIELD_SCHEMA, "schema_name");
+        refer.setRefer(Function.FIELD_COMMENT, "comment");
+        refer.setRefer(Function.FIELD_DEFINITION,"prosrc");
         return refer;
     }
     /**

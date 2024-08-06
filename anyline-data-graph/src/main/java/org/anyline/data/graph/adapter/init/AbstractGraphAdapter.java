@@ -3920,13 +3920,15 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
         for(DataRow row:set) {
             if(null == primary) {
                 primary = (T)new PrimaryKey();
-                primary.setName(row.getString(refer.getRefers("name")));
+                primary.setName(row.getString(refer.getRefers(PrimaryKey.FIELD_NAME)));
                 if(null == table) {
-                    table = new Table(row.getString(refer.getRefers("Catalog")), row.getString(refer.getRefers("Schema")), row.getString(refer.getRefers("table")));
+                    table = new Table(row.getString(refer.getRefers(PrimaryKey.FIELD_CATALOG))
+                            , row.getString(refer.getRefers(PrimaryKey.FIELD_SCHEMA))
+                            , row.getString(refer.getRefers(PrimaryKey.FIELD_TABLE)));
                 }
                 primary.setTable(table);
             }
-            String col = row.getString(refer.getRefers("Column"));
+            String col = row.getString(refer.getRefers(PrimaryKey.FIELD_COLUMN));
             if(BasicUtil.isEmpty(col)) {
                 throw new Exception("主键相关列名异常,请检查buildQueryPrimaryRun与primaryMetadataColumn");
             }
@@ -3935,9 +3937,9 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
                 column = new Column(col);
             }
             column.setTable(table);
-            String position = row.getString(refer.getRefers("column"));
+            String position = row.getString(refer.getRefers(PrimaryKey.FIELD_POSITION));
             primary.setPosition(column, BasicUtil.parseInt(position, 0));
-            String order = row.getString(refer.getRefers("column_order"));
+            String order = row.getString(refer.getRefers(PrimaryKey.FIELD_ORDER));
             if(BasicUtil.isNotEmpty(order)) {
                 column.setOrder(order);
             }
@@ -4120,9 +4122,9 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
     @Override
     public MetadataFieldRefer initIndexFieldRefer() {
         MetadataFieldRefer refer = new MetadataFieldRefer(Index.class);
-        refer.setRefer("name", "Index Name");
-        refer.setRefer("Table", "By Tag,By Edge");
-        refer.setRefer("column", "Columns");
+        refer.setRefer(Index.FIELD_NAME, "Index Name");
+        refer.setRefer(Index.FIELD_TABLE, "By Tag,By Edge");
+        refer.setRefer(Index.FIELD_COLUMN, "Columns");
         return refer;
     }
     /**

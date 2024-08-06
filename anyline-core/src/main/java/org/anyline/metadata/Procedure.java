@@ -213,4 +213,16 @@ public class Procedure extends Metadata<Procedure> implements Serializable {
 	public String getKeyword() {
 		return this.keyword;
 	}
+
+/* ********************************* field refer ********************************** */
+    public static final String FIELD_KEYWORD                       = "KEYWORD";
+    public static final String FIELD_RETURN_TYPE                   = "RETURN_TYPE";
+    public static final String FIELD_PARAMETER                     = "PARAMETER";
+    public static final String FIELD_INPUT                         = "INPUT";
+    public static final String FIELD_OUTPUT                        = "OUTPUT";
+    public static final String FIELD_RESULT                        = "RESULT";
+    public static final String FIELD_HAS_RETURN                    = "HAS_RETURN";
+    public static final String FIELD_HAS_RETURN_CHECK              = "HAS_RETURN_CHECK";
+    public static final String FIELD_HAS_RETURN_CHECK_VALUE        = "HAS_RETURN_CHECK_VALUE";
+    public static final String FIELD_NAVI                          = "NAVI";
 }

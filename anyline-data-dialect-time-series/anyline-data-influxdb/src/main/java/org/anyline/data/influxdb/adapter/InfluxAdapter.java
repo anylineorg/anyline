@@ -2382,7 +2382,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
     @Override
     public MetadataFieldRefer initTableFieldRefer() {
         MetadataFieldRefer refer = new MetadataFieldRefer(Table.class);
-        refer.setRefer("name", "NAME");
+        refer.setRefer(Table.FIELD_NAME, "NAME");
         return refer;
     }
     /**

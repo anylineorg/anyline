@@ -33,5 +33,6 @@ public class Privilege extends Metadata<User> {
         this.tables = tables;
     }
 
-
+    /* ********************************* field refer ********************************** */
+    public static final String FIELD_TABLE = "TABLE";
 }

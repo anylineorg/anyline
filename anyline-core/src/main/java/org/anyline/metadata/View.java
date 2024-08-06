@@ -77,5 +77,10 @@ public class View extends Table<View> implements Serializable {
         return this.keyword+":"+name;
     }
 
-
+/* ********************************* field refer ********************************** */
+    public static final String FIELD_TYPES                         = "TYPES";
+    public static final String FIELD_KEYWORD                       = "KEYWORD";
+    public static final String FIELD_MATERIALIZE                   = "MATERIALIZE";
+    public static final String FIELD_MATERIALIZE_CHECK             = "MATERIALIZE_CHECK";
+    public static final String FIELD_MATERIALIZE_CHECK_VALUE       = "MATERIALIZE_CHECK_VALUE";
 }

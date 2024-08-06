@@ -17,4 +17,5 @@
 package org.anyline.metadata;
 
 public class TableComment extends TableAffiliation{
+    public static final String FIELD_VALUE = "VALUE";
 }

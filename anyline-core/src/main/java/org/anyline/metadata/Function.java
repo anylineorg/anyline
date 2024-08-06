@@ -62,4 +62,7 @@ public class Function extends Metadata<Function> implements Serializable {
         return copy;
     }
 
+/* ********************************* field refer ********************************** */
+    public static final String FIELD_KEYWORD                       = "KEYWORD";
+    public static final String FIELD_PARAMETER                     = "PARAMETER";
 }

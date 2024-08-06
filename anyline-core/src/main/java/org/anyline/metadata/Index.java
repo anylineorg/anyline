@@ -250,4 +250,28 @@ public class Index<M extends Index> extends TableAffiliation<M> implements Seria
         return this_define.equalsIgnoreCase(index_define);
     }
 
+/* ********************************* field refer ********************************** */
+    public static final String FIELD_KEYWORD                       = "KEYWORD";
+    public static final String FIELD_TYPE                          = "TYPE";
+    public static final String FIELD_COLUMN                        = "COLUMN";
+    public static final String FIELD_PRIMARY                       = "PRIMARY";
+    public static final String FIELD_PRIMARY_CHECK                 = "PRIMARY_CHECK";
+    public static final String FIELD_PRIMARY_CHECK_VALUE           = "PRIMARY_CHECK_VALUE";
+    public static final String FIELD_CLUSTER                       = "CLUSTER";
+    public static final String FIELD_CLUSTER_CHECK                 = "CLUSTER_CHECK";
+    public static final String FIELD_CLUSTER_CHECK_VALUE           = "CLUSTER_CHECK_VALUE";
+    public static final String FIELD_FULLTEXT                      = "FULLTEXT";
+    public static final String FIELD_FULLTEXT_CHECK                = "FULLTEXT_CHECK";
+    public static final String FIELD_FULLTEXT_CHECK_VALUE          = "FULLTEXT_CHECK_VALUE";
+    public static final String FIELD_SPATIAL                       = "SPATIAL";
+    public static final String FIELD_SPATIAL_CHECK                 = "SPATIAL_CHECK";
+    public static final String FIELD_SPATIAL_CHECK_VALUE           = "SPATIAL_CHECK_VALUE";
+    public static final String FIELD_APPROXIMATE                   = "APPROXIMATE";
+    public static final String FIELD_APPROXIMATE_CHECK             = "APPROXIMATE_CHECK";
+    public static final String FIELD_APPROXIMATE_CHECK_VALUE       = "APPROXIMATE_CHECK_VALUE";
+    public static final String FIELD_POSITION                      = "POSITION";
+    public static final String FIELD_ORDER                         = "ORDER";
+    public static final String FIELD_UNIQUE                        = "UNIQUE";
+    public static final String FIELD_UNIQUE_CHECK                  = "UNIQUE_CHECK";
+    public static final String FIELD_UNIQUE_CHECK_VALUE            = "UNIQUE_CHECK_VALUE";
 }

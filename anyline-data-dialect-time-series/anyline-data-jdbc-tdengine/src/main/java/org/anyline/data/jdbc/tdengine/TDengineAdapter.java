@@ -1854,9 +1854,9 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
     @Override
     public MetadataFieldRefer initTableFieldRefer() {
         MetadataFieldRefer refer = new MetadataFieldRefer(Table.class);
-        refer.setRefer("name", "TABLE_NAME");
-        refer.setRefer("Catalog", "DB_NAME");
-        refer.setRefer("Comment", "TABLE_COMMENT");
+        refer.setRefer(Table.FIELD_NAME, "TABLE_NAME");
+        refer.setRefer(Table.FIELD_CATALOG, "DB_NAME");
+        refer.setRefer(Table.FIELD_COMMENT, "TABLE_COMMENT");
         return refer;
     }
     /**
@@ -2300,9 +2300,9 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
     @Override
     public MetadataFieldRefer initMasterTableFieldRefer() {
         MetadataFieldRefer refer = new MetadataFieldRefer(MasterTable.class);
-        refer.setRefer("name", "STABLE_NAME");
-        refer.setRefer("Catalog", "DB_NAME");
-        refer.setRefer("Comment", "TABLE_COMMENT");
+        refer.setRefer(MasterTable.FIELD_NAME, "STABLE_NAME");
+        refer.setRefer(MasterTable.FIELD_CATALOG, "DB_NAME");
+        refer.setRefer(MasterTable.FIELD_COMMENT, "TABLE_COMMENT");
         return refer;
     }
     /**

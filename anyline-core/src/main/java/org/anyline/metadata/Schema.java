@@ -62,4 +62,6 @@ public class Schema extends Metadata<Schema> implements Serializable {
         return this.keyword;
     }
 
+/* ********************************* field refer ********************************** */
+    public static final String FIELD_KEYWORD                       = "KEYWORD";
 }

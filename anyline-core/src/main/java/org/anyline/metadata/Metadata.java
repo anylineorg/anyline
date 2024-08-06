@@ -717,4 +717,40 @@ public class Metadata<T extends Metadata> {
     public String toString() {
         return getKeyword() + ":" + getName();
     }
+
+/* ********************************* field refer ********************************** */
+    public static final String FIELD_TYPES                         = "TYPES";
+    public static final String FIELD_DATABASE                      = "DATABASE";
+    public static final String FIELD_DATASOURCE                    = "DATASOURCE";
+    public static final String FIELD_CATALOG                       = "CATALOG";
+    public static final String FIELD_SCHEMA                        = "SCHEMA";
+    public static final String FIELD_NAME                          = "NAME";
+    public static final String FIELD_ALIAS                         = "ALIAS";
+    public static final String FIELD_COMMENT                       = "COMMENT";
+    public static final String FIELD_EXECUTE                       = "EXECUTE";
+    public static final String FIELD_EXECUTE_CHECK                 = "EXECUTE_CHECK";
+    public static final String FIELD_EXECUTE_CHECK_VALUE           = "EXECUTE_CHECK_VALUE";
+    public static final String FIELD_TEXT                          = "TEXT";
+    public static final String FIELD_ID                            = "ID";
+    public static final String FIELD_USER                          = "USER";
+    public static final String FIELD_OBJECT_ID                     = "OBJECT_ID";
+    public static final String FIELD_DEFINITION                    = "DEFINITION";
+    public static final String FIELD_SETMAP                        = "SETMAP";
+    public static final String FIELD_SETMAP_CHECK                  = "SETMAP_CHECK";
+    public static final String FIELD_SETMAP_CHECK_VALUE            = "SETMAP_CHECK_VALUE";
+    public static final String FIELD_GETMAP                        = "GETMAP";
+    public static final String FIELD_GETMAP_CHECK                  = "GETMAP_CHECK";
+    public static final String FIELD_GETMAP_CHECK_VALUE            = "GETMAP_CHECK_VALUE";
+    public static final String FIELD_DROP                          = "DROP";
+    public static final String FIELD_DROP_CHECK                    = "DROP_CHECK";
+    public static final String FIELD_DROP_CHECK_VALUE              = "DROP_CHECK_VALUE";
+    public static final String FIELD_ACTION                        = "ACTION";
+    public static final String FIELD_DDL                           = "DDL";
+    public static final String FIELD_RUN                           = "RUN";
+    public static final String FIELD_IDENTITY                      = "IDENTITY";
+    public static final String FIELD_EXTEND                        = "EXTEND";
+    public static final String FIELD_CHECK_SCHEMA_TIME             = "CHECK_SCHEMA_TIME";
+    public static final String FIELD_PROPERTY                      = "PROPERTY";
+    public static final String FIELD_METADATA                      = "METADATA";
+    public static final String FIELD_SWT                           = "SWT";
 }

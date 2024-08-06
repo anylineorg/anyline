@@ -52,4 +52,6 @@ public class Label extends Table<Label> implements Serializable {
         return this.keyword+":"+name;
     }
 
+/* ********************************* field refer ********************************** */
+    public static final String FIELD_KEYWORD                       = "KEYWORD";
 }
