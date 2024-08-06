@@ -28,7 +28,6 @@ import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.runtime.RuntimeHolder;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.util.BasicUtil;
-import org.anyline.util.ConfigTable;
 import org.apache.http.Header;
 import org.apache.http.HeaderElement;
 import org.apache.http.HeaderElementIterator;
@@ -60,7 +59,6 @@ import org.elasticsearch.client.RestClient;
 
 import javax.net.ssl.SSLContext;
 import javax.sql.DataSource;
-import java.sql.Connection;
 import java.util.*;
 
 @Component("anyline.environment.data.datasource.holder.elasticsearch")
@@ -78,23 +76,18 @@ public class ElasticSearchDataSourceHolder extends AbstractDataSourceHolder impl
 			if(BasicUtil.isNotEmpty(prefix) && !prefix.endsWith(".")) {
 				prefix += ".";
 			}
-			String url = ConfigTable.environment().string(prefix, "url,uri,host,hosts");
-
+			String url =  value(prefix, params, "url", String.class, null);
 			if(BasicUtil.isEmpty(url)) {
 				return null;
 			}
 
-			String type = ConfigTable.environment().string(prefix, "type");
-			if(null == type) {//未设置类型 先取默认数据源类型
-				type = ConfigTable.environment().string(prefix.substring(0, prefix.length()- key.length()-1), "type");
-			}
-
-			if(null == type) {
+			String adapter = value(prefix, params, "adapter", String.class, null);
+			if(null == adapter) {
 				//只注册es驱动
 				return null;
 			}
-			type = type.toLowerCase();
-			if(type.contains("elasticsearchdatasource") || type.contains("es")) {
+			adapter = adapter.toLowerCase();
+			if(adapter.contains("elasticsearch") || adapter.contains("es")) {
 				Map<String, Object> map = new HashMap<>();
 				return inject(key, prefix, map, true);
 			}
@@ -135,22 +128,16 @@ public class ElasticSearchDataSourceHolder extends AbstractDataSourceHolder impl
 			cache = new HashMap<>();
 			DataSourceHolder.params.put(key, cache);
 		}
-		String url =  value(params, "url,uri,host,hosts", String.class, null);
-		if(BasicUtil.isEmpty(url)) {
-			url = ConfigTable.environment().string(prefix, "url,uri,host,hosts");
-		}
+		String url =  value(prefix, params, "url", String.class, null);
 		if(BasicUtil.isEmpty(url)) {
 			return null;
 		}
-		String type = value(params, "type", String.class, null);
-		if(BasicUtil.isEmpty(type)) {
-			type = ConfigTable.environment().string(prefix, "type");
-		}
-		if(null == type){
+		String adapter = value(prefix, params, "adapter", String.class, null);
+		if(null == adapter){
 			return null;
 		}
-		type = type.toLowerCase();
-		if(!type.contains("elasticsearch") && !type.contains("es")) {
+		adapter = adapter.toLowerCase();
+		if(!adapter.contains("elasticsearch") && !adapter.contains("es")) {
 			//只注册ElasticSearchDataSource类型
 			return null;
 		}
@@ -168,9 +155,9 @@ public class ElasticSearchDataSourceHolder extends AbstractDataSourceHolder impl
 			RestClient client = RestClient.builder(posts)
 					.setRequestConfigCallback(requestConfigBuilder -> {
 						//设置连接超时时间
-						requestConfigBuilder.setConnectTimeout(value(prefix, "connectTimeout", Integer.class, 10000));
-						requestConfigBuilder.setSocketTimeout(value(prefix, "socketTimeout", Integer.class, 10000));
-						requestConfigBuilder.setConnectionRequestTimeout(value(prefix, "connectionRequestTimeout", Integer.class, 10000));
+						requestConfigBuilder.setConnectTimeout(value(prefix, params, "connectTimeout", Integer.class, 10000));
+						requestConfigBuilder.setSocketTimeout(value(prefix, params, "socketTimeout", Integer.class, 10000));
+						requestConfigBuilder.setConnectionRequestTimeout(value(prefix, params, "connectionRequestTimeout", Integer.class, 10000));
 						return requestConfigBuilder;
 					}).setFailureListener(new RestClient.FailureListener() {
 						//某节点失败
@@ -202,22 +189,22 @@ public class ElasticSearchDataSourceHolder extends AbstractDataSourceHolder impl
 							PoolingNHttpClientConnectionManager poolConnManager = new PoolingNHttpClientConnectionManager(ioReactor,
 									null, sessionStrategyRegistry, (DnsResolver) null);
 							// 最大连接数
-							poolConnManager.setMaxTotal(value(prefix, "maxTotalConnect", Integer.class, 100));
+							poolConnManager.setMaxTotal(value(prefix, params, "maxTotalConnect", Integer.class, 100));
 							// 同路由并发数
-							poolConnManager.setDefaultMaxPerRoute(value(prefix, "maxConnectPerRoute", Integer.class, 10));
+							poolConnManager.setDefaultMaxPerRoute(value(prefix, params, "maxConnectPerRoute", Integer.class, 10));
 							//配置连接池
 							httpSyncClientBuilder.setConnectionManager(poolConnManager);
 							//设置默认请求头
 							List<Header> headers = getDefaultHeaders();
 							httpSyncClientBuilder.setDefaultHeaders(headers);
 							// 设置长连接策略
-							httpSyncClientBuilder.setKeepAliveStrategy(connectionKeepAliveStrategy(null, value(prefix, "keepAliveTime", Integer.class, 10) ));
+							httpSyncClientBuilder.setKeepAliveStrategy(connectionKeepAliveStrategy(null, value(prefix, params, "keepAliveTime", Integer.class, 10) ));
 							httpSyncClientBuilder.disableAuthCaching();
 						} catch (IOReactorException e) {
 							log.error("ES的Http异步连接池配置错误", e);
 						}
-						String user = value(prefix, "user", String.class, null);
-						String password = value(prefix, "password", String.class, null);
+						String user = value(prefix, params, "user", String.class, null);
+						String password = value(prefix, params, "password", String.class, null);
 						return getHttpAsyncClientBuilder(httpSyncClientBuilder, user, password);
 					}).build();
 			//ConfigTable.environment().regBean(datasource_id, client);
@@ -240,10 +227,6 @@ public class ElasticSearchDataSourceHolder extends AbstractDataSourceHolder impl
 		return reg(key, prefix);
 	}
 
-	@Override
-	public DataSource create(String key, Connection connection, boolean override) {
-		return null;
-	}
 
 	/**
 	 * 检测数据源是否连接正常

@@ -29,7 +29,6 @@ import org.anyline.metadata.type.DatabaseType;
 import org.anyline.util.BasicUtil;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -50,7 +49,7 @@ public class InfluxDataSourceHolder extends AbstractDataSourceHolder {
 				prefix += ".";
 			}
 			Map<String, Object> map = new HashMap<>();
-			String url = value(prefix, "url", String.class, null);
+			String url = value(prefix, map, "url", String.class, null);
 			if(BasicUtil.isEmpty(url)) {
 				return null;
 			}
@@ -69,11 +68,6 @@ public class InfluxDataSourceHolder extends AbstractDataSourceHolder {
 	@Override
 	public String create(String key, String prefix) {
 		return reg(key, prefix);
-	}
-
-	@Override
-	public DataSource create(String key, Connection connection, boolean override) {
-		return null;
 	}
 
 	@Override

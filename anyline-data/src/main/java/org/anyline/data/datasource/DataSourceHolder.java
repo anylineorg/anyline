@@ -35,7 +35,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
 import java.util.*;
 
 public interface DataSourceHolder {
@@ -426,7 +425,6 @@ public interface DataSourceHolder {
 	 * @return bean.id
 	 */
 	String create(String key, String prefix);
-	DataSource create(String key, Connection connection, boolean override);
 
 	default String create(String key, Map<String, Object> param) throws Exception {
 		return create(key, param, true);
@@ -455,9 +453,6 @@ public interface DataSourceHolder {
 			runtime.setAdapterKey(type.name());
 		}
 		return runtime;
-	}
-	default DataSource create(String key, Connection connection) {
-		return create(key, connection, false);
 	}
 
 	/**

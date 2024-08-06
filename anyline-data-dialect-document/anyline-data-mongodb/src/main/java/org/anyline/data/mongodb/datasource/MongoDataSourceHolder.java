@@ -35,7 +35,6 @@ import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -77,11 +76,6 @@ public class MongoDataSourceHolder extends AbstractDataSourceHolder implements D
     @Override
     public String create(String key, String prefix) {
         return reg(key, prefix);
-    }
-
-    @Override
-    public DataSource create(String key, Connection connection, boolean override) {
-        return null;
     }
 
     @Override
@@ -160,17 +154,11 @@ public class MongoDataSourceHolder extends AbstractDataSourceHolder implements D
         DataSourceHolder.check(key, override);
         String datasource_id = DataRuntime.ANYLINE_DATASOURCE_BEAN_PREFIX + key;
         try {
-            String url =  value(params, "url", String.class, null);
-            if(BasicUtil.isEmpty(url)) {
-                url = value(prefix, "url", String.class, null);
-            }
+            String url =  value(prefix, params, "url", String.class, null);
             if(BasicUtil.isEmpty(url)) {
                 return null;
             }
-            String database = value(params, "database", String.class, null);
-            if(BasicUtil.isEmpty(database)) {
-                database = value(prefix, "database", String.class, null);
-            }
+            String database = value(prefix, params, "database", String.class, null);
             //只解析Mongo系列
             if(!url.toLowerCase().startsWith("mongodb:")) {
                 return null;

@@ -1,4 +1,4 @@
-package org.anyline.data.milvus;
+package org.anyline.data.milvus.adapter;
 
 import org.anyline.annotation.Component;
 import org.anyline.data.adapter.init.AbstractDriverAdapter;

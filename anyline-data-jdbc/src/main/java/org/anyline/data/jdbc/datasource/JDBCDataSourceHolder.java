@@ -141,11 +141,6 @@ public class JDBCDataSourceHolder extends AbstractDataSourceHolder implements Da
     }
 
     @Override
-    public DataSource create(String key, Connection connection, boolean override) {
-        return null;
-    }
-
-    @Override
     public boolean validate(DataRuntime runtime) throws Exception {
         return false;
     }
@@ -245,10 +240,7 @@ public class JDBCDataSourceHolder extends AbstractDataSourceHolder implements Da
         DataSourceHolder.check(key, override);
         String datasource_id = DataRuntime.ANYLINE_DATASOURCE_BEAN_PREFIX + key;
         try {
-            String url =  value(params, "url", String.class, null);
-            if(BasicUtil.isEmpty(url)) {
-                url = value(prefix, "url", String.class, null);
-            }
+            String url =  value(prefix, params, "url", String.class, null);
             if(BasicUtil.isEmpty(url)) {
                 return null;
             }
@@ -257,11 +249,7 @@ public class JDBCDataSourceHolder extends AbstractDataSourceHolder implements Da
                 return null;
             }
             params.put("url", url);
-
-            String type = value(params, "type", String.class, null);
-            if(BasicUtil.isEmpty(type)) {
-                type = value(prefix, "type", String.class, null);
-            }
+            String type = value(prefix, params, "type", String.class, null);
             if (type == null) {
                 type = DataSourceUtil.POOL_TYPE_DEFAULT;
             }
