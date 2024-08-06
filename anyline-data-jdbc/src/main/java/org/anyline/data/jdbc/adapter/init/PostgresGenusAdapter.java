@@ -2480,7 +2480,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
             builder.append("LEFT JOIN PG_DESCRIPTION FD ON FD.OBJOID = FC.OID AND FD.OBJSUBID = M.ORDINAL_POSITION");
             configs.and("M.TABLE_CATALOG", query.getCatalogName());
             configs.and("M.TABLE_SCHEMA", query.getSchemaName());
-            configs.like("M.TABLE_NAME", query.getName());
+            configs.like("M.TABLE_NAME", query.getTableName());
             configs.order("M.TABLE_NAME");
         }
         return runs;
