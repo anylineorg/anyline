@@ -106,12 +106,12 @@ public enum VoltDBTypeMetadataAlias implements TypeMetadataAlias {
 	INT128                        ("INT128"                         ,StandardTypeMetadata.BIGINT                        ,   1,   1,   1),
 	CLICKHOUSE_INT128             ("Int128"                         ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	CLICKHOUSE_INT16              ("Int16"                          ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
-	INT16                         ("INT16"                          ,StandardTypeMetadata.BIGINT                        ,   1,   1,   1),
+	INT16                         ("INT16"                          ,StandardTypeMetadata.SMALLINT                      ,   1,   1,   1),
 	INT2                          ("INT2"                           ,StandardTypeMetadata.INTEGER                       ,   1,   1,   1),
 	CLICKHOUSE_INT256             ("Int256"                         ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	INT256                        ("INT256"                         ,StandardTypeMetadata.BIGINT                        ,   1,   1,   1),
 	CLICKHOUSE_INT32              ("Int32"                          ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
-	INT32                         ("INT32"                          ,StandardTypeMetadata.BIGINT                        ,   1,   1,   1),
+	INT32                         ("INT32"                          ,StandardTypeMetadata.INTEGER                       ,   1,   1,   1),
 	INT4                          ("INT4"                           ,StandardTypeMetadata.INTEGER                       ,   1,   1,   1),
 	INT4RANGE                     ("INT4RANGE"                      ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	CLICKHOUSE_INT64              ("Int64"                          ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
@@ -236,7 +236,7 @@ public enum VoltDBTypeMetadataAlias implements TypeMetadataAlias {
 	SYSNAME                       ("SYSNAME"                        ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	TEXT                          ("TEXT"                           ,StandardTypeMetadata.VARCHAR                       ,   0,   1,   1),
 	TID                           ("TID"                            ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
-	TIME                          ("TIME"                           ,StandardTypeMetadata.TIMESTAMP                     ,   1,   1,   2),
+	TIME                          ("TIME"                           ,StandardTypeMetadata.TIMESTAMP                     , "TIME"     , "TIME({S})"     , null                       , null                 , null            ,   1,   1,   2),
 	TIME_TZ_UNCONSTRAINED         ("TIME TZ UNCONSTRAINED"          ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	TIME_WITH_TIME_ZONE           ("TIME WITH TIME ZONE"            ,StandardTypeMetadata.TIME_WITH_TIME_ZONE           ,   1,   1,   1),
 	TIME_WITH_ZONE                ("TIME WITH TIME ZONE"            ,StandardTypeMetadata.TIME_WITH_TIME_ZONE           ,   1,   1,   1),
@@ -289,7 +289,7 @@ public enum VoltDBTypeMetadataAlias implements TypeMetadataAlias {
 	private String lengthRefer               ; // 读取元数据依据-长度
 	private String precisionRefer            ; // 读取元数据依据-有效位数
 	private String scaleRefer                ; // 读取元数据依据-小数位数
-	private TypeMetadata.Refer refer       ; // 集成元数据读写配置
+	private TypeMetadata.Refer refer         ; // 集成元数据读写配置
 
 	VoltDBTypeMetadataAlias(String input, TypeMetadata standard, String meta, String formula, String lengthRefer, String precisionRefer, String scaleRefer, int ignoreLength, int ignorePrecision, int ignoreScale){
 		this.input = input;

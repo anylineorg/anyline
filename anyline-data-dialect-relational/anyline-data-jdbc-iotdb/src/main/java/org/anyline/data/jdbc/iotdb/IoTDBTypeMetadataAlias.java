@@ -23,7 +23,7 @@ import org.anyline.metadata.type.TypeMetadata;
 public enum IoTDBTypeMetadataAlias implements TypeMetadataAlias {
 	DOUBLE                        ("DOUBLE"                         ,StandardTypeMetadata.DOUBLE                        , null       , null            , null                       , "NUMERIC_PRECISION"  , "NUMERIC_SCALE" ,   1,   0,   0),
 	FLOAT                         ("FLOAT"                          ,StandardTypeMetadata.FLOAT                         ,   1,   2,   3),
-	INT32                         ("INT32"                          ,StandardTypeMetadata.BIGINT                        , "Int32"    , "Int32"         , null                       , null                 , null            ,   1,   1,   1),
+	INT32                         ("INT32"                          ,StandardTypeMetadata.INT                           , "Int32"    , "Int32"         , null                       , null                 , null            ,   1,   1,   1),
 	INT64                         ("INT64"                          ,StandardTypeMetadata.INT64                         ,   1,   1,   1),
 	TEXT                          ("TEXT"                           ,StandardTypeMetadata.TEXT                          ,   1,   1,   1),
 	ACLITEM                       ("ACLITEM"                        ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
@@ -232,7 +232,7 @@ public enum IoTDBTypeMetadataAlias implements TypeMetadataAlias {
 	SYS_REFCURSOR                 ("SYS_REFCURSOR"                  ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	SYSNAME                       ("SYSNAME"                        ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	TID                           ("TID"                            ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
-	TIME                          ("TIME"                           ,StandardTypeMetadata.INT64                         ,   1,   1,   1),
+	TIME                          ("TIME"                           ,StandardTypeMetadata.INT64                         , "TIME"     , "TIME({S})"     , null                       , null                 , null            ,   1,   1,   1),
 	TIME_TZ_UNCONSTRAINED         ("TIME TZ UNCONSTRAINED"          ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	TIME_WITH_TIME_ZONE           ("TIME WITH TIME ZONE"            ,StandardTypeMetadata.TIME_WITH_TIME_ZONE           ,   1,   1,   1),
 	TIME_WITH_ZONE                ("TIME WITH TIME ZONE"            ,StandardTypeMetadata.TIME_WITH_TIME_ZONE           ,   1,   1,   1),
@@ -289,7 +289,7 @@ public enum IoTDBTypeMetadataAlias implements TypeMetadataAlias {
 	private String lengthRefer               ; // 读取元数据依据-长度
 	private String precisionRefer            ; // 读取元数据依据-有效位数
 	private String scaleRefer                ; // 读取元数据依据-小数位数
-	private TypeMetadata.Refer refer       ; // 集成元数据读写配置
+	private TypeMetadata.Refer refer         ; // 集成元数据读写配置
 
 	IoTDBTypeMetadataAlias(String input, TypeMetadata standard, String meta, String formula, String lengthRefer, String precisionRefer, String scaleRefer, int ignoreLength, int ignorePrecision, int ignoreScale){
 		this.input = input;

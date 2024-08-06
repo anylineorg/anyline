@@ -116,7 +116,7 @@ public enum InformixTypeMetadataAlias implements TypeMetadataAlias {
 	INT256                        ("INT256"                         ,StandardTypeMetadata.BIGINT                        ,   1,   1,   1),
 	CLICKHOUSE_INT256             ("Int256"                         ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	CLICKHOUSE_INT32              ("Int32"                          ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
-	INT32                         ("INT32"                          ,StandardTypeMetadata.BIGINT                        ,   1,   1,   1),
+	INT32                         ("INT32"                          ,StandardTypeMetadata.INT                           ,   1,   1,   1),
 	INT4                          ("INT4"                           ,StandardTypeMetadata.INT                           ,   1,   1,   1),
 	INT4RANGE                     ("INT4RANGE"                      ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	INT64                         ("INT64"                          ,StandardTypeMetadata.BIGINT                        ,   1,   1,   1),
@@ -289,7 +289,7 @@ public enum InformixTypeMetadataAlias implements TypeMetadataAlias {
 	private String lengthRefer               ; // 读取元数据依据-长度
 	private String precisionRefer            ; // 读取元数据依据-有效位数
 	private String scaleRefer                ; // 读取元数据依据-小数位数
-	private TypeMetadata.Refer refer       ; // 集成元数据读写配置
+	private TypeMetadata.Refer refer         ; // 集成元数据读写配置
 
 	InformixTypeMetadataAlias(String input, TypeMetadata standard, String meta, String formula, String lengthRefer, String precisionRefer, String scaleRefer, int ignoreLength, int ignorePrecision, int ignoreScale){
 		this.input = input;

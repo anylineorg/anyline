@@ -289,7 +289,7 @@ public enum XuGuTypeMetadataAlias implements TypeMetadataAlias {
 	private String lengthRefer               ; // 读取元数据依据-长度
 	private String precisionRefer            ; // 读取元数据依据-有效位数
 	private String scaleRefer                ; // 读取元数据依据-小数位数
-	private TypeMetadata.Refer refer       ; // 集成元数据读写配置
+	private TypeMetadata.Refer refer         ; // 集成元数据读写配置
 
 	XuGuTypeMetadataAlias(String input, TypeMetadata standard, String meta, String formula, String lengthRefer, String precisionRefer, String scaleRefer, int ignoreLength, int ignorePrecision, int ignoreScale){
 		this.input = input;

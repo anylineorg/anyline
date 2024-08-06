@@ -110,7 +110,7 @@ public enum DB2TypeMetadataAlias implements TypeMetadataAlias {
 	INT128                        ("INT128"                         ,StandardTypeMetadata.BIGINT                        ,   1,   1,   1),
 	CLICKHOUSE_INT128             ("Int128"                         ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	CLICKHOUSE_INT16              ("Int16"                          ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
-	INT16                         ("INT16"                          ,StandardTypeMetadata.BIGINT                        ,   1,   1,   1),
+	INT16                         ("INT16"                          ,StandardTypeMetadata.INT                           ,   1,   1,   1),
 	INT2                          ("INT2"                           ,StandardTypeMetadata.INT                           ,   1,   1,   1),
 	CLICKHOUSE_INT256             ("Int256"                         ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	INT256                        ("INT256"                         ,StandardTypeMetadata.BIGINT                        ,   1,   1,   1),
@@ -289,7 +289,7 @@ public enum DB2TypeMetadataAlias implements TypeMetadataAlias {
 	private String lengthRefer               ; // 读取元数据依据-长度
 	private String precisionRefer            ; // 读取元数据依据-有效位数
 	private String scaleRefer                ; // 读取元数据依据-小数位数
-	private TypeMetadata.Refer refer       ; // 集成元数据读写配置
+	private TypeMetadata.Refer refer         ; // 集成元数据读写配置
 
 	DB2TypeMetadataAlias(String input, TypeMetadata standard, String meta, String formula, String lengthRefer, String precisionRefer, String scaleRefer, int ignoreLength, int ignorePrecision, int ignoreScale){
 		this.input = input;
