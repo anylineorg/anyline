@@ -2500,7 +2500,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         refer.setRefer("Table", "TABLE_NAME");
         refer.setRefer("Nullable", "IS_NULLABLE");
 
-        refer.setRefer("data_type", "DATA_TYPE,FULL_TYPE");
+        refer.setRefer("data_type", "UDT_NAME,FULL_TYPE"); //不用DATA_TYPE
         refer.setRefer("Position", "ORDINAL_POSITION");
         refer.setRefer("Comment", "COLUMN_COMMENT");//SQL组装
         refer.setRefer("Default", "COLUMN_DEFAULT");
@@ -2567,7 +2567,6 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Table table, Column query, DataSet set) throws Exception {
-        set.changeKey("UDT_NAME","DATA_TYPE");
         return super.columns(runtime, index, create, previous, table, query, set);
     }
     @Override
