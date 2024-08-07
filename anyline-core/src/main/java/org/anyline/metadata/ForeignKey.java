@@ -142,6 +142,11 @@ public class ForeignKey extends Constraint<ForeignKey> implements Serializable {
     }
 
 /* ********************************* field refer ********************************** */
-    public static final String FIELD_KEYWORD                       = "KEYWORD";
-    public static final String FIELD_REFERENCE                     = "REFERENCE";
+    public static final String FIELD_KEYWORD                            = "KEYWORD";
+    public static final String FIELD_REFERENCE_CATALOG                  = "REFERENCE_CATALOG";
+    public static final String FIELD_REFERENCE_SCHEMA                   = "REFERENCE_SCHEMA";
+    public static final String FIELD_REFERENCE_TABLE                    = "REFERENCE_TABLE";
+    public static final String FIELD_REFERENCE_COLUMN                   = "REFERENCE_COLUMN";
+    public static final String FIELD_COLUMN                             = "COLUMN";
+    public static final String FIELD_COLUMN_POSITION                    = "COLUMN_POSITION";
 }

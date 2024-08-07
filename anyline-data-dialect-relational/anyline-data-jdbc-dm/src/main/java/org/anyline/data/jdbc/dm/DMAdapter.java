@@ -1247,7 +1247,8 @@ public class DMAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public MetadataFieldRefer initDatabaseFieldRefer() {
-		MetadataFieldRefer refer = new MetadataFieldRefer(Database.class, "DATABASE");
+		MetadataFieldRefer refer = new MetadataFieldRefer(Database.class);
+		refer.setRefer(Database.FIELD_NAME, "DATABASE");
 		refer.setRefer(Database.FIELD_USER, "user_name");
 		return refer;
 	}

@@ -206,17 +206,29 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         MetadataReferHolder.reg(type(), TypeMetadata.CATEGORY.OTHER, new TypeMetadata.Refer( 1, 1, 1));
 
 
+        reg(initDatabaseFieldRefer());
         reg(initCatalogFieldRefer());
         reg(initSchemaFieldRefer());
-        reg(initDatabaseFieldRefer());
         reg(initTableFieldRefer());
         reg(initTableCommentFieldRefer());
         reg(initMasterTableFieldRefer());
+        reg(initPartitionTableFieldRefer());
+        reg(initEdgeFieldRefer());
+        reg(initVertexFieldRefer());
         reg(initColumnFieldRefer());
+        reg(initTagFieldRefer());
         reg(initViewFieldRefer());
         reg(initPrimaryKeyFieldRefer());
+        reg(initForeignKeyFieldRefer());
+        reg(initConstraintFieldRefer());
         reg(initIndexFieldRefer());
+        reg(initTriggerFieldRefer());
+        reg(initProcedureFieldRefer());
+        reg(initFunctionFieldRefer());
+        reg(initSequenceFieldRefer());
         reg(initUserFieldRefer());
+        reg(initRoleFieldRefer());
+        reg(initPrivilegeFieldRefer());
     }
 
     @Override
@@ -8440,6 +8452,11 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         MetadataFieldRefer refer = refer(runtime, PartitionTable.class);
         meta.setMetadata(row);
         meta.setName(getString(row, refer, PartitionTable.FIELD_NAME));
+        meta.setCatalog(getString(row, refer, PartitionTable.FIELD_CATALOG));
+        meta.setSchema(getString(row, refer, PartitionTable.FIELD_SCHEMA));
+        meta.setType(getString(row, refer, PartitionTable.FIELD_TYPE));
+        meta.setComment(getString(row, refer, PartitionTable.FIELD_COMMENT));
+        meta.setMaster(getString(row, refer, PartitionTable.FIELD_MASTER));
         return meta;
 	}
 	/**
@@ -9655,6 +9672,22 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         MetadataFieldRefer refer = refer(runtime, ForeignKey.class);
         meta.setMetadata(row);
         meta.setName(getString(row, refer, ForeignKey.FIELD_NAME));
+        String name = getString(row, refer, ForeignKey.FIELD_NAME);
+
+        meta.setName(name);
+        meta.setTable(getString(row, refer, ForeignKey.FIELD_TABLE));
+        meta.setReference(getString(row, refer, ForeignKey.FIELD_REFERENCE_TABLE));
+
+        Table refTable = new Table(getString(row, refer, ForeignKey.FIELD_REFERENCE_CATALOG),
+            getString(row, refer, ForeignKey.FIELD_REFERENCE_SCHEMA),
+            getString(row, refer, ForeignKey.FIELD_REFERENCE_TABLE));
+        Column reference = new Column(getString(row, refer, ForeignKey.FIELD_REFERENCE_COLUMN));
+        reference.setTable(refTable);
+        meta.addColumn(new Column(getString(row, refer, ForeignKey.FIELD_COLUMN))
+            .setReference(reference)
+            .setPosition(getInt(row, refer, ForeignKey.FIELD_POSITION, 0))
+            );
+
         return meta;
 	}
 
@@ -10628,11 +10661,21 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         if(null == meta) {
             meta = (T)new Trigger();
         }
-        Table table = query.getTable();
-        MetadataFieldRefer refer = refer(runtime, Database.class);
-        meta.setMetadata(row);
+        MetadataFieldRefer refer = refer(runtime, Trigger.class);
         meta.setName(getString(row, refer, Trigger.FIELD_NAME));
+        Table table = null;
+        String tableName = getString(row, refer, Trigger.FIELD_TABLE);
+        if(BasicUtil.isNotEmpty(tableName)){
+            table = new Table(
+                getString(row, refer, Trigger.FIELD_CATALOG),
+                getString(row, refer, Trigger.FIELD_SCHEMA),
+                tableName);
+        }else{
+            table = query.getTable();
+        }
         meta.setTable(table);
+        meta.setMetadata(row);
+        meta.setDefinition(getString(row, refer, Trigger.FIELD_DEFINITION));
         return meta;
 	}
 	/**
@@ -10978,6 +11021,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         MetadataFieldRefer refer = refer(runtime, Procedure.class);
         meta.setMetadata(row);
         meta.setName(getString(row, refer, Procedure.FIELD_NAME));
+        meta.setCatalog(getString(row, refer, Procedure.FIELD_CATALOG));
+        meta.setSchema(getString(row, refer, Procedure.FIELD_SCHEMA));
+        meta.setDefinition(getString(row, refer, Procedure.FIELD_DEFINITION));
         return meta;
 	}
 	/**
@@ -11333,6 +11379,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return meta;
 	}
+
 	/**
 	 * function[结果集封装]<br/>
 	 * 根据查询结果封装function对象,更多属性

@@ -1284,7 +1284,9 @@ public class KingbaseAdapter extends PostgresGenusAdapter implements JDBCAdapter
 	 */
 	@Override
 	public MetadataFieldRefer initDatabaseFieldRefer() {
-		return new MetadataFieldRefer(Database.class, "DATNAME");
+		MetadataFieldRefer refer = new MetadataFieldRefer(Database.class);
+		refer.setRefer(Database.FIELD_NAME, "DATNAME");
+		return refer;;
 	}
 
 	/**

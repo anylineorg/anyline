@@ -32,6 +32,7 @@ import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
+import org.anyline.util.LogUtil;
 import org.anyline.util.regular.RegularUtil;
 
 import javax.sql.DataSource;
@@ -1431,14 +1432,11 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
     public List<Run> buildQueryCatalogsRun(DataRuntime runtime, boolean greedy, Catalog query) throws Exception {
         List<Run> runs = new ArrayList<>();
         SimpleRun run = new SimpleRun(runtime);
-        StringBuilder builder = run.getBuilder();
-        builder.append("SELECT * FROM pg_stat_database");
-        if(null != query){
-            if(null != query.getName()){
-                builder.append(" WHERE datname LIKE '").append(query.getName()).append("'");
-            }
-        }
         runs.add(run);
+        StringBuilder builder = run.getBuilder();
+        ConfigStore configs = run.getConfigs();
+        builder.append("SELECT * FROM pg_stat_database");
+        configs.like("datname", query.getName());
         return runs;
     }
 
@@ -1634,13 +1632,8 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         List<Run> runs = new ArrayList<>();
         SimpleRun run = new SimpleRun(runtime);
         StringBuilder builder = run.getBuilder();
-        builder.append("SELECT * FROM information_schema.schemata");
         ConfigStore configs = run.getConfigs();
-        if(null != query){
-            if(null != query.getCatalogName()){
-                configs.and("catalog_name", query.getCatalogName());
-            }
-        }
+        builder.append("SELECT * FROM information_schema.schemata");
         runs.add(run);
         return runs;
     }
@@ -1843,6 +1836,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         return runs;
     }
 
+
     /**
      * Table[结果集封装]<br/>
      * Table 属性与结果集对应关系
@@ -1850,7 +1844,13 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public MetadataFieldRefer initTableFieldRefer() {
-        return super.initTableFieldRefer();
+        MetadataFieldRefer refer = new MetadataFieldRefer(Table.class);
+        refer.setRefer(Table.FIELD_NAME, "TABLE_NAME");
+        refer.setRefer(Table.FIELD_CATALOG, "TABLE_CATALOG");
+        refer.setRefer(Table.FIELD_SCHEMA, "TABLE_SCHEMA");
+        refer.setRefer(Table.FIELD_TYPE, "TABLE_TYPE");
+        refer.setRefer(Table.FIELD_COMMENT, "TABLE_COMMENT");
+        return refer;
     }
     /**
      * table[命令合成]<br/>
@@ -2059,6 +2059,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         return runs;
     }
 
+
     /**
      * View[结果集封装]<br/>
      * View 属性与结果集对应关系
@@ -2066,7 +2067,12 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public MetadataFieldRefer initViewFieldRefer() {
-        return super.initViewFieldRefer();
+        MetadataFieldRefer refer = new MetadataFieldRefer(View.class);
+        refer.setRefer(View.FIELD_NAME, "TABLE_NAME");
+        refer.setRefer(View.FIELD_CATALOG, "TABLE_CATALOG");
+        refer.setRefer(View.FIELD_SCHEMA, "TABLE_SCHEMA");
+        refer.setRefer(View.FIELD_DEFINITION, "VIEW_DEFINITION");
+        return refer;
     }
     /**
      * view[结果集封装]<br/>
@@ -2310,7 +2316,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         runs.add(run);
         StringBuilder builder = run.getBuilder();
         ConfigStore configs = run.getConfigs();
-        builder.append("SELECT M.*, obj_description(F.relfilenode,'pg_class')  AS TABLE_COMMENT\n");
+        builder.append("SELECT M.*, obj_description(F.relfilenode,'pg_class')  AS TABLE_COMMENT, FM.relname AS MASTER_TABLE_NAME\n");
         builder.append("FROM  INFORMATION_SCHEMA.TABLES AS M\n");
         builder.append("LEFT JOIN pg_namespace AS N ON N.NSPNAME = M.table_schema\n");
         builder.append("LEFT JOIN pg_class AS F ON M.TABLE_NAME = F.relname AND N.oid = F.relnamespace\n");
@@ -2321,6 +2327,24 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         configs.like("M.table_name", query.getName());
         return runs;
     }
+
+    /**
+     * partition table[结果集封装]<br/>
+     * PartitionTable 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer initPartitionTableFieldRefer() {
+        MetadataFieldRefer refer = new MetadataFieldRefer(PartitionTable.class);
+        refer.setRefer(PartitionTable.FIELD_NAME, "TABLE_NAME");
+        refer.setRefer(PartitionTable.FIELD_COMMENT, "TABLE_COMMENT");
+        refer.setRefer(PartitionTable.FIELD_CATALOG, "TABLE_CATALOG");
+        refer.setRefer(PartitionTable.FIELD_SCHEMA, "TABLE_SCHEMA");
+        refer.setRefer(PartitionTable.FIELD_TYPE, "TABLE_TYPE");
+        refer.setRefer(PartitionTable.FIELD_MASTER, "FM.MASTER_TABLE_NAME");
+        return refer;
+    }
+
     /**
      * partition table[结果集封装]<br/>
      * 根据查询结果集构造Table
@@ -2826,7 +2850,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         runs.add(run);
         StringBuilder builder = run.getBuilder();
         ConfigStore configs = run.getConfigs();
-        builder.append("SELECT TC.CONSTRAINT_NAME,TC.TABLE_NAME AS TABLE_NAME, KCU.COLUMN_NAME AS COLUMN_NAME, KCU.ORDINAL_POSITION,CCU.TABLE_NAME AS REFERENCED_TABLE_NAME, CCU.COLUMN_NAME AS REFERENCED_COLUMN_NAME\n");
+        builder.append("SELECT TC.CONSTRAINT_NAME,TC.TABLE_NAME AS TABLE_NAME, KCU.COLUMN_NAME AS COLUMN_NAME, KCU.ORDINAL_POSITION, CCU.TABLE_NAME AS REFERENCED_TABLE_NAME, CCU.COLUMN_NAME AS REFERENCED_COLUMN_NAME\n");
         builder.append("FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS AS TC\n");
         builder.append("JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE AS KCU ON TC.CONSTRAINT_NAME = KCU.CONSTRAINT_NAME\n");
         builder.append("JOIN INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE AS CCU ON CCU.CONSTRAINT_NAME = TC.CONSTRAINT_NAME\n");
@@ -2834,6 +2858,26 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         configs.and("TC.TABLE_NAME", query.getTableName());
         configs.order("KCU.ORDINAL_POSITION");
         return runs;
+    }
+    /**
+     * foreign[结果集封装]<br/>
+     * ForeignKey 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer initForeignKeyFieldRefer() {
+        MetadataFieldRefer refer = new MetadataFieldRefer(ForeignKey.class);
+        refer.setRefer(ForeignKey.FIELD_NAME, "CONSTRAINT_NAME");
+        refer.setRefer(ForeignKey.FIELD_CATALOG, "");
+        refer.setRefer(ForeignKey.FIELD_SCHEMA, "REFERENCED_SCHEMA_NAME");
+        refer.setRefer(ForeignKey.FIELD_TABLE, "TABLE_NAME");
+        refer.setRefer(ForeignKey.FIELD_COLUMN, "COLUMN_NAME");
+        refer.setRefer(ForeignKey.FIELD_COLUMN_POSITION, "ORDINAL_POSITION");
+        refer.setRefer(ForeignKey.FIELD_REFERENCE_CATALOG, "REFERENCED_CATALOG_NAME");
+        refer.setRefer(ForeignKey.FIELD_REFERENCE_SCHEMA, "REFERENCED_SCHEMA_NAME");
+        refer.setRefer(ForeignKey.FIELD_REFERENCE_TABLE, "REFERENCED_TABLE_NAME");
+        refer.setRefer(ForeignKey.FIELD_REFERENCE_COLUMN, "REFERENCED_COLUMN_NAME");
+        return refer;
     }
     /**
      * foreign[结构集封装]<br/>
@@ -2847,27 +2891,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, int index, LinkedHashMap<String, T> previous, ForeignKey query, DataSet set) throws Exception {
-        Table table = query.getTable();
-        if(null == previous) {
-            previous = new LinkedHashMap<>();
-        }
-        for(DataRow row:set) {
-            String name = row.getString("CONSTRAINT_NAME");
-            T foreign = previous.get(name.toUpperCase());
-            if(null == foreign) {
-                foreign = (T)new ForeignKey();
-                foreign.setName(name);
-                foreign.setTable(row.getString("TABLE_NAME"));
-                foreign.setReference(row.getString("REFERENCED_TABLE_NAME"));
-                previous.put(name.toUpperCase(), foreign);
-            }
-            Table refTable = new Table(row.getString("REFERENCED_CATALOG_NAME"),row.getString("REFERENCED_SCHEMA_NAME"),row.getString("REFERENCED_TABLE_NAME"));
-            Column reference = new Column(row.getString("REFERENCED_COLUMN_NAME"));
-            reference.setTable(refTable);
-            foreign.addColumn(new Column(row.getString("COLUMN_NAME")).setReference(reference).setPosition(row.getInt("ORDINAL_POSITION", 0)));
-
-        }
-        return previous;
+        return super.foreigns(runtime, index, previous, query, set);
     }
 
     /**
@@ -3279,6 +3303,22 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
     }
     /**
      * trigger[结果集封装]<br/>
+     * trigger 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer initTriggerFieldRefer() {
+        MetadataFieldRefer refer = new MetadataFieldRefer(Trigger.class);
+        refer.setRefer(Trigger.FIELD_NAME, "TRIGGER_NAME");
+        refer.setRefer(Trigger.FIELD_CATALOG, "TRIGGER_CATALOG");
+        refer.setRefer(Trigger.FIELD_SCHEMA, "TRIGGER_SCHEMA");
+        refer.setRefer(Trigger.FIELD_TABLE, "EVENT_OBJECT_TABLE");
+        refer.setRefer(Trigger.FIELD_EVENT, "EVENT_MANIPULATION");
+        refer.setRefer(Trigger.FIELD_DEFINITION, "ACTION_STATEMENT");
+        return refer;
+    }
+    /**
+     * trigger[结果集封装]<br/>
      * 根据查询结果集构造 Trigger
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
@@ -3290,42 +3330,55 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @throws Exception 异常
      */
     public <T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Trigger query, DataSet set) throws Exception {
-        Table table = query.getTable();
-        if(null == previous) {
-            previous = new LinkedHashMap<>();
-        }
-        for(DataRow row:set) {
-            String name = row.getString("TRIGGER_NAME");
-            T trigger = previous.get(name.toUpperCase());
-            if(null == trigger) {
-                trigger = (T)new Trigger();
-            }
-            trigger.setName(name);
-            Table tab = new Table(row.getString("EVENT_OBJECT_TABLE"));
-            tab.setSchema(row.getString("TRIGGER_SCHEMA"));
-            tab.setCatalog(row.getString("TRIGGER_CATALOG("));
-            trigger.setTable(tab);
-            boolean each = false;
-            if("ROW".equalsIgnoreCase(row.getString("ACTION_ORIENTATION"))) {
-                each = true;
-            }
-            trigger.setEach(each);
-            try{
-                String[] events = row.getStringNvl("EVENT_MANIPULATION").split(",");
-                String time = row.getString("ACTION_TIMING");
-                trigger.setTime(Trigger.TIME.valueOf(time));
-                for(String event:events) {
-                    trigger.addEvent(Trigger.EVENT.valueOf(event));
-                }
-            }catch (Exception e) {
-                log.error("封装trigger 异常:", e);
-            }
-            trigger.setDefinition(row.getString("ACTION_STATEMENT"));
+        return super.triggers(runtime, index, create, previous, query, set);
+    }
 
-            previous.put(name.toUpperCase(), trigger);
-
+    /**
+     * trigger[结果集封装]<br/>
+     * 根据查询结果封装trigger对象,只封装catalog,schema,name等基础属性
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta 上一步封装结果
+     * @param query 查询条件 根据metadata属性
+     * @param row 查询结果集
+     * @return Trigger
+     */
+    @Override
+    public <T extends Trigger> T init(DataRuntime runtime, int index, T meta, Trigger query, DataRow row) {
+        meta = super.init(runtime, index, meta, query, row);
+        if(null == meta) {
+            meta = (T)new Trigger();
         }
-        return previous;
+        boolean each = false;
+        if("ROW".equalsIgnoreCase(row.getString("ACTION_ORIENTATION"))) {
+            each = true;
+        }
+        meta.setEach(each);
+        try{
+            String[] events = row.getStringNvl("EVENT_MANIPULATION").split(",");
+            String time = row.getString("ACTION_TIMING");
+            meta.setTime(Trigger.TIME.valueOf(time));
+            for(String event:events) {
+                meta.addEvent(Trigger.EVENT.valueOf(event));
+            }
+        }catch (Exception e) {
+            log.error("封装trigger 异常:", e);
+        }
+        return meta;
+    }
+    /**
+     * trigger[结果集封装]<br/>
+     * 根据查询结果封装trigger对象,更多属性
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta 上一步封装结果
+     * @param row 查询结果集
+     * @return Trigger
+     */
+    @Override
+    public <T extends Trigger> T detail(DataRuntime runtime, int index, T meta, Trigger query, DataRow row) {
+        if(log.isDebugEnabled()) {
+            log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Trigger> T detail(DataRuntime runtime, int index, T meta, Trigger query, DataRow row)", 37));
+        }
+        return meta;
     }
 
     /* *****************************************************************************************************************

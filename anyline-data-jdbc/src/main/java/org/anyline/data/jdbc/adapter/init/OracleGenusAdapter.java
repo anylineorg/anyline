@@ -1996,6 +1996,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         refer.setRefer(Table.FIELD_TYPE, "TABLE_TYPE");
         refer.setRefer(Table.FIELD_SCHEMA, "TABLE_SCHEMA");
         refer.setRefer(Table.FIELD_COMMENT, "COMMENTS");
+        refer.setRefer(Table.FIELD_CREATE_TIME, "CREATE_TIME");
+        refer.setRefer(Table.FIELD_UPDATE_TIME, "UPDATE_TIME");
         return refer;
     }
     /**
@@ -2205,6 +2207,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         return buildQueryTablesRun(runtime, greedy, query, types, configs);
     }
 
+
     /**
      * View[结果集封装]<br/>
      * View 属性与结果集对应关系
@@ -2212,7 +2215,13 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public MetadataFieldRefer initViewFieldRefer() {
-        return super.initViewFieldRefer();
+        MetadataFieldRefer refer = new MetadataFieldRefer(View.class);
+        refer.setRefer(View.FIELD_NAME, "VIEW_NAME,TABLE_NAME,NAME,TABNAME");
+        refer.setRefer(View.FIELD_CATALOG, "VIEW_CATALOG,TABLE_CATALOG");
+        refer.setRefer(View.FIELD_SCHEMA, "VIEW_SCHEMA,TABLE_SCHEMA,TABSCHEMA,SCHEMA_NAME");
+        refer.setRefer(View.FIELD_DEFINITION, "DEFINITION_SQL");
+        refer.setRefer(View.FIELD_COMMENT, "COMMENTS");
+        return refer;
     }
     /**
      * view[结果集封装]<br/>
@@ -2944,6 +2953,26 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         return runs;
     }
     /**
+     * foreign[结果集封装]<br/>
+     * ForeignKey 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer initForeignKeyFieldRefer() {
+        MetadataFieldRefer refer = new MetadataFieldRefer(ForeignKey.class);
+        refer.setRefer(ForeignKey.FIELD_NAME, "CONSTRAINT_NAME");
+        refer.setRefer(ForeignKey.FIELD_CATALOG, "");
+        refer.setRefer(ForeignKey.FIELD_SCHEMA, "REFERENCED_SCHEMA_NAME");
+        refer.setRefer(ForeignKey.FIELD_TABLE, "TABLE_NAME");
+        refer.setRefer(ForeignKey.FIELD_COLUMN, "COLUMN_NAME");
+        refer.setRefer(ForeignKey.FIELD_COLUMN_POSITION, "ORDINAL_POSITION");
+        refer.setRefer(ForeignKey.FIELD_REFERENCE_CATALOG, "REFERENCED_CATALOG_NAME");
+        refer.setRefer(ForeignKey.FIELD_REFERENCE_SCHEMA, "REFERENCED_SCHEMA_NAME");
+        refer.setRefer(ForeignKey.FIELD_REFERENCE_TABLE, "REFERENCED_TABLE_NAME");
+        refer.setRefer(ForeignKey.FIELD_REFERENCE_COLUMN, "REFERENCED_COLUMN_NAME");
+        return refer;
+    }
+    /**
      * foreign[结构集封装]<br/>
      *  根据查询结果集构造PrimaryKey
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -2955,27 +2984,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, int index, LinkedHashMap<String, T> previous, ForeignKey query, DataSet set) throws Exception {
-        Table table = query.getTable();
-        if(null == previous) {
-            previous = new LinkedHashMap<>();
-        }
-        for(DataRow row:set) {
-            String name = row.getString("CONSTRAINT_NAME");
-            T foreign = previous.get(name.toUpperCase());
-            if(null == foreign) {
-                foreign = (T)new ForeignKey();
-                foreign.setName(name);
-                foreign.setTable(row.getString("TABLE_NAME"));
-                foreign.setReference(row.getString("REFERENCED_TABLE_NAME"));
-                previous.put(name.toUpperCase(), foreign);
-            }
-            Table refTable = new Table(row.getString("REFERENCED_CATALOG_NAME"), row.getString("REFERENCED_SCHEMA_NAME"), row.getString("REFERENCED_TABLE_NAME"));
-            Column reference = new Column(row.getString("REFERENCED_COLUMN_NAME"));
-            reference.setTable(refTable);
-            foreign.addColumn(new Column(row.getString("COLUMN_NAME")).setReference(reference).setPosition(row.getInt("ORDINAL_POSITION", 0)));
-
-        }
-        return previous;
+        return super.foreigns(runtime, index, previous, query, set);
     }
 
     /**

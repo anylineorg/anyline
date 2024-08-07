@@ -31,6 +31,7 @@ import org.anyline.metadata.*;
 import org.anyline.metadata.refer.*;
 import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.util.BasicUtil;
+import org.anyline.util.LogUtil;
 import org.anyline.util.regular.RegularUtil;
 
 import java.lang.reflect.Array;
@@ -1347,7 +1348,8 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public MetadataFieldRefer initDatabaseFieldRefer() {
-        MetadataFieldRefer refer = new MetadataFieldRefer(Database.class, "DATABASE");
+        MetadataFieldRefer refer = new MetadataFieldRefer(Database.class);
+        refer.setRefer(Database.FIELD_NAME, "DATABASE");
         return refer;
     }
     /**
@@ -1745,7 +1747,9 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public MetadataFieldRefer initSchemaFieldRefer() {
-        return new MetadataFieldRefer(Schema.class, "DATABASE");
+        MetadataFieldRefer refer = new MetadataFieldRefer(Schema.class);
+        refer.setRefer(Schema.FIELD_NAME, "DATABASE");
+        return refer;
     }
     /**
      * schema[结果集封装]<br/>
@@ -2822,7 +2826,6 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public <T extends PrimaryKey> T init(DataRuntime runtime, int index, T primary, PrimaryKey query, DataSet set) throws Exception {
-        Table table = query.getTable();
         set = set.getRows("Key_name","PRIMARY");
         if(!set.isEmpty()) {
             primary = (T)new PrimaryKey();
@@ -2878,7 +2881,29 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         configs.order("ORDINAL_POSITION");
         return runs;
     }
+
     /**
+     * foreign[结果集封装]<br/>
+     * ForeignKey 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer initForeignKeyFieldRefer() {
+        MetadataFieldRefer refer = new MetadataFieldRefer(ForeignKey.class);
+        refer.setRefer(ForeignKey.FIELD_NAME, "CONSTRAINT_NAME");
+        refer.setRefer(ForeignKey.FIELD_CATALOG, "");
+        refer.setRefer(ForeignKey.FIELD_SCHEMA, "REFERENCED_SCHEMA_NAME");
+        refer.setRefer(ForeignKey.FIELD_TABLE, "TABLE_NAME");
+        refer.setRefer(ForeignKey.FIELD_COLUMN, "COLUMN_NAME");
+        refer.setRefer(ForeignKey.FIELD_COLUMN_POSITION, "ORDINAL_POSITION");
+        refer.setRefer(ForeignKey.FIELD_REFERENCE_CATALOG, "");
+        refer.setRefer(ForeignKey.FIELD_REFERENCE_SCHEMA, "REFERENCED_SCHEMA_NAME");
+        refer.setRefer(ForeignKey.FIELD_REFERENCE_TABLE, "REFERENCED_TABLE_NAME");
+        refer.setRefer(ForeignKey.FIELD_REFERENCE_COLUMN, "REFERENCED_COLUMN_NAME");
+        return refer;
+    }
+    /**
+     *
      * foreign[结构集封装]<br/>
      *  根据查询结果集构造PrimaryKey
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -2890,27 +2915,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, int index, LinkedHashMap<String, T> previous, ForeignKey query, DataSet set) throws Exception {
-        Table table = query.getTable();
-        if(null == previous) {
-            previous = new LinkedHashMap<>();
-        }
-        for(DataRow row:set) {
-            String name = row.getString("CONSTRAINT_NAME");
-            T foreign = previous.get(name.toUpperCase());
-            if(null == foreign) {
-                foreign = (T)new ForeignKey();
-                foreign.setName(name);
-                foreign.setTable(row.getString("TABLE_NAME"));
-                foreign.setReference(row.getString("REFERENCED_TABLE_NAME"));
-                previous.put(name.toUpperCase(), foreign);
-            }
-            Table refTable = new Table(row.getString("REFERENCED_CATALOG_NAME"),row.getString("REFERENCED_SCHEMA_NAME"),row.getString("REFERENCED_TABLE_NAME"));
-            Column reference = new Column(row.getString("REFERENCED_COLUMN_NAME"));
-            reference.setTable(refTable);
-            foreign.addColumn(new Column(row.getString("COLUMN_NAME")).setReference(reference).setPosition(row.getInt("ORDINAL_POSITION", 0)));
-
-        }
-        return previous;
+        return super.foreigns(runtime, index, previous, query, set);
     }
 
     /**
@@ -3293,6 +3298,22 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         configs.in("EVENT_MANIPULATION", events);
         return runs;
     }
+
+    /**
+     * trigger[结果集封装]<br/>
+     * trigger 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer initTriggerFieldRefer() {
+        MetadataFieldRefer refer = new MetadataFieldRefer(Trigger.class);
+        refer.setRefer(Trigger.FIELD_NAME, "TRIGGER_NAME");
+        refer.setRefer(Trigger.FIELD_SCHEMA, "TRIGGER_SCHEMA");
+        refer.setRefer(Trigger.FIELD_TABLE, "EVENT_OBJECT_TABLE");
+        refer.setRefer(Trigger.FIELD_EVENT, "EVENT_MANIPULATION");
+        refer.setRefer(Trigger.FIELD_DEFINITION, "ACTION_STATEMENT");
+        return refer;
+    }
     /**
      * trigger[结果集封装]<br/>
      * 根据查询结果集构造 Trigger
@@ -3306,43 +3327,56 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @throws Exception 异常
      */
     public <T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Trigger query, DataSet set) throws Exception {
-        Table table = query.getTable();
-        if(null == previous) {
-            previous = new LinkedHashMap<>();
-        }
-        for(DataRow row:set) {
-            String name = row.getString("TRIGGER_NAME");
-            T trigger = previous.get(name.toUpperCase());
-            if(null == trigger) {
-                trigger = (T)new Trigger();
-            }
-            trigger.setName(name);
-            Table tab = new Table(row.getString("EVENT_OBJECT_TABLE"));
-            tab.setSchema(row.getString("TRIGGER_SCHEMA"));
-            trigger.setTable(tab);
-            boolean each = false;
-            if("ROW".equalsIgnoreCase(row.getString("ACTION_ORIENTATION"))) {
-                each = true;
-            }
-            trigger.setEach(each);
-            try{
-                String[] events = row.getStringNvl("EVENT_MANIPULATION").split(",");
-                String time = row.getString("ACTION_TIMING");
-                trigger.setTime(Trigger.TIME.valueOf(time));
-                for(String event:events) {
-                    trigger.addEvent(Trigger.EVENT.valueOf(event));
-                }
-            }catch (Exception e) {
-                log.error("封装trigger 异常:", e);
-            }
-            trigger.setDefinition(row.getString("ACTION_STATEMENT"));
-
-            previous.put(name.toUpperCase(), trigger);
-
-        }
-        return previous;
+        return super.triggers(runtime, index, create, previous, query, set);
     }
 
+    /**
+     * trigger[结果集封装]<br/>
+     * 根据查询结果封装trigger对象,只封装catalog,schema,name等基础属性
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta 上一步封装结果
+     * @param query 查询条件 根据metadata属性
+     * @param row 查询结果集
+     * @return Trigger
+     */
+    @Override
+    public <T extends Trigger> T init(DataRuntime runtime, int index, T meta, Trigger query, DataRow row) {
+        meta = super.init(runtime, index, meta, query, row);
+        if(null == meta) {
+            meta = (T)new Trigger();
+        }
+        boolean each = false;
+        if("ROW".equalsIgnoreCase(row.getString("ACTION_ORIENTATION"))) {
+            each = true;
+        }
+        meta.setEach(each);
+        try{
+            String[] events = row.getStringNvl("EVENT_MANIPULATION").split(",");
+            String time = row.getString("ACTION_TIMING");
+            meta.setTime(Trigger.TIME.valueOf(time));
+            for(String event:events) {
+                meta.addEvent(Trigger.EVENT.valueOf(event));
+            }
+        }catch (Exception e) {
+            log.error("封装trigger 异常:", e);
+        }
+        return meta;
+    }
+    /**
+     * trigger[结果集封装]<br/>
+     * 根据查询结果封装trigger对象,更多属性
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta 上一步封装结果
+     * @param row 查询结果集
+     * @return Trigger
+     */
+    @Override
+    public <T extends Trigger> T detail(DataRuntime runtime, int index, T meta, Trigger query, DataRow row) {
+        if(log.isDebugEnabled()) {
+            log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Trigger> T detail(DataRuntime runtime, int index, T meta, Trigger query, DataRow row)", 37));
+        }
+        return meta;
+    }
     /* *****************************************************************************************************************
      *                                                     procedure
      * -----------------------------------------------------------------------------------------------------------------
@@ -3411,6 +3445,19 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     }
     /**
      * procedure[结果集封装]<br/>
+     * Procedure 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer initProcedureFieldRefer() {
+        MetadataFieldRefer refer = new MetadataFieldRefer(Procedure.class);
+        refer.setRefer(Procedure.FIELD_NAME, "ROUTINE_NAME");
+        refer.setRefer(Procedure.FIELD_SCHEMA, "ROUTINE_NAME");
+        refer.setRefer(Procedure.FIELD_DEFINITION, "ROUTINE_DEFINITION");
+        return refer;
+    }
+    /**
+     * procedure[结果集封装]<br/>
      * 根据查询结果集构造 Trigger
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
@@ -3422,17 +3469,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Procedure query, DataSet set) throws Exception {
-        if(null == previous) {
-            previous = new LinkedHashMap<>();
-        }
-        for(DataRow row:set) {
-            T procedure = (T)new Procedure();
-            procedure.setSchema(row.getString("ROUTINE_SCHEMA"));
-            procedure.setName(row.getString("ROUTINE_NAME"));
-            procedure.setDefinition(row.getString("ROUTINE_DEFINITION"));
-            previous.put(procedure.getName().toUpperCase(), procedure);
-        }
-        return previous;
+        return super.procedures(runtime, index, create, previous, query, set);
     }
 
     /**
@@ -3587,8 +3624,14 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public MetadataFieldRefer initFunctionFieldRefer() {
-        return super.initFunctionFieldRefer();
+        MetadataFieldRefer refer = new MetadataFieldRefer(Function.class);
+        refer.setRefer(Function.FIELD_NAME, "ROUTINE_NAME");
+        refer.setRefer(Function.FIELD_SCHEMA, "ROUTINE_SCHEMA");
+        refer.setRefer(Function.FIELD_CATALOG, "");
+        refer.setRefer(Function.FIELD_DEFINITION, "ROUTINE_DEFINITION");
+        return refer;
     }
+
     /**
      * function[结果集封装]<br/>
      * 根据查询结果集构造 Trigger
@@ -3617,17 +3660,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public <T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Function query, DataSet set) throws Exception {
-        if(null == previous) {
-            previous = new LinkedHashMap<>();
-        }
-        for(DataRow row:set) {
-            T function = (T)new Function();
-            function.setSchema(row.getString("ROUTINE_SCHEMA"));
-            function.setName(row.getString("ROUTINE_NAME"));
-            function.setDefinition(row.getString("ROUTINE_DEFINITION"));
-            previous.put(function.getName().toUpperCase(), function);
-        }
-        return previous;
+        return super.functions(runtime, index, create, previous, query, set);
     }
 
     /**

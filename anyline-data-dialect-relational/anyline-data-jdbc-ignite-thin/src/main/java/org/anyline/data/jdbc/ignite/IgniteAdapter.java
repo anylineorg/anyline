@@ -1234,7 +1234,9 @@ public class IgniteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
      */
     @Override
     public MetadataFieldRefer initDatabaseFieldRefer() {
-        return new MetadataFieldRefer(Database.class, "DATABASE");
+        MetadataFieldRefer refer = new MetadataFieldRefer(Database.class);
+        refer.setRefer(Database.FIELD_NAME, "DATABASE");
+        return refer;
     }
 
     /**

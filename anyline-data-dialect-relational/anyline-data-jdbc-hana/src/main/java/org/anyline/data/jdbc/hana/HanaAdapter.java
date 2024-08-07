@@ -1898,7 +1898,6 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		configs.like("VIEW_NAME", query.getName());
 		return runs;
 	}
-
 	/**
 	 * View[结果集封装]<br/>
 	 * View 属性与结果集对应关系
@@ -1906,7 +1905,13 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 */
 	@Override
 	public MetadataFieldRefer initViewFieldRefer() {
-		return super.initViewFieldRefer();
+		MetadataFieldRefer refer = new MetadataFieldRefer(View.class);
+		refer.setRefer(View.FIELD_NAME, "VIEW_NAME");
+		refer.setRefer(View.FIELD_CATALOG, "");
+		refer.setRefer(View.FIELD_SCHEMA, "SCHEMA_NAME");
+		refer.setRefer(View.FIELD_DEFINITION, "DEFINITION");
+		refer.setRefer(View.FIELD_COMMENT, "COMMENTS");
+		return refer;
 	}
 	/**
 	 * view[结果集封装]<br/>
@@ -1922,29 +1927,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 */
 	@Override
 	public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, View query, DataSet set) throws Exception {
-		Catalog catalog = query.getCatalog();
-		Schema schema = query.getSchema();
-		String pattern = query.getName();
-		if(null == previous) {
-			previous = new LinkedHashMap<>();
-		}
-		for(DataRow row:set) {
-			String name = row.getString("VIEW_NAME");
-			T view = previous.get(name.toUpperCase());
-			if(null == view) {
-				view = (T)new View();
-			}
-			if(null == schema) {
-				schema = new Schema(row.getString("SCHEMA_NAME"));
-			}
-			view.setCatalog(catalog);
-			view.setSchema(schema);
-			view.setName(name);
-			view.setComment(row.getString("COMMENTS"));
-			view.setDefinition(row.getString("DEFINITION"));
-			previous.put(name.toUpperCase(), view);
-		}
-		return previous;
+		return super.views(runtime, index, create, previous, query, set);
 	}
 
 	/**
