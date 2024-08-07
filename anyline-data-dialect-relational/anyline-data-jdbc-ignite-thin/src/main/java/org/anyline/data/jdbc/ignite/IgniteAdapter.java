@@ -1729,25 +1729,6 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         builder.append("SELECT * FROM sys.TABLES");
         configs.and("SCHEMA_NAME", query.getSchemaName());
         configs.like("TABLE_NAME", query.getName());
-        /*
-        if(BasicUtil.isNotEmpty(types)) {
-            String[] tmps = types.split(",");
-            builder.append(" AND TABLE_TYPE IN(");
-            int idx = 0;
-            for(String tmp:tmps) {
-                if(idx > 0) {
-                    builder.append(",");
-                }
-                if(tmp.equalsIgnoreCase("table")) {
-                    tmp = "BASE TABLE";
-                }
-                builder.append("'").append(tmp).append("'");
-                idx ++;
-            }
-            builder.append(")");
-        }else {
-            builder.append(" AND TABLE_TYPE IN ('BASE TABLE','TABLE')");
-        }*/
         return runs;
     }
 
@@ -2364,35 +2345,13 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
     @Override
     public List<Run> buildQueryColumnsRun(DataRuntime runtime,  boolean metadata, Column query, ConfigStore configs) throws Exception {
         List<Run> runs = new ArrayList<>();
-        Catalog catalog = null;
-        Schema schema = null;
-        Table table = query.getTable();
-        String name = null;
-        if(null != table) {
-            name = table.getName();
-            catalog = table.getCatalog();
-            schema = table.getSchema();
-        }
-        Run run = new SimpleRun(runtime);
+        Run run = new SimpleRun(runtime, configs);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
-        if(metadata) {
-            builder.append("SELECT * FROM ");
-            name(runtime, builder, table);
-            builder.append(" WHERE 1=0");
-        }else{
-            builder.append("SELECT * FROM SYS.TABLE_COLUMNS WHERE COLUMN_NAME != '_KEY' AND COLUMN_NAME != '_VAL' ");
-            if(!empty(schema)) {
-                builder.append(" AND SCHEMA_NAME = '").append(schema.getName()).append("'");
-            }
-            if(BasicUtil.isNotEmpty(name)) {
-                builder.append(" AND TABLE_NAME = '").append(objectName(runtime, name)).append("'");
-            }
-            run.setOrders("TABLE_NAME");
-            if(null != configs){
-                run.setPageNavi(configs.getPageNavi());
-            }
-        }
+        builder.append("SELECT * FROM SYS.TABLE_COLUMNS WHERE COLUMN_NAME != '_KEY' AND COLUMN_NAME != '_VAL' ");
+        configs.and("SCHEMA_NAME", query.getSchemaName());
+        configs.and("TABLE_NAME", query.getTableName());
+        configs.order("TABLE_NAME");
         return runs;
     }
 
@@ -3199,20 +3158,14 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
      */
     @Override
     public List<Run> buildQueryProceduresRun(DataRuntime runtime, boolean greedy, Procedure query) {
-        Catalog catalog = query.getCatalog();
-        Schema schema = query.getSchema();
-        String pattern = query.getName();
         List<Run> runs = new ArrayList<>();
         Run run = new SimpleRun(runtime);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
+        ConfigStore configs = run.getConfigs();
         builder.append("SELECT * FROM sys.ROUTINES WHERE ROUTINE_TYPE = 'PROCEDURE'");
-        if(!empty(schema)) {
-            builder.append(" AND ROUTINE_SCHEMA = '").append(schema.getName()).append("'");
-        }
-        if(BasicUtil.isNotEmpty(pattern)) {
-            builder.append(" AND ROUTINE_NAME LIKE '").append(pattern).append("'");
-        }
+        configs.and("ROUTINE_SCHEMA", query.getSchemaName());
+        configs.like("ROUTINE_NAME", query.getName());
         return runs;
     }
 
@@ -3367,19 +3320,14 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
      */
     @Override
     public List<Run> buildQueryFunctionsRun(DataRuntime runtime, boolean greedy, Function query) {
-        Schema schema = query.getSchema();
-        String name = query.getName();
         List<Run> runs = new ArrayList<>();
         Run run = new SimpleRun(runtime);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
+        ConfigStore configs = run.getConfigs();
         builder.append("SELECT * FROM sys.ROUTINES WHERE ROUTINE_TYPE = 'FUNCTION'");
-        if(!empty(schema)) {
-            builder.append(" AND ROUTINE_SCHEMA = '").append(schema.getName()).append("'");
-        }
-        if(BasicUtil.isNotEmpty(name)) {
-            builder.append(" AND ROUTINE_NAME = '").append(name).append("'");
-        }
+        configs.and("ROUTINE_SCHEMA", query.getSchemaName());
+        configs.like("ROUTINE_NAME", query.getName());
         return runs;
     }
 

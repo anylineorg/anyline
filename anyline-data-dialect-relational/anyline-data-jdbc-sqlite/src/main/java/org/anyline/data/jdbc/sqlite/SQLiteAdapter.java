@@ -1669,20 +1669,12 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 */
 	@Override
 	public List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Table query, int types, ConfigStore configs) throws Exception {
-		Catalog catalog = query.getCatalog();
-		Schema schema = query.getSchema();
-		String pattern = query.getName();
 		List<Run> runs = new ArrayList<>();
-		Run run = new SimpleRun(runtime);
+		Run run = new SimpleRun(runtime, configs);
+		runs.add(run);
 		StringBuilder builder = run.getBuilder();
 		builder.append("SELECT * FROM sqlite_master WHERE type='table'");
-		if(BasicUtil.isNotEmpty(pattern)) {
-			builder.append(" AND name LIKE '").append(pattern).append("'");
-		}
-		if(null != configs){
-			run.setPageNavi(configs.getPageNavi());
-		}
-		runs.add(run);
+		configs.like("name", query.getName());
 		return runs;
 	}
 
@@ -1897,18 +1889,12 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 */
 	@Override
 	public List<Run> buildQueryViewsRun(DataRuntime runtime, boolean greedy, View query, int types, ConfigStore configs) throws Exception {
-
-		Catalog catalog = query.getCatalog();
-		Schema schema = query.getSchema();
-		String pattern = query.getName();
 		List<Run> runs = new ArrayList<>();
-		Run run = new SimpleRun(runtime);
+		Run run = new SimpleRun(runtime, configs);
+		runs.add(run);
 		StringBuilder builder = run.getBuilder();
 		builder.append("SELECT * FROM sqlite_master WHERE type='view'");
-		if(BasicUtil.isNotEmpty(pattern)) {
-			builder.append(" AND name LIKE '").append(pattern).append("'");
-		}
-		runs.add(run);
+		configs.like("name", query.getName());
 		return runs;
 	}
 

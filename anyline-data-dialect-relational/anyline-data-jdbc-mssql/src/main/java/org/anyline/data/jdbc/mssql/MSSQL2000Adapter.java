@@ -29,7 +29,6 @@ import org.anyline.entity.DataSet;
 import org.anyline.entity.OrderStore;
 import org.anyline.entity.PageNavi;
 import org.anyline.entity.generator.PrimaryGenerator;
-import org.anyline.metadata.Catalog;
 import org.anyline.metadata.Column;
 import org.anyline.metadata.Schema;
 import org.anyline.metadata.Table;
@@ -272,27 +271,14 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter {
      */
     @Override
     public List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Table query, int types, ConfigStore configs) throws Exception {
-        Catalog catalog = query.getCatalog();
-        Schema schema = query.getSchema();
-        String pattern = query.getName();
         List<Run> runs = new ArrayList<>();
-        Run run = new SimpleRun(runtime);
+        Run run = new SimpleRun(runtime, configs);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
-        builder.append("SELECT M.*, SCHEMA_NAME(M.SCHEMA_ID) AS TABLE_SCHEMA, F.VALUE AS TABLE_COMMENT FROM SYS.TABLES AS M \n")
-                .append("LEFT JOIN SYS.EXTENDED_PROPERTIES AS F ON M.OBJECT_ID = F.MAJOR_ID AND F.MINOR_ID=0 \n");
-        if(BasicUtil.isNotEmpty(pattern) || !empty(schema)) {
-            builder.append(conditionHead());
-        }
-        if(BasicUtil.isNotEmpty(pattern)) {
-            builder.append(" AND M.NAME LIKE '").append(pattern).append("'");
-        }
-        if(!empty(schema)) {
-            builder.append(" AND SCHEMA_NAME(M.SCHEMA_ID) = '").append(schema.getName()).append("'");
-        }
-        if(null != configs){
-            run.setPageNavi(configs.getPageNavi());
-        }
+        builder.append("SELECT M.*, SCHEMA_NAME(M.SCHEMA_ID) AS TABLE_SCHEMA, F.VALUE AS TABLE_COMMENT FROM SYS.TABLES AS M \n");
+        builder.append("LEFT JOIN SYS.EXTENDED_PROPERTIES AS F ON M.OBJECT_ID = F.MAJOR_ID AND F.MINOR_ID=0 \n");
+        configs.and("SCHEMA_NAME(M.SCHEMA_ID)", query.getSchemaName());
+        configs.like("M.NAM", query.getName());
         //SYS.TABLES 中没有视图不需要过滤视图
         return runs;
     }

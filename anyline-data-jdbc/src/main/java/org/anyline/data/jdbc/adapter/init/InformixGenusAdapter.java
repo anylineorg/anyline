@@ -2477,38 +2477,13 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     @Override
     public List<Run> buildQueryColumnsRun(DataRuntime runtime,  boolean metadata, Column query, ConfigStore configs) throws Exception {
         List<Run> runs = new ArrayList<>();
-        Catalog catalog = null;
-        Schema schema = null;
-        String name = null;
-        Table table = query.getTable();
-        if(null != table) {
-            name = table.getName();
-            catalog = table.getCatalog();
-            schema = table.getSchema();
-        }
-        Run run = new SimpleRun(runtime);
+        Run run = new SimpleRun(runtime, configs);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
-        if(metadata) {
-            builder.append("SELECT * FROM ");
-            name(runtime, builder, table);
-            builder.append(" WHERE 1=0");
-        }else{
-            builder.append("SELECT M.*,F.TABNAME FROM SYSCOLUMNS AS M LEFT JOIN SYSTABLES AS F ON M.TABID = F.TABID\n");
-            builder.append("WHERE 1 = 1\n");
-            if(BasicUtil.isNotEmpty(catalog)) {
-            }
-            if(!empty(schema)) {
-                builder.append(" AND F.OWNER = '").append(schema.getName()).append("'");
-            }
-            if(BasicUtil.isNotEmpty(name)) {
-                builder.append(" AND F.TABNAME = '").append(name).append("'");
-            }
-            run.setOrders("F.TABNAME");
-            if(null != configs){
-                run.setPageNavi(configs.getPageNavi());
-            }
-        }
+        builder.append("SELECT M.*,F.TABNAME FROM SYSCOLUMNS AS M LEFT JOIN SYSTABLES AS F ON M.TABID = F.TABID\n");
+        configs.and("F.OWNER", query.getSchemaName());
+        configs.like("F.TABNAME", query.getName());
+        configs.order("F.TABNAME");
         return runs;
     }
     /**
@@ -2521,33 +2496,14 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public List<Run> buildQueryColumnsRun(DataRuntime runtime, boolean metadata, Collection<? extends Table> tables, Column query, ConfigStore configs) throws Exception {
-        Catalog catalog = query.getCatalog();
-        Schema schema = query.getSchema();
         List<Run> runs = new ArrayList<>();
-        Table table = null;
-        if(!tables.isEmpty()) {
-            table = tables.iterator().next();
-        }
-        if(null != table) {
-            catalog = table.getCatalog();
-            schema = table.getSchema();
-        }
-        Run run = new SimpleRun(runtime);
+        Run run = new SimpleRun(runtime, configs);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
-
         builder.append("SELECT M.*,F.TABNAME FROM SYSCOLUMNS AS M LEFT JOIN SYSTABLES AS F ON M.TABID = F.TABID\n");
-        builder.append("WHERE 1 = 1\n");
-        if(BasicUtil.isNotEmpty(catalog)) {
-        }
-        if(!empty(schema)) {
-            builder.append(" AND F.OWNER = '").append(schema.getName()).append("'");
-        }
-        in(runtime, builder, "F.TABNAME", Table.names(tables));
-        run.setOrders("F.TABNAME");
-        if(null != configs){
-            run.setPageNavi(configs.getPageNavi());
-        }
+        configs.and("F.OWNER", query.getSchemaName());
+        configs.in("F.TABNAME", Table.names(tables));
+        configs.order("F.TABNAME");
         return runs;
     }
     /**
@@ -2780,17 +2736,15 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
         Run run = new SimpleRun(runtime);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
+        ConfigStore configs = run.getConfigs();
         builder.append("SELECT T.TABNAME AS TABLE_NAME, C.CONSTRNAME AS CONSTRAINT_NAME, C.CONSTRTYPE AS CONSTRAINT_TYPE, K.COLNAME AS COLUMN_NAME\n");
         builder.append("FROM SYSTABLES T\n");
         builder.append("JOIN SYSCONSTRAINTS C ON T.TABID = C.TABID\n");
         builder.append("JOIN SYSINDEXES I ON C.IDXNAME = I.IDXNAME AND C.TABID = I.TABID\n");
         builder.append("JOIN SYSCOLUMNS K ON T.TABID = K.TABID AND I.PART1 = K.COLNO\n");
         builder.append("WHERE  C.CONSTRTYPE = 'P'\n");
-        builder.append("AND T.TABNAME = '").append(table.getName()).append("'\n");
-        Schema schema = table.getSchema();
-        if(!empty(schema)) {
-            builder.append(" AND T.OWNER = '").append(schema.getName()).append("'");
-        }
+        configs.and("T.OWNER", query.getSchemaName());
+        configs.and("T.TABNAME", query.getTableName());
         return runs;
     }
 

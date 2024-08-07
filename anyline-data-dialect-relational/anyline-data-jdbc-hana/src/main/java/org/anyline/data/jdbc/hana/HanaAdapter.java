@@ -1679,18 +1679,6 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		builder.append("SELECT SCHEMA_NAME, TABLE_NAME, COMMENTS, 'TABLE' AS TABLE_TYPE FROM public.tables");
 		configs.and("SCHEMA_NAME", query.getSchemaName());
 		configs.like("TABLE_NAME", query.getName());
-
-		/*if((types & 2) == 2) {
-			builder.append("UNION ALL \n");
-			builder.append("SELECT SCHEMA_NAME, VIEW_NAME, COMMENTS, 'VIEW' AS TABLE_TYPE FROM public.views WHERE 1=1");
-
-			if(!empty(schema)) {
-				builder.append(" AND SCHEMA_NAME = '").append(schema.getName()).append("'");
-			}
-			if(BasicUtil.isNotEmpty(pattern)) {
-				builder.append(" AND VIEW_NAME LIKE '").append(pattern).append("'");
-			}
-		} */
 		return runs;
 	}
 
@@ -2572,17 +2560,14 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 */
 	@Override
 	public List<Run> buildQueryPrimaryRun(DataRuntime runtime, boolean greedy,  PrimaryKey query) throws Exception {
-		Table table = query.getTable();
 		List<Run> runs = new ArrayList<>();
 		Run run = new SimpleRun(runtime);
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();
-		builder.append("SELECT * FROM PUBLIC.INDEX_COLUMNS \n");
-		builder.append("WHERE CONSTRAINT = 'PRIMARY KEY'");
-		builder.append(" AND TABLE_NAME = '").append(table.getName()).append("'");
-		if(BasicUtil.isNotEmpty(table.getSchemaName())) {
-			builder.append(" AND SCHEMA_NAME = '").append(table.getSchemaName()).append("'");
-		}
+		ConfigStore configs = run.getConfigs();
+		builder.append("SELECT * FROM PUBLIC.INDEX_COLUMNS WHERE CONSTRAINT = 'PRIMARY KEY'");
+		configs.and("SCHEMA_NAME", query.getSchemaName());
+		configs.and("TABLE_NAME", query.getTableName());
 		return runs;
 	}
 

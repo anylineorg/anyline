@@ -1675,31 +1675,13 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 */
 	@Override
 	public List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Table query, int types, ConfigStore configs) throws Exception {
-		Catalog catalog = query.getCatalog();
-		Schema schema = query.getSchema();
-		String pattern = query.getName();
 		List<Run> runs = new ArrayList<>();
-		Run run = new SimpleRun(runtime);
+		Run run = new SimpleRun(runtime, configs);
 		runs.add(run);
-		String catalogName = null;
-		String schemaName = null;
-		if(null != catalog) {
-			catalogName = catalog.getName();
-		}
-		if(null != schema) {
-			schemaName = schema.getName();
-		}
 		StringBuilder builder = run.getBuilder();
 		builder.append("SELECT * FROM SYSCAT.TABLES  WHERE TYPE = 'T'");
-		if(BasicUtil.isNotEmpty(schemaName)) {
-			builder.append(" AND TABSCHEMA ='").append(schemaName).append("'");
-		}
-		if(BasicUtil.isNotEmpty(pattern)) {
-			builder.append(" AND TABNAME LIKE '").append(pattern).append("'");
-		}
-		if(null != configs){
-			run.setPageNavi(configs.getPageNavi());
-		}
+		configs.and("TABSCHEMA", query.getSchemaName());
+		configs.like("TABNAME", query.getName());
 		return runs;
 	}
 
@@ -2309,35 +2291,14 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	public List<Run> buildQueryColumnsRun(DataRuntime runtime,  boolean metadata, Column query, ConfigStore configs) throws Exception {
 		Table table = query.getTable();
 		List<Run> runs = new ArrayList<>();
-		Run run = new SimpleRun(runtime);
+		Run run = new SimpleRun(runtime, configs);
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();
-		if(metadata) {
-			builder.append("SELECT * FROM ");
-			name(runtime, builder, table);
-			builder.append(" WHERE 1=0");
-		}else{
-			//String catalog = null;
-			String schema = null;
-			String name = null;
-			if(null != table) {
-				//catalog = table.getCatalogName();
-				schema = table.getSchemaName();
-				name = table.getName();
-			}
-			builder.append("SELECT * FROM SYSCAT.COLUMNS");
-			/*if(BasicUtil.isNotEmpty(catalog)) {
-				builder.append(" AND TABLE_CATALOG = '").append(catalog).append("'");
-			}*/
-			if(!empty(schema)) {
-				configs.and("TABSCHEMA", schema);
-			}
-			if(null != name) {
-				configs.and("TABNAME", objectName(runtime, name));
-			}
-			run.setOrders("TABNAME", "COLNO");
-			run.setConfigStore(configs);
-		}
+        builder.append("SELECT * FROM SYSCAT.COLUMNS");
+		configs.and("TABSCHEMA", query.getSchemaName());
+		configs.and("TABNAME", objectName(runtime, query.getName()));
+        configs.order("TABNAME").order("COLNO");
+
 		return runs;
 	}
 
@@ -2645,13 +2606,11 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		Run run = new SimpleRun(runtime);
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();
+		ConfigStore configs = run.getConfigs();
 		builder.append("SELECT * FROM SYSCAT.KEYCOLUSE\n");
 		builder.append("WHERE CONSTNAME= 'PRIMARY'\n");
-		builder.append("AND TABNAME = '").append(table.getName()).append("'\n");
-		Schema schema = table.getSchema();
-		if(!empty(schema)) {
-			builder.append(" AND TABSCHEMA = '").append(schema.getName()).append("'");
-		}
+		configs.and("TABSCHEMA", query.getSchemaName());
+		configs.and("TABNAME", query.getTableName());
 		return runs;
 	}
 

@@ -4406,7 +4406,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
      * @throws Exception 异常
      */
     @Override
-    public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> procedures, Procedure query, DataSet set) throws Exception {
+    public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Procedure query, DataSet set) throws Exception {
         return new LinkedHashMap<>();
     }
 

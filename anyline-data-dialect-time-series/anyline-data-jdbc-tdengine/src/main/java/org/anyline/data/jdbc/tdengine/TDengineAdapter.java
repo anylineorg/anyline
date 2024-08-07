@@ -1818,31 +1818,22 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
      */
     @Override
     public List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Table query, int types, ConfigStore configs) throws Exception {
-        Catalog catalog = query.getCatalog();
-        Schema schema = query.getSchema();
         String pattern = query.getName();
         List<Run> runs = new ArrayList<>();
         Run run = new SimpleRun(runtime);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
-
         builder.append("SHOW TABLES");
         if (BasicUtil.isNotEmpty(pattern)) {
             builder.append(" LIKE '" + pattern + "'");
         }
-        Run r = new SimpleRun(runtime);
+
+        Run r = new SimpleRun(runtime, configs);
         runs.add(r);
         builder = r.getBuilder();
         builder.append("SELECT * FROM INFORMATION_SCHEMA.INS_TABLES WHERE TYPE = 'NORMAL_TABLE' ");
-        if (!empty(catalog)) {
-            builder.append(" AND DB_NAME = '" + catalog.getName() + "'");
-        }
-        if (BasicUtil.isNotEmpty(pattern)) {
-            builder.append( " AND TABLE_NAME LIKE '" + pattern + "'");
-        }
-        if(null != configs){
-            r.setPageNavi(configs.getPageNavi());
-        }
+        configs.and("DB_NAME", query.getCatalogName());
+        configs.like("TABLE_NAME", query.getName());
         return runs;
     }
 
@@ -2516,10 +2507,10 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         Run run = new SimpleRun(runtime);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
-        builder.append("SELECT * FROM INFORMATION_SCHEMA.INS_TABLES WHERE STABLE_NAME = '").append(stable).append("'");
-        if(BasicUtil.isNotEmpty(name)) {
-            builder.append(" AND TABLE_NAME = '").append(name).append("'");
-        }
+        ConfigStore configs = run.getConfigs();
+        builder.append("SELECT * FROM INFORMATION_SCHEMA.INS_TABLES").append(stable).append("'");
+        configs.and("STABLE_NAME", stable);
+        configs.like("TABLE_NAME", query.getName());
         return runs;
     }
 

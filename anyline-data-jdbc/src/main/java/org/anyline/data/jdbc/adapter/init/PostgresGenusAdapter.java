@@ -1228,15 +1228,13 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public List<Run> buildQueryDatabasesRun(DataRuntime runtime, boolean greedy, Database query) throws Exception {
-        String name = query.getName();
         List<Run> runs = new ArrayList<>();
         Run run = new SimpleRun(runtime);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
+        ConfigStore configs = run.getConfigs();
         builder.append("SELECT * FROM PG_DATABASE WHERE DATISTEMPLATE=FALSE");
-        if(BasicUtil.isNotEmpty(name)) {
-            builder.append(" AND datname = '").append(name).append("'");
-        }
+        configs.like("datname", query.getName());
         return runs;
     }
 
@@ -1805,11 +1803,8 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Table query, int types, ConfigStore configs) throws Exception {
-        Catalog catalog = query.getCatalog();
-        Schema schema = query.getSchema();
-        String pattern = query.getName();
         List<Run> runs = new ArrayList<>();
-        Run run = new SimpleRun(runtime);
+        Run run = new SimpleRun(runtime, configs);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
         builder.append("SELECT M.*, obj_description(F.relfilenode,'pg_class')  AS TABLE_COMMENT\n");
@@ -1818,26 +1813,19 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         builder.append("LEFT JOIN pg_class AS F ON M.TABLE_NAME = F.relname AND N.oid = F.relnamespace\n");
         builder.append("LEFT JOIN pg_inherits AS I ON I.inhrelid = F.oid\n");//继承关系
         builder.append("WHERE I.inhrelid IS NULL\n"); //GIS中没有f.relpartbound
-        if(!empty(schema)) {
-            builder.append(" AND M.table_schema = '").append(schema.getName()).append("'");
-        }
-        if(BasicUtil.isNotEmpty(pattern)) {
-            builder.append(" AND M.table_name LIKE '").append(pattern).append("'");
-        }
+        configs.and("M.table_schema", query.getSchemaName());
+        configs.like("M.table_name", query.getName());
         if((types & 2) != 2) {
             //不包含视图
-            builder.append(" AND M.TABLE_TYPE != 'VIEW'");
+            configs.and("M.TABLE_TYPE != 'VIEW'");
         }
         return runs;
     }
     //与上一个方法的区别是 有些库没有区分 是否分区表 的元数据,不清楚的默认调用上一个方法，确认支持的再调用这个方法
     //builder.append("WHERE (I.inhrelid IS NULL  OR F.relpartbound IS NULL)\n"); //过滤分区表(没有继承自其他表或 继承自其他表但是子表不是分区表)
     protected List<Run> buildQueryTablesRunWithPartBound(DataRuntime runtime, boolean greedy, Table query, int types, ConfigStore configs) throws Exception {
-        Catalog catalog = query.getCatalog();
-        Schema schema = query.getSchema();
-        String pattern = query.getName();
         List<Run> runs = new ArrayList<>();
-        Run run = new SimpleRun(runtime);
+        Run run = new SimpleRun(runtime, configs);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
         builder.append("SELECT M.*, obj_description(F.relfilenode,'pg_class')  AS TABLE_COMMENT\n");
@@ -1846,15 +1834,11 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         builder.append("LEFT JOIN pg_class AS F ON M.TABLE_NAME = F.relname AND N.oid = F.relnamespace\n");
         builder.append("LEFT JOIN pg_inherits AS I ON I.inhrelid = F.oid\n");//继承关系
         builder.append("WHERE (I.inhrelid IS NULL  OR F.relpartbound IS NULL)\n"); //过滤分区表(没有继承自其他表或 继承自其他表但是子表不是分区表)
-        if(!empty(schema)) {
-            builder.append(" AND M.table_schema = '").append(schema.getName()).append("'");
-        }
-        if(BasicUtil.isNotEmpty(pattern)) {
-            builder.append(" AND M.table_name LIKE '").append(pattern).append("'");
-        }
+        configs.and("M.table_schema", query.getSchemaName());
+        configs.like("M.table_name", query.getName());
         if((types & 2) != 2) {
             //不包含视图
-            builder.append(" AND M.TABLE_TYPE != 'VIEW'");
+            configs.and("M.TABLE_TYPE != 'VIEW'");
         }
         return runs;
     }
@@ -2319,28 +2303,22 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, boolean greedy,  PartitionTable query, int types) throws Exception {
-        Table master = query.getMaster();
         Map<String, Tag> tags = query.getTags();
         String name = query.getName();
         List<Run> runs = new ArrayList<>();
         Run run = new SimpleRun(runtime);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
+        ConfigStore configs = run.getConfigs();
         builder.append("SELECT M.*, obj_description(F.relfilenode,'pg_class')  AS TABLE_COMMENT\n");
         builder.append("FROM  INFORMATION_SCHEMA.TABLES AS M\n");
         builder.append("LEFT JOIN pg_namespace AS N ON N.NSPNAME = M.table_schema\n");
         builder.append("LEFT JOIN pg_class AS F ON M.TABLE_NAME = F.relname AND N.oid = F.relnamespace\n");
         builder.append("LEFT JOIN pg_inherits AS I ON I.inhrelid = F.oid\n");//继承关系
         builder.append("LEFT JOIN pg_class AS FM ON FM.oid = I.inhparent AND N.oid = FM.relnamespace\n");//主表
-        builder.append("WHERE FM.relname ='").append(master.getName()).append("'\n");
-        String schema = master.getSchemaName();
-        if(!empty(schema)) {
-            builder.append(" AND M.table_schema = '").append(schema).append("'");
-        }
-        if(BasicUtil.isNotEmpty(name)) {
-            builder.append(" AND M.table_name LIKE '").append(name).append("'");
-        }
-
+        configs.and("FM.relname", query.getMasterName());
+        configs.and("M.table_schema", query.getSchemaName());
+        configs.like("M.table_name", query.getName());
         return runs;
     }
     /**
@@ -2518,39 +2496,19 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public List<Run> buildQueryColumnsRun(DataRuntime runtime, boolean metadata, Collection<? extends Table> tables, Column query, ConfigStore configs) throws Exception {
-        Catalog catalog = query.getCatalog();
-        Schema schema = query.getSchema();
         List<Run> runs = new ArrayList<>();
-        Table table = null;
-        if(!tables.isEmpty()) {
-            table = tables.iterator().next();
-        }
-        if(null != table) {
-            checkName(runtime, null, table);
-            catalog = table.getCatalog();
-            schema = table.getSchema();
-        }
         Run run = new SimpleRun(runtime, configs);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
-
         builder.append("SELECT M.*,pg_catalog.format_type ( FA.ATTTYPID, FA.ATTTYPMOD ) AS FULL_TYPE,FD.DESCRIPTION AS COLUMN_COMMENT \n");
         builder.append("FROM INFORMATION_SCHEMA.COLUMNS M\n");
         builder.append("LEFT JOIN PG_CLASS FC ON FC.RELNAME = M.TABLE_NAME\n");
         builder.append("LEFT JOIN PG_ATTRIBUTE  FA ON FA.ATTNAME = M.COLUMN_NAME AND FA.ATTRELID = FC.OID\n");
         builder.append("LEFT JOIN PG_DESCRIPTION FD ON FD.OBJOID = FC.OID AND FD.OBJSUBID = M.ORDINAL_POSITION\n");
-        builder.append("WHERE 1 = 1\n");
-        if(!empty(catalog)) {
-            builder.append(" AND M.TABLE_CATALOG = '").append(catalog.getName()).append("'");
-        }
-        if(!empty(schema)) {
-            builder.append(" AND M.TABLE_SCHEMA = '").append(schema.getName()).append("'");
-        }
-        in(runtime, builder, "M.TABLE_NAME", Table.names(tables));
-        run.setOrders("M.TABLE_NAME");
-        if(null != configs){
-            run.setPageNavi(configs.getPageNavi());
-        }
+        configs.and("M.TABLE_CATALOG", query.getCatalogName());
+        configs.and("M.TABLE_SCHEMA", query.getSchemaName());
+        configs.in("M.TABLE_NAME", Table.names(tables));
+        configs.order("M.TABLE_NAME");
         return runs;
     }
     /**
@@ -2764,22 +2722,18 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public List<Run> buildQueryPrimaryRun(DataRuntime runtime, boolean greedy,  PrimaryKey query) throws Exception {
-        Table table = query.getTable();
         List<Run> runs = new ArrayList<>();
         Run run = new SimpleRun(runtime);
         runs.add(run);
-        checkName(runtime, null, table);
         StringBuilder builder = run.getBuilder();
+        ConfigStore configs = run.getConfigs();
         //test_pk_pkey    | p    | {2,1}    |     PRIMARY KEY (id, name)
         builder.append("SELECT  m.conname, pg_get_constraintdef(m.oid, true) AS define\n");
         builder.append("FROM pg_constraint m \n");
         builder.append("LEFT JOIN pg_namespace ns ON m.connamespace = ns.oid \n");
         builder.append("LEFT JOIN pg_class ft ON m.conrelid = ft.oid \n");
-        builder.append("WHERE ft.relname = '").append(table.getName()).append("'");
-        Schema schema = table.getSchema();
-        if(!empty(schema)) {
-            builder.append(" AND ns.nspname = '").append(schema.getName()).append("'");
-        }
+        configs.and("ft.relname", query.getTableName());
+        configs.and("ns.nspname", query.getSchemaName());
         return runs;
     }
 
@@ -2867,24 +2821,18 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public List<Run> buildQueryForeignsRun(DataRuntime runtime, boolean greedy,  ForeignKey query) throws Exception {
-        Table table = query.getTable();
         List<Run> runs = new ArrayList<>();
         Run run = new SimpleRun(runtime);
         runs.add(run);
-        checkName(runtime, null, table);
         StringBuilder builder = run.getBuilder();
+        ConfigStore configs = run.getConfigs();
         builder.append("SELECT TC.CONSTRAINT_NAME,TC.TABLE_NAME AS TABLE_NAME, KCU.COLUMN_NAME AS COLUMN_NAME, KCU.ORDINAL_POSITION,CCU.TABLE_NAME AS REFERENCED_TABLE_NAME, CCU.COLUMN_NAME AS REFERENCED_COLUMN_NAME\n");
         builder.append("FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS AS TC\n");
         builder.append("JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE AS KCU ON TC.CONSTRAINT_NAME = KCU.CONSTRAINT_NAME\n");
         builder.append("JOIN INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE AS CCU ON CCU.CONSTRAINT_NAME = TC.CONSTRAINT_NAME\n");
         builder.append("WHERE TC.CONSTRAINT_TYPE = 'FOREIGN KEY'\n");
-        if(null != table) {
-            String name = table.getName();
-            if(BasicUtil.isNotEmpty(name)) {
-                builder.append(" AND TC.TABLE_NAME = '").append(name).append("'\n");
-            }
-        }
-        builder.append("ORDER BY KCU.ORDINAL_POSITION");
+        configs.and("TC.TABLE_NAME", query.getTableName());
+        configs.order("KCU.ORDINAL_POSITION");
         return runs;
     }
     /**
@@ -3575,12 +3523,11 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public List<Run> buildQueryFunctionsRun(DataRuntime runtime, boolean greedy, Function query) {
-        Schema schema = query.getSchema();
-        String name = query.getName();
         List<Run> runs = new ArrayList<>();
         Run run = new SimpleRun(runtime);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
+        ConfigStore configs = run.getConfigs();
         builder.append("SELECT\n")
                 .append("    P.*,\n")
                 .append("    N.NSPNAME AS SCHEMA_NAME,\n")
@@ -3595,13 +3542,8 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
                 .append("    LEFT JOIN PG_NAMESPACE TYPNS ON TYPNS.OID = TYP.TYPNAMESPACE\n")
                 .append("    LEFT JOIN PG_NAMESPACE N ON N.OID = P.PRONAMESPACE \n")
                 .append("WHERE P.PROKIND <> 'a' \n");
-
-        if(!empty(schema)) {
-            builder.append(" AND N.NSPNAME = '").append(schema.getName()).append("'");
-        }
-        if(BasicUtil.isNotEmpty(name)) {
-            builder.append(" AND P.PRONAME = '").append(name).append("'");
-        }
+        configs.and("AND N.NSPNAME", query.getSchemaName());
+        configs.like("AND P.PRONAMEE", query.getName());
         return runs;
     }
 

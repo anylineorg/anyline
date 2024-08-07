@@ -1960,44 +1960,27 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Table query, int types, ConfigStore configs) throws Exception {
-        Catalog catalog = query.getCatalog();
-        Schema schema = query.getSchema();
-        String pattern = query.getName();
         /*
         ALL_TABLES：当前登录用户可见的所有表
         DBA_TABLES：数据库中所有表
         USER_TABLES：当前登录用户拥有的所有表
         */
         List<Run> runs = new ArrayList<>();
-        Run run = new SimpleRun(runtime);
+        Run run = new SimpleRun(runtime, configs);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
         //需要跨schema查询
         builder.append("SELECT M.OWNER AS TABLE_SCHEMA, M.OBJECT_NAME AS TABLE_NAME, M.OBJECT_TYPE AS TABLE_TYPE, M.CREATED AS CREATE_TIME, M.LAST_DDL_TIME AS UPDATE_TIME, M.TEMPORARY AS IS_TEMPORARY, F.COMMENTS\n");
         builder.append("FROM ALL_OBJECTS M LEFT JOIN ALL_TAB_COMMENTS F \n");
         builder.append("ON M.OBJECT_NAME = F.TABLE_NAME  AND M.OWNER = F.OWNER AND M.object_type = F.TABLE_TYPE \n");
-        builder.append("WHERE 1=1");
-        if(!empty(schema)) {
-            builder.append(" AND M.OWNER = '").append(schema.getName()).append("'");
-        }
-        if(BasicUtil.isNotEmpty(pattern)) {
-            builder.append(" AND M.OBJECT_NAME LIKE '").append(pattern).append("'");
-        }
+        configs.and("M.OWNER", query.getSchemaName());
+        configs.like("M.OBJECT_NAME", query.getName());
         List<String> tps = names(Table.types(types));
-        if(null != tps && !tps.isEmpty()) {;
-            builder.append(" AND M.OBJECT_TYPE IN(");
-            boolean first = true;
-            for(String tmp:tps) {
-                if(!first) {
-                    builder.append(",");
-                }
-                builder.append("'").append(tmp).append("'");
-                first = false;
-            }
-            builder.append(")");
-        }else{
-            builder.append(" AND M.OBJECT_TYPE IN('TABLE','VIEW')");
+        if(tps.isEmpty()){
+            tps.add("TABLE");
+            tps.add("VIEW");
         }
+        configs.in("M.OBJECT_TYP", tps);
         return runs;
     }
 
@@ -2609,36 +2592,21 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
     @Override
     public List<Run> buildQueryColumnsRun(DataRuntime runtime,  boolean metadata, Column query, ConfigStore configs) throws Exception {
         List<Run> runs = new ArrayList<>();
-        Catalog catalog = query.getCatalog();
-        Schema schema = query.getSchema();
-        Table table = query.getTable();
-        String name = null;
-        if(null != table) {
-            name = table.getName();
-            schema = table.getSchema();
-        }
-        Run run = new SimpleRun(runtime);
+        String schema = query.getSchemaName();
+        String table = query.getTableName();
+
+        Run run = new SimpleRun(runtime, configs);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
-        if(metadata) {
-            builder.append("SELECT * FROM ");
-            name(runtime, builder, table);
-            builder.append(" WHERE 1=0");
-        }else{
-            builder.append("SELECT M.*, F.COMMENTS AS COLUMN_COMMENT FROM ALL_TAB_COLUMNS M \n");
-            builder.append("LEFT JOIN ALL_COL_COMMENTS F ON M.TABLE_NAME = F.TABLE_NAME AND M.COLUMN_NAME = F.COLUMN_NAME AND M.OWNER = F.OWNER\n");
-            builder.append("WHERE 1=1\n");
-            if (BasicUtil.isNotEmpty(name)) {
-                builder.append("AND M.TABLE_NAME = '").append(name).append("'");
-            }
-            if(!empty(schema)) {
-                builder.append(" AND M.OWNER = '").append(schema.getName()).append("'");
-            }
-            run.setOrders("M.TABLE_NAME");
-            if(null != configs){
-                run.setPageNavi(configs.getPageNavi());
-            }
+        builder.append("SELECT M.*, F.COMMENTS AS COLUMN_COMMENT FROM ALL_TAB_COLUMNS M \n");
+        builder.append("LEFT JOIN ALL_COL_COMMENTS F ON M.TABLE_NAME = F.TABLE_NAME AND M.COLUMN_NAME = F.COLUMN_NAME AND M.OWNER = F.OWNER\n");
+        configs.and("M.TABLE_NAME", table);
+        configs.and("M.OWNER", schema);
+        run.setOrders("M.TABLE_NAME");
+        if(null != configs){
+            run.setPageNavi(configs.getPageNavi());
         }
+
         return runs;
     }
 
@@ -2652,32 +2620,16 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public List<Run> buildQueryColumnsRun(DataRuntime runtime, boolean metadata, Collection<? extends Table> tables, Column query, ConfigStore configs) throws Exception {
-        Schema schema = query.getSchema();
+        String schema = query.getSchemaName();
         List<Run> runs = new ArrayList<>();
-        Table table = null;
-        if(!tables.isEmpty()) {
-            table = tables.iterator().next();
-        }
-        if(null != table) {
-            checkName(runtime, null, table);
-            schema = table.getSchema();
-        }
-
-        Run run = new SimpleRun(runtime);
+        Run run = new SimpleRun(runtime, configs);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
         builder.append("SELECT M.*, F.COMMENTS AS COLUMN_COMMENT FROM ALL_TAB_COLUMNS M \n");
         builder.append("LEFT JOIN ALL_COL_COMMENTS F ON M.TABLE_NAME = F.TABLE_NAME AND M.COLUMN_NAME = F.COLUMN_NAME AND M.OWNER = F.OWNER\n");
-        builder.append("WHERE 1=1\n");
-
-        if(!empty(schema)) {
-            builder.append(" AND M.OWNER = '").append(schema.getName()).append("'");
-        }
-        in(runtime, builder, "M.TABLE_NAME", Table.names(tables));
+        configs.and("M.OWNER", schema);
+        configs.in("M.TABLE_NAME", Table.names(tables));
         run.setOrders("M.TABLE_NAME");
-        if(null != configs){
-            run.setPageNavi(configs.getPageNavi());
-        }
         return runs;
     }
 
@@ -2881,18 +2833,16 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public List<Run> buildQueryPrimaryRun(DataRuntime runtime, boolean greedy,  PrimaryKey query) throws Exception {
-        Table table = query.getTable();
         List<Run> runs = new ArrayList<>();
         Run run = new SimpleRun(runtime);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
+        ConfigStore configs = run.getConfigs();
         builder.append("SELECT COL.* FROM USER_CONSTRAINTS CON, USER_CONS_COLUMNS COL\n");
         builder.append("WHERE CON.CONSTRAINT_NAME = COL.CONSTRAINT_NAME\n");
         builder.append("AND CON.CONSTRAINT_TYPE = 'P'\n");
-        builder.append("AND COL.TABLE_NAME = '").append(table.getName()).append("'\n");
-        if(BasicUtil.isNotEmpty(table.getSchema())) {
-            builder.append(" AND COL.OWNER = '").append(table.getSchemaName()).append("'");
-        }
+        configs.and("COL.TABLE_NAME", query.getTableName());
+        configs.and("COL.OWNER", query.getSchemaName());
         return runs;
     }
 
@@ -2983,17 +2933,14 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         Run run = new SimpleRun(runtime);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
+        ConfigStore configs = run.getConfigs();
         builder.append("SELECT UC.CONSTRAINT_NAME, UC.TABLE_NAME, KCU.COLUMN_NAME, UC.R_CONSTRAINT_NAME, RC.TABLE_NAME AS REFERENCED_TABLE_NAME, RCC.COLUMN_NAME AS REFERENCED_COLUMN_NAME, RCC.POSITION AS ORDINAL_POSITION\n");
         builder.append("FROM USER_CONSTRAINTS UC \n");
         builder.append("JOIN USER_CONS_COLUMNS KCU ON UC.CONSTRAINT_NAME = KCU.CONSTRAINT_NAME \n");
         builder.append("JOIN USER_CONSTRAINTS RC ON UC.R_CONSTRAINT_NAME = RC.CONSTRAINT_NAME \n");
         builder.append("JOIN USER_CONS_COLUMNS RCC ON RC.CONSTRAINT_NAME = RCC.CONSTRAINT_NAME AND KCU.POSITION = RCC.POSITION");
-        if(null != table) {
-            if(BasicUtil.isNotEmpty(table.getCatalogName())) {
-                builder.append(" AND UC.OWNER = '").append(table.getCatalogName()).append("'\n");
-            }
-            builder.append(" AND UC.TABLE_NAME = '").append(table.getName()).append("'\n");
-        }
+        configs.and("UC.OWNER", query.getSchemaName());
+        configs.and("UC.TABLE_NAME", query.getTableName());
         return runs;
     }
     /**
@@ -3115,18 +3062,10 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         List<Run> runs = new ArrayList<>();
         Run run = buildQueryIndexBody(runtime);
         runs.add(run);
-        StringBuilder builder = run.getBuilder();
-        String schema = table.getSchemaName();
-        String tab = table.getName();
-        if(!empty(schema)) {
-            builder.append("AND M.INDEX_OWNER = '").append(schema).append("'\n");
-        }
-        if(BasicUtil.isNotEmpty(tab)) {
-            builder.append("AND M.TABLE_NAME = '").append(tab).append("'\n");
-        }
-        if(BasicUtil.isNotEmpty(name)) {
-            builder.append("AND M.INDEX_NAME = '").append(name).append("'\n");
-        }
+        ConfigStore configs = run.getConfigs();
+        configs.and("M.INDEX_OWNER", query.getSchemaName());
+        configs.and("M.TABLE_NAME", query.getTableName());
+        configs.like("M.INDEX_NAME", query.getName());
         return runs;
     }
     @Override
@@ -3134,18 +3073,13 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         List<Run> runs = new ArrayList<>();
         Run run = buildQueryIndexBody(runtime);
         runs.add(run);
-        StringBuilder builder = run.getBuilder();
+        ConfigStore configs = run.getConfigs();
         Table table = null;
         if(null != tables && !tables.isEmpty()){
             table = tables.iterator().next();
+            configs.and("M.INDEX_OWNER", table.getSchemaName());
         }
-        String schema = table.getSchemaName();
-        String tab = table.getName();
-        if(!empty(schema)) {
-            builder.append("AND M.INDEX_OWNER = '").append(schema).append("'\n");
-        }
-        List<String> names = Table.names(tables);
-        in(runtime, builder, "M.TABLE_NAME", names);
+        configs.in("M.TABLE_NAME", Table.names(tables));
         return runs;
     }
     protected Run buildQueryIndexBody(DataRuntime runtime){
@@ -3154,7 +3088,6 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         builder.append("SELECT M.*, F.COLUMN_EXPRESSION FROM ALL_IND_COLUMNS M\n");
         builder.append("LEFT JOIN ALL_IND_EXPRESSIONS F\n");
         builder.append("ON M.INDEX_OWNER = F.INDEX_OWNER AND M.INDEX_NAME = F.INDEX_NAME AND M.COLUMN_POSITION = F.COLUMN_POSITION\n");
-        builder.append("WHERE 1=1\n");
         return run;
     }
     /**

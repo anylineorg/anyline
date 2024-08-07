@@ -1786,49 +1786,24 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
      */
     @Override
     public List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Table query, int types, ConfigStore configs) throws Exception {
-        Catalog catalog = query.getCatalog();
-        Schema schema = query.getSchema();
-        String pattern = query.getName();
         List<Run> runs = new ArrayList<>();
-        Run run = new SimpleRun(runtime);
+        Run run = new SimpleRun(runtime, configs);
         runs.add(run);
-        String schemaName = null;
-        if(null != schema) {
-            schemaName = schema.getName();
-        }
         StringBuilder builder = run.getBuilder();
         builder.append("SELECT  O.NAME, FT.TABLE_CATALOG, FT.TABLE_SCHEMA, O.TYPE, O.TYPE_DESC, EP.VALUE AS COMMENT \n");
         builder.append("FROM SYS.OBJECTS O \n");
         builder.append("LEFT JOIN INFORMATION_SCHEMA.TABLES AS FT ON O.OBJECT_ID = OBJECT_ID(FT.TABLE_CATALOG + '.' + FT.TABLE_SCHEMA + '.' + FT.TABLE_NAME) \n");
         builder.append("LEFT JOIN SYS.EXTENDED_PROPERTIES EP ON O.OBJECT_ID = EP.MAJOR_ID AND EP.CLASS = 1 AND EP.MINOR_ID = 0 AND EP.NAME = 'MS_Description' \n");
+
         if((types & 2) == 2) {
             //包含视图
-            builder.append("WHERE (O.TYPE = 'U' OR O.TYPE='V') \n");
+            configs.and("(O.TYPE = 'U' OR O.TYPE='V') \n");
         }else{
-            builder.append("WHERE O.TYPE = 'U' \n");
+            configs.and("O.TYPE", "U");
         }
-        if(BasicUtil.isNotEmpty(pattern)) {
-            builder.append(" AND O.NAME LIKE '").append(pattern).append("'");
-        }
-        if(BasicUtil.isNotEmpty(schemaName)) {
-            builder.append(" AND FT.TABLE_SCHEMA ='").append(schemaName).append("'");
-        }
-        List<String> tps = names(Table.types(types));
-        if(null != tps && !tps.isEmpty()) {
-            builder.append(" AND O.TYPE_DESC IN(");
-            boolean first = true;
-            for(String tp:tps) {
-                if(!first) {
-                    builder.append(",");
-                }
-                builder.append("'").append(tp).append("'");
-                first = false;
-            }
-            builder.append(")");
-        }
-        if(null != configs){
-            run.setPageNavi(configs.getPageNavi());
-        }
+        configs.and("FT.TABLE_SCHEMA", query.getSchemaName());
+        configs.like("O.NAME", query.getName());
+        configs.in("O.TYPE_DESC", names(Table.types(types)));
         return runs;
     }
 
@@ -1852,19 +1827,18 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
      */
     @Override
     public List<Run> buildQueryTablesCommentRun(DataRuntime runtime, Table query, int types) throws Exception {
-        Catalog catalog = query.getCatalog();
-        Schema schema = query.getSchema();
         String pattern = query.getName();
         List<Run> runs = new ArrayList<>();
         Run run = new SimpleRun(runtime);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
+        ConfigStore configs = run.getConfigs();
         builder.append("SELECT TBS.NAME AS TABLE_NAME,DS.VALUE AS TABLE_COMMENT\n");
         builder.append("FROM SYS.EXTENDED_PROPERTIES DS\n");
         builder.append("LEFT JOIN SYS.SYSOBJECTS TBS ON DS.MAJOR_ID=TBS.ID \n");
         builder.append("WHERE  DS.MINOR_ID=0 \n");
         if(BasicUtil.isNotEmpty(objectName(runtime, pattern))) {
-            builder.append("TBS.NAME LIKE '").append(pattern).append("'");
+            configs.like("TBS.NAME", pattern);
         }
         return runs;
     }
@@ -2816,17 +2790,15 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
      */
     @Override
     public List<Run> buildQueryForeignsRun(DataRuntime runtime, boolean greedy,  ForeignKey query) throws Exception {
-        Table table = query.getTable();
         List<Run> runs = new ArrayList<>();
         Run run = new SimpleRun(runtime);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
+        ConfigStore configs = run.getConfigs();
         builder.append("SELECT F.NAME AS CONSTRAINT_NAME, OBJECT_NAME(F.PARENT_OBJECT_ID) AS TABLE_NAME, COL_NAME(FC.PARENT_OBJECT_ID, FC.PARENT_COLUMN_ID) AS COLUMN_NAME,");
         builder.append(" OBJECT_NAME(F.REFERENCED_OBJECT_ID) AS REFERENCED_TABLE_NAME, COL_NAME(FC.REFERENCED_OBJECT_ID, FC.REFERENCED_COLUMN_ID) AS REFERENCED_COLUMN_NAME \n");
         builder.append("FROM SYS.FOREIGN_KEYS AS F INNER JOIN SYS.FOREIGN_KEY_COLUMNS AS FC ON F.OBJECT_ID = FC.CONSTRAINT_OBJECT_ID \n");
-        if(null != table) {
-            builder.append(" AND OBJECT_NAME(F.PARENT_OBJECT_ID) = '").append(table.getName()).append("'\n");
-        }
+        configs.and("OBJECT_NAME(F.PARENT_OBJECT_ID)", query.getTableName());
         return runs;
     }
 

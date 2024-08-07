@@ -1897,10 +1897,6 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         runs.add(run);
         StringBuilder builder = run.getBuilder();
         builder.append("SELECT * FROM information_schema.TABLES");
-        // 8.0版本中 这个表中 TABLE_CATALOG = def  TABLE_SCHEMA = 数据库名
-        /*if(BasicUtil.isNotEmpty(catalog)) {
-            builder.append(" AND TABLE_SCHEMA = '").append(catalog.getName()).append("'");
-        }*/
         configs.and("TABLE_SCHEMA", query.getSchemaName());
         configs.like("TABLE_NAME", objectName(runtime, query.getName()));
         List<String> tps = names(Table.types(types));
@@ -2175,10 +2171,6 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         runs.add(run);
         StringBuilder builder = run.getBuilder();
         builder.append("SELECT * FROM information_schema.VIEWS");
-        // 8.0版本中 这个视图中 TABLE_CATALOG = def  TABLE_SCHEMA = 数据库名
-        /*if(BasicUtil.isNotEmpty(catalog)) {
-            builder.append(" AND TABLE_SCHEMA = '").append(catalog).append("'");
-        }*/
         configs.and("TABLE_SCHEMA", query.getSchemaName());
         configs.like("TABLE_NAME", query.getName());
         return runs;
@@ -2627,9 +2619,6 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         runs.add(run);
         StringBuilder builder = run.getBuilder();
         builder.append("SELECT * FROM INFORMATION_SCHEMA.COLUMNS");
-        /*if(BasicUtil.isNotEmpty(catalog)) {
-            builder.append(" AND TABLE_CATALOG = '").append(catalog).append("'");
-        }*/
         if(!empty(schema)) {
             configs.and("TABLE_SCHEMA", schema.getName());
         }
@@ -2879,20 +2868,14 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public List<Run> buildQueryForeignsRun(DataRuntime runtime, boolean greedy,  ForeignKey query) throws Exception {
-        Table table = query.getTable();
         List<Run> runs = new ArrayList<>();
         Run run = new SimpleRun(runtime);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
+        ConfigStore configs = run.getConfigs();
         builder.append("SELECT * FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE where REFERENCED_TABLE_NAME IS NOT NULL\n");
-        if(null != table) {
-            checkName(runtime, null, table);
-            String name = table.getName();
-            if(BasicUtil.isNotEmpty(name)) {
-                builder.append(" AND TABLE_NAME = '").append(name).append("'\n");
-            }
-        }
-        builder.append("ORDER BY ORDINAL_POSITION");
+        configs.and("TABLE_NAME", query.getTableName());
+        configs.order("ORDINAL_POSITION");
         return runs;
     }
     /**
@@ -3009,27 +2992,16 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public List<Run> buildQueryIndexesRun(DataRuntime runtime, boolean greedy, Index query) {
-        Table table = query.getTable();
-        String name = query.getName();
         List<Run> runs = new ArrayList<>();
         Run run = new SimpleRun(runtime);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
+        ConfigStore configs = run.getConfigs();
         builder.append("SELECT * FROM INFORMATION_SCHEMA.STATISTICS\n");
-        builder.append("WHERE 1=1\n");
-        if(null != table) {
-            checkName(runtime, null, table);
-            if (null != table.getSchema()) {
-                builder.append("AND TABLE_SCHEMA='").append(table.getSchemaName()).append("'\n");
-            }
-            if (null != table.getName()) {
-                builder.append("AND TABLE_NAME='").append(objectName(runtime, table.getName())).append("'\n");
-            }
-        }
-        if(BasicUtil.isNotEmpty(name)) {
-            builder.append("AND INDEX_NAME='").append(name).append("'\n");
-        }
-        builder.append("ORDER BY SEQ_IN_INDEX");
+        configs.and("TABLE_SCHEMA", query.getSchemaName());
+        configs.and("TABLE_SCHEMA", query.getTableName());
+        configs.like("INDEX_NAME", query.getName());
+        configs.order("SEQ_IN_INDEX");
         return runs;
     }
 
@@ -3039,21 +3011,14 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         Run run = new SimpleRun(runtime);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
+        ConfigStore configs = run.getConfigs();
         builder.append("SELECT * FROM INFORMATION_SCHEMA.STATISTICS\n");
-        builder.append("WHERE 1=1\n");
-        Table table = null;
         if(null != tables && !tables.isEmpty()){
-            table = tables.iterator().next();
+            Table table = tables.iterator().next();
+            configs.and("TABLE_SCHEMA", table.getSchemaName());
         }
-        if(null != table) {
-            checkName(runtime, null, table);
-            if (null != table.getSchema()) {
-                builder.append("AND TABLE_SCHEMA='").append(table.getSchemaName()).append("'\n");
-            }
-        }
-        List<String> names = Table.names(tables);
-        in(runtime, builder, "TABLE_NAME", names);
-        builder.append("ORDER BY TABLE_NAME, SEQ_IN_INDEX");
+        configs.in("TABLE_NAME", Table.names(tables));
+        configs.order("TABLE_NAME").order("SEQ_IN_INDEX");
         return runs;
     }
     /**
@@ -3434,20 +3399,14 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public List<Run> buildQueryProceduresRun(DataRuntime runtime, boolean greedy, Procedure query) {
-        Catalog catalog = query.getCatalog();
-        Schema schema = query.getSchema();
-        String pattern = query.getName();
         List<Run> runs = new ArrayList<>();
         Run run = new SimpleRun(runtime);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
+        ConfigStore configs = run.getConfigs();
         builder.append("SELECT * FROM information_schema.ROUTINES WHERE ROUTINE_TYPE = 'PROCEDURE'");
-        if(!empty(schema)) {
-            builder.append(" AND ROUTINE_SCHEMA = '").append(schema.getName()).append("'");
-        }
-        if(BasicUtil.isNotEmpty(pattern)) {
-            builder.append(" AND ROUTINE_NAME LIKE '").append(pattern).append("'");
-        }
+        configs.and("ROUTINE_SCHEMA", query.getSchemaName());
+        configs.like("ROUTINE_NAME", query.getName());
         return runs;
     }
     /**
@@ -3610,19 +3569,14 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public List<Run> buildQueryFunctionsRun(DataRuntime runtime, boolean greedy, Function query) {
-        Schema schema = query.getSchema();
-        String name = query.getName();
         List<Run> runs = new ArrayList<>();
         Run run = new SimpleRun(runtime);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
+        ConfigStore configs = run.getConfigs();
         builder.append("SELECT * FROM information_schema.ROUTINES WHERE ROUTINE_TYPE = 'FUNCTION'");
-        if(!empty(schema)) {
-            builder.append(" AND ROUTINE_SCHEMA = '").append(schema.getName()).append("'");
-        }
-        if(BasicUtil.isNotEmpty(name)) {
-            builder.append(" AND ROUTINE_NAME = '").append(name).append("'");
-        }
+        configs.and("ROUTINE_SCHEMA", query.getSchemaName());
+        configs.like("ROUTINE_NAME", query.getName());
         return runs;
     }
 
