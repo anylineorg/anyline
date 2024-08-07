@@ -191,7 +191,7 @@ public interface AnylineService<E>{
 	 */
 	long insert(Table dest, Table origin, ConfigStore configs, Object obj, String ... conditions);
 	default long insert(Table dest, Table origin, Object obj, String ... conditions) {
-		return insert(dest, origin, (ConfigStore) null, obj, conditions);
+		return insert(dest, origin, new DefaultConfigStore(), obj, conditions);
 	}
 	default long insert(Table dest, Table origin, long first, long last, Object obj, String ... conditions) {
 		return insert(dest, origin, new DefaultConfigStore(first, last), obj, conditions);
@@ -200,7 +200,7 @@ public interface AnylineService<E>{
 		return insert(dest, origin, configs, null, conditions);
 	}
 	default long insert(Table dest, Table origin, String ... conditions) {
-		return insert(dest, origin, (ConfigStore) null, null, conditions);
+		return insert(dest, origin, new DefaultConfigStore(), null, conditions);
 	}
 	default long insert(Table dest, Table origin, PageNavi navi, String ... conditions) {
 		return insert(dest, origin, new DefaultConfigStore().setPageNavi(navi), null, conditions);
@@ -213,7 +213,7 @@ public interface AnylineService<E>{
 		return insert(new Table(dest), new Table(origin), configs, obj, conditions);
 	}
 	default long insert(String dest, String origin, Object obj, String ... conditions) {
-		return insert(dest, origin, (ConfigStore) null, obj, conditions);
+		return insert(dest, origin, new DefaultConfigStore(), obj, conditions);
 	}
 	default long insert(String dest, String origin, long first, long last, Object obj, String ... conditions) {
 		return insert(dest, origin, new DefaultConfigStore(first, last), obj, conditions);
@@ -222,7 +222,7 @@ public interface AnylineService<E>{
 		return insert(dest, origin, configs, null, conditions);
 	}
 	default long insert(String dest, String origin, String ... conditions) {
-		return insert(dest, origin, (ConfigStore) null, null, conditions);
+		return insert(dest, origin, new DefaultConfigStore(), null, conditions);
 	}
 	default long insert(String dest, String origin, PageNavi navi, String ... conditions) {
 		return insert(dest, origin, new DefaultConfigStore().setPageNavi(navi), null, conditions);
@@ -250,7 +250,7 @@ public interface AnylineService<E>{
 		return insert(dest, prepare, configs, obj, conditions);
 	}
 	default long insert(Table dest, RunPrepare prepare, Object obj, String ... conditions) {
-		return insert(dest, prepare, (ConfigStore) null, obj, conditions);
+		return insert(dest, prepare, new DefaultConfigStore(), obj, conditions);
 	}
 	default long insert(Table dest, RunPrepare prepare, long first, long last, Object obj, String ... conditions) {
 		ConfigStore configs = new DefaultConfigStore(first, last);
@@ -261,7 +261,7 @@ public interface AnylineService<E>{
 		return insert(dest, prepare, configs, null, conditions);
 	}
 	default long insert(Table dest, RunPrepare prepare, String ... conditions) {
-		return insert(dest, prepare, (ConfigStore) null, null, conditions);
+		return insert(dest, prepare, new DefaultConfigStore(), null, conditions);
 	}
 	default long insert(Table dest, RunPrepare prepare, long first, long last, String ... conditions) {
 		return insert(dest, prepare, first, last, null, conditions);
@@ -275,7 +275,7 @@ public interface AnylineService<E>{
 		return insert(new Table(dest), prepare, first, last, configs, obj, conditions);
 	}
 	default long insert(String dest, RunPrepare prepare, Object obj, String ... conditions) {
-		return insert(dest, prepare, (ConfigStore) null, obj, conditions);
+		return insert(dest, prepare, new DefaultConfigStore(), obj, conditions);
 	}
 	default long insert(String dest, RunPrepare prepare, long first, long last, Object obj, String ... conditions) {
 		ConfigStore configs = new DefaultConfigStore(first, last);
@@ -286,7 +286,7 @@ public interface AnylineService<E>{
 		return insert(dest, prepare, configs, null, conditions);
 	}
 	default long insert(String dest, RunPrepare prepare, String ... conditions) {
-		return insert(dest, prepare, (ConfigStore) null, null, conditions);
+		return insert(dest, prepare, new DefaultConfigStore(), null, conditions);
 	}
 	default long insert(String dest, RunPrepare prepare, long first, long last, String ... conditions) {
 		return insert(dest, prepare, first, last, null, conditions);
@@ -509,7 +509,7 @@ public interface AnylineService<E>{
 		return querys(dest, configs, obj, conditions);
 	}
 	default DataSet querys(String dest, Object obj, String ... conditions) {
-		return querys(dest, (ConfigStore) null, obj, conditions);
+		return querys(dest, new DefaultConfigStore(), obj, conditions);
 	}
 	default void querys(String dest, DataHandler handler, Object obj, String ... conditions) {
 		ConfigStore configs = new DefaultConfigStore();
@@ -582,7 +582,7 @@ public interface AnylineService<E>{
 		return querys(dest, configs, obj, conditions);
 	}
 	default DataSet querys(Table dest, Object obj, String ... conditions) {
-		return querys(dest, (ConfigStore) null, obj, conditions);
+		return querys(dest, new DefaultConfigStore(), obj, conditions);
 	}
 	default void querys(Table dest, DataHandler handler, Object obj, String ... conditions) {
 		ConfigStore configs = new DefaultConfigStore();
@@ -658,7 +658,7 @@ public interface AnylineService<E>{
 		return query(dest, configs, null, conditions);
 	}
 	default DataRow query(String dest, String ... conditions) {
-		return query(dest, (ConfigStore) null, conditions);
+		return query(dest, new DefaultConfigStore(), conditions);
 	}
 	default DataRow query(RunPrepare prepare, ConfigStore configs, String ... conditions) {
 		return query(prepare, configs, null, conditions);
@@ -677,7 +677,7 @@ public interface AnylineService<E>{
 		return query(dest, configs, null, conditions);
 	}
 	default DataRow query(Table dest, String ... conditions) {
-		return query(dest, (ConfigStore) null, conditions);
+		return query(dest, new DefaultConfigStore(), conditions);
 	}
 
 	/**
@@ -725,7 +725,7 @@ public interface AnylineService<E>{
 		return selects(dest, clazz, configs, entity, conditions);
 	}
 	default <T> EntitySet<T> selects(String dest, Class<T> clazz, T entity, String ... conditions) {
-		return selects(dest, clazz, (ConfigStore) null, entity, conditions);
+		return selects(dest, clazz, new DefaultConfigStore(), entity, conditions);
 	}
 	default <T> EntitySet<T> selects(String dest, Class<T> clazz, EntityHandler<T> handler, T entity, String ... conditions) {
 		ConfigStore configs = new DefaultConfigStore();
@@ -762,7 +762,7 @@ public interface AnylineService<E>{
 		return selects(dest, clazz, configs, entity, conditions);
 	}
 	default <T> EntitySet<T> selects(Table dest, Class<T> clazz, T entity, String ... conditions) {
-		return selects(dest, clazz, (ConfigStore) null, entity, conditions);
+		return selects(dest, clazz, new DefaultConfigStore(), entity, conditions);
 	}
 	default <T> EntitySet<T> selects(Table dest, Class<T> clazz, EntityHandler<T> handler, T entity, String ... conditions) {
 		ConfigStore configs = new DefaultConfigStore();
@@ -794,7 +794,7 @@ public interface AnylineService<E>{
 
 	<T> T select(String dest, Class<T> clazz, ConfigStore configs, T entity, String ... conditions);
 	default <T> T select(String dest, Class<T> clazz, T entity, String ... conditions) {
-		return select(dest, clazz, (ConfigStore) null, entity, conditions);
+		return select(dest, clazz, new DefaultConfigStore(), entity, conditions);
 	}
 	default <T> T select(String dest, Class<T> clazz, ConfigStore configs, String ... conditions) {
 		return select(dest, clazz, configs, (T) null, conditions);
@@ -804,7 +804,7 @@ public interface AnylineService<E>{
 	}
 	<T> T select(Table dest, Class<T> clazz, ConfigStore configs, T entity, String ... conditions);
 	default <T> T select(Table dest, Class<T> clazz, T entity, String ... conditions) {
-		return select(dest, clazz, (ConfigStore) null, entity, conditions);
+		return select(dest, clazz, new DefaultConfigStore(), entity, conditions);
 	}
 	default <T> T select(Table dest, Class<T> clazz, ConfigStore configs, String ... conditions) {
 		return select(dest, clazz, configs, (T) null, conditions);
@@ -829,7 +829,7 @@ public interface AnylineService<E>{
 		return selects(clazz, configs, entity, conditions);
 	}
 	default <T> EntitySet<T> selects(Class<T> clazz, T entity, String ... conditions) {
-		return selects(clazz, (ConfigStore) null, entity, conditions);
+		return selects(clazz, new DefaultConfigStore(), entity, conditions);
 	}
 	default <T> EntitySet<T> selects(Class<T> clazz, EntityHandler<T> handler, T entity, String ... conditions) {
 		ConfigStore configs = new DefaultConfigStore();
@@ -842,7 +842,7 @@ public interface AnylineService<E>{
 	}
 	<T> T select(Class<T> clazz, ConfigStore configs, T entity, String ... conditions);
 	default <T> T select(Class<T> clazz, T entity, String ... conditions) {
-		return select(clazz, (ConfigStore) null, entity, conditions);
+		return select(clazz, new DefaultConfigStore(), entity, conditions);
 	}
 	default <T> EntitySet<T> selects(Class<T> clazz, ConfigStore configs, String ... conditions) {
 		return selects(clazz, configs, (T) null, conditions);
@@ -876,7 +876,7 @@ public interface AnylineService<E>{
 
 	// 与DataSet querys(String dest, String ... conditions);  签名冲突
 	default EntitySet<E> gets(String ... conditions) {
-		return gets((ConfigStore) null, conditions);
+		return gets(new DefaultConfigStore(), conditions);
 	}
 	default EntitySet<E> gets(EntityHandler<E> handler, String ... conditions) {
 		ConfigStore configs = new DefaultConfigStore();
@@ -912,7 +912,7 @@ public interface AnylineService<E>{
 		maps(dest, configs, obj, conditions);
 	}
 	default List<Map<String, Object>> maps(String dest, Object obj, String ... conditions) {
-		return maps(dest, (ConfigStore) null, obj, conditions);
+		return maps(dest, new DefaultConfigStore(), obj, conditions);
 	}
 	default List<Map<String, Object>> maps(String dest, long first, long last, Object obj, String ... conditions) {
 		return maps(dest, new DefaultConfigStore(first, last), obj, conditions);
@@ -921,7 +921,7 @@ public interface AnylineService<E>{
 		return maps(dest, configs, null, conditions);
 	}
 	default List<Map<String, Object>> maps(String dest, String ... conditions) {
-		return maps(dest, (ConfigStore) null, null, conditions);
+		return maps(dest, new DefaultConfigStore(), null, conditions);
 	}
 	default void maps(String dest, DataHandler handler, String ... conditions) {
 		ConfigStore configs = new DefaultConfigStore();
@@ -947,7 +947,7 @@ public interface AnylineService<E>{
 		maps(dest, configs, obj, conditions);
 	}
 	default List<Map<String, Object>> maps(Table dest, Object obj, String ... conditions) {
-		return maps(dest, (ConfigStore) null, obj, conditions);
+		return maps(dest, new DefaultConfigStore(), obj, conditions);
 	}
 	default List<Map<String, Object>> maps(Table dest, long first, long last, Object obj, String ... conditions) {
 		return maps(dest, new DefaultConfigStore(first, last), obj, conditions);
@@ -956,7 +956,7 @@ public interface AnylineService<E>{
 		return maps(dest, configs, null, conditions);
 	}
 	default List<Map<String, Object>> maps(Table dest, String ... conditions) {
-		return maps(dest, (ConfigStore) null, null, conditions);
+		return maps(dest, new DefaultConfigStore(), null, conditions);
 	}
 	default void maps(Table dest, DataHandler handler, String ... conditions) {
 		ConfigStore configs = new DefaultConfigStore();
@@ -994,7 +994,7 @@ public interface AnylineService<E>{
 		return maps(prepare, configs, obj, conditions);
 	}
 	default List<Map<String, Object>> maps(RunPrepare prepare, Object obj, String ... conditions) {
-		return maps(prepare, (ConfigStore) null, obj, conditions);
+		return maps(prepare, new DefaultConfigStore(), obj, conditions);
 	}
 	default void maps(RunPrepare prepare, StreamHandler handler, Object obj, String ... conditions) {
 		ConfigStore configs = new DefaultConfigStore();
@@ -1010,7 +1010,7 @@ public interface AnylineService<E>{
 		return maps(prepare, configs, null, conditions);
 	}
 	default List<Map<String, Object>> maps(RunPrepare prepare, String ... conditions) {
-		return maps(prepare, (ConfigStore) null, null, conditions);
+		return maps(prepare, new DefaultConfigStore(), null, conditions);
 	}
 	default void maps(RunPrepare prepare, StreamHandler handler, String ... conditions) {
 		ConfigStore configs = new DefaultConfigStore();
@@ -1157,7 +1157,7 @@ public interface AnylineService<E>{
 		return querys(prepare, configs, obj, conditions);
 	}
 	default DataSet querys(RunPrepare prepare, Object obj, String ... conditions) {
-		return querys(prepare, (ConfigStore) null, obj, conditions);
+		return querys(prepare, new DefaultConfigStore(), obj, conditions);
 	}
 	default void querys(RunPrepare prepare, StreamHandler handler, Object obj, String ... conditions) {
 		ConfigStore configs = new DefaultConfigStore();
@@ -1173,7 +1173,7 @@ public interface AnylineService<E>{
 		return querys(prepare, configs, null, conditions);
 	}
 	default DataSet querys(RunPrepare prepare, String ... conditions) {
-		return querys(prepare, (ConfigStore) null, null, conditions);
+		return querys(prepare, new DefaultConfigStore(), null, conditions);
 	}
 	default void querys(RunPrepare prepare, StreamHandler handler, String ... conditions) {
 		ConfigStore configs = new DefaultConfigStore();
@@ -3410,25 +3410,25 @@ public interface AnylineService<E>{
 		 */
 		<T extends Column> List<T> columns(boolean greedy, Catalog catalog, Schema schema, ConfigStore configs);
 		default <T extends Column> List<T> columns(boolean greedy, Catalog catalog, Schema schema){
-			return columns(greedy, catalog, schema, (ConfigStore) null);
+			return columns(greedy, catalog, schema, new DefaultConfigStore());
 		}
 		default <T extends Column> List<T> columns(Catalog catalog, Schema schema, ConfigStore configs) {
 			return columns(false, catalog, schema, configs);
 		}
 		default <T extends Column> List<T> columns(Catalog catalog, Schema schema) {
-			return columns(false, catalog, schema, (ConfigStore) null);
+			return columns(false, catalog, schema, new DefaultConfigStore());
 		}
 		default <T extends Column> List<T> columns(boolean greedy, ConfigStore configs) {
 			return columns(greedy, (Catalog) null, (Schema) null, configs);
 		}
 		default <T extends Column> List<T> columns(boolean greedy) {
-			return columns(greedy, (Catalog) null, (Schema) null, (ConfigStore) null);
+			return columns(greedy, (Catalog) null, (Schema) null, new DefaultConfigStore());
 		}
 		default <T extends Column> List<T> columns(ConfigStore configs) {
 			return columns(false, (Catalog) null, (Schema)null, configs);
 		}
 		default <T extends Column> List<T> columns() {
-			return columns(false, (Catalog) null, (Schema)null, (ConfigStore) null);
+			return columns(false, (Catalog) null, (Schema)null, new DefaultConfigStore());
 		}
 
 		/**

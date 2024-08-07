@@ -370,7 +370,7 @@ public interface AnylineDao<E>{
 		return insert(new Table(dest), prepare, configs);
 	}
 	default long insert(String dest, RunPrepare prepare) {
-		return insert(new Table(dest), prepare, (ConfigStore) null);
+		return insert(new Table(dest), prepare, new DefaultConfigStore());
 	}
 	/**
 	 * 保存(insert|update)
@@ -1653,7 +1653,7 @@ public interface AnylineDao<E>{
 		return columns(false, catalog, schema, configs);
 	}
 	default <T extends Column> List<T> columns(Catalog catalog, Schema schema) {
-		return columns(false, catalog, schema, (ConfigStore) null);
+		return columns(false, catalog, schema, new DefaultConfigStore());
 	}
 	default <T extends Column> List<T> columns(boolean greedy, ConfigStore configs) {
 		return columns(greedy, (Catalog) null, (Schema) null, configs);
