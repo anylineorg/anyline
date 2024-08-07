@@ -1441,7 +1441,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
                 if (Modifier.isStatic(field.getModifiers())) {
                     continue;
                 }
-                Object value = get(field.getName());
+                Object value = get(field.getName(), true);
                 /*属性赋值*/
                 BeanUtil.setFieldValue(entity, field, value);
             }//end 自身属性
@@ -1457,7 +1457,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
                             column = tmps[1];
                         }
                     }
-                    Object value = get(column);
+                    Object value = get(column, true);
                     BeanUtil.setFieldValue(entity, field, value);
                 }
             }
@@ -3658,6 +3658,21 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 
         }
         return result;
+    }
+    private Map<String, String> ignores = new Hashtable<>();
+    public Object get(String key, boolean ignoreCase){
+        if(null == key){
+            return null;
+        }
+        if(ignoreCase) {
+            if (ignores.isEmpty()) {
+                for (String k : keySet()) {
+                    ignores.put(k.toUpperCase().replace("_", "").replace("-", ""), k);
+                }
+            }
+            key = ignores.get(key.toUpperCase().replace("_", "").replace("-", ""));
+        }
+        return super.get(key);
     }
 
     public Object get(KEY_CASE keyCase, String key) {
