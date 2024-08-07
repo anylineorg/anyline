@@ -6079,8 +6079,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 查出所有key并以大写缓存 用来实现忽略大小写
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param catalog 对于MySQL, 则对应相应的数据库, 对于Oracle来说, 则是对应相应的数据库实例, 可以不填, 也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
-	 * @param schema 可以理解为数据库的登录名, 而对于Oracle也可以理解成对该数据库操作的所有者的登录名。对于Oracle要特别注意, 其登陆名必须是大写, 不然的话是无法获取到相应的数据, 而MySQL则不做强制要求。
+     * @param query 查询条件 根据metadata属性
 	 */
 	protected void vertexMap(DataRuntime runtime, String random, boolean greedy, VertexTable query,  ConfigStore configs) {
 		//Map<String, String> names = CacheProxy.names(this, catalog, schema);
@@ -6638,8 +6637,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 查出所有key并以大写缓存 用来实现忽略大小写
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param catalog 对于MySQL, 则对应相应的数据库, 对于Oracle来说, 则是对应相应的数据库实例, 可以不填, 也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
-	 * @param schema 可以理解为数据库的登录名, 而对于Oracle也可以理解成对该数据库操作的所有者的登录名。对于Oracle要特别注意, 其登陆名必须是大写, 不然的话是无法获取到相应的数据, 而MySQL则不做强制要求。
+     * @param query 查询条件 根据metadata属性
 	 */
 	protected void edgeMap(DataRuntime runtime, String random, boolean greedy, EdgeTable query, ConfigStore configs) {
 		//Map<String, String> names = CacheProxy.names(this, catalog, schema);
@@ -7194,8 +7192,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 查出所有key并以大写缓存 用来实现忽略大小写
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param catalog 对于MySQL, 则对应相应的数据库, 对于Oracle来说, 则是对应相应的数据库实例, 可以不填, 也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
-	 * @param schema 可以理解为数据库的登录名, 而对于Oracle也可以理解成对该数据库操作的所有者的登录名。对于Oracle要特别注意, 其登陆名必须是大写, 不然的话是无法获取到相应的数据, 而MySQL则不做强制要求。
+     * @param query 查询条件 根据metadata属性
 	 */
 	protected void viewMap(DataRuntime runtime, String random, boolean greedy, View query, ConfigStore configs) {
 		//Map<String, String> names = CacheProxy.names(this, catalog, schema);
