@@ -138,7 +138,7 @@ public class ConvertProxy {
                     int len = Array.getLength(value);
                     List<Object> list = new ArrayList<>();
                     for (int i = 0; i < len; i++) {
-                        list.add(Array.get(array, i));
+                        list.add(Array.get(value, i));
                     }
                     if ("concat".equalsIgnoreCase(ConfigTable.LIST2STRING_FORMAT)) {
                         return BeanUtil.concat(list);
