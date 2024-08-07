@@ -2848,7 +2848,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
     @Override
     public MetadataFieldRefer initIndexFieldRefer() {
         MetadataFieldRefer refer = new MetadataFieldRefer(Index.class);
-        refer.setRefer(Index.FIELD_NAM, "INDEX_NAME");
+        refer.setRefer(Index.FIELD_NAME, "INDEX_NAME");
         refer.setRefer(Index.FIELD_SCHEMA, "SCHEMA_NAME");
         refer.setRefer(Index.FIELD_TABLE, "TABLE_NAME");
         refer.setRefer(Index.FIELD_COMMENT, "INDEX_COMMENT");

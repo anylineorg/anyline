@@ -10977,7 +10977,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         }
         MetadataFieldRefer refer = refer(runtime, Procedure.class);
         meta.setMetadata(row);
-        meta.setName(getString(roiw, refer, Procedure.FIELD_NAME));
+        meta.setName(getString(row, refer, Procedure.FIELD_NAME));
         return meta;
 	}
 	/**

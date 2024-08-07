@@ -1887,6 +1887,8 @@ public class Column extends TableAffiliation<Column> implements Serializable {
     public static final String FIELD_INCREMENT_SEED                = "INCREMENT_SEED";
     public static final String FIELD_INCREMENT_STEP                = "INCREMENT_STEP";
     public static final String FIELD_PRIMARY                       = "PRIMARY";
+    public static final String FIELD_PRIMARY_CHECK                 = "PRIMARY_CHECK";
+    public static final String FIELD_PRIMARY_CHECK_VALUE           = "PRIMARY_CHECK_VALUE";
     public static final String FIELD_PRIMARY_TYPE                  = "PRIMARY_TYPE";
     public static final String FIELD_UNIQUE                        = "UNIQUE";
     public static final String FIELD_GENERATED                     = "GENERATED";
@@ -1909,6 +1911,8 @@ public class Column extends TableAffiliation<Column> implements Serializable {
     public static final String FIELD_AFTER                         = "AFTER";
     public static final String FIELD_BEFORE                        = "BEFORE";
     public static final String FIELD_ON_UPDATE                     = "ON_UPDATE";
+    public static final String FIELD_ON_UPDATE_CHECK               = "ON_UPDATE_CHECK";
+    public static final String FIELD_ON_UPDATE_CHECK_VALUE         = "ON_UPDATE_CHECK_VALUE";
     public static final String FIELD_VALUE                         = "VALUE";
     public static final String FIELD_DEFAULT_CURRENT_DATE_TIME     = "DEFAULT_CURRENT_DATE_TIME";
     public static final String FIELD_DEFAULT_CURRENT_DATE_TIME_CHECK = "DEFAULT_CURRENT_DATE_TIME_CHECK";

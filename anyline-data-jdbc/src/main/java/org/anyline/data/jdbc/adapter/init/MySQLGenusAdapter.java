@@ -2597,7 +2597,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         refer.setRefer(Column.FIELD_AUTO_INCREMENT_CHECK_VALUE, "auto_increment");
 
         refer.setRefer(Column.FIELD_ON_UPDATE_CHECK, "EXTRA");
-        refer.setRefer(Column.FIELD_ON_UPDATE+"_VALUE", ".*on update.*");
+        refer.setRefer(Column.FIELD_ON_UPDATE_CHECK_VALUE, ".*on update.*");
 
         refer.setRefer(Column.FIELD_PRIMARY_CHECK,"COLUMN_KEY");
         refer.setRefer(Column.FIELD_PRIMARY_CHECK_VALUE,"PRI");
