@@ -1286,7 +1286,7 @@ public class KingbaseAdapter extends PostgresGenusAdapter implements JDBCAdapter
 	public MetadataFieldRefer initDatabaseFieldRefer() {
 		MetadataFieldRefer refer = new MetadataFieldRefer(Database.class);
 		refer.setRefer(Database.FIELD_NAME, "DATNAME");
-		return refer;;
+		return refer;
 	}
 
 	/**
@@ -2512,7 +2512,6 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryTagsRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param table 表
 	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
 	 * @return tags
