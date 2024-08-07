@@ -153,6 +153,12 @@ public class CacheProxy {
     public static  <T extends Table> void tables(String cache, List<T> tables){
         caches().put(cache, tables);
     }
+    public static  <T extends VertexTable> void vertexs(String cache, List<T> vertexs){
+        caches().put(cache, vertexs);
+    }
+    public static  <T extends EdgeTable> void edges(String cache, List<T> edges){
+        caches().put(cache, edges);
+    }
 
     public static  <T extends View> List<T> views(String cache){
         List<T> view = (List<T>)caches().get(cache);

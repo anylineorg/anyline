@@ -1980,7 +1980,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
             tps.add("TABLE");
             tps.add("VIEW");
         }
-        configs.in("M.OBJECT_TYP", tps);
+        configs.in("M.OBJECT_TYPE", tps);
         return runs;
     }
 
@@ -2015,9 +2015,9 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         runs.add(run);
         StringBuilder builder = run.getBuilder();
         ConfigStore configs = run.getConfigs();
-        builder.append("SELECT * FROM ALL_TAB_COMMENTS");
-        configs.and("OWNER", query.getSchemaName());
-        configs.like("TABLE_NAME", query.getName());
+        builder.append("SELECT * FROM ALL_TAB_COMMENTS M");
+        configs.and("M.OWNER", query.getSchemaName());
+        configs.like("M.TABLE_NAME", query.getName());
         return runs;
     }
 
@@ -2601,16 +2601,10 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
     @Override
     public List<Run> buildQueryColumnsRun(DataRuntime runtime,  boolean metadata, Column query, ConfigStore configs) throws Exception {
         List<Run> runs = new ArrayList<>();
-        String schema = query.getSchemaName();
-        String table = query.getTableName();
-
-        Run run = new SimpleRun(runtime, configs);
+        Run run = buildQueryColumnsBody(runtime, configs);
         runs.add(run);
-        StringBuilder builder = run.getBuilder();
-        builder.append("SELECT M.*, F.COMMENTS AS COLUMN_COMMENT FROM ALL_TAB_COLUMNS M \n");
-        builder.append("LEFT JOIN ALL_COL_COMMENTS F ON M.TABLE_NAME = F.TABLE_NAME AND M.COLUMN_NAME = F.COLUMN_NAME AND M.OWNER = F.OWNER\n");
-        configs.and("M.TABLE_NAME", table);
-        configs.and("M.OWNER", schema);
+        configs.and("M.TABLE_NAME", query.getTableName());
+        configs.and("M.OWNER", query.getSchemaName());
         run.setOrders("M.TABLE_NAME");
         if(null != configs){
             run.setPageNavi(configs.getPageNavi());
@@ -2631,17 +2625,27 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
     public List<Run> buildQueryColumnsRun(DataRuntime runtime, boolean metadata, Collection<? extends Table> tables, Column query, ConfigStore configs) throws Exception {
         String schema = query.getSchemaName();
         List<Run> runs = new ArrayList<>();
-        Run run = new SimpleRun(runtime, configs);
+        Run run = buildQueryColumnsBody(runtime, configs);
         runs.add(run);
-        StringBuilder builder = run.getBuilder();
-        builder.append("SELECT M.*, F.COMMENTS AS COLUMN_COMMENT FROM ALL_TAB_COLUMNS M \n");
-        builder.append("LEFT JOIN ALL_COL_COMMENTS F ON M.TABLE_NAME = F.TABLE_NAME AND M.COLUMN_NAME = F.COLUMN_NAME AND M.OWNER = F.OWNER\n");
         configs.and("M.OWNER", schema);
         configs.in("M.TABLE_NAME", Table.names(tables));
         run.setOrders("M.TABLE_NAME");
         return runs;
     }
 
+    protected Run buildQueryColumnsBody(DataRuntime runtime,  ConfigStore configs){
+        Run run = new SimpleRun(runtime, configs);
+        StringBuilder builder = run.getBuilder();
+        builder.append("SELECT M.*, F.COMMENTS AS COLUMN_COMMENT , FP.CONSTRAINT_TYPE\n" +
+            "FROM ALL_TAB_COLUMNS M \n" +
+            "LEFT JOIN ALL_COL_COMMENTS F ON M.TABLE_NAME = F.TABLE_NAME AND M.COLUMN_NAME = F.COLUMN_NAME AND M.OWNER = F.OWNER\n" +
+            //主键
+            "LEFT JOIN (\n" +
+            "\tSELECT P.*, PC.COLUMN_NAME FROM USER_CONSTRAINTS P, USER_CONS_COLUMNS PC \n" +
+            "\tWHERE P.CONSTRAINT_NAME = PC.CONSTRAINT_NAME  AND P.CONSTRAINT_TYPE = 'P'\n" +
+            ")   FP ON M.OWNER = FP.OWNER AND M.TABLE_NAME = FP.TABLE_NAME AND M.COLUMN_NAME = FP.COLUMN_NAME");
+        return run;
+    }
     /**
      * Column[结果集封装]<br/>
      * Column 属性与结果集对应关系
@@ -2661,6 +2665,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         refer.setRefer(Column.FIELD_POSITION, "COLUMN_ID");
         refer.setRefer(Column.FIELD_COMMENT, "COLUMN_COMMENT");//SQL组装
         refer.setRefer(Column.FIELD_DEFAULT_VALUE, "DATA_DEFAULT");
+        refer.setRefer(Column.FIELD_PRIMARY_CHECK, "IS_PRIMARY");
+        refer.setRefer(Column.FIELD_PRIMARY_CHECK_VALUE, "P");
         return refer;
     }
     /**

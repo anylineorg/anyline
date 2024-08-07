@@ -51,6 +51,10 @@ import java.util.Map;
 public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter {
     
     public static boolean IS_GET_SEQUENCE_VALUE_BEFORE_INSERT = false;
+    /**
+     * 是查询表时忽略的schema
+     */
+    public static String IGNORE_SCHEMAS = "CTXSYS,EXFSYS,WMSYS,MDSYS,SYSTEM,OLAPSYS,SYSMAN,SYS";
 
     public DatabaseType type() {
         return DatabaseType.ORACLE; 
@@ -1789,7 +1793,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
     public List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Table query, int types, ConfigStore configs) throws Exception {
         List<Run> runs = super.buildQueryTablesRun(runtime, greedy, query, types, configs);
         for(Run run:runs) {
-            run.getBuilder().append(" AND M.OWNER NOT IN('CTXSYS','EXFSYS','WMSYS','MDSYS','SYSTEM','OLAPSYS','SYSMAN','APEX_030200','SYS')");
+            run.getConfigs().notIn("M.OWNER", IGNORE_SCHEMAS.split(","));
         }
         return runs;
     }
@@ -1816,7 +1820,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
     public List<Run> buildQueryTablesCommentRun(DataRuntime runtime, Table query, int types) throws Exception {
         List<Run> runs = super.buildQueryTablesCommentRun(runtime, query, types);
         for(Run run:runs) {
-            run.getBuilder().append(" AND OWNER NOT IN('CTXSYS','EXFSYS','WMSYS','MDSYS','SYSTEM','OLAPSYS','SYSMAN','APEX_030200','SYS')");
+            run.getConfigs().notIn("M.OWNER", IGNORE_SCHEMAS.split(","));
         }
         return runs;
     }
@@ -2374,7 +2378,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         List<Run> runs = super.buildQueryColumnsRun(runtime, metadata, query, configs);
         if(!metadata) {
             for(Run run:runs) {
-                run.getBuilder().append(" AND M.OWNER NOT IN('CTXSYS','EXFSYS','WMSYS','MDSYS','SYSTEM','OLAPSYS','SYSMAN','APEX_030200','SYS')");
+                run.getConfigs().notIn("M.OWNER", IGNORE_SCHEMAS.split(","));
             }
         }
         return runs;

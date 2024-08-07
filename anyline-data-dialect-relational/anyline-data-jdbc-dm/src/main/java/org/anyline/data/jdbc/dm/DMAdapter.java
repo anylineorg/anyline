@@ -2279,17 +2279,21 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		Run run = new SimpleRun(runtime, configs);
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();
-		if(metadata) {
-			builder.append("SELECT * FROM ");
-			name(runtime, builder, query.getTable());
-			builder.append(" WHERE 1=0");
-		}else{
-			builder.append("SELECT M.*, F.COMMENTS AS COLUMN_COMMENT FROM ALL_TAB_COLUMNS M \n");
-			//不要从 ALL_COL_COMMENTS 中查
-			builder.append("LEFT JOIN USER_COL_COMMENTS F ON M.TABLE_NAME = F.TABLE_NAME AND M.COLUMN_NAME = F.COLUMN_NAME AND M.OWNER = F.OWNER");
-			configs.and("M.TABLE_NAME", query.getTableName());
-			configs.and("M.OWNER", query.getSchemaName());
-		}
+		builder.append("SELECT M.*, F.COMMENTS AS COLUMN_COMMENT, C.INFO1, C.INFO2,FP.CONSTRAINT_TYPE AS IS_PRIMARY\n" +
+			"FROM ALL_TAB_COLUMNS M \n" +
+			//自增
+			"LEFT JOIN USER_COL_COMMENTS F ON M.TABLE_NAME = F.TABLE_NAME AND M.COLUMN_NAME = F.COLUMN_NAME AND M.OWNER = F.OWNER\n" +
+			"LEFT JOIN user_objects O ON M.TABLE_NAME = O.OBJECT_NAME  AND O.OBJECT_TYPE = 'TABLE'\n" +  //管理员可用 dba_objects 需要AND M.OWNER = O.OWNER 条件
+			//主键
+			"LEFT JOIN syscolumns C ON C.ID = O.OBJECT_ID AND C.NAME = M.COLUMN_NAME\n" +
+			"LEFT JOIN (\n" +
+			"\tSELECT P.*, PC.COLUMN_NAME FROM USER_CONSTRAINTS P, USER_CONS_COLUMNS PC \n" +
+			"\tWHERE P.CONSTRAINT_NAME = PC.CONSTRAINT_NAME  AND P.CONSTRAINT_TYPE = 'P'\n" +
+			")   FP ON M.OWNER = FP.OWNER AND M.TABLE_NAME = FP.TABLE_NAME AND M.COLUMN_NAME = FP.COLUMN_NAME\n");
+		//不要从 ALL_COL_COMMENTS 中查
+		configs.and("M.TABLE_NAME", query.getTableName());
+		configs.and("M.OWNER", query.getSchemaName());
+
 		return runs;
 	}
 
@@ -2306,6 +2310,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	public List<Run> buildQueryColumnsRun(DataRuntime runtime, boolean metadata, Collection<? extends Table> tables, Column query, ConfigStore configs) throws Exception {
 		return super.buildQueryColumnsRun(runtime, metadata, tables, query, configs);
 	}
+
 	/**
 	 * Column[结果集封装]<br/>
 	 * Column 属性与结果集对应关系
@@ -2313,7 +2318,23 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 */
 	@Override
 	public MetadataFieldRefer initColumnFieldRefer() {
-		return super.initColumnFieldRefer();
+		MetadataFieldRefer refer = new MetadataFieldRefer(Column.class);
+		refer.setRefer(Column.FIELD_NAME, "COLUMN_NAME");
+		refer.setRefer(Column.FIELD_CATALOG, "");//忽略
+		refer.setRefer(Column.FIELD_SCHEMA, "OWNER");
+		refer.setRefer(Column.FIELD_TABLE, "TABLE_NAME");
+		refer.setRefer(Column.FIELD_NULLABLE, "NULLABLE");
+		refer.setRefer(Column.FIELD_CHARSET, "CHARACTER_SET_NAME");
+		refer.setRefer(Column.FIELD_COLLATE, "");//忽略
+		refer.setRefer(Column.FIELD_TYPE_NAME, "DATA_TYPE");
+		refer.setRefer(Column.FIELD_POSITION, "COLUMN_ID");
+		refer.setRefer(Column.FIELD_COMMENT, "COLUMN_COMMENT");//SQL组装
+		refer.setRefer(Column.FIELD_DEFAULT_VALUE, "DATA_DEFAULT");
+		refer.setRefer(Column.FIELD_AUTO_INCREMENT_CHECK, "INFO2");
+		refer.setRefer(Column.FIELD_AUTO_INCREMENT_CHECK_VALUE, "1");
+		refer.setRefer(Column.FIELD_PRIMARY_CHECK, "IS_PRIMARY");
+		refer.setRefer(Column.FIELD_PRIMARY_CHECK_VALUE, "P");
+		return refer;
 	}
 	/**
 	 * column[结果集封装]<br/>
