@@ -3795,6 +3795,24 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
 
     /**
      * sequence[结果集封装]<br/>
+     * Sequence 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer initSequenceFieldRefer() {
+        MetadataFieldRefer refer = new MetadataFieldRefer(Sequence.class);
+        refer.map(Sequence.FIELD_NAME, "SEQUENCE_NAME");
+        refer.map(Sequence.FIELD_SCHEMA, "SEQUENCE_OWNER");
+        refer.map(Sequence.FIELD_LAST, "LAST_NUMBER");
+        refer.map(Sequence.FIELD_MIN, "MIN_VALUE");
+        refer.map(Sequence.FIELD_MAX, "MAX_VALUE");
+        refer.map(Sequence.FIELD_INCREMENT, "INCREMENT_BY");
+        refer.map(Sequence.FIELD_CACHE, "CACHE_SIZE");
+        refer.map(Sequence.FIELD_CYCLE_CHECK, "CYCLE_FLAG");
+        return refer;
+    }
+    /**
+     * sequence[结果集封装]<br/>
      * 根据查询结果集构造 Trigger
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
@@ -3806,15 +3824,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public <T extends Sequence> List<T> sequences(DataRuntime runtime, int index, boolean create, List<T> previous, Sequence query, DataSet set) throws Exception {
-        if(null == previous) {
-            previous = new ArrayList<>();
-        }
-        for(DataRow row:set) {
-            String name = row.getString("SEQUENCE_NAME");
-            Sequence sequence = new Sequence(name);
-            previous.add((T)init(sequence, row));
-        }
-        return previous;
+        return super.sequences(runtime, index, create, previous, query, set);
     }
     /**
      * sequence[结果集封装]<br/>
@@ -3829,29 +3839,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public <T extends Sequence> LinkedHashMap<String, T> sequences(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Sequence query, DataSet set) throws Exception {
-        if(null == previous) {
-            previous = new LinkedHashMap<>();
-        }
-        for(DataRow row:set) {
-            String name = row.getString("SEQUENCE_NAME");
-            Sequence sequence = previous.get(name.toUpperCase());
-            previous.put(name.toUpperCase(), (T)init(sequence, row));
-        }
-        return previous;
-    }
-    protected Sequence init(Sequence sequence, DataRow row) {
-        if(null == sequence) {
-            sequence = new Sequence();
-        }
-        sequence.setName(row.getString("SEQUENCE_NAME"));
-        sequence.setSchema(new Schema(row.getString("SEQUENCE_OWNER")));
-        sequence.setLast(row.getLong("LAST_NUMBER", (Long)null));
-        sequence.setMin(row.getLong("MIN_VALUE", (Long)null));
-        sequence.setMax(row.getLong("MAX_VALUE", (Long)null));
-        sequence.setIncrement(row.getInt("INCREMENT_BY", 1));
-        sequence.setCache(row.getInt("CACHE_SIZE", null));
-        sequence.setCycle(row.getBoolean("CYCLE_FLAG", null));
-        return sequence;
+        return super.sequences(runtime, index, create, previous, query, set);
     }
     /**
      * sequence[结果集封装]<br/>

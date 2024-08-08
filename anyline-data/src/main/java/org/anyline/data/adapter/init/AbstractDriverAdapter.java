@@ -11688,6 +11688,14 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         MetadataFieldRefer refer = refer(runtime, Database.class);
         meta.setMetadata(row);
         meta.setName(getString(row, refer, Sequence.FIELD_NAME));
+        meta.setCatalog(getString(row, refer, Sequence.FIELD_CATALOG));
+        meta.setSchema(getString(row, refer, Sequence.FIELD_SCHEMA));
+        meta.setLast(getLong(row, refer, Sequence.FIELD_LAST, null));
+        meta.setMin(getLong(row, refer, Sequence.FIELD_MIN, null));
+        meta.setMax(getLong(row, refer, Sequence.FIELD_MAX, null));
+        meta.setIncrement(getInt(row, refer, Sequence.FIELD_INCREMENT, 1));
+        meta.setCache(getInt(row, refer, Sequence.FIELD_CACHE, null));
+        meta.setCycle(getBoolean(row, refer, Sequence.FIELD_CYCLE_CHECK, null));
         return meta;
 	}
 	/**
