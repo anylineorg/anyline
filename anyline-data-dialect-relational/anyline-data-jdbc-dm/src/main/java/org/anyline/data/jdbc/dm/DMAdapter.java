@@ -2326,7 +2326,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		refer.map(Column.FIELD_NULLABLE, "NULLABLE");
 		refer.map(Column.FIELD_CHARSET, "CHARACTER_SET_NAME");
 		refer.map(Column.FIELD_COLLATE, "");//忽略
-		refer.map(Column.FIELD_TYPE_NAME, "DATA_TYPE");
+		refer.map(Column.FIELD_TYPE, "DATA_TYPE");
 		refer.map(Column.FIELD_POSITION, "COLUMN_ID");
 		refer.map(Column.FIELD_COMMENT, "COLUMN_COMMENT");//SQL组装
 		refer.map(Column.FIELD_DEFAULT_VALUE, "DATA_DEFAULT");

@@ -1692,14 +1692,13 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
     }
 
 /* ********************************* field refer ********************************** */
-    public static final String FIELD_TYPES                         = "TYPES";
+   
     public static final String FIELD_KEYWORD                       = "KEYWORD";
     public static final String FIELD_PARTITION                     = "PARTITION";
     public static final String FIELD_TYPE                          = "TYPE";
     public static final String FIELD_SRID                          = "SRID";
     public static final String FIELD_TYPE_CAT                      = "TYPE_CAT";
     public static final String FIELD_TYPE_SCHEMA                   = "TYPE_SCHEMA";
-    public static final String FIELD_TYPE_NAME                     = "TYPE_NAME";
     public static final String FIELD_SELF_REFERENCING_COLUMN       = "SELF_REFERENCING_COLUMN";
     public static final String FIELD_REF_GENERATION                = "REF_GENERATION";
     public static final String FIELD_ENGINE                        = "ENGINE";

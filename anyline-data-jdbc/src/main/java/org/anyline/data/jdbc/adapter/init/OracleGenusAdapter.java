@@ -2661,7 +2661,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         refer.map(Column.FIELD_NULLABLE, "NULLABLE");
         refer.map(Column.FIELD_CHARSET, "");//忽略
         refer.map(Column.FIELD_COLLATE, "");//忽略
-        refer.map(Column.FIELD_TYPE_NAME, "DATA_TYPE");
+        refer.map(Column.FIELD_TYPE, "DATA_TYPE");
         refer.map(Column.FIELD_POSITION, "COLUMN_ID");
         refer.map(Column.FIELD_COMMENT, "COLUMN_COMMENT");//SQL组装
         refer.map(Column.FIELD_DEFAULT_VALUE, "DATA_DEFAULT");

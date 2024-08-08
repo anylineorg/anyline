@@ -2284,7 +2284,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		MetadataFieldRefer refer = new MetadataFieldRefer(Column.class);
 		refer.map(Column.FIELD_NAME, "NAME");
 		refer.map(Column.FIELD_NULLABLE, "NOTNULL");
-		refer.map(Column.FIELD_TYPE_NAME, "TYPE");
+		refer.map(Column.FIELD_TYPE, "TYPE");
 		refer.map(Column.FIELD_DEFAULT_VALUE, "DFLT_VALUE");
 		return refer;
 	}

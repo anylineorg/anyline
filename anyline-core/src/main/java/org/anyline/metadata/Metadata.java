@@ -719,7 +719,7 @@ public class Metadata<T extends Metadata> {
     }
 
 /* ********************************* field refer ********************************** */
-    public static final String FIELD_TYPES                         = "TYPES";
+   
     public static final String FIELD_DATABASE                      = "DATABASE";
     public static final String FIELD_DATASOURCE                    = "DATASOURCE";
     public static final String FIELD_CATALOG                       = "CATALOG";

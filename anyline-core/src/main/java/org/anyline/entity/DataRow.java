@@ -4153,41 +4153,11 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
          * @return DataRow
          */
         public DataRow date(boolean greedy, String format, String def) {
-            List<String> checked = new ArrayList<>();
-            List<String> keys = keys();
-            for(String key:keys) {
-                Object value = get(key);
-                if(null != value) {
-                    String vc = value.getClass().getSimpleName();
-                    boolean exe = false;
-                    if(vc.toUpperCase().contains("DATE")) {
-                        exe = true;
-                    }
-                    if(!exe) {
-                        Column column = getMetadata(key);
-                        if(null != column) {
-                            if(column.getTypeName().toUpperCase().contains("DATE")) {
-                                exe = true;
-                            }
-                        }
-                    }
-                    if(exe) {
-                        checked.add(key);
-                        dateFormat(key, key, format, "");
-                    }
-                }
+            Date date = null;
+            if(BasicUtil.isNotEmpty(def)){
+                date = DateUtil.parse(def);
             }
-            if(greedy) {
-                for(String key:keys) {
-                    if(checked.contains(key)) {
-                        continue;
-                    }
-                    if(key.toUpperCase().contains("DATE")) {
-                        dateFormat(key, key, format, def);
-                    }
-                }
-            }
-            return DataRow.this;
+            return date(greedy, format, date);
         }
         /**
          * 格式化所有日期类型列(类型或列名中出现date关键字)
@@ -4226,7 +4196,6 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
                     if(checked.contains(key)) {
                         continue;
                     }
-                    Column column = metadatas.get(key);
                     if(key.toUpperCase().contains("DATE")) {
                         dateFormat(key, key, format, def);
                     }

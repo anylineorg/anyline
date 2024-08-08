@@ -166,7 +166,7 @@ public class Column extends TableAffiliation<Column> implements Serializable {
     protected String defaultConstraint            ; // 默认约束名
     protected String charset                      ; // 编码
     protected String collate                      ; // 排序编码
-    protected Aggregation aggregation; //聚合类型
+    protected Aggregation aggregation             ; //聚合类型
     protected int withTimeZone                = -1;
     protected int withLocalTimeZone           = -1;
     protected Column reference                    ; // 外键依赖列
@@ -209,6 +209,7 @@ public class Column extends TableAffiliation<Column> implements Serializable {
     protected String subObjects;
     protected String termVector;
     protected int parseLvl                      = 0;// 类型解析级别0:未解析 1:column解析 2:adapter解析
+    protected ColumnFamily family;                 ; // 列族
 
     public Column() {
     }
@@ -1745,6 +1746,14 @@ public class Column extends TableAffiliation<Column> implements Serializable {
         return this;
     }
 
+    public ColumnFamily getFamily() {
+        return family;
+    }
+
+    public Column setFamily(ColumnFamily family) {
+        this.family = family;
+        return this;
+    }
 
     public void ignoreLength(int ignoreLength) {
         this.ignoreLength = ignoreLength;
@@ -1856,7 +1865,6 @@ public class Column extends TableAffiliation<Column> implements Serializable {
     public static final String FIELD_TYPE_CATEGORY_CONFIG          = "TYPE_CATEGORY_CONFIG";
     public static final String FIELD_KEYWORD                       = "KEYWORD";
     public static final String FIELD_ORIGIN_NAME                   = "ORIGIN_NAME";
-    public static final String FIELD_TYPE_NAME                     = "TYPE_NAME";
     public static final String FIELD_ORIGIN_TYPE                   = "ORIGIN_TYPE";
     public static final String FIELD_TYPE_METADATA                 = "TYPE_METADATA";
     public static final String FIELD_FULL_TYPE                     = "FULL_TYPE";
@@ -1943,9 +1951,10 @@ public class Column extends TableAffiliation<Column> implements Serializable {
     public static final String FIELD_NORMS                         = "NORMS";
     public static final String FIELD_NULL_VALUE                    = "NULL_VALUE";
     public static final String FIELD_POSITION_INCREMENT_GAP        = "POSITION_INCREMENT_GAP";
-    public static final String FIELD_PROPERTIE                     = "PROPERTIE";
+    public static final String FIELD_PROPERTY                     = "PROPERTY";
     public static final String FIELD_SIMILARITY                    = "SIMILARITY";
     public static final String FIELD_SUB_OBJECTS                   = "SUB_OBJECTS";
     public static final String FIELD_TERM_VECTOR                   = "TERM_VECTOR";
     public static final String FIELD_PARSE_LVL                     = "PARSE_LVL";
+    public static final String FIELD_FIELD_FAMILY                  = "FAMILY ";
 }

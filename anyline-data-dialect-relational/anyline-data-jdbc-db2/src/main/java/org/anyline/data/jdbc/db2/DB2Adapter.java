@@ -2315,7 +2315,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		refer.map(Column.FIELD_SCHEMA, "TABSCEHMA");
 		refer.map(Column.FIELD_POSITION, "COLNO");
 		refer.map(Column.FIELD_TABLE, "TABNAME");
-		refer.map(Column.FIELD_TYPE_NAME, "TYPENAME");
+		refer.map(Column.FIELD_TYPE, "TYPENAME");
 		return refer;
 	}
 	/**

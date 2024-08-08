@@ -3576,7 +3576,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
             meta.setPosition(getInt(row, refer, Column.FIELD_POSITION, null));
         }
         meta.setComment(getString(row, refer, Column.FIELD_COMMENT, meta.getComment()));
-        String type = getString(row, refer, Column.FIELD_TYPE_NAME);
+        String type = getString(row, refer, Column.FIELD_TYPE);
         /*if(null != type) {
             type = type.replace("character varying","VARCHAR");
         }*/

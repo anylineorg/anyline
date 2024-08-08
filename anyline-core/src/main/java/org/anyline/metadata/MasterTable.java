@@ -88,7 +88,7 @@ public class MasterTable extends Table<MasterTable> implements Serializable {
     /**
      * 根据值定位分区表
      * @param value value
-     * @return table table
+     * @return Table
      */
     public Table getPartition(DataRow value) {
         if(getmap && null != update) {
@@ -100,7 +100,7 @@ public class MasterTable extends Table<MasterTable> implements Serializable {
     /**
      * 根据标签定位分区表
      * @param tags tags
-     * @return table table
+     * @return Table
      */
     public Table getPartition(Tag... tags) {
         if(getmap && null != update) {
@@ -118,7 +118,7 @@ public class MasterTable extends Table<MasterTable> implements Serializable {
     }
 
 /* ********************************* field refer ********************************** */
-    public static final String FIELD_TYPES                         = "TYPES";
+
     public static final String FIELD_KEYWORD                       = "KEYWORD";
     public static final String FIELD_PARTITION                     = "PARTITION";
 }

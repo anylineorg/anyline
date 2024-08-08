@@ -5062,6 +5062,17 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta, String type, int ignoreLength, int ignorePrecision, int ignoreScale) {
 		if(null != meta) {
 			TypeMetadata tm = meta.getTypeMetadata();
+            if(tm == StandardTypeMetadata.CHAR){
+                Integer length = meta.getPrecisionLength();
+                if (null != length && length > 255) {
+                    meta.setFullType(null);
+                    meta.setTypeMetadata(StandardTypeMetadata.VARCHAR);
+                    type = StandardTypeMetadata.VARCHAR.getName();
+                    ignoreLength = 0;
+                    ignorePrecision = 1;
+                    ignoreScale = 1;
+                }
+            }
 			if (tm == StandardTypeMetadata.VARCHAR) {
 				Integer length = meta.getPrecisionLength();
 				if (null != length && length > 65533) {
