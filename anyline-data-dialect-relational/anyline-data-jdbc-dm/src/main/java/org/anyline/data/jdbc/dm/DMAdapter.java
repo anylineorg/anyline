@@ -1248,8 +1248,8 @@ public class DMAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	@Override
 	public MetadataFieldRefer initDatabaseFieldRefer() {
 		MetadataFieldRefer refer = new MetadataFieldRefer(Database.class);
-		refer.setRefer(Database.FIELD_NAME, "DATABASE");
-		refer.setRefer(Database.FIELD_USER, "user_name");
+		refer.map(Database.FIELD_NAME, "DATABASE");
+		refer.map(Database.FIELD_USER, "user_name");
 		return refer;
 	}
 
@@ -1578,8 +1578,8 @@ public class DMAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	@Override
 	public MetadataFieldRefer initSchemaFieldRefer() {
 		MetadataFieldRefer refer = new MetadataFieldRefer(Schema.class);
-		refer.setRefer(Schema.FIELD_NAME, "schema_name");
-		refer.setRefer(Schema.FIELD_USER, "user_name");
+		refer.map(Schema.FIELD_NAME, "schema_name");
+		refer.map(Schema.FIELD_USER, "user_name");
 		return refer;
 	}
 	/**
@@ -2319,21 +2319,21 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	@Override
 	public MetadataFieldRefer initColumnFieldRefer() {
 		MetadataFieldRefer refer = new MetadataFieldRefer(Column.class);
-		refer.setRefer(Column.FIELD_NAME, "COLUMN_NAME");
-		refer.setRefer(Column.FIELD_CATALOG, "");//忽略
-		refer.setRefer(Column.FIELD_SCHEMA, "OWNER");
-		refer.setRefer(Column.FIELD_TABLE, "TABLE_NAME");
-		refer.setRefer(Column.FIELD_NULLABLE, "NULLABLE");
-		refer.setRefer(Column.FIELD_CHARSET, "CHARACTER_SET_NAME");
-		refer.setRefer(Column.FIELD_COLLATE, "");//忽略
-		refer.setRefer(Column.FIELD_TYPE_NAME, "DATA_TYPE");
-		refer.setRefer(Column.FIELD_POSITION, "COLUMN_ID");
-		refer.setRefer(Column.FIELD_COMMENT, "COLUMN_COMMENT");//SQL组装
-		refer.setRefer(Column.FIELD_DEFAULT_VALUE, "DATA_DEFAULT");
-		refer.setRefer(Column.FIELD_AUTO_INCREMENT_CHECK, "INFO2");
-		refer.setRefer(Column.FIELD_AUTO_INCREMENT_CHECK_VALUE, "1");
-		refer.setRefer(Column.FIELD_PRIMARY_CHECK, "IS_PRIMARY");
-		refer.setRefer(Column.FIELD_PRIMARY_CHECK_VALUE, "P");
+		refer.map(Column.FIELD_NAME, "COLUMN_NAME");
+		refer.map(Column.FIELD_CATALOG, "");//忽略
+		refer.map(Column.FIELD_SCHEMA, "OWNER");
+		refer.map(Column.FIELD_TABLE, "TABLE_NAME");
+		refer.map(Column.FIELD_NULLABLE, "NULLABLE");
+		refer.map(Column.FIELD_CHARSET, "CHARACTER_SET_NAME");
+		refer.map(Column.FIELD_COLLATE, "");//忽略
+		refer.map(Column.FIELD_TYPE_NAME, "DATA_TYPE");
+		refer.map(Column.FIELD_POSITION, "COLUMN_ID");
+		refer.map(Column.FIELD_COMMENT, "COLUMN_COMMENT");//SQL组装
+		refer.map(Column.FIELD_DEFAULT_VALUE, "DATA_DEFAULT");
+		refer.map(Column.FIELD_AUTO_INCREMENT_CHECK, "INFO2");
+		refer.map(Column.FIELD_AUTO_INCREMENT_CHECK_VALUE, "1");
+		refer.map(Column.FIELD_PRIMARY_CHECK, "IS_PRIMARY");
+		refer.map(Column.FIELD_PRIMARY_CHECK_VALUE, "P");
 		return refer;
 	}
 	/**
@@ -2802,12 +2802,12 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	@Override
 	public MetadataFieldRefer initIndexFieldRefer() {
 		MetadataFieldRefer refer = new MetadataFieldRefer(Index.class);
-		refer.setRefer(Index.FIELD_SCHEMA, "INDEX_OWNER");
-		refer.setRefer(Index.FIELD_NAME, "INDEX_NAME");
-		refer.setRefer(Index.FIELD_TABLE, "TABLE_NAME");
-		refer.setRefer(Index.FIELD_COLUMN, "COLUMN_NAME");
-		refer.setRefer(Index.FIELD_POSITION, "COLUMN_POSITION");
-		refer.setRefer(Index.FIELD_ORDER, "DESCEND");
+		refer.map(Index.FIELD_SCHEMA, "INDEX_OWNER");
+		refer.map(Index.FIELD_NAME, "INDEX_NAME");
+		refer.map(Index.FIELD_TABLE, "TABLE_NAME");
+		refer.map(Index.FIELD_COLUMN, "COLUMN_NAME");
+		refer.map(Index.FIELD_POSITION, "COLUMN_POSITION");
+		refer.map(Index.FIELD_ORDER, "DESCEND");
 		return refer;
 	}
 	/**

@@ -1276,7 +1276,7 @@ public class XuGuAdapter extends OracleGenusAdapter implements JDBCAdapter {
     @Override
     public MetadataFieldRefer initDatabaseFieldRefer() {
         MetadataFieldRefer refer = new MetadataFieldRefer(Database.class);
-        refer.setRefer(Database.FIELD_NAME, "DATNAME");
+        refer.map(Database.FIELD_NAME, "DATNAME");
         return refer;
     }
 

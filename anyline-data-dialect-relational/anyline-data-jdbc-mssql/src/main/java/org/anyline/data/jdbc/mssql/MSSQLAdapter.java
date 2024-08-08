@@ -1305,7 +1305,7 @@ public class MSSQLAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
     @Override
     public MetadataFieldRefer initDatabaseFieldRefer() {
         MetadataFieldRefer refer = new MetadataFieldRefer(Database.class);
-        refer.setRefer(Database.FIELD_NAME, "NAME");
+        refer.map(Database.FIELD_NAME, "NAME");
         return refer;
     }
 
@@ -2424,16 +2424,16 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
     @Override
     public MetadataFieldRefer initColumnFieldRefer() {
         MetadataFieldRefer refer = new MetadataFieldRefer(Column.class);
-        refer.setRefer(Column.FIELD_NAME, "COLUMN_NAME");
-        refer.setRefer(Column.FIELD_CATALOG, "CATALOG_NAME");
-        refer.setRefer(Column.FIELD_SCHEMA, "SCHEMA_NAME");
-        refer.setRefer(Column.FIELD_TABLE, "TABLE_NAME");
-        refer.setRefer(Column.FIELD_NULLABLE, "IS_NULLABLE");
-        refer.setRefer(Column.FIELD_TYPE, "TYPE_NAME");
-        refer.setRefer(Column.FIELD_POSITION, "COLUMN_ID");
-        refer.setRefer(Column.FIELD_COMMENT, "COLUMN_COMMENT");
-        refer.setRefer(Column.FIELD_AUTO_INCREMENT_CHECK, "IS_IDENTITY");
-        refer.setRefer(Column.FIELD_AUTO_INCREMENT_CHECK_VALUE, "true");
+        refer.map(Column.FIELD_NAME, "COLUMN_NAME");
+        refer.map(Column.FIELD_CATALOG, "CATALOG_NAME");
+        refer.map(Column.FIELD_SCHEMA, "SCHEMA_NAME");
+        refer.map(Column.FIELD_TABLE, "TABLE_NAME");
+        refer.map(Column.FIELD_NULLABLE, "IS_NULLABLE");
+        refer.map(Column.FIELD_TYPE, "TYPE_NAME");
+        refer.map(Column.FIELD_POSITION, "COLUMN_ID");
+        refer.map(Column.FIELD_COMMENT, "COLUMN_COMMENT");
+        refer.map(Column.FIELD_AUTO_INCREMENT_CHECK, "IS_IDENTITY");
+        refer.map(Column.FIELD_AUTO_INCREMENT_CHECK_VALUE, "true");
         return refer;
     }
     /**
@@ -2709,12 +2709,12 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
     @Override
     public MetadataFieldRefer initPrimaryKeyFieldRefer() {
         MetadataFieldRefer refer = new MetadataFieldRefer(PrimaryKey.class);
-        refer.setRefer(PrimaryKey.FIELD_NAME, "CONSTRAINT_NAME");
-        refer.setRefer(PrimaryKey.FIELD_CATALOG, "TABLE_CATALOG");
-        refer.setRefer(PrimaryKey.FIELD_SCHEMA, "TABLE_SCHEMA");
-        refer.setRefer(PrimaryKey.FIELD_TABLE, "TABLE_NAME");
-        refer.setRefer(PrimaryKey.FIELD_COLUMN, "COLUMN_NAME");
-        refer.setRefer(PrimaryKey.FIELD_POSITION, "ORDINAL_POSITION");
+        refer.map(PrimaryKey.FIELD_NAME, "CONSTRAINT_NAME");
+        refer.map(PrimaryKey.FIELD_CATALOG, "TABLE_CATALOG");
+        refer.map(PrimaryKey.FIELD_SCHEMA, "TABLE_SCHEMA");
+        refer.map(PrimaryKey.FIELD_TABLE, "TABLE_NAME");
+        refer.map(PrimaryKey.FIELD_COLUMN, "COLUMN_NAME");
+        refer.map(PrimaryKey.FIELD_POSITION, "ORDINAL_POSITION");
         return refer;
     }
     /**
@@ -2810,16 +2810,16 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
     @Override
     public MetadataFieldRefer initForeignKeyFieldRefer() {
         MetadataFieldRefer refer = new MetadataFieldRefer(ForeignKey.class);
-        refer.setRefer(ForeignKey.FIELD_NAME, "CONSTRAINT_NAME");
-        refer.setRefer(ForeignKey.FIELD_CATALOG, "");
-        refer.setRefer(ForeignKey.FIELD_SCHEMA, "REFERENCED_SCHEMA_NAME");
-        refer.setRefer(ForeignKey.FIELD_TABLE, "TABLE_NAME");
-        refer.setRefer(ForeignKey.FIELD_COLUMN, "COLUMN_NAME");
-        refer.setRefer(ForeignKey.FIELD_COLUMN_POSITION, "ORDINAL_POSITION");
-        refer.setRefer(ForeignKey.FIELD_REFERENCE_CATALOG, "REFERENCED_CATALOG_NAME");
-        refer.setRefer(ForeignKey.FIELD_REFERENCE_SCHEMA, "REFERENCED_SCHEMA_NAME");
-        refer.setRefer(ForeignKey.FIELD_REFERENCE_TABLE, "REFERENCED_TABLE_NAME");
-        refer.setRefer(ForeignKey.FIELD_REFERENCE_COLUMN, "REFERENCED_COLUMN_NAME");
+        refer.map(ForeignKey.FIELD_NAME, "CONSTRAINT_NAME");
+        refer.map(ForeignKey.FIELD_CATALOG, "");
+        refer.map(ForeignKey.FIELD_SCHEMA, "REFERENCED_SCHEMA_NAME");
+        refer.map(ForeignKey.FIELD_TABLE, "TABLE_NAME");
+        refer.map(ForeignKey.FIELD_COLUMN, "COLUMN_NAME");
+        refer.map(ForeignKey.FIELD_COLUMN_POSITION, "ORDINAL_POSITION");
+        refer.map(ForeignKey.FIELD_REFERENCE_CATALOG, "REFERENCED_CATALOG_NAME");
+        refer.map(ForeignKey.FIELD_REFERENCE_SCHEMA, "REFERENCED_SCHEMA_NAME");
+        refer.map(ForeignKey.FIELD_REFERENCE_TABLE, "REFERENCED_TABLE_NAME");
+        refer.map(ForeignKey.FIELD_REFERENCE_COLUMN, "REFERENCED_COLUMN_NAME");
         return refer;
     }
     /**

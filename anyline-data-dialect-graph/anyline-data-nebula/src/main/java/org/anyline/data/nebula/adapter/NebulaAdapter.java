@@ -19,13 +19,9 @@
 package org.anyline.data.nebula.adapter;
 
 import org.anyline.adapter.EntityAdapter;
-import org.anyline.adapter.KeyAdapter;
 import org.anyline.annotation.Component;
 import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.graph.adapter.init.AbstractGraphAdapter;
-import org.anyline.data.nebula.metadata.EdgeIndex;
-import org.anyline.data.nebula.metadata.EdgeType;
-import org.anyline.data.nebula.metadata.TagIndex;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.RunPrepare;
@@ -37,19 +33,22 @@ import org.anyline.entity.generator.PrimaryGenerator;
 import org.anyline.entity.graph.EdgeRow;
 import org.anyline.entity.graph.VertexRow;
 import org.anyline.exception.CommandException;
-import org.anyline.exception.NotSupportException;
 import org.anyline.exception.CommandQueryException;
 import org.anyline.exception.CommandUpdateException;
+import org.anyline.exception.NotSupportException;
 import org.anyline.metadata.*;
-import org.anyline.metadata.refer.MetadataFieldRefer;
 import org.anyline.metadata.graph.EdgeTable;
 import org.anyline.metadata.graph.GraphTable;
 import org.anyline.metadata.graph.VertexTable;
+import org.anyline.metadata.refer.MetadataFieldRefer;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.proxy.CacheProxy;
 import org.anyline.proxy.EntityAdapterProxy;
-import org.anyline.util.*;
+import org.anyline.util.BasicUtil;
+import org.anyline.util.BeanUtil;
+import org.anyline.util.DateUtil;
+import org.anyline.util.LogUtil;
 
 import java.util.*;
 
@@ -2524,7 +2523,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
     @Override
     public MetadataFieldRefer initTableFieldRefer() {
         MetadataFieldRefer refer = new MetadataFieldRefer(Table.class);
-        refer.setRefer(Table.FIELD_NAME, "NAME");
+        refer.map(Table.FIELD_NAME, "NAME");
         return refer;
     }
     /**
@@ -2756,6 +2755,17 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
     }
 
     /**
+     * Table[结果集封装]<br/>
+     * Table 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer initVertexFieldRefer() {
+        MetadataFieldRefer refer = new MetadataFieldRefer(VertexTable.class);
+        refer.map(Table.FIELD_NAME, "NAME");
+        return refer;
+    }
+    /**
      * vertex[命令合成]<br/>
      * 查询表备注
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -2781,14 +2791,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
      */
     @Override
     public <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, VertexTable query, DataSet set) throws Exception {
-        if(null == tables) {
-            tables = new LinkedHashMap<>();
-        }
-        for(DataRow row:set) {
-            String name = row.getString("NAME");
-            tables.put(name.toUpperCase(), (T)new org.anyline.data.nebula.metadata.Tag(name));
-        }
-        return tables;
+        return super.vertexs(runtime, index, create, tables, query, set);
     }
 
     /**
@@ -2804,14 +2807,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
      */
     @Override
     public <T extends VertexTable> List<T> vertexs(DataRuntime runtime, int index, boolean create, List<T> tables, VertexTable query, DataSet set) throws Exception {
-        if(null == tables) {
-            tables = new ArrayList<>();
-        }
-        for(DataRow row:set) {
-            String name = row.getString("NAME");
-            tables.add((T)new org.anyline.data.nebula.metadata.Tag(name));
-        }
-        return tables;
+        return super.vertexs(runtime, index, create, tables, query, set);
     }
 
     /**
@@ -2980,6 +2976,17 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
     }
 
     /**
+     * edge[结果集封装]<br/>
+     * EdgeTable 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer initEdgeFieldRefer() {
+        MetadataFieldRefer refer = new MetadataFieldRefer(EdgeTable.class);
+        refer.map(EdgeTable.FIELD_NAME, "NAME");
+        return refer;
+    }
+    /**
      * edge[命令合成]<br/>
      * 查询表备注
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -3005,14 +3012,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
      */
     @Override
     public <T extends EdgeTable> LinkedHashMap<String, T> edges(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, EdgeTable query, DataSet set) throws Exception {
-        if(null == tables) {
-            tables = new LinkedHashMap<>();
-        }
-        for(DataRow row:set) {
-            String name = row.getString("NAME");
-            tables.put(name.toUpperCase(), (T)new EdgeType(name));
-        }
-        return tables;
+        return super.edges(runtime, index, create, tables, query, set);
     }
 
     /**
@@ -3028,14 +3028,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
      */
     @Override
     public <T extends EdgeTable> List<T> edges(DataRuntime runtime, int index, boolean create, List<T> tables, EdgeTable query, DataSet set) throws Exception {
-        if(null == tables) {
-            tables = new ArrayList<>();
-        }
-        for(DataRow row:set) {
-            String name = row.getString("NAME");
-            tables.add((T)new EdgeType(name));
-        }
-        return tables;
+        return super.edges(runtime, index, create, tables, query, set);
     }
 
     /**
@@ -3536,101 +3529,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
      */
     @Override
     public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Table table, Column query, boolean primary, ConfigStore configs) {
-        if (!greedy) {
-            checkSchema(runtime, table);
-        }
-        Catalog catalog = table.getCatalog();
-        Schema schema = table.getSchema();
-
-        String key = CacheProxy.key(runtime, "table_columns", greedy, table);
-        LinkedHashMap<String,T> columns = CacheProxy.columns(key);
-        if(null != columns && !columns.isEmpty()) {
-            return columns;
-        }
-        long fr = System.currentTimeMillis();
-        if(null == random) {
-            random = random(runtime);
-        }
-        try {
-
-            int qty_total = 0;
-            int qty_dialect = 0; //优先根据系统表查询
-            int qty_metadata = 0; //再根据metadata解析
-            int qty_jdbc = 0; //根据驱动内置接口补充
-
-            // 1.优先根据系统表查询
-            try {
-                List<Run> runs = buildQueryColumnsRun(runtime, greedy, query, configs);
-                if (null != runs) {
-                    int idx = 0;
-                    for (Run run: runs) {
-                        DataSet set = select(runtime, random, true, (String) null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run);
-                        columns = columns(runtime, idx, true, columns, table, query, set);
-                        idx++;
-                    }
-                }
-                if(null != columns) {
-                    qty_dialect = columns.size();
-                    qty_total=columns.size();
-                }
-            } catch (Exception e) {
-                if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
-                    e.printStackTrace();
-                }
-                if(primary) {
-                    e.printStackTrace();
-                } if (ConfigTable.IS_LOG_SQL && log.isWarnEnabled()) {
-                    log.warn("{}[columns][{}][catalog:{}][schema:{}][table:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, table, e.toString());
-                }
-            }
-            //检测主键
-            if(ConfigTable.IS_METADATA_AUTO_CHECK_COLUMN_PRIMARY) {
-                if (null != columns || !columns.isEmpty()) {
-                    boolean exists = false;
-                    for(Column column:columns.values()) {
-                        if(column.isPrimaryKey() != -1) {
-                            exists = true;
-                            break;
-                        }
-                    }
-                    if(!exists) {
-                        PrimaryKey pk = primary(runtime, random, false, table);
-                        if(null != pk) {
-                            LinkedHashMap<String,Column> pks = pk.getColumns();
-                            if(null != pks) {
-                                for(String k:pks.keySet()) {
-                                    Column column = columns.get(k);
-                                    if(null != column) {
-                                        column.primary(true);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }catch (Exception e) {
-            if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
-                e.printStackTrace();
-            }else{
-                log.error("｛｝[columns][result:fail][table:{}][msg:{}]", random, table, e.toString());
-            }
-        }
-        if(null != columns) {
-            CacheProxy.cache(key, columns);
-        }else{
-            columns = new LinkedHashMap<>();
-        }
-        int index = 0;
-        for(Column column:columns.values()) {
-            if(null == column.getPosition() || -1 == column.getPosition()) {
-                column.setPosition(index++);
-            }
-            if(null == column.getTable() && !greedy) {
-                column.setTable(table);
-            }
-        }
-        return columns;
+        return super.columns(runtime, random, greedy, table, query, primary, configs);
     }
 
     /**
@@ -3676,7 +3575,13 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
      */
     @Override
     public MetadataFieldRefer initColumnFieldRefer() {
-        return super.initColumnFieldRefer();
+        MetadataFieldRefer refer = new MetadataFieldRefer(Column.class);
+        refer.map(Column.FIELD_NAME, "Field");
+        refer.map(Column.FIELD_TYPE, "Type");
+        refer.map(Column.FIELD_NULLABLE, "Null");
+        refer.map(Column.FIELD_DEFAULT_VALUE, "Default");
+        refer.map(Column.FIELD_COMMENT, "Comment");
+        return refer;
     }
     /**
      * column[结果集封装]<br/>
@@ -3692,39 +3597,11 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
      */
     @Override
     public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Table table, Column query, DataSet set) throws Exception {
-        if(null == previous) {
-            previous = new LinkedHashMap<>();
-        }
-        for(DataRow row:set) {
-            //| Field  | Type     | Null  | Default | Comment |
-            String name = row.getString("Field");
-            Column column = new Column();
-            column.setName(name);
-            column.setType(row.getString("Type"));
-            column.setNullable(row.getBoolean("Null"));
-            column.setDefaultValue(row.get("Default"));
-            column.setComment(row.getString("Comment"));
-            previous.put(name.toUpperCase(), (T)column);
-        }
-        return previous;
+        return super.columns(runtime, index, create, previous, table, query, set);
     }
     @Override
     public <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, List<T> previous, Column query, DataSet set) throws Exception {
-        if(null == previous) {
-            previous = new ArrayList<>();
-        }
-        for(DataRow row:set) {
-            //| Field  | Type     | Null  | Default | Comment |
-            String name = row.getString("Field");
-            Column column = new Column();
-            column.setName(name);
-            column.setType(row.getString("Type"));
-            column.setNullable(row.getBoolean("Null"));
-            column.setDefaultValue(row.get("Default"));
-            column.setComment(row.getString("Comment"));
-            previous.add((T)column);
-        }
-        return previous;
+       return super.columns(runtime, index, create, previous, query, set);
     }
 
     /**
@@ -4124,9 +4001,9 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
     @Override
     public MetadataFieldRefer initIndexFieldRefer() {
         MetadataFieldRefer refer = new MetadataFieldRefer(Index.class);
-        refer.setRefer(Index.FIELD_NAME, "Index Name");
-        refer.setRefer(Index.FIELD_TABLE, "By Tag,By Edge");
-        refer.setRefer(Index.FIELD_COLUMN, "Columns");
+        refer.map(Index.FIELD_NAME, "Index Name");
+        refer.map(Index.FIELD_TABLE, "By Tag,By Edge");
+        refer.map(Index.FIELD_COLUMN, "Columns");
         return refer;
     }
     /**

@@ -3516,8 +3516,8 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         Table table = query.getTable();
         //属性在查询结果中对应的列(通用)
         MetadataFieldRefer refer = refer(runtime, Column.class);
-        String catalog = row.getString(refer.getRefers(Column.FIELD_CATALOG));
-        String schema = row.getString(refer.getRefers(Column.FIELD_SCHEMA));//"TABLE_SCHEMA","TABSCHEMA","SCHEMA_NAME","OWNER"
+        String catalog = row.getString(refer.maps(Column.FIELD_CATALOG));
+        String schema = row.getString(refer.maps(Column.FIELD_SCHEMA));//"TABLE_SCHEMA","TABSCHEMA","SCHEMA_NAME","OWNER"
         schema = BasicUtil.evl(schema, meta.getSchemaName());
         //如果上一步没有提供table有可能是查所有表的列,column单独创建自己的table对象
         if(null != table) {
@@ -3542,13 +3542,13 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         if(null != table) {//查询全部表
             meta.setTable(table);
         }else {
-            String tableName = row.getString(refer.getRefers(Column.FIELD_TABLE));
+            String tableName = row.getString(refer.maps(Column.FIELD_TABLE));
             table = new Table(BasicUtil.evl(tableName, meta.getTableName(true), tableName));
             table.setCatalog(catalog);
             table.setSchema(schema);
             meta.setTable(table);
         }
-        String name = row.getString(refer.getRefers(Column.FIELD_NAME));
+        String name = row.getString(refer.maps(Column.FIELD_NAME));
         meta.setName(name);
         meta.setMetadata(row);
         return meta;

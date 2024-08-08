@@ -1371,7 +1371,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
     @Override
     public MetadataFieldRefer initDatabaseFieldRefer() {
         MetadataFieldRefer refer = new MetadataFieldRefer(Database.class);
-        refer.setRefer(Database.FIELD_NAME, "DATABASE_NAME");
+        refer.map(Database.FIELD_NAME, "DATABASE_NAME");
         return refer;
     }
     /**
@@ -1992,12 +1992,12 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
     @Override
     public MetadataFieldRefer initTableFieldRefer() {
         MetadataFieldRefer refer = new MetadataFieldRefer(Table.class);
-        refer.setRefer(Table.FIELD_NAME, "TABLE_NAME");
-        refer.setRefer(Table.FIELD_TYPE, "TABLE_TYPE");
-        refer.setRefer(Table.FIELD_SCHEMA, "TABLE_SCHEMA");
-        refer.setRefer(Table.FIELD_COMMENT, "COMMENTS");
-        refer.setRefer(Table.FIELD_CREATE_TIME, "CREATE_TIME");
-        refer.setRefer(Table.FIELD_UPDATE_TIME, "UPDATE_TIME");
+        refer.map(Table.FIELD_NAME, "TABLE_NAME");
+        refer.map(Table.FIELD_TYPE, "TABLE_TYPE");
+        refer.map(Table.FIELD_SCHEMA, "TABLE_SCHEMA");
+        refer.map(Table.FIELD_COMMENT, "COMMENTS");
+        refer.map(Table.FIELD_CREATE_TIME, "CREATE_TIME");
+        refer.map(Table.FIELD_UPDATE_TIME, "UPDATE_TIME");
         return refer;
     }
     /**
@@ -2216,11 +2216,11 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
     @Override
     public MetadataFieldRefer initViewFieldRefer() {
         MetadataFieldRefer refer = new MetadataFieldRefer(View.class);
-        refer.setRefer(View.FIELD_NAME, "VIEW_NAME,TABLE_NAME,NAME,TABNAME");
-        refer.setRefer(View.FIELD_CATALOG, "VIEW_CATALOG,TABLE_CATALOG");
-        refer.setRefer(View.FIELD_SCHEMA, "VIEW_SCHEMA,TABLE_SCHEMA,TABSCHEMA,SCHEMA_NAME");
-        refer.setRefer(View.FIELD_DEFINITION, "DEFINITION_SQL");
-        refer.setRefer(View.FIELD_COMMENT, "COMMENTS");
+        refer.map(View.FIELD_NAME, "VIEW_NAME,TABLE_NAME,NAME,TABNAME");
+        refer.map(View.FIELD_CATALOG, "VIEW_CATALOG,TABLE_CATALOG");
+        refer.map(View.FIELD_SCHEMA, "VIEW_SCHEMA,TABLE_SCHEMA,TABSCHEMA,SCHEMA_NAME");
+        refer.map(View.FIELD_DEFINITION, "DEFINITION_SQL");
+        refer.map(View.FIELD_COMMENT, "COMMENTS");
         return refer;
     }
     /**
@@ -2654,19 +2654,19 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
     @Override
     public MetadataFieldRefer initColumnFieldRefer() {
         MetadataFieldRefer refer = new MetadataFieldRefer(Column.class);
-        refer.setRefer(Column.FIELD_NAME, "COLUMN_NAME");
-        refer.setRefer(Column.FIELD_CATALOG, "");//忽略
-        refer.setRefer(Column.FIELD_SCHEMA, "OWNER");
-        refer.setRefer(Column.FIELD_TABLE, "TABLE_NAME");
-        refer.setRefer(Column.FIELD_NULLABLE, "NULLABLE");
-        refer.setRefer(Column.FIELD_CHARSET, "");//忽略
-        refer.setRefer(Column.FIELD_COLLATE, "");//忽略
-        refer.setRefer(Column.FIELD_TYPE_NAME, "DATA_TYPE");
-        refer.setRefer(Column.FIELD_POSITION, "COLUMN_ID");
-        refer.setRefer(Column.FIELD_COMMENT, "COLUMN_COMMENT");//SQL组装
-        refer.setRefer(Column.FIELD_DEFAULT_VALUE, "DATA_DEFAULT");
-        refer.setRefer(Column.FIELD_PRIMARY_CHECK, "IS_PRIMARY");
-        refer.setRefer(Column.FIELD_PRIMARY_CHECK_VALUE, "P");
+        refer.map(Column.FIELD_NAME, "COLUMN_NAME");
+        refer.map(Column.FIELD_CATALOG, "");//忽略
+        refer.map(Column.FIELD_SCHEMA, "OWNER");
+        refer.map(Column.FIELD_TABLE, "TABLE_NAME");
+        refer.map(Column.FIELD_NULLABLE, "NULLABLE");
+        refer.map(Column.FIELD_CHARSET, "");//忽略
+        refer.map(Column.FIELD_COLLATE, "");//忽略
+        refer.map(Column.FIELD_TYPE_NAME, "DATA_TYPE");
+        refer.map(Column.FIELD_POSITION, "COLUMN_ID");
+        refer.map(Column.FIELD_COMMENT, "COLUMN_COMMENT");//SQL组装
+        refer.map(Column.FIELD_DEFAULT_VALUE, "DATA_DEFAULT");
+        refer.map(Column.FIELD_PRIMARY_CHECK, "IS_PRIMARY");
+        refer.map(Column.FIELD_PRIMARY_CHECK_VALUE, "P");
         return refer;
     }
     /**
@@ -2869,13 +2869,13 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
     @Override
     public MetadataFieldRefer initPrimaryKeyFieldRefer() {
         MetadataFieldRefer refer = new MetadataFieldRefer(PrimaryKey.class);
-        refer.setRefer(PrimaryKey.FIELD_NAME, "CONSTRAINT_NAME");
-        refer.setRefer(PrimaryKey.FIELD_CATALOG, (String)null);
-        refer.setRefer(PrimaryKey.FIELD_SCHEMA, "OWNER");
-        refer.setRefer(PrimaryKey.FIELD_TABLE, "TABLE_NAME");
-        refer.setRefer(PrimaryKey.FIELD_COLUMN, "COLUMN_NAME");
-        refer.setRefer(PrimaryKey.FIELD_POSITION, "POSITION");
-        refer.setRefer(PrimaryKey.FIELD_ORDER, (String)null);
+        refer.map(PrimaryKey.FIELD_NAME, "CONSTRAINT_NAME");
+        refer.map(PrimaryKey.FIELD_CATALOG, (String)null);
+        refer.map(PrimaryKey.FIELD_SCHEMA, "OWNER");
+        refer.map(PrimaryKey.FIELD_TABLE, "TABLE_NAME");
+        refer.map(PrimaryKey.FIELD_COLUMN, "COLUMN_NAME");
+        refer.map(PrimaryKey.FIELD_POSITION, "POSITION");
+        refer.map(PrimaryKey.FIELD_ORDER, (String)null);
         return refer;
     }
     /**
@@ -2966,16 +2966,16 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
     @Override
     public MetadataFieldRefer initForeignKeyFieldRefer() {
         MetadataFieldRefer refer = new MetadataFieldRefer(ForeignKey.class);
-        refer.setRefer(ForeignKey.FIELD_NAME, "CONSTRAINT_NAME");
-        refer.setRefer(ForeignKey.FIELD_CATALOG, "");
-        refer.setRefer(ForeignKey.FIELD_SCHEMA, "REFERENCED_SCHEMA_NAME");
-        refer.setRefer(ForeignKey.FIELD_TABLE, "TABLE_NAME");
-        refer.setRefer(ForeignKey.FIELD_COLUMN, "COLUMN_NAME");
-        refer.setRefer(ForeignKey.FIELD_COLUMN_POSITION, "ORDINAL_POSITION");
-        refer.setRefer(ForeignKey.FIELD_REFERENCE_CATALOG, "REFERENCED_CATALOG_NAME");
-        refer.setRefer(ForeignKey.FIELD_REFERENCE_SCHEMA, "REFERENCED_SCHEMA_NAME");
-        refer.setRefer(ForeignKey.FIELD_REFERENCE_TABLE, "REFERENCED_TABLE_NAME");
-        refer.setRefer(ForeignKey.FIELD_REFERENCE_COLUMN, "REFERENCED_COLUMN_NAME");
+        refer.map(ForeignKey.FIELD_NAME, "CONSTRAINT_NAME");
+        refer.map(ForeignKey.FIELD_CATALOG, "");
+        refer.map(ForeignKey.FIELD_SCHEMA, "REFERENCED_SCHEMA_NAME");
+        refer.map(ForeignKey.FIELD_TABLE, "TABLE_NAME");
+        refer.map(ForeignKey.FIELD_COLUMN, "COLUMN_NAME");
+        refer.map(ForeignKey.FIELD_COLUMN_POSITION, "ORDINAL_POSITION");
+        refer.map(ForeignKey.FIELD_REFERENCE_CATALOG, "REFERENCED_CATALOG_NAME");
+        refer.map(ForeignKey.FIELD_REFERENCE_SCHEMA, "REFERENCED_SCHEMA_NAME");
+        refer.map(ForeignKey.FIELD_REFERENCE_TABLE, "REFERENCED_TABLE_NAME");
+        refer.map(ForeignKey.FIELD_REFERENCE_COLUMN, "REFERENCED_COLUMN_NAME");
         return refer;
     }
     /**
@@ -3113,13 +3113,13 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
     @Override
     public MetadataFieldRefer initIndexFieldRefer() {
         MetadataFieldRefer refer = new MetadataFieldRefer(Index.class);
-        refer.setRefer(Index.FIELD_NAME, "INDEX_NAME");
-        refer.setRefer(Index.FIELD_TABLE, "TABLE_NAME");
-        refer.setRefer(Index.FIELD_SCHEMA, "INDEX_OWNER");
-        refer.setRefer(Index.FIELD_CATALOG, "");
-        refer.setRefer(Index.FIELD_COLUMN, "COLUMN_EXPRESSION,COLUMN_NAME");
-        refer.setRefer(Index.FIELD_ORDER, "DESCEND");
-        refer.setRefer(Index.FIELD_POSITION, "COLUMN_POSITION");
+        refer.map(Index.FIELD_NAME, "INDEX_NAME");
+        refer.map(Index.FIELD_TABLE, "TABLE_NAME");
+        refer.map(Index.FIELD_SCHEMA, "INDEX_OWNER");
+        refer.map(Index.FIELD_CATALOG, "");
+        refer.map(Index.FIELD_COLUMN, "COLUMN_EXPRESSION,COLUMN_NAME");
+        refer.map(Index.FIELD_ORDER, "DESCEND");
+        refer.map(Index.FIELD_POSITION, "COLUMN_POSITION");
         return refer;
     }
     /**

@@ -1818,19 +1818,10 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
      */
     @Override
     public List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Table query, int types, ConfigStore configs) throws Exception {
-        String pattern = query.getName();
         List<Run> runs = new ArrayList<>();
-        Run run = new SimpleRun(runtime);
+        Run run = new SimpleRun(runtime, configs);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
-        builder.append("SHOW TABLES");
-        if (BasicUtil.isNotEmpty(pattern)) {
-            builder.append(" LIKE '" + pattern + "'");
-        }
-
-        Run r = new SimpleRun(runtime, configs);
-        runs.add(r);
-        builder = r.getBuilder();
         builder.append("SELECT * FROM INFORMATION_SCHEMA.INS_TABLES WHERE TYPE = 'NORMAL_TABLE' ");
         configs.and("DB_NAME", query.getCatalogName());
         configs.like("TABLE_NAME", query.getName());
@@ -1845,9 +1836,9 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
     @Override
     public MetadataFieldRefer initTableFieldRefer() {
         MetadataFieldRefer refer = new MetadataFieldRefer(Table.class);
-        refer.setRefer(Table.FIELD_NAME, "TABLE_NAME");
-        refer.setRefer(Table.FIELD_CATALOG, "DB_NAME");
-        refer.setRefer(Table.FIELD_COMMENT, "TABLE_COMMENT");
+        refer.map(Table.FIELD_NAME, "TABLE_NAME");
+        refer.map(Table.FIELD_CATALOG, "DB_NAME");
+        refer.map(Table.FIELD_COMMENT, "TABLE_COMMENT");
         return refer;
     }
     /**
@@ -1878,51 +1869,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
      */
     @Override
     public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Table query, DataSet set) throws Exception {
-        Catalog catalog = query.getCatalog();
-        Schema schema = query.getSchema();
-        if(null == previous) {
-            previous = new LinkedHashMap<>();
-        }
-        if(index == 0) {
-            // SHOW TABLES 只返回一列stable_name
-            for(DataRow row:set) {
-                String name = row.getString("STABLE_NAME");
-                if(BasicUtil.isEmpty(name)) {
-                    continue;
-                }
-                T table = previous.get(name.toUpperCase());
-                if(null == table) {
-                    if(create) {
-                        table = (T)new MasterTable(name);
-                        previous.put(name.toUpperCase(), table);
-                    }
-                }
-            }
-        }else if(index == 1) {
-            // SELECT * FROM INFORMATION_SCHEMA.INS_TABLES
-            // table_name   | db_name|create_time            |columns |stable_name    |uid                |vgroup_id        |     ttl     |         table_comment          |         type          |
-            // a_test       | simple  2022-09-19 11:08:46.512|3       | NULL          |657579901363175104 |           2     |           0 | NULL                           | NORMAL_TABLE          |
-
-            for(DataRow row:set) {
-                String name = row.getString("STABLE_NAME");
-                if(BasicUtil.isEmpty(name)) {
-                    continue;
-                }
-                T table = previous.get(name.toUpperCase());
-                if(null == table) {
-                    if(create) {
-                        table = (T)new MasterTable(name);
-                        previous.put(name.toUpperCase(), table);
-                    }else{
-                        continue;
-                    }
-                }
-                table.setCatalog(row.getString("DB_NAME"));
-                table.setType(row.getString("TYPE"));
-                table.setComment(row.getString("TABLE_COMMENT"));
-            }
-        }
-        return previous;
+        return super.tables(runtime, index, create, previous, query, set);
     }
 
     /**
@@ -1939,55 +1886,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
      */
     @Override
     public <T extends Table> List<T> tables(DataRuntime runtime, int index, boolean create, List<T> previous, Table query, DataSet set) throws Exception {
-        Catalog catalog = query.getCatalog();
-        Schema schema = query.getSchema();
-        if(null == previous) {
-            previous = new ArrayList<>();
-        }
-        if(index == 0) {
-            // SHOW TABLES 只返回一列stable_name
-            for(DataRow row:set) {
-                String name = row.getString("STABLE_NAME");
-                if(BasicUtil.isEmpty(name)) {
-                    continue;
-                }
-                T table = search(previous, catalog, schema, name);
-                if(null == table) {
-                    if(create) {
-                        table = (T)new MasterTable(name);
-                        previous.add(table);
-                    }
-                }
-            }
-        }else if(index == 1) {
-            // SELECT * FROM INFORMATION_SCHEMA.INS_TABLES
-            // table_name   | db_name|create_time            |columns |stable_name    |uid                |vgroup_id        |     ttl     |         table_comment          |         type          |
-            // a_test       | simple  2022-09-19 11:08:46.512|3       | NULL          |657579901363175104 |           2     |           0 | NULL                           | NORMAL_TABLE          |
-
-            for(DataRow row:set) {
-                String name = row.getString("STABLE_NAME");
-                if(BasicUtil.isEmpty(name)) {
-                    continue;
-                }
-                boolean contains = true;
-                T table = search(previous, catalog, schema, name);
-                if(null == table) {
-                    if(create) {
-                        table = (T)new MasterTable(name);
-                        contains = false;
-                    }else{
-                        continue;
-                    }
-                }
-                table.setCatalog(row.getString("DB_NAME"));
-                table.setType(row.getString("TYPE"));
-                table.setComment(row.getString("TABLE_COMMENT"));
-                if(!contains) {
-                    previous.add(table);
-                }
-            }
-        }
-        return previous;
+        return super.tables(runtime, index, create, previous, query, set);
     }
 
     /**
@@ -2291,9 +2190,9 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
     @Override
     public MetadataFieldRefer initMasterTableFieldRefer() {
         MetadataFieldRefer refer = new MetadataFieldRefer(MasterTable.class);
-        refer.setRefer(MasterTable.FIELD_NAME, "STABLE_NAME");
-        refer.setRefer(MasterTable.FIELD_CATALOG, "DB_NAME");
-        refer.setRefer(MasterTable.FIELD_COMMENT, "TABLE_COMMENT");
+        refer.map(MasterTable.FIELD_NAME, "STABLE_NAME");
+        refer.map(MasterTable.FIELD_CATALOG, "DB_NAME");
+        refer.map(MasterTable.FIELD_COMMENT, "TABLE_COMMENT");
         return refer;
     }
     /**

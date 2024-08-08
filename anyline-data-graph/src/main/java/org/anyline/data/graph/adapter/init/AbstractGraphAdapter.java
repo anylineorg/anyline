@@ -18,13 +18,11 @@
 
 package org.anyline.data.graph.adapter.init;
 
-import org.anyline.adapter.KeyAdapter;
 import org.anyline.data.adapter.init.AbstractDriverAdapter;
 import org.anyline.data.handler.DataHandler;
 import org.anyline.data.handler.StreamHandler;
 import org.anyline.data.param.ConfigParser;
 import org.anyline.data.param.ConfigStore;
-import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.prepare.auto.AutoPrepare;
 import org.anyline.data.prepare.auto.TablePrepare;
@@ -38,9 +36,9 @@ import org.anyline.exception.CommandQueryException;
 import org.anyline.exception.CommandUpdateException;
 import org.anyline.exception.NotSupportException;
 import org.anyline.metadata.*;
-import org.anyline.metadata.refer.MetadataFieldRefer;
 import org.anyline.metadata.graph.EdgeTable;
 import org.anyline.metadata.graph.VertexTable;
+import org.anyline.metadata.refer.MetadataFieldRefer;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.proxy.CacheProxy;
@@ -51,7 +49,6 @@ import org.anyline.util.*;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.*;
 
 public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
@@ -3580,112 +3577,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
      */
     @Override
     public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Table table, Column query, boolean primary, ConfigStore configs) {
-        if (!greedy) {
-            checkSchema(runtime, table);
-        }
-        Catalog catalog = table.getCatalog();
-        Schema schema = table.getSchema();
-
-        String key = CacheProxy.key(runtime, "table_columns", greedy, table);
-        LinkedHashMap<String,T> columns = CacheProxy.columns(key);
-        if(null != columns && !columns.isEmpty()) {
-            return columns;
-        }
-        long fr = System.currentTimeMillis();
-        if(null == random) {
-            random = random(runtime);
-        }
-        try {
-
-            int qty_total = 0;
-            int qty_dialect = 0; //优先根据系统表查询
-            int qty_metadata = 0; //再根据metadata解析
-            int qty_jdbc = 0; //根据驱动内置接口补充
-
-            // 1.优先根据系统表查询
-            try {
-                List<Run> runs = buildQueryColumnsRun(runtime, greedy, query, configs);
-                if (null != runs) {
-                    int idx = 0;
-                    for (Run run: runs) {
-                        DataSet set = select(runtime, random, true, (String) null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run);
-                        columns = columns(runtime, idx, true, columns, table, query, set);
-                        idx++;
-                    }
-                }
-                if(null != columns) {
-                    qty_dialect = columns.size();
-                    qty_total=columns.size();
-                }
-            } catch (Exception e) {
-                if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
-                    e.printStackTrace();
-                }
-                if(primary) {
-                    e.printStackTrace();
-                } if (ConfigTable.IS_LOG_SQL && log.isWarnEnabled()) {
-                    log.warn("{}[columns][{}][catalog:{}][schema:{}][table:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, table, e.toString());
-                }
-            }
-
-            // 方法(3)根据根据驱动内置接口补充
-
-            //检测主键
-            if(ConfigTable.IS_METADATA_AUTO_CHECK_COLUMN_PRIMARY) {
-                if (null != columns || !columns.isEmpty()) {
-                    boolean exists = false;
-                    for(Column column:columns.values()) {
-                        if(column.isPrimaryKey() != -1) {
-                            exists = true;
-                            break;
-                        }
-                    }
-                    if(!exists) {
-                        PrimaryKey pk = primary(runtime, random, false, table);
-                        if(null != pk) {
-                            LinkedHashMap<String,Column> pks = pk.getColumns();
-                            if(null != pks) {
-                                for(String k:pks.keySet()) {
-                                    Column column = columns.get(k);
-                                    if(null != column) {
-                                        column.primary(true);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }catch (Exception e) {
-            if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
-                e.printStackTrace();
-            }else{
-                log.error("{}[columns][result:fail][table:{}][msg:{}]", random, table, e.toString());
-            }
-        }
-        if(null != columns) {
-            CacheProxy.cache(key, columns);
-        }else{
-            columns = new LinkedHashMap<>();
-        }
-        int index = 0;
-        for(Column column:columns.values()) {
-            if(null == column.getPosition() || -1 == column.getPosition()) {
-                column.setPosition(index++);
-            }
-            if(column.isAutoIncrement() != 1) {
-                column.autoIncrement(false);
-            }
-            if(column.isPrimaryKey() != 1) {
-                column.setPrimary(false);
-            }
-            if(null == column.getTable() && !greedy) {
-                column.setTable(table);
-            }
-        }
-        //table有可能根据class解析设置过columns以这里为准
-        table.setColumns(columns);
-        return columns;
+        return super.columns(runtime, random, greedy, table, query, primary, configs);
     }
 
 
@@ -3717,33 +3609,11 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
      */
     @Override
     public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Table table, Column query, DataSet set) throws Exception {
-        if(null == previous) {
-            previous = new LinkedHashMap<>();
-        }
-        for(DataRow row:set) {
-            T column = null;
-            column = init(runtime, index, column, table, row);
-            if(null != column) {
-                column = detail(runtime, index, column, null, null, row);
-                previous.put(column.getName().toUpperCase(), column);
-            }
-        }
-        return previous;
+        return super.columns(runtime, index, create, previous, table, query, set);
     }
     @Override
     public <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, List<T> previous, Column query, DataSet set) throws Exception {
-        if(null == previous) {
-            previous = new ArrayList<>();
-        }
-        for(DataRow row:set) {
-            T column = null;
-            column = init(runtime, index, column, query, row);
-            if(null == Metadata.match(column, previous)) {
-                previous.add(column);
-            }
-            detail(runtime, index, column, null, null, row);
-        }
-        return previous;
+        return super.columns(runtime, index, create, previous, query, set);
     }
 
     /**
@@ -3760,29 +3630,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
      */
     @Override
     public <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create,  List<T> previous, Collection<? extends Table> tables, Column query, DataSet set) throws Exception {
-        if(null == previous) {
-            previous = new ArrayList<>();
-        }
-        Map<String,Table> tbls = new HashMap<>();
-        for(Table table:tables) {
-            tbls.put(table.getName().toUpperCase(), table);
-        }
-        for(DataRow row:set) {
-            T column = null;
-            column = init(runtime, index, column, query, row);
-            if(null == Metadata.match(column, previous)) {
-                previous.add(column);
-            }
-            detail(runtime, index, column, null, null, row);
-            String tableName = column.getTableName();
-            if(null != tableName) {
-                Table table = tbls.get(tableName.toUpperCase());
-                if(null != table) {
-                    table.addColumn(column);
-                }
-            }
-        }
-        return previous;
+        return super.columns(runtime, index, create, previous, query, set);
     }
     /**
      * column[调用入口]<br/>(方法1)<br/>
@@ -3914,38 +3762,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends PrimaryKey> T init(DataRuntime runtime, int index, T primary, PrimaryKey query, DataSet set) throws Exception {
-        Table table = query.getTable();
-        MetadataFieldRefer refer = refer(runtime, PrimaryKey.class);
-        for(DataRow row:set) {
-            if(null == primary) {
-                primary = (T)new PrimaryKey();
-                primary.setName(row.getString(refer.getRefers(PrimaryKey.FIELD_NAME)));
-                if(null == table) {
-                    table = new Table(row.getString(refer.getRefers(PrimaryKey.FIELD_CATALOG))
-                            , row.getString(refer.getRefers(PrimaryKey.FIELD_SCHEMA))
-                            , row.getString(refer.getRefers(PrimaryKey.FIELD_TABLE)));
-                }
-                primary.setTable(table);
-            }
-            String col = row.getString(refer.getRefers(PrimaryKey.FIELD_COLUMN));
-            if(BasicUtil.isEmpty(col)) {
-                throw new Exception("主键相关列名异常,请检查buildQueryPrimaryRun与primaryMetadataColumn");
-            }
-            Column column = primary.getColumn(col);
-            if(null == column) {
-                column = new Column(col);
-            }
-            column.setTable(table);
-            String position = row.getString(refer.getRefers(PrimaryKey.FIELD_POSITION));
-            primary.setPosition(column, BasicUtil.parseInt(position, 0));
-            String order = row.getString(refer.getRefers(PrimaryKey.FIELD_ORDER));
-            if(BasicUtil.isNotEmpty(order)) {
-                column.setOrder(order);
-            }
-            primary.addColumn(column);
-        }
-        return primary;
+    public <T extends PrimaryKey> T init(DataRuntime runtime, int index, T meta, PrimaryKey query, DataSet set) throws Exception {
+        return super.init(runtime, index, meta, query, set);
     }
     /**
      * primary[结构集封装]<br/>
@@ -4122,9 +3940,9 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
     @Override
     public MetadataFieldRefer initIndexFieldRefer() {
         MetadataFieldRefer refer = new MetadataFieldRefer(Index.class);
-        refer.setRefer(Index.FIELD_NAME, "Index Name");
-        refer.setRefer(Index.FIELD_TABLE, "By Tag,By Edge");
-        refer.setRefer(Index.FIELD_COLUMN, "Columns");
+        refer.map(Index.FIELD_NAME, "Index Name");
+        refer.map(Index.FIELD_TABLE, "By Tag,By Edge");
+        refer.map(Index.FIELD_COLUMN, "Columns");
         return refer;
     }
     /**
@@ -4308,34 +4126,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
      */
     @Override
     public <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Constraint query, DataSet set) throws Exception {
-        Table table = query.getTable();
-        if(null == previous) {
-            previous = new LinkedHashMap<>();
-        }
-        for(DataRow row:set) {
-            String name = row.getString("CONSTRAINT_NAME");
-            if(null == name) {
-                continue;
-            }
-            T constraint = previous.get(name.toUpperCase());
-            if(null == constraint && create) {
-                constraint = (T)new Constraint();
-                previous.put(name.toUpperCase(), constraint);
-            };
-
-            String catalog = row.getString("CONSTRAINT_CATALOG");
-            String schema = row.getString("CONSTRAINT_SCHEMA");
-            constraint.setCatalog(catalog);
-            constraint.setSchema(schema);
-            if(null == table) {
-                table = new Table(catalog, schema, row.getString("TABLE_NAME"));
-            }
-            constraint.setTable(table);
-            constraint.setName(name);
-            constraint.setType(row.getString("CONSTRAINT_TYPE"));
-
-        }
-        return previous;
+        return super.constraints(runtime, index, create, previous, query, set);
     }
 
     /* *****************************************************************************************************************
@@ -8326,356 +8117,5 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 		return null;
 	}
 
-	/**
-	 * 伪表
-	 * @return String
-	 */
-	protected String dummy() {
-		return "dual";
-	}
-	/* *****************************************************************************************************************
-	 * 													多分支子类型选择(子类只选择调用不要出现不要覆盖)
-	 * -----------------------------------------------------------------------------------------------------------------
-	 * protected String pageXXX()
-	 * protected String concatXXX()
-	 ******************************************************************************************************************/
-
-	/**
-	 * 合成分页 mysql适用
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
-	 * @return String
-	 */
-	protected String pageLimit(DataRuntime runtime, Run run) {
-		String sql = run.getBaseQuery();
-		String cols = run.getQueryColumn();
-		if(!"*".equals(cols)) {
-			String reg = "(?i)^select[\\s\\S]+from";
-			sql = sql.replaceAll(reg,"SELECT "+cols+" FROM ");
-		}
-		OrderStore orders = run.getOrderStore();
-		if(null != orders) {
-			sql += orders.getRunText(getDelimiterFr() + getDelimiterTo());
-		}
-		PageNavi navi = run.getPageNavi();
-		if(null != navi) {
-			long limit = navi.getLastRow() - navi.getFirstRow() + 1;
-			if(limit < 0) {
-				limit = 0;
-			}
-			sql += " LIMIT " + navi.getFirstRow() + "," + limit;
-		}
-		sql = compressCondition(runtime, sql);
-		return sql;
-	}
-
-	/**
-	 * 合成分页 pg适用
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
-	 * @return String
-	 */
-	protected String pageLimitOffset(DataRuntime runtime, Run run) {
-		String sql = run.getBaseQuery();
-		String cols = run.getQueryColumn();
-		if(!"*".equals(cols)) {
-			String reg = "(?i)^select[\\s\\S]+from";
-			sql = sql.replaceAll(reg,"SELECT "+cols+" FROM ");
-		}
-		OrderStore orders = run.getOrderStore();
-		if(null != orders) {
-			sql += orders.getRunText(getDelimiterFr()+getDelimiterTo());
-		}
-		PageNavi navi = run.getPageNavi();
-		if(null != navi) {
-			long limit = navi.getLastRow() - navi.getFirstRow() + 1;
-			if(limit < 0) {
-				limit = 0;
-			}
-			sql += " LIMIT " + limit + " OFFSET " + navi.getFirstRow();
-		}
-		sql = compressCondition(runtime, sql);
-		return sql;
-	}
-
-	/**
-	 * 合成分页 oracle12-适用
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
-	 * @return String
-	 */
-	protected String pageRowNum(DataRuntime runtime, Run run) {
-		StringBuilder builder = new StringBuilder();
-		String cols = run.getQueryColumn();
-		PageNavi navi = run.getPageNavi();
-		String sql = run.getBaseQuery();
-		OrderStore orders = run.getOrderStore();
-		long first = 0;
-		long last = 0;
-		String order = "";
-		if(null != orders) {
-			order = orders.getRunText(getDelimiterFr()+getDelimiterTo());
-		}
-		if(null != navi) {
-			first = navi.getFirstRow();
-			last = navi.getLastRow();
-		}
-		if(null == navi) {
-			builder.append(sql).append("\n").append(order);
-		}else{
-			// 分页
-			builder.append("SELECT ").append(cols).append(" FROM( \n");
-			builder.append("SELECT TAB_I.*,ROWNUM AS PAGE_ROW_NUMBER_ \n");
-			builder.append("FROM( \n");
-			builder.append(sql);
-			builder.append("\n").append(order);
-			builder.append(")  TAB_I \n");
-			builder.append(")  TAB_O WHERE PAGE_ROW_NUMBER_ >= ").append(first + 1).append(" AND PAGE_ROW_NUMBER_ <= ").append(last + 1);
-
-		}
-
-		return builder.toString();
-
-	}
-
-	/**
-	 * 合成分页 oracle12=+适用
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
-	 * @return String
-	 */
-	protected String pageOffsetNext(DataRuntime runtime, Run run) {
-		StringBuilder builder = new StringBuilder();
-		PageNavi navi = run.getPageNavi();
-		String sql = run.getBaseQuery();
-		OrderStore orders = run.getOrderStore();
-		long first = 0;
-		String order = "";
-		if(null != orders) {
-			order = orders.getRunText(getDelimiterFr()+getDelimiterTo());
-		}
-		if(null != navi) {
-			first = navi.getFirstRow();
-		}
-		if(null == navi) {
-			builder.append(sql).append("\n").append(order);
-		}else{
-			// 分页
-			builder.append(sql).append("\n").append(order);
-			builder.append(" OFFSET ").append(first).append(" ROWS FETCH NEXT ").append(navi.getPageRows()).append(" ROWS ONLY");
-		}
-		return builder.toString();
-	}
-
-	/**
-	 * 合成分页 informix适用
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
-	 * @return String
-	 */
-	protected String pageSkip(DataRuntime runtime, Run run) {
-		String sql = run.getBaseQuery();
-		String cols = run.getQueryColumn();
-		if(!"*".equals(cols)) {
-			String reg = "(?i)^select[\\s\\S]+from";
-			sql = sql.replaceAll(reg,"SELECT " + cols + " FROM ");
-		}
-		OrderStore orders = run.getOrderStore();
-		if(null != orders) {
-			sql += orders.getRunText(getDelimiterFr()+getDelimiterTo());
-		}
-		PageNavi navi = run.getPageNavi();
-		if(null != navi) {
-			long limit = navi.getLastRow() - navi.getFirstRow() + 1;
-			if(limit < 0) {
-				limit = 0;
-			}
-			String sub = sql.substring(sql.toUpperCase().indexOf("SELECT") + 6);
-			sql = "SELECT SKIP " + navi.getFirstRow() + " FIRST " + limit + sub;
-		}
-		return sql;
-	}
-
-	/**
-	 * 合成分页 mssql 2005-适用
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
-	 * @return String
-	 */
-	protected String pageTop(DataRuntime runtime, Run run) {
-		StringBuilder builder = new StringBuilder();
-		String cols = run.getQueryColumn();
-		PageNavi navi = run.getPageNavi();
-		String sql = run.getBaseQuery();
-		OrderStore orders = run.getOrderStore();
-		long first = 0;
-		long last = 0;
-		String order = "";
-		if(null != orders) {
-			order = orders.getRunText(getDelimiterFr()+getDelimiterTo());
-		}
-		if(null != navi) {
-			first = navi.getFirstRow();
-			last = navi.getLastRow();
-		}
-		if(first == 0 && null != navi) {
-			// top
-			builder.append("SELECT TOP ").append(last+1).append(" "+cols+" FROM(\n");
-			builder.append(sql).append("\n) AS _TAB_O \n");
-			builder.append(order);
-			return builder.toString();
-		}
-		if(null == navi) {
-			builder.append(sql).append("\n").append(order);
-		}else{
-			// 分页
-			long rows = navi.getPageRows();
-			if(rows * navi.getCurPage() > navi.getTotalRow()) {
-				// 最后一页不足10条
-				rows = navi.getTotalRow() % navi.getPageRows();
-			}
-			String asc = order;
-			String desc = order.replace("ASC","<A_ORDER>");
-			desc = desc.replace("DESC","ASC");
-			desc = desc.replace("<A_ORDER>","DESC");
-			builder.append("SELECT "+cols+" FROM (\n ");
-			builder.append("SELECT TOP ").append(rows).append(" * FROM (\n");
-			builder.append("SELECT TOP ").append(navi.getPageRows()*navi.getCurPage()).append(" * ");
-			builder.append(" FROM (" + sql + ") AS T0 ").append(asc).append("\n");
-			builder.append(") AS T1 ").append(desc).append("\n");
-			builder.append(") AS T2").append(asc);
-		}
-		return builder.toString();
-	}
-
-	/**
-	 * 合成分页 mssql 2005=+适用
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
-	 * @return String
-	 */
-	protected String pageRowNumber(DataRuntime runtime, Run run) {
-
-		StringBuilder builder = new StringBuilder();
-		String cols = run.getQueryColumn();
-		PageNavi navi = run.getPageNavi();
-		String sql = run.getBaseQuery();
-		OrderStore orders = run.getOrderStore();
-		long first = 0;
-		long last = 0;
-		String order = "";
-		if(null != orders) {
-			order = orders.getRunText(getDelimiterFr()+getDelimiterTo());
-		}
-		if(null != navi) {
-			first = navi.getFirstRow();
-			last = navi.getLastRow();
-		}
-		if(first == 0 && null != navi) {
-			// top
-			builder.append("SELECT TOP ").append(last+1).append(" "+cols+" FROM(\n");
-			builder.append(sql).append("\n) AS _TAB_O \n");
-			builder.append(order);
-			return builder.toString();
-		}
-		if(null == navi) {
-			builder.append(sql).append("\n").append(order);
-		}else{
-			// 分页
-			// 2005 及以上
-			if(BasicUtil.isEmpty(order)) {
-				order = "ORDER BY "+ ConfigTable.DEFAULT_PRIMARY_KEY;
-			}
-			builder.append("SELECT "+cols+" FROM( \n");
-			builder.append("SELECT _TAB_I.*,ROW_NUMBER() OVER(")
-					.append(order)
-					.append(") AS PAGE_ROW_NUMBER_ \n");
-			builder.append("FROM( \n");
-			builder.append(sql);
-			builder.append(") AS _TAB_I \n");
-			builder.append(") AS _TAB_O WHERE PAGE_ROW_NUMBER_ BETWEEN "+(first+1)+" AND "+(last+1));
-		}
-		return builder.toString();
-	}
-
-	protected String concatFun(DataRuntime runtime, String ... args) {
-		String result = "";
-		if(null != args && args.length > 0) {
-			result = "concat(";
-			int size = args.length;
-			for(int i=0; i<size; i++) {
-				String arg = args[i];
-				if(i>0) {
-					result += ",";
-				}
-				result += arg;
-			}
-			result += ")";
-		}
-		return result;
-	}
-
-	protected String concatOr(DataRuntime runtime, String ... args) {
-		String result = "";
-		if(null != args && args.length > 0) {
-			int size = args.length;
-			for(int i=0; i<size; i++) {
-				String arg = args[i];
-				if(i>0) {
-					result += " || ";
-				}
-				result += arg;
-			}
-		}
-		return result;
-	}
-	protected String concatAdd(DataRuntime runtime, String ... args) {
-		String result = "";
-		if(null != args && args.length > 0) {
-			int size = args.length;
-			for(int i=0; i<size; i++) {
-				String arg = args[i];
-				if(i>0) {
-					result += " + ";
-				}
-				result += arg;
-			}
-		}
-		return result;
-	}
-	protected String concatAnd(DataRuntime runtime, String ... args) {
-		String result = "";
-		if(null != args && args.length > 0) {
-			int size = args.length;
-			for(int i=0; i<size; i++) {
-				String arg = args[i];
-				if(i>0) {
-					result += " & ";
-				}
-				result += arg;
-			}
-		}
-		return result;
-	}
-	private void queryTimeout(Statement statement, ConfigStore configs) {
-		int timeout = ConfigStore.SQL_QUERY_TIMEOUT(configs);
-		if(timeout > 0) {
-			try {
-				statement.setQueryTimeout(timeout);
-			}catch (Exception e) {
-				log.warn("设置超时时间异常:{}", e);
-			}
-		}
-	}
-	private void updateTimeout(Statement statement, ConfigStore configs) {
-		int timeout = ConfigStore.SQL_QUERY_TIMEOUT(configs);
-		if(timeout > 0) {
-			try {
-				statement.setQueryTimeout(timeout);
-			}catch (Exception e) {
-				log.warn("设置超时时间异常:{}", e);
-			}
-		}
-	}
 
 }

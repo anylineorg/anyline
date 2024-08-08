@@ -1686,7 +1686,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	@Override
 	public MetadataFieldRefer initTableFieldRefer() {
 		MetadataFieldRefer refer = new MetadataFieldRefer(Table.class);
-		refer.setRefer(Table.FIELD_NAME, "NAME");
+		refer.map(Table.FIELD_NAME, "NAME");
 		return refer;
 	}
 	/**
@@ -2282,10 +2282,10 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	@Override
 	public MetadataFieldRefer initColumnFieldRefer() {
 		MetadataFieldRefer refer = new MetadataFieldRefer(Column.class);
-		refer.setRefer(Column.FIELD_NAME, "NAME");
-		refer.setRefer(Column.FIELD_NULLABLE, "NOTNULL");
-		refer.setRefer(Column.FIELD_TYPE_NAME, "TYPE");
-		refer.setRefer(Column.FIELD_DEFAULT_VALUE, "DFLT_VALUE");
+		refer.map(Column.FIELD_NAME, "NAME");
+		refer.map(Column.FIELD_NULLABLE, "NOTNULL");
+		refer.map(Column.FIELD_TYPE_NAME, "TYPE");
+		refer.map(Column.FIELD_DEFAULT_VALUE, "DFLT_VALUE");
 		return refer;
 	}
 	/**

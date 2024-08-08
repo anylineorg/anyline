@@ -1235,7 +1235,7 @@ public class IgniteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
     @Override
     public MetadataFieldRefer initDatabaseFieldRefer() {
         MetadataFieldRefer refer = new MetadataFieldRefer(Database.class);
-        refer.setRefer(Database.FIELD_NAME, "DATABASE");
+        refer.map(Database.FIELD_NAME, "DATABASE");
         return refer;
     }
 
@@ -1963,6 +1963,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         return runs;
     }
 
+
     /**
      * View[结果集封装]<br/>
      * View 属性与结果集对应关系
@@ -1970,7 +1971,12 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
      */
     @Override
     public MetadataFieldRefer initViewFieldRefer() {
-        return super.initViewFieldRefer();
+        MetadataFieldRefer refer = new MetadataFieldRefer(View.class);
+        refer.map(View.FIELD_NAME, "TABLE_NAME");
+        refer.map(View.FIELD_CATALOG, "");
+        refer.map(View.FIELD_SCHEMA, "SCHEMA_NAME");
+        refer.map(View.FIELD_DEFINITION, "VIEW_DEFINITION");
+        return refer;
     }
     /**
      * view[结果集封装]<br/>
@@ -1978,31 +1984,15 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条SQL 对照buildQueryViewsRun返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
+     * @param previous 上一步查询结果
      * @param query 查询条件 根据metadata属性
      * @param set 查询结果集
      * @return views
      * @throws Exception 异常
      */
     @Override
-    public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> views, View query, DataSet set) throws Exception {
-        Catalog catalog = query.getCatalog();
-        Schema schema = query.getSchema();
-        String pattern = query.getName();
-        if(null == views) {
-            views = new LinkedHashMap<>();
-        }
-        for(DataRow row:set) {
-            String name = row.getString("TABLE_NAME");
-            T view = views.get(name.toUpperCase());
-            if(null == view) {
-                view = (T)new View();
-            }
-            view.setSchema(row.getString("SCHEMA_NAME"));
-            view.setName(name);
-            view.setDefinition(row.getString("VIEW_DEFINITION"));
-            views.put(name.toUpperCase(), view);
-        }
-        return views;
+    public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, View query, DataSet set) throws Exception {
+        return super.views(runtime, index, create, previous, query, set);
     }
 
     /**
@@ -2061,6 +2051,35 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
             ddls.add(row.getString("CREATE VIEW"));
         }
         return ddls;
+    }
+
+    /**
+     * view[结果集封装]<br/>
+     * 根据查询结果封装View基础属性
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param index index
+     * @param meta 上一步封装结果
+     * @param query 查询条件 根据metadata属性
+     * @param row 查询结果集
+     * @return View
+     * @param <T> View
+     */
+    public <T extends View> T init(DataRuntime runtime, int index, T meta, View query, DataRow row) {
+        return super.init(runtime, index, meta, query, row);
+    }
+
+
+    /**
+     * view[结果集封装]<br/>
+     * 根据查询结果封装View更多属性
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta 上一步封装结果
+     * @param row 查询结果集
+     * @return View
+     */
+    @Override
+    public <T extends View> T detail(DataRuntime runtime, int index, T meta, View query, DataRow row) {
+        return super.detail(runtime, index, meta, query, row);
     }
     /* *****************************************************************************************************************
      *                                                     master table
@@ -2809,13 +2828,13 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
     @Override
     public MetadataFieldRefer initIndexFieldRefer() {
         MetadataFieldRefer refer = new MetadataFieldRefer(Index.class);
-        refer.setRefer(Index.FIELD_NAME, "INDEX_NAME");
-        refer.setRefer(Index.FIELD_SCHEMA, "SCHEMA_NAME");
-        refer.setRefer(Index.FIELD_TABLE, "TABLE_NAME");
-        refer.setRefer(Index.FIELD_COMMENT, "INDEX_COMMENT");
-        refer.setRefer(Index.FIELD_TYPE, "INDEX_TYPE");
-        refer.setRefer(Index.FIELD_COLUMN, "COLUMN_NAME");
-        refer.setRefer(Index.FIELD_POSITION, "ORDINAL_POSITION");
+        refer.map(Index.FIELD_NAME, "INDEX_NAME");
+        refer.map(Index.FIELD_SCHEMA, "SCHEMA_NAME");
+        refer.map(Index.FIELD_TABLE, "TABLE_NAME");
+        refer.map(Index.FIELD_COMMENT, "INDEX_COMMENT");
+        refer.map(Index.FIELD_TYPE, "INDEX_TYPE");
+        refer.map(Index.FIELD_COLUMN, "COLUMN_NAME");
+        refer.map(Index.FIELD_POSITION, "ORDINAL_POSITION");
         return refer;
     }
     /**

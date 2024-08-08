@@ -1911,7 +1911,6 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
      */
     @Override
     public List<String> ddl(DataRuntime runtime, int index, Table table, List<String> ddls, DataSet set) {
-
         if(null == ddls) {
             ddls = new ArrayList<>();
         }

@@ -1906,11 +1906,11 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	@Override
 	public MetadataFieldRefer initViewFieldRefer() {
 		MetadataFieldRefer refer = new MetadataFieldRefer(View.class);
-		refer.setRefer(View.FIELD_NAME, "VIEW_NAME");
-		refer.setRefer(View.FIELD_CATALOG, "");
-		refer.setRefer(View.FIELD_SCHEMA, "SCHEMA_NAME");
-		refer.setRefer(View.FIELD_DEFINITION, "DEFINITION");
-		refer.setRefer(View.FIELD_COMMENT, "COMMENTS");
+		refer.map(View.FIELD_NAME, "VIEW_NAME");
+		refer.map(View.FIELD_CATALOG, "");
+		refer.map(View.FIELD_SCHEMA, "SCHEMA_NAME");
+		refer.map(View.FIELD_DEFINITION, "DEFINITION");
+		refer.map(View.FIELD_COMMENT, "COMMENTS");
 		return refer;
 	}
 	/**

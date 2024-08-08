@@ -32,29 +32,39 @@ public class MetadataFieldRefer {
     public MetadataFieldRefer(Class<?> metadata){
         this.metadata = metadata;
     }
-    public MetadataFieldRefer(Class<?> metadata, String name){
-        this.metadata = metadata;
-        setRefer("name", name);
-    }
     public Class<?> metadata(){
         return metadata;
     }
-    public String[] getRefers(String field) {
+    public String[] maps(String field) {
         return map.get(field.toUpperCase());
     }
 
-    public String getRefer(String field) {
+    public String map(String field) {
         String[] refers = map.get(field.toUpperCase());
         if(null != refers && refers.length > 0) {
             return refers[0];
         }
         return null;
     }
-    public MetadataFieldRefer setRefer(String field, String[] refers) {
+
+    /**
+     * 属性与列名对应关系
+     * @param field metadata属性
+     * @param refers 列名 如果有多种情况 提供多个
+     * @return MetadataFieldRefer
+     */
+    public MetadataFieldRefer map(String field, String[] refers) {
         map.put(field.toUpperCase(), refers);
         return this;
     }
-    public MetadataFieldRefer setRefer(String field, String refer) {
+
+    /**
+     * 属性与列名对应关系
+     * @param field metadata属性
+     * @param refer 列名 如果有多种情况 用逗号分隔
+     * @return MetadataFieldRefer
+     */
+    public MetadataFieldRefer map(String field, String refer) {
         String[] refers = null;
         if(BasicUtil.isNotEmpty(refer)) {
             refers = refer.split(",");

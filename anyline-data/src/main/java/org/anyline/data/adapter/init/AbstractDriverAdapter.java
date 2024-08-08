@@ -4382,8 +4382,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         }
         MetadataFieldRefer refer = refer(runtime, Database.class);
         meta.setMetadata(row);
-        meta.setName(row.getString(refer.getRefers(Database.FIELD_NAME)));
-        meta.setUser(row.getString(refer.getRefers(Database.FIELD_USER)));
+        meta.setName(row.getString(refer.maps(Database.FIELD_NAME)));
+        meta.setUser(row.getString(refer.maps(Database.FIELD_USER)));
         return meta;
     }
 
@@ -4749,7 +4749,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             meta = (T)new Catalog();
         }
         MetadataFieldRefer refer = refer(runtime, Catalog.class);
-        String name = row.getString(refer.getRefers(Catalog.FIELD_NAME));
+        String name = row.getString(refer.maps(Catalog.FIELD_NAME));
         meta.setMetadata(row);
         meta.setName(name);
         return meta;
@@ -5158,15 +5158,15 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             meta = (T)new Schema();
         }
         MetadataFieldRefer refer = refer(runtime, Schema.class);
-        String _catalog = row.getString(refer.getRefers(Schema.FIELD_CATALOG));
+        String _catalog = row.getString(refer.maps(Schema.FIELD_CATALOG));
         if(null == _catalog && null != catalog) {
             _catalog = catalog.getName();
         }
-        String name = row.getString(refer.getRefers(Schema.FIELD_NAME));
+        String name = row.getString(refer.maps(Schema.FIELD_NAME));
         if(null != _catalog) {
             _catalog = _catalog.trim();
         }
-        meta.setUser(row.getString(refer.getRefers(Schema.FIELD_USER)));
+        meta.setUser(row.getString(refer.maps(Schema.FIELD_USER)));
         meta.setMetadata(row);
         meta.setCatalog(_catalog);
         meta.setName(name);
@@ -5474,10 +5474,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
     @Override
     public MetadataFieldRefer initTableFieldRefer() {
         MetadataFieldRefer refer = new MetadataFieldRefer(Table.class);
-        refer.setRefer(Table.FIELD_NAME, "TABLE_NAME,NAME,TABNAME");
-        refer.setRefer(Table.FIELD_CATALOG, "TABLE_CATALOG");
-        refer.setRefer(Table.FIELD_SCHEMA, "TABLE_SCHEMA,TABSCHEMA,SCHEMA_NAME");
-        refer.setRefer(Table.FIELD_COMMENT, "TABLE_COMMENT,COMMENTS,COMMENT");
+        refer.map(Table.FIELD_NAME, "TABLE_NAME,NAME,TABNAME");
+        refer.map(Table.FIELD_CATALOG, "TABLE_CATALOG");
+        refer.map(Table.FIELD_SCHEMA, "TABLE_SCHEMA,TABSCHEMA,SCHEMA_NAME");
+        refer.map(Table.FIELD_COMMENT, "TABLE_COMMENT,COMMENTS,COMMENT");
         return refer;
     }
 
@@ -5489,10 +5489,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
     @Override
     public MetadataFieldRefer initTableCommentFieldRefer() {
         MetadataFieldRefer refer = new MetadataFieldRefer(TableComment.class);
-        refer.setRefer(TableComment.FIELD_VALUE, "TABLE_COMMENT");
-        refer.setRefer(TableComment.FIELD_TABLE,  "TABLE_NAME");
-        refer.setRefer(TableComment.FIELD_CATALOG, "TABLE_CATALOG");
-        refer.setRefer(TableComment.FIELD_SCHEMA, "TABLE_SCHEMA");
+        refer.map(TableComment.FIELD_VALUE, "TABLE_COMMENT");
+        refer.map(TableComment.FIELD_TABLE,  "TABLE_NAME");
+        refer.map(TableComment.FIELD_CATALOG, "TABLE_CATALOG");
+        refer.map(TableComment.FIELD_SCHEMA, "TABLE_SCHEMA");
         return refer;
     }
 	/**
@@ -7285,9 +7285,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
     @Override
     public MetadataFieldRefer initViewFieldRefer() {
         MetadataFieldRefer refer = new MetadataFieldRefer(View.class);
-        refer.setRefer(View.FIELD_NAME, "VIEW_NAME,TABLE_NAME,NAME,TABNAME");
-        refer.setRefer(View.FIELD_CATALOG, "VIEW_CATALOG,TABLE_CATALOG");
-        refer.setRefer(View.FIELD_SCHEMA, "VIEW_SCHEMA,TABLE_SCHEMA,TABSCHEMA,SCHEMA_NAME");
+        refer.map(View.FIELD_NAME, "VIEW_NAME,TABLE_NAME,NAME,TABNAME");
+        refer.map(View.FIELD_CATALOG, "VIEW_CATALOG,TABLE_CATALOG");
+        refer.map(View.FIELD_SCHEMA, "VIEW_SCHEMA,TABLE_SCHEMA,TABSCHEMA,SCHEMA_NAME");
         return refer;
     }
 	/**
@@ -8737,17 +8737,17 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
     @Override
     public MetadataFieldRefer initColumnFieldRefer() {
         MetadataFieldRefer refer = new MetadataFieldRefer(Column.class);
-        refer.setRefer(Column.FIELD_NAME, "COLUMN_NAME,COLNAME");
-        refer.setRefer(Column.FIELD_CATALOG,"TABLE_CATALOG");
-        refer.setRefer(Column.FIELD_SCHEMA,"TABLE_SCHEMA,TABSCHEMA,SCHEMA_NAME,OWNER");
-        refer.setRefer(Column.FIELD_TABLE,"TABLE_NAME,TABNAME");
-        refer.setRefer(Column.FIELD_NULLABLE,"IS_NULLABLE,NULLABLE,NULLS");
-        refer.setRefer(Column.FIELD_CHARSET, "CHARACTER_SET_NAME");
-        refer.setRefer(Column.FIELD_COLLATE, "COLLATION_NAME");
-        refer.setRefer(Column.FIELD_TYPE_NAME, "FULL_TYPE,DATA_TYPE,TYPE_NAME,TYPENAME,DATA_TYPE_NAME,UDT_NAME,DATA_TYPE,TYPENAME,DATA_TYPE_NAME");
-        refer.setRefer(Column.FIELD_POSITION, "ORDINAL_POSITION,COLNO,POSITION");
-        refer.setRefer(Column.FIELD_COMMENT ,"COLUMN_COMMENT,COMMENTS,REMARKS");
-        refer.setRefer(Column.FIELD_DEFAULT_VALUE, "COLUMN_DEFAULT,DATA_DEFAULT,DEFAULT,DEFAULT_VALUE,DEFAULT_DEFINITION");
+        refer.map(Column.FIELD_NAME, "COLUMN_NAME,COLNAME");
+        refer.map(Column.FIELD_CATALOG,"TABLE_CATALOG");
+        refer.map(Column.FIELD_SCHEMA,"TABLE_SCHEMA,TABSCHEMA,SCHEMA_NAME,OWNER");
+        refer.map(Column.FIELD_TABLE,"TABLE_NAME,TABNAME");
+        refer.map(Column.FIELD_NULLABLE,"IS_NULLABLE,NULLABLE,NULLS");
+        refer.map(Column.FIELD_CHARSET, "CHARACTER_SET_NAME");
+        refer.map(Column.FIELD_COLLATE, "COLLATION_NAME");
+        refer.map(Column.FIELD_TYPE_NAME, "FULL_TYPE,DATA_TYPE,TYPE_NAME,TYPENAME,DATA_TYPE_NAME,UDT_NAME,DATA_TYPE,TYPENAME,DATA_TYPE_NAME");
+        refer.map(Column.FIELD_POSITION, "ORDINAL_POSITION,COLNO,POSITION");
+        refer.map(Column.FIELD_COMMENT ,"COLUMN_COMMENT,COMMENTS,REMARKS");
+        refer.map(Column.FIELD_DEFAULT_VALUE, "COLUMN_DEFAULT,DATA_DEFAULT,DEFAULT,DEFAULT_VALUE,DEFAULT_DEFINITION");
         return refer;
     }
 	/**
@@ -9928,12 +9928,12 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
     @Override
     public MetadataFieldRefer initIndexFieldRefer() {
         MetadataFieldRefer refer = new MetadataFieldRefer(Index.class);
-        refer.setRefer(Index.FIELD_NAME,"INDEX_NAME");
-        refer.setRefer(Index.FIELD_TABLE,"TABLE_NAME");
-        refer.setRefer(Index.FIELD_SCHEMA, "TABLE_SCHEMA");
-        refer.setRefer(Index.FIELD_COLUMN, "COLUMN_NAME");
-        refer.setRefer(Index.FIELD_ORDER, "COLLATION");
-        refer.setRefer(Index.FIELD_POSITION, "SEQ_IN_INDEX");
+        refer.map(Index.FIELD_NAME,"INDEX_NAME");
+        refer.map(Index.FIELD_TABLE,"TABLE_NAME");
+        refer.map(Index.FIELD_SCHEMA, "TABLE_SCHEMA");
+        refer.map(Index.FIELD_COLUMN, "COLUMN_NAME");
+        refer.map(Index.FIELD_ORDER, "COLLATION");
+        refer.map(Index.FIELD_POSITION, "SEQ_IN_INDEX");
         return refer;
     }
 	/**
@@ -10159,15 +10159,15 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			meta.setMetadata(row);
 
 			//是否主键
-			String[] chks = refer.getRefers(Index.FIELD_PRIMARY_CHECK);
-			String[] vals = refer.getRefers(Index.FIELD_PRIMARY_CHECK_VALUE);
+			String[] chks = refer.maps(Index.FIELD_PRIMARY_CHECK);
+			String[] vals = refer.maps(Index.FIELD_PRIMARY_CHECK_VALUE);
 			Boolean bol = matchBoolean(row, chks, vals);
 			if(null != bol){
 				meta.setPrimary(bol);
 			}
 			//是否唯一
-			chks = refer.getRefers(Index.FIELD_UNIQUE_CHECK);
-			vals = refer.getRefers(Index.FIELD_UNIQUE_CHECK_VALUE);
+			chks = refer.maps(Index.FIELD_UNIQUE_CHECK);
+			vals = refer.maps(Index.FIELD_UNIQUE_CHECK_VALUE);
 			bol = matchBoolean(row, chks, vals);
 			if(null != bol){
 				meta.setUnique(bol);
@@ -10189,7 +10189,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	@Override
 	public <T extends Index> T detail(DataRuntime runtime, int index, T meta, Index query, DataRow row) throws Exception {
         MetadataFieldRefer refer = refer(runtime, Index.class);
-		String columnName = row.getStringWithoutEmpty(refer.getRefers(Index.FIELD_COLUMN));
+		String columnName = row.getStringWithoutEmpty(refer.maps(Index.FIELD_COLUMN));
 		if(null == columnName) {
 			return meta;
 		}
@@ -10351,10 +10351,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
     @Override
     public MetadataFieldRefer initConstraintFieldRefer() {
         MetadataFieldRefer refer = new MetadataFieldRefer(Constraint.class);
-        refer.setRefer(Constraint.FIELD_NAME, "CONSTRAINT_NAME");
-        refer.setRefer(Constraint.FIELD_SCHEMA, "CONSTRAINT_CATALOG");
-        refer.setRefer(Constraint.FIELD_TABLE, "TABLE_NAME");
-        refer.setRefer(Constraint.FIELD_TYPE, "CONSTRAINT_TYPE");
+        refer.map(Constraint.FIELD_NAME, "CONSTRAINT_NAME");
+        refer.map(Constraint.FIELD_SCHEMA, "CONSTRAINT_CATALOG");
+        refer.map(Constraint.FIELD_TABLE, "TABLE_NAME");
+        refer.map(Constraint.FIELD_TYPE, "CONSTRAINT_TYPE");
         return refer;
     }
 
@@ -16580,8 +16580,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         }
         MetadataFieldRefer refer = refer(runtime, Procedure.class);
         meta.setMetadata(row);
-        meta.setName(row.getString(refer.getRefers(User.FIELD_NAME)));
-        meta.setHost(row.getString(refer.getRefers(User.FIELD_HOST)));
+        meta.setName(row.getString(refer.maps(User.FIELD_NAME)));
+        meta.setHost(row.getString(refer.maps(User.FIELD_HOST)));
         return meta;
 	}
 
@@ -16727,7 +16727,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         }
         MetadataFieldRefer refer = refer(runtime, Procedure.class);
         meta.setMetadata(row);
-        meta.setName(row.getString(refer.getRefers(Procedure.FIELD_NAME)));
+        meta.setName(row.getString(refer.maps(Procedure.FIELD_NAME)));
         return meta;
 	}
 
@@ -16839,7 +16839,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 
     protected String getString(DataRow row, MetadataFieldRefer refer, String key, String def){
         String result = null;
-        String[] keys = refer.getRefers(key);
+        String[] keys = refer.maps(key);
         if(null != keys && keys.length > 0){
             result = row.getString(keys);
         }
@@ -16855,7 +16855,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
     protected Boolean getBoolean(DataRow row, MetadataFieldRefer refer, String key, Boolean def){
         Boolean result = null;
         try{
-            String[] keys = refer.getRefers(key);
+            String[] keys = refer.maps(key);
             if(null != keys && keys.length > 0){
                 result = row.getBoolean(keys);
             }
@@ -16868,7 +16868,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
     protected Date getDate(DataRow row, MetadataFieldRefer refer, String key, Date def){
         Date result = null;
         try{
-            String[] keys = refer.getRefers(key);
+            String[] keys = refer.maps(key);
             if(null != keys && keys.length > 0){
                 result = row.getDate(keys);
             }
@@ -16885,7 +16885,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
     protected Long getLong(DataRow row, MetadataFieldRefer refer, String key, Long def){
         Long result = null;
         try{
-            String[] keys = refer.getRefers(key);
+            String[] keys = refer.maps(key);
             if(null != keys && keys.length > 0){
                 result = row.getLong(keys);
             }
@@ -16902,7 +16902,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
     protected Integer getInt(DataRow row, MetadataFieldRefer refer, String key, Integer def){
         Integer result = null;
         try{
-            String[] keys = refer.getRefers(key);
+            String[] keys = refer.maps(key);
             if(null != keys && keys.length > 0){
                 result = row.getInt(keys);
             }
@@ -16917,8 +16917,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         return getInt(row, refer, key, null);
     }
     protected Boolean matchBoolean(DataRow row, MetadataFieldRefer refer, String key, String value) {
-        String[] cols = refer.getRefers(key);
-        String[] vals = refer.getRefers(value);
+        String[] cols = refer.maps(key);
+        String[] vals = refer.maps(value);
         return matchBoolean(row, cols, vals);
     }
     /**
