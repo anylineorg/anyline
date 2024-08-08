@@ -19,6 +19,7 @@ package org.anyline.data;
 import org.anyline.entity.Compare;
 import org.anyline.entity.PageNavi;
 import org.anyline.metadata.*;
+import org.anyline.metadata.type.TypeMetadata;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -121,7 +122,8 @@ public interface Run {
     List<String> getExcludeColumns();
 
     Object getValue();
-
+    void setValueType(TypeMetadata type);
+    TypeMetadata getValueType();
     String log(ACTION.DML action, boolean placeholder);
 
 }

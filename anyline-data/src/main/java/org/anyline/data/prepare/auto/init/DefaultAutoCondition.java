@@ -302,19 +302,19 @@ public class DefaultAutoCondition extends AbstractCondition implements AutoCondi
 		// runtime value 有占位符
 		if(support && placeholder && variableType != Condition.VARIABLE_PLACEHOLDER_TYPE_NONE) {
 			if(null == val) {
-				runValues.add(new RunValue(this.column, val));
+				runValues.add(new RunValue(this.column, val, valueClass));
 			}else { //多个值 IN 、 BETWEEN 、 FIND_IN_SET
 				// (compareCode == 40 || compareCode == 140 || compareCode == 80 || (compareCode >=60 && compareCode <= 62) || compareCode == 75 || compareCode ==76) {
 				if(compare.valueCount() > 1) {
 					List<Object> list = getValues(val);
 					if (null != list) {
 						for (Object obj : list) {
-							runValues.add(new RunValue(this.column, obj));
+							runValues.add(new RunValue(this.column, obj, valueClass));
 						}
 					}
 				} else {
 					Object value = getValue(val);
-					runValues.add(new RunValue(this.column, value));
+					runValues.add(new RunValue(this.column, value, valueClass));
 				}
 			}
 		}

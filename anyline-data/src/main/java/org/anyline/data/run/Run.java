@@ -75,7 +75,7 @@ public interface Run extends org.anyline.data.Run{
 	 * @param compare 比较方式 
 	 * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
 	 */
-	Run addCondition(EMPTY_VALUE_SWITCH swt, Compare compare, String prefix, String var, Object value);
+	Run addCondition(EMPTY_VALUE_SWITCH swt, Compare compare, String prefix, String var, Object value, String valueClass);
 	Run setConditionChain(ConditionChain chain);
 
 	/**

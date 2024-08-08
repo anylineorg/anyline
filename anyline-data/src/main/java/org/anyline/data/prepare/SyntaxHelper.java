@@ -17,12 +17,19 @@
 
 
 package org.anyline.data.prepare;
- 
+
 import org.anyline.data.prepare.init.DefaultVariable;
 import org.anyline.entity.Compare;
+import org.anyline.metadata.refer.MetadataReferHolder;
+import org.anyline.metadata.type.DatabaseType;
+import org.anyline.metadata.type.init.StandardTypeMetadata;
 import org.anyline.util.BasicUtil;
- 
+
+import java.util.HashMap;
+import java.util.Map;
+
 public class SyntaxHelper {
+	public static Map<String, StandardTypeMetadata> types = new HashMap<>();
 /**
 0.[ID=:ID ]				1.[ID=]				2.[:ID]			3.[ ]		 <br/>
 0.[IN(:TYPE)]			1.[IN(]				2.[:TYPE]		3.[)]		 <br/>
@@ -35,7 +42,11 @@ public class SyntaxHelper {
 0.[IN(${TYPE})]			1.[IN(]				2.[${TYPE}]		3.[)]		 <br/>
 0.['${SORT}']			1.[']				2.[${SORT}]		3.[']		 <br/>
 0.['%${NM}%]			1.['%]				2.[${NM}]		3.[%]		 <br/>
-0.[CONTAT('%', {CODE}]	1.[CONTAT('%', ]		2.[{CODE}]		3.[null]	 <br/>
+0.[CONCAT('%', {CODE}]	1.[CONTAT('%', ]		2.[{CODE}]		3.[null]	 <br/>
+ ====================== <br/>
+ 注意区分数据类型
+ CODE:code::int
+ '2023-01-01'::date
  
 	   @param signType 1:以:区分 2:以{}区分
 	 * @param all  all
@@ -45,6 +56,13 @@ public class SyntaxHelper {
 	 * @return Variable
 	 */ 
 	public static Variable buildVariable(int signType, String all, String prefix, String fullKey, String afterChar) {
+		if(all.startsWith("::")){
+			String type = all.replace("::","");
+			//检测数据类型
+			if(checkType(type)){
+				return null;
+			}
+		}
 		int varType = -1;
 		if(null != prefix && null != fullKey) {
 			if(prefix.endsWith(":") && fullKey.startsWith(":")) {
@@ -133,5 +151,22 @@ public class SyntaxHelper {
 			} 
         } 
 		return null; 
-	} 
+	}
+	public static boolean checkType(String type){
+		type = type.toUpperCase();
+		if(types.isEmpty()){
+			for(StandardTypeMetadata item:StandardTypeMetadata.values()){
+				types.put(item.getName().toUpperCase(), item);
+				types.put(item.name().toUpperCase(), item);
+			}
+		}
+		if(types.containsKey(type)){
+			return true;
+		}
+
+		if(null != MetadataReferHolder.get(DatabaseType.NONE, type)){
+			return true;
+		}
+		return false;
+	}
 } 

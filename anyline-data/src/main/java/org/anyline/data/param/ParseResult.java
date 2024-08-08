@@ -49,6 +49,7 @@ public class ParseResult {
 	private boolean isValueEncrypt			; // value是否加密
 	 
 	private boolean setEncrypt = false		; // 是否已指定加密方式
+	private String valueClass;
  
 	private List<ParseResult> defs = new ArrayList<>();	// 默认值
 	private ParseResult or = null;	// or 只有value或defs有值时 ors才生效
@@ -208,5 +209,13 @@ public class ParseResult {
 			return true;
 		}
 		return false;
+	}
+
+	public String getValueClass() {
+		return valueClass;
+	}
+
+	public void setValueClass(String valueClass) {
+		this.valueClass = valueClass;
 	}
 }

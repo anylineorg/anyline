@@ -118,8 +118,9 @@ public class ConfigParser {
 
 	/**
 	 *
-	 * @param config +id.field:key | key
-	 * 	             +date.dateFr:dateFr | date
+	 * @param config +id.field:key | key<br/>
+	 * 	             +date.dateFr:dateFr | date<br/>
+	 * 	             CO:code::int++
 	 * @return ParseResult
 	 */
 	private static ParseResult parseInit(String config) {
@@ -127,6 +128,18 @@ public class ConfigParser {
 		String prefix = null;
 		String var = config;
 		String key = config;
+		if(config.contains("::")){
+			String[] tmps = config.split("::");
+			config = tmps[0];
+			String type = tmps[1];
+			if(type.endsWith("++")){
+				config += "++";
+			}else if(type.endsWith("+")){
+				config += "+";
+			}
+			type = type.replace("+", "");
+			result.setValueClass(type);
+		}
 		Compare.EMPTY_VALUE_SWITCH swt = Compare.EMPTY_VALUE_SWITCH.IGNORE;
 		if(key.contains(":")) {
 			var = config.substring(0,config.indexOf(":"));

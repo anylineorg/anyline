@@ -225,6 +225,7 @@ public class DefaultConfig implements Config {
 			condition.setSwt(getSwt());
 			//condition.apart(apart);
 			condition.integrality(integrality);
+			condition.setValueClass(parser.getValueClass());
 		}
 		return condition;
 	} 

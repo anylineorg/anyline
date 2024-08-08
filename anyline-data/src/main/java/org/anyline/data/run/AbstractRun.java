@@ -62,7 +62,7 @@ public abstract class AbstractRun implements Run {
 	protected List<Variable> variables;
 
 	protected Object value;
-
+	protected TypeMetadata valueType;
 	protected EMPTY_VALUE_SWITCH swt = EMPTY_VALUE_SWITCH.IGNORE;
 	protected boolean valid = true;
 	protected LinkedHashMap<String, Column> insertColumns = null;
@@ -329,7 +329,7 @@ public abstract class AbstractRun implements Run {
 				this.values = new ArrayList<>();
 			}
 			for(Object value:values) {
-				this.values.add(new RunValue(key, value));
+				this.values.add(new RunValue(key, value, null));
 			}
 		}
 	}
@@ -661,8 +661,9 @@ public abstract class AbstractRun implements Run {
 	 * @param compare 比较方式
 	 */
 	@Override
-	public Run addCondition(EMPTY_VALUE_SWITCH swt, Compare compare, String prefix, String var, Object value) {
+	public Run addCondition(EMPTY_VALUE_SWITCH swt, Compare compare, String prefix, String var, Object value, String valueClass) {
 		Condition condition = new DefaultAutoCondition(swt, compare, prefix, var, value);
+		condition.setValueClass(valueClass);
 		if(null == conditionChain) {
 			conditionChain = new DefaultAutoConditionChain();
 		}
@@ -930,7 +931,21 @@ public abstract class AbstractRun implements Run {
 					addCondition(con);
 					continue;
 				}
-
+				/*String valueClass = null;
+				if(condition.contains("::")){
+					String[] tmps = condition.split("::");
+					condition = tmps[0];
+					valueClass = tmps[1];
+					if(null != valueClass) {
+						if (valueClass.endsWith("++")) {
+							condition += "++";
+						} else if (valueClass.endsWith("+")) {
+							condition += "+";
+						}
+						valueClass = valueClass.replace("+", "");
+					}
+				}
+*/
 				if(condition.contains(":")) {
 					// :符号是否表示时间
 					boolean isTime = false;
@@ -943,7 +958,7 @@ public abstract class AbstractRun implements Run {
 						// 需要解析的SQL
 						ParseResult parser = ConfigParser.parse(condition, false);
 						Object value = ConfigParser.getValues(parser);
-						addCondition(parser.getSwt(), parser.getCompare(), parser.getPrefix(), parser.getVar(), value);
+						addCondition(parser.getSwt(), parser.getCompare(), parser.getPrefix(), parser.getVar(), value, parser.getValueClass());
 						continue;
 					}
 				}
@@ -1040,6 +1055,15 @@ public abstract class AbstractRun implements Run {
 	@Override
 	public void setValue(Object value) {
 		this.value = value;
+	}
+
+	@Override
+	public TypeMetadata getValueType() {
+		return valueType;
+	}
+	@Override
+	public void setValueType(TypeMetadata type) {
+		this.valueType = type;
 	}
 
 	@Override
