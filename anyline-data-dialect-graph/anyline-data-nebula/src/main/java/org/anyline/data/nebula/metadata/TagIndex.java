@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.data.nebula.metadata;
 
 import org.anyline.metadata.Table;
@@ -36,6 +34,7 @@ public class TagIndex extends VertexIndex {
     public TagIndex(Table table, String name) {
         super(table, name);
     }
+
     @Override
     public String getKeyword() {
         return keyword;

@@ -14,12 +14,9 @@
  * limitations under the License.
  */
 
-
-
 /**
  * V2.0 
  */ 
-
 
 package org.anyline.data.prepare.init;
 

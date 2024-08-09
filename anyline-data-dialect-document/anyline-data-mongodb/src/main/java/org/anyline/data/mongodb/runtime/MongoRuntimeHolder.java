@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.data.mongodb.runtime;
 
 import com.mongodb.client.MongoClient;
@@ -77,6 +75,7 @@ public class MongoRuntimeHolder extends AbstractRuntimeHolder implements Runtime
         //runtime.setHolder(this);
         return runtime;
     }
+
     /**
      * 注册运行环境
      * @param key 数据源前缀
@@ -154,7 +153,6 @@ public class MongoRuntimeHolder extends AbstractRuntimeHolder implements Runtime
         }
         return true;
     }
-
 
     public static void close(String key) {
         /*Object datasource = null;

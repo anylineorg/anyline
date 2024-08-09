@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.environment.spring.data.jdbc.datasource;
 
 import org.anyline.data.adapter.DriverAdapter;
@@ -106,7 +104,6 @@ public class SpringJDBCDataSourceHolder extends JDBCDataSourceHolder {
 	 *   2.2 初始化周边环境(init)
 	 * ****************************************************************************************************************/
 
-
 	/**
 	 * 添加数据源，同时添加事务与service
 	 * @param key 数据源名称
@@ -189,7 +186,6 @@ public class SpringJDBCDataSourceHolder extends JDBCDataSourceHolder {
 		}
 	}
 
-
 	/**
 	 * 检测数据源是否连接正常
 	 * @param datasource 数据源名称
@@ -219,9 +215,6 @@ public class SpringJDBCDataSourceHolder extends JDBCDataSourceHolder {
 		return validate(jdbc);
 	}
 
-
-
-
 	/* *****************************************************************************************************************
 	 *
 	 *                                                事务相关
@@ -233,7 +226,6 @@ public class SpringJDBCDataSourceHolder extends JDBCDataSourceHolder {
 	 * 回滚事务
 	 *
 	 * ****************************************************************************************************************/
-
 	public String regTransactionManager(String key, DataSource datasource, boolean primary) {
 
 		/*String tm_id = DataRuntime.ANYLINE_TRANSACTION_BEAN_PREFIX +  key;

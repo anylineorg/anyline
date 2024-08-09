@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.environment.spring.data.jdbc;
 
 import org.anyline.adapter.EntityAdapter;
@@ -530,6 +528,7 @@ public class SpringJDBCActuator implements DriverActuator {
         }
         return map;
     }
+
     @Override
     public long insert(DriverAdapter adapter, DataRuntime runtime, String random, Object data, ConfigStore configs, Run run, String generatedKey, String[] pks) throws Exception {
         long cnt = -1;
@@ -579,6 +578,7 @@ public class SpringJDBCActuator implements DriverActuator {
         identity(adapter, runtime, random, data, configs, keyholder, generatedKey);
         return cnt;
     }
+
     /**
      * insert[命令执行后]
      * insert执行后 通过KeyHolder获取主键值赋值给data
@@ -771,6 +771,7 @@ public class SpringJDBCActuator implements DriverActuator {
         });
         return list;
     }
+
     /**
      * execute [命令执行]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -1056,6 +1057,7 @@ public class SpringJDBCActuator implements DriverActuator {
         previous = SpringJDBCUtil.columns(adapter, runtime, true, previous, table, set);
         return previous;
     }
+
     /**
      * 根方法(3)根据根据驱动内置元数据接口补充表结构
      * @param adapter DriverAdapter

@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.entity.html;
 
 import org.anyline.util.BeanUtil;

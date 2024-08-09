@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.metadata;
 
 import java.io.Serializable;
@@ -60,6 +58,7 @@ public class ForeignKey extends Constraint<ForeignKey> implements Serializable {
         this.reference = reference;
         return this;
     }
+
     /**
      * 添加依赖表
      * @param reference 依赖表
@@ -111,6 +110,7 @@ public class ForeignKey extends Constraint<ForeignKey> implements Serializable {
         addColumn(new Column(column).setReference(reference));
         return this;
     }
+
     /**
      * 添加列
      * @param column 列

@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.data.elasticsearch.runtime;
 
 import org.anyline.data.adapter.DriverAdapter;

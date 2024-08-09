@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.entity.geometry;
 
 public class Line extends Geometry{

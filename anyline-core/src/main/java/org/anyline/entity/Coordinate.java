@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.entity;
  
 import org.anyline.entity.geometry.Point;

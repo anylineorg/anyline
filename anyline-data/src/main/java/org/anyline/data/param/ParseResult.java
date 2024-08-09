@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.data.param;
 
 import org.anyline.data.prepare.Condition;
@@ -54,7 +52,7 @@ public class ParseResult {
 	private List<ParseResult> defs = new ArrayList<>();	// 默认值
 	private ParseResult or = null;	// or 只有value或defs有值时 ors才生效
 	private Compare compare = Compare.EQUAL			; // 比较方式
-	private String join = Condition.CONDITION_JOIN_TYPE_AND			; // 连接方式
+	private Condition.JOIN join = Condition.JOIN.AND			; // 连接方式
 	private int paramFetchType = FETCH_REQUEST_VALUE_TYPE_SINGLE	; // request取值方式
 
 	public DataRow map() {
@@ -81,7 +79,7 @@ public class ParseResult {
 			row.put("default", defs);
 		}
 		row.put("compare", compare.getCode());
-		row.put("join", join.trim());
+		row.put("join", join.getCode());
 		row.put("swt", swt);
 		return row;
 	}
@@ -178,12 +176,12 @@ public class ParseResult {
 		}
 		this.prefix = prefix;
 	} 
-	public String getJoin() {
+	public Condition.JOIN getJoin() {
 		return join; 
-	} 
-	public void setJoin(String join) {
-		this.join = join; 
-	}  
+	}
+	public void setJoin(Condition.JOIN join) {
+		this.join = join;
+	}
 
 	public ParseResult addArg(String arg) {
 		args.add(arg);

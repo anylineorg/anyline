@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.data.metadata;
 
 import org.anyline.metadata.type.TypeMetadata;
@@ -24,6 +22,7 @@ public interface TypeMetadataAlias {
     default String input() {
         return "";
     }
+
     /**
      * 标准数据类型,生成DDL时实际用到的类型
      * @return TypeMetadata

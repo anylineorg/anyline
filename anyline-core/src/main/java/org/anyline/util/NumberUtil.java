@@ -14,9 +14,6 @@
  * limitations under the License.
  */
 
-
-
-
 package org.anyline.util;
 
 import java.math.BigDecimal;
@@ -712,7 +709,6 @@ public class NumberUtil {
 	 * @param origin 原文
 	 * @return hex
 	 */
-
 	public static String string2hex(String origin, String charset) {
 		byte[] bytes = origin.getBytes(Charset.forName(charset));
 		String hex = byte2hex(bytes);

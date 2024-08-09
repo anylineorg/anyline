@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.environment.boot.mail;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;

@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.environment.spring;
 
 import org.anyline.adapter.EntityAdapter;
@@ -93,6 +91,7 @@ public class SpringAutoConfiguration implements InitializingBean {
             }
         }
     }
+
     @Override
     public void afterPropertiesSet() {
         if(!loader_after_status && null != listeners && null != ConfigTable.environment) {

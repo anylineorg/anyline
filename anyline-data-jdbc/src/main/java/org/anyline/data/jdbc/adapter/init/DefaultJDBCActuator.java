@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.data.jdbc.adapter.init;
 
 import org.anyline.adapter.EntityAdapter;
@@ -466,7 +464,6 @@ public class DefaultJDBCActuator implements DriverActuator {
                 }
             }
 
-
             mid[0] = System.currentTimeMillis();
             count[0] = maps.size();
 
@@ -540,7 +537,6 @@ public class DefaultJDBCActuator implements DriverActuator {
 
         }
 
-
         long time = System.currentTimeMillis() - fr;
         fr = System.currentTimeMillis();
         boolean slow = false;
@@ -561,6 +557,7 @@ public class DefaultJDBCActuator implements DriverActuator {
         }
         return map;
     }
+
     @Override
     public long insert(DriverAdapter adapter, DataRuntime runtime, String random, Object data, ConfigStore configs, Run run, String generatedKey, String[] pks) throws Exception {
         long cnt = -1;
@@ -617,6 +614,7 @@ public class DefaultJDBCActuator implements DriverActuator {
 
         return cnt;
     }
+
     /**
      * insert[命令执行后]
      * insert执行后 通过KeyHolder获取主键值赋值给data
@@ -831,9 +829,9 @@ public class DefaultJDBCActuator implements DriverActuator {
             }
         }
 
-
         return list;
     }
+
     /**
      * execute [命令执行]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -1117,6 +1115,7 @@ public class DefaultJDBCActuator implements DriverActuator {
     public <T extends Column> LinkedHashMap<String, T> columns(DriverAdapter adapter, DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Table table, String sql) throws Exception {
         return previous;
     }
+
     /**
      * 根方法(3)根据根据驱动内置元数据接口补充表结构
      * @param adapter DriverAdapter

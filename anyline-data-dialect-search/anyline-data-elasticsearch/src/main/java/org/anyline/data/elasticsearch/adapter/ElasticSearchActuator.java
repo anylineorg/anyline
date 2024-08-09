@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.data.elasticsearch.adapter;
 
 import org.anyline.adapter.KeyAdapter;
@@ -55,6 +53,7 @@ public class ElasticSearchActuator implements DriverActuator {
     public Class<? extends DriverAdapter> supportAdapterType() {
         return ElasticSearchAdapter.class;
     }
+
     @Override
     public DataSource getDataSource(DriverAdapter adapter, DataRuntime runtime) {
         return null;

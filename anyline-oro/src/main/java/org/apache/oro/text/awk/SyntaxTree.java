@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 /*
  * $Id: SyntaxTree.java,v 1.8 2003/11/07 20:16:24 dfs Exp $
  *

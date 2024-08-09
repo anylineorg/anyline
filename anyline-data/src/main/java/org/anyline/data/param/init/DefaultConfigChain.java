@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.data.param.init;
 
 import org.anyline.data.param.Config;
@@ -59,11 +57,10 @@ public class DefaultConfigChain extends DefaultConfig implements ConfigChain {
 	}
 	public DataRow map(boolean empty) {
 		DataRow row = new OriginRow();
-		String join = getJoin();
+		Condition.JOIN join = getJoin();
 		if(null != join) {
-			join = join.trim();
+			row.put("join", join);
 		}
-		row.put("join", join);
 		if((null != configs && !configs.isEmpty()) || empty) {
 			DataSet set = new DataSet();
 			for (Config config : configs) {
@@ -109,7 +106,7 @@ public class DefaultConfigChain extends DefaultConfig implements ConfigChain {
 				}
 			}
 			DefaultConfig conf = new DefaultConfig(item);
-			conf.setJoin(Condition.CONDITION_JOIN_TYPE_OR);
+			conf.setJoin(Condition.JOIN.OR);
 			//只是设置了key还没有设置value
 			//if(!conf.isEmpty()) {
 				this.configs.add(conf);

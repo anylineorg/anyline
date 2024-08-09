@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.entity.graph;
 
 import org.anyline.entity.DataRow;

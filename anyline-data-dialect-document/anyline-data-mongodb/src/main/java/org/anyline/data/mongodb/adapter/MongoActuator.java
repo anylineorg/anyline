@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.data.mongodb.adapter;
 
 import org.anyline.annotation.Component;
@@ -40,6 +38,7 @@ public class MongoActuator implements DriverActuator {
     public Class<? extends DriverAdapter> supportAdapterType() {
         return MongoAdapter.class;
     }
+
     @Override
     public DataSource getDataSource(DriverAdapter adapter, DataRuntime runtime) {
         return null;
@@ -86,8 +85,6 @@ public class MongoActuator implements DriverActuator {
         return set;
     }
 
-    
-
     @Override
     public List<Map<String, Object>> maps(DriverAdapter adapter, DataRuntime runtime, String random, ConfigStore configs, Run run) throws Exception {
         return null;
@@ -111,8 +108,6 @@ public class MongoActuator implements DriverActuator {
         //不返回影响行数
         return 0;
     }
-
-    
 
     @Override
     public long execute(DriverAdapter adapter, DataRuntime runtime, String random, ConfigStore configs, Run run) throws Exception {

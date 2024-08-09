@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.entity.generator.init;
 
 import org.anyline.entity.DataRow;
@@ -49,6 +47,7 @@ public class TimeGenerator implements PrimaryGenerator {
         }
         return true;
     }
+
     @Override
     public boolean create(Object entity, DatabaseType type, String table, LinkedHashMap<String, Column> columns, String other) {
         if(null == columns) {

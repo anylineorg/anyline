@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.metadata;
 
 import java.io.Serializable;
@@ -52,8 +50,6 @@ public class PartitionTable extends Table<PartitionTable> implements Serializabl
         return this.keyword+":"+name;
     }
 
-
     public static final String FIELD_MASTER                             = "MASTER";
-
 
 }

@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.data.jdbc.adapter.init;
 
 import org.anyline.data.jdbc.adapter.init.alias.MySQLGenusTypeMetadataAlias;
@@ -61,6 +59,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         }
 
     }
+
     @Override
     public boolean supportCatalog() {
         return false;
@@ -79,6 +78,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         types.put(Metadata.TYPE.TABLE, "BASE TABLE");
         types.put(Metadata.TYPE.VIEW, "VIEW");
     }
+
     @Override
     public String name(Type type) {
         return types.get(type);
@@ -147,6 +147,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public long insert(DataRuntime runtime, String random, int batch, Table dest, Object data, ConfigStore configs, List<String> columns) {
         return super.insert(runtime, random, batch, dest, data, configs, columns);
     }
+
     /**
      * insert [命令合成]<br/>
      * 填充inset命令内容(创建批量INSERT RunPrepare)
@@ -237,6 +238,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public boolean supportInsertPlaceholder() {
         return true;
     }
+
     /**
      * insert [命令合成-子流程]<br/>
      * 设置主键值
@@ -247,6 +249,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     protected void setPrimaryValue(Object obj, Object value) {
         super.setPrimaryValue(obj, value);
     }
+
     /**
      * insert [命令合成-子流程]<br/>
      * 根据entity创建 INSERT RunPrepare由buildInsertRun调用
@@ -301,8 +304,6 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         return super.insert(runtime, random, data, configs, run, pks);
     }
 
-    
-
     /* *****************************************************************************************************************
      *                                                     UPDATE
      * -----------------------------------------------------------------------------------------------------------------
@@ -346,6 +347,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public long update(DataRuntime runtime, String random, int batch, String dest, Object data, ConfigStore configs, List<String> columns) {
         return super.update(runtime, random, batch, dest, data, configs, columns);
     }
+
     /**
      * update [命令合成]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -373,18 +375,22 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public Run buildUpdateRun(DataRuntime runtime, int batch, String dest, Object obj, ConfigStore configs, List<String> columns) {
         return super.buildUpdateRun(runtime, batch, dest, obj, configs, columns);
     }
+
     @Override
     public Run buildUpdateRunFromEntity(DataRuntime runtime, String dest, Object obj, ConfigStore configs, LinkedHashMap<String, Column> columns) {
         return super.buildUpdateRunFromEntity(runtime, dest, obj, configs, columns);
     }
+
     @Override
     public Run buildUpdateRunFromDataRow(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, LinkedHashMap<String, Column> columns) {
         return super.buildUpdateRunFromDataRow(runtime, dest, row, configs, columns);
     }
+
     @Override
     public Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns) {
         return super.buildUpdateRunFromCollection(runtime, batch, dest, list, configs, columns);
     }
+
     @Override
     public Run buildUpdateRunLimit(DataRuntime runtime, Run run){
         if(null != run){
@@ -401,6 +407,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         }
         return run;
     }
+
     /**
      * update [命令合成-子流程]<br/>
      * 确认需要更新的列
@@ -427,10 +434,12 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public LinkedHashMap<String, Column> confirmUpdateColumns(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, List<String> columns) {
         return super.confirmUpdateColumns(runtime, dest, row, configs, columns);
     }
+
     @Override
     public LinkedHashMap<String, Column> confirmUpdateColumns(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns) {
         return super.confirmUpdateColumns(runtime, dest, obj, configs, columns);
     }
+
     /**
      * update [命令执行]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -481,14 +490,17 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     protected long saveCollection(DataRuntime runtime, String random, Table dest, Collection<?> data, ConfigStore configs, List<String> columns) {
         return super.saveCollection(runtime, random, dest, data, configs, columns);
     }
+
     @Override
     protected long saveObject(DataRuntime runtime, String random, Table dest, Object data, ConfigStore configs, List<String> columns) {
         return super.saveObject(runtime, random, dest, data, configs, columns);
     }
+
     @Override
     protected Boolean checkOverride(Object obj) {
         return super.checkOverride(obj);
     }
+
     @Override
     protected Map<String, Object> checkPv(Object obj) {
         return super.checkPv(obj);
@@ -504,10 +516,12 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     protected boolean isMultipleValue(DataRuntime runtime, TableRun run, String key) {
         return super.isMultipleValue(runtime, run, key);
     }
+
     @Override
     protected boolean isMultipleValue(Column column) {
         return super.isMultipleValue(column);
     }
+
     /**
      * 过滤掉表结构中不存在的列
      * @param table 表
@@ -619,6 +633,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public List<Map<String, Object>> maps(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
         return super.maps(runtime, random, prepare, configs, conditions);
     }
+
     /**
      * select[命令合成]<br/> 最终可执行命令<br/>
      * 创建查询SQL
@@ -652,18 +667,22 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public Run fillQueryContent(DataRuntime runtime, Run run) {
         return super.fillQueryContent(runtime, run);
     }
+
     @Override
     protected Run fillQueryContent(DataRuntime runtime, XMLRun run) {
         return super.fillQueryContent(runtime, run);
     }
+
     @Override
     protected Run fillQueryContent(DataRuntime runtime, TextRun run) {
         return super.fillQueryContent(runtime, run);
     }
+
     @Override
     protected Run fillQueryContent(DataRuntime runtime, TableRun run) {
         return super.fillQueryContent(runtime, run);
     }
+
     /**
      * select[命令合成-子流程] <br/>
      * 合成最终 select 命令 包含分页 排序
@@ -675,6 +694,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public String mergeFinalQuery(DataRuntime runtime, Run run) {
         return super.pageLimitOffset(runtime, run);
     }
+
     /**
      * select[命令合成-子流程] <br/>
      * 构造 LIKE 查询条件
@@ -689,6 +709,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public RunValue createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder) {
         return super.createConditionLike(runtime, builder, compare, value, placeholder);
     }
+
     /**
      * select[命令合成-子流程] <br/>
      * 构造 FIND_IN_SET 查询条件
@@ -742,6 +763,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         }
         return value;
     }
+
     /**
      * select[命令合成-子流程] <br/>
      * 构造 JSON_CONTAINS 查询条件
@@ -789,6 +811,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         }
         return value;
     }
+
     /**
      * select[命令合成-子流程] <br/>
      * 构造 JSON_CONTAINS 查询条件
@@ -826,6 +849,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         builder.append(")");
         return value;
     }
+
     /**
      * select[命令合成-子流程] <br/>
      * 构造(NOT) IN 查询条件
@@ -839,6 +863,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder) {
         return super.createConditionIn(runtime, builder, compare, value, placeholder);
     }
+
     /**
      * select [命令执行]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -864,6 +889,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public List<Map<String, Object>> maps(DataRuntime runtime, String random, ConfigStore configs, Run run) {
         return super.maps(runtime, random, configs, run);
     }
+
     /**
      * select [命令执行]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -924,6 +950,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public long count(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
         return super.count(runtime, random, prepare, configs, conditions);
     }
+
     /**
      * count [命令合成]<br/>
      * 合成最终 select count 命令
@@ -968,6 +995,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public boolean exists(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
         return super.exists(runtime, random, prepare, configs, conditions);
     }
+
     @Override
     public String mergeFinalExists(DataRuntime runtime, Run run) {
         return super.mergeFinalExists(runtime, run);
@@ -1005,6 +1033,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public long execute(DataRuntime runtime, String random, int batch, ConfigStore configs, RunPrepare prepare, Collection<Object> values) {
         return super.execute(runtime, random, batch, configs, prepare, values);
     }
+
     /**
      * procedure [命令执行]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -1016,6 +1045,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public boolean execute(DataRuntime runtime, String random, Procedure procedure) {
         return super.execute(runtime, random, procedure);
     }
+
     /**
      * execute [命令合成]<br/>
      * 创建执行SQL
@@ -1029,14 +1059,17 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public Run buildExecuteRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions) {
         return super.buildExecuteRun(runtime, prepare, configs, conditions);
     }
+
     @Override
     protected void fillExecuteContent(DataRuntime runtime, XMLRun run) {
         super.fillExecuteContent(runtime, run);
     }
+
     @Override
     protected void fillExecuteContent(DataRuntime runtime, TextRun run) {
         super.fillExecuteContent(runtime, run);
     }
+
     @Override
     protected void fillExecuteContent(DataRuntime runtime, TableRun run) {
         super.fillExecuteContent(runtime, run);
@@ -1052,6 +1085,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public void fillExecuteContent(DataRuntime runtime, Run run) {
         super.fillExecuteContent(runtime, run);
     }
+
     /**
      * execute [命令执行]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -1276,6 +1310,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         }
         return super.database(runtime, random);
     }
+
     /**
      * database[调用入口]<br/>
      * 当前数据源 数据库描述(产品名称+版本号)
@@ -1286,6 +1321,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public String product(DataRuntime runtime, String random) {
         return super.product(runtime, random);
     }
+
     /**
      * database[调用入口]<br/>
      * 当前数据源 数据库类型
@@ -1296,6 +1332,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public String version(DataRuntime runtime, String random) {
         return super.version(runtime, random);
     }
+
     /**
      * database[调用入口]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -1308,6 +1345,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public <T extends Database> List<T> databases(DataRuntime runtime, String random, boolean greedy, Database query) {
         return super.databases(runtime, random, greedy, query);
     }
+
     /**
      * database[调用入口]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -1319,6 +1357,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public <T extends Database> LinkedHashMap<String, T> databases(DataRuntime runtime, String random, Database query) {
         return super.databases(runtime, random, query);
     }
+
     /**
      * database[命令合成]<br/>
      * 查询全部数据库
@@ -1341,6 +1380,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         }
         return runs;
     }
+
     /**
      * database[结果集封装]<br/>
      * database 属性与结果集对应关系
@@ -1352,6 +1392,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         refer.map(Database.FIELD_NAME, "DATABASE");
         return refer;
     }
+
     /**
      * database[结果集封装]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -1366,6 +1407,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public <T extends Database> LinkedHashMap<String, T> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Database query, DataSet set) throws Exception {
         return super.databases(runtime, index, create, previous, query, set);
     }
+
     @Override
     public <T extends Database> List<T> databases(DataRuntime runtime, int index, boolean create, List<T> previous, Database query, DataSet set) throws Exception {
         return super.databases(runtime, index, create, previous, query, set);
@@ -1422,6 +1464,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public String product(DataRuntime runtime, int index, boolean create, String product, DataSet set) {
         return super.product(runtime, index, create, product, set);
     }
+
     /**
      * database[结果集封装]<br/>
      * 根据JDBC内置接口 product
@@ -1435,6 +1478,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public String product(DataRuntime runtime, boolean create, String product) {
         return super.product(runtime, create, product);
     }
+
     /**
      * database[结果集封装]<br/>
      * 根据查询结果集构造 version
@@ -1449,6 +1493,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public String version(DataRuntime runtime, int index, boolean create, String version, DataSet set) {
         return super.version(runtime, index, create, version, set);
     }
+
     /**
      * database[结果集封装]<br/>
      * 根据JDBC内置接口 version
@@ -1515,6 +1560,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public <T extends Catalog> LinkedHashMap<String, T> catalogs(DataRuntime runtime, String random, Catalog query) {
         return super.catalogs(runtime, random, query);
     }
+
     /**
      * catalog[调用入口]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -1550,6 +1596,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public MetadataFieldRefer initCatalogFieldRefer() {
         return super.initCatalogFieldRefer();
     }
+
     /**
      * catalog[结果集封装]<br/>
      * 根据查询结果集构造 Database
@@ -1565,6 +1612,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public <T extends Catalog> LinkedHashMap<String, T> catalogs(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Catalog query, DataSet set) throws Exception {
         return super.catalogs(runtime, index, create, previous, query, set);
     }
+
     /**
      * catalog[结果集封装]<br/>
      * 根据查询结果集构造 Database
@@ -1580,6 +1628,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public <T extends Catalog> List<T> catalogs(DataRuntime runtime, int index, boolean create, List<T> previous, Catalog query, DataSet set) throws Exception {
         return super.catalogs(runtime, index, create, previous, query, set);
     }
+
     /**
      * catalog[结果集封装]<br/>
      * 根据驱动内置接口补充 catalog
@@ -1607,6 +1656,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public <T extends Catalog> List<T> catalogs(DataRuntime runtime, boolean create, List<T> previous) throws Exception {
         return super.catalogs(runtime, create, previous);
     }
+
     /**
      * catalog[结果集封装]<br/>
      * 当前catalog 根据查询结果集
@@ -1636,7 +1686,6 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public Catalog catalog(DataRuntime runtime, boolean create, Catalog meta) throws Exception {
         return super.catalog(runtime, create, meta);
     }
-
 
     /**
      * catalog[结果集封装]<br/>
@@ -1705,6 +1754,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public <T extends Schema> LinkedHashMap<String, T> schemas(DataRuntime runtime, String random, Schema query) {
         return super.schemas(runtime, random, query);
     }
+
     /**
      * schema[调用入口]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -1751,6 +1801,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         refer.map(Schema.FIELD_NAME, "DATABASE");
         return refer;
     }
+
     /**
      * schema[结果集封装]<br/>
      * 根据查询结果集构造 Database
@@ -1766,6 +1817,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public <T extends Schema> LinkedHashMap<String, T> schemas(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Schema query, DataSet set) throws Exception {
         return super.schemas(runtime, index, create, previous, query, set);
     }
+
     @Override
     public <T extends Schema> List<T> schemas(DataRuntime runtime, int index, boolean create, List<T> previous, Schema query, DataSet set) throws Exception {
         return super.schemas(runtime, index, create, previous, query, set);
@@ -1800,7 +1852,6 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public Schema schema(DataRuntime runtime, boolean create, Schema meta) throws Exception {
         return super.schema(runtime, create, meta);
     }
-
 
     /**
      * schema[结果集封装]<br/>
@@ -1935,6 +1986,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         refer.map(Table.FIELD_TEMPORARY, "IS_TEMPORARY");
         return super.initTableFieldRefer();
     }
+
     /**
      * Table[结果集封装]<br/>
      * TableComment 属性与结果集对应关系
@@ -1949,6 +2001,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         refer.map(TableComment.FIELD_SCHEMA, "TABLE_SCHEMA");
         return refer;
     }
+
     /**
      * table[命令合成]<br/>
      * 查询表备注
@@ -1999,6 +2052,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         previous = super.tables(runtime, index, create, previous, query, set);
         return previous;
     }
+
     /**
      * table[结果集封装]<br/>
      * 根据驱动内置方法补充
@@ -2159,6 +2213,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, View query, int types, int struct, ConfigStore configs) {
         return super.views(runtime, random, query, types, struct, configs);
     }
+
     /**
      * view[命令合成]<br/>
      * 查询视图
@@ -2193,6 +2248,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         refer.map(View.FIELD_DEFINITION,"VIEW_DEFINITION");
         return refer;
     }
+
     /**
      * view[结果集封装]<br/>
      *  根据查询结果集构造View
@@ -2209,6 +2265,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, View query, DataSet set) throws Exception {
         return super.views(runtime, index, create, previous, query, set);
     }
+
     /**
      * view[结果集封装]<br/>
      * 根据根据驱动内置接口补充
@@ -2309,6 +2366,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public <T extends MasterTable> List<T> masters(DataRuntime runtime, String random, boolean greedy, MasterTable query, int types, int struct, ConfigStore configs) {
         return super.masters(runtime, random, greedy, query, types, struct, configs);
     }
+
     /**
      * master table[命令合成]<br/>
      * 查询主表
@@ -2331,6 +2389,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public MetadataFieldRefer initMasterTableFieldRefer() {
         return super.initMasterTableFieldRefer();
     }
+
     /**
      * master table[结果集封装]<br/>
      * 根据查询结果集构造Table
@@ -2347,6 +2406,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, MasterTable query, DataSet set) throws Exception {
         return super.masters(runtime, index, create, previous, query, set);
     }
+
     /**
      * master table[结果集封装]<br/>
      * 根据根据驱动内置接口
@@ -2373,6 +2433,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public List<String> ddl(DataRuntime runtime, String random, MasterTable meta, boolean init) {
         return super.ddl(runtime, random, meta, init);
     }
+
     /**
      * master table[命令合成]<br/>
      * 查询 MasterTable DDL
@@ -2384,6 +2445,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public List<Run> buildQueryDdlRun(DataRuntime runtime, MasterTable meta) throws Exception {
         return super.buildQueryDdlRun(runtime, meta);
     }
+
     /**
      * master table[结果集封装]<br/>
      * 查询 MasterTable DDL
@@ -2443,6 +2505,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, boolean greedy,  PartitionTable query, int types) throws Exception {
         return super.buildQueryPartitionTablesRun(runtime, greedy, query, types);
     }
+
     /**
      * partition table[结果集封装]<br/>
      * 根据查询结果集构造Table
@@ -2460,6 +2523,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public <T extends PartitionTable> LinkedHashMap<String, T> partitions(DataRuntime runtime, int total, int index, boolean create, LinkedHashMap<String, T> previous, PartitionTable query, DataSet set) throws Exception {
         return super.partitions(runtime, total, index, create, previous, query, set);
     }
+
     /**
      * partition table[结果集封装]<br/>
      * 根据根据驱动内置接口
@@ -2474,6 +2538,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public <T extends PartitionTable> LinkedHashMap<String,T> partitions(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, PartitionTable query) throws Exception {
         return super.partitions(runtime, create, previous, query);
     }
+
     /**
      * partition table[调用入口]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -2599,6 +2664,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         refer.map(Column.FIELD_PRIMARY_CHECK_VALUE,"PRI");
         return refer;
     }
+
     /**
      * column[命令合成]<br/>
      * 查询表上的列
@@ -2649,6 +2715,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         set.removeColumn("TABLE_CATALOG");
         return super.columns(runtime, index, create, previous, table, query, set);
     }
+
     @Override
     public <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, List<T> previous, Column query, DataSet set) throws Exception {
         set.removeColumn("TABLE_CATALOG");
@@ -2682,6 +2749,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public <T extends Column> T detail(DataRuntime runtime, int index, T meta, Column query, DataRow row) {
         return super.detail(runtime, index, meta, query, row);
     }
+
     /**
      * column[结构集封装-依据]<br/>
      * 读取column元数据结果集的依据(需要区分数据类型)
@@ -2720,6 +2788,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, String random, boolean greedy, Table table, Tag query) {
         return super.tags(runtime, random, greedy, table, query);
     }
+
     /**
      * tag[命令合成]<br/>
      * 查询表上的列
@@ -2747,6 +2816,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Tag query, DataSet set) throws Exception {
         return super.tags(runtime, index, create, previous, query, set);
     }
+
     /**
      *
      * tag[结果集封装]<br/>
@@ -2815,6 +2885,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public MetadataFieldRefer initPrimaryKeyFieldRefer() {
         return super.initPrimaryKeyFieldRefer();
     }
+
     /**
      * primary[结构集封装]<br/>
      *  根据查询结果集构造PrimaryKey
@@ -2862,6 +2933,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, String random, boolean greedy, ForeignKey query) {
         return super.foreigns(runtime, random, greedy, query);
     }
+
     /**
      * foreign[命令合成]<br/>
      * 查询表上的外键
@@ -2902,6 +2974,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         refer.map(ForeignKey.FIELD_REFERENCE_COLUMN, "REFERENCED_COLUMN_NAME");
         return refer;
     }
+
     /**
      *
      * foreign[结构集封装]<br/>
@@ -2975,6 +3048,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public <T extends Index> List<T> indexes(DataRuntime runtime, String random, boolean greedy, Index query) {
         return super.indexes(runtime, random, greedy, query);
     }
+
     /**
      *
      * index[调用入口]<br/>
@@ -2988,6 +3062,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public <T extends Index> LinkedHashMap<String, T> indexes(DataRuntime runtime, String random, Index query) {
         return super.indexes(runtime, random, query);
     }
+
     /**
      * index[命令合成]<br/>
      * 查询表上的索引
@@ -3026,6 +3101,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         configs.order("TABLE_NAME").order("SEQ_IN_INDEX");
         return runs;
     }
+
     /**
      * Index[结果集封装]<br/>
      * Index 属性与结果集对应关系
@@ -3047,6 +3123,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         refer.map(Index.FIELD_CATALOG, "");
         return refer;
     }
+
     /**
      * index[结果集封装]<br/>
      *  根据查询结果集构造Index
@@ -3063,6 +3140,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public <T extends Index> LinkedHashMap<String, T> indexes(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Index query, DataSet set) throws Exception {
         return super.indexes(runtime, index, create, previous, query, set);
     }
+
     /**
      * index[结果集封装]<br/>
      *  根据查询结果集构造Index
@@ -3093,6 +3171,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public <T extends Index> List<T> indexes(DataRuntime runtime, boolean create, List<T> previous, Index query) throws Exception {
         return super.indexes(runtime, create, previous, query);
     }
+
     /**
      * index[结果集封装]<br/>
      * 根据驱动内置接口
@@ -3166,6 +3245,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public <T extends Constraint> List<T> constraints(DataRuntime runtime, String random, boolean greedy, Constraint query) {
         return super.constraints(runtime, random, greedy, query);
     }
+
     /**
      *
      * constraint[调用入口]<br/>
@@ -3219,6 +3299,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         refer.map(Constraint.FIELD_TYPE, "CONSTRAINT_TYPE");
         return refer;
     }
+
     /**
      * constraint[结果集封装]<br/>
      * 根据查询结果集构造Constraint
@@ -3236,6 +3317,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         set.removeColumn("CONSTRAINT_CATALOG");
         return super.constraints(runtime, index, create, previous, query, set);
     }
+
     /**
      * constraint[结果集封装]<br/>
      * 根据查询结果集构造Constraint
@@ -3278,6 +3360,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public <T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, String random, boolean greedy, Trigger query) {
         return super.triggers(runtime, random, greedy, query);
     }
+
     /**
      * trigger[命令合成]<br/>
      * 查询表上的 Trigger
@@ -3314,6 +3397,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         refer.map(Trigger.FIELD_DEFINITION, "ACTION_STATEMENT");
         return refer;
     }
+
     /**
      * trigger[结果集封装]<br/>
      * 根据查询结果集构造 Trigger
@@ -3362,6 +3446,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         }
         return meta;
     }
+
     /**
      * trigger[结果集封装]<br/>
      * 根据查询结果封装trigger对象,更多属性
@@ -3411,6 +3496,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public <T extends Procedure> List<T> procedures(DataRuntime runtime, String random, boolean greedy, Procedure query) {
         return super.procedures(runtime, random, greedy, query);
     }
+
     /**
      *
      * procedure[调用入口]<br/>
@@ -3424,6 +3510,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, String random, Procedure query) {
         return super.procedures(runtime, random, query);
     }
+
     /**
      * procedure[命令合成]<br/>
      * 查询表上的 Trigger
@@ -3443,6 +3530,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         configs.like("ROUTINE_NAME", query.getName());
         return runs;
     }
+
     /**
      * procedure[结果集封装]<br/>
      * Procedure 属性与结果集对应关系
@@ -3456,6 +3544,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         refer.map(Procedure.FIELD_DEFINITION, "ROUTINE_DEFINITION");
         return refer;
     }
+
     /**
      * procedure[结果集封装]<br/>
      * 根据查询结果集构造 Trigger
@@ -3499,6 +3588,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Procedure query) throws Exception {
         return super.procedures(runtime, create, previous, query);
     }
+
     /**
      *
      * procedure[调用入口]<br/>
@@ -3511,6 +3601,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public List<String> ddl(DataRuntime runtime, String random, Procedure procedure) {
         return super.ddl(runtime, random, procedure);
     }
+
     /**
      * procedure[命令合成]<br/>
      * 查询存储DDL
@@ -3584,6 +3675,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public <T extends Function> List<T> functions(DataRuntime runtime, String random, boolean greedy, Function query) {
         return super.functions(runtime, random, greedy, query);
     }
+
     /**
      *
      * function[调用入口]<br/>
@@ -3597,6 +3689,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public <T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, String random, Function query) {
         return super.functions(runtime, random, query);
     }
+
     /**
      * function[命令合成]<br/>
      * 查询表上的 Trigger
@@ -3647,6 +3740,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public <T extends Function> List<T> functions(DataRuntime runtime, int index, boolean create, List<T> previous, Function query, DataSet set) throws Exception {
         return super.functions(runtime, index, create, previous, query, set);
     }
+
     /**
      * function[结果集封装]<br/>
      * 根据查询结果集构造 Trigger
@@ -3707,6 +3801,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         name(runtime, builder, meta);
         return runs;
     }
+
     /**
      * function[结果集封装]<br/>
      * 查询 Function DDL
@@ -3762,6 +3857,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public <T extends Sequence> List<T> sequences(DataRuntime runtime, String random, boolean greedy, Sequence query) {
         return super.sequences(runtime, random, greedy, query);
     }
+
     /**
      *
      * sequence[调用入口]<br/>
@@ -3775,6 +3871,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public <T extends Sequence> LinkedHashMap<String, T> sequences(DataRuntime runtime, String random, Sequence query) {
         return super.sequences(runtime, random, query);
     }
+
     /**
      * sequence[命令合成]<br/>
      * 查询表上的 Trigger
@@ -3802,6 +3899,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public <T extends Sequence> List<T> sequences(DataRuntime runtime, int index, boolean create, List<T> previous, Sequence query, DataSet set) throws Exception {
         return super.sequences(runtime, index, create, previous, query, set);
     }
+
     /**
      * sequence[结果集封装]<br/>
      * 根据查询结果集构造 Trigger
@@ -3856,6 +3954,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public List<Run> buildQueryDdlRun(DataRuntime runtime, Sequence meta) throws Exception {
         return super.buildQueryDdlRun(runtime, meta);
     }
+
     /**
      * sequence[结果集封装]<br/>
      * 查询 Sequence DDL
@@ -3915,6 +4014,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public <T extends Catalog> T catalog(List<T> catalogs, String name) {
         return super.catalog(catalogs, name);
     }
+
     /**
      *
      * 根据 name检测databases集合中是否存在
@@ -3954,6 +4054,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public boolean slice() {
         return true;
     }
+
     /**
      * ddl [执行命令]
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -4039,6 +4140,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
             }
         }
     }
+
     /**
      * table[调用入口]<br/>
      * 删除表,执行的命令通过meta.ddls()返回
@@ -4068,8 +4170,6 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         return super.rename(runtime, origin, name);
     }
 
-    
-
     /**
      * table[命令合成]<br/>
      * 创建表<br/>
@@ -4088,6 +4188,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public List<Run> buildCreateRun(DataRuntime runtime, Table meta) throws Exception {
         return super.buildCreateRun(runtime, meta);
     }
+
     /**
      * table[命令合成]<br/>
      * 修改表
@@ -4136,6 +4237,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         name(runtime, builder, meta.getUpdate());
         return runs;
     }
+
     /**
      * table[命令合成]<br/>
      * 删除表
@@ -4185,6 +4287,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public List<Run> buildAppendColumnCommentRun(DataRuntime runtime, Table meta) throws Exception {
         return super.buildAppendColumnCommentRun(runtime, meta);
     }
+
     /**
      * table[命令合成-子流程]<br/>
      * 修改备注
@@ -4437,6 +4540,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         runs.addAll(buildAppendCommentRun(runtime, meta));
         return runs;
     }
+
     /**
      * view[命令合成]<br/>
      * 修改视图
@@ -4450,6 +4554,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public List<Run> buildAlterRun(DataRuntime runtime, View meta) throws Exception {
         return super.buildAlterRun(runtime, meta);
     }
+
     /**
      * view[命令合成]<br/>
      * 重命名
@@ -4463,6 +4568,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public List<Run> buildRenameRun(DataRuntime runtime, View meta) throws Exception {
         return super.buildRenameRun(runtime, meta);
     }
+
     /**
      * view[命令合成]<br/>
      * 删除视图
@@ -4625,6 +4731,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public List<Run> buildDropRun(DataRuntime runtime, MasterTable meta) throws Exception {
         return super.buildDropRun(runtime, meta);
     }
+
     /**
      * master table[命令合成-子流程]<br/>
      * 修改主表
@@ -4637,6 +4744,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public List<Run> buildAlterRun(DataRuntime runtime, MasterTable meta) throws Exception {
         return super.buildAlterRun(runtime, meta);
     }
+
     /**
      * master table[命令合成-子流程]<br/>
      * 主表重命名
@@ -4734,6 +4842,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public boolean drop(DataRuntime runtime, PartitionTable meta) throws Exception {
         return super.drop(runtime, meta);
     }
+
     /**
      * partition table[调用入口]<br/>
      * 创建分区表,执行的命令通过meta.ddls()返回
@@ -4747,6 +4856,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public boolean rename(DataRuntime runtime, PartitionTable origin, String name) throws Exception {
         return super.rename(runtime, origin, name);
     }
+
     /**
      * partition table[命令合成]<br/>
      * 创建分区表
@@ -4798,6 +4908,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public List<Run> buildDropRun(DataRuntime runtime, PartitionTable meta) throws Exception {
         return super.buildDropRun(runtime, meta);
     }
+
     /**
      * partition table[命令合成]<br/>
      * 分区表重命名
@@ -5039,8 +5150,6 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         return super.buildDropRun(runtime, meta, slice);
     }
 
-    
-
     /**
      * column[命令合成]<br/>
      * 修改列名
@@ -5202,6 +5311,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public StringBuilder checkColumnExists(DataRuntime runtime, StringBuilder builder, boolean exists) {
         return super.checkColumnExists(runtime, builder, exists);
     }
+
     /**
      * column[命令合成-子流程]<br/>
      * 列定义:数据类型
@@ -5214,6 +5324,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta) {
         return super.type(runtime, builder, meta);
     }
+
     /**
      * column[命令合成-子流程]<br/>
      * 列定义:数据类型定义
@@ -5242,6 +5353,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public StringBuilder nullable(DataRuntime runtime, StringBuilder builder, Column meta, ACTION.DDL action) {
         return super.nullable(runtime, builder, meta, action);
     }
+
     /**
      * column[命令合成-子流程]<br/>
      * 列定义:编码
@@ -5323,6 +5435,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         }
         return builder;
     }
+
     /**
      * column[命令合成-子流程]<br/>
      * 列定义:递增列,需要通过serial实现递增的在type(DataRuntime runtime, StringBuilder builder, Column meta)中实现
@@ -5338,6 +5451,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         }
         return builder;
     }
+
     /**
      * column[命令合成-子流程]<br/>
      * 列定义:更新行事件
@@ -5499,6 +5613,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public List<Run> buildAddRun(DataRuntime runtime, Tag meta, boolean slice) throws Exception {
         return new ArrayList<>();
     }
+
     /**
      * tag[命令合成]<br/>
      * 修改标签
@@ -5536,6 +5651,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public List<Run> buildRenameRun(DataRuntime runtime, Tag meta, boolean slice) throws Exception {
         return new ArrayList<>();
     }
+
     /**
      * tag[命令合成]<br/>
      * 修改默认值
@@ -5683,6 +5799,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public boolean rename(DataRuntime runtime, PrimaryKey origin, String name) throws Exception {
         return super.rename(runtime, origin, name);
     }
+
     /**
      * primary[命令合成]<br/>
      * 添加主键
@@ -5716,6 +5833,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         }
         return runs;
     }
+
     /**
      * primary[命令合成]<br/>
      * 修改主键
@@ -5729,6 +5847,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public List<Run> buildAlterRun(DataRuntime runtime, PrimaryKey origin, PrimaryKey meta, boolean slice) throws Exception {
         return super.buildAlterRun(runtime, origin, meta, slice);
     }
+
     /**
      * primary[命令合成]<br/>
      * 删除主键
@@ -5752,6 +5871,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         builder.append(" DROP PRIMARY KEY");
         return runs;
     }
+
     /**
      * primary[命令合成]<br/>
      * 修改主键名
@@ -5858,6 +5978,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public List<Run> buildAddRun(DataRuntime runtime, ForeignKey meta) throws Exception {
         return super.buildAddRun(runtime, meta);
     }
+
     /**
      * foreign[命令合成]<br/>
      * 修改外键
@@ -5999,6 +6120,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public List<Run> buildAppendIndexRun(DataRuntime runtime, Table meta) throws Exception {
         return super.buildAppendIndexRun(runtime, meta);
     }
+
     /**
      * index[命令合成]<br/>
      * 修改索引
@@ -6011,6 +6133,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public List<Run> buildAlterRun(DataRuntime runtime, Index meta) throws Exception {
         return super.buildAlterRun(runtime, meta);
     }
+
     /**
      * index[命令合成]<br/>
      * 删除索引
@@ -6033,6 +6156,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         }
         return runs;
     }
+
     /**
      * index[命令合成]<br/>
      * 修改索引名
@@ -6062,6 +6186,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         }
         return builder;
     }
+
     /**
      * index[命令合成-子流程]<br/>
      * 索引备注
@@ -6184,6 +6309,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public List<Run> buildAlterRun(DataRuntime runtime, Constraint meta) throws Exception {
         return super.buildAlterRun(runtime, meta);
     }
+
     /**
      * constraint[命令合成]<br/>
      * 删除约束
@@ -6282,6 +6408,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public List<Run> buildCreateRun(DataRuntime runtime, Trigger meta) throws Exception {
         return super.buildCreateRun(runtime, meta);
     }
+
     /**
      * trigger[命令合成]<br/>
      * 修改触发器
@@ -6319,6 +6446,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public List<Run> buildRenameRun(DataRuntime runtime, Trigger meta) throws Exception {
         return super.buildRenameRun(runtime, meta);
     }
+
     /**
      * trigger[命令合成-子流程]<br/>
      * 触发级别(行或整个命令)
@@ -6413,6 +6541,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public List<Run> buildCreateRun(DataRuntime runtime, Procedure meta) throws Exception {
         return super.buildCreateRun(runtime, meta);
     }
+
     /**
      * procedure[命令合成]<br/>
      * 修改存储过程
@@ -6700,7 +6829,6 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         return new ArrayList<>();
     }
 
-
     /* *****************************************************************************************************************
      *
      *                                                     Authorize
@@ -6710,7 +6838,6 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * grant        : 授权
      * privilege    : 权限
      ******************************************************************************************************************/
-
 
     /**
      * 执行命令
@@ -6850,6 +6977,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         refer.map(User.FIELD_NAME, "user");
         return refer;
     }
+
     /**
      * user[结果集封装]<br/>
      * 根据查询结果集构造 user
@@ -6899,7 +7027,6 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public <T extends User> T detail(DataRuntime runtime, int index, T meta, User query, DataRow row) {
         return super.detail(runtime, index, meta, query, row);
     }
-
 
     /* *****************************************************************************************************************
      *                                                     privilege
@@ -6978,8 +7105,6 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         return super.detail(runtime, index, meta, query, row);
     }
 
-
-
     /* *****************************************************************************************************************
      *                                                     grant
      * -----------------------------------------------------------------------------------------------------------------
@@ -7057,6 +7182,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
             meta.setSchema(catalog);
         }
     }
+
     /**
      * 在调用jdbc接口前处理业务中的catalog,schema,部分数据库(如mysql)业务系统与dbc标准可能不一致根据实际情况处理<br/>
      * @param catalog 对于MySQL, 则对应相应的数据库, 对于Oracle来说, 则是对应相应的数据库实例, 可以不填, 也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
@@ -7152,6 +7278,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public String concat(DataRuntime runtime, String ... args) {
         return super.concatFun(runtime, args);
     }
+
     /**
      * 伪表
      * @return String

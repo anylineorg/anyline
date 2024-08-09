@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.client.map;
 
 import org.anyline.entity.Coordinate;
@@ -40,6 +38,7 @@ public abstract class AbstractMapClient implements MapClient{
         }
         return null;
     }
+
     /**
      * 根据地址查坐标(子类实现)
      * @param address  address
@@ -58,6 +57,7 @@ public abstract class AbstractMapClient implements MapClient{
     public Coordinate geo(String address) {
         return geo(address, null);
     }
+
     /**
      * 逆地址解析
      * @param lng 经度
@@ -74,11 +74,13 @@ public abstract class AbstractMapClient implements MapClient{
     public Coordinate regeo(SRS srs, String lng, String lat)  {
         return regeo(srs, BasicUtil.parseDouble(lng, null), BasicUtil.parseDouble(lat, null));
     }
+
     @Override
     public Coordinate regeo(SRS srs, String point)  {
         String[] points = point.split(",");
         return regeo(srs, BasicUtil.parseDouble(points[0], null), BasicUtil.parseDouble(points[1], null));
     }
+
     @Override
     public Coordinate regeo(String point)  {
         return regeo(SRS.GCJ02LL, point);
@@ -86,22 +88,27 @@ public abstract class AbstractMapClient implements MapClient{
     public Coordinate regeo(String lng, String lat) {
         return regeo(BasicUtil.parseDouble(lng, null), BasicUtil.parseDouble(lat, null));
     }
+
     @Override
     public Coordinate regeo(Double lng, Double lat) {
         return regeo(SRS.GCJ02LL, lng, lat);
     }
+
     @Override
     public Coordinate regeo(SRS srs, String[] point) {
         return regeo(srs, point[0], point[1]);
     }
+
     @Override
     public Coordinate regeo(String[] point) {
         return regeo(point[0], point[1]);
     }
+
     @Override
     public Coordinate regeo(SRS srs, Double[] point) {
         return regeo(srs, point[0], point[1]);
     }
+
     @Override
     public Coordinate regeo(Double[] point) {
         return regeo(point[0], point[1]);

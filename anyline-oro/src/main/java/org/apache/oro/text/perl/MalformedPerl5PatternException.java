@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 /*
  * $Id: MalformedPerl5PatternException.java,v 1.7 2003/11/07 20:16:25 dfs Exp $
  *

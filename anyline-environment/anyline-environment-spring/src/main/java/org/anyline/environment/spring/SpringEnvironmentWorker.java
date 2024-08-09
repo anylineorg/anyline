@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.environment.spring;
 
 import org.anyline.adapter.EnvironmentWorker;
@@ -166,6 +164,7 @@ public class SpringEnvironmentWorker extends DefaultEnvironmentWorker implements
     public <T> T getSingletonBean(String name, Class<T> clazz) {
         return (T) factory.getSingleton(name);
     }
+
     @Override
     public Object get(String key) {
         Object val = environment.getProperty(key);

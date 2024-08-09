@@ -14,9 +14,6 @@
  * limitations under the License.
  */
 
-
-
-
 package org.anyline.dao.init;
 
 import org.anyline.adapter.PersistenceAdapter;
@@ -676,7 +673,6 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		checkOne2ManyDependencySave(runtime, random, data, ENTITY_FIELD_INSERT_DEPENDENCY, 0);
 		return result;
 	}
-
 
 	/**
 	 * insert into table select * from table
@@ -2006,7 +2002,6 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		DataRuntime runtime = runtime();
 		return runtime.getAdapter().create(runtime, user);
 	}
-
 
 	/**
 	 * 查询用户

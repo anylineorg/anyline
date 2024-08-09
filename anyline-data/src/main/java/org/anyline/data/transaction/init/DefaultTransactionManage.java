@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.data.transaction.init;
 
 import org.anyline.data.datasource.ApplicationConnectionHolder;

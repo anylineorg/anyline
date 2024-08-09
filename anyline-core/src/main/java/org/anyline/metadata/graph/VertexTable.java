@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.metadata.graph;
 
 import org.anyline.metadata.Catalog;

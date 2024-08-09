@@ -14,9 +14,6 @@
  * limitations under the License.
  */
 
-
-
-
 package org.anyline.data.hbase.datasource;
 
 import org.anyline.annotation.Component;
@@ -34,7 +31,7 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 
-@Component("anyline.environment.data.datasource.loader.HBase")
+@Component("anyline.environment.data.datasource.loader.hbase")
 public class HBaseDataSourceLoader extends AbstractDataSourceLoader implements DataSourceLoader {
     public static Logger log = LoggerFactory.getLogger(HBaseDataSourceLoader.class);
 
@@ -44,6 +41,7 @@ public class HBaseDataSourceLoader extends AbstractDataSourceLoader implements D
     public DataSourceHolder holder() {
         return holder;
     }
+
     @Override
     public List<String> load() {
         List<String> list = new ArrayList<>();

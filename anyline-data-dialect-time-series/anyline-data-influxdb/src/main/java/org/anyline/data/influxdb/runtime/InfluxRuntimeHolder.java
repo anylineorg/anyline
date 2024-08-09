@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-
 package org.anyline.data.influxdb.runtime;
-
 
 import com.influxdb.client.InfluxDBClient;
 import org.anyline.bean.BeanDefine;
@@ -43,7 +41,6 @@ public class InfluxRuntimeHolder extends AbstractRuntimeHolder {
     }
     public InfluxRuntimeHolder() {
     }
-
 
     /**
      * 注册数据源 子类覆盖 生成简单的DataRuntime不注册到
@@ -75,6 +72,7 @@ public class InfluxRuntimeHolder extends AbstractRuntimeHolder {
         //runtime.setHolder(this);
         return runtime;
     }
+
     /**
      * 注册运行环境
      * @param key 数据源前缀
@@ -152,7 +150,6 @@ public class InfluxRuntimeHolder extends AbstractRuntimeHolder {
         }
         return true;
     }
-
 
     public static void close(String key) {
     }

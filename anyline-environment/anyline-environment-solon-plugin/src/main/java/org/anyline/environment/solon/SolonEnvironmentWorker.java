@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.environment.solon;
 
 import org.anyline.adapter.EnvironmentWorker;
@@ -37,6 +35,7 @@ public class SolonEnvironmentWorker extends DefaultEnvironmentWorker implements 
     private static AppContext context;
     private static SolonProps props;
     public SolonEnvironmentWorker() {}
+
     @Override
     public void start(AppContext context) throws Throwable {
         log.debug("solon environment start");
@@ -60,6 +59,7 @@ public class SolonEnvironmentWorker extends DefaultEnvironmentWorker implements 
         props = Solon.cfg();
         DefaultEnvironmentWorker.start();
     }
+
     @Override
     public Object get(String key) {
         return props.get(key);
@@ -100,7 +100,6 @@ public class SolonEnvironmentWorker extends DefaultEnvironmentWorker implements 
         return context.getBeansMapOfType(clazz);
     }
 
-
     public boolean regBean(String name, Object bean) {
         return reg(name, bean);
     }
@@ -131,6 +130,7 @@ public class SolonEnvironmentWorker extends DefaultEnvironmentWorker implements 
         }
         return bean;
     }
+
     @Override
     public boolean containsBean(String name) {
         return null != context.getBean(name);
@@ -140,6 +140,5 @@ public class SolonEnvironmentWorker extends DefaultEnvironmentWorker implements 
     public Object getSingletonBean(String name) {
         return context.getBean(name);
     }
-
 
 }

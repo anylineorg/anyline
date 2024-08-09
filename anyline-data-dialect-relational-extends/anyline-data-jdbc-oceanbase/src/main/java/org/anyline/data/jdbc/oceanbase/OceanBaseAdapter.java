@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.data.jdbc.oceanbase;
 
 import org.anyline.annotation.Component;
@@ -31,7 +29,6 @@ public class OceanBaseAdapter extends MySQLAdapter {
 		delimiterFr = "`";
 		delimiterTo = "`";
 	}
-
 
 	private String delimiter;
 

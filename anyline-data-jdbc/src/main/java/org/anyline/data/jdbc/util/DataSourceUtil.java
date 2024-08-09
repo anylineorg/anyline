@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.data.jdbc.util;
 
 import org.anyline.metadata.type.DatabaseType;
@@ -96,6 +94,7 @@ public class DataSourceUtil {
         param.put("password", password);
         return build(param);
     }
+
     /**
      * 注册数据源(生产环境不要调用这个方法，这里只设置几个必需参数用来测试)
      * @param url url

@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.metadata.type.init;
 
 import org.anyline.metadata.type.Convert;

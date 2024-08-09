@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.proxy;
 
 import org.anyline.adapter.EntityAdapter;
@@ -80,6 +78,7 @@ public class EntityAdapterProxy {
     public static TypeMetadata type(Class clazz) {
         return types.get(clazz);
     }
+
     /**
      * 清空缓存
      */
@@ -166,6 +165,7 @@ public class EntityAdapterProxy {
         }
         return null;
     }
+
     /**
      * 获取指定类.属性关联的列名
      * @param clazz 类
@@ -182,6 +182,7 @@ public class EntityAdapterProxy {
         }
         return new LinkedHashMap<>();
     }
+
     /**
      * 获取指定类.属性关联的列名
      * @param clazz 类
@@ -206,6 +207,7 @@ public class EntityAdapterProxy {
         }
         return null;
     }
+
     /**
      * 根据类与列名 获取相关的属性
      * @param clazz 类
@@ -313,6 +315,7 @@ public class EntityAdapterProxy {
         }
         return null;
     }
+
     /**
      * 主键值
      * @param obj obj
@@ -356,6 +359,7 @@ public class EntityAdapterProxy {
         }
         return false;
     }
+
     /**
      * DataRow转换成entity时调用  如果有实现则不再执行 DataRow.entity
      * 如果不实现当前可以返回null, 将继续执行默认处理方式

@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.entity.generator.init;
 
 import org.anyline.metadata.Column;
@@ -33,6 +31,7 @@ public class DisableGenerator implements PrimaryGenerator {
     public boolean create(Object entity, DatabaseType type, String table, List<String> columns, String other) {
         return false;
     }
+
     @Override
     public boolean create(Object entity, DatabaseType type, String table, LinkedHashMap<String, Column> columns, String other) {
         return false;

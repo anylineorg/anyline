@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.proxy;
 
 import org.anyline.cache.CacheProvider;
@@ -81,7 +79,6 @@ public class CacheProxy {
     private static Map<String, DataRow> cache_table_maps = new HashMap<>();
     private static Map<String, DataRow> cache_view_maps = new HashMap<>();
 */
-
 
     public static String key(DataRuntime runtime, String flag, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs){
         StringBuilder key = new StringBuilder();
@@ -294,7 +291,6 @@ public class CacheProxy {
         cache_view_maps.put(datasource(datasource), maps);
     }*/
 
-
    /* public static DataRow getTableMaps(String datasource) {
         DataRow row = cache_table_maps.get(datasource(datasource));
         if(null == row) {
@@ -313,14 +309,12 @@ public class CacheProxy {
         return row;
     }*/
 
-
     public static <T extends Column> LinkedHashMap<String, T> columns(String key) {
         return (LinkedHashMap<String, T>) caches().get(key);
     }
     public static <T extends Tag> LinkedHashMap<String, T> tags(String key) {
         return (LinkedHashMap<String, T>) caches().get(key);
     }
-
 
    /* public static <T extends Column> void columns(DriverAdapter adapter, String datasource, Table table, LinkedHashMap<String, T> columns) {
         if(null == table) {

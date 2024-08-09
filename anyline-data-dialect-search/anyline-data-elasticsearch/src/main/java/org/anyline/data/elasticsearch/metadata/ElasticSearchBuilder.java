@@ -16,7 +16,6 @@
 
 package org.anyline.data.elasticsearch.metadata;
 
-
 import org.anyline.metadata.Column;
 import org.anyline.metadata.Table;
 import org.anyline.metadata.type.DatabaseType;

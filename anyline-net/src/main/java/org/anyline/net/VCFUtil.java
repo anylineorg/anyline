@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.net;
 
 import org.slf4j.Logger;
@@ -72,6 +70,7 @@ public class VCFUtil {
        }
        return builder.toString();
     }
+
     /**
      * 编码 UTF8 quoted-printable
      * @param str 需要编码的字符串

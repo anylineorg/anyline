@@ -14,10 +14,7 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.net;
-
 
 import com.jcraft.jsch.*;
 import com.jcraft.jsch.ChannelSftp.LsEntry;

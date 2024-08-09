@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.data.runtime.init;
 
 import org.anyline.data.runtime.RuntimeHolder;

@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.data.param.init;
 
 import org.anyline.adapter.KeyAdapter;
@@ -204,12 +202,12 @@ public class DefaultConfigStore implements ConfigStore {
 	}
 
 	@Override
-	public ConfigStore setJoin(String type) {
+	public ConfigStore setJoin(Condition.JOIN type) {
 		this.chain.setJoin(type);
 		return this;
 	}
 	@Override
-	public String getJoin(){
+	public Condition.JOIN getJoin(){
 		return chain.getJoin();
 	}
 	/**
@@ -492,7 +490,6 @@ public class DefaultConfigStore implements ConfigStore {
 		return this;
 	}
 
-
 	@Override
 	public ConfigStore autoCount(boolean auto) {
 		if(null == navi) {
@@ -727,7 +724,7 @@ public class DefaultConfigStore implements ConfigStore {
 		}else{
 			if(null == conf) {
 				conf = new DefaultConfig();
-				conf.setJoin(Condition.CONDITION_JOIN_TYPE_AND);
+				conf.setJoin(Condition.JOIN.AND);
 				conf.setCompare(compare);
 				conf.setPrefix(prefix);
 				conf.setVariable(var);
@@ -894,7 +891,7 @@ public class DefaultConfigStore implements ConfigStore {
 		}else{
 			if(null == conf) {
 				conf = new DefaultConfig();
-				conf.setJoin(Condition.CONDITION_JOIN_TYPE_AND);
+				conf.setJoin(Condition.JOIN.AND);
 				conf.setCompare(compare);
 				conf.setPrefix(prefix);
 				conf.setVariable(var);
@@ -966,7 +963,7 @@ public class DefaultConfigStore implements ConfigStore {
 			list = chain;
 		}
 		ConfigChain orChain = configs.getConfigChain();
-		orChain.setJoin(Condition.CONDITION_JOIN_TYPE_OR);
+		orChain.setJoin(Condition.JOIN.OR);
 		//orChain.apart(apart);
 		list.addConfig(orChain);
 		chain = list;
@@ -974,7 +971,7 @@ public class DefaultConfigStore implements ConfigStore {
 	}
 	@Override
 	public ConfigStore or(Config config) {
-		config.setJoin(Condition.CONDITION_JOIN_TYPE_OR);
+		config.setJoin(Condition.JOIN.OR);
 		chain.addConfig(config);
 		return this;
 	}
@@ -983,7 +980,7 @@ public class DefaultConfigStore implements ConfigStore {
 	public ConfigStore or(EMPTY_VALUE_SWITCH swt, String text) {
 		Config config = new DefaultConfig();
 		config.setText(text);
-		config.setJoin(Condition.CONDITION_JOIN_TYPE_OR);
+		config.setJoin(Condition.JOIN.OR);
 		chain.addConfig(config);
 		return this;
 	}
@@ -994,7 +991,7 @@ public class DefaultConfigStore implements ConfigStore {
 		list.addConfig(chain);
 		Config config = new DefaultConfig();
 		config.setText(text);
-		config.setJoin(Condition.CONDITION_JOIN_TYPE_OR);
+		config.setJoin(Condition.JOIN.OR);
 		list.addConfig(config);
 		chain = list;
 		return this;
@@ -1004,7 +1001,7 @@ public class DefaultConfigStore implements ConfigStore {
 	public ConfigStore ors(EMPTY_VALUE_SWITCH swt, Config config) {
 		ConfigChain list = new DefaultConfigChain();
 		list.addConfig(chain);
-		config.setJoin(Condition.CONDITION_JOIN_TYPE_OR);
+		config.setJoin(Condition.JOIN.OR);
 		list.addConfig(config);
 		chain = list;
 		return this;
@@ -1049,10 +1046,10 @@ public class DefaultConfigStore implements ConfigStore {
 				}else if(compareCode == 62) {
 					//FIND_IN_AND
 					ConfigChain findChain = new DefaultConfigChain();
-					findChain.setJoin(Condition.CONDITION_JOIN_TYPE_OR);
+					findChain.setJoin(Condition.JOIN.OR);
 					for(Object item:list) {
 						conf = new DefaultConfig();
-						conf.setJoin(Condition.CONDITION_JOIN_TYPE_AND);
+						conf.setJoin(Condition.JOIN.AND);
 						conf.setCompare(compare);
 						conf.setPrefix(prefix);
 						conf.setVariable(var);
@@ -1084,7 +1081,7 @@ public class DefaultConfigStore implements ConfigStore {
 						orChain.addConfig(last);
 					}
 					conf = new DefaultConfig();
-					conf.setJoin(Condition.CONDITION_JOIN_TYPE_OR);
+					conf.setJoin(Condition.JOIN.OR);
 					if(compare == Compare.NULL || compare == Compare.NOT_NULL) {
 						String column = var;
 						if(BasicUtil.isNotEmpty(prefix)) {
@@ -1138,7 +1135,7 @@ public class DefaultConfigStore implements ConfigStore {
 				//FIND_IN_OR
 				for(Object item:list) {
 					conf = new DefaultConfig();
-					conf.setJoin(Condition.CONDITION_JOIN_TYPE_OR);
+					conf.setJoin(Condition.JOIN.OR);
 					conf.setPrefix(prefix);
 					conf.setCompare(compare);
 					conf.setVariable(var);
@@ -1148,10 +1145,10 @@ public class DefaultConfigStore implements ConfigStore {
 			}else if(compareCode == 62) {
 				//FIND_IN_AND
 				ConfigChain findChain = new DefaultConfigChain();
-				findChain.setJoin(Condition.CONDITION_JOIN_TYPE_OR);
+				findChain.setJoin(Condition.JOIN.OR);
 				for(Object item:list) {
 					conf = new DefaultConfig();
-					conf.setJoin(Condition.CONDITION_JOIN_TYPE_AND);
+					conf.setJoin(Condition.JOIN.AND);
 					conf.setCompare(compare);
 					conf.setPrefix(prefix);
 					conf.setVariable(var);
@@ -1169,7 +1166,7 @@ public class DefaultConfigStore implements ConfigStore {
 				}
 			}else{
 				conf = new DefaultConfig();
-				conf.setJoin(Condition.CONDITION_JOIN_TYPE_OR);
+				conf.setJoin(Condition.JOIN.OR);
 
 				if(compare == Compare.NULL || compare == Compare.NOT_NULL) {
 					String column = var;

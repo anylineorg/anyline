@@ -14,9 +14,6 @@
  * limitations under the License.
  */
 
-
-
-
 package org.anyline.util;
 
 import org.dom4j.Document;
@@ -54,6 +51,7 @@ public class DomUtil {
         }
         return result;
     }
+
     /**
      * 根据标签name搜索element
      * @param root 根节点
@@ -63,6 +61,7 @@ public class DomUtil {
     public static Element element(Element root, String tags) {
         return element(root, BeanUtil.array2list(tags.split(",")));
     }
+
     /**
      * 根据标签name搜索element
      * @param root 根节点
@@ -95,6 +94,7 @@ public class DomUtil {
     public static List<Element> elements(Element root, String tags) {
         return elements(root, tags, true);
     }
+
     /**
      * 根据标签name以及属性值搜索element
      * @param root 根节点
@@ -121,6 +121,7 @@ public class DomUtil {
     public static Element element(Element root, String tags, String attribute, String value) {
         return element(root, BeanUtil.array2list(tags.split(",")), attribute, value);
     }
+
     /**
      * 根据标签name以及属性值搜索element
      * @param root 根节点
@@ -146,6 +147,7 @@ public class DomUtil {
     public static List<Element> elements(Element root, String tags, String attribute, String value) {
         return elements(root, BeanUtil.array2list(tags.split(",")), attribute, value);
     }
+
     /**
      * 根据属性值搜索element
      * @param root 根节点
@@ -167,6 +169,7 @@ public class DomUtil {
         }
         return result;
     }
+
     /**
      * 根据属性值搜索element
      * @param root 根节点
@@ -259,6 +262,7 @@ public class DomUtil {
         }
         return list;
     }
+
     /**
      * 当前节点前的所有节点
      * @param element element

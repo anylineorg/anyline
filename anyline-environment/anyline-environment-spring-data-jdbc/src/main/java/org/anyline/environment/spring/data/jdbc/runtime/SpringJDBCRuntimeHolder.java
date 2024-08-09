@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.environment.spring.data.jdbc.runtime;
 
 import org.anyline.bean.BeanDefine;
@@ -82,6 +80,7 @@ public class SpringJDBCRuntimeHolder extends AbstractRuntimeHolder implements Ru
         //runtime.setHolder(this);
         return runtime;
     }
+
     /**
      * 注册运行环境
      * @param key 数据源前缀
@@ -178,7 +177,6 @@ public class SpringJDBCRuntimeHolder extends AbstractRuntimeHolder implements Ru
         }
         return true;
     }
-
 
     public static void close(String key) {
         Object datasource = null;

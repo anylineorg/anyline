@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.adapter;
 
 import org.anyline.metadata.type.TypeMetadata;

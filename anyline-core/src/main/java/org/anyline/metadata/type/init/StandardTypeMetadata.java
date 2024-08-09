@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.metadata.type.init;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -154,6 +152,7 @@ public enum StandardTypeMetadata implements TypeMetadata {
    , UNIQUEIDENTIFIER(CATEGORY.TEXT, "UNIQUEIDENTIFIER", null, String.class,1, 1, 1, MSSQL) {
         public Object write(Object value, Object def, boolean array, boolean placeholder) {return CHAR.write(value, def, placeholder);}
     }
+
     /**
      * mysql(byte[])
      */
@@ -326,6 +325,7 @@ public enum StandardTypeMetadata implements TypeMetadata {
     , DOUBLE_PRECISION(CATEGORY.FLOAT, "DOUBLE PRECISION", null, Double.class, 1, 1, 1, H2) {
         public Object write(Object value, Object def, boolean array, boolean placeholder) {return FLOAT.write(value, def, placeholder);}
     }
+
     /**
      * mysql(p, s)
      * pg:
@@ -510,6 +510,7 @@ public enum StandardTypeMetadata implements TypeMetadata {
     , DATETIME_WITH_TIME_ZONE(CATEGORY.DATETIME, "DATETIME WITH TIME ZONE", "DATETIME({S}) WITH TIME ZONE", null, java.sql.Timestamp.class, 1, 1, 2, DM) {
         public Object write(Object value, Object def, boolean array, boolean placeholder) {return DATETIME.write(value, def, placeholder);}
     }
+
     /**
      * MSSQL<br/>
      * 2020-01-01 15:10:10.0000011
@@ -895,10 +896,12 @@ public enum StandardTypeMetadata implements TypeMetadata {
     public TypeMetadata getOrigin() {
         return origin;
     }
+
     @Override
     public CATEGORY getCategory() {
         return category;
     }
+
     @Override
     public CATEGORY_GROUP getCategoryGroup() {
         if(null != category) {
@@ -906,6 +909,7 @@ public enum StandardTypeMetadata implements TypeMetadata {
         }
         return CATEGORY_GROUP.NONE;
     }
+
     @Override
     public Object convert(Object value, Object def) {
         return convert(value, null, def);
@@ -974,6 +978,7 @@ public enum StandardTypeMetadata implements TypeMetadata {
         }
         return value;
     }
+
     @Override
     public String getName() {
         return name;
@@ -983,6 +988,7 @@ public enum StandardTypeMetadata implements TypeMetadata {
     public int ignoreLength() {
         return ignoreLength;
     }
+
     @Override
     public int ignorePrecision() {
         return ignorePrecision;

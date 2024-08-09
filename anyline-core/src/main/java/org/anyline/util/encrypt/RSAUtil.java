@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.util.encrypt;
 
 import org.anyline.util.Base64Util;

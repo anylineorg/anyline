@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.data.run;
 
 import org.anyline.data.runtime.DataRuntime;
@@ -49,6 +47,7 @@ public class ProcedureRun extends AbstractRun implements Run{
         }
         this.procedure = procedure;
     }
+
     @Override
     public boolean checkValid() {
         return true;

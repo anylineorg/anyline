@@ -14,10 +14,7 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.data.transaction;
-
 
 public interface TransactionDefine {
     enum MODE{
@@ -25,6 +22,7 @@ public interface TransactionDefine {
         APPLICATION,    //应用内有效
         DISTRIBUTED     //分布式
     }
+
     /**
      * 如果当前存在事务，则加入该事务；如果当前没有事务，则创建一个新的事务
      */
@@ -59,7 +57,6 @@ public interface TransactionDefine {
      * 如果当前存在事务，则创建一个事务作为当前事务的嵌套事务来运行；如果当前没有事务，则该取值等价于TransactionDefinition.PROPAGATION_REQUIRED。
      */
     int PROPAGATION_NESTED = 6;
-
 
     /**
      * Use the default isolation level of the underlying datastore.
@@ -112,13 +109,11 @@ public interface TransactionDefine {
      */
     int ISOLATION_SERIALIZABLE = 8;  // same as java.sql.Connection.TRANSACTION_SERIALIZABLE;
 
-
     /**
      * Use the default timeout of the underlying transaction system,
      * or none if timeouts are not supported.
      */
     int TIMEOUT_DEFAULT = -1;
-
 
     /**
      * Return the propagation behavior.
@@ -203,6 +198,5 @@ public interface TransactionDefine {
         return MODE.THREAD;
     }
     void setMode(MODE mode);
-
 
 }

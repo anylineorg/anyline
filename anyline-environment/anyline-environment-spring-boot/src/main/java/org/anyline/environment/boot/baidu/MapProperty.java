@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.environment.boot.baidu;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;

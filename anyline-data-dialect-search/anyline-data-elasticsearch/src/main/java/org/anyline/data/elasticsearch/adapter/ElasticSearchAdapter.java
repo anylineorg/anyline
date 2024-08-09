@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.data.elasticsearch.adapter;
 
 import org.anyline.adapter.KeyAdapter;
@@ -41,7 +39,6 @@ import org.anyline.exception.NotSupportException;
 import org.anyline.metadata.*;
 import org.anyline.metadata.refer.MetadataFieldRefer;
 import org.anyline.metadata.type.DatabaseType;
-import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.net.HttpResponse;
 import org.anyline.proxy.CacheProxy;
 import org.anyline.proxy.EntityAdapterProxy;
@@ -151,7 +148,6 @@ public class ElasticSearchAdapter extends AbstractDriverAdapter implements Drive
         return super.insert(runtime, random, batch, dest, data, configs, columns);
     }
 
-
     /**
      * insert [命令合成]<br/>
      * 填充inset命令内容(创建批量INSERT RunPrepare)
@@ -242,6 +238,7 @@ public class ElasticSearchAdapter extends AbstractDriverAdapter implements Drive
     public boolean supportInsertPlaceholder() {
         return true;
     }
+
     /**
      * insert [命令合成-子流程]<br/>
      * 设置主键值
@@ -252,6 +249,7 @@ public class ElasticSearchAdapter extends AbstractDriverAdapter implements Drive
     protected void setPrimaryValue(Object obj, Object value) {
         super.setPrimaryValue(obj, value);
     }
+
     /**
      * insert [命令合成-子流程]<br/>
      * 根据entity创建 INSERT RunPrepare由buildInsertRun调用
@@ -345,7 +343,6 @@ public class ElasticSearchAdapter extends AbstractDriverAdapter implements Drive
 { "index" : { "_id" : "2" } }
 { "field1" : "value2" }
 
-
 #批量添加  也可以写上索引名 PUT index_user/_bulk
 PUT * /_bulk
         {"index":{"_index":"index_user", "_id":"10011"}}
@@ -363,7 +360,6 @@ PUT * /_bulk
         {"id":1002, "name":"b c", "age":20}
         {"index":{"_index":"index_user"}}
         {"id":1003, "name":"c d", "age":30}
-
 
 */
         return run;
@@ -394,8 +390,6 @@ PUT * /_bulk
     public long insert(DataRuntime runtime, String random, Object data, ConfigStore configs, Run run, String[] pks) {
         return super.insert(runtime, random, data, configs, run, pks);
     }
-
-    
 
     /* *****************************************************************************************************************
      *                                                     UPDATE
@@ -440,6 +434,7 @@ PUT * /_bulk
     public long update(DataRuntime runtime, String random, int batch, Table dest, Object data, ConfigStore configs, List<String> columns) {
         return super.update(runtime, random, batch, dest, data, configs, columns);
     }
+
     /**
      * update [命令合成]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -467,14 +462,17 @@ PUT * /_bulk
     public Run buildUpdateRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, List<String> columns) {
         return createInsertRun(runtime, dest, obj, configs, columns);
     }
+
     @Override
     public Run buildUpdateRunFromEntity(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, LinkedHashMap<String, Column> columns) {
         return super.buildUpdateRunFromEntity(runtime, dest, obj, configs, columns);
     }
+
     @Override
     public Run buildUpdateRunFromDataRow(DataRuntime runtime, Table dest, DataRow row, ConfigStore configs, LinkedHashMap<String,Column> columns) {
         return createInsertRun(runtime, dest, row, configs, Column.names(columns));
     }
+
     @Override
     public Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, LinkedHashMap<String,Column> columns) {
         return super.buildUpdateRunFromCollection(runtime, batch, dest, list, configs, columns);
@@ -506,10 +504,12 @@ PUT * /_bulk
     public LinkedHashMap<String,Column> confirmUpdateColumns(DataRuntime runtime, Table dest, DataRow row, ConfigStore configs, List<String> columns) {
         return super.confirmUpdateColumns(runtime, dest, row, configs, columns);
     }
+
     @Override
     public LinkedHashMap<String,Column> confirmUpdateColumns(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns) {
         return super.confirmUpdateColumns(runtime, dest, obj, configs, columns);
     }
+
     /**
      * update [命令执行]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -560,14 +560,17 @@ PUT * /_bulk
     protected long saveCollection(DataRuntime runtime, String random, Table dest, Collection<?> data, ConfigStore configs, List<String> columns) {
         return super.saveCollection(runtime, random, dest, data, configs, columns);
     }
+
     @Override
     protected long saveObject(DataRuntime runtime, String random, Table dest, Object data, ConfigStore configs, List<String> columns) {
         return super.saveObject(runtime, random, dest, data, configs, columns);
     }
+
     @Override
     protected Boolean checkOverride(Object obj) {
         return super.checkOverride(obj);
     }
+
     @Override
     protected Map<String,Object> checkPv(Object obj) {
         return super.checkPv(obj);
@@ -583,10 +586,12 @@ PUT * /_bulk
     protected boolean isMultipleValue(DataRuntime runtime, TableRun run, String key) {
         return super.isMultipleValue(runtime, run, key);
     }
+
     @Override
     protected boolean isMultipleValue(Column column) {
         return super.isMultipleValue(column);
     }
+
     /**
      * 过滤掉表结构中不存在的列
      * ES不检测
@@ -701,6 +706,7 @@ PUT * /_bulk
     public List<Map<String,Object>> maps(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
         return super.maps(runtime, random, prepare, configs, conditions);
     }
+
     /**
      * select[命令合成]<br/> 最终可执行命令<br/>
      * 创建查询SQL
@@ -753,14 +759,17 @@ PUT * /_bulk
     public Run fillQueryContent(DataRuntime runtime, Run run) {
         return super.fillQueryContent(runtime, run);
     }
+
     @Override
     protected Run fillQueryContent(DataRuntime runtime, XMLRun run) {
         return super.fillQueryContent(runtime, run);
     }
+
     @Override
     protected Run fillQueryContent(DataRuntime runtime, TextRun run) {
         return super.fillQueryContent(runtime, run);
     }
+
     @Override
     protected Run fillQueryContent(DataRuntime runtime, TableRun run) {
         ElasticSearchRun r = (ElasticSearchRun)run;
@@ -837,17 +846,18 @@ PUT * /_bulk
                     row = base;
                     DataRow bool = base.put("bool");
                     DataSet set = null;
-                    String join = chain.getJoin().trim();
-                    if(BasicUtil.isEmpty(join) || "AND".equalsIgnoreCase(join)){ //默认就是AND
+                    Condition.JOIN join = chain.getJoin();
+                    String joinCode = null;
+                    if(null == join || Condition.JOIN.AND == join){ //默认就是AND
                         Condition second = conditions.get(1);
-                        join = second.getJoin().trim();
+                        join = second.getJoin();
                     }
-                    if ("OR".equalsIgnoreCase(join)) {
-                        join ="should";
-                    } else if("AND".equalsIgnoreCase(join)){
-                        join= "must";
+                    if (Condition.JOIN.OR == join) {
+                        joinCode ="should";
+                    } else if(Condition.JOIN.AND == join){
+                        joinCode= "must";
                     }
-                    set = bool.puts(join);
+                    set = bool.puts(joinCode);
                     for (Condition item : conditions) {
                         set.add(parseCondition(new OriginRow(), item));
                     }
@@ -859,7 +869,6 @@ PUT * /_bulk
                 //List<RunValue> values = condition.getRunValues();
                 List<Object> values = auto.getValues();
                 String column = condition.getId();
-                String join = condition.getJoin();
                 row = filter(auto.getCompare(), column, values);
             }
         }
@@ -914,6 +923,7 @@ PUT * /_bulk
         }
         return row;
     }
+
     /**
      * select[命令合成-子流程] <br/>
      * 合成最终 select 命令 包含分页 排序
@@ -925,6 +935,7 @@ PUT * /_bulk
     public String mergeFinalQuery(DataRuntime runtime, Run run) {
         return super.mergeFinalQuery(runtime, run);
     }
+
     /**
      * select[命令合成-子流程] <br/>
      * 构造 LIKE 查询条件
@@ -939,6 +950,7 @@ PUT * /_bulk
     public RunValue createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder) {
         return super.createConditionLike(runtime, builder, compare, value, placeholder);
     }
+
     /**
      * select[命令合成-子流程] <br/>
      * 构造 FIND_IN_SET 查询条件
@@ -954,6 +966,7 @@ PUT * /_bulk
     public Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder) throws NotSupportException {
         return super.createConditionFindInSet(runtime, builder, column, compare, value, placeholder);
     }
+
     /**
      * select[命令合成-子流程] <br/>
      * 构造(NOT) IN 查询条件
@@ -981,6 +994,7 @@ PUT * /_bulk
     public DataSet select(DataRuntime runtime, String random, boolean system, Table table, ConfigStore configs, Run run) {
         return select(runtime, random, system, table, configs, (ElasticSearchRun) run);
     }
+
     /**
      * select [命令执行]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -992,6 +1006,7 @@ PUT * /_bulk
     public List<Map<String,Object>> maps(DataRuntime runtime, String random, ConfigStore configs, Run run) {
         return super.maps(runtime, random, configs, run);
     }
+
     /**
      * select [命令执行]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -1052,6 +1067,7 @@ PUT * /_bulk
     public long count(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
         return super.count(runtime, random, prepare, configs, conditions);
     }
+
     /**
      * count [命令合成]<br/>
      * 合成最终 select count 命令
@@ -1096,6 +1112,7 @@ PUT * /_bulk
     public boolean exists(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
         return super.exists(runtime, random, prepare, configs, conditions);
     }
+
     @Override
     public String mergeFinalExists(DataRuntime runtime, Run run) {
         return super.mergeFinalExists(runtime, run);
@@ -1133,6 +1150,7 @@ PUT * /_bulk
     public long execute(DataRuntime runtime, String random, int batch, ConfigStore configs, RunPrepare prepare, Collection<Object> values) {
         return super.execute(runtime, random, batch, configs, prepare, values);
     }
+
     /**
      * procedure [命令执行]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -1144,6 +1162,7 @@ PUT * /_bulk
     public boolean execute(DataRuntime runtime, String random, Procedure procedure) {
         return super.execute(runtime, random, procedure);
     }
+
     /**
      * execute [命令合成]<br/>
      * 创建执行SQL
@@ -1157,14 +1176,17 @@ PUT * /_bulk
     public Run buildExecuteRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions) {
         return super.buildExecuteRun(runtime, prepare, configs, conditions);
     }
+
     @Override
     protected void fillExecuteContent(DataRuntime runtime, XMLRun run) {
         super.fillExecuteContent(runtime, run);
     }
+
     @Override
     protected void fillExecuteContent(DataRuntime runtime, TextRun run) {
         super.fillExecuteContent(runtime, run);
     }
+
     @Override
     protected void fillExecuteContent(DataRuntime runtime, TableRun run) {
         super.fillExecuteContent(runtime, run);
@@ -1180,6 +1202,7 @@ PUT * /_bulk
     public void fillExecuteContent(DataRuntime runtime, Run run) {
         super.fillExecuteContent(runtime, run);
     }
+
     /**
      * execute [命令执行]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -1434,6 +1457,7 @@ PUT * /_bulk
     public <T extends Database> List<T> databases(DataRuntime runtime, String random, boolean greedy, Database query) {
         return super.databases(runtime, random, greedy, query);
     }
+
     /**
      * database[调用入口]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -1445,6 +1469,7 @@ PUT * /_bulk
     public <T extends Database> LinkedHashMap<String, T> databases(DataRuntime runtime, String random, Database query) {
         return super.databases(runtime, random, query);
     }
+
     /**
      * database[命令合成]<br/>
      * 查询全部数据库
@@ -1458,6 +1483,7 @@ PUT * /_bulk
     public List<Run> buildQueryDatabasesRun(DataRuntime runtime, boolean greedy, Database query) throws Exception {
         return super.buildQueryDatabasesRun(runtime, greedy, query);
     }
+
     /**
      * database[结果集封装]<br/>
      * database 属性与结果集对应关系
@@ -1467,6 +1493,7 @@ PUT * /_bulk
     public MetadataFieldRefer initDatabaseFieldRefer() {
         return super.initDatabaseFieldRefer();
     }
+
     /**
      * database[结果集封装]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -1481,10 +1508,12 @@ PUT * /_bulk
     public <T extends Database> LinkedHashMap<String, T> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Database query, DataSet set) throws Exception {
         return super.databases(runtime, index, create, previous, query, set);
     }
+
     @Override
     public <T extends Database> List<T> databases(DataRuntime runtime, int index, boolean create, List<T> previous, Database query, DataSet set) throws Exception {
         return super.databases(runtime, index, create, previous, query, set);
     }
+
     /**
      * database[结果集封装]<br/>
      * 当前database 根据查询结果集
@@ -1624,6 +1653,7 @@ PUT * /_bulk
     public <T extends Catalog> LinkedHashMap<String, T> catalogs(DataRuntime runtime, String random, Catalog query) {
         return super.catalogs(runtime, random, query);
     }
+
     /**
      * catalog[调用入口]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -1649,6 +1679,7 @@ PUT * /_bulk
     public List<Run> buildQueryCatalogsRun(DataRuntime runtime, boolean greedy, Catalog query) throws Exception {
         return super.buildQueryCatalogsRun(runtime, greedy, query);
     }
+
     /**
      * Catalog[结果集封装]<br/>
      * Catalog 属性与结果集对应关系
@@ -1658,6 +1689,7 @@ PUT * /_bulk
     public MetadataFieldRefer initCatalogFieldRefer() {
         return super.initCatalogFieldRefer();
     }
+
     /**
      * catalog[结果集封装]<br/>
      * 根据查询结果集构造 Database
@@ -1673,6 +1705,7 @@ PUT * /_bulk
     public <T extends Catalog> LinkedHashMap<String, T> catalogs(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Catalog query, DataSet set) throws Exception {
         return super.catalogs(runtime, index, create, previous, query, set);
     }
+
     /**
      * catalog[结果集封装]<br/>
      * 根据查询结果集构造 Database
@@ -1688,6 +1721,7 @@ PUT * /_bulk
     public <T extends Catalog> List<T> catalogs(DataRuntime runtime, int index, boolean create, List<T> previous, Catalog query, DataSet set) throws Exception {
         return super.catalogs(runtime, index, create, previous, query, set);
     }
+
     /**
      * catalog[结果集封装]<br/>
      * 根据驱动内置接口补充 catalog
@@ -1715,6 +1749,7 @@ PUT * /_bulk
     public <T extends Catalog> List<T> catalogs(DataRuntime runtime, boolean create, List<T> previous) throws Exception {
         return super.catalogs(runtime, create, previous);
     }
+
     /**
      * catalog[结果集封装]<br/>
      * 当前catalog 根据查询结果集
@@ -1744,7 +1779,6 @@ PUT * /_bulk
     public Catalog catalog(DataRuntime runtime, boolean create, Catalog meta) throws Exception {
         return super.catalog(runtime, create, meta);
     }
-
 
     /**
      * catalog[结果集封装]<br/>
@@ -1813,6 +1847,7 @@ PUT * /_bulk
     public <T extends Schema> LinkedHashMap<String, T> schemas(DataRuntime runtime, String random, Schema query) {
         return super.schemas(runtime, random, query);
     }
+
     /**
      * schema[调用入口]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -1848,6 +1883,7 @@ PUT * /_bulk
     public MetadataFieldRefer initSchemaFieldRefer() {
         return super.initSchemaFieldRefer();
     }
+
     /**
      * schema[结果集封装]<br/>
      * 根据查询结果集构造 Database
@@ -1863,6 +1899,7 @@ PUT * /_bulk
     public <T extends Schema> LinkedHashMap<String, T> schemas(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Schema query, DataSet set) throws Exception {
         return super.schemas(runtime, index, create, previous, query, set);
     }
+
     @Override
     public <T extends Schema> List<T> schemas(DataRuntime runtime, int index, boolean create, List<T> previous, Schema query, DataSet set) throws Exception {
         return super.schemas(runtime, index, create, previous, query, set);
@@ -1897,7 +1934,6 @@ PUT * /_bulk
     public Schema schema(DataRuntime runtime, boolean create, Schema meta) throws Exception {
         return super.schema(runtime, create, meta);
     }
-
 
     /**
      * schema[结果集封装]<br/>
@@ -2200,6 +2236,7 @@ PUT * /_bulk
     public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, View query, int types, int struct, ConfigStore configs) {
         return super.views(runtime, random, query, types, struct, configs);
     }
+
     /**
      * view[命令合成]<br/>
      * 查询视图
@@ -2223,6 +2260,7 @@ PUT * /_bulk
     public MetadataFieldRefer initViewFieldRefer() {
         return super.initViewFieldRefer();
     }
+
     /**
      * view[结果集封装]<br/>
      *  根据查询结果集构造View
@@ -2239,6 +2277,7 @@ PUT * /_bulk
     public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, View query, DataSet set) throws Exception {
         return super.views(runtime, index, create, previous, query, set);
     }
+
     /**
      * view[结果集封装]<br/>
      * 根据根据驱动内置接口补充
@@ -2327,6 +2366,7 @@ PUT * /_bulk
     public <T extends MasterTable> List<T> masters(DataRuntime runtime, String random, boolean greedy, MasterTable query, int types, int struct, ConfigStore configs) {
         return super.masters(runtime, random, greedy, query, types, struct, configs);
     }
+
     /**
      * master table[命令合成]<br/>
      * 查询主表
@@ -2349,6 +2389,7 @@ PUT * /_bulk
     public MetadataFieldRefer initMasterTableFieldRefer() {
         return super.initMasterTableFieldRefer();
     }
+
     /**
      * master table[结果集封装]<br/>
      * 根据查询结果集构造Table
@@ -2365,6 +2406,7 @@ PUT * /_bulk
     public <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, MasterTable query, DataSet set) throws Exception {
         return super.masters(runtime, index, create, previous, query, set);
     }
+
     /**
      * master table[结果集封装]<br/>
      * 根据根据驱动内置接口
@@ -2391,6 +2433,7 @@ PUT * /_bulk
     public List<String> ddl(DataRuntime runtime, String random, MasterTable meta, boolean init) {
         return super.ddl(runtime, random, meta, init);
     }
+
     /**
      * master table[命令合成]<br/>
      * 查询 MasterTable DDL
@@ -2402,6 +2445,7 @@ PUT * /_bulk
     public List<Run> buildQueryDdlRun(DataRuntime runtime, MasterTable meta) throws Exception {
         return super.buildQueryDdlRun(runtime, meta);
     }
+
     /**
      * master table[结果集封装]<br/>
      * 查询 MasterTable DDL
@@ -2461,6 +2505,7 @@ PUT * /_bulk
     public List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, boolean greedy,  PartitionTable query, int types) throws Exception {
         return super.buildQueryPartitionTablesRun(runtime, greedy, query, types);
     }
+
     /**
      * partition table[结果集封装]<br/>
      * 根据查询结果集构造Table
@@ -2478,6 +2523,7 @@ PUT * /_bulk
     public <T extends PartitionTable> LinkedHashMap<String, T> partitions(DataRuntime runtime, int total, int index, boolean create, LinkedHashMap<String, T> previous, PartitionTable query, DataSet set) throws Exception {
         return super.partitions(runtime, total, index, create, previous, query, set);
     }
+
     /**
      * partition table[结果集封装]<br/>
      * 根据根据驱动内置接口
@@ -2492,6 +2538,7 @@ PUT * /_bulk
     public <T extends PartitionTable> LinkedHashMap<String,T> partitions(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, PartitionTable query) throws Exception {
         return super.partitions(runtime, create, previous, query);
     }
+
     /**
      * partition table[调用入口]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -2602,6 +2649,7 @@ PUT * /_bulk
     public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Table table, Column query, DataSet set) throws Exception {
         return super.columns(runtime, index, create, previous, table, query, set);
     }
+
     @Override
     public <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, List<T> previous, Column query, DataSet set) throws Exception {
         return super.columns(runtime, index, create, previous, query, set);
@@ -2647,6 +2695,7 @@ PUT * /_bulk
     public <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, String random, boolean greedy, Table table, Tag query) {
         return super.tags(runtime, random, greedy, table, query);
     }
+
     /**
      * tag[命令合成]<br/>
      * 查询表上的列
@@ -2674,6 +2723,7 @@ PUT * /_bulk
     public <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Tag query, DataSet set) throws Exception {
         return super.tags(runtime, index, create, previous, query, set);
     }
+
     /**
      *
      * tag[结果集封装]<br/>
@@ -2735,6 +2785,7 @@ PUT * /_bulk
     public MetadataFieldRefer initPrimaryKeyFieldRefer() {
         return super.initPrimaryKeyFieldRefer();
     }
+
     /**
      * primary[结构集封装]<br/>
      *  根据查询结果集构造PrimaryKey
@@ -2774,6 +2825,7 @@ PUT * /_bulk
     public <T extends PrimaryKey> T detail(DataRuntime runtime, int index, T meta, PrimaryKey query, DataSet set) throws Exception {
         return super.detail(runtime, index, meta, query, set);
     }
+
     /**
      * foreign[命令合成]<br/>
      * 查询表上的外键
@@ -2785,6 +2837,7 @@ PUT * /_bulk
     public List<Run> buildQueryForeignsRun(DataRuntime runtime, boolean greedy,  ForeignKey query) throws Exception {
         return super.buildQueryForeignsRun(runtime, greedy, query);
     }
+
     /**
      * foreign[结构集封装]<br/>
      *  根据查询结果集构造PrimaryKey
@@ -2857,6 +2910,7 @@ PUT * /_bulk
     public <T extends Index> List<T> indexes(DataRuntime runtime, String random, boolean greedy, Index query) {
         return super.indexes(runtime, random, greedy, query);
     }
+
     /**
      *
      * index[调用入口]<br/>
@@ -2870,6 +2924,7 @@ PUT * /_bulk
     public <T extends Index> LinkedHashMap<String, T> indexes(DataRuntime runtime, String random, Index query) {
         return super.indexes(runtime, random, query);
     }
+
     /**
      * index[命令合成]<br/>
      * 查询表上的索引
@@ -2891,6 +2946,7 @@ PUT * /_bulk
     public MetadataFieldRefer initIndexFieldRefer() {
         return super.initIndexFieldRefer();
     }
+
     /**
      * index[结果集封装]<br/>
      *  根据查询结果集构造Index
@@ -2907,6 +2963,7 @@ PUT * /_bulk
     public <T extends Index> LinkedHashMap<String, T> indexes(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Index query, DataSet set) throws Exception {
         return super.indexes(runtime, index, create, previous, query, set);
     }
+
     /**
      * index[结果集封装]<br/>
      *  根据查询结果集构造Index
@@ -2937,6 +2994,7 @@ PUT * /_bulk
     public <T extends Index> List<T> indexes(DataRuntime runtime, boolean create, List<T> previous, Index query) throws Exception {
         return super.indexes(runtime, create, previous, query);
     }
+
     /**
      * index[结果集封装]<br/>
      * 根据驱动内置接口
@@ -2977,6 +3035,7 @@ PUT * /_bulk
     public <T extends Constraint> List<T> constraints(DataRuntime runtime, String random, boolean greedy, Constraint query) {
         return super.constraints(runtime, random, greedy, query);
     }
+
     /**
      *
      * constraint[调用入口]<br/>
@@ -2992,7 +3051,6 @@ PUT * /_bulk
     public <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, String random, Table table, Column column, String pattern) {
         return super.constraints(runtime, random, table, column, pattern);
     }
-
 
     /**
      * constraint[命令合成]<br/>
@@ -3022,6 +3080,7 @@ PUT * /_bulk
     public <T extends Constraint> List<T> constraints(DataRuntime runtime, int index, boolean create, List<T> previous, Constraint query, DataSet set) throws Exception {
         return super.constraints(runtime, index, create, previous, query, set);
     }
+
     /**
      * constraint[结果集封装]<br/>
      * 根据查询结果集构造Constraint
@@ -3063,6 +3122,7 @@ PUT * /_bulk
     public <T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, String random, boolean greedy, Trigger query) {
         return super.triggers(runtime, random, greedy, query);
     }
+
     /**
      * trigger[命令合成]<br/>
      * 查询表上的 Trigger
@@ -3073,6 +3133,7 @@ PUT * /_bulk
     public List<Run> buildQueryTriggersRun(DataRuntime runtime, boolean greedy, Trigger query) {
         return super.buildQueryTriggersRun(runtime, greedy, query);
     }
+
     /**
      * trigger[结果集封装]<br/>
      * 根据查询结果集构造 Trigger
@@ -3123,6 +3184,7 @@ PUT * /_bulk
     public <T extends Procedure> List<T> procedures(DataRuntime runtime, String random, boolean greedy, Procedure query) {
         return super.procedures(runtime, random, greedy, query);
     }
+
     /**
      *
      * procedure[调用入口]<br/>
@@ -3136,6 +3198,7 @@ PUT * /_bulk
     public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, String random, Procedure query) {
         return super.procedures(runtime, random, query);
     }
+
     /**
      * procedure[命令合成]<br/>
      * 查询表上的 Trigger
@@ -3147,6 +3210,7 @@ PUT * /_bulk
     public List<Run> buildQueryProceduresRun(DataRuntime runtime, boolean greedy, Procedure query) {
         return super.buildQueryProceduresRun(runtime, greedy, query);
     }
+
     /**
      * procedure[结果集封装]<br/>
      * 根据查询结果集构造 Trigger
@@ -3190,6 +3254,7 @@ PUT * /_bulk
     public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Procedure query) throws Exception {
         return super.procedures(runtime, create, previous, query);
     }
+
     /**
      *
      * procedure[调用入口]<br/>
@@ -3202,6 +3267,7 @@ PUT * /_bulk
     public List<String> ddl(DataRuntime runtime, String random, Procedure procedure) {
         return super.ddl(runtime, random, procedure);
     }
+
     /**
      * procedure[命令合成]<br/>
      * 查询存储DDL
@@ -3262,6 +3328,7 @@ PUT * /_bulk
     public <T extends Function> List<T> functions(DataRuntime runtime, String random, boolean greedy, Function query) {
         return super.functions(runtime, random, greedy, query);
     }
+
     /**
      *
      * function[调用入口]<br/>
@@ -3275,6 +3342,7 @@ PUT * /_bulk
     public <T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, String random, Function query) {
         return super.functions(runtime, random, query);
     }
+
     /**
      * function[命令合成]<br/>
      * 查询表上的 Trigger
@@ -3296,6 +3364,7 @@ PUT * /_bulk
     public MetadataFieldRefer initFunctionFieldRefer() {
         return super.initFunctionFieldRefer();
     }
+
     /**
      * function[结果集封装]<br/>
      * 根据查询结果集构造 Trigger
@@ -3311,6 +3380,7 @@ PUT * /_bulk
     public <T extends Function> List<T> functions(DataRuntime runtime, int index, boolean create, List<T> previous, Function query, DataSet set) throws Exception {
         return super.functions(runtime, index, create, previous, query, set);
     }
+
     /**
      * function[结果集封装]<br/>
      * 根据查询结果集构造 Trigger
@@ -3365,6 +3435,7 @@ PUT * /_bulk
     public List<Run> buildQueryDdlRun(DataRuntime runtime, Function meta) throws Exception {
         return super.buildQueryDdlRun(runtime, meta);
     }
+
     /**
      * function[结果集封装]<br/>
      * 查询 Function DDL
@@ -3413,6 +3484,7 @@ PUT * /_bulk
     public <T extends Sequence> List<T> sequences(DataRuntime runtime, String random, boolean greedy, Sequence query) {
         return super.sequences(runtime, random, greedy, query);
     }
+
     /**
      *
      * sequence[调用入口]<br/>
@@ -3426,6 +3498,7 @@ PUT * /_bulk
     public <T extends Sequence> LinkedHashMap<String, T> sequences(DataRuntime runtime, String random, Sequence query) {
         return super.sequences(runtime, random, query);
     }
+
     /**
      * sequence[命令合成]<br/>
      * 查询表上的 Trigger
@@ -3453,6 +3526,7 @@ PUT * /_bulk
     public <T extends Sequence> List<T> sequences(DataRuntime runtime, int index, boolean create, List<T> previous, Sequence query, DataSet set) throws Exception {
         return super.sequences(runtime, index, create, previous, query, set);
     }
+
     /**
      * sequence[结果集封装]<br/>
      * 根据查询结果集构造 Trigger
@@ -3507,6 +3581,7 @@ PUT * /_bulk
     public List<Run> buildQueryDdlRun(DataRuntime runtime, Sequence meta) throws Exception {
         return super.buildQueryDdlRun(runtime, meta);
     }
+
     /**
      * sequence[结果集封装]<br/>
      * 查询 Sequence DDL
@@ -3566,6 +3641,7 @@ PUT * /_bulk
     public <T extends Catalog> T catalog(List<T> catalogs, String name) {
         return super.catalog(catalogs, name);
     }
+
     /**
      *
      * 根据 name检测databases集合中是否存在
@@ -3675,6 +3751,7 @@ PUT * /_bulk
     public boolean alter(DataRuntime runtime, Table meta) throws Exception {
         return super.alter(runtime, meta);
     }
+
     /**
      * table[调用入口]<br/>
      * 删除表,执行的命令通过meta.ddls()返回
@@ -3703,8 +3780,6 @@ PUT * /_bulk
     public boolean rename(DataRuntime runtime, Table origin, String name) throws Exception {
         return super.rename(runtime, origin, name);
     }
-
-    
 
     /**
      * table[命令合成]<br/>
@@ -3739,6 +3814,7 @@ PUT * /_bulk
         run.getBuilder().append(json);
         return runs;
     }
+
     /**
      * table[命令合成]<br/>
      * 修改表
@@ -3779,6 +3855,7 @@ PUT * /_bulk
     public List<Run> buildRenameRun(DataRuntime runtime, Table meta) throws Exception {
         return super.buildRenameRun(runtime, meta);
     }
+
     /**
      * table[命令合成]<br/>
      * 删除表
@@ -4002,6 +4079,7 @@ PUT * /_bulk
     public List<Run> buildCreateRun(DataRuntime runtime, View meta) throws Exception {
         return super.buildCreateRun(runtime, meta);
     }
+
     /**
      * view[命令合成]<br/>
      * 修改视图
@@ -4015,6 +4093,7 @@ PUT * /_bulk
     public List<Run> buildAlterRun(DataRuntime runtime, View meta) throws Exception {
         return super.buildAlterRun(runtime, meta);
     }
+
     /**
      * view[命令合成]<br/>
      * 重命名
@@ -4028,6 +4107,7 @@ PUT * /_bulk
     public List<Run> buildRenameRun(DataRuntime runtime, View meta) throws Exception {
         return super.buildRenameRun(runtime, meta);
     }
+
     /**
      * view[命令合成]<br/>
      * 删除视图
@@ -4190,6 +4270,7 @@ PUT * /_bulk
     public List<Run> buildDropRun(DataRuntime runtime, MasterTable meta) throws Exception {
         return super.buildDropRun(runtime, meta);
     }
+
     /**
      * master table[命令合成-子流程]<br/>
      * 修改主表
@@ -4202,6 +4283,7 @@ PUT * /_bulk
     public List<Run> buildAlterRun(DataRuntime runtime, MasterTable meta) throws Exception {
         return super.buildAlterRun(runtime, meta);
     }
+
     /**
      * master table[命令合成-子流程]<br/>
      * 主表重命名
@@ -4299,6 +4381,7 @@ PUT * /_bulk
     public boolean drop(DataRuntime runtime, PartitionTable meta) throws Exception {
         return super.drop(runtime, meta);
     }
+
     /**
      * partition table[调用入口]<br/>
      * 创建分区表,执行的命令通过meta.ddls()返回
@@ -4312,6 +4395,7 @@ PUT * /_bulk
     public boolean rename(DataRuntime runtime, PartitionTable origin, String name) throws Exception {
         return super.rename(runtime, origin, name);
     }
+
     /**
      * partition table[命令合成]<br/>
      * 创建分区表
@@ -4363,6 +4447,7 @@ PUT * /_bulk
     public List<Run> buildDropRun(DataRuntime runtime, PartitionTable meta) throws Exception {
         return super.buildDropRun(runtime, meta);
     }
+
     /**
      * partition table[命令合成]<br/>
      * 分区表重命名
@@ -4513,6 +4598,7 @@ PUT * /_bulk
     public List<Run> buildAddRun(DataRuntime runtime, Column meta, boolean slice) throws Exception {
         return super.buildAddRun(runtime, meta, slice);
     }
+
     /**
      * column[命令合成]<br/>
      * 修改列
@@ -4701,6 +4787,7 @@ PUT * /_bulk
     public StringBuilder checkColumnExists(DataRuntime runtime, StringBuilder builder, boolean exists) {
         return super.checkColumnExists(runtime, builder, exists);
     }
+
     /**
      * column[命令合成-子流程]<br/>
      * 列定义:数据类型
@@ -4713,6 +4800,7 @@ PUT * /_bulk
     public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta) {
         return super.type(runtime, builder, meta);
     }
+
     /**
      * column[命令合成-子流程]<br/>
      * 列定义:数据类型定义
@@ -4741,6 +4829,7 @@ PUT * /_bulk
     public StringBuilder nullable(DataRuntime runtime, StringBuilder builder, Column meta, ACTION.DDL action) {
         return super.nullable(runtime, builder, meta, action);
     }
+
     /**
      * column[命令合成-子流程]<br/>
      * 列定义:编码
@@ -4791,6 +4880,7 @@ PUT * /_bulk
     public StringBuilder increment(DataRuntime runtime, StringBuilder builder, Column meta) {
         return super.increment(runtime, builder, meta);
     }
+
     /**
      * column[命令合成-子流程]<br/>
      * 列定义:更新行事件
@@ -4929,6 +5019,7 @@ PUT * /_bulk
     public List<Run> buildAddRun(DataRuntime runtime, Tag meta, boolean slice) throws Exception {
         return super.buildAddRun(runtime, meta, slice);
     }
+
     /**
      * tag[命令合成]<br/>
      * 修改标签
@@ -4966,6 +5057,7 @@ PUT * /_bulk
     public List<Run> buildRenameRun(DataRuntime runtime, Tag meta, boolean slice) throws Exception {
         return super.buildRenameRun(runtime, meta, slice);
     }
+
     /**
      * tag[命令合成]<br/>
      * 修改默认值
@@ -5113,6 +5205,7 @@ PUT * /_bulk
     public boolean rename(DataRuntime runtime, PrimaryKey origin, String name) throws Exception {
         return super.rename(runtime, origin, name);
     }
+
     /**
      * primary[命令合成]<br/>
      * 添加主键
@@ -5139,6 +5232,7 @@ PUT * /_bulk
     public List<Run> buildAlterRun(DataRuntime runtime, PrimaryKey origin, PrimaryKey meta, boolean slice) throws Exception {
         return super.buildAlterRun(runtime, origin, meta, slice);
     }
+
     /**
      * primary[命令合成]<br/>
      * 删除主键
@@ -5151,6 +5245,7 @@ PUT * /_bulk
     public List<Run> buildDropRun(DataRuntime runtime, PrimaryKey meta, boolean slice) throws Exception {
         return super.buildDropRun(runtime, meta);
     }
+
     /**
      * primary[命令合成]<br/>
      * 修改主键名
@@ -5257,6 +5352,7 @@ PUT * /_bulk
     public List<Run> buildAddRun(DataRuntime runtime, ForeignKey meta) throws Exception {
         return super.buildAddRun(runtime, meta);
     }
+
     /**
      * foreign[命令合成]<br/>
      * 修改外键
@@ -5394,6 +5490,7 @@ PUT * /_bulk
     public List<Run> buildAppendIndexRun(DataRuntime runtime, Table meta) throws Exception {
         return super.buildAppendIndexRun(runtime, meta);
     }
+
     /**
      * index[命令合成]<br/>
      * 修改索引
@@ -5406,6 +5503,7 @@ PUT * /_bulk
     public List<Run> buildAlterRun(DataRuntime runtime, Index meta) throws Exception {
         return super.buildAlterRun(runtime, meta);
     }
+
     /**
      * index[命令合成]<br/>
      * 删除索引
@@ -5417,6 +5515,7 @@ PUT * /_bulk
     public List<Run> buildDropRun(DataRuntime runtime, Index meta) throws Exception {
         return super.buildDropRun(runtime, meta);
     }
+
     /**
      * index[命令合成]<br/>
      * 修改索引名
@@ -5442,6 +5541,7 @@ PUT * /_bulk
     public StringBuilder type(DataRuntime runtime, StringBuilder builder, Index meta) {
         return super.type(runtime, builder, meta);
     }
+
     /**
      * index[命令合成-子流程]<br/>
      * 索引备注
@@ -5560,6 +5660,7 @@ PUT * /_bulk
     public List<Run> buildAlterRun(DataRuntime runtime, Constraint meta) throws Exception {
         return super.buildAlterRun(runtime, meta);
     }
+
     /**
      * constraint[命令合成]<br/>
      * 删除约束
@@ -5658,6 +5759,7 @@ PUT * /_bulk
     public List<Run> buildCreateRun(DataRuntime runtime, Trigger meta) throws Exception {
         return super.buildCreateRun(runtime, meta);
     }
+
     /**
      * trigger[命令合成]<br/>
      * 修改触发器
@@ -5695,6 +5797,7 @@ PUT * /_bulk
     public List<Run> buildRenameRun(DataRuntime runtime, Trigger meta) throws Exception {
         return super.buildRenameRun(runtime, meta);
     }
+
     /**
      * trigger[命令合成-子流程]<br/>
      * 触发级别(行或整个命令)
@@ -5789,6 +5892,7 @@ PUT * /_bulk
     public List<Run> buildCreateRun(DataRuntime runtime, Procedure meta) throws Exception {
         return super.buildCreateRun(runtime, meta);
     }
+
     /**
      * procedure[命令合成]<br/>
      * 修改存储过程
@@ -5970,6 +6074,7 @@ PUT * /_bulk
         Object processor = runtime.getProcessor();
         return (RestClient) processor;
     }
+
     /**
      *
      PUT index_user/_bulk<br/>

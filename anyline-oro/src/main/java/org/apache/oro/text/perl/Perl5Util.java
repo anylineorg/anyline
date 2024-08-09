@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 /*
  * $Id: Perl5Util.java,v 1.19 2003/11/07 20:16:25 dfs Exp $
  *

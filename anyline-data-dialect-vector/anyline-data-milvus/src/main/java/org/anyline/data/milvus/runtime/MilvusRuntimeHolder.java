@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.data.milvus.runtime;
 
 import io.milvus.v2.client.MilvusClientV2;
@@ -49,7 +47,7 @@ public class MilvusRuntimeHolder extends AbstractRuntimeHolder {
         return instance;
     }
 
-/**
+	/**
      * 注册数据源 子类覆盖 生成简单的DataRuntime不注册到spring
      * @param client 数据源, 如DruidDataSource, MongoClient, es.MilvusClientV2
      * @param database 数据库, jdbc类型数据源不需要
@@ -57,7 +55,6 @@ public class MilvusRuntimeHolder extends AbstractRuntimeHolder {
      * @return DataRuntime
      * @throws Exception 异常 Exception
      */
-
 
     public DataRuntime temporary(Object client, String database, DriverAdapter adapter) throws Exception {
         MilvusRuntime runtime = new MilvusRuntime();
@@ -87,7 +84,7 @@ public class MilvusRuntimeHolder extends AbstractRuntimeHolder {
         return reg(key, client, null);
     }
 
-/**
+	/**
      * 注册运行环境
      * @param datasource 数据源前缀
      * @param client MilvusClientV2

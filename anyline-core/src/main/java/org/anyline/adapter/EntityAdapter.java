@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.adapter;
 
 import org.anyline.entity.DataRow;
@@ -65,6 +63,7 @@ public interface EntityAdapter {
     default int order() {
         return 10;
     }
+
     /**
      * 针对哪些类有效
      * @return 类
@@ -80,6 +79,7 @@ public interface EntityAdapter {
     default List<Class> types() {
         return new ArrayList<>();
     }
+
     /**
      * 获取指定类关联的表名
      * @param clazz 类
@@ -196,6 +196,7 @@ public interface EntityAdapter {
         list.putAll(columns);
         return list;
     }
+
     /**
      * 获取指定类.属性关联的列名
      * @param clazz 类
@@ -317,6 +318,7 @@ public interface EntityAdapter {
         }
         return column;
     }
+
     /**
      * 根据类与列名 获取相关的属性
      * @param clazz 类
@@ -422,6 +424,7 @@ public interface EntityAdapter {
         }
 
     }
+
     /**
      * 检测主键(是主键名不是值)<br/>
      * 根据注解检测主键名s(注解名不区分大小写, 支持模糊匹配如Table*)<br/>
@@ -498,6 +501,7 @@ public interface EntityAdapter {
     default boolean createPrimaryValue(Object obj, LinkedHashMap<String, Column> inserts) {
         return false;
     }
+
     /**
      * 主键值
      * @param obj obj

@@ -71,6 +71,7 @@ public class TableAffiliation<E extends TableAffiliation> extends Metadata<E> im
         }
         return execute;
     }
+
     /**
      * 相关表
      * @param update 是否检测update

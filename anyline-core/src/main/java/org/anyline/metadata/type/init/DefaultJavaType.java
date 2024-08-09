@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.metadata.type.init;
 
 import org.anyline.entity.DataRow;
@@ -366,6 +364,7 @@ public enum DefaultJavaType implements DataType {
         this.ignorePrecision = ignorePrecision;
         this.ignoreScale = ignoreScale;
     }
+
     @Override
     public Object read(Object value, Object def, Class clazz) {
         return value;

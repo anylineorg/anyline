@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.data.prepare.init;
 
 import org.anyline.data.prepare.Condition;
@@ -47,7 +45,7 @@ public abstract class AbstractCondition implements Condition {
 	protected String valueClass											;   // 数据类型 到 adapter中根据TypeMetadata解析成class
 	protected Map<String, Object> runValuesMap = new HashMap<String, Object>()		;	// 运行时参数
 	protected Map<String, Object> runOrValuesMap = new HashMap<String, Object>()		;	// 运行时参数(or)
-	protected String join = Condition.CONDITION_JOIN_TYPE_AND			;	// 连接方式
+	protected Condition.JOIN join = JOIN.AND							;	// 连接方式
 	protected ConditionChain container									;	// 当前条件所处容器
 	protected String id													; 	// ID
 	protected String text												;	// 静态条件
@@ -81,15 +79,16 @@ public abstract class AbstractCondition implements Condition {
 	}
 
 	@Override
-	public Condition setJoin(String join) {
+	public Condition setJoin(Condition.JOIN join) {
 		this.join = join; 
 		return this; 
 	}
 
 	@Override
-	public String getJoin() {
+	public Condition.JOIN getJoin() {
 		return join; 
 	}
+
 	@Override
 	public ConditionChain getContainer() {
 		return container; 

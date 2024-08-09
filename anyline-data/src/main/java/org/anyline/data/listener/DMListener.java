@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.anyline.data.listener;
 
 import org.anyline.data.param.ConfigStore;
@@ -55,6 +54,7 @@ public interface DMListener {
      * @return SWITCH
      */
     default SWITCH beforeTotal(DataRuntime runtime, String random, Run run) {return SWITCH.CONTINUE;}
+
     /**
      * 统计总记录数之后调用
      *
@@ -68,6 +68,7 @@ public interface DMListener {
      * @return SWITCH
      */
     default SWITCH afterTotal(DataRuntime runtime, String random, Run run, boolean success, long total, long millis) {return SWITCH.CONTINUE;}
+
     /**
      * 查询之前调用<br/>
      * 不满足查询条件的不会走到这一步(DataRuntime runtime, String random, 如必须参数未提供)
@@ -81,6 +82,7 @@ public interface DMListener {
      * @return SWITCH
      */
     default SWITCH beforeQuery(DataRuntime runtime, String random, Run run, long total) {return SWITCH.CONTINUE;}
+
     /**
      * 查询之后调用(DataRuntime runtime, String random, 调用service.map或service.maps)
      *
@@ -95,6 +97,7 @@ public interface DMListener {
      */
     default SWITCH afterQuery(DataRuntime runtime, String random, Run run, boolean success, List<?>  maps, long millis) {return SWITCH.CONTINUE;}
     default SWITCH afterQuery(DataRuntime runtime, String random, Run run, boolean success, EntitySet<?> maps, long millis) {return SWITCH.CONTINUE;}
+
     /**
      * 查询之后调用(DataRuntime runtime, String random, 调用service.query或service.querys)
      *
@@ -108,6 +111,7 @@ public interface DMListener {
      * @return SWITCH
      */
     default SWITCH afterQuery(DataRuntime runtime, String random, Run run, boolean success, DataSet set, long millis) {return SWITCH.CONTINUE;}
+
     /**
      * count之前调用
      *
@@ -118,6 +122,7 @@ public interface DMListener {
      * @return SWITCH
      */
     default SWITCH beforeCount(DataRuntime runtime, String random, Run run) {return SWITCH.CONTINUE;}
+
     /**
      * count之后调用
      *
@@ -142,6 +147,7 @@ public interface DMListener {
      * @return SWITCH
      */
     default SWITCH beforeExists(DataRuntime runtime, String random, Run run) {return SWITCH.CONTINUE;}
+
     /**
      * 判断是否存在之后调用
      *
@@ -185,6 +191,7 @@ public interface DMListener {
      * @return SWITCH
      */
     default SWITCH  beforeUpdate(DataRuntime runtime, String random, Run run, Table dest, Object obj, List<String> columns) {return SWITCH.CONTINUE;}
+
     /**
      * 更新之前调用
      *
@@ -218,6 +225,7 @@ public interface DMListener {
     default SWITCH prepareInsert(DataRuntime runtime, String random, Table dest, RunPrepare prepare, ConfigStore configs){
         return SWITCH.CONTINUE;
     }
+
     /**
      * 创建insert sql之前调用
      *
@@ -342,6 +350,7 @@ public interface DMListener {
      * @return SWITCH
      */
     default SWITCH prepareDelete(DataRuntime runtime, String random, int batch, Table dest, Object obj, String ... columns) {return SWITCH.CONTINUE;}
+
     /**
      * 创建删除SQL前调用(DataRuntime runtime, String random, 根据条件), 修改删除条件可以在这一步实现<br/>
      * 注意不是beforeDelete<br/>
@@ -356,6 +365,7 @@ public interface DMListener {
      * @return SWITCH
      */
     default SWITCH prepareDelete(DataRuntime runtime, String random, int batch, Table table, String key, Object values) {return SWITCH.CONTINUE;}
+
     /**
      * 执行删除前调用
      *

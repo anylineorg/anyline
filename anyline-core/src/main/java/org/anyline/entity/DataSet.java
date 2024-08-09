@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.entity;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -362,6 +360,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
         }
         return this;
     }
+
     /**
      * 多个空白压缩成一个空格
      * @return DataSet
@@ -412,6 +411,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
         }
         return this;
     }
+
     /**
      * 添加主键
      *
@@ -562,6 +562,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
         }
         return columns;
     }
+
     /**
      * 提取主键
      *
@@ -595,6 +596,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
     public Map<String, Object> getTags() {
         return tags;
     }
+
     /**
      * 添加表头
      *
@@ -640,6 +642,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
         }
         return this;
     }
+
     /**
      * 从begin开始截断到end, 方法执行将改变原DataSet长度
      *
@@ -779,6 +782,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
         }
         return null;
     }
+
     /**
      * 记录数量
      *
@@ -944,6 +948,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
     public DataRow getRowByPrimvaryValue(String value) {
         return getRow(DataRow.DEFAULT_PRIMARY_KEY, value);
     }
+
     /**
      * 根据keys去重
      *
@@ -1161,6 +1166,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
         }
         return kvs;
     }
+
     /**
      * 筛选符合条件的集合
      * 注意如果String类型 1与1.0比较不相等, 可以先调用convertNumber转换一下数据类型
@@ -1193,6 +1199,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
     public DataSet getRows(int begin, int qty, Map<String, String> kvs) {
         return getRows(Compare.EQUAL, begin, qty, kvs);
     }
+
     /**
      *
      * @param compare 对比方式, 如果不指定则根据k:v解析 如 k:%v%
@@ -1513,6 +1520,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
     public DataRow avgs(boolean empty, int scale, int round, String ... keys) {
         return avgs(new DataRow(), empty, scale, round, BeanUtil.array2list(keys));
     }
+
     /**
      * 最大值
      *
@@ -1723,9 +1731,6 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
         return avg(true, key);
     }
 
-
-
-
     /**
      * 中位数
      *
@@ -1776,6 +1781,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
         }
         return median.intValue();
     }
+
     /**
      * 求和
      * [
@@ -2905,6 +2911,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
         }
         return list;
     }
+
     /**
      * rows 列表中的数据格式化成json格式   不同与toJSON
      * map.put("type","list");
@@ -3150,6 +3157,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
     public DataSet union(DataSet set, String... keys) {
         return union(set, BeanUtil.array2list(keys));
     }
+
     /**
      * 合并合并不去重
      *
@@ -3495,6 +3503,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
         }
         return this;
     }
+
     @Override
     public DataSet toUpperKey(boolean recursion, String... keys) {
         for (DataRow row : rows) {
@@ -3527,6 +3536,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
         }
         return this;
     }
+
     /**
      * 设置是否更新null列
      * @param updateEmptyColumn updateEmptyColumn
@@ -3554,6 +3564,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
     public DataSet group(String... keys) {
         return group("ITEMS",Compare.EQUAL, keys);
     }
+
     /**
      * 分组聚合
      * @param items 是否保留条目 如果为空则不保留 否则保留会在每个分组中添加items属性用来保存当前分组中的条件
@@ -3756,6 +3767,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
         List<BigDecimal> values = getDecimals(key, null);
         return NumberUtil.stdeva(values, scale, round);
     }
+
     /**
      * 总体标准差
      * 总体标准差σ=sqrt(s^2)，即标准差=方差的平方根
@@ -4045,6 +4057,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
     public DataSet changeKey(String key, String target) {
         return changeKey(key, target, true);
     }
+
     /**
      * 删除rows中的columns列
      *
@@ -4588,6 +4601,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
     public DataSet pivot(String[] pks, String[] classKeys, String[] valueKeys) {
         return pivot(BeanUtil.array2list(pks),BeanUtil.array2list(classKeys),BeanUtil.array2list(valueKeys));
     }
+
     /**
      * 行转列
      * @param pk       唯一标识key(如姓名)多个key以,分隔如(编号,姓名)
@@ -4658,6 +4672,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
         }
         return map;
     }
+
     /**
      * @param key 作为key的列的下标
      * @param value 作为value的列的下标
@@ -4672,6 +4687,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
         }
         return new LinkedHashMap();
     }
+
     /**
      * 默认第0列值作为key,第1列值作为value
      * @return LinkedHashMap
@@ -4700,6 +4716,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
         }
         return result;
     }
+
     /**
      * @param key 作为key的列的下标
      * @param value 作为value的列的下标
@@ -4714,6 +4731,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
         }
         return new DataRow();
     }
+
     /**
      * 默认第0列值作为key,第1列值作为value
      * @return DataRow
@@ -4751,6 +4769,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
         }
         return kvs;
     }
+
     /**
      * 排序(正序)
      * @param keys 参与排序的列
@@ -4996,6 +5015,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
     public DataSet ognl(String key, String formula) throws Exception {
         return ognl(key, formula, null, 0, false);
     }
+
     /**
      * 随机取min到max行
      * @param min min
@@ -5464,7 +5484,6 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
             return set;
         }
 
-
         /**
          * values中有一个存在于item中即可
          * @param key item.key
@@ -5502,7 +5521,6 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
             set.copyProperty(src);
             return set;
         }
-
 
         /**
          * values中每一个都存在于item中才返回
@@ -6005,7 +6023,6 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
         }
         return null;
     }
-
 
     public class Format implements Serializable{
         /**

@@ -14,10 +14,6 @@
  * limitations under the License.
  */
 
-
-
-
-
 package org.anyline.util;
 
 import org.anyline.util.encrypt.MD5Util;
@@ -935,6 +931,7 @@ public class FileUtil {
 	public static boolean zip(File zip, List<File> srcs) {
 		return ZipUtil.zip(srcs, zip);
 	}
+
     /**
     * 获取单个文件的MD5值！
     * @param file file
@@ -943,6 +940,7 @@ public class FileUtil {
 	public static String md5(File file) {
 		return MD5Util.crypto(file);
 	}
+
     /**
     * 获取文件夹中文件的MD5值
     * @param file file

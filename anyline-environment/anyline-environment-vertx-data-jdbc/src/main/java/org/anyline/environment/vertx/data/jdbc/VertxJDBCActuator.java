@@ -14,10 +14,7 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.environment.vertx.data.jdbc;
-
 
 import io.vertx.core.cli.annotations.Name;
 import org.anyline.data.adapter.DriverAdapter;

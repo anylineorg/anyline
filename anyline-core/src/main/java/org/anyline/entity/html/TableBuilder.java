@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.entity.html;
 
 import org.anyline.util.BasicUtil;
@@ -493,6 +491,7 @@ public class TableBuilder {
         styles.put(field, style);
         return this;
     }
+
     /**
      * 设置水平对齐方式
      * @param field field
@@ -575,6 +574,7 @@ public class TableBuilder {
         style.put("width", width);
         return this;
     }
+
     /**
      *
      * @param header 表头名称
@@ -585,6 +585,7 @@ public class TableBuilder {
     public TableBuilder addConfig(String header, String field, int width) {
         return addConfig(header, field, width+widthUnit);
     }
+
     /**
      *
      * @param header 表头名称
@@ -596,6 +597,7 @@ public class TableBuilder {
         fields.add(field);
         return this;
     }
+
     /**
      * 根据属性设置列宽度
      * @param field 属性(定位列)
@@ -664,6 +666,7 @@ public class TableBuilder {
         this.cellBorder = border;
         return this;
     }
+
     /**
      * 设置所有单元格默认边框
      * @param border 是否需要边框
@@ -741,6 +744,7 @@ public class TableBuilder {
         this.emptyCellHorizontalAlign = align;
         return this;
     }
+
     /**
      * 设置下拉列表数据源
      * @param field 属性(定位列)
@@ -751,6 +755,7 @@ public class TableBuilder {
         options.put(field, option);
         return this;
     }
+
     /**
      * 追加下拉列表数据源
      * @param field 属性(定位列)

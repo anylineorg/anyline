@@ -14,9 +14,6 @@
  * limitations under the License.
  */
 
-
-
-
 package org.anyline.data.milvus.datasource;
 
 import io.milvus.v2.client.MilvusClientV2;
@@ -44,6 +41,7 @@ public class MilvusDataSourceLoader extends AbstractDataSourceLoader implements 
     public DataSourceHolder holder() {
         return holder;
     }
+
     @Override
     public List<String> load() {
         List<String> list = new ArrayList<>();

@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.data.runtime.init;
 
 import org.anyline.data.adapter.DriverAdapter;
@@ -67,6 +65,7 @@ public class AbstractRuntime implements DataRuntime {
     public String getFeature(boolean connection) {
         return null;
     }
+
     @Override
     public void setFeature(String feature) {
         this.feature = feature;
@@ -76,11 +75,11 @@ public class AbstractRuntime implements DataRuntime {
     public String getLastFeature() {
         return this.lastFeature;
     }
+
     @Override
     public void setLastFeature(String feature) {
         this.lastFeature = feature;
     }
-
 
     @Override
     public String getVersion() {
@@ -194,6 +193,7 @@ public class AbstractRuntime implements DataRuntime {
     public String getAdapterKey() {
         return adapterKey;
     }
+
     @Override
     public void setHolder(RuntimeHolder holder) {
         this.holder = holder;

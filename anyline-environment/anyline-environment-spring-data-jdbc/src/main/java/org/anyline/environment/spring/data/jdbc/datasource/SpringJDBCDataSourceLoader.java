@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.environment.spring.data.jdbc.datasource;
 
 import org.anyline.data.datasource.DataSourceHolder;
@@ -36,7 +34,6 @@ import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.List;
 
-
 @Component("anyline.environment.spring.data.datasource.loader.jdbc")
 public class SpringJDBCDataSourceLoader extends JDBCDataSourceLoader implements DataSourceLoader {
     private final SpringJDBCDataSourceHolder holder = SpringJDBCDataSourceHolder.instance();
@@ -45,6 +42,7 @@ public class SpringJDBCDataSourceLoader extends JDBCDataSourceLoader implements 
     public DataSourceHolder holder() {
         return holder;
     }
+
     @Override
     public List<String> load() {
         List<String> list = new ArrayList<>();
@@ -112,6 +110,5 @@ public class SpringJDBCDataSourceLoader extends JDBCDataSourceLoader implements 
         list.addAll(load("anyline.datasource", loadDefault));
         return list;
     }
-
 
 }

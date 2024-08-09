@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.data.jdbc.util;
 
 import org.anyline.adapter.KeyAdapter;
@@ -484,6 +482,7 @@ public class JDBCUtil {
         }
         return true;
     }
+
     /**
 	 * 先检测rs中是否包含当前key 如果包含再取值, 取值时按keys中的大小写为准
 	 * @param keys keys

@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.data.param.init;
 
 import org.anyline.data.param.Config;
@@ -56,8 +54,11 @@ public class DefaultConfig implements Config {
 		this.parser = parser;
 	}
 	public String toString() {
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("join", this.getJoin());
+		Map<String, Object> map = new HashMap<>();
+		Condition.JOIN join = getJoin();
+		if(null != join) {
+			map.put("join", join);
+		}
 		map.put("prefix", this.getPrefix());
 		map.put("var", this.getVariable());
 		map.put("key", this.getKey());
@@ -67,11 +68,10 @@ public class DefaultConfig implements Config {
 	}
 	public DataRow map(boolean empty) {
 		DataRow row = new OriginRow();
-		String join = getJoin();
+		Condition.JOIN join = getJoin();
 		if(null != join) {
-			join = join.trim();
+			row.put("join", join);
 		}
-		row.put("join", join);
 		if(empty || BasicUtil.isNotEmpty(text)) {
 			row.put("text", text);
 		}
@@ -84,7 +84,7 @@ public class DefaultConfig implements Config {
 			row.put("var", var);
 		}
 		row.put("compare", getCompareCode());
-		if("or".equalsIgnoreCase(join)) {
+		if(Condition.JOIN.OR == join) {
 			if(empty || BasicUtil.isNotEmpty(orValues) || BasicUtil.isNotEmpty(values)) {
 				if(BasicUtil.isEmpty(orValues)) {
 					row.put("values", values);
@@ -293,14 +293,15 @@ public class DefaultConfig implements Config {
 		this.empty = empty; 
 	} 
 
-	public String getJoin() {
+	public Condition.JOIN getJoin() {
 		return parser.getJoin(); 
-	} 
- 
-	public void setJoin(String join) {
+	}
+
+	@Override
+	public void setJoin(Condition.JOIN join) {
 		parser.setJoin(join);
-	} 
- 
+	}
+
 	public boolean isKeyEncrypt() {
 		return parser.isKeyEncrypt(); 
 	} 

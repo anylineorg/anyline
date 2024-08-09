@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.metadata.refer;
 
 import org.anyline.metadata.type.DatabaseType;
@@ -56,6 +54,7 @@ public class MetadataReferHolder {
         reg(DatabaseType.COMMON, TypeMetadata.CATEGORY.GEOMETRY, new TypeMetadata.Refer(1, 1, 1));
         reg(DatabaseType.COMMON, TypeMetadata.CATEGORY.OTHER, new TypeMetadata.Refer(1, 1, 1));
     }
+
     /**
      * 注册数据类型配置
      * 要从配置项中取出每个属性检测合并,不要整个覆盖
@@ -81,6 +80,7 @@ public class MetadataReferHolder {
         reg(database, name, refer);
         return src;
     }
+
     /**
      * 注册数据类型配置
      * 要从配置项中取出每个属性检测合并,不要整个覆盖
@@ -144,6 +144,7 @@ public class MetadataReferHolder {
         }
         return config;
     }
+
     /**
      * 根据类型名称获取元数据配置项
      * @param database 数据库类型
@@ -160,6 +161,7 @@ public class MetadataReferHolder {
         }
         return config;
     }
+
     /**
      * 根据类型大类获取元数据配置项
      * @param database 数据库类型

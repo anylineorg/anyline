@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.data.adapter.init;
 
 import org.anyline.data.param.ConfigStore;
@@ -8340,7 +8338,6 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
      * List<Run> buildGrantRun(DataRuntime runtime, User user, Privilege... privileges) throws Exception
      * boolean revoke(DataRuntime runtime, User user, Privilege ... privileges) throws Exception	 *
      ******************************************************************************************************************/
-
 
     /**
      * privilege[调用入口]<br/>

@@ -14,9 +14,6 @@
  * limitations under the License.
  */
 
-
-
-
 package org.anyline.data.prepare.auto.init;
 
 import org.anyline.data.param.ConfigParser;
@@ -467,7 +464,6 @@ public abstract class DefaultAutoPrepare extends AbstractRunPrepare implements A
 	public String getAlias() {
 		return alias;
 	}
-
 
 	@Override
 	public void setAlias(String alias) {

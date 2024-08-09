@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.data.prepare.xml.init;
 
 import org.anyline.data.prepare.Condition;
@@ -67,10 +65,10 @@ public class DefaultXMLCondition extends AbstractCondition implements Condition 
 		return clone; 
 	} 
 	public DefaultXMLCondition() {
-		join = ""; 
+		join = null;
 	} 
 	public DefaultXMLCondition(String id, String text, boolean isStatic) {
-		join = ""; 
+		join = null;
 		this.id = id; 
 		this.text = text; 
 		setVariableType(Condition.VARIABLE_PLACEHOLDER_TYPE_INDEX); 

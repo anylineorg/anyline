@@ -14,10 +14,6 @@
  * limitations under the License.
  */
 
-
- 
-
-
 package org.anyline.data.run;
 
 import ognl.Ognl;
@@ -429,7 +425,6 @@ public class XMLRun extends AbstractRun implements Run {
 		} 
 		return null; 
 	}
-
 
 	private List<Variable> getVariables(String key) {
 		List<Variable> vars = new ArrayList<Variable>();

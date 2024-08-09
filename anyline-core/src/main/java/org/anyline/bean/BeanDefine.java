@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.bean;
 
 import java.util.LinkedHashMap;

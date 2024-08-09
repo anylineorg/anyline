@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.metadata.persistence;
 
 import java.lang.reflect.Field;

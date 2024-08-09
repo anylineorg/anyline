@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.data.influxdb.adapter;
 
 import com.influxdb.client.InfluxDBClient;
@@ -54,6 +52,7 @@ public class InfluxActuator implements DriverActuator {
     protected InfluxDBClient client(DataRuntime runtime) {
         return ((InfluxRuntime)runtime).client();
     }
+
     @Override
     public DataSource getDataSource(DriverAdapter adapter, DataRuntime runtime) {
         return null;
@@ -109,6 +108,7 @@ public class InfluxActuator implements DriverActuator {
         }
         return databases;
     }
+
     @Override
     public DataSet select(DriverAdapter adapter, DataRuntime runtime, String random, boolean system, ACTION.DML action, Table table, ConfigStore configs, Run run, String cmd, List<Object> values, LinkedHashMap<String, Column> columns) throws Exception {
         InfluxSet set = new InfluxSet();
@@ -167,8 +167,6 @@ public class InfluxActuator implements DriverActuator {
         return set;
     }
 
-
-
     @Override
     public List<Map<String, Object>> maps(DriverAdapter adapter, DataRuntime runtime, String random, ConfigStore configs, Run run) throws Exception {
         return null;
@@ -197,8 +195,6 @@ public class InfluxActuator implements DriverActuator {
     public long update(DriverAdapter adapter, DataRuntime runtime, String random, Table dest, Object data, ConfigStore configs, Run run) throws Exception {
         return 0;
     }
-
-    
 
     @Override
     public long execute(DriverAdapter adapter, DataRuntime runtime, String random, ConfigStore configs, Run run) throws Exception {

@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 /*
  * $Id: AwkPattern.java,v 1.7 2003/11/07 20:16:24 dfs Exp $
  *
@@ -90,7 +88,7 @@ final class DFAState {
   }
 }
 
-/**
+	/**
  * An implementation of the Pattern interface for Awk regular expressions.
  * This class is compatible with the AwkCompiler and AwkMatcher
  * classes.  When an AwkCompiler instance compiles a regular expression

@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.data.prepare.auto.init;
 
 import org.anyline.data.param.Config;
@@ -90,7 +88,7 @@ public class DefaultAutoConditionChain extends AbstractConditionChain implements
 					if(txt.startsWith("(")){
 						tab(lvl+1, true, subBuilder);
 					}
-					subBuilder.append(condition.getJoin());
+					subBuilder.append(condition.getJoinText());
 				}
 				if(subBuilder.length() > 0 && !txt.startsWith(" ") && !txt.startsWith("(")) {
 					subBuilder.append(" ");

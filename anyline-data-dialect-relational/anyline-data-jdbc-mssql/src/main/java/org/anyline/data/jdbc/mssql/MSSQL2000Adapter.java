@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.data.jdbc.mssql;
 
 import org.anyline.annotation.Component;
@@ -78,6 +76,7 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter {
         }
         return false;
     }
+
     /**
      * 查询SQL
      * Run 反转调用
@@ -292,6 +291,7 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter {
     public MetadataFieldRefer initTableFieldRefer() {
         return super.initTableFieldRefer();
     }
+
     /**
      * 创建表完成后追加表备注, 创建过程能添加备注的不需要实现与comment(DataRuntime runtime, StringBuilder builder, Table meta)二选一实现
      * @param table 表

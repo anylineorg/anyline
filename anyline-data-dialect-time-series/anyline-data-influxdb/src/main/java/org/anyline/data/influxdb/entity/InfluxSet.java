@@ -36,7 +36,6 @@ public class InfluxSet extends DataSet {
     private String fill_time_precision;
     private String fill_time_zone;
 
-
     protected String bucket;
     protected String org;
 

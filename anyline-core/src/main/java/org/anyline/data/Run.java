@@ -35,7 +35,6 @@ public interface Run {
      */
     boolean isEmptyCondition();
 
-
     /**
      * 获取行数
      * @return 未设置行数的返回-1

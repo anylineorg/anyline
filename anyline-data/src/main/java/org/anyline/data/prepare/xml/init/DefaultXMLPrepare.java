@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.data.prepare.xml.init;
 
 import org.anyline.data.param.ConfigParser;
@@ -422,7 +420,6 @@ public class DefaultXMLPrepare extends AbstractRunPrepare implements XMLPrepare 
 	public RunPrepare excludeColumn(String columns) {
 		return this;
 	}
-
 
 	@Override
 	public Table getTable() {

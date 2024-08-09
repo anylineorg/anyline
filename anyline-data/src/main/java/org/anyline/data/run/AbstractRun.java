@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.data.run;
 
 import org.anyline.data.adapter.DriverAdapter;
@@ -1070,7 +1068,6 @@ public abstract class AbstractRun implements Run {
 	public void setValues(List<RunValue> values) {
 		this.values = values;
 	}
-
 
 	@Override
 	public Run setQueryColumns(String... columns) {

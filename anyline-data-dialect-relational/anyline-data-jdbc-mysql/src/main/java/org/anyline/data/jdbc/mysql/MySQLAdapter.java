@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.data.jdbc.mysql;
 
 import org.anyline.annotation.Component;
@@ -1665,7 +1663,6 @@ public class MySQLAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 		return super.tables(runtime, random, query, types, struct, configs);
 	}
 
-
 	/**
 	 * table[命令合成]<br/>
 	 * 查询表,不是查表中的数据
@@ -2141,7 +2138,6 @@ public class MySQLAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 	public List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, boolean greedy,  PartitionTable query, int types) throws Exception {
 		return super.buildQueryPartitionTablesRun(runtime, greedy, query, types);
 	}
-
 
 	/**
 	 * partition table[结果集封装]<br/>
@@ -6173,6 +6169,7 @@ public class MySQLAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 	public <T extends Metadata> void checkSchema(DataRuntime runtime, Connection con, T meta) {
 		super.checkSchema(runtime, con, meta);
 	}
+
     /**
      * 根据运行环境识别 catalog与schema
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端

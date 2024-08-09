@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.proxy;
 
 import org.anyline.data.interceptor.*;
@@ -310,7 +308,6 @@ public class InterceptorProxy {
         return swt;
     }
 
-
     public static SWITCH afterInsert(DataRuntime runtime, String random, Run run, Table dest, RunPrepare prepare, ConfigStore configs, boolean success, long result, long millis) {
         SWITCH swt = SWITCH.CONTINUE;
         for(InsertInterceptor interceptor:insertInterceptors) {
@@ -446,6 +443,7 @@ public class InterceptorProxy {
         }
         return swt;
     }
+
     /*******************************************************************************************************************
      *
      *                                  DDL

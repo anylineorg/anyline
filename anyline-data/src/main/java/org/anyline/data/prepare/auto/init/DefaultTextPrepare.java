@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.data.prepare.auto.init;
  
 import org.anyline.data.prepare.auto.TextPrepare;

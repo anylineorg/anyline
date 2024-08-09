@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.data.jdbc.adapter.init.geometry;
 
 import org.anyline.entity.geometry.*;
@@ -861,6 +859,7 @@ Geometry 1, Geometry 2, ..., Geometry N: 表示 GeometryCollection 中的每个�
             wkb(buffer, polygon, true);
         }
     }
+
     /**
      * 生成wkb格式要
      * @param collection GeometryCollection

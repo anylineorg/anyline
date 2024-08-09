@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.data.interceptor;
 
 import org.anyline.data.run.Run;
@@ -69,6 +67,7 @@ public interface DDInterceptor  extends JDBCInterceptor{
      * @return SWITCH
      */
     default <T extends Metadata<T>> SWITCH before(DataRuntime runtime, String random, ACTION.DDL action, Metadata<T> metadata, List<Run> runs) {return SWITCH.CONTINUE;}
+
     /**
      * 一组命令中每个执行完成后调用
      * @param runtime  包含数据源(key)、适配器、JDBCTemplate、dao
@@ -82,6 +81,7 @@ public interface DDInterceptor  extends JDBCInterceptor{
      * @return SWITCH
      */
     default <T extends Metadata<T>> SWITCH after(DataRuntime runtime, String random, ACTION.DDL action, Metadata<T> metadata, Run run, List<Run> runs, boolean result, long millis) {return SWITCH.CONTINUE;}
+
     /**
      * 整组命令执行后调用
      * @param runtime  包含数据源(key)、适配器、JDBCTemplate、dao

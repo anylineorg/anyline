@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.metadata;
 
 import org.anyline.metadata.refer.MetadataReferHolder;
@@ -506,7 +504,6 @@ public class Column extends TableAffiliation<Column> implements Serializable {
         this.properties = properties;
     }
 
-
     public Column drop() {
         this.action = ACTION.DDL.COLUMN_DROP;
         return super.drop();
@@ -665,6 +662,7 @@ public class Column extends TableAffiliation<Column> implements Serializable {
         this.type = type;
         return this;
     }
+
     /**
      * 设置数据类型 根据数据库定义的数据类型 实际调用了setTypeName(String)
      * @param type  数据类型 如 int  varchar(10) decimal(18, 6)
@@ -709,6 +707,7 @@ public class Column extends TableAffiliation<Column> implements Serializable {
     public Column setTypeName(String typeName) {
         return setTypeName(typeName, true);
     }
+
     /**
      * 设置数据类型 根据数据库定义的数据类型
      * @param typeName 数据类型 如 int  varchar(10) decimal(18, 6)
@@ -1261,7 +1260,6 @@ public class Column extends TableAffiliation<Column> implements Serializable {
         return this;
     }
 
-
     public int isPrimaryKey() {
         if(getmap && null != update) {
             return update.primary;
@@ -1670,7 +1668,6 @@ public class Column extends TableAffiliation<Column> implements Serializable {
         return TypeMetadata.CATEGORY.NONE;
     }
 
-
     public Column setTypeMetadata(TypeMetadata typeMetadata) {
         if(setmap && null != update) {
             update.setTypeMetadata(typeMetadata);
@@ -1704,7 +1701,6 @@ public class Column extends TableAffiliation<Column> implements Serializable {
         return javaType;
     }
 
-    
     public Column setJavaType(JavaType javaType) {
         if(setmap && null != update) {
             update.setJavaType(javaType);

@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.data.mongodb.adapter;
 
 import com.mongodb.client.*;
@@ -83,6 +81,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
         types.put(Table.TYPE.NORMAL, "collection");
         types.put(Metadata.TYPE.TABLE, "collection");
     }
+
     @Override
     public String name(Type type) {
         return types.get(type);
@@ -98,7 +97,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
         return createInsertRun(runtime, dest, obj, configs, columns);
     }
 
-/**
+	/**
      * 根据entity创建 INSERT RunPrepare
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
@@ -123,7 +122,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
         return run;
     }
 
-/**
+	/**
      * 根据collection创建 INSERT RunPrepare
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
@@ -237,6 +236,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
         }
         return cnt;
     }
+
     /**
      * 过滤掉表结构中不存在的列
      * MONGO不检测
@@ -248,6 +248,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
     public LinkedHashMap<String, Column> checkMetadata(DataRuntime runtime, Table table, ConfigStore configs, LinkedHashMap<String, Column> columns) {
         return columns;
     }
+
     /**
      * 创建查询SQL
      * @param prepare  构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
@@ -282,7 +283,6 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
     public Object createConditionJsonContains(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder) {
         return null;
     }
-
 
     @Override
     protected Run fillQueryContent(DataRuntime runtime, TableRun run) {
@@ -325,10 +325,10 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
                 //List<RunValue> values = condition.getRunValues();
                 List<Object> values = auto.getValues();
                 String column = condition.getId();
-                String join = condition.getJoin();
+                Condition.JOIN join = condition.getJoin();
                 Bson create = bson(auto.getCompare(), column, values);
                 if(null != create) {
-                    if ("or".equalsIgnoreCase(join)) {
+                    if (Condition.JOIN.OR == join) {
                         bson = Filters.or(create);
                     } else {
                         bson = Filters.and(create);
@@ -340,7 +340,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
     }
 
     private Bson parseCondition(Bson bson, ConditionChain chain) {
-        String join = chain.getJoin();
+        Condition.JOIN join = chain.getJoin();
         Bson child = null;
         List<Condition> conditions = chain.getConditions();
         for(Condition con:conditions) {
@@ -350,7 +350,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
             bson = child;
         }else {
             if(null != child) {
-                if ("or".equalsIgnoreCase(join)) {
+                if (Condition.JOIN.OR == join) {
                     bson = Filters.or(bson, child);
                 } else {
                     bson = Filters.and(bson, child);
@@ -410,6 +410,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
         }
         return bson;
     }
+
     @Override
     public DataSet select(DataRuntime runtime, String random, boolean system, Table table, ConfigStore configs, Run run) {
         MongoRun r = (MongoRun) run;
@@ -756,7 +757,6 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
         return buildDeleteRun(runtime, dest, configs);
     }
 
-
 /* *****************************************************************************************************************
      *                                                     DELETE
      * -----------------------------------------------------------------------------------------------------------------
@@ -829,6 +829,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
         runs.add(run);
         return runs;
     }
+
     /**
      * 构造删除主体
      * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
@@ -852,7 +853,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
         mr.setFilter(bson);
     }
 
-/**
+	/**
      * 执行删除
      * @param runtime DataRuntime
      * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
@@ -893,7 +894,6 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
         return result;
     }
 
-
     /**
      * table[命令合成]<br/>
      * 查询表,不是查表中的数据
@@ -918,6 +918,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
     public MetadataFieldRefer initTableFieldRefer() {
         return super.initTableFieldRefer();
     }
+
     /**
      * table[调用入口]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -1027,12 +1028,10 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
 
     }
 
-
     @Override
     public LinkedHashMap<String, Column> metadata(DataRuntime runtime, RunPrepare prepare, boolean comment) {
         return null;
     }
-
 
     @Override
     public String concat(DataRuntime runtime, String... args) {

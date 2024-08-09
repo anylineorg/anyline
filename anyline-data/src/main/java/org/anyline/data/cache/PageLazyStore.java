@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.data.cache;
 
 import org.anyline.util.ConfigTable;

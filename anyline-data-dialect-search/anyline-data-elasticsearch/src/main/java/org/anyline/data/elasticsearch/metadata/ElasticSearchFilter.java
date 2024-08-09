@@ -35,7 +35,6 @@ public class ElasticSearchFilter {
     private List<String> synonyms = new ArrayList<>(); //同义词 ["pc => personal computer", "computer, pc, laptop"]
     private List<String> filters = new ArrayList<>(); //Multiplexer token filter
 
-
     public String getType() {
         return type;
     }
@@ -126,7 +125,6 @@ public class ElasticSearchFilter {
         synonyms.add(synonym);
         return this;
     }
-
 
     public String getKey() {
         return key;

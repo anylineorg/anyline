@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.data.jdbc.datasource;
 
 import org.anyline.annotation.Component;
@@ -123,7 +121,6 @@ public class JDBCDataSourceHolder extends AbstractDataSourceHolder implements Da
         return null;
     }
 
-
     @Override
     public String create(String key, DatabaseType database, String url, String user, String password) throws Exception {
         Map params = new HashMap();
@@ -151,7 +148,6 @@ public class JDBCDataSourceHolder extends AbstractDataSourceHolder implements Da
         }
         return key;
     }
-
 
     @Override
     public String runtime(String key, String datasource, boolean override) throws Exception {

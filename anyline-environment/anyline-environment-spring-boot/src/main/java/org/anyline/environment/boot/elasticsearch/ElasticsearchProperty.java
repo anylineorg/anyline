@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.environment.boot.elasticsearch;
 
 import org.anyline.environment.boot.datasource.DataSourceProperty;

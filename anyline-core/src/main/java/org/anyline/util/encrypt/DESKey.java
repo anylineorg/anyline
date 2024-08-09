@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.util.encrypt;
 
 public class DESKey {

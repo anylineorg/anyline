@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.data.jdbc.handler;
 
 import org.anyline.data.handler.ConnectionHandler;
@@ -53,10 +51,12 @@ public class SimpleResultSetHandler implements ResultSetHandler {
     public int size() {
         return size;
     }
+
     @Override
     public void handler(ConnectionHandler handler) {
         this.handler = handler;
     }
+
     @Override
     public boolean keep() {
        return true;

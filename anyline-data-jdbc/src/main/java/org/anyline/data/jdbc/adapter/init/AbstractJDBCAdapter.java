@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.data.jdbc.adapter.init;
 
 import org.anyline.adapter.KeyAdapter;
@@ -90,10 +88,12 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
         types.put(Metadata.TYPE.TABLE, "BASE TABLE");
         types.put(Metadata.TYPE.VIEW, "VIEW");
     }
+
     @Override
     public String name(Type type) {
         return types.get(type);
     }
+
     /**
      * 验证运行环境与当前适配器是否匹配<br/>
      * 默认不连接只根据连接参数<br/>
@@ -111,7 +111,6 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
     public boolean match(String feature, List<String> keywords, boolean compensate) {
         return super.match(feature, keywords, compensate);
     }
-
 
     /* *****************************************************************************************************************
      *
@@ -176,7 +175,6 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
     public long insert(DataRuntime runtime, String random, int batch, Table dest, Object data, ConfigStore configs, List<String> columns) {
         return super.insert(runtime, random, batch, dest, data, configs, columns);
     }
-
 
     /**
      * insert into table select * from table
@@ -290,6 +288,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
         }
         return run;
     }
+
     /**
      * insert [命令合成]<br/>
      * 填充inset命令内容(创建批量INSERT RunPrepare)
@@ -718,14 +717,17 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
     public Run buildUpdateRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, List<String> columns) {
         return super.buildUpdateRun(runtime, batch, dest, obj, configs, columns);
     }
+
     @Override
     public Run buildUpdateRunFromEntity(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, LinkedHashMap<String, Column> columns) {
         return super.buildUpdateRunFromEntity(runtime, dest, obj, configs, columns);
     }
+
     @Override
     public Run buildUpdateRunFromDataRow(DataRuntime runtime, Table dest, DataRow row, ConfigStore configs, LinkedHashMap<String, Column> columns) {
         return super.buildUpdateRunFromDataRow(runtime, dest, row, configs, columns);
     }
+
     @Override
     public Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns) {
         return super.buildUpdateRunFromCollection(runtime, batch, dest, list, configs, columns);
@@ -772,6 +774,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
     public LinkedHashMap<String, Column> confirmUpdateColumns(DataRuntime runtime, Table dest, DataRow row, ConfigStore configs, List<String> columns) {
         return super.confirmUpdateColumns(runtime, dest, row, configs, columns);
     }
+
     @Override
     public LinkedHashMap<String, Column> confirmUpdateColumns(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns) {
         return super.confirmUpdateColumns(runtime, dest, obj, configs, columns);
@@ -827,14 +830,17 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
     protected long saveCollection(DataRuntime runtime, String random, Table dest, Collection<?> data, ConfigStore configs, List<String> columns) {
         return super.saveCollection(runtime, random, dest, data, configs, columns);
     }
+
     @Override
     protected long saveObject(DataRuntime runtime, String random, Table dest, Object data, ConfigStore configs, List<String> columns) {
         return super.saveObject(runtime, random, dest, data, configs, columns);
     }
+
     @Override
     protected Boolean checkOverride(Object obj) {
         return super.checkOverride(obj);
     }
+
     @Override
     protected Map<String, Object> checkPv(Object obj) {
         return super.checkPv(obj);
@@ -850,6 +856,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
     protected boolean isMultipleValue(DataRuntime runtime, TableRun run, String key) {
         return super.isMultipleValue(runtime, run, key);
     }
+
     @Override
     protected boolean isMultipleValue(Column column) {
         return super.isMultipleValue(column);
@@ -1062,10 +1069,12 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
     public Run fillQueryContent(DataRuntime runtime, Run run) {
         return super.fillQueryContent(runtime, run);
     }
+
     @Override
     protected Run fillQueryContent(DataRuntime runtime, XMLRun run) {
         return super.fillQueryContent(runtime, run);
     }
+
     @Override
     protected Run fillQueryContent(DataRuntime runtime, TextRun run) {
         return super.fillQueryContent(runtime, run);
@@ -1097,6 +1106,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
         run.checkValid();
         return run;
     }
+
     /**
      * select[命令合成-子流程] <br/>
      * 合成最终 select 命令 包含分页 排序
@@ -1422,6 +1432,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
         }
         return result;
     }
+
     @Override
     public String mergeFinalExists(DataRuntime runtime, Run run) {
         String sql = "SELECT EXISTS(\n" + run.getBuilder().toString() +"\n) IS_EXISTS";
@@ -1556,14 +1567,17 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
     public Run buildExecuteRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions) {
         return super.buildExecuteRun(runtime, prepare, configs, conditions);
     }
+
     @Override
     protected void fillExecuteContent(DataRuntime runtime, XMLRun run) {
         super.fillExecuteContent(runtime, run);
     }
+
     @Override
     protected void fillExecuteContent(DataRuntime runtime, TextRun run) {
         super.fillExecuteContent(runtime, run);
     }
+
     @Override
     protected void fillExecuteContent(DataRuntime runtime, TableRun run) {
         super.fillExecuteContent(runtime, run);
@@ -1914,7 +1928,6 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
         return super.delete(runtime, random, configs, run);
     }
 
-
     /* *****************************************************************************************************************
      *
      *                                                     metadata
@@ -2142,6 +2155,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
     public List<Run> buildQueryDatabasesRun(DataRuntime runtime, boolean greedy, Database query) throws Exception {
         return super.buildQueryDatabasesRun(runtime, greedy, query);
     }
+
     /**
      * database[结果集封装]<br/>
      * database 属性与结果集对应关系
@@ -2166,12 +2180,12 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
     public <T extends Database> LinkedHashMap<String, T> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Database query, DataSet set) throws Exception {
         return super.databases(runtime, index, create, previous, query, set);
     }
+
     @Override
     public <T extends Database> List<T> databases(DataRuntime runtime, int index, boolean create, List<T> previous, Database query, DataSet set) throws Exception {
         return super.databases(runtime, index, create, previous, query, set);
     }
 
-    
     /**
      * database[结果集封装]<br/>
      * 当前database 根据查询结果集
@@ -2322,6 +2336,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
     public MetadataFieldRefer initCatalogFieldRefer() {
         return super.initCatalogFieldRefer();
     }
+
     /**
      * catalog[结果集封装]<br/>
      * 根据查询结果集构造 Database
@@ -2462,6 +2477,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
     public MetadataFieldRefer initSchemaFieldRefer() {
         return super.initSchemaFieldRefer();
     }
+
     /**
      * schema[结果集封装]<br/>
      * 根据查询结果集构造 Database
@@ -2477,6 +2493,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
     public <T extends Schema> LinkedHashMap<String, T> schemas(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Schema query, DataSet set) throws Exception {
         return super.schemas(runtime, index, create, previous, query, set);
     }
+
     @Override
     public <T extends Schema> List<T> schemas(DataRuntime runtime, int index, boolean create, List<T> previous, Schema query, DataSet set) throws Exception {
         return super.schemas(runtime, index, create, previous, query, set);
@@ -2626,6 +2643,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
     public MetadataFieldRefer initTableFieldRefer() {
         return super.initTableFieldRefer();
     }
+
     /**
      * table[命令合成]<br/>
      * 查询表备注
@@ -2888,6 +2906,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
     public MetadataFieldRefer initViewFieldRefer() {
         return super.initViewFieldRefer();
     }
+
     /**
      * view[命令合成]<br/>
      * 查询表备注
@@ -3022,7 +3041,6 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         return super.init(runtime, index, meta, query, row);
     }
 
-
     /**
      * view[结果集封装]<br/>
      * 根据查询结果封装View更多属性
@@ -3117,6 +3135,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
     public MetadataFieldRefer initMasterTableFieldRefer() {
         return super.initMasterTableFieldRefer();
     }
+
     /**
      * master[命令合成]<br/>
      * 查询表备注
@@ -3219,6 +3238,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
     public <T extends MasterTable> T init(DataRuntime runtime, int index, T meta, MasterTable query, DataRow row) {
         return super.init(runtime, index, meta, query, row);
     }
+
     /**
      * master[结果集封装]<br/>
      * 根据查询结果封装MasterTable对象,更多属性
@@ -3278,7 +3298,6 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
     public List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, boolean greedy,  PartitionTable query, int types) throws Exception {
         return super.buildQueryPartitionTablesRun(runtime, greedy, query, types);
     }
-
 
     /**
      * partition table[结果集封装]<br/>
@@ -3449,6 +3468,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
     public MetadataFieldRefer initColumnFieldRefer() {
         return super.initColumnFieldRefer();
     }
+
     /**
      * column[命令合成]<br/>(方法1)<br/>
      * 查询多个表的列
@@ -3462,6 +3482,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
     public List<Run> buildQueryColumnsRun(DataRuntime runtime, boolean metadata, Collection<? extends Table> tables, Column query, ConfigStore configs) throws Exception {
         return super.buildQueryColumnsRun(runtime, metadata, tables, query, configs);
     }
+
     /**
      * column[结果集封装]<br/>
      *  根据查询结果集构造Tag
@@ -3478,6 +3499,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
     public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Table table, Column query, DataSet set) throws Exception {
         return super.columns(runtime, index, create, previous, table, query, set);
     }
+
     @Override
     public <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, List<T> previous, Column query, DataSet set) throws Exception {
         return super.columns(runtime, index, create, previous, query, set);
@@ -3788,6 +3810,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         }
         return tags;
     }
+
     /**
      * tag[命令合成]<br/>
      * 查询表上的列
@@ -3866,6 +3889,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
     public List<Run> buildQueryPrimaryRun(DataRuntime runtime, boolean greedy,  PrimaryKey query) throws Exception {
         return super.buildQueryPrimaryRun(runtime, greedy, query);
     }
+
     /**
      * primary[结果集封装]<br/>
      * PrimaryKey 属性与结果集对应关系
@@ -3889,6 +3913,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
     public <T extends PrimaryKey> T init(DataRuntime runtime, int index, T primary, PrimaryKey query, DataSet set) throws Exception {
         return super.init(runtime, index, primary, query, set);
     }
+
     /**
      * primary[结构集封装]<br/>
      * 根据查询结果集构造PrimaryKey更多属性
@@ -3902,8 +3927,6 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
     public <T extends PrimaryKey> T detail(DataRuntime runtime, int index, T meta, PrimaryKey query, DataSet set) throws Exception {
         return super.detail(runtime, index, meta, query, set);
     }
-
-
 
     /**
      * primary[结构集封装]<br/>
@@ -4051,6 +4074,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
     public List<Run> buildQueryIndexesRun(DataRuntime runtime, boolean greedy, Index query) {
         return super.buildQueryIndexesRun(runtime, greedy, query);
     }
+
     @Override
     public List<Run> buildQueryIndexesRun(DataRuntime runtime, boolean greedy,  Collection<? extends Table> tables) {
         return super.buildQueryIndexesRun(runtime, greedy, tables);
@@ -4065,6 +4089,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
     public MetadataFieldRefer initIndexFieldRefer() {
         return super.initIndexFieldRefer();
     }
+
     /**
      * index[结果集封装]<br/>
      *  根据查询结果集构造Index
@@ -4197,7 +4222,6 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	public <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, String random, Constraint query) {
 		return super.constraints(runtime, random, query);
 	}
-
 
 	/**
 	 * constraint[命令合成]<br/>
@@ -4934,8 +4958,6 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	public boolean rename(DataRuntime runtime, Table origin, String name) throws Exception {
 		return super.rename(runtime, origin, name);
 	}
-
-
 
 	/**
 	 * table[命令合成]<br/>
@@ -6310,7 +6332,6 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		delimiter(builder, meta.getName());
 		return runs;
 	}
-
 
 	/**
 	 * column[命令合成]<br/>

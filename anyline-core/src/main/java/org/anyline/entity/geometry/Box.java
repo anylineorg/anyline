@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.entity.geometry;
 
 public class Box extends Geometry{
@@ -59,6 +57,7 @@ public class Box extends Geometry{
     public void setP2(Point p2) {
         this.p2 = p2;
     }
+
     @Override
     public String toString() {
         return toString(true);

@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.entity;
 
 import java.io.Serializable;
@@ -36,6 +34,7 @@ public interface AnyData<T> extends Serializable, Cloneable {
     default T toLowerKey(String... keys) {
         return toLowerKey(true, keys);
     }
+
     /**
      * key转小写,转换后删除原来的key
      * @param recursion 是否递归执行(仅支持AnyData类型)

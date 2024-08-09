@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.data.prepare;
 
 import org.anyline.data.run.RunValue;
@@ -27,9 +25,15 @@ import java.util.List;
 import java.util.Map;
 
 public interface Condition extends Cloneable{
-
-	String CONDITION_JOIN_TYPE_AND		= " AND "	;	// 拼接方式 AND
-	String CONDITION_JOIN_TYPE_OR		= " OR "	;	// 拼接方式 OR
+	enum JOIN{
+		AND,OR;
+		public String getText(){
+			return " " + this.name() + " ";
+		}
+		public String getCode(){
+			return this.name();
+		}
+	}
 	// 参数变量类型
 	int VARIABLE_PLACEHOLDER_TYPE_INDEX	= 0			;	// 按下标区分
 	int VARIABLE_PLACEHOLDER_TYPE_KEY		= 1			;	// 按KEY区分
@@ -68,9 +72,16 @@ public interface Condition extends Cloneable{
 	/** 
 	 * 拼接方式 
 	 * @return String
-	 */ 
-	String getJoin(); 
-	Condition setJoin(String join); 
+	 */
+	Condition.JOIN getJoin();
+	default String getJoinText(){
+		Condition.JOIN join = getJoin();
+		if(null != join){
+			return join.getText();
+		}
+		return "";
+	}
+	Condition setJoin(Condition.JOIN join);
 	/** 
 	 * 当前条件所处容器 
 	 * @return ConditionChain

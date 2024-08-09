@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.util;
 
 import org.anyline.util.regular.RegularUtil;
@@ -187,7 +185,6 @@ public class BasicUtil {
 		}
 		return null;
 	}
-
 
 	/**
 	 * 反回第一个不为空(""|null|empty)的值 没有符合条件的 则返回NULL
@@ -758,7 +755,6 @@ public class BasicUtil {
 		}
 		return list;
 	}
-
 
 	/**
 	 * 子串出现次数

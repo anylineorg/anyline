@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.util;
  
 import org.dom4j.Document;

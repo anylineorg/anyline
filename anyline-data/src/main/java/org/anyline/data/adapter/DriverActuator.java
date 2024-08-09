@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.data.adapter;
 
 import org.anyline.data.param.ConfigStore;
@@ -161,6 +159,7 @@ public interface DriverActuator {
     default List<Object> execute(DriverAdapter adapter, DataRuntime runtime, String random, Procedure procedure, String sql, List<Parameter> inputs, List<Parameter> outputs) throws Exception {
         return null;
     }
+
     /**
      * execute [命令执行]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -180,7 +179,6 @@ public interface DriverActuator {
     default LinkedHashMap<String, Column> metadata(DriverAdapter adapter, DataRuntime runtime, String random, Run run, boolean comment) {
         return new LinkedHashMap<>();
     }
-
 
     /**
      * table[结果集封装]<br/>
@@ -211,6 +209,7 @@ public interface DriverActuator {
     default <T extends Table> List<T> tables(DriverAdapter adapter, DataRuntime runtime, boolean create, List<T> previous, Table query, int types) throws Exception {
         return previous;
     }
+
     /**
      * view[结果集封装]<br/>
      * 根据驱动内置方法补充
@@ -255,6 +254,7 @@ public interface DriverActuator {
     default <T extends Column> LinkedHashMap<String, T> columns(DriverAdapter adapter, DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Table table, String cmd) throws Exception {
         return previous;
     }
+
     /**
      * 根方法(3)根据根据驱动内置元数据接口补充表结构
      * @param adapter DriverAdapter

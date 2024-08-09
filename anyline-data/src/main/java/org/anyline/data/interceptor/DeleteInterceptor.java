@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.data.interceptor;
 
 import org.anyline.data.runtime.DataRuntime;
@@ -50,6 +48,7 @@ public interface DeleteInterceptor extends DMInterceptor{
      * @return RESULT
      */
     default SWITCH before(DataRuntime runtime, String random, Run run) { return SWITCH.CONTINUE;}
+
     /**
      * 合计总数之前调用，到这一步SQL已创建完成
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端

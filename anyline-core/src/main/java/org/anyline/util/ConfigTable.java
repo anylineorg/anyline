@@ -14,9 +14,6 @@
  * limitations under the License.
  */
 
-
-
-
 package org.anyline.util;
 
 import org.anyline.adapter.EnvironmentWorker;
@@ -56,7 +53,6 @@ public class ConfigTable {
 	protected static final String minVersion 			= "000"				;	// 版本号
 	protected static boolean isLoading 					= false				;	// 是否加载配置文件中
 	private static boolean listener_running 			= false				;	// 监听是否启动
-
 
 	public static String CONFIG_NAME = "anyline-config.xml";
 

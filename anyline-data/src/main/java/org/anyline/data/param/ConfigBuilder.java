@@ -20,6 +20,7 @@ import org.anyline.adapter.KeyAdapter;
 import org.anyline.data.param.init.DefaultConfig;
 import org.anyline.data.param.init.DefaultConfigChain;
 import org.anyline.data.param.init.DefaultConfigStore;
+import org.anyline.data.prepare.Condition;
 import org.anyline.entity.*;
 import org.anyline.util.BasicUtil;
 
@@ -77,7 +78,10 @@ public class ConfigBuilder {
                 parser.setClazz(parse.getString("class"));
                 parser.setMethod(parse.getString("method"));
                 parser.setKey(parse.getString("key"));
-                parser.setJoin(parse.getString("join"));
+                String join = parse.getString("join");
+                if(null != join){
+                    parser.setJoin(Condition.JOIN.valueOf(join.trim().toUpperCase()));
+                }
                 parser.setCompare(compare(parse.getInt("compare", Compare.EQUAL.getCode())));
                 String swt = parse.getString("swt");
                 if(BasicUtil.isNotEmpty(swt)) {
@@ -87,7 +91,10 @@ public class ConfigBuilder {
                 }
             }
             config = new DefaultConfig(parser);
-            config.setJoin(row.getString("join"));
+            String join = row.getString("join");
+            if(null != join){
+                config.setJoin(Condition.JOIN.valueOf(join.trim().toUpperCase()));
+            }
             config.setText(row.getString("text"));
             config.setKey(row.getString("key"));
             config.setValue(row.get("values"));
@@ -100,7 +107,10 @@ public class ConfigBuilder {
     public static ConfigChain parseConfigChain(DataRow row) {
         ConfigChain chain = null;
         chain = new DefaultConfigChain();
-        chain.setJoin(row.getString("join"));
+        String join = row.getString("join");
+        if(null != join){
+            chain.setJoin(Condition.JOIN.valueOf(join.trim().toUpperCase()));
+        }
         chain.setText(row.getString("text"));
         DataSet items = row.getSet("items");
         if(null != items) {

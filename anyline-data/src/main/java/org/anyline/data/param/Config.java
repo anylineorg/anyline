@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.data.param;
 
 import org.anyline.data.prepare.Condition;
@@ -73,10 +71,10 @@ public interface Config extends Cloneable {
  
 	void setEmpty(boolean empty) ; 
 
-	String getJoin() ; 
- 
-	void setJoin(String join) ; 
- 
+	Condition.JOIN getJoin() ;
+
+	void setJoin(Condition.JOIN join) ;
+
 	boolean isKeyEncrypt() ; 
  
 	boolean isValueEncrypt();

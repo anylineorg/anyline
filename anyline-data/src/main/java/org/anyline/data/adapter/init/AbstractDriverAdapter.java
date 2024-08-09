@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.data.adapter.init;
 
 import org.anyline.adapter.DataReader;
@@ -74,7 +72,6 @@ import org.anyline.util.regular.RegularUtil;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.util.*;
-
 
 /**
  * SQL生成 子类主要实现与分页相关的SQL 以及delimiter
@@ -142,18 +139,22 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
     public void setActuator(DriverActuator actuator) {
         this.actuator = actuator;
     }
+
     @Override
     public DriverActuator getActuator() {
         return actuator;
     }
+
     @Override
     public String getDelimiterFr() {
         return this.delimiterFr;
     }
+
     @Override
     public String getDelimiterTo() {
         return this.delimiterTo;
     }
+
     @Override
     public void setDelimiter(String delimiter) {
         if(BasicUtil.isNotEmpty(delimiter)) {
@@ -167,6 +168,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             }
         }
     }
+
     /**
      * 对应的兼容模式，有些数据库会兼容oracle或pg,需要分别提供两个JDBCAdapter或者直接依赖oracle/pg的adapter
      * 参考DefaultJDBCAdapterUtil定位adapter的方法
@@ -205,7 +207,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         MetadataReferHolder.reg(type(), TypeMetadata.CATEGORY.GEOMETRY, new TypeMetadata.Refer(1, 1, 1));
         MetadataReferHolder.reg(type(), TypeMetadata.CATEGORY.OTHER, new TypeMetadata.Refer( 1, 1, 1));
 
-
         reg(initDatabaseFieldRefer());
         reg(initCatalogFieldRefer());
         reg(initSchemaFieldRefer());
@@ -239,6 +240,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         }
         return refer;
     }
+
     @Override
     public void reg(MetadataFieldRefer refer) {
         Class<?> metadata = refer.metadata();
@@ -249,6 +251,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             refers.put(metadata, refer);
         }
     }
+
     @Override
     public LinkedHashMap<String, TypeMetadata> alias() {
         return alias;
@@ -279,6 +282,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             this.alias.put(key.replace(" ", "_"), value);
         }
     }
+
     /**
      * 注册数据类型配置
      * 要从配置项中取出每个属性检测合并,不要整个覆盖
@@ -290,6 +294,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
     public TypeMetadata.Refer reg(TypeMetadata type, TypeMetadata.Refer config) {
         return MetadataReferHolder.reg(type(), type, config);
     }
+
     /**
      * 注册数据类型配置
      * 要从配置项中取出每个属性检测合并,不要整个覆盖
@@ -476,7 +481,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         return run;
     }
 
-
     /**
      * insert [命令合成]<br/>
      * 填充inset命令内容(创建批量INSERT RunPrepare)
@@ -526,7 +530,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         }
     }
 
-
     /**
      * 插入子表前 检测并创建子表
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -540,6 +543,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 void fillInsertCreateTemplate(DataRuntime runtime, Run run, PartitionTable dest, ConfigStore configs)", 37));
         }
     }
+
     /**
      * insert [命令合成-子流程]<br/>
      * 确认需要插入的列
@@ -1855,6 +1859,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         //List<Run> runs = buildInsertRun(runtime, random, batch, dest, data, columns);
         return cnt;
     }
+
     /**
      *
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -2483,6 +2488,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             }
         }
     }
+
     /**
      * 解析文本中的占位符
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -2593,6 +2599,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
     public Run fillQueryContent(DataRuntime runtime, Run run) {
         return fillQueryContent(runtime, run.getBuilder(), run);
     }
+
     /**
      * select[命令合成-子流程] <br/>
      * 构造查询主体
@@ -2614,6 +2621,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         }
         return run;
     }
+
     /**
      * select[命令合成-子流程] <br/>
      * 构造查询主体
@@ -2623,6 +2631,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
     protected Run fillQueryContent(DataRuntime runtime, XMLRun run) {
         return fillQueryContent(runtime, run.getBuilder(), run);
     }
+
     /**
      *
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -2635,6 +2644,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         }
         return run;
     }
+
     /**
      * select[命令合成-子流程] <br/>
      * 构造查询主体
@@ -2668,6 +2678,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
     protected Run fillQueryContent(DataRuntime runtime, TableRun run) {
         return fillQueryContent(runtime, run.getBuilder(), run);
     }
+
     /**
      * 有些非JDBC环境也需要用到SQL
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -3088,6 +3099,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         }
         return false;
     }
+
     /**
      * exists [命令合成]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -3253,6 +3265,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         run.setValues(null, values);
         return execute(runtime, random, configs, run);
     }
+
     /**
      * procedure [命令执行]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -3301,6 +3314,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         }
         return run;
     }
+
     /**
      * execute [命令合成]<br/>
      * 填充execute命令
@@ -3312,6 +3326,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 fillExecuteContent(DataRuntime runtime, XMLRun run)", 37));
         }
     }
+
     /**
      * execute [命令合成]<br/>
      * 填充execute命令
@@ -3324,6 +3339,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         run.appendGroup();
         run.checkValid();
     }
+
     /**
      * execute [命令合成]<br/>
      * 填充execute命令
@@ -3771,7 +3787,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return runs;
 	}
 
-
 	/**
 	 * delete[命令合成]<br/>
 	 * 合成 where column in (values)
@@ -4196,6 +4211,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return new ArrayList<>();
 	}
+
     /**
      * database[结果集封装]<br/>
      * database 属性与结果集对应关系
@@ -4366,6 +4382,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return null;
 	}
+
     /**
      * schema[结果集封装]<br/>
      * 根据查询结果封装 schema 对象,只封装catalog,schema,name等基础属性
@@ -4732,7 +4749,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return null;
 	}
-
 
     /**
      * catalog[结果集封装]<br/>
@@ -5882,7 +5898,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return ddls;
 	}
 
-
 	/* *****************************************************************************************************************
 	 * 													vertex
 	 * -----------------------------------------------------------------------------------------------------------------
@@ -6128,7 +6143,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		//}
 
 	}
-
 
 	/**
 	 * vertex[结果集封装-子流程]<br/>
@@ -6422,6 +6436,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 
         return meta;
     }
+
     /**
      * vertex[结果集封装]<br/>
      * 根据查询结果封装VertexTable对象,更多属性
@@ -6438,7 +6453,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         }
         return meta;
     }
-
 
     /* *****************************************************************************************************************
 	 * 													EdgeTable
@@ -6994,7 +7008,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return ddls;
 	}
-
 
 	/* *****************************************************************************************************************
 	 * 													view
@@ -7576,7 +7589,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return ddls;
 	}
 
-
 	/* *****************************************************************************************************************
 	 * 													master
 	 * -----------------------------------------------------------------------------------------------------------------
@@ -8065,7 +8077,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return meta;
 	}
 
-
 	/**
 	 *
 	 * master[调用入口]<br/>
@@ -8273,7 +8284,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
     public MetadataFieldRefer initPartitionTableFieldRefer() {
         return new MetadataFieldRefer(PartitionTable.class);
     }
-
 
 	/**
 	 * partition table[结果集封装]<br/>
@@ -8617,8 +8627,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return columns;
 	}
 
-
-
 	/**
 	 * column[调用入口]<br/>(方法1)<br/>
 	 * 查询多个表列，并分配到每个表中，需要保持所有表的catalog,schema相同
@@ -8729,6 +8737,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return new ArrayList<>();
 	}
+
     /**
      * Column[结果集封装]<br/>
      * Column 属性与结果集对应关系
@@ -8822,6 +8831,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
    public  <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Column query) throws Exception {
        return previous;
    }
+
     /**
 	 * column[结果集封装]<br/>(方法1)<br/>
 	 * 根据系统表查询SQL获取表结构
@@ -8895,7 +8905,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return meta;
 	}
-
 
 	/**
 	 * column[结果集封装]<br/>(方法1)<br/>
@@ -9602,7 +9611,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
     public MetadataFieldRefer initForeignKeyFieldRefer() {
         return new MetadataFieldRefer(ForeignKey.class);
     }
-
 
     /**
 	 * foreign[结构集封装]<br/>
@@ -10371,7 +10379,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         return refer;
     }
 
-
     /**
 	 * constraint[结果集封装]<br/>
 	 * 根据查询结果集构造Constraint
@@ -10796,13 +10803,13 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @param query 查询条件 根据metadata属性
 	 * @return runs
 	 */
-
 	public List<Run> buildQueryProceduresRun(DataRuntime runtime, boolean greedy, Procedure query) {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryProceduresRun(DataRuntime runtime, boolean greedy, Procedure query)", 37));
 		}
 		return new ArrayList<>();
 	}
+
     /**
      * procedure[结果集封装]<br/>
      * Procedure 属性与结果集对应关系
@@ -11505,6 +11512,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return new ArrayList<>();
 	}
+
     /**
      * sequence[结果集封装]<br/>
      * Sequence 属性与结果集对应关系
@@ -11726,7 +11734,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return meta;
 	}
-
 
 	/* *****************************************************************************************************************
 	 * 													common
@@ -12277,7 +12284,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return boolean 是否执行成功
 	 * @throws Exception DDL异常
 	 */
-
 	public boolean rename(DataRuntime runtime, Table origin, String name) throws Exception {
 		ACTION.DDL action = ACTION.DDL.TABLE_RENAME;
 		String random = random(runtime);
@@ -12290,8 +12296,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		List<Run> runs = buildRenameRun(runtime, origin);
 		return execute(runtime, random, origin, action, runs);
 	}
-
-
 
 	/**
 	 * table[命令合成]<br/>
@@ -13371,7 +13375,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return boolean 是否执行成功
 	 * @throws Exception DDL异常
 	 */
-
 	public boolean drop(DataRuntime runtime, PartitionTable meta) throws Exception {
 		ACTION.DDL action = ACTION.DDL.PARTITION_TABLE_DROP;
 		String random = random(runtime);
@@ -14914,7 +14917,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param meta 外键
 	 * @return List
 	 */
-
 	public List<Run> buildAlterRun(DataRuntime runtime, ForeignKey meta) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildAlterRun(DataRuntime runtime, ForeignKey meta)", 37));
@@ -16178,7 +16180,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return execute(runtime, random, role, action, runs);
 	}
 
-
 	/**
 	 * role[调用入口]<br/>
 	 * 角色重命名
@@ -16193,7 +16194,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		List<Run> runs = buildRenameRun(runtime, origin, update);
 		return execute(runtime, random, origin, action, runs);
 	}
-
 
 	/**
 	 * role[调用入口]<br/>
@@ -16322,7 +16322,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         return new MetadataFieldRefer(Role.class);
     }
 
-
     /**
 	 * role[结果集封装]<br/>
 	 * 根据查询结果集构造 role
@@ -16371,7 +16370,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         return meta;
 	}
 
-
 	/**
 	 * role[结果集封装]<br/>
 	 * 根据查询结果封装 role 对象,更多属性
@@ -16384,8 +16382,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	public <T extends Role> T detail(DataRuntime runtime, int index, T meta, Role query, DataRow row) {
 		return meta;
 	}
-
-
 
 	/* *****************************************************************************************************************
 	 * 													user
@@ -16430,7 +16426,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		List<Run> runs = buildRenameRun(runtime, origin, update);
 		return execute(runtime, random, origin, action, runs);
 	}
-
 
 	/**
 	 * user[调用入口]<br/>
@@ -16619,8 +16614,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return meta;
 	}
 
-
-
 	/* *****************************************************************************************************************
 	 * 													privilege
 	 * -----------------------------------------------------------------------------------------------------------------
@@ -16704,8 +16697,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         return new MetadataFieldRefer(Privilege.class);
     }
 
-
-
     /**
 	 * privilege[结果集封装]<br/>
 	 * 根据查询结果集构造 Trigger
@@ -16773,7 +16764,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * boolean revoke(DataRuntime runtime, User user, Privilege ... privileges) throws Exception	 *
 	 ******************************************************************************************************************/
 
-
 	/**
 	 * privilege[调用入口]<br/>
 	 * 授权
@@ -16788,7 +16778,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		List<Run> runs = buildGrantRun(runtime, user);
 		return execute(runtime, random, user, action, runs);
 	}
-
 
 	/**
 	 * grant[命令合成]<br/>
@@ -16820,7 +16809,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return execute(runtime, random, user, action, runs);
 	}
 
-
 	/**
 	 * privilege[命令合成]<br/>
 	 * 撤销授权
@@ -16835,8 +16823,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return new ArrayList<>();
 	}
-
-
 
 	/* *****************************************************************************************************************
 	 *
@@ -16942,6 +16928,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         String[] vals = refer.maps(value);
         return matchBoolean(row, cols, vals);
     }
+
     /**
      * parse boolean
      * @param row 结果集
@@ -17246,7 +17233,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	public String value(DataRuntime runtime, Column column, SQL_BUILD_IN_VALUE value) {
 		return null;
 	}
-
 
 	/**
 	 * 写入数据库前类型转换<br/>
@@ -17767,7 +17753,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return builder.toString();
 	}
-
 
 	protected String random(DataRuntime runtime) {
 		StringBuilder builder = new StringBuilder();

@@ -14,9 +14,6 @@
  * limitations under the License.
  */
 
-
-
-
 package org.anyline.data.elasticsearch.datasource;
 
 import org.anyline.annotation.Component;
@@ -43,6 +40,7 @@ public class ElasticSearchDataSourceLoader extends AbstractDataSourceLoader impl
     public DataSourceHolder holder() {
         return holder;
     }
+
     @Override
     public List<String> load() {
         List<String> list = new ArrayList<>();

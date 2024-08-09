@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.data.nebula.adapter;
 
 import org.anyline.adapter.EntityAdapter;
@@ -164,7 +162,6 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
     public long insert(DataRuntime runtime, String random, int batch, Table dest, Object data, ConfigStore configs, List<String> columns) {
         return super.insert(runtime, random, batch, dest, data, configs, columns);
     }
-
 
     /**
      * insert [命令合成]<br/>
@@ -768,10 +765,12 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
     public Run buildUpdateRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, List<String> columns) {
         return super.buildUpdateRun(runtime, batch, dest, obj, configs, columns);
     }
+
     @Override
     public Run buildUpdateRunFromEntity(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, LinkedHashMap<String, Column> columns) {
         return super.buildUpdateRunFromEntity(runtime, dest, obj, configs, columns);
     }
+
     @Override
     public Run buildUpdateRunFromDataRow(DataRuntime runtime, Table dest, DataRow row, ConfigStore configs, LinkedHashMap<String,Column> columns) {
         //注意columns中可能含 +-号
@@ -824,6 +823,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
         run.setUpdateColumns(updateColumns);
         return run;
     }
+
     @Override
     public Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, LinkedHashMap<String,Column> columns) {
         return super.buildUpdateRunFromCollection(runtime, batch, dest, list, configs, columns);
@@ -855,6 +855,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
     public LinkedHashMap<String,Column> confirmUpdateColumns(DataRuntime runtime, Table dest, DataRow row, ConfigStore configs, List<String> columns) {
         return super.confirmUpdateColumns(runtime, dest, row, configs, columns);
     }
+
     @Override
     public LinkedHashMap<String,Column> confirmUpdateColumns(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns) {
         return super.confirmUpdateColumns(runtime, dest, obj, configs, columns);
@@ -988,14 +989,17 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
     protected long saveCollection(DataRuntime runtime, String random, Table dest, Collection<?> data, ConfigStore configs, List<String> columns) {
         return super.saveCollection(runtime, random, dest, data, configs, columns);
     }
+
     @Override
     protected long saveObject(DataRuntime runtime, String random, Table dest, Object data, ConfigStore configs, List<String> columns) {
         return super.saveObject(runtime, random, dest, data, configs, columns);
     }
+
     @Override
     protected Boolean checkOverride(Object obj) {
         return super.checkOverride(obj);
     }
+
     @Override
     protected Map<String,Object> checkPv(Object obj) {
         return super.checkPv(obj);
@@ -1011,6 +1015,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
     protected boolean isMultipleValue(DataRuntime runtime, TableRun run, String key) {
         return super.isMultipleValue(runtime, run, key);
     }
+
     @Override
     protected boolean isMultipleValue(Column column) {
         return super.isMultipleValue(column);
@@ -1158,6 +1163,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
     public boolean supportSqlVarPlaceholderRegexExt(DataRuntime runtime) {
         return false;
     }
+
     /**
      * 查询序列cur 或 next value
      * @param next  是否生成返回下一个序列 false:cur true:next
@@ -1178,14 +1184,17 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
     public Run fillQueryContent(DataRuntime runtime, Run run) {
         return super.fillQueryContent(runtime, run);
     }
+
     @Override
     protected Run fillQueryContent(DataRuntime runtime, XMLRun run) {
         return super.fillQueryContent(runtime, run);
     }
+
     @Override
     protected Run fillQueryContent(DataRuntime runtime, TextRun run) {
         return super.fillQueryContent(runtime, run);
     }
+
     @Override
     protected Run fillQueryContent(DataRuntime runtime, TableRun run) {
         return super.fillQueryContent(runtime, run);
@@ -1353,6 +1362,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
         }
         return set;
     }
+
     /**
      * select [命令执行]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -1470,6 +1480,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
     public boolean exists(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
         return super.exists(runtime, random, prepare, configs, conditions);
     }
+
     @Override
     public String mergeFinalExists(DataRuntime runtime, Run run) {
         return super.mergeFinalExists(runtime, run);
@@ -1533,14 +1544,17 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
     public Run buildExecuteRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions) {
         return super.buildExecuteRun(runtime, prepare, configs, conditions);
     }
+
     @Override
     protected void fillExecuteContent(DataRuntime runtime, XMLRun run) {
         super.fillExecuteContent(runtime, run);
     }
+
     @Override
     protected void fillExecuteContent(DataRuntime runtime, TextRun run) {
         super.fillExecuteContent(runtime, run);
     }
+
     @Override
     protected void fillExecuteContent(DataRuntime runtime, TableRun run) {
         super.fillExecuteContent(runtime, run);
@@ -1945,6 +1959,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
     public List<Run> buildQueryDatabasesRun(DataRuntime runtime, boolean greedy, Database query) throws Exception {
         return super.buildQueryDatabasesRun(runtime, greedy, query);
     }
+
     /**
      * database[结果集封装]<br/>
      * database 属性与结果集对应关系
@@ -1969,6 +1984,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
     public <T extends Database> LinkedHashMap<String, T> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Database query, DataSet set) throws Exception {
         return super.databases(runtime, index, create, previous, query, set);
     }
+
     @Override
     public <T extends Database> List<T> databases(DataRuntime runtime, int index, boolean create, List<T> previous, Database query, DataSet set) throws Exception {
         return super.databases(runtime, index, create, previous, query, set);
@@ -2115,6 +2131,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
     public List<Run> buildQueryCatalogsRun(DataRuntime runtime, boolean greedy, Catalog query) throws Exception {
         return super.buildQueryCatalogsRun(runtime, greedy, query);
     }
+
     /**
      * Catalog[结果集封装]<br/>
      * Catalog 属性与结果集对应关系
@@ -2215,7 +2232,6 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
         return super.catalog(runtime, create, meta);
     }
 
-
     /**
      * catalog[结果集封装]<br/>
      * 根据查询结果封装 catalog 对象,只封装catalog,schema,name等基础属性
@@ -2303,6 +2319,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
     public MetadataFieldRefer initSchemaFieldRefer() {
         return super.initSchemaFieldRefer();
     }
+
     /**
      * schema[结果集封装]<br/>
      * 根据查询结果集构造 Database
@@ -2318,6 +2335,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
     public <T extends Schema> LinkedHashMap<String, T> schemas(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Schema query, DataSet set) throws Exception {
         return super.schemas(runtime, index, create, previous, query, set);
     }
+
     @Override
     public <T extends Schema> List<T> schemas(DataRuntime runtime, int index, boolean create, List<T> previous, Schema query, DataSet set) throws Exception {
         return super.schemas(runtime, index, create, previous, query, set);
@@ -2352,7 +2370,6 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
     public Schema schema(DataRuntime runtime, boolean create, Schema meta) throws Exception {
         return super.schema(runtime, create, meta);
     }
-
 
     /**
      * schema[结果集封装]<br/>
@@ -2526,6 +2543,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
         refer.map(Table.FIELD_NAME, "NAME");
         return refer;
     }
+
     /**
      * table[命令合成]<br/>
      * 查询表备注
@@ -2765,6 +2783,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
         refer.map(Table.FIELD_NAME, "NAME");
         return refer;
     }
+
     /**
      * vertex[命令合成]<br/>
      * 查询表备注
@@ -2857,6 +2876,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
     public <T extends VertexTable> T init(DataRuntime runtime, int index, T meta, VertexTable query, DataRow row) {
         return init(runtime, index, meta, query, row);
     }
+
     /**
      * vertex[结果集封装]<br/>
      * 根据查询结果封装VertexTable对象,更多属性
@@ -2870,6 +2890,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
     public <T extends VertexTable> T detail(DataRuntime runtime, int index, T meta, VertexTable query, DataRow row) {
         return detail(runtime, index, meta, query, row);
     }
+
     /**
      *
      * vertex[调用入口]<br/>
@@ -2986,6 +3007,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
         refer.map(EdgeTable.FIELD_NAME, "NAME");
         return refer;
     }
+
     /**
      * edge[命令合成]<br/>
      * 查询表备注
@@ -3078,6 +3100,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
     public <T extends EdgeTable> T init(DataRuntime runtime, int index, T meta, EdgeTable query, DataRow row) {
         return super.init(runtime, index, meta, query, row);
     }
+
     /**
      * edge[结果集封装]<br/>
      * 根据查询结果封装EdgeTable对象,更多属性
@@ -3091,6 +3114,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
     public <T extends EdgeTable> T detail(DataRuntime runtime, int index, T meta, EdgeTable query, DataRow row) {
         return super.detail(runtime, index, meta, query, row);
     }
+
     /**
      *
      * edge[调用入口]<br/>
@@ -3187,6 +3211,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
     public MetadataFieldRefer initViewFieldRefer() {
         return super.initViewFieldRefer();
     }
+
     /**
      * view[结果集封装]<br/>
      *  根据查询结果集构造View
@@ -3315,6 +3340,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
     public MetadataFieldRefer initMasterTableFieldRefer() {
         return super.initMasterTableFieldRefer();
     }
+
     /**
      * master table[结果集封装]<br/>
      * 根据查询结果集构造Table
@@ -3431,8 +3457,6 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
         return super.buildQueryPartitionTablesRun(runtime, greedy, query, types);
     }
 
-
-    
     /**
      * partition table[结果集封装]<br/>
      * 根据查询结果集构造Table
@@ -3583,6 +3607,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
         refer.map(Column.FIELD_COMMENT, "Comment");
         return refer;
     }
+
     /**
      * column[结果集封装]<br/>
      *  根据查询结果集构造Tag
@@ -3599,6 +3624,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
     public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Table table, Column query, DataSet set) throws Exception {
         return super.columns(runtime, index, create, previous, table, query, set);
     }
+
     @Override
     public <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, List<T> previous, Column query, DataSet set) throws Exception {
        return super.columns(runtime, index, create, previous, query, set);
@@ -3645,7 +3671,6 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
     public <T extends Column> T detail(DataRuntime runtime, int index, T meta, Column query, DataRow row) {
         return super.detail(runtime, index, meta, query, row);
     }
-
 
     /**
      * column[结果集封装]<br/>(方法1)<br/>
@@ -3802,6 +3827,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
     public MetadataFieldRefer initPrimaryKeyFieldRefer() {
         return super.initPrimaryKeyFieldRefer();
     }
+
     /**
      * primary[结构集封装]<br/>
      * 根据查询结果集构造PrimaryKey基础属性
@@ -3982,6 +4008,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
         builder.append(" INDEXES");
         return runs;
     }
+
     @Override
     public List<Run> buildQueryIndexesRun(DataRuntime runtime, boolean greedy,  Collection<? extends Table> tables) {
         List<Run> runs = new ArrayList<>();
@@ -4006,6 +4033,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
         refer.map(Index.FIELD_COLUMN, "Columns");
         return refer;
     }
+
     /**
      * index[结果集封装]<br/>
      *  根据查询结果集构造Index
@@ -4110,7 +4138,6 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
     public <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, String random, Table table, Column column, String pattern) {
         return new LinkedHashMap<>();
     }
-
 
     /**
      * constraint[命令合成]<br/>
@@ -4424,6 +4451,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
     public MetadataFieldRefer initFunctionFieldRefer() {
         return super.initFunctionFieldRefer();
     }
+
     /**
      * function[结果集封装]<br/>
      * 根据查询结果集构造 Trigger
@@ -5891,8 +5919,6 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
         return super.buildDropRun(runtime, meta, slice);
     }
 
-    
-
     /**
      * column[命令合成]<br/>
      * 修改列名
@@ -6907,6 +6933,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
     public StringBuilder comment(DataRuntime runtime, StringBuilder builder, Index meta) {
         return super.comment(runtime, builder, meta);
     }
+
     /**
      * table[命令合成-子流程]<br/>
      * 创建或删除表之前  检测表是否存在
@@ -7547,10 +7574,12 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
     public List<Run> buildRenameRun(DataRuntime runtime, Sequence meta) throws Exception {
         return super.buildRenameRun(runtime, meta);
     }
+
     @Override
     public String conditionHead() {
         return "WHEN";
     }
+
     /**
      * 比较运算符在不同数据库的区别
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端

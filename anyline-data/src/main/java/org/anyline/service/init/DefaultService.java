@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.service.init;
 
 import org.anyline.annotation.Autowired;
@@ -121,6 +119,7 @@ public class DefaultService<E> implements AnylineService<E> {
     public DataSet querys(Table dest, ConfigStore configs, Object obj, String... conditions) {
         return queryFromDao(new DefaultTablePrepare(dest), configs, conditions);
     }
+
     @Override
     public List<String> column2param(String table) {
         List<String> columns = columns(table);
@@ -155,6 +154,7 @@ public class DefaultService<E> implements AnylineService<E> {
         }
         return maps;
     }
+
     @Override
     public List<Map<String, Object>> maps(String dest, ConfigStore configs, Object obj, String... conditions) {
         String[] ps = DataSourceUtil.parseRuntime(dest);
@@ -288,6 +288,7 @@ public class DefaultService<E> implements AnylineService<E> {
         }
         return null;
     }
+
     @Override
     public BigDecimal sequence(boolean next, String name) {
         DataRow row = sequences(next, name);
@@ -297,12 +298,10 @@ public class DefaultService<E> implements AnylineService<E> {
         return null;
     }
 
-
     @Override
     public DataRow sequences(boolean next, String... names) {
         return dao.sequence(next, names);
     }
-
 
     @Override
     public DataRow cache(String cache, String dest, ConfigStore configs, Object obj, String... conditions) {
@@ -402,11 +401,11 @@ public class DefaultService<E> implements AnylineService<E> {
         return row;
     }
 
-
     @Override
     public <T> EntitySet<T> selects(Class<T> clazz, ConfigStore configs, T entity, String... conditions) {
         return selectFromDao(clazz, append(configs, entity), conditions);
     }
+
     @Override
     public <T> T select(Class<T> clazz, ConfigStore configs, T entity, String... conditions) {
         DefaultPageNavi navi = new DefaultPageNavi();
@@ -448,7 +447,6 @@ public class DefaultService<E> implements AnylineService<E> {
         }
         return queryFromDao(dest, clazz, append(configs, entity), conditions);
     }
-
 
     @Override
     public <T> T select(String dest, Class<T> clazz, ConfigStore configs, T entity, String... conditions) {
@@ -518,13 +516,11 @@ public class DefaultService<E> implements AnylineService<E> {
         return clazz;
     }
 
-
     @Override
     public EntitySet<E> gets(ConfigStore configs, String... conditions) {
         Class<E> clazz = parseGenericClass();
         return selects(clazz, configs, conditions);
     }
-
 
     @Override
     public E get(ConfigStore configs, String... conditions) {
@@ -566,7 +562,6 @@ public class DefaultService<E> implements AnylineService<E> {
         }
         return set;
     }
-
 
     @Override
     public DataRow query(RunPrepare table, ConfigStore store, Object obj, String... conditions) {
@@ -716,6 +711,7 @@ public class DefaultService<E> implements AnylineService<E> {
             return false;
         }
     }
+
     @Override
     public boolean clearCaches() {
         if (null != CacheProxy.provider) {
@@ -768,6 +764,7 @@ public class DefaultService<E> implements AnylineService<E> {
         }
         return result;
     }
+
     /**
      * 只根据主键判断
      * @param dest 查询或操作的目标(表、存储过程、SQL等)
@@ -791,6 +788,7 @@ public class DefaultService<E> implements AnylineService<E> {
             return false;
         }
     }
+
     @Override
     public boolean exists(Table dest, DataRow row) {
         if (null != row) {
@@ -844,6 +842,7 @@ public class DefaultService<E> implements AnylineService<E> {
         }
         return count;
     }
+
     @Override
     public long count(Table dest, ConfigStore configs, Object obj, String... conditions) {
         String[] ps = DataSourceUtil.parseRuntime(dest);
@@ -866,6 +865,7 @@ public class DefaultService<E> implements AnylineService<E> {
         }
         return count;
     }
+
     @Override
     public
     long count(RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions){
@@ -1178,6 +1178,7 @@ public class DefaultService<E> implements AnylineService<E> {
         }
         return dao.execute(batch, vol, prepare, values);
     }
+
     @Override
     public long execute(String src, ConfigStore configs, String... conditions) {
         String[] ps = DataSourceUtil.parseRuntime(src);
@@ -1363,7 +1364,6 @@ public class DefaultService<E> implements AnylineService<E> {
         }
     }
 
-
     @Override
     public <T> long deletes(int batch, String table, String key, T... values) {
         String[] ps = DataSourceUtil.parseRuntime(table);
@@ -1381,7 +1381,6 @@ public class DefaultService<E> implements AnylineService<E> {
         }
         return dao.deletes(batch, table, key, values);
     }
-
 
     @Override
     public long delete(String table, ConfigStore configs, String... conditions) {
@@ -1406,7 +1405,6 @@ public class DefaultService<E> implements AnylineService<E> {
         }
         return dao.delete(table, configs, conditions);
     }
-
 
     @Override
     public long truncate(String table) {
@@ -1549,6 +1547,7 @@ public class DefaultService<E> implements AnylineService<E> {
     public List<Run> ddl(MetadataDiffer differ) {
         return dao.ddl(differ);
     }
+
     /**
      * 根据差异生成SQL
      * @param differs differs
@@ -1558,6 +1557,7 @@ public class DefaultService<E> implements AnylineService<E> {
     public List<Run> ddl(List<MetadataDiffer> differs) {
         return dao.ddl(differs);
     }
+
     /**
      * 解析SQL中指定的主键table(col1, col2)&lt;pk1, pk2&gt;
      *
@@ -1802,6 +1802,7 @@ public class DefaultService<E> implements AnylineService<E> {
         LinkedHashMap<String, Column> metadata = dao.metadata(prepare, comment);
         return metadata;
     }
+
     @Override
     public List<String> tables(Catalog catalog, Schema schema, String name, int types) {
         LinkedHashMap<String, Table> tables = metadata.tables(catalog, schema, name, types);
@@ -1822,7 +1823,6 @@ public class DefaultService<E> implements AnylineService<E> {
         return list;
     }
 
-
     @Override
     public List<String> masters(boolean greedy, Catalog catalog, Schema schema, String name, int types) {
         LinkedHashMap<String, MasterTable> tables = metadata.masters(catalog, schema, name, types);
@@ -1842,7 +1842,6 @@ public class DefaultService<E> implements AnylineService<E> {
         }
         return list;
     }
-
 
     @Override
     public List<String> tags(boolean greedy, Table table) {
@@ -1897,6 +1896,7 @@ public class DefaultService<E> implements AnylineService<E> {
     public DDLService ddl() {
         return ddl;
     }
+
     @Override
     public AuthorizeService authorize() {
         return authorize;
@@ -2130,7 +2130,6 @@ public class DefaultService<E> implements AnylineService<E> {
             }
             return dao.ddl(table, init);
         }
-
 
         /* *****************************************************************************************************************
          * 													vertex
@@ -2638,7 +2637,6 @@ public class DefaultService<E> implements AnylineService<E> {
          * PartitionTable partition(String name)
          ******************************************************************************************************************/
 
-
         @Override
         public boolean exists(boolean greedy, PartitionTable table) {
             PartitionTable tab = partition(greedy, table.getCatalog(), table.getSchema(), table.getMasterName(), table.getName());
@@ -3107,7 +3105,6 @@ public class DefaultService<E> implements AnylineService<E> {
          * boolean drop(Table table) throws Exception
          ******************************************************************************************************************/
 
-
         @Override
         public boolean save(Table table) throws Exception {
             boolean result = false;
@@ -3195,7 +3192,6 @@ public class DefaultService<E> implements AnylineService<E> {
          * boolean drop(View view) throws Exception
          ******************************************************************************************************************/
 
-
         @Override
         public boolean save(View view) throws Exception {
             boolean result = false;
@@ -3235,7 +3231,6 @@ public class DefaultService<E> implements AnylineService<E> {
                 CacheProxy.clear();
             }
         }
-
 
         @Override
         public boolean drop(View view) throws Exception {
@@ -3289,7 +3284,6 @@ public class DefaultService<E> implements AnylineService<E> {
             return result;
         }
 
-
         @Override
         public boolean alter(MasterTable table) throws Exception {
             CacheProxy.clear();
@@ -3300,7 +3294,6 @@ public class DefaultService<E> implements AnylineService<E> {
                 CacheProxy.clear();
             }
         }
-
 
         @Override
         public boolean drop(MasterTable table) throws Exception {
@@ -3349,13 +3342,11 @@ public class DefaultService<E> implements AnylineService<E> {
             }
         }
 
-
         @Override
         public boolean create(PartitionTable table) throws Exception {
             boolean result =  dao.create(table);
             return result;
         }
-
 
         @Override
         public boolean alter(PartitionTable table) throws Exception {
@@ -3367,7 +3358,6 @@ public class DefaultService<E> implements AnylineService<E> {
                 CacheProxy.clear();
             }
         }
-
 
         @Override
         public boolean drop(PartitionTable table) throws Exception {
@@ -3407,7 +3397,6 @@ public class DefaultService<E> implements AnylineService<E> {
          * @param column 列
          * @throws Exception 异常 SQL异常
          */
-
 
         @Override
         public boolean save(Column column) throws Exception {
@@ -3583,7 +3572,6 @@ public class DefaultService<E> implements AnylineService<E> {
             }
         }
 
-
         @Override
         public boolean alter(Tag tag) throws Exception {
             CacheProxy.clear();
@@ -3595,7 +3583,6 @@ public class DefaultService<E> implements AnylineService<E> {
                 CacheProxy.clear();
             }
         }
-
 
         @Override
         public boolean drop(Tag tag) throws Exception {
@@ -3669,7 +3656,6 @@ public class DefaultService<E> implements AnylineService<E> {
          * boolean drop(PrimaryKey primary) throws Exception
          ******************************************************************************************************************/
 
-
         @Override
         public boolean add(PrimaryKey primary) throws Exception {
             CacheProxy.clear();
@@ -3679,7 +3665,6 @@ public class DefaultService<E> implements AnylineService<E> {
                 CacheProxy.clear();
             }
         }
-
 
         @Override
         public boolean alter(PrimaryKey primary) throws Exception {
@@ -3760,7 +3745,6 @@ public class DefaultService<E> implements AnylineService<E> {
          * boolean drop(Index index) throws Exception
          ******************************************************************************************************************/
 
-
         @Override
         public boolean add(Index index) throws Exception {
             CacheProxy.clear();
@@ -3771,7 +3755,6 @@ public class DefaultService<E> implements AnylineService<E> {
                 CacheProxy.clear();
             }
         }
-
 
         @Override
         public boolean alter(Index index) throws Exception {
@@ -3816,13 +3799,11 @@ public class DefaultService<E> implements AnylineService<E> {
             }
         }
 
-
         @Override
         public boolean alter(Constraint constraint) throws Exception {
             CacheProxy.clear();
             return false;
         }
-
 
         @Override
         public boolean drop(Constraint constraint) throws Exception {
@@ -4024,7 +4005,6 @@ public class DefaultService<E> implements AnylineService<E> {
             return dao.rename(origin, update);
         }
 
-
         /**
          * 删除角色
          * @param role 角色
@@ -4034,7 +4014,6 @@ public class DefaultService<E> implements AnylineService<E> {
         public boolean delete(Role role) throws Exception {
             return dao.delete(role);
         }
-
 
         /* *****************************************************************************************************************
          * 													user

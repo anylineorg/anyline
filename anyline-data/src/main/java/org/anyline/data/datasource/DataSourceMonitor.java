@@ -78,6 +78,7 @@ public interface DataSourceMonitor {
     default DriverAdapter adapter(DataRuntime runtime, Object datasource) {
         return null;
     }
+
     /**
      * 上层方法完成adapter定位后调用,可以在这里缓存,下一次定位提供给adapter(Object datasource)
      * @param datasource 数据源

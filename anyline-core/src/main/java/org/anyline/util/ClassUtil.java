@@ -14,9 +14,6 @@
  * limitations under the License.
  */
 
-
-
-
 package org.anyline.util;
 
 import org.slf4j.Logger;
@@ -510,7 +507,6 @@ public class ClassUtil {
 	 * @param ignoreCase 是否忽略大小写及其他符号
 	 * @return Field
 	 */
-
 	public static Field getField(Class<?> clazz, String name, boolean recursion, boolean ignoreCase) {
 		Field field = null;
 		try{
@@ -794,7 +790,6 @@ public class ClassUtil {
 		}
 		return null;
 	}
-
 
 	/**
 	 * 根据属性获取 集合或数组的泛型类,如果不同Map类型 只返回class[0]

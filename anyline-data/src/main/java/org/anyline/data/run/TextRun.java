@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.data.run;
 
 import org.anyline.data.param.Config;
@@ -42,7 +40,6 @@ public class TextRun extends AbstractRun implements Run {
 		this.conditionChain = new DefaultAutoConditionChain();
 		this.orderStore = new DefaultOrderStore();
 	}
-
 
 	public Run setPrepare(RunPrepare prepare) {
 		this.prepare = prepare;
@@ -374,7 +371,6 @@ public class TextRun extends AbstractRun implements Run {
 		}
 		return null;
 	}
-
 
 	public List<Variable> getVariables(String key) {
 		List<Variable> list = new ArrayList<>();

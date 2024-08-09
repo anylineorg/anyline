@@ -14,9 +14,6 @@
  * limitations under the License.
  */
 
-
-
-
 package org.anyline.exception;
  
 public class CommandQueryException extends CommandException {

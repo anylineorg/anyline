@@ -14,9 +14,6 @@
  * limitations under the License.
  */
 
-
-
-
 package org.anyline.util;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -4015,7 +4012,6 @@ public class BeanUtil {
 		}
 		return true;
 	}
-
 
 	public static Object value(Map map, String keys, Map<String, HashSet<String>> alias) {
 		return value(map, keys, alias, Object.class, null);

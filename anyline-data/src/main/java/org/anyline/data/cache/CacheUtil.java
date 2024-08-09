@@ -14,9 +14,6 @@
  * limitations under the License.
  */
 
-
-
-
 package org.anyline.data.cache;
 
 import org.anyline.data.param.Config;
@@ -80,6 +77,7 @@ public class CacheUtil {
     	int period = ConfigTable.getInt(key, 120);		// 两次刷新最小间隔
     	return start(key, period);
     }
+
     /**
      * 刷新完成
      * @param key key
@@ -112,6 +110,7 @@ public class CacheUtil {
     	}
     	return true;
     }
+
     /**
      * 已执行时间
      * @param key key
@@ -125,6 +124,7 @@ public class CacheUtil {
     	}
     	return result;
     }
+
     /**
      * 创建集中缓存的key
      * @param table 表
@@ -142,6 +142,7 @@ public class CacheUtil {
     	}
     	return key;
     }
+
     /**
 	 * 创建cache key
 	 * @param page 是否需要拼接分页下标

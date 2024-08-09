@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.anyline.data.mongodb.runtime;
 
 import com.mongodb.client.MongoClient;
@@ -46,7 +45,6 @@ public class MongoRuntime extends AbstractRuntime implements DataRuntime {
         }
     }
 
-
     public String datasource() {
         String datasource = key;
         return datasource;
@@ -62,7 +60,6 @@ public class MongoRuntime extends AbstractRuntime implements DataRuntime {
     public MongoClient client() {
         return client;
     }
-
 
     public String getFeature(boolean connection) {
         if(null == feature) {

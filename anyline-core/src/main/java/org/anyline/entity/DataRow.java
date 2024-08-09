@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.entity;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -450,6 +448,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     public static Object parseJsonObject(KEY_CASE keyCase, JsonNode json) {
         return parseJsonObject(null, keyCase, json);
     }
+
     /**
      * 解析xml结构字符
      * @param row 在此基础上执行, 如果不提供则新创建
@@ -700,6 +699,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         }
         return null;
     }
+
     /**
      * 创建时间
      * @return long
@@ -928,6 +928,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         parseKeyCase(KEY_CASE.LOWER);
         return this;
     }
+
     /**
      * key转换成大写
      * @param recursion 是否递归
@@ -1186,6 +1187,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         }
         return columns;
     }
+
     /**
      * 读取主键
      * 主键为空时且容器有主键时, 读取容器主键, 否则返回默认主键
@@ -1250,6 +1252,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         }
         return this;
     }
+
     /**
      * 是否有主键
      * @return boolean
@@ -1415,6 +1418,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         put(KEY_ALL_CHILDREN, set);
         return set;
     }
+
     /**
      * 转换成对象
      * @param <T>  T
@@ -1501,6 +1505,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         }
         return keys;
     }
+
     @Override
     public void putAll(Map<? extends String, ? extends Object> map) {
         for(String key:map.keySet()) {
@@ -1618,6 +1623,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         put(key, set);
         return set;
     }
+
     /**
      * 这是重写的父类put不要改返回值类型
      * @param key key
@@ -1658,6 +1664,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         }
         return this;
     }
+
     /**
      * 原来的值为null时执行
      * @param key key
@@ -1911,6 +1918,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         }
         return result;
     }
+
     /**
      * 返回第1个非NULL值
      * @param keys keys
@@ -1946,6 +1954,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         }
         return result;
     }
+
     /**
      * 返回第1个存在的key对应的值, 有可能返回null或""
      * @param keys keys
@@ -2357,6 +2366,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         }
         return this;
     }
+
     /**
      * {id:1, code:a, value:100}<br/>
      * toSet("k","v")转换成<br/>
@@ -2375,6 +2385,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         }
         return set;
     }
+
     /**
      * 转换成json格式
      * @return String
@@ -2455,6 +2466,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         }
         return true;
     }
+
     /**
      * 轮换成xml格式
      * @return String
@@ -2934,6 +2946,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     public DataRow copy(DataRow data, List<String> fixs, String... keys) {
         return copy(false, data, fixs, keys);
     }
+
     /**
     /**
      * 抽取指定列, 生成新的DataRow, 新的DataRow只包括指定列的值, 不包含其他附加信息(如来源表)
@@ -2997,6 +3010,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         }
         return result;
     }
+
     /**
      * 检测必选项
      * @param keys keys
@@ -3042,6 +3056,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     public DataRow camel() {
         return camel(false);
     }
+
     /**
      * 下划线转小驼峰
      * @param lower 是否先转换成小写 遇到全大写但没有下划线的情况 false:不处理 true:全部转成小写
@@ -3122,7 +3137,6 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return getKeyCase(KEY_CASE.CONFIG, key);
     }
 
-
     /**
      * key大小写转换
      * @param keyCase keyCase
@@ -3163,7 +3177,6 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     public static String putKeyCase(String key) {
         return putKeyCase(KEY_CASE.CONFIG, key);
     }
-
 
     /**
      * 是否更新null列
@@ -3333,6 +3346,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         }
         return this;
     }
+
     /**
      * 替换所有空值
      * @param keys keys
@@ -3419,6 +3433,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         }
         return this;
     }
+
     /**
      * 拼接value
      * @param keys keys
@@ -3504,6 +3519,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         }
         return this;
     }
+
     /**
      * 指定key转换成number
      * @param keys keys

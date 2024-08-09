@@ -14,10 +14,6 @@
  * limitations under the License.
  */
 
-
-
-
-
 package org.anyline.util;
 
 import java.util.Date;
@@ -172,7 +168,6 @@ public class DateBuilder{
 	 * 下周第一天
 	 * @return DateBuilder
 	 */
-
 	public DateBuilder firstDayOfNextWeek() {
 		date = DateUtil.getFirstDayOfNextWeek(date);
 		return this;
@@ -182,7 +177,6 @@ public class DateBuilder{
 	 * 上个周第一天
 	 * @return DateBuilder
 	 */
-
 	public DateBuilder firstDayOfPreviousWeek() {
 		date = DateUtil.getFirstDayOfPreviousWeek(date);
 		return this;
@@ -219,7 +213,6 @@ public class DateBuilder{
 	 * 当月第一天
 	 * @return DateBuilder
 	 */
-
 	public DateBuilder firstDayOfMonth() {
 		date = DateUtil.getFirstDayOfMonth(date);
 		return this;
@@ -238,7 +231,6 @@ public class DateBuilder{
 	 * 上个月第一天
 	 * @return DateBuilder
 	 */
-
 	public DateBuilder firstDayOfPreviousMonth() {
 		date =  DateUtil.getFirstDayOfPreviousMonth(date);
 		return this;
@@ -257,7 +249,6 @@ public class DateBuilder{
 	 * 上月最后一天
 	 * @return DateBuilder
 	 */
-
 	public DateBuilder lastDayOfPreviousMonth() {
 		date = DateUtil.getLastDayOfPreviousMonth(date);
 		return this;
@@ -267,7 +258,6 @@ public class DateBuilder{
 	 * 下月最后一天
 	 * @return DateBuilder
 	 */
-
 	public DateBuilder lastDayOfNextMonth() {
 		date =  DateUtil.getLastDayOfNextMonth(date);
 		return this;

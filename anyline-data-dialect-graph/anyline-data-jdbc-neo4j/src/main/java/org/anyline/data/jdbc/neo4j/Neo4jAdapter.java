@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.data.jdbc.neo4j;
 
 import org.anyline.adapter.EntityAdapter;
@@ -259,6 +257,7 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 
         return run;
     }
+
     /**
      * 生成insert sql的value部分, 每个Entity(每行数据)调用一次
      * (:User{name:'ZH', age:20})
@@ -490,6 +489,7 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
         String content = builder.toString();
         return content;
     }
+
     /**
      * 构造 LIKE 查询条件
      * MATCH (n:Dept) where n.name CONTAINS '财务' RETURN n
@@ -600,6 +600,7 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
     protected Run fillQueryContent(DataRuntime runtime, XMLRun run) {
         return run;
     }
+
     /**
      * 生成基础查询主体
      * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
@@ -696,6 +697,7 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
         run.checkValid();
         return run;
     }
+
     /**
      * 生成基础查询主体
      * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
@@ -938,6 +940,7 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
         run.appendOrderStore();
         run.checkValid();
     }
+
     @Override
     public List<Run> buildDeleteRunFromTable(DataRuntime runtime, int batch, String table, ConfigStore configs,String key, Object values) {
         List<Run> runs = new ArrayList<>();
@@ -978,6 +981,7 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
         runs.add(run);
         return runs;
     }
+
     @Override
     public List<Run> buildDeleteRunFromEntity(DataRuntime runtime, Table dest, ConfigStore configs, Object obj, String ... columns) {
         List<Run> runs = new ArrayList<>();

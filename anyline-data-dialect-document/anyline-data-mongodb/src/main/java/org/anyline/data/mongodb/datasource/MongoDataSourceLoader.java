@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.data.mongodb.datasource;
 
 import com.mongodb.client.MongoDatabase;
@@ -39,6 +37,7 @@ public class MongoDataSourceLoader extends AbstractDataSourceLoader implements D
     public DataSourceHolder holder() {
         return holder;
     }
+
     @Override
     public List<String> load() {
         List<String> list = new ArrayList<>();

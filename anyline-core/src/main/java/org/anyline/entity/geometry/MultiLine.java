@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.entity.geometry;
 
 import java.util.ArrayList;
@@ -70,6 +68,7 @@ public class MultiLine extends Geometry{
     public String toString() {
         return toString(true);
     }
+
     /**
      * sql格式
      * @param tag 是否包含tag<br/>

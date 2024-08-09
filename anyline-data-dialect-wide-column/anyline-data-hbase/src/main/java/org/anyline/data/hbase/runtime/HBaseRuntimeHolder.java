@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.data.hbase.runtime;
 
 import org.anyline.bean.BeanDefine;
@@ -49,7 +47,7 @@ public class HBaseRuntimeHolder extends AbstractRuntimeHolder {
         return instance;
     }
 
-/**
+	/**
      * 注册数据源 子类覆盖 生成简单的DataRuntime不注册到spring
      * @param client 数据源, 如DruidDataSource, MongoClient, es.Connection
      * @param database 数据库, jdbc类型数据源不需要
@@ -57,7 +55,6 @@ public class HBaseRuntimeHolder extends AbstractRuntimeHolder {
      * @return DataRuntime
      * @throws Exception 异常 Exception
      */
-
 
     public DataRuntime temporary(Object client, String database, DriverAdapter adapter) throws Exception {
         HBaseRuntime runtime = new HBaseRuntime();
@@ -87,7 +84,7 @@ public class HBaseRuntimeHolder extends AbstractRuntimeHolder {
         return reg(key, client, null);
     }
 
-/**
+	/**
      * 注册运行环境
      * @param datasource 数据源前缀
      * @param client Connection

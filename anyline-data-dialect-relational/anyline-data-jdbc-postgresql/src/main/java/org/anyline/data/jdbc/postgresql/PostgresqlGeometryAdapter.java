@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.data.jdbc.postgresql;
 
 import org.anyline.entity.geometry.*;
@@ -35,6 +33,7 @@ public class PostgresqlGeometryAdapter {
         point.tag("Point");
         return point;
     }
+
     /**
      * 线段(两个点)
      * @param pg PG原生lseg
@@ -47,6 +46,7 @@ public class PostgresqlGeometryAdapter {
         segment.tag("Lseg");
         return segment;
     }
+
     /**
      * 线(多个点)
      * @param pg PG原生path
@@ -62,6 +62,7 @@ public class PostgresqlGeometryAdapter {
         string.tag("Path");
         return string;
     }
+
     /**
      * 多边形
      * @param pg PG原生polygon
@@ -81,6 +82,7 @@ public class PostgresqlGeometryAdapter {
         polygon.tag("Polygon");
         return polygon;
     }
+
     /**
      * 圆
      * @param pg PG原生circle
@@ -104,6 +106,7 @@ public class PostgresqlGeometryAdapter {
         line.tag("Line");
         return line;
     }
+
     /**
      * 长方形
      * @param pg PG原生box

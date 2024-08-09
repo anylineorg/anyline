@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-
  
-
 
 package org.anyline.data.datasource;
 
@@ -54,7 +52,6 @@ public interface DataSourceHolder {
 	 * 运行环境未启动之前注册的数据源参数 缓存
 	 */
 	Map<String, Object> caches = new HashMap<>();
-
 
 	/**
 	 * 驱动类型与holder对应关系
@@ -141,7 +138,6 @@ public interface DataSourceHolder {
 		}
 		return holder;
 	}
-
 
 	/**
 	 * 注册数据源(生产环境不要调用这个方法，这里只设置几个必需参数用来测试)
@@ -584,13 +580,11 @@ public interface DataSourceHolder {
 	 */
 	String inject(String key, String prefix, Map<String, Object> params,  boolean override) throws Exception;
 
-
 	default  <T> T value(Map map, String keys, Class<T> clazz, T def) {
 		return BeanUtil.value(map, keys, DataSourceKeyMap.maps, clazz, def);
 	}
 	default <T> T value(String prefix, String keys, Class<T> clazz, T def) {
 		return ConfigTable.environment().value(prefix, keys, DataSourceKeyMap.maps, clazz, def);
 	}
-
 
 }

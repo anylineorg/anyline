@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.data.interceptor;
 
 import org.anyline.data.param.ConfigStore;
@@ -47,6 +45,7 @@ public interface UpdateInterceptor extends DMInterceptor{
      * @return RESULT
      */
     default SWITCH before(DataRuntime runtime, String random, Run run, Table dest, Object data, ConfigStore configs, List<String> columns) { return SWITCH.CONTINUE;}
+
     /**
      * 合计总数之前调用，到这一步SQL已创建完成
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端

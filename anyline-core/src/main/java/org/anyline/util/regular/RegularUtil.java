@@ -14,9 +14,6 @@
  * limitations under the License.
  */
 
-
-
-
 package org.anyline.util.regular;
 
 import org.apache.oro.text.regex.*;
@@ -388,7 +385,6 @@ public class RegularUtil {
 	 * @param tags  tags
 	 * @return String
 	 */
-
 	public static String removeTagExcept(String src, String ...tags) {
 		if(null == src || null == tags || tags.length == 0) {
 			return src;

@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.service;
 
 import org.anyline.dao.AnylineDao;
@@ -175,7 +173,6 @@ public interface AnylineService<E>{
 		return insert(dest, data, configs, BeanUtil.array2list(columns));
 	}
 
-
 	/* *****************************************************************************************************************
 	 * 													INSERT SELECT
 	 ******************************************************************************************************************/
@@ -231,7 +228,6 @@ public interface AnylineService<E>{
 		return insert(dest, origin, first, last, null, conditions);
 	}
 
-
 	/**
 	 * insert into table select * from table
 	 * 复杂的查询先通过TableBuilder构造查询
@@ -267,7 +263,6 @@ public interface AnylineService<E>{
 		return insert(dest, prepare, first, last, null, conditions);
 	}
 
-
 	default long insert(String dest, RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions){
 		return insert(new Table<>(dest), prepare, configs, obj, conditions);
 	}
@@ -291,7 +286,6 @@ public interface AnylineService<E>{
 	default long insert(String dest, RunPrepare prepare, long first, long last, String ... conditions) {
 		return insert(dest, prepare, first, last, null, conditions);
 	}
-
 
 	/* *****************************************************************************************************************
 	 * 													UPDATE
@@ -2032,7 +2026,6 @@ public interface AnylineService<E>{
 			return tables(Table.TYPE.NORMAL.value, false, configs);
 		}
 
-
 		default <T extends Table> List<T> tables(boolean greedy, Catalog catalog, Schema schema, String name, int types, ConfigStore configs) {
 			return tables(greedy, catalog, schema, name, types, false, configs);
 		}
@@ -2431,8 +2424,6 @@ public interface AnylineService<E>{
 			return ddl(view, false);
 		}
 
-
-
 		/* *****************************************************************************************************************
 		 * 													master table
 		 ******************************************************************************************************************/
@@ -2557,7 +2548,6 @@ public interface AnylineService<E>{
 		default <T extends MasterTable> LinkedHashMap<String, T> masters(ConfigStore configs) {
 			return masters(MasterTable.TYPE.NORMAL.value, false, configs);
 		}
-
 
 		default <T extends MasterTable> List<T> masters(boolean greedy, Catalog catalog, Schema schema, String name, int types, ConfigStore configs) {
 			return masters(greedy, catalog, schema, name, types, false, configs);
@@ -3068,7 +3058,6 @@ public interface AnylineService<E>{
 			return ddl(vertex, false);
 		}
 
-
 		/* *************************************************************************************************************
 		 * 													EdgeTable
 		 **************************************************************************************************************/
@@ -3328,7 +3317,6 @@ public interface AnylineService<E>{
 		default List<String> ddl(EdgeTable edge) {
 			return ddl(edge, false);
 		}
-
 
 		/* *****************************************************************************************************************
 		 * 													column
@@ -4070,15 +4058,12 @@ public interface AnylineService<E>{
 		 */
 		boolean rename(Role origin, Role update) throws Exception;
 
-
 		/**
 		 * 删除角色
 		 * @param role 角色
 		 * @return boolean
 		 */
 		boolean delete(Role role) throws Exception;
-
-
 
 		/* *****************************************************************************************************************
 		 * 													user

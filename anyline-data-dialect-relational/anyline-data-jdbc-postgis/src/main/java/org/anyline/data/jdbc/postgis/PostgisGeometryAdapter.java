@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.data.jdbc.postgis;
 
 import org.postgis.*;
@@ -54,6 +52,7 @@ public class PostgisGeometryAdapter {
         }
         return result;
     }
+
     /**
      * 点
      * @param input PG原生point
@@ -83,7 +82,6 @@ public class PostgisGeometryAdapter {
     public static Object parsePGgeometryLW(PGgeometryLW input) {
         return input;
     }
-
 
     public static Object parsePGbox3d(PGbox3d input) {
         return input;

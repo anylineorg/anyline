@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.metadata.differ;
 
 import org.anyline.metadata.Table;
@@ -36,6 +34,7 @@ public class TableDiffer extends AbstractDiffer {
         this.origin = origin;
         this.dest = dest;
     }
+
     @Override
     public MetadataDiffer setDirect(DIRECT direct) {
         if(direct == DIRECT.ORIGIN){

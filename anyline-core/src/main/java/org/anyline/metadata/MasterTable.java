@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.metadata;
 
 import org.anyline.entity.DataRow;
@@ -97,6 +95,7 @@ public class MasterTable extends Table<MasterTable> implements Serializable {
         Table table = null;
         return table;
     }
+
     /**
      * 根据标签定位分区表
      * @param tags tags

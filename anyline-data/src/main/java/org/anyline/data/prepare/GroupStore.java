@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.data.prepare;
  
 import java.util.List;
@@ -37,5 +35,4 @@ public interface GroupStore extends Cloneable{
 	boolean isEmpty();
 	GroupStore clone();
 
-
-} 
+}

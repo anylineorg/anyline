@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.metadata;
 
 import org.anyline.entity.PageNavi;
@@ -99,7 +97,6 @@ public class Procedure extends Metadata<Procedure> implements Serializable {
 	 * @param type	类型 type	类型
 	 * @return Procedure
 	 */
-
 	public Procedure regOutput(Object value, Integer type) {
 		Parameter param = new Parameter();
 		param.setValue(value);

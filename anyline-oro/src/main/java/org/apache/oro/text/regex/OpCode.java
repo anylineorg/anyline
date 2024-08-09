@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 /*
  * $Id: OpCode.java,v 1.11 2003/11/07 20:16:25 dfs Exp $
  *

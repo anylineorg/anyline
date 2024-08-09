@@ -41,7 +41,6 @@ public class ElasticSearchRun extends TableRun implements Run {
         super(runtime, table);
     }
 
-
     public String getMethod() {
         return method;
     }
@@ -61,6 +60,7 @@ public class ElasticSearchRun extends TableRun implements Run {
         //不检测更新条件 直接POST
         return false;
     }
+
     @Override
     public String format(String cmd) {
         //不要删除换行命令中有要求
@@ -102,6 +102,7 @@ public class ElasticSearchRun extends TableRun implements Run {
         }
         return builder.toString();
     }
+
     @Override
     public boolean isEmpty(){
         if(null != endpoint){

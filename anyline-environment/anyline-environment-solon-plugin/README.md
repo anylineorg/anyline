@@ -29,11 +29,9 @@ solon-data数据扩展插件,提供基于AnyLine[【官网】](http://www.anylin
   编码时甚至不知道数据源是什么名、是什么类型的数据库  
   所以遇到动态数据源时传统的注释切换数据源、注解事务全部失效
 
-
 * ##### 结果集处理  
   虽然没有了VO/PO/DTO等各种实体类  
   但anyline提供了更灵活的动态结构用来实现结果集的二次操作
-
 
 #### 3、示例
 ##### 数据源注册及切换
@@ -150,8 +148,6 @@ TransactionProxy.rollback(state);
 有些情况下从数据库中查出结果集后还需要经过多次过滤，用来避免多次查询给数据库造成不必要的压力  
 DataSet类似sql的查询  
 DataSet result = set.select.equals("AGE","20")的方式调用
-
-
 
 **具体可参考：**  
 [源码](https://gitee.com/anyline/anyline)  

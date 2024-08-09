@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.bean.init;
 
 import org.anyline.bean.BeanDefine;
@@ -107,6 +105,7 @@ public class DefaultBeanDefine implements BeanDefine {
         values.put(name, value);
         return this;
     }
+
     @Override
     public BeanDefine addReferenceValue(String name, String value) {
         values.put(name, new DefaultValueReference(value));

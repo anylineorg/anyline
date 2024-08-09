@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.data.runtime;
 
 import org.anyline.data.adapter.DriverAdapter;
@@ -49,7 +47,6 @@ public interface DataRuntime {
     }
 
     void setFeature(String feature) ;
-
 
     /**
      * 返回最后一次检测的数据库特征

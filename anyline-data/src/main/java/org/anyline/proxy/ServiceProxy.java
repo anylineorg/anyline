@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.proxy;
 
 import org.anyline.adapter.EnvironmentWorker;
@@ -235,8 +233,6 @@ public class ServiceProxy {
         return insert(dest, data, configs, BeanUtil.array2list(columns));
     }
 
-
-
     /* *****************************************************************************************************************
      * 													INSERT SELECT
      ******************************************************************************************************************/
@@ -294,7 +290,6 @@ public class ServiceProxy {
         return service.insert(dest, origin, first, last, conditions);
     }
 
-
     /**
      * insert into table select * from table
      * 复杂的查询先通过TableBuilder构造查询
@@ -325,7 +320,6 @@ public class ServiceProxy {
         return service.insert(dest, prepare, first, last,  conditions);
     }
 
-
     public static long insert(String dest, RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions){
         return service.insert(dest, prepare, configs, obj, conditions);
     }
@@ -348,7 +342,6 @@ public class ServiceProxy {
     public static long insert(String dest, RunPrepare prepare, long first, long last, String ... conditions) {
         return service.insert(dest, prepare, first, last, conditions);
     }
-
 
     /* *****************************************************************************************************************
      * 													UPDATE
@@ -750,6 +743,7 @@ public class ServiceProxy {
     public static <T> T select(Table dest, Class<T> clazz, String ... conditions) {
         return (T)service.select(dest, clazz, conditions);
     }
+
     /**
      *
      * @param clazz 返回类型
@@ -1062,6 +1056,7 @@ public class ServiceProxy {
     public static boolean removeCache(String channel, Table dest, long first, long last, String ... conditions) {
         return service.removeCache(channel, dest, first, last, conditions);
     }
+
     /**
      * 清空缓存
      * @param channel channel
@@ -1145,7 +1140,6 @@ public class ServiceProxy {
         return service.count(dest, conditions);
     }
 
-
     public static long count(RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions){
         return service.count(prepare, configs, obj, conditions);
     }
@@ -1158,7 +1152,6 @@ public class ServiceProxy {
     public static long count(RunPrepare prepare, String ... conditions) {
         return count(prepare, null, null, conditions);
     }
-
 
     /* *****************************************************************************************************************
      * 													EXECUTE
@@ -1182,6 +1175,7 @@ public class ServiceProxy {
     public static int[] execute(String txt, boolean brk) {
         return service.execute(txt, brk);
     }
+
     /**
      * 执行
      * @param dest  查询或操作的目标(表、存储过程、SQL等)
@@ -1195,6 +1189,7 @@ public class ServiceProxy {
     public static long execute(String dest, String ... conditions) {
         return service.execute(dest, conditions);
     }
+
     /**
      * 执行存储过程
      * @param procedure  procedure
@@ -1208,8 +1203,6 @@ public class ServiceProxy {
         return service.execute(procedure, inputs);
     }
 
-
-
     /**
      * 执行命令<br/>
      * execute(10, sql, List&lt;List&lt;Object&gt;&gt;);<br/>
@@ -1222,6 +1215,7 @@ public class ServiceProxy {
     public static long execute(int batch, String sql, Collection<Object> values){
         return service.execute(batch, sql, values);
     }
+
     /**
      * 执行命令<br/>
      * execute(10, sql, List&lt;List&lt;Object&gt;&gt;);<br/>
@@ -1235,6 +1229,7 @@ public class ServiceProxy {
     public static long execute(int batch, int vol, String sql, Collection<Object> values){
         return service.execute(batch, vol, sql, values);
     }
+
     /**
      * 根据存储过程查询
      * @param procedure  procedure
@@ -1288,6 +1283,7 @@ public class ServiceProxy {
     public static long delete(Table dest, ConfigStore configs, String ... conditions) {
         return service().delete(dest, configs, conditions);
     }
+
     /**
      * 删除 根据columns列删除 可设置复合主键
      * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
@@ -1340,6 +1336,7 @@ public class ServiceProxy {
     public static long delete(String table, Collection values){
         return service.delete(table, values);
     }
+
     /**
      * 根据一列的多个值删除多行
      * @param table 表
@@ -1442,6 +1439,7 @@ public class ServiceProxy {
     public static List<String> tags(Catalog catalog, Schema schema, String table) {
         return service.tags(catalog, schema, table);
     }
+
     /**
      * 根据差异生成SQL
      * @param differ differ
@@ -1450,6 +1448,7 @@ public class ServiceProxy {
     public static List<Run> ddl(MetadataDiffer differ) {
         return service.ddl(differ);
     }
+
     /**
      * 根据差异生成SQL
      * @param differs differs
@@ -1458,7 +1457,6 @@ public class ServiceProxy {
     public static List<Run> ddl(List<MetadataDiffer> differs) {
         return service.ddl(differs);
     }
-
 
     /**
      * 根据结果集对象获取列结构, 如果有表名应该调用metadata().columns(table);或metadata().table(table).getColumns()

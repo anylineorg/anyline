@@ -69,6 +69,7 @@ public class InfluxConfigStore extends DefaultConfigStore {
     public String measurement(){
         return measurement;
     }
+
     @Override
     public boolean isEmptyCondition() {
         if(null != chain && !chain.isEmpty()) {

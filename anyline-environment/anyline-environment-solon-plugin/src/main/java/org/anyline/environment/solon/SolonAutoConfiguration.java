@@ -14,10 +14,7 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.environment.solon;
-
 
 import org.anyline.adapter.EntityAdapter;
 import org.anyline.adapter.init.DefaultEntityAdapter;

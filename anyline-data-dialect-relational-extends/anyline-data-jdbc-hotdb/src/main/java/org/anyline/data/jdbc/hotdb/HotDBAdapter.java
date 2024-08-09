@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.data.jdbc.hotdb;
 
 import org.anyline.annotation.Component;

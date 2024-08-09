@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.data.jdbc.cassandra;
 
 import org.anyline.annotation.Component;
@@ -35,7 +33,6 @@ import org.anyline.metadata.type.DatabaseType;
 
 import java.util.LinkedHashMap;
 import java.util.List;
-
 
 @Component("anyline.data.jdbc.adapter.cassandra")
 public class CassandraAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
@@ -89,7 +86,6 @@ public class CassandraAdapter extends AbstractJDBCAdapter implements JDBCAdapter
         sql = compressCondition(runtime, sql);
         return sql;
     }
-
 
     @Override
     public <T extends Database> LinkedHashMap<String, T> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Database query, DataSet set) throws Exception {

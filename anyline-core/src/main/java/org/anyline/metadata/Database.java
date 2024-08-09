@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.metadata;
 
 import java.io.Serializable;
@@ -69,7 +67,6 @@ public class Database extends Metadata<Database> implements Serializable {
     public String getKeyword() {
         return this.keyword;
     }
-
 
     public void setUser(String user) {
         this.user = user;

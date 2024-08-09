@@ -14,9 +14,6 @@
  * limitations under the License.
  */
 
-
-
-
 package org.anyline.util;
  
 import java.io.ByteArrayOutputStream; 
@@ -37,6 +34,7 @@ public class Base64Util {
     public static String encode(String src) throws Exception {
         return encode(src, "UTF-8");
     }
+
     /**
      * 将字节数组编码为字符串
      *

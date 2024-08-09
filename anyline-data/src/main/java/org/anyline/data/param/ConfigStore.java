@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.data.param;
 
 import org.anyline.adapter.KeyAdapter;
 import org.anyline.data.handler.DataHandler;
+import org.anyline.data.prepare.Condition;
 import org.anyline.data.prepare.Group;
 import org.anyline.data.prepare.GroupStore;
 import org.anyline.data.run.Run;
@@ -112,9 +111,9 @@ public interface ConfigStore extends Cloneable{
 	 * @return this
 	 */
 
-	ConfigStore setJoin(String type);
+	ConfigStore setJoin(Condition.JOIN type);
 
-	String getJoin();
+	Condition.JOIN getJoin();
 
 	/**
 	 * 查询或操作的目标(表,存储过程,sql等)
@@ -143,7 +142,6 @@ public interface ConfigStore extends Cloneable{
 	 */
 	ConfigStore handler(DataHandler handler);
 	DataHandler handler();
-
 
 	ConfigStore entityClass(Class clazz);
 	Class entityClass();
@@ -731,9 +729,6 @@ public interface ConfigStore extends Cloneable{
 		return and(Compare.LIKE, var, value);
 	}
 
-
-
-
 	default ConfigStore match(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(swt, Compare.MATCH, id, var, value, overCondition, overValue);
 	}
@@ -749,9 +744,6 @@ public interface ConfigStore extends Cloneable{
 	default ConfigStore match(String var, Object value) {
 		return and(Compare.MATCH, var, value);
 	}
-
-
-
 
 	default ConfigStore likePrefix(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(swt, Compare.START_WITH, id, var, value, overCondition, overValue);
@@ -817,7 +809,6 @@ public interface ConfigStore extends Cloneable{
 		return and(Compare.END_WITH, var, value);
 	}
 
-
 	default ConfigStore regex(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(swt, Compare.REGEX, id, var, value, overCondition, overValue);
 	}
@@ -833,7 +824,6 @@ public interface ConfigStore extends Cloneable{
 	default ConfigStore regex(String var, Object value) {
 		return and(Compare.REGEX, var, value);
 	}
-
 
 	default ConfigStore findInSet(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(swt, Compare.FIND_IN_SET, id, var, value, overCondition, overValue);
@@ -946,7 +936,6 @@ public interface ConfigStore extends Cloneable{
 	default ConfigStore between(String var, Object min, Object max) {
 		return and(Compare.BETWEEN, var, Arrays.asList(min,max));
 	}
-
 
 	default ConfigStore ne(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(swt, Compare.NOT_EQUAL, id, var, value, overCondition, overValue);

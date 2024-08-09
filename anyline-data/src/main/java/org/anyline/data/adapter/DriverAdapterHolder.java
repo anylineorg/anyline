@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.data.adapter;
 
 import org.anyline.data.datasource.DataSourceMonitor;
@@ -49,7 +47,6 @@ public class DriverAdapterHolder {
 	public static DataSourceMonitor getMonitor() {
 		return monitor;
 	}
-
 
 	/**
 	 * 同一个数据源是否保持同一个adapter<br/>

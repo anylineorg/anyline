@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.data.nebula.runtime;
 
 import com.vesoft.nebula.client.graph.SessionPool;
@@ -28,7 +26,6 @@ public class NebulaRuntime extends AbstractRuntime implements DataRuntime {
     protected SessionPool pool;
     public NebulaRuntime() {
     }
-
 
     public void setProcessor(Object processor) {
         if(processor instanceof SessionPool) {

@@ -14,9 +14,6 @@
  * limitations under the License.
  */
 
-
-
-
 package org.anyline.data.elasticsearch.datasource;
 
 import org.anyline.annotation.Component;
@@ -97,20 +94,18 @@ public class ElasticSearchDataSourceHolder extends AbstractDataSourceHolder impl
 		return null;
 	}
 
-
-/**
+	/**
 	 * 根据params创建数据源, 同时注入到spring上下文
 	 * @param key 调用或注销数据源时需要用到  如ServiceProxy.service(key)
 	 * @param params 帐号密码等参数
 	 * @return bean.id
 	 * @throws Exception Exception
 	 */
-
 	public String inject(String key, Map params, boolean over) throws Exception {
 		return inject(key, null, params, over);
 	}
 
-/**
+	/**
 	 * 根据params与配置文件创建数据源, 同时注入到spring上下文
 	 * @param key 调用或注销数据源时需要用到  如ServiceProxy.service(“sso”)
 	 * @param prefix 配置文件前缀 如 anyline.datasource.sso
@@ -119,7 +114,6 @@ public class ElasticSearchDataSourceHolder extends AbstractDataSourceHolder impl
 	 * @return bean.di
 	 * @throws Exception Exception
 	 */
-
 	public String inject(String key, String prefix, Map<String, Object> params, boolean override) throws Exception {
 		DataSourceHolder.check(key, override);
 		String datasource_id = DataRuntime.ANYLINE_DATASOURCE_BEAN_PREFIX + key;
@@ -216,7 +210,6 @@ public class ElasticSearchDataSourceHolder extends AbstractDataSourceHolder impl
 		return datasource_id;
 	}
 
-
 	@Override
 	public String create(String key, DatabaseType type, String url, String user, String password) throws Exception {
 		return null;
@@ -227,13 +220,11 @@ public class ElasticSearchDataSourceHolder extends AbstractDataSourceHolder impl
 		return reg(key, prefix);
 	}
 
-
 	/**
 	 * 检测数据源是否连接正常
 	 * @param ds 数据源名称
 	 * @return boolean
 	 */
-
 	public boolean validate(String ds) {
 		return validate(RuntimeHolder.runtime(ds));
 	}
@@ -303,7 +294,7 @@ public class ElasticSearchDataSourceHolder extends AbstractDataSourceHolder impl
 		return httpAsyncClientBuilder;
 	}
 
-/**
+	/**
 	 * 配置长连接保持策略
 	 *
 	 * @return ConnectionKeepAliveStrategy

@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.data.nebula.adapter;
 
 import com.vesoft.nebula.Vertex;
@@ -52,6 +50,7 @@ public class NebulaActuator implements DriverActuator {
     protected SessionPool session(DataRuntime runtime) {
         return ((NebulaRuntime)runtime).session();
     }
+
     @Override
     public DataSource getDataSource(DriverAdapter adapter, DataRuntime runtime) {
         return null;
@@ -222,8 +221,6 @@ public class NebulaActuator implements DriverActuator {
         return set;
     }
 
-
-
     @Override
     public List<Map<String, Object>> maps(DriverAdapter adapter, DataRuntime runtime, String random, ConfigStore configs, Run run) throws Exception {
         return null;
@@ -261,8 +258,6 @@ public class NebulaActuator implements DriverActuator {
         //不返回影响行数
         return 0;
     }
-
-    
 
     @Override
     public long execute(DriverAdapter adapter, DataRuntime runtime, String random, ConfigStore configs, Run run) throws Exception {

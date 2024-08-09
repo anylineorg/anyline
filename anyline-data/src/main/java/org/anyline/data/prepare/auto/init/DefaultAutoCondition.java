@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.data.prepare.auto.init;
 
 import org.anyline.data.adapter.DriverAdapter;
@@ -395,8 +393,11 @@ public class DefaultAutoCondition extends AbstractCondition implements AutoCondi
 		return this;
 	}
 	public String toString() {
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("join", this.getJoin());
+		Map<String, Object> map = new HashMap<>();
+		Condition.JOIN join = getJoin();
+		if(null != join) {
+			map.put("join", join);
+		}
 		map.put("column", column);
 		map.put("compare", compare.getName());
 		map.put("values", values);

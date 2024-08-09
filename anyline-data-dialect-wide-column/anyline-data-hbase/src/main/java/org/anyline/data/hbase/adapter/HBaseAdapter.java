@@ -1,5 +1,6 @@
 package org.anyline.data.hbase.adapter;
 
+import org.anyline.annotation.Component;
 import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.adapter.init.AbstractDriverAdapter;
 import org.anyline.data.prepare.RunPrepare;
@@ -11,6 +12,7 @@ import org.anyline.metadata.type.DatabaseType;
 
 import java.util.LinkedHashMap;
 
+@Component("anyline.data.adapter.hbase")
 public class HBaseAdapter extends AbstractDriverAdapter implements DriverAdapter {
     @Override
     public DatabaseType type() {

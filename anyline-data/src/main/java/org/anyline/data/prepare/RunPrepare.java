@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.data.prepare;
 
 import org.anyline.data.param.ConfigStore;
@@ -226,7 +224,6 @@ public interface RunPrepare extends Cloneable {
 	void setBatch(int batch);
 	int getBatch();
 
-
 	ConfigStore condition();
 	RunPrepare condition(ConfigStore configs);
 	RunPrepare setUnionAll(boolean all);
@@ -259,5 +256,4 @@ public interface RunPrepare extends Cloneable {
 	}
 	Run build(DataRuntime runtime);
 
-
-} 
+}

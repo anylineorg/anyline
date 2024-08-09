@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.data.influxdb.runtime;
 
 import com.influxdb.client.InfluxDBClient;

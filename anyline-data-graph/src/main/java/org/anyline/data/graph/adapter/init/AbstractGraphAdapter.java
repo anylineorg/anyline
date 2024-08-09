@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.data.graph.adapter.init;
 
 import org.anyline.data.adapter.init.AbstractDriverAdapter;
@@ -56,6 +54,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
     public AbstractGraphAdapter() {
         super();
     }
+
     @Override
     public DatabaseType type() {
         return DatabaseType.COMMON;
@@ -79,10 +78,12 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
         types.put(Metadata.TYPE.TABLE, "BASE TABLE");
         types.put(Metadata.TYPE.VIEW, "VIEW");
     }
+
     @Override
     public String name(Type type) {
         return types.get(type);
     }
+
     /**
      * 验证运行环境与当前适配器是否匹配<br/>
      * 默认不连接只根据连接参数<br/>
@@ -598,14 +599,17 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
     public Run buildUpdateRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, List<String> columns) {
         return super.buildUpdateRun(runtime, batch, dest, obj, configs, columns);
     }
+
     @Override
     public Run buildUpdateRunFromEntity(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, LinkedHashMap<String, Column> columns) {
         return super.buildUpdateRunFromEntity(runtime, dest, obj, configs, columns);
     }
+
     @Override
     public Run buildUpdateRunFromDataRow(DataRuntime runtime, Table dest, DataRow row, ConfigStore configs, LinkedHashMap<String, Column> columns) {
         return super.buildUpdateRunFromDataRow(runtime, dest, row, configs, columns);
     }
+
     @Override
     public Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns) {
         return super.buildUpdateRunFromCollection(runtime, batch, dest, list, configs, columns);
@@ -652,6 +656,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
     public LinkedHashMap<String, Column> confirmUpdateColumns(DataRuntime runtime, Table dest, DataRow row, ConfigStore configs, List<String> columns) {
         return super.confirmUpdateColumns(runtime, dest, row, configs, columns);
     }
+
     @Override
     public LinkedHashMap<String, Column> confirmUpdateColumns(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns) {
         return super.confirmUpdateColumns(runtime, dest, obj, configs, columns);
@@ -788,14 +793,17 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
     protected long saveCollection(DataRuntime runtime, String random, Table dest, Collection<?> data, ConfigStore configs, List<String> columns) {
         return super.saveCollection(runtime, random, dest, data, configs, columns);
     }
+
     @Override
     protected long saveObject(DataRuntime runtime, String random, Table dest, Object data, ConfigStore configs, List<String> columns) {
         return super.saveObject(runtime, random, dest, data, configs, columns);
     }
+
     @Override
     protected Boolean checkOverride(Object obj) {
         return super.checkOverride(obj);
     }
+
     @Override
     protected Map<String, Object> checkPv(Object obj) {
         return super.checkPv(obj);
@@ -811,6 +819,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
     protected boolean isMultipleValue(DataRuntime runtime, TableRun run, String key) {
         return super.isMultipleValue(runtime, run, key);
     }
+
     @Override
     protected boolean isMultipleValue(Column column) {
         return super.isMultipleValue(column);
@@ -1024,14 +1033,17 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
     public Run fillQueryContent(DataRuntime runtime, Run run) {
         return super.fillQueryContent(runtime, run);
     }
+
     @Override
     protected Run fillQueryContent(DataRuntime runtime, XMLRun run) {
         return super.fillQueryContent(runtime, run);
     }
+
     @Override
     protected Run fillQueryContent(DataRuntime runtime, TextRun run) {
         return super.fillQueryContent(runtime, run);
     }
+
     @Override
     protected Run fillQueryContent(DataRuntime runtime, TableRun run) {
         StringBuilder builder = run.getBuilder();
@@ -1140,6 +1152,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
         run.appendGroup();
         return run;
     }
+
     /**
      * select[命令合成-子流程] <br/>
      * 合成最终 select 命令 包含分页 排序
@@ -1578,6 +1591,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
         }
         return result;
     }
+
     @Override
     public String mergeFinalExists(DataRuntime runtime, Run run) {
         String sql = "SELECT EXISTS(\n" + run.getBuilder().toString() +"\n)  IS_EXISTS";
@@ -1713,14 +1727,17 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
     public Run buildExecuteRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions) {
         return super.buildExecuteRun(runtime, prepare, configs, conditions);
     }
+
     @Override
     protected void fillExecuteContent(DataRuntime runtime, XMLRun run) {
         super.fillExecuteContent(runtime, run);
     }
+
     @Override
     protected void fillExecuteContent(DataRuntime runtime, TextRun run) {
         super.fillExecuteContent(runtime, run);
     }
+
     @Override
     protected void fillExecuteContent(DataRuntime runtime, TableRun run) {
         super.fillExecuteContent(runtime, run);
@@ -2255,6 +2272,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
     public List<Run> buildQueryDatabasesRun(DataRuntime runtime, boolean greedy, Database query) throws Exception {
         return super.buildQueryDatabasesRun(runtime, greedy, query);
     }
+
     /**
      * database[结果集封装]<br/>
      * database 属性与结果集对应关系
@@ -2279,6 +2297,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
     public <T extends Database> LinkedHashMap<String, T> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Database query, DataSet set) throws Exception {
         return super.databases(runtime, index, create, previous, query, set);
     }
+
     @Override
     public <T extends Database> List<T> databases(DataRuntime runtime, int index, boolean create, List<T> previous, Database query, DataSet set) throws Exception {
         return super.databases(runtime, index, create, previous, query, set);
@@ -2575,6 +2594,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
     public MetadataFieldRefer initSchemaFieldRefer() {
         return super.initSchemaFieldRefer();
     }
+
     /**
      * schema[结果集封装]<br/>
      * 根据查询结果集构造 Database
@@ -2590,6 +2610,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
     public <T extends Schema> LinkedHashMap<String, T> schemas(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Schema query, DataSet set) throws Exception {
         return super.schemas(runtime, index, create, previous, query, set);
     }
+
     @Override
     public <T extends Schema> List<T> schemas(DataRuntime runtime, int index, boolean create, List<T> previous, Schema query, DataSet set) throws Exception {
         return super.schemas(runtime, index, create, previous, query, set);
@@ -3049,6 +3070,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
     public <T extends VertexTable> T init(DataRuntime runtime, int index, T meta, VertexTable query, DataRow row) {
         return init(runtime, index, meta, query, row);
     }
+
     /**
      * vertex[结果集封装]<br/>
      * 根据查询结果封装VertexTable对象,更多属性
@@ -3062,6 +3084,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
     public <T extends VertexTable> T detail(DataRuntime runtime, int index, T meta, VertexTable query, DataRow row) {
         return detail(runtime, index, meta, query, row);
     }
+
     /**
      *
      * vertex[调用入口]<br/>
@@ -3255,6 +3278,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
     public <T extends EdgeTable> T init(DataRuntime runtime, int index, T meta, EdgeTable query, DataRow row) {
         return super.init(runtime, index, meta, query, row);
     }
+
     /**
      * edge[结果集封装]<br/>
      * 根据查询结果封装EdgeTable对象,更多属性
@@ -3268,6 +3292,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
     public <T extends EdgeTable> T detail(DataRuntime runtime, int index, T meta, EdgeTable query, DataRow row) {
         return super.detail(runtime, index, meta, query, row);
     }
+
     /**
      *
      * edge[调用入口]<br/>
@@ -3364,6 +3389,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
     public MetadataFieldRefer initMasterTableFieldRefer() {
         return super.initMasterTableFieldRefer();
     }
+
     /**
      * master table[结果集封装]<br/>
      * 根据查询结果集构造Table
@@ -3480,7 +3506,6 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
         return super.buildQueryPartitionTablesRun(runtime, greedy, query, types);
     }
 
-
     /**
      * partition table[结果集封装]<br/>
      * 根据查询结果集构造Table
@@ -3580,8 +3605,6 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
         return super.columns(runtime, random, greedy, table, query, primary, configs);
     }
 
-
-
     /**
      * column[命令合成]<br/>(方法1)<br/>
      * 查询多个表的列
@@ -3595,6 +3618,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
     public List<Run> buildQueryColumnsRun(DataRuntime runtime, boolean metadata, Collection<? extends Table> tables, Column query, ConfigStore configs) throws Exception {
         return super.buildQueryColumnsRun(runtime, metadata, tables, query, configs);
     }
+
     /**
      * column[结果集封装]<br/>
      *  根据查询结果集构造Tag
@@ -3611,6 +3635,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
     public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Table table, Column query, DataSet set) throws Exception {
         return super.columns(runtime, index, create, previous, table, query, set);
     }
+
     @Override
     public <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, List<T> previous, Column query, DataSet set) throws Exception {
         return super.columns(runtime, index, create, previous, query, set);
@@ -3632,6 +3657,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
     public <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create,  List<T> previous, Collection<? extends Table> tables, Column query, DataSet set) throws Exception {
         return super.columns(runtime, index, create, previous, query, set);
     }
+
     /**
      * column[调用入口]<br/>(方法1)<br/>
      * 查询多个表列，并分配到每个表中，需要保持所有表的catalog,schema相同
@@ -3752,6 +3778,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
     public MetadataFieldRefer initPrimaryKeyFieldRefer() {
         return super.initPrimaryKeyFieldRefer();
     }
+
     /**
      * primary[结构集封装]<br/>
      * 根据查询结果集构造PrimaryKey基础属性
@@ -3765,6 +3792,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
     public <T extends PrimaryKey> T init(DataRuntime runtime, int index, T meta, PrimaryKey query, DataSet set) throws Exception {
         return super.init(runtime, index, meta, query, set);
     }
+
     /**
      * primary[结构集封装]<br/>
      * 根据查询结果集构造PrimaryKey更多属性
@@ -3927,6 +3955,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
     public List<Run> buildQueryIndexesRun(DataRuntime runtime, boolean greedy, Index query) {
         return super.buildQueryIndexesRun(runtime, greedy, query);
     }
+
     @Override
     public List<Run> buildQueryIndexesRun(DataRuntime runtime, boolean greedy,  Collection<? extends Table> tables) {
         return super.buildQueryIndexesRun(runtime, greedy, tables);
@@ -3945,6 +3974,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
         refer.map(Index.FIELD_COLUMN, "Columns");
         return refer;
     }
+
     /**
      * index[结果集封装]<br/>
      *  根据查询结果集构造Index
@@ -4808,7 +4838,6 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	public boolean rename(DataRuntime runtime, Table origin, String name) throws Exception {
 		return super.rename(runtime, origin, name);
 	}
-
 
 	/**
 	 * table[命令合成]<br/>
@@ -6181,7 +6210,6 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 		delimiter(builder, meta.getName());
 		return runs;
 	}
-
 
 	/**
 	 * column[命令合成]<br/>
@@ -8116,6 +8144,5 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	public String concat(DataRuntime runtime, String... args) {
 		return null;
 	}
-
 
 }

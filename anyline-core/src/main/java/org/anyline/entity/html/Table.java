@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.entity.html;
 
 import org.anyline.util.BeanUtil;
@@ -167,6 +165,7 @@ public class Table {
         }
         return this;
     }
+
     /**
      * 追加行, 追加的行将复制上一行的样式(背景色、字体等)
      * @param index 位置
@@ -254,6 +253,7 @@ public class Table {
     public String build() {
         return build(true);
     }
+
     /**
      * 根据内容是否相同, 在右侧qty范围内检测需要合并的列数量
      * @param td 单元格
@@ -423,6 +423,7 @@ public class Table {
         }
         return max;
     }
+
     /**
      * 设置需要合并行的列下标
      * @param cols 依据列1, 2, 3(1, 2) 第1, 2, 3列值相同时合并行, 第3列合并的前提是第1, 2列已合并
@@ -609,6 +610,7 @@ public class Table {
         td.setTr2blBorder();
         return td;
     }
+
     /**
      * 设置左上至右下边框
      * @param rows rows
@@ -744,6 +746,7 @@ public class Table {
     public Td removeStyle(int rows, int cols) {
         return getTd(rows, cols).removeStyle();
     }
+
     /**
      * 清除背景色
      * @param rows rows
@@ -763,6 +766,7 @@ public class Table {
     public Td removeColor(int rows, int cols) {
         return getTd(rows, cols).removeColor();
     }
+
     /**
      * 粗体
      * @param rows rows
@@ -811,6 +815,7 @@ public class Table {
     public Td setDelete(int rows, int cols, boolean strike) {
         return getTd(rows, cols).setDelete();
     }
+
     /**
      * 斜体
      * @param rows rows

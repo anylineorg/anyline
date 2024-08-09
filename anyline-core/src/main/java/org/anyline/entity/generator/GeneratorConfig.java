@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.entity.generator;
 
 import java.util.HashMap;
@@ -44,6 +42,7 @@ public class GeneratorConfig {
     public void set(Map<String, PrimaryGenerator> generators) {
         GeneratorConfig.generators = generators;
     }
+
     /**
      * 设置单个表的主键生成器
      * @param table 表

@@ -14,9 +14,6 @@
  * limitations under the License.
  */
 
-
-
-
 package org.anyline.data.milvus.datasource;
 
 import io.milvus.v2.client.ConnectConfig;
@@ -70,20 +67,18 @@ public class MilvusDataSourceHolder extends AbstractDataSourceHolder implements 
 		return null;
 	}
 
-
-/**
+	/**
 	 * 根据params创建数据源, 同时注入到spring上下文
 	 * @param key 调用或注销数据源时需要用到  如ServiceProxy.service(key)
 	 * @param params 帐号密码等参数
 	 * @return bean.id
 	 * @throws Exception Exception
 	 */
-
 	public String inject(String key, Map params, boolean over) throws Exception {
 		return inject(key, null, params, over);
 	}
 
-/**
+	/**
 	 * 根据params与配置文件创建数据源, 同时注入到spring上下文
 	 * @param key 调用或注销数据源时需要用到  如ServiceProxy.service(“sso”)
 	 * @param prefix 配置文件前缀 如 anyline.datasource.sso
@@ -92,7 +87,6 @@ public class MilvusDataSourceHolder extends AbstractDataSourceHolder implements 
 	 * @return bean.di
 	 * @throws Exception Exception
 	 */
-
 	public String inject(String key, String prefix, Map<String, Object> params, boolean override) throws Exception {
 		DataSourceHolder.check(key, override);
 		String datasource_id = DataRuntime.ANYLINE_DATASOURCE_BEAN_PREFIX + key;
@@ -139,7 +133,6 @@ public class MilvusDataSourceHolder extends AbstractDataSourceHolder implements 
 		return datasource_id;
 	}
 
-
 	@Override
 	public String create(String key, DatabaseType type, String url, String user, String password) throws Exception {
 		return null;
@@ -155,7 +148,6 @@ public class MilvusDataSourceHolder extends AbstractDataSourceHolder implements 
 	 * @param ds 数据源名称
 	 * @return boolean
 	 */
-
 	public boolean validate(String ds) {
 		return validate(RuntimeHolder.runtime(ds));
 	}

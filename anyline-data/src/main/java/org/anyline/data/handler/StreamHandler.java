@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.data.handler;
 
 public interface StreamHandler extends DataHandler {
@@ -30,6 +28,7 @@ public interface StreamHandler extends DataHandler {
      * @param handler ConnectionHandler
      */
     default void handler(ConnectionHandler handler) {}
+
     /**
      * read(ResultSet result)之后 是否保存ResultSet连接状态，如果保持则需要在项目中调用ConnectionHandler释放连接
      * @return boolean

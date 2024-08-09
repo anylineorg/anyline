@@ -16,7 +16,6 @@
 
  
 
-
 package org.anyline.data.jdbc.gaussdb;
 
 import org.anyline.annotation.Component;
@@ -49,7 +48,6 @@ public class GaussDBAdapter extends PostgresGenusAdapter implements JDBCAdapter 
     public DatabaseType type() {
         return DatabaseType.GaussDB100;
     }
-
 
     private String delimiter;
 
@@ -360,14 +358,17 @@ public class GaussDBAdapter extends PostgresGenusAdapter implements JDBCAdapter 
     public Run buildUpdateRun(DataRuntime runtime, int batch, String dest, Object obj, ConfigStore configs, List<String> columns) {
         return super.buildUpdateRun(runtime, batch, dest, obj, configs, columns);
     }
+
     @Override
     public Run buildUpdateRunFromEntity(DataRuntime runtime, String dest, Object obj, ConfigStore configs, LinkedHashMap<String, Column> columns) {
         return super.buildUpdateRunFromEntity(runtime, dest, obj, configs, columns);
     }
+
     @Override
     public Run buildUpdateRunFromDataRow(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, LinkedHashMap<String, Column> columns) {
         return super.buildUpdateRunFromDataRow(runtime, dest, row, configs, columns);
     }
+
     @Override
     public Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns) {
         return super.buildUpdateRunFromCollection(runtime, batch, dest, list, configs, columns);
@@ -399,6 +400,7 @@ public class GaussDBAdapter extends PostgresGenusAdapter implements JDBCAdapter 
     public LinkedHashMap<String, Column> confirmUpdateColumns(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, List<String> columns) {
         return super.confirmUpdateColumns(runtime, dest, row, configs, columns);
     }
+
     @Override
     public LinkedHashMap<String, Column> confirmUpdateColumns(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns) {
         return super.confirmUpdateColumns(runtime, dest, obj, configs, columns);
@@ -454,14 +456,17 @@ public class GaussDBAdapter extends PostgresGenusAdapter implements JDBCAdapter 
     protected long saveCollection(DataRuntime runtime, String random, Table dest, Collection<?> data, ConfigStore configs, List<String> columns) {
         return super.saveCollection(runtime, random, dest, data, configs, columns);
     }
+
     @Override
     protected long saveObject(DataRuntime runtime, String random, Table dest, Object data, ConfigStore configs, List<String> columns) {
         return super.saveObject(runtime, random, dest, data, configs, columns);
     }
+
     @Override
     protected Boolean checkOverride(Object obj) {
         return super.checkOverride(obj);
     }
+
     @Override
     protected Map<String, Object> checkPv(Object obj) {
         return super.checkPv(obj);
@@ -477,6 +482,7 @@ public class GaussDBAdapter extends PostgresGenusAdapter implements JDBCAdapter 
     protected boolean isMultipleValue(DataRuntime runtime, TableRun run, String key) {
         return super.isMultipleValue(runtime, run, key);
     }
+
     @Override
     protected boolean isMultipleValue(Column column) {
         return super.isMultipleValue(column);
@@ -627,14 +633,17 @@ public class GaussDBAdapter extends PostgresGenusAdapter implements JDBCAdapter 
     public Run fillQueryContent(DataRuntime runtime, Run run) {
         return super.fillQueryContent(runtime, run);
     }
+
     @Override
     protected Run fillQueryContent(DataRuntime runtime, XMLRun run) {
         return super.fillQueryContent(runtime, run);
     }
+
     @Override
     protected Run fillQueryContent(DataRuntime runtime, TextRun run) {
         return super.fillQueryContent(runtime, run);
     }
+
     @Override
     protected Run fillQueryContent(DataRuntime runtime, TableRun run) {
         return super.fillQueryContent(runtime, run);
@@ -828,6 +837,7 @@ public class GaussDBAdapter extends PostgresGenusAdapter implements JDBCAdapter 
     public boolean exists(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
         return super.exists(runtime, random, prepare, configs, conditions);
     }
+
     @Override
     public String mergeFinalExists(DataRuntime runtime, Run run) {
         return super.mergeFinalExists(runtime, run);
@@ -891,14 +901,17 @@ public class GaussDBAdapter extends PostgresGenusAdapter implements JDBCAdapter 
     public Run buildExecuteRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions) {
         return super.buildExecuteRun(runtime, prepare, configs, conditions);
     }
+
     @Override
     protected void fillExecuteContent(DataRuntime runtime, XMLRun run) {
         super.fillExecuteContent(runtime, run);
     }
+
     @Override
     protected void fillExecuteContent(DataRuntime runtime, TextRun run) {
         super.fillExecuteContent(runtime, run);
     }
+
     @Override
     protected void fillExecuteContent(DataRuntime runtime, TableRun run) {
         super.fillExecuteContent(runtime, run);
@@ -1245,6 +1258,7 @@ public class GaussDBAdapter extends PostgresGenusAdapter implements JDBCAdapter 
     public MetadataFieldRefer initDatabaseFieldRefer() {
         return super.initDatabaseFieldRefer();
     }
+
     /**
      * database[结果集封装]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -1259,6 +1273,7 @@ public class GaussDBAdapter extends PostgresGenusAdapter implements JDBCAdapter 
     public <T extends Database> LinkedHashMap<String, T> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Database query, DataSet set) throws Exception {
         return super.databases(runtime, index, create, previous, query, set);
     }
+
     @Override
     public <T extends Database> List<T> databases(DataRuntime runtime, int index, boolean create, List<T> previous, Database query, DataSet set) throws Exception {
         return super.databases(runtime, index, create, previous, query, set);
@@ -1415,6 +1430,7 @@ public class GaussDBAdapter extends PostgresGenusAdapter implements JDBCAdapter 
     public MetadataFieldRefer initCatalogFieldRefer() {
         return super.initCatalogFieldRefer();
     }
+
     /**
      * catalog[结果集封装]<br/>
      * 根据查询结果集构造 Database
@@ -1505,7 +1521,6 @@ public class GaussDBAdapter extends PostgresGenusAdapter implements JDBCAdapter 
         return super.catalog(runtime, create, meta);
     }
 
-
     /**
      * catalog[结果集封装]<br/>
      * 根据查询结果封装 catalog 对象,只封装catalog,schema,name等基础属性
@@ -1593,6 +1608,7 @@ public class GaussDBAdapter extends PostgresGenusAdapter implements JDBCAdapter 
     public MetadataFieldRefer initSchemaFieldRefer() {
         return super.initSchemaFieldRefer();
     }
+
     /**
      * schema[结果集封装]<br/>
      * 根据查询结果集构造 Database
@@ -1608,6 +1624,7 @@ public class GaussDBAdapter extends PostgresGenusAdapter implements JDBCAdapter 
     public <T extends Schema> LinkedHashMap<String, T> schemas(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Schema query, DataSet set) throws Exception {
         return super.schemas(runtime, index, create, previous, query, set);
     }
+
     @Override
     public <T extends Schema> List<T> schemas(DataRuntime runtime, int index, boolean create, List<T> previous, Schema query, DataSet set) throws Exception {
         return super.schemas(runtime, index, create, previous, query, set);
@@ -1642,7 +1659,6 @@ public class GaussDBAdapter extends PostgresGenusAdapter implements JDBCAdapter 
     public Schema schema(DataRuntime runtime, boolean create, Schema meta) throws Exception {
         return super.schema(runtime, create, meta);
     }
-
 
     /**
      * schema[结果集封装]<br/>
@@ -1750,6 +1766,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
     public MetadataFieldRefer initTableFieldRefer() {
         return super.initTableFieldRefer();
     }
+
     /**
      * table[命令合成]<br/>
      * 查询表备注
@@ -1960,6 +1977,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
     public MetadataFieldRefer initViewFieldRefer() {
         return super.initViewFieldRefer();
     }
+
     /**
      * view[结果集封装]<br/>
      *  根据查询结果集构造View
@@ -2086,6 +2104,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
     public MetadataFieldRefer initMasterTableFieldRefer() {
         return super.initMasterTableFieldRefer();
     }
+
     /**
      * master table[结果集封装]<br/>
      * 根据查询结果集构造Table
@@ -2202,7 +2221,6 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         return super.buildQueryPartitionTablesRun(runtime, greedy, query, types);
     }
 
-
     /**
      * partition table[结果集封装]<br/>
      * 根据查询结果集构造Table
@@ -2302,8 +2320,6 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         return super.columns(runtime, random, greedy, table, query, primary, configs);
     }
 
-    
-
     /**
      * column[命令合成]<br/>
      * 查询表上的列
@@ -2330,6 +2346,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
     public List<Run> buildQueryColumnsRun(DataRuntime runtime, boolean metadata, Collection<? extends Table> tables, Column query, ConfigStore configs) throws Exception {
         return super.buildQueryColumnsRun(runtime, metadata, tables, query, configs);
     }
+
     /**
      * Column[结果集封装]<br/>
      * Column 属性与结果集对应关系
@@ -2339,6 +2356,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
     public MetadataFieldRefer initColumnFieldRefer() {
         return super.initColumnFieldRefer();
     }
+
     /**
      * column[结果集封装]<br/>
      *  根据查询结果集构造Tag
@@ -2355,6 +2373,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
     public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Table table, Column query, DataSet set) throws Exception {
         return super.columns(runtime, index, create, previous, table, query, set);
     }
+
     @Override
     public <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, List<T> previous, Column query, DataSet set) throws Exception {
         return super.columns(runtime, index, create, previous, query, set);
@@ -2435,7 +2454,6 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
     public <T extends Column> T detail(DataRuntime runtime, int index, T meta, Column query, DataRow row) {
         return super.detail(runtime, index, meta, query, row);
     }
-
 
     /**
      * column[结果集封装]<br/>(方法1)<br/>
@@ -2591,6 +2609,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
     public MetadataFieldRefer initPrimaryKeyFieldRefer() {
         return super.initPrimaryKeyFieldRefer();
     }
+
     /**
      * primary[结构集封装]<br/>
      * 根据查询结果集构造PrimaryKey基础属性
@@ -2618,6 +2637,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
     public <T extends PrimaryKey> T detail(DataRuntime runtime, int index, T primary, PrimaryKey query, DataSet set) throws Exception {
         return super.detail(runtime, index, primary, query, set);
     }
+
     /**
      * primary[结构集封装]<br/>
      *  根据驱动内置接口补充PrimaryKey
@@ -2764,6 +2784,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
     public List<Run> buildQueryIndexesRun(DataRuntime runtime, boolean greedy, Index query) {
         return super.buildQueryIndexesRun(runtime, greedy, query);
     }
+
     @Override
     public List<Run> buildQueryIndexesRun(DataRuntime runtime, boolean greedy,  Collection<? extends Table> tables) {
         return super.buildQueryIndexesRun(runtime, greedy, tables);
@@ -2778,6 +2799,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
     public MetadataFieldRefer initIndexFieldRefer() {
         return super.initIndexFieldRefer();
     }
+
     /**
      * index[结果集封装]<br/>
      *  根据查询结果集构造Index
@@ -3224,6 +3246,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
     public MetadataFieldRefer initFunctionFieldRefer() {
         return super.initFunctionFieldRefer();
     }
+
     /**
      * function[结果集封装]<br/>
      * 根据查询结果集构造 Trigger
@@ -3622,8 +3645,6 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
     public boolean rename(DataRuntime runtime, Table origin, String name) throws Exception {
         return super.rename(runtime, origin, name);
     }
-
-    
 
     /**
      * table[命令合成]<br/>
@@ -6246,6 +6267,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	public <T extends Metadata> void checkSchema(DataRuntime runtime, Connection con, T meta) {
 		super.checkSchema(runtime, con, meta);
 	}
+
     /**
      * 根据运行环境识别 catalog与schema
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端

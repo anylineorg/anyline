@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.metadata;
 
 import org.anyline.exception.AnylineException;
@@ -276,6 +274,7 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
         this.distribution = distribution;
         return this;
     }
+
     /**
      * 设置分桶方式
      * @param type 分桶方式
@@ -287,6 +286,7 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
         setDistribution(new Distribution(type, buckets, columns));
         return this;
     }
+
     /**
      * 设置分桶方式
      * @param type 分桶方式
@@ -1188,6 +1188,7 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
             primaryKey.setTable((Table)null);
         }
     }
+
     /**
      * 列排序
      * @param nullFirst 未设置位置(setPosition)的列是否排在最前
@@ -1275,6 +1276,7 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
     public TableDiffer compare(Table table) {
         return compare(table, MetadataDiffer.DIRECT.ORIGIN);
     }
+
     /**
      * 分桶方式及数量
      */
@@ -1418,6 +1420,7 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
             return this;
         }
     }
+
     /**
      * 分区
      * partition by :分区方式(LIST, RANGE, HASH)及 依据列

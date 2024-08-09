@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.environment.spring.data.transaction;
 
 import org.anyline.data.transaction.TransactionDefine;
@@ -40,6 +38,7 @@ public class SpringTransactionManage extends DefaultTransactionManage implements
     public SpringTransactionManage(DataSourceTransactionManager manager) {
         this.manager = manager;
     }
+
     @Override
     public TransactionState start(TransactionDefine define) throws SQLException {
         TransactionStatus status = manager.getTransaction(definition(define));

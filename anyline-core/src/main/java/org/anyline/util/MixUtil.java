@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.util;
 
 import org.anyline.util.encrypt.MD5Util;

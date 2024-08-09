@@ -14,10 +14,7 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.data.transaction;
-
 
 import org.anyline.data.transaction.init.DefaultTransactionDefine;
 import org.slf4j.Logger;
@@ -40,7 +37,6 @@ public interface TransactionManage {
     static TransactionManage instance(String datasource) {
         return instances.get(datasource);
     }
-
 
     /**
      * 启动事务

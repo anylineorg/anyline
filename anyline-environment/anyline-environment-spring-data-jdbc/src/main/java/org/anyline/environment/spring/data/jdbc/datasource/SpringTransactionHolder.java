@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.environment.spring.data.jdbc.datasource;
 
 public class SpringTransactionHolder {/*

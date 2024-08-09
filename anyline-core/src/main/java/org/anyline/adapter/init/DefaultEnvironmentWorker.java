@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.adapter.init;
 
 import org.anyline.adapter.EnvironmentWorker;
@@ -418,6 +416,7 @@ public class DefaultEnvironmentWorker implements EnvironmentWorker {
     public <T> T getSingletonBean(String name, Class<T> clazz) {
         return getBean(name, clazz);
     }
+
     @Override
     public Object get(String key) {
         return null; //ConfigTable.get(key);递归
@@ -425,6 +424,7 @@ public class DefaultEnvironmentWorker implements EnvironmentWorker {
     public String getString(String key) {
         return ConfigTable.getString(key);
     }
+
     /**
      * 根据配置文件提取指定key的值
      * @param prefixes 前缀 多个以,分隔
@@ -509,6 +509,7 @@ public class DefaultEnvironmentWorker implements EnvironmentWorker {
         }
         return value;
     }
+
     /**
      * 根据params与配置文件创建数据源, 同时注入到spring上下文
      * @param id bean id

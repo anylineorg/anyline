@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.data.runtime;
 
 import org.anyline.data.adapter.DriverAdapter;
@@ -67,6 +65,7 @@ public interface RuntimeHolder {
     static DataRuntime runtime() {
         return runtime(null);
     }
+
     /**
      * 数据源相关的runtime
      * @param datasource 数据源

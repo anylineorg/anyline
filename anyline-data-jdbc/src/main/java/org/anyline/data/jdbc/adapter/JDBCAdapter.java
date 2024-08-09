@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.data.jdbc.adapter;
 
 import org.anyline.data.adapter.DriverAdapter;

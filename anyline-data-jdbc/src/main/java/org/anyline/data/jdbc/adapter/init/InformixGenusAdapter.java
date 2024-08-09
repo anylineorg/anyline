@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.data.jdbc.adapter.init;
 
 import org.anyline.data.param.ConfigStore;
@@ -149,6 +147,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public long insert(DataRuntime runtime, String random, int batch, Table dest, Object data, ConfigStore configs, List<String> columns) {
         return super.insert(runtime, random, batch, dest, data, configs, columns);
     }
+
     /**
      * insert [命令合成]<br/>
      * 填充inset命令内容(创建批量INSERT RunPrepare)
@@ -405,6 +404,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public boolean supportInsertPlaceholder() {
         return true;
     }
+
     /**
      * insert [命令合成-子流程]<br/>
      * 设置主键值
@@ -415,6 +415,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     protected void setPrimaryValue(Object obj, Object value) {
         super.setPrimaryValue(obj, value);
     }
+
     /**
      * insert [命令合成-子流程]<br/>
      * 根据entity创建 INSERT RunPrepare由buildInsertRun调用
@@ -512,6 +513,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public long update(DataRuntime runtime, String random, int batch, String dest, Object data, ConfigStore configs, List<String> columns) {
         return super.update(runtime, random, batch, dest, data, configs, columns);
     }
+
     /**
      * update [命令合成]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -539,18 +541,22 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public Run buildUpdateRun(DataRuntime runtime, int batch, String dest, Object obj, ConfigStore configs, List<String> columns) {
         return super.buildUpdateRun(runtime, batch, dest, obj, configs, columns);
     }
+
     @Override
     public Run buildUpdateRunFromEntity(DataRuntime runtime, String dest, Object obj, ConfigStore configs, LinkedHashMap<String, Column> columns) {
         return super.buildUpdateRunFromEntity(runtime, dest, obj, configs, columns);
     }
+
     @Override
     public Run buildUpdateRunFromDataRow(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, LinkedHashMap<String,Column> columns) {
         return super.buildUpdateRunFromDataRow(runtime, dest, row, configs, columns);
     }
+
     @Override
     public Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore configs, LinkedHashMap<String,Column> columns) {
         return super.buildUpdateRunFromCollection(runtime, batch, dest, list, configs, columns);
     }
+
     /**
      * update [命令合成-子流程]<br/>
      * 确认需要更新的列
@@ -577,10 +583,12 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public LinkedHashMap<String,Column> confirmUpdateColumns(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, List<String> columns) {
         return super.confirmUpdateColumns(runtime, dest, row, configs, columns);
     }
+
     @Override
     public LinkedHashMap<String,Column> confirmUpdateColumns(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns) {
         return super.confirmUpdateColumns(runtime, dest, obj, configs, columns);
     }
+
     /**
      * update [命令执行]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -631,14 +639,17 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     protected long saveCollection(DataRuntime runtime, String random, Table dest, Collection<?> data, ConfigStore configs, List<String> columns) {
         return super.saveCollection(runtime, random, dest, data, configs, columns);
     }
+
     @Override
     protected long saveObject(DataRuntime runtime, String random, Table dest, Object data, ConfigStore configs, List<String> columns) {
         return super.saveObject(runtime, random, dest, data, configs, columns);
     }
+
     @Override
     protected Boolean checkOverride(Object obj) {
         return super.checkOverride(obj);
     }
+
     @Override
     protected Map<String,Object> checkPv(Object obj) {
         return super.checkPv(obj);
@@ -654,10 +665,12 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     protected boolean isMultipleValue(DataRuntime runtime, TableRun run, String key) {
         return super.isMultipleValue(runtime, run, key);
     }
+
     @Override
     protected boolean isMultipleValue(Column column) {
         return super.isMultipleValue(column);
     }
+
     /**
      * 过滤掉表结构中不存在的列
      * @param table 表
@@ -769,6 +782,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public List<Map<String,Object>> maps(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
         return super.maps(runtime, random, prepare, configs, conditions);
     }
+
     /**
      * select[命令合成]<br/> 最终可执行命令<br/>
      * 创建查询SQL
@@ -802,18 +816,22 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public Run fillQueryContent(DataRuntime runtime, Run run) {
         return super.fillQueryContent(runtime, run);
     }
+
     @Override
     protected Run fillQueryContent(DataRuntime runtime, XMLRun run) {
         return super.fillQueryContent(runtime, run);
     }
+
     @Override
     protected Run fillQueryContent(DataRuntime runtime, TextRun run) {
         return super.fillQueryContent(runtime, run);
     }
+
     @Override
     protected Run fillQueryContent(DataRuntime runtime, TableRun run) {
         return super.fillQueryContent(runtime, run);
     }
+
     /**
      * select[命令合成-子流程] <br/>
      * 合成最终 select 命令 包含分页 排序
@@ -825,6 +843,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public String mergeFinalQuery(DataRuntime runtime, Run run) {
         return super.pageSkip(runtime, run);
     }
+
     /**
      * select[命令合成-子流程] <br/>
      * 构造 LIKE 查询条件
@@ -839,6 +858,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public RunValue createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder) {
         return super.createConditionLike(runtime, builder, compare, value, placeholder);
     }
+
     /**
      * select[命令合成-子流程] <br/>
      * 构造 FIND_IN_SET 查询条件
@@ -854,6 +874,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder) throws NotSupportException {
         return super.createConditionFindInSet(runtime, builder, column, compare, value, placeholder);
     }
+
     /**
      * select[命令合成-子流程] <br/>
      * 构造(NOT) IN 查询条件
@@ -867,6 +888,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder) {
         return super.createConditionIn(runtime, builder, compare, value, placeholder);
     }
+
     /**
      * select [命令执行]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -892,6 +914,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public List<Map<String,Object>> maps(DataRuntime runtime, String random, ConfigStore configs, Run run) {
         return super.maps(runtime, random, configs, run);
     }
+
     /**
      * select [命令执行]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -952,6 +975,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public long count(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
         return super.count(runtime, random, prepare, configs, conditions);
     }
+
     /**
      * count [命令合成]<br/>
      * 合成最终 select count 命令
@@ -996,6 +1020,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public boolean exists(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
         return super.exists(runtime, random, prepare, configs, conditions);
     }
+
     @Override
     public String mergeFinalExists(DataRuntime runtime, Run run) {
         String sql = "SELECT 1 AS IS_EXISTS FROM DUAL WHERE  EXISTS(" + run.getBuilder().toString() + ")";
@@ -1035,6 +1060,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public long execute(DataRuntime runtime, String random, int batch, ConfigStore configs, RunPrepare prepare, Collection<Object> values) {
         return super.execute(runtime, random, batch, configs, prepare, values);
     }
+
     /**
      * procedure [命令执行]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -1046,6 +1072,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public boolean execute(DataRuntime runtime, String random, Procedure procedure) {
         return super.execute(runtime, random, procedure);
     }
+
     /**
      * execute [命令合成]<br/>
      * 创建执行SQL
@@ -1059,14 +1086,17 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public Run buildExecuteRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions) {
         return super.buildExecuteRun(runtime, prepare, configs, conditions);
     }
+
     @Override
     protected void fillExecuteContent(DataRuntime runtime, XMLRun run) {
         super.fillExecuteContent(runtime, run);
     }
+
     @Override
     protected void fillExecuteContent(DataRuntime runtime, TextRun run) {
         super.fillExecuteContent(runtime, run);
     }
+
     @Override
     protected void fillExecuteContent(DataRuntime runtime, TableRun run) {
         super.fillExecuteContent(runtime, run);
@@ -1082,6 +1112,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public void fillExecuteContent(DataRuntime runtime, Run run) {
         super.fillExecuteContent(runtime, run);
     }
+
     /**
      * execute [命令执行]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -1317,6 +1348,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public Database database(DataRuntime runtime, String random) {
         return super.database(runtime, random);
     }
+
     /**
      * database[调用入口]<br/>
      * 当前数据源 数据库描述(产品名称+版本号)
@@ -1327,6 +1359,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public String product(DataRuntime runtime, String random) {
         return super.product(runtime, random);
     }
+
     /**
      * database[调用入口]<br/>
      * 当前数据源 数据库类型
@@ -1337,6 +1370,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public String version(DataRuntime runtime, String random) {
         return super.version(runtime, random);
     }
+
     /**
      * database[调用入口]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -1349,6 +1383,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public <T extends Database> List<T> databases(DataRuntime runtime, String random, boolean greedy, Database query) {
         return super.databases(runtime, random, greedy, query);
     }
+
     /**
      * database[调用入口]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -1372,6 +1407,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public List<Run> buildQueryProductRun(DataRuntime runtime) throws Exception {
         return super.buildQueryProductRun(runtime);
     }
+
     /**
      * database[命令合成]<br/>
      * 查询当前数据源 数据库版本 版本号比较复杂 不是全数字
@@ -1383,6 +1419,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public List<Run> buildQueryVersionRun(DataRuntime runtime) throws Exception {
         return super.buildQueryVersionRun(runtime);
     }
+
     /**
      * database[命令合成]<br/>
      * 查询全部数据库
@@ -1396,6 +1433,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public List<Run> buildQueryDatabasesRun(DataRuntime runtime, boolean greedy, Database query) throws Exception {
         return super.buildQueryDatabasesRun(runtime, greedy, query);
     }
+
     /**
      * database[结果集封装]<br/>
      * database 属性与结果集对应关系
@@ -1405,6 +1443,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public MetadataFieldRefer initDatabaseFieldRefer() {
         return super.initDatabaseFieldRefer();
     }
+
     /**
      * database[结果集封装]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -1419,10 +1458,12 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public <T extends Database> LinkedHashMap<String, T> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Database query, DataSet set) throws Exception {
         return super.databases(runtime, index, create, previous, query, set);
     }
+
     @Override
     public <T extends Database> List<T> databases(DataRuntime runtime, int index, boolean create, List<T> previous, Database query, DataSet set) throws Exception {
         return super.databases(runtime, index, create, previous, query, set);
     }
+
     /**
      * database[结果集封装]<br/>
      * 当前database 根据查询结果集
@@ -1438,6 +1479,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public Database database(DataRuntime runtime, int index, boolean create, Database meta, DataSet set) throws Exception {
         return super.database(runtime, index, create, meta, set);
     }
+
     /**
      * database[结果集封装]<br/>
      * 当前database 根据驱动内置接口补充
@@ -1466,6 +1508,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public String product(DataRuntime runtime, int index, boolean create, String product, DataSet set) {
         return super.product(runtime, index, create, product, set);
     }
+
     /**
      * database[结果集封装]<br/>
      * 根据JDBC内置接口 product
@@ -1479,6 +1522,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public String product(DataRuntime runtime, boolean create, String product) {
         return super.product(runtime, create, product);
     }
+
     /**
      * database[结果集封装]<br/>
      * 根据查询结果集构造 version
@@ -1493,6 +1537,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public String version(DataRuntime runtime, int index, boolean create, String version, DataSet set) {
         return super.version(runtime, index, create, version, set);
     }
+
     /**
      * database[结果集封装]<br/>
      * 根据JDBC内置接口 version
@@ -1534,6 +1579,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public <T extends Catalog> LinkedHashMap<String, T> catalogs(DataRuntime runtime, String random, Catalog query) {
         return super.catalogs(runtime, random, query);
     }
+
     /**
      * catalog[调用入口]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -1569,6 +1615,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public MetadataFieldRefer initCatalogFieldRefer() {
         return super.initCatalogFieldRefer();
     }
+
     /**
      * catalog[结果集封装]<br/>
      * 根据查询结果集构造 Database
@@ -1584,6 +1631,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public <T extends Catalog> LinkedHashMap<String, T> catalogs(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Catalog query, DataSet set) throws Exception {
         return super.catalogs(runtime, index, create, previous, query, set);
     }
+
     /**
      * catalog[结果集封装]<br/>
      * 根据查询结果集构造 Database
@@ -1599,6 +1647,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public <T extends Catalog> List<T> catalogs(DataRuntime runtime, int index, boolean create, List<T> previous, Catalog query, DataSet set) throws Exception {
         return super.catalogs(runtime, index, create, previous, query, set);
     }
+
     /**
      * catalog[结果集封装]<br/>
      * 根据驱动内置接口补充 catalog
@@ -1626,6 +1675,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public <T extends Catalog> List<T> catalogs(DataRuntime runtime, boolean create, List<T> previous) throws Exception {
         return super.catalogs(runtime, create, previous);
     }
+
     /**
      * catalog[结果集封装]<br/>
      * 当前catalog 根据查询结果集
@@ -1641,6 +1691,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public Catalog catalog(DataRuntime runtime, int index, boolean create, Catalog meta, DataSet set) throws Exception {
         return super.catalog(runtime, index, create, meta, set);
     }
+
     /**
      * catalog[结果集封装]<br/>
      * 当前catalog 根据驱动内置接口补充
@@ -1654,7 +1705,6 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public Catalog catalog(DataRuntime runtime, boolean create, Catalog meta) throws Exception {
         return super.catalog(runtime, create, meta);
     }
-
 
     /**
      * catalog[结果集封装]<br/>
@@ -1707,6 +1757,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public <T extends Schema> LinkedHashMap<String, T> schemas(DataRuntime runtime, String random, Schema query) {
         return super.schemas(runtime, random, query);
     }
+
     /**
      * schema[调用入口]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -1742,6 +1793,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public MetadataFieldRefer initSchemaFieldRefer() {
         return super.initSchemaFieldRefer();
     }
+
     /**
      * schema[结果集封装]<br/>
      * 根据查询结果集构造 Database
@@ -1757,10 +1809,12 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public <T extends Schema> LinkedHashMap<String, T> schemas(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Schema query, DataSet set) throws Exception {
         return super.schemas(runtime, index, create, previous, query, set);
     }
+
     @Override
     public <T extends Schema> List<T> schemas(DataRuntime runtime, int index, boolean create, List<T> previous, Schema query, DataSet set) throws Exception {
         return super.schemas(runtime, index, create, previous, query, set);
     }
+
     /**
      * schema[结果集封装]<br/>
      * 当前schema 根据查询结果集
@@ -1790,7 +1844,6 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public Schema schema(DataRuntime runtime, boolean create, Schema meta) throws Exception {
         return super.schema(runtime, create, meta);
     }
-
 
     /**
      * schema[结果集封装]<br/>
@@ -1907,6 +1960,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public MetadataFieldRefer initTableFieldRefer() {
         return super.initTableFieldRefer();
     }
+
     /**
      * table[命令合成]<br/>
      * 查询表备注
@@ -1954,6 +2008,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public <T extends Table> List<T> tables(DataRuntime runtime, int index, boolean create, List<T> previous, Table query, DataSet set) throws Exception {
         return super.tables(runtime, index, create, previous, query, set);
     }
+
     /**
      * table[结果集封装]<br/>
      * 根据驱动内置方法补充
@@ -2094,6 +2149,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public <T extends View> List<T> views(DataRuntime runtime, String random, boolean greedy, View query, int types, int struct, ConfigStore configs) {
         return super.views(runtime, random, greedy, query, types, struct, configs);
     }
+
     /**
      * view[命令合成]<br/>
      * 查询视图
@@ -2117,6 +2173,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public MetadataFieldRefer initViewFieldRefer() {
         return super.initViewFieldRefer();
     }
+
     /**
      * view[结果集封装]<br/>
      *  根据查询结果集构造View
@@ -2133,6 +2190,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, View query, DataSet set) throws Exception {
         return super.views(runtime, index, create, previous, query, set);
     }
+
     /**
      * view[结果集封装]<br/>
      * 根据根据驱动内置接口补充
@@ -2221,6 +2279,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public <T extends MasterTable> List<T> masters(DataRuntime runtime, String random, boolean greedy, MasterTable query, int types, int struct, ConfigStore configs) {
         return super.masters(runtime, random, greedy, query, types, struct, configs);
     }
+
     /**
      * master table[命令合成]<br/>
      * 查询主表
@@ -2243,6 +2302,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public MetadataFieldRefer initMasterTableFieldRefer() {
         return super.initMasterTableFieldRefer();
     }
+
     /**
      * master table[结果集封装]<br/>
      * 根据查询结果集构造Table
@@ -2259,6 +2319,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, MasterTable query, DataSet set) throws Exception {
         return super.masters(runtime, index, create, previous, query, set);
     }
+
     /**
      * master table[结果集封装]<br/>
      * 根据根据驱动内置接口
@@ -2285,6 +2346,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public List<String> ddl(DataRuntime runtime, String random, MasterTable meta, boolean init) {
         return super.ddl(runtime, random, meta, init);
     }
+
     /**
      * master table[命令合成]<br/>
      * 查询 MasterTable DDL
@@ -2296,6 +2358,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public List<Run> buildQueryDdlRun(DataRuntime runtime, MasterTable meta) throws Exception {
         return super.buildQueryDdlRun(runtime, meta);
     }
+
     /**
      * master table[结果集封装]<br/>
      * 查询 MasterTable DDL
@@ -2355,6 +2418,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, boolean greedy,  PartitionTable query, int types) throws Exception {
         return super.buildQueryPartitionTablesRun(runtime, greedy, query, types);
     }
+
     /**
      * partition table[结果集封装]<br/>
      * 根据查询结果集构造Table
@@ -2372,6 +2436,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public <T extends PartitionTable> LinkedHashMap<String, T> partitions(DataRuntime runtime, int total, int index, boolean create, LinkedHashMap<String, T> previous, PartitionTable query, DataSet set) throws Exception {
         return super.partitions(runtime, total, index, create, previous, query, set);
     }
+
     /**
      * partition table[结果集封装]<br/>
      * 根据根据驱动内置接口
@@ -2386,6 +2451,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public <T extends PartitionTable> LinkedHashMap<String,T> partitions(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, PartitionTable query) throws Exception {
         return super.partitions(runtime, create, previous, query);
     }
+
     /**
      * partition table[调用入口]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -2466,6 +2532,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Column query, ConfigStore configs) {
         return super.columns(runtime, random, greedy, query, configs);
     }
+
     /**
      * column[命令合成]<br/>
      * 查询表上的列
@@ -2486,6 +2553,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
         configs.order("F.TABNAME");
         return runs;
     }
+
     /**
      * column[命令合成]<br/>
      * 查询表上的列
@@ -2506,6 +2574,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
         configs.order("F.TABNAME");
         return runs;
     }
+
     /**
      * Column[结果集封装]<br/>
      * Column 属性与结果集对应关系
@@ -2515,6 +2584,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public MetadataFieldRefer initColumnFieldRefer() {
         return super.initColumnFieldRefer();
     }
+
     /**
      * column[结果集封装]<br/>
      *  根据查询结果集构造Tag
@@ -2544,6 +2614,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
         }
         return previous;
     }
+
     @Override
     public <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, List<T> previous, Column query, DataSet set) throws Exception {
         Table table = query.getTable();
@@ -2615,6 +2686,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
         }
         return meta;
     }
+
     /**
      * column[结果集封装]<br/>
      * 解析JDBC get columns结果
@@ -2655,6 +2727,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, String random, boolean greedy, Table table, Tag query) {
         return super.tags(runtime, random, greedy, table, query);
     }
+
     /**
      * tag[命令合成]<br/>
      * 查询表上的列
@@ -2682,6 +2755,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Tag query, DataSet set) throws Exception {
         return super.tags(runtime, index, create, previous, query, set);
     }
+
     /**
      *
      * tag[结果集封装]<br/>
@@ -2757,6 +2831,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public MetadataFieldRefer initPrimaryKeyFieldRefer() {
         return super.initPrimaryKeyFieldRefer();
     }
+
     /**
      * primary[结构集封装]<br/>
      *  根据查询结果集构造PrimaryKey
@@ -2810,6 +2885,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, String random, boolean greedy, ForeignKey query) {
         return super.foreigns(runtime, random, greedy, query);
     }
+
     /**
      * foreign[命令合成]<br/>
      * 查询表上的外键
@@ -2821,6 +2897,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public List<Run> buildQueryForeignsRun(DataRuntime runtime, boolean greedy,  ForeignKey query) throws Exception {
         return super.buildQueryForeignsRun(runtime, greedy, query);
     }
+
     /**
      * foreign[结构集封装]<br/>
      *  根据查询结果集构造PrimaryKey
@@ -2893,6 +2970,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public <T extends Index> List<T> indexes(DataRuntime runtime, String random, boolean greedy, Index query) {
         return super.indexes(runtime, random, greedy, query);
     }
+
     /**
      *
      * index[调用入口]<br/>
@@ -2906,6 +2984,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public <T extends Index> LinkedHashMap<String, T> indexes(DataRuntime runtime, String random, Index query) {
         return super.indexes(runtime, random, query);
     }
+
     /**
      * index[命令合成]<br/>
      * 查询表上的索引
@@ -2927,6 +3006,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public MetadataFieldRefer initIndexFieldRefer() {
         return super.initIndexFieldRefer();
     }
+
     /**
      * index[结果集封装]<br/>
      *  根据查询结果集构造Index
@@ -2943,6 +3023,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public <T extends Index> LinkedHashMap<String, T> indexes(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Index query, DataSet set) throws Exception {
         return super.indexes(runtime, index, create, previous, query, set);
     }
+
     /**
      * index[结果集封装]<br/>
      *  根据查询结果集构造Index
@@ -2973,6 +3054,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public <T extends Index> List<T> indexes(DataRuntime runtime, boolean create, List<T> previous, Index query) throws Exception {
         return super.indexes(runtime, create, previous, query);
     }
+
     /**
      * index[结果集封装]<br/>
      * 根据驱动内置接口
@@ -3013,6 +3095,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public <T extends Constraint> List<T> constraints(DataRuntime runtime, String random, boolean greedy, Constraint query) {
         return super.constraints(runtime, random, greedy, query);
     }
+
     /**
      *
      * constraint[调用入口]<br/>
@@ -3057,6 +3140,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public <T extends Constraint> List<T> constraints(DataRuntime runtime, int index, boolean create, List<T> previous, Constraint query, DataSet set) throws Exception {
         return super.constraints(runtime, index, create, previous, query, set);
     }
+
     /**
      * constraint[结果集封装]<br/>
      * 根据查询结果集构造Constraint
@@ -3098,6 +3182,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public <T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, String random, boolean greedy, Trigger query) {
         return super.triggers(runtime, random, greedy, query);
     }
+
     /**
      * trigger[命令合成]<br/>
      * 查询表上的 Trigger
@@ -3108,6 +3193,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public List<Run> buildQueryTriggersRun(DataRuntime runtime, boolean greedy, Trigger query) {
         return super.buildQueryTriggersRun(runtime, greedy, query);
     }
+
     /**
      * trigger[结果集封装]<br/>
      * 根据查询结果集构造 Trigger
@@ -3158,6 +3244,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public <T extends Procedure> List<T> procedures(DataRuntime runtime, String random, boolean greedy, Procedure query) {
         return super.procedures(runtime, random, greedy, query);
     }
+
     /**
      *
      * procedure[调用入口]<br/>
@@ -3171,6 +3258,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, String random, Procedure query) {
         return super.procedures(runtime, random, query);
     }
+
     /**
      * procedure[命令合成]<br/>
      * 查询表上的 Trigger
@@ -3182,6 +3270,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public List<Run> buildQueryProceduresRun(DataRuntime runtime, boolean greedy, Procedure query) {
         return super.buildQueryProceduresRun(runtime, greedy, query);
     }
+
     /**
      * procedure[结果集封装]<br/>
      * 根据查询结果集构造 Trigger
@@ -3225,6 +3314,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Procedure query) throws Exception {
         return super.procedures(runtime, create, previous, query);
     }
+
     /**
      *
      * procedure[调用入口]<br/>
@@ -3237,6 +3327,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public List<String> ddl(DataRuntime runtime, String random, Procedure procedure) {
         return super.ddl(runtime, random, procedure);
     }
+
     /**
      * procedure[命令合成]<br/>
      * 查询存储DDL
@@ -3297,6 +3388,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public <T extends Function> List<T> functions(DataRuntime runtime, String random, boolean greedy, Function query) {
         return super.functions(runtime, random, greedy, query);
     }
+
     /**
      *
      * function[调用入口]<br/>
@@ -3310,6 +3402,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public <T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, String random, Function query) {
         return super.functions(runtime, random, query);
     }
+
     /**
      * function[命令合成]<br/>
      * 查询表上的 Trigger
@@ -3331,6 +3424,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public MetadataFieldRefer initFunctionFieldRefer() {
         return super.initFunctionFieldRefer();
     }
+
     /**
      * function[结果集封装]<br/>
      * 根据查询结果集构造 Trigger
@@ -3346,6 +3440,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public <T extends Function> List<T> functions(DataRuntime runtime, int index, boolean create, List<T> previous, Function query, DataSet set) throws Exception {
         return super.functions(runtime, index, create, previous, query, set);
     }
+
     /**
      * function[结果集封装]<br/>
      * 根据查询结果集构造 Trigger
@@ -3400,6 +3495,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public List<Run> buildQueryDdlRun(DataRuntime runtime, Function meta) throws Exception {
         return super.buildQueryDdlRun(runtime, meta);
     }
+
     /**
      * function[结果集封装]<br/>
      * 查询 Function DDL
@@ -3448,6 +3544,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public <T extends Sequence> List<T> sequences(DataRuntime runtime, String random, boolean greedy, Sequence query) {
         return super.sequences(runtime, random, greedy, query);
     }
+
     /**
      *
      * sequence[调用入口]<br/>
@@ -3461,6 +3558,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public <T extends Sequence> LinkedHashMap<String, T> sequences(DataRuntime runtime, String random, Sequence query) {
         return super.sequences(runtime, random, query);
     }
+
     /**
      * sequence[命令合成]<br/>
      * 查询表上的 Trigger
@@ -3488,6 +3586,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public <T extends Sequence> List<T> sequences(DataRuntime runtime, int index, boolean create, List<T> previous, Sequence query, DataSet set) throws Exception {
         return super.sequences(runtime, index, create, previous, query, set);
     }
+
     /**
      * sequence[结果集封装]<br/>
      * 根据查询结果集构造 Trigger
@@ -3542,6 +3641,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public List<Run> buildQueryDdlRun(DataRuntime runtime, Sequence meta) throws Exception {
         return super.buildQueryDdlRun(runtime, meta);
     }
+
     /**
      * sequence[结果集封装]<br/>
      * 查询 Sequence DDL
@@ -3601,6 +3701,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public <T extends Catalog> T catalog(List<T> catalogs, String name) {
         return super.catalog(catalogs, name);
     }
+
     /**
      *
      * 根据 name检测databases集合中是否存在
@@ -3696,6 +3797,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public boolean alter(DataRuntime runtime, Table meta) throws Exception {
         return super.alter(runtime, meta);
     }
+
     /**
      * table[调用入口]<br/>
      * 删除表,执行的命令通过meta.ddls()返回
@@ -3725,8 +3827,6 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
         return super.rename(runtime, origin, name);
     }
 
-    
-
     /**
      * table[命令合成]<br/>
      * 创建表<br/>
@@ -3745,6 +3845,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public List<Run> buildCreateRun(DataRuntime runtime, Table meta) throws Exception {
         return super.buildCreateRun(runtime, meta);
     }
+
     /**
      * table[命令合成]<br/>
      * 修改表
@@ -3785,6 +3886,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public List<Run> buildRenameRun(DataRuntime runtime, Table meta) throws Exception {
         return super.buildRenameRun(runtime, meta);
     }
+
     /**
      * table[命令合成]<br/>
      * 删除表
@@ -3823,6 +3925,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public List<Run> buildAppendColumnCommentRun(DataRuntime runtime, Table meta) throws Exception {
         return super.buildAppendColumnCommentRun(runtime, meta);
     }
+
     /**
      * table[命令合成-子流程]<br/>
      * 修改备注
@@ -3910,6 +4013,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public StringBuilder indexes(DataRuntime runtime, StringBuilder builder, Table meta) {
         return super.indexes(runtime, builder, meta);
     }
+
     /**
      * table[命令合成-子流程]<br/>
      * 编码
@@ -4078,6 +4182,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public List<Run> buildCreateRun(DataRuntime runtime, View meta) throws Exception {
         return super.buildCreateRun(runtime, meta);
     }
+
     /**
      * view[命令合成]<br/>
      * 修改视图
@@ -4091,6 +4196,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public List<Run> buildAlterRun(DataRuntime runtime, View meta) throws Exception {
         return super.buildAlterRun(runtime, meta);
     }
+
     /**
      * view[命令合成]<br/>
      * 重命名
@@ -4104,6 +4210,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public List<Run> buildRenameRun(DataRuntime runtime, View meta) throws Exception {
         return super.buildRenameRun(runtime, meta);
     }
+
     /**
      * view[命令合成]<br/>
      * 删除视图
@@ -4266,6 +4373,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public List<Run> buildDropRun(DataRuntime runtime, MasterTable meta) throws Exception {
         return super.buildDropRun(runtime, meta);
     }
+
     /**
      * master table[命令合成-子流程]<br/>
      * 修改主表
@@ -4278,6 +4386,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public List<Run> buildAlterRun(DataRuntime runtime, MasterTable meta) throws Exception {
         return super.buildAlterRun(runtime, meta);
     }
+
     /**
      * master table[命令合成-子流程]<br/>
      * 主表重命名
@@ -4375,6 +4484,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public boolean drop(DataRuntime runtime, PartitionTable meta) throws Exception {
         return super.drop(runtime, meta);
     }
+
     /**
      * partition table[调用入口]<br/>
      * 创建分区表,执行的命令通过meta.ddls()返回
@@ -4388,6 +4498,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public boolean rename(DataRuntime runtime, PartitionTable origin, String name) throws Exception {
         return super.rename(runtime, origin, name);
     }
+
     /**
      * partition table[命令合成]<br/>
      * 创建分区表
@@ -4413,6 +4524,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public List<Run> buildAppendCommentRun(DataRuntime runtime, PartitionTable meta) throws Exception {
         return super.buildAppendCommentRun(runtime, meta);
     }
+
     /**
      * partition table[命令合成]<br/>
      * 修改分区表
@@ -4438,6 +4550,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public List<Run> buildDropRun(DataRuntime runtime, PartitionTable meta) throws Exception {
         return super.buildDropRun(runtime, meta);
     }
+
     /**
      * partition table[命令合成]<br/>
      * 分区表重命名
@@ -4617,8 +4730,6 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
         return super.buildDropRun(runtime, meta, slice);
     }
 
-    
-
     /**
      * column[命令合成]<br/>
      * 修改列名
@@ -4796,6 +4907,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public StringBuilder checkColumnExists(DataRuntime runtime, StringBuilder builder, boolean exists) {
         return super.checkColumnExists(runtime, builder, exists);
     }
+
     /**
      * column[命令合成-子流程]<br/>
      * 列定义:数据类型
@@ -4841,6 +4953,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
         }
         return super.type(runtime, builder, meta);
     }
+
     /**
      * column[命令合成-子流程]<br/>
      * 列定义:数据类型定义
@@ -4882,6 +4995,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public StringBuilder nullable(DataRuntime runtime, StringBuilder builder, Column meta, ACTION.DDL action) {
         return super.nullable(runtime, builder, meta, action);
     }
+
     /**
      * column[命令合成-子流程]<br/>
      * 列定义:编码
@@ -4932,6 +5046,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public StringBuilder increment(DataRuntime runtime, StringBuilder builder, Column meta) {
         return builder;
     }
+
     /**
      * column[命令合成-子流程]<br/>
      * 列定义:更新行事件
@@ -5071,6 +5186,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public List<Run> buildAddRun(DataRuntime runtime, Tag meta, boolean slice) throws Exception {
         return super.buildAddRun(runtime, meta, slice);
     }
+
     /**
      * tag[命令合成]<br/>
      * 修改标签
@@ -5108,6 +5224,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public List<Run> buildRenameRun(DataRuntime runtime, Tag meta, boolean slice) throws Exception {
         return super.buildRenameRun(runtime, meta, slice);
     }
+
     /**
      * tag[命令合成]<br/>
      * 修改默认值
@@ -5229,6 +5346,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public boolean alter(DataRuntime runtime, Table table, PrimaryKey origin, PrimaryKey meta) throws Exception {
         return super.alter(runtime, table, origin, meta);
     }
+
     /**
      * primary[调用入口]<br/>
      * 修改主键
@@ -5268,6 +5386,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public boolean rename(DataRuntime runtime, PrimaryKey origin, String name) throws Exception {
         return super.rename(runtime, origin, name);
     }
+
     /**
      * primary[命令合成]<br/>
      * 添加主键
@@ -5300,6 +5419,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
         }
         return runs;
     }
+
     /**
      * primary[命令合成]<br/>
      * 修改主键
@@ -5313,6 +5433,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public List<Run> buildAlterRun(DataRuntime runtime, PrimaryKey origin, PrimaryKey meta, boolean slice) throws Exception {
         return super.buildAlterRun(runtime, origin, meta, slice);
     }
+
     /**
      * primary[命令合成]<br/>
      * 删除主键
@@ -5325,6 +5446,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public List<Run> buildDropRun(DataRuntime runtime, PrimaryKey meta, boolean slice) throws Exception {
         return super.buildDropRun(runtime, meta, slice);
     }
+
     /**
      * primary[命令合成]<br/>
      * 修改主键名
@@ -5431,6 +5553,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public List<Run> buildAddRun(DataRuntime runtime, ForeignKey meta) throws Exception {
         return super.buildAddRun(runtime, meta);
     }
+
     /**
      * foreign[命令合成]<br/>
      * 修改外键
@@ -5568,6 +5691,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public List<Run> buildAppendIndexRun(DataRuntime runtime, Table meta) throws Exception {
         return super.buildAppendIndexRun(runtime, meta);
     }
+
     /**
      * index[命令合成]<br/>
      * 添加索引
@@ -5579,6 +5703,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public List<Run> buildAddRun(DataRuntime runtime, Index meta) throws Exception {
         return super.buildAddRun(runtime, meta);
     }
+
     /**
      * index[命令合成]<br/>
      * 修改索引
@@ -5591,6 +5716,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public List<Run> buildAlterRun(DataRuntime runtime, Index meta) throws Exception {
         return super.buildAlterRun(runtime, meta);
     }
+
     /**
      * index[命令合成]<br/>
      * 删除索引
@@ -5602,6 +5728,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public List<Run> buildDropRun(DataRuntime runtime, Index meta) throws Exception {
         return super.buildDropRun(runtime, meta);
     }
+
     /**
      * index[命令合成]<br/>
      * 修改索引名
@@ -5627,6 +5754,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public StringBuilder type(DataRuntime runtime, StringBuilder builder, Index meta) {
         return super.type(runtime, builder, meta);
     }
+
     /**
      * index[命令合成-子流程]<br/>
      * 索引备注
@@ -5745,6 +5873,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public List<Run> buildAlterRun(DataRuntime runtime, Constraint meta) throws Exception {
         return super.buildAlterRun(runtime, meta);
     }
+
     /**
      * constraint[命令合成]<br/>
      * 删除约束
@@ -5843,6 +5972,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public List<Run> buildCreateRun(DataRuntime runtime, Trigger meta) throws Exception {
         return super.buildCreateRun(runtime, meta);
     }
+
     /**
      * trigger[命令合成]<br/>
      * 修改触发器
@@ -5880,6 +6010,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public List<Run> buildRenameRun(DataRuntime runtime, Trigger meta) throws Exception {
         return super.buildRenameRun(runtime, meta);
     }
+
     /**
      * trigger[命令合成-子流程]<br/>
      * 触发级别(行或整个命令)
@@ -5974,6 +6105,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public List<Run> buildCreateRun(DataRuntime runtime, Procedure meta) throws Exception {
         return super.buildCreateRun(runtime, meta);
     }
+
     /**
      * procedure[命令合成]<br/>
      * 修改存储过程
@@ -6273,6 +6405,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public <T extends Metadata> void checkSchema(DataRuntime runtime, Connection con, T meta) {
         super.checkSchema(runtime, con, meta);
     }
+
     /**
      * 根据运行环境识别 catalog与schema
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -6298,10 +6431,12 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public <T extends Metadata> void correctSchemaFromJDBC(DataRuntime runtime, T meta, String catalog, String schema, boolean overrideRuntime, boolean overrideMeta) {
         super.correctSchemaFromJDBC(runtime, meta, catalog, schema, overrideRuntime, overrideMeta);
     }
+
     @Override
     public <T extends Metadata> void correctSchemaFromJDBC(DataRuntime runtime, T meta, String catalog, String schema) {
         super.correctSchemaFromJDBC(runtime, meta, catalog, schema);
     }
+
     /**
      * 在调用jdbc接口前处理业务中的catalog,schema,部分数据库(如mysql)业务系统与dbc标准可能不一致根据实际情况处理<br/>
      * @param catalog 对于MySQL, 则对应相应的数据库, 对于Oracle来说, 则是对应相应的数据库实例, 可以不填, 也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；

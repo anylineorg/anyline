@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.metadata.type.init;
 
 import org.anyline.proxy.ConvertProxy;
@@ -109,6 +107,7 @@ public class AbstractTypeMetadata implements TypeMetadata {
     public Object read(Object value, Object def, Class clazz) {
         return read(value, def, clazz, false);
     }
+
     @Override
     public Object read(Object value, Object def, Class clazz, boolean array) {
         if(null == clazz) {
@@ -125,6 +124,7 @@ public class AbstractTypeMetadata implements TypeMetadata {
     public Object write(Object value, Object def, boolean placeholder) {
         return write(value, def, false, placeholder);
     }
+
     @Override
     public Object write(Object value, Object def, boolean array, boolean placeholder) {
         if(null != value) {
@@ -157,6 +157,7 @@ public class AbstractTypeMetadata implements TypeMetadata {
     public CATEGORY getCategory() {
         return this.category;
     }
+
     @Override
     public CATEGORY_GROUP getCategoryGroup() {
         if(null != category) {
@@ -174,6 +175,7 @@ public class AbstractTypeMetadata implements TypeMetadata {
     public int ignoreLength() {
         return ignoreLength;
     }
+
     @Override
     public int ignorePrecision() {
         return ignorePrecision;

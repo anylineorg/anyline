@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.data.jdbc.runtime;
 
 import org.anyline.annotation.Component;
@@ -79,6 +77,7 @@ public class JDBCRuntimeHolder extends AbstractRuntimeHolder implements RuntimeH
         //runtime.setHolder(this);
         return runtime;
     }
+
     /**
      * 注册运行环境
      * @param key 数据源前缀
@@ -166,7 +165,6 @@ public class JDBCRuntimeHolder extends AbstractRuntimeHolder implements RuntimeH
         }
         return true;
     }
-
 
     public static void close(String key) {
         Object datasource = null;

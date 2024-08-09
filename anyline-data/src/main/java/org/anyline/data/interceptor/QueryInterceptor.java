@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.data.interceptor;
 
 import org.anyline.data.param.ConfigStore;
@@ -39,6 +37,7 @@ public interface QueryInterceptor extends DMInterceptor{
     default SWITCH prepare(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) { return SWITCH.CONTINUE;}
 
     default SWITCH prepare(DataRuntime runtime, String random, Procedure procedure, PageNavi navi) { return SWITCH.CONTINUE;}
+
     /**
      * 合计总数之后调用，行数页数等信息在navi中, 到这一步SQL已创建完成
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -48,6 +47,7 @@ public interface QueryInterceptor extends DMInterceptor{
      */
     default SWITCH before(DataRuntime runtime, String random, Run run, PageNavi navi) { return SWITCH.CONTINUE;}
     default SWITCH before(DataRuntime runtime, String random, Procedure procedure, PageNavi navi) { return SWITCH.CONTINUE;}
+
     /**
      * 合计总数之前调用，到这一步SQL已创建完成
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端

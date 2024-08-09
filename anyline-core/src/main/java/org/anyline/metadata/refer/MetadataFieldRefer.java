@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.metadata.refer;
 
 import org.anyline.util.BasicUtil;

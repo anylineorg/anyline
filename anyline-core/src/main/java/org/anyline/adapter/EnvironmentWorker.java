@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.adapter;
 
 import org.anyline.bean.BeanDefine;
@@ -55,8 +53,6 @@ public interface EnvironmentWorker {
     <T> T getSingletonBean(String name, Class<T> clazz);
     Object getSingletonBean(String name);
 
-
-
     default  <T> T value(Map<String, HashSet<String>>  aliasMap, String prefix, String key, Class<T> clazz, T def) {
         if(null != prefix && null != key) {
             String ps[] = prefix.split(",");
@@ -85,6 +81,7 @@ public interface EnvironmentWorker {
         }
         return def;
     }
+
     /**
      * 从配置文件中取值
      * @param prefix 前缀 如果有多个用,分隔如如spring.datasource,anyline.datasource
@@ -123,6 +120,7 @@ public interface EnvironmentWorker {
     default Object value(String prefix, String keys, Map<String, HashSet<String>> alias) {
         return value(prefix, keys, alias, Object.class, null);
     }
+
     /**
      * 根据params与配置文件创建数据源, 同时注入到spring上下文
      * @param id bean id

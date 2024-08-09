@@ -16,7 +16,6 @@
 
  
 
-
 package org.anyline.data.jdbc.iotdb;
 
 import org.anyline.annotation.Component;
@@ -32,7 +31,6 @@ public class IoTDBAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 	public DatabaseType type() {
 		return DatabaseType.IoTDB;
 	}
-
 
 	private String delimiter;
 

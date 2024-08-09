@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.data.jdbc.adapter.init;
 
 import org.anyline.data.param.ConfigStore;
@@ -82,6 +80,7 @@ public abstract class TemplateJDBCAdapter extends AbstractJDBCAdapter {
     public <T extends Metadata> void checkSchema(DataRuntime runtime, Connection con, T meta) {
         super.checkSchema(runtime, con, meta);
     }
+
     /**
      * 根据运行环境识别 catalog与schema
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端

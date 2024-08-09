@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.data.influxdb.datasource;
 
 import com.influxdb.client.InfluxDBClient;
@@ -40,6 +38,7 @@ public class InfluxDataSourceLoader extends AbstractDataSourceLoader implements 
     public DataSourceHolder holder() {
         return holder;
     }
+
     @Override
     public List<String> load() {
         List<String> list = new ArrayList<>();

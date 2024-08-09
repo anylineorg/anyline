@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.util;
 
 import org.anyline.entity.Coordinate;
@@ -43,6 +41,7 @@ public class GISUtil {
     private static Double rad(Double d) {
         return d * Math.PI / 180.0;
     }
+
     /**
      * 通过经纬度获取距离(单位:米)
      *
@@ -141,6 +140,7 @@ public class GISUtil {
         }
         return result;
     }
+
     /**
      * gps转经纬度
      * @param gps  gps
@@ -405,6 +405,7 @@ public class GISUtil {
         }
         return pnpoly(point.x(), point.y(), lngs, lats);
     }
+
     /**
      * 坐标点是否在多边形内
      * @param lng lng

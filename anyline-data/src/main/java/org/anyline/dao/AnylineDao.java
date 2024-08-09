@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.dao;
 
 import org.anyline.data.adapter.DriverAdapter;
@@ -338,7 +336,6 @@ public interface AnylineDao<E>{
 	default long insert(Table dest, Object data, ConfigStore configs, String ... columns) {
 		return insert(0, dest, data, configs, BeanUtil.array2list(columns));
 	}
-
 
 	/**
 	 * insert into table select * from table
@@ -1016,7 +1013,6 @@ public interface AnylineDao<E>{
 		return ddl(runtime(), null, edge, init);
 	}
 
-
 	/* *****************************************************************************************************************
 	 * 													vertex
 	 ******************************************************************************************************************/
@@ -1333,7 +1329,6 @@ public interface AnylineDao<E>{
 		return masters(null, null, types);
 	}
 
-
 	/* *****************************************************************************************************************
 	 * 													view
 	 ******************************************************************************************************************/
@@ -1498,7 +1493,6 @@ public interface AnylineDao<E>{
 	default List<String> ddl(View view) {
 		return ddl(runtime(), null, view, false);
 	}
-
 
 	/* *****************************************************************************************************************
 	 * 													partition table
@@ -2095,15 +2089,12 @@ public interface AnylineDao<E>{
 	 */
 	boolean rename(Role origin, Role update) throws Exception;
 
-
 	/**
 	 * 删除角色
 	 * @param role 角色
 	 * @return boolean
 	 */
 	boolean delete(Role role) throws Exception;
-
-
 
 	/* *****************************************************************************************************************
 	 * 													user

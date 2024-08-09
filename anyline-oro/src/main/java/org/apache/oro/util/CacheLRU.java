@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 /*
  * $Id: CacheLRU.java,v 1.10 2003/11/07 20:16:25 dfs Exp $
  *

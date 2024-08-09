@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.data.mongodb.datasource;
 
 import com.mongodb.ConnectionString;
@@ -67,7 +65,6 @@ public class MongoDataSourceHolder extends AbstractDataSourceHolder implements D
         return null;
     }
 
-
     @Override
     public String create(String key, DatabaseType database, String url, String user, String password) throws Exception {
         return null;
@@ -93,7 +90,6 @@ public class MongoDataSourceHolder extends AbstractDataSourceHolder implements D
     public String regTransactionManager(String key, MongoClient client, MongoDatabase database, boolean primary) {
         return "";
     }
-
 
     @Override
     public String runtime(String key, String datasource, boolean override) throws Exception {

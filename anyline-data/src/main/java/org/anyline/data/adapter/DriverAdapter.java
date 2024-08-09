@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.data.adapter;
 
 import org.anyline.adapter.DataReader;
@@ -211,6 +209,7 @@ public interface DriverAdapter {
         }
         return BasicUtil.equals(n1, n2, true);
     }
+
     /**
      * 注册数据类型别名(包含对应的标准类型、length/precision/scale等配置)
      * @param alias 数据类型别名
@@ -281,6 +280,7 @@ public interface DriverAdapter {
         }
         return false;
     }
+
     /**
      *
      * @param feature 当前运行环境特征
@@ -450,7 +450,6 @@ public interface DriverAdapter {
         }
     }
 
-
     /**
      * 合关DDL片段
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -462,6 +461,7 @@ public interface DriverAdapter {
     default List<Run> ddl(DataRuntime runtime, String random, MetadataDiffer differ) {
         return ddl(runtime, random, differ, true);
     }
+
     /**
      * 根据差异生成SQL
      * @param differ differ 需要保证表中有列信息
@@ -711,6 +711,7 @@ public interface DriverAdapter {
         }
         return list;
     }
+
     /**
      * 根据差异生成SQL
      * @param differs differs
@@ -1413,6 +1414,7 @@ public interface DriverAdapter {
     default RunPrepare buildRunPrepare(DataRuntime runtime, String text){
         return null;
     }
+
     /**
      * 解析文本中的占位符
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -1428,6 +1430,7 @@ public interface DriverAdapter {
     default boolean supportSqlVarPlaceholderRegexExt(DataRuntime runtime) {
         return true;
     }
+
     /**
      * select[命令合成]<br/>
      * 创建 select sequence 最终可执行命令
@@ -1483,6 +1486,7 @@ public interface DriverAdapter {
     default Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder) throws NotSupportException {
         throw new NotSupportException("不支持");
     }
+
     /**
      * select[命令合成-子流程] <br/>
      * 构造 JSON_CONTAINS 查询条件
@@ -1497,6 +1501,7 @@ public interface DriverAdapter {
     default Object createConditionJsonContains(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder) throws NotSupportException {
         throw new NotSupportException("不支持");
     }
+
     /**
      * select[命令合成-子流程] <br/>
      * 构造 JSON_CONTAINS 查询条件
@@ -1511,6 +1516,7 @@ public interface DriverAdapter {
     default Object createConditionJsonContainsPath(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder) throws NotSupportException {
         throw new NotSupportException("不支持");
     }
+
     /**
      * select[命令合成-子流程] <br/>
      * 构造(NOT) IN 查询条件
@@ -1804,6 +1810,7 @@ public interface DriverAdapter {
     default List<Run> buildDeleteRun(DataRuntime runtime, String table, ConfigStore configs) {
         return buildDeleteRun(runtime,  new Table(table), configs, null, null);
     }
+
     /**
      * delete[命令合成]<br/>
      * 合成 where column in (values)
@@ -1969,6 +1976,7 @@ public interface DriverAdapter {
     default <T extends Metadata> void correctSchemaFromJDBC(DataRuntime runtime, T meta, String catalog, String schema) {
         correctSchemaFromJDBC(runtime, meta, catalog, schema, false, true);
     }
+
     /**
      * 在调用jdbc接口前处理业务中的catalog,schema,部分数据库(如mysql)业务系统与dbc标准可能不一致根据实际情况处理<br/>
      * @param catalog 对于MySQL, 则对应相应的数据库, 对于Oracle来说, 则是对应相应的数据库实例, 可以不填, 也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
@@ -2686,6 +2694,7 @@ public interface DriverAdapter {
         Table query = new Table(catalog, schema, pattern);
         return buildQueryTablesCommentRun(runtime, query, types);
     }
+
     /**
      * table[结果集封装]<br/>
      * 根据查询结果集构造Table
@@ -2755,6 +2764,7 @@ public interface DriverAdapter {
         Table query = new Table(catalog, schema, pattern);
         return tables(runtime, create, previous, query, types);
     }
+
     /**
      * table[结果集封装]<br/>
      * 根据驱动内置方法补充
@@ -2883,6 +2893,7 @@ public interface DriverAdapter {
         query.setSchema(schema);
         return init(runtime, index, meta, query, row);
     }
+
     /**
      * table[结果集封装]<br/>
      * 根据查询结果封装Table对象,更多属性
@@ -2906,7 +2917,6 @@ public interface DriverAdapter {
         query.setSchema(schema);
         return detail(runtime, index, meta, query, row);
     }
-
 
     /* *****************************************************************************************************************
      *                                                     vertex
@@ -3013,7 +3023,6 @@ public interface DriverAdapter {
      */
     MetadataFieldRefer initVertexFieldRefer();
 
-
     /**
      * vertex[命令合成]<br/>
      * 查询表备注
@@ -3110,6 +3119,7 @@ public interface DriverAdapter {
         VertexTable query = new VertexTable(catalog, schema, pattern);
         return vertexs(runtime, create, previous, query, types);
     }
+
     /**
      * vertex[结果集封装]<br/>
      * 根据驱动内置方法补充
@@ -3197,6 +3207,7 @@ public interface DriverAdapter {
         query.setSchema(schema);
         return init(runtime, index, meta, query, row);
     }
+
     /**
      * vertex[结果集封装]<br/>
      * 根据查询结果封装VertexTable对象,更多属性
@@ -3352,6 +3363,7 @@ public interface DriverAdapter {
         EdgeTable query = new EdgeTable(catalog, schema, pattern);
         return buildQueryEdgesCommentRun(runtime, query, types);
     }
+
     /**
      * edge[结果集封装]<br/>
      *  根据查询结果集构造EdgeTable
@@ -3422,6 +3434,7 @@ public interface DriverAdapter {
         EdgeTable query = new EdgeTable(catalog, schema, pattern);
         return edges(runtime, create, previous, query, types);
     }
+
     /**
      * edge[结果集封装]<br/>
      * 根据驱动内置方法补充
@@ -3510,6 +3523,7 @@ public interface DriverAdapter {
         query.setSchema(schema);
         return init(runtime, index, meta, query, row);
     }
+
     /**
      * edge[结果集封装]<br/>
      * 根据查询结果封装EdgeTable对象,更多属性
@@ -3533,7 +3547,6 @@ public interface DriverAdapter {
         query.setSchema(schema);
         return detail(runtime, index, meta, query, row);
     }
-
 
     /* *****************************************************************************************************************
      *                                                     view
@@ -3666,6 +3679,7 @@ public interface DriverAdapter {
         View query = new View(catalog, schema, pattern);
         return buildQueryViewsCommentRun(runtime, query, types);
     }
+
     /**
      * view[结果集封装]<br/>
      *  根据查询结果集构造View
@@ -3735,6 +3749,7 @@ public interface DriverAdapter {
         View query = new View(catalog, schema, pattern);
         return views(runtime, create, previous, query, types);
     }
+
     /**
      * view[结果集封装]<br/>
      * 根据驱动内置方法补充
@@ -3822,6 +3837,7 @@ public interface DriverAdapter {
         query.setSchema(schema);
         return init(runtime, index, meta, query, row);
     }
+
     /**
      * view[结果集封装]<br/>
      * 根据查询结果封装View对象,更多属性
@@ -3977,6 +3993,7 @@ public interface DriverAdapter {
         MasterTable query = new MasterTable(catalog, schema, pattern);
         return buildQueryMasterTablesCommentRun(runtime, query, types);
     }
+
     /**
      * master[结果集封装]<br/>
      *  根据查询结果集构造MasterTable
@@ -4047,6 +4064,7 @@ public interface DriverAdapter {
         MasterTable query = new MasterTable(catalog, schema, pattern);
         return masters(runtime, create, previous, query, types);
     }
+
     /**
      * master[结果集封装]<br/>
      * 根据驱动内置方法补充
@@ -4134,6 +4152,7 @@ public interface DriverAdapter {
         query.setSchema(schema);
         return init(runtime, index, meta, query, row);
     }
+
     /**
      * master[结果集封装]<br/>
      * 根据查询结果封装MasterTable对象,更多属性
@@ -4226,6 +4245,7 @@ public interface DriverAdapter {
         PartitionTable query = new PartitionTable(catalog, schema, pattern);
         return buildQueryPartitionTablesRun(runtime, greedy, query, types);
     }
+
     /**
      * partition table[命令合成]<br/>
      * 根据主表查询分区表
@@ -4237,6 +4257,7 @@ public interface DriverAdapter {
     default List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, boolean greedy,  PartitionTable query) throws Exception {
         return buildQueryPartitionTablesRun(runtime, greedy, query, 1);
     }
+
     /**
      * partition table[命令合成]<br/>
      * 根据主表查询分区表
@@ -4265,6 +4286,7 @@ public interface DriverAdapter {
         query.setName(pattern);
         return buildQueryPartitionTablesRun(runtime, greedy, query);
     }
+
     /**
      * partition table[命令合成]<br/>
      * 根据主表查询分区表
@@ -4291,6 +4313,7 @@ public interface DriverAdapter {
         };
         return buildQueryPartitionTablesRun(runtime, greedy, query);
     }
+
     /**
      * partition table[命令合成]<br/>
      * 根据主表查询分区表
@@ -4376,6 +4399,7 @@ public interface DriverAdapter {
         query.setSchema(schema);
         return partitions(runtime, create, tables, query);
     }
+
     /**
      * partition table[调用入口]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -4431,6 +4455,7 @@ public interface DriverAdapter {
         query.setSchema(schema);
         return init(runtime, index, meta, query, row);
     }
+
     /**
      * partition table[结果集封装]<br/>
      * 根据查询结果封装PartitionTable对象,更多属性
@@ -4499,7 +4524,6 @@ public interface DriverAdapter {
         return columns(runtime, random, greedy, new ArrayList<>(), query, configs);
     }
 
-
     /**
      * column[调用入口]<br/>(方法1)<br/>
      * 查询多个表列，并分配到每个表中，需要保持所有表的catalog,schema相同
@@ -4526,7 +4550,6 @@ public interface DriverAdapter {
      */
     List<Run> buildQueryColumnsRun(DataRuntime runtime, boolean metadata, Column query, ConfigStore configs) throws Exception;
 
-
     /**
      * column[命令合成]<br/>(方法1)<br/>
      * 查询多个表的列
@@ -4537,7 +4560,6 @@ public interface DriverAdapter {
      * @return runs
      */
     List<Run> buildQueryColumnsRun(DataRuntime runtime, boolean metadata, Collection<? extends Table> tables, Column query, ConfigStore configs) throws Exception;
-
 
     /**
      * Column[结果集封装]<br/>
@@ -4738,6 +4760,7 @@ public interface DriverAdapter {
         query.setTable(table);
         return tags(runtime, random, greedy, table, query);
     }
+
     /**
      * tag[命令合成]<br/>
      * 查询表上的列
@@ -4753,7 +4776,6 @@ public interface DriverAdapter {
      * @return MetadataFieldRefer
      */
     MetadataFieldRefer initTagFieldRefer();
-
 
     /**
      * tag[结果集封装]<br/>
@@ -4911,6 +4933,7 @@ public interface DriverAdapter {
         query.setTable(table);
         return detail(runtime, index, meta, query, set);
     }
+
     /**
      * primary[结构集封装]<br/>
      *  根据驱动内置接口补充PrimaryKey
@@ -4960,6 +4983,7 @@ public interface DriverAdapter {
         query.setTable(table);
         return foreigns(runtime, random, greedy, query);
     }
+
     /**
      * foreign[命令合成]<br/>
      * 查询表上的外键
@@ -5129,6 +5153,7 @@ public interface DriverAdapter {
         query.setName(pattern);
         return indexes(runtime, random, query);
     }
+
     /**
      * index[命令合成]<br/>
      * 查询表上的索引
@@ -5338,6 +5363,7 @@ public interface DriverAdapter {
         query.setName(pattern);
         return constraints(runtime, random, greedy, query);
     }
+
     /**
      *
      * constraint[调用入口]<br/>
@@ -5401,7 +5427,6 @@ public interface DriverAdapter {
      * @return MetadataFieldRefer
      */
     MetadataFieldRefer initConstraintFieldRefer();
-
 
     /**
      * constraint[结果集封装]<br/>
@@ -5516,7 +5541,6 @@ public interface DriverAdapter {
 		return detail(runtime, index, meta, query, row);
 	}
 
-
 	/* *****************************************************************************************************************
 	 * 													trigger
 	 ******************************************************************************************************************/
@@ -5571,14 +5595,12 @@ public interface DriverAdapter {
 		return buildQueryTriggersRun(runtime, greedy, query);
 	}
 
-
     /**
      * trigger[结果集封装]<br/>
      * Trigger 属性与结果集对应关系
      * @return MetadataFieldRefer
      */
     MetadataFieldRefer initTriggerFieldRefer();
-
 
     /**
 	 * trigger[结果集封装]<br/>
@@ -5661,7 +5683,6 @@ public interface DriverAdapter {
 		query.setSchema(schema);
 		return detail(runtime, index, meta, query, row);
 	}
-
 
 	/* *****************************************************************************************************************
 	 * 													procedure
@@ -6378,7 +6399,6 @@ public interface DriverAdapter {
 	 * @throws Exception DDL异常
 	 */
 	boolean create(DataRuntime runtime, Table meta) throws Exception;
-
 
 	/**
 	 * table[调用入口]<br/>
@@ -7127,7 +7147,6 @@ public interface DriverAdapter {
 	 */
 	List<Run> buildAddRun(DataRuntime runtime, Column column, boolean slice) throws Exception;
 
-
 	/**
 	 * column[命令合成]<br/>
 	 * 修改列
@@ -7139,7 +7158,6 @@ public interface DriverAdapter {
 	 */
 	List<Run> buildAlterRun(DataRuntime runtime, Column column, boolean slice) throws Exception;
 
-
 	/**
 	 * column[命令合成]<br/>
 	 * 删除列
@@ -7149,7 +7167,6 @@ public interface DriverAdapter {
 	 * @return String
 	 */
 	List<Run> buildDropRun(DataRuntime runtime, Column column, boolean slice) throws Exception;
-
 
 	/**
 	 * column[命令合成]<br/>
@@ -8451,7 +8468,6 @@ public interface DriverAdapter {
 	 */
 	List<Run> buildRenameRun(DataRuntime runtime, Sequence meta) throws Exception;
 
-
 	/* *****************************************************************************************************************
 	 *
 	 * 													Authorize
@@ -8496,7 +8512,6 @@ public interface DriverAdapter {
 	 */
 	boolean create(DataRuntime runtime, Role role) throws Exception;
 
-
 	/**
 	 * role[调用入口]<br/>
 	 * 角色重命名
@@ -8505,7 +8520,6 @@ public interface DriverAdapter {
 	 * @return boolean
 	 */
 	boolean rename(DataRuntime runtime, Role origin, Role update) throws Exception;
-
 
 	/**
 	 * role[调用入口]<br/>
@@ -8909,8 +8923,6 @@ public interface DriverAdapter {
 		return detail(runtime, index, meta, new User(catalog, schema, null), row);
 	}
 
-
-
 	/* *****************************************************************************************************************
 	 * 													privilege
 	 * -----------------------------------------------------------------------------------------------------------------
@@ -8950,7 +8962,6 @@ public interface DriverAdapter {
 	default <T extends Privilege> List<T> privileges(DataRuntime runtime, String random, boolean greedy, String user) throws Exception {
 		return privileges(runtime, random, greedy, new User(user));
 	}
-
 
 	/**
 	 * privilege[命令合成]<br/>
@@ -9058,7 +9069,6 @@ public interface DriverAdapter {
 	 * boolean revoke(DataRuntime runtime, User user, Privilege ... privileges) throws Exception	 *
 	 ******************************************************************************************************************/
 
-
 	/**
 	 * privilege[调用入口]<br/>
 	 * 授权
@@ -9106,7 +9116,6 @@ public interface DriverAdapter {
 		return revoke(runtime, new User(user), privileges);
 	}
 
-
 	/**
 	 * privilege[命令合成]<br/>
 	 * 撤销授权
@@ -9115,7 +9124,6 @@ public interface DriverAdapter {
 	 * @return List
 	 */
 	List<Run> buildRevokeRun(DataRuntime runtime, User user, Privilege ... privileges) throws Exception;
-
 
 	/* *****************************************************************************************************************
 	 *

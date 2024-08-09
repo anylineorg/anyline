@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.data.prepare.xml.init;
 
 import org.anyline.data.prepare.Condition;
@@ -56,7 +54,7 @@ public class DefaultXMLConditionChain extends AbstractConditionChain implements 
 					}
 				}
 				if(BasicUtil.isNotEmpty(txt) && condition instanceof AutoCondition) {
-					txt = condition.getJoin() + txt;
+					txt = condition.getJoinText() + txt;
 				}
 				if(condition.isActive()) {
 					builder.append("\n\t");

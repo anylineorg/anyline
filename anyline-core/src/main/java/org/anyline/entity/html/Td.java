@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.entity.html;
 
 import org.anyline.util.BeanUtil;
@@ -433,6 +431,7 @@ public class Td {
         setBorder( "tr2bl", "1px", "auto", "single");
         return this;
     }
+
     /**
      * 设置左上至右下边框
      * @param top 左上文本
@@ -583,6 +582,7 @@ public class Td {
         styles.clear();
         return this;
     }
+
     /**
      * 清除背景色
      * @return td
@@ -600,6 +600,7 @@ public class Td {
         styles.remove("color");
         return this;
     }
+
     /**
      * 粗体
      * @param bold 是否
@@ -666,6 +667,7 @@ public class Td {
         }
         return this;
     }
+
     /**
      * 斜体
      * @param italic 是否

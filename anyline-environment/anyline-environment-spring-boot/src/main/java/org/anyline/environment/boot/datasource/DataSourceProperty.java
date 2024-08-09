@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.environment.boot.datasource;
 
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
@@ -92,7 +90,6 @@ public class DataSourceProperty extends DataSourceProperties {
      * Authentication database name.
      */
     private String authenticationDatabase;
-
 
     /**
      * Login user of the mongo server. Cannot be set with URI.
@@ -333,12 +330,10 @@ public class DataSourceProperty extends DataSourceProperties {
         this.minIdle = minIdle;
     }
 
-    
     public String getPassword() {
         return password;
     }
 
-    
     public void setPassword(String password) {
         this.password = password;
     }
@@ -383,12 +378,10 @@ public class DataSourceProperty extends DataSourceProperties {
         this.datasourceJndiName = datasourceJndiName;
     }
 
-    
     public String getDriverClassName() {
         return driverClassName;
     }
 
-    
     public void setDriverClassName(String driverClassName) {
         this.driverClassName = driverClassName;
     }

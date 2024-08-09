@@ -14,15 +14,11 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.data.transaction.init;
 
 import org.anyline.data.transaction.TransactionDefine;
 
-
 public class DefaultTransactionDefine implements TransactionDefine {
-
 
     /** Prefix for the propagation constants defined in TransactionDefinition. */
     public static final String PREFIX_PROPAGATION = "PROPAGATION_";
@@ -36,8 +32,6 @@ public class DefaultTransactionDefine implements TransactionDefine {
     /** Marker for read-only transactions in description strings. */
     public static final String READ_ONLY_MARKER = "readOnly";
 
-
-
     private int propagationBehavior = PROPAGATION_REQUIRED;
 
     private int isolationLevel = ISOLATION_DEFAULT;
@@ -48,7 +42,6 @@ public class DefaultTransactionDefine implements TransactionDefine {
 
     private String name;
     private MODE mode = MODE.THREAD;
-
 
     /**
      * Create a new DefaultTransactionDefinition, with default settings.
@@ -85,9 +78,6 @@ public class DefaultTransactionDefine implements TransactionDefine {
         this.propagationBehavior = propagationBehavior;
     }
 
-
-
-
     @Override
     public final int getPropagationBehavior() {
         return this.propagationBehavior;
@@ -97,7 +87,6 @@ public class DefaultTransactionDefine implements TransactionDefine {
     public String getPropagationBehaviorName() {
         return null;
     }
-
 
     @Override
     public final int getIsolationLevel() {
@@ -160,14 +149,17 @@ public class DefaultTransactionDefine implements TransactionDefine {
     public void setName(String name) {
         this.name = name;
     }
+
     @Override
     public String getName() {
         return this.name;
     }
+
     @Override
     public MODE getMode() {
         return mode;
     }
+
     @Override
     public void setMode(MODE mode) {
         this.mode = mode;

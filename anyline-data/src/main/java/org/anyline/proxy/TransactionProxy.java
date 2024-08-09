@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.proxy;
 
 import org.anyline.data.runtime.RuntimeHolder;
@@ -92,6 +90,7 @@ public class TransactionProxy {
     public static TransactionState start() throws SQLException {
         return start(RuntimeHolder.runtime().datasource());
     }
+
     /**
      * 提交事务 同时释放连接(发生异常时,不会释放连接)
      * @param state 启动事务时返回status
@@ -104,6 +103,7 @@ public class TransactionProxy {
         }
         manage.commit(state);
     }
+
     /**
      * 回滚事务 同时释放连接(发生异常时,不会释放连接)
      * @param state 启动事务时返回status

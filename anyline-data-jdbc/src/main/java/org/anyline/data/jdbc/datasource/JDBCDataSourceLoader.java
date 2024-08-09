@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.data.jdbc.datasource;
 
 import org.anyline.annotation.Component;
@@ -42,6 +40,7 @@ public class JDBCDataSourceLoader extends AbstractDataSourceLoader implements Da
     public DataSourceHolder holder() {
         return holder;
     }
+
     @Override
     public List<String> load() {
         List<String> list = new ArrayList<>();
@@ -95,6 +94,5 @@ public class JDBCDataSourceLoader extends AbstractDataSourceLoader implements Da
         }
         return list;
     }
-
 
 }

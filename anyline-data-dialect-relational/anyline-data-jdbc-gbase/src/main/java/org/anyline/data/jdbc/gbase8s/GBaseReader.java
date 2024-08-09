@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.data.jdbc.gbase8s;
 
 import org.anyline.adapter.DataReader;

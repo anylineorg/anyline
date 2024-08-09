@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.data.jdbc.neo4j.entity;
 
 import org.anyline.entity.OriginRow;

@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 package org.anyline.data.jdbc.oracle;
 
 import org.anyline.annotation.Component;
@@ -43,6 +41,7 @@ public class Oracle11Adapter extends OracleAdapter implements JDBCAdapter {
     public Oracle11Adapter() {
         super();
     }
+
     /**
      * 验证运行环境与当前适配器是否匹配<br/>
      * 默认不连接只根据连接参数<br/>
@@ -76,6 +75,7 @@ public class Oracle11Adapter extends OracleAdapter implements JDBCAdapter {
         }
         return false;
     }
+
     @Override
     public String mergeFinalQuery(DataRuntime runtime, Run run) {
         StringBuilder builder = new StringBuilder();
