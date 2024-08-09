@@ -714,7 +714,6 @@ Geometry 1, Geometry 2, ..., Geometry N: 表示 GeometryCollection 中的每个�
         buffer.put((byte) geometry.endian());
         buffer.put(geometry.type());
     }*/
-
     public static byte[] wkb(Point point) {
         init(point);
         ByteBuffer buffer = new ByteBuffer(25, point.endian());

@@ -169,7 +169,6 @@ public class ServiceProxy {
     /* *****************************************************************************************************************
      * 													INSERT
      ******************************************************************************************************************/
-
     public static long insert(int batch, String dest, Object data, List<String>  columns) {
         return service.insert(batch, dest, data, columns);
     }
@@ -360,7 +359,6 @@ public class ServiceProxy {
      * @param configs 	更新条件
      * @return int 影响行数
      */
-
     public static long update(int batch, String dest, Object data, ConfigStore configs, List<String> columns) {
         return service.update(batch, dest, data, configs, columns);
     }
@@ -1384,7 +1382,6 @@ public class ServiceProxy {
     /* *****************************************************************************************************************
      * 													METADATA
      ******************************************************************************************************************/
-
     public static List<String> tables(Catalog catalog, Schema schema, String name, int types) {
         return service.tables(catalog, schema, name, types);
     }

@@ -30,7 +30,6 @@ import org.anyline.service.init.DefaultService;
 import org.anyline.util.ConfigTable;
 import org.elasticsearch.client.RestClient;
 
-import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -56,7 +55,6 @@ public class ElasticSearchRuntimeHolder extends AbstractRuntimeHolder {
      * @return DataRuntime
      * @throws Exception 异常 Exception
      */
-
     public DataRuntime temporary(Object client, String database, DriverAdapter adapter) throws Exception {
         ElasticSearchRuntime runtime = new ElasticSearchRuntime();
         if(null == adapter) {
@@ -91,7 +89,6 @@ public class ElasticSearchRuntimeHolder extends AbstractRuntimeHolder {
      * @param client RestClient
      * @param adapter adapter 可以为空 第一次执行时补齐
      */
-
     public ElasticSearchRuntime reg(String datasource, RestClient client, DriverAdapter adapter) {
         log.debug("[create ElasticSearch runtime][key:{}]", datasource);
         if(null == adapter) {
@@ -115,11 +112,9 @@ public class ElasticSearchRuntimeHolder extends AbstractRuntimeHolder {
         serviceDefine.addReferenceValue("dao", dao_key);
         ConfigTable.environment().regBean(service_key, serviceDefine);
         return runtime;
-
     }
 
     public boolean destroy(String key) {
-
         int close = 0;
         DataSourceMonitor monitor = DriverAdapterHolder.getMonitor();
         if(null != monitor){

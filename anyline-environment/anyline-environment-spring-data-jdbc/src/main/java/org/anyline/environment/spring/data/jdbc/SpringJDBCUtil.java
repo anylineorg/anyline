@@ -43,7 +43,6 @@ public class SpringJDBCUtil {
      * @param <T> Column
      * @throws Exception Exception
      */
-
     public static <T extends Column> LinkedHashMap<String, T> columns(DriverAdapter adapter, DataRuntime runtime, boolean create, LinkedHashMap<String, T> columns, Table table, SqlRowSet set) throws Exception {
         if(null == columns) {
             columns = new LinkedHashMap<>();

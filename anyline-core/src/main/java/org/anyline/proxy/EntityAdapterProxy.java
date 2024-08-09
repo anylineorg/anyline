@@ -321,7 +321,6 @@ public class EntityAdapterProxy {
      * @param obj obj
      * @return Map
      */
-
     public static Map<String, Object> primaryValues(Object obj) {
         List<EntityAdapter> list = getAdapters(obj.getClass());
         for(EntityAdapter adapter:list) {

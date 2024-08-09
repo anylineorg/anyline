@@ -859,7 +859,6 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
      * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
      * @return int
      */
-
     public long delete(DataRuntime runtime, String random, ConfigStore configs, Run run) {
         MongoRun mr = (MongoRun) run;
         long result = -1;

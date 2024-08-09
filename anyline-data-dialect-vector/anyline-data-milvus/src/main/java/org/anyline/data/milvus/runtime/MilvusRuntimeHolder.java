@@ -55,7 +55,6 @@ public class MilvusRuntimeHolder extends AbstractRuntimeHolder {
      * @return DataRuntime
      * @throws Exception 异常 Exception
      */
-
     public DataRuntime temporary(Object client, String database, DriverAdapter adapter) throws Exception {
         MilvusRuntime runtime = new MilvusRuntime();
         if(null == adapter) {
@@ -90,7 +89,6 @@ public class MilvusRuntimeHolder extends AbstractRuntimeHolder {
      * @param client MilvusClientV2
      * @param adapter adapter 可以为空 第一次执行时补齐
      */
-
     public MilvusRuntime reg(String datasource, MilvusClientV2 client, DriverAdapter adapter) {
         log.debug("[create milvus runtime][key:{}]", datasource);
         if(null == adapter) {

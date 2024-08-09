@@ -79,7 +79,6 @@ public class CacheProxy {
     private static Map<String, DataRow> cache_table_maps = new HashMap<>();
     private static Map<String, DataRow> cache_view_maps = new HashMap<>();
 */
-
     public static String key(DataRuntime runtime, String flag, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs){
         StringBuilder key = new StringBuilder();
         key.append(runtime.datasource()).append("_").append(flag).append("_").append(greedy).append("_");
@@ -308,7 +307,6 @@ public class CacheProxy {
         }
         return row;
     }*/
-
     public static <T extends Column> LinkedHashMap<String, T> columns(String key) {
         return (LinkedHashMap<String, T>) caches().get(key);
     }
@@ -331,7 +329,6 @@ public class CacheProxy {
             cache_columns.put(key, static_cache);
         }
     } */
-
     public static void clear() {/*
         if(null != provider && !ConfigTable.IS_CACHE_DISABLED) {
             String cache = ConfigTable.METADATA_CACHE_KEY;

@@ -590,7 +590,6 @@ public class Metadata<T extends Metadata> {
      * DDL是否立即执行
      * @param execute  默认:true, false:只生成SQL不支持，可以通过ddls()返回生成的SQL
      */
-
     public void execute(boolean execute) {
         this.execute = execute;
     }

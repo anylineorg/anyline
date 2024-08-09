@@ -5129,6 +5129,21 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return null;
 	}
 
+    /**
+     * 根据结果集对象获取列结构,如果有表名应该调用metadata().columns(table);或metadata().table(table).getColumns()
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
+     * @param comment 是否需要查询列注释
+     * @return LinkedHashMap
+     */
+    @Override
+    public LinkedHashMap<String,Column> metadata(DataRuntime runtime, RunPrepare prepare, boolean comment) {
+        if(log.isDebugEnabled()) {
+            log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 LinkedHashMap<String,Column> metadata(DataRuntime runtime, RunPrepare prepare, boolean comment)", 37));
+        }
+        return null;
+    }
+
 	/**
 	 * 检测name,name中可能包含catalog.schema.name<br/>
 	 * 如果有一项或三项，在父类中解析<br/>

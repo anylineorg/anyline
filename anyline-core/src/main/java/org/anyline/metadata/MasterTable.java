@@ -117,7 +117,6 @@ public class MasterTable extends Table<MasterTable> implements Serializable {
     }
 
 /* ********************************* field refer ********************************** */
-
     public static final String FIELD_KEYWORD                       = "KEYWORD";
     public static final String FIELD_PARTITION                     = "PARTITION";
 }

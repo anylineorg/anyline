@@ -28,7 +28,6 @@ public class ManyToMany {
        , inverseJoinColumns = @JoinColumn(name="DEPARTMENT_ID"))   //关联表中与当前表关联的外键
         List<Department> departments;
     */
-
     public String joinTable			; // HR_EMPLOYEE_DEPARTMENT 	: 关联表
     public String joinColumn		; // EMPLOYEE_ID				: 关联表中与当前表关联的外键
     public String inverseJoinColumn	; // DEPARTMENT_ID				: 关联表中与右表关联的外键

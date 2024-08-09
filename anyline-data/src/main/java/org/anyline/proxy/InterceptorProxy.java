@@ -111,7 +111,6 @@ public class InterceptorProxy {
      *                                  DML
      *
      * ****************************************************************************************************************/
-
     public static SWITCH prepareQuery(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
         SWITCH swt = SWITCH.CONTINUE;
         for(QueryInterceptor interceptor:queryInterceptors) {
@@ -449,7 +448,6 @@ public class InterceptorProxy {
      *                                  DDL
      *
      * ****************************************************************************************************************/
-
     public static <T extends Metadata<T>> SWITCH prepare(DataRuntime runtime, String random, ACTION.DDL action, Metadata<T> metadata) {
         SWITCH swt = metadata.swt();//SWITCH.CONTINUE;
         List<DDInterceptor> interceptors = dds.get(action);

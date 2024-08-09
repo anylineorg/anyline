@@ -4555,7 +4555,6 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
      *      {编号:01,姓名:张三,2010-物理:{分数:100,等级:A}}
      *  ]
      */
-
     public DataSet pivot(List<String> pks, List<String> classKeys, List<String> valueKeys) {
         DataSet result = distinct(pks);
         DataSet classValues = distinct(classKeys);  // [{年度:2010,科目:数学},{年度:2010,科目:物理},{年度:2011,科目:数学}]

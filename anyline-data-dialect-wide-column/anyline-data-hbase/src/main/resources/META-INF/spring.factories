@@ -1,0 +1,5 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+org.anyline.data.hbase.adapter.HBaseAdapter,\
+org.anyline.data.hbase.datasource.HBaseDataSourceLoader,\
+org.anyline.data.hbase.datasource.HBaseDataSourceHolder,\
+org.anyline.data.hbase.adapter.HBaseActuator

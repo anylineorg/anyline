@@ -37,7 +37,6 @@ public class HBaseRuntimeHolder extends AbstractRuntimeHolder {
     /**
      * 临时数据源
      */
-
     private static Map<String, Connection> temporary = new HashMap<>();
 
     private static final HBaseRuntimeHolder instance = new HBaseRuntimeHolder();
@@ -55,7 +54,6 @@ public class HBaseRuntimeHolder extends AbstractRuntimeHolder {
      * @return DataRuntime
      * @throws Exception 异常 Exception
      */
-
     public DataRuntime temporary(Object client, String database, DriverAdapter adapter) throws Exception {
         HBaseRuntime runtime = new HBaseRuntime();
         if(null == adapter) {
@@ -90,7 +88,6 @@ public class HBaseRuntimeHolder extends AbstractRuntimeHolder {
      * @param client Connection
      * @param adapter adapter 可以为空 第一次执行时补齐
      */
-
     public HBaseRuntime reg(String datasource, Connection client, DriverAdapter adapter) {
         log.debug("[create HBase runtime][key:{}]", datasource);
         if(null == adapter) {
