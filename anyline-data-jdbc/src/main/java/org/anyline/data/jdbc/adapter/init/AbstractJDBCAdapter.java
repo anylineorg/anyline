@@ -3640,11 +3640,11 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
             }
         }
         //mysql中的on update
-        Boolean onupdate = matchBoolean(row, refer, "onupdate_check", "onupdate_check_value");
+        Boolean onupdate = matchBoolean(row, refer, Column.FIELD_ON_UPDATE_CHECK, Column.FIELD_ON_UPDATE_CHECK_VALUE);
         if(null != onupdate) {
             meta.setOnUpdate(onupdate);
         }
-        meta.setObjectId(getLong(row, refer, "object", null));
+        meta.setObjectId(getLong(row, refer, Column.FIELD_OBJECT_ID, null));
         //主键 mysql已合并
         Boolean primary = matchBoolean(row, refer, Column.FIELD_PRIMARY_CHECK, Column.FIELD_PRIMARY_CHECK_VALUE);
         if(null != primary && primary){
@@ -3657,7 +3657,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         //非空
         if(-1 == meta.isNullable()) {
             try {
-                meta.nullable(getBoolean(row, refer, "nullable", null));//"IS_NULLABLE","NULLABLE","NULLS"
+                meta.nullable(getBoolean(row, refer,Column.FIELD_NULLABLE, null));//"IS_NULLABLE","NULLABLE","NULLS"
             }catch (Exception ignored) {}
         }
         //oracle中decimal(18,9) data_length == 22 DATA_PRECISION=18
@@ -3697,10 +3697,10 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         }catch (Exception ignored) {}
 
         if(null == meta.getCharset()) {
-            meta.setCharset(getString(row, refer, "charset"));//"CHARACTER_SET_NAME"
+            meta.setCharset(getString(row, refer, Table.FIELD_CHARSET));//"CHARACTER_SET_NAME"
         }
         if(null == meta.getCollate()) {
-            meta.setCollate(getString(row, refer, "collate"));//COLLATION_NAME
+            meta.setCollate(getString(row, refer, Table.FIELD_COLLATE));//COLLATION_NAME
         }
         if(null == meta.getTypeMetadata()) {
             typeMetadata(runtime, meta);

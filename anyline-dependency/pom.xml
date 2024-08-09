@@ -62,7 +62,7 @@
 		<influxdb-client.version>5.0.0</influxdb-client.version>
 		<milvus-client.version>2.4.2</milvus-client.version>
 		<pinecone-client.version>2.0.0</pinecone-client.version>
-		<hbase-client.version>2.0.5</hbase-client.version>
+		<hbase-client.version>2.6.0</hbase-client.version>
 
 		<javax.mail.version>1.5.0-b01</javax.mail.version>
 		<fastjson.version>1.2.83</fastjson.version>

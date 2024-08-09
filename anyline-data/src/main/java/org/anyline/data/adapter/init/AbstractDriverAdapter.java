@@ -5709,19 +5709,19 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	@Override
 	public <T extends Table> T detail(DataRuntime runtime, int index, T meta, Table query, DataRow row) {
         MetadataFieldRefer refer = refer(runtime, Table.class);
-        meta.setObjectId(getLong(row, refer, "object"));
-        meta.setComment(getString(row, refer, "comment"));
-        meta.setDataRows(getLong(row, refer, "rows"));
-        meta.setCollate(getString(row, refer, "collation"));
-        meta.setDataLength(getLong(row, refer, "length"));
-        meta.setDataFree(getLong(row, refer, "free"));
-        meta.setIncrement(getLong(row, refer, "Increment"));
-        meta.setIndexLength(getLong(row, refer, "index_length"));
-        meta.setCreateTime(getDate(row, refer, "create_time"));
-        meta.setUpdateTime(getDate(row, refer, "update_time"));
-        meta.setType(getString(row, refer, "type"));
-        meta.setEngine(getString(row, refer, "engine"));
-        meta.setTemporary(getBoolean(row, refer, "temporary", false));
+        meta.setObjectId(getLong(row, refer, Table.FIELD_OBJECT_ID));
+        meta.setComment(getString(row, refer, Table.FIELD_COMMENT));
+        meta.setDataRows(getLong(row, refer, Table.FIELD_DATA_ROWS));
+        meta.setCollate(getString(row, refer, Table.FIELD_COLLATE));
+        meta.setDataLength(getLong(row, refer, Table.FIELD_DATA_LENGTH));
+        meta.setDataFree(getLong(row, refer, Table.FIELD_DATA_FREE));
+        meta.setIncrement(getLong(row, refer, Table.FIELD_INCREMENT));
+        meta.setIndexLength(getLong(row, refer, Table.FIELD_INDEX_LENGTH));
+        meta.setCreateTime(getDate(row, refer, Table.FIELD_CREATE_TIME));
+        meta.setUpdateTime(getDate(row, refer, Table.FIELD_UPDATE_TIME));
+        meta.setType(getString(row, refer, Table.FIELD_TYPE));
+        meta.setEngine(getString(row, refer, Table.FIELD_ENGINE));
+        meta.setTemporary(getBoolean(row, refer, Table.FIELD_TEMPORARY, false));
         return meta;
 	}
 
@@ -5744,8 +5744,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         }
         MetadataFieldRefer refer = new MetadataFieldRefer(TableComment.class);
         for(DataRow row:set) {
-            String tab = getString(row, refer, "table");
-            String comment = getString(row, refer, "value");
+            String tab = getString(row, refer, TableComment.FIELD_TABLE);
+            String comment = getString(row, refer, TableComment.FIELD_VALUE);
             if(null != tab && null != comment) {
                 Table table = previous.get(tab.toUpperCase());
                 if(null != table) {
@@ -5777,10 +5777,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         }
         MetadataFieldRefer refer = new MetadataFieldRefer(TableComment.class);
         for(DataRow row:set) {
-            String tab = getString(row, refer, "table");
-            String comment = getString(row, refer, "value");
-            String catlog_ = getString(row, refer, "catalog");
-            String schema_ = getString(row, refer, "schema");
+            String tab = getString(row, refer, TableComment.FIELD_TABLE);
+            String comment = getString(row, refer, TableComment.FIELD_VALUE);
+            String catlog_ = getString(row, refer, TableComment.FIELD_CATALOG);
+            String schema_ = getString(row, refer, TableComment.FIELD_SCHEMA);
             if(null == catalog && BasicUtil.isNotEmpty(catlog_)) {
                 catalog = new Catalog(catlog_);
             }

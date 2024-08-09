@@ -1984,7 +1984,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         refer.map(Table.FIELD_CREATE_TIME, "CREATE_TIME");
         refer.map(Table.FIELD_UPDATE_TIME, "UPDATE_TIME");
         refer.map(Table.FIELD_TEMPORARY, "IS_TEMPORARY");
-        return super.initTableFieldRefer();
+        return refer;
     }
 
     /**
