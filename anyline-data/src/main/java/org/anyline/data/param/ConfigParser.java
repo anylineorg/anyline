@@ -136,7 +136,7 @@ public class ConfigParser {
 				config += "+";
 			}
 			type = type.replace("+", "");
-			result.setValueClass(type);
+			result.datatype(type);
 		}
 		Compare.EMPTY_VALUE_SWITCH swt = Compare.EMPTY_VALUE_SWITCH.IGNORE;
 		if(key.contains(":")) {

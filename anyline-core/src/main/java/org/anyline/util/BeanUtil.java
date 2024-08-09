@@ -1281,7 +1281,7 @@ public class BeanUtil {
 	public static <K, V> Map<K, V> object2map(Map map, Object obj) {
 		return object2map(map, obj, null, null);
 	}
-	public static <K, V> Map<K, V> object2map(Map map, Object obj, List<K> keys, Class<? extends V> valueClass) {
+	public static <K, V> Map<K, V> object2map(Map map, Object obj, List<K> keys, Class<? extends V> datatype) {
 		if(null == obj) {
 			return null;
 		}
@@ -1296,8 +1296,8 @@ public class BeanUtil {
 					for (Object key:objmap.keySet()) {
 						Object value = objmap.get(key);
 						if(null != value){
-							if(null != valueClass) {
-								value = ConvertProxy.convert(value, valueClass, false);
+							if(null != datatype) {
+								value = ConvertProxy.convert(value, datatype, false);
 							}else{
 								if (ClassUtil.isWrapClass(value) && !(value instanceof String)) {
 									value = object22map(value);
@@ -1319,8 +1319,8 @@ public class BeanUtil {
 						continue;
 					}
 					Object value = getFieldValue(obj, field);
-					if(null != valueClass && null != value){
-						value = ConvertProxy.convert(value, valueClass, false);
+					if(null != datatype && null != value){
+						value = ConvertProxy.convert(value, datatype, false);
 					}
 					/*if (null == value) {
 						value = "";
@@ -1339,8 +1339,8 @@ public class BeanUtil {
 				for (K key : keys) {
 					Object value = getFieldValue(obj, key.toString());
 
-					if(null != valueClass && null != value){
-						value = ConvertProxy.convert(value, valueClass, false);
+					if(null != datatype && null != value){
+						value = ConvertProxy.convert(value, datatype, false);
 					}
 					/*if (null == value) {
 						value = "";

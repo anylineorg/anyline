@@ -17547,12 +17547,12 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				//根据列属性转换(最终也是根据java类型转换)
 				value = convert(runtime, metadata, value);
 			}else {
-                String valueClass = run.getValueClass();
+                String datatype = run.datatype();
                 TypeMetadata tm = null;
-                if (null != valueClass) {
-                    tm = alias.get(valueClass.toUpperCase());
+                if (null != datatype) {
+                    tm = alias.get(datatype.toUpperCase());
                     if (null == tm) {
-                        log.warn("[类型检测失败][class:{}]", valueClass);
+                        log.warn("[类型检测失败][datatype:{}]", datatype);
                     }
                 }
                 if (null != tm) {

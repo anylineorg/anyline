@@ -47,7 +47,7 @@ public class ParseResult {
 	private boolean isValueEncrypt			; // value是否加密
 	 
 	private boolean setEncrypt = false		; // 是否已指定加密方式
-	private String valueClass;
+	private String datatype;
  
 	private List<ParseResult> defs = new ArrayList<>();	// 默认值
 	private ParseResult or = null;	// or 只有value或defs有值时 ors才生效
@@ -77,6 +77,9 @@ public class ParseResult {
 		}
 		if(empty || BasicUtil.isNotEmpty(true, defs)) {
 			row.put("default", defs);
+		}
+		if(empty || BasicUtil.isNotEmpty(datatype)) {
+			row.put("datatype", datatype);
 		}
 		row.put("compare", compare.getCode());
 		row.put("join", join.getCode());
@@ -209,11 +212,11 @@ public class ParseResult {
 		return false;
 	}
 
-	public String getValueClass() {
-		return valueClass;
+	public String datatype() {
+		return datatype;
 	}
 
-	public void setValueClass(String valueClass) {
-		this.valueClass = valueClass;
+	public void datatype(String datatype) {
+		this.datatype = datatype;
 	}
 }

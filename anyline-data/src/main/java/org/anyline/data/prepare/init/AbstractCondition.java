@@ -42,7 +42,7 @@ public abstract class AbstractCondition implements Condition {
 	protected int variableType = VARIABLE_PLACEHOLDER_TYPE_NONE				;	// 变量标记方式
 	protected List<RunValue> runValues = new ArrayList<>()				;	// 运行时参数
 	protected List<RunValue> runOrValues = new ArrayList<>()			;	// 运行时参数(or)
-	protected String valueClass											;   // 数据类型 到 adapter中根据TypeMetadata解析成class
+	protected String datatype											;   // 数据类型 到 adapter中根据TypeMetadata解析成class
 	protected Map<String, Object> runValuesMap = new HashMap<String, Object>()		;	// 运行时参数
 	protected Map<String, Object> runOrValuesMap = new HashMap<String, Object>()		;	// 运行时参数(or)
 	protected Condition.JOIN join = JOIN.AND							;	// 连接方式
@@ -204,13 +204,13 @@ public abstract class AbstractCondition implements Condition {
 	}
 
 	@Override
-	public String getValueClass() {
-		return valueClass;
+	public String datatype() {
+		return datatype;
 	}
 
 	@Override
-	public void setValueClass(String valueClass) {
-		this.valueClass = valueClass;
+	public void datatype(String datatype) {
+		this.datatype = datatype;
 	}
 
 	@Override

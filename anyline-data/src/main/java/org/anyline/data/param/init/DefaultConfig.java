@@ -41,6 +41,7 @@ public class DefaultConfig implements Config {
 	protected String text					 ; // 静态条件(如原生SQL) 没有参数
 	protected List<Object> values			 ; // VALUE
 	protected List<Object> orValues			 ; // OR VALUE
+	protected String datatype				 ; // 数据类型
 	protected boolean empty					 ; // 是否值为空
 	protected ParseResult parser			 ; //
 	protected boolean overCondition  = false ; // 覆盖相同var的查询条件
@@ -58,6 +59,9 @@ public class DefaultConfig implements Config {
 		Condition.JOIN join = getJoin();
 		if(null != join) {
 			map.put("join", join);
+		}
+		if(null != datatype){
+			map.put("datatype", datatype);
 		}
 		map.put("prefix", this.getPrefix());
 		map.put("var", this.getVariable());
@@ -97,6 +101,9 @@ public class DefaultConfig implements Config {
 				row.put("values", values);
 			}
 		}
+		if(null != datatype || empty){
+			row.put("datatype", datatype);
+		}
 		row.put("over_condition", overCondition);
 		row.put("over_value", overValue);
 		row.put("parser", parser.map(empty));
@@ -112,7 +119,16 @@ public class DefaultConfig implements Config {
 		map.put("values", values);
 		return BeanUtil.map2json(map);
 	}
- 
+
+	@Override
+	public String datatype() {
+		return datatype;
+	}
+
+	@Override
+	public void datatype(String datatype) {
+		this.datatype = datatype;
+	}
 	/** 
 	 * 解析配置 
 	 * 		[+]	SQL参数名	[.SQL变量名]	:	[&gt;=]request参数名		:默认值 
@@ -207,6 +223,7 @@ public class DefaultConfig implements Config {
 			if(this instanceof ConfigChain) {
 				condition = new DefaultAutoConditionChain((ConfigChain)this);
 				condition.setJoin(this.getJoin());
+				condition.datatype(datatype);
 				condition.setContainer(chain);
 			}else{
 				if(null != text) {
@@ -225,7 +242,10 @@ public class DefaultConfig implements Config {
 			condition.setSwt(getSwt());
 			//condition.apart(apart);
 			condition.integrality(integrality);
-			condition.setValueClass(parser.getValueClass());
+			if(BasicUtil.isNotEmpty(parser.datatype())) {
+				//parse中有可能没有设置
+				condition.datatype(parser.datatype());
+			}
 		}
 		return condition;
 	} 

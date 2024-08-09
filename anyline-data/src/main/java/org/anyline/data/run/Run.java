@@ -70,10 +70,11 @@ public interface Run extends org.anyline.data.Run{
 	 * @param prefix 表名
 	 * @param var 列名
 	 * @param value 值 
-	 * @param compare 比较方式 
+	 * @param compare 比较方式
+	 * @param datatype 数据类型 以StandardTypeMetadata枚举为准不区分大小写
 	 * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
 	 */
-	Run addCondition(EMPTY_VALUE_SWITCH swt, Compare compare, String prefix, String var, Object value, String valueClass);
+	Run addCondition(EMPTY_VALUE_SWITCH swt, Compare compare, String prefix, String var, Object value, String datatype);
 	Run setConditionChain(ConditionChain chain);
 
 	/**

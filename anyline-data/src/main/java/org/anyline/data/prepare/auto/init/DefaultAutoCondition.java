@@ -52,6 +52,7 @@ public class DefaultAutoCondition extends AbstractCondition implements AutoCondi
  
 	public DefaultAutoCondition(Config config) {
 		setJoin(config.getJoin());
+		datatype(config.datatype());
 		setTable(config.getPrefix());   	// 表名或表别名
 		setColumn(config.getVariable());   // 列名
 		setValues(config.getValues()); 
@@ -300,19 +301,19 @@ public class DefaultAutoCondition extends AbstractCondition implements AutoCondi
 		// runtime value 有占位符
 		if(support && placeholder && variableType != Condition.VARIABLE_PLACEHOLDER_TYPE_NONE) {
 			if(null == val) {
-				runValues.add(new RunValue(this.column, val, valueClass));
+				runValues.add(new RunValue(this.column, val, datatype));
 			}else { //多个值 IN 、 BETWEEN 、 FIND_IN_SET
 				// (compareCode == 40 || compareCode == 140 || compareCode == 80 || (compareCode >=60 && compareCode <= 62) || compareCode == 75 || compareCode ==76) {
 				if(compare.valueCount() > 1) {
 					List<Object> list = getValues(val);
 					if (null != list) {
 						for (Object obj : list) {
-							runValues.add(new RunValue(this.column, obj, valueClass));
+							runValues.add(new RunValue(this.column, obj, datatype));
 						}
 					}
 				} else {
 					Object value = getValue(val);
-					runValues.add(new RunValue(this.column, value, valueClass));
+					runValues.add(new RunValue(this.column, value, datatype));
 				}
 			}
 		}
@@ -397,6 +398,9 @@ public class DefaultAutoCondition extends AbstractCondition implements AutoCondi
 		Condition.JOIN join = getJoin();
 		if(null != join) {
 			map.put("join", join);
+		}
+		if(null != datatype){
+			map.put("datatype", datatype);
 		}
 		map.put("column", column);
 		map.put("compare", compare.getName());

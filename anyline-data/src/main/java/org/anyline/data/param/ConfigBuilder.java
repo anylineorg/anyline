@@ -98,6 +98,7 @@ public class ConfigBuilder {
             config.setText(row.getString("text"));
             config.setKey(row.getString("key"));
             config.setValue(row.get("values"));
+            config.datatype(row.getString("datatype"));
             config.setOverCondition(row.getBoolean("over_condition", false));
             config.setOverValue(row.getBoolean("over_value", true));
             config.setCompare(compare(row.getInt("compare", Compare.EQUAL.getCode())));
@@ -150,7 +151,8 @@ public class ConfigBuilder {
                         "key": null,
                         "var": "ID",
                         "compare": 10,
-                        "values": [ 1],
+                        "values": [1],
+                        datatype: "int", //数据类型 以StandardTypeMetadata枚举为准不区分大小写
                         "over_condition": false,
                         "over_value": true,
                         "parser": {
@@ -175,6 +177,7 @@ public class ConfigBuilder {
                         "values": [
                             "ZH"
                         ],
+                        datatype: "varchar",
                         "over_condition": false,
                         "over_value": true,
                         "parser": {

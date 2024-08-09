@@ -17,14 +17,12 @@
 package org.anyline.data.run;
 
 import org.anyline.metadata.Column;
-import org.anyline.metadata.type.TypeMetadata;
 
 public class RunValue {
     private String key;
     private Object value;
     private Column column;
-    private String valueClass;
-    private TypeMetadata valueType;
+    private String datatype;
 
     private boolean placeholder = true;
 
@@ -38,10 +36,10 @@ public class RunValue {
         this.column = column;
         this.value = value;
     }
-    public RunValue(String key, Object value, String valueClass) {
+    public RunValue(String key, Object value, String datatype) {
         this.key = key;
         this.value = value;
-        this.valueClass = valueClass;
+        this.datatype = datatype;
     }
     public RunValue(String key, Object value) {
         this.key = key;
@@ -79,19 +77,11 @@ public class RunValue {
         this.placeholder = placeholder;
     }
 
-    public String getValueClass() {
-        return valueClass;
+    public String datatype() {
+        return datatype;
     }
 
-    public void setValueClass(String valueClass) {
-        this.valueClass = valueClass;
-    }
-
-    public TypeMetadata getValueType() {
-        return valueType;
-    }
-
-    public void setValueType(TypeMetadata valueType) {
-        this.valueType = valueType;
+    public void datatype(String datatype) {
+        this.datatype = datatype;
     }
 }

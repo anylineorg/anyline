@@ -140,8 +140,8 @@ public interface Condition extends Cloneable{
 	void setVariableSlave(boolean bol);
 	boolean isSetValue();
 	boolean isSetValue(String variable);
-	void setValueClass(String type);
-	String getValueClass();
+	void datatype(String type);
+	String datatype();
 	/**
 	 * 是否需要跟前面的条件 隔离，前面所有条件加到()中
 	 * @return boolean

@@ -659,9 +659,9 @@ public abstract class AbstractRun implements Run {
 	 * @param compare 比较方式
 	 */
 	@Override
-	public Run addCondition(EMPTY_VALUE_SWITCH swt, Compare compare, String prefix, String var, Object value, String valueClass) {
+	public Run addCondition(EMPTY_VALUE_SWITCH swt, Compare compare, String prefix, String var, Object value, String datatype) {
 		Condition condition = new DefaultAutoCondition(swt, compare, prefix, var, value);
-		condition.setValueClass(valueClass);
+		condition.datatype(datatype);
 		if(null == conditionChain) {
 			conditionChain = new DefaultAutoConditionChain();
 		}
@@ -929,18 +929,18 @@ public abstract class AbstractRun implements Run {
 					addCondition(con);
 					continue;
 				}
-				/*String valueClass = null;
+				/*String datatype = null;
 				if(condition.contains("::")){
 					String[] tmps = condition.split("::");
 					condition = tmps[0];
-					valueClass = tmps[1];
-					if(null != valueClass) {
-						if (valueClass.endsWith("++")) {
+					datatype = tmps[1];
+					if(null != datatype) {
+						if (datatype.endsWith("++")) {
 							condition += "++";
-						} else if (valueClass.endsWith("+")) {
+						} else if (datatype.endsWith("+")) {
 							condition += "+";
 						}
-						valueClass = valueClass.replace("+", "");
+						datatype = datatype.replace("+", "");
 					}
 				}
 */
@@ -956,7 +956,7 @@ public abstract class AbstractRun implements Run {
 						// 需要解析的SQL
 						ParseResult parser = ConfigParser.parse(condition, false);
 						Object value = ConfigParser.getValues(parser);
-						addCondition(parser.getSwt(), parser.getCompare(), parser.getPrefix(), parser.getVar(), value, parser.getValueClass());
+						addCondition(parser.getSwt(), parser.getCompare(), parser.getPrefix(), parser.getVar(), value, parser.datatype());
 						continue;
 					}
 				}

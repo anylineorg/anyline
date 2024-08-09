@@ -35,6 +35,8 @@ public interface Config extends Cloneable {
 	List<Object> getOrValues() ; 
 	void addValue(Object value);
 	void setValue(Object value);
+	void datatype(String type);
+	String datatype();
 
 	void setOrValue(Object value);
 	void addOrValue(Object value);
