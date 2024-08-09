@@ -4578,11 +4578,11 @@ public interface DriverAdapter {
      * 解析JDBC get columns结果
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param create 上一步没有查到的,这一步是否需要新创建
-     * @return columns 上一步查询结果
+     * @return previous 上一步查询结果
      * @param query 查询条件 根据metadata属性
      * @throws Exception 异常
      */
-    <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, LinkedHashMap<String, T> columns, Column query) throws Exception;
+    <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Column query) throws Exception;
     /**
      * column[结果集封装]<br/>(方法1)<br/>
      * 根据系统表查询SQL获取表结构

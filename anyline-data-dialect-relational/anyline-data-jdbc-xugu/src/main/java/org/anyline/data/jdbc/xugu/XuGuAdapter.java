@@ -1305,14 +1305,14 @@ public class XuGuAdapter extends OracleGenusAdapter implements JDBCAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
      * @param create 上一步没有查到的, 这一步是否需要新创建
-     * @param database 上一步查询结果
+     * @param meta 上一步查询结果
      * @param set 查询结果集
      * @return database
      * @throws Exception 异常
      */
     @Override
-    public Database database(DataRuntime runtime, int index, boolean create, Database database, DataSet set) throws Exception {
-        return super.database(runtime, index, create, database, set);
+    public Database database(DataRuntime runtime, int index, boolean create, Database meta, DataSet set) throws Exception {
+        return super.database(runtime, index, create, meta, set);
     }
 
     /**
@@ -1320,13 +1320,13 @@ public class XuGuAdapter extends OracleGenusAdapter implements JDBCAdapter {
      * 当前database 根据驱动内置接口补充
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param create 上一步没有查到的, 这一步是否需要新创建
-     * @param database 上一步查询结果
+     * @param meta 上一步查询结果
      * @return database
      * @throws Exception 异常
      */
     @Override
-    public Database database(DataRuntime runtime, boolean create, Database database) throws Exception {
-        return super.database(runtime, create, database);
+    public Database database(DataRuntime runtime, boolean create, Database meta) throws Exception {
+        return super.database(runtime, create, meta);
     }
 
     /**

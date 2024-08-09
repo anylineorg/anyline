@@ -4267,15 +4267,15 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param database 上一步查询结果
+	 * @param meta 上一步查询结果
 	 * @param set 查询结果集
 	 * @return database
 	 * @throws Exception 异常
 	 */
 	@Override
-	public Database database(DataRuntime runtime, int index, boolean create, Database database, DataSet set) throws Exception {
+	public Database database(DataRuntime runtime, int index, boolean create, Database meta, DataSet set) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 Database database(DataRuntime runtime, int index, boolean create, Database database,DataSet set)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 Database database(DataRuntime runtime, int index, boolean create, Database meta, DataSet set)", 37));
 		}
 		return null;
 	}
@@ -4285,14 +4285,14 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 当前database 根据驱动内置接口补充
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param database 上一步查询结果
+	 * @param meta 上一步查询结果
 	 * @return database
 	 * @throws Exception 异常
 	 */
 	@Override
-	public Database database(DataRuntime runtime, boolean create, Database database) throws Exception {
+	public Database database(DataRuntime runtime, boolean create, Database meta) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 Database database(DataRuntime runtime, boolean create, Database database)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 Database database(DataRuntime runtime, boolean create, Database meta)", 37));
 		}
 		return null;
 	}
@@ -8809,7 +8809,20 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         }
         return previous;
 	}
-	/**
+
+    /**
+     * column[结果集封装]<br/>
+     * 解析JDBC get columns结果
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param create 上一步没有查到的,这一步是否需要新创建
+     * @return previous 上一步查询结果
+     * @param query 查询条件 根据metadata属性
+     * @throws Exception 异常
+     */
+   public  <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Column query) throws Exception {
+       return previous;
+   }
+    /**
 	 * column[结果集封装]<br/>(方法1)<br/>
 	 * 根据系统表查询SQL获取表结构
 	 * 根据查询结果集构造Column,并分配到各自的表中
