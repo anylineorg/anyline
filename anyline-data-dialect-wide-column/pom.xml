@@ -15,6 +15,7 @@
 
     <modules>
 		<module>anyline-data-jdbc-cassandra</module>
+		<module>anyline-data-hbase</module>
     </modules>
 	<build>
 		<plugins>
