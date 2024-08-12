@@ -141,7 +141,7 @@ public class MilvusDataSourceHolder extends AbstractDataSourceHolder implements 
 			}
 			Boolean keepAliveWithoutCalls = value(prefix, params, "keepAliveWithoutCalls", Boolean.class, null);
 			if(null != keepAliveWithoutCalls) {
-				builder.keepAliveWithoutCalls(keepAliveWithoutCalls);
+				builder.keepAliveWithoutCalls(false);
 			}
 
 			Long rpcDeadline = value(prefix, params, "rpcDeadlineMs,rpcDeadline", Long.class, 0L);
@@ -184,7 +184,7 @@ public class MilvusDataSourceHolder extends AbstractDataSourceHolder implements 
 			log.error("[注册数据源失败][type:milvus][key:{}][msg:{}]", key, e.toString());
 			return null;
 		}
-		return datasource_id;
+		return null;
 	}
 
 	@Override

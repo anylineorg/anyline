@@ -1,4 +1,5 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+org.anyline.data.milvus.adapter.MilvusActuator,\
 org.anyline.data.milvus.adapter.MilvusAdapter,\
 org.anyline.data.milvus.datasource.MilvusDataSourceLoader,\
 org.anyline.data.milvus.datasource.MilvusDataSourceHolder
