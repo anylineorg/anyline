@@ -418,7 +418,15 @@ public interface DriverAdapter {
         }
         return writer;
     }
-    String name(Type type);
+    default String name(Type type){
+        Map<Type, String> types = new HashMap<>();
+        types.put(Table.TYPE.NORMAL, "BASE TABLE");
+        types.put(Table.TYPE.VIEW, "VIEW");
+        types.put(View.TYPE.NORMAL, "VIEW");
+        types.put(Metadata.TYPE.TABLE, "BASE TABLE");
+        types.put(Metadata.TYPE.VIEW, "VIEW");
+        return types.get(type);
+    }
     default List<String> names(List<Type> types) {
         List<String> list = new ArrayList<>();
         for(Type type:types) {
@@ -5126,7 +5134,7 @@ public interface DriverAdapter {
         return indexes(runtime, random, greedy,  query);
     }
 
-    <T extends Index> List<T> indexes(DataRuntime runtime, String random, boolean greedy,  Collection<? extends Table> tables);
+    <T extends Index> List<T> indexes(DataRuntime runtime, String random, boolean greedy,  Collection<? extends Table> tables, Index query);
     /**
      *
      * index[调用入口]<br/>
