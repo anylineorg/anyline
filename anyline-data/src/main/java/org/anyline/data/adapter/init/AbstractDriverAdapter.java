@@ -5266,137 +5266,150 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             String pattern = query.getName();
 			String caches_key = CacheProxy.key(runtime, "tables", greedy, catalog, schema, pattern, types, configs);
 			list = CacheProxy.tables(caches_key);
-			if(null != list && !list.isEmpty()){
-				return list;
-			}
-			String cache_key = CacheProxy.key(runtime, "table_name_map", greedy, catalog, schema, pattern);
-			String origin = CacheProxy.name(cache_key);
-			if(null == origin && ConfigTable.IS_METADATA_IGNORE_CASE) {
-				//先查出所有key并以大写缓存 用来实现忽略大小写
-				tableMap(runtime, random, greedy, query, new DefaultConfigStore());
-				origin = CacheProxy.name(cache_key);
-			}
-			if(null != origin) {
-                query.setName(origin);
-			}else{
-                origin = query.getName();
-            }
-			PageNavi navi = null;
-			if(null == configs){
-				configs = new DefaultConfigStore();
-			}
-			navi = configs.getPageNavi();
-			// 根据系统表查询
-			try{
-				List<Run> runs = buildQueryTablesRun(runtime, greedy, query, types, configs);
-				if(null != runs) {
-					int idx = 0;
-					for(Run run:runs) {
-						if(null != navi){
-							run.setPageNavi(navi);
-							mergeFinalQuery(runtime, run);
-						}
-						DataSet set = selectMetadata(runtime, random, run);
-						list = tables(runtime, idx++, true, list, catalog, schema, set);
-						if(null != navi){
-							//分页只查一次
-							break;
-						}
-					}
-				}
-			}catch (Exception e) {
-				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
-					e.printStackTrace();
-				}else if (ConfigTable.IS_LOG_SQL && log.isWarnEnabled()) {
-					log.warn("{}[tables][{}][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, origin, e.toString());
-				}
-			}
+			if(null == list || list.isEmpty()) {
+                String cache_key = CacheProxy.key(runtime, "table_name_map", greedy, catalog, schema, pattern);
+                String origin = CacheProxy.name(cache_key);
+                if (null == origin && ConfigTable.IS_METADATA_IGNORE_CASE) {
+                    //先查出所有key并以大写缓存 用来实现忽略大小写
+                    tableMap(runtime, random, greedy, query, new DefaultConfigStore());
+                    origin = CacheProxy.name(cache_key);
+                }
+                if (null != origin) {
+                    query.setName(origin);
+                } else {
+                    origin = query.getName();
+                }
+                PageNavi navi = null;
+                if (null == configs) {
+                    configs = new DefaultConfigStore();
+                }
+                navi = configs.getPageNavi();
+                // 根据系统表查询
+                try {
+                    List<Run> runs = buildQueryTablesRun(runtime, greedy, query, types, configs);
+                    if (null != runs) {
+                        int idx = 0;
+                        for (Run run : runs) {
+                            if (null != navi) {
+                                run.setPageNavi(navi);
+                                mergeFinalQuery(runtime, run);
+                            }
+                            DataSet set = selectMetadata(runtime, random, run);
+                            list = tables(runtime, idx++, true, list, catalog, schema, set);
+                            if (null != navi) {
+                                //分页只查一次
+                                break;
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    if (ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+                        e.printStackTrace();
+                    } else if (ConfigTable.IS_LOG_SQL && log.isWarnEnabled()) {
+                        log.warn("{}[tables][{}][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, origin, e.toString());
+                    }
+                }
 
-			// 根据系统表查询失败后根据驱动内置接口补充
-			if(list.isEmpty()) {
-				try {
-					list = tables(runtime, true, list, catalog, schema, origin, types);
-					//删除跨库表，JDBC驱动内置接口补充可能会返回跨库表
-					if(!greedy) {
-						int size = list.size();
-						for(int i=size-1;i>=0; i--) {
-							Table item = list.get(i);
-							if(!equals(catalog, item.getCatalog()) || !equals(schema, item.getSchema())) {
-								list.remove(i);
-							}
-						}
-					}
-				} catch (Exception e) {
-					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
-						e.printStackTrace();
-					}else {
-						log.warn("{}[tables][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据驱动内置接口补充失败", 33), catalog, schema, origin, e.toString());
-					}
-				}
-			}
-			boolean comment = false;
-			for(Table table:list) {
-				if(BasicUtil.isNotEmpty(table.getComment())) {
-					comment = true;
-					break;
-				}
-			}
-			//表备注
-			if(!comment) {
-				try {
-					List<Run> runs = buildQueryTablesCommentRun(runtime, catalog, schema, origin, types);
-					if (null != runs) {
-						int idx = 0;
-						for (Run run : runs) {
-							if(null != navi){
-								run.setPageNavi(navi);
-								//mergeFinalQuery(runtime, run);
-							}
-							DataSet set = selectMetadata(runtime, random, run);
-							list = comments(runtime, idx++, true, list, catalog, schema, set);
-							if(null != navi){
-								break;
-							}
-							//merge(list, maps);
-						}
-					}
-				} catch (Exception e) {
-					if (ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
-						e.printStackTrace();
-					} else if (ConfigTable.IS_LOG_SQL && log.isWarnEnabled()) {
-						log.info("{}[tables][{}][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, origin, e.toString());
-					}
-				}
-			}
-			if (ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
-				log.info("{}[tables][catalog:{}][schema:{}][pattern:{}][type:{}][result:{}][执行耗时:{}]", random, catalog, schema, origin, types, list.size(), DateUtil.format(System.currentTimeMillis() - fr));
-			}
-			if(BasicUtil.isNotEmpty(origin)) {
-				origin = origin.replace("%",".*");
-				//有表名的，根据表名过滤出符合条件的
-				List<T> tmp = new ArrayList<>();
-				for(T item:list) {
-					String name = item.getName(greedy)+"";
-					if(RegularUtil.match(name.toUpperCase(), origin.toUpperCase(), Regular.MATCH_MODE.MATCH)) {
-						if(equals(catalog, item.getCatalog()) && equals(schema, item.getSchema())) {
-							tmp.add(item);
-						}
-					}
-				}
-				list = tmp;
-			}
-			if(Metadata.check(struct, Metadata.TYPE.COLUMN)) {
-				//查询全部表结构 columns()内部已经给table.columns赋值
-				Column query_columns = new Column();
-				query_columns.setCatalog(catalog);
-				query_columns.setSchema(schema);
-				List<Column> columns = columns(runtime, random, greedy, list, query_columns);
-			}
-			if(Metadata.check(struct, Metadata.TYPE.INDEX)) {
-				//查询全部表结构
-				indexes(runtime, random, greedy, list);
-			}
-			CacheProxy.tables(caches_key, list);
+                // 根据系统表查询失败后根据驱动内置接口补充
+                if (list.isEmpty()) {
+                    try {
+                        list = tables(runtime, true, list, catalog, schema, origin, types);
+                        //删除跨库表，JDBC驱动内置接口补充可能会返回跨库表
+                        if (!greedy) {
+                            int size = list.size();
+                            for (int i = size - 1; i >= 0; i--) {
+                                Table item = list.get(i);
+                                if (!equals(catalog, item.getCatalog()) || !equals(schema, item.getSchema())) {
+                                    list.remove(i);
+                                }
+                            }
+                        }
+                    } catch (Exception e) {
+                        if (ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+                            e.printStackTrace();
+                        } else {
+                            log.warn("{}[tables][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据驱动内置接口补充失败", 33), catalog, schema, origin, e.toString());
+                        }
+                    }
+                }
+                boolean comment = false;
+                for (Table table : list) {
+                    if (BasicUtil.isNotEmpty(table.getComment())) {
+                        comment = true;
+                        break;
+                    }
+                }
+                //表备注
+                if (!comment) {
+                    try {
+                        List<Run> runs = buildQueryTablesCommentRun(runtime, catalog, schema, origin, types);
+                        if (null != runs) {
+                            int idx = 0;
+                            for (Run run : runs) {
+                                if (null != navi) {
+                                    run.setPageNavi(navi);
+                                    //mergeFinalQuery(runtime, run);
+                                }
+                                DataSet set = selectMetadata(runtime, random, run);
+                                list = comments(runtime, idx++, true, list, catalog, schema, set);
+                                if (null != navi) {
+                                    break;
+                                }
+                                //merge(list, maps);
+                            }
+                        }
+                    } catch (Exception e) {
+                        if (ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+                            e.printStackTrace();
+                        } else if (ConfigTable.IS_LOG_SQL && log.isWarnEnabled()) {
+                            log.info("{}[tables][{}][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, origin, e.toString());
+                        }
+                    }
+                }
+                if (ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
+                    log.info("{}[tables][catalog:{}][schema:{}][pattern:{}][type:{}][result:{}][执行耗时:{}]", random, catalog, schema, origin, types, list.size(), DateUtil.format(System.currentTimeMillis() - fr));
+                }
+                if (BasicUtil.isNotEmpty(origin)) {
+                    origin = origin.replace("%", ".*");
+                    //有表名的，根据表名过滤出符合条件的
+                    List<T> tmp = new ArrayList<>();
+                    for (T item : list) {
+                        String name = item.getName(greedy) + "";
+                        if (RegularUtil.match(name.toUpperCase(), origin.toUpperCase(), Regular.MATCH_MODE.MATCH)) {
+                            if (equals(catalog, item.getCatalog()) && equals(schema, item.getSchema())) {
+                                tmp.add(item);
+                            }
+                        }
+                    }
+                    list = tmp;
+                }
+                CacheProxy.tables(caches_key, list);
+            }
+
+            if(Metadata.check(struct, Metadata.TYPE.COLUMN)) {
+                //查询全部表结构 columns()内部已经给table.columns赋值
+                for(Table item:list){
+                    if(null == item.getColumns() || item.getColumns().isEmpty()) {
+                        Column column_query = new Column();
+                        column_query.setCatalog(catalog);
+                        column_query.setSchema(schema);
+                        columns(runtime, random, greedy, list, column_query);
+                        break;
+                    }
+                }
+            }
+            if(Metadata.check(struct, Metadata.TYPE.INDEX)) {
+                //查询全部表结构 indexes()内部已经给table.indexes赋值
+                for(Table item:list){
+                    if(null == item.getIndexes() || item.getIndexes().isEmpty()){
+                        Index index_qeury = new Index();
+                        index_qeury.setCatalog(catalog);
+                        index_qeury.setSchema(schema);
+                        indexes(runtime, random, greedy, list, index_qeury);
+                        break;
+                    }
+                }
+            }
 		}catch (Exception e) {
 			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 				e.printStackTrace();
@@ -5963,135 +5976,148 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             String pattern = query.getName();
             String caches_key = CacheProxy.key(runtime, "vertexs", greedy, catalog, schema, pattern, types, configs);
             list = CacheProxy.vertexs(caches_key);
-            if(null != list && !list.isEmpty()){
-                return list;
-            }
-            String cache_key = CacheProxy.key(runtime, "vertex_name_map", greedy, catalog, schema, pattern);
-            String origin = CacheProxy.name(cache_key);
-            if(null == origin && ConfigTable.IS_METADATA_IGNORE_CASE) {
-                //先查出所有key并以大写缓存 用来实现忽略大小写
-                vertexMap(runtime, random, greedy, query, new DefaultConfigStore());
-                origin = CacheProxy.name(cache_key);
-            }
-            if(null != origin) {
-                query.setName(origin);
-            }else{
-                origin = query.getName();
-            }
-            PageNavi navi = null;
-            if(null == configs){
-                configs = new DefaultConfigStore();
-            }
-            navi = configs.getPageNavi();
-            // 根据系统表查询
-            try{
-                List<Run> runs = buildQueryTablesRun(runtime, greedy, query, types, configs);
-                if(null != runs) {
-                    int idx = 0;
-                    for(Run run:runs) {
-                        if(null != navi){
-                            run.setPageNavi(navi);
-                            mergeFinalQuery(runtime, run);
-                        }
-                        DataSet set = selectMetadata(runtime, random, run);
-                        list = vertexs(runtime, idx++, true, list, catalog, schema, set);
-                        if(null != navi){
-                            //分页只查一次
-                            break;
-                        }
-                    }
+            if(null == list || list.isEmpty()) {
+                String cache_key = CacheProxy.key(runtime, "vertex_name_map", greedy, catalog, schema, pattern);
+                String origin = CacheProxy.name(cache_key);
+                if (null == origin && ConfigTable.IS_METADATA_IGNORE_CASE) {
+                    //先查出所有key并以大写缓存 用来实现忽略大小写
+                    vertexMap(runtime, random, greedy, query, new DefaultConfigStore());
+                    origin = CacheProxy.name(cache_key);
                 }
-            }catch (Exception e) {
-                if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
-                    e.printStackTrace();
-                }else if (ConfigTable.IS_LOG_SQL && log.isWarnEnabled()) {
-                    log.warn("{}[vertexs][{}][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, origin, e.toString());
+                if (null != origin) {
+                    query.setName(origin);
+                } else {
+                    origin = query.getName();
                 }
-            }
-
-            // 根据系统表查询失败后根据驱动内置接口补充
-            if(list.isEmpty()) {
+                PageNavi navi = null;
+                if (null == configs) {
+                    configs = new DefaultConfigStore();
+                }
+                navi = configs.getPageNavi();
+                // 根据系统表查询
                 try {
-                    list = vertexs(runtime, true, list, catalog, schema, origin, types);
-                    //删除跨库表，JDBC驱动内置接口补充可能会返回跨库表
-                    if(!greedy) {
-                        int size = list.size();
-                        for(int i=size-1;i>=0; i--) {
-                            Table item = list.get(i);
-                            if(!equals(catalog, item.getCatalog()) || !equals(schema, item.getSchema())) {
-                                list.remove(i);
-                            }
-                        }
-                    }
-                } catch (Exception e) {
-                    if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
-                        e.printStackTrace();
-                    }else {
-                        log.warn("{}[vertexs][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据驱动内置接口补充失败", 33), catalog, schema, origin, e.toString());
-                    }
-                }
-            }
-            boolean comment = false;
-            for(Table vertex:list) {
-                if(BasicUtil.isNotEmpty(vertex.getComment())) {
-                    comment = true;
-                    break;
-                }
-            }
-            //表备注
-            if(!comment) {
-                try {
-                    List<Run> runs = buildQueryTablesCommentRun(runtime, catalog, schema, origin, types);
+                    List<Run> runs = buildQueryTablesRun(runtime, greedy, query, types, configs);
                     if (null != runs) {
                         int idx = 0;
                         for (Run run : runs) {
-                            if(null != navi){
+                            if (null != navi) {
                                 run.setPageNavi(navi);
-                                //mergeFinalQuery(runtime, run);
+                                mergeFinalQuery(runtime, run);
                             }
                             DataSet set = selectMetadata(runtime, random, run);
-                            list = comments(runtime, idx++, true, list, catalog, schema, set);
-                            if(null != navi){
+                            list = vertexs(runtime, idx++, true, list, catalog, schema, set);
+                            if (null != navi) {
+                                //分页只查一次
                                 break;
                             }
-                            //merge(list, maps);
                         }
                     }
                 } catch (Exception e) {
                     if (ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
                         e.printStackTrace();
                     } else if (ConfigTable.IS_LOG_SQL && log.isWarnEnabled()) {
-                        log.info("{}[vertexs][{}][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, origin, e.toString());
+                        log.warn("{}[vertexs][{}][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, origin, e.toString());
                     }
                 }
-            }
-            if (ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
-                log.info("{}[vertexs][catalog:{}][schema:{}][pattern:{}][type:{}][result:{}][执行耗时:{}]", random, catalog, schema, origin, types, list.size(), DateUtil.format(System.currentTimeMillis() - fr));
-            }
-            if(BasicUtil.isNotEmpty(origin)) {
-                origin = origin.replace("%",".*");
-                //有表名的，根据表名过滤出符合条件的
-                List<T> tmp = new ArrayList<>();
-                for(T item:list) {
-                    String name = item.getName(greedy)+"";
-                    if(RegularUtil.match(name.toUpperCase(), origin.toUpperCase(), Regular.MATCH_MODE.MATCH)) {
-                        if(equals(catalog, item.getCatalog()) && equals(schema, item.getSchema())) {
-                            tmp.add(item);
+
+                // 根据系统表查询失败后根据驱动内置接口补充
+                if (list.isEmpty()) {
+                    try {
+                        list = vertexs(runtime, true, list, catalog, schema, origin, types);
+                        //删除跨库表，JDBC驱动内置接口补充可能会返回跨库表
+                        if (!greedy) {
+                            int size = list.size();
+                            for (int i = size - 1; i >= 0; i--) {
+                                Table item = list.get(i);
+                                if (!equals(catalog, item.getCatalog()) || !equals(schema, item.getSchema())) {
+                                    list.remove(i);
+                                }
+                            }
+                        }
+                    } catch (Exception e) {
+                        if (ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+                            e.printStackTrace();
+                        } else {
+                            log.warn("{}[vertexs][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据驱动内置接口补充失败", 33), catalog, schema, origin, e.toString());
                         }
                     }
                 }
-                list = tmp;
+                boolean comment = false;
+                for (Table vertex : list) {
+                    if (BasicUtil.isNotEmpty(vertex.getComment())) {
+                        comment = true;
+                        break;
+                    }
+                }
+                //表备注
+                if (!comment) {
+                    try {
+                        List<Run> runs = buildQueryTablesCommentRun(runtime, catalog, schema, origin, types);
+                        if (null != runs) {
+                            int idx = 0;
+                            for (Run run : runs) {
+                                if (null != navi) {
+                                    run.setPageNavi(navi);
+                                    //mergeFinalQuery(runtime, run);
+                                }
+                                DataSet set = selectMetadata(runtime, random, run);
+                                list = comments(runtime, idx++, true, list, catalog, schema, set);
+                                if (null != navi) {
+                                    break;
+                                }
+                                //merge(list, maps);
+                            }
+                        }
+                    } catch (Exception e) {
+                        if (ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+                            e.printStackTrace();
+                        } else if (ConfigTable.IS_LOG_SQL && log.isWarnEnabled()) {
+                            log.info("{}[vertexs][{}][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, origin, e.toString());
+                        }
+                    }
+                }
+                if (ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
+                    log.info("{}[vertexs][catalog:{}][schema:{}][pattern:{}][type:{}][result:{}][执行耗时:{}]", random, catalog, schema, origin, types, list.size(), DateUtil.format(System.currentTimeMillis() - fr));
+                }
+                if (BasicUtil.isNotEmpty(origin)) {
+                    origin = origin.replace("%", ".*");
+                    //有表名的，根据表名过滤出符合条件的
+                    List<T> tmp = new ArrayList<>();
+                    for (T item : list) {
+                        String name = item.getName(greedy) + "";
+                        if (RegularUtil.match(name.toUpperCase(), origin.toUpperCase(), Regular.MATCH_MODE.MATCH)) {
+                            if (equals(catalog, item.getCatalog()) && equals(schema, item.getSchema())) {
+                                tmp.add(item);
+                            }
+                        }
+                    }
+                    list = tmp;
+                }
             }
+
             if(Metadata.check(struct, Metadata.TYPE.COLUMN)) {
-                //查询全部表结构 columns()内部已经给vertex.columns赋值
-                Column query_columns = new Column();
-                query_columns.setCatalog(catalog);
-                query_columns.setSchema(schema);
-                List<Column> columns = columns(runtime, random, greedy,  list, query_columns);
+                //查询全部表结构 columns()内部已经给VertexTable.columns赋值
+                for(VertexTable item:list){
+                    if(null == item.getColumns() || item.getColumns().isEmpty()) {
+                        Column column_query = new Column();
+                        column_query.setCatalog(catalog);
+                        column_query.setSchema(schema);
+                        columns(runtime, random, greedy, list, column_query);
+                        break;
+                    }
+                }
             }
             if(Metadata.check(struct, Metadata.TYPE.INDEX)) {
-                //查询全部表结构
-                indexes(runtime, random, greedy, list);
+                //查询全部表结构 indexes()内部已经给VertexTable.indexes赋值
+                for(VertexTable item:list){
+                    if(null == item.getIndexes() || item.getIndexes().isEmpty()){
+                        Index index_qeury = new Index();
+                        index_qeury.setCatalog(catalog);
+                        index_qeury.setSchema(schema);
+                        indexes(runtime, random, greedy, list, index_qeury);
+                        break;
+                    }
+                }
             }
             CacheProxy.vertexs(caches_key, list);
         }catch (Exception e) {
@@ -6520,137 +6546,150 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             String pattern = query.getName();
             String caches_key = CacheProxy.key(runtime, "edges", greedy, catalog, schema, pattern, types, configs);
             list = CacheProxy.edges(caches_key);
-            if(null != list && !list.isEmpty()){
-                return list;
-            }
-            String cache_key = CacheProxy.key(runtime, "edge_name_map", greedy, catalog, schema, pattern);
-            String origin = CacheProxy.name(cache_key);
-            if(null == origin && ConfigTable.IS_METADATA_IGNORE_CASE) {
-                //先查出所有key并以大写缓存 用来实现忽略大小写
-                edgeMap(runtime, random, greedy, query, new DefaultConfigStore());
-                origin = CacheProxy.name(cache_key);
-            }
-            if(null != origin) {
-                query.setName(origin);
-            }else{
-                origin = query.getName();
-            }
-            PageNavi navi = null;
-            if(null == configs){
-                configs = new DefaultConfigStore();
-            }
-            navi = configs.getPageNavi();
-            // 根据系统表查询
-            try{
-                List<Run> runs = buildQueryTablesRun(runtime, greedy, query, types, configs);
-                if(null != runs) {
-                    int idx = 0;
-                    for(Run run:runs) {
-                        if(null != navi){
-                            run.setPageNavi(navi);
-                            mergeFinalQuery(runtime, run);
-                        }
-                        DataSet set = selectMetadata(runtime, random, run);
-                        list = edges(runtime, idx++, true, list, catalog, schema, set);
-                        if(null != navi){
-                            //分页只查一次
-                            break;
-                        }
-                    }
+            if(null == list || list.isEmpty()) {
+                String cache_key = CacheProxy.key(runtime, "edge_name_map", greedy, catalog, schema, pattern);
+                String origin = CacheProxy.name(cache_key);
+                if (null == origin && ConfigTable.IS_METADATA_IGNORE_CASE) {
+                    //先查出所有key并以大写缓存 用来实现忽略大小写
+                    edgeMap(runtime, random, greedy, query, new DefaultConfigStore());
+                    origin = CacheProxy.name(cache_key);
                 }
-            }catch (Exception e) {
-                if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
-                    e.printStackTrace();
-                }else if (ConfigTable.IS_LOG_SQL && log.isWarnEnabled()) {
-                    log.warn("{}[edges][{}][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, origin, e.toString());
+                if (null != origin) {
+                    query.setName(origin);
+                } else {
+                    origin = query.getName();
                 }
-            }
-
-            // 根据系统表查询失败后根据驱动内置接口补充
-            if(list.isEmpty()) {
+                PageNavi navi = null;
+                if (null == configs) {
+                    configs = new DefaultConfigStore();
+                }
+                navi = configs.getPageNavi();
+                // 根据系统表查询
                 try {
-                    list = edges(runtime, true, list, catalog, schema, origin, types);
-                    //删除跨库表，JDBC驱动内置接口补充可能会返回跨库表
-                    if(!greedy) {
-                        int size = list.size();
-                        for(int i=size-1;i>=0; i--) {
-                            Table item = list.get(i);
-                            if(!equals(catalog, item.getCatalog()) || !equals(schema, item.getSchema())) {
-                                list.remove(i);
-                            }
-                        }
-                    }
-                } catch (Exception e) {
-                    if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
-                        e.printStackTrace();
-                    }else {
-                        log.warn("{}[edges][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据驱动内置接口补充失败", 33), catalog, schema, origin, e.toString());
-                    }
-                }
-            }
-            boolean comment = false;
-            for(Table edge:list) {
-                if(BasicUtil.isNotEmpty(edge.getComment())) {
-                    comment = true;
-                    break;
-                }
-            }
-            //表备注
-            if(!comment) {
-                try {
-                    List<Run> runs = buildQueryTablesCommentRun(runtime, catalog, schema, origin, types);
+                    List<Run> runs = buildQueryTablesRun(runtime, greedy, query, types, configs);
                     if (null != runs) {
                         int idx = 0;
                         for (Run run : runs) {
-                            if(null != navi){
+                            if (null != navi) {
                                 run.setPageNavi(navi);
-                                //mergeFinalQuery(runtime, run);
+                                mergeFinalQuery(runtime, run);
                             }
                             DataSet set = selectMetadata(runtime, random, run);
-                            list = comments(runtime, idx++, true, list, catalog, schema, set);
-                            if(null != navi){
+                            list = edges(runtime, idx++, true, list, catalog, schema, set);
+                            if (null != navi) {
+                                //分页只查一次
                                 break;
                             }
-                            //merge(list, maps);
                         }
                     }
                 } catch (Exception e) {
                     if (ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
                         e.printStackTrace();
                     } else if (ConfigTable.IS_LOG_SQL && log.isWarnEnabled()) {
-                        log.info("{}[edges][{}][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, origin, e.toString());
+                        log.warn("{}[edges][{}][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, origin, e.toString());
                     }
                 }
-            }
-            if (ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
-                log.info("{}[edges][catalog:{}][schema:{}][pattern:{}][type:{}][result:{}][执行耗时:{}]", random, catalog, schema, origin, types, list.size(), DateUtil.format(System.currentTimeMillis() - fr));
-            }
-            if(BasicUtil.isNotEmpty(origin)) {
-                origin = origin.replace("%",".*");
-                //有表名的，根据表名过滤出符合条件的
-                List<T> tmp = new ArrayList<>();
-                for(T item:list) {
-                    String name = item.getName(greedy)+"";
-                    if(RegularUtil.match(name.toUpperCase(), origin.toUpperCase(), Regular.MATCH_MODE.MATCH)) {
-                        if(equals(catalog, item.getCatalog()) && equals(schema, item.getSchema())) {
-                            tmp.add(item);
+
+                // 根据系统表查询失败后根据驱动内置接口补充
+                if (list.isEmpty()) {
+                    try {
+                        list = edges(runtime, true, list, catalog, schema, origin, types);
+                        //删除跨库表，JDBC驱动内置接口补充可能会返回跨库表
+                        if (!greedy) {
+                            int size = list.size();
+                            for (int i = size - 1; i >= 0; i--) {
+                                Table item = list.get(i);
+                                if (!equals(catalog, item.getCatalog()) || !equals(schema, item.getSchema())) {
+                                    list.remove(i);
+                                }
+                            }
+                        }
+                    } catch (Exception e) {
+                        if (ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+                            e.printStackTrace();
+                        } else {
+                            log.warn("{}[edges][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据驱动内置接口补充失败", 33), catalog, schema, origin, e.toString());
                         }
                     }
                 }
-                list = tmp;
+                boolean comment = false;
+                for (Table edge : list) {
+                    if (BasicUtil.isNotEmpty(edge.getComment())) {
+                        comment = true;
+                        break;
+                    }
+                }
+                //表备注
+                if (!comment) {
+                    try {
+                        List<Run> runs = buildQueryTablesCommentRun(runtime, catalog, schema, origin, types);
+                        if (null != runs) {
+                            int idx = 0;
+                            for (Run run : runs) {
+                                if (null != navi) {
+                                    run.setPageNavi(navi);
+                                    //mergeFinalQuery(runtime, run);
+                                }
+                                DataSet set = selectMetadata(runtime, random, run);
+                                list = comments(runtime, idx++, true, list, catalog, schema, set);
+                                if (null != navi) {
+                                    break;
+                                }
+                                //merge(list, maps);
+                            }
+                        }
+                    } catch (Exception e) {
+                        if (ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+                            e.printStackTrace();
+                        } else if (ConfigTable.IS_LOG_SQL && log.isWarnEnabled()) {
+                            log.info("{}[edges][{}][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, origin, e.toString());
+                        }
+                    }
+                }
+                if (ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
+                    log.info("{}[edges][catalog:{}][schema:{}][pattern:{}][type:{}][result:{}][执行耗时:{}]", random, catalog, schema, origin, types, list.size(), DateUtil.format(System.currentTimeMillis() - fr));
+                }
+                if (BasicUtil.isNotEmpty(origin)) {
+                    origin = origin.replace("%", ".*");
+                    //有表名的，根据表名过滤出符合条件的
+                    List<T> tmp = new ArrayList<>();
+                    for (T item : list) {
+                        String name = item.getName(greedy) + "";
+                        if (RegularUtil.match(name.toUpperCase(), origin.toUpperCase(), Regular.MATCH_MODE.MATCH)) {
+                            if (equals(catalog, item.getCatalog()) && equals(schema, item.getSchema())) {
+                                tmp.add(item);
+                            }
+                        }
+                    }
+                    list = tmp;
+                }
+                CacheProxy.edges(caches_key, list);
             }
+
             if(Metadata.check(struct, Metadata.TYPE.COLUMN)) {
-                //查询全部表结构 columns()内部已经给edge.columns赋值
-                Column query_columns = new Column();
-                query_columns.setCatalog(catalog);
-                query_columns.setSchema(schema);
-                List<Column> columns = columns(runtime, random, greedy,  list, query_columns);
+                //查询全部表结构 columns()内部已经给EdgeTable.columns赋值
+                for(EdgeTable item:list){
+                    if(null == item.getColumns() || item.getColumns().isEmpty()) {
+                        Column column_query = new Column();
+                        column_query.setCatalog(catalog);
+                        column_query.setSchema(schema);
+                        columns(runtime, random, greedy, list, column_query);
+                        break;
+                    }
+                }
             }
             if(Metadata.check(struct, Metadata.TYPE.INDEX)) {
-                //查询全部表结构
-                indexes(runtime, random, greedy, list);
+                //查询全部表结构 indexes()内部已经给EdgeTable.indexes赋值
+                for(EdgeTable item:list){
+                    if(null == item.getIndexes() || item.getIndexes().isEmpty()){
+                        Index index_qeury = new Index();
+                        index_qeury.setCatalog(catalog);
+                        index_qeury.setSchema(schema);
+                        indexes(runtime, random, greedy, list, index_qeury);
+                        break;
+                    }
+                }
             }
-            CacheProxy.edges(caches_key, list);
         }catch (Exception e) {
             if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
                 e.printStackTrace();
@@ -7074,137 +7113,149 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             String pattern = query.getName();
             String caches_key = CacheProxy.key(runtime, "views", greedy, catalog, schema, pattern, types, configs);
             list = CacheProxy.views(caches_key);
-            if(null != list && !list.isEmpty()){
-                return list;
-            }
-            String cache_key = CacheProxy.key(runtime, "view_name_map", greedy, catalog, schema, pattern);
-            String origin = CacheProxy.name(cache_key);
-            if(null == origin && ConfigTable.IS_METADATA_IGNORE_CASE) {
-                //先查出所有key并以大写缓存 用来实现忽略大小写
-                viewMap(runtime, random, greedy, query, new DefaultConfigStore());
-                origin = CacheProxy.name(cache_key);
-            }
-            if(null != origin) {
-                query.setName(origin);
-            }else{
-                origin = query.getName();
-            }
-            PageNavi navi = null;
-            if(null == configs){
-                configs = new DefaultConfigStore();
-            }
-            navi = configs.getPageNavi();
-            // 根据系统表查询
-            try{
-                List<Run> runs = buildQueryTablesRun(runtime, greedy, query, types, configs);
-                if(null != runs) {
-                    int idx = 0;
-                    for(Run run:runs) {
-                        if(null != navi){
-                            run.setPageNavi(navi);
-                            mergeFinalQuery(runtime, run);
-                        }
-                        DataSet set = selectMetadata(runtime, random, run);
-                        list = views(runtime, idx++, true, list, catalog, schema, set);
-                        if(null != navi){
-                            //分页只查一次
-                            break;
-                        }
-                    }
+            if(null == list || list.isEmpty()) {
+                String cache_key = CacheProxy.key(runtime, "view_name_map", greedy, catalog, schema, pattern);
+                String origin = CacheProxy.name(cache_key);
+                if (null == origin && ConfigTable.IS_METADATA_IGNORE_CASE) {
+                    //先查出所有key并以大写缓存 用来实现忽略大小写
+                    viewMap(runtime, random, greedy, query, new DefaultConfigStore());
+                    origin = CacheProxy.name(cache_key);
                 }
-            }catch (Exception e) {
-                if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
-                    e.printStackTrace();
-                }else if (ConfigTable.IS_LOG_SQL && log.isWarnEnabled()) {
-                    log.warn("{}[views][{}][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, origin, e.toString());
+                if (null != origin) {
+                    query.setName(origin);
+                } else {
+                    origin = query.getName();
                 }
-            }
-
-            // 根据系统表查询失败后根据驱动内置接口补充
-            if(list.isEmpty()) {
+                PageNavi navi = null;
+                if (null == configs) {
+                    configs = new DefaultConfigStore();
+                }
+                navi = configs.getPageNavi();
+                // 根据系统表查询
                 try {
-                    list = views(runtime, true, list, catalog, schema, origin, types);
-                    //删除跨库表，JDBC驱动内置接口补充可能会返回跨库表
-                    if(!greedy) {
-                        int size = list.size();
-                        for(int i=size-1;i>=0; i--) {
-                            Table item = list.get(i);
-                            if(!equals(catalog, item.getCatalog()) || !equals(schema, item.getSchema())) {
-                                list.remove(i);
-                            }
-                        }
-                    }
-                } catch (Exception e) {
-                    if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
-                        e.printStackTrace();
-                    }else {
-                        log.warn("{}[views][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据驱动内置接口补充失败", 33), catalog, schema, origin, e.toString());
-                    }
-                }
-            }
-            boolean comment = false;
-            for(Table view:list) {
-                if(BasicUtil.isNotEmpty(view.getComment())) {
-                    comment = true;
-                    break;
-                }
-            }
-            //表备注
-            if(!comment) {
-                try {
-                    List<Run> runs = buildQueryTablesCommentRun(runtime, catalog, schema, origin, types);
+                    List<Run> runs = buildQueryTablesRun(runtime, greedy, query, types, configs);
                     if (null != runs) {
                         int idx = 0;
                         for (Run run : runs) {
-                            if(null != navi){
+                            if (null != navi) {
                                 run.setPageNavi(navi);
-                                //mergeFinalQuery(runtime, run);
+                                mergeFinalQuery(runtime, run);
                             }
                             DataSet set = selectMetadata(runtime, random, run);
-                            list = comments(runtime, idx++, true, list, catalog, schema, set);
-                            if(null != navi){
+                            list = views(runtime, idx++, true, list, catalog, schema, set);
+                            if (null != navi) {
+                                //分页只查一次
                                 break;
                             }
-                            //merge(list, maps);
                         }
                     }
                 } catch (Exception e) {
                     if (ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
                         e.printStackTrace();
                     } else if (ConfigTable.IS_LOG_SQL && log.isWarnEnabled()) {
-                        log.info("{}[views][{}][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, origin, e.toString());
+                        log.warn("{}[views][{}][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, origin, e.toString());
                     }
                 }
-            }
-            if (ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
-                log.info("{}[views][catalog:{}][schema:{}][pattern:{}][type:{}][result:{}][执行耗时:{}]", random, catalog, schema, origin, types, list.size(), DateUtil.format(System.currentTimeMillis() - fr));
-            }
-            if(BasicUtil.isNotEmpty(origin)) {
-                origin = origin.replace("%",".*");
-                //有表名的，根据表名过滤出符合条件的
-                List<T> tmp = new ArrayList<>();
-                for(T item:list) {
-                    String name = item.getName(greedy)+"";
-                    if(RegularUtil.match(name.toUpperCase(), origin.toUpperCase(), Regular.MATCH_MODE.MATCH)) {
-                        if(equals(catalog, item.getCatalog()) && equals(schema, item.getSchema())) {
-                            tmp.add(item);
+
+                // 根据系统表查询失败后根据驱动内置接口补充
+                if (list.isEmpty()) {
+                    try {
+                        list = views(runtime, true, list, catalog, schema, origin, types);
+                        //删除跨库表，JDBC驱动内置接口补充可能会返回跨库表
+                        if (!greedy) {
+                            int size = list.size();
+                            for (int i = size - 1; i >= 0; i--) {
+                                Table item = list.get(i);
+                                if (!equals(catalog, item.getCatalog()) || !equals(schema, item.getSchema())) {
+                                    list.remove(i);
+                                }
+                            }
+                        }
+                    } catch (Exception e) {
+                        if (ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+                            e.printStackTrace();
+                        } else {
+                            log.warn("{}[views][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据驱动内置接口补充失败", 33), catalog, schema, origin, e.toString());
                         }
                     }
                 }
-                list = tmp;
+                boolean comment = false;
+                for (Table view : list) {
+                    if (BasicUtil.isNotEmpty(view.getComment())) {
+                        comment = true;
+                        break;
+                    }
+                }
+                //表备注
+                if (!comment) {
+                    try {
+                        List<Run> runs = buildQueryTablesCommentRun(runtime, catalog, schema, origin, types);
+                        if (null != runs) {
+                            int idx = 0;
+                            for (Run run : runs) {
+                                if (null != navi) {
+                                    run.setPageNavi(navi);
+                                    //mergeFinalQuery(runtime, run);
+                                }
+                                DataSet set = selectMetadata(runtime, random, run);
+                                list = comments(runtime, idx++, true, list, catalog, schema, set);
+                                if (null != navi) {
+                                    break;
+                                }
+                                //merge(list, maps);
+                            }
+                        }
+                    } catch (Exception e) {
+                        if (ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+                            e.printStackTrace();
+                        } else if (ConfigTable.IS_LOG_SQL && log.isWarnEnabled()) {
+                            log.info("{}[views][{}][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, origin, e.toString());
+                        }
+                    }
+                }
+                if (ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
+                    log.info("{}[views][catalog:{}][schema:{}][pattern:{}][type:{}][result:{}][执行耗时:{}]", random, catalog, schema, origin, types, list.size(), DateUtil.format(System.currentTimeMillis() - fr));
+                }
+                if (BasicUtil.isNotEmpty(origin)) {
+                    origin = origin.replace("%", ".*");
+                    //有表名的，根据表名过滤出符合条件的
+                    List<T> tmp = new ArrayList<>();
+                    for (T item : list) {
+                        String name = item.getName(greedy) + "";
+                        if (RegularUtil.match(name.toUpperCase(), origin.toUpperCase(), Regular.MATCH_MODE.MATCH)) {
+                            if (equals(catalog, item.getCatalog()) && equals(schema, item.getSchema())) {
+                                tmp.add(item);
+                            }
+                        }
+                    }
+                    list = tmp;
+                }
+                CacheProxy.views(caches_key, list);
             }
             if(Metadata.check(struct, Metadata.TYPE.COLUMN)) {
                 //查询全部表结构 columns()内部已经给view.columns赋值
-                Column query_columns = new Column();
-                query_columns.setCatalog(catalog);
-                query_columns.setSchema(schema);
-                List<Column> columns = columns(runtime, random, greedy,  list, query_columns);
+                for(View item:list){
+                    if(null == item.getColumns() || item.getColumns().isEmpty()) {
+                        Column column_query = new Column();
+                        column_query.setCatalog(catalog);
+                        column_query.setSchema(schema);
+                        columns(runtime, random, greedy, list, column_query);
+                        break;
+                    }
+                }
             }
             if(Metadata.check(struct, Metadata.TYPE.INDEX)) {
-                //查询全部表结构
-                indexes(runtime, random, greedy, list);
+                //查询全部表结构 indexes()内部已经给view.indexes赋值
+                for(View item:list){
+                    if(null == item.getIndexes() || item.getIndexes().isEmpty()){
+                        Index index_qeury = new Index();
+                        index_qeury.setCatalog(catalog);
+                        index_qeury.setSchema(schema);
+                        indexes(runtime, random, greedy, list, index_qeury);
+                        break;
+                    }
+                }
             }
-            CacheProxy.views(caches_key, list);
         }catch (Exception e) {
             if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
                 e.printStackTrace();
@@ -7651,9 +7702,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		try{
 			long fr = System.currentTimeMillis();
 			MasterTable search = new MasterTable();
-			if(
-					(supportCatalog() && empty(catalog))    //支持catalog 但catalog为空
-							|| (supportSchema() && empty(schema))	//支持schema 但schema为空
+			if((supportCatalog() && empty(catalog))    //支持catalog 但catalog为空
+				|| (supportSchema() && empty(schema))	//支持schema 但schema为空
 			) {
 				MasterTable tmp = new MasterTable();
 				if(!greedy) { //非贪婪模式下 检测当前catalog schema
@@ -7668,140 +7718,154 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			}
 			String caches_key = CacheProxy.key(runtime, "masters", greedy, catalog, schema, pattern, types, configs);
 			list = CacheProxy.masters(caches_key);
-			if(null != list && !list.isEmpty()){
-				return list;
-			}
-			String cache_key = CacheProxy.key(runtime, "master", greedy, catalog, schema, pattern);
-			String origin = CacheProxy.name(cache_key);
-			if(null == origin && ConfigTable.IS_METADATA_IGNORE_CASE) {
-				//先查出所有key并以大写缓存 用来实现忽略大小写
-				masterMap(runtime, random, greedy, query, configs);
-				origin = CacheProxy.name(cache_key);
-			}
-            if(null != origin) {
-                query.setName(origin);
-            }else{
-                origin = query.getName();
-            }
-			search.setName(origin);
-			search.setCatalog(catalog);
-			search.setSchema(schema);
-			PageNavi navi = null;
-			if(null == configs){
-				configs = new DefaultConfigStore();
-			}
-			navi = configs.getPageNavi();
-			// 根据系统表查询
-			try{
-				List<Run> runs = buildQueryMasterTablesRun(runtime, greedy, catalog, schema, origin, types, configs);
-				if(null != runs) {
-					int idx = 0;
-					for(Run run:runs) {
-						if(null != navi){
-							run.setPageNavi(navi);
-							mergeFinalQuery(runtime, run);
-						}
-						DataSet set = selectMetadata(runtime, random, run);
-						list = masters(runtime, idx++, true, list, catalog, schema, set);
-						if(null != navi){
-							//分页只查一次
-							break;
-						}
-					}
-				}
-			}catch (Exception e) {
-				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
-					e.printStackTrace();
-				}else if (ConfigTable.IS_LOG_SQL && log.isWarnEnabled()) {
-					log.warn("{}[masters][{}][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, origin, e.toString());
-				}
-			}
+			if(null == list || list.isEmpty()) {
+                String cache_key = CacheProxy.key(runtime, "master", greedy, catalog, schema, pattern);
+                String origin = CacheProxy.name(cache_key);
+                if (null == origin && ConfigTable.IS_METADATA_IGNORE_CASE) {
+                    //先查出所有key并以大写缓存 用来实现忽略大小写
+                    masterMap(runtime, random, greedy, query, configs);
+                    origin = CacheProxy.name(cache_key);
+                }
+                if (null != origin) {
+                    query.setName(origin);
+                } else {
+                    origin = query.getName();
+                }
+                search.setName(origin);
+                search.setCatalog(catalog);
+                search.setSchema(schema);
+                PageNavi navi = null;
+                if (null == configs) {
+                    configs = new DefaultConfigStore();
+                }
+                navi = configs.getPageNavi();
+                // 根据系统表查询
+                try {
+                    List<Run> runs = buildQueryMasterTablesRun(runtime, greedy, catalog, schema, origin, types, configs);
+                    if (null != runs) {
+                        int idx = 0;
+                        for (Run run : runs) {
+                            if (null != navi) {
+                                run.setPageNavi(navi);
+                                mergeFinalQuery(runtime, run);
+                            }
+                            DataSet set = selectMetadata(runtime, random, run);
+                            list = masters(runtime, idx++, true, list, catalog, schema, set);
+                            if (null != navi) {
+                                //分页只查一次
+                                break;
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    if (ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+                        e.printStackTrace();
+                    } else if (ConfigTable.IS_LOG_SQL && log.isWarnEnabled()) {
+                        log.warn("{}[masters][{}][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, origin, e.toString());
+                    }
+                }
 
-			// 根据系统表查询失败后根据驱动内置接口补充
-			if(list.isEmpty()) {
-				try {
-					list = masters(runtime, true, list, catalog, schema, origin, types);
-					//删除跨库表，JDBC驱动内置接口补充可能会返回跨库表
-					if(!greedy) {
-						int size = list.size();
-						for(int i=size-1;i>=0; i--) {
-							MasterTable item = list.get(i);
-							if(!equals(catalog, item.getCatalog()) || !equals(schema, item.getSchema())) {
-								list.remove(i);
-							}
-						}
-					}
-				} catch (Exception e) {
-					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
-						e.printStackTrace();
-					}else {
-						log.warn("{}[masters][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据驱动内置接口补充失败", 33), catalog, schema, origin, e.toString());
-					}
-				}
-			}
-			boolean comment = false;
-			for(MasterTable master:list) {
-				if(BasicUtil.isNotEmpty(master.getComment())) {
-					comment = true;
-					break;
-				}
-			}
-			//表备注
-			if(!comment) {
-				try {
-					List<Run> runs = buildQueryMasterTablesCommentRun(runtime, catalog, schema, origin, types);
-					if (null != runs) {
-						int idx = 0;
-						for (Run run : runs) {
-							if(null != navi){
-								run.setPageNavi(navi);
-								//mergeFinalQuery(runtime, run);
-							}
-							DataSet set = selectMetadata(runtime, random, run);
-							list = comments(runtime, idx++, true, list, catalog, schema, set);
-							if(null != navi){
-								break;
-							}
-							//merge(list, maps);
-						}
-					}
-				} catch (Exception e) {
-					if (ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
-						e.printStackTrace();
-					} else if (ConfigTable.IS_LOG_SQL && log.isWarnEnabled()) {
-						log.info("{}[masters][{}][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, origin, e.toString());
-					}
-				}
-			}
-			if (ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
-				log.info("{}[masters][catalog:{}][schema:{}][pattern:{}][type:{}][result:{}][执行耗时:{}]", random, catalog, schema, origin, types, list.size(), DateUtil.format(System.currentTimeMillis() - fr));
-			}
-			if(BasicUtil.isNotEmpty(origin)) {
-				origin = origin.replace("%",".*");
-				//有表名的，根据表名过滤出符合条件的
-				List<T> tmp = new ArrayList<>();
-				for(T item:list) {
-					String name = item.getName(greedy)+"";
-					if(RegularUtil.match(name.toUpperCase(), origin.toUpperCase(), Regular.MATCH_MODE.MATCH)) {
-						if(equals(catalog, item.getCatalog()) && equals(schema, item.getSchema())) {
-							tmp.add(item);
-						}
-					}
-				}
-				list = tmp;
-			}
-			if(Metadata.check(struct, Metadata.TYPE.COLUMN)) {
-				//查询全部表结构 columns()内部已经给master.columns赋值
-				Column column_query = new Column();
-				column_query.setCatalog(catalog);
-				column_query.setSchema(schema);
-				List<Column> columns = columns(runtime, random, greedy, (List<MasterTable>)list, column_query);
-			}
-			if(Metadata.check(struct, Metadata.TYPE.INDEX)) {
-				//查询全部表结构
-				indexes(runtime, random, greedy, (List<MasterTable>)list);
-			}
-			CacheProxy.tables(caches_key, list);
+                // 根据系统表查询失败后根据驱动内置接口补充
+                if (list.isEmpty()) {
+                    try {
+                        list = masters(runtime, true, list, catalog, schema, origin, types);
+                        //删除跨库表，JDBC驱动内置接口补充可能会返回跨库表
+                        if (!greedy) {
+                            int size = list.size();
+                            for (int i = size - 1; i >= 0; i--) {
+                                MasterTable item = list.get(i);
+                                if (!equals(catalog, item.getCatalog()) || !equals(schema, item.getSchema())) {
+                                    list.remove(i);
+                                }
+                            }
+                        }
+                    } catch (Exception e) {
+                        if (ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+                            e.printStackTrace();
+                        } else {
+                            log.warn("{}[masters][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据驱动内置接口补充失败", 33), catalog, schema, origin, e.toString());
+                        }
+                    }
+                }
+                boolean comment = false;
+                for (MasterTable master : list) {
+                    if (BasicUtil.isNotEmpty(master.getComment())) {
+                        comment = true;
+                        break;
+                    }
+                }
+                //表备注
+                if (!comment) {
+                    try {
+                        List<Run> runs = buildQueryMasterTablesCommentRun(runtime, catalog, schema, origin, types);
+                        if (null != runs) {
+                            int idx = 0;
+                            for (Run run : runs) {
+                                if (null != navi) {
+                                    run.setPageNavi(navi);
+                                    //mergeFinalQuery(runtime, run);
+                                }
+                                DataSet set = selectMetadata(runtime, random, run);
+                                list = comments(runtime, idx++, true, list, catalog, schema, set);
+                                if (null != navi) {
+                                    break;
+                                }
+                                //merge(list, maps);
+                            }
+                        }
+                    } catch (Exception e) {
+                        if (ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+                            e.printStackTrace();
+                        } else if (ConfigTable.IS_LOG_SQL && log.isWarnEnabled()) {
+                            log.info("{}[masters][{}][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, origin, e.toString());
+                        }
+                    }
+                }
+                if (ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
+                    log.info("{}[masters][catalog:{}][schema:{}][pattern:{}][type:{}][result:{}][执行耗时:{}]", random, catalog, schema, origin, types, list.size(), DateUtil.format(System.currentTimeMillis() - fr));
+                }
+                if (BasicUtil.isNotEmpty(origin)) {
+                    origin = origin.replace("%", ".*");
+                    //有表名的，根据表名过滤出符合条件的
+                    List<T> tmp = new ArrayList<>();
+                    for (T item : list) {
+                        String name = item.getName(greedy) + "";
+                        if (RegularUtil.match(name.toUpperCase(), origin.toUpperCase(), Regular.MATCH_MODE.MATCH)) {
+                            if (equals(catalog, item.getCatalog()) && equals(schema, item.getSchema())) {
+                                tmp.add(item);
+                            }
+                        }
+                    }
+                    list = tmp;
+                }
+                CacheProxy.masters(caches_key, list);
+            }
+
+
+            if(Metadata.check(struct, Metadata.TYPE.COLUMN)) {
+                //查询全部表结构 columns()内部已经给MasterTable.columns赋值
+                for(MasterTable item:list){
+                    if(null == item.getColumns() || item.getColumns().isEmpty()) {
+                        Column column_query = new Column();
+                        column_query.setCatalog(catalog);
+                        column_query.setSchema(schema);
+                        columns(runtime, random, greedy, list, column_query);
+                        break;
+                    }
+                }
+            }
+            if(Metadata.check(struct, Metadata.TYPE.INDEX)) {
+                //查询全部表结构 indexes()内部已经给MasterTable.indexes赋值
+                for(MasterTable item:list){
+                    if(null == item.getIndexes() || item.getIndexes().isEmpty()){
+                        Index index_qeury = new Index();
+                        index_qeury.setCatalog(catalog);
+                        index_qeury.setSchema(schema);
+                        indexes(runtime, random, greedy, list, index_qeury);
+                        break;
+                    }
+                }
+            }
 		}catch (Exception e) {
 			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 				e.printStackTrace();
@@ -9734,7 +9798,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param <T> Index
 	 */
 	@Override
-	public <T extends Index> List<T> indexes(DataRuntime runtime, String random, boolean greedy, Collection<? extends Table> tables) {
+	public <T extends Index> List<T> indexes(DataRuntime runtime, String random, boolean greedy, Collection<? extends Table> tables, Index query) {
 		List<T> list = null;
 		if(null == random) {
 			random = random(runtime);
