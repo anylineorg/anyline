@@ -149,6 +149,9 @@ public class CacheProxy {
     public static  <T extends Table> void tables(String cache, List<T> tables){
         caches().put(cache, tables);
     }
+    public static  <T extends MasterTable> void masters(String cache, List<T> masters){
+        caches().put(cache, masters);
+    }
     public static  <T extends VertexTable> void vertexs(String cache, List<T> vertexs){
         caches().put(cache, vertexs);
     }
