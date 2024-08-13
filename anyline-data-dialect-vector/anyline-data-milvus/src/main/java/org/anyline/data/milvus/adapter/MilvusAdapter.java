@@ -8293,7 +8293,7 @@ public class MilvusAdapter extends AbstractDriverAdapter {
      */
     @Override
     public <T extends Privilege> List<T> privileges(DataRuntime runtime, String random, boolean greedy, Privilege query) throws Exception {
-        return super.privileges(runtime, random, greedy, query);
+        return actuator().privileges(runtime, random, greedy, query);
     }
 
     /**
@@ -8364,9 +8364,12 @@ public class MilvusAdapter extends AbstractDriverAdapter {
     /* *****************************************************************************************************************
      * 													grant
      * -----------------------------------------------------------------------------------------------------------------
-     * boolean grant(DataRuntime runtime, User user, Privilege... privileges)  throws Exception
-     * List<Run> buildGrantRun(DataRuntime runtime, User user, Privilege... privileges) throws Exception
-     * boolean revoke(DataRuntime runtime, User user, Privilege ... privileges) throws Exception	 *
+     * boolean grant(DataRuntime runtime, User user, Privilege ... privileges)  throws Exception
+     * boolean grant(DataRuntime runtime, User user, Role ... roles) throws Exception
+     * boolean grant(DataRuntime runtime, Role role, Privilege ... privileges) throws Exception
+     * List<Run> buildGrantRun(DataRuntime runtime, User user, Privilege ... privileges) throws Exception
+     * List<Run> buildGrantRun(DataRuntime runtime, User user, Role ... roles) throws Exception
+     * List<Run> buildGrantRun(DataRuntime runtime, Role role, Privilege ... privileges) throws Exception
      ******************************************************************************************************************/
 
     /**
@@ -8377,8 +8380,34 @@ public class MilvusAdapter extends AbstractDriverAdapter {
      * @return boolean
      */
     @Override
-    public boolean grant(DataRuntime runtime, User user, Privilege... privileges)  throws Exception {
-        return super.grant(runtime, user, privileges);
+    public boolean grant(DataRuntime runtime, User user, Privilege ... privileges)  throws Exception {
+        return actuator().grant(runtime, user, privileges);
+    }
+
+
+    /**
+     * privilege[调用入口]<br/>
+     * 授权
+     * @param user 用户
+     * @param roles 角色
+     * @return boolean
+     */
+    @Override
+    public boolean grant(DataRuntime runtime, User user, Role ... roles)  throws Exception {
+        return actuator().grant(runtime, user, roles);
+    }
+
+
+    /**
+     * privilege[调用入口]<br/>
+     * 授权
+     * @param role 角色
+     * @param privileges 权限
+     * @return boolean
+     */
+    @Override
+    public boolean grant(DataRuntime runtime, Role role, Privilege ... privileges)  throws Exception {
+        return actuator().grant(runtime, role, privileges);
     }
 
     /**
@@ -8389,12 +8418,45 @@ public class MilvusAdapter extends AbstractDriverAdapter {
      * @return List
      */
     @Override
-    public List<Run> buildGrantRun(DataRuntime runtime, User user, Privilege... privileges) throws Exception {
+    public List<Run> buildGrantRun(DataRuntime runtime, User user, Privilege ... privileges) throws Exception {
         return super.buildGrantRun(runtime, user, privileges);
     }
+    /**
+     * grant[命令合成]<br/>
+     * 授权
+     * @param user 用户
+     * @param roles 角色
+     * @return List
+     */
+    @Override
+    public List<Run> buildGrantRun(DataRuntime runtime, User user, Role ... roles) throws Exception {
+        return super.buildGrantRun(runtime, user, roles);
+    }
+    /**
+     * grant[命令合成]<br/>
+     * 授权
+     * @param role 角色
+     * @param privileges 权限
+     * @return List
+     */
+    @Override
+    public List<Run> buildGrantRun(DataRuntime runtime, Role role, Privilege ... privileges) throws Exception {
+        return super.buildGrantRun(runtime, role, privileges);
+    }
+
+    /* *****************************************************************************************************************
+     * 													revoke
+     * -----------------------------------------------------------------------------------------------------------------
+     * boolean revoke(DataRuntime runtime, User user, Privilege ... privileges)  throws Exception
+     * boolean revoke(DataRuntime runtime, User user, Role ... roles) throws Exception
+     * boolean revoke(DataRuntime runtime, Role role, Privilege ... privileges) throws Exception
+     * List<Run> buildRevokeRun(DataRuntime runtime, User user, Privilege ... privileges) throws Exception
+     * List<Run> buildRevokeRun(DataRuntime runtime, User user, Role ... roles) throws Exception
+     * List<Run> buildRevokeRun(DataRuntime runtime, Role role, Privilege ... privileges) throws Exception
+     ******************************************************************************************************************/
 
     /**
-     * privilege[调用入口]<br/>
+     * revoke[调用入口]<br/>
      * 撤销授权
      * @param user 用户
      * @param privileges 权限
@@ -8402,11 +8464,33 @@ public class MilvusAdapter extends AbstractDriverAdapter {
      */
     @Override
     public boolean revoke(DataRuntime runtime, User user, Privilege ... privileges) throws Exception {
-        return super.revoke(runtime, user, privileges);
+        return actuator().revoke(runtime, user, privileges);
+    }
+    /**
+     * revoke[调用入口]<br/>
+     * 撤销授权
+     * @param user 用户
+     * @param roles 角色
+     * @return boolean
+     */
+    @Override
+    public boolean revoke(DataRuntime runtime, User user, Role ... roles) throws Exception {
+        return actuator().revoke(runtime, user, roles);
+    }
+    /**
+     * revoke[调用入口]<br/>
+     * 撤销授权
+     * @param role 角色
+     * @param privileges 权限
+     * @return boolean
+     */
+    @Override
+    public boolean revoke(DataRuntime runtime, Role role, Privilege ... privileges) throws Exception {
+        return actuator().revoke(runtime, role, privileges);
     }
 
     /**
-     * privilege[命令合成]<br/>
+     * revoke[命令合成]<br/>
      * 撤销授权
      * @param user 用户
      * @param privileges 权限
@@ -8415,6 +8499,30 @@ public class MilvusAdapter extends AbstractDriverAdapter {
     @Override
     public List<Run> buildRevokeRun(DataRuntime runtime, User user, Privilege ... privileges) throws Exception {
         return super.buildRevokeRun(runtime, user, privileges);
+    }
+
+    /**
+     * revoke[命令合成]<br/>
+     * 撤销授权
+     * @param role 角色
+     * @param privileges 权限
+     * @return List
+     */
+    @Override
+    public List<Run> buildRevokeRun(DataRuntime runtime, Role role, Privilege ... privileges) throws Exception {
+        return super.buildRevokeRun(runtime, role, privileges);
+    }
+
+    /**
+     * revoke[命令合成]<br/>
+     * 撤销授权
+     * @param user 用户
+     * @param roles 角色
+     * @return List
+     */
+    @Override
+    public List<Run> buildRevokeRun(DataRuntime runtime, User user, Role ... roles) throws Exception {
+        return super.buildRevokeRun(runtime, user, roles);
     }
 
     @Override

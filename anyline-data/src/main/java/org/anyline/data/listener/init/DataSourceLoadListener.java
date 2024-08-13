@@ -79,7 +79,7 @@ public class DataSourceLoadListener implements LoadListener {
                     adapter.setGenerator(primaryGenerator);
                 }
                 //anyline.data.jdbc.delimiter.db2
-                String delimiter = ConfigTable.getString("anyline.data.jdbc.delimiter."+adapter.type().name().toLowerCase());
+                String delimiter = ConfigTable.getString("anyline.data.jdbc.delimiter." + adapter.type().name().toLowerCase());
                 if(null != delimiter) {
                     adapter.setDelimiter(delimiter);
                 }
@@ -89,10 +89,6 @@ public class DataSourceLoadListener implements LoadListener {
             for(DataSourceLoader loader:loaders.values()) {
                 loader.load();
             }
-        }
-        Object def = ConfigTable.environment().getBean(DataRuntime.ANYLINE_SERVICE_BEAN_PREFIX+"default");
-        if(null == ConfigTable.environment().getBean("anyline.service") && null != def) {
-            ConfigTable.environment().regBean("anyline.service", def);
         }
         if(null == adapters || adapters.isEmpty()) {
             adapters = ConfigTable.environment().getBeans(DriverAdapter.class);
@@ -126,6 +122,7 @@ public class DataSourceLoadListener implements LoadListener {
     @Override
     public void after() {
         if(ConfigTable.environment().containsBean(DataRuntime.ANYLINE_SERVICE_BEAN_PREFIX + "default")) {
+            ConfigTable.environment().regAlias(DataRuntime.ANYLINE_SERVICE_BEAN_PREFIX + "default", "anyline.service");
             AnylineService service = ConfigTable.environment().getBean(DataRuntime.ANYLINE_SERVICE_BEAN_PREFIX + "default", AnylineService.class);
             if(null != service) {
                 ServiceProxy.init(service);

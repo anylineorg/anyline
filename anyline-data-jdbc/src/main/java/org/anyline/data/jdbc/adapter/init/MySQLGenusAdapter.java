@@ -7109,8 +7109,8 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     /* *****************************************************************************************************************
      *                                                     grant
      * -----------------------------------------------------------------------------------------------------------------
-     * boolean grant(DataRuntime runtime, User user, Privilege... privileges)  throws Exception
-     * List<Run> buildGrantRun(DataRuntime runtime, User user, Privilege... privileges) throws Exception
+     * boolean grant(DataRuntime runtime, User user, Privilege ... privileges)  throws Exception
+     * List<Run> buildGrantRun(DataRuntime runtime, User user, Privilege ... privileges) throws Exception
      * boolean revoke(DataRuntime runtime, User user, Privilege ... privileges) throws Exception     *
      ******************************************************************************************************************/
     /**
@@ -7121,7 +7121,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return boolean
      */
     @Override
-    public boolean grant(DataRuntime runtime, User user, Privilege... privileges)  throws Exception {
+    public boolean grant(DataRuntime runtime, User user, Privilege ... privileges)  throws Exception {
         return super.grant(runtime, user, privileges);
     }
 
@@ -7133,7 +7133,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return List
      */
     @Override
-    public List<Run> buildGrantRun(DataRuntime runtime, User user, Privilege... privileges) throws Exception {
+    public List<Run> buildGrantRun(DataRuntime runtime, User user, Privilege ... privileges) throws Exception {
         return super.buildGrantRun(runtime, user, privileges);
     }
 
