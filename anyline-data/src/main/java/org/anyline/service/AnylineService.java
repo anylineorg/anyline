@@ -1132,6 +1132,90 @@ public interface AnylineService<E>{
 		return cache(cache, dest, null, null, conditions);
 	}
 
+	//当前线程内缓存
+	default DataSet caches(String dest, ConfigStore configs, Object obj, String ... conditions) {
+		return caches(null, dest, configs, obj, conditions);
+	}
+	default DataSet caches(String dest, long first, long last, ConfigStore configs, Object obj, String ... conditions) {
+		return caches(null, dest, first, last, configs, obj, conditions);
+	}
+	default DataSet caches(String dest, Object obj, String ... conditions) {
+		return caches(null, dest, null, obj, conditions);
+	}
+	default DataSet caches(String dest, long first, long last, Object obj, String ... conditions) {
+		return caches(null, dest, first, last,obj, conditions);
+	}
+
+	default DataSet caches(Table dest, ConfigStore configs, Object obj, String ... conditions) {
+		return caches(null, dest, configs, obj, conditions);
+	}
+	default DataSet caches(Table dest, long first, long last, ConfigStore configs, Object obj, String ... conditions) {
+		return caches(null, dest, first, last, configs, obj, conditions);
+	}
+	default DataSet caches(Table dest, Object obj, String ... conditions) {
+		return caches(null, dest, null, obj, conditions);
+	}
+	default DataSet caches(Table dest, long first, long last, Object obj, String ... conditions) {
+		ConfigStore configs = new DefaultConfigStore(first, last);
+		return caches(null, dest, configs, obj, conditions);
+	}
+
+	/**
+	 * @param dest 			查询或操作的目标(表、存储过程、SQL等)
+	 * @param configs		根据http等上下文构造查询条件
+	 * @param obj			根据obj的field/value构造查询条件(支侍Map和Object)(查询条件只支持 =和in)
+	 * @param conditions 	固定查询条件
+	 * @return DataSet
+	 */
+	default DataRow cache(String dest, ConfigStore configs, Object obj, String ... conditions) {
+		return cache(null, dest, configs, obj, conditions);
+	}
+	default DataRow cache(String dest, Object obj, String ... conditions) {
+		return cache(null, dest, null, obj, conditions);
+	}
+	default DataSet caches(String dest, ConfigStore configs, String ... conditions) {
+		return caches(null, dest, configs, (Object) null, conditions);
+	}
+	default DataSet caches(String dest, long first, long last, ConfigStore configs, String ... conditions) {
+		return caches(null, dest, first, last, configs, conditions);
+	}
+	default DataSet caches(String dest, String ... conditions) {
+		return caches(null, dest, null, null, conditions);
+	}
+	default DataSet caches(String dest, long first, long last, String ... conditions) {
+		return caches(null, dest, first, last, null, conditions);
+	}
+	default DataRow cache(String dest, ConfigStore configs, String ... conditions) {
+		return cache(null, dest, configs, null, conditions);
+	}
+	default DataRow cache(String dest, String ... conditions) {
+		return cache(null, dest, null, null, conditions);
+	}
+
+	default DataRow cache(Table dest, ConfigStore configs, Object obj, String ... conditions) {
+		return cache(null, dest, configs, obj, conditions);
+	}
+	default DataRow cache(Table dest, Object obj, String ... conditions) {
+		return cache(null, dest, null, obj, conditions);
+	}
+	default DataSet caches(Table dest, ConfigStore configs, String ... conditions) {
+		return caches(null, dest, configs, (Object) null, conditions);
+	}
+	default DataSet caches(Table dest, long first, long last, ConfigStore configs, String ... conditions) {
+		return caches(null, dest, first, last, configs, conditions);
+	}
+	default DataSet caches(Table dest, String ... conditions) {
+		return caches(null, dest, null, null, conditions);
+	}
+	default DataSet caches(Table dest, long first, long last, String ... conditions) {
+		return caches(null, dest, first, last, null, conditions);
+	}
+	default DataRow cache(Table dest, ConfigStore configs, String ... conditions) {
+		return cache(null, dest, configs, null, conditions);
+	}
+	default DataRow cache(Table dest, String ... conditions) {
+		return cache(null, dest, null, null, conditions);
+	}
 	/*多表查询, 左右连接时使用*/
 
 	/**
