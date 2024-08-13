@@ -29,6 +29,7 @@ import org.anyline.metadata.*;
 import org.anyline.metadata.refer.*;
 import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.util.BasicUtil;
+import org.anyline.util.ConfigTable;
 import org.anyline.util.LogUtil;
 import org.anyline.util.regular.RegularUtil;
 
@@ -5478,6 +5479,9 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public StringBuilder position(DataRuntime runtime, StringBuilder builder, Column meta) {
+        if(!ConfigTable.IS_ENABLE_COMMON_POSITION){
+            return builder;
+        }
         Integer position = meta.getPosition();
         String after = meta.getAfter();
         String before = meta.getBefore();
