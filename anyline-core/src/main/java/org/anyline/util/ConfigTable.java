@@ -284,16 +284,11 @@ public class ConfigTable {
 	 * @return String
 	 */
 	public static String getProjectProtocol() {
-		return ConfigTable.class.getResource("/").getProtocol();
-		/*String type = "war";
-		if("jar".equals(type)) {
-			return type;
+		URL url = ConfigTable.class.getResource("/");
+		if(null != url){
+			return url.getProtocol();
 		}
-		String path = ConfigTable.class.getResource("/").getPath();;
-		if(path.contains(".jar!")) {
-			type = "jar";
-		}
-		return type;*/
+		return null;
 	}
 	public static String path(String path) {
 		//return new File(path).getAbsolutePath();
@@ -305,6 +300,9 @@ public class ConfigTable {
 		// path=file:/D:/develop/git/sso/bin/classes/										(windows IDE)
 		// path=file:/usr/local/web/sso/sso-0.0.2.jar!/BOOT-INF/classes!/		(linux jar)
 		// path=/usr/local/web/sso/WEB-INF/classes/									(linux tomcat)
+		if(null == path){
+			return null;
+		}
 		Properties props=System.getProperties();
 		String os = props.getProperty("os.name");
 		if(null != os && os.toUpperCase().contains("WINDOWS")) {
@@ -321,15 +319,26 @@ public class ConfigTable {
 		return path;
 	}
 	public static void prepare() {
-
 		if(isLoading) {
 			return;
 		}
 		lastLoadTime = System.currentTimeMillis();
 		isLoading = true;
-		String path =  "";
+		String path =  null;
 		try{
-			path = ConfigTable.class.getResource("/").getPath();
+			URL url = ConfigTable.class.getResource("/"); //项目外的lib目录获取不到url
+			if(null != url){
+				path = url.getPath();
+			}
+			if(null == path){
+				File tmp = new File(".").getAbsoluteFile();
+				if(null != tmp){
+					path = tmp.getParent();
+				}
+			}
+			if(null == path){
+				path = System.getProperty("user.dir");
+			}
 		}catch(Exception e) {
 			log.error("prepare exception:", e);
 		}
@@ -365,6 +374,9 @@ public class ConfigTable {
 			if(path.indexOf("target") > 0) {
 				webRoot = path.substring(0, path.indexOf("target")-1);
 			}*/
+		}
+		if(null == path){
+			path = root;
 		}
 		if(path.contains("classes")) {
 			classpath = path;
