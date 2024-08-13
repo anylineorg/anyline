@@ -16281,10 +16281,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return boolean
 	 */
 	@Override
-	public boolean delete(DataRuntime runtime, Role role) throws Exception {
+	public boolean drop(DataRuntime runtime, Role role) throws Exception {
 		String random = random(runtime);
-		ACTION.Authorize action = ACTION.Authorize.ROLE_DELETE;
-		List<Run> runs = buildDeleteRun(runtime, role);
+		ACTION.Authorize action = ACTION.Authorize.ROLE_DROP;
+		List<Run> runs = buildDropRun(runtime, role);
 		return execute(runtime, random, role, action, runs);
 	}
 
@@ -16370,9 +16370,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<Run> buildDeleteRun(DataRuntime runtime, Role role) throws Exception {
+	public List<Run> buildDropRun(DataRuntime runtime, Role role) throws Exception {
         if(log.isDebugEnabled()) {
-            log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildDeleteRun(DataRuntime runtime, Role role)", 37));
+            log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildDropRun(DataRuntime runtime, Role role)", 37));
         }
 		return new ArrayList<>();
 	}
@@ -16467,7 +16467,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * boolean create(DataRuntime runtime, User user) throws Exception
 	 * boolean rename(DataRuntime runtime, User origin, User update) throws Exception;
-	 * boolean delete(DataRuntime runtime, User user) throws Exception
+	 * boolean drop(DataRuntime runtime, User user) throws Exception
 	 * List<User> users(Catalog catalog, Schema schema, String pattern) throws Exception
 	 * List<Run> buildQueryUsersRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) throws Exception
 	 * <T extends User> List<T> users(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, List<T> users, DataSet set) throws Exception
@@ -16513,11 +16513,11 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return boolean
 	 */
 	@Override
-	public boolean delete(DataRuntime runtime, User user) throws Exception {
+	public boolean drop(DataRuntime runtime, User user) throws Exception {
 		boolean result = false;
 		String random = random(runtime);
-		ACTION.Authorize action = ACTION.Authorize.USER_DELETE;
-		List<Run> runs = buildDeleteRun(runtime, user);
+		ACTION.Authorize action = ACTION.Authorize.USER_DROP;
+		List<Run> runs = buildDropRun(runtime, user);
 		return execute(runtime, random, user, action, runs);
 	}
 
@@ -16599,13 +16599,13 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	/**
 	 * user[命令合成]<br/>
 	 * 删除用户
-	 * @param user 用户
+	 * @param meta 用户
 	 * @return List
 	 */
 	@Override
-	public List<Run> buildDeleteRun(DataRuntime runtime, User user) throws Exception {
+	public List<Run> buildDropRun(DataRuntime runtime, User user) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildDeleteRun(DataRuntime runtime, User user)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildDropRun(DataRuntime runtime, User user)", 37));
 		}
 		return new ArrayList<>();
 	}

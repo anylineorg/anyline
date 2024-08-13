@@ -18,6 +18,9 @@ package org.anyline.data.milvus.adapter;
 
 import io.milvus.v2.client.MilvusClientV2;
 import io.milvus.v2.service.rbac.request.CreateRoleReq;
+import io.milvus.v2.service.rbac.request.CreateUserReq;
+import io.milvus.v2.service.rbac.request.DropRoleReq;
+import io.milvus.v2.service.rbac.request.DropUserReq;
 import org.anyline.annotation.Component;
 import org.anyline.data.adapter.DriverActuator;
 import org.anyline.data.adapter.DriverAdapter;
@@ -122,25 +125,30 @@ public class MilvusActuator implements DriverActuator {
     /**
      * role[调用入口]<br/>
      * 创建角色
-     * @param meta 角色
+     * @param role 角色
      * @return boolean
      */
-    public boolean create(DataRuntime runtime, Role meta) throws Exception {
+    public boolean create(DataRuntime runtime, Role role) throws Exception {
         CreateRoleReq req = CreateRoleReq.builder()
-            .roleName(meta.getName())
+            .roleName(role.getName())
             .build();
         client(runtime).createRole(req);
         return true;
     }
-    public <T extends Role> List<T>  roles(DataRuntime runtime, String random, boolean greedy, Role query){
-        List<T> list = new ArrayList<>();
-        List<String> roles = client(runtime).listRoles();
-        for(String role:roles){
-            list.add((T)new Role(role));
-        }
-        return list;
+    /**
+     * role[调用入口]<br/>
+     * 删除角色
+     * @param role 角色
+     * @return boolean
+     */
+    public boolean drop(DataRuntime runtime, Role role) throws Exception {
+        DropRoleReq req = DropRoleReq.builder()
+            .roleName(role.getName())
+            .build();
+        client(runtime).dropRole(req);
+        return true;
     }
-    public <T extends Role> List<T>  roles(DataRuntime runtime, Role meta){
+    public <T extends Role> List<T>  roles(DataRuntime runtime, String random, boolean greedy, Role query){
         List<T> list = new ArrayList<>();
         List<String> roles = client(runtime).listRoles();
         for(String role:roles){
@@ -152,14 +160,28 @@ public class MilvusActuator implements DriverActuator {
     /**
      * user[调用入口]<br/>
      * 创建 用户
-     * @param meta 用户
+     * @param user 用户
      * @return boolean
      */
-    public boolean create(DataRuntime runtime, User meta) throws Exception {
-        CreateRoleReq req = CreateRoleReq.builder()
-            .roleName(meta.getName())
+    public boolean create(DataRuntime runtime, User user) throws Exception {
+        CreateUserReq req = CreateUserReq.builder()
+            .userName(user.getName())
+            .password(user.getPassword())
             .build();
-        client(runtime).createRole(req);
+        client(runtime).createUser(req);
+        return true;
+    }
+    /**
+     * user[调用入口]<br/>
+     * 删除 用户
+     * @param user 用户
+     * @return boolean
+     */
+    public boolean drop(DataRuntime runtime, User user) throws Exception {
+        DropUserReq req = DropUserReq.builder()
+            .userName(user.getName())
+            .build();
+        client(runtime).dropUser(req);
         return true;
     }
     public <T extends User> List<T>  users(DataRuntime runtime, String random, boolean greedy, User query){

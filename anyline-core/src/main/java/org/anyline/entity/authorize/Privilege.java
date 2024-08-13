@@ -20,6 +20,8 @@ import org.anyline.metadata.Metadata;
 
 public class Privilege extends Metadata<User> {
     private String tables;
+    private String objectType;
+    private String objectName;
 
     public Privilege(){}
     public Privilege(User user){
@@ -33,6 +35,24 @@ public class Privilege extends Metadata<User> {
         this.tables = tables;
     }
 
+    public String getObjectType() {
+        return objectType;
+    }
+
+    public void setObjectType(String objectType) {
+        this.objectType = objectType;
+    }
+
+    public String getObjectName() {
+        return objectName;
+    }
+
+    public void setObjectName(String objectName) {
+        this.objectName = objectName;
+    }
+
     /* ********************************* field refer ********************************** */
     public static final String FIELD_TABLE = "TABLE";
+    public static final String FIELD_OBJECT_TYPE = "OBJECT_TYPE";
+    public static final String FIELD_OBJECT_NAME = "OBJECT_NAME";
 }

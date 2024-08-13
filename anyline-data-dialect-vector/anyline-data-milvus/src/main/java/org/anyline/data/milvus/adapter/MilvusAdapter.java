@@ -56,7 +56,7 @@ public class MilvusAdapter extends AbstractDriverAdapter {
 
     @Override
     public boolean supportSchema() {
-        return false;
+        return true;
     }
 
     public MilvusActuator actuator() {
@@ -4097,8 +4097,8 @@ public class MilvusAdapter extends AbstractDriverAdapter {
      * @param <T> Index
      */
     @Override
-    public <T extends Index> List<T> indexes(DataRuntime runtime, String random, boolean greedy, Collection<? extends Table> tables) {
-        return super.indexes(runtime, random, greedy, tables);
+    public <T extends Index> List<T> indexes(DataRuntime runtime, String random, boolean greedy, Collection<? extends Table> tables, Index query) {
+        return super.indexes(runtime, random, greedy, tables, query);
     }
 
     /**
@@ -7978,7 +7978,8 @@ public class MilvusAdapter extends AbstractDriverAdapter {
      */
     @Override
     public boolean create(DataRuntime runtime, Role role) throws Exception {
-        return super.create(runtime, role);
+        log.warn("[创建角色][name:{}]", role.getName());
+        return actuator().create(runtime, role);
     }
 
     /**
@@ -8000,8 +8001,9 @@ public class MilvusAdapter extends AbstractDriverAdapter {
      * @return boolean
      */
     @Override
-    public boolean delete(DataRuntime runtime, Role role) throws Exception {
-        return super.delete(runtime, role);
+    public boolean drop(DataRuntime runtime, Role role) throws Exception {
+        log.warn("[删除角色][name:{}]", role.getName());
+        return actuator().drop(runtime, role);
     }
 
     /**
@@ -8045,8 +8047,8 @@ public class MilvusAdapter extends AbstractDriverAdapter {
      * @return List
      */
     @Override
-    public List<Run> buildDeleteRun(DataRuntime runtime, Role role) throws Exception {
-        return super.buildDeleteRun(runtime, role);
+    public List<Run> buildDropRun(DataRuntime runtime, Role role) throws Exception {
+        return super.buildDropRun(runtime, role);
     }
 
     /**
@@ -8118,7 +8120,7 @@ public class MilvusAdapter extends AbstractDriverAdapter {
      * -----------------------------------------------------------------------------------------------------------------
      * boolean create(DataRuntime runtime, User user) throws Exception
      * boolean rename(DataRuntime runtime, User origin, User update) throws Exception;
-     * boolean delete(DataRuntime runtime, User user) throws Exception
+     * boolean drop(DataRuntime runtime, User user) throws Exception
      * List<User> users(Catalog catalog, Schema schema, String pattern) throws Exception
      * List<Run> buildQueryUsersRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) throws Exception
      * <T extends User> List<T> users(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, List<T> users, DataSet set) throws Exception
@@ -8134,7 +8136,8 @@ public class MilvusAdapter extends AbstractDriverAdapter {
      */
     @Override
     public boolean create(DataRuntime runtime, User user) throws Exception {
-        return super.create(runtime, user);
+        log.warn("[创建用户][name:{}]", user.getName());
+        return actuator().create(runtime, user);
     }
 
     /**
@@ -8156,8 +8159,9 @@ public class MilvusAdapter extends AbstractDriverAdapter {
      * @return boolean
      */
     @Override
-    public boolean delete(DataRuntime runtime, User user) throws Exception {
-        return super.delete(runtime, user);
+    public boolean drop(DataRuntime runtime, User user) throws Exception {
+        log.warn("[删除用户][name:{}]", user.getName());
+        return actuator().drop(runtime, user);
     }
 
     /**
@@ -8201,8 +8205,8 @@ public class MilvusAdapter extends AbstractDriverAdapter {
      * @return List
      */
     @Override
-    public List<Run> buildDeleteRun(DataRuntime runtime, User user) throws Exception {
-        return super.buildDeleteRun(runtime, user);
+    public List<Run> buildDropRun(DataRuntime runtime, User user) throws Exception {
+        return super.buildDropRun(runtime, user);
     }
 
     /**

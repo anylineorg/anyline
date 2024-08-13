@@ -1935,7 +1935,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * boolean create(Role role) throws Exception
 	 * <T extends Role> List<T> roles(Role query) throws Exception
 	 * boolean rename(Role origin, Role update) throws Exception
-	 * boolean delete(Role role) throws Exception
+	 * boolean drop(Role role) throws Exception
 	 ******************************************************************************************************************/
 	/**
 	 * 创建角色
@@ -1978,9 +1978,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @return boolean
 	 */
 	@Override
-	public boolean delete(Role role) throws Exception {
+	public boolean drop(Role role) throws Exception {
 		DataRuntime runtime = runtime();
-		return runtime.getAdapter().delete(runtime, role);
+		return runtime.getAdapter().drop(runtime, role);
 	}
 
 	/* *****************************************************************************************************************
@@ -1989,7 +1989,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * boolean create(User user) throws Exception
 	 * <T extends Role> List<T> roles(User query) throws Exception
 	 * boolean rename(User origin, Role update) throws Exception
-	 * boolean delete(User user) throws Exception
+	 * boolean drop(User user) throws Exception
 	 ******************************************************************************************************************/
 
 	/**
@@ -2030,9 +2030,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @return boolean
 	 */
 	@Override
-	public boolean delete(User user) throws Exception {
+	public boolean drop(User user) throws Exception {
 		DataRuntime runtime = runtime();
-		return runtime.getAdapter().delete(runtime, user);
+		return runtime.getAdapter().drop(runtime, user);
 	}
 
 	/* *****************************************************************************************************************
@@ -2051,6 +2051,28 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public boolean grant(User user, Privilege... privileges) throws Exception {
 		DataRuntime runtime = runtime();
 		return runtime.getAdapter().grant(runtime, user, privileges);
+	}
+	/**
+	 * 授权
+	 * @param role 角色
+	 * @param privileges 权限
+	 * @return boolean
+	 */
+	@Override
+	public boolean grant(Role role, Privilege... privileges) throws Exception {
+		DataRuntime runtime = runtime();
+		return runtime.getAdapter().grant(runtime, role, privileges);
+	}
+	/**
+	 * 授权
+	 * @param user 用户
+	 * @param roles 角色
+	 * @return boolean
+	 */
+	@Override
+	public boolean grant(User user, Role ... roles) throws Exception {
+		DataRuntime runtime = runtime();
+		return runtime.getAdapter().grant(runtime, user, roles);
 	}
 
 	/* *****************************************************************************************************************
@@ -2082,6 +2104,30 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public boolean revoke(User user, Privilege ... privileges) throws Exception {
 		DataRuntime runtime = runtime();
 		return runtime.getAdapter().revoke(runtime, user, privileges);
+	}
+
+	/**
+	 * 撤销授权
+	 * @param role 角色
+	 * @param privileges 权限
+	 * @return boolean
+	 */
+	@Override
+	public boolean revoke(Role role, Privilege ... privileges) throws Exception {
+		DataRuntime runtime = runtime();
+		return runtime.getAdapter().revoke(runtime, role, privileges);
+	}
+
+	/**
+	 * 撤销授权
+	 * @param user 用户
+	 * @param roles 角色
+	 * @return boolean
+	 */
+	@Override
+	public boolean revoke(User user, Role ... roles) throws Exception {
+		DataRuntime runtime = runtime();
+		return runtime.getAdapter().revoke(runtime, user, roles);
 	}
 
 	/* *****************************************************************************************************************

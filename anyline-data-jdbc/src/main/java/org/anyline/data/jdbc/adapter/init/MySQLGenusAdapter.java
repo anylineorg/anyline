@@ -6834,7 +6834,8 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      *                                                     Authorize
      *
      * =================================================================================================================
-     * user            : 用户
+     * roe          : 角色
+     * user         : 用户
      * grant        : 授权
      * privilege    : 权限
      ******************************************************************************************************************/
@@ -6858,7 +6859,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * -----------------------------------------------------------------------------------------------------------------
      * boolean create(DataRuntime runtime, User user) throws Exception
      * boolean rename(DataRuntime runtime, User origin, User update) throws Exception;
-     * boolean delete(DataRuntime runtime, User user) throws Exception
+     * boolean drop(DataRuntime runtime, User user) throws Exception
      * List<User> users(Catalog catalog, Schema schema, String pattern) throws Exception
      * List<Run> buildQueryUsersRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) throws Exception
      * <T extends User> List<T> users(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, List<T> users, DataSet set) throws Exception
@@ -6896,8 +6897,8 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return boolean
      */
     @Override
-    public boolean delete(DataRuntime runtime, User user) throws Exception {
-        return super.delete(runtime, user);
+    public boolean drop(DataRuntime runtime, User user) throws Exception {
+        return super.drop(runtime, user);
     }
 
     /**
@@ -6941,8 +6942,8 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return List
      */
     @Override
-    public List<Run> buildDeleteRun(DataRuntime runtime, User user) throws Exception {
-        return super.buildDeleteRun(runtime, user);
+    public List<Run> buildDropRun(DataRuntime runtime, User user) throws Exception {
+        return super.buildDropRun(runtime, user);
     }
 
     /**

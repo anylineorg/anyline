@@ -118,10 +118,10 @@ public interface ACTION {
     enum Authorize implements ACTION{
         ROLE_CREATE,
         ROLE_RENAME,
-        ROLE_DELETE,
+        ROLE_DROP,
         USER_CREATE,
         USER_RENAME,
-        USER_DELETE,
+        USER_DROP,
         GRANT,
         REVOKE,
         PROCEDURE

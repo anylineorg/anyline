@@ -198,16 +198,16 @@ public class ConfigTable {
 
 	public static EnvironmentWorker environment() {
 		if(null == environment) {
-			log.error("未注入EnvironmentWorker(8.7.2+)(基础Java环境调用DefaultEnvironmentWorker.start(),其他环境添加依赖如:anyline-environment-spring-data-jdbc)");
+			log.error("未注入EnvironmentWorker(8.7.2+)(基础Java环境调用DefaultEnvironmentWorker.start(),其他环境添加依赖如spring环境:anyline-environment-spring-data-jdbc)");
 		}
 		return environment;
 	}
 	private synchronized static void listener() {
-		if(listener_running) {
+		if(listener_running || listener_files.isEmpty()) {
 			return;
 		}
 		listener_running = true;
-		log.info("[启动监听]");
+		log.info("[启动监听][{}]", BeanUtil.concat(listener_files.keySet()));
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
