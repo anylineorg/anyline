@@ -21,6 +21,7 @@
 
         <module>anyline-environment-spring</module>
         <module>anyline-environment-spring-boot</module>
+        <module>anyline-environment-spring-data</module>
         <module>anyline-environment-spring-data-jdbc</module>
 
         <module>anyline-environment-vertx-data-jdbc</module>

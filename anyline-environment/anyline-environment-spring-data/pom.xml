@@ -11,19 +11,18 @@
         <relativePath>../../anyline-dependency/pom.xml</relativePath>
     </parent>
 
-    <artifactId>anyline-environment-spring-data-jdbc</artifactId>
+    <artifactId>anyline-environment-spring-data</artifactId>
     <packaging>jar</packaging>
-    <name>anyline-environment-spring-data-jdbc</name>
-    <url>http://www.anyline.org/environment/spring-data-jdbc</url>
+    <name>anyline-environment-spring-data</name>
+    <url>http://www.anyline.org/environment/spring-data</url>
     <dependencies>
         <dependency>
             <groupId>org.anyline</groupId>
-            <artifactId>anyline-data-jdbc</artifactId>
+            <artifactId>anyline-data</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.anyline</groupId>
-            <artifactId>anyline-environment-spring-data</artifactId>
+            <artifactId>anyline-environment-spring</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -33,16 +32,6 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-jdbc</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-tx</artifactId>
             <scope>provided</scope>
         </dependency>
     </dependencies>
