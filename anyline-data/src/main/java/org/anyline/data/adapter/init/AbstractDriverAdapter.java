@@ -16599,7 +16599,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	/**
 	 * user[命令合成]<br/>
 	 * 删除用户
-	 * @param meta 用户
+	 * @param user 用户
 	 * @return List
 	 */
 	@Override
@@ -16990,8 +16990,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * grant[调用入口]<br/>
      * 撤销授权
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param user 用户
-     * @param roles 角色
+     * @param role 角色
+     * @param privileges 权限
      * @return boolean
      */
     @Override

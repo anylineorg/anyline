@@ -41,21 +41,22 @@ import java.util.Map;
  * 所有的非jdbc adapter复制这个源码，在这个基础上修改实现
  */
 
-public abstract class TemplateAdapter extends AbstractDriverAdapter {	/* *****************************************************************************************************************
- *
- *                                                     DML
- *
- * =================================================================================================================
- * INSERT            : 插入
- * UPDATE            : 更新
- * SAVE                : 根据情况插入或更新
- * QUERY            : 查询(RunPrepare/XML/TABLE/VIEW/PROCEDURE)
- * EXISTS            : 是否存在
- * COUNT            : 统计
- * EXECUTE            : 执行(原生SQL及存储过程)
- * DELETE            : 删除
- *
- ******************************************************************************************************************/
+public abstract class TemplateAdapter extends AbstractDriverAdapter {
+    /* *****************************************************************************************************************
+     *
+     *                                                     DML
+     *
+     * =================================================================================================================
+     * INSERT            : 插入
+     * UPDATE            : 更新
+     * SAVE                : 根据情况插入或更新
+     * QUERY            : 查询(RunPrepare/XML/TABLE/VIEW/PROCEDURE)
+     * EXISTS            : 是否存在
+     * COUNT            : 统计
+     * EXECUTE            : 执行(原生SQL及存储过程)
+     * DELETE            : 删除
+     *
+     ******************************************************************************************************************/
 
     /* *****************************************************************************************************************
      *                                                     INSERT
@@ -8192,7 +8193,7 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {	/* *******
     /**
      * user[命令合成]<br/>
      * 删除用户
-     * @param meta 用户
+     * @param user 用户
      * @return List
      */
     @Override
@@ -8355,14 +8356,18 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {	/* *******
     /* *****************************************************************************************************************
      * 													grant
      * -----------------------------------------------------------------------------------------------------------------
-     * boolean grant(DataRuntime runtime, User user, Privilege ... privileges)  throws Exception
+     * boolean grant(DataRuntime runtime, User user, Privilege ... privileges) throws Exception
+     * boolean grant(DataRuntime runtime, User user, Role ... roles) throws Exception
+     * boolean grant(DataRuntime runtime, Role role, Privilege ... privileges) throws Exception
      * List<Run> buildGrantRun(DataRuntime runtime, User user, Privilege ... privileges) throws Exception
-     * boolean revoke(DataRuntime runtime, User user, Privilege ... privileges) throws Exception	 *
+     * List<Run> buildGrantRun(DataRuntime runtime, User user, Role ... roles) throws Exception
+     * List<Run> buildGrantRun(DataRuntime runtime, Role role, Privilege ... privileges) throws Exception
      ******************************************************************************************************************/
 
     /**
      * grant[调用入口]<br/>
      * 授权
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param user 用户
      * @param privileges 权限
      * @return boolean
@@ -8375,6 +8380,7 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {	/* *******
     /**
      * grant[调用入口]<br/>
      * 授权
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param user 用户
      * @param roles 角色
      * @return boolean
@@ -8387,6 +8393,7 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {	/* *******
     /**
      * grant[调用入口]<br/>
      * 授权
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param role 角色
      * @param privileges 权限
      * @return boolean
@@ -8399,6 +8406,7 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {	/* *******
     /**
      * grant[命令合成]<br/>
      * 授权
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param user 用户
      * @param privileges 权限
      * @return List
@@ -8411,6 +8419,7 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {	/* *******
     /**
      * grant[命令合成]<br/>
      * 授权
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param user 用户
      * @param roles 角色
      * @return List
@@ -8423,6 +8432,7 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {	/* *******
     /**
      * grant[命令合成]<br/>
      * 授权
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param role 角色
      * @param privileges 权限
      * @return List
@@ -8432,9 +8442,20 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {	/* *******
         return super.buildGrantRun(runtime, role, privileges);
     }
 
+    /* *****************************************************************************************************************
+     * 													revoke
+     * -----------------------------------------------------------------------------------------------------------------
+     * boolean revoke(DataRuntime runtime, User user, Privilege ... privileges) throws Exception
+     * boolean revoke(DataRuntime runtime, User user, Role ... roles) throws Exception
+     * boolean revoke(DataRuntime runtime, Role role, Privilege ... privileges) throws Exception
+     * List<Run> buildRevokeRun(DataRuntime runtime, User user, Privilege ... privileges) throws Exception
+     * List<Run> buildRevokeRun(DataRuntime runtime, User user, Role ... roles) throws Exception
+     * List<Run> buildRevokeRun(DataRuntime runtime, Role role, Privilege ... privileges) throws Exception
+     ******************************************************************************************************************/
     /**
      * grant[调用入口]<br/>
      * 撤销授权
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param user 用户
      * @param privileges 权限
      * @return boolean
@@ -8447,6 +8468,7 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {	/* *******
     /**
      * grant[调用入口]<br/>
      * 撤销授权
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param user 用户
      * @param roles 角色
      * @return boolean
@@ -8459,8 +8481,9 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {	/* *******
     /**
      * grant[调用入口]<br/>
      * 撤销授权
-     * @param user 用户
-     * @param roles 角色
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param role 角色
+     * @param privileges 权限
      * @return boolean
      */
     @Override
@@ -8471,6 +8494,7 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {	/* *******
     /**
      * grant[命令合成]<br/>
      * 撤销授权
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param user 用户
      * @param privileges 权限
      * @return List
@@ -8483,6 +8507,7 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {	/* *******
     /**
      * grant[命令合成]<br/>
      * 撤销授权
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param user 用户
      * @param roles 角色
      * @return List
@@ -8495,6 +8520,7 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {	/* *******
     /**
      * grant[命令合成]<br/>
      * 撤销授权
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param role 角色
      * @param privileges 权限
      * @return List
@@ -8503,5 +8529,7 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {	/* *******
     public List<Run> buildRevokeRun(DataRuntime runtime, Role role, Privilege ... privileges) throws Exception {
         return super.buildRevokeRun(runtime, role, privileges);
     }
+
+
 
 }

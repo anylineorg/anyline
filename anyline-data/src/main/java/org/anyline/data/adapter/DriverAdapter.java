@@ -9172,8 +9172,8 @@ public interface DriverAdapter {
      * privilege[调用入口]<br/>
      * 撤销授权
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param role 角色
-     * @param privileges 权限
+     * @param user 用户
+     * @param roles 角色
      * @return boolean
      */
     boolean revoke(DataRuntime runtime, User user, Role ... roles) throws Exception;
