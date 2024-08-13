@@ -1,4 +1,2 @@
-
-
 org.anyline.environment.spring.SpringAutoConfiguration
 org.anyline.environment.spring.SpringEnvironmentWorker
