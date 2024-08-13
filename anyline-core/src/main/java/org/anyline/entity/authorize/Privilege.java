@@ -18,7 +18,9 @@ package org.anyline.entity.authorize;
 
 import org.anyline.metadata.Metadata;
 
-public class Privilege extends Metadata<User> {
+public class Privilege extends Metadata<Privilege> {
+    protected User user; // 所属用户
+    protected Role role;
     private String tables;
     private String objectType;
     private String objectName;
@@ -51,8 +53,28 @@ public class Privilege extends Metadata<User> {
         this.objectName = objectName;
     }
 
+    @Override
+    public User getUser() {
+        return user;
+    }
+
+    @Override
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
     /* ********************************* field refer ********************************** */
     public static final String FIELD_TABLE = "TABLE";
+    public static final String FIELD_USER = "USER";
+    public static final String FIELD_ROLE = "ROLE";
     public static final String FIELD_OBJECT_TYPE = "OBJECT_TYPE";
     public static final String FIELD_OBJECT_NAME = "OBJECT_NAME";
 }

@@ -21,6 +21,7 @@ import org.anyline.metadata.Metadata;
 import org.anyline.metadata.Schema;
 
 public class User extends Metadata<User> {
+    protected Role role;
     private String password;
     private String host;
     public User(){
@@ -54,8 +55,17 @@ public class User extends Metadata<User> {
         this.host = host;
     }
 
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
     /* ********************************* field refer ********************************** */
     public static final String FIELD_HOST = "HOST";
+    public static final String FIELD_ROLE = "ROLE";
 
     public static final String FIELD_PASSWORD = "PASSWORD";
 

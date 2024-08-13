@@ -351,6 +351,7 @@ public interface AnylineService<E>{
 	default long update(Table dest, Object data, ConfigStore configs, String ... columns) {
 		return update(dest, data, configs, BeanUtil.array2list(columns));
 	}
+	long update(Table table);
 	/* *****************************************************************************************************************
 	 * 													SAVE
 	 ******************************************************************************************************************/
@@ -4042,12 +4043,23 @@ public interface AnylineService<E>{
 			query.setName(pattern);
 			return roles(query);
 		}
+
 		/**
 		 * 查询角色
 		 * @return List
 		 */
 		default <T extends Role> List<T> roles() throws Exception {
 			return roles(new Role());
+		}
+
+		/**
+		 * 查询角色
+		 * @return List
+		 */
+		default <T extends Role> List<T> roles(User user) throws Exception {
+			Role query = new Role();
+			query.setUser(user);
+			return roles(query);
 		}
 
 		/**
@@ -4126,6 +4138,16 @@ public interface AnylineService<E>{
 			return users(new User(pattern));
 		}
 		/**
+		 * 查询用户
+		 * @param role 角色
+		 * @return List
+		 */
+		default List<User> users(Role role) throws Exception {
+			User query = new User();
+			query.setRole(role);
+			return users(query);
+		}
+		/**
 		 * 用户重命名
 		 * @param origin 原名
 		 * @param update 新名
@@ -4161,8 +4183,10 @@ public interface AnylineService<E>{
 		/* *****************************************************************************************************************
 		 * 													grant
 		 * -----------------------------------------------------------------------------------------------------------------
-		 * boolean grant(User user, Privilege... privileges) throws Exception
+		 * boolean grant(User user, Privilege ... privileges) throws Exception
 		 * boolean grant(String user, Privilege ... privileges) throws Exception
+		 * boolean grant(User user, Role ... roles) throws Exception
+		 * boolean grant(Role role, Privilege ... privileges) throws Exception
 		 ******************************************************************************************************************/
 		/**
 		 * 授权
@@ -4196,39 +4220,13 @@ public interface AnylineService<E>{
 		}
 
 		/* *****************************************************************************************************************
-		 * 													privilege
+		 * 													revoke
 		 * -----------------------------------------------------------------------------------------------------------------
-		 * List<Privilege> privileges(Privilege query) throws Exception;
-		 * List<Privilege> privileges(User user) throws Exception
-		 * List<Privilege> privileges(String user) throws Exception
-		 * boolean revoke(User user, Privilege... privileges) throws Exception
+		 * boolean revoke(User user, Privilege ... privileges) throws Exception
 		 * boolean revoke(String user, Privilege ... privileges) throws Exception
+		 * boolean revoke(User user, Role ... roles) throws Exception
+		 * boolean revoke(Role role, Privilege ... privileges) throws Exception
 		 ******************************************************************************************************************/
-		/**
-		 * 查询用户权限
-		 * @param query 查询条件 根据metadata属性
-		 * @return List
-		 */
-		List<Privilege> privileges(Privilege query) throws Exception;
-		/**
-		 * 查询用户权限
-		 * @param user 用户
-		 * @return List
-		 */
-		default List<Privilege> privileges(User user) throws Exception {
-			Privilege query = new Privilege();
-			return privileges(query);
-		}
-
-		/**
-		 * 查询用户权限
-		 * @param user 用户
-		 * @return List
-		 */
-		default List<Privilege> privileges(String user) throws Exception {
-			return privileges(new User(user));
-		}
-
 		/**
 		 * 撤销授权
 		 * @param user 用户
@@ -4262,6 +4260,52 @@ public interface AnylineService<E>{
 		default boolean revoke(String user, Privilege ... privileges) throws Exception {
 			return revoke(new User(user), privileges);
 		}
+		/* *****************************************************************************************************************
+		 * 													privilege
+		 * -----------------------------------------------------------------------------------------------------------------
+		 * List<Privilege> privileges(Privilege query) throws Exception;
+		 * List<Privilege> privileges(User user) throws Exception
+		 * List<Privilege> privileges(String user) throws Exception
+		 * boolean revoke(User user, Privilege ... privileges) throws Exception
+		 * boolean revoke(String user, Privilege ... privileges) throws Exception
+		 ******************************************************************************************************************/
+		/**
+		 * 查询用户权限
+		 * @param query 查询条件 根据metadata属性
+		 * @return List
+		 */
+		List<Privilege> privileges(Privilege query) throws Exception;
+
+		/**
+		 * 查询用户权限
+		 * @param user 用户
+		 * @return List
+		 */
+		default List<Privilege> privileges(User user) throws Exception {
+			Privilege query = new Privilege();
+			query.setUser(user);
+			return privileges(query);
+		}
+
+		/**
+		 * 查询用户权限
+		 * @param role 角色
+		 * @return List
+		 */
+		default List<Privilege> privileges(Role role) throws Exception {
+			Privilege query = new Privilege();
+			query.setRole(role);
+			return privileges(query);
+		}
+		/**
+		 * 查询用户权限
+		 * @param user 用户
+		 * @return List
+		 */
+		default List<Privilege> privileges(String user) throws Exception {
+			return privileges(new User(user));
+		}
+
 	}
 
 }

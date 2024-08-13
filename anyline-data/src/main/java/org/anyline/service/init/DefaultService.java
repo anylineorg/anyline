@@ -971,6 +971,11 @@ public class DefaultService<E> implements AnylineService<E> {
         return dao.update(batch, dest, data, configs, columns);
     }
 
+    @Override
+    public long update(Table table) {
+        return 0;
+    }
+
     /**
      * update/delete 前检测是否有过滤条件
      * @param data Entity | DataRow
@@ -4061,10 +4066,27 @@ public class DefaultService<E> implements AnylineService<E> {
             return dao.drop(user);
         }
 
+
+        /* *****************************************************************************************************************
+         * 													privilege
+         * -----------------------------------------------------------------------------------------------------------------
+         * List<Privilege> privileges(Privilege query)  throws Exception
+         ******************************************************************************************************************/
+        /**
+         * 查询用户权限
+         * @param query 查询条件 根据metadata属性
+         * @return List
+         */
+        @Override
+        public List<Privilege> privileges(Privilege query) throws Exception {
+            return dao.privileges(query);
+        }
         /* *****************************************************************************************************************
          * 													grant
          * -----------------------------------------------------------------------------------------------------------------
-         * boolean grant(User user, Privilege... privileges) throws Exception
+         * boolean grant(User user, Privilege ... privileges) throws Exception
+         * boolean grant(User user, Role ... roles) throws Exception
+         * boolean grant(Role role, Privilege ... privileges) throws Exception
          ******************************************************************************************************************/
         /**
          * 授权
@@ -4073,7 +4095,7 @@ public class DefaultService<E> implements AnylineService<E> {
          * @return boolean
          */
         @Override
-        public boolean grant(User user, Privilege... privileges) throws Exception {
+        public boolean grant(User user, Privilege ... privileges) throws Exception {
             return dao.grant(user, privileges);
         }
         /**
@@ -4093,26 +4115,17 @@ public class DefaultService<E> implements AnylineService<E> {
          * @return boolean
          */
         @Override
-        public boolean grant(Role role, Privilege... privileges) throws Exception {
+        public boolean grant(Role role, Privilege ... privileges) throws Exception {
             return dao.grant(role, privileges);
         }
 
         /* *****************************************************************************************************************
-         * 													privilege
+         * 													revoke
          * -----------------------------------------------------------------------------------------------------------------
-         * List<Privilege> privileges(User user) throws Exception
-         * boolean revoke(User user, Privilege... privileges) throws Exception
+         * boolean revoke(User user, Privilege ... privileges) throws Exception
+         * boolean revoke(User user, Role ... roles) throws Exception
+         * boolean revoke(Role role, Privilege ... privileges) throws Exception
          ******************************************************************************************************************/
-        /**
-         * 查询用户权限
-         * @param query 查询条件 根据metadata属性
-         * @return List
-         */
-        @Override
-        public List<Privilege> privileges(Privilege query) throws Exception {
-            return dao.privileges(query);
-        }
-
         /**
          * 撤销授权
          * @param user 用户
@@ -4120,18 +4133,8 @@ public class DefaultService<E> implements AnylineService<E> {
          * @return boolean
          */
         @Override
-        public boolean revoke(User user, Privilege... privileges) throws Exception {
-            return dao.revoke(user, privileges);
-        }
-        /**
-         * 撤销授权
-         * @param role 角色
-         * @param privileges 权限
-         * @return boolean
-         */
-        @Override
-        public boolean revoke(Role role, Privilege... privileges) throws Exception {
-            return dao.revoke(role, privileges);
+        public boolean revoke(User user, Privilege ... privileges) throws Exception {
+            return dao.grant(user, privileges);
         }
         /**
          * 撤销授权
@@ -4140,8 +4143,19 @@ public class DefaultService<E> implements AnylineService<E> {
          * @return boolean
          */
         @Override
-        public boolean revoke(User user, Role... roles) throws Exception {
-            return dao.revoke(user, roles);
+        public boolean revoke(User user, Role ... roles) throws Exception {
+            return dao.grant(user, roles);
         }
+        /**
+         * 撤销授权
+         * @param role 角色
+         * @param privileges 权限
+         * @return boolean
+         */
+        @Override
+        public boolean revoke(Role role, Privilege ... privileges) throws Exception {
+            return dao.grant(role, privileges);
+        }
+
     };
 }

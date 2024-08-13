@@ -21,6 +21,7 @@ import org.anyline.metadata.Metadata;
 import org.anyline.metadata.Schema;
 
 public class Role extends Metadata<Role> {
+    protected User user;
 
     public Role(){}
     public Role(String name){
@@ -32,4 +33,15 @@ public class Role extends Metadata<Role> {
         this.name = name;
     }
 
+    @Override
+    public User getUser() {
+        return user;
+    }
+
+    @Override
+    public void setUser(User user) {
+        this.user = user;
+    }
+    /* ********************************* field refer ********************************** */
+    public static final String FIELD_USER = "USER";
 }

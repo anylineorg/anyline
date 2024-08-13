@@ -2038,7 +2038,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	/* *****************************************************************************************************************
 	 * 													grant
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * boolean grant(User user, Privilege... privileges) throws Exception
+	 * boolean grant(User user, Privilege ... privileges) throws Exception
 	 * boolean grant(String user, Privilege ... privileges) throws Exception
 	 ******************************************************************************************************************/
 	/**
@@ -2048,7 +2048,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @return boolean
 	 */
 	@Override
-	public boolean grant(User user, Privilege... privileges) throws Exception {
+	public boolean grant(User user, Privilege ... privileges) throws Exception {
 		DataRuntime runtime = runtime();
 		return runtime.getAdapter().grant(runtime, user, privileges);
 	}
@@ -2059,7 +2059,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @return boolean
 	 */
 	@Override
-	public boolean grant(Role role, Privilege... privileges) throws Exception {
+	public boolean grant(Role role, Privilege ... privileges) throws Exception {
 		DataRuntime runtime = runtime();
 		return runtime.getAdapter().grant(runtime, role, privileges);
 	}
@@ -2081,7 +2081,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * List<Privilege> privileges(Privilege query) throws Exception;
 	 * List<Privilege> privileges(User user) throws Exception
 	 * List<Privilege> privileges(String user) throws Exception
-	 * boolean revoke(User user, Privilege... privileges) throws Exception
+	 * boolean revoke(User user, Privilege ... privileges) throws Exception
 	 * boolean revoke(String user, Privilege ... privileges) throws Exception
 	 ******************************************************************************************************************/
 	/**

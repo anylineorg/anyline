@@ -9072,8 +9072,8 @@ public interface DriverAdapter {
 	/* *****************************************************************************************************************
 	 * 													grant
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * boolean grant(DataRuntime runtime, User user, Privilege... privileges)  throws Exception
-	 * List<Run> buildGrantRun(DataRuntime runtime, User user, Privilege... privileges) throws Exception
+	 * boolean grant(DataRuntime runtime, User user, Privilege ... privileges)  throws Exception
+	 * List<Run> buildGrantRun(DataRuntime runtime, User user, Privilege ... privileges) throws Exception
 	 * boolean revoke(DataRuntime runtime, User user, Privilege ... privileges) throws Exception	 *
 	 ******************************************************************************************************************/
 
@@ -9084,7 +9084,7 @@ public interface DriverAdapter {
      * @param privileges 权限
      * @return boolean
      */
-    boolean grant(DataRuntime runtime, User user, Privilege... privileges)  throws Exception;
+    boolean grant(DataRuntime runtime, User user, Privilege ... privileges)  throws Exception;
     /**
      * privilege[调用入口]<br/>
      * 授权
@@ -9092,7 +9092,7 @@ public interface DriverAdapter {
      * @param privileges 权限
      * @return boolean
      */
-    boolean grant(DataRuntime runtime, Role role, Privilege... privileges)  throws Exception;
+    boolean grant(DataRuntime runtime, Role role, Privilege ... privileges)  throws Exception;
     /**
      * privilege[调用入口]<br/>
      * 授权
@@ -9112,14 +9112,33 @@ public interface DriverAdapter {
 		return grant(runtime, new User(user), privileges);
 	}
 
-	/**
-	 * grant[命令合成]<br/>
-	 * 授权
-	 * @param user 用户
-	 * @param privileges 权限
-	 * @return List
-	 */
-	List<Run> buildGrantRun(DataRuntime runtime, User user, Privilege... privileges) throws Exception;
+    /**
+     * grant[命令合成]<br/>
+     * 授权
+     * @param user 用户
+     * @param privileges 权限
+     * @return List
+     */
+    List<Run> buildGrantRun(DataRuntime runtime, User user, Privilege ... privileges) throws Exception;
+
+    /**
+     * grant[命令合成]<br/>
+     * 授权
+     * @param user 用户
+     * @param roles 角色
+     * @return List
+     */
+    List<Run> buildGrantRun(DataRuntime runtime, User user, Role ... roles) throws Exception;
+
+    /**
+     * grant[命令合成]<br/>
+     * 授权
+     * @param role 角色
+     * @param privileges 权限
+     * @return List
+     */
+    List<Run> buildGrantRun(DataRuntime runtime, Role role, Privilege ... privileges) throws Exception;
+
     /**
      * privilege[调用入口]<br/>
      * 撤销授权
@@ -9164,6 +9183,24 @@ public interface DriverAdapter {
 	 * @return List
 	 */
 	List<Run> buildRevokeRun(DataRuntime runtime, User user, Privilege ... privileges) throws Exception;
+
+    /**
+     * privilege[命令合成]<br/>
+     * 撤销授权
+     * @param user 用户
+     * @param roles 角色
+     * @return List
+     */
+    List<Run> buildRevokeRun(DataRuntime runtime, User user, Role ... roles) throws Exception;
+
+    /**
+     * privilege[命令合成]<br/>
+     * 撤销授权
+     * @param role 角色
+     * @param privileges 权限
+     * @return List
+     */
+    List<Run> buildRevokeRun(DataRuntime runtime, Role role, Privilege ... privileges) throws Exception;
 
 	/* *****************************************************************************************************************
 	 *

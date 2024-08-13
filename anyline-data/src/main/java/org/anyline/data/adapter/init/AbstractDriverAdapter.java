@@ -16838,25 +16838,55 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	/* *****************************************************************************************************************
 	 * 													grant
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * boolean grant(DataRuntime runtime, User user, Privilege... privileges)  throws Exception
-	 * List<Run> buildGrantRun(DataRuntime runtime, User user, Privilege... privileges) throws Exception
+	 * boolean grant(DataRuntime runtime, User user, Privilege ... privileges)  throws Exception
+	 * List<Run> buildGrantRun(DataRuntime runtime, User user, Privilege ... privileges) throws Exception
 	 * boolean revoke(DataRuntime runtime, User user, Privilege ... privileges) throws Exception	 *
 	 ******************************************************************************************************************/
 
 	/**
-	 * privilege[调用入口]<br/>
+	 * grant[调用入口]<br/>
 	 * 授权
 	 * @param user 用户
 	 * @param privileges 权限
 	 * @return boolean
 	 */
 	@Override
-	public boolean grant(DataRuntime runtime, User user, Privilege... privileges)  throws Exception {
+	public boolean grant(DataRuntime runtime, User user, Privilege ... privileges)  throws Exception {
 		String random = random(runtime);
 		ACTION.Authorize action = ACTION.Authorize.GRANT;
-		List<Run> runs = buildGrantRun(runtime, user);
+		List<Run> runs = buildGrantRun(runtime, user, privileges);
 		return execute(runtime, random, user, action, runs);
 	}
+
+    /**
+     * grant[调用入口]<br/>
+     * 授权
+     * @param user 用户
+     * @param roles 角色
+     * @return boolean
+     */
+    @Override
+    public boolean grant(DataRuntime runtime, User user, Role ... roles)  throws Exception {
+        String random = random(runtime);
+        ACTION.Authorize action = ACTION.Authorize.GRANT;
+        List<Run> runs = buildGrantRun(runtime, user, roles);
+        return execute(runtime, random, user, action, runs);
+    }
+
+    /**
+     * grant[调用入口]<br/>
+     * 授权
+     * @param role 角色
+     * @param privileges 权限
+     * @return boolean
+     */
+    @Override
+    public boolean grant(DataRuntime runtime, Role role, Privilege ... privileges)  throws Exception {
+        String random = random(runtime);
+        ACTION.Authorize action = ACTION.Authorize.GRANT;
+        List<Run> runs = buildGrantRun(runtime, role, privileges);
+        return execute(runtime, random, role, action, runs);
+    }
 
 	/**
 	 * grant[命令合成]<br/>
@@ -16866,14 +16896,45 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<Run> buildGrantRun(DataRuntime runtime, User user, Privilege... privileges) throws Exception {
+	public List<Run> buildGrantRun(DataRuntime runtime, User user, Privilege ... privileges) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 buildGrantRun(DataRuntime runtime, User user, Privilege... privileges)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 buildGrantRun(DataRuntime runtime, User user, Privilege ... privileges)", 37));
 		}
 		return new ArrayList<>();
 	}
+
+    /**
+     * grant[命令合成]<br/>
+     * 授权
+     * @param user 用户
+     * @param roles 角色
+     * @return List
+     */
+    @Override
+    public List<Run> buildGrantRun(DataRuntime runtime, User user, Role ... roles) throws Exception {
+        if(log.isDebugEnabled()) {
+            log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 buildGrantRun(DataRuntime runtime, User user, Role ... roles)", 37));
+        }
+        return new ArrayList<>();
+    }
+
+    /**
+     * grant[命令合成]<br/>
+     * 授权
+     * @param role 角色
+     * @param privileges 权限
+     * @return List
+     */
+    @Override
+    public List<Run> buildGrantRun(DataRuntime runtime, Role role, Privilege ... privileges) throws Exception {
+        if(log.isDebugEnabled()) {
+            log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 buildGrantRun(DataRuntime runtime, User user, Privilege ... privileges)", 37));
+        }
+        return new ArrayList<>();
+    }
+
 	/**
-	 * privilege[调用入口]<br/>
+	 * grant[调用入口]<br/>
 	 * 撤销授权
 	 * @param user 用户
 	 * @param privileges 权限
@@ -16884,24 +16945,86 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		boolean result = false;
 		String random = random(runtime);
 		ACTION.Authorize action = ACTION.Authorize.REVOKE;
-		List<Run> runs = buildRevokeRun(runtime, user);
+		List<Run> runs = buildRevokeRun(runtime, user, privileges);
 		return execute(runtime, random, user, action, runs);
 	}
 
-	/**
-	 * privilege[命令合成]<br/>
-	 * 撤销授权
-	 * @param user 用户
-	 * @param privileges 权限
-	 * @return List
-	 */
-	@Override
-	public List<Run> buildRevokeRun(DataRuntime runtime, User user, Privilege ... privileges) throws Exception {
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 buildRevokeRun(DataRuntime runtime, User user, Privilege ... privileges)", 37));
-		}
-		return new ArrayList<>();
-	}
+    /**
+     * grant[调用入口]<br/>
+     * 撤销授权
+     * @param user 用户
+     * @param roles 角色
+     * @return boolean
+     */
+    @Override
+    public boolean revoke(DataRuntime runtime, User user, Role ... roles) throws Exception {
+        boolean result = false;
+        String random = random(runtime);
+        ACTION.Authorize action = ACTION.Authorize.REVOKE;
+        List<Run> runs = buildRevokeRun(runtime, user, roles);
+        return execute(runtime, random, user, action, runs);
+    }
+
+    /**
+     * grant[调用入口]<br/>
+     * 撤销授权
+     * @param user 用户
+     * @param roles 角色
+     * @return boolean
+     */
+    @Override
+    public boolean revoke(DataRuntime runtime, Role role, Privilege ... privileges) throws Exception {
+        boolean result = false;
+        String random = random(runtime);
+        ACTION.Authorize action = ACTION.Authorize.REVOKE;
+        List<Run> runs = buildRevokeRun(runtime, role, privileges);
+        return execute(runtime, random, role, action, runs);
+    }
+
+    /**
+     * grant[命令合成]<br/>
+     * 撤销授权
+     * @param user 用户
+     * @param privileges 权限
+     * @return List
+     */
+    @Override
+    public List<Run> buildRevokeRun(DataRuntime runtime, User user, Privilege ... privileges) throws Exception {
+        if(log.isDebugEnabled()) {
+            log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 buildRevokeRun(DataRuntime runtime, User user, Privilege ... privileges)", 37));
+        }
+        return new ArrayList<>();
+    }
+
+    /**
+     * grant[命令合成]<br/>
+     * 撤销授权
+     * @param user 用户
+     * @param roles 角色
+     * @return List
+     */
+    @Override
+    public List<Run> buildRevokeRun(DataRuntime runtime, User user, Role ... roles) throws Exception {
+        if(log.isDebugEnabled()) {
+            log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 buildRevokeRun(DataRuntime runtime, User user, Role ... roles)", 37));
+        }
+        return new ArrayList<>();
+    }
+
+    /**
+     * grant[命令合成]<br/>
+     * 撤销授权
+     * @param role 角色
+     * @param privileges 权限
+     * @return List
+     */
+    @Override
+    public List<Run> buildRevokeRun(DataRuntime runtime, Role role, Privilege ... privileges) throws Exception {
+        if(log.isDebugEnabled()) {
+            log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 buildRevokeRun(DataRuntime runtime, Role role, Privilege ... privileges)", 37));
+        }
+        return new ArrayList<>();
+    }
 
 	/* *****************************************************************************************************************
 	 *

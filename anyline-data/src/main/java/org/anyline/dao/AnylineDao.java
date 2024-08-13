@@ -2200,7 +2200,7 @@ public interface AnylineDao<E>{
 	/* *****************************************************************************************************************
 	 * 													grant
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * boolean grant(User user, Privilege... privileges) throws Exception
+	 * boolean grant(User user, Privilege ... privileges) throws Exception
 	 * boolean grant(String user, Privilege ... privileges) throws Exception
 	 ******************************************************************************************************************/
 
@@ -2210,14 +2210,14 @@ public interface AnylineDao<E>{
 	 * @param privileges 权限
 	 * @return boolean
 	 */
-	boolean grant(User user, Privilege... privileges) throws Exception;
+	boolean grant(User user, Privilege ... privileges) throws Exception;
 	/**
 	 * 授权
 	 * @param role 角色
 	 * @param privileges 权限
 	 * @return boolean
 	 */
-	boolean grant(Role role, Privilege... privileges) throws Exception;
+	boolean grant(Role role, Privilege ... privileges) throws Exception;
 	/**
 	 * 授权
 	 * @param user 用户
@@ -2241,7 +2241,7 @@ public interface AnylineDao<E>{
 	 * List<Privilege> privileges(Privilege query) throws Exception;
 	 * List<Privilege> privileges(User user) throws Exception
 	 * List<Privilege> privileges(String user) throws Exception
-	 * boolean revoke(User user, Privilege... privileges) throws Exception
+	 * boolean revoke(User user, Privilege ... privileges) throws Exception
 	 * boolean revoke(String user, Privilege ... privileges) throws Exception
 	 ******************************************************************************************************************/
 
