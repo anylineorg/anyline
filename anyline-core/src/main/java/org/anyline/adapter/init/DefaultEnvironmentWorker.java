@@ -334,6 +334,11 @@ public class DefaultEnvironmentWorker implements EnvironmentWorker {
     public boolean regBean(String name, BeanDefine bean) {
         return reg(name, bean);
     }
+
+    public void regAlias(String name, String alias) {
+        Object bean = getBean(name);
+        regBean(alias, bean);
+    }
     public boolean reg(String name, Object bean) {
         Object type = bean;
         if(bean instanceof BeanDefine) {

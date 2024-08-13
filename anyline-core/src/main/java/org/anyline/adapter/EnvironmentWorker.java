@@ -52,7 +52,7 @@ public interface EnvironmentWorker {
     boolean containsSingleton(String name);
     <T> T getSingletonBean(String name, Class<T> clazz);
     Object getSingletonBean(String name);
-
+    void regAlias(String name, String alias);
     default  <T> T value(Map<String, HashSet<String>>  aliasMap, String prefix, String key, Class<T> clazz, T def) {
         if(null != prefix && null != key) {
             String ps[] = prefix.split(",");

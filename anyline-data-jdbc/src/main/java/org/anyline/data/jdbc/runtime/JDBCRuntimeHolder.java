@@ -119,7 +119,7 @@ public class JDBCRuntimeHolder extends AbstractRuntimeHolder implements RuntimeH
 
         if(ConfigTable.environment().containsBean(service_key)){
             //提前注入了占位
-            AnylineService service = (AnylineService)ConfigTable.environment().get(service_key);
+            AnylineService service = (AnylineService)ConfigTable.environment().getBean(service_key);
             if(null == service.getDao()) {
                 service.setDao((AnylineDao) ConfigTable.environment().getBean(dao_key));
             }

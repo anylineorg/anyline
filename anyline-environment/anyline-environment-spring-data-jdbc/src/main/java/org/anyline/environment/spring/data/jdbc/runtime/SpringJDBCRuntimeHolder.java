@@ -132,7 +132,7 @@ public class SpringJDBCRuntimeHolder extends AbstractRuntimeHolder implements Ru
         ConfigTable.environment().regBean(dao_key, daoDefine);
         if(ConfigTable.environment().containsBean(service_key)){
             //提前注入了占位
-            AnylineService service = (AnylineService)ConfigTable.environment().get(service_key);
+            AnylineService service = (AnylineService)ConfigTable.environment().getBean(service_key);
             if(null == service.getDao()) {
                 service.setDao((AnylineDao) ConfigTable.environment().getBean(dao_key));
             }

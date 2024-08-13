@@ -141,4 +141,8 @@ public class SolonEnvironmentWorker extends DefaultEnvironmentWorker implements 
         return context.getBean(name);
     }
 
+    public void regAlias(String name, String alias){
+        Object bean = getBean(name);
+        reg(alias, bean);
+    }
 }
