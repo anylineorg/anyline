@@ -886,6 +886,9 @@ public class ServiceProxy {
     public static DataSet caches(String cache, String dest, ConfigStore configs, Object obj, String ... conditions) {
         return service.caches(cache, dest, configs, obj, conditions);
     }
+    public static DataSet caches(String cache, String dest, long first, long last, ConfigStore configs, Object obj, String ... conditions) {
+        return service.caches(cache, dest, first, last, configs, obj, conditions);
+    }
     public static DataSet caches(String cache, String dest, Object obj, String ... conditions) {
         return service.caches(cache, dest, obj, conditions);
     }
@@ -1027,6 +1030,89 @@ public class ServiceProxy {
         return service.cache(cache, prepare, conditions);
     }
 
+    public static DataSet caches(String dest, ConfigStore configs, Object obj, String ... conditions) {
+        return caches(null, dest, configs, obj, conditions);
+    }
+    public static DataSet caches(String dest, long first, long last, ConfigStore configs, Object obj, String ... conditions) {
+        return caches(null, dest, first, last, configs, obj, conditions);
+    }
+    public static DataSet caches(String dest, Object obj, String ... conditions) {
+        return caches(null, dest, null, obj, conditions);
+    }
+    public static DataSet caches(String dest, long first, long last, Object obj, String ... conditions) {
+        return caches(null, dest, first, last,obj, conditions);
+    }
+
+    public static DataSet caches(Table dest, ConfigStore configs, Object obj, String ... conditions) {
+        return caches(null, dest, configs, obj, conditions);
+    }
+    public static DataSet caches(Table dest, long first, long last, ConfigStore configs, Object obj, String ... conditions) {
+        return caches(null, dest, first, last, configs, obj, conditions);
+    }
+    public static DataSet caches(Table dest, Object obj, String ... conditions) {
+        return caches(null, dest, null, obj, conditions);
+    }
+    public static DataSet caches(Table dest, long first, long last, Object obj, String ... conditions) {
+        ConfigStore configs = new DefaultConfigStore(first, last);
+        return caches(null, dest, configs, obj, conditions);
+    }
+
+    /**
+     * @param dest 			查询或操作的目标(表、存储过程、SQL等)
+     * @param configs		根据http等上下文构造查询条件
+     * @param obj			根据obj的field/value构造查询条件(支侍Map和Object)(查询条件只支持 =和in)
+     * @param conditions 	固定查询条件
+     * @return DataSet
+     */
+    public static DataRow cache(String dest, ConfigStore configs, Object obj, String ... conditions) {
+        return cache(null, dest, configs, obj, conditions);
+    }
+    public static DataRow cache(String dest, Object obj, String ... conditions) {
+        return cache(null, dest, null, obj, conditions);
+    }
+    public static DataSet caches(String dest, ConfigStore configs, String ... conditions) {
+        return caches(null, dest, configs, (Object) null, conditions);
+    }
+    public static DataSet caches(String dest, long first, long last, ConfigStore configs, String ... conditions) {
+        return caches(null, dest, first, last, configs, conditions);
+    }
+    public static DataSet caches(String dest, String ... conditions) {
+        return caches(null, dest, null, null, conditions);
+    }
+    public static DataSet caches(String dest, long first, long last, String ... conditions) {
+        return caches(null, dest, first, last, null, conditions);
+    }
+    public static DataRow cache(String dest, ConfigStore configs, String ... conditions) {
+        return cache(null, dest, configs, null, conditions);
+    }
+    public static DataRow cache(String dest, String ... conditions) {
+        return cache(null, dest, null, null, conditions);
+    }
+
+    public static DataRow cache(Table dest, ConfigStore configs, Object obj, String ... conditions) {
+        return cache(null, dest, configs, obj, conditions);
+    }
+    public static DataRow cache(Table dest, Object obj, String ... conditions) {
+        return cache(null, dest, null, obj, conditions);
+    }
+    public static DataSet caches(Table dest, ConfigStore configs, String ... conditions) {
+        return caches(null, dest, configs, (Object) null, conditions);
+    }
+    public static DataSet caches(Table dest, long first, long last, ConfigStore configs, String ... conditions) {
+        return caches(null, dest, first, last, configs, conditions);
+    }
+    public static DataSet caches(Table dest, String ... conditions) {
+        return caches(null, dest, null, null, conditions);
+    }
+    public static DataSet caches(Table dest, long first, long last, String ... conditions) {
+        return caches(null, dest, first, last, null, conditions);
+    }
+    public static DataRow cache(Table dest, ConfigStore configs, String ... conditions) {
+        return cache(null, dest, configs, null, conditions);
+    }
+    public static DataRow cache(Table dest, String ... conditions) {
+        return cache(null, dest, null, null, conditions);
+    }
     /**
      * 删除缓存 参数保持与查询参数完全一致
      * @param channel 		channel
