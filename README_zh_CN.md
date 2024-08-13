@@ -1,4 +1,4 @@
-[![EN doc](https://img.shields.io/badge/document-English-blue.svg)](README_zh_CN)
+[![EN doc](https://img.shields.io/badge/document-English-blue.svg)](README.md)
 [![CN doc](https://img.shields.io/badge/文档-中文版-blue.svg)](README_zh_CN.md)
 
 8.7.2后分离了多个环境(Spring/Solon/Vertx)比之前的版本多一个依赖  
