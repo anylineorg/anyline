@@ -1022,7 +1022,7 @@ public interface AnylineService<E>{
 	List<String> column2param(String table);
 	/**
 	 * 如果二级缓存开启 会从二级缓存中提取数据
-	 * @param cache			对应ehcache缓存配置文件 中的cache.name
+	 * @param cache			对应ehcache缓存配置文件 中的cache.name 如果不指定cache则只在当前线程内有效
 	 * @param dest 			查询或操作的目标(表、存储过程、SQL等)
 	 * @param configs		根据http等上下文构造查询条件
 	 * @param obj			根据obj的field/value构造查询条件(支侍Map和Object)(查询条件只支持 =和in)
@@ -1130,6 +1130,7 @@ public interface AnylineService<E>{
 	default DataRow cache(String cache, Table dest, String ... conditions) {
 		return cache(cache, dest, null, null, conditions);
 	}
+
 	/*多表查询, 左右连接时使用*/
 
 	/**

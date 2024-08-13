@@ -61,7 +61,7 @@ import java.util.*;
 @Component(value = "anyline.service", index = 10)
 public class DefaultService<E> implements AnylineService<E> {
     protected final Logger log = LoggerFactory.getLogger(this.getClass());
-
+    private static final ThreadLocal<Map<String,Object>> caches = new ThreadLocal<>();
     @Autowired
     protected AnylineDao dao;
 
@@ -215,14 +215,11 @@ public class DefaultService<E> implements AnylineService<E> {
         DataSet set = null;
         dest = BasicUtil.compress(dest);
         conditions = BasicUtil.compress(conditions);
-        if (null == cache || ConfigTable.IS_CACHE_DISABLED) {
-            set = querys(dest, append(configs, obj), conditions);
+        configs = append(configs, obj);
+        if (ConfigTable.IS_CACHE_DISABLED) {
+            set = querys(dest, configs, conditions);
         } else {
-            if (null != CacheProxy.provider) {
-                set = queryFromCache(cache, dest, configs, conditions);
-            } else {
-                set = querys(dest, configs, conditions);
-            }
+            set = queryFromCache(cache, dest, configs, conditions);
         }
         return set;
     }
@@ -235,14 +232,11 @@ public class DefaultService<E> implements AnylineService<E> {
         }
         DataSet set = null;
         conditions = BasicUtil.compress(conditions);
-        if (null == cache || ConfigTable.IS_CACHE_DISABLED) {
-            set = querys(dest, append(configs, obj), conditions);
+        configs = append(configs, obj);
+        if (ConfigTable.IS_CACHE_DISABLED) {
+            set = querys(dest, configs, conditions);
         } else {
-            if (null != CacheProxy.provider) {
-                set = queryFromCache(cache, dest, configs, conditions);
-            } else {
-                set = querys(dest, configs, conditions);
-            }
+            set = queryFromCache(cache, dest, configs, conditions);
         }
         return set;
     }
@@ -1674,6 +1668,24 @@ public class DefaultService<E> implements AnylineService<E> {
         }
         DataSet set = null;
         String key = "SET:";
+        String condition_key = CacheUtil.createCacheElementKey(true, true, dest, configs, conditions);
+        if(null == cache){
+            key += condition_key;
+            //当前线程缓存
+            Map<String, Object> map = caches.get();
+            if(null == map){
+                map = new HashMap<>();
+                caches.set(map);
+            }else{
+                set = (DataSet)map.get(key);
+            }
+            if(null == set){
+                set = queryFromDao(dest, configs, conditions);
+                map.put(key, set);
+            }
+            return set;
+        }
+
         if (cache.contains(">")) {
             String tmp[] = cache.split(">");
             cache = tmp[0];
@@ -1683,8 +1695,7 @@ public class DefaultService<E> implements AnylineService<E> {
             cache = ks[0];
             key += ks[1] + ":";
         }
-        key += CacheUtil.createCacheElementKey(true, true, dest, configs, conditions);
-        RunPrepare prepare = createRunPrepare(dest);
+        key += condition_key;
         if (null != CacheProxy.provider) {
             CacheElement cacheElement = CacheProxy.provider.get(cache, key);
             if (null != cacheElement && null != cacheElement.getValue()) {
@@ -1704,14 +1715,12 @@ public class DefaultService<E> implements AnylineService<E> {
                     }
                     final String _key = key;
                     final String _cache = cache;
-                    final RunPrepare _sql = prepare;
                     final ConfigStore _configs = configs;
-                    final String[] _conditions = conditions;
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
                             CacheUtil.start(_key, _max / 10);
-                            DataSet newSet = dao.querys(_sql, _configs, _conditions);
+                            DataSet newSet = queryFromDao(dest, configs, conditions);
                             CacheProxy.provider.put(_cache, _key, newSet);
                             CacheUtil.stop(_key, _max / 10);
                         }
@@ -1720,9 +1729,12 @@ public class DefaultService<E> implements AnylineService<E> {
 
             } else {
                 setPageLazy(dest, configs, conditions);
-                set = dao.querys(prepare, configs, conditions);
+                set = queryFromDao(dest, configs, conditions);
                 CacheProxy.provider.put(cache, key, set);
             }
+        }else{
+            log.warn("未加载缓存插件");
+            set = queryFromDao(dest, configs, conditions);
         }
         return set;
     }
