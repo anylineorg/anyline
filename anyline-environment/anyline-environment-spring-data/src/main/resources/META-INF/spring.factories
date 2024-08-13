@@ -1,0 +1,2 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+org.anyline.environment.spring.data.factory.PlaceHolderFactory
