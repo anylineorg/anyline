@@ -61,7 +61,7 @@ public class MilvusRuntimeHolder extends AbstractRuntimeHolder {
             adapter = ConfigTable.environment().getBean(MilvusAdapter.class);
         }
         if(client instanceof MilvusClientV2) {
-            String key = "temporary_es";
+            String key = "temporary_milvus";
             temporary.remove(key);
             //DriverAdapterHolder.remove(key);
             //创建新数据源

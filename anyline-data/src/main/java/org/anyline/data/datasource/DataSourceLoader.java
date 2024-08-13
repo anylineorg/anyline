@@ -47,7 +47,7 @@ public interface DataSourceLoader {
         List<String> list = new ArrayList<>();
         if(loadDefault) {
             //上下文初始化前后会调用 两次第二次就不执行加载了
-            if(!ConfigTable.environment.containsBean(DataRuntime.ANYLINE_SERVICE_BEAN_PREFIX+"default")) {
+            if(!ConfigTable.environment.containsBean(DataRuntime.ANYLINE_SERVICE_BEAN_PREFIX + "default")) {
                 String def = holder().create("default", head);
                 if (null != def) {
                     list.add(def);

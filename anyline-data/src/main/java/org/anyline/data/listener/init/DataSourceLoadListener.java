@@ -35,11 +35,14 @@ import org.anyline.proxy.ServiceProxy;
 import org.anyline.service.AnylineService;
 import org.anyline.util.ClassUtil;
 import org.anyline.util.ConfigTable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
 @Component("anyline.environment.data.listener.jdbc")
 public class DataSourceLoadListener implements LoadListener {
+    private static Logger log = LoggerFactory.getLogger(DataSourceLoadListener.class);
     @Override
     public void start() {
         //缓存
@@ -58,7 +61,7 @@ public class DataSourceLoadListener implements LoadListener {
         DMListener dmListener = ConfigTable.environment().getBean(DMListener.class);
         DDListener ddListener = ConfigTable.environment().getBean(DDListener.class);
         Map<String, DriverAdapter> adapters = ConfigTable.environment().getBeans(DriverAdapter.class);
-        Map<String, DriverActuator> workers = ConfigTable.environment().getBeans(DriverActuator.class);
+        Map<String, DriverActuator> actuators = ConfigTable.environment().getBeans(DriverActuator.class);
         Map<String, DataSourceLoader> loaders =ConfigTable.environment().getBeans(DataSourceLoader.class);
         DataSourceMonitor monitor = ConfigTable.environment().getBean(DataSourceMonitor.class);
         DriverAdapterHolder.setMonitor(monitor);
@@ -76,7 +79,7 @@ public class DataSourceLoadListener implements LoadListener {
                     adapter.setGenerator(primaryGenerator);
                 }
                 //anyline.data.jdbc.delimiter.db2
-                String delimiter = ConfigTable.getString("anyline.data.jdbc.delimiter."+adapter.type().name().toLowerCase());
+                String delimiter = ConfigTable.getString("anyline.data.jdbc.delimiter." + adapter.type().name().toLowerCase());
                 if(null != delimiter) {
                     adapter.setDelimiter(delimiter);
                 }
@@ -87,27 +90,30 @@ public class DataSourceLoadListener implements LoadListener {
                 loader.load();
             }
         }
-        Object def = ConfigTable.environment().getBean(DataRuntime.ANYLINE_SERVICE_BEAN_PREFIX+"default");
-        if(null == ConfigTable.environment().getBean("anyline.service") && null != def) {
-            ConfigTable.environment().regBean("anyline.service", def);
-        }
         if(null == adapters || adapters.isEmpty()) {
             adapters = ConfigTable.environment().getBeans(DriverAdapter.class);
         }
-        if(null == workers || workers.isEmpty()) {
-            workers = ConfigTable.environment().getBeans(DriverActuator.class);
+        if(null == actuators || actuators.isEmpty()) {
+            actuators = ConfigTable.environment().getBeans(DriverActuator.class);
         }
-        if(null != workers && null != adapters) {
-            for(DriverActuator worker:workers.values()) {
-                Class clazz = worker.supportAdapterType();
+        if(null != actuators && null != adapters) {
+            for(DriverActuator actuator:actuators.values()) {
+                Class clazz = actuator.supportAdapterType();
                 for(DriverAdapter adapter:adapters.values()) {
                     if(ClassUtil.isInSub(adapter.getClass(), clazz)) {
                         DriverActuator origin = adapter.getActuator();
-                        //没有设置过worker 或原来的优先级更低
-                        if(null == origin || origin.priority() < worker.priority()) {
-                            adapter.setActuator(worker);
+                        //没有设置过actuator 或原来的优先级更低
+                        if(null == origin || origin.priority() < actuator.priority()) {
+                            adapter.setActuator(actuator);
                         }
                     }
+                }
+            }
+        }
+        if(null != adapters){
+            for(DriverAdapter adapter:adapters.values()) {
+                if(null == adapter.getActuator()){
+                    log.warn("[not found actuator][adapter:{}]", adapter);
                 }
             }
         }
@@ -116,6 +122,7 @@ public class DataSourceLoadListener implements LoadListener {
     @Override
     public void after() {
         if(ConfigTable.environment().containsBean(DataRuntime.ANYLINE_SERVICE_BEAN_PREFIX + "default")) {
+            ConfigTable.environment().regAlias(DataRuntime.ANYLINE_SERVICE_BEAN_PREFIX + "default", "anyline.service");
             AnylineService service = ConfigTable.environment().getBean(DataRuntime.ANYLINE_SERVICE_BEAN_PREFIX + "default", AnylineService.class);
             if(null != service) {
                 ServiceProxy.init(service);

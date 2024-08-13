@@ -98,6 +98,9 @@ public class SpringEnvironmentWorker extends DefaultEnvironmentWorker implements
     public boolean regBean(String name, BeanDefine bean) {
         return reg(name, bean);
     }
+    public void regAlias(String name, String alias) {
+        factory.registerAlias(name, alias);
+    }
     public boolean regBean(String name, Object bean) {
         return reg(name, bean);
     }

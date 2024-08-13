@@ -2080,6 +2080,18 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
     }
 
     /**
+     * 根据结果集对象获取列结构,如果有表名应该调用metadata().columns(table);或metadata().table(table).getColumns()
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
+     * @param comment 是否需要查询列注释
+     * @return LinkedHashMap
+     */
+    @Override
+    public LinkedHashMap<String,Column> metadata(DataRuntime runtime, RunPrepare prepare, boolean comment) {
+        return super.metadata(runtime, prepare, comment);
+    }
+
+    /**
      * 检测name,name中可能包含catalog.schema.name<br/>
      * 如果有一项或三项，在父类中解析<br/>
      * 如果只有两项，需要根据不同数据库区分出最前一项是catalog还是schema，如果区分不出来的抛出异常
@@ -3630,6 +3642,20 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
     }
 
     /**
+     * column[结果集封装]<br/>
+     * 解析JDBC get columns结果
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param create 上一步没有查到的,这一步是否需要新创建
+     * @return previous 上一步查询结果
+     * @param query 查询条件 根据metadata属性
+     * @throws Exception 异常
+     */
+    @Override
+    public  <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Column query) throws Exception {
+        return super.columns(runtime, create, previous, query);
+    }
+
+    /**
      * column[结果集封装]<br/>(方法1)<br/>
      * 根据系统表查询SQL获取表结构
      * 根据查询结果集构造Column,并分配到各自的表中
@@ -4071,8 +4097,8 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
      * @param <T> Index
      */
     @Override
-    public <T extends Index> List<T> indexes(DataRuntime runtime, String random, boolean greedy, Collection<? extends Table> tables) {
-        return super.indexes(runtime, random, greedy, tables);
+    public <T extends Index> List<T> indexes(DataRuntime runtime, String random, boolean greedy, Collection<? extends Table> tables, Index query) {
+        return super.indexes(runtime, random, greedy, tables, query);
     }
 
     /**
@@ -4519,7 +4545,6 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
      * @return runs
      */
     @Override
-
     public List<Run> buildQueryProceduresRun(DataRuntime runtime, boolean greedy, Procedure query) {
         return super.buildQueryProceduresRun(runtime, greedy, query);
     }
@@ -5250,7 +5275,6 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
      * @throws Exception DDL异常
      */
     @Override
-
     public boolean rename(DataRuntime runtime, Table origin, String name) throws Exception {
         return super.rename(runtime, origin, name);
     }
@@ -6001,7 +6025,6 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
      * @throws Exception DDL异常
      */
     @Override
-
     public boolean drop(DataRuntime runtime, PartitionTable meta) throws Exception {
         return super.drop(runtime, meta);
     }
@@ -7053,7 +7076,6 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
      * @return List
      */
     @Override
-
     public List<Run> buildAlterRun(DataRuntime runtime, ForeignKey meta) throws Exception {
         return super.buildAlterRun(runtime, meta);
     }
@@ -7974,8 +7996,8 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
      * @return boolean
      */
     @Override
-    public boolean delete(DataRuntime runtime, Role role) throws Exception {
-        return super.delete(runtime, role);
+    public boolean drop(DataRuntime runtime, Role role) throws Exception {
+        return super.drop(runtime, role);
     }
 
     /**
@@ -8019,8 +8041,8 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
      * @return List
      */
     @Override
-    public List<Run> buildDeleteRun(DataRuntime runtime, Role role) throws Exception {
-        return super.buildDeleteRun(runtime, role);
+    public List<Run> buildDropRun(DataRuntime runtime, Role role) throws Exception {
+        return super.buildDropRun(runtime, role);
     }
 
     /**
@@ -8092,7 +8114,7 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
      * -----------------------------------------------------------------------------------------------------------------
      * boolean create(DataRuntime runtime, User user) throws Exception
      * boolean rename(DataRuntime runtime, User origin, User update) throws Exception;
-     * boolean delete(DataRuntime runtime, User user) throws Exception
+     * boolean drop(DataRuntime runtime, User user) throws Exception
      * List<User> users(Catalog catalog, Schema schema, String pattern) throws Exception
      * List<Run> buildQueryUsersRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) throws Exception
      * <T extends User> List<T> users(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, List<T> users, DataSet set) throws Exception
@@ -8130,8 +8152,8 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
      * @return boolean
      */
     @Override
-    public boolean delete(DataRuntime runtime, User user) throws Exception {
-        return super.delete(runtime, user);
+    public boolean drop(DataRuntime runtime, User user) throws Exception {
+        return super.drop(runtime, user);
     }
 
     /**
@@ -8175,8 +8197,8 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
      * @return List
      */
     @Override
-    public List<Run> buildDeleteRun(DataRuntime runtime, User user) throws Exception {
-        return super.buildDeleteRun(runtime, user);
+    public List<Run> buildDropRun(DataRuntime runtime, User user) throws Exception {
+        return super.buildDropRun(runtime, user);
     }
 
     /**
@@ -8334,38 +8356,106 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
     /* *****************************************************************************************************************
      * 													grant
      * -----------------------------------------------------------------------------------------------------------------
-     * boolean grant(DataRuntime runtime, User user, Privilege... privileges)  throws Exception
-     * List<Run> buildGrantRun(DataRuntime runtime, User user, Privilege... privileges) throws Exception
-     * boolean revoke(DataRuntime runtime, User user, Privilege ... privileges) throws Exception	 *
+     * boolean grant(DataRuntime runtime, User user, Privilege ... privileges) throws Exception
+     * boolean grant(DataRuntime runtime, User user, Role ... roles) throws Exception
+     * boolean grant(DataRuntime runtime, Role role, Privilege ... privileges) throws Exception
+     * List<Run> buildGrantRun(DataRuntime runtime, User user, Privilege ... privileges) throws Exception
+     * List<Run> buildGrantRun(DataRuntime runtime, User user, Role ... roles) throws Exception
+     * List<Run> buildGrantRun(DataRuntime runtime, Role role, Privilege ... privileges) throws Exception
      ******************************************************************************************************************/
 
     /**
-     * privilege[调用入口]<br/>
+     * grant[调用入口]<br/>
      * 授权
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param user 用户
      * @param privileges 权限
      * @return boolean
      */
     @Override
-    public boolean grant(DataRuntime runtime, User user, Privilege... privileges)  throws Exception {
+    public boolean grant(DataRuntime runtime, User user, Privilege ... privileges)  throws Exception {
         return super.grant(runtime, user, privileges);
+    }
+
+    /**
+     * grant[调用入口]<br/>
+     * 授权
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param user 用户
+     * @param roles 角色
+     * @return boolean
+     */
+    @Override
+    public boolean grant(DataRuntime runtime, User user, Role ... roles)  throws Exception {
+        return super.grant(runtime, user, roles);
+    }
+
+    /**
+     * grant[调用入口]<br/>
+     * 授权
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param role 角色
+     * @param privileges 权限
+     * @return boolean
+     */
+    @Override
+    public boolean grant(DataRuntime runtime, Role role, Privilege ... privileges)  throws Exception {
+        return super.grant(runtime, role, privileges);
     }
 
     /**
      * grant[命令合成]<br/>
      * 授权
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param user 用户
      * @param privileges 权限
      * @return List
      */
     @Override
-    public List<Run> buildGrantRun(DataRuntime runtime, User user, Privilege... privileges) throws Exception {
+    public List<Run> buildGrantRun(DataRuntime runtime, User user, Privilege ... privileges) throws Exception {
         return super.buildGrantRun(runtime, user, privileges);
     }
 
     /**
-     * privilege[调用入口]<br/>
+     * grant[命令合成]<br/>
+     * 授权
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param user 用户
+     * @param roles 角色
+     * @return List
+     */
+    @Override
+    public List<Run> buildGrantRun(DataRuntime runtime, User user, Role ... roles) throws Exception {
+        return super.buildGrantRun(runtime, user, roles);
+    }
+
+    /**
+     * grant[命令合成]<br/>
+     * 授权
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param role 角色
+     * @param privileges 权限
+     * @return List
+     */
+    @Override
+    public List<Run> buildGrantRun(DataRuntime runtime, Role role, Privilege ... privileges) throws Exception {
+        return super.buildGrantRun(runtime, role, privileges);
+    }
+
+    /* *****************************************************************************************************************
+     * 													revoke
+     * -----------------------------------------------------------------------------------------------------------------
+     * boolean revoke(DataRuntime runtime, User user, Privilege ... privileges) throws Exception
+     * boolean revoke(DataRuntime runtime, User user, Role ... roles) throws Exception
+     * boolean revoke(DataRuntime runtime, Role role, Privilege ... privileges) throws Exception
+     * List<Run> buildRevokeRun(DataRuntime runtime, User user, Privilege ... privileges) throws Exception
+     * List<Run> buildRevokeRun(DataRuntime runtime, User user, Role ... roles) throws Exception
+     * List<Run> buildRevokeRun(DataRuntime runtime, Role role, Privilege ... privileges) throws Exception
+     ******************************************************************************************************************/
+    /**
+     * grant[调用入口]<br/>
      * 撤销授权
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param user 用户
      * @param privileges 权限
      * @return boolean
@@ -8376,8 +8466,35 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
     }
 
     /**
-     * privilege[命令合成]<br/>
+     * grant[调用入口]<br/>
      * 撤销授权
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param user 用户
+     * @param roles 角色
+     * @return boolean
+     */
+    @Override
+    public boolean revoke(DataRuntime runtime, User user, Role ... roles) throws Exception {
+        return super.revoke(runtime, user, roles);
+    }
+
+    /**
+     * grant[调用入口]<br/>
+     * 撤销授权
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param role 角色
+     * @param privileges 权限
+     * @return boolean
+     */
+    @Override
+    public boolean revoke(DataRuntime runtime, Role role, Privilege ... privileges) throws Exception {
+        return super.revoke(runtime, role, privileges);
+    }
+
+    /**
+     * grant[命令合成]<br/>
+     * 撤销授权
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param user 用户
      * @param privileges 权限
      * @return List
@@ -8386,5 +8503,33 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
     public List<Run> buildRevokeRun(DataRuntime runtime, User user, Privilege ... privileges) throws Exception {
         return super.buildRevokeRun(runtime, user, privileges);
     }
+
+    /**
+     * grant[命令合成]<br/>
+     * 撤销授权
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param user 用户
+     * @param roles 角色
+     * @return List
+     */
+    @Override
+    public List<Run> buildRevokeRun(DataRuntime runtime, User user, Role ... roles) throws Exception {
+        return super.buildRevokeRun(runtime, user, roles);
+    }
+
+    /**
+     * grant[命令合成]<br/>
+     * 撤销授权
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param role 角色
+     * @param privileges 权限
+     * @return List
+     */
+    @Override
+    public List<Run> buildRevokeRun(DataRuntime runtime, Role role, Privilege ... privileges) throws Exception {
+        return super.buildRevokeRun(runtime, role, privileges);
+    }
+
+
 
 }

@@ -2036,7 +2036,7 @@ public interface AnylineDao<E>{
 	 * boolean create(Role role) throws Exception
 	 * <T extends Role> List<T> roles(Role query) throws Exception
 	 * boolean rename(Role origin, Role update) throws Exception
-	 * boolean delete(Role role) throws Exception
+	 * boolean drop(Role role) throws Exception
 	 ******************************************************************************************************************/
 	/**
 	 * 创建角色
@@ -2094,7 +2094,7 @@ public interface AnylineDao<E>{
 	 * @param role 角色
 	 * @return boolean
 	 */
-	boolean delete(Role role) throws Exception;
+	boolean drop(Role role) throws Exception;
 
 	/* *****************************************************************************************************************
 	 * 													user
@@ -2102,7 +2102,7 @@ public interface AnylineDao<E>{
 	 * boolean create(User user) throws Exception
 	 * <T extends Role> List<T> roles(User query) throws Exception
 	 * boolean rename(User origin, Role update) throws Exception
-	 * boolean delete(User user) throws Exception
+	 * boolean drop(User user) throws Exception
 	 ******************************************************************************************************************/
 	/**
 	 * 创建用户
@@ -2187,38 +2187,14 @@ public interface AnylineDao<E>{
 	 * @param user 用户
 	 * @return boolean
 	 */
-	boolean delete(User user) throws Exception;
+	boolean drop(User user) throws Exception;
 	/**
 	 * 删除用户
 	 * @param user 用户名
 	 * @return boolean
 	 */
-	default boolean delete(String user) throws Exception {
-		return delete(new User(user));
-	}
-
-	/* *****************************************************************************************************************
-	 * 													grant
-	 * -----------------------------------------------------------------------------------------------------------------
-	 * boolean grant(User user, Privilege... privileges) throws Exception
-	 * boolean grant(String user, Privilege ... privileges) throws Exception
-	 ******************************************************************************************************************/
-
-	/**
-	 * 授权
-	 * @param user 用户
-	 * @param privileges 权限
-	 * @return boolean
-	 */
-	boolean grant(User user, Privilege... privileges) throws Exception;
-	/**
-	 * 授权
-	 * @param user 用户
-	 * @param privileges 权限
-	 * @return boolean
-	 */
-	default boolean grant(String user, Privilege ... privileges) throws Exception {
-		return grant(new User(user), privileges);
+	default boolean drop(String user) throws Exception {
+		return drop(new User(user));
 	}
 
 	/* *****************************************************************************************************************
@@ -2227,7 +2203,7 @@ public interface AnylineDao<E>{
 	 * List<Privilege> privileges(Privilege query) throws Exception;
 	 * List<Privilege> privileges(User user) throws Exception
 	 * List<Privilege> privileges(String user) throws Exception
-	 * boolean revoke(User user, Privilege... privileges) throws Exception
+	 * boolean revoke(User user, Privilege ... privileges) throws Exception
 	 * boolean revoke(String user, Privilege ... privileges) throws Exception
 	 ******************************************************************************************************************/
 
@@ -2265,6 +2241,52 @@ public interface AnylineDao<E>{
 		return privileges(new User(user));
 	}
 
+	/* *****************************************************************************************************************
+	 * 													grant
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * boolean grant(User user, Privilege ... privileges) throws Exception
+	 * boolean grant(Role role, Privilege ... privileges) throws Exception
+	 * boolean grant(User user, Role ... roles) throws Exception
+	 ******************************************************************************************************************/
+	/**
+	 * 授权
+	 * @param user 用户
+	 * @param privileges 权限
+	 * @return boolean
+	 */
+	boolean grant(User user, Privilege ... privileges) throws Exception;
+	/**
+	 * 授权
+	 * @param role 角色
+	 * @param privileges 权限
+	 * @return boolean
+	 */
+	boolean grant(Role role, Privilege ... privileges) throws Exception;
+	/**
+	 * 授权
+	 * @param user 用户
+	 * @param roles 角色
+	 * @return boolean
+	 */
+	boolean grant(User user, Role ... roles) throws Exception;
+	/**
+	 * 授权
+	 * @param user 用户
+	 * @param privileges 权限
+	 * @return boolean
+	 */
+	default boolean grant(String user, Privilege ... privileges) throws Exception {
+		return grant(new User(user), privileges);
+	}
+
+	/* *****************************************************************************************************************
+	 * 													revoke
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * boolean revoke(User user, Privilege ... privileges) throws Exception
+	 * boolean revoke(Role role, Privilege ... privileges) throws Exception
+	 * boolean revoke(User user, Role ... roles) throws Exception
+	 ******************************************************************************************************************/
+
 	/**
 	 * 撤销授权
 	 * @param user 用户
@@ -2272,6 +2294,24 @@ public interface AnylineDao<E>{
 	 * @return boolean
 	 */
 	boolean revoke(User user, Privilege ... privileges) throws Exception;
+
+
+	/**
+	 * 撤销授权
+	 * @param role 角色
+	 * @param privileges 权限
+	 * @return boolean
+	 */
+	boolean revoke(Role role, Privilege ... privileges) throws Exception;
+
+
+	/**
+	 * 撤销授权
+	 * @param user 用户
+	 * @param roles 角色
+	 * @return boolean
+	 */
+	boolean revoke(User user, Role ... roles) throws Exception;
 
 	/**
 	 * 撤销授权
@@ -2282,4 +2322,5 @@ public interface AnylineDao<E>{
 	default boolean revoke(String user, Privilege ... privileges) throws Exception {
 		return revoke(new User(user), privileges);
 	}
+
 } 

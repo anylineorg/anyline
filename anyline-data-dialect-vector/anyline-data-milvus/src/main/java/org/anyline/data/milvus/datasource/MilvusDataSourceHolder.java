@@ -123,14 +123,68 @@ public class MilvusDataSourceHolder extends AbstractDataSourceHolder implements 
 			if(BasicUtil.isNotEmpty(token)){
 				builder.token(token);
 			}
-			ConnectConfig connectConfig = builder.build();
-			MilvusClientV2 client = new MilvusClientV2(connectConfig);
+			String database = value(prefix, params, "database,dbName", String.class, null);
+			if(BasicUtil.isNotEmpty(database)){
+				builder.dbName(database);
+			}
+			Long connectTimeout = value(prefix, params, "connectTimeoutMs,connectTimeout", Long.class, 0L);
+			if(connectTimeout > 0){
+				builder.connectTimeoutMs(connectTimeout);
+			}
+			Long keepAliveTime = value(prefix, params, "keepAliveTimeMs,keepAliveTime", Long.class, 0L);
+			if(keepAliveTime > 0){
+				builder.keepAliveTimeMs(keepAliveTime);
+			}
+			Long keepAliveTimeout = value(prefix, params, "keepAliveTimeoutMs,keepAliveTimeout", Long.class, 0L);
+			if(keepAliveTimeout > 0){
+				builder.keepAliveTimeoutMs(keepAliveTimeout);
+			}
+			Boolean keepAliveWithoutCalls = value(prefix, params, "keepAliveWithoutCalls", Boolean.class, null);
+			if(null != keepAliveWithoutCalls) {
+				builder.keepAliveWithoutCalls(false);
+			}
+
+			Long rpcDeadline = value(prefix, params, "rpcDeadlineMs,rpcDeadline", Long.class, 0L);
+			if(rpcDeadline > 0){
+				builder.rpcDeadlineMs(rpcDeadline);
+			}
+			String clientKeyPath = value(prefix, params, "clientKeyPath", String.class, null);
+			if(BasicUtil.isNotEmpty(clientKeyPath)){
+				builder.clientKeyPath(clientKeyPath);
+			}
+			String clientPemPath = value(prefix, params, "clientPemPath", String.class, null);
+			if(BasicUtil.isNotEmpty(clientPemPath)){
+				builder.clientPemPath(clientPemPath);
+			}
+			String caPemPath = value(prefix, params, "caPemPath", String.class, null);
+			if(BasicUtil.isNotEmpty(caPemPath)){
+				builder.clientPemPath(caPemPath);
+			}
+			String serverPemPath = value(prefix, params, "serverPemPath", String.class, null);
+			if(BasicUtil.isNotEmpty(serverPemPath)){
+				builder.clientPemPath(serverPemPath);
+			}
+			String serverName = value(prefix, params, "serverName", String.class, null);
+			if(BasicUtil.isNotEmpty(serverName)){
+				builder.clientPemPath(serverName);
+			}
+			Boolean secure = value(prefix, params, "secure", Boolean.class, null);
+			if(null != secure) {
+				builder.secure(secure);
+			}
+			Long idleTimeout = value(prefix, params, "idleTimeoutMs,idleTimeout", Long.class, 0L);
+			if(idleTimeout > 0){
+				builder.idleTimeoutMs(idleTimeout);
+			}
+
+			ConnectConfig config = builder.build();
+			MilvusClientV2 client = new MilvusClientV2(config);
 			MilvusRuntimeHolder.instance().reg(key, client);
 		} catch (Exception e) {
-			log.error("[注册数据源失败][type:Milvus][key:{}][msg:{}]", key, e.toString());
+			log.error("[注册数据源失败][type:milvus][key:{}][msg:{}]", key, e.toString());
 			return null;
 		}
-		return datasource_id;
+		return null;
 	}
 
 	@Override

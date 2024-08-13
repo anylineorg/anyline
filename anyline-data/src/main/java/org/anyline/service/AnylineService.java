@@ -351,6 +351,7 @@ public interface AnylineService<E>{
 	default long update(Table dest, Object data, ConfigStore configs, String ... columns) {
 		return update(dest, data, configs, BeanUtil.array2list(columns));
 	}
+	long update(Table table);
 	/* *****************************************************************************************************************
 	 * 													SAVE
 	 ******************************************************************************************************************/
@@ -4014,7 +4015,7 @@ public interface AnylineService<E>{
 		 * boolean create(Role role) throws Exception
 		 * <T extends Role> List<T> roles(Role query) throws Exception
 		 * boolean rename(Role origin, Role update) throws Exception
-		 * boolean delete(Role role) throws Exception
+		 * boolean drop(Role role) throws Exception
 		 ******************************************************************************************************************/
 		/**
 		 * 创建角色
@@ -4043,12 +4044,23 @@ public interface AnylineService<E>{
 			query.setName(pattern);
 			return roles(query);
 		}
+
 		/**
 		 * 查询角色
 		 * @return List
 		 */
 		default <T extends Role> List<T> roles() throws Exception {
 			return roles(new Role());
+		}
+
+		/**
+		 * 查询角色
+		 * @return List
+		 */
+		default <T extends Role> List<T> roles(User user) throws Exception {
+			Role query = new Role();
+			query.setUser(user);
+			return roles(query);
 		}
 
 		/**
@@ -4064,7 +4076,7 @@ public interface AnylineService<E>{
 		 * @param role 角色
 		 * @return boolean
 		 */
-		boolean delete(Role role) throws Exception;
+		boolean drop(Role role) throws Exception;
 
 		/* *****************************************************************************************************************
 		 * 													user
@@ -4072,7 +4084,7 @@ public interface AnylineService<E>{
 		 * boolean create(User user) throws Exception
 		 * <T extends Role> List<T> roles(User query) throws Exception
 		 * boolean rename(User origin, Role update) throws Exception
-		 * boolean delete(User user) throws Exception
+		 * boolean drop(User user) throws Exception
 		 ******************************************************************************************************************/
 		/**
 		 * 创建用户
@@ -4127,6 +4139,16 @@ public interface AnylineService<E>{
 			return users(new User(pattern));
 		}
 		/**
+		 * 查询用户
+		 * @param role 角色
+		 * @return List
+		 */
+		default List<User> users(Role role) throws Exception {
+			User query = new User();
+			query.setRole(role);
+			return users(query);
+		}
+		/**
 		 * 用户重命名
 		 * @param origin 原名
 		 * @param update 新名
@@ -4149,21 +4171,23 @@ public interface AnylineService<E>{
 		 * @param user 用户
 		 * @return boolean
 		 */
-		boolean delete(User user) throws Exception;
+		boolean drop(User user) throws Exception;
 		/**
 		 * 删除用户
 		 * @param user 用户名
 		 * @return boolean
 		 */
-		default boolean delete(String user) throws Exception {
-			return delete(new User(user));
+		default boolean drop(String user) throws Exception {
+			return drop(new User(user));
 		}
 
 		/* *****************************************************************************************************************
 		 * 													grant
 		 * -----------------------------------------------------------------------------------------------------------------
-		 * boolean grant(User user, Privilege... privileges) throws Exception
+		 * boolean grant(User user, Privilege ... privileges) throws Exception
 		 * boolean grant(String user, Privilege ... privileges) throws Exception
+		 * boolean grant(User user, Role ... roles) throws Exception
+		 * boolean grant(Role role, Privilege ... privileges) throws Exception
 		 ******************************************************************************************************************/
 		/**
 		 * 授权
@@ -4175,6 +4199,20 @@ public interface AnylineService<E>{
 		/**
 		 * 授权
 		 * @param user 用户
+		 * @param roles 角色
+		 * @return boolean
+		 */
+		boolean grant(User user, Role ... roles) throws Exception;
+		/**
+		 * 授权
+		 * @param role 角色
+		 * @param privileges 权限
+		 * @return boolean
+		 */
+		boolean grant(Role role, Privilege ... privileges) throws Exception;
+		/**
+		 * 授权
+		 * @param user 用户
 		 * @param privileges 权限
 		 * @return boolean
 		 */
@@ -4183,39 +4221,13 @@ public interface AnylineService<E>{
 		}
 
 		/* *****************************************************************************************************************
-		 * 													privilege
+		 * 													revoke
 		 * -----------------------------------------------------------------------------------------------------------------
-		 * List<Privilege> privileges(Privilege query) throws Exception;
-		 * List<Privilege> privileges(User user) throws Exception
-		 * List<Privilege> privileges(String user) throws Exception
-		 * boolean revoke(User user, Privilege... privileges) throws Exception
+		 * boolean revoke(User user, Privilege ... privileges) throws Exception
 		 * boolean revoke(String user, Privilege ... privileges) throws Exception
+		 * boolean revoke(User user, Role ... roles) throws Exception
+		 * boolean revoke(Role role, Privilege ... privileges) throws Exception
 		 ******************************************************************************************************************/
-		/**
-		 * 查询用户权限
-		 * @param query 查询条件 根据metadata属性
-		 * @return List
-		 */
-		List<Privilege> privileges(Privilege query) throws Exception;
-		/**
-		 * 查询用户权限
-		 * @param user 用户
-		 * @return List
-		 */
-		default List<Privilege> privileges(User user) throws Exception {
-			Privilege query = new Privilege();
-			return privileges(query);
-		}
-
-		/**
-		 * 查询用户权限
-		 * @param user 用户
-		 * @return List
-		 */
-		default List<Privilege> privileges(String user) throws Exception {
-			return privileges(new User(user));
-		}
-
 		/**
 		 * 撤销授权
 		 * @param user 用户
@@ -4226,6 +4238,22 @@ public interface AnylineService<E>{
 
 		/**
 		 * 撤销授权
+		 * @param role 角色
+		 * @param privileges 权限
+		 * @return boolean
+		 */
+		boolean revoke(Role role, Privilege ... privileges) throws Exception;
+
+		/**
+		 * 撤销授权
+		 * @param user 用户
+		 * @param roles 角色
+		 * @return boolean
+		 */
+		boolean revoke(User user, Role ... roles) throws Exception;
+
+		/**
+		 * 撤销授权
 		 * @param user 用户
 		 * @param privileges 权限
 		 * @return boolean
@@ -4233,6 +4261,52 @@ public interface AnylineService<E>{
 		default boolean revoke(String user, Privilege ... privileges) throws Exception {
 			return revoke(new User(user), privileges);
 		}
+		/* *****************************************************************************************************************
+		 * 													privilege
+		 * -----------------------------------------------------------------------------------------------------------------
+		 * List<Privilege> privileges(Privilege query) throws Exception;
+		 * List<Privilege> privileges(User user) throws Exception
+		 * List<Privilege> privileges(String user) throws Exception
+		 * boolean revoke(User user, Privilege ... privileges) throws Exception
+		 * boolean revoke(String user, Privilege ... privileges) throws Exception
+		 ******************************************************************************************************************/
+		/**
+		 * 查询用户权限
+		 * @param query 查询条件 根据metadata属性
+		 * @return List
+		 */
+		List<Privilege> privileges(Privilege query) throws Exception;
+
+		/**
+		 * 查询用户权限
+		 * @param user 用户
+		 * @return List
+		 */
+		default List<Privilege> privileges(User user) throws Exception {
+			Privilege query = new Privilege();
+			query.setUser(user);
+			return privileges(query);
+		}
+
+		/**
+		 * 查询用户权限
+		 * @param role 角色
+		 * @return List
+		 */
+		default List<Privilege> privileges(Role role) throws Exception {
+			Privilege query = new Privilege();
+			query.setRole(role);
+			return privileges(query);
+		}
+		/**
+		 * 查询用户权限
+		 * @param user 用户
+		 * @return List
+		 */
+		default List<Privilege> privileges(String user) throws Exception {
+			return privileges(new User(user));
+		}
+
 	}
 
 }

@@ -949,7 +949,10 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
         }
         if(Metadata.check(struct, Metadata.TYPE.INDEX)) {
             //查询全部表结构
-            indexes(runtime, random, greedy, tables);
+            Index index_query = new Index();
+            index_query.setCatalog(catalog);
+            index_query.setSchema(schema);
+            indexes(runtime, random, greedy, tables, index_query);
         }
         return tables;
     }

@@ -418,7 +418,15 @@ public interface DriverAdapter {
         }
         return writer;
     }
-    String name(Type type);
+    default String name(Type type){
+        Map<Type, String> types = new HashMap<>();
+        types.put(Table.TYPE.NORMAL, "BASE TABLE");
+        types.put(Table.TYPE.VIEW, "VIEW");
+        types.put(View.TYPE.NORMAL, "VIEW");
+        types.put(Metadata.TYPE.TABLE, "BASE TABLE");
+        types.put(Metadata.TYPE.VIEW, "VIEW");
+        return types.get(type);
+    }
     default List<String> names(List<Type> types) {
         List<String> list = new ArrayList<>();
         for(Type type:types) {
@@ -5126,7 +5134,7 @@ public interface DriverAdapter {
         return indexes(runtime, random, greedy,  query);
     }
 
-    <T extends Index> List<T> indexes(DataRuntime runtime, String random, boolean greedy,  Collection<? extends Table> tables);
+    <T extends Index> List<T> indexes(DataRuntime runtime, String random, boolean greedy,  Collection<? extends Table> tables, Index query);
     /**
      *
      * index[调用入口]<br/>
@@ -8527,7 +8535,7 @@ public interface DriverAdapter {
 	 * @param role 角色
 	 * @return boolean
 	 */
-	boolean delete(DataRuntime runtime, Role role) throws Exception;
+	boolean drop(DataRuntime runtime, Role role) throws Exception;
 
 	/**
 	 * role[调用入口]<br/>
@@ -8592,7 +8600,7 @@ public interface DriverAdapter {
 	 * @param role 角色
 	 * @return List
 	 */
-	List<Run> buildDeleteRun(DataRuntime runtime, Role role) throws Exception;
+	List<Run> buildDropRun(DataRuntime runtime, Role role) throws Exception;
 
 	/**
 	 * role[命令合成]<br/>
@@ -8696,7 +8704,7 @@ public interface DriverAdapter {
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * boolean create(DataRuntime runtime, User user) throws Exception
 	 * boolean rename(DataRuntime runtime, User origin, User update) throws Exception;
-	 * boolean delete(DataRuntime runtime, User user) throws Exception
+	 * boolean drop(DataRuntime runtime, User user) throws Exception
 	 * List<User> users(Catalog catalog, Schema schema, String pattern) throws Exception
 	 * List<Run> buildQueryUsersRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) throws Exception
 	 * <T extends User> List<T> users(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, List<T> users, DataSet set) throws Exception
@@ -8749,15 +8757,15 @@ public interface DriverAdapter {
 	 * @param user 用户
 	 * @return boolean
 	 */
-	boolean delete(DataRuntime runtime, User user) throws Exception;
+	boolean drop(DataRuntime runtime, User user) throws Exception;
 	/**
 	 * user[调用入口]<br/>
 	 * 删除用户
 	 * @param user 用户名
 	 * @return boolean
 	 */
-	default boolean delete(DataRuntime runtime, String user)  throws Exception {
-		return delete(runtime, new User(user));
+	default boolean drop(DataRuntime runtime, String user)  throws Exception {
+		return drop(runtime, new User(user));
 	}
 
 	/**
@@ -8823,7 +8831,7 @@ public interface DriverAdapter {
 	 * @param user 用户
 	 * @return List
 	 */
-	List<Run> buildDeleteRun(DataRuntime runtime, User user) throws Exception;
+	List<Run> buildDropRun(DataRuntime runtime, User user) throws Exception;
 
 	/**
 	 * user[命令合成]<br/>
@@ -9064,22 +9072,45 @@ public interface DriverAdapter {
 	/* *****************************************************************************************************************
 	 * 													grant
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * boolean grant(DataRuntime runtime, User user, Privilege... privileges)  throws Exception
-	 * List<Run> buildGrantRun(DataRuntime runtime, User user, Privilege... privileges) throws Exception
-	 * boolean revoke(DataRuntime runtime, User user, Privilege ... privileges) throws Exception	 *
+     * boolean grant(DataRuntime runtime, User user, Privilege ... privileges) throws Exception
+     * boolean grant(DataRuntime runtime, User user, Role ... roles) throws Exception
+     * boolean grant(DataRuntime runtime, Role role, Privilege ... privileges) throws Exception
+     * List<Run> buildGrantRun(DataRuntime runtime, User user, Privilege ... privileges) throws Exception
+     * List<Run> buildGrantRun(DataRuntime runtime, User user, Role ... roles) throws Exception
+     * List<Run> buildGrantRun(DataRuntime runtime, Role role, Privilege ... privileges) throws Exception
 	 ******************************************************************************************************************/
 
+    /**
+     * grant[调用入口]<br/>
+     * 授权
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param user 用户
+     * @param privileges 权限
+     * @return boolean
+     */
+    boolean grant(DataRuntime runtime, User user, Privilege ... privileges)  throws Exception;
+    /**
+     * grant[调用入口]<br/>
+     * 授权
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param role 角色
+     * @param privileges 权限
+     * @return boolean
+     */
+    boolean grant(DataRuntime runtime, Role role, Privilege ... privileges)  throws Exception;
+    /**
+     * grant[调用入口]<br/>
+     * 授权
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param user 用户
+     * @param roles 角色
+     * @return boolean
+     */
+    boolean grant(DataRuntime runtime, User user, Role ... roles)  throws Exception;
 	/**
-	 * privilege[调用入口]<br/>
+	 * grant[调用入口]<br/>
 	 * 授权
-	 * @param user 用户
-	 * @param privileges 权限
-	 * @return boolean
-	 */
-	boolean grant(DataRuntime runtime, User user, Privilege... privileges)  throws Exception;
-	/**
-	 * privilege[调用入口]<br/>
-	 * 授权
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param user 用户
 	 * @param privileges 权限
 	 * @return boolean
@@ -9088,26 +9119,78 @@ public interface DriverAdapter {
 		return grant(runtime, new User(user), privileges);
 	}
 
-	/**
-	 * grant[命令合成]<br/>
-	 * 授权
-	 * @param user 用户
-	 * @param privileges 权限
-	 * @return List
-	 */
-	List<Run> buildGrantRun(DataRuntime runtime, User user, Privilege... privileges) throws Exception;
-	/**
-	 * privilege[调用入口]<br/>
-	 * 撤销授权
-	 * @param user 用户
-	 * @param privileges 权限
-	 * @return boolean
-	 */
-	boolean revoke(DataRuntime runtime, User user, Privilege ... privileges) throws Exception;
+    /**
+     * grant[命令合成]<br/>
+     * 授权
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param user 用户
+     * @param privileges 权限
+     * @return List
+     */
+    List<Run> buildGrantRun(DataRuntime runtime, User user, Privilege ... privileges) throws Exception;
+
+    /**
+     * grant[命令合成]<br/>
+     * 授权
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param user 用户
+     * @param roles 角色
+     * @return List
+     */
+    List<Run> buildGrantRun(DataRuntime runtime, User user, Role ... roles) throws Exception;
+
+    /**
+     * grant[命令合成]<br/>
+     * 授权
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param role 角色
+     * @param privileges 权限
+     * @return List
+     */
+    List<Run> buildGrantRun(DataRuntime runtime, Role role, Privilege ... privileges) throws Exception;
+
+    /* *****************************************************************************************************************
+     * 													revoke
+     * -----------------------------------------------------------------------------------------------------------------
+     * boolean revoke(DataRuntime runtime, User user, Privilege ... privileges) throws Exception
+     * boolean revoke(DataRuntime runtime, User user, Role ... roles) throws Exception
+     * boolean revoke(DataRuntime runtime, Role role, Privilege ... privileges) throws Exception
+     * List<Run> buildRevokeRun(DataRuntime runtime, User user, Privilege ... privileges) throws Exception
+     * List<Run> buildRevokeRun(DataRuntime runtime, User user, Role ... roles) throws Exception
+     * List<Run> buildRevokeRun(DataRuntime runtime, Role role, Privilege ... privileges) throws Exception
+     ******************************************************************************************************************/
+    /**
+     * privilege[调用入口]<br/>
+     * 撤销授权
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param user 用户
+     * @param privileges 权限
+     * @return boolean
+     */
+    boolean revoke(DataRuntime runtime, User user, Privilege ... privileges) throws Exception;
+    /**
+     * privilege[调用入口]<br/>
+     * 撤销授权
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param user 用户
+     * @param roles 角色
+     * @return boolean
+     */
+    boolean revoke(DataRuntime runtime, User user, Role ... roles) throws Exception;
+    /**
+     * privilege[调用入口]<br/>
+     * 撤销授权
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param role 角色
+     * @param privileges 权限
+     * @return boolean
+     */
+    boolean revoke(DataRuntime runtime, Role role, Privilege ... privileges) throws Exception;
 
 	/**
 	 * privilege[调用入口]<br/>
 	 * 撤销授权
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param user 用户
 	 * @param privileges 权限
 	 * @return boolean
@@ -9119,11 +9202,32 @@ public interface DriverAdapter {
 	/**
 	 * privilege[命令合成]<br/>
 	 * 撤销授权
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param user 用户
 	 * @param privileges 权限
 	 * @return List
 	 */
 	List<Run> buildRevokeRun(DataRuntime runtime, User user, Privilege ... privileges) throws Exception;
+
+    /**
+     * privilege[命令合成]<br/>
+     * 撤销授权
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param user 用户
+     * @param roles 角色
+     * @return List
+     */
+    List<Run> buildRevokeRun(DataRuntime runtime, User user, Role ... roles) throws Exception;
+
+    /**
+     * privilege[命令合成]<br/>
+     * 撤销授权
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param role 角色
+     * @param privileges 权限
+     * @return List
+     */
+    List<Run> buildRevokeRun(DataRuntime runtime, Role role, Privilege ... privileges) throws Exception;
 
 	/* *****************************************************************************************************************
 	 *

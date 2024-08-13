@@ -4097,8 +4097,8 @@ public class HBaseAdapter extends AbstractDriverAdapter implements DriverAdapter
      * @param <T> Index
      */
     @Override
-    public <T extends Index> List<T> indexes(DataRuntime runtime, String random, boolean greedy, Collection<? extends Table> tables) {
-        return super.indexes(runtime, random, greedy, tables);
+    public <T extends Index> List<T> indexes(DataRuntime runtime, String random, boolean greedy, Collection<? extends Table> tables, Index query) {
+        return super.indexes(runtime, random, greedy, tables, query);
     }
 
     /**
@@ -8000,8 +8000,8 @@ public class HBaseAdapter extends AbstractDriverAdapter implements DriverAdapter
      * @return boolean
      */
     @Override
-    public boolean delete(DataRuntime runtime, Role role) throws Exception {
-        return super.delete(runtime, role);
+    public boolean drop(DataRuntime runtime, Role role) throws Exception {
+        return super.drop(runtime, role);
     }
 
     /**
@@ -8045,8 +8045,8 @@ public class HBaseAdapter extends AbstractDriverAdapter implements DriverAdapter
      * @return List
      */
     @Override
-    public List<Run> buildDeleteRun(DataRuntime runtime, Role role) throws Exception {
-        return super.buildDeleteRun(runtime, role);
+    public List<Run> buildDropRun(DataRuntime runtime, Role role) throws Exception {
+        return super.buildDropRun(runtime, role);
     }
 
     /**
@@ -8118,7 +8118,7 @@ public class HBaseAdapter extends AbstractDriverAdapter implements DriverAdapter
      * -----------------------------------------------------------------------------------------------------------------
      * boolean create(DataRuntime runtime, User user) throws Exception
      * boolean rename(DataRuntime runtime, User origin, User update) throws Exception;
-     * boolean delete(DataRuntime runtime, User user) throws Exception
+     * boolean drop(DataRuntime runtime, User user) throws Exception
      * List<User> users(Catalog catalog, Schema schema, String pattern) throws Exception
      * List<Run> buildQueryUsersRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) throws Exception
      * <T extends User> List<T> users(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, List<T> users, DataSet set) throws Exception
@@ -8156,8 +8156,8 @@ public class HBaseAdapter extends AbstractDriverAdapter implements DriverAdapter
      * @return boolean
      */
     @Override
-    public boolean delete(DataRuntime runtime, User user) throws Exception {
-        return super.delete(runtime, user);
+    public boolean drop(DataRuntime runtime, User user) throws Exception {
+        return super.drop(runtime, user);
     }
 
     /**
@@ -8201,8 +8201,8 @@ public class HBaseAdapter extends AbstractDriverAdapter implements DriverAdapter
      * @return List
      */
     @Override
-    public List<Run> buildDeleteRun(DataRuntime runtime, User user) throws Exception {
-        return super.buildDeleteRun(runtime, user);
+    public List<Run> buildDropRun(DataRuntime runtime, User user) throws Exception {
+        return super.buildDropRun(runtime, user);
     }
 
     /**
@@ -8360,8 +8360,8 @@ public class HBaseAdapter extends AbstractDriverAdapter implements DriverAdapter
     /* *****************************************************************************************************************
      * 													grant
      * -----------------------------------------------------------------------------------------------------------------
-     * boolean grant(DataRuntime runtime, User user, Privilege... privileges)  throws Exception
-     * List<Run> buildGrantRun(DataRuntime runtime, User user, Privilege... privileges) throws Exception
+     * boolean grant(DataRuntime runtime, User user, Privilege ... privileges)  throws Exception
+     * List<Run> buildGrantRun(DataRuntime runtime, User user, Privilege ... privileges) throws Exception
      * boolean revoke(DataRuntime runtime, User user, Privilege ... privileges) throws Exception	 *
      ******************************************************************************************************************/
 
@@ -8373,7 +8373,7 @@ public class HBaseAdapter extends AbstractDriverAdapter implements DriverAdapter
      * @return boolean
      */
     @Override
-    public boolean grant(DataRuntime runtime, User user, Privilege... privileges)  throws Exception {
+    public boolean grant(DataRuntime runtime, User user, Privilege ... privileges)  throws Exception {
         return super.grant(runtime, user, privileges);
     }
 
@@ -8385,7 +8385,7 @@ public class HBaseAdapter extends AbstractDriverAdapter implements DriverAdapter
      * @return List
      */
     @Override
-    public List<Run> buildGrantRun(DataRuntime runtime, User user, Privilege... privileges) throws Exception {
+    public List<Run> buildGrantRun(DataRuntime runtime, User user, Privilege ... privileges) throws Exception {
         return super.buildGrantRun(runtime, user, privileges);
     }
 

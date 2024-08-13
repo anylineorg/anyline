@@ -96,6 +96,7 @@ public class ConfigTable {
 	public static int HTTP_PARAM_ENCODE									= 0				;   // http参数是否解码0:自动识别 1:确认编码 -1:确认未编码
 	public static boolean IS_MULTIPLE_SERVICE							= true			;	// 如果有多数据源为每个数据源生成独立的service
 	public static boolean IS_ENABLE_COMMON_JDBC_ADAPTER					= false			;   // 是否开启通用的jdbc adapter(仅支持部分标准SQL)遇到没有实现adapter的数据库时可以开启
+	public static boolean IS_ENABLE_COMMON_POSITION						= true			;	// 是否开启通用的position(仅支持部分标准SQL)遇到没有实现adapter的数据库时可以开启
 	public static boolean IS_AUTO_CONVERT_BYTES							= true			;   // 否将数据库中与Java bytes[]对应的类型自动转换如Point > double[](返回DataRow时受此开关景程)
 	public static boolean IS_AUTO_SPLIT_ARRAY							= true			;	// 更新数据库时，是把自动把数组/集合类型拆分
 	public static boolean IS_METADATA_IGNORE_CASE						= true			;   // 查询元数据时忽略大小写
@@ -198,16 +199,16 @@ public class ConfigTable {
 
 	public static EnvironmentWorker environment() {
 		if(null == environment) {
-			log.error("未注入EnvironmentWorker(8.7.2+)(基础Java环境调用DefaultEnvironmentWorker.start(),其他环境添加依赖如:anyline-environment-spring-data-jdbc)");
+			log.error("未注入EnvironmentWorker(8.7.2+)(基础Java环境调用DefaultEnvironmentWorker.start(),其他环境添加依赖如spring环境:anyline-environment-spring-data-jdbc)");
 		}
 		return environment;
 	}
 	private synchronized static void listener() {
-		if(listener_running) {
+		if(listener_running || listener_files.isEmpty()) {
 			return;
 		}
 		listener_running = true;
-		log.info("[启动监听]");
+		log.info("[启动监听][{}]", BeanUtil.concat(listener_files.keySet()));
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -284,16 +285,11 @@ public class ConfigTable {
 	 * @return String
 	 */
 	public static String getProjectProtocol() {
-		return ConfigTable.class.getResource("/").getProtocol();
-		/*String type = "war";
-		if("jar".equals(type)) {
-			return type;
+		URL url = ConfigTable.class.getResource("/");
+		if(null != url){
+			return url.getProtocol();
 		}
-		String path = ConfigTable.class.getResource("/").getPath();;
-		if(path.contains(".jar!")) {
-			type = "jar";
-		}
-		return type;*/
+		return null;
 	}
 	public static String path(String path) {
 		//return new File(path).getAbsolutePath();
@@ -305,6 +301,9 @@ public class ConfigTable {
 		// path=file:/D:/develop/git/sso/bin/classes/										(windows IDE)
 		// path=file:/usr/local/web/sso/sso-0.0.2.jar!/BOOT-INF/classes!/		(linux jar)
 		// path=/usr/local/web/sso/WEB-INF/classes/									(linux tomcat)
+		if(null == path){
+			return null;
+		}
 		Properties props=System.getProperties();
 		String os = props.getProperty("os.name");
 		if(null != os && os.toUpperCase().contains("WINDOWS")) {
@@ -321,15 +320,26 @@ public class ConfigTable {
 		return path;
 	}
 	public static void prepare() {
-
 		if(isLoading) {
 			return;
 		}
 		lastLoadTime = System.currentTimeMillis();
 		isLoading = true;
-		String path =  "";
+		String path =  null;
 		try{
-			path = ConfigTable.class.getResource("/").getPath();
+			URL url = ConfigTable.class.getResource("/"); //项目外的lib目录获取不到url
+			if(null != url){
+				path = url.getPath();
+			}
+			if(null == path){
+				File tmp = new File(".").getAbsoluteFile();
+				if(null != tmp){
+					path = tmp.getParent();
+				}
+			}
+			if(null == path){
+				path = System.getProperty("user.dir");
+			}
 		}catch(Exception e) {
 			log.error("prepare exception:", e);
 		}
@@ -365,6 +375,9 @@ public class ConfigTable {
 			if(path.indexOf("target") > 0) {
 				webRoot = path.substring(0, path.indexOf("target")-1);
 			}*/
+		}
+		if(null == path){
+			path = root;
 		}
 		if(path.contains("classes")) {
 			classpath = path;

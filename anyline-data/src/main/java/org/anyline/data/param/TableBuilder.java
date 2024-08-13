@@ -135,5 +135,4 @@ public class TableBuilder {
     public TableBuilder full(Table table, String condition) {
         return join(Join.TYPE.FULL, table, condition);
     }
-
 }

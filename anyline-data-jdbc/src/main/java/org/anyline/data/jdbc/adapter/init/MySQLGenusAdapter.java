@@ -29,6 +29,7 @@ import org.anyline.metadata.*;
 import org.anyline.metadata.refer.*;
 import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.util.BasicUtil;
+import org.anyline.util.ConfigTable;
 import org.anyline.util.LogUtil;
 import org.anyline.util.regular.RegularUtil;
 
@@ -5478,6 +5479,9 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public StringBuilder position(DataRuntime runtime, StringBuilder builder, Column meta) {
+        if(!ConfigTable.IS_ENABLE_COMMON_POSITION){
+            return builder;
+        }
         Integer position = meta.getPosition();
         String after = meta.getAfter();
         String before = meta.getBefore();
@@ -6834,7 +6838,8 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      *                                                     Authorize
      *
      * =================================================================================================================
-     * user            : 用户
+     * roe          : 角色
+     * user         : 用户
      * grant        : 授权
      * privilege    : 权限
      ******************************************************************************************************************/
@@ -6858,7 +6863,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * -----------------------------------------------------------------------------------------------------------------
      * boolean create(DataRuntime runtime, User user) throws Exception
      * boolean rename(DataRuntime runtime, User origin, User update) throws Exception;
-     * boolean delete(DataRuntime runtime, User user) throws Exception
+     * boolean drop(DataRuntime runtime, User user) throws Exception
      * List<User> users(Catalog catalog, Schema schema, String pattern) throws Exception
      * List<Run> buildQueryUsersRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) throws Exception
      * <T extends User> List<T> users(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, List<T> users, DataSet set) throws Exception
@@ -6896,8 +6901,8 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return boolean
      */
     @Override
-    public boolean delete(DataRuntime runtime, User user) throws Exception {
-        return super.delete(runtime, user);
+    public boolean drop(DataRuntime runtime, User user) throws Exception {
+        return super.drop(runtime, user);
     }
 
     /**
@@ -6941,8 +6946,8 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return List
      */
     @Override
-    public List<Run> buildDeleteRun(DataRuntime runtime, User user) throws Exception {
-        return super.buildDeleteRun(runtime, user);
+    public List<Run> buildDropRun(DataRuntime runtime, User user) throws Exception {
+        return super.buildDropRun(runtime, user);
     }
 
     /**
@@ -7108,8 +7113,8 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     /* *****************************************************************************************************************
      *                                                     grant
      * -----------------------------------------------------------------------------------------------------------------
-     * boolean grant(DataRuntime runtime, User user, Privilege... privileges)  throws Exception
-     * List<Run> buildGrantRun(DataRuntime runtime, User user, Privilege... privileges) throws Exception
+     * boolean grant(DataRuntime runtime, User user, Privilege ... privileges)  throws Exception
+     * List<Run> buildGrantRun(DataRuntime runtime, User user, Privilege ... privileges) throws Exception
      * boolean revoke(DataRuntime runtime, User user, Privilege ... privileges) throws Exception     *
      ******************************************************************************************************************/
     /**
@@ -7120,7 +7125,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return boolean
      */
     @Override
-    public boolean grant(DataRuntime runtime, User user, Privilege... privileges)  throws Exception {
+    public boolean grant(DataRuntime runtime, User user, Privilege ... privileges)  throws Exception {
         return super.grant(runtime, user, privileges);
     }
 
@@ -7132,7 +7137,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return List
      */
     @Override
-    public List<Run> buildGrantRun(DataRuntime runtime, User user, Privilege... privileges) throws Exception {
+    public List<Run> buildGrantRun(DataRuntime runtime, User user, Privilege ... privileges) throws Exception {
         return super.buildGrantRun(runtime, user, privileges);
     }
 
