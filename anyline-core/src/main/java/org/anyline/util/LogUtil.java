@@ -265,9 +265,9 @@ public class LogUtil {
             tables.add(table);
         }
         int tab_index = 0;
-        result.append("[tables:").append(tables.size()).append("][rows:").append(set.size()).append("]");
+        result.append("[tables:").append(tables.size()).append("][rows:").append(set.size()).append("][cols:").append(keys.size()).append("]");
         if(BasicUtil.isNotEmpty(ConfigTable.LOG_QUERY_RESULT_ALT)){
-            result.append(" ").append(ConfigTable.LOG_QUERY_RESULT_ALT);
+            result.append(ConfigTable.LOG_QUERY_RESULT_ALT);
         }
         result.append("\n");
         for(List<String> cols:tables){
@@ -279,7 +279,7 @@ public class LogUtil {
             }
             int col_size = cols.size();
             for(int i=0; i<col_size; i++){
-                int view_width = view_widths.get(cols.get(i));
+                Integer view_width = view_widths.get(cols.get(i).toUpperCase());
                 String left = "";
                 String right = "+";
                 if(i == 0){
@@ -311,7 +311,7 @@ public class LogUtil {
                 title.append(right);
             }
             if(color) {
-                builder.append(format(title.toString(), 36));
+                builder.append(format(title.toString(), 34));
             }else{
                 builder.append(title);
             }
@@ -337,7 +337,11 @@ public class LogUtil {
                         left = "|";
                     }
                     builder.append(left);
-                    String content = cell(value, view_width, cols_aligns.get(key.toUpperCase()));
+                    Integer align = cols_aligns.get(key.toUpperCase());
+                    String content = cell(value, view_width, align);
+                    if(null != align && align == 1){
+                        content = format(content, 36);
+                    }
                     builder.append(content);
                     builder.append(right);
                 }
