@@ -1341,7 +1341,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
                 log.info("{}[action:select][执行耗时:{}]", random, DateUtil.format(time));
                 log.info("{}[action:select][封装耗时:{}][封装行数:{}]", random, DateUtil.format(time), count);
             }
-            if((!system || !ConfigTable.IS_LOG_QUERY_RESULT_EXCLUDE_METADATA) && ConfigTable.IS_LOG_QUERY_RESULT && log.isInfoEnabled()){
+            if((!system || !ConfigStore.IS_LOG_QUERY_RESULT_EXCLUDE_METADATA(configs)) && ConfigStore.IS_LOG_QUERY_RESULT(configs) && log.isInfoEnabled()){
                 log.info("{}[查询结果]{}", random, LogUtil.table(set));
             }
             set.setDatalink(runtime.datasource());

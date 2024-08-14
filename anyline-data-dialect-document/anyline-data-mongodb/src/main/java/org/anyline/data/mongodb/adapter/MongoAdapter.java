@@ -454,7 +454,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
             if(ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
                 log.info("{}[封装耗时:{}][封装行数:{}]", random, DateUtil.format(System.currentTimeMillis() - fr), set.size());
             }
-            if((!system || !ConfigTable.IS_LOG_QUERY_RESULT_EXCLUDE_METADATA) && ConfigTable.IS_LOG_QUERY_RESULT && log.isInfoEnabled()){
+            if((!system || !ConfigStore.IS_LOG_QUERY_RESULT_EXCLUDE_METADATA(configs)) && ConfigStore.IS_LOG_QUERY_RESULT(configs) && log.isInfoEnabled()){
                 log.info("{}[查询结果]{}", random, LogUtil.table(set));
             }
         }catch(Exception e) {

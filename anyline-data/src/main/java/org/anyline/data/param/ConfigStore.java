@@ -1835,6 +1835,28 @@ public interface ConfigStore extends Cloneable{
 	}
 
 	/**
+	 * 查询结果输出日志
+	 * @return boolean
+	 */
+	default boolean IS_LOG_QUERY_RESULT() {
+		return getBoolean("IS_LOG_QUERY_RESULT", ConfigTable.IS_LOG_QUERY_RESULT);
+	}
+	default ConfigStore IS_LOG_QUERY_RESULT(boolean value) {
+		return config("IS_LOG_QUERY_RESULT", value);
+	}
+
+	/**
+	 * 查询结果输出日志时 是否过滤元数据查询结果
+	 * @return boolean
+	 */
+	default boolean IS_LOG_QUERY_RESULT_EXCLUDE_METADATA() {
+		return getBoolean("IS_LOG_QUERY_RESULT_EXCLUDE_METADATA", ConfigTable.IS_LOG_QUERY_RESULT_EXCLUDE_METADATA);
+	}
+	default ConfigStore IS_LOG_QUERY_RESULT_EXCLUDE_METADATA(boolean value) {
+		return config("IS_LOG_QUERY_RESULT_EXCLUDE_METADATA", value);
+	}
+
+	/**
 	 * 异常时是否显示SQL
 	 * @return boolean
 	 */
@@ -2187,6 +2209,30 @@ public interface ConfigStore extends Cloneable{
 			return configs.IS_LOG_SLOW_SQL();
 		}
 		return ConfigTable.IS_LOG_SLOW_SQL;
+	}
+
+	/**
+	 * 查询结果输出日志
+	 * @param configs ConfigStore
+	 * @return boolean
+	 */
+	static boolean IS_LOG_QUERY_RESULT(ConfigStore configs) {
+		if(null != configs) {
+			return configs.IS_LOG_QUERY_RESULT();
+		}
+		return ConfigTable.IS_LOG_QUERY_RESULT;
+	}
+
+	/**
+	 * 查询结果输出日志时 是否过滤元数据查询结果
+	 * @param configs ConfigStore
+	 * @return boolean
+	 */
+	static boolean IS_LOG_QUERY_RESULT_EXCLUDE_METADATA(ConfigStore configs) {
+		if(null != configs) {
+			return configs.IS_LOG_QUERY_RESULT_EXCLUDE_METADATA();
+		}
+		return ConfigTable.IS_LOG_QUERY_RESULT_EXCLUDE_METADATA;
 	}
 
 	/**
