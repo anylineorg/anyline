@@ -3492,6 +3492,22 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
         }
         return this;
     }
+
+    /**
+     * 全部条目keys合集
+     * @return List
+     */
+    public List<String> keys(){
+        List<String> keys = new ArrayList<>();
+        Map<String,String> map = new LinkedHashMap<>();
+        for(DataRow row:rows){
+            for(String key:row.keySet()){
+                map.put(key, key);
+            }
+        }
+        keys.addAll(map.keySet());
+        return keys;
+    }
     public DataSet join(DataSet items, String... keys) {
         return join(items, BeanUtil.array2list(keys));
     }
