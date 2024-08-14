@@ -265,6 +265,11 @@ public class LogUtil {
             tables.add(table);
         }
         int tab_index = 0;
+        result.append("tables:").append(tables.size()).append(", rows:").append(set.size());
+        if(BasicUtil.isNotEmpty(ConfigTable.LOG_QUERY_RESULT_ALT)){
+            result.append(" ").append(ConfigTable.LOG_QUERY_RESULT_ALT);
+        }
+        result.append("\n");
         for(List<String> cols:tables){
             StringBuilder builder = new StringBuilder();
             //分隔线
@@ -314,7 +319,7 @@ public class LogUtil {
             builder.append(row_split);
             idx = 0;
             for(DataRow row:set){
-                if(idx > rows){
+                if(idx >= rows){
                     break;
                 }
                 builder.append("\n");
@@ -387,7 +392,7 @@ public class LogUtil {
      * @param src 原文
      * @param size 补齐宽度
      * @param align 对齐方式 -1左对齐(默认) 1右对齐 0居中
-     * @return
+     * @return String
      */
     public static String cell(String src, int size, Integer align){
         if(null == align){

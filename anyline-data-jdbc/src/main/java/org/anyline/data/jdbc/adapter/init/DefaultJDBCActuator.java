@@ -37,10 +37,7 @@ import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.PageNavi;
 import org.anyline.metadata.*;
-import org.anyline.util.BasicUtil;
-import org.anyline.util.BeanUtil;
-import org.anyline.util.ConfigTable;
-import org.anyline.util.DateUtil;
+import org.anyline.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -378,6 +375,9 @@ public class DefaultJDBCActuator implements DriverActuator {
         set.setDatalink(rt.datasource());
         if(ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
             log.info("{}[封装耗时:{}][封装行数:{}]", rdm, DateUtil.format(System.currentTimeMillis() - mid), set.size());
+        }
+        if(!ConfigTable.IS_LOG_QUERY_RESULT_EXCLUDE_METADATA && ConfigTable.IS_LOG_QUERY_RESULT && log.isInfoEnabled()){
+            log.info("{}[查询结果]\n{}", random, LogUtil.table(set));
         }
         return set;
     }

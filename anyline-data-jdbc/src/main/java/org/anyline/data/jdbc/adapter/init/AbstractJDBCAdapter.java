@@ -8481,6 +8481,9 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 				log.info("{}[action:select][执行耗时:{}]", random, DateUtil.format(times));
 				log.info("{}[action:select][封装耗时:{}][封装行数:{}]", random, DateUtil.format(configs.getLastPackageTime()), set.size());
 			}
+            if((!system || !ConfigTable.IS_LOG_QUERY_RESULT_EXCLUDE_METADATA) && ConfigTable.IS_LOG_QUERY_RESULT && log.isInfoEnabled()){
+                log.info("{}[查询结果]\n{}", random, LogUtil.table(set));
+            }
 			set.setDatalink(runtime.datasource());
 		}catch(Exception e) {
 			if(ConfigStore.IS_PRINT_EXCEPTION_STACK_TRACE(configs)) {
