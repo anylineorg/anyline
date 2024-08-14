@@ -1179,17 +1179,12 @@ public interface AnylineService<E>{
 	default DataSet caches(String dest, long first, long last, ConfigStore configs, String ... conditions) {
 		return caches(null, dest, first, last, configs, conditions);
 	}
-	default DataSet caches(String dest, String ... conditions) {
-		return caches(null, dest, null, null, conditions);
-	}
+
 	default DataSet caches(String dest, long first, long last, String ... conditions) {
 		return caches(null, dest, first, last, null, conditions);
 	}
 	default DataRow cache(String dest, ConfigStore configs, String ... conditions) {
 		return cache(null, dest, configs, null, conditions);
-	}
-	default DataRow cache(String dest, String ... conditions) {
-		return cache(null, dest, null, null, conditions);
 	}
 
 	default DataRow cache(Table dest, ConfigStore configs, Object obj, String ... conditions) {
