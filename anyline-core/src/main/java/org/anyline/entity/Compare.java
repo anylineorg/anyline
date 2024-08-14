@@ -292,6 +292,11 @@ public enum Compare {
             return 1;
         }
     },
+    JSON_SEARCH(72, "json_search", "", " JSON_SEARCH ") {
+        public int valueCount() {
+            return 1;
+        }
+    },
     JSON_CONTAINS_PATH_OR(75, "json_contains_path", "", " JSON_CONTAINS_PATH ") {
         //ONE 包含1个即可
         public int valueCount() {
