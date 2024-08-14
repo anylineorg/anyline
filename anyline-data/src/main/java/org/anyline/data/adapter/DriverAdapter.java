@@ -1512,7 +1512,7 @@ public interface DriverAdapter {
 
     /**
      * select[命令合成-子流程] <br/>
-     * 构造 JSON_CONTAINS 查询条件
+     * 构造 JSON_CONTAINS_PATH 查询条件
      * 如果不需要占位符 返回null  否则原样返回value
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param builder builder
@@ -1522,6 +1522,20 @@ public interface DriverAdapter {
      * @return value
      */
     default Object createConditionJsonContainsPath(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder) throws NotSupportException {
+        throw new NotSupportException("不支持");
+    }
+    /**
+     * select[命令合成-子流程] <br/>
+     * 构造 JSON_SEARCH 查询条件(默认 IS NOT NULL)
+     * 如果不需要占位符 返回null  否则原样返回value
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param builder builder
+     * @param column 列
+     * @param compare 比较方式 默认 equal 多个值默认 in
+     * @param value value
+     * @return value
+     */
+    default Object createConditionJsonSearch(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder) throws NotSupportException {
         throw new NotSupportException("不支持");
     }
 

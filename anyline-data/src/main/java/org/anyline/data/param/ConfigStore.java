@@ -921,6 +921,22 @@ public interface ConfigStore extends Cloneable{
 		return and(Compare.JSON_CONTAINS_PATH_AND, var, value);
 	}
 
+	default ConfigStore jsonSearch(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue) {
+		return and(swt, Compare.JSON_SEARCH, id, var, value, overCondition, overValue);
+	}
+	default ConfigStore jsonSearch(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue) {
+		return and(swt, Compare.JSON_SEARCH, var, value, overCondition, overValue);
+	}
+	default ConfigStore jsonSearch(String id, String var, Object value, boolean overCondition, boolean overValue) {
+		return and(Compare.JSON_SEARCH, id, var, value, overCondition, overValue);
+	}
+	default ConfigStore jsonSearch(String var, Object value, boolean overCondition, boolean overValue) {
+		return and(Compare.JSON_SEARCH, var, value, overCondition, overValue);
+	}
+	default ConfigStore jsonSearch(String var, Object value) {
+		return and(Compare.JSON_SEARCH, var, value);
+	}
+
 	default ConfigStore between(EMPTY_VALUE_SWITCH swt, String id, String var, Object min, Object max, boolean overCondition, boolean overValue) {
 		return and(swt, Compare.BETWEEN, id, var, Arrays.asList(min,max), overCondition, overValue);
 	}

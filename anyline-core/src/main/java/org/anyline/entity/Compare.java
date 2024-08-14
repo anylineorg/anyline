@@ -292,11 +292,6 @@ public enum Compare {
             return 1;
         }
     },
-    JSON_SEARCH(72, "json_search", "", " JSON_SEARCH ") {
-        public int valueCount() {
-            return 1;
-        }
-    },
     JSON_CONTAINS_PATH_OR(75, "json_contains_path", "", " JSON_CONTAINS_PATH ") {
         //ONE 包含1个即可
         public int valueCount() {
@@ -319,6 +314,21 @@ public enum Compare {
         //ALL 必须包含全部
         public int valueCount() {
             return 9;
+        }
+    },
+    JSON_SEARCH(77, "json_search", "", " JSON_SEARCH ") {
+        public int valueCount() {
+            return 1;
+        }
+    },
+    JSON_SEARCH_OEN(77, "json_search", "", " JSON_SEARCH ") {
+        public int valueCount() {
+            return 1;
+        }
+    },
+    JSON_SEARCH_ALL(78, "json_search", "", " JSON_SEARCH ") {
+        public int valueCount() {
+            return 1;
         }
     },
     BETWEEN(80, "区间",""," BETWEEN ? AND ? ")			{

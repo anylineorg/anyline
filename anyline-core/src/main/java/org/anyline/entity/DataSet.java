@@ -3506,6 +3506,11 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
             }
         }
         keys.addAll(map.keySet());
+        if(keys.isEmpty() && null != metadatas){
+            for(Column column:metadatas.values()){
+                keys.add(column.getName());
+            }
+        }
         return keys;
     }
     public DataSet join(DataSet items, String... keys) {

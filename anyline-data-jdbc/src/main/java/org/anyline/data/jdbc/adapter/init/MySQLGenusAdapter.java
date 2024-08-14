@@ -853,6 +853,44 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
 
     /**
      * select[命令合成-子流程] <br/>
+     * 构造 JSON_SEARCH 查询条件(默认 IS NOT NULL)
+     * 如果不需要占位符 返回null  否则原样返回value
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param builder builder
+     * @param column 列
+     * @param compare 比较方式 默认 equal 多个值默认 in
+     * @param value value
+     * @return value
+     */
+    @Override
+    public Object createConditionJsonSearch(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder) throws NotSupportException {
+        //JSON_SEARCH(JSON_COLUMN, 'one', 'abc') IS NOT NULL
+        String scope = "one";
+        if(compare.getCode() == 78) {
+            scope = "all";
+        }
+        Collection<Object> values = new ArrayList<>();
+        if(value instanceof Collection) {
+            values = (Collection<Object>) value;
+        }else{
+            values.add(value);
+        }
+        builder.append("JSON_SEARCH(").append(column).append(", '").append(scope).append("'");
+        for(Object v:values) {
+            builder.append(", ");
+            if(placeholder) {
+                builder.append("?");
+            }else{
+                builder.append("'").append(v).append("'");
+            }
+        }
+
+        builder.append(") IS NOT NULL");
+        return value;
+    }
+
+    /**
+     * select[命令合成-子流程] <br/>
      * 构造(NOT) IN 查询条件
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param builder builder
