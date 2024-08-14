@@ -1224,7 +1224,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
                 log.info("{}[action:select][封装耗时:{}][封装行数:{}]", random, DateUtil.format(time), count);
             }
             if((!system || !ConfigTable.IS_LOG_QUERY_RESULT_EXCLUDE_METADATA) && ConfigTable.IS_LOG_QUERY_RESULT && log.isInfoEnabled()){
-                log.info("{}[查询结果]\n{}", random, LogUtil.table(set));
+                log.info("{}[查询结果]{}", random, LogUtil.table(set));
             }
             set.setDatalink(runtime.datasource());
         }catch(Exception e) {

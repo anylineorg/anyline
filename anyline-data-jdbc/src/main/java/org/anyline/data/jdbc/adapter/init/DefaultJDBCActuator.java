@@ -377,7 +377,7 @@ public class DefaultJDBCActuator implements DriverActuator {
             log.info("{}[封装耗时:{}][封装行数:{}]", rdm, DateUtil.format(System.currentTimeMillis() - mid), set.size());
         }
         if(!ConfigTable.IS_LOG_QUERY_RESULT_EXCLUDE_METADATA && ConfigTable.IS_LOG_QUERY_RESULT && log.isInfoEnabled()){
-            log.info("{}[查询结果]\n{}", random, LogUtil.table(set));
+            log.info("{}[查询结果]{}", random, LogUtil.table(set));
         }
         return set;
     }

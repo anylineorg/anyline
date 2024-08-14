@@ -394,8 +394,8 @@ public class SpringJDBCActuator implements DriverActuator {
                 if(ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
                     log.info("{}[封装耗时:{}][封装行数:{}]", rdm, DateUtil.format(System.currentTimeMillis() - mid), set.size());
                 }
-                if((!system || !ConfigTable.IS_LOG_QUERY_RESULT_EXCLUDE_METADATA) && ConfigTable.IS_LOG_QUERY_RESULT && log.isInfoEnabled()){
-                    log.info("{}[查询结果]\n{}", rdm, LogUtil.table(set));
+                if(!ConfigTable.IS_LOG_QUERY_RESULT_EXCLUDE_METADATA && ConfigTable.IS_LOG_QUERY_RESULT && log.isInfoEnabled()){
+                    log.info("{}[查询结果]{}", rdm, LogUtil.table(set));
                 }
                 return set;
             }

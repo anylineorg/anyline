@@ -265,7 +265,7 @@ public class LogUtil {
             tables.add(table);
         }
         int tab_index = 0;
-        result.append("tables:").append(tables.size()).append(", rows:").append(set.size());
+        result.append("[tables:").append(tables.size()).append("][rows:").append(set.size()).append("]");
         if(BasicUtil.isNotEmpty(ConfigTable.LOG_QUERY_RESULT_ALT)){
             result.append(" ").append(ConfigTable.LOG_QUERY_RESULT_ALT);
         }
