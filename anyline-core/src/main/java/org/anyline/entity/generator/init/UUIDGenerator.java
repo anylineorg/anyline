@@ -38,7 +38,7 @@ public class UUIDGenerator implements PrimaryGenerator {
             }
         }
         for(String column:columns) {
-            if(null != BeanUtil.getFieldValue(entity, column)) {
+            if(null != BeanUtil.getFieldValue(entity, column, true)) {
                 continue;
             }
             String value = UUID.randomUUID().toString();
@@ -57,7 +57,7 @@ public class UUIDGenerator implements PrimaryGenerator {
             }
         }
         for(Column column:columns.values()) {
-            if(null != BeanUtil.getFieldValue(entity, column.getName())) {
+            if(null != BeanUtil.getFieldValue(entity, column.getName(), true)) {
                 continue;
             }
             String value = UUID.randomUUID().toString();

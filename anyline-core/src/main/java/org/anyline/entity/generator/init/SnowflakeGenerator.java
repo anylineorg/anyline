@@ -43,7 +43,7 @@ public class SnowflakeGenerator implements PrimaryGenerator {
 			worker = newInstance();
 		}
 		for(String column:columns) {
-			if(null != BeanUtil.getFieldValue(entity, column)) {
+			if(null != BeanUtil.getFieldValue(entity, column, true)) {
 				continue;
 			}
 			create(entity, type, table, column, other);
@@ -64,7 +64,8 @@ public class SnowflakeGenerator implements PrimaryGenerator {
 			worker = newInstance();
 		}
 		for(Column column:columns.values()) {
-			if(null != BeanUtil.getFieldValue(entity, column.getName())) {
+			//检测主键值
+			if(null != BeanUtil.getFieldValue(entity, column.getName(), true)) {
 				continue;
 			}
 			create(entity, type, table, column.getName(), other);

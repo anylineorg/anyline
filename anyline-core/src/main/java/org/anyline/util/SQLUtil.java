@@ -105,6 +105,7 @@ public class SQLUtil {
 			builder.append(src);
 			return builder;
 		}
+		//SELECT 1 AS ID FROM TABLE
 		if(BasicUtil.isNumber(src)) {
 			builder.append(src);
 			return builder;

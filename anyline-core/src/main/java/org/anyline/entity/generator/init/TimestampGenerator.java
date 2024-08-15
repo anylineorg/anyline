@@ -39,7 +39,7 @@ public class TimestampGenerator implements PrimaryGenerator {
             }
         }
         for(String column:columns) {
-            if(null != BeanUtil.getFieldValue(entity, column)) {
+            if(null != BeanUtil.getFieldValue(entity, column, true)) {
                 continue;
             }
             create(entity, type, table, column, other);
@@ -57,7 +57,7 @@ public class TimestampGenerator implements PrimaryGenerator {
             }
         }
         for(Column column:columns.values()) {
-            if(null != BeanUtil.getFieldValue(entity, column.getName())) {
+            if(null != BeanUtil.getFieldValue(entity, column.getName(), true)) {
                 continue;
             }
             create(entity, type, table, column.getName(), other);
