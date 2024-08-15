@@ -566,7 +566,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
             if(!(obj instanceof Map) && EntityAdapterProxy.hasAdapter(obj.getClass())) {
                 value = BeanUtil.getFieldValue(obj, EntityAdapterProxy.field(obj.getClass(), key));
             }else{
-                value = BeanUtil.getFieldValue(obj, key);
+                value = BeanUtil.getFieldValue(obj, key, true);
             }
 
             String str = null;
@@ -1846,7 +1846,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
                         if (EntityAdapterProxy.hasAdapter(obj.getClass())) {
                             value = BeanUtil.getFieldValue(obj, EntityAdapterProxy.field(obj.getClass(), key));
                         } else {
-                            value = BeanUtil.getFieldValue(obj, key);
+                            value = BeanUtil.getFieldValue(obj, key, true);
                         }
                     }
                     addRunValue(runtime, run, Compare.EQUAL, new Column(key), value);

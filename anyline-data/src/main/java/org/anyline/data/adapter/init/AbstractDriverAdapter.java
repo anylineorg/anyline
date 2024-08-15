@@ -661,7 +661,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 if(!(obj instanceof Map) && EntityAdapterProxy.hasAdapter(obj.getClass())) {
                     value = BeanUtil.getFieldValue(obj, EntityAdapterProxy.field(obj.getClass(), key));
                 }else{
-                    value = BeanUtil.getFieldValue(obj, key);
+                    value = BeanUtil.getFieldValue(obj, key, true);
                 }
 
                 if(null == value) {
@@ -1176,7 +1176,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                     Field field = EntityAdapterProxy.field(obj.getClass(), key);
                     value = BeanUtil.getFieldValue(obj, field);
                 }else {
-                    value = BeanUtil.getFieldValue(obj, key);
+                    value = BeanUtil.getFieldValue(obj, key, true);
                 }
                 //if(null != value && value.toString().startsWith("${") && value.toString().endsWith("}")) {
                 if(BasicUtil.checkEl(value+"")) {
@@ -1226,7 +1226,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                         Field field = EntityAdapterProxy.field(obj.getClass(), pk);
                         configs.and(Compare.EMPTY_VALUE_SWITCH.SRC, pk, BeanUtil.getFieldValue(obj, field));
                     } else {
-                        configs.and(Compare.EMPTY_VALUE_SWITCH.SRC, pk, BeanUtil.getFieldValue(obj, pk));
+                        configs.and(Compare.EMPTY_VALUE_SWITCH.SRC, pk, BeanUtil.getFieldValue(obj, pk, true));
                     }
                 }
             }
@@ -1449,7 +1449,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         for(Object item:list) {
             for(Column col:cols.values()) {
                 String key = col.getName();
-                Object value = BeanUtil.getFieldValue(item, key);
+                Object value = BeanUtil.getFieldValue(item, key, true);
                 //if(null != value && value.toString().startsWith("${") && value.toString().endsWith("}") ) {
                 if(BasicUtil.checkEl(value+"")) {
                     String str = value.toString();
@@ -1465,7 +1465,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             }
 
             for (String pk : primaryKeys) {
-                values.add(new RunValue(pk, BeanUtil.getFieldValue(item, pk)));
+                values.add(new RunValue(pk, BeanUtil.getFieldValue(item, pk, true)));
             }
         }
         run.setBatch(batch);
@@ -1674,7 +1674,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                     // 必须更新
                     continue;
                 }
-                Object value = BeanUtil.getFieldValue(obj, key);
+                Object value = BeanUtil.getFieldValue(obj, key, true);
                 if(null == value) {
                     if(factKeys.contains(key)) {
                         cols.remove(key.toUpperCase());
@@ -3233,7 +3233,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 }
                 for (Object item : values) {
                     for (String key : keys) {
-                        Object value = BeanUtil.getFieldValue(item, key);
+                        Object value = BeanUtil.getFieldValue(item, key, true);
                         list.add(value);
                     }
                 }
@@ -17613,7 +17613,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				Field field = EntityAdapterProxy.field(obj.getClass(), key);
 				value = BeanUtil.getFieldValue(obj, field);
 			} else {
-				value = BeanUtil.getFieldValue(obj, key);
+				value = BeanUtil.getFieldValue(obj, key, true);
 			}
 		}
 		if(null != value) {

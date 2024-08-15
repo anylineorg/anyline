@@ -289,7 +289,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         Map<String, Sequence> sequens = new HashMap<>();
         for(Column column:columns.values()) {
             String key = column.getName();
-            Object value = BeanUtil.getFieldValue(first, key);
+            Object value = BeanUtil.getFieldValue(first, key, true);
             if(null != value) {
                 if(value instanceof String) {
                     String str = (String) value;

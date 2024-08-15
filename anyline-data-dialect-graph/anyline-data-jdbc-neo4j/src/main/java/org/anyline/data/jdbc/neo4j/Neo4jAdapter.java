@@ -291,7 +291,7 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
             if(!(obj instanceof Map) && EntityAdapterProxy.hasAdapter(obj.getClass())) {
                 value = BeanUtil.getFieldValue(obj, EntityAdapterProxy.field(obj.getClass(), key));
             }else{
-                value = BeanUtil.getFieldValue(obj, key);
+                value = BeanUtil.getFieldValue(obj, key, true);
             }
             delimiter(builder, key).append(":");
             //if(null != value && value.toString().startsWith("${") && value.toString().endsWith("}")) {
@@ -808,7 +808,7 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
                     Field field = EntityAdapterProxy.field(obj.getClass(), key);
                     value = BeanUtil.getFieldValue(obj, field);
                 }else {
-                    value = BeanUtil.getFieldValue(obj, key);
+                    value = BeanUtil.getFieldValue(obj, key, true);
                 }
                 //if(null != value && value.toString().startsWith("${") && value.toString().endsWith("}")) {
                 if(BasicUtil.checkEl(value+"")) {
@@ -1019,7 +1019,7 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
                 if(!(obj instanceof Map) && EntityAdapterProxy.hasAdapter(obj.getClass())) {
                     value = BeanUtil.getFieldValue(obj, EntityAdapterProxy.field(obj.getClass(), key));
                 }else{
-                    value = BeanUtil.getFieldValue(obj, key);
+                    value = BeanUtil.getFieldValue(obj, key, true);
                 }
 
                 run.addValues(Compare.EQUAL, new Column(key), value, ConfigTable.IS_AUTO_SPLIT_ARRAY);

@@ -99,7 +99,7 @@ public class EntitySet<T> implements Collection<T>, Serializable {
     public EntitySet<T> gets(String key, Object value) {
         EntitySet<T> result = new EntitySet<>();
         for(T entity:datas) {
-            Object v = BeanUtil.getFieldValue(entity, key);
+            Object v = BeanUtil.getFieldValue(entity, key, true);
             if(null != v && v.equals(value)) {
                 result.add(entity);
             }

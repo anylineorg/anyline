@@ -837,8 +837,8 @@ public class TableBuilder {
         for(Object obj:datas) {
             String v = null;
             String t = null;
-            Object ov = BeanUtil.getFieldValue(obj, value);
-            Object ot = BeanUtil.getFieldValue(obj, text);
+            Object ov = BeanUtil.getFieldValue(obj, value, true);
+            Object ot = BeanUtil.getFieldValue(obj, text, true);
             if(null != ov) {
                 v = ov.toString();
             }

@@ -268,7 +268,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
         Map<String, String> seqs = new HashMap<>();
         for(Column column:columns.values()) {
             String key = column.getName();
-            Object value = BeanUtil.getFieldValue(first, key);
+            Object value = BeanUtil.getFieldValue(first, key, true);
             if(value instanceof String) {
                 String str = (String)value;
                 if (str.toUpperCase().contains(".NEXTVAL")) {

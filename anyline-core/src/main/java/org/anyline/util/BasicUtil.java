@@ -780,7 +780,7 @@ public class BasicUtil {
 			return null;
 		}
 		for (Object item : items) {
-			Object tmpValue = BeanUtil.getFieldValue(item, key);
+			Object tmpValue = BeanUtil.getFieldValue(item, key, true);
 			if (null != tmpValue && tmpValue.equals(value)) {
 				return item;
 			}
@@ -1139,7 +1139,7 @@ public class BasicUtil {
 			}else{
 				// v2非基础类型
 				if(null != properties2 && !properties2.isEmpty()) {
-					v2 = BeanUtil.getFieldValue(v2, properties2.get(0))+"";
+					v2 = BeanUtil.getFieldValue(v2, properties2.get(0), true)+"";
 				}
 				result = v2.toString().equals(v1.toString());
 			}
@@ -1148,7 +1148,7 @@ public class BasicUtil {
 			if(v2 instanceof String || v2 instanceof Number || v2 instanceof Boolean || v2 instanceof Date) {
 				// v2基础类型
 				if(null != properties1 && !properties1.isEmpty()) {
-					v1 = BeanUtil.getFieldValue(v1, properties1.get(0))+"";
+					v1 = BeanUtil.getFieldValue(v1, properties1.get(0), true)+"";
 				}
 				result = v2.toString().equals(v1.toString());
 			}else{
@@ -1165,8 +1165,8 @@ public class BasicUtil {
 					for(int i=0; i<psize; i++) {
 						String p1 = properties1.get(i);
 						String p2 = properties2.get(i);
-						String vv1 = BeanUtil.getFieldValue(v1, p1)+"";
-						String vv2 = BeanUtil.getFieldValue(v2, p2)+"";
+						String vv1 = BeanUtil.getFieldValue(v1, p1, true)+"";
+						String vv2 = BeanUtil.getFieldValue(v2, p2, true)+"";
 						if(!vv1.equals(vv2)) {
 							eq = false;
 							break;

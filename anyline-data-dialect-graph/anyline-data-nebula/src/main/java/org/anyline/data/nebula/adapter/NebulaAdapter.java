@@ -315,7 +315,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
             first = false;
             Object value = null;
             if(obj instanceof DataRow) {
-                value = BeanUtil.getFieldValue(obj, key);
+                value = BeanUtil.getFieldValue(obj, key, true);
             }else if(obj instanceof Map) {
                 value = ((Map)obj).get(key);
             }else{
@@ -490,7 +490,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
             if(!(obj instanceof Map) && EntityAdapterProxy.hasAdapter(obj.getClass())) {
                 value = BeanUtil.getFieldValue(obj, EntityAdapterProxy.field(obj.getClass(), key));
             }else{
-                value = BeanUtil.getFieldValue(obj, key);
+                value = BeanUtil.getFieldValue(obj, key, true);
             }
 
             String str = null;

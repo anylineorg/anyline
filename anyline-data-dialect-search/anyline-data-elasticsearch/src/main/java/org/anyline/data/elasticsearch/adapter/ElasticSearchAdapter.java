@@ -6097,10 +6097,10 @@ PUT * /_bulk
         String body = null;
         StringBuilder builder = new StringBuilder();
         for(Object entity:list) {
-            Object _id = BeanUtil.getFieldValue(entity, pk);
+            Object _id = BeanUtil.getFieldValue(entity, pk, true);
             if (null == _id) {
                 pk = "id";
-                _id = BeanUtil.getFieldValue(entity, pk);
+                _id = BeanUtil.getFieldValue(entity, pk, true);
             }
             builder.append("{\"index\":{\"_index\":\"").append(table).append("\", \"_id\":\"").append(_id).append("\"}}\n");
             builder.append(BeanUtil.object2json(entity)).append("\n");
@@ -6138,10 +6138,10 @@ PUT * /_bulk
         StringBuilder builder = new StringBuilder();
         for(DataRow row:set) {
             String pk = "_id";
-            Object _id = BeanUtil.getFieldValue(row, pk);
+            Object _id = BeanUtil.getFieldValue(row, pk, true);
             if (null == _id) {
                 pk = "id";
-                _id = BeanUtil.getFieldValue(row, pk);
+                _id = BeanUtil.getFieldValue(row, pk, true);
             }
             row.remove("_id");
             builder.append("{\"index\":{\"_index\":\"").append(table).append("\", \"_id\":\"").append(_id).append("\"}}\n");
@@ -6162,10 +6162,10 @@ PUT * /_bulk
         String endpoint = null;
         String body = null;
         //一般需要设置用于索引的主键 如法规id = l100 问答id = q100
-        Object _id = BeanUtil.getFieldValue(entity, pk);
+        Object _id = BeanUtil.getFieldValue(entity, pk, true);
         if (null == _id) {
             pk = "id";
-            _id = BeanUtil.getFieldValue(entity, pk);
+            _id = BeanUtil.getFieldValue(entity, pk, true);
         }
         endpoint = table + "/_doc/";
         if (BasicUtil.isNotEmpty(_id)) {

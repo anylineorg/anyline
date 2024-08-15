@@ -111,7 +111,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
         Run run = new MongoRun(runtime, dest);
         PrimaryGenerator generator = checkPrimaryGenerator(type(), dest.getName());
         if(null != generator) {
-            Object pv = BeanUtil.getFieldValue(obj, "_id");
+            Object pv = BeanUtil.getFieldValue(obj, "_id", true);
             if(null == pv) {
                 List<String> pk = new ArrayList<>();
                 pk.add("_id");
@@ -139,7 +139,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
             List<String> pk = new ArrayList<>();
             pk.add("_id");
             for (Object item : list) {
-                Object pv = BeanUtil.getFieldValue(item, "_id");
+                Object pv = BeanUtil.getFieldValue(item, "_id", true);
                 if(null != pv) {
                     break;
                 }
@@ -611,7 +611,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
                     Field field = EntityAdapterProxy.field(obj.getClass(), key);
                     value = BeanUtil.getFieldValue(obj, field);
                 }else {
-                    value = BeanUtil.getFieldValue(obj, key);
+                    value = BeanUtil.getFieldValue(obj, key, true);
                 }
                 //if(null != value && value.toString().startsWith("${") && value.toString().endsWith("}")) {
                 if(BasicUtil.checkEl(value+"")) {
@@ -647,7 +647,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
                         Field field = EntityAdapterProxy.field(obj.getClass(), pk);
                         configs.and(pk, BeanUtil.getFieldValue(obj, field));
                     } else {
-                        configs.and(pk, BeanUtil.getFieldValue(obj, pk));
+                        configs.and(pk, BeanUtil.getFieldValue(obj, pk, true));
                     }
                 }
             }
@@ -754,7 +754,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
                 configs = new DefaultConfigStore();
             }
             for(String column:columns) {
-                configs.and(column, BeanUtil.getFieldValue(obj, column));
+                configs.and(column, BeanUtil.getFieldValue(obj, column, true));
             }
         }
         return buildDeleteRun(runtime, dest, configs);

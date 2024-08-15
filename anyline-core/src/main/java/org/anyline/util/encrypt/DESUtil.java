@@ -193,7 +193,7 @@ public class DESUtil {
 					map.put(key, DESUtil.getInstance().encrypt(value.toString())); 
 				} 
 			}else{
-				Object value = BeanUtil.getFieldValue(obj, key);
+				Object value = BeanUtil.getFieldValue(obj, key, true);
 				if(null != value) {
 					value = DESUtil.getInstance().encrypt(value.toString()); 
 					BeanUtil.setFieldValue(obj, key, value); 

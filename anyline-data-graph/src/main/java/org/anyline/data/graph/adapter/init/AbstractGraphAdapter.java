@@ -422,7 +422,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
             if(!(obj instanceof Map) && EntityAdapterProxy.hasAdapter(obj.getClass())) {
                 value = BeanUtil.getFieldValue(obj, EntityAdapterProxy.field(obj.getClass(), key));
             }else{
-                value = BeanUtil.getFieldValue(obj, key);
+                value = BeanUtil.getFieldValue(obj, key, true);
             }
 
             String str = null;
@@ -2065,7 +2065,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
                     if(EntityAdapterProxy.hasAdapter(obj.getClass())) {
                         value = BeanUtil.getFieldValue(obj,EntityAdapterProxy.field(obj.getClass(), key));
                     }else{
-                        value = BeanUtil.getFieldValue(obj, key);
+                        value = BeanUtil.getFieldValue(obj, key, true);
                     }
                 }
                 addRunValue(runtime, run, Compare.EQUAL, new Column(key),value);
@@ -8083,7 +8083,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 			first = false;
 			Object value = null;
 			if(obj instanceof DataRow) {
-				value = BeanUtil.getFieldValue(obj, key);
+				value = BeanUtil.getFieldValue(obj, key, true);
 			}else if(obj instanceof Map) {
 				value = ((Map)obj).get(key);
 			}else{

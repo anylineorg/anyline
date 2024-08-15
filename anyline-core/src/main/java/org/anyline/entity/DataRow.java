@@ -3729,7 +3729,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
                     }
                 }
                 if (ClassUtil.isWrapClass(result) && !(result instanceof String)) {
-                    result = BeanUtil.getFieldValue(result, key);
+                    result = BeanUtil.getFieldValue(result, key, true);
                 } else {
                     if(!strict) {
                         //不严格要求提取到最后一层

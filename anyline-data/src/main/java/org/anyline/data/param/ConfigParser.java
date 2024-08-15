@@ -1145,7 +1145,7 @@ public class ConfigParser {
 		}else if(ClassUtil.isWrapClass(src.getClass())) {
 			List<String> keys = ClassUtil.getFieldsName(src.getClass());
 			for(String key:keys) {
-				Object value = BeanUtil.getFieldValue(src, key);
+				Object value = BeanUtil.getFieldValue(src, key, true);
 				BeanUtil.setFieldValue(src, key, filterIllegalChar(value));
 			}
 		}

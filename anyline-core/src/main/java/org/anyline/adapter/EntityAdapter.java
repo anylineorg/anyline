@@ -669,7 +669,7 @@ public interface EntityAdapter {
         } else if(EntityAdapterProxy.hasAdapter(obj.getClass())) {
             return EntityAdapterProxy.primaryValue(obj);
         }else{
-            return BeanUtil.getFieldValue(obj, ConfigTable.DEFAULT_PRIMARY_KEY);
+            return BeanUtil.getFieldValue(obj, ConfigTable.DEFAULT_PRIMARY_KEY, true);
         }
     }
     static void setPrimaryValue(Object obj, Object value) {
