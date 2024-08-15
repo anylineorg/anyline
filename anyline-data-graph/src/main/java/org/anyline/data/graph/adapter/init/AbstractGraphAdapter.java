@@ -5153,7 +5153,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 						builder.append(",");
 					}
 					column.setAction(ACTION.DDL.COLUMN_ADD);
-					delimiter(builder, column.getName()).append(" ");
+					delimiter(builder, column.getName(), false).append(" ");
 					define(runtime, builder, column, ACTION.DDL.TABLE_CREATE);
 					idx ++;
 				}
@@ -7300,7 +7300,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 			if(qty>0) {
 				builder.append(",");
 			}
-			delimiter(builder, column.getName());
+			delimiter(builder, column.getName(), false);
 			Order.TYPE order = meta.getOrder(column.getName());
 			if(BasicUtil.isNotEmpty(order)) {
 				builder.append(" ").append(order);
@@ -7541,7 +7541,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 				builder.append(",");
 			}
 			first = false;
-			delimiter(builder, column.getName());
+			delimiter(builder, column.getName(), false);
 			String order = column.getOrder();
 			if(BasicUtil.isNotEmpty(order)) {
 				builder.append(" ").append(order);

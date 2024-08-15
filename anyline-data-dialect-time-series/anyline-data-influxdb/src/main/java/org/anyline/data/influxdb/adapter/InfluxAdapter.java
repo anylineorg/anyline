@@ -4933,7 +4933,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
                 column.setTypeMetadata(metadata);
             }
             column.setAction(ACTION.DDL.COLUMN_ADD);
-            delimiter(builder, column.getName()).append(" ");
+            delimiter(builder, column.getName(), false).append(" ");
             define(runtime, builder, column, ACTION.DDL.TABLE_CREATE);
         }
         return builder;

@@ -17342,9 +17342,12 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param src 原文
 	 * @return StringBuilder
 	 */
-	public StringBuilder delimiter(StringBuilder builder, String src) {
-		return SQLUtil.delimiter(builder, src, getDelimiterFr(), getDelimiterTo());
-	}
+    public StringBuilder delimiter(StringBuilder builder, String src, boolean check) {
+        return SQLUtil.delimiter(builder, src, getDelimiterFr(), getDelimiterTo(), check);
+    }
+    public StringBuilder delimiter(StringBuilder builder, String src) {
+        return SQLUtil.delimiter(builder, src, getDelimiterFr(), getDelimiterTo());
+    }
 	/**
 	 * 拼接界定符
 	 * @param builder StringBuilder

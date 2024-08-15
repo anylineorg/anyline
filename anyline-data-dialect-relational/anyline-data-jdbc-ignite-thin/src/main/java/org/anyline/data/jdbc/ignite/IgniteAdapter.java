@@ -5774,7 +5774,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 			if(qty>0) {
 				builder.append(",");
 			}
-			delimiter(builder, column.getName());
+			delimiter(builder, column.getName(), false);
 			String order = column.getOrder();
 			if(BasicUtil.isNotEmpty(order)) {
 				builder.append(" ").append(order);

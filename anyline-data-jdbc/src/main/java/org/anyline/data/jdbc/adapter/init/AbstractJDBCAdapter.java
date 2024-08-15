@@ -5275,7 +5275,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 						builder.append(",");
 					}
 					column.setAction(ACTION.DDL.COLUMN_ADD);
-					delimiter(builder, column.getName()).append(" ");
+					delimiter(builder, column.getName(), false).append(" ");
 					define(runtime, builder, column, ACTION.DDL.TABLE_CREATE);
 					idx ++;
 				}
@@ -7476,7 +7476,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 			if(qty>0) {
 				builder.append(",");
 			}
-			delimiter(builder, column.getName());
+			delimiter(builder, column.getName(), false);
 			Order.TYPE order = meta.getOrder(column.getName());
 			if(BasicUtil.isNotEmpty(order)) {
 				builder.append(" ").append(order);
@@ -7716,7 +7716,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 				builder.append(",");
 			}
 			first = false;
-			delimiter(builder, column.getName());
+			delimiter(builder, column.getName(), false);
 			String order = column.getOrder();
 			if(BasicUtil.isNotEmpty(order)) {
 				builder.append(" ").append(order);

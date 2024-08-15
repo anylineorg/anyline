@@ -6994,7 +6994,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
                     }
                     first = false;
                     builder.append(column.getName()).append(" = EXCLUDED.");
-                    delimiter(builder, column.getName());
+                    delimiter(builder, column.getName(), false);
                 }
             }else{
                 builder.append(" DO NOTHING");

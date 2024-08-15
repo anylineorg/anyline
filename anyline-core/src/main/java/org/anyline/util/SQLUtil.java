@@ -55,6 +55,9 @@ public class SQLUtil {
 		return false;
 	}
 	public static StringBuilder delimiter(StringBuilder builder, String src, String delimiter) {
+		return delimiter(builder, src, delimiter, true);
+	}
+	public static StringBuilder delimiter(StringBuilder builder, String src, String delimiter, boolean check) {
 		if(BasicUtil.isEmpty(src)) {
 			return builder;
 		}
@@ -78,16 +81,31 @@ public class SQLUtil {
 			delimiterFr = delimiter.substring(0, 1);
 			delimiterTo = delimiter.substring(1, 2);
 		}
-		return delimiter(builder, src, delimiterFr, delimiterTo);
+		return delimiter(builder, src, delimiterFr, delimiterTo, check);
 	}
 	public static StringBuilder delimiter(StringBuilder builder, Metadata src, String delimiterFr, String delimiterTo) {
+		return delimiter(builder, src, delimiterFr, delimiterTo, true);
+	}
+	public static StringBuilder delimiter(StringBuilder builder, Metadata src, String delimiterFr, String delimiterTo, boolean check) {
 		String name =  null;
 		if(null != src) {
 			name = src.getName();
 		}
-		return delimiter(builder, name, delimiterFr, delimiterTo);
+		return delimiter(builder, name, delimiterFr, delimiterTo, check);
 	}
 	public static StringBuilder delimiter(StringBuilder builder, String src, String delimiterFr, String delimiterTo) {
+		return delimiter(builder, src, delimiterFr, delimiterTo, true);
+	}
+	/**
+	 * 补充界定符
+	 * @param builder builder
+	 * @param src 原文
+	 * @param delimiterFr 界定符
+	 * @param delimiterTo 界定符
+	 * @param check 是否检测原文 带${}的拆开，带.的拆分 数字常量跳过 ,创建列时不检测极特殊情况列名会是数字
+	 * @return builder
+	 */
+	public static StringBuilder delimiter(StringBuilder builder, String src, String delimiterFr, String delimiterTo, boolean check) {
 		if("null".equalsIgnoreCase(src)) {
 			builder.append(src);
 			return builder;
@@ -95,18 +113,19 @@ public class SQLUtil {
 		if(BasicUtil.isEmpty(src)) {
 			return builder;
 		}
+		if(!delimiter(src)) {
+			builder.append(src);
+			return builder;
+		}
+
 		if(src.startsWith("${") && src.endsWith("}")) {
 			String body = RegularUtil.cut(src, "${", "}");
 			builder.append(body);
 			return builder;
 		}
 
-		if(!delimiter(src)) {
-			builder.append(src);
-			return builder;
-		}
 		//SELECT 1 AS ID FROM TABLE
-		if(BasicUtil.isNumber(src)) {
+		if(check && BasicUtil.isNumber(src)) {
 			builder.append(src);
 			return builder;
 		}
