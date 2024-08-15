@@ -51,9 +51,11 @@ public class Oracle11Adapter extends OracleAdapter implements JDBCAdapter {
         boolean chk = super.match(runtime, feature, adapterKey, compensate);
         if(chk) {
             String version = runtime.getVersion();
-            //Oracle Database 11g Enterprise Edition Release 11.2.0.1.0 - 64bit Production With the Partitioning, OLAP, Data Mining and Real Application Testing options*//*
+            //Oracle Database 11g Enterprise Edition Release 11.2.0.1.0 - 64bit Production With the Partitioning, OLAP, Data Mining and Real Application Testing options
+            //Oracle Database 23ai Free Release 23.0.0.0.0 - Develop, Learn, and Run for Free Version 23.4.0.24.05
             if(null != version ) {
-                version = RegularUtil.cut(version, "release","-");
+                version = version.toLowerCase();
+                version = RegularUtil.cut(version, "release", " ", " ");
                 if(null != version) {
                     //11.2.0.1.0
                     version = version.split("\\.")[0];
