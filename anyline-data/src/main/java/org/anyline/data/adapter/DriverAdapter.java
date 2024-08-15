@@ -235,6 +235,7 @@ public interface DriverAdapter {
      */
     TypeMetadata.Refer reg(TypeMetadata type, TypeMetadata.Refer config);
     /**
+     * 子类不要覆盖这个方法 用来实现子类跨多层父类直接调用当前方法
      * 验证运行环境与当前适配器是否匹配<br/>
      * 默认不连接只根据连接参数<br/>
      * 只有同一个库区分不同版本(如mssql2000/mssql2005)或不同模式(如KingBase的oracle/pg模式)时才需要单独实现
@@ -242,12 +243,12 @@ public interface DriverAdapter {
      * @param compensate 是否补偿匹配，第一次失败后，会再匹配一次，第二次传入true
      * @return boolean
      */
-    default boolean match(DataRuntime runtime, String feature, String adapterKey, boolean compensate) {
+    default boolean exeMatch(DataRuntime runtime, String feature, String adapterKey, boolean compensate) {
         if(BasicUtil.isNotEmpty(adapterKey)){
             return matchByAdapter(adapterKey);
         }
         if(null == feature){
-            feature = runtime.getFeature();
+            feature = runtime.getFeature(true);
         }
         //获取特征时会重新解析 adapter参数,因为有些数据源是通过DataSource对象注册的，这时需要打开连接后才能拿到url
         if(BasicUtil.isNotEmpty(runtime.getAdapterKey())) {
@@ -256,6 +257,10 @@ public interface DriverAdapter {
 
         List<String> keywords = type().keywords(); //关键字+jdbc-url前缀+驱动类
         return match(feature, keywords, compensate);
+    }
+
+    default boolean match(DataRuntime runtime, String feature, String adapterKey, boolean compensate) {
+       return exeMatch(runtime, feature, adapterKey, compensate);
     }
     default boolean matchByAdapter(DataRuntime runtime) {
         String config_adapter_key = runtime.getAdapterKey();

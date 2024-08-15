@@ -19,6 +19,7 @@
 package org.anyline.data.jdbc.mssql;
 
 import org.anyline.annotation.Component;
+import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.adapter.init.AbstractJDBCAdapter;
 import org.anyline.data.param.ConfigStore;

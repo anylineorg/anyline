@@ -48,7 +48,8 @@ public class Oracle11Adapter extends OracleAdapter implements JDBCAdapter {
      */
     @Override
     public boolean match(DataRuntime runtime, String feature, String adapterKey, boolean compensate) {
-        boolean chk = super.match(runtime, feature, adapterKey, compensate);
+        //直接调用顶层方式  不要调用12的match
+        boolean chk = super.exeMatch(runtime, feature, adapterKey, compensate);
         if(chk) {
             String version = runtime.getVersion();
             //Oracle Database 11g Enterprise Edition Release 11.2.0.1.0 - 64bit Production With the Partitioning, OLAP, Data Mining and Real Application Testing options

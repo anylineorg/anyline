@@ -58,7 +58,8 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter {
      */
     @Override
     public boolean match(DataRuntime runtime, String feature, String adapterKey, boolean compensate) {
-        boolean chk = super.match(runtime, feature, adapterKey, compensate);
+        //直接调用顶层方式  不要调用2005的match
+        boolean chk = super.exeMatch(runtime, feature, adapterKey, compensate);
         if(chk) {
             String version = runtime.getVersion();
             if (null != version && version.contains(".")) {
