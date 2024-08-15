@@ -57,7 +57,42 @@ public class SpringJDBCRuntime extends JDBCRuntime implements DataRuntime {
     public void setProcessor(Object processor) {
         this.processor = (JdbcTemplate) processor;
     }
+    public String getAdapterKey() {
+        String result = null;
+        boolean keep = DriverAdapterHolder.keepAdapter(this, getProcessor());
+        if(ConfigTable.KEEP_ADAPTER == 1) {
+            result = this.adapterKey;
+            keep = true;
+        }
+        if(!keep){
+            result = null;
+        }
+        if(null == result) {
+            JdbcTemplate jdbc = jdbc();
+            if (null != jdbc) {
+                DataSource datasource = null;
+                Connection con = null;
+                try {
+                    datasource = jdbc.getDataSource();
+                    con = DataSourceUtils.getConnection(datasource);
+                    DatabaseMetaData meta = con.getMetaData();
+                    String url = meta.getURL();
+                    result = DataSourceUtil.parseAdapterKey(url);
+                    if(null == adapterKey && ConfigTable.KEEP_ADAPTER == 1) {
+                        adapterKey = result;
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    if (null != con && !DataSourceUtils.isConnectionTransactional(con, datasource)) {
+                        DataSourceUtils.releaseConnection(con, datasource);
+                    }
+                }
+            }
 
+        }
+        return result;
+    }
     public String getFeature(boolean connection) {
         boolean keep = DriverAdapterHolder.keepAdapter(this, getProcessor());
         String feature = DriverAdapterHolder.feature(this, getProcessor());

@@ -103,8 +103,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
      * @return boolean
      */
     @Override
-    public boolean match(DataRuntime runtime, boolean compensate) {
-        return super.match(runtime, compensate);
+    public boolean match(DataRuntime runtime, String feature, String adapterKey, boolean compensate) {
+        return super.match(runtime, feature, adapterKey, compensate);
     }
 
     @Override

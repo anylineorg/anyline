@@ -242,22 +242,18 @@ public interface DriverAdapter {
      * @param compensate 是否补偿匹配，第一次失败后，会再匹配一次，第二次传入true
      * @return boolean
      */
-    default boolean match(DataRuntime runtime, boolean compensate) {
-        if(BasicUtil.isNotEmpty(runtime.getAdapterKey())) {
-            return matchByAdapter(runtime);
+    default boolean match(DataRuntime runtime, String feature, String adapterKey, boolean compensate) {
+        if(BasicUtil.isNotEmpty(adapterKey)){
+            return matchByAdapter(adapterKey);
         }
-        String feature = runtime.getFeature();//数据源特征中包含上以任何一项都可以通过
+        if(null == feature){
+            feature = runtime.getFeature();
+        }
         //获取特征时会重新解析 adapter参数,因为有些数据源是通过DataSource对象注册的，这时需要打开连接后才能拿到url
         if(BasicUtil.isNotEmpty(runtime.getAdapterKey())) {
             return matchByAdapter(runtime);
         }
-        List<String> keywords = type().keywords(); //关键字+jdbc-url前缀+驱动类
-        return match(feature, keywords, compensate);
-    }
-    default boolean match(String feature, String adapterKey, boolean compensate) {
-        if(BasicUtil.isNotEmpty(adapterKey)){
-            return matchByAdapter(adapterKey);
-        }
+
         List<String> keywords = type().keywords(); //关键字+jdbc-url前缀+驱动类
         return match(feature, keywords, compensate);
     }

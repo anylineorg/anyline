@@ -57,10 +57,8 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter {
      * @return boolean
      */
     @Override
-    public boolean match(DataRuntime runtime, boolean compensate) {
-        List<String> keywords = type().keywords(); //关键字+jdbc-url前缀+驱动类
-        String feature = runtime.getFeature();//数据源特征中包含上以任何一项都可以通过
-        boolean chk = match(feature, keywords, compensate);
+    public boolean match(DataRuntime runtime, String feature, String adapterKey, boolean compensate) {
+        boolean chk = super.match(runtime, feature, adapterKey, compensate);
         if(chk) {
             String version = runtime.getVersion();
             if (null != version && version.contains(".")) {

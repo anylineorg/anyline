@@ -88,8 +88,8 @@ public class MSSQLAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
      * @return boolean
      */
     @Override
-    public boolean match(DataRuntime runtime, boolean compensate) {
-        boolean chk = super.match(runtime, compensate);
+    public boolean match(DataRuntime runtime, String feature, String adapterKey, boolean compensate) {
+        boolean chk = super.match(runtime, feature, adapterKey, compensate);
         if(chk) {
             String version = runtime.getVersion();
             if (null != version && version.contains(".")) {

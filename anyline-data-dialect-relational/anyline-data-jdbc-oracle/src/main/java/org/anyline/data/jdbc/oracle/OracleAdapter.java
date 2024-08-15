@@ -99,8 +99,8 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter {
      * @return boolean
      */
     @Override
-    public boolean match(DataRuntime runtime, boolean compensate) {
-        boolean chk = super.match(runtime, compensate);
+    public boolean match(DataRuntime runtime, String feature, String adapterKey, boolean compensate) {
+        boolean chk = super.match(runtime, feature, adapterKey, compensate);
         if(chk) {
             String version = runtime.getVersion();
             //Oracle Database 11g Enterprise Edition Release 11.2.0.1.0 - 64bit Production With the Partitioning, OLAP, Data Mining and Real Application Testing options*//*

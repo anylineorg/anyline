@@ -55,11 +55,11 @@ public class DorisAdapter extends MySQLGenusAdapter implements JDBCAdapter {
     }
 
     @Override
-    public boolean match(DataRuntime runtime, boolean compensate) {
+    public boolean match(DataRuntime runtime, String feature, String adapterKey, boolean compensate) {
         if(!"doris".equalsIgnoreCase(runtime.getAdapterKey())) {
             return false;
         }
-        return super.match(runtime, compensate);
+        return super.match(runtime, feature, adapterKey, compensate);
     }
 
     @Override
