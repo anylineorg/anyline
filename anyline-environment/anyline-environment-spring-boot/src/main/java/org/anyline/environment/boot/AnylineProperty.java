@@ -108,7 +108,7 @@ public class AnylineProperty {
      */
     protected boolean enableCommonJdbcAdapter                   = ConfigTable.IS_ENABLE_COMMON_JDBC_ADAPTER        ;
     /**
-     * 否将数据库中与Java bytes[]对应的类型自动转换如Point > double[](返回DataRow时受此开关景程)
+     * 否将数据库中与Java bytes[]对应的类型自动转换如Point &gt;  double[](返回DataRow时受此开关景程)
      */
     protected boolean autoConvertBytes 							 = ConfigTable.IS_AUTO_CONVERT_BYTES		    ;
 
@@ -265,11 +265,11 @@ public class AnylineProperty {
      */
     protected boolean openParseMybatis							= true		    ; 	
     /**
-     * 实体属性 与数据库表列名对照时 默认属性小驼峰转下划线 userName > USER_NAME
+     * 实体属性 与数据库表列名对照时 默认属性小驼峰转下划线 userName &gt; USER_NAME
      */
     protected String entityFieldColumnMap                       = "camel_"      ;   
     /**
-     * 实体类名 与数据库表名对照时 默认属性大驼峰转下划线 CrmUser > CRM_USER
+     * 实体类名 与数据库表名对照时 默认属性大驼峰转下划线 CrmUser &gt; CRM_USER
      */
     protected String entityClassTableMap						= "Camel_"  	;	
     /**
@@ -286,23 +286,23 @@ public class AnylineProperty {
     protected String entityPrimaryKeyAnnotation				    = null		    ;   
 
     /**
-     * 实体类属性依赖层级 > 0:查询属性关联表
+     * 实体类属性依赖层级 &gt; 0:查询属性关联表
      */
     protected int entityFieldSelectDependency = 0             ;   
 
     protected String entityFieldSelectDependencyCompare         = "IN"         ;   
     /**
-     * 实体类属性依赖层级 > 0:插入属性关联表
+     * 实体类属性依赖层级 &gt; 0:插入属性关联表
      */
     protected int entityFieldInsertDependency = 0             ;   
 
     /**
-     * 实体类属性依赖层级 > 0:更新属性关联表
+     * 实体类属性依赖层级 &gt; 0:更新属性关联表
      */
     protected int entityFieldUpdateDependency = 0             ;   
 
     /**
-     * 实体类属性依赖层级 > 0:删除属性关联表
+     * 实体类属性依赖层级 &gt; 0:删除属性关联表
      */
     protected int entityFieldDeleteDependency = 0             ;   
     

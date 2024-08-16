@@ -859,8 +859,8 @@ public class ClassUtil {
 
 	/**
 	 * 对象类型<br/>
-	 * int[] > int[]<br/>
-	 * Integer[] > java.long.Integer[]<br/>
+	 * int[] &gt; int[]<br/>
+	 * Integer[] &gt; java.long.Integer[]<br/>
 	 * @param obj 对象
 	 * @return 类型
 	 */

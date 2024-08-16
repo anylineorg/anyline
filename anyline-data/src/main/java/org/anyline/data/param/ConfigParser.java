@@ -762,7 +762,7 @@ public class ConfigParser {
 	 *            密文
 	 * @param type  type
 	 *            密文类型
-	 * @return 删除前缀 > 解析版本号 > 解密
+	 * @return 删除前缀 &gt; 解析版本号 &gt; 解密
 	 */
 	private static String decrypt(String src, String type) {
 		if (null == src || null == type) {

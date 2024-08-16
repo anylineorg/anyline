@@ -450,7 +450,7 @@ public interface AnylineService<E>{
 	 * 			CD: 忽略<br/>
 	 * 			CD:null 忽略<br/>
 	 * 			CD:NULL 生成SQL:CD IS NULL<br/>
-	 * 			原生SQL(包括GROUP、ORDER、HAVING等)如 ID > 1 AND ID < 10<br/>
+	 * 			原生SQL(包括GROUP、ORDER、HAVING等)如 ID &gt; 1 AND ID &lt; 10<br/>
 	 * 			${原生SQL}:${}之内的SQL不全处理 如果原生SQL比较复杂(如出现小时格式)可能与以上几种格式混淆, 可以用${}表示不解析按原文执行<br/>
 	 * 			
 	 * @return DataSet

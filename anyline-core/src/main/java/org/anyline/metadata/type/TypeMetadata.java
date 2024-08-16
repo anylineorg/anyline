@@ -346,7 +346,7 @@ public interface TypeMetadata {
 
     /**
      * 中间转换类型
-     * 如 value(double[]) > transfer(Point) > byte[](compatible)
+     * 如 value(double[]) > transfer(Point) &gt; byte[](compatible)
      * @return Class
      */
     Class transfer();
