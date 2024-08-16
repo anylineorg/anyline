@@ -1742,6 +1742,67 @@ public class DefaultConfigStore implements ConfigStore {
 			clone.setPageNavi(navi.clone());
 		}
 		clone.chain =this.chain.clone();
+		if(null != columns){
+			clone.columns = new ArrayList<>();
+			for(String column:columns){
+				clone.columns.add(column);
+			}
+		}
+		if(null != excludes){
+			clone.excludes = new ArrayList<>();
+			for(String column:excludes){
+				clone.excludes.add(column);
+			}
+		}
+		if(null != keyHolders){
+			clone.keyHolders = new ArrayList<>();
+			for(String key:keyHolders){
+				clone.keyHolders.add(key);
+			}
+		}
+		if(null != values){
+			clone.values = new ArrayList<>();
+			for(Object value:values){
+				clone.values.add(value);
+			}
+		}
+
+		if(null != overrideByColumns){
+			clone.overrideByColumns = new ArrayList<>();
+			for(String item:overrideByColumns){
+				clone.overrideByColumns.add(item);
+			}
+		}
+		if(null != primaryKeys){
+			clone.primaryKeys = new ArrayList<>();
+			for(String item:primaryKeys){
+				clone.primaryKeys.add(item);
+			}
+		}
+
+		if(null != runs){
+			clone.runs = new ArrayList<>();
+			for(Run item:runs){
+				clone.runs.add(item);
+			}
+		}
+
+		clone.having = having;
+		clone.cascade = this.cascade;
+		clone.integrality = this.integrality;
+		clone.execute = this.execute;
+		clone.datasource = this.datasource;
+		clone.join = this.join;
+		if(null != catalog){
+			clone.catalog = catalog.clone();
+		}
+		if(null != schema){
+			clone.schema = schema.clone();
+		}
+		if(null != table){
+			clone.table = table.clone();
+		}
+
 		return clone;
 	}
 }
