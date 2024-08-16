@@ -444,7 +444,7 @@ public class SpringJDBCActuator implements DriverActuator {
                 ps = con.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
                 ps.setFetchSize(handler.size());
                 ps.setFetchDirection(ResultSet.FETCH_FORWARD);
-                org.anyline.data.jdbc.util.JDBCUtil.queryTimeout(ps, configs);
+                JDBCUtil.queryTimeout(ps, configs);
                 if (null != values && !values.isEmpty()) {
                     int idx = 0;
                     for (Object value : values) {
@@ -460,7 +460,7 @@ public class SpringJDBCActuator implements DriverActuator {
                 }else {
                     while (rs.next()) {
                         count[0] ++;
-                        boolean next = org.anyline.data.jdbc.util.JDBCUtil.stream(adapter, handler, rs, configs, true, runtime, null);
+                        boolean next = JDBCUtil.stream(adapter, handler, rs, configs, true, runtime, null);
                         if(!next) {
                             break;
                         }
@@ -563,7 +563,7 @@ public class SpringJDBCActuator implements DriverActuator {
                                 ps.setObject(++idx, obj);
                             }
                         }
-                        org.anyline.data.jdbc.util.JDBCUtil.updateTimeout(ps, configs);
+                        JDBCUtil.updateTimeout(ps, configs);
                         return ps;
                     }
                 }, keyholder);
@@ -923,7 +923,7 @@ public class SpringJDBCActuator implements DriverActuator {
             String[] tmp = adapter.correctSchemaFromJDBC(catalogName, schemaName);
             String[] tps = BeanUtil.list2array(adapter.names(Table.types(types)));
             ResultSet set = dbmd.getTables(tmp[0], tmp[1], pattern, tps);
-            previous = org.anyline.data.jdbc.util.JDBCUtil.tables(adapter, runtime, create, previous, set);
+            previous = JDBCUtil.tables(adapter, runtime, create, previous, set);
         }finally {
             if(null != con && !DataSourceUtils.isConnectionTransactional(con, ds)) {
                 DataSourceUtils.releaseConnection(con, ds);
@@ -970,7 +970,7 @@ public class SpringJDBCActuator implements DriverActuator {
             String[] tmp = adapter.correctSchemaFromJDBC(catalogName, schemaName);
             String[] tps = BeanUtil.list2array(adapter.names(Table.types(types)));
             ResultSet set = dbmd.getTables(tmp[0], tmp[1], pattern, tps);
-            previous = org.anyline.data.jdbc.util.JDBCUtil.tables(adapter, runtime, create, previous, set);
+            previous = JDBCUtil.tables(adapter, runtime, create, previous, set);
         }finally {
             if(null != con && !DataSourceUtils.isConnectionTransactional(con, ds)) {
                 DataSourceUtils.releaseConnection(con, ds);
@@ -1016,7 +1016,7 @@ public class SpringJDBCActuator implements DriverActuator {
             }
             String[] tmp = adapter.correctSchemaFromJDBC(catalogName, schemaName);
             ResultSet set = dbmd.getTables(tmp[0], tmp[1], pattern, new String[]{"VIEW"});
-            previous = org.anyline.data.jdbc.util.JDBCUtil.views(adapter, runtime, create, previous, set);
+            previous = JDBCUtil.views(adapter, runtime, create, previous, set);
         }finally {
             if(null != con && !DataSourceUtils.isConnectionTransactional(con, ds)) {
                 DataSourceUtils.releaseConnection(con, ds);
@@ -1079,7 +1079,7 @@ public class SpringJDBCActuator implements DriverActuator {
             ds = jdbc(runtime).getDataSource();
             con = DataSourceUtils.getConnection(ds);
             metadata = con.getMetaData();
-            previous = org.anyline.data.jdbc.util.JDBCUtil.metadata(adapter, runtime, true, previous, metadata, table, pattern);
+            previous = JDBCUtil.metadata(adapter, runtime, true, previous, metadata, table, pattern);
         } catch (Exception e) {
             if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
                 e.printStackTrace();
@@ -1125,7 +1125,7 @@ public class SpringJDBCActuator implements DriverActuator {
             Map<String, Integer> keys = JDBCUtil.keys(set);
             LinkedHashMap<String, Column> columns = null;
             while (set.next()) {
-                String name = org.anyline.data.jdbc.util.JDBCUtil.string(keys, "INDEX_NAME", set);
+                String name = JDBCUtil.string(keys, "INDEX_NAME", set);
                 if(null == name) {
                     continue;
                 }
@@ -1137,16 +1137,16 @@ public class SpringJDBCActuator implements DriverActuator {
                     }else{
                         continue;
                     }
-                    index.setName(org.anyline.data.jdbc.util.JDBCUtil.string(keys, "INDEX_NAME", set));
+                    index.setName(JDBCUtil.string(keys, "INDEX_NAME", set));
                     //index.setType(integer(keys, "TYPE", set, null));
-                    index.setUnique(!org.anyline.data.jdbc.util.JDBCUtil.bool(keys, "NON_UNIQUE", set, false));
-                    String catalog = BasicUtil.evl(org.anyline.data.jdbc.util.JDBCUtil.string(keys, "TABLE_CATALOG", set), org.anyline.data.jdbc.util.JDBCUtil.string(keys, "TABLE_CAT", set));
-                    String schema = BasicUtil.evl(org.anyline.data.jdbc.util.JDBCUtil.string(keys, "TABLE_SCHEMA", set), org.anyline.data.jdbc.util.JDBCUtil.string(keys, "TABLE_SCHEM", set));
+                    index.setUnique(!JDBCUtil.bool(keys, "NON_UNIQUE", set, false));
+                    String catalog = BasicUtil.evl(JDBCUtil.string(keys, "TABLE_CATALOG", set), JDBCUtil.string(keys, "TABLE_CAT", set));
+                    String schema = BasicUtil.evl(JDBCUtil.string(keys, "TABLE_SCHEMA", set), JDBCUtil.string(keys, "TABLE_SCHEM", set));
                     adapter.correctSchemaFromJDBC(runtime, index, catalog, schema);
                     if(!adapter.equals(table.getCatalog(), index.getCatalog()) || !adapter.equals(table.getSchema(), index.getSchema())) {
                         continue;
                     }
-                    index.setTable(org.anyline.data.jdbc.util.JDBCUtil.string(keys, "TABLE_NAME", set));
+                    index.setTable(JDBCUtil.string(keys, "TABLE_NAME", set));
                     indexes.put(name.toUpperCase(), index);
                     columns = new LinkedHashMap<>();
                     index.setColumns(columns);
@@ -1160,7 +1160,7 @@ public class SpringJDBCActuator implements DriverActuator {
                 }else {
                     columns = index.getColumns();
                 }
-                String columnName = org.anyline.data.jdbc.util.JDBCUtil.string(keys, "COLUMN_NAME", set);
+                String columnName = JDBCUtil.string(keys, "COLUMN_NAME", set);
                 Column col = table.getColumn(columnName.toUpperCase());
                 Column column = null;
                 if(null != col) {
@@ -1169,14 +1169,14 @@ public class SpringJDBCActuator implements DriverActuator {
                     column = new Column();
                     column.setName(columnName);
                 }
-                String order = org.anyline.data.jdbc.util.JDBCUtil.string(keys, "ASC_OR_DESC", set);
+                String order = JDBCUtil.string(keys, "ASC_OR_DESC", set);
                 if(null != order && order.startsWith("D")) {
                     order = "DESC";
                 }else{
                     order = "ASC";
                 }
                 column.setOrder(order);
-                column.setPosition(org.anyline.data.jdbc.util.JDBCUtil.integer(keys,"ORDINAL_POSITION", set, null));
+                column.setPosition(JDBCUtil.integer(keys,"ORDINAL_POSITION", set, null));
                 columns.put(column.getName().toUpperCase(), column);
             }
         }finally{
