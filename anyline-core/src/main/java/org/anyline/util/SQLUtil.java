@@ -46,7 +46,7 @@ public class SQLUtil {
 			return false;
 		}
 		key = key.trim();
-		if(key.contains(" ") || key.contains("+") || key.contains("/") || key.contains(">") || key.contains("*") || key.contains("<")) {
+		if(key.contains("(") ||key.contains(" ") || key.contains("+") || key.contains("/") || key.contains(">") || key.contains("*") || key.contains("<")) {
 			return false;
 		}
 		if(ConfigTable.IS_SQL_DELIMITER_OPEN || key.contains("-") || (ConfigTable.IS_AUTO_CHECK_KEYWORD && keys.contains(key.toLowerCase()))) {
@@ -65,14 +65,11 @@ public class SQLUtil {
 			builder.append(src);
 			return builder;
 		}
-		if(!delimiter(src)) {
-			builder.append(src);
-			return builder;
-		}
 		String delimiterFr = "";
 		String delimiterTo = "";
 		delimiter = delimiter.replaceAll("\\s", "");
 		if(delimiter.length() == 0) {
+			builder.append(src);
 			return builder;
 		}else if(delimiter.length() ==1) {
 			delimiterFr = delimiter;
@@ -82,19 +79,6 @@ public class SQLUtil {
 			delimiterTo = delimiter.substring(1, 2);
 		}
 		return delimiter(builder, src, delimiterFr, delimiterTo, check);
-	}
-	public static StringBuilder delimiter(StringBuilder builder, Metadata src, String delimiterFr, String delimiterTo) {
-		return delimiter(builder, src, delimiterFr, delimiterTo, true);
-	}
-	public static StringBuilder delimiter(StringBuilder builder, Metadata src, String delimiterFr, String delimiterTo, boolean check) {
-		String name =  null;
-		if(null != src) {
-			name = src.getName();
-		}
-		return delimiter(builder, name, delimiterFr, delimiterTo, check);
-	}
-	public static StringBuilder delimiter(StringBuilder builder, String src, String delimiterFr, String delimiterTo) {
-		return delimiter(builder, src, delimiterFr, delimiterTo, true);
 	}
 	/**
 	 * 补充界定符
@@ -113,10 +97,6 @@ public class SQLUtil {
 		if(BasicUtil.isEmpty(src)) {
 			return builder;
 		}
-		if(!delimiter(src)) {
-			builder.append(src);
-			return builder;
-		}
 
 		if(src.startsWith("${") && src.endsWith("}")) {
 			String body = RegularUtil.cut(src, "${", "}");
@@ -124,8 +104,16 @@ public class SQLUtil {
 			return builder;
 		}
 
+		if(!check) {
+			builder.append(src);
+			return builder;
+		}
+		if(!delimiter(src)) {
+			builder.append(src);
+			return builder;
+		}
 		//SELECT 1 AS ID FROM TABLE
-		if(check && BasicUtil.isNumber(src)) {
+		if(BasicUtil.isNumber(src)) {
 			builder.append(src);
 			return builder;
 		}
@@ -160,21 +148,26 @@ public class SQLUtil {
 		}else {
 			builder.append(delimiterFr).append(src).append(delimiterTo);
 		}
-
 		return builder ;
 	}
+	public static StringBuilder delimiter(StringBuilder builder, Metadata src, String delimiterFr, String delimiterTo) {
+		return delimiter(builder, src, delimiterFr, delimiterTo, true);
+	}
+	public static StringBuilder delimiter(StringBuilder builder, Metadata src, String delimiterFr, String delimiterTo, boolean check) {
+		String name =  null;
+		if(null != src) {
+			name = src.getName();
+		}
+		return delimiter(builder, name, delimiterFr, delimiterTo, check);
+	}
+	public static StringBuilder delimiter(StringBuilder builder, String src, String delimiterFr, String delimiterTo) {
+		return delimiter(builder, src, delimiterFr, delimiterTo, true);
+	}
+	public static String delimiter(String src, String delimiterFr, String delimiterTo, boolean check) {
+		return delimiter(new StringBuilder(), src, delimiterFr, delimiterTo, check).toString();
+	}
 	public static String delimiter(String src, String delimiterFr, String delimiterTo) {
-		if(BasicUtil.isEmpty(src)) {
-			return "";
-		}
-		if(!delimiter(src)) {
-			return src;
-		}
-		if(src.startsWith(delimiterFr) || src.endsWith(delimiterTo)) {
-			return src ;
-		}
-		String result = SQLUtil.delimiter(new StringBuilder(), src, delimiterFr, delimiterTo).toString();
-		return result;
+		return delimiter(new StringBuilder(), src, delimiterFr, delimiterTo).toString();
 	}
 
 	/**
