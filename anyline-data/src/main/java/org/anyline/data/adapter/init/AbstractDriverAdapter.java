@@ -1983,6 +1983,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         if(!ConfigStore.IS_AUTO_CHECK_METADATA(configs)) {
             return columns;
         }
+        if(null == table || table.isEmpty()){
+            return columns;
+        }
         LinkedHashMap<String, Column> result = new LinkedHashMap<>();
         LinkedHashMap<String, Column> metadatas = columns(runtime, null, false, table, false);
         try {
