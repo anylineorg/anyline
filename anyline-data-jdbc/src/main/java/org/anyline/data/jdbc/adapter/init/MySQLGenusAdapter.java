@@ -2216,6 +2216,10 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
                     String charset = RegularUtil.cut(item, "CHARSET="," ");
                     table.setCharset(charset);
                 }
+                if(item.contains("ENGINE=")){
+                    String engine = RegularUtil.cut(item, "ENGINE="," ");
+                    table.setEngine(engine);
+                }
             }
         }
         return ddls;
