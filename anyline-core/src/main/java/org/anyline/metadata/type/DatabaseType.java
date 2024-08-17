@@ -291,7 +291,7 @@ public enum DatabaseType implements Serializable {
         MuDB                  ("MuDB"                                      , DatabaseGenus.Postgres    , KEY_CASE.SRC   , 900  , null, "org.postgresql.Driver", "jdbc:postgresql://{host}:{port:5432}/{database}"),
         Mulgara               ("Mulgara"                                   , DatabaseGenus.None        , KEY_CASE.SRC   , 694  , null, null                , null                          ),
         MyScale               ("MyScale"                                   , DatabaseGenus.None        , KEY_CASE.SRC   , 655  , null, null                , null                          ),
-        MYSQL                 ("MySQL"                                     , DatabaseGenus.MySQL       , KEY_CASE.SRC   , 999  , null, "com.mysql.cj.jdbc.Driver", "jdbc:mysql://{host}:{port:3306}/{database}"),
+        MySQL                 ("MySQL"                                     , DatabaseGenus.MySQL       , KEY_CASE.SRC   , 999  , null, "com.mysql.cj.jdbc.Driver", "jdbc:mysql://{host}:{port:3306}/{database}"),
         NCache                ("NCache"                                    , DatabaseGenus.None        , KEY_CASE.SRC   , 801  , null, null                , null                          ),
         Nebula                ("Nebula"                                    , DatabaseGenus.None        , KEY_CASE.SRC   , 873  , null, "NebulaDriver"      , "jdbc:nebula://{host}"        ),
         Neo4j                 ("Neo4j"                                     , DatabaseGenus.None        , KEY_CASE.SRC   , 980  , null, "org.neo4j.jdbc.Driver", "jdbc:neo4j:http://{host}:{port:7474}"),
@@ -481,6 +481,7 @@ public enum DatabaseType implements Serializable {
         DatabaseType(String title, DatabaseGenus genus, KEY_CASE objectNameCase, int boost, String keywords, String driver, String url) {
                 this.title = title;
                 this.driver = driver;
+                this.genus = genus;
                 this.objectNameCase = objectNameCase;
                 this.url = url;
                 this.boost = boost;
@@ -504,6 +505,7 @@ public enum DatabaseType implements Serializable {
         //时查询系统表时对象名(表名、列表)是否大写
         private final List<String> keywords = new ArrayList<>();
         private final KEY_CASE objectNameCase;
+        private final DatabaseGenus genus;
         private final int boost;
         private final String title;
         private final String driver;
@@ -525,6 +527,9 @@ public enum DatabaseType implements Serializable {
         }
         public KEY_CASE nameCase() {
                 return objectNameCase;
+        }
+        public DatabaseGenus genus(){
+                return genus;
         }
 
 }

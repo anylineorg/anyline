@@ -40,6 +40,7 @@ import org.anyline.metadata.refer.*;
 import org.anyline.metadata.differ.*;
 import org.anyline.metadata.graph.EdgeTable;
 import org.anyline.metadata.graph.VertexTable;
+import org.anyline.metadata.type.DatabaseGenus;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.util.BasicUtil;
@@ -93,6 +94,9 @@ public interface DriverAdapter {
             types.put(type.getName().toUpperCase(), type);
         }
         return types;
+    }
+    default DatabaseGenus genus() {
+        return type().genus();
     }
 
     /**
