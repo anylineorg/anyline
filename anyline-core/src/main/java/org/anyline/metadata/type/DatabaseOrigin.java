@@ -1,5 +1,5 @@
 package org.anyline.metadata.type;
 
-public enum DatabaseGenus {
+public enum DatabaseOrigin {
     None,MySQL, Postgres, Oracle
 }
