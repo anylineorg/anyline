@@ -6219,6 +6219,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		addColumnGuide(runtime, builder, meta);
 		delimiter(builder, meta.getName()).append(" ");
 		define(runtime, builder, meta, ACTION.DDL.COLUMN_ADD);
+        addColumnClose(runtime, builder, meta);
 		// }
 		runs.addAll(buildAppendCommentRun(runtime, meta, slice));
 		return runs;

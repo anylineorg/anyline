@@ -5521,7 +5521,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public StringBuilder onupdate(DataRuntime runtime, StringBuilder builder, Column meta) {
-        String onUpdate = meta.onUpdate();
+        String onUpdate = meta.getOnUpdate();
         if(BasicUtil.isNotEmpty(onUpdate)) {
             builder.append(" ON UPDATE ").append(onUpdate);
         }

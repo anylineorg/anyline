@@ -471,7 +471,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 
         if(obj instanceof Collection) {
             Collection list = (Collection) obj;
-            if(!list.isEmpty()) {
+            if(null != null && !list.isEmpty()) {
                 run = createInsertRunFromCollection(runtime, batch, dest, list, configs, columns);
             }
         }else {
@@ -5318,7 +5318,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 }
 
                 // 根据系统表查询失败后根据驱动内置接口补充
-                if (list.isEmpty()) {
+                if(null == list || list.isEmpty()) {
                     try {
                         list = tables(runtime, true, list, catalog, schema, origin, types);
                         //删除跨库表，JDBC驱动内置接口补充可能会返回跨库表
@@ -6028,7 +6028,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 }
 
                 // 根据系统表查询失败后根据驱动内置接口补充
-                if (list.isEmpty()) {
+                if(null == list || list.isEmpty()) {
                     try {
                         list = vertexs(runtime, true, list, catalog, schema, origin, types);
                         //删除跨库表，JDBC驱动内置接口补充可能会返回跨库表
@@ -6598,7 +6598,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 }
 
                 // 根据系统表查询失败后根据驱动内置接口补充
-                if (list.isEmpty()) {
+                if(null == list || list.isEmpty()) {
                     try {
                         list = edges(runtime, true, list, catalog, schema, origin, types);
                         //删除跨库表，JDBC驱动内置接口补充可能会返回跨库表
@@ -7165,7 +7165,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 }
 
                 // 根据系统表查询失败后根据驱动内置接口补充
-                if (list.isEmpty()) {
+                if(null == list || list.isEmpty()) {
                     try {
                         list = views(runtime, true, list, catalog, schema, origin, types);
                         //删除跨库表，JDBC驱动内置接口补充可能会返回跨库表
@@ -7773,7 +7773,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 }
 
                 // 根据系统表查询失败后根据驱动内置接口补充
-                if (list.isEmpty()) {
+                if(null == list || list.isEmpty()) {
                     try {
                         list = masters(runtime, true, list, catalog, schema, origin, types);
                         //删除跨库表，JDBC驱动内置接口补充可能会返回跨库表
@@ -11021,7 +11021,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 					DataSet set = selectMetadata(runtime, random, run);
 					list = ddl(runtime, idx++, procedure, list, set);
 				}
-				if(!list.isEmpty()) {
+				if(null != list && !list.isEmpty()) {
 					procedure.setDdls(list);
 				}
 			}else{
@@ -11370,7 +11370,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 					DataSet set = selectMetadata(runtime, random, run);
 					list = ddl(runtime, idx++, meta, list, set);
 				}
-				if(!list.isEmpty()) {
+				if(null != list && !list.isEmpty()) {
 					meta.setDdls(list);
 				}
 			}else{
@@ -11723,7 +11723,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 					DataSet set = selectMetadata(runtime, random, run);
 					list = ddl(runtime, idx++, meta, list, set);
 				}
-				if(!list.isEmpty()) {
+				if(null != list && !list.isEmpty()) {
 					meta.setDdls(list);
 				}
 			}else{

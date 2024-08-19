@@ -29,6 +29,7 @@ import org.anyline.metadata.*;
 import org.anyline.metadata.refer.MetadataFieldRefer;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.metadata.type.TypeMetadata;
+import org.anyline.util.BasicUtil;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -3422,6 +3423,14 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 ******************************************************************************************************************/
 
 	/**
+	 * 是否支持DDL合并
+	 * @return boolean
+	 */
+	public boolean slice() {
+		return false;
+	}
+
+	/**
 	 * ddl [执行命令]
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
@@ -4477,7 +4486,17 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 */
 	@Override
 	public List<Run> buildAddRun(DataRuntime runtime, Column meta, boolean slice) throws Exception {
-		return super.buildAddRun(runtime, meta, slice);
+		List<Run> runs = super.buildAddRun(runtime, meta, slice);
+		//有默认值的 再执行一次修改列属性 把默认值 设置上
+		Object def = meta.getDefaultValue();
+		if(BasicUtil.isNotEmpty(def)){
+			meta.setAction(ACTION.DDL.COLUMN_ALTER);
+			Column update = meta.update(false, false);
+			meta.setDefaultValue(null);
+			update.setDefaultValue(def);
+			runs.addAll(buildAlterRun(runtime, meta, slice));
+		}
+		return runs;
 	}
 
 	/**
@@ -4491,7 +4510,27 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 */
 	@Override
 	public List<Run> buildAlterRun(DataRuntime runtime, Column meta, boolean slice) throws Exception {
-		return super.buildAlterRun(runtime, meta, slice);
+		List<Run> runs = new ArrayList<>();
+		Run run = new SimpleRun(runtime);
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
+		if(!slice(slice)) {
+			Table table = meta.getTable(true);
+			builder.append("ALTER TABLE ");
+			name(runtime, builder, table);
+		}else{
+			run.slice(slice);
+		}
+		Column update = meta.getUpdate();
+		if(null == update) {
+			update = meta;
+		}
+		boolean rename = meta.isRename();
+		builder.append(" CHANGE COLUMN ");
+		delimiter(builder, meta.getName()).append(" ");
+		delimiter(builder, update.getName()).append(" "); //要显示两次列名(无论是否改名)
+		define(runtime, builder, update, ACTION.DDL.COLUMN_ADD);
+		return runs;
 	}
 
 	/**
@@ -4555,7 +4594,13 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 */
 	@Override
 	public StringBuilder addColumnGuide(DataRuntime runtime, StringBuilder builder, Column meta) {
-		return super.addColumnGuide(runtime, builder, meta);
+		builder.append(" ADD COLUMNS (");
+		return builder;
+	}
+	@Override
+	public StringBuilder addColumnClose(DataRuntime runtime, StringBuilder builder, Column column) {
+		builder.append(")");
+		return builder;
 	}
 
 	/**
@@ -4582,7 +4627,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 */
 	@Override
 	public List<Run> buildChangeDefaultRun(DataRuntime runtime, Column meta, boolean slice) throws Exception {
-		return super.buildChangeDefaultRun(runtime, meta, slice);
+		return buildAlterRun(runtime, meta, slice);
 	}
 
 	/**
@@ -4756,6 +4801,10 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 */
 	@Override
 	public StringBuilder defaultValue(DataRuntime runtime, StringBuilder builder, Column meta) {
+		if(ACTION.DDL.COLUMN_ADD == meta.getAction()){
+			//添加列时不支持设置默认值,添加列后再执行一次修改列属性
+			return builder;
+		}
 		return super.defaultValue(runtime, builder, meta);
 	}
 
@@ -6215,16 +6264,16 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	@Override
 	public String value(DataRuntime runtime, Column column, SQL_BUILD_IN_VALUE value) {
 		if(value == SQL_BUILD_IN_VALUE.CURRENT_DATETIME) {
-			return "unix_timestamp()";
+			return "CURRENT_TIMESTAMP";
 		}
 		if(value == SQL_BUILD_IN_VALUE.CURRENT_DATE) {
-			return "unix_timestamp()";
+			return "CURRENT_DATE";
 		}
 		if(value == SQL_BUILD_IN_VALUE.CURRENT_TIME) {
-			return "unix_timestamp()";
+			return "CURRENT_TIMESTAMP";
 		}
 		if(value == SQL_BUILD_IN_VALUE.CURRENT_TIMESTAMP) {
-			return "unix_timestamp()";
+			return "CURRENT_TIMESTAMP";
 		}
 		return null;
 	}

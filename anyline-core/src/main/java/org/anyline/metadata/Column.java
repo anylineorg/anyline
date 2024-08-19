@@ -1487,7 +1487,7 @@ public class Column extends TableAffiliation<Column> implements Serializable {
         return this;
     }
 
-    public String onUpdate() {
+    public String getOnUpdate() {
         if(getmap && null != update) {
             return update.onUpdate;
         }

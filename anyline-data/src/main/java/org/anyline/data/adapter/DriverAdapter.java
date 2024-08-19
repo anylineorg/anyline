@@ -7235,7 +7235,10 @@ public interface DriverAdapter {
 	 * @param column 列
 	 * @return String
 	 */
-	StringBuilder addColumnGuide(DataRuntime runtime, StringBuilder builder, Column column);
+    StringBuilder addColumnGuide(DataRuntime runtime, StringBuilder builder, Column column);
+    default StringBuilder addColumnClose(DataRuntime runtime, StringBuilder builder, Column column) {
+        return builder;
+    }
 
 	/**
 	 * column[命令合成-子流程]<br/>
