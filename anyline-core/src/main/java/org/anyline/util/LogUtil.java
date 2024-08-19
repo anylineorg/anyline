@@ -176,7 +176,7 @@ public class LogUtil {
 
         int idx = 0;
         for(DataRow row:set){
-            if(idx ++ >= rows){
+            if(idx ++ >= rows && rows != -1){
                 break;
             }
             for(String key:keys){
