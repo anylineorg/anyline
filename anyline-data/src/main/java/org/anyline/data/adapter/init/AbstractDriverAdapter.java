@@ -2051,12 +2051,16 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      */
     @Override
     public DataSet querys(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
+        Table table = null;
         DataSet set = null;
         Long fr = 0L;
         boolean cmd_success = false;
         Run run = null;
         PageNavi navi = null;
-
+        if(null == prepare.getJoins() || prepare.getJoins().isEmpty()){
+            //多个表的情况 不考虑表结构(不查元数据)
+            table = prepare.getTable();
+        }
         if(null == random) {
             random = random(runtime);
         }
@@ -2065,12 +2069,12 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             swt = dmListener.prepareQuery(runtime, random, prepare, configs, conditions);
         }
         if(swt == ACTION.SWITCH.BREAK) {
-            return new DataSet().setTable(prepare.getTable());
+            return new DataSet().setTable(table);
         }
         //query拦截
         swt = InterceptorProxy.prepareQuery(runtime, random, prepare, configs, conditions);
         if(swt == ACTION.SWITCH.BREAK) {
-            return new DataSet().setTable(prepare.getTable());
+            return new DataSet().setTable(table);
         }
 
         run = buildQueryRun(runtime, prepare, configs, conditions);
@@ -2132,21 +2136,21 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 }
                 swt = InterceptorProxy.beforeQuery(runtime, random, run, navi);
                 if(swt == ACTION.SWITCH.BREAK) {
-                    return new DataSet().setTable(prepare.getTable());
+                    return new DataSet().setTable(table);
                 }
-                set = select(runtime, random, false, prepare.getTable(), configs, run);
+                set = select(runtime, random, false, table, configs, run);
                 cmd_success = true;
             }else{
                 if(null != configs) {
                     configs.add(run);
                 }
-                set = new DataSet().setTable(prepare.getTable());
+                set = new DataSet().setTable(table);
                 if(ConfigStore.IS_CHECK_EMPTY_SET_METADATA(configs)) {
                     set.setMetadata(metadata(runtime, prepare, false));
                 }
             }
         } else {
-            set = new DataSet().setTable(prepare.getTable());
+            set = new DataSet().setTable(table);
         }
 
         set.setDest(prepare.getDest());
