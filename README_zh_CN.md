@@ -1,12 +1,14 @@
 [![EN doc](https://img.shields.io/badge/document-English-blue.svg)](README.md)
 [![CN doc](https://img.shields.io/badge/文档-中文版-blue.svg)](README_zh_CN.md)
 
-8.7.2后分离了多个环境(Spring/Solon/Vertx)比之前的版本多一个依赖  
-***具体参考***[【8.7.2更新】](http://doc.anyline.org/aa/2f_3951)  ***详细说明请参考:*** [【官网】](http://doc.anyline.org/)  
-开发测试环境请使用[【8.7.2-SNAPSHOT】](http://doc.anyline.org/aa/aa_3702)版本 语法测试请参考[【各数据库模拟环境】](http://run.anyline.org/)       
-发版务必到[【中央库】](https://mvnrepository.com/artifact/org.anyline/anyline-core)找一个正式版本，不要把SNAPSHOT版本发到生产环境  
+| [<img src="https://cdn.anyline.org/img/user/alq.png" width="150">](https://qm.qq.com/q/M5ub6mqS0o) | [<img src="https://cdn.anyline.org/img/user/alvg.png" width="150">](http://www.anyline.org/ss/9f_17) | [<img src="https://cdn.anyline.org/img/user/alv.png" width="150">](http://www.anyline.org/ss/9f_17) |
+|:--------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------------------:|
+|                                           QQ群(86020680)                                            |                                                 微信群                                                  |                                             过期或满员联系管理员                                              |
+
+***快速测试请参考[【anyline-simple-clear】](https://gitee.com/anyline/anyline-simple-clear)***
+***详细语法请参考[【anyline-simple】](https://gitee.com/anyline/anyline-simple)***  
 关于多数据源，请先阅读   
-[【三种方式注册数据源】](http://doc.anyline.org/aa/a9_3451)
+[【六种方式注册数据源】](http://doc.anyline.org/aa/a9_3451)
 [【三种方式切换数据源】](http://doc.anyline.org/aa/64_3449)
 [【多数据源事务控制】](http://doc.anyline.org/ss/23_1189)  
 低代码平台、数据中台等场景需要生成SQL/操作元数据参考  
@@ -16,18 +18,6 @@
 [【ConfigStore与JSON互换】](http://doc.anyline.org/aa/73_13975)
 [【service.metadata】](http://doc.anyline.org/ss/22_1174)
 [【SQL.metadata】](http://doc.anyline.org/aa/c1_3847)
-
-***快速开始请参考示例源码(各种各样最简单的hello world):***  
-[/anyline/anyline-simple](/anyline/anyline-simple)
-
-***一个字都不想看，就想直接启动项目的下载这个源码:***  
-[/anyline/anyline-simple-clear](/anyline/anyline-simple-clear)
-
-有问题请不要自行百度，因为百度收录的内容有可能过期或版本不一致, 有问题请联系
-
-|   [<img src="https://alcdn.oss-cn-shanghai.aliyuncs.com/img/user/alq.png" width="150">](https://qm.qq.com/q/M5ub6mqS0o)   | [<img src="https://cdn.anyline.org/img/user/alvg.png" width="150">](http://www.anyline.org/ss/9f_17) | [<img src="https://cdn.anyline.org/img/user/alv.png" width="150">](http://www.anyline.org/ss/9f_17) |
-|:-------:|:----------------------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------------------:|
-|   QQ群(86020680)   |                                                 微信群                                                  |                                             过期或满员联系管理员                                              |
 
 ## 简介
 AnyLine的核心是一个面向运行时的 元数据动态关系映射 主要用于  
@@ -44,7 +34,7 @@ AnyLine的核心是一个面向运行时的 元数据动态关系映射 主要�
 参考【[适用场景](http://doc.anyline.org/ss/ed_14)】  
 
 ##### 数据源注册及切换
-注意这里的数据源并不是主从关系，而是多个完全无关的数据源。
+注意这里的数据源并不是主从关系，而是多个完全不相关的数据源。
 ```java
 DataSource ds_sso = new DruidDataSource();
 ds_sso.setUrl("jdbc:mysql://localhost:3306/sso");
@@ -210,7 +200,7 @@ anyline的大部分代码与灵感也是来自这部分用户的日常实践。
 哪个项目少了AOP依赖还切换不了数据源了？  
 
 ### 重复工作
-如果只是写个helloworld，以上都不是问题，没什么解决不了的。但实际工作中是需要考虑工作量和开发速度的。  
+如果只是写个hello world，以上都不是问题，没什么解决不了的。但实际工作中是需要考虑工作量和开发速度的。  
 比如一个订单可能有几十上百列的数据，每个分析师需要根据不同的列查询。有那么几十列上同时需要<>=!=IN FIND_IN_SET多种查询方式算正常吧  
 不能让开发人员挨个写一遍吧，写一遍是没问题，但修改起来可就不是一遍两遍的事了    
 所以需要提供一个字典让用户自己去配置，低代码开发平台、自定义报表、动态查询条件应该经常有这个需求。    
@@ -221,7 +211,7 @@ DML方面hibernate还可以处理，DDL呢？国产库呢？
 
 当然这种问题很难有定论，只能在实际应用过程中根据情况取舍。  
 可以参考【[适用场景](http://doc.anyline.org/ss/ed_14)】和【[实战对比](http://doc.anyline.org/ss/c9_1153)】中的示例  
-造型之前，当然要搞明白优势劣势，参考【[优势劣势](http://doc.anyline.org/aa/24_3712)】
+选型之前，当然要搞明白优势劣势，参考【[优势劣势](http://doc.anyline.org/aa/24_3712)】
 
 ## 误解
 当然我们并不是要抛弃Entity或ORM，相反的 AnyLine源码中也使用了多达几十个Entity   
@@ -238,14 +228,14 @@ DataSet set = service.querys("HR_USER(ID, NM)",
     condition(true, "anyline根据约定自动生成的=, in, like等查询条件"));  
 ```
 这里的查询条件不再需要各种配置, 各种if else foreach标签  
-Anyline会自动生成, 生成规则可以【参考】这里的[【约定规则】](http://doc.anyline.org/s?id=p298pn6e9o1r5gv78acvic1e624c62387f2c45dd13bb112b34176fad5a868fa6a4)  
+Anyline会自动生成, 生成规则可以参考这里的[【约定规则】](http://doc.anyline.org/s?id=p298pn6e9o1r5gv78acvic1e624c62387f2c45dd13bb112b34176fad5a868fa6a4)  
 分页也不需要另外的插件，更不需要繁琐的计算和配置，指定true或false即可
 
 ## 如何集成
 
 只需要一个依赖、一个注解即可实现与springboot, netty等框架项目完美整合，参考【入门系列】
 大概的方式就是在需要操作数据库的地方注入AnylineService
-接下来service就可以完成大部分的数据库操作了。常用示例可以参考【[示例代码](/anyline/anyline-simple)】
+接下来service就可以完成大部分的数据库操作了。常用示例可以参考【[示例代码](https://gitee.com/anyline/anyline-simple)】
 
 ## 兼容
 如果实现放不下那些已存在的各种XOOO  
@@ -333,7 +323,7 @@ userService.querys(condition(true, "anyline根据约定自动生成的查询条�
 <a style="display:inline-block;" href="/anyline/anyline-simple/tree/master/anyline-simple-data-jdbc-dialect/anyline-simple-data-jdbc-dm"><img alt="DM" src="https://gitee.com/anyline/service/raw/master/db/dm.webp" width="100"/>DM(武汉达梦数据库股份有限公司)</a>
 <a style="display:inline-block;" href="https://www.gbase.cn/"><img alt="GBase8a" src="https://gitee.com/anyline/service/raw/master/db/gbase.webp" width="100"/>GBase8a(天津南大通用数据技术股份有限公司)</a>
 <a style="display:inline-block;" href="https://www.gbase.cn/"><img alt="GBase8c" src="https://gitee.com/anyline/service/raw/master/db/gbase.webp" width="100"/>GBase8c(天津南大通用数据技术股份有限公司)</a>
-<a style="display:inline-block;" href="/anyline/anyline-simple/tree/master/anyline-simple-data-jdbc-dialect/anyline-simple-data-jdbc-gbase8s"><img alt="GBase8s" src="https://gitee.com/anyline/service/raw/master/db/gbase.webp" width="100"/>GBase8s(天津南大通用数据技术股份有限公司)</a>
+<a style="display:inline-block;" href="/anyline/anyline-simple/tree/master/anyline-simple-data-jdbc-dialect/anyline-simple-data-jdbc-GBase8s"><img alt="GBase8s" src="https://gitee.com/anyline/service/raw/master/db/gbase.webp" width="100"/>GBase8s(天津南大通用数据技术股份有限公司)</a>
 <a style="display:inline-block;" href="/anyline/anyline-simple/tree/master/anyline-simple-data-jdbc-dialect/anyline-simple-data-jdbc-oscar"><img alt="oscar" src="https://gitee.com/anyline/service/raw/master/db/oscar.png" width="100"/>oscar</a>
 <a style="display:inline-block;" href="/anyline/anyline-simple/tree/master/anyline-simple-data-jdbc-dialect/anyline-simple-data-jdbc-sqlite"><img alt="SQLite" src="https://gitee.com/anyline/service/raw/master/db/sqlite.gif" width="100"/>SQLite</a>
 <a style="display:inline-block;" href="https://www.snowflake.com/"><img alt="Snowflake" src="https://gitee.com/anyline/service/raw/master/db/snowflake.svg" width="100"/>Snowflake</a>

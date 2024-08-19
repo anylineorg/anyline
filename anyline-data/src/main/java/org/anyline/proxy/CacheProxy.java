@@ -98,9 +98,14 @@ public class CacheProxy {
     public static String key(DataRuntime runtime, String flag, boolean greedy, Table table){
         StringBuilder key = new StringBuilder();
         key.append(runtime.datasource()).append("_").append(flag).append("_").append(greedy).append("_");
-        String name = table.getName();
-        String catalog = table.getCatalogName();
-        String schema = table.getSchemaName();
+        String name = null;
+        String catalog = null;
+        String schema = null;
+        if(null != table){
+            name = table.getName();
+            catalog = table.getCatalogName();
+            schema = table.getSchemaName();
+        }
         if(null != catalog){
             key.append(catalog);
         }

@@ -47,7 +47,7 @@ public class SpringJDBCDataSourceHolder extends JDBCDataSourceHolder {
 	public SpringJDBCDataSourceHolder() {
 		for(DatabaseType type:DatabaseType.values()) {
 			String url = type.url();
-			if(url.contains("jdbc:") && url.contains("://")) { // jdbc:postgresql://localhost:35432/simple
+			if(null != url && url.contains("jdbc:") && url.contains("://")) { // jdbc:postgresql://localhost:35432/simple
 				DataSourceHolder.register(type, this);
 				DataSourceHolder.register(type.driver(), this);
 				DataSourceHolder.register(type.name().toUpperCase(), this);

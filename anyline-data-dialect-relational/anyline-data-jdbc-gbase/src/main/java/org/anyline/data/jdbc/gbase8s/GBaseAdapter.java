@@ -38,7 +38,7 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-@Component("anyline.data.jdbc.adapter.gbase8s")
+@Component("anyline.data.jdbc.adapter.GBase8s")
 public class GBaseAdapter extends InformixGenusAdapter implements JDBCAdapter {
 
 	public DatabaseType type() {
