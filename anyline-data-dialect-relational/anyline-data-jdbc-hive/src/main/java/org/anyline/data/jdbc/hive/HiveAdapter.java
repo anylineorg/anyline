@@ -2229,8 +2229,14 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @return runs
 	 */
 	@Override
-	public List<Run> buildQueryColumnsRun(DataRuntime runtime,  boolean metadata, Column query, ConfigStore configs) throws Exception {
-		return super.buildQueryColumnsRun(runtime, metadata, query, configs);
+	public List<Run> buildQueryColumnsRun(DataRuntime runtime,  boolean metadata, Column query, ConfigStore configs) throws Exception { List<Run> runs = new ArrayList<>();
+		Table table = query.getTable();
+		Run run = new SimpleRun(runtime, configs);
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
+		builder.append("desc ");
+		name(runtime, builder, table);
+		return runs;
 	}
 
 	/**
@@ -2253,7 +2259,11 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 */
 	@Override
 	public MetadataFieldRefer initColumnFieldRefer() {
-		return super.initColumnFieldRefer();
+		MetadataFieldRefer refer = new MetadataFieldRefer(Column.class);
+		refer.map(Column.FIELD_NAME, "COL_NAME");
+		refer.map(Column.FIELD_TYPE, "DATA_TYPE");
+		refer.map(Column.FIELD_COMMENT ,"COMMENT");
+		return refer;
 	}
 	/**
 	 * column[结果集封装]<br/>
