@@ -3639,11 +3639,6 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
                 meta.autoIncrement(true);
             }
         }
-        //mysql中的on update
-        Boolean onupdate = matchBoolean(row, refer, Column.FIELD_ON_UPDATE_CHECK, Column.FIELD_ON_UPDATE_CHECK_VALUE);
-        if(null != onupdate) {
-            meta.setOnUpdate(onupdate);
-        }
         meta.setObjectId(getLong(row, refer, Column.FIELD_OBJECT_ID, null));
         //主键 mysql已合并
         Boolean primary = matchBoolean(row, refer, Column.FIELD_PRIMARY_CHECK, Column.FIELD_PRIMARY_CHECK_VALUE);

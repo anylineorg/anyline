@@ -2791,7 +2791,22 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public <T extends Column> T detail(DataRuntime runtime, int index, T meta, Column query, DataRow row) {
-        return super.detail(runtime, index, meta, query, row);
+        T result = super.detail(runtime, index, meta, query, row);
+
+        String onupdate = null;
+        String extra = row.getString("EXTRA");
+        if(null != extra){
+            if(extra.contains("on update")){
+                onupdate = RegularUtil.cut(extra, "on update", " ");
+                if(BasicUtil.isEmpty(onupdate)){
+                    onupdate = RegularUtil.cut(extra, "on update", RegularUtil.TAG_END);
+                }
+            }
+        }
+        if(null != onupdate) {
+            meta.setOnUpdate(onupdate);
+        }
+        return result;
     }
 
     /**
@@ -5506,8 +5521,9 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public StringBuilder onupdate(DataRuntime runtime, StringBuilder builder, Column meta) {
-        if(meta.isOnUpdate() == 1) {
-            builder.append(" ON UPDATE CURRENT_TIMESTAMP");
+        String onUpdate = meta.onUpdate();
+        if(BasicUtil.isNotEmpty(onUpdate)) {
+            builder.append(" ON UPDATE ").append(onUpdate);
         }
         return builder;
     }

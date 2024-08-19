@@ -177,7 +177,7 @@ public class Column extends TableAffiliation<Column> implements Serializable {
 
     protected String after                        ; // 修改列时 在表中的位置
     protected String before                       ; // 修改列时 在表中的位置
-    protected int onUpdate = -1                   ; // 是否在更新行时 更新这一列数据
+    protected String onUpdate = null              ; // 是否在更新行时 更新这一列数据
     protected Object value                        ;
     protected boolean defaultCurrentDateTime = false;
     protected Boolean index                       ; // 是否需要创建索引(ES里用的其他数据库应该通过new Index()创建索引)
@@ -1487,31 +1487,21 @@ public class Column extends TableAffiliation<Column> implements Serializable {
         return this;
     }
 
-    public int isOnUpdate() {
+    public String onUpdate() {
         if(getmap && null != update) {
             return update.onUpdate;
         }
         return onUpdate;
     }
 
-    public Column setOnUpdate(int onUpdate) {
+    public Column setOnUpdate(String onUpdate) {
         this.onUpdate = onUpdate;
         return this;
     }
-    public Column onUpdate(int onUpdate) {
+    public Column onUpdate(String onUpdate) {
         return setOnUpdate(onUpdate);
     }
-    public Column setOnUpdate(boolean onUpdate) {
-        return onUpdate(onUpdate);
-    }
-    public Column onUpdate(boolean onUpdate) {
-        if(onUpdate) {
-            this.onUpdate = 1;
-        }else{
-            this.onUpdate = -1;
-        }
-        return this;
-    }
+
 
     public Column setAfter(String after) {
         if(setmap && null != update) {
