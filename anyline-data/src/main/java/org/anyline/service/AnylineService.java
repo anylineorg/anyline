@@ -183,7 +183,7 @@ public interface AnylineService<E>{
 	 * @param origin 查询表
 	 * @param configs 查询条件及相关配置
 	 * @param obj 查询条件
-	 * @param conditions 查询条件
+	 * @param conditions 查询条件 支持k:v k:v::type 以及原生sql形式(包含ORDER、GROUP、HAVING)默认忽略空值条件
 	 * @return 影响行数
 	 */
 	long insert(Table dest, Table origin, ConfigStore configs, Object obj, String ... conditions);
@@ -445,7 +445,7 @@ public interface AnylineService<E>{
 	 * @param dest 			数据源(表或自定义SQL或SELECT语句)
 	 * @param configs		根据http等上下文构造查询条件
 	 * @param obj			根据obj的field/value构造查询条件
-	 * @param conditions	固定查询条件 <br/>
+	 * @param conditions 查询条件 支持k:v k:v::type 以及原生sql形式(包含ORDER、GROUP、HAVING)默认忽略空值条件 <br/>
 	 * 			CD:1 生成SQL: CD = 1<br/>
 	 * 			CD: 忽略<br/>
 	 * 			CD:null 忽略<br/>
@@ -461,7 +461,7 @@ public interface AnylineService<E>{
 	 * 有些数据库 不根据表查询 不需要提供表
 	 * @param configs		根据http等上下文构造查询条件
 	 * @param obj			根据obj的field/value构造查询条件
-	 * @param conditions	固定查询条件
+	 * @param conditions 查询条件 支持k:v k:v::type 以及原生sql形式(包含ORDER、GROUP、HAVING)默认忽略空值条件
 	 * @return DataSet
 	 */
 	default DataSet querys(ConfigStore configs, Object obj, String ... conditions){
@@ -523,7 +523,7 @@ public interface AnylineService<E>{
 	 * @param obj			根据obj的field/value构造查询条件(支侍Map和Object)(查询条件只支持 =和in)
 	 * @param first 起 下标从0开始
 	 * @param last 止
-	 * @param conditions	固定查询条件
+	 * @param conditions 查询条件 支持k:v k:v::type 以及原生sql形式(包含ORDER、GROUP、HAVING)默认忽略空值条件
 	 * @return DataSet
 	 */
 	default DataSet querys(String dest, long first, long last, Object obj, String ... conditions) {
@@ -596,7 +596,7 @@ public interface AnylineService<E>{
 	 * @param obj			根据obj的field/value构造查询条件(支侍Map和Object)(查询条件只支持 =和in)
 	 * @param first 起 下标从0开始
 	 * @param last 止
-	 * @param conditions	固定查询条件
+	 * @param conditions 查询条件 支持k:v k:v::type 以及原生sql形式(包含ORDER、GROUP、HAVING)默认忽略空值条件
 	 * @return DataSet
 	 */
 	default DataSet querys(Table dest, long first, long last, Object obj, String ... conditions) {
@@ -708,7 +708,7 @@ public interface AnylineService<E>{
 	 * @param clazz 返回类型
 	 * @param configs 根据http等上下文构造查询条件
 	 * @param entity 根据entity的field/value构造简单的查询条件(支侍Map和Object)(查询条件只支持 =和in)
-	 * @param conditions 固定查询条件
+	 * @param conditions 查询条件 支持k:v k:v::type 以及原生sql形式(包含ORDER、GROUP、HAVING)默认忽略空值条件
 	 * @return EntitySet
 	 * @param <T> T
 	 */
@@ -813,7 +813,7 @@ public interface AnylineService<E>{
 	 * @param clazz 返回类型
 	 * @param configs 根据http等上下文构造查询条件
 	 * @param entity 根据entity的field/value构造简单的查询条件(支侍Map和Object)(查询条件只支持 =和in)
-	 * @param conditions 固定查询条件
+	 * @param conditions 查询条件 支持k:v k:v::type 以及原生sql形式(包含ORDER、GROUP、HAVING)默认忽略空值条件
 	 * @return EntitySet
 	 * @param <T> T
 	 */
@@ -891,7 +891,7 @@ public interface AnylineService<E>{
 	 * @param dest			数据源(表或自定义SQL或SELECT语句)
 	 * @param configs		根据http等上下文构造查询条件
 	 * @param obj			根据obj的field/value构造查询条件(支侍Map和Object)(查询条件只支持 =和in)
-	 * @param conditions	固定查询条件
+	 * @param conditions 查询条件 支持k:v k:v::type 以及原生sql形式(包含ORDER、GROUP、HAVING)默认忽略空值条件
 	 * @return List
 	 */
 	List<Map<String, Object>> maps(String dest, ConfigStore configs, Object obj, String ... conditions);
@@ -975,7 +975,7 @@ public interface AnylineService<E>{
 	 * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
 	 * @param configs 过滤条件及相关配置
 	 * @param obj 根据obj的field/value构造查询条件(支侍Map和Object)(查询条件只支持 =和in)
-	 * @param conditions  简单过滤条件
+	 * @param conditions 查询条件 支持k:v k:v::type 以及原生sql形式(包含ORDER、GROUP、HAVING)默认忽略空值条件
 	 * @return DataSet
 	 */
 	List<Map<String, Object>> maps(RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions);
@@ -1027,7 +1027,7 @@ public interface AnylineService<E>{
 	 * @param dest 			查询或操作的目标(表、存储过程、SQL等)
 	 * @param configs		根据http等上下文构造查询条件
 	 * @param obj			根据obj的field/value构造查询条件(支侍Map和Object)(查询条件只支持 =和in)
-	 * @param conditions 	固定查询条件
+	 * @param conditions 查询条件 支持k:v k:v::type 以及原生sql形式(包含ORDER、GROUP、HAVING)默认忽略空值条件
 	 * @return DataSet
 	 */
 	DataSet caches(String cache, String dest, ConfigStore configs, Object obj, String ... conditions);
@@ -1071,7 +1071,7 @@ public interface AnylineService<E>{
 	 * @param dest 			查询或操作的目标(表、存储过程、SQL等)
 	 * @param configs		根据http等上下文构造查询条件
 	 * @param obj			根据obj的field/value构造查询条件(支侍Map和Object)(查询条件只支持 =和in)
-	 * @param conditions 	固定查询条件
+	 * @param conditions 查询条件 支持k:v k:v::type 以及原生sql形式(包含ORDER、GROUP、HAVING)默认忽略空值条件
 	 * @return DataSet
 	 */
 	DataRow cache(String cache, String dest, ConfigStore configs, Object obj, String ... conditions);
@@ -1164,7 +1164,7 @@ public interface AnylineService<E>{
 	 * @param dest 			查询或操作的目标(表、存储过程、SQL等)
 	 * @param configs		根据http等上下文构造查询条件
 	 * @param obj			根据obj的field/value构造查询条件(支侍Map和Object)(查询条件只支持 =和in)
-	 * @param conditions 	固定查询条件
+	 * @param conditions 查询条件 支持k:v k:v::type 以及原生sql形式(包含ORDER、GROUP、HAVING)默认忽略空值条件
 	 * @return DataSet
 	 */
 	default DataRow cache(String dest, ConfigStore configs, Object obj, String ... conditions) {
@@ -1218,7 +1218,7 @@ public interface AnylineService<E>{
 	 * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
 	 * @param configs 过滤条件及相关配置
 	 * @param obj 根据obj的field/value构造查询条件(支侍Map和Object)(查询条件只支持 =和in)
-	 * @param conditions  简单过滤条件
+	 * @param conditions 查询条件 支持k:v k:v::type 以及原生sql形式(包含ORDER、GROUP、HAVING)默认忽略空值条件
 	 * @return DataSet
 	 */
 	DataSet querys(RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions);
@@ -1265,7 +1265,7 @@ public interface AnylineService<E>{
 	 * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
 	 * @param configs 过滤条件及相关配置
 	 * @param obj 根据obj的field/value构造查询条件(支侍Map和Object)(查询条件只支持 =和in)
-	 * @param conditions  简单过滤条件
+	 * @param conditions 查询条件 支持k:v k:v::type 以及原生sql形式(包含ORDER、GROUP、HAVING)默认忽略空值条件
 	 * @return DataSet
 	 */
 	DataSet caches(String cache, RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions);
@@ -1283,7 +1283,7 @@ public interface AnylineService<E>{
 	 * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
 	 * @param configs 过滤条件及相关配置
 	 * @param obj 根据obj的field/value构造查询条件(支侍Map和Object)(查询条件只支持 =和in)
-	 * @param conditions  简单过滤条件
+	 * @param conditions 查询条件 支持k:v k:v::type 以及原生sql形式(包含ORDER、GROUP、HAVING)默认忽略空值条件
 	 * @return DataSet
 	 */
 	DataRow cache(String cache, RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions);
@@ -1320,7 +1320,7 @@ public interface AnylineService<E>{
 	 * @param channel 		channel
 	 * @param dest 			查询或操作的目标(表、存储过程、SQL等)
 	 * @param configs  		根据http等上下文构造查询条件
-	 * @param conditions 	固定查询条件
+	 * @param conditions 查询条件 支持k:v k:v::type 以及原生sql形式(包含ORDER、GROUP、HAVING)默认忽略空值条件
 	 * @return boolean
 	 */
 	boolean removeCache(String channel, String dest, ConfigStore configs, String ... conditions);
@@ -1361,7 +1361,7 @@ public interface AnylineService<E>{
 	 * @param dest       查询或操作的目标(表、存储过程、SQL等)
 	 * @param configs    根据http等上下文构造查询条件
 	 * @param obj        根据obj的field/value构造查询条件(支侍Map和Object)(查询条件只支持 =和in)
-	 * @param conditions 固定查询条件
+	 * @param conditions 查询条件 支持k:v k:v::type 以及原生sql形式(包含ORDER、GROUP、HAVING)默认忽略空值条件
 	 * @return boolean
 	 */
 	boolean exists(String dest, ConfigStore configs, Object obj, String ... conditions);
@@ -1400,7 +1400,7 @@ public interface AnylineService<E>{
 	 * @param dest 查询或操作的目标(表、存储过程、SQL等)
 	 * @param configs 过滤条件
 	 * @param obj 根据obj生成的过滤条件
-	 * @param conditions 简单过滤条件
+	 * @param conditions 查询条件 支持k:v k:v::type 以及原生sql形式(包含ORDER、GROUP、HAVING)默认忽略空值条件
 	 * @return long
 	 */
 	long count(String dest, ConfigStore configs, Object obj, String ... conditions);

@@ -79,7 +79,7 @@ public interface Run extends org.anyline.data.Run{
 
 	/**
 	 * 添加条件
-	 * @param conditions  简单过滤条件、ORDER、GROUP、HAVING 等
+	 * @param conditions 查询条件 支持k:v k:v::type 以及原生sql形式(包含ORDER、GROUP、HAVING)默认忽略空值条
 	 * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
 	 */
 	Run addCondition(String ... conditions);

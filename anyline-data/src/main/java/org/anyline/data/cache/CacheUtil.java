@@ -149,7 +149,7 @@ public class CacheUtil {
 	 * @param order order
 	 * @param dest 查询或操作的目标(表、存储过程、SQL等)
 	 * @param store 根据http等上下文构造查询条件
-	 * @param conditions 固定查询条件
+	 * @param conditions 查询条件 支持k:v k:v::type 以及原生sql形式(包含ORDER、GROUP、HAVING)默认忽略空值条件
 	 * @return String
 	 */
 	public static String createCacheElementKey(boolean page, boolean order, String dest, ConfigStore store, String ... conditions) {

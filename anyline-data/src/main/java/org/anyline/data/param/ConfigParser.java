@@ -559,7 +559,7 @@ public class ConfigParser {
 	 * @param order  order
 	 * @param src  src
 	 * @param store  store
-	 * @param conditions  conditions
+	 * @param conditions 查询条件 支持k:v k:v::type 以及原生sql形式(包含ORDER、GROUP、HAVING)默认忽略空值条件
 	 * @return String
 	 */
 	public static String createSQLSign(boolean page, boolean order, String src, ConfigStore store, String ... conditions) {

@@ -439,7 +439,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @param prepare 查询表
      * @param configs 查询条件及相关配置
      * @param obj 查询条件
-     * @param conditions 查询条件
+     * @param conditions 查询条件 支持k:v k:v::type 以及原生sql形式(包含ORDER、GROUP、HAVING)默认忽略空值条件
      * @return 影响行数
      */
     @Override
@@ -2046,7 +2046,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @param random 用来标记同一组命令
      * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
      * @param configs 过滤条件及相关配置
-     * @param conditions  简单过滤条件
+     * @param conditions 查询条件 支持k:v k:v::type 以及原生sql形式(包含ORDER、GROUP、HAVING)默认忽略空值条件
      * @return DataSet
      */
     @Override
@@ -2190,7 +2190,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @param clazz 类
      * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
      * @param configs 过滤条件及相关配置
-     * @param conditions  简单过滤条件
+     * @param conditions 查询条件 支持k:v k:v::type 以及原生sql形式(包含ORDER、GROUP、HAVING)默认忽略空值条件
      * @return EntitySet
      * @param <T> Entity
      */
@@ -2339,7 +2339,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @param random 用来标记同一组命令
      * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
      * @param configs 过滤条件及相关配置
-     * @param conditions  简单过滤条件
+     * @param conditions 查询条件 支持k:v k:v::type 以及原生sql形式(包含ORDER、GROUP、HAVING)默认忽略空值条件
      * @return maps 返回map集合
      */
     @Override
@@ -2415,7 +2415,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
      * @param configs 过滤条件及相关配置
-     * @param conditions  简单过滤条件
+     * @param conditions 查询条件 支持k:v k:v::type 以及原生sql形式(包含ORDER、GROUP、HAVING)默认忽略空值条件
      * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
      */
     @Override
@@ -2442,7 +2442,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
      * @param configs 过滤条件及相关配置
-     * @param conditions  简单过滤条件
+     * @param conditions 查询条件 支持k:v k:v::type 以及原生sql形式(包含ORDER、GROUP、HAVING)默认忽略空值条件
      */
     public void init(DataRuntime runtime, Run run, ConfigStore configs, String ... conditions) {
         if(null != run) {
@@ -3004,7 +3004,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @param random 用来标记同一组命令
      * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
      * @param configs 过滤条件及相关配置
-     * @param conditions  简单过滤条件
+     * @param conditions 查询条件 支持k:v k:v::type 以及原生sql形式(包含ORDER、GROUP、HAVING)默认忽略空值条件
      * @return long
      */
     @Override
@@ -3096,7 +3096,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @param random 用来标记同一组命令
      * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
      * @param configs 查询条件及相关设置
-     * @param conditions  简单过滤条件
+     * @param conditions 查询条件 支持k:v k:v::type 以及原生sql形式(包含ORDER、GROUP、HAVING)默认忽略空值条件
      * @return boolean
      */
     @Override
@@ -3141,7 +3141,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @param random 用来标记同一组命令
      * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
      * @param configs 查询条件及相关设置
-     * @param conditions  简单过滤条件
+     * @param conditions 查询条件 支持k:v k:v::type 以及原生sql形式(包含ORDER、GROUP、HAVING)默认忽略空值条件
      * @return 影响行数
      */
     @Override
@@ -3294,7 +3294,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
      * @param configs 查询条件及相关设置
-     * @param conditions  简单过滤条件
+     * @param conditions 查询条件 支持k:v k:v::type 以及原生sql形式(包含ORDER、GROUP、HAVING)默认忽略空值条件
      * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
      */
     @Override
@@ -3673,7 +3673,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @param random 用来标记同一组命令
      * @param table 表
      * @param configs 查询条件及相关设置
-     * @param conditions  简单过滤条件
+     * @param conditions 查询条件 支持k:v k:v::type 以及原生sql形式(包含ORDER、GROUP、HAVING)默认忽略空值条件
      * @return 影响行数
      */
     @Override

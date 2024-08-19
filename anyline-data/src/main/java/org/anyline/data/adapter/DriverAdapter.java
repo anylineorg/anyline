@@ -825,7 +825,7 @@ public interface DriverAdapter {
      * @param prepare 查询表
      * @param configs 查询条件及相关配置
      * @param obj 查询条件
-     * @param conditions 查询条件
+     * @param conditions 查询条件 支持k:v k:v::type 以及原生sql形式(包含ORDER、GROUP、HAVING)默认忽略空值条件
      * @return 影响行数
      */
     long insert(DataRuntime runtime, String random, Table dest, RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions);
@@ -1370,7 +1370,7 @@ public interface DriverAdapter {
      * @param random 用来标记同一组命令
      * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
      * @param configs 过滤条件及相关配置
-     * @param conditions  简单过滤条件
+     * @param conditions 查询条件 支持k:v k:v::type 以及原生sql形式(包含ORDER、GROUP、HAVING)默认忽略空值条件
      * @return DataSet
      */
     DataSet querys(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions);
@@ -1391,7 +1391,7 @@ public interface DriverAdapter {
      * @param clazz 类
      * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
      * @param configs 过滤条件及相关配置
-     * @param conditions  简单过滤条件
+     * @param conditions 查询条件 支持k:v k:v::type 以及原生sql形式(包含ORDER、GROUP、HAVING)默认忽略空值条件
      * @return EntitySet
      * @param <T> Entity
      */
@@ -1404,7 +1404,7 @@ public interface DriverAdapter {
      * @param random 用来标记同一组命令
      * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
      * @param configs 过滤条件及相关配置
-     * @param conditions  简单过滤条件
+     * @param conditions 查询条件 支持k:v k:v::type 以及原生sql形式(包含ORDER、GROUP、HAVING)默认忽略空值条件
      * @return maps 返回map集合
      */
     List<Map<String,Object>> maps(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions);
@@ -1413,7 +1413,7 @@ public interface DriverAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
      * @param configs 过滤条件及相关配置
-     * @param conditions  简单过滤条件
+     * @param conditions 查询条件 支持k:v k:v::type 以及原生sql形式(包含ORDER、GROUP、HAVING)默认忽略空值条件
      * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
      */
     Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions);
@@ -1614,7 +1614,7 @@ public interface DriverAdapter {
      * @param random 用来标记同一组命令
      * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
      * @param configs 过滤条件及相关配置
-     * @param conditions  简单过滤条件
+     * @param conditions 查询条件 支持k:v k:v::type 以及原生sql形式(包含ORDER、GROUP、HAVING)默认忽略空值条件
      * @return long
      */
     long count(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions);
@@ -1646,7 +1646,7 @@ public interface DriverAdapter {
      * @param random 用来标记同一组命令
      * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
      * @param configs 查询条件及相关设置
-     * @param conditions  简单过滤条件
+     * @param conditions 查询条件 支持k:v k:v::type 以及原生sql形式(包含ORDER、GROUP、HAVING)默认忽略空值条件
      * @return boolean
      */
     boolean exists(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions);
@@ -1670,7 +1670,7 @@ public interface DriverAdapter {
      * @param random 用来标记同一组命令
      * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
      * @param configs 查询条件及相关设置
-     * @param conditions  简单过滤条件
+     * @param conditions 查询条件 支持k:v k:v::type 以及原生sql形式(包含ORDER、GROUP、HAVING)默认忽略空值条件
      * @return 影响行数
      */
     long execute(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) ;
@@ -1690,7 +1690,7 @@ public interface DriverAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
      * @param configs 查询条件及相关设置
-     * @param conditions  简单过滤条件
+     * @param conditions 查询条件 支持k:v k:v::type 以及原生sql形式(包含ORDER、GROUP、HAVING)默认忽略空值条件
      * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
      */
     Run buildExecuteRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions);
@@ -1797,7 +1797,7 @@ public interface DriverAdapter {
      * @param random 用来标记同一组命令
      * @param table 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
      * @param configs 查询条件及相关设置
-     * @param conditions  简单过滤条件
+     * @param conditions 查询条件 支持k:v k:v::type 以及原生sql形式(包含ORDER、GROUP、HAVING)默认忽略空值条件
      * @return 影响行数
      */
     long delete(DataRuntime runtime, String random, Table table, ConfigStore configs, String... conditions);

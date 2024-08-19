@@ -1799,7 +1799,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
      * @param compare 条件过滤对比方式
      * @param items 计算条目中的 items 集合
      * @param field 根据field列 求和
-     * @param conditions items子集过滤条件
+     * @param conditions 查询条件 支持k:v k:v::type 以及原生sql形式(包含ORDER、GROUP、HAVING)默认忽略空值条件
      * @return DataSet
      */
     public DataSet sum(String result, String items, String field, Compare compare, String ... conditions) {

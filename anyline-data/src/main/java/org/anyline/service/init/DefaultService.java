@@ -93,7 +93,7 @@ public class DefaultService<E> implements AnylineService<E> {
      *
      * @param dest        查询或操作的目标(表｜视图｜函数｜自定义SQL | SELECT语句)
      * @param obj        根据obj的field/value构造查询条件(支侍Map和Object)(查询条件只支持 =和in)
-     * @param conditions 固定查询条件
+     * @param conditions 查询条件 支持k:v k:v::type 以及原生sql形式(包含ORDER、GROUP、HAVING)默认忽略空值条件
      * @return DataSet
      */
     @Override
@@ -132,7 +132,7 @@ public class DefaultService<E> implements AnylineService<E> {
      * @param prepare    构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
      * @param configs    根据http等上下文构造查询条件
      * @param obj        根据obj的field/value构造查询条件(支侍Map和Object)(查询条件只支持 =和in)
-     * @param conditions 固定查询条件
+     * @param conditions 查询条件 支持k:v k:v::type 以及原生sql形式(包含ORDER、GROUP、HAVING)默认忽略空值条件
      * @return DataSet
      */
     @Override
@@ -528,7 +528,7 @@ public class DefaultService<E> implements AnylineService<E> {
      * @param prepare    构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
      * @param configs    根据http等上下文构造查询条件
      * @param obj        根据obj的field/value构造查询条件(支侍Map和Object)(查询条件只支持 =和in)
-     * @param conditions 固定查询条件
+     * @param conditions 查询条件 支持k:v k:v::type 以及原生sql形式(包含ORDER、GROUP、HAVING)默认忽略空值条件
      * @return DataSet
      */
 
@@ -584,7 +584,7 @@ public class DefaultService<E> implements AnylineService<E> {
      * @param table
      * @param configs 过滤条件及相关配置
      * @param obj 根据obj的field/value构造查询条件(支侍Map和Object)(查询条件只支持 =和in)
-     * @param conditions  简单过滤条件
+     * @param conditions 查询条件 支持k:v k:v::type 以及原生sql形式(包含ORDER、GROUP、HAVING)默认忽略空值条件
      * @return DataRow
      */
     @Override
@@ -721,7 +721,7 @@ public class DefaultService<E> implements AnylineService<E> {
      * @param dest        查询或操作的目标(表、存储过程、SQL等)
      * @param configs    根据http等上下文构造查询条件
      * @param obj        根据obj的field/value构造查询条件(支侍Map和Object)(查询条件只支持 =和in)
-     * @param conditions 固定查询条件
+     * @param conditions 查询条件 支持k:v k:v::type 以及原生sql形式(包含ORDER、GROUP、HAVING)默认忽略空值条件
      * @return boolean
      */
     @Override
@@ -809,7 +809,7 @@ public class DefaultService<E> implements AnylineService<E> {
      * @param dest 表或视图或自定义SQL
      * @param configs 过滤条件
      * @param obj 根据obj生成的过滤条件
-     * @param conditions 简单过滤条件
+     * @param conditions 查询条件 支持k:v k:v::type 以及原生sql形式(包含ORDER、GROUP、HAVING)默认忽略空值条件
      * @return long
      */
     @Override
