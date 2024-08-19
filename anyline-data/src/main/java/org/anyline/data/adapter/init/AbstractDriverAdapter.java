@@ -773,7 +773,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         LinkedHashMap<String, Column> cols = new LinkedHashMap<>();
         for(Object item:list) {
             cols.putAll(confirmInsertColumns(runtime, dest, item, configs, columns, true));
-            if(!ConfigTable.IS_CHECK_ALL_INSERT_COLUMN) {
+            if(!ConfigStore.IS_CHECK_ALL_INSERT_COLUMN(configs)) {
                 break;
             }
         }
@@ -1390,7 +1390,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 }
                 replaceEmptyNull = ConfigStore.IS_REPLACE_EMPTY_NULL(configs);
             }
-            if(!ConfigTable.IS_CHECK_ALL_UPDATE_COLUMN) {
+            if(!ConfigStore.IS_CHECK_ALL_UPDATE_COLUMN(configs)) {
                 break;
             }
         }

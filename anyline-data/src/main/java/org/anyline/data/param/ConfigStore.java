@@ -2144,6 +2144,18 @@ public interface ConfigStore extends Cloneable{
 	default boolean IS_ENABLE_PLACEHOLDER_REGEX_EXT() {
 		return getBoolean("IS_ENABLE_PLACEHOLDER_REGEX_EXT", ConfigTable.IS_ENABLE_PLACEHOLDER_REGEX_EXT);
 	}
+	default ConfigStore IS_CHECK_ALL_INSERT_COLUMN(boolean s) {
+		return config("IS_CHECK_ALL_INSERT_COLUMN", s);
+	}
+	default boolean IS_CHECK_ALL_INSERT_COLUMN() {
+		return getBoolean("IS_CHECK_ALL_INSERT_COLUMN", ConfigTable.IS_CHECK_ALL_INSERT_COLUMN);
+	}
+	default ConfigStore IS_CHECK_ALL_UPDATE_COLUMN(boolean s) {
+		return config("IS_CHECK_ALL_UPDATE_COLUMN", s);
+	}
+	default boolean IS_CHECK_ALL_UPDATE_COLUMN() {
+		return getBoolean("IS_CHECK_ALL_UPDATE_COLUMN", ConfigTable.IS_CHECK_ALL_UPDATE_COLUMN);
+	}
 	/**
 	 * 关闭所有SQL日志
 	 * @return ConfigStore
@@ -2464,6 +2476,18 @@ public interface ConfigStore extends Cloneable{
 			return configs.IS_ENABLE_PLACEHOLDER_REGEX_EXT();
 		}
 		return ConfigTable.IS_ENABLE_PLACEHOLDER_REGEX_EXT;
+	}
+	static boolean IS_CHECK_ALL_INSERT_COLUMN(ConfigStore configs){
+		if(null != configs){
+			return configs.IS_CHECK_ALL_INSERT_COLUMN();
+		}
+		return ConfigTable.IS_CHECK_ALL_INSERT_COLUMN;
+	}
+	static boolean IS_CHECK_ALL_UPDATE_COLUMN(ConfigStore configs){
+		if(null != configs){
+			return configs.IS_CHECK_ALL_UPDATE_COLUMN();
+		}
+		return ConfigTable.IS_CHECK_ALL_UPDATE_COLUMN;
 	}
 } 
  
