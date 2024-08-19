@@ -90,7 +90,7 @@ public class HttpBuilder {
     }
 
     /**
-     * 解析url 识别出参数k=v&k=v
+     * 解析url 识别出参数k=v&amp;k=v
      * @param url url
      * @return HttpBuilder
      */
