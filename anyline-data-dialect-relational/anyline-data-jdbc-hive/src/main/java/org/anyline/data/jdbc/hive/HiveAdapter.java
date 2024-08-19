@@ -1806,7 +1806,13 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 */
 	@Override
 	public List<Run> buildQueryDdlRun(DataRuntime runtime, Table table) throws Exception {
-		return super.buildQueryDdlRun(runtime, table);
+		List<Run> runs = new ArrayList<>();
+		Run run = new SimpleRun(runtime);
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
+		builder.append("show create table ");
+		name(runtime, builder, table);
+		return runs;
 	}
 
 	/**
@@ -1820,7 +1826,13 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 */
 	@Override
 	public List<String> ddl(DataRuntime runtime, int index, Table table, List<String> ddls, DataSet set) {
-		return super.ddl(runtime, index, table, ddls, set);
+		if(null == ddls) {
+			ddls = new ArrayList<>();
+		}
+		for(DataRow row:set) {
+			ddls.add(row.getString("CREATETAB_STMT"));
+		}
+		return ddls;
 	}
 
 	/* *****************************************************************************************************************
