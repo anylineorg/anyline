@@ -319,7 +319,7 @@ public class LogUtil {
             builder.append(row_split);
             idx = 0;
             for(DataRow row:set){
-                if(idx >= rows){
+                if(idx >= rows && rows != -1){
                     break;
                 }
                 builder.append("\n");
