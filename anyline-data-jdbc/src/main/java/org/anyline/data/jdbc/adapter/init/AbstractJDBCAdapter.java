@@ -18,6 +18,7 @@ package org.anyline.data.jdbc.adapter.init;
 
 import org.anyline.adapter.KeyAdapter;
 import org.anyline.data.adapter.init.AbstractDriverAdapter;
+import org.anyline.data.entity.Join;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.param.ConfigParser;
 import org.anyline.data.param.ConfigStore;
@@ -1895,13 +1896,13 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
         if(null != joins) {
             for (Join join:joins) {
                 builder.append(BR_TAB).append(join.getType().getCode()).append(" ");
-                Table joinTable = join.getTable();
+                Table joinTable = join.getPrepare().getTable();
                 String jionTableAlias = joinTable.getAlias();
                 name(runtime, builder, joinTable);
                 if(BasicUtil.isNotEmpty(jionTableAlias)) {
                     builder.append("  ").append(jionTableAlias);
                 }
-                builder.append(" ON ").append(join.getCondition());
+                builder.append(" ON ").append(join.getConfigs().getRunText(runtime, false));
             }
         }
 

@@ -21,7 +21,7 @@ import org.anyline.data.prepare.auto.TablePrepare;
 import org.anyline.data.run.Run;
 import org.anyline.data.run.TableRun;
 import org.anyline.data.runtime.DataRuntime;
-import org.anyline.entity.Join;
+import org.anyline.data.entity.Join;
 import org.anyline.metadata.Table;
 
 import java.util.List;
@@ -61,15 +61,16 @@ public class DefaultTablePrepare extends DefaultAutoPrepare implements TablePrep
 
 	public RunPrepare join(Join join) {
 		joins.add(join);
-		Table table = join.getTable();
+		RunPrepare prepare = join.getPrepare();
+		Table table = prepare.getTable();
 		parseTable(table);
 		return this;
 	}
-	public RunPrepare join(Join.TYPE type, Table table, String condition) {
+	public RunPrepare join(Join.TYPE type, Table table, String ... conditions) {
 		Join join = new Join();
 		join.setTable(table);
 		join.setType(type);
-		join.setCondition(condition);
+		join.setConditions(conditions);
 		return join(join);
 	}
 	public RunPrepare join(Join.TYPE type, String table, String condition) {

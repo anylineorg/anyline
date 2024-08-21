@@ -17,6 +17,7 @@
 package org.anyline.data.graph.adapter.init;
 
 import org.anyline.data.adapter.init.AbstractDriverAdapter;
+import org.anyline.data.entity.Join;
 import org.anyline.data.handler.DataHandler;
 import org.anyline.data.handler.StreamHandler;
 import org.anyline.data.param.ConfigParser;
@@ -1134,14 +1135,14 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
         if(null != joins) {
             for (Join join:joins) {
                 builder.append(BR_TAB).append(join.getType().getCode()).append(" ");
-                Table joinTable = join.getTable();
+                Table joinTable = join.getPrepare().getTable();
                 String joinTableAlias = joinTable.getAlias();
                 name(runtime, builder, joinTable);
                 if(BasicUtil.isNotEmpty(joinTableAlias)) {
                     builder.append("  ");
                     delimiter(builder, joinTableAlias);
                 }
-                builder.append(" ON ").append(join.getCondition());
+                builder.append(" ON ").append(join.getConfigs().getRunText(runtime, false));
             }
         }
 
@@ -2111,13 +2112,13 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
         if(null != joins) {
             for (Join join:joins) {
                 builder.append(BR_TAB).append(join.getType().getCode()).append(" ");
-                Table joinTable = join.getTable();
+                Table joinTable = join.getPrepare().getTable();
                 String jionTableAlias = joinTable.getAlias();
                 name(runtime, builder, joinTable);
                 if(BasicUtil.isNotEmpty(jionTableAlias)) {
                     builder.append("  ").append(jionTableAlias);
                 }
-                builder.append(" ON ").append(join.getCondition());
+                builder.append(" ON ").append(join.getConfigs().getRunText(runtime, false));
             }
         }
 

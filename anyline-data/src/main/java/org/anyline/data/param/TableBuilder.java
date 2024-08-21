@@ -17,8 +17,9 @@
 package org.anyline.data.param;
 
 import org.anyline.data.prepare.RunPrepare;
+import org.anyline.data.prepare.auto.TablePrepare;
 import org.anyline.data.prepare.auto.init.DefaultTablePrepare;
-import org.anyline.entity.Join;
+import org.anyline.data.entity.Join;
 import org.anyline.metadata.Column;
 import org.anyline.metadata.Table;
 
@@ -28,11 +29,30 @@ import java.util.List;
 
 public class TableBuilder {
 
-    private Table table;
-    private String datasource;
+    private TablePrepare prepare;
+    private ConfigStore configs;
     private LinkedHashMap<String,Column> columns = new LinkedHashMap<>(); //需要查询的列
     private List<Join> joins = new ArrayList<>();//关联表
 
+    public RunPrepare build() {
+        if(null == prepare){
+            prepare = new DefaultTablePrepare();
+        }
+        if(null != joins) {
+            for (Join join : joins) {
+                prepare.join(join);
+            }
+        }
+        if(null != columns) {
+            for (Column col : columns.values()) {
+                prepare.addColumn(col);
+            }
+        }
+        if(null != configs){
+            prepare.condition(configs);
+        }
+        return prepare;
+    }
     public static TableBuilder init() {
         TableBuilder builder = new TableBuilder();
         return builder;
@@ -47,23 +67,30 @@ public class TableBuilder {
         builder.setTable(table);
         return builder;
     }
+    public static TableBuilder init(TablePrepare prepare) {
+        TableBuilder builder = new TableBuilder();
+        builder.prepare = prepare;
+        return builder;
+    }
     public static TableBuilder init(String table, String columns) {
         TableBuilder builder = new TableBuilder();
         builder.setTable(table);
         builder.addColumns(columns);
         return builder;
     }
-
-    public TableBuilder setDataSource(String datasoruce) {
-        this.datasource = datasoruce;
+    public TableBuilder condition(ConfigStore configs) {
+        this.configs = configs;
         return this;
     }
+
     public TableBuilder setTable(String table) {
-        this.table = new Table(table);
+        this.prepare = new DefaultTablePrepare();
+        prepare.setTable(table);
         return this;
     }
     public TableBuilder setTable(Table table) {
-        this.table = table;
+        this.prepare = new DefaultTablePrepare();
+        prepare.setTable(table);
         return this;
     }
     public TableBuilder addColumn(String column) {
@@ -80,59 +107,66 @@ public class TableBuilder {
         }
         return this;
     }
-    public RunPrepare build() {
-        DefaultTablePrepare prepare = new DefaultTablePrepare();
-        prepare.setDest(datasource);
-        prepare.setTable(table);
-        for(Join join:joins) {
-            prepare.join(join);
-        }
-        for(Column col: columns.values()) {
-            prepare.addColumn(col);
-        }
-        return prepare;
-    }
 
     public TableBuilder join(Join join) {
         joins.add(join);
         return this;
     }
-    public TableBuilder join(Join.TYPE type, String table, String condition) {
-        return join(type, new Table(table), condition);
+    public TableBuilder join(Join.TYPE type, String table, String ... conditions) {
+        return join(type, new Table(table), conditions);
     }
-    public TableBuilder join(Join.TYPE type, Table table, String condition) {
+    public TableBuilder join(Join.TYPE type, Table table, String ... conditions) {
         Join join = new Join();
         join.setTable(table);
         join.setType(type);
-        join.setCondition(condition);
+        join.setConditions(conditions);
         return join(join);
     }
-    public Table getTable() {
-        return table;
+    public TableBuilder inner(Table table, String ... conditions) {
+        return join(Join.TYPE.INNER, table.getFullName(), conditions);
     }
-    public TableBuilder inner(Table table, String condition) {
-        return join(Join.TYPE.INNER, table.getFullName(), condition);
+    public TableBuilder inner(String table, String ... conditions) {
+        return join(Join.TYPE.INNER, table, conditions);
     }
-    public TableBuilder inner(String table, String condition) {
-        return join(Join.TYPE.INNER, table, condition);
+    public TableBuilder left(String table, String ... conditions) {
+        return join(Join.TYPE.LEFT, table, conditions);
     }
-    public TableBuilder left(String table, String condition) {
-        return join(Join.TYPE.LEFT, table, condition);
+    public TableBuilder left(Table table, String ... conditions) {
+        return join(Join.TYPE.LEFT, table, conditions);
     }
-    public TableBuilder left(Table table, String condition) {
-        return join(Join.TYPE.LEFT, table, condition);
+    public TableBuilder right(String table, String ... conditions) {
+        return join(Join.TYPE.RIGHT, table, conditions);
     }
-    public TableBuilder right(String table, String condition) {
-        return join(Join.TYPE.RIGHT, table, condition);
+    public TableBuilder right(Table table, String ... conditions) {
+        return join(Join.TYPE.RIGHT, table, conditions);
     }
-    public TableBuilder right(Table table, String condition) {
-        return join(Join.TYPE.RIGHT, table, condition);
-    }
-    public TableBuilder full(String table, String condition) {
-        return join(Join.TYPE.FULL, table, condition);
+    public TableBuilder full(String table, String ... conditions) {
+        return join(Join.TYPE.FULL, table, conditions);
     }
 
-    public TableBuilder full(Table table, String condition) {
-        return join(Join.TYPE.FULL, table, condition);
+    public TableBuilder full(Table table, String ... conditions) {
+        return join(Join.TYPE.FULL, table, conditions);
+    }
+
+
+    public TableBuilder join(Join.TYPE type, RunPrepare prepare, String ... conditions) {
+        Join join = new Join();
+        join.setPrepare(prepare);
+        join.setType(type);
+        join.setConditions(conditions);
+        return join(join);
+    }
+    public TableBuilder inner(RunPrepare prepare, String ... conditions) {
+        return join(Join.TYPE.INNER, prepare, conditions);
+    }
+    public TableBuilder left(RunPrepare prepare, String ... conditions) {
+        return join(Join.TYPE.LEFT, prepare, conditions);
+    }
+    public TableBuilder right(RunPrepare prepare, String ... conditions) {
+        return join(Join.TYPE.RIGHT, prepare, conditions);
+    }
+
+    public TableBuilder full(RunPrepare prepare, String ... conditions) {
+        return join(Join.TYPE.FULL, prepare, conditions);
     }
 }

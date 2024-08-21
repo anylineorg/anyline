@@ -16,6 +16,7 @@
 
 package org.anyline.data.prepare;
 
+import org.anyline.data.entity.Join;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.run.Run;
 import org.anyline.data.runtime.DataRuntime;

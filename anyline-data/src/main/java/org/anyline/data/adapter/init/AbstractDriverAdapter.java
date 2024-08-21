@@ -23,6 +23,7 @@ import org.anyline.adapter.KeyAdapter;
 import org.anyline.data.adapter.DriverActuator;
 import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.cache.PageLazyStore;
+import org.anyline.data.entity.Join;
 import org.anyline.data.listener.DDListener;
 import org.anyline.data.listener.DMListener;
 import org.anyline.data.metadata.TypeMetadataAlias;
@@ -2422,6 +2423,15 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
     public Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions) {
         Run run = initQueryRun(runtime, prepare);
         init(runtime, run, configs, conditions);
+        List<Join> joins = prepare.getJoins();
+        if(null != joins){
+            for(Join join:joins){
+                RunPrepare joinPrepare = join.getPrepare();
+                Run joinRun = buildQueryRun(runtime, joinPrepare, join.getConfigs());
+                joinRun = fillQueryContent(runtime, joinRun);
+                join.setRun(joinRun);
+            }
+        }
         List<Run> unions = run.getUnions();
         if(null != unions) {
             for(Run union:unions) {
@@ -2762,14 +2772,15 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         if(null != joins) {
             for (Join join:joins) {
                 builder.append(BR_TAB).append(join.getType().getCode()).append(" ");
-                Table joinTable = join.getTable();
-                String joinTableAlias = joinTable.getAlias();
-                name(runtime, builder, joinTable);
+                RunPrepare prepare = join.getPrepare();
+                String joinTableAlias = prepare.getAlias();
+                builder.append("(").append(join.getRun().getFinalQuery(true)).append(")");
+                //name(runtime, builder, joinTable);
                 if(BasicUtil.isNotEmpty(joinTableAlias)) {
                     builder.append("  ");
                     delimiter(builder, joinTableAlias);
                 }
-                builder.append(" ON ").append(join.getCondition());
+                builder.append(" ON ").append(join.getConfigs().getRunText(runtime, false));
             }
         }
 

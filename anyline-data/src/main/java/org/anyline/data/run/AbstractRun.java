@@ -17,6 +17,7 @@
 package org.anyline.data.run;
 
 import org.anyline.data.adapter.DriverAdapter;
+import org.anyline.data.entity.Join;
 import org.anyline.data.param.ConfigParser;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.ParseResult;
@@ -1314,11 +1315,11 @@ public abstract class AbstractRun implements Run {
 		joins.add(join);
 		return this;
 	}
-	public Run join(Join.TYPE type, Table table, String condition) {
+	public Run join(Join.TYPE type, Table table, String ... conditions) {
 		Join join = new Join();
 		join.setTable(table);
 		join.setType(type);
-		join.setCondition(condition);
+		join.setConditions(conditions);
 		return join(join);
 	}
 	public Run join(Join.TYPE type, String table, String condition) {

@@ -25,7 +25,7 @@ import org.anyline.data.prepare.Variable;
 import org.anyline.data.prepare.auto.AutoPrepare;
 import org.anyline.data.prepare.init.AbstractRunPrepare;
 import org.anyline.entity.Compare;
-import org.anyline.entity.Join;
+import org.anyline.data.entity.Join;
 import org.anyline.entity.Order;
 import org.anyline.metadata.Catalog;
 import org.anyline.metadata.Column;

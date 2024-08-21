@@ -16,6 +16,7 @@
 
 package org.anyline.data.prepare.init;
 
+import org.anyline.data.entity.Join;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.Condition;
 import org.anyline.data.prepare.ConditionChain;

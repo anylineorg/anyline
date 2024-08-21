@@ -558,7 +558,7 @@ public class DefaultService<E> implements AnylineService<E> {
     }
 
     @Override
-    public DataRow query(RunPrepare table, ConfigStore store, Object obj, String... conditions) {
+    public DataRow query(RunPrepare prepare, ConfigStore store, Object obj, String... conditions) {
         DefaultPageNavi navi = new DefaultPageNavi();
         navi.setFirstRow(0);
         navi.setLastRow(0);
@@ -567,7 +567,7 @@ public class DefaultService<E> implements AnylineService<E> {
             store = new DefaultConfigStore();
         }
         store.setPageNavi(navi);
-        DataSet set = querys(table, store, obj, conditions);
+        DataSet set = querys(prepare, store, obj, conditions);
         if (null != set && !set.isEmpty()) {
             DataRow row = set.getRow(0);
             return row;

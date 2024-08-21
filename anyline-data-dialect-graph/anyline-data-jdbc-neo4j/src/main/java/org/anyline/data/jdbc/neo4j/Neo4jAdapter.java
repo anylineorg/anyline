@@ -18,6 +18,7 @@ package org.anyline.data.jdbc.neo4j;
 
 import org.anyline.adapter.EntityAdapter;
 import org.anyline.annotation.Component;
+import org.anyline.data.entity.Join;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.adapter.init.AbstractJDBCAdapter;
 import org.anyline.data.jdbc.neo4j.entity.Neo4jRow;
@@ -922,12 +923,12 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
         if(null != joins) {
             for (Join join:joins) {
                 builder.append(JDBCAdapter.BR_TAB).append(join.getType().getCode()).append(" ");
-                Table table = join.getTable();
+                Table table = join.getPrepare().getTable();
                 delimiter(builder, table.getName());
                 if(BasicUtil.isNotEmpty(table.getAlias())) {
                     builder.append("  ").append(table.getAlias());
                 }
-                builder.append(" ON ").append(join.getCondition());
+                builder.append(" ON ").append(join.getConfigs().getRunText(runtime, false));
             }
         }
 
