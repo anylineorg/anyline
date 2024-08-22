@@ -16,11 +16,11 @@
 
 package org.anyline.data.entity;
 
-import org.anyline.data.Run;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.prepare.auto.init.DefaultTablePrepare;
+import org.anyline.data.run.Run;
 import org.anyline.metadata.Table;
 
 import java.io.Serializable;

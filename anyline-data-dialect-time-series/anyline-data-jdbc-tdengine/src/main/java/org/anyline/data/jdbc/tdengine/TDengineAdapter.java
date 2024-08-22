@@ -4209,7 +4209,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         int idx = 0;
         for(Tag tag:tags) {
             if(idx > 0) {
-                builder.append(",");
+                builder.append(", ");
             }
             delimiter(builder, tag.getName());
             idx ++;
@@ -4218,7 +4218,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         idx = 0;
         for(Tag tag:tags) {
             if(idx > 0) {
-                builder.append(",");
+                builder.append(", ");
             }
             //format(builder, tag.getValue());
             builder.append(write(runtime,tag, tag.getValue(), false));
@@ -4529,7 +4529,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
                 int idx = 0;
                 for(Tag tag:tags.values()) {
                     if(idx > 0) {
-                        builder.append(",");
+                        builder.append(", ");
                     }
                     delimiter(builder, tag.getName()).append(" ");
                     type(runtime, builder, tag);
@@ -4710,7 +4710,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         int idx = 0;
         for(Tag tag:tags) {
             if(idx > 0) {
-                builder.append(",");
+                builder.append(", ");
             }
             delimiter(builder, tag.getName());
             idx ++;
@@ -4719,7 +4719,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         idx = 0;
         for(Tag tag:tags) {
             if(idx > 0) {
-                builder.append(",");
+                builder.append(", ");
             }
             //format(builder, tag.getValue());
             builder.append(write(runtime,null, tag.getValue(), false));

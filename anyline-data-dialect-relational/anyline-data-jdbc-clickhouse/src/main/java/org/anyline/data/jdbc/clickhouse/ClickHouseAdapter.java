@@ -42,6 +42,7 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
     }
 
     public ClickHouseAdapter() {
+        super();
         delimiterFr = "";
         delimiterTo = "";
         ClickhouseConvert.reg();
@@ -3822,7 +3823,7 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
             Column.sort(primary.getPositions(), pks);
             for(Column pk:pks.values()) {
                 if(!first) {
-                    builder.append(",");
+                    builder.append(", ");
                 }
                 first = false;
                 delimiter(builder, pk.getName());

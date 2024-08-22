@@ -71,6 +71,14 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         return super.supportSchema();
     }
 
+    @Override
+    public  String columnAliasGuidd(){
+        return " AS ";
+    }
+    @Override
+    public  String tableAliasGuidd(){
+        return " AS ";
+    }
     private static Map<Type, String> types = new HashMap<>();
     static {
         types.put(Table.TYPE.NORMAL, "BASE TABLE");
@@ -4420,7 +4428,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
             Column.sort(primary.getPositions(), pks);
             for(Column pk:pks.values()) {
                 if(!first) {
-                    builder.append(",");
+                    builder.append(", ");
                 }
                 first = false;
                 delimiter(builder, pk.getName());

@@ -220,7 +220,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
             for(Column column:columns.values()) {
                 String key = column.getName();
                 if(!start) {
-                    builder.append(",");
+                    builder.append(", ");
                 }
                 start = false;
                 builder.append(key);
@@ -299,7 +299,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
         for(Column column:columns.values()) {
             String key = column.getName();
             if(!start) {
-                builder.append(",");
+                builder.append(", ");
             }
             start = false;
             builder.append(key);
@@ -311,7 +311,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
             String key = column.getName();
             String seq = seqs.get(key);
             if(!start) {
-                builder.append(",");
+                builder.append(", ");
             }
             start = false;
             if(null != seq) {
@@ -3987,7 +3987,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
             Column.sort(primary.getPositions(), pks);
             for(Column pk:pks.values()) {
                 if(!first) {
-                    builder.append(",");
+                    builder.append(", ");
                 }
                 first = false;
                 delimiter(builder, pk.getName());

@@ -111,6 +111,12 @@ public interface DriverAdapter {
     default boolean supportPlaceholder(){
         return true;
     }
+    default String columnAliasGuidd(){
+        return " ";
+    }
+    default String tableAliasGuidd(){
+        return " ";
+    }
     void setListener(DDListener listener);
     DDListener getDDListener();
     void setListener(DMListener listener);

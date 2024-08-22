@@ -16,11 +16,13 @@
 
 package org.anyline.data.param;
 
+import org.anyline.data.entity.Join;
 import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.RunPrepare;
-import org.anyline.data.prepare.auto.TablePrepare;
+import org.anyline.data.prepare.auto.init.DefaultAutoPrepare;
 import org.anyline.data.prepare.auto.init.DefaultTablePrepare;
-import org.anyline.data.entity.Join;
+import org.anyline.data.run.Run;
+import org.anyline.data.runtime.DataRuntime;
 import org.anyline.metadata.Column;
 import org.anyline.metadata.Table;
 
@@ -30,12 +32,19 @@ import java.util.List;
 
 public class TableBuilder {
 
+    private Table table;
     private RunPrepare prepare;
     private ConfigStore conditions = new DefaultConfigStore();
     private LinkedHashMap<String,Column> columns = new LinkedHashMap<>(); //需要查询的列
     private List<Join> joins = new ArrayList<>();//关联表
 
     public RunPrepare build() {
+        RunPrepare result = new DefaultAutoPrepare() {
+            @Override
+            public Run build(DataRuntime runtime) {
+                return null;
+            }
+        };
         if(null == prepare){
             prepare = new DefaultTablePrepare();
         }
@@ -59,16 +68,25 @@ public class TableBuilder {
         return builder;
     }
     public static TableBuilder init(String table) {
+        return from(table);
+    }
+    public static TableBuilder from(String table) {
         TableBuilder builder = new TableBuilder();
         builder.setTable(table);
         return builder;
     }
     public static TableBuilder init(Table table) {
+        return from(table);
+    }
+    public static TableBuilder from(Table table) {
         TableBuilder builder = new TableBuilder();
         builder.setTable(table);
         return builder;
     }
     public static TableBuilder init(RunPrepare prepare) {
+        return from(prepare);
+    }
+    public static TableBuilder from(RunPrepare prepare) {
         TableBuilder builder = new TableBuilder();
         builder.prepare = prepare;
         return builder;
@@ -85,15 +103,10 @@ public class TableBuilder {
     }
 
     public TableBuilder setTable(String table) {
-        TablePrepare prepare = new DefaultTablePrepare();
-        prepare.setTable(table);
-        this.prepare = prepare;
-        return this;
+        return setTable(new Table(table));
     }
     public TableBuilder setTable(Table table) {
-        TablePrepare prepare = new DefaultTablePrepare();
-        prepare.setTable(table);
-        this.prepare = prepare;
+        this.table = table;
         return this;
     }
     public TableBuilder addColumn(String column) {
@@ -103,6 +116,19 @@ public class TableBuilder {
         return this;
     }
     public TableBuilder addColumns(String ... columns) {
+        if(null != columns) {
+            for (String column:columns) {
+                addColumn(column);
+            }
+        }
+        return this;
+    }
+    public TableBuilder columns(String ... columns) {
+        return addColumns(columns);
+    }
+
+    public TableBuilder setColumns(String ... columns) {
+        this.columns = new LinkedHashMap<>();
         if(null != columns) {
             for (String column:columns) {
                 addColumn(column);

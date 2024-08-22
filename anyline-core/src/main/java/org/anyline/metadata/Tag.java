@@ -82,7 +82,7 @@ public class Tag extends Column implements Serializable {
         if(null != precision && precision > 0) {
             builder.append("(").append(precision);
             if(null != scale && scale > 0) {
-                builder.append(",").append(scale);
+                builder.append(", ").append(scale);
             }
             builder.append(")");
         }

@@ -61,7 +61,7 @@ public class DefaultDDListener implements DDListener {
         }else{
             // 根据行数
             RunPrepare prepare = new DefaultTablePrepare();
-            prepare.setDest(table.getName());
+            prepare.setDest(table);
             long rows = runtime.getAdapter().count(runtime, random, prepare, null);
             if(rows > ConfigTable.AFTER_ALTER_COLUMN_EXCEPTION_ACTION) {
                 swt = afterAlterColumnException(runtime, random, table, column, rows, exception);

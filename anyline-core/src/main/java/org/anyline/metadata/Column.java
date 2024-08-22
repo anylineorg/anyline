@@ -875,7 +875,7 @@ public class Column extends TableAffiliation<Column> implements Serializable {
                     }
                     if (appendScale) {//可能单独出现
                         if (appendPrecision) {
-                            builder.append(",");
+                            builder.append(", ");
                         }
                         builder.append(scale);
                     }
@@ -890,7 +890,7 @@ public class Column extends TableAffiliation<Column> implements Serializable {
                     builder.append("(");
                     builder.append(child);
                     if (null != srid) {
-                        builder.append(",").append(srid);
+                        builder.append(", ").append(srid);
                     }
                     builder.append(")");
                 }

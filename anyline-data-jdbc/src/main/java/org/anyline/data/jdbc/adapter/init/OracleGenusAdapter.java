@@ -329,7 +329,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
             boolean start = true;
             for (Column column : columns.values()) {
                 if (!start) {
-                    builder.append(",");
+                    builder.append(", ");
                 }
                 start = false;
                 String key = column.getName();
@@ -821,7 +821,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
             boolean first = true;
             for (String name : names) {
                 if(!first) {
-                    builder.append(",");
+                    builder.append(", ");
                 }
                 first = false;
                 delimiter(builder,name);
@@ -4366,7 +4366,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
             Column.sort(primary.getPositions(), pks);
             for(Column pk:pks.values()) {
                 if(!first) {
-                    builder.append(",");
+                    builder.append(", ");
                 }
                 delimiter(builder, pk.getName());
                 String order = pk.getOrder();
@@ -7048,7 +7048,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
             String key = column.getName();
             Sequence seq = sequens.get(key);
             if(!start) {
-                builder.append(",");
+                builder.append(", ");
             }
             start = false;
             if(null != seq) {

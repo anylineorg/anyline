@@ -16,6 +16,7 @@
 
 package org.anyline.data.prepare.auto.init;
  
+import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.prepare.auto.TextPrepare;
 import org.anyline.data.run.Run;
 import org.anyline.data.run.TextRun;
@@ -38,5 +39,11 @@ public class DefaultTextPrepare extends DefaultAutoPrepare implements TextPrepar
 		run.setPrepare(this);
 		run.setRuntime(runtime);
 		return run;
+	}
+
+	@Override
+	public RunPrepare setContent(String content) {
+		this.text = content;
+		return this;
 	}
 }

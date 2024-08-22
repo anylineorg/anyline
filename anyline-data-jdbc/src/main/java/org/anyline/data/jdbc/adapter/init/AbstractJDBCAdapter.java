@@ -558,8 +558,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
         boolean first = true;
         for(Column column:cols.values()) {
             if(!first) {
-                builder.append(",");
-                valuesBuilder.append(",");
+                builder.append(", ");
+                valuesBuilder.append(", ");
             }
             first = false;
             String key = column.getName();
@@ -1191,7 +1191,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
             boolean first = true;
             for(Object v:values) {
                 if(!first) {
-                    builder.append(",");
+                    builder.append(", ");
                 }
                 first = false;
                 if(placeholder) {
@@ -1772,7 +1772,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
                     int idx = 0;
                     for (Object obj : cons) {
                         if (idx > 0) {
-                            builder.append(",");
+                            builder.append(", ");
                         }
                         // builder.append("'").append(obj).append("'");
                         builder.append("?");
@@ -1902,7 +1902,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
                 if(BasicUtil.isNotEmpty(jionTableAlias)) {
                     builder.append("  ").append(jionTableAlias);
                 }
-                builder.append(" ON ").append(join.getConfigs().getRunText(runtime, false));
+                builder.append(" ON ").append(join.getOns().getRunText(runtime, false));
             }
         }
 
@@ -5164,7 +5164,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 			Column.sort(primary.getPositions(), pks);
 			for(Column pk:pks.values()) {
 				if(!first) {
-					builder.append(",");
+					builder.append(", ");
 				}
 				delimiter(builder, pk.getName());
 				String order = pk.getOrder();
@@ -5268,7 +5268,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 					}
 					builder.append("\n\t");
 					if(idx > 0) {
-						builder.append(",");
+						builder.append(", ");
 					}
 					column.setAction(ACTION.DDL.COLUMN_ADD);
 					delimiter(builder, column.getName(), false).append(" ");
@@ -5476,7 +5476,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 			boolean first = true;
 			for(Object item:list) {
 				if(!first) {
-					builder.append(",");
+					builder.append(", ");
 				}
 				first = false;
 				if(item instanceof Number) {
@@ -7115,7 +7115,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 							continue;
 						}
 						if (!first) {
-							builder.append(",");
+							builder.append(", ");
 						}
 						builder.append(item.getBuilder());
 						first = false;
@@ -7279,7 +7279,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 			boolean first = true;
 			for(Column column:columns.values()) {
 				if(!first) {
-					builder.append(",");
+					builder.append(", ");
 				}
 				name(runtime, builder, column.getReference());
 				first = false;
@@ -7471,7 +7471,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		Column.sort(meta.getPositions(), columns);
 		for(Column column:columns.values()) {
 			if(qty>0) {
-				builder.append(",");
+				builder.append(", ");
 			}
 			delimiter(builder, column.getName(), false);
 			Order.TYPE order = meta.getOrder(column.getName());
@@ -7710,7 +7710,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		Collection<Column> cols = meta.getColumns().values();
 		for(Column column:cols) {
 			if(!first) {
-				builder.append(",");
+				builder.append(", ");
 			}
 			first = false;
 			delimiter(builder, column.getName(), false);
@@ -8047,13 +8047,13 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 				continue;
 			}
 			if(!first) {
-				builder.append(",");
+				builder.append(", ");
 			}
 			parameter(runtime, builder, parameter);
 		}
 		for(Parameter parameter:outs) {
 			if(!first) {
-				builder.append(",");
+				builder.append(", ");
 			}
 			parameter(runtime, builder, parameter);
 		}
@@ -8567,7 +8567,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 			boolean src = false; //直接拼接 如${now()} ${序列}
 			String key = column.getName();
 			if (!first && (!batch || head)) {
-				builder.append(",");
+				builder.append(", ");
 			}
 			first = false;
 			Object value = null;

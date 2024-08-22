@@ -794,7 +794,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
                 String key = col.getName();
                 Object value = row.get(key);
                 if(!first) {
-                    builder.append(",");
+                    builder.append(", ");
                 }
                 first = false;
                 if(BasicUtil.checkEl(value+"")) {

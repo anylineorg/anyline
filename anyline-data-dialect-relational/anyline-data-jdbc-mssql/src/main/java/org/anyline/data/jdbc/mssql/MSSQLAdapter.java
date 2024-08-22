@@ -4038,7 +4038,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
             Column.sort(primary.getPositions(), pks);
             for(Column pk:pks.values()) {
                 if(!first) {
-                    builder.append(",");
+                    builder.append(", ");
                 }
                 first = false;
                 delimiter(builder, pk.getName());

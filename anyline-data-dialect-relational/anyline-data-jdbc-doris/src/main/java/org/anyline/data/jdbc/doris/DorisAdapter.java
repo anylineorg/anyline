@@ -3964,7 +3964,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
                 if(null != type && null != columns && !columns.isEmpty()) {
                     builder.append("\n");
                     if(!kfirst) {
-                        builder.append(",");
+                        builder.append(", ");
                     }
                     kfirst = false;
                     builder.append(" ").append(type.name()).append(" KEY(");
@@ -4031,7 +4031,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
                     continue;
                 }
                 if(!vfirst) {
-                    builder.append(",");
+                    builder.append(", ");
                 }
                 vfirst = false;
                 builder.append(view.getName()).append("(");
@@ -4064,7 +4064,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
                     continue;
                 }
                 if(!first) {
-                    builder.append(",");
+                    builder.append(", ");
                 }
                 first = false;
                 builder.append("\"").append(key).append("\" = \"").append(value).append("\"");
@@ -4134,7 +4134,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
             for(Table.Partition.Slice slice:slices) {
                 builder.append("\n\t");
                 if(!sfirst) {
-                    builder.append(",");
+                    builder.append(", ");
                 }
                 sfirst = false;
                 Object min = slice.getMin();
@@ -4181,7 +4181,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
                     boolean lfirst = true;
                     for (Column column : columns.values()) {
                         if (!lfirst) {
-                            builder.append(",");
+                            builder.append(", ");
                         }
                         lfirst = false;
                         Object v = less.get(column.getName().toUpperCase());
@@ -4207,7 +4207,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
                     boolean vfirst = true;
                     for(Object value:values) {
                         if(!vfirst) {
-                            builder.append(",");
+                            builder.append(", ");
                         }
                         vfirst = false;
                         boolean number = BasicUtil.isNumber(value);
@@ -5964,7 +5964,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 				continue;
 			}
 			if(!first){
-				builder.append(",");
+				builder.append(", ");
 			}
 			first = false;
 			builder.append("\"").append(key).append("\" = \"").append(value).append("\"");

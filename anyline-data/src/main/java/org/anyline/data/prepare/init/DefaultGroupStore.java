@@ -93,7 +93,7 @@ public class DefaultGroupStore implements GroupStore, Serializable {
 				}
 				SQLUtil.delimiter(builder, group.getColumn(), delimiter);
 				if(i<groups.size()-1) {
-					builder.append(",");
+					builder.append(", ");
 				} 
 			} 
 		} 

@@ -267,7 +267,7 @@ public class DefaultXMLPrepare extends AbstractRunPrepare implements XMLPrepare 
 //			for(int i=0; i<size; i++) {
 //				builder.append(groups.get(i)); 
 //				if(i<size-1) {
-//					builder.append(","); 
+//					builder.append(", "); 
 //				} 
 //			} 
 //		} 

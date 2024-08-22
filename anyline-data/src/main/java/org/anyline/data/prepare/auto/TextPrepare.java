@@ -19,4 +19,10 @@ package org.anyline.data.prepare.auto;
 import org.anyline.data.prepare.RunPrepare;
  
 public interface TextPrepare extends RunPrepare{
+    /**
+     * 设置数据源
+     * @param content 查询等命令
+     * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
+     */
+    RunPrepare setContent(String content);
 }

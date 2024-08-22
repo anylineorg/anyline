@@ -1185,7 +1185,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                     value = str.substring(2, str.length()-1);
 
                     if(!first) {
-                        builder.append(",");
+                        builder.append(", ");
                     }
                     delimiter(builder, key).append(" = ").append(value).append(BR_TAB);
                     first = false;
@@ -1207,7 +1207,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                     }
                     if(chk) {
                         if(!first) {
-                            builder.append(",");
+                            builder.append(", ");
                         }
                         first = false;
                         delimiter(builder, key).append(" = ?").append(BR_TAB);
@@ -1316,7 +1316,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 String key = col.getName();
                 Object value = row.get(key);
                 if(!first) {
-                    builder.append(",");
+                    builder.append(", ");
                 }
                 first = false;
                 //if(null != value && value.toString().startsWith("${") && value.toString().endsWith("}") ) {
@@ -1428,7 +1428,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             for(Column col:cols.values()) {
                 String key = col.getName();
                 if(!start) {
-                    builder.append(",");
+                    builder.append(", ");
                 }
                 start = false;
                 builder.append(key);
@@ -2426,9 +2426,13 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         List<Join> joins = prepare.getJoins();
         if(null != joins){
             for(Join join:joins){
+                //判断是简单的表 还是子查询
+                //指定列 或 查询条件的要生成子查询
                 RunPrepare joinPrepare = join.getPrepare();
-                Run joinRun = buildQueryRun(runtime, joinPrepare, join.getConditions());
-                join.setRun(joinRun);
+                if(!joinPrepare.getColumns().isEmpty() || !joinPrepare.getConditionChain().getConditions().isEmpty()) {
+                    Run joinRun = buildQueryRun(runtime, joinPrepare, join.getConditions());
+                    join.setRun(joinRun);
+                }
             }
         }
         List<Run> unions = run.getUnions();
@@ -2727,7 +2731,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                     continue;
                 }
                 if(!first) {
-                    builder.append(",");
+                    builder.append(", ");
                 }
                 first = false;
                 String name = column.getName();
@@ -2742,7 +2746,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                         int split = name.toUpperCase().indexOf(" AS ");
                         String tmp = name.substring(0, split).trim();
                         delimiter(builder, tmp);
-                        builder.append(" ");
+                        builder.append(columnAliasGuidd());
                         tmp = name.substring(split+4).trim();
                         delimiter(builder, tmp);
                     }else if("*".equals(name)) {
@@ -2758,12 +2762,19 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             builder.append("*");
             builder.append(BR);
         }
+        RunPrepare prepare = run.getPrepare();
         Table table = run.getTable();
-        builder.append("FROM").append(BR_TAB);
-        name(runtime, builder, table);
+        builder.append("FROM ");
+        if(!prepare.getColumns().isEmpty() || !prepare.getConditionChain().getConditions().isEmpty()) {
+            String inner = run.getFinalQuery(true);
+            inner = BasicUtil.tab(inner);
+            builder.append("(\n").append(inner).append("\n)");
+        }else {
+            name(runtime, builder, table); //TODO 这里要判断是表还是子查询
+        }
         String alias = table.getAlias();
         if(BasicUtil.isNotEmpty(alias)) {
-            builder.append(" ");
+            builder.append(tableAliasGuidd());
             delimiter(builder, alias);
         }
         builder.append(BR);
@@ -2771,14 +2782,18 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         if(null != joins) {
             for (Join join:joins) {
                 builder.append(join.getType().getCode()).append(" ");
-                RunPrepare prepare = join.getPrepare();
-                String joinTableAlias = prepare.getAlias();
-                String inner = join.getRun().getFinalQuery(true);
-                inner = BasicUtil.tab(inner);
-                builder.append("(\n").append(inner).append("\n)");
-                //name(runtime, builder, joinTable);
+                RunPrepare join_prepare = join.getPrepare();
+                String joinTableAlias = join_prepare.getAlias();
+                Run inner_run = join.getRun();
+                if(null != inner_run){
+                    String inner = join.getRun().getFinalQuery(true);
+                    inner = BasicUtil.tab(inner);
+                    builder.append("(\n").append(inner).append("\n)");
+                }else{
+                    name(runtime, builder, join.getPrepare().getTable());
+                }
                 if(BasicUtil.isNotEmpty(joinTableAlias)) {
-                    builder.append("  ");
+                    builder.append(tableAliasGuidd());
                     delimiter(builder, joinTableAlias);
                 }
                 String on = join.getOns().getRunText(runtime, false);
@@ -12168,7 +12183,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 					}
 					builder.append("\n");
 					if(!first) {
-						builder.append(",");
+						builder.append(", ");
 					}
 					first = false;
 					builder.append(line);

@@ -5772,7 +5772,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		Collection<Column> cols = meta.getColumns().values();
 		for(Column column:cols) {
 			if(qty>0) {
-				builder.append(",");
+				builder.append(", ");
 			}
 			delimiter(builder, column.getName(), false);
 			String order = column.getOrder();

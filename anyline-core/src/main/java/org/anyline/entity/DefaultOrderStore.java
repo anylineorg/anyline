@@ -111,7 +111,7 @@ public class DefaultOrderStore implements OrderStore{
 				}
 				SQLUtil.delimiter(builder, order.getColumn(), delimiter).append(" ").append(order.getType());
 				if(i<orders.size()-1) {
-					builder.append(",");
+					builder.append(", ");
 				} 
 			} 
 		} 

@@ -15,7 +15,17 @@
  */
 
 package org.anyline.data.prepare.auto;
- 
- 
+
+
+import org.anyline.data.prepare.RunPrepare;
+
 public interface TablePrepare extends AutoPrepare{
+
+    /**
+     * 设置数据源
+     * @param table 表
+     * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
+     */
+    RunPrepare setTable(String table);
+
 }

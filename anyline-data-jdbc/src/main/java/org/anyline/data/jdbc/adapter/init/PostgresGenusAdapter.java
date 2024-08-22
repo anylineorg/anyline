@@ -654,7 +654,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
             boolean first = true;
             for (String name : names) {
                 if(!first) {
-                    builder.append(",");
+                    builder.append(", ");
                 }
                 first = false;
                 builder.append(key).append("('").append(name).append("') AS ").append(name);
@@ -6990,7 +6990,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
                 boolean first = true;
                 for(Column column:columns.values()) {
                     if(!first) {
-                        builder.append(",");
+                        builder.append(", ");
                     }
                     first = false;
                     builder.append(column.getName()).append(" = EXCLUDED.");

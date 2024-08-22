@@ -785,7 +785,7 @@ public class DefaultPageNavi implements PageNavi, Serializable, Cloneable {
 				if(!get) {//post
 					builder.append(" onclick='_navi_go(").append(page);
 					if (BasicUtil.isNotEmpty(configFlag)) {
-						builder.append(",").append(configFlag);
+						builder.append(", ").append(configFlag);
 					}
 					builder.append(")'");
 				}

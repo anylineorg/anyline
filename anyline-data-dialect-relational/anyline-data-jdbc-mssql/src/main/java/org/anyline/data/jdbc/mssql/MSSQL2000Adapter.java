@@ -161,7 +161,7 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter {
         boolean start = true;
         for(Column column:columns.values()) {
             if(!start) {
-                builder.append(",");
+                builder.append(", ");
             }
             start = false;
             String key = column.getName();
@@ -226,7 +226,7 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter {
         boolean start = true;
         for(Column column:columns.values()) {
             if(!start) {
-                builder.append(",");
+                builder.append(", ");
             }
             start = false;
             String key = column.getName();
