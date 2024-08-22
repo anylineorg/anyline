@@ -38,6 +38,8 @@
 		<spring-boot.version>2.6.12</spring-boot.version>
 		<vertx.version>4.5.7</vertx.version>
 
+
+		<jdbc-access.version>5.0.1</jdbc-access.version>
 		<jdbc-mssql.version>7.2.2.jre8</jdbc-mssql.version>
 		<jdbc-mysql.version>8.0.28</jdbc-mysql.version>
 		<jdbc-db2.version>11.5.0.0</jdbc-db2.version>
@@ -424,6 +426,11 @@
 			<dependency>
 				<groupId>org.anyline</groupId>
 				<artifactId>anyline-data-jdbc-mssql</artifactId>
+				<version>${anyline.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
+				<artifactId>anyline-data-jdbc-access</artifactId>
 				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
@@ -821,6 +828,11 @@
 				<groupId>com.microsoft.sqlserver</groupId>
 				<artifactId>mssql-jdbc</artifactId>
 				<version>${jdbc-mssql.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>net.sf.ucanaccess</groupId>
+				<artifactId>ucanaccess</artifactId>
+				<version>${jdbc-access.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.neo4j</groupId>
