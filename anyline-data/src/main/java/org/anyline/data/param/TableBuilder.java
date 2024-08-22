@@ -43,6 +43,7 @@ public class TableBuilder {
                 prepare.join(item);
             }
             if(null != columns && !columns.isEmpty()) {
+                prepare.getColumns().clear();
                 for(Column col: columns.values()) {
                     prepare.addColumn(col);
                 }
@@ -59,16 +60,16 @@ public class TableBuilder {
         return from(table);
     }
     public static TableBuilder from(String table) {
-        TableBuilder builder = new TableBuilder();
-        builder.joins.add(new DefaultTablePrepare(table));
-        return builder;
+        return from(new Table(table));
     }
     public static TableBuilder init(Table table) {
         return from(table);
     }
     public static TableBuilder from(Table table) {
         TableBuilder builder = new TableBuilder();
-        builder.joins.add(new DefaultTablePrepare(table));
+        RunPrepare prepare = new DefaultTablePrepare(table);
+        prepare.setIsSub(false);
+        builder.prepare = prepare;
         return builder;
     }
     public static TableBuilder init(RunPrepare prepare) {
@@ -76,12 +77,12 @@ public class TableBuilder {
     }
     public static TableBuilder from(RunPrepare prepare) {
         TableBuilder builder = new TableBuilder();
-        builder.joins.add(prepare);
+        prepare.setIsSub(true);
+        builder.prepare = prepare;
         return builder;
     }
     public static TableBuilder init(String table, String columns) {
-        TableBuilder builder = new TableBuilder();
-        builder.joins.add(new DefaultTablePrepare(table));
+        TableBuilder builder = init(table);
          builder.addColumns(columns);
         return builder;
     }
@@ -121,19 +122,23 @@ public class TableBuilder {
         Join join = new Join();
         join.setType(type);
         join.setConditions(configs);
+        prepare.setIsSub(true);
         return join(prepare, join);
     }
     public TableBuilder join(RunPrepare prepare, Join.TYPE type, String ... conditions) {
         Join join = new Join();
         join.setType(type);
         join.setConditions(conditions);
+        prepare.setIsSub(true);
         return join(prepare, join);
     }
     public TableBuilder join(RunPrepare prepare, Join join) {
         prepare.setJoin(join);
+        prepare.setIsSub(true);
         return join(prepare);
     }
     public TableBuilder join(RunPrepare prepare) {
+        prepare.setIsSub(true);
         this.joins.add(prepare);
         return this;
     }
@@ -142,11 +147,13 @@ public class TableBuilder {
     }
     public TableBuilder join(Join.TYPE type, Table table, String ... conditions) {
         RunPrepare prepare = new DefaultTablePrepare(table);
+        prepare.setIsSub(false);
         Join join = new Join();
         join.setType(type);
         join.setConditions(conditions);
         prepare.setJoin(join);
-        return join(prepare);
+        this.joins.add(prepare);
+        return this;
     }
     public TableBuilder inner(Table table, String ... conditions) {
         return join(Join.TYPE.INNER, table.getFullName(), conditions);

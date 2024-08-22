@@ -58,6 +58,7 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 	protected List<String> excludes = new ArrayList<>();  //不查询列
 	protected ConfigStore condition;
 	protected Join join;
+	protected Boolean isSub = null;
 	protected boolean unionAll = false;
 	protected RunPrepare master;
 	protected List<RunPrepare> unions = new ArrayList<>();
@@ -78,10 +79,19 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 		}else{
 			runValues.clear(); 
 		} 
-	} 
-	 
- 
-	/** 
+	}
+
+	@Override
+	public Boolean getIsSub() {
+		return isSub;
+	}
+
+	@Override
+	public void setIsSub(Boolean sub) {
+		this.isSub = sub;
+	}
+
+	/**
 	 * 添加排序条件, 在之前的基础上添加新排序条件, 有重复条件则覆盖
 	 * @param order  order
 	 * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
@@ -408,7 +418,8 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 		join.setConditions(conditions);
 		RunPrepare prepare = new DefaultTablePrepare(table);
 		prepare.setJoin(join);
-		join(prepare);
+		prepare.setIsSub(false);
+		this.joins.add(prepare);
 		return this;
 	}
 	public RunPrepare join(Join.TYPE type, String table, String condition) {
@@ -441,6 +452,7 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 
 	@Override
 	public RunPrepare join(RunPrepare prepare) {
+		prepare.setIsSub(true);
 		joins.add(prepare);
 		return this;
 	}

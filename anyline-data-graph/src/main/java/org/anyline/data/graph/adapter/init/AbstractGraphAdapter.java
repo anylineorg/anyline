@@ -1131,18 +1131,18 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
             delimiter(builder, alias);
         }
         builder.append(BR);
-        List<Join> joins = sql.getJoins();
+        List<RunPrepare> joins = sql.getJoins();
         if(null != joins) {
-            for (Join join:joins) {
-                builder.append(BR_TAB).append(join.getType().getCode()).append(" ");
-                Table joinTable = join.getPrepare().getTable();
-                String joinTableAlias = joinTable.getAlias();
+            for (RunPrepare join:joins) {
+                Join jn = join.getJoin();
+                builder.append(BR_TAB).append(jn.getType().getCode()).append(" ");
+                Table joinTable = join.getTable();
+                String jionTableAlias = joinTable.getAlias();
                 name(runtime, builder, joinTable);
-                if(BasicUtil.isNotEmpty(joinTableAlias)) {
-                    builder.append("  ");
-                    delimiter(builder, joinTableAlias);
+                if(BasicUtil.isNotEmpty(jionTableAlias)) {
+                    builder.append("  ").append(jionTableAlias);
                 }
-                builder.append(" ON ").append(join.getOns().getRunText(runtime, false));
+                builder.append(" ON ").append(jn.getConditions().getRunText(runtime, false));
             }
         }
 
@@ -2108,17 +2108,18 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
             // builder.append(" AS ").append(sql.getAlias());
             builder.append("  ").append(prepare.getAlias());
         }
-        List<Join> joins = prepare.getJoins();
+        List<RunPrepare> joins = prepare.getJoins();
         if(null != joins) {
-            for (Join join:joins) {
-                builder.append(BR_TAB).append(join.getType().getCode()).append(" ");
-                Table joinTable = join.getPrepare().getTable();
+            for (RunPrepare join:joins) {
+                Join jn = join.getJoin();
+                builder.append(BR_TAB).append(jn.getType().getCode()).append(" ");
+                Table joinTable = join.getTable();
                 String jionTableAlias = joinTable.getAlias();
                 name(runtime, builder, joinTable);
                 if(BasicUtil.isNotEmpty(jionTableAlias)) {
                     builder.append("  ").append(jionTableAlias);
                 }
-                builder.append(" ON ").append(join.getOns().getRunText(runtime, false));
+                builder.append(" ON ").append(jn.getConditions().getRunText(runtime, false));
             }
         }
 

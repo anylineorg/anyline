@@ -919,16 +919,18 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
         if(BasicUtil.isNotEmpty(prepare.getAlias())) {
             builder.append("  ").append(prepare.getAlias());
         }
-        List<Join> joins = prepare.getJoins();
+        List<RunPrepare> joins = prepare.getJoins();
         if(null != joins) {
-            for (Join join:joins) {
-                builder.append(JDBCAdapter.BR_TAB).append(join.getType().getCode()).append(" ");
-                Table table = join.getPrepare().getTable();
-                delimiter(builder, table.getName());
-                if(BasicUtil.isNotEmpty(table.getAlias())) {
-                    builder.append("  ").append(table.getAlias());
+            for (RunPrepare join:joins) {
+                Join jn = join.getJoin();
+                builder.append(BR_TAB).append(jn.getType().getCode()).append(" ");
+                Table joinTable = join.getTable();
+                String jionTableAlias = joinTable.getAlias();
+                name(runtime, builder, joinTable);
+                if(BasicUtil.isNotEmpty(jionTableAlias)) {
+                    builder.append("  ").append(jionTableAlias);
                 }
-                builder.append(" ON ").append(join.getOns().getRunText(runtime, false));
+                builder.append(" ON ").append(jn.getConditions().getRunText(runtime, false));
             }
         }
 

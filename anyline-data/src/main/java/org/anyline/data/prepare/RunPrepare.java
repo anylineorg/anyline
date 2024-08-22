@@ -109,7 +109,15 @@ public interface RunPrepare extends Cloneable {
 	String getSchemaName();
 	Table getTable();
 	String getTableName();
-
+	Boolean getIsSub();
+	default boolean isSub(){
+		Boolean isSub = getIsSub();
+		if(null != isSub){
+			return isSub;
+		}
+		return false;
+	}
+	void setIsSub(Boolean sub);
 	/**
 	 * 用来标记运行环境key(其中关联了数据源与适配器)<br/>
 	 * 经常在service方法参数前加数据源前缀缀时会用到

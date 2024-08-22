@@ -1892,17 +1892,18 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
             // builder.append(" AS ").append(sql.getAlias());
             builder.append("  ").append(prepare.getAlias());
         }
-        List<Join> joins = prepare.getJoins();
+        List<RunPrepare> joins = prepare.getJoins();
         if(null != joins) {
-            for (Join join:joins) {
-                builder.append(BR_TAB).append(join.getType().getCode()).append(" ");
-                Table joinTable = join.getPrepare().getTable();
+            for (RunPrepare join:joins) {
+                Join jn = join.getJoin();
+                builder.append(BR_TAB).append(jn.getType().getCode()).append(" ");
+                Table joinTable = join.getTable();
                 String jionTableAlias = joinTable.getAlias();
                 name(runtime, builder, joinTable);
                 if(BasicUtil.isNotEmpty(jionTableAlias)) {
                     builder.append("  ").append(jionTableAlias);
                 }
-                builder.append(" ON ").append(join.getOns().getRunText(runtime, false));
+                builder.append(" ON ").append(jn.getConditions().getRunText(runtime, false));
             }
         }
 

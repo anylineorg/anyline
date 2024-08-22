@@ -2423,12 +2423,12 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
     public Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions) {
         Run run = initQueryRun(runtime, prepare);
         init(runtime, run, configs, conditions);
-        List<RunPrepare> joins = prepare.getJoins();
+        /*List<RunPrepare> joins = prepare.getJoins();
         if(null != joins){
             for(RunPrepare join:joins){
-                buildQueryRun(runtime, join, join.condition());
+                buildQueryRun(runtime, join, new DefaultConfigStore());
             }
-        }
+        }*/
         List<Run> unions = run.getUnions();
         if(null != unions) {
             for(Run union:unions) {
@@ -2700,13 +2700,13 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
      */
     protected Run fillQueryContent(DataRuntime runtime, StringBuilder builder, TableRun run) {
-        TablePrepare sql = (TablePrepare)run.getPrepare();
+        TablePrepare prepare = (TablePrepare)run.getPrepare();
         builder.append("SELECT ");
-        if(null != sql.getDistinct()) {
-            builder.append(sql.getDistinct());
+        if(null != prepare.getDistinct()) {
+            builder.append(prepare.getDistinct());
         }
         builder.append(BR_TAB);
-        LinkedHashMap<String,Column> columns = sql.getColumns();
+        LinkedHashMap<String,Column> columns = prepare.getColumns();
         if(null == columns || columns.isEmpty()) {
             ConfigStore configs = run.getConfigs();
             if(null != configs) {
@@ -2756,29 +2756,35 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             builder.append("*");
             builder.append(BR);
         }
-        RunPrepare prepare = run.getPrepare();
-        Table table = run.getTable();
         builder.append("FROM ");
-        name(runtime, builder, table); //TODO 这里要判断是表还是子查询
-       /* if(!prepare.getColumns().isEmpty() || !prepare.getConditionChain().getConditions().isEmpty()) {
+
+        Table table = run.getTable();
+        if(prepare.isSub() && !prepare.getJoins().isEmpty()){
             String inner = run.getFinalQuery(true);
             inner = BasicUtil.tab(inner);
             builder.append("(\n").append(inner).append("\n)");
         }else {
-
-        }*/
+            name(runtime, builder, table);
+        }
         String alias = table.getAlias();
         if(BasicUtil.isNotEmpty(alias)) {
             builder.append(tableAliasGuidd());
             delimiter(builder, alias);
         }
         builder.append(BR);
-        List<RunPrepare> joins = sql.getJoins();
+        List<RunPrepare> joins = prepare.getJoins();
         if(null != joins) {
             for (RunPrepare join:joins) {
                 Join jn = join.getJoin();
                 builder.append(jn.getType().getCode()).append(" ");
-                name(runtime, builder, join.getTable());
+                if(join.isSub()){
+                    Run joinRun = buildQueryRun(runtime, join, new DefaultConfigStore());
+                    String inner = joinRun.getFinalQuery(true);
+                    inner = BasicUtil.tab(inner);
+                    builder.append("(\n").append(inner).append("\n)");
+                }else {
+                    name(runtime, builder, join.getTable());
+                }
                 String joinTableAlias = join.getAlias();
                 if(BasicUtil.isNotEmpty(joinTableAlias)) {
                     builder.append(tableAliasGuidd());
