@@ -18,10 +18,6 @@ package org.anyline.data.entity;
 
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.init.DefaultConfigStore;
-import org.anyline.data.prepare.RunPrepare;
-import org.anyline.data.prepare.auto.init.DefaultTablePrepare;
-import org.anyline.data.run.Run;
-import org.anyline.metadata.Table;
 
 import java.io.Serializable;
 
@@ -34,19 +30,8 @@ public class Join  implements Serializable {
         public abstract String getName();
         public abstract String getCode();
     }
-    private RunPrepare prepare;
-    private Run run;
     private TYPE type = TYPE.INNER;
     private ConfigStore conditions = new DefaultConfigStore();
-    private ConfigStore ons = new DefaultConfigStore();
-
-    public Run getRun() {
-        return run;
-    }
-
-    public void setRun(Run run) {
-        this.run = run;
-    }
 
 
     public ConfigStore getConditions() {
@@ -57,25 +42,6 @@ public class Join  implements Serializable {
         this.conditions = configs;
     }
 
-    public ConfigStore getOns() {
-        return ons;
-    }
-
-    public void setOns(ConfigStore ons) {
-        this.ons = ons;
-    }
-
-    public RunPrepare getPrepare(){
-        return prepare;
-    }
-    public void setPrepare(RunPrepare prepare){
-        this.prepare = prepare;
-    }
-    public void setTable(Table table){
-        DefaultTablePrepare prepare = new DefaultTablePrepare();
-        prepare.setTable(table);
-        this.prepare = prepare;
-    }
     public TYPE getType() {
         return type;
     }
@@ -95,20 +61,6 @@ public class Join  implements Serializable {
         this.conditions = new DefaultConfigStore();
         for(String condition:conditions){
             this.conditions.and(condition);
-        }
-        return this;
-    }
-    public Join addOns(String ... conditions){
-        for(String condition:conditions){
-            this.ons.and(condition);
-        }
-        return this;
-    }
-
-    public Join setOns(String ... conditions) {
-        this.ons = new DefaultConfigStore();
-        for(String condition:conditions){
-            this.ons.and(condition);
         }
         return this;
     }

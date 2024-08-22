@@ -16,6 +16,7 @@
 
 package org.anyline.data.prepare.auto.init;
 
+import org.anyline.data.entity.Join;
 import org.anyline.data.param.ConfigParser;
 import org.anyline.data.param.ParseResult;
 import org.anyline.data.prepare.Condition;
@@ -25,7 +26,6 @@ import org.anyline.data.prepare.Variable;
 import org.anyline.data.prepare.auto.AutoPrepare;
 import org.anyline.data.prepare.init.AbstractRunPrepare;
 import org.anyline.entity.Compare;
-import org.anyline.data.entity.Join;
 import org.anyline.entity.Order;
 import org.anyline.metadata.Catalog;
 import org.anyline.metadata.Column;
@@ -44,7 +44,6 @@ public abstract class DefaultAutoPrepare extends AbstractRunPrepare implements A
 	protected Table table;
 	protected String distinct = "";
 	protected String alias;
-	protected List<Join> joins = new ArrayList<Join>();//关联表
 
 	public DefaultAutoPrepare() {
 		super();
@@ -76,6 +75,8 @@ public abstract class DefaultAutoPrepare extends AbstractRunPrepare implements A
 		parseTable(this.table);
 		return this;
 	}
+
+
 	/* ******************************************************************************************
 	 *
 	 * 										添加条件
@@ -453,11 +454,6 @@ public abstract class DefaultAutoPrepare extends AbstractRunPrepare implements A
 	@Override
 	public List<Variable> getSQLVariables() {
 		return null;
-	}
-
-	@Override
-	public List<Join> getJoins() {
-		return joins;
 	}
 
 	@Override

@@ -2423,16 +2423,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
     public Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions) {
         Run run = initQueryRun(runtime, prepare);
         init(runtime, run, configs, conditions);
-        List<Join> joins = prepare.getJoins();
+        List<RunPrepare> joins = prepare.getJoins();
         if(null != joins){
-            for(Join join:joins){
-                //判断是简单的表 还是子查询
-                //指定列 或 查询条件的要生成子查询
-                RunPrepare joinPrepare = join.getPrepare();
-                if(!joinPrepare.getColumns().isEmpty() || !joinPrepare.getConditionChain().getConditions().isEmpty()) {
-                    Run joinRun = buildQueryRun(runtime, joinPrepare, join.getConditions());
-                    join.setRun(joinRun);
-                }
+            for(RunPrepare join:joins){
+                buildQueryRun(runtime, join, join.condition());
             }
         }
         List<Run> unions = run.getUnions();
@@ -2484,7 +2478,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 run.init();
                 //检测不存在的列
                 if(ConfigStore.IS_AUTO_CHECK_METADATA(configs) && null != prepare) {
-                    List<Join> joins = prepare.getJoins();
+                    List<RunPrepare> joins = prepare.getJoins();
                     Table table = run.getTable();
                     if(null != table && (null == joins || joins.isEmpty())) {//TODO 单表时再检测
                         LinkedHashMap<String, Column> metadatas = columns(runtime, null, false, table, false);
@@ -2765,38 +2759,32 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         RunPrepare prepare = run.getPrepare();
         Table table = run.getTable();
         builder.append("FROM ");
-        if(!prepare.getColumns().isEmpty() || !prepare.getConditionChain().getConditions().isEmpty()) {
+        name(runtime, builder, table); //TODO 这里要判断是表还是子查询
+       /* if(!prepare.getColumns().isEmpty() || !prepare.getConditionChain().getConditions().isEmpty()) {
             String inner = run.getFinalQuery(true);
             inner = BasicUtil.tab(inner);
             builder.append("(\n").append(inner).append("\n)");
         }else {
-            name(runtime, builder, table); //TODO 这里要判断是表还是子查询
-        }
+
+        }*/
         String alias = table.getAlias();
         if(BasicUtil.isNotEmpty(alias)) {
             builder.append(tableAliasGuidd());
             delimiter(builder, alias);
         }
         builder.append(BR);
-        List<Join> joins = sql.getJoins();
+        List<RunPrepare> joins = sql.getJoins();
         if(null != joins) {
-            for (Join join:joins) {
-                builder.append(join.getType().getCode()).append(" ");
-                RunPrepare join_prepare = join.getPrepare();
-                String joinTableAlias = join_prepare.getAlias();
-                Run inner_run = join.getRun();
-                if(null != inner_run){
-                    String inner = join.getRun().getFinalQuery(true);
-                    inner = BasicUtil.tab(inner);
-                    builder.append("(\n").append(inner).append("\n)");
-                }else{
-                    name(runtime, builder, join.getPrepare().getTable());
-                }
+            for (RunPrepare join:joins) {
+                Join jn = join.getJoin();
+                builder.append(jn.getType().getCode()).append(" ");
+                name(runtime, builder, join.getTable());
+                String joinTableAlias = join.getAlias();
                 if(BasicUtil.isNotEmpty(joinTableAlias)) {
                     builder.append(tableAliasGuidd());
                     delimiter(builder, joinTableAlias);
                 }
-                String on = join.getOns().getRunText(runtime, false);
+                String on = jn.getConditions().getRunText(runtime, false);
                 on = SQLUtil.trim(on);
                 builder.append(" ON ").append(on);
             }

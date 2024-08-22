@@ -66,6 +66,21 @@ public interface RunPrepare extends Cloneable {
 
 	String getId();
 	RunPrepare setId(String id);
+
+	Join getJoin();
+	RunPrepare setJoin(Join join);
+	default RunPrepare setJoin(Join.TYPE type, ConfigStore configs) {
+		Join join = new Join();
+		join.setType(type);
+		join.setConditions(configs);
+		return setJoin(join);
+	}
+	default RunPrepare setJoin(Join.TYPE type, String ... conditions) {
+		Join join = new Join();
+		join.setType(type);
+		join.setConditions(conditions);
+		return setJoin(join);
+	}
 	/** 
 	 * 设置查询或操作的目标(表、存储过程、SQL等)
 	 * <p> 
@@ -199,13 +214,11 @@ public interface RunPrepare extends Cloneable {
 	RunPrepare addColumn(Column column);
 	RunPrepare excludeColumn(String columns);
 
-	RunPrepare join(Join join);
 	RunPrepare join(Join.TYPE type, String table, String condition);
 	RunPrepare inner(String table, String condition);
 	RunPrepare left(String table, String condition);
 	RunPrepare right(String table, String condition);
 	RunPrepare full(String table, String condition);
-	List<Join> getJoins();
 	void setAlias(String alias);
 	String getAlias();
 
@@ -240,6 +253,24 @@ public interface RunPrepare extends Cloneable {
 		return union(prepare, true);
 	}
 	List<RunPrepare> getUnions();
+	List<RunPrepare> getJoins();
+	RunPrepare join(RunPrepare prepare);
+	default RunPrepare join(RunPrepare prepare, Join join) {
+		prepare.setJoin(join);
+		return join(prepare);
+	}
+	default RunPrepare join(RunPrepare prepare, Join.TYPE type, ConfigStore configs) {
+		Join join = new Join();
+		join.setType(type);
+		join.setConditions(configs);
+		return join(prepare, join);
+	}
+	default RunPrepare join(RunPrepare prepare, Join.TYPE type, String ... conditions) {
+		Join join = new Join();
+		join.setType(type);
+		join.setConditions(conditions);
+		return join(prepare, join);
+	}
 	/**
 	 * 过滤不存在的列
 	 * @param metadatas 可用范围

@@ -23,9 +23,11 @@ import org.anyline.data.prepare.ConditionChain;
 import org.anyline.data.prepare.GroupStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.prepare.auto.init.DefaultAutoCondition;
+import org.anyline.data.prepare.auto.init.DefaultTablePrepare;
 import org.anyline.entity.*;
 import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;
 import org.anyline.metadata.Column;
+import org.anyline.metadata.Table;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.slf4j.Logger;
@@ -55,8 +57,11 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 	protected LinkedHashMap<String,Column> columns = new LinkedHashMap<>();	//查询列
 	protected List<String> excludes = new ArrayList<>();  //不查询列
 	protected ConfigStore condition;
+	protected Join join;
 	protected boolean unionAll = false;
+	protected RunPrepare master;
 	protected List<RunPrepare> unions = new ArrayList<>();
+	protected List<RunPrepare> joins = new ArrayList<>();
 
 	// 运行时参数值
 	protected Vector<Object> runValues;
@@ -397,27 +402,62 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 	public List<String> getFetchKeys() {
 		return fetchKeys;
 	}
-
-	public RunPrepare join(Join join) {
+	public RunPrepare join(Join.TYPE type, Table table, String ... conditions) {
+		Join join = new Join();
+		join.setType(type);
+		join.setConditions(conditions);
+		RunPrepare prepare = new DefaultTablePrepare(table);
+		prepare.setJoin(join);
+		join(prepare);
 		return this;
 	}
 	public RunPrepare join(Join.TYPE type, String table, String condition) {
-		return this;
+		return join(type, new Table(table), condition);
 	}
 	public RunPrepare inner(String table, String condition) {
-		return this;
+		return join(Join.TYPE.INNER, table, condition);
+	}
+	public RunPrepare inner(Table table, String condition) {
+		return join(Join.TYPE.INNER, table, condition);
 	}
 	public RunPrepare left(String table, String condition) {
-		return this;
+		return join(Join.TYPE.LEFT, table, condition);
+	}
+	public RunPrepare left(Table table, String condition) {
+		return join(Join.TYPE.LEFT, table, condition);
 	}
 	public RunPrepare right(String table, String condition) {
-		return this;
+		return join(Join.TYPE.RIGHT, table, condition);
+	}
+	public RunPrepare right(Table table, String condition) {
+		return join(Join.TYPE.RIGHT, table, condition);
 	}
 	public RunPrepare full(String table, String condition) {
+		return join(Join.TYPE.FULL, table, condition);
+	}
+	public RunPrepare full(Table table, String condition) {
+		return join(Join.TYPE.FULL, table, condition);
+	}
+
+	@Override
+	public RunPrepare join(RunPrepare prepare) {
+		joins.add(prepare);
 		return this;
 	}
-	public List<Join> getJoins() {
-		return null;
+	@Override
+	public Join getJoin() {
+		return join;
+	}
+
+	@Override
+	public RunPrepare setJoin(Join join) {
+		this.join = join;
+		return this;
+	}
+
+	@Override
+	public List<RunPrepare> getJoins() {
+		return joins;
 	}
 
 	@Override

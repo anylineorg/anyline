@@ -1310,14 +1310,13 @@ public abstract class AbstractRun implements Run {
 	public List<Run> getUnions() {
 		return unions;
 	}
-
+/*
 	public Run join(Join join) {
 		joins.add(join);
 		return this;
 	}
 	public Run join(Join.TYPE type, Table table, String ... conditions) {
 		Join join = new Join();
-		join.setTable(table);
 		join.setType(type);
 		join.setConditions(conditions);
 		return join(join);
@@ -1350,9 +1349,10 @@ public abstract class AbstractRun implements Run {
 		return join(Join.TYPE.FULL, table, condition);
 	}
 
-	public String toString(){
-		return this.getClass().getSimpleName()+":"+builder.toString();
-	}
+	*/
+public String toString(){
+	return this.getClass().getSimpleName()+":"+builder.toString();
+}
 }
  
  

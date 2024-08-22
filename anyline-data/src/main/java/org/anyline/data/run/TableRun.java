@@ -50,12 +50,14 @@ public class TableRun extends AbstractRun implements Run {
 		if(null != prepare) {
 			table = prepare.getTableName();
 		}
-		table = table.replace(delimiterFr, "").replace(delimiterTo, "");
-		if(table.contains(".")) {
+		if(null != table) {
+			table = table.replace(delimiterFr, "").replace(delimiterTo, "");
+			if (table.contains(".")) {
 
-		} else{
-			if(null != prepare && BasicUtil.isNotEmpty(prepare.getSchema())) {
-				schema = prepare.getSchema();
+			} else {
+				if (null != prepare && BasicUtil.isNotEmpty(prepare.getSchema())) {
+					schema = prepare.getSchema();
+				}
 			}
 		}
 	} 

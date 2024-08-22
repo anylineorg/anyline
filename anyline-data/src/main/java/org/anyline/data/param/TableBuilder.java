@@ -19,10 +19,7 @@ package org.anyline.data.param;
 import org.anyline.data.entity.Join;
 import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.RunPrepare;
-import org.anyline.data.prepare.auto.init.DefaultAutoPrepare;
 import org.anyline.data.prepare.auto.init.DefaultTablePrepare;
-import org.anyline.data.run.Run;
-import org.anyline.data.runtime.DataRuntime;
 import org.anyline.metadata.Column;
 import org.anyline.metadata.Table;
 
@@ -31,34 +28,25 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 public class TableBuilder {
-
-    private Table table;
-    private RunPrepare prepare;
+    private RunPrepare prepare = null;
     private ConfigStore conditions = new DefaultConfigStore();
     private LinkedHashMap<String,Column> columns = new LinkedHashMap<>(); //需要查询的列
-    private List<Join> joins = new ArrayList<>();//关联表
+    private List<RunPrepare> joins = new ArrayList<>();
 
     public RunPrepare build() {
-        RunPrepare result = new DefaultAutoPrepare() {
-            @Override
-            public Run build(DataRuntime runtime) {
-                return null;
-            }
-        };
-        if(null == prepare){
-            prepare = new DefaultTablePrepare();
+        if(null == prepare && !joins.isEmpty()){
+            prepare = joins.get(0);
+            joins.remove(prepare);
         }
-        if(null != joins) {
-            for (Join join : joins) {
-                prepare.join(join);
+        if(null != prepare) {
+            for (RunPrepare item : joins) {
+                prepare.join(item);
             }
-        }
-        if(null != columns) {
-            for (Column col : columns.values()) {
-                prepare.addColumn(col);
+            if(null != columns && !columns.isEmpty()) {
+                for(Column col: columns.values()) {
+                    prepare.addColumn(col);
+                }
             }
-        }
-        if(null != conditions){
             prepare.condition(conditions);
         }
         return prepare;
@@ -72,7 +60,7 @@ public class TableBuilder {
     }
     public static TableBuilder from(String table) {
         TableBuilder builder = new TableBuilder();
-        builder.setTable(table);
+        builder.joins.add(new DefaultTablePrepare(table));
         return builder;
     }
     public static TableBuilder init(Table table) {
@@ -80,7 +68,7 @@ public class TableBuilder {
     }
     public static TableBuilder from(Table table) {
         TableBuilder builder = new TableBuilder();
-        builder.setTable(table);
+        builder.joins.add(new DefaultTablePrepare(table));
         return builder;
     }
     public static TableBuilder init(RunPrepare prepare) {
@@ -88,25 +76,17 @@ public class TableBuilder {
     }
     public static TableBuilder from(RunPrepare prepare) {
         TableBuilder builder = new TableBuilder();
-        builder.prepare = prepare;
+        builder.joins.add(prepare);
         return builder;
     }
     public static TableBuilder init(String table, String columns) {
         TableBuilder builder = new TableBuilder();
-        builder.setTable(table);
-        builder.addColumns(columns);
+        builder.joins.add(new DefaultTablePrepare(table));
+         builder.addColumns(columns);
         return builder;
     }
     public TableBuilder condition(ConfigStore configs) {
         this.conditions = configs;
-        return this;
-    }
-
-    public TableBuilder setTable(String table) {
-        return setTable(new Table(table));
-    }
-    public TableBuilder setTable(Table table) {
-        this.table = table;
         return this;
     }
     public TableBuilder addColumn(String column) {
@@ -137,19 +117,36 @@ public class TableBuilder {
         return this;
     }
 
-    public TableBuilder join(Join join) {
-        joins.add(join);
+    public TableBuilder join(RunPrepare prepare, Join.TYPE type, ConfigStore configs) {
+        Join join = new Join();
+        join.setType(type);
+        join.setConditions(configs);
+        return join(prepare, join);
+    }
+    public TableBuilder join(RunPrepare prepare, Join.TYPE type, String ... conditions) {
+        Join join = new Join();
+        join.setType(type);
+        join.setConditions(conditions);
+        return join(prepare, join);
+    }
+    public TableBuilder join(RunPrepare prepare, Join join) {
+        prepare.setJoin(join);
+        return join(prepare);
+    }
+    public TableBuilder join(RunPrepare prepare) {
+        this.joins.add(prepare);
         return this;
     }
     public TableBuilder join(Join.TYPE type, String table, String ... conditions) {
         return join(type, new Table(table), conditions);
     }
     public TableBuilder join(Join.TYPE type, Table table, String ... conditions) {
+        RunPrepare prepare = new DefaultTablePrepare(table);
         Join join = new Join();
-        join.setTable(table);
         join.setType(type);
-        join.setOns(conditions);
-        return join(join);
+        join.setConditions(conditions);
+        prepare.setJoin(join);
+        return join(prepare);
     }
     public TableBuilder inner(Table table, String ... conditions) {
         return join(Join.TYPE.INNER, table.getFullName(), conditions);
@@ -180,10 +177,10 @@ public class TableBuilder {
 
     public TableBuilder join(Join.TYPE type, RunPrepare prepare, String ... conditions) {
         Join join = new Join();
-        join.setPrepare(prepare);
         join.setType(type);
-        join.setOns(conditions);
-        return join(join);
+        join.setConditions(conditions);
+        prepare.setJoin(join);
+        return join(prepare);
     }
     public TableBuilder inner(RunPrepare prepare, String ... conditions) {
         return join(Join.TYPE.INNER, prepare, conditions);
