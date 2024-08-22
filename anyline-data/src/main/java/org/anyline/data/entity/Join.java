@@ -19,16 +19,11 @@ package org.anyline.data.entity;
 import org.anyline.data.Run;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.init.DefaultConfigStore;
-import org.anyline.data.prepare.Condition;
 import org.anyline.data.prepare.RunPrepare;
-import org.anyline.data.prepare.auto.init.DefaultAutoCondition;
 import org.anyline.data.prepare.auto.init.DefaultTablePrepare;
 import org.anyline.metadata.Table;
-import org.anyline.util.BasicUtil;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Join  implements Serializable {
     public static enum TYPE{
@@ -42,7 +37,8 @@ public class Join  implements Serializable {
     private RunPrepare prepare;
     private Run run;
     private TYPE type = TYPE.INNER;
-    private ConfigStore configs = new DefaultConfigStore();
+    private ConfigStore conditions = new DefaultConfigStore();
+    private ConfigStore ons = new DefaultConfigStore();
 
     public Run getRun() {
         return run;
@@ -52,18 +48,21 @@ public class Join  implements Serializable {
         this.run = run;
     }
 
-    public void setConditions(List<Condition> conditions) {
-        for(Condition condition:conditions) {
-            conditions.add(condition);
-        }
+
+    public ConfigStore getConditions() {
+        return conditions;
     }
 
-    public ConfigStore getConfigs() {
-        return configs;
+    public void setConditions(ConfigStore configs) {
+        this.conditions = configs;
     }
 
-    public void setConfigs(ConfigStore configs) {
-        this.configs = configs;
+    public ConfigStore getOns() {
+        return ons;
+    }
+
+    public void setOns(ConfigStore ons) {
+        this.ons = ons;
     }
 
     public RunPrepare getPrepare(){
@@ -85,14 +84,31 @@ public class Join  implements Serializable {
         this.type = type;
     }
 
-    public Join addCondition(String condition){
-        configs.and(condition);
+    public Join addConditions(String ... conditions){
+        for(String condition : conditions){
+            this.conditions.and(condition);
+        }
         return this;
     }
 
     public Join setConditions(String ... conditions) {
+        this.conditions = new DefaultConfigStore();
         for(String condition:conditions){
-            configs.and(condition);
+            this.conditions.and(condition);
+        }
+        return this;
+    }
+    public Join addOns(String ... conditions){
+        for(String condition:conditions){
+            this.ons.and(condition);
+        }
+        return this;
+    }
+
+    public Join setOns(String ... conditions) {
+        this.ons = new DefaultConfigStore();
+        for(String condition:conditions){
+            this.ons.and(condition);
         }
         return this;
     }

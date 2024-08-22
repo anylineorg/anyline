@@ -724,6 +724,28 @@ public class BasicUtil {
 		return fillChar(src+"", len);
 	}
 
+
+	public static String tab(String origin, int qty){
+		return tab(origin, qty, "\t");
+	}
+	public static String tab(String origin){
+		return tab(origin, 1, "\t");
+	}
+	public static String tab(String origin, int qty, String tab){
+		if(null != origin){
+			String[] lines = origin.split("\n");
+			StringBuilder tabs = new StringBuilder();
+			for(int i=0; i<qty; i++){
+				tabs.append(tab);
+			}
+			StringBuilder builder = new StringBuilder();
+			for (String line:lines){
+				builder.append("\n").append(tabs).append(line);
+			}
+			return builder.toString();
+		}
+		return origin;
+	}
 	/**
 	 * 提取HashMap的key
 	 *

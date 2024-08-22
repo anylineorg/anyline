@@ -16,6 +16,7 @@
 
 package org.anyline.data.param;
 
+import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.prepare.auto.TablePrepare;
 import org.anyline.data.prepare.auto.init.DefaultTablePrepare;
@@ -29,8 +30,8 @@ import java.util.List;
 
 public class TableBuilder {
 
-    private TablePrepare prepare;
-    private ConfigStore configs;
+    private RunPrepare prepare;
+    private ConfigStore conditions = new DefaultConfigStore();
     private LinkedHashMap<String,Column> columns = new LinkedHashMap<>(); //需要查询的列
     private List<Join> joins = new ArrayList<>();//关联表
 
@@ -48,8 +49,8 @@ public class TableBuilder {
                 prepare.addColumn(col);
             }
         }
-        if(null != configs){
-            prepare.condition(configs);
+        if(null != conditions){
+            prepare.condition(conditions);
         }
         return prepare;
     }
@@ -67,7 +68,7 @@ public class TableBuilder {
         builder.setTable(table);
         return builder;
     }
-    public static TableBuilder init(TablePrepare prepare) {
+    public static TableBuilder init(RunPrepare prepare) {
         TableBuilder builder = new TableBuilder();
         builder.prepare = prepare;
         return builder;
@@ -79,18 +80,20 @@ public class TableBuilder {
         return builder;
     }
     public TableBuilder condition(ConfigStore configs) {
-        this.configs = configs;
+        this.conditions = configs;
         return this;
     }
 
     public TableBuilder setTable(String table) {
-        this.prepare = new DefaultTablePrepare();
+        TablePrepare prepare = new DefaultTablePrepare();
         prepare.setTable(table);
+        this.prepare = prepare;
         return this;
     }
     public TableBuilder setTable(Table table) {
-        this.prepare = new DefaultTablePrepare();
+        TablePrepare prepare = new DefaultTablePrepare();
         prepare.setTable(table);
+        this.prepare = prepare;
         return this;
     }
     public TableBuilder addColumn(String column) {
@@ -119,7 +122,7 @@ public class TableBuilder {
         Join join = new Join();
         join.setTable(table);
         join.setType(type);
-        join.setConditions(conditions);
+        join.setOns(conditions);
         return join(join);
     }
     public TableBuilder inner(Table table, String ... conditions) {
@@ -153,7 +156,7 @@ public class TableBuilder {
         Join join = new Join();
         join.setPrepare(prepare);
         join.setType(type);
-        join.setConditions(conditions);
+        join.setOns(conditions);
         return join(join);
     }
     public TableBuilder inner(RunPrepare prepare, String ... conditions) {

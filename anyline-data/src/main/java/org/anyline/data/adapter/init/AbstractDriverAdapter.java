@@ -2427,8 +2427,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         if(null != joins){
             for(Join join:joins){
                 RunPrepare joinPrepare = join.getPrepare();
-                Run joinRun = buildQueryRun(runtime, joinPrepare, join.getConfigs());
-                joinRun = fillQueryContent(runtime, joinRun);
+                Run joinRun = buildQueryRun(runtime, joinPrepare, join.getConditions());
                 join.setRun(joinRun);
             }
         }
@@ -2771,16 +2770,20 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         List<Join> joins = sql.getJoins();
         if(null != joins) {
             for (Join join:joins) {
-                builder.append(BR_TAB).append(join.getType().getCode()).append(" ");
+                builder.append(join.getType().getCode()).append(" ");
                 RunPrepare prepare = join.getPrepare();
                 String joinTableAlias = prepare.getAlias();
-                builder.append("(").append(join.getRun().getFinalQuery(true)).append(")");
+                String inner = join.getRun().getFinalQuery(true);
+                inner = BasicUtil.tab(inner);
+                builder.append("(\n").append(inner).append("\n)");
                 //name(runtime, builder, joinTable);
                 if(BasicUtil.isNotEmpty(joinTableAlias)) {
                     builder.append("  ");
                     delimiter(builder, joinTableAlias);
                 }
-                builder.append(" ON ").append(join.getConfigs().getRunText(runtime, false));
+                String on = join.getOns().getRunText(runtime, false);
+                on = SQLUtil.trim(on);
+                builder.append(" ON ").append(on);
             }
         }
 
