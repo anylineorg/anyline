@@ -111,8 +111,8 @@ public interface Run {
     StringBuilder getBuilder();
     void setBuilder(StringBuilder builder);
     //1-DataRow 2-Entity
-    int getFrom();
-    void setFrom(int from);
+    int getOriginType();
+    void setOriginType(int from);
     boolean isSetValue(String condition, String variable);
     boolean isSetValue(String variable);
 

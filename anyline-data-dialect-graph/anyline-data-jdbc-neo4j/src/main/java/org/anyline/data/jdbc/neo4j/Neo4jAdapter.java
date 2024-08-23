@@ -765,7 +765,7 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
      ******************************************************************************************************************/
     public Run buildUpdateRunFromEntity(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, LinkedHashMap<String, Column> columns) {
         TableRun run = new TableRun(runtime, dest);
-        run.setFrom(2);
+        run.setOriginType(2);
         StringBuilder builder = run.getBuilder();
         // List<Object> values = new ArrayList<Object>();
         LinkedHashMap<String, Column> keys = new LinkedHashMap<>();
@@ -989,7 +989,7 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
     public List<Run> buildDeleteRunFromEntity(DataRuntime runtime, Table dest, ConfigStore configs, Object obj, String ... columns) {
         List<Run> runs = new ArrayList<>();
         TableRun run = new TableRun(runtime, dest);
-        run.setFrom(2);
+        run.setOriginType(2);
         StringBuilder builder = new StringBuilder();
         builder.append("MATCH (d");
          if(null != dest) {

@@ -20,6 +20,7 @@ import org.anyline.data.entity.Join;
 import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.prepare.auto.init.DefaultTablePrepare;
+import org.anyline.data.prepare.auto.init.VirtualTablePrepare;
 import org.anyline.metadata.Column;
 import org.anyline.metadata.Table;
 
@@ -34,23 +35,20 @@ public class TableBuilder {
     private List<RunPrepare> joins = new ArrayList<>();
 
     public RunPrepare build() {
-        if(null == prepare && !joins.isEmpty()){
-            prepare = joins.get(0);
-            joins.remove(prepare);
+        for (RunPrepare item : joins) {
+            prepare.join(item);
         }
-        if(null != prepare) {
-            for (RunPrepare item : joins) {
-                prepare.join(item);
+        if(null != columns && !columns.isEmpty()) {
+            prepare.getColumns().clear();
+            for(Column col: columns.values()) {
+                prepare.addColumn(col);
             }
-            if(null != columns && !columns.isEmpty()) {
-                prepare.getColumns().clear();
-                for(Column col: columns.values()) {
-                    prepare.addColumn(col);
-                }
-            }
-            prepare.condition(conditions);
         }
+        prepare.condition(conditions);
         return prepare;
+    }
+    public TableBuilder select(String ... columns){
+        return columns(columns);
     }
     public static TableBuilder init() {
         TableBuilder builder = new TableBuilder();
@@ -67,23 +65,20 @@ public class TableBuilder {
     }
     public static TableBuilder from(Table table) {
         TableBuilder builder = new TableBuilder();
-        RunPrepare prepare = new DefaultTablePrepare(table);
-        prepare.setIsSub(false);
-        builder.prepare = prepare;
+        builder.prepare = new DefaultTablePrepare(table);
         return builder;
     }
-    public static TableBuilder init(RunPrepare prepare) {
-        return from(prepare);
+    public static TableBuilder init(String alias, RunPrepare prepare) {
+        return from(alias, prepare);
     }
-    public static TableBuilder from(RunPrepare prepare) {
+    public static TableBuilder from(String alias, RunPrepare prepare) {
         TableBuilder builder = new TableBuilder();
-        prepare.setIsSub(true);
-        builder.prepare = prepare;
+        builder.prepare = new VirtualTablePrepare(prepare).setAlias(alias);
         return builder;
     }
     public static TableBuilder init(String table, String columns) {
         TableBuilder builder = init(table);
-         builder.addColumns(columns);
+        builder.addColumns(columns);
         return builder;
     }
     public TableBuilder condition(ConfigStore configs) {
@@ -118,28 +113,24 @@ public class TableBuilder {
         return this;
     }
 
-    public TableBuilder join(RunPrepare prepare, Join.TYPE type, ConfigStore configs) {
+    public TableBuilder join(String alias, RunPrepare prepare, Join.TYPE type, ConfigStore configs) {
         Join join = new Join();
         join.setType(type);
         join.setConditions(configs);
-        prepare.setIsSub(true);
-        return join(prepare, join);
+        return join(alias, prepare, join);
     }
-    public TableBuilder join(RunPrepare prepare, Join.TYPE type, String ... conditions) {
+    public TableBuilder join(String alias, RunPrepare prepare, Join.TYPE type, String ... conditions) {
         Join join = new Join();
         join.setType(type);
         join.setConditions(conditions);
-        prepare.setIsSub(true);
-        return join(prepare, join);
+        return join(alias, prepare, join);
     }
-    public TableBuilder join(RunPrepare prepare, Join join) {
+    public TableBuilder join(String alias, RunPrepare prepare, Join join) {
         prepare.setJoin(join);
-        prepare.setIsSub(true);
-        return join(prepare);
+        return join(alias, prepare);
     }
-    public TableBuilder join(RunPrepare prepare) {
-        prepare.setIsSub(true);
-        this.joins.add(prepare);
+    public TableBuilder join(String alias, RunPrepare prepare) {
+        this.joins.add(new VirtualTablePrepare(prepare).setAlias(alias));
         return this;
     }
     public TableBuilder join(Join.TYPE type, String table, String ... conditions) {
@@ -147,7 +138,6 @@ public class TableBuilder {
     }
     public TableBuilder join(Join.TYPE type, Table table, String ... conditions) {
         RunPrepare prepare = new DefaultTablePrepare(table);
-        prepare.setIsSub(false);
         Join join = new Join();
         join.setType(type);
         join.setConditions(conditions);
@@ -182,24 +172,24 @@ public class TableBuilder {
     }
 
 
-    public TableBuilder join(Join.TYPE type, RunPrepare prepare, String ... conditions) {
+    public TableBuilder join(String alias, Join.TYPE type, RunPrepare prepare, String ... conditions) {
         Join join = new Join();
         join.setType(type);
         join.setConditions(conditions);
         prepare.setJoin(join);
-        return join(prepare);
+        return join(alias, prepare);
     }
-    public TableBuilder inner(RunPrepare prepare, String ... conditions) {
-        return join(Join.TYPE.INNER, prepare, conditions);
+    public TableBuilder inner(String alias, RunPrepare prepare, String ... conditions) {
+        return join(alias, Join.TYPE.INNER, prepare, conditions);
     }
-    public TableBuilder left(RunPrepare prepare, String ... conditions) {
-        return join(Join.TYPE.LEFT, prepare, conditions);
+    public TableBuilder left(String alias, RunPrepare prepare, String ... conditions) {
+        return join(alias, Join.TYPE.LEFT, prepare, conditions);
     }
-    public TableBuilder right(RunPrepare prepare, String ... conditions) {
-        return join(Join.TYPE.RIGHT, prepare, conditions);
+    public TableBuilder right(String alias, RunPrepare prepare, String ... conditions) {
+        return join(alias, Join.TYPE.RIGHT, prepare, conditions);
     }
 
-    public TableBuilder full(RunPrepare prepare, String ... conditions) {
-        return join(Join.TYPE.FULL, prepare, conditions);
+    public TableBuilder full(String alias, RunPrepare prepare, String ... conditions) {
+        return join(alias, Join.TYPE.FULL, prepare, conditions);
     }
 }

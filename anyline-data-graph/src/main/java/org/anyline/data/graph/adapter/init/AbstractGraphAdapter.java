@@ -369,7 +369,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
         checkName(runtime, null, dest);
         PrimaryGenerator generator = checkPrimaryGenerator(type(), dest.getName());
 
-        int from = 1;
+        int type = 1;
         StringBuilder valuesBuilder = new StringBuilder();
         DataRow row = null;
         if(obj instanceof Map) {
@@ -384,7 +384,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
                 //createPrimaryValue(row, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), null);
             }
         }else{
-            from = 2;
+            type = 2;
             boolean create = EntityAdapterProxy.createPrimaryValue(obj, columns);
             LinkedHashMap<String, Column> pks = EntityAdapterProxy.primaryKeys(obj.getClass());
             if(!create && null != generator) {
@@ -392,7 +392,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
                 //createPrimaryValue(obj, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, null);
             }
         }
-        run.setFrom(from);
+        run.setOriginType(type);
         /*确定需要插入的列*/
         LinkedHashMap<String, Column> cols = confirmInsertColumns(runtime, dest, obj, configs, columns, false);
         if(null == cols || cols.isEmpty()) {
@@ -2033,7 +2033,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
     public List<Run> buildDeleteRunFromEntity(DataRuntime runtime, Table table, ConfigStore configs, Object obj, String... columns) {
         List<Run> runs = new ArrayList<>();
         TableRun run = new TableRun(runtime, table);
-        run.setFrom(2);
+        run.setOriginType(2);
         StringBuilder builder = new StringBuilder();
         builder.append("DELETE FROM ");
         name(runtime, builder, table);
@@ -8069,11 +8069,11 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 		if(scope && batch<=1) {
 			builder.append("(");
 		}
-		int from = 1;
+		int type = 1;
 		if(obj instanceof DataRow) {
-			from = 1;
+            type = 1;
 		}
-		run.setFrom(from);
+		run.setOriginType(type);
 		boolean first = true;
 		for(Column column:columns.values()) {
 			boolean place = placeholder;

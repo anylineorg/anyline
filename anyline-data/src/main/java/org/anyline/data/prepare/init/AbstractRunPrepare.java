@@ -60,9 +60,10 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 	protected Join join;
 	protected Boolean isSub = null;
 	protected boolean unionAll = false;
-	protected RunPrepare master;
+
 	protected List<RunPrepare> unions = new ArrayList<>();
 	protected List<RunPrepare> joins = new ArrayList<>();
+
 
 	// 运行时参数值
 	protected Vector<Object> runValues;
@@ -79,16 +80,6 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 		}else{
 			runValues.clear(); 
 		} 
-	}
-
-	@Override
-	public Boolean getIsSub() {
-		return isSub;
-	}
-
-	@Override
-	public void setIsSub(Boolean sub) {
-		this.isSub = sub;
 	}
 
 	/**
@@ -418,7 +409,6 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 		join.setConditions(conditions);
 		RunPrepare prepare = new DefaultTablePrepare(table);
 		prepare.setJoin(join);
-		prepare.setIsSub(false);
 		this.joins.add(prepare);
 		return this;
 	}
@@ -452,7 +442,6 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 
 	@Override
 	public RunPrepare join(RunPrepare prepare) {
-		prepare.setIsSub(true);
 		joins.add(prepare);
 		return this;
 	}
@@ -478,8 +467,9 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 	}
 
 	@Override
-	public void setAlias(String alias) {
+	public RunPrepare setAlias(String alias) {
 		this.alias = alias;
+		return this;
 	}
 
 	@Override

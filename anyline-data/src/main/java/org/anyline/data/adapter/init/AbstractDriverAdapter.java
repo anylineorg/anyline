@@ -39,6 +39,7 @@ import org.anyline.data.prepare.auto.TablePrepare;
 import org.anyline.data.prepare.auto.TextPrepare;
 import org.anyline.data.prepare.auto.init.DefaultTablePrepare;
 import org.anyline.data.prepare.auto.init.DefaultTextPrepare;
+import org.anyline.data.prepare.auto.init.VirtualTablePrepare;
 import org.anyline.data.prepare.init.DefaultVariable;
 import org.anyline.data.prepare.xml.XMLPrepare;
 import org.anyline.data.run.*;
@@ -1123,7 +1124,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
     @Override
     public Run buildUpdateRunFromEntity(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, LinkedHashMap<String, Column> columns) {
         TableRun run = new TableRun(runtime, dest);
-        run.setFrom(2);
+        run.setOriginType(2);
         StringBuilder builder = run.getBuilder();
         // List<Object> values = new ArrayList<Object>();
         List<String> list = new ArrayList<>();
@@ -1256,7 +1257,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
     public Run buildUpdateRunFromDataRow(DataRuntime runtime, Table dest, DataRow row, ConfigStore configs, LinkedHashMap<String, Column> columns) {
         //注意columns中可能含 +-号
         TableRun run = new TableRun(runtime, dest);
-        run.setFrom(1);
+        run.setOriginType(1);
         StringBuilder builder = run.getBuilder();
 
         // List<Object> values = new ArrayList<Object>();
@@ -1359,7 +1360,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
     @Override
     public Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns) {
         TableRun run = new TableRun(runtime, dest);
-        run.setFrom(1);
+        run.setOriginType(1);
         if (null == list || list.isEmpty()) {
             return run;
         }
@@ -2757,16 +2758,17 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             builder.append(BR);
         }
         builder.append("FROM ");
-
-        Table table = run.getTable();
-        if(prepare.isSub() && !prepare.getJoins().isEmpty()){
-            String inner = run.getFinalQuery(true);
+        if(prepare instanceof VirtualTablePrepare){
+            Run fromRun = buildQueryRun(runtime, ((VirtualTablePrepare) prepare).getPrepare(), new DefaultConfigStore());
+            String inner = fromRun.getFinalQuery(true);
             inner = BasicUtil.tab(inner);
             builder.append("(\n").append(inner).append("\n)");
-        }else {
+        } else {
+            Table table = prepare.getTable();
             name(runtime, builder, table);
         }
-        String alias = table.getAlias();
+
+        String alias = prepare.getAlias();
         if(BasicUtil.isNotEmpty(alias)) {
             builder.append(tableAliasGuidd());
             delimiter(builder, alias);
@@ -2776,13 +2778,15 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         if(null != joins) {
             for (RunPrepare join:joins) {
                 Join jn = join.getJoin();
-                builder.append(jn.getType().getCode()).append(" ");
-                if(join.isSub()){
-                    Run joinRun = buildQueryRun(runtime, join, new DefaultConfigStore());
+                if(join instanceof VirtualTablePrepare){
+                    jn = ((VirtualTablePrepare) join).getPrepare().getJoin();
+                    builder.append(jn.getType().getCode()).append(" ");
+                    Run joinRun = buildQueryRun(runtime, ((VirtualTablePrepare) join).getPrepare(), new DefaultConfigStore());
                     String inner = joinRun.getFinalQuery(true);
                     inner = BasicUtil.tab(inner);
                     builder.append("(\n").append(inner).append("\n)");
                 }else {
+                    builder.append(jn.getType().getCode()).append(" ");
                     name(runtime, builder, join.getTable());
                 }
                 String joinTableAlias = join.getAlias();

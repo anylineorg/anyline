@@ -299,11 +299,11 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
         StringBuilder builder = new StringBuilder();
         Object pv = EntityAdapter.getPrimaryValue(obj);
         builder.append(" '").append(pv).append("':(");
-        int from = 1;
+        int type = 1;
         if(obj instanceof DataRow) {
-            from = 1;
+            type = 1;
         }
-        run.setFrom(from);
+        run.setOriginType(type);
         boolean first = true;
         for(Column column:columns.values()) {
             boolean place = placeholder;
@@ -434,7 +434,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
         checkName(runtime, null, dest);
         PrimaryGenerator generator = checkPrimaryGenerator(type(), dest.getName());
 
-        int from = 1;
+        int type = 1;
         DataRow row = null;
         if(obj instanceof Map) {
             if(!(obj instanceof DataRow)) {
@@ -448,7 +448,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
                 //createPrimaryValue(row, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), null);
             }
         }else{
-            from = 2;
+            type = 2;
             boolean create = EntityAdapterProxy.createPrimaryValue(obj, columns);
             LinkedHashMap<String, Column> pks = EntityAdapterProxy.primaryKeys(obj.getClass());
             if(!create && null != generator) {
@@ -456,7 +456,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
                 //createPrimaryValue(obj, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, null);
             }
         }
-        run.setFrom(from);
+        run.setOriginType(type);
         /*确定需要插入的列*/
         LinkedHashMap<String, Column> cols = confirmInsertColumns(runtime, dest, obj, configs, columns, false);
         if(null == cols || cols.isEmpty()) {
@@ -772,7 +772,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
     public Run buildUpdateRunFromDataRow(DataRuntime runtime, Table dest, DataRow row, ConfigStore configs, LinkedHashMap<String,Column> columns) {
         //注意columns中可能含 +-号
         TableRun run = new TableRun(runtime, dest);
-        run.setFrom(1);
+        run.setOriginType(1);
         StringBuilder builder = run.getBuilder();
         /*确定需要更新的列*/
         LinkedHashMap<String, Column> cols = confirmUpdateColumns(runtime, dest, row, configs, Column.names(columns));

@@ -16,7 +16,6 @@
 
 package org.anyline.data.prepare.auto.init;
 
-import org.anyline.data.entity.Join;
 import org.anyline.data.param.ConfigParser;
 import org.anyline.data.param.ParseResult;
 import org.anyline.data.prepare.Condition;
@@ -462,7 +461,8 @@ public abstract class DefaultAutoPrepare extends AbstractRunPrepare implements A
 	}
 
 	@Override
-	public void setAlias(String alias) {
+	public RunPrepare setAlias(String alias) {
 		this.alias = alias;
+		return this;
 	}
 }

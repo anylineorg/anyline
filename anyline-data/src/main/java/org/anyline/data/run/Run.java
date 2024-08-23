@@ -194,8 +194,8 @@ public interface Run extends org.anyline.data.Run{
 	StringBuilder getBuilder();
 	void setBuilder(StringBuilder builder);
 	//1-DataRow 2-Entity
-	int getFrom();
-	void setFrom(int from);
+	int getOriginType();
+	void setOriginType(int from);
 	boolean isSetValue(String condition, String variable);
 	boolean isSetValue(String variable);
 	Variable getVariable(String var);
@@ -208,6 +208,8 @@ public interface Run extends org.anyline.data.Run{
 	List<String> getExcludeColumns();
 	Run setExcludeColumns(List<String> excludeColumn);
 	Run setExcludeColumns(String... columns);
+	Object setFrom(Object from);
+	Object getFrom();
 
 	void setValue(Object value);
 	void setValues(String key, Collection<Object> values);

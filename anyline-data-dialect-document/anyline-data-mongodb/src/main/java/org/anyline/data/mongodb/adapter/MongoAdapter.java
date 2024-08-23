@@ -572,7 +572,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
     @Override
     public Run buildUpdateRunFromEntity(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, LinkedHashMap<String, Column> columns) {
         MongoRun run = new MongoRun(runtime, dest);
-        run.setFrom(2);
+        run.setOriginType(2);
         LinkedHashMap<String, Column> cols = new LinkedHashMap<>();
         List<String> primaryKeys = new ArrayList<>();
         if(null != columns && !columns.isEmpty()) {
@@ -662,7 +662,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
     @Override
     public Run buildUpdateRunFromDataRow(DataRuntime runtime, Table dest, DataRow row, ConfigStore configs, LinkedHashMap<String,Column> columns) {
         MongoRun run = new MongoRun(runtime, dest);
-        run.setFrom(1);
+        run.setOriginType(1);
 
         /*确定需要更新的列*/
         LinkedHashMap<String, Column> cols = confirmUpdateColumns(runtime, dest, row, configs, Column.names(columns));

@@ -68,7 +68,8 @@ public abstract class AbstractRun implements Run {
 	protected LinkedHashMap<String, Column> updateColumns;
 	protected List<String> queryColumns;	//查询列
 	protected List<String> excludeColumn;  //不查询列
-	protected int from = 1;
+	protected Object from;
+	protected int getOriginType = 1;
 	protected long rows = -1;
 	protected boolean supportBr = true;
 
@@ -132,13 +133,13 @@ public abstract class AbstractRun implements Run {
 	}
 
 	@Override
-	public int getFrom() {
-		return from;
+	public int getOriginType() {
+		return getOriginType;
 	}
 
 	@Override
-	public void setFrom(int from) {
-		this.from = from;
+	public void setOriginType(int type) {
+		this.getOriginType = type;
 	}
 
 	@Override
@@ -347,7 +348,7 @@ public abstract class AbstractRun implements Run {
 		List<RunValue> rvs = new ArrayList<>();
 		if(null != obj) {
 			// from:1-DataRow 2-Entity
-			if(split && (null == column || !column.isArray()) && getFrom() != 2) {
+			if(split && (null == column || !column.isArray()) && getOriginType() != 2) {
 				/**/
 				boolean json = false;
 				if(null != column) {
@@ -1105,6 +1106,17 @@ public abstract class AbstractRun implements Run {
 		if(null != columns) {
 			this.queryColumns = BeanUtil.array2list(columns);
 		}
+		return this;
+	}
+
+	@Override
+	public Object getFrom() {
+		return from;
+	}
+
+	@Override
+	public Run setFrom(Object from) {
+		this.from = from;
 		return this;
 	}
 

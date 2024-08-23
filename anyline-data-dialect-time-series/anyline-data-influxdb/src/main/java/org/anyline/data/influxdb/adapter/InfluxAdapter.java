@@ -483,7 +483,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
     public Run buildUpdateRunFromDataRow(DataRuntime runtime, Table dest, DataRow row, ConfigStore configs, LinkedHashMap<String,Column> columns) {
         //注意columns中可能含 +-号
         TableRun run = new TableRun(runtime, dest);
-        run.setFrom(1);
+        run.setOriginType(1);
         StringBuilder builder = run.getBuilder();
         /*确定需要更新的列*/
         LinkedHashMap<String, Column> cols = confirmUpdateColumns(runtime, dest, row, configs, Column.names(columns));
