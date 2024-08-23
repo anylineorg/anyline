@@ -128,10 +128,10 @@ public interface RunPrepare extends Cloneable {
  
 	/** 
 	 * 添加分组条件, 在之前的基础上添加新分组条件, 有重复条件则覆盖
-	 * @param group  group
+	 * @param groups  groups
 	 * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
 	 */ 
-	RunPrepare group(String group);
+	RunPrepare group(String ... groups);
 	RunPrepare having(String having);
  
 	void setPageNavi(PageNavi navi); 

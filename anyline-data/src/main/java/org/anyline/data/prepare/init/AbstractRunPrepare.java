@@ -118,20 +118,24 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 	} 
 	/** 
 	 * 添加分组条件, 在之前的基础上添加新分组条件, 有重复条件则覆盖
-	 * @param group  group
+	 * @param groups  group
 	 * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
 	 */ 
-	public RunPrepare group(String group) {
-		/*避免添加空条件*/ 
-		if(BasicUtil.isEmpty(group)) {
-			return this; 
-		} 
-		 
-		if(null == groups) {
-			groups = new DefaultGroupStore();
-		} 
-		group = group.trim().toUpperCase(); 
-		groups.group(group); 
+	public RunPrepare group(String ... groups) {
+		/*避免添加空条件*/
+		if(null != groups){
+
+			if(null == this.groups) {
+				this.groups = new DefaultGroupStore();
+			}
+			for(String group:groups){
+				if(BasicUtil.isEmpty(group)) {
+					continue;
+				}
+				group = group.trim().toUpperCase();
+				this.groups.group(group);
+			}
+		}
 		 
 		return this; 
 	}

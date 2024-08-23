@@ -2760,6 +2760,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         builder.append("FROM ");
         if(prepare instanceof VirtualTablePrepare){
             Run fromRun = buildQueryRun(runtime, ((VirtualTablePrepare) prepare).getPrepare(), new DefaultConfigStore());
+            run.getRunValues().addAll(fromRun.getRunValues());
             String inner = fromRun.getFinalQuery(true);
             inner = BasicUtil.tab(inner);
             builder.append("(\n").append(inner).append("\n)");
@@ -2782,6 +2783,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                     jn = ((VirtualTablePrepare) join).getPrepare().getJoin();
                     builder.append(jn.getType().getCode()).append(" ");
                     Run joinRun = buildQueryRun(runtime, ((VirtualTablePrepare) join).getPrepare(), new DefaultConfigStore());
+                    run.getRunValues().addAll(joinRun.getRunValues());
                     String inner = joinRun.getFinalQuery(true);
                     inner = BasicUtil.tab(inner);
                     builder.append("(\n").append(inner).append("\n)");
@@ -2796,7 +2798,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 }
                 String on = jn.getConditions().getRunText(runtime, false);
                 on = SQLUtil.trim(on);
-                builder.append(" ON ").append(on);
+                builder.append(" ON ").append(on).append("\n");
             }
         }
 
