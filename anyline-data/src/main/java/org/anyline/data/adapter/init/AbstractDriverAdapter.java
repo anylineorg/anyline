@@ -473,7 +473,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 
         if(obj instanceof Collection) {
             Collection list = (Collection) obj;
-            if(null != null && !list.isEmpty()) {
+            if(null != list && !list.isEmpty()) {
                 run = createInsertRunFromCollection(runtime, batch, dest, list, configs, columns);
             }
         }else {
