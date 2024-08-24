@@ -1046,6 +1046,81 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
     }
 
     /**
+     * 多表关联更新
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param prepare 一般通过TableBuilder生成
+     * @param data K-DataRow.VariableValue 更新值key:需要更新的列 value:通常是关联表的列用DataRow.VariableValue表示，也可以是常量
+     * @return 影响行数
+     */
+    @Override
+    public long update(DataRuntime runtime, String random, RunPrepare prepare, DataRow data) {
+        ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
+        ConfigStore configs = prepare.condition();
+        boolean cmd_success = false;
+        if(null == random) {
+            random = random(runtime);
+        }
+        swt = InterceptorProxy.prepareUpdate(runtime, random, prepare, data, configs);
+        if(swt == ACTION.SWITCH.BREAK) {
+            return -1;
+        }
+        if(null != dmListener) {
+            swt = dmListener.prepareUpdate(runtime, random, prepare, data, configs);
+        }
+        if(swt == ACTION.SWITCH.BREAK) {
+            return -1;
+        }
+        if(null == data || data.isEmpty()) {
+            throw new CommandUpdateException("更新空数据");
+        }
+        long result = -1; 
+
+        Run run = buildUpdateRun(runtime, prepare, data);
+
+        if(!run.isValid()) {
+            if(log.isWarnEnabled() && ConfigStore.IS_LOG_SQL(configs)) {
+                log.warn("[valid:false][不具备执行条件]");
+            }
+            return -1;
+        }
+        long fr = System.currentTimeMillis();
+        long millis = -1;
+        swt = InterceptorProxy.beforeUpdate(runtime, random, run, prepare, data, configs);
+        if (swt == ACTION.SWITCH.BREAK) {
+            return -1;
+        }
+        if (null != dmListener) {
+            swt = dmListener.beforeUpdate(runtime, random, run, prepare, data, configs);
+        }
+        if (swt == ACTION.SWITCH.BREAK) {
+            return -1;
+        }
+        result = update(runtime, random, "", data, configs, run);
+        cmd_success = true;
+        millis = System.currentTimeMillis() - fr;
+        if (null != dmListener) {
+            dmListener.afterUpdate(runtime, random, run, result, prepare, data, configs, cmd_success, result, millis);
+        }
+        InterceptorProxy.afterUpdate(runtime, random, run, prepare, data, configs, cmd_success, result, System.currentTimeMillis() - fr);
+        return result;
+    }
+
+    /**
+     * 多表关联更新
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param prepare 一般通过TableBuilder生成
+     * @param data K-DataRow.VariableValue 更新值key:需要更新的列 value:通常是关联表的列用DataRow.VariableValue表示，也可以是常量
+     * @return 影响行数
+     */
+    @Override
+    public Run buildUpdateRun(DataRuntime runtime, RunPrepare prepare, DataRow data) {
+        if(log.isDebugEnabled()) {
+            log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 Run buildUpdateRun(DataRuntime runtime, RunPrepare prepare, DataRow data)", 37));
+        }
+        return null;
+    }
+
+    /**
      * update [命令合成]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源

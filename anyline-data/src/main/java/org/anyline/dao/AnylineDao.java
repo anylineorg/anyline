@@ -231,6 +231,17 @@ public interface AnylineDao<E>{
 		return update(runtime, random, 0, dest, data, configs, columns);
 	}
 
+
+	/**
+	 * 多表关联更新
+	 * @param prepare 一般通过TableBuilder生成
+	 * @param data K-DataRow.VariableValue 更新值key:需要更新的列 value:通常是关联表的列用DataRow.VariableValue表示，也可以是常量
+	 * @return 影响行数
+	 */
+	long update(DataRuntime runtime, String random, RunPrepare prepare, DataRow data);
+	default long update(RunPrepare prepare, DataRow data) {
+		return update(runtime(), null, prepare, row);
+	}
 	/** 
 	 * 添加
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端

@@ -351,7 +351,14 @@ public interface AnylineService<E>{
 	default long update(Table dest, Object data, ConfigStore configs, String ... columns) {
 		return update(dest, data, configs, BeanUtil.array2list(columns));
 	}
-	long update(Table table);
+
+	/**
+	 * 多表关联更新
+	 * @param prepare 一般通过TableBuilder生成
+	 * @param data K-DataRow.VariableValue 更新值key:需要更新的列 value:通常是关联表的列用DataRow.VariableValue表示，也可以是常量
+	 * @return 影响行数
+	 */
+	long update(RunPrepare prepare, DataRow data);
 	/* *****************************************************************************************************************
 	 * 													SAVE
 	 ******************************************************************************************************************/

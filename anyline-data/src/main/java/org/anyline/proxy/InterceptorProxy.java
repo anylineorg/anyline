@@ -21,6 +21,7 @@ import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.run.Run;
 import org.anyline.data.runtime.DataRuntime;
+import org.anyline.entity.DataRow;
 import org.anyline.entity.PageNavi;
 import org.anyline.metadata.ACTION;
 import org.anyline.metadata.ACTION.DDL;
@@ -224,6 +225,18 @@ public class InterceptorProxy {
         }
         return swt;
     }
+
+    public static SWITCH prepareUpdate(DataRuntime runtime, String random, RunPrepare prepare, DataRow data, ConfigStore configs) {
+        SWITCH swt = SWITCH.CONTINUE;
+        for(UpdateInterceptor interceptor:updateInterceptors) {
+            swt = interceptor.prepare(runtime, random, prepare, data, configs);
+            if(swt == SWITCH.SKIP) {
+                //跳过后续的 prepare
+                return swt;
+            }
+        }
+        return swt;
+    }
     public static SWITCH beforeUpdate(DataRuntime runtime, String random, Run run, Table dest, Object data, ConfigStore configs, List<String> columns) {
         SWITCH swt = SWITCH.CONTINUE;
         for(UpdateInterceptor interceptor:updateInterceptors) {
@@ -235,10 +248,32 @@ public class InterceptorProxy {
         }
         return swt;
     }
+    public static SWITCH beforeUpdate(DataRuntime runtime, String random, Run run, RunPrepare prepare, DataRow data, ConfigStore configs) {
+        SWITCH swt = SWITCH.CONTINUE;
+        for(UpdateInterceptor interceptor:updateInterceptors) {
+            swt = interceptor.before(runtime, random, run, prepare, data, configs);
+            if(swt == SWITCH.SKIP) {
+                //跳过后续的 before
+                return swt;
+            }
+        }
+        return swt;
+    }
     public static SWITCH afterUpdate(DataRuntime runtime, String random, Run run, Table dest, Object data, ConfigStore configs, List<String> columns, boolean success, long result, long millis) {
         SWITCH swt = SWITCH.CONTINUE;
         for(UpdateInterceptor interceptor:updateInterceptors) {
             swt = interceptor.after(runtime, random, run, dest, data, configs, columns, success, result, millis);
+            if(swt == SWITCH.SKIP) {
+                //跳过后续的 after
+                return swt;
+            }
+        }
+        return swt;
+    }
+    public static SWITCH afterUpdate(DataRuntime runtime, String random, Run run, RunPrepare prepare, DataRow data, ConfigStore configs, boolean success, long result, long millis) {
+        SWITCH swt = SWITCH.CONTINUE;
+        for(UpdateInterceptor interceptor:updateInterceptors) {
+            swt = interceptor.after(runtime, random, run, prepare, data, configs, success, result, millis);
             if(swt == SWITCH.SKIP) {
                 //跳过后续的 after
                 return swt;

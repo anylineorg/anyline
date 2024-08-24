@@ -1140,6 +1140,24 @@ public interface DriverAdapter {
     }
 
     /**
+     * 多表关联更新
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param prepare 一般通过TableBuilder生成
+     * @param data K-DataRow.VariableValue 更新值key:需要更新的列 value:通常是关联表的列用DataRow.VariableValue表示，也可以是常量
+     * @return 影响行数
+     */
+    long update(DataRuntime runtime, String random, RunPrepare prepare, DataRow data);
+
+    /**
+     * 多表关联更新
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param prepare 一般通过TableBuilder生成
+     * @param data K-DataRow.VariableValue 更新值key:需要更新的列 value:通常是关联表的列用DataRow.VariableValue表示，也可以是常量
+     * @return 影响行数
+     */
+    Run buildUpdateRun(DataRuntime runtime, RunPrepare prepare, DataRow data);
+
+    /**
      * update [命令合成]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源

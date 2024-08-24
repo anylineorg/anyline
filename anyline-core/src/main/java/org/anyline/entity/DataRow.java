@@ -88,7 +88,6 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     protected Schema schema                                 = null                  ; // schema
     protected transient LinkedHashMap<String, Table> tables = new LinkedHashMap<>() ; // 数据来源表(图数据库可能来自多个表) //TODO 解析sql中多个表(未实现)
     protected DataRow attributes                            = null                  ; // 属性
-    protected LinkedHashMap<String, Object> tags            = null                  ; // 标签
     protected DataRow relations                             = null                  ; // 对外关系
     protected long createTime                               = 0                     ; // 创建时间(毫秒)
     protected long nanoTime                                 = 0                     ; // 创建时间(纳秒)
@@ -102,6 +101,18 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     protected KeyAdapter keyAdapter                         = null                  ; // key格式转换
     protected KEY_CASE keyCase 				                = DEFAULT_KEY_CASE      ; // 列名格式
 
+    public class VariableValue {
+        private String value;
+        public VariableValue(String value){
+            this.value = value;
+        }
+        public String value(){
+            return value;
+        }
+        public void value(String value){
+            this.value = value;
+        }
+    }
     public DataRow() {
         parseKeyCase(null);
         String pk = keyAdapter.key(DEFAULT_PRIMARY_KEY);
@@ -1639,12 +1650,25 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         put(null, key, value, false, true);
         return this;
     }
+
+    /**
+     * value != null时执行
+     * @param key key
+     * @param value value
+     * @return this
+     */
     public DataRow putWithoutNull(String key, Object value) {
         if(null != value) {
             this.put(key, value);
         }
         return this;
     }
+    /**
+     * value 非空时执行
+     * @param key key
+     * @param value value
+     * @return this
+     */
     public DataRow putWithoutEmpty(String key, Object value) {
         if(BasicUtil.isNotEmpty(value)) {
             this.put(key, value);
@@ -1675,6 +1699,10 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         if(isNull(key)) {
             this.put(key, value);
         }
+        return this;
+    }
+    public DataRow putVar(String key, String value){
+        this.put(key, new VariableValue(value));
         return this;
     }
 
@@ -1717,42 +1745,6 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     public DataRow setAttributes(DataRow attributes) {
         this.attributes = attributes;
         return this;
-    }
-    public DataRow tag(String key, Object value) {
-        if(null == tags) {
-            tags = new LinkedHashMap<>();
-        }
-        tags.put(key, value);
-        return this;
-    }
-
-    public DataRow addTag(String key, Object value) {
-        if(null == tags) {
-            tags = new LinkedHashMap<>();
-        }
-        tags.put(key, value);
-        return this;
-    }
-
-    public Object tag(String key) {
-        if(null == tags) {
-            tags = new LinkedHashMap<>();
-        }
-        return tags.get(key);
-    }
-
-    public Object getTag(String key) {
-        if(null == tags) {
-            tags = new LinkedHashMap<>();
-        }
-        return tags.get(key);
-    }
-
-    public LinkedHashMap<String, Object> getTags() {
-        if(null == tags) {
-            tags = new LinkedHashMap<>();
-        }
-        return tags;
     }
 
     public DataRow getRow(String key) {

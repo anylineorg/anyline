@@ -20,6 +20,7 @@ import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.run.Run;
 import org.anyline.data.runtime.DataRuntime;
+import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.EntitySet;
 import org.anyline.metadata.ACTION;
@@ -34,7 +35,6 @@ public interface DMListener {
     /**
      * 创建查相关的SQL之前调用, 包括slect exists count等<br/>
      * 要修改查询条件可以在这一步实现, 注意不是在beforeQuery
-     
      * @param runtime  包含数据源(key)、适配器、JDBCTemplate、dao
      * @param random 用来标记同一组SQL、执行结构、参数等
      * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
@@ -47,7 +47,6 @@ public interface DMListener {
     /**
      * 统计总记录数之前调用
      *
-     
      * @param runtime  包含数据源(key)、适配器、JDBCTemplate、dao
      * @param random 用来标记同一组SQL、执行结构、参数等
      * @param run 包含最终执行的命令以及占位参数值
@@ -58,7 +57,6 @@ public interface DMListener {
     /**
      * 统计总记录数之后调用
      *
-     
      * @param runtime  包含数据源(key)、适配器、JDBCTemplate、dao
      * @param random 用来标记同一组SQL、执行结构、参数等
      * @param run 包含最终执行的命令以及占位参数值
@@ -74,7 +72,6 @@ public interface DMListener {
      * 不满足查询条件的不会走到这一步(DataRuntime runtime, String random, 如必须参数未提供)
      * 只有确定执行查询时才会到这一步，到了这一步已经不能修改查询条件<br/>
      * 要修改查询条件可以在prepareQuery实现
-     
      * @param runtime  包含数据源(key)、适配器、JDBCTemplate、dao
      * @param random 用来标记同一组SQL、执行结构、参数等
      * @param run 包含最终执行的命令以及占位参数值
@@ -86,7 +83,6 @@ public interface DMListener {
     /**
      * 查询之后调用(DataRuntime runtime, String random, 调用service.map或service.maps)
      *
-     
      * @param runtime  包含数据源(key)、适配器、JDBCTemplate、dao
      * @param random 用来标记同一组SQL、执行结构、参数等
      * @param run 包含最终执行的命令以及占位参数值
@@ -115,7 +111,6 @@ public interface DMListener {
     /**
      * count之前调用
      *
-     
      * @param runtime  包含数据源(key)、适配器、JDBCTemplate、dao
      * @param random 用来标记同一组SQL、执行结构、参数等
      * @param run 包含最终执行的命令以及占位参数值
@@ -126,7 +121,6 @@ public interface DMListener {
     /**
      * count之后调用
      *
-     
      * @param runtime  包含数据源(key)、适配器、JDBCTemplate、dao
      * @param random 用来标记同一组SQL、执行结构、参数等
      * @param run 包含最终执行的命令以及占位参数值
@@ -140,7 +134,6 @@ public interface DMListener {
     /**
      * 判断是否存在之前调用
      *
-     
      * @param runtime  包含数据源(key)、适配器、JDBCTemplate、dao
      * @param random 用来标记同一组SQL、执行结构、参数等
      * @param run 包含最终执行的命令以及占位参数值
@@ -151,7 +144,6 @@ public interface DMListener {
     /**
      * 判断是否存在之后调用
      *
-     
      * @param runtime  包含数据源(key)、适配器、JDBCTemplate、dao
      * @param random 用来标记同一组SQL、执行结构、参数等
      * @param run 包含最终执行的命令以及占位参数值
@@ -165,37 +157,54 @@ public interface DMListener {
     /**
      * 创建更新相关的SQL之前调用<br/>
      * 要修改更新内容或条件可以在这一步实现, 注意不是在beforeUpdate
-     
      * @param runtime  包含数据源(key)、适配器、JDBCTemplate、dao
      * @param random 用来标记同一组SQL、执行结构、参数等
      * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
      * @param obj Entity或DtaRow
      * @param columns 需要更新的列
      * @param configs 更新条件
-     * @return 如果返回false 则中断执行
-     * @return SWITCH
+     * @return SWITCH 如果返回false 则中断执行
      */
     default SWITCH prepareUpdate(DataRuntime runtime, String random, int batch, Table dest, Object obj, ConfigStore configs, List<String> columns) {return SWITCH.CONTINUE;}
 
     /**
+     * 创建更新相关的SQL之前调用<br/>
+     * 要修改更新内容或条件可以在这一步实现, 注意不是在beforeUpdate
+     * @param runtime  包含数据源(key)、适配器、JDBCTemplate、dao
+     * @param random 用来标记同一组SQL、执行结构、参数等
+     * @param prepare 一般通过TableBuilder生成
+     * @param data K-DataRow.VariableValue 更新值key:需要更新的列 value:通常是关联表的列用DataRow.VariableValue表示，也可以是常量
+     * @return SWITCH 如果返回false 则中断执行
+     */
+    default SWITCH prepareUpdate(DataRuntime runtime, String random, RunPrepare prepare, DataRow data, ConfigStore configs) {return SWITCH.CONTINUE;}
+
+    /**
      * 更新之前调用
      *
-     
      * @param runtime  包含数据源(key)、适配器、JDBCTemplate、dao
      * @param random 用来标记同一组SQL、执行结构、参数等
      * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
      * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
      * @param obj 更新内容
      * @param columns 需要更新的列
-     * @return 是否执行  如果返回false 将不执行更新
-     * @return SWITCH
+     * @return SWITCH 是否执行  如果返回false 将不执行更新
      */
-    default SWITCH  beforeUpdate(DataRuntime runtime, String random, Run run, Table dest, Object obj, List<String> columns) {return SWITCH.CONTINUE;}
+    default SWITCH beforeUpdate(DataRuntime runtime, String random, Run run, Table dest, Object obj, List<String> columns) {return SWITCH.CONTINUE;}
 
     /**
      * 更新之前调用
      *
-     
+     * @param runtime  包含数据源(key)、适配器、JDBCTemplate、dao
+     * @param random 用来标记同一组SQL、执行结构、参数等
+     * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
+     * @param data K-DataRow.VariableValue 更新值key:需要更新的列 value:通常是关联表的列用DataRow.VariableValue表示，也可以是常量
+     * @return SWITCH 是否执行  如果返回false 将不执行更新
+     */
+    default SWITCH beforeUpdate(DataRuntime runtime, String random, Run run, RunPrepare prepare, DataRow data, ConfigStore configs) {return SWITCH.CONTINUE;}
+
+    /**
+     * 更新之前调用
+     *
      * @param runtime  包含数据源(key)、适配器、JDBCTemplate、dao
      * @param random 用来标记同一组SQL、执行结构、参数等
      * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
@@ -211,9 +220,24 @@ public interface DMListener {
     default SWITCH afterUpdate(DataRuntime runtime, String random, Run run, long count, Table dest, Object obj, List<String> columns, boolean success, long qty, long millis) {return SWITCH.CONTINUE;}
 
     /**
+     * 更新之前调用
+     *
+     * @param runtime  包含数据源(key)、适配器、JDBCTemplate、dao
+     * @param random 用来标记同一组SQL、执行结构、参数等
+     * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
+     * @param count 影响行数
+     * @param prepare 一般通过TableBuilder生成
+     * @param data K-DataRow.VariableValue 更新值key:需要更新的列 value:通常是关联表的列用DataRow.VariableValue表示，也可以是常量
+     * @param success SQL是否成功执行
+     * @param qty 景程行数，如果执行不成功返回-1
+     * @param millis 执行耗时
+     * @return SWITCH
+     */
+    default SWITCH afterUpdate(DataRuntime runtime, String random, Run run, long count,  RunPrepare prepare, DataRow data, ConfigStore configs, boolean success, long qty, long millis) {return SWITCH.CONTINUE;}
+
+    /**
      * 创建插入相关的SQL之前调用<br/>
      * 要修改插入内容可以在这一步实现, 注意不是在beforeInsert
-     
      * @param runtime  包含数据源(key)、适配器、JDBCTemplate、dao
      * @param random 用来标记同一组SQL、执行结构、参数等
      * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
@@ -229,7 +253,6 @@ public interface DMListener {
     /**
      * 创建insert sql之前调用
      *
-     
      * @param runtime  包含数据源(key)、适配器、JDBCTemplate、dao
      * @param random 用来标记同一组SQL、执行结构、参数等
      * @param run 包含最终执行的命令以及占位参数值
@@ -244,7 +267,6 @@ public interface DMListener {
     /**
      * 插入之后调用
      *
-     
      * @param runtime  包含数据源(key)、适配器、JDBCTemplate、dao
      * @param random 用来标记同一组SQL、执行结构、参数等
      * @param run 包含最终执行的命令以及占位参数值
@@ -263,7 +285,6 @@ public interface DMListener {
     /**
      * 执行SQL之前调用
      *
-     
      * @param runtime  包含数据源(key)、适配器、JDBCTemplate、dao
      * @param random 用来标记同一组SQL、执行结构、参数等
      * @param run 包含最终执行的命令以及占位参数值
@@ -274,7 +295,6 @@ public interface DMListener {
     /**
      * 执行SQL之后调用
      *
-     
      * @param runtime  包含数据源(key)、适配器、JDBCTemplate、dao
      * @param random 用来标记同一组SQL、执行结构、参数等
      * @param run 包含最终执行的命令以及占位参数值
@@ -288,12 +308,10 @@ public interface DMListener {
     /**
      * 执行存储过程之前调用
      *
-     
      * @param runtime  包含数据源(key)、适配器、JDBCTemplate、dao
      * @param random 用来标记同一组SQL、执行结构、参数等
      * @param procedure 存储过程
-     * @return 是否执行 如果返回false装不执行存储过程
-     * @return SWITCH
+     * @return SWITCH 是否执行 如果返回false装不执行存储过程
      */
     default SWITCH prepareExecute(DataRuntime runtime, String random, Procedure procedure) {return SWITCH.CONTINUE;}
     default SWITCH  beforeExecute(DataRuntime runtime, String random, Procedure procedure) {return SWITCH.CONTINUE;}
@@ -301,7 +319,6 @@ public interface DMListener {
     /**
      * 执行存储过程之后调用
      *
-     
      * @param runtime  包含数据源(key)、适配器、JDBCTemplate、dao
      * @param random 用来标记同一组SQL、执行结构、参数等
      * @param procedure 存储过程
@@ -314,7 +331,6 @@ public interface DMListener {
     /**
      * 查询存过程之前调用
      *
-     
      * @param runtime  包含数据源(key)、适配器、JDBCTemplate、dao
      * @param random 用来标记同一组SQL、执行结构、参数等
      * @param procedure 存储过程
@@ -341,7 +357,6 @@ public interface DMListener {
      * 注意不是beforeDelete<br/>
      * 注意prepareDelete有两个函数需要实现
      * service.delete(DataRuntime runtime, String random, DataRow/Entity) {return SWITCH.CONTINUE;}
-     
      * @param runtime  包含数据源(key)、适配器、JDBCTemplate、dao
      * @param random 用来标记同一组SQL、执行结构、参数等
      * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
@@ -356,7 +371,6 @@ public interface DMListener {
      * 注意不是beforeDelete<br/>
      * 注意prepareDelete有两个函数需要实现
      * service.delete(DataRuntime runtime, String random, "CRM_USER","ID","1","2","3") {return SWITCH.CONTINUE;}
-     
      * @param runtime  包含数据源(key)、适配器、JDBCTemplate、dao
      * @param random 用来标记同一组SQL、执行结构、参数等
      * @param table 表
@@ -369,7 +383,6 @@ public interface DMListener {
     /**
      * 执行删除前调用
      *
-     
      * @param runtime  包含数据源(key)、适配器、JDBCTemplate、dao
      * @param random 用来标记同一组SQL、执行结构、参数等
      * @param run 包含最终执行的命令以及占位参数值
@@ -380,7 +393,6 @@ public interface DMListener {
     /**
      * 执行删除后调用
      *
-     
      * @param runtime  包含数据源(key)、适配器、JDBCTemplate、dao
      * @param random 用来标记同一组SQL、执行结构、参数等
      * @param run 包含最终执行的命令以及占位参数值
@@ -393,7 +405,6 @@ public interface DMListener {
 
     /**
      * 执行SQL时间超限时触发
-     
      * @param runtime  包含数据源(key)、适配器、JDBCTemplate、dao
      * @param random 用来标记同一组SQL、执行结构、参数等 
      * @param action 执行命令

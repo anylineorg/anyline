@@ -248,6 +248,21 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		return update(runtime, random, batch, DataSourceUtil.parseDest(dest, data, configs), data, configs, columns);
 	}
 
+
+	/**
+	 * 多表关联更新
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param prepare 一般通过TableBuilder生成
+	 * @param data K-DataRow.VariableValue 更新值key:需要更新的列 value:通常是关联表的列用DataRow.VariableValue表示，也可以是常量
+	 * @return 影响行数
+	 */
+	@Override
+	public long update(DataRuntime runtime, String random, RunPrepare prepare, DataRow data) {
+		if(null == runtime) {
+			runtime = runtime();
+		}
+		return runtime.getAdapter().update(runtime, random, prepare, row);
+	}
 	/**
 	 * 检测级联insert/update
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
