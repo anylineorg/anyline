@@ -27,6 +27,7 @@ import org.anyline.data.param.ConfigChain;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.RunPrepare;
+import org.anyline.data.prepare.auto.TablePrepare;
 import org.anyline.data.run.Run;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.transaction.TransactionDefine;
@@ -356,9 +357,14 @@ public interface AnylineService<E>{
 	 * 多表关联更新
 	 * @param prepare 一般通过TableBuilder生成
 	 * @param data K-DataRow.VariableValue 更新值key:需要更新的列 value:通常是关联表的列用DataRow.VariableValue表示，也可以是常量
+	 * @param configs 附加过滤条件 通常是在prepare最外层设置
+	 * @param conditions 附加查询条件 支持k:v k:v::type 以及原生sql形式 默认忽略空值条件 <br/>
 	 * @return 影响行数
 	 */
-	long update(RunPrepare prepare, DataRow data);
+	long update(TablePrepare prepare, DataRow data, ConfigStore configs, String ... conditions);
+	default long update(TablePrepare prepare, DataRow data, String ... conditions) {
+		return update(prepare, data, new DefaultConfigStore(), conditions);
+	}
 	/* *****************************************************************************************************************
 	 * 													SAVE
 	 ******************************************************************************************************************/

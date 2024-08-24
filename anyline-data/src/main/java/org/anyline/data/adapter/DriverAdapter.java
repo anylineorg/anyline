@@ -24,8 +24,10 @@ import org.anyline.data.metadata.TypeMetadataAlias;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.RunPrepare;
+import org.anyline.data.prepare.auto.TablePrepare;
 import org.anyline.data.run.Run;
 import org.anyline.data.run.RunValue;
+import org.anyline.data.run.TableRun;
 import org.anyline.data.run.TextRun;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.util.DataSourceUtil;
@@ -1146,7 +1148,7 @@ public interface DriverAdapter {
      * @param data K-DataRow.VariableValue 更新值key:需要更新的列 value:通常是关联表的列用DataRow.VariableValue表示，也可以是常量
      * @return 影响行数
      */
-    long update(DataRuntime runtime, String random, RunPrepare prepare, DataRow data);
+    long update(DataRuntime runtime, String random, TablePrepare prepare, DataRow data, ConfigStore configs, String ... conditions);
 
     /**
      * 多表关联更新
@@ -1155,8 +1157,24 @@ public interface DriverAdapter {
      * @param data K-DataRow.VariableValue 更新值key:需要更新的列 value:通常是关联表的列用DataRow.VariableValue表示，也可以是常量
      * @return 影响行数
      */
-    Run buildUpdateRun(DataRuntime runtime, RunPrepare prepare, DataRow data);
+    Run buildUpdateRun(DataRuntime runtime, TablePrepare prepare, DataRow data, ConfigStore configs, String ... conditions);
 
+    /**
+     *
+     * 多表关联更新
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
+     */
+    void fillUpdateContent(DataRuntime runtime, TableRun run, StringBuilder builder, DataRow data, ConfigStore configs);
+    /**
+     *
+     * 多表关联更新
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
+     */
+    default void fillUpdateContent(DataRuntime runtime, TableRun run, DataRow data, ConfigStore configs) {
+        fillUpdateContent(runtime, run, run.getBuilder(), data, configs);
+    }
     /**
      * update [命令合成]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端

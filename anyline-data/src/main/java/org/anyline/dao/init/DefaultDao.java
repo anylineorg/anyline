@@ -23,6 +23,7 @@ import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.RunPrepare;
+import org.anyline.data.prepare.auto.TablePrepare;
 import org.anyline.data.prepare.auto.init.DefaultTablePrepare;
 import org.anyline.data.prepare.auto.init.DefaultTextPrepare;
 import org.anyline.data.run.Run;
@@ -257,11 +258,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @return 影响行数
 	 */
 	@Override
-	public long update(DataRuntime runtime, String random, RunPrepare prepare, DataRow data) {
+	public long update(DataRuntime runtime, String random, TablePrepare prepare, DataRow data, ConfigStore configs, String ... conditions) {
 		if(null == runtime) {
 			runtime = runtime();
 		}
-		return runtime.getAdapter().update(runtime, random, prepare, row);
+		return runtime.getAdapter().update(runtime, random, prepare, data, configs, conditions);
 	}
 	/**
 	 * 检测级联insert/update

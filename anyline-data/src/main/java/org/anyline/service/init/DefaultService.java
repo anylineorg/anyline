@@ -26,6 +26,7 @@ import org.anyline.data.cache.PageLazyStore;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.RunPrepare;
+import org.anyline.data.prepare.auto.TablePrepare;
 import org.anyline.data.prepare.auto.init.DefaultTablePrepare;
 import org.anyline.data.prepare.auto.init.DefaultTextPrepare;
 import org.anyline.data.prepare.auto.init.SimplePrepare;
@@ -966,8 +967,8 @@ public class DefaultService<E> implements AnylineService<E> {
     }
 
     @Override
-    public long  update(RunPrepare prepare, DataRow data) {
-        return dao.update(prepare, row);
+    public long  update(TablePrepare prepare, DataRow data, ConfigStore configs, String ... conditions) {
+        return dao.update(prepare, data, configs, conditions);
     }
 
     /**

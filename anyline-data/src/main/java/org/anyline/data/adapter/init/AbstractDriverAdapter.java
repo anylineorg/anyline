@@ -1053,9 +1053,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @return 影响行数
      */
     @Override
-    public long update(DataRuntime runtime, String random, RunPrepare prepare, DataRow data) {
+    public long update(DataRuntime runtime, String random, TablePrepare prepare, DataRow data, ConfigStore configs, String ... conditions) {
         ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
-        ConfigStore configs = prepare.condition();
         boolean cmd_success = false;
         if(null == random) {
             random = random(runtime);
@@ -1075,7 +1074,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         }
         long result = -1; 
 
-        Run run = buildUpdateRun(runtime, prepare, data);
+        Run run = buildUpdateRun(runtime, prepare, data, configs, conditions);
 
         if(!run.isValid()) {
             if(log.isWarnEnabled() && ConfigStore.IS_LOG_SQL(configs)) {
@@ -1113,11 +1112,19 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @return 影响行数
      */
     @Override
-    public Run buildUpdateRun(DataRuntime runtime, RunPrepare prepare, DataRow data) {
-        if(log.isDebugEnabled()) {
-            log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 Run buildUpdateRun(DataRuntime runtime, RunPrepare prepare, DataRow data)", 37));
+    public Run buildUpdateRun(DataRuntime runtime, TablePrepare prepare, DataRow data, ConfigStore configs, String ... conditions) {
+        Run run = initQueryRun(runtime, prepare);
+        init(runtime, run, configs, conditions);
+        if(run.checkValid()) {
+            fillUpdateContent(runtime, (TableRun) run, data, configs);
         }
-        return null;
+        return run;
+    }
+    @Override
+    public void fillUpdateContent(DataRuntime runtime, TableRun run, StringBuilder builder, DataRow data, ConfigStore configs){
+        if(log.isDebugEnabled()) {
+            log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 void fillUpdateContent(DataRuntime runtime, TableRun run, StringBuilder builder, DataRow data, ConfigStore configs)", 37));
+        }
     }
 
     /**
@@ -2861,7 +2868,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                     run.getRunValues().addAll(joinRun.getRunValues());
                     String inner = joinRun.getFinalQuery(true);
                     inner = BasicUtil.tab(inner);
-                    builder.append("(\n").append(inner).append("\n)");
+                    builder.append("(").append(BR).append(inner).append(BR).append(")");
                 }else {
                     builder.append(jn.getType().getCode()).append(" ");
                     name(runtime, builder, join.getTable());
@@ -2873,7 +2880,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 }
                 String on = jn.getConditions().getRunText(runtime, false);
                 on = SQLUtil.trim(on);
-                builder.append(" ON ").append(on).append("\n");
+                builder.append(" ON ").append(on).append(BR);
             }
         }
 

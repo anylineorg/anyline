@@ -16,9 +16,13 @@
 
 package org.anyline.data.jdbc.adapter.init;
 
+import org.anyline.data.entity.Join;
 import org.anyline.data.jdbc.adapter.init.alias.MySQLGenusTypeMetadataAlias;
 import org.anyline.data.param.ConfigStore;
+import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.RunPrepare;
+import org.anyline.data.prepare.auto.TablePrepare;
+import org.anyline.data.prepare.auto.init.VirtualTablePrepare;
 import org.anyline.data.run.*;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
@@ -31,6 +35,7 @@ import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.LogUtil;
+import org.anyline.util.SQLUtil;
 import org.anyline.util.regular.RegularUtil;
 
 import java.lang.reflect.Array;
@@ -399,22 +404,80 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns) {
         return super.buildUpdateRunFromCollection(runtime, batch, dest, list, configs, columns);
     }
-
+    /**
+     * 多表关联更新
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param prepare 一般通过TableBuilder生成
+     * @param data K-DataRow.VariableValue 更新值key:需要更新的列 value:通常是关联表的列用DataRow.VariableValue表示，也可以是常量
+     * @return 影响行数
+     */
     @Override
-    public Run buildUpdateRunLimit(DataRuntime runtime, Run run){
-        if(null != run){
-            ConfigStore configs = run.getConfigs();
-            if(null != configs){
-                PageNavi navi = configs.getPageNavi();
-                if(null != navi){
-                    int limit = navi.getPageRows();
-                    if(limit > 0) {
-                        run.getBuilder().append(" LIMIT ").append(limit);
-                    }
+    public Run buildUpdateRun(DataRuntime runtime, TablePrepare prepare, DataRow data, ConfigStore configs, String ... conditions) {
+        Run run = initQueryRun(runtime, prepare);
+        init(runtime, run, configs, conditions);
+        StringBuilder builder = run.getBuilder();
+
+        return run;
+    }
+    @Override
+    public void fillUpdateContent(DataRuntime runtime, TableRun run, StringBuilder builder, DataRow data, ConfigStore configs){
+        TablePrepare prepare = (TablePrepare)run.getPrepare();
+        builder.append("UPDATE ");
+        name(runtime, builder, prepare.getTable());
+        String alias = prepare.getAlias();
+        if(BasicUtil.isNotEmpty(alias)){
+            builder.append(tableAliasGuidd());
+            delimiter(builder, alias);
+        }
+        builder.append(BR);
+        List<RunPrepare> joins = prepare.getJoins();
+        if(null != joins) {
+            for (RunPrepare join:joins) {
+                Join jn = join.getJoin();
+                if(join instanceof VirtualTablePrepare){
+                    jn = ((VirtualTablePrepare) join).getPrepare().getJoin();
+                    builder.append(jn.getType().getCode()).append(" ");
+                    Run joinRun = buildQueryRun(runtime, ((VirtualTablePrepare) join).getPrepare(), new DefaultConfigStore());
+                    run.getRunValues().addAll(joinRun.getRunValues());
+                    String inner = joinRun.getFinalQuery(true);
+                    inner = BasicUtil.tab(inner);
+                    builder.append("(").append(BR).append(inner).append(BR).append(")");
+                }else {
+                    builder.append(jn.getType().getCode()).append(" ");
+                    name(runtime, builder, join.getTable());
                 }
+                String joinTableAlias = join.getAlias();
+                if(BasicUtil.isNotEmpty(joinTableAlias)) {
+                    builder.append(tableAliasGuidd());
+                    delimiter(builder, joinTableAlias);
+                }
+                String on = jn.getConditions().getRunText(runtime, false);
+                on = SQLUtil.trim(on);
+                builder.append(" ON ").append(on).append(BR);
             }
         }
-        return run;
+        builder.append("SET").append(BR);
+        List<String> keys = data.keys();
+        boolean first = true;
+        for(String key:keys){
+            if(!first){
+                builder.append(", ");
+            }
+            first = true;
+            builder.append(TAB).append(key).append(" = ");
+            Object value = data.get(key);
+            if(value instanceof DataRow.VariableValue){
+                DataRow.VariableValue var = (DataRow.VariableValue)value;
+                delimiter(builder, var.value());
+            }else{
+                builder.append("?");
+                RunValue rv = new RunValue();
+                rv.setValue(value);
+                run.addValue(rv);
+            }
+        }
+        run.appendCondition(builder, this, true, true);
+
     }
 
     /**

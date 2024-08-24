@@ -19,6 +19,7 @@ package org.anyline.proxy;
 import org.anyline.data.interceptor.*;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
+import org.anyline.data.prepare.auto.TablePrepare;
 import org.anyline.data.run.Run;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.DataRow;
@@ -226,7 +227,7 @@ public class InterceptorProxy {
         return swt;
     }
 
-    public static SWITCH prepareUpdate(DataRuntime runtime, String random, RunPrepare prepare, DataRow data, ConfigStore configs) {
+    public static SWITCH prepareUpdate(DataRuntime runtime, String random, TablePrepare prepare, DataRow data, ConfigStore configs) {
         SWITCH swt = SWITCH.CONTINUE;
         for(UpdateInterceptor interceptor:updateInterceptors) {
             swt = interceptor.prepare(runtime, random, prepare, data, configs);
@@ -248,7 +249,7 @@ public class InterceptorProxy {
         }
         return swt;
     }
-    public static SWITCH beforeUpdate(DataRuntime runtime, String random, Run run, RunPrepare prepare, DataRow data, ConfigStore configs) {
+    public static SWITCH beforeUpdate(DataRuntime runtime, String random, Run run, TablePrepare prepare, DataRow data, ConfigStore configs) {
         SWITCH swt = SWITCH.CONTINUE;
         for(UpdateInterceptor interceptor:updateInterceptors) {
             swt = interceptor.before(runtime, random, run, prepare, data, configs);
@@ -270,7 +271,7 @@ public class InterceptorProxy {
         }
         return swt;
     }
-    public static SWITCH afterUpdate(DataRuntime runtime, String random, Run run, RunPrepare prepare, DataRow data, ConfigStore configs, boolean success, long result, long millis) {
+    public static SWITCH afterUpdate(DataRuntime runtime, String random, Run run, TablePrepare prepare, DataRow data, ConfigStore configs, boolean success, long result, long millis) {
         SWITCH swt = SWITCH.CONTINUE;
         for(UpdateInterceptor interceptor:updateInterceptors) {
             swt = interceptor.after(runtime, random, run, prepare, data, configs, success, result, millis);
