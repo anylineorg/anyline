@@ -1148,7 +1148,7 @@ public interface DriverAdapter {
      * @param data K-DataRow.VariableValue 更新值key:需要更新的列 value:通常是关联表的列用DataRow.VariableValue表示，也可以是常量
      * @return 影响行数
      */
-    long update(DataRuntime runtime, String random, TablePrepare prepare, DataRow data, ConfigStore configs, String ... conditions);
+    long update(DataRuntime runtime, String random, RunPrepare prepare, DataRow data, ConfigStore configs, String ... conditions);
 
     /**
      * 多表关联更新
@@ -1157,7 +1157,7 @@ public interface DriverAdapter {
      * @param data K-DataRow.VariableValue 更新值key:需要更新的列 value:通常是关联表的列用DataRow.VariableValue表示，也可以是常量
      * @return 影响行数
      */
-    Run buildUpdateRun(DataRuntime runtime, TablePrepare prepare, DataRow data, ConfigStore configs, String ... conditions);
+    Run buildUpdateRun(DataRuntime runtime, RunPrepare prepare, DataRow data, ConfigStore configs, String ... conditions);
 
     /**
      *

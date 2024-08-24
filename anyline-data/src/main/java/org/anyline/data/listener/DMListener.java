@@ -177,7 +177,7 @@ public interface DMListener {
      * @param data K-DataRow.VariableValue 更新值key:需要更新的列 value:通常是关联表的列用DataRow.VariableValue表示，也可以是常量
      * @return SWITCH 如果返回false 则中断执行
      */
-    default SWITCH prepareUpdate(DataRuntime runtime, String random, TablePrepare prepare, DataRow data, ConfigStore configs) {return SWITCH.CONTINUE;}
+    default SWITCH prepareUpdate(DataRuntime runtime, String random, RunPrepare prepare, DataRow data, ConfigStore configs) {return SWITCH.CONTINUE;}
 
     /**
      * 更新之前调用
@@ -201,7 +201,7 @@ public interface DMListener {
      * @param data K-DataRow.VariableValue 更新值key:需要更新的列 value:通常是关联表的列用DataRow.VariableValue表示，也可以是常量
      * @return SWITCH 是否执行  如果返回false 将不执行更新
      */
-    default SWITCH beforeUpdate(DataRuntime runtime, String random, Run run, TablePrepare prepare, DataRow data, ConfigStore configs) {return SWITCH.CONTINUE;}
+    default SWITCH beforeUpdate(DataRuntime runtime, String random, Run run, RunPrepare prepare, DataRow data, ConfigStore configs) {return SWITCH.CONTINUE;}
 
     /**
      * 更新之前调用
@@ -234,7 +234,7 @@ public interface DMListener {
      * @param millis 执行耗时
      * @return SWITCH
      */
-    default SWITCH afterUpdate(DataRuntime runtime, String random, Run run, long count,  TablePrepare prepare, DataRow data, ConfigStore configs, boolean success, long qty, long millis) {return SWITCH.CONTINUE;}
+    default SWITCH afterUpdate(DataRuntime runtime, String random, Run run, long count,  RunPrepare prepare, DataRow data, ConfigStore configs, boolean success, long qty, long millis) {return SWITCH.CONTINUE;}
 
     /**
      * 创建插入相关的SQL之前调用<br/>

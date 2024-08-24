@@ -48,7 +48,7 @@ public interface UpdateInterceptor extends DMInterceptor{
      * @param data K-DataRow.VariableValue 更新值key:需要更新的列 value:通常是关联表的列用DataRow.VariableValue表示，也可以是常量
      * @return RESULT
      */
-    default ACTION.SWITCH prepare(DataRuntime runtime, String random, TablePrepare prepare, DataRow data, ConfigStore configs) { return SWITCH.CONTINUE;}
+    default ACTION.SWITCH prepare(DataRuntime runtime, String random, RunPrepare prepare, DataRow data, ConfigStore configs) { return SWITCH.CONTINUE;}
 
     /**
      * 合计总数之前调用，到这一步SQL已创建完成
@@ -65,7 +65,7 @@ public interface UpdateInterceptor extends DMInterceptor{
      * @param data K-DataRow.VariableValue 更新值key:需要更新的列 value:通常是关联表的列用DataRow.VariableValue表示，也可以是常量
      * @return RESULT
      */
-    default SWITCH before(DataRuntime runtime, String random, Run run, TablePrepare prepare, DataRow data, ConfigStore configs) { return SWITCH.CONTINUE;}
+    default SWITCH before(DataRuntime runtime, String random, Run run, RunPrepare prepare, DataRow data, ConfigStore configs) { return SWITCH.CONTINUE;}
 
     /**
      * 合计总数之前调用，到这一步SQL已创建完成
@@ -87,5 +87,5 @@ public interface UpdateInterceptor extends DMInterceptor{
      * @param millis 耗时
      * @return RESULT
      */
-    default SWITCH after(DataRuntime runtime, String random, Run run, TablePrepare prepare, DataRow data, ConfigStore configs, boolean success, long result, long millis) { return SWITCH.CONTINUE;}
+    default SWITCH after(DataRuntime runtime, String random, Run run, RunPrepare prepare, DataRow data, ConfigStore configs, boolean success, long result, long millis) { return SWITCH.CONTINUE;}
 }

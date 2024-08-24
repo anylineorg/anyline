@@ -361,8 +361,8 @@ public interface AnylineService<E>{
 	 * @param conditions 附加查询条件 支持k:v k:v::type 以及原生sql形式 默认忽略空值条件 <br/>
 	 * @return 影响行数
 	 */
-	long update(TablePrepare prepare, DataRow data, ConfigStore configs, String ... conditions);
-	default long update(TablePrepare prepare, DataRow data, String ... conditions) {
+	long update(RunPrepare prepare, DataRow data, ConfigStore configs, String ... conditions);
+	default long update(RunPrepare prepare, DataRow data, String ... conditions) {
 		return update(prepare, data, new DefaultConfigStore(), conditions);
 	}
 	/* *****************************************************************************************************************

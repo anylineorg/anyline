@@ -239,8 +239,8 @@ public interface AnylineDao<E>{
 	 * @param data K-DataRow.VariableValue 更新值key:需要更新的列 value:通常是关联表的列用DataRow.VariableValue表示，也可以是常量
 	 * @return 影响行数
 	 */
-	long update(DataRuntime runtime, String random, TablePrepare prepare, DataRow data, ConfigStore configs, String ... conditions);
-	default long update(TablePrepare prepare, DataRow data, ConfigStore configs, String ... conditions) {
+	long update(DataRuntime runtime, String random, RunPrepare prepare, DataRow data, ConfigStore configs, String ... conditions);
+	default long update(RunPrepare prepare, DataRow data, ConfigStore configs, String ... conditions) {
 		return update(runtime(), null, prepare, data, configs, conditions);
 	}
 	/** 

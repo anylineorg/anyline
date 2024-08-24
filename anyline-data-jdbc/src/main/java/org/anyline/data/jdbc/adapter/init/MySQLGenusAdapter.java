@@ -412,11 +412,12 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return 影响行数
      */
     @Override
-    public Run buildUpdateRun(DataRuntime runtime, TablePrepare prepare, DataRow data, ConfigStore configs, String ... conditions) {
+    public Run buildUpdateRun(DataRuntime runtime, RunPrepare prepare, DataRow data, ConfigStore configs, String ... conditions) {
         Run run = initQueryRun(runtime, prepare);
         init(runtime, run, configs, conditions);
-        StringBuilder builder = run.getBuilder();
 
+        StringBuilder builder = run.getBuilder();
+        fillUpdateContent(runtime, (TableRun)run, builder, data, configs);
         return run;
     }
     @Override

@@ -967,7 +967,7 @@ public class DefaultService<E> implements AnylineService<E> {
     }
 
     @Override
-    public long  update(TablePrepare prepare, DataRow data, ConfigStore configs, String ... conditions) {
+    public long  update(RunPrepare prepare, DataRow data, ConfigStore configs, String ... conditions) {
         return dao.update(prepare, data, configs, conditions);
     }
 

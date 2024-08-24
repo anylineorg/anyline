@@ -258,7 +258,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @return 影响行数
 	 */
 	@Override
-	public long update(DataRuntime runtime, String random, TablePrepare prepare, DataRow data, ConfigStore configs, String ... conditions) {
+	public long update(DataRuntime runtime, String random, RunPrepare prepare, DataRow data, ConfigStore configs, String ... conditions) {
 		if(null == runtime) {
 			runtime = runtime();
 		}

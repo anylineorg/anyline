@@ -1053,7 +1053,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @return 影响行数
      */
     @Override
-    public long update(DataRuntime runtime, String random, TablePrepare prepare, DataRow data, ConfigStore configs, String ... conditions) {
+    public long update(DataRuntime runtime, String random, RunPrepare prepare, DataRow data, ConfigStore configs, String ... conditions) {
         ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
         boolean cmd_success = false;
         if(null == random) {
@@ -1112,7 +1112,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @return 影响行数
      */
     @Override
-    public Run buildUpdateRun(DataRuntime runtime, TablePrepare prepare, DataRow data, ConfigStore configs, String ... conditions) {
+    public Run buildUpdateRun(DataRuntime runtime, RunPrepare prepare, DataRow data, ConfigStore configs, String ... conditions) {
         Run run = initQueryRun(runtime, prepare);
         init(runtime, run, configs, conditions);
         if(run.checkValid()) {
