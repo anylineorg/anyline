@@ -16,9 +16,13 @@
 
 package org.anyline.data.jdbc.adapter.init;
 
+import org.anyline.data.entity.Join;
 import org.anyline.data.jdbc.adapter.init.alias.PostgresGenusTypeMetadataAlias;
 import org.anyline.data.param.ConfigStore;
+import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.RunPrepare;
+import org.anyline.data.prepare.auto.TablePrepare;
+import org.anyline.data.prepare.auto.init.VirtualTablePrepare;
 import org.anyline.data.run.*;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
@@ -27,10 +31,7 @@ import org.anyline.metadata.*;
 import org.anyline.metadata.refer.MetadataFieldRefer;
 import org.anyline.metadata.refer.MetadataReferHolder;
 import org.anyline.metadata.type.TypeMetadata;
-import org.anyline.util.BasicUtil;
-import org.anyline.util.BeanUtil;
-import org.anyline.util.ConfigTable;
-import org.anyline.util.LogUtil;
+import org.anyline.util.*;
 import org.anyline.util.regular.RegularUtil;
 
 import javax.sql.DataSource;
@@ -394,6 +395,71 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         return super.buildUpdateRunFromCollection(runtime, batch, dest, list, configs, columns);
     }
 
+    /**
+     * 多表关联更新
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param prepare 一般通过TableBuilder生成
+     * @param data K-DataRow.VariableValue 更新值key:需要更新的列 value:通常是关联表的列用DataRow.VariableValue表示，也可以是常量
+     * @return 影响行数
+     */
+    @Override
+    public Run buildUpdateRun(DataRuntime runtime, RunPrepare prepare, DataRow data, ConfigStore configs, String ... conditions) {
+        return super.buildUpdateRun(runtime, prepare, data, configs, conditions);
+    }
+    @Override
+    public void fillUpdateContent(DataRuntime runtime, TableRun run, StringBuilder builder, DataRow data, ConfigStore configs){
+        TablePrepare prepare = (TablePrepare)run.getPrepare();
+        builder.append("UPDATE ");
+        name(runtime, builder, prepare.getTable());
+        String alias = prepare.getAlias();
+        if(BasicUtil.isNotEmpty(alias)){
+            builder.append(tableAliasGuidd());
+            delimiter(builder, alias);
+        }
+        builder.append(BR);
+        builder.append("SET").append(BR);
+        List<String> keys = data.keys();
+        boolean first = true;
+        for(String key:keys){
+            if(!first){
+                builder.append(", ");
+            }
+            first = false;
+            builder.append(key).append(" = ");
+            Object value = data.get(key);
+            if(value instanceof DataRow.VariableValue){
+                DataRow.VariableValue var = (DataRow.VariableValue)value;
+                delimiter(builder, var.value());
+            }else{
+                builder.append("?");
+                RunValue rv = new RunValue();
+                rv.setValue(value);
+                run.addValue(rv);
+            }
+        }
+        RunPrepare master = null;
+        List<RunPrepare> joins = prepare.getJoins();
+        if(null != joins && !joins.isEmpty()) {
+            master = joins.get(0);
+            joins.remove(master);
+            builder.append("\nFROM ");
+            fillMasterTableContent(runtime, builder, run, master);
+            for (RunPrepare join:joins) {
+                fillJoinTableContent(runtime, builder, run, join);
+            }
+        }
+        run.appendCondition(builder, this, true, true);
+        if(null != master){
+            Join join = master.getJoin();
+            if(master instanceof VirtualTablePrepare) {
+                join = ((VirtualTablePrepare) master).getPrepare().getJoin();
+            }
+            if(null != join){
+                String on = join.getConditions().getRunText(runtime, false);
+                builder.append(on);
+            }
+        }
+    }
     /**
      * update [命令合成-子流程]<br/>
      * 确认需要更新的列

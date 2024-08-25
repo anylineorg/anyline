@@ -2840,47 +2840,12 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             builder.append(BR);
         }
         builder.append("FROM ");
-        if(prepare instanceof VirtualTablePrepare){
-            Run fromRun = buildQueryRun(runtime, ((VirtualTablePrepare) prepare).getPrepare(), new DefaultConfigStore());
-            run.getRunValues().addAll(fromRun.getRunValues());
-            String inner = fromRun.getFinalQuery(true);
-            inner = BasicUtil.tab(inner);
-            builder.append("(\n").append(inner).append("\n)");
-        } else {
-            Table table = prepare.getTable();
-            name(runtime, builder, table);
-        }
-
-        String alias = prepare.getAlias();
-        if(BasicUtil.isNotEmpty(alias)) {
-            builder.append(tableAliasGuidd());
-            delimiter(builder, alias);
-        }
+        fillMasterTableContent(runtime, builder, run, prepare);
         builder.append(BR);
         List<RunPrepare> joins = prepare.getJoins();
         if(null != joins) {
             for (RunPrepare join:joins) {
-                Join jn = join.getJoin();
-                if(join instanceof VirtualTablePrepare){
-                    jn = ((VirtualTablePrepare) join).getPrepare().getJoin();
-                    builder.append(jn.getType().getCode()).append(" ");
-                    Run joinRun = buildQueryRun(runtime, ((VirtualTablePrepare) join).getPrepare(), new DefaultConfigStore());
-                    run.getRunValues().addAll(joinRun.getRunValues());
-                    String inner = joinRun.getFinalQuery(true);
-                    inner = BasicUtil.tab(inner);
-                    builder.append("(").append(BR).append(inner).append(BR).append(")");
-                }else {
-                    builder.append(jn.getType().getCode()).append(" ");
-                    name(runtime, builder, join.getTable());
-                }
-                String joinTableAlias = join.getAlias();
-                if(BasicUtil.isNotEmpty(joinTableAlias)) {
-                    builder.append(tableAliasGuidd());
-                    delimiter(builder, joinTableAlias);
-                }
-                String on = jn.getConditions().getRunText(runtime, false);
-                on = SQLUtil.trim(on);
-                builder.append(" ON ").append(on).append(BR);
+                fillJoinTableContent(runtime, builder, run, join);
             }
         }
 
@@ -2892,6 +2857,66 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         return run;
     }
 
+    /**
+     * 主表
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param builder 有可能合个run合成一个 所以提供一个共用builder
+     * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
+     * @param prepare TablePrepare
+     * @return Run
+     */
+    public Run fillMasterTableContent(DataRuntime runtime, StringBuilder builder, TableRun run, RunPrepare prepare) {
+        if(prepare instanceof VirtualTablePrepare){
+            Run fromRun = buildQueryRun(runtime, ((VirtualTablePrepare) prepare).getPrepare(), new DefaultConfigStore());
+            run.getRunValues().addAll(fromRun.getRunValues());
+            String inner = fromRun.getFinalQuery(true);
+            inner = BasicUtil.tab(inner);
+            builder.append("(\n").append(inner).append("\n)");
+        } else {
+            Table table = prepare.getTable();
+            name(runtime, builder, table);
+        }
+        String alias = prepare.getAlias();
+        if(BasicUtil.isNotEmpty(alias)) {
+            builder.append(tableAliasGuidd());
+            delimiter(builder, alias);
+        }
+        return run;
+    }
+
+    /**
+     * 关联表
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param builder 有可能合个run合成一个 所以提供一个共用builder
+     * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
+     * @param prepare TablePrepare
+     * @return Run
+     */
+    public Run fillJoinTableContent(DataRuntime runtime, StringBuilder builder, TableRun run, RunPrepare prepare) {
+        builder.append(BR);
+        Join join = prepare.getJoin();
+        if(prepare instanceof VirtualTablePrepare){
+            join = ((VirtualTablePrepare) prepare).getPrepare().getJoin();
+            builder.append(join.getType().getCode()).append(" ");
+            Run joinRun = buildQueryRun(runtime, ((VirtualTablePrepare) prepare).getPrepare(), new DefaultConfigStore());
+            run.getRunValues().addAll(joinRun.getRunValues());
+            String inner = joinRun.getFinalQuery(true);
+            inner = BasicUtil.tab(inner);
+            builder.append("(").append(BR).append(inner).append(BR).append(")");
+        }else {
+            builder.append(join.getType().getCode()).append(" ");
+            name(runtime, builder, prepare.getTable());
+        }
+        String alias = prepare.getAlias();
+        if(BasicUtil.isNotEmpty(alias)) {
+            builder.append(tableAliasGuidd());
+            delimiter(builder, alias);
+        }
+        String on = join.getConditions().getRunText(runtime, false);
+        on = SQLUtil.trim(on);
+        builder.append(" ON ").append(on).append(BR);
+        return run;
+    }
     /**
      * select[命令合成-子流程] <br/>
      * 合成最终 select 命令 包含分页 排序

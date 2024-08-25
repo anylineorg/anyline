@@ -413,12 +413,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public Run buildUpdateRun(DataRuntime runtime, RunPrepare prepare, DataRow data, ConfigStore configs, String ... conditions) {
-        Run run = initQueryRun(runtime, prepare);
-        init(runtime, run, configs, conditions);
-
-        StringBuilder builder = run.getBuilder();
-        fillUpdateContent(runtime, (TableRun)run, builder, data, configs);
-        return run;
+        return super.buildUpdateRun(runtime, prepare, data, configs, conditions);
     }
     @Override
     public void fillUpdateContent(DataRuntime runtime, TableRun run, StringBuilder builder, DataRow data, ConfigStore configs){
@@ -434,27 +429,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         List<RunPrepare> joins = prepare.getJoins();
         if(null != joins) {
             for (RunPrepare join:joins) {
-                Join jn = join.getJoin();
-                if(join instanceof VirtualTablePrepare){
-                    jn = ((VirtualTablePrepare) join).getPrepare().getJoin();
-                    builder.append(jn.getType().getCode()).append(" ");
-                    Run joinRun = buildQueryRun(runtime, ((VirtualTablePrepare) join).getPrepare(), new DefaultConfigStore());
-                    run.getRunValues().addAll(joinRun.getRunValues());
-                    String inner = joinRun.getFinalQuery(true);
-                    inner = BasicUtil.tab(inner);
-                    builder.append("(").append(BR).append(inner).append(BR).append(")");
-                }else {
-                    builder.append(jn.getType().getCode()).append(" ");
-                    name(runtime, builder, join.getTable());
-                }
-                String joinTableAlias = join.getAlias();
-                if(BasicUtil.isNotEmpty(joinTableAlias)) {
-                    builder.append(tableAliasGuidd());
-                    delimiter(builder, joinTableAlias);
-                }
-                String on = jn.getConditions().getRunText(runtime, false);
-                on = SQLUtil.trim(on);
-                builder.append(" ON ").append(on).append(BR);
+                fillJoinTableContent(runtime, builder, run, join);
             }
         }
         builder.append("SET").append(BR);
@@ -478,7 +453,6 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
             }
         }
         run.appendCondition(builder, this, true, true);
-
     }
 
     /**
