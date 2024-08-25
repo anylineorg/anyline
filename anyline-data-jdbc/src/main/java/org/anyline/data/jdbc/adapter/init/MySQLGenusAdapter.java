@@ -464,8 +464,8 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
             if(!first){
                 builder.append(", ");
             }
-            first = true;
-            builder.append(TAB).append(key).append(" = ");
+            first = false;
+            builder.append(key).append(" = ");
             Object value = data.get(key);
             if(value instanceof DataRow.VariableValue){
                 DataRow.VariableValue var = (DataRow.VariableValue)value;
