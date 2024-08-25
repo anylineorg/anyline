@@ -404,7 +404,11 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public Run buildUpdateRun(DataRuntime runtime, RunPrepare prepare, DataRow data, ConfigStore configs, String ... conditions) {
-        return super.buildUpdateRun(runtime, prepare, data, configs, conditions);
+        Run run = initQueryRun(runtime, prepare);
+        if(run.checkValid()) {
+            fillUpdateContent(runtime, (TableRun) run, data, configs);
+        }
+        return run;
     }
     @Override
     public void fillUpdateContent(DataRuntime runtime, TableRun run, StringBuilder builder, DataRow data, ConfigStore configs){
@@ -448,7 +452,6 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
                 fillJoinTableContent(runtime, builder, run, join);
             }
         }
-        run.appendCondition(builder, this, true, true);
         if(null != master){
             Join join = master.getJoin();
             if(master instanceof VirtualTablePrepare) {
@@ -456,9 +459,12 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
             }
             if(null != join){
                 String on = join.getConditions().getRunText(runtime, false);
-                builder.append(on);
+                //builder.append(on);
+                configs.and(on);
             }
         }
+        init(runtime, run, configs);
+        run.appendCondition(builder, this, true, true);
     }
     /**
      * update [命令合成-子流程]<br/>
