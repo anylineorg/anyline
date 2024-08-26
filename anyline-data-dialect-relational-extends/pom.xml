@@ -26,7 +26,6 @@
 		<module>anyline-data-jdbc-lightdb</module>			<!--恒生电子-->
 		<module>anyline-data-jdbc-mogdb</module>			<!--云和恩墨-->
 		<module>anyline-data-jdbc-mudb</module>				<!--沐融信息科技-->
-		<module>anyline-data-jdbc-oceanbase</module>
 		<module>anyline-data-jdbc-polardb</module>
 		<module>anyline-data-jdbc-questdb</module>
 		<module>anyline-data-jdbc-stardb</module>			<!--京东StarDB-->

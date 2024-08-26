@@ -14,12 +14,9 @@
  * limitations under the License.
  */
 
- 
-
-package org.anyline.data.jdbc.tidb;
+package org.anyline.data.jdbc.oceanbase;
 
 import org.anyline.annotation.Component;
-import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.adapter.init.MySQLGenusAdapter;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
@@ -41,17 +38,15 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-@Component("anyline.data.jdbc.adapter.tidb")
-public class TiDBAdapter extends MySQLGenusAdapter implements JDBCAdapter {
-
+@Component("anyline.data.jdbc.adapter.oceanbase")
+public class OceanBaseAdapter extends MySQLGenusAdapter {
+	
 	public DatabaseType type() {
-		return DatabaseType.TiDB;
-	}
-
-	public TiDBAdapter() {
+		return DatabaseType.OceanBase;
+	} 
+	public OceanBaseAdapter() {
 		super();
 	}
-
 	/* *****************************************************************************************************************
 	 *
 	 *                                                     DML
@@ -8539,4 +8534,5 @@ public class TiDBAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 	public List<Run> buildRevokeRun(DataRuntime runtime, Role role, Privilege ... privileges) throws Exception {
 		return super.buildRevokeRun(runtime, role, privileges);
 	}
+
 } 

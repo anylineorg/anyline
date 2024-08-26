@@ -34,10 +34,10 @@ public interface JDBCInterceptor {
         Collections.sort(interceptors, new Comparator<JDBCInterceptor>() {
             public int compare(JDBCInterceptor r1, JDBCInterceptor r2) {
                 int order1 = r1.order();
-                int ordre2 = r2.order();
-                if(order1 > ordre2) {
+                int order2 = r2.order();
+                if(order1 > order2) {
                     return 1;
-                }else if(order1 < ordre2) {
+                }else if(order1 < order2) {
                     return -1;
                 }
                 return 0;

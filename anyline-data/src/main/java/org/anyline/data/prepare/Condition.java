@@ -21,6 +21,8 @@ import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;
 import org.anyline.util.SQLUtil;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -38,7 +40,30 @@ public interface Condition extends Cloneable{
 	int VARIABLE_PLACEHOLDER_TYPE_INDEX	= 0			;	// 按下标区分
 	int VARIABLE_PLACEHOLDER_TYPE_KEY		= 1			;	// 按KEY区分
 	int VARIABLE_PLACEHOLDER_TYPE_NONE		= 2			;	// 没有变量
-	 
+
+	/**
+	 * 顺序 按升序排列
+	 * @return double 转认1.0
+	 */
+	default double index() {
+		return 1.0;
+	}
+	void index(double index);
+
+	static void sort(List<Condition> configs){
+		Collections.sort(configs, new Comparator<Condition>() {
+			public int compare(Condition r1, Condition r2) {
+				double order1 = r1.index();
+				double order2 = r2.index();
+				if(order1 > order2) {
+					return 1;
+				}else if(order1 < order2) {
+					return -1;
+				}
+				return 0;
+			}
+		});
+	}
 	/** 
 	 * 运行时文本 
 	 * @param prefix 前缀

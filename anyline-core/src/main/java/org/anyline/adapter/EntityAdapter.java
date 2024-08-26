@@ -50,10 +50,10 @@ public interface EntityAdapter {
         Collections.sort(interceptors, new Comparator<EntityAdapter>() {
             public int compare(EntityAdapter r1, EntityAdapter r2) {
                 int order1 = r1.order();
-                int ordre2 = r2.order();
-                if(order1 > ordre2) {
+                int order2 = r2.order();
+                if(order1 > order2) {
                     return 1;
-                }else if(order1 < ordre2) {
+                }else if(order1 < order2) {
                     return -1;
                 }
                 return 0;

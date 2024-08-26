@@ -648,7 +648,6 @@ public class DefaultConfigStore implements ConfigStore {
 
 	@Override
 	public ConfigStore and(EMPTY_VALUE_SWITCH swt, Compare compare, String prefix, String var, Object value, boolean overCondition, boolean overValue) {
-
 		if(null == compare) {
 			compare = Compare.AUTO;
 		}

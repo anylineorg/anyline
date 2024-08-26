@@ -22,14 +22,17 @@ import org.anyline.entity.Compare;
 import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;
 import org.anyline.entity.DataRow;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
- 
+
 public interface Config extends Cloneable {
 	// 从request 取值方式
 	static int FETCH_REQUEST_VALUE_TYPE_NONE 	= 0;	// 没有参数
 	static int FETCH_REQUEST_VALUE_TYPE_SINGLE 	= 1;	// 单值
 	static int FETCH_REQUEST_VALUE_TYPE_MULTIPLE = 2;	// 数组
+
 	void setValue(Map<String,Object> values); 
 	List<Object> getValues() ; 
 	List<Object> getOrValues() ; 
@@ -37,6 +40,30 @@ public interface Config extends Cloneable {
 	void setValue(Object value);
 	void datatype(String type);
 	String datatype();
+
+	/**
+	 * 顺序 按升序排列
+	 * @return double 转认1.0
+	 */
+	default double index() {
+		return 1.0;
+	}
+	void index(double index);
+
+	static void sort(List<Config> configs){
+		Collections.sort(configs, new Comparator<Config>() {
+			public int compare(Config r1, Config r2) {
+				double order1 = r1.index();
+				double order2 = r2.index();
+				if(order1 > order2) {
+					return 1;
+				}else if(order1 < order2) {
+					return -1;
+				}
+				return 0;
+			}
+		});
+	}
 
 	void setOrValue(Object value);
 	void addOrValue(Object value);

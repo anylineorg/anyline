@@ -40,6 +40,7 @@
 		<module>anyline-data-jdbc-mssql</module>
 		<module>anyline-data-jdbc-mysql</module>
 		<module>anyline-data-jdbc-opengauss</module>					<!--高斯-->
+		<module>anyline-data-jdbc-oceanbase</module>
 		<module>anyline-data-jdbc-oracle</module>
 		<module>anyline-data-jdbc-oscar</module>						<!--神舟通用-->
 		<module>anyline-data-jdbc-postgis</module>

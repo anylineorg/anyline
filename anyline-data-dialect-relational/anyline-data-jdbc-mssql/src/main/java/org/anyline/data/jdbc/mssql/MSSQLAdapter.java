@@ -19,11 +19,11 @@
 package org.anyline.data.jdbc.mssql;
 
 import org.anyline.annotation.Component;
-import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.adapter.init.AbstractJDBCAdapter;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
+import org.anyline.data.prepare.auto.TablePrepare;
 import org.anyline.data.run.*;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
@@ -425,6 +425,64 @@ public class MSSQLAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
     @Override
     public Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore configs, LinkedHashMap<String,Column> columns) {
         return super.buildUpdateRunFromCollection(runtime, batch, dest, list, configs, columns);
+    }
+
+    /**
+     * 多表关联更新
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param prepare 一般通过TableBuilder生成
+     * @param data K-DataRow.VariableValue 更新值key:需要更新的列 value:通常是关联表的列用DataRow.VariableValue表示，也可以是常量
+     * @return 影响行数
+     */
+    @Override
+    public Run buildUpdateRun(DataRuntime runtime, RunPrepare prepare, DataRow data, ConfigStore configs, String ... conditions) {
+        return super.buildUpdateRun(runtime, prepare, data, configs, conditions);
+    }
+    @Override
+    public void fillUpdateContent(DataRuntime runtime, TableRun run, StringBuilder builder, DataRow data, ConfigStore configs){
+        TablePrepare prepare = (TablePrepare)run.getPrepare();
+        builder.append("UPDATE ");
+        String alias = prepare.getAlias();
+        if(BasicUtil.isNotEmpty(alias)){
+            builder.append(tableAliasGuidd());
+            delimiter(builder, alias);
+        }else{
+            name(runtime, builder, prepare.getTable());
+        }
+        builder.append(" SET").append(BR);
+        List<String> keys = data.keys();
+        boolean first = true;
+        for(String key:keys){
+            if(!first){
+                builder.append(", ");
+            }
+            first = false;
+            builder.append(key).append(" = ");
+            Object value = data.get(key);
+            if(value instanceof DataRow.VariableValue){
+                DataRow.VariableValue var = (DataRow.VariableValue)value;
+                delimiter(builder, var.value());
+            }else{
+                builder.append("?");
+                RunValue rv = new RunValue();
+                rv.setValue(value);
+                run.addValue(rv);
+            }
+        }
+        builder.append(BR).append("FROM ");
+        name(runtime, builder, prepare.getTable());
+        if(BasicUtil.isNotEmpty(alias)){
+            builder.append(tableAliasGuidd());
+            delimiter(builder, alias);
+        }
+        builder.append(BR);
+        List<RunPrepare> joins = prepare.getJoins();
+        if(null != joins) {
+            for (RunPrepare join:joins) {
+                fillJoinTableContent(runtime, builder, run, join);
+            }
+        }
+        run.appendCondition(builder, this, true, true);
     }
 
     /**

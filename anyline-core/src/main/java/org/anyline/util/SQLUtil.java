@@ -143,7 +143,7 @@ public class SQLUtil {
 					builder.append(".");
 				}
 			}
-		}else if(src.contains(" ") || src.contains("(")) {
+		}else if(src.contains(" ") || src.contains("(") || src.contains(")")) {
 			builder.append(src);
 		}else {
 			builder.append(delimiterFr).append(src).append(delimiterTo);

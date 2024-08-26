@@ -25,7 +25,9 @@ public class UbiSQLAdapter extends TiDBAdapter {
     public DatabaseType type() {
         return DatabaseType.UbiSQL;
     }
-    
-    private String delimiter;
-
+    public UbiSQLAdapter() {
+        super();
+        delimiterFr = "`";
+        delimiterTo = "`";
+    }
 } 
