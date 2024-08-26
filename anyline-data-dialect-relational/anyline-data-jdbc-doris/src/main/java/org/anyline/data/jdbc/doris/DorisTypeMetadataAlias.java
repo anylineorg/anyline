@@ -248,7 +248,7 @@ public enum DorisTypeMetadataAlias implements TypeMetadataAlias {
 	TIMESTAMP_WITH_ZONE           ("TIMESTAMP WITH TIME ZONE"       ,StandardTypeMetadata.TIMESTAMP_WITH_TIME_ZONE      , "DATETIME" , "DATETIME({S})" , null                       , "DATETIME_PRECISION" , null            ,   1,   1,   2),
 	TIMESTAMP_WITHOUT_TIME_ZONE   ("TIMESTAMP WITHOUT TIME ZONE"    ,StandardTypeMetadata.TIMESTAMP_WITHOUT_TIME_ZONE   , "DATETIME" , "DATETIME({S})" , null                       , "DATETIME_PRECISION" , null            ,   1,   2,   1),
 	TIMESTAMP_WITHOUT_ZONE        ("TIMESTAMP WITHOUT TIME ZONE"    ,StandardTypeMetadata.TIMESTAMP_WITHOUT_TIME_ZONE   , "DATETIME" , "DATETIME({S})" , null                       , "DATETIME_PRECISION" , null            ,   1,   2,   1),
-	TIMESTAMP_NTZ                 ("TIMESTAMP_NTZ"                  ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
+	TIMESTAMP_NTZ                 ("TIMESTAMP_NTZ"                  ,StandardTypeMetadata.TIMESTAMP_WITHOUT_TIME_ZONE   ,   1,   2,   1),
 	TIMESTAMPTZ                   ("TIMESTAMPTZ"                    ,StandardTypeMetadata.TIMESTAMP                     , null       , null            , null                       , "DATETIME_PRECISION" , null            ,   1,  -1,   2),
 	TIMEZ                         ("TIMEZ"                          ,StandardTypeMetadata.DATETIME                      , "DATETIME" , "DATETIME({S})" , null                       , null                 , null            ,   1,   1,   2),
 	TINYBLOB                      ("TINYBLOB"                       ,StandardTypeMetadata.BITMAP                        ,   1,   1,   1),

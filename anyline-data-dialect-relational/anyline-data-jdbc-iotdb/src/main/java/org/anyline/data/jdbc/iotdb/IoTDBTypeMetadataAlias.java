@@ -245,7 +245,7 @@ public enum IoTDBTypeMetadataAlias implements TypeMetadataAlias {
 	TIMESTAMP_WITH_ZONE           ("TIMESTAMP WITH TIME ZONE"       ,StandardTypeMetadata.TIMESTAMP_WITH_TIME_ZONE      , null       , null            , null                       , "DATETIME_PRECISION" , null            ,   1,   1,   2),
 	TIMESTAMP_WITHOUT_TIME_ZONE   ("TIMESTAMP WITHOUT TIME ZONE"    ,StandardTypeMetadata.TIMESTAMP_WITHOUT_TIME_ZONE   , null       , null            , null                       , "DATETIME_PRECISION" , null            ,   1,   2,   1),
 	TIMESTAMP_WITHOUT_ZONE        ("TIMESTAMP WITHOUT TIME ZONE"    ,StandardTypeMetadata.TIMESTAMP_WITHOUT_TIME_ZONE   , null       , null            , null                       , "DATETIME_PRECISION" , null            ,   1,   2,   1),
-	TIMESTAMP_NTZ                 ("TIMESTAMP_NTZ"                  ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
+	TIMESTAMP_NTZ                 ("TIMESTAMP_NTZ"                  ,StandardTypeMetadata.TIMESTAMP_WITHOUT_TIME_ZONE   ,   1,   2,   1),
 	TIMESTAMPTZ                   ("TIMESTAMPTZ"                    ,StandardTypeMetadata.TIMESTAMP                     , null       , null            , null                       , "DATETIME_PRECISION" , null            ,   1,  -1,   2),
 	TIMEZ                         ("TIMEZ"                          ,StandardTypeMetadata.INT64                         ,   1,   1,   1),
 	TINYBLOB                      ("TINYBLOB"                       ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),

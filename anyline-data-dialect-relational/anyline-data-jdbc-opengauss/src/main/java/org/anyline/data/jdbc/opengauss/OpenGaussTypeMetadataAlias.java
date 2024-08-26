@@ -253,7 +253,7 @@ public enum OpenGaussTypeMetadataAlias implements TypeMetadataAlias {
 	TIME_UNCONSTRAINED            ("TIME_UNCONSTRAINED"             ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	TIMESTAMP_WITHOUT_TIME_ZONE   ("TIMESTAMP WITHOUT TIME ZONE"    ,StandardTypeMetadata.TIMESTAMP_WITHOUT_TIME_ZONE   , "TIMESTAMP WITHOUT TIME ZONE"    , "TIMESTAMP({S}) WITHOUT TIME ZONE"    , null   , null   , null   ,   1,   2,   1),
 	TIMESTAMP_WITHOUT_ZONE        ("TIMESTAMP WITHOUT TIME ZONE"    ,StandardTypeMetadata.TIMESTAMP_WITHOUT_TIME_ZONE   , "TIMESTAMP WITHOUT TIME ZONE"    , "TIMESTAMP({S}) WITHOUT TIME ZONE"    , null   , null   , null   ,   1,   2,   1),
-	TIMESTAMP_NTZ                 ("TIMESTAMP_NTZ"                  ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
+	TIMESTAMP_NTZ                 ("TIMESTAMP_NTZ"                  ,StandardTypeMetadata.TIMESTAMP_WITHOUT_TIME_ZONE   ,   1,   2,   1),
 	TIMESTAMPTZ                   ("TIMESTAMPTZ"                    ,StandardTypeMetadata.TIMESTAMPTZ                   , "TIMESTAMP WITH TIME ZONE"       , "TIMESTAMP({S}) WITH TIME ZONE"       , null   , null   , null   ,   1,   2,   1),
 	TINYBLOB                      ("TINYBLOB"                       ,StandardTypeMetadata.BYTEA                         ,   1,   1,   1),
 	TINYINT                       ("TINYINT"                        ,StandardTypeMetadata.INT2                          ,   1,   1,   1),
