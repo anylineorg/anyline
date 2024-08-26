@@ -700,12 +700,17 @@ public interface ConfigStore extends Cloneable{
 	default ConfigStore in(String id, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(Compare.IN, id, var, value, overCondition, overValue);
 	}
+
 	default ConfigStore in(String var, Object value, boolean overCondition, boolean overValue) {
 		return and(Compare.IN, var, value, overCondition, overValue);
 	}
-	default ConfigStore in(String var, Object value) {
-		return and(Compare.IN, var, value);
-	}
+
+	/**
+	 * in
+	 * @param var 列
+	 * @param values 可以是集合 或对象 最终会组合到一维数组中
+	 * @return ConfigStore
+	 */
 	default ConfigStore in(String var, Object ... values) {
 		List<Object> list = BeanUtil.array2list(values);
 		return and(Compare.IN, var, list);
@@ -1023,9 +1028,6 @@ public interface ConfigStore extends Cloneable{
 	}
 	default ConfigStore notIn(String var, Object value, boolean overCondition, boolean overValue) {
 		return and(Compare.NOT_IN, var, value, overCondition, overValue);
-	}
-	default ConfigStore notIn(String var, Object value) {
-		return and(Compare.NOT_IN, var, value);
 	}
 	default ConfigStore notIn(String var, Object ... values) {
 		List<Object> list = BeanUtil.array2list(values);
