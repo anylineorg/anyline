@@ -3701,17 +3701,20 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
     protected void replaceVariable(DataRuntime runtime, TextRun run) {
         StringBuilder builder = run.getBuilder();
         List<Variable> variables = run.getVariables();
-        List<VariableBlock> blocks = run.getVariableBlocks();
         String text = run.getText();
-        for(VariableBlock block:blocks){
-            String box = block.box();
-            String body = block.body();
-            boolean active = block.active();
-            if(!active){
-                text = text.replace(box, "");
-                run.getVariables().removeAll(block.variables());
-            }else{
-                text = text.replace(box, body);
+
+        List<VariableBlock> blocks = run.getVariableBlocks();
+        if(null != blocks) {
+            for (VariableBlock block : blocks) {
+                String box = block.box();
+                String body = block.body();
+                boolean active = block.active();
+                if (!active) {
+                    text = text.replace(box, "");
+                    run.getVariables().removeAll(block.variables());
+                } else {
+                    text = text.replace(box, body);
+                }
             }
         }
         text = replaceVariable(runtime, run, variables, text);
