@@ -31,16 +31,14 @@ import org.anyline.data.param.Config;
 import org.anyline.data.param.ConfigParser;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.init.DefaultConfigStore;
-import org.anyline.data.prepare.ConditionChain;
-import org.anyline.data.prepare.RunPrepare;
-import org.anyline.data.prepare.SyntaxHelper;
-import org.anyline.data.prepare.Variable;
+import org.anyline.data.prepare.*;
 import org.anyline.data.prepare.auto.TablePrepare;
 import org.anyline.data.prepare.auto.TextPrepare;
 import org.anyline.data.prepare.auto.init.DefaultTablePrepare;
 import org.anyline.data.prepare.auto.init.DefaultTextPrepare;
 import org.anyline.data.prepare.auto.init.VirtualTablePrepare;
 import org.anyline.data.prepare.init.DefaultVariable;
+import org.anyline.data.prepare.init.DefaultVariableBlock;
 import org.anyline.data.prepare.xml.XMLPrepare;
 import org.anyline.data.run.*;
 import org.anyline.data.runtime.DataRuntime;
@@ -2601,20 +2599,42 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         if(null == text) {
             return;
         }
+        parseText(runtime, run, text);
+    }
+
+    /**
+     * 解析文本
+     * @param runtime
+     * @param run
+     * @param text
+     */
+    public void parseText(DataRuntime runtime, TextRun run, String text) {
         try{
-            int varType = -1;
-            Compare compare = Compare.EQUAL;
-            List<List<String>> keys = null;
             //${ AND ID = ::ID}  ${AND CODE=:CODE }
-            keys = RegularUtil.fetchs(text, RunPrepare.SQL_VAR_BOX_REGEX, Regular.MATCH_MODE.CONTAIN);
-            while (!keys.isEmpty()){
-                keys = RegularUtil.fetchs(text, RunPrepare.SQL_VAR_BOX_REGEX, Regular.MATCH_MODE.CONTAIN);
+            List<List<String>> boxs = RegularUtil.fetchs(text, RunPrepare.SQL_VAR_BOX_REGEX, Regular.MATCH_MODE.CONTAIN);
+            if(!boxs.isEmpty()){
+                String box = boxs.get(0).get(0);
+                String prev = RegularUtil.cut(text, RegularUtil.TAG_BEGIN, box);
+                parseTextVariable(runtime, run, prev);
+                parseTextVarBox(runtime, run, text, box);
+                String next = RegularUtil.cut(text, box, RegularUtil.TAG_END);
+                parseText(runtime, run, next);
+            }else{
+                parseTextVariable(runtime, run, text);
             }
+
+        }catch(Exception e) {
+            log.error("parse text exception:", e);
+        }
+    }
+    public List<Variable> parseTextVariable(DataRuntime runtime, TextRun run, String text) {
+        List<Variable> vars = new ArrayList<>();
+        try{
             //${ID = :ID}
             int type = 0;
             // AND CD = {CD} || CD LIKE '%{CD}%' || CD IN ({CD}) || CD = ${CD} || CD = #{CD}
             //{CD} 用来兼容旧版本，新版本中不要用，避免与josn格式冲突
-            keys = RegularUtil.fetchs(text, RunPrepare.SQL_VAR_PLACEHOLDER_REGEX, Regular.MATCH_MODE.CONTAIN);
+            List<List<String>> keys = RegularUtil.fetchs(text, RunPrepare.SQL_VAR_PLACEHOLDER_REGEX, Regular.MATCH_MODE.CONTAIN);
             type = Variable.KEY_TYPE_SIGN_V2 ;
 
             //::KEY 格式的占位符解析,在PG环境中会与 ::INT8 格式冲突 需要禁用
@@ -2634,6 +2654,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                     }
                     var.setSwt(Compare.EMPTY_VALUE_SWITCH.NULL);
                     run.addVariable(var);
+                    vars.add(var);
                 }// end for
             }else{
                 // AND CD = ?
@@ -2644,19 +2665,26 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                         var.setType(Variable.VAR_TYPE_INDEX);
                         var.setSwt(Compare.EMPTY_VALUE_SWITCH.NULL);
                         run.addVariable(var);
+                        vars.add(var);
                     }
                 }
             }
-        }catch(Exception e) {
-            log.error("parse text exception:", e);
+        }catch (Exception e){
+            e.printStackTrace();
         }
-    }
-
-    public void parseTextSlice(DataRuntime runtime, TextRun run, String slice) {
-
+        return vars;
     }
     public void parseTextVarBox(DataRuntime runtime, TextRun run, String text, String box) {
-
+        // ${ AND ID = ::ID}
+        // ${AND CODE=:CODE }
+        if(null != box){
+            box = box.trim();
+            String body = box.substring(2, box.length()-1);
+            List<Variable> vars = parseTextVariable(runtime, run, body);
+            VariableBlock block = new DefaultVariableBlock(box, body);
+            block.variables(vars);
+            run.addVariableBlock(block);
+        }
     }
     /**
      * 解析文本中的占位符
@@ -3666,14 +3694,34 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
     /**
      * query [命令合成]<br/>
      * 替换占位符
+     * 先执行 ${AND ID = :ID}
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
      */
     protected void replaceVariable(DataRuntime runtime, TextRun run) {
         StringBuilder builder = run.getBuilder();
         List<Variable> variables = run.getVariables();
-        String result = run.getText();
-        if(null != result && supportPlaceholder() && null != variables) {
+        List<VariableBlock> blocks = run.getVariableBlocks();
+        String text = run.getText();
+        for(VariableBlock block:blocks){
+            String box = block.box();
+            String body = block.body();
+            boolean active = block.active();
+            if(!active){
+                text = text.replace(box, "");
+                run.getVariables().removeAll(block.variables());
+            }else{
+                text = text.replace(box, body);
+            }
+        }
+        text = replaceVariable(runtime, run, variables, text);
+
+        if(null != text) {
+            builder.append(text);
+        }
+    }
+    protected String replaceVariable(DataRuntime runtime, TextRun run,  List<Variable> variables, String text) {
+        if(null != text && supportPlaceholder() && null != variables) {
             for(Variable var:variables) {
                 if(null == var) {
                     continue;
@@ -3690,9 +3738,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                         }
                     }
                     if(null != value) {
-                        result = result.replace(var.getFullKey(), value);
+                        text = text.replace(var.getFullKey(), value);
                     }else{
-                        result = result.replace(var.getFullKey(), "NULL");
+                        text = text.replace(var.getFullKey(), "NULL");
                     }
                 }
             }
@@ -3712,9 +3760,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                         }
                     }
                     if(null != value) {
-                        result = result.replace(var.getFullKey(), value);
+                        text = text.replace(var.getFullKey(), value);
                     }else{
-                        result = result.replace(var.getFullKey(), "");
+                        text = text.replace(var.getFullKey(), "");
                     }
                 }
             }
@@ -3726,7 +3774,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                     // CD = :CD
                     List<Object> varValues = var.getValues();
                     if(run.getBatch() >1) {//批量执行时在下一步提供值
-                        result = result.replace(var.getFullKey(), "?");
+                        text = text.replace(var.getFullKey(), "?");
                     }else if(BasicUtil.isNotEmpty(true, varValues)) {
                         if(var.getCompare() == Compare.IN) {
                             // 多个值IN
@@ -3736,15 +3784,15 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                             }
                             addRunValue(runtime, run, Compare.IN, new Column(var.getKey()), varValues);
                             replaceDst = replaceDst.trim().replace(" ",",");
-                            result = result.replace(var.getFullKey(), replaceDst);
+                            text = text.replace(var.getFullKey(), replaceDst);
                         }else{
                             // 单个值
-                            result = result.replace(var.getFullKey(), "?");
+                            text = text.replace(var.getFullKey(), "?");
                             addRunValue(runtime, run, Compare.EQUAL, new Column(var.getKey()), varValues.get(0));
                         }
                     }else{
                         //没有提供参数值
-                        result = result.replace(var.getFullKey(), "NULL");
+                        text = text.replace(var.getFullKey(), "NULL");
                     }
                 }
             }
@@ -3764,9 +3812,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 }
             }
         }
-        if(null != result) {
-            builder.append(result);
-        }
+        return text;
     }
     /* *****************************************************************************************************************
      *                                                     DELETE

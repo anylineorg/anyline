@@ -407,6 +407,21 @@ public class ServiceProxy {
     public static long update(Table dest, Object data, ConfigStore configs, String ... columns) {
         return update(dest, data, configs, BeanUtil.array2list(columns));
     }
+
+    /**
+     * 多表关联更新
+     * @param prepare 一般通过TableBuilder生成
+     * @param data K-DataRow.VariableValue 更新值key:需要更新的列 value:通常是关联表的列用DataRow.VariableValue表示，也可以是常量
+     * @param configs 附加过滤条件 通常是在prepare最外层设置
+     * @param conditions 附加查询条件 支持k:v k:v::type 以及原生sql形式 默认忽略空值条件 <br/>
+     * @return 影响行数
+     */
+    public static long update(RunPrepare prepare, DataRow data, ConfigStore configs, String ... conditions) {
+        return service.update(prepare, data, configs, conditions);
+    }
+    public static long update(RunPrepare prepare, DataRow data, String ... conditions) {
+        return update(prepare, data, new DefaultConfigStore(), conditions);
+    }
     /* *****************************************************************************************************************
      * 													SAVE
      ******************************************************************************************************************/
