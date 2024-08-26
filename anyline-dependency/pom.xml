@@ -59,6 +59,7 @@
 		<jdbc-informix.version>4.50.10</jdbc-informix.version>
 		<jdbc-iotdb.version>1.1.1</jdbc-iotdb.version>
 		<jdbc-voltdb.version>13.0.0</jdbc-voltdb.version>
+		<jdbc-odps.version>3.6.0</jdbc-odps.version>
 		<elasticsearch.version>8.7.0</elasticsearch.version>
 		<mongodb-client.version>5.1.0</mongodb-client.version>
 		<influxdb-client.version>5.0.0</influxdb-client.version>
@@ -613,6 +614,11 @@
 				<artifactId>anyline-data-hbase</artifactId>
 				<version>${anyline.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
+				<artifactId>anyline-data-jdbc-maxcompute</artifactId>
+				<version>${anyline.version}</version>
+			</dependency>
 
 			<dependency>
 				<groupId>org.anyline</groupId>
@@ -935,6 +941,11 @@
 				<groupId>org.apache.hbase</groupId>
 				<artifactId>hbase-mapreduce</artifactId>
 				<version>${hbase-client.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.aliyun.odps</groupId>
+				<artifactId>odps-jdbc</artifactId>
+				<version>${jdbc-odps.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>cn.jpush.api</groupId>
