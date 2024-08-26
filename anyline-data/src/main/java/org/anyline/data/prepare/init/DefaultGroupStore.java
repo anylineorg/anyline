@@ -56,12 +56,16 @@ public class DefaultGroupStore implements GroupStore, Serializable {
 			return; 
 		} 
 		if (str.toUpperCase().contains("GROUP BY")) {
-			str = str.toUpperCase().replace("GROUP BY","").trim();
-		} 
-		String[] tmps = str.split(","); // 多列排序
-		for (String tmp : tmps) {
-			group(new AbstractGroup(tmp));
-		} 
+			str = str.replaceAll("(?i)group\\s+by", "").trim();
+		}
+		if(str.contains(")") || str.contains("'")){
+			group(new AbstractGroup(str));
+		}else{
+			String[] tmps = str.split(","); // 多列排序
+			for (String tmp : tmps) {
+				group(new AbstractGroup(tmp));
+			}
+		}
 	} 
  
 	public Group getGroup(String group) {

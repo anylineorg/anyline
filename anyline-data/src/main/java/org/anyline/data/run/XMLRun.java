@@ -520,14 +520,20 @@ public class XMLRun extends AbstractRun implements Run {
 					} 
 					continue; 
 				}else if(up.startsWith("GROUP BY")) {
-					String groupStr = condition.substring(up.indexOf("GROUP BY") + "GROUP BY".length()).trim(); 
-					String groups[] = groupStr.split(",");
-					for(String item:groups) {
-						// sql.group(item); 
-						if(null != configs) {
-							configs.group(item);
-						} 
-					} 
+					String groupStr = condition.replaceAll("(?i)group\\s+by", "").trim();
+					if(groupStr.contains("'") || groupStr.contains("(")){
+						if (null != configs) {
+							configs.group(groupStr);
+						}
+					}else {
+						String groups[] = groupStr.split(",");
+						for (String item : groups) {
+							// sql.group(item);
+							if (null != configs) {
+								configs.group(item);
+							}
+						}
+					}
 					continue; 
 				} 
 				addCondition(condition); 

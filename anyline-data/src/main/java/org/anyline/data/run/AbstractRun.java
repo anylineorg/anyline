@@ -905,13 +905,20 @@ public abstract class AbstractRun implements Run {
 					continue;
 				}else if(up.startsWith("GROUP BY")) {
 					// 分组条件
-					String groupStr = condition.substring(up.indexOf("GROUP BY") + "GROUP BY".length()).trim();
-					String groups[] = groupStr.split(",");
-					for(String item:groups) {
+					String groupStr = condition.replaceAll("(?i)group\\s+by", "").trim();
+					if(groupStr.contains(")") || groupStr.contains("'")){
 						if(null == groupStore) {
 							groupStore = new DefaultGroupStore();
 						}
-						groupStore.group(item);
+						groupStore.group(groupStr);
+					}else{
+						String groups[] = groupStr.split(",");
+						for(String item:groups) {
+							if(null == groupStore) {
+								groupStore = new DefaultGroupStore();
+							}
+							groupStore.group(item);
+						}
 					}
 					continue;
 				}else if(up.startsWith("HAVING")) {
