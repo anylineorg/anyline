@@ -259,6 +259,7 @@ public enum KingBaseTypeMetadataAlias implements TypeMetadataAlias {
 	SYSNAME                       ("SYSNAME"                        ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	TIME                          ("TIME"                           ,StandardTypeMetadata.TIMESTAMP                     , "TIMESTAMP"                 , "TIMESTAMP({S})"            , null   , null   , null   ,   1,   1,   2),
 	TIMESTAMP_WITH_LOCAL_ZONE     ("TIMESTAMP WITH LOCAL TIME ZONE" ,StandardTypeMetadata.TIMESTAMPTZ                   , "TIMESTAMPTZ"               , "TIMESTAMPTZ({S})"          , null   , null   , null   ,   1,   1,   1),
+	TIMESTAMP_NTZ                 ("TIMESTAMP_NTZ"                  ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	TIMESTAMPTZ                   ("TIMESTAMPTZ"                    ,StandardTypeMetadata.TIMESTAMPTZ                   , "TIMESTAMPTZ"               , "TIMESTAMPTZ({S})"          , null   , null   , null   ,   1,   2,   1),
 	TIMEZ                         ("TIMEZ"                          ,StandardTypeMetadata.TIMESTAMP                     , "TIMESTAMP"                 , "TIMESTAMP({S})"            , null   , null   , null   ,   1,   1,   2),
 	TINYBLOB                      ("TINYBLOB"                       ,StandardTypeMetadata.BLOB                          ,   1,   1,   1),

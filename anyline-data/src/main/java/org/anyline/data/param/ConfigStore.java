@@ -706,6 +706,10 @@ public interface ConfigStore extends Cloneable{
 	default ConfigStore in(String var, Object value) {
 		return and(Compare.IN, var, value);
 	}
+	default ConfigStore in(String var, Object ... values) {
+		List<Object> list = BeanUtil.array2list(values);
+		return and(Compare.IN, var, list);
+	}
 
 	default ConfigStore likes(String value) {
 		return likes(EMPTY_VALUE_SWITCH.IGNORE, value);
@@ -1022,6 +1026,10 @@ public interface ConfigStore extends Cloneable{
 	}
 	default ConfigStore notIn(String var, Object value) {
 		return and(Compare.NOT_IN, var, value);
+	}
+	default ConfigStore notIn(String var, Object ... values) {
+		List<Object> list = BeanUtil.array2list(values);
+		return and(Compare.NOT_IN, var, list);
 	}
 
 	default ConfigStore notLike(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue) {

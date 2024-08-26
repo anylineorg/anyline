@@ -1,5 +1,1 @@
-
-
-org.anyline.data.jdbc.gbase8a.GBaseAdapter
-org.anyline.data.jdbc.gbase8c.GBaseAdapter
-org.anyline.data.jdbc.gbase8s.GBaseAdapter
+org.anyline.data.jdbc.gbase8a.GBaseAdapterorg.anyline.data.jdbc.gbase8c.GBaseAdapterorg.anyline.data.jdbc.gbase8s.GBaseAdapter

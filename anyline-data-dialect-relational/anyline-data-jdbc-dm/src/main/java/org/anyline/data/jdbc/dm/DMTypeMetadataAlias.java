@@ -249,6 +249,7 @@ public enum DMTypeMetadataAlias implements TypeMetadataAlias {
 	TIME_UNCONSTRAINED            ("TIME_UNCONSTRAINED"             ,StandardTypeMetadata.TIME                          , "TIME"                           , "TIME({S})"                           , null   , null   , null   ,   1,   1,   1),
 	TIMESTAMP_WITHOUT_TIME_ZONE   ("TIMESTAMP WITHOUT TIME ZONE"    ,StandardTypeMetadata.TIMESTAMP_WITHOUT_TIME_ZONE   , "TIMESTAMP"                      , "TIMESTAMP({S}) "                     , null   , null   , null   ,   1,   2,   2),
 	TIMESTAMP_WITHOUT_ZONE        ("TIMESTAMP WITHOUT TIME ZONE"    ,StandardTypeMetadata.TIMESTAMP_WITHOUT_TIME_ZONE   , "TIMESTAMP"                      , "TIMESTAMP({S}) "                     , null   , null   , null   ,   1,   2,   2),
+	TIMESTAMP_NTZ                 ("TIMESTAMP_NTZ"                  ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	TIMESTAMPTZ                   ("TIMESTAMPTZ"                    ,StandardTypeMetadata.TIMESTAMP_WITH_TIME_ZONE      , "TIMESTAMP WITH TIME ZONE"       , "TIMESTAMP({S}) WITH TIME ZONE"       , null   , null   , null   ,   1,   1,   2),
 	TIMEZ                         ("TIMEZ"                          ,StandardTypeMetadata.TIME                          , "TIME WITH TIME ZONE"            , "TIME({S}) WITH TIME ZONE"            , null   , null   , null   ,   1,   1,   2),
 	TINYBLOB                      ("TINYBLOB"                       ,StandardTypeMetadata.BLOB                          ,   1,   1,   1),

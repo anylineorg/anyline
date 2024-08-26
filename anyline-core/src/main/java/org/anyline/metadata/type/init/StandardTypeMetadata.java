@@ -588,9 +588,14 @@ public enum StandardTypeMetadata implements TypeMetadata {
             return DATETIME.write(value, def, placeholder);
         }
     }
-   , TIMESTAMPTZ(CATEGORY.TIMESTAMP, "TIMESTAMPTZ", null, java.sql.Timestamp.class, 1, 1, 1, PostgreSQL) {
+    , TIMESTAMPTZ(CATEGORY.TIMESTAMP, "TIMESTAMPTZ", null, java.sql.Timestamp.class, 1, 1, 1, PostgreSQL) {
         public Object write(Object value, Object def, boolean array, boolean placeholder) {
             return DATETIME.write(value, def, placeholder);
+        }
+    }
+    , TIMESTAMP_NTZ(CATEGORY.TIMESTAMP, "TIMESTAMP_NTZ", null, java.sql.Timestamp.class, 1, 1, 1, MaxCompute) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {
+            return TIMESTAMP.write(value, def, placeholder);
         }
     }
    , YEAR(CATEGORY.DATE, "YEAR", null, java.sql.Date.class, 1, 1, 1, MySQL) {

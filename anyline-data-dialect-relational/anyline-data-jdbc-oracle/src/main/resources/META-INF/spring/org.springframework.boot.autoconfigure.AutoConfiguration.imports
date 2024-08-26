@@ -1,4 +1,1 @@
-
-
-org.anyline.data.jdbc.oracle.OracleAdapter
-org.anyline.data.jdbc.oracle.Oracle11Adapter
+org.anyline.data.jdbc.oracle.OracleAdapterorg.anyline.data.jdbc.oracle.Oracle11Adapter

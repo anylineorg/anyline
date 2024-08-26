@@ -247,6 +247,7 @@ public enum ElasticSearchTypeMetadataAlias implements TypeMetadataAlias {
 	TIMESTAMP_WITH_ZONE           ("TIMESTAMP WITH TIME ZONE"       ,StandardTypeMetadata.DATE                      , "date"          , "date"          , null   , null   , null   ,   1,   1,   1),
 	TIMESTAMP_WITHOUT_TIME_ZONE   ("TIMESTAMP WITHOUT TIME ZONE"    ,StandardTypeMetadata.DATE                      , "date"          , "date"          , null   , null   , null   ,   1,   1,   1),
 	TIMESTAMP_WITHOUT_ZONE        ("TIMESTAMP WITHOUT TIME ZONE"    ,StandardTypeMetadata.DATE                      , "date"          , "date"          , null   , null   , null   ,   1,   1,   1),
+	TIMESTAMP_NTZ                 ("TIMESTAMP_NTZ"                  ,StandardTypeMetadata.NONE                      ,  -1,  -1,  -1),
 	TIMESTAMPTZ                   ("TIMESTAMPTZ"                    ,StandardTypeMetadata.NONE                      ,   1,  -1,  -1),
 	TIMEZ                         ("TIMEZ"                          ,StandardTypeMetadata.DATE                      , "date"          , "date"          , null   , null   , null   ,   1,   1,   1),
 	TINYBLOB                      ("TINYBLOB"                       ,StandardTypeMetadata.BINARY                    , "binary"        , "binary"        , null   , null   , null   ,   0,   1,   1),
