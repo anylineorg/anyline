@@ -4291,7 +4291,42 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public List<Run> buildCreateRun(DataRuntime runtime, Table meta) throws Exception {
-        return super.buildCreateRun(runtime, meta);
+        List<Run> runs = new ArrayList<>();
+        Run run = new SimpleRun(runtime);
+        runs.add(run);
+        StringBuilder builder = run.getBuilder();
+        builder.append("CREATE ").append(keyword(meta)).append(" ");
+        checkTableExists(runtime, builder, false);
+        name(runtime, builder, meta);
+        //列,索引
+        body(runtime, builder, meta);
+        //索引
+        indexes(runtime, builder, meta);
+        //继承表
+        inherit(runtime, builder, meta);
+        //引擎
+        engine(runtime, builder, meta);
+        //编码方式
+        charset(runtime, builder, meta);
+        //keys type
+        keys(runtime, builder, meta);
+        //注释
+        comment(runtime, builder, meta);
+        //分表
+        partitionBy(runtime, builder, meta);
+        partitionFor(runtime, builder, meta);
+        //分桶方式
+        distribution(runtime, builder, meta);
+        //物化视图
+        materialize(runtime, builder, meta);
+        //扩展属性
+        property(runtime, builder, meta);
+
+        runs.addAll(buildAppendCommentRun(runtime, meta));
+        runs.addAll(buildAppendColumnCommentRun(runtime, meta));
+        runs.addAll(buildAppendPrimaryRun(runtime, meta));
+        runs.addAll(buildAppendIndexRun(runtime, meta));
+        return runs;
     }
 
     /**
@@ -4535,7 +4570,16 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public StringBuilder partitionBy(DataRuntime runtime, StringBuilder builder, Table meta) throws Exception {
-        return super.partitionBy(runtime, builder, meta);
+        // PARTITION BY RANGE (code); #根据code值分区
+        Table.Partition partition = meta.getPartition();
+        if(null == partition) {
+            return builder;
+        }
+        builder.append("\nPARTITION BY ").append(partition.getType()).append("(");
+        LinkedHashMap<String, Column> columns = partition.getColumns();
+        delimiter(builder, Column.names(columns));
+        builder.append(")");
+        return builder;
     }
 
     /**
@@ -4551,6 +4595,109 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     @Override
     public StringBuilder partitionOf(DataRuntime runtime, StringBuilder builder, Table meta) throws Exception {
         return super.partitionOf(runtime, builder, meta);
+    }
+
+    /**
+     * table[命令合成-子流程]<br/>
+     * 子表执行分区依据(分区依据值)如CREATE TABLE hr_user_fi PARTITION OF hr_user FOR VALUES IN ('FI')
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param builder builder
+     * @param meta 表
+     * @return StringBuilder
+     * @throws Exception 异常
+     */
+    @Override
+    public StringBuilder partitionFor(DataRuntime runtime, StringBuilder builder, Table meta) throws Exception {
+        Table.Partition partition = meta.getPartition();
+        if(null == partition) {
+            return builder;
+        }
+        Table.Partition.TYPE type = partition.getType();
+        if(null == type) {
+            return builder;
+        }
+        if(type == Table.Partition.TYPE.HASH){
+            builder.append(" PARTITIONS ").append(partition.getModulus());
+            return builder;
+        }
+        List<Table.Partition.Slice> slices = partition.getSlices();
+        if(null != slices && !slices.isEmpty()) {
+            builder.append("(\n");
+            boolean sfirst = true;
+            for(Table.Partition.Slice slice:slices) {
+                builder.append("\n\t");
+                if(!sfirst) {
+                    builder.append(", ");
+                }
+                sfirst = false;
+                Object max = slice.getMax();
+                List<Object> values = slice.getValues();
+                LinkedHashMap<String,Object> less = slice.getLess();
+                int interval = slice.getInterval();
+                String unit = slice.getUnit();
+                if(type == Table.Partition.TYPE.RANGE) {
+                    LinkedHashMap<String, Column> columns = partition.getColumns();
+                        /*PARTITION BY RANGE(col1[, col2, ...])
+                        (
+                            PARTITION partition_name1 VALUES LESS THAN MAXVALUE|("value1", "value2", ...),
+                            PARTITION partition_name2 VALUES LESS THAN MAXVALUE|("value1", "value2", ...)
+                        )*/
+                    builder.append("PARTITION ").append(slice.getName()).append(" VALUES LESS THAN ");
+                    builder.append("(");
+                    boolean lfirst = true;
+                    for (Column column : columns.values()) {
+                        if (!lfirst) {
+                            builder.append(", ");
+                        }
+                        lfirst = false;
+                        Object v = less.get(column.getName().toUpperCase());
+                        String str = v.toString();
+                        boolean number = BasicUtil.isNumber(v);
+                        boolean fun = false;
+                        if(!number){
+                            if(str.contains("(") || str.contains("'") || v instanceof DataRow.VariableValue){
+                                fun = true;
+                            }
+                        }
+                        if(!number && !fun) {
+                            builder.append("'");
+                        }
+                        builder.append(v);
+                        if(!number && !fun) {
+                            builder.append("'");
+                        }
+                    }
+                    builder.append(")");
+                }else if(type == Table.Partition.TYPE.LIST) {
+                        /*
+                        PARTITION BY List(`address` )
+                        (
+                            PARTITION `p_city1` VALUES IN ("浦东","闵行"),
+                            PARTITION `p_city2` VALUES IN ("海淀","昌平"),
+                            PARTITION `p_city3` VALUES IN ("太原","忻州")
+                        */
+                    builder.append("PARTITION ").append(slice.getName()).append(" VALUES IN(");
+                    boolean vfirst = true;
+                    for(Object value:values) {
+                        if(!vfirst) {
+                            builder.append(", ");
+                        }
+                        vfirst = false;
+                        boolean number = BasicUtil.isNumber(value);
+                        if(!number) {
+                            builder.append("'");
+                        }
+                        builder.append(value);
+                        if(!number) {
+                            builder.append("'");
+                        }
+                    }
+                    builder.append(")");
+                }
+            }
+            builder.append("\n)");
+        }
+        return builder;
     }
 
     /* *****************************************************************************************************************
