@@ -61,6 +61,9 @@ public interface RunPrepare extends Cloneable {
 	// NM IN(#{NM})
 	String SQL_VAR_PLACEHOLDER_REGEX = "([^\\s\\$#]+)\\s*\\(?(\\s*[\\$|#]*{\\w+})(\\+|\\s|'|\\)|%)?";
 
+	// ${ AND ID = ::ID}  ${AND CODE=:CODE }
+	String SQL_VAR_BOX_REGEX = "\\$\\{.+?:.+?\\}";
+
 	// 自定义SQL.id格式 文件名:id
 	String XML_SQL_ID_STYLE = "(\\.|\\S)*\\S+:\\S+";
 

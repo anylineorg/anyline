@@ -15,8 +15,7 @@
  */
 
 package org.anyline.data.prepare.auto.init;
- 
-import org.anyline.data.entity.Join;
+
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.prepare.auto.TextPrepare;
 import org.anyline.data.run.Run;
@@ -33,8 +32,6 @@ public class DefaultTextPrepare extends DefaultAutoPrepare implements TextPrepar
 	public String getText() {
 		return this.text; 
 	}
-
-
 
 	@Override
 	public Run build(DataRuntime runtime) {

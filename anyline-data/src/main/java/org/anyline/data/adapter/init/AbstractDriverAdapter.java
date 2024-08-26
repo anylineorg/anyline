@@ -2604,8 +2604,79 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         try{
             int varType = -1;
             Compare compare = Compare.EQUAL;
-
             List<List<String>> keys = null;
+            //${ AND ID = ::ID}  ${AND CODE=:CODE }
+            keys = RegularUtil.fetchs(text, RunPrepare.SQL_VAR_BOX_REGEX, Regular.MATCH_MODE.CONTAIN);
+            while (!keys.isEmpty()){
+                keys = RegularUtil.fetchs(text, RunPrepare.SQL_VAR_BOX_REGEX, Regular.MATCH_MODE.CONTAIN);
+            }
+            //${ID = :ID}
+            int type = 0;
+            // AND CD = {CD} || CD LIKE '%{CD}%' || CD IN ({CD}) || CD = ${CD} || CD = #{CD}
+            //{CD} 用来兼容旧版本，新版本中不要用，避免与josn格式冲突
+            keys = RegularUtil.fetchs(text, RunPrepare.SQL_VAR_PLACEHOLDER_REGEX, Regular.MATCH_MODE.CONTAIN);
+            type = Variable.KEY_TYPE_SIGN_V2 ;
+
+            //::KEY 格式的占位符解析,在PG环境中会与 ::INT8 格式冲突 需要禁用
+            if(keys.isEmpty() && ConfigStore.IS_ENABLE_PLACEHOLDER_REGEX_EXT(run.getConfigs()) && supportSqlVarPlaceholderRegexExt(runtime)) {
+                // AND CD = :CD || CD LIKE ':CD' || CD IN (:CD) || CD = ::CD
+                keys = RegularUtil.fetchs(text, RunPrepare.SQL_VAR_PLACEHOLDER_REGEX_EXT, Regular.MATCH_MODE.CONTAIN);
+                type = Variable.KEY_TYPE_SIGN_V1 ;
+            }
+            if(BasicUtil.isNotEmpty(true, keys)) {
+                // AND CD = :CD
+                for(int i=0; i<keys.size();i++) {
+                    List<String> keyItem = keys.get(i);
+
+                    Variable var = SyntaxHelper.buildVariable(type, keyItem.get(0), keyItem.get(1), keyItem.get(2), keyItem.get(3));
+                    if(null == var) {
+                        continue;
+                    }
+                    var.setSwt(Compare.EMPTY_VALUE_SWITCH.NULL);
+                    run.addVariable(var);
+                }// end for
+            }else{
+                // AND CD = ?
+                int qty = SQLUtil.countPlaceholder(text);
+                if(qty > 0) {
+                    for(int i=0; i<qty; i++) {
+                        Variable var = new DefaultVariable();
+                        var.setType(Variable.VAR_TYPE_INDEX);
+                        var.setSwt(Compare.EMPTY_VALUE_SWITCH.NULL);
+                        run.addVariable(var);
+                    }
+                }
+            }
+        }catch(Exception e) {
+            log.error("parse text exception:", e);
+        }
+    }
+
+    public void parseTextSlice(DataRuntime runtime, TextRun run, String slice) {
+
+    }
+    public void parseTextVarBox(DataRuntime runtime, TextRun run, String text, String box) {
+
+    }
+    /**
+     * 解析文本中的占位符
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
+     */
+    public void parseText_bak(DataRuntime runtime, TextRun run) {
+        RunPrepare prepare = run.getPrepare();
+        if(null == prepare){
+            return;
+        }
+        String text = prepare.getText();
+        if(null == text) {
+            return;
+        }
+        try{
+            int varType = -1;
+            Compare compare = Compare.EQUAL;
+            List<List<String>> keys = null;
+            //${ID = :ID}
             int type = 0;
             // AND CD = {CD} || CD LIKE '%{CD}%' || CD IN ({CD}) || CD = ${CD} || CD = #{CD}
             //{CD} 用来兼容旧版本，新版本中不要用，避免与josn格式冲突

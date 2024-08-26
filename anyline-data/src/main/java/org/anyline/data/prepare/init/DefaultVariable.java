@@ -44,7 +44,8 @@ public class DefaultVariable implements Variable {
 		str = BeanUtil.map2json(map);
 		return str;
 	} 
- 
+
+	private String box;				// ${AND ID = :ID}
 	private String key;				// 变量KEY
 	private String fullKey;			// 完整KEY :CD ::CD {CD} ${CD} #{CD} 8.5之后不用{CD}避免与json冲突
 	private List<Object> values;	// 变量值 
@@ -72,8 +73,18 @@ public class DefaultVariable implements Variable {
 			clone.setValue = this.setValue;
 		} 
 		return clone; 
-	} 
-	 
+	}
+
+	@Override
+	public String getBox() {
+		return box;
+	}
+
+	@Override
+	public void setBox(String box) {
+		this.box = box;
+	}
+
 	public void init() {
 		if(null != values) {
 			values.clear(); 

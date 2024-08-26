@@ -45,6 +45,8 @@ public interface Variable extends Cloneable, Serializable{
 	//ID
 	String getKey() ;
 	void setKey(String key) ;
+	void setBox(String box);
+	String getBox();
 
 	//完整KEY :CD ::CD {CD} ${CD} #{CD} 8.5之后不用{CD}避免与json冲突
 	String getFullKey();
