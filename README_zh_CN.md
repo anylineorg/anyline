@@ -1,9 +1,11 @@
 [![EN doc](https://img.shields.io/badge/document-English-blue.svg)](README.md)
-[![CN doc](https://img.shields.io/badge/文档-中文版-blue.svg)](README_zh_CN.md)
+[![CN doc](https://img.shields.io/badge/文档-中文版-blue.svg)](README_zh_CN.md)  
+有问题请联系(无论BUG、疑问、需求、源码、竞品)
 
 | [<img src="https://cdn.anyline.org/img/user/alq.png" width="150">](https://qm.qq.com/q/M5ub6mqS0o) | [<img src="https://cdn.anyline.org/img/user/alvg.png" width="150">](http://www.anyline.org/ss/9f_17) | [<img src="https://cdn.anyline.org/img/user/alv.png" width="150">](http://www.anyline.org/ss/9f_17) |
 |:--------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------------------:|
 |                                           QQ群(86020680)                                            |                                                 微信群                                                  |                                             过期或满员联系管理员                                              |
+ 
 
 ***快速测试请参考[【anyline-simple-clear】](https://gitee.com/anyline/anyline-simple-clear)***
 ***详细语法请参考[【anyline-simple】](https://gitee.com/anyline/anyline-simple)***  
