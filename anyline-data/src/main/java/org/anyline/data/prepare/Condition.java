@@ -28,7 +28,7 @@ import java.util.Map;
 
 public interface Condition extends Cloneable{
 	enum JOIN{
-		AND,OR;
+		AND,OR,FILTER;
 		public String getText(){
 			return " " + this.name() + " ";
 		}

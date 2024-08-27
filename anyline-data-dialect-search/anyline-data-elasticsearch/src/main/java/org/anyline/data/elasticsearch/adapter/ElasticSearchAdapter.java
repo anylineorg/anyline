@@ -855,7 +855,9 @@ PUT * /_bulk
                     if (Condition.JOIN.OR == join) {
                         joinCode ="should";
                     } else if(Condition.JOIN.AND == join){
-                        joinCode= "must";
+                        joinCode = "must";
+                    }else{
+                        joinCode = join.getCode();
                     }
                     set = bool.puts(joinCode);
                     for (Condition item : conditions) {
