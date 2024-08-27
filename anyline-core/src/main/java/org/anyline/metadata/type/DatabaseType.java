@@ -268,7 +268,7 @@ public enum DatabaseType implements Serializable {
         MachbaseNeo           ("Machbase Neo"                              , DatabaseOrigin.None        , KEY_CASE.SRC   , 711  , null, "com.machbase.jdbc.MachDriver", "jdbc:machbase://{host}:{port:5656}/{database}"),
         ManticoreSearch       ("Manticore Search"                          , DatabaseOrigin.None        , KEY_CASE.SRC   , 652  , null, null                , ""                            ),
         MapDB                 ("MapDB"                                     , DatabaseOrigin.None        , KEY_CASE.SRC   , 770  , null, null                , ""                            ),
-        MariaDB               ("MariaDB"                                   , DatabaseOrigin.MySQL       , KEY_CASE.SRC   , 986  , null, "org.mariadb.jdbc.Driver", "jdbc:mysql://{host}:{port}/{database}"),
+        MariaDB               ("MariaDB"                                   , DatabaseOrigin.MySQL       , KEY_CASE.SRC   , 986  , null, "org.mariadb.jdbc.Driver", "jdbc:mariadb://{host}:{port}/{database}"),
         MarkLogic             ("MarkLogic"                                 , DatabaseOrigin.None        , KEY_CASE.SRC   , 945  , null, null                , ""                            ),
         Marqo                 ("Marqo"                                     , DatabaseOrigin.None        , KEY_CASE.SRC   , 700  , null, null                , ""                            ),
         MatrixOne             ("MatrixOne"                                 , DatabaseOrigin.None        , KEY_CASE.SRC   , 817  , null, null                , ""                            ),

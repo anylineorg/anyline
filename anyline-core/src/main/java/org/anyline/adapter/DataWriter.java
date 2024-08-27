@@ -22,8 +22,9 @@ public interface DataWriter {
     /**
      * 写入数据库前类型转换(非基础类型时需要)
      * @param value value
-     * @param placeholder 是否启动占位符
-     * @return Object
+     * @param placeholder 是否启用占位符
+     * @param type 要写入到列的数据类型 开启了ConfigTable.IS_AUTO_CHECK_METADATA的情况下 当前方法才会接收到这个类型
+     * @return Object 把value转换成 java默认类型 或 数据库驱动中支持的类型
      */
     Object write(Object value, boolean placeholder, TypeMetadata type);
 

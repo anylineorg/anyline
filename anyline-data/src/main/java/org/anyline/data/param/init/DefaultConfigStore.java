@@ -792,6 +792,9 @@ public class DefaultConfigStore implements ConfigStore {
 		if(BasicUtil.isNotEmpty(having)) {
 			this.having(having);
 		}
+		if(null != columns){
+			this.columns(configs.columns());
+		}
 		chain = list;
 		return this;
 	}

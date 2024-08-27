@@ -303,10 +303,10 @@ public class SQLUtil {
 	}
 	public static List<String> columns(String ... columns){
 		List<String> list = new ArrayList<>();
-		if(null == columns){
+		if(null != columns){
 			for(String column: columns){
 				if(column.contains(",")){
-					//在''或()内的 不做处理
+					//在''或()内的 不拆分
 					if(RegularUtil.match(column,"'.*,.*'", Regular.MATCH_MODE.CONTAIN) || RegularUtil.match(column,"\\(.*,.*\\)", Regular.MATCH_MODE.CONTAIN)) {
 						list.add(column);
 					}else {
