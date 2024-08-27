@@ -99,7 +99,7 @@ public class InfluxActuator implements DriverActuator {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @return List
      */
-    public <T extends Database> List<T> databases(DriverAdapter adapter, DataRuntime runtime){
+    public <T extends Database> List<T> databases(DriverAdapter adapter, DataRuntime runtime, Database query){
         List<T> databases = new ArrayList<>();
         InfluxDBClient client = client(runtime);
         List<Bucket> list =  client.getBucketsApi().findBuckets();

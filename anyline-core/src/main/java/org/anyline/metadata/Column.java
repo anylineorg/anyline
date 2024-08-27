@@ -751,7 +751,7 @@ public class Column extends TableAffiliation<Column> implements Serializable {
         return this;
     }
     public String getFullType() {
-        return getFullType(database);
+        return getFullType(databaseType);
     }
 
     public String getFullType(DatabaseType database) {
@@ -761,7 +761,7 @@ public class Column extends TableAffiliation<Column> implements Serializable {
         if(getmap && null != update) {
             return update.getFullType(database);
         }
-        if(null != fullType && this.database == database) {
+        if(null != fullType && this.databaseType == database) {
             return fullType;
         }
         int ignoreLength = -1;
@@ -781,7 +781,7 @@ public class Column extends TableAffiliation<Column> implements Serializable {
             ignoreScale = ignoreScale(database);
             formula = formula(database);
         }
-        if(null != typeMetadata && typeMetadata != TypeMetadata.NONE && typeMetadata != TypeMetadata.ILLEGAL && database == this.database) {
+        if(null != typeMetadata && typeMetadata != TypeMetadata.NONE && typeMetadata != TypeMetadata.ILLEGAL && database == this.databaseType) {
             type = typeMetadata.getName();
         }else{
             type = getTypeName();

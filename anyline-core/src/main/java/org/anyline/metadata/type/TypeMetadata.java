@@ -622,7 +622,7 @@ public interface TypeMetadata {
         String typeName = originType;
         String up = typeName.toUpperCase();
         TypeMetadata typeMetadata = meta.getTypeMetadata();
-        if(null != typeMetadata && TypeMetadata.NONE != typeMetadata && meta.getParseLvl() >=2 && meta.getDatabase() == database) {
+        if(null != typeMetadata && TypeMetadata.NONE != typeMetadata && meta.getParseLvl() >=2 && meta.getDatabaseType() == database) {
             return typeMetadata;
         }
         Integer length = meta.getLength();
@@ -809,7 +809,7 @@ public interface TypeMetadata {
         if(null != database && database != DatabaseType.NONE) {
             meta.setParseLvl(2);
         }
-        meta.setDatabase(database);
+        meta.setDatabaseType(database);
         return typeMetadata;
     }
     static TypeMetadata parse(LinkedHashMap<String, TypeMetadata> alias, Map<String,String> spells, String name) {

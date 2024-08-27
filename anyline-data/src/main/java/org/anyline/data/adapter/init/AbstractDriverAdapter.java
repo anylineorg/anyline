@@ -17467,9 +17467,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	@Override
 	public TypeMetadata typeMetadata(DataRuntime runtime, Column meta) {
 		TypeMetadata typeMetadata = meta.getTypeMetadata();
-		if(null == typeMetadata || TypeMetadata.NONE == typeMetadata || meta.getParseLvl() < 2 || type() != meta.getDatabase()) {
+		if(null == typeMetadata || TypeMetadata.NONE == typeMetadata || meta.getParseLvl() < 2 || type() != meta.getDatabaseType()) {
 			typeMetadata = TypeMetadata.parse(type(), meta, alias, spells);
-			meta.setDatabase(type());
+			meta.setDatabaseType(type());
 			meta.setParseLvl(2);
 		}
 		return typeMetadata;

@@ -1512,7 +1512,7 @@ public class MilvusAdapter extends AbstractDriverAdapter {
      */
     @Override
     public <T extends Database> List<T> databases(DataRuntime runtime, String random, boolean greedy, Database query) {
-        return super.databases(runtime, random, greedy, query);
+        return actuator().databases(runtime, random, greedy, query);
     }
 
     /**

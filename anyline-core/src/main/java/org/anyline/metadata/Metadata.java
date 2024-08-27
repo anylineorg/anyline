@@ -98,9 +98,10 @@ public class Metadata<T extends Metadata> {
         }
         return list;
     }
-    protected DatabaseType database = DatabaseType.NONE;
+    protected DatabaseType databaseType = DatabaseType.NONE;
     protected String datasource                   ; // 数据源
     protected Catalog catalog                     ; // 数据库 catalog与schema 不同有数据库实现方式不一样
+    protected Database database                   ; // 数据库
     protected Schema schema                       ; // dbo mysql中相当于数据库名  查数据库列表 是用SHOW SCHEMAS 但JDBC con.getCatalog()返回数据库名 而con.getSchema()返回null
     protected String name                         ; // 名称
     protected String alias                        ; // 别名
@@ -144,6 +145,25 @@ public class Metadata<T extends Metadata> {
             //identity = MD5Util.crypto(identity.toUpperCase());
         }
         return identity;
+    }
+
+    public Database getDatabase() {
+        return database;
+    }
+    public String getDatabaseName() {
+        if(null != database){
+            return database.getName();
+        }
+        return null;
+    }
+
+    public T setDatabase(Database database) {
+        this.database = database;
+        return (T)this;
+    }
+    public T setDatabase(String database) {
+        this.database = new Database(database);
+        return (T)this;
     }
 
     public static <T extends Metadata> List<String> names(LinkedHashMap<String, T> metas) {
@@ -224,12 +244,12 @@ public class Metadata<T extends Metadata> {
         return false;
     }
 
-    public DatabaseType getDatabase() {
-        return database;
+    public DatabaseType getDatabaseType() {
+        return databaseType;
     }
 
-    public void setDatabase(DatabaseType database) {
-        this.database = database;
+    public void setDatabaseType(DatabaseType databaseType) {
+        this.databaseType = databaseType;
     }
     public String getDataSource() {
         return datasource;

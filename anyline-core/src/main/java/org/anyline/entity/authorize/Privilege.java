@@ -53,16 +53,6 @@ public class Privilege extends Metadata<Privilege> {
         this.objectName = objectName;
     }
 
-    @Override
-    public User getUser() {
-        return user;
-    }
-
-    @Override
-    public void setUser(User user) {
-        this.user = user;
-    }
-
     public Role getRole() {
         return role;
     }

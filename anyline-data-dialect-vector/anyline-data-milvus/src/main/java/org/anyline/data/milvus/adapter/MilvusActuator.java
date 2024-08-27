@@ -31,10 +31,7 @@ import org.anyline.entity.DataSet;
 import org.anyline.entity.authorize.Privilege;
 import org.anyline.entity.authorize.Role;
 import org.anyline.entity.authorize.User;
-import org.anyline.metadata.ACTION;
-import org.anyline.metadata.Column;
-import org.anyline.metadata.Metadata;
-import org.anyline.metadata.Table;
+import org.anyline.metadata.*;
 import org.anyline.metadata.refer.MetadataFieldRefer;
 import org.anyline.util.BasicUtil;
 
@@ -122,6 +119,13 @@ public class MilvusActuator implements DriverActuator {
         return 0;
     }
 
+
+    public <T extends Database> List<T>  databases(DataRuntime runtime, String random, boolean greedy, Database query) {
+        //https://milvus.io/api-reference/java/v2.4.x/v2/Database/listDatabases.md
+        List<T> list = new ArrayList<>();
+        return list;
+    }
+
     /* *****************************************************************************************************************
      * 													role
      * -----------------------------------------------------------------------------------------------------------------
@@ -158,7 +162,7 @@ public class MilvusActuator implements DriverActuator {
         client(runtime).dropRole(req);
         return true;
     }
-    public <T extends Role> List<T>  roles(DataRuntime runtime, String random, boolean greedy, Role query){
+    public <T extends Role> List<T>  roles(DataRuntime runtime, String random, boolean greedy, Role query) {
         //https://milvus.io/api-reference/java/v2.4.x/v2/Authentication/listRoles.md
         List<T> list = new ArrayList<>();
         String user = query.getUserName();
@@ -273,7 +277,7 @@ public class MilvusActuator implements DriverActuator {
                     privilege.setObjectName(grant.getObjectName());
                     privilege.setObjectType(grant.getObjectType());
                     privilege.setName(grant.getPrivilege());
-                    privilege.setCatalog(grant.getDbName());
+                    privilege.setDatabase(grant.getDbName());
                     list.add((T)privilege);
                 }
             }
@@ -396,7 +400,7 @@ public class MilvusActuator implements DriverActuator {
     public boolean revoke(DataRuntime runtime, Role role, Privilege ... privileges) throws Exception {
         for (Privilege privilege:privileges){
             client(runtime).revokePrivilege(RevokePrivilegeReq.builder()
-                    .dbName(privilege.getCatalogName())
+                    .dbName(privilege.getDatabaseName())
                     .roleName(role.getName())
                     .objectType(privilege.getObjectType())
                     .privilege(privilege.getName())
