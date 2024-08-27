@@ -20,6 +20,7 @@ import org.anyline.adapter.EnvironmentWorker;
 import org.anyline.adapter.init.DefaultEnvironmentWorker;
 import org.anyline.annotation.Component;
 import org.anyline.bean.BeanDefine;
+import org.anyline.data.datasource.DataSourceHolder;
 import org.anyline.util.ClassUtil;
 import org.anyline.util.ConfigTable;
 import org.noear.solon.Solon;
@@ -28,6 +29,7 @@ import org.noear.solon.core.AppContext;
 import org.noear.solon.core.Plugin;
 import org.noear.solon.core.event.AppLoadEndEvent;
 
+import javax.sql.DataSource;
 import java.util.Map;
 
 @Component
@@ -46,6 +48,13 @@ public class SolonEnvironmentWorker extends DefaultEnvironmentWorker implements 
         context.onEvent(AppLoadEndEvent.class, e->{
             log.debug("solon end event");
             SolonAutoConfiguration.init();
+        });
+        context.subWrapsOfType(DataSource.class, bw->{
+            try {
+                DataSourceHolder.reg(bw.name(), bw.raw());
+            }catch (Exception e){
+                log.error("注册数据源异常", e);
+            }
         });
     }
 
