@@ -23,6 +23,7 @@ import org.anyline.data.prepare.auto.init.DefaultTablePrepare;
 import org.anyline.data.prepare.auto.init.VirtualTablePrepare;
 import org.anyline.metadata.Column;
 import org.anyline.metadata.Table;
+import org.anyline.util.SQLUtil;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -92,24 +93,34 @@ public class TableBuilder {
         return this;
     }
     public TableBuilder addColumns(String ... columns) {
-        if(null != columns) {
-            for (String column:columns) {
-                addColumn(column);
-            }
+        List<String> list = SQLUtil.columns(columns);
+        for(String column:list){
+            addColumn(column);
+        }
+        return this;
+    }
+    public TableBuilder addColumns(List<String> columns) {
+        for(String column:columns){
+            addColumn(column);
         }
         return this;
     }
     public TableBuilder columns(String ... columns) {
         return addColumns(columns);
     }
+    public TableBuilder columns(List<String> columns) {
+        return addColumns(columns);
+    }
 
     public TableBuilder setColumns(String ... columns) {
         this.columns = new LinkedHashMap<>();
-        if(null != columns) {
-            for (String column:columns) {
-                addColumn(column);
-            }
-        }
+        addColumns(columns);
+        return this;
+    }
+
+    public TableBuilder setColumns(List<String> columns) {
+        this.columns = new LinkedHashMap<>();
+        addColumns(columns);
         return this;
     }
 

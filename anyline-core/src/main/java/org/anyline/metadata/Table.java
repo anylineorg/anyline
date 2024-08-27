@@ -24,6 +24,7 @@ import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
+import org.anyline.util.SQLUtil;
 
 import java.io.Serializable;
 import java.lang.reflect.Array;
@@ -1361,10 +1362,9 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
             if(null == this.columns) {
                 this.columns = new LinkedHashMap<>();
             }
-            if(null != columns) {
-                for (String column:columns) {
-                    this.columns.put(column.toUpperCase(), new Column(column));
-                }
+            List<String> list = SQLUtil.columns(columns);
+            for (String column:list) {
+                this.columns.put(column.toUpperCase(), new Column(column));
             }
             return this;
         }
@@ -1412,10 +1412,9 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
             if(null == this.columns) {
                 this.columns = new LinkedHashMap<>();
             }
-            if(null != columns) {
-                for (String column:columns) {
-                    this.columns.put(column.toUpperCase(), new Column(column));
-                }
+            List<String> list = SQLUtil.columns(columns);
+            for (String column:list) {
+                this.columns.put(column.toUpperCase(), new Column(column));
             }
             return this;
         }
@@ -1483,7 +1482,8 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
 
         public Partition setColumns(String ... columns) {
             this.columns = new LinkedHashMap<>();
-            for(String column:columns) {
+            List<String> list = SQLUtil.columns(columns);
+            for(String column:list) {
                 this.columns.put(column.toUpperCase(), new Column(column));
             }
             return this;

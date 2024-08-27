@@ -34,6 +34,7 @@ import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;
 import org.anyline.metadata.*;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
+import org.anyline.util.SQLUtil;
 import org.anyline.util.encrypt.DESUtil;
 
 import java.lang.reflect.Array;
@@ -1495,11 +1496,10 @@ public class DefaultConfigStore implements ConfigStore {
 	 * @return ConfigStore
 	 */
 	public ConfigStore columns(String ... columns) {
-		if(null != columns) {
-			for(String column:columns) {
-				this.columns.add(column);
-			}
-		}
+		List<String> list = SQLUtil.columns(columns);
+        for(String column:list) {
+            this.columns.add(column);
+        }
 		return this;
 	}
 	public ConfigStore columns(List<String> columns) {

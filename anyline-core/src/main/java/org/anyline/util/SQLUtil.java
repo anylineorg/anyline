@@ -22,6 +22,7 @@ import org.anyline.util.regular.RegularUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
@@ -299,5 +300,24 @@ public class SQLUtil {
 			condition = condition.trim();
 		}
 		return condition;
+	}
+	public static List<String> columns(String ... columns){
+		List<String> list = new ArrayList<>();
+		if(null == columns){
+			for(String column: columns){
+				if(column.contains(",")){
+					//在''或()内的 不做处理
+					if(RegularUtil.match(column,"'.*,.*'", Regular.MATCH_MODE.CONTAIN) || RegularUtil.match(column,"\\(.*,.*\\)", Regular.MATCH_MODE.CONTAIN)) {
+						list.add(column);
+					}else {
+						String[] cols = column.split(",");
+						list.addAll(columns(cols));
+					}
+				}else{
+					list.add(column);
+				}
+			}
+		}
+		return list;
 	}
 } 

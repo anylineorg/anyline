@@ -272,7 +272,7 @@ public enum DatabaseType implements Serializable {
         MarkLogic             ("MarkLogic"                                 , DatabaseOrigin.None        , KEY_CASE.SRC   , 945  , null, null                , ""                            ),
         Marqo                 ("Marqo"                                     , DatabaseOrigin.None        , KEY_CASE.SRC   , 700  , null, null                , ""                            ),
         MatrixOne             ("MatrixOne"                                 , DatabaseOrigin.None        , KEY_CASE.SRC   , 817  , null, null                , ""                            ),
-        MaxCompute            ("Alibaba Cloud MaxCompute"                  , DatabaseOrigin.None        , KEY_CASE.SRC   , 762  , null, "com.aliyun.odps.jdbc.OdpsDriver", "jdbc:odps:{host}?project={database}"),
+        MaxCompute            ("Alibaba Cloud MaxCompute"                  , DatabaseOrigin.None        , KEY_CASE.SRC   , 762  , "maxcompute/odps", "com.aliyun.odps.jdbc.OdpsDriver", "jdbc:odps:{host}?project={database}"),
         MaxDB                 ("MaxDB"                                     , DatabaseOrigin.None        , KEY_CASE.SRC   , 899  , null, "com.sap.dbtech.jdbc.DriverSapDB", "jdbc:sapdb://{host}:{port}/{database}"),
         Meilisearch           ("Meilisearch"                               , DatabaseOrigin.None        , KEY_CASE.SRC   , 818  , null, null                , ""                            ),
         Memcached             ("Memcached"                                 , DatabaseOrigin.None        , KEY_CASE.SRC   , 964  , null, null                , ""                            ),
