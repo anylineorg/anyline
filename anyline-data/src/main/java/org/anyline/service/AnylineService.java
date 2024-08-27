@@ -2009,7 +2009,7 @@ public interface AnylineService<E>{
 		 * tables
 		 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
 		 * @param query 查询条件 根据metadata属性
-		 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
+		 * @param types 查询的类型 参考 Table.TYPE 多个类型相加算出总和
 		 * @param struct 查询的属性 参考Metadata.TYPE 多个属性相加算出总和
 		 * @return tables
 		 */
@@ -2020,7 +2020,7 @@ public interface AnylineService<E>{
 		 * @param catalog 对于MySQL, 则对应相应的数据库, 对于Oracle来说, 则是对应相应的数据库实例, 可以不填, 也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
 		 * @param schema 可以理解为数据库的登录名, 而对于Oracle也可以理解成对该数据库操作的所有者的登录名。对于Oracle要特别注意, 其登陆名必须是大写, 不然的话是无法获取到相应的数据, 而MySQL则不做强制要求。
 		 * @param name 一般情况下如果要获取所有的表的话, 可以直接设置为null, 如果设置为特定的表名称, 则返回该表的具体信息。
-		 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
+		 * @param types 查询的类型 参考 Table.TYPE 多个类型相加算出总和
 		 * @param struct 查询的属性 参考Metadata.TYPE 多个属性相加算出总和
 		 * @return tables
 		 */
@@ -2278,7 +2278,7 @@ public interface AnylineService<E>{
 		 * views
 		 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
 		 * @param query 查询条件 根据metadata属性
-		 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
+		 * @param types 查询的类型 参考 Table.TYPE 多个类型相加算出总和
 		 * @param struct 查询的属性 参考Metadata.TYPE 多个属性相加算出总和
 		 * @return views
 		 */
@@ -2289,7 +2289,7 @@ public interface AnylineService<E>{
 		 * @param catalog 对于MySQL, 则对应相应的数据库, 对于Oracle来说, 则是对应相应的数据库实例, 可以不填, 也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
 		 * @param schema 可以理解为数据库的登录名, 而对于Oracle也可以理解成对该数据库操作的所有者的登录名。对于Oracle要特别注意, 其登陆名必须是大写, 不然的话是无法获取到相应的数据, 而MySQL则不做强制要求。
 		 * @param name 一般情况下如果要获取所有的视图的话, 可以直接设置为null, 如果设置为特定的视图名称, 则返回该视图的具体信息。
-		 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
+		 * @param types 查询的类型 参考 Table.TYPE 多个类型相加算出总和
 		 * @param struct 查询的属性 参考Metadata.TYPE 多个属性相加算出总和
 		 * @return views
 		 */
@@ -2537,7 +2537,7 @@ public interface AnylineService<E>{
 		 * masters
 		 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
 		 * @param query 查询条件 根据metadata属性
-		 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
+		 * @param types 查询的类型 参考 Table.TYPE 多个类型相加算出总和
 		 * @param struct 查询的属性 参考Metadata.TYPE 多个属性相加算出总和
 		 * @return masters
 		 */
@@ -2549,7 +2549,7 @@ public interface AnylineService<E>{
 		 * @param catalog 对于MySQL, 则对应相应的数据库, 对于Oracle来说, 则是对应相应的数据库实例, 可以不填, 也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
 		 * @param schema 可以理解为数据库的登录名, 而对于Oracle也可以理解成对该数据库操作的所有者的登录名。对于Oracle要特别注意, 其登陆名必须是大写, 不然的话是无法获取到相应的数据, 而MySQL则不做强制要求。
 		 * @param name 一般情况下如果要获取所有的表的话, 可以直接设置为null, 如果设置为特定的表名称, 则返回该表的具体信息。
-		 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
+		 * @param types 查询的类型 参考 Table.TYPE 多个类型相加算出总和
 		 * @param struct 查询的属性 参考Metadata.TYPE 多个属性相加算出总和
 		 * @return masters
 		 */
@@ -2909,7 +2909,7 @@ public interface AnylineService<E>{
 		 * vertexs
 		 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
 		 * @param query 查询条件 根据metadata属性
-		 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
+		 * @param types 查询的类型 参考 Table.TYPE 多个类型相加算出总和
 		 * @param struct 查询的属性 参考Metadata.TYPE 多个属性相加算出总和
 		 * @return vertexs
 		 */
@@ -2920,7 +2920,7 @@ public interface AnylineService<E>{
 		 * @param catalog 对于MySQL, 则对应相应的数据库, 对于Oracle来说, 则是对应相应的数据库实例, 可以不填, 也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
 		 * @param schema 可以理解为数据库的登录名, 而对于Oracle也可以理解成对该数据库操作的所有者的登录名。对于Oracle要特别注意, 其登陆名必须是大写, 不然的话是无法获取到相应的数据, 而MySQL则不做强制要求。
 		 * @param name 一般情况下如果要获取所有的表的话, 可以直接设置为null, 如果设置为特定的表名称, 则返回该表的具体信息。
-		 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
+		 * @param types 查询的类型 参考 Table.TYPE 多个类型相加算出总和
 		 * @param struct 查询的属性 参考Metadata.TYPE 多个属性相加算出总和
 		 * @return vertexs
 		 */
@@ -3170,7 +3170,7 @@ public interface AnylineService<E>{
 		 * edges
 		 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
 		 * @param query 查询条件 根据metadata属性
-		 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
+		 * @param types 查询的类型 参考 Table.TYPE 多个类型相加算出总和
 		 * @param struct 查询的属性 参考Metadata.TYPE 多个属性相加算出总和
 		 * @return edges
 		 */
@@ -3181,7 +3181,7 @@ public interface AnylineService<E>{
 		 * @param catalog 对于MySQL, 则对应相应的数据库, 对于Oracle来说, 则是对应相应的数据库实例, 可以不填, 也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
 		 * @param schema 可以理解为数据库的登录名, 而对于Oracle也可以理解成对该数据库操作的所有者的登录名。对于Oracle要特别注意, 其登陆名必须是大写, 不然的话是无法获取到相应的数据, 而MySQL则不做强制要求。
 		 * @param name 一般情况下如果要获取所有的表的话, 可以直接设置为null, 如果设置为特定的表名称, 则返回该表的具体信息。
-		 * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
+		 * @param types 查询的类型 参考 Table.TYPE 多个类型相加算出总和
 		 * @param struct 查询的属性 参考Metadata.TYPE 多个属性相加算出总和
 		 * @return edges
 		 */

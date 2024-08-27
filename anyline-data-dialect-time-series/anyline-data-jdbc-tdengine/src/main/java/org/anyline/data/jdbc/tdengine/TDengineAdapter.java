@@ -1797,7 +1797,7 @@ public class TDengineAdapter extends AbstractJDBCAdapter implements JDBCAdapter 
      * @param random 用来标记同一组命令
      * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
      * @param query 查询条件 根据metadata属性
-     * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
+     * @param types 查询的类型 参考 Table.TYPE 多个类型相加算出总和
      * @param struct 查询的属性 参考Metadata.TYPE 多个属性相加算出总和 true:表示查询全部
      * @return List
      * @param <T> Table
@@ -1828,7 +1828,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
      * @param query 查询条件 根据metadata属性
-     * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
+     * @param types 查询的类型 参考 Table.TYPE 多个类型相加算出总和
      * @return String
      * @throws Exception Exception
      */
@@ -1863,7 +1863,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
      * 查询表备注
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param query 查询条件 根据metadata属性
-     * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
+     * @param types 查询的类型 参考 Table.TYPE 多个类型相加算出总和
      * @return String
      * @throws Exception Exception
      */
@@ -1913,7 +1913,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param previous 上一步查询结果
      * @param query 查询条件 根据metadata属性
-     * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
+     * @param types 查询的类型 参考 Table.TYPE 多个类型相加算出总和
      * @return tables
      * @throws Exception 异常
      */
@@ -1929,7 +1929,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param previous 上一步查询结果
      * @param query 查询条件 根据metadata属性
-     * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
+     * @param types 查询的类型 参考 Table.TYPE 多个类型相加算出总和
      * @return tables
      * @throws Exception 异常
      */
@@ -2038,7 +2038,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
      * @param catalog 对于MySQL, 则对应相应的数据库, 对于Oracle来说, 则是对应相应的数据库实例, 可以不填, 也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
      * @param schema 可以理解为数据库的登录名, 而对于Oracle也可以理解成对该数据库操作的所有者的登录名。对于Oracle要特别注意, 其登陆名必须是大写, 不然的话是无法获取到相应的数据, 而MySQL则不做强制要求。
      * @param pattern 名称统配符或正则
-     * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
+     * @param types 查询的类型 参考 Table.TYPE 多个类型相加算出总和
      * @return List
      * @param <T> View
      */
@@ -2049,7 +2049,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
      * @param query 查询条件 根据metadata属性
-     * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
+     * @param types 查询的类型 参考 Table.TYPE 多个类型相加算出总和
      * @return List
      */
     @Override
@@ -2091,7 +2091,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param previous 上一步查询结果
      * @param query 查询条件 根据metadata属性
-     * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
+     * @param types 查询的类型 参考 Table.TYPE 多个类型相加算出总和
      * @return views
      * @throws Exception 异常
      */
@@ -2162,7 +2162,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param query 查询条件 根据metadata属性
-     * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
+     * @param types 查询的类型 参考 Table.TYPE 多个类型相加算出总和
      * @return List
      * @param <T> MasterTable
      */
@@ -2176,7 +2176,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
      * 查询主表
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param query 查询条件 根据metadata属性
-     * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
+     * @param types 查询的类型 参考 Table.TYPE 多个类型相加算出总和
      * @return String
      */
     @Override

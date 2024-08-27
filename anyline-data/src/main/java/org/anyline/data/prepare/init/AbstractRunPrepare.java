@@ -132,7 +132,7 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 				if(BasicUtil.isEmpty(group)) {
 					continue;
 				}
-				group = group.trim().toUpperCase();
+				group = group.trim();
 				this.groups.group(group);
 			}
 		}

@@ -264,7 +264,7 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter {
     /**
      * 查询表
      * @param query 查询条件 根据metadata属性
-     * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
+     * @param types 查询的类型 参考 Table.TYPE 多个类型相加算出总和
      * @return String
      */
     @Override

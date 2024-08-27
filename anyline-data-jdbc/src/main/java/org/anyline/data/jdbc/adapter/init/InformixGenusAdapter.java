@@ -1902,7 +1902,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @param random 用来标记同一组命令
      * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
      * @param query 查询条件 根据metadata属性
-     * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
+     * @param types 查询的类型 参考 Table.TYPE 多个类型相加算出总和
      * @param struct 查询的属性 参考Metadata.TYPE 多个属性相加算出总和 true:表示查询全部
      * @return List
      * @param <T> Table
@@ -1934,7 +1934,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * 查询表,不是查表中的数据
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
-     * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
+     * @param types 查询的类型 参考 Table.TYPE 多个类型相加算出总和
      * @return String
      * @throws Exception Exception
      */
@@ -1966,7 +1966,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * 查询表备注
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param query 查询条件 根据metadata属性
-     * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
+     * @param types 查询的类型 参考 Table.TYPE 多个类型相加算出总和
      * @return String
      * @throws Exception Exception
      */
@@ -2016,7 +2016,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param previous 上一步查询结果
      * @param query 查询条件 根据metadata属性
-     * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
+     * @param types 查询的类型 参考 Table.TYPE 多个类型相加算出总和
      * @return tables
      * @throws Exception 异常
      */
@@ -2033,7 +2033,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param previous 上一步查询结果
      * @param query 查询条件 根据metadata属性
-     * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
+     * @param types 查询的类型 参考 Table.TYPE 多个类型相加算出总和
      * @return tables
      * @throws Exception 异常
      */
@@ -2141,7 +2141,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @param random 用来标记同一组命令
      * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
      * @param query 查询条件 根据metadata属性
-     * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
+     * @param types 查询的类型 参考 Table.TYPE 多个类型相加算出总和
      * @return List
      * @param <T> View
      */
@@ -2156,7 +2156,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
      * @param query 查询条件 根据metadata属性
-     * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
+     * @param types 查询的类型 参考 Table.TYPE 多个类型相加算出总和
      * @return List
      */
     @Override
@@ -2198,7 +2198,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param previous 上一步查询结果
      * @param query 查询条件 根据metadata属性
-     * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
+     * @param types 查询的类型 参考 Table.TYPE 多个类型相加算出总和
      * @return views
      * @throws Exception 异常
      */
@@ -2270,7 +2270,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @param random 用来标记同一组命令
      * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
      * @param query 查询条件 根据metadata属性
-     * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
+     * @param types 查询的类型 参考 Table.TYPE 多个类型相加算出总和
      * @param struct 查询的属性 参考Metadata.TYPE 多个属性相加算出总和 true:表示查询全部
      * @return List
      * @param <T> MasterTable
@@ -2285,7 +2285,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * 查询主表
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param query 查询条件 根据metadata属性
-     * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
+     * @param types 查询的类型 参考 Table.TYPE 多个类型相加算出总和
      * @return String
      */
     @Override
@@ -2411,7 +2411,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * 查询分区表
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param query 查询条件 根据metadata属性
-     * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
+     * @param types 查询的类型 参考 Table.TYPE 多个类型相加算出总和
      * @return String
      */
     @Override

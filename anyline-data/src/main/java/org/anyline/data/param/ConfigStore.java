@@ -716,6 +716,11 @@ public interface ConfigStore extends Cloneable{
 		return and(Compare.IN, var, list);
 	}
 
+	default ConfigStore in(String var, Object values) {
+		//这个方法不要删除 否则会NoSuchMethodError: org.anyline.data.param.ConfigStore.in(java/lang/string;java/lang/Object);
+		return and(Compare.IN, var, values);
+	}
+
 	default ConfigStore likes(String value) {
 		return likes(EMPTY_VALUE_SWITCH.IGNORE, value);
 	}

@@ -893,7 +893,7 @@ public class SpringJDBCActuator implements DriverActuator {
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param previous 上一步查询结果
      * @param query 查询条件 根据metadata属性
-     * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
+     * @param types 查询的类型 参考 Table.TYPE 多个类型相加算出总和
      * @return tables
      * @throws Exception 异常
      */
@@ -939,7 +939,7 @@ public class SpringJDBCActuator implements DriverActuator {
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param previous 上一步查询结果
      * @param query 查询条件 根据metadata属性
-     * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
+     * @param types 查询的类型 参考 Table.TYPE 多个类型相加算出总和
      * @return tables
      * @throws Exception 异常
      */
@@ -986,7 +986,7 @@ public class SpringJDBCActuator implements DriverActuator {
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param previous 上一步查询结果
      * @param query 查询条件 根据metadata属性
-     * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
+     * @param types 查询的类型 参考 Table.TYPE 多个类型相加算出总和
      * @return views
      * @throws Exception 异常
      */
@@ -1031,7 +1031,7 @@ public class SpringJDBCActuator implements DriverActuator {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param query 查询条件 根据metadata属性
-     * @param types 查询的类型 参考Metadata.TYPE 多个类型相加算出总和
+     * @param types 查询的类型 参考 Table.TYPE 多个类型相加算出总和
      * @return views
      * @throws Exception 异常
      */
