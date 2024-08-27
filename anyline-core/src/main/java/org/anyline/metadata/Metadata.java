@@ -293,11 +293,13 @@ public class Metadata<T extends Metadata> {
         return user;
     }
 
-    public void setUser(User user) {
+    public T setUser(User user) {
         this.user = user;
+        return (T)this;
     }
-    public void setUser(String user) {
+    public T setUser(String user) {
         this.user = new User(user);
+        return (T)this;
     }
 
     public Date getCheckSchemaTime() {

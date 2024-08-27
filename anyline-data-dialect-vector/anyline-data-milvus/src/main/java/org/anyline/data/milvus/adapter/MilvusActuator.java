@@ -18,6 +18,8 @@ package org.anyline.data.milvus.adapter;
 
 import io.milvus.v2.client.MilvusClientV2;
 import io.milvus.v2.service.rbac.request.*;
+import io.milvus.v2.service.rbac.response.DescribeRoleResp;
+import io.milvus.v2.service.rbac.response.DescribeUserResp;
 import org.anyline.annotation.Component;
 import org.anyline.data.adapter.DriverActuator;
 import org.anyline.data.adapter.DriverAdapter;
@@ -38,10 +40,7 @@ import org.anyline.util.BasicUtil;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component("anyline.environment.data.driver.actuator.milvus")
 public class MilvusActuator implements DriverActuator {
@@ -138,6 +137,7 @@ public class MilvusActuator implements DriverActuator {
      * @return boolean
      */
     public boolean create(DataRuntime runtime, Role role) throws Exception {
+        //https://milvus.io/api-reference/java/v2.4.x/v2/Authentication/createRole.md
         CreateRoleReq req = CreateRoleReq.builder()
             .roleName(role.getName())
             .build();
@@ -151,6 +151,7 @@ public class MilvusActuator implements DriverActuator {
      * @return boolean
      */
     public boolean drop(DataRuntime runtime, Role role) throws Exception {
+        //https://milvus.io/api-reference/java/v2.4.x/v2/Authentication/dropRole.md
         DropRoleReq req = DropRoleReq.builder()
             .roleName(role.getName())
             .build();
@@ -158,11 +159,29 @@ public class MilvusActuator implements DriverActuator {
         return true;
     }
     public <T extends Role> List<T>  roles(DataRuntime runtime, String random, boolean greedy, Role query){
+        //https://milvus.io/api-reference/java/v2.4.x/v2/Authentication/listRoles.md
         List<T> list = new ArrayList<>();
-        List<String> roles = client(runtime).listRoles();
-        for(String role:roles){
-            list.add((T)new Role(role));
+        String user = query.getUserName();
+        if(null != user){
+            //用户相关角色
+            DescribeUserResp response = client(runtime).describeUser(DescribeUserReq.builder()
+                    .userName(user)
+                    .build()
+            );
+            if(null != response){
+                List<String> roles = response.getRoles();
+                for(String role:roles){
+                    list.add((T)new Role(role));
+                }
+            }
+        }else{
+            //全部角色
+            List<String> roles = client(runtime).listRoles();
+            for(String role:roles){
+                list.add((T)new Role(role));
+            }
         }
+
         return list;
     }
 
@@ -182,6 +201,7 @@ public class MilvusActuator implements DriverActuator {
      * @return boolean
      */
     public boolean create(DataRuntime runtime, User user) throws Exception {
+        //https://milvus.io/api-reference/java/v2.4.x/v2/Authentication/createUser.md
         CreateUserReq req = CreateUserReq.builder()
             .userName(user.getName())
             .password(user.getPassword())
@@ -196,6 +216,7 @@ public class MilvusActuator implements DriverActuator {
      * @return boolean
      */
     public boolean drop(DataRuntime runtime, User user) throws Exception {
+        //https://milvus.io/api-reference/java/v2.4.x/v2/Authentication/dropUser.md
         DropUserReq req = DropUserReq.builder()
             .userName(user.getName())
             .build();
@@ -203,6 +224,7 @@ public class MilvusActuator implements DriverActuator {
         return true;
     }
     public <T extends User> List<T>  users(DataRuntime runtime, String random, boolean greedy, User query){
+        //https://milvus.io/api-reference/java/v2.4.x/v2/Authentication/listUsers.md
         List<T> list = new ArrayList<>();
         List<String> users = client(runtime).listUsers();
         for(String user:users){
@@ -224,7 +246,39 @@ public class MilvusActuator implements DriverActuator {
      */
 
     public <T extends Privilege> List<T> privileges(DataRuntime runtime, String random, boolean greedy, Privilege query) throws Exception {
-        return new ArrayList<>();
+        List<T> list = new ArrayList<>();
+        String role = query.getRoleName();
+        String user = query.getUserName();
+        if(null != user){
+            Map<String, T> map = new HashMap<>();
+            List<Role> roles = roles(runtime, random, false, new Role().setUser(user));
+            for(Role r:roles){
+                List<T> ps = privileges(runtime, random, greedy, new Privilege().setRole(r));
+                for(T p:ps){
+                    map.put(p.getName(), p);
+                }
+            }
+            list.addAll(map.values());
+        }else if(null != role){
+            //角色相关权限
+            DescribeRoleReq describe = DescribeRoleReq.builder()
+                    .roleName(role)
+                    .build();
+            DescribeRoleResp response = client(runtime).describeRole(describe);
+            if(null != response){
+                List<DescribeRoleResp.GrantInfo> grants = response.getGrantInfos();
+                for(DescribeRoleResp.GrantInfo grant:grants){
+                    Privilege privilege = new Privilege();
+                    privilege.setRole(new Role(role));
+                    privilege.setObjectName(grant.getObjectName());
+                    privilege.setObjectType(grant.getObjectType());
+                    privilege.setName(grant.getPrivilege());
+                    privilege.setCatalog(grant.getDbName());
+                    list.add((T)privilege);
+                }
+            }
+        }
+        return list;
     }
 
     /* *****************************************************************************************************************
@@ -244,6 +298,7 @@ public class MilvusActuator implements DriverActuator {
      */
 
     public boolean grant(DataRuntime runtime, User user, Privilege ... privileges)  throws Exception {
+        //没有实现 可以通过 给角色授权 给用户赋角色
         return true;
     }
 
@@ -256,6 +311,13 @@ public class MilvusActuator implements DriverActuator {
      */
 
     public boolean grant(DataRuntime runtime, User user, Role ... roles)  throws Exception {
+        for(Role role:roles){
+            client(runtime).grantRole(GrantRoleReq.builder()
+                    .roleName(role.getName())
+                    .userName(user.getName())
+                    .build()
+            );
+        }
         return true;
     }
 
@@ -301,6 +363,7 @@ public class MilvusActuator implements DriverActuator {
      */
 
     public boolean revoke(DataRuntime runtime, User user, Privilege ... privileges) throws Exception {
+        //没有实现 可以通过 给用户删除角色 或给角色删除权限
         return true;
     }
 
@@ -313,6 +376,13 @@ public class MilvusActuator implements DriverActuator {
      */
 
     public boolean revoke(DataRuntime runtime, User user, Role ... roles) throws Exception {
+        for(Role role:roles){
+            client(runtime).revokeRole(RevokeRoleReq.builder()
+                    .roleName(role.getName())
+                    .userName(user.getName())
+                    .build()
+            );
+        }
         return true;
     }
     /**
@@ -324,6 +394,16 @@ public class MilvusActuator implements DriverActuator {
      */
 
     public boolean revoke(DataRuntime runtime, Role role, Privilege ... privileges) throws Exception {
+        for (Privilege privilege:privileges){
+            client(runtime).revokePrivilege(RevokePrivilegeReq.builder()
+                    .dbName(privilege.getCatalogName())
+                    .roleName(role.getName())
+                    .objectType(privilege.getObjectType())
+                    .privilege(privilege.getName())
+                    .objectName(privilege.getObjectName())
+                    .build()
+            );
+        }
         return true;
     }
 

@@ -37,6 +37,12 @@ public class Role extends Metadata<Role> {
     public User getUser() {
         return user;
     }
+    public String getUserName(){
+        if(null != user){
+            return user.getName();
+        }
+        return null;
+    }
 
     @Override
     public void setUser(User user) {

@@ -66,9 +66,23 @@ public class Privilege extends Metadata<Privilege> {
     public Role getRole() {
         return role;
     }
+    public String getRoleName(){
+        if(null != role){
+            return role.getName();
+        }
+        return null;
+    }
+    public String getUserName(){
+        if(null != user){
+            return user.getName();
+        }
+        return null;
+    }
 
-    public void setRole(Role role) {
+
+    public Privilege setRole(Role role) {
         this.role = role;
+        return this;
     }
 
     /* ********************************* field refer ********************************** */
