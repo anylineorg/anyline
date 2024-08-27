@@ -27,7 +27,6 @@ import org.anyline.data.param.ConfigChain;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.RunPrepare;
-import org.anyline.data.prepare.auto.TablePrepare;
 import org.anyline.data.run.Run;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.transaction.TransactionDefine;
@@ -524,6 +523,11 @@ public interface AnylineService<E>{
 		configs.handler(handler);
 		querys(dest, configs, obj, conditions);
 	}
+	default void querys(RunPrepare prepare, DataHandler handler, Object obj, String ... conditions) {
+		ConfigStore configs = new DefaultConfigStore();
+		configs.handler(handler);
+		querys(prepare, configs, obj, conditions);
+	}
 	default DataSet querys(String dest, PageNavi navi, Object obj, String ... conditions) {
 		ConfigStore configs = new DefaultConfigStore();
 		configs.setPageNavi(navi);
@@ -564,6 +568,7 @@ public interface AnylineService<E>{
 		configs.handler(handler);
 		querys(dest, configs, conditions);
 	}
+
 	default DataSet querys(String dest, PageNavi navi, String ... conditions) {
 		return querys(dest, navi, null, conditions);
 	}
@@ -637,6 +642,11 @@ public interface AnylineService<E>{
 		configs.handler(handler);
 		querys(dest, configs, conditions);
 	}
+	default void querys(RunPrepare prepare, DataHandler handler, String ... conditions) {
+		ConfigStore configs = new DefaultConfigStore();
+		configs.handler(handler);
+		querys(prepare, configs, conditions);
+	}
 	default DataSet querys(Table dest, PageNavi navi, String ... conditions) {
 		return querys(dest, navi, null, conditions);
 	}
@@ -650,6 +660,14 @@ public interface AnylineService<E>{
 		configs.setPageNavi(navi);
 		configs.handler(handler);
 		return querys(dest, first, last, configs, conditions);
+	}
+	default DataSet querys(RunPrepare prepare, DataHandler handler, long first, long last, String ... conditions) {
+		DefaultPageNavi navi = new DefaultPageNavi();
+		ConfigStore configs = new DefaultConfigStore();
+		navi.scope(first, last);
+		configs.setPageNavi(navi);
+		configs.handler(handler);
+		return querys(prepare, first, last, configs, conditions);
 	}
 	DataRow query(RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions);
 	DataRow query(String dest, ConfigStore configs, Object obj, String ... conditions);
@@ -954,6 +972,11 @@ public interface AnylineService<E>{
 		configs.handler(handler);
 		maps(dest, configs, obj, conditions);
 	}
+	default void maps(RunPrepare prepare,  DataHandler handler, Object obj, String ... conditions) {
+		ConfigStore configs = new DefaultConfigStore();
+		configs.handler(handler);
+		maps(prepare, configs, obj, conditions);
+	}
 	default List<Map<String, Object>> maps(Table dest, Object obj, String ... conditions) {
 		return maps(dest, new DefaultConfigStore(), obj, conditions);
 	}
@@ -971,6 +994,11 @@ public interface AnylineService<E>{
 		configs.handler(handler);
 		maps(dest, configs, null, conditions);
 	}
+	default void maps(RunPrepare prepare, DataHandler handler, String ... conditions) {
+		ConfigStore configs = new DefaultConfigStore();
+		configs.handler(handler);
+		maps(prepare, configs, null, conditions);
+	}
 	default List<Map<String, Object>> maps(Table dest, PageNavi navi, String ... conditions) {
 		return maps(dest, new DefaultConfigStore().setPageNavi(navi), null, conditions);
 	}
@@ -981,6 +1009,15 @@ public interface AnylineService<E>{
 		ConfigStore configs = new DefaultConfigStore(first, last);
 		configs.handler(handler);
 		return maps(dest, first, last, configs, conditions);
+	}
+	default List<Map<String, Object>> maps(RunPrepare prepare,  DataHandler handler, long first, long last, String ... conditions) {
+		ConfigStore configs = new DefaultConfigStore(first, last);
+		configs.handler(handler);
+		return maps(prepare, first, last, configs, conditions);
+	}
+	default List<Map<String, Object>> maps(RunPrepare prepare,  DataHandler handler, ConfigStore configs, String ... conditions) {
+		configs.handler(handler);
+		return maps(prepare, configs, conditions);
 	}
 
 	/**
