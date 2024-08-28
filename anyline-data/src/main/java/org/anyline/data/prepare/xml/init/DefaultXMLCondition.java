@@ -149,6 +149,15 @@ public class DefaultXMLCondition extends AbstractCondition implements Condition 
 				parseText(next);
 			}else{
 				List<Variable> vars = CommandParser.parseTextVariable(ConfigTable.IS_ENABLE_PLACEHOLDER_REGEX_EXT, text);
+				if(!vars.isEmpty()) {
+					int type = vars.get(0).getType();
+					this.setVariableType(type);
+					if(type == Variable.VAR_TYPE_INDEX){
+						for(Variable var:vars){
+							var.setKey(id);
+						}
+					}
+				}
 				variables.addAll(vars);
 			}
 		}catch (Exception e){
