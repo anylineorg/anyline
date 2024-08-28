@@ -5731,7 +5731,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public StringBuilder position(DataRuntime runtime, StringBuilder builder, Column meta) {
-        if(!ConfigTable.IS_ENABLE_COMMON_POSITION){
+        if(!ConfigTable.IS_ENABLE_COLUMN_POSITION){
             return builder;
         }
         Integer position = meta.getPosition();

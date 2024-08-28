@@ -71,8 +71,10 @@ public class RegularUtil {
 	 */
 	public static synchronized List<List<String>> fetchs(String src, String regx, Regular.MATCH_MODE mode) throws Exception {
 		List<List<String>> result = null;
-		regular = regularList.get(mode);
-		result = regular.fetchs(src, regx);
+		if(null != src) {
+			regular = regularList.get(mode);
+			result = regular.fetchs(src, regx);
+		}
 		return result;
 	}
 	public static List<List<String>> fetchs(String src, String regx) throws Exception {
@@ -91,8 +93,10 @@ public class RegularUtil {
 	}
 	public static synchronized List<String> fetch(String src, String regx, Regular.MATCH_MODE mode) throws Exception {
 		List<String> result = null;
+		if(null != src){
 		regular = regularList.get(mode);
 		result = regular.fetch(src, regx);
+		}
 		return result;
 	}
 	public static List<String> filter(List<String> src, String regx, Regular.MATCH_MODE mode, Regular.FILTER_TYPE type) {

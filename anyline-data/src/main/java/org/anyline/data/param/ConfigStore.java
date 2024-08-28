@@ -1860,6 +1860,7 @@ public interface ConfigStore extends Cloneable{
 	ConfigStore excludes(String ... columns);
 	ConfigStore excludes(List<String> columns);
 	List<String> excludes();
+	Map<String, Column> getExcludes();
 
 	ConfigStore addStaticValue(Object value);
 	List<Object> getStaticValues();

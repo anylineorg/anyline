@@ -50,7 +50,7 @@ public abstract class AbstractCondition implements Condition {
 	protected String id													; 	// ID
 	protected String text												;	// 静态条件
 	protected String test												;	// 判断条件
-	protected List<Variable> variables									;	// 变量
+	protected List<Variable> variables	= new ArrayList<>()				;	// 变量
 	protected boolean setValue = false									;   // 是否赋值过
 	//protected boolean apart = false										;   // 是否需要跟前面的条件 隔离，前面所有条件加到()中
 	protected boolean integrality = true								;   // 是否作为一个整体，不可分割，与其他条件合并时以()包围
@@ -174,7 +174,7 @@ public abstract class AbstractCondition implements Condition {
 
 	@Override
 	public Variable getVariable(String var) {
-		if(null == variables || null == var) {
+		if(null == var) {
 			return null;
 		}
 		for(Variable variable:variables) {

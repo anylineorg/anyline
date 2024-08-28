@@ -44,6 +44,9 @@ public class ConfigBuilder {
             List<String> query = (List<String>)columns.getList("query");
             configs.columns(query);
             List<String> excludes = (List<String>)columns.getList("exclude");
+            if(null == excludes){
+                excludes = (List<String>)columns.getList("excludes");
+            }
             configs.excludes(excludes);
         }
         DataRow navi = row.getRow("navi");

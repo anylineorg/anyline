@@ -1759,7 +1759,19 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
      */
     @Override
     public List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Table query, int types, ConfigStore configs) throws Exception {
-        return super.buildQueryTablesRun(runtime, greedy, query, types, configs);
+        List<Run> runs = new ArrayList<>();
+        Run run = new SimpleRun(runtime, configs);
+        runs.add(run);
+        StringBuilder builder = run.getBuilder();
+        builder.append("SELECT * FROM system.tables");
+        configs.and("TABLE_SCHEMA", query.getSchemaName());
+        configs.like("TABLE_NAME", objectName(runtime, query.getName()));
+        List<String> tps = names(Table.types(types));
+        if(tps.isEmpty()){
+            tps.add("BASE TABLE");
+        }
+        configs.in("TABLE_TYPE", tps);
+        return runs;
     }
 
     /**
@@ -1769,7 +1781,23 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
      */
     @Override
     public MetadataFieldRefer initTableFieldRefer() {
-        return super.initTableFieldRefer();
+        MetadataFieldRefer refer = new MetadataFieldRefer(Table.class);
+        refer.map(Table.FIELD_NAME,  "TABLE_NAME");
+        refer.map(Table.FIELD_SCHEMA, "TABLE_SCHEMA");
+        refer.map(Table.FIELD_TYPE, "TABLE_TYPE");
+        refer.map(Table.FIELD_ENGINE, "ENGINE");
+        refer.map(Table.FIELD_OBJECT_ID, "OBJECT_ID");
+        refer.map(Table.FIELD_DATA_ROWS, "TABLE_ROWS");
+        refer.map(Table.FIELD_COLLATE, "TABLE_COLLATION");
+        refer.map(Table.FIELD_DATA_LENGTH, "DATA_LENGTH");
+        refer.map(Table.FIELD_DATA_FREE, "DATA_FREE");
+        refer.map(Table.FIELD_INCREMENT, "AUTO_INCREMENT");
+        refer.map(Table.FIELD_INDEX_LENGTH, "INDEX_LENGTH");
+        refer.map(Table.FIELD_CREATE_TIME, "CREATE_TIME");
+        refer.map(Table.FIELD_UPDATE_TIME, "UPDATE_TIME");
+        refer.map(Table.FIELD_TEMPORARY, "IS_TEMPORARY");
+        refer.map(Table.FIELD_COMMENT, "TABLE_COMMENT");
+        return refer;
     }
 
     /**

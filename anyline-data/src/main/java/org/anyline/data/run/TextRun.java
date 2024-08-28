@@ -227,7 +227,7 @@ public class TextRun extends AbstractRun implements Run {
 	@Override 
 	public Run setConditionValue(EMPTY_VALUE_SWITCH swt, Compare compare, String condition, String variable, Object value) {
 		/*不指定变量名时, 根据condition为SQL主体变量赋值*/ 
-		if(null != variables && BasicUtil.isEmpty(variable)) {
+		if(!variables.isEmpty() && BasicUtil.isEmpty(variable)) {
 			for(Variable v:variables) {
 				if(null == v) {
 					continue;
@@ -317,7 +317,7 @@ public class TextRun extends AbstractRun implements Run {
 	 * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
 	 */
 	public Run addCondition(String condition, String variable, Object value) {
-		if(null != variables && BasicUtil.isEmpty(variable)) {
+		if(!variables.isEmpty() && BasicUtil.isEmpty(variable)) {
 			for(Variable v:variables) {
 				if(null == v) {
 					continue;
@@ -358,7 +358,7 @@ public class TextRun extends AbstractRun implements Run {
 		return this; 
 	}
 	public Variable getVariable(String key) {
-		if(null == key || null == variables) {
+		if(null == key) {
 			return null;
 		}
 		for(Variable var:variables) {
@@ -374,7 +374,7 @@ public class TextRun extends AbstractRun implements Run {
 
 	public List<Variable> getVariables(String key) {
 		List<Variable> list = new ArrayList<>();
-		if(null == key || null == variables) {
+		if(null == key) {
 			return list;
 		}
 		for(Variable var:variables) {
@@ -387,5 +387,11 @@ public class TextRun extends AbstractRun implements Run {
 		}
 		return list;
 	}
-
+	protected boolean supportSqlVarPlaceholderRegexExt = true;
+	public boolean supportSqlVarPlaceholderRegexExt(){
+		return supportSqlVarPlaceholderRegexExt;
+	}
+	public void supportSqlVarPlaceholderRegexExt(boolean supportSqlVarPlaceholderRegexExt){
+		this.supportSqlVarPlaceholderRegexExt = supportSqlVarPlaceholderRegexExt;
+	}
 }

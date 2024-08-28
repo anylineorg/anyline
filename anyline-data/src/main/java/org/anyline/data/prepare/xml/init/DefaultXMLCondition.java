@@ -19,15 +19,16 @@ package org.anyline.data.prepare.xml.init;
 import org.anyline.data.prepare.Condition;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.prepare.Variable;
+import org.anyline.data.prepare.VariableBlock;
 import org.anyline.data.prepare.init.AbstractCondition;
-import org.anyline.data.prepare.init.DefaultVariable;
+import org.anyline.data.prepare.init.DefaultVariableBlock;
 import org.anyline.data.run.RunValue;
 import org.anyline.data.runtime.DataRuntime;
+import org.anyline.data.util.CommandParser;
 import org.anyline.entity.Compare;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
-import org.anyline.util.SQLUtil;
 import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
 
@@ -42,6 +43,7 @@ import java.util.List;
  */ 
 public class DefaultXMLCondition extends AbstractCondition implements Condition {
 	private String text;
+	protected List<VariableBlock> blocks = new ArrayList<>();
 	 
 	 
 	public DefaultXMLCondition clone() {
@@ -51,17 +53,17 @@ public class DefaultXMLCondition extends AbstractCondition implements Condition 
 		}catch (Exception e) {
 			clone = new DefaultXMLCondition();
 		}
-		if(null != variables) {
-			List<Variable> cVariables = new ArrayList<>();
-			for(Variable var:variables) {
-				if(null == var) {
-					continue;
-				} 
-				cVariables.add(var.clone());
+		//变量实时解析 因为需要与block共享变量
+		/*List<Variable> cVariables = new ArrayList<>();
+		for(Variable var:variables) {
+			if(null == var) {
+				continue;
 			}
-			clone.setSwt(swt);
-			clone.variables = cVariables; 
-		} 
+			cVariables.add(var.clone());
+		}
+		clone.variables = cVariables;*/
+
+		clone.setSwt(swt);
 		return clone; 
 	} 
 	public DefaultXMLCondition() {
@@ -73,16 +75,13 @@ public class DefaultXMLCondition extends AbstractCondition implements Condition 
 		this.text = text; 
 		setVariableType(Condition.VARIABLE_PLACEHOLDER_TYPE_INDEX); 
 		if(!isStatic) {
-			parseText(); 
+			parseText();
 		}else{
 			setVariableType(Condition.VARIABLE_PLACEHOLDER_TYPE_NONE);
 		} 
 	} 
 	public void init() {
-		setActive(false); 
-		if(null == variables) {
-			variables = new ArrayList<Variable>();
-		} 
+		setActive(false);
 		for(Variable variable:variables) {
 			variable.init(); 
 		} 
@@ -94,7 +93,7 @@ public class DefaultXMLCondition extends AbstractCondition implements Condition 
 	 */ 
 	public void setValue(String variable, Object values) {
 		runValuesMap.put(variable, values); 
-		if(null == variable || null == variables) {
+		if(null == variable) {
 			return; 
 		} 
 		for(Variable v:variables) {
@@ -109,76 +108,49 @@ public class DefaultXMLCondition extends AbstractCondition implements Condition 
 				} 
 			} 
 		} 
-	} 
- 
-	/** 
-	 * 解析变量
-	 */ 
+	}
 	private void parseText() {
+		parseText(text);
+	}
+	private void parseText(String text) {
 		try{
-			List<List<String>> keys = null;
-			// AND CD = {CD} || CD LIKE '%{CD}%' || CD IN ({CD}) || CD = ${CD} || CD = #{CD}
-			//{CD} 用来兼容旧版本，新版本中不要用，避免与josn格式冲突
-			keys = RegularUtil.fetchs(text, RunPrepare.SQL_VAR_PLACEHOLDER_REGEX, Regular.MATCH_MODE.CONTAIN);
-			if(keys.isEmpty() && ConfigTable.IS_ENABLE_PLACEHOLDER_REGEX_EXT) {
-				// AND CD = :CD || CD LIKE ':CD' || CD IN (:CD) || CD = ::CD
-				keys = RegularUtil.fetchs(text, RunPrepare.SQL_VAR_PLACEHOLDER_REGEX_EXT, Regular.MATCH_MODE.CONTAIN);
-			} 
-			if(BasicUtil.isNotEmpty(true,keys)) {
-				setVariableType(VARIABLE_PLACEHOLDER_TYPE_KEY); 
-				int varType = Variable.VAR_TYPE_INDEX;
-				Compare compare = Compare.EQUAL;
-				for(int i=0; i<keys.size(); i++) {
-					List<String> keyItem = keys.get(i); 
-					String prefix = keyItem.get(1).trim();		// 前缀 空或#或$
-					String fullKey = keyItem.get(2).trim();		// 完整KEY :CD ::CD {CD} ${CD} #{CD} 8.5之后不用{CD}避免与json冲突
-					String typeChar = keyItem.get(3);	// null || "'" || ")" 
-					// String key = fullKey.replace(":","").replace(" {","").replace("}","").replace("$","");
-					if(fullKey.startsWith("::") || fullKey.startsWith("${")) {
-						//替换
-						// AND CD = ::CD  AND CD = ${CD}
-						varType = Variable.VAR_TYPE_REPLACE;
-					}else if(BasicUtil.isNotEmpty(typeChar) && ("'".equals(typeChar) || "%".equals(typeChar))) {
-						//符合占位  但需要替换 如在''内
-						// AND CD = ':CD' 
-						varType = Variable.VAR_TYPE_KEY_REPLACE;
-					}else{
-						// AND CD = :CD 
-						varType = Variable.VAR_TYPE_KEY;
-					}
-
-					if(prefix.equalsIgnoreCase("IN") || prefix.equalsIgnoreCase("IN(")) {
-						compare = Compare.IN;
-					}
-					Variable var = new DefaultVariable();
-					var.setFullKey(fullKey);
-					var.setType(varType); 
-					var.setCompare(compare); 
-					addVariable(var); 
-				} 
+			List<List<String>> boxes = RegularUtil.fetchs(text, RunPrepare.SQL_VAR_BOX_REGEX, Regular.MATCH_MODE.CONTAIN);
+			if(!boxes.isEmpty()){
+				String box = boxes.get(0).get(0);
+				String prev = RegularUtil.cut(text, RegularUtil.TAG_BEGIN, box);
+				List<Variable> vars = CommandParser.parseTextVariable(ConfigTable.IS_ENABLE_PLACEHOLDER_REGEX_EXT, prev);
+				variables.addAll(vars);
+				VariableBlock block = parseTextVarBox(text, box);
+				if(null != block){
+					blocks.add(block);
+					variables.addAll(block.variables());
+				}
+				String next = RegularUtil.cut(text, box, RegularUtil.TAG_END);
+				parseText(next);
 			}else{
-				int qty = SQLUtil.countPlaceholder(text);
-				if(qty > 0) {
-					// 按下标区分变量 
-					this.setVariableType(VARIABLE_PLACEHOLDER_TYPE_INDEX); 
-					int varType = Variable.VAR_TYPE_INDEX;
-					for(int i=0; i<qty; i++) {
-						Variable var = new DefaultVariable();
-						var.setType(varType); 
-						var.setKey(id); 
-						addVariable(var); 
-					} 
-				} 
-			} 
-		}catch(Exception e) {
-			e.printStackTrace(); 
-		} 
-	} 
+				List<Variable> vars = CommandParser.parseTextVariable(ConfigTable.IS_ENABLE_PLACEHOLDER_REGEX_EXT, text);
+				variables.addAll(vars);
+			}
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+	}
+	private VariableBlock parseTextVarBox(String text, String box) {
+		// ${ AND ID = ::ID}
+		// ${AND CODE=:CODE }
+		if(null != box){
+			box = box.trim();
+			String body = box.substring(2, box.length()-1);
+			List<Variable> vars = CommandParser.parseTextVariable(ConfigTable.IS_ENABLE_PLACEHOLDER_REGEX_EXT, body);
+			VariableBlock block = new DefaultVariableBlock(box, body);
+			block.variables(vars);
+			return block;
+		}
+		return null;
+	}
+
  
 	private void addVariable(Variable variable) {
-		if(null == variables) {
-			variables = new ArrayList<Variable>();
-		} 
 		variables.add(variable); 
 	} 
  
@@ -196,11 +168,26 @@ public class DefaultXMLCondition extends AbstractCondition implements Condition 
 
 	@Override
 	public String getRunText(int lvl, String prefix, DataRuntime runtime, boolean placeholder) {
-		String result = text; 
-		runValues = new ArrayList<>();
-		if(null == variables) {
-			return result;
+		return getRunText(lvl, prefix, runtime, placeholder, text);
+	}
+	public String getRunText(int lvl, String prefix, DataRuntime runtime, boolean placeholder, String text) {
+		for (VariableBlock block : blocks) {
+			String box = block.box();
+			String body = block.body();
+			boolean active = block.active();
+			if (!active) {
+				text = text.replace(box, "");
+				variables.removeAll(block.variables());
+			} else {
+				text = text.replace(box, body);
+			}
 		}
+		text = replaceVariable(lvl, prefix, runtime, placeholder, text);
+		return text;
+	}
+	public String replaceVariable(int lvl, String prefix, DataRuntime runtime, boolean placeholder, String text) {
+		String result = text;
+		runValues = new ArrayList<>();
 		for(Variable var: variables) {
 			if(null == var) {
 				continue;
@@ -297,17 +284,16 @@ public class DefaultXMLCondition extends AbstractCondition implements Condition 
 		if(!super.isValid()) {
 			return false;
 		}
-		if(null != variables) {
-			for(Variable variable:variables) {
-				if(null == variable) {
-					continue;
-				}
-				List<Object> values = variable.getValues();
-				if(swt == Compare.EMPTY_VALUE_SWITCH.BREAK && BasicUtil.isEmpty(true, values)) {
-					return false;
-				}
+		for(Variable variable:variables) {
+			if(null == variable) {
+				continue;
+			}
+			List<Object> values = variable.getValues();
+			if(swt == Compare.EMPTY_VALUE_SWITCH.BREAK && BasicUtil.isEmpty(true, values)) {
+				return false;
 			}
 		}
+
 		return true;
 	}
 

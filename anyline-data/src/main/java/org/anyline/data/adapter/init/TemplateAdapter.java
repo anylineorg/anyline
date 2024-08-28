@@ -824,16 +824,6 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
         return super.fillQueryContent(runtime, run);
     }
 
-    /**
-     *
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param builder 有可能合个run合成一个 所以提供一个共用builder
-     * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
-     */
-    @Override
-    protected Run fillQueryContent(DataRuntime runtime, StringBuilder builder, XMLRun run) {
-        return super.fillQueryContent(runtime, builder, run);
-    }
 
     /**
      * select[命令合成-子流程] <br/>
@@ -1203,16 +1193,6 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
         return super.execute(runtime, random, configs, run);
     }
 
-    /**
-     * query [命令合成]<br/>
-     * 替换占位符
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
-     */
-    @Override
-    protected void replaceVariable(DataRuntime runtime, TextRun run) {
-        super.replaceVariable(runtime, run);
-    }
 
     /* *****************************************************************************************************************
      *                                                     DELETE

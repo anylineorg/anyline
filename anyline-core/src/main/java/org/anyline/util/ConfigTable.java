@@ -102,7 +102,7 @@ public class ConfigTable {
 	public static int HTTP_PARAM_ENCODE									= 0				;   // http参数是否解码0:自动识别 1:确认编码 -1:确认未编码
 	public static boolean IS_MULTIPLE_SERVICE							= true			;	// 如果有多数据源为每个数据源生成独立的service
 	public static boolean IS_ENABLE_COMMON_JDBC_ADAPTER					= false			;   // 是否开启通用的jdbc adapter(仅支持部分标准SQL)遇到没有实现adapter的数据库时可以开启
-	public static boolean IS_ENABLE_COMMON_POSITION						= true			;	// 是否开启通用的position(仅支持部分标准SQL)遇到没有实现adapter的数据库时可以开启
+	public static boolean IS_ENABLE_COLUMN_POSITION						= true			;	// 是否开启通用的position(仅支持部分标准SQL)遇到没有实现adapter的数据库时可以开启
 	public static boolean IS_AUTO_CONVERT_BYTES							= true			;   // 否将数据库中与Java bytes[]对应的类型自动转换如Point > double[](返回DataRow时受此开关景程)
 	public static boolean IS_AUTO_SPLIT_ARRAY							= true			;	// 更新数据库时，是把自动把数组/集合类型拆分
 	public static boolean IS_METADATA_IGNORE_CASE						= true			;   // 查询元数据时忽略大小写

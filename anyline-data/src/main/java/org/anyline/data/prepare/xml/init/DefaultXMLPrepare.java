@@ -45,16 +45,13 @@ public class DefaultXMLPrepare extends AbstractRunPrepare implements XMLPrepare 
 	/*解析XML*/ 
 	private String id;
 	private boolean strict = true;	// 严格格式, true:不允许添加XML定义之外 的临时查询条件
-	private List<Variable> variables;
+	private List<Variable> variables = new ArrayList<>();
 	 
 	public DefaultXMLPrepare() {
 		super(); 
 		chain = new DefaultXMLConditionChain();
 	} 
 	public RunPrepare init() {
-		if(null == variables) {
-			variables = new ArrayList<Variable>();
-		} 
 		for(Variable variable:variables) {
 			if(null == variable) {
 				continue;
@@ -79,16 +76,16 @@ public class DefaultXMLPrepare extends AbstractRunPrepare implements XMLPrepare 
 			clone =new DefaultXMLPrepare();
 		}
 		clone.chain = chain.clone();
-		if(null != variables) {
+		if(!variables.isEmpty()) {
 			List<Variable> cVariables = new ArrayList<>();
 			for(Variable var:variables) {
 				if(null == var) {
 					continue;
-				} 
+				}
 				cVariables.add(var.clone());
-			} 
-			clone.variables = cVariables; 
-		} 
+			}
+			clone.variables = cVariables;
+		}
 		return clone; 
 	} 
 	/** 
@@ -181,9 +178,6 @@ public class DefaultXMLPrepare extends AbstractRunPrepare implements XMLPrepare 
 	 * @param var  var
 	 */ 
 	private void addVariable(Variable var) {
-		if(null == variables) {
-			variables = new ArrayList<Variable>();
-		}
 		variables.add(var); 
 	} 
  
@@ -204,7 +198,7 @@ public class DefaultXMLPrepare extends AbstractRunPrepare implements XMLPrepare 
 	 */ 
 	public RunPrepare setConditionValue(String condition, String variable, Object value) {
 		/*不指定变量名时,根据condition为SQL主体变量赋值*/ 
-		if(null != variables && BasicUtil.isEmpty(variable)) {
+		if(BasicUtil.isEmpty(variable)) {
 			for(Variable v:variables) {
 				if(v.getKey().equalsIgnoreCase(condition)) {
 					v.setValue(value); 

@@ -3608,8 +3608,12 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         //character varying
         //TODO timestamp without time zone
         //TODO 子类型  geometry(Polygon,4326) geometry(Polygon) geography(Polygon,4326)
+        //TODO CHARACTER VARYING
         if(null != type && type.contains(" ")) {
-            type = row.getString("UDT_NAME","DATA_TYPE","TYPENAME","DATA_TYPE_NAME");
+           String tmp = row.getString("UDT_NAME","DATA_TYPE","TYPENAME","DATA_TYPE_NAME");
+           if(null != tmp){
+               type = tmp;
+           }
         }
         meta.setOriginType(BasicUtil.evl(type, meta.getTypeName()));
         TypeMetadata typeMetadata = typeMetadata(runtime, meta);

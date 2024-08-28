@@ -313,8 +313,10 @@ public class JDBCUtil {
     public static DataRow row(DriverAdapter adapter, boolean system, DataRuntime runtime, LinkedHashMap<String, Column> metadatas, ConfigStore configs, ResultSet rs) {
         DataRow row = null;
         KeyAdapter.KEY_CASE kc = null;
+        Map<String, Column> excludes = new HashMap<>();
         if(null != configs) {
             kc = configs.keyCase();
+            excludes = configs.getExcludes();
         }
         if(null == kc) {
             if(!ConfigTable.IS_UPPER_KEY && !ConfigTable.IS_LOWER_KEY) {
@@ -347,6 +349,9 @@ public class JDBCUtil {
                         if(null == name || name.equalsIgnoreCase("PAGE_ROW_NUMBER_")) {
                             continue;
                         }
+                        if(excludes.containsKey(name.toUpperCase())){
+                            continue;
+                        }
                         Column column = metadatas.get(name) ;
                         column = column(adapter, runtime, column, rsmd, i);
                         metadatas.put(name.toUpperCase(), column);
@@ -356,6 +361,9 @@ public class JDBCUtil {
             for (int i = 1; i <= qty; i++) {
                 String name = rsmd.getColumnLabel(i);
                 if(null == name || name.equalsIgnoreCase("PAGE_ROW_NUMBER_")) {
+                    continue;
+                }
+                if(excludes.containsKey(name.toUpperCase())){
                     continue;
                 }
                 try {
@@ -391,6 +399,10 @@ public class JDBCUtil {
 
     public static LinkedHashMap<String, Object> map(DriverAdapter adapter, boolean system, DataRuntime runtime, LinkedHashMap<String, Column> metadatas, ConfigStore configs, ResultSet rs) {
         LinkedHashMap<String, Object> map = new LinkedHashMap<>();
+        Map<String, Column> excludes = new HashMap<>();
+        if(null != configs){
+            excludes = configs.getExcludes();
+        }
         try {
             ResultSetMetaData rsmd = rs.getMetaData();
             int qty = rsmd.getColumnCount();
@@ -405,6 +417,9 @@ public class JDBCUtil {
                         if (null == name || name.equalsIgnoreCase("PAGE_ROW_NUMBER_")) {
                             continue;
                         }
+                        if(excludes.containsKey(name.toUpperCase())){
+                            continue;
+                        }
                         Column column = metadatas.get(name);
                         column = column(adapter, runtime, (Column) column, rsmd, i);
                         metadatas.put(name.toUpperCase(), column);
@@ -414,6 +429,9 @@ public class JDBCUtil {
             for (int i = 1; i <= qty; i++) {
                 String name = rsmd.getColumnLabel(i);
                 if(null == name || name.equalsIgnoreCase("PAGE_ROW_NUMBER_")) {
+                    continue;
+                }
+                if(excludes.containsKey(name.toUpperCase())){
                     continue;
                 }
                 try {

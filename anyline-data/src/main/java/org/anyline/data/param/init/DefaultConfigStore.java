@@ -48,8 +48,8 @@ public class DefaultConfigStore implements ConfigStore {
 	protected OrderStore orders										; // 排序依据
 	protected GroupStore groups;
 	protected String having;
-	protected List<String> columns 			= new ArrayList<>()		; // 查询或插入或更新的列
-	protected List<String> excludes 		= new ArrayList<>()		; // 不查询或插入或更新的列
+	protected LinkedHashMap<String, Column> columns 		= new LinkedHashMap<>()		; // 查询或插入或更新的列
+	protected LinkedHashMap<String, Column> excludes 		= new LinkedHashMap<>()		; // 不查询或插入或更新的列
 	protected List<Object> values									; // 保存values后续parse用到
 	protected boolean cascade				= false					; // 是否开启级联操作(Graph库中用到)
 	protected boolean supportKeyHolder		= true					; // 是否支持返回自增主键值
@@ -75,7 +75,7 @@ public class DefaultConfigStore implements ConfigStore {
 		DataRow row = new OriginRow();
 		DataRow columns = new OriginRow();
 		columns.put("query", this.columns);
-		columns.put("exclude", excludes);
+		columns.put("excludes", excludes);
 		if(empty || !excludes.isEmpty() || !this.columns.isEmpty()) {
 			row.put("columns", columns);
 		}
@@ -795,6 +795,9 @@ public class DefaultConfigStore implements ConfigStore {
 		if(null != columns){
 			this.columns(configs.columns());
 		}
+		if(null != excludes){
+			this.excludes(configs.excludes());
+		}
 		chain = list;
 		return this;
 	}
@@ -1501,47 +1504,56 @@ public class DefaultConfigStore implements ConfigStore {
 	public ConfigStore columns(String ... columns) {
 		List<String> list = SQLUtil.columns(columns);
         for(String column:list) {
-            this.columns.add(column);
+			this.columns.put(column.toUpperCase(), new Column(column));
         }
 		return this;
 	}
 	public ConfigStore columns(List<String> columns) {
 		if(null != columns) {
-			this.columns.addAll(columns);
+			for(String column:columns){
+				this.columns.put(column.toUpperCase(), new Column(column));
+			}
 		}
 		return this;
 	}
 	public List<String> columns() {
+		List<String> columns = new ArrayList<>();
+		for(Column column:this.columns.values()){
+			columns.add(column.getName());
+		}
 		return columns;
 	}
 
 	public LinkedHashMap<String, Column> getColumns(){
-		LinkedHashMap<String, Column> map = new LinkedHashMap();
-		if(null != columns){
-			for(String column:columns){
-				map.put(column.toUpperCase(), new Column(column));
-			}
-		}
-		return map;
+		return columns;
 	}
 	public ConfigStore excludes(String ... columns) {
 		if(null != columns) {
 			for(String column:columns) {
-				this.excludes.add(column);
+				excludes.put(column.toUpperCase(), new Column(column));
 			}
 		}
 		return this;
 	}
 	public ConfigStore excludes(List<String> columns) {
 		if(null != columns) {
-			this.excludes.addAll(columns);
+			for(String column:columns) {
+				excludes.put(column.toUpperCase(), new Column(column));
+			}
 		}
 		return this;
 	}
 	public List<String> excludes() {
-		return excludes;
+		List<String> columns = new ArrayList<>();
+		for(Column column:this.excludes.values()){
+			columns.add(column.getName());
+		}
+		return columns;
 	}
 
+	public Map<String, Column> getExcludes(){
+		return excludes;
+	}
 	/**
 	 * 级联(如删除点相关的边)
 	 * @param cascade  是否开启
@@ -1745,16 +1757,12 @@ public class DefaultConfigStore implements ConfigStore {
 		}
 		clone.chain =this.chain.clone();
 		if(null != columns){
-			clone.columns = new ArrayList<>();
-			for(String column:columns){
-				clone.columns.add(column);
-			}
+			clone.columns = new LinkedHashMap<>();
+			clone.columns.putAll(columns);
 		}
 		if(null != excludes){
-			clone.excludes = new ArrayList<>();
-			for(String column:excludes){
-				clone.excludes.add(column);
-			}
+			clone.excludes =new LinkedHashMap<>();
+			clone.excludes.putAll(excludes);
 		}
 		if(null != keyHolders){
 			clone.keyHolders = new ArrayList<>();

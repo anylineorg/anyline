@@ -26,22 +26,22 @@ import java.util.List;
  * 
  */ 
 public interface XMLPrepare extends RunPrepare{
-	public RunPrepare init() ;
+	RunPrepare init() ;
  
 	/** 
 	 * 设置SQL 主体文本 
 	 * @param text  text
 	 * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
 	 */ 
-	public RunPrepare setText(String text) ;
-	public String getText(); 
+	RunPrepare setText(String text) ;
+	String getText();
  
 	/** 
 	 * 添加静态文本查询条件 
 	 * @param condition condition
 	 * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
 	 */ 
-	public RunPrepare addCondition(String condition) ;
+	RunPrepare addCondition(String condition) ;
  
 	/* *********************************************************************************************************************************** 
 	 *  
@@ -55,11 +55,11 @@ public interface XMLPrepare extends RunPrepare{
 	 * @param value  值
 	 * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
 	 */ 
-	public RunPrepare setConditionValue(String condition, String variable, Object value);
+	RunPrepare setConditionValue(String condition, String variable, Object value);
 	/* *********************************************************************************************************************************** 
 	 *  
 	 * 														生成SQL 
 	 *  
 	 * ***********************************************************************************************************************************/ 
-	public List<Variable> getSQLVariables();
+	List<Variable> getSQLVariables();
 } 

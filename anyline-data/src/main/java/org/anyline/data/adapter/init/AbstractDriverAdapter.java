@@ -38,10 +38,10 @@ import org.anyline.data.prepare.auto.init.DefaultTablePrepare;
 import org.anyline.data.prepare.auto.init.DefaultTextPrepare;
 import org.anyline.data.prepare.auto.init.VirtualTablePrepare;
 import org.anyline.data.prepare.init.DefaultVariable;
-import org.anyline.data.prepare.init.DefaultVariableBlock;
 import org.anyline.data.prepare.xml.XMLPrepare;
 import org.anyline.data.run.*;
 import org.anyline.data.runtime.DataRuntime;
+import org.anyline.data.util.CommandParser;
 import org.anyline.data.util.DataSourceUtil;
 import org.anyline.entity.*;
 import org.anyline.entity.authorize.Privilege;
@@ -2591,6 +2591,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      */
     @Override
     public void parseText(DataRuntime runtime, TextRun run) {
+        /*run.supportSqlVarPlaceholderRegexExt(supportSqlVarPlaceholderRegexExt(runtime));
+        CommandParser.parseText(runtime, run);*/
         RunPrepare prepare = run.getPrepare();
         if(null == prepare){
             return;
@@ -2599,152 +2601,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         if(null == text) {
             return;
         }
-        parseText(runtime, run, text);
+        CommandParser.parseText(runtime, run, text);
     }
 
-    /**
-     * 解析文本
-     * @param runtime
-     * @param run
-     * @param text
-     */
-    public void parseText(DataRuntime runtime, TextRun run, String text) {
-        try{
-            //${ AND ID = ::ID}  ${AND CODE=:CODE }
-            List<List<String>> boxs = RegularUtil.fetchs(text, RunPrepare.SQL_VAR_BOX_REGEX, Regular.MATCH_MODE.CONTAIN);
-            if(!boxs.isEmpty()){
-                String box = boxs.get(0).get(0);
-                String prev = RegularUtil.cut(text, RegularUtil.TAG_BEGIN, box);
-                parseTextVariable(runtime, run, prev);
-                parseTextVarBox(runtime, run, text, box);
-                String next = RegularUtil.cut(text, box, RegularUtil.TAG_END);
-                parseText(runtime, run, next);
-            }else{
-                parseTextVariable(runtime, run, text);
-            }
 
-        }catch(Exception e) {
-            log.error("parse text exception:", e);
-        }
-    }
-    public List<Variable> parseTextVariable(DataRuntime runtime, TextRun run, String text) {
-        List<Variable> vars = new ArrayList<>();
-        try{
-            //${ID = :ID}
-            int type = 0;
-            // AND CD = {CD} || CD LIKE '%{CD}%' || CD IN ({CD}) || CD = ${CD} || CD = #{CD}
-            //{CD} 用来兼容旧版本，新版本中不要用，避免与josn格式冲突
-            List<List<String>> keys = RegularUtil.fetchs(text, RunPrepare.SQL_VAR_PLACEHOLDER_REGEX, Regular.MATCH_MODE.CONTAIN);
-            type = Variable.KEY_TYPE_SIGN_V2 ;
-
-            //::KEY 格式的占位符解析,在PG环境中会与 ::INT8 格式冲突 需要禁用
-            if(keys.isEmpty() && ConfigStore.IS_ENABLE_PLACEHOLDER_REGEX_EXT(run.getConfigs()) && supportSqlVarPlaceholderRegexExt(runtime)) {
-                // AND CD = :CD || CD LIKE ':CD' || CD IN (:CD) || CD = ::CD
-                keys = RegularUtil.fetchs(text, RunPrepare.SQL_VAR_PLACEHOLDER_REGEX_EXT, Regular.MATCH_MODE.CONTAIN);
-                type = Variable.KEY_TYPE_SIGN_V1 ;
-            }
-            if(BasicUtil.isNotEmpty(true, keys)) {
-                // AND CD = :CD
-                for(int i=0; i<keys.size();i++) {
-                    List<String> keyItem = keys.get(i);
-
-                    Variable var = SyntaxHelper.buildVariable(type, keyItem.get(0), keyItem.get(1), keyItem.get(2), keyItem.get(3));
-                    if(null == var) {
-                        continue;
-                    }
-                    var.setSwt(Compare.EMPTY_VALUE_SWITCH.NULL);
-                    run.addVariable(var);
-                    vars.add(var);
-                }// end for
-            }else{
-                // AND CD = ?
-                int qty = SQLUtil.countPlaceholder(text);
-                if(qty > 0) {
-                    for(int i=0; i<qty; i++) {
-                        Variable var = new DefaultVariable();
-                        var.setType(Variable.VAR_TYPE_INDEX);
-                        var.setSwt(Compare.EMPTY_VALUE_SWITCH.NULL);
-                        run.addVariable(var);
-                        vars.add(var);
-                    }
-                }
-            }
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        return vars;
-    }
-    public void parseTextVarBox(DataRuntime runtime, TextRun run, String text, String box) {
-        // ${ AND ID = ::ID}
-        // ${AND CODE=:CODE }
-        if(null != box){
-            box = box.trim();
-            String body = box.substring(2, box.length()-1);
-            List<Variable> vars = parseTextVariable(runtime, run, body);
-            VariableBlock block = new DefaultVariableBlock(box, body);
-            block.variables(vars);
-            run.addVariableBlock(block);
-        }
-    }
-    /**
-     * 解析文本中的占位符
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
-     */
-    public void parseText_bak(DataRuntime runtime, TextRun run) {
-        RunPrepare prepare = run.getPrepare();
-        if(null == prepare){
-            return;
-        }
-        String text = prepare.getText();
-        if(null == text) {
-            return;
-        }
-        try{
-            int varType = -1;
-            Compare compare = Compare.EQUAL;
-            List<List<String>> keys = null;
-            //${ID = :ID}
-            int type = 0;
-            // AND CD = {CD} || CD LIKE '%{CD}%' || CD IN ({CD}) || CD = ${CD} || CD = #{CD}
-            //{CD} 用来兼容旧版本，新版本中不要用，避免与josn格式冲突
-            keys = RegularUtil.fetchs(text, RunPrepare.SQL_VAR_PLACEHOLDER_REGEX, Regular.MATCH_MODE.CONTAIN);
-            type = Variable.KEY_TYPE_SIGN_V2 ;
-
-            //::KEY 格式的占位符解析,在PG环境中会与 ::INT8 格式冲突 需要禁用
-            if(keys.isEmpty() && ConfigStore.IS_ENABLE_PLACEHOLDER_REGEX_EXT(run.getConfigs()) && supportSqlVarPlaceholderRegexExt(runtime)) {
-                // AND CD = :CD || CD LIKE ':CD' || CD IN (:CD) || CD = ::CD
-                keys = RegularUtil.fetchs(text, RunPrepare.SQL_VAR_PLACEHOLDER_REGEX_EXT, Regular.MATCH_MODE.CONTAIN);
-                type = Variable.KEY_TYPE_SIGN_V1 ;
-            }
-            if(BasicUtil.isNotEmpty(true, keys)) {
-                // AND CD = :CD
-                for(int i=0; i<keys.size();i++) {
-                    List<String> keyItem = keys.get(i);
-
-                    Variable var = SyntaxHelper.buildVariable(type, keyItem.get(0), keyItem.get(1), keyItem.get(2), keyItem.get(3));
-                    if(null == var) {
-                        continue;
-                    }
-                    var.setSwt(Compare.EMPTY_VALUE_SWITCH.NULL);
-                    run.addVariable(var);
-                }// end for
-            }else{
-                // AND CD = ?
-                int qty = SQLUtil.countPlaceholder(text);
-                if(qty > 0) {
-                    for(int i=0; i<qty; i++) {
-                        Variable var = new DefaultVariable();
-                        var.setType(Variable.VAR_TYPE_INDEX);
-                        var.setSwt(Compare.EMPTY_VALUE_SWITCH.NULL);
-                        run.addVariable(var);
-                    }
-                }
-            }
-        }catch(Exception e) {
-            log.error("parse text exception:", e);
-        }
-    }
     private void likes(DataRuntime runtime, Table table, ConfigStore configs) {
         if(null == table || null == configs) {
             return;
@@ -2828,16 +2688,19 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         return fillQueryContent(runtime, run.getBuilder(), run);
     }
 
+
     /**
      *
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param builder 有可能合个run合成一个 所以提供一个共用builder
-     * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
+     * @param run TextRun
      */
     protected Run fillQueryContent(DataRuntime runtime, StringBuilder builder, XMLRun run) {
-        if(log.isDebugEnabled()) {
-            log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 fillQueryContent(DataRuntime runtime, XMLRun run)", 37));
-        }
+        String text = CommandParser.replaceVariable(runtime, run, run.getVariableBlocks(), run.getVariables(), run.getText());
+        run.getBuilder().append(text);
+        run.appendCondition(true);
+        run.appendGroup();
+        run.checkValid();
         return run;
     }
 
@@ -2858,7 +2721,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @param run TextRun
      */
     protected Run fillQueryContent(DataRuntime runtime, StringBuilder builder, TextRun run) {
-        replaceVariable(runtime, run);
+        String text = CommandParser.replaceVariable(runtime, run, run.getVariableBlocks(), run.getVariables(), run.getText());
+        run.getBuilder().append(text);
         run.appendCondition(true);
         run.appendGroup();
         // appendOrderStore();
@@ -3576,7 +3440,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @param run XMLRun
      */
     protected void fillExecuteContent(DataRuntime runtime, TextRun run) {
-        replaceVariable(runtime, run);
+        String text = CommandParser.replaceVariable(runtime, run, run.getVariableBlocks(), run.getVariables(), run.getText());
+        run.getBuilder().append(text);
         run.appendCondition(true);
         run.appendGroup();
         run.checkValid();
@@ -3691,132 +3556,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         return result;
     }
 
-    /**
-     * query [命令合成]<br/>
-     * 替换占位符
-     * 先执行 ${AND ID = :ID}
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
-     */
-    protected void replaceVariable(DataRuntime runtime, TextRun run) {
-        StringBuilder builder = run.getBuilder();
-        List<Variable> variables = run.getVariables();
-        String text = run.getText();
-
-        List<VariableBlock> blocks = run.getVariableBlocks();
-        if(null != blocks) {
-            for (VariableBlock block : blocks) {
-                String box = block.box();
-                String body = block.body();
-                boolean active = block.active();
-                if (!active) {
-                    text = text.replace(box, "");
-                    run.getVariables().removeAll(block.variables());
-                } else {
-                    text = text.replace(box, body);
-                }
-            }
-        }
-        text = replaceVariable(runtime, run, variables, text);
-
-        if(null != text) {
-            builder.append(text);
-        }
-    }
-    protected String replaceVariable(DataRuntime runtime, TextRun run,  List<Variable> variables, String text) {
-        if(null != text && supportPlaceholder() && null != variables) {
-            for(Variable var:variables) {
-                if(null == var) {
-                    continue;
-                }
-                if(var.getType() == Variable.VAR_TYPE_REPLACE) {
-                    // CD = ::CD
-                    List<Object> values = var.getValues();
-                    String value = null;
-                    if(BasicUtil.isNotEmpty(true, values)) {
-                        if(var.getCompare() == Compare.IN) {
-                            value = BeanUtil.concat(BeanUtil.wrap(values, "'"));
-                        }else {
-                            value = values.get(0).toString();
-                        }
-                    }
-                    if(null != value) {
-                        text = text.replace(var.getFullKey(), value);
-                    }else{
-                        text = text.replace(var.getFullKey(), "NULL");
-                    }
-                }
-            }
-            for(Variable var:variables) {
-                if(null == var) {
-                    continue;
-                }
-                if(var.getType() == Variable.VAR_TYPE_KEY_REPLACE) {
-                    // CD = ':CD'
-                    List<Object> values = var.getValues();
-                    String value = null;
-                    if(BasicUtil.isNotEmpty(true, values)) {
-                        if(var.getCompare() == Compare.IN) {
-                            value = BeanUtil.concat(BeanUtil.wrap(values, "'"));
-                        }else {
-                            value = values.get(0).toString();
-                        }
-                    }
-                    if(null != value) {
-                        text = text.replace(var.getFullKey(), value);
-                    }else{
-                        text = text.replace(var.getFullKey(), "");
-                    }
-                }
-            }
-            for(Variable var:variables) {
-                if(null == var) {
-                    continue;
-                }
-                if(var.getType() == Variable.VAR_TYPE_KEY) {
-                    // CD = :CD
-                    List<Object> varValues = var.getValues();
-                    if(run.getBatch() >1) {//批量执行时在下一步提供值
-                        text = text.replace(var.getFullKey(), "?");
-                    }else if(BasicUtil.isNotEmpty(true, varValues)) {
-                        if(var.getCompare() == Compare.IN) {
-                            // 多个值IN
-                            String replaceDst = "";
-                            for(Object tmp:varValues) {
-                                replaceDst += " ?";
-                            }
-                            addRunValue(runtime, run, Compare.IN, new Column(var.getKey()), varValues);
-                            replaceDst = replaceDst.trim().replace(" ",",");
-                            text = text.replace(var.getFullKey(), replaceDst);
-                        }else{
-                            // 单个值
-                            text = text.replace(var.getFullKey(), "?");
-                            addRunValue(runtime, run, Compare.EQUAL, new Column(var.getKey()), varValues.get(0));
-                        }
-                    }else{
-                        //没有提供参数值
-                        text = text.replace(var.getFullKey(), "NULL");
-                    }
-                }
-            }
-            // 添加其他变量值
-            for(Variable var:variables) {
-                if(null == var) {
-                    continue;
-                }
-                // CD = ?
-                if(var.getType() == Variable.VAR_TYPE_INDEX) {
-                    List<Object> varValues = var.getValues();
-                    Object value = null;
-                    if(BasicUtil.isNotEmpty(true, varValues)) {
-                        value = varValues.get(0);
-                    }
-                    addRunValue(runtime, run, Compare.EQUAL, new Column(var.getKey()), value);
-                }
-            }
-        }
-        return text;
-    }
     /* *****************************************************************************************************************
      *                                                     DELETE
      * -----------------------------------------------------------------------------------------------------------------
@@ -4354,7 +4093,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 					}
 				}
 				if(databases.isEmpty()){
-					databases = getActuator().databases(this, runtime);
+					databases = getActuator().databases(this, runtime, query);
 				}
 			}catch (Exception e) {
 				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
@@ -4403,7 +4142,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 					}
 				}
 				if(databases.isEmpty()){
-					List<T> list = getActuator().databases(this, runtime);
+					List<T> list = getActuator().databases(this, runtime, query);
 					for(T item:list){
 						databases.put(item.getName().toUpperCase(), item);
 					}

@@ -58,8 +58,8 @@ public abstract class AbstractRun implements Run {
 	protected OrderStore orderStore; 
 	protected GroupStore groupStore;
 	protected String having;
-	protected List<Variable> variables;
-	protected List<VariableBlock> blocks;
+	protected List<Variable> variables = new ArrayList<>();
+	protected List<VariableBlock> blocks = new ArrayList<>();
 
 	protected Object value;
 	protected TypeMetadata valueType;
@@ -744,17 +744,16 @@ public abstract class AbstractRun implements Run {
 	}
 
 	public Run addVariable(Variable var) {
-		if(null == variables) {
-			variables = new ArrayList<>();
-		}
 		variables.add(var);
 		return this;
 	}
 
+	public Run addVariable(List<Variable> vars) {
+		variables.addAll(vars);
+		return this;
+	}
+
 	public Run addVariableBlock(VariableBlock block) {
-		if(null == blocks) {
-			blocks = new ArrayList<>();
-		}
 		blocks.add(block);
 		return this;
 	}
@@ -1050,7 +1049,7 @@ public abstract class AbstractRun implements Run {
 	}
 
 	public Variable getVariable(String var) {
-		if(null == variables || null == var) {
+		if(null == var) {
 			return null;
 		}
 		for(Variable variable:variables) {

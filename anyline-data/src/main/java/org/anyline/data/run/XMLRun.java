@@ -36,7 +36,7 @@ import org.anyline.util.DefaultOgnlMemberAccess;
 
 import java.util.*;
 
-public class XMLRun extends AbstractRun implements Run {
+public class XMLRun extends TextRun implements Run {
 	private List<String> conditions; 
 	private List<String> staticConditions; 
 	public XMLRun() {
@@ -50,12 +50,11 @@ public class XMLRun extends AbstractRun implements Run {
 		this.prepare = prepare;
 		this.table = prepare.getTable();
 		setText(prepare.getText());
-		copyParam(); 
+		copyParam();
 		return this; 
 	}
 
 	public void init() {
-		super.init(); 
 		if(null != configs) {
 			for(Config conf: configs.getConfigChain().getConfigs()) {
 				setConditionValue(conf.getSwt(), conf.getCompare(), conf.getPrefix(), conf.getVariable(), conf.getValues());
@@ -97,11 +96,10 @@ public class XMLRun extends AbstractRun implements Run {
 				}else{
 					con.setActive(true);
 					List<Variable> vars = con.getVariables();
-					if(null != vars) {
-						for(Variable var:vars) {
-							var.setValue(false, null);
-						}
+					for(Variable var:vars) {
+						var.setValue(false, null);
 					}
+
 				}
 			} 
 		} 
@@ -115,7 +113,7 @@ public class XMLRun extends AbstractRun implements Run {
 			} 
 		} 
 		checkTest(); 
-		parseText();
+		//parseText();
 	}
 
 	public boolean checkValid() {
@@ -260,23 +258,20 @@ public class XMLRun extends AbstractRun implements Run {
 	} 
  
 	private void copyParam() {
-		// 复制XML RunPrepare 变量 
-		List<Variable> xmlVars = prepare.getSQLVariables();
+		// 复制XML RunPrepare 变量 (改成运行时添加)
+		/*List<Variable> xmlVars = prepare.getSQLVariables();
 		if(null != xmlVars) {
-			if(null == this.variables) {
-				variables = new ArrayList<Variable>();
-			} 
 			for(Variable var:xmlVars) {
 				if(null == var) {
 					continue; 
 				} 
 				try{
-					variables.add((Variable)var.clone());
+					variables.add(var.clone());
 				}catch(Exception e) {
 					log.error("copay param exception:", e);
 				} 
 			} 
-		} 
+		} */
 		// 复制XML RunPrepare 查询条件 
 		ConditionChain xmlConditionChain = prepare.getConditionChain();
 		if(null != xmlConditionChain) {
@@ -318,7 +313,7 @@ public class XMLRun extends AbstractRun implements Run {
 			} 
 		}
 	} 
-	private void appendGroup() {
+	public void appendGroup() {
 		if(null != groupStore) {
 			builder.append(groupStore.getRunText(delimiterFr+delimiterTo));
 		} 
@@ -373,8 +368,8 @@ public class XMLRun extends AbstractRun implements Run {
 	} 
 	/** 
 	 * 拼接查询条件
-	 */ 
-	private void appendCondition(boolean placeholder) {
+	 */
+	public void appendCondition(boolean placeholder) {
 		if(null == conditionChain || !conditionChain.isActive()) {
 			return; 
 		} 
@@ -393,7 +388,7 @@ public class XMLRun extends AbstractRun implements Run {
 //			} 
 //		} 
 	} 
-	private void appendStaticCondition() {
+	public void appendStaticCondition() {
 		if(!endWithWhere(builder.toString())) {
 			builder.append(" WHERE 1=1");
 		} 
@@ -426,7 +421,7 @@ public class XMLRun extends AbstractRun implements Run {
 		return null; 
 	}
 
-	private List<Variable> getVariables(String key) {
+	public List<Variable> getVariables(String key) {
 		List<Variable> vars = new ArrayList<Variable>();
 		if(null != variables) {
 			for(Variable v:variables) {
