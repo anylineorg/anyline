@@ -34,10 +34,8 @@ import org.anyline.metadata.type.TypeMetadata;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
 @Component("anyline.data.jdbc.adapter.h2")
 public class H2Adapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	
@@ -1669,7 +1667,12 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 */
 	@Override
 	public List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Table query, int types, ConfigStore configs) throws Exception {
-		return super.buildQueryTablesRun(runtime, greedy, query, types, configs);
+		List<Run> runs = new ArrayList<>();
+		SimpleRun run = new SimpleRun(runtime);
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
+		builder.append("SHOW TABLES");
+		return runs;
 	}
 
 	/**
@@ -1679,6 +1682,9 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 */
 	@Override
 	public MetadataFieldRefer initTableFieldRefer() {
+		MetadataFieldRefer refer = new MetadataFieldRefer(Table.class);
+		refer.map(Table.FIELD_NAME, "TABLE_NAME");
+		refer.map(Table.FIELD_SCHEMA,"TABLE_SCHEMA");
 		return super.initTableFieldRefer();
 	}
 	/**
@@ -2244,7 +2250,12 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 */
 	@Override
 	public List<Run> buildQueryColumnsRun(DataRuntime runtime,  boolean metadata, Column query, ConfigStore configs) throws Exception {
-		return super.buildQueryColumnsRun(runtime, metadata, query, configs);
+		List<Run> runs = new ArrayList<>();
+		SimpleRun run = new SimpleRun(runtime);
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
+		builder.append("SHOW COLUMNS FROM ").append(query.getTableName());
+		return runs;
 	}
 
 	/**
@@ -2267,7 +2278,14 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 */
 	@Override
 	public MetadataFieldRefer initColumnFieldRefer() {
-		return super.initColumnFieldRefer();
+		MetadataFieldRefer refer = new MetadataFieldRefer(Column.class);
+		refer.map(Column.FIELD_NAME, "FIELD");
+		refer.map(Column.FIELD_TYPE, "TYPE");
+		refer.map(Column.FIELD_NULLABLE, "NULL");
+		refer.map(Column.FIELD_DEFAULT_VALUE, "DEFAULT");
+		refer.map(Column.FIELD_PRIMARY_CHECK, "KEY");
+		refer.map(Column.FIELD_PRIMARY_CHECK_VALUE, "PRI");
+		return refer;
 	}
 	/**
 	 * column[结果集封装]<br/>
