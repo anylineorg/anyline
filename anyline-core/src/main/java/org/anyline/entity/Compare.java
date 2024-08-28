@@ -208,6 +208,66 @@ public enum Compare {
             return 1;
         }
     },
+
+    START_WITH_IGNORE_CASE(51, "ilike ?%",""," ILIKE ")		{
+        public int getCode() {return 51;}
+        public String formula() {return " ILIKE ";}
+        public String getName() {return "ilike ?%";}
+        public boolean compare(Object value, Object target) {
+            if(null == target || null == value) {
+                return false;
+            }
+            return value.toString().toUpperCase().startsWith(target.toString().toUpperCase());
+        }
+        public int valueCount() {
+            return 1;
+        }
+    },
+    LIKE_SUFFIX_IGNORE_CASE(52, "ilike %?",""," ILIKE ")		{
+        public boolean compare(Object value, Object target) {
+            if(null == target || null == value) {
+                return false;
+            }
+            return value.toString().toUpperCase().endsWith(target.toString().toUpperCase());
+        }
+        public int valueCount() {
+            return 1;
+        }
+    },
+    END_WITH_IGNORE_CASE(52, "ilike %?",""," ILIKE ")		{
+        public boolean compare(Object value, Object target) {
+            if(null == target || null == value) {
+                return false;
+            }
+            return value.toString().toUpperCase().endsWith(target.toString().toUpperCase());
+        }
+        public int valueCount() {
+            return 1;
+        }
+    },
+    //忽略大小写
+    LIKE_IGNORE_CASE(50, "ilike %?%",""," ILIKE ")			{
+        public boolean compare(Object value, Object target) {
+            if(null == target || null == value) {
+                return false;
+            }
+            return value.toString().toUpperCase().contains(target.toString().toUpperCase());
+        }
+        public int valueCount() {
+            return 1;
+        }
+    },
+    LIKE_PREFIX_IGNORE_CASE(51, "ilike ?%",""," ILIKE ")		{
+        public boolean compare(Object value, Object target) {
+            if(null == target || null == value) {
+                return false;
+            }
+            return value.toString().toUpperCase().startsWith(target.toString().toUpperCase());
+        }
+        public int valueCount() {
+            return 1;
+        }
+    },
     /**
      * 搜索引擎 匹配 多列时 生成 MULTI_MATCH
      */
@@ -240,6 +300,17 @@ public enum Compare {
      * 这个专用来实现所有列LIKE
      */
     LIKES(59, "like %?%",""," LIKE ")			{
+        public boolean compare(Object value, Object target) {
+            if(null == target || null == value) {
+                return false;
+            }
+            return value.toString().toUpperCase().contains(target.toString().toUpperCase());
+        }
+        public int valueCount() {
+            return 1;
+        }
+    },
+    LIKES_IGNORE_CASE(59, "ilike %?%",""," ILIKE ")			{
         public boolean compare(Object value, Object target) {
             if(null == target || null == value) {
                 return false;

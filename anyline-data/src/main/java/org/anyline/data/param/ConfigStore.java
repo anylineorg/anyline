@@ -743,6 +743,30 @@ public interface ConfigStore extends Cloneable{
 		return and(Compare.LIKE, var, value);
 	}
 
+
+	default ConfigStore likesIgnoreCase(String value) {
+		return likesIgnoreCase(EMPTY_VALUE_SWITCH.IGNORE, value);
+	}
+	default ConfigStore likesIgnoreCase(EMPTY_VALUE_SWITCH swt, String value) {
+		return and(swt, Compare.LIKES_IGNORE_CASE, null, value);
+	}
+	default ConfigStore likeIgnoreCase(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue) {
+		return and(swt, Compare.LIKE_IGNORE_CASE, id, var, value, overCondition, overValue);
+	}
+	default ConfigStore likeIgnoreCase(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue) {
+		return and(swt, Compare.LIKE_IGNORE_CASE, var, value, overCondition, overValue);
+	}
+	default ConfigStore likeIgnoreCase(String id, String var, Object value, boolean overCondition, boolean overValue) {
+		return and(Compare.LIKE_IGNORE_CASE, id, var, value, overCondition, overValue);
+	}
+	default ConfigStore likeIgnoreCase(String var, Object value, boolean overCondition, boolean overValue) {
+		return and(Compare.LIKE_IGNORE_CASE, var, value, overCondition, overValue);
+	}
+	default ConfigStore likeIgnoreCase(String var, Object value) {
+		return and(Compare.LIKE_IGNORE_CASE, var, value);
+	}
+
+
 	default ConfigStore match(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(swt, Compare.MATCH, id, var, value, overCondition, overValue);
 	}
@@ -775,6 +799,23 @@ public interface ConfigStore extends Cloneable{
 		return and(Compare.START_WITH, var, value);
 	}
 
+
+	default ConfigStore likePrefixIgnoreCase(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue) {
+		return and(swt, Compare.START_WITH_IGNORE_CASE, id, var, value, overCondition, overValue);
+	}
+	default ConfigStore likePrefixIgnoreCase(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue) {
+		return and(swt, Compare.START_WITH_IGNORE_CASE, var, value, overCondition, overValue);
+	}
+	default ConfigStore likePrefixIgnoreCase(String id, String var, Object value, boolean overCondition, boolean overValue) {
+		return and(Compare.START_WITH_IGNORE_CASE, id, var, value, overCondition, overValue);
+	}
+	default ConfigStore likePrefixIgnoreCase(String var, Object value, boolean overCondition, boolean overValue) {
+		return and(Compare.START_WITH_IGNORE_CASE, var, value, overCondition, overValue);
+	}
+	default ConfigStore likePrefixIgnoreCase(String var, Object value) {
+		return and(Compare.START_WITH_IGNORE_CASE, var, value);
+	}
+
 	default ConfigStore startWith(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(swt, Compare.START_WITH, id, var, value, overCondition, overValue);
 	}
@@ -791,6 +832,23 @@ public interface ConfigStore extends Cloneable{
 		return and(Compare.START_WITH, var, value);
 	}
 
+	default ConfigStore startWithIgnoreCase(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue) {
+		return and(swt, Compare.START_WITH_IGNORE_CASE, id, var, value, overCondition, overValue);
+	}
+	default ConfigStore startWithIgnoreCase(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue) {
+		return and(swt, Compare.START_WITH_IGNORE_CASE, var, value, overCondition, overValue);
+	}
+	default ConfigStore startWithIgnoreCase(String id, String var, Object value, boolean overCondition, boolean overValue) {
+		return and(Compare.START_WITH_IGNORE_CASE, id, var, value, overCondition, overValue);
+	}
+	default ConfigStore startWithIgnoreCase(String var, Object value, boolean overCondition, boolean overValue) {
+		return and(Compare.START_WITH_IGNORE_CASE, var, value, overCondition, overValue);
+	}
+	default ConfigStore startWithIgnoreCase(String var, Object value) {
+		return and(Compare.START_WITH_IGNORE_CASE, var, value);
+	}
+
+
 	default ConfigStore likeSuffix(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(swt, Compare.END_WITH, id, var, value, overCondition, overValue);
 	}
@@ -805,6 +863,23 @@ public interface ConfigStore extends Cloneable{
 	}
 	default ConfigStore likeSuffix(String var, Object value) {
 		return and(Compare.END_WITH, var, value);
+	}
+
+
+	default ConfigStore likeSuffixIgnoreCase(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue) {
+		return and(swt, Compare.END_WITH_IGNORE_CASE, id, var, value, overCondition, overValue);
+	}
+	default ConfigStore likeSuffixIgnoreCase(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue) {
+		return and(swt, Compare.END_WITH_IGNORE_CASE, var, value, overCondition, overValue);
+	}
+	default ConfigStore likeSuffixIgnoreCase(String id, String var, Object value, boolean overCondition, boolean overValue) {
+		return and(Compare.END_WITH_IGNORE_CASE, id, var, value, overCondition, overValue);
+	}
+	default ConfigStore likeSuffixIgnoreCase(String var, Object value, boolean overCondition, boolean overValue) {
+		return and(Compare.END_WITH_IGNORE_CASE, var, value, overCondition, overValue);
+	}
+	default ConfigStore likeSuffixIgnoreCase(String var, Object value) {
+		return and(Compare.END_WITH_IGNORE_CASE, var, value);
 	}
 
 	default ConfigStore endWith(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue) {
@@ -823,6 +898,21 @@ public interface ConfigStore extends Cloneable{
 		return and(Compare.END_WITH, var, value);
 	}
 
+	default ConfigStore endWithIgnoreCase(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue) {
+		return and(swt, Compare.END_WITH_IGNORE_CASE, id, var, value, overCondition, overValue);
+	}
+	default ConfigStore endWithIgnoreCase(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue) {
+		return and(swt, Compare.END_WITH_IGNORE_CASE, var, value, overCondition, overValue);
+	}
+	default ConfigStore endWithIgnoreCase(String id, String var, Object value, boolean overCondition, boolean overValue) {
+		return and(Compare.END_WITH_IGNORE_CASE, id, var, value, overCondition, overValue);
+	}
+	default ConfigStore endWithIgnoreCase(String var, Object value, boolean overCondition, boolean overValue) {
+		return and(Compare.END_WITH_IGNORE_CASE, var, value, overCondition, overValue);
+	}
+	default ConfigStore endWithIgnoreCase(String var, Object value) {
+		return and(Compare.END_WITH_IGNORE_CASE, var, value);
+	}
 	default ConfigStore regex(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(swt, Compare.REGEX, id, var, value, overCondition, overValue);
 	}
