@@ -308,11 +308,15 @@ public class Metadata<T extends Metadata> {
         this.schema = schema;
         return (T)this;
     }
-
     public User getUser() {
         return user;
     }
-
+    public String getUserName(){
+        if(null != user){
+            return user.getName();
+        }
+        return null;
+    }
     public T setUser(User user) {
         this.user = user;
         return (T)this;

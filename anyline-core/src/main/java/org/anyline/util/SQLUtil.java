@@ -301,6 +301,12 @@ public class SQLUtil {
 		}
 		return condition;
 	}
+
+	/**
+	 * 拆分 column,主要识别引号括号内的分隔符
+	 * @param columns column
+	 * @return List
+	 */
 	public static List<String> columns(String ... columns){
 		List<String> list = new ArrayList<>();
 		if(null != columns){

@@ -33,21 +33,7 @@ public class Role extends Metadata<Role> {
         this.name = name;
     }
 
-    @Override
-    public User getUser() {
-        return user;
-    }
-    public String getUserName(){
-        if(null != user){
-            return user.getName();
-        }
-        return null;
-    }
 
-    @Override
-    public void setUser(User user) {
-        this.user = user;
-    }
     /* ********************************* field refer ********************************** */
     public static final String FIELD_USER = "USER";
 }
