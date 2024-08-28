@@ -1224,17 +1224,6 @@ public class MilvusAdapter extends AbstractDriverAdapter {
         return super.execute(runtime, random, configs, run);
     }
 
-    /**
-     * query [命令合成]<br/>
-     * 替换占位符
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
-     */
-    @Override
-    protected void replaceVariable(DataRuntime runtime, TextRun run) {
-        super.replaceVariable(runtime, run);
-    }
-
     /* *****************************************************************************************************************
      *                                                     DELETE
      * -----------------------------------------------------------------------------------------------------------------

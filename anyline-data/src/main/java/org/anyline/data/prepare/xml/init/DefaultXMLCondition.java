@@ -33,9 +33,11 @@ import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
- 
- 
+import java.util.Map;
+
+
 /** 
  * 通过XML定义的参数 
  * @author zh 
@@ -53,15 +55,33 @@ public class DefaultXMLCondition extends AbstractCondition implements Condition 
 		}catch (Exception e) {
 			clone = new DefaultXMLCondition();
 		}
-		//变量实时解析 因为需要与block共享变量
-		/*List<Variable> cVariables = new ArrayList<>();
+		clone.text = text;
+		List<Variable> cVariables = new ArrayList<>();
+		Map<String, Variable> vmap = new HashMap<>();
 		for(Variable var:variables) {
 			if(null == var) {
 				continue;
 			}
-			cVariables.add(var.clone());
+			Variable cvar = var.clone();
+			vmap.put(cvar.getKeyPrefix()+"_"+cvar.getKey(), cvar);
 		}
-		clone.variables = cVariables;*/
+		cVariables.addAll(vmap.values());
+		clone.variables = cVariables;
+		//block要与condition共享var block不成立时根据block.vars 删除 conditions.vars
+		List<VariableBlock> cblocks = new ArrayList<>();
+		for(VariableBlock block:blocks) {
+			if(null == block) {
+				continue;
+			}
+			VariableBlock cblock = block.clone();
+			List<Variable> bvars = block.variables();
+			for(Variable var:bvars){
+				Variable cvar = vmap.get(var.getKeyPrefix()+"_"+var.getKey());
+				cblock.variables().add(cvar);
+			}
+			cblocks.add(cblock);
+		}
+		clone.blocks = cblocks;
 
 		clone.setSwt(swt);
 		return clone; 

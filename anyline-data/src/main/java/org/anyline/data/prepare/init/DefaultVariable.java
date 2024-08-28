@@ -63,7 +63,16 @@ public class DefaultVariable implements Variable {
 		}catch (Exception e) {
 			clone = new DefaultVariable();
 		}
-		if(null != values) {
+		clone.box = box;
+		clone.key = key;
+		clone.fullKey = fullKey;
+		clone.type = type;
+		clone.signType = signType;
+		clone.keyPrefix = keyPrefix;
+		clone.compare = compare;
+		clone.setValue = false;
+		clone.swt = swt;
+		/*if(null != values) {
 			List<Object> cValues = new ArrayList<Object>(); 
 			for(Object value:values) {
 				Object tmp = value; 
@@ -71,7 +80,7 @@ public class DefaultVariable implements Variable {
 			} 
 			clone.values = cValues;
 			clone.setValue = this.setValue;
-		} 
+		} */
 		return clone; 
 	}
 

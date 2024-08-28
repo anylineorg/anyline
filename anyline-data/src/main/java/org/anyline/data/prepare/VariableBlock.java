@@ -32,4 +32,5 @@ public interface VariableBlock {
     VariableBlock add(Variable ... variables);
 
     boolean active();
+    VariableBlock clone();
 }

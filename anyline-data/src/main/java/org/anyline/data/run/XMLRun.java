@@ -285,7 +285,7 @@ public class XMLRun extends TextRun implements Run {
 						continue; 
 					} 
 					try{
-						this.conditionChain.addCondition((Condition)condition.clone()); 
+						this.conditionChain.addCondition(condition.clone());
 					}catch(Exception e) {
 						log.error("copy param exception:", e);
 					} 

@@ -89,4 +89,12 @@ public class DefaultVariableBlock implements VariableBlock {
         }
         return true;
     }
+    public VariableBlock clone(){
+        DefaultVariableBlock clone = new DefaultVariableBlock();
+        clone.box = box;
+        clone.body = body;
+        clone.variables = new ArrayList<>();
+        //变量不要clone 必须与condition共享
+        return clone;
+    }
 }
