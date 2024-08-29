@@ -16,9 +16,10 @@
 
 package org.anyline.data.jdbc.adapter.init;
 
+import org.anyline.data.adapter.CommonAdapter;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.util.ConfigTable;
-public class CommonJDBCAdapter extends AbstractJDBCAdapter {
+public class CommonJDBCAdapter extends AbstractJDBCAdapter implements CommonAdapter {
     /**
      * 验证运行环境与当前适配器是否匹配<br/>
      * 默认不连接只根据连接参数<br/>

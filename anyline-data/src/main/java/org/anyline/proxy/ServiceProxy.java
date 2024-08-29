@@ -19,6 +19,7 @@ package org.anyline.proxy;
 import org.anyline.adapter.EnvironmentWorker;
 import org.anyline.dao.AnylineDao;
 import org.anyline.dao.init.DefaultDao;
+import org.anyline.data.adapter.CommonAdapter;
 import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.adapter.DriverAdapterHolder;
 import org.anyline.data.datasource.DataSourceHolder;
@@ -31,7 +32,10 @@ import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.run.Run;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.runtime.init.AbstractRuntime;
-import org.anyline.entity.*;
+import org.anyline.entity.DataRow;
+import org.anyline.entity.DataSet;
+import org.anyline.entity.EntitySet;
+import org.anyline.entity.PageNavi;
 import org.anyline.metadata.*;
 import org.anyline.metadata.differ.MetadataDiffer;
 import org.anyline.metadata.type.DatabaseType;
@@ -103,7 +107,7 @@ public class ServiceProxy {
         DriverAdapter adapter = DriverAdapterHolder.getAdapter(type);
         if(null == adapter && type.url().contains("jdbc:") && ConfigTable.IS_ENABLE_COMMON_JDBC_ADAPTER) {
             try {
-                adapter = (DriverAdapter) ConfigTable.environment().getBean("anyline.data.jdbc.adapter.common");
+                adapter = ConfigTable.environment().getBean(CommonAdapter.class);
             }catch (Exception e) {
                 e.printStackTrace();
             }
