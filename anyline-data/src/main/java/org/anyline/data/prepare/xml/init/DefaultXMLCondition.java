@@ -57,13 +57,13 @@ public class DefaultXMLCondition extends AbstractCondition implements Condition 
 		}
 		clone.text = text;
 		List<Variable> cVariables = new ArrayList<>();
-		Map<String, Variable> vmap = new HashMap<>();
+		Map<Variable, Variable> vmap = new HashMap<>();
 		for(Variable var:variables) {
 			if(null == var) {
 				continue;
 			}
 			Variable cvar = var.clone();
-			vmap.put(cvar.getKeyPrefix()+"_"+cvar.getKey(), cvar);
+			vmap.put(var, cvar);
 		}
 		cVariables.addAll(vmap.values());
 		clone.variables = cVariables;
@@ -76,7 +76,7 @@ public class DefaultXMLCondition extends AbstractCondition implements Condition 
 			VariableBlock cblock = block.clone();
 			List<Variable> bvars = block.variables();
 			for(Variable var:bvars){
-				Variable cvar = vmap.get(var.getKeyPrefix()+"_"+var.getKey());
+				Variable cvar = vmap.get(var);
 				cblock.variables().add(cvar);
 			}
 			cblocks.add(cblock);
@@ -138,7 +138,7 @@ public class DefaultXMLCondition extends AbstractCondition implements Condition 
 			if(!boxes.isEmpty()){
 				String box = boxes.get(0).get(0);
 				String prev = RegularUtil.cut(text, RegularUtil.TAG_BEGIN, box);
-				List<Variable> vars = CommandParser.parseTextVariable(ConfigTable.IS_ENABLE_PLACEHOLDER_REGEX_EXT, prev);
+				List<Variable> vars = CommandParser.parseTextVariable(ConfigTable.IS_ENABLE_PLACEHOLDER_REGEX_EXT, prev, Compare.EMPTY_VALUE_SWITCH.IGNORE);
 				variables.addAll(vars);
 				VariableBlock block = parseTextVarBox(text, box);
 				if(null != block){
@@ -148,7 +148,7 @@ public class DefaultXMLCondition extends AbstractCondition implements Condition 
 				String next = RegularUtil.cut(text, box, RegularUtil.TAG_END);
 				parseText(next);
 			}else{
-				List<Variable> vars = CommandParser.parseTextVariable(ConfigTable.IS_ENABLE_PLACEHOLDER_REGEX_EXT, text);
+				List<Variable> vars = CommandParser.parseTextVariable(ConfigTable.IS_ENABLE_PLACEHOLDER_REGEX_EXT, text, Compare.EMPTY_VALUE_SWITCH.IGNORE);
 				if(!vars.isEmpty()) {
 					int type = vars.get(0).getType();
 					this.setVariableType(type);
@@ -170,7 +170,7 @@ public class DefaultXMLCondition extends AbstractCondition implements Condition 
 		if(null != box){
 			box = box.trim();
 			String body = box.substring(2, box.length()-1);
-			List<Variable> vars = CommandParser.parseTextVariable(ConfigTable.IS_ENABLE_PLACEHOLDER_REGEX_EXT, body);
+			List<Variable> vars = CommandParser.parseTextVariable(ConfigTable.IS_ENABLE_PLACEHOLDER_REGEX_EXT, body, Compare.EMPTY_VALUE_SWITCH.IGNORE);
 			VariableBlock block = new DefaultVariableBlock(box, body);
 			block.variables(vars);
 			return block;
@@ -324,6 +324,9 @@ public class DefaultXMLCondition extends AbstractCondition implements Condition 
 		}
 
 		return true;
+	}
+	public String toString(){
+		return text;
 	}
 
 }

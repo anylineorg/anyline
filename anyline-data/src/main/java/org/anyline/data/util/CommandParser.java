@@ -75,7 +75,7 @@ public class CommandParser {
             if(!boxes.isEmpty()){
                 String box = boxes.get(0).get(0);
                 String prev = RegularUtil.cut(text, RegularUtil.TAG_BEGIN, box);
-                List<Variable> vars = parseTextVariable(supportSqlVarPlaceholderRegexExt,  prev);
+                List<Variable> vars = parseTextVariable(supportSqlVarPlaceholderRegexExt,  prev, Compare.EMPTY_VALUE_SWITCH.NULL);
                 run.addVariable(vars);
                 VariableBlock block = parseTextVarBox(runtime, run.getConfigs(), text, box);
                 if(null != block) {
@@ -85,7 +85,7 @@ public class CommandParser {
                 String next = RegularUtil.cut(text, box, RegularUtil.TAG_END);
                 parseText(runtime, run, next);
             }else{
-                List<Variable> vars = parseTextVariable(supportSqlVarPlaceholderRegexExt, text);
+                List<Variable> vars = parseTextVariable(supportSqlVarPlaceholderRegexExt, text, Compare.EMPTY_VALUE_SWITCH.NULL);
                 run.addVariable(vars);
             }
 
@@ -93,7 +93,7 @@ public class CommandParser {
             e.printStackTrace();
         }
     }
-    public static List<Variable> parseTextVariable(boolean supportSqlVarPlaceholderRegexExt, String text) {
+    public static List<Variable> parseTextVariable(boolean supportSqlVarPlaceholderRegexExt, String text, Compare.EMPTY_VALUE_SWITCH emptyValueSwitch) {
         List<Variable> vars = new ArrayList<>();
         if(null == text){
             return vars;
@@ -121,7 +121,7 @@ public class CommandParser {
                     if(null == var) {
                         continue;
                     }
-                    var.setSwt(Compare.EMPTY_VALUE_SWITCH.NULL);
+                    var.setSwt(emptyValueSwitch);
                     vars.add(var);
                 }// end for
             }else{
@@ -131,7 +131,7 @@ public class CommandParser {
                     for(int i=0; i<qty; i++) {
                         Variable var = new DefaultVariable();
                         var.setType(Variable.VAR_TYPE_INDEX);
-                        var.setSwt(Compare.EMPTY_VALUE_SWITCH.NULL);
+                        var.setSwt(emptyValueSwitch);
                         vars.add(var);
                     }
                 }
@@ -148,7 +148,7 @@ public class CommandParser {
             box = box.trim();
             String body = box.substring(2, box.length()-1);
             boolean supportSqlVarPlaceholderRegexExt = ConfigStore.IS_ENABLE_PLACEHOLDER_REGEX_EXT(configs) && runtime.getAdapter().supportSqlVarPlaceholderRegexExt(runtime);
-            List<Variable> vars = parseTextVariable(supportSqlVarPlaceholderRegexExt, body);
+            List<Variable> vars = parseTextVariable(supportSqlVarPlaceholderRegexExt, body, Compare.EMPTY_VALUE_SWITCH.IGNORE);
             //run.addVariable(vars);
             VariableBlock block = new DefaultVariableBlock(box, body);
             block.variables(vars);

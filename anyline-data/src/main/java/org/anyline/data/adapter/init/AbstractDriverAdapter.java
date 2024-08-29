@@ -5378,7 +5378,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                     for (T item : list) {
                         String name = item.getName(greedy) + "";
                         if (RegularUtil.match(name.toUpperCase(), origin.toUpperCase(), Regular.MATCH_MODE.MATCH)) {
-                            if (equals(catalog, item.getCatalog()) && equals(schema, item.getSchema())) {
+                            if (
+                                (BasicUtil.isEmpty(catalog) || equals(catalog, item.getCatalog())) //catalog 无要求 或 相等
+                                && (BasicUtil.isEmpty(schema) || equals(schema, item.getSchema()))
+                            ) {
                                 tmp.add(item);
                             }
                         }

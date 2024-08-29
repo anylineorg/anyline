@@ -28,6 +28,7 @@ import java.util.*;
 public class Metadata<T extends Metadata> {
 
     public enum TYPE implements Type{
+        ALL(32767),
         TABLE(1)            , // 继承子表、父表、分区表、主表、点类型、边类型
         VIEW(2)             , // 视图
         COLUMN(4)           , // 列

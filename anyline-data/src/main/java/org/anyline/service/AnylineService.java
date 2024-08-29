@@ -2071,7 +2071,7 @@ public interface AnylineService<E>{
 		default <T extends Table> List<T> tables(boolean greedy, Catalog catalog, Schema schema, String name, int types, boolean struct, ConfigStore configs) {
 			int structs = 0;
 			if(struct) {
-				structs = 32767;
+				structs = Metadata.TYPE.ALL.value();
 			}
 			return tables(greedy, catalog, schema, name, types, structs, configs);
 		}
@@ -2101,6 +2101,10 @@ public interface AnylineService<E>{
 		}
 
 		<T extends Table> LinkedHashMap<String, T> tables(Table query, int types, int struct, ConfigStore configs);
+
+		default <T extends Table> LinkedHashMap<String, T> tables(Table query) {
+			return tables(query, Table.TYPE.NORMAL.value, Metadata.TYPE.ALL.value(), new DefaultConfigStore());
+		}
 		default <T extends Table> LinkedHashMap<String, T> tables(Catalog catalog, Schema schema, String name, int types, int struct, ConfigStore configs) {
 			Table query = new Table(catalog, schema, name);
 			return tables(query, types, struct, configs);
@@ -2111,7 +2115,7 @@ public interface AnylineService<E>{
 		default <T extends Table> LinkedHashMap<String, T> tables(Catalog catalog, Schema schema, String name, int types, boolean struct, ConfigStore configs) {
 			int structs = 0;
 			if(struct) {
-				structs = 32767;
+				structs = Metadata.TYPE.ALL.value();
 			}
 			return tables(catalog, schema, name, types, structs, configs);
 		}
@@ -2218,7 +2222,7 @@ public interface AnylineService<E>{
 		default Table table(boolean greedy, Catalog catalog, Schema schema, String name, boolean struct) {
 			int structs = 0;
 			if(struct) {
-				structs = 32767;
+				structs = Metadata.TYPE.ALL.value();
 			}
 			return table(greedy, catalog, schema, name, structs);
 		}
@@ -2243,7 +2247,7 @@ public interface AnylineService<E>{
 		default Table table(Catalog catalog, Schema schema, String name, boolean struct) {
 			int structs = 0;
 			if(struct) {
-				structs = 32767;
+				structs = Metadata.TYPE.ALL.value();
 			}
 			return table(catalog, schema, name, structs);
 		}
@@ -2340,7 +2344,7 @@ public interface AnylineService<E>{
 		default <T extends View> List<T> views(boolean greedy, Catalog catalog, Schema schema, String name, int types, boolean struct, ConfigStore configs) {
 			int structs = 0;
 			if(struct) {
-				structs = 32767;
+				structs = Metadata.TYPE.ALL.value();
 			}
 			return views(greedy, catalog, schema, name, types, structs, configs);
 		}
@@ -2380,7 +2384,7 @@ public interface AnylineService<E>{
 		default <T extends View> LinkedHashMap<String, T> views(Catalog catalog, Schema schema, String name, int types, boolean struct, ConfigStore configs) {
 			int structs = 0;
 			if(struct) {
-				structs = 32767;
+				structs = Metadata.TYPE.ALL.value();
 			}
 			return views(catalog, schema, name, types, structs, configs);
 		}
@@ -2483,7 +2487,7 @@ public interface AnylineService<E>{
 		default View view(boolean greedy, Catalog catalog, Schema schema, String name, boolean struct) {
 			int structs = 0;
 			if(struct) {
-				structs = 32767;
+				structs = Metadata.TYPE.ALL.value();
 			}
 			return view(greedy, catalog, schema, name, structs);
 		}
@@ -2508,7 +2512,7 @@ public interface AnylineService<E>{
 		default View view(Catalog catalog, Schema schema, String name, boolean struct) {
 			int structs = 0;
 			if(struct) {
-				structs = 32767;
+				structs = Metadata.TYPE.ALL.value();
 			}
 			return view(catalog, schema, name, structs);
 		}
@@ -2600,7 +2604,7 @@ public interface AnylineService<E>{
 		default <T extends MasterTable> List<T> masters(boolean greedy, Catalog catalog, Schema schema, String name, int types, boolean struct, ConfigStore configs) {
 			int structs = 0;
 			if(struct) {
-				structs = 32767;
+				structs = Metadata.TYPE.ALL.value();
 			}
 			return masters(greedy, catalog, schema, name, types, structs, configs);
 		}
@@ -2640,7 +2644,7 @@ public interface AnylineService<E>{
 		default <T extends MasterTable> LinkedHashMap<String, T> masters(Catalog catalog, Schema schema, String name, int types, boolean struct, ConfigStore configs) {
 			int structs = 0;
 			if(struct) {
-				structs = 32767;
+				structs = Metadata.TYPE.ALL.value();
 			}
 			return masters(catalog, schema, name, types, structs, configs);
 		}
@@ -2744,7 +2748,7 @@ public interface AnylineService<E>{
 		default MasterTable master(boolean greedy, Catalog catalog, Schema schema, String name, boolean struct) {
 			int structs = 0;
 			if(struct) {
-				structs = 32767;
+				structs = Metadata.TYPE.ALL.value();
 			}
 			return master(greedy, catalog, schema, name, structs);
 		}
@@ -2769,7 +2773,7 @@ public interface AnylineService<E>{
 		default MasterTable master(Catalog catalog, Schema schema, String name, boolean struct) {
 			int structs = 0;
 			if(struct) {
-				structs = 32767;
+				structs = Metadata.TYPE.ALL.value();
 			}
 			return master(catalog, schema, name, structs);
 		}
@@ -2971,7 +2975,7 @@ public interface AnylineService<E>{
 		default <T extends VertexTable> List<T> vertexs(boolean greedy, Catalog catalog, Schema schema, String name, int types, boolean struct, ConfigStore configs) {
 			int structs = 0;
 			if(struct) {
-				structs = 32767;
+				structs = Metadata.TYPE.ALL.value();
 			}
 			return vertexs(greedy, catalog, schema, name, types, structs, configs);
 		}
@@ -3011,7 +3015,7 @@ public interface AnylineService<E>{
 		default <T extends VertexTable> LinkedHashMap<String, T> vertexs(Catalog catalog, Schema schema, String name, int types, boolean struct, ConfigStore configs) {
 			int structs = 0;
 			if(struct) {
-				structs = 32767;
+				structs = Metadata.TYPE.ALL.value();
 			}
 			return vertexs(catalog, schema, name, types, structs, configs);
 		}
@@ -3116,7 +3120,7 @@ public interface AnylineService<E>{
 		default VertexTable vertex(boolean greedy, Catalog catalog, Schema schema, String name, boolean struct) {
 			int structs = 0;
 			if(struct) {
-				structs = 32767;
+				structs = Metadata.TYPE.ALL.value();
 			}
 			return vertex(greedy, catalog, schema, name, structs);
 		}
@@ -3142,7 +3146,7 @@ public interface AnylineService<E>{
 		default VertexTable vertex(Catalog catalog, Schema schema, String name, boolean struct) {
 			int structs = 0;
 			if(struct) {
-				structs = 32767;
+				structs = Metadata.TYPE.ALL.value();
 			}
 			return vertex(catalog, schema, name, structs);
 		}
@@ -3232,7 +3236,7 @@ public interface AnylineService<E>{
 		default <T extends EdgeTable> List<T> edges(boolean greedy, Catalog catalog, Schema schema, String name, int types, boolean struct, ConfigStore configs) {
 			int structs = 0;
 			if(struct) {
-				structs = 32767;
+				structs = Metadata.TYPE.ALL.value();
 			}
 			return edges(greedy, catalog, schema, name, types, structs, configs);
 		}
@@ -3272,7 +3276,7 @@ public interface AnylineService<E>{
 		default <T extends EdgeTable> LinkedHashMap<String, T> edges(Catalog catalog, Schema schema, String name, int types, boolean struct, ConfigStore configs) {
 			int structs = 0;
 			if(struct) {
-				structs = 32767;
+				structs = Metadata.TYPE.ALL.value();
 			}
 			return edges(catalog, schema, name, types, structs, configs);
 		}
@@ -3377,7 +3381,7 @@ public interface AnylineService<E>{
 		default EdgeTable edge(boolean greedy, Catalog catalog, Schema schema, String name, boolean struct) {
 			int structs = 0;
 			if(struct) {
-				structs = 32767;
+				structs = Metadata.TYPE.ALL.value();
 			}
 			return edge(greedy, catalog, schema, name, structs);
 		}
@@ -3402,7 +3406,7 @@ public interface AnylineService<E>{
 		default EdgeTable edge(Catalog catalog, Schema schema, String name, boolean struct) {
 			int structs = 0;
 			if(struct) {
-				structs = 32767;
+				structs = Metadata.TYPE.ALL.value();
 			}
 			return edge(catalog, schema, name, structs);
 		}

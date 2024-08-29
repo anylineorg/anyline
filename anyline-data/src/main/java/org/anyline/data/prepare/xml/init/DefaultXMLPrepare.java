@@ -20,14 +20,13 @@ import org.anyline.data.param.ConfigParser;
 import org.anyline.data.param.ParseResult;
 import org.anyline.data.prepare.Condition;
 import org.anyline.data.prepare.RunPrepare;
-import org.anyline.data.prepare.SyntaxHelper;
 import org.anyline.data.prepare.Variable;
 import org.anyline.data.prepare.init.AbstractRunPrepare;
-import org.anyline.data.prepare.init.DefaultVariable;
 import org.anyline.data.prepare.xml.XMLPrepare;
 import org.anyline.data.run.Run;
 import org.anyline.data.run.XMLRun;
 import org.anyline.data.runtime.DataRuntime;
+import org.anyline.data.util.CommandParser;
 import org.anyline.entity.Compare;
 import org.anyline.metadata.Catalog;
 import org.anyline.metadata.Column;
@@ -35,9 +34,6 @@ import org.anyline.metadata.Schema;
 import org.anyline.metadata.Table;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
-import org.anyline.util.SQLUtil;
-import org.anyline.util.regular.Regular;
-import org.anyline.util.regular.RegularUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -132,46 +128,9 @@ public class DefaultXMLPrepare extends AbstractRunPrepare implements XMLPrepare 
 	private void parseText() {
 		if(null == text) {
 			return;
-		} 
-		try{
-			List<List<String>> keys = null;
-			int type = 0;
-
-			// AND CD = {CD} || CD LIKE '%{CD}%' || CD IN ({CD}) || CD = ${CD} || CD = #{CD}
-			//{CD} 用来兼容旧版本，新版本中不要用，避免与josn格式冲突
-			keys = RegularUtil.fetchs(text, RunPrepare.SQL_VAR_PLACEHOLDER_REGEX, Regular.MATCH_MODE.CONTAIN);
-			type = Variable.KEY_TYPE_SIGN_V2 ;
-			if(keys.isEmpty() && ConfigTable.IS_ENABLE_PLACEHOLDER_REGEX_EXT) {
-				// AND CD = :CD || CD LIKE ':CD' || CD IN (:CD) || CD = ::CD
-				keys = RegularUtil.fetchs(text, RunPrepare.SQL_VAR_PLACEHOLDER_REGEX_EXT, Regular.MATCH_MODE.CONTAIN);
-				type = Variable.KEY_TYPE_SIGN_V1 ;
-			} 
-			if(BasicUtil.isNotEmpty(true,keys)) {
-				// AND CD = :CD AND CD = {CD} AND CD = ${CD} AND CD = ${CD}
-				for(int i=0; i<keys.size();i++) {
-					List<String> keyItem = keys.get(i); 
-					Variable var = SyntaxHelper.buildVariable(type, keyItem.get(0), keyItem.get(1), keyItem.get(2), keyItem.get(3));
-					if(null == var) {
-						continue;
-					}
-					var.setSwt(Compare.EMPTY_VALUE_SWITCH.NULL);
-					addVariable(var); 
-				}// end for 
-			}else{
-				// AND CD = ?
-				int qty = SQLUtil.countPlaceholder(text);
-				if(qty > 0) {
-					for(int i=0; i<qty; i++) {
-						Variable var = new DefaultVariable();
-						var.setType(Variable.VAR_TYPE_INDEX);
-						var.setSwt(Compare.EMPTY_VALUE_SWITCH.NULL);
-						addVariable(var); 
-					} 
-				} 
-			} 
-		}catch(Exception e) {
-			e.printStackTrace(); 
-		} 
+		}
+		List<Variable> vars = CommandParser.parseTextVariable(ConfigTable.IS_ENABLE_PLACEHOLDER_REGEX_EXT, text, Compare.EMPTY_VALUE_SWITCH.NULL);
+		this.variables.addAll(vars);
 	} 
 	/** 
 	 * 添加SQL主体变量 
