@@ -19,7 +19,6 @@ package org.anyline.data.jdbc.adapter.init;
 import org.anyline.data.entity.Join;
 import org.anyline.data.jdbc.adapter.init.alias.PostgresGenusTypeMetadataAlias;
 import org.anyline.data.param.ConfigStore;
-import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.prepare.auto.TablePrepare;
 import org.anyline.data.prepare.auto.init.VirtualTablePrepare;
@@ -31,7 +30,10 @@ import org.anyline.metadata.*;
 import org.anyline.metadata.refer.MetadataFieldRefer;
 import org.anyline.metadata.refer.MetadataReferHolder;
 import org.anyline.metadata.type.TypeMetadata;
-import org.anyline.util.*;
+import org.anyline.util.BasicUtil;
+import org.anyline.util.BeanUtil;
+import org.anyline.util.ConfigTable;
+import org.anyline.util.LogUtil;
 import org.anyline.util.regular.RegularUtil;
 
 import javax.sql.DataSource;
@@ -1343,7 +1345,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         StringBuilder builder = run.getBuilder();
         ConfigStore configs = run.getConfigs();
         builder.append("SELECT * FROM PG_DATABASE WHERE DATISTEMPLATE=FALSE");
-        configs.like("datname", query.getName());
+        configs.and(Compare.LIKE_SIMPLE,"datname", query.getName());
         return runs;
     }
 
@@ -1548,7 +1550,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         StringBuilder builder = run.getBuilder();
         ConfigStore configs = run.getConfigs();
         builder.append("SELECT * FROM pg_stat_database");
-        configs.like("datname", query.getName());
+        configs.and(Compare.LIKE_SIMPLE,"datname", query.getName());
         return runs;
     }
 
@@ -1924,7 +1926,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         builder.append("LEFT JOIN pg_inherits AS I ON I.inhrelid = F.oid\n");//继承关系
         builder.append("WHERE I.inhrelid IS NULL\n"); //GIS中没有f.relpartbound
         configs.and("M.table_schema", query.getSchemaName());
-        configs.like("M.table_name", query.getName());
+        configs.and(Compare.LIKE_SIMPLE,"M.table_name", query.getName());
         if((types & 2) != 2) {
             //不包含视图
             configs.and("M.TABLE_TYPE != 'VIEW'");
@@ -1945,7 +1947,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         builder.append("LEFT JOIN pg_inherits AS I ON I.inhrelid = F.oid\n");//继承关系
         builder.append("WHERE (I.inhrelid IS NULL  OR F.relpartbound IS NULL)\n"); //过滤分区表(没有继承自其他表或 继承自其他表但是子表不是分区表)
         configs.and("M.table_schema", query.getSchemaName());
-        configs.like("M.table_name", query.getName());
+        configs.and(Compare.LIKE_SIMPLE,"M.table_name", query.getName());
         if((types & 2) != 2) {
             //不包含视图
             configs.and("M.TABLE_TYPE != 'VIEW'");
@@ -2174,7 +2176,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         builder.append("SELECT * FROM INFORMATION_SCHEMA.VIEWS");
         configs.and("TABLE_CATALOG", query.getCatalogName());
         configs.and("TABLE_SCHEMA", query.getSchemaName());
-        configs.like("TABLE_NAME", query.getName());
+        configs.and(Compare.LIKE_SIMPLE,"TABLE_NAME", query.getName());
         return runs;
     }
 
@@ -2449,7 +2451,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         builder.append("LEFT JOIN pg_class AS FM ON FM.oid = I.inhparent AND N.oid = FM.relnamespace\n");//主表
         configs.and("FM.relname", query.getMasterName());
         configs.and("M.table_schema", query.getSchemaName());
-        configs.like("M.table_name", query.getName());
+        configs.and(Compare.LIKE_SIMPLE,"M.table_name", query.getName());
         return runs;
     }
 
@@ -2610,7 +2612,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
             builder.append("LEFT JOIN PG_DESCRIPTION FD ON FD.OBJOID = FC.OID AND FD.OBJSUBID = M.ORDINAL_POSITION");
             configs.and("M.TABLE_CATALOG", query.getCatalogName());
             configs.and("M.TABLE_SCHEMA", query.getSchemaName());
-            configs.like("M.TABLE_NAME", query.getTableName());
+            configs.and(Compare.LIKE_SIMPLE,"M.TABLE_NAME", query.getTableName());
             configs.order("M.TABLE_NAME");
         }
         return runs;
@@ -2889,7 +2891,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         builder.append("FROM pg_constraint m \n");
         builder.append("LEFT JOIN pg_namespace ns ON m.connamespace = ns.oid \n");
         builder.append("LEFT JOIN pg_class ft ON m.conrelid = ft.oid \n");
-        configs.and("ft.relname", query.getTableName());
+        configs.and(Compare.LIKE_SIMPLE, "ft.relname", query.getTableName());
         configs.and("ns.nspname", query.getSchemaName());
         return runs;
     }
@@ -2990,7 +2992,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         builder.append("JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE AS KCU ON TC.CONSTRAINT_NAME = KCU.CONSTRAINT_NAME\n");
         builder.append("JOIN INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE AS CCU ON CCU.CONSTRAINT_NAME = TC.CONSTRAINT_NAME\n");
         builder.append("WHERE TC.CONSTRAINT_TYPE = 'FOREIGN KEY'\n");
-        configs.and("TC.TABLE_NAME", query.getTableName());
+        configs.and(Compare.LIKE_SIMPLE, "TC.TABLE_NAME", query.getTableName());
         configs.order("KCU.ORDINAL_POSITION");
         return runs;
     }
@@ -3120,7 +3122,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         StringBuilder builder = run.getBuilder();
         ConfigStore configs = run.getConfigs();
         configs.and("ins.nspname", query.getSchemaName());
-        configs.and("c.relname", query.getTableName());
+        configs.and(Compare.LIKE_SIMPLE, "c.relname", query.getTableName());
         if(BasicUtil.isNotEmpty(name)) {
             configs.and("AND i.indexrelid = '"+name+"'::regclass");
         }
@@ -3442,7 +3444,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         ConfigStore configs = run.getConfigs();
         builder.append("SELECT * FROM INFORMATION_SCHEMA.TRIGGERS");
         configs.and("TRIGGER_SCHEMA", query.getSchemaName());
-        configs.and("EVENT_OBJECT_TABLE", query.getTableName());
+        configs.and(Compare.LIKE_SIMPLE, "EVENT_OBJECT_TABLE", query.getTableName());
         configs.in("EVENT_MANIPULATION", events);
         return runs;
     }
@@ -3751,7 +3753,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
                 .append("    LEFT JOIN PG_NAMESPACE N ON N.OID = P.PRONAMESPACE \n")
                 .append("WHERE P.PROKIND <> 'a' \n");
         configs.and("AND N.NSPNAME", query.getSchemaName());
-        configs.like("AND P.PRONAMEE", query.getName());
+        configs.and(Compare.LIKE_SIMPLE,"AND P.PRONAMEE", query.getName());
         return runs;
     }
 
@@ -3947,7 +3949,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         builder.append("SELECT * FROM INFORMATION_SCHEMA.SEQUENCES");
         configs.and("SEQUENCE_CATALOG", query.getCatalogName());
         configs.and("SEQUENCE_SCHEMA", query.getSchemaName());
-        configs.like("SEQUENCE_NAME", query.getName());
+        configs.and(Compare.LIKE_SIMPLE,"SEQUENCE_NAME", query.getName());
         return runs;
     }
 

@@ -64,7 +64,7 @@ public class MongoRuntime extends AbstractRuntime implements DataRuntime {
     public String getFeature(boolean connection) {
         if(null == feature) {
             if(null != client) {
-                feature = client.getClass().getName();
+                feature = client.getClass().getName()+"_mongodb:";
             }
         }
         return feature;

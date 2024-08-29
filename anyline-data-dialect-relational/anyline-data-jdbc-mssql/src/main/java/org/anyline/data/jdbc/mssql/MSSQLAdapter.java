@@ -1878,7 +1878,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
             configs.and("O.TYPE", "U");
         }
         configs.and("FT.TABLE_SCHEMA", query.getSchemaName());
-        configs.like("O.NAME", query.getName());
+        configs.and(Compare.LIKE_SIMPLE,"O.NAME", query.getName());
         configs.in("O.TYPE_DESC", names(Table.types(types)));
         return runs;
     }
@@ -1915,7 +1915,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         builder.append("LEFT JOIN SYS.SYSOBJECTS TBS ON DS.MAJOR_ID=TBS.ID \n");
         builder.append("WHERE  DS.MINOR_ID=0 \n");
         if(BasicUtil.isNotEmpty(objectName(runtime, pattern))) {
-            configs.like("TBS.NAME", pattern);
+            configs.and(Compare.LIKE_SIMPLE,"TBS.NAME", pattern);
         }
         return runs;
     }
@@ -2486,7 +2486,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
             builder.append("LEFT JOIN SYS.EXTENDED_PROPERTIES B ON B.MAJOR_ID = c.OBJECT_ID AND B.MINOR_ID = C.COLUMN_ID\n");
             configs.and("TABLE_CATALOG", query.getCatalogName());
             configs.and("SCHEMA_NAME(FT.SCHEMA_ID)", query.getSchemaName());
-            configs.and("OBJECT_NAME(c.OBJECT_ID)", objectName(runtime, query.getTableName()));
+            configs.and(Compare.LIKE_SIMPLE, "OBJECT_NAME(c.OBJECT_ID)", objectName(runtime, query.getTableName()));
             configs.order("c.OBJECT_ID");
         }
         return runs;
@@ -2876,7 +2876,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         builder.append("SELECT F.NAME AS CONSTRAINT_NAME, OBJECT_NAME(F.PARENT_OBJECT_ID) AS TABLE_NAME, COL_NAME(FC.PARENT_OBJECT_ID, FC.PARENT_COLUMN_ID) AS COLUMN_NAME,");
         builder.append(" OBJECT_NAME(F.REFERENCED_OBJECT_ID) AS REFERENCED_TABLE_NAME, COL_NAME(FC.REFERENCED_OBJECT_ID, FC.REFERENCED_COLUMN_ID) AS REFERENCED_COLUMN_NAME \n");
         builder.append("FROM SYS.FOREIGN_KEYS AS F INNER JOIN SYS.FOREIGN_KEY_COLUMNS AS FC ON F.OBJECT_ID = FC.CONSTRAINT_OBJECT_ID \n");
-        configs.and("OBJECT_NAME(F.PARENT_OBJECT_ID)", query.getTableName());
+        configs.and(Compare.LIKE_SIMPLE,"OBJECT_NAME(F.PARENT_OBJECT_ID)", query.getTableName());
         return runs;
     }
 
@@ -3234,7 +3234,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         StringBuilder builder = run.getBuilder();
         ConfigStore configs = run.getConfigs();
         builder.append("SELECT object_name(parent_id) AS TABLE_NAME,* FROM SYS.TRIGGERS");
-        configs.and("object_name(parent_id)", query.getTableName());
+        configs.and(Compare.LIKE_SIMPLE,"object_name(parent_id)", query.getTableName());
         return runs;
     }
 

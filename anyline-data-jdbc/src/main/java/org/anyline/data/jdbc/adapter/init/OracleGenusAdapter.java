@@ -2020,7 +2020,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         builder.append("FROM ALL_OBJECTS M LEFT JOIN ALL_TAB_COMMENTS F \n");
         builder.append("ON M.OBJECT_NAME = F.TABLE_NAME  AND M.OWNER = F.OWNER AND M.object_type = F.TABLE_TYPE \n");
         configs.and("M.OWNER", query.getSchemaName());
-        configs.like("M.OBJECT_NAME", query.getName());
+        configs.and(Compare.LIKE_SIMPLE,"M.OBJECT_NAME", query.getName());
         List<String> tps = names(Table.types(types));
         if(tps.isEmpty()){
             tps.add("TABLE");
@@ -2064,7 +2064,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         ConfigStore configs = run.getConfigs();
         builder.append("SELECT * FROM ALL_TAB_COMMENTS M");
         configs.and("M.OWNER", query.getSchemaName());
-        configs.like("M.TABLE_NAME", query.getName());
+        configs.and(Compare.LIKE_SIMPLE,"M.TABLE_NAME", query.getName());
         return runs;
     }
 
@@ -2662,7 +2662,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         List<Run> runs = new ArrayList<>();
         Run run = buildQueryColumnsBody(runtime, configs);
         runs.add(run);
-        configs.and("M.TABLE_NAME", query.getTableName());
+        configs.and(Compare.LIKE_SIMPLE, "M.TABLE_NAME", query.getTableName());
         configs.and("M.OWNER", query.getSchemaName());
         run.setOrders("M.TABLE_NAME");
         if(null != configs){
@@ -2919,7 +2919,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         builder.append("SELECT COL.* FROM USER_CONSTRAINTS CON, USER_CONS_COLUMNS COL\n");
         builder.append("WHERE CON.CONSTRAINT_NAME = COL.CONSTRAINT_NAME\n");
         builder.append("AND CON.CONSTRAINT_TYPE = 'P'\n");
-        configs.and("COL.TABLE_NAME", query.getTableName());
+        configs.and(Compare.LIKE_SIMPLE, "COL.TABLE_NAME", query.getTableName());
         configs.and("COL.OWNER", query.getSchemaName());
         return runs;
     }
@@ -3021,7 +3021,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         builder.append("JOIN USER_CONSTRAINTS RC ON UC.R_CONSTRAINT_NAME = RC.CONSTRAINT_NAME \n");
         builder.append("JOIN USER_CONS_COLUMNS RCC ON RC.CONSTRAINT_NAME = RCC.CONSTRAINT_NAME AND KCU.POSITION = RCC.POSITION");
         configs.and("UC.OWNER", query.getSchemaName());
-        configs.and("UC.TABLE_NAME", query.getTableName());
+        configs.and(Compare.LIKE_SIMPLE, "UC.TABLE_NAME", query.getTableName());
         return runs;
     }
 
@@ -3149,8 +3149,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         runs.add(run);
         ConfigStore configs = run.getConfigs();
         configs.and("M.INDEX_OWNER", query.getSchemaName());
-        configs.and("M.TABLE_NAME", query.getTableName());
-        configs.like("M.INDEX_NAME", query.getName());
+        configs.and(Compare.LIKE_SIMPLE,"M.TABLE_NAME", query.getTableName());
+        configs.and(Compare.LIKE_SIMPLE,"M.INDEX_NAME", query.getName());
         return runs;
     }
 
@@ -3348,7 +3348,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         ConfigStore configs = run.getConfigs();
         builder.append("SELECT * FROM USER_CONSTRAINTS");
         configs.and("OWNER", query.getSchemaName());
-        configs.and("TABLE_NAME", query.getTableName());
+        configs.and(Compare.LIKE_SIMPLE, "TABLE_NAME", query.getTableName());
         return runs;
     }
 
@@ -3461,7 +3461,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         ConfigStore configs = run.getConfigs();
         builder.append("SELECT * FROM USER_TRIGGERS");
         configs.and("TABLE_OWNER", query.getSchemaName());
-        configs.and("TABLE_NAME", query.getTableName());
+        configs.and(Compare.LIKE_SIMPLE, "TABLE_NAME", query.getTableName());
         configs.in("TRIGGERING_EVENT", events);
         return runs;
     }
@@ -3880,7 +3880,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         ConfigStore configs = run.getConfigs();
         builder.append("SELECT * FROM all_sequences");
         configs.and("SEQUENCE_OWNER", query.getSchemaName());
-        configs.like("SEQUENCE_NAME", query.getName());
+        configs.and(Compare.LIKE_SIMPLE,"SEQUENCE_NAME", query.getName());
         return runs;
     }
 

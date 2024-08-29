@@ -1677,7 +1677,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		StringBuilder builder = run.getBuilder();
 		builder.append("SELECT * FROM SYSCAT.TABLES  WHERE TYPE = 'T'");
 		configs.and("TABSCHEMA", query.getSchemaName());
-		configs.like("TABNAME", query.getName());
+		configs.and(Compare.LIKE_SIMPLE,"TABNAME", query.getName());
 		return runs;
 	}
 
@@ -2291,7 +2291,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		StringBuilder builder = run.getBuilder();
         builder.append("SELECT * FROM SYSCAT.COLUMNS");
 		configs.and("TABSCHEMA", query.getSchemaName());
-		configs.and("TABNAME", objectName(runtime, query.getName()));
+		configs.and(Compare.LIKE_SIMPLE, "TABNAME", objectName(runtime, query.getTableName()));
         configs.order("TABNAME").order("COLNO");
 
 		return runs;
@@ -2605,7 +2605,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		builder.append("SELECT * FROM SYSCAT.KEYCOLUSE\n");
 		builder.append("WHERE CONSTNAME= 'PRIMARY'\n");
 		configs.and("TABSCHEMA", query.getSchemaName());
-		configs.and("TABNAME", query.getTableName());
+		configs.and(Compare.LIKE_SIMPLE,"TABNAME", query.getTableName());
 		return runs;
 	}
 

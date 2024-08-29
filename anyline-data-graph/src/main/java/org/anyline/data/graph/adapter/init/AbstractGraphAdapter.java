@@ -1189,7 +1189,9 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
         // NOT %A% 150
         // NOT A%  151
         // NOT %A  152
-        if(code == 50) {
+        if(compare == Compare.LIKE_SIMPLE){
+            builder.append(" LIKE ?");
+        }else if(code == 50) {
             builder.append(" LIKE ").append(concat(runtime, "'%'","?","'%'"));
         }else if(code == 51) {
             builder.append(" LIKE ").append(concat(runtime, "?","'%'"));

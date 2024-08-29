@@ -22,10 +22,7 @@ import org.anyline.data.param.ConfigStore;
 import org.anyline.data.run.Run;
 import org.anyline.data.run.SimpleRun;
 import org.anyline.data.runtime.DataRuntime;
-import org.anyline.entity.DataRow;
-import org.anyline.entity.DataSet;
-import org.anyline.entity.OrderStore;
-import org.anyline.entity.PageNavi;
+import org.anyline.entity.*;
 import org.anyline.entity.generator.PrimaryGenerator;
 import org.anyline.metadata.Column;
 import org.anyline.metadata.Schema;
@@ -276,7 +273,7 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter {
         builder.append("SELECT M.*, SCHEMA_NAME(M.SCHEMA_ID) AS TABLE_SCHEMA, F.VALUE AS TABLE_COMMENT FROM SYS.TABLES AS M \n");
         builder.append("LEFT JOIN SYS.EXTENDED_PROPERTIES AS F ON M.OBJECT_ID = F.MAJOR_ID AND F.MINOR_ID=0 \n");
         configs.and("SCHEMA_NAME(M.SCHEMA_ID)", query.getSchemaName());
-        configs.like("M.NAM", query.getName());
+        configs.and(Compare.LIKE_SIMPLE,"M.NAM", query.getName());
         //SYS.TABLES 中没有视图不需要过滤视图
         return runs;
     }

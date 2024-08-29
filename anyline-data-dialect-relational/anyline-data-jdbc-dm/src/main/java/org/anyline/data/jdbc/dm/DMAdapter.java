@@ -2286,7 +2286,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 			"\tWHERE P.CONSTRAINT_NAME = PC.CONSTRAINT_NAME  AND P.CONSTRAINT_TYPE = 'P'\n" +
 			")   FP ON M.OWNER = FP.OWNER AND M.TABLE_NAME = FP.TABLE_NAME AND M.COLUMN_NAME = FP.COLUMN_NAME\n");
 		//不要从 ALL_COL_COMMENTS 中查
-		configs.and("M.TABLE_NAME", query.getTableName());
+		configs.and(Compare.LIKE_SIMPLE, "M.TABLE_NAME", query.getTableName());
 		configs.and("M.OWNER", query.getSchemaName());
 
 		return runs;

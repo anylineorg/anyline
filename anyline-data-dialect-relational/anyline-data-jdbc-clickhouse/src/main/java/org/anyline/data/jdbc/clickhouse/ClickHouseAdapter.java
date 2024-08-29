@@ -1765,7 +1765,7 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
         StringBuilder builder = run.getBuilder();
         builder.append("SELECT * FROM system.tables");
         configs.and("TABLE_SCHEMA", query.getSchemaName());
-        configs.like("TABLE_NAME", objectName(runtime, query.getName()));
+        configs.and(Compare.LIKE_SIMPLE,"TABLE_NAME", objectName(runtime, query.getName()));
         List<String> tps = names(Table.types(types));
         if(tps.isEmpty()){
             tps.add("BASE TABLE");

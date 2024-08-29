@@ -1674,7 +1674,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		StringBuilder builder = run.getBuilder();
 		builder.append("SELECT SCHEMA_NAME, TABLE_NAME, COMMENTS, 'TABLE' AS TABLE_TYPE FROM public.tables");
 		configs.and("SCHEMA_NAME", query.getSchemaName());
-		configs.like("TABLE_NAME", query.getName());
+		configs.and(Compare.LIKE_SIMPLE,"TABLE_NAME", query.getName());
 		return runs;
 	}
 
@@ -1891,7 +1891,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		StringBuilder builder = run.getBuilder();
 		builder.append("SELECT * FROM  public.views");
 		configs.and("SCHEMA_NAME", query.getSchemaName());
-		configs.like("VIEW_NAME", query.getName());
+		configs.and(Compare.LIKE_SIMPLE,"VIEW_NAME", query.getName());
 		return runs;
 	}
 	/**
@@ -2545,7 +2545,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		ConfigStore configs = run.getConfigs();
 		builder.append("SELECT * FROM PUBLIC.INDEX_COLUMNS WHERE CONSTRAINT = 'PRIMARY KEY'");
 		configs.and("SCHEMA_NAME", query.getSchemaName());
-		configs.and("TABLE_NAME", query.getTableName());
+		configs.and(Compare.LIKE_SIMPLE, "TABLE_NAME", query.getTableName());
 		return runs;
 	}
 

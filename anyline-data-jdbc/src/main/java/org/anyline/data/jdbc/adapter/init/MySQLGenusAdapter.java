@@ -2038,7 +2038,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         StringBuilder builder = run.getBuilder();
         builder.append("SELECT * FROM information_schema.TABLES");
         configs.and("TABLE_SCHEMA", query.getSchemaName());
-        configs.like("TABLE_NAME", objectName(runtime, query.getName()));
+        configs.and(Compare.LIKE_SIMPLE,"TABLE_NAME", objectName(runtime, query.getName()));
         List<String> tps = names(Table.types(types));
         if(tps.isEmpty()){
             tps.add("BASE TABLE");
@@ -2321,7 +2321,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         StringBuilder builder = run.getBuilder();
         builder.append("SELECT * FROM information_schema.VIEWS");
         configs.and("TABLE_SCHEMA", query.getSchemaName());
-        configs.like("TABLE_NAME", query.getName());
+        configs.and(Compare.LIKE_SIMPLE,"TABLE_NAME", query.getName());
         return runs;
     }
 
@@ -2718,7 +2718,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
             builder.append("SELECT * FROM INFORMATION_SCHEMA.COLUMNS");
             //mysql忽略catalog
             configs.and("TABLE_SCHEMA", query.getSchemaName());
-            configs.and("TABLE_NAME", objectName(runtime, query.getTableName()));
+            configs.and(Compare.LIKE_SIMPLE, "TABLE_NAME", objectName(runtime, query.getTableName()));
             configs.order("TABLE_NAME").order("ORDINAL_POSITION");
         }
         return runs;
@@ -3054,7 +3054,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         StringBuilder builder = run.getBuilder();
         ConfigStore configs = run.getConfigs();
         builder.append("SELECT * FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE where REFERENCED_TABLE_NAME IS NOT NULL\n");
-        configs.and("TABLE_NAME", query.getTableName());
+        configs.and(Compare.LIKE_SIMPLE, "TABLE_NAME", query.getTableName());
         configs.order("ORDINAL_POSITION");
         return runs;
     }
@@ -3184,8 +3184,8 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         ConfigStore configs = run.getConfigs();
         builder.append("SELECT * FROM INFORMATION_SCHEMA.STATISTICS\n");
         configs.and("TABLE_SCHEMA", query.getSchemaName());
-        configs.and("TABLE_SCHEMA", query.getTableName());
-        configs.like("INDEX_NAME", query.getName());
+        configs.and(Compare.LIKE_SIMPLE,"TABLE_NAME", query.getTableName());
+        configs.and(Compare.LIKE_SIMPLE,"INDEX_NAME", query.getName());
         configs.order("SEQ_IN_INDEX");
         return runs;
     }
@@ -3386,7 +3386,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         builder.append("SELECT * FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS");
         configs.and("CONSTRAINT_CATALOG", query.getCatalogName());
         configs.and("CONSTRAINT_SCHEMA", query.getSchemaName());
-        configs.and("TABLE_NAME", query.getTableName());
+        configs.and(Compare.LIKE_SIMPLE, "TABLE_NAME", query.getTableName());
         return runs;
     }
 
@@ -3482,7 +3482,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         ConfigStore configs = run.getConfigs();
         builder.append("SELECT * FROM INFORMATION_SCHEMA.TRIGGERS");
         configs.and("TRIGGER_SCHEMA", query.getSchemaName());
-        configs.and("EVENT_OBJECT_TABLE", query.getTableName());
+        configs.and(Compare.LIKE_SIMPLE, "EVENT_OBJECT_TABLE", query.getTableName());
         configs.in("EVENT_MANIPULATION", events);
         return runs;
     }
@@ -3632,7 +3632,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         ConfigStore configs = run.getConfigs();
         builder.append("SELECT * FROM information_schema.ROUTINES WHERE ROUTINE_TYPE = 'PROCEDURE'");
         configs.and("ROUTINE_SCHEMA", query.getSchemaName());
-        configs.like("ROUTINE_NAME", query.getName());
+        configs.and(Compare.LIKE_SIMPLE,"ROUTINE_NAME", query.getName());
         return runs;
     }
 
@@ -3811,7 +3811,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         ConfigStore configs = run.getConfigs();
         builder.append("SELECT * FROM information_schema.ROUTINES WHERE ROUTINE_TYPE = 'FUNCTION'");
         configs.and("ROUTINE_SCHEMA", query.getSchemaName());
-        configs.like("ROUTINE_NAME", query.getName());
+        configs.and(Compare.LIKE_SIMPLE,"ROUTINE_NAME", query.getName());
         return runs;
     }
 

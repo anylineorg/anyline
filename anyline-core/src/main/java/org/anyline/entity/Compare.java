@@ -48,7 +48,7 @@ public enum Compare {
             return 1;
         }
     },
-    EQUAL(10, "等于","eq"," = ? ")			{
+    EQUAL(10, "等于","eq"," = ? ") {
         public boolean compare(Object value, Object target) {
             if(null == target) {
                 if(null == value) {
@@ -63,7 +63,7 @@ public enum Compare {
             return 1;
         }
     },
-    EQUALS(11, "等于","eq"," == ? ")			{
+    EQUALS(11, "等于","eq"," == ? ") {
         public boolean compare(Object value, Object target) {
             if(null == target) {
                 if(null == value) {
@@ -78,7 +78,7 @@ public enum Compare {
             return 1;
         }
     },
-    GREAT(20, "大于","gt"," > ? ")			{
+    GREAT(20, "大于","gt"," > ? ") {
         public boolean compare(Object value, Object target) {
             if(null == target || null == value) {
                 return false;
@@ -104,7 +104,7 @@ public enum Compare {
             return 1;
         }
     },
-    LESS(30, "小于","lt"," < ? ")			{
+    LESS(30, "小于","lt"," < ? ") {
         public boolean compare(Object value, Object target) {
             if(null == target || null == value) {
                 return false;
@@ -150,7 +150,19 @@ public enum Compare {
             return 9;
         }
     },
-    LIKE(50, "like %?%",""," LIKE ")			{
+    LIKE(50, "like %?%",""," LIKE ") {
+        public boolean compare(Object value, Object target) {
+            if(null == target || null == value) {
+                return false;
+            }
+            return value.toString().toUpperCase().contains(target.toString().toUpperCase());
+        }
+        public int valueCount() {
+            return 1;
+        }
+    },
+    LIKE_SIMPLE(50, "like ?",""," LIKE ") {
+        //不添加通配符
         public boolean compare(Object value, Object target) {
             if(null == target || null == value) {
                 return false;
@@ -246,7 +258,7 @@ public enum Compare {
         }
     },
     //忽略大小写
-    LIKE_IGNORE_CASE(50, "ilike %?%",""," ILIKE ")			{
+    LIKE_IGNORE_CASE(50, "ilike %?%",""," ILIKE ") {
         public boolean compare(Object value, Object target) {
             if(null == target || null == value) {
                 return false;
@@ -299,7 +311,7 @@ public enum Compare {
     /**
      * 这个专用来实现所有列LIKE
      */
-    LIKES(59, "like %?%",""," LIKE ")			{
+    LIKES(59, "like %?%",""," LIKE ") {
         public boolean compare(Object value, Object target) {
             if(null == target || null == value) {
                 return false;
@@ -310,7 +322,7 @@ public enum Compare {
             return 1;
         }
     },
-    LIKES_IGNORE_CASE(59, "ilike %?%",""," ILIKE ")			{
+    LIKES_IGNORE_CASE(59, "ilike %?%",""," ILIKE ") {
         public boolean compare(Object value, Object target) {
             if(null == target || null == value) {
                 return false;
@@ -402,7 +414,7 @@ public enum Compare {
             return 1;
         }
     },
-    BETWEEN(80, "区间",""," BETWEEN ? AND ? ")			{
+    BETWEEN(80, "区间",""," BETWEEN ? AND ? ") {
         public boolean compare(Object value, Object target) {
             if(null == value) {
                 return false;
@@ -433,7 +445,7 @@ public enum Compare {
             return 2;
         }
     },
-    NULL(90, "空",""," IS NULL ")			{
+    NULL(90, "空",""," IS NULL ") {
         public boolean compare(Object value, Object target) {
             if(null == value) {
                 return true;
@@ -444,7 +456,7 @@ public enum Compare {
             return 0;
         }
     },
-    EMPTY(91, "空",""," IS EMPTY ")			{
+    EMPTY(91, "空",""," IS EMPTY ") {
         public boolean compare(Object value, Object target) {
             if(BasicUtil.isEmpty(true, value)) {
                 return true;
@@ -466,7 +478,7 @@ public enum Compare {
             return 1;
         }
     },
-    NOT_IN(140, "不包含","nin"," NOT IN ")			{
+    NOT_IN(140, "不包含","nin"," NOT IN ") {
         public boolean compare(Object value, Object target) {
             if(null == target || null == value) {
                 return false;
@@ -496,7 +508,22 @@ public enum Compare {
             return 1;
         }
     },
-    NOT_LIKE_PREFIX(151, "NOT LIKE ?%",""," NOT LIKE ")			{
+    NOT_LIKE_SIMPLE(150, "NOT LIKE ?",""," NOT LIKE ")				{
+        public boolean compare(Object value, Object target) {
+            if(null == target || null == value) {
+                return false;
+            }
+            if(value instanceof Collection) {
+                Collection col = (Collection)value;
+                return col.contains(target);
+            }
+            return false;
+        }
+        public int valueCount() {
+            return 1;
+        }
+    },
+    NOT_LIKE_PREFIX(151, "NOT LIKE ?%",""," NOT LIKE ") {
         public boolean compare(Object value, Object target) {
             if(null == target || null == value) {
                 return false;
@@ -526,7 +553,7 @@ public enum Compare {
             return 1;
         }
     },
-    NOT_LIKE_SUFFIX(152, "NOT LIKE %?",""," NOT LIKE ")			{
+    NOT_LIKE_SUFFIX(152, "NOT LIKE %?",""," NOT LIKE ") {
         public boolean compare(Object value, Object target) {
             if(null == target || null == value) {
                 return false;
@@ -541,7 +568,7 @@ public enum Compare {
             return 1;
         }
     },
-    NOT_END_WITH(152, "NOT LIKE %?",""," NOT LIKE ")			{
+    NOT_END_WITH(152, "NOT LIKE %?",""," NOT LIKE ") {
         public boolean compare(Object value, Object target) {
             if(null == target || null == value) {
                 return false;
@@ -556,7 +583,7 @@ public enum Compare {
             return 1;
         }
     },
-    NOT_NULL(190, "非空",""," IS NOT NULL ")			{
+    NOT_NULL(190, "非空",""," IS NOT NULL ") {
         public boolean compare(Object value, Object target) {
             if(null == value) {
                 return false;
@@ -567,7 +594,7 @@ public enum Compare {
             return 0;
         }
     },
-    NOT_EMPTY(191, "非空",""," IS NOT EMPTY ")			{
+    NOT_EMPTY(191, "非空",""," IS NOT EMPTY ") {
         public boolean compare(Object value, Object target) {
             if(BasicUtil.isEmpty(true, value)) {
                 return false;
@@ -579,7 +606,7 @@ public enum Compare {
         }
     },
     //正则表达式，注意不是每个数据库都支持
-    REGEX(999, "正则","regex"," REGEXP ?")			{
+    REGEX(999, "正则","regex"," REGEXP ?") {
         public boolean compare(Object value, Object target) {
             if(null == target || null == value) {
                 return false;

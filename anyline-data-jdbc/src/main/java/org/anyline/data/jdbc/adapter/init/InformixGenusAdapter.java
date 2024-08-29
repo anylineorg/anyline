@@ -2549,7 +2549,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
         StringBuilder builder = run.getBuilder();
         builder.append("SELECT M.*,F.TABNAME FROM SYSCOLUMNS AS M LEFT JOIN SYSTABLES AS F ON M.TABID = F.TABID\n");
         configs.and("F.OWNER", query.getSchemaName());
-        configs.like("F.TABNAME", query.getName());
+        configs.and(Compare.LIKE_SIMPLE,"F.TABNAME", query.getTableName());
         configs.order("F.TABNAME");
         return runs;
     }
@@ -2818,7 +2818,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
         builder.append("JOIN SYSCOLUMNS K ON T.TABID = K.TABID AND I.PART1 = K.COLNO\n");
         builder.append("WHERE  C.CONSTRTYPE = 'P'\n");
         configs.and("T.OWNER", query.getSchemaName());
-        configs.and("T.TABNAME", query.getTableName());
+        configs.and(Compare.LIKE_SIMPLE, "T.TABNAME", query.getTableName());
         return runs;
     }
 

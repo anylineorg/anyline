@@ -1746,7 +1746,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         StringBuilder builder = run.getBuilder();
         builder.append("SELECT * FROM sys.TABLES");
         configs.and("SCHEMA_NAME", query.getSchemaName());
-        configs.like("TABLE_NAME", query.getName());
+        configs.and(Compare.LIKE_SIMPLE,"TABLE_NAME", query.getName());
         return runs;
     }
 
@@ -1976,7 +1976,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 
         builder.append("SELECT * FROM sys.VIEWS");
         configs.and("SCHEMA_NAME", query.getSchemaName());
-        configs.like("TABLE_NAME", query.getName());
+        configs.and(Compare.LIKE_SIMPLE,"TABLE_NAME", query.getName());
         return runs;
     }
 
@@ -2385,7 +2385,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         StringBuilder builder = run.getBuilder();
         builder.append("SELECT * FROM SYS.TABLE_COLUMNS WHERE COLUMN_NAME != '_KEY' AND COLUMN_NAME != '_VAL' ");
         configs.and("SCHEMA_NAME", query.getSchemaName());
-        configs.and("TABLE_NAME", query.getTableName());
+        configs.and(Compare.LIKE_SIMPLE, "TABLE_NAME", query.getTableName());
         configs.order("TABLE_NAME");
         return runs;
     }
@@ -2811,8 +2811,8 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         ConfigStore configs = run.getConfigs();
         builder.append("SELECT * FROM SYS.INDEXES");
         configs.and("SCHEMA_NAME", query.getSchemaName());
-        configs.and("TABLE_NAME", objectName(runtime, query.getTableName()));
-        configs.like("INDEX_NAME", query.getName());
+        configs.and(Compare.LIKE_SIMPLE, "TABLE_NAME", objectName(runtime, query.getTableName()));
+        configs.and(Compare.LIKE_SIMPLE,"INDEX_NAME", query.getName());
         return runs;
     }
 
@@ -3083,7 +3083,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         ConfigStore configs = run.getConfigs();
         builder.append("SELECT * FROM INFORMATION_SCHEMA.TRIGGERS");
         configs.and("TRIGGER_SCHEMA", query.getSchemaName());
-        configs.and("EVENT_OBJECT_TABLE", query.getTableName());
+        configs.and(Compare.LIKE_SIMPLE, "EVENT_OBJECT_TABLE", query.getTableName());
         configs.in("EVENT_MANIPULATION", events);
         return runs;
     }
@@ -3203,7 +3203,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         ConfigStore configs = run.getConfigs();
         builder.append("SELECT * FROM sys.ROUTINES WHERE ROUTINE_TYPE = 'PROCEDURE'");
         configs.and("ROUTINE_SCHEMA", query.getSchemaName());
-        configs.like("ROUTINE_NAME", query.getName());
+        configs.and(Compare.LIKE_SIMPLE,"ROUTINE_NAME", query.getName());
         return runs;
     }
 
@@ -3365,7 +3365,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         ConfigStore configs = run.getConfigs();
         builder.append("SELECT * FROM sys.ROUTINES WHERE ROUTINE_TYPE = 'FUNCTION'");
         configs.and("ROUTINE_SCHEMA", query.getSchemaName());
-        configs.like("ROUTINE_NAME", query.getName());
+        configs.and(Compare.LIKE_SIMPLE,"ROUTINE_NAME", query.getName());
         return runs;
     }
 

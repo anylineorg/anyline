@@ -229,24 +229,31 @@ public class HttpUtil {
 	}
 
 	public static DownloadTask download(String url, String dst) {
-		File file = new File(dst); 
-		return download(url, file, null, null, false);
-	} 
+		File file = new File(dst);
+		return download(null, url, file, null, false);
+	}
+	public static DownloadTask download(Map<String, String> headers, String url, String dst) {
+		File file = new File(dst);
+		return download(headers, url, file, null, false);
+	}
 	public static DownloadTask download(String url, File dst) {
-		return download(url, dst, null, null, false);
-	} 
-	public static DownloadTask download(String url, String dest, Map<String, String> headers, Map<String, Object> params) {
+		return download(null,url, dst, null, false);
+	}
+	public static DownloadTask download(Map<String, String> headers, String url, File dst) {
+		return download(headers, url, dst, null, false);
+	}
+	public static DownloadTask download(Map<String, String> headers, String url, String dest, Map<String, Object> params) {
 		File file = new File(dest);
-		return download(url, file, headers, params, false);
+		return download(headers, url, file, params, false);
 	} 
-	public static DownloadTask download(String url, File dst, Map<String, String> headers, Map<String, Object> params) {
-		return download(url, dst, headers, params, false);
+	public static DownloadTask download(Map<String, String> headers, String url, File dst, Map<String, Object> params) {
+		return download(headers, url, dst, params, false);
 	} 
-	public static DownloadTask download(String url, String dest, Map<String, String> headers, Map<String, Object> params, boolean override) {
+	public static DownloadTask download(Map<String, String> headers, String url, String dest, Map<String, Object> params, boolean override) {
 		File file = new File(dest);
-		return download(url, file, headers, params, override);
+		return download(headers, url, file, params, override);
 	} 
-	public static DownloadTask download(String url, File dst, Map<String, String> headers, Map<String, Object> params, boolean override) {
+	public static DownloadTask download(Map<String, String> headers, String url, File dst, Map<String, Object> params, boolean override) {
 		return download(new DefaultProgress(url, dst), url, dst, headers, params, override);
 	} 
 	public static DownloadTask download(DownloadProgress progress, String url, String dest, boolean override) {

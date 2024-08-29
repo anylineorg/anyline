@@ -1840,7 +1840,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         StringBuilder builder = run.getBuilder();
         builder.append("SELECT * FROM INFORMATION_SCHEMA.INS_TABLES WHERE TYPE = 'NORMAL_TABLE' ");
         configs.and("DB_NAME", query.getCatalogName());
-        configs.like("TABLE_NAME", query.getName());
+        configs.and(Compare.LIKE_SIMPLE,"TABLE_NAME", query.getName());
         return runs;
     }
 
@@ -2195,7 +2195,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         StringBuilder builder = run.getBuilder();
         builder.append("SELECT * FROM INFORMATION_SCHEMA.INS_STABLES");
         configs.and("DB_NAME", query.getCatalogName());
-        configs.like("STABLE_NAME", query.getName());
+        configs.and(Compare.LIKE_SIMPLE,"STABLE_NAME", query.getName());
         runs.add(run);
         return runs;
     }
@@ -2427,8 +2427,8 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         StringBuilder builder = run.getBuilder();
         ConfigStore configs = run.getConfigs();
         builder.append("SELECT * FROM INFORMATION_SCHEMA.INS_TABLES").append(stable).append("'");
-        configs.and("STABLE_NAME", stable);
-        configs.like("TABLE_NAME", query.getName());
+        configs.and(Compare.LIKE_SIMPLE, "STABLE_NAME", stable);
+        configs.and(Compare.LIKE_SIMPLE,"TABLE_NAME", query.getName());
         return runs;
     }
 

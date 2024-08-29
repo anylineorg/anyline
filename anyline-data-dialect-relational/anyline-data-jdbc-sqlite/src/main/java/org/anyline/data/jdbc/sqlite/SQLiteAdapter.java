@@ -1671,7 +1671,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();
 		builder.append("SELECT * FROM sqlite_master WHERE type='table'");
-		configs.like("name", query.getName());
+		configs.and(Compare.LIKE_SIMPLE,"name", query.getName());
 		return runs;
 	}
 
@@ -1891,7 +1891,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();
 		builder.append("SELECT * FROM sqlite_master WHERE type='view'");
-		configs.like("name", query.getName());
+		configs.and(Compare.LIKE_SIMPLE,"name", query.getName());
 		return runs;
 	}
 
