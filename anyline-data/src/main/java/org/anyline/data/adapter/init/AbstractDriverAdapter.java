@@ -17795,7 +17795,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 } else {
                     DataWriter writer = writer(value.getClass());
                     if (null != writer) {
-                        value = writer.write(value, true, metadata.getTypeMetadata());
+                        value = writer.write(value, true, null);
                     }
                 }
             }
