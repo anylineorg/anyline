@@ -7,7 +7,7 @@
         <groupId>org.anyline</groupId>
         <artifactId>anyline-dependency</artifactId>
         <version>8.7.2-SNAPSHOT</version>
-        <relativePath/>
+        <relativePath>../../anyline-dependency/pom.xml</relativePath>
     </parent>
     <packaging>pom</packaging>
     <artifactId>anyline-dependency-web</artifactId>

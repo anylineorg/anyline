@@ -29,12 +29,10 @@
 	</scm>
     <modules>
 		<module>anyline-dependency</module>
-		<module>anyline-dependency-web</module>
 		<module>anyline-core</module>
 		<module>anyline-data</module>
 		<module>anyline-data-jdbc</module>
 		<module>anyline-data-graph</module>
-		<module>anyline-data-cache</module>
 		<module>anyline-oro</module>
 		<module>anyline-net</module>
 
@@ -57,9 +55,7 @@
 		<module>anyline-data-dialect-time-series</module>
 		<module>anyline-data-dialect-vector</module>
 		<module>anyline-data-dialect-wide-column</module>
-		<module>anyline-web</module>
-		<module>anyline-mvc</module>
-    </modules>
+	</modules>
 	<build>
 		<plugins>
 			<plugin>
