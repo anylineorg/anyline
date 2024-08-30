@@ -786,7 +786,30 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public RunValue createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder) {
-        return super.createConditionLike(runtime, builder, compare, value, placeholder);
+        int code = compare.getCode();
+        if(code > 100) {
+            builder.append(" NOT");
+            code = code - 100;
+        }
+        // %A% 50
+        // A%  51
+        // %A  52
+        // NOT %A% 150
+        // NOT A%  151
+        // NOT %A  152
+        String formula = compare.formula();
+        if(compare == Compare.LIKE_SIMPLE){
+            builder.append(formula).append("?");
+        }else if(code == 50) {
+            builder.append(formula).append(concat(runtime, "'%'","?","'%'"));
+        }else if(code == 51) {
+            builder.append(formula).append(concat(runtime, "?","'%'"));
+        }else if(code == 52) {
+            builder.append(formula).append(concat(runtime, "'%'","?"));
+        }
+        RunValue run = new RunValue();
+        run.setValue(value);
+        return run;
     }
 
     /**

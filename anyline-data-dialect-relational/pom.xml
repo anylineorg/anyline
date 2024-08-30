@@ -36,6 +36,7 @@
 		<module>anyline-data-jdbc-iotdb</module>						<!--Apache IoTDB-->
 		<module>anyline-data-jdbc-kingbase</module>						<!--人大金仓(oracle)-->
 		<module>anyline-data-jdbc-mariadb</module>
+		<module>anyline-data-jdbc-maxcompute</module>
 		<module>anyline-data-jdbc-maxdb</module>						<!--MaxDB/SAP DB-->
 		<module>anyline-data-jdbc-mssql</module>
 		<module>anyline-data-jdbc-mysql</module>

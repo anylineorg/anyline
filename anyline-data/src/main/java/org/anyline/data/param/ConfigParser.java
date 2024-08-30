@@ -229,6 +229,12 @@ public class ConfigParser {
 	private static ParseResult parseCompare(ParseResult result, boolean isKey) {
 		String key = result.getKey();
 		String var = result.getVar();
+		boolean ignoreCase = false;
+		if(key.startsWith("~")){
+			ignoreCase = true;
+			key = key.substring(1);
+		}
+
 		if (key.startsWith(">=")) {
 			result.setCompare(Compare.GREAT_EQUAL);
 			key = key.substring(2);
@@ -262,14 +268,26 @@ public class ConfigParser {
 
 		} else if (key.startsWith("%")) {
 			if (key.endsWith("%")) {
-				result.setCompare(Compare.LIKE);
+				if(ignoreCase) {
+					result.setCompare(Compare.LIKE_IGNORE_CASE);
+				}else{
+					result.setCompare(Compare.LIKE);
+				}
 				key = key.substring(1, key.length()-1);
 			} else {
-				result.setCompare(Compare.LIKE_SUFFIX);
-				key = key.substring(1, key.length());
+				if(ignoreCase){
+					result.setCompare(Compare.LIKE_SUFFIX_IGNORE_CASE);
+				}else {
+					result.setCompare(Compare.LIKE_SUFFIX);
+				}
+				key = key.substring(1);
 			}
 		} else if (key.endsWith("%")) {
-			result.setCompare(Compare.LIKE_PREFIX);
+			if(ignoreCase) {
+				result.setCompare(Compare.LIKE_PREFIX_IGNORE_CASE);
+			}else{
+				result.setCompare(Compare.LIKE_PREFIX);
+			}
 			key = key.substring(0, key.length()-1);
 		}else {
 			result.setCompare(Compare.EQUAL);

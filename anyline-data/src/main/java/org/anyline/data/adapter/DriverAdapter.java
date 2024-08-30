@@ -1486,6 +1486,9 @@ public interface DriverAdapter {
         return true;
     }
 
+    default String compareFormula(DataRuntime runtime, Compare compare) {
+        return compare.formula();
+    }
     /**
      * select[命令合成]<br/>
      * 创建 select sequence 最终可执行命令

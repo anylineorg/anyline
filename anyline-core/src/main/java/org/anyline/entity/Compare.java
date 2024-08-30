@@ -93,7 +93,7 @@ public enum Compare {
             return 1;
         }
     },
-    GREAT_EQUAL(21, "大于等于","gte"," >= ? ")		{
+    GREAT_EQUAL(21, "大于等于","gte"," >= ? ") {
         public boolean compare(Object value, Object target) {
             if(null == target || null == value) {
                 return false;
@@ -119,7 +119,7 @@ public enum Compare {
             return 1;
         }
     },
-    LESS_EQUAL(31, "小于等于","lte"," <= ? ")		{
+    LESS_EQUAL(31, "小于等于","lte"," <= ? ") {
         public boolean compare(Object value, Object target) {
             if(null == target || null == value) {
                 return false;
@@ -134,7 +134,7 @@ public enum Compare {
             return 1;
         }
     },
-    IN(40, "in","in"," IN ")				{
+    IN(40, "in","in"," IN ")  {
         public boolean compare(Object value, Object targets) {
             if(null != targets && targets instanceof Collection) {
                 Collection cols = (Collection) targets;
@@ -173,7 +173,7 @@ public enum Compare {
             return 1;
         }
     },
-    LIKE_PREFIX(51, "like ?%",""," LIKE ")		{
+    LIKE_PREFIX(51, "like ?%",""," LIKE ") {
         public boolean compare(Object value, Object target) {
             if(null == target || null == value) {
                 return false;
@@ -184,10 +184,7 @@ public enum Compare {
             return 1;
         }
     },
-    START_WITH(51, "like ?%",""," LIKE ")		{
-        public int getCode() {return 51;}
-        public String formula() {return " LIKE ";}
-        public String getName() {return "like ?%";}
+    START_WITH(51, "like ?%",""," LIKE ") {
         public boolean compare(Object value, Object target) {
             if(null == target || null == value) {
                 return false;
@@ -198,7 +195,7 @@ public enum Compare {
             return 1;
         }
     },
-    LIKE_SUFFIX(52, "like %?",""," LIKE ")		{
+    LIKE_SUFFIX(52, "like %?",""," LIKE ") {
         public boolean compare(Object value, Object target) {
             if(null == target || null == value) {
                 return false;
@@ -209,7 +206,7 @@ public enum Compare {
             return 1;
         }
     },
-    END_WITH(52, "like %?",""," LIKE ")		{
+    END_WITH(52, "like %?",""," LIKE ") {
         public boolean compare(Object value, Object target) {
             if(null == target || null == value) {
                 return false;
@@ -221,10 +218,7 @@ public enum Compare {
         }
     },
 
-    START_WITH_IGNORE_CASE(51, "ilike ?%",""," ILIKE ")		{
-        public int getCode() {return 51;}
-        public String formula() {return " ILIKE ";}
-        public String getName() {return "ilike ?%";}
+    START_WITH_IGNORE_CASE(51, "ilike ?%",""," ILIKE ") {
         public boolean compare(Object value, Object target) {
             if(null == target || null == value) {
                 return false;
@@ -235,7 +229,7 @@ public enum Compare {
             return 1;
         }
     },
-    LIKE_SUFFIX_IGNORE_CASE(52, "ilike %?",""," ILIKE ")		{
+    LIKE_SUFFIX_IGNORE_CASE(52, "ilike %?",""," ILIKE ") {
         public boolean compare(Object value, Object target) {
             if(null == target || null == value) {
                 return false;
@@ -246,7 +240,7 @@ public enum Compare {
             return 1;
         }
     },
-    END_WITH_IGNORE_CASE(52, "ilike %?",""," ILIKE ")		{
+    END_WITH_IGNORE_CASE(52, "ilike %?",""," ILIKE ") {
         public boolean compare(Object value, Object target) {
             if(null == target || null == value) {
                 return false;
@@ -269,7 +263,7 @@ public enum Compare {
             return 1;
         }
     },
-    LIKE_PREFIX_IGNORE_CASE(51, "ilike ?%",""," ILIKE ")		{
+    LIKE_PREFIX_IGNORE_CASE(51, "ilike ?%",""," ILIKE ") {
         public boolean compare(Object value, Object target) {
             if(null == target || null == value) {
                 return false;
@@ -283,7 +277,7 @@ public enum Compare {
     /**
      * 搜索引擎 匹配 多列时 生成 MULTI_MATCH
      */
-    MATCH(55, "MATCH",""," ")		{
+    MATCH(55, "MATCH",""," ") {
         public boolean compare(Object value, Object target) {
             if(null == target || null == value) {
                 return false;
@@ -297,7 +291,7 @@ public enum Compare {
     /**
      * 搜索引擎 匹配
      */
-    MATCH_PHRASE(56, "MATCH_PHRASE",""," ")		{
+    MATCH_PHRASE(56, "MATCH_PHRASE",""," ") {
         public boolean compare(Object value, Object target) {
             if(null == target || null == value) {
                 return false;
@@ -467,7 +461,7 @@ public enum Compare {
             return 0;
         }
     },
-    NOT_EQUAL(110, "不等于","nin"," != ? ")		{
+    NOT_EQUAL(110, "不等于","nin"," != ? ") {
         public boolean compare(Object value, Object target) {
             if(null == target || null == value) {
                 return false;
@@ -493,7 +487,7 @@ public enum Compare {
             return 9;
         }
     },
-    NOT_LIKE(150, "NOT LIKE %?%",""," NOT LIKE ")				{
+    NOT_LIKE(150, "NOT LIKE %?%",""," NOT LIKE ")  {
         public boolean compare(Object value, Object target) {
             if(null == target || null == value) {
                 return false;
@@ -508,7 +502,7 @@ public enum Compare {
             return 1;
         }
     },
-    NOT_LIKE_SIMPLE(150, "NOT LIKE ?",""," NOT LIKE ")				{
+    NOT_LIKE_SIMPLE(150, "NOT LIKE ?",""," NOT LIKE ")  {
         public boolean compare(Object value, Object target) {
             if(null == target || null == value) {
                 return false;
@@ -538,7 +532,7 @@ public enum Compare {
             return 1;
         }
     },
-    NOT_START_WITH(151, "NOT LIKE ?%",""," NOT LIKE ")				{
+    NOT_START_WITH(151, "NOT LIKE ?%",""," NOT LIKE ")  {
         public boolean compare(Object value, Object target) {
             if(null == target || null == value) {
                 return false;
