@@ -27,6 +27,7 @@ import org.anyline.entity.*;
 import org.anyline.exception.NotSupportException;
 import org.anyline.metadata.*;
 import org.anyline.metadata.refer.MetadataFieldRefer;
+import org.anyline.metadata.refer.MetadataReferHolder;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.util.BasicUtil;
@@ -43,9 +44,24 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
 
     public ClickHouseAdapter() {
         super();
-        delimiterFr = "";
-        delimiterTo = "";
+        delimiterFr = "`";
+        delimiterTo = "`";
         ClickhouseConvert.reg();
+
+        MetadataReferHolder.reg(type(), TypeMetadata.CATEGORY.CHAR, new TypeMetadata.Refer("character_octet_length", null, null, 0, 1, 1));
+        MetadataReferHolder.reg(type(), TypeMetadata.CATEGORY.TEXT, new TypeMetadata.Refer("character_octet_length", null, null, 1, 1, 1));
+        MetadataReferHolder.reg(type(), TypeMetadata.CATEGORY.BOOLEAN, new TypeMetadata.Refer("character_octet_length", null, null, 1,1, 1));
+        MetadataReferHolder.reg(type(), TypeMetadata.CATEGORY.BYTES, new TypeMetadata.Refer("character_octet_length", null, null, 0, 1, 1));
+        MetadataReferHolder.reg(type(), TypeMetadata.CATEGORY.BLOB, new TypeMetadata.Refer(null, null, null, 1,1,1));
+        MetadataReferHolder.reg(type(), TypeMetadata.CATEGORY.INT, new TypeMetadata.Refer(null, "numeric_precision", null, 1, 1, 1));
+        MetadataReferHolder.reg(type(), TypeMetadata.CATEGORY.FLOAT, new TypeMetadata.Refer(null, "numeric_precision", "numeric_scale", 1, 2, 2));
+        MetadataReferHolder.reg(type(), TypeMetadata.CATEGORY.DATE, new TypeMetadata.Refer(null, "datetime_precision", null, 1, 1, 1));
+        MetadataReferHolder.reg(type(), TypeMetadata.CATEGORY.TIME, new TypeMetadata.Refer(null, "datetime_precision", null, 1, 1, 1));
+        MetadataReferHolder.reg(type(), TypeMetadata.CATEGORY.DATETIME, new TypeMetadata.Refer(null, "datetime_precision", null, 1, 1, 1));
+        MetadataReferHolder.reg(type(), TypeMetadata.CATEGORY.TIMESTAMP, new TypeMetadata.Refer(null, "datetime_precision", null, 1, 1, 1));
+        MetadataReferHolder.reg(type(), TypeMetadata.CATEGORY.COLLECTION, new TypeMetadata.Refer(null, null, null, 1, 1, 1));
+        MetadataReferHolder.reg(type(), TypeMetadata.CATEGORY.GEOMETRY, new TypeMetadata.Refer(null, null, null, 1, 1, 1));
+        MetadataReferHolder.reg(type(), TypeMetadata.CATEGORY.OTHER, new TypeMetadata.Refer(null, null, null, 1, 1, 1));
 
         for(ClickhouseWriter writer: ClickhouseWriter.values()) {
             reg(writer.supports(), writer.writer());
@@ -1764,13 +1780,9 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
         runs.add(run);
         StringBuilder builder = run.getBuilder();
         builder.append("SELECT * FROM system.tables");
-        configs.and("TABLE_SCHEMA", query.getSchemaName());
-        configs.and(Compare.LIKE_SIMPLE,"TABLE_NAME", objectName(runtime, query.getName()));
-        List<String> tps = names(Table.types(types));
-        if(tps.isEmpty()){
-            tps.add("BASE TABLE");
-        }
-        configs.in("TABLE_TYPE", tps);
+        configs.and("database", query.getSchemaName());
+        configs.and(Compare.LIKE_SIMPLE,"name", query.getName());
+        //List<String> tps = names(Table.types(types));
         return runs;
     }
 
@@ -1782,21 +1794,22 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
     @Override
     public MetadataFieldRefer initTableFieldRefer() {
         MetadataFieldRefer refer = new MetadataFieldRefer(Table.class);
-        refer.map(Table.FIELD_NAME,  "TABLE_NAME");
-        refer.map(Table.FIELD_SCHEMA, "TABLE_SCHEMA");
-        refer.map(Table.FIELD_TYPE, "TABLE_TYPE");
-        refer.map(Table.FIELD_ENGINE, "ENGINE");
-        refer.map(Table.FIELD_OBJECT_ID, "OBJECT_ID");
-        refer.map(Table.FIELD_DATA_ROWS, "TABLE_ROWS");
-        refer.map(Table.FIELD_COLLATE, "TABLE_COLLATION");
-        refer.map(Table.FIELD_DATA_LENGTH, "DATA_LENGTH");
-        refer.map(Table.FIELD_DATA_FREE, "DATA_FREE");
-        refer.map(Table.FIELD_INCREMENT, "AUTO_INCREMENT");
-        refer.map(Table.FIELD_INDEX_LENGTH, "INDEX_LENGTH");
-        refer.map(Table.FIELD_CREATE_TIME, "CREATE_TIME");
-        refer.map(Table.FIELD_UPDATE_TIME, "UPDATE_TIME");
-        refer.map(Table.FIELD_TEMPORARY, "IS_TEMPORARY");
-        refer.map(Table.FIELD_COMMENT, "TABLE_COMMENT");
+        refer.map(Table.FIELD_NAME,  "name");
+        refer.map(Table.FIELD_SCHEMA, "database");
+        //refer.map(Table.FIELD_TYPE, "TABLE_TYPE");
+        refer.map(Table.FIELD_ENGINE, "engine");
+        refer.map(Table.FIELD_OBJECT_ID, "uuid");
+        refer.map(Table.FIELD_DATA_ROWS, "total_rows");
+        //refer.map(Table.FIELD_COLLATE, "TABLE_COLLATION");
+        refer.map(Table.FIELD_DATA_LENGTH, "total_bytes");
+        refer.map(Table.FIELD_DATA_FREE, "lifetime_bytes");
+        //refer.map(Table.FIELD_INCREMENT, "AUTO_INCREMENT");
+        //refer.map(Table.FIELD_INDEX_LENGTH, "INDEX_LENGTH");
+        refer.map(Table.FIELD_CREATE_TIME, "metadata_modification_time");
+        refer.map(Table.FIELD_UPDATE_TIME, "metadata_modification_time");
+        refer.map(Table.FIELD_TEMPORARY, "is_temporary");
+        refer.map(Table.FIELD_COMMENT, "comment");
+        refer.map(Table.FIELD_DDL, "create_table_query");
         return refer;
     }
 
@@ -2375,7 +2388,16 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
      */
     @Override
     public List<Run> buildQueryColumnsRun(DataRuntime runtime,  boolean metadata, Column query, ConfigStore configs) throws Exception {
-        return super.buildQueryColumnsRun(runtime, metadata, query, configs);
+        List<Run> runs = new ArrayList<>();
+        Run run = new SimpleRun(runtime, configs);
+        runs.add(run);
+        StringBuilder builder = run.getBuilder();
+        builder.append("SELECT * FROM system.columns");
+        configs.and("database", query.getSchemaName());
+        configs.and("table", query.getTableName());
+        configs.and(Compare.LIKE_SIMPLE,"name", query.getName());
+        //List<String> tps = names(Table.types(types));
+        return runs;
     }
 
     /**
@@ -2399,7 +2421,28 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
      */
     @Override
     public MetadataFieldRefer initColumnFieldRefer() {
-        return super.initColumnFieldRefer();
+        MetadataFieldRefer refer = new MetadataFieldRefer(Column.class);
+        refer.map(Column.FIELD_NAME, "name");
+        refer.map(Column.FIELD_CATALOG, "");//忽略
+        refer.map(Column.FIELD_SCHEMA, "database");
+        refer.map(Column.FIELD_TABLE, "table");
+       //refer.map(Column.FIELD_NULLABLE, "IS_NULLABLE");
+       //refer.map(Column.FIELD_CHARSET, "CHARACTER_SET_NAME");
+       //refer.map(Column.FIELD_COLLATE, "COLLATION_NAME");
+        refer.map(Column.FIELD_TYPE, "type");
+        refer.map(Column.FIELD_POSITION, "position");
+        refer.map(Column.FIELD_COMMENT, "comment");
+        //refer.map(Column.FIELD_DEFAULT_VALUE, "COLUMN_DEFAULT");
+
+        //refer.map(Column.FIELD_AUTO_INCREMENT_CHECK, "EXTRA");
+        //refer.map(Column.FIELD_AUTO_INCREMENT_CHECK_VALUE, "auto_increment");
+
+        //refer.map(Column.FIELD_ON_UPDATE_CHECK, "EXTRA");
+        //refer.map(Column.FIELD_ON_UPDATE_CHECK_VALUE, ".*on update.*");
+
+        refer.map(Column.FIELD_PRIMARY_CHECK,"is_in_primary_key");
+        refer.map(Column.FIELD_PRIMARY_CHECK_VALUE,"1");
+        return refer;
     }
 
     /**
