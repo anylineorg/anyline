@@ -2432,7 +2432,7 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
         refer.map(Column.FIELD_TYPE, "type");
         refer.map(Column.FIELD_POSITION, "position");
         refer.map(Column.FIELD_COMMENT, "comment");
-        //refer.map(Column.FIELD_DEFAULT_VALUE, "COLUMN_DEFAULT");
+        refer.map(Column.FIELD_DEFAULT_VALUE, "default_expression");
 
         //refer.map(Column.FIELD_AUTO_INCREMENT_CHECK, "EXTRA");
         //refer.map(Column.FIELD_AUTO_INCREMENT_CHECK_VALUE, "auto_increment");
@@ -2870,12 +2870,12 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
      */
     @Override
     public List<Run> buildQueryIndexesRun(DataRuntime runtime, boolean greedy, Index query) {
-        return super.buildQueryIndexesRun(runtime, greedy, query);
+        return new ArrayList<>();
     }
 
     @Override
     public List<Run> buildQueryIndexesRun(DataRuntime runtime, boolean greedy,  Collection<? extends Table> tables) {
-        return super.buildQueryIndexesRun(runtime, greedy, tables);
+        return new ArrayList<>();
     }
 
     /**
@@ -3746,11 +3746,51 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param meta 表
      * @return runs
-     * @throws Exception
+     * @throws Exception Exception
      */
     @Override
     public List<Run> buildCreateRun(DataRuntime runtime, Table meta) throws Exception {
-        return super.buildCreateRun(runtime, meta);
+        List<Run> runs = new ArrayList<>();
+        if(BasicUtil.isEmpty(meta.getEngine())){
+            throw new CommandException("未配置tab.engine");
+        }
+        Run run = new SimpleRun(runtime);
+        runs.add(run);
+        StringBuilder builder = run.getBuilder();
+        builder.append("CREATE ").append(keyword(meta)).append(" ");
+        checkTableExists(runtime, builder, false);
+        name(runtime, builder, meta);
+        //列,索引
+        body(runtime, builder, meta);
+        //索引
+        indexes(runtime, builder, meta);
+        //继承表
+        inherit(runtime, builder, meta);
+        //引擎
+        engine(runtime, builder, meta);
+        //主键(注意这里的顺序与父类不一样)
+        primary(builder, meta);
+        //编码方式
+        charset(runtime, builder, meta);
+        //keys type
+        keys(runtime, builder, meta);
+        //注释
+        comment(runtime, builder, meta);
+        //分表
+        partitionBy(runtime, builder, meta);
+        partitionFor(runtime, builder, meta);
+        //分桶方式
+        distribution(runtime, builder, meta);
+        //物化视图
+        materialize(runtime, builder, meta);
+        //扩展属性
+        property(runtime, builder, meta);
+
+        runs.addAll(buildAppendCommentRun(runtime, meta));
+        runs.addAll(buildAppendColumnCommentRun(runtime, meta));
+        runs.addAll(buildAppendPrimaryRun(runtime, meta));
+        runs.addAll(buildAppendIndexRun(runtime, meta));
+        return runs;
     }
 
     /**
@@ -3881,6 +3921,11 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
      */
     @Override
     public StringBuilder primary(DataRuntime runtime, StringBuilder builder, Table meta) {
+        //这里在在列之后的主键 不要实现
+        return builder;
+    }
+    //在engine后
+    protected void primary(StringBuilder builder, Table meta){
         PrimaryKey primary = meta.getPrimaryKey();
         LinkedHashMap<String, Column> pks = null;
         if(null != primary) {
@@ -3889,7 +3934,7 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
             pks = meta.primarys();
         }
         if(!pks.isEmpty()) {//不支持单列主键时在列名上设置
-            builder.append(",PRIMARY KEY (");
+            builder.append(" PRIMARY KEY (");
             boolean first = true;
             Column.sort(primary.getPositions(), pks);
             for(Column pk:pks.values()) {
@@ -3905,7 +3950,6 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
             }
             builder.append(")");
         }
-        return builder;
     }
 
     /**
