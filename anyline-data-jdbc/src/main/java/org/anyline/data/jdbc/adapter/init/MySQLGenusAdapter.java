@@ -7451,7 +7451,6 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         return new String[]{schema, null};
     }
     public String insertHead(ConfigStore configs) {
-
         Boolean override = null;
         if(null != configs) {
             override = configs.override();

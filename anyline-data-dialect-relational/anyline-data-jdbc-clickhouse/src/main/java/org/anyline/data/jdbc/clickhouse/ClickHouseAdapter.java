@@ -2412,7 +2412,17 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
      */
     @Override
     public List<Run> buildQueryColumnsRun(DataRuntime runtime, boolean metadata, Collection<? extends Table> tables, Column query, ConfigStore configs) throws Exception {
-        return super.buildQueryColumnsRun(runtime, metadata, tables, query, configs);
+        List<Run> runs = new ArrayList<>();
+        Run run = new SimpleRun(runtime, configs);
+        runs.add(run);
+        StringBuilder builder = run.getBuilder();
+        builder.append("SELECT * FROM system.columns");
+        configs.and("database", query.getSchemaName());
+        configs.and(Compare.LIKE_SIMPLE,"name", query.getName());
+        List<String> names = Table.names(tables);
+        configs.in("table", names);
+        configs.order("table").order("position");
+        return runs;
     }
 
     /**
@@ -2427,7 +2437,7 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
         refer.map(Column.FIELD_CATALOG, "");//忽略
         refer.map(Column.FIELD_SCHEMA, "database");
         refer.map(Column.FIELD_TABLE, "table");
-       //refer.map(Column.FIELD_NULLABLE, "IS_NULLABLE");
+        refer.map(Column.FIELD_NULLABLE, "IS_NULLABLE"); //init之前设置一下标记
        //refer.map(Column.FIELD_CHARSET, "CHARACTER_SET_NAME");
        //refer.map(Column.FIELD_COLLATE, "COLLATION_NAME");
         refer.map(Column.FIELD_TYPE, "type");
@@ -2527,6 +2537,12 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
      */
     @Override
     public <T extends Column> T init(DataRuntime runtime, int index, T meta, Column query, DataRow row) {
+        String type = row.getString(Column.FIELD_TYPE);
+        if(null != type && type.contains("Nullable(")){
+            type = type.substring(9, type.length()-1);
+            row.put(Column.FIELD_TYPE, type);
+            row.put("IS_NULLABLE", true);
+        }
         return super.init(runtime, index, meta, query, row);
     }
 
@@ -2686,7 +2702,7 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
      */
     @Override
     public List<Run> buildQueryPrimaryRun(DataRuntime runtime, boolean greedy,  PrimaryKey query) throws Exception {
-        return super.buildQueryPrimaryRun(runtime, greedy, query);
+        return new ArrayList<>();
     }
 
     /**
@@ -4784,7 +4800,17 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
      */
     @Override
     public List<Run> buildAlterRun(DataRuntime runtime, Column meta, boolean slice) throws Exception {
-        return super.buildAlterRun(runtime, meta, slice);
+        List<Run> runs = new ArrayList<>();
+        boolean rename = meta.isRename();
+        if(rename){
+            //重命名的单独生成
+            runs.addAll(buildRenameRun(runtime, meta, slice));
+            meta.setName(meta.getUpdate().getName());
+            runs.addAll(buildAlterRun(runtime, meta, slice));
+            return runs;
+        }else{
+            return super.buildAlterRun(runtime, meta, slice);
+        }
     }
 
     /**
@@ -4810,7 +4836,14 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
      */
     @Override
     public List<Run> buildRenameRun(DataRuntime runtime, Column meta, boolean slice) throws Exception {
-        return super.buildRenameRun(runtime, meta, slice);
+        List<Run> runs = new ArrayList<>();
+        Run run = new SimpleRun(runtime);
+        runs.add(run);
+        StringBuilder builder = run.getBuilder();
+        builder.append("ALTER TABLE ");
+        name(runtime,builder, meta.getTable());
+        builder.append(" RENAME COLUMN ").append(meta.getName()).append(" TO ").append(meta.getUpdate().getName());
+        return runs;
     }
 
     /**
@@ -5092,7 +5125,7 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
      */
     @Override
     public StringBuilder onupdate(DataRuntime runtime, StringBuilder builder, Column meta) {
-        return super.onupdate(runtime, builder, meta);
+        return builder;
     }
 
     /**
@@ -5431,7 +5464,7 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
      */
     @Override
     public List<Run> buildAddRun(DataRuntime runtime, PrimaryKey meta, boolean slice) throws Exception {
-        return super.buildAddRun(runtime, meta, slice);
+        return new ArrayList<>();
     }
 
     /**
@@ -5445,7 +5478,7 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
      */
     @Override
     public List<Run> buildAlterRun(DataRuntime runtime, PrimaryKey origin, PrimaryKey meta, boolean slice) throws Exception {
-        return super.buildAlterRun(runtime, origin, meta, slice);
+        return new ArrayList<>();
     }
 
     /**
@@ -5458,7 +5491,7 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
      */
     @Override
     public List<Run> buildDropRun(DataRuntime runtime, PrimaryKey meta, boolean slice) throws Exception {
-        return super.buildDropRun(runtime, meta, slice);
+        return new ArrayList<>();
     }
 
     /**
@@ -5471,7 +5504,7 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
      */
     @Override
     public List<Run> buildRenameRun(DataRuntime runtime, PrimaryKey meta) throws Exception {
-        return super.buildRenameRun(runtime, meta);
+        return new ArrayList<>();
     }
 
     /* *****************************************************************************************************************
@@ -6483,7 +6516,7 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
 	}
 
 	public String insertHead(ConfigStore configs) {
-		return super.insertHead(configs);
+        return "INSERT INTO ";
 	}
 	public String insertFoot(ConfigStore configs, LinkedHashMap<String, Column> columns) {
 		return super.insertFoot(configs, columns);
