@@ -76,7 +76,7 @@ public enum ElasticSearchTypeMetadataAlias implements TypeMetadataAlias {
 	BPCHARBYTE                    ("BPCHARBYTE"                     ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	BYTEA                         ("BYTEA"                          ,StandardTypeMetadata.BINARY                        , "binary"        , "binary"        , null   , null   , null   ,   0,   1,   1),
 	CHAR                          ("CHAR"                           ,StandardTypeMetadata.TEXT                          , "text"          , "text"          , null   , null   , null   ,   1,   1,   1),
-	CHARACTER                     ("CHARACTER"                      ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
+	CHARACTER                     ("CHARACTER"                      ,StandardTypeMetadata.VARCHAR                       ,   0,   1,   1),
 	CID                           ("CID"                            ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	CIDR                          ("CIDR"                           ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	CIRCLE                        ("CIRCLE"                         ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),

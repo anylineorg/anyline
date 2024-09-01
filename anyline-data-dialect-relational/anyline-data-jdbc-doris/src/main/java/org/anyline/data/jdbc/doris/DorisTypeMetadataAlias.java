@@ -61,7 +61,7 @@ public enum DorisTypeMetadataAlias implements TypeMetadataAlias {
 	BPCHARBYTE                    ("BPCHARBYTE"                     ,StandardTypeMetadata.NONE                          , null       , null            , "CHARACTER_MAXIMUM_LENGTH" , null                 , null            ,  -1,  -1,  -1),
 	BYTE                          ("BYTE"                           ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	BYTEA                         ("BYTEA"                          ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
-	CHARACTER                     ("CHARACTER"                      ,StandardTypeMetadata.NONE                          , null       , null            , "CHARACTER_MAXIMUM_LENGTH" , null                 , null            ,  -1,  -1,  -1),
+	CHARACTER                     ("CHARACTER"                      ,StandardTypeMetadata.VARCHAR                       , null       , null            , "CHARACTER_MAXIMUM_LENGTH" , null                 , null            ,   0,   1,   1),
 	CID                           ("CID"                            ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	CIDR                          ("CIDR"                           ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	CIRCLE                        ("CIRCLE"                         ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),

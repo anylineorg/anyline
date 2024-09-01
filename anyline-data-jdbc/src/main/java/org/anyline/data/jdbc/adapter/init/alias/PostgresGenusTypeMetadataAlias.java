@@ -88,7 +88,7 @@ public enum PostgresGenusTypeMetadataAlias implements TypeMetadataAlias {
 	BPCHAR                        ("BPCHAR"                         ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	BPCHARBYTE                    ("BPCHARBYTE"                     ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	BYTE                          ("BYTE"                           ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
-	CHARACTER                     ("CHARACTER"                      ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
+	CHARACTER                     ("CHARACTER"                      ,StandardTypeMetadata.VARCHAR                       ,   0,   1,   1),
 	CID                           ("CID"                            ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	CIDR                          ("CIDR"                           ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	CIRCLE                        ("CIRCLE"                         ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),

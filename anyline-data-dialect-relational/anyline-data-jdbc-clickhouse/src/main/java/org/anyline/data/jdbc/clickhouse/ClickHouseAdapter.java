@@ -24,6 +24,7 @@ import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.run.*;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
+import org.anyline.exception.CommandException;
 import org.anyline.exception.NotSupportException;
 import org.anyline.metadata.*;
 import org.anyline.metadata.refer.MetadataFieldRefer;
@@ -37,7 +38,7 @@ import java.sql.Connection;
 import java.util.*;
 @Component("anyline.data.jdbc.adapter.clickhouse")
 public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter {
-    
+    public static String DEFAULT_TABLE_ENGINE = "MergeTree()";
     public DatabaseType type() {
         return DatabaseType.ClickHouse;
     }
@@ -3752,7 +3753,10 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
     public List<Run> buildCreateRun(DataRuntime runtime, Table meta) throws Exception {
         List<Run> runs = new ArrayList<>();
         if(BasicUtil.isEmpty(meta.getEngine())){
-            throw new CommandException("未配置tab.engine");
+            meta.setEngine(DEFAULT_TABLE_ENGINE);
+        }
+        if(BasicUtil.isEmpty(meta.getEngine())){
+            throw new CommandException("未配置table.engine");
         }
         Run run = new SimpleRun(runtime);
         runs.add(run);
