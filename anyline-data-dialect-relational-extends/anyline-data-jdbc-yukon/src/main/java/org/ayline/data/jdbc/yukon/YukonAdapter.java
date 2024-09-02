@@ -41,7 +41,7 @@ import java.util.Map;
 @Component("anyline.data.jdbc.adapter.yukon")
 public class YukonAdapter extends PostgresGenusAdapter {
     public DatabaseType type() {
-        return DatabaseType.ClickHouse;
+        return DatabaseType.Yukon;
     }
 
     public YukonAdapter() {
