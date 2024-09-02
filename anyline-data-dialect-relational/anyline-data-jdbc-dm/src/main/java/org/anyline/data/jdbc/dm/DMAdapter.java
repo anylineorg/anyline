@@ -1562,7 +1562,9 @@ public class DMAdapter extends OracleGenusAdapter implements JDBCAdapter {
 		SimpleRun run = new SimpleRun(runtime);
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();
+		ConfigStore configs = run.getConfigs();
 		builder.append("select a.name as user_name, b.name as schema_name from sysobjects a inner join sysobjects b on a.id = b.pid where b.subtype$ is null");
+		configs.and(Compare.LIKE_SIMPLE, "schema_name", query.getName());
 		return runs;
 	}
 

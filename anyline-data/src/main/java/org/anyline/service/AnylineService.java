@@ -2103,7 +2103,10 @@ public interface AnylineService<E>{
 		<T extends Table> LinkedHashMap<String, T> tables(Table query, int types, int struct, ConfigStore configs);
 
 		default <T extends Table> LinkedHashMap<String, T> tables(Table query) {
-			return tables(query, Table.TYPE.NORMAL.value, Metadata.TYPE.ALL.value(), new DefaultConfigStore());
+			return tables(query, Table.TYPE.NORMAL.value, 0, new DefaultConfigStore());
+		}
+		default <T extends Table> LinkedHashMap<String, T> tables(Table query, ConfigStore configs) {
+			return tables(query, Table.TYPE.NORMAL.value, 0, configs);
 		}
 		default <T extends Table> LinkedHashMap<String, T> tables(Catalog catalog, Schema schema, String name, int types, int struct, ConfigStore configs) {
 			Table query = new Table(catalog, schema, name);

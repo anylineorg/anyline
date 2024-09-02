@@ -1775,6 +1775,8 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         StringBuilder builder = run.getBuilder();
         ConfigStore configs = run.getConfigs();
         builder.append("SELECT * FROM information_schema.schemata");
+        configs.and(Compare.LIKE_SIMPLE, "schema_name", query.getName());
+        configs.and("catalog_name", query.getCatalogName());
         runs.add(run);
         return runs;
     }

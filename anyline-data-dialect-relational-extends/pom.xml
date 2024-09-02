@@ -35,7 +35,8 @@
 		<module>anyline-data-jdbc-uxdb</module>				<!--优炫数据库-->
 		<module>anyline-data-jdbc-xigemadb</module>			<!--华胜信泰-->
 		<module>anyline-data-jdbc-vastbase</module>			<!--海量数据-->
-		<module>anyline-data-jdbc-yidb</module>				<!--天翼数智-->
+		<module>anyline-data-jdbc-yidb</module>
+        <module>anyline-data-jdbc-yukon</module>                <!--天翼数智-->
 	</modules>
 	<build>
 		<plugins>

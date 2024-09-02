@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package org.anyline.data.jdbc.xigemadb;
+package org.ayline.data.jdbc.yukon;
 
 import org.anyline.annotation.Component;
-import org.anyline.data.jdbc.informix.InformixAdapter;
+import org.anyline.data.jdbc.adapter.init.PostgresGenusAdapter;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.run.*;
@@ -38,16 +38,16 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-@Component("anyline.data.jdbc.adapter.xigemadb")
-public class XigemaDBAdapter extends InformixAdapter {
-    
+@Component("anyline.data.jdbc.adapter.yukon")
+public class YukonAdapter extends PostgresGenusAdapter {
     public DatabaseType type() {
-        return DatabaseType.xigemaDB;
+        return DatabaseType.ClickHouse;
     }
-    public XigemaDBAdapter(){
+
+    public YukonAdapter() {
         super();
     }
-    
+
     private String delimiter;
 
     /* *****************************************************************************************************************
@@ -8518,4 +8518,4 @@ public class XigemaDBAdapter extends InformixAdapter {
         return super.buildRevokeRun(runtime, role, privileges);
     }
 
-} 
+}
