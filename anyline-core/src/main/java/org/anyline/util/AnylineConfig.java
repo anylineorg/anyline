@@ -60,7 +60,6 @@ public abstract class AnylineConfig {
 	 */
 	protected synchronized static void load(Hashtable<String, AnylineConfig> instances, Class<? extends AnylineConfig> clazz, String fileName, String... compatibles) {
 		try {
-
 			int configSize = 0;
 			if ("jar".equals(ConfigTable.getProjectProtocol())) {
 				InputStream in = null;
@@ -109,7 +108,7 @@ public abstract class AnylineConfig {
 					}
 				}
 			}
-			log.info("[解析配置文件][文件:{}][数量:{}/{}][请参考:http://doc.anyline.org或源码中resources/{}]", fileName, configSize, instances.size(), fileName);
+			//log.info("[解析配置文件][文件:{}][数量:{}/{}][请参考:http://doc.anyline.org或源码中resources/{}]", fileName, configSize, instances.size(), fileName);
 
 		} catch (Exception e) {
 			log.error("[解析配置文件][file:{}][配置文件解析异常:{}]", fileName, e.getMessage());
