@@ -46,7 +46,7 @@ import java.util.Map;
 public class GaussDBAdapter extends PostgresGenusAdapter implements JDBCAdapter {
     
     public DatabaseType type() {
-        return DatabaseType.GaussDB100;
+        return DatabaseType.GaussDB;
     }
 
     private String delimiter;
