@@ -786,6 +786,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public RunValue createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder) {
+        RunValue rv = new RunValue();
         int code = compare.getCode();
         if(code > 100) {
             builder.append(" NOT");
@@ -798,18 +799,33 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         // NOT A%  151
         // NOT %A  152
         String formula = compare.formula();
-        if(compare == Compare.LIKE_SIMPLE){
-            builder.append(formula).append("?");
-        }else if(code == 50) {
-            builder.append(formula).append(concat(runtime, "'%'","?","'%'"));
-        }else if(code == 51) {
-            builder.append(formula).append(concat(runtime, "?","'%'"));
-        }else if(code == 52) {
-            builder.append(formula).append(concat(runtime, "'%'","?"));
+        if(null == value){
+            value = "";
         }
-        RunValue run = new RunValue();
-        run.setValue(value);
-        return run;
+        if(placeholder){
+            if(compare == Compare.LIKE_SIMPLE){
+                builder.append(formula).append("?");
+            }else if(code == 50) {
+                builder.append(formula).append(concat(runtime, "'%'","?","'%'"));
+            }else if(code == 51) {
+                builder.append(formula).append(concat(runtime, "?","'%'"));
+            }else if(code == 52) {
+                builder.append(formula).append(concat(runtime, "'%'","?"));
+            }
+            rv.setValue(value);
+        }else{
+            rv.setPlaceholder(false);
+            if(compare == Compare.LIKE_SIMPLE){
+                builder.append(formula).append("'").append(value).append("'");
+            }else if(code == 50) {
+                builder.append(formula).append("'%").append(value).append("%'");
+            }else if(code == 51) {
+                builder.append(formula).append("'").append(value).append("%'");
+            }else if(code == 52) {
+                builder.append(formula).append("'%").append(value).append("'");
+            }
+        }
+        return rv;
     }
 
     /**
