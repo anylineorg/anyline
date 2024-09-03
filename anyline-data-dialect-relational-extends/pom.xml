@@ -38,7 +38,8 @@
 		<module>anyline-data-jdbc-yidb</module>
         <module>anyline-data-jdbc-yukon</module>
 		<module>anyline-data-jdbc-memfiredb</module>
-		<module>anyline-data-jdbc-ymatrix</module>                <!--天翼数智-->
+		<module>anyline-data-jdbc-ymatrix</module>
+        <module>anyline-data-jdbc-selectdb</module>                <!--天翼数智-->
 	</modules>
 	<build>
 		<plugins>

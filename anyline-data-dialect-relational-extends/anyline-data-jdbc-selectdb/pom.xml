@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
     <modelVersion>4.0.0</modelVersion>
+
     <parent>
         <groupId>org.anyline</groupId>
         <artifactId>anyline-dependency</artifactId>
@@ -9,16 +11,15 @@
         <relativePath>../../anyline-dependency/pom.xml</relativePath>
     </parent>
 
-    <artifactId>anyline-data-jdbc-starrocks</artifactId>
+    <artifactId>anyline-data-jdbc-selectdb</artifactId>
     <packaging>jar</packaging>
-    <name>anyline-data-jdbc-starrocks</name>
-    <url>http://www.anyline.org/starrocks</url>
-
+    <name>anyline-data-jdbc-selectdb</name>
+    <url>http://www.anyline.org/selectdb</url>
+    <description>SelectDB</description>
     <dependencies>
         <dependency>
             <groupId>org.anyline</groupId>
             <artifactId>anyline-data-jdbc-doris</artifactId>
         </dependency>
-
     </dependencies>
 </project>

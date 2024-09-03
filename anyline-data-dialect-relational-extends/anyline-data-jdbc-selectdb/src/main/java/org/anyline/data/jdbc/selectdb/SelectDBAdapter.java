@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package org.anyline.data.jdbc.starrocks;
+package org.anyline.data.jdbc.selectdb;
 
 import org.anyline.annotation.Component;
-import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.doris.DorisAdapter;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
@@ -39,17 +38,15 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-@Component("anyline.data.jdbc.adapter.starrocks")
-public class StarRocksAdapter extends DorisAdapter implements JDBCAdapter {
-    public DatabaseType type() {
-        return DatabaseType.StarRocks;
-    }
+@Component("anyline.data.jdbc.adapter.selectdb")
+public class SelectDBAdapter extends DorisAdapter {
 
-    public StarRocksAdapter() {
+    public DatabaseType type() {
+        return DatabaseType.SelectDB;
+    }
+    public SelectDBAdapter() {
         super();
-        delimiterFr = "`";
-        delimiterTo = "`";
-        for (StarRocksTypeMetadataAlias alias: StarRocksTypeMetadataAlias.values()) {
+        for (SelectDBTypeMetadataAlias alias: SelectDBTypeMetadataAlias.values()) {
             reg(alias);
             alias(alias.name(), alias.standard());
         }
@@ -8522,5 +8519,4 @@ public class StarRocksAdapter extends DorisAdapter implements JDBCAdapter {
         return super.buildRevokeRun(runtime, role, privileges);
     }
 
-
-}
+} 

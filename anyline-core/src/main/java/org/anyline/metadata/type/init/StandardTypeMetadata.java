@@ -464,6 +464,9 @@ public enum StandardTypeMetadata implements TypeMetadata {
             return value;
         }
     }
+    , DATEV2(CATEGORY.DATE, "DATEV2", null, java.sql.Date.class, 1, 1, 1, SelectDB) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {return DATE.write(value, def, placeholder);}
+    }
     , DATE_NANOS(CATEGORY.DATE, "date_nanos", null, java.sql.Date.class, 1, 1, 1, ElasticSearch) {
         public Object write(Object value, Object def, boolean array, boolean placeholder) {
             if(null == value) {
@@ -503,6 +506,9 @@ public enum StandardTypeMetadata implements TypeMetadata {
             }
             return value;
         }
+    }
+    , DATETIMEV2(CATEGORY.DATETIME, "DATETIMEV2", null, java.sql.Timestamp.class, 1, 1, 1, SelectDB) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {return DATETIME.write(value, def, placeholder);}
     }
     , DATETIME2(CATEGORY.DATETIME, "DATETIME2", null, java.sql.Timestamp.class, 1, 1, 1, MSSQL) {
         public Object write(Object value, Object def, boolean array, boolean placeholder) {return DATETIME.write(value, def, placeholder);}

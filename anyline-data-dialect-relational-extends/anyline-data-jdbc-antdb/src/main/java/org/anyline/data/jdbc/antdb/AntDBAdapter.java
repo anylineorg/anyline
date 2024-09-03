@@ -44,7 +44,7 @@ public class AntDBAdapter extends PostgresGenusAdapter {
     public DatabaseType type() {
         return DatabaseType.AntDB;
     }
-    public AntDBAdapter {
+    public AntDBAdapter() {
         super();
     }
 
