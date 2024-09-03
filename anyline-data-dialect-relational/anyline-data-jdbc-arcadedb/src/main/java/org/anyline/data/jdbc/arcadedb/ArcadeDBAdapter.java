@@ -1,24 +1,7 @@
-/*
- * Copyright 2006-2023 www.anyline.org
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-package org.anyline.data.jdbc.yugabyte;
+package org.anyline.data.jdbc.arcadedb;
 
 import org.anyline.annotation.Component;
-import org.anyline.data.jdbc.adapter.JDBCAdapter;
-import org.anyline.data.jdbc.adapter.init.PostgresGenusAdapter;
+import org.anyline.data.jdbc.adapter.init.MySQLGenusAdapter;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.run.*;
@@ -39,15 +22,12 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-@Component("anyline.data.jdbc.adapter.yugabyte")
-public class YugabyteAdapter extends PostgresGenusAdapter implements JDBCAdapter {
-    
+@Component("anyline.data.jdbc.adapter.arcadedb")
+public class ArcadeDBAdapter extends MySQLGenusAdapter {
     public DatabaseType type() {
-        return DatabaseType.YugabyteDB;
+        return DatabaseType.ArcadeDB;
     }
-    
-    private String delimiter;
-    public YugabyteAdapter(){
+    public ArcadeDBAdapter(){
         super();
     }
     /* *****************************************************************************************************************
@@ -8518,5 +8498,4 @@ public class YugabyteAdapter extends PostgresGenusAdapter implements JDBCAdapter
         return super.buildRevokeRun(runtime, role, privileges);
     }
 
-
-} 
+}

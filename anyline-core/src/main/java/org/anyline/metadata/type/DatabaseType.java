@@ -384,7 +384,7 @@ public enum DatabaseType implements Serializable {
         Sedna                 ("Sedna"                                     , DatabaseOrigin.None       , KEY_CASE.SRC   , 843  , null, null                , ""                            ),
         SelectDB              ("SelectDB"                                  , DatabaseOrigin.MySQL      , KEY_CASE.SRC   , 900  , null, "com.mysql.jdbc.Driver", "jdbc:mysql://{host}:{port:3306}/{database}"),
         SenseiDB              ("SenseiDB"                                  , DatabaseOrigin.None       , KEY_CASE.SRC   , 643  , null, null                , ""                            ),
-        Sequoiadb             ("Sequoiadb(巨杉数据库)"                          , DatabaseOrigin.MySQL      , KEY_CASE.SRC   , 730  , null, "com.mysql.jdbc.Driver", "jdbc:mysql://{host}:{port:3306}/{database}"),
+        SequoiaDB             ("SequoiaDB(巨杉数据库)"                          , DatabaseOrigin.MySQL      , KEY_CASE.SRC   , 730  , null, "com.mysql.jdbc.Driver", "jdbc:mysql://{host}:{port:3306}/{database}"),
         Siaqodb               ("Siaqodb"                                   , DatabaseOrigin.None       , KEY_CASE.SRC   , 637  , null, null                , ""                            ),
         SingleStore           ("SingleStore"                               , DatabaseOrigin.None       , KEY_CASE.SRC   , 927  , null, "com.singlestore.jdbc.Driver", "jdbc:singlestore://{host}:{port}/{database}"),
         SinoDB                ("星瑞格"                                       , DatabaseOrigin.None       , KEY_CASE.SRC   , 900  , null, "com.sinodbms.jdbc.IfxDriver", "jdbc:sinodbms-sqli://{host}:{port}/{database}:sinodbmsserver={server}"),

@@ -651,6 +651,23 @@ public class DefaultConfigStore implements ConfigStore {
 	public ConfigStore and(EMPTY_VALUE_SWITCH swt, Compare compare, String prefix, String var, Object value, boolean overCondition, boolean overValue) {
 		if(null == compare) {
 			compare = Compare.AUTO;
+			if(null == value){
+				compare = Compare.EQUAL;
+			}
+		}
+
+		if(compare == Compare.AUTO){
+			if(value instanceof Collection){
+				Collection list = (Collection) value;
+				if(list.size() > 1){
+					compare = Compare.IN;
+				}
+			}else if(value.getClass().isArray() && Array.getLength(value) > 1){
+				compare = Compare.IN;
+			}
+		}
+		if(compare == Compare.AUTO){
+			compare = Compare.EQUAL;
 		}
 		int compareCode = compare.getCode();
 		if(null == prefix && null != var && var.contains(".")

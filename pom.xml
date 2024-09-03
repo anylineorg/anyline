@@ -55,7 +55,8 @@
 		<module>anyline-data-dialect-time-series</module>
 		<module>anyline-data-dialect-vector</module>
 		<module>anyline-data-dialect-wide-column</module>
-	</modules>
+        <module>anyline-data-dialect-relational/anyline-data-jdbc-arcadedb</module>
+    </modules>
 	<build>
 		<plugins>
 			<plugin>

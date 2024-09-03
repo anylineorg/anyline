@@ -47,11 +47,13 @@
 		<module>anyline-data-jdbc-postgis</module>
 		<module>anyline-data-jdbc-postgresql</module>
 		<module>anyline-data-jdbc-rethinkdb</module>
+		<module>anyline-data-jdbc-sequoiadb</module>					<!--巨杉-->
 		<module>anyline-data-jdbc-sinodb</module>						<!--星瑞格-->
 		<module>anyline-data-jdbc-sqlite</module>
 		<module>anyline-data-jdbc-starrocks</module>
 		<module>anyline-data-jdbc-sybase</module>
 		<module>anyline-data-jdbc-tidb</module>
+		<module>anyline-data-jdbc-vitess</module>
 		<module>anyline-data-jdbc-voltdb</module>
 		<module>anyline-data-jdbc-xugu</module>							<!--虚谷-->
 		<module>anyline-data-jdbc-yugabyte</module>
