@@ -1921,6 +1921,18 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
     }
 
     /**
+     * Table[结果集封装]<br/>
+     * TableComment 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer initTableCommentFieldRefer() {
+        MetadataFieldRefer refer = new MetadataFieldRefer(TableComment.class);
+        refer.map(TableComment.FIELD_TABLE, "TABLE_NAME");
+        refer.map(TableComment.FIELD_VALUE, "TABLE_COMMENT");
+        return refer;
+    }
+    /**
      * table[结果集封装]<br/>
      * 根据查询结果集构造Table
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
