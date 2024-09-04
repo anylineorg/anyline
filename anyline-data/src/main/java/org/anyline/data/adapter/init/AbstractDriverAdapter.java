@@ -7338,7 +7338,12 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		LinkedHashMap<String, T> views = new LinkedHashMap<>();
 		List<T> list = views(runtime, random, false, query, types, struct, configs);
 		for(T view:list) {
-			views.put(view.getName().toUpperCase(), view);
+            if(view instanceof View) {
+                String name = view.getName();
+                if(null != name) {
+                    views.put(name.toUpperCase(), view);
+                }
+            }
 		}
 		return views;
 	}

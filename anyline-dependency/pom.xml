@@ -66,6 +66,7 @@
 		<milvus-client.version>2.4.2</milvus-client.version>
 		<pinecone-client.version>2.0.0</pinecone-client.version>
 		<hbase-client.version>2.6.0</hbase-client.version>
+		<jdbc-redshift.version>2.1.0.30</jdbc-redshift.version>
 
 		<javax.mail.version>1.5.0-b01</javax.mail.version>
 		<fastjson.version>1.2.83</fastjson.version>
@@ -946,6 +947,11 @@
 				<groupId>com.aliyun.odps</groupId>
 				<artifactId>odps-jdbc</artifactId>
 				<version>${jdbc-odps.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.amazon.redshift</groupId>
+				<artifactId>redshift-jdbc42</artifactId>
+				<version>${jdbc-redshift.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>cn.jpush.api</groupId>

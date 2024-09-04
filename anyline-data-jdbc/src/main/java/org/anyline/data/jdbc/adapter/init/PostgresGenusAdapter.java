@@ -814,6 +814,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
             }
             rv.setValue(value);
         }else{
+            value = BeanUtil.first(value);
             rv.setPlaceholder(false);
             if(compare == Compare.LIKE_SIMPLE){
                 builder.append(formula).append("'").append(value).append("'");

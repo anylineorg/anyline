@@ -49,7 +49,7 @@ public enum DatabaseType implements Serializable {
         AmazonDynamoDB        ("Amazon DynamoDB"                           , DatabaseOrigin.None       , KEY_CASE.SRC   , 983  , null, null                , ""                            ),
         AmazonKeyspaces       ("Amazon Keyspaces"                          , DatabaseOrigin.None       , KEY_CASE.SRC   , 782  , null, null                , ""                            ),
         AmazonNeptune         ("Amazon Neptune"                            , DatabaseOrigin.None       , KEY_CASE.SRC   , 872  , null, null                , ""                            ),
-        AmazonRedshift        ("Amazon Redshift"                           , DatabaseOrigin.None       , KEY_CASE.SRC   , 966  , null, "com.amazon.redshift.jdbc4.Driver", "jdbc:redshift://{host}:{port}/{database}"),
+        Redshift                ("Amazon Redshift"                           , DatabaseOrigin.None       , KEY_CASE.SRC   , 966  , null, "com.amazon.redshift.jdbc4.Driver", "jdbc:redshift://{host}:{port}/{database}"),
         AmazonSimpleDB        ("Amazon SimpleDB"                           , DatabaseOrigin.None       , KEY_CASE.SRC   , 869  , null, null                , ""                            ),
         AmazonTimestream      ("Amazon Timestream"                         , DatabaseOrigin.None       , KEY_CASE.SRC   , 785  , null, null                , ""                            ),
         AnalyticDBMySQL       ("Alibaba Cloud AnalyticDB for MySQL"        , DatabaseOrigin.MySQL      , KEY_CASE.SRC   , 759  , null, "com.mysql.cj.jdbc.Driver", "jdbc:mysql://{host}:{port:3306}/{database}"),

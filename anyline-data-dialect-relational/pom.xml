@@ -15,6 +15,7 @@
 
     <modules>
 		<module>anyline-data-jdbc-access</module>
+		<module>anyline-data-jdbc-arcadedb</module>
 		<module>anyline-data-jdbc-clickhouse</module>
 		<module>anyline-data-jdbc-cloudera</module>
 		<module>anyline-data-jdbc-cockroachdb</module>
@@ -46,6 +47,7 @@
 		<module>anyline-data-jdbc-oscar</module>						<!--神舟通用-->
 		<module>anyline-data-jdbc-postgis</module>
 		<module>anyline-data-jdbc-postgresql</module>
+		<module>anyline-data-jdbc-redshift</module>
 		<module>anyline-data-jdbc-rethinkdb</module>
 		<module>anyline-data-jdbc-sequoiadb</module>					<!--巨杉-->
 		<module>anyline-data-jdbc-sinodb</module>						<!--星瑞格-->

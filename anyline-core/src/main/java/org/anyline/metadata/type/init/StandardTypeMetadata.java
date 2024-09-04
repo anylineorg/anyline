@@ -564,7 +564,12 @@ public enum StandardTypeMetadata implements TypeMetadata {
             return TIME.write(value, def, placeholder);
         }
     }
-   , TIMEZ(CATEGORY.TIME, "TIMEZ", null, java.sql.Time.class, 1, 1, 1, PostgreSQL) {
+    , TIMEZ(CATEGORY.TIME, "TIMEZ", null, java.sql.Time.class, 1, 1, 1, PostgreSQL) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {
+            return TIME.write(value, def, placeholder);
+        }
+    }
+    , TIMETZ(CATEGORY.TIME, "TIMEZ", null, java.sql.Time.class, 1, 1, 1, Redshift) {
         public Object write(Object value, Object def, boolean array, boolean placeholder) {
             return TIME.write(value, def, placeholder);
         }
@@ -670,6 +675,9 @@ public enum StandardTypeMetadata implements TypeMetadata {
             }
             return value;
         }
+    }
+   , VARBYTE(CATEGORY.BYTES, "VARBYTE", null, byte[].class, 1, 1, 1, MySQL) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {return BLOB.write(value, def, placeholder);}
     }
    , LONGBLOB(CATEGORY.BYTES, "LONGBLOB", null, byte[].class, 1, 1, 1, MySQL) {
         public Object write(Object value, Object def, boolean array, boolean placeholder) {return BLOB.write(value, def, placeholder);}
@@ -851,6 +859,7 @@ public enum StandardTypeMetadata implements TypeMetadata {
     , TOKEN_COUNT(CATEGORY.NONE, "token_count", null, null, 1, 1, 1, ElasticSearch)
     , VERSION(CATEGORY.NONE, "version", null, null, 1, 1, 1, ElasticSearch)
     , AGGREGATE_METRIC_DOUBLE(CATEGORY.NONE, "aggregate_metric_double", null, null, 1, 1, 1, ElasticSearch)
+    , SUPER(CATEGORY.NONE, "aggregate_metric_double", null, null, 1, 1, 1, Redshift)
 
     ;
 

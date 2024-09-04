@@ -1159,6 +1159,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
             }
             rv.setValue(value);
         }else{
+            value = BeanUtil.first(value);
             rv.setPlaceholder(false);
             if (compare == Compare.LIKE_SIMPLE) {
                 builder.append(" LIKE '").append(value).append("'");

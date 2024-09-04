@@ -263,6 +263,7 @@ public enum KingBaseTypeMetadataAlias implements TypeMetadataAlias {
 	TIMESTAMP_WITH_LOCAL_ZONE     ("TIMESTAMP WITH LOCAL TIME ZONE" ,StandardTypeMetadata.TIMESTAMPTZ                   , "TIMESTAMPTZ"               , "TIMESTAMPTZ({S})"          , null   , null   , null   ,   1,   1,   1),
 	TIMESTAMP_NTZ                 ("TIMESTAMP_NTZ"                  ,StandardTypeMetadata.TIMESTAMP_WITHOUT_TIME_ZONE   ,   1,   2,   1),
 	TIMESTAMPTZ                   ("TIMESTAMPTZ"                    ,StandardTypeMetadata.TIMESTAMPTZ                   , "TIMESTAMPTZ"               , "TIMESTAMPTZ({S})"          , null   , null   , null   ,   1,   2,   1),
+	TIMETZ                        ("TIMETZ"                         ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	TIMEZ                         ("TIMEZ"                          ,StandardTypeMetadata.TIMESTAMP                     , "TIMESTAMP"                 , "TIMESTAMP({S})"            , null   , null   , null   ,   1,   1,   2),
 	TINYBLOB                      ("TINYBLOB"                       ,StandardTypeMetadata.BLOB                          ,   1,   1,   1),
 	TINYINT                       ("TINYINT"                        ,StandardTypeMetadata.INT2                          ,   1,   1,   1),
@@ -278,6 +279,7 @@ public enum KingBaseTypeMetadataAlias implements TypeMetadataAlias {
 	UNIQUEIDENTIFIER              ("UNIQUEIDENTIFIER"               ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	UNSIGNED_LONG                 ("unsigned_long"                  ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	VARBINARY                     ("VARBINARY"                      ,StandardTypeMetadata.BLOB                          ,   1,   1,   1),
+	VARBYTE                       ("VARBYTE"                        ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	VECTOR                        ("VECTOR"                         ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	VERSION                       ("version"                        ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	YEAR                          ("YEAR"                           ,StandardTypeMetadata.DATE                          ,   1,   1,   1);
