@@ -54,6 +54,21 @@ public class Concat extends BaseBodyTag {
 		super.release();
 		data = null;
 		split = ",";
-	} 
-	 
-} 
+	}
+
+	public Object getData() {
+		return data;
+	}
+
+	public void setData(Object data) {
+		this.data = data;
+	}
+
+	public String getSplit() {
+		return split;
+	}
+
+	public void setSplit(String split) {
+		this.split = split;
+	}
+}
