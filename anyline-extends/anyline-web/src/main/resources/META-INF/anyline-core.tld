@@ -93,6 +93,23 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
+
+	<tag>
+		<name>concat</name>
+		<tagclass>org.anyline.web.tag.Concat</tagclass>
+		<bodycontent>JSP</bodycontent>
+		<info>拼接字符串代替join</info>
+		<attribute>
+			<name>data</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>split</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
 	<tag>
 		<name>join</name>
 		<tagclass>org.anyline.web.tag.Join</tagclass>
