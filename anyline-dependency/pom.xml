@@ -67,6 +67,7 @@
 		<pinecone-client.version>2.0.0</pinecone-client.version>
 		<hbase-client.version>2.6.0</hbase-client.version>
 		<jdbc-redshift.version>2.1.0.30</jdbc-redshift.version>
+		<jdbc-yashandb.version>1.6.1</jdbc-yashandb.version>
 
 		<javax.mail.version>1.5.0-b01</javax.mail.version>
 		<fastjson.version>1.2.83</fastjson.version>
@@ -952,6 +953,11 @@
 				<groupId>com.amazon.redshift</groupId>
 				<artifactId>redshift-jdbc42</artifactId>
 				<version>${jdbc-redshift.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.yashandb</groupId>
+				<artifactId>yashandb-jdbc</artifactId>
+				<version>${jdbc-yashandb.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>cn.jpush.api</groupId>

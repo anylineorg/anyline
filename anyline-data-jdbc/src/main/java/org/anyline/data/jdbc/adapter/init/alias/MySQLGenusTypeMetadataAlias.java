@@ -75,6 +75,7 @@ public enum MySQLGenusTypeMetadataAlias implements TypeMetadataAlias {
 	BOOL                          ("BOOL"                           ,StandardTypeMetadata.BIT                           ,   1,   1,   1),
 	BOOLEAN                       ("BOOLEAN"                        ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	BOX                           ("BOX"                            ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
+	BOX2D                         ("BOX2D"                          ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	BPCHAR                        ("BPCHAR"                         ,StandardTypeMetadata.CHAR                          ,   0,   1,   1),
 	BPCHARBYTE                    ("BPCHARBYTE"                     ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	BYTE                          ("BYTE"                           ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
@@ -137,8 +138,8 @@ public enum MySQLGenusTypeMetadataAlias implements TypeMetadataAlias {
 	INT4RANGE                     ("INT4RANGE"                      ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	INT64                         ("INT64"                          ,StandardTypeMetadata.BIGINT                        ,   1,   1,   1),
 	CLICKHOUSE_INT64              ("Int64"                          ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
-	INT8                          ("INT8"                           ,StandardTypeMetadata.BIGINT                        ,   1,   1,   1),
 	CLICKHOUSE_INT8               ("Int8"                           ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
+	INT8                          ("INT8"                           ,StandardTypeMetadata.BIGINT                        ,   1,   1,   1),
 	INT8RANGE                     ("INT8RANGE"                      ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	INTEGER                       ("INTEGER"                        ,StandardTypeMetadata.INT                           ,   1,   1,   1),
 	INTERVAL                      ("INTERVAL"                       ,StandardTypeMetadata.NONE                          , null       , null            , null                       , "DATETIME_PRECISION" , null            ,  -1,  -1,  -1),
@@ -166,8 +167,8 @@ public enum MySQLGenusTypeMetadataAlias implements TypeMetadataAlias {
 	LARGEINT                      ("LARGEINT"                       ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	LINE                          ("LINE"                           ,StandardTypeMetadata.LINESTRING                    ,   1,   1,   1),
 	LIST                          ("LIST"                           ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
-	LONG                          ("long"                           ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	LONG_TEXT                     ("LONG"                           ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
+	LONG                          ("long"                           ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	LOWCARDINALITY                ("LowCardinality"                 ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	LSEG                          ("LSEG"                           ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	LVARCHAR                      ("LVARCHAR"                       ,StandardTypeMetadata.NONE                          , null       , null            , "CHARACTER_MAXIMUM_LENGTH" , null                 , null            ,  -1,  -1,  -1),
@@ -282,6 +283,7 @@ public enum MySQLGenusTypeMetadataAlias implements TypeMetadataAlias {
 	VERSION                       ("version"                        ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	XID                           ("XID"                            ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	XML                           ("XML"                            ,StandardTypeMetadata.TEXT                          ,   1,   1,   1),
+	XMLTYPE                       ("XMLTYPE"                        ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	YMINTERVAL                    ("YMINTERVAL"                     ,StandardTypeMetadata.NONE                          , null       , null            , null                       , "DATETIME_PRECISION" , null            ,  -1,  -1,  -1);
 
 	private String input                     ; // 输入名称(根据输入名称转换成标准类型)(名称与枚举名不一致的需要,如带空格的)

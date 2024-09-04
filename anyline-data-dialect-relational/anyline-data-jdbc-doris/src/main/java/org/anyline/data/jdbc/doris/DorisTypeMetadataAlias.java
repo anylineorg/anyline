@@ -57,6 +57,7 @@ public enum DorisTypeMetadataAlias implements TypeMetadataAlias {
 	BLOB                          ("BLOB"                           ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	BOOLEAN                       ("BOOLEAN"                        ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	BOX                           ("BOX"                            ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
+	BOX2D                         ("BOX2D"                          ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	BPCHAR                        ("BPCHAR"                         ,StandardTypeMetadata.CHAR                          ,   0,   1,   1),
 	BPCHARBYTE                    ("BPCHARBYTE"                     ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	BYTE                          ("BYTE"                           ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
@@ -246,8 +247,8 @@ public enum DorisTypeMetadataAlias implements TypeMetadataAlias {
 	TIME_UNCONSTRAINED            ("TIME_UNCONSTRAINED"             ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	TIMESTAMP                     ("TIMESTAMP"                      ,StandardTypeMetadata.DATETIME                      , "DATETIME" , "DATETIME({S})" , null                       , "DATETIME_PRECISION" , null            ,   1,   1,   2),
 	TIMESTAMP_WITH_LOCAL_ZONE     ("TIMESTAMP WITH LOCAL TIME ZONE" ,StandardTypeMetadata.DATETIME                      , "DATETIME" , "DATETIME({S})" , null                       , "DATETIME_PRECISION" , null            ,   1,   1,   2),
-	TIMESTAMP_WITH_TIME_ZONE      ("TIMESTAMP WITH TIME ZONE"       ,StandardTypeMetadata.DATETIME                      , "DATETIME" , "DATETIME({S})" , null                       , "DATETIME_PRECISION" , null            ,   1,   1,   2),
 	TIMESTAMP_WITH_ZONE           ("TIMESTAMP WITH TIME ZONE"       ,StandardTypeMetadata.TIMESTAMP_WITH_TIME_ZONE      , "DATETIME" , "DATETIME({S})" , null                       , "DATETIME_PRECISION" , null            ,   1,   1,   2),
+	TIMESTAMP_WITH_TIME_ZONE      ("TIMESTAMP WITH TIME ZONE"       ,StandardTypeMetadata.DATETIME                      , "DATETIME" , "DATETIME({S})" , null                       , "DATETIME_PRECISION" , null            ,   1,   1,   2),
 	TIMESTAMP_WITHOUT_TIME_ZONE   ("TIMESTAMP WITHOUT TIME ZONE"    ,StandardTypeMetadata.TIMESTAMP_WITHOUT_TIME_ZONE   , "DATETIME" , "DATETIME({S})" , null                       , "DATETIME_PRECISION" , null            ,   1,   2,   1),
 	TIMESTAMP_WITHOUT_ZONE        ("TIMESTAMP WITHOUT TIME ZONE"    ,StandardTypeMetadata.TIMESTAMP_WITHOUT_TIME_ZONE   , "DATETIME" , "DATETIME({S})" , null                       , "DATETIME_PRECISION" , null            ,   1,   2,   1),
 	TIMESTAMP_NTZ                 ("TIMESTAMP_NTZ"                  ,StandardTypeMetadata.TIMESTAMP_WITHOUT_TIME_ZONE   ,   1,   2,   1),
@@ -281,6 +282,7 @@ public enum DorisTypeMetadataAlias implements TypeMetadataAlias {
 	VERSION                       ("version"                        ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	XID                           ("XID"                            ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	XML                           ("XML"                            ,StandardTypeMetadata.VARCHAR                       ,   0,   1,   1),
+	XMLTYPE                       ("XMLTYPE"                        ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	YEAR                          ("YEAR"                           ,StandardTypeMetadata.DATE                          ,   1,   1,   1),
 	YMINTERVAL                    ("YMINTERVAL"                     ,StandardTypeMetadata.NONE                          , null       , null            , null                       , "DATETIME_PRECISION" , null            ,  -1,  -1,  -1);
 

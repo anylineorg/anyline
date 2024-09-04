@@ -42,6 +42,7 @@ public enum ArcadeDBTypeMetadataAlias implements TypeMetadataAlias {
 	BOOL                          ("BOOL"                           ,StandardTypeMetadata.BOOLEAN      ,   1,   1,   1),
 	BOOLEAN                       ("BOOLEAN"                        ,StandardTypeMetadata.BOOLEAN      ,   1,   1,   1),
 	BOX                           ("BOX"                            ,StandardTypeMetadata.NONE         ,  -1,  -1,  -1),
+	BOX2D                         ("BOX2D"                          ,StandardTypeMetadata.NONE         ,  -1,  -1,  -1),
 	BYTE                          ("BYTE"                           ,StandardTypeMetadata.BYTE         ,   1,   1,   1),
 	BYTEA                         ("BYTEA"                          ,StandardTypeMetadata.BINARY       ,   0,   1,   1),
 	CHAR                          ("CHAR"                           ,StandardTypeMetadata.STRING       ,   1,   1,   1),
@@ -281,6 +282,7 @@ public enum ArcadeDBTypeMetadataAlias implements TypeMetadataAlias {
 	VERSION                       ("version"                        ,StandardTypeMetadata.NONE         ,  -1,  -1,  -1),
 	XID                           ("XID"                            ,StandardTypeMetadata.NONE         ,  -1,  -1,  -1),
 	XML                           ("XML"                            ,StandardTypeMetadata.STRING       ,   1,   1,   1),
+	XMLTYPE                       ("XMLTYPE"                        ,StandardTypeMetadata.NONE         ,  -1,  -1,  -1),
 	YEAR                          ("YEAR"                           ,StandardTypeMetadata.SHORT        ,   1,   1,   1),
 	YMINTERVAL                    ("YMINTERVAL"                     ,StandardTypeMetadata.NONE         ,  -1,  -1,  -1);
 

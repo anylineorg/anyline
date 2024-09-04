@@ -57,6 +57,7 @@ public enum DB2TypeMetadataAlias implements TypeMetadataAlias {
 	BITMAP                        ("BITMAP"                         ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	BOOL                          ("BOOL"                           ,StandardTypeMetadata.BOOLEAN                       ,   1,   1,   1),
 	BOX                           ("BOX"                            ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
+	BOX2D                         ("BOX2D"                          ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	BPCHAR                        ("BPCHAR"                         ,StandardTypeMetadata.CHAR                          ,   0,   1,   1),
 	BPCHARBYTE                    ("BPCHARBYTE"                     ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	BYTE                          ("BYTE"                           ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
@@ -116,8 +117,8 @@ public enum DB2TypeMetadataAlias implements TypeMetadataAlias {
 	INT2                          ("INT2"                           ,StandardTypeMetadata.INT                           ,   1,   1,   1),
 	CLICKHOUSE_INT256             ("Int256"                         ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	INT256                        ("INT256"                         ,StandardTypeMetadata.BIGINT                        ,   1,   1,   1),
-	CLICKHOUSE_INT32              ("Int32"                          ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	INT32                         ("INT32"                          ,StandardTypeMetadata.BIGINT                        ,   1,   1,   1),
+	CLICKHOUSE_INT32              ("Int32"                          ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	INT4                          ("INT4"                           ,StandardTypeMetadata.INT                           ,   1,   1,   1),
 	INT4RANGE                     ("INT4RANGE"                      ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	INT64                         ("INT64"                          ,StandardTypeMetadata.BIGINT                        ,   1,   1,   1),
@@ -281,6 +282,7 @@ public enum DB2TypeMetadataAlias implements TypeMetadataAlias {
 	VECTOR                        ("VECTOR"                         ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	VERSION                       ("version"                        ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	XID                           ("XID"                            ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
+	XMLTYPE                       ("XMLTYPE"                        ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	YEAR                          ("YEAR"                           ,StandardTypeMetadata.INT                           ,   1,   1,   1),
 	YMINTERVAL                    ("YMINTERVAL"                     ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1);
 

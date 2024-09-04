@@ -77,6 +77,7 @@ public enum ClickHouseTypeMetadataAlias implements TypeMetadataAlias {
 	BOOL                          ("BOOL"                           ,StandardTypeMetadata.CLICKHOUSE_INT8           , "Int8"            , "Int8"                , null   , null   , null   ,   1,   1,   1),
 	BOOLEAN                       ("BOOLEAN"                        ,StandardTypeMetadata.CLICKHOUSE_INT8           , "Int8"            , "Int8"                , null   , null   , null   ,   1,   1,   1),
 	BOX                           ("BOX"                            ,StandardTypeMetadata.NONE                      ,  -1,  -1,  -1),
+	BOX2D                         ("BOX2D"                          ,StandardTypeMetadata.NONE                      ,  -1,  -1,  -1),
 	BPCHAR                        ("BPCHAR"                         ,StandardTypeMetadata.CHAR                      ,   0,   1,   1),
 	BPCHARBYTE                    ("BPCHARBYTE"                     ,StandardTypeMetadata.NONE                      ,  -1,  -1,  -1),
 	BYTE                          ("BYTE"                           ,StandardTypeMetadata.CLICKHOUSE_INT8           , "Int8"            , "Int8"                , null   , null   , null   ,   1,   1,   1),
@@ -259,8 +260,8 @@ public enum ClickHouseTypeMetadataAlias implements TypeMetadataAlias {
 	TIME_UNCONSTRAINED            ("TIME_UNCONSTRAINED"             ,StandardTypeMetadata.DATETIME                  , "DateTime"        , "DateTime"            , null   , null   , null   ,   1,   1,   1),
 	TIMESTAMP                     ("TIMESTAMP"                      ,StandardTypeMetadata.DATETIME                  , "DateTime"        , "DATETIME({S})"       , null   , null   , null   ,   1,   1,   2),
 	TIMESTAMP_WITH_LOCAL_ZONE     ("TIMESTAMP WITH LOCAL TIME ZONE" ,StandardTypeMetadata.DATETIME                  , "DateTime"        , "DATETIME({S})"       , null   , null   , null   ,   1,   1,   2),
-	TIMESTAMP_WITH_TIME_ZONE      ("TIMESTAMP WITH TIME ZONE"       ,StandardTypeMetadata.DATETIME                  , "DateTime"        , "DATETIME({S})"       , null   , null   , null   ,   1,   1,   2),
 	TIMESTAMP_WITH_ZONE           ("TIMESTAMP WITH TIME ZONE"       ,StandardTypeMetadata.DATETIME                  , "DateTime"        , "DateTime"            , null   , null   , null   ,   1,   1,   1),
+	TIMESTAMP_WITH_TIME_ZONE      ("TIMESTAMP WITH TIME ZONE"       ,StandardTypeMetadata.DATETIME                  , "DateTime"        , "DATETIME({S})"       , null   , null   , null   ,   1,   1,   2),
 	TIMESTAMP_WITHOUT_TIME_ZONE   ("TIMESTAMP WITHOUT TIME ZONE"    ,StandardTypeMetadata.DATETIME                  , "DateTime"        , "DateTime"            , null   , null   , null   ,   1,   1,   1),
 	TIMESTAMP_WITHOUT_ZONE        ("TIMESTAMP WITHOUT TIME ZONE"    ,StandardTypeMetadata.DATETIME                  , "DateTime"        , "DateTime"            , null   , null   , null   ,   1,   1,   1),
 	TIMESTAMP_NTZ                 ("TIMESTAMP_NTZ"                  ,StandardTypeMetadata.DATETIME                  , "DateTime"        , "DateTime"            , null   , null   , null   ,   1,   1,   1),
@@ -295,6 +296,7 @@ public enum ClickHouseTypeMetadataAlias implements TypeMetadataAlias {
 	VERSION                       ("version"                        ,StandardTypeMetadata.NONE                      ,  -1,  -1,  -1),
 	XID                           ("XID"                            ,StandardTypeMetadata.NONE                      ,  -1,  -1,  -1),
 	XML                           ("XML"                            ,StandardTypeMetadata.STRING                    , "String"          , "String"              , null   , null   , null   ,  -1,  -1,  -1),
+	XMLTYPE                       ("XMLTYPE"                        ,StandardTypeMetadata.NONE                      ,  -1,  -1,  -1),
 	YEAR                          ("YEAR"                           ,StandardTypeMetadata.CLICKHOUSE_UINT8          , "UInt8"           , "UInt8"               , null   , null   , null   ,   1,   1,   1),
 	YMINTERVAL                    ("YMINTERVAL"                     ,StandardTypeMetadata.NONE                      ,  -1,  -1,  -1);
 

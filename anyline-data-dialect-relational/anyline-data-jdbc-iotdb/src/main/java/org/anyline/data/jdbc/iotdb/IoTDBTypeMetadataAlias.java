@@ -45,6 +45,7 @@ public enum IoTDBTypeMetadataAlias implements TypeMetadataAlias {
 	BOOL                          ("BOOL"                           ,StandardTypeMetadata.BOOLEAN    ,  -1,  -1,  -1),
 	BOOLEAN                       ("BOOLEAN"                        ,StandardTypeMetadata.BOOLEAN    ,   1,   1,   1),
 	BOX                           ("BOX"                            ,StandardTypeMetadata.NONE       ,  -1,  -1,  -1),
+	BOX2D                         ("BOX2D"                          ,StandardTypeMetadata.NONE       ,  -1,  -1,  -1),
 	BPCHAR                        ("BPCHAR"                         ,StandardTypeMetadata.TEXT       ,   1,   1,   1),
 	BPCHARBYTE                    ("BPCHARBYTE"                     ,StandardTypeMetadata.NONE       ,  -1,  -1,  -1),
 	BYTE                          ("BYTE"                           ,StandardTypeMetadata.NONE       ,  -1,  -1,  -1),
@@ -281,6 +282,7 @@ public enum IoTDBTypeMetadataAlias implements TypeMetadataAlias {
 	VERSION                       ("version"                        ,StandardTypeMetadata.NONE       ,  -1,  -1,  -1),
 	XID                           ("XID"                            ,StandardTypeMetadata.NONE       ,  -1,  -1,  -1),
 	XML                           ("XML"                            ,StandardTypeMetadata.TEXT       ,   1,   1,   1),
+	XMLTYPE                       ("XMLTYPE"                        ,StandardTypeMetadata.NONE       ,  -1,  -1,  -1),
 	YEAR                          ("YEAR"                           ,StandardTypeMetadata.INT32      ,   1,   1,   1),
 	YMINTERVAL                    ("YMINTERVAL"                     ,StandardTypeMetadata.NONE       , null       , null            , null                       , "DATETIME_PRECISION" , null            ,  -1,  -1,  -1);
 

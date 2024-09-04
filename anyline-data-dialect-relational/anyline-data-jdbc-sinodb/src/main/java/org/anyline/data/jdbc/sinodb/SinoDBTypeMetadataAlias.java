@@ -62,6 +62,7 @@ public enum SinoDBTypeMetadataAlias implements TypeMetadataAlias {
 	BITMAP                        ("BITMAP"                         ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	BOOL                          ("BOOL"                           ,StandardTypeMetadata.BOOLEAN                       ,   1,   1,   1),
 	BOX                           ("BOX"                            ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
+	BOX2D                         ("BOX2D"                          ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	BPCHAR                        ("BPCHAR"                         ,StandardTypeMetadata.CHAR                          ,   0,   1,   1),
 	BPCHARBYTE                    ("BPCHARBYTE"                     ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	BYTEA                         ("BYTEA"                          ,StandardTypeMetadata.BYTE                          ,   1,   1,   1),
@@ -119,8 +120,8 @@ public enum SinoDBTypeMetadataAlias implements TypeMetadataAlias {
 	CLICKHOUSE_INT16              ("Int16"                          ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	INT16                         ("INT16"                          ,StandardTypeMetadata.BIGINT                        ,   1,   1,   1),
 	INT2                          ("INT2"                           ,StandardTypeMetadata.SMALLINT                      ,   1,   1,   1),
-	INT256                        ("INT256"                         ,StandardTypeMetadata.BIGINT                        ,   1,   1,   1),
 	CLICKHOUSE_INT256             ("Int256"                         ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
+	INT256                        ("INT256"                         ,StandardTypeMetadata.BIGINT                        ,   1,   1,   1),
 	CLICKHOUSE_INT32              ("Int32"                          ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	INT32                         ("INT32"                          ,StandardTypeMetadata.BIGINT                        ,   1,   1,   1),
 	INT4                          ("INT4"                           ,StandardTypeMetadata.INT8                          ,   1,   1,   1),
@@ -281,6 +282,7 @@ public enum SinoDBTypeMetadataAlias implements TypeMetadataAlias {
 	VERSION                       ("version"                        ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	XID                           ("XID"                            ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	XML                           ("XML"                            ,StandardTypeMetadata.TEXT                          ,   1,   1,   1),
+	XMLTYPE                       ("XMLTYPE"                        ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	YEAR                          ("YEAR"                           ,StandardTypeMetadata.INTEGER                       ,   1,   1,   1),
 	YMINTERVAL                    ("YMINTERVAL"                     ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1);
 

@@ -1,1 +1,1 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=rg.anyline.data.jdbc.arcadedb.ArcadeDBAdapter
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=org.anyline.data.jdbc.arcadedb.ArcadeDBAdapter

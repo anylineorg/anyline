@@ -57,6 +57,7 @@ public enum HiveTypeMetadataAlias implements TypeMetadataAlias {
 	BLOB                          ("BLOB"                           ,StandardTypeMetadata.BINARY                        ,   1,   1,   1),
 	BOOL                          ("BOOL"                           ,StandardTypeMetadata.BOOLEAN                       ,   1,   1,   1),
 	BOX                           ("BOX"                            ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
+	BOX2D                         ("BOX2D"                          ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	BPCHAR                        ("BPCHAR"                         ,StandardTypeMetadata.CHAR                          ,   0,   1,   1),
 	BPCHARBYTE                    ("BPCHARBYTE"                     ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	BYTE                          ("BYTE"                           ,StandardTypeMetadata.BINARY                        ,   0,   1,   1),
@@ -114,8 +115,8 @@ public enum HiveTypeMetadataAlias implements TypeMetadataAlias {
 	INT32                         ("INT32"                          ,StandardTypeMetadata.INT                           ,   1,   1,   1),
 	INT4                          ("INT4"                           ,StandardTypeMetadata.TINYINT                       ,   1,   1,   1),
 	INT4RANGE                     ("INT4RANGE"                      ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
-	INT64                         ("INT64"                          ,StandardTypeMetadata.INT                           ,   1,   1,   1),
 	CLICKHOUSE_INT64              ("Int64"                          ,StandardTypeMetadata.INT                           ,   1,   1,   1),
+	INT64                         ("INT64"                          ,StandardTypeMetadata.INT                           ,   1,   1,   1),
 	INT8                          ("INT8"                           ,StandardTypeMetadata.INT                           ,   1,   1,   1),
 	CLICKHOUSE_INT8               ("Int8"                           ,StandardTypeMetadata.TINYINT                       ,   1,   1,   1),
 	INT8RANGE                     ("INT8RANGE"                      ,StandardTypeMetadata.INT                           ,   1,   1,   1),
@@ -281,6 +282,7 @@ public enum HiveTypeMetadataAlias implements TypeMetadataAlias {
 	VERSION                       ("version"                        ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	XID                           ("XID"                            ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	XML                           ("XML"                            ,StandardTypeMetadata.STRING                        ,   1,   1,   1),
+	XMLTYPE                       ("XMLTYPE"                        ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	YEAR                          ("YEAR"                           ,StandardTypeMetadata.DATE                          ,   1,   1,   1),
 	YMINTERVAL                    ("YMINTERVAL"                     ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1);
 

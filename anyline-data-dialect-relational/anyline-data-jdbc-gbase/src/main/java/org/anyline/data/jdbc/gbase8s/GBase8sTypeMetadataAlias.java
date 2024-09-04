@@ -55,6 +55,7 @@ public enum GBase8sTypeMetadataAlias implements TypeMetadataAlias {
 	BOOL                          ("BOOL"                           ,StandardTypeMetadata.NUMBER                        ,   1,   2,   2),
 	BOOLEAN                       ("BOOLEAN"                        ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	BOX                           ("BOX"                            ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
+	BOX2D                         ("BOX2D"                          ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	BPCHAR                        ("BPCHAR"                         ,StandardTypeMetadata.CHAR                          ,   0,   1,   1),
 	BPCHARBYTE                    ("BPCHARBYTE"                     ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	BYTE                          ("BYTE"                           ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
@@ -68,8 +69,8 @@ public enum GBase8sTypeMetadataAlias implements TypeMetadataAlias {
 	DATE_NANOS                    ("date_nanos"                     ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	CLICKHOUSE_DATE32             ("Date32"                         ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	DATERANGE                     ("DATERANGE"                      ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
-	DATETIME                      ("DATETIME"                       ,StandardTypeMetadata.TIMESTAMP                     ,   1,   1,   2),
 	CLICKHOUSE_DATETIME64         ("DateTime"                       ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
+	DATETIME                      ("DATETIME"                       ,StandardTypeMetadata.TIMESTAMP                     ,   1,   1,   2),
 	DATETIME_WITH_TIME_ZONE       ("DATETIME WITH TIME ZONE"        ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	DATETIME2                     ("DATETIME2"                      ,StandardTypeMetadata.TIMESTAMP                     ,   1,   1,   2),
 	DATETIMEOFFSET                ("DATETIMEOFFSET"                 ,StandardTypeMetadata.TIMESTAMP                     ,   1,   1,   2),
@@ -281,6 +282,7 @@ public enum GBase8sTypeMetadataAlias implements TypeMetadataAlias {
 	VERSION                       ("version"                        ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	XID                           ("XID"                            ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	XML                           ("XML"                            ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
+	XMLTYPE                       ("XMLTYPE"                        ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	YEAR                          ("YEAR"                           ,StandardTypeMetadata.DATE                          ,   1,   1,   1),
 	YMINTERVAL                    ("YMINTERVAL"                     ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1);
 

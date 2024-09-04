@@ -60,6 +60,7 @@ public enum HanaTypeMetadataAlias implements TypeMetadataAlias {
 	BITMAP                        ("BITMAP"                         ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	BOOL                          ("BOOL"                           ,StandardTypeMetadata.BOOLEAN                       ,   1,   1,   1),
 	BOX                           ("BOX"                            ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
+	BOX2D                         ("BOX2D"                          ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	BPCHAR                        ("BPCHAR"                         ,StandardTypeMetadata.CHAR                          ,   0,   1,   1),
 	BPCHARBYTE                    ("BPCHARBYTE"                     ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	BYTE                          ("BYTE"                           ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
@@ -74,8 +75,8 @@ public enum HanaTypeMetadataAlias implements TypeMetadataAlias {
 	DATE_NANOS                    ("date_nanos"                     ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	CLICKHOUSE_DATE32             ("Date32"                         ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	DATERANGE                     ("DATERANGE"                      ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
-	DATETIME                      ("DATETIME"                       ,StandardTypeMetadata.DATETIME                      , "DATETIME"                  , "DATETIME({S})"                  , null   , null   , null   ,   1,   1,   2),
 	CLICKHOUSE_DATETIME64         ("DateTime"                       ,StandardTypeMetadata.TIMESTAMP                     , "TIMESTAMP"                 , "TIMESTAMP({S}) "                , null   , null   , null   ,  -1,  -1,  -1),
+	DATETIME                      ("DATETIME"                       ,StandardTypeMetadata.DATETIME                      , "DATETIME"                  , "DATETIME({S})"                  , null   , null   , null   ,   1,   1,   2),
 	DATETIME_WITH_TIME_ZONE       ("DATETIME WITH TIME ZONE"        ,StandardTypeMetadata.TIMESTAMP_WITH_TIME_ZONE      , "TIMESTAMP WITH TIME ZONE"  , "TIMESTAMP({S}) WITH TIME ZONE"  , null   , null   , null   ,  -1,  -1,  -1),
 	DATETIME2                     ("DATETIME2"                      ,StandardTypeMetadata.DATETIME                      , "DATETIME"                  , "DATETIME({S})"                  , null   , null   , null   ,   1,   1,   2),
 	DATETIMEOFFSET                ("DATETIMEOFFSET"                 ,StandardTypeMetadata.DATETIME                      , "DATETIME"                  , "DATETIME({S})"                  , null   , null   , null   ,   1,   1,   2),
@@ -281,6 +282,7 @@ public enum HanaTypeMetadataAlias implements TypeMetadataAlias {
 	VERSION                       ("version"                        ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	XID                           ("XID"                            ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	XML                           ("XML"                            ,StandardTypeMetadata.NVARCHAR                      ,   0,   1,   1),
+	XMLTYPE                       ("XMLTYPE"                        ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	YEAR                          ("YEAR"                           ,StandardTypeMetadata.INTEGER                       ,   1,   1,   1),
 	YMINTERVAL                    ("YMINTERVAL"                     ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1);
 

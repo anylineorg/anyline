@@ -14,8 +14,10 @@
 	<packaging>pom</packaging>
 
     <modules>
+		<module>anyline-data-jdbc-antdb</module>						<!--亚信-->
 		<module>anyline-data-jdbc-access</module>
 		<module>anyline-data-jdbc-arcadedb</module>
+		<module>anyline-data-jdbc-citus</module>
 		<module>anyline-data-jdbc-clickhouse</module>
 		<module>anyline-data-jdbc-cloudera</module>
 		<module>anyline-data-jdbc-cockroachdb</module>
@@ -49,6 +51,7 @@
 		<module>anyline-data-jdbc-postgresql</module>
 		<module>anyline-data-jdbc-redshift</module>
 		<module>anyline-data-jdbc-rethinkdb</module>
+		<module>anyline-data-jdbc-selectdb</module>                		<!--天翼数智-->
 		<module>anyline-data-jdbc-sequoiadb</module>					<!--巨杉-->
 		<module>anyline-data-jdbc-sinodb</module>						<!--星瑞格-->
 		<module>anyline-data-jdbc-sqlite</module>
@@ -57,8 +60,11 @@
 		<module>anyline-data-jdbc-tidb</module>
 		<module>anyline-data-jdbc-vitess</module>
 		<module>anyline-data-jdbc-voltdb</module>
+		<module>anyline-data-jdbc-yashandb</module>
 		<module>anyline-data-jdbc-xugu</module>							<!--虚谷-->
+		<module>anyline-data-jdbc-ymatrix</module>
 		<module>anyline-data-jdbc-yugabyte</module>
+		<module>anyline-data-jdbc-yukon</module>
     </modules>
 	<build>
 		<plugins>
