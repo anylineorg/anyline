@@ -1592,6 +1592,10 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
             private LinkedHashMap<String,Object> less;
             private int interval;
             private String unit;
+            public Slice(){}
+            public Slice(String name){
+                this.name = name;
+            }
             public String getName() {
                 return name;
             }
