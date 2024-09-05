@@ -5763,6 +5763,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         MetadataFieldRefer refer = new MetadataFieldRefer(TableComment.class);
         for(DataRow row:set) {
             String tab = getString(row, refer, TableComment.FIELD_TABLE);
+            if(null == tab){
+                continue;
+            }
             String comment = getString(row, refer, TableComment.FIELD_VALUE);
             if(null != tab && null != comment) {
                 Table table = previous.get(tab.toUpperCase());
