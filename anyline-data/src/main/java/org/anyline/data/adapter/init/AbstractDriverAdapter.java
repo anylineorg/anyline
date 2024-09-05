@@ -5682,9 +5682,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	public <T extends Table> T init(DataRuntime runtime, int index, T meta, Table query, DataRow row) {
         Catalog catalog = query.getCatalog();
         Schema schema = query.getSchema();
-        if(null == meta) {
-            meta = (T)new Table();
-        }
         MetadataFieldRefer refer = refer(runtime, Table.class);
         String _catalog = getString(row, refer, Table.FIELD_CATALOG);
         String _schema = getString(row, refer, Table.FIELD_SCHEMA);
@@ -5700,7 +5697,14 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             if("VIEW".equals(getString(row, refer, Table.FIELD_TYPE))) {
                 meta = (T)new View();
             }else {
-                meta = (T)new Table();
+                String[] chks = refer.maps(Table.FIELD_MASTER_CHECK);
+                String[] vals = refer.maps(Table.FIELD_MASTER_CHECK_VALUE);
+                Boolean bol = matchBoolean(row, chks, vals);
+                if(null != bol && bol){
+                    meta = (T) new MasterTable();
+                }else {
+                    meta = (T) new Table();
+                }
             }
         }
         if(null != _catalog) {
