@@ -2070,6 +2070,8 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         refer.map(Table.FIELD_UPDATE_TIME, "UPDATE_TIME");
         refer.map(Table.FIELD_TEMPORARY, "IS_TEMPORARY");
         refer.map(Table.FIELD_COMMENT, "TABLE_COMMENT");
+        refer.map(Table.FIELD_MASTER_CHECK, "CREATE_OPTIONS");
+        refer.map(Table.FIELD_MASTER_CHECK_VALUE, "partitioned");
         return refer;
     }
 

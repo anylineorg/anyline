@@ -1734,7 +1734,6 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
     public static final String FIELD_SORT                          = "SORT";
     public static final String FIELD_SORT_CHECK                    = "SORT_CHECK";
     public static final String FIELD_SORT_CHECK_VALUE              = "SORT_CHECK_VALUE";
-    public static final String FIELD_AUTO_DROP_COLUMN              = "AUTO_DROP_COLUMN";
-    public static final String FIELD_AUTO_DROP_COLUMN_CHECK        = "AUTO_DROP_COLUMN_CHECK";
-    public static final String FIELD_AUTO_DROP_COLUMN_CHECK_VALUE  = "AUTO_DROP_COLUMN_CHECK_VALUE";
+    public static final String FIELD_MASTER_CHECK                  = "_MASTER_CHECK";
+    public static final String FIELD_MASTER_CHECK_VALUE            = "MASTER_CHECK_VALUE";
 }
