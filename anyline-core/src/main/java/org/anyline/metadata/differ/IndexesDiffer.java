@@ -32,7 +32,7 @@ public class IndexesDiffer extends AbstractDiffer {
         LinkedHashMap<String, Index> drops = new LinkedHashMap<>();
         LinkedHashMap<String, Index> updates = new LinkedHashMap<>();
 
-        if(null != origins) {
+        if(null == origins) {
             origins = new LinkedHashMap<>();
         }
         if(null == dests) {
