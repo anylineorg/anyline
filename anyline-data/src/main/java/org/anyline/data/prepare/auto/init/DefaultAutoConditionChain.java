@@ -56,7 +56,7 @@ public class DefaultAutoConditionChain extends AbstractConditionChain implements
 		}
 	}
 	@Override
-	public String getRunText(int lvl, String prefix, DataRuntime runtime, boolean placeholder) {
+	public String getRunText(int lvl, String prefix, DataRuntime runtime, boolean placeholder, boolean unicode) {
 		runValues = new ArrayList<>();
 		int size = conditions.size();
 		int active = 0; //有效条件
@@ -70,7 +70,7 @@ public class DefaultAutoConditionChain extends AbstractConditionChain implements
 			if(null == condition || condition.isVariableSlave()) {
 				continue;
 			}
-			txt = condition.getRunText(lvl+1, prefix, runtime, placeholder);
+			txt = condition.getRunText(lvl+1, prefix, runtime, placeholder, unicode);
 			if(BasicUtil.isEmpty(txt)) {
 				continue;
 			}

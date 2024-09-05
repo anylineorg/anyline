@@ -593,9 +593,9 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * List<Run> buildQuerySequence(DataRuntime runtime, boolean next, String ... names)
      * Run fillQueryContent(DataRuntime runtime, Run run)
      * String mergeFinalQuery(DataRuntime runtime, Run run)
-     * RunValue createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder)
-     * Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder)
-     * StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder)
+     * RunValue createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder, boolean unicode)
+     * Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder, boolean unicode)
+     * StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder, boolean unicode)
      * [命令执行]
      * DataSet select(DataRuntime runtime, String random, boolean system, String table, ConfigStore configs, Run run)
      * List<Map<String, Object>> maps(DataRuntime runtime, String random, ConfigStore configs, Run run)
@@ -753,8 +753,8 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return value 有占位符时返回占位值，没有占位符返回null
      */
     @Override
-    public RunValue createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder) {
-        return super.createConditionLike(runtime, builder, compare, value, placeholder);
+    public RunValue createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder, boolean unicode) {
+        return super.createConditionLike(runtime, builder, compare, value, placeholder, unicode);
     }
 
     /**
@@ -769,7 +769,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return value
      */
     @Override
-    public Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder) throws NotSupportException {
+    public Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder, boolean unicode) throws NotSupportException {
         List<Object> values = new ArrayList<>();
         if(null != value) {
             if(value instanceof Collection) {
@@ -823,7 +823,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return value
      */
     @Override
-    public Object createConditionJsonContains(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder) {
+    public Object createConditionJsonContains(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder, boolean unicode) {
         //json_contains(JSON_COLUMN,'"VIP"','$.name')
         String key = null;
         if(column.contains(">")) {
@@ -871,7 +871,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return value
      */
     @Override
-    public Object createConditionJsonContainsPath(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder) {
+    public Object createConditionJsonContainsPath(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder, boolean unicode) {
         //JSON_CONTAINS_PATH(JSON_COLUMN, 'all', '$.A', '$.D')
         String scope = "one";
         if(compare.getCode() == 76) {
@@ -909,7 +909,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return value
      */
     @Override
-    public Object createConditionJsonSearch(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder) throws NotSupportException {
+    public Object createConditionJsonSearch(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder, boolean unicode) throws NotSupportException {
         //JSON_SEARCH(JSON_COLUMN, 'one', 'abc') IS NOT NULL
         String scope = "one";
         if(compare.getCode() == 78) {
@@ -945,8 +945,8 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return builder
      */
     @Override
-    public StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder) {
-        return super.createConditionIn(runtime, builder, compare, value, placeholder);
+    public StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder, boolean unicode) {
+        return super.createConditionIn(runtime, builder, compare, value, placeholder, unicode);
     }
 
     /**

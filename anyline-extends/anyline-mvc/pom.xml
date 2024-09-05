@@ -9,7 +9,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		<groupId>org.anyline</groupId>
 		<artifactId>anyline-dependency-web</artifactId>
 		<version>8.7.2-SNAPSHOT</version>
-		<relativePath>../../anyline-dependency-web/pom.xml</relativePath>
+		<relativePath>../anyline-dependency-web/pom.xml</relativePath>
 	</parent>
 
 	<artifactId>anyline-mvc</artifactId>
@@ -25,10 +25,12 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		<dependency>
 			<groupId>org.anyline</groupId>
 			<artifactId>anyline-environment-spring-boot</artifactId>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-webmvc</artifactId>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 </project>

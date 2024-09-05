@@ -1218,7 +1218,7 @@ public abstract class AbstractRun implements Run {
 				}
 				DriverAdapter adapter = adapter();
 				if(null != adapter) {
-					replacement = adapter.write(runtime, column, value, false)+"";
+					replacement = adapter.write(runtime, column, value, false, false)+"";
 				}else {
 					if (BasicUtil.isNumber(value) || "NULL".equalsIgnoreCase(value.toString())) {
 						replacement = value.toString();

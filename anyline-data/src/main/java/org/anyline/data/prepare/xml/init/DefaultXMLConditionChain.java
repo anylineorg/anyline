@@ -30,7 +30,7 @@ import java.util.List;
 public class DefaultXMLConditionChain extends AbstractConditionChain implements ConditionChain{
 
 	@Override
-	public String getRunText(int lvl, String prefix, DataRuntime runtime, boolean placeholder) {
+	public String getRunText(int lvl, String prefix, DataRuntime runtime, boolean placeholder, boolean unicode) {
 		initRunValue(); 
 		StringBuilder builder = new StringBuilder(); 
 		if(null != conditions) {
@@ -40,9 +40,9 @@ public class DefaultXMLConditionChain extends AbstractConditionChain implements 
 				}
 				String txt = ""; 
 				if(condition.getVariableType() == VARIABLE_PLACEHOLDER_TYPE_NONE) {
-					txt = condition.getRunText(prefix, runtime, placeholder);
+					txt = condition.getRunText(prefix, runtime, placeholder, unicode);
 				}else if(condition.isActive()) {
-					txt = condition.getRunText(prefix, runtime, placeholder);
+					txt = condition.getRunText(prefix, runtime, placeholder, unicode);
 					List<RunValue> values = condition.getRunValues();
 					if(BasicUtil.isEmpty(true, values)) {
 						String reg = "=\\s*\\?";

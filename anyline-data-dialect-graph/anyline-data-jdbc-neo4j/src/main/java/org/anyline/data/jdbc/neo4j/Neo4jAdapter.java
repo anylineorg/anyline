@@ -415,7 +415,7 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
      * -----------------------------------------------------------------------------------------------------------------
      * String mergeFinalQuery(DataRuntime runtime, Run run)
      * StringBuilder createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare)
-     * StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder)
+     * StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder, boolean unicode)
      * List<Map<String, Object>> process(DataRuntime runtime, List<Map<String, Object>> list)
      *
      * protected Run fillQueryContent(DataRuntime runtime, XMLRun run)
@@ -503,7 +503,7 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public RunValue createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder) {
+    public RunValue createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder, boolean unicode) {
         if(compare == Compare.LIKE) {
             builder.append(" CONTAINS ?");
         }else if(compare == Compare.LIKE_PREFIX || compare == Compare.START_WITH) {
@@ -517,7 +517,7 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
     }
 
     @Override
-    public Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder) throws NotSupportException {
+    public Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder, boolean unicode) throws NotSupportException {
         return null;
     }
 
@@ -529,7 +529,7 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder) {
+    public StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder, boolean unicode) {
         if(compare== Compare.NOT_IN) {
             builder.append(" NOT");
         }

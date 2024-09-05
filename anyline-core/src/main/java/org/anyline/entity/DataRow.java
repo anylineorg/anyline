@@ -61,7 +61,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 
     protected Boolean override                    = null                  ; //如果数据库中存在相同数据(根据主键判断)是否覆盖 true或false会检测数据库null不检测
     protected Boolean overrideSync                = null                  ; //检测到相同数据后，是否从数据库中同步到当前DataRow中不有赋值的其他列
-
+    protected Boolean unicode                     = null                  ; //插入数据库时是否Unicode编码
     protected boolean updateNullColumn            = ConfigTable.IS_UPDATE_NULL_COLUMN;
     protected boolean updateEmptyColumn           = ConfigTable.IS_UPDATE_EMPTY_COLUMN;
     protected boolean insertNullColumn            = ConfigTable.IS_INSERT_NULL_COLUMN;
@@ -617,6 +617,14 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
             parent = parent.getParent(key);
         }
         return set;
+    }
+
+    public Boolean getUnicode() {
+        return unicode;
+    }
+
+    public void setUnicode(Boolean unicode) {
+        this.unicode = unicode;
     }
 
     public Boolean getOverride() {

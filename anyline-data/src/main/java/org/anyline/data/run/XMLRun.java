@@ -376,7 +376,7 @@ public class XMLRun extends TextRun implements Run {
 		if(!endWithWhere(builder.toString())) {
 			builder.append(" WHERE 1=1");
 		}
-		String condition = conditionChain.getRunText(null, runtime, placeholder);
+		String condition = conditionChain.getRunText(null, runtime, placeholder, false);
 		if(!condition.isEmpty()) {
 			emptyCondition = false;
 		}

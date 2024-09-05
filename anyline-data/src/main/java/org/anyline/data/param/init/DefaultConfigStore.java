@@ -59,6 +59,8 @@ public class DefaultConfigStore implements ConfigStore {
 	protected List<String> overrideByColumns		= null			; //中存在相同数据(根据overrideBy)是否覆盖 true或false会检测数据库null不检测
 	protected Constraint overrideByConstraint		= null			; //中存在相同数据(根据Constraint)是否覆盖 true或false会检测数据库null不检测
 	protected List<String> primaryKeys    	= new ArrayList<>()     ; // 主键
+	protected Boolean unicode 				= null					; // 插入数据库时是否Unicode编码
+	protected Boolean placeholder			= true					;
 	protected boolean integrality 			= true					; // 是否作为一个整体，不可分割，与其他条件合并时以()包围
 	protected List<Run> runs				= new ArrayList<>()		; // 执行过的命令 包括ddl dml
 	protected KeyAdapter.KEY_CASE kc 		= null					; //
@@ -85,8 +87,8 @@ public class DefaultConfigStore implements ConfigStore {
 		}
 		return row;
 	}
-	public String getRunText(DataRuntime runtime, boolean placeholder) {
-		return this.getConfigChain().createAutoConditionChain().getRunText(null, runtime, placeholder);
+	public String getRunText(DataRuntime runtime, boolean placeholder, boolean unicode) {
+		return this.getConfigChain().createAutoConditionChain().getRunText(null, runtime, placeholder, unicode);
 	}
 	@Override
 	public Table table() {
@@ -557,6 +559,21 @@ public class DefaultConfigStore implements ConfigStore {
 		return this;
 	}
 
+	public Boolean getPlaceholder() {
+		return placeholder;
+	}
+
+	public void setPlaceholder(Boolean placeholder) {
+		this.placeholder = placeholder;
+	}
+
+	public Boolean getUnicode() {
+		return unicode;
+	}
+
+	public void setUnicode(Boolean unicode) {
+		this.unicode = unicode;
+	}
 	public ConfigStore addPrimaryKey(Collection<String> pks) {
 		if (BasicUtil.isEmpty(pks)) {
 			return this;

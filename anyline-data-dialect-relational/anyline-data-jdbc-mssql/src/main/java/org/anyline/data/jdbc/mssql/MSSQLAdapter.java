@@ -623,9 +623,9 @@ public class MSSQLAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
      * List<Run> buildQuerySequence(DataRuntime runtime, boolean next, String ... names)
      * Run fillQueryContent(DataRuntime runtime, Run run)
      * String mergeFinalQuery(DataRuntime runtime, Run run)
-     * RunValue createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder)
-     * Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder)
-     * StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder)
+     * RunValue createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder, boolean unicode)
+     * Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder, boolean unicode)
+     * StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder, boolean unicode)
      * [命令执行]
      * DataSet select(DataRuntime runtime, String random, boolean system, String table, ConfigStore configs, Run run)
      * List<Map<String,Object>> maps(DataRuntime runtime, String random, ConfigStore configs, Run run)
@@ -783,8 +783,8 @@ public class MSSQLAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
      * @return value 有占位符时返回占位值，没有占位符返回null
      */
     @Override
-    public RunValue createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder) {
-        return super.createConditionLike(runtime, builder, compare, value, placeholder);
+    public RunValue createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder, boolean unicode) {
+        return super.createConditionLike(runtime, builder, compare, value, placeholder, unicode);
     }
 
     /**
@@ -799,8 +799,8 @@ public class MSSQLAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
      * @return value
      */
     @Override
-    public Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder) throws NotSupportException {
-        return super.createConditionFindInSet(runtime, builder, column, compare, value, placeholder);
+    public Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder, boolean unicode) throws NotSupportException {
+        return super.createConditionFindInSet(runtime, builder, column, compare, value, placeholder, unicode);
     }
 
     /**
@@ -813,8 +813,8 @@ public class MSSQLAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
      * @return builder
      */
     @Override
-    public StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder) {
-        return super.createConditionIn(runtime, builder, compare, value, placeholder);
+    public StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder, boolean unicode) {
+        return super.createConditionIn(runtime, builder, compare, value, placeholder, unicode);
     }
 
     /**
@@ -5078,7 +5078,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
             builder.append("ALTER TABLE ");
             name(runtime, builder, meta.getTable());
             builder.append(" ADD DEFAULT ");
-            udef = write(runtime, meta, udef, false);
+            udef = write(runtime, meta, udef, false, false);
             if (null == udef) {
                 udef = meta.getDefaultValue();
             }
@@ -5088,7 +5088,9 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         }
         return runs;
     }
-
+    public String unicodeGuide(DataRuntime runtime) {
+        return "N";
+    }
     /**
      * column[命令合成-子流程]<br/>
      * 修改非空限制
@@ -5321,7 +5323,17 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
      */
     @Override
     public StringBuilder charset(DataRuntime runtime, StringBuilder builder, Column meta) {
-        return super.charset(runtime, builder, meta);
+        String typeName = meta.getTypeName();
+        if(null != typeName && typeName.toLowerCase().contains("char")) {
+            String collate = meta.getCollate();
+            if(null == collate){
+                collate = meta.getCharset();
+            }
+            if(BasicUtil.isNotEmpty(collate)) {
+                builder.append(" COLLATE ").append(collate);
+            }
+        }
+        return builder;
     }
 
     /**

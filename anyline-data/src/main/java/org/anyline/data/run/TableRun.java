@@ -147,7 +147,7 @@ public class TableRun extends AbstractRun implements Run {
 		if(null != prepare) {
 			alias = prepare.getAlias();
 		}
-		String condition = conditionChain.getRunText(alias, runtime, placeholder);
+		String condition = conditionChain.getRunText(alias, runtime, placeholder, false);
 		if(!condition.isEmpty()) {
 			emptyCondition = false;
 			if(first) {

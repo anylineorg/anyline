@@ -45,6 +45,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
     protected LinkedHashMap<String, Object> origin  = new LinkedHashMap<>() ; // 从数据库中查询的未处理的原始数据
     private Boolean override                        = null  ; //如果数据库中存在相同数据(根据主键判断)是否覆盖 true或false会检测数据库null不检测
     private Boolean overrideSync                    = null  ;
+    protected Boolean unicode                       = null  ; //插入数据库时是否Unicode编码
     private boolean result                          = true  ; // 执行结果
     private String code                             = null  ; // code
     private Exception exception                     = null  ; // 异常
@@ -191,6 +192,14 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
         return overrideSync;
     }
 
+
+    public Boolean getUnicode() {
+        return unicode;
+    }
+
+    public void setUnicode(Boolean unicode) {
+        this.unicode = unicode;
+    }
     public void setOverride(Boolean override) {
         this.override = override;
         for(DataRow row:rows) {

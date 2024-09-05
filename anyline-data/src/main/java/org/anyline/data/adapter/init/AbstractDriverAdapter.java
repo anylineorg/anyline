@@ -2109,9 +2109,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * List<Run> buildQuerySequence(DataRuntime runtime, boolean next, String ... names)
      * Run fillQueryContent(DataRuntime runtime, Run run)
      * String mergeFinalQuery(DataRuntime runtime, Run run)
-     * RunValue createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder)
-     * Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder)
-     * StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder)
+     * RunValue createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder, boolean unicode)
+     * Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder, boolean unicode)
+     * StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder, boolean unicode)
      * [命令执行]
      * DataSet select(DataRuntime runtime, String random, boolean system, String table, ConfigStore configs, Run run)
      * List<Map<String, Object>> maps(DataRuntime runtime, String random, ConfigStore configs, Run run)
@@ -2903,9 +2903,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @return value 有占位符时返回占位值，没有占位符返回null
      */
     @Override
-    public RunValue createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder) {
+    public RunValue createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder, boolean unicode) {
         if(log.isDebugEnabled()) {
-            log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 RunValue createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder)", 37));
+            log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 RunValue createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder, boolean unicode)", 37));
         }
         return null;
     }
@@ -2920,9 +2920,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @return builder
      */
     @Override
-    public StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder) {
+    public StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder, boolean unicode) {
         if(log.isDebugEnabled()) {
-            log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder)", 37));
+            log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder, boolean unicode)", 37));
         }
         return null;
     }
@@ -14259,7 +14259,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				if(null != def && def.toString().contains("::")) {
 					def = def.toString().split("::")[0];
 				}
-				def = write(runtime, meta, def, false);
+				def = write(runtime, meta, def, false, false);
 				if(null == def) {
 					def = meta.getDefaultValue();
 				}
@@ -17489,7 +17489,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return Object
 	 */
 	@Override
-	public Object write(DataRuntime runtime, Column metadata, Object value, boolean placeholder) {
+	public Object write(DataRuntime runtime, Column metadata, Object value, boolean placeholder, boolean unicode) {
 		if(null == value || "NULL".equals(value)) {
 			return null;
 		}
@@ -17538,15 +17538,21 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			writer = writer(value.getClass());
 		}
 		if(null != writer) {
-			result = writer.write(value, placeholder, columnType);
+			result = writer.write(value, placeholder, unicode, columnType);
 		}
 		if(null != result) {
+            if(!placeholder && unicode && result instanceof String && result.toString().startsWith("'")){
+                result = unicodeGuide(runtime) + result;
+            }
 			return result;
 		}
 		if(null != columnType && TypeMetadata.NONE != columnType) {
 			result = columnType.write(value, null, false);
 		}
 		if(null != result) {
+            if(!placeholder && unicode && result instanceof String && result.toString().startsWith("'")){
+                result = unicodeGuide(runtime) + result;
+            }
 			return result;
 		}
 		//根据值类型
@@ -17554,6 +17560,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			if (null == value || BasicUtil.isNumber(value) || "NULL".equals(value)) {
 				result = value;
 			} else {
+                if(unicode && !placeholder){
+                    result = unicodeGuide(runtime) + result;
+                }
 				result = "'" + value + "'";
 			}
 		}
@@ -17806,7 +17815,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 } else {
                     DataWriter writer = writer(value.getClass());
                     if (null != writer) {
-                        value = writer.write(value, true, null);
+                        value = writer.write(value, true, false,null);
                     }
                 }
             }
@@ -17880,7 +17889,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 					writer = writer(meta.getCategory());
 				}
 				if(null != writer) {
-					value = writer.write(value, true, meta);
+					value = writer.write(value, true, false, meta);
 				}else {
 					Class transfer = meta.transfer();
 					Class compatible = meta.compatible();

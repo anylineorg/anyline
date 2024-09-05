@@ -29,7 +29,7 @@ import java.util.Date;
 public enum GBaseWriter {
     DateWriter(new Object[]{java.sql.Date.class, Timestamp.class, Date.class, LocalDate.class, LocalDateTime.class}, new DataWriter() {
         @Override
-        public Object write(Object value, boolean placeholder, TypeMetadata type) {
+        public Object write(Object value, boolean placeholder, boolean unicode, TypeMetadata type) {
             if(!placeholder && null != value) {
                 Date date = (Date) ConvertProxy.convert(value, Date.class, false);
                 value = " to_date ( '"+DateUtil.format(date)+"', 'YYYY-MM-DD HH24:MI:SS')";

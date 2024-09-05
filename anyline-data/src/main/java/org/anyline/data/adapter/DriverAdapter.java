@@ -90,6 +90,9 @@ public interface DriverAdapter {
      * @return DatabaseType
      */
     DatabaseType type();
+    default String version(){
+        return null;
+    }
     default LinkedHashMap<String, TypeMetadata> types() {
         LinkedHashMap<String, TypeMetadata> types = new LinkedHashMap<>();
         for(TypeMetadata type:alias().values()) {
@@ -1528,7 +1531,7 @@ public interface DriverAdapter {
      * @param value value
      * @return value 有占位符时返回占位值，没有占位符返回null
      */
-    RunValue createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder);
+    RunValue createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder, boolean unicode);
 
     /**
      * select[命令合成-子流程] <br/>
@@ -1541,7 +1544,7 @@ public interface DriverAdapter {
      * @param value value
      * @return value
      */
-    default Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder) throws NotSupportException {
+    default Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder, boolean unicode) throws NotSupportException {
         throw new NotSupportException("不支持");
     }
 
@@ -1556,7 +1559,7 @@ public interface DriverAdapter {
      * @param value value
      * @return value
      */
-    default Object createConditionJsonContains(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder) throws NotSupportException {
+    default Object createConditionJsonContains(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder, boolean unicode) throws NotSupportException {
         throw new NotSupportException("不支持");
     }
 
@@ -1571,7 +1574,7 @@ public interface DriverAdapter {
      * @param value value
      * @return value
      */
-    default Object createConditionJsonContainsPath(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder) throws NotSupportException {
+    default Object createConditionJsonContainsPath(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder, boolean unicode) throws NotSupportException {
         throw new NotSupportException("不支持");
     }
     /**
@@ -1585,7 +1588,7 @@ public interface DriverAdapter {
      * @param value value
      * @return value
      */
-    default Object createConditionJsonSearch(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder) throws NotSupportException {
+    default Object createConditionJsonSearch(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder, boolean unicode) throws NotSupportException {
         throw new NotSupportException("不支持");
     }
 
@@ -1598,7 +1601,7 @@ public interface DriverAdapter {
      * @param value value
      * @return builder
      */
-    StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder);
+    StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder, boolean unicode);
 
     /**
      * select [命令执行]<br/>
@@ -9380,7 +9383,10 @@ public interface DriverAdapter {
 	 * @param value value
 	 * @return Object
 	 */
-	Object write(DataRuntime runtime, Column metadata, Object value, boolean placeholder);
+	Object write(DataRuntime runtime, Column metadata, Object value, boolean placeholder, boolean unicode);
+    default String unicodeGuide(DataRuntime runtime) {
+        return "";
+    }
  	/**
 	 * 拼接字符串
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -9471,12 +9477,12 @@ public interface DriverAdapter {
 	 * @param value 值
 	 * @param placeholder 是否启用占位符
 	 */
-	default void formula(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Column metadata, Object value, boolean placeholder) {
+	default void formula(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Column metadata, Object value, boolean placeholder, boolean unicode) {
 		if(!placeholder) {
 			//不用占位 需要引号的在这里加上
-			value = write(runtime, metadata, value, placeholder);
+			value = write(runtime, metadata, value, placeholder, unicode);
 		}
-		builder.append(compare.formula(column, value, placeholder));
+		builder.append(compare.formula(column, value, placeholder, unicode));
 	}
 
 }

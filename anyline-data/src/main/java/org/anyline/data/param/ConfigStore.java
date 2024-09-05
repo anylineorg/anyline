@@ -55,7 +55,10 @@ public interface ConfigStore extends Cloneable{
 	default String json() {
 		return json(false);
 	}
-	String getRunText(DataRuntime runtime, boolean placeholder);
+	String getRunText(DataRuntime runtime, boolean placeholder, boolean unicode);
+	default String getRunText(DataRuntime runtime, boolean placeholder) {
+		return getRunText(runtime, placeholder, false);
+	}
 	/**
 	 * 设置查询或操作的数据源
 	 * @param datasource 查询或操作的数据源
@@ -258,6 +261,13 @@ public interface ConfigStore extends Cloneable{
 		return setPrimaryKey(BeanUtil.array2list(pks));
 	}
 
+	Boolean getPlaceholder();
+
+	void setPlaceholder(Boolean placeholder);
+
+	Boolean getUnicode();
+
+	void setUnicode(Boolean unicode);
 	/**
 	 * 设置主键
 	 * @param pks keys

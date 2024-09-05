@@ -22,6 +22,7 @@ import org.anyline.data.handler.DataHandler;
 import org.anyline.data.handler.StreamHandler;
 import org.anyline.data.param.ConfigParser;
 import org.anyline.data.param.ConfigStore;
+import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.prepare.auto.AutoPrepare;
 import org.anyline.data.prepare.auto.TablePrepare;
@@ -365,6 +366,14 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
         if(BasicUtil.isEmpty(dest)) {
             throw new CommandException("未指定表");
         }
+        if(null == configs){
+            configs = new DefaultConfigStore();
+        }
+        Boolean placeholder = configs.getPlaceholder();
+        Boolean unicode = null;
+        if(null == placeholder){
+            placeholder = true;
+        }
 
         checkName(runtime, null, dest);
         PrimaryGenerator generator = checkPrimaryGenerator(type(), dest.getName());
@@ -379,6 +388,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
         }
         if(obj instanceof DataRow) {
             row = (DataRow)obj;
+            unicode = row.getUnicode();
             if(row.hasPrimaryKeys() && null != generator) {
                 generator.create(row, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), null);
                 //createPrimaryValue(row, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), null);
@@ -404,6 +414,12 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
             replaceEmptyNull = row.isReplaceEmptyNull();
         }else{
             replaceEmptyNull = ConfigStore.IS_REPLACE_EMPTY_NULL(configs);
+        }
+        if(null == unicode){
+            unicode = configs.getUnicode();
+        }
+        if(null == unicode){
+            unicode = false;
         }
         String head = insertHead(configs);
         builder.append(head);//.append(parseTable(dest));
@@ -442,7 +458,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
                 valuesBuilder.append(value);
             }else{
                 insertColumns.add(key);
-                if(supportInsertPlaceholder()) {
+                if(supportInsertPlaceholder() && placeholder) {
                     valuesBuilder.append("?");
                     if ("NULL".equals(value)) {
                         value = null;
@@ -452,7 +468,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
                     addRunValue(runtime, run, Compare.EQUAL, column, value);
                 }else{
                     //format(valuesBuilder, value);
-                    valuesBuilder.append(write(runtime, null, value, false));
+                    valuesBuilder.append(write(runtime, null, value, false, unicode));
                 }
             }
         }
@@ -850,9 +866,9 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
      * List<Run> buildQuerySequence(DataRuntime runtime, boolean next, String ... names)
      * Run fillQueryContent(DataRuntime runtime, Run run)
      * String mergeFinalQuery(DataRuntime runtime, Run run)
-     * RunValue createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder)
-     * Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder)
-     * StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder)
+     * RunValue createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder, boolean unicode)
+     * Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder, boolean unicode)
+     * StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder, boolean unicode)
      * [命令执行]
      * DataSet select(DataRuntime runtime, String random, boolean system, String table, ConfigStore configs, Run run)
      * List<Map<String, Object>> maps(DataRuntime runtime, String random, ConfigStore configs, Run run)
@@ -1177,7 +1193,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
      * @return value 有占位符时返回占位值，没有占位符返回null
      */
     @Override
-    public RunValue createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder) {
+    public RunValue createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder, boolean unicode) {
         int code = compare.getCode();
         if(code > 100) {
             builder.append(" NOT");
@@ -1215,8 +1231,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
      * @return value
      */
     @Override
-    public Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder) throws NotSupportException {
-        return super.createConditionFindInSet(runtime, builder, column, compare, value, placeholder);
+    public Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder, boolean unicode) throws NotSupportException {
+        return super.createConditionFindInSet(runtime, builder, column, compare, value, placeholder, unicode);
     }
 
     /**
@@ -1229,7 +1245,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
      * @return builder
      */
     @Override
-    public StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder) {
+    public StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder, boolean unicode) {
         if(compare == Compare.NOT_IN) {
             builder.append(" NOT");
         }
@@ -8120,7 +8136,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 						addRunValue(runtime, run, Compare.EQUAL, column, value);
 					} else {
 						//value(runtime, builder, obj, key);
-						builder.append(write(runtime, column, value, false));
+						builder.append(write(runtime, column, value, false, false));
 					}
 				} else {
 					addRunValue(runtime, run, Compare.EQUAL, column, value);

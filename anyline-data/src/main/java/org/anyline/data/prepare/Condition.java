@@ -71,16 +71,16 @@ public interface Condition extends Cloneable{
 	 * @param connector 是否携带开头的连接符号(and or)默认true
 	 * @return String
 	 */
-	default String getRunText(boolean connector, String prefix, DataRuntime runtime, boolean placeholder) {
-		String txt = getRunText(prefix, runtime, placeholder).trim();
+	default String getRunText(boolean connector, String prefix, DataRuntime runtime, boolean placeholder, boolean unicode) {
+		String txt = getRunText(prefix, runtime, placeholder, unicode).trim();
 		if(!connector) {
 			txt = SQLUtil.trim(txt);
 		}
 		return txt;
 	}
-	String getRunText(int lvl, String prefix, DataRuntime runtime, boolean placeholder);
-	default String getRunText(String prefix, DataRuntime runtime, boolean placeholder) {
-		return getRunText(0, prefix, runtime, placeholder);
+	String getRunText(int lvl, String prefix, DataRuntime runtime, boolean placeholder, boolean unicode);
+	default String getRunText(String prefix, DataRuntime runtime, boolean placeholder, boolean unicode) {
+		return getRunText(0, prefix, runtime, placeholder, unicode);
 	}
 
 	/**

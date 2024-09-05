@@ -199,7 +199,7 @@ public class TextRun extends AbstractRun implements Run {
 		} 
 		String txt = builder.toString();
 
-		String condition = conditionChain.getRunText(null, runtime, placeholder);
+		String condition = conditionChain.getRunText(null, runtime, placeholder, false);
 		boolean where = endWithWhere(txt);
 		if(BasicUtil.isNotEmpty(condition)) {
 			emptyCondition = false;
