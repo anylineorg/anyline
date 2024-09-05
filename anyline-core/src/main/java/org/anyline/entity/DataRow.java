@@ -60,6 +60,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     public static String DEFAULT_PRIMARY_KEY    = ConfigTable.DEFAULT_PRIMARY_KEY;
 
     protected Boolean override                    = null                  ; //如果数据库中存在相同数据(根据主键判断)是否覆盖 true或false会检测数据库null不检测
+    protected Boolean overrideSync                = null                  ; //检测到相同数据后，是否从数据库中同步到当前DataRow中不有赋值的其他列
 
     protected boolean updateNullColumn            = ConfigTable.IS_UPDATE_NULL_COLUMN;
     protected boolean updateEmptyColumn           = ConfigTable.IS_UPDATE_EMPTY_COLUMN;
@@ -621,9 +622,17 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     public Boolean getOverride() {
         return override;
     }
+    public Boolean getOverrideSync() {
+        return overrideSync;
+    }
 
     public void setOverride(Boolean override) {
         this.override = override;
+    }
+
+    public void setOverride(Boolean override, Boolean sync) {
+        this.override = override;
+        this.overrideSync = sync;
     }
 
     public DataRow setMetadata(LinkedHashMap<String, Column> metadatas) {
@@ -2939,6 +2948,48 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return copy(false, data, fixs, keys);
     }
 
+    public DataRow copyIfEmpty(DataRow copy, String... keys) {
+        List<String> cols = null;
+        if(null != keys && keys.length>0){
+            cols = BeanUtil.array2list(keys);
+        }else{
+            cols = copy.keys();
+        }
+        for(String col:cols){
+            if(isEmpty(col)){
+                put(col, copy.get(col));
+            }
+        }
+        return this;
+    }
+    public DataRow copyIfNull(DataRow copy, String... keys) {
+        List<String> cols = null;
+        if(null != keys && keys.length>0){
+            cols = BeanUtil.array2list(keys);
+        }else{
+            cols = copy.keys();
+        }
+        for(String col:cols){
+            if(isNull(col)){
+                put(col, copy.get(col));
+            }
+        }
+        return this;
+    }
+    public DataRow copyIfNotExists(DataRow copy, String... keys) {
+        List<String> cols = null;
+        if(null != keys && keys.length>0){
+            cols = BeanUtil.array2list(keys);
+        }else{
+            cols = copy.keys();
+        }
+        for(String col:cols){
+            if(contains(col)){
+                put(col, copy.get(col));
+            }
+        }
+        return this;
+    }
     /**
     /**
      * 抽取指定列, 生成新的DataRow, 新的DataRow只包括指定列的值, 不包含其他附加信息(如来源表)

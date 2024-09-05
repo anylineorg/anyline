@@ -26,7 +26,6 @@ import org.anyline.data.cache.PageLazyStore;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.RunPrepare;
-import org.anyline.data.prepare.auto.TablePrepare;
 import org.anyline.data.prepare.auto.init.DefaultTablePrepare;
 import org.anyline.data.prepare.auto.init.DefaultTextPrepare;
 import org.anyline.data.prepare.auto.init.SimplePrepare;
@@ -1050,14 +1049,29 @@ public class DefaultService<E> implements AnylineService<E> {
             DataSet updates = new DataSet();
             for(DataRow row:set) {
                 Boolean override = row.getOverride();
+                if(null == override){
+                    override = set.getOverride();
+                }
                 if(null != override) {
+                    Boolean sync = row.getOverrideSync();
+                    if(null == sync){
+                        sync = set.getOverrideSync();
+                    }
                     //如果设置了override需要到数据库中实际检测
-                    boolean exists = exists(dest, row);
-                    if(exists) {
+                    ConfigStore query = new DefaultConfigStore();
+                    List<String> keys = row.getPrimaryKeys();
+                    for(String key:keys){
+                        query.and(key, row.get(key));
+                    }
+                    DataRow exists = query(dest, query);
+                    if(null != exists) {
                         if(!override) {//忽略
 
                         }else{//覆盖(更新)
                             updates.add(row);
+                        }
+                        if(null != sync && sync){
+                            row.copyIfEmpty(exists);
                         }
                     }else{
                         inserts.add(row);
@@ -1105,6 +1119,32 @@ public class DefaultService<E> implements AnylineService<E> {
     }
 
     protected long saveObject(Table dest, Object data, ConfigStore configs, List<String> columns) {
+        if(data instanceof DataRow){
+            DataRow row = (DataRow) data;
+            Boolean override = row.getOverride();
+            if(null != override) {
+                Boolean sync = row.getOverrideSync();
+                //如果设置了override需要到数据库中实际检测
+                ConfigStore query = new DefaultConfigStore();
+                List<String> keys = row.getPrimaryKeys();
+                for(String key:keys){
+                    query.and(key, row.get(key));
+                }
+                DataRow exists = query(dest, query);
+                if(null != exists) {
+                    if(!override) {//忽略
+
+                    }else{//覆盖(更新)
+                        dao.update(0, dest, data, configs, columns);
+                    }
+                    if(null != sync && sync){
+                        row.copyIfEmpty(exists);
+                    }
+                }else{
+                    dao.insert(dest, data, configs, columns);
+                }
+            }
+        }
         return dao.save(dest, data, configs, columns);
     }
     protected long saveObject(String dest, Object data, ConfigStore configs, String... columns) {

@@ -44,6 +44,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
     private LinkedHashMap<String, Column>  metadatas= null  ; // 数据类型相关(需要开启ConfigTable.IS_AUTO_CHECK_METADATA)
     protected LinkedHashMap<String, Object> origin  = new LinkedHashMap<>() ; // 从数据库中查询的未处理的原始数据
     private Boolean override                        = null  ; //如果数据库中存在相同数据(根据主键判断)是否覆盖 true或false会检测数据库null不检测
+    private Boolean overrideSync                    = null  ;
     private boolean result                          = true  ; // 执行结果
     private String code                             = null  ; // code
     private Exception exception                     = null  ; // 异常
@@ -186,11 +187,21 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
     public Boolean getOverride() {
         return override;
     }
+    public Boolean getOverrideSync() {
+        return overrideSync;
+    }
 
     public void setOverride(Boolean override) {
         this.override = override;
         for(DataRow row:rows) {
             row.setOverride(override);
+        }
+    }
+    public void setOverride(Boolean override, Boolean sync) {
+        this.override = override;
+        this.overrideSync = sync;
+        for(DataRow row:rows) {
+            row.setOverride(override, sync);
         }
     }
     public DataSet attr(String key, Object value) {
