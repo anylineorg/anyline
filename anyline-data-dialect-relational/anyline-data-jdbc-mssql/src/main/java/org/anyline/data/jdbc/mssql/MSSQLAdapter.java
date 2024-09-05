@@ -2516,6 +2516,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         refer.map(Column.FIELD_CATALOG, "CATALOG_NAME");
         refer.map(Column.FIELD_SCHEMA, "SCHEMA_NAME");
         refer.map(Column.FIELD_TABLE, "TABLE_NAME");
+        refer.map(Column.FIELD_CHARSET, "COLLATION_NAME");
         refer.map(Column.FIELD_NULLABLE, "IS_NULLABLE");
         refer.map(Column.FIELD_TYPE, "TYPE_NAME");
         refer.map(Column.FIELD_POSITION, "COLUMN_ID");
