@@ -1962,6 +1962,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         }else{
             //是否覆盖(null:不检测直接执行update有可能影响行数=0)
             Boolean override = checkOverride(data);
+            Boolean overrideSync = checkOverrideSync(data);
             ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
             if(null != override) {
                 RunPrepare prepare = new DefaultTablePrepare(dest);
@@ -1970,10 +1971,15 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 for(String k:pvs.keySet()) {
                     stores.and(k, pvs.get(k));
                 }
-                boolean exists = exists(runtime, random, prepare, stores);
-                if(exists) {
+                DataSet exists = querys(runtime, random, prepare, stores);
+                if(!exists.isEmpty()) {
                     if(override) {
-                        return update(runtime, random, dest, data, configs, columns);
+                        long result = update(runtime, random, dest, data, configs, columns);
+                        if(null != overrideSync && overrideSync && data instanceof DataRow){
+                            DataRow row = (DataRow) data;
+                            row.copyIfEmpty(exists.getRow(0));
+                        }
+                        return result;
                     }else{
                         log.warn("[跳过更新][数据已存在:{}({})]", dest, BeanUtil.map2json(pvs));
                     }
@@ -1999,8 +2005,15 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      */
     protected Boolean checkOverride(Object obj) {
         Boolean result = null;
-        if(null != obj && obj instanceof DataRow) {
+        if(obj instanceof DataRow) {
             result = ((DataRow)obj).getOverride();
+        }
+        return result;
+    }
+    protected Boolean checkOverrideSync(Object obj) {
+        Boolean result = null;
+        if(obj instanceof DataRow) {
+            result = ((DataRow)obj).getOverrideSync();
         }
         return result;
     }
