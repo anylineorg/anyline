@@ -5665,7 +5665,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
                     map.put(k, null);
                 }
             }else if(obj.getClass().isArray()) {
-                List<Object> items = BeanUtil.list(obj);
+                List<Object> items = BeanUtil.object2list(obj);
                 for(Object item:items){
                     String k = item.toString().trim();
                     if(ignoreCase){

@@ -80,7 +80,7 @@ public class XMLRun extends TextRun implements Run {
 				ParseResult parser = ConfigParser.parse(condition, false);
 				Object value = ConfigParser.getValues(parser);// parser.getKey(); 
 				if(parser.getParamFetchType() == ParseResult.FETCH_REQUEST_VALUE_TYPE_MULTIPLE) {
-					 value = BeanUtil.list(value);
+					 value = BeanUtil.object2list(value);
 				} 
 				setConditionValue(parser.getSwt(), parser.getCompare(), parser.getPrefix(), parser.getVar(), value);
 			} 

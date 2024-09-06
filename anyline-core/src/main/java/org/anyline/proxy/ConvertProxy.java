@@ -108,7 +108,7 @@ public class ConvertProxy {
             //数组
             if(array) {
                 if(value instanceof Collection || value.getClass().isArray()) {
-                    List<Object> list = BeanUtil.list(value);
+                    List<Object> list = BeanUtil.object2list(value);
                     int size = list.size();
                     T[] arrays = (T[])Array.newInstance(target, size);
                     int idx = 0;
