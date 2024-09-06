@@ -3189,7 +3189,7 @@ public class BeanUtil {
 		return rv;
 	}
 
-	public static List list(Object array) {
+	public static List<Object> object2list(Object array){
 		List list = new ArrayList<>();
 		if(null != array) {
 			if(array.getClass().isArray()) {
@@ -3243,20 +3243,6 @@ public class BeanUtil {
 						}
 					}
 				}
-			}
-		}
-		return list;
-	}
-	public static List<Object> object2list(Object array){
-		List<Object> list = new ArrayList<>();
-		if(null != array){
-			if(array.getClass().isArray()){
-				int len = Array.getLength(array);
-				for (int i = 0; i < len; i++) {
-					list.add(Array.get(array, i));
-				}
-			}else{
-				list.add(array);
 			}
 		}
 		return list;
