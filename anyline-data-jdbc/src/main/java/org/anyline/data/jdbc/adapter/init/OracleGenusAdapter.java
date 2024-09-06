@@ -645,6 +645,9 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
             joins.remove(master);
             sub.append("\nFROM ");
             fillMasterTableContent(runtime, sub, run, master);
+            if(joins.isEmpty()){
+                sub.append("\n");
+            }
             for (RunPrepare join:joins) {
                 fillJoinTableContent(runtime, sub, run, join);
             }
