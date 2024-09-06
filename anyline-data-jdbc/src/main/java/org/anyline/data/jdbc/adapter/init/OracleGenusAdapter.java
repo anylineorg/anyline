@@ -638,14 +638,15 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
             }
         }
         RunPrepare master = null;
+        StringBuilder sub = new StringBuilder();
         List<RunPrepare> joins = prepare.getJoins();
         if(null != joins && !joins.isEmpty()) {
             master = joins.get(0);
             joins.remove(master);
-            builder.append("\nFROM ");
-            fillMasterTableContent(runtime, builder, run, master);
+            sub.append("\nFROM ");
+            fillMasterTableContent(runtime, sub, run, master);
             for (RunPrepare join:joins) {
-                fillJoinTableContent(runtime, builder, run, join);
+                fillJoinTableContent(runtime, sub, run, join);
             }
         }
         if(null != master){
@@ -655,10 +656,11 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
             }
             if(null != join){
                 String on = join.getConditions().getRunText(runtime, false);
-                builder.append(" WHERE ").append(SQLUtil.trim(on));
+                sub.append("WHERE ").append(SQLUtil.trim(on));
             }
         }
-        builder.append(")");
+        builder.append(BasicUtil.tab(sub.toString(), 1));
+        builder.append("\n)");
         init(runtime, run, configs);
         run.appendCondition(builder, this, true, true);
     }
