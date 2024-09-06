@@ -407,6 +407,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
     @Override
     public Run buildUpdateRun(DataRuntime runtime, RunPrepare prepare, DataRow data, ConfigStore configs, String ... conditions) {
         Run run = initQueryRun(runtime, prepare);
+        run.addCondition(conditions);
         if(run.checkValid()) {
             fillUpdateContent(runtime, (TableRun) run, data, configs);
         }
