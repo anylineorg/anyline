@@ -32,10 +32,7 @@ import org.anyline.exception.NotSupportException;
 import org.anyline.metadata.*;
 import org.anyline.metadata.refer.*;
 import org.anyline.metadata.type.TypeMetadata;
-import org.anyline.util.BasicUtil;
-import org.anyline.util.ConfigTable;
-import org.anyline.util.LogUtil;
-import org.anyline.util.SQLUtil;
+import org.anyline.util.*;
 import org.anyline.util.regular.RegularUtil;
 
 import java.lang.reflect.Array;
@@ -782,22 +779,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder, boolean unicode) throws NotSupportException {
-        List<Object> values = new ArrayList<>();
-        if(null != value) {
-            if(value instanceof Collection) {
-                Collection cols = (Collection) value;
-                for(Object col:cols) {
-                    values.add(col);
-                }
-            }else if(value.getClass().isArray()) {
-                int len = Array.getLength(value);
-                for(int i=0; i<len; i++){
-                    values.add(Array.get(value, i));
-                }
-            }else{
-                values.add(value);
-            }
-        }
+        List<Object> values = BeanUtil.object2list(value);
         if(values.size() > 1) {
             builder.append("(");
         }
@@ -837,38 +819,58 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     @Override
     public Object createConditionJsonContains(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder, boolean unicode) {
         //json_contains(JSON_COLUMN,'"VIP"','$.name')
+        List<Object> values = BeanUtil.object2list(value);
+        List<Object> returns = new ArrayList<>();
+
+        if(values.size() > 1) {
+            builder.append("(");
+        }
+        boolean first = true;
+        String join = " OR ";
+        if(compare == Compare.JSON_CONTAINS_AND){
+            join = " AND ";
+        }
         String key = null;
         if(column.contains(">")) {
             String[] ks = column.split(">");
             column = ks[0];
             key = ks[1];
         }
-        builder.append("JSON_CONTAINS(").append(column).append(", ");
-        if(placeholder) {
-            builder.append("?");
-        }
-        if(BasicUtil.isNotEmpty(key)) {
-            builder.append(",'").append(key).append("'");
-        }
-        builder.append(")");
-        if(value instanceof Collection) {
-            Collection list = ((Collection)value);
-            if(!list.isEmpty()) {
-                value = list.iterator().next();
+
+        for(Object v:values) {
+            if(!first) {
+                builder.append(join);
             }
-        }
-        if(BasicUtil.isNumber(value)) {
-            value = value.toString();
-        }else{
-            String str = value.toString();
-            if(str.startsWith("${") && str.endsWith("}")) {
-                str = str.substring(2, str.length()-1);
-            }else if(!str.startsWith("\"")) {
-                str = "\""+str+"\"";
+
+            if(BasicUtil.isNumber(v)) {
+                v = v.toString();
+            }else{
+                String str = v.toString();
+                if(str.startsWith("${") && str.endsWith("}")) {
+                    str = str.substring(2, str.length()-1);
+                }else if(!str.startsWith("\"")) {
+                    str = "\""+str+"\"";
+                }
+                v = str;
             }
-            value = str;
+
+            builder.append("JSON_CONTAINS(").append(column).append(", ");
+            if(placeholder) {
+                builder.append("?");
+            } else {
+                builder.append(v);
+            }
+            if(BasicUtil.isNotEmpty(key)) {
+                builder.append(",'").append(key).append("'");
+            }
+            builder.append(")");
+            returns.add(v);
+            first = false;
         }
-        return value;
+        if(values.size() > 1) {
+            builder.append(")");
+        }
+        return returns;
     }
 
     /**

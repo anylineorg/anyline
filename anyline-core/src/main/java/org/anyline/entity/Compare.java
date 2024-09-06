@@ -336,7 +336,7 @@ public enum Compare {
             return BeanUtil.array2list(arrays).contains(value);
         }
         public int valueCount() {
-            return 9;
+            return 1;
         }
     },
     FIND_IN_SET_OR(61, "find in set",""," FIND_IN_SET ") {
@@ -363,10 +363,19 @@ public enum Compare {
             return 9;
         }
     },
-    JSON_CONTAINS(71, "json_contains", "", " JSON_CONTAINS ") {
-        //json_contains(JSON_COLUMN,'"VIP"','$.name')
+    JSON_CONTAINS(70, "json_contains", "", " JSON_CONTAINS ") {
         public int valueCount() {
             return 1;
+        }
+    },
+    JSON_CONTAINS_OR(71, "json_contains", "", " JSON_CONTAINS ") {
+        public int valueCount() {
+            return 9;
+        }
+    },
+    JSON_CONTAINS_AND(72, "json_contains", "", " JSON_CONTAINS ") {
+        public int valueCount() {
+            return 9;
         }
     },
     JSON_CONTAINS_PATH_OR(75, "json_contains_path", "", " JSON_CONTAINS_PATH ") {

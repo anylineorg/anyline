@@ -1003,6 +1003,40 @@ public interface ConfigStore extends Cloneable{
 		return and(Compare.JSON_CONTAINS, var, value);
 	}
 
+
+	default ConfigStore jsonContainsOr(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue) {
+		return and(swt, Compare.JSON_CONTAINS_OR, id, var, value, overCondition, overValue);
+	}
+	default ConfigStore jsonContainsOr(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue) {
+		return and(swt, Compare.JSON_CONTAINS_OR, var, value, overCondition, overValue);
+	}
+	default ConfigStore jsonContainsOr(String id, String var, Object value, boolean overCondition, boolean overValue) {
+		return and(Compare.JSON_CONTAINS_OR, id, var, value, overCondition, overValue);
+	}
+	default ConfigStore jsonContainsOr(String var, Object value, boolean overCondition, boolean overValue) {
+		return and(Compare.JSON_CONTAINS_OR, var, value, overCondition, overValue);
+	}
+	default ConfigStore jsonContainsOr(String var, Object value) {
+		return and(Compare.JSON_CONTAINS_OR, var, value);
+	}
+
+
+	default ConfigStore jsonContainsAnd(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue) {
+		return and(swt, Compare.JSON_CONTAINS_AND, id, var, value, overCondition, overValue);
+	}
+	default ConfigStore jsonContainsAnd(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue) {
+		return and(swt, Compare.JSON_CONTAINS_AND, var, value, overCondition, overValue);
+	}
+	default ConfigStore jsonContainsAnd(String id, String var, Object value, boolean overCondition, boolean overValue) {
+		return and(Compare.JSON_CONTAINS_AND, id, var, value, overCondition, overValue);
+	}
+	default ConfigStore jsonContainsAnd(String var, Object value, boolean overCondition, boolean overValue) {
+		return and(Compare.JSON_CONTAINS_AND, var, value, overCondition, overValue);
+	}
+	default ConfigStore jsonContainsAnd(String var, Object value) {
+		return and(Compare.JSON_CONTAINS_AND, var, value);
+	}
+
 	default ConfigStore jsonContainsPathOr(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(swt, Compare.JSON_CONTAINS_PATH_OR, id, var, value, overCondition, overValue);
 	}

@@ -182,7 +182,7 @@ public class DefaultAutoCondition extends AbstractCondition implements AutoCondi
 			}catch (NotSupportException ignored) {
 				support = false;
 			}
-		}else if(compareCode == 71) {							// JSON_CONTAINS
+		}else if(compareCode >= 70 && compareCode <= 72) {							// JSON_CONTAINS
 			try {
 				val = adapter.createConditionJsonContains(runtime, builder, col_builder.toString(), compare, val, placeholder, unicode);
 			}catch (NotSupportException ignored) {
