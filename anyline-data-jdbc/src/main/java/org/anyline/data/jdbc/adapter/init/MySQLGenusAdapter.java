@@ -432,6 +432,10 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
                 fillJoinTableContent(runtime, builder, run, join);
             }
         }
+        String master = alias;
+        if(BasicUtil.isEmpty(master)){
+            master = prepare.getTableName();
+        }
         builder.append("SET").append(BR);
         List<String> keys = data.keys();
         boolean first = true;
@@ -440,6 +444,9 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
                 builder.append(", ");
             }
             first = false;
+            if(!key.contains(".")) {
+                builder.append(master).append(".");
+            }
             builder.append(key).append(" = ");
             Object value = data.get(key);
             if(value instanceof DataRow.VariableValue){
