@@ -604,8 +604,13 @@ public class CitusAdapter extends PostgresGenusAdapter {
      * false:跳过更新<br/>
      */
     @Override
-    protected Boolean checkOverride(Object obj) {
-        return super.checkOverride(obj);
+    protected Boolean checkOverride(Object obj, ConfigStore configs) {
+        return super.checkOverride(obj, configs);
+    }
+
+    @Override
+    protected Boolean checkOverrideSync(Object obj, ConfigStore configs) {
+        return super.checkOverrideSync(obj, configs);
     }
 
     /**

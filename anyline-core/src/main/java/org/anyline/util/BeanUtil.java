@@ -3958,7 +3958,49 @@ public class BeanUtil {
 			}
 		}
 	}
+	public static void copyFieldValueNvl(Object src, DataRow copy) {
+		if(null == src || null == copy) {
+			return;
+		}
+		List<Field> fields = ClassUtil.getFields(src.getClass());
+		for(Field field:fields) {
+			Object value = getFieldValue(src, field);
+			if(null == value) {
+				setFieldValue(src, field, copy.get(field.getName()));
+			}
+		}
+	}
 
+	/**
+	 * 复制copy的属性值到src(src属性值为空的情况下生效)
+	 * @param src src
+	 * @param copy copy
+	 */
+	public static void copyFieldValueEvl(Object src, Object copy) {
+		if(null == src || null == copy) {
+			return;
+		}
+		List<Field> fields = ClassUtil.getFields(src.getClass());
+		for(Field field:fields) {
+			Object value = getFieldValue(src, field);
+			if(BasicUtil.isEmpty(value)) {
+				value = getFieldValue(copy, field);
+				setFieldValue(src, field, value);
+			}
+		}
+	}
+	public static void copyFieldValueEvl(Object src, DataRow copy) {
+		if(null == src || null == copy) {
+			return;
+		}
+		List<Field> fields = ClassUtil.getFields(src.getClass());
+		for(Field field:fields) {
+			Object value = getFieldValue(src, field);
+			if(BasicUtil.isEmpty(value)) {
+				setFieldValue(src, field, copy.get(field.getName()));
+			}
+		}
+	}
 	/**
 	 * 复制copy的属性值到to
 	 * @param to 赋值给to

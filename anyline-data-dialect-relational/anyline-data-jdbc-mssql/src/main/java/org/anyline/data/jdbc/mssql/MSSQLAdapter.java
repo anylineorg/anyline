@@ -574,8 +574,13 @@ public class MSSQLAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
     }
 
     @Override
-    protected Boolean checkOverride(Object obj) {
-        return super.checkOverride(obj);
+    protected Boolean checkOverride(Object obj, ConfigStore configs) {
+        return super.checkOverride(obj, configs);
+    }
+
+    @Override
+    protected Boolean checkOverrideSync(Object obj, ConfigStore configs) {
+        return super.checkOverrideSync(obj, configs);
     }
 
     @Override

@@ -1961,8 +1961,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             return insert(runtime, random, 0, dest, data, configs, columns);
         }else{
             //是否覆盖(null:不检测直接执行update有可能影响行数=0)
-            Boolean override = checkOverride(data);
-            Boolean overrideSync = checkOverrideSync(data);
+            Boolean override = checkOverride(data, configs);
+            Boolean overrideSync = checkOverrideSync(data, configs);
             ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
             if(null != override) {
                 RunPrepare prepare = new DefaultTablePrepare(dest);
@@ -1975,9 +1975,13 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 if(!exists.isEmpty()) {
                     if(override) {
                         long result = update(runtime, random, dest, data, configs, columns);
-                        if(null != overrideSync && overrideSync && data instanceof DataRow){
-                            DataRow row = (DataRow) data;
-                            row.copyIfEmpty(exists.getRow(0));
+                        if(null != overrideSync && overrideSync){
+                            if(data instanceof DataRow) {
+                                DataRow row = (DataRow) data;
+                                row.copyIfEmpty(exists.getRow(0));
+                            }else{
+                                BeanUtil.copyFieldValueEvl(data, exists.getRow(0));
+                            }
                         }
                         return result;
                     }else{
@@ -2003,17 +2007,23 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * true:执行更新<br/>
      * false:跳过更新<br/>
      */
-    protected Boolean checkOverride(Object obj) {
+    protected Boolean checkOverride(Object obj, ConfigStore configs) {
         Boolean result = null;
         if(obj instanceof DataRow) {
             result = ((DataRow)obj).getOverride();
         }
+        if(null == result){
+            result = configs.override();
+        }
         return result;
     }
-    protected Boolean checkOverrideSync(Object obj) {
+    protected Boolean checkOverrideSync(Object obj, ConfigStore configs) {
         Boolean result = null;
         if(obj instanceof DataRow) {
             result = ((DataRow)obj).getOverrideSync();
+        }
+        if(null == result){
+            result = configs.override();
         }
         return result;
     }
