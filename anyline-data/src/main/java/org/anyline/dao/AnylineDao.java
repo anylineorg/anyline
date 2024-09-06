@@ -1509,6 +1509,15 @@ public interface AnylineDao<E>{
 	/* *****************************************************************************************************************
 	 * 													partition table
 	 ******************************************************************************************************************/
+	/**
+	 * 表分区方式及分片
+	 * @param table 主表
+	 * @return Partition
+	 */
+	Table.Partition partition(DataRuntime runtime, String random, Table table);
+	default Table.Partition partition(Table table) {
+		return partition(runtime(), null, table);
+	}
 	<T extends PartitionTable> LinkedHashMap<String, T> partitions(DataRuntime runtime, String random, boolean greedy, PartitionTable query);
 	default <T extends PartitionTable> LinkedHashMap<String, T> partitions(boolean greedy, PartitionTable query) {
 		return partitions(runtime(), null, greedy, query);

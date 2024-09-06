@@ -4255,7 +4255,12 @@ public interface DriverAdapter {
     /* *****************************************************************************************************************
      *                                                     partition table
      ******************************************************************************************************************/
-
+    /**
+     * 表分区方式及分片
+     * @param table 主表
+     * @return Partition
+     */
+    Table.Partition partition(DataRuntime runtime, String random, Table table);
     /**
      * partition table[调用入口]<br/>
      * 查询主表

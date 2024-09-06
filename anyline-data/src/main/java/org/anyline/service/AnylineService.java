@@ -2827,6 +2827,12 @@ public interface AnylineService<E>{
 		 **************************************************************************************************************/
 
 		/**
+		 * 表分区方式及分片
+		 * @param table 主表
+		 * @return Partition
+		 */
+		Table.Partition partition(Table table);
+		/**
 		 * 子表
 		 * @param table 表
 		 * @return LinkedHashMap

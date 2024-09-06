@@ -8302,6 +8302,18 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * [结果集封装]<br/>
 	 * List<String> ddl(DataRuntime runtime, int index, PartitionTable table, List<String> ddls, DataSet set)
 	 ******************************************************************************************************************/
+    /**
+     * 表分区方式及分片
+     * @param table 主表
+     * @return Partition
+     */
+    public Table.Partition partition(DataRuntime runtime, String random, Table table) {
+        if(null == random) {
+            random = random(runtime);
+        }
+        Table.Partition partition = null;
+        return partition;
+    }
 	/**
 	 * partition table[调用入口]<br/>
 	 * 查询主表

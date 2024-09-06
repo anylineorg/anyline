@@ -2108,7 +2108,7 @@ public class DefaultService<E> implements AnylineService<E> {
         }
 
         private void struct(Table table, int struct) {
-            //是否查询详细结构(1列、2主键、4索引、8外键、16约束、128DDL等)
+            //列
             LinkedHashMap<String, Column> columns = table.getColumns();
             if(Metadata.check(struct, Metadata.TYPE.COLUMN)) {
                 if(null == columns || columns.isEmpty()) {//上一步ddl是否加载过以下内容
@@ -2117,7 +2117,7 @@ public class DefaultService<E> implements AnylineService<E> {
                     table.setTags(tags(table));
                 }
             }
-
+            //主键
             if(Metadata.check(struct, Metadata.TYPE.PRIMARY)) {
                 PrimaryKey pk = table.getPrimaryKey();
                 if(null == pk) {
@@ -2134,22 +2134,30 @@ public class DefaultService<E> implements AnylineService<E> {
                     table.setPrimaryKey(pk);
                 }
             }
+            //索引
             if(Metadata.check(struct, Metadata.TYPE.INDEX)) {
                 LinkedHashMap<String, Index> indexes = table.getIndexes();
                 if(null == indexes || indexes.isEmpty()) {
                     table.setIndexes(indexes(table));
                 }
             }
+            //约束
             if(Metadata.check(struct, Metadata.TYPE.CONSTRAINT)) {
                 LinkedHashMap<String, Constraint> constraints = table.getConstraints();
                 if(null == constraints || constraints.isEmpty()) {
                     table.setConstraints(constraints(table));
                 }
             }
+            //DDL
             if(Metadata.check(struct, Metadata.TYPE.DDL)) {
                 if (null == table.ddl()) {
                     ddl(table);
                 }
+            }
+            //分区
+            if(table instanceof MasterTable){
+                Table.Partition partition = partition(table);
+                table.setPartition(partition);
             }
 
         }
@@ -2694,6 +2702,15 @@ public class DefaultService<E> implements AnylineService<E> {
          * PartitionTable partition(String name)
          ******************************************************************************************************************/
 
+        /**
+         * 表分区方式及分片
+         * @param table 主表
+         * @return Partition
+         */
+        @Override
+        public Table.Partition partition(Table table) {
+            return dao.partition(table);
+        }
         @Override
         public boolean exists(boolean greedy, PartitionTable table) {
             PartitionTable tab = partition(greedy, table.getCatalog(), table.getSchema(), table.getMasterName(), table.getName());

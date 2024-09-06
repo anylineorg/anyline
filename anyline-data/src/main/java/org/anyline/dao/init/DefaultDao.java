@@ -23,7 +23,6 @@ import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.RunPrepare;
-import org.anyline.data.prepare.auto.TablePrepare;
 import org.anyline.data.prepare.auto.init.DefaultTablePrepare;
 import org.anyline.data.prepare.auto.init.DefaultTextPrepare;
 import org.anyline.data.run.Run;
@@ -1188,6 +1187,18 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * LinkedHashMap<String, PartitionTable> partitions(MasterTable table)
 	 ******************************************************************************************************************/
 
+	/**
+	 * 表分区方式及分片
+	 * @param table 主表
+	 * @return Partition
+	 */
+	@Override
+	public Table.Partition partition(DataRuntime runtime, String random, Table table) {
+		if(null == runtime) {
+			runtime = runtime();
+		}
+		return runtime.getAdapter().partition(runtime, random, table);
+	}
 	@Override
 	public <T extends PartitionTable> LinkedHashMap<String, T> partitions(DataRuntime runtime, String random, boolean greedy, PartitionTable query) {
 		if(null == runtime) {
