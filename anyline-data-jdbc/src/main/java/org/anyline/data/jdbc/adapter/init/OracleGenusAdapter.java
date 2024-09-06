@@ -16,11 +16,14 @@
 
 package org.anyline.data.jdbc.adapter.init;
 
+import org.anyline.data.entity.Join;
 import org.anyline.data.jdbc.adapter.init.alias.OracleGenusTypeMetadataAlias;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.RunPrepare;
+import org.anyline.data.prepare.auto.TablePrepare;
 import org.anyline.data.prepare.auto.init.DefaultTablePrepare;
+import org.anyline.data.prepare.auto.init.VirtualTablePrepare;
 import org.anyline.data.run.*;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
@@ -34,6 +37,7 @@ import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
+import org.anyline.util.SQLUtil;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -562,6 +566,104 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
     }
 
     /**
+     * 多表关联更新
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param prepare 一般通过TableBuilder生成
+     * @param data K-DataRow.VariableValue 更新值key:需要更新的列 value:通常是关联表的列用DataRow.VariableValue表示，也可以是常量
+     * @return 影响行数
+     */
+    @Override
+    public Run buildUpdateRun(DataRuntime runtime, RunPrepare prepare, DataRow data, ConfigStore configs, String ... conditions) {
+        Run run = initQueryRun(runtime, prepare);
+        run.addCondition(conditions);
+        if(run.checkValid()) {
+            fillUpdateContent(runtime, (TableRun) run, data, configs);
+        }
+        return run;
+    }
+    @Override
+    public void fillUpdateContent(DataRuntime runtime, TableRun run, StringBuilder builder, DataRow data, ConfigStore configs){
+        /*update flights f1
+         set f1.departure_datetime = timestamp'2015-01-01 11:00:00 -00:00',
+         (f1.flight_number, f1.flight_duration)
+         = ( select f2.flight_number || '0', f2.flight_duration
+         from flights f2
+          where f2.departure_airport_code = f1.departure_airport_code
+          and f2.destination_airport_code = f1.destination_airport_code
+          and trunc(f2.departure_datetime) = trunc(f2.departure_datetime)
+          and f2.operating_carrier_code = 'AA'
+          )
+          where f1.operating_carrier_code = 'BA'
+          and trunc(f1.departure_datetime) = date'2015-01-01';
+        * */
+        TablePrepare prepare = (TablePrepare)run.getPrepare();
+        builder.append("UPDATE ");
+        name(runtime, builder, prepare.getTable());
+        String alias = prepare.getAlias();
+        String masterName = prepare.getTableName();
+        if(BasicUtil.isNotEmpty(alias)){
+            builder.append(tableAliasGuidd());
+            delimiter(builder, alias);
+            masterName = alias;
+        }
+        builder.append(" SET ").append(BR).append("(");
+        List<String> keys = data.keys();
+        boolean first = true;
+        for(String key:keys){
+            if(!first){
+                builder.append(", ");
+            }
+            first = false;
+            if(!key.contains(".")) {
+                builder.append(masterName).append(".");
+            }
+            builder.append(key);
+        }
+        builder.append(") = ( SELECT ");
+        first = true;
+        for(String key:keys){
+            if(!first){
+                builder.append(", ");
+            }
+            first = false;
+            Object value = data.get(key);
+            if(value instanceof DataRow.VariableValue){
+                DataRow.VariableValue var = (DataRow.VariableValue)value;
+                delimiter(builder, var.value());
+            }else{
+                builder.append("?");
+                RunValue rv = new RunValue();
+                rv.setValue(value);
+                run.addValue(rv);
+            }
+        }
+        RunPrepare master = null;
+        List<RunPrepare> joins = prepare.getJoins();
+        if(null != joins && !joins.isEmpty()) {
+            master = joins.get(0);
+            joins.remove(master);
+            builder.append("\nFROM ");
+            fillMasterTableContent(runtime, builder, run, master);
+            for (RunPrepare join:joins) {
+                fillJoinTableContent(runtime, builder, run, join);
+            }
+        }
+        if(null != master){
+            Join join = master.getJoin();
+            if(master instanceof VirtualTablePrepare) {
+                join = ((VirtualTablePrepare) master).getPrepare().getJoin();
+            }
+            if(null != join){
+                String on = join.getConditions().getRunText(runtime, false);
+                builder.append(" WHERE ").append(SQLUtil.trim(on));
+            }
+        }
+        builder.append(")");
+        init(runtime, run, configs);
+        run.appendCondition(builder, this, true, true);
+    }
+
+    /**
      * update [命令合成-子流程]<br/>
      * 确认需要更新的列
      * @param row DataRow
@@ -606,7 +708,6 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
     public long update(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, Run run) {
         return super.update(runtime, random, dest, data, configs, run);
     }
-
     /**
      * save [调用入口]<br/>
      * <br/>
