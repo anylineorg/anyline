@@ -2154,7 +2154,7 @@ public class DefaultService<E> implements AnylineService<E> {
                     ddl(table);
                 }
             }
-            //分区
+            //分区方式
             if(table instanceof MasterTable){
                 Table.Partition partition = partition(table);
                 table.setPartition(partition);

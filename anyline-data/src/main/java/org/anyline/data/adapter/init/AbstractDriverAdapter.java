@@ -8335,7 +8335,20 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             random = random(runtime);
         }
         Table.Partition partition = null;
+        List<Run> runs = buildQueryTablePartitionRun(runtime, table);
         return partition;
+    }
+
+    /**
+     * partition table[命令合成]<br/>
+     * 查询表分区方式及分片
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param table 表
+     * @return String
+     */
+    @Override
+    public List<Run> buildQueryTablePartitionRun(DataRuntime runtime, Table table) {
+        return new ArrayList();
     }
 	/**
 	 * partition table[调用入口]<br/>

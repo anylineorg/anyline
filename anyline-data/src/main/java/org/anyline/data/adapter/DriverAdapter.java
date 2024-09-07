@@ -2670,7 +2670,7 @@ public interface DriverAdapter {
     default <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, boolean struct, ConfigStore configs) {
         int structs = 0;
         if(struct) {
-            structs = 32767;
+            structs = Metadata.TYPE.ALL.value();
         }
         return tables(runtime, random, greedy, catalog, schema, pattern, types, structs, configs);
     }
@@ -2691,7 +2691,7 @@ public interface DriverAdapter {
     default <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, boolean struct, ConfigStore configs) {
         int structs = 0;
         if(struct) {
-            structs = 32767;
+            structs = Metadata.TYPE.ALL.value();
         }
         return tables(runtime, random, catalog, schema, pattern, types, structs, configs);
     }
@@ -3031,7 +3031,7 @@ public interface DriverAdapter {
     default <T extends VertexTable> List<T> vertexs(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, boolean struct, ConfigStore configs) {
         int structs = 0;
         if(struct) {
-            structs = 32767;
+            structs = Metadata.TYPE.ALL.value();
         }
         return vertexs(runtime, random, greedy, catalog, schema, pattern, types, structs, configs);
     }
@@ -3052,7 +3052,7 @@ public interface DriverAdapter {
     default <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, boolean struct, ConfigStore configs) {
         int structs = 0;
         if(struct) {
-            structs = 32767;
+            structs = Metadata.TYPE.ALL.value();
         }
         return vertexs(runtime, random, catalog, schema, pattern, types, structs, configs);
     }
@@ -3346,7 +3346,7 @@ public interface DriverAdapter {
     default <T extends EdgeTable> List<T> edges(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, boolean struct, ConfigStore configs) {
         int structs = 0;
         if(struct) {
-            structs = 32767;
+            structs = Metadata.TYPE.ALL.value();
         }
         return edges(runtime, random, greedy, catalog, schema, pattern, types, structs, configs);
     }
@@ -3367,7 +3367,7 @@ public interface DriverAdapter {
     default <T extends EdgeTable> LinkedHashMap<String, T> edges(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, boolean struct, ConfigStore configs) {
         int structs = 0;
         if(struct) {
-            structs = 32767;
+            structs = Metadata.TYPE.ALL.value();
         }
         return edges(runtime, random, catalog, schema, pattern, types, structs, configs);
     }
@@ -3662,7 +3662,7 @@ public interface DriverAdapter {
     default <T extends View> List<T> views(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, boolean struct, ConfigStore configs) {
         int structs = 0;
         if(struct) {
-            structs = 32767;
+            structs = Metadata.TYPE.ALL.value();
         }
         return views(runtime, random, greedy, catalog, schema, pattern, types, structs, configs);
     }
@@ -3683,7 +3683,7 @@ public interface DriverAdapter {
     default <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, boolean struct, ConfigStore configs) {
         int structs = 0;
         if(struct) {
-            structs = 32767;
+            structs = Metadata.TYPE.ALL.value();
         }
         return views(runtime, random, catalog, schema, pattern, types, structs, configs);
     }
@@ -3977,7 +3977,7 @@ public interface DriverAdapter {
     default <T extends MasterTable> List<T> masters(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, boolean struct, ConfigStore configs) {
         int structs = 0;
         if(struct) {
-            structs = 32767;
+            structs = Metadata.TYPE.ALL.value();
         }
         return masters(runtime, random, greedy, catalog, schema, pattern, types, structs, configs);
     }
@@ -3998,7 +3998,7 @@ public interface DriverAdapter {
     default <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, boolean struct, ConfigStore configs) {
         int structs = 0;
         if(struct) {
-            structs = 32767;
+            structs = Metadata.TYPE.ALL.value();
         }
         return masters(runtime, random, catalog, schema, pattern, types, structs, configs);
     }
@@ -4261,6 +4261,15 @@ public interface DriverAdapter {
      * @return Partition
      */
     Table.Partition partition(DataRuntime runtime, String random, Table table);
+
+    /**
+     * partition table[命令合成]<br/>
+     * 查询表分区方式及分片
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param table 表
+     * @return String
+     */
+    List<Run> buildQueryTablePartitionRun(DataRuntime runtime, Table table);
     /**
      * partition table[调用入口]<br/>
      * 查询主表

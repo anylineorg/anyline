@@ -715,7 +715,7 @@ public interface AnylineDao<E>{
 	default <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String name, int types, boolean struct, ConfigStore configs) {
 		int structs = 0;
 		if(struct) {
-			structs = 32767;
+			structs = Metadata.TYPE.ALL.value();
 		}
 		return tables(runtime, random, greedy, catalog, schema, name, types, structs, configs);
 	}
@@ -769,7 +769,7 @@ public interface AnylineDao<E>{
 	default <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String name, int types, boolean struct, ConfigStore configs) {
 		int structs = 0;
 		if(struct) {
-			structs = 32767;
+			structs = Metadata.TYPE.ALL.value();
 		}
 		return tables(runtime, random, catalog, schema, name, types, structs, configs);
 	}
@@ -880,7 +880,7 @@ public interface AnylineDao<E>{
 	default <T extends EdgeTable> List<T> edges(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String name, int types, boolean struct, ConfigStore configs) {
 		int structs = 0;
 		if(struct) {
-			structs = 32767;
+			structs = Metadata.TYPE.ALL.value();
 		}
 		return edges(runtime, random, greedy, catalog, schema, name, types, structs, configs);
 	}
@@ -931,7 +931,7 @@ public interface AnylineDao<E>{
 	default <T extends EdgeTable> LinkedHashMap<String, T> edges(DataRuntime runtime, String random, Catalog catalog, Schema schema, String name, int types, boolean struct, ConfigStore configs) {
 		int structs = 0;
 		if(struct) {
-			structs = 32767;
+			structs = Metadata.TYPE.ALL.value();
 		}
 		return edges(runtime, random, catalog, schema, name, types, structs, configs);
 	}
@@ -1042,7 +1042,7 @@ public interface AnylineDao<E>{
 	default <T extends VertexTable> List<T> vertexs(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String name, int types, boolean struct, ConfigStore configs) {
 		int structs = 0;
 		if(struct) {
-			structs = 32767;
+			structs = Metadata.TYPE.ALL.value();
 		}
 		return vertexs(runtime, random, greedy, catalog, schema, name, types, structs, configs);
 	}
@@ -1093,7 +1093,7 @@ public interface AnylineDao<E>{
 	default <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, String random, Catalog catalog, Schema schema, String name, int types, boolean struct, ConfigStore configs) {
 		int structs = 0;
 		if(struct) {
-			structs = 32767;
+			structs = Metadata.TYPE.ALL.value();
 		}
 		return vertexs(runtime, random, catalog, schema, name, types, structs, configs);
 	}
@@ -1207,7 +1207,7 @@ public interface AnylineDao<E>{
 	default <T extends MasterTable> List<T> masters(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String name, int types, boolean struct, ConfigStore configs) {
 		int structs = 0;
 		if(struct) {
-			structs = 32767;
+			structs = Metadata.TYPE.ALL.value();
 		}
 		return masters(runtime, random, greedy, catalog, schema, name, types, structs, configs);
 	}
@@ -1261,7 +1261,7 @@ public interface AnylineDao<E>{
 	default <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, String random, Catalog catalog, Schema schema, String name, int types, boolean struct, ConfigStore configs) {
 		int structs = 0;
 		if(struct) {
-			structs = 32767;
+			structs = Metadata.TYPE.ALL.value();
 		}
 		return masters(runtime, random, catalog, schema, name, types, structs, configs);
 	}
@@ -1358,7 +1358,7 @@ public interface AnylineDao<E>{
 	default <T extends View> List<T> views(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String name, int types, boolean struct, ConfigStore configs) {
 		int structs = 0;
 		if(struct) {
-			structs = 32767;
+			structs = Metadata.TYPE.ALL.value();
 		}
 		return views(runtime, random, greedy, catalog, schema, name, types, structs, configs);
 	}
@@ -1409,7 +1409,7 @@ public interface AnylineDao<E>{
 	default <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, Catalog catalog, Schema schema, String name, int types, boolean struct, ConfigStore configs) {
 		int structs = 0;
 		if(struct) {
-			structs = 32767;
+			structs = Metadata.TYPE.ALL.value();
 		}
 		return views(runtime, random, catalog, schema, name, types, structs, configs);
 	}
