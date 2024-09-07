@@ -454,8 +454,8 @@ public class DMAdapter extends OracleGenusAdapter implements JDBCAdapter {
 		return super.saveObject(runtime, random, dest, data, configs, columns);
 	}
 	@Override
-	protected Boolean checkOverride(Object obj) {
-		return super.checkOverride(obj);
+	protected Boolean checkOverride(Object obj, ConfigStore configs) {
+		return super.checkOverride(obj, configs);
 	}
 	@Override
 	protected Map<String, Object> checkPv(Object obj) {

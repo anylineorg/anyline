@@ -606,8 +606,8 @@ public class TiDBAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 	 * false:跳过更新<br/>
 	 */
 	@Override
-	protected Boolean checkOverride(Object obj) {
-		return super.checkOverride(obj);
+	protected Boolean checkOverride(Object obj, ConfigStore configs) {
+		return super.checkOverride(obj, configs);
 	}
 
 	/**
