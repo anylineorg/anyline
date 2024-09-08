@@ -2585,6 +2585,163 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * List<String> ddl(DataRuntime runtime, int index, PartitionTable table, List<String> ddls, DataSet set)
      ******************************************************************************************************************/
     /**
+     * 表分区方式及分片
+     * @param table 主表
+     * @return Partition
+     */
+    public Table.Partition partition(DataRuntime runtime, String random, Table table) {
+        return super.partition(runtime, random, table);
+    }
+
+    /**
+     * partition table[命令合成]<br/>
+     * 查询表分区方式及分片
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param table 表
+     * @return String
+     */
+    @Override
+    public List<Run> buildQueryTablePartitionRun(DataRuntime runtime, Table table) {
+        List<Run> runs = new ArrayList<>();
+        SimpleRun run = new SimpleRun(runtime);
+        runs.add(run);
+        StringBuilder builder = run.getBuilder();
+        //分区方式
+        builder.append("SHOW CREATE TABLE ");
+        name(runtime, builder, table);
+
+        //分区
+        run = new SimpleRun(runtime);
+        runs.add(run);
+        builder = run.getBuilder();
+        builder.append("SELECT * FROM information_schema.PARTITIONS");
+        ConfigStore configs = run.getConfigs();
+        configs.and("TABLE_SCHEMA", table.getSchemaName());
+        configs.and("TABLE_NAME", table.getName());
+        return runs;
+    }
+
+    /**
+     * partition table[结果集封装]<br/>
+     * 根据查询结果集构造Table
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param index 第几条SQL 对照 buildQueryMasterTablesRun返回顺序
+     * @param create 上一步没有查到的,这一步是否需要新创建
+     * @param meta 上一步查询结果
+     * @param table 表
+     * @param set 查询结果集
+     * @return tables
+     * @throws Exception 异常
+     */
+    @Override
+    public Table.Partition partition(DataRuntime runtime, int index, boolean create, Table.Partition meta, Table table, DataSet set) throws Exception {
+        return super.partition(runtime, index, create, meta, table, set);
+    }
+
+    /**
+     * partition table[结果集封装]<br/>
+     * 根据查询结果集构造Table.Partition
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param index 第几条SQL 对照 buildQueryMasterTablesRun返回顺序
+     * @param create 上一步没有查到的,这一步是否需要新创建
+     * @param meta 上一步查询结果
+     * @param table 表
+     * @param row 查询结果集
+     * @return tables
+     * @throws Exception 异常
+     */
+    @Override
+    public Table.Partition init(DataRuntime runtime, int index, boolean create, Table.Partition meta, Table table, DataRow row) throws Exception {
+        MetadataFieldRefer refer = refer(runtime, Table.Partition.class);
+        if(index == 0){
+            meta = new Table.Partition();
+            String txt = row.getString("Create Table");
+            if(null != txt){
+                /* PARTITION BY HASH (`ID`)
+                PARTITIONS 100 */
+                String type = RegularUtil.cut(txt,"/*!", "PARTITION BY", "(");
+                if(null != type){
+                    type = type.trim();
+                    Table.Partition.TYPE ty = Table.Partition.TYPE.valueOf(type);
+                    meta.setType(ty);
+                    String[] columns = RegularUtil.cut(txt, "/*!","PARTITION BY", "(", ")").split(",");
+                    for(String column:columns){
+                        meta.addColumn(column.replace("`", "").trim());
+                    }
+                    if(ty == Table.Partition.TYPE.HASH){
+                        String mod = RegularUtil.cut(txt,"/*!", "PARTITION BY", "PARTITIONS", " ", " ");
+                        meta.setModulus(BasicUtil.parseInt(mod.trim(), -1));
+                    }
+                }
+            }
+        }
+        return meta;
+    }
+
+    /**
+     * partition table[结果集封装]<br/>
+     * 根据查询结果集构造Table.Partition
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param index 第几条SQL 对照 buildQueryMasterTablesRun返回顺序
+     * @param create 上一步没有查到的,这一步是否需要新创建
+     * @param meta 上一步查询结果
+     * @param table 表
+     * @param row 查询结果集
+     * @return tables
+     * @throws Exception 异常
+     */
+    @Override
+    public Table.Partition detail(DataRuntime runtime, int index, boolean create, Table.Partition meta, Table table, DataRow row) throws Exception {
+        if(index == 1){
+            MetadataFieldRefer refer = refer(runtime, Table.Partition.Slice.class);
+            Table.Partition.Slice slice = new Table.Partition.Slice();
+            slice.setName(getString(row, refer, Table.Partition.Slice.FIELD_NAME));
+            Table.Partition.TYPE type = meta.getType();
+            if(type == Table.Partition.TYPE.LIST){
+                String[] values = row.getString("PARTITION_DESCRIPTION").split(",");
+                for(String value:values){
+                    slice.addValue(value);
+                }
+            }else if(type == Table.Partition.TYPE.RANGE){
+                String[] less = row.getString("PARTITION_DESCRIPTION").split(",");
+                String[] columns = row.getString("PARTITION_EXPRESSION").split(",");
+                int size = columns.length;
+                for(int i=0; i<size; i++){
+                    slice.setLess(columns[i], less[i]);
+                }
+            }
+            meta.addSlice(slice);
+        }
+        return meta;
+    }
+
+
+    /**
+     * partition table[结果集封装]<br/>
+     * Table.Partition 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer initTablePartitionFieldRefer() {
+        MetadataFieldRefer refer = new MetadataFieldRefer(Table.Partition.class);
+        refer.map(Table.Partition.FIELD_TYPE, "PARTITION_METHOD");
+        refer.map(Table.Partition.FIELD_COLUMN, "PARTITION_EXPRESSION");
+        return refer;
+    }
+
+    /**
+     * partition table[结果集封装]<br/>
+     * Table.Partition.Slice 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer initTablePartitionSliceFieldRefer() {
+        MetadataFieldRefer refer = new MetadataFieldRefer(Table.Partition.Slice.class);
+        refer.map(Table.Partition.Slice.FIELD_NAME, "PARTITION_NAME");
+        return refer;
+    }
+
+    /**
      * partition table[调用入口]<br/>
      * 查询主表
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端

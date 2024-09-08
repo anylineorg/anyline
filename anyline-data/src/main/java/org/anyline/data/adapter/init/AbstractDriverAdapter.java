@@ -8332,6 +8332,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @param table 主表
      * @return Partition
      */
+    @Override
     public Table.Partition partition(DataRuntime runtime, String random, Table table) {
         if(null == random) {
             random = random(runtime);
@@ -8463,6 +8464,28 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         meta.addSlice(slice);
         return meta;
     }
+
+
+    /**
+     * partition table[结果集封装]<br/>
+     * Table.Partition 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer initTablePartitionFieldRefer() {
+        return new MetadataFieldRefer(Table.Partition.class);
+    }
+
+    /**
+     * partition table[结果集封装]<br/>
+     * Table.Partition.Slice 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer initTablePartitionSliceFieldRefer() {
+        return new MetadataFieldRefer(Table.Partition.Slice.class);
+    }
+
 	/**
 	 * partition table[调用入口]<br/>
 	 * 查询主表
@@ -8545,25 +8568,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         return new MetadataFieldRefer(PartitionTable.class);
     }
 
-    /**
-     * partition table[结果集封装]<br/>
-     * Table.Partition 属性与结果集对应关系
-     * @return MetadataFieldRefer
-     */
-    @Override
-    public MetadataFieldRefer initTablePartitionFieldRefer() {
-        return new MetadataFieldRefer(Table.Partition.class);
-    }
-
-    /**
-     * partition table[结果集封装]<br/>
-     * Table.Partition.Slice 属性与结果集对应关系
-     * @return MetadataFieldRefer
-     */
-    @Override
-    public MetadataFieldRefer initTablePartitionSliceFieldRefer() {
-        return new MetadataFieldRefer(Table.Partition.Slice.class);
-    }
 	/**
 	 * partition table[结果集封装]<br/>
 	 * 根据查询结果集构造Table
