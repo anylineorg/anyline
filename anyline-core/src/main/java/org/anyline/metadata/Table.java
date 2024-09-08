@@ -1426,7 +1426,7 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
      * partition of :主表
      * partition for:分区依据值
      */
-    public static class Partition implements Serializable {
+    public static class Partition extends TableAffiliation implements Serializable {
         public enum TYPE{LIST, RANGE, HASH}
         //主表中设置分区
         private List<Slice> slices = new ArrayList<>();
@@ -1584,7 +1584,7 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
         /**
          * 分片(分区依据值)
          */
-        public static class Slice implements Serializable{
+        public static class Slice extends TableAffiliation implements Serializable{
             private String name;
             private Object min;
             private Object max;
@@ -1695,7 +1695,25 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
                 this.unit = unit;
                 return this;
             }
+            public static final String FIELD_NAME                      = "NAME";
+            public static final String FIELD_MIN                       = "MIN";
+            public static final String FIELD_MAX                       = "MAX";
+            public static final String FIELD_VALUE                     = "VALUE";
+            public static final String FIELD_LESS                      = "LESS";
+            public static final String FIELD_INTERVAL                  = "INTERVAL";
+            public static final String FIELD_UNIT                      = "UNIT";
         }
+        public static final String FIELD_NAME                           = "NAME";
+        public static final String FIELD_TYPE                           = "TYPE";
+        public static final String FIELD_COLUMN                         = "COLUMN";
+        public static final String FIELD_MIN                            = "MIN";
+        public static final String FIELD_MAX                            = "MAX";
+        public static final String FIELD_VALUE                          = "VALUE";
+        public static final String FIELD_LESS                           = "LESS";
+        public static final String FIELD_INTERVAL                       = "INTERVAL";
+        public static final String FIELD_UNIT                           = "UNIT";
+        public static final String FIELD_MODULUS                        = "MODULUS";
+        public static final String FIELD_REMAINDER                      = "REMAINDER";
     }
 
 /* ********************************* field refer ********************************** */

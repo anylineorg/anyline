@@ -4292,6 +4292,20 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     }
 
     /**
+     * table[命令合成-子流程]<br/>
+     * 部分数据库在创建主表时用主表关键字(默认)，部分数据库普通表主表子表都用table，部分数据库用collection、timeseries等
+     * @param meta 表
+     * @return String
+     */
+    @Override
+    public String keyword(Metadata meta) {
+        if(meta instanceof Table) {
+            return "TABLE";
+        }
+        return super.keyword(meta);
+    }
+
+    /**
      * table[命令合成]<br/>
      * 创建表<br/>
      * 关于创建主键的几个环节<br/>

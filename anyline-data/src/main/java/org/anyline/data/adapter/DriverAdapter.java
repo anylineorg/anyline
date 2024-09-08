@@ -4270,6 +4270,48 @@ public interface DriverAdapter {
      * @return String
      */
     List<Run> buildQueryTablePartitionRun(DataRuntime runtime, Table table);
+
+    /**
+     * partition table[结果集封装]<br/>
+     * 根据查询结果集构造Table
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param index 第几条SQL 对照 buildQueryMasterTablesRun返回顺序
+     * @param create 上一步没有查到的,这一步是否需要新创建
+     * @param meta 上一步查询结果
+     * @param table 表
+     * @param set 查询结果集
+     * @return tables
+     * @throws Exception 异常
+     */
+    Table.Partition partition(DataRuntime runtime, int index, boolean create, Table.Partition meta, Table table, DataSet set) throws Exception;
+
+    /**
+     * partition table[结果集封装]<br/>
+     * 根据查询结果集构造Table.Partition
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param index 第几条SQL 对照 buildQueryMasterTablesRun返回顺序
+     * @param create 上一步没有查到的,这一步是否需要新创建
+     * @param meta 上一步查询结果
+     * @param table 表
+     * @param row 查询结果集
+     * @return tables
+     * @throws Exception 异常
+     */
+    Table.Partition init(DataRuntime runtime, int index, boolean create, Table.Partition meta, Table table, DataRow row) throws Exception;
+
+    /**
+     * partition table[结果集封装]<br/>
+     * 根据查询结果集构造Table.Partition
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param index 第几条SQL 对照 buildQueryMasterTablesRun返回顺序
+     * @param create 上一步没有查到的,这一步是否需要新创建
+     * @param meta 上一步查询结果
+     * @param table 表
+     * @param row 查询结果集
+     * @return tables
+     * @throws Exception 异常
+     */
+    Table.Partition detail(DataRuntime runtime, int index, boolean create, Table.Partition meta, Table table, DataRow row) throws Exception;
     /**
      * partition table[调用入口]<br/>
      * 查询主表
@@ -4423,6 +4465,20 @@ public interface DriverAdapter {
      * @return MetadataFieldRefer
      */
     MetadataFieldRefer initPartitionTableFieldRefer();
+
+    /**
+     * partition table[结果集封装]<br/>
+     * Table.Partition 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    MetadataFieldRefer initTablePartitionFieldRefer();
+
+    /**
+     * partition table[结果集封装]<br/>
+     * Table.Partition.Slice 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    MetadataFieldRefer initTablePartitionSliceFieldRefer();
 
     /**
      * partition table[结果集封装]<br/>

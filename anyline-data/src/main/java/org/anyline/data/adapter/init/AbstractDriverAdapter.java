@@ -213,6 +213,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         reg(initTableFieldRefer());
         reg(initTableCommentFieldRefer());
         reg(initMasterTableFieldRefer());
+        reg(initTablePartitionFieldRefer());
+        reg(initTablePartitionSliceFieldRefer());
         reg(initPartitionTableFieldRefer());
         reg(initEdgeFieldRefer());
         reg(initVertexFieldRefer());
@@ -8335,7 +8337,35 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             random = random(runtime);
         }
         Table.Partition partition = null;
-        List<Run> runs = buildQueryTablePartitionRun(runtime, table);
+        try{
+            long fr = System.currentTimeMillis();
+            // 根据系统表查询
+            try{
+                List<Run> runs = buildQueryTablePartitionRun(runtime, table);
+                if(null != runs) {
+                    int idx = 0;
+                    for(Run run:runs) {
+                        DataSet set = selectMetadata(runtime, random, run);
+                        partition = partition(runtime, idx++, true, partition, table, set);
+                    }
+                }
+            }catch (Exception e) {
+                if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+                    log.error("[partition][result:fail]", e);
+                }else if (ConfigTable.IS_LOG_SQL && log.isWarnEnabled()) {
+                    log.warn("{}[partition][{}][table:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), table.getName(), e.toString());
+                }
+            }
+            if (ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
+                log.info("{}[partition][table:{}][result:true][执行耗时:{}]", random, table.getName(), DateUtil.format(System.currentTimeMillis() - fr));
+            }
+        }catch (Exception e) {
+            if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+                log.error("[partition][result:fail]", e);
+            }else{
+                log.error("[partition][result:fail][msg:{}]", e.toString());
+            }
+        }
         return partition;
     }
 
@@ -8348,7 +8378,90 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      */
     @Override
     public List<Run> buildQueryTablePartitionRun(DataRuntime runtime, Table table) {
-        return new ArrayList();
+        return new ArrayList<>();
+    }
+
+    /**
+     * partition table[结果集封装]<br/>
+     * 根据查询结果集构造Table
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param index 第几条SQL 对照 buildQueryMasterTablesRun返回顺序
+     * @param create 上一步没有查到的,这一步是否需要新创建
+     * @param meta 上一步查询结果
+     * @param table 表
+     * @param set 查询结果集
+     * @return tables
+     * @throws Exception 异常
+     */
+    @Override
+    public Table.Partition partition(DataRuntime runtime, int index, boolean create, Table.Partition meta, Table table, DataSet set) throws Exception {
+        for(DataRow row:set) {
+            if(null == meta) {
+               meta = init(runtime, index, create, meta, table, row);
+            }
+            if(null == meta){
+                continue;
+            }
+            meta = detail(runtime, index, create, meta, table, row);
+        }
+        return meta;
+    }
+
+    /**
+     * partition table[结果集封装]<br/>
+     * 根据查询结果集构造Table.Partition
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param index 第几条SQL 对照 buildQueryMasterTablesRun返回顺序
+     * @param create 上一步没有查到的,这一步是否需要新创建
+     * @param meta 上一步查询结果
+     * @param table 表
+     * @param row 查询结果集
+     * @return tables
+     * @throws Exception 异常
+     */
+    @Override
+    public Table.Partition init(DataRuntime runtime, int index, boolean create, Table.Partition meta, Table table, DataRow row) throws Exception {
+        MetadataFieldRefer refer = refer(runtime, Table.Partition.class);
+        try{
+            String type = getString(row, refer, Table.Partition.FIELD_NAME);
+            if(BasicUtil.isNotEmpty(type)){
+                meta.setType(Table.Partition.TYPE.valueOf(type));
+                meta.setMetadata(row);
+                String columns = getString(row, refer, Table.Partition.FIELD_COLUMN);
+                if(null != columns){
+                    String[] cols = columns.split(",");
+                    for(String col:cols){
+                        col = col.replace(getDelimiterFr(), "");
+                        col = col.replace(getDelimiterTo(), "");
+                        meta.addColumn(col);
+                    }
+                }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return meta;
+    }
+
+    /**
+     * partition table[结果集封装]<br/>
+     * 根据查询结果集构造Table.Partition
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param index 第几条SQL 对照 buildQueryMasterTablesRun返回顺序
+     * @param create 上一步没有查到的,这一步是否需要新创建
+     * @param meta 上一步查询结果
+     * @param table 表
+     * @param row 查询结果集
+     * @return tables
+     * @throws Exception 异常
+     */
+    @Override
+    public Table.Partition detail(DataRuntime runtime, int index, boolean create, Table.Partition meta, Table table, DataRow row) throws Exception {
+        MetadataFieldRefer refer = refer(runtime, Table.Partition.Slice.class);
+        Table.Partition.Slice slice = new Table.Partition.Slice();
+        slice.setName(getString(row, refer, Table.Partition.Slice.FIELD_NAME));
+        meta.addSlice(slice);
+        return meta;
     }
 	/**
 	 * partition table[调用入口]<br/>
@@ -8432,6 +8545,25 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         return new MetadataFieldRefer(PartitionTable.class);
     }
 
+    /**
+     * partition table[结果集封装]<br/>
+     * Table.Partition 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer initTablePartitionFieldRefer() {
+        return new MetadataFieldRefer(Table.Partition.class);
+    }
+
+    /**
+     * partition table[结果集封装]<br/>
+     * Table.Partition.Slice 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer initTablePartitionSliceFieldRefer() {
+        return new MetadataFieldRefer(Table.Partition.Slice.class);
+    }
 	/**
 	 * partition table[结果集封装]<br/>
 	 * 根据查询结果集构造Table

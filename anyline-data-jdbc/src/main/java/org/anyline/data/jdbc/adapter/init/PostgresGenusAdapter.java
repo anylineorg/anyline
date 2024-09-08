@@ -4304,7 +4304,10 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public String keyword(Metadata meta) {
-        return "TABLE";
+        if(meta instanceof Table) {
+            return "TABLE";
+        }
+        return super.keyword(meta);
     }
 
     /**
