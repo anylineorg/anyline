@@ -2704,7 +2704,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
                 }
             }else if(type == Table.Partition.TYPE.RANGE){
                 String[] less = row.getString("PARTITION_DESCRIPTION").split(",");
-                String[] columns = row.getString("PARTITION_EXPRESSION").split(",");
+                String[] columns = row.getString("PARTITION_EXPRESSION").replace("`","").split(",");
                 int size = columns.length;
                 for(int i=0; i<size; i++){
                     slice.setLess(columns[i], less[i]);
