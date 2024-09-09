@@ -69,5 +69,4 @@ public interface AutoPrepare extends RunPrepare {
 	RunPrepare setSchema(String schema) ;
 	RunPrepare setTable(String table) ;
 	RunPrepare setTable(Table table) ;
-	String getDistinct();
 } 
