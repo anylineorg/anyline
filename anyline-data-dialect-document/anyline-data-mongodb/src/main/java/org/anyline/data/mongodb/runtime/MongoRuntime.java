@@ -82,4 +82,10 @@ public class MongoRuntime extends AbstractRuntime implements DataRuntime {
         this.database = database;
     }
 
+
+    @Override
+    public boolean destroy() throws Exception {
+        MongoRuntimeHolder.instance().destroy(this.key);
+        return true;
+    }
 }
