@@ -86,6 +86,30 @@ public class ParseResult {
 		row.put("swt", swt);
 		return row;
 	}
+	public static ParseResult build(DataRow row){
+		ParseResult parser = new ParseResult();
+		parser.setVar(row.getString("var"));
+		DataRow parse = row.getRow("parser");
+		if(null != parse) {
+			parser.setPrefix(parse.getString("prefix"));
+			parser.setVar(parse.getString("var"));
+			parser.setClazz(parse.getString("class"));
+			parser.setMethod(parse.getString("method"));
+			parser.setKey(parse.getString("key"));
+			String join = parse.getString("join");
+			if(null != join){
+				parser.setJoin(Condition.JOIN.valueOf(join.trim().toUpperCase()));
+			}
+			parser.setCompare(ConfigBuilder.compare(parse.getInt("compare", Compare.EQUAL.getCode())));
+			String swt = parse.getString("swt");
+			if(BasicUtil.isNotEmpty(swt)) {
+				try {
+					parser.setSwt(Compare.EMPTY_VALUE_SWITCH.valueOf(swt));
+				}catch (Exception ignored) {}
+			}
+		}
+		return parser;
+	}
 	public String json() {
 		return json(false);
 	}

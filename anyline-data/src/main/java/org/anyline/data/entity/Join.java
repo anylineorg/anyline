@@ -18,8 +18,11 @@ package org.anyline.data.entity;
 
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.init.DefaultConfigStore;
+import org.anyline.entity.DataRow;
+import org.anyline.entity.OriginRow;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class Join  implements Serializable {
     public static enum TYPE{
@@ -56,6 +59,12 @@ public class Join  implements Serializable {
         }
         return this;
     }
+    public Join addConditions(List<String> conditions){
+        for(String condition : conditions){
+            this.conditions.and(condition);
+        }
+        return this;
+    }
 
     public Join setConditions(String ... conditions) {
         this.conditions = new DefaultConfigStore();
@@ -63,5 +72,29 @@ public class Join  implements Serializable {
             this.conditions.and(condition);
         }
         return this;
+    }
+    public Join setConditions(List<String> conditions) {
+        this.conditions = new DefaultConfigStore();
+        for(String condition:conditions){
+            this.conditions.and(condition);
+        }
+        return this;
+    }
+    public DataRow map(boolean empty) {
+        DataRow row = new OriginRow();
+        if(empty || null != type){
+            row.put("type", type.getCode());
+        }
+        row.put("conditions", conditions.getConfigChain().map(empty));
+        return row;
+    }
+    public DataRow map() {
+        return map(false);
+    }
+    public String json(boolean empty) {
+        return map(empty).json();
+    }
+    public String json() {
+        return json(false);
     }
 }

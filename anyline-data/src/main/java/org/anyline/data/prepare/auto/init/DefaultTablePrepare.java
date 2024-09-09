@@ -21,6 +21,8 @@ import org.anyline.data.prepare.auto.TablePrepare;
 import org.anyline.data.run.Run;
 import org.anyline.data.run.TableRun;
 import org.anyline.data.runtime.DataRuntime;
+import org.anyline.entity.DataRow;
+import org.anyline.entity.OriginRow;
 import org.anyline.metadata.Table;
 
 import java.util.List;
@@ -51,12 +53,7 @@ public class DefaultTablePrepare extends DefaultAutoPrepare implements TablePrep
 		}
 		parseTable(this.table);
 		return this;
-	} 
- 
-	@Override 
-	public String getDistinct() {
-		return this.distinct; 
-	} 
+	}
 
 	@Override
 	public Run build(DataRuntime runtime) {
@@ -70,5 +67,18 @@ public class DefaultTablePrepare extends DefaultAutoPrepare implements TablePrep
 			}
 		}
 		return run;
+	}
+
+
+	@Override
+	public DataRow map(boolean empty, boolean join) {
+		DataRow row = new OriginRow();
+		row.put("table", table.getName());
+		row.put("alias", table.getAlias());
+		if(join && null != this.join) {
+			row.put("type", this.join.getType().name());
+			row.put("conditions", this.join.getConditions().getConfigChain().map(empty));
+		}
+		return row;
 	}
 }

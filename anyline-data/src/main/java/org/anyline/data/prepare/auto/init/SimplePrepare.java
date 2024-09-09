@@ -20,6 +20,8 @@ import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.run.Run;
 import org.anyline.data.run.SimpleRun;
 import org.anyline.data.runtime.DataRuntime;
+import org.anyline.entity.DataRow;
+import org.anyline.entity.OriginRow;
 
 public class SimplePrepare extends DefaultAutoPrepare implements RunPrepare {
 	@Override
@@ -27,5 +29,13 @@ public class SimplePrepare extends DefaultAutoPrepare implements RunPrepare {
 		SimpleRun run = new SimpleRun(runtime);
 		run.setPrepare(this);
 		return run;
+	}
+
+
+	@Override
+	public DataRow map(boolean empty, boolean join) {
+		DataRow row = new OriginRow();
+		row.put("text", text);
+		return row;
 	}
 }

@@ -21,6 +21,8 @@ import org.anyline.data.prepare.auto.TextPrepare;
 import org.anyline.data.run.Run;
 import org.anyline.data.run.TextRun;
 import org.anyline.data.runtime.DataRuntime;
+import org.anyline.entity.DataRow;
+import org.anyline.entity.OriginRow;
 
 public class DefaultTextPrepare extends DefaultAutoPrepare implements TextPrepare {
 	private String text; 
@@ -42,8 +44,16 @@ public class DefaultTextPrepare extends DefaultAutoPrepare implements TextPrepar
 	}
 
 	@Override
+	public DataRow map(boolean empty, boolean join) {
+		DataRow row = new OriginRow();
+		row.put("text", text);
+		return row;
+	}
+
+	@Override
 	public RunPrepare setContent(String content) {
 		this.text = content;
 		return this;
 	}
+
 }

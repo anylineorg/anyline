@@ -52,6 +52,8 @@ import org.anyline.proxy.CacheProxy;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.proxy.InterceptorProxy;
 import org.anyline.util.*;
+import org.anyline.util.regular.Regular;
+import org.anyline.util.regular.RegularUtil;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
@@ -941,7 +943,15 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
         MongoDatabase database = rt.getDatabase();
         ListCollectionNamesIterable names = database.listCollectionNames();
         for(String name:names){
-            tables.add((T)new Table(name));
+            T table = (T) new Table(name);
+            if(BasicUtil.isNotEmpty(pattern)){
+                String regex = pattern.replace("%", ".*").replace("_", ".");
+                if (RegularUtil.match(name.toUpperCase(), regex.toUpperCase(), Regular.MATCH_MODE.MATCH)) {
+                    tables.add(table);
+                }
+            }else {
+                tables.add(table);
+            }
         }
         if(Metadata.check(struct, Metadata.TYPE.COLUMN)) {
             //查询全部表结构 columns()内部已经给table.columns赋值

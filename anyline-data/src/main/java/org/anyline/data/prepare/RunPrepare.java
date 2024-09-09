@@ -288,6 +288,20 @@ public interface RunPrepare extends Cloneable {
 			}
 		}
 	}
+	String getDistinct();
+	RunPrepare setDistinct(boolean distinct);
 	Run build(DataRuntime runtime);
-
+	DataRow map(boolean empty, boolean join);
+	default DataRow map(boolean empty) {
+		return map(empty, false);
+	}
+	default DataRow map() {
+		return map(false);
+	}
+	default String json(boolean empty) {
+		return map(empty).json();
+	}
+	default String json() {
+		return json(false);
+	}
 }

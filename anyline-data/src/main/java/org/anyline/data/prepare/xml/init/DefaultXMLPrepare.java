@@ -28,6 +28,8 @@ import org.anyline.data.run.XMLRun;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.util.CommandParser;
 import org.anyline.entity.Compare;
+import org.anyline.entity.DataRow;
+import org.anyline.entity.OriginRow;
 import org.anyline.metadata.Catalog;
 import org.anyline.metadata.Column;
 import org.anyline.metadata.Schema;
@@ -385,5 +387,12 @@ public class DefaultXMLPrepare extends AbstractRunPrepare implements XMLPrepare 
 		run.setRuntime(runtime);
 		return run;
 	}
-	
+
+
+	@Override
+	public DataRow map(boolean empty, boolean join) {
+		DataRow row = new OriginRow();
+		row.put("text", text);
+		return row;
+	}
 } 
