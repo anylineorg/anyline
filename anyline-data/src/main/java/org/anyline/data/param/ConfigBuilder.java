@@ -22,7 +22,6 @@ import org.anyline.data.param.init.DefaultConfigChain;
 import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.Condition;
 import org.anyline.entity.*;
-import org.anyline.util.BasicUtil;
 
 import java.util.List;
 
@@ -72,27 +71,7 @@ public class ConfigBuilder {
         if(null != items && !items.isEmpty()) {
             config = parseConfigChain(row);
         }else {
-            ParseResult parser = new ParseResult();
-            parser.setVar(row.getString("var"));
-            DataRow parse = row.getRow("parser");
-            if(null != parse) {
-                parser.setPrefix(parse.getString("prefix"));
-                parser.setVar(parse.getString("var"));
-                parser.setClazz(parse.getString("class"));
-                parser.setMethod(parse.getString("method"));
-                parser.setKey(parse.getString("key"));
-                String join = parse.getString("join");
-                if(null != join){
-                    parser.setJoin(Condition.JOIN.valueOf(join.trim().toUpperCase()));
-                }
-                parser.setCompare(compare(parse.getInt("compare", Compare.EQUAL.getCode())));
-                String swt = parse.getString("swt");
-                if(BasicUtil.isNotEmpty(swt)) {
-                    try {
-                        parser.setSwt(Compare.EMPTY_VALUE_SWITCH.valueOf(swt));
-                    }catch (Exception ignored) {}
-                }
-            }
+            ParseResult parser = ParseResult.build(row);
             config = new DefaultConfig(parser);
             String join = row.getString("join");
             if(null != join){
@@ -164,9 +143,7 @@ public class ConfigBuilder {
                             "class": null,
                             "method": null,
                             "key": null,
-                            "default": [
-
-                            ],
+                            "default": [],
                             "compare": 10,
                             "join": "AND"
                         }
