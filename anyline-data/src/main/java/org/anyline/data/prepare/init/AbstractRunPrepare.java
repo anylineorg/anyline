@@ -56,6 +56,7 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 	protected EMPTY_VALUE_SWITCH swt       = EMPTY_VALUE_SWITCH.IGNORE;
 	protected LinkedHashMap<String,Column> columns = new LinkedHashMap<>();	//查询列
 	protected List<String> excludes = new ArrayList<>();  //不查询列
+	protected String distinct = "";
 	protected ConfigStore condition;
 	protected Join join;
 	protected Boolean isSub = null;
@@ -348,7 +349,20 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 			return false;
 		}
 	}
-	
+	@Override
+	public String getDistinct() {
+		return this.distinct;
+	}
+
+	@Override
+	public RunPrepare setDistinct(boolean distinct) {
+		if(distinct){
+			this.distinct = "distinct";
+		}else{
+			this.distinct = "";
+		}
+		return this;
+	}
 	
 
 	public RunPrepare addFetchKey(String ... fetchKeys) {
