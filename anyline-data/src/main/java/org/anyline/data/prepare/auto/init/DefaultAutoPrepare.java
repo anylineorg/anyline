@@ -41,7 +41,6 @@ public abstract class DefaultAutoPrepare extends AbstractRunPrepare implements A
 	protected Catalog catalog;
 	protected Schema schema;
 	protected Table table;
-	protected String distinct = "";
 	protected String alias;
 
 	public DefaultAutoPrepare() {
@@ -238,6 +237,9 @@ public abstract class DefaultAutoPrepare extends AbstractRunPrepare implements A
 			String catalog = null;
 			String schema = null;
 			String name = table.getName();
+			if(BasicUtil.isNotEmpty(table.getAlias())){
+				this.alias = table.getAlias();
+			}
 			if(name.startsWith("<")) {
 				datasoruce = name.substring(1, name.indexOf(">"));
 				name = name.substring(name.indexOf(">")+1);
