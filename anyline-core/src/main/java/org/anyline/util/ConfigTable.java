@@ -133,7 +133,7 @@ public class ConfigTable {
 	public static boolean IS_AUTO_CHECK_METADATA						= false			; 	// insert update 时是否自动检测表结构(删除表中不存在的属性,转换数据类型)以及查询条件中的数据类型
 	public static int METADATA_CACHE_SCOPE								= 9				;   // 0:不缓存 1:当前线程 9:整个应用
 	public static String METADATA_CACHE_KEY								= ""			;	// 表结构缓存key
-	public static int METADATA_CACHE_SECOND								= 3600*24		;	// 表结构缓存时间(没有设置缓存key的情况下生效)(-1:表示永不失效)
+	public static int METADATA_CACHE_SECOND								= 3600*24		;	// 表结构缓存时间(-1:表示永不失效)
 	public static int CHECK_METADATA_SAMPLE								= 1000			;   // 检测元数据的样本数量(-1:全部 0:不检测)(mongo当前版本中没有提供元数据查询方法)
 	public static boolean IS_CHECK_EMPTY_SET_METADATA					= false			;   // 查询返回空DataSet时，是否检测元数据信息
 	public static boolean IS_DISABLED_DEFAULT_ENTITY_ADAPTER			= false			; 	// 禁用默认的entity adapter
