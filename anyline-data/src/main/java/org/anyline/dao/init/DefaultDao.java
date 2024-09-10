@@ -1141,7 +1141,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 	@Override
 	public List<String> ddl(DataRuntime runtime, String random, View view, boolean init) {
-		return null;
+		return runtime.getAdapter().ddl(runtime, random, view, init);
 	}
 
 	/* *****************************************************************************************************************
