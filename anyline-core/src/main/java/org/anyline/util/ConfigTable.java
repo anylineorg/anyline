@@ -49,7 +49,7 @@ public class ConfigTable {
 	protected static Hashtable<String, Object> configs = new Hashtable<>()	;
 	protected static long lastLoadTime 					= 0					;	// 最后一次加载时间
 	protected static int reload 						= 0					;	// 重新加载间隔
-	protected static final String version 				= "8.7.2-20240909"	;	// 版本号
+	protected static final String version 				= "8.7.2-SNAPSHOT"	;	// 版本号
 	protected static final String minVersion 			= "000"				;	// 版本号
 	protected static boolean isLoading 					= false				;	// 是否加载配置文件中
 	private static boolean listener_running 			= false				;	// 监听是否启动

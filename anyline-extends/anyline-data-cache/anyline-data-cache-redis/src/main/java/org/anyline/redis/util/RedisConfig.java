@@ -14,9 +14,6 @@
  * limitations under the License.
  */
 
-
-
-
 package org.anyline.redis.util;
 
 import org.anyline.util.AnylineConfig;

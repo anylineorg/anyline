@@ -13,11 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
-
-
-
 package org.anyline.web.controller;
 
 import org.anyline.adapter.EntityAdapter;
@@ -49,7 +44,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 
 public abstract class AbstractController {
 	protected final Logger log = LoggerFactory.getLogger(this.getClass());
@@ -107,9 +101,10 @@ public abstract class AbstractController {
 		}
 		return controller_listener;
 	}
+	
 	/* *****************************************************************************************************************
 	 *
-	 * 封装参数
+	 * 														封装参数
 	 *
 	 * ****************************************************************************************************************/
 
@@ -236,60 +231,67 @@ public abstract class AbstractController {
 	public DataRow entity(HttpServletRequest request, KEY_CASE keyCase, DataRow row, boolean keyEncrypt, boolean valueEncrypt, String... params) {
 		return entity(request, keyCase, row, keyEncrypt, valueEncrypt, BeanUtil.array2list(params));
 	}
-	//
+	
 	public DataRow entity(HttpServletRequest request, KEY_CASE keyCase, DataRow row, boolean keyEncrypt, boolean valueEncrypt, String[] fixs, String... params) {
 		return entity(request, keyCase, row, keyEncrypt, valueEncrypt, BeanUtil.array2list(fixs, params));
 	}
-	//
+	
 	public DataRow entity(HttpServletRequest request, KEY_CASE keyCase, DataRow row, boolean keyEncrypt, String... params) {
 		return entity(request, keyCase, row, keyEncrypt, false, BeanUtil.array2list(params));
 	}
-	//
+	
 	public DataRow entity(HttpServletRequest request, KEY_CASE keyCase, DataRow row, boolean keyEncrypt, String[] fixs, String... params) {
 		return entity(request, keyCase, row, keyEncrypt, false, BeanUtil.array2list(fixs, params));
 	}
-	//
+	
 	public DataRow entity(HttpServletRequest request, DataRow row, boolean keyEncrypt, String... params) {
 		return entity(request, KEY_CASE.CONFIG, row, keyEncrypt, false, BeanUtil.array2list(params));
 	}
-	//
+	
 	public DataRow entity(HttpServletRequest request, DataRow row, boolean keyEncrypt, String[] fixs, String... params) {
 		return entity(request, KEY_CASE.CONFIG, row, keyEncrypt, false, BeanUtil.array2list(fixs, params));
 	}
-	//
+	
 	public DataRow entity(HttpServletRequest request, KEY_CASE keyCase, DataRow row, String... params) {
 		return entity(request,keyCase, row, false, false, BeanUtil.array2list(params));
 	}
-	//
+	
 	public DataRow entity(HttpServletRequest request, KEY_CASE keyCase, DataRow row, String[] fixs, String... params) {
 		return entity(request, keyCase, row, false, false, BeanUtil.array2list(fixs, params));
 	}
-	//
+	
 	public DataRow entity(HttpServletRequest request, DataRow row, String... params) {
 		return entity(request, KEY_CASE.CONFIG, row, false, false, BeanUtil.array2list(params));
 	}
-	//
+	
 	public DataRow entity(HttpServletRequest request, DataRow row, String[] fixs, String... params) {
 		return entity(request, KEY_CASE.CONFIG, row, false, false, BeanUtil.array2list(fixs, params));
 	}
+	
 	public DataRow entity(HttpServletRequest request, KEY_CASE keyCase, boolean keyEncrypt, boolean valueEncrypt, String... params) {
 		return entity(request, keyCase, null, keyEncrypt, valueEncrypt, BeanUtil.array2list(params));
 	}
+	
 	public DataRow entity(HttpServletRequest request, KEY_CASE keyCase, boolean keyEncrypt, boolean valueEncrypt, String[] fixs, String... params) {
 		return entity(request, keyCase, null, keyEncrypt, valueEncrypt, BeanUtil.array2list(fixs, params));
 	}
+	
 	public DataRow entity(HttpServletRequest request, boolean keyEncrypt, boolean valueEncrypt, String... params) {
 		return entity(request, KEY_CASE.CONFIG, null, keyEncrypt, valueEncrypt, BeanUtil.array2list(params));
 	}
+	
 	public DataRow entity(HttpServletRequest request, boolean keyEncrypt, boolean valueEncrypt, String[] fixs, String... params) {
 		return entity(request, KEY_CASE.CONFIG, null, keyEncrypt, valueEncrypt, BeanUtil.array2list(fixs, params));
 	}
+	
 	public DataRow entity(HttpServletRequest request, KEY_CASE keyCase, boolean keyEncrypt, String... params) {
 		return entity(request,keyCase,null, keyEncrypt, false, BeanUtil.array2list(params));
 	}
+	
 	public DataRow entity(HttpServletRequest request, KEY_CASE keyCase, boolean keyEncrypt, String[] fixs, String... params) {
 		return entity(request,keyCase, null, keyEncrypt, false, BeanUtil.array2list(fixs, params));
 	}
+	
 	public DataRow entity(HttpServletRequest request, boolean keyEncrypt, String... params) {
 		return entity(request, KEY_CASE.CONFIG, null, keyEncrypt, false, BeanUtil.array2list(params));
 	}
@@ -297,15 +299,19 @@ public abstract class AbstractController {
 	public DataRow entity(HttpServletRequest request, boolean keyEncrypt, String[] fixs, String... params) {
 		return entity(request, KEY_CASE.CONFIG, null, keyEncrypt, false, BeanUtil.array2list(fixs, params));
 	}
+	
 	public DataRow entity(HttpServletRequest request, KEY_CASE keyCase, String... params) {
 		return entity(request,keyCase,null, false, false, BeanUtil.array2list(params));
 	}
+	
 	public DataRow entity(HttpServletRequest request, KEY_CASE keyCase, String[] fixs, String... params) {
 		return entity(request,keyCase,null, false, false, BeanUtil.array2list(fixs, params));
 	}
+	
 	public DataRow entity(HttpServletRequest request, String... params) {
 		return entity(request, KEY_CASE.CONFIG, null, false, false, BeanUtil.array2list(params));
 	}
+	
 	public DataRow entity(HttpServletRequest request, String[] fixs, String... params) {
 		return entity(request, KEY_CASE.CONFIG, null, false, false, BeanUtil.array2list(fixs, params));
 	}
@@ -393,38 +399,47 @@ public abstract class AbstractController {
 	public DataSet entitys(HttpServletRequest request, KEY_CASE keyCase, boolean keyEncrypt, boolean valueEncrypt, String... params) {
 		return entitys(request, keyCase, keyEncrypt, valueEncrypt, BeanUtil.array2list(params));
 	}
+	
 	public DataSet entitys(HttpServletRequest request, KEY_CASE keyCase, boolean keyEncrypt, boolean valueEncrypt, String[] fixs, String... params) {
 		return entitys(request, keyCase, keyEncrypt, valueEncrypt, BeanUtil.array2list(fixs, params));
 	}
+	
 	public DataSet entitys(HttpServletRequest request, boolean keyEncrypt, boolean valueEncrypt, String... params) {
 		return entitys(request, KEY_CASE.CONFIG, keyEncrypt, valueEncrypt, BeanUtil.array2list(params));
 	}
+	
 	public DataSet entitys(HttpServletRequest request, KEY_CASE keyCase, boolean keyEncrypt, String... params) {
 		return entitys(request,keyCase,keyEncrypt, false, BeanUtil.array2list(params));
 	}
+	
 	public DataSet entitys(HttpServletRequest request, KEY_CASE keyCase, boolean keyEncrypt, String[] fixs, String... params) {
 		return entitys(request,keyCase,keyEncrypt, false, BeanUtil.array2list(fixs, params));
 	}
+	
 	public DataSet entitys(HttpServletRequest request, boolean keyEncrypt, String... params) {
 		return entitys(request, KEY_CASE.CONFIG,keyEncrypt, false, BeanUtil.array2list(params));
 	}
+	
 	public DataSet entitys(HttpServletRequest request, boolean keyEncrypt, String[] fixs, String... params) {
 		return entitys(request, KEY_CASE.CONFIG,keyEncrypt, false, BeanUtil.array2list(fixs, params));
 	}
+	
 	public DataSet entitys(HttpServletRequest request, KEY_CASE keyCase, String... params) {
 		return entitys(request, keyCase, false, false, BeanUtil.array2list(params));
 	}
+	
 	public DataSet entitys(HttpServletRequest request, KEY_CASE keyCase, String[] fixs, String... params) {
 		return entitys(request, keyCase, false, false, BeanUtil.array2list(fixs, params));
 	}
+	
 	public DataSet entitys(HttpServletRequest request, String... params) {
 		return entitys(request, KEY_CASE.CONFIG, false, false, BeanUtil.array2list(params));
 	}
+	
 	public DataSet entitys(HttpServletRequest request, String[] fixs, String... params) {
 		return entitys(request, KEY_CASE.CONFIG, false, false, BeanUtil.array2list(fixs, params));
 	}
-
-
+	
 	/**
 	 * 解析参数
 	 *
@@ -453,9 +468,11 @@ public abstract class AbstractController {
 	protected ConfigStore condition(HttpServletRequest request, boolean navi, String... configs) {
 		return condition(request, navi, BeanUtil.array2list(configs));
 	}
+	
 	protected ConfigStore condition(HttpServletRequest request, boolean navi, String[] fixs, String... configs) {
 		return condition(request, navi, BeanUtil.array2list(fixs, configs));
 	}
+	
 	/**
 	 * 解析参数
 	 *
@@ -480,12 +497,15 @@ public abstract class AbstractController {
 		}
 		return store;
 	}
+	
 	protected ConfigStore condition(HttpServletRequest request, int vol, String... configs) {
 		return condition(request, vol, BeanUtil.array2list(configs));
 	}
+	
 	protected ConfigStore condition(HttpServletRequest request, int vol, String[] fixs,  String... configs) {
 		return condition(request, vol, BeanUtil.array2list(fixs, configs));
 	}
+	
 	/**
 	 * 解析参数
 	 *
@@ -515,15 +535,19 @@ public abstract class AbstractController {
 	protected ConfigStore condition(HttpServletRequest request, long fr, long to, String[] fixs, String... configs) {
 		return  condition(request, fr, to, BeanUtil.array2list(fixs, configs));
 	}
+	
 	protected ConfigStore condition(HttpServletRequest request, long fr, long to, String... configs) {
 		return  condition(request, fr, to, BeanUtil.array2list(configs));
 	}
+	
 	protected ConfigStore condition(HttpServletRequest request, String... configs) {
 		return condition(request, false,  BeanUtil.array2list(configs));
 	}
+	
 	protected ConfigStore condition(HttpServletRequest request, String[] fixs, String... configs) {
 		return condition(request, false, BeanUtil.array2list(fixs, configs));
 	}
+	
 	protected ConfigStore condition(HttpServletRequest request, List<String> fixs, String... configs) {
 		return condition(request, false,  fixs, configs);
 	}
@@ -561,6 +585,7 @@ public abstract class AbstractController {
 	protected List<Object> getParams(HttpServletRequest request, String key, boolean valueEncrypt) {
 		return getParams(request, key, false, valueEncrypt);
 	}
+	
 	protected List<Object> getParams(HttpServletRequest request, String key) {
 		return getParams(request,key, false, false);
 	}
@@ -605,8 +630,6 @@ public abstract class AbstractController {
 		return getStrings(request,key, false, false);
 	}
 
-
-
 	protected int getInt(HttpServletRequest request, String key, boolean keyEncrypt, boolean valueEncrypt) throws Exception{
 		String val = getParam(request,key, keyEncrypt, valueEncrypt);
 		return BasicUtil.parseInt(val);
@@ -648,10 +671,7 @@ public abstract class AbstractController {
 			return def;
 		}
 	}
-
-
-
-
+	
 	protected double getDouble(HttpServletRequest request, String key, boolean keyEncrypt, boolean valueEncrypt) throws Exception{
 		String val = getParam(request,key, keyEncrypt, valueEncrypt);
 		return Double.parseDouble(val);
@@ -760,9 +780,9 @@ public abstract class AbstractController {
 
 	/* *****************************************************************************************************************
 	 *
-	 * 数据验证
+	 * 													数据验证
 	 *
-	 * ******************************************************************************************************************/
+	 * ****************************************************************************************************************/
 	/**
 	 * 验证必须参数
 	 *
@@ -797,7 +817,7 @@ public abstract class AbstractController {
 	 *
 	 * 数据库操作
 	 *
-	 *******************************************************************************************************************/
+	 ******************************************************************************************************************/
 
 	/**
 	 * 是否是ajax请求
@@ -812,6 +832,7 @@ public abstract class AbstractController {
 		else
 			return false;
 	}
+	
 	/**
 	 * request参数保存到分页中
 	 *
@@ -839,33 +860,12 @@ public abstract class AbstractController {
 		}
 		return navi;
 	}
-//	/**
-//	 * 当前操作客户端
-//	 *
-//	 * @return ClientTrace
-//	 */
-//	protected ClientTrace currentClient(HttpServletRequest request) {
-//		ClientTrace client = null;
-//		client = (ClientTrace) request.getAttribute(Constant.REQUEST_ATTR_HTTP_CLIENT);
-//		if (null == client) {
-//			client = new ClientTrace(request);
-//			// service.save(ConfigTable.getString("CLIENT_TRACE_TABLE"), client);
-//		}
-//		return client;
-//	}
-//	protected String currentClientCd(HttpServletRequest request) {
-//		String result = null;
-//		ClientTrace client = currentClient(request);
-//		if (null != client) {
-//			result = client.getCd();
-//		}
-//		return result;
-//	}
-	/********************************************************************************************************************************
+	
+	/*******************************************************************************************************************
+	 *			
+	 * 												提示信息
 	 *
-	 * 提示信息
-	 *
-	 ********************************************************************************************************************************/
+	 ******************************************************************************************************************/
 	/**
 	 * 设置提示信息
 	 *
@@ -907,7 +907,6 @@ public abstract class AbstractController {
 		setMessage(request, BasicUtil.getRandomLowerString(10), value);
 	}
 
-
 	protected void setSessionMessage(HttpSession session, String key, Object value, String type) {
 		DataSet messages = null;
 		messages = (DataSet) session.getAttribute(Constant.SESSION_ATTR_MESSAGE);
@@ -921,7 +920,6 @@ public abstract class AbstractController {
 		row.put(Constant.MESSAGE_TYPE, type);
 		messages.addRow(row);
 	}
-
 
 	protected void setSessionMessage(HttpSession session, String key, Object value) {
 		setSessionMessage(session, key, value, null);
@@ -967,8 +965,7 @@ public abstract class AbstractController {
 	 *
 	 * 实现接口
 	 *
-	 * ******************************************************************************************************************/
-
+	 * ****************************************************************************************************************/
 
 	public String getDir() {
 		String dir = null;
@@ -983,6 +980,7 @@ public abstract class AbstractController {
 		}
 		return dir;
 	}
+	
 	/**
 	 *
 	 * @param adapt adapt
@@ -1029,6 +1027,7 @@ public abstract class AbstractController {
 		map.put("EXT", ext);
 		return map;
 	}
+	
 	public Map<String,Object> navi(HttpServletRequest request, HttpServletResponse response, Object data, PageNavi navi, String page, Object ext){
 		return navi(false, request, response, data, navi, page, ext);
 	}
@@ -1036,5 +1035,4 @@ public abstract class AbstractController {
 	public Map<String,Object> navi(HttpServletRequest request, HttpServletResponse response, Object data, PageNavi navi, String page){
 		return navi(request, response, data, navi, page, null);
 	}
-
 }

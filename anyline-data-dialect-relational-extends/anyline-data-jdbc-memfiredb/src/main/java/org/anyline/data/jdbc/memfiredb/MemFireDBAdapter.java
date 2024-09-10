@@ -8515,9 +8515,4 @@ public class MemFireDBAdapter extends PostgresGenusAdapter {
 	@Override
 	public List<Run> buildRevokeRun(DataRuntime runtime, Role role, Privilege ... privileges) throws Exception {
 		return super.buildRevokeRun(runtime, role, privileges);
-	}
-
-
-
-
-} 
+	}} 

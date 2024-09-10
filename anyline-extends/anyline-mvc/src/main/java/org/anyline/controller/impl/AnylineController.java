@@ -364,12 +364,7 @@ public class AnylineController extends AbstractController {
 
     protected ConfigStore condition(List<String> fixs, String... conditions) {
         return condition(getRequest(), false, fixs, conditions);
-    }
-
-
-
-
-    protected ConfigStore where(boolean navi, String... configs) {
+    }    protected ConfigStore where(boolean navi, String... configs) {
         return condition(getRequest(), navi, configs);
     }
     protected ConfigStore where(boolean navi, String[] fixs, String... configs) {
@@ -483,11 +478,6 @@ public class AnylineController extends AbstractController {
     protected int getInt(String key, int def) {
         return getInt(getRequest(), key, def);
     }
-
-
-
-
-
     protected double getDouble(String key, boolean keyEncrypt, boolean valueEncrypt) throws Exception{
         return getDouble(getRequest(), key, keyEncrypt, valueEncrypt);
     }

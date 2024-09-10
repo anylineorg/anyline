@@ -12344,10 +12344,12 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 						continue;
 					}
 					if(null == merge){
+                        //先加入队列 保证ADD COLUMN在前
 						merge = new SimpleRun(runtime);
 						builder = merge.getBuilder();
 						builder.append("ALTER ").append(keyword(meta)).append(" ");
 						name(runtime, builder, meta);
+                        runs.add(merge);
 					}
 					builder.append("\n");
 					if(!first) {
@@ -12357,10 +12359,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 					builder.append(line);
 				}
 			}
-		}
-		if(null != merge){
-			//合并的最后执行(pg rename不支持合并 先安排)
-			runs.add(merge);
 		}
 		return runs;
 	}

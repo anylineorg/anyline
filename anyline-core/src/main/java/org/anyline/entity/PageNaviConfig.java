@@ -23,7 +23,6 @@ import org.anyline.util.ConfigTable;
 import java.util.Hashtable;
  
 public class PageNaviConfig extends AnylineConfig  {
-
 	public static String CONFIG_NAME 							= "anyline-navi.xml"			; // 配置文件名称
 	public static String DEFAULT_KEY_PAGE_ROWS					= "_anyline_page_rows"			; // 设置每页显示多少条的key
 	public static String DEFAULT_KEY_PAGE_NO					= "_anyline_page"				; // 设置当前第几页的key
@@ -83,7 +82,6 @@ public class PageNaviConfig extends AnylineConfig  {
 	public String KEY_SHOW_VOL			= DEFAULT_KEY_SHOW_VOL			; // 设置是否显示每页条数设置key
 	public String KEY_GUIDE				= DEFAULT_KEY_GUIDE				; // 设置分页样式的key
 	public String KEY_ID_FLAG 			= DEFAULT_KEY_ID_FLAG			; // 生成配置文件标识
-	 
 	 
 	public int CONFIG_PAGE_VAL_SET_SORT = 1;	// 1:VAR_PAGE_VOL_NUMBERS 2:STYLE_PAGE_VOL  
 	// 样式html 

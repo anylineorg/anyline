@@ -14,9 +14,6 @@
  * limitations under the License.
  */
 
-
-
-
 package org.anyline.web.tag;
  
 import org.anyline.entity.DataSet;
@@ -151,12 +148,7 @@ public class Sum extends BaseBodyTag {
 
 	public void setData(Object data) {
 		this.data = data;
-	}
-
-
-
-
-	public String getProperty() {
+	}	public String getProperty() {
 		return property;
 	}
 
