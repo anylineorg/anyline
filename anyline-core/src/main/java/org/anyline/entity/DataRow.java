@@ -169,6 +169,47 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         this();
         parseMap(columns, map);
     }
+
+    /**
+     * 根据前端JSON格式解析insert/update/delete结构
+     * @param keyCase 大小写
+     * @param json json
+     * @return DataRow
+     */
+    public static DataRow build(KEY_CASE keyCase, String json){
+        DataRow row = new DataRow(keyCase);
+        DataRow data = parseJson(keyCase, json);
+        row.setTable(data.getString("table"));
+        return row;
+    }
+    /*
+    {
+        "table":"hr_user",                                  //表
+        "data":{"id":1, "code":"A","name":"ZH","age":20},   //数据
+        "key":["id"],                                       //主键
+        "generator":"UUID"                                  //主键生成器
+        "columns":["code", "name"]                          //更新的列 默认insert全部 update除主键
+        “override”:true                                     //已存在数据是否更新(null:不检测,true:覆盖,false:跳过)
+        ...其他属性
+        "joins":[
+            {
+                "table":"hr_dept",                          //部门
+                ...与外层类似
+                ,"data":{"name","财务部"}
+                ,"join":"LEADER_ID"                          //部门负责人ID 用主表.主键赋值, 关联表中与当前表关联的外键,如果多个用数组 与外层key顺序保持一致
+            },{
+                "table":"hr_user_role",                     //用户角色
+                ...与外层类似
+                ,"data":{"ROLE_ID":1}            //还需要出现角色表？ 以及角色表其他属性？
+                ,"join":"USER_ID"                //用户ID 用主表.主键赋值, 主表中与当前表关联的外键,如果多个用数组 与外层key顺序保持一致
+                ,"":"ROLE_ID"                    //角色ID
+            }
+        ]
+    }
+    * */
+    public static DataRow build(String json){
+        return build(null, json);
+    }
     public DataRow parseMap(LinkedHashMap columns, Map<String, Object> map) {
         setMetadata(columns);
         Set<Map.Entry<String, Object>> set = map.entrySet();
