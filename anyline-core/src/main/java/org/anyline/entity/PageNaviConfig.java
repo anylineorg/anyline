@@ -36,6 +36,7 @@ public class PageNaviConfig extends AnylineConfig  {
 	public static String DEFAULT_KEY_ID_FLAG 					= "_anyline_navi_conf_"			; // 生成配置文件标识
 	public static int DEFAULT_VAR_PAGE_DEFAULT_VOL				= 10							; // 每页多少条
 	public static int DEFAULT_VAR_PAGE_MAX_VOL					= 100							; // 每页最多多少条(只针对从http传过来的vol, 后台设置的不影响)
+	public static int DEFAULT_VAL_PAGE_MAX_PAGE					= -1							; // 最大页数 -1:不限制
 	public static boolean DEFAULT_VAR_CLIENT_SET_VOL_ENABLE		= false							; // 前端是否可设置每页多少条
 
 	public static Boolean IS_AUTO_COUNT							= null							; // 是否自动查询总行数(DataSet:null或true时自动 maps:true时自动)
@@ -59,6 +60,7 @@ public class PageNaviConfig extends AnylineConfig  {
 	public int VAR_PAGE_RANGE					= 5										; // 下标数量
 	public int VAR_PAGE_DEFAULT_VOL				= DEFAULT_VAR_PAGE_DEFAULT_VOL			; // 每页多少条
 	public int VAR_PAGE_MAX_VOL					= DEFAULT_VAR_PAGE_MAX_VOL				; // 每页最多多少条(只针对从http传过来的vol, 后台设置的不影响)
+	public int VAR_PAGE_MAX_PAGE				= DEFAULT_VAL_PAGE_MAX_PAGE				; // 最大页数 -1:不限制
 	public boolean VAR_CLIENT_SET_VOL_ENABLE 	= DEFAULT_VAR_CLIENT_SET_VOL_ENABLE		; // 前端是否可设置每页多少条
 	public boolean VAR_SHOW_STAT				= false					; // 是否显示分布统计 
 	public boolean VAR_SHOW_JUMP				= false					; // 是否显示跳转 

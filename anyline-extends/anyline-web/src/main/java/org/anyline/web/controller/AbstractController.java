@@ -723,8 +723,11 @@ public abstract class AbstractController {
 				pageVol = NumberUtil.min(config.VAR_PAGE_MAX_VOL, httpVol);
 			}
 		}
-
-		pageNo = BasicUtil.parseLong(getParam(request,config.KEY_PAGE_NO),pageNo);
+		//最大页数
+		pageNo = BasicUtil.parseLong(getParam(request,config.KEY_PAGE_NO), pageNo);
+		if(config.VAR_PAGE_MAX_PAGE != -1){
+			pageNo = NumberUtil.min(pageNo, config.VAR_PAGE_MAX_PAGE);
+		}
 		String uri = null;
 		if (null == uri) {
 			uri = request.getRequestURI();

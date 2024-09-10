@@ -34,6 +34,7 @@ public class PageNaviProperty {
     public String keyIdFlag 			    = "_anyline_navi_conf_"			; // 生成配置文件标识
     public int varPageDefaultVol            = 10					        ; // 每页多少条
     public int varPageMaxVol				= 100					        ; // 每页最多多少条(只针对从http传过来的vol, 后台设置的不影响)
+    public int varPageMaxPage               = -1                            ; // 最大页数 -1:不限制
     public boolean varClientSetVolEnable	= false					        ; // 前端是否可设置每页多少条
 
     public String getKeyPageRows() {
@@ -142,5 +143,14 @@ public class PageNaviProperty {
     public void setVarClientSetVolEnable(boolean varClientSetVolEnable) {
         this.varClientSetVolEnable = varClientSetVolEnable;
         PageNaviConfig.DEFAULT_VAR_CLIENT_SET_VOL_ENABLE = varClientSetVolEnable;
+    }
+
+    public int getVarPageMaxPage() {
+        return varPageMaxPage;
+    }
+
+    public void setVarPageMaxPage(int varPageMaxPage) {
+        this.varPageMaxPage = varPageMaxPage;
+        PageNaviConfig.DEFAULT_VAL_PAGE_MAX_PAGE = varPageMaxPage;
     }
 }
