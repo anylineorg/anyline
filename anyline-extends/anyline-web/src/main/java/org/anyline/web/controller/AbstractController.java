@@ -728,6 +728,8 @@ public abstract class AbstractController {
 		PageNaviConfig config = PageNaviConfig.getInstance(style);
 		if(null == config){
 			config = new PageNaviConfig();
+		}else{
+			config.VAR_PAGE_MAX_PAGE = PageNaviConfig.DEFAULT_VAL_PAGE_MAX_PAGE;
 		}
 		long pageNo = 1; // 当前页数 默认1
 		int pageVol = config.VAR_PAGE_DEFAULT_VOL; // 每页多少条 默认10

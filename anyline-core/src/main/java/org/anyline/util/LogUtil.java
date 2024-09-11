@@ -135,7 +135,7 @@ public class LogUtil {
 
 
     public static String table(DataSet set) {
-        return table(set, set.keys(), true, ConfigTable.LOG_QUERY_RESULT_ROWS, ConfigTable.LOG_QUERY_RESULT_TABLE_WIDTH);
+        return table(set, set.keys(), true, ConfigTable.LOG_QUERY_RESULT_ROWS, ConfigTable.LOG_QUERY_RESULT_TABLE_MAX_WIDTH);
     }
     /**
      * 表格日志格式化
@@ -148,8 +148,8 @@ public class LogUtil {
      */
     public static String table(DataSet set, List<String> keys, boolean color, int rows, int width) {
         StringBuilder result = new StringBuilder();
-        int line_width = width; //每行限制宽度
-        int col_max_width = ConfigTable.LOG_QUERY_RESULT_CUT_WIDTH; //截断后最宽可保留多少 如果不设置会因为整行内容太宽 以及line_width限制 按比例截断造成 内容太短
+        int limit_width = width; //每行限制宽度
+        int col_max_width = ConfigTable.LOG_QUERY_RESULT_CUT_WIDTH; //截断后最宽可保留多少 如果不设置会因为整行内容太宽 以及limit_width限制 按比例截断造成 内容太短
         int col_max_length = 90; //多行合计
         boolean ellipsis = true;//超出是否显示省略号
         boolean br = true; //超出是否换行
@@ -204,8 +204,11 @@ public class LogUtil {
         for(Integer col_width:origin_widths.values()){
             max_width += col_width;
         }
+        if(limit_width > max_width){
+            limit_width = (int)max_width;
+        }
         //按比例计算 每列 显示宽度
-        double rate = line_width/max_width;
+        double rate = limit_width/max_width;
         int exceed = 0; //根据列且宽度 超出的宽度 按比例缩短最宽n列(但不能小于列名，否则换行显示)
         for(String key:keys){
             int origin_width = origin_widths.get(key.toUpperCase());  //原宽度
@@ -251,7 +254,7 @@ public class LogUtil {
         for(String key:keys){
             int view_width = view_widths.get(key.toUpperCase());
             total += view_width;
-            if(total > line_width){
+            if(total > limit_width){
                 tables.add(table);
                 //下一个表
                 table = new ArrayList<>();

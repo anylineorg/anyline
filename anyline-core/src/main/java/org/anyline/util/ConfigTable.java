@@ -80,7 +80,7 @@ public class ConfigTable {
 	public static boolean IS_LOG_QUERY_RESULT_EXCLUDE_METADATA			= true			;	// 查询结果输出日志时 是否过滤元数据查询结果
 	public static String LOG_QUERY_RESULT_ALT							= "(中文对齐请设置字体)";	// 查询结果日志显示行数
 	public static int LOG_QUERY_RESULT_ROWS								= 10			;	// 查询结果日志显示行数(-1表示全部)
-	public static int LOG_QUERY_RESULT_TABLE_WIDTH						= 120			;   // 查询结果日志表格宽度(中文占2个宽度)
+	public static int LOG_QUERY_RESULT_TABLE_MAX_WIDTH					= 120			;   // 查询结果日志表格最大宽度(中文占2个宽度)如果小于实际内容宽度按实际跨度显示
 	public static int LOG_QUERY_RESULT_CUT_WIDTH						= 30			;   // 查询结果日志超长列截断后宽度
 	public static boolean IS_LOG_ADAPTER_MATCH							= false			;	// 是否输出adapter匹配过程日志
 

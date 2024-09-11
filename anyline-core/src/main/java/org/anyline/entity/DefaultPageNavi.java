@@ -536,8 +536,10 @@ public class DefaultPageNavi implements PageNavi, Serializable, Cloneable {
 	 */ 
 	public String html(String adapter, String method) {
 		PageNaviConfig config = PageNaviConfig.getInstance(style);
-		if(null == config) {
+		if(null == config){
 			config = new PageNaviConfig();
+		}else{
+			config.VAR_PAGE_MAX_PAGE = PageNaviConfig.DEFAULT_VAL_PAGE_MAX_PAGE;
 		}
 		boolean get = false;
 		if("get".equalsIgnoreCase(method)) {
@@ -794,8 +796,10 @@ public class DefaultPageNavi implements PageNavi, Serializable, Cloneable {
 		builder.append(">");
 		if(get) {//get
 			PageNaviConfig config = PageNaviConfig.getInstance(style);
-			if(null == config) {
+			if(null == config){
 				config = new PageNaviConfig();
+			}else{
+				config.VAR_PAGE_MAX_PAGE = PageNaviConfig.DEFAULT_VAL_PAGE_MAX_PAGE;
 			}
 			builder.append("<a href='").append(baseLink);
 			if(baseLink.contains("?")) {

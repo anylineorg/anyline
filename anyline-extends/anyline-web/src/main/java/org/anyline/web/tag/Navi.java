@@ -71,6 +71,8 @@ public class Navi extends BodyTagSupport{
 			PageNaviConfig config = PageNaviConfig.getInstance(style);
 			if(null == config){
 				config = new PageNaviConfig();
+			}else{
+				config.VAR_PAGE_MAX_PAGE = PageNaviConfig.DEFAULT_VAL_PAGE_MAX_PAGE;
 			}
 			StringBuilder builder = new StringBuilder();
 			int idx = BasicUtil.parseInt((String)pageContext.getRequest().getAttribute("_anyline_navi_tag_idx"), 0);
