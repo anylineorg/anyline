@@ -282,7 +282,7 @@ public enum StarRocksTypeMetadataAlias implements TypeMetadataAlias {
 	VERSION                       ("version"                        ,StandardTypeMetadata.NONE       ,  -1,  -1,  -1),
 	XID                           ("XID"                            ,StandardTypeMetadata.NONE       ,  -1,  -1,  -1),
 	XML                           ("XML"                            ,StandardTypeMetadata.STRING     ,   1,   1,   1),
-	XMLTYPE                       ("XMLTYPE"                        ,StandardTypeMetadata.VARHCAR    ,  -1,  -1,  -1),
+	XMLTYPE                       ("XMLTYPE"                        ,StandardTypeMetadata.VARCHAR    ,  -1,  -1,  -1),
 	YEAR                          ("YEAR"                           ,StandardTypeMetadata.TINYINT    ,   1,   1,   1),
 	YMINTERVAL                    ("YMINTERVAL"                     ,StandardTypeMetadata.NONE       , null       , null            , null                       , "DATETIME_PRECISION" , null            ,  -1,  -1,  -1);
 

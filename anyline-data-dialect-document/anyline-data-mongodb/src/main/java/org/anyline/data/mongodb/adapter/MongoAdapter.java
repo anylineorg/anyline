@@ -870,7 +870,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
         boolean cmd_success = false;
         ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
         long fr = System.currentTimeMillis();
-        swt = InterceptorProxy.beforeDelete(runtime, random, run);
+        swt = InterceptorProxy.beforeDelete(runtime, random, run, configs);
         if(swt == ACTION.SWITCH.BREAK) {
             return -1;
         }
@@ -894,7 +894,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
         if(null != dmListener) {
             dmListener.afterDelete(runtime, random, run, cmd_success, result, millis);
         }
-        InterceptorProxy.afterDelete(runtime, random, run, cmd_success, result, millis);
+        InterceptorProxy.afterDelete(runtime, random, run, configs, cmd_success, result, millis);
         return result;
     }
 
