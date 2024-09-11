@@ -2024,7 +2024,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         if(obj instanceof DataRow) {
             result = ((DataRow)obj).getOverrideSync();
         }
-        if(null == result){
+        if(null == result && null != configs){
             result = configs.override();
         }
         return result;
