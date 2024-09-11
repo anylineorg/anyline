@@ -152,7 +152,7 @@ public enum NebulaTypeMetadataAlias implements TypeMetadataAlias {
 	LARGEINT                      ("LARGEINT"                       ,StandardTypeMetadata.STRING                        ,   1,   1,   1),
 	LINE                          ("LINE"                           ,StandardTypeMetadata.LINESTRING                    ,   1,   1,   1),
 	LONG                          ("long"                           ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
-	LONG_TEXT                     ("LONG"                           ,StandardTypeMetadata.INT64                         ,   1,   1,   1),
+	LONG_TEXT                     ("LONG"                           ,StandardTypeMetadata.STRING                        ,   1,   1,   1),
 	LONGBLOB                      ("LONGBLOB"                       ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	LONGTEXT                      ("LONGTEXT"                       ,StandardTypeMetadata.STRING                        ,   1,   1,   1),
 	LOWCARDINALITY                ("LowCardinality"                 ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),

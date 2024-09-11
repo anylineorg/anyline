@@ -375,7 +375,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         }
         ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
         boolean cmd_success = false;
-        swt = InterceptorProxy.prepareInsert(runtime, random, batch, dest, data, columns);
+        swt = InterceptorProxy.prepareInsert(runtime, random, batch, dest, data, configs, columns);
         if(swt == ACTION.SWITCH.BREAK) {
             return -1;
         }
@@ -415,7 +415,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         long fr = System.currentTimeMillis();
         long millis = -1;
 
-        swt = InterceptorProxy.beforeInsert(runtime, random, run, dest, data, columns);
+        swt = InterceptorProxy.beforeInsert(runtime, random, run, dest, data, configs, columns);
         if(swt == ACTION.SWITCH.BREAK) {
             return -1;
         }
@@ -429,7 +429,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         if (null != dmListener) {
             dmListener.afterInsert(runtime, random, run, cnt, dest, data, columns, cmd_success, cnt, millis);
         }
-        InterceptorProxy.afterInsert(runtime, random, run, dest, data, columns, cmd_success, cnt, System.currentTimeMillis() - fr);
+        InterceptorProxy.afterInsert(runtime, random, run, dest, data, configs, columns, cmd_success, cnt, System.currentTimeMillis() - fr);
         return cnt;
     }
 
@@ -3162,7 +3162,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         if (null != dmListener) {
             dmListener.beforeCount(runtime, random, run);
         }
-        swt = InterceptorProxy.beforeCount(runtime, random, run);
+        swt = InterceptorProxy.beforeCount(runtime, random, run, configs);
         if(swt == ACTION.SWITCH.BREAK) {
             return -1;
         }
@@ -3173,7 +3173,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         if(null != dmListener) {
             dmListener.afterCount(runtime, random, run, cmd_success, count, System.currentTimeMillis() - fr);
         }
-        InterceptorProxy.afterCount(runtime, random, run, cmd_success, count, System.currentTimeMillis() - fr);
+        InterceptorProxy.afterCount(runtime, random, run, configs, cmd_success, count, System.currentTimeMillis() - fr);
         return count;
     }
 
@@ -3291,7 +3291,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         long fr = System.currentTimeMillis();
 
         long millis = -1;
-        swt = InterceptorProxy.beforeExecute(runtime, random, run);
+        swt = InterceptorProxy.beforeExecute(runtime, random, run, configs);
         if(swt == ACTION.SWITCH.BREAK) {
             return -1;
         }
@@ -3306,7 +3306,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         if (null != dmListener) {
             dmListener.afterExecute(runtime, random, run, cmd_success, result, millis);
         }
-        InterceptorProxy.afterExecute(runtime, random, run, cmd_success, result, System.currentTimeMillis()-fr);
+        InterceptorProxy.afterExecute(runtime, random, run, configs, cmd_success, result, System.currentTimeMillis()-fr);
         return result;
     }
 
@@ -3616,7 +3616,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         if(null == random) {
             random = random(runtime);
         }
-        ACTION.SWITCH swt = InterceptorProxy.prepareDelete(runtime, random, batch, table, key, values);
+        ACTION.SWITCH swt = InterceptorProxy.prepareDelete(runtime, random, batch, table, configs, key, values);
         if(swt == ACTION.SWITCH.BREAK) {
             return -1;
         }
@@ -3658,7 +3658,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
         long size = -1;
         if(null != obj) {
-            swt = InterceptorProxy.prepareDelete(runtime, random, 0, dest, obj, columns);
+            swt = InterceptorProxy.prepareDelete(runtime, random, 0, dest, obj, configs, columns);
             if(swt == ACTION.SWITCH.BREAK) {
                 return -1;
             }
@@ -3895,7 +3895,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
 		long fr = System.currentTimeMillis();
-		swt = InterceptorProxy.beforeDelete(runtime, random, run);
+		swt = InterceptorProxy.beforeDelete(runtime, random, run, configs);
 		if(swt == ACTION.SWITCH.BREAK) {
 			return -1;
 		}
@@ -3914,7 +3914,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		if(null != dmListener) {
 			dmListener.afterDelete(runtime, random, run, cmd_success, result, millis);
 		}
-		InterceptorProxy.afterDelete(runtime, random, run, cmd_success, result, millis);
+		InterceptorProxy.afterDelete(runtime, random, run, configs, cmd_success, result, millis);
 		return result;
 	}
 

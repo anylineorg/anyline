@@ -35,7 +35,7 @@ public interface InsertInterceptor extends DMInterceptor{
      * @param columns  需要更新的列
      * @return SWITCH
      */
-    default SWITCH prepare(DataRuntime runtime, String random, int batch, Table dest, Object data, List<String> columns) { return SWITCH.CONTINUE;}
+    default SWITCH prepare(DataRuntime runtime, String random, int batch, Table dest, Object data, ConfigStore configs, List<String> columns) { return SWITCH.CONTINUE;}
     default SWITCH prepare(DataRuntime runtime, String random, Table dest, RunPrepare prepare, ConfigStore configs){
         return SWITCH.CONTINUE;
     }
@@ -46,7 +46,7 @@ public interface InsertInterceptor extends DMInterceptor{
      * @param run 查询SQL(包含SQL体，查询条件，查询参数值)
      * @return SWITCH
      */
-    default SWITCH before(DataRuntime runtime, String random, Run run, Table dest, Object data, List<String> columns) { return SWITCH.CONTINUE;}
+    default SWITCH before(DataRuntime runtime, String random, Run run, Table dest, Object data, ConfigStore configs, List<String> columns) { return SWITCH.CONTINUE;}
     default SWITCH before(DataRuntime runtime, String random, Run run, Table dest, RunPrepare prepare, ConfigStore configs) { return SWITCH.CONTINUE;}
 
     /**
@@ -57,6 +57,6 @@ public interface InsertInterceptor extends DMInterceptor{
      * @param millis 耗时
      * @return SWITCH
      */
-    default SWITCH after(DataRuntime runtime, String random, Run run, Table dest, Object data, List<String> columns, boolean success, long result, long millis) { return SWITCH.CONTINUE;}
+    default SWITCH after(DataRuntime runtime, String random, Run run, Table dest, Object data, ConfigStore configs, List<String> columns, boolean success, long result, long millis) { return SWITCH.CONTINUE;}
     default SWITCH after(DataRuntime runtime, String random, Run run, Table dest, RunPrepare prepare, ConfigStore configs, boolean success, long result, long millis) { return SWITCH.CONTINUE;}
 }

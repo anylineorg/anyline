@@ -163,7 +163,7 @@ public enum DorisTypeMetadataAlias implements TypeMetadataAlias {
 	MATCH_ONLY_TEXT               ("match_only_text "               ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	MEDIUMBLOB                    ("MEDIUMBLOB"                     ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	MEDIUMINT                     ("MEDIUMINT"                      ,StandardTypeMetadata.INT                           ,   1,   1,   1),
-	MEDIUMTEXT                    ("MEDIUMTEXT"                     ,StandardTypeMetadata.INT                           ,   1,   1,   1),
+	MEDIUMTEXT                    ("MEDIUMTEXT"                     ,StandardTypeMetadata.MEDIUMTEXT                    ,   1,   1,   1),
 	MONEY                         ("MONEY"                          ,StandardTypeMetadata.DECIMAL                       ,   1,   0,   0),
 	MULTILINESTRING               ("MULTILINESTRING"                ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	MULTIPOINT                    ("MULTIPOINT"                     ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),

@@ -35,7 +35,7 @@ public interface ExecuteInterceptor extends DMInterceptor{
      * @return RESULT
      */
     default ACTION.SWITCH prepare(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) { return SWITCH.CONTINUE;}
-    default SWITCH prepare(DataRuntime runtime, String random, Procedure procedure) { return SWITCH.CONTINUE;}
+    default SWITCH prepare(DataRuntime runtime, String random, Procedure procedure, ConfigStore configs) { return SWITCH.CONTINUE;}
 
     /**
      * 合计总数之前调用，到这一步SQL已创建完成
@@ -43,7 +43,7 @@ public interface ExecuteInterceptor extends DMInterceptor{
      * @param run 查询SQL(包含SQL体，查询条件，查询参数值)
      * @return RESULT
      */
-    default SWITCH before(DataRuntime runtime, String random, Run run) { return SWITCH.CONTINUE;}
+    default SWITCH before(DataRuntime runtime, String random, Run run, ConfigStore configs) { return SWITCH.CONTINUE;}
 
     /**
      * 合计总数之前调用，到这一步SQL已创建完成
@@ -51,7 +51,7 @@ public interface ExecuteInterceptor extends DMInterceptor{
      * @param procedure 存储过程
      * @return RESULT
      */
-    default SWITCH before(DataRuntime runtime, String random, Procedure procedure) { return SWITCH.CONTINUE;}
+    default SWITCH before(DataRuntime runtime, String random, Procedure procedure, ConfigStore configs) { return SWITCH.CONTINUE;}
 
     /**
      * 合计总数之前调用，到这一步SQL已创建完成
@@ -61,7 +61,7 @@ public interface ExecuteInterceptor extends DMInterceptor{
      * @param millis 耗时
      * @return RESULT
      */
-    default SWITCH after(DataRuntime runtime, String random, Run run, boolean success, long result, long millis) { return SWITCH.CONTINUE;}
+    default SWITCH after(DataRuntime runtime, String random, Run run, ConfigStore configs, boolean success, long result, long millis) { return SWITCH.CONTINUE;}
 
     /**
      * 合计总数之前调用，到这一步SQL已创建完成
