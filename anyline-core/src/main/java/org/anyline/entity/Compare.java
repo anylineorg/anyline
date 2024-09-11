@@ -668,6 +668,9 @@ public enum Compare {
         }
         return formula;
     }
+    public String formula(String column, Object value, boolean placeholder) {
+        return formula(column, value, placeholder, false);
+    }
     public String getOperator() {
         return operator;
     }

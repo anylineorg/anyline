@@ -90,6 +90,9 @@ public class DefaultConfigStore implements ConfigStore {
 	public String getRunText(DataRuntime runtime, boolean placeholder, boolean unicode) {
 		return this.getConfigChain().createAutoConditionChain().getRunText(null, runtime, placeholder, unicode);
 	}
+	public String getRunText(DataRuntime runtime, boolean placeholder) {
+		return this.getConfigChain().createAutoConditionChain().getRunText(null, runtime, placeholder, false);
+	}
 	@Override
 	public Table table() {
 		return table;

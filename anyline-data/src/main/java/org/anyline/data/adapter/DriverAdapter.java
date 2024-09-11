@@ -1562,6 +1562,9 @@ public interface DriverAdapter {
     default Object createConditionJsonContains(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder, boolean unicode) throws NotSupportException {
         throw new NotSupportException("不支持");
     }
+    default Object createConditionJsonContains(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder) throws NotSupportException {
+        throw new NotSupportException("不支持");
+    }
 
     /**
      * select[命令合成-子流程] <br/>

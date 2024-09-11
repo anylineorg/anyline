@@ -78,9 +78,18 @@ public interface Condition extends Cloneable{
 		}
 		return txt;
 	}
+	default String getRunText(boolean connector, String prefix, DataRuntime runtime, boolean placeholder) {
+		return getRunText(connector, prefix, runtime, placeholder, false);
+	}
 	String getRunText(int lvl, String prefix, DataRuntime runtime, boolean placeholder, boolean unicode);
+	default String getRunText(int lvl, String prefix, DataRuntime runtime, boolean placeholder) {
+		return getRunText(lvl, prefix, runtime, placeholder, false);
+	}
 	default String getRunText(String prefix, DataRuntime runtime, boolean placeholder, boolean unicode) {
 		return getRunText(0, prefix, runtime, placeholder, unicode);
+	}
+	default String getRunText(String prefix, DataRuntime runtime, boolean placeholder) {
+		return getRunText(0, prefix, runtime, placeholder, false);
 	}
 
 	/**
