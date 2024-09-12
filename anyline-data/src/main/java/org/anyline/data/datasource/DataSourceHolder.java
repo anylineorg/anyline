@@ -307,7 +307,7 @@ public interface DataSourceHolder {
 		return false;
 	}
 	/**
-	 * 鸡数据源是否可用
+	 * 检测数据源是否可用
 	 * @param datasource 数据源
 	 * @return boolean
 	 */
@@ -323,7 +323,7 @@ public interface DataSourceHolder {
 		return false;
 	}
 	/**
-	 * 鸡数据源是否可用
+	 * 检测数据源是否可用
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @return boolean
 	 */
@@ -340,7 +340,7 @@ public interface DataSourceHolder {
 	}
 
 	/**
-	 * 鸡数据源是否可用 如果不可用 会抛出异常
+	 * 检测数据源是否可用 如果不可用 会抛出异常
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @return boolean
 	 * @throws Exception Exception
@@ -351,7 +351,7 @@ public interface DataSourceHolder {
 	}
 
 	/**
-	 * 鸡数据源是否可用 如果不可用 会抛出异常
+	 * 检测数据源是否可用 如果不可用 会抛出异常
 	 * @param datasource 数据源
 	 * @return boolean
 	 * @throws Exception Exception

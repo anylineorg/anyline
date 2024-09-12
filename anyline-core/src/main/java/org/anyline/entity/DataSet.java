@@ -5323,7 +5323,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
 
         /**
          * 筛选key列的值like pattern的子集,pattern遵循sql通配符的规则,%表示任意个字符,_表示一个字符
-         *
+         * key值like value
          * @param key     列
          * @param pattern 表达式
          * @return DataSet
@@ -5405,6 +5405,12 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
             return set;
         }
 
+        /**
+         * key值startWith prefix
+         * @param key key
+         * @param prefix prefix
+         * @return DataSet
+         */
         public DataSet startWith(String key, String prefix) {
             return startWith(DataSet.this, key, prefix);
         }
@@ -5442,6 +5448,12 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
             return set;
         }
 
+        /**
+         * key值 endWith suffix
+         * @param key key
+         * @param suffix suffix
+         * @return DataSet
+         */
         public DataSet endWith(String key, String suffix) {
             return endWith(DataSet.this, key, suffix);
         }
@@ -5479,6 +5491,13 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
             return set;
         }
 
+        /**
+         * key值 in values
+         * @param key key
+         * @param values values
+         * @return DataSet
+         * @param <T> T
+         */
         public <T> DataSet in(String key, T... values) {
             return in(DataSet.this, key, BeanUtil.array2list(values));
         }
@@ -5780,6 +5799,13 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
             return set;
         }
 
+        /**
+         * key值 小于 value
+         * @param key DataRow取key值
+         * @param value value
+         * @return DataSet
+         * @param <T> T
+         */
         public <T> DataSet less(String key, T value) {
             return less(DataSet.this, key, value);
         }
@@ -5832,6 +5858,13 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
             return set;
         }
 
+        /**
+         * key值 小于等于 value
+         * @param key DataRow取key值
+         * @param value value
+         * @return DataSet
+         * @param <T> T
+         */
         public <T> DataSet lessEqual(String key, T value) {
             return lessEqual(DataSet.this, key, value);
         }
@@ -5884,6 +5917,13 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
             return set;
         }
 
+        /**
+         * key值 大于 value
+         * @param key DataRow取key值
+         * @param value value
+         * @return DataSet
+         * @param <T> T
+         */
         public <T> DataSet greater(String key, T value) {
             return greater(DataSet.this, key, value);
         }
@@ -5936,6 +5976,13 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
             return set;
         }
 
+        /**
+         * key值 大于等于 value
+         * @param key DataRow取key值
+         * @param value value
+         * @return DataSet
+         * @param <T> T
+         */
         public <T> DataSet greaterEqual(String key, T value) {
             return greaterEqual(DataSet.this, key, value);
         }
@@ -5987,6 +6034,14 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
             set.copyProperty(src);
             return set;
         }
+        /**
+         * key值 大于等于min 小于等于 max
+         * @param key DataRow取key值
+         * @param min min
+         * @param max max
+         * @return DataSet
+         * @param <T> T
+         */
 
         public <T> DataSet between(String key, T min, T max) {
             return between(DataSet.this, key, min, max);
