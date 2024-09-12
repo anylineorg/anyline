@@ -4093,7 +4093,36 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     public DataRow round(String key, int scale, int mode) {
         return round(key, key, scale, mode);
     }
+    public BigDecimal sum(String ... keys){
+        BigDecimal sum = BigDecimal.ZERO;
+        for(String key:keys){
+            BigDecimal value = getDecimal(key, 0);
+            sum = sum.add(value);
+        }
+        return sum;
+    }
 
+    public BigDecimal avg(String ... keys) {
+        return avg(2, BigDecimal.ROUND_HALF_DOWN, keys);
+    }
+    public BigDecimal avg(int sale, int round, String ... keys) {
+        if(null == keys || keys.length == 0){
+            return null;
+        }
+        int qty = 0;
+        BigDecimal sum = BigDecimal.ZERO;
+        for(String key:keys){
+            BigDecimal value = getDecimal(key, (BigDecimal) null);
+            if(null != value) {
+                sum = sum.add(value);
+                qty ++;
+            }
+        }
+        if(qty > 0){
+            return sum.divide(new BigDecimal(qty), 2, round);
+        }
+        return null;
+    }
     public String toString() {
         String result = this.getClass().getSimpleName();
         Object pv = getPrimaryValue();
