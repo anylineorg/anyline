@@ -22,6 +22,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 
@@ -110,6 +111,60 @@ public class NumberUtil {
 			}
 		}
 		return min;
+	}
+
+	/**
+	 * 最小值,不能转换成数字的忽略
+	 * @param list list
+	 * @return min
+	 */
+	public static BigDecimal min(Collection list){
+		BigDecimal min = null;
+		for(Object item:list){
+			BigDecimal num = null;
+			if(item instanceof BigDecimal){
+				num = (BigDecimal) item;
+			}else{
+				try{
+					num = new BigDecimal(item.toString());
+				}catch (Exception ignore){}
+			}
+			if(null != num) {
+				if (min == null) {
+					min = num;
+				} else {
+					min = min(min, num);
+				}
+			}
+		}
+		return min;
+	}
+
+	/**
+	 * 最大值,不能转换成数字的忽略
+	 * @param list list
+	 * @return max
+	 */
+	public static BigDecimal max(Collection list){
+		BigDecimal max = null;
+		for(Object item:list){
+			BigDecimal num = null;
+			if(item instanceof BigDecimal){
+				num = (BigDecimal) item;
+			}else{
+				try{
+					num = new BigDecimal(item.toString());
+				}catch (Exception ignore){}
+			}
+			if(null != num) {
+				if (max == null) {
+					max = num;
+				} else {
+					max = max(max, num);
+				}
+			}
+		}
+		return max;
 	}
 
 	/**
