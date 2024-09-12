@@ -55,7 +55,7 @@ public class MongoRuntimeHolder extends AbstractRuntimeHolder implements Runtime
      */
     public DataRuntime temporary(Object datasource, String database, DriverAdapter adapter) throws Exception {
         MongoRuntime runtime = new MongoRuntime();
-        if(datasource instanceof MongoDatabase) {
+        if(datasource instanceof MongoDatabase || datasource instanceof MongoClient) {
             String key = "temporary_mongo";
             //关闭上一个
             close(key);
