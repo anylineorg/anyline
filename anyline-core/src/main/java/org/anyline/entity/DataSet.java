@@ -1428,30 +1428,32 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
     }
 
     /**
-     * 合计
+     * 合计(如果提供多个key则多列合计一个值)
      * @param begin 开始
      * @param end 结束
-     * @param key key
+     * @param keys 列
      * @return BigDecimal
      */
-    public BigDecimal sum(int begin, int end, String key) {
+    public BigDecimal sum(int begin, int end, String ... keys) {
         BigDecimal result = BigDecimal.ZERO;
         int size = rows.size();
         if (begin <= 0) {
             begin = 0;
         }
         for (int i = begin; i < size && i <= end; i++) {
-            BigDecimal tmp = getDecimal(i, key, 0);
-            if (null != tmp) {
-                result = result.add(getDecimal(i, key, 0));
+            for(String key:keys) {
+                BigDecimal tmp = getDecimal(i, key, 0);
+                if (null != tmp) {
+                    result = result.add(tmp);
+                }
             }
         }
         return result;
     }
 
-    public BigDecimal sum(String key) {
+    public BigDecimal sum(String ... keys) {
         BigDecimal result = BigDecimal.ZERO;
-        result = sum(0, size() - 1, key);
+        result = sum(0, size() - 1, keys);
         return result;
     }
 
@@ -1709,12 +1711,12 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
      *
      * @param empty 空值是否参与计算
      * @param top 多少行
-     * @param key key
+     * @param keys key
      * @param scale scale
      * @param round round
      * @return BigDecimal
      */
-    public BigDecimal avg(boolean empty, int scale, int round, int top, String key) {
+    public BigDecimal avg(boolean empty, int scale, int round, int top, String  ... keys) {
         BigDecimal result = BigDecimal.ZERO;
         int size = rows.size();
         if (size > top) {
@@ -1722,12 +1724,14 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
         }
         int count = 0;
         for (int i = 0; i < size; i++) {
-            BigDecimal tmp = getDecimal(i, key, 0);
-            if (null != tmp) {
-                result = result.add(tmp);
-            }
-            if(null != tmp || empty) {
-                count++;
+            for(String key:keys) {
+                BigDecimal tmp = getDecimal(i, key, 0);
+                if (null != tmp) {
+                    result = result.add(tmp);
+                }
+                if (null != tmp || empty) {
+                    count++;
+                }
             }
         }
         if (count > 0) {
@@ -1736,19 +1740,19 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
         return result;
     }
 
-    public BigDecimal avg(int scale, int round, String key) {
-        return avg(true, scale, round, size(), key);
+    public BigDecimal avg(int scale, int round, String  ... keys) {
+        return avg(true, scale, round, size(), keys);
     }
-    public BigDecimal avg(boolean empty, int scale, int round, String key) {
-        return avg(empty, scale, round, size(), key);
-    }
-
-    public BigDecimal avg(boolean empty, String key) {
-        return avg(empty, size(), 2, BigDecimal.ROUND_HALF_UP, key);
+    public BigDecimal avg(boolean empty, int scale, int round, String  ... keys) {
+        return avg(empty, scale, round, size(), keys);
     }
 
-    public BigDecimal avg(String key) {
-        return avg(true, key);
+    public BigDecimal avg(boolean empty, String  ... keys) {
+        return avg(empty, size(), 2, BigDecimal.ROUND_HALF_UP, keys);
+    }
+
+    public BigDecimal avg(String ... keys) {
+        return avg(true, keys);
     }
 
     /**
