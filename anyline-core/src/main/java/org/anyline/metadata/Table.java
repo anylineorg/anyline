@@ -1592,6 +1592,8 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
             private LinkedHashMap<String,Object> less;
             private int interval;
             private String unit;
+            private int modulus;
+            private int remainder;
             public Slice(){}
             public Slice(String name){
                 this.name = name;
@@ -1666,6 +1668,24 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
                 return this;
             }
 
+            public int getModulus() {
+                return modulus;
+            }
+
+            public Slice setModulus(int modulus) {
+                this.modulus = modulus;
+                return this;
+            }
+
+            public int getRemainder() {
+                return remainder;
+            }
+
+            public Slice setRemainder(int remainder) {
+                this.remainder = remainder;
+                return this;
+            }
+
             public int getInterval() {
                 return interval;
             }
@@ -1696,6 +1716,7 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
                 return this;
             }
             public static final String FIELD_NAME                      = "NAME";
+            public static final String FIELD_FOR                       = "FOR";
             public static final String FIELD_MIN                       = "MIN";
             public static final String FIELD_MAX                       = "MAX";
             public static final String FIELD_VALUE                     = "VALUE";

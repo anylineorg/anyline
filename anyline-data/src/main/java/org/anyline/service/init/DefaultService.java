@@ -2155,10 +2155,10 @@ public class DefaultService<E> implements AnylineService<E> {
                 }
             }
             //分区方式
-            if(table instanceof MasterTable){
+            //if(table instanceof MasterTable){
                 Table.Partition partition = partition(table);
                 table.setPartition(partition);
-            }
+            //}
 
         }
         @Override
