@@ -28,6 +28,7 @@ import org.anyline.data.run.*;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
 import org.anyline.entity.generator.PrimaryGenerator;
+import org.anyline.exception.CommandException;
 import org.anyline.exception.NotSupportException;
 import org.anyline.metadata.*;
 import org.anyline.metadata.refer.MetadataFieldRefer;
@@ -569,7 +570,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * 多表关联更新
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param prepare 一般通过TableBuilder生成
-     * @param data K-DataRow.VariableValue 更新值key:需要更新的列 value:通常是关联表的列用DataRow.VariableValue表示，也可以是常量
+     * @param data K-VariableValue 更新值key:需要更新的列 value:通常是关联表的列用VariableValue表示，也可以是常量
      * @return 影响行数
      */
     @Override
@@ -627,8 +628,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
             }
             first = false;
             Object value = data.get(key);
-            if(value instanceof DataRow.VariableValue){
-                DataRow.VariableValue var = (DataRow.VariableValue)value;
+            if(value instanceof VariableValue){
+                VariableValue var = (VariableValue)value;
                 delimiter(builder, var.value());
             }else{
                 builder.append("?");
@@ -4286,7 +4287,40 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public List<Run> buildCreateRun(DataRuntime runtime, Table meta) throws Exception {
-        return super.buildCreateRun(runtime, meta);
+        List<Run> runs = new ArrayList<>();
+        Run run = new SimpleRun(runtime);
+        runs.add(run);
+        StringBuilder builder = run.getBuilder();
+        builder.append("CREATE ").append(keyword(meta)).append(" ");
+        checkTableExists(runtime, builder, false);
+        name(runtime, builder, meta);
+        body(runtime, builder, meta);
+        //分区依据列(主表执行) PARTITION BY RANGE (code);
+        partitionBy(runtime, builder, meta);
+        partitionFor(runtime, builder, meta);
+        //继承表CREATE TABLE simple.public.tab_1c1() INHERITS(simple.public.tab_parent)
+        inherit(runtime, builder, meta);
+        //引擎
+        engine(runtime, builder, meta);
+        //编码方式
+        charset(runtime, builder, meta);
+        //keys type
+        keys(runtime, builder, meta);
+        //分桶方式
+        distribution(runtime, builder, meta);
+        //物化视图
+        materialize(runtime, builder, meta);
+        //扩展属性
+        property(runtime, builder, meta);
+        //备注
+        comment(runtime, builder, meta);
+
+        //创建表后追加
+        runs.addAll(buildAppendCommentRun(runtime, meta));
+        runs.addAll(buildAppendColumnCommentRun(runtime, meta));
+        runs.addAll(buildAppendPrimaryRun(runtime, meta));
+        runs.addAll(buildAppendIndexRun(runtime, meta));
+        return runs;
     }
 
     /**
@@ -4543,6 +4577,89 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
     @Override
     public StringBuilder partitionBy(DataRuntime runtime, StringBuilder builder, Table meta) throws Exception {
         return super.partitionBy(runtime, builder, meta);
+    }
+
+    /**
+     * table[命令合成-子流程]<br/>
+     * 子表执行分区依据(分区依据值)如CREATE TABLE hr_user_fi PARTITION OF hr_user FOR VALUES IN ('FI')
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param builder builder
+     * @param meta 表
+     * @return StringBuilder
+     * @throws Exception 异常
+     */
+    @Override
+    public StringBuilder partitionFor(DataRuntime runtime, StringBuilder builder, Table meta) throws Exception {
+        Table.Partition partition = meta.getPartition();
+        if(null == partition) {
+            return builder;
+        }
+        Table.Partition.TYPE type = partition.getType();
+        if(null == type) {
+            return builder;
+        }
+        if(type == Table.Partition.TYPE.HASH){
+            builder.append(" PARTITIONS ").append(partition.getModulus());
+            return builder;
+        }
+        List<Table.Partition.Slice> slices = partition.getSlices();
+        if(null != slices && !slices.isEmpty()) {
+            builder.append("(\n");
+            boolean sfirst = true;
+            for(Table.Partition.Slice slice:slices) {
+                builder.append("\n\t");
+                if(!sfirst) {
+                    builder.append(", ");
+                }
+                sfirst = false;
+                Object max = slice.getMax();
+                List<Object> values = slice.getValues();
+                LinkedHashMap<String,Object> less = slice.getLess();
+                int interval = slice.getInterval();
+                String unit = slice.getUnit();
+                if(type == Table.Partition.TYPE.RANGE) {
+                    LinkedHashMap<String, Column> columns = partition.getColumns();
+                        /*PARTITION BY RANGE(col1[, col2, ...])
+                        (
+                            PARTITION partition_name1 VALUES LESS THAN MAXVALUE|("value1", "value2", ...),
+                            PARTITION partition_name2 VALUES LESS THAN MAXVALUE|("value1", "value2", ...)
+                        )*/
+                    builder.append("PARTITION ").append(slice.getName()).append(" VALUES LESS THAN ");
+                    builder.append("(");
+                    boolean lfirst = true;
+                    for (Column column : columns.values()) {
+                        if (!lfirst) {
+                            builder.append(", ");
+                        }
+                        lfirst = false;
+                        Object v = less.get(column.getName().toUpperCase());
+                        builder.append(write(runtime, null, v, false, false));
+                    }
+                    builder.append(")");
+                }else if(type == Table.Partition.TYPE.LIST) {
+                        /*
+                        PARTITION BY List(address)(
+                             partition p_job1 values('PRESIDENT','MANAGER','ANALYST'),
+                             partition p_job2 values('CLERK'),
+                             partition p_job3 values(default)
+                        )
+                        */
+                    builder.append("PARTITION ").append(slice.getName()).append(" VALUES (");
+                    boolean vfirst = true;
+                    for(Object value:values) {
+                        if(!vfirst) {
+                            builder.append(", ");
+                        }
+                        vfirst = false;
+                        Object write = write(runtime, null, value, false, false);
+                        builder.append(write);
+                    }
+                    builder.append(")");
+                }
+            }
+            builder.append("\n)");
+        }
+        return builder;
     }
 
     /**

@@ -401,7 +401,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * 多表关联更新
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param prepare 一般通过TableBuilder生成
-     * @param data K-DataRow.VariableValue 更新值key:需要更新的列 value:通常是关联表的列用DataRow.VariableValue表示，也可以是常量
+     * @param data K-VariableValue 更新值key:需要更新的列 value:通常是关联表的列用VariableValue表示，也可以是常量
      * @return 影响行数
      */
     @Override
@@ -434,8 +434,8 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
             first = false;
             builder.append(key).append(" = ");
             Object value = data.get(key);
-            if(value instanceof DataRow.VariableValue){
-                DataRow.VariableValue var = (DataRow.VariableValue)value;
+            if(value instanceof VariableValue){
+                VariableValue var = (VariableValue)value;
                 delimiter(builder, var.value());
             }else{
                 builder.append("?");

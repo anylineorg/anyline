@@ -102,18 +102,6 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     protected KeyAdapter keyAdapter                         = null                  ; // key格式转换
     protected KEY_CASE keyCase 				                = DEFAULT_KEY_CASE      ; // 列名格式
 
-    public class VariableValue {
-        private String value;
-        public VariableValue(String value){
-            this.value = value;
-        }
-        public String value(){
-            return value;
-        }
-        public void value(String value){
-            this.value = value;
-        }
-    }
     public DataRow() {
         parseKeyCase(null);
         String pk = keyAdapter.key(DEFAULT_PRIMARY_KEY);

@@ -45,7 +45,7 @@ public interface UpdateInterceptor extends DMInterceptor{
      * 创建update SQL之前，可以在这一步修改查询条件
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param prepare 一般通过TableBuilder生成
-     * @param data K-DataRow.VariableValue 更新值key:需要更新的列 value:通常是关联表的列用DataRow.VariableValue表示，也可以是常量
+     * @param data K-VariableValue 更新值key:需要更新的列 value:通常是关联表的列用VariableValue表示，也可以是常量
      * @return RESULT
      */
     default ACTION.SWITCH prepare(DataRuntime runtime, String random, RunPrepare prepare, DataRow data, ConfigStore configs) { return SWITCH.CONTINUE;}
@@ -62,7 +62,7 @@ public interface UpdateInterceptor extends DMInterceptor{
      * 合计总数之前调用，到这一步SQL已创建完成
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param run 查询SQL(包含SQL体，查询条件，查询参数值)
-     * @param data K-DataRow.VariableValue 更新值key:需要更新的列 value:通常是关联表的列用DataRow.VariableValue表示，也可以是常量
+     * @param data K-VariableValue 更新值key:需要更新的列 value:通常是关联表的列用VariableValue表示，也可以是常量
      * @return RESULT
      */
     default SWITCH before(DataRuntime runtime, String random, Run run, RunPrepare prepare, DataRow data, ConfigStore configs) { return SWITCH.CONTINUE;}
@@ -83,7 +83,7 @@ public interface UpdateInterceptor extends DMInterceptor{
      * @param result 影响行数
      * @param run 查询SQL(包含SQL体，查询条件，查询参数值)
      * @param prepare 一般通过TableBuilder生成
-     * @param data K-DataRow.VariableValue 更新值key:需要更新的列 value:通常是关联表的列用DataRow.VariableValue表示，也可以是常量
+     * @param data K-VariableValue 更新值key:需要更新的列 value:通常是关联表的列用VariableValue表示，也可以是常量
      * @param millis 耗时
      * @return RESULT
      */

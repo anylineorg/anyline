@@ -1049,7 +1049,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * 多表关联更新
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param prepare 一般通过TableBuilder生成
-     * @param data K-DataRow.VariableValue 更新值key:需要更新的列 value:通常是关联表的列用DataRow.VariableValue表示，也可以是常量
+     * @param data K-VariableValue 更新值key:需要更新的列 value:通常是关联表的列用VariableValue表示，也可以是常量
      * @return 影响行数
      */
     @Override
@@ -1108,7 +1108,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * 多表关联更新
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param prepare 一般通过TableBuilder生成
-     * @param data K-DataRow.VariableValue 更新值key:需要更新的列 value:通常是关联表的列用DataRow.VariableValue表示，也可以是常量
+     * @param data K-VariableValue 更新值key:需要更新的列 value:通常是关联表的列用VariableValue表示，也可以是常量
      * @return 影响行数
      */
     @Override
@@ -17727,34 +17727,48 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			result = writer.write(value, placeholder, unicode, columnType);
 		}
 		if(null != result) {
-            if(!placeholder && unicode && result instanceof String && result.toString().startsWith("'")){
-                result = unicodeGuide(runtime) + result;
-            }
-			return result;
+            return write(runtime, result, placeholder, unicode);
 		}
 		if(null != columnType && TypeMetadata.NONE != columnType) {
 			result = columnType.write(value, null, false);
 		}
 		if(null != result) {
-            if(!placeholder && unicode && result instanceof String && result.toString().startsWith("'")){
+            return write(runtime, result, placeholder, unicode);
+		}
+		return write(runtime, value, placeholder, unicode);
+	}
+    private Object write(DataRuntime runtime, Object value, boolean placeholder, boolean unicode){
+        if(null == value){
+            return null;
+        }
+        Object result = null;
+        if(!placeholder) {
+            boolean isNumber = BasicUtil.isNumber(value);
+            boolean isNull = null == value || "NULL".equals(value);
+            boolean isFun = false;
+            String str = value +"";
+            if(!isNumber){
+                if(str.contains("(") || str.contains("'")){
+                    isFun = true;
+                }
+            }
+            boolean isOrigin = isNumber || isNull || isFun || value instanceof VariableValue;
+
+            if (isOrigin) {
+                result = value;
+            } else {
+                result = "'" + value + "'";
+            }
+            if(unicode && result instanceof String && result.toString().startsWith("'")){
                 result = unicodeGuide(runtime) + result;
             }
-			return result;
-		}
-		//根据值类型
-		if(!placeholder) {
-			if (null == value || BasicUtil.isNumber(value) || "NULL".equals(value)) {
-				result = value;
-			} else {
-                if(unicode && !placeholder){
-                    result = unicodeGuide(runtime) + result;
-                }
-				result = "'" + value + "'";
-			}
-		}
-
-		return result;
-	}
+        }else{
+            if(value instanceof VariableValue){
+                result = ((VariableValue)value).value();
+            }
+        }
+        return result;
+    }
 
 	/**
 	 * 从数据库中读取数据<br/>

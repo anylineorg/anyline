@@ -405,7 +405,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * 多表关联更新
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param prepare 一般通过TableBuilder生成
-     * @param data K-DataRow.VariableValue 更新值key:需要更新的列 value:通常是关联表的列用DataRow.VariableValue表示，也可以是常量
+     * @param data K-VariableValue 更新值key:需要更新的列 value:通常是关联表的列用VariableValue表示，也可以是常量
      * @return 影响行数
      */
     @Override
@@ -446,8 +446,8 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
             }
             builder.append(key).append(" = ");
             Object value = data.get(key);
-            if(value instanceof DataRow.VariableValue){
-                DataRow.VariableValue var = (DataRow.VariableValue)value;
+            if(value instanceof VariableValue){
+                VariableValue var = (VariableValue)value;
                 delimiter(builder, var.value());
             }else{
                 builder.append("?");
@@ -4838,21 +4838,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
                         }
                         lfirst = false;
                         Object v = less.get(column.getName().toUpperCase());
-                        String str = v.toString();
-                        boolean number = BasicUtil.isNumber(v);
-                        boolean fun = false;
-                        if(!number){
-                            if(str.contains("(") || str.contains("'") || v instanceof DataRow.VariableValue){
-                                fun = true;
-                            }
-                        }
-                        if(!number && !fun) {
-                            builder.append("'");
-                        }
-                        builder.append(v);
-                        if(!number && !fun) {
-                            builder.append("'");
-                        }
+                        builder.append(write(runtime, null, v, false, false));
                     }
                     builder.append(")");
                 }else if(type == Table.Partition.TYPE.LIST) {
@@ -4870,14 +4856,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
                             builder.append(", ");
                         }
                         vfirst = false;
-                        boolean number = BasicUtil.isNumber(value);
-                        if(!number) {
-                            builder.append("'");
-                        }
-                        builder.append(value);
-                        if(!number) {
-                            builder.append("'");
-                        }
+                        builder.append(write(runtime, null, value, false, false));
                     }
                     builder.append(")");
                 }

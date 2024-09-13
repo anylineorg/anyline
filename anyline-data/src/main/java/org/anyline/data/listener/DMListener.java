@@ -174,7 +174,7 @@ public interface DMListener {
      * @param runtime  包含数据源(key)、适配器、JDBCTemplate、dao
      * @param random 用来标记同一组SQL、执行结构、参数等
      * @param prepare 一般通过TableBuilder生成
-     * @param data K-DataRow.VariableValue 更新值key:需要更新的列 value:通常是关联表的列用DataRow.VariableValue表示，也可以是常量
+     * @param data K-VariableValue 更新值key:需要更新的列 value:通常是关联表的列用VariableValue表示，也可以是常量
      * @return SWITCH 如果返回false 则中断执行
      */
     default SWITCH prepareUpdate(DataRuntime runtime, String random, RunPrepare prepare, DataRow data, ConfigStore configs) {return SWITCH.CONTINUE;}
@@ -198,7 +198,7 @@ public interface DMListener {
      * @param runtime  包含数据源(key)、适配器、JDBCTemplate、dao
      * @param random 用来标记同一组SQL、执行结构、参数等
      * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
-     * @param data K-DataRow.VariableValue 更新值key:需要更新的列 value:通常是关联表的列用DataRow.VariableValue表示，也可以是常量
+     * @param data K-VariableValue 更新值key:需要更新的列 value:通常是关联表的列用VariableValue表示，也可以是常量
      * @return SWITCH 是否执行  如果返回false 将不执行更新
      */
     default SWITCH beforeUpdate(DataRuntime runtime, String random, Run run, RunPrepare prepare, DataRow data, ConfigStore configs) {return SWITCH.CONTINUE;}
@@ -228,7 +228,7 @@ public interface DMListener {
      * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
      * @param count 影响行数
      * @param prepare 一般通过TableBuilder生成
-     * @param data K-DataRow.VariableValue 更新值key:需要更新的列 value:通常是关联表的列用DataRow.VariableValue表示，也可以是常量
+     * @param data K-VariableValue 更新值key:需要更新的列 value:通常是关联表的列用VariableValue表示，也可以是常量
      * @param success SQL是否成功执行
      * @param qty 景程行数，如果执行不成功返回-1
      * @param millis 执行耗时
