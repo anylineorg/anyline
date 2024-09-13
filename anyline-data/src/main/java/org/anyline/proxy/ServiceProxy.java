@@ -1116,17 +1116,11 @@ public class ServiceProxy {
     public static DataSet caches(String dest, long first, long last, ConfigStore configs, String ... conditions) {
         return caches(null, dest, first, last, configs, conditions);
     }
-    public static DataSet caches(String dest, String ... conditions) {
-        return caches(null, dest, null, null, conditions);
-    }
     public static DataSet caches(String dest, long first, long last, String ... conditions) {
         return caches(null, dest, first, last, null, conditions);
     }
     public static DataRow cache(String dest, ConfigStore configs, String ... conditions) {
         return cache(null, dest, configs, null, conditions);
-    }
-    public static DataRow cache(String dest, String ... conditions) {
-        return cache(null, dest, null, null, conditions);
     }
 
     public static DataRow cache(Table dest, ConfigStore configs, Object obj, String ... conditions) {
