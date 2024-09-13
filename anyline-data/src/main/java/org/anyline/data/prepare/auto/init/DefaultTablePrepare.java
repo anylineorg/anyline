@@ -74,7 +74,9 @@ public class DefaultTablePrepare extends DefaultAutoPrepare implements TablePrep
 	public DataRow map(boolean empty, boolean join) {
 		DataRow row = new OriginRow();
 		row.put("table", table.getName());
-		row.put("alias", table.getAlias());
+		if(null != table.getAlias() || empty) {
+			row.put("alias", table.getAlias());
+		}
 		if(join && null != this.join) {
 			row.put("type", this.join.getType().name());
 			row.put("conditions", this.join.getConditions().getConfigChain().map(empty));

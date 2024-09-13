@@ -83,45 +83,47 @@ public class TableBuilder {
             builder.prepare.setDistinct(true);
         }
         DataSet joins = row.getSet("joins");
-        for(DataRow item:joins){
-            Object item_table = item.getString("table");
-            String item_alias = item.getString("alias");
-            String item_join = item.getString("type");
-            Join.TYPE join_type = null;
-            if(BasicUtil.isNotEmpty(item_join)){
-                join_type = Join.TYPE.valueOf(item_join.trim().toUpperCase());
-            }else{
-                join_type = Join.TYPE.LEFT;
-            }
-            Join join = new Join();
-            join.setType(join_type);
+        if(null != joins) {
+            for (DataRow item : joins) {
+                Object item_table = item.getString("table");
+                String item_alias = item.getString("alias");
+                String item_join = item.getString("type");
+                Join.TYPE join_type = null;
+                if (BasicUtil.isNotEmpty(item_join)) {
+                    join_type = Join.TYPE.valueOf(item_join.trim().toUpperCase());
+                } else {
+                    join_type = Join.TYPE.LEFT;
+                }
+                Join join = new Join();
+                join.setType(join_type);
 
-            DefaultConfigStore configs = new DefaultConfigStore();
-            Object conditions = item.get("conditions");
-            if(conditions instanceof DataRow){ //参考ConfigBuilder示例
-                ConfigChain chain = ConfigBuilder.parseConfigChain((DataRow) conditions);
-                configs.setChain(chain);
-                join.setConditions(configs);
-            }else if(conditions instanceof String){
-                // conditions:"FI.ID = M.USER_ID"
-                join.addConditions((String)conditions);
-            }else if(conditions instanceof List){
-                // [{"FI.ID = M.USER_ID","FI.TYPE_ID > 10"}]
-                List<String> list = (List<String>)conditions;
-                for(String con:list){
-                    join.addConditions(con);
+                DefaultConfigStore configs = new DefaultConfigStore();
+                Object conditions = item.get("conditions");
+                if (conditions instanceof DataRow) { //参考ConfigBuilder示例
+                    ConfigChain chain = ConfigBuilder.parseConfigChain((DataRow) conditions);
+                    configs.setChain(chain);
+                    join.setConditions(configs);
+                } else if (conditions instanceof String) {
+                    // conditions:"FI.ID = M.USER_ID"
+                    join.addConditions((String) conditions);
+                } else if (conditions instanceof List) {
+                    // [{"FI.ID = M.USER_ID","FI.TYPE_ID > 10"}]
+                    List<String> list = (List<String>) conditions;
+                    for (String con : list) {
+                        join.addConditions(con);
+                    }
                 }
-            }
-            RunPrepare prepare = null;
-            if(item_table instanceof String){
-                Table item_tab = new Table((String)item_table);
-                if(BasicUtil.isNotEmpty(item_alias)){
-                    item_tab.setAlias(item_alias);
+                RunPrepare prepare = null;
+                if (item_table instanceof String) {
+                    Table item_tab = new Table((String) item_table);
+                    if (BasicUtil.isNotEmpty(item_alias)) {
+                        item_tab.setAlias(item_alias);
+                    }
+                    prepare = new DefaultTablePrepare(item_tab);
                 }
-                prepare = new DefaultTablePrepare(item_tab);
+                prepare.setJoin(join);
+                builder.join(prepare);
             }
-            prepare.setJoin(join);
-            builder.join(prepare);
         }
         Object columns = row.get("columns");
         if(columns instanceof List){
