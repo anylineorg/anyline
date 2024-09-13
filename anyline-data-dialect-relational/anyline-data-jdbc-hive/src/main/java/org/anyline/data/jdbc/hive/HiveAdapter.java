@@ -3769,7 +3769,11 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 */
 	@Override
 	public StringBuilder comment(DataRuntime runtime, StringBuilder builder, Table meta) {
-		return super.comment(runtime, builder, meta);
+		String comment = meta.getComment();
+		if(BasicUtil.isNotEmpty(comment)) {
+			builder.append(" COMMENT '").append(comment).append("'");
+		}
+		return builder;
 	}
 	
 	/**
@@ -4905,7 +4909,11 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 */
 	@Override
 	public StringBuilder comment(DataRuntime runtime, StringBuilder builder, Column meta) {
-		return super.comment(runtime, builder, meta);
+		String comment = meta.getComment();
+		if(BasicUtil.isNotEmpty(comment)) {
+			builder.append(" COMMENT '").append(comment).append("'");
+		}
+		return builder;
 	}
 
 	/* *****************************************************************************************************************
