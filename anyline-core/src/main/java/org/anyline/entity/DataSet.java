@@ -1516,9 +1516,20 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
     /**
      * 多列平均值
      * @param result 保存合计结果
-     * @param scale scale
-     * @param round round
+     * @param scale 小数位
      * @param keys keys
+     * @param round 舍入模式 参考BigDecimal静态常量
+     *       ROUND_UP        = 0 舍入远离零的舍入模式 在丢弃非零部分之前始终增加数字（始终对非零舍弃部分前面的数字加 1） 如:2.36 转成 2.4<br/>
+     *       ROUND_DOWN      = 1 接近零的舍入模式 在丢弃某部分之前始终不增加数字(从不对舍弃部分前面的数字加1,即截短). 如:2.36 转成 2.3<br/>
+     *       ROUND_CEILING   = 2 接近正无穷大的舍入模式 如果 BigDecimal 为正,则舍入行为与 ROUND_UP 相同 如果为负,则舍入行为与 ROUND_DOWN 相同 相当于是 ROUND_UP 和 ROUND_DOWN 的合集<br/>
+     *       ROUND_FLOOR     = 3 接近负无穷大的舍入模式 如果 BigDecimal 为正,则舍入行为与 ROUND_DOWN 相同 如果为负,则舍入行为与 ROUND_UP 相同 与ROUND_CEILING 正好相反<br/>
+     *       ROUND_HALF_UP   = 4 四舍五入<br/>
+     *       ROUND_HALF_DOWN = 5 五舍六入<br/>
+     *       ROUND_HALF_EVEN = 6 四舍六入 五留双(银行家舍入法) <br/>
+     *         如果舍弃部分左边的数字为奇数,则舍入行为与 ROUND_HALF_UP 相同（四舍五入）<br/>
+     *         如果为偶数,则舍入行为与 ROUND_HALF_DOWN 相同（五舍六入）<br/>
+     *         如:1.15 转成 1.2,因为5前面的1是奇数;1.25 转成 1.2,因为5前面的2是偶数<br/>
+     *      ROUND_UNNECESSARY=7 断言所请求的操作具有准确的结果，因此不需要舍入。如果在产生不精确结果的操作上指定了该舍入模式，则会抛出ArithmeticException异常
      * @return DataRow
      */
     public DataRow avgs(DataRow result, boolean empty, int scale, int round, List<String>  keys) {
@@ -1712,8 +1723,19 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
      * @param empty 空值是否参与计算
      * @param top 多少行
      * @param keys key
-     * @param scale scale
-     * @param round round
+     * @param scale 小数位
+     * @param round 舍入模式 参考BigDecimal静态常量
+     *       ROUND_UP        = 0 舍入远离零的舍入模式 在丢弃非零部分之前始终增加数字（始终对非零舍弃部分前面的数字加 1） 如:2.36 转成 2.4<br/>
+     *       ROUND_DOWN      = 1 接近零的舍入模式 在丢弃某部分之前始终不增加数字(从不对舍弃部分前面的数字加1,即截短). 如:2.36 转成 2.3<br/>
+     *       ROUND_CEILING   = 2 接近正无穷大的舍入模式 如果 BigDecimal 为正,则舍入行为与 ROUND_UP 相同 如果为负,则舍入行为与 ROUND_DOWN 相同 相当于是 ROUND_UP 和 ROUND_DOWN 的合集<br/>
+     *       ROUND_FLOOR     = 3 接近负无穷大的舍入模式 如果 BigDecimal 为正,则舍入行为与 ROUND_DOWN 相同 如果为负,则舍入行为与 ROUND_UP 相同 与ROUND_CEILING 正好相反<br/>
+     *       ROUND_HALF_UP   = 4 四舍五入<br/>
+     *       ROUND_HALF_DOWN = 5 五舍六入<br/>
+     *       ROUND_HALF_EVEN = 6 四舍六入 五留双(银行家舍入法) <br/>
+     *         如果舍弃部分左边的数字为奇数,则舍入行为与 ROUND_HALF_UP 相同（四舍五入）<br/>
+     *         如果为偶数,则舍入行为与 ROUND_HALF_DOWN 相同（五舍六入）<br/>
+     *         如:1.15 转成 1.2,因为5前面的1是奇数;1.25 转成 1.2,因为5前面的2是偶数<br/>
+     *      ROUND_UNNECESSARY=7 断言所请求的操作具有准确的结果，因此不需要舍入。如果在产生不精确结果的操作上指定了该舍入模式，则会抛出ArithmeticException异常
      * @return BigDecimal
      */
     public BigDecimal avg(boolean empty, int scale, int round, int top, String  ... keys) {
@@ -1755,6 +1777,95 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
         return avg(true, keys);
     }
 
+    /**
+     * 计算key列值在整个集合中占比
+     * @param scale 小数位
+     * @param round 舍入模式 参考BigDecimal静态常量
+     *       ROUND_UP        = 0 舍入远离零的舍入模式 在丢弃非零部分之前始终增加数字（始终对非零舍弃部分前面的数字加 1） 如:2.36 转成 2.4<br/>
+     *       ROUND_DOWN      = 1 接近零的舍入模式 在丢弃某部分之前始终不增加数字(从不对舍弃部分前面的数字加1,即截短). 如:2.36 转成 2.3<br/>
+     *       ROUND_CEILING   = 2 接近正无穷大的舍入模式 如果 BigDecimal 为正,则舍入行为与 ROUND_UP 相同 如果为负,则舍入行为与 ROUND_DOWN 相同 相当于是 ROUND_UP 和 ROUND_DOWN 的合集<br/>
+     *       ROUND_FLOOR     = 3 接近负无穷大的舍入模式 如果 BigDecimal 为正,则舍入行为与 ROUND_DOWN 相同 如果为负,则舍入行为与 ROUND_UP 相同 与ROUND_CEILING 正好相反<br/>
+     *       ROUND_HALF_UP   = 4 四舍五入<br/>
+     *       ROUND_HALF_DOWN = 5 五舍六入<br/>
+     *       ROUND_HALF_EVEN = 6 四舍六入 五留双(银行家舍入法) <br/>
+     *         如果舍弃部分左边的数字为奇数,则舍入行为与 ROUND_HALF_UP 相同（四舍五入）<br/>
+     *         如果为偶数,则舍入行为与 ROUND_HALF_DOWN 相同（五舍六入）<br/>
+     *         如:1.15 转成 1.2,因为5前面的1是奇数;1.25 转成 1.2,因为5前面的2是偶数<br/>
+     *      ROUND_UNNECESSARY=7 断言所请求的操作具有准确的结果，因此不需要舍入。如果在产生不精确结果的操作上指定了该舍入模式，则会抛出ArithmeticException异常
+     * @param keys keys
+     */
+    public void percent(int scale, int round, String ... keys){
+        for(String key:keys){
+            BigDecimal sum = sum(key);
+            if(null != sum && sum.compareTo(BigDecimal.ZERO) > 0){
+                for(DataRow row:rows){
+                    BigDecimal value = row.getDecimal(key, (BigDecimal) null);
+                    if(null != value){
+                        BigDecimal percent = value.divide(sum, scale, round);
+                        row.put(key+"_percent", percent);
+                    }
+                }
+            }
+        }
+    }
+    public void percent(String ... keys){
+        percent(2, 4, keys);
+    }
+
+    /**
+     * 加权均值
+     * @param factor 权重计算列
+     * @param key 值计算列
+     * @param scale 小数位
+     * @param round 舍入模式 参考BigDecimal静态常量
+     *       ROUND_UP        = 0 舍入远离零的舍入模式 在丢弃非零部分之前始终增加数字（始终对非零舍弃部分前面的数字加 1） 如:2.36 转成 2.4<br/>
+     *       ROUND_DOWN      = 1 接近零的舍入模式 在丢弃某部分之前始终不增加数字(从不对舍弃部分前面的数字加1,即截短). 如:2.36 转成 2.3<br/>
+     *       ROUND_CEILING   = 2 接近正无穷大的舍入模式 如果 BigDecimal 为正,则舍入行为与 ROUND_UP 相同 如果为负,则舍入行为与 ROUND_DOWN 相同 相当于是 ROUND_UP 和 ROUND_DOWN 的合集<br/>
+     *       ROUND_FLOOR     = 3 接近负无穷大的舍入模式 如果 BigDecimal 为正,则舍入行为与 ROUND_DOWN 相同 如果为负,则舍入行为与 ROUND_UP 相同 与ROUND_CEILING 正好相反<br/>
+     *       ROUND_HALF_UP   = 4 四舍五入<br/>
+     *       ROUND_HALF_DOWN = 5 五舍六入<br/>
+     *       ROUND_HALF_EVEN = 6 四舍六入 五留双(银行家舍入法) <br/>
+     *         如果舍弃部分左边的数字为奇数,则舍入行为与 ROUND_HALF_UP 相同（四舍五入）<br/>
+     *         如果为偶数,则舍入行为与 ROUND_HALF_DOWN 相同（五舍六入）<br/>
+     *         如:1.15 转成 1.2,因为5前面的1是奇数;1.25 转成 1.2,因为5前面的2是偶数<br/>
+     *      ROUND_UNNECESSARY=7 断言所请求的操作具有准确的结果，因此不需要舍入。如果在产生不精确结果的操作上指定了该舍入模式，则会抛出ArithmeticException异常
+     */
+    public BigDecimal wac(int scale, int round, String factor, String key){
+        BigDecimal result = null;
+        BigDecimal sum_value = BigDecimal.ZERO;
+        BigDecimal sum_factor = sum(factor);
+        for(DataRow row:rows){
+            sum_value = sum_value.add(row.multiply(factor, key));
+        }
+        if(null != sum_value && null != sum_factor && sum_factor.compareTo(BigDecimal.ZERO)>0){
+            result = sum_value.divide(sum_factor, scale, round);
+        }
+        return result;
+    }
+    public BigDecimal wac(String factor, String key){
+        return wac(2, BigDecimal.ROUND_HALF_UP, factor, key);
+    }
+    /**
+     * 多列的乘积
+     * @param target 结果存放位置
+     * @param empty 是否计算空列 如果计算会算出0
+     * @param keys keys
+     */
+    public void multiply(String target, boolean empty, String ... keys) {
+        if(BasicUtil.isEmpty(target)){
+            target = BeanUtil.concat(keys);
+        }
+        for(DataRow row:rows){
+            BigDecimal multiply = row.multiply(empty, keys);
+            row.put(target, multiply);
+        }
+    }
+    public void multiply(boolean empty, String ... keys) {
+        multiply(null, empty, keys);
+    }
+    public void multiply(String ... keys) {
+        multiply(null, true, keys);
+    }
     /**
      * 中位数
      *

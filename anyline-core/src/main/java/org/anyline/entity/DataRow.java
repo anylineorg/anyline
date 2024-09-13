@@ -4027,10 +4027,10 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
      *       ROUND_CEILING   = 2 接近正无穷大的舍入模式 如果 BigDecimal 为正, 则舍入行为与 ROUND_UP 相同 如果为负, 则舍入行为与 ROUND_DOWN 相同 相当于是 ROUND_UP 和 ROUND_DOWN 的合集<br/>
      *       ROUND_FLOOR     = 3 接近负无穷大的舍入模式 如果 BigDecimal 为正, 则舍入行为与 ROUND_DOWN 相同 如果为负, 则舍入行为与 ROUND_UP 相同 与ROUND_CEILING 正好相反<br/>
      *       ROUND_HALF_UP   = 4 四舍五入<br/>
-     *       ROUND_HALF_DOWN = 5 五舍六入<br/>
+     *       ROUND_HALF_UP = 5 五舍六入<br/>
      *       ROUND_HALF_EVEN = 6 四舍六入 五留双(银行家舍入法) <br/>
      *         如果舍弃部分左边的数字为奇数, 则舍入行为与 ROUND_HALF_UP 相同（四舍五入）<br/>
-     *         如果为偶数, 则舍入行为与 ROUND_HALF_DOWN 相同（五舍六入）<br/>
+     *         如果为偶数, 则舍入行为与 ROUND_HALF_UP 相同（五舍六入）<br/>
      *         如:1.15 转成 1.2, 因为5前面的1是奇数;1.25 转成 1.2, 因为5前面的2是偶数<br/>
      *      ROUND_UNNECESSARY=7 断言所请求的操作具有准确的结果，因此不需要舍入。如果在产生不精确结果的操作上指定了该舍入模式，则会抛出ArithmeticException异常
      * @return DataRow
@@ -4075,10 +4075,10 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
      *       ROUND_CEILING   = 2 接近正无穷大的舍入模式 如果 BigDecimal 为正,则舍入行为与 ROUND_UP 相同 如果为负,则舍入行为与 ROUND_DOWN 相同 相当于是 ROUND_UP 和 ROUND_DOWN 的合集<br/>
      *       ROUND_FLOOR     = 3 接近负无穷大的舍入模式 如果 BigDecimal 为正,则舍入行为与 ROUND_DOWN 相同 如果为负,则舍入行为与 ROUND_UP 相同 与ROUND_CEILING 正好相反<br/>
      *       ROUND_HALF_UP   = 4 四舍五入<br/>
-     *       ROUND_HALF_DOWN = 5 五舍六入<br/>
+     *       ROUND_HALF_UP = 5 五舍六入<br/>
      *       ROUND_HALF_EVEN = 6 四舍六入 五留双(银行家舍入法) <br/>
      *         如果舍弃部分左边的数字为奇数,则舍入行为与 ROUND_HALF_UP 相同（四舍五入）<br/>
-     *         如果为偶数,则舍入行为与 ROUND_HALF_DOWN 相同（五舍六入）<br/>
+     *         如果为偶数,则舍入行为与 ROUND_HALF_UP 相同（五舍六入）<br/>
      *         如:1.15 转成 1.2,因为5前面的1是奇数;1.25 转成 1.2,因为5前面的2是偶数<br/>
      *      ROUND_UNNECESSARY=7 断言所请求的操作具有准确的结果，因此不需要舍入。如果在产生不精确结果的操作上指定了该舍入模式，则会抛出ArithmeticException异常
      * @return DataRow
@@ -4093,6 +4093,12 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     public DataRow round(String key, int scale, int mode) {
         return round(key, key, scale, mode);
     }
+
+    /**
+     * 多列求和
+     * @param keys keys
+     * @return BigDecimal
+     */
     public BigDecimal sum(String ... keys){
         BigDecimal sum = BigDecimal.ZERO;
         for(String key:keys){
@@ -4101,11 +4107,60 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         }
         return sum;
     }
+    /**
+     * 多列乘积
+     * @param keys keys
+     * @param empty 是否计算空列 如果计算会算出0 
+     * @return BigDecimal
+     */
+    public BigDecimal multiply(boolean empty, String ... keys){
+        BigDecimal multiply = null;
+        for(String key:keys){
+            BigDecimal value = getDecimal(key, (BigDecimal) null);
+            if(null == value && empty){
+                value = BigDecimal.ZERO;
+            }
+            if(null != value) {
+                if(null == multiply) {
+                    multiply = value;
+                }else{
+                    multiply = multiply.multiply(value);
+                }
+            }
+        }
+        return multiply;
+    }
+    public BigDecimal multiply(String ... keys){
+        return multiply(true, keys);
+    }
 
     public BigDecimal avg(String ... keys) {
-        return avg(2, BigDecimal.ROUND_HALF_DOWN, keys);
+        return avg(true, 2, BigDecimal.ROUND_HALF_UP, keys);
     }
-    public BigDecimal avg(int sale, int round, String ... keys) {
+    public BigDecimal avg(boolean empty, String ... keys) {
+        return avg(empty, 2, BigDecimal.ROUND_HALF_UP, keys);
+    }
+
+    /**
+     * 多列平均值
+     * @param empty 空值是否计数
+     * @param scale 小数位
+     * @param keys keys
+     * @param round 舍入模式 参考BigDecimal静态常量
+     *       ROUND_UP        = 0 舍入远离零的舍入模式 在丢弃非零部分之前始终增加数字（始终对非零舍弃部分前面的数字加 1） 如:2.36 转成 2.4<br/>
+     *       ROUND_DOWN      = 1 接近零的舍入模式 在丢弃某部分之前始终不增加数字(从不对舍弃部分前面的数字加1,即截短). 如:2.36 转成 2.3<br/>
+     *       ROUND_CEILING   = 2 接近正无穷大的舍入模式 如果 BigDecimal 为正,则舍入行为与 ROUND_UP 相同 如果为负,则舍入行为与 ROUND_DOWN 相同 相当于是 ROUND_UP 和 ROUND_DOWN 的合集<br/>
+     *       ROUND_FLOOR     = 3 接近负无穷大的舍入模式 如果 BigDecimal 为正,则舍入行为与 ROUND_DOWN 相同 如果为负,则舍入行为与 ROUND_UP 相同 与ROUND_CEILING 正好相反<br/>
+     *       ROUND_HALF_UP   = 4 四舍五入<br/>
+     *       ROUND_HALF_DOWN = 5 五舍六入<br/>
+     *       ROUND_HALF_EVEN = 6 四舍六入 五留双(银行家舍入法) <br/>
+     *         如果舍弃部分左边的数字为奇数,则舍入行为与 ROUND_HALF_UP 相同（四舍五入）<br/>
+     *         如果为偶数,则舍入行为与 ROUND_HALF_DOWN 相同（五舍六入）<br/>
+     *         如:1.15 转成 1.2,因为5前面的1是奇数;1.25 转成 1.2,因为5前面的2是偶数<br/>
+     *      ROUND_UNNECESSARY=7 断言所请求的操作具有准确的结果，因此不需要舍入。如果在产生不精确结果的操作上指定了该舍入模式，则会抛出ArithmeticException异常
+     * @return avg
+     */
+    public BigDecimal avg(boolean empty, int scale, int round, String ... keys) {
         if(null == keys || keys.length == 0){
             return null;
         }
@@ -4116,10 +4171,14 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
             if(null != value) {
                 sum = sum.add(value);
                 qty ++;
+            }else{
+                if(empty){
+                    qty ++;
+                }
             }
         }
         if(qty > 0){
-            return sum.divide(new BigDecimal(qty), 2, round);
+            return sum.divide(new BigDecimal(qty), scale, round);
         }
         return null;
     }
