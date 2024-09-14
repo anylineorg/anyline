@@ -16,8 +16,8 @@
 
 package org.anyline.util;
  
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
@@ -32,7 +32,7 @@ import java.util.Map.Entry;
  
 public class FileTypeUtil {
 	public final static Map<String, String> FILE_TYPE_MAP = new HashMap<>(); 
-    private static Logger log = LoggerFactory.getLogger(FileTypeUtil.class);
+    private static Log log = LogProxy.get(FileTypeUtil.class);
 	protected FileTypeUtil() {
 	} 
  

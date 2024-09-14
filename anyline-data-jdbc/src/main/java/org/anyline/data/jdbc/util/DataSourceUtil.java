@@ -19,8 +19,8 @@ package org.anyline.data.jdbc.util;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
@@ -28,7 +28,7 @@ import java.util.Map;
 
 public class DataSourceUtil {
 
-    public static Logger log = LoggerFactory.getLogger(DataSourceUtil.class);
+    public static Log log = LogProxy.get(DataSourceUtil.class);
 
     public static final String POOL_TYPE_DEFAULT = "com.zaxxer.hikari.HikariDataSource";
 

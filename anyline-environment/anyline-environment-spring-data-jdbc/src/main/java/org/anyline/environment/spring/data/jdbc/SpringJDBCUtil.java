@@ -21,15 +21,15 @@ import org.anyline.data.runtime.DataRuntime;
 import org.anyline.metadata.Column;
 import org.anyline.metadata.Table;
 import org.anyline.util.BasicUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.jdbc.support.rowset.SqlRowSetMetaData;
 
 import java.util.LinkedHashMap;
 
 public class SpringJDBCUtil {
-    private static Logger log = LoggerFactory.getLogger(SpringJDBCUtil.class);
+    private static Log log = LogProxy.get(SpringJDBCUtil.class);
 
     /**
      * column[结果集封装]<br/>(方法4)<br/>

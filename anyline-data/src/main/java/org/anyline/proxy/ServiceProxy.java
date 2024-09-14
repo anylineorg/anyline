@@ -43,8 +43,8 @@ import org.anyline.service.AnylineService;
 import org.anyline.service.init.DefaultService;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 
 import java.io.File;
 import java.nio.charset.Charset;
@@ -55,7 +55,7 @@ import java.util.List;
 import java.util.Map;
 
 public class ServiceProxy {
-    private static Logger log = LoggerFactory.getLogger(ServiceProxy.class);
+    private static Log log = LogProxy.get(ServiceProxy.class);
     private static AnylineService service;
     private static AnylineService.DDLService ddl;
     private static AnylineService.MetaDataService metadata;

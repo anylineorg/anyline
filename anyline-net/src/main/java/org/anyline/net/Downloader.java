@@ -28,11 +28,11 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import org.anyline.util.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory; 
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy; 
  
 public class Downloader {
-	private static Logger log = LoggerFactory.getLogger(Downloader.class); 
+	private static Log log = LogProxy.get(Downloader.class); 
 	private Map<String, DownloadTask> tasks = new Hashtable<String, DownloadTask>();
 	private int maxParallel = 5		; // 最大并行下载数量 
 	private int curParallel			; // 当前并行下载数量	 

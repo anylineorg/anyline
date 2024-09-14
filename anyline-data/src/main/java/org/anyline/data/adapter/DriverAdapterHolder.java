@@ -21,13 +21,13 @@ import org.anyline.data.runtime.DataRuntime;
 import org.anyline.exception.NotFoundAdapterException;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.util.ConfigTable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 
 import java.util.*;
 
 public class DriverAdapterHolder {
-	private static final Logger log = LoggerFactory.getLogger(DriverAdapterHolder.class);
+	private static final Log log = LogProxy.get(DriverAdapterHolder.class);
 	/**
 	 * 项目注册adapter用来覆盖adapters
 	 */

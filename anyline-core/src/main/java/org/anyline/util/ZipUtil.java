@@ -16,8 +16,8 @@
 
 package org.anyline.util;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 
 import java.io.*;
 import java.net.URI;
@@ -39,7 +39,7 @@ import java.util.zip.ZipOutputStream;
  * Java utils 实现的Zip工具 不支持RAR格式
  */ 
 public class ZipUtil {
-	static final Logger log = LoggerFactory.getLogger(ZipUtil.class); 
+	static final Log log = LogProxy.get(ZipUtil.class); 
 	private static final int BUFF_SIZE = 1024 * 1024; // 1M Byte 
 
 	/**

@@ -33,8 +33,8 @@ import org.anyline.metadata.Column;
 import org.anyline.metadata.Table;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.regular.RegularUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -42,7 +42,7 @@ import java.util.List;
 
 public class DefaultDDListener implements DDListener {
 
-    protected Logger log = LoggerFactory.getLogger(DefaultDDListener.class);
+    protected Log log = LogProxy.get(DefaultDDListener.class);
     /**
      * ddl异常触发
      * @param table 表

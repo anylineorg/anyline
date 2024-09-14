@@ -16,8 +16,8 @@
 
 package org.anyline.util;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,7 +31,7 @@ import java.util.jar.JarFile;
 
 public class ClassUtil {
 
-	private static final Logger log = LoggerFactory.getLogger(ClassUtil.class);
+	private static final Log log = LogProxy.get(ClassUtil.class);
 	private static Map<Class, Class> INTERFACE_IMPLEMENT = new HashMap<>();
 	public static void regImplement(Class interfaceClass, Class implementClass) {
 		INTERFACE_IMPLEMENT.put(interfaceClass, implementClass);

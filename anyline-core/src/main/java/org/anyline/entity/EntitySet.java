@@ -19,8 +19,8 @@ package org.anyline.entity;
 import org.anyline.metadata.Column;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.util.BeanUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
@@ -31,7 +31,7 @@ import java.util.stream.Stream;
 
 public class EntitySet<T> implements Collection<T>, Serializable {
     private static final long serialVersionUID = 6443551515441660102L;
-    protected static final Logger log = LoggerFactory.getLogger(EntitySet.class);
+    protected static final Log log = LogProxy.get(EntitySet.class);
     private LinkedHashMap<String, Column>  metadatas= null  ; // 数据类型相关(需要开启ConfigTable.IS_AUTO_CHECK_METADATA)
     private boolean result = true;              // 执行结果
     private String code = null;

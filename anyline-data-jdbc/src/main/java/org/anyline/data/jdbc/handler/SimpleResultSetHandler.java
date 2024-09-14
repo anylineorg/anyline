@@ -19,8 +19,8 @@ package org.anyline.data.jdbc.handler;
 import org.anyline.data.handler.ConnectionHandler;
 import org.anyline.data.handler.ResultSetHandler;
 import org.anyline.entity.DataRow;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.Map;
 
 public class SimpleResultSetHandler implements ResultSetHandler {
-    private static Logger log = LoggerFactory.getLogger(SimpleResultSetHandler.class);
+    private static Log log = LogProxy.get(SimpleResultSetHandler.class);
     private ConnectionHandler handler;
     private ResultSet result;
     private List<String> keys;

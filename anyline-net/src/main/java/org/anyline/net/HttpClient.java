@@ -36,8 +36,8 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.util.EntityUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 
 import javax.net.ssl.SSLContext;
 import java.io.*;
@@ -46,7 +46,7 @@ import java.security.KeyStore;
 import java.util.*;
 
 public class HttpClient {
-	private static final Logger log = LoggerFactory.getLogger(HttpClient.class);
+	private static final Log log = LogProxy.get(HttpClient.class);
 	private String protocol = "TLSv1";
 	private RequestConfig requestConfig;
 	private String userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.74 Safari/537.36 Edg/99.0.1150.55";

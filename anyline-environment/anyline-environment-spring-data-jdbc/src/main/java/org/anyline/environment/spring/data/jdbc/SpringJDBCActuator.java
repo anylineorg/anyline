@@ -34,8 +34,8 @@ import org.anyline.entity.DataSet;
 import org.anyline.entity.PageNavi;
 import org.anyline.metadata.*;
 import org.anyline.util.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.*;
 import org.springframework.jdbc.datasource.DataSourceUtils;
@@ -51,7 +51,7 @@ import java.util.*;
 
 @Component("anyline.environment.spring.data.driver.actuator.jdbc")
 public class SpringJDBCActuator implements DriverActuator {
-    private Logger log = LoggerFactory.getLogger(SpringJDBCActuator.class);
+    private Log log = LogProxy.get(SpringJDBCActuator.class);
 
     /**
      * 根据类型注入到DriverAdapter中

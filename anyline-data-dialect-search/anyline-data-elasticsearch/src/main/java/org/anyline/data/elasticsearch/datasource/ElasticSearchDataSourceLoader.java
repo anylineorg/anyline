@@ -22,17 +22,17 @@ import org.anyline.data.datasource.DataSourceLoader;
 import org.anyline.data.datasource.init.AbstractDataSourceLoader;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.util.DataSourceUtil;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 import org.elasticsearch.client.RestClient;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 @Component("anyline.environment.data.datasource.loader.elasticsearch")
 public class ElasticSearchDataSourceLoader extends AbstractDataSourceLoader implements DataSourceLoader {
-    public static Logger log = LoggerFactory.getLogger(ElasticSearchDataSourceLoader.class);
+    public static Log log = LogProxy.get(ElasticSearchDataSourceLoader.class);
 
     private final ElasticSearchDataSourceHolder holder = ElasticSearchDataSourceHolder.instance();
 

@@ -17,8 +17,8 @@
 package org.anyline.util;
 
 import org.anyline.util.encrypt.MD5Util;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 
 import java.io.*;
 import java.nio.ByteBuffer;
@@ -30,7 +30,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 public class FileUtil {
-	private static final Logger log = LoggerFactory.getLogger(FileUtil.class);
+	private static final Log log = LogProxy.get(FileUtil.class);
 	public final static int PATH_TYPE_JAR = 0;
 
 	/**

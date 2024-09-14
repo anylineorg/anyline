@@ -55,6 +55,7 @@
 		<module>anyline-data-dialect-time-series</module>
 		<module>anyline-data-dialect-vector</module>
 		<module>anyline-data-dialect-wide-column</module>
+        <module>anyline-log</module>
     </modules>
 	<build>
 		<plugins>

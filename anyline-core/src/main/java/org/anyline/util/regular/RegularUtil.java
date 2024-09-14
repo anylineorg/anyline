@@ -17,8 +17,8 @@
 package org.anyline.util.regular;
 
 import org.apache.oro.text.regex.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,7 +37,7 @@ public class RegularUtil {
 	public static final String TAG_BEGIN = "${begin}";
 	public static final String TAG_END = "${end}";
 
-	private static final Logger log = LoggerFactory.getLogger(RegularUtil.class);
+	private static final Log log = LogProxy.get(RegularUtil.class);
 	static{
 		regularList.put(Regular.MATCH_MODE.MATCH, regularMatch);
 		regularList.put(Regular.MATCH_MODE.PREFIX, regularMatchPrefix);

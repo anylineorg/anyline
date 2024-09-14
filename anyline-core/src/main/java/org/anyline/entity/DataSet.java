@@ -31,8 +31,8 @@ import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.util.*;
 import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -40,7 +40,7 @@ import java.util.*;
 
 public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataSet> {
     private static final long serialVersionUID = 6443551515441660101L;
-    protected static final Logger log = LoggerFactory.getLogger(DataSet.class);
+    protected static final Log log = LogProxy.get(DataSet.class);
     private LinkedHashMap<String, Column>  metadatas= null  ; // 数据类型相关(需要开启ConfigTable.IS_AUTO_CHECK_METADATA)
     protected LinkedHashMap<String, Object> origin  = new LinkedHashMap<>() ; // 从数据库中查询的未处理的原始数据
     private Boolean override                        = null  ; //如果数据库中存在相同数据(根据主键判断)是否覆盖 true或false会检测数据库null不检测

@@ -21,8 +21,8 @@ import java.io.IOException;
 import javax.servlet.jsp.JspWriter;
 
 import org.anyline.util.BasicUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
  
 public class UNEscape extends BaseBodyTag {
 	private static final long serialVersionUID = 1L; 

@@ -41,8 +41,8 @@ import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 
 import java.io.*;
 import java.lang.reflect.*;
@@ -65,7 +65,7 @@ import java.util.regex.Pattern;
 public class BeanUtil {
 	public static ObjectMapper JSON_MAPPER = new ObjectMapper();
 
-	private static final Logger log = LoggerFactory.getLogger(BeanUtil.class);
+	private static final Log log = LogProxy.get(BeanUtil.class);
 	static{
 		DateTimeFormatter DATETIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 		DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");

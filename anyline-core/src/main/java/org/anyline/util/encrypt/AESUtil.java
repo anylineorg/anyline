@@ -19,8 +19,8 @@ package org.anyline.util.encrypt;
 import org.anyline.util.Base64Util;
 import org.anyline.util.BasicUtil;
 import org.apache.commons.codec.binary.Base64;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
@@ -33,7 +33,7 @@ import java.security.Key;
 import java.security.SecureRandom;
 
 public class AESUtil {
-	private static Logger log = LoggerFactory.getLogger(AESUtil.class); 
+	private static Log log = LogProxy.get(AESUtil.class); 
 	private static final String KEY = "AES";
 	public static enum CIPHER{
 		PKCS5			{public String getCode() {return "AES/ECB/PKCS5Padding";}},

@@ -22,8 +22,8 @@ import org.anyline.util.regular.RegularUtil;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -38,7 +38,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.*;
  
 public class DESUtil {
-	private static final Logger log = LoggerFactory.getLogger(DESUtil.class); 
+	private static final Log log = LogProxy.get(DESUtil.class); 
 	public static final String DEFAULT_SECRET_KEY = "L~@L$^N*)E+";	// 默认密钥
 	public static final String DEFAULT_SALT = "!@)A(#$N%^&Y*(";		// 盐值
 	private Cipher encryptCipher = null;							// 加密

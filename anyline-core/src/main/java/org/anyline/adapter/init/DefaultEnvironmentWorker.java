@@ -25,8 +25,8 @@ import org.anyline.bean.ValueReference;
 import org.anyline.bean.init.DefaultBeanDefine;
 import org.anyline.proxy.ConvertProxy;
 import org.anyline.util.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 
 import java.io.File;
 import java.io.InputStream;
@@ -40,7 +40,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 public class DefaultEnvironmentWorker implements EnvironmentWorker {
-    protected static Logger log = LoggerFactory.getLogger(DefaultEnvironmentWorker.class);
+    protected static Log log = LogProxy.get(DefaultEnvironmentWorker.class);
     private static DefaultEnvironmentWorker instance = null;
     private static final Map<String, Object> factory = new HashMap<>();
     public static EnvironmentWorker start(File config) {

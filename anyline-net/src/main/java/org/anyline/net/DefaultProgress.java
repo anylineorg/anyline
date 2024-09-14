@@ -15,16 +15,16 @@
  */
 
 package org.anyline.net;
- 
-import java.io.File; 
- 
-import org.anyline.util.DateUtil; 
-import org.anyline.util.FileUtil; 
-import org.slf4j.Logger; 
-import org.slf4j.LoggerFactory; 
+
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
+import org.anyline.util.DateUtil;
+import org.anyline.util.FileUtil;
+
+import java.io.File;
  
 public class DefaultProgress implements DownloadProgress{
-	private Logger log = LoggerFactory.getLogger(DefaultProgress.class); 
+	private Log log = LogProxy.get(DefaultProgress.class);
 	private String url			; // URL
 	private File local			; // 本地文件
 	private long past			; // 上次已下载长度

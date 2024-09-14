@@ -18,14 +18,14 @@ package org.anyline.data.datasource;
 
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.util.ConfigTable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public interface DataSourceLoader {
-    Logger log = LoggerFactory.getLogger(DataSourceLoader.class);
+    Log log = LogProxy.get(DataSourceLoader.class);
 
     DataSourceHolder holder();
     /**

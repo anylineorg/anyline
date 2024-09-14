@@ -36,8 +36,8 @@ import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
@@ -49,7 +49,7 @@ import java.util.*;
 
 public class DataRow extends LinkedHashMap<String, Object> implements Serializable, AnyData<DataRow> {
     private static final long serialVersionUID = -2098827041540802313L;
-    private static final Logger log = LoggerFactory.getLogger(DataRow.class);
+    private static final Log log = LogProxy.get(DataRow.class);
 
     //public static String KEY_PARENT             = "PARENT"              ; // 上级
     //public static String KEY_ALL_PARENT         = "ALL_PARENT"          ; // 所有上级

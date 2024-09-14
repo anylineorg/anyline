@@ -20,8 +20,8 @@ import org.anyline.entity.Coordinate;
 import org.anyline.entity.SRS;
 import org.anyline.entity.geometry.Point;
 import org.anyline.entity.geometry.Ring;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -30,7 +30,7 @@ import java.util.List;
 
 public class GISUtil {
 
-    private static final Logger log = LoggerFactory.getLogger(GISUtil.class);
+    private static final Log log = LogProxy.get(GISUtil.class);
     private static Double EARTH_RADIUS = 6378.137;
 
     /*

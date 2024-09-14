@@ -35,14 +35,14 @@ import org.anyline.proxy.ServiceProxy;
 import org.anyline.service.AnylineService;
 import org.anyline.util.ClassUtil;
 import org.anyline.util.ConfigTable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 
 import java.util.Map;
 
 @Component("anyline.environment.data.listener.jdbc")
 public class DataSourceLoadListener implements LoadListener {
-    private static Logger log = LoggerFactory.getLogger(DataSourceLoadListener.class);
+    private static Log log = LogProxy.get(DataSourceLoadListener.class);
     @Override
     public void start() {
         //缓存

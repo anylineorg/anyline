@@ -3912,7 +3912,27 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 */
 	@Override
 	public StringBuilder property(DataRuntime runtime, StringBuilder builder, Table meta) {
-		return super.property(runtime, builder, meta);
+		LinkedHashMap<String, Object> map = meta.getProperty();
+		boolean append = null != map && !map.isEmpty();
+		if(append){
+			builder.append("\nTBLPROPERTIES (");
+			boolean first = true;
+			for(String key:map.keySet()){
+				Object value = map.get(key);
+				if(BasicUtil.isEmpty(value)){
+					continue;
+				}
+				if(!first){
+					builder.append(", ");
+				}
+				first = false;
+				builder.append("\"").append(key).append("\" = \"").append(value).append("\"");
+			}
+			if(append){
+				builder.append(")");
+			}
+		}
+		return builder;
 	}
 
 	/**
@@ -3931,7 +3951,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		if(null == partition) {
 			return builder;
 		}
-		builder.append("\n PARTITIONED BY ").append("(");
+		builder.append("\nPARTITIONED BY ").append("(");
 		LinkedHashMap<String, Column> columns = partition.getColumns();
 		boolean first = true;
 		for(Column column:columns.values()){

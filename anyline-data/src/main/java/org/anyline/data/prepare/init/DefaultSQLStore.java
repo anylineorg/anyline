@@ -31,8 +31,8 @@ import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 
 import java.io.*;
 import java.util.*;
@@ -43,7 +43,7 @@ public class DefaultSQLStore extends SQLStore {
 
 	private static DefaultSQLStore instance;
 	private static Hashtable<String, RunPrepare> sqls = new Hashtable();
-	private static final Logger log = LoggerFactory.getLogger(DefaultSQLStore.class);
+	private static final Log log = LogProxy.get(DefaultSQLStore.class);
 
 	protected DefaultSQLStore() {
 	}

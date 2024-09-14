@@ -23,8 +23,8 @@ import org.anyline.cache.CacheProvider;
 import org.anyline.proxy.CacheProxy;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.FileUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -37,7 +37,7 @@ import java.util.List;
 
 @Component("anyline.data.cache.provider")
 public class EHCacheProvider implements CacheProvider {
-	private static final Logger log = LoggerFactory.getLogger(EHCacheProvider.class);
+	private static final Log log = LogProxy.get(EHCacheProvider.class);
 	private CacheManager manager = null;
 	private HashSet<String> channels = new HashSet<>();
 	private Hashtable<String,Long> reflushFlag = new Hashtable<String,Long>();		// 缓存刷新标记

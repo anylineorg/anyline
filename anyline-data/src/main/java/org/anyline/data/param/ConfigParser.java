@@ -28,8 +28,8 @@ import org.anyline.util.regular.RegularUtil;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 
 import java.io.File;
 import java.lang.reflect.Array;
@@ -37,7 +37,7 @@ import java.lang.reflect.Method;
 import java.util.*;
 
 public class ConfigParser {
-	static final Logger log = LoggerFactory.getLogger(ConfigParser.class);
+	static final Log log = LogProxy.get(ConfigParser.class);
 	// 	public static final String PARAMS_PART_DECRYPT_MAP = "PARAMS_PART_DECRYPT_MAP"; // 参数值解密后MAP(逐个加密)
 //	public static final String IS_PARAMS_DECRYPT = "IS_PARAMS_DECRYPT"; // 参数值是否已解密
 	private static Map<String, DESKey> deskeys = null;

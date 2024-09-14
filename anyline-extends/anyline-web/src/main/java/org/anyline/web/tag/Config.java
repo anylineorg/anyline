@@ -25,8 +25,8 @@ import javax.servlet.jsp.JspWriter;
 
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 public class Config extends BaseBodyTag implements Cloneable{
 	private static final long serialVersionUID = 1L; 
 	

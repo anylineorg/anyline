@@ -30,14 +30,14 @@ import org.anyline.entity.OriginRow;
 import org.anyline.util.BasicUtil;
 import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;
 import org.anyline.util.BeanUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 
 import java.lang.reflect.Array;
 import java.util.*;
 
 public class DefaultConfig implements Config {
-	protected static final Logger log = LoggerFactory.getLogger(DefaultConfig.class);
+	protected static final Log log = LogProxy.get(DefaultConfig.class);
 	protected String text					 ; // 静态条件(如原生SQL) 没有参数
 	protected List<Object> values			 ; // VALUE
 	protected List<Object> orValues			 ; // OR VALUE

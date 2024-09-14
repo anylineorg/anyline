@@ -16,8 +16,8 @@
 package org.anyline.plugin.springmvc;
  
 import org.anyline.util.ConfigTable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 import org.springframework.web.servlet.view.JstlView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -26,7 +26,7 @@ import java.io.File;
 import java.util.Map;
  
 public class TemplateView extends JstlView {
-	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	private final Log log = LogProxy.get(this.getClass());
 	public static final String ANYLINE_TEMPLATE_NAME				= "template_name";
 	public static final String ANYLINE_STYLE_TEMPLATE_DES			= "style_template_des";
 	public static final String ANYLINE_TEMPLATE_NAME_DEFAULT		= "default";

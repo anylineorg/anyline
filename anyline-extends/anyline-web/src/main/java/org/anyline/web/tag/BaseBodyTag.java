@@ -17,8 +17,8 @@
 package org.anyline.web.tag;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.BodyContent;
@@ -27,7 +27,7 @@ import java.util.*;
 public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 	private static final long serialVersionUID = 1L;
 
-	protected final Logger log = LoggerFactory.getLogger(this.getClass()); 
+	protected final Log log = LogProxy.get(this.getClass()); 
  
 	protected List<Object> paramList = null; 
 	protected Map<String,Object> paramMap = null; 

@@ -21,8 +21,8 @@ package org.anyline.entity;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.NumberUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 
 import java.beans.Transient;
 import java.io.Serializable;
@@ -30,7 +30,7 @@ import java.util.*;
 
 public class DefaultPageNavi implements PageNavi, Serializable, Cloneable {
 	protected static final long serialVersionUID = 3593100423479113410L;
-	protected static final Logger log = LoggerFactory.getLogger(DefaultPageNavi.class);
+	protected static final Log log = LogProxy.get(DefaultPageNavi.class);
  
 	protected static final String BR 					= "\n"; 
 	protected static final String TAB 					= "\t"; 

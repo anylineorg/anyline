@@ -26,14 +26,14 @@ import org.anyline.metadata.Table;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.encrypt.MD5Util;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 
 import java.util.Hashtable;
 import java.util.List;
 
 public class CacheUtil {
-	private static final Logger log = LoggerFactory.getLogger(CacheUtil.class);
+	private static final Log log = LogProxy.get(CacheUtil.class);
 	private static Hashtable<String, Long> reflushFlag = new Hashtable<String, Long>();		// 缓存刷新标记
 
 	/*

@@ -24,8 +24,8 @@ import javax.servlet.jsp.tagext.Tag;
 import org.anyline.entity.DataSet;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
  
 public class Set extends BaseBodyTag {
 	private static final long serialVersionUID = 1L; 

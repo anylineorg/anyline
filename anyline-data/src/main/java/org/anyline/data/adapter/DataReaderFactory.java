@@ -18,14 +18,14 @@ package org.anyline.data.adapter;
 
 import org.anyline.adapter.DataReader;
 import org.anyline.metadata.type.DatabaseType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class DataReaderFactory {
-    private static final Logger log = LoggerFactory.getLogger(DataReaderFactory.class);
+    private static final Log log = LogProxy.get(DataReaderFactory.class);
 
     // 读取数据库后类型转换
     // 以数据库类型作key,未指定数据库类型的以NONE作key

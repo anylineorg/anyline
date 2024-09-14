@@ -16,15 +16,15 @@
 
 package org.anyline.net;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 
 import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 public class VCFUtil {
-    private static Logger log = LoggerFactory.getLogger(VCFUtil.class);
+    private static Log log = LogProxy.get(VCFUtil.class);
     /**
      * 生成通讯录格式
      * @param mobile 手机号

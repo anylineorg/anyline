@@ -45,8 +45,8 @@ import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ClassUtil;
 import org.anyline.util.ConfigTable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
@@ -54,7 +54,7 @@ import java.util.*;
 
 @Component("anyline.dao")
 public class DefaultDao<E> implements AnylineDao<E> {
-	protected static final Logger log = LoggerFactory.getLogger(DefaultDao.class);
+	protected static final Log log = LogProxy.get(DefaultDao.class);
 
 	//默认环境, 如果没有值则根据当前线程动态获取
 	//用于ServiceProxy中生成多个service/dao/jdbc

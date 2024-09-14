@@ -19,15 +19,15 @@ package org.anyline.util;
 import org.anyline.metadata.Metadata;
 import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
 public class SQLUtil {
-	private static Logger log = LoggerFactory.getLogger(SQLUtil.class);
+	private static Log log = LogProxy.get(SQLUtil.class);
 
 	public static HashSet<String> keys = new HashSet<>();
 	static {
@@ -87,7 +87,7 @@ public class SQLUtil {
 	 * @param src 原文
 	 * @param delimiterFr 界定符
 	 * @param delimiterTo 界定符
-	 * @param check 是否检测原文 带${}的拆开，带.的拆分 数字常量跳过 ,创建列时不检测极特殊情况列名会是数字
+	 * @param check 是否检测原文 false:不检测直接添加界定符(除了已有界定符的)  true:调用 public static boolean delimiter(String key) 检测是否需要界定符
 	 * @return builder
 	 */
 	public static StringBuilder delimiter(StringBuilder builder, String src, String delimiterFr, String delimiterTo, boolean check) {
@@ -99,54 +99,50 @@ public class SQLUtil {
 			return builder;
 		}
 
-		if(src.startsWith("${") && src.endsWith("}")) {
-			String body = RegularUtil.cut(src, "${", "}");
-			builder.append(body);
-			return builder;
-		}
-
-		if(!check) {
-			builder.append(src);
-			return builder;
-		}
-		if(!delimiter(src)) {
-			builder.append(src);
-			return builder;
-		}
-		//SELECT 1 AS ID FROM TABLE
-		if(BasicUtil.isNumber(src)) {
-			builder.append(src);
-			return builder;
-		}
-		if(src.contains("'") || src.contains("\"")) {
-			builder.append(src);
-			return builder;
-		}
 		src = src.trim();
 		if(src.startsWith(delimiterFr) || src.endsWith(delimiterTo)) {
 			builder.append(src);
 			return builder ;
 		}
-		String[] holder = placeholder();
-		if(null != holder) {
-			if(src.startsWith(holder[0]) || src.endsWith(holder[1])) {
-				builder.append(src);
-				return builder ;
-			}
+		if(src.startsWith("${") && src.endsWith("}")) {
+			String body = RegularUtil.cut(src, "${", "}");
+			builder.append(body);
+			return builder;
 		}
-		if(src.contains(".")) {
-			String[] cols = src.split("\\.");
-			int size = cols.length;
-			for(int i=0; i<size; i++) {
-				String col = cols[i];
-				builder.append(delimiterFr).append(col).append(delimiterTo);
-				if(i < size-1) {
-					builder.append(".");
+		if(check){
+			if(!delimiter(src)) {
+				builder.append(src);
+				return builder;
+			}
+			if(BasicUtil.isNumber(src)) {
+				builder.append(src);
+				return builder;
+			}
+			if(src.contains("'") || src.contains("\"")) {
+				builder.append(src);
+				return builder;
+			}
+			String[] holder = placeholder();
+			if(null != holder) {
+				if(src.startsWith(holder[0]) || src.endsWith(holder[1])) {
+					builder.append(src);
+					return builder ;
 				}
 			}
-		}else if(src.contains(" ") || src.contains("(") || src.contains(")")) {
-			builder.append(src);
-		}else {
+			if(src.contains(".")) {
+				String[] cols = src.split("\\.");
+				int size = cols.length;
+				for(int i=0; i<size; i++) {
+					String col = cols[i];
+					builder.append(delimiterFr).append(col).append(delimiterTo);
+					if(i < size-1) {
+						builder.append(".");
+					}
+				}
+			}else if(src.contains(" ") || (src.contains("(") && src.contains(")"))) {
+				builder.append(src);
+			}
+		} else {
 			builder.append(delimiterFr).append(src).append(delimiterTo);
 		}
 		return builder ;

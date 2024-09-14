@@ -22,8 +22,8 @@ import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 
 import java.io.File;
 import java.io.InputStream;
@@ -37,7 +37,7 @@ import java.util.jar.JarFile;
 
 public abstract class AnylineConfig {
 	protected static long lastLoadTime = 0;    // 最后一次加载时间
-	protected static final Logger log = LoggerFactory.getLogger(AnylineConfig.class);
+	protected static final Log log = LogProxy.get(AnylineConfig.class);
 	protected Map<String, String> kvs = new HashMap<>();
 	protected static String[] compatibles = {};
 

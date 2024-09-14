@@ -17,7 +17,7 @@
 package org.anyline.environment.spring.data.jdbc.datasource;
 
 public class SpringTransactionHolder {/*
-    private static Logger log = LoggerFactory.getLogger(SpringTransactionHolder.class);
+    private static Log log = LogProxy.get(SpringTransactionHolder.class);
     private static Map<TransactionStatus, String> records = new Hashtable<>();
 
     *//**

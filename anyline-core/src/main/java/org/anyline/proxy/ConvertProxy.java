@@ -25,8 +25,8 @@ import org.anyline.metadata.type.ConvertException;
 import org.anyline.metadata.type.DataType;
 import org.anyline.metadata.type.init.AbstractConvert;
 import org.anyline.util.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 
 import java.lang.reflect.Array;
 import java.math.BigDecimal;
@@ -39,7 +39,7 @@ import java.util.*;
 
 public class ConvertProxy {
 
-    private static final Logger log = LoggerFactory.getLogger(ConvertProxy.class);
+    private static final Log log = LogProxy.get(ConvertProxy.class);
     public static Map<Class, Map<Class, Convert>> converts = new Hashtable();    //DATE > {STRING>SrintCovert, TIME>timeConvert}
     public ConvertProxy() {}
 

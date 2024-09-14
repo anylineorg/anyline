@@ -30,8 +30,8 @@ import org.anyline.web.listener.ControllerListener;
 import org.anyline.web.param.WebConfigStore;
 import org.anyline.web.util.Constant;
 import org.anyline.web.util.WebUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Lazy;
@@ -46,7 +46,7 @@ import java.util.List;
 import java.util.Map;
 
 public abstract class AbstractController {
-	protected final Logger log = LoggerFactory.getLogger(this.getClass());
+	protected final Log log = LogProxy.get(this.getClass());
 	protected String dir;				// <result>文件默认目录
 
 

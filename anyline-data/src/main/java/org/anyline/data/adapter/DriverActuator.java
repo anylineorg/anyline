@@ -22,8 +22,8 @@ import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.PageNavi;
 import org.anyline.metadata.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface DriverActuator {
-    Logger log = LoggerFactory.getLogger(DriverActuator.class);
+    Log log = LogProxy.get(DriverActuator.class);
     /**
      * 根据类型注入到DriverAdapter中
      * @return Class

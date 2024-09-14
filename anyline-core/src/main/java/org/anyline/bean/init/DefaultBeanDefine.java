@@ -17,13 +17,13 @@
 package org.anyline.bean.init;
 
 import org.anyline.bean.BeanDefine;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 
 import java.util.LinkedHashMap;
 
 public class DefaultBeanDefine implements BeanDefine {
-    private static Logger log = LoggerFactory.getLogger(DefaultBeanDefine.class);
+    private static Log log = LogProxy.get(DefaultBeanDefine.class);
     public DefaultBeanDefine() {}
     public DefaultBeanDefine(Class type) {
         this.type = type;

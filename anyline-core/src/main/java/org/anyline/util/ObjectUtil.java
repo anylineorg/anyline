@@ -16,13 +16,13 @@
 
 package org.anyline.util;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 
 import java.io.*;
  
 public class ObjectUtil {
-	private static Logger log = LoggerFactory.getLogger(ObjectUtil.class);
+	private static Log log = LogProxy.get(ObjectUtil.class);
 	public static byte[] serialize(Object obj) {
 		ObjectOutputStream obi = null; 
 		ByteArrayOutputStream bai = null; 

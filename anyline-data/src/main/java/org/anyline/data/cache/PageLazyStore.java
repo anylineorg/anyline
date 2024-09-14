@@ -17,13 +17,13 @@
 package org.anyline.data.cache;
 
 import org.anyline.util.ConfigTable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 
 import java.util.Hashtable;
  
 public class PageLazyStore {
-	private static final Logger log = LoggerFactory.getLogger(PageLazyStore.class); 
+	private static final Log log = LogProxy.get(PageLazyStore.class); 
 	private static Hashtable<String, Long> lazyTotal = new Hashtable();		// 总数
 	private static Hashtable<String, Long> lazyTime = new Hashtable();		// 总数创建时间
 	/** 

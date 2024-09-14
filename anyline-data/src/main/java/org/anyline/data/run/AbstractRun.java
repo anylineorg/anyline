@@ -33,14 +33,14 @@ import org.anyline.metadata.*;
 import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.util.*;
 import org.anyline.util.regular.RegularUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 
 import java.lang.reflect.Array;
 import java.util.*;
 
 public abstract class AbstractRun implements Run {
-	protected static final Logger log = LoggerFactory.getLogger(AbstractRun.class);
+	protected static final Log log = LogProxy.get(AbstractRun.class);
 	protected StringBuilder builder = new StringBuilder();
 	protected int batch;
 	protected int vol;//每行多少个值

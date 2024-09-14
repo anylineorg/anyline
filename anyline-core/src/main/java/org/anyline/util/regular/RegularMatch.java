@@ -18,8 +18,8 @@ package org.anyline.util.regular;
  
 import org.anyline.util.ConfigTable;
 import org.apache.oro.text.regex.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +30,7 @@ import java.util.List;
  * 
  */ 
 public class RegularMatch implements Regular{
-	private static final Logger log = LoggerFactory.getLogger(RegularMatch.class);
+	private static final Log log = LogProxy.get(RegularMatch.class);
 
 	private PatternCompiler patternCompiler = new Perl5Compiler(); 
 	/** 

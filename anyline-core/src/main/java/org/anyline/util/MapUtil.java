@@ -18,14 +18,14 @@ package org.anyline.util;
 
 import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 
 import java.util.*;
 
 public class MapUtil {
 
-	private static final Logger log = LoggerFactory.getLogger(MapUtil.class);
+	private static final Log log = LogProxy.get(MapUtil.class);
 
 	/**
 	 * 提取集合中每个条目的多个key属性的值

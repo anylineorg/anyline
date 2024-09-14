@@ -19,8 +19,8 @@ package org.anyline.net;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.DateUtil;
 import org.anyline.util.FileUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 
 import java.io.File;
 import java.math.BigDecimal;
@@ -31,7 +31,7 @@ import java.util.Map;
 import java.util.Map.Entry;
  
 public class DownloadTask {
-	private Logger log = LoggerFactory.getLogger(DownloadTask.class); 
+	private Log log = LogProxy.get(DownloadTask.class); 
 	private boolean openLog = true; 
 	private String url	; // url
 	private File local	; // 本地文件

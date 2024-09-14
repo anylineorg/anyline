@@ -21,8 +21,8 @@ package org.anyline.util.encrypt;
 
 import org.anyline.util.BasicUtil;
 import org.anyline.util.NumberUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -32,7 +32,7 @@ import java.util.HashMap;
 import java.util.Map;
  
 public class MD5Util {
-	private static final Logger log = LoggerFactory.getLogger(MD5Util.class);  
+	private static final Log log = LogProxy.get(MD5Util.class);  
 
 	public static String sign(String src) {
 		return sign(src, "UTF-8");

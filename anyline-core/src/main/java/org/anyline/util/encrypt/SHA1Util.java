@@ -17,14 +17,14 @@
 package org.anyline.util.encrypt;
  
 import org.anyline.util.ConfigTable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
  
 public class SHA1Util {
-	private static final Logger log = LoggerFactory.getLogger(SHA1Util.class); 
+	private static final Log log = LogProxy.get(SHA1Util.class); 
 	private static MessageDigest digest = null; 
 	public static String sign(String src) {
 		String result = ""; 

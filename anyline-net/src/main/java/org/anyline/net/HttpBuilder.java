@@ -28,8 +28,8 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 
 import javax.net.ssl.SSLContext;
 import java.io.File;
@@ -39,7 +39,7 @@ import java.util.List;
 import java.util.Map;
 
 public class HttpBuilder {
-    private static final Logger log = LoggerFactory.getLogger(HttpBuilder.class);
+    private static final Log log = LogProxy.get(HttpBuilder.class);
     private CloseableHttpClient client;
     private Map<String, String> headers = new HashMap<>();
     private HttpEntity entity;

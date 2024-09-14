@@ -26,8 +26,8 @@ import org.anyline.entity.OriginRow;
 import org.anyline.metadata.*;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
@@ -36,7 +36,7 @@ import java.sql.Statement;
 import java.util.*;
 
 public class JDBCUtil {
-    private static Logger log = LoggerFactory.getLogger(JDBCUtil.class);
+    private static Log log = LogProxy.get(JDBCUtil.class);
 
     /**
      *

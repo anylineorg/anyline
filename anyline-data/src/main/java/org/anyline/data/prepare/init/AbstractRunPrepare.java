@@ -30,14 +30,14 @@ import org.anyline.metadata.Column;
 import org.anyline.metadata.Table;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 
 import java.util.*;
 
 public abstract class AbstractRunPrepare implements RunPrepare{
 
-	protected static final Logger log     = LoggerFactory.getLogger(AbstractRunPrepare.class);
+	protected static final Log log     = LogProxy.get(AbstractRunPrepare.class);
 	protected String id 										;
 	protected String text										;
 	protected ConditionChain chain								; // 查询条件

@@ -16,8 +16,8 @@
 
 package org.anyline.util;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReadParam;
@@ -38,7 +38,7 @@ import java.util.Iterator;
  * 功能:缩放图像、切割图像、图像类型转换、彩色转黑白、文字水印、图片水印等 
  */
 public class ImgUtil {
-	private static final Logger log = LoggerFactory.getLogger(ImgUtil.class); 
+	private static final Log log = LogProxy.get(ImgUtil.class); 
  
 	public static enum IMAGE_TYPE{
 		GIF{

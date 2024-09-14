@@ -24,7 +24,6 @@ import org.anyline.data.metadata.TypeMetadataAlias;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.RunPrepare;
-import org.anyline.data.prepare.auto.TablePrepare;
 import org.anyline.data.run.Run;
 import org.anyline.data.run.RunValue;
 import org.anyline.data.run.TableRun;
@@ -37,19 +36,19 @@ import org.anyline.entity.authorize.Role;
 import org.anyline.entity.authorize.User;
 import org.anyline.entity.generator.PrimaryGenerator;
 import org.anyline.exception.NotSupportException;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 import org.anyline.metadata.*;
-import org.anyline.metadata.refer.*;
 import org.anyline.metadata.differ.*;
 import org.anyline.metadata.graph.EdgeTable;
 import org.anyline.metadata.graph.VertexTable;
+import org.anyline.metadata.refer.MetadataFieldRefer;
 import org.anyline.metadata.type.DatabaseOrigin;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -63,7 +62,7 @@ import java.util.*;
  * 以上3步在子类中要全部实现，如果不实现，需要输出日志或调用super方法(用于异常堆栈输出)<br/>
  */
 public interface DriverAdapter {
-    Logger log = LoggerFactory.getLogger(DriverAdapter.class);
+    Log log = LogProxy.get(DriverAdapter.class);
 
     // 内置VALUE
      enum SQL_BUILD_IN_VALUE{

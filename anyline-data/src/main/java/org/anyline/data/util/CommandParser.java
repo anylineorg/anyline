@@ -33,14 +33,14 @@ import org.anyline.util.BeanUtil;
 import org.anyline.util.SQLUtil;
 import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class CommandParser {
-    private Logger log = LoggerFactory.getLogger(CommandParser.class);
+    private Log log = LogProxy.get(CommandParser.class);
 
     /**
      * 解析文本中的占位符

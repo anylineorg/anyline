@@ -20,11 +20,11 @@ import org.anyline.entity.Coordinate;
 import org.anyline.entity.SRS;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.LogUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 
 public abstract class AbstractMapClient implements MapClient{
-    private static Logger log = LoggerFactory.getLogger(AbstractMapClient.class);
+    private static Log log = LogProxy.get(AbstractMapClient.class);
 
     /**
      * 逆地址解析 根据坐标返回详细地址及各级地区编号

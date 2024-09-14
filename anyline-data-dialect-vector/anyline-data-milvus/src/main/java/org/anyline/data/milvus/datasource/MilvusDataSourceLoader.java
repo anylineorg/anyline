@@ -25,15 +25,15 @@ import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.util.DataSourceUtil;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Component("anyline.environment.data.datasource.loader.milvus")
 public class MilvusDataSourceLoader extends AbstractDataSourceLoader implements DataSourceLoader {
-    public static Logger log = LoggerFactory.getLogger(MilvusDataSourceLoader.class);
+    public static Log log = LogProxy.get(MilvusDataSourceLoader.class);
 
     private final MilvusDataSourceHolder holder = MilvusDataSourceHolder.instance();
 

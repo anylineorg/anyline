@@ -20,8 +20,8 @@ import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 
 import java.io.File;
 import java.util.Hashtable;
@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.Map;
  
 public class I18NUtil {
-	static final Logger log = LoggerFactory.getLogger(I18NUtil.class); 
+	static final Log log = LogProxy.get(I18NUtil.class); 
 	public static final String defaultLang = "cn"; 
 	private static Map<String, Map<String, String>> messages;
 	 

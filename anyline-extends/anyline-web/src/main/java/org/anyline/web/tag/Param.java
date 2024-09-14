@@ -25,8 +25,8 @@ import javax.servlet.jsp.tagext.Tag;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
  
 /** 
  * 为上级标签添加参数list 或map格式 

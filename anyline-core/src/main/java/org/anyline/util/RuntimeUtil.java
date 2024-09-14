@@ -16,14 +16,14 @@
 
 package org.anyline.util;
  
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
  
 public class RuntimeUtil {
-	private static Logger log = LoggerFactory.getLogger(RuntimeUtil.class); 
+	private static Log log = LogProxy.get(RuntimeUtil.class); 
 	 
 	public static String run(String cmd, boolean wait) {
 		String result = ""; 

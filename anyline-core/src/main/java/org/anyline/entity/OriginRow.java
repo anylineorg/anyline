@@ -18,12 +18,12 @@ package org.anyline.entity;
 
 import org.anyline.adapter.KeyAdapter.KEY_CASE;
 import org.anyline.util.BasicUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 
 public class OriginRow extends DataRow {
     private static final long serialVersionUID = -2098827041540802316L;
-    private static final Logger log = LoggerFactory.getLogger(OriginRow.class);
+    private static final Log log = LogProxy.get(OriginRow.class);
     protected KEY_CASE keyCase 				        = KEY_CASE.SRC      ; // 列名格式
 
     public OriginRow() {

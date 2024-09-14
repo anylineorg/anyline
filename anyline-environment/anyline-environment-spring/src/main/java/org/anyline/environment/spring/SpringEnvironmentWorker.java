@@ -22,8 +22,8 @@ import org.anyline.bean.BeanDefine;
 import org.anyline.bean.ValueReference;
 import org.anyline.proxy.ConvertProxy;
 import org.anyline.util.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
@@ -41,7 +41,7 @@ import java.util.*;
 
 @Component("anyline.environment.worker.spring")
 public class SpringEnvironmentWorker extends DefaultEnvironmentWorker implements EnvironmentAware, EnvironmentWorker, ApplicationContextAware {
-    private static Logger log = LoggerFactory.getLogger(SpringEnvironmentWorker.class);
+    private static Log log = LogProxy.get(SpringEnvironmentWorker.class);
     private Environment environment;
     private static DefaultListableBeanFactory factory;
     public ApplicationContext context;

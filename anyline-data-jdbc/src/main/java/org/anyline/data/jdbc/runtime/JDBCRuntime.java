@@ -22,15 +22,15 @@ import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.runtime.init.AbstractRuntime;
 import org.anyline.data.util.DataSourceUtil;
 import org.anyline.util.ConfigTable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 
 public class JDBCRuntime extends AbstractRuntime implements DataRuntime {
-    private static Logger log = LoggerFactory.getLogger(JDBCRuntime.class);
+    private static Log log = LogProxy.get(JDBCRuntime.class);
     protected DataSource processor;
 
     public JDBCRuntime(String key, DataSource datasource, DriverAdapter adapter) {

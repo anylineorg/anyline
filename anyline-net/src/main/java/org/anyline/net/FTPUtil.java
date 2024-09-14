@@ -23,8 +23,8 @@ import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.ftp.FTPReply;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 
 import java.io.*;
 import java.net.SocketException;
@@ -35,7 +35,7 @@ import java.util.Map;
    
 public class FTPUtil {
        
-    private static Logger log = LoggerFactory.getLogger(FTPUtil.class); 
+    private static Log log = LogProxy.get(FTPUtil.class); 
     private static Map<String, FTPUtil> instances = new HashMap<String, FTPUtil>();
     private FTPClient client;   
 	private String host; 

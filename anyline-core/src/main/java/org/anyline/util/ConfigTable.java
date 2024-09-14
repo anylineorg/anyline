@@ -24,8 +24,8 @@ import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 
 import java.io.File;
 import java.io.InputStream;
@@ -38,7 +38,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 public class ConfigTable {
-	private static final Logger log = LoggerFactory.getLogger(ConfigTable.class);
+	private static final Log log = LogProxy.get(ConfigTable.class);
 	public static EnvironmentWorker environment;
 	private static boolean IS_LOG = false;
 	private static final Map<String, Long> listener_files = new Hashtable<>(); // 监听文件更新<文件名, 最后加载时间>

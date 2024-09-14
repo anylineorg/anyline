@@ -23,8 +23,8 @@ import org.anyline.entity.DataSet;
 import org.anyline.adapter.KeyAdapter.KEY_CASE;
 import org.anyline.util.*;
 import org.anyline.util.encrypt.DESUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 import org.springframework.core.env.Environment;
 
 import javax.servlet.*;
@@ -43,7 +43,7 @@ import java.util.regex.Pattern;
 
 public class WebUtil {
 
-	protected static final Logger log = LoggerFactory.getLogger(WebUtil.class);
+	protected static final Log log = LogProxy.get(WebUtil.class);
 
 	// 	public static final String PARAMS_FULL_DECRYPT_MAP = "PARAMS_FULL_DECRYPT_MAP"; // 参数值解密后MAP(整体加密) 加密(k=v&k=v)
 	// 	public static final String PARAMS_PART_DECRYPT_MAP = "PARAMS_PART_DECRYPT_MAP"; // 参数值解密后MAP(逐个加密) 加密(k)=加密(v)&加密(k)=加密(v)

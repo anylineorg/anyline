@@ -36,6 +36,8 @@ import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
 import org.anyline.exception.CommandQueryException;
 import org.anyline.exception.NotSupportException;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 import org.anyline.metadata.*;
 import org.anyline.metadata.refer.MetadataFieldRefer;
 import org.anyline.metadata.type.DatabaseType;
@@ -46,14 +48,12 @@ import org.anyline.util.*;
 import org.elasticsearch.client.Request;
 import org.elasticsearch.client.Response;
 import org.elasticsearch.client.RestClient;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
 @Component("anyline.data.jdbc.adapter.elasticsearch")
 public class ElasticSearchAdapter extends AbstractDriverAdapter implements DriverAdapter {
-    private static Logger log = LoggerFactory.getLogger(ElasticSearchAdapter.class);
+    private static Log log = LogProxy.get(ElasticSearchAdapter.class);
 
     @Override
     public DatabaseType type() {

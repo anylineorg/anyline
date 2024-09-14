@@ -29,14 +29,14 @@ import org.anyline.service.AnylineService;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ClassUtil;
 import org.anyline.util.ConfigTable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 
 import javax.sql.DataSource;
 import java.util.*;
 
 public interface DataSourceHolder {
-	Logger log = LoggerFactory.getLogger(DataSourceHolder.class);
+	Log log = LogProxy.get(DataSourceHolder.class);
 	/**
 	 * 注册数据源的参数
 	 */

@@ -18,8 +18,8 @@ package org.anyline.util.regular;
  
 import org.anyline.util.ConfigTable;
 import org.apache.oro.text.regex.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +30,7 @@ import java.util.List;
  * 
  */ 
 public class RegularContain implements Regular{
-	private static final Logger log = LoggerFactory.getLogger(RegularContain.class); 
+	private static final Log log = LogProxy.get(RegularContain.class); 
 	private static PatternCompiler patternCompiler = new Perl5Compiler(); 
 	/** 
 	 * 配置状态 

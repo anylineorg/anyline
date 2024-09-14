@@ -16,8 +16,8 @@
 
 package org.anyline.net;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -28,7 +28,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
 public class SimpleHttpUtil {
-	private static Logger log = LoggerFactory.getLogger(SimpleHttpUtil.class);
+	private static Log log = LogProxy.get(SimpleHttpUtil.class);
 	public static String post(String url, String param) {
 		return request(url, "POST", param);
 	} 

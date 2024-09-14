@@ -38,8 +38,8 @@ import org.anyline.entity.DataSet;
 import org.anyline.entity.PageNavi;
 import org.anyline.metadata.*;
 import org.anyline.util.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -48,7 +48,7 @@ import java.util.*;
 
 @Component("anyline.environment.data.driver.actuator.jdbc")
 public class DefaultJDBCActuator implements DriverActuator {
-    private Logger log = LoggerFactory.getLogger(DefaultJDBCActuator.class);
+    private Log log = LogProxy.get(DefaultJDBCActuator.class);
 
     /**
      * 根据类型注入到DriverAdapter中

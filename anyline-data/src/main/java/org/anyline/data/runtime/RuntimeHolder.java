@@ -17,8 +17,8 @@
 package org.anyline.data.runtime;
 
 import org.anyline.data.adapter.DriverAdapter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface RuntimeHolder {
-    Logger log = LoggerFactory.getLogger(RuntimeHolder.class);
+    Log log = LogProxy.get(RuntimeHolder.class);
     Map<String, DataRuntime> runtimes = new Hashtable<>();
 
     /**

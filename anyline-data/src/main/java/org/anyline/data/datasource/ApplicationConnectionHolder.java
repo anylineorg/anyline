@@ -16,8 +16,8 @@
 
 package org.anyline.data.datasource;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -25,7 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ApplicationConnectionHolder {
-    protected static Logger log = LoggerFactory.getLogger(ApplicationConnectionHolder.class);
+    protected static Log log = LogProxy.get(ApplicationConnectionHolder.class);
 
     /**
      * 整个应用内有效
