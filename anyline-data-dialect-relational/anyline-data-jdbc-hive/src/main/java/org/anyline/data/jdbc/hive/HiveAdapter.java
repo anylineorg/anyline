@@ -3855,37 +3855,34 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		//CLUSTERED BY(ID, P1) SORTED BY(ID ASC) INTO 32 BUCKETS
 		//  [CLUSTERED BY (col_name, col_name, ...) [SORTED BY (col_name [ASC|DESC], ...)] INTO num_buckets BUCKETS]
 		if(null != distribution) {
-			Table.Distribution.TYPE type = distribution.getType();
-			if(null != type) {
-				builder.append("\nCLUSTERED BY ").append(type);
-				LinkedHashMap<String, Column> columns = distribution.getColumns();
-				if(null != columns && !columns.isEmpty()) {
-					//分桶相关列
-					builder.append("(");
-					delimiter(builder, Column.names(columns));
-					builder.append(")");
-					LinkedHashMap<String, String> orders = distribution.orders();
-					if(null != orders && !orders.isEmpty()){
-						builder.append(" SORTED BY(");
-						boolean first = true;
-						for(String order:orders.keySet()){
-							if(!first){
-								builder.append(", ");
-							}
-							first = false;
-							delimiter(builder, order);
-							String sc = orders.get(order);
-							if(null != sc){
-								builder.append(" ").append(sc);
-							}
+			LinkedHashMap<String, Column> columns = distribution.getColumns();
+			if(null != columns && !columns.isEmpty()) {
+				builder.append("\nCLUSTERED BY ");
+				//分桶相关列
+				builder.append("(");
+				delimiter(builder, Column.names(columns));
+				builder.append(")");
+				LinkedHashMap<String, String> orders = distribution.orders();
+				if(null != orders && !orders.isEmpty()){
+					builder.append(" SORTED BY(");
+					boolean first = true;
+					for(String order:orders.keySet()){
+						if(!first){
+							builder.append(", ");
 						}
-						builder.append(")");
+						first = false;
+						delimiter(builder, order);
+						String sc = orders.get(order);
+						if(null != sc){
+							builder.append(" ").append(sc);
+						}
 					}
-					//分桶数量
-					int buckets = distribution.getBuckets();
-					if(buckets > 0) {
-						builder.append(" INTO ").append(buckets).append(" BUCKETS");
-					}
+					builder.append(")");
+				}
+				//分桶数量
+				int buckets = distribution.getBuckets();
+				if(buckets > 0) {
+					builder.append(" INTO ").append(buckets).append(" BUCKETS");
 				}
 			}
 		}
