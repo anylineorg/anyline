@@ -1,164 +1,166 @@
 package org.anyline.log.init;
 
+import org.anyline.log.Log;
 import org.slf4j.Logger;
 
-public class Log implements org.anyline.log.Log{
-    private Logger logger = null;
-    public Log(Logger logger){
-        this.logger = logger;
+public class DefaultLog implements Log {
+    private Logger log = null;
+    public DefaultLog(Logger log){
+        this.log = log;
     }
+
     @Override
     public String getName() {
-        return logger.getName();
+        return log.getName();
     }
 
     @Override
     public boolean isTraceEnabled() {
-        return logger.isTraceEnabled();
+        return log.isTraceEnabled();
     }
 
     @Override
     public void trace(String msg) {
-        logger.trace(msg);
+        log.trace(msg);
     }
 
     @Override
     public void trace(String format, Object arg) {
-        logger.trace(format, arg);
+        log.trace(format, arg);
     }
 
     @Override
     public void trace(String format, Object arg1, Object arg2) {
-        logger.trace(format, arg1, arg2);
+        log.trace(format, arg1, arg2);
     }
 
     @Override
     public void trace(String format, Object... arguments) {
-        logger.trace(format, arguments);
+        log.trace(format, arguments);
     }
 
     @Override
     public void trace(String msg, Throwable t) {
-        logger.trace(msg, t);
+        log.trace(msg, t);
     }
 
     @Override
     public boolean isDebugEnabled() {
-        return logger.isDebugEnabled();
+        return log.isDebugEnabled();
     }
 
     @Override
     public void debug(String msg) {
-        logger.debug(msg);
+        log.debug(msg);
     }
 
     @Override
     public void debug(String format, Object arg) {
-        logger.debug(format, arg);
+        log.debug(format, arg);
     }
 
     @Override
     public void debug(String format, Object arg1, Object arg2) {
-        logger.debug(format, arg1, arg2);
+        log.debug(format, arg1, arg2);
     }
 
     @Override
     public void debug(String format, Object... arguments) {
-        logger.debug(format, arguments);
+        log.debug(format, arguments);
     }
 
     @Override
     public void debug(String msg, Throwable t) {
-        logger.debug(msg, t);
+        log.debug(msg, t);
     }
 
     @Override
     public boolean isInfoEnabled() {
-        return logger.isInfoEnabled();
+        return log.isInfoEnabled();
     }
 
     @Override
     public void info(String msg) {
-        logger.info(msg);
+        log.info(msg);
     }
 
     @Override
     public void info(String format, Object arg) {
-        logger.info(format, arg);
+        log.info(format, arg);
     }
 
     @Override
     public void info(String format, Object arg1, Object arg2) {
-        logger.info(format, arg1, arg2);
+        log.info(format, arg1, arg2);
     }
 
     @Override
     public void info(String format, Object... arguments) {
-        logger.info(format, arguments);
+        log.info(format, arguments);
     }
 
     @Override
     public void info(String msg, Throwable t) {
-        logger.info(msg, t);
+        log.info(msg, t);
     }
 
     @Override
     public boolean isWarnEnabled() {
-        return logger.isWarnEnabled();
+        return log.isWarnEnabled();
     }
 
     @Override
     public void warn(String msg) {
-        logger.warn(msg);
+        log.warn(msg);
     }
 
     @Override
     public void warn(String format, Object arg) {
-        logger.warn(format, arg);
+        log.warn(format, arg);
     }
 
     @Override
     public void warn(String format, Object... arguments) {
-        logger.warn(format, arguments);
+        log.warn(format, arguments);
     }
 
     @Override
     public void warn(String format, Object arg1, Object arg2) {
-        logger.warn(format, arg1, arg2);
+        log.warn(format, arg1, arg2);
     }
 
     @Override
     public void warn(String msg, Throwable t) {
-        logger.warn(msg, t);
+        log.warn(msg, t);
     }
 
     @Override
     public boolean isErrorEnabled() {
-        return logger.isErrorEnabled();
+        return log.isErrorEnabled();
     }
 
     @Override
     public void error(String msg) {
-        logger.error(msg);
+        log.error(msg);
     }
 
     @Override
     public void error(String format, Object arg) {
-        logger.error(format, arg);
+        log.error(format, arg);
     }
 
     @Override
     public void error(String format, Object arg1, Object arg2) {
-        logger.error(format, arg1, arg2);
+        log.error(format, arg1, arg2);
     }
 
     @Override
     public void error(String format, Object... arguments) {
-        logger.error(format, arguments);
+        log.error(format, arguments);
     }
 
     @Override
     public void error(String msg, Throwable t) {
-        logger.error(msg, t);
+        log.error(msg, t);
     }
 }

@@ -1,3 +1,2 @@
-
-
 anyline.adapter.entity=org.anyline.adapter.init.DefaultEntityAdapter
+anyline.environment.listener.log=org.anyline.log.LogLoadListener

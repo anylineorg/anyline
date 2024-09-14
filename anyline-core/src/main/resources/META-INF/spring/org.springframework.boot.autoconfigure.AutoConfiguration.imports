@@ -1,3 +1,2 @@
-
-
 org.anyline.adapter.init.DefaultEntityAdapter
+org.anyline.log.LogLoadListener

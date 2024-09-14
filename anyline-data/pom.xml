@@ -18,5 +18,9 @@
             <groupId>org.anyline</groupId>
             <artifactId>anyline-core</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.anyline</groupId>
+            <artifactId>anyline-log</artifactId>
+        </dependency>
     </dependencies>
 </project>
