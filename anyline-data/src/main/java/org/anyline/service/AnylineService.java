@@ -206,7 +206,7 @@ public interface AnylineService<E>{
 		return insert(dest, origin, first, last, null, conditions);
 	}
 
-	default long insert(String dest, String origin, ConfigStore configs, Object obj, String ... conditions){
+	default long insert(String dest, String origin, ConfigStore configs, Object obj, String ... conditions) {
 		return insert(new Table(dest), new Table(origin), configs, obj, conditions);
 	}
 	default long insert(String dest, String origin, Object obj, String ... conditions) {
@@ -263,7 +263,7 @@ public interface AnylineService<E>{
 		return insert(dest, prepare, first, last, null, conditions);
 	}
 
-	default long insert(String dest, RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions){
+	default long insert(String dest, RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions) {
 		return insert(new Table<>(dest), prepare, configs, obj, conditions);
 	}
 	default long insert(String dest, RunPrepare prepare, long first, long last, ConfigStore configs, Object obj, String ... conditions) {
@@ -476,10 +476,10 @@ public interface AnylineService<E>{
 	 * @param conditions 查询条件 支持k:v k:v::type 以及原生sql形式(包含ORDER、GROUP、HAVING)默认忽略空值条件
 	 * @return DataSet
 	 */
-	default DataSet querys(ConfigStore configs, Object obj, String ... conditions){
+	default DataSet querys(ConfigStore configs, Object obj, String ... conditions) {
 		return querys((String)null, configs, obj, conditions);
 	}
-	default DataSet querys(ConfigStore configs, String ... conditions){
+	default DataSet querys(ConfigStore configs, String ... conditions) {
 		return querys((String)null, configs, null, conditions);
 	}
 	/**
@@ -671,10 +671,10 @@ public interface AnylineService<E>{
 	}
 	DataRow query(RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions);
 	DataRow query(String dest, ConfigStore configs, Object obj, String ... conditions);
-	default DataRow query(ConfigStore configs, Object obj, String ... conditions){
+	default DataRow query(ConfigStore configs, Object obj, String ... conditions) {
 		return query((String)null, configs, obj, conditions);
 	}
-	default DataRow query(ConfigStore configs, String ... conditions){
+	default DataRow query(ConfigStore configs, String ... conditions) {
 		return query((String)null, configs, null, conditions);
 	}
 	default DataRow query(String dest, Object obj, String ... conditions) {
@@ -926,10 +926,10 @@ public interface AnylineService<E>{
 	 * @return List
 	 */
 	List<Map<String, Object>> maps(String dest, ConfigStore configs, Object obj, String ... conditions);
-	default List<Map<String, Object>> maps(ConfigStore configs, Object obj, String ... conditions){
+	default List<Map<String, Object>> maps(ConfigStore configs, Object obj, String ... conditions) {
 		return maps((String)null, configs, obj, conditions);
 	}
-	default List<Map<String, Object>> maps(ConfigStore configs, String ... conditions){
+	default List<Map<String, Object>> maps(ConfigStore configs, String ... conditions) {
 		return maps((String)null, configs, null, conditions);
 	}
 	default void maps(String dest, DataHandler handler, Object obj, String ... conditions) {
@@ -1644,10 +1644,10 @@ public interface AnylineService<E>{
 	 * @return 影响行数
 	 */
 	long delete(String dest, ConfigStore configs, String ... conditions);
-	default long delete(ConfigStore configs, String ... conditions){
+	default long delete(ConfigStore configs, String ... conditions) {
 		return delete((String)null, configs, conditions);
 	}
-	default long delete(ConfigStore configs){
+	default long delete(ConfigStore configs) {
 		return delete((String)null, configs);
 	}
 	long delete(Table dest, ConfigStore configs, String ... conditions);
@@ -2065,7 +2065,7 @@ public interface AnylineService<E>{
 			Table query = new Table(catalog, schema, name);
 			return tables(greedy, query, types, struct, configs);
 		}
-		default <T extends Table> List<T> tables(boolean greedy, Catalog catalog, Schema schema, String name, int types, int struct){
+		default <T extends Table> List<T> tables(boolean greedy, Catalog catalog, Schema schema, String name, int types, int struct) {
 			return tables(greedy, catalog, schema, name, types, struct, null);
 		}
 		default <T extends Table> List<T> tables(boolean greedy, Catalog catalog, Schema schema, String name, int types, boolean struct, ConfigStore configs) {
@@ -2112,7 +2112,7 @@ public interface AnylineService<E>{
 			Table query = new Table(catalog, schema, name);
 			return tables(query, types, struct, configs);
 		}
-		default <T extends Table> LinkedHashMap<String, T> tables(Catalog catalog, Schema schema, String name, int types, int struct){
+		default <T extends Table> LinkedHashMap<String, T> tables(Catalog catalog, Schema schema, String name, int types, int struct) {
 			return tables(catalog, schema, name, types, struct, null);
 		}
 		default <T extends Table> LinkedHashMap<String, T> tables(Catalog catalog, Schema schema, String name, int types, boolean struct, ConfigStore configs) {
@@ -2341,7 +2341,7 @@ public interface AnylineService<E>{
 			View query = new View(catalog, schema, name);
 			return views(greedy, query, types, struct, configs);
 		}
-		default <T extends View> List<T> views(boolean greedy, Catalog catalog, Schema schema, String name, int types, int struct){
+		default <T extends View> List<T> views(boolean greedy, Catalog catalog, Schema schema, String name, int types, int struct) {
 			return views(greedy, catalog, schema, name, types, struct, null);
 		}
 		default <T extends View> List<T> views(boolean greedy, Catalog catalog, Schema schema, String name, int types, boolean struct, ConfigStore configs) {
@@ -2381,7 +2381,7 @@ public interface AnylineService<E>{
 			View query = new View(catalog, schema, name);
 			return views(query, types, struct, configs);
 		}
-		default <T extends View> LinkedHashMap<String, T> views(Catalog catalog, Schema schema, String name, int types, int struct){
+		default <T extends View> LinkedHashMap<String, T> views(Catalog catalog, Schema schema, String name, int types, int struct) {
 			return views(catalog, schema, name, types, struct, null);
 		}
 		default <T extends View> LinkedHashMap<String, T> views(Catalog catalog, Schema schema, String name, int types, boolean struct, ConfigStore configs) {
@@ -2601,7 +2601,7 @@ public interface AnylineService<E>{
 			MasterTable query = new MasterTable(catalog, schema, name);
 			return masters(greedy, query, types, struct, configs);
 		}
-		default <T extends MasterTable> List<T> masters(boolean greedy, Catalog catalog, Schema schema, String name, int types, int struct){
+		default <T extends MasterTable> List<T> masters(boolean greedy, Catalog catalog, Schema schema, String name, int types, int struct) {
 			return masters(greedy, catalog, schema, name, types, struct, null);
 		}
 		default <T extends MasterTable> List<T> masters(boolean greedy, Catalog catalog, Schema schema, String name, int types, boolean struct, ConfigStore configs) {
@@ -2641,7 +2641,7 @@ public interface AnylineService<E>{
 			MasterTable query = new MasterTable(catalog, schema, name);
 			return masters(query, types, struct, configs);
 		}
-		default <T extends MasterTable> LinkedHashMap<String, T> masters(Catalog catalog, Schema schema, String name, int types, int struct){
+		default <T extends MasterTable> LinkedHashMap<String, T> masters(Catalog catalog, Schema schema, String name, int types, int struct) {
 			return masters(catalog, schema, name, types, struct, null);
 		}
 		default <T extends MasterTable> LinkedHashMap<String, T> masters(Catalog catalog, Schema schema, String name, int types, boolean struct, ConfigStore configs) {
@@ -2857,11 +2857,11 @@ public interface AnylineService<E>{
 		default <T extends PartitionTable> LinkedHashMap<String, T> partitions(boolean greedy, MasterTable master, Map<String, Object> tags, String name) {
 			PartitionTable query = new PartitionTable();
 			query.setMaster(master);
-			if(null != tags){
-				for(String key:tags.keySet()){
+			if(null != tags) {
+				for(String key:tags.keySet()) {
 					Tag tag = null;
 					Object value = tags.get(key);
-					if(value instanceof Tag){
+					if(value instanceof Tag) {
 						tag = (Tag)value;
 					}else{
 						tag = new Tag(key, value);
@@ -2978,7 +2978,7 @@ public interface AnylineService<E>{
 			VertexTable query = new VertexTable(catalog, schema, name);
 			return vertexs(greedy, query, types, struct, configs);
 		}
-		default <T extends VertexTable> List<T> vertexs(boolean greedy, Catalog catalog, Schema schema, String name, int types, int struct){
+		default <T extends VertexTable> List<T> vertexs(boolean greedy, Catalog catalog, Schema schema, String name, int types, int struct) {
 			return vertexs(greedy, catalog, schema, name, types, struct, null);
 		}
 		default <T extends VertexTable> List<T> vertexs(boolean greedy, Catalog catalog, Schema schema, String name, int types, boolean struct, ConfigStore configs) {
@@ -3018,7 +3018,7 @@ public interface AnylineService<E>{
 			VertexTable query = new VertexTable(catalog, schema, name);
 			return vertexs(query, types, struct, configs);
 		}
-		default <T extends VertexTable> LinkedHashMap<String, T> vertexs(Catalog catalog, Schema schema, String name, int types, int struct){
+		default <T extends VertexTable> LinkedHashMap<String, T> vertexs(Catalog catalog, Schema schema, String name, int types, int struct) {
 			return vertexs(catalog, schema, name, types, struct, null);
 		}
 		default <T extends VertexTable> LinkedHashMap<String, T> vertexs(Catalog catalog, Schema schema, String name, int types, boolean struct, ConfigStore configs) {
@@ -3239,7 +3239,7 @@ public interface AnylineService<E>{
 			EdgeTable query = new EdgeTable(catalog, schema, name);
 			return edges(greedy, query, types, struct, configs);
 		}
-		default <T extends EdgeTable> List<T> edges(boolean greedy, Catalog catalog, Schema schema, String name, int types, int struct){
+		default <T extends EdgeTable> List<T> edges(boolean greedy, Catalog catalog, Schema schema, String name, int types, int struct) {
 			return edges(greedy, catalog, schema, name, types, struct, null);
 		}
 		default <T extends EdgeTable> List<T> edges(boolean greedy, Catalog catalog, Schema schema, String name, int types, boolean struct, ConfigStore configs) {
@@ -3279,7 +3279,7 @@ public interface AnylineService<E>{
 			EdgeTable query = new EdgeTable();
 			return edges(query, types, struct, configs);
 		}
-		default <T extends EdgeTable> LinkedHashMap<String, T> edges(Catalog catalog, Schema schema, String name, int types, int struct){
+		default <T extends EdgeTable> LinkedHashMap<String, T> edges(Catalog catalog, Schema schema, String name, int types, int struct) {
 			return edges(catalog, schema, name, types, struct, null);
 		}
 		default <T extends EdgeTable> LinkedHashMap<String, T> edges(Catalog catalog, Schema schema, String name, int types, boolean struct, ConfigStore configs) {
@@ -3499,7 +3499,7 @@ public interface AnylineService<E>{
 		 * @return map
 		 */
 		<T extends Column> LinkedHashMap<String, T> columns(boolean greedy, Table table, ConfigStore configs);
-		default <T extends Column> LinkedHashMap<String, T> columns(boolean greedy, Table table){
+		default <T extends Column> LinkedHashMap<String, T> columns(boolean greedy, Table table) {
 			return columns(greedy, table, null);
 		}
 		default <T extends Column> LinkedHashMap<String, T> columns(boolean greedy, String table, ConfigStore configs) {
@@ -3541,7 +3541,7 @@ public interface AnylineService<E>{
 		 * @return List
 		 */
 		<T extends Column> List<T> columns(boolean greedy, Catalog catalog, Schema schema, ConfigStore configs);
-		default <T extends Column> List<T> columns(boolean greedy, Catalog catalog, Schema schema){
+		default <T extends Column> List<T> columns(boolean greedy, Catalog catalog, Schema schema) {
 			return columns(greedy, catalog, schema, new DefaultConfigStore());
 		}
 		default <T extends Column> List<T> columns(Catalog catalog, Schema schema, ConfigStore configs) {

@@ -103,7 +103,7 @@ public class HBaseDataSourceHolder extends AbstractDataSourceHolder implements D
 			return null;
 		}
 		String adapter = value(prefix, params, "adapter", String.class, null);
-		if(null == adapter){
+		if(null == adapter) {
 			return null;
 		}
 		adapter = adapter.toLowerCase();
@@ -117,7 +117,7 @@ public class HBaseDataSourceHolder extends AbstractDataSourceHolder implements D
 			Configuration conf = HBaseConfiguration.create();
 			conf.set("hbase.zookeeper.quorum", hosts);
 			conf.set("hbase.zookeeper.property.client", port);
-			for (String k:params.keySet()){
+			for (String k:params.keySet()) {
 				if(k.startsWith("hbase.")) {
 					Object v = params.get(k);
 					if (null != v) {
@@ -127,7 +127,7 @@ public class HBaseDataSourceHolder extends AbstractDataSourceHolder implements D
 			}
 			try{
 				connection = ConnectionFactory.createConnection(conf);
-			}catch (Exception e){
+			}catch (Exception e) {
 				e.printStackTrace();
 			}
 			HBaseRuntimeHolder.instance().reg(key, connection);

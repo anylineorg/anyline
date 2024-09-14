@@ -70,7 +70,7 @@ public class TableRun extends AbstractRun implements Run {
 				//for(Condition condition:chain.getConditions()) {
 				//	addCondition(condition);
 				//}
-				if(this.conditionChain.getConditions().isEmpty()){
+				if(this.conditionChain.getConditions().isEmpty()) {
 					//去除最外一层多余()
 					this.conditionChain = chain;
 				}else{

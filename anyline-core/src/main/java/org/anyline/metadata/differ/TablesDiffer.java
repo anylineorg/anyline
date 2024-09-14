@@ -92,8 +92,8 @@ public class TablesDiffer extends AbstractDiffer {
 
     @Override
     public MetadataDiffer setDirect(DIRECT direct) {
-        if(null != differs){
-            for(TableDiffer differ:differs.values()){
+        if(null != differs) {
+            for(TableDiffer differ:differs.values()) {
                 differ.setDirect(direct);
             }
         }

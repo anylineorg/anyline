@@ -37,7 +37,7 @@ public class DES extends BaseBodyTag{
 			value = DESUtil.getInstance(key).encrypt(value); 
 			JspWriter out = pageContext.getOut(); 
 			out.print(value); 
-		}catch(Exception e){
+		}catch(Exception e) {
 			e.printStackTrace(); 
 		}finally{
 			release(); 

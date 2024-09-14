@@ -56,12 +56,12 @@ public class I18N extends BaseBodyTag{
 		 String html = "";
 		 textKey = textKey.replace("{","${");
 		 valueKey = valueKey.replace("{","${");
-		 if(BasicUtil.isNotEmpty(data)){
-			 if(data instanceof String){
-				if(data.toString().endsWith("}")){
+		 if(BasicUtil.isNotEmpty(data)) {
+			 if(data instanceof String) {
+				if(data.toString().endsWith("}")) {
 					String items[] = data.toString().replace("{", "").replace("}", "").toString().split(",");
 					List list = new ArrayList();
-					for(String item:items){
+					for(String item:items) {
 						Map map = new HashMap();
 						String ks[] = BeanUtil.parseKeyValue(item);
 						map.put(valueKey, ks[0]);
@@ -72,17 +72,17 @@ public class I18N extends BaseBodyTag{
 				}
 			}
 			Collection<Map> items = (Collection<Map>)data;
-			if(null != value){
-				for(Map item:items){
+			if(null != value) {
+				for(Map item:items) {
 					Object tmp = item.get(valueKey);
-					if(null != tmp && value.toString().equals(tmp.toString())){
+					if(null != tmp && value.toString().equals(tmp.toString())) {
 						String text = "";
-						if(textKey.contains("{")){
+						if(textKey.contains("{")) {
 							try {
 								List<String> keys = RegularUtil.fetch(textKey, "\\${\\w+\\}",Regular.MATCH_MODE.CONTAIN,0);
-								for(String key:keys){
+								for(String key:keys) {
 									Object v = BeanUtil.getFieldValue(item,key.replace("${", "").replace("}", ""));
-									if(null == v){
+									if(null == v) {
 										v = "";
 									}
 									text = text.replace(key, v.toString());
@@ -92,7 +92,7 @@ public class I18N extends BaseBodyTag{
 							}
 						}else{
 							Object v = BeanUtil.getFieldValue(item, textKey);
-							if(null != v){
+							if(null != v) {
 								text = v.toString();
 							}
 						}
@@ -107,7 +107,7 @@ public class I18N extends BaseBodyTag{
 		JspWriter out = pageContext.getOut(); 
 		try{
 			out.print(html); 
-		}catch(Exception e){
+		}catch(Exception e) {
  
 		}finally{
 			release(); 
@@ -115,7 +115,7 @@ public class I18N extends BaseBodyTag{
         return EVAL_PAGE;    
 	} 
 	@Override 
-    public void release(){
+    public void release() {
 		super.release();
 		data = null;
 		textKey = null;
@@ -128,23 +128,23 @@ public class I18N extends BaseBodyTag{
 	/** 
 	 * 确认语言环境 
 	 */ 
-	private void checkLang(){
-		if(BasicUtil.isEmpty(lang)){
+	private void checkLang() {
+		if(BasicUtil.isEmpty(lang)) {
 			lang = (String)request.getSession().getAttribute(ConfigTable.getString("I18N_MESSAGE_SESSION_KEY")); 
 		} 
-		if(BasicUtil.isEmpty(lang)){
+		if(BasicUtil.isEmpty(lang)) {
 			// 配置文件默认
 			lang = ConfigTable.getString("I18N_MESSAGE_DEFAULT_LANG"); 
 		} 
-		if(BasicUtil.isEmpty(lang)){
+		if(BasicUtil.isEmpty(lang)) {
 			// struts
 			lang = (String)request.getSession().getAttribute("WW_TRANS_I18N_LOCALE"); 
 		} 
-		if(BasicUtil.isEmpty(lang)){
+		if(BasicUtil.isEmpty(lang)) {
 			// Local
 			lang = Locale.getDefault().getCountry().toLowerCase(); 
 		} 
-		if(BasicUtil.isEmpty(lang)){
+		if(BasicUtil.isEmpty(lang)) {
 			lang = I18NUtil.defaultLang; 
 		} 
 	} 

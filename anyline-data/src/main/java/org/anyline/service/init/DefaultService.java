@@ -104,8 +104,8 @@ public class DefaultService<E> implements AnylineService<E> {
         }
         dest = BasicUtil.compress(dest);
         conditions = BasicUtil.compress(conditions);
-        if(obj instanceof PageNavi){
-            if(null == configs){
+        if(obj instanceof PageNavi) {
+            if(null == configs) {
                 configs = new DefaultConfigStore();
                 configs.setPageNavi((PageNavi) obj);
             }
@@ -862,7 +862,7 @@ public class DefaultService<E> implements AnylineService<E> {
 
     @Override
     public
-    long count(RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions){
+    long count(RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions) {
         long count = -1;
         try {
             conditions = BasicUtil.compress(conditions);
@@ -917,7 +917,7 @@ public class DefaultService<E> implements AnylineService<E> {
     }
 
     @Override
-    public long insert(Table dest, Table origin, ConfigStore configs, Object obj, String ... conditions){
+    public long insert(Table dest, Table origin, ConfigStore configs, Object obj, String ... conditions) {
         String[] ps = DataSourceUtil.parseRuntime(dest);
         if(null != ps[0]) {
             return ServiceProxy.service(ps[0]).insert(dest, origin, configs, obj, conditions);
@@ -1049,18 +1049,18 @@ public class DefaultService<E> implements AnylineService<E> {
             DataSet updates = new DataSet();
             for(DataRow row:set) {
                 Boolean override = row.getOverride();
-                if(null == override){
+                if(null == override) {
                     override = set.getOverride();
                 }
                 if(null != override) {
                     Boolean sync = row.getOverrideSync();
-                    if(null == sync){
+                    if(null == sync) {
                         sync = set.getOverrideSync();
                     }
                     //如果设置了override需要到数据库中实际检测
                     ConfigStore query = new DefaultConfigStore();
                     List<String> keys = row.getPrimaryKeys();
-                    for(String key:keys){
+                    for(String key:keys) {
                         query.and(key, row.get(key));
                     }
                     DataRow exists = query(dest, query);
@@ -1070,7 +1070,7 @@ public class DefaultService<E> implements AnylineService<E> {
                         }else{//覆盖(更新)
                             updates.add(row);
                         }
-                        if(null != sync && sync){
+                        if(null != sync && sync) {
                             row.copyIfEmpty(exists);
                         }
                     }else{
@@ -1119,7 +1119,7 @@ public class DefaultService<E> implements AnylineService<E> {
     }
 
     protected long saveObject(Table dest, Object data, ConfigStore configs, List<String> columns) {
-        if(data instanceof DataRow){
+        if(data instanceof DataRow) {
             DataRow row = (DataRow) data;
             Boolean override = row.getOverride();
             if(null != override) {
@@ -1127,7 +1127,7 @@ public class DefaultService<E> implements AnylineService<E> {
                 //如果设置了override需要到数据库中实际检测
                 ConfigStore query = new DefaultConfigStore();
                 List<String> keys = row.getPrimaryKeys();
-                for(String key:keys){
+                for(String key:keys) {
                     query.and(key, row.get(key));
                 }
                 DataRow exists = query(dest, query);
@@ -1137,7 +1137,7 @@ public class DefaultService<E> implements AnylineService<E> {
                     }else{//覆盖(更新)
                         dao.update(0, dest, data, configs, columns);
                     }
-                    if(null != sync && sync){
+                    if(null != sync && sync) {
                         row.copyIfEmpty(exists);
                     }
                 }else{
@@ -1276,7 +1276,7 @@ public class DefaultService<E> implements AnylineService<E> {
         if (null == obj) {
             return 0;
         }
-        if(obj instanceof ConfigStore){
+        if(obj instanceof ConfigStore) {
             return delete((ConfigStore) obj, columns);
         }
         if(!checkCondition(obj)) {
@@ -1625,14 +1625,14 @@ public class DefaultService<E> implements AnylineService<E> {
     }
 
     protected RunPrepare createRunPrepare(Table table) {
-        if(null == table){
+        if(null == table) {
             return new SimplePrepare();
         }
         return createRunPrepare(table.getFullName());
     }
     protected RunPrepare createRunPrepare(String src) {
         RunPrepare prepare = null;
-        if(BasicUtil.isEmpty(src)){
+        if(BasicUtil.isEmpty(src)) {
             //有些数据库不根据表查询可以为空
             return new DefaultTablePrepare();
         }
@@ -1653,10 +1653,10 @@ public class DefaultService<E> implements AnylineService<E> {
             pks = Column.names(table.primarys());
             DriverAdapter adapter = adapter();
             src = table.getText();
-            if(null != adapter){
+            if(null != adapter) {
                 prepare = adapter.buildRunPrepare(runtime(), src);
             }
-            if(null == prepare){
+            if(null == prepare) {
                 if (null != id && RegularUtil.match(id, RunPrepare.XML_SQL_ID_STYLE)) {
                     /* XML定义 */
                     if (ConfigTable.isSQLDebug()) {
@@ -1668,14 +1668,14 @@ public class DefaultService<E> implements AnylineService<E> {
                     }
                 }
             }
-            if(null == prepare){
+            if(null == prepare) {
                 String chk = src;
-                if(null != chk){
+                if(null != chk) {
 
                     chk = chk.replace("\n","").replace("\r","").trim().toLowerCase()
                         .replaceAll("\\s+\\(","("); //user (id, name) > user(id, name)
                 }
-                if(BasicUtil.isEmpty(chk) || chk.matches("^\\S+$") || chk.matches("^\\S+\\(.*\\)$")){
+                if(BasicUtil.isEmpty(chk) || chk.matches("^\\S+$") || chk.matches("^\\S+\\(.*\\)$")) {
                     //USER
                     //USER(ID,CODE)
                     //USER(ID AS CODE, IFNULL(CODE, ID ) AS CODE)
@@ -1715,17 +1715,17 @@ public class DefaultService<E> implements AnylineService<E> {
         DataSet set = null;
         String key = "SET:";
         String condition_key = CacheUtil.createCacheElementKey(true, true, dest, configs, conditions);
-        if(null == cache){
+        if(null == cache) {
             key += condition_key;
             //当前线程缓存
             Map<String, Object> map = caches.get();
-            if(null == map){
+            if(null == map) {
                 map = new HashMap<>();
                 caches.set(map);
             }else{
                 set = (DataSet)map.get(key);
             }
-            if(null == set){
+            if(null == set) {
                 set = queryFromDao(dest, configs, conditions);
                 map.put(key, set);
             }
@@ -2155,7 +2155,7 @@ public class DefaultService<E> implements AnylineService<E> {
                 }
             }
             //分区方式
-            //if(table instanceof MasterTable){
+            //if(table instanceof MasterTable) {
                 Table.Partition partition = partition(table);
                 table.setPartition(partition);
             //}
@@ -4038,7 +4038,7 @@ public class DefaultService<E> implements AnylineService<E> {
      * grant		: 授权
      * privilege	: 权限
      ******************************************************************************************************************/
-    public AuthorizeService authorize = new AuthorizeService(){
+    public AuthorizeService authorize = new AuthorizeService() {
 
         /* *****************************************************************************************************************
          * 													role

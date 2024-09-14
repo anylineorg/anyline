@@ -36,7 +36,7 @@ public interface InsertInterceptor extends DMInterceptor{
      * @return SWITCH
      */
     default SWITCH prepare(DataRuntime runtime, String random, int batch, Table dest, Object data, ConfigStore configs, List<String> columns) { return SWITCH.CONTINUE;}
-    default SWITCH prepare(DataRuntime runtime, String random, Table dest, RunPrepare prepare, ConfigStore configs){
+    default SWITCH prepare(DataRuntime runtime, String random, Table dest, RunPrepare prepare, ConfigStore configs) {
         return SWITCH.CONTINUE;
     }
 

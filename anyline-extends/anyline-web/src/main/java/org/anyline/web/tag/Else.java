@@ -30,13 +30,13 @@ public class Else extends BaseBodyTag implements Cloneable{
 	 public int doEndTag() throws JspException {
 		try{
 			Tag parent = this.getParent(); 
-			if(null != parent){
+			if(null != parent) {
 				Method method = parent.getClass().getMethod("setElse", Object.class); 
-				if(null != method){
+				if(null != method) {
 					method.invoke(parent, BasicUtil.nvl(value,body)); 
 				} 
 			} 
-		}catch(Exception e){
+		}catch(Exception e) {
 			e.printStackTrace(); 
 		}finally{
 			release(); 

@@ -27,10 +27,10 @@ import java.util.Map;
 public class MetadataFieldRefer {
     private Map<String, String[]> map = new HashMap<>();
     private final Class<?> metadata;
-    public MetadataFieldRefer(Class<?> metadata){
+    public MetadataFieldRefer(Class<?> metadata) {
         this.metadata = metadata;
     }
-    public Class<?> metadata(){
+    public Class<?> metadata() {
         return metadata;
     }
     public String[] maps(String field) {
@@ -72,8 +72,8 @@ public class MetadataFieldRefer {
         map.put(field.toUpperCase(), refers);
         return this;
     }
-    public MetadataFieldRefer copy(MetadataFieldRefer copy){
-        if(null != copy){
+    public MetadataFieldRefer copy(MetadataFieldRefer copy) {
+        if(null != copy) {
             map.putAll(copy.map);
         }
         return this;

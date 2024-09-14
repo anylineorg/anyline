@@ -40,49 +40,49 @@ public class Nvl extends BaseBodyTag implements Cloneable{
 	private String scope;
 
 	public int doEndTag() throws JspException {
-		if(BasicUtil.isNotEmpty(var)){
+		if(BasicUtil.isNotEmpty(var)) {
 			pageContext.getRequest().removeAttribute(var);
 		}
-		if(null == paramList || paramList.size()==0){
+		if(null == paramList || paramList.size()==0) {
 			value = BasicUtil.nvl(value,body);
-			if(null == value){
+			if(null == value) {
 				String str = value.toString();
-				if(str.contains(",")){
+				if(str.contains(",")) {
 					paramList = BeanUtil.array2list(str.split(","));
 				}
 			}
 		}
-		if(null != paramList && paramList.size()>0){
+		if(null != paramList && paramList.size()>0) {
 			try{
 				String result = "";
-				for(Object param:paramList){
-					if(null != param && !param.toString().equals("null")){
+				for(Object param:paramList) {
+					if(null != param && !param.toString().equals("null")) {
 						result = param.toString();
 						break;
 					}
 				}
 
 				result = BasicUtil.nvl(result,body,"").toString();
-				if(BasicUtil.isEmpty(var)){
+				if(BasicUtil.isEmpty(var)) {
 					JspWriter out = pageContext.getOut();
 					out.print(result);
 				}else{
-					if(null == scope){
+					if(null == scope) {
 						pageContext.getRequest().setAttribute(var, result);
-					}else if("parent".equalsIgnoreCase(scope)){
+					}else if("parent".equalsIgnoreCase(scope)) {
 						Tag parent = this.getParent();
 						BeanUtil.setFieldValue(parent, var, result);
-					}else if("page".equalsIgnoreCase(scope)){
+					}else if("page".equalsIgnoreCase(scope)) {
 						pageContext.setAttribute(var, result);
-					}else if("request".equalsIgnoreCase(scope)){
+					}else if("request".equalsIgnoreCase(scope)) {
 						pageContext.getRequest().setAttribute(var, result);
-					}else if("session".equalsIgnoreCase(scope)){
+					}else if("session".equalsIgnoreCase(scope)) {
 						((HttpServletRequest)pageContext.getRequest()).getSession().setAttribute(var, result);
-					}else if("servlet".equalsIgnoreCase(scope) || "application".equalsIgnoreCase(scope)){
+					}else if("servlet".equalsIgnoreCase(scope) || "application".equalsIgnoreCase(scope)) {
 						pageContext.getRequest().getServletContext().setAttribute(var, result);
 					}
 				}
-			}catch(Exception e){
+			}catch(Exception e) {
 				e.printStackTrace();
 			}finally{
 				release();

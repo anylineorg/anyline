@@ -5,7 +5,7 @@ import org.slf4j.Logger;
 
 public class DefaultLog implements Log {
     private Logger log = null;
-    public DefaultLog(Logger log){
+    public DefaultLog(Logger log) {
         this.log = log;
     }
 

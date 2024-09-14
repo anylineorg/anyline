@@ -34,7 +34,7 @@ public class DESHttpRequestParamKey extends BaseBodyTag{
 		try{
 			JspWriter out = pageContext.getOut(); 
 			out.print(DESUtil.encryptParamKey(BasicUtil.nvl(value,body,"").toString())); 
-		}catch(Exception e){
+		}catch(Exception e) {
 			e.printStackTrace(); 
 		}finally{
 			release(); 

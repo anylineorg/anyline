@@ -237,7 +237,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
     @Override
     public MetadataFieldRefer refer(DataRuntime runtime, Class<?> type) {
         MetadataFieldRefer refer = refers.get(type);
-        if(null == refer){
+        if(null == refer) {
             refer = new MetadataFieldRefer(type);
         }
         return refer;
@@ -247,7 +247,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
     public void reg(MetadataFieldRefer refer) {
         Class<?> metadata = refer.metadata();
         MetadataFieldRefer cur = refers.get(metadata);
-        if(null != cur){
+        if(null != cur) {
             cur.copy(refer);
         }else {
             refers.put(metadata, refer);
@@ -540,7 +540,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @param configs ConfigStore
      */
     @Override
-    public void fillInsertCreateTemplate(DataRuntime runtime, Run run, PartitionTable dest, ConfigStore configs){
+    public void fillInsertCreateTemplate(DataRuntime runtime, Run run, PartitionTable dest, ConfigStore configs) {
         if(log.isDebugEnabled()) {
             log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 void fillInsertCreateTemplate(DataRuntime runtime, Run run, PartitionTable dest, ConfigStore configs)", 37));
         }
@@ -1121,7 +1121,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         return run;
     }
     @Override
-    public void fillUpdateContent(DataRuntime runtime, TableRun run, StringBuilder builder, DataRow data, ConfigStore configs){
+    public void fillUpdateContent(DataRuntime runtime, TableRun run, StringBuilder builder, DataRow data, ConfigStore configs) {
         if(log.isDebugEnabled()) {
             log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 void fillUpdateContent(DataRuntime runtime, TableRun run, StringBuilder builder, DataRow data, ConfigStore configs)", 37));
         }
@@ -1189,7 +1189,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @return Run
      */
     @Override
-    public Run buildUpdateRunLimit(DataRuntime runtime, Run run){
+    public Run buildUpdateRunLimit(DataRuntime runtime, Run run) {
         return run;
     }
 
@@ -1818,7 +1818,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         List<Object> values = run.getValues();
         int batch = run.getBatch();
         String action = null;
-        if(null != run.action()){
+        if(null != run.action()) {
             action = run.action().toString();
         }
         if(batch > 1) {
@@ -1977,7 +1977,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 if(!exists.isEmpty()) {
                     if(override) {
                         long result = update(runtime, random, dest, data, configs, columns);
-                        if(null != overrideSync && overrideSync){
+                        if(null != overrideSync && overrideSync) {
                             if(data instanceof DataRow) {
                                 DataRow row = (DataRow) data;
                                 row.copyIfEmpty(exists.getRow(0));
@@ -2014,7 +2014,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         if(obj instanceof DataRow) {
             result = ((DataRow)obj).getOverride();
         }
-        if(null == result && null != configs){
+        if(null == result && null != configs) {
             result = configs.override();
         }
         return result;
@@ -2024,7 +2024,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         if(obj instanceof DataRow) {
             result = ((DataRow)obj).getOverrideSync();
         }
-        if(null == result && null != configs){
+        if(null == result && null != configs) {
             result = configs.override();
         }
         return result;
@@ -2090,7 +2090,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         if(!ConfigStore.IS_AUTO_CHECK_METADATA(configs)) {
             return columns;
         }
-        if(null == table || table.isEmpty()){
+        if(null == table || table.isEmpty()) {
             return columns;
         }
         LinkedHashMap<String, Column> result = new LinkedHashMap<>();
@@ -2098,7 +2098,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         try {
             LinkedHashMap<String, Tag> tags = tags(runtime, null,false, table);
             metadatas.putAll(tags);
-        }catch (Exception e){}
+        }catch (Exception e) {}
         //tags(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tags, Table table, String pattern)
         if(!metadatas.isEmpty()) {
             for (String key:columns.keySet()) {
@@ -2164,7 +2164,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         boolean cmd_success = false;
         Run run = null;
         PageNavi navi = null;
-        if(null == prepare.getJoins() || prepare.getJoins().isEmpty()){
+        if(null == prepare.getJoins() || prepare.getJoins().isEmpty()) {
             //多个表的情况 不考虑表结构(不查元数据)
             table = prepare.getTable();
         }
@@ -2198,7 +2198,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             log.warn(tmp);
         }
         navi = run.getPageNavi();
-        if(null == navi && null != configs){
+        if(null == navi && null != configs) {
             navi = configs.getPageNavi();
         }
         long total = 0;
@@ -2530,8 +2530,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         Run run = initQueryRun(runtime, prepare);
         init(runtime, run, configs, conditions);
         /*List<RunPrepare> joins = prepare.getJoins();
-        if(null != joins){
-            for(RunPrepare join:joins){
+        if(null != joins) {
+            for(RunPrepare join:joins) {
                 buildQueryRun(runtime, join, new DefaultConfigStore());
             }
         }*/
@@ -2619,7 +2619,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         /*run.supportSqlVarPlaceholderRegexExt(supportSqlVarPlaceholderRegexExt(runtime));
         CommandParser.parseText(runtime, run);*/
         RunPrepare prepare = run.getPrepare();
-        if(null == prepare){
+        if(null == prepare) {
             return;
         }
         String text = prepare.getText();
@@ -2854,7 +2854,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @return Run
      */
     public Run fillMasterTableContent(DataRuntime runtime, StringBuilder builder, TableRun run, RunPrepare prepare) {
-        if(prepare instanceof VirtualTablePrepare){
+        if(prepare instanceof VirtualTablePrepare) {
             Run fromRun = buildQueryRun(runtime, ((VirtualTablePrepare) prepare).getPrepare(), new DefaultConfigStore());
             run.getRunValues().addAll(fromRun.getRunValues());
             String inner = fromRun.getFinalQuery(true);
@@ -2883,7 +2883,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
     public Run fillJoinTableContent(DataRuntime runtime, StringBuilder builder, TableRun run, RunPrepare prepare) {
         builder.append(BR);
         Join join = prepare.getJoin();
-        if(prepare instanceof VirtualTablePrepare){
+        if(prepare instanceof VirtualTablePrepare) {
             join = ((VirtualTablePrepare) prepare).getPrepare().getJoin();
             builder.append(join.getType().getCode()).append(" ");
             Run joinRun = buildQueryRun(runtime, ((VirtualTablePrepare) prepare).getPrepare(), new DefaultConfigStore());
@@ -3340,7 +3340,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 }
                 run.setValues(null, list);
                 run.setVol(vol);
-            } else if(first.getClass().isArray()){
+            } else if(first.getClass().isArray()) {
                 //?下标占位
                 List<Object> list = new ArrayList<>();
                 int vol = 0;
@@ -3627,7 +3627,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             return -1;
         }
         List<Run> runs = buildDeleteRun(runtime, batch, table, configs, key, values);
-        for(Run run:runs){
+        for(Run run:runs) {
 
             if(!run.isValid()) {
                 if(log.isWarnEnabled() && ConfigStore.IS_LOG_SQL(configs)) {
@@ -3635,7 +3635,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 }
                 continue;
             }
-            if(result == -1){
+            if(result == -1) {
                 result = 1;
             }
             result += delete(runtime, random, configs, run);
@@ -3669,14 +3669,14 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 return -1;
             }
             List<Run> runs = buildDeleteRun(runtime, dest, configs, obj, columns);
-            for(Run run:runs){
+            for(Run run:runs) {
                 if(!run.isValid()) {
                     if(log.isWarnEnabled() && ConfigStore.IS_LOG_SQL(configs)) {
                         log.warn("[valid:false][不具备执行条件][dest:" + dest + "][thread:" + Thread.currentThread().getId() + "][ds:" + runtime.datasource() + "]");
                     }
                     continue;
                 }
-                if(size == -1){
+                if(size == -1) {
                     size = 0;
                 }
                 size += delete(runtime, random, configs, run);
@@ -3711,14 +3711,14 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             return -1;
         }
         List<Run> runs = buildDeleteRun(runtime, table, configs, conditions);
-        for(Run run:runs){
+        for(Run run:runs) {
             if(!run.isValid()) {
                 if(log.isWarnEnabled() && ConfigStore.IS_LOG_SQL(configs)) {
                     log.warn("[valid:false][不具备执行条件][table:" + table + "][thread:" + Thread.currentThread().getId() + "][ds:" + runtime.datasource() + "]");
                 }
         		continue;
 			}
-			if(result == -1){
+			if(result == -1) {
 				result = 0;
 			}
 			result += delete(  runtime, random, configs, run);
@@ -3758,9 +3758,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		if(null == obj && (null == configs || configs.isEmptyCondition())) {
 			return null;
 		}
-		if(obj instanceof Collection){
+		if(obj instanceof Collection) {
 			Collection list = (Collection) obj;
-			for(Object item:list){
+			for(Object item:list) {
 				runs.addAll(buildDeleteRun(runtime, dest, configs, item, columns));
 			}
 			return runs;
@@ -3778,7 +3778,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				dest = table;
 			}
 		}
-		if(null == dest || BasicUtil.isEmpty(dest.getName())){
+		if(null == dest || BasicUtil.isEmpty(dest.getName())) {
 			runs = buildDeleteRunFromConfig(runtime, configs);
 		}else if(obj instanceof ConfigStore) {
 			Run run = new TableRun(runtime, dest);
@@ -4106,7 +4106,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			long fr = System.currentTimeMillis();
 			// 根据系统表查询
 			try{
-                if(!greedy){
+                if(!greedy) {
                     checkSchema(runtime, query);
                 }
 				List<Run> runs = buildQueryDatabasesRun(runtime, greedy, name);
@@ -4117,7 +4117,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 						databases = databases(runtime, idx++, true, databases, query, set);
 					}
 				}
-				if(databases.isEmpty()){
+				if(databases.isEmpty()) {
 					databases = getActuator().databases(this, runtime, query);
 				}
 			}catch (Exception e) {
@@ -4166,9 +4166,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 						databases = databases(runtime, idx++, true, databases, query, set);
 					}
 				}
-				if(databases.isEmpty()){
+				if(databases.isEmpty()) {
 					List<T> list = getActuator().databases(this, runtime, query);
-					for(T item:list){
+					for(T item:list) {
 						databases.put(item.getName().toUpperCase(), item);
 					}
 				}
@@ -4267,7 +4267,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         for(DataRow row:set) {
             T meta = null;
             meta = init(runtime, index, meta, query, row);
-            if(null == meta || meta.isEmpty()){
+            if(null == meta || meta.isEmpty()) {
                 continue;
             }
             meta = detail(runtime, index, meta, query, row);
@@ -4295,7 +4295,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         for (DataRow row : set) {
             T meta = null;
             meta = init(runtime, index, meta, query, row);
-            if(null == meta || meta.isEmpty()){
+            if(null == meta || meta.isEmpty()) {
                 continue;
             }
             meta = detail(runtime, index, meta, query, row);
@@ -4578,7 +4578,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			long fr = System.currentTimeMillis();
 			// 根据系统表查询
 			try{
-                if(!greedy){
+                if(!greedy) {
                     checkSchema(runtime, query);
                 }
 				List<Run> runs = buildQueryCatalogsRun(runtime, greedy, query);
@@ -4671,7 +4671,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         for(DataRow row:set) {
             T meta = null;
             meta = init(runtime, index, meta, query, row);
-            if(null == meta || meta.isEmpty()){
+            if(null == meta || meta.isEmpty()) {
                 continue;
             }
             meta = detail(runtime, index, meta, query, row);
@@ -4698,7 +4698,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         for(DataRow row:set) {
             T meta = null;
             meta = init(runtime, index, meta, query, row);
-            if(null == meta || meta.isEmpty()){
+            if(null == meta || meta.isEmpty()) {
                 continue;
             }
             meta = detail(runtime, index, meta, query, row);
@@ -4881,13 +4881,13 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	}
     public DataSet selectMetadata(DataRuntime runtime, String random, Run run) {
         ConfigStore configs = run.getConfigs();
-        if(null == configs){
+        if(null == configs) {
             configs = new DefaultConfigStore();
             run.setConfigStore(configs);
         }
         configs.keyCase(KeyAdapter.KEY_CASE.PUT_UPPER);
         configs.IS_ENABLE_PLACEHOLDER_REGEX_EXT(false);
-        if(run instanceof SimpleRun){
+        if(run instanceof SimpleRun) {
             String text = run.getBuilder().toString();
             RunPrepare prepare = new DefaultTextPrepare(text);
             run = buildQueryRun(runtime, prepare, configs);
@@ -4957,7 +4957,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			long fr = System.currentTimeMillis();
 			// 根据系统表查询
 			try{
-                if(!greedy){
+                if(!greedy) {
                     checkSchema(runtime, query);
                 }
 				List<Run> runs = buildQuerySchemasRun(runtime, greedy, query);
@@ -5050,7 +5050,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         for(DataRow row:set) {
             T meta = null;
             meta = init(runtime, index, meta, query, row);
-            if(null == meta || meta.isEmpty()){
+            if(null == meta || meta.isEmpty()) {
                 continue;
             }
             meta = detail(runtime, index, meta, query, row);
@@ -5077,7 +5077,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         for(DataRow row:set) {
             T meta = null;
             meta = init(runtime, index, meta, query, row);
-            if(null == meta || meta.isEmpty()){
+            if(null == meta || meta.isEmpty()) {
                 continue;
             }
             meta = detail(runtime, index, meta, query, row);
@@ -5285,7 +5285,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		try{
 			long fr = System.currentTimeMillis();
-            if(!greedy){
+            if(!greedy) {
                 checkSchema(runtime, query);
             }
             Catalog catalog = query.getCatalog();
@@ -5418,7 +5418,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 
             if(Metadata.check(struct, Metadata.TYPE.COLUMN)) {
                 //查询全部表结构 columns()内部已经给table.columns赋值
-                for(Table item:list){
+                for(Table item:list) {
                     if(null == item.getColumns() || item.getColumns().isEmpty()) {
                         Column column_query = new Column();
                         column_query.setCatalog(catalog);
@@ -5430,8 +5430,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             }
             if(Metadata.check(struct, Metadata.TYPE.INDEX)) {
                 //查询全部表结构 indexes()内部已经给table.indexes赋值
-                for(Table item:list){
-                    if(null == item.getIndexes() || item.getIndexes().isEmpty()){
+                for(Table item:list) {
+                    if(null == item.getIndexes() || item.getIndexes().isEmpty()) {
                         Index index_qeury = new Index();
                         index_qeury.setCatalog(catalog);
                         index_qeury.setSchema(schema);
@@ -5480,7 +5480,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 					for (Run run : runs) {
 						DataSet set = selectMetadata(runtime, random, run);
 						tables = tables(runtime, idx++, true, tables, catalog, schema, set);
-						for(Table table:tables){
+						for(Table table:tables) {
 							String cache_key = CacheProxy.key(runtime, "table_name_map", greedy, catalog, schema, table.getName());
 							CacheProxy.name(cache_key, table.getName());
 						}
@@ -5493,7 +5493,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			if(!sys) {
 				try {
 					tables = tables(runtime, true, tables, catalog, schema, null, Table.TYPE.NORMAL.value);
-					for(Table table:tables){
+					for(Table table:tables) {
 						String cache_key = CacheProxy.key(runtime, "table_name_map", greedy, catalog, schema, table.getName());
 						CacheProxy.name(cache_key, table.getName());
 					}
@@ -5608,7 +5608,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         for(DataRow row:set) {
             T meta = null;
             meta = init(runtime, index, meta, catalog, schema, row);
-            if(null == meta || meta.isEmpty()){
+            if(null == meta || meta.isEmpty()) {
                 continue;
             }
             meta = detail(runtime, index, meta, catalog, schema, row);
@@ -5637,7 +5637,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		for(DataRow row:set) {
 			T meta = null;
             meta = init(runtime, index, meta, query, row);
-            if(null == meta || meta.isEmpty()){
+            if(null == meta || meta.isEmpty()) {
                 continue;
             }
 			if(null == search(previous, meta.getCatalog(), meta.getSchema(), meta.getName())) {
@@ -5725,7 +5725,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 String[] chks = refer.maps(Table.FIELD_MASTER_CHECK);
                 String[] vals = refer.maps(Table.FIELD_MASTER_CHECK_VALUE);
                 Boolean bol = matchBoolean(row, chks, vals);
-                if(null != bol && bol){
+                if(null != bol && bol) {
                     meta = (T) new MasterTable();
                 }else {
                     meta = (T) new Table();
@@ -5792,7 +5792,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         MetadataFieldRefer refer = new MetadataFieldRefer(TableComment.class);
         for(DataRow row:set) {
             String tab = getString(row, refer, TableComment.FIELD_TABLE);
-            if(null == tab){
+            if(null == tab) {
                 continue;
             }
             String comment = getString(row, refer, TableComment.FIELD_VALUE);
@@ -5828,7 +5828,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         MetadataFieldRefer refer = new MetadataFieldRefer(TableComment.class);
         for(DataRow row:set) {
             String tab = getString(row, refer, TableComment.FIELD_TABLE);
-            if(null == tab){
+            if(null == tab) {
                 continue;
             }
             String comment = getString(row, refer, TableComment.FIELD_VALUE);
@@ -6008,7 +6008,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         }
         try{
             long fr = System.currentTimeMillis();
-            if(!greedy){
+            if(!greedy) {
                 checkSchema(runtime, query);
             }
             Catalog catalog = query.getCatalog();
@@ -6137,7 +6137,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 
             if(Metadata.check(struct, Metadata.TYPE.COLUMN)) {
                 //查询全部表结构 columns()内部已经给VertexTable.columns赋值
-                for(VertexTable item:list){
+                for(VertexTable item:list) {
                     if(null == item.getColumns() || item.getColumns().isEmpty()) {
                         Column column_query = new Column();
                         column_query.setCatalog(catalog);
@@ -6149,8 +6149,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             }
             if(Metadata.check(struct, Metadata.TYPE.INDEX)) {
                 //查询全部表结构 indexes()内部已经给VertexTable.indexes赋值
-                for(VertexTable item:list){
-                    if(null == item.getIndexes() || item.getIndexes().isEmpty()){
+                for(VertexTable item:list) {
+                    if(null == item.getIndexes() || item.getIndexes().isEmpty()) {
                         Index index_qeury = new Index();
                         index_qeury.setCatalog(catalog);
                         index_qeury.setSchema(schema);
@@ -6200,7 +6200,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				for (Run run : runs) {
 					DataSet set = selectMetadata(runtime, random, run);
 					vertexs = vertexs(runtime, idx++, true, vertexs, catalog, schema, set);
-					for(VertexTable vertex:vertexs){
+					for(VertexTable vertex:vertexs) {
 						String cache_key = CacheProxy.key(runtime, "vertex", greedy, catalog, schema, vertex.getName());
 						CacheProxy.name(cache_key, vertex.getName());
 					}
@@ -6213,7 +6213,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		if(!sys) {
 			try {
 				vertexs = vertexs(runtime, true, vertexs, catalog, schema, null, VertexTable.TYPE.NORMAL.value);
-				for(VertexTable vertex:vertexs){
+				for(VertexTable vertex:vertexs) {
 					String cache_key = CacheProxy.key(runtime, "vertex", greedy, catalog, schema, vertex.getName());
 					CacheProxy.name(cache_key, vertex.getName());
 				}
@@ -6307,7 +6307,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         for(DataRow row:set) {
             T meta = null;
             meta = init(runtime, index, meta, query, row);
-            if(null == meta || meta.isEmpty()){
+            if(null == meta || meta.isEmpty()) {
                 continue;
             }
             meta = detail(runtime, index, meta, query, row);
@@ -6336,7 +6336,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         for(DataRow row:set) {
             T meta = null;
             meta = init(runtime, index, meta, query, row);
-            if(null == meta || meta.isEmpty()){
+            if(null == meta || meta.isEmpty()) {
                 continue;
             }
             meta = detail(runtime, index, meta, query, row);
@@ -6578,7 +6578,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         }
         try{
             long fr = System.currentTimeMillis();
-            if(!greedy){
+            if(!greedy) {
                 checkSchema(runtime, query);
             }
             Catalog catalog = query.getCatalog();
@@ -6708,7 +6708,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 
             if(Metadata.check(struct, Metadata.TYPE.COLUMN)) {
                 //查询全部表结构 columns()内部已经给EdgeTable.columns赋值
-                for(EdgeTable item:list){
+                for(EdgeTable item:list) {
                     if(null == item.getColumns() || item.getColumns().isEmpty()) {
                         Column column_query = new Column();
                         column_query.setCatalog(catalog);
@@ -6720,8 +6720,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             }
             if(Metadata.check(struct, Metadata.TYPE.INDEX)) {
                 //查询全部表结构 indexes()内部已经给EdgeTable.indexes赋值
-                for(EdgeTable item:list){
-                    if(null == item.getIndexes() || item.getIndexes().isEmpty()){
+                for(EdgeTable item:list) {
+                    if(null == item.getIndexes() || item.getIndexes().isEmpty()) {
                         Index index_qeury = new Index();
                         index_qeury.setCatalog(catalog);
                         index_qeury.setSchema(schema);
@@ -6770,7 +6770,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				for (Run run : runs) {
 					DataSet set = selectMetadata(runtime, random, run);
 					edges = edges(runtime, idx++, true, edges, catalog, schema, set);
-					for(EdgeTable item:edges){
+					for(EdgeTable item:edges) {
 						String cache_key = CacheProxy.key(runtime, "edge", greedy, catalog, schema, item.getName());
 						CacheProxy.name(cache_key, item.getName());
 					}
@@ -6783,7 +6783,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		if(!sys) {
 			try {
 				edges = edges(runtime, true, edges, catalog, schema, null, EdgeTable.TYPE.NORMAL.value);
-				for(EdgeTable item:edges){
+				for(EdgeTable item:edges) {
 					String cache_key = CacheProxy.key(runtime, "edge", greedy, catalog, schema, item.getName());
 					CacheProxy.name(cache_key, item.getName());
 				}
@@ -6877,7 +6877,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         for(DataRow row:set) {
             T meta = null;
             meta = init(runtime, index, meta, query, row);
-            if(null == meta || meta.isEmpty()){
+            if(null == meta || meta.isEmpty()) {
                 continue;
             }
             meta = detail(runtime, index, meta, query, row);
@@ -6906,7 +6906,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         for (DataRow row : set) {
             T meta = null;
             meta = init(runtime, index, meta, query, row);
-            if(null == meta || meta.isEmpty()){
+            if(null == meta || meta.isEmpty()) {
                 continue;
             }
             meta = detail(runtime, index, meta, query, row);
@@ -7145,7 +7145,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         }
         try{
             long fr = System.currentTimeMillis();
-            if(!greedy){
+            if(!greedy) {
                 checkSchema(runtime, query);
             }
             Catalog catalog = query.getCatalog();
@@ -7274,7 +7274,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             }
             if(Metadata.check(struct, Metadata.TYPE.COLUMN)) {
                 //查询全部表结构 columns()内部已经给view.columns赋值
-                for(View item:list){
+                for(View item:list) {
                     if(null == item.getColumns() || item.getColumns().isEmpty()) {
                         Column column_query = new Column();
                         column_query.setCatalog(catalog);
@@ -7286,8 +7286,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             }
             if(Metadata.check(struct, Metadata.TYPE.INDEX)) {
                 //查询全部表结构 indexes()内部已经给view.indexes赋值
-                for(View item:list){
-                    if(null == item.getIndexes() || item.getIndexes().isEmpty()){
+                for(View item:list) {
+                    if(null == item.getIndexes() || item.getIndexes().isEmpty()) {
                         Index index_qeury = new Index();
                         index_qeury.setCatalog(catalog);
                         index_qeury.setSchema(schema);
@@ -7336,7 +7336,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				for (Run run : runs) {
 					DataSet set = selectMetadata(runtime, random, run);
 					views = views(runtime, idx++, true, views, catalog, schema, set);
-					for(View view:views){
+					for(View view:views) {
 						String cache_key = CacheProxy.key(runtime, "view_name_map", greedy, catalog, schema, view.getName());
 						CacheProxy.name(cache_key, view.getName());
 					}
@@ -7349,7 +7349,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		if(!sys) {
 			try {
 				views = views(runtime, true, views, catalog, schema, null, View.TYPE.NORMAL.value);
-				for(View view:views){
+				for(View view:views) {
 					String cache_key = CacheProxy.key(runtime, "view_name_map", greedy, catalog, schema, view.getName());
 					CacheProxy.name(cache_key, view.getName());
 				}
@@ -7451,7 +7451,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         for(DataRow row:set) {
             T meta = null;
             meta = init(runtime, index, meta, query, row);
-            if(null == meta || meta.isEmpty()){
+            if(null == meta || meta.isEmpty()) {
                 continue;
             }
             meta = detail(runtime, index, meta, query, row);
@@ -7480,7 +7480,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         for (DataRow row : set) {
             T meta = null;
             meta = init(runtime, index, meta, query, row);
-            if(null == meta || meta.isEmpty()){
+            if(null == meta || meta.isEmpty()) {
                 continue;
             }
             meta = detail(runtime, index, meta, query, row);
@@ -7889,7 +7889,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 
             if(Metadata.check(struct, Metadata.TYPE.COLUMN)) {
                 //查询全部表结构 columns()内部已经给MasterTable.columns赋值
-                for(MasterTable item:list){
+                for(MasterTable item:list) {
                     if(null == item.getColumns() || item.getColumns().isEmpty()) {
                         Column column_query = new Column();
                         column_query.setCatalog(catalog);
@@ -7901,8 +7901,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             }
             if(Metadata.check(struct, Metadata.TYPE.INDEX)) {
                 //查询全部表结构 indexes()内部已经给MasterTable.indexes赋值
-                for(MasterTable item:list){
-                    if(null == item.getIndexes() || item.getIndexes().isEmpty()){
+                for(MasterTable item:list) {
+                    if(null == item.getIndexes() || item.getIndexes().isEmpty()) {
                         Index index_qeury = new Index();
                         index_qeury.setCatalog(catalog);
                         index_qeury.setSchema(schema);
@@ -7951,7 +7951,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				for (Run run : runs) {
 					DataSet set = selectMetadata(runtime, random, run);
 					masters = masters(runtime, idx++, true, masters, catalog, schema, set);
-					for(MasterTable master:masters){
+					for(MasterTable master:masters) {
 						String cache_key = CacheProxy.key(runtime, "master", greedy, catalog, schema, master.getName());
 						CacheProxy.name(cache_key, master.getName());
 					}
@@ -7964,7 +7964,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		if(!sys) {
 			try {
 				masters = masters(runtime, true, masters, catalog, schema, null, MasterTable.TYPE.NORMAL.value);
-				for(MasterTable master:masters){
+				for(MasterTable master:masters) {
 					String cache_key = CacheProxy.key(runtime, "master", greedy, catalog, schema, master.getName());
 					CacheProxy.name(cache_key, master.getName());
 				}
@@ -8057,7 +8057,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         for(DataRow row:set) {
             T meta = null;
             meta = init(runtime, index, meta, query, row);
-            if(null == meta || meta.isEmpty()){
+            if(null == meta || meta.isEmpty()) {
                 continue;
             }
             meta = detail(runtime, index, meta, query, row);
@@ -8400,7 +8400,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             if(null == meta) {
                meta = init(runtime, index, create, meta, table, row);
             }
-            if(null == meta){
+            if(null == meta) {
                 continue;
             }
             meta = detail(runtime, index, create, meta, table, row);
@@ -8425,20 +8425,20 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         MetadataFieldRefer refer = refer(runtime, Table.Partition.class);
         try{
             String type = getString(row, refer, Table.Partition.FIELD_NAME);
-            if(BasicUtil.isNotEmpty(type)){
+            if(BasicUtil.isNotEmpty(type)) {
                 meta.setType(Table.Partition.TYPE.valueOf(type));
                 meta.setMetadata(row);
                 String columns = getString(row, refer, Table.Partition.FIELD_COLUMN);
-                if(null != columns){
+                if(null != columns) {
                     String[] cols = columns.split(",");
-                    for(String col:cols){
+                    for(String col:cols) {
                         col = col.replace(getDelimiterFr(), "");
                         col = col.replace(getDelimiterTo(), "");
                         meta.addColumn(col);
                     }
                 }
             }
-        }catch (Exception e){
+        }catch (Exception e) {
             e.printStackTrace();
         }
         return meta;
@@ -8498,7 +8498,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public <T extends PartitionTable> LinkedHashMap<String,T> partitions(DataRuntime runtime, String random, boolean greedy, PartitionTable query) {
-        if(!greedy){
+        if(!greedy) {
             checkSchema(runtime, query);
         }
         MasterTable master = (MasterTable) query.getMaster();
@@ -8589,7 +8589,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         for(DataRow row:set) {
             T meta = null;
             meta = init(runtime, index, meta, query, row);
-            if(null == meta || meta.isEmpty()){
+            if(null == meta || meta.isEmpty()) {
                 continue;
             }
             meta = detail(runtime, index, meta, query, row);
@@ -8762,10 +8762,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         if(null != table) {
             query.setTable(table);
         }
-        if(null == configs){
+        if(null == configs) {
             configs = new DefaultConfigStore();
         }
-        if(!greedy){
+        if(!greedy) {
             checkSchema(runtime, query);
         }
 		Catalog catalog = query.getCatalog();
@@ -8923,7 +8923,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Collection<? extends Table> tables, Column query, ConfigStore configs) {
-        if(!greedy){
+        if(!greedy) {
             checkSchema(runtime, query);
         }
 		Catalog catalog = query.getCatalog();
@@ -9605,7 +9605,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         for(DataRow row:set) {
             T meta = null;
             meta = init(runtime, index, meta, query, row);
-            if(null == meta || meta.isEmpty()){
+            if(null == meta || meta.isEmpty()) {
                 continue;
             }
             meta = detail(runtime, index, meta, query, row);
@@ -9699,7 +9699,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			random = random(runtime);
 		}
 		try{
-            if(!greedy){
+            if(!greedy) {
                 checkSchema(runtime, query);
             }
 			List<Run> runs = buildQueryPrimaryRun(runtime, greedy, query);
@@ -9850,7 +9850,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			random = random(runtime);
 		}
 		try {
-            if(!greedy){
+            if(!greedy) {
                 checkSchema(runtime, query);
             }
 			List<Run> runs = buildQueryForeignsRun(runtime, greedy, query);
@@ -9913,7 +9913,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         for(DataRow row:set) {
             T meta = null;
             meta = init(runtime, index, meta, query, row);
-            if(null == meta || meta.isEmpty()){
+            if(null == meta || meta.isEmpty()) {
                 continue;
             }
             meta = detail(runtime, index, meta, query, row);
@@ -10071,7 +10071,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		if(null == random) {
 			random = random(runtime);
 		}
-        if(!greedy){
+        if(!greedy) {
             checkSchema(runtime, query);
         }
 		List<Run> runs = buildQueryIndexesRun(runtime, greedy, query);
@@ -10268,7 +10268,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             if(null == meta) {
                 meta = init(runtime, index, meta, query, row);
             }
-            if(null == meta || meta.isEmpty()){
+            if(null == meta || meta.isEmpty()) {
                 continue;
             }
 			if(null != table) {
@@ -10312,7 +10312,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             if(null == meta) {
                 meta = init(runtime, index, meta, table, row);
             }
-            if(null == meta || meta.isEmpty()){
+            if(null == meta || meta.isEmpty()) {
                 continue;
             }
 			if(null != table) {
@@ -10359,7 +10359,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             if(null == meta) {
                 meta = init(runtime, index, meta, query, row);
             }
-            if(null == meta || meta.isEmpty()){
+            if(null == meta || meta.isEmpty()) {
                 continue;
             }
 			if(null == Metadata.match(meta, previous)) {
@@ -10466,14 +10466,14 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			String[] chks = refer.maps(Index.FIELD_PRIMARY_CHECK);
 			String[] vals = refer.maps(Index.FIELD_PRIMARY_CHECK_VALUE);
 			Boolean bol = matchBoolean(row, chks, vals);
-			if(null != bol){
+			if(null != bol) {
 				meta.setPrimary(bol);
 			}
 			//是否唯一
 			chks = refer.maps(Index.FIELD_UNIQUE_CHECK);
 			vals = refer.maps(Index.FIELD_UNIQUE_CHECK_VALUE);
 			bol = matchBoolean(row, chks, vals);
-			if(null != bol){
+			if(null != bol) {
 				meta.setUnique(bol);
 			}
 		}
@@ -10554,7 +10554,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             long fr = System.currentTimeMillis();
             // 根据系统表查询
             try{
-                if(!greedy){
+                if(!greedy) {
                     checkSchema(runtime, query);
                 }
                 List<Run> runs = buildQueryConstraintsRun(runtime, greedy, query);
@@ -10687,10 +10687,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 continue;
             }
             T meta = search(previous, name);
-            if(null == meta){
+            if(null == meta) {
                 meta = init(runtime, index, meta, query, row);
             }
-            if(null == meta || meta.isEmpty()){
+            if(null == meta || meta.isEmpty()) {
                 continue;
             }
             if(null != table) {
@@ -10731,10 +10731,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 continue;
             }
             T meta = previous.get(name.toUpperCase());
-            if(null == meta){
+            if(null == meta) {
                 meta = init(runtime, index, meta, query, row);
             }
-            if(null == meta || meta.isEmpty()){
+            if(null == meta || meta.isEmpty()) {
                 continue;
             }
             if(null != table) {
@@ -10761,7 +10761,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public <T extends Constraint> T init(DataRuntime runtime, int index, T meta, Constraint query, DataRow row) {
-        if(null == meta){
+        if(null == meta) {
             meta = (T)new Constraint<>();
         }
         MetadataFieldRefer refer = refer(runtime, Constraint.class);
@@ -10829,7 +10829,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             long fr = System.currentTimeMillis();
             // 根据系统表查询
             try{
-                if(!greedy){
+                if(!greedy) {
                     checkSchema(runtime, query);
                 }
                 List<Run> runs = buildQueryTriggersRun(runtime, greedy, query);
@@ -10905,7 +10905,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         for(DataRow row:set) {
             T meta = null;
             meta = init(runtime, index, meta, query, row);
-            if(null == meta || meta.isEmpty()){
+            if(null == meta || meta.isEmpty()) {
                 continue;
             }
             meta = detail(runtime, index, meta, query, row);
@@ -10932,7 +10932,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         meta.setName(getString(row, refer, Trigger.FIELD_NAME));
         Table table = null;
         String tableName = getString(row, refer, Trigger.FIELD_TABLE);
-        if(BasicUtil.isNotEmpty(tableName)){
+        if(BasicUtil.isNotEmpty(tableName)) {
             table = new Table(
                 getString(row, refer, Trigger.FIELD_CATALOG),
                 getString(row, refer, Trigger.FIELD_SCHEMA),
@@ -11001,7 +11001,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             long fr = System.currentTimeMillis();
             // 根据系统表查询
             try{
-                if(!greedy){
+                if(!greedy) {
                     checkSchema(runtime, query);
                 }
                 List<Run> runs = buildQueryProceduresRun(runtime, greedy, query);
@@ -11122,7 +11122,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         for (DataRow row : set) {
             T meta = null;
             meta = init(runtime, index, meta, query, row);
-            if(null == meta || meta.isEmpty()){
+            if(null == meta || meta.isEmpty()) {
                 continue;
             }
             meta = detail(runtime, index, meta, query, row);
@@ -11150,7 +11150,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         for(DataRow row:set) {
             T meta = null;
             meta = init(runtime, index, meta, query, row);
-            if(null == meta || meta.isEmpty()){
+            if(null == meta || meta.isEmpty()) {
                 continue;
             }
             meta = detail(runtime, index, meta, query, row);
@@ -11349,7 +11349,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             long fr = System.currentTimeMillis();
             // 根据系统表查询
             try{
-                if(!greedy){
+                if(!greedy) {
                     checkSchema(runtime, query);
                 }
                 List<Run> runs = buildQueryFunctionsRun(runtime, greedy, query);
@@ -11471,7 +11471,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         for (DataRow row : set) {
             T meta = null;
             meta = init(runtime, index, meta, query, row);
-            if(null == meta || meta.isEmpty()){
+            if(null == meta || meta.isEmpty()) {
                 continue;
             }
             meta = detail(runtime, index, meta, query, row);
@@ -11499,7 +11499,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         for(DataRow row:set) {
             T meta = null;
             meta = init(runtime, index, meta, query, row);
-            if(null == meta || meta.isEmpty()){
+            if(null == meta || meta.isEmpty()) {
                 continue;
             }
             meta = detail(runtime, index, meta, query, row);
@@ -11703,7 +11703,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			long fr = System.currentTimeMillis();
 			// 根据系统表查询
 			try{
-                if(!greedy){
+                if(!greedy) {
                     checkSchema(runtime, query);
                 }
 				List<Run> runs = buildQuerySequencesRun(runtime, greedy, query);
@@ -11824,7 +11824,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         for (DataRow row : set) {
             T meta = null;
             meta = init(runtime, index, meta, query, row);
-            if(null == meta || meta.isEmpty()){
+            if(null == meta || meta.isEmpty()) {
                 continue;
             }
             meta = detail(runtime, index, meta, query, row);
@@ -11852,7 +11852,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         for(DataRow row:set) {
             T meta = null;
             meta = init(runtime, index, meta, query, row);
-            if(null == meta || meta.isEmpty()){
+            if(null == meta || meta.isEmpty()) {
                 continue;
             }
             meta = detail(runtime, index, meta, query, row);
@@ -12326,10 +12326,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return list
 	 */
 	@Override
-	public List<Run> merge(DataRuntime runtime, Table meta, List<Run> slices){
+	public List<Run> merge(DataRuntime runtime, Table meta, List<Run> slices) {
 		List<Run> runs = new ArrayList<>();
 		Run merge = null;
-		if(null != slices && !slices.isEmpty()){
+		if(null != slices && !slices.isEmpty()) {
 			StringBuilder builder = null;
 			boolean first = true;
 			for(Run item:slices) {
@@ -12338,12 +12338,12 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 					if(BasicUtil.isEmpty(line)) {
 						continue;
 					}
-					if(!item.slice()){
+					if(!item.slice()) {
 						//不支持合并的(不是片段的)
 						runs.add(item);
 						continue;
 					}
-					if(null == merge){
+					if(null == merge) {
                         //先加入队列 保证ADD COLUMN在前
 						merge = new SimpleRun(runtime);
 						builder = merge.getBuilder();
@@ -12400,7 +12400,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		//修改表备注
 		String ucomment = update.getComment();
 		String comment = meta.getComment();
-		if(BasicUtil.isEmpty(ucomment) && BasicUtil.isEmpty(comment)){
+		if(BasicUtil.isEmpty(ucomment) && BasicUtil.isEmpty(comment)) {
 			//都为空时不更新
 		}else {
 			if (!BasicUtil.equals(comment, ucomment)) {
@@ -12433,9 +12433,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			meta.setChangePrimary(1);
 		}
 		//主动标记删除状态
-		if(null != cur_primary && cur_primary.isDrop()){
+		if(null != cur_primary && cur_primary.isDrop()) {
 			cur_primary.execute(meta.execute());
-			if(slice){
+			if(slice) {
 				slices.addAll(buildDropRun(runtime, cur_primary, slice));
 			}else {
 				drop(runtime, cur_primary);
@@ -12460,7 +12460,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		if(change_pk && null != src_primary) {
 			src_primary.execute(meta.execute());
-			if(slice){
+			if(slice) {
 				slices.addAll(buildDropRun(runtime, src_primary, slice));
 			}else {
 				drop(runtime, src_primary);
@@ -12470,7 +12470,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 
 		//更新列
 		List<Run> alters = buildAlterRun(runtime, meta, cols.values(), slice);
-		if(slice){
+		if(slice) {
 			slices.addAll(alters);
 		}else{
 			if(null != alters && !alters.isEmpty()) {
@@ -12483,8 +12483,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 
 		//在alters执行完成后 添加主键 避免主键中存在alerts新添加的列
 		if(null != cur_primary) {//复合主键的单独添加
-			if(change_pk){
-				if(slice){
+			if(change_pk) {
+				if(slice) {
 					slices.addAll(buildAddRun(runtime, cur_primary, slice));
 				}else {
 					add(runtime, cur_primary);
@@ -12521,7 +12521,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 						add(runtime, index);
 					}else{
 						if(!index.equals(oindex)) {
-							if(oindex.isPrimary()){
+							if(oindex.isPrimary()) {
 								continue;
 							}
 							oindex.execute(meta.execute());
@@ -15267,7 +15267,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		ACTION.DDL action = ACTION.DDL.INDEX_ADD;
 		String random = random(runtime);
 		Index update = (Index)meta.getUpdate();
-		if(null != update){
+		if(null != update) {
 			//如果是修改 调用过来的  添加update
 			meta = update;
 		}
@@ -16506,7 +16506,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             long fr = System.currentTimeMillis();
             // 根据系统表查询
             try{
-                if(!greedy){
+                if(!greedy) {
                     checkSchema(runtime, query);
                 }
                 List<Run> runs = buildQueryRolesRun(runtime, greedy, query);
@@ -16622,7 +16622,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         for (DataRow row : set) {
             T meta = null;
             meta = init(runtime, index, meta, query, row);
-            if(null == meta || meta.isEmpty()){
+            if(null == meta || meta.isEmpty()) {
                 continue;
             }
             meta = detail(runtime, index, meta, query, row);
@@ -16739,7 +16739,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             long fr = System.currentTimeMillis();
             // 根据系统表查询
             try{
-                if(!greedy){
+                if(!greedy) {
                     checkSchema(runtime, query);
                 }
                 List<Run> runs = buildQueryUsersRun(runtime, greedy, query);
@@ -16849,7 +16849,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public <T extends User> List<T> users(DataRuntime runtime, int index, boolean create, List<T> previous, User query, DataSet set) throws Exception {
-		if(null == previous){
+		if(null == previous) {
 			previous = new ArrayList<>();
 		}
 		for(DataRow row:set) {
@@ -16923,7 +16923,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			long fr = System.currentTimeMillis();
 			// 根据系统表查询
 			try{
-                if(!greedy){
+                if(!greedy) {
                     checkSchema(runtime, query);
                 }
 				List<Run> runs = buildQueryPrivilegesRun(runtime, greedy, query);
@@ -16992,7 +16992,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public <T extends Privilege> List<T> privileges(DataRuntime runtime, int index, boolean create,  List<T> previous, Privilege query, DataSet set) throws Exception {
-		if(null == previous){
+		if(null == previous) {
 			previous = new ArrayList<>();
 		}
 		for(DataRow row:set) {
@@ -17273,83 +17273,83 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * protected Object value(List<String> keys, String key, ResultSet set) throws Exception
 	 ******************************************************************************************************************/
 
-    protected String getString(DataRow row, MetadataFieldRefer refer, String key, String def){
+    protected String getString(DataRow row, MetadataFieldRefer refer, String key, String def) {
         String result = null;
         String[] keys = refer.maps(key);
-        if(null != keys && keys.length > 0){
+        if(null != keys && keys.length > 0) {
             result = row.getString(keys);
         }
-        if(null == result){
+        if(null == result) {
             result = def;
         }
         return result;
     }
 
-    protected String getString(DataRow row, MetadataFieldRefer refer, String key){
+    protected String getString(DataRow row, MetadataFieldRefer refer, String key) {
         return getString(row, refer, key, null);
     }
-    protected Boolean getBoolean(DataRow row, MetadataFieldRefer refer, String key, Boolean def){
+    protected Boolean getBoolean(DataRow row, MetadataFieldRefer refer, String key, Boolean def) {
         Boolean result = null;
         try{
             String[] keys = refer.maps(key);
-            if(null != keys && keys.length > 0){
+            if(null != keys && keys.length > 0) {
                 result = row.getBoolean(keys);
             }
-        }catch (Exception ignore){}
-        if(null == result){
+        }catch (Exception ignore) {}
+        if(null == result) {
             result = def;
         }
         return result;
     }
-    protected Date getDate(DataRow row, MetadataFieldRefer refer, String key, Date def){
+    protected Date getDate(DataRow row, MetadataFieldRefer refer, String key, Date def) {
         Date result = null;
         try{
             String[] keys = refer.maps(key);
-            if(null != keys && keys.length > 0){
+            if(null != keys && keys.length > 0) {
                 result = row.getDate(keys);
             }
-        }catch (Exception ignore){}
-        if(null == result){
+        }catch (Exception ignore) {}
+        if(null == result) {
             result = def;
         }
         return result;
     }
 
-    protected Date getDate(DataRow row, MetadataFieldRefer refer, String key){
+    protected Date getDate(DataRow row, MetadataFieldRefer refer, String key) {
         return getDate(row, refer, key, null);
     }
-    protected Long getLong(DataRow row, MetadataFieldRefer refer, String key, Long def){
+    protected Long getLong(DataRow row, MetadataFieldRefer refer, String key, Long def) {
         Long result = null;
         try{
             String[] keys = refer.maps(key);
-            if(null != keys && keys.length > 0){
+            if(null != keys && keys.length > 0) {
                 result = row.getLong(keys);
             }
-        }catch (Exception ignore){}
-        if(null == result){
+        }catch (Exception ignore) {}
+        if(null == result) {
             result = def;
         }
         return result;
     }
 
-    protected Long getLong(DataRow row, MetadataFieldRefer refer, String key){
+    protected Long getLong(DataRow row, MetadataFieldRefer refer, String key) {
         return getLong(row, refer, key, null);
     }
-    protected Integer getInt(DataRow row, MetadataFieldRefer refer, String key, Integer def){
+    protected Integer getInt(DataRow row, MetadataFieldRefer refer, String key, Integer def) {
         Integer result = null;
         try{
             String[] keys = refer.maps(key);
-            if(null != keys && keys.length > 0){
+            if(null != keys && keys.length > 0) {
                 result = row.getInt(keys);
             }
-        }catch (Exception ignore){}
-        if(null == result){
+        }catch (Exception ignore) {}
+        if(null == result) {
             result = def;
         }
         return result;
     }
 
-    protected Integer getInt(DataRow row, MetadataFieldRefer refer, String key){
+    protected Integer getInt(DataRow row, MetadataFieldRefer refer, String key) {
         return getInt(row, refer, key, null);
     }
     protected Boolean matchBoolean(DataRow row, MetadataFieldRefer refer, String key, String value) {
@@ -17365,15 +17365,15 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @param vals 匹配true的值S(只要一项匹配就返回true)
      * @return boolean
      */
-    protected Boolean matchBoolean(DataRow row, String[] cols, String[] vals){
+    protected Boolean matchBoolean(DataRow row, String[] cols, String[] vals) {
         Boolean bol = null;
-        if(null != cols){
-            for(String col:cols){
+        if(null != cols) {
+            for(String col:cols) {
                 Object value = row.get(col);
-                if(null == value){
+                if(null == value) {
                     continue;
                 }
-                if(value instanceof Boolean){
+                if(value instanceof Boolean) {
                     bol = (Boolean)value;
                 }else if(null != vals) {
                     String str = value.toString();
@@ -17384,7 +17384,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                         }
                     }
                 }
-                if(null != bol){
+                if(null != bol) {
                     break;
                 }
             }
@@ -17737,8 +17737,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return write(runtime, value, placeholder, unicode);
 	}
-    private Object write(DataRuntime runtime, Object value, boolean placeholder, boolean unicode){
-        if(null == value){
+    private Object write(DataRuntime runtime, Object value, boolean placeholder, boolean unicode) {
+        if(null == value) {
             return null;
         }
         Object result = null;
@@ -17747,8 +17747,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             boolean isNull = null == value || "NULL".equals(value);
             boolean isFun = false;
             String str = value +"";
-            if(!isNumber){
-                if(str.contains("(") || str.contains("'")){
+            if(!isNumber) {
+                if(str.contains("(") || str.contains("'")) {
                     isFun = true;
                 }
             }
@@ -17759,11 +17759,11 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             } else {
                 result = "'" + value + "'";
             }
-            if(unicode && result instanceof String && result.toString().startsWith("'")){
+            if(unicode && result instanceof String && result.toString().startsWith("'")) {
                 result = unicodeGuide(runtime) + result;
             }
         }else{
-            if(value instanceof VariableValue){
+            if(value instanceof VariableValue) {
                 result = ((VariableValue)value).value();
             }
         }

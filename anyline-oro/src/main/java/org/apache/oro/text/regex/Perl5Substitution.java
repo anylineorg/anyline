@@ -309,7 +309,7 @@ public class Perl5Substitution extends StringSubstitution {
 	saveDigits = __isInterpolationCharacter(nextc);
       } else if (c == '\\') {// Escape codes
 	if (nextc == 'l') {
-	  if (!caseMode){
+	  if (!caseMode) {
 	    __addElement(_OPCODE_LOWERCASE_CHAR);
 	    current++;
 	  }

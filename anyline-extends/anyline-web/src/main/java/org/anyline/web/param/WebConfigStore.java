@@ -32,22 +32,22 @@ import java.util.List;
 public class WebConfigStore extends DefaultConfigStore implements ConfigStore {
 	private HttpServletRequest request = null;
 
-	public WebConfigStore(){
+	public WebConfigStore() {
 		super();
 	}
 
-	public WebConfigStore(List<String> configs){
+	public WebConfigStore(List<String> configs) {
 		super(configs);
 	}
 
-	public ConfigStore setValue(HttpServletRequest request){
+	public ConfigStore setValue(HttpServletRequest request) {
 		this.request = request;
-		if(null == chain){
+		if(null == chain) {
 			return this; 
 		} 
 		List<Config> configs = chain.getConfigs(); 
-		for(Config config:configs){
-			if(null == config){
+		for(Config config:configs) {
+			if(null == config) {
 				continue;
 			} 
 			config.setValue(request); 

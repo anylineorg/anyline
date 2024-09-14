@@ -376,7 +376,7 @@ public class DefaultJDBCActuator implements DriverActuator {
         if(ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
             log.info("{}[封装耗时:{}][封装行数:{}]", rdm, DateUtil.format(System.currentTimeMillis() - mid), set.size());
         }
-        if(ConfigTable.IS_LOG_QUERY_RESULT && log.isInfoEnabled()){
+        if(ConfigTable.IS_LOG_QUERY_RESULT && log.isInfoEnabled()) {
             log.info("{}[查询结果]{}", random, LogUtil.table(set));
         }
         return set;
@@ -574,7 +574,7 @@ public class DefaultJDBCActuator implements DriverActuator {
         }else {
             boolean keyHolder = adapter.supportKeyHolder(runtime, configs);
 
-            if(data instanceof RunPrepare){
+            if(data instanceof RunPrepare) {
                 // insert into a select * from b
                 keyHolder = false;
             }

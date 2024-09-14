@@ -101,7 +101,7 @@ public class MilvusDataSourceHolder extends AbstractDataSourceHolder implements 
 			return null;
 		}
 		String adapter = value(prefix, params, "adapter", String.class, null);
-		if(null == adapter){
+		if(null == adapter) {
 			return null;
 		}
 		adapter = adapter.toLowerCase();
@@ -114,29 +114,29 @@ public class MilvusDataSourceHolder extends AbstractDataSourceHolder implements 
 			String user = value(prefix, params, "user", String.class, null);
 			String password = value(prefix, params, "password", String.class, null);
 			String token = value(prefix, params, "token", String.class, null);
-			if(BasicUtil.isNotEmpty(user)){
+			if(BasicUtil.isNotEmpty(user)) {
 				builder.username(user);
 			}
-			if(BasicUtil.isNotEmpty(password)){
+			if(BasicUtil.isNotEmpty(password)) {
 				builder.password(password);
 			}
-			if(BasicUtil.isNotEmpty(token)){
+			if(BasicUtil.isNotEmpty(token)) {
 				builder.token(token);
 			}
 			String database = value(prefix, params, "database,dbName", String.class, null);
-			if(BasicUtil.isNotEmpty(database)){
+			if(BasicUtil.isNotEmpty(database)) {
 				builder.dbName(database);
 			}
 			Long connectTimeout = value(prefix, params, "connectTimeoutMs,connectTimeout", Long.class, 0L);
-			if(connectTimeout > 0){
+			if(connectTimeout > 0) {
 				builder.connectTimeoutMs(connectTimeout);
 			}
 			Long keepAliveTime = value(prefix, params, "keepAliveTimeMs,keepAliveTime", Long.class, 0L);
-			if(keepAliveTime > 0){
+			if(keepAliveTime > 0) {
 				builder.keepAliveTimeMs(keepAliveTime);
 			}
 			Long keepAliveTimeout = value(prefix, params, "keepAliveTimeoutMs,keepAliveTimeout", Long.class, 0L);
-			if(keepAliveTimeout > 0){
+			if(keepAliveTimeout > 0) {
 				builder.keepAliveTimeoutMs(keepAliveTimeout);
 			}
 			Boolean keepAliveWithoutCalls = value(prefix, params, "keepAliveWithoutCalls", Boolean.class, null);
@@ -145,27 +145,27 @@ public class MilvusDataSourceHolder extends AbstractDataSourceHolder implements 
 			}
 
 			Long rpcDeadline = value(prefix, params, "rpcDeadlineMs,rpcDeadline", Long.class, 0L);
-			if(rpcDeadline > 0){
+			if(rpcDeadline > 0) {
 				builder.rpcDeadlineMs(rpcDeadline);
 			}
 			String clientKeyPath = value(prefix, params, "clientKeyPath", String.class, null);
-			if(BasicUtil.isNotEmpty(clientKeyPath)){
+			if(BasicUtil.isNotEmpty(clientKeyPath)) {
 				builder.clientKeyPath(clientKeyPath);
 			}
 			String clientPemPath = value(prefix, params, "clientPemPath", String.class, null);
-			if(BasicUtil.isNotEmpty(clientPemPath)){
+			if(BasicUtil.isNotEmpty(clientPemPath)) {
 				builder.clientPemPath(clientPemPath);
 			}
 			String caPemPath = value(prefix, params, "caPemPath", String.class, null);
-			if(BasicUtil.isNotEmpty(caPemPath)){
+			if(BasicUtil.isNotEmpty(caPemPath)) {
 				builder.clientPemPath(caPemPath);
 			}
 			String serverPemPath = value(prefix, params, "serverPemPath", String.class, null);
-			if(BasicUtil.isNotEmpty(serverPemPath)){
+			if(BasicUtil.isNotEmpty(serverPemPath)) {
 				builder.clientPemPath(serverPemPath);
 			}
 			String serverName = value(prefix, params, "serverName", String.class, null);
-			if(BasicUtil.isNotEmpty(serverName)){
+			if(BasicUtil.isNotEmpty(serverName)) {
 				builder.clientPemPath(serverName);
 			}
 			Boolean secure = value(prefix, params, "secure", Boolean.class, null);
@@ -173,7 +173,7 @@ public class MilvusDataSourceHolder extends AbstractDataSourceHolder implements 
 				builder.secure(secure);
 			}
 			Long idleTimeout = value(prefix, params, "idleTimeoutMs,idleTimeout", Long.class, 0L);
-			if(idleTimeout > 0){
+			if(idleTimeout > 0) {
 				builder.idleTimeoutMs(idleTimeout);
 			}
 

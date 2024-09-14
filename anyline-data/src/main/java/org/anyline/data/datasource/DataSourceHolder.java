@@ -211,7 +211,7 @@ public interface DataSourceHolder {
 
 	static DataRuntime reg(String key, Object datasource, String database, DatabaseType type, DriverAdapter adapter, boolean override) throws Exception {
 		DataSourceHolder instance = null;
-		if(null != datasource){
+		if(null != datasource) {
 			instance = instance(datasource.getClass());
 		}
 		if(null == instance) {
@@ -300,8 +300,8 @@ public interface DataSourceHolder {
 	 * @param datasource 数据源key对应注册时的key
 	 * @return boolean
 	 */
-	static boolean exists(String datasource){
-		if(null != datasource){
+	static boolean exists(String datasource) {
+		if(null != datasource) {
 			return RuntimeHolder.keys().contains(datasource);
 		}
 		return false;

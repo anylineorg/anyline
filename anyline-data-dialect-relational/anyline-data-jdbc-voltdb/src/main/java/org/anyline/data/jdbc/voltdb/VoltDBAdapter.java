@@ -2673,7 +2673,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	@Override
 	public List<Run> buildQueryIndexesRun(DataRuntime runtime, boolean greedy,  Collection<? extends Table> tables) {
 		List<Run> runs = new ArrayList<>();
-		for(Table table:tables){
+		for(Table table:tables) {
 			Index query = new Index();
 			query.setTable(table);;
 			runs.addAll(buildQueryIndexesRun(runtime, greedy, query));

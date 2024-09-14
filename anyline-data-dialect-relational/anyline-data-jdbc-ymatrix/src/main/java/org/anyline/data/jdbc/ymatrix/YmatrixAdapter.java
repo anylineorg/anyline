@@ -45,7 +45,7 @@ public class YmatrixAdapter extends PostgresGenusAdapter {
 		return DatabaseType.YMatrix;
 	}
 
-	public YmatrixAdapter(){
+	public YmatrixAdapter() {
 		super();
 	}
 	private String delimiter;
@@ -193,7 +193,7 @@ public class YmatrixAdapter extends PostgresGenusAdapter {
 	 * @param configs ConfigStore
 	 */
 	@Override
-	public void fillInsertCreateTemplate(DataRuntime runtime, Run run, PartitionTable dest, ConfigStore configs){
+	public void fillInsertCreateTemplate(DataRuntime runtime, Run run, PartitionTable dest, ConfigStore configs) {
 		super.fillInsertCreateTemplate(runtime, run, dest, configs);
 	}
 
@@ -413,7 +413,7 @@ public class YmatrixAdapter extends PostgresGenusAdapter {
 	 * @return Run
 	 */
 	@Override
-	public Run buildUpdateRunLimit(DataRuntime runtime, Run run){
+	public Run buildUpdateRunLimit(DataRuntime runtime, Run run) {
 		return super.buildUpdateRunLimit(runtime, run);
 	}
 
@@ -5222,7 +5222,7 @@ public class YmatrixAdapter extends PostgresGenusAdapter {
 	 * @return list
 	 */
 	@Override
-	public List<Run> merge(DataRuntime runtime, Table meta, List<Run> slices){
+	public List<Run> merge(DataRuntime runtime, Table meta, List<Run> slices) {
 		return super.merge(runtime, meta, slices);
 	}
 

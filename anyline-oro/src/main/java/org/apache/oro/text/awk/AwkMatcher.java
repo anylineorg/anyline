@@ -134,7 +134,7 @@ public final class AwkMatcher implements PatternMatcher {
   // I reimplemented this method in terms of streammatchesPrefix
   // to reduce the code size.  This is not very elegant and
   // reduces performance by a small degree.
-  public boolean matchesPrefix(char[] input, Pattern pattern, int offset){
+  public boolean matchesPrefix(char[] input, Pattern pattern, int offset) {
     int result = -1;
 
     __awkPattern = (AwkPattern)pattern;
@@ -147,7 +147,7 @@ public final class AwkMatcher implements PatternMatcher {
     __offsets[0] = offset;
     try {
       result = __streamMatchPrefix();
-    } catch(IOException e){
+    } catch(IOException e) {
       // Don't do anything because we're not doing any I/O
       result = -1;
     }
@@ -177,7 +177,7 @@ public final class AwkMatcher implements PatternMatcher {
    * @param pattern  The Pattern to be matched.
    * @return True if input matches pattern, false otherwise.
    */
-  public boolean matchesPrefix(char[] input, Pattern pattern){
+  public boolean matchesPrefix(char[] input, Pattern pattern) {
     return matchesPrefix(input, pattern, 0);
   }
 
@@ -216,7 +216,7 @@ public final class AwkMatcher implements PatternMatcher {
    * @param pattern  The Pattern to be matched.
    * @return True if input matches pattern, false otherwise.
    */
-  public boolean matchesPrefix(PatternMatcherInput input, Pattern pattern){
+  public boolean matchesPrefix(PatternMatcherInput input, Pattern pattern) {
     int result = -1;
 
     __awkPattern = (AwkPattern)pattern;
@@ -276,7 +276,7 @@ public final class AwkMatcher implements PatternMatcher {
     __offsets[0] = 0;
     try {
       result = __streamMatchPrefix();
-    } catch(IOException e){
+    } catch(IOException e) {
       // Don't do anything because we're not doing any I/O
       result = -1;
     }
@@ -309,7 +309,7 @@ public final class AwkMatcher implements PatternMatcher {
    * @exception ClassCastException If a Pattern instance other than an
    *         AwkPattern is passed as the pattern parameter.
    */
-  public boolean matches(String input, Pattern pattern){
+  public boolean matches(String input, Pattern pattern) {
     return matches(input.toCharArray(), pattern);
   }
 
@@ -337,7 +337,7 @@ public final class AwkMatcher implements PatternMatcher {
    * @exception ClassCastException If a Pattern instance other than an
    *         AwkPattern is passed as the pattern parameter.
    */
-  public boolean matches(PatternMatcherInput input, Pattern pattern){
+  public boolean matches(PatternMatcherInput input, Pattern pattern) {
     int result = -1;
 
     __awkPattern = (AwkPattern)pattern;
@@ -349,7 +349,7 @@ public final class AwkMatcher implements PatternMatcher {
     __streamSearchBuffer = __scratchBuffer;
     try {
       result = __streamMatchPrefix();
-    } catch(IOException e){
+    } catch(IOException e) {
       // Don't do anything because we're not doing any I/O
       result = -1;
     }
@@ -394,7 +394,7 @@ public final class AwkMatcher implements PatternMatcher {
     __awkPattern = (AwkPattern)pattern;
 
     // Begin anchor requires match occur at beginning of input
-    if(__awkPattern._hasBeginAnchor && !__awkPattern._fastMap[input[0]]){
+    if(__awkPattern._hasBeginAnchor && !__awkPattern._fastMap[input[0]]) {
       __lastMatchResult = null;
       return false;
     }
@@ -436,7 +436,7 @@ public final class AwkMatcher implements PatternMatcher {
    * @exception ClassCastException If a Pattern instance other than an
    *         AwkPattern is passed as the pattern parameter.
    */
-  public boolean contains(String input, Pattern pattern){
+  public boolean contains(String input, Pattern pattern) {
     return contains(input.toCharArray(), pattern);
   }
 
@@ -646,25 +646,25 @@ public final class AwkMatcher implements PatternMatcher {
 	tstateArray = __awkPattern._getStateArray(current);
 	current = tstateArray[token];
 
-	if(current == 0){
+	if(current == 0) {
 	  __awkPattern._createNewState(lastState, token, tstateArray);
 	  current = tstateArray[token];
 	}
 
-	if(current == AwkPattern._INVALID_STATE){
+	if(current == AwkPattern._INVALID_STATE) {
 	  break test;
-	} else if(__awkPattern._endStates.get(current)){
+	} else if(__awkPattern._endStates.get(current)) {
 	  lastMatchedOffset = offset;
 	}
 
-	if(offset == maxOffset){
+	if(offset == maxOffset) {
 	  offset =
 	    __streamSearchBuffer._reallocate(initialOffset) + __beginOffset;
 	  
 	  maxOffset = __streamSearchBuffer._bufferSize + __beginOffset;
 
 	  // If we're at the end of the stream, don't reset values
-	  if(offset != maxOffset){
+	  if(offset != maxOffset) {
 	    if(lastMatchedOffset != -1)
 	      lastMatchedOffset-=initialOffset;
 	    initialOffset = 0;
@@ -694,10 +694,10 @@ public final class AwkMatcher implements PatternMatcher {
 
     __lastMatchResult = null;
 
-    while(true){
+    while(true) {
       if(__lastMatchedBufferOffset >= 
 	 __streamSearchBuffer._bufferSize + __beginOffset) {
-	if(__streamSearchBuffer._endOfStreamReached){
+	if(__streamSearchBuffer._endOfStreamReached) {
 	  // Get rid of reference now that it should no longer be used.
 	  __streamSearchBuffer = null;
 	  return;

@@ -2458,7 +2458,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	@Override
 	public String columnFieldPrecisionRefer(DataRuntime runtime, TypeMetadata meta) {
 		String result = super.columnFieldPrecisionRefer(runtime, meta);
-		if(null == result){
+		if(null == result) {
 			result = "LENGTH";
 		}
 		return result;
@@ -2476,7 +2476,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	@Override
 	public String columnFieldScaleRefer(DataRuntime runtime, TypeMetadata meta) {
 		String result = super.columnFieldScaleRefer(runtime, meta);
-		if(null == result){
+		if(null == result) {
 			result = "SCALE";
 		}
 		return result;

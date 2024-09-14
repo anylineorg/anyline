@@ -55,16 +55,16 @@ public class DriverAdapterHolder {
 	 * @param datasource 数据源
 	 * @return boolean false:每次操作都会检测一次adapter true:同一数据源使用同一个adapter
 	 */
-	public static boolean keepAdapter(DataRuntime runtime,Object datasource){
+	public static boolean keepAdapter(DataRuntime runtime,Object datasource) {
 		boolean keep = ConfigTable.KEEP_ADAPTER == 1;
-		if(ConfigTable.KEEP_ADAPTER == 2 && null != monitor){
+		if(ConfigTable.KEEP_ADAPTER == 2 && null != monitor) {
 			keep = monitor.keepAdapter(runtime, datasource);
 		}
 		return keep;
 	}
-	public static DriverAdapter getAdapterByMonitor(DataRuntime runtime, Object datasource){
+	public static DriverAdapter getAdapterByMonitor(DataRuntime runtime, Object datasource) {
 		DriverAdapter adapter = null;
-		if(null != monitor){
+		if(null != monitor) {
 			adapter = monitor.adapter(runtime, datasource);
 		}
 		return adapter;
@@ -75,21 +75,21 @@ public class DriverAdapterHolder {
 	 * @param datasource 数据源
 	 * @return String 返回null由上层自动提取
 	 */
-	public static String feature(DataRuntime runtime, Object datasource){
+	public static String feature(DataRuntime runtime, Object datasource) {
 		String feature = null;
-		if(ConfigTable.KEEP_ADAPTER == 2 && null != monitor){
+		if(ConfigTable.KEEP_ADAPTER == 2 && null != monitor) {
 			feature = monitor.feature(runtime, datasource);
 		}
 		return feature;
 	}
-	public static DriverAdapter after(DataRuntime runtime, Object datasource, DriverAdapter adapter){
-		if(null != monitor){
+	public static DriverAdapter after(DataRuntime runtime, Object datasource, DriverAdapter adapter) {
+		if(null != monitor) {
 			return monitor.after(runtime, datasource, adapter);
 		}
 		return adapter;
 	}
-	public static String key(DataRuntime runtime, Object datasource){
-		if(null != monitor){
+	public static String key(DataRuntime runtime, Object datasource) {
+		if(null != monitor) {
 			return monitor.key(runtime, datasource);
 		}
 		return null;
@@ -172,7 +172,7 @@ public class DriverAdapterHolder {
 			}
 		}
 		DriverAdapter adapter = getAdapterByMonitor(runtime, runtime.getProcessor());
-		if(null == adapter){
+		if(null == adapter) {
 			String feature = runtime.getFeature(false);
 			String adapter_key = runtime.getAdapterKey();
 			try {
@@ -195,11 +195,11 @@ public class DriverAdapterHolder {
 			} catch (Exception e) {
 				log.error("检测适配器 异常:", e);
 			}
-			if(null != adapter && log.isDebugEnabled()){
+			if(null != adapter && log.isDebugEnabled()) {
 				log.debug("[检测数据库适配器][数据源:{}][特征:{}][适配结果:{}]", datasource, feature, adapter);
 			}
 		}
-		if(null != adapter){
+		if(null != adapter) {
 			adapter = after(runtime, runtime.getProcessor(), adapter);
 		}
 		if(null == adapter) {

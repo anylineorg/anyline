@@ -47,11 +47,11 @@ public class DefaultAutoConditionChain extends AbstractConditionChain implements
 	}
 	private static String TAB = "\t";
 	private static String BR = "\n";
-	private void tab(int lvl, boolean br, StringBuilder builder){
-		if(br){
+	private void tab(int lvl, boolean br, StringBuilder builder) {
+		if(br) {
 			builder.append(BR);
 		}
-		for(int i=0; i<lvl; i++){
+		for(int i=0; i<lvl; i++) {
 			builder.append(TAB);
 		}
 	}
@@ -85,7 +85,7 @@ public class DefaultAutoConditionChain extends AbstractConditionChain implements
 
 				txt = SQLUtil.trim(txt);
 				if(joinSize>0) {
-					if(txt.startsWith("(")){
+					if(txt.startsWith("(")) {
 						tab(lvl+1, true, subBuilder);
 					}
 					subBuilder.append(condition.getJoinText());

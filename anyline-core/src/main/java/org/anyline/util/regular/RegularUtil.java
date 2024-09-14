@@ -93,7 +93,7 @@ public class RegularUtil {
 	}
 	public static synchronized List<String> fetch(String src, String regx, Regular.MATCH_MODE mode) throws Exception {
 		List<String> result = null;
-		if(null != src){
+		if(null != src) {
 		regular = regularList.get(mode);
 		result = regular.fetch(src, regx);
 		}

@@ -298,17 +298,17 @@ public class ElasticSearchAdapter extends AbstractDriverAdapter implements Drive
         run.setMethod("POST");
         String endpoint = null;
         String index_name = null;
-        if(null != dest){
+        if(null != dest) {
             index_name = dest.getName();
         }
-        if(BasicUtil.isNotEmpty(index_name)){
+        if(BasicUtil.isNotEmpty(index_name)) {
             endpoint = index_name+"/_bulk";
         }else{
             endpoint = "*/_bulk";
         }
         run.setEndpoint(endpoint);
         StringBuilder builder = run.getBuilder();
-        for(Object item:list){
+        for(Object item:list) {
             String item_index_name = null;
             Object pv = null;
             if(item instanceof DataRow) {
@@ -319,17 +319,17 @@ public class ElasticSearchAdapter extends AbstractDriverAdapter implements Drive
                 item_index_name = EntityAdapterProxy.table(item.getClass(), true);
                 pv = EntityAdapterProxy.primaryValue(item, true);
             }
-            if(BasicUtil.isEmpty(item_index_name)){
+            if(BasicUtil.isEmpty(item_index_name)) {
                 item_index_name = index_name;
             }
             Map<String, Object> head = new HashMap<>();
             Map<String, Object> head_property = new HashMap<>();
             //{"index":{"_index":"index_user", "_id":"10011"}}
             head.put("index", head_property);
-            if(BasicUtil.isNotEmpty(item_index_name)){
+            if(BasicUtil.isNotEmpty(item_index_name)) {
                 head_property.put("_index", item_index_name);
             }
-            if(BasicUtil.isNotEmpty(pv)){
+            if(BasicUtil.isNotEmpty(pv)) {
                 head_property.put("_id", pv);
             }
             Map<String, Object> map = BeanUtil.object2map(item);
@@ -726,7 +726,7 @@ PUT * /_bulk
         run.setMethod("POST");
         String endpoint = null;
         String index_name = prepare.getTableName();
-        if(BasicUtil.isNotEmpty(index_name)){
+        if(BasicUtil.isNotEmpty(index_name)) {
             endpoint = "/" + index_name + "/_search";
         }else{
             endpoint = "/*/_search";
@@ -784,31 +784,31 @@ PUT * /_bulk
 
         DataRow body = new DataRow(KeyAdapter.KEY_CASE.SRC);
         ConfigStore configs = run.getConfigs();
-        if(null != configs){
+        if(null != configs) {
             configs.autoCount(false); //不需要单独计算总行数
             PageNavi navi = configs.getPageNavi();
-            if(null != navi){
+            if(null != navi) {
                 body.put("from", navi.getFirstRow());
                 body.put("size", navi.getPageRows());
             }
             List<String> columns = configs.columns();
-            if(null != columns && !columns.isEmpty()){
+            if(null != columns && !columns.isEmpty()) {
                 body.put("_source", columns);
             }
             Highlight highlight = configs.getHighlight();
-            if(null != highlight){
+            if(null != highlight) {
                 LinkedHashMap<String, Highlight> fields = highlight.getFields();
                 LinkedHashMap<String, Map> fields_map = new LinkedHashMap<>();
                 Map map = BeanUtil.object2map(highlight);
                 BeanUtil.clearEmpty(map, true);
-                for(String field:fields.keySet()){
+                for(String field:fields.keySet()) {
                     //field有空的情况也需要保留
                     Highlight field_highlight = fields.get(field);
                     Map field_map = BeanUtil.object2map(field_highlight);
                     BeanUtil.clearEmpty(field_map, true);
                     fields_map.put(field,field_map);
                 }
-                if(!fields_map.isEmpty()){
+                if(!fields_map.isEmpty()) {
                     map.put("fields",fields_map);
                 }
                 body.put("highlight", map);
@@ -821,31 +821,31 @@ PUT * /_bulk
             body.put("query", query);
         }
         OrderStore orderStore = configs.getOrders();
-        if(null!= orderStore){
+        if(null!= orderStore) {
             List<Order> orders = orderStore.getOrders();
-            if(null != orders && !orders.isEmpty()){
+            if(null != orders && !orders.isEmpty()) {
                 DataSet sorts = new DataSet();
                 body.put("sort", sorts);
-                for(Order order:orders){
+                for(Order order:orders) {
                     DataRow sort = new OriginRow();
                     sort.put(order.getColumn()).put("order", order.getType().getCode().toLowerCase());
                     sorts.add(sort);
                 }
             }
         }
-        if(!body.isEmpty()){
+        if(!body.isEmpty()) {
             request.setJson(body.json());
             r.getBuilder().append(body.json());
         }
         return r;
     }
-    private DataRow parseCondition(DataRow base, Condition condition){
+    private DataRow parseCondition(DataRow base, Condition condition) {
         DataRow row = null;
         if(condition instanceof ConditionChain) {
             ConditionChain chain = (ConditionChain)condition;
             List<Condition> conditions = chain.getConditions();
-            if(null != conditions && !conditions.isEmpty()){
-                if(conditions.size() ==1){//只有一个条件
+            if(null != conditions && !conditions.isEmpty()) {
+                if(conditions.size() ==1) {//只有一个条件
                     parseCondition(base, conditions.get(0));
                 }else {
                     row = base;
@@ -853,13 +853,13 @@ PUT * /_bulk
                     DataSet set = null;
                     Condition.JOIN join = chain.getJoin();
                     String joinCode = null;
-                    if(null == join || Condition.JOIN.AND == join){ //默认就是AND
+                    if(null == join || Condition.JOIN.AND == join) { //默认就是AND
                         Condition second = conditions.get(1);
                         join = second.getJoin();
                     }
                     if (Condition.JOIN.OR == join) {
                         joinCode ="should";
-                    } else if(Condition.JOIN.AND == join){
+                    } else if(Condition.JOIN.AND == join) {
                         joinCode = "must";
                     }else{
                         joinCode = join.getCode();
@@ -904,7 +904,7 @@ PUT * /_bulk
             }else if(cc == 52) {                                     //  END_WITH
                 row.put("wildcard").put(column, "*"+value);
             }else if(cc == 55) {                                     //  MATCH
-                if(column.contains(",")){
+                if(column.contains(",")) {
                     String[] cols = column.split(",");
                     row.put("multi_match").set("query", value).set("fields", cols);
                 }else{
@@ -1314,14 +1314,14 @@ PUT * /_bulk
         ElasticSearchRun run = new ElasticSearchRun(runtime, dest);
         run.setTable(dest);
         run.action(ACTION.DML.DELETE);
-        if(obj instanceof Collection){
+        if(obj instanceof Collection) {
             Collection list = (Collection) obj;
             run.setMethod("POST");
             run.setEndpoint(dest.getName() + "/_bulk");
             StringBuilder builder = run.getBuilder();
-            for(Object item:list){
+            for(Object item:list) {
                 Object pv = null;
-                if(obj instanceof DataRow){
+                if(obj instanceof DataRow) {
                     pv = ((DataRow)obj).getPrimaryValue();
                 }else{
                     pv = EntityAdapterProxy.primaryValue(item, true);
@@ -1331,7 +1331,7 @@ PUT * /_bulk
         }else{
             run.setMethod("DELETE");
             Object pv = null;
-            if(obj instanceof DataRow){
+            if(obj instanceof DataRow) {
                 pv = ((DataRow)obj).getPrimaryValue();
             }else{
                 pv = EntityAdapterProxy.primaryValue(obj, true);
@@ -2092,7 +2092,7 @@ PUT * /_bulk
 
     @Override
     public <T extends Table> T init(DataRuntime runtime, int index, T table, Table query, DataRow row) {
-        if(null == table){
+        if(null == table) {
             table = (T) new ElasticSearchIndex();
         }
         table.setName(row.getString("2"));
@@ -3813,7 +3813,7 @@ PUT * /_bulk
         run.setTable(meta);
         runs.add(run);
         LinkedHashMap<String, Column> columns = meta.getColumns();
-        for(Column column:columns.values()){
+        for(Column column:columns.values()) {
             typeMetadata(runtime, column);
         }
         LinkedHashMap<String, Object> map = ElasticSearchBuilder.build(meta);
@@ -6344,7 +6344,7 @@ PUT * /_bulk
                 log.info("{}[action:select][执行耗时:{}]", random, DateUtil.format(times));
                 log.info("{}[action:select][封装耗时:{}][封装行数:{}]", random, DateUtil.format(configs.getLastPackageTime()), set.size());
             }
-            if((!system || !ConfigStore.IS_LOG_QUERY_RESULT_EXCLUDE_METADATA(configs)) && ConfigStore.IS_LOG_QUERY_RESULT(configs) && log.isInfoEnabled()){
+            if((!system || !ConfigStore.IS_LOG_QUERY_RESULT_EXCLUDE_METADATA(configs)) && ConfigStore.IS_LOG_QUERY_RESULT(configs) && log.isInfoEnabled()) {
                 log.info("{}[查询结果]{}", random, LogUtil.table(set));
             }
             set.setDatalink(runtime.datasource());

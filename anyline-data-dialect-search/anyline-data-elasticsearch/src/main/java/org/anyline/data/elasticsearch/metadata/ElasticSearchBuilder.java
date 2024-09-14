@@ -24,27 +24,27 @@ import org.anyline.util.BasicUtil;
 import java.util.LinkedHashMap;
 
 public class ElasticSearchBuilder {
-    public static LinkedHashMap<String, Object> build(Table table){
+    public static LinkedHashMap<String, Object> build(Table table) {
         LinkedHashMap<String, Object> map =null;
-        if(table instanceof ElasticSearchIndex){
+        if(table instanceof ElasticSearchIndex) {
             ElasticSearchIndex index = (ElasticSearchIndex) table;
             map = index.map();
         }else{
             map = new LinkedHashMap<>();
         }
         LinkedHashMap<String, Column> columns = table.getColumns();
-        if(null != columns && !columns.isEmpty()){
+        if(null != columns && !columns.isEmpty()) {
             LinkedHashMap<String, Object> mappings = new LinkedHashMap<>();
             LinkedHashMap<String, Object> properties = new LinkedHashMap<>();
             mappings.put("properties", properties);
-            for(Column column:columns.values()){
+            for(Column column:columns.values()) {
                 properties.put(column.getName(), build(column));
             }
             map.put("mappings", mappings);
         }
         return map;
     }
-    public static LinkedHashMap<String, Object> build(Column column){
+    public static LinkedHashMap<String, Object> build(Column column) {
         LinkedHashMap<String, Object> map = new LinkedHashMap<>();
         String type = column.getFullType(DatabaseType.ElasticSearch);
         Boolean index = column.getIndex();
@@ -77,7 +77,7 @@ public class ElasticSearchBuilder {
                 map.put("dims", dims);
             }
         }
-        if(BasicUtil.isNotEmpty(similarity)){
+        if(BasicUtil.isNotEmpty(similarity)) {
             map.put("similarity", similarity);
         }
         return map;

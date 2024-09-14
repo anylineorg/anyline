@@ -39,27 +39,27 @@ public class Ajax extends BodyTagSupport{
 		try{
 			StringBuilder builder = new StringBuilder();
 			builder.append("<script>\n");
-			if(!intime){
-				builder.append("$(function(){\n");
+			if(!intime) {
+				builder.append("$(function() {\n");
 			}
 			builder.append("al.ajax({");
 			builder.append("url:'").append(url).append("',");
-			if(BasicUtil.isNotEmpty(param)){
+			if(BasicUtil.isNotEmpty(param)) {
 				builder.append("data:");
 				builder.append(param).append(",");
 			}
-			if(BasicUtil.isNotEmpty(callback)){
+			if(BasicUtil.isNotEmpty(callback)) {
 				builder.append("callback:").append(callback).append(",");
 			}
 			builder.append("async:").append(async);
 			builder.append("});\n");
-			if(!intime){
+			if(!intime) {
 				builder.append("});\n");
 			}
 			builder.append("</script>");
 			JspWriter out = pageContext.getOut();
 			out.print(builder.toString());
-		}catch(Exception e){
+		}catch(Exception e) {
 			e.printStackTrace(); 
 		}finally{
 			release(); 

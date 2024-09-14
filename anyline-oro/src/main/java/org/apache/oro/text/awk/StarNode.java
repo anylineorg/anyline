@@ -82,7 +82,7 @@ import java.util.*;
 class StarNode extends SyntaxNode {
   SyntaxNode _left;
 
-  StarNode(SyntaxNode child){
+  StarNode(SyntaxNode child) {
     _left = child;
   }
 

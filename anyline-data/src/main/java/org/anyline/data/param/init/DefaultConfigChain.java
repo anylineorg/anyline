@@ -246,15 +246,15 @@ public class DefaultConfigChain extends DefaultConfig implements ConfigChain {
 		for(Config config:configs) {
 			Condition condition = config.createAutoCondition(chain); 
 			if(null != condition) {
-				if(condition instanceof ConditionChain){
+				if(condition instanceof ConditionChain) {
 					ConditionChain itemChain = (ConditionChain) condition;
 					List<Condition> items = itemChain.getConditions();
-					if(items.size() == 1){
+					if(items.size() == 1) {
 						//只有一个条件的 去除多余() 但join需要用外层的
 						Condition first = items.get(0);
 						first.setJoin(itemChain.getJoin());
 						chain.addCondition(first);
-					}else if(items.size() > 1){
+					}else if(items.size() > 1) {
 						chain.addCondition(condition);
 					}
 				}else {

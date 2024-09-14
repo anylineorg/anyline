@@ -31,7 +31,7 @@ public class Ellipsis extends BaseBodyTag {
  
 	public int doEndTag() {
 		String src = BasicUtil.nvl(value,body,"").toString().trim(); 
-		if(BasicUtil.isEmpty(src)){
+		if(BasicUtil.isEmpty(src)) {
 			return EVAL_BODY_INCLUDE; 
 		} 
  
@@ -42,19 +42,19 @@ public class Ellipsis extends BaseBodyTag {
 			int size = length * 2; 
 			String chrs[] = src.split("");
 			long cnt = 0;
-			for(String chr:chrs){
-				if(cnt >= size){
+			for(String chr:chrs) {
+				if(cnt >= size) {
 					break; 
 				} 
-				if(SINGLE_CHAR.contains(chr.toLowerCase())){
+				if(SINGLE_CHAR.contains(chr.toLowerCase())) {
 					cnt += 1; 
 				}else{
 					cnt += 2; 
 				} 
 				result += chr; 
 			} 
-			if(result.length() < src.length()){
-				if(toggle){
+			if(result.length() < src.length()) {
+				if(toggle) {
 					// 点击显示全部
 					String random = BasicUtil.getRandomLowerString(10);
 					String all = "<span style='display:none;' id='tga_" + random + "'>" + src + "</span>";
@@ -62,12 +62,12 @@ public class Ellipsis extends BaseBodyTag {
 					result = all + sub;
 				}else{
 					result += replace;
-					if(label){
+					if(label) {
 						result = "<label title=\""+src+"\">" + result + "</label>";
 					}
 				} 
 			}else{
-				if(label){
+				if(label) {
 					result = "<label title=\""+src+"\">" + src + "</label>";
 				}else{
 					result = src;

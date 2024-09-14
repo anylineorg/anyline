@@ -19,10 +19,10 @@ package org.anyline.data.influxdb.metadata;
 import org.anyline.metadata.Database;
 
 public class InfluxBucket extends Database {
-    public InfluxBucket(){
+    public InfluxBucket() {
         super();
     }
-    public InfluxBucket(String name){
+    public InfluxBucket(String name) {
         super(name);
     }
 }

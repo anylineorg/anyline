@@ -69,31 +69,31 @@ public class RedisProvider  implements CacheProvider {
 
 
     private String prefix = ConfigTable.getString("REDIS_PREFIX");
-    public static RedisProvider newInstance(String key, String prefix){
+    public static RedisProvider newInstance(String key, String prefix) {
         RedisProvider instance = instances.get(key);
-        if(null == instance){
+        if(null == instance) {
             instance = new RedisProvider();
             if(null != prefix) {
                 instance.prefix = prefix;
             }
-            if(null == instance.prefix){
+            if(null == instance.prefix) {
                 instance.prefix = "";
             }
             instances.put(key,instance);
         }
         return instance;
     }
-    public static RedisProvider newInstance(String key){
+    public static RedisProvider newInstance(String key) {
         return newInstance(key,ConfigTable.getString("REDIS_PREFIX"));
     }
-    public static RedisProvider getInstance(String key){
+    public static RedisProvider getInstance(String key) {
         return newInstance(key);
     }
 
-    public static RedisProvider getInstance(){
+    public static RedisProvider getInstance() {
         return newInstance(ConfigTable.getString("REDIS_PREFIX"));
     }
-    public String key(String key){
+    public String key(String key) {
         return prefix+key;
     }
 

@@ -80,7 +80,7 @@ package org.apache.oro.text.awk;
 final class QuestionNode extends OrNode {
   final static SyntaxNode _epsilon = new EpsilonNode();
 
-  QuestionNode(SyntaxNode child){
+  QuestionNode(SyntaxNode child) {
     super(child, _epsilon);
   }
 

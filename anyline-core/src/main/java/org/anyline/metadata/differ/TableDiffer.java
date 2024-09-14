@@ -37,12 +37,12 @@ public class TableDiffer extends AbstractDiffer {
 
     @Override
     public MetadataDiffer setDirect(DIRECT direct) {
-        if(direct == DIRECT.ORIGIN){
+        if(direct == DIRECT.ORIGIN) {
             this.direct = origin;
-        }else if(direct == DIRECT.DEST){
+        }else if(direct == DIRECT.DEST) {
             this.direct = dest;
         }
-        if(null != columnsDiffer){
+        if(null != columnsDiffer) {
             columnsDiffer.setDirect(this.direct);
         }
         return this;
@@ -62,8 +62,8 @@ public class TableDiffer extends AbstractDiffer {
         if(null == dest) {
             dest = new Table();
         }
-        if(null == direct){
-            if(null != origin){
+        if(null == direct) {
+            if(null != origin) {
                 direct = origin;
             }else{
                 direct = dest;

@@ -89,7 +89,7 @@ public interface DriverAdapter {
      * @return DatabaseType
      */
     DatabaseType type();
-    default String version(){
+    default String version() {
         return null;
     }
     default LinkedHashMap<String, TypeMetadata> types() {
@@ -112,13 +112,13 @@ public interface DriverAdapter {
     DriverActuator getActuator();
     boolean supportCatalog();
     boolean supportSchema();
-    default boolean supportPlaceholder(){
+    default boolean supportPlaceholder() {
         return true;
     }
-    default String columnAliasGuidd(){
+    default String columnAliasGuidd() {
         return " ";
     }
-    default String tableAliasGuidd(){
+    default String tableAliasGuidd() {
         return " ";
     }
     void setListener(DDListener listener);
@@ -258,10 +258,10 @@ public interface DriverAdapter {
      * @return boolean
      */
     default boolean exeMatch(DataRuntime runtime, String feature, String adapterKey, boolean compensate) {
-        if(BasicUtil.isNotEmpty(adapterKey)){
+        if(BasicUtil.isNotEmpty(adapterKey)) {
             return matchByAdapter(adapterKey);
         }
-        if(null == feature){
+        if(null == feature) {
             feature = runtime.getFeature(true);
         }
         //获取特征时会重新解析 adapter参数,因为有些数据源是通过DataSource对象注册的，这时需要打开连接后才能拿到url
@@ -433,7 +433,7 @@ public interface DriverAdapter {
         }
         return writer;
     }
-    default String name(Type type){
+    default String name(Type type) {
         Map<Type, String> types = new HashMap<>();
         types.put(Table.TYPE.NORMAL, "BASE TABLE");
         types.put(Table.TYPE.VIEW, "VIEW");
@@ -583,30 +583,30 @@ public interface DriverAdapter {
             boolean slice = slice();
             List<Run> slices = new ArrayList<>();
             try{
-                if(null != drop){
-                    if(null == table){
+                if(null != drop) {
+                    if(null == table) {
                         table = drop.getTable();
                     }
                     slices.addAll(buildDropRun(runtime, drop, slice));
                 }
-                if(null != add){
-                    if(null == table){
+                if(null != add) {
+                    if(null == table) {
                         table = add.getTable();
                     }
                     slices.addAll(buildAddRun(runtime, add, slice));
                 }
-                if(null != alter){
-                    if(null == table){
+                if(null != alter) {
+                    if(null == table) {
                         table = alter.getTable();
                     }
                     slices.addAll(buildAlterRun(runtime, alter, alter.getUpdate(), slice));
                 }
-                if(merge){
+                if(merge) {
                     list.addAll(merge(runtime, table, slices));
                 }else{
                     list.addAll(slices);
                 }
-            }catch (Exception e){
+            }catch (Exception e) {
                 log.error("build ddl exception:", e);
             }
 
@@ -620,7 +620,7 @@ public interface DriverAdapter {
             List<Run> slices = new ArrayList<>();
             for(Column add:adds.values()) {
                 try {
-                    if(null == direct){
+                    if(null == direct) {
                         direct = add.getTable();
                     }
                     slices.addAll(buildAddRun(runtime, add, slice));
@@ -630,7 +630,7 @@ public interface DriverAdapter {
             }
             for(Column update:updates.values()) {
                 try {
-                    if(null == direct){
+                    if(null == direct) {
                         direct = update.getTable();
                     }
                     slices.addAll(buildAlterRun(runtime, update, slice));
@@ -640,7 +640,7 @@ public interface DriverAdapter {
             }
             for(Column drop:drops.values()) {
                 try {
-                    if(null == direct){
+                    if(null == direct) {
                         direct = drop.getTable();
                     }
                     slices.addAll(buildDropRun(runtime, drop, slice));
@@ -1461,14 +1461,14 @@ public interface DriverAdapter {
      * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
      */
     Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions);
-    default Run initQueryRun(DataRuntime runtime, RunPrepare prepare){
+    default Run initQueryRun(DataRuntime runtime, RunPrepare prepare) {
         Run run = prepare.build(runtime);
-        if(null != run && null == run.action()){
+        if(null != run && null == run.action()) {
             run.action(ACTION.DML.SELECT);
         }
         return run;
     }
-    default RunPrepare buildRunPrepare(DataRuntime runtime, String text){
+    default RunPrepare buildRunPrepare(DataRuntime runtime, String text) {
         return null;
     }
 
@@ -1941,9 +1941,9 @@ public interface DriverAdapter {
         return buildDeleteRunFromEntity(runtime, new Table(table), configs, obj, columns);
     }
 
-    default List<Run> buildDeleteRunFromConfig(DataRuntime runtime, ConfigStore configs){
+    default List<Run> buildDeleteRunFromConfig(DataRuntime runtime, ConfigStore configs) {
         Table table = configs.table();
-        if(null!= table && BasicUtil.isNotEmpty(table.getName())){
+        if(null!= table && BasicUtil.isNotEmpty(table.getName())) {
             return buildDeleteRunFromTable(runtime, 1, table, configs, null, null);
         }
         return null;
@@ -2666,7 +2666,7 @@ public interface DriverAdapter {
         Table query = new Table(catalog, schema, pattern);
         return tables(runtime, random, greedy, query, types, struct, configs);
     }
-    default <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct){
+    default <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct) {
         return tables(runtime, random, greedy, catalog, schema, pattern, types, struct, null);
     }
     default <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, boolean struct, ConfigStore configs) {
@@ -2687,7 +2687,7 @@ public interface DriverAdapter {
         Table query = new Table(catalog, schema, pattern);
         return tables(runtime, random, query, types, struct, configs);
     }
-    default <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct){
+    default <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct) {
         return tables(runtime, random, catalog, schema, pattern, types, struct, null);
     }
     default <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, boolean struct, ConfigStore configs) {
@@ -3027,7 +3027,7 @@ public interface DriverAdapter {
         VertexTable query = new VertexTable(catalog, schema, pattern);
         return vertexs(runtime, random, greedy, query, types, struct, configs);
     }
-    default <T extends VertexTable> List<T> vertexs(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct){
+    default <T extends VertexTable> List<T> vertexs(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct) {
         return vertexs(runtime, random, greedy, catalog, schema, pattern, types, struct, null);
     }
     default <T extends VertexTable> List<T> vertexs(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, boolean struct, ConfigStore configs) {
@@ -3048,7 +3048,7 @@ public interface DriverAdapter {
         VertexTable query = new VertexTable(catalog, schema, pattern);
         return vertexs(runtime, random, query, types, struct, configs);
     }
-    default <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct){
+    default <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct) {
         return vertexs(runtime, random, catalog, schema, pattern, types, struct, null);
     }
     default <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, boolean struct, ConfigStore configs) {
@@ -3342,7 +3342,7 @@ public interface DriverAdapter {
         EdgeTable query = new EdgeTable(catalog, schema, pattern);
         return edges(runtime, random, greedy, query, types, struct, configs);
     }
-    default <T extends EdgeTable> List<T> edges(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct){
+    default <T extends EdgeTable> List<T> edges(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct) {
         return edges(runtime, random, greedy, catalog, schema, pattern, types, struct, null);
     }
     default <T extends EdgeTable> List<T> edges(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, boolean struct, ConfigStore configs) {
@@ -3363,7 +3363,7 @@ public interface DriverAdapter {
         EdgeTable query = new EdgeTable(catalog, schema, pattern);
         return edges(runtime, random, query, types, struct, configs);
     }
-    default <T extends EdgeTable> LinkedHashMap<String, T> edges(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct){
+    default <T extends EdgeTable> LinkedHashMap<String, T> edges(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct) {
         return edges(runtime, random, catalog, schema, pattern, types, struct, null);
     }
     default <T extends EdgeTable> LinkedHashMap<String, T> edges(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, boolean struct, ConfigStore configs) {
@@ -3658,7 +3658,7 @@ public interface DriverAdapter {
         View query = new View(catalog, schema, pattern);
         return views(runtime, random, greedy, catalog, schema, pattern, types, struct, configs);
     }
-    default <T extends View> List<T> views(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct){
+    default <T extends View> List<T> views(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct) {
         return views(runtime, random, greedy, catalog, schema, pattern, types, struct, null);
     }
     default <T extends View> List<T> views(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, boolean struct, ConfigStore configs) {
@@ -3679,7 +3679,7 @@ public interface DriverAdapter {
         View query = new View(catalog, schema, pattern);
         return views(runtime, random, query, types, struct, configs);
     }
-    default <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct){
+    default <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct) {
         return views(runtime, random, catalog, schema, pattern, types, struct, null);
     }
     default <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, boolean struct, ConfigStore configs) {
@@ -3973,7 +3973,7 @@ public interface DriverAdapter {
         return masters(runtime, random, greedy, query, types, struct, configs);
     }
 
-    default <T extends MasterTable> List<T> masters(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct){
+    default <T extends MasterTable> List<T> masters(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct) {
         return masters(runtime, random, greedy, catalog, schema, pattern, types, struct, null);
     }
     default <T extends MasterTable> List<T> masters(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, boolean struct, ConfigStore configs) {
@@ -3994,7 +3994,7 @@ public interface DriverAdapter {
         MasterTable query = new MasterTable(catalog, schema, pattern);
         return masters(runtime, random, query, types, struct, configs);
     }
-    default <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct){
+    default <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct) {
         return masters(runtime, random, catalog, schema, pattern, types, struct, null);
     }
     default <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, boolean struct, ConfigStore configs) {
@@ -4339,11 +4339,11 @@ public interface DriverAdapter {
     default <T extends PartitionTable> LinkedHashMap<String,T> partitions(DataRuntime runtime, String random, boolean greedy, MasterTable master, Map<String, Object> tags, String pattern) {
         PartitionTable query = new PartitionTable();
         query.setMaster(master);
-        if(null != tags){
-            for(String key:tags.keySet()){
+        if(null != tags) {
+            for(String key:tags.keySet()) {
                 Tag tag = null;
                 Object value = tags.get(key);
-                if(value instanceof Tag){
+                if(value instanceof Tag) {
                     tag = (Tag)value;
                 }else{
                     tag = new Tag(key, value);
@@ -4404,11 +4404,11 @@ public interface DriverAdapter {
     default List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, boolean greedy,  Table master, Map<String, Tag> tags, String pattern) throws Exception {
         PartitionTable query = new PartitionTable();
         query.setMaster(master);
-        if(null != tags){
-            for(String key:tags.keySet()){
+        if(null != tags) {
+            for(String key:tags.keySet()) {
                 Tag tag = null;
                 Object value = tags.get(key);
-                if(value instanceof Tag){
+                if(value instanceof Tag) {
                     tag = (Tag)value;
                 }else{
                     tag = new Tag(key, value);
@@ -4432,11 +4432,11 @@ public interface DriverAdapter {
     default List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, boolean greedy,  Table master, Map<String, Tag> tags) throws Exception {
         PartitionTable query = new PartitionTable();
         query.setMaster(master);
-        if(null != tags){
-            for(String key:tags.keySet()){
+        if(null != tags) {
+            for(String key:tags.keySet()) {
                 Tag tag = null;
                 Object value = tags.get(key);
-                if(value instanceof Tag){
+                if(value instanceof Tag) {
                     tag = (Tag)value;
                 }else{
                     tag = new Tag(key, value);
@@ -4683,7 +4683,7 @@ public interface DriverAdapter {
      * @param <T> Column
      */
     <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Collection<? extends Table> tables, Column query, ConfigStore configs);
-    default <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Collection<? extends Table> tables, Column query){
+    default <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Collection<? extends Table> tables, Column query) {
         return columns(runtime, random, greedy, tables, query, new DefaultConfigStore());
     }
 
@@ -9391,8 +9391,8 @@ public interface DriverAdapter {
 	boolean convert(DataRuntime runtime, Catalog catalog, Schema schema, String table, RunValue run);
 	boolean convert(DataRuntime runtime, Table table, Run run);
 	boolean convert(DataRuntime runtime, ConfigStore configs, Run run);
-	default boolean convert(DataRuntime runtime, ConfigStore configs, List<Run> runs){
-		for(Run run:runs){
+	default boolean convert(DataRuntime runtime, ConfigStore configs, List<Run> runs) {
+		for(Run run:runs) {
 			convert(runtime, configs, run);
 		}
 		return true;

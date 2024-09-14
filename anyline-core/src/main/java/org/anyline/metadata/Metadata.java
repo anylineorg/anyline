@@ -152,7 +152,7 @@ public class Metadata<T extends Metadata> {
         return database;
     }
     public String getDatabaseName() {
-        if(null != database){
+        if(null != database) {
             return database.getName();
         }
         return null;
@@ -312,8 +312,8 @@ public class Metadata<T extends Metadata> {
     public User getUser() {
         return user;
     }
-    public String getUserName(){
-        if(null != user){
+    public String getUserName() {
+        if(null != user) {
             return user.getName();
         }
         return null;
@@ -556,7 +556,7 @@ public class Metadata<T extends Metadata> {
         this.runs = run;
     }
     public void addRun(Run run) {
-        if(null != origin){
+        if(null != origin) {
             origin.addRun(run);
             return;
         }
@@ -605,8 +605,8 @@ public class Metadata<T extends Metadata> {
     }
 
     public boolean execute() {
-        if(null != origin){
-            if(!origin.execute()){
+        if(null != origin) {
+            if(!origin.execute()) {
                 return false;
             }
         }
@@ -729,10 +729,10 @@ public class Metadata<T extends Metadata> {
     public void setText(String text) {
         this.text = text;
     }
-    public void swt(ACTION.SWITCH swt){
+    public void swt(ACTION.SWITCH swt) {
         this.swt = swt;
     }
-    public ACTION.SWITCH swt(){
+    public ACTION.SWITCH swt() {
         return this.swt;
     }
     public String getKeyword() {

@@ -121,9 +121,9 @@ public class NebulaRuntimeHolder extends AbstractRuntimeHolder {
     public boolean destroy(String key) {
         int close = 0;
         DataSourceMonitor monitor = DriverAdapterHolder.getMonitor();
-        if(null != monitor){
+        if(null != monitor) {
             NebulaRuntime runtime = (NebulaRuntime) runtimes.get(key);
-            if(null != runtime){
+            if(null != runtime) {
                 //这一步有可能抛出 异常
                 close = monitor.destroy(runtime, key, runtime.getSession());
             }

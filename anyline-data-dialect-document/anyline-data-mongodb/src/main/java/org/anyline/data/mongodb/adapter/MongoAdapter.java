@@ -456,7 +456,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
             if(ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
                 log.info("{}[封装耗时:{}][封装行数:{}]", random, DateUtil.format(System.currentTimeMillis() - fr), set.size());
             }
-            if((!system || !ConfigStore.IS_LOG_QUERY_RESULT_EXCLUDE_METADATA(configs)) && ConfigStore.IS_LOG_QUERY_RESULT(configs) && log.isInfoEnabled()){
+            if((!system || !ConfigStore.IS_LOG_QUERY_RESULT_EXCLUDE_METADATA(configs)) && ConfigStore.IS_LOG_QUERY_RESULT(configs) && log.isInfoEnabled()) {
                 log.info("{}[查询结果]{}", random, LogUtil.table(set));
             }
         }catch(Exception e) {
@@ -934,7 +934,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
      * @return List
      * @param <T> Table
      */
-    public <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Table query, int types, int struct, ConfigStore configs){
+    public <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Table query, int types, int struct, ConfigStore configs) {
         Catalog catalog = query.getCatalog();
         Schema schema = query.getSchema();
         String pattern = query.getName();
@@ -942,9 +942,9 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
         MongoRuntime rt = (MongoRuntime) runtime;
         MongoDatabase database = rt.getDatabase();
         ListCollectionNamesIterable names = database.listCollectionNames();
-        for(String name:names){
+        for(String name:names) {
             T table = (T) new Table(name);
-            if(BasicUtil.isNotEmpty(pattern)){
+            if(BasicUtil.isNotEmpty(pattern)) {
                 String regex = pattern.replace("%", ".*").replace("_", ".");
                 if (RegularUtil.match(name.toUpperCase(), regex.toUpperCase(), Regular.MATCH_MODE.MATCH)) {
                     tables.add(table);
@@ -988,20 +988,20 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
         List<T> list = new ArrayList<>();
         MongoRuntime rt = (MongoRuntime) runtime;
         MongoDatabase database = rt.getDatabase();
-        for(Table table:tables){
+        for(Table table:tables) {
             String cache_key = CacheProxy.key(runtime, "collection_column", greedy, catalog, schema, table.getName());
             LinkedHashMap<String, T> columns = CacheProxy.columns(cache_key);
-            if(null == columns || columns.isEmpty()){
+            if(null == columns || columns.isEmpty()) {
                 MongoCollection collection = database.getCollection(table.getName());
-                if(null != collection){
+                if(null != collection) {
                     if(ConfigTable.CHECK_METADATA_SAMPLE > 0) {
                         MongoCursor<Document> cursor = collection.find().limit(ConfigTable.CHECK_METADATA_SAMPLE).iterator();
-                        while (cursor.hasNext()){
+                        while (cursor.hasNext()) {
                             Document doc = cursor.next();
                             Set<String> fields = doc.keySet();
-                            for(String field:fields){
+                            for(String field:fields) {
                                 String up = field.toUpperCase();
-                                if(columns.containsKey(up)){
+                                if(columns.containsKey(up)) {
                                     continue;
                                 }
                                 Object value = doc.get(field);

@@ -2280,7 +2280,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 			if (BasicUtil.isNotEmpty(name)) {
 				builder.append("WHERE "+keyword(table)+"_NAME = '").append(name).append("'");
 			}
-			if(null != configs){
+			if(null != configs) {
 				run.setPageNavi(configs.getPageNavi());
 			}
 		}

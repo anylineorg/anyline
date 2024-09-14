@@ -36,10 +36,10 @@ public class PageContext extends BaseBodyTag implements Cloneable{
 	 
 	public int doEndTag() throws JspException {
 		try{
-			if(null != key){
+			if(null != key) {
 				pageContext.setAttribute(key, BasicUtil.nvl(value,body));
 			} 
-		}catch(Exception e){
+		}catch(Exception e) {
 			e.printStackTrace(); 
 		}finally{
 			release(); 

@@ -388,10 +388,10 @@ public class TextRun extends AbstractRun implements Run {
 		return list;
 	}
 	protected boolean supportSqlVarPlaceholderRegexExt = true;
-	public boolean supportSqlVarPlaceholderRegexExt(){
+	public boolean supportSqlVarPlaceholderRegexExt() {
 		return supportSqlVarPlaceholderRegexExt;
 	}
-	public void supportSqlVarPlaceholderRegexExt(boolean supportSqlVarPlaceholderRegexExt){
+	public void supportSqlVarPlaceholderRegexExt(boolean supportSqlVarPlaceholderRegexExt) {
 		this.supportSqlVarPlaceholderRegexExt = supportSqlVarPlaceholderRegexExt;
 	}
 }

@@ -35,16 +35,16 @@ public class MinuteFormat extends BaseBodyTag implements Cloneable{
 	public int doEndTag() throws JspException {
 		try{
 			String result = ""; 
-			if(null == value){
+			if(null == value) {
 				value = body; 
 			}
-			if(BasicUtil.isNotEmpty(value)){
+			if(BasicUtil.isNotEmpty(value)) {
 				int minute = BasicUtil.parseInt(value, 0);
 				result = DateUtil.convertMinute(minute);
 			} 
 			JspWriter out = pageContext.getOut(); 
 			out.print(result); 
-		}catch(Exception e){
+		}catch(Exception e) {
 			e.printStackTrace(); 
 		}finally{
 			release(); 

@@ -34,12 +34,12 @@ public class DESUrl extends BaseBodyTag implements Cloneable{
 	public int doEndTag() throws JspException {
 		try{
 			value = BasicUtil.nvl(value,body,"").toString().trim(); 
-			if(null != value && !"".equals(value)){
+			if(null != value && !"".equals(value)) {
 				String result = ""; 
 				String url = value; 
 				String split = ""; 
 				String param = ""; 
-				if(value.contains("?")){
+				if(value.contains("?")) {
 					url = value.substring(0, value.indexOf("?")); 
 					param = value.substring(value.indexOf("?")+1); 
 					split = "?"; 
@@ -48,7 +48,7 @@ public class DESUrl extends BaseBodyTag implements Cloneable{
 				JspWriter out = pageContext.getOut(); 
 				out.print(result); 
 			} 
-		}catch(Exception e){
+		}catch(Exception e) {
 			e.printStackTrace(); 
 		}finally{
 			release(); 

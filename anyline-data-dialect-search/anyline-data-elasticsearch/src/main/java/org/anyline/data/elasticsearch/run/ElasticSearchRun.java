@@ -56,7 +56,7 @@ public class ElasticSearchRun extends TableRun implements Run {
     public void setEndpoint(String endpoint) {
         this.endpoint = endpoint;
     }
-    public boolean isEmptyCondition(){
+    public boolean isEmptyCondition() {
         //不检测更新条件 直接POST
         return false;
     }
@@ -104,8 +104,8 @@ public class ElasticSearchRun extends TableRun implements Run {
     }
 
     @Override
-    public boolean isEmpty(){
-        if(null != endpoint){
+    public boolean isEmpty() {
+        if(null != endpoint) {
             return false;
         }
         return true;

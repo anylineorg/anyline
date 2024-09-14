@@ -39,36 +39,36 @@ public class TimeDelay extends BaseBodyTag implements Cloneable{
 	public int doEndTag() throws JspException {
 		try{
 			String result = ""; 
-			if(null == value){
+			if(null == value) {
 				value = body; 
 			} 
-			if(BasicUtil.isEmpty(value) && BasicUtil.parseBoolean(nvl)){
+			if(BasicUtil.isEmpty(value) && BasicUtil.parseBoolean(nvl)) {
 				value = new Date(); 
-			}else if(value instanceof String){
+			}else if(value instanceof String) {
 				value = DateUtil.parse((String)value); 
 			}
 			Date date = (Date)value;
 			long fr = date.getTime()/1000;
 			long to = new Date().getTime()/1000;
 			long dif = to - fr;
-			if(dif < 60){
+			if(dif < 60) {
 				result = dif + "秒";
-			}else if(dif < 60 * 60){
+			}else if(dif < 60 * 60) {
 				result = dif/60 + "分钟";
-			}else if(dif <60*60*24){
+			}else if(dif <60*60*24) {
 				result = dif/60/60 + "小时";
-			}else if(dif <60*60*24*7){
+			}else if(dif <60*60*24*7) {
 				result = dif/60/60/24 + "天";
-			}else if(dif <60*60*24*30){
+			}else if(dif <60*60*24*30) {
 				result = dif/60/60/24/7 + "周";
-			}else if(dif <60*60*24*365){
+			}else if(dif <60*60*24*365) {
 				result = dif/60/60/24/30 + "月";
 			}else{
 				result = dif/60/60/24/365 + "年";
 			} 
 			JspWriter out = pageContext.getOut(); 
 			out.print(result); 
-		}catch(Exception e){
+		}catch(Exception e) {
 			e.printStackTrace(); 
 		}finally{
 			release(); 

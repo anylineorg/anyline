@@ -63,7 +63,7 @@ public class JDBCRuntime extends AbstractRuntime implements DataRuntime {
             driver = this.driver;
             keep = true;
         }
-        if(!keep){
+        if(!keep) {
             connection = true;
             driver = null;
             url = null;
@@ -104,7 +104,7 @@ public class JDBCRuntime extends AbstractRuntime implements DataRuntime {
         if(null == adapterKey && keep) {
             adapterKey = DataSourceUtil.parseAdapterKey(feature);
         }
-        if(keep){
+        if(keep) {
             this.feature = feature;
             this.url = url;
         }

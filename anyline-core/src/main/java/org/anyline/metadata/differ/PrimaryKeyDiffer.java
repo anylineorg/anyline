@@ -26,27 +26,27 @@ public class PrimaryKeyDiffer extends AbstractDiffer {
 
     public static PrimaryKeyDiffer compare(PrimaryKey origin, PrimaryKey dest, Table direct) {
         PrimaryKeyDiffer differ = new PrimaryKeyDiffer();
-        if(null == origin && null == dest){
+        if(null == origin && null == dest) {
             return differ;
         }
 
-        if(null == origin){
+        if(null == origin) {
             differ.add = dest;
-            if(null == direct){
+            if(null == direct) {
                 direct = dest.getTable();
             }
         }else{
-            if(null == dest){
+            if(null == dest) {
                 origin.drop();
                 differ.drop = origin;
-                if(null == direct){
+                if(null == direct) {
                     direct = origin.getTable();
                 }
             }else{
                 if(!origin.equals(dest)) {
                     origin.setUpdate(dest, false, false);
                     differ.alter = origin;
-                    if(null == direct){
+                    if(null == direct) {
                         direct = origin.getTable();
                     }
                 }
@@ -55,11 +55,11 @@ public class PrimaryKeyDiffer extends AbstractDiffer {
         differ.setDirect(direct);
         return differ;
     }
-    public static PrimaryKeyDiffer compare(PrimaryKey origin, PrimaryKey dest){
+    public static PrimaryKeyDiffer compare(PrimaryKey origin, PrimaryKey dest) {
         Table direct = null;
-        if(null != origin){
+        if(null != origin) {
             direct = origin.getTable();
-        }else if(null == dest){
+        }else if(null == dest) {
             direct = dest.getTable();
         }
         return compare(origin, dest, direct);

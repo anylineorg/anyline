@@ -32,17 +32,17 @@ public class Random extends BaseBodyTag {
 
 		String result = ""; 
 		try {
-			if(BasicUtil.isNotEmpty(var)){
+			if(BasicUtil.isNotEmpty(var)) {
 				pageContext.getRequest().removeAttribute(var);
 			}
 			int _begin = BasicUtil.parseInt(begin, 0);
 			int _end = BasicUtil.parseInt(end, 0);
-			if(_begin != _end){
+			if(_begin != _end) {
 				result = BasicUtil.getRandomNumber(_begin, _end)+"";
 			}else{
 				int size = BasicUtil.parseInt(length, 0);
-				if(size>0){
-					if("char".equalsIgnoreCase(type) || "string".equalsIgnoreCase(type)){
+				if(size>0) {
+					if("char".equalsIgnoreCase(type) || "string".equalsIgnoreCase(type)) {
 						result = BasicUtil.getRandomString(size);
 					}else{
 						result = BasicUtil.getRandomNumberString(size);
@@ -50,7 +50,7 @@ public class Random extends BaseBodyTag {
 				}
 			}
 			if(null != result) {
-				if(BasicUtil.isNotEmpty(var)){
+				if(BasicUtil.isNotEmpty(var)) {
 					pageContext.getRequest().setAttribute(var, result);
 				}else {
 					JspWriter out = pageContext.getOut();

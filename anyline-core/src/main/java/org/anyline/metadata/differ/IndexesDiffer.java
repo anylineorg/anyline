@@ -40,11 +40,11 @@ public class IndexesDiffer extends AbstractDiffer {
         }
         for(String key:origins.keySet()) {
             Index origin = origins.get(key);
-            if(origin.isPrimary()){
+            if(origin.isPrimary()) {
                 continue;
             }
             Index dest = dests.get(key);
-            if(null != dest && dest.isPrimary()){
+            if(null != dest && dest.isPrimary()) {
                 continue;
             }
             if(null == dest) {
@@ -61,7 +61,7 @@ public class IndexesDiffer extends AbstractDiffer {
         for(String key:dests.keySet()) {
             if(!origins.containsKey(key)) {
                 Index index = dests.get(key);
-                if(index.isPrimary()){
+                if(index.isPrimary()) {
                     continue;
                 }
                 adds.put(key, index);

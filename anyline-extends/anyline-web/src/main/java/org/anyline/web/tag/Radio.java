@@ -50,27 +50,27 @@ public class Radio extends BaseBodyTag{
 		textKey = textKey.replace("{","${");
 		valueKey = valueKey.replace("{","${");
 		try{
-			if(BasicUtil.isEmpty(name)){
+			if(BasicUtil.isEmpty(name)) {
 				name = BasicUtil.getRandomLowerString(10);
 			} 
-			if(null != data){
-				if(data instanceof String){
-					if(data.toString().endsWith("}")){
+			if(null != data) {
+				if(data instanceof String) {
+					if(data.toString().endsWith("}")) {
 						data = data.toString().replace("{", "").replace("}", "");
 					}else{
-						if("servlet".equals(scope) || "application".equalsIgnoreCase(scope)){
+						if("servlet".equals(scope) || "application".equalsIgnoreCase(scope)) {
 							data = request.getSession().getServletContext().getAttribute(data.toString()); 
-						}else if("session".equals(scope)){
+						}else if("session".equals(scope)) {
 							data = request.getSession().getAttribute(data.toString()); 
 						}else{
 							data = request.getAttribute(data.toString()); 
 						} 
 					} 
 				} 
-				if(data instanceof String){
+				if(data instanceof String) {
 					String items[] = data.toString().split(","); 
 					List list = new ArrayList(); 
-					for(String item:items){
+					for(String item:items) {
 						Map map = new HashMap(); 
 						String ks[] = BeanUtil.parseKeyValue(item); 
 						map.put(valueKey, ks[0]); 
@@ -84,8 +84,8 @@ public class Radio extends BaseBodyTag{
 				String itemBorderTagName ="";
 				String itemBorderStartTag = "";
 				String itemBorderEndTag = "";
-				if(BasicUtil.isNotEmpty(border) && !"false".equals(border)){
-					if("true".equalsIgnoreCase(border)){
+				if(BasicUtil.isNotEmpty(border) && !"false".equals(border)) {
+					if("true".equalsIgnoreCase(border)) {
 						itemBorderTagName = "div";
 					}else{
 						itemBorderTagName = border;
@@ -93,21 +93,21 @@ public class Radio extends BaseBodyTag{
 					itemBorderStartTag = "<"+itemBorderTagName+" class=\""+borderClazz+"\">";
 					itemBorderEndTag = "</"+itemBorderTagName+">";
 				}
-				if(null == headValue){
+				if(null == headValue) {
 					headValue = "";
 				}
 
-				if(null == headValue){
+				if(null == headValue) {
 					headValue = "";
 				}
-				if(null != head){
+				if(null != head) {
 					String id = this.id;
-					if(BasicUtil.isEmpty(id)){
+					if(BasicUtil.isEmpty(id)) {
 						id = name +"_"+ headValue; 
 					}
 					html.append(itemBorderStartTag);
 					html.append("<input type=\"radio\"");
-					if((null != headValue && headValue.equals(value))){
+					if((null != headValue && headValue.equals(value))) {
 						html.append(" checked = \"checked\"");
 					}
 					Map<String, String> map = new HashMap<String, String>();
@@ -124,24 +124,24 @@ public class Radio extends BaseBodyTag{
 				 
 				Collection<Map> items = (Collection<Map>)data;
 				if(null != items) 
-				for(Map item:items){
+				for(Map item:items) {
 					Object srcValue = BeanUtil.getFieldValue(item, valueKey);
 					Object value = srcValue;
-					if(this.encrypt){
+					if(this.encrypt) {
 						value = DESUtil.encryptValue(value+"");
 					}
 					
 					String id = name +"_"+ value;
 					html.append(itemBorderStartTag);
 					html.append("<input type=\"radio\" value=\"").append(value).append("\" id=\"").append(id).append("\"");
-					if(null != srcValue && null != this.value && srcValue.toString().equals(this.value.toString())){
+					if(null != srcValue && null != this.value && srcValue.toString().equals(this.value.toString())) {
 						html.append(" checked=\"checked\""); 
 					}
 					attribute(html);
 					crateExtraData(html,item);
 					html.append("/>");
 					
-					if(BasicUtil.isEmpty(label)){
+					if(BasicUtil.isEmpty(label)) {
 						String labelHtml = "<label for=\""+id+ "\" class=\""+labelClazz+"\">";
 						String labelBody = "";
 						if (textKey.contains("${")) {
@@ -156,7 +156,7 @@ public class Radio extends BaseBodyTag{
 						html.append(labelHtml);
 					}else{//指定label文本
 						String labelHtml = label;
-						if(labelHtml.contains("{") && labelHtml.contains("}")){
+						if(labelHtml.contains("{") && labelHtml.contains("}")) {
 							labelHtml = BeanUtil.parseRuntimeValue(item,labelHtml.replace("{","${"));
 						}
 						html.append(labelHtml);
@@ -167,7 +167,7 @@ public class Radio extends BaseBodyTag{
 			} 
 			JspWriter out = pageContext.getOut(); 
 			out.print(html); 
-		}catch(Exception e){
+		}catch(Exception e) {
 			e.printStackTrace(); 
 		}finally{
 			release(); 

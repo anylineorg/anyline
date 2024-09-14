@@ -158,15 +158,15 @@ public class LogUtil {
         Map<String, Integer> view_widths = new HashMap<>();   //显示宽度
         Map<String, Integer> zip_cols = new HashMap<>();      //整行超宽后 需要压缩的列 String格式的列
         Map<String, Integer> cols_aligns = new HashMap<>();   //对齐方式 -1左对齐(默认) 1右对齐 0居中
-        for(String key:keys){
+        for(String key:keys) {
             Column column = set.getMetadata(key);
-            if(null != column){
+            if(null != column) {
                 TypeMetadata tm = column.getTypeMetadata();
-                if(null != tm){
+                if(null != tm) {
                     TypeMetadata.CATEGORY_GROUP tc = tm.getCategoryGroup();
-                    if(tc == TypeMetadata.CATEGORY_GROUP.DATETIME || tc == TypeMetadata.CATEGORY_GROUP.BOOLEAN){
+                    if(tc == TypeMetadata.CATEGORY_GROUP.DATETIME || tc == TypeMetadata.CATEGORY_GROUP.BOOLEAN) {
                         cols_aligns.put(key.toUpperCase(), 0);
-                    }else if(tc == TypeMetadata.CATEGORY_GROUP.NUMBER){
+                    }else if(tc == TypeMetadata.CATEGORY_GROUP.NUMBER) {
                         cols_aligns.put(key.toUpperCase(), 1);
                     }
                 }
@@ -175,22 +175,22 @@ public class LogUtil {
         boolean has_pk = !set.getPrimaryKeys().isEmpty();
 
         int idx = 0;
-        for(DataRow row:set){
-            if(idx ++ >= rows && rows != -1){
+        for(DataRow row:set) {
+            if(idx ++ >= rows && rows != -1) {
                 break;
             }
-            for(String key:keys){
+            for(String key:keys) {
                 Integer origin_width = origin_widths.get(key.toUpperCase());
-                if(null == origin_width){
+                if(null == origin_width) {
                     origin_width = 0;
                 }
                 String value = " " + row.getString(key) + " ";
                 int key_width = len(key) + 2; //两侧有空格
                 int value_width = 0;
-                if(null != value){
+                if(null != value) {
                     value_width = len(value);
                     origin_width = NumberUtil.max(origin_width, value_width, key_width);
-                    if(value_width > key_width){
+                    if(value_width > key_width) {
                         //value > key 的列,超宽时优先压缩
                         if(isZip(row, key) && value_width > key_width) {
                             zip_cols.put(key.toUpperCase(), value_width);
@@ -201,45 +201,45 @@ public class LogUtil {
             }
         }
         double max_width = 0d; //每行总宽度
-        for(Integer col_width:origin_widths.values()){
+        for(Integer col_width:origin_widths.values()) {
             max_width += col_width;
         }
-        if(limit_width > max_width){
+        if(limit_width > max_width) {
             limit_width = (int)max_width;
         }
         //按比例计算 每列 显示宽度
         double rate = limit_width/max_width;
         int exceed = 0; //根据列且宽度 超出的宽度 按比例缩短最宽n列(但不能小于列名，否则换行显示)
-        for(String key:keys){
+        for(String key:keys) {
             int origin_width = origin_widths.get(key.toUpperCase());  //原宽度
             int rate_width = (int)(origin_width*rate); //按比例计算后宽度
             int view_width = origin_width;//最终显示宽度
             int key_width = len(key)+2;
-            if(zip_cols.containsKey(key.toUpperCase())){
-                if(rate_width < col_max_width){
+            if(zip_cols.containsKey(key.toUpperCase())) {
+                if(rate_width < col_max_width) {
                     rate_width = col_max_width;
                 }
                 view_width = rate_width;
             }
-            if(view_width < key_width){
+            if(view_width < key_width) {
                 view_width = key_width;
             }
-            if(view_width > rate_width){
+            if(view_width > rate_width) {
                 exceed += view_width - rate_width;
             }
             view_widths.put(key.toUpperCase(), view_width);
         }
-        if(exceed > 0){
+        if(exceed > 0) {
             double zip_cols_width = 0d; //需要压缩的宽列一共宽度
-            for(String key:zip_cols.keySet()){
+            for(String key:zip_cols.keySet()) {
                 zip_cols_width += zip_cols.get(key);
             }
             //按比例压缩
-            for(String key:zip_cols.keySet()){
+            for(String key:zip_cols.keySet()) {
                 int view_width = view_widths.get(key);
                 int key_width = len(key) + 2;
                 view_width = view_width - (int)((view_width/zip_cols_width)*exceed);
-                if(view_width < key_width){
+                if(view_width < key_width) {
                     //比列名短
                     view_width = key_width;
                 }
@@ -251,10 +251,10 @@ public class LogUtil {
         List<List<String>> tables = new ArrayList<>();
         List<String> table = new ArrayList<>();
         int total = 0;
-        for(String key:keys){
+        for(String key:keys) {
             int view_width = view_widths.get(key.toUpperCase());
             total += view_width;
-            if(total > limit_width){
+            if(total > limit_width) {
                 tables.add(table);
                 //下一个表
                 table = new ArrayList<>();
@@ -264,28 +264,28 @@ public class LogUtil {
                 table.add(key);
             }
         }
-        if(!table.isEmpty()){
+        if(!table.isEmpty()) {
             tables.add(table);
         }
         int tab_index = 0;
         result.append("[tables:").append(tables.size()).append("][rows:").append(set.size()).append("][cols:").append(keys.size()).append("]");
-        if(BasicUtil.isNotEmpty(ConfigTable.LOG_QUERY_RESULT_ALT)){
+        if(BasicUtil.isNotEmpty(ConfigTable.LOG_QUERY_RESULT_ALT)) {
             result.append(ConfigTable.LOG_QUERY_RESULT_ALT);
         }
         result.append("\n");
-        for(List<String> cols:tables){
+        for(List<String> cols:tables) {
             StringBuilder builder = new StringBuilder();
             //分隔线
             StringBuilder row_split = new StringBuilder();
-            if(!has_pk){
+            if(!has_pk) {
                 row_split.append("---");
             }
             int col_size = cols.size();
-            for(int i=0; i<col_size; i++){
+            for(int i=0; i<col_size; i++) {
                 Integer view_width = view_widths.get(cols.get(i).toUpperCase());
                 String left = "";
                 String right = "+";
-                if(i == 0){
+                if(i == 0) {
                     left = "+";
                 }
                 row_split.append(left);
@@ -296,16 +296,16 @@ public class LogUtil {
             builder.append("\n");
             //生成表头
             StringBuilder title = new StringBuilder();
-            if(!has_pk){
+            if(!has_pk) {
                 title.append((tab_index+1)+"/"+tables.size());
                 tab_index ++;
             }
-            for(int i=0; i<col_size; i++){
+            for(int i=0; i<col_size; i++) {
                 String key = cols.get(i);
                 int view_width = view_widths.get(key.toUpperCase());
                 String left = "";
                 String right = "|";
-                if(i == 0){
+                if(i == 0) {
                     left = "|";
                 }
                 title.append(left);
@@ -321,28 +321,28 @@ public class LogUtil {
             builder.append("\n");
             builder.append(row_split);
             idx = 0;
-            for(DataRow row:set){
-                if(idx >= rows && rows != -1){
+            for(DataRow row:set) {
+                if(idx >= rows && rows != -1) {
                     break;
                 }
                 builder.append("\n");
-                if(!has_pk){
+                if(!has_pk) {
                     builder.append(cell(idx+"", 3, 1));
                 }
                 idx ++;
-                for(int i=0; i<col_size; i++){
+                for(int i=0; i<col_size; i++) {
                     String key = cols.get(i);
                     String value = " " + row.getString(key) + " ";
                     int view_width = view_widths.get(key.toUpperCase());
                     String left = "";
                     String right = "|";
-                    if(i == 0){
+                    if(i == 0) {
                         left = "|";
                     }
                     builder.append(left);
                     Integer align = cols_aligns.get(key.toUpperCase());
                     String content = cell(value, view_width, align);
-                    if(null != align && align == 1){
+                    if(null != align && align == 1) {
                         content = format(content, 36);
                     }
                     builder.append(content);
@@ -365,26 +365,26 @@ public class LogUtil {
     private static boolean isZip(DataRow row, String key) {
         Column column = row.getMetadata(key);
         boolean zip = true;
-        if(null != column){
+        if(null != column) {
             TypeMetadata.CATEGORY_GROUP type = column.getTypeMetadata().getCategoryGroup();
             //NUMBER, BOOLEAN, BYTES, DATETIME 这几类不压缩
-            if(type == TypeMetadata.CATEGORY_GROUP.NUMBER || type == TypeMetadata.CATEGORY_GROUP.BOOLEAN || type == TypeMetadata.CATEGORY_GROUP.BYTES || type == TypeMetadata.CATEGORY_GROUP.DATETIME){
+            if(type == TypeMetadata.CATEGORY_GROUP.NUMBER || type == TypeMetadata.CATEGORY_GROUP.BOOLEAN || type == TypeMetadata.CATEGORY_GROUP.BYTES || type == TypeMetadata.CATEGORY_GROUP.DATETIME) {
                 zip = false;
             }
         }
         return zip;
     }
 
-    public static void fill(StringBuilder builder, int size, String ch){
-        for(int i=0; i<size; i++){
+    public static void fill(StringBuilder builder, int size, String ch) {
+        for(int i=0; i<size; i++) {
             builder.append(ch);
         }
     }
-    public static int len(String src){
+    public static int len(String src) {
         String chrs[] = src.split("");
         int cnt = 0;
-        for(String chr:chrs){
-            if(SINGLE_CHAR.contains(chr.toLowerCase())){
+        for(String chr:chrs) {
+            if(SINGLE_CHAR.contains(chr.toLowerCase())) {
                 cnt += 1;
             }else{
                 cnt += 2;
@@ -401,21 +401,21 @@ public class LogUtil {
      * @param align 对齐方式 -1左对齐(默认) 1右对齐 0居中
      * @return String
      */
-    public static String cell(String src, int size, Integer align){
-        if(null == align){
+    public static String cell(String src, int size, Integer align) {
+        if(null == align) {
             align = -1;
         }
         StringBuilder result = new StringBuilder();
         String chrs[] = src.split("");
         int cnt = 0;
-        for(String chr:chrs){
-            if(cnt >= size){
+        for(String chr:chrs) {
+            if(cnt >= size) {
                 break;
             }
-            if(SINGLE_CHAR.contains(chr.toLowerCase())){
+            if(SINGLE_CHAR.contains(chr.toLowerCase())) {
                 cnt += 1;
             }else{
-                if(cnt + 2 > size){
+                if(cnt + 2 > size) {
                     break;
                 }
                 cnt += 2;
@@ -423,11 +423,11 @@ public class LogUtil {
             result.append(chr);
         }
         int dif = size - cnt;
-        if(align == 1){
+        if(align == 1) {
             for (int i = 0; i < dif; i++) {
                 result.insert(0," ");
             }
-        }else if(align == 0){
+        }else if(align == 0) {
             int left = (int)Math.ceil(dif/2);
             int right = dif - left;
             for (int i = 0; i < left; i++) {

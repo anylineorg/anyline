@@ -39,7 +39,7 @@ public class InfluxDataSourceHolder extends AbstractDataSourceHolder {
 		return instance;
 	}
 
-	public InfluxDataSourceHolder(){
+	public InfluxDataSourceHolder() {
 		DataSourceHolder.register(InfluxDBClient.class, this);
 	}
 
@@ -113,10 +113,10 @@ public class InfluxDataSourceHolder extends AbstractDataSourceHolder {
 			InfluxDBClientOptions.Builder  builder = InfluxDBClientOptions.builder()
 				.url(url)
 				.authenticateToken(token.toCharArray());
-			if(BasicUtil.isNotEmpty(org)){
+			if(BasicUtil.isNotEmpty(org)) {
 				builder.org(org);
 			}
-			if(BasicUtil.isNotEmpty(bucket)){
+			if(BasicUtil.isNotEmpty(bucket)) {
 				builder.bucket(bucket);
 			}
 			InfluxDBClientOptions options = builder.build();

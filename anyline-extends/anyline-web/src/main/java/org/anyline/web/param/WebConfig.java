@@ -27,9 +27,9 @@ public class WebConfig extends DefaultConfig implements Config {
 	public void setValue(HttpServletRequest request) {
 		super.setValue(WebUtil.values(request));
 	}
-	public WebConfig(){
+	public WebConfig() {
 	}
-	public WebConfig(String config){
+	public WebConfig(String config) {
 		super(config);
 	}
 }

@@ -298,7 +298,7 @@ public enum VoltDBTypeMetadataAlias implements TypeMetadataAlias {
 	private String scaleRefer                ; // 读取元数据依据-小数位数
 	private TypeMetadata.Refer refer         ; // 集成元数据读写配置
 
-	VoltDBTypeMetadataAlias(String input, TypeMetadata standard, String meta, String formula, String lengthRefer, String precisionRefer, String scaleRefer, int ignoreLength, int ignorePrecision, int ignoreScale){
+	VoltDBTypeMetadataAlias(String input, TypeMetadata standard, String meta, String formula, String lengthRefer, String precisionRefer, String scaleRefer, int ignoreLength, int ignorePrecision, int ignoreScale) {
 		this.input = input;
 		this.standard = standard;
 		this.meta = meta;
@@ -311,34 +311,34 @@ public enum VoltDBTypeMetadataAlias implements TypeMetadataAlias {
 		this.ignoreScale = ignoreScale;
 	}
 
-	VoltDBTypeMetadataAlias(String input, TypeMetadata standard, String lengthRefer, String precisionRefer, String scaleRefer, int ignoreLength, int ignorePrecision, int ignoreScale){
+	VoltDBTypeMetadataAlias(String input, TypeMetadata standard, String lengthRefer, String precisionRefer, String scaleRefer, int ignoreLength, int ignorePrecision, int ignoreScale) {
 		this(input, standard, null , null, lengthRefer, precisionRefer, scaleRefer, ignoreLength, ignorePrecision, ignoreScale);
 	}
 
-	VoltDBTypeMetadataAlias(String input, TypeMetadata standard, String meta, String formula, int ignoreLength, int ignorePrecision, int ignoreScale){
+	VoltDBTypeMetadataAlias(String input, TypeMetadata standard, String meta, String formula, int ignoreLength, int ignorePrecision, int ignoreScale) {
 		this(input, standard, meta, formula, null, null, null, ignoreLength, ignorePrecision, ignoreScale);
 	}
 
-	VoltDBTypeMetadataAlias(String input, TypeMetadata standard, int ignoreLength, int ignorePrecision, int ignoreScale){
+	VoltDBTypeMetadataAlias(String input, TypeMetadata standard, int ignoreLength, int ignorePrecision, int ignoreScale) {
 		this(input, standard, null, null, null, ignoreLength, ignorePrecision, ignoreScale);
 	}
 
-	VoltDBTypeMetadataAlias(TypeMetadata standard, String lengthRefer, String precisionRefer, String scaleRefer, int ignoreLength, int ignorePrecision, int ignoreScale){
+	VoltDBTypeMetadataAlias(TypeMetadata standard, String lengthRefer, String precisionRefer, String scaleRefer, int ignoreLength, int ignorePrecision, int ignoreScale) {
 		this(null, standard, lengthRefer, precisionRefer, scaleRefer, ignoreLength, ignorePrecision, ignoreScale);
 	}
 
-	VoltDBTypeMetadataAlias(String input, TypeMetadata standard){
+	VoltDBTypeMetadataAlias(String input, TypeMetadata standard) {
 		this.input = input;
 		this.standard = standard;
 	}
 
-	VoltDBTypeMetadataAlias(TypeMetadata standard){
+	VoltDBTypeMetadataAlias(TypeMetadata standard) {
 		this.standard = standard;
 	}
 
 	@Override
-	public String input(){
-		if(null == input){
+	public String input() {
+		if(null == input) {
 			input = name();
 		}
 		return input;
@@ -351,7 +351,7 @@ public enum VoltDBTypeMetadataAlias implements TypeMetadataAlias {
 
 	@Override
 	public TypeMetadata.Refer refer() {
-		if(null == refer){
+		if(null == refer) {
 			refer = new TypeMetadata.Refer();
 			if(null != meta) {
 				refer.setMeta(meta);

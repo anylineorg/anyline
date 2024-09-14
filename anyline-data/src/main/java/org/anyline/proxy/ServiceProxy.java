@@ -249,7 +249,7 @@ public class ServiceProxy {
      * @param conditions 查询条件 支持k:v k:v::type 以及原生sql形式(包含ORDER、GROUP、HAVING)默认忽略空值条件
      * @return 影响行数
      */
-    public static long insert(Table dest, Table origin, ConfigStore configs, Object obj, String ... conditions){
+    public static long insert(Table dest, Table origin, ConfigStore configs, Object obj, String ... conditions) {
         return service.insert(dest, origin, configs, obj, conditions);
     }
     public static long insert(Table dest, Table origin, Object obj, String ... conditions) {
@@ -271,7 +271,7 @@ public class ServiceProxy {
         return service.insert(dest, origin, first, last,  conditions);
     }
 
-    public static long insert(String dest, String origin, ConfigStore configs, Object obj, String ... conditions){
+    public static long insert(String dest, String origin, ConfigStore configs, Object obj, String ... conditions) {
         return service.insert(dest, origin, configs, obj, conditions);
     }
     public static long insert(String dest, String origin, Object obj, String ... conditions) {
@@ -300,7 +300,7 @@ public class ServiceProxy {
      * @param prepare 一般通过TableBuilder生成查询
      * @return 影响行数
      */
-    public static long insert(Table dest, RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions){
+    public static long insert(Table dest, RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions) {
         return service.insert(dest, prepare, configs, obj, conditions);
     }
     public static long insert(Table dest, RunPrepare prepare, long first, long last, ConfigStore configs, Object obj, String ... conditions) {
@@ -323,7 +323,7 @@ public class ServiceProxy {
         return service.insert(dest, prepare, first, last,  conditions);
     }
 
-    public static long insert(String dest, RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions){
+    public static long insert(String dest, RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions) {
         return service.insert(dest, prepare, configs, obj, conditions);
     }
     public static long insert(String dest, RunPrepare prepare, long first, long last, ConfigStore configs, Object obj, String ... conditions) {
@@ -1258,7 +1258,7 @@ public class ServiceProxy {
         return service.count(dest, conditions);
     }
 
-    public static long count(RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions){
+    public static long count(RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions) {
         return service.count(prepare, configs, obj, conditions);
     }
     public static long count(RunPrepare prepare, Object obj, String ... conditions) {
@@ -1330,7 +1330,7 @@ public class ServiceProxy {
      * @param values 如果是批量执行，需要提供一个二维数组
      * @return 影响行数批量执行时不准确
      */
-    public static long execute(int batch, String sql, Collection<Object> values){
+    public static long execute(int batch, String sql, Collection<Object> values) {
         return service.execute(batch, sql, values);
     }
 
@@ -1344,7 +1344,7 @@ public class ServiceProxy {
      * @param values 如果是批量执行，需要提供一个二维数组
      * @return 影响行数批量执行时不准确
      */
-    public static long execute(int batch, int vol, String sql, Collection<Object> values){
+    public static long execute(int batch, int vol, String sql, Collection<Object> values) {
         return service.execute(batch, vol, sql, values);
     }
 
@@ -1448,10 +1448,10 @@ public class ServiceProxy {
         return service.delete(table, kvs);
     }
 
-    public static long delete(Table table, Collection values){
+    public static long delete(Table table, Collection values) {
         return service.delete(table, values);
     }
-    public static long delete(String table, Collection values){
+    public static long delete(String table, Collection values) {
         return service.delete(table, values);
     }
 
@@ -1582,7 +1582,7 @@ public class ServiceProxy {
      * @param condition 是否需要拼接查询条件, 如果需要会拼接where 1=0 条件(默认不添加，通常情况下SQL自带查询条件，给参数赋值NULL达到相同的效果)
      * @return LinkedHashMap
      */
-    public static LinkedHashMap<String, Column> metadata(String sql, boolean comment, boolean condition){
+    public static LinkedHashMap<String, Column> metadata(String sql, boolean comment, boolean condition) {
         return service.metadata(sql, comment,condition);
     }
     public static  LinkedHashMap<String, Column> metadata(String sql) {

@@ -66,11 +66,11 @@ public class ClassUtil {
 	 * @param check 类或对象
 	 * @return null返回true
 	 */
-	public static boolean isJavaType(Object check){
-		if(null == check){
+	public static boolean isJavaType(Object check) {
+		if(null == check) {
 			return true;
 		}
-		if(ClassUtil.isPrimitiveClass(check)){
+		if(ClassUtil.isPrimitiveClass(check)) {
 			return true;
 		}
 		if(check instanceof Class) {
@@ -520,19 +520,19 @@ public class ClassUtil {
 			}
 		}
 		//忽略大小写及其他符号
-		if(null == field && ignoreCase){
+		if(null == field && ignoreCase) {
 			name = name.replace("_", "");
 			Field[] fields = clazz.getFields();
 			for(Field item:fields) {
-				if(name.equalsIgnoreCase(item.getName().replace("_",""))){
+				if(name.equalsIgnoreCase(item.getName().replace("_",""))) {
 					field = item;
 					break;
 				}
 			}
-			if(null == field){
+			if(null == field) {
 				fields = clazz.getDeclaredFields();
 				for(Field item:fields) {
-					if(name.equalsIgnoreCase(item.getName().replace("_",""))){
+					if(name.equalsIgnoreCase(item.getName().replace("_",""))) {
 						field = item;
 						break;
 					}

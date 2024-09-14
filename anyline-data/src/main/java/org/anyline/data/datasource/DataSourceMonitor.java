@@ -45,7 +45,7 @@ public interface DataSourceMonitor {
      * @throws DataSourceUsingException 如果抛出异常，上层方法会抛出异常并中断注销
      */
     default int destroy(DataRuntime runtime, String key, Object datasource) throws DataSourceUsingException {
-        if(using(runtime, key, datasource)){
+        if(using(runtime, key, datasource)) {
             throw new DataSourceUsingException(key, datasource);
         }
         //可以在这里释放相关资源 并返回 1

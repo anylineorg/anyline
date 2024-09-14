@@ -29,10 +29,10 @@ import java.util.Map;
 public interface Condition extends Cloneable{
 	enum JOIN{
 		AND,OR,FILTER;
-		public String getText(){
+		public String getText() {
 			return " " + this.name() + " ";
 		}
-		public String getCode(){
+		public String getCode() {
 			return this.name();
 		}
 	}
@@ -50,7 +50,7 @@ public interface Condition extends Cloneable{
 	}
 	void index(double index);
 
-	static void sort(List<Condition> configs){
+	static void sort(List<Condition> configs) {
 		Collections.sort(configs, new Comparator<Condition>() {
 			public int compare(Condition r1, Condition r2) {
 				double order1 = r1.index();
@@ -108,9 +108,9 @@ public interface Condition extends Cloneable{
 	 * @return String
 	 */
 	Condition.JOIN getJoin();
-	default String getJoinText(){
+	default String getJoinText() {
 		Condition.JOIN join = getJoin();
-		if(null != join){
+		if(null != join) {
 			return join.getText();
 		}
 		return "";

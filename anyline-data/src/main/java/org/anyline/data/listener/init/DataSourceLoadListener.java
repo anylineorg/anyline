@@ -110,9 +110,9 @@ public class DataSourceLoadListener implements LoadListener {
                 }
             }
         }
-        if(null != adapters){
+        if(null != adapters) {
             for(DriverAdapter adapter:adapters.values()) {
-                if(null == adapter.getActuator()){
+                if(null == adapter.getActuator()) {
                     log.warn("[not found actuator][adapter:{}]", adapter);
                 }
             }

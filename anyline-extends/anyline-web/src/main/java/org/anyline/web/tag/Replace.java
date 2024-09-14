@@ -31,22 +31,22 @@ public class Replace extends BaseBodyTag implements Cloneable{
 	private String to;
 
 	 public int doEndTag() throws JspException {
-		 if(BasicUtil.isNotEmpty(var)){
+		 if(BasicUtil.isNotEmpty(var)) {
 			 pageContext.getRequest().removeAttribute(var);
 		 }
 		 String src = BasicUtil.nvl(value,body,"").toString().trim();
-		 if(BasicUtil.isEmpty(src)){
+		 if(BasicUtil.isEmpty(src)) {
 			 return EVAL_BODY_INCLUDE;
 		 }
-		 if(null == from || from.length()==0){
+		 if(null == from || from.length()==0) {
 			 return EVAL_BODY_INCLUDE;
 		 }
-		if(BasicUtil.isEmpty(to)){
+		if(BasicUtil.isEmpty(to)) {
 			to = "";
 		}
 		try {
 			String result = "";
-			if(null!= separate){
+			if(null!= separate) {
 				/**
 				 * 以separate分隔from,每个条目换成to,如果to中也有separate并且条目长度与from一致则按顺序替换
 				 * value = "ABC123"  from = "ABC" to="a" result = "a123"
@@ -57,9 +57,9 @@ public class Replace extends BaseBodyTag implements Cloneable{
 				String tos[] = to.split(separate,-1);
 
 				result = src;
-				if(tos.length == froms.length){
+				if(tos.length == froms.length) {
 					int len = froms.length;
-					for(int i=0; i<len; i++){
+					for(int i=0; i<len; i++) {
 						result = result.replace(froms[i], tos[i]);
 					}
 				}else {
@@ -71,7 +71,7 @@ public class Replace extends BaseBodyTag implements Cloneable{
 				result = src.replace(from, to);
 			}
 			if(null != result) {
-				if(BasicUtil.isNotEmpty(var)){
+				if(BasicUtil.isNotEmpty(var)) {
 					pageContext.getRequest().setAttribute(var, result);
 				}else {
 					JspWriter out = pageContext.getOut();

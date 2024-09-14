@@ -86,7 +86,7 @@ abstract class LeafNode extends SyntaxNode {
   protected int _position;
   protected BitSet _positionSet;
 
-  LeafNode(int position){
+  LeafNode(int position) {
     _position = position;
     _positionSet = new BitSet(position + 1);
     _positionSet.set(position);

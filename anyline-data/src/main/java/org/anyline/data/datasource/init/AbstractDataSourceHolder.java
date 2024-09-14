@@ -51,7 +51,7 @@ public abstract class AbstractDataSourceHolder implements DataSourceHolder {
      */
     public <T> T value(String prefix, Map map, String keys, Class<T> clazz, T def) {
         T  result = BeanUtil.value(map, keys, DataSourceKeyMap.maps, clazz, def);
-        if(BasicUtil.isEmpty(result)){
+        if(BasicUtil.isEmpty(result)) {
             result = value(prefix, keys, clazz, def);
         }
         return result;

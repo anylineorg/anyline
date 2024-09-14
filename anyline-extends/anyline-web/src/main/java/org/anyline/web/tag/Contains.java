@@ -44,39 +44,39 @@ public class Contains extends BaseBodyTag {
 
 	private boolean contains = false;
 
-	public int doStartTag(){
+	public int doStartTag() {
 		HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
 		String html = "";
 		try{
-			if(null != data && null != value){
-//				if(null != valueProperty && ClassUtil.isWrapClass(value) && !(value instanceof String)){
+			if(null != data && null != value) {
+//				if(null != valueProperty && ClassUtil.isWrapClass(value) && !(value instanceof String)) {
 //					value = BeanUtil.getFieldValue(value, valueProperty);
 //				}
-				if(data instanceof String){
-					if(data.toString().endsWith("}")){
+				if(data instanceof String) {
+					if(data.toString().endsWith("}")) {
 						data = data.toString().replace("{", "").replace("}", "");
 					}else{
-						if("servlet".equals(scope) || "application".equalsIgnoreCase(scope)){
+						if("servlet".equals(scope) || "application".equalsIgnoreCase(scope)) {
 							data = request.getSession().getServletContext().getAttribute(data.toString());
-						}else if("session".equals(scope)){
+						}else if("session".equals(scope)) {
 							data = request.getSession().getAttribute(data.toString());
 						}else{
 							data = request.getAttribute(data.toString());
 						}
 					}
 				}
-				if(data instanceof String){
+				if(data instanceof String) {
 					String items[] = data.toString().split(",");
 					List list = new ArrayList();
-					for(String item:items){
+					for(String item:items) {
 						list.add(item);
 					}
 					data = list;
 				}
-				if(data instanceof Collection){
+				if(data instanceof Collection) {
 					Collection cons = (Collection)data;
-					for(Object item:cons){
-						if(BasicUtil.equals(item, value, property)){
+					for(Object item:cons) {
+						if(BasicUtil.equals(item, value, property)) {
 							contains = true;
 							break;
 						}
@@ -85,14 +85,14 @@ public class Contains extends BaseBodyTag {
 					contains = BasicUtil.equals(data, value, property);
 				}
 			}
-		}catch(Exception e){
+		}catch(Exception e) {
 			e.printStackTrace();
 		}
 
-		if(truncate && !contains){
+		if(truncate && !contains) {
 			return SKIP_PAGE;
 		}
-		if(skip && !contains){
+		if(skip && !contains) {
 			return SKIP_BODY;
 		}else {
 			return EVAL_BODY_BUFFERED;
@@ -102,14 +102,14 @@ public class Contains extends BaseBodyTag {
 	public int doEndTag() throws JspException {
 		try{
 			String html = "";
-			if(contains){
+			if(contains) {
 				html = body;
-			}else if(null != elseValue){
+			}else if(null != elseValue) {
 				html = elseValue.toString();
 			}
 			JspWriter out = pageContext.getOut();
 			out.print(html);
-		}catch(Exception e){
+		}catch(Exception e) {
 
 		}finally{
 			release();

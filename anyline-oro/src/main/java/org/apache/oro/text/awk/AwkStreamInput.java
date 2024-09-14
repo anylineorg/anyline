@@ -164,7 +164,7 @@ public final class AwkStreamInput {
     bytesRead =
       __searchStream.read(tmpBuffer, offset, __bufferIncrementUnit);
 
-    if(bytesRead <= 0){
+    if(bytesRead <= 0) {
       _endOfStreamReached = true;
       /* bytesRead should never equal zero, but if it does, we don't
 	 want to continue to try and read, running the risk of entering

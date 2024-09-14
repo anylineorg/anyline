@@ -126,13 +126,13 @@ public class ConfigParser {
 		String prefix = null;
 		String var = config;
 		String key = config;
-		if(config.contains("::")){
+		if(config.contains("::")) {
 			String[] tmps = config.split("::");
 			config = tmps[0];
 			String type = tmps[1];
-			if(type.endsWith("++")){
+			if(type.endsWith("++")) {
 				config += "++";
-			}else if(type.endsWith("+")){
+			}else if(type.endsWith("+")) {
 				config += "+";
 			}
 			type = type.replace("+", "");
@@ -230,7 +230,7 @@ public class ConfigParser {
 		String key = result.getKey();
 		String var = result.getVar();
 		boolean ignoreCase = false;
-		if(key.startsWith("~")){
+		if(key.startsWith("~")) {
 			ignoreCase = true;
 			key = key.substring(1);
 		}
@@ -275,7 +275,7 @@ public class ConfigParser {
 				}
 				key = key.substring(1, key.length()-1);
 			} else {
-				if(ignoreCase){
+				if(ignoreCase) {
 					result.setCompare(Compare.LIKE_SUFFIX_IGNORE_CASE);
 				}else {
 					result.setCompare(Compare.LIKE_SUFFIX);

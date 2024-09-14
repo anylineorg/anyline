@@ -51,21 +51,21 @@ public class Set extends BaseBodyTag {
 							data = request.getSession().getAttribute(data.toString()); 
 						}  else if ("request".equals(scope)) {
 							data = request.getAttribute(data.toString()); 
-						}else if ("page".equals(scope)){
+						}else if ("page".equals(scope)) {
 							data = pageContext.getAttribute(data.toString()); 
 						} 
 					} 
 				} 
-				if(data instanceof Collection){
+				if(data instanceof Collection) {
 					Collection items = (Collection) data; 
-					if(BasicUtil.isNotEmpty(selector)){
+					if(BasicUtil.isNotEmpty(selector)) {
 						items = BeanUtil.select(items,selector.split(","));
 					} 
-					if(index != null){
+					if(index != null) {
 						int i = 0; 
 						data = null; 
-						for(Object item:items){
-							if(index ==i){
+						for(Object item:items) {
+							if(index ==i) {
 								data = item; 
 								break; 
 							} 
@@ -73,7 +73,7 @@ public class Set extends BaseBodyTag {
 						} 
 					}else{
 						int[] range = BasicUtil.range(begin, end, qty, items.size());
-						if(items instanceof DataSet){
+						if(items instanceof DataSet) {
 							data = ((DataSet) items).cuts(range[0], range[1]);
 						}else {
 							data = BeanUtil.cuts(items, range[0], range[1]);
@@ -89,7 +89,7 @@ public class Set extends BaseBodyTag {
 					request.setAttribute(var,data); 
 				}  else if ("parent".equals(scope)) {
 					Tag parent = this.getParent(); 
-					if(null != parent){
+					if(null != parent) {
 						BeanUtil.setFieldValue(parent, var, data); 
 					} 
 				}else {

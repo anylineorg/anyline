@@ -41,35 +41,35 @@ public class NumberFormat extends BaseBodyTag implements Cloneable{
  
 	public int doEndTag() throws JspException {
 		try{
-			if(BasicUtil.isNotEmpty(var)){
+			if(BasicUtil.isNotEmpty(var)) {
 				pageContext.getRequest().removeAttribute(var);
 			}
 			String result = null;
-			if(null == value){
+			if(null == value) {
 				value = body;
 			}
-			if(BasicUtil.isEmpty(value)){
+			if(BasicUtil.isEmpty(value)) {
 				value = def;
 			}
 			BigDecimal num = null;
-			if(BasicUtil.isNotEmpty(value)){
+			if(BasicUtil.isNotEmpty(value)) {
 				num = new BigDecimal(value.toString());
-				if(BasicUtil.isNotEmpty(min)){
+				if(BasicUtil.isNotEmpty(min)) {
 					BigDecimal minNum = new BigDecimal(min.toString());
-					if(minNum.compareTo(num) > 0){
+					if(minNum.compareTo(num) > 0) {
 						log.warn("[number format][value:{}][小于最小值:{}]", num,min);
 						num = minNum;
 					}
 				}
-				if(BasicUtil.isNotEmpty(max)){
+				if(BasicUtil.isNotEmpty(max)) {
 					BigDecimal maxNum = new BigDecimal(max.toString());
-					if(maxNum.compareTo(num) < 0){
+					if(maxNum.compareTo(num) < 0) {
 						log.warn("[number format][value:{}][超过最大值:{}]",num, max);
 						num = maxNum;
 					}
 				}
-				if(null != scale){
-					if(null != round){
+				if(null != scale) {
+					if(null != round) {
 						num = num.setScale(scale, round);
 					}else {
 						num = num.setScale(scale);
@@ -80,36 +80,36 @@ public class NumberFormat extends BaseBodyTag implements Cloneable{
 				}else{
 					result = num.toString();
 				}
-				if(num.compareTo(BigDecimal.ZERO) > 0){
-					if(null != factor && factor && !result.startsWith("+")){
+				if(num.compareTo(BigDecimal.ZERO) > 0) {
+					if(null != factor && factor && !result.startsWith("+")) {
 						result = "+" + result;
 					}
 				}
 			}else{
-				if(null == result && null != nvl){
+				if(null == result && null != nvl) {
 					result = nvl.toString();
 				}
-				if(BasicUtil.isEmpty(result) && null != evl){
+				if(BasicUtil.isEmpty(result) && null != evl) {
 					result = evl.toString();
 				}
 			}
 
 			if(null != result) {
-				if(BasicUtil.isNotEmpty(var)){
+				if(BasicUtil.isNotEmpty(var)) {
 					pageContext.getRequest().setAttribute(var, result);
 				}else {
 					JspWriter out = pageContext.getOut();
-					if(BasicUtil.isNotEmpty(echo) && null != num){
+					if(BasicUtil.isNotEmpty(echo) && null != num) {
 						out.print("<span class='"+echo+"'>"+result+"</span>");
 					}else {
 						out.print(result);
 					}
-					if(BasicUtil.isNotEmpty(hide) && null != num){
+					if(BasicUtil.isNotEmpty(hide) && null != num) {
 						out.print("<span class='"+hide+"' style='display:none;'>"+num+"</span>");
 					}
 				}
 			}
-		}catch(Exception e){
+		}catch(Exception e) {
 			e.printStackTrace(); 
 		}finally{
 			release(); 

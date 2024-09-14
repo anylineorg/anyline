@@ -516,7 +516,7 @@ public class XMLRun extends TextRun implements Run {
 					continue; 
 				}else if(up.startsWith("GROUP BY")) {
 					String groupStr = condition.replaceAll("(?i)group\\s+by", "").trim();
-					if(groupStr.contains("'") || groupStr.contains("(")){
+					if(groupStr.contains("'") || groupStr.contains("(")) {
 						if (null != configs) {
 							configs.group(groupStr);
 						}

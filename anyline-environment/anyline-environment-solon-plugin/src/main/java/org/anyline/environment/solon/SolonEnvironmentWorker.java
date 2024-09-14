@@ -52,7 +52,7 @@ public class SolonEnvironmentWorker extends DefaultEnvironmentWorker implements 
         context.subWrapsOfType(DataSource.class, bw->{
             try {
                 DataSourceHolder.reg(bw.name(), bw.raw());
-            }catch (Exception e){
+            }catch (Exception e) {
                 log.error("注册数据源异常", e);
             }
         });
@@ -150,7 +150,7 @@ public class SolonEnvironmentWorker extends DefaultEnvironmentWorker implements 
         return context.getBean(name);
     }
 
-    public void regAlias(String name, String alias){
+    public void regAlias(String name, String alias) {
         Object bean = getBean(name);
         reg(alias, bean);
     }

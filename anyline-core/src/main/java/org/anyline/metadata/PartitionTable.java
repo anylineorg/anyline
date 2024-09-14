@@ -37,7 +37,7 @@ public class PartitionTable extends Table<PartitionTable> implements Serializabl
 
     public String getSchemaName() {
         String name = super.getSchemaName();
-        if(null == name && null != master){
+        if(null == name && null != master) {
             name = master.getSchemaName();
         }
         return name;

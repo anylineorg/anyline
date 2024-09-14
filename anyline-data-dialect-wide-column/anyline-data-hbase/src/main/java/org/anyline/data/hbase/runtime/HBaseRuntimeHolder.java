@@ -118,9 +118,9 @@ public class HBaseRuntimeHolder extends AbstractRuntimeHolder {
 
         int close = 0;
         DataSourceMonitor monitor = DriverAdapterHolder.getMonitor();
-        if(null != monitor){
+        if(null != monitor) {
             HBaseRuntime runtime = (HBaseRuntime) runtimes.get(key);
-            if(null != runtime){
+            if(null != runtime) {
                 //这一步有可能抛出 异常
                 close = monitor.destroy(runtime, key, runtime.getProcessor());
             }

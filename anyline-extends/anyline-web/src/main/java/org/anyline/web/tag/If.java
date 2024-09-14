@@ -31,11 +31,11 @@ public class If extends BaseBodyTag implements Cloneable{
 	private Object elseValue;
 	private boolean truncate = false;
 
-	public int doStartTag(){
-		if(truncate && !test){
+	public int doStartTag() {
+		if(truncate && !test) {
 			return SKIP_PAGE;
 		}
-		if(skip && !test){
+		if(skip && !test) {
 			return SKIP_BODY;
 		}else {
 			return EVAL_BODY_BUFFERED;
@@ -43,14 +43,14 @@ public class If extends BaseBodyTag implements Cloneable{
 	} 
 	 public int doEndTag() throws JspException {
 		try{
-			if(test){
+			if(test) {
 				JspWriter out = pageContext.getOut(); 
 				out.print(BasicUtil.nvl(value,body,"")); 
-			}else if(null != elseValue){
+			}else if(null != elseValue) {
 				JspWriter out = pageContext.getOut(); 
 				out.print(elseValue); 
 			} 
-		}catch(Exception e){
+		}catch(Exception e) {
 			e.printStackTrace(); 
 		}finally{
 			release(); 
@@ -76,7 +76,7 @@ public class If extends BaseBodyTag implements Cloneable{
 	public void setElse(Object elseValue) {
 		this.elseValue = elseValue;
 	}
-	public boolean getTest(){
+	public boolean getTest() {
 		return test;
 	} 
 	 

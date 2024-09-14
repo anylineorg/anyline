@@ -21,10 +21,10 @@ import org.anyline.data.param.Highlight;
 public class ElasticSearchRequestBody {
     protected Highlight highlight;
     protected String json;
-    public ElasticSearchRequestBody(){
+    public ElasticSearchRequestBody() {
 
     }
-    public ElasticSearchRequestBody(String json){
+    public ElasticSearchRequestBody(String json) {
         this.json = json;
     }
 

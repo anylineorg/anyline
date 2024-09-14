@@ -4007,7 +4007,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
                     int buckets = distribution.getBuckets();
                     if(buckets > 0) {
                         builder.append(" BUCKETS ").append(buckets);
-                    }else if(distribution.isAutoBucket()){
+                    }else if(distribution.isAutoBucket()) {
                         builder.append(" BUCKETS AUTO");
                     }
                 }
@@ -4065,7 +4065,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
             boolean first = true;
             for(String key:property.keySet()) {
                 Object value = property.get(key);
-                if(BasicUtil.isEmpty(value)){
+                if(BasicUtil.isEmpty(value)) {
                     continue;
                 }
                 if(!first) {
@@ -5089,7 +5089,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta, String type, int ignoreLength, int ignorePrecision, int ignoreScale) {
 		if(null != meta) {
 			TypeMetadata tm = meta.getTypeMetadata();
-            if(tm == StandardTypeMetadata.CHAR){
+            if(tm == StandardTypeMetadata.CHAR) {
                 Integer length = meta.getPrecisionLength();
                 if (null != length && length > 255) {
                     meta.setFullType(null);
@@ -5959,22 +5959,22 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	public StringBuilder property(DataRuntime runtime, StringBuilder builder, Index meta) {
 		LinkedHashMap<String, Object> map = meta.getProperty();
 		boolean append = null != map && !map.isEmpty();
-		if(append){
+		if(append) {
 			builder.append(" PROPERTIES(");
 		}
 		boolean first = true;
-		for(String key:map.keySet()){
+		for(String key:map.keySet()) {
 			Object value = map.get(key);
-			if(BasicUtil.isEmpty(value)){
+			if(BasicUtil.isEmpty(value)) {
 				continue;
 			}
-			if(!first){
+			if(!first) {
 				builder.append(", ");
 			}
 			first = false;
 			builder.append("\"").append(key).append("\" = \"").append(value).append("\"");
 		}
-		if(append){
+		if(append) {
 			builder.append(")");
 		}
 		return super.property(runtime, builder, meta);

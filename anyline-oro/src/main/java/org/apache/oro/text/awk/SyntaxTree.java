@@ -110,14 +110,14 @@ final class SyntaxTree {
     _root._followPosition(_followSet, _nodes);
   }
 
-  private void __addToFastMap(BitSet pos, boolean[] fastMap, boolean[] done){
+  private void __addToFastMap(BitSet pos, boolean[] fastMap, boolean[] done) {
     int token, node;
 
-    for(node = 0; node < _positions; node++){
-      if(pos.get(node) && !done[node]){
+    for(node = 0; node < _positions; node++) {
+      if(pos.get(node) && !done[node]) {
 	done[node] = true;
 
-	for(token=0; token < LeafNode._NUM_TOKENS; token++){
+	for(token=0; token < LeafNode._NUM_TOKENS; token++) {
 	  if(!fastMap[token])
 	    fastMap[token] = _nodes[node]._matches((char)token);
 	}
@@ -125,7 +125,7 @@ final class SyntaxTree {
     }
   }
 
-  boolean[] createFastMap(){
+  boolean[] createFastMap() {
     boolean[] fastMap, done;
 
     fastMap  = new boolean[LeafNode._NUM_TOKENS]; 

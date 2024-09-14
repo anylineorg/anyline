@@ -36,14 +36,14 @@ public class Config extends BaseBodyTag implements Cloneable{
 	 public int doEndTag() throws JspException {
 		try{
 			value = ConfigTable.getString(key);
-			if(BasicUtil.isEmpty(value)){
+			if(BasicUtil.isEmpty(value)) {
 				value = defaultValue;
 			}
-			if(BasicUtil.isNotEmpty(value)){
+			if(BasicUtil.isNotEmpty(value)) {
 				JspWriter out = pageContext.getOut();
 				out.print(value);
 			} 
-		}catch(Exception e){
+		}catch(Exception e) {
 			e.printStackTrace(); 
 		}finally{
 			release(); 

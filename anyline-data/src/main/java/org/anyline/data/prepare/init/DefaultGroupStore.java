@@ -58,7 +58,7 @@ public class DefaultGroupStore implements GroupStore, Serializable {
 		if (str.toUpperCase().contains("GROUP BY")) {
 			str = str.replaceAll("(?i)group\\s+by", "").trim();
 		}
-		if(str.contains(")") || str.contains("'")){
+		if(str.contains(")") || str.contains("'")) {
 			group(new AbstractGroup(str));
 		}else{
 			String[] tmps = str.split(","); // 多列排序

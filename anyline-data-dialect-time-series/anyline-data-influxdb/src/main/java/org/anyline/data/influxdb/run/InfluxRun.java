@@ -38,80 +38,80 @@ public class InfluxRun extends SimpleRun {
     protected Map<String, String> headers = new HashMap<>();
 
     @Override
-    public boolean isEmpty(){
-        if(null != points && !points.isEmpty()){
+    public boolean isEmpty() {
+        if(null != points && !points.isEmpty()) {
             return false;
         }
         return true;
     }
-    public InfluxRun points(List<Point> points){
+    public InfluxRun points(List<Point> points) {
         this.points = points;
         return this;
     }
-    public InfluxRun add(Point point){
-        if(null == points){
+    public InfluxRun add(Point point) {
+        if(null == points) {
             this.points = new ArrayList<>();
         }
         points.add(point);
         return this;
     }
 
-    public List<Point> points(){
+    public List<Point> points() {
         return points;
     }
-    public String measurement(){
+    public String measurement() {
         return this.measurement;
     }
 
-    public String org(){
+    public String org() {
         return this.org;
     }
 
-    public InfluxRun api(String api){
+    public InfluxRun api(String api) {
         this.api = api;
         return this;
     }
-    public String api(){
+    public String api() {
         return api;
     }
-    public String method(){
+    public String method() {
         return this.method;
     }
-    public InfluxRun method(String method){
+    public InfluxRun method(String method) {
         this.method = method;
         return this;
     }
-    public Map<String, String> headers(){
+    public Map<String, String> headers() {
         return headers;
     }
-    public InfluxRun header(String key, String value){
+    public InfluxRun header(String key, String value) {
         headers.put(key, value);
         return this;
     }
-    public String body(){
+    public String body() {
         return this.body;
     }
-    public InfluxRun body(String body){
+    public InfluxRun body(String body) {
         this.body = body;
         return this;
     }
-    public String bucket(){
+    public String bucket() {
         return this.bucket;
     }
 
-    public InfluxRun bucket(String bucket){
+    public InfluxRun bucket(String bucket) {
         this.bucket = bucket;
         return this;
     }
-    public InfluxRun measurement(String measurement){
+    public InfluxRun measurement(String measurement) {
         this.measurement = measurement;
         return this;
     }
-    public InfluxRun org(String org){
+    public InfluxRun org(String org) {
         this.org = org;
         return this;
     }
-    public InfluxRun table(String measurement){
+    public InfluxRun table(String measurement) {
         this.measurement = measurement;
         return this;
     }

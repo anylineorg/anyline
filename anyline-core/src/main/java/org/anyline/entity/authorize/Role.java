@@ -23,11 +23,11 @@ import org.anyline.metadata.Schema;
 public class Role extends Metadata<Role> {
     protected User user;
 
-    public Role(){}
-    public Role(String name){
+    public Role() {}
+    public Role(String name) {
         this.name = name;
     }
-    public Role(Catalog catalog, Schema schema, String name){
+    public Role(Catalog catalog, Schema schema, String name) {
         this.catalog = catalog;
         this.schema = schema;
         this.name = name;

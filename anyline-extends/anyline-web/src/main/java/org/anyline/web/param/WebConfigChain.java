@@ -32,37 +32,37 @@ public class WebConfigChain extends WebConfig implements  ConfigChain{
 	private List<Config> configs = new ArrayList<>();
 
 
-	public Config getConfig(String id, String var){
+	public Config getConfig(String id, String var) {
 		List<Config> list = getConfigs(id, var);
-		if(list.size()>0){
+		if(list.size()>0) {
 			return list.get(0);
 		}
 		return null;
 	}
-	public List<Config> getConfigs(String id, String var){
+	public List<Config> getConfigs(String id, String var) {
 		List<Config> list = new ArrayList<>();
-		if(BasicUtil.isEmpty(id, var)){
+		if(BasicUtil.isEmpty(id, var)) {
 			return list;
 		}
-		for(Config conf: configs){
-			if(conf instanceof ConfigChain){
+		for(Config conf: configs) {
+			if(conf instanceof ConfigChain) {
 				ConfigChain chain = (ConfigChain)conf;
 				list.addAll(chain.getConfigs(id, var));
 			}
 			String confId = conf.getPrefix();
 			String confVar = conf.getVariable();
-			if(BasicUtil.isEmpty(id)){
+			if(BasicUtil.isEmpty(id)) {
 				// 只提供列名,不提供表名
-				if(var.equalsIgnoreCase(confVar)){
+				if(var.equalsIgnoreCase(confVar)) {
 					list.add(conf);
 				}
-			}else if(BasicUtil.isEmpty(var)){
+			}else if(BasicUtil.isEmpty(var)) {
 				// 只提供查询条件id不提供变量名
-				if(id.equalsIgnoreCase(confId)){
+				if(id.equalsIgnoreCase(confId)) {
 					list.add(conf);
 				}
 			}else{
-				if(id.equalsIgnoreCase(confId) && var.equalsIgnoreCase(confVar)){
+				if(id.equalsIgnoreCase(confId) && var.equalsIgnoreCase(confVar)) {
 					list.add(conf);
 				}
 			}
@@ -70,43 +70,43 @@ public class WebConfigChain extends WebConfig implements  ConfigChain{
 		return null;
 	}
 
-	public List<Config> getConfigs(String prefix, String var, Compare type){
+	public List<Config> getConfigs(String prefix, String var, Compare type) {
 		List<Config> list = new ArrayList<>();
-		if(BasicUtil.isEmpty(prefix, var)){
+		if(BasicUtil.isEmpty(prefix, var)) {
 			return list;
 		}
-		for(Config conf: configs){
-			if(conf instanceof ConfigChain){
+		for(Config conf: configs) {
+			if(conf instanceof ConfigChain) {
 				ConfigChain chain = (ConfigChain)conf;
 				list.addAll(chain.getConfigs(prefix, var, type));
 			}
 			String confId = conf.getPrefix();
 			String confVar = conf.getVariable();
 			Compare confType = conf.getCompare();
-			if(BasicUtil.isEmpty(prefix)){
+			if(BasicUtil.isEmpty(prefix)) {
 				// 只提供列名,不提供表名
-				if(var.equalsIgnoreCase(confVar) && type == confType){
+				if(var.equalsIgnoreCase(confVar) && type == confType) {
 					list.add(conf);
 				}
-			}else if(BasicUtil.isEmpty(var)){
+			}else if(BasicUtil.isEmpty(var)) {
 				// 只提供查询条件id不提供变量名
-				if(prefix.equalsIgnoreCase(confId) && type == confType){
+				if(prefix.equalsIgnoreCase(confId) && type == confType) {
 					list.add(conf);
 				}
 			}else{
-				if(prefix.equalsIgnoreCase(confId) && var.equalsIgnoreCase(confVar) && type == confType){
+				if(prefix.equalsIgnoreCase(confId) && var.equalsIgnoreCase(confVar) && type == confType) {
 					list.add(conf);
 				}
 			}
 		}
 		return list;
 	}
-	public Config getConfig(String prefix, String var, Compare type){
-		if(BasicUtil.isEmpty(prefix, var)){
+	public Config getConfig(String prefix, String var, Compare type) {
+		if(BasicUtil.isEmpty(prefix, var)) {
 			return null;
 		}
 		List<Config> list = getConfigs(prefix, var, type);
-		if(list.size()>0){
+		if(list.size()>0) {
 			return list.get(0);
 		}
 		return null;
@@ -114,19 +114,19 @@ public class WebConfigChain extends WebConfig implements  ConfigChain{
 
 
 
-	public ConfigChain removeConfig(String prefix, String var){
+	public ConfigChain removeConfig(String prefix, String var) {
 		List<Config> configs = getConfigs(prefix, var);
 		return removeConfig(configs);
 	}
-	public ConfigChain removeConfig(String key, String var, Compare type){
+	public ConfigChain removeConfig(String key, String var, Compare type) {
 		List<Config> configs = getConfigs(key, var, type);
 		return removeConfig(configs);
 	}
-	public ConfigChain removeConfig(Config config){
-		if(null != config){
+	public ConfigChain removeConfig(Config config) {
+		if(null != config) {
 			configs.remove(config);
-			for(Config item:configs){
-				if(item instanceof ConfigChain){
+			for(Config item:configs) {
+				if(item instanceof ConfigChain) {
 					ConfigChain chain = ((ConfigChain)item);
 					chain.removeConfig(config);
 				}
@@ -135,8 +135,8 @@ public class WebConfigChain extends WebConfig implements  ConfigChain{
 		return this;
 	}
 
-	public ConfigChain removeConfig(List<Config> list){
-		if(null != list){
+	public ConfigChain removeConfig(List<Config> list) {
+		if(null != list) {
 			for(Config config:list) {
 				removeConfig(config);
 			}
@@ -144,13 +144,13 @@ public class WebConfigChain extends WebConfig implements  ConfigChain{
 		return this;
 	}
 
-	public void addConfig(Config config){
+	public void addConfig(Config config) {
 		configs.add(config);
 	}
 
 	public List<Object> getValues() {
 		List<Object> values = new ArrayList<Object>();
-		for(Config config:configs){
+		for(Config config:configs) {
 			values.addAll(config.getValues());
 		}
 		return values;
@@ -159,38 +159,38 @@ public class WebConfigChain extends WebConfig implements  ConfigChain{
 	 * 赋值 
 	 * @param request  request
 	 */ 
-	public void setValue(HttpServletRequest request){
-		for(Config config:configs){
+	public void setValue(HttpServletRequest request) {
+		for(Config config:configs) {
 			config.setValue(request); 
 		} 
-//		if(items.size()>0){
+//		if(items.size()>0) {
 //			setCompare(items.get(0).getCompareType()); 
 //		} 
 	}
-	public List<Config> getConfigs(){
+	public List<Config> getConfigs() {
 		return configs;
 	}
-	public ConditionChain createAutoConditionChain(){
+	public ConditionChain createAutoConditionChain() {
 		ConditionChain chain = new DefaultAutoConditionChain();
-		for(Config config:configs){
+		for(Config config:configs) {
 			Condition condition = config.createAutoCondition(chain);
-			if(null != condition){
+			if(null != condition) {
 				chain.addCondition(condition);
 			}
 		}
 		chain.integrality(integrality);
 		return chain;
 	}
-	public WebConfigChain clone(){
+	public WebConfigChain clone() {
 		WebConfigChain clone = null;
 		try {
 			clone = (WebConfigChain) super.clone();
-		}catch (Exception ignored){
+		}catch (Exception ignored) {
 			clone = new WebConfigChain();
 		}
-		if(null != this.configs){
+		if(null != this.configs) {
 			List<Config> configs = new ArrayList<>();
-			for(Config config:this.configs){
+			for(Config config:this.configs) {
 				configs.add(config.clone());
 			}
 			clone.configs = configs;

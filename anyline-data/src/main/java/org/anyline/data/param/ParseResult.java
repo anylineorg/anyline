@@ -86,7 +86,7 @@ public class ParseResult {
 		row.put("swt", swt);
 		return row;
 	}
-	public static ParseResult build(DataRow row){
+	public static ParseResult build(DataRow row) {
 		ParseResult parser = new ParseResult();
 		parser.setVar(row.getString("var"));
 		DataRow parse = row.getRow("parser");
@@ -97,7 +97,7 @@ public class ParseResult {
 			parser.setMethod(parse.getString("method"));
 			parser.setKey(parse.getString("key"));
 			String join = parse.getString("join");
-			if(null != join){
+			if(null != join) {
 				parser.setJoin(Condition.JOIN.valueOf(join.trim().toUpperCase()));
 			}
 			parser.setCompare(ConfigBuilder.compare(parse.getInt("compare", Compare.EQUAL.getCode())));

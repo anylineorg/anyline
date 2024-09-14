@@ -262,8 +262,8 @@ public class BeanUtil {
 				columnTypeName = columnTypeName.toUpperCase();
 			}
 		}
-		if(null != value){
-			if(ClassUtil.isInSub(value.getClass(), targetClass)){
+		if(null != value) {
+			if(ClassUtil.isInSub(value.getClass(), targetClass)) {
 				try {
 					if (field.isAccessible()) {
 						// 可访问属性
@@ -275,7 +275,7 @@ public class BeanUtil {
 						field.setAccessible(false);
 					}
 					return true;
-				}catch (Exception e){
+				}catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
@@ -568,7 +568,7 @@ public class BeanUtil {
 				//列名转驼峰
 				f = ClassUtil.getField(obj.getClass(), camel(field), recursion);
 			}
-			if(null == f){
+			if(null == f) {
 				//忽略大小写 及 其他符号
 				f = ClassUtil.getField(obj.getClass(), camel(field), recursion, ignoreCase);
 			}
@@ -1139,7 +1139,7 @@ public class BeanUtil {
 		if(null == obj) {
 			return null;
 		}
-		if(obj instanceof Map){
+		if(obj instanceof Map) {
 			return (Map<String, Object>)obj;
 		}
 		Map<String, Object> map = new LinkedHashMap<>();
@@ -1198,21 +1198,21 @@ public class BeanUtil {
 		}
 		return map;
 	}
-	private static Object object22map(Object obj){
-		if(null == obj){
+	private static Object object22map(Object obj) {
+		if(null == obj) {
 			return null;
 		}
-		if(obj instanceof Map){
+		if(obj instanceof Map) {
 			Map result_map = new LinkedHashMap();
 			Map map = (Map)obj;
-			for(Object k:map.keySet()){
+			for(Object k:map.keySet()) {
 				result_map.put(k, object22map(map.get(k)));
 			}
 			return result_map;
-		}else if(obj instanceof Collection){
+		}else if(obj instanceof Collection) {
 			Collection result_list = new ArrayList();
 			Collection list = (Collection) obj;
-			for(Object item:list){
+			for(Object item:list) {
 				result_list.add(object22map(item));
 			}
 			return result_list;
@@ -1225,7 +1225,7 @@ public class BeanUtil {
 			}
 			return result_list;
 		}
-		if(!ClassUtil.isJavaType(obj)){
+		if(!ClassUtil.isJavaType(obj)) {
 			Map<String, Object> result_map = new LinkedHashMap<>();
 			List<Field> fields = ClassUtil.getFields(obj.getClass());
 			for(Field field:fields) {
@@ -1243,30 +1243,30 @@ public class BeanUtil {
 		if(null == obj) {
 			return null;
 		}
-		if(ClassUtil.isPrimitiveClass(obj) || obj instanceof String){
+		if(ClassUtil.isPrimitiveClass(obj) || obj instanceof String) {
 			return null;
 		}
-		if(obj instanceof Collection){
+		if(obj instanceof Collection) {
 			return null;
 		}
-		if(obj.getClass().isArray()){
+		if(obj.getClass().isArray()) {
 			return null;
 		}
 		Map<String, Object> map = new LinkedHashMap<>();
-		if(obj instanceof Map){
+		if(obj instanceof Map) {
 			Map vmap = (Map) obj;
-			for(Object k:vmap.keySet()){
+			for(Object k:vmap.keySet()) {
 				map.put(k.toString(), object22map(vmap.get(k)));
 			}
 			return map;
 		}
-		if(ClassUtil.isJavaType(obj)){
+		if(ClassUtil.isJavaType(obj)) {
 			return null;
 		}
 
 		List<Field> fields = ClassUtil.getFields(obj.getClass());
 		for(Field field:fields) {
-			if(Modifier.isStatic(field.getModifiers())){
+			if(Modifier.isStatic(field.getModifiers())) {
 				continue;
 			}
 			Object value = getFieldValue(obj, field);
@@ -1295,7 +1295,7 @@ public class BeanUtil {
 					Map objmap = (Map)obj;
 					for (Object key:objmap.keySet()) {
 						Object value = objmap.get(key);
-						if(null != value){
+						if(null != value) {
 							if(null != datatype) {
 								value = ConvertProxy.convert(value, datatype, false);
 							}else{
@@ -1315,11 +1315,11 @@ public class BeanUtil {
 				}
 				List<Field> fields = ClassUtil.getFields(obj.getClass());
 				for(Field field:fields) {
-					if(Modifier.isStatic(field.getModifiers())){
+					if(Modifier.isStatic(field.getModifiers())) {
 						continue;
 					}
 					Object value = getFieldValue(obj, field);
-					if(null != datatype && null != value){
+					if(null != datatype && null != value) {
 						value = ConvertProxy.convert(value, datatype, false);
 					}
 					/*if (null == value) {
@@ -1339,7 +1339,7 @@ public class BeanUtil {
 				for (K key : keys) {
 					Object value = getFieldValue(obj, key.toString());
 
-					if(null != datatype && null != value){
+					if(null != datatype && null != value) {
 						value = ConvertProxy.convert(value, datatype, false);
 					}
 					/*if (null == value) {
@@ -2412,7 +2412,7 @@ public class BeanUtil {
 		List<String> keys = BasicUtil.getMapKeys(map);
 		for(String key:keys) {
 			Object value = map.get(key);
-			if(value instanceof Map){
+			if(value instanceof Map) {
 				clearEmpty((Map) value);
 			}
 			if(BasicUtil.isEmpty(recursion, value)) {
@@ -2862,7 +2862,7 @@ public class BeanUtil {
 	 * @return String
 	 */
 	public static String camel(String key, boolean hold) {
-		if(null == key){
+		if(null == key) {
 			return key;
 		}
 		if(!key.contains("-") && !key.contains("_")) {
@@ -2893,7 +2893,7 @@ public class BeanUtil {
 	 * @return String
 	 */
 	public static String Camel(String key, boolean hold) {
-		if(null == key){
+		if(null == key) {
 			return key;
 		}
 		if(!key.contains("-") && !key.contains("_")) {
@@ -3189,7 +3189,7 @@ public class BeanUtil {
 		return rv;
 	}
 
-	public static List<Object> object2list(Object array){
+	public static List<Object> object2list(Object array) {
 		List list = new ArrayList<>();
 		if(null != array) {
 			if(array.getClass().isArray()) {

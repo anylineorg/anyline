@@ -170,14 +170,14 @@ public class AbstractRuntime implements DataRuntime {
     public String datasource() {
         String result = key;
         boolean keep = DriverAdapterHolder.keepAdapter(this, getProcessor());
-        if(keep){
+        if(keep) {
             return result;
         }
         String lockKey = (AbstractRuntime.class.getName() + "getAdapter" + key).intern();
         synchronized (lockKey) {
             result = DriverAdapterHolder.key(this, getProcessor());
         }
-        if(null == result){
+        if(null == result) {
             result = key;
         }
         return key+"-"+result;

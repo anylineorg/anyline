@@ -37,12 +37,12 @@ public class SubString extends BaseBodyTag{
 		// 输出 
 		JspWriter out = pageContext.getOut(); 
 		String text = body; 
-		if(null != text){
+		if(null != text) {
 			int range[] = BasicUtil.range(begin, end, qty, text.length());
 			text = text.substring(range[0],range[1]);
 			try{
 				out.print(text); 
-			}catch(Exception e){
+			}catch(Exception e) {
 	 
 			}finally{
 				release(); 
@@ -51,7 +51,7 @@ public class SubString extends BaseBodyTag{
         return EVAL_PAGE;    
 	} 
 	@Override 
-    public void release(){
+    public void release() {
 		super.release(); 
     	begin = null;
     	end = null;

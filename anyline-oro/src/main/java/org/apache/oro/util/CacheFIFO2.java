@@ -114,7 +114,7 @@ public final class CacheFIFO2 extends GenericCache {
    * CacheFIFO2(GenericCache.DEFAULT_CAPACITY);
    * </pre></blockquote>
    */
-  public CacheFIFO2(){
+  public CacheFIFO2() {
     this(GenericCache.DEFAULT_CAPACITY);
   }
 

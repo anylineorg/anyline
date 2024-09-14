@@ -64,7 +64,7 @@ public class SpringJDBCRuntime extends JDBCRuntime implements DataRuntime {
             result = this.adapterKey;
             keep = true;
         }
-        if(!keep){
+        if(!keep) {
             result = null;
         }
         if(null == result) {
@@ -104,7 +104,7 @@ public class SpringJDBCRuntime extends JDBCRuntime implements DataRuntime {
             driver = this.driver;
             keep = true;
         }
-        if(!keep){
+        if(!keep) {
             connection = true;
             driver = null;
             url = null;
@@ -147,7 +147,7 @@ public class SpringJDBCRuntime extends JDBCRuntime implements DataRuntime {
         if(null == adapterKey && keep) {
             adapterKey = DataSourceUtil.parseAdapterKey(feature);
         }
-        if(keep){
+        if(keep) {
             this.feature = feature;
             this.url = url;
         }

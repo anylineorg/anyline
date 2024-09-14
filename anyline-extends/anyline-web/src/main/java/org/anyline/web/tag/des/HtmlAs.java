@@ -32,12 +32,12 @@ public class HtmlAs extends BaseBodyTag implements Cloneable{
 	public int doEndTag() throws JspException {
 		try{
 			String value = body; 
-			if(null != value && !"".equals(value.trim())){
+			if(null != value && !"".equals(value.trim())) {
 				value = value.trim(); 
 				JspWriter out = pageContext.getOut(); 
 				out.print(DESUtil.encryptHtmlTagA(value)); 
 			} 
-		}catch(Exception e){
+		}catch(Exception e) {
 			e.printStackTrace(); 
 		}finally{
 			release(); 

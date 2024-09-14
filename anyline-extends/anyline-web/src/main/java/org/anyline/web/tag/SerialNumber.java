@@ -34,34 +34,34 @@ public class SerialNumber extends BaseBodyTag implements Cloneable{
 		try{
 			String result = "";
 			PageNavi navi = null;
-			if(null != data){
-				if(data instanceof DataSet){
+			if(null != data) {
+				if(data instanceof DataSet) {
 					navi = ((DataSet)data).getNavi();
 				}
-				if(data instanceof PageNavi){
+				if(data instanceof PageNavi) {
 					navi = (PageNavi)data;
 				}
 			}
-			if(null == navi){
+			if(null == navi) {
 				Object tmp = pageContext.getAttribute("navi");
-				if(null != tmp && tmp instanceof PageNavi){
+				if(null != tmp && tmp instanceof PageNavi) {
 					navi = (PageNavi)tmp;
 				}
 			}
-			if(null == navi){
+			if(null == navi) {
 				Object tmp = pageContext.getRequest().getAttribute("navi");
-				if(null != tmp && tmp instanceof PageNavi){
+				if(null != tmp && tmp instanceof PageNavi) {
 					navi = (PageNavi)tmp;
 				}
 			}
-			if(null != navi){
+			if(null != navi) {
 				index += navi.getPageRows() * (navi.getCurPage()-1);
 			}
 			index ++;
 			result = index+""; 
 			JspWriter out = pageContext.getOut(); 
 			out.print(result); 
-		}catch(Exception e){
+		}catch(Exception e) {
 			e.printStackTrace(); 
 		}finally{
 			release(); 

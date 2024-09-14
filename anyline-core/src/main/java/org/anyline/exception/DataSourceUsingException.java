@@ -19,10 +19,10 @@ package org.anyline.exception;
 public class DataSourceUsingException extends AbstractRuntimeException {
     private String key;
     private Object datasource;
-    public DataSourceUsingException(){
+    public DataSourceUsingException() {
 
     }
-    public DataSourceUsingException(String key, Object datasource){
+    public DataSourceUsingException(String key, Object datasource) {
         this.key = key;
         this.datasource = datasource;
     }

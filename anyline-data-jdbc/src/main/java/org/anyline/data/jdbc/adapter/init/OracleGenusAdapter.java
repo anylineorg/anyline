@@ -583,7 +583,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         return run;
     }
     @Override
-    public void fillUpdateContent(DataRuntime runtime, TableRun run, StringBuilder builder, DataRow data, ConfigStore configs){
+    public void fillUpdateContent(DataRuntime runtime, TableRun run, StringBuilder builder, DataRow data, ConfigStore configs) {
         /*update flights f1
          set f1.departure_datetime = timestamp'2015-01-01 11:00:00 -00:00',
          (f1.flight_number, f1.flight_duration)
@@ -602,7 +602,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         name(runtime, builder, prepare.getTable());
         String alias = prepare.getAlias();
         String masterName = prepare.getTableName();
-        if(BasicUtil.isNotEmpty(alias)){
+        if(BasicUtil.isNotEmpty(alias)) {
             builder.append(tableAliasGuidd());
             delimiter(builder, alias);
             masterName = alias;
@@ -610,8 +610,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         builder.append(" SET ").append(BR).append("(");
         List<String> keys = data.keys();
         boolean first = true;
-        for(String key:keys){
-            if(!first){
+        for(String key:keys) {
+            if(!first) {
                 builder.append(", ");
             }
             first = false;
@@ -622,13 +622,13 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         }
         builder.append(") = ( SELECT ");
         first = true;
-        for(String key:keys){
-            if(!first){
+        for(String key:keys) {
+            if(!first) {
                 builder.append(", ");
             }
             first = false;
             Object value = data.get(key);
-            if(value instanceof VariableValue){
+            if(value instanceof VariableValue) {
                 VariableValue var = (VariableValue)value;
                 delimiter(builder, var.value());
             }else{
@@ -646,19 +646,19 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
             joins.remove(master);
             sub.append("\nFROM ");
             fillMasterTableContent(runtime, sub, run, master);
-            if(joins.isEmpty()){
+            if(joins.isEmpty()) {
                 sub.append("\n");
             }
             for (RunPrepare join:joins) {
                 fillJoinTableContent(runtime, sub, run, join);
             }
         }
-        if(null != master){
+        if(null != master) {
             Join join = master.getJoin();
             if(master instanceof VirtualTablePrepare) {
                 join = ((VirtualTablePrepare) master).getPrepare().getJoin();
             }
-            if(null != join){
+            if(null != join) {
                 String on = join.getConditions().getRunText(runtime, false);
                 sub.append("WHERE ").append(SQLUtil.trim(on));
             }
@@ -2134,7 +2134,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         configs.and("M.OWNER", query.getSchemaName());
         configs.and(Compare.LIKE_SIMPLE,"M.OBJECT_NAME", query.getName());
         List<String> tps = names(Table.types(types));
-        if(tps.isEmpty()){
+        if(tps.isEmpty()) {
             tps.add("TABLE");
             tps.add("VIEW");
         }
@@ -2777,7 +2777,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         configs.and(Compare.LIKE_SIMPLE, "M.TABLE_NAME", query.getTableName());
         configs.and("M.OWNER", query.getSchemaName());
         run.setOrders("M.TABLE_NAME");
-        if(null != configs){
+        if(null != configs) {
             run.setPageNavi(configs.getPageNavi());
         }
 
@@ -2804,7 +2804,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         return runs;
     }
 
-    protected Run buildQueryColumnsBody(DataRuntime runtime,  ConfigStore configs){
+    protected Run buildQueryColumnsBody(DataRuntime runtime,  ConfigStore configs) {
         Run run = new SimpleRun(runtime, configs);
         StringBuilder builder = run.getBuilder();
         builder.append("SELECT M.*, F.COMMENTS AS COLUMN_COMMENT , FP.CONSTRAINT_TYPE\n" +
@@ -3273,14 +3273,14 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         runs.add(run);
         ConfigStore configs = run.getConfigs();
         Table table = null;
-        if(null != tables && !tables.isEmpty()){
+        if(null != tables && !tables.isEmpty()) {
             table = tables.iterator().next();
             configs.and("M.INDEX_OWNER", table.getSchemaName());
         }
         configs.in("M.TABLE_NAME", Table.names(tables));
         return runs;
     }
-    protected Run buildQueryIndexBody(DataRuntime runtime){
+    protected Run buildQueryIndexBody(DataRuntime runtime) {
         Run run = new SimpleRun(runtime);
         StringBuilder builder = run.getBuilder();
         builder.append("SELECT M.*, F.COLUMN_EXPRESSION FROM ALL_IND_COLUMNS M\n");
@@ -4598,7 +4598,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         if(null == type) {
             return builder;
         }
-        if(type == Table.Partition.TYPE.HASH){
+        if(type == Table.Partition.TYPE.HASH) {
             builder.append(" PARTITIONS ").append(partition.getModulus());
             return builder;
         }

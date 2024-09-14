@@ -88,7 +88,7 @@ final class EpsilonNode extends SyntaxNode {
   void _followPosition(BitSet[] follow, SyntaxNode[] nodes) {
   }
 
-  SyntaxNode _clone(int pos[]){
+  SyntaxNode _clone(int pos[]) {
     return new EpsilonNode();
   }
 }

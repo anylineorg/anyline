@@ -211,15 +211,15 @@ public final class AwkCompiler implements PatternCompiler {
 	    (token == '_'));
   }
 
-  static boolean _isLowerCase(char token){
+  static boolean _isLowerCase(char token) {
     return (token >= 'a' && token <= 'z');
   }
 
-  static boolean _isUpperCase(char token){
+  static boolean _isUpperCase(char token) {
     return (token >= 'A' && token <= 'Z');
   }
 
-  static char _toggleCase(char token){
+  static char _toggleCase(char token) {
     if(_isUpperCase(token))
       return (char)(token + 32);
     else if(_isLowerCase(token))
@@ -229,7 +229,7 @@ public final class AwkCompiler implements PatternCompiler {
   }
 
   private void __match(char token) throws MalformedPatternException {
-    if(token == __lookahead){
+    if(token == __lookahead) {
       if(__bytesRead < __expressionLength)
 	__lookahead = __regularExpression[__bytesRead++];
       else
@@ -267,7 +267,7 @@ public final class AwkCompiler implements PatternCompiler {
 
     left = __piece();
 
-    if(__lookahead == ')'){
+    if(__lookahead == ')') {
       if(__openParen > __closeParen)
 	return left;
       else
@@ -283,8 +283,8 @@ public final class AwkCompiler implements PatternCompiler {
     while(true) {
       left = __piece();
 
-      if(__lookahead == ')'){
-	if(__openParen > __closeParen){
+      if(__lookahead == ')') {
+	if(__openParen > __closeParen) {
 	  current._right = left;
 	  break;
 	}
@@ -292,7 +292,7 @@ public final class AwkCompiler implements PatternCompiler {
 	  throw
 	    new MalformedPatternException("Parse error: close parenthesis"
 	     + " without matching open parenthesis at position " + __bytesRead);
-      } else  if(__lookahead == '|' || __lookahead == _END_OF_INPUT){
+      } else  if(__lookahead == '|' || __lookahead == _END_OF_INPUT) {
 	current._right = left;
 	break;
       }
@@ -310,7 +310,7 @@ public final class AwkCompiler implements PatternCompiler {
 
     left = __atom();
 
-    switch(__lookahead){
+    switch(__lookahead) {
     case '+' : __match('+'); return (new PlusNode(left));
     case '?' : __match('?'); return (new QuestionNode(left));
     case '*' : __match('*'); return (new StarNode(left));
@@ -329,7 +329,7 @@ public final class AwkCompiler implements PatternCompiler {
     // We don't expect huge numbers, so an initial buffer of 4 is fine.
     buf = new StringBuffer(4);
 
-    while(Character.digit(__lookahead, radix) != -1 && digits < maxDigits){
+    while(Character.digit(__lookahead, radix) != -1 && digits < maxDigits) {
       buf.append((char)__lookahead);
       __match(__lookahead);
       ++digits;
@@ -363,7 +363,7 @@ public final class AwkCompiler implements PatternCompiler {
     startPosition = new int[1];
     startPosition[0] = __position;
 
-    if(__lookahead == '}'){
+    if(__lookahead == '}') {
       // Match exactly min times.  Concatenate the atom min times.
       __match('}');
 
@@ -388,7 +388,7 @@ public final class AwkCompiler implements PatternCompiler {
       }
 
       catNode._right = atom._clone(startPosition);
-    } else if(__lookahead == ','){
+    } else if(__lookahead == ',') {
       __match(',');
 
       if(__lookahead == '}') {
@@ -513,7 +513,7 @@ public final class AwkCompiler implements PatternCompiler {
 
     __match('\\');
 
-    if(__lookahead == 'x'){
+    if(__lookahead == 'x') {
       __match('x');
       // Parse a hexadecimal number
       current = _newTokenNode((char)__parseUnsignedInteger(16, 2, 2),
@@ -528,7 +528,7 @@ public final class AwkCompiler implements PatternCompiler {
     } else if(__lookahead >= '0' && __lookahead <= '9') {
       __match(__lookahead);
 
-      if(__lookahead >= '0' && __lookahead <= '9'){
+      if(__lookahead >= '0' && __lookahead <= '9') {
 	// We have an octal character or a multi-digit backreference.
 	// Assume octal character for now.
 	__putback();
@@ -538,7 +538,7 @@ public final class AwkCompiler implements PatternCompiler {
       } else {
 	// We have either \0, an escaped digit, or a backreference.
 	__putback();
-	if(__lookahead == '0'){
+	if(__lookahead == '0') {
 	  // \0 matches the null character
 	  __match('0');
 	  current = new TokenNode('\0', __position++);
@@ -561,7 +561,7 @@ public final class AwkCompiler implements PatternCompiler {
 				position++);
 				*/
       __match('b');
-    } /*else if(__lookahead == 'B' && !__inCharacterClass){
+    } /*else if(__lookahead == 'B' && !__inCharacterClass) {
       current = new TokenNode((char)LeafNode._NONWORD_BOUNDARY_MARKER_TOKEN,
 			      position++);
       __match('B');
@@ -569,7 +569,7 @@ public final class AwkCompiler implements PatternCompiler {
       CharacterClassNode characterSet;
       token = __lookahead;
 
-      switch(__lookahead){
+      switch(__lookahead) {
       case 'n' : token = '\n'; break;
       case 'r' : token = '\r'; break;
       case 't' : token = '\t'; break;
@@ -678,7 +678,7 @@ public final class AwkCompiler implements PatternCompiler {
     __match('[');
     __inCharacterClass = true;
 
-    if(__lookahead == '^'){
+    if(__lookahead == '^') {
       __match('^');
       current = new NegativeCharacterClassNode(__position++);
     } else
@@ -686,13 +686,13 @@ public final class AwkCompiler implements PatternCompiler {
 
     while(__lookahead != ']' && __lookahead != _END_OF_INPUT) {
 
-      if(__lookahead == '\\'){
+      if(__lookahead == '\\') {
 	node = __backslashToken();
 	--__position;
 
 	// __backslashToken() (actually newTokenNode()) does not take care of
         // case insensitivity when __inCharacterClass is true.
-	if(node instanceof TokenNode){
+	if(node instanceof TokenNode) {
 	  lastToken = ((TokenNode)node)._token;
 	  current._addToken(lastToken);
 	  if(!__caseSensitive)
@@ -703,7 +703,7 @@ public final class AwkCompiler implements PatternCompiler {
 	  // This could be made more efficient by manipulating the
 	  // characterSet elements of the CharacterClassNodes but
 	  // for the moment, this is more clear.
-	  for(token=0; token < LeafNode._NUM_TOKENS; token++){
+	  for(token=0; token < LeafNode._NUM_TOKENS; token++) {
 	    if(slash._matches(token))
 	      current._addToken(token);
 	  }
@@ -729,9 +729,9 @@ public final class AwkCompiler implements PatternCompiler {
       // after the end of a range, it is interpreted as a '-' and no
       // exception is thrown. e.g., the second dash in [a-z-x]
       // This is considered a feature and not a bug for now.
-      if(__lookahead == '-'){
+      if(__lookahead == '-') {
 	__match('-');
-	if(__lookahead == ']'){
+	if(__lookahead == ']') {
 	  current._addToken('-');
 	  break;
 	} else if(__lookahead == '\\') {
@@ -762,9 +762,9 @@ public final class AwkCompiler implements PatternCompiler {
     return current;
   }
 
-  SyntaxNode _newTokenNode(char token, int position){
+  SyntaxNode _newTokenNode(char token, int position) {
     if(!__inCharacterClass && !__caseSensitive &&
-       (_isUpperCase(token) || _isLowerCase(token))){
+       (_isUpperCase(token) || _isLowerCase(token))) {
       CharacterClassNode node = new CharacterClassNode(position);
       node._addToken(token);
       node._addToken(_toggleCase(token));

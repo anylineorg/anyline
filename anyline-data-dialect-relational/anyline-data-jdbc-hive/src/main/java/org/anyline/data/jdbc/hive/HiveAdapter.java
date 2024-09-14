@@ -3754,15 +3754,15 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	@Override
 	public StringBuilder body(DataRuntime runtime, StringBuilder builder, Table meta) {
 		Table.Partition partition = meta.getPartition();
-		if(null != partition){
+		if(null != partition) {
 			LinkedHashMap<String, Column> pcs = partition.getColumns();
 			LinkedHashMap<String, Column> columns = meta.getColumns();
-			for(String pc:pcs.keySet()){
+			for(String pc:pcs.keySet()) {
 				Column col = pcs.get(pc);
 				Column column = columns.get(pc);
-				if(null != column){
+				if(null != column) {
 					//分区时仅指定了列名没有设置数据类型
-					if(null == col.getTypeName()){
+					if(null == col.getTypeName()) {
 						pcs.put(pc, column);
 					}
 					columns.remove(pc);
@@ -3863,17 +3863,17 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 				delimiter(builder, Column.names(columns));
 				builder.append(")");
 				LinkedHashMap<String, String> orders = distribution.orders();
-				if(null != orders && !orders.isEmpty()){
+				if(null != orders && !orders.isEmpty()) {
 					builder.append(" SORTED BY(");
 					boolean first = true;
-					for(String order:orders.keySet()){
-						if(!first){
+					for(String order:orders.keySet()) {
+						if(!first) {
 							builder.append(", ");
 						}
 						first = false;
 						delimiter(builder, order);
 						String sc = orders.get(order);
-						if(null != sc){
+						if(null != sc) {
 							builder.append(" ").append(sc);
 						}
 					}
@@ -3914,21 +3914,21 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	public StringBuilder property(DataRuntime runtime, StringBuilder builder, Table meta) {
 		LinkedHashMap<String, Object> map = meta.getProperty();
 		boolean append = null != map && !map.isEmpty();
-		if(append){
+		if(append) {
 			builder.append("\nTBLPROPERTIES (");
 			boolean first = true;
-			for(String key:map.keySet()){
+			for(String key:map.keySet()) {
 				Object value = map.get(key);
-				if(BasicUtil.isEmpty(value)){
+				if(BasicUtil.isEmpty(value)) {
 					continue;
 				}
-				if(!first){
+				if(!first) {
 					builder.append(", ");
 				}
 				first = false;
 				builder.append("\"").append(key).append("\" = \"").append(value).append("\"");
 			}
-			if(append){
+			if(append) {
 				builder.append(")");
 			}
 		}
@@ -3954,8 +3954,8 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		builder.append("\nPARTITIONED BY ").append("(");
 		LinkedHashMap<String, Column> columns = partition.getColumns();
 		boolean first = true;
-		for(Column column:columns.values()){
-			if(!first){
+		for(Column column:columns.values()) {
+			if(!first) {
 				builder.append(", ");
 			}
 			first = false;
@@ -4001,7 +4001,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		if(null == type) {
 			return builder;
 		}
-		if(type == Table.Partition.TYPE.HASH){
+		if(type == Table.Partition.TYPE.HASH) {
 			builder.append(" PARTITIONS ").append(partition.getModulus());
 			return builder;
 		}
@@ -4708,7 +4708,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		List<Run> runs = super.buildAddRun(runtime, meta, slice);
 		//有默认值的 再执行一次修改列属性 把默认值 设置上
 		Object def = meta.getDefaultValue();
-		if(BasicUtil.isNotEmpty(def)){
+		if(BasicUtil.isNotEmpty(def)) {
 			meta.setAction(ACTION.DDL.COLUMN_ALTER);
 			Column update = meta.update(false, false);
 			meta.setDefaultValue(null);
@@ -5020,7 +5020,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 */
 	@Override
 	public StringBuilder defaultValue(DataRuntime runtime, StringBuilder builder, Column meta) {
-		if(ACTION.DDL.COLUMN_ADD == meta.getAction()){
+		if(ACTION.DDL.COLUMN_ADD == meta.getAction()) {
 			//添加列时不支持设置默认值,添加列后再执行一次修改列属性
 			return builder;
 		}

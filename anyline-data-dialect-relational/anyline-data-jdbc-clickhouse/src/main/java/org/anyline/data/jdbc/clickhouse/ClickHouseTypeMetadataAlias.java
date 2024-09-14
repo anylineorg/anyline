@@ -312,7 +312,7 @@ public enum ClickHouseTypeMetadataAlias implements TypeMetadataAlias {
 	private String scaleRefer                ; // 读取元数据依据-小数位数
 	private TypeMetadata.Refer refer         ; // 集成元数据读写配置
 
-	ClickHouseTypeMetadataAlias(String input, TypeMetadata standard, String meta, String formula, String lengthRefer, String precisionRefer, String scaleRefer, int ignoreLength, int ignorePrecision, int ignoreScale){
+	ClickHouseTypeMetadataAlias(String input, TypeMetadata standard, String meta, String formula, String lengthRefer, String precisionRefer, String scaleRefer, int ignoreLength, int ignorePrecision, int ignoreScale) {
 		this.input = input;
 		this.standard = standard;
 		this.meta = meta;
@@ -325,34 +325,34 @@ public enum ClickHouseTypeMetadataAlias implements TypeMetadataAlias {
 		this.ignoreScale = ignoreScale;
 	}
 
-	ClickHouseTypeMetadataAlias(String input, TypeMetadata standard, String lengthRefer, String precisionRefer, String scaleRefer, int ignoreLength, int ignorePrecision, int ignoreScale){
+	ClickHouseTypeMetadataAlias(String input, TypeMetadata standard, String lengthRefer, String precisionRefer, String scaleRefer, int ignoreLength, int ignorePrecision, int ignoreScale) {
 		this(input, standard, null , null, lengthRefer, precisionRefer, scaleRefer, ignoreLength, ignorePrecision, ignoreScale);
 	}
 
-	ClickHouseTypeMetadataAlias(String input, TypeMetadata standard, String meta, String formula, int ignoreLength, int ignorePrecision, int ignoreScale){
+	ClickHouseTypeMetadataAlias(String input, TypeMetadata standard, String meta, String formula, int ignoreLength, int ignorePrecision, int ignoreScale) {
 		this(input, standard, meta, formula, null, null, null, ignoreLength, ignorePrecision, ignoreScale);
 	}
 
-	ClickHouseTypeMetadataAlias(String input, TypeMetadata standard, int ignoreLength, int ignorePrecision, int ignoreScale){
+	ClickHouseTypeMetadataAlias(String input, TypeMetadata standard, int ignoreLength, int ignorePrecision, int ignoreScale) {
 		this(input, standard, null, null, null, ignoreLength, ignorePrecision, ignoreScale);
 	}
 
-	ClickHouseTypeMetadataAlias(TypeMetadata standard, String lengthRefer, String precisionRefer, String scaleRefer, int ignoreLength, int ignorePrecision, int ignoreScale){
+	ClickHouseTypeMetadataAlias(TypeMetadata standard, String lengthRefer, String precisionRefer, String scaleRefer, int ignoreLength, int ignorePrecision, int ignoreScale) {
 		this(null, standard, lengthRefer, precisionRefer, scaleRefer, ignoreLength, ignorePrecision, ignoreScale);
 	}
 
-	ClickHouseTypeMetadataAlias(String input, TypeMetadata standard){
+	ClickHouseTypeMetadataAlias(String input, TypeMetadata standard) {
 		this.input = input;
 		this.standard = standard;
 	}
 
-	ClickHouseTypeMetadataAlias(TypeMetadata standard){
+	ClickHouseTypeMetadataAlias(TypeMetadata standard) {
 		this.standard = standard;
 	}
 
 	@Override
-	public String input(){
-		if(null == input){
+	public String input() {
+		if(null == input) {
 			input = name();
 		}
 		return input;
@@ -365,7 +365,7 @@ public enum ClickHouseTypeMetadataAlias implements TypeMetadataAlias {
 
 	@Override
 	public TypeMetadata.Refer refer() {
-		if(null == refer){
+		if(null == refer) {
 			refer = new TypeMetadata.Refer();
 			if(null != meta) {
 				refer.setMeta(meta);

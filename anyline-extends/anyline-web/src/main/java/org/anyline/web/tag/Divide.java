@@ -45,7 +45,7 @@ public class Divide extends BodyTagSupport{
 			BigDecimal _dividend = BasicUtil.parseDecimal(dividend, 0);
 			if(null == scale) {
 				if (null != format) {
-					if(format.indexOf(".") >=0){
+					if(format.indexOf(".") >=0) {
 						scale = format.length() - format.indexOf(".")-1;
 					}else{
 						scale = 1;
@@ -54,16 +54,16 @@ public class Divide extends BodyTagSupport{
 					scale = 10;
 				}
 			}
-			if(_divisor.compareTo(BigDecimal.ZERO) != 0){
+			if(_divisor.compareTo(BigDecimal.ZERO) != 0) {
 				BigDecimal result = _dividend.divide(_divisor,scale, round);
-				if(null != format){
+				if(null != format) {
 					defaultValue = NumberUtil.format(result, format); 
 				}else{
 					defaultValue = result +""; 
 				} 
 			} 
 			out.print(defaultValue); 
-		}catch(Exception e){
+		}catch(Exception e) {
 			e.printStackTrace(); 
 		}finally{
 			release(); 

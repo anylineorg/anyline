@@ -57,7 +57,7 @@ public class AnylineController extends AbstractController {
      */
     protected HttpServletRequest getRequest() {
 
-        if(null == _request){
+        if(null == _request) {
             _request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         }
         return _request;
@@ -65,16 +65,16 @@ public class AnylineController extends AbstractController {
 
     //Autowired注解不要删除
     @Autowired
-    protected void setRequest(HttpServletRequest request){
+    protected void setRequest(HttpServletRequest request) {
         this._request = request;
         try{
             this._request.setCharacterEncoding(ConfigTable.getString("HTTP_ENCODING","UTF-8"));
-        }catch(Exception e){
+        }catch(Exception e) {
 
         }
     }
     protected HttpServletResponse getResponse() {
-        if(null == _response){
+        if(null == _response) {
             _response =  ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
         }
         return _response;
@@ -82,11 +82,11 @@ public class AnylineController extends AbstractController {
 
     //Autowired注解不要删除
     @Autowired
-    public void setResponse(HttpServletResponse response){
+    public void setResponse(HttpServletResponse response) {
         this._response = response;
         try{
             this._response.setCharacterEncoding(ConfigTable.getString("HTTP_ENCODING","UTF-8"));
-        }catch(Exception e){
+        }catch(Exception e) {
 
         }
     }
@@ -306,7 +306,7 @@ public class AnylineController extends AbstractController {
     public DataSet entitys(List<String> fixs, String... params) {
         return entitys(getRequest(), KEY_CASE.CONFIG, false, false, fixs, params);
     } 
-    public DataSet entitys(RunPrepare prepare){
+    public DataSet entitys(RunPrepare prepare) {
         List<String> metadatas = service.columns(prepare.getTable());
         List<String> params = EntityAdapterProxy.column2param(metadatas);
         return entitys(getRequest(), null, false, false, params);
@@ -467,7 +467,7 @@ public class AnylineController extends AbstractController {
         return getInt(getRequest(), key);
     }
 
-    protected int getInt(String key, boolean keyEncrypt, boolean valueEncrypt, int def){
+    protected int getInt(String key, boolean keyEncrypt, boolean valueEncrypt, int def) {
         return getInt(getRequest(), key, keyEncrypt, valueEncrypt, def);
     }
 
@@ -490,7 +490,7 @@ public class AnylineController extends AbstractController {
         return getDouble(getRequest(), key);
     }
 
-    protected double getDouble(String key, boolean keyEncrypt, boolean valueEncrypt, double def){
+    protected double getDouble(String key, boolean keyEncrypt, boolean valueEncrypt, double def) {
         return getDouble(getRequest(), key, keyEncrypt, valueEncrypt, def);
     }
 
@@ -597,7 +597,7 @@ public class AnylineController extends AbstractController {
         rtn.setSign((String)request.getAttribute("response_sign"));
         rtn.setResponse_id((String)request.getAttribute("response_id"));
         rtn.setResponse_time((Long)request.getAttribute("response_time"));
-        if(log.isInfoEnabled()){
+        if(log.isInfoEnabled()) {
             log.info("[controller return][result:{}][message:{}][request:{}][response:{}][finish:{}]"
                     ,result,message, rtn.getRequest_time(), rtn.getResponse_time(), rtn.getFinish_time());
         }
@@ -610,14 +610,14 @@ public class AnylineController extends AbstractController {
      * @return String
      */
     protected String fail(String msg, boolean encrypt) {
-        if(encrypt){
+        if(encrypt) {
             msg = DESUtil.encryptParamValue(msg);
         }
         Object code = ConfigTable.get("HTTP_FAIL_CODE", Integer.valueOf(-1));
         return result(code,false, null, msg);
     }
     protected String fail(String code, String msg, boolean encrypt) {
-        if(encrypt){
+        if(encrypt) {
             msg = DESUtil.encryptParamValue(msg);
         }
         return result(code,false, null, msg);
@@ -643,7 +643,7 @@ public class AnylineController extends AbstractController {
      */
     protected String success(Object data, boolean encrypt) {
         Object code = ConfigTable.get("HTTP_SUCCESS_CODE", Integer.valueOf(200));
-        if(encrypt && null != data){
+        if(encrypt && null != data) {
             return result(code,true,DESUtil.encryptParamValue(data.toString()),null);
         }
         return result(code,true, data, null);
@@ -668,24 +668,24 @@ public class AnylineController extends AbstractController {
      * @param ext	扩展数据	  ext	扩展数据
      * @return String
      */
-    public String navi(boolean adapt, HttpServletRequest request, HttpServletResponse response, DataSet data, String page, Object ext){
+    public String navi(boolean adapt, HttpServletRequest request, HttpServletResponse response, DataSet data, String page, Object ext) {
 
-        if(null == request){
+        if(null == request) {
             request = getRequest();
         }
-        if(null == response){
+        if(null == response) {
             response = getResponse();
         }
-        if(null == data){
+        if(null == data) {
             data = (DataSet)request.getAttribute("_anyline_navi_data");
         }else{
             request.setAttribute("_anyline_navi_data", data);
         }
         PageNavi navi = null;
-        if(null != data){
+        if(null != data) {
             navi = data.getNavi();
         }
-        if(page != null && !page.startsWith("/")){
+        if(page != null && !page.startsWith("/")) {
             page = buildDir() + page;
         }
 
@@ -725,19 +725,19 @@ public class AnylineController extends AbstractController {
         Map<String,Object> map = super.navi(request, response, data, navi, page, ext);
         return success(map);
     }
-    public String navi(HttpServletRequest request, HttpServletResponse response, DataSet data, String page, Object ext){
+    public String navi(HttpServletRequest request, HttpServletResponse response, DataSet data, String page, Object ext) {
         return navi(false,request, response, data, page, ext);
     }
-    public String navi(HttpServletRequest request, HttpServletResponse response, DataSet data, String page){
+    public String navi(HttpServletRequest request, HttpServletResponse response, DataSet data, String page) {
         return navi(request, response, data, page ,null);
     }
-    public String navi(boolean adapt, HttpServletRequest request, HttpServletResponse response, DataSet data, String page){
+    public String navi(boolean adapt, HttpServletRequest request, HttpServletResponse response, DataSet data, String page) {
         return navi(adapt,request, response, data, page ,null);
     }
-    public String navi(HttpServletResponse response, String page){
+    public String navi(HttpServletResponse response, String page) {
         return navi(null, response, null, page, null);
     }
-    public String navi(HttpServletResponse response, DataSet data, String page){
+    public String navi(HttpServletResponse response, DataSet data, String page) {
         return navi(getRequest(), response, data, page, null);
     }
     /**
@@ -783,37 +783,37 @@ public class AnylineController extends AbstractController {
      * 根据dir构造文件目录(super.dir+this.dir)
      * @return String
      */
-    protected String buildDir(){
+    protected String buildDir() {
         String result = "";
         try {
             Class clazz = getClass();
-            while(null != clazz){
+            while(null != clazz) {
                 String dir = (String) BeanUtil.getFieldValue(clazz.newInstance(), "dir", false);
-                if(BasicUtil.isNotEmpty(dir)){
+                if(BasicUtil.isNotEmpty(dir)) {
                     result = paths(dir, result);
                 }
-                if(result.startsWith("/")){
+                if(result.startsWith("/")) {
                     break;
                 }
                 clazz = clazz.getSuperclass();
             }
         } catch (Exception e) {
         }
-        if(!result.endsWith("/")){
+        if(!result.endsWith("/")) {
             result = result + "/";
         }
         result = parseVariable(result);
         return result;
     }
-    protected String parseVariable(String src){
+    protected String parseVariable(String src) {
         HttpServletRequest request = getRequest();
-        if(null != request){
+        if(null != request) {
             Map<String,Object> map = (Map<String,Object>)request.getAttribute("anyline_template_variable");
-            if(null == map){
+            if(null == map) {
                 map = (Map<String,Object>)request.getSession().getAttribute("anyline_template_variable");
             }
-            if(null != map){
-                for(String key:map.keySet()){
+            if(null != map) {
+                for(String key:map.keySet()) {
                     Object value = map.get(key);
                     if(null != value) {
                         src = src.replace("${" + key + "}", value.toString());
@@ -824,20 +824,20 @@ public class AnylineController extends AbstractController {
         return src;
     }
 
-    public static String paths(String ... paths){
+    public static String paths(String ... paths) {
         String result = null;
         String separator = "/";
-        if(null != paths){
-            for(String path:paths){
-                if(BasicUtil.isEmpty(path)){
+        if(null != paths) {
+            for(String path:paths) {
+                if(BasicUtil.isEmpty(path)) {
                     continue;
                 }
                 path = path.replace("\\", "/");
-                if(null == result){
+                if(null == result) {
                     result = path;
                 }else{
-                    if(result.endsWith("/")){
-                        if(path.startsWith("/")){
+                    if(result.endsWith("/")) {
+                        if(path.startsWith("/")) {
                             // "root/" + "/sub"
                             result += path.substring(1);
                         }else{
@@ -845,7 +845,7 @@ public class AnylineController extends AbstractController {
                             result += path;
                         }
                     }else{
-                        if(path.startsWith("/")){
+                        if(path.startsWith("/")) {
                             // "root" + "/sub"
                             result += path;
                         }else{

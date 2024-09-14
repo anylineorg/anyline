@@ -41,7 +41,7 @@ public class Highlight {
     protected Boolean require_field_match     ; // 默认情况下，只突出显示包含查询匹配的字段。将require_field_match设置为false以突出显示所有字段。默认值为true。
     protected String tags_schema				    ; // 设置为使用内置标记模式的样式。
     protected String type					        ; // 使用的高亮模式:unified, plain, or fvh. 默认为 unified。
-    public Highlight getHighlight(String field){
+    public Highlight getHighlight(String field) {
         return fields.get(field);
     }
     public LinkedHashMap<String, Highlight> getFields() {
@@ -55,7 +55,7 @@ public class Highlight {
         this.fields = fields;
     }
     public void addField(String key, Highlight highlight) {
-        if(null != highlight){
+        if(null != highlight) {
             highlight.setFields(null);
         }
         this.fields.put(key, highlight);
@@ -65,7 +65,7 @@ public class Highlight {
             addField(filed, new Highlight());
         }
     }
-    public void clear(){
+    public void clear() {
         fields.clear();
     }
 

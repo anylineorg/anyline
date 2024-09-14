@@ -101,7 +101,7 @@ public class NebulaActuator implements DriverActuator {
             return set;
         }
         ResultSet rs = sesion.execute(cmd);
-        if(rs.getErrorCode() != 0){
+        if(rs.getErrorCode() != 0) {
             log.error("nebula执行异常:{}",rs.getErrorMessage());
         }
         /*

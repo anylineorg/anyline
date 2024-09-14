@@ -52,7 +52,7 @@ public class HBaseDataSourceLoader extends AbstractDataSourceLoader implements D
             Connection connection = null;
             try{
                 connection = ConfigTable.environment().getBean(Connection.class);
-            }catch (Exception e){
+            }catch (Exception e) {
                 e.printStackTrace();
             }
             if(null != connection) {

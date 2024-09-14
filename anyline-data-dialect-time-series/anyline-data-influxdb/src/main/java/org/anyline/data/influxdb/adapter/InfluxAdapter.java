@@ -84,7 +84,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
     }
 
     @Override
-    public boolean supportPlaceholder(){
+    public boolean supportPlaceholder() {
         return false;
     }
 
@@ -294,13 +294,13 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
         String bucket = null;
         String org = null;
         String measurement = null;
-        if(configs instanceof InfluxConfigStore){
+        if(configs instanceof InfluxConfigStore) {
             InfluxConfigStore cfg = (InfluxConfigStore)configs;
             bucket = cfg.bucket();
             org = cfg.org();
             measurement = cfg.measurement();
         }
-        if(obj instanceof InfluxRow){
+        if(obj instanceof InfluxRow) {
             InfluxRow row =(InfluxRow)obj;
             run.add(row.point());
             if(BasicUtil.isEmpty(bucket)) {
@@ -310,14 +310,14 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
                 org = row.org();
             }
             cmd.append(row.point().toLineProtocol());
-        }else if(obj instanceof Collection){
+        }else if(obj instanceof Collection) {
             List<Point> points = new ArrayList<>();
             Collection set = (Collection)obj;
             boolean first = true;
-            for(Object row:set){
-                if(row instanceof InfluxRow){
+            for(Object row:set) {
+                if(row instanceof InfluxRow) {
                     InfluxRow r = (InfluxRow)row;
-                    if(first){
+                    if(first) {
                         if(BasicUtil.isEmpty(bucket)) {
                             bucket = r.bucket();
                         }
@@ -334,7 +334,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
         }
 
         //InfluxSet.bucket
-        if(obj instanceof InfluxSet){
+        if(obj instanceof InfluxSet) {
             InfluxSet set = (InfluxSet)obj;
             if(BasicUtil.isEmpty(bucket)) {
                 bucket = set.bucket();
@@ -825,26 +825,26 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
     }
 
     @Override
-    public RunPrepare buildRunPrepare(DataRuntime runtime, String text){
+    public RunPrepare buildRunPrepare(DataRuntime runtime, String text) {
         RunPrepare prepare = null;
-        if(null!= text){
+        if(null!= text) {
             String chk = text.toLowerCase().trim();
-            if(chk.startsWith("from")){
+            if(chk.startsWith("from")) {
                 prepare = new InfluxVndPrepare();
                 prepare.setText(text);
             }
         }
         return prepare;
     }
-    public Run initQueryRun(DataRuntime runtime, RunPrepare prepare){
+    public Run initQueryRun(DataRuntime runtime, RunPrepare prepare) {
         Run run = null;
-        if(prepare instanceof TablePrepare){
+        if(prepare instanceof TablePrepare) {
             //fillQueryContent中会转成 InfluxSqlRun,这一步用来合成SQL
             run = new TableRun(runtime, prepare.getTable());
-        }else if(prepare instanceof InfluxRunPrepare){ //其他类型最后一步 if 处理
+        }else if(prepare instanceof InfluxRunPrepare) { //其他类型最后一步 if 处理
             run = prepare.build(runtime);
         }
-        if(null == run){
+        if(null == run) {
             String text = prepare.getText();
             if(null!= text) {
                 String lower = text.toLowerCase().trim();
@@ -915,11 +915,11 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
         String schema = table.getSchemaName();
         String name = table.getName();
         //bucket.table
-        if(name.contains(".")){
+        if(name.contains(".")) {
             String[] tmps = name.split("\\.");
             table.setName(tmps[1]);
             result.bucket(tmps[0]);
-        }else if(BasicUtil.isNotEmpty(schema)){
+        }else if(BasicUtil.isNotEmpty(schema)) {
             result.bucket(schema);
         }
         table.setSchema((String)null);
@@ -933,11 +933,11 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
     @Override
     protected Run fillQueryContent(DataRuntime runtime, StringBuilder builder, TextRun run) {
         Run result = run;
-        if(run instanceof InfluxSqlRun){
+        if(run instanceof InfluxSqlRun) {
             result = fillQueryContent(runtime, builder, (InfluxSqlRun) run);
-        }else if(run instanceof InfluxJsonRun){
+        }else if(run instanceof InfluxJsonRun) {
             result = fillQueryContent(runtime, builder, (InfluxJsonRun) run);
-        }else if(run instanceof InfluxVndRun){
+        }else if(run instanceof InfluxVndRun) {
             result = fillQueryContent(runtime, builder, (InfluxVndRun) run);
         }
         return result;
@@ -951,11 +951,11 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * Config
      * @return
      */
-    private List<Config> configs(ConfigChain chain){
+    private List<Config> configs(ConfigChain chain) {
         List<Config> configs = new ArrayList<>();
         List<Config> items = chain.getConfigs();
-        for(Config item:items){
-            if(item instanceof ConfigChain){
+        for(Config item:items) {
+            if(item instanceof ConfigChain) {
                 configs.addAll(configs((ConfigChain) item));
             }else {
                 configs.add(item);
@@ -971,7 +971,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
         String start = null;
         String stop = null;
         String measurement = null;
-        if(configs instanceof InfluxConfigStore){
+        if(configs instanceof InfluxConfigStore) {
             InfluxConfigStore cfg = (InfluxConfigStore)configs;
             if(BasicUtil.isEmpty(org)) {
                 org = cfg.org();
@@ -993,39 +993,39 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
         run.bucket(bucket);
 
         long limit = -1;
-        if(null != configs){
+        if(null != configs) {
             PageNavi navi = configs.getPageNavi();
-            if(null != navi){
+            if(null != navi) {
                 limit = navi.getLastRow() - navi.getFirstRow();
             }
         }
         String body = run.body();
-        if(null == body){
+        if(null == body) {
             //没有提供body根据configs构造
             body = "from(bucket: \""+bucket+"\") ";
-            if(BasicUtil.isNotEmpty(start) || BasicUtil.isNotEmpty(stop)){
+            if(BasicUtil.isNotEmpty(start) || BasicUtil.isNotEmpty(stop)) {
                 body += "|> range(";
-                if(BasicUtil.isNotEmpty(start)){
+                if(BasicUtil.isNotEmpty(start)) {
                     body += "start:" + start;
-                    if(BasicUtil.isNotEmpty(stop)){
+                    if(BasicUtil.isNotEmpty(stop)) {
                         body += ",";
                     }
                 }
 
-                if(BasicUtil.isNotEmpty(stop)){
+                if(BasicUtil.isNotEmpty(stop)) {
                     body += "stop:" + stop;
                 }
                 body += ")";
             }
-            if(BasicUtil.isNotEmpty(measurement)){
+            if(BasicUtil.isNotEmpty(measurement)) {
                 configs.and("_measurement", measurement);
             }
             List<Config> conditions = configs(configs.getConfigChain());
             if(!conditions.isEmpty()) {
                 body += "|> filter(fn: (r) =>";
                 boolean first = true;
-                for(Config condition:conditions){
-                    if(!first){
+                for(Config condition:conditions) {
+                    if(!first) {
                         body += " and ";
                     }
                     first = false;
@@ -1051,7 +1051,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
         String bucket = run.bucket();
         String org = run.org();
         String measurement = run.measurement();
-        if(configs instanceof InfluxConfigStore){
+        if(configs instanceof InfluxConfigStore) {
             InfluxConfigStore cfg = (InfluxConfigStore)configs;
             if(BasicUtil.isEmpty(bucket)) {
                 bucket = cfg.bucket();
@@ -1228,7 +1228,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
                 log.info("{}[action:select][执行耗时:{}]", random, DateUtil.format(time));
                 log.info("{}[action:select][封装耗时:{}][封装行数:{}]", random, DateUtil.format(time), count);
             }
-            if((!system || !ConfigStore.IS_LOG_QUERY_RESULT_EXCLUDE_METADATA(configs)) && ConfigStore.IS_LOG_QUERY_RESULT(configs) && log.isInfoEnabled()){
+            if((!system || !ConfigStore.IS_LOG_QUERY_RESULT_EXCLUDE_METADATA(configs)) && ConfigStore.IS_LOG_QUERY_RESULT(configs) && log.isInfoEnabled()) {
                 log.info("{}[查询结果]{}", random, LogUtil.table(set));
             }
             set.setDatalink(runtime.datasource());
@@ -1670,18 +1670,18 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
     }
 
     @Override
-    public List<Run> buildDeleteRunFromConfig(DataRuntime runtime, ConfigStore configs){
+    public List<Run> buildDeleteRunFromConfig(DataRuntime runtime, ConfigStore configs) {
         List<Run> runs = new ArrayList<>();
-        if(configs instanceof InfluxConfigStore){
+        if(configs instanceof InfluxConfigStore) {
             InfluxRuntime rt = (InfluxRuntime)runtime;
             InfluxConfigStore cfg = (InfluxConfigStore) configs;
             String org = cfg.org();
             String bucket = cfg.bucket();
             String measurement = cfg.measurement();
-            if(null == org){
+            if(null == org) {
                 org = rt.org();
             }
-            if(null == bucket){
+            if(null == bucket) {
                 bucket = rt.bucket();
             }
             InfluxJsonRun run = new InfluxJsonRun(runtime);
@@ -1689,13 +1689,13 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
             DataRow body = new OriginRow();
             String start = cfg.start();
             String stop = cfg.stop();
-            if(BasicUtil.isNotEmpty(start)){
+            if(BasicUtil.isNotEmpty(start)) {
                 body.put("start", start);
             }
-            if(BasicUtil.isNotEmpty(stop)){
+            if(BasicUtil.isNotEmpty(stop)) {
                 body.put("stop", stop);
             }
-            if(BasicUtil.isNotEmpty(measurement)){
+            if(BasicUtil.isNotEmpty(measurement)) {
                 configs.and("_measurement", measurement);
             }
             String predicate = cfg.getRunText(runtime, false);
@@ -3847,7 +3847,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
     @Override
     public List<Run> buildQueryIndexesRun(DataRuntime runtime, boolean greedy,  Collection<? extends Table> tables) {
         List<Run> runs = new ArrayList<>();
-        for(Table table:tables){
+        for(Table table:tables) {
             Index query = new Index();
             query.setTable(table);;
             runs.addAll(buildQueryIndexesRun(runtime, greedy, query));

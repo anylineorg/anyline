@@ -25,11 +25,11 @@ public class InfluxSqlRun extends InfluxRun{
         this.sql = sql;
     }
 
-    public InfluxSqlRun sql(String sql){
+    public InfluxSqlRun sql(String sql) {
         this.sql = sql;
         return this;
     }
-    public String sql(){
+    public String sql() {
         return sql;
     }
 }

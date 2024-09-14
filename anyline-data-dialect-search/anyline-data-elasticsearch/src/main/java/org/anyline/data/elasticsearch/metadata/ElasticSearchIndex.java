@@ -27,8 +27,8 @@ public class ElasticSearchIndex extends Table {
     //index.store.type 后续版本会删除
     private ElasticSearchAnalysis analysis = null;
 
-    public ElasticSearchIndex(){}
-    public ElasticSearchIndex(String name){
+    public ElasticSearchIndex() {}
+    public ElasticSearchIndex(String name) {
         super(name);
     }
     public Integer getNumberOfShards() {
@@ -58,16 +58,16 @@ public class ElasticSearchIndex extends Table {
         return this;
     }
 
-    public LinkedHashMap<String, Object> map(){
+    public LinkedHashMap<String, Object> map() {
         LinkedHashMap<String, Object> map =new LinkedHashMap<>();
-        if(null != analysis){
+        if(null != analysis) {
             LinkedHashMap<String, Object> settings = new LinkedHashMap<>();
             map.put("settings", settings);
             settings.put("analysis", analysis.map());
-            if(null != numberOfReplicas){
+            if(null != numberOfReplicas) {
                 settings.put("number_of_replicas", numberOfReplicas);
             }
-            if(null != numberOfShards){
+            if(null != numberOfShards) {
                 settings.put("number_of_shards", numberOfShards);
             }
         }

@@ -92,7 +92,7 @@ public class DefaultEnvironmentWorker implements EnvironmentWorker {
                     loadBean(jar);
                 }
             }
-        }catch (Exception e){
+        }catch (Exception e) {
             log.warn("配置文件加载异常", e);
         }
         //2.项目中的配置文件

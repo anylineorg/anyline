@@ -200,7 +200,7 @@ public class YashanDBAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @param configs ConfigStore
 	 */
 	@Override
-	public void fillInsertCreateTemplate(DataRuntime runtime, Run run, PartitionTable dest, ConfigStore configs){
+	public void fillInsertCreateTemplate(DataRuntime runtime, Run run, PartitionTable dest, ConfigStore configs) {
 		super.fillInsertCreateTemplate(runtime, run, dest, configs);
 	}
 
@@ -420,7 +420,7 @@ public class YashanDBAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return Run
 	 */
 	@Override
-	public Run buildUpdateRunLimit(DataRuntime runtime, Run run){
+	public Run buildUpdateRunLimit(DataRuntime runtime, Run run) {
 		return super.buildUpdateRunLimit(runtime, run);
 	}
 
@@ -5229,7 +5229,7 @@ public class YashanDBAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return list
 	 */
 	@Override
-	public List<Run> merge(DataRuntime runtime, Table meta, List<Run> slices){
+	public List<Run> merge(DataRuntime runtime, Table meta, List<Run> slices) {
 		return super.merge(runtime, meta, slices);
 	}
 

@@ -46,69 +46,69 @@ public class Head extends BaseBodyTag implements Cloneable{
 	public int doEndTag() throws JspException {
 		try{			 
 			String _title = (String)pageContext.getAttribute("title"); 
-			if(_title == null || _title.trim().equals("")){
+			if(_title == null || _title.trim().equals("")) {
 				_title = title; 
 			} 
-			if(_title == null || _title.trim().equals("")){
+			if(_title == null || _title.trim().equals("")) {
 				_title = getParamValue("title"); 
 			} 
 			 
 			String _keywords = (String)pageContext.getAttribute("keywords"); 
-			if(_keywords == null || _keywords.trim().equals("")){
+			if(_keywords == null || _keywords.trim().equals("")) {
 				_keywords = keywords; 
 			} 
-			if(_keywords == null || _keywords.trim().equals("")){
+			if(_keywords == null || _keywords.trim().equals("")) {
 				_keywords = getParamValue("keywords"); 
 			} 
 			 
 			String _description = (String)pageContext.getAttribute("description"); 
-			if(_description == null || _description.trim().equals("")){
+			if(_description == null || _description.trim().equals("")) {
 				_description = description; 
 			} 
-			if(_description == null || _description.trim().equals("")){
+			if(_description == null || _description.trim().equals("")) {
 				_description = getParamValue("description"); 
 			} 
 			 
  
 			String _var = (String)pageContext.getAttribute("var"); 
-			if(_var == null || _var.trim().equals("")){
+			if(_var == null || _var.trim().equals("")) {
 				_var = var; 
 			} 
-			if(_var == null || _var.trim().equals("")){
+			if(_var == null || _var.trim().equals("")) {
 				_var = getParamValue("var"); 
 			} 
-			if(null != _var && !_var.equals("")){
+			if(null != _var && !_var.equals("")) {
 				vars = _var.split(","); 
 			} 
 			 
-			if(null != vars){
+			if(null != vars) {
 				int len = vars.length; 
-				for(int i=0; i<len; i++){
-					if(null != _title && !_title.equals("")){
+				for(int i=0; i<len; i++) {
+					if(null != _title && !_title.equals("")) {
 						_title = _title.trim().replace("{"+i+"}", vars[i]);
 					} 
-					if(null != _keywords && !_keywords.equals("")){
+					if(null != _keywords && !_keywords.equals("")) {
 						_keywords = _keywords.trim().replace("{"+i+"}", vars[i]);
 					} 
-					if(null != _description && !_description.equals("")){
+					if(null != _description && !_description.equals("")) {
 						_description = _description.trim().replace("{"+i+"}", vars[i]);
 					} 
 				} 
 			} 
 			 
 			JspWriter out = pageContext.getOut(); 
-			if(_title != null && !_title.trim().equals("")){
+			if(_title != null && !_title.trim().equals("")) {
 				out.println("\t<title>" + _title + "</title>"); 
 			} 
-			if(_keywords != null && !_keywords.trim().equals("")){
+			if(_keywords != null && !_keywords.trim().equals("")) {
 				out.println("\t<meta name=\"keywords\" content=\"" + _keywords + "\" />"); 
 			} 
-			if(_description != null && !_description.trim().equals("")){
+			if(_description != null && !_description.trim().equals("")) {
 				out.println("\t<meta name=\"description\" content=\"" + _description + "\" />"); 
 			} 
 			 
 			 
-		}catch(Exception e){
+		}catch(Exception e) {
 			e.printStackTrace(); 
 		}finally{
 			release(); 
@@ -131,8 +131,8 @@ public class Head extends BaseBodyTag implements Cloneable{
 		return super.clone(); 
 	} 
  
-	private String getParamValue(String key){
-		if(paramMap != null){
+	private String getParamValue(String key) {
+		if(paramMap != null) {
 			return (String)paramMap.get(key); 
 		} 
 		return null; 

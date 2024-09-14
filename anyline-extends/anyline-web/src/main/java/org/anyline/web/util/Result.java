@@ -49,14 +49,14 @@ public class Result {
     private HttpServletRequest request;
     private HttpServletResponse response;
 
-    public static Result success(Object data){
+    public static Result success(Object data) {
         Result result = new Result();
         result.data = data;
         result.success = true;
         result.init();
         return result;
     }
-    public static Result init(boolean success, Object code, Object data, String message){
+    public static Result init(boolean success, Object code, Object data, String message) {
         Result result = new Result();
         result.success = success;
         result.data = data;
@@ -65,14 +65,14 @@ public class Result {
         result.init();
         return result;
     }
-    public static Result fail(String message){
+    public static Result fail(String message) {
         Result result = new Result();
         result.message = message;
         result.success = false;
         result.init();
         return result;
     }
-    public Result fail(String code, String message){
+    public Result fail(String code, String message) {
         Result result = new Result();
         result.message = message;
         result.code = code;
@@ -80,7 +80,7 @@ public class Result {
         result.init();
         return result;
     }
-    public Result fail(Integer code, String message){
+    public Result fail(Integer code, String message) {
         Result result = new Result();
         result.message = message;
         result.code = code;
@@ -105,19 +105,19 @@ public class Result {
         this.sign = sign;
     }
 
-    public String toString(){
+    public String toString() {
         return json();
     }
-    private void init(){
+    private void init() {
        request =  ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
        response =  ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
         if(null != request) {
             Object request_time_ = request.getParameter(ConfigTable.getString("HTTP_REQUEST_TIME_KET","_anyline_request_time"));
-            if(null != request_time_){
+            if(null != request_time_) {
                 request_time = (Long)request_time_;
             }
             Object response_time_ = request.getAttribute(ConfigTable.getString("HTTP_RESPONSE_TIME_KEY","_anyline_response_time"));
-            if(null != response_time_){
+            if(null != response_time_) {
                 response_time = (Long)response_time_;
             }
         }
@@ -151,16 +151,16 @@ public class Result {
 
         if (data instanceof DataSet || data instanceof EntitySet) {
             dataType = "list";
-            if(data instanceof DataSet){
+            if(data instanceof DataSet) {
                 DataSet set = (DataSet) data;
                 data = set.getRows();
-                if(null == navi){
+                if(null == navi) {
                     navi = set.getNavi();
                 }
-            }else if(data instanceof EntitySet){
+            }else if(data instanceof EntitySet) {
                 EntitySet set = (EntitySet) data;
                 data = set.getDatas();
-                if(null == navi){
+                if(null == navi) {
                     navi = set.getNavi();
                 }
             }
@@ -171,39 +171,39 @@ public class Result {
                 // 有分页对象
                 Map<String, Object> navi_ = new HashMap<>();
                 navi_.put(response_key_navi_cur_page, navi.getCurPage());          // 当前页
-                if(simpleStruct && !map.containsKey(response_key_navi_cur_page)){
+                if(simpleStruct && !map.containsKey(response_key_navi_cur_page)) {
                     map.put(response_key_navi_cur_page, navi.getCurPage());
                 }
                 navi_.put(response_key_navi_total_page, navi.getTotalPage());      // 总页数
-                if(simpleStruct && !map.containsKey(response_key_navi_total_page)){
+                if(simpleStruct && !map.containsKey(response_key_navi_total_page)) {
                     map.put(response_key_navi_total_page, navi.getTotalPage());
                 }
                 navi_.put(response_key_navi_total_row, navi.getTotalRow());        // 总行数
-                if(simpleStruct && !map.containsKey(response_key_navi_total_row)){
+                if(simpleStruct && !map.containsKey(response_key_navi_total_row)) {
                     map.put(response_key_navi_total_row, navi.getTotalRow());
                 }
                 navi_.put(response_key_navi_page_rows, navi.getPageRows());        // 每页行籹
-                if(simpleStruct && !map.containsKey(response_key_navi_page_rows)){
+                if(simpleStruct && !map.containsKey(response_key_navi_page_rows)) {
                     map.put(response_key_navi_page_rows, navi.getPageRows());
                 }
                 map.put(response_key_navi, navi_);
-            }else if(rows != -1){
+            }else if(rows != -1) {
                 // 设置了总行数、每页行数
                 Map<String, Object> navi_ = new HashMap<>();
                 navi_.put(response_key_navi_cur_page, page);         // 当前页
-                if(simpleStruct && !map.containsKey(response_key_navi_cur_page)){
+                if(simpleStruct && !map.containsKey(response_key_navi_cur_page)) {
                     map.put(response_key_navi_cur_page, page);
                 }
                 navi_.put(response_key_navi_total_page, pages);      // 总页数
-                if(simpleStruct && !map.containsKey(response_key_navi_total_page)){
+                if(simpleStruct && !map.containsKey(response_key_navi_total_page)) {
                     map.put(response_key_navi_total_page, pages);
                 }
                 navi_.put(response_key_navi_total_row, rows);        // 总行数
-                if(simpleStruct && !map.containsKey(response_key_navi_total_row)){
+                if(simpleStruct && !map.containsKey(response_key_navi_total_row)) {
                     map.put(response_key_navi_total_row, rows);
                 }
                 navi_.put(response_key_navi_page_rows, vol);         // 每页行籹
-                if(simpleStruct && !map.containsKey(response_key_navi_page_rows)){
+                if(simpleStruct && !map.containsKey(response_key_navi_page_rows)) {
                     map.put(response_key_navi_page_rows, vol);
                 }
                 map.put(response_key_navi, navi_);
@@ -227,7 +227,7 @@ public class Result {
         }
 
 
-        if (null != response){
+        if (null != response) {
             response.setContentType("application/json;charset=utf-8");
             response.setHeader("Content-type", "application/json;charset=utf-8");
             response.setCharacterEncoding("UTF-8");

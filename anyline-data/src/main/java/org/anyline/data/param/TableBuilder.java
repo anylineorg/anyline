@@ -66,20 +66,20 @@ public class TableBuilder {
      * @param json json
      * @return RunPrepare
      */
-    public static RunPrepare build(String json){
+    public static RunPrepare build(String json) {
         TableBuilder builder = null;
         DataRow row = DataRow.parseJson(json);
         Object master = row.get("table");
         String alias = row.getString("alias");
         String distinct = row.getString("distinct");
-        if(master instanceof String){
+        if(master instanceof String) {
             Table table = new Table((String)master);
-            if(BasicUtil.isNotEmpty(alias)){
+            if(BasicUtil.isNotEmpty(alias)) {
                 table.setAlias(alias);
             }
             builder = TableBuilder.init(table);
         }
-        if(BasicUtil.isNotEmpty(distinct)){
+        if(BasicUtil.isNotEmpty(distinct)) {
             builder.prepare.setDistinct(true);
         }
         DataSet joins = row.getSet("joins");
@@ -126,10 +126,10 @@ public class TableBuilder {
             }
         }
         Object columns = row.get("columns");
-        if(columns instanceof List){
+        if(columns instanceof List) {
             List cols = (List)columns;
-            for(Object col:cols){
-                if(col instanceof String){
+            for(Object col:cols) {
+                if(col instanceof String) {
                     builder.addColumn((String)col);
                 }
             }
@@ -162,8 +162,8 @@ joins:[
 
     public DataRow map(boolean empty) {
         DataRow row = new OriginRow();
-        if(empty || null != prepare){
-            if(prepare instanceof DefaultTablePrepare){
+        if(empty || null != prepare) {
+            if(prepare instanceof DefaultTablePrepare) {
                 DefaultTablePrepare table = (DefaultTablePrepare)prepare;
                 row.put("table",  table.getTableName());
                 row.put("alias", table.getTable().getAlias());
@@ -171,17 +171,17 @@ joins:[
             }else{
             }
         }
-        if(null != joins && !joins.isEmpty()){
+        if(null != joins && !joins.isEmpty()) {
             DataSet set = new DataSet();
-            for(RunPrepare item:joins){
+            for(RunPrepare item:joins) {
                 set.add(item.map(empty, true));
             }
             row.put("joins", set);
         }
-        if(null != columns && !columns.isEmpty()){
+        if(null != columns && !columns.isEmpty()) {
             row.put("columns", Column.names(columns.values()));
         }else{
-            if(null != prepare.getColumns() && !prepare.getColumns().isEmpty()){
+            if(null != prepare.getColumns() && !prepare.getColumns().isEmpty()) {
                 row.put("columns", Column.names(prepare.getColumns().values()));
             }
         }
@@ -190,14 +190,14 @@ joins:[
     public String json(boolean empty) {
         return map(empty).json();
     }
-    public TableBuilder distinct(boolean distinct){
+    public TableBuilder distinct(boolean distinct) {
         this.distinct = distinct;
         return this;
     }
     public String json() {
         return json(false);
     }
-    public TableBuilder select(String ... columns){
+    public TableBuilder select(String ... columns) {
         return columns(columns);
     }
     public static TableBuilder init() {
@@ -243,13 +243,13 @@ joins:[
     }
     public TableBuilder addColumns(String ... columns) {
         List<String> list = SQLUtil.columns(columns);
-        for(String column:list){
+        for(String column:list) {
             addColumn(column);
         }
         return this;
     }
     public TableBuilder addColumns(List<String> columns) {
-        for(String column:columns){
+        for(String column:columns) {
             addColumn(column);
         }
         return this;

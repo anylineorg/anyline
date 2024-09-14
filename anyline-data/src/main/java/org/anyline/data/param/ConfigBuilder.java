@@ -43,7 +43,7 @@ public class ConfigBuilder {
             List<String> query = (List<String>)columns.getList("query");
             configs.columns(query);
             List<String> excludes = (List<String>)columns.getList("exclude");
-            if(null == excludes){
+            if(null == excludes) {
                 excludes = (List<String>)columns.getList("excludes");
             }
             configs.excludes(excludes);
@@ -74,7 +74,7 @@ public class ConfigBuilder {
             ParseResult parser = ParseResult.build(row);
             config = new DefaultConfig(parser);
             String join = row.getString("join");
-            if(null != join){
+            if(null != join) {
                 config.setJoin(Condition.JOIN.valueOf(join.trim().toUpperCase()));
             }
             config.setText(row.getString("text"));
@@ -91,7 +91,7 @@ public class ConfigBuilder {
         ConfigChain chain = null;
         chain = new DefaultConfigChain();
         String join = row.getString("join");
-        if(null != join){
+        if(null != join) {
             chain.setJoin(Condition.JOIN.valueOf(join.trim().toUpperCase()));
         }
         chain.setText(row.getString("text"));

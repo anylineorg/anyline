@@ -32,11 +32,11 @@ public class Token extends BodyTagSupport{
 	 public int doStartTag() throws JspException {
 		HttpServletRequest request = (HttpServletRequest)pageContext.getRequest(); 
 		String token = TokenUtil.createToken(request); 
-		if(null != token){
+		if(null != token) {
 			JspWriter out = pageContext.getOut(); 
 			try{
 				out.print(token); 
-			}catch(Exception e){
+			}catch(Exception e) {
 				 
 			}finally{
 				 

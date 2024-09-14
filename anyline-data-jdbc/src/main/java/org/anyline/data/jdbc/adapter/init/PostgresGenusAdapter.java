@@ -414,12 +414,12 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         return run;
     }
     @Override
-    public void fillUpdateContent(DataRuntime runtime, TableRun run, StringBuilder builder, DataRow data, ConfigStore configs){
+    public void fillUpdateContent(DataRuntime runtime, TableRun run, StringBuilder builder, DataRow data, ConfigStore configs) {
         TablePrepare prepare = (TablePrepare)run.getPrepare();
         builder.append("UPDATE ");
         name(runtime, builder, prepare.getTable());
         String alias = prepare.getAlias();
-        if(BasicUtil.isNotEmpty(alias)){
+        if(BasicUtil.isNotEmpty(alias)) {
             builder.append(tableAliasGuidd());
             delimiter(builder, alias);
         }
@@ -427,14 +427,14 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         builder.append("SET").append(BR);
         List<String> keys = data.keys();
         boolean first = true;
-        for(String key:keys){
-            if(!first){
+        for(String key:keys) {
+            if(!first) {
                 builder.append(", ");
             }
             first = false;
             builder.append(key).append(" = ");
             Object value = data.get(key);
-            if(value instanceof VariableValue){
+            if(value instanceof VariableValue) {
                 VariableValue var = (VariableValue)value;
                 delimiter(builder, var.value());
             }else{
@@ -455,12 +455,12 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
                 fillJoinTableContent(runtime, builder, run, join);
             }
         }
-        if(null != master){
+        if(null != master) {
             Join join = master.getJoin();
             if(master instanceof VirtualTablePrepare) {
                 join = ((VirtualTablePrepare) master).getPrepare().getJoin();
             }
-            if(null != join){
+            if(null != join) {
                 String on = join.getConditions().getRunText(runtime, false);
                 //builder.append(on);
                 configs.and(on);
@@ -805,11 +805,11 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         // NOT A%  151
         // NOT %A  152
         String formula = compare.formula();
-        if(null == value){
+        if(null == value) {
             value = "";
         }
-        if(placeholder){
-            if(compare == Compare.LIKE_SIMPLE){
+        if(placeholder) {
+            if(compare == Compare.LIKE_SIMPLE) {
                 builder.append(formula).append("?");
             }else if(code == 50) {
                 builder.append(formula).append(concat(runtime, "'%'","?","'%'"));
@@ -822,7 +822,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         }else{
             value = BeanUtil.first(value);
             rv.setPlaceholder(false);
-            if(compare == Compare.LIKE_SIMPLE){
+            if(compare == Compare.LIKE_SIMPLE) {
                 builder.append(formula).append("'").append(value).append("'");
             }else if(code == 50) {
                 builder.append(formula).append("'%").append(value).append("%'");
@@ -2543,25 +2543,25 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
     @Override
     public Table.Partition init(DataRuntime runtime, int index, boolean create, Table.Partition meta, Table table, DataRow row) throws Exception {
         //分区方式
-        if(index == 0){
+        if(index == 0) {
             MetadataFieldRefer refer = refer(runtime, Table.Partition.class);
             meta = new Table.Partition();
             //分区策略 h = 哈希分区表 l = 列表分区表 r = 范围分区表
             String type = getString(row, refer, Table.Partition.FIELD_TYPE);
-            if("h".equalsIgnoreCase(type)){
+            if("h".equalsIgnoreCase(type)) {
                 meta.setType(Table.Partition.TYPE.HASH);
-            }else if("l".equalsIgnoreCase(type)){
+            }else if("l".equalsIgnoreCase(type)) {
                 meta.setType(Table.Partition.TYPE.LIST);
-            }else if("r".equalsIgnoreCase(type)){
+            }else if("r".equalsIgnoreCase(type)) {
                 meta.setType(Table.Partition.TYPE.RANGE);
             }
             LinkedHashMap<String, Column> cols = table.getColumns();
             String columns = getString(row, refer, Table.Partition.FIELD_COLUMN);
-            if(BasicUtil.isNotEmpty(columns)){
+            if(BasicUtil.isNotEmpty(columns)) {
                 String[] nums = columns.split(" ");
-                for(String num:nums){
-                    for(Column col:cols.values()){
-                        if(num.equals(col.getPosition())){
+                for(String num:nums) {
+                    for(Column col:cols.values()) {
+                        if(num.equals(col.getPosition())) {
                             meta.addColumn(col);
                             break;
                         }
@@ -2586,21 +2586,21 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public Table.Partition detail(DataRuntime runtime, int index, boolean create, Table.Partition meta, Table table, DataRow row) throws Exception {
-        if(index == 1){
+        if(index == 1) {
             MetadataFieldRefer refer = refer(runtime, Table.Partition.Slice.class);
             Table.Partition.Slice slice = new Table.Partition.Slice();
             slice.setName(getString(row, refer, Table.Partition.Slice.FIELD_NAME));
             String fors = getString(row, refer, Table.Partition.Slice.FIELD_FOR);
             fors = fors.replace("'", "").replace("\"", "");
             Table.Partition.TYPE type = meta.getType();
-            if(type == Table.Partition.TYPE.LIST){
+            if(type == Table.Partition.TYPE.LIST) {
                 //FOR VALUES IN ('FI', 'CO')
                 String vals = RegularUtil.cut(fors, "(", ")");
                 String[] values = vals.split(",");
-                for(String value:values){
+                for(String value:values) {
                     slice.addValue(value.trim());
                 }
-            }else if(type == Table.Partition.TYPE.HASH){
+            }else if(type == Table.Partition.TYPE.HASH) {
                 //FOR VALUES WITH (modulus 3, remainder 2)
                 String modules = RegularUtil.cut(fors, "modulus", ",").trim();
                 int module = BasicUtil.parseInt(modules, 0);
@@ -2609,12 +2609,12 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
                 table.getPartition().setModulus(module);
                 slice.setModulus(module);
                 slice.setRemainder(rem);
-            }else if(type == Table.Partition.TYPE.RANGE){
+            }else if(type == Table.Partition.TYPE.RANGE) {
                 //FOR VALUES FROM ('2020-02-01') TO ('2020-05-31')
                 String[] less = RegularUtil.cut(fors, "FROM", "(", ")").split(",");
                 String[] columns = RegularUtil.cut(fors, "TO", "(", ")").split(",");
                 int size = columns.length;
-                for(int i=0; i<size; i++){
+                for(int i=0; i<size; i++) {
                     slice.setLess(columns[i].trim(), less[i].trim());
                 }
             }
@@ -3375,7 +3375,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         runs.add(run);
         StringBuilder builder = run.getBuilder();
         ConfigStore configs = run.getConfigs();
-        if(null != tables && !tables.isEmpty()){
+        if(null != tables && !tables.isEmpty()) {
             Table table = tables.iterator().next();
             configs.and("ins.nspname", table.getSchemaName());
         }
@@ -3384,7 +3384,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         configs.in("c.relname", names);
         return runs;
     }
-    protected Run buildQueryIndexBody(DataRuntime runtime){
+    protected Run buildQueryIndexBody(DataRuntime runtime) {
         Run run = new SimpleRun(runtime);
         StringBuilder builder = run.getBuilder();
         builder.append("SELECT \n");
@@ -3539,7 +3539,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         meta.setPosition(column, position);
 
         List<String> orders = BeanUtil.array2list(row.getStringNvl(Index.FIELD_ORDER,"").split(" "));//[0, 1, 1]  0:ASC 1:DESC
-        if(position >= 0){
+        if(position >= 0) {
             String order = orders.get(position);
             if(null != order) {
                 order = order.toUpperCase();
@@ -4686,7 +4686,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         }else{
             pks = meta.primarys();
         }
-        if(BasicUtil.isEmpty(name)){
+        if(BasicUtil.isEmpty(name)) {
             name = "pk_" + meta.getName();
         }
         if(!pks.isEmpty()) {

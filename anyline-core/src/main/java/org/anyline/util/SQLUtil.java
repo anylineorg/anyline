@@ -109,7 +109,7 @@ public class SQLUtil {
 			builder.append(body);
 			return builder;
 		}
-		if(check){
+		if(check) {
 			if(!delimiter(src)) {
 				builder.append(src);
 				return builder;
@@ -266,7 +266,7 @@ public class SQLUtil {
 	 * @param txt 原文
 	 * @return int
 	 */
-	public static int countPlaceholder(String txt){
+	public static int countPlaceholder(String txt) {
 		int qty = 0;
 		try {
 			String reg = "(?:'[^']*'|\"[^\"]*\")";
@@ -279,13 +279,13 @@ public class SQLUtil {
 			keys = RegularUtil.fetch(txt, "\\?", Regular.MATCH_MODE.CONTAIN, 0);
 			//全部符号数量 - 此号内符号数量
 			qty = keys.size() - qty;
-		}catch (Exception e){
+		}catch (Exception e) {
 			log.warn("占位符正则表达式解析异常:", e);
 		}
 		return qty;
 	}
-	public static String trim(String condition){
-		if(null != condition){
+	public static String trim(String condition) {
+		if(null != condition) {
 			condition = condition.trim();
 			String up = condition.toUpperCase();
 			if(up.startsWith("AND ") || up.startsWith("AND(")) {
@@ -303,11 +303,11 @@ public class SQLUtil {
 	 * @param columns column
 	 * @return List
 	 */
-	public static List<String> columns(String ... columns){
+	public static List<String> columns(String ... columns) {
 		List<String> list = new ArrayList<>();
-		if(null != columns){
-			for(String column: columns){
-				if(column.contains(",")){
+		if(null != columns) {
+			for(String column: columns) {
+				if(column.contains(",")) {
 					//在''或()内的 不拆分
 					if(RegularUtil.match(column,"'.*,.*'", Regular.MATCH_MODE.CONTAIN) || RegularUtil.match(column,"\\(.*,.*\\)", Regular.MATCH_MODE.CONTAIN)) {
 						list.add(column);

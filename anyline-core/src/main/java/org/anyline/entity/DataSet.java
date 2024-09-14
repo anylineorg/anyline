@@ -1794,13 +1794,13 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
      *      ROUND_UNNECESSARY=7 断言所请求的操作具有准确的结果，因此不需要舍入。如果在产生不精确结果的操作上指定了该舍入模式，则会抛出ArithmeticException异常
      * @param keys keys
      */
-    public void percent(int scale, int round, String ... keys){
-        for(String key:keys){
+    public void percent(int scale, int round, String ... keys) {
+        for(String key:keys) {
             BigDecimal sum = sum(key);
-            if(null != sum && sum.compareTo(BigDecimal.ZERO) > 0){
-                for(DataRow row:rows){
+            if(null != sum && sum.compareTo(BigDecimal.ZERO) > 0) {
+                for(DataRow row:rows) {
                     BigDecimal value = row.getDecimal(key, (BigDecimal) null);
-                    if(null != value){
+                    if(null != value) {
                         BigDecimal percent = value.divide(sum, scale, round);
                         row.put(key+"_percent", percent);
                     }
@@ -1808,7 +1808,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
             }
         }
     }
-    public void percent(String ... keys){
+    public void percent(String ... keys) {
         percent(2, 4, keys);
     }
 
@@ -1830,19 +1830,19 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
      *         如:1.15 转成 1.2,因为5前面的1是奇数;1.25 转成 1.2,因为5前面的2是偶数<br/>
      *      ROUND_UNNECESSARY=7 断言所请求的操作具有准确的结果，因此不需要舍入。如果在产生不精确结果的操作上指定了该舍入模式，则会抛出ArithmeticException异常
      */
-    public BigDecimal wac(int scale, int round, String factor, String key){
+    public BigDecimal wac(int scale, int round, String factor, String key) {
         BigDecimal result = null;
         BigDecimal sum_value = BigDecimal.ZERO;
         BigDecimal sum_factor = sum(factor);
-        for(DataRow row:rows){
+        for(DataRow row:rows) {
             sum_value = sum_value.add(row.multiply(factor, key));
         }
-        if(null != sum_value && null != sum_factor && sum_factor.compareTo(BigDecimal.ZERO)>0){
+        if(null != sum_value && null != sum_factor && sum_factor.compareTo(BigDecimal.ZERO)>0) {
             result = sum_value.divide(sum_factor, scale, round);
         }
         return result;
     }
-    public BigDecimal wac(String factor, String key){
+    public BigDecimal wac(String factor, String key) {
         return wac(2, BigDecimal.ROUND_HALF_UP, factor, key);
     }
     /**
@@ -1852,10 +1852,10 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
      * @param keys keys
      */
     public void multiply(String target, boolean empty, String ... keys) {
-        if(BasicUtil.isEmpty(target)){
+        if(BasicUtil.isEmpty(target)) {
             target = BeanUtil.concat(keys);
         }
-        for(DataRow row:rows){
+        for(DataRow row:rows) {
             BigDecimal multiply = row.multiply(empty, keys);
             row.put(target, multiply);
         }
@@ -1888,30 +1888,30 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
         }
         return null;
     }
-    public Double median(String key, Double def){
+    public Double median(String key, Double def) {
         BigDecimal median = median(key);
-        if(null == median){
+        if(null == median) {
             return def;
         }
         return median.doubleValue();
     }
-    public Float median(String key, Float def){
+    public Float median(String key, Float def) {
         BigDecimal median = median(key);
-        if(null == median){
+        if(null == median) {
             return def;
         }
         return median.floatValue();
     }
-    public Long median(String key, Long def){
+    public Long median(String key, Long def) {
         BigDecimal median = median(key);
-        if(null == median){
+        if(null == median) {
             return def;
         }
         return median.longValue();
     }
-    public Integer median(String key, Integer def){
+    public Integer median(String key, Integer def) {
         BigDecimal median = median(key);
-        if(null == median){
+        if(null == median) {
             return def;
         }
         return median.intValue();
@@ -3632,17 +3632,17 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
      * 全部条目keys合集
      * @return List
      */
-    public List<String> keys(){
+    public List<String> keys() {
         List<String> keys = new ArrayList<>();
         Map<String,String> map = new LinkedHashMap<>();
-        for(DataRow row:rows){
-            for(String key:row.keySet()){
+        for(DataRow row:rows) {
+            for(String key:row.keySet()) {
                 map.put(key, key);
             }
         }
         keys.addAll(map.keySet());
-        if(keys.isEmpty() && null != metadatas){
-            for(Column column:metadatas.values()){
+        if(keys.isEmpty() && null != metadatas) {
+            for(Column column:metadatas.values()) {
                 keys.add(column.getName());
             }
         }
@@ -5320,7 +5320,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
                             chk = false;
                         }else {
                             boolean valueNumber = BasicUtil.isNumber(value);
-                            if(valueNumber && tmpNumber){
+                            if(valueNumber && tmpNumber) {
                                 chk = new BigDecimal(tmpValue.toString()).compareTo(new BigDecimal(value.toString())) == 0;
                             }else {
                                 chk = tmpValue.toString().equalsIgnoreCase(value.toString());
@@ -5328,7 +5328,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
                         }
                     } else {
                         boolean valueNumber = BasicUtil.isNumber(value);
-                        if(valueNumber && tmpNumber){
+                        if(valueNumber && tmpNumber) {
                             chk = new BigDecimal(tmpValue.toString()).compareTo(new BigDecimal(value.toString())) == 0;
                         }else {
                             chk = tmpValue.equals(value);
@@ -5678,13 +5678,13 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
             if (null != values) {
                 for (DataRow row : src) {
                     Map<String, String> map = value2map(row.get(key));
-                    for(T value:values){
-                        if(null != value){
+                    for(T value:values) {
+                        if(null != value) {
                             String k = value.toString();
-                            if(ignoreCase){
+                            if(ignoreCase) {
                                 k = k.toUpperCase();
                             }
-                            if(map.containsKey(k)){
+                            if(map.containsKey(k)) {
                                 set.add(row);
                                 break;
                             }
@@ -5717,21 +5717,21 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
                 for (DataRow row : src) {
                     Map<String, String> map = value2map(row.get(key));
                     boolean chk = true;
-                    for(T value:values){
-                        if(null == value){
+                    for(T value:values) {
+                        if(null == value) {
                             chk = false;
                             break;
                         }
                         String k = value.toString();
-                        if(ignoreCase){
+                        if(ignoreCase) {
                             k = k.toUpperCase();
                         }
-                        if(!map.containsKey(k)){
+                        if(!map.containsKey(k)) {
                             chk = false;
                             break;
                         }
                     }
-                    if(chk){
+                    if(chk) {
                         set.add(row);
                     }
                 }
@@ -5764,45 +5764,45 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
          * @param obj a,b,c 或 [a,b,c] 或map
          * @return
          */
-        private Map<String, String> value2map(Object obj){
+        private Map<String, String> value2map(Object obj) {
             Map<String, String> map = new HashMap<>();
-            if(null == obj){
+            if(null == obj) {
                 return map;
             }
-            if(obj instanceof String){
+            if(obj instanceof String) {
                 String[] tmps = obj.toString().split(",");
-                for(String tmp:tmps){
-                    if(null != tmp){
+                for(String tmp:tmps) {
+                    if(null != tmp) {
                         String k = tmp.trim();
-                        if(ignoreCase){
+                        if(ignoreCase) {
                             k = k.toUpperCase();
                         }
                         map.put(k, null);
                     }
                 }
-            }else if(obj instanceof Collection){
+            }else if(obj instanceof Collection) {
                 Collection items = (Collection) obj;
-                for(Object item:items){
+                for(Object item:items) {
                     String k = item.toString().trim();
-                    if(ignoreCase){
+                    if(ignoreCase) {
                         k = k.toUpperCase();
                     }
                     map.put(k, null);
                 }
-            }else if(obj instanceof Map){
+            }else if(obj instanceof Map) {
                 Map maps = (Map)obj;
-                for(Object key:maps.keySet()){
+                for(Object key:maps.keySet()) {
                     String k = key.toString().trim();
-                    if(ignoreCase){
+                    if(ignoreCase) {
                         k = k.toUpperCase();
                     }
                     map.put(k, null);
                 }
             }else if(obj.getClass().isArray()) {
                 List<Object> items = BeanUtil.object2list(obj);
-                for(Object item:items){
+                for(Object item:items) {
                     String k = item.toString().trim();
-                    if(ignoreCase){
+                    if(ignoreCase) {
                         k = k.toUpperCase();
                     }
                     map.put(k, null);
@@ -6215,11 +6215,11 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
                 set = startWith(key, string(values));
             }else if(compare == Compare.END_WITH) {
                 set = endWith(key, string(values));
-            }else if(compare == Compare.FIND_IN_SET){
+            }else if(compare == Compare.FIND_IN_SET) {
                 set = findInSet(key, values);
-            }else if(compare == Compare.FIND_IN_SET_OR){
+            }else if(compare == Compare.FIND_IN_SET_OR) {
                 set = findInSetOr(key, values);
-            }else if(compare == Compare.FIND_IN_SET_AND){
+            }else if(compare == Compare.FIND_IN_SET_AND) {
                 set = findInSetAnd(key, values);
             }
             return set;

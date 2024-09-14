@@ -40,32 +40,32 @@ public class CacheProxy {
     public static void init(CacheProvider provider) {
         CacheProxy.provider = provider;
     }
-    private static OriginRow caches(){
+    private static OriginRow caches() {
         OriginRow result = new OriginRow();
-        if(ConfigTable.METADATA_CACHE_SCOPE == 1){
+        if(ConfigTable.METADATA_CACHE_SCOPE == 1) {
             result = thread_caches.get();
-            if(null == result){
+            if(null == result) {
                 result = new OriginRow();
                 thread_caches.set(result);
             }
-        }else if(ConfigTable.METADATA_CACHE_SCOPE == 9){
-            if(application_caches.isExpire(ConfigTable.METADATA_CACHE_SECOND*1000)){
+        }else if(ConfigTable.METADATA_CACHE_SCOPE == 9) {
+            if(application_caches.isExpire(ConfigTable.METADATA_CACHE_SECOND*1000)) {
                 application_caches = new OriginRow();
             }
             result = application_caches;
         }
         return result;
     }
-    private static OriginRow names(){
+    private static OriginRow names() {
         OriginRow result = new OriginRow();
-        if(ConfigTable.METADATA_CACHE_SCOPE == 1){
+        if(ConfigTable.METADATA_CACHE_SCOPE == 1) {
             result = thread_names.get();
-            if(null == result){
+            if(null == result) {
                 result = new OriginRow();
                 thread_names.set(result);
             }
-        }else if(ConfigTable.METADATA_CACHE_SCOPE == 9){
-            if(application_names.isExpire(ConfigTable.METADATA_CACHE_SECOND*1000)){
+        }else if(ConfigTable.METADATA_CACHE_SCOPE == 9) {
+            if(application_names.isExpire(ConfigTable.METADATA_CACHE_SECOND*1000)) {
                 application_names = new OriginRow();
             }
             result = application_names;
@@ -79,51 +79,51 @@ public class CacheProxy {
     private static Map<String, DataRow> cache_table_maps = new HashMap<>();
     private static Map<String, DataRow> cache_view_maps = new HashMap<>();
 */
-    public static String key(DataRuntime runtime, String flag, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs){
+    public static String key(DataRuntime runtime, String flag, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs) {
         StringBuilder key = new StringBuilder();
         key.append(runtime.datasource()).append("_").append(flag).append("_").append(greedy).append("_");
-        if(null != catalog){
+        if(null != catalog) {
             key.append(catalog.getName());
         }
         key.append("_");
-        if(null != schema){
+        if(null != schema) {
             key.append(schema.getName());
         }
         key.append("_").append(pattern).append("_").append(types);
-        if(null != configs){
+        if(null != configs) {
             key.append(MD5Util.crypto(configs.json()));;
         }
         return key.toString().toUpperCase();
     }
-    public static String key(DataRuntime runtime, String flag, boolean greedy, Table table){
+    public static String key(DataRuntime runtime, String flag, boolean greedy, Table table) {
         StringBuilder key = new StringBuilder();
         key.append(runtime.datasource()).append("_").append(flag).append("_").append(greedy).append("_");
         String name = null;
         String catalog = null;
         String schema = null;
-        if(null != table){
+        if(null != table) {
             name = table.getName();
             catalog = table.getCatalogName();
             schema = table.getSchemaName();
         }
-        if(null != catalog){
+        if(null != catalog) {
             key.append(catalog);
         }
         key.append("_");
-        if(null != schema){
+        if(null != schema) {
             key.append(schema);
         }
         key.append("_").append(name);
         return key.toString().toUpperCase();
     }
-    public static String key(DataRuntime runtime, String flag, boolean greedy, Catalog catalog, Schema schema, String pattern){
+    public static String key(DataRuntime runtime, String flag, boolean greedy, Catalog catalog, Schema schema, String pattern) {
         StringBuilder key = new StringBuilder();
         key.append(runtime.datasource()).append("_").append(flag).append("_").append(greedy).append("_");
-        if(null != catalog){
+        if(null != catalog) {
             key.append(catalog.getName());
         }
         key.append("_");
-        if(null != schema){
+        if(null != schema) {
             key.append(schema.getName());
         }
         key.append("_").append(pattern);
@@ -135,44 +135,44 @@ public class CacheProxy {
     public static void name(String key, String origin) {
         names().put(key.toUpperCase(), origin);
     }
-    public static  <T extends Table> List<T> tables(String cache){
+    public static  <T extends Table> List<T> tables(String cache) {
         List<T> tables = (List<T>)caches().get(cache);
         return tables;
     }
-    public static  <T extends MasterTable> List<T> masters(String cache){
+    public static  <T extends MasterTable> List<T> masters(String cache) {
         List<T> tables = (List<T>)caches().get(cache);
         return tables;
     }
-    public static  <T extends EdgeTable> List<T> edges(String cache){
+    public static  <T extends EdgeTable> List<T> edges(String cache) {
         List<T> tables = (List<T>)caches().get(cache);
         return tables;
     }
-    public static  <T extends VertexTable> List<T> vertexs(String cache){
+    public static  <T extends VertexTable> List<T> vertexs(String cache) {
         List<T> tables = (List<T>)caches().get(cache);
         return tables;
     }
-    public static  <T extends Table> void tables(String cache, List<T> tables){
+    public static  <T extends Table> void tables(String cache, List<T> tables) {
         caches().put(cache, tables);
     }
-    public static  <T extends MasterTable> void masters(String cache, List<T> masters){
+    public static  <T extends MasterTable> void masters(String cache, List<T> masters) {
         caches().put(cache, masters);
     }
-    public static  <T extends VertexTable> void vertexs(String cache, List<T> vertexs){
+    public static  <T extends VertexTable> void vertexs(String cache, List<T> vertexs) {
         caches().put(cache, vertexs);
     }
-    public static  <T extends EdgeTable> void edges(String cache, List<T> edges){
+    public static  <T extends EdgeTable> void edges(String cache, List<T> edges) {
         caches().put(cache, edges);
     }
 
-    public static  <T extends View> List<T> views(String cache){
+    public static  <T extends View> List<T> views(String cache) {
         List<T> view = (List<T>)caches().get(cache);
         return view;
     }
-    public static  <T extends View> void views(String cache, List<T> view){
+    public static  <T extends View> void views(String cache, List<T> view) {
         caches().put(cache, view);
     }
 
-    public static  void cache(String cache, Object value){
+    public static  void cache(String cache, Object value) {
         caches().put(cache, value);
     }
 

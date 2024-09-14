@@ -60,8 +60,8 @@ public class HTMLA extends BaseBodyTag {
 			} 
 			if (null != href) {
 				String url = href; 
-				if(BasicUtil.isNotEmpty(params)){
-					if(url.contains("?")){
+				if(BasicUtil.isNotEmpty(params)) {
+					if(url.contains("?")) {
 						url = url + "&" + params; 
 					}else{
 						url = url + "?" + params; 

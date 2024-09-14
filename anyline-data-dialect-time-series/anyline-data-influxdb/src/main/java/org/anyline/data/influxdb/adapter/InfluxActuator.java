@@ -99,7 +99,7 @@ public class InfluxActuator implements DriverActuator {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @return List
      */
-    public <T extends Database> List<T> databases(DriverAdapter adapter, DataRuntime runtime, Database query){
+    public <T extends Database> List<T> databases(DriverAdapter adapter, DataRuntime runtime, Database query) {
         List<T> databases = new ArrayList<>();
         InfluxDBClient client = client(runtime);
         List<Bucket> list =  client.getBucketsApi().findBuckets();
@@ -122,7 +122,7 @@ public class InfluxActuator implements DriverActuator {
         String url = HttpUtil.createFullPath(rt.getUrl(), api);
         HttpResponse response = null;
         String result = null;
-        if("get".equalsIgnoreCase(method)){
+        if("get".equalsIgnoreCase(method)) {
             response = HttpUtil.get(header, url);
         }else{
             String body = r.body();
@@ -134,29 +134,29 @@ public class InfluxActuator implements DriverActuator {
         }
         result = response.getText();
         String alt = result;
-        if(response.getStatus() == 200){
+        if(response.getStatus() == 200) {
             alt = BasicUtil.ellipsis(200, alt);
         }
 
         log.info("[influx http api][action:{}][status:{}]{}", run.action(), response.getStatus(), alt);
         String[] lines = result.split("\n");
         int len = lines.length;
-        if(len > 1){
+        if(len > 1) {
             String[] titles = lines[0].split(",");
             int vol = titles.length;
             Map<String, InfluxMeasurement> measurements = new HashMap<>();
-            for(int i=1; i<len; i++){
+            for(int i=1; i<len; i++) {
                 String[] cols = lines[i].split(",");
                 String table_name = cols[0];
                 InfluxMeasurement measurement = measurements.get(table_name);
-                if(null == measurement){
+                if(null == measurement) {
                     measurement = new InfluxMeasurement(table_name);
                     measurements.put(table_name, measurement);
                 }
                 InfluxPoint point = new InfluxPoint(measurement);
-                for(int c=2; c<vol; c++){
+                for(int c=2; c<vol; c++) {
                     String value = "";
-                    if(c < cols.length){
+                    if(c < cols.length) {
                         value =cols[c];
                     }
                     point.put(titles[c], value);
@@ -207,7 +207,7 @@ public class InfluxActuator implements DriverActuator {
         String url = HttpUtil.createFullPath(rt.getUrl(), api);
 
         HttpResponse response = null;
-        if("get".equalsIgnoreCase(method)){
+        if("get".equalsIgnoreCase(method)) {
             response = HttpUtil.get(header, url);
         }else{
             String body = r.body();

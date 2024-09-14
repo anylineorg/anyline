@@ -237,7 +237,7 @@ public abstract class DefaultAutoPrepare extends AbstractRunPrepare implements A
 			String catalog = null;
 			String schema = null;
 			String name = table.getName();
-			if(BasicUtil.isNotEmpty(table.getAlias())){
+			if(BasicUtil.isNotEmpty(table.getAlias())) {
 				this.alias = table.getAlias();
 			}
 			if(name.startsWith("<")) {

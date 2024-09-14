@@ -105,7 +105,7 @@ public final class CacheRandom extends GenericCache {
    * CacheRandom(GenericCache.DEFAULT_CAPACITY);
    * </pre></blockquote>
    */
-  public CacheRandom(){
+  public CacheRandom() {
     this(GenericCache.DEFAULT_CAPACITY);
   }
 

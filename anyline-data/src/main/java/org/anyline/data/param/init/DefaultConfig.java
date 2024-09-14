@@ -61,7 +61,7 @@ public class DefaultConfig implements Config {
 		if(null != join) {
 			map.put("join", join);
 		}
-		if(null != datatype){
+		if(null != datatype) {
 			map.put("datatype", datatype);
 		}
 		map.put("prefix", this.getPrefix());
@@ -102,7 +102,7 @@ public class DefaultConfig implements Config {
 				row.put("values", values);
 			}
 		}
-		if(null != datatype || empty){
+		if(null != datatype || empty) {
 			row.put("datatype", datatype);
 		}
 		row.put("over_condition", overCondition);
@@ -309,9 +309,9 @@ public class DefaultConfig implements Config {
 			sw = parser.getSwt();
 			compare = parser.getCompare().getCode();
 		}
-		if(compare == 90 || compare == 91 || compare == 190 || compare == 191){
+		if(compare == 90 || compare == 91 || compare == 190 || compare == 191) {
 			//IS NULL IS EMPTY
-			if(BasicUtil.isNotEmpty(parser.getVar())){
+			if(BasicUtil.isNotEmpty(parser.getVar())) {
 				return false;
 			}
 		}

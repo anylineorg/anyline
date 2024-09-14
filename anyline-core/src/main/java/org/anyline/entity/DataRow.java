@@ -164,7 +164,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
      * @param json json
      * @return DataRow
      */
-    public static DataRow build(KEY_CASE keyCase, String json){
+    public static DataRow build(KEY_CASE keyCase, String json) {
         DataRow row = new DataRow(keyCase);
         DataRow data = parseJson(keyCase, json);
         row.setTable(data.getString("table"));
@@ -195,7 +195,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         ]
     }
     * */
-    public static DataRow build(String json){
+    public static DataRow build(String json) {
         return build(null, json);
     }
     public DataRow parseMap(LinkedHashMap columns, Map<String, Object> map) {
@@ -1747,7 +1747,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         }
         return this;
     }
-    public DataRow putVar(String key, String value){
+    public DataRow putVar(String key, String value) {
         this.put(key, new VariableValue(value));
         return this;
     }
@@ -2987,13 +2987,13 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 
     public DataRow copyIfEmpty(DataRow copy, String... keys) {
         List<String> cols = null;
-        if(null != keys && keys.length>0){
+        if(null != keys && keys.length>0) {
             cols = BeanUtil.array2list(keys);
         }else{
             cols = copy.keys();
         }
-        for(String col:cols){
-            if(isEmpty(col)){
+        for(String col:cols) {
+            if(isEmpty(col)) {
                 put(col, copy.get(col));
             }
         }
@@ -3001,13 +3001,13 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     }
     public DataRow copyIfNull(DataRow copy, String... keys) {
         List<String> cols = null;
-        if(null != keys && keys.length>0){
+        if(null != keys && keys.length>0) {
             cols = BeanUtil.array2list(keys);
         }else{
             cols = copy.keys();
         }
-        for(String col:cols){
-            if(isNull(col)){
+        for(String col:cols) {
+            if(isNull(col)) {
                 put(col, copy.get(col));
             }
         }
@@ -3015,13 +3015,13 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     }
     public DataRow copyIfNotExists(DataRow copy, String... keys) {
         List<String> cols = null;
-        if(null != keys && keys.length>0){
+        if(null != keys && keys.length>0) {
             cols = BeanUtil.array2list(keys);
         }else{
             cols = copy.keys();
         }
-        for(String col:cols){
-            if(contains(col)){
+        for(String col:cols) {
+            if(contains(col)) {
                 put(col, copy.get(col));
             }
         }
@@ -3756,8 +3756,8 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return result;
     }
     private Map<String, String> ignores = new Hashtable<>();
-    public Object get(String key, boolean ignoreCase){
-        if(null == key){
+    public Object get(String key, boolean ignoreCase) {
+        if(null == key) {
             return null;
         }
         if(ignoreCase) {
@@ -4087,9 +4087,9 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
      * @param keys keys
      * @return BigDecimal
      */
-    public BigDecimal sum(String ... keys){
+    public BigDecimal sum(String ... keys) {
         BigDecimal sum = BigDecimal.ZERO;
-        for(String key:keys){
+        for(String key:keys) {
             BigDecimal value = getDecimal(key, 0);
             sum = sum.add(value);
         }
@@ -4101,11 +4101,11 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
      * @param empty 是否计算空列 如果计算会算出0 
      * @return BigDecimal
      */
-    public BigDecimal multiply(boolean empty, String ... keys){
+    public BigDecimal multiply(boolean empty, String ... keys) {
         BigDecimal multiply = null;
-        for(String key:keys){
+        for(String key:keys) {
             BigDecimal value = getDecimal(key, (BigDecimal) null);
-            if(null == value && empty){
+            if(null == value && empty) {
                 value = BigDecimal.ZERO;
             }
             if(null != value) {
@@ -4118,7 +4118,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         }
         return multiply;
     }
-    public BigDecimal multiply(String ... keys){
+    public BigDecimal multiply(String ... keys) {
         return multiply(true, keys);
     }
 
@@ -4149,23 +4149,23 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
      * @return avg
      */
     public BigDecimal avg(boolean empty, int scale, int round, String ... keys) {
-        if(null == keys || keys.length == 0){
+        if(null == keys || keys.length == 0) {
             return null;
         }
         int qty = 0;
         BigDecimal sum = BigDecimal.ZERO;
-        for(String key:keys){
+        for(String key:keys) {
             BigDecimal value = getDecimal(key, (BigDecimal) null);
             if(null != value) {
                 sum = sum.add(value);
                 qty ++;
             }else{
-                if(empty){
+                if(empty) {
                     qty ++;
                 }
             }
         }
-        if(qty > 0){
+        if(qty > 0) {
             return sum.divide(new BigDecimal(qty), scale, round);
         }
         return null;
@@ -4338,7 +4338,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
          */
         public DataRow date(boolean greedy, String format, String def) {
             Date date = null;
-            if(BasicUtil.isNotEmpty(def)){
+            if(BasicUtil.isNotEmpty(def)) {
                 date = DateUtil.parse(def);
             }
             return date(greedy, format, date);

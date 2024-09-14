@@ -39,15 +39,15 @@ public class TableAffiliation<E extends TableAffiliation> extends Metadata<E> im
             this.ddls = new ArrayList<>();
         }
         ddls.add(ddl);
-        if(null != this.table){
+        if(null != this.table) {
             this.table.addDdl(ddl);
         }
     }
     public void addRun(Run run) {
-        if(null != table){
+        if(null != table) {
             table.addRun(run);
         }
-        if(null != origin){
+        if(null != origin) {
             origin.addRun(run);
             return;
         }
@@ -59,13 +59,13 @@ public class TableAffiliation<E extends TableAffiliation> extends Metadata<E> im
         }
     }
     public boolean execute() {
-        if(null != table){
-            if(!table.execute()){
+        if(null != table) {
+            if(!table.execute()) {
                 return false;
             }
         }
-        if(null != origin){
-            if(!origin.execute()){
+        if(null != origin) {
+            if(!origin.execute()) {
                 return false;
             }
         }
@@ -111,13 +111,13 @@ public class TableAffiliation<E extends TableAffiliation> extends Metadata<E> im
     }
 
     public Catalog getCatalog() {
-        if(null == catalog && null != table){
+        if(null == catalog && null != table) {
             catalog = table.getCatalog();
         }
         return catalog;
     }
     public Schema getSchema() {
-        if(null == schema && null != table){
+        if(null == schema && null != table) {
             schema = table.getSchema();
         }
         return schema;

@@ -117,7 +117,7 @@ public class JDBCRuntimeHolder extends AbstractRuntimeHolder implements RuntimeH
         daoDefine.setLazy(true);
         ConfigTable.environment().regBean(dao_key, daoDefine);
 
-        if(ConfigTable.environment().containsBean(service_key)){
+        if(ConfigTable.environment().containsBean(service_key)) {
             //提前注入了占位
             AnylineService service = (AnylineService)ConfigTable.environment().getBean(service_key);
             if(null == service.getDao()) {
@@ -135,9 +135,9 @@ public class JDBCRuntimeHolder extends AbstractRuntimeHolder implements RuntimeH
     public boolean destroy(String key) {
         int close = 0;
         DataSourceMonitor monitor = DriverAdapterHolder.getMonitor();
-        if(null != monitor){
+        if(null != monitor) {
             JDBCRuntime runtime = (JDBCRuntime)runtimes.get(key);
-            if(null != runtime){
+            if(null != runtime) {
                 //这一步有可能抛出 异常
                 close = monitor.destroy(runtime, key, runtime.getDataSource());
             }

@@ -523,7 +523,7 @@ public final class Perl5Compiler implements PatternCompiler {
       latest = __parseBranch(retFlags);
 
       if(latest == OpCode._NULL_OFFSET) {
-	if((flags & __TRYAGAIN) != 0){
+	if((flags & __TRYAGAIN) != 0) {
 	  value = __input._getValue();
 	  continue;
 	}
@@ -851,7 +851,7 @@ public final class Perl5Compiler implements PatternCompiler {
 	      num = pOffset;
 	      value = __input._getValue(num);
 
-	      while(Character.isDigit(value)){
+	      while(Character.isDigit(value)) {
 		buffer.append(value);
 		++num;
 		value = __input._getValue(num);
@@ -998,7 +998,7 @@ public final class Perl5Compiler implements PatternCompiler {
       if(clss == '\\') {
 	clss = __input._postIncrement();
 
-	switch(clss){
+	switch(clss) {
 	case 'w':
 	  for(clss = 0; clss < 256; clss++)
 	    if(OpCode._isWordCharacter(clss))
@@ -1152,13 +1152,13 @@ public final class Perl5Compiler implements PatternCompiler {
 	  } else {
 	    /* try POSIX expression */
 	    char posixOpCode = __parsePOSIX(negFlag);
-	    if(posixOpCode != 0){
+	    if(posixOpCode != 0) {
 	      opcodeFlag = true;
 	      clss = posixOpCode;
 	    }
 	  }
 	  if (opcodeFlag != true) {
-	    switch(clss){
+	    switch(clss) {
 	    case 'w':
 	      opcodeFlag = true;
 	      clss = OpCode._ALNUM;
@@ -1264,7 +1264,7 @@ public final class Perl5Compiler implements PatternCompiler {
 	  __emitCode(clss);
 
 	  if((__modifierFlags[0] & __CASE_INSENSITIVE) != 0 &&
-	     Character.isUpperCase(clss) && Character.isUpperCase(lastclss)){
+	     Character.isUpperCase(clss) && Character.isUpperCase(lastclss)) {
 	    __programSize--;
 	    __emitCode(Character.toLowerCase(clss));
 	  }
@@ -1276,7 +1276,7 @@ public final class Perl5Compiler implements PatternCompiler {
 	  __emitCode(clss);
 
 	  if((__modifierFlags[0] & __CASE_INSENSITIVE) != 0 &&
-	     Character.isUpperCase(clss) && Character.isUpperCase(lastclss)){
+	     Character.isUpperCase(clss) && Character.isUpperCase(lastclss)) {
 	    __programSize-=2;
 	    __emitCode(Character.toLowerCase(lastclss));
 	    __emitCode(Character.toLowerCase(clss));
@@ -1328,11 +1328,11 @@ public final class Perl5Compiler implements PatternCompiler {
       while ( (value = __input._getValue(pos++)) != ':' && pos < len) {
 	buf.append(value);	
       }
-    } catch (Exception e){
+    } catch (Exception e) {
       return 0;
     }
 
-    if( __input._getValue(pos++) != ']'){
+    if( __input._getValue(pos++) != ']') {
       return 0;
     }
 
@@ -1430,7 +1430,7 @@ public final class Perl5Compiler implements PatternCompiler {
 
 	value = __input._getValue(num);
 
-	while(Character.isDigit(value)){
+	while(Character.isDigit(value)) {
 	  buffer.append(value);
 	  ++num;
 	  value = __input._getValue(num);
@@ -1490,7 +1490,7 @@ public final class Perl5Compiler implements PatternCompiler {
     if(handleRepetition) {
 
       // handle repetition
-      if((flags[0] & __SIMPLE) != 0){
+      if((flags[0] & __SIMPLE) != 0) {
 	__cost+= ((2 + __cost) / 2);
 	__programInsertOperator(OpCode._CURLY, offset);
       } else {
@@ -1748,7 +1748,7 @@ public final class Perl5Compiler implements PatternCompiler {
     startString              = null;
 
     scan = 1;
-    if(__program[OpCode._getNext(__program, scan)] == OpCode._END){
+    if(__program[OpCode._getNext(__program, scan)] == OpCode._END) {
       boolean doItAgain;  // bad variables names!
       char op;
 

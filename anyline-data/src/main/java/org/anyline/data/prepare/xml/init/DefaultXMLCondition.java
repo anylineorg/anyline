@@ -75,7 +75,7 @@ public class DefaultXMLCondition extends AbstractCondition implements Condition 
 			}
 			VariableBlock cblock = block.clone();
 			List<Variable> bvars = block.variables();
-			for(Variable var:bvars){
+			for(Variable var:bvars) {
 				Variable cvar = vmap.get(var);
 				cblock.variables().add(cvar);
 			}
@@ -135,13 +135,13 @@ public class DefaultXMLCondition extends AbstractCondition implements Condition 
 	private void parseText(String text) {
 		try{
 			List<List<String>> boxes = RegularUtil.fetchs(text, RunPrepare.SQL_VAR_BOX_REGEX, Regular.MATCH_MODE.CONTAIN);
-			if(!boxes.isEmpty()){
+			if(!boxes.isEmpty()) {
 				String box = boxes.get(0).get(0);
 				String prev = RegularUtil.cut(text, RegularUtil.TAG_BEGIN, box);
 				List<Variable> vars = CommandParser.parseTextVariable(ConfigTable.IS_ENABLE_PLACEHOLDER_REGEX_EXT, prev, Compare.EMPTY_VALUE_SWITCH.IGNORE);
 				variables.addAll(vars);
 				VariableBlock block = parseTextVarBox(text, box);
-				if(null != block){
+				if(null != block) {
 					blocks.add(block);
 					variables.addAll(block.variables());
 				}
@@ -152,22 +152,22 @@ public class DefaultXMLCondition extends AbstractCondition implements Condition 
 				if(!vars.isEmpty()) {
 					int type = vars.get(0).getType();
 					this.setVariableType(type);
-					if(type == Variable.VAR_TYPE_INDEX){
-						for(Variable var:vars){
+					if(type == Variable.VAR_TYPE_INDEX) {
+						for(Variable var:vars) {
 							var.setKey(id);
 						}
 					}
 				}
 				variables.addAll(vars);
 			}
-		}catch (Exception e){
+		}catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 	private VariableBlock parseTextVarBox(String text, String box) {
 		// ${ AND ID = ::ID}
 		// ${AND CODE=:CODE }
-		if(null != box){
+		if(null != box) {
 			box = box.trim();
 			String body = box.substring(2, box.length()-1);
 			List<Variable> vars = CommandParser.parseTextVariable(ConfigTable.IS_ENABLE_PLACEHOLDER_REGEX_EXT, body, Compare.EMPTY_VALUE_SWITCH.IGNORE);
@@ -325,7 +325,7 @@ public class DefaultXMLCondition extends AbstractCondition implements Condition 
 
 		return true;
 	}
-	public String toString(){
+	public String toString() {
 		return text;
 	}
 

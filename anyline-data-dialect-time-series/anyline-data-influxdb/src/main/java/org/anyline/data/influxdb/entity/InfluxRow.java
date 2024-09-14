@@ -31,7 +31,7 @@ public class InfluxRow extends OriginRow {
     protected String bucket;
     protected String org;
     protected Point point;
-    public InfluxRow(Point point){
+    public InfluxRow(Point point) {
         this.point = point;
     }
     public InfluxRow(String measurement) {
@@ -52,21 +52,21 @@ public class InfluxRow extends OriginRow {
         nanoTime = System.currentTimeMillis();
         setTable(measurement);
     }
-    public Point point(){
+    public Point point() {
         return this.point;
     }
-    public InfluxRow bucket(String bucket){
+    public InfluxRow bucket(String bucket) {
         this.bucket = bucket;
         return this;
     }
-    public String bucket(){
+    public String bucket() {
         return this.bucket;
     }
-    public InfluxRow org(String org){
+    public InfluxRow org(String org) {
         this.org = org;
         return this;
     }
-    public String org(){
+    public String org() {
         return this.org;
     }
     @Nonnull

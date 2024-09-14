@@ -1950,7 +1950,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
         runs.add(run);
         StringBuilder builder = run.getBuilder();
         builder.append("SELECT * FROM SYSTABLES  WHERE TABID > 99 AND TABTYPE = 'T'");
-        if(null != configs){
+        if(null != configs) {
             run.setPageNavi(configs.getPageNavi());
         }
         return runs;

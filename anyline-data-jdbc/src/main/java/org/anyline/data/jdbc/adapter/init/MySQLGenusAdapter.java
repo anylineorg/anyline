@@ -74,11 +74,11 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     }
 
     @Override
-    public  String columnAliasGuidd(){
+    public  String columnAliasGuidd() {
         return " AS ";
     }
     @Override
-    public  String tableAliasGuidd(){
+    public  String tableAliasGuidd() {
         return " AS ";
     }
     private static Map<Type, String> types = new HashMap<>();
@@ -413,12 +413,12 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         return super.buildUpdateRun(runtime, prepare, data, configs, conditions);
     }
     @Override
-    public void fillUpdateContent(DataRuntime runtime, TableRun run, StringBuilder builder, DataRow data, ConfigStore configs){
+    public void fillUpdateContent(DataRuntime runtime, TableRun run, StringBuilder builder, DataRow data, ConfigStore configs) {
         TablePrepare prepare = (TablePrepare)run.getPrepare();
         builder.append("UPDATE ");
         name(runtime, builder, prepare.getTable());
         String alias = prepare.getAlias();
-        if(BasicUtil.isNotEmpty(alias)){
+        if(BasicUtil.isNotEmpty(alias)) {
             builder.append(tableAliasGuidd());
             delimiter(builder, alias);
         }
@@ -430,14 +430,14 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
             }
         }
         String master = alias;
-        if(BasicUtil.isEmpty(master)){
+        if(BasicUtil.isEmpty(master)) {
             master = prepare.getTableName();
         }
         builder.append("SET").append(BR);
         List<String> keys = data.keys();
         boolean first = true;
-        for(String key:keys){
-            if(!first){
+        for(String key:keys) {
+            if(!first) {
                 builder.append(", ");
             }
             first = false;
@@ -446,7 +446,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
             }
             builder.append(key).append(" = ");
             Object value = data.get(key);
-            if(value instanceof VariableValue){
+            if(value instanceof VariableValue) {
                 VariableValue var = (VariableValue)value;
                 delimiter(builder, var.value());
             }else{
@@ -785,7 +785,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         }
         boolean first = true;
         String join = " OR ";
-        if(compare == Compare.FIND_IN_SET_AND){
+        if(compare == Compare.FIND_IN_SET_AND) {
             join = " AND ";
         }
         for(Object v:values) {
@@ -827,7 +827,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         }
         boolean first = true;
         String join = " OR ";
-        if(compare == Compare.JSON_CONTAINS_AND){
+        if(compare == Compare.JSON_CONTAINS_AND) {
             join = " AND ";
         }
         String key = null;
@@ -2054,7 +2054,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         configs.and("TABLE_SCHEMA", query.getSchemaName());
         configs.and(Compare.LIKE_SIMPLE,"TABLE_NAME", objectName(runtime, query.getName()));
         List<String> tps = names(Table.types(types));
-        if(tps.isEmpty()){
+        if(tps.isEmpty()) {
             tps.add("BASE TABLE");
         }
         configs.in("TABLE_TYPE", tps);
@@ -2278,7 +2278,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
                     String charset = RegularUtil.cut(item, "CHARSET="," ");
                     table.setCharset(charset);
                 }
-                if(item.contains("ENGINE=")){
+                if(item.contains("ENGINE=")) {
                     String engine = RegularUtil.cut(item, "ENGINE="," ");
                     table.setEngine(engine);
                 }
@@ -2653,22 +2653,22 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     @Override
     public Table.Partition init(DataRuntime runtime, int index, boolean create, Table.Partition meta, Table table, DataRow row) throws Exception {
         MetadataFieldRefer refer = refer(runtime, Table.Partition.class);
-        if(index == 0){
+        if(index == 0) {
             meta = new Table.Partition();
             String txt = row.getString("Create Table");
-            if(null != txt){
+            if(null != txt) {
                 /* PARTITION BY HASH (`ID`)
                 PARTITIONS 100 */
                 String type = RegularUtil.cut(txt,"/*!", "PARTITION BY", "(");
-                if(null != type){
+                if(null != type) {
                     type = type.trim();
                     Table.Partition.TYPE ty = Table.Partition.TYPE.valueOf(type);
                     meta.setType(ty);
                     String[] columns = RegularUtil.cut(txt, "/*!","PARTITION BY", "(", ")").split(",");
-                    for(String column:columns){
+                    for(String column:columns) {
                         meta.addColumn(column.replace("`", "").trim());
                     }
-                    if(ty == Table.Partition.TYPE.HASH){
+                    if(ty == Table.Partition.TYPE.HASH) {
                         String mod = RegularUtil.cut(txt,"/*!", "PARTITION BY", "PARTITIONS", " ", " ");
                         meta.setModulus(BasicUtil.parseInt(mod.trim(), -1));
                     }
@@ -2692,21 +2692,21 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public Table.Partition detail(DataRuntime runtime, int index, boolean create, Table.Partition meta, Table table, DataRow row) throws Exception {
-        if(index == 1){
+        if(index == 1) {
             MetadataFieldRefer refer = refer(runtime, Table.Partition.Slice.class);
             Table.Partition.Slice slice = new Table.Partition.Slice();
             slice.setName(getString(row, refer, Table.Partition.Slice.FIELD_NAME));
             Table.Partition.TYPE type = meta.getType();
-            if(type == Table.Partition.TYPE.LIST){
+            if(type == Table.Partition.TYPE.LIST) {
                 String[] values = row.getString("PARTITION_DESCRIPTION").split(",");
-                for(String value:values){
+                for(String value:values) {
                     slice.addValue(value);
                 }
-            }else if(type == Table.Partition.TYPE.RANGE){
+            }else if(type == Table.Partition.TYPE.RANGE) {
                 String[] less = row.getString("PARTITION_DESCRIPTION").split(",");
                 String[] columns = row.getString("PARTITION_EXPRESSION").replace("`","").split(",");
                 int size = columns.length;
-                for(int i=0; i<size; i++){
+                for(int i=0; i<size; i++) {
                     slice.setLess(columns[i], less[i]);
                 }
             }
@@ -3014,10 +3014,10 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
 
         String onupdate = null;
         String extra = row.getString("EXTRA");
-        if(null != extra){
-            if(extra.contains("on update")){
+        if(null != extra) {
+            if(extra.contains("on update")) {
                 onupdate = RegularUtil.cut(extra, "on update", " ");
-                if(BasicUtil.isEmpty(onupdate)){
+                if(BasicUtil.isEmpty(onupdate)) {
                     onupdate = RegularUtil.cut(extra, "on update", RegularUtil.TAG_END);
                 }
             }
@@ -3371,7 +3371,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         StringBuilder builder = run.getBuilder();
         ConfigStore configs = run.getConfigs();
         builder.append("SELECT * FROM INFORMATION_SCHEMA.STATISTICS\n");
-        if(null != tables && !tables.isEmpty()){
+        if(null != tables && !tables.isEmpty()) {
             Table table = tables.iterator().next();
             configs.and("TABLE_SCHEMA", table.getSchemaName());
         }
@@ -4699,7 +4699,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
             }
             builder.append(")");
             String type = primary.getType();
-            if(BasicUtil.isNotEmpty(type)){
+            if(BasicUtil.isNotEmpty(type)) {
                 builder.append(" USING ").append(type);
             }
         }
@@ -4803,7 +4803,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         if(null == type) {
             return builder;
         }
-        if(type == Table.Partition.TYPE.HASH){
+        if(type == Table.Partition.TYPE.HASH) {
             builder.append(" PARTITIONS ").append(partition.getModulus());
             return builder;
         }
@@ -5897,7 +5897,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public StringBuilder position(DataRuntime runtime, StringBuilder builder, Column meta) {
-        if(!ConfigTable.IS_ENABLE_COLUMN_POSITION){
+        if(!ConfigTable.IS_ENABLE_COLUMN_POSITION) {
             return builder;
         }
         Integer position = meta.getPosition();
@@ -6249,7 +6249,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
             delimiter(builder, Column.names(columns));
             builder.append(")");
             String type = meta.getType();
-            if(BasicUtil.isNotEmpty(type)){
+            if(BasicUtil.isNotEmpty(type)) {
                 builder.append(" USING ").append(type);
             }
         }
@@ -7382,7 +7382,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         runs.add(run);
         StringBuilder builder = run.getBuilder();
         builder.append("SELECT * FROM mysql.user");
-        if(BasicUtil.isNotEmpty(pattern)){
+        if(BasicUtil.isNotEmpty(pattern)) {
             builder.append(" WHERE user LIKE '%").append(pattern).append("%'");
         }
         return runs;
@@ -7430,7 +7430,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     @Override
     public <T extends User> T init(DataRuntime runtime, int index, T meta, User query, DataRow row) {
         MetadataFieldRefer refer = refer(runtime, User.class);
-        if(null == meta){
+        if(null == meta) {
             meta = (T) new User();
         }
         meta.setHost(row.getString(refer.maps(User.FIELD_HOST)));

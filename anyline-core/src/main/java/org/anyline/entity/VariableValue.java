@@ -3,16 +3,16 @@ package org.anyline.entity;
 
 public class VariableValue {
     private String value;
-    public VariableValue(String value){
+    public VariableValue(String value) {
         this.value = value;
     }
-    public String value(){
+    public String value() {
         return value;
     }
-    public void value(String value){
+    public void value(String value) {
         this.value = value;
     }
-    public String toString(){
+    public String toString() {
         return value;
     }
 }

@@ -57,7 +57,7 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 		return itemExtra;
 	}
 	public void setItemExtra(String itemExtra) {
-		if(null != itemExtra && !itemExtra.startsWith("{")){
+		if(null != itemExtra && !itemExtra.startsWith("{")) {
 			itemExtra = itemExtra.replace("{","${");
 		}
 		this.itemExtra = itemExtra;
@@ -66,7 +66,7 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 		return extra;
 	}
 	public void setExtra(String extra) {
-		if(null != extra && !extra.startsWith("{")){
+		if(null != extra && !extra.startsWith("{")) {
 			extra = extra.replace("{","${");
 		}
 		this.extra = extra;
@@ -77,35 +77,35 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 	public void setDisabled(String disabled) {
 		this.disabled = disabled;
 	}
-	protected void attribute(StringBuffer builder){
-		if(null != id){
+	protected void attribute(StringBuffer builder) {
+		if(null != id) {
 			builder.append(" id=\"").append(id).append("\"");
 		} 
-		if(null != name){
+		if(null != name) {
 			builder.append(" name=\"").append(name).append("\"");
 		}
-		if(null != clazz){
+		if(null != clazz) {
 			builder.append(" class=\"").append(clazz).append("\"");
 		} 
-		if(null != style){
+		if(null != style) {
 			builder.append(" style=\"").append(style).append("\"");
 		} 
-		if(null != onclick){
+		if(null != onclick) {
 			builder.append(" onclick=\"").append(onclick).append("\"");
 		} 
-		if(null != onchange){
+		if(null != onchange) {
 			builder.append(" onchange=\"").append(onchange).append("\"");
 		} 
-		if(null != onblur){
+		if(null != onblur) {
 			builder.append(" onblur=\"").append(onblur).append("\"");
 		}
-		if(null != onfocus){
+		if(null != onfocus) {
 			builder.append(" onfocus=\"").append(onfocus).append("\"");
 		}
-		if(BasicUtil.isNotEmpty(disabled) && !"false".equalsIgnoreCase(disabled)){
+		if(BasicUtil.isNotEmpty(disabled) && !"false".equalsIgnoreCase(disabled)) {
 			builder.append(" disabled=\"").append(disabled).append("\"");
 		}
-		if(BasicUtil.isNotEmpty(readonly) && !"false".equalsIgnoreCase(readonly)){
+		if(BasicUtil.isNotEmpty(readonly) && !"false".equalsIgnoreCase(readonly)) {
 			builder.append(" readonly=\"").append(readonly).append("\"");
 		}
 		crateExtraData(builder);
@@ -118,16 +118,16 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 	 * @param builder builder
 	 * @param obj obj
 	 */
-	protected void crateExtraData(StringBuffer builder, Object obj){
-		if(BasicUtil.isNotEmpty(itemExtra)){
+	protected void crateExtraData(StringBuffer builder, Object obj) {
+		if(BasicUtil.isNotEmpty(itemExtra)) {
 			String[] list = itemExtra.split(",");
-			for(String item:list){
+			for(String item:list) {
 				String[] tmps = item.split(":");
-				if(tmps.length>=2){
+				if(tmps.length>=2) {
 					String id = tmps[0];
 					String key = tmps[1];
 					String value = BeanUtil.parseRuntimeValue(obj,key);
-					if(null == value){
+					if(null == value) {
 						value = "";
 					}
 					builder.append(extraPrefix).append(id).append("=\"").append(value).append("\"");
@@ -135,24 +135,24 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 			}
 		}
 	}
-	protected void crateExtraData(StringBuffer builder){
-		if(BasicUtil.isNotEmpty(extra)){
-			if(extra.startsWith("{") && extra.endsWith("}")){
+	protected void crateExtraData(StringBuffer builder) {
+		if(BasicUtil.isNotEmpty(extra)) {
+			if(extra.startsWith("{") && extra.endsWith("}")) {
 				// {id:1,nm:2} > data-id=1,data-nm=2
 				extra = extra.substring(1,extra.length()-1);
 				String[] list = extra.split(",");
-				for(String item:list){
+				for(String item:list) {
 					String[] tmps = item.split(":");
-					if(tmps.length>=2){
+					if(tmps.length>=2) {
 						builder.append(extraPrefix).append(tmps[0]).append("=\"").append(tmps[1]).append("\"");
 					}
 				}
 			}else{
 				// id:ID,name:{NM}-{CODE} > data-id=extraData.get("ID"),data-NAME=extraData.get("NM")-extraData.get("CODE")
 				String[] list = extra.split(",");
-				for(String item:list){
+				for(String item:list) {
 					String[] tmps = item.split(":");
-					if(tmps.length>=2){
+					if(tmps.length>=2) {
 						String value = BeanUtil.parseRuntimeValue(extraData, tmps[1]);
 						builder.append(extraPrefix).append(tmps[0]).append("=\"").append(value).append("\"");
 					}
@@ -164,7 +164,7 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
         return EVAL_BODY_BUFFERED; 
     } 
 	public int doAfterBody() throws JspException {
-		if(null != bodyContent){
+		if(null != bodyContent) {
 			body = bodyContent.getString().trim(); 
 		} 
 		return super.doAfterBody(); 
@@ -177,10 +177,10 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 	@Override 
 	public void release() {
 		super.release(); 
-		if(null != paramList){
+		if(null != paramList) {
 			paramList.clear(); 
 		} 
-		if(null != paramMap){
+		if(null != paramMap) {
 			paramMap.clear(); 
 		} 
 		body = null;
@@ -212,20 +212,20 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
  
 	@SuppressWarnings({"rawtypes", "unchecked" })
 	public void addParam(String key, Object value) {
-//		if(null == value || "".equals(value.toString().trim())){
+//		if(null == value || "".equals(value.toString().trim())) {
 //			return ; 
 //		} 
-		if(null == key){
-			if(null == paramList){
+		if(null == key) {
+			if(null == paramList) {
 				paramList = new ArrayList<Object>(); 
 			} 
-			if(value instanceof Collection){
+			if(value instanceof Collection) {
 				paramList.addAll((Collection)value); 
 			}else{
 				paramList.add(value); 
 			} 
 		}else{
-			if(null == paramMap){
+			if(null == paramMap) {
 				paramMap = new HashMap<String,Object>(); 
 			} 
 			paramMap.put(key.trim(), value); 
@@ -242,9 +242,9 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 		return body; 
 	} 
 	public void setBody(String body) {
-//		if(evl && BasicUtil.isNotEmpty(body)){
+//		if(evl && BasicUtil.isNotEmpty(body)) {
 //			 String str = body.toString();
-//			 if(str.contains(",")){
+//			 if(str.contains(",")) {
 //				 String[] strs = str.split(",");
 //				 body = (String)BasicUtil.nvl(strs);
 //			 }
@@ -268,9 +268,9 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 		return value; 
 	} 
 	public void setValue(Object value) {
-//		if(evl && BasicUtil.isNotEmpty(value)){
+//		if(evl && BasicUtil.isNotEmpty(value)) {
 //			 String str = value.toString();
-//			 if(str.contains(",")){
+//			 if(str.contains(",")) {
 //				 String[] strs = str.split(",");
 //				 value = BasicUtil.nvl(strs);
 //			 }

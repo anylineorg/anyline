@@ -130,7 +130,7 @@ public class SpringJDBCRuntimeHolder extends AbstractRuntimeHolder implements Ru
         daoDefine.addValue("runtime", runtime);
         daoDefine.setLazy(true);
         ConfigTable.environment().regBean(dao_key, daoDefine);
-        if(ConfigTable.environment().containsBean(service_key)){
+        if(ConfigTable.environment().containsBean(service_key)) {
             //提前注入了占位
             AnylineService service = (AnylineService)ConfigTable.environment().getBean(service_key);
             if(null == service.getDao()) {
@@ -148,9 +148,9 @@ public class SpringJDBCRuntimeHolder extends AbstractRuntimeHolder implements Ru
     public boolean destroy(String key) {
         int close = 0;
         DataSourceMonitor monitor = DriverAdapterHolder.getMonitor();
-        if(null != monitor){
+        if(null != monitor) {
             SpringJDBCRuntime runtime = (SpringJDBCRuntime)runtimes.get(key);
-            if(null != runtime){
+            if(null != runtime) {
                 //这一步有可能抛出 异常
                 close = monitor.destroy(runtime, key, runtime.getDataSource());
             }

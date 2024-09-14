@@ -115,7 +115,7 @@ final class AwkMatchResult implements MatchResult {
    * Default constructor given default access to prevent instantiation
    * outside the package.
    */
-  AwkMatchResult(String match, int matchBeginOffset){
+  AwkMatchResult(String match, int matchBeginOffset) {
     __match            = match;
     __length           = match.length();
     __matchBeginOffset = matchBeginOffset;
@@ -133,7 +133,7 @@ final class AwkMatchResult implements MatchResult {
   /**
    * @return The length of the match.
    */
-  public int length(){return __length; }
+  public int length() {return __length; }
 
   /**
    * @return The number of groups contained in the result.  This number
@@ -142,7 +142,7 @@ final class AwkMatchResult implements MatchResult {
    *         itself.  Because Awk doesn't save parenthesized groups, this
    *         always returns 1.
    */
-  public int groups(){return 1; }
+  public int groups() {return 1; }
 
   /**
    * @param group The pattern subgroup to return.
@@ -152,7 +152,7 @@ final class AwkMatchResult implements MatchResult {
    *         a group matching the null string, which will return a String
    *         of length 0.
    */
-  public String group(int group){return (group == 0 ? __match : null); }
+  public String group(int group) {return (group == 0 ? __match : null); }
 
   /**
    * @param group The pattern subgroup.
@@ -160,7 +160,7 @@ final class AwkMatchResult implements MatchResult {
    *         pattern subgroup.  If a group was never matched or does
    *         not exist, returns -1.
    */
-  public int begin(int group){return (group == 0 ? 0 : -1); }
+  public int begin(int group) {return (group == 0 ? 0 : -1); }
 
   /**
    * @param group The pattern subgroup.
@@ -169,7 +169,7 @@ final class AwkMatchResult implements MatchResult {
    *         or does not exist, returns -1.  A group matching the null
    *         string will return its start offset.
    */
-  public int end(int group){return (group == 0 ? __length : -1); }
+  public int end(int group) {return (group == 0 ? __length : -1); }
 
   /**
    * Returns an offset marking the beginning of the pattern match
@@ -180,7 +180,7 @@ final class AwkMatchResult implements MatchResult {
    *         pattern subgroup.  If a group was never matched or does
    *         not exist, returns -1.
    */
-  public int beginOffset(int group){
+  public int beginOffset(int group) {
     return (group == 0 ? __matchBeginOffset : -1);
   }
 
@@ -194,7 +194,7 @@ final class AwkMatchResult implements MatchResult {
    *         or does not exist, returns -1.  A group matching the null
    *         string will return its start offset.
    */
-  public int endOffset(int group){
+  public int endOffset(int group) {
     return (group == 0 ? __matchBeginOffset + __length : -1);
   }
 

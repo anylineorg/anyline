@@ -127,7 +127,7 @@ public class ElasticSearchDataSourceHolder extends AbstractDataSourceHolder impl
 			return null;
 		}
 		String adapter = value(prefix, params, "adapter", String.class, null);
-		if(null == adapter){
+		if(null == adapter) {
 			return null;
 		}
 		adapter = adapter.toLowerCase();

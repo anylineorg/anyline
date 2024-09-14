@@ -41,72 +41,72 @@ public class Text extends BaseBodyTag{
         return EVAL_BODY_BUFFERED; 
     } 
 	 public int doEndTag() throws JspException {
-		 if(null != var){
+		 if(null != var) {
 			 pageContext.removeAttribute(var);
 		 }
 		// 输出 
 		JspWriter out = pageContext.getOut();
 		try{
 			Object result = null; 
-			if(data instanceof DataSet){
+			if(data instanceof DataSet) {
 				DataSet set = (DataSet)data;
 				DataRow row = null;
-				if(BasicUtil.isNotEmpty(selector)){
+				if(BasicUtil.isNotEmpty(selector)) {
 					set = set.getRows(selector.split(","));
 				}
-				if(index == -1){
+				if(index == -1) {
 					index = 0;
 				}
-				if(index<set.size()){
+				if(index<set.size()) {
 					row = set.getRow(index);
 				}
-				if(null != row && null != property){
+				if(null != row && null != property) {
 					result = row.getString(property);
 				}
-			}else if(data instanceof List){
+			}else if(data instanceof List) {
 				@SuppressWarnings("rawtypes")
 				List list = (List)data;
 				Object item = null;
-				if(index == -1){
+				if(index == -1) {
 					index = 0;
 				}
-				if(index<list.size()){
+				if(index<list.size()) {
 					item = list.get(index);
 				}
 				if(null != item && null != property) {
 					result = BeanUtil.getFieldValue(item, property);
 				}
-			}else if(data instanceof String[]){
+			}else if(data instanceof String[]) {
 				String[] list = (String[])data;
-				if(index == -1){
+				if(index == -1) {
 					index = 0;
 				}
-				if(index < list.length){
+				if(index < list.length) {
 					result = list[index];
 				}
-			}else if(null != property){
+			}else if(null != property) {
 				result = BeanUtil.getFieldValue(data,property);
 			}else{
 				result = data;
 			}
-			if(null == result){
+			if(null == result) {
 				result = body;
 			}
-			if(null != nvl){
+			if(null != nvl) {
 				result = BasicUtil.nvl(result,nvl); 
 			}
 
-			if(null != evl){
+			if(null != evl) {
 				result = BasicUtil.evl(result,evl); 
 			}
 			if(BasicUtil.isNotEmpty(result)) {
-				if(null != var){
+				if(null != var) {
 					pageContext.setAttribute(var, result);
 				}else {
 					out.print(result);
 				}
 			}
-		}catch(Exception e){
+		}catch(Exception e) {
 		 
 		}finally{
 			release(); 
@@ -114,7 +114,7 @@ public class Text extends BaseBodyTag{
 		return EVAL_PAGE;    
 	} 
 	@Override 
-    public void release(){
+    public void release() {
 		super.release();
 		data = null;
 		property = null;

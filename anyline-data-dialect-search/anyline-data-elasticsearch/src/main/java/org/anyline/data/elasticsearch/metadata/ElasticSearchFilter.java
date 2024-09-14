@@ -121,7 +121,7 @@ public class ElasticSearchFilter {
      * @param synonym 同义词  ["pc => personal computer", "computer, pc, laptop"]
      * @return this
      */
-    public ElasticSearchFilter addSynonym(String synonym){
+    public ElasticSearchFilter addSynonym(String synonym) {
         synonyms.add(synonym);
         return this;
     }
@@ -135,30 +135,30 @@ public class ElasticSearchFilter {
         return this;
     }
 
-    public LinkedHashMap<String, Object> map(){
+    public LinkedHashMap<String, Object> map() {
         LinkedHashMap<String, Object> map =new LinkedHashMap<>();
-        if(null != type){
+        if(null != type) {
             map.put("type", type);
         }
-        if(null != synonymsPath){
+        if(null != synonymsPath) {
             map.put("synonyms_path", synonymsPath);
         }
-        if(null != synonymsSet){
+        if(null != synonymsSet) {
             map.put("synonyms_set", synonymsSet);
         }
-        if(null != updateAble){
+        if(null != updateAble) {
             map.put("updateable", updateAble);
         }
-        if(null != synonyms && !synonyms.isEmpty()){
+        if(null != synonyms && !synonyms.isEmpty()) {
             map.put("synonyms", synonyms);
         }
-        if(null != lenient){
+        if(null != lenient) {
             map.put("lenient", lenient);
         }
-        if(null != expand){
+        if(null != expand) {
             map.put("expand", expand);
         }
-        if(null != filters && !filters.isEmpty()){
+        if(null != filters && !filters.isEmpty()) {
             map.put("filters", filters);
         }
         return map;

@@ -28,35 +28,35 @@ import org.anyline.web.tag.ComponentTag;
 public class HTMLTextarea extends ComponentTag{
 	private static final long serialVersionUID = 1L; 
 
-	public void createHead(Object obj){
+	public void createHead(Object obj) {
 		setEncryptKey(true); 
 		builder.append("\t\t\t<textarea "); 
 		createAttribute(); 
 		createValue(null); 
 		builder.append("/>"); 
 	} 
-	public void createBody(Object obj){
+	public void createBody(Object obj) {
 		value = BasicUtil.nvl(body,value,"").toString();
-		if(encryptValue){
+		if(encryptValue) {
 			value = DESUtil.encryptParamValue(value+"");
 		} 
 		builder.append(value); 
 	} 
-	public void createEnd(){
+	public void createEnd() {
 		builder.append("</textarea>"); 
 	} 
-	private void createValue(Object data){
-		if(null != data && null != property){
+	private void createValue(Object data) {
+		if(null != data && null != property) {
 			try{
 				Object v = BeanUtil.getFieldValue(data, property); 
-				if(null != v){
+				if(null != v) {
 					value = v.toString(); 
 				} 
-			}catch(Exception e){
+			}catch(Exception e) {
 				e.printStackTrace(); 
 			} 
 		} 
-		if(!"text".equalsIgnoreCase(type)){
+		if(!"text".equalsIgnoreCase(type)) {
 			value = DESUtil.encryptParamValue(value+""); 
 		} 
 		 

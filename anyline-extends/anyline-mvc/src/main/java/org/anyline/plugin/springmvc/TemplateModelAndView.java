@@ -27,16 +27,16 @@ public class TemplateModelAndView extends ModelAndView{
 	
 	private String fromClass = "";	// 创建视图的类
 	
-	public TemplateModelAndView setTitle(String title){
+	public TemplateModelAndView setTitle(String title) {
 		addObject(PAGE_TITLE, title);
 		return this;
 	}
-	public TemplateModelAndView setData(String url){
-		if(null != url && !url.startsWith("/")){
+	public TemplateModelAndView setData(String url) {
+		if(null != url && !url.startsWith("/")) {
 			String base = (String)getModel().get(CONTENT_URL);
 			base = base.substring(0,base.lastIndexOf("/"));
-			if(null != base){
-				if(base.endsWith("/")){
+			if(null != base) {
+				if(base.endsWith("/")) {
 					url = base + url;
 				}else{
 					url = base + "/" + url;
@@ -53,12 +53,12 @@ public class TemplateModelAndView extends ModelAndView{
 	 * @param template template
 	 * @return TemplateModelAndView
 	 */
-	public TemplateModelAndView setStyle(String template){
+	public TemplateModelAndView setStyle(String template) {
 		
 		try{
 			String data_template= createFullTemplatePath(template);
 			addObject(TemplateView.ANYLINE_STYLE_TEMPLATE_DES, WebUtil.encrypt(data_template));
-		}catch(Exception e){
+		}catch(Exception e) {
 			e.printStackTrace();
 		}
 		return this;
@@ -68,25 +68,25 @@ public class TemplateModelAndView extends ModelAndView{
 	 * @param path path
 	 * @return String
 	 */
-	public String createFullTemplatePath(String path){
+	public String createFullTemplatePath(String path) {
 		String viewName = this.getViewName();
 		String data_template = viewName.substring(0,viewName.lastIndexOf("/")+1).replace("/page/", "/template/style/")+path;
 		int idx = data_template.indexOf(":");
-		if(idx > 0){
+		if(idx > 0) {
 			String method = data_template.substring(idx+1);
-			if(method.indexOf(".") == -1){
+			if(method.indexOf(".") == -1) {
 				data_template = data_template.replace(method, fromClass+"."+ method);
 			}
 		}
 		return data_template;
 	}
-	public TemplateModelAndView setDataParser(String ... parser){
+	public TemplateModelAndView setDataParser(String ... parser) {
 		String str = "${";
 		int size = parser.length;
-		for(int i=0; i<size; i++){
+		for(int i=0; i<size; i++) {
 			String p =parser[i];
 			str += "'"+p.replace(":", "':'")+"'";
-			if(i<size-1){
+			if(i<size-1) {
 				str += ",";
 			}
 		}

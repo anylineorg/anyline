@@ -28,21 +28,21 @@ import javax.servlet.jsp.JspWriter;
 public class Client extends BaseBodyTag implements Cloneable{
 	private static final long serialVersionUID = 1L;
 	private boolean out = true;
-	public int doStartTag(){
+	public int doStartTag() {
 			return EVAL_BODY_BUFFERED;
 	}
 	public int doEndTag() throws JspException {
 		try{
 			HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
 			String curType = WebUtil.clientType(request).toLowerCase();
-			if(BasicUtil.isNotEmpty(var)){
+			if(BasicUtil.isNotEmpty(var)) {
 				request.setAttribute(var,curType);
 			}
-			if(out){
+			if(out) {
 				JspWriter out = pageContext.getOut();
 				out.print(curType);
 			}
-		}catch(Exception e){
+		}catch(Exception e) {
 			e.printStackTrace();
 		}finally{
 			release();

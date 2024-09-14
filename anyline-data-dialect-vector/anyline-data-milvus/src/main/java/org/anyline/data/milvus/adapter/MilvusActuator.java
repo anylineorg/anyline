@@ -166,22 +166,22 @@ public class MilvusActuator implements DriverActuator {
         //https://milvus.io/api-reference/java/v2.4.x/v2/Authentication/listRoles.md
         List<T> list = new ArrayList<>();
         String user = query.getUserName();
-        if(null != user){
+        if(null != user) {
             //用户相关角色
             DescribeUserResp response = client(runtime).describeUser(DescribeUserReq.builder()
                     .userName(user)
                     .build()
             );
-            if(null != response){
+            if(null != response) {
                 List<String> roles = response.getRoles();
-                for(String role:roles){
+                for(String role:roles) {
                     list.add((T)new Role(role));
                 }
             }
         }else{
             //全部角色
             List<String> roles = client(runtime).listRoles();
-            for(String role:roles){
+            for(String role:roles) {
                 list.add((T)new Role(role));
             }
         }
@@ -227,11 +227,11 @@ public class MilvusActuator implements DriverActuator {
         client(runtime).dropUser(req);
         return true;
     }
-    public <T extends User> List<T>  users(DataRuntime runtime, String random, boolean greedy, User query){
+    public <T extends User> List<T>  users(DataRuntime runtime, String random, boolean greedy, User query) {
         //https://milvus.io/api-reference/java/v2.4.x/v2/Authentication/listUsers.md
         List<T> list = new ArrayList<>();
         List<String> users = client(runtime).listUsers();
-        for(String user:users){
+        for(String user:users) {
             list.add((T)new User(user));
         }
         return list;
@@ -253,25 +253,25 @@ public class MilvusActuator implements DriverActuator {
         List<T> list = new ArrayList<>();
         String role = query.getRoleName();
         String user = query.getUserName();
-        if(null != user){
+        if(null != user) {
             Map<String, T> map = new HashMap<>();
             List<Role> roles = roles(runtime, random, false, new Role().setUser(user));
-            for(Role r:roles){
+            for(Role r:roles) {
                 List<T> ps = privileges(runtime, random, greedy, new Privilege().setRole(r));
-                for(T p:ps){
+                for(T p:ps) {
                     map.put(p.getName(), p);
                 }
             }
             list.addAll(map.values());
-        }else if(null != role){
+        }else if(null != role) {
             //角色相关权限
             DescribeRoleReq describe = DescribeRoleReq.builder()
                     .roleName(role)
                     .build();
             DescribeRoleResp response = client(runtime).describeRole(describe);
-            if(null != response){
+            if(null != response) {
                 List<DescribeRoleResp.GrantInfo> grants = response.getGrantInfos();
-                for(DescribeRoleResp.GrantInfo grant:grants){
+                for(DescribeRoleResp.GrantInfo grant:grants) {
                     Privilege privilege = new Privilege();
                     privilege.setRole(new Role(role));
                     privilege.setObjectName(grant.getObjectName());
@@ -315,7 +315,7 @@ public class MilvusActuator implements DriverActuator {
      */
 
     public boolean grant(DataRuntime runtime, User user, Role ... roles)  throws Exception {
-        for(Role role:roles){
+        for(Role role:roles) {
             client(runtime).grantRole(GrantRoleReq.builder()
                     .roleName(role.getName())
                     .userName(user.getName())
@@ -334,13 +334,13 @@ public class MilvusActuator implements DriverActuator {
      */
 
     public boolean grant(DataRuntime runtime, Role role, Privilege ... privileges)  throws Exception {
-        for(Privilege privilege:privileges){
+        for(Privilege privilege:privileges) {
             GrantPrivilegeReq.GrantPrivilegeReqBuilder build = GrantPrivilegeReq.builder();
             build.roleName(role.getName());
-            if(BasicUtil.isNotEmpty(privilege.getObjectName())){
+            if(BasicUtil.isNotEmpty(privilege.getObjectName())) {
                 build.objectName(privilege.getObjectName());
             }
-            if(BasicUtil.isNotEmpty(privilege.getObjectType())){
+            if(BasicUtil.isNotEmpty(privilege.getObjectType())) {
                 build.objectType(privilege.getObjectType());
             }
             build.privilege(privilege.getName());
@@ -380,7 +380,7 @@ public class MilvusActuator implements DriverActuator {
      */
 
     public boolean revoke(DataRuntime runtime, User user, Role ... roles) throws Exception {
-        for(Role role:roles){
+        for(Role role:roles) {
             client(runtime).revokeRole(RevokeRoleReq.builder()
                     .roleName(role.getName())
                     .userName(user.getName())
@@ -398,7 +398,7 @@ public class MilvusActuator implements DriverActuator {
      */
 
     public boolean revoke(DataRuntime runtime, Role role, Privilege ... privileges) throws Exception {
-        for (Privilege privilege:privileges){
+        for (Privilege privilege:privileges) {
             client(runtime).revokePrivilege(RevokePrivilegeReq.builder()
                     .dbName(privilege.getDatabaseName())
                     .roleName(role.getName())

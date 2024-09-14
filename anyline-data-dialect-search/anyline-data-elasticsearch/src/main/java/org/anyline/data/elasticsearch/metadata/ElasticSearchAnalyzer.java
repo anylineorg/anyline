@@ -57,12 +57,12 @@ public class ElasticSearchAnalyzer {
     public void setKey(String key) {
         this.key = key;
     }
-    public LinkedHashMap<String, Object> map(){
+    public LinkedHashMap<String, Object> map() {
         LinkedHashMap<String, Object> map =new LinkedHashMap<>();
-        if(null != tokenizer){
+        if(null != tokenizer) {
             map.put("tokenizer", tokenizer);
         }
-        if(null != filters && !filters.isEmpty()){
+        if(null != filters && !filters.isEmpty()) {
             map.put("filter", filters);
         }
         return map;

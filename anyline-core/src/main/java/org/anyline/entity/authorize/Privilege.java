@@ -25,8 +25,8 @@ public class Privilege extends Metadata<Privilege> {
     private String objectType;
     private String objectName;
 
-    public Privilege(){}
-    public Privilege(User user){
+    public Privilege() {}
+    public Privilege(User user) {
         this.user = user;
     }
     public String getTables() {
@@ -56,14 +56,14 @@ public class Privilege extends Metadata<Privilege> {
     public Role getRole() {
         return role;
     }
-    public String getRoleName(){
-        if(null != role){
+    public String getRoleName() {
+        if(null != role) {
             return role.getName();
         }
         return null;
     }
-    public String getUserName(){
-        if(null != user){
+    public String getUserName() {
+        if(null != user) {
             return user.getName();
         }
         return null;

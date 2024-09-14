@@ -41,19 +41,19 @@ public class TemplateController extends AnylineController {
 	 * @return TemplateModelAndView
 	 */
 
-	protected TemplateModelAndView template(boolean adapt, String name, String template){
+	protected TemplateModelAndView template(boolean adapt, String name, String template) {
 		TemplateModelAndView tv = new TemplateModelAndView();
-		if(null != name && !name.startsWith("/")){
+		if(null != name && !name.startsWith("/")) {
 			// 相对目录
 			name = buildDir() + name;
 		}
 		String content_template = "";
-		if(null != template){
-			if(!template.endsWith(".jsp")){
+		if(null != template) {
+			if(!template.endsWith(".jsp")) {
 				template += ".jsp";
 			}
-			if(!template.startsWith("/")){
-				if(name.contains("/page/")){
+			if(!template.startsWith("/")) {
+				if(name.contains("/page/")) {
 					content_template = name.substring(0, name.indexOf("/page/")) + "/template/layout/" + template;
 				}else{
 					content_template = buildDir() + "template/layout/" + template;
@@ -62,19 +62,19 @@ public class TemplateController extends AnylineController {
 		}
 		content_template = parseVariable(content_template);
 		String clientType = "web";
-		if(WebUtil.isWap(getRequest())){
+		if(WebUtil.isWap(getRequest())) {
 			clientType = "wap";
 		}
-		if(null != name){
-			if(adapt){
+		if(null != name) {
+			if(adapt) {
 				name = name.replace("/web/", "/"+clientType+"/");
 				name = name.replace("/wap/", "/"+clientType+"/");
 			}
 			name = name.replace("${client_type}", clientType);
 			name = name.replace("${client}", clientType);
 		}
-		if(null != content_template){
-			if(adapt){
+		if(null != content_template) {
+			if(adapt) {
 				content_template = content_template.replace("/web/", "/"+clientType+"/");
 				content_template = content_template.replace("/wap/", "/"+clientType+"/");
 			}
@@ -87,36 +87,36 @@ public class TemplateController extends AnylineController {
 	}
 
 
-	protected TemplateModelAndView template(boolean adapt, String name){
+	protected TemplateModelAndView template(boolean adapt, String name) {
 		String template = ConfigTable.getString("DEFAULT_TEMPLATE");
-		if(BasicUtil.isEmpty(template)){
+		if(BasicUtil.isEmpty(template)) {
 			template = TemplateView.ANYLINE_TEMPLATE_NAME_DEFAULT;
 		}
 		return template(adapt, name, template);
 	}
 
 
-	protected TemplateModelAndView template(String name){
+	protected TemplateModelAndView template(String name) {
 		String template = ConfigTable.getString("DEFAULT_TEMPLATE");
-		if(BasicUtil.isEmpty(template)){
+		if(BasicUtil.isEmpty(template)) {
 			template = TemplateView.ANYLINE_TEMPLATE_NAME_DEFAULT;
 		}
 		return template(false, name, template);
 	}
 
 
-	protected TemplateModelAndView template(String name, String template){
+	protected TemplateModelAndView template(String name, String template) {
 		return template(false, name, template);
 	}
 
-	protected ModelAndView error(String ... msgs ){
+	protected ModelAndView error(String ... msgs ) {
 		return errorView(msgs);
 	}
-	protected ModelAndView errorView(String ... msgs){
+	protected ModelAndView errorView(String ... msgs) {
 		String message ="";
 		String bak_url = getRequest().getHeader("Referer");
-		if(null != msgs){
-			for(String msg:msgs){
+		if(null != msgs) {
+			for(String msg:msgs) {
 				message += "<br/>"+ msg;
 			}
 		}
@@ -126,11 +126,11 @@ public class TemplateController extends AnylineController {
 		view.addObject("bak_url",bak_url);
 		return view;
 	}
-	protected ModelAndView emptyView(String ... msgs){
+	protected ModelAndView emptyView(String ... msgs) {
 		String message ="";
 		String bak_url = getRequest().getHeader("Referer");
-		if(null != msgs){
-			for(String msg:msgs){
+		if(null != msgs) {
+			for(String msg:msgs) {
 				message += "<br/>"+ msg;
 			}
 		}
@@ -140,7 +140,7 @@ public class TemplateController extends AnylineController {
 		view.addObject("bak_url",bak_url);
 		return view;
 	}
-	protected ModelAndView emptyView(){
+	protected ModelAndView emptyView() {
 		ModelAndView view = new ModelAndView(ConfigTable.getString("EMPTY_PAGE_PATH"));
 		return view;
 	}

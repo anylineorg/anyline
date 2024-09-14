@@ -162,7 +162,7 @@ public class DefaultAutoCondition extends AbstractCondition implements AutoCondi
 		if(BasicUtil.isNotEmpty(table)) {
 			prefix = table;
 		}
-		if(BasicUtil.isEmpty(column)){
+		if(BasicUtil.isEmpty(column)) {
 			return "";
 		}
 		StringBuilder col_builder = new StringBuilder();
@@ -404,7 +404,7 @@ public class DefaultAutoCondition extends AbstractCondition implements AutoCondi
 		if(null != join) {
 			map.put("join", join);
 		}
-		if(null != datatype){
+		if(null != datatype) {
 			map.put("datatype", datatype);
 		}
 		map.put("column", column);

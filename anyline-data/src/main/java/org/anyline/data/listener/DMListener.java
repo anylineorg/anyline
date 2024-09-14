@@ -247,7 +247,7 @@ public interface DMListener {
      * @return SWITCH
      */
     default SWITCH prepareInsert(DataRuntime runtime, String random, int batch, Table dest, Object obj, List<String> columns) {return SWITCH.CONTINUE;}
-    default SWITCH prepareInsert(DataRuntime runtime, String random, Table dest, RunPrepare prepare, ConfigStore configs){
+    default SWITCH prepareInsert(DataRuntime runtime, String random, Table dest, RunPrepare prepare, ConfigStore configs) {
         return SWITCH.CONTINUE;
     }
 

@@ -54,10 +54,10 @@ public class SyntaxHelper {
 	 * @return Variable
 	 */ 
 	public static Variable buildVariable(int signType, String all, String prefix, String fullKey, String afterChar) {
-		if(all.startsWith("::")){
+		if(all.startsWith("::")) {
 			String type = all.replace("::","");
 			//检测数据类型
-			if(checkType(type)){
+			if(checkType(type)) {
 				return null;
 			}
 		}
@@ -150,19 +150,19 @@ public class SyntaxHelper {
         } 
 		return null; 
 	}
-	public static boolean checkType(String type){
+	public static boolean checkType(String type) {
 		type = type.toUpperCase();
-		if(types.isEmpty()){
-			for(StandardTypeMetadata item:StandardTypeMetadata.values()){
+		if(types.isEmpty()) {
+			for(StandardTypeMetadata item:StandardTypeMetadata.values()) {
 				types.put(item.getName().toUpperCase(), item);
 				types.put(item.name().toUpperCase(), item);
 			}
 		}
-		if(types.containsKey(type)){
+		if(types.containsKey(type)) {
 			return true;
 		}
 
-		if(null != MetadataReferHolder.get(DatabaseType.NONE, type)){
+		if(null != MetadataReferHolder.get(DatabaseType.NONE, type)) {
 			return true;
 		}
 		return false;

@@ -51,7 +51,7 @@ public class CommandParser {
         /*run.supportSqlVarPlaceholderRegexExt(supportSqlVarPlaceholderRegexExt(runtime));
         CommandParser.parseText(runtime, run);*/
         RunPrepare prepare = run.getPrepare();
-        if(null == prepare){
+        if(null == prepare) {
             return;
         }
         String text = prepare.getText();
@@ -72,7 +72,7 @@ public class CommandParser {
         try{
             //${ AND ID = ::ID}  ${AND CODE=:CODE }
             List<List<String>> boxes = RegularUtil.fetchs(text, RunPrepare.SQL_VAR_BOX_REGEX, Regular.MATCH_MODE.CONTAIN);
-            if(!boxes.isEmpty()){
+            if(!boxes.isEmpty()) {
                 String box = boxes.get(0).get(0);
                 String prev = RegularUtil.cut(text, RegularUtil.TAG_BEGIN, box);
                 List<Variable> vars = parseTextVariable(supportSqlVarPlaceholderRegexExt,  prev, Compare.EMPTY_VALUE_SWITCH.NULL);
@@ -95,7 +95,7 @@ public class CommandParser {
     }
     public static List<Variable> parseTextVariable(boolean supportSqlVarPlaceholderRegexExt, String text, Compare.EMPTY_VALUE_SWITCH emptyValueSwitch) {
         List<Variable> vars = new ArrayList<>();
-        if(null == text){
+        if(null == text) {
             return vars;
         }
         try{
@@ -136,7 +136,7 @@ public class CommandParser {
                     }
                 }
             }
-        }catch (Exception e){
+        }catch (Exception e) {
             e.printStackTrace();
         }
         return vars;
@@ -144,7 +144,7 @@ public class CommandParser {
     public static VariableBlock parseTextVarBox(DataRuntime runtime, ConfigStore configs, String text, String box) {
         // ${ AND ID = ::ID}
         // ${AND CODE=:CODE }
-        if(null != box){
+        if(null != box) {
             box = box.trim();
             String body = box.substring(2, box.length()-1);
             boolean supportSqlVarPlaceholderRegexExt = ConfigStore.IS_ENABLE_PLACEHOLDER_REGEX_EXT(configs) && runtime.getAdapter().supportSqlVarPlaceholderRegexExt(runtime);

@@ -24,18 +24,18 @@ public class User extends Metadata<User> {
     protected Role role;
     private String password;
     private String host;
-    public User(){
+    public User() {
 
     }
-    public User(String name){
+    public User(String name) {
         this.name = name;
     }
-    public User(Catalog catalog, Schema schema, String name){
+    public User(Catalog catalog, Schema schema, String name) {
         this.catalog = catalog;
         this.schema = schema;
         this.name = name;
     }
-    public User(String name, String password){
+    public User(String name, String password) {
         this.name = name;
         this.password = password;
     }

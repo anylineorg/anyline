@@ -62,23 +62,23 @@ public abstract class AbstractController {
 	@Lazy
 	@Autowired(required = false)
 	@Qualifier("anyline.service")
-	public void setService(AnylineService service){
+	public void setService(AnylineService service) {
 		this.service = service;
 	}
 
 	@Autowired(required = false)
 	@Qualifier("anyline.entity.listener")
-	public void setListener(EntityListener listener){
+	public void setListener(EntityListener listener) {
 		AbstractController.entity_listener = listener;
 	}
-	protected static EntityListener getEntityListener(){
-		if(null != entity_listener){
+	protected static EntityListener getEntityListener() {
+		if(null != entity_listener) {
 			return entity_listener;
 		}
 		if(!is_entity_listener_load) {
 			try {
 				ConfigTable.environment().getBean(EntityListener.class);
-			}catch (Exception e){}
+			}catch (Exception e) {}
 			is_entity_listener_load = true;
 		}
 		return entity_listener;
@@ -86,17 +86,17 @@ public abstract class AbstractController {
 
 	@Autowired(required = false)
 	@Qualifier("anyline.controller.listener")
-	public void setListener(ControllerListener listener){
+	public void setListener(ControllerListener listener) {
 		AbstractController.controller_listener = listener;
 	}
-	protected static ControllerListener getControllerListener(){
-		if(null != controller_listener){
+	protected static ControllerListener getControllerListener() {
+		if(null != controller_listener) {
 			return controller_listener;
 		}
 		if(!is_controller_listener_load) {
 			try {
 				controller_listener = ConfigTable.environment().getBean(ControllerListener.class);
-			}catch (Exception e){}
+			}catch (Exception e) {}
 			is_controller_listener_load = true;
 		}
 		return controller_listener;
@@ -156,7 +156,7 @@ public abstract class AbstractController {
 				}
 			}// end 未指定属性与request参数对应关系
 			entity_listener = getEntityListener();
-			if(null != entity_listener){
+			if(null != entity_listener) {
 				entity_listener.after(request, entity);
 			}
 		} catch (Exception e) {
@@ -189,9 +189,9 @@ public abstract class AbstractController {
 		}
 		List<String> arrays = BeanUtil.merge(fixs, params);
 
-		if(arrays.size() == 1){
+		if(arrays.size() == 1) {
 			String param = arrays.get(0);
-			if(param.startsWith("${") && param.endsWith("}")){
+			if(param.startsWith("${") && param.endsWith("}")) {
 				String table = param.substring(2, param.length()-1);
 				List<String> columns = service.columns(table);
 				arrays = EntityAdapterProxy.column2param(columns);
@@ -208,13 +208,13 @@ public abstract class AbstractController {
 					Object value = ConfigParser.getValue(requestValues, parser);
 					row.put(col, value);
 				}
-				if(parser.isRequired()){
+				if(parser.isRequired()) {
 					row.addUpdateColumns(parser.getVar());
 				}
 			}
 		}else{
 			/*Enumeration<String> names = request.getParameterNames();
-			while(names.hasMoreElements()){
+			while(names.hasMoreElements()) {
 				String name = names.nextElement();
 				String value = request.getParameter(name);
 				row.put(name, value);
@@ -222,7 +222,7 @@ public abstract class AbstractController {
 		}
 
 		entity_listener = getEntityListener();
-		if(null != entity_listener){
+		if(null != entity_listener) {
 			entity_listener.after(request, row);
 		}
 		return row;
@@ -320,9 +320,9 @@ public abstract class AbstractController {
 		DataSet set = new DataSet();
 		List<String> arrays = BeanUtil.merge(fixs, params);
 
-		if(arrays.size() == 1){
+		if(arrays.size() == 1) {
 			String param = arrays.get(0);
-			if(param.startsWith("${") && param.endsWith("}")){
+			if(param.startsWith("${") && param.endsWith("}")) {
 				String table = param.substring(2, param.length()-1);
 				List<String> columns = service.columns(table);
 				arrays = EntityAdapterProxy.column2param(columns);
@@ -332,7 +332,7 @@ public abstract class AbstractController {
 		if (!arrays.isEmpty()) {
 			// raw [json]格式
 			DataSet list = WebUtil.values(request);
-			if(!list.isEmpty()){
+			if(!list.isEmpty()) {
 				for(DataRow item:list) {
 					DataRow row = new DataRow();
 					for (String param : arrays) {
@@ -362,7 +362,7 @@ public abstract class AbstractController {
 				}
 			}
 
-			for(int i=0; i<size; i++){
+			for(int i=0; i<size; i++) {
 				DataRow row = new DataRow(keyCase);
 				for (String param : arrays) {
 					ParseResult parser = ConfigParser.parse(param,true);
@@ -387,7 +387,7 @@ public abstract class AbstractController {
 				}
 
 				entity_listener = getEntityListener();
-				if(null != entity_listener){
+				if(null != entity_listener) {
 					entity_listener.after(request, row);
 				}
 				set.addRow(row);
@@ -459,7 +459,7 @@ public abstract class AbstractController {
 		store.setRequest(request);
 
 		controller_listener = getControllerListener();
-		if(null != controller_listener){
+		if(null != controller_listener) {
 			controller_listener.after(request, store);
 		}
 		return store;
@@ -484,7 +484,7 @@ public abstract class AbstractController {
 	 */
 	protected ConfigStore condition(HttpServletRequest request, int vol, List<String> fixs, String... configs) {
 		WebConfigStore store = new WebConfigStore(BeanUtil.merge(fixs, configs));
-		if(vol >0){
+		if(vol >0) {
 			PageNavi pageNavi = parsePageNavi(request);
 			pageNavi.setPageRows(vol);
 			store.setPageNavi(pageNavi);
@@ -492,7 +492,7 @@ public abstract class AbstractController {
 		store.setValue(WebUtil.value(request));
 		store.setRequest(request);
 		controller_listener = getControllerListener();
-		if(null != controller_listener){
+		if(null != controller_listener) {
 			controller_listener.after(request, store);
 		}
 		return store;
@@ -526,7 +526,7 @@ public abstract class AbstractController {
 		store.setValue(WebUtil.value(request));
 		store.setRequest(request);
 		controller_listener = getControllerListener();
-		if(null != controller_listener){
+		if(null != controller_listener) {
 			controller_listener.after(request, store);
 		}
 		return store;
@@ -564,7 +564,7 @@ public abstract class AbstractController {
 	 */
 	protected String getParam(HttpServletRequest request, String key, boolean keyEncrypt, boolean valueEncrypt, String ... defs) {
 		String result =  (String) WebUtil.getHttpRequestParam(request, key,keyEncrypt, valueEncrypt);
-		if(BasicUtil.isEmpty(result) && null != defs && defs.length>0){
+		if(BasicUtil.isEmpty(result) && null != defs && defs.length>0) {
 			return BasicUtil.nvl(defs);
 		}
 		return result;
@@ -605,13 +605,13 @@ public abstract class AbstractController {
 	protected List<String> getStrings(HttpServletRequest request, String key, boolean keyEncrypt, boolean valueEncrypt) {
 		List<String> result = new ArrayList<>();
 		List<Object> params = getParams(request, key, keyEncrypt, valueEncrypt);
-		for(Object param:params){
-			if(null != param){
-				if(param instanceof List){
+		for(Object param:params) {
+			if(null != param) {
+				if(param instanceof List) {
 					List list = (List)param;
-					if(list.size()>0){
+					if(list.size()>0) {
 						param = list.get(0);
-						if(null != param){
+						if(null != param) {
 							result.add(param.toString());
 						}
 					}
@@ -645,11 +645,11 @@ public abstract class AbstractController {
 		return BasicUtil.parseInt(val);
 	}
 
-	protected int getInt(HttpServletRequest request, String key, boolean keyEncrypt, boolean valueEncrypt, int def){
+	protected int getInt(HttpServletRequest request, String key, boolean keyEncrypt, boolean valueEncrypt, int def) {
 		String val = getParam(request,key, keyEncrypt, valueEncrypt);
 		try {
 			return BasicUtil.parseInt(val);
-		}catch (Exception e){
+		}catch (Exception e) {
 			return def;
 		}
 	}
@@ -658,7 +658,7 @@ public abstract class AbstractController {
 		String val = getParam(request,key, valueEncrypt);
 		try {
 			return BasicUtil.parseInt(val);
-		}catch (Exception e){
+		}catch (Exception e) {
 			return def;
 		}
 	}
@@ -667,7 +667,7 @@ public abstract class AbstractController {
 		String val = getParam(request,key);
 		try {
 			return BasicUtil.parseInt(val);
-		}catch (Exception e){
+		}catch (Exception e) {
 			return def;
 		}
 	}
@@ -687,11 +687,11 @@ public abstract class AbstractController {
 		return Double.parseDouble(val);
 	}
 
-	protected double getDouble(HttpServletRequest request, String key, boolean keyEncrypt, boolean valueEncrypt, double def){
+	protected double getDouble(HttpServletRequest request, String key, boolean keyEncrypt, boolean valueEncrypt, double def) {
 		String val = getParam(request,key, keyEncrypt, valueEncrypt);
 		try {
 			return Double.parseDouble(val);
-		}catch (Exception e){
+		}catch (Exception e) {
 			return def;
 		}
 	}
@@ -700,7 +700,7 @@ public abstract class AbstractController {
 		String val = getParam(request,key, valueEncrypt);
 		try {
 			return Double.parseDouble(val);
-		}catch (Exception e){
+		}catch (Exception e) {
 			return def;
 		}
 	}
@@ -709,7 +709,7 @@ public abstract class AbstractController {
 		String val = getParam(request,key);
 		try {
 			return Double.parseDouble(val);
-		}catch (Exception e){
+		}catch (Exception e) {
 			return def;
 		}
 	}
@@ -721,12 +721,12 @@ public abstract class AbstractController {
 	 * @return PageNavi
 	 */
 	protected  PageNavi parsePageNavi(HttpServletRequest request) {
-		if (null == request){
+		if (null == request) {
 			return null;
 		}
 		String style = getParam(request,"style");
 		PageNaviConfig config = PageNaviConfig.getInstance(style);
-		if(null == config){
+		if(null == config) {
 			config = new PageNaviConfig();
 		}else{
 			config.VAR_PAGE_MAX_PAGE = PageNaviConfig.DEFAULT_VAL_PAGE_MAX_PAGE;
@@ -736,10 +736,10 @@ public abstract class AbstractController {
 		// 提取request中请求参数
 		pageVol = BasicUtil.parseInt(request.getAttribute(config.KEY_PAGE_ROWS),pageVol);
 		// 是否启用前端设置显示行数
-		if(config.VAR_CLIENT_SET_VOL_ENABLE){
+		if(config.VAR_CLIENT_SET_VOL_ENABLE) {
 			int httpVol = BasicUtil.parseInt(getParam(request,config.KEY_PAGE_ROWS),0);
-			if(httpVol > 0){
-				if(httpVol > config.VAR_PAGE_MAX_VOL){
+			if(httpVol > 0) {
+				if(httpVol > config.VAR_PAGE_MAX_VOL) {
 					log.warn("[每页条数超出限制][参考anyline-navi.xml:VAR_PAGE_MAX_VOL]");
 				}
 				pageVol = NumberUtil.min(config.VAR_PAGE_MAX_VOL, httpVol);
@@ -747,7 +747,7 @@ public abstract class AbstractController {
 		}
 		//最大页数
 		pageNo = BasicUtil.parseLong(getParam(request,config.KEY_PAGE_NO), pageNo);
-		if(config.VAR_PAGE_MAX_PAGE != -1){
+		if(config.VAR_PAGE_MAX_PAGE != -1) {
 			pageNo = NumberUtil.min(pageNo, config.VAR_PAGE_MAX_PAGE);
 		}
 		String uri = null;
@@ -757,7 +757,7 @@ public abstract class AbstractController {
 		PageNavi navi = new DefaultPageNavi(pageNo, pageVol, uri);
 		String flag = getParam(request,config.KEY_ID_FLAG);
 
-		if(null != flag){
+		if(null != flag) {
 			flag = flag.replace("'", "").replace("\"", "");
 		}
 		navi.setFlag(flag);
@@ -799,7 +799,7 @@ public abstract class AbstractController {
 		boolean result = true;
 		for (String param : params) {
 			param = param.trim();
-			if(BasicUtil.isEmpty(param)){
+			if(BasicUtil.isEmpty(param)) {
 				continue;
 			}
 
@@ -973,12 +973,12 @@ public abstract class AbstractController {
 		String dir = null;
 		try{
 			Field[] fields = getClass().getFields();
-			for(Field field:fields){
-				if(field.getName().equals("dir")){
+			for(Field field:fields) {
+				if(field.getName().equals("dir")) {
 					dir = (String)field.get(this);
 				}
 			}
-		}catch(Exception e){
+		}catch(Exception e) {
 		}
 		return dir;
 	}
@@ -994,8 +994,8 @@ public abstract class AbstractController {
 	 * @param ext	扩展数据 ext	扩展数据
 	 * @return Map
 	 */
-	public Map<String,Object> navi(boolean adapt, HttpServletRequest request, HttpServletResponse response, Object data, PageNavi navi, String page, Object ext){
-		if(null == data){
+	public Map<String,Object> navi(boolean adapt, HttpServletRequest request, HttpServletResponse response, Object data, PageNavi navi, String page, Object ext) {
+		if(null == data) {
 			data = (DataSet)request.getAttribute("_anyline_navi_data");
 		}else{
 			request.setAttribute("_anyline_navi_data", data);
@@ -1003,18 +1003,18 @@ public abstract class AbstractController {
 		String html = "";
 		try{
 			html = WebUtil.parseJsp(request, response, page);
-		}catch(Exception e){
+		}catch(Exception e) {
 			e.printStackTrace();
 		}
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("BODY", BasicUtil.escape(html));
-		if(null != navi){
-			if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
+		if(null != navi) {
+			if(ConfigTable.IS_DEBUG && log.isWarnEnabled()) {
 				log.info("[load jsp navi][rows:{}][page:{}]", navi.getTotalRow(), navi.getTotalPage());
 			}
 			int type = 0;
 			String _type = getParam(request,"_anyline_navi_type");
-			if("1".equals(_type)){
+			if("1".equals(_type)) {
 				type = 1;
 			}
 			navi.setType(type);
@@ -1030,11 +1030,11 @@ public abstract class AbstractController {
 		return map;
 	}
 	
-	public Map<String,Object> navi(HttpServletRequest request, HttpServletResponse response, Object data, PageNavi navi, String page, Object ext){
+	public Map<String,Object> navi(HttpServletRequest request, HttpServletResponse response, Object data, PageNavi navi, String page, Object ext) {
 		return navi(false, request, response, data, navi, page, ext);
 	}
 
-	public Map<String,Object> navi(HttpServletRequest request, HttpServletResponse response, Object data, PageNavi navi, String page){
+	public Map<String,Object> navi(HttpServletRequest request, HttpServletResponse response, Object data, PageNavi navi, String page) {
 		return navi(request, response, data, navi, page, null);
 	}
 }

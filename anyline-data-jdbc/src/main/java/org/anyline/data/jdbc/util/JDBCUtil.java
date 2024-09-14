@@ -349,7 +349,7 @@ public class JDBCUtil {
                         if(null == name || name.equalsIgnoreCase("PAGE_ROW_NUMBER_")) {
                             continue;
                         }
-                        if(excludes.containsKey(name.toUpperCase())){
+                        if(excludes.containsKey(name.toUpperCase())) {
                             continue;
                         }
                         Column column = metadatas.get(name) ;
@@ -363,7 +363,7 @@ public class JDBCUtil {
                 if(null == name || name.equalsIgnoreCase("PAGE_ROW_NUMBER_")) {
                     continue;
                 }
-                if(excludes.containsKey(name.toUpperCase())){
+                if(excludes.containsKey(name.toUpperCase())) {
                     continue;
                 }
                 try {
@@ -400,7 +400,7 @@ public class JDBCUtil {
     public static LinkedHashMap<String, Object> map(DriverAdapter adapter, boolean system, DataRuntime runtime, LinkedHashMap<String, Column> metadatas, ConfigStore configs, ResultSet rs) {
         LinkedHashMap<String, Object> map = new LinkedHashMap<>();
         Map<String, Column> excludes = new HashMap<>();
-        if(null != configs){
+        if(null != configs) {
             excludes = configs.getExcludes();
         }
         try {
@@ -417,7 +417,7 @@ public class JDBCUtil {
                         if (null == name || name.equalsIgnoreCase("PAGE_ROW_NUMBER_")) {
                             continue;
                         }
-                        if(excludes.containsKey(name.toUpperCase())){
+                        if(excludes.containsKey(name.toUpperCase())) {
                             continue;
                         }
                         Column column = metadatas.get(name);
@@ -431,7 +431,7 @@ public class JDBCUtil {
                 if(null == name || name.equalsIgnoreCase("PAGE_ROW_NUMBER_")) {
                     continue;
                 }
-                if(excludes.containsKey(name.toUpperCase())){
+                if(excludes.containsKey(name.toUpperCase())) {
                     continue;
                 }
                 try {

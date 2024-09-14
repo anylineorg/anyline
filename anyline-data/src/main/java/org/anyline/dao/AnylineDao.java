@@ -360,7 +360,7 @@ public interface AnylineDao<E>{
 	 * @return 影响行数
 	 */
 	long insert(DataRuntime runtime, String random, Table dest, RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions);
-	default long insert(Table dest, RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions){
+	default long insert(Table dest, RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions) {
 		return insert(runtime(), null, dest, prepare, configs, obj, conditions);
 	}
 	default long insert(DataRuntime runtime, String random, Table dest, RunPrepare prepare) {
@@ -531,10 +531,10 @@ public interface AnylineDao<E>{
 	default long delete(String dest, Object obj, String ... columns) {
 		return delete(runtime(), null, dest, obj, columns);
 	}
-	default long delete(String dest, Collection values){
+	default long delete(String dest, Collection values) {
 		return delete(runtime(), null, dest, values);
 	}
-	default long delete(Table dest, Collection values){
+	default long delete(Table dest, Collection values) {
 		return delete(runtime(), null, dest, values);
 	}
 	default long delete(DataRuntime runtime, String random, String table, ConfigStore configs, String ... conditions) {
@@ -709,7 +709,7 @@ public interface AnylineDao<E>{
 		Table query = new Table();
 		return tables(runtime, random, greedy, query, types, struct, configs);
 	}
-	default <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String name, int types, int struct){
+	default <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String name, int types, int struct) {
 		return tables(runtime, random, greedy, catalog, schema, name, types, struct, null);
 	}
 	default <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String name, int types, boolean struct, ConfigStore configs) {
@@ -867,14 +867,14 @@ public interface AnylineDao<E>{
 	 * 													edge
 	 ******************************************************************************************************************/
 	<T extends EdgeTable> List<T> edges(DataRuntime runtime, String random, boolean greedy, EdgeTable query, int types, int struct, ConfigStore configs);
-	default <T extends EdgeTable> List<T> edges(boolean greedy, EdgeTable query, int types, int struct, ConfigStore configs){
+	default <T extends EdgeTable> List<T> edges(boolean greedy, EdgeTable query, int types, int struct, ConfigStore configs) {
 		return edges(runtime(), null, greedy, query, types, struct, configs);
 	}
 	default <T extends EdgeTable> List<T> edges(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String name, int types, int struct, ConfigStore configs) {
 		EdgeTable query = new EdgeTable(catalog, schema, name);
 		return edges(runtime, random, greedy, query, types, struct, configs);
 	}
-	default <T extends EdgeTable> List<T> edges(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String name, int types, int struct){
+	default <T extends EdgeTable> List<T> edges(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String name, int types, int struct) {
 		return edges(runtime, random, greedy, catalog, schema, name, types, struct, null);
 	}
 	default <T extends EdgeTable> List<T> edges(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String name, int types, boolean struct, ConfigStore configs) {
@@ -1036,7 +1036,7 @@ public interface AnylineDao<E>{
 		VertexTable query = new VertexTable(catalog, schema, name);
 		return vertexs(runtime, random, greedy, query, types, struct, configs);
 	}
-	default <T extends VertexTable> List<T> vertexs(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String name, int types, int struct){
+	default <T extends VertexTable> List<T> vertexs(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String name, int types, int struct) {
 		return vertexs(runtime, random, greedy, catalog, schema, name, types, struct, null);
 	}
 	default <T extends VertexTable> List<T> vertexs(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String name, int types, boolean struct, ConfigStore configs) {
@@ -1201,7 +1201,7 @@ public interface AnylineDao<E>{
 		query.setName(name);
 		return masters(runtime, random, greedy, query, types, struct, configs);
 	}
-	default <T extends MasterTable> List<T> masters(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String name, int types, int struct){
+	default <T extends MasterTable> List<T> masters(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String name, int types, int struct) {
 		return masters(runtime, random, greedy, catalog, schema, name, types, struct, null);
 	}
 	default <T extends MasterTable> List<T> masters(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String name, int types, boolean struct, ConfigStore configs) {
@@ -1352,7 +1352,7 @@ public interface AnylineDao<E>{
 		View query = new View(catalog, schema, name);
 		return views(runtime, random, greedy, query, types, struct, configs);
 	}
-	default <T extends View> List<T> views(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String name, int types, int struct){
+	default <T extends View> List<T> views(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String name, int types, int struct) {
 		return views(runtime, random, greedy, catalog, schema, name, types, struct, null);
 	}
 	default <T extends View> List<T> views(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String name, int types, boolean struct, ConfigStore configs) {
@@ -1525,11 +1525,11 @@ public interface AnylineDao<E>{
 	default<T extends PartitionTable> LinkedHashMap<String, T> partitions(DataRuntime runtime, String random, boolean greedy, MasterTable master, Map<String, Object> tags, String name) {
 		PartitionTable query = new PartitionTable();
 		query.setMaster(master);
-		if(null != tags){
-			for(String key:tags.keySet()){
+		if(null != tags) {
+			for(String key:tags.keySet()) {
 				Tag tag = null;
 				Object value = tags.get(key);
-				if(value instanceof Tag){
+				if(value instanceof Tag) {
 					tag = (Tag)value;
 				}else{
 					tag = new Tag(key, value);
@@ -1604,7 +1604,7 @@ public interface AnylineDao<E>{
 	 * @param <T> Column
 	 */
 	<T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Table table, boolean primary, ConfigStore configs);
-	default <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Table table, boolean primary){
+	default <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Table table, boolean primary) {
 		return columns(runtime, random, greedy, table, primary, null);
 	}
 	default <T extends Column> LinkedHashMap<String, T> columns(boolean greedy, Table table, ConfigStore configs) {
@@ -1654,7 +1654,7 @@ public interface AnylineDao<E>{
 		return columns(runtime, random, greedy, query, configs);
 	}
 
-	default <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema){
+	default <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema) {
 		return columns(runtime, random, greedy,catalog, schema, null);
 	}
 

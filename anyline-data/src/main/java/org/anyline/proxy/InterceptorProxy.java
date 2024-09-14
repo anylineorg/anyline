@@ -92,9 +92,9 @@ public class InterceptorProxy {
         }
     }
     public static void reg(DDL action, DDInterceptor interceptor) {
-        if(action == DDL.ALL){
-            for(DDL item:DDL.values()){
-                if(item != DDL.ALL && item != DDL.IGNORE){
+        if(action == DDL.ALL) {
+            for(DDL item:DDL.values()) {
+                if(item != DDL.ALL && item != DDL.IGNORE) {
                     reg(item, interceptor);
                 }
             }

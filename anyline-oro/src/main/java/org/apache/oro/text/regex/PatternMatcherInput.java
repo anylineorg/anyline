@@ -336,7 +336,7 @@ public final class PatternMatcherInput {
    * @return The String or char[] input used to initialize the
    *         PatternMatcherInput instance.
    */
-  public Object getInput(){
+  public Object getInput() {
     if(_originalStringInput == null)
       return _originalCharInput;
     return _originalStringInput;
@@ -358,7 +358,7 @@ public final class PatternMatcherInput {
    * @return True if the current offset is greater than or equal to the
    *         end offset.
    */
-  public boolean endOfInput(){return (_currentOffset >= _endOffset); }
+  public boolean endOfInput() {return (_currentOffset >= _endOffset); }
 
   /**
    * @return The offset of the input that should be considered the start

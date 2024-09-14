@@ -28,10 +28,10 @@ public class DefaultVariableBlock implements VariableBlock {
     protected List<Variable> variables = new ArrayList<>();
     protected String box;
     protected String body;
-    public DefaultVariableBlock(){
+    public DefaultVariableBlock() {
 
     }
-    public DefaultVariableBlock(String box, String body){
+    public DefaultVariableBlock(String box, String body) {
         this.box = box;
         this.body = body;
     }
@@ -69,27 +69,27 @@ public class DefaultVariableBlock implements VariableBlock {
 
     @Override
     public VariableBlock add(Variable... variables) {
-        for(Variable variable:variables){
+        for(Variable variable:variables) {
             this.variables.add(variable);
         }
         return this;
     }
-    public boolean active(){
-        for(Variable var:variables){
+    public boolean active() {
+        for(Variable var:variables) {
             Compare.EMPTY_VALUE_SWITCH swt = var.getSwt();
             List<Object> values = var.getValues();
-            if(BasicUtil.isEmpty(values)){
+            if(BasicUtil.isEmpty(values)) {
                 return false;
             }
-            for(Object value:values){
-                if(BasicUtil.isEmpty(value)){
+            for(Object value:values) {
+                if(BasicUtil.isEmpty(value)) {
                     return false; //任何一个空值
                 }
             }
         }
         return true;
     }
-    public VariableBlock clone(){
+    public VariableBlock clone() {
         DefaultVariableBlock clone = new DefaultVariableBlock();
         clone.box = box;
         clone.body = body;

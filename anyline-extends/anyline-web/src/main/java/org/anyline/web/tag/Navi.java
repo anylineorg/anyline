@@ -69,7 +69,7 @@ public class Navi extends BodyTagSupport{
 	public int doStartTag() throws JspException {
 		try{
 			PageNaviConfig config = PageNaviConfig.getInstance(style);
-			if(null == config){
+			if(null == config) {
 				config = new PageNaviConfig();
 			}else{
 				config.VAR_PAGE_MAX_PAGE = PageNaviConfig.DEFAULT_VAL_PAGE_MAX_PAGE;
@@ -77,21 +77,21 @@ public class Navi extends BodyTagSupport{
 			StringBuilder builder = new StringBuilder();
 			int idx = BasicUtil.parseInt((String)pageContext.getRequest().getAttribute("_anyline_navi_tag_idx"), 0);
 			String flag = id;
-			if(null == flag){
+			if(null == flag) {
 				flag = idx+"";
 			}
 			String confId = config.KEY_ID_FLAG + flag;
 			builder.append("<div id='_navi_border_"+flag+"'>");
 			// 放到form里 实现后退时值不被重置
 			builder.append("<form><input type='text' style='display:none;'/><input type='text' style='display:none;' id='_navi_cache_page_"+flag+"'><input type='text' style='display:none;' id='_navi_cache_vol_"+flag+"'></form>");
-			if(idx == 0){
+			if(idx == 0) {
 				builder.append("<link rel=\"stylesheet\" href=\"" + config.STYLE_FILE_PATH + "\" type=\"text/css\"/>\n");
 				builder.append("<script type=\"text/javascript\" src=\"" + config.SCRIPT_FILE_PATH + "\"></script>\n");
 			}
 			builder.append("<script>\n");
 
-			if(type ==2){
-				if(WebUtil.isWap((HttpServletRequest)pageContext.getRequest())){
+			if(type ==2) {
+				if(WebUtil.isWap((HttpServletRequest)pageContext.getRequest())) {
 					type = 1;
 				}else{
 					type = 0;
@@ -100,14 +100,14 @@ public class Navi extends BodyTagSupport{
 			}
 			builder.append("var " + confId + " = {");
 			builder.append(config.KEY_ID_FLAG).append(":'").append(flag).append("',");
-			if(BasicUtil.isNotEmpty(url)){
+			if(BasicUtil.isNotEmpty(url)) {
 				builder.append("url:'").append(url).append("',");
 			}
-			if(BasicUtil.isNotEmpty(param)){
+			if(BasicUtil.isNotEmpty(param)) {
 				String sign = "'";
-				if(param.contains(")")){
+				if(param.contains(")")) {
 					// 构成成String 每次运行时解析实时value
-					if(param.contains("'")){
+					if(param.contains("'")) {
 						sign = "\"";
 					}
 					builder.append("param:").append(sign).append(param).append(sign).append(",");
@@ -115,63 +115,63 @@ public class Navi extends BodyTagSupport{
 					builder.append("param:").append(param).append(",");
 				}
 			}
-			if(BasicUtil.isNotEmpty(container)){
+			if(BasicUtil.isNotEmpty(container)) {
 				builder.append("container:'").append(container).append("',");
 			}
 			body = (String)BasicUtil.nvl(body, bodyContainer);
 			page = (String)BasicUtil.nvl(page, naviContainer);
-			if(BasicUtil.isNotEmpty(body)){
+			if(BasicUtil.isNotEmpty(body)) {
 				builder.append("body:'").append(body).append("',");
 				builder.append("bodyContainer:'").append(body).append("',");
 			}
-			if(BasicUtil.isNotEmpty(page)){
+			if(BasicUtil.isNotEmpty(page)) {
 				builder.append("page:'" ).append(page).append("',");
 				builder.append("naviContainer:'" ).append(page).append("',");
 			}
-			if(BasicUtil.isNotEmpty(callback)){
+			if(BasicUtil.isNotEmpty(callback)) {
 				builder.append("callback:" ).append(callback).append(",");
 			}
 			before = BasicUtil.nvl(before, config.EVENT_BEFORE,"").toString();
-			if(BasicUtil.isNotEmpty(before)){
+			if(BasicUtil.isNotEmpty(before)) {
 				builder.append("before:" ).append(before).append(",");
 			}
 			after = BasicUtil.nvl(after, config.EVENT_AFTER,"").toString();
-			if(BasicUtil.isNotEmpty(after)){
+			if(BasicUtil.isNotEmpty(after)) {
 				builder.append("after:" );
-				if(after.contains(",")){
+				if(after.contains(",")) {
 					builder.append("'").append(after).append("',");
 				}else {
 					builder.append(after).append(",");
 				}
 			}
-			if(null != guide){
+			if(null != guide) {
 				builder.append("guide:'" ).append(guide).append("',");
 			}
-			if(BasicUtil.isNotEmpty(max)){
+			if(BasicUtil.isNotEmpty(max)) {
 				builder.append("max:" ).append(max).append(",");
 			}
 			builder.append("vol:").append(vol).append(",");
-			if(null == cache){
+			if(null == cache) {
 				cache = config.VAR_CACHE_CONDITION_SECOND;
 			}
 			builder.append("cache:").append(cache).append(",");
-			if(null == auto){
+			if(null == auto) {
 				auto = config.VAR_AUTO_LOAD;
 			}
 
 			builder.append("auto:").append(auto).append(",");
 			builder.append("type:").append(type).append(",");
 			builder.append("style:'").append(style).append("',");
-			if(empty == null){
+			if(empty == null) {
 				empty = config.STYLE_DATA_EMPTY;
 			}
-			if(over == null){
+			if(over == null) {
 				over = config.STYLE_PAGE_OVER;
 			}
-			if(null != empty){
+			if(null != empty) {
 				builder.append("empty:'" ).append(empty).append("',");
 			}
-			if(null != over){
+			if(null != over) {
 				builder.append("over:'" ).append(over).append("',");
 			}
 
@@ -179,55 +179,55 @@ public class Navi extends BodyTagSupport{
 			builder.append("stat:").append(stat).append(",");
 			builder.append("adapter:'").append(adapter).append("'");
 			builder.append("};\n");
-			if(null == cur){
+			if(null == cur) {
 				cur = pageContext.getRequest().getParameter(config.KEY_PAGE_NO);
 			}
 			int curPage = BasicUtil.parseInt(cur, 1);
 			// 加载数据函数
-			if(BasicUtil.isNotEmpty(function)){
+			if(BasicUtil.isNotEmpty(function)) {
 				// clear:清空上一页内容  hold:保持当前页
-				builder.append("function ").append(function).append("(clear,hold){\n");
+				builder.append("function ").append(function).append("(clear,hold) {\n");
 
 				// 加载缓存
-				if(null != cache){
+				if(null != cache) {
 					builder.append("\tif(typeof _navi_load_cache === \"function\") {\n");
 					builder.append("\t\t_navi_load_cache('").append(flag).append("',").append(confId).append(");\n");
 					builder.append("\t}\n");
 				}
-				builder.append("\tif(clear){\n\t\t").append(confId).append("['clear'] = 1;\n\t\t").append(confId).append("['flush'] = true;\n\t}\n");
+				builder.append("\tif(clear) {\n\t\t").append(confId).append("['clear'] = 1;\n\t\t").append(confId).append("['flush'] = true;\n\t}\n");
 				builder.append("\tvar _cur_page = ").append(curPage).append(";\n");
-				builder.append("\tif(hold){\n\t\t_cur_page = $('#_navi_cache_page_").append(flag).append("').val() || $('#hid_cur_page_").append(flag).append("').val() || _cur_page;\n\t\t_navi_go(_cur_page,"+confId+");\n\t}else{\n");
+				builder.append("\tif(hold) {\n\t\t_cur_page = $('#_navi_cache_page_").append(flag).append("').val() || $('#hid_cur_page_").append(flag).append("').val() || _cur_page;\n\t\t_navi_go(_cur_page,"+confId+");\n\t}else{\n");
 				builder.append("\t\t_navi_init(").append(confId).append(");\n\t}\n");
-				builder.append("\tif(clear){").append(confId).append("['clear'] = 0;}\n");
+				builder.append("\tif(clear) {").append(confId).append("['clear'] = 0;}\n");
 				builder.append("}\n");
-				if(intime){
+				if(intime) {
 				    // 延时执行,先读取当前第几页,每页多少条
-					builder.append("setTimeout(function(){").append(function).append("(true,true)},").append(delay).append(");\n");
+					builder.append("setTimeout(function() {").append(function).append("(true,true)},").append(delay).append(");\n");
 				}
 			}else{
-				builder.append("setTimeout(function(){_navi_init(").append(confId).append(")},").append(delay).append(");\n");
+				builder.append("setTimeout(function() {_navi_init(").append(confId).append(")},").append(delay).append(");\n");
 			}
 			// 刷新当前页函数
 			refresh = BasicUtil.nvl(refresh, config.EVENT_REFRESH,"").toString();
-			if(BasicUtil.isNotEmpty(refresh)){
-				builder.append("function ").append(refresh).append("(){\n");
+			if(BasicUtil.isNotEmpty(refresh)) {
+				builder.append("function ").append(refresh).append("() {\n");
 				builder.append("_navi_refresh(").append(confId).append(");\n");
 				builder.append("}\n");
 			}
 			// 自动加载
 			String scrollEventSrc = "window";
-			if(BasicUtil.isNotEmpty(scroll)){
+			if(BasicUtil.isNotEmpty(scroll)) {
 				scrollEventSrc = "'" + scroll + "'";
 			}
-			builder.append("var scroll = $('"+scroll+"');\nif(scroll.length==0){scroll = window}else{scroll=scroll[0]}\n");
-			builder.append("$("+scrollEventSrc+").scroll(function(){_navi_auto_load(").append(confId).append(",scroll").append(");});\n");
+			builder.append("var scroll = $('"+scroll+"');\nif(scroll.length==0) {scroll = window}else{scroll=scroll[0]}\n");
+			builder.append("$("+scrollEventSrc+").scroll(function() {_navi_auto_load(").append(confId).append(",scroll").append(");});\n");
 			builder.append("</script>");
 			builder.append("</div>");
 			idx ++;
 			pageContext.getRequest().setAttribute("_anyline_navi_tag_idx", idx + "");
 			JspWriter out = pageContext.getOut();
 			out.print(builder.toString());
-		}catch(Exception e){
+		}catch(Exception e) {
 			e.printStackTrace();
 		}finally{
 			release();

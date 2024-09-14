@@ -53,14 +53,14 @@ public class Join  implements Serializable {
         this.type = type;
     }
 
-    public Join addConditions(String ... conditions){
-        for(String condition : conditions){
+    public Join addConditions(String ... conditions) {
+        for(String condition : conditions) {
             this.conditions.and(condition);
         }
         return this;
     }
-    public Join addConditions(List<String> conditions){
-        for(String condition : conditions){
+    public Join addConditions(List<String> conditions) {
+        for(String condition : conditions) {
             this.conditions.and(condition);
         }
         return this;
@@ -68,21 +68,21 @@ public class Join  implements Serializable {
 
     public Join setConditions(String ... conditions) {
         this.conditions = new DefaultConfigStore();
-        for(String condition:conditions){
+        for(String condition:conditions) {
             this.conditions.and(condition);
         }
         return this;
     }
     public Join setConditions(List<String> conditions) {
         this.conditions = new DefaultConfigStore();
-        for(String condition:conditions){
+        for(String condition:conditions) {
             this.conditions.and(condition);
         }
         return this;
     }
     public DataRow map(boolean empty) {
         DataRow row = new OriginRow();
-        if(empty || null != type){
+        if(empty || null != type) {
             row.put("type", type.getCode());
         }
         row.put("conditions", conditions.getConfigChain().map(empty));

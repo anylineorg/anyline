@@ -168,27 +168,27 @@ public class TDengineAdapter extends AbstractJDBCAdapter implements JDBCAdapter 
      * @param configs ConfigStore
      */
     @Override
-    public void fillInsertCreateTemplate(DataRuntime runtime, Run run, PartitionTable dest, ConfigStore configs){
+    public void fillInsertCreateTemplate(DataRuntime runtime, Run run, PartitionTable dest, ConfigStore configs) {
         StringBuilder builder = run.getBuilder();
         Table master = dest.getMaster();
         LinkedHashMap<String, Tag> tags = dest.getTags();
-        if(null != master && !tags.isEmpty()){
+        if(null != master && !tags.isEmpty()) {
             StringBuilder cols = new StringBuilder();
             StringBuilder vals = new StringBuilder();
             boolean first = true;
             for(Tag tag:tags.values()) {
                 String key = tag.getName();
                 Object value = tag.getValue();
-                if(BasicUtil.isEmpty(value)){
+                if(BasicUtil.isEmpty(value)) {
                     continue;
                 }
-                if(!first){
+                if(!first) {
                     cols.append(",");
                     vals.append(",");
                 }
                 first = false;
                 delimiter(cols, key);
-                if(value instanceof String){
+                if(value instanceof String) {
                     vals.append("'");
                     vals.append(value);
                     vals.append("'");
@@ -196,7 +196,7 @@ public class TDengineAdapter extends AbstractJDBCAdapter implements JDBCAdapter 
                     vals.append(value);
                 }
             }
-            if(first){ //没有生成tags
+            if(first) { //没有生成tags
                 return;
             }
             builder.append(" USING ");

@@ -114,7 +114,7 @@ public final class CacheLRU extends GenericCache {
    * CacheLRU(GenericCache.DEFAULT_CAPACITY);
    * </pre></blockquote>
    */
-  public CacheLRU(){
+  public CacheLRU() {
     this(GenericCache.DEFAULT_CAPACITY);
   }
 

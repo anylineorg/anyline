@@ -77,7 +77,7 @@ public class Select extends BaseBodyTag {
 				String ks[] = BeanUtil.parseKeyValue(item); 
 				map.put(valueKey, ks[0]); 
 				map.put(textKey, ks[1]); 
-				if(ks.length>2){
+				if(ks.length>2) {
 					map.put("CHK", ks[2]); 
 				} 
 				list.add(map); 
@@ -85,17 +85,17 @@ public class Select extends BaseBodyTag {
 			data = list; 
 		} 
 		Collection items = (Collection) data;
-		if(BasicUtil.isNotEmpty(selector) && data instanceof Collection){
+		if(BasicUtil.isNotEmpty(selector) && data instanceof Collection) {
 			items = BeanUtil.select(items,selector.split(","));
 		}
 		try {
 			if ("text".equals(type)) {
 				if (null != items) {
-					if(items instanceof Map){
+					if(items instanceof Map) {
 						Map map = (Map)items;
 						Object item = map.get(value);
-						if(null != item){
-							if(ClassUtil.isPrimitiveClass(item) || item instanceof String){
+						if(null != item) {
+							if(ClassUtil.isPrimitiveClass(item) || item instanceof String) {
 								html = item.toString();
 							}else{
 								html = BeanUtil.parseRuntimeValue(item, textKey);
@@ -114,10 +114,10 @@ public class Select extends BaseBodyTag {
 				StringBuffer builder = new StringBuffer();
 				builder.append("<select ");
 				attribute(builder);
-				if(BasicUtil.isNotEmpty(multiple)){
+				if(BasicUtil.isNotEmpty(multiple)) {
 					builder.append(" multiple=\"multiple\"");
 				}
-				if(size>1){
+				if(size>1) {
 					builder.append(" size=\""+size+"\"");
 				}
 				builder.append(">");
@@ -157,20 +157,20 @@ public class Select extends BaseBodyTag {
 
 	@SuppressWarnings({"rawtypes", "unchecked" })
 	public void addParam(String key, Object value) {
-//		if(null == value || "".equals(value.toString().trim())){
+//		if(null == value || "".equals(value.toString().trim())) {
 //			return ;
 //		}
-		if(null == key){
-			if(null == paramList){
+		if(null == key) {
+			if(null == paramList) {
 				paramList = new ArrayList<Object>();
 			}
-			if(value instanceof Collection){
+			if(value instanceof Collection) {
 				paramList.addAll((Collection)value);
 			}else{
 				paramList.add(value);
 			}
 		}else{
-			if(null == paramMap){
+			if(null == paramMap) {
 				paramMap = new HashMap<String,Object>();
 			}
 			paramMap.put(key.trim(), value);

@@ -213,7 +213,7 @@ public class DefaultConfigStore implements ConfigStore {
 		return this;
 	}
 	@Override
-	public Condition.JOIN getJoin(){
+	public Condition.JOIN getJoin() {
 		return chain.getJoin();
 	}
 	/**
@@ -231,14 +231,14 @@ public class DefaultConfigStore implements ConfigStore {
 	}
 	@Override
 	public Highlight getHighlight(String field) {
-		if(null != highlight){
+		if(null != highlight) {
 			return highlight.getHighlight(field);
 		}
 		return null;
 	}
 	@Override
 	public ConfigStore addHighlight(String ... fields) {
-		if(null == this.highlight){
+		if(null == this.highlight) {
 			this.highlight = new Highlight();
 		}
 		this.highlight.addField(fields);
@@ -250,7 +250,7 @@ public class DefaultConfigStore implements ConfigStore {
 		return this;
 	}@Override
 	public ConfigStore addHighlight(String field, Highlight highlight) {
-		if(null == this.highlight){
+		if(null == this.highlight) {
 			this.highlight = new Highlight();
 		}
 		this.highlight.addField(field, highlight);
@@ -299,7 +299,7 @@ public class DefaultConfigStore implements ConfigStore {
 	 */
 	@Override
 	public List<String> keys() {
-		if(null == primaryKeys){
+		if(null == primaryKeys) {
 			return new ArrayList<>();
 		}
 		return primaryKeys;
@@ -671,22 +671,22 @@ public class DefaultConfigStore implements ConfigStore {
 	public ConfigStore and(EMPTY_VALUE_SWITCH swt, Compare compare, String prefix, String var, Object value, boolean overCondition, boolean overValue) {
 		if(null == compare) {
 			compare = Compare.AUTO;
-			if(null == value){
+			if(null == value) {
 				compare = Compare.EQUAL;
 			}
 		}
 
-		if(compare == Compare.AUTO){
-			if(value instanceof Collection){
+		if(compare == Compare.AUTO) {
+			if(value instanceof Collection) {
 				Collection list = (Collection) value;
-				if(list.size() > 1){
+				if(list.size() > 1) {
 					compare = Compare.IN;
 				}
-			}else if(value.getClass().isArray() && Array.getLength(value) > 1){
+			}else if(value.getClass().isArray() && Array.getLength(value) > 1) {
 				compare = Compare.IN;
 			}
 		}
-		if(compare == Compare.AUTO){
+		if(compare == Compare.AUTO) {
 			compare = Compare.EQUAL;
 		}
 		int compareCode = compare.getCode();
@@ -829,10 +829,10 @@ public class DefaultConfigStore implements ConfigStore {
 		if(BasicUtil.isNotEmpty(having)) {
 			this.having(having);
 		}
-		if(null != columns){
+		if(null != columns) {
 			this.columns(configs.columns());
 		}
-		if(null != excludes){
+		if(null != excludes) {
 			this.excludes(configs.excludes());
 		}
 		chain = list;
@@ -1238,7 +1238,7 @@ public class DefaultConfigStore implements ConfigStore {
 			if (value.getClass().isArray()) {
 				int len = Array.getLength(value);
 				List<Object> list = new ArrayList<>();
-				for(int i=0; i<len; i++){
+				for(int i=0; i<len; i++) {
 					list.add(Array.get(value, i));
 				}
 				value = list;
@@ -1547,7 +1547,7 @@ public class DefaultConfigStore implements ConfigStore {
 	}
 	public ConfigStore columns(List<String> columns) {
 		if(null != columns) {
-			for(String column:columns){
+			for(String column:columns) {
 				this.columns.put(column.toUpperCase(), new Column(column));
 			}
 		}
@@ -1555,13 +1555,13 @@ public class DefaultConfigStore implements ConfigStore {
 	}
 	public List<String> columns() {
 		List<String> columns = new ArrayList<>();
-		for(Column column:this.columns.values()){
+		for(Column column:this.columns.values()) {
 			columns.add(column.getName());
 		}
 		return columns;
 	}
 
-	public LinkedHashMap<String, Column> getColumns(){
+	public LinkedHashMap<String, Column> getColumns() {
 		return columns;
 	}
 	public ConfigStore excludes(String ... columns) {
@@ -1582,13 +1582,13 @@ public class DefaultConfigStore implements ConfigStore {
 	}
 	public List<String> excludes() {
 		List<String> columns = new ArrayList<>();
-		for(Column column:this.excludes.values()){
+		for(Column column:this.excludes.values()) {
 			columns.add(column.getName());
 		}
 		return columns;
 	}
 
-	public Map<String, Column> getExcludes(){
+	public Map<String, Column> getExcludes() {
 		return excludes;
 	}
 	/**
@@ -1793,43 +1793,43 @@ public class DefaultConfigStore implements ConfigStore {
 			clone.setPageNavi(navi.clone());
 		}
 		clone.chain =this.chain.clone();
-		if(null != columns){
+		if(null != columns) {
 			clone.columns = new LinkedHashMap<>();
 			clone.columns.putAll(columns);
 		}
-		if(null != excludes){
+		if(null != excludes) {
 			clone.excludes =new LinkedHashMap<>();
 			clone.excludes.putAll(excludes);
 		}
-		if(null != keyHolders){
+		if(null != keyHolders) {
 			clone.keyHolders = new ArrayList<>();
-			for(String key:keyHolders){
+			for(String key:keyHolders) {
 				clone.keyHolders.add(key);
 			}
 		}
-		if(null != values){
+		if(null != values) {
 			clone.values = new ArrayList<>();
-			for(Object value:values){
+			for(Object value:values) {
 				clone.values.add(value);
 			}
 		}
 
-		if(null != overrideByColumns){
+		if(null != overrideByColumns) {
 			clone.overrideByColumns = new ArrayList<>();
-			for(String item:overrideByColumns){
+			for(String item:overrideByColumns) {
 				clone.overrideByColumns.add(item);
 			}
 		}
-		if(null != primaryKeys){
+		if(null != primaryKeys) {
 			clone.primaryKeys = new ArrayList<>();
-			for(String item:primaryKeys){
+			for(String item:primaryKeys) {
 				clone.primaryKeys.add(item);
 			}
 		}
 
-		if(null != runs){
+		if(null != runs) {
 			clone.runs = new ArrayList<>();
-			for(Run item:runs){
+			for(Run item:runs) {
 				clone.runs.add(item);
 			}
 		}
@@ -1840,13 +1840,13 @@ public class DefaultConfigStore implements ConfigStore {
 		clone.execute = this.execute;
 		clone.datasource = this.datasource;
 		clone.join = this.join;
-		if(null != catalog){
+		if(null != catalog) {
 			clone.catalog = catalog.clone();
 		}
-		if(null != schema){
+		if(null != schema) {
 			clone.schema = schema.clone();
 		}
-		if(null != table){
+		if(null != table) {
 			clone.table = table.clone();
 		}
 

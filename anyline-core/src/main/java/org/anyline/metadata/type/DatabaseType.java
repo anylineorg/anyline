@@ -534,7 +534,7 @@ public enum DatabaseType implements Serializable {
         public KEY_CASE nameCase() {
                 return objectNameCase;
         }
-        public DatabaseOrigin origin(){
+        public DatabaseOrigin origin() {
                 return origin;
         }
 

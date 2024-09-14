@@ -1346,7 +1346,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
                 log.info("{}[action:select][执行耗时:{}]", random, DateUtil.format(time));
                 log.info("{}[action:select][封装耗时:{}][封装行数:{}]", random, DateUtil.format(time), count);
             }
-            if((!system || !ConfigStore.IS_LOG_QUERY_RESULT_EXCLUDE_METADATA(configs)) && ConfigStore.IS_LOG_QUERY_RESULT(configs) && log.isInfoEnabled()){
+            if((!system || !ConfigStore.IS_LOG_QUERY_RESULT_EXCLUDE_METADATA(configs)) && ConfigStore.IS_LOG_QUERY_RESULT(configs) && log.isInfoEnabled()) {
                 log.info("{}[查询结果]{}", random, LogUtil.table(set));
             }
             set.setDatalink(runtime.datasource());
@@ -2513,7 +2513,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
         Schema schema = query.getSchema();
         String pattern = query.getName();
         List<Run> runs = new ArrayList<>();
-        if(types == 1){
+        if(types == 1) {
             types = 32 + 64; //EDGE + VERTEX
         }
         List<Type> list = Table.types(types);
@@ -2527,7 +2527,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
             }else if(type == Table.TYPE.VERTEX) {
                 k = "TAGS";
             }
-            if(null != k){
+            if(null != k) {
                 builder.append(k);
                 runs.add(run);
             }else{
@@ -2598,7 +2598,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
         }
         for(DataRow row:set) {
             String name = row.getString("NAME");
-            if(index == 0){
+            if(index == 0) {
                 tables.add((T)new EdgeTable(name));
             }else{
                 tables.add((T)new VertexTable(name));
@@ -4017,7 +4017,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
     @Override
     public List<Run> buildQueryIndexesRun(DataRuntime runtime, boolean greedy,  Collection<? extends Table> tables) {
         List<Run> runs = new ArrayList<>();
-        for(Table table:tables){
+        for(Table table:tables) {
             Index query = new Index();
             query.setTable(table);;
             runs.addAll(buildQueryIndexesRun(runtime, greedy, query));

@@ -55,11 +55,11 @@ public class Keywords extends BaseBodyTag{
 			insert = ConfigTable.getBoolean("SEO_INSERT_KEYWORDS",insert); 
 			insert = ConfigTable.getBoolean("SEO_INSERT_KEYWORDS_"+request.getServerName(),insert); 
 			 
-			if(insert && WebUtil.isSpider(request)){
+			if(insert && WebUtil.isSpider(request)) {
 				List<String> keys = new ArrayList<>();
-				if(null != paramList){
-					for(Object item:paramList){
-						if(null != item){
+				if(null != paramList) {
+					for(Object item:paramList) {
+						if(null != item) {
 							keys.add(item.toString().trim()); 
 						} 
 					} 
@@ -68,7 +68,7 @@ public class Keywords extends BaseBodyTag{
 			} 
 			out = pageContext.getOut(); 
 			out.print(body); 
-		}catch(Exception e){
+		}catch(Exception e) {
 			e.printStackTrace(); 
 		}finally{
 			release(); 

@@ -140,7 +140,7 @@ public final class Perl5Matcher implements PatternMatcher {
     ch = mustString[0];
     // Find the offset of the first character of the must string
     while(current < endOffset) {
-      if(ch == input[current]){
+      if(ch == input[current]) {
 	saveCurrent = current;
 	count = 0;
 
@@ -394,7 +394,7 @@ public final class Perl5Matcher implements PatternMatcher {
 
 	  while(__currentOffset < endOffset) {
 	    if(ch == __input[__currentOffset]) {
-	      if(__tryExpression(__currentOffset)){
+	      if(__tryExpression(__currentOffset)) {
 		success = true;
 		break _mainLoop;
 	      }
@@ -409,7 +409,7 @@ public final class Perl5Matcher implements PatternMatcher {
 
 	  while((__currentOffset =
 		 __findFirst(__input, __currentOffset, endOffset, mustString))
-		< endOffset){
+		< endOffset) {
 	    if(__tryExpression(__currentOffset)) {
 	      success = true;
 	      break _mainLoop;
@@ -485,7 +485,7 @@ public final class Perl5Matcher implements PatternMatcher {
 
 	  while(__currentOffset < endOffset) {
 	    ch = __input[__currentOffset];
-	    if(tmp != OpCode._isWordCharacter(ch)){
+	    if(tmp != OpCode._isWordCharacter(ch)) {
 	      tmp = !tmp;
 	      if(__tryExpression(__currentOffset)) {
 		success = true;
@@ -648,10 +648,10 @@ public final class Perl5Matcher implements PatternMatcher {
   {
     boolean isANYOF = ( opcode == OpCode._ANYOFUN );
 
-    while( __program[offset] != OpCode._END ){
-      if( __program[offset] == OpCode._RANGE ){
+    while( __program[offset] != OpCode._END ) {
+      if( __program[offset] == OpCode._RANGE ) {
 	offset++;
-	if((code >= __program[offset]) && (code <= __program[offset+1])){
+	if((code >= __program[offset]) && (code <= __program[offset+1])) {
 	  return isANYOF;
 	} else {
 	  offset+=2;
@@ -762,7 +762,7 @@ public final class Perl5Matcher implements PatternMatcher {
       }
     }
 
-    if(__match(1)){
+    if(__match(1)) {
       __beginMatchOffsets[0] = offset;
       __endMatchOffsets[0]   = __inputOffset;
       return true;
@@ -817,7 +817,7 @@ public final class Perl5Matcher implements PatternMatcher {
     case OpCode._NANYOFUN:
       if(scan < eol) {
 	ch = __input[scan];
-	while(__matchUnicodeClass(ch, __program, operand, op)){
+	while(__matchUnicodeClass(ch, __program, operand, op)) {
 	  if(++scan < eol)
 	    ch = __input[scan];
 	  else
@@ -880,7 +880,7 @@ public final class Perl5Matcher implements PatternMatcher {
     scan     = offset;
     maxScan  = __program.length;
 
-    while(scan < maxScan /*&& scan > 0*/){
+    while(scan < maxScan /*&& scan > 0*/) {
       next = OpCode._getNext(__program, scan);
 
       switch(op = __program[scan]) {

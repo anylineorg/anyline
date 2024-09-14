@@ -30,7 +30,7 @@ public class ConfigListener implements ApplicationContextAware {
 
     @Override
     public void setApplicationContext(ApplicationContext ac) throws BeansException {
-        if(ac instanceof WebApplicationContext){
+        if(ac instanceof WebApplicationContext) {
             WebApplicationContext servlet = (WebApplicationContext)ac;
             ServletContext context = servlet.getServletContext();
             context.setAttribute(ConfigTable.EL_ATTRIBUTE_PREFIX, ConfigTable.getConfigs());

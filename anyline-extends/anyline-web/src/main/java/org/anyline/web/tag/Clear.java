@@ -31,10 +31,10 @@ public class Clear extends BaseBodyTag implements Cloneable{
 
 	 public int doEndTag() throws JspException {
 		 String src = BasicUtil.nvl(value,body,"").toString().trim();
-		 if(BasicUtil.isEmpty(src)){
+		 if(BasicUtil.isEmpty(src)) {
 			 return EVAL_BODY_INCLUDE;
 		 }
-		 if(BasicUtil.isNotEmpty(var)){
+		 if(BasicUtil.isNotEmpty(var)) {
 			 pageContext.getRequest().removeAttribute(var);
 		 }
 		try {
@@ -47,10 +47,10 @@ public class Clear extends BaseBodyTag implements Cloneable{
 					.replace("”", "")
 					.replace("“", "");
 			if(null != result) {
-				if(len >= 0 && len<result.length()){
+				if(len >= 0 && len<result.length()) {
 					result = result.substring(0, len);
 				}
-				if(BasicUtil.isNotEmpty(var)){
+				if(BasicUtil.isNotEmpty(var)) {
 					pageContext.getRequest().setAttribute(var, result);
 				}else {
 					JspWriter out = pageContext.getOut();

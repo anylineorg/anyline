@@ -33,10 +33,10 @@ public class Split extends BaseBodyTag{
         return EVAL_BODY_BUFFERED; 
     } 
 	 public int doEndTag() throws JspException {
-		 if(null != var){
+		 if(null != var) {
 			 pageContext.removeAttribute(var);
 		 }
-		if(BasicUtil.isEmpty(text)){
+		if(BasicUtil.isEmpty(text)) {
 			text = body;
 		}
 		 String[] result = null;
@@ -50,10 +50,10 @@ public class Split extends BaseBodyTag{
 				pageContext.getSession().setAttribute(var, result);
 			}  else if ("request".equals(scope)) {
 				pageContext.getRequest().setAttribute(var, result);
-			}else if ("page".equals(scope)){
+			}else if ("page".equals(scope)) {
 				pageContext.setAttribute(var, result);
 			}
-		}catch(Exception e){
+		}catch(Exception e) {
 
 		}finally{
 			release();
@@ -61,7 +61,7 @@ public class Split extends BaseBodyTag{
         return EVAL_PAGE;    
 	} 
 	@Override 
-    public void release(){
+    public void release() {
 		super.release(); 
 		regex = null;
 		var = null;

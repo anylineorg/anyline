@@ -66,7 +66,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		return runtime;
 	}
-	public DriverAdapter adapter(){
+	public DriverAdapter adapter() {
 		return runtime().getAdapter();
 	}
 
@@ -700,7 +700,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @return 影响行数
 	 */
 	@Override
-	public long insert(DataRuntime runtime, String random, Table dest, RunPrepare prepare,  ConfigStore configs, Object obj, String ... conditions){
+	public long insert(DataRuntime runtime, String random, Table dest, RunPrepare prepare,  ConfigStore configs, Object obj, String ... conditions) {
 		if(null == runtime) {
 			runtime = runtime();
 		}

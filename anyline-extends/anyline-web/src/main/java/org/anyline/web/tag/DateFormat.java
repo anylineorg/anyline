@@ -49,25 +49,25 @@ public class DateFormat extends BaseBodyTag implements Cloneable{
  
 	public int doEndTag() throws JspException {
 		try{
-			if(BasicUtil.isNotEmpty(var)){
+			if(BasicUtil.isNotEmpty(var)) {
 				pageContext.getRequest().removeAttribute(var);
 			}
 			Date date = null;
 			String result = ""; 
-			if(null == format){
+			if(null == format) {
 				format = "yyyy-MM-dd"; 
 			} 
-			if(null == value){
+			if(null == value) {
 				value = body; 
 			}
 			Locale local = Locale.CHINA;
-			if(BasicUtil.isNotEmpty(lang)){
+			if(BasicUtil.isNotEmpty(lang)) {
 				local = new Locale(lang);
 			}
 			date = DateUtil.parse(value);
-			if(null == date){
+			if(null == date) {
 				if(BasicUtil.isNotEmpty(nvl)) {
-					if ("true".equalsIgnoreCase(nvl.toString()) || (nvl instanceof Boolean && (Boolean)nvl)){
+					if ("true".equalsIgnoreCase(nvl.toString()) || (nvl instanceof Boolean && (Boolean)nvl)) {
 						date = new Date();
 					}
 				}
@@ -75,34 +75,34 @@ public class DateFormat extends BaseBodyTag implements Cloneable{
 
 			if(null != date) {
 				if (add != 0) {
-					if("y".equals(part)){
+					if("y".equals(part)) {
 						date = DateUtil.addYear(date,add);
-					}else if("d".equals(part)){
+					}else if("d".equals(part)) {
 						date = DateUtil.addDay(date, add);
-					}else if("M".equals(part)){
+					}else if("M".equals(part)) {
 						date = DateUtil.addMonth(date,add);
-					}else if("h".equalsIgnoreCase(part) || "hh".equals(part)){
+					}else if("h".equalsIgnoreCase(part) || "hh".equals(part)) {
 						date = DateUtil.addHour(date,add);
 					}
 				}
 			}
-			if(null != date){
+			if(null != date) {
 				result = DateUtil.format(local, ZoneId.systemDefault(),date,format);
 			}
-			if(BasicUtil.isEmpty(result)){
-				if(null !=nvl && !"false".equalsIgnoreCase(nvl.toString()) && !(nvl instanceof Boolean)){
+			if(BasicUtil.isEmpty(result)) {
+				if(null !=nvl && !"false".equalsIgnoreCase(nvl.toString()) && !(nvl instanceof Boolean)) {
 					result = nvl.toString();
 				}
 			}
 			if(null != result) {
-				if(BasicUtil.isNotEmpty(var)){
+				if(BasicUtil.isNotEmpty(var)) {
 					pageContext.getRequest().setAttribute(var, result);
 				}else {
 					JspWriter out = pageContext.getOut();
 					out.print(result);
 				}
 			}
-		}catch(Exception e){
+		}catch(Exception e) {
 			e.printStackTrace(); 
 		}finally{
 			release(); 

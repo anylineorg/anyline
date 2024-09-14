@@ -27,7 +27,7 @@ public class Decode extends BaseBodyTag {
  
 	public int doEndTag() {
 		String src = BasicUtil.nvl(value,body,"").toString().trim(); 
-		if(BasicUtil.isEmpty(src)){
+		if(BasicUtil.isEmpty(src)) {
 			return EVAL_BODY_INCLUDE; 
 		} 
  

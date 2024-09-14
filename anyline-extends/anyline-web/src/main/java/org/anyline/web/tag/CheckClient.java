@@ -36,17 +36,17 @@ public class CheckClient extends BaseBodyTag implements Cloneable{
 	private boolean skip = false;//如果test=false时是否跳过body体(不再执行boyd中的子标签) skip=false时即使test=false标签体也会执行
 	private boolean test = false;
 	private boolean truncate = false; // 如果test=false;跳整个页面
-	public int doStartTag(){
+	public int doStartTag() {
 		type = (type+"").toLowerCase();
 		HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
 		String curType = WebUtil.clientType(request).toLowerCase();
-		if(type.contains(curType)){
+		if(type.contains(curType)) {
 			test = true;
 		}
-		if(truncate && !test){
+		if(truncate && !test) {
 			return SKIP_PAGE;
 		}
-		if(skip && !test){
+		if(skip && !test) {
 			return SKIP_BODY;
 		}else {
 			return EVAL_BODY_BUFFERED;
@@ -54,14 +54,14 @@ public class CheckClient extends BaseBodyTag implements Cloneable{
 	}
 	public int doEndTag() throws JspException {
 		try{
-			if(test){
+			if(test) {
 				JspWriter out = pageContext.getOut();
 				out.print(BasicUtil.nvl(value,body,""));
-			}else if(null != elseValue){
+			}else if(null != elseValue) {
 				JspWriter out = pageContext.getOut();
 				out.print(elseValue);
 			}
-		}catch(Exception e){
+		}catch(Exception e) {
 			e.printStackTrace();
 		}finally{
 			release();

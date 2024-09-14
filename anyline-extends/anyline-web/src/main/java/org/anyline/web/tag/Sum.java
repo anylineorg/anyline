@@ -47,7 +47,7 @@ public class Sum extends BaseBodyTag {
 	public int doEndTag() throws JspException {
 		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest(); 
 		String html = "";
-		if(null != var){
+		if(null != var) {
 			pageContext.removeAttribute(var);
 		}
 		try {
@@ -66,65 +66,65 @@ public class Sum extends BaseBodyTag {
 						} 
 					} 
 				} 
-				if(!(data instanceof Collection)){
+				if(!(data instanceof Collection)) {
 					return EVAL_PAGE;
 				}
 				Collection items = (Collection) data;
-				if(BasicUtil.isNotEmpty(selector) && data instanceof DataSet){
+				if(BasicUtil.isNotEmpty(selector) && data instanceof DataSet) {
 					items = BeanUtil.select(items,selector.split(","));
 				}
 
 				BigDecimal sum = new BigDecimal(0);
-				if (null != items){
+				if (null != items) {
 					for (Object item : items) {
-						if(null == item){
+						if(null == item) {
 							continue;
 						}
 						Object val = null;
-						if(item instanceof Number){
+						if(item instanceof Number) {
 							val = item;
 						}else{
 							val = BeanUtil.getFieldValue(item, property);
 						}
-						if(null != val){
+						if(null != val) {
 							sum = sum.add(new BigDecimal(val.toString()));
 						}
 					}
 
-					if(BasicUtil.isNotEmpty(min)){
+					if(BasicUtil.isNotEmpty(min)) {
 						BigDecimal minNum = new BigDecimal(min.toString());
-						if(minNum.compareTo(sum) > 0){
+						if(minNum.compareTo(sum) > 0) {
 							log.warn("[number sum][value:{}][小于最小值:{}]", sum,min);
 							sum = minNum;
 						}
 					}
-					if(BasicUtil.isNotEmpty(max)){
+					if(BasicUtil.isNotEmpty(max)) {
 						BigDecimal maxNum = new BigDecimal(max.toString());
-						if(maxNum.compareTo(sum) < 0){
+						if(maxNum.compareTo(sum) < 0) {
 							log.warn("[number sum][value:{}][超过最大值:{}]",sum, max);
 							sum = maxNum;
 						}
 					}
-					if(null != scale){
-						if(null != round){
+					if(null != scale) {
+						if(null != round) {
 							sum = sum.setScale(scale, round);
 						}else {
 							sum = sum.setScale(scale);
 						}
 					}
-					if(BasicUtil.isNotEmpty(format)){
+					if(BasicUtil.isNotEmpty(format)) {
 						html = NumberUtil.format(sum,format);
 					}else{
 						html = sum.toString();
 					}
 
-					if(BasicUtil.isNotEmpty(hide)){
+					if(BasicUtil.isNotEmpty(hide)) {
 						out.print("<span class='"+hide+"' style='display:none;'>"+sum+"</span>");
 					}
 				}
 
 			}
-			if(BasicUtil.isEmpty(html) && BasicUtil.isNotEmpty(nvl)){
+			if(BasicUtil.isEmpty(html) && BasicUtil.isNotEmpty(nvl)) {
 				html = nvl;
 			}
 			if(null == var) {

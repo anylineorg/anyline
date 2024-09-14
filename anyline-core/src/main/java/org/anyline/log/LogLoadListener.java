@@ -11,7 +11,7 @@ public class LogLoadListener  implements LoadListener {
     @Override
     public void start() {
         Map<String, LogFactory> factors = ConfigTable.environment().getBeans(LogFactory.class);
-        for(LogFactory item:factors.values()){
+        for(LogFactory item:factors.values()) {
             LogProxy.addFactory(item);
         }
     }

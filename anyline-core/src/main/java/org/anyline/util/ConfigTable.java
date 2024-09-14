@@ -292,7 +292,7 @@ public class ConfigTable {
 	 */
 	public static String getProjectProtocol() {
 		URL url = ConfigTable.class.getResource("/");
-		if(null != url){
+		if(null != url) {
 			return url.getProtocol();
 		}
 		return null;
@@ -307,7 +307,7 @@ public class ConfigTable {
 		// path=file:/D:/develop/git/sso/bin/classes/										(windows IDE)
 		// path=file:/usr/local/web/sso/sso-0.0.2.jar!/BOOT-INF/classes!/		(linux jar)
 		// path=/usr/local/web/sso/WEB-INF/classes/									(linux tomcat)
-		if(null == path){
+		if(null == path) {
 			return null;
 		}
 		Properties props=System.getProperties();
@@ -334,16 +334,16 @@ public class ConfigTable {
 		String path =  null;
 		try{
 			URL url = ConfigTable.class.getResource("/"); //项目外的lib目录获取不到url
-			if(null != url){
+			if(null != url) {
 				path = url.getPath();
 			}
-			if(null == path){
+			if(null == path) {
 				File tmp = new File(".").getAbsoluteFile();
-				if(null != tmp){
+				if(null != tmp) {
 					path = tmp.getParent();
 				}
 			}
-			if(null == path){
+			if(null == path) {
 				path = System.getProperty("user.dir");
 			}
 		}catch(Exception e) {
@@ -382,7 +382,7 @@ public class ConfigTable {
 				webRoot = path.substring(0, path.indexOf("target")-1);
 			}*/
 		}
-		if(null == path){
+		if(null == path) {
 			path = root;
 		}
 		if(path.contains("classes")) {
@@ -1035,7 +1035,7 @@ public class ConfigTable {
 	public boolean IS_AUTO_CHECK_KEYWORD() {
 		return IS_AUTO_CHECK_KEYWORD;
 	}
-	public boolean IS_AUTO_CHECK_EL_VALUE(){return IS_AUTO_CHECK_EL_VALUE;}
+	public boolean IS_AUTO_CHECK_EL_VALUE() {return IS_AUTO_CHECK_EL_VALUE;}
 
 	public boolean  IS_SQL_DELIMITER_PLACEHOLDER_OPEN() {
 		return IS_SQL_DELIMITER_PLACEHOLDER_OPEN;

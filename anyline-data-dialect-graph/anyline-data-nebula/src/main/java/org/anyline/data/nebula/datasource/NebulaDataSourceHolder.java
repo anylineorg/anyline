@@ -40,7 +40,7 @@ public class NebulaDataSourceHolder extends AbstractDataSourceHolder {
 		return instance;
 	}
 
-	public NebulaDataSourceHolder(){
+	public NebulaDataSourceHolder() {
 		DataSourceHolder.register(SessionPool.class, this);
 	}
 
@@ -110,15 +110,15 @@ public class NebulaDataSourceHolder extends AbstractDataSourceHolder {
 			List<HostAddress> hosts = new ArrayList<>();
 			String[] urls = url.split(",");
 			String space = value(prefix, params, "space", String.class, null);
-			for(String item:urls){
+			for(String item:urls) {
 				String[] splits = item.split(":");
 				String ip = splits[0];
 				//    nebula://localhost:9696,localhost:9696/sso
-				if(ip.contains("nebula://")){
+				if(ip.contains("nebula://")) {
 					ip = ip.replace("nebula://", "");
 				}
 				String point_ = splits[1];
-				if(point_.contains("/")){
+				if(point_.contains("/")) {
 					String[] tmps = point_.split("/");
 					point_ = tmps[0];
 					space = tmps[1];

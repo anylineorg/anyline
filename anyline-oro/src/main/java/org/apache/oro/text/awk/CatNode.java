@@ -87,7 +87,7 @@ final class CatNode extends SyntaxNode {
   }
 
   BitSet _firstPosition() {
-    if(_left._nullable()){
+    if(_left._nullable()) {
       BitSet ls, rs, bs;
 
       ls = _left._firstPosition();

@@ -32,38 +32,38 @@ public class InfluxRuntime extends AbstractRuntime implements DataRuntime {
 
     public InfluxRuntime() {
     }
-    public String bucket(){
+    public String bucket() {
         return bucket;
     }
-    public String org(){
+    public String org() {
         return org;
     }
-    public String token(){
+    public String token() {
         return token;
     }
-    public String user(){
+    public String user() {
         return user;
     }
-    public String password(){
+    public String password() {
         return password;
     }
-    public InfluxRuntime token(String token){
+    public InfluxRuntime token(String token) {
         this.token = token;
         return this;
     }
-    public InfluxRuntime org(String org){
+    public InfluxRuntime org(String org) {
         this.org = org;
         return this;
     }
-    public InfluxRuntime bucket(String bucket){
+    public InfluxRuntime bucket(String bucket) {
         this.bucket = bucket;
         return this;
     }
-    public InfluxRuntime password(String password){
+    public InfluxRuntime password(String password) {
         this.password = password;
         return this;
     }
-    public InfluxRuntime user(String user){
+    public InfluxRuntime user(String user) {
         this.user = user;
         return this;
     }

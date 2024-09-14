@@ -118,16 +118,16 @@ public class NumberUtil {
 	 * @param list list
 	 * @return min
 	 */
-	public static BigDecimal min(Collection list){
+	public static BigDecimal min(Collection list) {
 		BigDecimal min = null;
-		for(Object item:list){
+		for(Object item:list) {
 			BigDecimal num = null;
-			if(item instanceof BigDecimal){
+			if(item instanceof BigDecimal) {
 				num = (BigDecimal) item;
 			}else{
 				try{
 					num = new BigDecimal(item.toString());
-				}catch (Exception ignore){}
+				}catch (Exception ignore) {}
 			}
 			if(null != num) {
 				if (min == null) {
@@ -145,16 +145,16 @@ public class NumberUtil {
 	 * @param list list
 	 * @return max
 	 */
-	public static BigDecimal max(Collection list){
+	public static BigDecimal max(Collection list) {
 		BigDecimal max = null;
-		for(Object item:list){
+		for(Object item:list) {
 			BigDecimal num = null;
-			if(item instanceof BigDecimal){
+			if(item instanceof BigDecimal) {
 				num = (BigDecimal) item;
 			}else{
 				try{
 					num = new BigDecimal(item.toString());
-				}catch (Exception ignore){}
+				}catch (Exception ignore) {}
 			}
 			if(null != num) {
 				if (max == null) {

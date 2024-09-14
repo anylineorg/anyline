@@ -113,7 +113,7 @@ public class Column extends TableAffiliation<Column> implements Serializable {
     }
     public static class Property{
         String type;
-        public Property(String type){
+        public Property(String type) {
             this.type = type;
         }
         public String getType() {
@@ -492,7 +492,7 @@ public class Column extends TableAffiliation<Column> implements Serializable {
         this.termVector = termVector;
         return this;
     }
-    public Column addProperty(String name, String type){
+    public Column addProperty(String name, String type) {
         properties.put(name, new Property(type));
         return this;
     }

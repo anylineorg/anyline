@@ -20,7 +20,7 @@ import org.anyline.data.prepare.RunPrepare;
 
 public class VirtualTablePrepare extends DefaultTablePrepare{
     protected RunPrepare prepare;
-    public VirtualTablePrepare(RunPrepare prepare){
+    public VirtualTablePrepare(RunPrepare prepare) {
         this.prepare = prepare;
     }
 

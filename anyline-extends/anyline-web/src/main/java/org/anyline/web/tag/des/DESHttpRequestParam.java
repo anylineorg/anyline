@@ -34,26 +34,26 @@ public class DESHttpRequestParam extends BaseBodyTag implements Cloneable{
 	public int doEndTag() throws JspException {
 		try{
 			value = BasicUtil.nvl(value,body,"").toString().trim(); 
-			if(null != value && !"".equals(value)){
+			if(null != value && !"".equals(value)) {
 				String result = ""; 
 				String url = ""; 
 				String split = ""; 
-				if(value.contains("?")){
+				if(value.contains("?")) {
 					url = value.substring(0, value.indexOf("?")); 
 					value = value.substring(value.indexOf("?")+1); 
 					split = "?"; 
 				} 
-				if(value.startsWith("&")){
+				if(value.startsWith("&")) {
 					split = "&"; 
 				} 
 				String[] params = value.split("&"); 
 				int size = params.length; 
-				for(int i=0; i<size; i++){
+				for(int i=0; i<size; i++) {
 					String param = params[i]; 
 					String[] keys = param.split("="); 
-					if(keys.length == 2){
+					if(keys.length == 2) {
 						result += DESUtil.encryptParamKey(keys[0]) + "=" + DESUtil.encryptParamValue(keys[1]); 
-						if(i<size-1){
+						if(i<size-1) {
 							result += "&"; 
 						} 
 					} 
@@ -62,7 +62,7 @@ public class DESHttpRequestParam extends BaseBodyTag implements Cloneable{
 				JspWriter out = pageContext.getOut(); 
 				out.print(result); 
 			} 
-		}catch(Exception e){
+		}catch(Exception e) {
 			e.printStackTrace(); 
 		}finally{
 			release(); 

@@ -5,24 +5,36 @@ import java.util.List;
 
 public class Group implements Log {
     private List<Log> logs = new ArrayList<>();
-    public Group(){
+    private String name;
+    private Class<?> clazz;
+
+    public Group() {
     }
-    public Group(Log log){
+    public Group(Log log) {
         logs.add(log);
     }
-    public Group add(Log log){
+    public Group add(Log log) {
         this.logs.add(log);
         return this;
     }
     @Override
     public String getName() {
-        return null;
+        return name;
+    }
+    public Class<?> getClazz() {
+        return clazz;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+    public void setClazz(Class<?> clazz) {
+        this.clazz = clazz;
     }
 
     @Override
     public boolean isTraceEnabled() {
         boolean enable = false;
-        for(Log log:logs){
+        for(Log log:logs) {
             enable = enable || log.isTraceEnabled();
         }
         return enable;
@@ -30,35 +42,35 @@ public class Group implements Log {
 
     @Override
     public void trace(String msg) {
-        for(Log log:logs){
+        for(Log log:logs) {
             log.trace(msg);
         }
     }
 
     @Override
     public void trace(String format, Object arg) {
-        for(Log log:logs){
+        for(Log log:logs) {
             log.trace(format, arg);
         }
     }
 
     @Override
     public void trace(String format, Object arg1, Object arg2) {
-        for(Log log:logs){
+        for(Log log:logs) {
             log.trace(format, arg1, arg2);
         }
     }
 
     @Override
     public void trace(String format, Object... arguments) {
-        for(Log log:logs){
+        for(Log log:logs) {
             log.trace(format, arguments);
         }
     }
 
     @Override
     public void trace(String msg, Throwable t) {
-        for(Log log:logs){
+        for(Log log:logs) {
             log.trace(msg, t);
         }
     }
@@ -66,7 +78,7 @@ public class Group implements Log {
     @Override
     public boolean isDebugEnabled() {
         boolean enable = false;
-        for(Log log:logs){
+        for(Log log:logs) {
             enable = enable || log.isDebugEnabled();
         }
         return enable;
@@ -74,35 +86,35 @@ public class Group implements Log {
 
     @Override
     public void debug(String msg) {
-        for(Log log:logs){
+        for(Log log:logs) {
             log.debug(msg);
         }
     }
 
     @Override
     public void debug(String format, Object arg) {
-        for(Log log:logs){
+        for(Log log:logs) {
             log.debug(format, arg);
         }
     }
 
     @Override
     public void debug(String format, Object arg1, Object arg2) {
-        for(Log log:logs){
+        for(Log log:logs) {
             log.debug(format, arg1, arg2);
         }
     }
 
     @Override
     public void debug(String format, Object... arguments) {
-        for(Log log:logs){
+        for(Log log:logs) {
             log.debug(format, arguments);
         }
     }
 
     @Override
     public void debug(String msg, Throwable t) {
-        for(Log log:logs){
+        for(Log log:logs) {
             log.debug(msg, t);
         }
     }
@@ -110,7 +122,7 @@ public class Group implements Log {
     @Override
     public boolean isInfoEnabled() {
         boolean enable = false;
-        for(Log log:logs){
+        for(Log log:logs) {
             enable = enable || log.isInfoEnabled();
         }
         return enable;
@@ -118,35 +130,35 @@ public class Group implements Log {
 
     @Override
     public void info(String msg) {
-        for(Log log:logs){
+        for(Log log:logs) {
             log.info(msg);
         }
     }
 
     @Override
     public void info(String format, Object arg) {
-        for(Log log:logs){
+        for(Log log:logs) {
             log.info(format, arg);
         }
     }
 
     @Override
     public void info(String format, Object arg1, Object arg2) {
-        for(Log log:logs){
+        for(Log log:logs) {
             log.info(format, arg1, arg2);
         }
     }
 
     @Override
     public void info(String format, Object... arguments) {
-        for(Log log:logs){
+        for(Log log:logs) {
             log.info(format, arguments);
         }
     }
 
     @Override
     public void info(String msg, Throwable t) {
-        for(Log log:logs){
+        for(Log log:logs) {
             log.info(msg, t);
         }
     }
@@ -154,7 +166,7 @@ public class Group implements Log {
     @Override
     public boolean isWarnEnabled() {
         boolean enable = false;
-        for(Log log:logs){
+        for(Log log:logs) {
             enable = enable || log.isWarnEnabled();
         }
         return enable;
@@ -162,35 +174,35 @@ public class Group implements Log {
 
     @Override
     public void warn(String msg) {
-        for(Log log:logs){
+        for(Log log:logs) {
             log.warn(msg);
         }
     }
 
     @Override
     public void warn(String format, Object arg) {
-        for(Log log:logs){
+        for(Log log:logs) {
             log.warn(format, arg);
         }
     }
 
     @Override
     public void warn(String format, Object arg1, Object arg2) {
-        for(Log log:logs){
+        for(Log log:logs) {
             log.warn(format, arg1, arg2);
         }
     }
 
     @Override
     public void warn(String format, Object... arguments) {
-        for(Log log:logs){
+        for(Log log:logs) {
             log.warn(format, arguments);
         }
     }
 
     @Override
     public void warn(String msg, Throwable t) {
-        for(Log log:logs){
+        for(Log log:logs) {
             log.warn(msg, t);
         }
     }
@@ -198,7 +210,7 @@ public class Group implements Log {
     @Override
     public boolean isErrorEnabled() {
         boolean enable = false;
-        for(Log log:logs){
+        for(Log log:logs) {
             enable = enable || log.isErrorEnabled();
         }
         return enable;
@@ -206,35 +218,35 @@ public class Group implements Log {
 
     @Override
     public void error(String msg) {
-        for(Log log:logs){
+        for(Log log:logs) {
             log.error(msg);
         }
     }
 
     @Override
     public void error(String format, Object arg) {
-        for(Log log:logs){
+        for(Log log:logs) {
             log.error(format, arg);
         }
     }
 
     @Override
     public void error(String format, Object arg1, Object arg2) {
-        for(Log log:logs){
+        for(Log log:logs) {
             log.error(format, arg1, arg2);
         }
     }
 
     @Override
     public void error(String format, Object... arguments) {
-        for(Log log:logs){
+        for(Log log:logs) {
             log.error(format, arguments);
         }
     }
 
     @Override
     public void error(String msg, Throwable t) {
-        for(Log log:logs){
+        for(Log log:logs) {
             log.error(msg, t);
         }
     }

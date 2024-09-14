@@ -366,12 +366,12 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
         if(BasicUtil.isEmpty(dest)) {
             throw new CommandException("未指定表");
         }
-        if(null == configs){
+        if(null == configs) {
             configs = new DefaultConfigStore();
         }
         Boolean placeholder = configs.getPlaceholder();
         Boolean unicode = null;
-        if(null == placeholder){
+        if(null == placeholder) {
             placeholder = true;
         }
 
@@ -415,10 +415,10 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
         }else{
             replaceEmptyNull = ConfigStore.IS_REPLACE_EMPTY_NULL(configs);
         }
-        if(null == unicode){
+        if(null == unicode) {
             unicode = configs.getUnicode();
         }
-        if(null == unicode){
+        if(null == unicode) {
             unicode = false;
         }
         String head = insertHead(configs);
@@ -1210,7 +1210,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
         // NOT %A% 150
         // NOT A%  151
         // NOT %A  152
-        if(compare == Compare.LIKE_SIMPLE){
+        if(compare == Compare.LIKE_SIMPLE) {
             builder.append(" LIKE ?");
         }else if(code == 50) {
             builder.append(" LIKE ").append(concat(runtime, "'%'","?","'%'"));
@@ -3778,7 +3778,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
      * @return PrimaryKey
      */
     @Override
-    public PrimaryKey primary(DataRuntime runtime, String random, boolean greedy, PrimaryKey query){
+    public PrimaryKey primary(DataRuntime runtime, String random, boolean greedy, PrimaryKey query) {
         return super.primary(runtime, random, greedy, query);
     }
 

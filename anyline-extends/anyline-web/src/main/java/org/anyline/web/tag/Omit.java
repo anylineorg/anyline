@@ -33,7 +33,7 @@ public class Omit extends BaseBodyTag {
 	 
 	public int doEndTag() {
 		String src = BasicUtil.nvl(value,body,"").toString().trim(); 
-		if(BasicUtil.isEmpty(src)){
+		if(BasicUtil.isEmpty(src)) {
 			return EVAL_BODY_INCLUDE; 
 		} 
  
@@ -43,41 +43,41 @@ public class Omit extends BaseBodyTag {
 
 			writer = pageContext.getOut();
 			int len = src.length();
-			if(null == max || max < 0 || max>len){
+			if(null == max || max < 0 || max>len) {
 				max = len;
 			}
 
-			if(null == left || left<0){
+			if(null == left || left<0) {
 				left = 0;
 			}
-			if(left > len){
+			if(left > len) {
 				left = len;
 			}
-			if(null == left || left<0){
+			if(null == left || left<0) {
 				left = 0;
 			}
-			if(null == right || right<0){
+			if(null == right || right<0) {
 				right = 0;
 			}
 
-			if(null == min ){
+			if(null == min ) {
 				min = 0;
 			}
-			if(min < left+right){
+			if(min < left+right) {
 				min = left+right+1;
 			}
 
 			int fill = max - left - right;
-			if(fill < 0){
+			if(fill < 0) {
 				fill = 0;
 			}
-			if(fill + left + right < min){
+			if(fill + left + right < min) {
 				fill = min - left - right;
 			}
-			if(left > max){
+			if(left > max) {
 				left = max;
 			}
-			if(right > max - left){
+			if(right > max - left) {
 				right = max - left;
 			}
 			String l = src.substring(0,left);

@@ -439,11 +439,11 @@ public class MSSQLAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
         return super.buildUpdateRun(runtime, prepare, data, configs, conditions);
     }
     @Override
-    public void fillUpdateContent(DataRuntime runtime, TableRun run, StringBuilder builder, DataRow data, ConfigStore configs){
+    public void fillUpdateContent(DataRuntime runtime, TableRun run, StringBuilder builder, DataRow data, ConfigStore configs) {
         TablePrepare prepare = (TablePrepare)run.getPrepare();
         builder.append("UPDATE ");
         String alias = prepare.getAlias();
-        if(BasicUtil.isNotEmpty(alias)){
+        if(BasicUtil.isNotEmpty(alias)) {
             builder.append(tableAliasGuidd());
             delimiter(builder, alias);
         }else{
@@ -452,14 +452,14 @@ public class MSSQLAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
         builder.append(" SET").append(BR);
         List<String> keys = data.keys();
         boolean first = true;
-        for(String key:keys){
-            if(!first){
+        for(String key:keys) {
+            if(!first) {
                 builder.append(", ");
             }
             first = false;
             builder.append(key).append(" = ");
             Object value = data.get(key);
-            if(value instanceof VariableValue){
+            if(value instanceof VariableValue) {
                 VariableValue var = (VariableValue)value;
                 delimiter(builder, var.value());
             }else{
@@ -471,7 +471,7 @@ public class MSSQLAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
         }
         builder.append(BR).append("FROM ");
         name(runtime, builder, prepare.getTable());
-        if(BasicUtil.isNotEmpty(alias)){
+        if(BasicUtil.isNotEmpty(alias)) {
             builder.append(tableAliasGuidd());
             delimiter(builder, alias);
         }
@@ -5332,7 +5332,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         String typeName = meta.getTypeName();
         if(null != typeName && typeName.toLowerCase().contains("char")) {
             String collate = meta.getCollate();
-            if(null == collate){
+            if(null == collate) {
                 collate = meta.getCharset();
             }
             if(BasicUtil.isNotEmpty(collate)) {

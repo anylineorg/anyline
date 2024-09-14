@@ -36,13 +36,13 @@ public class TemplateView extends JstlView {
 	private String template;
 	private String content;
 
-	public TemplateView(){
+	public TemplateView() {
 		super();
 	}
-	public TemplateView(String name){
+	public TemplateView(String name) {
 		super(name);
 	}
-	public TemplateView(String content, String template){
+	public TemplateView(String content, String template) {
 		super(content);
 		this.content = content;
 		this.template = template;
@@ -78,25 +78,25 @@ public class TemplateView extends JstlView {
 		
 
 		String template = null;
-		if(null != model){
+		if(null != model) {
 			// 通过ModelAndView.add(TEMPLATE_NAME,"default");形式设置模板
 			template = (String)model.get(ANYLINE_TEMPLATE_NAME);
 		}
-		if(null == template){
+		if(null == template) {
 			// 通过 new TemplateView(url,template);设置模板
 			template = getTemplate();
 		}
-		if(null != template){
+		if(null != template) {
 			String content_url = getContent();//模板文件中引用的实际内容路径
-			if(null == content_url || content_url.trim().equals("")){
+			if(null == content_url || content_url.trim().equals("")) {
 				content_url = getUrl();
 			}
-			if(null == content_url || content_url.trim().equals("")){
+			if(null == content_url || content_url.trim().equals("")) {
 				content_url = getBeanName();
 			}
 			String template_url = "";
 			String prefix = content_url.substring(0, content_url.indexOf(getBeanName()));
-			if(!template.contains(prefix) && !template.startsWith("/")){
+			if(!template.contains(prefix) && !template.startsWith("/")) {
 				template_url = prefix + template;
 			}else{
 				template_url = template;
@@ -104,7 +104,7 @@ public class TemplateView extends JstlView {
 			setUrl(template_url);
 			setContent(content_url);
 			File file = new File(ConfigTable.getWebRoot(), content_url);
-			if(!file.exists()){
+			if(!file.exists()) {
 				// 内容文件未指定  或 不存在 
 				log.error("[文件不存在]:[url:{}]", content_url);
 				content_url = ConfigTable.getString("DEFAULT_CONTENT_PAGE_PATH");

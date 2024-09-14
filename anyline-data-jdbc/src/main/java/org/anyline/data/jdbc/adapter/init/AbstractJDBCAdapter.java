@@ -191,9 +191,9 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
     @Override
     public long insert(DataRuntime runtime, String random, Table dest, RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions) {
         String name = dest.getName();
-        if(name.contains("(")){
+        if(name.contains("(")) {
             String[] cols = name.substring(name.indexOf("(")+1, name.lastIndexOf(")")).split(",");
-            for(String col:cols){
+            for(String col:cols) {
                 dest.addColumn(new Column(col));
             }
             dest.setName(name.substring(0, name.indexOf("(")));
@@ -257,7 +257,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
      * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
      */
     @Override
-    public Run buildInsertRun(DataRuntime runtime, Table dest, RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions){
+    public Run buildInsertRun(DataRuntime runtime, Table dest, RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions) {
         Run run = new TableRun(runtime, dest);
         StringBuilder builder = run.getBuilder();
         if(BasicUtil.isEmpty(dest)) {
@@ -268,11 +268,11 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
         builder.append("INSERT INTO ");
         name(runtime, builder, dest);
         LinkedHashMap<String, Column> cols = dest.getColumns();
-        if(null != cols && !cols.isEmpty()){
+        if(null != cols && !cols.isEmpty()) {
             builder.append("(");
             boolean first = true;
-            for(Column col:cols.values()){
-                if(!first){
+            for(Column col:cols.values()) {
+                if(!first) {
                     builder.append(", ");
                 }
                 first = false;
@@ -331,7 +331,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
         String head = insertHead(configs);
         builder.append(head);
         name(runtime, builder, dest);//.append(parseTable(dest));
-        if(dest instanceof PartitionTable){
+        if(dest instanceof PartitionTable) {
             PartitionTable pt = (PartitionTable)dest;
             fillInsertCreateTemplate(runtime, run, pt, configs);
         }
@@ -396,7 +396,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
         String head = insertHead(configs);
         builder.append(head);//
         name(runtime, builder, dest);// .append(parseTable(dest));
-        if(dest instanceof PartitionTable){
+        if(dest instanceof PartitionTable) {
             PartitionTable pt = (PartitionTable)dest;
             fillInsertCreateTemplate(runtime, run, pt, configs);
         }
@@ -508,13 +508,13 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
         if(BasicUtil.isEmpty(dest)) {
             throw new CommandException("未指定表");
         }
-        if(null == configs){
+        if(null == configs) {
             configs = new DefaultConfigStore();
         }
         checkName(runtime, null, dest);
         PrimaryGenerator generator = checkPrimaryGenerator(type(), dest.getName());
         Boolean placeholder = configs.getPlaceholder();
-        if(null == placeholder){
+        if(null == placeholder) {
             placeholder = true;
         }
         Boolean unicode = null;
@@ -542,7 +542,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
                 //createPrimaryValue(obj, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, null);
             }
         }
-        if(null == unicode){
+        if(null == unicode) {
             unicode = configs.getUnicode();
         }
         run.setOriginType(type);
@@ -605,7 +605,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
                     }
                     addRunValue(runtime, run, Compare.EQUAL, column, value);
                 }else{
-                    if(null == unicode){
+                    if(null == unicode) {
                         unicode = false;
                     }
                     //format(valuesBuilder, value);
@@ -1162,7 +1162,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
         // NOT %A% 150
         // NOT A%  151
         // NOT %A  152
-        if(null == value){
+        if(null == value) {
             value = "";
         }
         if(placeholder) {
@@ -3648,7 +3648,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         //TODO CHARACTER VARYING
         if(null != type && type.contains(" ")) {
            String tmp = row.getString("UDT_NAME","DATA_TYPE","TYPENAME","DATA_TYPE_NAME");
-           if(null != tmp){
+           if(null != tmp) {
                type = tmp;
            }
         }
@@ -3685,7 +3685,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         meta.setObjectId(getLong(row, refer, Column.FIELD_OBJECT_ID, null));
         //主键 mysql已合并
         Boolean primary = matchBoolean(row, refer, Column.FIELD_PRIMARY_CHECK, Column.FIELD_PRIMARY_CHECK_VALUE);
-        if(null != primary && primary){
+        if(null != primary && primary) {
             meta.setPrimary(1);
         }
         if(row.getBoolean("PK", Boolean.FALSE)) {
@@ -8520,7 +8520,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 				log.info("{}[action:select][执行耗时:{}]", random, DateUtil.format(times));
 				log.info("{}[action:select][封装耗时:{}][封装行数:{}]", random, DateUtil.format(configs.getLastPackageTime()), set.size());
 			}
-            if((!system || !ConfigStore.IS_LOG_QUERY_RESULT_EXCLUDE_METADATA(configs)) && ConfigStore.IS_LOG_QUERY_RESULT(configs) && log.isInfoEnabled()){
+            if((!system || !ConfigStore.IS_LOG_QUERY_RESULT_EXCLUDE_METADATA(configs)) && ConfigStore.IS_LOG_QUERY_RESULT(configs) && log.isInfoEnabled()) {
                 log.info("{}[查询结果]{}", random, LogUtil.table(set));
             }
 			set.setDatalink(runtime.datasource());
@@ -8649,7 +8649,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 						builder.append("?");
 						addRunValue(runtime, run, Compare.EQUAL, column, value);
 					} else {
-                        if(null == unicode){
+                        if(null == unicode) {
                             unicode = false;
                         }
 						//value(runtime, builder, obj, key);

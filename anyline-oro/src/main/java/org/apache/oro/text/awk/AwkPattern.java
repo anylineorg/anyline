@@ -82,7 +82,7 @@ final class DFAState {
   int _stateNumber;
   BitSet _state;
 
-  DFAState(BitSet s, int num){
+  DFAState(BitSet s, int num) {
     _state = s;
     _stateNumber = num;
   }
@@ -116,7 +116,7 @@ public final class AwkPattern implements Pattern, Serializable {
   boolean _matchesNullString, _fastMap[];
   boolean _hasBeginAnchor = false, _hasEndAnchor = false;
 
-  AwkPattern(String expression, SyntaxTree tree){
+  AwkPattern(String expression, SyntaxTree tree) {
     int token, node, tstateArray[];
     DFAState dfaState;
 
@@ -153,7 +153,7 @@ public final class AwkPattern implements Pattern, Serializable {
     _emptySet = new BitSet(tree._positions);
 
     _nodeList = new Vector[LeafNode._NUM_TOKENS];
-    for(token = 0; token < LeafNode._NUM_TOKENS; token++){
+    for(token = 0; token < LeafNode._NUM_TOKENS; token++) {
       _nodeList[token] = new Vector();
       for(node=0; node < tree._positions; node++)
 	if(tree._nodes[node]._matches((char)token))
@@ -172,19 +172,19 @@ public final class AwkPattern implements Pattern, Serializable {
     T    = (DFAState)_stateList.elementAt(current);
     node = _nodeList[token].size();
     _U.xor(_U);  // clear bits
-    while(node-- > 0){
+    while(node-- > 0) {
       pos = ((LeafNode)_nodeList[token].elementAt(node))._position;
       if(T._state.get(pos))
 	_U.or(_followSet[pos]);
     }
 
-    if(!_stateMap.containsKey(_U)){
+    if(!_stateMap.containsKey(_U)) {
       dfaState = new DFAState((BitSet)_U.clone(), _numStates++);
       _stateList.addElement(dfaState);
       _stateMap.put(dfaState._state, dfaState);
       _Dtrans.addElement(new int[LeafNode._NUM_TOKENS]);
 
-      if(!_U.equals(_emptySet)){
+      if(!_U.equals(_emptySet)) {
 	tstateArray[token] = _numStates - 1;
 
 	if(_U.get(_endPosition))

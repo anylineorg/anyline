@@ -73,7 +73,7 @@ public class MongoRuntime extends AbstractRuntime implements DataRuntime {
     public void setClient(MongoClient client) {
         this.client = client;
     }
-    public MongoClient getClient(){
+    public MongoClient getClient() {
         return client;
     }
 

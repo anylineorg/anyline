@@ -64,10 +64,10 @@ public class Checkbox extends BaseBodyTag {
 		valueKey = valueKey.replace("{","${");
 		try {
 
-			if(null == rely){
+			if(null == rely) {
 				rely = property;
 			}
-			if(null == rely){
+			if(null == rely) {
 				rely = valueKey;
 			}
 			 
@@ -93,7 +93,7 @@ public class Checkbox extends BaseBodyTag {
 						String ks[] = BeanUtil.parseKeyValue(item); 
 						map.put(valueKey, ks[0]);
 						map.put(textKey, ks[1]);
-						if(ks.length>2){
+						if(ks.length>2) {
 							map.put("CHK", ks[2]);
 						} 
 						list.add(map); 
@@ -102,7 +102,7 @@ public class Checkbox extends BaseBodyTag {
 				} 
 				// 选中值
 				if (null != this.value) {
-					if(!(this.value instanceof String || this.value instanceof Collection)){
+					if(!(this.value instanceof String || this.value instanceof Collection)) {
 						this.value = this.value.toString();
 					} 
 					if (this.value instanceof String) {
@@ -112,12 +112,12 @@ public class Checkbox extends BaseBodyTag {
 					}
 					if (this.value instanceof String) {
 						this.value = BeanUtil.array2list(this.value.toString().split(","));
-					}else if(this.value instanceof Collection){
+					}else if(this.value instanceof Collection) {
 						List list = new ArrayList(); 
 						Collection cols = (Collection)this.value; 
-						for(Object item:cols){
+						for(Object item:cols) {
 							Object val = item; 
-							if(item instanceof Map){
+							if(item instanceof Map) {
 								val = ((Map)item).get(rely); 
 							} 
 							list.add(val); 
@@ -133,8 +133,8 @@ public class Checkbox extends BaseBodyTag {
 				String itemBorderStartTag = "";
 				String itemBorderEndTag = "";
 				
-				if(BasicUtil.isNotEmpty(border) && !"false".equals(border)){
-					if("true".equalsIgnoreCase(border)){
+				if(BasicUtil.isNotEmpty(border) && !"false".equals(border)) {
+					if("true".equalsIgnoreCase(border)) {
 						itemBorderTagName = "div";
 					}else{
 						itemBorderTagName = border;
@@ -144,17 +144,17 @@ public class Checkbox extends BaseBodyTag {
 				}
 				
 				
-				if(null == headValue){
+				if(null == headValue) {
 					headValue = "";
 				}
-				if(null != head){
+				if(null != head) {
 					String id = this.id;
-					if(BasicUtil.isEmpty(id)){
+					if(BasicUtil.isEmpty(id)) {
 						id = name +"_"+ headValue; 
 					}
 					html.append(itemBorderStartTag);
 					html.append("<input type=\"checkbox\"");
-					if(null != headValue){
+					if(null != headValue) {
 						if(checked || checkedValue.equals(headValue) || "true".equalsIgnoreCase(headValue) || "checked".equalsIgnoreCase(headValue) || checked(value,headValue) ) {
 							html.append(" checked=\"checked\"");
 						}
@@ -174,19 +174,19 @@ public class Checkbox extends BaseBodyTag {
 				if (null != items) 
 					for (Map item : items) {
 						Object val = item.get(valueKey);
-						if(this.encrypt){
+						if(this.encrypt) {
 							val = DESUtil.encryptValue(val+"");
 						}
 						String id = this.id;
-						if(BasicUtil.isEmpty(id)){
+						if(BasicUtil.isEmpty(id)) {
 							id = name +"_"+ val; 
 						}
 						html.append(itemBorderStartTag);
 						html.append("<input type=\"checkbox\" value=\"").append(val).append("\" id=\"").append(id).append("\"");
 						Object chk = null;
-						if(BasicUtil.isNotEmpty(rely)){
+						if(BasicUtil.isNotEmpty(rely)) {
 							chk = item.get(rely);
-							if(null != chk){
+							if(null != chk) {
 								chk = chk.toString().trim();
 							}
 						} 
@@ -196,7 +196,7 @@ public class Checkbox extends BaseBodyTag {
 						attribute(html);
 						crateExtraData(html,item);
 						html.append("/>");
-						if(BasicUtil.isEmpty(label)){
+						if(BasicUtil.isEmpty(label)) {
 							String labelHtml = "<label for=\""+id+ "\" class=\""+labelClazz+"\">"; 
 							String labelBody = ""; 
 							if (textKey.contains("{")) {
@@ -211,7 +211,7 @@ public class Checkbox extends BaseBodyTag {
 							html.append(labelHtml);
 						}else{//指定label文本
 							String labelHtml = label;
-							if(labelHtml.contains("{") && labelHtml.contains("}")){
+							if(labelHtml.contains("{") && labelHtml.contains("}")) {
 								labelHtml = BeanUtil.parseRuntimeValue(item,labelHtml.replace("{","${"));
 							}
 							html.append(labelHtml);
@@ -223,7 +223,7 @@ public class Checkbox extends BaseBodyTag {
 			out.print(html.toString()); 
 		} catch (Exception e) {
 			e.printStackTrace();
-			if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
+			if(ConfigTable.IS_DEBUG && log.isWarnEnabled()) {
 				e.printStackTrace();
 			} 
 		} finally {
@@ -231,10 +231,10 @@ public class Checkbox extends BaseBodyTag {
 		} 
 		return EVAL_PAGE; 
 	}
-	private boolean checked(Collection<?> chks, Object value){
-		if(null != chks){
-			for(Object chk:chks){
-				if(null != chk && null != value && chk.toString().equals(value.toString())){
+	private boolean checked(Collection<?> chks, Object value) {
+		if(null != chks) {
+			for(Object chk:chks) {
+				if(null != chk && null != value && chk.toString().equals(value.toString())) {
 					return true;
 				}
 			}
@@ -242,9 +242,9 @@ public class Checkbox extends BaseBodyTag {
 		return false;
 	}
 	@SuppressWarnings("rawtypes")
-	private boolean checked(Object chks, Object value){
-		if(null != chks){
-			if(chks instanceof Collection){
+	private boolean checked(Object chks, Object value) {
+		if(null != chks) {
+			if(chks instanceof Collection) {
 				return checked((Collection)chks, value);
 			}else{
 				return chks.equals(value);

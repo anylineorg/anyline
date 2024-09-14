@@ -32,7 +32,7 @@ public class Concat extends BaseBodyTag {
 		JspWriter writer = null;
 		String result = "";
 		try {
-			if(data instanceof String){
+			if(data instanceof String) {
 				String[] items = data.toString().split(",");
 				result = BeanUtil.concat(items, split);
 			}

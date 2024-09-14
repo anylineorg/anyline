@@ -124,12 +124,12 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 	 */ 
 	public RunPrepare group(String ... groups) {
 		/*避免添加空条件*/
-		if(null != groups){
+		if(null != groups) {
 
 			if(null == this.groups) {
 				this.groups = new DefaultGroupStore();
 			}
-			for(String group:groups){
+			for(String group:groups) {
 				if(BasicUtil.isEmpty(group)) {
 					continue;
 				}
@@ -356,7 +356,7 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 
 	@Override
 	public RunPrepare setDistinct(boolean distinct) {
-		if(distinct){
+		if(distinct) {
 			this.distinct = "distinct";
 		}else{
 			this.distinct = "";

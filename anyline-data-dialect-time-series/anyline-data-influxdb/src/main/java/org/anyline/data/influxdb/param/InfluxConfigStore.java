@@ -26,47 +26,47 @@ public class InfluxConfigStore extends DefaultConfigStore {
     private String stop;
     private String measurement;
 
-    public InfluxConfigStore(){
+    public InfluxConfigStore() {
         super();
     }
-    public InfluxConfigStore start(String start){
+    public InfluxConfigStore start(String start) {
         this.start = start;
         return this;
     }
-    public String start(){
+    public String start() {
         return start;
     }
-    public InfluxConfigStore stop(String stop){
+    public InfluxConfigStore stop(String stop) {
         this.stop = stop;
         return this;
     }
-    public String stop(){
+    public String stop() {
         return stop;
     }
-    public InfluxConfigStore range(String start, String stop){
+    public InfluxConfigStore range(String start, String stop) {
         this.start = start;
         this.stop = stop;
         return this;
     }
-    public InfluxConfigStore org(String org){
+    public InfluxConfigStore org(String org) {
         this.org = org;
         return this;
     }
-    public String org(){
+    public String org() {
         return org;
     }
-    public InfluxConfigStore bucket(String bucket){
+    public InfluxConfigStore bucket(String bucket) {
         this.bucket = bucket;
         return this;
     }
-    public String bucket(){
+    public String bucket() {
         return bucket;
     }
-    public InfluxConfigStore measurement(String measurement){
+    public InfluxConfigStore measurement(String measurement) {
         this.measurement = measurement;
         return this;
     }
-    public String measurement(){
+    public String measurement() {
         return measurement;
     }
 
@@ -75,13 +75,13 @@ public class InfluxConfigStore extends DefaultConfigStore {
         if(null != chain && !chain.isEmpty()) {
             return false;
         }
-        if(null != measurement){
+        if(null != measurement) {
             return false;
         }
-        if(BasicUtil.isNotEmpty(start)){
+        if(BasicUtil.isNotEmpty(start)) {
             return false;
         }
-        if(BasicUtil.isNotEmpty(stop)){
+        if(BasicUtil.isNotEmpty(stop)) {
             return false;
         }
         return true;

@@ -58,25 +58,25 @@ public class WebUtil {
 
 	public static String getRemoteIp(HttpServletRequest request) {
 		String ip = getRemoteIps(request);
-		if(null != ip && ip.contains(",")){
+		if(null != ip && ip.contains(",")) {
 			ip = ip.substring(0, ip.indexOf(","));
 		}
 		return ip;
 	}
 	//get post参数
-	public static Map<String,Object> params(HttpServletRequest request){
+	public static Map<String,Object> params(HttpServletRequest request) {
 		Map<String,Object> params = new HashMap<>();
 		Enumeration<String> keys = request.getParameterNames();
-		while (keys.hasMoreElements()){
+		while (keys.hasMoreElements()) {
 			String key = keys.nextElement();
 			String[] values = request.getParameterValues(key);
 			params.put(key, values);
-			if(null != values){
-				if(values.length ==0){
+			if(null != values) {
+				if(values.length ==0) {
 					params.put(key, null);
-				}else if(values.length == 1){
+				}else if(values.length == 1) {
 					params.put(key, values[0]);
-				}else if(values.length >1){
+				}else if(values.length >1) {
 					params.put(key, BeanUtil.array2list(values));
 				}
 			}
@@ -156,56 +156,56 @@ public class WebUtil {
 		return (request.getHeader("Referer") != null);
 	}
 
-	public static DataSet values(HttpServletRequest request){
+	public static DataSet values(HttpServletRequest request) {
 		DataSet set = new DataSet();
-		if(null == request){
+		if(null == request) {
 			return set;
 		}
 		String body = WebUtil.read(request,"UTF-8", true);
-		if(BasicUtil.isNotEmpty(body) && body.startsWith("[") && body.endsWith("]")){
+		if(BasicUtil.isNotEmpty(body) && body.startsWith("[") && body.endsWith("]")) {
 			try {
 				set = DataSet.parseJson(KEY_CASE.SRC, body);
-			}catch(Exception e){
+			}catch(Exception e) {
 				log.error("[json parse error][{}]", e.toString());
 			}
 		}
 		return set;
 	}
-	private static String decode(String src, String encode){
+	private static String decode(String src, String encode) {
 		// HTTP参数是否开启了ENCODE
-		if(ConfigTable.getBoolean("HTTP_PARAM_ENCODE", false)){
+		if(ConfigTable.getBoolean("HTTP_PARAM_ENCODE", false)) {
 			try{
 				return URLDecoder.decode(src, encode);
-			}catch (Exception e){
+			}catch (Exception e) {
 				return src;
 			}
 		}
 		return src;
 
 	}
-	public static Map<String,Object> value(HttpServletRequest request){
-		if(null == request){
+	public static Map<String,Object> value(HttpServletRequest request) {
+		if(null == request) {
 			return new HashMap<String,Object>();
 		}
 		String charset = "UTF-8";
 		boolean isEncode = true;
-		if(ConfigTable.HTTP_PARAM_ENCODE == -1){
+		if(ConfigTable.HTTP_PARAM_ENCODE == -1) {
 			isEncode = false;
-		}else if(ConfigTable.HTTP_PARAM_ENCODE == 0){
+		}else if(ConfigTable.HTTP_PARAM_ENCODE == 0) {
 			//TODO 自动识别
 		}
 		Map<String,Object> map = (Map<String,Object>)request.getAttribute(PACK_REQUEST_PARAM);
-		if(null == map){
+		if(null == map) {
 			//通过ur形式提交的参数
 			String params = request.getQueryString();
-			if(BasicUtil.isNotEmpty(params)){
+			if(BasicUtil.isNotEmpty(params)) {
 				map = BeanUtil.param2map(params, true, isEncode);
 			}else {
 				map = new HashMap<String, Object>();
 			}
 			// body体json格式(ajax以raw提交)
 			String body = WebUtil.read(request, charset,true);
-			if(BasicUtil.isNotEmpty(body)){
+			if(BasicUtil.isNotEmpty(body)) {
 				body = body.trim();
 				if(body.startsWith("{") && body.endsWith("}")) {
 					map.putAll(DataRow.parseJson(KEY_CASE.SRC, body));
@@ -218,15 +218,15 @@ public class WebUtil {
 				Enumeration<String> keys = request.getParameterNames();
 				while (keys.hasMoreElements()) {
 					String key = keys.nextElement() + "";
-					if(map.containsKey(key)){
+					if(map.containsKey(key)) {
 						continue;
 					}
 					String[] values = request.getParameterValues(key);
 					if (null != values) {
 						if (values.length == 1) {
 							String v = values[0];
-							if(null != v){
-								if(ConfigTable.IS_HTTP_PARAM_AUTO_TRIM){
+							if(null != v) {
+								if(ConfigTable.IS_HTTP_PARAM_AUTO_TRIM) {
 									v = v.trim();
 								}
 								if(isEncode) {
@@ -240,8 +240,8 @@ public class WebUtil {
 						} else if (values.length > 1) {
 							List<Object> list = new ArrayList<Object>();
 							for (String value : values) {
-								if(null != value){
-									if(ConfigTable.IS_HTTP_PARAM_AUTO_TRIM){
+								if(null != value) {
+									if(ConfigTable.IS_HTTP_PARAM_AUTO_TRIM) {
 										value = value.trim();
 									}
 									if(isEncode) {
@@ -333,7 +333,7 @@ public class WebUtil {
 			}
 			try {
 				value = DESUtil.decryptParam(value);
-			}catch(Exception e){
+			}catch(Exception e) {
 
 			}
 			if (null != value) {
@@ -350,7 +350,7 @@ public class WebUtil {
 						v = kv[1].trim();
 						// v = DESUtil.filterIllegalChar(v);
 					}
-					if(null != v){
+					if(null != v) {
 						v = v.trim();
 					}
 					if (!"".equals(k) && !"".equals(v)) {
@@ -394,19 +394,19 @@ public class WebUtil {
 	 * @param value value
 	 * @return String
 	 */
-	public static String decrypt(String value){
+	public static String decrypt(String value) {
 		return ConfigParser.decryptParamValue(value);
 	}
-	public static String decryptValue(String value){
+	public static String decryptValue(String value) {
 		return ConfigParser.decryptParamValue(value);
 	}
-	public static String decryptKey(String value){
+	public static String decryptKey(String value) {
 		return ConfigParser.decryptParamKey(value);
 	}
 
-	public static String decrypt(String value, String def){
+	public static String decrypt(String value, String def) {
 		value = decrypt(value);
-		if(BasicUtil.isEmpty(value)){
+		if(BasicUtil.isEmpty(value)) {
 			return def;
 		}
 		return value;
@@ -489,7 +489,7 @@ public class WebUtil {
 	public static Object getHttpRequestParam(HttpServletRequest request, String key, boolean keyEncrypt, boolean valueEncrypt) {
 		String result = null;
 		List<Object> list = getHttpRequestParams(request, key, keyEncrypt, valueEncrypt);
-		if(null != list && list.size()>0){
+		if(null != list && list.size()>0) {
 			result = (String)list.get(0);
 		}
 		return result;
@@ -578,7 +578,7 @@ public class WebUtil {
 		boolean result = false;
 		try{
 			String agent = request.getHeader("user-agent");
-			if(null == agent){
+			if(null == agent) {
 				return false;
 			}
 			String agentcheck = agent.trim().toLowerCase();
@@ -606,7 +606,7 @@ public class WebUtil {
 					}
 				}
 			}
-		}catch(Exception e){
+		}catch(Exception e) {
 
 		}
 		return result;
@@ -616,7 +616,7 @@ public class WebUtil {
 	 * @param request request
 	 * @return boolean
 	 */
-	public static boolean isLocal(HttpServletRequest request){
+	public static boolean isLocal(HttpServletRequest request) {
 		String ip = getRemoteIp(request);
 		return ("127.0.0.1".equals(ip) || "0:0:0:0:0:0:0:1".equals(ip));
 	}
@@ -625,23 +625,23 @@ public class WebUtil {
 	 * @param request request
 	 * @return boolean
 	 */
-	public static boolean isWechat(HttpServletRequest request){
+	public static boolean isWechat(HttpServletRequest request) {
 		String userAgent = (request.getHeader("user-agent")+"").toLowerCase();
 		return userAgent.indexOf("micromessenger") > -1;
 	}
-	public static boolean isWechatApp(HttpServletRequest request){
+	public static boolean isWechatApp(HttpServletRequest request) {
 		String referer = request.getHeader("referer");
-		if(null != referer && referer.startsWith("https://servicewechat.com")){
+		if(null != referer && referer.startsWith("https://servicewechat.com")) {
 			return true;
 		}
 		String userAgent = (request.getHeader("user-agent")+"").toLowerCase();
 		return userAgent.indexOf("micromessenger") > -1 && userAgent.indexOf("miniprogram") > -1;
 	}
-	public static boolean isApp(HttpServletRequest request){
-		if(null == request){
+	public static boolean isApp(HttpServletRequest request) {
+		if(null == request) {
 			return false;
 		}
-		if(null == request.getSession()){
+		if(null == request.getSession()) {
 			return false;
 		}
 		String isApp = request.getSession().getAttribute("_IS_APP")+"";
@@ -653,7 +653,7 @@ public class WebUtil {
 	 * @param request request
 	 * @return boolean
 	 */
-	public static boolean isAlipay(HttpServletRequest request){
+	public static boolean isAlipay(HttpServletRequest request) {
 		String userAgent = (request.getHeader("user-agent")+"").toLowerCase();
 		return userAgent.indexOf("alipayclient") > -1;
 	}
@@ -662,7 +662,7 @@ public class WebUtil {
 	 * @param request request
 	 * @return boolean
 	 */
-	public static boolean isQQ(HttpServletRequest request){
+	public static boolean isQQ(HttpServletRequest request) {
 		String userAgent = (request.getHeader("user-agent")+"").toLowerCase();
 		return userAgent.indexOf("qq/") > -1;
 	}
@@ -672,7 +672,7 @@ public class WebUtil {
 	 * @param request request
 	 * @return boolean
 	 */
-	public static boolean isAndroid(HttpServletRequest request){
+	public static boolean isAndroid(HttpServletRequest request) {
 		String userAgent = request.getHeader("user-agent").toLowerCase();
 		return userAgent.indexOf("android") > -1;
 	}
@@ -681,21 +681,21 @@ public class WebUtil {
 	 * @param request request
 	 * @return boolean
 	 */
-	public static boolean isIphone(HttpServletRequest request){
+	public static boolean isIphone(HttpServletRequest request) {
 		String userAgent = request.getHeader("user-agent").toLowerCase();
 		return userAgent.indexOf("iphone") > -1;
 	}
-	public static String clientType(HttpServletRequest request){
+	public static String clientType(HttpServletRequest request) {
 		String type = "";
-		if(isApp(request)){
+		if(isApp(request)) {
 			type = "app";
-		}else if(isWechat(request)){
+		}else if(isWechat(request)) {
 			type = "wechat";
-		}else if(isQQ(request)){
+		}else if(isQQ(request)) {
 			type = "qq";
-		}else if(isAlipay(request)){
+		}else if(isAlipay(request)) {
 			type = "alipay";
-		}else if(isWap(request)){
+		}else if(isWap(request)) {
 			type = "wap";
 		}else{
 			type = "web";
@@ -717,14 +717,14 @@ public class WebUtil {
 		}
 		fixs = BeanUtil.merge(fixs, keys);
 		List<String> ks = BeanUtil.getMapKeys(map);
-		for(String k:ks){
+		for(String k:ks) {
 			Object v = map.get(k);
-			if(null == v){
+			if(null == v) {
 				continue;
 			}
 
 			if(v instanceof String || v instanceof Number || v instanceof Boolean || v instanceof Date) {
-				if(null == fixs || fixs.size() == 0 || fixs.contains(k)){
+				if(null == fixs || fixs.size() == 0 || fixs.contains(k)) {
 					v = encryptValue(v.toString(), mix);
 				}
 			}else{
@@ -781,7 +781,7 @@ public class WebUtil {
 					continue;
 				}
 				if(v instanceof String || v instanceof Number || v instanceof Boolean || v instanceof Date) {
-					if(null == list || list.size() == 0 || list.contains(k)){
+					if(null == list || list.size() == 0 || list.contains(k)) {
 						v = encryptValue(v.toString(), mix, list);
 					}
 				} else {
@@ -869,7 +869,7 @@ public class WebUtil {
 		ByteArrayOutputStream os = new ByteArrayOutputStream();
 		render(request, response, jsp, os, false);
 		String result = os.toString();
-		if(ConfigTable.IS_DEBUG && ConfigTable.getBoolean("PARSE_JSP_LOG")){
+		if(ConfigTable.IS_DEBUG && ConfigTable.getBoolean("PARSE_JSP_LOG")) {
 			log.warn("[LOAD JSP TEMPLATE][FILE:{}][HTML:{}]", jsp, result);
 		}
 		return result;
@@ -898,7 +898,7 @@ public class WebUtil {
 			public void write(byte[] data, int offset, int length) {
 				try {
 					os.write(data, offset, length);
-				}catch (Exception e){
+				}catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
@@ -926,10 +926,10 @@ public class WebUtil {
 		};
 		dispatcher.include(request, resp);
 		writer.flush();
-		if(close){
+		if(close) {
 			try{
 				os.close();
-			}catch (Exception e){
+			}catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
@@ -943,49 +943,49 @@ public class WebUtil {
 	 * @param title title
 	 * @return boolean
 	 */
-	public static boolean download(HttpServletRequest request, HttpServletResponse response, File file, String title){
+	public static boolean download(HttpServletRequest request, HttpServletResponse response, File file, String title) {
 		try{
 			if (null != file && file.exists()) {
-				if(BasicUtil.isEmpty(title)){
+				if(BasicUtil.isEmpty(title)) {
 					title = file.getName();
 				}
 				return download(request, response, Files.newInputStream(file.toPath()), title);
 			}
-		}catch(Exception e){
+		}catch(Exception e) {
 			e.printStackTrace();
 		}
 		return false;
 	}
 
-	public static boolean download(HttpServletRequest request, HttpServletResponse response, File file){
+	public static boolean download(HttpServletRequest request, HttpServletResponse response, File file) {
 		try{
 			if (null != file && file.exists()) {
 				return download(request, response, Files.newInputStream(file.toPath()), file.getName());
 			}
-		}catch(Exception e){
+		}catch(Exception e) {
 			e.printStackTrace();
 		}
 		return false;
 	}
-	public static boolean download(HttpServletResponse response, File file){
+	public static boolean download(HttpServletResponse response, File file) {
 		return download(null, response, file, file.getName());
 	}
-	public static boolean download(HttpServletResponse response, File file, String title){
+	public static boolean download(HttpServletResponse response, File file, String title) {
 		return download(null, response, file, title);
 	}
-	public static boolean download(HttpServletRequest request, HttpServletResponse response, String txt, String title){
+	public static boolean download(HttpServletRequest request, HttpServletResponse response, String txt, String title) {
 		try{
 			return download(request, response, new ByteArrayInputStream(txt.getBytes()), title);
-		}catch(Exception e){
+		}catch(Exception e) {
 			e.printStackTrace();
 		}
 		return false;
 	}
 
-	public static boolean download(HttpServletResponse response, String txt, String title){
+	public static boolean download(HttpServletResponse response, String txt, String title) {
 		return download(null, response, txt, title);
 	}
-	public static boolean download(HttpServletResponse response, InputStream in, String title){
+	public static boolean download(HttpServletResponse response, InputStream in, String title) {
 		return download(null, response, in, title);
 	}
 
@@ -995,11 +995,11 @@ public class WebUtil {
 	 * @param response response
 	 * @param title title
 	 */
-	public static void download(HttpServletRequest request, HttpServletResponse response, String title){
+	public static void download(HttpServletRequest request, HttpServletResponse response, String title) {
 		try{
 			response.setCharacterEncoding("UTF-8");
 			response.setHeader("Location",   title );
-			if(null != request){
+			if(null != request) {
 				title = encode(request, title);
 			}else {
 				title = URLEncoder.encode(title, "utf-8");
@@ -1007,9 +1007,9 @@ public class WebUtil {
 			String content = "attachment; filename*=utf-8'zh_cn'" + title;
 			response.setHeader("Content-Disposition", content);
 			String contentType = "application/x-download";
-			if(BasicUtil.isNotEmpty(title)){
+			if(BasicUtil.isNotEmpty(title)) {
 				String subName = FileUtil.parseSubName(title);
-				if(null != subName){
+				if(null != subName) {
 					int idx = FileUtil.httpFileExtend.indexOf(subName);
 					if(idx != -1) {
 						contentType = FileUtil.httpFileType.get(idx);
@@ -1017,7 +1017,7 @@ public class WebUtil {
 				}
 			}
 			response.setContentType(contentType);
-		}catch (Exception e){
+		}catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
@@ -1029,7 +1029,7 @@ public class WebUtil {
 	 * @param title title
 	 * @return boolean
 	 */
-	public static boolean download(HttpServletRequest request, HttpServletResponse response, InputStream in, String title){
+	public static boolean download(HttpServletRequest request, HttpServletResponse response, InputStream in, String title) {
 		OutputStream out = null;
 		try {
 			download(request, response, title);
@@ -1076,14 +1076,14 @@ public class WebUtil {
 		}
 		return value;
 	}
-	public static String getCookie(HttpServletRequest request, String key){
-		if(null == key){
+	public static String getCookie(HttpServletRequest request, String key) {
+		if(null == key) {
 			return null;
 		}
 		Cookie[] cks = request.getCookies();
-		if(null != cks){
-			for(Cookie ck:cks){
-				if(key.equals(ck.getName())){
+		if(null != cks) {
+			for(Cookie ck:cks) {
+				if(key.equals(ck.getName())) {
 					return ck.getValue();
 				}
 			}
@@ -1098,21 +1098,21 @@ public class WebUtil {
 	 * @param value value
 	 * @param expire 过期时间(秒)
 	 */
-	public static void setCookie(HttpServletResponse response, String key, String value, int expire){
+	public static void setCookie(HttpServletResponse response, String key, String value, int expire) {
 		Cookie cookie = new Cookie(key, value);
 		cookie.setMaxAge(expire);
 		cookie.setPath("/");
 		response.addCookie(cookie);
 	}
 
-	public static void deleteCookie(HttpServletRequest request, HttpServletResponse response, String key){
-		if(null == key){
+	public static void deleteCookie(HttpServletRequest request, HttpServletResponse response, String key) {
+		if(null == key) {
 			return;
 		}
 		Cookie[] cks = request.getCookies();
-		if(null != cks){
-			for(Cookie ck:cks){
-				if(key.equals(ck.getName())){
+		if(null != cks) {
+			for(Cookie ck:cks) {
+				if(key.equals(ck.getName())) {
 					ck.setValue(null);
 					ck.setMaxAge(0);
 					response.addCookie(ck);
@@ -1120,7 +1120,7 @@ public class WebUtil {
 			}
 		}
 	}
-	public static String readRequestContent(HttpServletRequest request, String charset){
+	public static String readRequestContent(HttpServletRequest request, String charset) {
 		StringBuilder sb = new StringBuilder();
 		try{
 			BufferedReader br = null;
@@ -1130,15 +1130,15 @@ public class WebUtil {
 				br = new BufferedReader(new InputStreamReader(request.getInputStream()));
 			}
 			String line = null;
-			while((line = br.readLine())!=null){
+			while((line = br.readLine())!=null) {
 				sb.append(line);
 			}
-		}catch(Exception e){
+		}catch(Exception e) {
 			e.printStackTrace();
 		}
 		return sb.toString();
 	}
-	public static String readRequestContent(HttpServletRequest request){
+	public static String readRequestContent(HttpServletRequest request) {
 		return readRequestContent(request, "UTF-8");
 	}
 
@@ -1157,16 +1157,16 @@ public class WebUtil {
 		}
 		return params;
 	}
-	public static Object getParam(HttpServletRequest request, String key){
+	public static Object getParam(HttpServletRequest request, String key) {
 		String[] values = request.getParameterValues(key);
-		if(null == values || values.length ==0){
+		if(null == values || values.length ==0) {
 			return null;
 		}else{
 			int len = values.length;
-			for(int i=0; i<len; i++){
+			for(int i=0; i<len; i++) {
 				values[i] = decode(values[i],"UTF-8");
 			}
-			if(values.length ==1){
+			if(values.length ==1) {
 				return values[0];
 			}else{
 				return values;
@@ -1181,9 +1181,9 @@ public class WebUtil {
 	 * @param prefix 前缀
 	 * @param env 配置文件环境
 	 */
-	public static void setFieldsValue(Object obj, String prefix, Environment env ){
+	public static void setFieldsValue(Object obj, String prefix, Environment env ) {
 		List<String> fields = ClassUtil.getFieldsName(obj.getClass());
-		for(String field:fields){
+		for(String field:fields) {
 			String value = getProperty(prefix, env, field);
 			if(BasicUtil.isNotEmpty(value)) {
 				BeanUtil.setFieldValue(obj, field, value);
@@ -1198,47 +1198,47 @@ public class WebUtil {
 	 * @param keys key列表 第一个有值的key生效
 	 * @return String
 	 */
-	public static String getProperty(String prefix, Environment env, String ... keys){
+	public static String getProperty(String prefix, Environment env, String ... keys) {
 		String value = null;
-		if(null == env || null == keys){
+		if(null == env || null == keys) {
 			return value;
 		}
-		if(null == prefix){
+		if(null == prefix) {
 			prefix = "";
 		}
-		for(String key:keys){
+		for(String key:keys) {
 			key = prefix + key;
 			value = env.getProperty(key);
-			if(null != value){
+			if(null != value) {
 				return value;
 			}
 			// 以中划线分隔的配置文件
 			String[] ks = key.split("-");
 			StringBuilder sKey = null;
-			for(String k:ks){
-				if(null == sKey){
+			for(String k:ks) {
+				if(null == sKey) {
 					sKey = new StringBuilder(k);
 				}else{
 					sKey.append(CharUtil.toUpperCaseHeader(k));
 				}
 			}
 			value = env.getProperty(sKey.toString());
-			if(null != value){
+			if(null != value) {
 				return value;
 			}
 
 			// 以下划线分隔的配置文件
 			ks = key.split("_");
 			sKey = null;
-			for(String k:ks){
-				if(null == sKey){
+			for(String k:ks) {
+				if(null == sKey) {
 					sKey = new StringBuilder(k);
 				}else{
 					sKey.append(CharUtil.toUpperCaseHeader(k));
 				}
 			}
 			value = env.getProperty(sKey.toString());
-			if(null != value){
+			if(null != value) {
 				return value;
 			}
 		}
@@ -1252,22 +1252,22 @@ public class WebUtil {
 	 * @param cache 是否缓存(第二次reqad是否有效)
 	 * @return String
 	 */
-	public static String read(HttpServletRequest request, String charset, boolean cache){
+	public static String read(HttpServletRequest request, String charset, boolean cache) {
 		try {
 			String str = new String(read(request,cache), charset);
 			//str = decode(str,encode);
 			return str;
-		}catch (Exception e){
+		}catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
-	public static String read(HttpServletRequest request, String encode){
+	public static String read(HttpServletRequest request, String encode) {
 		return read(request, encode, true);
 	}
 	public static byte[] read(HttpServletRequest request, boolean cache) {
 		byte[] buffer = (byte[])request.getAttribute("_anyline_request_read_cache_byte");
-		if(null != buffer){
+		if(null != buffer) {
 			return buffer;
 		}
 		buffer = new byte[1024];

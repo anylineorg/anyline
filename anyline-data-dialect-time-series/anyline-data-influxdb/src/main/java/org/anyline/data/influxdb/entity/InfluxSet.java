@@ -39,18 +39,18 @@ public class InfluxSet extends DataSet {
     protected String bucket;
     protected String org;
 
-    public InfluxSet bucket(String bucket){
+    public InfluxSet bucket(String bucket) {
         this.bucket = bucket;
         return this;
     }
-    public String bucket(){
+    public String bucket() {
         return this.bucket;
     }
-    public InfluxSet org(String org){
+    public InfluxSet org(String org) {
         this.org = org;
         return this;
     }
-    public String org(){
+    public String org() {
         return this.org;
     }
 }

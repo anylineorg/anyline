@@ -2774,7 +2774,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	@Override
 	public List<Run> buildQueryIndexesRun(DataRuntime runtime, boolean greedy,  Collection<? extends Table> tables) {
 		List<Run> runs = new ArrayList<>();
-		if(null == tables || tables.isEmpty()){
+		if(null == tables || tables.isEmpty()) {
 			return runs;
 		}
 		Table table = tables.iterator().next();

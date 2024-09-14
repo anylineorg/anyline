@@ -105,8 +105,8 @@ public abstract class AbstractRun implements Run {
 		return this;
 	}
 	@Override
-	public boolean isEmpty(){
-		if(null != builder && builder.length() > 0){
+	public boolean isEmpty() {
+		if(null != builder && builder.length() > 0) {
 			return false;
 		}
 		return true;
@@ -360,7 +360,7 @@ public abstract class AbstractRun implements Run {
 						}
 					}
 				}
-				if(!json){
+				if(!json) {
 					if(obj.getClass().isArray()) {
 						if(obj instanceof byte[] || obj instanceof Byte[]) {
 							RunValue rv = new RunValue(column, obj);
@@ -368,7 +368,7 @@ public abstract class AbstractRun implements Run {
 							addValues(rv);
 						}else{
 							int len = Array.getLength(obj);
-							for(int i=0; i<len; i++){
+							for(int i=0; i<len; i++) {
 								Object v = Array.get(obj, i);
 								RunValue rv = new RunValue(column, v);
 								rvs.add(rv);
@@ -378,7 +378,7 @@ public abstract class AbstractRun implements Run {
 								}
 							}
 							//不要在最后添加new RunValue(column, obj); obj有可能是个数据库不支持的类型
-							if(len == 0){
+							if(len == 0) {
 								RunValue rv = new RunValue(column, null);
 								addValues(rv);
 								rvs.add(rv);
@@ -395,7 +395,7 @@ public abstract class AbstractRun implements Run {
 							}
 						}
 						//不要在最后添加new RunValue(column, obj); obj有可能是个数据库不支持的类型
-						if(list.isEmpty()){
+						if(list.isEmpty()) {
 							RunValue rv = new RunValue(column, null);
 							addValues(rv);
 							rvs.add(rv);
@@ -406,7 +406,7 @@ public abstract class AbstractRun implements Run {
 			}
 
 		}
-		if(rvs.isEmpty()){
+		if(rvs.isEmpty()) {
 			RunValue rv = new RunValue(column, obj);
 			addValues(rv);
 			rvs.add(rv);
@@ -914,7 +914,7 @@ public abstract class AbstractRun implements Run {
 				}else if(up.startsWith("GROUP BY")) {
 					// 分组条件
 					String groupStr = condition.replaceAll("(?i)group\\s+by", "").trim();
-					if(groupStr.contains(")") || groupStr.contains("'")){
+					if(groupStr.contains(")") || groupStr.contains("'")) {
 						if(null == groupStore) {
 							groupStore = new DefaultGroupStore();
 						}
@@ -947,7 +947,7 @@ public abstract class AbstractRun implements Run {
 					continue;
 				}
 				/*String datatype = null;
-				if(condition.contains("::")){
+				if(condition.contains("::")) {
 					String[] tmps = condition.split("::");
 					condition = tmps[0];
 					datatype = tmps[1];
@@ -1385,7 +1385,7 @@ public abstract class AbstractRun implements Run {
 	}
 
 	*/
-public String toString(){
+public String toString() {
 	return this.getClass().getSimpleName()+":"+builder.toString();
 }
 }

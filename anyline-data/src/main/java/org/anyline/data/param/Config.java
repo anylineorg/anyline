@@ -50,7 +50,7 @@ public interface Config extends Cloneable {
 	}
 	void index(double index);
 
-	static void sort(List<Config> configs){
+	static void sort(List<Config> configs) {
 		Collections.sort(configs, new Comparator<Config>() {
 			public int compare(Config r1, Config r2) {
 				double order1 = r1.index();

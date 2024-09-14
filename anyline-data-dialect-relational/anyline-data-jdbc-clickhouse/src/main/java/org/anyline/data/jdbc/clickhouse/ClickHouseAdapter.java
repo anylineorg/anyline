@@ -2543,7 +2543,7 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
     @Override
     public <T extends Column> T init(DataRuntime runtime, int index, T meta, Column query, DataRow row) {
         String type = row.getString(Column.FIELD_TYPE);
-        if(null != type && type.contains("Nullable(")){
+        if(null != type && type.contains("Nullable(")) {
             type = type.substring(9, type.length()-1);
             row.put(Column.FIELD_TYPE, type);
             row.put("IS_NULLABLE", true);
@@ -3773,10 +3773,10 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
     @Override
     public List<Run> buildCreateRun(DataRuntime runtime, Table meta) throws Exception {
         List<Run> runs = new ArrayList<>();
-        if(BasicUtil.isEmpty(meta.getEngine())){
+        if(BasicUtil.isEmpty(meta.getEngine())) {
             meta.setEngine(DEFAULT_TABLE_ENGINE);
         }
-        if(BasicUtil.isEmpty(meta.getEngine())){
+        if(BasicUtil.isEmpty(meta.getEngine())) {
             throw new CommandException("未配置table.engine");
         }
         Run run = new SimpleRun(runtime);
@@ -3950,7 +3950,7 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
         return builder;
     }
     //在engine后
-    protected void primary(StringBuilder builder, Table meta){
+    protected void primary(StringBuilder builder, Table meta) {
         PrimaryKey primary = meta.getPrimaryKey();
         LinkedHashMap<String, Column> pks = null;
         if(null != primary) {
@@ -4807,7 +4807,7 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
     public List<Run> buildAlterRun(DataRuntime runtime, Column meta, boolean slice) throws Exception {
         List<Run> runs = new ArrayList<>();
         boolean rename = meta.isRename();
-        if(rename){
+        if(rename) {
             //重命名的单独生成
             runs.addAll(buildRenameRun(runtime, meta, slice));
             meta.setName(meta.getUpdate().getName());

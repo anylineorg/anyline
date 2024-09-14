@@ -2131,7 +2131,7 @@ public interface ConfigStore extends Cloneable{
 	default boolean IS_AUTO_CHECK_EL_VALUE() {
 		return getBoolean("IS_AUTO_CHECK_EL_VALUE", ConfigTable.IS_AUTO_CHECK_EL_VALUE);
 	}
-	default ConfigStore IS_AUTO_CHECK_EL_VALUE(boolean value){
+	default ConfigStore IS_AUTO_CHECK_EL_VALUE(boolean value) {
 		return config("IS_AUTO_CHECK_EL_VALUE", value);
 	}
 	/**
@@ -2358,8 +2358,8 @@ public interface ConfigStore extends Cloneable{
 		return ConfigTable.IS_AUTO_CHECK_METADATA;
 	}
 
-	static boolean IS_AUTO_CHECK_EL_VALUE(ConfigStore configs){
-		if(null != configs){
+	static boolean IS_AUTO_CHECK_EL_VALUE(ConfigStore configs) {
+		if(null != configs) {
 			return configs.IS_AUTO_CHECK_EL_VALUE();
 		}
 		return ConfigTable.IS_AUTO_CHECK_EL_VALUE;
@@ -2621,20 +2621,20 @@ public interface ConfigStore extends Cloneable{
 		}
 		return ConfigTable.MERGE_GRAPH_QUERY_RESULT_TABLE;
 	}
-	static boolean IS_ENABLE_PLACEHOLDER_REGEX_EXT(ConfigStore configs){
-		if(null != configs){
+	static boolean IS_ENABLE_PLACEHOLDER_REGEX_EXT(ConfigStore configs) {
+		if(null != configs) {
 			return configs.IS_ENABLE_PLACEHOLDER_REGEX_EXT();
 		}
 		return ConfigTable.IS_ENABLE_PLACEHOLDER_REGEX_EXT;
 	}
-	static boolean IS_CHECK_ALL_INSERT_COLUMN(ConfigStore configs){
-		if(null != configs){
+	static boolean IS_CHECK_ALL_INSERT_COLUMN(ConfigStore configs) {
+		if(null != configs) {
 			return configs.IS_CHECK_ALL_INSERT_COLUMN();
 		}
 		return ConfigTable.IS_CHECK_ALL_INSERT_COLUMN;
 	}
-	static boolean IS_CHECK_ALL_UPDATE_COLUMN(ConfigStore configs){
-		if(null != configs){
+	static boolean IS_CHECK_ALL_UPDATE_COLUMN(ConfigStore configs) {
+		if(null != configs) {
 			return configs.IS_CHECK_ALL_UPDATE_COLUMN();
 		}
 		return ConfigTable.IS_CHECK_ALL_UPDATE_COLUMN;

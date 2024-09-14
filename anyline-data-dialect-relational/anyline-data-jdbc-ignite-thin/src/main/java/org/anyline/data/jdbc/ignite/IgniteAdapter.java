@@ -2830,7 +2830,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         ConfigStore configs = run.getConfigs();
         builder.append("SELECT * FROM SYS.INDEXES\n");
         Table table = null;
-        if(null != tables && !tables.isEmpty()){
+        if(null != tables && !tables.isEmpty()) {
             table = tables.iterator().next();
         }
         if(null != table) {

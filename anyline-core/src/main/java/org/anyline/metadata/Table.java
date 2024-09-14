@@ -877,7 +877,7 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
                         primaryKey.setTable(this);
                     }
                     primaryKey.addColumn(column);
-                    if(null != column.getPrimaryType()){
+                    if(null != column.getPrimaryType()) {
                         primaryKey.setType(column.getPrimaryType());
                     }
                 }
@@ -1159,36 +1159,36 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
         return this;
     }
 
-    public Map<String, Object> map(){
+    public Map<String, Object> map() {
         clearPropertyTable();
         return BeanUtil.object2map(this);
     }
-    public String json(){
+    public String json() {
         clearPropertyTable();
         return BeanUtil.object2json(this);
     }
-    public void clearPropertyTable(){
-        if(null != columns){
-            for(Column column:columns.values()){
+    public void clearPropertyTable() {
+        if(null != columns) {
+            for(Column column:columns.values()) {
                 column.setTable((Table)null);
             }
         }
-        if(null != tags){
-            for(Tag tag:tags.values()){
+        if(null != tags) {
+            for(Tag tag:tags.values()) {
                 tag.setTable((Table)null);
             }
         }
-        if(null != indexes){
-            for(Index index:indexes.values()){
+        if(null != indexes) {
+            for(Index index:indexes.values()) {
                 index.setTable((Table)null);
             }
         }
-        if(null != constraints){
-            for(Constraint constraint:constraints.values()){
+        if(null != constraints) {
+            for(Constraint constraint:constraints.values()) {
                 constraint.setTable((Table)null);
             }
         }
-        if(null != primaryKey){
+        if(null != primaryKey) {
             primaryKey.setTable((Table)null);
         }
     }
@@ -1270,7 +1270,7 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
     }
     public TableDiffer compare(Table table, MetadataDiffer.DIRECT direct) {
         Table direct_ = null;
-        if(direct == MetadataDiffer.DIRECT.DEST){
+        if(direct == MetadataDiffer.DIRECT.DEST) {
             direct_ = table;
         }else{
             direct_ = this;
@@ -1335,17 +1335,17 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
             setAutoBucket(false);
             return this;
         }
-        public Distribution order(String column, String type){
-            if(null == orders){
+        public Distribution order(String column, String type) {
+            if(null == orders) {
                 orders = new LinkedHashMap<>();
             }
             orders.put(column, type);
             return this;
         }
-        public Distribution order(String column){
+        public Distribution order(String column) {
             return order(column, null);
         }
-        public LinkedHashMap<String, String> orders(){
+        public LinkedHashMap<String, String> orders() {
             return orders;
         }
         public boolean isAutoBucket() {
@@ -1386,7 +1386,7 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
 
     }
     public static class Cluster extends Distribution {
-        public Cluster(){}
+        public Cluster() {}
     }
     public static class Key{
         public enum TYPE {
@@ -1566,7 +1566,7 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
                     }
                 }else if(null != item && item.getClass().isArray()) {
                     int len = Array.getLength(item);
-                    for(int i=0; i<len; i++){
+                    for(int i=0; i<len; i++) {
                         addValues(Array.get(item, i));
                     }
                 }else {
@@ -1612,8 +1612,8 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
             private String unit;
             private int modulus;
             private int remainder;
-            public Slice(){}
-            public Slice(String name){
+            public Slice() {}
+            public Slice(String name) {
                 this.name = name;
             }
             public String getName() {

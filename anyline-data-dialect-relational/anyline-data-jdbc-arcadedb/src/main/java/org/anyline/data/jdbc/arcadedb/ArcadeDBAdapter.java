@@ -43,7 +43,7 @@ public class ArcadeDBAdapter extends MySQLGenusAdapter {
     public DatabaseType type() {
         return DatabaseType.ArcadeDB;
     }
-    public ArcadeDBAdapter(){
+    public ArcadeDBAdapter() {
         super();
     }
     /* *****************************************************************************************************************
@@ -190,7 +190,7 @@ public class ArcadeDBAdapter extends MySQLGenusAdapter {
      * @param configs ConfigStore
      */
     @Override
-    public void fillInsertCreateTemplate(DataRuntime runtime, Run run, PartitionTable dest, ConfigStore configs){
+    public void fillInsertCreateTemplate(DataRuntime runtime, Run run, PartitionTable dest, ConfigStore configs) {
         super.fillInsertCreateTemplate(runtime, run, dest, configs);
     }
 
@@ -410,7 +410,7 @@ public class ArcadeDBAdapter extends MySQLGenusAdapter {
      * @return Run
      */
     @Override
-    public Run buildUpdateRunLimit(DataRuntime runtime, Run run){
+    public Run buildUpdateRunLimit(DataRuntime runtime, Run run) {
         return super.buildUpdateRunLimit(runtime, run);
     }
 
@@ -5224,7 +5224,7 @@ public class ArcadeDBAdapter extends MySQLGenusAdapter {
      * @return list
      */
     @Override
-    public List<Run> merge(DataRuntime runtime, Table meta, List<Run> slices){
+    public List<Run> merge(DataRuntime runtime, Table meta, List<Run> slices) {
         return super.merge(runtime, meta, slices);
     }
 
