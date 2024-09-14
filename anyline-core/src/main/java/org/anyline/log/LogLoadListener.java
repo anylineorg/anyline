@@ -10,13 +10,13 @@ import java.util.Map;
 public class LogLoadListener  implements LoadListener {
     @Override
     public void start() {
-    }
-
-    @Override
-    public void after() {
         Map<String, LogFactory> factors = ConfigTable.environment().getBeans(LogFactory.class);
         for(LogFactory item:factors.values()){
             LogProxy.addFactory(item);
         }
+    }
+
+    @Override
+    public void after() {
     }
 }

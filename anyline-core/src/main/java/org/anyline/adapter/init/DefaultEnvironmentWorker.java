@@ -23,10 +23,10 @@ import org.anyline.bean.BeanDefine;
 import org.anyline.bean.LoadListener;
 import org.anyline.bean.ValueReference;
 import org.anyline.bean.init.DefaultBeanDefine;
-import org.anyline.proxy.ConvertProxy;
-import org.anyline.util.*;
 import org.anyline.log.Log;
 import org.anyline.log.LogProxy;
+import org.anyline.proxy.ConvertProxy;
+import org.anyline.util.*;
 
 import java.io.File;
 import java.io.InputStream;
@@ -72,26 +72,29 @@ public class DefaultEnvironmentWorker implements EnvironmentWorker {
     public static void loadBean() throws Exception {
         //加载当前jar中的配置文件
         //file:/D:/jA.jar!/org/anyline/util/
-        String path = Objects.requireNonNull(ConfigTable.class.getResource("")).getPath();
-        path = ConfigTable.path(path);
-        loadBean(new JarFile(path));
-        //1. 加载包含org.anyline包的所有目录
-        //file:/D:/sso/target/classes/org/anyline/
-        //jar:file:/D:/A.jar!/org/anyline/
-        //D:\A.jar!/BOOT-INF/lib/B.jar
-        Enumeration<URL> urls = ConfigTable.class.getClassLoader().getResources("org/anyline/");
-        while (urls.hasMoreElements()) {
-            URL url = urls.nextElement();
-            String protocol = url.getProtocol().toLowerCase();
-            if("file".equals(protocol)) {
-                loadBean(new File(url.getFile()));
-            }else if("jar".equals(protocol)) {
-                JarFile jar = ((JarURLConnection) url.openConnection()).getJarFile();
-                log.debug("[load bean form jar][path:{}]", jar.getName());
-                loadBean(jar);
+        try {
+            String path = ConfigTable.class.getResource("").getPath();
+            path = ConfigTable.path(path);
+            loadBean(new JarFile(path));
+            //1. 加载包含org.anyline包的所有目录
+            //file:/D:/sso/target/classes/org/anyline/
+            //jar:file:/D:/A.jar!/org/anyline/
+            //D:\A.jar!/BOOT-INF/lib/B.jar
+            Enumeration<URL> urls = ConfigTable.class.getClassLoader().getResources("org/anyline/");
+            while (urls.hasMoreElements()) {
+                URL url = urls.nextElement();
+                String protocol = url.getProtocol().toLowerCase();
+                if ("file".equals(protocol)) {
+                    loadBean(new File(url.getFile()));
+                } else if ("jar".equals(protocol)) {
+                    JarFile jar = ((JarURLConnection) url.openConnection()).getJarFile();
+                    log.debug("[load bean form jar][path:{}]", jar.getName());
+                    loadBean(jar);
+                }
             }
+        }catch (Exception e){
+            log.warn("配置文件加载异常", e);
         }
-
         //2.项目中的配置文件
         String type = ConfigTable.getProjectProtocol();
         if ("jar".equals(type)) {
