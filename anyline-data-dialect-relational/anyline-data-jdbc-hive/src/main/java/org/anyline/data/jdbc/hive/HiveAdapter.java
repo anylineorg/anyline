@@ -3560,7 +3560,43 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 */
 	@Override
 	public List<Run> buildCreateRun(DataRuntime runtime, Table meta) throws Exception {
-		return super.buildCreateRun(runtime, meta);
+
+		List<Run> runs = new ArrayList<>();
+		Run run = new SimpleRun(runtime);
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
+		builder.append("CREATE ").append(keyword(meta)).append(" ");
+		checkTableExists(runtime, builder, false);
+		name(runtime, builder, meta);
+		//列,索引
+		body(runtime, builder, meta);
+		//索引
+		indexes(runtime, builder, meta);
+		//继承表
+		inherit(runtime, builder, meta);
+		//引擎
+		engine(runtime, builder, meta);
+		//编码方式
+		charset(runtime, builder, meta);
+		//keys type
+		keys(runtime, builder, meta);
+		//注释
+		comment(runtime, builder, meta);
+		//分表
+		partitionBy(runtime, builder, meta);
+		partitionFor(runtime, builder, meta);
+		//分桶方式
+		distribution(runtime, builder, meta);
+		//物化视图
+		materialize(runtime, builder, meta);
+		//扩展属性
+		property(runtime, builder, meta);
+
+		runs.addAll(buildAppendCommentRun(runtime, meta));
+		runs.addAll(buildAppendColumnCommentRun(runtime, meta));
+		runs.addAll(buildAppendPrimaryRun(runtime, meta));
+		runs.addAll(buildAppendIndexRun(runtime, meta));
+		return runs;
 	}
 
 	/**
@@ -3717,6 +3753,22 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 */
 	@Override
 	public StringBuilder body(DataRuntime runtime, StringBuilder builder, Table meta) {
+		Table.Partition partition = meta.getPartition();
+		if(null != partition){
+			LinkedHashMap<String, Column> pcs = partition.getColumns();
+			LinkedHashMap<String, Column> columns = meta.getColumns();
+			for(String pc:pcs.keySet()){
+				Column col = pcs.get(pc);
+				Column column = columns.get(pc);
+				if(null != column){
+					//分区时仅指定了列名没有设置数据类型
+					if(null == col.getTypeName()){
+						pcs.put(pc, column);
+					}
+					columns.remove(pc);
+				}
+			}
+		}
 		return super.body(runtime, builder, meta);
 	}
 
@@ -3799,7 +3851,45 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 */
 	@Override
 	public StringBuilder distribution(DataRuntime runtime, StringBuilder builder, Table meta) {
-		return super.distribution(runtime, builder, meta);
+		Table.Distribution distribution = meta.getDistribution();
+		//CLUSTERED BY(ID, P1) SORTED BY(ID ASC) INTO 32 BUCKETS
+		//  [CLUSTERED BY (col_name, col_name, ...) [SORTED BY (col_name [ASC|DESC], ...)] INTO num_buckets BUCKETS]
+		if(null != distribution) {
+			Table.Distribution.TYPE type = distribution.getType();
+			if(null != type) {
+				builder.append("\nCLUSTERED BY ").append(type);
+				LinkedHashMap<String, Column> columns = distribution.getColumns();
+				if(null != columns && !columns.isEmpty()) {
+					//分桶相关列
+					builder.append("(");
+					delimiter(builder, Column.names(columns));
+					builder.append(")");
+					LinkedHashMap<String, String> orders = distribution.orders();
+					if(null != orders && !orders.isEmpty()){
+						builder.append(" SORTED BY(");
+						boolean first = true;
+						for(String order:orders.keySet()){
+							if(!first){
+								builder.append(", ");
+							}
+							first = false;
+							delimiter(builder, order);
+							String sc = orders.get(order);
+							if(null != sc){
+								builder.append(" ").append(sc);
+							}
+						}
+						builder.append(")");
+					}
+					//分桶数量
+					int buckets = distribution.getBuckets();
+					if(buckets > 0) {
+						builder.append(" INTO ").append(buckets).append(" BUCKETS");
+					}
+				}
+			}
+		}
+		return builder;
 	}
 
 	/**
@@ -3839,12 +3929,30 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 */
 	@Override
 	public StringBuilder partitionBy(DataRuntime runtime, StringBuilder builder, Table meta) throws Exception {
-		return super.partitionBy(runtime, builder, meta);
+		// PARTITION BY RANGE (code string); #根据code值分区
+		Table.Partition partition = meta.getPartition();
+		if(null == partition) {
+			return builder;
+		}
+		builder.append("\n PARTITIONED BY ").append("(");
+		LinkedHashMap<String, Column> columns = partition.getColumns();
+		boolean first = true;
+		for(Column column:columns.values()){
+			if(!first){
+				builder.append(", ");
+			}
+			first = false;
+			delimiter(builder, column.getName()).append(" ");
+			type(runtime, builder, column);
+			comment(runtime, builder, column);
+		}
+		builder.append(")");
+		return builder;
 	}
 
 	/**
 	 * table[命令合成-子流程]<br/>
-	 * 子表执行分区依据(相关主表)<br/>
+	 * 子表执行分区依据(相关主表及分区值)
 	 * 如CREATE TABLE hr_user_fi PARTITION OF hr_user FOR VALUES IN ('FI')
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder builder
@@ -3868,7 +3976,75 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 */
 	@Override
 	public StringBuilder partitionFor(DataRuntime runtime, StringBuilder builder, Table meta) throws Exception {
-		return super.partitionFor(runtime, builder, meta);
+		Table.Partition partition = meta.getPartition();
+		if(null == partition) {
+			return builder;
+		}
+		Table.Partition.TYPE type = partition.getType();
+		if(null == type) {
+			return builder;
+		}
+		if(type == Table.Partition.TYPE.HASH){
+			builder.append(" PARTITIONS ").append(partition.getModulus());
+			return builder;
+		}
+		List<Table.Partition.Slice> slices = partition.getSlices();
+		if(null != slices && !slices.isEmpty()) {
+			builder.append("(\n");
+			boolean sfirst = true;
+			for(Table.Partition.Slice slice:slices) {
+				builder.append("\n\t");
+				if(!sfirst) {
+					builder.append(", ");
+				}
+				sfirst = false;
+				Object max = slice.getMax();
+				List<Object> values = slice.getValues();
+				LinkedHashMap<String,Object> less = slice.getLess();
+				int interval = slice.getInterval();
+				String unit = slice.getUnit();
+				if(type == Table.Partition.TYPE.RANGE) {
+					LinkedHashMap<String, Column> columns = partition.getColumns();
+                        /*PARTITION BY RANGE(col1[, col2, ...])
+                        (
+                            PARTITION partition_name1 VALUES LESS THAN MAXVALUE|("value1", "value2", ...),
+                            PARTITION partition_name2 VALUES LESS THAN MAXVALUE|("value1", "value2", ...)
+                        )*/
+					builder.append("PARTITION ").append(slice.getName()).append(" VALUES LESS THAN ");
+					builder.append("(");
+					boolean lfirst = true;
+					for (Column column : columns.values()) {
+						if (!lfirst) {
+							builder.append(", ");
+						}
+						lfirst = false;
+						Object v = less.get(column.getName().toUpperCase());
+						builder.append(write(runtime, null, v, false, false));
+					}
+					builder.append(")");
+				}else if(type == Table.Partition.TYPE.LIST) {
+                        /*
+                        PARTITION BY List(`address` )
+                        (
+                            PARTITION `p_city1` VALUES IN ("浦东","闵行"),
+                            PARTITION `p_city2` VALUES IN ("海淀","昌平"),
+                            PARTITION `p_city3` VALUES IN ("太原","忻州")
+                        */
+					builder.append("PARTITION ").append(slice.getName()).append(" VALUES IN(");
+					boolean vfirst = true;
+					for(Object value:values) {
+						if(!vfirst) {
+							builder.append(", ");
+						}
+						vfirst = false;
+						builder.append(write(runtime, null, value, false, false));
+					}
+					builder.append(")");
+				}
+			}
+			builder.append("\n)");
+		}
+		return builder;
 	}
 
 	/**
@@ -6294,16 +6470,16 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	@Override
 	public String value(DataRuntime runtime, Column column, SQL_BUILD_IN_VALUE value) {
 		if(value == SQL_BUILD_IN_VALUE.CURRENT_DATETIME) {
-			return "CURRENT_TIMESTAMP";
+			return "CURRENT_TIMESTAMP()";
 		}
 		if(value == SQL_BUILD_IN_VALUE.CURRENT_DATE) {
-			return "CURRENT_DATE";
+			return "CURRENT_DATE()";
 		}
 		if(value == SQL_BUILD_IN_VALUE.CURRENT_TIME) {
-			return "CURRENT_TIMESTAMP";
+			return "CURRENT_TIMESTAMP()";
 		}
 		if(value == SQL_BUILD_IN_VALUE.CURRENT_TIMESTAMP) {
-			return "CURRENT_TIMESTAMP";
+			return "CURRENT_TIMESTAMP()";
 		}
 		return null;
 	}

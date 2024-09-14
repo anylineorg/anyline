@@ -275,6 +275,9 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
         this.distribution = distribution;
         return this;
     }
+    public Table setCluster(Distribution distribution) {
+        return setDistribution(distribution);
+    }
 
     /**
      * 设置分桶方式
@@ -1280,6 +1283,7 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
 
     /**
      * 分桶方式及数量
+     * distribution 或 clustered
      */
     public static class Distribution{
         public enum TYPE{
@@ -1311,9 +1315,8 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
          * 分桶依据列
          */
         private LinkedHashMap<String, Column> columns;
-        public Distribution() {
-
-        }
+        private LinkedHashMap<String, String> orders;
+        public Distribution() {}
         public Distribution(TYPE type, int buckets, String ... columns) {
             setBuckets(buckets);
             setType(type);
@@ -1332,7 +1335,19 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
             setAutoBucket(false);
             return this;
         }
-
+        public Distribution order(String column, String type){
+            if(null == orders){
+                orders = new LinkedHashMap<>();
+            }
+            orders.put(column, type);
+            return this;
+        }
+        public Distribution order(String column){
+            return order(column, null);
+        }
+        public LinkedHashMap<String, String> orders(){
+            return orders;
+        }
         public boolean isAutoBucket() {
             return autoBucket;
         }
@@ -1369,6 +1384,9 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
             return this;
         }
 
+    }
+    public static class Cluster extends Distribution {
+        public Cluster(){}
     }
     public static class Key{
         public enum TYPE {
