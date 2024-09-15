@@ -185,7 +185,10 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
      */
     protected int temporary                     ;
     protected int metadataScan = 1000           ; //部分数据库的列信息需要检测数据,0:检测 -1:全部
-
+    protected Skew skew                         ; //
+    protected String rowFormat                  ;
+    protected String store                      ;
+    protected String location                   ;
     /**
      * 主键是否需要更新
      */
@@ -1031,6 +1034,38 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
         return this;
     }
 
+    public Skew getSkew() {
+        return skew;
+    }
+
+    public void setSkew(Skew skew) {
+        this.skew = skew;
+    }
+
+    public String getRowFormat() {
+        return rowFormat;
+    }
+
+    public void setRowFormat(String rowFormat) {
+        this.rowFormat = rowFormat;
+    }
+
+    public String getStore() {
+        return store;
+    }
+
+    public void setStore(String store) {
+        this.store = store;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
     public Long getDataFree() {
         return dataFree;
     }
@@ -1280,12 +1315,44 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
     public TableDiffer compare(Table table) {
         return compare(table, MetadataDiffer.DIRECT.ORIGIN);
     }
-
+    public static class Skew {
+        private LinkedHashMap<String, List<Object>> values = new LinkedHashMap<>();
+        private String store;
+        public Skew addColumn(String ... columns) {
+            if(null != columns){
+                for(String column:columns){
+                    if(values.containsKey(column)){
+                        values.put(column, new ArrayList<>());
+                    }
+                }
+            }
+            return this;
+        }
+        public Skew addValue(String column, Object ... values){
+            List<Object> list = this.values.get(column);
+            if(null == list) {
+                list = new ArrayList<>();
+                this.values.put(column, list);
+            }
+            list.addAll(BeanUtil.object2list(values));
+            return this;
+        }
+        public LinkedHashMap<String, List<Object>> values() {
+            return values;
+        }
+        public String store() {
+            return store;
+        }
+        public Skew store(String store) {
+            this.store = store;
+            return this;
+        }
+    }
     /**
      * 分桶方式及数量
      * distribution 或 clustered
      */
-    public static class Distribution{
+    public static class Distribution {
         public enum TYPE{
             HASH 			("HASH"  			, "哈希分桶"),
             RANDOM 			("RANDOM"  			, "随机分桶");
