@@ -26,14 +26,16 @@ public class LogProxy {
     public static int size() {
         return factors.size();
     }
-    public static void addFactory(LogFactory factory) {
+    public static void append(LogFactory factory) {
         LogProxy.factors.add(factory);
-        compensate();
+        enrich();
     }
-    private static void compensate() {
-        Vector<Group> removes = new Vector<>();
+    private static void enrich() {
         for(Group group:caches) {
             for(LogFactory factory:factors) {
+                if(factory.disabled()){
+                    continue;
+                }
                 String name = group.getName();
                 Class<?> clazz = group.getClazz();
                 if(null != name) {
@@ -42,14 +44,15 @@ public class LogProxy {
                     group.add(factory.get(clazz));
                 }
             }
-            removes.add(group);
         }
-        caches.removeAll(removes);
     }
     public static Log get(String name) {
         Group group = new Group();
         group.setName(name);
         for(LogFactory factory:factors) {
+            if(factory.disabled()){
+                continue;
+            }
             group.add(factory.get(name));
         }
         if(factors.isEmpty()) {
@@ -61,6 +64,9 @@ public class LogProxy {
         Group group = new Group();
         group.setClazz(clazz);
         for(LogFactory factory:factors) {
+            if(factory.disabled()){
+                continue;
+            }
             group.add(factory.get(clazz));
         }
         if(factors.isEmpty()) {

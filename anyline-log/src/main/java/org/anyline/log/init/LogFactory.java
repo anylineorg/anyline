@@ -18,6 +18,7 @@ package org.anyline.log.init;
 
 import org.anyline.annotation.Component;
 import org.anyline.log.Log;
+import org.anyline.util.ConfigTable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,5 +34,10 @@ public class LogFactory implements org.anyline.log.LogFactory{
     public Log get(String name) {
         Logger logger = LoggerFactory.getLogger(name);
         return new DefaultLog(logger);
+    }
+
+    @Override
+    public boolean disabled() {
+        return ConfigTable.IS_DISABLED_DEFAULT_LOG;
     }
 }

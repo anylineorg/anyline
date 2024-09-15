@@ -73,9 +73,13 @@ public class DefaultEnvironmentWorker implements EnvironmentWorker {
         //加载当前jar中的配置文件
         //file:/D:/jA.jar!/org/anyline/util/
         try {
-            String path = ConfigTable.class.getResource("").getPath();
-            path = ConfigTable.path(path);
-            loadBean(new JarFile(path));
+            String path = null;
+            URL uri = ConfigTable.class.getResource("");
+            if(null != uri) {
+                path = uri.getPath();
+                path = ConfigTable.path(path);
+                loadBean(new JarFile(path));
+            }
             //1. 加载包含org.anyline包的所有目录
             //file:/D:/sso/target/classes/org/anyline/
             //jar:file:/D:/A.jar!/org/anyline/

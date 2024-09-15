@@ -20,17 +20,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Group implements Log {
-    private List<Log> logs = new ArrayList<>();
+    private final List<Log> logs = new ArrayList<>();
     private String name;
     private Class<?> clazz;
+    private final List<Class<? extends Log>> types = new ArrayList<>();
 
     public Group() {
     }
-    public Group(Log log) {
-        logs.add(log);
-    }
     public Group add(Log log) {
-        this.logs.add(log);
+        if(!types.contains(log.getClass())){
+            this.logs.add(log);
+            types.add(log.getClass());
+        }
         return this;
     }
     @Override

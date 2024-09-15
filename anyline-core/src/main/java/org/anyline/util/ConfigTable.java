@@ -73,12 +73,13 @@ public class ConfigTable {
 	 */
 	public static int KEEP_ADAPTER										= 1				;	// 同一个数据源是否保持相同的adapter
 	public static int  DEBUG_LVL										= 0				;   //
+	public static boolean IS_DISABLED_DEFAULT_LOG						= false			;   // 是否禁用默认日志(anyline-log)
 	public static boolean IS_LOG_SQL									= true			;	// 执行SQL时是否输出日志
 	public static boolean IS_LOG_SLOW_SQL								= true			;	// 执行慢SQL时是否输出日志
 	public static boolean IS_LOG_SQL_TIME								= true			;	// 执行SQL时是否输出耗时日志
 	public static boolean IS_LOG_QUERY_RESULT							= false			;	// 查询结果输出日志
 	public static boolean IS_LOG_QUERY_RESULT_EXCLUDE_METADATA			= true			;	// 查询结果输出日志时 是否过滤元数据查询结果
-	public static String LOG_QUERY_RESULT_ALT							= "(中文对齐请设置字体)";	// 查询结果日志显示行数
+	public static String LOG_QUERY_RESULT_ALT							= "(中文对齐请设置字体)";	// 查询结果提示
 	public static int LOG_QUERY_RESULT_ROWS								= 10			;	// 查询结果日志显示行数(-1表示全部)
 	public static int LOG_QUERY_RESULT_TABLE_MAX_WIDTH					= 120			;   // 查询结果日志表格最大宽度(中文占2个宽度)如果小于实际内容宽度按实际跨度显示
 	public static int LOG_QUERY_RESULT_CUT_WIDTH						= 30			;   // 查询结果日志超长列截断后宽度
@@ -298,18 +299,19 @@ public class ConfigTable {
 		return null;
 	}
 	public static String path(String path) {
-		//return new File(path).getAbsolutePath();
-
-		// path=file:/D:/develop/web/sso-0.0.2.jar!/BOOT-INF/classes!/		(windows jar)
-		// path=/D:/develop/web/sso/WEB-INF/classes/ 									(windows tomcat)
-		// path=/D:/develop/git/sso/target/classes/									(windows IDE)
-		// path=/D:/develop/git/sso/bin/classes/										(windows IDE)
-		// path=file:/D:/develop/git/sso/bin/classes/										(windows IDE)
-		// path=file:/usr/local/web/sso/sso-0.0.2.jar!/BOOT-INF/classes!/		(linux jar)
-		// path=/usr/local/web/sso/WEB-INF/classes/									(linux tomcat)
+		// return new File(path).getAbsolutePath();
+		// path=nested:/usr/local/A.jar!/BOOT-INF/lib/B.jar
+		// path=file:/D:/develop/web/A.jar!/BOOT-INF/classes!/				(windows jar)
+		// path=/D:/develop/web/sso/WEB-INF/classes/ 						(windows tomcat)
+		// path=/D:/develop/git/sso/target/classes/							(windows IDE)
+		// path=/D:/develop/git/sso/bin/classes/							(windows IDE)
+		// path=file:/D:/develop/git/sso/bin/classes/						(windows IDE)
+		// path=file:/usr/local/web/sso/A.jar!/BOOT-INF/classes!/			(linux jar)
+		// path=/usr/local/web/sso/WEB-INF/classes/							(linux tomcat)
 		if(null == path) {
 			return null;
 		}
+		path = path.replace("nested:", "");
 		Properties props=System.getProperties();
 		String os = props.getProperty("os.name");
 		if(null != os && os.toUpperCase().contains("WINDOWS")) {

@@ -23,7 +23,6 @@ public interface Log {
     int WARN_INT =  30;
     int ERROR_INT = 40;
 
-    String ROOT_LOGGER_NAME = "ROOT";
 
     String getName();
 
@@ -31,7 +30,7 @@ public interface Log {
     /**
      * Returns whether this Logger is enabled for a given
      *
-     * @param level
+     * @param level level
      * @return true if enabled, false otherwise.
      */
     default boolean isEnabledForLevel(int level) {

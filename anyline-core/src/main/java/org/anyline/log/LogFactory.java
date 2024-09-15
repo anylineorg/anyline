@@ -16,7 +16,12 @@
 
 package org.anyline.log;
 
+import org.anyline.util.ConfigTable;
+
 public interface LogFactory {
     Log get(Class<?> clazz);
     Log get(String name);
+    default boolean disabled() {
+        return false;
+    }
 }
