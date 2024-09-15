@@ -30,6 +30,7 @@ import org.anyline.metadata.refer.MetadataFieldRefer;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.util.BasicUtil;
+import org.anyline.util.BeanUtil;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -3587,6 +3588,10 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		partitionFor(runtime, builder, meta);
 		//分桶方式
 		distribution(runtime, builder, meta);
+		//skewed
+		skew(runtime, builder, meta);
+		//
+		store(runtime, builder, meta);
 		//物化视图
 		materialize(runtime, builder, meta);
 		//扩展属性
@@ -3598,7 +3603,81 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		runs.addAll(buildAppendIndexRun(runtime, meta));
 		return runs;
 	}
+	public StringBuilder store(DataRuntime runtime, StringBuilder builder, Table meta) {
+		/*[ROW FORMAT row_format]
+		   [STORED AS file_format]
+			 | STORED BY 'storage.handler.class.name' [WITH SERDEPROPERTIES (...)]
+		  ]*/
+		Table.Store store = meta.getStore();
+		if(null != store){
+			String rowFormat = store.getRowFormat();
+			if(BasicUtil.isNotEmpty(rowFormat)){
+				builder.append("\nROW FORMAT ").append(rowFormat);
+			}
+			String fileFormat = store.getFileFormat();
+			if(BasicUtil.isNotEmpty(fileFormat)){
+				builder.append("\nSTORED AS ").append(fileFormat);
+			}
+			String hanlder = store.getHandler();
+			if(BasicUtil.isNotEmpty(hanlder)){
+				builder.append("\nSTORED BY '").append(hanlder).append("'");
+				LinkedHashMap<String, Object> map = store.getProperty();
+				if(null != map && !map.isEmpty()){
+					builder.append("\nWITH SERDEPROPERTIES (");
+					boolean first = true;
+					for(String key:map.keySet()) {
+						Object value = map.get(key);
+						if(BasicUtil.isEmpty(value)) {
+							continue;
+						}
+						if(!first) {
+							builder.append(", ");
+						}
+						first = false;
+						builder.append("\"").append(key).append("\" = \"").append(value).append("\"");
+					}
+					builder.append(")");
+				}
+			}
 
+		}
+		return builder;
+	}
+	public StringBuilder skew(DataRuntime runtime, StringBuilder builder, Table meta) {
+		Table.Skew skew = meta.getSkew();
+		//SKEWED BY (col_name, col_name, ...)  ON ((col_value, col_value, ...), (col_value, col_value, ...), ...)
+		if(null != skew){
+			LinkedHashMap<String, List<Object>> values = skew.values();
+			if(!values.isEmpty()) {
+				builder.append("\nSKEWED BY (");
+				builder.append(BeanUtil.concat(values.keySet()));
+				builder.append(") ON(");
+				int value_length = values.values().iterator().next().size();
+				for(int i=0; i<value_length; i++){
+					boolean key_first = true;
+					if(i>0){
+						builder.append(", ");
+					}
+					builder.append("(");
+					for(String key:values.keySet()){
+						if(!key_first){
+							builder.append(", ");
+						}
+						key_first = false;
+						Object v = write(runtime, null, values.get(key).get(i), false, false);
+						builder.append(v);
+					}
+					builder.append(")");
+				}
+				builder.append(")");
+				String store = skew.store();
+				if(null != store){
+					builder.append(" STORED AS ").append(store);
+				}
+			}
+		}
+		return builder;
+	}
 	/**
 	 * table[命令合成]<br/>
 	 * 修改表

@@ -186,8 +186,7 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
     protected int temporary                     ;
     protected int metadataScan = 1000           ; //部分数据库的列信息需要检测数据,0:检测 -1:全部
     protected Skew skew                         ; //
-    protected String rowFormat                  ;
-    protected String store                      ;
+    protected Store store                       ; //
     protected String location                   ;
     /**
      * 主键是否需要更新
@@ -1042,19 +1041,11 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
         this.skew = skew;
     }
 
-    public String getRowFormat() {
-        return rowFormat;
-    }
-
-    public void setRowFormat(String rowFormat) {
-        this.rowFormat = rowFormat;
-    }
-
-    public String getStore() {
+    public Store getStore() {
         return store;
     }
 
-    public void setStore(String store) {
+    public void setStore(Store store) {
         this.store = store;
     }
 
@@ -1315,26 +1306,21 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
     public TableDiffer compare(Table table) {
         return compare(table, MetadataDiffer.DIRECT.ORIGIN);
     }
+
+
     public static class Skew {
         private LinkedHashMap<String, List<Object>> values = new LinkedHashMap<>();
         private String store;
-        public Skew addColumn(String ... columns) {
-            if(null != columns){
-                for(String column:columns){
-                    if(values.containsKey(column)){
-                        values.put(column, new ArrayList<>());
-                    }
-                }
-            }
-            return this;
-        }
+
         public Skew addValue(String column, Object ... values){
             List<Object> list = this.values.get(column);
             if(null == list) {
                 list = new ArrayList<>();
                 this.values.put(column, list);
             }
-            list.addAll(BeanUtil.object2list(values));
+            for(Object value:values){
+                list.add(value);
+            }
             return this;
         }
         public LinkedHashMap<String, List<Object>> values() {
@@ -1347,7 +1333,39 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
             this.store = store;
             return this;
         }
+
     }
+
+    public static class Store extends TableAffiliation{
+        private String rowFormat;
+        private String fileFormat;
+        private String handler;
+
+        public String getRowFormat() {
+            return rowFormat;
+        }
+
+        public void setRowFormat(String rowFormat) {
+            this.rowFormat = rowFormat;
+        }
+
+        public String getFileFormat() {
+            return fileFormat;
+        }
+
+        public void setFileFormat(String fileFormat) {
+            this.fileFormat = fileFormat;
+        }
+
+        public String getHandler() {
+            return handler;
+        }
+
+        public void setHandler(String handler) {
+            this.handler = handler;
+        }
+    }
+
     /**
      * 分桶方式及数量
      * distribution 或 clustered
