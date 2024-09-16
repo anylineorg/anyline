@@ -20,6 +20,10 @@ import dm.jdbc.driver.DmdbBlob;
 import dm.jdbc.driver.DmdbClob;
 import dm.jdbc.driver.DmdbNClob;
 import org.anyline.adapter.DataReader;
+import org.anyline.util.BeanUtil;
+
+import java.io.BufferedReader;
+import java.sql.NClob;
 
 public enum DMReader {
     /**
@@ -29,7 +33,31 @@ public enum DMReader {
         @Override
         public Object read(Object value) {
             if(value instanceof DmdbNClob) {
-                value = ((DmdbNClob)value).data;
+                DmdbNClob clob = (DmdbNClob)value;
+                if(clob.length == -1) {
+                    BufferedReader reader = null;
+                    try {
+                        reader = new BufferedReader(clob.getCharacterStream());
+                        StringBuilder builder = new StringBuilder();
+                        String line = reader.readLine();
+                        if(null != line){
+                            builder.append(line);
+                            while ((line = reader.readLine()) != null) {
+                                builder.append("\n").append(line);
+                            }
+                        }
+                        value = builder.toString();
+                    }catch (Exception ignored){
+                    }finally {
+                        if(null != reader){
+                            try {
+                                reader.close();
+                            }catch (Exception ignored){}
+                        }
+                    }
+                }else {
+                    value = clob.data;
+                }
             }
             return value;
         }
@@ -41,7 +69,14 @@ public enum DMReader {
         @Override
         public Object read(Object value) {
             if(value instanceof DmdbBlob) {
-                value = ((DmdbBlob)value).data;
+                DmdbBlob blob = (DmdbBlob)value;
+                if(blob.length == -1){
+                    try {
+                        value = BeanUtil.stream2bytes(blob.getBinaryStream());
+                    }catch (Exception ignored){}
+                }else {
+                    value = blob.data;
+                }
             }
             return value;
         }
@@ -53,7 +88,31 @@ public enum DMReader {
         @Override
         public Object read(Object value) {
             if(value instanceof DmdbClob) {
-                value = ((DmdbClob)value).data;
+                DmdbClob clob = (DmdbClob)value;
+                if(clob.length == -1) {
+                    BufferedReader reader = null;
+                    try {
+                        reader = new BufferedReader(clob.getCharacterStream());
+                        StringBuilder builder = new StringBuilder();
+                        String line = reader.readLine();
+                        if(null != line){
+                            builder.append(line);
+                            while ((line = reader.readLine()) != null) {
+                                builder.append("\n").append(line);
+                            }
+                        }
+                        value = builder.toString();
+                    }catch (Exception ignored){
+                    }finally {
+                        if(null != reader){
+                            try {
+                                reader.close();
+                            }catch (Exception ignored){}
+                        }
+                    }
+                }else {
+                    value = clob.data;
+                }
             }
             return value;
         }
