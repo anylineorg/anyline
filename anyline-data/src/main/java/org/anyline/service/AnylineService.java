@@ -1629,7 +1629,7 @@ public interface AnylineService<E>{
 	default DataRow queryProcedure(String procedure, String ... inputs) {
 		Procedure proc = new Procedure();
 		proc.setName(procedure);
-		return query(procedure, inputs);
+		return query(proc, inputs);
 	}
 	DataRow query(Procedure procedure, String ... inputs);
 
