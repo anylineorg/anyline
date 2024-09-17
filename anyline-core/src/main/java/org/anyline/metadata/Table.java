@@ -211,6 +211,14 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
     }
     public Table(String name) {
         if(null != name) {
+            String tmp = name.replaceAll("\\s+", " ");
+            String up = tmp.toUpperCase();
+            if(up.contains(" AS ")){
+                int split = up.lastIndexOf(" AS ");
+                name = tmp.substring(0, split).trim();
+                String alias = tmp.substring(split+4).trim();
+                this.setAlias(alias);
+            }
             if(name.contains(":") || name.contains(" ")) {
                 //自定义XML或sql
                 this.name = name;

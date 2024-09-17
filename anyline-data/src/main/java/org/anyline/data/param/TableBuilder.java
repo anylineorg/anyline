@@ -27,6 +27,7 @@ import org.anyline.entity.OriginRow;
 import org.anyline.metadata.Column;
 import org.anyline.metadata.Table;
 import org.anyline.util.BasicUtil;
+import org.anyline.util.BeanUtil;
 import org.anyline.util.SQLUtil;
 
 import java.util.ArrayList;
@@ -231,6 +232,61 @@ joins:[
         builder.addColumns(columns);
         return builder;
     }
+
+    /**
+     * 外键关联
+     * SELECT u.NAME AS USER_NAME
+     * LEFT JOIN CRM_USER AS U ON M.USER_ID = U.ID
+     * LEFT JOIN {table} AS U ON M.{column} = U.{fk}
+     * @param column 当前主表外键列 如 USER_ID
+     * @param table 外键关联表 如 user as u
+     * @param fk 外键表主键 如 user.ID
+     * @param relations 查询结果 别名如NAME,USER_NAME u.NAME AS USER_NAME
+     * @param conditions 关联条件
+     * @return this
+     */
+    public TableBuilder foreign(String column, Table table, String fk, LinkedHashMap<String, String> relations, String ... conditions){
+        boolean empty = columns.isEmpty();
+        String table_alias = table.getAlias();
+        if(BasicUtil.isEmpty(table_alias)){
+            table_alias = table.getName();
+        }
+        String master_alias = prepare.getAlias();
+        if(BasicUtil.isEmpty(master_alias)){
+            master_alias = prepare.getTableName();
+        }
+        for(String relation:relations.keySet()){
+            String col = table_alias + "." + relation + " AS " + relations.get(relation);
+            columns.put(col.toUpperCase(), new Column(col));
+        }
+        if(empty){
+            columns.put(master_alias+".*", new Column(master_alias+".*"));
+        }
+        List<String> cons = new ArrayList<>();
+        cons.add(master_alias+"."+column + " = " + table_alias + "." + fk);
+        if(null != conditions) {
+            for (String condition:conditions) {
+                cons.add(condition);
+            }
+        }
+        join(Join.TYPE.LEFT, table, cons);
+        return this;
+    }
+    public TableBuilder foreign(String column, Table table, String fk, String relation, String alias, String ... conditions){
+        LinkedHashMap<String, String> relations = new LinkedHashMap<>();
+        relations.put(relation, alias);
+        return foreign(column, table, fk, relations, conditions);
+    }
+
+    public TableBuilder foreign(String column, String table, String fk, String relation, String alias, String ... conditions){
+        LinkedHashMap<String, String> relations = new LinkedHashMap<>();
+        relations.put(relation, alias);
+        return foreign(column, table, fk, relations, conditions);
+    }
+    public TableBuilder foreign(String column, String table, String fk, LinkedHashMap<String, String> relations, String ... conditions){
+        return foreign(column, new Table(table), fk, relations, conditions);
+    }
+
     public TableBuilder condition(ConfigStore configs) {
         this.conditions = configs;
         return this;
