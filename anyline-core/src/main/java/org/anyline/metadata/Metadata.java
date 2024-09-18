@@ -169,11 +169,19 @@ public class Metadata<T extends Metadata> {
     }
 
     public String getEngine() {
+        if(getmap && null != update) {
+            return update.engine;
+        }
         return engine;
     }
 
-    public void setEngine(String engine) {
+    public T setEngine(String engine) {
+        if(setmap && null != update) {
+            update.setEngine(engine);
+            return (T)this;
+        }
         this.engine = engine;
+        return (T)this;
     }
 
     public static <T extends Metadata> List<String> names(LinkedHashMap<String, T> metas) {

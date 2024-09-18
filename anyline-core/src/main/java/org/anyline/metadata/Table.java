@@ -132,11 +132,6 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
      */
     protected String refGeneration                ;
 
-    /**
-     * 数据库引擎
-     */
-    protected String engine                       ;
-
     private String engineParameters               ;
 
     /**
@@ -975,22 +970,6 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
             return update.getTag(name);
         }
         return tags.get(name.toUpperCase());
-    }
-
-    public String getEngine() {
-        if(getmap && null != update) {
-            return update.engine;
-        }
-        return engine;
-    }
-
-    public Table setEngine(String engine) {
-        if(setmap && null != update) {
-            update.setEngine(engine);
-            return this;
-        }
-        this.engine = engine;
-        return this;
     }
 
     public String getCharset() {

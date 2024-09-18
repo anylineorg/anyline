@@ -25,7 +25,6 @@ public class Database extends Metadata<Database> implements Serializable {
     protected String filePath                     ; // 文件位置
     protected String logPath                      ; // 日志位置
     protected String user                         ; // 所属用户
-    protected String engine                       ; // engine
     public Database() {}
     public Database(String name) {
         setName(name);
@@ -67,14 +66,6 @@ public class Database extends Metadata<Database> implements Serializable {
     }
     public String getKeyword() {
         return this.keyword;
-    }
-
-    public String getEngine() {
-        return engine;
-    }
-
-    public void setEngine(String engine) {
-        this.engine = engine;
     }
 
     /* ********************************* field refer ********************************** */
