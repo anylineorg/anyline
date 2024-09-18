@@ -6528,6 +6528,552 @@ public interface DriverAdapter {
 	 */
 	boolean execute(DataRuntime runtime, String random, Metadata meta, ACTION.DDL action, Run run);
 	boolean execute(DataRuntime runtime, String random, Metadata meta, ACTION.DDL action, List<Run> runs);
+
+
+    /* *****************************************************************************************************************
+     * 													catalog
+     * -----------------------------------------------------------------------------------------------------------------
+     * boolean create(Catalog catalog) throws Exception
+     * boolean alter(Catalog catalog) throws Exception
+     * boolean drop(Catalog catalog) throws Exception
+     * boolean rename(Catalog origin, String name) throws Exception
+     ******************************************************************************************************************/
+
+    /**
+     * catalog[调用入口]<br/>
+     * 创建Catalog,执行的命令通过meta.ddls()返回
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta Catalog
+     * @return boolean 是否执行成功
+     * @throws Exception DDL异常
+     */
+    boolean create(DataRuntime runtime, Catalog meta) throws Exception;
+
+    /**
+     * catalog[调用入口]<br/>
+     * 修改Catalog,执行的命令通过meta.ddls()返回
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta Catalog
+     * @return boolean 是否执行成功
+     * @throws Exception DDL异常
+     */
+    boolean alter(DataRuntime runtime, Catalog meta) throws Exception;
+    /**
+     * catalog[调用入口]<br/>
+     * 删除Catalog,执行的命令通过meta.ddls()返回
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta Catalog
+     * @return boolean 是否执行成功
+     * @throws Exception DDL异常
+     */
+    boolean drop(DataRuntime runtime, Catalog meta) throws Exception;
+
+    /**
+     * catalog[调用入口]<br/>
+     * 重命名Catalog,执行的命令通过meta.ddls()返回
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param origin 原Catalog
+     * @param name 新名称
+     * @return boolean 是否执行成功
+     * @throws Exception DDL异常
+     */
+    boolean rename(DataRuntime runtime, Catalog origin, String name) throws Exception;
+
+    /**
+     * catalog[命令合成]<br/>
+     * 创建Catalog<br/>
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta Catalog
+     * @return sql
+     * @throws Exception 异常
+     */
+    List<Run> buildCreateRun(DataRuntime runtime, Catalog meta) throws Exception;
+
+    /**
+     * catalog[命令合成]<br/>
+     * 修改Catalog
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta Catalog
+     * @return sql
+     * @throws Exception 异常
+     */
+    List<Run> buildAlterRun(DataRuntime runtime, Catalog meta) throws Exception;
+
+    /**
+     * catalog[命令合成]<br/>
+     * 重命名
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta Catalog
+     * @return sql
+     * @throws Exception 异常
+     */
+    List<Run> buildRenameRun(DataRuntime runtime, Catalog meta) throws Exception;
+
+    /**
+     * catalog[命令合成]<br/>
+     * 删除Catalog
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta Catalog
+     * @return sql
+     * @throws Exception 异常
+     */
+    List<Run> buildDropRun(DataRuntime runtime, Catalog meta) throws Exception;
+
+    /**
+     * catalog[命令合成-子流程]<br/>
+     * 创建Catalog完成后追加Catalog备注,创建过程能添加备注的不需要实现与comment(DataRuntime runtime, StringBuilder builder, Catalog meta)二选一实现
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta Catalog
+     * @return sql
+     * @throws Exception 异常
+     */
+    List<Run> buildAppendCommentRun(DataRuntime runtime, Catalog meta) throws Exception;
+    /**
+     * catalog[命令合成-子流程]<br/>
+     * 创建Catalog完成后追加列备注,创建过程能添加备注的不需要实现与comment(DataRuntime runtime, StringBuilder builder, Column meta)二选一实现
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta Catalog
+     * @return sql
+     * @throws Exception 异常
+     */
+    List<Run> buildAppendColumnCommentRun(DataRuntime runtime, Catalog meta) throws Exception;
+
+    /**
+     * catalog[命令合成-子流程]<br/>
+     * 修改备注
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param catalog Catalog
+     * @return sql
+     * @throws Exception 异常
+     */
+    List<Run> buildChangeCommentRun(DataRuntime runtime, Catalog catalog) throws Exception;
+
+    /**
+     * catalog[命令合成-子流程]<br/>
+     * 添加备注(部分数据库需要区分添加还是修改)
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param catalog Catalog
+     * @return sql
+     * @throws Exception 异常
+     */
+    default List<Run> buildAddCommentRun(DataRuntime runtime, Catalog catalog) throws Exception {
+        return buildChangeCommentRun(runtime, catalog);
+    }
+
+    /**
+     * catalog[命令合成-子流程]<br/>
+     * 创建或删除Catalog之前  检测Catalog是否存在
+     * IF NOT EXISTS
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param builder builder
+     * @param exists exists
+     * @return StringBuilder
+     */
+    StringBuilder checkCatalogExists(DataRuntime runtime, StringBuilder builder, boolean exists);
+
+    /**
+     * catalog[命令合成-子流程]<br/>
+     * 创建Catalog engine
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param builder builder
+     * @param meta Catalog
+     * @return StringBuilder
+     */
+    StringBuilder engine(DataRuntime runtime, StringBuilder builder, Catalog meta);
+
+    /**
+     * catalog[命令合成-子流程]<br/>
+     * 编码
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param builder builder
+     * @param meta Catalog
+     * @return StringBuilder
+     */
+    StringBuilder charset(DataRuntime runtime, StringBuilder builder, Catalog meta);
+
+    /**
+     * catalog[命令合成-子流程]<br/>
+     * Catalog备注
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param builder builder
+     * @param meta Catalog
+     * @return StringBuilder
+     */
+    StringBuilder comment(DataRuntime runtime, StringBuilder builder, Catalog meta);
+
+    /**
+     * catalog[命令合成-子流程]<br/>
+     * 扩展属性
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param builder builder
+     * @param meta Catalog
+     * @return StringBuilder
+     */
+    StringBuilder property(DataRuntime runtime, StringBuilder builder, Catalog meta);
+
+
+    /* *****************************************************************************************************************
+     * 													schema
+     * -----------------------------------------------------------------------------------------------------------------
+     * boolean create(Schema schema) throws Exception
+     * boolean alter(Schema schema) throws Exception
+     * boolean drop(Schema schema) throws Exception
+     * boolean rename(Schema origin, String name) throws Exception
+     ******************************************************************************************************************/
+
+    /**
+     * schema[调用入口]<br/>
+     * 创建Schema,执行的命令通过meta.ddls()返回
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta Schema
+     * @return boolean 是否执行成功
+     * @throws Exception DDL异常
+     */
+    boolean create(DataRuntime runtime, Schema meta) throws Exception;
+
+    /**
+     * schema[调用入口]<br/>
+     * 修改Schema,执行的命令通过meta.ddls()返回
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta Schema
+     * @return boolean 是否执行成功
+     * @throws Exception DDL异常
+     */
+    boolean alter(DataRuntime runtime, Schema meta) throws Exception;
+    /**
+     * schema[调用入口]<br/>
+     * 删除Schema,执行的命令通过meta.ddls()返回
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta Schema
+     * @return boolean 是否执行成功
+     * @throws Exception DDL异常
+     */
+    boolean drop(DataRuntime runtime, Schema meta) throws Exception;
+
+    /**
+     * schema[调用入口]<br/>
+     * 重命名Schema,执行的命令通过meta.ddls()返回
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param origin 原Schema
+     * @param name 新名称
+     * @return boolean 是否执行成功
+     * @throws Exception DDL异常
+     */
+    boolean rename(DataRuntime runtime, Schema origin, String name) throws Exception;
+
+    /**
+     * schema[命令合成]<br/>
+     * 创建Schema<br/>
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta Schema
+     * @return sql
+     * @throws Exception 异常
+     */
+    List<Run> buildCreateRun(DataRuntime runtime, Schema meta) throws Exception;
+
+    /**
+     * schema[命令合成]<br/>
+     * 修改Schema
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta Schema
+     * @return sql
+     * @throws Exception 异常
+     */
+    List<Run> buildAlterRun(DataRuntime runtime, Schema meta) throws Exception;
+
+    /**
+     * schema[命令合成]<br/>
+     * 重命名
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta Schema
+     * @return sql
+     * @throws Exception 异常
+     */
+    List<Run> buildRenameRun(DataRuntime runtime, Schema meta) throws Exception;
+
+    /**
+     * schema[命令合成]<br/>
+     * 删除Schema
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta Schema
+     * @return sql
+     * @throws Exception 异常
+     */
+    List<Run> buildDropRun(DataRuntime runtime, Schema meta) throws Exception;
+
+    /**
+     * schema[命令合成-子流程]<br/>
+     * 创建Schema完成后追加Schema备注,创建过程能添加备注的不需要实现与comment(DataRuntime runtime, StringBuilder builder, Schema meta)二选一实现
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta Schema
+     * @return sql
+     * @throws Exception 异常
+     */
+    List<Run> buildAppendCommentRun(DataRuntime runtime, Schema meta) throws Exception;
+    /**
+     * schema[命令合成-子流程]<br/>
+     * 创建Schema完成后追加列备注,创建过程能添加备注的不需要实现与comment(DataRuntime runtime, StringBuilder builder, Column meta)二选一实现
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta Schema
+     * @return sql
+     * @throws Exception 异常
+     */
+    List<Run> buildAppendColumnCommentRun(DataRuntime runtime, Schema meta) throws Exception;
+
+    /**
+     * schema[命令合成-子流程]<br/>
+     * 修改备注
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param schema Schema
+     * @return sql
+     * @throws Exception 异常
+     */
+    List<Run> buildChangeCommentRun(DataRuntime runtime, Schema schema) throws Exception;
+
+    /**
+     * schema[命令合成-子流程]<br/>
+     * 添加备注(部分数据库需要区分添加还是修改)
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param schema Schema
+     * @return sql
+     * @throws Exception 异常
+     */
+    default List<Run> buildAddCommentRun(DataRuntime runtime, Schema schema) throws Exception {
+        return buildChangeCommentRun(runtime, schema);
+    }
+
+    /**
+     * schema[命令合成-子流程]<br/>
+     * 创建或删除Schema之前  检测Schema是否存在
+     * IF NOT EXISTS
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param builder builder
+     * @param exists exists
+     * @return StringBuilder
+     */
+    StringBuilder checkSchemaExists(DataRuntime runtime, StringBuilder builder, boolean exists);
+
+    /**
+     * schema[命令合成-子流程]<br/>
+     * 创建Schema engine
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param builder builder
+     * @param meta Schema
+     * @return StringBuilder
+     */
+    StringBuilder engine(DataRuntime runtime, StringBuilder builder, Schema meta);
+
+    /**
+     * schema[命令合成-子流程]<br/>
+     * 编码
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param builder builder
+     * @param meta Schema
+     * @return StringBuilder
+     */
+    StringBuilder charset(DataRuntime runtime, StringBuilder builder, Schema meta);
+
+    /**
+     * schema[命令合成-子流程]<br/>
+     * Schema备注
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param builder builder
+     * @param meta Schema
+     * @return StringBuilder
+     */
+    StringBuilder comment(DataRuntime runtime, StringBuilder builder, Schema meta);
+
+    /**
+     * schema[命令合成-子流程]<br/>
+     * 扩展属性
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param builder builder
+     * @param meta Schema
+     * @return StringBuilder
+     */
+    StringBuilder property(DataRuntime runtime, StringBuilder builder, Schema meta);
+
+    /* *****************************************************************************************************************
+     * 													database
+     * -----------------------------------------------------------------------------------------------------------------
+     * boolean create(Database database) throws Exception
+     * boolean alter(Database database) throws Exception
+     * boolean drop(Database database) throws Exception
+     * boolean rename(Database origin, String name) throws Exception
+     ******************************************************************************************************************/
+
+    /**
+     * database[调用入口]<br/>
+     * 创建Database,执行的命令通过meta.ddls()返回
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta Database
+     * @return boolean 是否执行成功
+     * @throws Exception DDL异常
+     */
+    boolean create(DataRuntime runtime, Database meta) throws Exception;
+
+    /**
+     * database[调用入口]<br/>
+     * 修改Database,执行的命令通过meta.ddls()返回
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta Database
+     * @return boolean 是否执行成功
+     * @throws Exception DDL异常
+     */
+    boolean alter(DataRuntime runtime, Database meta) throws Exception;
+    /**
+     * database[调用入口]<br/>
+     * 删除Database,执行的命令通过meta.ddls()返回
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta Database
+     * @return boolean 是否执行成功
+     * @throws Exception DDL异常
+     */
+    boolean drop(DataRuntime runtime, Database meta) throws Exception;
+
+    /**
+     * database[调用入口]<br/>
+     * 重命名Database,执行的命令通过meta.ddls()返回
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param origin 原Database
+     * @param name 新名称
+     * @return boolean 是否执行成功
+     * @throws Exception DDL异常
+     */
+    boolean rename(DataRuntime runtime, Database origin, String name) throws Exception;
+
+    /**
+     * database[命令合成]<br/>
+     * 创建Database<br/>
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta Database
+     * @return sql
+     * @throws Exception 异常
+     */
+    List<Run> buildCreateRun(DataRuntime runtime, Database meta) throws Exception;
+
+    /**
+     * database[命令合成]<br/>
+     * 修改Database
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta Database
+     * @return sql
+     * @throws Exception 异常
+     */
+    List<Run> buildAlterRun(DataRuntime runtime, Database meta) throws Exception;
+
+    /**
+     * database[命令合成]<br/>
+     * 重命名
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta Database
+     * @return sql
+     * @throws Exception 异常
+     */
+    List<Run> buildRenameRun(DataRuntime runtime, Database meta) throws Exception;
+
+    /**
+     * database[命令合成]<br/>
+     * 删除Database
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta Database
+     * @return sql
+     * @throws Exception 异常
+     */
+    List<Run> buildDropRun(DataRuntime runtime, Database meta) throws Exception;
+
+    /**
+     * database[命令合成-子流程]<br/>
+     * 创建Database完成后追加Database备注,创建过程能添加备注的不需要实现与comment(DataRuntime runtime, StringBuilder builder, Database meta)二选一实现
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta Database
+     * @return sql
+     * @throws Exception 异常
+     */
+    List<Run> buildAppendCommentRun(DataRuntime runtime, Database meta) throws Exception;
+    /**
+     * database[命令合成-子流程]<br/>
+     * 创建Database完成后追加列备注,创建过程能添加备注的不需要实现与comment(DataRuntime runtime, StringBuilder builder, Column meta)二选一实现
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta Database
+     * @return sql
+     * @throws Exception 异常
+     */
+    List<Run> buildAppendColumnCommentRun(DataRuntime runtime, Database meta) throws Exception;
+
+    /**
+     * database[命令合成-子流程]<br/>
+     * 修改备注
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param database Database
+     * @return sql
+     * @throws Exception 异常
+     */
+    List<Run> buildChangeCommentRun(DataRuntime runtime, Database database) throws Exception;
+
+    /**
+     * database[命令合成-子流程]<br/>
+     * 添加备注(部分数据库需要区分添加还是修改)
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param database Database
+     * @return sql
+     * @throws Exception 异常
+     */
+    default List<Run> buildAddCommentRun(DataRuntime runtime, Database database) throws Exception {
+        return buildChangeCommentRun(runtime, database);
+    }
+
+    /**
+     * database[命令合成-子流程]<br/>
+     * 创建或删除Database之前  检测Database是否存在
+     * IF NOT EXISTS
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param builder builder
+     * @param exists exists
+     * @return StringBuilder
+     */
+    StringBuilder checkDatabaseExists(DataRuntime runtime, StringBuilder builder, boolean exists);
+
+    /**
+     * database[命令合成-子流程]<br/>
+     * 创建Database engine
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param builder builder
+     * @param meta Database
+     * @return StringBuilder
+     */
+    StringBuilder engine(DataRuntime runtime, StringBuilder builder, Database meta);
+
+    /**
+     * database[命令合成-子流程]<br/>
+     * 编码
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param builder builder
+     * @param meta Database
+     * @return StringBuilder
+     */
+    StringBuilder charset(DataRuntime runtime, StringBuilder builder, Database meta);
+
+    /**
+     * database[命令合成-子流程]<br/>
+     * Database备注
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param builder builder
+     * @param meta Database
+     * @return StringBuilder
+     */
+    StringBuilder comment(DataRuntime runtime, StringBuilder builder, Database meta);
+
+    /**
+     * database[命令合成-子流程]<br/>
+     * 扩展属性
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param builder builder
+     * @param meta Database
+     * @return StringBuilder
+     */
+    StringBuilder property(DataRuntime runtime, StringBuilder builder, Database meta);
+
 	/* *****************************************************************************************************************
 	 * 													table
 	 * -----------------------------------------------------------------------------------------------------------------

@@ -3171,6 +3171,211 @@ public class DefaultService<E> implements AnylineService<E> {
 	 * function         : 函数
 	 ******************************************************************************************************************/
     public DDLService ddl = new DDLService() {
+
+        /* *****************************************************************************************************************
+         * 													catalog
+         * -----------------------------------------------------------------------------------------------------------------
+         * boolean save(Catalog catalog) throws Exception
+         * boolean create(Catalog catalog) throws Exception
+         * boolean alter(Catalog catalog) throws Exception
+         * boolean drop(Catalog catalog) throws Exception
+         ******************************************************************************************************************/
+        @Override
+        public boolean save(Catalog meta) throws Exception {
+            boolean result = false;
+            CacheProxy.clear();
+            try {
+                Catalog exists = metadata.catalog(meta.getName());
+                if (null != exists) {
+                    exists.execute(meta.execute());
+                    Catalog update = meta.getUpdate();
+                    if (null == update) {
+                        update = meta;
+                    }
+                    exists.setUpdate(update, false, false);
+                    result = dao.alter(exists);
+                    meta.setDdls(exists.ddls());
+                    meta.setRuns(exists.runs());
+                } else {
+                    result = dao.create(meta);
+                }
+            }finally {
+                CacheProxy.clear();
+            }
+            return result;
+        }
+
+        @Override
+        public boolean create(Catalog meta) throws Exception {
+            return dao.create(meta);
+        }
+        @Override
+        public boolean alter(Catalog meta) throws Exception {
+            CacheProxy.clear();
+            try {
+                Catalog update = meta.getUpdate();
+                if (null == update) {
+                    update = meta;
+                }
+                meta = metadata().catalog(meta.getName());
+                meta.setUpdate(update, false, false);
+                boolean result = dao.alter(meta);
+                return result;
+            }finally {
+                CacheProxy.clear();
+            }
+        }
+
+        @Override
+        public boolean drop(Catalog meta) throws Exception {
+            boolean result = dao.drop(meta);
+            CacheProxy.clear();
+            return result;
+        }
+
+        @Override
+        public boolean rename(Catalog origin, String name) throws Exception {
+            boolean result = dao.rename(origin, name);
+            CacheProxy.clear();
+            return result;
+        }
+
+        /* *****************************************************************************************************************
+         * 													schema
+         * -----------------------------------------------------------------------------------------------------------------
+         * boolean save(Schema schema) throws Exception
+         * boolean create(Schema schema) throws Exception
+         * boolean alter(Schema schema) throws Exception
+         * boolean drop(Schema schema) throws Exception
+         ******************************************************************************************************************/
+        @Override
+        public boolean save(Schema meta) throws Exception {
+            boolean result = false;
+            CacheProxy.clear();
+            try {
+                Schema exists = metadata.schema(meta.getName());
+                if (null != exists) {
+                    exists.execute(meta.execute());
+                    Schema update = meta.getUpdate();
+                    if (null == update) {
+                        update = meta;
+                    }
+                    exists.setUpdate(update, false, false);
+                    result = dao.alter(exists);
+                    meta.setDdls(exists.ddls());
+                    meta.setRuns(exists.runs());
+                } else {
+                    result = dao.create(meta);
+                }
+            }finally {
+                CacheProxy.clear();
+            }
+            return result;
+        }
+
+        @Override
+        public boolean create(Schema meta) throws Exception {
+            return dao.create(meta);
+        }
+        @Override
+        public boolean alter(Schema meta) throws Exception {
+            CacheProxy.clear();
+            try {
+                Schema update = meta.getUpdate();
+                if (null == update) {
+                    update = meta;
+                }
+                meta = metadata().schema(meta.getName());
+                meta.setUpdate(update, false, false);
+                boolean result = dao.alter(meta);
+                return result;
+            }finally {
+                CacheProxy.clear();
+            }
+        }
+
+        @Override
+        public boolean drop(Schema meta) throws Exception {
+            boolean result = dao.drop(meta);
+            CacheProxy.clear();
+            return result;
+        }
+
+        @Override
+        public boolean rename(Schema origin, String name) throws Exception {
+            boolean result = dao.rename(origin, name);
+            CacheProxy.clear();
+            return result;
+        }
+
+        /* *****************************************************************************************************************
+         * 													database
+         * -----------------------------------------------------------------------------------------------------------------
+         * boolean save(Database database) throws Exception
+         * boolean create(Database database) throws Exception
+         * boolean alter(Database database) throws Exception
+         * boolean drop(Database database) throws Exception
+         ******************************************************************************************************************/
+        @Override
+        public boolean save(Database meta) throws Exception {
+            boolean result = false;
+            CacheProxy.clear();
+            try {
+                Database exists = metadata.database(meta.getName());
+                if (null != exists) {
+                    exists.execute(meta.execute());
+                    Database update = meta.getUpdate();
+                    if (null == update) {
+                        update = meta;
+                    }
+                    exists.setUpdate(update, false, false);
+                    result = dao.alter(exists);
+                    meta.setDdls(exists.ddls());
+                    meta.setRuns(exists.runs());
+                } else {
+                    result = dao.create(meta);
+                }
+            }finally {
+                CacheProxy.clear();
+            }
+            return result;
+        }
+
+        @Override
+        public boolean create(Database meta) throws Exception {
+            return dao.create(meta);
+        }
+        @Override
+        public boolean alter(Database meta) throws Exception {
+            CacheProxy.clear();
+            try {
+                Database update = meta.getUpdate();
+                if (null == update) {
+                    update = meta;
+                }
+                meta = metadata().database(meta.getName());
+                meta.setUpdate(update, false, false);
+                boolean result = dao.alter(meta);
+                return result;
+            }finally {
+                CacheProxy.clear();
+            }
+        }
+
+        @Override
+        public boolean drop(Database meta) throws Exception {
+            boolean result = dao.drop(meta);
+            CacheProxy.clear();
+            return result;
+        }
+
+        @Override
+        public boolean rename(Database origin, String name) throws Exception {
+            boolean result = dao.rename(origin, name);
+            CacheProxy.clear();
+            return result;
+        }
+
         /* *****************************************************************************************************************
          * 													table
          * -----------------------------------------------------------------------------------------------------------------

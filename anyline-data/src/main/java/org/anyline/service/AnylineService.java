@@ -1994,6 +1994,13 @@ public interface AnylineService<E>{
 		 * 													catalog
 		 **************************************************************************************************************/
 		Catalog catalog();
+		default Catalog catalog(String name) {
+			List<Catalog> catalogs = catalogs(false, name);
+			if(!catalogs.isEmpty()){
+				return catalogs.get(0);
+			}
+			return null;
+		}
 		<T extends Catalog> LinkedHashMap<String, T> catalogs(String name);
 		default LinkedHashMap<String, Catalog> catalogs() {
 			return catalogs(null);
@@ -2007,6 +2014,13 @@ public interface AnylineService<E>{
 		 * 													schema
 		 **************************************************************************************************************/
 		Schema schema();
+		default Schema schema(String name) {
+			List<Schema> schemas = schemas(false, name);
+			if(!schemas.isEmpty()){
+				return schemas.get(0);
+			}
+			return null;
+		}
 		<T extends Schema> LinkedHashMap<String, T> schemas(Catalog catalog, String name);
 		default LinkedHashMap<String, Schema> schemas(Catalog catalog) {
 			return schemas(catalog, null);
@@ -3978,43 +3992,73 @@ public interface AnylineService<E>{
 	interface DDLService{
 
 		/* *****************************************************************************************************************
-		 * 													table
+		 * 													catalog
+		 ******************************************************************************************************************/
+		boolean save(Catalog meta) throws Exception;
+		boolean create(Catalog meta) throws Exception;
+		boolean alter(Catalog meta) throws Exception;
+		boolean drop(Catalog meta) throws Exception;
+		boolean rename(Catalog origin, String name) throws Exception;
+
+		/* *****************************************************************************************************************
+		 * 													schema
 		 ******************************************************************************************************************/
 
-		boolean save(Table table) throws Exception;
-		boolean create(Table table) throws Exception;
-		boolean alter(Table table) throws Exception;
-		boolean drop(Table table) throws Exception;
+		boolean save(Schema schema) throws Exception;
+		boolean create(Schema schema) throws Exception;
+		boolean alter(Schema schema) throws Exception;
+		boolean drop(Schema schema) throws Exception;
+		boolean rename(Schema origin, String name) throws Exception;
+
+
+		/* *****************************************************************************************************************
+		 * 													database
+		 ******************************************************************************************************************/
+
+		boolean save(Database database) throws Exception;
+		boolean create(Database database) throws Exception;
+		boolean alter(Database database) throws Exception;
+		boolean drop(Database database) throws Exception;
+		boolean rename(Database origin, String name) throws Exception;
+
+
+		/* *****************************************************************************************************************
+		 * 													table
+		 ******************************************************************************************************************/
+		boolean save(Table meta) throws Exception;
+		boolean create(Table meta) throws Exception;
+		boolean alter(Table meta) throws Exception;
+		boolean drop(Table meta) throws Exception;
 		boolean rename(Table origin, String name) throws Exception;
 
 		/* *****************************************************************************************************************
 		 * 													view
 		 ******************************************************************************************************************/
 
-		boolean save(View view) throws Exception;
-		boolean create(View view) throws Exception;
-		boolean alter(View view) throws Exception;
-		boolean drop(View view) throws Exception;
+		boolean save(View meta) throws Exception;
+		boolean create(View meta) throws Exception;
+		boolean alter(View meta) throws Exception;
+		boolean drop(View meta) throws Exception;
 		boolean rename(View origin, String name) throws Exception;
 
 		/* *****************************************************************************************************************
 		 * 													master table
 		 ******************************************************************************************************************/
 
-		boolean save(MasterTable table) throws Exception;
-		boolean create(MasterTable table) throws Exception;
-		boolean alter(MasterTable table) throws Exception;
-		boolean drop(MasterTable table) throws Exception;
+		boolean save(MasterTable meta) throws Exception;
+		boolean create(MasterTable meta) throws Exception;
+		boolean alter(MasterTable meta) throws Exception;
+		boolean drop(MasterTable meta) throws Exception;
 		boolean rename(MasterTable origin, String name) throws Exception;
 
 		/* *****************************************************************************************************************
 		 * 													partition table
 		 ******************************************************************************************************************/
 
-		boolean save(PartitionTable table) throws Exception;
-		boolean create(PartitionTable table) throws Exception;
-		boolean alter(PartitionTable table) throws Exception;
-		boolean drop(PartitionTable table) throws Exception;
+		boolean save(PartitionTable meta) throws Exception;
+		boolean create(PartitionTable meta) throws Exception;
+		boolean alter(PartitionTable meta) throws Exception;
+		boolean drop(PartitionTable meta) throws Exception;
 		boolean rename(PartitionTable origin, String name) throws Exception;
 
 		/* *****************************************************************************************************************
@@ -4024,49 +4068,49 @@ public interface AnylineService<E>{
 		 * 修改列  名称 数据类型 位置 默认值
 		 * 执行save前先调用column.update()设置修改后的属性
 		 * column.update().setName().setDefaultValue().setAfter()....
-		 * @param column 列
+		 * @param meta 列
 		 * @throws Exception 异常 SQL异常
 		 */
-		boolean save(Column column) throws Exception;
-		boolean add(Column column) throws Exception;
-		boolean alter(Column column) throws Exception;
-		boolean drop(Column column) throws Exception;
+		boolean save(Column meta) throws Exception;
+		boolean add(Column meta) throws Exception;
+		boolean alter(Column meta) throws Exception;
+		boolean drop(Column meta) throws Exception;
 		boolean rename(Column origin, String name) throws Exception;
 
 		/* *****************************************************************************************************************
 		 * 													tag
 		 ******************************************************************************************************************/
 
-		boolean save(Tag tag) throws Exception;
-		boolean add(Tag tag) throws Exception;
-		boolean alter(Tag tag) throws Exception;
-		boolean drop(Tag tag) throws Exception;
+		boolean save(Tag meta) throws Exception;
+		boolean add(Tag meta) throws Exception;
+		boolean alter(Tag meta) throws Exception;
+		boolean drop(Tag meta) throws Exception;
 		boolean rename(Tag origin, String name) throws Exception;
 
 		/* *****************************************************************************************************************
 		 * 													primary
 		 ******************************************************************************************************************/
 
-		boolean add(PrimaryKey primary) throws Exception;
-		boolean alter(PrimaryKey primary) throws Exception;
-		boolean drop(PrimaryKey primary) throws Exception;
+		boolean add(PrimaryKey meta) throws Exception;
+		boolean alter(PrimaryKey meta) throws Exception;
+		boolean drop(PrimaryKey meta) throws Exception;
 		boolean rename(PrimaryKey origin, String name) throws Exception;
 		/* *****************************************************************************************************************
 		 * 													foreign
 		 ******************************************************************************************************************/
 
-		boolean add(ForeignKey foreign) throws Exception;
-		boolean alter(ForeignKey foreign) throws Exception;
-		boolean drop(ForeignKey foreign) throws Exception;
-		boolean rename(ForeignKey origin, String name) throws Exception;
+		boolean add(ForeignKey meta) throws Exception;
+		boolean alter(ForeignKey meta) throws Exception;
+		boolean drop(ForeignKey meta) throws Exception;
+		boolean rename(ForeignKey meta, String name) throws Exception;
 
 		/* *****************************************************************************************************************
 		 * 													index
 		 ******************************************************************************************************************/
 
-		boolean add(Index index) throws Exception;
-		boolean alter(Index index) throws Exception;
-		boolean drop(Index index) throws Exception;
+		boolean add(Index meta) throws Exception;
+		boolean alter(Index meta) throws Exception;
+		boolean drop(Index meta) throws Exception;
 		boolean rename(Index origin, String name) throws Exception;
 
 		/* *****************************************************************************************************************
@@ -4074,13 +4118,13 @@ public interface AnylineService<E>{
 		 ******************************************************************************************************************/
 		/**
 		 * 修改约束
-		 * @param constraint 约束
+		 * @param meta 约束
 		 * @return boolean
 		 * @throws Exception 异常 Exception
 		 */
-		boolean add(Constraint constraint) throws Exception;
-		boolean alter(Constraint constraint) throws Exception;
-		boolean drop(Constraint constraint) throws Exception;
+		boolean add(Constraint meta) throws Exception;
+		boolean alter(Constraint meta) throws Exception;
+		boolean drop(Constraint meta) throws Exception;
 		boolean rename(Constraint origin, String name) throws Exception;
 
 		/* *****************************************************************************************************************
@@ -4088,13 +4132,13 @@ public interface AnylineService<E>{
 		 ******************************************************************************************************************/
 		/**
 		 * 触发器
-		 * @param trigger 触发器
+		 * @param meta 触发器
 		 * @return trigger
 		 * @throws Exception 异常 Exception
 		 */
-		boolean create(Trigger trigger) throws Exception;
-		boolean alter(Trigger trigger) throws Exception;
-		boolean drop(Trigger trigger) throws Exception;
+		boolean create(Trigger meta) throws Exception;
+		boolean alter(Trigger meta) throws Exception;
+		boolean drop(Trigger meta) throws Exception;
 		boolean rename(Trigger origin, String name) throws Exception;
 
 		/* *****************************************************************************************************************
@@ -4102,13 +4146,13 @@ public interface AnylineService<E>{
 		 ******************************************************************************************************************/
 		/**
 		 * 存储过程
-		 * @param procedure 存储过程
+		 * @param meta 存储过程
 		 * @return boolean
 		 * @throws Exception 异常 Exception
 		 */
-		boolean create(Procedure procedure) throws Exception;
-		boolean alter(Procedure procedure) throws Exception;
-		boolean drop(Procedure procedure) throws Exception;
+		boolean create(Procedure meta) throws Exception;
+		boolean alter(Procedure meta) throws Exception;
+		boolean drop(Procedure meta) throws Exception;
 		boolean rename(Procedure origin, String name) throws Exception;
 
 		/* *****************************************************************************************************************
@@ -4116,26 +4160,26 @@ public interface AnylineService<E>{
 		 ******************************************************************************************************************/
 		/**
 		 * 函数
-		 * @param function 函数
+		 * @param meta 函数
 		 * @return boolean
 		 * @throws Exception 异常 Exception
 		 */
-		boolean create(Function function) throws Exception;
-		boolean alter(Function function) throws Exception;
-		boolean drop(Function function) throws Exception;
+		boolean create(Function meta) throws Exception;
+		boolean alter(Function meta) throws Exception;
+		boolean drop(Function meta) throws Exception;
 		boolean rename(Function origin, String name) throws Exception;
 		/* *****************************************************************************************************************
 		 * 													sequence
 		 ******************************************************************************************************************/
 		/**
 		 * 函数
-		 * @param sequence 序列
+		 * @param meta 序列
 		 * @return boolean
 		 * @throws Exception 异常 Exception
 		 */
-		boolean create(Sequence sequence) throws Exception;
-		boolean alter(Sequence sequence) throws Exception;
-		boolean drop(Sequence sequence) throws Exception;
+		boolean create(Sequence meta) throws Exception;
+		boolean alter(Sequence meta) throws Exception;
+		boolean drop(Sequence meta) throws Exception;
 		boolean rename(Sequence origin, String name) throws Exception;
 	}
 

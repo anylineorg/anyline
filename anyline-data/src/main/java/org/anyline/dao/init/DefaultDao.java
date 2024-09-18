@@ -1464,6 +1464,124 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 ******************************************************************************************************************/
 
 	/* *****************************************************************************************************************
+	 * 													catalog
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * boolean create(Catalog catalog) throws Exception
+	 * boolean alter(Catalog catalog) throws Exception
+	 * boolean drop(Catalog catalog) throws Exception
+	 * boolean rename(Catalog origin, String name) throws Exception
+	 ******************************************************************************************************************/
+	@Override
+	public boolean create(Catalog meta) throws Exception {
+		DataRuntime runtime = runtime();
+		return runtime.getAdapter().create(runtime, meta);
+	}
+
+	@Override
+	public boolean alter(Catalog meta) throws Exception {
+		DataRuntime runtime = runtime();
+		return runtime.getAdapter().alter(runtime, meta);
+	}
+
+	@Override
+	public boolean drop(Catalog meta) throws Exception {
+		DataRuntime runtime = runtime();
+		return runtime.getAdapter().drop(runtime, meta);
+	}
+
+	/**
+	 * 重命名
+	 * @param origin 原表
+	 * @param name 新名称
+	 * @return boolean
+	 * @throws Exception DDL异常
+	 */
+	@Override
+	public boolean rename(Catalog origin, String name) throws Exception {
+		DataRuntime runtime = runtime();
+		return runtime.getAdapter().rename(runtime, origin, name);
+	}
+
+
+	/* *****************************************************************************************************************
+	 * 													schema
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * boolean create(Schema schema) throws Exception
+	 * boolean alter(Schema schema) throws Exception
+	 * boolean drop(Schema schema) throws Exception
+	 * boolean rename(Schema origin, String name) throws Exception
+	 ******************************************************************************************************************/
+	@Override
+	public boolean create(Schema meta) throws Exception {
+		DataRuntime runtime = runtime();
+		return runtime.getAdapter().create(runtime, meta);
+	}
+
+	@Override
+	public boolean alter(Schema meta) throws Exception {
+		DataRuntime runtime = runtime();
+		return runtime.getAdapter().alter(runtime, meta);
+	}
+
+	@Override
+	public boolean drop(Schema meta) throws Exception {
+		DataRuntime runtime = runtime();
+		return runtime.getAdapter().drop(runtime, meta);
+	}
+
+	/**
+	 * 重命名
+	 * @param origin 原Schema
+	 * @param name 新名称
+	 * @return boolean
+	 * @throws Exception DDL异常
+	 */
+	@Override
+	public boolean rename(Schema origin, String name) throws Exception {
+		DataRuntime runtime = runtime();
+		return runtime.getAdapter().rename(runtime, origin, name);
+	}
+	/* *****************************************************************************************************************
+	 * 													database
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * boolean create(Database database) throws Exception
+	 * boolean alter(Database database) throws Exception
+	 * boolean drop(Database database) throws Exception
+	 * boolean rename(Database origin, String name) throws Exception
+	 ******************************************************************************************************************/
+	@Override
+	public boolean create(Database meta) throws Exception {
+		DataRuntime runtime = runtime();
+		return runtime.getAdapter().create(runtime, meta);
+	}
+
+	@Override
+	public boolean alter(Database meta) throws Exception {
+		DataRuntime runtime = runtime();
+		return runtime.getAdapter().alter(runtime, meta);
+	}
+
+	@Override
+	public boolean drop(Database meta) throws Exception {
+		DataRuntime runtime = runtime();
+		return runtime.getAdapter().drop(runtime, meta);
+	}
+
+	/**
+	 * 重命名
+	 * @param origin 原Database
+	 * @param name 新名称
+	 * @return boolean
+	 * @throws Exception DDL异常
+	 */
+	@Override
+	public boolean rename(Database origin, String name) throws Exception {
+		DataRuntime runtime = runtime();
+		return runtime.getAdapter().rename(runtime, origin, name);
+	}
+
+
+	/* *****************************************************************************************************************
 	 * 													table
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * boolean create(Table table) throws Exception

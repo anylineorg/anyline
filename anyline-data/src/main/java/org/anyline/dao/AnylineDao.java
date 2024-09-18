@@ -20,7 +20,6 @@ import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.RunPrepare;
-import org.anyline.data.prepare.auto.TablePrepare;
 import org.anyline.data.run.Run;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.util.DataSourceUtil;
@@ -1907,6 +1906,30 @@ public interface AnylineDao<E>{
 	 * procedure        : 存储过程
 	 * function         : 函数
 	 ******************************************************************************************************************/
+
+	/* *****************************************************************************************************************
+	 * 													catalog
+	 ******************************************************************************************************************/
+	boolean create(Catalog catalog) throws Exception;
+	boolean alter(Catalog catalog) throws Exception;
+	boolean drop(Catalog catalog) throws Exception;
+	boolean rename(Catalog origin, String name) throws Exception;
+
+	/* *****************************************************************************************************************
+	 * 													schema
+	 ******************************************************************************************************************/
+	boolean create(Schema schema) throws Exception;
+	boolean alter(Schema schema) throws Exception;
+	boolean drop(Schema schema) throws Exception;
+	boolean rename(Schema origin, String name) throws Exception;
+
+	/* *****************************************************************************************************************
+	 * 													database
+	 ******************************************************************************************************************/
+	boolean create(Database database) throws Exception;
+	boolean alter(Database database) throws Exception;
+	boolean drop(Database database) throws Exception;
+	boolean rename(Database origin, String name) throws Exception;
 
 	/* *****************************************************************************************************************
 	 * 													table

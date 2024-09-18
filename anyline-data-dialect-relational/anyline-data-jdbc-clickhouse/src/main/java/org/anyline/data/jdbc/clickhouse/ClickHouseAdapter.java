@@ -1271,7 +1271,15 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
      */
     @Override
     public List<Run> buildQueryDatabasesRun(DataRuntime runtime, boolean greedy, Database query) throws Exception {
-        return super.buildQueryDatabasesRun(runtime, greedy, query);
+        String name = query.getName();
+        List<Run> runs = new ArrayList<>();
+        Run run = new SimpleRun(runtime);
+        runs.add(run);
+        ConfigStore configs = run.getConfigs();
+        StringBuilder builder = run.getBuilder();
+        builder.append("SELECT * FROM system.databases");
+        configs.and(Compare.LIKE_SIMPLE,"name", objectName(runtime, query.getName()));
+        return runs;
     }
 
     /**
@@ -1281,7 +1289,9 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
      */
     @Override
     public MetadataFieldRefer initDatabaseFieldRefer() {
-        return super.initDatabaseFieldRefer();
+        MetadataFieldRefer refer = new MetadataFieldRefer(Database.class);
+        refer.map(Database.FIELD_NAME, "NAME");
+        return refer;
     }
 
     /**
