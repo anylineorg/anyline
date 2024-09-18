@@ -1422,7 +1422,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             builder.append(BR);
             //builder.append("\nWHERE 1=1").append(BR_TAB);
             run.setConfigStore(configs);
-            run.init();
+             run.init();
             run.appendCondition(this, true, true);
         }
         run.setUpdateColumns(updateColumns);
@@ -4426,8 +4426,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         }
         MetadataFieldRefer refer = refer(runtime, Database.class);
         meta.setMetadata(row);
-        meta.setName(row.getString(refer.maps(Database.FIELD_NAME)));
-        meta.setUser(row.getString(refer.maps(Database.FIELD_USER)));
+        meta.setName(getString(row, refer, Database.FIELD_NAME));
         return meta;
     }
 
@@ -4441,6 +4440,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      */
     @Override
     public <T extends Database> T detail(DataRuntime runtime, int index, T meta, Database query, DataRow row) {
+        MetadataFieldRefer refer = refer(runtime, Database.class);
+        meta.setUser(getString(row, refer, Database.FIELD_USER));
+        meta.setEngine(getString(row, refer, Database.FIELD_ENGINE));
         return meta;
     }
 	/* *****************************************************************************************************************
@@ -12180,7 +12182,14 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      */
     @Override
     public boolean create(DataRuntime runtime, Catalog meta) throws Exception {
-        return false;
+        ACTION.DDL action = ACTION.DDL.CATALOG_CREATE;
+        String random = random(runtime);
+        ACTION.SWITCH swt = InterceptorProxy.prepare(runtime, random, action, meta);
+        if(swt == ACTION.SWITCH.BREAK) {
+            return false;
+        }
+        List<Run> runs = buildCreateRun(runtime, meta);
+        return execute(runtime, random, meta, action, runs);
     }
 
     /**
@@ -12205,7 +12214,15 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      */
     @Override
     public boolean drop(DataRuntime runtime, Catalog meta) throws Exception {
-        return false;
+        ACTION.DDL action = ACTION.DDL.CATALOG_DROP;
+        String random = random(runtime);
+        ACTION.SWITCH swt = InterceptorProxy.prepare(runtime, random, action, meta);
+        if(swt == ACTION.SWITCH.BREAK) {
+            return false;
+        }
+        checkSchema(runtime, meta);
+        List<Run> runs = buildDropRun(runtime, meta);
+        return execute(runtime, random, meta, action, runs);
     }
 
     /**
@@ -12412,7 +12429,14 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      */
     @Override
     public boolean create(DataRuntime runtime, Schema meta) throws Exception {
-        return false;
+        ACTION.DDL action = ACTION.DDL.SCHEMA_CREATE;
+        String random = random(runtime);
+        ACTION.SWITCH swt = InterceptorProxy.prepare(runtime, random, action, meta);
+        if(swt == ACTION.SWITCH.BREAK) {
+            return false;
+        }
+        List<Run> runs = buildCreateRun(runtime, meta);
+        return execute(runtime, random, meta, action, runs);
     }
 
     /**
@@ -12425,7 +12449,15 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      */
     @Override
     public boolean alter(DataRuntime runtime, Schema meta) throws Exception {
-        return false;
+        ACTION.DDL action = ACTION.DDL.SCHEMA_DROP;
+        String random = random(runtime);
+        ACTION.SWITCH swt = InterceptorProxy.prepare(runtime, random, action, meta);
+        if(swt == ACTION.SWITCH.BREAK) {
+            return false;
+        }
+        checkSchema(runtime, meta);
+        List<Run> runs = buildDropRun(runtime, meta);
+        return execute(runtime, random, meta, action, runs);
     }
     /**
      * schema[调用入口]<br/>
@@ -12644,7 +12676,14 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      */
     @Override
     public boolean create(DataRuntime runtime, Database meta) throws Exception {
-        return false;
+        ACTION.DDL action = ACTION.DDL.DATABASE_CREATE;
+        String random = random(runtime);
+        ACTION.SWITCH swt = InterceptorProxy.prepare(runtime, random, action, meta);
+        if(swt == ACTION.SWITCH.BREAK) {
+            return false;
+        }
+        List<Run> runs = buildCreateRun(runtime, meta);
+        return execute(runtime, random, meta, action, runs);
     }
 
     /**
@@ -12669,7 +12708,15 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      */
     @Override
     public boolean drop(DataRuntime runtime, Database meta) throws Exception {
-        return false;
+        ACTION.DDL action = ACTION.DDL.DATABASE_DROP;
+        String random = random(runtime);
+        ACTION.SWITCH swt = InterceptorProxy.prepare(runtime, random, action, meta);
+        if(swt == ACTION.SWITCH.BREAK) {
+            return false;
+        }
+        checkSchema(runtime, meta);
+        List<Run> runs = buildDropRun(runtime, meta);
+        return execute(runtime, random, meta, action, runs);
     }
 
     /**

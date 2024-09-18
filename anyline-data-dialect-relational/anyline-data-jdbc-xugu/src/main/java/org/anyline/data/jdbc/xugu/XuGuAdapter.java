@@ -3608,6 +3608,472 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
     public boolean execute(DataRuntime runtime, String random, Metadata meta, ACTION.DDL action, Run run) {
         return super.execute(runtime, random, meta, action, run);
     }
+
+    /* *****************************************************************************************************************
+     * 													catalog
+     * -----------------------------------------------------------------------------------------------------------------
+     * boolean create(Catalog catalog) throws Exception
+     * boolean alter(Catalog catalog) throws Exception
+     * boolean drop(Catalog catalog) throws Exception
+     * boolean rename(Catalog origin, String name) throws Exception
+     ******************************************************************************************************************/
+
+    /**
+     * catalog[调用入口]<br/>
+     * 创建Catalog,执行的命令通过meta.ddls()返回
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta Catalog
+     * @return boolean 是否执行成功
+     * @throws Exception DDL异常
+     */
+    @Override
+    public boolean create(DataRuntime runtime, Catalog meta) throws Exception {
+        return super.create(runtime, meta);
+    }
+
+    /**
+     * catalog[调用入口]<br/>
+     * 修改Catalog,执行的命令通过meta.ddls()返回
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta Catalog
+     * @return boolean 是否执行成功
+     * @throws Exception DDL异常
+     */
+    @Override
+    public boolean alter(DataRuntime runtime, Catalog meta) throws Exception {
+        return super.alter(runtime, meta);
+    }
+
+    /**
+     * catalog[调用入口]<br/>
+     * 删除Catalog,执行的命令通过meta.ddls()返回
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta Catalog
+     * @return boolean 是否执行成功
+     * @throws Exception DDL异常
+     */
+    @Override
+    public boolean drop(DataRuntime runtime, Catalog meta) throws Exception {
+        return super.drop(runtime, meta);
+    }
+
+    /**
+     * catalog[调用入口]<br/>
+     * 重命名Catalog,执行的命令通过meta.ddls()返回
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param origin 原Catalog
+     * @param name 新名称
+     * @return boolean 是否执行成功
+     * @throws Exception DDL异常
+     */
+    @Override
+    public boolean rename(DataRuntime runtime, Catalog origin, String name) throws Exception {
+        return super.rename(runtime, origin, name);
+    }
+
+    /**
+     * catalog[命令合成]<br/>
+     * 创建Catalog<br/>
+     * 其中1.x三选一 不要重复
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta Catalog
+     * @return sql
+     * @throws Exception 异常
+     */
+    @Override
+    public List<Run> buildCreateRun(DataRuntime runtime, Catalog meta) throws Exception {
+        return super.buildCreateRun(runtime, meta);
+    }
+
+    /**
+     * catalog[命令合成]<br/>
+     * 修改Catalog
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta Catalog
+     * @return sql
+     * @throws Exception 异常
+     */
+    @Override
+    public List<Run> buildAlterRun(DataRuntime runtime, Catalog meta) throws Exception {
+        return super.buildAlterRun(runtime, meta);
+    }
+
+    /**
+     * catalog[命令合成]<br/>
+     * 重命名
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta Catalog
+     * @return sql
+     * @throws Exception 异常
+     */
+    @Override
+    public List<Run> buildRenameRun(DataRuntime runtime, Catalog meta) throws Exception {
+        return super.buildRenameRun(runtime, meta);
+    }
+
+    /**
+     * catalog[命令合成]<br/>
+     * 删除Catalog
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta Catalog
+     * @return sql
+     * @throws Exception 异常
+     */
+    @Override
+    public List<Run> buildDropRun(DataRuntime runtime, Catalog meta) throws Exception {
+        return super.buildDropRun(runtime, meta);
+    }
+
+    /**
+     * catalog[命令合成-子流程]<br/>
+     * 创建Catalog完成后追加Catalog备注,创建过程能添加备注的不需要实现与comment(DataRuntime runtime, StringBuilder builder, Catalog meta)二选一实现
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta Catalog
+     * @return sql
+     * @throws Exception 异常
+     */
+    @Override
+    public List<Run> buildAppendCommentRun(DataRuntime runtime, Catalog meta) throws Exception {
+        return super.buildAppendCommentRun(runtime, meta);
+    }
+
+    /**
+     * catalog[命令合成-子流程]<br/>
+     * 创建Catalog完成后追加列备注,创建过程能添加备注的不需要实现与comment(DataRuntime runtime, StringBuilder builder, Column meta)二选一实现
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta Catalog
+     * @return sql
+     * @throws Exception 异常
+     */
+    @Override
+    public List<Run> buildAppendColumnCommentRun(DataRuntime runtime, Catalog meta) throws Exception {
+        return super.buildAppendColumnCommentRun(runtime, meta);
+    }
+
+    /**
+     * catalog[命令合成-子流程]<br/>
+     * 修改备注
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param catalog Catalog
+     * @return sql
+     * @throws Exception 异常
+     */
+    @Override
+    public List<Run> buildChangeCommentRun(DataRuntime runtime, Catalog catalog) throws Exception {
+        return super.buildChangeCommentRun(runtime, catalog);
+    }
+
+    /**
+     * catalog[命令合成-子流程]<br/>
+     * 添加备注(部分数据库需要区分添加还是修改)
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param catalog Catalog
+     * @return sql
+     * @throws Exception 异常
+     */
+    @Override
+    public  List<Run> buildAddCommentRun(DataRuntime runtime, Catalog catalog) throws Exception {
+        return super.buildAddCommentRun(runtime, catalog);
+    }
+
+    /**
+     * catalog[命令合成-子流程]<br/>
+     * 创建或删除Catalog之前  检测Catalog是否存在
+     * IF NOT EXISTS
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param builder builder
+     * @param exists exists
+     * @return StringBuilder
+     */
+    @Override
+    public StringBuilder checkCatalogExists(DataRuntime runtime, StringBuilder builder, boolean exists) {
+        return super.checkCatalogExists(runtime, builder, exists);
+    }
+
+    /**
+     * catalog[命令合成-子流程]<br/>
+     * 创建Catalog engine
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param builder builder
+     * @param meta Catalog
+     * @return StringBuilder
+     */
+    @Override
+    public StringBuilder engine(DataRuntime runtime, StringBuilder builder, Catalog meta) {
+        return super.engine(runtime, builder, meta);
+    }
+
+    /**
+     * catalog[命令合成-子流程]<br/>
+     * 编码
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param builder builder
+     * @param meta Catalog
+     * @return StringBuilder
+     */
+    @Override
+    public StringBuilder charset(DataRuntime runtime, StringBuilder builder, Catalog meta) {
+        return super.charset(runtime, builder, meta);
+    }
+
+    /**
+     * catalog[命令合成-子流程]<br/>
+     * Catalog备注
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param builder builder
+     * @param meta Catalog
+     * @return StringBuilder
+     */
+    @Override
+    public StringBuilder comment(DataRuntime runtime, StringBuilder builder, Catalog meta) {
+        return super.comment(runtime, builder, meta);
+    }
+
+    /**
+     * catalog[命令合成-子流程]<br/>
+     * 扩展属性
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param builder builder
+     * @param meta Catalog
+     * @return StringBuilder
+     */
+    @Override
+    public StringBuilder property(DataRuntime runtime, StringBuilder builder, Catalog meta) {
+        return super.property(runtime, builder, meta);
+    }
+
+    /* *****************************************************************************************************************
+     * 													schema
+     * -----------------------------------------------------------------------------------------------------------------
+     * boolean create(Schema schema) throws Exception
+     * boolean alter(Schema schema) throws Exception
+     * boolean drop(Schema schema) throws Exception
+     * boolean rename(Schema origin, String name) throws Exception
+     ******************************************************************************************************************/
+
+    /**
+     * schema[调用入口]<br/>
+     * 创建Schema,执行的命令通过meta.ddls()返回
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta Schema
+     * @return boolean 是否执行成功
+     * @throws Exception DDL异常
+     */
+    @Override
+    public boolean create(DataRuntime runtime, Schema meta) throws Exception {
+        return super.create(runtime, meta);
+    }
+
+    /**
+     * schema[调用入口]<br/>
+     * 修改Schema,执行的命令通过meta.ddls()返回
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta Schema
+     * @return boolean 是否执行成功
+     * @throws Exception DDL异常
+     */
+    @Override
+    public boolean alter(DataRuntime runtime, Schema meta) throws Exception {
+        return super.alter(runtime, meta);
+    }
+
+    /**
+     * schema[调用入口]<br/>
+     * 删除Schema,执行的命令通过meta.ddls()返回
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta Schema
+     * @return boolean 是否执行成功
+     * @throws Exception DDL异常
+     */
+    @Override
+    public boolean drop(DataRuntime runtime, Schema meta) throws Exception {
+        return super.drop(runtime, meta);
+    }
+
+    /**
+     * schema[调用入口]<br/>
+     * 重命名Schema,执行的命令通过meta.ddls()返回
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param origin 原Schema
+     * @param name 新名称
+     * @return boolean 是否执行成功
+     * @throws Exception DDL异常
+     */
+    @Override
+    public boolean rename(DataRuntime runtime, Schema origin, String name) throws Exception {
+        return super.rename(runtime, origin, name);
+    }
+
+    /**
+     * schema[命令合成]<br/>
+     * 创建Schema<br/>
+     * 其中1.x三选一 不要重复
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta Schema
+     * @return sql
+     * @throws Exception 异常
+     */
+    @Override
+    public List<Run> buildCreateRun(DataRuntime runtime, Schema meta) throws Exception {
+        return super.buildCreateRun(runtime, meta);
+    }
+
+    /**
+     * schema[命令合成]<br/>
+     * 修改Schema
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta Schema
+     * @return sql
+     * @throws Exception 异常
+     */
+    @Override
+    public List<Run> buildAlterRun(DataRuntime runtime, Schema meta) throws Exception {
+        return super.buildAlterRun(runtime, meta);
+    }
+
+    /**
+     * schema[命令合成]<br/>
+     * 重命名
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta Schema
+     * @return sql
+     * @throws Exception 异常
+     */
+    @Override
+    public List<Run> buildRenameRun(DataRuntime runtime, Schema meta) throws Exception {
+        return super.buildRenameRun(runtime, meta);
+    }
+
+    /**
+     * schema[命令合成]<br/>
+     * 删除Schema
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta Schema
+     * @return sql
+     * @throws Exception 异常
+     */
+    @Override
+    public List<Run> buildDropRun(DataRuntime runtime, Schema meta) throws Exception {
+        return super.buildDropRun(runtime, meta);
+    }
+
+    /**
+     * schema[命令合成-子流程]<br/>
+     * 创建Schema完成后追加Schema备注,创建过程能添加备注的不需要实现与comment(DataRuntime runtime, StringBuilder builder, Schema meta)二选一实现
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta Schema
+     * @return sql
+     * @throws Exception 异常
+     */
+    @Override
+    public List<Run> buildAppendCommentRun(DataRuntime runtime, Schema meta) throws Exception {
+        return super.buildAppendCommentRun(runtime, meta);
+    }
+
+    /**
+     * schema[命令合成-子流程]<br/>
+     * 创建Schema完成后追加列备注,创建过程能添加备注的不需要实现与comment(DataRuntime runtime, StringBuilder builder, Column meta)二选一实现
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta Schema
+     * @return sql
+     * @throws Exception 异常
+     */
+    @Override
+    public List<Run> buildAppendColumnCommentRun(DataRuntime runtime, Schema meta) throws Exception {
+        return super.buildAppendColumnCommentRun(runtime, meta);
+    }
+
+    /**
+     * schema[命令合成-子流程]<br/>
+     * 修改备注
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param schema Schema
+     * @return sql
+     * @throws Exception 异常
+     */
+    @Override
+    public List<Run> buildChangeCommentRun(DataRuntime runtime, Schema schema) throws Exception {
+        return super.buildChangeCommentRun(runtime, schema);
+    }
+
+    /**
+     * schema[命令合成-子流程]<br/>
+     * 添加备注(部分数据库需要区分添加还是修改)
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param schema Schema
+     * @return sql
+     * @throws Exception 异常
+     */
+    @Override
+    public  List<Run> buildAddCommentRun(DataRuntime runtime, Schema schema) throws Exception {
+        return super.buildAddCommentRun(runtime, schema);
+    }
+
+    /**
+     * schema[命令合成-子流程]<br/>
+     * 创建或删除Schema之前  检测Schema是否存在
+     * IF NOT EXISTS
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param builder builder
+     * @param exists exists
+     * @return StringBuilder
+     */
+    @Override
+    public StringBuilder checkSchemaExists(DataRuntime runtime, StringBuilder builder, boolean exists) {
+        return super.checkSchemaExists(runtime, builder, exists);
+    }
+
+    /**
+     * schema[命令合成-子流程]<br/>
+     * 创建Schema engine
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param builder builder
+     * @param meta Schema
+     * @return StringBuilder
+     */
+    @Override
+    public StringBuilder engine(DataRuntime runtime, StringBuilder builder, Schema meta) {
+        return super.engine(runtime, builder, meta);
+    }
+
+    /**
+     * schema[命令合成-子流程]<br/>
+     * 编码
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param builder builder
+     * @param meta Schema
+     * @return StringBuilder
+     */
+    @Override
+    public StringBuilder charset(DataRuntime runtime, StringBuilder builder, Schema meta) {
+        return super.charset(runtime, builder, meta);
+    }
+
+    /**
+     * schema[命令合成-子流程]<br/>
+     * Schema备注
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param builder builder
+     * @param meta Schema
+     * @return StringBuilder
+     */
+    @Override
+    public StringBuilder comment(DataRuntime runtime, StringBuilder builder, Schema meta) {
+        return super.comment(runtime, builder, meta);
+    }
+
+    /**
+     * schema[命令合成-子流程]<br/>
+     * 扩展属性
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param builder builder
+     * @param meta Schema
+     * @return StringBuilder
+     */
+    @Override
+    public StringBuilder property(DataRuntime runtime, StringBuilder builder, Schema meta) {
+        return super.property(runtime, builder, meta);
+    }
     /* *****************************************************************************************************************
      *                                                     table
      * -----------------------------------------------------------------------------------------------------------------

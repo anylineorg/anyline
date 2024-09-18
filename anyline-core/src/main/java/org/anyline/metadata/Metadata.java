@@ -108,9 +108,10 @@ public class Metadata<T extends Metadata> {
     protected String alias                        ; // 别名
     protected String comment                      ; // 备注
     protected boolean execute = true              ; // DDL是否立即执行, false:只创建SQL不执行可以通过ddls()返回生成的SQL
-    protected String text;
-    protected String id;
-    protected User user                         ; // 所属用户
+    protected String text                         ;
+    protected String id                           ;
+    protected User user                           ; // 所属用户
+    protected String engine                       ; // ENGINE
     protected Long objectId;
 
     protected String definition                   ; //view等创建SQL, column中 完整定义(不包含名称) 如果设置了define 生成SQL时 name define
@@ -165,6 +166,14 @@ public class Metadata<T extends Metadata> {
     public T setDatabase(String database) {
         this.database = new Database(database);
         return (T)this;
+    }
+
+    public String getEngine() {
+        return engine;
+    }
+
+    public void setEngine(String engine) {
+        this.engine = engine;
     }
 
     public static <T extends Metadata> List<String> names(LinkedHashMap<String, T> metas) {
@@ -777,4 +786,5 @@ public class Metadata<T extends Metadata> {
     public static final String FIELD_PROPERTY                      = "PROPERTY";
     public static final String FIELD_METADATA                      = "METADATA";
     public static final String FIELD_SWT                           = "SWT";
+    public static final String FIELD_ENGINE                        = "ENGINE";
 }

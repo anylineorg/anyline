@@ -31,6 +31,25 @@ public interface ACTION {
         IGNORE          (CMD.IGNORE, "忽略"),
         ALL             (CMD.IGNORE, "全部"), //注册事件时用到
 
+        CATALOG_CREATE    (CMD.CREATE, "CATALOG创建"),
+        CATALOG_ALTER     (CMD.ALTER, "CATALOG结构修改"),
+        CATALOG_DROP      (CMD.DROP, "CATALOG删除"),
+        CATALOG_RENAME    (CMD.RENAME, "CATALOG重命名"),
+        CATALOG_COMMENT   (CMD.ALTER, "CATALOG修改备注"),
+
+        SCHEMA_CREATE    (CMD.CREATE, "SCHEMA创建"),
+        SCHEMA_ALTER     (CMD.ALTER, "SCHEMA结构修改"),
+        SCHEMA_DROP      (CMD.DROP, "SCHEMA删除"),
+        SCHEMA_RENAME    (CMD.RENAME, "SCHEMA重命名"),
+        SCHEMA_COMMENT   (CMD.ALTER, "SCHEMA修改备注"),
+
+        DATABASE_CREATE    (CMD.CREATE, "DATABASE创建"),
+        DATABASE_ALTER     (CMD.ALTER, "DATABASE结构修改"),
+        DATABASE_DROP      (CMD.DROP, "DATABASE删除"),
+        DATABASE_RENAME    (CMD.RENAME, "DATABASE重命名"),
+        DATABASE_COMMENT   (CMD.ALTER, "DATABASE修改备注"),
+
+
         TABLE_CREATE    (CMD.CREATE, "表创建"),
         TABLE_ALTER     (CMD.ALTER, "表结构修改"),
         TABLE_DROP      (CMD.DROP, "表删除"),
