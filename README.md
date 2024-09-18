@@ -19,7 +19,7 @@ any questions, please contact skype: server@anyline.org
   <tr>
   <td>QQ群(86020680)</td>
   <td>微信群</td>
-  <td>过期或满员请联系管理员
+  <td>过期请联系管理员
   </td>
   </tr>
   <tr>
