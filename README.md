@@ -17,9 +17,9 @@ any questions, please contact skype: server@anyline.org
   </td>
   </tr>
   <tr>
-  <td>QQ Group(86020680)</td>
-  <td>Wechat Group</td>
-  <td>administrator
+  <td>QQ群(86020680)</td>
+  <td>微信群</td>
+  <td>过期或满员请联系管理员
   </td>
   </tr>
   <tr>
