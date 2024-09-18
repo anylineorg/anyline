@@ -55,9 +55,7 @@ public class LogProxy {
             }
             group.add(factory.get(name));
         }
-        if(factors.isEmpty()) {
-            caches.add(group);
-        }
+        caches.add(group);
         return group;
     }
     public static Log get(Class<?> clazz) {
@@ -69,9 +67,7 @@ public class LogProxy {
             }
             group.add(factory.get(clazz));
         }
-        if(factors.isEmpty()) {
-            caches.add(group);
-        }
+        caches.add(group);
         return group;
     }
 }
