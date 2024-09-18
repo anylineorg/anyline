@@ -16,6 +16,8 @@
 
 package org.anyline.net;
 
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 import org.anyline.util.BeanUtil;
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
@@ -24,15 +26,20 @@ import org.apache.http.config.RegistryBuilder;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
 import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
-import org.anyline.log.Log;
-import org.anyline.log.LogProxy;
 
 import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 import java.io.File;
+import java.security.GeneralSecurityException;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -55,13 +62,10 @@ public class HttpBuilder {
     public HttpClient build() {
         HttpClient client = new HttpClient();
         try {
-            SSLContext sslContext = SSLContext.getInstance("TLSv1.2");
-            sslContext.init(null, null, null);
-            SSLContext.setDefault(sslContext);
             Registry<ConnectionSocketFactory> socketFactoryRegistry =
                     RegistryBuilder.<ConnectionSocketFactory>create()
                             .register("http", PlainConnectionSocketFactory.INSTANCE)
-                            .register("https", new SSLConnectionSocketFactory(sslContext)).build();
+                            .register("https",ignoreSSL()).build();
             PoolingHttpClientConnectionManager mananger = new PoolingHttpClientConnectionManager(socketFactoryRegistry);
             mananger.setMaxTotal(100);
             mananger.setDefaultMaxPerRoute(20);
@@ -88,7 +92,41 @@ public class HttpBuilder {
         client.setReturnType(returnType);
         return client;
     }
+    /**
+     * 绕过验证
+     * @return
+     * @throws NoSuchAlgorithmException
+     * @throws KeyManagementException
+     */
+    public static SSLConnectionSocketFactory ignoreSSL() throws NoSuchAlgorithmException, KeyManagementException {
+        SSLConnectionSocketFactory sslsf = null;
+        try {
+            SSLContext sc = SSLContext.getInstance("TLS");
 
+            // 实现一个X509TrustManager接口，用于绕过验证，不用修改里面的方法
+            X509TrustManager trustManager = new X509TrustManager() {
+                @Override
+                public void checkClientTrusted(
+                    java.security.cert.X509Certificate[] paramArrayOfX509Certificate,
+                    String paramString) throws CertificateException {
+                }
+                @Override
+                public void checkServerTrusted(
+                    java.security.cert.X509Certificate[] paramArrayOfX509Certificate,
+                    String paramString) throws CertificateException {
+                }
+                @Override
+                public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                    return null;
+                }
+            };
+            sc.init(null, new TrustManager[] { trustManager }, null);
+            sslsf = new SSLConnectionSocketFactory(sc, SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
+        }catch (GeneralSecurityException e){
+            e.printStackTrace();
+        }
+        return sslsf;
+    }
     /**
      * 解析url 识别出参数k=v&amp;k=v
      * @param url url
