@@ -346,16 +346,16 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
         Bson child = null;
         List<Condition> conditions = chain.getConditions();
         for(Condition con:conditions) {
-            child = parseCondition(child, con);
-        }
-        if(null == bson) {
-            bson = child;
-        }else {
-            if(null != child) {
-                if (Condition.JOIN.OR == join) {
-                    bson = Filters.or(bson, child);
-                } else {
-                    bson = Filters.and(bson, child);
+            child = parseCondition(null, con);
+            if(null == bson) {
+                bson = child;
+            }else {
+                if(null != child) {
+                    if (Condition.JOIN.OR == join) {
+                        bson = Filters.or(bson, child);
+                    } else {
+                        bson = Filters.and(bson, child);
+                    }
                 }
             }
         }
