@@ -1131,18 +1131,20 @@ public class DefaultService<E> implements AnylineService<E> {
                     query.and(key, row.get(key));
                 }
                 DataRow exists = query(dest, query);
+                long result = 0;
                 if(null != exists) {
                     if(!override) {//忽略
 
                     }else{//覆盖(更新)
-                        dao.update(0, dest, data, configs, columns);
+                        result = dao.update(0, dest, data, configs, columns);
                     }
                     if(null != sync && sync) {
                         row.copyIfEmpty(exists);
                     }
                 }else{
-                    dao.insert(dest, data, configs, columns);
+                    result = dao.insert(dest, data, configs, columns);
                 }
+                return result;
             }
         }
         return dao.save(dest, data, configs, columns);
