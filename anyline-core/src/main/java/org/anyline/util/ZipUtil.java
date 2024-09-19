@@ -119,11 +119,26 @@ public class ZipUtil {
 	public static void replace(File zip, String item, String content) throws Exception {
 		replace(zip, item, content, StandardCharsets.UTF_8);
 	}
+	public static void replace(File zip, Map<String, String> contents) throws Exception {
+		replace(zip, contents, StandardCharsets.UTF_8);
+	}
 	public static void replace(File zip, String item, String content, Charset charset) throws Exception {
 		replace(zip, item, new ByteArrayInputStream(content.getBytes(charset)), charset);
 	}
 
+	public static void replace(File zip, Map<String, String> contents, Charset charset) throws Exception {
+		Map<String, InputStream> items = new HashMap<>();
+		for(String item:contents.keySet()){
+			items.put(item, new ByteArrayInputStream(contents.get(item).getBytes(charset)));
+		}
+		replaces(zip, items, charset);
+	}
 	public static void replace(File src, String item, InputStream in, Charset charset) throws Exception {
+		Map<String, InputStream> items = new HashMap<>();
+		items.put(item, in);
+		replaces(src, items, charset);
+	}
+	public static void replaces(File src, Map<String, InputStream> items, Charset charset) throws Exception {
 		if(!src.exists()) {
 			log.error("[文件不存在][path:{}]", src.getAbsolutePath());
 			return;
@@ -138,17 +153,19 @@ public class ZipUtil {
 			ZipEntry entity = entrys.nextElement();
 			InputStream is = zip.getInputStream(entity);
 			out.putNextEntry(new ZipEntry(entity.toString()));
-			if (item.equals(entity.toString())) {
-				while ((len = in.read(buffer)) != -1) {
-					out.write(buffer, 0, len);
+			for(String item:items.keySet()){
+				if (item.equals(entity.toString())) {
+					InputStream in = items.get(item);
+					while ((len = in.read(buffer)) != -1) {
+						out.write(buffer, 0, len);
+					}
+				} else {
+					while ((len = is.read(buffer)) != -1) {
+						out.write(buffer, 0, len);
+					}
 				}
-				in.close();
-			} else {
-				while ((len = is.read(buffer)) != -1) {
-					out.write(buffer, 0, len);
-				}
-				is.close();
 			}
+			is.close();
 		}
 		out.close();
 		zip.close();
