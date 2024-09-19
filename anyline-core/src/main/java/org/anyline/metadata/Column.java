@@ -1620,13 +1620,21 @@ public class Column extends TableAffiliation<Column> implements Serializable {
         if(!BasicUtil.equals(getDefaultValue(), column.getDefaultValue())) {
             return false;
         }
-        if(!BasicUtil.equals(getComment(), column.getComment())) {
+        if(!BasicUtil.equals(BasicUtil.evl(getComment()), BasicUtil.evl(column.getComment()))) {
             return false;
         }
         if(!BasicUtil.equals(isNullable(), column.isNullable())) {
             return false;
         }
-        if(!BasicUtil.equals(isAutoIncrement(), column.isAutoIncrement())) {
+        int isAutoIncrement = isAutoIncrement();
+        if(isAutoIncrement == -1){
+            isAutoIncrement = 0;
+        }
+        int colAutoIncrement = column.isAutoIncrement();
+        if(colAutoIncrement == -1){
+            colAutoIncrement = 0;
+        }
+        if(isAutoIncrement != colAutoIncrement) {
             return false;
         }
         if(!BasicUtil.equals(getCharset(), column.getCharset(), ignoreCase)) {

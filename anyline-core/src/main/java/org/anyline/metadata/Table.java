@@ -1254,6 +1254,9 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
                 return false;
             }
         }
+        if(!BasicUtil.equals(BasicUtil.evl(getComment()), BasicUtil.evl(table.getComment()))) {
+            return false;
+        }
         boolean name_equals = BasicUtil.equals(this.name, table.getName());
         if(!name_equals) {
             return false;
