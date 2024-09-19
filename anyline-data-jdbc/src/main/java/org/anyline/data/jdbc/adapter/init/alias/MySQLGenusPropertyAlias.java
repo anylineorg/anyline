@@ -3,8 +3,6 @@ package org.anyline.data.jdbc.adapter.init.alias;
 import org.anyline.data.metadata.PropertyAlias;
 import org.anyline.metadata.Metadata;
 import org.anyline.metadata.Table;
-import org.anyline.metadata.type.DatabaseType;
-import org.anyline.metadata.type.TypeMetadata;
 
 public enum MySQLGenusPropertyAlias implements PropertyAlias {
     MergeTree ("engine", "MergeTree", "InnoDB", Table.class);

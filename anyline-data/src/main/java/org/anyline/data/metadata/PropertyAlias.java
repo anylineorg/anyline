@@ -20,15 +20,19 @@ import org.anyline.metadata.Metadata;
 import org.anyline.metadata.type.DatabaseType;
 
 public interface PropertyAlias {
-    default String input() {
-        return "";
-    }
+    /**
+     * 输入属性名称
+     * @return String
+     */
+    String input();
 
     /**
      * 适用数据库的类型
      * @return String
      */
-    DatabaseType database();
+    default DatabaseType database() {
+        return null;
+    }
     /**
      * 兼容当前数据库的类型
      * @return String
@@ -36,7 +40,7 @@ public interface PropertyAlias {
     String value();
 
     /**
-     * 分组 如 ENGINE
+     * 属性分组 如 ENGINE
      * @return String
      */
     default String group() {
