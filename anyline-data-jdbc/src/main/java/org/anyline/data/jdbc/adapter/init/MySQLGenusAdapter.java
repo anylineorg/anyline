@@ -2654,13 +2654,13 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public Table.Partition init(DataRuntime runtime, int index, boolean create, Table.Partition meta, Table table, DataRow row) throws Exception {
         MetadataFieldRefer refer = refer(runtime, Table.Partition.class);
         if(index == 0) {
-            meta = new Table.Partition();
             String txt = row.getString("Create Table");
             if(null != txt) {
                 /* PARTITION BY HASH (`ID`)
                 PARTITIONS 100 */
                 String type = RegularUtil.cut(txt,"/*!", "PARTITION BY", "(");
                 if(null != type) {
+                    meta = new Table.Partition();
                     type = type.trim();
                     Table.Partition.TYPE ty = Table.Partition.TYPE.valueOf(type);
                     meta.setType(ty);
