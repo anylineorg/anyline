@@ -2545,25 +2545,27 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         //分区方式
         if(index == 0) {
             MetadataFieldRefer refer = refer(runtime, Table.Partition.class);
-            meta = new Table.Partition();
             //分区策略 h = 哈希分区表 l = 列表分区表 r = 范围分区表
             String type = getString(row, refer, Table.Partition.FIELD_TYPE);
-            if("h".equalsIgnoreCase(type)) {
-                meta.setType(Table.Partition.TYPE.HASH);
-            }else if("l".equalsIgnoreCase(type)) {
-                meta.setType(Table.Partition.TYPE.LIST);
-            }else if("r".equalsIgnoreCase(type)) {
-                meta.setType(Table.Partition.TYPE.RANGE);
-            }
-            LinkedHashMap<String, Column> cols = table.getColumns();
-            String columns = getString(row, refer, Table.Partition.FIELD_COLUMN);
-            if(BasicUtil.isNotEmpty(columns)) {
-                String[] nums = columns.split(" ");
-                for(String num:nums) {
-                    for(Column col:cols.values()) {
-                        if(num.equals(col.getPosition())) {
-                            meta.addColumn(col);
-                            break;
+            if(BasicUtil.isNotEmpty(type)) {
+                meta = new Table.Partition();
+                if ("h".equalsIgnoreCase(type)) {
+                    meta.setType(Table.Partition.TYPE.HASH);
+                } else if ("l".equalsIgnoreCase(type)) {
+                    meta.setType(Table.Partition.TYPE.LIST);
+                } else if ("r".equalsIgnoreCase(type)) {
+                    meta.setType(Table.Partition.TYPE.RANGE);
+                }
+                LinkedHashMap<String, Column> cols = table.getColumns();
+                String columns = getString(row, refer, Table.Partition.FIELD_COLUMN);
+                if(BasicUtil.isNotEmpty(columns)) {
+                    String[] nums = columns.split(" ");
+                    for(String num:nums) {
+                        for(Column col:cols.values()) {
+                            if(num.equals(col.getPosition())) {
+                                meta.addColumn(col);
+                                break;
+                            }
                         }
                     }
                 }
