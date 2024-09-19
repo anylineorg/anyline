@@ -2119,6 +2119,13 @@ public interface AnylineService<E>{
 		default <T extends Table> LinkedHashMap<String, T> tables(Table query) {
 			return tables(query, Table.TYPE.NORMAL.value, 0, new DefaultConfigStore());
 		}
+		default <T extends Table> LinkedHashMap<String, T> tables(Table query, boolean struct) {
+			int structs = 0;
+			if(struct) {
+				structs = Metadata.TYPE.ALL.value();
+			}
+			return tables(query, Table.TYPE.NORMAL.value, structs, new DefaultConfigStore());
+		}
 		default <T extends Table> LinkedHashMap<String, T> tables(Table query, ConfigStore configs) {
 			return tables(query, Table.TYPE.NORMAL.value, 0, configs);
 		}
