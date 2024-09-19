@@ -1215,7 +1215,7 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
      * database[调用入口]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
-     * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
+     * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据 false:只查当前catalog/schema/database范围内数据
      * @param query 查询条件 根据metadata属性
      * @return LinkedHashMap
      */
@@ -1265,7 +1265,7 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
      * 查询全部数据库
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param query 查询条件 根据metadata属性
-     * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
+     * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据 false:只查当前catalog/schema/database范围内数据
      * @return runs
      * @throws Exception 异常
      */
@@ -1448,7 +1448,7 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
      * 查询全部数据库
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param query 查询条件 根据metadata属性
-     * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
+     * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据 false:只查当前catalog/schema/database范围内数据
      * @return runs
      * @throws Exception 异常
      */
@@ -1626,7 +1626,7 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
      * 查询全部数据库
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param query 查询条件 根据metadata属性
-     * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
+     * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据 false:只查当前catalog/schema/database范围内数据
      * @return runs
      * @throws Exception 异常
      */
@@ -1751,7 +1751,7 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
      * table[调用入口]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
-     * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
+     * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据 false:只查当前catalog/schema/database范围内数据
      * @param query 查询条件 根据metadata属性
      * @param types 查询的类型 参考 Table.TYPE 多个类型相加算出总和
      * @param struct 查询的属性 参考Metadata.TYPE 多个属性相加算出总和 true:表示查询全部
@@ -1784,7 +1784,7 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
      * table[命令合成]<br/>
      * 查询表,不是查表中的数据
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
+     * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据 false:只查当前catalog/schema/database范围内数据
      * @param query 查询条件 根据metadata属性
      * @param types 查询的类型 参考 Table.TYPE 多个类型相加算出总和
      * @return String
@@ -2033,7 +2033,7 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
      * view[命令合成]<br/>
      * 查询视图
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
+     * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据 false:只查当前catalog/schema/database范围内数据
      * @param query 查询条件 根据metadata属性
      * @param types 查询的类型 参考 Table.TYPE 多个类型相加算出总和
      * @return List
@@ -2273,7 +2273,7 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
      * 查询主表
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
-     * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
+     * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据 false:只查当前catalog/schema/database范围内数据
      * @param query 查询条件 根据metadata属性
      * @return List
      * @param <T> MasterTable
