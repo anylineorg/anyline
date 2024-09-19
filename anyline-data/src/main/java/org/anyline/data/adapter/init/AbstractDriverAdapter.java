@@ -13209,7 +13209,46 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			}
 			src_primary = null;
 		}
-
+        List<Index> index_alters = new ArrayList<>();
+        List<Index> index_adds = new ArrayList<>();
+		/*
+		索引
+		删除先执行 因为有些索引相关的列要删除
+		添加和修改 放到column后执行 因为有可能用到添加的列
+		在索引上标记删除的才删除,没有明确标记删除的不删除(因为许多情况会生成索引，比如唯一约束也会生成个索引，但并不在uindexes中)
+		*/
+        LinkedHashMap<String, Index> oindexes = indexes(runtime, random, meta, null);		//原索引
+        LinkedHashMap<String, Index> indexes = update.getIndexes();		//新索引
+        for(Index index:indexes.values()) {
+            if(index.isPrimary()) {
+                continue;
+            }
+            index.execute(meta.execute());
+            if(index.isDrop()) {
+                //项目中调用drop()明确要删除的
+                drop(runtime, index);
+            }else{
+                if(null != index.getUpdate()) {
+                    //改名或设置过update的
+                    index_alters.add(index);
+                }else {
+                    Index oindex = oindexes.get(index.getName().toUpperCase());
+                    if (null == oindex) {
+                        //名称不存在的
+                        index_adds.add(index);
+                    }else{
+                        if(!index.equals(oindex)) {
+                            if(oindex.isPrimary()) {
+                                continue;
+                            }
+                            oindex.execute(meta.execute());
+                            oindex.setUpdate(index, false, false);
+                            index_alters.add(oindex);
+                        }
+                    }
+                }
+            }
+        }
 		//更新列
 		List<Run> alters = buildAlterRun(runtime, meta, cols.values(), slice);
 		if(slice) {
@@ -13238,42 +13277,13 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		if(meta.swt() == ACTION.SWITCH.BREAK) {
 			return result;
 		}
-		/*
-		修改索引
-		在索引上标记删除的才删除,没有明确标记删除的不删除(因为许多情况会生成索引，比如唯一约束也会生成个索引，但并不在uindexes中)
-		*/
-		LinkedHashMap<String, Index> oindexes = indexes(runtime, random, meta, null);		//原索引
-		LinkedHashMap<String, Index> indexes = update.getIndexes();		//新索引
-		for(Index index:indexes.values()) {
-			if(index.isPrimary()) {
-				continue;
-			}
-			index.execute(meta.execute());
-			if(index.isDrop()) {
-				//项目中调用drop()明确要删除的
-				drop(runtime, index);
-			}else{
-				if(null != index.getUpdate()) {
-					//改名或设置过update的
-					alter(runtime, index);
-				}else {
-					Index oindex = oindexes.get(index.getName().toUpperCase());
-					if (null == oindex) {
-						//名称不存在的
-						add(runtime, index);
-					}else{
-						if(!index.equals(oindex)) {
-							if(oindex.isPrimary()) {
-								continue;
-							}
-							oindex.execute(meta.execute());
-							oindex.setUpdate(index, false, false);
-							alter(runtime, oindex);
-						}
-					}
-				}
-			}
-		}
+        //修改 添加索引
+        for(Index index:index_adds){
+            add(runtime, index);
+        }
+        for(Index index:index_alters){
+            alter(runtime, index);
+        }
 		return result;
 	}
 
