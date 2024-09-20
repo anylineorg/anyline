@@ -271,6 +271,20 @@ joins:[
         join(Join.TYPE.LEFT, table, new DefaultConfigStore(), cons);
         return this;
     }
+
+    /**
+     * 外键关联
+     * SELECT u.NAME AS USER_NAME
+     * LEFT JOIN CRM_USER AS U ON M.USER_ID = U.ID
+     * LEFT JOIN {table} AS U ON M.{column} = U.{fk}
+     * @param column 当前主表外键列 如 USER_ID
+     * @param table 外键关联表 如 user as u
+     * @param fk 外键表主键 如 user.ID
+     * @param relation 关联表查询列 如u.NAME AS USER_NAME 中的u.NAME
+     * @param alias 联表查询列 别名如u.NAME AS USER_NAME 中的 USER_NAME
+     * @param conditions 关联条件
+     * @return this
+     */
     public TableBuilder foreign(String column, Table table, String fk, String relation, String alias, String ... conditions){
         LinkedHashMap<String, String> relations = new LinkedHashMap<>();
         relations.put(relation, alias);
@@ -369,6 +383,7 @@ joins:[
                 configs.and(condition);
             }
         }
+        join.setConditions(configs);
         prepare.setJoin(join);
         this.joins.add(prepare);
         return this;
@@ -385,6 +400,7 @@ joins:[
                 configs.and(condition);
             }
         }
+        join.setConditions(configs);
         prepare.setJoin(join);
         this.joins.add(prepare);
         return this;
