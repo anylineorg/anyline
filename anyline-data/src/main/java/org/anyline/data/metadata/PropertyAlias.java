@@ -21,10 +21,10 @@ import org.anyline.metadata.type.DatabaseType;
 
 public interface PropertyAlias {
     /**
-     * 输入属性名称
+     * 输入属性名称或别名
      * @return String
      */
-    String input();
+    String alias();
 
     /**
      * 适用数据库的类型
@@ -34,24 +34,24 @@ public interface PropertyAlias {
         return null;
     }
     /**
-     * 兼容当前数据库的类型
-     * @return String
-     */
-    String value();
-
-    /**
-     * 属性分组 如 ENGINE
-     * @return String
-     */
-    default String group() {
-        return "default";
-    }
-
-    /**
      * 适用类型 如Table.class
      * @return Class
      */
     default Class<? extends Metadata> metadata() {
         return Metadata.class;
     }
+    /**
+     * 属性分组 如 ENGINE
+     * @return String
+     */
+    default String property() {
+        return "default";
+    }
+    /**
+     * 兼容当前数据库的类型
+     * @return String
+     */
+    String value();
+
+
 }
