@@ -1889,10 +1889,10 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         }
         Object obj = get(key);
         if (null != obj) {
-            if(obj instanceof List) {
-                return (List<?>) obj;
-            }else if(obj instanceof DataSet) {
+            if(obj instanceof DataSet) {
                 return ((DataSet)obj).getRows();
+            }else if(obj instanceof Collection) {
+                return new ArrayList<>((Collection<?>) obj) ;
             }
         }
         return null;
