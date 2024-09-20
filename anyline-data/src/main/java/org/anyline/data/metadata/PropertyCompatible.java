@@ -42,16 +42,16 @@ public interface PropertyCompatible {
         return "default";
     }
     /**
-     * 输入属性名称或别名
+     * 兼容属性名称或别名
      * @return String
      */
     String compatible();
 
     /**
-     * 兼容当前数据库的类型
+     * 适用当前数据库的类型
      * @return String
      */
-    String fit();
+    String optimal();
 
 
 }

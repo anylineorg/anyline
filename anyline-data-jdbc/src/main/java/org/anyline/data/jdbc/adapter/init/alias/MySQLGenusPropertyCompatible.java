@@ -20,18 +20,18 @@ import org.anyline.data.metadata.PropertyCompatible;
 import org.anyline.metadata.*;
 
 public enum MySQLGenusPropertyCompatible implements PropertyCompatible {
-	MergeTree   (Table.class  ,"ENGINE" ,"MergeTree" ,null   );
+	MergeTree   (Table.class  ,"ENGINE" ,"MergeTree" ,"InnoDB" );
 
 	private Class<? extends Metadata> metadata  ; // 适用类型 如Table.class
 	private String property                     ; // 属性分组 如 ENGINE
-	private String alias                        ; // 输入属性值
-	private String value                        ; // 兼容当前数据库的属性值
+	private String compatible                   ; // 兼容属性名称或别名
+	private String optimal                      ; // 适用当前数据库的属性值
 
-	MySQLGenusPropertyCompatible(Class<? extends Metadata> metadata, String group, String alias, String value) {
+	MySQLGenusPropertyCompatible(Class<? extends Metadata> metadata, String property, String compatible, String optimal) {
 		this.metadata = metadata;
 		this.property = property;
-		this.alias = alias;
-		this.value = value;
+		this.compatible = compatible;
+		this.optimal = optimal;
 	}
 
 	@Override
@@ -50,7 +50,7 @@ public enum MySQLGenusPropertyCompatible implements PropertyCompatible {
 	}
 
 	@Override
-	public String fit() {
+	public String optimal() {
 		return optimal;
 	}
 
