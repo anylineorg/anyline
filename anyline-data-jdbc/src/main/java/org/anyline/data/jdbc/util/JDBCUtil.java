@@ -373,6 +373,9 @@ public class JDBCUtil {
                     if(null != metadatas) {
                         Column column = metadatas.get(name.toUpperCase());
                         value = adapter.read(runtime, column, origin, null);
+                        if(null == value) { //转换失败
+                            value = origin;
+                        }
                     }
                     if (upper) {
                         name = name.toUpperCase();
@@ -435,10 +438,14 @@ public class JDBCUtil {
                     continue;
                 }
                 try {
-                    Object value = rs.getObject(name);
+                    Object origin = rs.getObject(name);
+                    Object value = origin;
                     if(null != metadatas) {
                         Column column = metadatas.get(name.toUpperCase());
                         value = adapter.read(runtime, column, value, null);
+                        if(null == value){
+                            value = origin;
+                        }
                     }
                     map.put(name, value);
                 }catch (Exception e) {
