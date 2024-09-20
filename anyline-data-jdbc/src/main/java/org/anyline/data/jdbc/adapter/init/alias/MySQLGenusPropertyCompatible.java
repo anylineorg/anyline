@@ -16,18 +16,18 @@
 
 package org.anyline.data.jdbc.adapter.init.alias;
 
-import org.anyline.data.metadata.PropertyAlias;
+import org.anyline.data.metadata.PropertyCompatible;
 import org.anyline.metadata.*;
 
-public enum MySQLGenusPropertyAlias implements PropertyAlias {
-	MergeTree   (Table.class  ,"ENGINE" ,"MergeTree" ,"InnoDB" );
+public enum MySQLGenusPropertyCompatible implements PropertyCompatible {
+	MergeTree   (Table.class  ,"ENGINE" ,"MergeTree" ,null   );
 
 	private Class<? extends Metadata> metadata  ; // 适用类型 如Table.class
 	private String property                     ; // 属性分组 如 ENGINE
 	private String alias                        ; // 输入属性值
 	private String value                        ; // 兼容当前数据库的属性值
 
-	MySQLGenusPropertyAlias(Class<? extends Metadata> metadata, String group, String alias, String value) {
+	MySQLGenusPropertyCompatible(Class<? extends Metadata> metadata, String group, String alias, String value) {
 		this.metadata = metadata;
 		this.property = property;
 		this.alias = alias;
@@ -45,13 +45,13 @@ public enum MySQLGenusPropertyAlias implements PropertyAlias {
 	}
 
 	@Override
-	public String alias() {
-		return alias;
+	public String compatible() {
+		return compatible;
 	}
 
 	@Override
-	public String value() {
-		return value;
+	public String fit() {
+		return optimal;
 	}
 
 }

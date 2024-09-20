@@ -19,13 +19,7 @@ package org.anyline.data.metadata;
 import org.anyline.metadata.Metadata;
 import org.anyline.metadata.type.DatabaseType;
 
-public interface PropertyAlias {
-    /**
-     * 输入属性名称或别名
-     * @return String
-     */
-    String alias();
-
+public interface PropertyCompatible {
     /**
      * 适用数据库的类型
      * @return String
@@ -48,10 +42,16 @@ public interface PropertyAlias {
         return "default";
     }
     /**
+     * 输入属性名称或别名
+     * @return String
+     */
+    String compatible();
+
+    /**
      * 兼容当前数据库的类型
      * @return String
      */
-    String value();
+    String fit();
 
 
 }
