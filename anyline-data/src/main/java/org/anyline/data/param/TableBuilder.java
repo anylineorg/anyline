@@ -27,7 +27,6 @@ import org.anyline.entity.OriginRow;
 import org.anyline.metadata.Column;
 import org.anyline.metadata.Table;
 import org.anyline.util.BasicUtil;
-import org.anyline.util.BeanUtil;
 import org.anyline.util.SQLUtil;
 
 import java.util.ArrayList;
@@ -269,7 +268,7 @@ joins:[
                 cons.add(condition);
             }
         }
-        join(Join.TYPE.LEFT, table, cons);
+        join(Join.TYPE.LEFT, table, new DefaultConfigStore(), cons);
         return this;
     }
     public TableBuilder foreign(String column, Table table, String fk, String relation, String alias, String ... conditions){
@@ -333,17 +332,22 @@ joins:[
         this.joins.add(prepare);
         return this;
     }
-    public TableBuilder join(String alias, RunPrepare prepare, Join.TYPE type, ConfigStore configs) {
+    public TableBuilder join(String alias, RunPrepare prepare, Join.TYPE type, ConfigStore configs, String ... conditions) {
         Join join = new Join();
         join.setType(type);
+        if(null == configs){
+            configs = new DefaultConfigStore();
+        }
+        if(null != conditions){
+            for(String condition:conditions){
+                configs.and(condition);
+            }
+        }
         join.setConditions(configs);
         return join(alias, prepare, join);
     }
     public TableBuilder join(String alias, RunPrepare prepare, Join.TYPE type, String ... conditions) {
-        Join join = new Join();
-        join.setType(type);
-        join.setConditions(conditions);
-        return join(alias, prepare, join);
+        return join(alias, prepare, type, new DefaultConfigStore(), conditions);
     }
     public TableBuilder join(String alias, RunPrepare prepare, Join join) {
         prepare.setJoin(join);
@@ -353,79 +357,152 @@ joins:[
         this.joins.add(new VirtualTablePrepare(prepare).setAlias(alias));
         return this;
     }
-    public TableBuilder join(Join.TYPE type, Table table, String ... conditions) {
+    public TableBuilder join(Join.TYPE type, Table table, ConfigStore configs, String ... conditions) {
         RunPrepare prepare = new DefaultTablePrepare(table);
         Join join = new Join();
         join.setType(type);
-        join.setConditions(conditions);
+        if(null == configs){
+            configs = new DefaultConfigStore();
+        }
+        if(null != conditions){
+            for(String condition:conditions){
+                configs.and(condition);
+            }
+        }
         prepare.setJoin(join);
         this.joins.add(prepare);
         return this;
     }
-    public TableBuilder join(Join.TYPE type, Table table, List<String> conditions) {
+    public TableBuilder join(Join.TYPE type, Table table, ConfigStore configs, List<String> conditions) {
         RunPrepare prepare = new DefaultTablePrepare(table);
         Join join = new Join();
         join.setType(type);
-        join.setConditions(conditions);
+        if(null == configs){
+            configs = new DefaultConfigStore();
+        }
+        if(null != conditions){
+            for(String condition:conditions){
+                configs.and(condition);
+            }
+        }
         prepare.setJoin(join);
         this.joins.add(prepare);
         return this;
+    }
+    public TableBuilder join(Join.TYPE type, String table, ConfigStore configs, String ... conditions) {
+        return join(type, new Table(table), configs, conditions);
     }
     public TableBuilder join(Join.TYPE type, String table, String ... conditions) {
-        return join(type, new Table(table), conditions);
+        return join(type, new Table(table), new DefaultConfigStore(), conditions);
     }
     public TableBuilder inner(Table table, String ... conditions) {
         return join(Join.TYPE.INNER, table.getFullName(), conditions);
     }
+    public TableBuilder inner(Table table, ConfigStore configs, String ... conditions) {
+        return join(Join.TYPE.INNER, table.getFullName(), configs, conditions);
+    }
+    public TableBuilder inner(String table, ConfigStore configs, String ... conditions) {
+        return join(Join.TYPE.INNER, table, configs, conditions);
+    }
     public TableBuilder inner(String table, String ... conditions) {
         return join(Join.TYPE.INNER, table, conditions);
     }
+    public TableBuilder left(String table, ConfigStore configs, String ... conditions) {
+        return join(Join.TYPE.LEFT, table, configs, conditions);
+    }
     public TableBuilder left(String table, String ... conditions) {
-        return join(Join.TYPE.LEFT, table, conditions);
+        return join(Join.TYPE.LEFT, table, new DefaultConfigStore(), conditions);
+    }
+
+    public TableBuilder left(Table table, ConfigStore configs, String ... conditions) {
+        return join(Join.TYPE.LEFT, table, configs, conditions);
     }
     public TableBuilder left(Table table, String ... conditions) {
-        return join(Join.TYPE.LEFT, table, conditions);
+        return join(Join.TYPE.LEFT, table, new DefaultConfigStore(), conditions);
+    }
+
+    public TableBuilder right(String table, ConfigStore configs, String ... conditions) {
+        return join(Join.TYPE.RIGHT, table, configs, conditions);
     }
     public TableBuilder right(String table, String ... conditions) {
-        return join(Join.TYPE.RIGHT, table, conditions);
+        return join(Join.TYPE.RIGHT, table, new DefaultConfigStore(), conditions);
+    }
+    public TableBuilder right(Table table, ConfigStore configs, String ... conditions) {
+        return join(Join.TYPE.RIGHT, table, configs, conditions);
     }
     public TableBuilder right(Table table, String ... conditions) {
-        return join(Join.TYPE.RIGHT, table, conditions);
+        return join(Join.TYPE.RIGHT, table, new DefaultConfigStore(), conditions);
     }
+    public TableBuilder full(String table, ConfigStore configs, String ... conditions) {
+        return join(Join.TYPE.FULL, table, configs, conditions);
+    }
+
     public TableBuilder full(String table, String ... conditions) {
-        return join(Join.TYPE.FULL, table, conditions);
+        return join(Join.TYPE.FULL, table, new DefaultConfigStore(),  conditions);
     }
 
+    public TableBuilder full(Table table, ConfigStore configs, String ... conditions) {
+        return join(Join.TYPE.FULL, table, configs, conditions);
+    }
     public TableBuilder full(Table table, String ... conditions) {
-        return join(Join.TYPE.FULL, table, conditions);
+        return join(Join.TYPE.FULL, table, new DefaultConfigStore(), conditions);
     }
 
 
-    public TableBuilder join(String alias, Join.TYPE type, RunPrepare prepare, String ... conditions) {
+    public TableBuilder join(String alias, Join.TYPE type, RunPrepare prepare, ConfigStore configs, String ... conditions) {
         Join join = new Join();
         join.setType(type);
-        join.setConditions(conditions);
+        if(null == configs){
+            configs = new DefaultConfigStore();
+        }
+        if(null != conditions){
+            for(String condition:conditions){
+                configs.and(condition);
+            }
+        }
+        join.setConditions(configs);
         prepare.setJoin(join);
         return join(alias, prepare);
     }
-    public TableBuilder join(String alias, Join.TYPE type, RunPrepare prepare, List<String> conditions) {
+    public TableBuilder join(String alias, Join.TYPE type, RunPrepare prepare, ConfigStore configs, List<String> conditions) {
         Join join = new Join();
         join.setType(type);
-        join.setConditions(conditions);
+        if(null == configs){
+            configs = new DefaultConfigStore();
+        }
+        if(null != conditions){
+            for(String condition:conditions){
+                configs.and(condition);
+            }
+        }
+        join.setConditions(configs);
         prepare.setJoin(join);
         return join(alias, prepare);
+    }
+    public TableBuilder inner(String alias, RunPrepare prepare, ConfigStore configs, String ... conditions) {
+        return join(alias, Join.TYPE.INNER, prepare, configs, conditions);
     }
     public TableBuilder inner(String alias, RunPrepare prepare, String ... conditions) {
-        return join(alias, Join.TYPE.INNER, prepare, conditions);
+        return join(alias, Join.TYPE.INNER, prepare, new DefaultConfigStore(), conditions);
+    }
+    public TableBuilder left(String alias, RunPrepare prepare, ConfigStore configs, String ... conditions) {
+        return join(alias, Join.TYPE.LEFT, prepare, configs, conditions);
     }
     public TableBuilder left(String alias, RunPrepare prepare, String ... conditions) {
-        return join(alias, Join.TYPE.LEFT, prepare, conditions);
+        return join(alias, Join.TYPE.LEFT, prepare, new DefaultConfigStore(), conditions);
     }
-    public TableBuilder right(String alias, RunPrepare prepare, String ... conditions) {
-        return join(alias, Join.TYPE.RIGHT, prepare, conditions);
+    public TableBuilder right(String alias, RunPrepare prepare, ConfigStore configs, String ... conditions) {
+        return join(alias, Join.TYPE.RIGHT, prepare, configs, conditions);
     }
 
+    public TableBuilder right(String alias, RunPrepare prepare, String ... conditions) {
+        return join(alias, Join.TYPE.RIGHT, prepare, new DefaultConfigStore(), conditions);
+    }
+
+    public TableBuilder full(String alias, RunPrepare prepare, ConfigStore configs, String ... conditions) {
+        return join(alias, Join.TYPE.FULL, prepare, configs, conditions);
+    }
     public TableBuilder full(String alias, RunPrepare prepare, String ... conditions) {
-        return join(alias, Join.TYPE.FULL, prepare, conditions);
+        return join(alias, Join.TYPE.FULL, prepare, new DefaultConfigStore(), conditions);
     }
 }
