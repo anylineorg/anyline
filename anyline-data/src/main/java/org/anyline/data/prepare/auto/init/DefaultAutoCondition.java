@@ -148,7 +148,7 @@ public class DefaultAutoCondition extends AbstractCondition implements AutoCondi
 			delimiterFr = adapter.getDelimiterFr();
 			delimiterTo = adapter.getDelimiterTo();
 		}
-		boolean empty = compare.paramCount()>0 && BasicUtil.isEmpty(true, val);
+		boolean empty = compare.valueCount()>0 && BasicUtil.isEmpty(true, val);
 		int compareCode = compare.getCode();
 		if(compareCode == -1) {
 			//只作参数赋值
@@ -309,7 +309,7 @@ public class DefaultAutoCondition extends AbstractCondition implements AutoCondi
 				runValues.add(new RunValue(this.column, val, datatype));
 			}else { //多个值 IN 、 BETWEEN 、 FIND_IN_SET
 				// (compareCode == 40 || compareCode == 140 || compareCode == 80 || (compareCode >=60 && compareCode <= 62) || compareCode == 75 || compareCode ==76) {
-				if(compare.paramCount() > 1) {
+				if(compare.valueCount() > 1) {
 					List<Object> list = getValues(val);
 					if (null != list) {
 						for (Object obj : list) {

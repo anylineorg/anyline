@@ -58,7 +58,7 @@ public class MilvusDataSourceLoader extends AbstractDataSourceLoader implements 
             }
             if(null != client) {
                 try {
-                    runtime =  holder().create("default", client, false);
+                    runtime =  holder().create("milvus.default", client, false);
                     loadDefault = false;
                 }catch (Exception e) {
                     runtime = null;

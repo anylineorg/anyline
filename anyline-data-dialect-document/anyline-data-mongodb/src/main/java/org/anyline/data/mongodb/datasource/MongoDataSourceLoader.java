@@ -55,7 +55,7 @@ public class MongoDataSourceLoader extends AbstractDataSourceLoader implements D
             }
             if(null != datasource) {
                 try {
-                    runtime =  holder().create("default", datasource, false);
+                    runtime =  holder().create("mongo.default", datasource, false);
                     loadDefault = false;
                 }catch (Exception e) {
                     runtime = null;

@@ -885,7 +885,7 @@ PUT * /_bulk
         DataRow row = new OriginRow();
         if(null != values && !values.isEmpty()) {
             Object value = null;
-            if (compare.paramCount() > 1) {
+            if (compare.valueCount() > 1) {
                 List<Object> list = new ArrayList<>();
                 list.addAll(values);
                 value = list;

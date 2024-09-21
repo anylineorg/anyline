@@ -27,14 +27,14 @@ public enum Compare {
     //只作为参数值为占位符赋值, 不能独立生成新的查询条件
     NONE(-1, null, null, null) {
         @Override
-        public int paramCount() {
+        public int valueCount() {
             return 1;
         }
     },
     //根据参数格式判断
     AUTO(0, null, null, null) {
         @Override
-        public int paramCount() {
+        public int valueCount() {
             return 1;
         }
     },
@@ -49,7 +49,7 @@ public enum Compare {
             }
             return target.toString().equalsIgnoreCase(value.toString());
         }
-        public int paramCount() {
+        public int valueCount() {
             return 1;
         }
     },
@@ -64,7 +64,7 @@ public enum Compare {
             }
             return target.toString().equalsIgnoreCase(value.toString());
         }
-        public int paramCount() {
+        public int valueCount() {
             return 1;
         }
     },
@@ -79,7 +79,7 @@ public enum Compare {
                 return false;
             }
         }
-        public int paramCount() {
+        public int valueCount() {
             return 1;
         }
     },
@@ -90,7 +90,7 @@ public enum Compare {
             }
             return new BigDecimal(value.toString()).compareTo(new BigDecimal(target.toString())) >= 0;
         }
-        public int paramCount() {
+        public int valueCount() {
             return 1;
         }
     },
@@ -105,7 +105,7 @@ public enum Compare {
                 return false;
             }
         }
-        public int paramCount() {
+        public int valueCount() {
             return 1;
         }
     },
@@ -120,7 +120,7 @@ public enum Compare {
                 return false;
             }
         }
-        public int paramCount() {
+        public int valueCount() {
             return 1;
         }
     },
@@ -136,7 +136,7 @@ public enum Compare {
             }
             return false;
         }
-        public int paramCount() {
+        public int valueCount() {
             return 9;
         }
     },
@@ -147,7 +147,7 @@ public enum Compare {
             }
             return value.toString().toUpperCase().contains(target.toString().toUpperCase());
         }
-        public int paramCount() {
+        public int valueCount() {
             return 1;
         }
     },
@@ -159,7 +159,7 @@ public enum Compare {
             }
             return value.toString().toUpperCase().contains(target.toString().toUpperCase());
         }
-        public int paramCount() {
+        public int valueCount() {
             return 1;
         }
     },
@@ -170,7 +170,7 @@ public enum Compare {
             }
             return value.toString().toUpperCase().startsWith(target.toString().toUpperCase());
         }
-        public int paramCount() {
+        public int valueCount() {
             return 1;
         }
     },
@@ -181,7 +181,7 @@ public enum Compare {
             }
             return value.toString().toUpperCase().startsWith(target.toString().toUpperCase());
         }
-        public int paramCount() {
+        public int valueCount() {
             return 1;
         }
     },
@@ -192,7 +192,7 @@ public enum Compare {
             }
             return value.toString().toUpperCase().endsWith(target.toString().toUpperCase());
         }
-        public int paramCount() {
+        public int valueCount() {
             return 1;
         }
     },
@@ -203,7 +203,7 @@ public enum Compare {
             }
             return value.toString().toUpperCase().endsWith(target.toString().toUpperCase());
         }
-        public int paramCount() {
+        public int valueCount() {
             return 1;
         }
     },
@@ -215,7 +215,7 @@ public enum Compare {
             }
             return value.toString().toUpperCase().startsWith(target.toString().toUpperCase());
         }
-        public int paramCount() {
+        public int valueCount() {
             return 1;
         }
     },
@@ -226,7 +226,7 @@ public enum Compare {
             }
             return value.toString().toUpperCase().endsWith(target.toString().toUpperCase());
         }
-        public int paramCount() {
+        public int valueCount() {
             return 1;
         }
     },
@@ -237,7 +237,7 @@ public enum Compare {
             }
             return value.toString().toUpperCase().endsWith(target.toString().toUpperCase());
         }
-        public int paramCount() {
+        public int valueCount() {
             return 1;
         }
     },
@@ -249,7 +249,7 @@ public enum Compare {
             }
             return value.toString().toUpperCase().contains(target.toString().toUpperCase());
         }
-        public int paramCount() {
+        public int valueCount() {
             return 1;
         }
     },
@@ -260,7 +260,7 @@ public enum Compare {
             }
             return value.toString().toUpperCase().startsWith(target.toString().toUpperCase());
         }
-        public int paramCount() {
+        public int valueCount() {
             return 1;
         }
     },
@@ -274,7 +274,7 @@ public enum Compare {
             }
             return value.toString().toUpperCase().endsWith(target.toString().toUpperCase());
         }
-        public int paramCount() {
+        public int valueCount() {
             return 1;
         }
     },
@@ -288,7 +288,7 @@ public enum Compare {
             }
             return value.toString().toUpperCase().endsWith(target.toString().toUpperCase());
         }
-        public int paramCount() {
+        public int valueCount() {
             return 1;
         }
     },
@@ -302,7 +302,7 @@ public enum Compare {
             }
             return value.toString().toUpperCase().contains(target.toString().toUpperCase());
         }
-        public int paramCount() {
+        public int valueCount() {
             return 1;
         }
     },
@@ -313,7 +313,7 @@ public enum Compare {
             }
             return value.toString().toUpperCase().contains(target.toString().toUpperCase());
         }
-        public int paramCount() {
+        public int valueCount() {
             return 1;
         }
     },
@@ -325,7 +325,7 @@ public enum Compare {
             String[] arrays = target.toString().split(",");
             return BeanUtil.array2list(arrays).contains(value);
         }
-        public int paramCount() {
+        public int valueCount() {
             return 1;
         }
     },
@@ -337,7 +337,7 @@ public enum Compare {
             String[] arrays = target.toString().split(",");
             return BeanUtil.array2list(arrays).contains(value);
         }
-        public int paramCount() {
+        public int valueCount() {
             return 9;
         }
     },
@@ -349,61 +349,61 @@ public enum Compare {
             String[] arrays = target.toString().split(",");
             return BeanUtil.array2list(arrays).contains(value);
         }
-        public int paramCount() {
+        public int valueCount() {
             return 9;
         }
     },
     JSON_CONTAINS(70, "json_contains", "", " JSON_CONTAINS ") {
-        public int paramCount() {
+        public int valueCount() {
             return 1;
         }
     },
     JSON_CONTAINS_OR(71, "json_contains", "", " JSON_CONTAINS ") {
-        public int paramCount() {
+        public int valueCount() {
             return 9;
         }
     },
     JSON_CONTAINS_AND(72, "json_contains", "", " JSON_CONTAINS ") {
-        public int paramCount() {
+        public int valueCount() {
             return 9;
         }
     },
     JSON_CONTAINS_PATH_OR(75, "json_contains_path", "", " JSON_CONTAINS_PATH ") {
         //ONE 包含1个即可
-        public int paramCount() {
+        public int valueCount() {
             return 9;
         }
     },
     JSON_CONTAINS_PATH_ONE(75, "json_contains_path", "", " JSON_CONTAINS_PATH ") {
         //ONE 包含1个即可
-        public int paramCount() {
+        public int valueCount() {
             return 9;
         }
     },
     JSON_CONTAINS_PATH_AND(76, "json_contains_path", "", " JSON_CONTAINS_PATH ") {
         //ALL 必须包含全部
-        public int paramCount() {
+        public int valueCount() {
             return 9;
         }
     },
     JSON_CONTAINS_PATH_ALL(76, "json_contains_path", "", " JSON_CONTAINS_PATH ") {
         //ALL 必须包含全部
-        public int paramCount() {
+        public int valueCount() {
             return 9;
         }
     },
     JSON_SEARCH(77, "json_search", "", " JSON_SEARCH ") {
-        public int paramCount() {
+        public int valueCount() {
             return 1;
         }
     },
     JSON_SEARCH_OEN(77, "json_search", "", " JSON_SEARCH ") {
-        public int paramCount() {
+        public int valueCount() {
             return 1;
         }
     },
     JSON_SEARCH_ALL(78, "json_search", "", " JSON_SEARCH ") {
-        public int paramCount() {
+        public int valueCount() {
             return 1;
         }
     },
@@ -434,7 +434,7 @@ public enum Compare {
             }
             return false;
         }
-        public int paramCount() {
+        public int valueCount() {
             return 2;
         }
     },
@@ -445,7 +445,7 @@ public enum Compare {
             }
             return false;
         }
-        public int paramCount() {
+        public int valueCount() {
             return 0;
         }
     },
@@ -456,7 +456,7 @@ public enum Compare {
             }
             return false;
         }
-        public int paramCount() {
+        public int valueCount() {
             return 0;
         }
     },
@@ -467,7 +467,7 @@ public enum Compare {
             }
             return !value.toString().toUpperCase().equals(target.toString().toUpperCase());
         }
-        public int paramCount() {
+        public int valueCount() {
             return 1;
         }
     },
@@ -482,7 +482,7 @@ public enum Compare {
             }
             return false;
         }
-        public int paramCount() {
+        public int valueCount() {
             return 9;
         }
     },
@@ -497,7 +497,7 @@ public enum Compare {
             }
             return false;
         }
-        public int paramCount() {
+        public int valueCount() {
             return 1;
         }
     },
@@ -512,7 +512,7 @@ public enum Compare {
             }
             return false;
         }
-        public int paramCount() {
+        public int valueCount() {
             return 1;
         }
     },
@@ -527,7 +527,7 @@ public enum Compare {
             }
             return false;
         }
-        public int paramCount() {
+        public int valueCount() {
             return 1;
         }
     },
@@ -542,7 +542,7 @@ public enum Compare {
             }
             return false;
         }
-        public int paramCount() {
+        public int valueCount() {
             return 1;
         }
     },
@@ -557,7 +557,7 @@ public enum Compare {
             }
             return false;
         }
-        public int paramCount() {
+        public int valueCount() {
             return 1;
         }
     },
@@ -572,7 +572,7 @@ public enum Compare {
             }
             return false;
         }
-        public int paramCount() {
+        public int valueCount() {
             return 1;
         }
     },
@@ -583,7 +583,7 @@ public enum Compare {
             }
             return true;
         }
-        public int paramCount() {
+        public int valueCount() {
             return 0;
         }
     },
@@ -594,7 +594,7 @@ public enum Compare {
             }
             return true;
         }
-        public int paramCount() {
+        public int valueCount() {
             return 0;
         }
     },
@@ -610,7 +610,7 @@ public enum Compare {
             }
             return false;
         }
-        public int paramCount() {
+        public int valueCount() {
             return 1;
         }
     };
@@ -640,7 +640,7 @@ public enum Compare {
      * 支持参数数量 0:没有参数 IS NULL/IS EMPTY 1:一个参数 2:两个参数 BETWEEN 9:多个参数  IN()
      * @return boolean
      */
-    public abstract int paramCount();
+    public abstract int valueCount();
     //public abstract boolean isMultipleValue();
 
     public String formula() {

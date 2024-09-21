@@ -56,7 +56,7 @@ public class InfluxDataSourceLoader extends AbstractDataSourceLoader implements 
             }
             if(null != client) {
                 try {
-                    runtime =  holder().create("default", client, false);
+                    runtime =  holder().create("influx.default", client, false);
                     loadDefault = false;
                 }catch (Exception e) {
                     runtime = null;

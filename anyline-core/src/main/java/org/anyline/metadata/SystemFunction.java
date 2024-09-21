@@ -7,16 +7,16 @@ public interface SystemFunction {
         CONCAT("拼接String", 9);
         META(String title, int cnt){
             this.title = title;
-            this.paramCount = cnt;
+            this.valueCount = cnt;
         }
         private final String title;
-        private final int paramCount;
+        private final int valueCount;
         /**
          * 支持参数数量 0:没有参数 IS NULL/IS EMPTY 1:一个参数 2:两个参数 BETWEEN 9:多个参数  IN()
          * @return boolean
          */
-        public int paramCount() {
-            return paramCount;
+        public int valueCount() {
+            return valueCount;
         }
         public String title() {
             return title;

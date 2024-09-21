@@ -57,7 +57,7 @@ public class HBaseDataSourceLoader extends AbstractDataSourceLoader implements D
             }
             if(null != connection) {
                 try {
-                    runtime =  holder().create("default", connection, false);
+                    runtime =  holder().create("hbase.default", connection, false);
                     loadDefault = false;
                 }catch (Exception e) {
                     runtime = null;

@@ -56,7 +56,7 @@ public class NebulaDataSourceLoader extends AbstractDataSourceLoader implements 
             }
             if(null != datasource) {
                 try {
-                    runtime =  holder().create("default", datasource, false);
+                    runtime =  holder().create("nebula.default", datasource, false);
                     loadDefault = false;
                 }catch (Exception e) {
                     runtime = null;
