@@ -19,7 +19,7 @@ package org.anyline.data.metadata;
 import org.anyline.metadata.Metadata;
 import org.anyline.metadata.type.DatabaseType;
 
-public interface PropertyCompatible {
+public interface PropertyCompat {
     /**
      * 适用数据库的类型
      * @return String
@@ -45,7 +45,7 @@ public interface PropertyCompatible {
      * 兼容属性名称或别名
      * @return String
      */
-    String compatible();
+    String compat();
 
     /**
      * 适用当前数据库的类型
