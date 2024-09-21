@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package org.anyline.data.jdbc.adapter.init.alias;
+package org.anyline.data.jdbc.mysql;
 
 import org.anyline.data.metadata.PropertyCompat;
 import org.anyline.metadata.*;
 
-public enum MySQLGenusPropertyCompat implements PropertyCompat {
+public enum MySQLPropertyCompat implements PropertyCompat {
 	DEFAULT                        (Table.class  ,"ENGINE" ,"DEFAULT"                      ,"InnoDB"    ),
 	AggregatingMergeTree           (Table.class  ,"ENGINE" ,"AggregatingMergeTree"         ,null        ),
 	ARCHIVE                        (Table.class  ,"ENGINE" ,"ARCHIVE"                      ,"ARCHIVE"   ),
@@ -57,7 +57,7 @@ public enum MySQLGenusPropertyCompat implements PropertyCompat {
 	private String compat                   ; // 兼容属性名称或别名
 	private String optimal                      ; // 适用当前数据库的属性值
 
-	MySQLGenusPropertyCompat(Class<? extends Metadata> metadata, String property, String compat, String optimal) {
+	MySQLPropertyCompat(Class<? extends Metadata> metadata, String property, String compat, String optimal) {
 		this.metadata = metadata;
 		this.property = property;
 		this.compat = compat;
