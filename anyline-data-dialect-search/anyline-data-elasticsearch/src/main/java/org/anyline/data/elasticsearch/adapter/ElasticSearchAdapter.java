@@ -879,6 +879,9 @@ PUT * /_bulk
                 row = filter(auto.getCompare(), column, values);
             }
         }
+        if(null == row){
+            row = new OriginRow();
+        }
         return row;
     }
     private DataRow filter(Compare compare, String column, List<Object> values) {
