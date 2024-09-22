@@ -846,7 +846,7 @@ PUT * /_bulk
             List<Condition> conditions = chain.getConditions();
             if(null != conditions && !conditions.isEmpty()) {
                 if(conditions.size() ==1) {//只有一个条件
-                    parseCondition(base, conditions.get(0));
+                    row = parseCondition(base, conditions.get(0));
                 }else {
                     row = base;
                     DataRow bool = base.put("bool");
