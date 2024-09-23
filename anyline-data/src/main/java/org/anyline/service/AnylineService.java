@@ -3997,6 +3997,18 @@ public interface AnylineService<E>{
 	 ******************************************************************************************************************/
 
 	interface DDLService{
+		/**
+		 * 解析DDL
+		 * @param type Metadata类型
+		 * @param ddl ddl
+		 * @param configs 其他配置
+		 * @return T
+		 * @param <T> T
+		 */
+		<T extends Metadata> T parse(Class<T> type, String ddl, ConfigStore configs);
+		default <T extends Metadata> T parse(Class<T> type, String ddl) {
+			return parse(type, ddl, new DefaultConfigStore());
+		}
 
 		/* *****************************************************************************************************************
 		 * 													catalog

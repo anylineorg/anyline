@@ -3171,7 +3171,10 @@ public class DefaultService<E> implements AnylineService<E> {
 	 * function         : 函数
 	 ******************************************************************************************************************/
     public DDLService ddl = new DDLService() {
-
+        @Override
+        public <T extends Metadata> T parse(Class<T> type, String ddl, ConfigStore configs) {
+            return (T) dao.parse(type, ddl, configs);
+        }
         /* *****************************************************************************************************************
          * 													catalog
          * -----------------------------------------------------------------------------------------------------------------

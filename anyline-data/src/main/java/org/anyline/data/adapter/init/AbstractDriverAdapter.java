@@ -12166,6 +12166,19 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return result;
 	}
 
+    /**
+     * 解析DDL
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param type Metadata类型
+     * @param ddl ddl
+     * @param configs 其他配置
+     * @return T
+     * @param <T> T
+     */
+    @Override
+    public <T extends Metadata> T parse(DataRuntime runtime, Class<T> type, String ddl, ConfigStore configs) {
+        return null;
+    }
     /* *****************************************************************************************************************
      * 													catalog
      * -----------------------------------------------------------------------------------------------------------------
