@@ -4398,7 +4398,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         if(placeholder){
             builder.append("?").append(suffix);
         }else{
-            Object write = write(runtime, null, value, false, unicode);
+            Object write = write(runtime, column, value, false, unicode);
             builder.append(write).append(suffix);
         }
         return value;

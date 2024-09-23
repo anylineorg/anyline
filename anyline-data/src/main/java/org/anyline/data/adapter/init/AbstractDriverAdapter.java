@@ -18309,7 +18309,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         if(placeholder){
             builder.append("?");
         }else{
-            Object write = write(runtime, null, value, false, unicode);
+            Object write = write(runtime, column, value, false, unicode);
             builder.append(write);
         }
         return value;

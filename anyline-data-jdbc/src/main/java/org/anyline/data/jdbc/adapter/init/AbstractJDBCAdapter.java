@@ -4894,7 +4894,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         if(placeholder){
             builder.append("?");
         }else{
-            Object write = write(runtime, null, value, false, unicode);
+            Object write = write(runtime, column, value, false, unicode);
             builder.append(write);
         }
         return value;
