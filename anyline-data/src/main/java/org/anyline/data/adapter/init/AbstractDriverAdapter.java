@@ -18520,6 +18520,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         Object result = null;
         if(!placeholder) {
             boolean isNumber = BasicUtil.isNumber(value);
+            boolean isBoolean = BasicUtil.isBoolean(value);
             boolean isNull = null == value || "NULL".equals(value);
             boolean isFun = false;
             String str = value +"";
@@ -18528,8 +18529,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                     isFun = true;
                 }
             }
-            boolean isOrigin = isNumber || isNull || isFun || value instanceof VariableValue;
-
+            boolean isOrigin = isNumber || isBoolean || isNull || isFun || value instanceof VariableValue;
+            if(value instanceof VariableValue){
+                value = ((VariableValue)value).value();
+            }
             if (isOrigin) {
                 result = value;
             } else {
