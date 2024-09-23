@@ -1408,7 +1408,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                     value = str.substring(2, str.length()-1);
                     delimiter(builder, key).append(" = ").append(value).append(BR_TAB);
                 }else{
-                    delimiter(builder, key).append(" = ?").append(BR_TAB);
+                    delimiter(builder, key).append(" = ");
+                    convert(runtime, builder, value, col, true, false, configs);
+                    builder.append(BR_TAB);
                     if("NULL".equals(value)) {
                         value = null;
                     }else if("".equals(value) && replaceEmptyNull) {
@@ -1515,7 +1517,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 }
                 start = false;
                 builder.append(key);
-                builder.append(" = ?");
+                builder.append(" = ");
+                convert(runtime, builder, null, col, true, false, configs);
             }
             start = true;
             for (String pk : primaryKeys) {
@@ -18290,6 +18293,27 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return builder;
 	}
 
+    /**
+     * 生成insert update 命令时 类型转换 如 ?::json
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param builder StringBuilder
+     * @param value 值
+     * @param column 数据类型
+     * @param configs ConfigStore
+     * @param placeholder 占位符
+     * @param unicode 编码
+     * @return Object
+     */
+    @Override
+    public Object convert(DataRuntime runtime, StringBuilder builder, Object value, Column column, boolean placeholder, Boolean unicode, ConfigStore configs) {
+        if(placeholder){
+            builder.append("?");
+        }else{
+            Object write = write(runtime, null, value, false, unicode);
+            builder.append(write);
+        }
+        return value;
+    }
 	/**
 	 * 拼接界定符
 	 * @param builder StringBuilder

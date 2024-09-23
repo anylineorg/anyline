@@ -9924,6 +9924,19 @@ public interface DriverAdapter {
 	 ******************************************************************************************************************/
 	StringBuilder name(DataRuntime runtime, StringBuilder builder, Metadata meta);
 	StringBuilder name(DataRuntime runtime, StringBuilder builder, Column meta);
+
+    /**
+     * 生成insert update 命令时 类型转换 如 ?::json
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param builder StringBuilder
+     * @param value 值
+     * @param column 数据类型
+     * @param configs ConfigStore
+     * @param placeholder 占位符
+     * @param unicode 编码
+     * @return Object
+     */
+    public Object convert(DataRuntime runtime, StringBuilder builder,  Object value, Column column, boolean placeholder, Boolean unicode, ConfigStore configs);
 	/**
 	 * 参数值 数据类型转换
 	 * 子类先解析(有些同名的类型以子类为准)、失败后再调用默认转换

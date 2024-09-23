@@ -4369,6 +4369,40 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
     public <T extends Database> T database(List<T> databases, String name) {
         return super.database(databases, name);
     }
+
+    /**
+     * 生成insert update 命令时 类型转换 如 ?::json
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param builder StringBuilder
+     * @param value 值
+     * @param column 数据类型
+     * @param configs ConfigStore
+     * @param placeholder 占位符
+     * @param unicode 编码
+     * @return Object
+     */
+    @Override
+    public Object convert(DataRuntime runtime, StringBuilder builder, Object value, Column column, boolean placeholder, Boolean unicode, ConfigStore configs) {
+        String suffix = "";
+        if(ConfigStore.IS_ENABLE_SQL_DATATYPE_CONVERT(configs)) {
+            if (null != column) {
+                String type = column.getTypeName();
+                if (BasicUtil.isNotEmpty(type)) {
+                    if (type.contains("(")) {
+                        type = type.split("\\(")[0];
+                    }
+                    suffix = "::" + type;
+                }
+            }
+        }
+        if(placeholder){
+            builder.append("?").append(suffix);
+        }else{
+            Object write = write(runtime, null, value, false, unicode);
+            builder.append(write).append(suffix);
+        }
+        return value;
+    }
     /* *****************************************************************************************************************
      *
      *                                                     DDL
