@@ -96,6 +96,7 @@ public class ConfigTable {
 	public static boolean IS_LOG_SQL_PARAM_WHEN_ERROR					= true			;	// 执行SQL异常时是否输出参数日志
 	public static boolean IS_SQL_LOG_PLACEHOLDER						= true			;   // SQL日志 是否显示占位符
 	public static boolean IS_ENABLE_PLACEHOLDER_REGEX_EXT				= true			;	// 是否启用 ::KEY 格式的占位符解析,在PG环境中会与 ::INT8 格式冲突 需要禁用
+	public static boolean IS_ENABLE_SQL_DATATYPE_CONVERT				= false			;	// 是否开启SQL数据类型转换 pg.json 不用占位符时String正常执行 使用占位符时需要转换 ?::json(jsonb)
 	public static boolean IS_SQL_DEBUG	 								= false			;	// 加载自定义SQL时是否输出日志
 	public static boolean IS_HTTP_LOG 									= true			;	// 调用HTTP接口时是否出输出日志
 	public static boolean IS_HTTP_PARAM_AUTO_TRIM						= true			;   // http参数值是否自动trim
