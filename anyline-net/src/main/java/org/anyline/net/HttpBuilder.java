@@ -94,7 +94,7 @@ public class HttpBuilder {
     }
     /**
      * 绕过验证
-     * @return
+     * @return SSLConnectionSocketFactory
      * @throws NoSuchAlgorithmException
      * @throws KeyManagementException
      */
