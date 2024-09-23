@@ -861,8 +861,8 @@ PUT * /_bulk
                         joinCode ="should";
                     } else if(Condition.JOIN.AND == join) {
                         joinCode = "must";
-                    }else{
-                        joinCode = join.getCode();
+                    }else if (Condition.JOIN.FILTER == join){
+                        joinCode = "filter";
                     }
                     set = bool.puts(joinCode);
                     for (Condition item : conditions) {
@@ -909,19 +909,27 @@ PUT * /_bulk
             }else if(cc == 55) {                                     //  MATCH
                 if(column.contains(",")) {
                     String[] cols = column.split(",");
-                    row.put("multi_match").set("query", value).set("fields", cols);
+                    row.put("multi_match")
+                        .set("query", value)
+                        .set("fields", cols);
                 }else{
                     row.put("match").put(column, value);
                 }
             }else if(cc == 20) {                                     //  GREAT
+                row.put("range").put(column).set("gt", value);
             }else if(cc == 21) {                                     //  GREAT_EQUAL
+                row.put("range").put(column).set("gte", value);
             }else if(cc == 30) {                                     //  LESS
+                row.put("range").put(column).set("lt", value);
             }else if(cc == 31) {                                     //  LESS_EQUAL
+                row.put("range").put(column).set("lte", value);
             }else if(cc == 40) {                                     //  IN
                 row.put("terms").put(column, value);
             }else if(cc == 80) {                                     //  BETWEEN
                 if(values.size() > 1) {
-                    row.put("range").put(column).set("gte", values.get(0)).set("lte",values.get(1));
+                    row.put("range").put(column)
+                        .set("gte", values.get(0))
+                        .set("lte",values.get(1));
                 }
             }else if(cc == 110) {                                    //  NOT EQUAL
             }else if(cc == 140) {                                    //  NOT IN
