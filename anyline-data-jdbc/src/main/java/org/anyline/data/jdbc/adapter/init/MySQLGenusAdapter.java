@@ -2657,20 +2657,24 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
             String txt = row.getString("Create Table");
             if(null != txt) {
                 /* PARTITION BY HASH (`ID`)
-                PARTITIONS 100 */
-                String type = RegularUtil.cut(txt,"/*!", "PARTITION BY", "(");
+                PARTITIONS 100
+                注意忽略大小写 mysql:大小写 ocean base:小写
+                */
+                String type = RegularUtil.cut(true, txt,  "PARTITION BY", "(");
                 if(null != type) {
                     meta = new Table.Partition();
                     type = type.trim();
-                    Table.Partition.TYPE ty = Table.Partition.TYPE.valueOf(type);
+                    Table.Partition.TYPE ty = Table.Partition.TYPE.valueOf(type.toUpperCase());
                     meta.setType(ty);
-                    String[] columns = RegularUtil.cut(txt, "/*!","PARTITION BY", "(", ")").split(",");
+                    String[] columns = RegularUtil.cut(true, txt,  "PARTITION BY", "(", ")").split(",");
                     for(String column:columns) {
                         meta.addColumn(column.replace("`", "").trim());
                     }
                     if(ty == Table.Partition.TYPE.HASH) {
-                        String mod = RegularUtil.cut(txt,"/*!", "PARTITION BY", "PARTITIONS", " ", " ");
-                        meta.setModulus(BasicUtil.parseInt(mod.trim(), -1));
+                        String mod = RegularUtil.cut(true, txt,  "PARTITION BY", "PARTITIONS", " ", " ");
+                        if(null != mod) {
+                            meta.setModulus(BasicUtil.parseInt(mod.trim(), -1));
+                        }
                     }
                 }
             }
