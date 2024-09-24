@@ -40,6 +40,8 @@ import org.anyline.util.encrypt.DESUtil;
 import java.lang.reflect.Array;
 import java.util.*;
 
+import static org.anyline.entity.Compare.MATCH_PHRASE;
+
 public class DefaultConfigStore implements ConfigStore {
 	protected Class clazz										    ;
 	protected DataHandler handler								    ; // 流式读取时handler
@@ -693,8 +695,10 @@ public class DefaultConfigStore implements ConfigStore {
 		if(null == prefix && null != var && var.contains(".")
 			&& !var.contains(">") // JSON_COLUMN>$.A
 		) {
-			prefix = var.substring(0, var.indexOf("."));
-			var = var.substring(var.indexOf(".")+1);
+			if(compare != Compare.MATCH && compare != MATCH_PHRASE) { //MATCH不要拆分 有可能是 column.keyword
+				prefix = var.substring(0, var.indexOf("."));
+				var = var.substring(var.indexOf(".") + 1);
+			}
 		}
 		if(null == swt || EMPTY_VALUE_SWITCH.NONE == swt) {
 			if (null != var) {
