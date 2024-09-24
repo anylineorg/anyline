@@ -1236,7 +1236,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
                 }
                 first = false;
                 if(placeholder) {
-                    builder.append("?");
+                    //builder.append("?");
                     convert(runtime, builder, value, null, placeholder, unicode, null);
                 }else{
                     if(v instanceof Number) {
