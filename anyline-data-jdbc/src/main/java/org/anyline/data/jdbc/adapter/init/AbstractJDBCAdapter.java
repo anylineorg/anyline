@@ -8504,7 +8504,24 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
      */
     @Override
     public boolean execute(DataRuntime runtime, String random, Metadata meta, ACTION.Authorize action, Run run) {
-        return execute(runtime, random, meta, action, run);
+        if(null == run) {
+            return false;
+        }
+        boolean result = false;
+        String sql = run.getFinalUpdate();
+        run.action(action);
+        if(BasicUtil.isNotEmpty(sql)) {
+            meta.addRun(run);
+            if(meta.execute()) {
+                try {
+                    update(runtime, random, (Table) null, null, null, run);
+                }finally {
+                    CacheProxy.clear();
+                }
+            }
+            result = true;
+        }
+        return result;
     }
     @Override
     public boolean execute(DataRuntime runtime, String random, Metadata meta, ACTION.Authorize action, List<Run> runs) {

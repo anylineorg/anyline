@@ -4414,7 +4414,7 @@ public class DefaultService<E> implements AnylineService<E> {
          */
         @Override
         public boolean revoke(User user, Privilege ... privileges) throws Exception {
-            return dao.grant(user, privileges);
+            return dao.revoke(user, privileges);
         }
         /**
          * 撤销授权
@@ -4424,7 +4424,7 @@ public class DefaultService<E> implements AnylineService<E> {
          */
         @Override
         public boolean revoke(User user, Role ... roles) throws Exception {
-            return dao.grant(user, roles);
+            return dao.revoke(user, roles);
         }
         /**
          * 撤销授权
@@ -4434,7 +4434,7 @@ public class DefaultService<E> implements AnylineService<E> {
          */
         @Override
         public boolean revoke(Role role, Privilege ... privileges) throws Exception {
-            return dao.grant(role, privileges);
+            return dao.revoke(role, privileges);
         }
 
     };

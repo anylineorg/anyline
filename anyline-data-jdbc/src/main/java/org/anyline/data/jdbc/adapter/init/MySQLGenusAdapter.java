@@ -2658,7 +2658,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
             if(null != txt) {
                 /* PARTITION BY HASH (`ID`)
                 PARTITIONS 100
-                注意忽略大小写 mysql:大小写 ocean base:小写
+                注意忽略大小写 mysql:大写 ocean base:小写
                 */
                 String type = RegularUtil.cut(true, txt,  "PARTITION BY", "(");
                 if(null != type) {
@@ -7812,7 +7812,20 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public List<Run> buildCreateRun(DataRuntime runtime, User user) throws Exception {
-        return super.buildCreateRun(runtime, user);
+        List<Run> runs = new ArrayList<>();
+        Run run = new SimpleRun(runtime);
+        runs.add(run);
+        StringBuilder builder = run.getBuilder();
+        builder.append("CREATE USER '").append(user.getName()).append("'");
+        String host = user.getHost();
+        if(BasicUtil.isNotEmpty(host)){
+            builder.append("@'").append(host).append("'");
+        }
+        String password = user.getPassword();
+        if(BasicUtil.isNotEmpty(password)){
+            builder.append(" IDENTIFIED BY '").append(password).append("'");
+        }
+        return runs;
     }
 
     /**
@@ -7835,7 +7848,16 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public List<Run> buildDropRun(DataRuntime runtime, User user) throws Exception {
-        return super.buildDropRun(runtime, user);
+        List<Run> runs = new ArrayList<>();
+        Run run = new SimpleRun(runtime);
+        runs.add(run);
+        StringBuilder builder = run.getBuilder();
+        builder.append("DROP USER '").append(user.getName()).append("'");
+        String host = user.getHost();
+        if(BasicUtil.isNotEmpty(host)){
+            builder.append("@'").append(host).append("'");
+        }
+        return runs;
     }
 
     /**
@@ -7846,15 +7868,14 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public List<Run> buildQueryUsersRun(DataRuntime runtime, boolean greedy, User query) throws Exception {
-        String pattern = query.getName();
         List<Run> runs = new ArrayList<>();
         SimpleRun run = new SimpleRun(runtime);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
+        ConfigStore configs = run.getConfigs();
         builder.append("SELECT * FROM mysql.user");
-        if(BasicUtil.isNotEmpty(pattern)) {
-            builder.append(" WHERE user LIKE '%").append(pattern).append("%'");
-        }
+        configs.and(Compare.LIKE_SIMPLE, "user", query.getName());
+        configs.and("Host", query.getHost());
         return runs;
     }
 
@@ -8026,9 +8047,41 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public List<Run> buildGrantRun(DataRuntime runtime, User user, Privilege ... privileges) throws Exception {
-        return super.buildGrantRun(runtime, user, privileges);
+        List<Run> runs = new ArrayList<>();
+        for(Privilege privilege:privileges) {
+            Run run = new SimpleRun(runtime);
+            runs.add(run);
+            StringBuilder builder = run.getBuilder();
+            List<String> actions = privilege.getActions();
+            if(actions.isEmpty()){
+                actions.add(privilege.getName());
+            }
+            builder.append("GRANT ").append(BeanUtil.concat(actions));
+            builder.append(" ON ");
+            String database = privilege.getDatabaseName();
+            if(BasicUtil.isEmpty(database)){
+                database = privilege.getSchemaName();
+            }
+            if(BasicUtil.isEmpty(database)){
+                database = "*";
+            }
+            String objectName = privilege.getObjectName();
+            if(BasicUtil.isEmpty(objectName)){
+                objectName = "*";
+            }
+            builder.append(database).append(".").append(objectName);
+            builder.append(" TO '").append(user.getName()).append("'");
+            String host = user.getHost();
+            if (BasicUtil.isNotEmpty(host)) {
+                builder.append("@'").append(host).append("'");
+            }
+        }
+        return runs;
     }
-
+    /*
+    GRANT SELECT,INSERT,UPDATE,DELETE,CREATE,DROP
+    ON expenses.
+    TO 'custom'@'host47.example.com';*/
     /**
      * revoke[调用入口]<br/>
      * 撤销授权
@@ -8050,7 +8103,36 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public List<Run> buildRevokeRun(DataRuntime runtime, User user, Privilege ... privileges) throws Exception {
-        return super.buildRevokeRun(runtime, user, privileges);
+        List<Run> runs = new ArrayList<>();
+        for(Privilege privilege:privileges) {
+            Run run = new SimpleRun(runtime);
+            runs.add(run);
+            StringBuilder builder = run.getBuilder();
+            List<String> actions = privilege.getActions();
+            if(actions.isEmpty()){
+                actions.add(privilege.getName());
+            }
+            builder.append("REVOKE ").append(BeanUtil.concat(actions));
+            builder.append(" ON ");
+            String database = privilege.getDatabaseName();
+            if(BasicUtil.isEmpty(database)){
+                database = privilege.getSchemaName();
+            }
+            if(BasicUtil.isEmpty(database)){
+                database = "*";
+            }
+            String objectName = privilege.getObjectName();
+            if(BasicUtil.isEmpty(objectName)){
+                objectName = "*";
+            }
+            builder.append(database).append(".").append(objectName);
+            builder.append(" FROM '").append(user.getName()).append("'");
+            String host = user.getHost();
+            if (BasicUtil.isNotEmpty(host)) {
+                builder.append("@'").append(host).append("'");
+            }
+        }
+        return runs;
     }
 
     /* *****************************************************************************************************************

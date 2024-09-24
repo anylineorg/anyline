@@ -18,10 +18,13 @@ package org.anyline.entity.authorize;
 
 import org.anyline.metadata.Metadata;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Privilege extends Metadata<Privilege> {
+    protected List<String> actions = new ArrayList<>();
     protected User user; // 所属用户
     protected Role role;
-    private String tables;
     private String objectType;
     private String objectName;
 
@@ -29,14 +32,16 @@ public class Privilege extends Metadata<Privilege> {
     public Privilege(User user) {
         this.user = user;
     }
-    public String getTables() {
-        return tables;
-    }
 
-    public void setTables(String tables) {
-        this.tables = tables;
+    public Privilege addActions(String ... actions) {
+        for(String action:actions){
+            this.actions.add(action);
+        }
+        return this;
     }
-
+    public List<String> getActions(){
+        return actions;
+    }
     public String getObjectType() {
         return objectType;
     }

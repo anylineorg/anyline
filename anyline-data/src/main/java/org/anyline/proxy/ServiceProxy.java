@@ -1595,4 +1595,7 @@ public class ServiceProxy {
     public static AnylineService.MetaDataService metadata() {
         return service.metadata();
     }
+    public static AnylineService.AuthorizeService authorize() {
+        return service.authorize();
+    }
 }
