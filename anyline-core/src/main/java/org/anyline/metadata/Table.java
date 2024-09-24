@@ -209,10 +209,25 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
             String tmp = name.replaceAll("\\s+", " ");
             String up = tmp.toUpperCase();
             if(up.contains(" AS ")){
-                int split = up.lastIndexOf(" AS ");
-                name = tmp.substring(0, split).trim();
-                String alias = tmp.substring(split+4).trim();
-                this.setAlias(alias);
+                //SSO_USER AS SSO
+                //SSO_USER(ID AS USER_ID) AS SSO
+                if(up.contains(")")){
+                    String tmps[] = tmp.split("\\)");
+                    if(tmps.length > 1) {
+                        String last = tmps[tmps.length - 1];
+                        if (last.contains(" AS ")) {
+                            int split = last.lastIndexOf(" AS ");
+                            String alias = last.substring(split + 4).trim();
+                            this.setAlias(alias);
+                            name = tmp.substring(0, tmp.length() - alias.length() - 4);
+                        }
+                    }
+                }else {
+                    int split = up.lastIndexOf(" AS ");
+                    name = tmp.substring(0, split).trim();
+                    String alias = tmp.substring(split + 4).trim();
+                    this.setAlias(alias);
+                }
             }
             if(name.contains(":") || name.contains(" ")) {
                 //自定义XML或sql
