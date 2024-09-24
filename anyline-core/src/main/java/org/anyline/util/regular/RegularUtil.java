@@ -716,18 +716,38 @@ public class RegularUtil {
 			return null;
 		}
 	}
+
 	public static String cut(String text, String ... tags) {
-		return cut(text, false, tags);
+		return cut(false, text, tags);
+	}
+	/**
+	 *
+	 * 取tags[i-2]与tags[i-1]之间的文本
+	 * @param ignore 忽略大小写
+	 * @param text 原文
+	 * @param tags 标记
+	 * @return String
+	 */
+	public static String cut(boolean ignore, String text, String ... tags) {
+		return cut(ignore, text, false, tags);
 	}
 
+	public static String cut(String text, boolean contains, String ... tags) {
+		return cut(false, text, contains, tags);
+	}
 	/**
 	 * 取tags[i-2]与tags[i-1]之间的文本
-	 * @param text text
-	 * @param tags tags
+	 * @param ignore 忽略大小写
+	 * @param text 原文
+	 * @param tags 标记
 	 * @param contains 是否包含开始结束标签
 	 * @return String
 	 */
-	public static String cut(String text, boolean contains, String ... tags) {
+	public static String cut(boolean ignore, String text, boolean contains, String ... tags) {
+		String up = text;
+		if(ignore){
+			up = up.toUpperCase();
+		}
 		if(null == text || null == tags || tags.length < 2) {
 			/*没有开始结束标志*/
 			return null;
@@ -745,9 +765,9 @@ public class RegularUtil {
 				frLength = 0;
 			}else{
 				if(i>0) {
-					_fr= text.indexOf(frTag, _fr+tags[i-1].length());
+					_fr= up.indexOf(frTag, _fr+tags[i-1].length());
 				}else{
-					_fr= text.indexOf(frTag, _fr);
+					_fr= up.indexOf(frTag, _fr);
 				}
 				if(_fr == -1) {
 					return null;
@@ -763,7 +783,7 @@ public class RegularUtil {
 				_to = text.length();
 				toLength = 0;
 			}else{
-				_to = text.indexOf(toTag, _fr+frLength);
+				_to = up.indexOf(toTag, _fr+frLength);
 				toLength = toTag.length();
 			}
 		}
@@ -772,7 +792,7 @@ public class RegularUtil {
 		}
 		String result = null;
 		if(contains) {
-			_fr = text.indexOf(tags[0]);
+			_fr = up.indexOf(tags[0]);
 			result = text.substring(_fr, _to+toLength);
 		}else{
 			result = text.substring(_fr+frLength, _to);
@@ -781,12 +801,22 @@ public class RegularUtil {
 	}
 
 	public static List<String> cuts(String text, String ... tags) {
-		return cuts(text, false, tags);
+		return cuts(false, text, tags);
+	}
+	public static List<String> cuts(boolean ignore, String text, String ... tags) {
+		return cuts(ignore, text, false, tags);
 	}
 	public static List<String> cuts(String text, boolean contains, String ... tags) {
+		return cuts(false, text, contains, tags);
+	}
+	public static List<String> cuts(boolean ignore, String text, boolean contains, String ... tags) {
 		List<String> list = new ArrayList<>();
+		String up = text;
+		if(ignore){
+			up = up.toUpperCase();
+		}
 		while(true) {
-			String item = cut(text, contains, tags);
+			String item = cut(ignore, text, contains, tags);
 			if(null == item) {
 				break;
 			}else{
@@ -797,7 +827,7 @@ public class RegularUtil {
 					if(idx>0) {
 						idx += 1;
 					}
-					idx = text.indexOf(tags[i], idx);
+					idx = up.indexOf(tags[i], idx);
 				}
 				if(idx <= 0) {
 					break;
