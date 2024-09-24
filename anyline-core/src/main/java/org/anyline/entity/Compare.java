@@ -272,7 +272,7 @@ public enum Compare {
             if(null == target || null == value) {
                 return false;
             }
-            return value.toString().toUpperCase().endsWith(target.toString().toUpperCase());
+            return value.toString().toUpperCase().contains(target.toString().toUpperCase());
         }
         public int valueCount() {
             return 1;
@@ -286,7 +286,21 @@ public enum Compare {
             if(null == target || null == value) {
                 return false;
             }
-            return value.toString().toUpperCase().endsWith(target.toString().toUpperCase());
+            return value.toString().toUpperCase().contains(target.toString().toUpperCase());
+        }
+        public int valueCount() {
+            return 1;
+        }
+    },
+    /**
+     * 搜索引擎 匹配
+     */
+    MATCH_PHRASE_PREFIX (56, "MATCH_PHRASE_PREFIX ",""," ") {
+        public boolean compare(Object value, Object target) {
+            if(null == target || null == value) {
+                return false;
+            }
+            return value.toString().toUpperCase().startsWith(target.toString().toUpperCase());
         }
         public int valueCount() {
             return 1;

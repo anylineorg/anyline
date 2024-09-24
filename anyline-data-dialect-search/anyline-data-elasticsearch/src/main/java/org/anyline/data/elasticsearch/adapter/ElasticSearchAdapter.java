@@ -915,6 +915,10 @@ PUT * /_bulk
                 }else{
                     row.put("match").put(column, value);
                 }
+            }else if(cc == 56) {                                     //  MATCH_PHRASE
+                row.put("match_phrase").put(column, value);
+            }else if(cc == 57) {                                     //  MATCH_PHRASE_PREFIX
+                row.put("match_phrase_prefix").put(column, value);
             }else if(cc == 20) {                                     //  GREAT
                 row.put("range").put(column).set("gt", value);
             }else if(cc == 21) {                                     //  GREAT_EQUAL
