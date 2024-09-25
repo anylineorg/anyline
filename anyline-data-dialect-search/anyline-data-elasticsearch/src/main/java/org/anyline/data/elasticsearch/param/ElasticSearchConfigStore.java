@@ -20,6 +20,7 @@ import org.anyline.data.param.init.DefaultConfigStore;
 
 public class ElasticSearchConfigStore extends DefaultConfigStore {
     protected String collapse;
+    protected String sql;
     protected ElasticSearchRequestBody requestBody;
 
     public ElasticSearchRequestBody getRequestBody() {
@@ -39,4 +40,13 @@ public class ElasticSearchConfigStore extends DefaultConfigStore {
     public String collapse(){
         return this.collapse;
     }
+
+    public ElasticSearchConfigStore sql(String sql){
+        this.sql = sql;
+        return this;
+    }
+    public String sql(){
+        return this.sql;
+    }
+
 }

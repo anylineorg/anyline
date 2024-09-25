@@ -734,10 +734,32 @@ PUT * /_bulk
         run.setPrepare(prepare);
         run.setConfigStore(configs);
         run.addCondition(conditions);
+
+        if(configs instanceof ElasticSearchConfigStore){
+            //如果指定了body
+            ElasticSearchRequestBody request = null;
+            ElasticSearchConfigStore esc = (ElasticSearchConfigStore)configs;
+            request = esc.getRequestBody();
+            if(null != request) {
+                run.getBuilder().append(request.getJson());
+                return run;
+            }
+            //如果指定了SQL
+            String sql = esc.sql();
+            if(BasicUtil.isNotEmpty(sql)){
+                endpoint = "/_sql?format=json";
+                run.setEndpoint(endpoint);
+                DataRow body = new OriginRow();
+                body.put("query", sql);
+                run.getBuilder().append(body.getJson());
+                return run;
+            }
+        }
+
         if(run.checkValid()) {
             //为变量赋值
             run.init();
-            //构造最终的查询SQL
+            //构造最终的查询
             fillQueryContent(runtime, run);
         }
         return run;
@@ -787,6 +809,9 @@ PUT * /_bulk
             if(null != request) {
                 r.getBuilder().append(request.getJson());
                 return r;
+            }
+            String sql = esc.sql();
+            if(BasicUtil.isNotEmpty(sql)){
             }
         }
         request = new ElasticSearchRequestBody();
