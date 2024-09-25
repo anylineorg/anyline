@@ -18,9 +18,12 @@ package org.anyline.data.param;
 
 import org.anyline.adapter.KeyAdapter;
 import org.anyline.data.handler.DataHandler;
+import org.anyline.data.param.init.DefaultConfig;
+import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.Condition;
 import org.anyline.data.prepare.Group;
 import org.anyline.data.prepare.GroupStore;
+import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.run.Run;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
@@ -290,12 +293,12 @@ public interface ConfigStore extends Cloneable{
 	 */
 	boolean hasSelfPrimaryKeys();
 	default ConfigStore exists(EMPTY_VALUE_SWITCH swt, RunPrepare prepare) {
-		Config conf = new DefaultConfig(prepare);
+		Config conf = new DefaultConfig();
 		conf.setCompare(Compare.EXISTS);
 		return and(conf);
 	}
 	default ConfigStore exists(RunPrepare prepare) {
-		return exists(EMPTY_VALUE_SWITCH.IGNORE, prepare)
+		return exists(EMPTY_VALUE_SWITCH.IGNORE, prepare);
 	}
 	/**
 	 * 构造查询条件

@@ -633,7 +633,7 @@ public enum Compare {
         public int valueCount() {
             return 0;
         }
-    }
+    },
     //正则表达式，注意不是每个数据库都支持
     REGEX(999, "正则","regex"," REGEXP ?") {
         public boolean compare(Object value, Object target) {
