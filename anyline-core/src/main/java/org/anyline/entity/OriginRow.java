@@ -84,5 +84,7 @@ public class OriginRow extends DataRow {
     public Object get(String key) {
         return mapGet(key);
     }
-
+    public static DataRow parseJson(String json){
+        return DataRow.parseJson(KEY_CASE.SRC, json);
+    }
 }
