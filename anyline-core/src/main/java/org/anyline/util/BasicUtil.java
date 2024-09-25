@@ -595,7 +595,7 @@ public class BasicUtil {
 	}
 
 	//直接替换文本不解析
-	public String replace(String text, Map<String, String> replaces){
+	public static String replace(String text, Map<String, String> replaces){
 		if(null != text){
 			for(String key:replaces.keySet()){
 				String value = replaces.get(key);
