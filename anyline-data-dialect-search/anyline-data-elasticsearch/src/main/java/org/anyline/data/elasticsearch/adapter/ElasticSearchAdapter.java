@@ -874,7 +874,7 @@ PUT * /_bulk
                     row = parseCondition(base, conditions.get(0));
                 }else {
                     row = base;
-                    DataRow bool = base.put("bool");
+                    DataRow bool = new OriginRow();
                     DataSet set = null;
                     Condition.JOIN join = chain.getJoin();
                     String joinCode = null;
@@ -889,9 +889,18 @@ PUT * /_bulk
                     }else if (Condition.JOIN.FILTER == join){
                         joinCode = "filter";
                     }
-                    set = bool.puts(joinCode);
+                    set = new DataSet();
                     for (Condition item : conditions) {
-                        set.add(parseCondition(new OriginRow(), item));
+                        DataRow con = parseCondition(new OriginRow(), item);
+                        if(null != con && !con.isEmpty()) {
+                            set.add(con);
+                        }
+                    }
+                    if(!set.isEmpty()){
+                        bool.put(joinCode, set);
+                    }
+                    if(!bool.isEmpty()){
+                        base.put("bool", bool);
                     }
                 }
             }
