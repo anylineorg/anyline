@@ -31,5 +31,4 @@ public class ElasticSearchConfigStore extends DefaultConfigStore {
     public void setRequestBody(String json) {
         this.requestBody = new ElasticSearchRequestBody(json);
     }
-
 }

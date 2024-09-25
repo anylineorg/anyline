@@ -795,6 +795,10 @@ PUT * /_bulk
             if(null != columns && !columns.isEmpty()) {
                 body.put("_source", columns);
             }
+            String collapse = configs.collapse();
+            if(BasicUtil.isNotEmpty(collapse)){
+                body.put("collapse").put("field", collapse);
+            }
             Highlight highlight = configs.getHighlight();
             if(null != highlight) {
                 LinkedHashMap<String, Highlight> fields = highlight.getFields();

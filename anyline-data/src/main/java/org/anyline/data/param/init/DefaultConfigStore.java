@@ -74,6 +74,7 @@ public class DefaultConfigStore implements ConfigStore {
 	protected Table table					= null					;
 	protected String join					= null					; // and or must must_not should filter
 	protected Highlight highlight;
+	protected String collapse;
 
 	public DataRow map(boolean empty) {
 		DataRow row = new OriginRow();
@@ -498,6 +499,13 @@ public class DefaultConfigStore implements ConfigStore {
 		return this;
 	}
 
+	public ConfigStore collapse(String field){
+		this.collapse = field;
+		return this;
+	}
+	public String collapse(){
+		return this.collapse;
+	}
 	@Override
 	public ConfigStore autoCount(boolean auto) {
 		if(null == navi) {
