@@ -499,13 +499,6 @@ public class DefaultConfigStore implements ConfigStore {
 		return this;
 	}
 
-	public ConfigStore collapse(String field){
-		this.collapse = field;
-		return this;
-	}
-	public String collapse(){
-		return this.collapse;
-	}
 	@Override
 	public ConfigStore autoCount(boolean auto) {
 		if(null == navi) {

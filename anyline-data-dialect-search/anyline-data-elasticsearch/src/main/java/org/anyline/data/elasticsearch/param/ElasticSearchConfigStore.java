@@ -19,6 +19,7 @@ package org.anyline.data.elasticsearch.param;
 import org.anyline.data.param.init.DefaultConfigStore;
 
 public class ElasticSearchConfigStore extends DefaultConfigStore {
+    protected String collapse;
     protected ElasticSearchRequestBody requestBody;
 
     public ElasticSearchRequestBody getRequestBody() {
@@ -30,5 +31,12 @@ public class ElasticSearchConfigStore extends DefaultConfigStore {
     }
     public void setRequestBody(String json) {
         this.requestBody = new ElasticSearchRequestBody(json);
+    }
+    public ElasticSearchConfigStore collapse(String field){
+        this.collapse = field;
+        return this;
+    }
+    public String collapse(){
+        return this.collapse;
     }
 }

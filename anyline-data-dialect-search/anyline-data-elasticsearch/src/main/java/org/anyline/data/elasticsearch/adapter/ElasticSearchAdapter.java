@@ -22,14 +22,13 @@ import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.adapter.init.AbstractDriverAdapter;
 import org.anyline.data.elasticsearch.metadata.ElasticSearchBuilder;
 import org.anyline.data.elasticsearch.metadata.ElasticSearchIndex;
+import org.anyline.data.elasticsearch.param.ElasticSearchConfigStore;
 import org.anyline.data.elasticsearch.param.ElasticSearchRequestBody;
 import org.anyline.data.elasticsearch.run.ElasticSearchRun;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.Highlight;
 import org.anyline.data.param.init.DefaultConfigStore;
-import org.anyline.data.prepare.Condition;
-import org.anyline.data.prepare.ConditionChain;
-import org.anyline.data.prepare.RunPrepare;
+import org.anyline.data.prepare.*;
 import org.anyline.data.prepare.auto.AutoCondition;
 import org.anyline.data.run.*;
 import org.anyline.data.runtime.DataRuntime;
@@ -780,10 +779,18 @@ PUT * /_bulk
         ElasticSearchRun r = (ElasticSearchRun)run;
         ConditionChain chain = r.getConditionChain();
 
-        ElasticSearchRequestBody request = new ElasticSearchRequestBody();
-
-        DataRow body = new DataRow(KeyAdapter.KEY_CASE.SRC);
         ConfigStore configs = run.getConfigs();
+        ElasticSearchRequestBody request = null;
+        if(configs instanceof ElasticSearchConfigStore){
+            ElasticSearchConfigStore esc = (ElasticSearchConfigStore)configs;
+            request = esc.getRequestBody();
+            if(null != request) {
+                r.getBuilder().append(request.getJson());
+                return r;
+            }
+        }
+        request = new ElasticSearchRequestBody();
+        DataRow body = new OriginRow();
         if(null != configs) {
             configs.autoCount(false); //不需要单独计算总行数
             PageNavi navi = configs.getPageNavi();
@@ -795,7 +802,20 @@ PUT * /_bulk
             if(null != columns && !columns.isEmpty()) {
                 body.put("_source", columns);
             }
-            String collapse = configs.collapse();
+            //去重 如果没有设置collapse取分组第1列
+            String collapse = null;
+            if(configs instanceof ElasticSearchConfigStore){
+                collapse = ((ElasticSearchConfigStore)configs).collapse();
+            }
+            if(BasicUtil.isEmpty(collapse)){
+                GroupStore gs = configs.getGroups();
+                if(null != gs){
+                    List<Group> groups = gs.getGroups();
+                    if(null != groups && ! groups.isEmpty()){
+                        collapse = groups.get(0).getColumn();
+                    }
+                }
+            }
             if(BasicUtil.isNotEmpty(collapse)){
                 body.put("collapse").put("field", collapse);
             }
@@ -841,6 +861,7 @@ PUT * /_bulk
             request.setJson(body.json());
             r.getBuilder().append(body.json());
         }
+
         return r;
     }
     private DataRow parseCondition(DataRow base, Condition condition) {

@@ -181,9 +181,6 @@ public interface ConfigStore extends Cloneable{
 	default ConfigStore limit(int rows) {
 		return limit(0, rows);
 	}
-
-	ConfigStore collapse(String field);
-	String collapse();
 	/**
 	 * 设置分页
 	 * @param page 第page页 下标从1开始
