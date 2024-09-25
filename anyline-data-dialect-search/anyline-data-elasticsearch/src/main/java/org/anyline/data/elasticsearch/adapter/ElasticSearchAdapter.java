@@ -896,11 +896,11 @@ PUT * /_bulk
                 value = values.get(0);
             }
             int cc = compare.getCode();
-            if(cc == 10) {                                           //  EQUAL
+            if(cc == 10) {                                            //  EQUAL
                 row.put("term").put(column, value);
-            }else if(cc == 999) {                                   //  Compare.REGEX
+            }else if(cc == 999) {                                    //  Compare.REGEX
                 row.put("regexp").put(column, value);
-            }else if(cc == 50) {                                    //  LIKE
+            }else if(cc == 50) {                                     //  LIKE
                 row.put("wildcard").put(column, "*"+value+"*");
             }else if(cc == 51) {                                     //  START_WITH
                 row.put("wildcard").put(column, value+"*");
