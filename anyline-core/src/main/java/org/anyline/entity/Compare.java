@@ -474,6 +474,17 @@ public enum Compare {
             return 0;
         }
     },
+    EXISTS(92, "存在",""," EXISTS ") {
+        public boolean compare(Object value, Object target) {
+            if(BasicUtil.isEmpty(true, value)) {
+                return false;
+            }
+            return true;
+        }
+        public int valueCount() {
+            return 0;
+        }
+    },
     NOT_EQUAL(110, "不等于","nin"," != ? ") {
         public boolean compare(Object value, Object target) {
             if(null == target || null == value) {
@@ -612,6 +623,17 @@ public enum Compare {
             return 0;
         }
     },
+    NOT_EXISTS(192, "不存在", "", " NOT EXISTS") {
+        public boolean compare(Object value, Object target) {
+            if(BasicUtil.isEmpty(true, value)) {
+                return true;
+            }
+            return false;
+        }
+        public int valueCount() {
+            return 0;
+        }
+    }
     //正则表达式，注意不是每个数据库都支持
     REGEX(999, "正则","regex"," REGEXP ?") {
         public boolean compare(Object value, Object target) {

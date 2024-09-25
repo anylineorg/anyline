@@ -289,7 +289,14 @@ public interface ConfigStore extends Cloneable{
 	 * @return boolean
 	 */
 	boolean hasSelfPrimaryKeys();
-
+	default ConfigStore exists(EMPTY_VALUE_SWITCH swt, RunPrepare prepare) {
+		Config conf = new DefaultConfig(prepare);
+		conf.setCompare(Compare.EXISTS);
+		return and(conf);
+	}
+	default ConfigStore exists(RunPrepare prepare) {
+		return exists(EMPTY_VALUE_SWITCH.IGNORE, prepare)
+	}
 	/**
 	 * 构造查询条件
 	 * @param swt 遇到空值处理方式
