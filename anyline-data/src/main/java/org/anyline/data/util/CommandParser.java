@@ -116,7 +116,6 @@ public class CommandParser {
                 // AND CD = :CD
                 for(int i=0; i<keys.size();i++) {
                     List<String> keyItem = keys.get(i);
-
                     Variable var = SyntaxHelper.buildVariable(type, keyItem.get(0), keyItem.get(1), keyItem.get(2), keyItem.get(3));
                     if(null == var) {
                         continue;

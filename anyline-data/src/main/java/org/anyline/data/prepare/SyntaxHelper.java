@@ -128,7 +128,11 @@ public class SyntaxHelper {
 		var.setFullKey(fullKey);
 		var.setSignType(signType);
 		var.setType(varType); 
-		var.setCompare(compare); 
+		var.setCompare(compare);
+		if(fullKey.startsWith("::") && checkType(var.getKey())){
+			//数据类型转换
+			return null;
+		}
 		return var; 
 	} 
 	public static Compare parseCompare(int code) {
@@ -151,6 +155,9 @@ public class SyntaxHelper {
 		return null; 
 	}
 	public static boolean checkType(String type) {
+		if(null == type){
+			return false;
+		}
 		type = type.toUpperCase();
 		if(types.isEmpty()) {
 			for(StandardTypeMetadata item:StandardTypeMetadata.values()) {
