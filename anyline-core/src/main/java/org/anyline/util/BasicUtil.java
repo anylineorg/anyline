@@ -594,6 +594,17 @@ public class BasicUtil {
 		return result.toString();
 	}
 
+	//直接替换文本不解析
+	public String replace(String text, Map<String, String> replaces){
+		if(null != text){
+			for(String key:replaces.keySet()){
+				String value = replaces.get(key);
+				//原文没有${}的也不要添加
+				text = text.replace(key, value);
+			}
+		}
+		return text;
+	}
 	/**
 	 * 删除空格
 	 *
