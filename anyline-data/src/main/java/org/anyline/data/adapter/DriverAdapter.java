@@ -1534,6 +1534,19 @@ public interface DriverAdapter {
 
     /**
      * select[命令合成-子流程] <br/>
+     * 构造 [not] exists 查询条件
+     * 如果不需要占位符 返回null  否则原样返回value
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param builder builder
+     * @param compare 比较方式 默认 equal 多个值默认 in
+     * @param value value
+     * @return value 有占位符时返回占位值，没有占位符返回null
+     */
+    default RunValue createConditionExists(DataRuntime runtime, StringBuilder builder, Compare compare, RunPrepare prepare, boolean placeholder, boolean unicode) {
+        return null;
+    }
+    /**
+     * select[命令合成-子流程] <br/>
      * 构造 FIND_IN_SET 查询条件
      * 如果不需要占位符 返回null  否则原样返回value
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
