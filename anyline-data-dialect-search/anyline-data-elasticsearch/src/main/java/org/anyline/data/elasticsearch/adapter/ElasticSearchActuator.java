@@ -26,10 +26,7 @@ import org.anyline.data.elasticsearch.runtime.ElasticSearchRuntime;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.run.Run;
 import org.anyline.data.runtime.DataRuntime;
-import org.anyline.entity.DataRow;
-import org.anyline.entity.DataSet;
-import org.anyline.entity.DefaultPageNavi;
-import org.anyline.entity.PageNavi;
+import org.anyline.entity.*;
 import org.anyline.metadata.*;
 import org.anyline.net.HttpResponse;
 import org.anyline.proxy.EntityAdapterProxy;
@@ -95,6 +92,18 @@ public class ElasticSearchActuator implements DriverActuator {
         return null;
     }
 
+    public String dsl(DriverAdapter adapter, DataRuntime runtime, String random, String sql) throws Exception {
+        String dsl = null;
+        Request request = new Request(
+            "POST",
+            "/_sql/translate");
+        DataRow body = new OriginRow();
+        body.put("query", sql);
+        request.setJsonEntity(body.json());
+        HttpResponse response = execute(random, runtime, request);
+        dsl = response.getText();
+        return dsl;
+    }
     @Override
     public DataSet select(DriverAdapter adapter, DataRuntime runtime, String random, boolean system, ACTION.DML action, Table table, ConfigStore configs, Run run, String cmd, List<Object> values, LinkedHashMap<String, Column> columns) throws Exception {
         DataSet set = new DataSet();
@@ -135,10 +144,37 @@ public class ElasticSearchActuator implements DriverActuator {
                     DataRow source = hit.getRow("_source");
                     if(null != source) {
                         row.putAll(source);
+                    }else{
+                        //根据SQL2DSL的在fields中
+                        DataRow fields = hit.getRow("fields");
+                        if(null != fields) {
+                            for (String field : fields.keySet()) {
+                                List<?> vs = (List<?>) fields.get(field);
+                                if (null != vs && !vs.isEmpty()) {
+                                    row.put(field, vs.get(0));
+                                } else {
+                                    row.put(field, null);
+                                }
+                            }
+                        }
                     }
                     row.put("_id", hit.get("_id"));
                     set.add(row);
                 }
+                /*   "_index": "es_index_table",
+                "_id": "1I3OJ5IBw0-YrZZCmw0k",
+                "_score": null,
+                "fields": {
+                    "title": [
+                        "Elasticsearch使用Lucen"
+                    ],
+                    "content": [
+                        "Elasticsearch使用Lucene，并试图通过JSON和Java API提供其所有特性。它支持facetting和percolating，如果新文档与注册查询匹配，这对于通知非常有用。另一个特性称为“网关”，处理索引的长期持久性；例如，在服务器崩溃的情况下，可以从网关恢复索引。Elasticsearch支持实时GET请求，适合作为NoSQL数据存储，但缺少分布式事务。"
+                    ]
+                },
+                "sort": [
+                    3
+                ]*/
             }else{
                 //根据sql查询
                 /*{"columns":[{"name":"content","type":"text"}],"rows":[["ElaK stack”）。"],["Elasticsearch可以用于搜索各种文档。它提供 片，每个...]*/

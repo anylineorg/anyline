@@ -736,15 +736,16 @@ PUT * /_bulk
         run.setConfigStore(configs);
         run.addCondition(conditions);
 
+        PageNavi navi = configs.getPageNavi();
         String sql = null;
         List<Object> sql_params = new ArrayList<>();
         if(configs instanceof ElasticSearchConfigStore){
             //如果指定了body
-            ElasticSearchRequestBody request = null;
+            ElasticSearchRequestBody rb = null;
             ElasticSearchConfigStore esc = (ElasticSearchConfigStore)configs;
-            request = esc.getRequestBody();
-            if(null != request) {
-                run.getBuilder().append(request.getJson());
+            rb = esc.getRequestBody();
+            if(null != rb) {
+                run.getBuilder().append(rb.getJson());
                 return run;
             }
             //如果指定了SQL
@@ -770,6 +771,22 @@ PUT * /_bulk
             }
         }
         if(BasicUtil.isNotEmpty(sql)){
+            if(null != navi){
+                //如果设置了分页，先转成DSL 因为SQL不支持OFFSET + LIMIT
+                //不单独计算总行数,查询结果中有
+                //navi.autoCount(false);
+                try {
+                    String dsl = ((ElasticSearchActuator) actuator).dsl(this, runtime, null, sql);
+                    DataRow json = OriginRow.parseJson(dsl);
+                    json.put("from", navi.getFirstRow());
+                    json.put("size", navi.getPageRows());
+                    navi.autoCount(false);
+                    run.getBuilder().append(json.json());
+                    return run;
+                }catch (Exception e){
+                    log.error("SQL转DSL失败", e);
+                }
+            }
             endpoint = "/_sql?format=json";
             run.setEndpoint(endpoint);
             DataRow body = new OriginRow();
