@@ -17,10 +17,12 @@
 package org.anyline.data.elasticsearch.param;
 
 import org.anyline.data.param.init.DefaultConfigStore;
+import org.anyline.data.prepare.RunPrepare;
 
 public class ElasticSearchConfigStore extends DefaultConfigStore {
     protected String collapse;
     protected String sql;
+    protected RunPrepare prepare;
     protected ElasticSearchRequestBody requestBody;
 
     public ElasticSearchRequestBody getRequestBody() {
@@ -45,8 +47,16 @@ public class ElasticSearchConfigStore extends DefaultConfigStore {
         this.sql = sql;
         return this;
     }
+    public ElasticSearchConfigStore sql(RunPrepare prepare){
+        this.prepare = prepare;
+        return this;
+    }
     public String sql(){
         return this.sql;
+    }
+
+    public RunPrepare prepare(){
+        return this.prepare;
     }
 
 }

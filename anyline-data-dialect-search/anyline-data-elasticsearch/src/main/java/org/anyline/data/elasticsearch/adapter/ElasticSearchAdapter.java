@@ -30,6 +30,7 @@ import org.anyline.data.param.Highlight;
 import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.*;
 import org.anyline.data.prepare.auto.AutoCondition;
+import org.anyline.data.prepare.auto.TextPrepare;
 import org.anyline.data.run.*;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
@@ -735,6 +736,8 @@ PUT * /_bulk
         run.setConfigStore(configs);
         run.addCondition(conditions);
 
+        String sql = null;
+        List<Object> sql_params = new ArrayList<>();
         if(configs instanceof ElasticSearchConfigStore){
             //如果指定了body
             ElasticSearchRequestBody request = null;
@@ -745,15 +748,37 @@ PUT * /_bulk
                 return run;
             }
             //如果指定了SQL
-            String sql = esc.sql();
-            if(BasicUtil.isNotEmpty(sql)){
-                endpoint = "/_sql?format=json";
-                run.setEndpoint(endpoint);
-                DataRow body = new OriginRow();
-                body.put("query", sql);
-                run.getBuilder().append(body.getJson());
-                return run;
+            sql = esc.sql();
+            RunPrepare rp = esc.prepare();
+            //如果指定了RunPrepare
+            if(BasicUtil.isEmpty(sql) && null != rp){
+                Run sql_run = super.buildQueryRun(runtime, rp, new DefaultConfigStore());
+                sql = sql_run.getFinalQuery(true);
+                List<RunValue> sql_run_values = sql_run.getRunValues();
+                for(RunValue rv:sql_run_values){
+                    sql_params.add(rv.getValue());
+                }
             }
+        }
+        if(prepare instanceof TextPrepare){
+            //service.querys("select * from ... ");
+            Run tr = super.buildQueryRun(runtime, prepare, configs, conditions);
+            sql = tr.getFinalQuery(true);
+            List<RunValue> sql_run_values = tr.getRunValues();
+            for(RunValue rv:sql_run_values){
+                sql_params.add(rv.getValue());
+            }
+        }
+        if(BasicUtil.isNotEmpty(sql)){
+            endpoint = "/_sql?format=json";
+            run.setEndpoint(endpoint);
+            DataRow body = new OriginRow();
+            body.put("query", sql);
+            if(!sql_params.isEmpty()){
+                body.put("params", sql_params);
+            }
+            run.getBuilder().append(body.getJson());
+            return run;
         }
 
         if(run.checkValid()) {
@@ -802,19 +827,7 @@ PUT * /_bulk
         ConditionChain chain = r.getConditionChain();
 
         ConfigStore configs = run.getConfigs();
-        ElasticSearchRequestBody request = null;
-        if(configs instanceof ElasticSearchConfigStore){
-            ElasticSearchConfigStore esc = (ElasticSearchConfigStore)configs;
-            request = esc.getRequestBody();
-            if(null != request) {
-                r.getBuilder().append(request.getJson());
-                return r;
-            }
-            String sql = esc.sql();
-            if(BasicUtil.isNotEmpty(sql)){
-            }
-        }
-        request = new ElasticSearchRequestBody();
+        ElasticSearchRequestBody request = new ElasticSearchRequestBody();
         DataRow body = new OriginRow();
         if(null != configs) {
             configs.autoCount(false); //不需要单独计算总行数

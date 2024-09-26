@@ -43,6 +43,7 @@ import org.elasticsearch.client.RestClient;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -97,6 +98,10 @@ public class ElasticSearchActuator implements DriverActuator {
     @Override
     public DataSet select(DriverAdapter adapter, DataRuntime runtime, String random, boolean system, ACTION.DML action, Table table, ConfigStore configs, Run run, String cmd, List<Object> values, LinkedHashMap<String, Column> columns) throws Exception {
         DataSet set = new DataSet();
+        if(null == columns){
+            columns = new LinkedHashMap<>();
+        }
+        set.setMetadata(columns);
         long fr = System.currentTimeMillis();
         ElasticSearchRun er = (ElasticSearchRun)run;
         String method = er.getMethod();
@@ -132,6 +137,30 @@ public class ElasticSearchActuator implements DriverActuator {
                         row.putAll(source);
                     }
                     row.put("_id", hit.get("_id"));
+                    set.add(row);
+                }
+            }else{
+                //根据sql查询
+                /*{"columns":[{"name":"content","type":"text"}],"rows":[["ElaK stack”）。"],["Elasticsearch可以用于搜索各种文档。它提供 片，每个...]*/
+                List<?> cols = json.getList("columns");
+                List<String> col_names = new ArrayList<>();
+                for(Object col:cols){
+                    DataRow col_ = (DataRow)col;
+                    String col_name = col_.getString("name");
+                    col_names.add(col_name);
+                    Column column = new Column(col_name, col_.getString("type"));
+                    columns.put(col_name.toUpperCase(), column);
+                }
+                int col_size = cols.size();
+                List<?> datas = json.getList("rows");
+                for(Object data:datas){
+                    DataRow row = new DataRow();
+                    List<?> data_ = (List<?>)data;
+                    for(int i=0; i<col_size; i++){
+                        String col_name = col_names.get(i);
+                        Object col_value = data_.get(i);
+                        row.put(col_name, col_value);
+                    }
                     set.add(row);
                 }
             }
