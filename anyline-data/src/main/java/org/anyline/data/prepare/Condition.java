@@ -64,6 +64,8 @@ public interface Condition extends Cloneable{
 			}
 		});
 	}
+	Condition prepare(RunPrepare prepare);
+	RunPrepare prepare();
 	/** 
 	 * 运行时文本 
 	 * @param prefix 前缀

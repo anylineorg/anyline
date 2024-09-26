@@ -22,6 +22,7 @@ import org.anyline.data.param.ConfigParser;
 import org.anyline.data.param.ParseResult;
 import org.anyline.data.prepare.Condition;
 import org.anyline.data.prepare.ConditionChain;
+import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.prepare.auto.init.DefaultAutoCondition;
 import org.anyline.data.prepare.auto.init.DefaultAutoConditionChain;
 import org.anyline.entity.Compare;
@@ -44,6 +45,7 @@ public class DefaultConfig implements Config {
 	protected String datatype				 ; // 数据类型
 	protected boolean empty					 ; // 是否值为空
 	protected double index					 ; // 顺序
+	protected RunPrepare prepare		     ; // 子查询 exists
 	protected ParseResult parser			 ; //
 	protected boolean overCondition  = false ; // 覆盖相同var的查询条件
 	protected boolean overValue		 = true  ; // 相同查询条件第二次赋值是否覆盖上一次的值，如果不覆盖则追加到集合中
@@ -141,6 +143,13 @@ public class DefaultConfig implements Config {
 		this.index = index;
 	}
 
+	public Config prepare(RunPrepare prepare) {
+		this.prepare = prepare;
+		return this;
+	}
+	public RunPrepare prepare() {
+		return this.prepare;
+	}
 	/**
 	 * 解析配置 
 	 * 		[+]	SQL参数名	[.SQL变量名]	:	[&gt;=]request参数名		:默认值 

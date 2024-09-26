@@ -176,25 +176,25 @@ public class DefaultAutoCondition extends AbstractCondition implements AutoCondi
 			}
 		}
 		SQLUtil.delimiter(col_builder, column, delimiterFr, delimiterTo);
-		if(compareCode >=60 && compareCode <= 62) {				// FIND_IN_SET(?, CODES)
+		if(compareCode >=60 && compareCode <= 62) {																		// FIND_IN_SET(?, CODES)
 			try {
 				val = adapter.createConditionFindInSet(runtime, builder, col_builder.toString(), compare, val, placeholder, unicode);
 			}catch (NotSupportException ignored) {
 				support = false;
 			}
-		}else if(compareCode >= 70 && compareCode <= 72) {							// JSON_CONTAINS
+		}else if(compareCode >= 70 && compareCode <= 72) {																// JSON_CONTAINS
 			try {
 				val = adapter.createConditionJsonContains(runtime, builder, col_builder.toString(), compare, val, placeholder, unicode);
 			}catch (NotSupportException ignored) {
 				support = false;
 			}
-		}else if(compareCode == 75 || compareCode == 76) {		// JSON_CONTAINS_PATH_OR
+		}else if(compareCode == 75 || compareCode == 76) {																// JSON_CONTAINS_PATH_OR
 			try {
 				val = adapter.createConditionJsonContainsPath(runtime, builder, col_builder.toString(), compare, val, placeholder, unicode);
 			}catch (NotSupportException ignored) {
 				support = false;
 			}
-		}else if(compareCode == 77 || compareCode == 78) {		// JSON_SEARCH
+		}else if(compareCode == 77 || compareCode == 78) {																// JSON_SEARCH
 			try {
 				val = adapter.createConditionJsonSearch(runtime, builder, col_builder.toString(), compare, val, placeholder, unicode);
 			}catch (NotSupportException ignored) {
@@ -241,13 +241,13 @@ public class DefaultAutoCondition extends AbstractCondition implements AutoCondi
 				}else{
 					adapter.formula(runtime, builder, column, compare, null, v, placeholder, unicode);
 				}
-			}else if(compareCode == 20) { 							// > ?
+			}else if(compareCode == 20) { 																				// > ?
 				adapter.formula(runtime, builder, column, compare, null, val, placeholder, unicode);
-			}else if(compareCode == 21) { 							// >= ?
+			}else if(compareCode == 21) { 																				// >= ?
 				adapter.formula(runtime, builder, column, compare, null, val, placeholder, unicode);
-			}else if(compareCode == 30) { 							// < ?
+			}else if(compareCode == 30) { 																				// < ?
 				adapter.formula(runtime, builder, column, compare, null, val, placeholder, unicode);
-			}else if(compareCode == 110) { 							// <> ?
+			}else if(compareCode == 110) { 																				// <> ?
 				Object v = getValue(val);
 				if("NULL".equals(v.toString())) {
 					placeholder = false;
@@ -268,14 +268,14 @@ public class DefaultAutoCondition extends AbstractCondition implements AutoCondi
 				}else{
 					adapter.formula(runtime, builder, column, compare, null, val, placeholder, unicode);
 				}
-			}else if(compareCode == 31) { 							// <= ?
+			}else if(compareCode == 31) { 																				// <= ?
 				adapter.formula(runtime, builder,  column,compare, null, val, placeholder, unicode);
-			}else if(compareCode == 80) { 							// BETWEEN ? AND ?
+			}else if(compareCode == 80) { 																				// BETWEEN ? AND ?
 				adapter.formula(runtime, builder, column, compare, null, val, placeholder, unicode);
-			}else if(compareCode == 40 || compareCode == 140) {		// IN(?, ?, ?)
+			}else if(compareCode == 40 || compareCode == 140) {															// IN(?, ?, ?)
 				adapter.createConditionIn(runtime, builder, compare, val, placeholder, unicode);
-			}else if((compareCode >= 50 && compareCode <= 52) 		// LIKE ?
-					|| (compareCode >= 150 && compareCode <= 152)) { // NOT LIKE ?
+			}else if((compareCode >= 50 && compareCode <= 52) 															// LIKE ?
+					|| (compareCode >= 150 && compareCode <= 152)) { 													// NOT LIKE ?
 				RunValue rv = adapter.createConditionLike(runtime, builder, compare, val, placeholder, unicode) ;
 				if(rv.isPlaceholder()) {
 					val = rv.getValue();
@@ -284,20 +284,25 @@ public class DefaultAutoCondition extends AbstractCondition implements AutoCondi
 					placeholder = false;
 					variableType = Condition.VARIABLE_PLACEHOLDER_TYPE_NONE;
 				}
-			}else if(compareCode == 90) {							// IS NULL
+			}else if(compareCode == 90) {																				// IS NULL
 				placeholder = false;
 				variableType = Condition.VARIABLE_PLACEHOLDER_TYPE_NONE;
 				adapter.formula(runtime, builder, column, compare, null, null,  placeholder, unicode);
-			}else if(compareCode == 190) {							// IS NOT NULL
+			}else if(compareCode == 190) {																				// IS NOT NULL
 				adapter.formula(runtime, builder, column, compare, null, null,  placeholder, unicode);
 				placeholder = false;
 				variableType = Condition.VARIABLE_PLACEHOLDER_TYPE_NONE;
-			}else if(compareCode == 91) {							// IS EMPTY
+			}else if(compareCode == 91) {																				// IS EMPTY
 				adapter.formula(runtime, builder, column, compare, null, null,  placeholder, unicode);
 				placeholder = false;
 				variableType = Condition.VARIABLE_PLACEHOLDER_TYPE_NONE;
-			}else if(compareCode == 191) {							// IS NOT EMPTY
+			}else if(compareCode == 191) {																				// IS NOT EMPTY
 				adapter.formula(runtime, builder, column, compare, null, null,  placeholder, unicode);
+			}else if(compareCode == 92) {																				// EXISTS
+				val = adapter.createConditionExists(runtime, builder, compare, this.prepare(), placeholder, unicode);
+				variableType = Condition.VARIABLE_PLACEHOLDER_TYPE_NONE;
+			}else if(compareCode == 192) {																				// NOT EXISTS
+				val = adapter.createConditionExists(runtime, builder, compare, this.prepare(), placeholder, unicode);
 			}else{
 				adapter.formula(runtime, builder, column, compare, null, null,  placeholder, unicode);
 			}
@@ -308,7 +313,6 @@ public class DefaultAutoCondition extends AbstractCondition implements AutoCondi
 			if(null == val) {
 				runValues.add(new RunValue(this.column, val, datatype));
 			}else { //多个值 IN 、 BETWEEN 、 FIND_IN_SET
-				// (compareCode == 40 || compareCode == 140 || compareCode == 80 || (compareCode >=60 && compareCode <= 62) || compareCode == 75 || compareCode ==76) {
 				if(compare.valueCount() > 1) {
 					List<Object> list = getValues(val);
 					if (null != list) {

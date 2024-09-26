@@ -18,6 +18,7 @@ package org.anyline.data.prepare.init;
 
 import org.anyline.data.prepare.Condition;
 import org.anyline.data.prepare.ConditionChain;
+import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.prepare.Variable;
 import org.anyline.data.run.RunValue;
 import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;
@@ -42,6 +43,7 @@ public abstract class AbstractCondition implements Condition {
 	protected int variableType = VARIABLE_PLACEHOLDER_TYPE_NONE				;	// 变量标记方式
 	protected List<RunValue> runValues = new ArrayList<>()				;	// 运行时参数
 	protected List<RunValue> runOrValues = new ArrayList<>()			;	// 运行时参数(or)
+	protected RunPrepare prepare										;   // 子查询 exists
 	protected String datatype											;   // 数据类型 到 adapter中根据TypeMetadata解析成class
 	protected Map<String, Object> runValuesMap = new HashMap<String, Object>()		;	// 运行时参数
 	protected Map<String, Object> runOrValuesMap = new HashMap<String, Object>()		;	// 运行时参数(or)
@@ -59,6 +61,15 @@ public abstract class AbstractCondition implements Condition {
 	public void init() {
 	}
 
+	@Override
+	public RunPrepare prepare() {
+		return prepare;
+	}
+	@Override
+	public Condition prepare(RunPrepare prepare) {
+		this.prepare = prepare;
+		return this;
+	}
 	@Override
 	public double index() {
 		return index;

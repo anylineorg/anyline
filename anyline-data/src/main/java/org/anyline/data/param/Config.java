@@ -18,6 +18,7 @@ package org.anyline.data.param;
 
 import org.anyline.data.prepare.Condition;
 import org.anyline.data.prepare.ConditionChain;
+import org.anyline.data.prepare.RunPrepare;
 import org.anyline.entity.Compare;
 import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;
 import org.anyline.entity.DataRow;
@@ -40,7 +41,8 @@ public interface Config extends Cloneable {
 	void setValue(Object value);
 	void datatype(String type);
 	String datatype();
-
+	Config prepare(RunPrepare prepare);
+	RunPrepare prepare();
 	/**
 	 * 顺序 按升序排列
 	 * @return double 转认1.0
