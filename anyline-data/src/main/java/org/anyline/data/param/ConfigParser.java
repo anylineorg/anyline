@@ -19,6 +19,7 @@ package org.anyline.data.param;
 import org.anyline.entity.Compare;
 import org.anyline.entity.OrderStore;
 import org.anyline.entity.PageNavi;
+import org.anyline.metadata.type.init.StandardTypeMetadata;
 import org.anyline.util.*;
 import org.anyline.util.encrypt.DESKey;
 import org.anyline.util.encrypt.DESUtil;
@@ -514,12 +515,21 @@ public class ConfigParser {
 	}
 	public static List<Object> getValues(ParseResult parser) {
 		List<Object> result = new ArrayList<Object>();
-		String value = parser.getKey();
-		if(BasicUtil.isNotEmpty(value)) {
+		String str = parser.getKey();
+		Object v = str;
+		if(BasicUtil.isNotEmpty(str)) {
 			if(ParseResult.FETCH_REQUEST_VALUE_TYPE_MULTIPLE == parser.getParamFetchType()) {
-				result = parseArrayValue(value);
+				result = parseArrayValue(str);
 			}else{
-				result.add(parser.getKey());
+				String type = parser.datatype();
+				if(null != type){
+					//指定过数据类型的 转换一下类型
+					try{
+						StandardTypeMetadata mt = StandardTypeMetadata.valueOf(type);
+						v = mt.read(str, null, null);
+					}catch (Exception ignored){}
+				}
+				result.add(v);
 			}
 		}
 		if(BasicUtil.isEmpty(true, result)) {
