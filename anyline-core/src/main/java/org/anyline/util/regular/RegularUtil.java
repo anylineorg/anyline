@@ -756,10 +756,16 @@ public class RegularUtil {
 		int _to = -1;	// 结束下标
 		String frTag = "";
 		String toTag = tags[tags.length-1];
+		if(ignore && null != toTag){
+			toTag = toTag.toUpperCase();
+		}
 		int frLength = 0;
 		int toLength = 0;
 		for(int i=0; i<tags.length-1; i++) {
 			frTag = tags[i];
+			if(ignore && null != frTag){
+				frTag = frTag.toUpperCase();
+			}
 			if(frTag.equalsIgnoreCase(TAG_BEGIN)) {
 				_fr = 0;
 				frLength = 0;
@@ -827,12 +833,17 @@ public class RegularUtil {
 					if(idx>0) {
 						idx += 1;
 					}
-					idx = up.indexOf(tags[i], idx);
+					String tag = tags[i];
+					if(ignore){
+						tag = tag.toUpperCase();
+					}
+					idx = up.indexOf(tag, idx);
 				}
 				if(idx <= 0) {
 					break;
 				}
 				text = text.substring(idx);
+				up = up.substring(idx);
 			}
 		}
 		return list;
