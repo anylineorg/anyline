@@ -1176,6 +1176,24 @@ PUT * /_bulk
      */
     @Override
     public long count(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
+        if(prepare instanceof TextPrepare){
+            //如果是text(sql)格式需要生成count(*) as CNT
+            TextPrepare tp = (TextPrepare) prepare;
+            String sql = tp.getText();
+            sql = mergeFinalTotal(runtime, sql);
+            tp.setText(sql);
+        }else{
+            if(null == configs){
+                configs = new DefaultConfigStore();
+            }
+            PageNavi navi = configs.getPageNavi();
+            if(null == navi){
+                navi = new DefaultPageNavi();
+                configs.setPageNavi(navi);
+            }
+            //如果是TablePrepare可以通过hits中的total获取总行数
+            navi.setPageRows(1);
+        }
         return super.count(runtime, random, prepare, configs, conditions);
     }
 
@@ -1188,7 +1206,35 @@ PUT * /_bulk
      */
     @Override
     public String mergeFinalTotal(DataRuntime runtime, Run run) {
-        return super.mergeFinalTotal(runtime, run);
+        //select * from user
+        //select (select id from a) as a, id as b from (select * from suer) where a in (select a from b)
+        String base = run.getBuilder().toString();
+        String sql = mergeFinalTotal(runtime, base);
+        return sql;
+    }
+
+    public String mergeFinalTotal(DataRuntime runtime, String base) {
+        //select * from user
+        //select (select id from a) as a, id as b from (select * from suer) where a in (select a from b)
+        StringBuilder builder = new StringBuilder();
+        boolean simple= false;
+        String upper = base.toUpperCase();
+        if(upper.split("FROM").length == 2) {
+            //只有一个表
+            //没有聚合 去重
+            if(!upper.contains("DISTINCT") && !upper.contains("GROUP")) {
+                simple = true;
+            }
+        }
+        if(simple) {
+            int idx = base.toUpperCase().indexOf("FROM");
+            builder.append("SELECT COUNT(*) AS CNT FROM ").append(base.substring(idx+5));
+        }else{
+            builder.append("SELECT COUNT(*) AS CNT FROM (\n").append(base).append("\n) F");
+        }
+        String sql = builder.toString();
+        sql = sql.replaceAll("WHERE\\s*1=1\\s*AND","WHERE ");
+        return sql;
     }
 
     /**
@@ -1200,7 +1246,18 @@ PUT * /_bulk
      */
     @Override
     public long count(DataRuntime runtime, String random, Run run) {
-        return super.count(runtime, random, run);
+        long total = 0;
+        ElasticSearchRun r = (ElasticSearchRun)run;
+        DataSet set = select(runtime, random, false, (Table)null, run.getConfigs(), r);
+        if(null != r.getText()){
+            //sql格式 select count(*) as CNT
+            if(!set.isEmpty()){
+                total = set.getRow(0).getLong("CNT", 0);
+            }
+        }else {
+            total = set.total();
+        }
+        return total;
     }
 
     /* *****************************************************************************************************************

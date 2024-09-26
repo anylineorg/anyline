@@ -25,7 +25,7 @@ import org.anyline.entity.DataRow;
 import org.anyline.entity.OriginRow;
 
 public class DefaultTextPrepare extends DefaultAutoPrepare implements TextPrepare {
-	private String text; 
+
 	public DefaultTextPrepare(String text) {
 		super(); 
 		this.text = text; 

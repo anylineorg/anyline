@@ -1539,7 +1539,7 @@ public interface DriverAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param builder builder
      * @param compare 比较方式 默认 equal 多个值默认 in
-     * @param value value
+     * @param prepare RunPrepare
      * @return value 有占位符时返回占位值，没有占位符返回null
      */
     default RunValue createConditionExists(DataRuntime runtime, StringBuilder builder, Compare compare, RunPrepare prepare, boolean placeholder, boolean unicode) {
