@@ -2273,7 +2273,11 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return getDecimal(key(index));
     }
     public BigDecimal getDecimal(String key) throws NumberFormatException {
-        return new BigDecimal(getString(key));
+        String value = getString(key);
+        if(null == value){
+            return null;
+        }
+        return new BigDecimal(value);
     }
 
     public BigDecimal getDecimal(int index, Double def) {
