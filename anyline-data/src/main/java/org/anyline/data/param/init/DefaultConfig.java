@@ -318,6 +318,9 @@ public class DefaultConfig implements Config {
 			sw = parser.getSwt();
 			compare = parser.getCompare().getCode();
 		}
+		if(compare == 92 || compare == 192){
+			return null == prepare;
+		}
 		if(compare == 90 || compare == 91 || compare == 190 || compare == 191) {
 			//IS NULL IS EMPTY
 			if(BasicUtil.isNotEmpty(parser.getVar())) {

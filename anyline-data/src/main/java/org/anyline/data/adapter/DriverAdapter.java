@@ -1542,7 +1542,7 @@ public interface DriverAdapter {
      * @param prepare RunPrepare
      * @return value 有占位符时返回占位值，没有占位符返回null
      */
-    default RunValue createConditionExists(DataRuntime runtime, StringBuilder builder, Compare compare, RunPrepare prepare, boolean placeholder, boolean unicode) {
+    default List<RunValue> createConditionExists(DataRuntime runtime, StringBuilder builder, Compare compare, RunPrepare prepare, boolean placeholder, boolean unicode) {
         return null;
     }
     /**

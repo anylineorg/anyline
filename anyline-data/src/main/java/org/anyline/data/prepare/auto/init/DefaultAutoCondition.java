@@ -60,13 +60,17 @@ public class DefaultAutoCondition extends AbstractCondition implements AutoCondi
 		setCompare(config.getCompare());
 		setVariableType(Condition.VARIABLE_PLACEHOLDER_TYPE_INDEX);
 		setSwt(config.getSwt());
+		prepare(config.prepare());
 		setRunText(config.getText());
 		if(BasicUtil.isNotEmpty(text)) {
 			setVariableType(Condition.VARIABLE_PLACEHOLDER_TYPE_NONE);
 		}
 		if(BasicUtil.isNotEmpty(text) || BasicUtil.isNotEmpty(true, values) || config.getSwt() == EMPTY_VALUE_SWITCH.NULL || config.getSwt() == EMPTY_VALUE_SWITCH.SRC) {
 			setActive(true); 
-		} 
+		}
+		if(null != prepare){
+			setActive(true);
+		}
 	} 
 	/** 
 	 * @param swt  遇到空值处理方式
@@ -162,11 +166,11 @@ public class DefaultAutoCondition extends AbstractCondition implements AutoCondi
 		if(BasicUtil.isNotEmpty(table)) {
 			prefix = table;
 		}
-		if(BasicUtil.isEmpty(column)) {
+		if(BasicUtil.isEmpty(column) && compareCode != 92 && compareCode != 192) {
 			return "";
 		}
 		StringBuilder col_builder = new StringBuilder();
-		if(!column.contains(".")) {
+		if(null != column && !column.contains(".")) {
 			if(BasicUtil.isNotEmpty(prefix)) {
 				SQLUtil.delimiter(col_builder, prefix, delimiterFr, delimiterTo).append(".");
 			}else {
@@ -299,10 +303,16 @@ public class DefaultAutoCondition extends AbstractCondition implements AutoCondi
 			}else if(compareCode == 191) {																				// IS NOT EMPTY
 				adapter.formula(runtime, builder, column, compare, null, null,  placeholder, unicode);
 			}else if(compareCode == 92) {																				// EXISTS
-				val = adapter.createConditionExists(runtime, builder, compare, this.prepare(), placeholder, unicode);
+				List<RunValue> rvs = adapter.createConditionExists(runtime, builder, compare, this.prepare(), placeholder, unicode);
+				if(null != rvs){
+					runValues.addAll(rvs);
+				}
 				variableType = Condition.VARIABLE_PLACEHOLDER_TYPE_NONE;
 			}else if(compareCode == 192) {																				// NOT EXISTS
-				val = adapter.createConditionExists(runtime, builder, compare, this.prepare(), placeholder, unicode);
+				List<RunValue> rvs = adapter.createConditionExists(runtime, builder, compare, this.prepare(), placeholder, unicode);
+				if(null != rvs){
+					runValues.addAll(rvs);
+				}
 			}else{
 				adapter.formula(runtime, builder, column, compare, null, null,  placeholder, unicode);
 			}

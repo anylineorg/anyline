@@ -1195,7 +1195,37 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
         }
         return rv;
     }
-
+    /**
+     * select[命令合成-子流程] <br/>
+     * 构造 [not] exists 查询条件
+     * 如果不需要占位符 返回null  否则原样返回value
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param builder builder
+     * @param compare 比较方式 默认 equal 多个值默认 in
+     * @param prepare RunPrepare
+     * @return value 有占位符时返回占位值，没有占位符返回null
+     */
+    @Override
+    public List<RunValue> createConditionExists(DataRuntime runtime, StringBuilder builder, Compare compare, RunPrepare prepare, boolean placeholder, boolean unicode) {
+        List<RunValue> values = new ArrayList<>();
+        // EXISTS
+        org.anyline.data.Run run = buildQueryRun(runtime, prepare, new DefaultConfigStore());
+        if(null != run){
+            String sql = run.getBaseQuery(placeholder);
+            sql = BasicUtil.tab(sql);
+            List<Object> vs = run.getValues();
+            for(Object v:vs){
+                RunValue rv = new RunValue();
+                rv.setValue(v);
+                values.add(rv);
+            }
+            if(compare.getCode() == 19){
+                builder.append(" NOT");
+            }
+            builder.append(" EXISTS(\n").append(sql).append("\n)");
+        }
+        return values;
+    }
     /**
      * select[命令合成-子流程] <br/>
      * 构造 FIND_IN_SET 查询条件

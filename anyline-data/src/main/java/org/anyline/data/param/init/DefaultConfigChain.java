@@ -258,7 +258,6 @@ public class DefaultConfigChain extends DefaultConfig implements ConfigChain {
 						chain.addCondition(condition);
 					}
 				}else {
-					condition.prepare(prepare);
 					chain.addCondition(condition);
 				}
 			} 
