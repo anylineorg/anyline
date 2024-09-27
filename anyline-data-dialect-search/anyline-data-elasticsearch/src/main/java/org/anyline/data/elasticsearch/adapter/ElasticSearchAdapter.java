@@ -1180,7 +1180,7 @@ PUT * /_bulk
             //如果是text(sql)格式需要生成count(*) as CNT
             TextPrepare tp = (TextPrepare) prepare;
             String sql = tp.getText();
-            sql = mergeFinalTotal(runtime, sql);
+            sql = SQLUtil.mergeFinalTotal(sql);
             tp.setText(sql);
         }else{
             if(null == configs){
