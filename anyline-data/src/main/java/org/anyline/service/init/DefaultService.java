@@ -1628,7 +1628,7 @@ public class DefaultService<E> implements AnylineService<E> {
 
     protected RunPrepare createRunPrepare(Table table) {
         if(null == table) {
-            return new SimplePrepare();
+            return new SimplePrepare().disposable(true);
         }
         return createRunPrepare(table.getFullName());
     }
@@ -1636,7 +1636,7 @@ public class DefaultService<E> implements AnylineService<E> {
         RunPrepare prepare = null;
         if(BasicUtil.isEmpty(src)) {
             //有些数据库不根据表查询可以为空
-            return new DefaultTablePrepare();
+            return new DefaultTablePrepare().disposable(true);
         }
         src = src.trim();
         List<String> pks = new ArrayList<>();
@@ -1703,6 +1703,7 @@ public class DefaultService<E> implements AnylineService<E> {
         if (null != prepare && null != pks && !pks.isEmpty()) {
             prepare.setPrimaryKey(pks);
         }
+        prepare.disposable(true);
         return prepare;
     }
 

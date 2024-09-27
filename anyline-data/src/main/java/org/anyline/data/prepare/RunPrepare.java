@@ -67,6 +67,14 @@ public interface RunPrepare extends Cloneable {
 	// 自定义SQL.id格式 目录名.目录名.文件名:id
 	String XML_SQL_ID_STYLE = "(\\.|\\S)*\\S+:\\S+";
 
+	/**
+	 * 是否一次性的(执行过程中可修改，否则应该clone一份，避免影响第二闪使用)
+	 * @return boolean
+	 */
+	default boolean disposable(){
+		return false;
+	}
+	RunPrepare disposable(boolean disposable);
 	String getId();
 	RunPrepare setId(String id);
 
@@ -304,4 +312,5 @@ public interface RunPrepare extends Cloneable {
 	default String json() {
 		return json(false);
 	}
+	RunPrepare clone();
 }

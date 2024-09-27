@@ -18,12 +18,10 @@ package org.anyline.data.prepare.init;
 
 import org.anyline.data.entity.Join;
 import org.anyline.data.param.ConfigStore;
-import org.anyline.data.prepare.Condition;
-import org.anyline.data.prepare.ConditionChain;
-import org.anyline.data.prepare.GroupStore;
-import org.anyline.data.prepare.RunPrepare;
+import org.anyline.data.prepare.*;
 import org.anyline.data.prepare.auto.init.DefaultAutoCondition;
 import org.anyline.data.prepare.auto.init.DefaultTablePrepare;
+import org.anyline.data.prepare.xml.init.DefaultXMLPrepare;
 import org.anyline.entity.*;
 import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;
 import org.anyline.metadata.Column;
@@ -39,6 +37,7 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 
 	protected static final Log log     = LogProxy.get(AbstractRunPrepare.class);
 	protected String id 										;
+	protected boolean disposable = false						; // 是否一次性的(执行过程中可修改，否则应该clone一份，避免影响第二闪使用)
 	protected String text										;
 	protected ConditionChain chain								; // 查询条件
 	protected OrderStore orders									; // 排序
@@ -511,6 +510,19 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 		this.id = id;
 		return this;
 	}
+	/**
+	 * 是否一次性的(执行过程中可修改，否则应该clone一份，避免影响第二闪使用)
+	 * @return boolean
+	 */
+	@Override
+	public boolean disposable(){
+		return this.disposable;
+	}
+	@Override
+	public RunPrepare disposable(boolean disposable) {
+		this.disposable = disposable;
+		return this;
+	}
 
 	@Override
 	public String getRuntime() {
@@ -631,5 +643,55 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 	@Override
 	public List<RunPrepare> getUnions() {
 		return  unions;
+	}
+
+	public RunPrepare clone() {
+		AbstractRunPrepare clone = null;
+		try {
+			clone = (AbstractRunPrepare)super.clone();
+			clone.id = this.id;
+			clone.disposable(true);
+			clone.text = this.text;
+			clone.chain = this.chain.clone();
+			clone.orders = this.orders.clone();
+			clone.groups = this.groups.clone();
+			clone.having = this.having;
+			clone.navi = this.navi.clone();
+            clone.primaryKeys = new ArrayList<>(primaryKeys);
+
+            clone.fetchKeys = new ArrayList<>(fetchKeys);
+			clone.valid = this.valid;
+			clone.alias = this.alias;
+			clone.batch = this.batch;
+			clone.multiple = this.multiple;
+			clone.strict = this.strict;
+			clone.runtime = this.runtime;
+			clone.swt = this.swt;
+			LinkedHashMap<String, Column> cols = new LinkedHashMap<>();
+			for(String key:columns.keySet()){
+				cols.put(key, columns.get(key).clone());
+			}
+			clone.columns = cols;
+            clone.excludes = new ArrayList<>(this.excludes);
+			clone.distinct = this.distinct;
+			clone.condition = this.condition.clone();
+			clone.join = this.join;
+			clone.isSub = this.isSub;
+			clone.unionAll = this.unionAll;
+			List<RunPrepare> unions = new ArrayList<>();
+			for(RunPrepare union:this.unions){
+				unions.add(union.clone());
+			}
+			clone.unions = unions;
+
+			List<RunPrepare> joins = new ArrayList<>();
+			for(RunPrepare join:this.joins){
+				joins.add(join.clone());
+			}
+			clone.joins = joins;
+            this.runValues = new Vector<>(this.runValues);
+		}catch (Exception ignored){
+		}
+		return clone;
 	}
 }

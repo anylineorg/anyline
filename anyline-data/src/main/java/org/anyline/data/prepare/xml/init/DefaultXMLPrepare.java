@@ -65,27 +65,7 @@ public class DefaultXMLPrepare extends AbstractRunPrepare implements XMLPrepare 
 			} 
 		} 
 		return this; 
-	} 
-	public DefaultXMLPrepare clone() {
-		DefaultXMLPrepare clone = null;
-		try{
-			clone = (DefaultXMLPrepare)super.clone();
-		}catch (Exception e) {
-			clone =new DefaultXMLPrepare();
-		}
-		clone.chain = chain.clone();
-		if(!variables.isEmpty()) {
-			List<Variable> cVariables = new ArrayList<>();
-			for(Variable var:variables) {
-				if(null == var) {
-					continue;
-				}
-				cVariables.add(var.clone());
-			}
-			clone.variables = cVariables;
-		}
-		return clone; 
-	} 
+	}
 	/** 
 	 * 设置SQL 主体文本 
 	 * @param text  text
@@ -394,5 +374,25 @@ public class DefaultXMLPrepare extends AbstractRunPrepare implements XMLPrepare 
 		DataRow row = new OriginRow();
 		row.put("text", text);
 		return row;
+	}
+	public DefaultXMLPrepare clone() {
+		DefaultXMLPrepare clone = null;
+		try{
+			clone = (DefaultXMLPrepare)super.clone();
+		}catch (Exception e) {
+			clone =new DefaultXMLPrepare();
+		}
+		clone.chain = chain.clone();
+		if(!variables.isEmpty()) {
+			List<Variable> cVariables = new ArrayList<>();
+			for(Variable var:variables) {
+				if(null == var) {
+					continue;
+				}
+				cVariables.add(var.clone());
+			}
+			clone.variables = cVariables;
+		}
+		return clone;
 	}
 } 

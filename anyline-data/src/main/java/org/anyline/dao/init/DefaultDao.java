@@ -127,6 +127,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		if(null == runtime) {
 			runtime = runtime();
 		}
+		if(!prepare.disposable()){
+			prepare = prepare.clone();
+		}
 		return runtime.getAdapter().maps(runtime, random, prepare, configs, conditions);
 	}
 
@@ -143,6 +146,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		if(null == runtime) {
 			runtime = runtime();
 		}
+		if(!prepare.disposable()){
+			prepare = prepare.clone();
+		}
 		return runtime.getAdapter().querys(runtime, null, prepare, configs, conditions);
 
 	}
@@ -158,6 +164,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public <T> EntitySet<T> selects(DataRuntime runtime, String random, RunPrepare prepare, Class<T> clazz, ConfigStore configs, String... conditions) {
 		if(null == runtime) {
 			runtime = runtime();
+		}
+		if(!prepare.disposable()){
+			prepare = prepare.clone();
 		}
 		EntitySet set = runtime.getAdapter().selects(runtime, null, prepare, clazz, configs, conditions);
 		int dependency = ConfigTable.ENTITY_FIELD_SELECT_DEPENDENCY;
@@ -198,6 +207,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		if(null == runtime) {
 			runtime = runtime();
 		}
+		if(!prepare.disposable()){
+			prepare = prepare.clone();
+		}
 		return runtime.getAdapter().count(runtime, null, prepare, configs, conditions);
 
 	}
@@ -215,6 +227,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public boolean exists(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
 		if(null == runtime) {
 			runtime = runtime();
+		}
+		if(!prepare.disposable()){
+			prepare = prepare.clone();
 		}
 		return runtime.getAdapter().exists(runtime, random, prepare, configs, conditions);
 
@@ -260,6 +275,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public long update(DataRuntime runtime, String random, RunPrepare prepare, DataRow data, ConfigStore configs, String ... conditions) {
 		if(null == runtime) {
 			runtime = runtime();
+		}
+		if(!prepare.disposable()){
+			prepare = prepare.clone();
 		}
 		return runtime.getAdapter().update(runtime, random, prepare, data, configs, conditions);
 	}
@@ -704,6 +722,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		if(null == runtime) {
 			runtime = runtime();
 		}
+		if(!prepare.disposable()){
+			prepare = prepare.clone();
+		}
 		return runtime.getAdapter().insert(runtime, random, dest, prepare, configs, obj, conditions);
 	}
 	/**
@@ -736,6 +757,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		if(null == runtime) {
 			runtime = runtime();
 		}
+		if(!prepare.disposable()){
+			prepare = prepare.clone();
+		}
 		return runtime.getAdapter().execute(runtime, random, prepare, configs, conditions);
 
 	}
@@ -745,12 +769,18 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		if(null == runtime) {
 			runtime = runtime();
 		}
+		if(!prepare.disposable()){
+			prepare = prepare.clone();
+		}
 		return runtime.getAdapter().execute(runtime, random, batch, null, prepare, values);
 	}
 	@Override
 	public long execute(DataRuntime runtime, String random, int batch, int vol, RunPrepare prepare, Collection<Object> values) {
 		if(null == runtime) {
 			runtime = runtime();
+		}
+		if(!prepare.disposable()){
+			prepare = prepare.clone();
 		}
 		return runtime.getAdapter().execute(runtime, random, batch, vol,null, prepare, values);
 	}
@@ -888,6 +918,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 */
 	public LinkedHashMap<String, Column> metadata(RunPrepare prepare, boolean comment) {
 		DataRuntime runtime = runtime();
+		if(!prepare.disposable()){
+			prepare = prepare.clone();
+		}
 		return runtime.getAdapter().metadata(runtime, prepare, comment);
 	}
 
