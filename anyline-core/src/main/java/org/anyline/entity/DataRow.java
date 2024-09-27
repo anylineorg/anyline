@@ -2091,6 +2091,9 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     }
     public Integer getInt(String key) throws NumberFormatException {
         Object val = get(key);
+        if(null == val){
+            return null;
+        }
         if (val instanceof Boolean) {
             boolean bol = (Boolean) val;
             if (bol) {
@@ -2176,6 +2179,9 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 
     public Long getLong(String ... keys) throws NumberFormatException {
         Object value = get(keys);
+        if(null == value){
+            return null;
+        }
         return BasicUtil.parseLong(value);
     }
 
@@ -2184,6 +2190,9 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     }
     public Long getLong(String key) throws NumberFormatException {
         Object value = get(key);
+        if(null == value){
+            return null;
+        }
         return BasicUtil.parseLong(value);
     }
 
@@ -2213,6 +2222,9 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 
     public Float getFloat(String ... keys) throws NumberFormatException {
         Object value = get(keys);
+        if(null == value){
+            return null;
+        }
         return Float.parseFloat(value.toString());
     }
     public Float getFloat(int index) throws NumberFormatException {
@@ -2255,18 +2267,30 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     }
 
     public Boolean getBoolean(String ... keys)  {
-        return BasicUtil.parseBoolean(getString(keys));
+        String value = getString(keys);
+        if(null == value){
+            return null;
+        }
+        return BasicUtil.parseBoolean(value);
     }
 
     public Boolean getBoolean(int index) {
         return getBoolean(key(index));
     }
     public Boolean getBoolean(String key) {
-        return BasicUtil.parseBoolean(getString(key));
+        String value = getString(key);
+        if(null == value){
+            return null;
+        }
+        return BasicUtil.parseBoolean(value);
     }
 
     public BigDecimal getDecimal(String ... keys) throws NumberFormatException {
-        return new BigDecimal(getString(keys));
+        String value = getString(keys);
+        if(null == value){
+            return null;
+        }
+        return new BigDecimal(value);
     }
 
     public BigDecimal getDecimal(int index) throws NumberFormatException {
@@ -2382,7 +2406,11 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return getDate(key(index));
     }
     public Date getDate(String key) throws Exception {
-        return DateUtil.parse(get(key));
+        Object value = get(key);
+        if(null == value){
+            return null;
+        }
+        return DateUtil.parse(value);
     }
     public byte[] getBytes(int index) {
         return getBytes(key(index));
