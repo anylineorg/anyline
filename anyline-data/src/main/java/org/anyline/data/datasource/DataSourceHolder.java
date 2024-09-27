@@ -190,23 +190,20 @@ public interface DataSourceHolder {
 	}
 
 	static String reg(String key, Map<String, Object> param, boolean override) throws Exception {
-		DataSourceHolder instance = instance(param.get("url"));
+		DataSourceHolder instance = instance(BeanUtil.value(param, "url", DataSourceKeyMap.maps, String.class, null));
 		if(null == instance) {
-			instance = instance(param.get("driver"));
+			instance = instance(BeanUtil.value(param, "driver", DataSourceKeyMap.maps, String.class, null));
 		}
 		if(null == instance) {
-			instance = instance(param.get("url"));
+			instance = instance(BeanUtil.value(param, "adapter", DataSourceKeyMap.maps, String.class, null));
 		}
 		if(null == instance) {
-			instance = instance(param.get("adapter"));
-		}
-		if(null == instance) {
-			instance = instance(param.get("type"));
+			instance = instance(BeanUtil.value(param, "type", DataSourceKeyMap.maps, String.class, null));
 		}
 		if(null != instance) {
 			return instance.create(key, param, override);
 		}
-		return null;
+		throw new Exception("DataSourceHolder实例异常");
 	}
 
 	static DataRuntime reg(String key, Object datasource, String database, DatabaseType type, DriverAdapter adapter, boolean override) throws Exception {
