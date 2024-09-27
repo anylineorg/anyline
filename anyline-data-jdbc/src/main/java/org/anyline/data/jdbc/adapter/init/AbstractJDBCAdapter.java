@@ -1381,7 +1381,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
     @Override
     public String mergeFinalTotal(DataRuntime runtime, Run run) {
         String base = run.getBuilder().toString();
-        sql = SQLUtil.mergeFinalTotal(base);
+        String sql = SQLUtil.mergeFinalTotal(base);
         return sql;
     }
 
