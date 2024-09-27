@@ -336,4 +336,28 @@ public class SQLUtil {
 		}
 		return list;
 	}
+	public static String mergeFinalTotal(String base) {
+		//select * from user
+		//select (select id from a) as a, id as b from (select * from suer) where a in (select a from b)
+		StringBuilder builder = new StringBuilder();
+		boolean simple= false;
+		String upper = base.toUpperCase();
+		if(upper.split("FROM").length == 2) {
+			//只有一个表
+			//没有聚合 去重
+			if(!upper.contains("DISTINCT") && !upper.contains("GROUP")) {
+				simple = true;
+			}
+		}
+		if(simple) {
+			int idx = base.toUpperCase().indexOf("FROM");
+			builder.append("SELECT COUNT(*) AS CNT FROM ").append(base.substring(idx+5));
+		}else{
+			builder.append("SELECT COUNT(*) AS CNT FROM (\n").append(base).append("\n) F");
+		}
+		String sql = builder.toString();
+		sql = sql.replaceAll("WHERE\\s*1=1\\s*AND","WHERE ");
+		return sql;
+	}
+
 } 
