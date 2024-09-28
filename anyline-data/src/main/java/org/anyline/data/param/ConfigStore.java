@@ -147,7 +147,9 @@ public interface ConfigStore extends Cloneable{
 	 */
 	ConfigStore handler(DataHandler handler);
 	DataHandler handler();
-
+	ConfigStore aggregations(List<AggregationConfig> aggregations);
+	ConfigStore aggregation(AggregationConfig ... aggregations);
+	List<AggregationConfig> aggregations();
 	ConfigStore entityClass(Class clazz);
 	Class entityClass();
 	/**

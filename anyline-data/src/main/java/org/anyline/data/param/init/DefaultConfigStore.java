@@ -18,6 +18,7 @@ package org.anyline.data.param.init;
 
 import org.anyline.adapter.KeyAdapter;
 import org.anyline.data.handler.DataHandler;
+import org.anyline.data.param.AggregationConfig;
 import org.anyline.data.param.Config;
 import org.anyline.data.param.ConfigChain;
 import org.anyline.data.param.ConfigStore;
@@ -48,7 +49,8 @@ public class DefaultConfigStore implements ConfigStore {
 	protected ConfigChain chain	= new DefaultConfigChain()			; // 条件集合
 	protected PageNavi navi											; // 分页参数
 	protected OrderStore orders										; // 排序依据
-	protected GroupStore groups;
+	List<AggregationConfig> aggregations = new ArrayList<>()		; // 聚合
+	protected GroupStore groups										; // 分组
 	protected String having;
 	protected LinkedHashMap<String, Column> columns 		= new LinkedHashMap<>()		; // 查询或插入或更新的列
 	protected LinkedHashMap<String, Column> excludes 		= new LinkedHashMap<>()		; // 不查询或插入或更新的列
@@ -455,6 +457,22 @@ public class DefaultConfigStore implements ConfigStore {
 		return this;
 	}
 
+	@Override
+	public ConfigStore aggregations(List<AggregationConfig> aggregations) {
+		this.aggregations.addAll(aggregations);
+		return this;
+	}
+	@Override
+	public ConfigStore aggregation(AggregationConfig... aggregations) {
+		for(AggregationConfig config:aggregations){
+			this.aggregations.add(config);
+		}
+		return this;
+	}
+	@Override
+	public List<AggregationConfig> aggregations() {
+		return this.aggregations;
+	}
 	@Override
 	public ConfigStore entityClass(Class clazz) {
 		this.clazz = clazz;
