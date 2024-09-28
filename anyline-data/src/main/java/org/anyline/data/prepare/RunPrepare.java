@@ -312,5 +312,12 @@ public interface RunPrepare extends Cloneable {
 	default String json() {
 		return json(false);
 	}
+
+
+	GroupStore groups();
+	RunPrepare aggregation(Aggregation aggregation, String column, String result);
+	RunPrepare aggregation(AggregationConfig ... configs);
+	List<AggregationConfig> aggregations();
+
 	RunPrepare clone();
 }

@@ -14,25 +14,13 @@
  * limitations under the License.
  */
 
-package org.anyline.data.prepare;
- 
-import java.util.List;
- 
-public interface GroupStore extends Cloneable{
-	List<Group> getGroups();
-	void group(Group group) ;
-	/** 
-	 * 排序多列以, 分隔
-	 * gropu("CD"); 
-	 * group("CD, NM");
-	 * @param str str
-	 */ 
-	void group(String str) ;
- 
-	Group getGroup(String group);
-	String getRunText(String delimiter);
-	void clear();
-	boolean isEmpty();
-	GroupStore clone();
+package org.anyline.entity;
 
-}
+import java.io.Serializable;
+
+
+public interface Group extends Cloneable, Serializable{
+	String getColumn() ;
+	void setColumn(String column) ;
+	Group clone();
+} 

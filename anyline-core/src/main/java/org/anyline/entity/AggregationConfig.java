@@ -48,6 +48,16 @@ public class AggregationConfig {
      *      *      ROUND_UNNECESSARY=7 断言所请求的操作具有准确的结果，因此不需要舍入。如果在产生不精确结果的操作上指定了该舍入模式，则会抛出ArithmeticException异常
      */
     private int round;
+    public AggregationConfig() {}
+    public AggregationConfig(Aggregation aggregation, String factor, String field){
+        this.aggregation = aggregation;
+        this.factor = factor;
+        this.field = field;
+    }
+    public AggregationConfig(Aggregation aggregation, String factor){
+        this.aggregation = aggregation;
+        this.factor = factor;
+    }
 
     public Aggregation getAggregation() {
         return aggregation;

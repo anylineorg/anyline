@@ -42,7 +42,9 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 	protected ConditionChain chain								; // 查询条件
 	protected OrderStore orders									; // 排序
 	protected GroupStore groups									; // 分组条件
+	private List<AggregationConfig> aggregations = new ArrayList<>();
 	protected String having										; // 分组过滤条件
+
 	protected PageNavi navi										; // 分页
 	protected List<String> primaryKeys     = new ArrayList<>()	; // 主键
 	protected List<String> fetchKeys       = new ArrayList<>()	; // 最终需要封装的列
@@ -645,6 +647,24 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 		return  unions;
 	}
 
+
+	public GroupStore groups(){
+		return this.groups;
+	}
+	public RunPrepare aggregation(Aggregation aggregation, String column, String result){
+		AggregationConfig config = new AggregationConfig(aggregation, column, result);
+		aggregations.add(config);
+		return this;
+	}
+	public RunPrepare aggregation(AggregationConfig ... configs){
+		for(AggregationConfig config:configs) {
+			aggregations.add(config);
+		}
+		return this;
+	}
+	public List<AggregationConfig> aggregations() {
+		return this.aggregations;
+	}
 	public RunPrepare clone() {
 		AbstractRunPrepare clone = null;
 		try {

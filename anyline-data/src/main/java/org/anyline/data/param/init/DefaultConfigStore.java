@@ -18,7 +18,6 @@ package org.anyline.data.param.init;
 
 import org.anyline.adapter.KeyAdapter;
 import org.anyline.data.handler.DataHandler;
-import org.anyline.data.param.AggregationConfig;
 import org.anyline.data.param.Config;
 import org.anyline.data.param.ConfigChain;
 import org.anyline.data.param.ConfigStore;

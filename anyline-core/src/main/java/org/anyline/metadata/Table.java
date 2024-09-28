@@ -16,6 +16,7 @@
 
 package org.anyline.metadata;
 
+import org.anyline.entity.*;
 import org.anyline.exception.AnylineException;
 import org.anyline.metadata.differ.MetadataDiffer;
 import org.anyline.metadata.differ.TableDiffer;
@@ -200,6 +201,10 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
     protected LinkedHashMap<String, Constraint> constraints = new LinkedHashMap<>();
     protected boolean sort = false; //列是否排序
 
+    //聚合查询
+    private List<AggregationConfig> aggregations = new ArrayList<>();
+    private GroupStore groups = new DefaultGroupStore();
+
     protected boolean autoDropColumn = ConfigTable.IS_DDL_AUTO_DROP_COLUMN;     //执行alter时是否删除 数据库中存在 但table 中不存在的列(属性)
 
     public Table() {
@@ -273,6 +278,29 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
         this.name = name;
     }
 
+    public Table group(String ... columns) {
+        for(String column:columns){
+            groups.group(column);
+        }
+        return this;
+    }
+    public GroupStore groups(){
+        return this.groups;
+    }
+    public Table aggregation(Aggregation aggregation, String column, String result){
+        AggregationConfig config = new AggregationConfig(aggregation, column, result);
+        aggregations.add(config);
+        return this;
+    }
+    public Table aggregation(AggregationConfig ... configs){
+        for(AggregationConfig config:configs) {
+            aggregations.add(config);
+        }
+        return this;
+    }
+    public List<AggregationConfig> aggregations() {
+        return this.aggregations;
+    }
     public static Table from(Class clazz) {
         return EntityAdapterProxy.table(clazz);
     }

@@ -22,6 +22,7 @@ import org.anyline.data.datasource.DataSourceHolder;
 import org.anyline.data.handler.DataHandler;
 import org.anyline.data.handler.EntityHandler;
 import org.anyline.data.handler.StreamHandler;
+import org.anyline.data.param.AggregationBuilder;
 import org.anyline.data.param.Config;
 import org.anyline.data.param.ConfigChain;
 import org.anyline.data.param.ConfigStore;
@@ -468,11 +469,6 @@ public interface AnylineService<E>{
 	 * @return DataSet
 	 */
 	DataSet querys(String dest, ConfigStore configs, Object obj, String ... conditions);
-
-
-	DataSet aggregations(Table table, Aggregation agg, String column, ConfigStore configs, String ... groups);
-	DataSet aggregations(Table table, Aggregation agg, ConfigStore configs, String ... groups);
-	DataSet aggregations(Table table, LinkedHashMap<String,Aggregation> agg, ConfigStore configs, String ... groups);
 	/**
 	 * 有些数据库 不根据表查询 不需要提供表
 	 * @param configs		根据http等上下文构造查询条件
@@ -1070,6 +1066,9 @@ public interface AnylineService<E>{
 		return maps(prepare, first, last, null, conditions);
 	}
 
+    default AggregationBuilder aggregation(){
+        return new AggregationBuilder(this);
+    }
 	/**
 	 * 列名转找成参数名 可以给condition()提供参数用来接收前端参数
 	 * @param table 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源

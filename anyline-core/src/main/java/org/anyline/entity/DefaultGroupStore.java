@@ -14,23 +14,21 @@
  * limitations under the License.
  */
 
-package org.anyline.data.prepare.init;
+package org.anyline.entity;
 
-import org.anyline.data.prepare.Group;
-import org.anyline.data.prepare.GroupStore;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.SQLUtil;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
- 
+
 public class DefaultGroupStore implements GroupStore, Serializable {
 	private static final long serialVersionUID = 1257282062069295247L;
 	private List<Group> groups;
  
 	public DefaultGroupStore() {
-		groups = new ArrayList<Group>(); 
+		groups = new ArrayList<Group>();
 	} 
 	public List<Group> getGroups() {
 		return groups; 

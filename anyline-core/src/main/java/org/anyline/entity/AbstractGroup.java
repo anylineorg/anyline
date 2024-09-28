@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
-package org.anyline.data.prepare.init;
- 
-import org.anyline.data.prepare.Group;
- 
- 
-public class AbstractGroup implements Group{
+package org.anyline.entity;
+
+
+public class AbstractGroup implements Group {
 	private static final long serialVersionUID = 5820480420021701152L;
 	private String column;						// 排序列
 	 

@@ -1,8 +1,7 @@
 package org.anyline.data.param;
 
 import org.anyline.data.prepare.RunPrepare;
-import org.anyline.entity.Aggregation;
-import org.anyline.entity.DataSet;
+import org.anyline.entity.*;
 import org.anyline.metadata.Table;
 import org.anyline.service.AnylineService;
 
@@ -15,18 +14,24 @@ public class AggregationBuilder {
     private RunPrepare prepare;
     private ConfigStore configs;
     private List<AggregationConfig> aggregations = new ArrayList<>();
-    private List<String> groups = new ArrayList<>();
+    private GroupStore groups = new DefaultGroupStore();
     public AggregationBuilder(AnylineService service) {
         this.service = service;
     }
     public AggregationBuilder group(String ... columns) {
         for(String column:columns){
-            groups.add(column);
+            groups.group(column);
         }
         return this;
     }
-    public AggregationBuilder agg(Aggregation agg, String column, String result){
-        AggregationConfig config = new AggregationConfig(agg, column, result);
+    public GroupStore groups(){
+        return this.groups;
+    }
+    public List<AggregationConfig> aggregations() {
+        return this.aggregations;
+    }
+    public AggregationBuilder aggregation(Aggregation aggregation, String column, String result){
+        AggregationConfig config = new AggregationConfig(aggregation, column, result);
         aggregations.add(config);
         return this;
     }
@@ -43,14 +48,22 @@ public class AggregationBuilder {
         return this;
     }
     public DataSet querys(){
-        for(String group:groups){
-            configs.group(group);
-        }
+        configs.setGroups(groups);
         configs.aggregations(aggregations);
         if(null != prepare){
             return service.querys(prepare, configs);
         }else if(null != table){
             return service.querys(table, configs);
+        }
+        throw new RuntimeException("未提供Table或RunPrepare");
+    }
+    public DataRow query(){
+        configs.setGroups(groups);
+        configs.aggregations(aggregations);
+        if(null != prepare){
+            return service.query(prepare, configs);
+        }else if(null != table){
+            return service.query(table, configs);
         }
         throw new RuntimeException("未提供Table或RunPrepare");
     }
