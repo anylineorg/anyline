@@ -24,7 +24,6 @@ import org.anyline.data.param.ConfigParser;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.ParseResult;
 import org.anyline.data.prepare.*;
-import org.anyline.data.prepare.init.DefaultGroupStore;
 import org.anyline.data.prepare.xml.init.DefaultXMLConditionChain;
 import org.anyline.entity.*;
 import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;

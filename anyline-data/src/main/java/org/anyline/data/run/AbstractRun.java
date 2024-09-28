@@ -24,7 +24,6 @@ import org.anyline.data.param.ParseResult;
 import org.anyline.data.prepare.*;
 import org.anyline.data.prepare.auto.init.DefaultAutoCondition;
 import org.anyline.data.prepare.auto.init.DefaultAutoConditionChain;
-import org.anyline.data.prepare.init.DefaultGroupStore;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.util.SQLUtil;
 import org.anyline.entity.*;
