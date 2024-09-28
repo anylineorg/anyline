@@ -138,6 +138,7 @@ public class ZipUtil {
 		items.put(item, in);
 		replaces(src, items, charset);
 	}
+
 	public static void replaces(File src, Map<String, InputStream> items, Charset charset) throws Exception {
 		if(!src.exists()) {
 			log.error("[文件不存在][path:{}]", src.getAbsolutePath());
@@ -151,18 +152,28 @@ public class ZipUtil {
 		byte[] buffer = new byte[1024*8];
 		while (entrys.hasMoreElements()) {
 			ZipEntry entity = entrys.nextElement();
-			InputStream is = zip.getInputStream(entity);
-			out.putNextEntry(new ZipEntry(entity.toString()));
+			String name = entity.getName();
+
+			InputStream is = zip.getInputStream(entity); 		//原文件流
+			out.putNextEntry(new ZipEntry(name));
+
+			boolean replace = false;							//是否有同名文件需要替换
 			for(String item:items.keySet()){
-				if (item.equals(entity.toString())) {
+				if (item.equals(name)) {
+					//如果有同名文件则替换
 					InputStream in = items.get(item);
 					while ((len = in.read(buffer)) != -1) {
 						out.write(buffer, 0, len);
 					}
-				} else {
-					while ((len = is.read(buffer)) != -1) {
-						out.write(buffer, 0, len);
-					}
+					in.close();
+					replace = true;
+					break;
+				}
+			}
+			if(!replace){
+				//如果没有替换则用原文件
+				while ((len = is.read(buffer)) != -1) {
+					out.write(buffer, 0, len);
 				}
 			}
 			is.close();
