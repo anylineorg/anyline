@@ -257,7 +257,9 @@ public class DefaultService<E> implements AnylineService<E> {
             return row;
         }
         if (ConfigTable.IS_RETURN_EMPTY_INSTANCE_REPLACE_NULL) {
-            return new DataRow();
+            DataRow row = new DataRow();
+            row.setMetadata(set.getMetadatas());
+            return row;
         }
         return null;
     }
@@ -278,7 +280,9 @@ public class DefaultService<E> implements AnylineService<E> {
             return row;
         }
         if (ConfigTable.IS_RETURN_EMPTY_INSTANCE_REPLACE_NULL) {
-            return new DataRow();
+            DataRow row = new DataRow();
+            row.setMetadata(set.getMetadatas());
+            return row;
         }
         return null;
     }
@@ -573,7 +577,9 @@ public class DefaultService<E> implements AnylineService<E> {
             return row;
         }
         if (ConfigTable.IS_RETURN_EMPTY_INSTANCE_REPLACE_NULL) {
-            return new DataRow();
+            DataRow row = new DataRow();
+            row.setMetadata(set.getMetadatas());
+            return row;
         }
         return null;
     }
@@ -1201,7 +1207,9 @@ public class DefaultService<E> implements AnylineService<E> {
             return set.getRow(0);
         }
         if (ConfigTable.IS_RETURN_EMPTY_INSTANCE_REPLACE_NULL) {
-            return new DataRow();
+            DataRow row = new DataRow();
+            row.setMetadata(set.getMetadatas());
+            return row;
         }
         return null;
     }
