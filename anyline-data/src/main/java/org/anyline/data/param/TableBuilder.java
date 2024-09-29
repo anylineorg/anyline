@@ -388,6 +388,9 @@ joins:[
         this.joins.add(prepare);
         return this;
     }
+    public TableBuilder join(Join.TYPE type, Table table, String ... conditions) {
+        return join(type, table, new DefaultConfigStore(), conditions);
+    }
     public TableBuilder join(Join.TYPE type, Table table, ConfigStore configs, List<String> conditions) {
         RunPrepare prepare = new DefaultTablePrepare(table);
         Join join = new Join();
@@ -404,6 +407,9 @@ joins:[
         prepare.setJoin(join);
         this.joins.add(prepare);
         return this;
+    }
+    public TableBuilder join(Join.TYPE type, Table table, List<String> conditions) {
+        return join(type, table, new DefaultConfigStore(), conditions);
     }
     public TableBuilder join(Join.TYPE type, String table, ConfigStore configs, String ... conditions) {
         return join(type, new Table(table), configs, conditions);
