@@ -1,0 +1,6 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+org.anyline.data.easysearch.adapter.EasysearchAdapter,\
+org.anyline.data.easysearch.datasource.EasysearchDataSourceLoader,\
+org.anyline.data.easysearch.datasource.EasysearchDataSourceHolder,\
+org.anyline.data.easysearch.runtime.EasysearchRuntimeHolder,\
+org.anyline.data.easysearch.adapter.EasysearchActuator
