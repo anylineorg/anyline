@@ -36,7 +36,7 @@ public class AggregationBuilder {
     }
     public AggregationBuilder group(String ... columns) {
         for(String column:columns){
-            groups.group(column);
+            groups.add(column);
         }
         return this;
     }

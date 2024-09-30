@@ -1360,7 +1360,7 @@ public class DefaultConfigStore implements ConfigStore {
 		if(null == orders) {
 			orders = new DefaultOrderStore();
 		} 
-		orders.order(order, override);
+		orders.add(order, override);
 		if(null != navi) {
 			navi.order(order.getColumn(), order.getType().getCode(), override);
 		}
@@ -1401,7 +1401,7 @@ public class DefaultConfigStore implements ConfigStore {
 	} 
 	@Override 
 	public OrderStore getOrders() {
-		if(null == orders || orders.getOrders().isEmpty()) {
+		if(null == orders || orders.gets().isEmpty()) {
 			if(null != navi) {
 				orders = navi.getOrders();
 			}
@@ -1423,7 +1423,7 @@ public class DefaultConfigStore implements ConfigStore {
 		if(null == groups) {
 			groups = new DefaultGroupStore();
 		} 
-		groups.group(group); 
+		groups.add(group);
 		return this; 
 	} 
 

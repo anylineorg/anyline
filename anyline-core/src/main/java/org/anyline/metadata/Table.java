@@ -284,7 +284,7 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
 
     public Table group(String ... columns) {
         for(String column:columns){
-            groups.group(column);
+            groups.add(column);
         }
         return this;
     }

@@ -258,8 +258,8 @@ public abstract class AbstractRun implements Run {
 		group = group.trim().toUpperCase(); 
 
 		/*添加新分组条件*/ 
-		if(!groupStore.getGroups().contains(group)) {
-			groupStore.group(group); 
+		if(!groupStore.gets().contains(group)) {
+			groupStore.add(group);
 		} 
 		 
 		return this; 
@@ -269,7 +269,7 @@ public abstract class AbstractRun implements Run {
 		if(null == orderStore) {
 			orderStore = new DefaultOrderStore();
 		} 
-		orderStore.order(order); 
+		orderStore.add(order);
 		return this; 
 	}
 	@Override
@@ -466,9 +466,9 @@ public abstract class AbstractRun implements Run {
 				if(groupStore == null) {
 					groupStore = new DefaultGroupStore();
 				}
-				List<Group> list = groups.getGroups();
+				List<Group> list = groups.gets();
 				for(Group group:list) {
-					groupStore.group(group);
+					groupStore.add(group);
 				}
 			}
 			String having = configs.getHaving();
@@ -493,9 +493,9 @@ public abstract class AbstractRun implements Run {
 					if(groupStore == null) {
 						groupStore = new DefaultGroupStore();
 					}
-					List<Group> list = groups.getGroups();
+					List<Group> list = groups.gets();
 					for(Group group:list) {
-						groupStore.group(group);
+						groupStore.add(group);
 					}
 					this.configs.setGroups(groupStore);
 				}
@@ -615,18 +615,18 @@ public abstract class AbstractRun implements Run {
 		if(null == orderStore) {
 			return this; 
 		} 
-		List<Order> orders = orderStore.getOrders(); 
+		List<Order> orders = orderStore.gets();
 		if(null == orders) {
 			return this; 
 		} 
 		for(Order order:orders) {
-			this.orderStore.order(order); 
+			this.orderStore.add(order);
 		} 
 		return this; 
 	}
 	@Override
 	public Run addOrder(Order order) {
-		this.orderStore.order(order); 
+		this.orderStore.add(order);
 		return this; 
 	}
 	public Run addValue(RunValue value) {
@@ -906,7 +906,7 @@ public abstract class AbstractRun implements Run {
 							configs.order(item);
 						}
 						if(null != this.orderStore) {
-							this.orderStore.order(item);
+							this.orderStore.add(item);
 						}
 					}
 					continue;
@@ -917,14 +917,14 @@ public abstract class AbstractRun implements Run {
 						if(null == groupStore) {
 							groupStore = new DefaultGroupStore();
 						}
-						groupStore.group(groupStr);
+						groupStore.add(groupStr);
 					}else{
 						String groups[] = groupStr.split(",");
 						for(String item:groups) {
 							if(null == groupStore) {
 								groupStore = new DefaultGroupStore();
 							}
-							groupStore.group(item);
+							groupStore.add(item);
 						}
 					}
 					continue;

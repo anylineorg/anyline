@@ -61,10 +61,10 @@ public class XMLRun extends TextRun implements Run {
 			 
 			OrderStore orderStore = configs.getOrders();
 			if(null != orderStore) {
-				List<Order> orders = orderStore.getOrders(); 
+				List<Order> orders = orderStore.gets();
 				if(null != orders) {
 					for(Order order:orders) {
-						this.orderStore.order(order); 
+						this.orderStore.add(order);
 					} 
 				} 
 			} 
@@ -104,10 +104,10 @@ public class XMLRun extends TextRun implements Run {
 		} 
 		GroupStore groupStore = prepare.getGroups();
 		if(null != groupStore) {
-			List<Group> groups = groupStore.getGroups();
+			List<Group> groups = groupStore.gets();
 			if(null != groups) {
 				for(Group group:groups) {
-					this.groupStore.group(group); 
+					this.groupStore.add(group);
 				} 
 			} 
 		} 
@@ -294,20 +294,20 @@ public class XMLRun extends TextRun implements Run {
 		// 复制XML RunPrepare ORDER 
 		OrderStore xmlOrderStore = prepare.getOrders();
 		if(null != xmlOrderStore) {
-			List<Order> xmlOrders = xmlOrderStore.getOrders(); 
+			List<Order> xmlOrders = xmlOrderStore.gets();
 			if(null != xmlOrders) {
 				for(Order order:xmlOrders) {
-					this.orderStore.order(order); 
+					this.orderStore.add(order);
 				} 
 			} 
 		} 
 		// 复制 XML RunPrepare GROUP 
 		GroupStore xmlGroupStore = prepare.getGroups();
 		if(null != xmlGroupStore) {
-			List<Group> xmlGroups = xmlGroupStore.getGroups(); 
+			List<Group> xmlGroups = xmlGroupStore.gets();
 			if(null != xmlGroups) {
 				for(Group group:xmlGroups) {
-					this.groupStore.group(group); 
+					this.groupStore.add(group);
 				} 
 			} 
 		}
@@ -509,7 +509,7 @@ public class XMLRun extends TextRun implements Run {
 							configs.order(item);
 						} 
 						if(null != this.orderStore) {
-							this.orderStore.order(item); 
+							this.orderStore.add(item);
 						} 
 					} 
 					continue; 
@@ -580,17 +580,17 @@ public class XMLRun extends TextRun implements Run {
 		if(null == orderStore) {
 			return this; 
 		} 
-		List<Order> orders = orderStore.getOrders(); 
+		List<Order> orders = orderStore.gets();
 		if(null == orders) {
 			return this; 
 		} 
 		for(Order order:orders) {
-			this.orderStore.order(order); 
+			this.orderStore.add(order);
 		} 
 		return this; 
 	} 
 	public Run addOrder(Order order) {
-		this.orderStore.order(order); 
+		this.orderStore.add(order);
 		return this; 
 	} 
 	 

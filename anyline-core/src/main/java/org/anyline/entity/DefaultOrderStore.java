@@ -29,11 +29,11 @@ public class DefaultOrderStore implements OrderStore{
 	public DefaultOrderStore() {
 	}
 	@Override
-	public void order(Order order, boolean override) {
+	public void add(Order order, boolean override) {
 		if(null == order) {
 			return; 
 		} 
-		Order tmp = getOrder(order.getColumn()); 
+		Order tmp = get(order.getColumn());
 		if(null != tmp) {
 			if(override) {
 				tmp.setType(order.getType());
@@ -43,22 +43,22 @@ public class DefaultOrderStore implements OrderStore{
 		} 
 	}
 
-	public void order(Order order) {
-		order(order, true);
+	public void add(Order order) {
+		add(order, true);
 	}
 
-	public void order(String col, Order.TYPE type, boolean override) {
-		order(new DefaultOrder(col, type), override);
+	public void add(String col, Order.TYPE type, boolean override) {
+		add(new DefaultOrder(col, type), override);
 	}
-	public void order(String col, Order.TYPE type) {
-		order(col, type, true);
+	public void add(String col, Order.TYPE type) {
+		add(col, type, true);
 	}
 
-	public void order(String col, String type, boolean override) {
-		order(new DefaultOrder(col, type), override);
+	public void add(String col, String type, boolean override) {
+		add(new DefaultOrder(col, type), override);
 	}
-	public void order(String col, String type) {
-		order(col, type, true);
+	public void add(String col, String type) {
+		add(col, type, true);
 	}
 
 	/** 
@@ -69,7 +69,7 @@ public class DefaultOrderStore implements OrderStore{
 	 * @param str  str
 	 * @param override 如果已存在相同的排序列 是否覆盖
 	 */ 
-	public void order(String str, boolean override) {
+	public void add(String str, boolean override) {
 		if (BasicUtil.isEmpty(str)) {
 			return; 
 		}
@@ -80,14 +80,14 @@ public class DefaultOrderStore implements OrderStore{
 		} 
 		String[] tmps = str.split(","); // 多列排序
 		for (String tmp : tmps) {
-			order(new DefaultOrder(tmp), override);
+			add(new DefaultOrder(tmp), override);
 		} 
 	}
 
-	public void order(String str) {
-		order(str, true);
+	public void add(String str) {
+		add(str, true);
 	}
-	public Order getOrder(String order) {
+	public Order get(String order) {
 		if(null == order) {
 			return null; 
 		} 
@@ -121,7 +121,7 @@ public class DefaultOrderStore implements OrderStore{
 	public void clear() {
 		orders.clear(); 
 	}
-	public List<Order> getOrders() {
+	public List<Order> gets() {
 		return this.orders;
 	}
 	public boolean isEmpty() {

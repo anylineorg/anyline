@@ -21,7 +21,6 @@ import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.*;
 import org.anyline.data.prepare.auto.init.DefaultAutoCondition;
 import org.anyline.data.prepare.auto.init.DefaultTablePrepare;
-import org.anyline.data.prepare.xml.init.DefaultXMLPrepare;
 import org.anyline.entity.*;
 import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;
 import org.anyline.metadata.Column;
@@ -93,7 +92,7 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 		if(null == orders) {
 			orders = new DefaultOrderStore();
 		} 
-		orders.order(order); 
+		orders.add(order);
 		return this; 
 	} 
 	 
@@ -101,14 +100,14 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 		if(null == orders) {
 			orders = new DefaultOrderStore();
 		} 
-		orders.order(order); 
+		orders.add(order);
 		return this; 
 	}
 	public RunPrepare order(String col, Order.TYPE type) {
 		if(null == orders) {
 			orders = new DefaultOrderStore();
 		}
-		orders.order(col, type);
+		orders.add(col, type);
 		return this;
 	}
  
@@ -135,7 +134,7 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 					continue;
 				}
 				group = group.trim();
-				this.groups.group(group);
+				this.groups.add(group);
 			}
 		}
 		 
@@ -244,12 +243,12 @@ public abstract class AbstractRunPrepare implements RunPrepare{
  
 	public void setOrders(OrderStore orders) {
 		if(null != orders) {
-			List<Order> list = orders.getOrders(); 
+			List<Order> list = orders.gets();
 			for(Order order:list) {
 				this.order(order); 
 			} 
-			for(Order order:orders.getOrders()) {
-				orders.order(order); 
+			for(Order order:orders.gets()) {
+				orders.add(order);
 			} 
 		}else{
 			this.orders.clear();

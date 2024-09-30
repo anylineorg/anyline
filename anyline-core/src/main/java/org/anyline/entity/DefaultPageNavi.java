@@ -293,8 +293,8 @@ public class DefaultPageNavi implements PageNavi, Serializable, Cloneable {
 			orders = store; 
 		}else{
 			if(null != store) {
-				for(Order order:store.getOrders()) {
-					orders.order(order); 
+				for(Order order:store.gets()) {
+					orders.add(order);
 				} 
 			} 
 		} 
@@ -317,7 +317,7 @@ public class DefaultPageNavi implements PageNavi, Serializable, Cloneable {
 		if(null == orders) {
 			orders = new DefaultOrderStore();
 		} 
-		orders.order(order, override);
+		orders.add(order, override);
 		return this; 
 	}
 	@Override

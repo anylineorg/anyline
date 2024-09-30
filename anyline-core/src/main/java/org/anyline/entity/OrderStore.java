@@ -24,16 +24,16 @@ import java.util.LinkedHashMap;
 import java.util.List;
  
 public interface OrderStore extends Cloneable, Serializable{
-	List<Order> getOrders(); 
-	void order(Order order, boolean override);
-	void order(Order order);
-	void order(String col, Order.TYPE type, boolean override);
-	void order(String col, Order.TYPE type);
-	void order(String col, String type, boolean override);
-	void order(String col, String type);
-	void order(String str, boolean override) ;
-	void order(String str) ;
-	Order getOrder(String order);
+	List<Order> gets();
+	void add(Order order, boolean override);
+	void add(Order order);
+	void add(String col, Order.TYPE type, boolean override);
+	void add(String col, Order.TYPE type);
+	void add(String col, String type, boolean override);
+	void add(String col, String type);
+	void add(String str, boolean override) ;
+	void add(String str) ;
+	Order get(String order);
 	String getRunText(String delimiter);
 	void clear();
 	boolean isEmpty();
@@ -44,7 +44,7 @@ public interface OrderStore extends Cloneable, Serializable{
 	 * @param metadatas 可用范围
 	 */
 	default void filter(LinkedHashMap<String, Column> metadatas) {
-		List<Order> orders = getOrders();
+		List<Order> orders = gets();
 		if (null != orders) {
 			int size = orders.size();
 			for (int i = size - 1; i >= 0; i--) {

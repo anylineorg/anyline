@@ -30,14 +30,14 @@ public class DefaultGroupStore implements GroupStore, Serializable {
 	public DefaultGroupStore() {
 		groups = new ArrayList<Group>();
 	} 
-	public List<Group> getGroups() {
+	public List<Group> gets() {
 		return groups; 
 	} 
-	public void group(Group group) {
+	public void add(Group group) {
 		if(null == group) {
 			return; 
 		} 
-		Group tmp = getGroup(group.getColumn()); 
+		Group tmp = get(group.getColumn());
 		if(null == tmp) {
 			groups.add(group); 
 		} 
@@ -49,7 +49,7 @@ public class DefaultGroupStore implements GroupStore, Serializable {
 	 * group("CD, NM ");
 	 * @param str  str
 	 */ 
-	public void group(String str) {
+	public void add(String str) {
 		if (BasicUtil.isEmpty(str)) {
 			return; 
 		} 
@@ -57,16 +57,16 @@ public class DefaultGroupStore implements GroupStore, Serializable {
 			str = str.replaceAll("(?i)group\\s+by", "").trim();
 		}
 		if(str.contains(")") || str.contains("'")) {
-			group(new AbstractGroup(str));
+			add(new AbstractGroup(str));
 		}else{
 			String[] tmps = str.split(","); // 多列排序
 			for (String tmp : tmps) {
-				group(new AbstractGroup(tmp));
+				add(new AbstractGroup(tmp));
 			}
 		}
 	} 
  
-	public Group getGroup(String group) {
+	public Group get(String group) {
 		if(null == group) {
 			return null; 
 		} 
@@ -116,7 +116,7 @@ public class DefaultGroupStore implements GroupStore, Serializable {
 		}
 		if(null != groups) {
 			for(Group group:groups) {
-				clone.group(group.clone());
+				clone.add(group.clone());
 			}
 		}
 		return clone;

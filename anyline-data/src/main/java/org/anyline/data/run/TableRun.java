@@ -79,10 +79,10 @@ public class TableRun extends AbstractRun implements Run {
 			}
 			OrderStore orderStore = configs.getOrders();
 			if(null != orderStore) {
-				List<Order> orders = orderStore.getOrders(); 
+				List<Order> orders = orderStore.gets();
 				if(null != orders) {
 					for(Order order:orders) {
-						this.orderStore.order(order); 
+						this.orderStore.add(order);
 					} 
 				} 
 			} 

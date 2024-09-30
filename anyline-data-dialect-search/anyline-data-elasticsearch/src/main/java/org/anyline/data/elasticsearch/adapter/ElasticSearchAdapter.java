@@ -865,7 +865,7 @@ PUT * /_bulk
             if(BasicUtil.isEmpty(collapse)){
                 GroupStore gs = configs.getGroups();
                 if(null != gs){
-                    List<Group> groups = gs.getGroups();
+                    List<Group> groups = gs.gets();
                     if(null != groups && ! groups.isEmpty()){
                         collapse = groups.get(0).getColumn();
                     }
@@ -901,7 +901,7 @@ PUT * /_bulk
         }
         OrderStore orderStore = configs.getOrders();
         if(null!= orderStore) {
-            List<Order> orders = orderStore.getOrders();
+            List<Order> orders = orderStore.gets();
             if(null != orders && !orders.isEmpty()) {
                 DataSet sorts = new DataSet();
                 body.put("sort", sorts);

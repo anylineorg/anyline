@@ -19,17 +19,17 @@ package org.anyline.entity;
 import java.util.List;
 
 public interface GroupStore extends Cloneable{
-	List<Group> getGroups();
-	void group(Group group) ;
+	List<Group> gets();
+	void add(Group group) ;
 	/** 
 	 * 排序多列以, 分隔
 	 * group("CD");
 	 * group("CD, NM");
 	 * @param str str
 	 */ 
-	void group(String str) ;
+	void add(String str) ;
  
-	Group getGroup(String group);
+	Group get(String group);
 	String getRunText(String delimiter);
 	void clear();
 	boolean isEmpty();

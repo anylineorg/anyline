@@ -138,7 +138,7 @@ public class TextRun extends AbstractRun implements Run {
 			}
 			OrderStore orderStore = configs.getOrders();
 			if(null != orderStore) {
-				List<Order> orders = orderStore.getOrders(); 
+				List<Order> orders = orderStore.gets();
 				if(null != orders) {
 					for(Order order:orders) {
 						addOrder(order); 
@@ -285,17 +285,17 @@ public class TextRun extends AbstractRun implements Run {
 		if(null == orderStore) {
 			return this; 
 		} 
-		List<Order> orders = orderStore.getOrders(); 
+		List<Order> orders = orderStore.gets();
 		if(null == orders) {
 			return this; 
 		} 
 		for(Order order:orders) {
-			this.orderStore.order(order); 
+			this.orderStore.add(order);
 		} 
 		return this; 
 	} 
 	public Run addOrder(Order order) {
-		this.orderStore.order(order); 
+		this.orderStore.add(order);
 		return this; 
 	} 
 	 
