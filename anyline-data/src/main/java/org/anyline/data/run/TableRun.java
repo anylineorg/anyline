@@ -33,14 +33,14 @@ public class TableRun extends AbstractRun implements Run {
 	public TableRun(DataRuntime runtime, String table) {
 		this.builder = new StringBuilder();
 		this.conditionChain = new DefaultAutoConditionChain();
-		this.orderStore = new DefaultOrderStore();
+		this.orders = new DefaultOrderStore();
 		this.table = new Table(table);
 		this.runtime = runtime;
 	}
 	public TableRun(DataRuntime runtime, Table table) {
 		this.builder = new StringBuilder();
 		this.conditionChain = new DefaultAutoConditionChain();
-		this.orderStore = new DefaultOrderStore();
+		this.orders = new DefaultOrderStore();
 		this.table = table;
 		this.runtime = runtime;
 	}
@@ -77,15 +77,7 @@ public class TableRun extends AbstractRun implements Run {
 					addCondition(chain);
 				}
 			}
-			OrderStore orderStore = configs.getOrders();
-			if(null != orderStore) {
-				List<Order> orders = orderStore.gets();
-				if(null != orders) {
-					for(Order order:orders) {
-						this.orderStore.add(order);
-					} 
-				} 
-			} 
+			this.orders.add(configs.getOrders());
 			PageNavi navi = configs.getPageNavi();
 			if(navi != null) {
 				this.pageNavi = navi; 
@@ -98,16 +90,16 @@ public class TableRun extends AbstractRun implements Run {
 	}
 	public void appendGroup(StringBuilder builder) {
 		if(null != configs) {
-			if (null == groupStore) {
-				groupStore = configs.getGroups();
+			if (null == groups) {
+				groups = configs.getGroups();
 			}
 			if (BasicUtil.isEmpty(having)) {
 				having = configs.getHaving();
 			}
 		}
 
-		if(null != groupStore) {
-			builder.append(groupStore.getRunText(delimiterFr+delimiterTo));
+		if(null != groups) {
+			builder.append(groups.getRunText(delimiterFr+delimiterTo));
 		}
 		if(BasicUtil.isNotEmpty(having)) {
 			if(having.trim().toUpperCase().startsWith("HAVING")) {

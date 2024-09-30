@@ -43,14 +43,14 @@ public interface Run extends org.anyline.data.Run{
 	 * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
 	 */
 	Run setConditionValue(EMPTY_VALUE_SWITCH swt, Compare compare, String prefix, String variable, Object value);
-	void setGroupStore(GroupStore groups) ;
+	void setGroups(GroupStore groups) ;
 	void setHaving(String having);
-	GroupStore getGroupStore() ; 
+	GroupStore getGroups() ;
 	Run group(String group);
  
-	void setOrderStore(OrderStore orders) ; 
+	void setOrders(OrderStore orders) ;
 	void setOrders(String ... orders);
-	OrderStore getOrderStore() ; 
+	OrderStore getOrders() ;
 	Run order(String order);
 
 	void setConfigStore(ConfigStore configs);
@@ -117,8 +117,8 @@ public interface Run extends org.anyline.data.Run{
 	 */
 	long getRows();
 	Run addValue(RunValue value);
-	Run addOrders(OrderStore orderStore);
-	Run addOrder(Order order);
+	Run add(OrderStore orderStore);
+	Run add(Order order);
 	RunPrepare getPrepare() ;
 	Table getTable();
 	Catalog getCatalog();

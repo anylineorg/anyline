@@ -293,7 +293,7 @@ public class DefaultPageNavi implements PageNavi, Serializable, Cloneable {
 			orders = store; 
 		}else{
 			if(null != store) {
-				for(Order order:store.gets()) {
+				for(Order order:store.gets().values()) {
 					orders.add(order);
 				} 
 			} 

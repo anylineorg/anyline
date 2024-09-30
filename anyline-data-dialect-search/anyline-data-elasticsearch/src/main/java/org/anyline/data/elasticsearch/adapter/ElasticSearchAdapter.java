@@ -865,9 +865,9 @@ PUT * /_bulk
             if(BasicUtil.isEmpty(collapse)){
                 GroupStore gs = configs.getGroups();
                 if(null != gs){
-                    List<Group> groups = gs.gets();
+                    LinkedHashMap<String,Group> groups = gs.gets();
                     if(null != groups && ! groups.isEmpty()){
-                        collapse = groups.get(0).getColumn();
+                        collapse = groups.values().iterator().next().getColumn();
                     }
                 }
             }
@@ -901,11 +901,11 @@ PUT * /_bulk
         }
         OrderStore orderStore = configs.getOrders();
         if(null!= orderStore) {
-            List<Order> orders = orderStore.gets();
+            LinkedHashMap<String, Order> orders = orderStore.gets();
             if(null != orders && !orders.isEmpty()) {
                 DataSet sorts = new DataSet();
                 body.put("sort", sorts);
-                for(Order order:orders) {
+                for(Order order:orders.values()) {
                     DataRow sort = new OriginRow();
                     sort.put(order.getColumn()).put("order", order.getType().getCode().toLowerCase());
                     sorts.add(sort);

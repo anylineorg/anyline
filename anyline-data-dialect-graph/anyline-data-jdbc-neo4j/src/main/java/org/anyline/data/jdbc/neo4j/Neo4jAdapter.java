@@ -438,7 +438,7 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
         builder.append(run.getBaseQuery());
         String cols = run.getQueryColumn();
         String alias = run.getPrepare().getAlias();
-        OrderStore orders = run.getOrderStore();
+        OrderStore orders = run.getOrders();
         if(null != orders) {
             builder.append(orders.getRunText(getDelimiterFr()+getDelimiterTo()));
         }

@@ -54,8 +54,8 @@ public abstract class AbstractRun implements Run {
 	protected PageNavi pageNavi;
 	protected ConditionChain conditionChain;			// 查询条件
 	protected ConfigStore configs;
-	protected OrderStore orderStore; 
-	protected GroupStore groupStore;
+	protected OrderStore orders;
+	protected GroupStore groups;
 	protected String having;
 	protected List<Variable> variables = new ArrayList<>();
 	protected List<VariableBlock> blocks = new ArrayList<>();
@@ -251,25 +251,25 @@ public abstract class AbstractRun implements Run {
 			return this; 
 		} 
 		 
-		if(null == groupStore) {
-			groupStore = new DefaultGroupStore();
+		if(null == groups) {
+			groups = new DefaultGroupStore();
 		} 
  
 		group = group.trim().toUpperCase(); 
 
 		/*添加新分组条件*/ 
-		if(!groupStore.gets().contains(group)) {
-			groupStore.add(group);
+		if(null != groups.get(group)) {
+			groups.add(group);
 		} 
 		 
 		return this; 
 	}
 	@Override
 	public Run order(String order) {
-		if(null == orderStore) {
-			orderStore = new DefaultOrderStore();
+		if(null == orders) {
+			orders = new DefaultOrderStore();
 		} 
-		orderStore.add(order);
+		orders.add(order);
 		return this; 
 	}
 	@Override
@@ -282,11 +282,11 @@ public abstract class AbstractRun implements Run {
 		this.table = prepare.getTable();
 		GroupStore groups = prepare.getGroups();
 		if(null != groups) {
-			setGroupStore(groups);
+			setGroups(groups);
 		}
 		OrderStore orders = prepare.getOrders();
 		if(null != orders) {
-			setOrderStore(orders);
+			setOrders(orders);
 		}
 		String having = prepare.getHaving();
 		if(null != having) {
@@ -463,13 +463,10 @@ public abstract class AbstractRun implements Run {
 		if(null != configs) {
 			GroupStore groups = configs.getGroups();
 			if(null != groups) {
-				if(groupStore == null) {
-					groupStore = new DefaultGroupStore();
+				if(this.groups == null) {
+					this.groups = new DefaultGroupStore();
 				}
-				List<Group> list = groups.gets();
-				for(Group group:list) {
-					groupStore.add(group);
-				}
+				this.groups.add(groups);
 			}
 			String having = configs.getHaving();
 			if(BasicUtil.isNotEmpty(having)) {
@@ -477,7 +474,7 @@ public abstract class AbstractRun implements Run {
 			}
 			OrderStore orders = configs.getOrders();
 			if(null != orders) {
-				this.orderStore = orders;
+				this.orders = orders;
 			}
 		}
 	}
@@ -490,14 +487,11 @@ public abstract class AbstractRun implements Run {
 				this.configs.and(configs);
 				GroupStore groups = configs.getGroups();
 				if(null != groups) {
-					if(groupStore == null) {
-						groupStore = new DefaultGroupStore();
+					if(this.groups == null) {
+						this.groups = new DefaultGroupStore();
 					}
-					List<Group> list = groups.gets();
-					for(Group group:list) {
-						groupStore.add(group);
-					}
-					this.configs.setGroups(groupStore);
+					this.groups.add(groups);
+					this.configs.setGroups(this.groups);
 				}
 				String having = configs.getHaving();
 				if(BasicUtil.isNotEmpty(having)) {
@@ -511,7 +505,7 @@ public abstract class AbstractRun implements Run {
 				}
 				OrderStore orders = configs.getOrders();
 				if(null != orders) {
-					this.orderStore = orders;
+					this.orders = orders;
 					this.configs.setOrders(orders);
 				}
 			}
@@ -519,20 +513,20 @@ public abstract class AbstractRun implements Run {
 	}
 
 	@Override
-	public OrderStore getOrderStore() {
-		return orderStore; 
+	public OrderStore getOrders() {
+		return orders;
 	}
 	@Override
-	public void setOrderStore(OrderStore orderStore) {
-		this.orderStore = orderStore; 
+	public void setOrders(OrderStore orders) {
+		this.orders = orders;
 	}
 	@Override
-	public GroupStore getGroupStore() {
-		return groupStore; 
+	public GroupStore getGroups() {
+		return groups;
 	}
 	@Override
-	public void setGroupStore(GroupStore groupStore) {
-		this.groupStore = groupStore; 
+	public void setGroups(GroupStore groups) {
+		this.groups = groups;
 	}
 	public void setHaving(String having) {
 		this.having = having;
@@ -611,22 +605,13 @@ public abstract class AbstractRun implements Run {
 		return text;
 	}
 	@Override
-	public Run addOrders(OrderStore orderStore) {
-		if(null == orderStore) {
-			return this; 
-		} 
-		List<Order> orders = orderStore.gets();
-		if(null == orders) {
-			return this; 
-		} 
-		for(Order order:orders) {
-			this.orderStore.add(order);
-		} 
+	public Run add(OrderStore orders) {
+		this.orders.add(orders);
 		return this; 
 	}
 	@Override
-	public Run addOrder(Order order) {
-		this.orderStore.add(order);
+	public Run add(Order order) {
+		this.orders.add(order);
 		return this; 
 	}
 	public Run addValue(RunValue value) {
@@ -905,8 +890,8 @@ public abstract class AbstractRun implements Run {
 						if(null != configs) {
 							configs.order(item);
 						}
-						if(null != this.orderStore) {
-							this.orderStore.add(item);
+						if(null != this.orders) {
+							this.orders.add(item);
 						}
 					}
 					continue;
@@ -914,17 +899,17 @@ public abstract class AbstractRun implements Run {
 					// 分组条件
 					String groupStr = condition.replaceAll("(?i)group\\s+by", "").trim();
 					if(groupStr.contains(")") || groupStr.contains("'")) {
-						if(null == groupStore) {
-							groupStore = new DefaultGroupStore();
+						if(null == groups) {
+							groups = new DefaultGroupStore();
 						}
-						groupStore.add(groupStr);
+						groups.add(groupStr);
 					}else{
 						String groups[] = groupStr.split(",");
 						for(String item:groups) {
-							if(null == groupStore) {
-								groupStore = new DefaultGroupStore();
+							if(null == this.groups) {
+								this.groups = new DefaultGroupStore();
 							}
-							groupStore.add(item);
+							this.groups.add(item);
 						}
 					}
 					continue;

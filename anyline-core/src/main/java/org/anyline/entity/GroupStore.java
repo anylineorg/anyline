@@ -16,11 +16,20 @@
 
 package org.anyline.entity;
  
+import java.util.LinkedHashMap;
 import java.util.List;
 
 public interface GroupStore extends Cloneable{
-	List<Group> gets();
+	LinkedHashMap<String, Group> gets();
 	void add(Group group) ;
+	default GroupStore add(GroupStore groups){
+		if(null != groups){
+			for(Group group:groups.gets().values()){
+				add(group);
+			}
+		}
+		return this;
+	}
 	/** 
 	 * 排序多列以, 分隔
 	 * group("CD");

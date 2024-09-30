@@ -21,26 +21,24 @@ import org.anyline.util.SQLUtil;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 public class DefaultGroupStore implements GroupStore, Serializable {
 	private static final long serialVersionUID = 1257282062069295247L;
-	private List<Group> groups;
+	private LinkedHashMap<String, Group> groups;
  
 	public DefaultGroupStore() {
-		groups = new ArrayList<Group>();
+		groups = new LinkedHashMap<String, Group>();
 	} 
-	public List<Group> gets() {
+	public LinkedHashMap<String, Group> gets() {
 		return groups; 
 	} 
 	public void add(Group group) {
 		if(null == group) {
 			return; 
-		} 
-		Group tmp = get(group.getColumn());
-		if(null == tmp) {
-			groups.add(group); 
-		} 
+		}
+		groups.put(group.getColumn().toUpperCase(), group);
 	} 
  
 	/** 
@@ -69,15 +67,8 @@ public class DefaultGroupStore implements GroupStore, Serializable {
 	public Group get(String group) {
 		if(null == group) {
 			return null; 
-		} 
-		if(null != groups) {
-			for(Group o:groups) {
-				if(null != o && group.equalsIgnoreCase(o.getColumn())) {
-					return o; 
-				} 
-			} 
-		} 
-		return null; 
+		}
+		return groups.get(group.toUpperCase());
 	} 
  
 	public void clear() {
@@ -115,7 +106,7 @@ public class DefaultGroupStore implements GroupStore, Serializable {
 			clone = new DefaultGroupStore();
 		}
 		if(null != groups) {
-			for(Group group:groups) {
+			for(Group group:groups.values()) {
 				clone.add(group.clone());
 			}
 		}

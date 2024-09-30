@@ -20,11 +20,12 @@ import org.anyline.util.BasicUtil;
 import org.anyline.util.SQLUtil;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 public class DefaultOrderStore implements OrderStore{
 	private static final long serialVersionUID = -2129393152486629564L;
-	private List<Order> orders = new ArrayList<>();
+	private LinkedHashMap<String, Order> orders = new LinkedHashMap<>();
  
 	public DefaultOrderStore() {
 	}
@@ -32,14 +33,15 @@ public class DefaultOrderStore implements OrderStore{
 	public void add(Order order, boolean override) {
 		if(null == order) {
 			return; 
-		} 
-		Order tmp = get(order.getColumn());
-		if(null != tmp) {
+		}
+		String column = order.getColumn();
+		Order exists = get(column.toUpperCase());
+		if(null != exists) {
 			if(override) {
-				tmp.setType(order.getType());
+				exists.setType(order.getType());
 			}
 		}else{
-			orders.add(order); 
+			orders.put(column.toUpperCase(), order);
 		} 
 	}
 
@@ -90,15 +92,8 @@ public class DefaultOrderStore implements OrderStore{
 	public Order get(String order) {
 		if(null == order) {
 			return null; 
-		} 
-		if(null != orders) {
-			for(Order o:orders) {
-				if(null != o && order.equalsIgnoreCase(o.getColumn())) {
-					return o; 
-				} 
-			} 
-		} 
-		return null; 
+		}
+		return orders.get(order.toUpperCase());
 	} 
 	public String getRunText(String delimiter) {
 		StringBuilder builder = new StringBuilder(); 
@@ -121,7 +116,7 @@ public class DefaultOrderStore implements OrderStore{
 	public void clear() {
 		orders.clear(); 
 	}
-	public List<Order> gets() {
+	public LinkedHashMap<String, Order> gets() {
 		return this.orders;
 	}
 	public boolean isEmpty() {
@@ -138,11 +133,9 @@ public class DefaultOrderStore implements OrderStore{
 			clone = new DefaultOrderStore();;
 		}
 		if(null != this.orders) {
-			List<Order> orders = new ArrayList<>();
-			for(Order order:this.orders) {
-				orders.add(order.clone());
+			for(Order order:orders.values()) {
+				clone.add(order.clone());
 			}
-			clone.orders = orders;
 		}
 		return clone;
 	}

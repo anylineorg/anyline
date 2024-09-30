@@ -26,13 +26,10 @@ import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.OrderStore;
 import org.anyline.entity.PageNavi;
-import org.anyline.metadata.Catalog;
 import org.anyline.metadata.Database;
-import org.anyline.metadata.Schema;
 import org.anyline.metadata.type.DatabaseType;
 
 import java.util.LinkedHashMap;
-import java.util.List;
 
 @Component("anyline.data.jdbc.adapter.cassandra")
 public class CassandraAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
@@ -71,7 +68,7 @@ public class CassandraAdapter extends AbstractJDBCAdapter implements JDBCAdapter
             String reg = "(?i)^select[\\s\\S]+from";
             sql = sql.replaceAll(reg, "SELECT "+cols+" FROM ");
         }
-        OrderStore orders = run.getOrderStore();
+        OrderStore orders = run.getOrders();
         if(null != orders) {
             sql += orders.getRunText(getDelimiterFr()+getDelimiterTo());
         }

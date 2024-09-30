@@ -37,7 +37,6 @@ import org.anyline.data.prepare.auto.TextPrepare;
 import org.anyline.data.prepare.auto.init.DefaultTablePrepare;
 import org.anyline.data.prepare.auto.init.DefaultTextPrepare;
 import org.anyline.data.prepare.auto.init.VirtualTablePrepare;
-import org.anyline.data.prepare.init.DefaultVariable;
 import org.anyline.data.prepare.xml.XMLPrepare;
 import org.anyline.data.run.*;
 import org.anyline.data.runtime.DataRuntime;
@@ -2592,7 +2591,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                     if(null != table && (null == joins || joins.isEmpty())) {//TODO 单表时再检测
                         LinkedHashMap<String, Column> metadatas = columns(runtime, null, false, table, false);
                         //检测不存在的列
-                        OrderStore orders = run.getOrderStore();
+                        OrderStore orders = run.getOrders();
                         if (null != orders) {
                             orders.filter(metadatas);
                         }

@@ -1103,7 +1103,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
             String regex = "(?i)^select[\\s\\S]+from";
             sql = sql.replaceAll(regex,"SELECT "+cols+" FROM ");
         }
-        OrderStore orders = run.getOrderStore();
+        OrderStore orders = run.getOrders();
         if(null != orders) {
             sql += orders.getRunText(getDelimiterFr()+getDelimiterTo());
         }

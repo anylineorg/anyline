@@ -41,8 +41,8 @@ public class XMLRun extends TextRun implements Run {
 	public XMLRun() {
 		this.builder = new StringBuilder();
 		this.conditionChain = new DefaultXMLConditionChain();
-		this.orderStore = new DefaultOrderStore();
-		this.groupStore = new DefaultGroupStore();
+		this.orders = new DefaultOrderStore();
+		this.groups = new DefaultGroupStore();
 	} 
  
 	public Run setPrepare(RunPrepare prepare) {
@@ -60,14 +60,8 @@ public class XMLRun extends TextRun implements Run {
 			} 
 			 
 			OrderStore orderStore = configs.getOrders();
-			if(null != orderStore) {
-				List<Order> orders = orderStore.gets();
-				if(null != orders) {
-					for(Order order:orders) {
-						this.orderStore.add(order);
-					} 
-				} 
-			} 
+			this.orders.add(configs.getOrders());
+
 			PageNavi navi = configs.getPageNavi();
 			if(navi != null) {
 				this.pageNavi = navi; 
@@ -101,16 +95,8 @@ public class XMLRun extends TextRun implements Run {
 
 				}
 			} 
-		} 
-		GroupStore groupStore = prepare.getGroups();
-		if(null != groupStore) {
-			List<Group> groups = groupStore.gets();
-			if(null != groups) {
-				for(Group group:groups) {
-					this.groupStore.add(group);
-				} 
-			} 
-		} 
+		}
+		this.groups.add(prepare.getGroups());
 		checkTest(); 
 		//parseText();
 	}
@@ -291,30 +277,14 @@ public class XMLRun extends TextRun implements Run {
 				} 
 			} 
 		} 
-		// 复制XML RunPrepare ORDER 
-		OrderStore xmlOrderStore = prepare.getOrders();
-		if(null != xmlOrderStore) {
-			List<Order> xmlOrders = xmlOrderStore.gets();
-			if(null != xmlOrders) {
-				for(Order order:xmlOrders) {
-					this.orderStore.add(order);
-				} 
-			} 
-		} 
-		// 复制 XML RunPrepare GROUP 
-		GroupStore xmlGroupStore = prepare.getGroups();
-		if(null != xmlGroupStore) {
-			List<Group> xmlGroups = xmlGroupStore.gets();
-			if(null != xmlGroups) {
-				for(Group group:xmlGroups) {
-					this.groupStore.add(group);
-				} 
-			} 
-		}
+		// 复制XML RunPrepare ORDER
+		this.orders.add(prepare.getOrders());
+		// 复制 XML RunPrepare GROUP
+		this.groups.add(prepare.getGroups());
 	} 
 	public void appendGroup() {
-		if(null != groupStore) {
-			builder.append(groupStore.getRunText(delimiterFr+delimiterTo));
+		if(null != groups) {
+			builder.append(groups.getRunText(delimiterFr+delimiterTo));
 		} 
 	} 
 	/** 
@@ -508,8 +478,8 @@ public class XMLRun extends TextRun implements Run {
 						if(null != configs) {
 							configs.order(item);
 						} 
-						if(null != this.orderStore) {
-							this.orderStore.add(item);
+						if(null != this.orders) {
+							this.orders.add(item);
 						} 
 					} 
 					continue; 
@@ -576,21 +546,12 @@ public class XMLRun extends TextRun implements Run {
 	} 
  
 
-	public Run addOrders(OrderStore orderStore) {
-		if(null == orderStore) {
-			return this; 
-		} 
-		List<Order> orders = orderStore.gets();
-		if(null == orders) {
-			return this; 
-		} 
-		for(Order order:orders) {
-			this.orderStore.add(order);
-		} 
+	public Run add(OrderStore orders) {
+		this.orders.add(orders);
 		return this; 
 	} 
-	public Run addOrder(Order order) {
-		this.orderStore.add(order);
+	public Run add(Order order) {
+		this.orders.add(order);
 		return this; 
 	} 
 	 

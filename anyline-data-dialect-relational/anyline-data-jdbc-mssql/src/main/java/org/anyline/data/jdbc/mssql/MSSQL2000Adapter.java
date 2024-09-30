@@ -85,7 +85,7 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter {
         String cols = run.getQueryColumn();
         PageNavi navi = run.getPageNavi();
         String sql = run.getBaseQuery();
-        OrderStore orders = run.getOrderStore();
+        OrderStore orders = run.getOrders();
         long first = 0;
         long last = 0;
         String order = "";

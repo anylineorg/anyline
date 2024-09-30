@@ -9377,7 +9377,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 			String reg = "(?i)^select[\\s\\S]+from";
 			sql = sql.replaceAll(reg,"SELECT "+cols+" FROM ");
 		}
-		OrderStore orders = run.getOrderStore();
+		OrderStore orders = run.getOrders();
 		if(null != orders) {
 			sql += orders.getRunText(getDelimiterFr() + getDelimiterTo());
 		}
@@ -9406,7 +9406,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 			String regex = "(?i)^select[\\s\\S]+from";
 			sql = sql.replaceAll(regex,"SELECT "+cols+" FROM ");
 		}
-		OrderStore orders = run.getOrderStore();
+		OrderStore orders = run.getOrders();
 		if(null != orders) {
 			sql += orders.getRunText(getDelimiterFr()+getDelimiterTo());
 		}
@@ -9433,7 +9433,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		String cols = run.getQueryColumn();
 		PageNavi navi = run.getPageNavi();
 		String sql = run.getBaseQuery();
-		OrderStore orders = run.getOrderStore();
+		OrderStore orders = run.getOrders();
 		long first = 0;
 		long last = 0;
 		String order = "";
@@ -9472,7 +9472,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		StringBuilder builder = new StringBuilder();
 		PageNavi navi = run.getPageNavi();
 		String sql = run.getBaseQuery();
-		OrderStore orders = run.getOrderStore();
+		OrderStore orders = run.getOrders();
 		long first = 0;
 		String order = "";
 		if(null != orders) {
@@ -9504,7 +9504,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 			String reg = "(?i)^select[\\s\\S]+from";
 			sql = sql.replaceAll(reg,"SELECT " + cols + " FROM ");
 		}
-		OrderStore orders = run.getOrderStore();
+		OrderStore orders = run.getOrders();
 		if(null != orders) {
 			sql += orders.getRunText(getDelimiterFr()+getDelimiterTo());
 		}
@@ -9531,7 +9531,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		String cols = run.getQueryColumn();
 		PageNavi navi = run.getPageNavi();
 		String sql = run.getBaseQuery();
-		OrderStore orders = run.getOrderStore();
+		OrderStore orders = run.getOrders();
 		long first = 0;
 		long last = 0;
 		String order = "";
@@ -9584,7 +9584,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		String cols = run.getQueryColumn();
 		PageNavi navi = run.getPageNavi();
 		String sql = run.getBaseQuery();
-		OrderStore orders = run.getOrderStore();
+		OrderStore orders = run.getOrders();
 		long first = 0;
 		long last = 0;
 		String order = "";

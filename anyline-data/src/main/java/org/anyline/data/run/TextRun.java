@@ -38,7 +38,7 @@ public class TextRun extends AbstractRun implements Run {
 	public TextRun() {
 		this.builder = new StringBuilder();
 		this.conditionChain = new DefaultAutoConditionChain();
-		this.orderStore = new DefaultOrderStore();
+		this.orders = new DefaultOrderStore();
 	}
 
 	public Run setPrepare(RunPrepare prepare) {
@@ -136,15 +136,8 @@ public class TextRun extends AbstractRun implements Run {
 					}
 				}
 			}
-			OrderStore orderStore = configs.getOrders();
-			if(null != orderStore) {
-				List<Order> orders = orderStore.gets();
-				if(null != orders) {
-					for(Order order:orders) {
-						addOrder(order); 
-					} 
-				} 
-			} 
+			this.add(configs.getOrders());
+
 			PageNavi navi = configs.getPageNavi();
 			if(navi != null) {
 				this.pageNavi = navi; 
@@ -166,16 +159,16 @@ public class TextRun extends AbstractRun implements Run {
 	}
 	public void appendGroup() {
 		if(null != configs) {
-			if (null == groupStore) {
-				groupStore = configs.getGroups();
+			if (null == groups) {
+				groups = configs.getGroups();
 			}
 			if (BasicUtil.isEmpty(having)) {
 				having = configs.getHaving();
 			}
 		}
 
-		if(null != groupStore) {
-			builder.append(groupStore.getRunText(delimiterFr+delimiterTo));
+		if(null != groups) {
+			builder.append(groups.getRunText(delimiterFr+delimiterTo));
 		}
 		if(BasicUtil.isNotEmpty(having)) {
 			if(having.trim().toUpperCase().startsWith("HAVING")) {
@@ -281,21 +274,12 @@ public class TextRun extends AbstractRun implements Run {
 		return this; 
 	} 
 
-	public Run addOrders(OrderStore orderStore) {
-		if(null == orderStore) {
-			return this; 
-		} 
-		List<Order> orders = orderStore.gets();
-		if(null == orders) {
-			return this; 
-		} 
-		for(Order order:orders) {
-			this.orderStore.add(order);
-		} 
+	public Run add(OrderStore orders) {
+		this.orders.add(orders);
 		return this; 
 	} 
-	public Run addOrder(Order order) {
-		this.orderStore.add(order);
+	public Run add(Order order) {
+		this.orders.add(order);
 		return this; 
 	} 
 	 

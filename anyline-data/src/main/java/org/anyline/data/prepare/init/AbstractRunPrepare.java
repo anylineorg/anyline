@@ -243,13 +243,7 @@ public abstract class AbstractRunPrepare implements RunPrepare{
  
 	public void setOrders(OrderStore orders) {
 		if(null != orders) {
-			List<Order> list = orders.gets();
-			for(Order order:list) {
-				this.order(order); 
-			} 
-			for(Order order:orders.gets()) {
-				orders.add(order);
-			} 
+			this.orders.add(orders);
 		}else{
 			this.orders.clear();
 		} 

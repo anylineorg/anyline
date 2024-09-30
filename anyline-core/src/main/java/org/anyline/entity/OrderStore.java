@@ -17,6 +17,7 @@
 package org.anyline.entity;
 
 import org.anyline.metadata.Column;
+import org.anyline.util.BeanUtil;
 import org.anyline.util.SQLUtil;
 
 import java.io.Serializable;
@@ -24,7 +25,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
  
 public interface OrderStore extends Cloneable, Serializable{
-	List<Order> gets();
+	LinkedHashMap<String, Order> gets();
 	void add(Order order, boolean override);
 	void add(Order order);
 	void add(String col, Order.TYPE type, boolean override);
@@ -33,6 +34,13 @@ public interface OrderStore extends Cloneable, Serializable{
 	void add(String col, String type);
 	void add(String str, boolean override) ;
 	void add(String str) ;
+	default void add(OrderStore orders){
+		if(null != orders){
+			for(Order order:orders.gets().values()){
+				add(order);
+			}
+		}
+	}
 	Order get(String order);
 	String getRunText(String delimiter);
 	void clear();
@@ -44,14 +52,12 @@ public interface OrderStore extends Cloneable, Serializable{
 	 * @param metadatas 可用范围
 	 */
 	default void filter(LinkedHashMap<String, Column> metadatas) {
-		List<Order> orders = gets();
+		LinkedHashMap<String, Order> orders = gets();
 		if (null != orders) {
-			int size = orders.size();
-			for (int i = size - 1; i >= 0; i--) {
-				Order order = orders.get(i);
-				String column = order.getColumn();
+			List<String> keys = BeanUtil.getMapKeys(orders);
+			for (String column:keys) {
 				if (SQLUtil.isSingleColumn(column) && !metadatas.containsKey(column.toUpperCase())) {
-					orders.remove(order);
+					orders.remove(column);
 				}
 			}
 		}
