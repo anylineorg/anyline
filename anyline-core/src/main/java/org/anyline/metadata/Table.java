@@ -111,6 +111,10 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
      * partition for:分区依据值
      */
     protected Partition partition ;
+    /**
+     * 子分区
+     */
+    protected Partition subPartition;
 
     /**
      * 表类型 不同数据库有所区别
@@ -433,6 +437,40 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
         return setPartition(partition);
     }
 
+    public Partition getSubPartition() {
+        if(getmap && null != update) {
+            return update.subPartition;
+        }
+        return subPartition;
+    }
+
+    /**
+     * 分区依据值
+     * @param type 分区方式
+     * @param values 分区依据值
+     * @return Table
+     */
+    public Table subPartitionFor(Partition.TYPE type, Object ... values) {
+        Partition suPartition = new Partition();
+        suPartition.setType(type);
+        suPartition.addValues(values);
+        return setSubPartition(suPartition);
+    }
+    public Table setSubPartition(Partition partition) {
+        if(setmap && null != update) {
+            update.setSubPartition(partition);
+            return this;
+        }
+        this.subPartition = partition;
+        return this;
+    }
+
+    public Table subPartitionBy(Partition.TYPE type, String ... columns) {
+        Partition partition = new Partition();
+        partition.setType(type);
+        partition.setColumns(columns);
+        return setSubPartition(partition);
+    }
     public String getMasterName() {
         if(null != master) {
             return master.getName();
