@@ -137,6 +137,7 @@ public enum DatabaseType implements Serializable {
         Ehcache               ("Ehcache"                                   , DatabaseOrigin.None       , KEY_CASE.SRC   , 937  , null, null                , ""                            ),
         EJDB                  ("EJDB"                                      , DatabaseOrigin.None       , KEY_CASE.SRC   , 699  , null, null                , ""                            ),
         Elassandra            ("Elassandra"                                , DatabaseOrigin.None       , KEY_CASE.SRC   , 726  , null, null                , ""                            ),
+        EasySearch            ("EasySearch"                                , DatabaseOrigin.None       , KEY_CASE.SRC   , 991  , null, null                , ""                            ),
         ElasticSearch         ("Elasticsearch"                             , DatabaseOrigin.None       , KEY_CASE.SRC   , 991  , null, null                , ""                            ),
         ElevateDB             ("ElevateDB"                                 , DatabaseOrigin.None       , KEY_CASE.SRC   , 688  , null, null                , ""                            ),
         Elliptics             ("Elliptics"                                 , DatabaseOrigin.None       , KEY_CASE.SRC   , 727  , null, null                , ""                            ),
