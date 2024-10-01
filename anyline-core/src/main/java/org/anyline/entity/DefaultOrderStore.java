@@ -99,15 +99,16 @@ public class DefaultOrderStore implements OrderStore{
 		StringBuilder builder = new StringBuilder(); 
 		if(null != orders && !orders.isEmpty()) {
 			builder.append("\nORDER BY ");
-			for(int i=0; i<orders.size(); i++) {
-				Order order = orders.get(i);
+			boolean first = true;
+			for(Order order:orders.values()) {
 				if(null == order) {
 					continue;
 				}
-				SQLUtil.delimiter(builder, order.getColumn(), delimiter).append(" ").append(order.getType());
-				if(i<orders.size()-1) {
+				if(!first) {
 					builder.append(", ");
-				} 
+				}
+				first = false;
+				SQLUtil.delimiter(builder, order.getColumn(), delimiter).append(" ").append(order.getType());
 			} 
 		} 
 		return builder.toString(); 
