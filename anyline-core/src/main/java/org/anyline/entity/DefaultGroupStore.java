@@ -78,16 +78,17 @@ public class DefaultGroupStore implements GroupStore, Serializable {
 	public String getRunText(String delimiter) {
 		StringBuilder builder = new StringBuilder(); 
 		if(null != groups && !groups.isEmpty()) {
-			builder.append(" GROUP BY "); 
-			for(int i=0; i<groups.size(); i++) {
-				Group group = groups.get(i);
+			builder.append(" GROUP BY ");
+			boolean first = true;
+			for(Group group:groups.values()) {
 				if(null == group) {
 					continue;
 				}
-				SQLUtil.delimiter(builder, group.getColumn(), delimiter);
-				if(i<groups.size()-1) {
+				if(!first) {
 					builder.append(", ");
-				} 
+				}
+				first = false;
+				SQLUtil.delimiter(builder, group.getColumn(), delimiter);
 			} 
 		} 
 		return builder.toString(); 
