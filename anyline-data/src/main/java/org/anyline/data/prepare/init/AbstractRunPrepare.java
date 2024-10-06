@@ -41,8 +41,8 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 	protected ConditionChain chain								; // 查询条件
 	protected OrderStore orders									; // 排序
 	protected GroupStore groups									; // 分组条件
-	private List<AggregationConfig> aggregations = new ArrayList<>();
-	protected String having										; // 分组过滤条件
+	protected List<AggregationConfig> aggregations = new ArrayList<>();
+	protected HavingStore haves								; // 分组过滤条件
 
 	protected PageNavi navi										; // 分页
 	protected List<String> primaryKeys     = new ArrayList<>()	; // 主键
@@ -141,7 +141,14 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 		return this; 
 	}
 	public RunPrepare having(String having) {
-		this.having = having;
+		if(null == this.haves){
+			this.haves = new DefaultHavingStore();
+		}
+		haves.add(new Having(having));
+		return this;
+	}
+	public RunPrepare having(HavingStore haves) {
+		this.haves = haves;
 		return this;
 	}
 	/** 
@@ -234,8 +241,8 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 	public GroupStore getGroups() {
 		return groups;
 	}
-	public String getHaving() {
-		return having;
+	public HavingStore having() {
+		return haves;
 	}
 	public OrderStore getOrders() {
 		return orders; 
@@ -668,7 +675,7 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 			clone.chain = this.chain.clone();
 			clone.orders = this.orders.clone();
 			clone.groups = this.groups.clone();
-			clone.having = this.having;
+			clone.haves = this.haves;
 			clone.navi = this.navi.clone();
             clone.primaryKeys = new ArrayList<>(primaryKeys);
 

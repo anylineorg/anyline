@@ -1839,17 +1839,24 @@ public interface ConfigStore extends Cloneable{
 	 * @return ConfigStore
 	 */
 	ConfigStore group(String column);
-	GroupStore getGroups() ; 
+	GroupStore getGroups() ;
+	default GroupStore groups(){
+		return getGroups();
+	}
 	ConfigStore setGroups(GroupStore groups) ;
 
+	default ConfigStore groups(GroupStore groups){
+		return setGroups(groups);
+	}
 	/**
 	 * 添加分组 过滤条件
 	 * @param having 列名
 	 * @return ConfigStore
 	 */
 	ConfigStore having(String having);
+	ConfigStore having(HavingStore having);
 
-	String getHaving() ;
+	HavingStore having() ;
 	PageNavi getPageNavi();
 
 	/**

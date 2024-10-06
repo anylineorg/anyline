@@ -11,9 +11,7 @@ public interface HavingStore {
      * @param having having
      */
     void add(String having) ;
-
-    Having get(String having);
-    String getRunText(String delimiter);
+    String getRunText();
     void clear();
     boolean isEmpty();
     HavingStore clone();

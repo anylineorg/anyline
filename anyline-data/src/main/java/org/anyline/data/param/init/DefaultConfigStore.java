@@ -45,8 +45,8 @@ public class DefaultConfigStore implements ConfigStore {
 	protected PageNavi navi											; // 分页参数
 	protected OrderStore orders										; // 排序依据
 	List<AggregationConfig> aggregations = new ArrayList<>()		; // 聚合
-	protected GroupStore groups										; // 分组
-	protected String having;
+	protected GroupStore groups = new DefaultGroupStore()			; // 分组
+	protected HavingStore having = new DefaultHavingStore()			;
 	protected LinkedHashMap<String, Column> columns 		= new LinkedHashMap<>()		; // 查询或插入或更新的列
 	protected LinkedHashMap<String, Column> excludes 		= new LinkedHashMap<>()		; // 不查询或插入或更新的列
 	protected List<Object> values									; // 保存values后续parse用到
@@ -843,8 +843,8 @@ public class DefaultConfigStore implements ConfigStore {
 		if(null != groups) {
 			this.setGroups(groups);
 		}
-		String having = configs.getHaving();
-		if(BasicUtil.isNotEmpty(having)) {
+		HavingStore having = configs.having();
+		if(null != having) {
 			this.having(having);
 		}
 		if(null != columns) {
@@ -1441,12 +1441,18 @@ public class DefaultConfigStore implements ConfigStore {
 
 	@Override
 	public ConfigStore having(String having) {
+		this.having.add(having);
+		return this;
+	}
+
+	@Override
+	public ConfigStore having(HavingStore having) {
 		this.having = having;
 		return this;
 	}
 
 	@Override
-	public String getHaving() {
+	public HavingStore having() {
 		return having;
 	}
 

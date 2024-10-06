@@ -163,19 +163,16 @@ public class TextRun extends AbstractRun implements Run {
 				groups = configs.getGroups();
 			}
 			if (BasicUtil.isEmpty(having)) {
-				having = configs.getHaving();
+				having = configs.having();
 			}
 		}
 
 		if(null != groups) {
 			builder.append(groups.getRunText(delimiterFr+delimiterTo));
 		}
-		if(BasicUtil.isNotEmpty(having)) {
-			if(having.trim().toUpperCase().startsWith("HAVING")) {
-				builder.append(having);
-			}else {
-				builder.append(" HAVING ").append(having);
-			}
+
+		if(null != having) {
+			builder.append(having.getRunText());
 		}
 	}
 

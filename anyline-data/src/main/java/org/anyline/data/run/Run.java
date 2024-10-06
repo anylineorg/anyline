@@ -44,7 +44,8 @@ public interface Run extends org.anyline.data.Run{
 	 */
 	Run setConditionValue(EMPTY_VALUE_SWITCH swt, Compare compare, String prefix, String variable, Object value);
 	void setGroups(GroupStore groups) ;
-	void setHaving(String having);
+	void having(String having);
+	HavingStore having();
 	GroupStore getGroups() ;
 	Run group(String group);
  

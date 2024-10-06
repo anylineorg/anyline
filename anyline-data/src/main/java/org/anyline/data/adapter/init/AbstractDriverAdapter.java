@@ -2779,9 +2779,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             builder.append(prepare.getDistinct());
         }
         builder.append(BR_TAB);
+        ConfigStore configs = run.getConfigs();
         LinkedHashMap<String,Column> columns = prepare.getColumns();
         if(null == columns || columns.isEmpty()) {
-            ConfigStore configs = run.getConfigs();
             if(null != configs) {
                 List<String> cols = configs.columns();
                 columns = new LinkedHashMap<>();
@@ -2790,9 +2790,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 }
             }
         }
+        boolean first = true;
         if(null != columns && !columns.isEmpty()) {
             // 指定查询列
-            boolean first = true;
             for(Column column:columns.values()) {
                 if(BasicUtil.isEmpty(column) || BasicUtil.isEmpty(column.getName())) {
                     continue;
@@ -2824,7 +2824,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 }
             }
             builder.append(BR);
-        }else{
+        }
+        if(null == columns || columns.isEmpty()){
             // 全部查询
             builder.append("*");
             builder.append(BR);
@@ -2843,7 +2844,40 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         /*添加查询条件*/
         // appendConfigStore();
         run.appendCondition(builder, this, true, true);
-        run.appendGroup(builder);
+        fillQueryContentGroup(runtime, builder, run);
+        return run;
+    }
+    protected Run fillQueryContentGroup(DataRuntime runtime, StringBuilder builder, TableRun run) {
+        RunPrepare prepare = run.getPrepare();
+        ConfigStore configs = run.getConfigs();
+        GroupStore groups = run.getGroups();
+        if(null == groups || groups.isEmpty()){
+            if(null != prepare){
+                groups = prepare.groups();
+            }
+        }
+        if(null == groups || groups.isEmpty()){
+            if(null != configs){
+                groups = configs.groups();
+            }
+        }
+        HavingStore having = run.having();
+        if(null == having || having.isEmpty()){
+            if(null != configs) {
+                having = configs.having();
+            }
+        }
+        if(null == having || having.isEmpty()){
+            having = prepare.having();
+        }
+        if(null != groups) {
+            builder.append("\n").append(groups.getRunText(delimiterFr+delimiterTo));
+        }
+
+        if(null != having) {
+            builder.append("\n").append(having.getRunText());
+        }
+        //run.appendGroup(builder);
         return run;
     }
 

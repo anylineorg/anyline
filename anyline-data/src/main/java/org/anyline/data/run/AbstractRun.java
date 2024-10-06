@@ -21,6 +21,7 @@ import org.anyline.data.entity.Join;
 import org.anyline.data.param.ConfigParser;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.ParseResult;
+import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.*;
 import org.anyline.data.prepare.auto.init.DefaultAutoCondition;
 import org.anyline.data.prepare.auto.init.DefaultAutoConditionChain;
@@ -53,10 +54,10 @@ public abstract class AbstractRun implements Run {
 	protected List<RunValue> batchValues;
 	protected PageNavi pageNavi;
 	protected ConditionChain conditionChain;			// 查询条件
-	protected ConfigStore configs;
-	protected OrderStore orders;
-	protected GroupStore groups;
-	protected String having;
+	protected ConfigStore configs = new DefaultConfigStore();
+	protected OrderStore orders = new DefaultOrderStore();
+	protected GroupStore groups = new DefaultGroupStore();
+	protected HavingStore having = new DefaultHavingStore();
 	protected List<Variable> variables = new ArrayList<>();
 	protected List<VariableBlock> blocks = new ArrayList<>();
 
@@ -288,7 +289,7 @@ public abstract class AbstractRun implements Run {
 		if(null != orders) {
 			setOrders(orders);
 		}
-		String having = prepare.getHaving();
+		HavingStore having = prepare.having();
 		if(null != having) {
 			this.having = having;
 		}
@@ -468,8 +469,8 @@ public abstract class AbstractRun implements Run {
 				}
 				this.groups.add(groups);
 			}
-			String having = configs.getHaving();
-			if(BasicUtil.isNotEmpty(having)) {
+			HavingStore having = configs.having();
+			if(null != having) {
 				this.having = having;
 			}
 			OrderStore orders = configs.getOrders();
@@ -493,8 +494,8 @@ public abstract class AbstractRun implements Run {
 					this.groups.add(groups);
 					this.configs.setGroups(this.groups);
 				}
-				String having = configs.getHaving();
-				if(BasicUtil.isNotEmpty(having)) {
+				HavingStore having = configs.having();
+				if(null != having && !having.isEmpty()) {
 					this.having = having;
 					this.configs.having(having);
 				}
@@ -528,8 +529,11 @@ public abstract class AbstractRun implements Run {
 	public void setGroups(GroupStore groups) {
 		this.groups = groups;
 	}
-	public void setHaving(String having) {
-		this.having = having;
+	public void having(String having) {
+		this.having.add(having);
+	}
+	public HavingStore having(){
+		return having;
 	}
 
 	public String getDelimiterFr() {
@@ -916,7 +920,7 @@ public abstract class AbstractRun implements Run {
 				}else if(up.startsWith("HAVING")) {
 					// 分组过滤
 					String haveStr = condition.substring(up.indexOf("HAVING") + "HAVING".length()).trim();
-					this.having = haveStr;
+					this.having.add(haveStr);
 					continue;
 				}
 //				if(up.contains(" OR ") && !(condition.startsWith("(") && condition.endsWith(")"))) {

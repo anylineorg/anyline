@@ -185,7 +185,7 @@ public interface RunPrepare extends Cloneable {
 	RunPrepare setConditionValue(String condition, String variable, Object value);
 	OrderStore getOrders();
 	GroupStore getGroups();
-	String getHaving();
+	HavingStore having();
 	void setOrders(OrderStore orders);
 	int getVersion(); 
 	ConditionChain getConditionChain();

@@ -29,7 +29,7 @@ public class DefaultGroupStore implements GroupStore, Serializable {
 	private LinkedHashMap<String, Group> groups;
  
 	public DefaultGroupStore() {
-		groups = new LinkedHashMap<String, Group>();
+		groups = new LinkedHashMap<>();
 	} 
 	public LinkedHashMap<String, Group> gets() {
 		return groups; 
