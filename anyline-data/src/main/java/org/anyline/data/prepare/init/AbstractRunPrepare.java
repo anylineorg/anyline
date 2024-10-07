@@ -39,10 +39,10 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 	protected boolean disposable = false						; // 是否一次性的(执行过程中可修改，否则应该clone一份，避免影响第二闪使用)
 	protected String text										;
 	protected ConditionChain chain								; // 查询条件
-	protected OrderStore orders									; // 排序
-	protected GroupStore groups									; // 分组条件
+	protected OrderStore orders = new DefaultOrderStore()		; // 排序
+	protected GroupStore groups = new DefaultGroupStore()		; // 分组条件
 	protected List<AggregationConfig> aggregations = new ArrayList<>();
-	protected HavingStore haves								; // 分组过滤条件
+	protected HavingStore having = new DefaultHavingStore(); // 分组过滤条件
 
 	protected PageNavi navi										; // 分页
 	protected List<String> primaryKeys     = new ArrayList<>()	; // 主键
@@ -110,6 +110,13 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 		orders.add(col, type);
 		return this;
 	}
+	public RunPrepare order(OrderStore orders) {
+		if(null == this.orders) {
+			this.orders = new DefaultOrderStore();
+		}
+		this.orders.add(orders);
+		return this;
+	}
  
 	protected String getOrderText(String delimiter) {
 		if(null != orders) {
@@ -121,7 +128,7 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 	 * 添加分组条件, 在之前的基础上添加新分组条件, 有重复条件则覆盖
 	 * @param groups  group
 	 * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
-	 */ 
+	 */
 	public RunPrepare group(String ... groups) {
 		/*避免添加空条件*/
 		if(null != groups) {
@@ -137,18 +144,27 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 				this.groups.add(group);
 			}
 		}
-		 
-		return this; 
+		return this;
+	}
+	public RunPrepare group(GroupStore groups) {
+		/*避免添加空条件*/
+		if(null != groups) {
+			if(null == this.groups) {
+				this.groups = new DefaultGroupStore();
+			}
+			this.groups.add(groups);
+		}
+		return this;
 	}
 	public RunPrepare having(String having) {
-		if(null == this.haves){
-			this.haves = new DefaultHavingStore();
+		if(null == this.having){
+			this.having = new DefaultHavingStore();
 		}
-		haves.add(new Having(having));
+		this.having.add(new Having(having));
 		return this;
 	}
 	public RunPrepare having(HavingStore haves) {
-		this.haves = haves;
+		this.having = haves;
 		return this;
 	}
 	/** 
@@ -242,7 +258,7 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 		return groups;
 	}
 	public HavingStore having() {
-		return haves;
+		return having;
 	}
 	public OrderStore getOrders() {
 		return orders; 
@@ -662,6 +678,12 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 		}
 		return this;
 	}
+	public RunPrepare aggregation(List<AggregationConfig> configs){
+		for(AggregationConfig config:configs) {
+			aggregations.add(config);
+		}
+		return this;
+	}
 	public List<AggregationConfig> aggregations() {
 		return this.aggregations;
 	}
@@ -675,7 +697,7 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 			clone.chain = this.chain.clone();
 			clone.orders = this.orders.clone();
 			clone.groups = this.groups.clone();
-			clone.haves = this.haves;
+			clone.having = this.having;
 			clone.navi = this.navi.clone();
             clone.primaryKeys = new ArrayList<>(primaryKeys);
 

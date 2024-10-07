@@ -1066,9 +1066,18 @@ public interface AnylineService<E>{
 		return maps(prepare, first, last, null, conditions);
 	}
 
-    default AggregationBuilder aggregation(){
-        return new AggregationBuilder(this);
-    }
+	default AggregationBuilder aggregation(){
+		return new AggregationBuilder(this);
+	}
+	default AggregationBuilder aggregation(Table table){
+		return new AggregationBuilder(this).table(table);
+	}
+	default AggregationBuilder aggregation(String table){
+		return new AggregationBuilder(this).table(table);
+	}
+	default AggregationBuilder aggregation(RunPrepare table){
+		return new AggregationBuilder(this).table(table);
+	}
 	/**
 	 * 列名转找成参数名 可以给condition()提供参数用来接收前端参数
 	 * @param table 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源

@@ -24,11 +24,11 @@ public class AggregationConfig {
     /**
      *聚合结果保存属性 如果不指定则以 factor_agg命名 如 age_avg
      */
-    private String field;
+    private String alias;
     /**
      * 计算因子属性 取条目中的factor属性的值参与计算
      */
-    private String factor;
+    private String field;
     /**
      *精度(小数位)
      */
@@ -51,12 +51,12 @@ public class AggregationConfig {
     public AggregationConfig() {}
     public AggregationConfig(Aggregation aggregation, String factor, String field){
         this.aggregation = aggregation;
-        this.factor = factor;
-        this.field = field;
+        this.field = factor;
+        this.alias = field;
     }
     public AggregationConfig(Aggregation aggregation, String factor){
         this.aggregation = aggregation;
-        this.factor = factor;
+        this.field = factor;
     }
 
     public Aggregation getAggregation() {
@@ -67,20 +67,20 @@ public class AggregationConfig {
         this.aggregation = aggregation;
     }
 
+    public String getAlias() {
+        return alias;
+    }
+
+    public void setAlias(String alias) {
+        this.alias = alias;
+    }
+
     public String getField() {
         return field;
     }
 
     public void setField(String field) {
         this.field = field;
-    }
-
-    public String getFactor() {
-        return factor;
-    }
-
-    public void setFactor(String factor) {
-        this.factor = factor;
     }
 
     public int getScale() {

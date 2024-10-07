@@ -3724,10 +3724,10 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
     /**
      * 分组聚合
      * @param items 是否保留条目 如果为空则不保留 否则保留会在每个分组中添加items属性用来保存当前分组中的条件
-     * @param field 聚合结果保存属性 如果不指定则以 factor_agg命名 如 age_avg
-     * @param factor 计算因子属性 取条目中的factor属性的值参与计算
+     * @param alias 聚合结果保存属性 如果不指定则以 factor_agg命名 如 age_avg
+     * @param field 计算因子属性 取条目中的factor属性的值参与计算
      * @param agg 聚合公式 参考Aggregation枚举
-     * @param keys 分组条件 指定属性相同的条目合成一组
+     * @param groups 分组条件 指定属性相同的条目合成一组
      * @param scale 精度(小数位)
      * @param round 舍入模式 参考BigDecimal静态常量
      *       ROUND_UP        = 0 舍入远离零的舍入模式 在丢弃非零部分之前始终增加数字（始终对非零舍弃部分前面的数字加 1） 如:2.36 转成 2.4<br/>
@@ -3743,68 +3743,68 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
      *      ROUND_UNNECESSARY=7 断言所请求的操作具有准确的结果，因此不需要舍入。如果在产生不精确结果的操作上指定了该舍入模式，则会抛出ArithmeticException异常
      * @return DataSet
      */
-    public DataSet group(String items, String field, String factor, Aggregation agg, int scale, int round, String ... keys) {
+    public DataSet group(String items, String alias, String field, Aggregation agg, int scale, int round, String ... groups) {
         String items_key = "ITEMS";
         if(BasicUtil.isNotEmpty(items)) {
             items_key = items;
         }
-        DataSet groups = group(items_key, Compare.EQUAL, keys);
-        for(DataRow group:groups) {
-            group.put(field, group.getItems().agg(agg, scale, round, factor));
+        DataSet gps = group(items_key, Compare.EQUAL, groups);
+        for(DataRow group:gps) {
+            group.put(alias, group.getItems().agg(agg, scale, round, field));
             if(BasicUtil.isEmpty(items)) {
                 group.remove(items_key);
             }
         }
-        return groups;
+        return gps;
     }
 
     /**
      * 同一规则分组后,多次聚合
      * @param items 是否保留条目 如果为空则不保留 否则保留会在每个分组中添加items属性用来保存当前分组中的条件
      * @param aggs 聚合规则
-     * @param keys 分组条件 指定属性相同的条目合成一组
+     * @param groups 分组条件 指定属性相同的条目合成一组
      * @return DataSet
      */
-    public DataSet group(String items, List<AggregationConfig> aggs, String ... keys) {
+    public DataSet group(String items, List<AggregationConfig> aggs, String ... groups) {
         String items_key = "ITEMS";
         if(BasicUtil.isNotEmpty(items)) {
             items_key = items;
         }
-        DataSet groups = group(items_key, Compare.EQUAL, keys);
-        for(DataRow group:groups) {
+        DataSet gps = group(items_key, Compare.EQUAL, groups);
+        for(DataRow group:gps) {
             for(AggregationConfig config:aggs) {
-                group.put(config.getField(), group.getItems().agg(config.getAggregation(), config.getScale(), config.getRound(), config.getFactor()));
+                group.put(config.getAlias(), group.getItems().agg(config.getAggregation(), config.getScale(), config.getRound(), config.getField()));
             }
             if(BasicUtil.isEmpty(items)) {
                 group.remove(items_key);
             }
         }
-        return groups;
+        return gps;
     }
 
-    public DataSet group(String factor, Aggregation agg, String ... keys) {
-        String field = agg.getCode();
-        if(BasicUtil.isNotEmpty(factor)) {
-            field = factor + "_" + field;
+    public DataSet group(String field, Aggregation agg, String ... groups) {
+        String alias = agg.code();
+        if(BasicUtil.isNotEmpty(field)) {
+            alias = field + "_" + alias;
         }
-        return group(null, field, factor, agg, 0, 0, keys);
+        return group(null, alias, field, agg, 0, 0, groups);
     }
-    public DataSet group(Aggregation agg, String ... keys) {
-        return group(null, agg.getCode(), null, agg, 0, 0, keys);
+    public DataSet group(Aggregation agg, String ... fields) {
+        return group(null, agg.code(), null, agg, 0, 0, fields);
     }
-    public Object agg(String type, String key) {
-        Aggregation agg = Aggregation.valueOf(type);
-        return agg(agg, key);
+    public Object agg(String type, String field) {
+        Aggregation agg = Aggregation.valueOf(field);
+        return agg(agg, field);
     }
 
-    public Object agg(Aggregation agg, String key) {
-        return agg(agg, 2, BigDecimal.ROUND_HALF_UP, key);
+    public Object agg(Aggregation agg, String field) {
+        return agg(agg, 2, BigDecimal.ROUND_HALF_UP, field);
     }
 
     /**
      * 聚合计算
      * @param agg 公式
-     * @param key 计算因子属性
+     * @param field 计算因子属性
      * @param scale 小数位
      * @param round 舍入模式 参考BigDecimal静态常量
      *       ROUND_UP        = 0 舍入远离零的舍入模式 在丢弃非零部分之前始终增加数字（始终对非零舍弃部分前面的数字加 1） 如:2.36 转成 2.4<br/>
@@ -3820,77 +3820,77 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
      *      ROUND_UNNECESSARY=7 断言所请求的操作具有准确的结果，因此不需要舍入。如果在产生不精确结果的操作上指定了该舍入模式，则会抛出ArithmeticException异常
      * @return Object
      */
-    public Object agg(Aggregation agg, int scale, int round, String key) {
+    public Object agg(Aggregation agg, int scale, int round, String field) {
         Object result = null;
         switch (agg) {
             case COUNT:
-                result = count(false, key);
+                result = count(false, field);
                 break;
             case SUM:
-                result = sum(key);
+                result = sum(field);
                 break;
             case AVG:
-                result = avg(false, scale, round, key);
+                result = avg(false, scale, round, field);
                 break;
             case AVGA:
-                result = avg(true, scale, round, key);
+                result = avg(true, scale, round, field);
                 break;
             case MEDIAN:
-                result = median(key);
+                result = median(field);
                 break;
             case MAX:
-                result = max(key);
+                result = max(field);
                 break;
             case MAX_DECIMAL:
-                result = maxDecimal(key);
+                result = maxDecimal(field);
                 break;
             case MAX_DOUBLE:
-                result = maxDouble(key);
+                result = maxDouble(field);
                 break;
             case MAX_FLOAT:
-                result = maxFloat(key);
+                result = maxFloat(field);
                 break;
             case MAX_INT:
-                result = maxInt(key);
+                result = maxInt(field);
                 break;
             case MIN:
-                result = min(key);
+                result = min(field);
                 break;
             case MIN_DECIMAL:
-                result = minDecimal(key);
+                result = minDecimal(field);
                 break;
             case MIN_DOUBLE:
-                result = minDouble(key);
+                result = minDouble(field);
                 break;
             case MIN_FLOAT:
-                result = minFloat(key);
+                result = minFloat(field);
                 break;
             case MIN_INT:
-                result = minInt(key);
+                result = minInt(field);
                 break;
             case STDEV:
-                result = stdev(scale, round, key);
+                result = stdev(scale, round, field);
                 break;
             case STDEVP:
-                result = stdevp(scale, round, key);
+                result = stdevp(scale, round, field);
                 break;
             case STDEVA:
-                result = stdeva(scale, round, key);
+                result = stdeva(scale, round, field);
                 break;
             case STDEVPA:
-                result = stdevpa(scale, round, key);
+                result = stdevpa(scale, round, field);
                 break;
             case VAR:
-                result = var(scale, round, key);
+                result = var(scale, round, field);
                 break;
             case VARA:
-                result = vara(scale, round, key);
+                result = vara(scale, round, field);
                 break;
             case VARP:
-                result = varp(scale, round, key);
+                result = varp(scale, round, field);
                 break;
             case VARPA:
-                result = varpa(scale, round, key);
+                result = varpa(scale, round, field);
                 break;
         }
         return result;
@@ -3899,7 +3899,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
     /**
      * 抽样标准差
      * 抽样标准差σ=sqrt(s^2)，即标准差=方差的平方根
-     * @param key 取值属性
+     * @param field 取值属性
      * @param scale 小数位
      * @param round 舍入模式 参考BigDecimal静态常量
      *       ROUND_UP        = 0 舍入远离零的舍入模式 在丢弃非零部分之前始终增加数字（始终对非零舍弃部分前面的数字加 1） 如:2.36 转成 2.4<br/>
@@ -3915,19 +3915,19 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
      *      ROUND_UNNECESSARY=7 断言所请求的操作具有准确的结果，因此不需要舍入。如果在产生不精确结果的操作上指定了该舍入模式，则会抛出ArithmeticException异常
      * @return 标准差
      */
-    public BigDecimal stdev(int scale, int round, String key) {
-        List<BigDecimal> values = getDecimals(key, null);
+    public BigDecimal stdev(int scale, int round, String field) {
+        List<BigDecimal> values = getDecimals(field, null);
         return NumberUtil.stdev(values, scale, round);
     }
-    public BigDecimal stdeva(int scale, int round, String key) {
-        List<BigDecimal> values = getDecimals(key, null);
+    public BigDecimal stdeva(int scale, int round, String field) {
+        List<BigDecimal> values = getDecimals(field, null);
         return NumberUtil.stdeva(values, scale, round);
     }
 
     /**
      * 总体标准差
      * 总体标准差σ=sqrt(s^2)，即标准差=方差的平方根
-     * @param key 取值属性
+     * @param field 取值属性
      * @param scale 小数位
      * @param round 舍入模式 参考BigDecimal静态常量
      *       ROUND_UP        = 0 舍入远离零的舍入模式 在丢弃非零部分之前始终增加数字（始终对非零舍弃部分前面的数字加 1） 如:2.36 转成 2.4<br/>
@@ -3943,19 +3943,19 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
      *      ROUND_UNNECESSARY=7 断言所请求的操作具有准确的结果，因此不需要舍入。如果在产生不精确结果的操作上指定了该舍入模式，则会抛出ArithmeticException异常
      * @return 标准差
      */
-    public BigDecimal stdevp(int scale, int round, String key) {
-        List<BigDecimal> values = getDecimals(key, null);
+    public BigDecimal stdevp(int scale, int round, String field) {
+        List<BigDecimal> values = getDecimals(field, null);
         return NumberUtil.stdevp(values, scale, round);
     }
-    public BigDecimal stdevpa(int scale, int round, String key) {
-        List<BigDecimal> values = getDecimals(key, null);
+    public BigDecimal stdevpa(int scale, int round, String field) {
+        List<BigDecimal> values = getDecimals(field, null);
         return NumberUtil.stdevpa(values, scale, round);
     }
 
     /**
      * 抽样方差
      * s^2=[（x1-x）^2+（x2-x）^2+......（xn-x）^2]/(n-1)（x为平均数）
-     * @param key 取值属性
+     * @param field 取值属性
      * @param scale 小数位
      * @param round 舍入模式 参考BigDecimal静态常量
      *       ROUND_UP        = 0 舍入远离零的舍入模式 在丢弃非零部分之前始终增加数字（始终对非零舍弃部分前面的数字加 1） 如:2.36 转成 2.4<br/>
@@ -3971,19 +3971,19 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
      *      ROUND_UNNECESSARY=7 断言所请求的操作具有准确的结果，因此不需要舍入。如果在产生不精确结果的操作上指定了该舍入模式，则会抛出ArithmeticException异常
      * @return 标准差
      */
-    public BigDecimal var(int scale, int round, String key) {
-        List<BigDecimal> values = getDecimals(key, null);
+    public BigDecimal var(int scale, int round, String field) {
+        List<BigDecimal> values = getDecimals(field, null);
         return NumberUtil.var(values, scale, round);
     }
-    public BigDecimal vara(int scale, int round, String key) {
-        List<BigDecimal> values = getDecimals(key, null);
+    public BigDecimal vara(int scale, int round, String field) {
+        List<BigDecimal> values = getDecimals(field, null);
         return NumberUtil.vara(values, scale, round);
     }
 
     /**
      * 总体方差
      * s^2=[（x1-x）^2+（x2-x）^2+......（xn-x）^2]/n（x为平均数）
-     * @param key 取值属性
+     * @param field 取值属性
      * @param scale 小数位
      * @param round 舍入模式 参考BigDecimal静态常量
      *       ROUND_UP        = 0 舍入远离零的舍入模式 在丢弃非零部分之前始终增加数字（始终对非零舍弃部分前面的数字加 1） 如:2.36 转成 2.4<br/>
@@ -3999,13 +3999,13 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
      *      ROUND_UNNECESSARY=7 断言所请求的操作具有准确的结果，因此不需要舍入。如果在产生不精确结果的操作上指定了该舍入模式，则会抛出ArithmeticException异常
      * @return 标准差
      */
-    public BigDecimal varp(int scale, int round, String key) {
-        List<BigDecimal> values = getDecimals(key, null);
+    public BigDecimal varp(int scale, int round, String field) {
+        List<BigDecimal> values = getDecimals(field, null);
         return NumberUtil.varp(values, scale, round);
     }
 
-    public BigDecimal varpa(int scale, int round, String key) {
-        List<BigDecimal> values = getDecimals(key, null);
+    public BigDecimal varpa(int scale, int round, String field) {
+        List<BigDecimal> values = getDecimals(field, null);
         return NumberUtil.varpa(values, scale, round);
     }
     public DataSet or(DataSet set, String... keys) {
@@ -4017,17 +4017,17 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
      *
      * @param distinct 是否根据keys抽取不重复的集合
      * @param sets     集合
-     * @param keys     判断依据
+     * @param fields     判断依据
      * @return DataSet
      */
-    public static DataSet intersection(boolean distinct, List<DataSet> sets, String... keys) {
+    public static DataSet intersection(boolean distinct, List<DataSet> sets, String... fields) {
         DataSet result = null;
         if (null != sets && !sets.isEmpty()) {
             for (DataSet set : sets) {
                 if (null == result) {
                     result = set;
                 } else {
-                    result = result.intersection(distinct, set, keys);
+                    result = result.intersection(distinct, set, fields);
                 }
             }
         }

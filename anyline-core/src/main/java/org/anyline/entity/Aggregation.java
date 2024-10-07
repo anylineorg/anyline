@@ -17,47 +17,52 @@
 package org.anyline.entity;
 
 public enum Aggregation {
-    MIN			    ("MIN"  			, "最小"),
-    MIN_DECIMAL		("MIN_DECIMAL"  	, "最小"),
-    MIN_DOUBLE		("MIN_DOUBLE"  	, "最小"),
-    MIN_FLOAT		("MIN_FLOAT"  	, "最小"),
-    MIN_LONG		("MIN_LONG"  		, "最小"),
-    MIN_INT			("MIN_INT"  		, "最小"),
-    MAX			    ("MAX" 			, "最大"),
-    MAX_DECIMAL     ("MAX_DECIMAL"     , "最大"),
-    MAX_DOUBLE      ("MAX_DOUBLE"      , "最大"),
-    MAX_FLOAT	    ("MAX_FLOAT"       , "最大"),
-    MAX_LONG	    ("MAX_LONG"       , "最大"),
-    MAX_INT			("MAX_INT"         , "最大"),
-    MEDIAN          ("MEDIAN"          ,"中位"),
-    MEDIAN_DECIMAL  ("MEDIAN_DECIMAL"  ,"中位"),
-    MEDIAN_DOUBLE   ("MEDIAN_DOUBLE"   ,"中位"),
-    MEDIAN_FLOAT    ("MEDIAN_FLOAT"    ,"中位"),
-    MEDIAN_LONG     ("MEDIAN_LONG"     ,"中位"),
-    MEDIAN_INT      ("MEDIAN_INT"      ,"中位"),
-    AVG		        ("AVG"  			 , "平均"),
-    AVGA		    ("AVGA"  			 , "平均(空值参与)"),
-    SUM			    ("SUM"  			 , "合计"),
-    COUNT		    ("COUNT"  		 , "数量"),
-    COUNTA		    ("COUNT"  		 , "数量(空值参与)"),
-    STDEV 		    ("STDEV"  		 , "抽样标准偏差"),
-    STDEVA 		    ("STDEVA"           , "抽样标准偏差(空值参与)"),
-    STDEVP		    ("STDEVP"           , "总体标准偏差"),
-    STDEVPA		    ("STDEVPA"          , "总体标准偏差(空值参与)"),
-    VAR		        ("VAR"              , "抽样方差"),
-    VARA		    ("VARA"             , "抽样方差(空值参与)"),
-    VARP		    ("VARP"  		     , "总体方差"),
-    VARPA		    ("VARPA"  		 , "总体方差(空值参与)");
+    MIN			    ("MIN"  			," MIN", "最小"),
+    MIN_DECIMAL		("MIN_DECIMAL"  	, " MIN","最小"),
+    MIN_DOUBLE		("MIN_DOUBLE"  	, " MIN","最小"),
+    MIN_FLOAT		("MIN_FLOAT"  	, " MIN","最小"),
+    MIN_LONG		("MIN_LONG"  		, " MIN","最小"),
+    MIN_INT			("MIN_INT"  		, " MIN","最小"),
+    MAX			    ("MAX" 			, " MAX","最大"),
+    MAX_DECIMAL     ("MAX_DECIMAL"     , " MAX","最大"),
+    MAX_DOUBLE      ("MAX_DOUBLE"      , " MAX","最大"),
+    MAX_FLOAT	    ("MAX_FLOAT"       , " MAX","最大"),
+    MAX_LONG	    ("MAX_LONG"       , " MAX","最大"),
+    MAX_INT			("MAX_INT"         , " MAX","最大"),
+    MEDIAN          ("MEDIAN"          ,"MEDIAN","中位"),
+    MEDIAN_DECIMAL  ("MEDIAN_DECIMAL"  ,"MEDIAN","中位"),
+    MEDIAN_DOUBLE   ("MEDIAN_DOUBLE"   ,"MEDIAN","中位"),
+    MEDIAN_FLOAT    ("MEDIAN_FLOAT"    ,"MEDIAN","中位"),
+    MEDIAN_LONG     ("MEDIAN_LONG"     ,"MEDIAN","中位"),
+    MEDIAN_INT      ("MEDIAN_INT"      ,"MEDIAN","中位"),
+    AVG		        ("AVG"  			 , "AVG","平均"),
+    AVGA		    ("AVGA"  			 , "AVG","平均(空值参与)"),
+    SUM			    ("SUM"  			 , "SUM","合计"),
+    COUNT		    ("COUNT"  		 , "COUNT","数量"),
+    COUNTA		    ("COUNT"  		 , "COUNT","数量(空值参与)"),
+    STDEV 		    ("STDEV"  		 , "STDEV","抽样标准偏差"),
+    STDEVA 		    ("STDEVA"           , "STDEVA","抽样标准偏差(空值参与)"),
+    STDEVP		    ("STDEVP"           , "STDEVP","总体标准偏差"),
+    STDEVPA		    ("STDEVPA"          , "STDEVPA","总体标准偏差(空值参与)"),
+    VAR		        ("VAR"              , "VAR","抽样方差"),
+    VARA		    ("VARA"             , "VARA" ,"抽样方差(空值参与)"),
+    VARP		    ("VARP"  		     , "VARP" ,"总体方差"),
+    VARPA		    ("VARPA"  		 , "VARPA","总体方差(空值参与)");
     final String code;
-    final String name;
-    Aggregation(String code, String name) {
+    final String formula;
+    final String title;
+    Aggregation(String code, String formula, String title) {
         this.code = code;
-        this.name = name;
+        this.title = title;
+        this.formula = formula;
     }
-    public String getName() {
-        return name;
+    public String title() {
+        return title;
     }
-    public String getCode() {
+    public String code() {
         return code;
+    }
+    public String formula(){
+        return formula;
     }
 }

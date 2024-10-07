@@ -16,7 +16,9 @@
 
 package org.anyline.data.param;
 
+import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.RunPrepare;
+import org.anyline.data.prepare.auto.init.DefaultTablePrepare;
 import org.anyline.entity.*;
 import org.anyline.metadata.Table;
 import org.anyline.service.AnylineService;
@@ -28,9 +30,11 @@ public class AggregationBuilder {
     private AnylineService service;
     private Table table;
     private RunPrepare prepare;
-    private ConfigStore configs;
+    private ConfigStore configs = new DefaultConfigStore();
     private List<AggregationConfig> aggregations = new ArrayList<>();
     private GroupStore groups = new DefaultGroupStore();
+    private HavingStore having = new DefaultHavingStore();
+    private OrderStore orders = new DefaultOrderStore();
     public AggregationBuilder(AnylineService service) {
         this.service = service;
     }
@@ -40,6 +44,24 @@ public class AggregationBuilder {
         }
         return this;
     }
+    public AggregationBuilder order(String column, String type) {
+        orders.add(column, type);
+        return this;
+    }
+    public AggregationBuilder order(String column) {
+        orders.add(column);
+        return this;
+    }
+
+    public AggregationBuilder having(String having) {
+        this.having.add(having);
+        return this;
+    }
+    public AggregationBuilder having(Having having) {
+        this.having.add(having);
+        return this;
+    }
+
     public GroupStore groups(){
         return this.groups;
     }
@@ -55,7 +77,12 @@ public class AggregationBuilder {
         this.table = table;
         return this;
     }
-    public AggregationBuilder table(RunPrepare prepare){
+    public AggregationBuilder table(String table){
+        this.table = new Table(table);
+        return this;
+    }
+    public AggregationBuilder
+    table(RunPrepare prepare){
         this.prepare = prepare;
         return this;
     }
@@ -64,22 +91,41 @@ public class AggregationBuilder {
         return this;
     }
     public DataSet querys(){
-        configs.setGroups(groups);
-        configs.aggregations(aggregations);
+        if(null == prepare && null != table){
+            prepare = new DefaultTablePrepare(table);
+        }
         if(null != prepare){
+            if(!orders.isEmpty()){
+                prepare.order(orders);
+            }
+            if(!groups.isEmpty()){
+                prepare.group(groups);
+            }
+            if(!having.isEmpty()){
+                prepare.having(having);
+            }
+            prepare.aggregation(aggregations);
             return service.querys(prepare, configs);
-        }else if(null != table){
-            return service.querys(table, configs);
         }
         throw new RuntimeException("未提供Table或RunPrepare");
     }
     public DataRow query(){
-        configs.setGroups(groups);
-        configs.aggregations(aggregations);
+
+        if(null == prepare && null != table){
+            prepare = new DefaultTablePrepare(table);
+        }
         if(null != prepare){
+            if(!orders.isEmpty()){
+                prepare.order(orders);
+            }
+            if(!groups.isEmpty()){
+                prepare.group(groups);
+            }
+            if(!having.isEmpty()){
+                prepare.having(having);
+            }
+            prepare.aggregation(aggregations);
             return service.query(prepare, configs);
-        }else if(null != table){
-            return service.query(table, configs);
         }
         throw new RuntimeException("未提供Table或RunPrepare");
     }

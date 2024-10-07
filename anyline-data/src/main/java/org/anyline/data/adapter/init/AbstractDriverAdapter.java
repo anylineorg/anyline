@@ -2780,7 +2780,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         }
         builder.append(BR_TAB);
         ConfigStore configs = run.getConfigs();
+
         LinkedHashMap<String,Column> columns = prepare.getColumns();
+        List<AggregationConfig> aggregations = prepare.aggregations();
         if(null == columns || columns.isEmpty()) {
             if(null != configs) {
                 List<String> cols = configs.columns();
@@ -2823,13 +2825,26 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                     }
                 }
             }
-            builder.append(BR);
         }
-        if(null == columns || columns.isEmpty()){
+        if(null != aggregations){
+            for(AggregationConfig agg:aggregations){
+                if(!first) {
+                    builder.append(", ");
+                }
+                first = false;
+                builder.append(agg.getAggregation().formula()).append("(").append(agg.getField()).append(") ");
+                String alias = agg.getAlias();
+                if(BasicUtil.isEmpty(alias)){
+                    alias = agg.getField() +"_" + agg.getAggregation().code();
+                }
+                builder.append(alias);
+            }
+        }
+        if((null == columns || columns.isEmpty()) && (null == aggregations || aggregations.isEmpty())){
             // 全部查询
             builder.append("*");
-            builder.append(BR);
         }
+        builder.append(BR);
         builder.append("FROM ");
         fillMasterTableContent(runtime, builder, run, prepare);
         builder.append(BR);

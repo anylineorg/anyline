@@ -136,15 +136,16 @@ public interface RunPrepare extends Cloneable {
 	RunPrepare order(String order);
 	RunPrepare order(String col, Order.TYPE type);
 	RunPrepare order(Order order);
- 
+	RunPrepare order(OrderStore order);
 	/** 
 	 * 添加分组条件, 在之前的基础上添加新分组条件, 有重复条件则覆盖
 	 * @param groups  groups
 	 * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
-	 */ 
+	 */
 	RunPrepare group(String ... groups);
+	RunPrepare group(GroupStore groups);
 	RunPrepare having(String having);
- 
+	RunPrepare having(HavingStore having);
 	void setPageNavi(PageNavi navi); 
 	PageNavi getPageNavi(); 
 	/* ******************************************************************************************************* 
@@ -317,6 +318,7 @@ public interface RunPrepare extends Cloneable {
 	GroupStore groups();
 	RunPrepare aggregation(Aggregation aggregation, String column, String result);
 	RunPrepare aggregation(AggregationConfig ... configs);
+	RunPrepare aggregation(List<AggregationConfig> configs);
 	List<AggregationConfig> aggregations();
 
 	RunPrepare clone();

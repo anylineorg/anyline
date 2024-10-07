@@ -206,8 +206,9 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
     protected boolean sort = false; //列是否排序
 
     //聚合查询
-    private List<AggregationConfig> aggregations = new ArrayList<>();
-    private GroupStore groups = new DefaultGroupStore();
+    protected List<AggregationConfig> aggregations = new ArrayList<>();
+    protected GroupStore groups = new DefaultGroupStore();
+    protected HavingStore having = new DefaultHavingStore();
 
     protected boolean autoDropColumn = ConfigTable.IS_DDL_AUTO_DROP_COLUMN;     //执行alter时是否删除 数据库中存在 但table 中不存在的列(属性)
 
@@ -290,6 +291,21 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
     }
     public GroupStore groups(){
         return this.groups;
+    }
+    public HavingStore having(){
+        return this.having;
+    }
+    public Table having(String having){
+        this.having.add(having);
+        return this;
+    }
+    public Table having(Having having){
+        this.having.add(having);
+        return this;
+    }
+    public Table having(HavingStore having){
+        this.having = having;
+        return this;
     }
     public Table aggregation(Aggregation aggregation, String column, String result){
         AggregationConfig config = new AggregationConfig(aggregation, column, result);

@@ -237,6 +237,9 @@ public abstract class DefaultAutoPrepare extends AbstractRunPrepare implements A
 			String catalog = null;
 			String schema = null;
 			String name = table.getName();
+			this.groups = table.groups();
+			this.having = table.having();
+			this.aggregations = table.aggregations();
 			if(BasicUtil.isNotEmpty(table.getAlias())) {
 				this.alias = table.getAlias();
 			}
@@ -433,10 +436,7 @@ public abstract class DefaultAutoPrepare extends AbstractRunPrepare implements A
 		parseTable(this.table);
 		return this;
 	}
-	@Override
-	public RunPrepare order(Order order) {
-		return this;
-	}
+
 	@Override
 	public ConditionChain getConditionChain() {
 		return this.chain;
