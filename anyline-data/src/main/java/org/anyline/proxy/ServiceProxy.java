@@ -26,6 +26,7 @@ import org.anyline.data.datasource.DataSourceHolder;
 import org.anyline.data.handler.DataHandler;
 import org.anyline.data.handler.EntityHandler;
 import org.anyline.data.handler.StreamHandler;
+import org.anyline.data.param.AggregationBuilder;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.RunPrepare;
@@ -905,6 +906,18 @@ public class ServiceProxy {
         return service.maps(prepare, handler, configs, conditions);
     }
 
+    public static AggregationBuilder aggregation(){
+        return service.aggregation();
+    }
+    public static AggregationBuilder aggregation(Table table){
+        return service.aggregation(table);
+    }
+    public static AggregationBuilder aggregation(String table){
+        return service.aggregation(table);
+    }
+    public static AggregationBuilder aggregation(RunPrepare table){
+        return service.aggregation(table);
+    }
     /**
      * 列名转找成参数名 可以给condition()提供参数用来接收前端参数
      * @param table 表
