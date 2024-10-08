@@ -121,16 +121,6 @@ public class JDBCDataSourceHolder extends AbstractDataSourceHolder implements Da
         return null;
     }
 
-    @Override
-    public String create(String key, DatabaseType database, String url, String user, String password) throws Exception {
-        Map params = new HashMap();
-        params.put("driverClass", database.driver());
-        params.put("url", url);
-        params.put("user", user);
-        params.put("password", password);
-        String ds = inject(key, params, true);
-        return runtime(key, ds, false);
-    }
 
     @Override
     public String create(String key, String prefix) {

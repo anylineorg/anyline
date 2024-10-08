@@ -186,11 +186,22 @@ public interface DataSourceHolder {
 	}
 
 	static String reg(String key, Map<String, Object> param) throws Exception {
-		return reg(key, param, true);
+		return reg(key, param, (DatabaseType)null,true);
 	}
 
-	static String reg(String key, Map<String, Object> param, boolean override) throws Exception {
-		DataSourceHolder instance = instance(BeanUtil.value(param, "url", DataSourceKeyMap.maps, String.class, null));
+	static String reg(String key, Map<String, Object> param, DatabaseType type) throws Exception {
+		return reg(key, param, type,true);
+	}
+
+	static String reg(String key, Map<String, Object> param, DatabaseType type, boolean override) throws Exception {
+		DataSourceHolder instance = null;
+
+		if(null == instance && null != type) {
+			instance = instance(type);
+		}
+		if(null == instance) {
+		instance(BeanUtil.value(param, "url", DataSourceKeyMap.maps, String.class, null));
+		}
 		if(null == instance) {
 			instance = instance(BeanUtil.value(param, "driver", DataSourceKeyMap.maps, String.class, null));
 		}
@@ -199,6 +210,9 @@ public interface DataSourceHolder {
 		}
 		if(null == instance) {
 			instance = instance(BeanUtil.value(param, "type", DataSourceKeyMap.maps, String.class, null));
+		}
+		if(!param.containsKey("adapter") && null != type){
+			param.put("adapter", type.name());
 		}
 		if(null != instance) {
 			return instance.create(key, param, override);
@@ -410,7 +424,17 @@ public interface DataSourceHolder {
 	 * @return DataSource
 	 * @throws Exception 异常 Exception
 	 */
-	String create(String key, DatabaseType type, String url, String user, String password) throws Exception;
+	default String create(String key, DatabaseType type, String url, String user, String password) throws Exception {
+		Map<String, Object> params = new HashMap<>();
+		params.put("url", url);
+		params.put("user", user);
+		params.put("password", password);
+		if(null != type) {
+			params.put("adapter", type.name());
+		}
+		String ds = inject(key, params, true);
+		return runtime(key, ds, false);
+	}
 	/**
 	 * 根据配置文件创建数据源
 	 * @param key 数据源key

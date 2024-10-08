@@ -139,11 +139,6 @@ public class HBaseDataSourceHolder extends AbstractDataSourceHolder implements D
 	}
 
 	@Override
-	public String create(String key, DatabaseType type, String url, String user, String password) throws Exception {
-		return null;
-	}
-
-	@Override
 	public String create(String key, String prefix) {
 		return reg(key, prefix);
 	}

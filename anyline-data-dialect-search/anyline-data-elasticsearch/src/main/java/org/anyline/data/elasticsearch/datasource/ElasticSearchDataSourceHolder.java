@@ -66,6 +66,7 @@ public class ElasticSearchDataSourceHolder extends AbstractDataSourceHolder impl
 	}
 	public ElasticSearchDataSourceHolder() {
 		DataSourceHolder.register(RestClient.class, this);
+		DataSourceHolder.register(DatabaseType.ElasticSearch, this);
 	}
 
 	public String reg(String key, String prefix) {
@@ -210,10 +211,6 @@ public class ElasticSearchDataSourceHolder extends AbstractDataSourceHolder impl
 		return datasource_id;
 	}
 
-	@Override
-	public String create(String key, DatabaseType type, String url, String user, String password) throws Exception {
-		return null;
-	}
 
 	@Override
 	public String create(String key, String prefix) {
