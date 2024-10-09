@@ -189,6 +189,10 @@ public interface DataSourceHolder {
 		return reg(key, param, (DatabaseType)null,true);
 	}
 
+	static String reg(String key, Map<String, Object> param, boolean override) throws Exception {
+		return reg(key, param, (DatabaseType)null, override);
+	}
+
 	static String reg(String key, Map<String, Object> param, DatabaseType type) throws Exception {
 		return reg(key, param, type,true);
 	}
