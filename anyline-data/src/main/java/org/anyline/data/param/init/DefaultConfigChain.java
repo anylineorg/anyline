@@ -224,7 +224,17 @@ public class DefaultConfigChain extends DefaultConfig implements ConfigChain {
 	}
 
 	public void addConfig(Config config) {
-		configs.add(config); 
+		if(null != config) {
+			if(config instanceof ConfigChain){
+				ConfigChain chain = (ConfigChain) config;
+				List<Config> configs = chain.getConfigs();
+				for(Config item:configs){
+					addConfig(item);
+				}
+			}else {
+				configs.add(config);
+			}
+		}
 	} 
 
 	public List<Object> getValues() {
