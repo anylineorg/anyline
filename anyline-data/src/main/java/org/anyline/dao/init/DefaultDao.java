@@ -165,7 +165,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		if(null == runtime) {
 			runtime = runtime();
 		}
-		if(!prepare.disposable()){
+		if(prepare != null && !prepare.disposable()){
 			prepare = prepare.clone();
 		}
 		EntitySet set = runtime.getAdapter().selects(runtime, null, prepare, clazz, configs, conditions);
