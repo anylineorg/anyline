@@ -694,14 +694,14 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 			clone.id = this.id;
 			clone.disposable(true);
 			clone.text = this.text;
-			clone.chain = this.chain.clone();
+			clone.chain = this.chain == null ? null : this.chain.clone();
 			clone.orders = this.orders.clone();
 			clone.groups = this.groups.clone();
 			clone.having = this.having;
-			clone.navi = this.navi.clone();
-            clone.primaryKeys = new ArrayList<>(primaryKeys);
+			clone.navi = this.navi == null ? null : this.navi.clone();
+			clone.primaryKeys = new ArrayList<>(primaryKeys);
 
-            clone.fetchKeys = new ArrayList<>(fetchKeys);
+			clone.fetchKeys = new ArrayList<>(fetchKeys);
 			clone.valid = this.valid;
 			clone.alias = this.alias;
 			clone.batch = this.batch;
@@ -710,13 +710,13 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 			clone.runtime = this.runtime;
 			clone.swt = this.swt;
 			LinkedHashMap<String, Column> cols = new LinkedHashMap<>();
-			for(String key:columns.keySet()){
+			for (String key : columns.keySet()) {
 				cols.put(key, columns.get(key).clone());
 			}
 			clone.columns = cols;
-            clone.excludes = new ArrayList<>(this.excludes);
+			clone.excludes = new ArrayList<>(this.excludes);
 			clone.distinct = this.distinct;
-			clone.condition = this.condition.clone();
+			clone.condition = this.condition == null ? null : this.condition.clone();
 			clone.join = this.join;
 			clone.isSub = this.isSub;
 			clone.unionAll = this.unionAll;
@@ -732,7 +732,8 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 			}
 			clone.joins = joins;
             this.runValues = new Vector<>(this.runValues);
-		}catch (Exception ignored){
+		}catch (Exception e){
+			e.printStackTrace();
 		}
 		return clone;
 	}
