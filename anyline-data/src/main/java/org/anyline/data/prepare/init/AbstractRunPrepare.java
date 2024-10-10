@@ -36,7 +36,7 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 
 	protected static final Log log     = LogProxy.get(AbstractRunPrepare.class);
 	protected String id 										;
-	protected boolean disposable = false						; // 是否一次性的(执行过程中可修改，否则应该clone一份，避免影响第二闪使用)
+	protected boolean disposable = false						; // 是否一次性的(执行过程中可修改，否则应该clone一份，避免影响第二次使用)
 	protected String text										;
 	protected ConditionChain chain								; // 查询条件
 	protected OrderStore orders = new DefaultOrderStore()		; // 排序
@@ -733,7 +733,7 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 			clone.joins = joins;
             this.runValues = new Vector<>(this.runValues);
 		}catch (Exception e){
-			e.printStackTrace();
+			log.error("RunPrepare clone", e);
 		}
 		return clone;
 	}
