@@ -731,7 +731,7 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 				joins.add(join.clone());
 			}
 			clone.joins = joins;
-            this.runValues = new Vector<>(this.runValues);
+			this.runValues = this.runValues == null ? null : new Vector<>(this.runValues);
 		}catch (Exception e){
 			log.error("RunPrepare clone", e);
 		}
