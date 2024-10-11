@@ -19,8 +19,10 @@ package org.anyline.data.jdbc.datasource;
 import org.anyline.annotation.Component;
 import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.adapter.DriverAdapterHolder;
+import org.anyline.data.datasource.ApplicationConnectionHolder;
 import org.anyline.data.datasource.DataSourceHolder;
 import org.anyline.data.datasource.DataSourceKeyMap;
+import org.anyline.data.datasource.ThreadConnectionHolder;
 import org.anyline.data.datasource.init.AbstractDataSourceHolder;
 import org.anyline.data.jdbc.runtime.JDBCRuntimeHolder;
 import org.anyline.data.jdbc.util.DataSourceUtil;
@@ -36,6 +38,7 @@ import org.anyline.util.ConfigTable;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 @Component("anyline.environment.data.datasource.holder.jdbc")
@@ -129,9 +132,35 @@ public class JDBCDataSourceHolder extends AbstractDataSourceHolder implements Da
 
     @Override
     public boolean validate(DataRuntime runtime) throws Exception {
-        return false;
+        DataSource ds = (DataSource) runtime.getProcessor();
+        return validate(ds);
     }
 
+    public boolean validate(DataSource datasource) throws Exception {
+        Connection con = null;
+        try{
+            //当前线程中已经开启了事务的 用事务连接
+            con = ThreadConnectionHolder.get(datasource);
+            if(null == con) {
+                con = datasource.getConnection();
+            }
+           return con.isValid(1000);
+        }catch (Exception e) {
+            log.error("连接 异常:", e);
+        }finally {
+            try {
+                if(ThreadConnectionHolder.contains(datasource, con)
+                    || ApplicationConnectionHolder.contains(datasource, con)) {
+                    //事务中不要关闭
+                }else {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                log.error("释放连接 异常:", e);
+            }
+        }
+        return false;
+    }
     public String regTransactionManager(String key, DataSource datasource, boolean primary) {
         if(ConfigTable.IS_OPEN_TRANSACTION_MANAGER) {
             TransactionManage.reg(key, new DefaultTransactionManage(datasource));
