@@ -58,8 +58,11 @@ public class XMLRun extends TextRun implements Run {
 			for(Config conf: configs.getConfigChain().getConfigs()) {
 				setConditionValue(conf.getSwt(), conf.getCompare(), conf.getPrefix(), conf.getVariable(), conf.getValues());
 			} 
-			 
-			OrderStore orderStore = configs.getOrders();
+			LinkedHashMap<String, Config> params = configs.params();
+			for(String key:params.keySet()){
+				Config conf = params.get(key);
+				setConditionValue(conf.getSwt(), conf.getCompare(), conf.getPrefix(), conf.getVariable(), conf.getValues());
+			}
 			this.orders.add(configs.getOrders());
 
 			PageNavi navi = configs.getPageNavi();
@@ -71,7 +74,7 @@ public class XMLRun extends TextRun implements Run {
 		if(null != conditions) {
 			for(String condition:conditions) {
 				ParseResult parser = ConfigParser.parse(condition, false);
-				Object value = ConfigParser.getValues(parser);// parser.getKey(); 
+				Object value = ConfigParser.getValues(parser);// parser.getKey();
 				if(parser.getParamFetchType() == ParseResult.FETCH_REQUEST_VALUE_TYPE_MULTIPLE) {
 					 value = BeanUtil.object2list(value);
 				} 

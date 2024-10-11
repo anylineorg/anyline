@@ -26,18 +26,20 @@ import org.anyline.data.prepare.*;
 import org.anyline.data.prepare.auto.init.DefaultAutoCondition;
 import org.anyline.data.prepare.auto.init.DefaultAutoConditionChain;
 import org.anyline.data.runtime.DataRuntime;
-import org.anyline.util.SQLUtil;
 import org.anyline.entity.*;
 import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 import org.anyline.metadata.*;
 import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.util.*;
 import org.anyline.util.regular.RegularUtil;
-import org.anyline.log.Log;
-import org.anyline.log.LogProxy;
 
 import java.lang.reflect.Array;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 public abstract class AbstractRun implements Run {
 	protected static final Log log = LogProxy.get(AbstractRun.class);
@@ -486,6 +488,7 @@ public abstract class AbstractRun implements Run {
 		}else{
 			if(null != configs) {
 				this.configs.and(configs);
+				this.configs.params().putAll(configs.params());
 				GroupStore groups = configs.getGroups();
 				if(null != groups) {
 					if(this.groups == null) {

@@ -39,37 +39,38 @@ import java.util.*;
 import static org.anyline.entity.Compare.MATCH_PHRASE;
 
 public class DefaultConfigStore implements ConfigStore {
-	protected Class clazz										    ;
-	protected DataHandler handler								    ; // 流式读取时handler
-	protected ConfigChain chain	= new DefaultConfigChain()			; // 条件集合
-	protected PageNavi navi											; // 分页参数
-	protected OrderStore orders										; // 排序依据
-	List<AggregationConfig> aggregations = new ArrayList<>()		; // 聚合
-	protected GroupStore groups = new DefaultGroupStore()			; // 分组
-	protected HavingStore having = new DefaultHavingStore()			;
+	protected Class clazz										    					;
+	protected DataHandler handler								    					; // 流式读取时handler
+	protected ConfigChain chain	= new DefaultConfigChain()								; // 条件集合
+	protected PageNavi navi																; // 分页参数
+	protected OrderStore orders															; // 排序依据
+	List<AggregationConfig> aggregations = new ArrayList<>()							; // 聚合
+	protected GroupStore groups = new DefaultGroupStore()								; // 分组
+	protected HavingStore having = new DefaultHavingStore()								;
 	protected LinkedHashMap<String, Column> columns 		= new LinkedHashMap<>()		; // 查询或插入或更新的列
 	protected LinkedHashMap<String, Column> excludes 		= new LinkedHashMap<>()		; // 不查询或插入或更新的列
-	protected List<Object> values									; // 保存values后续parse用到
-	protected boolean cascade				= false					; // 是否开启级联操作(Graph库中用到)
-	protected boolean supportKeyHolder		= true					; // 是否支持返回自增主键值
-	protected List<String> keyHolders		= new ArrayList<>()		; // 自增主键值key
+	protected List<Object> values														; // 保存values后续parse用到
+	protected LinkedHashMap<String, Config> params = new LinkedHashMap<>()				; // 只用来赋值
+	protected boolean cascade				  = false									; // 是否开启级联操作(Graph库中用到)
+	protected boolean supportKeyHolder		  = true									; // 是否支持返回自增主键值
+	protected List<String> keyHolders		  = new ArrayList<>()						; // 自增主键值key
 
-	protected Boolean override              = null                  ; //如果数据库中存在相同数据(根据overrideBy)是否覆盖 true或false会检测数据库null不检测
-	protected List<String> overrideByColumns		= null			; //中存在相同数据(根据overrideBy)是否覆盖 true或false会检测数据库null不检测
-	protected Constraint overrideByConstraint		= null			; //中存在相同数据(根据Constraint)是否覆盖 true或false会检测数据库null不检测
-	protected List<String> primaryKeys    	= new ArrayList<>()     ; // 主键
-	protected Boolean unicode 				= null					; // 插入数据库时是否Unicode编码
-	protected Boolean placeholder			= true					;
-	protected boolean integrality 			= true					; // 是否作为一个整体，不可分割，与其他条件合并时以()包围
-	protected List<Run> runs				= new ArrayList<>()		; // 执行过的命令 包括ddl dml
-	protected KeyAdapter.KEY_CASE kc 		= null					; //
-	protected boolean execute				= true  				;
-	protected String datasource				= null					; // 查询或操作的数据源
-	protected String dest					= null					; // 查询或操作的目标(表,存储过程, sql等)
-	protected Catalog catalog				= null					;
-	protected Schema schema					= null					;
-	protected Table table					= null					;
-	protected String join					= null					; // and or must must_not should filter
+	protected Boolean override                = null                  					; // 如果数据库中存在相同数据(根据overrideBy)是否覆盖 true或false会检测数据库null不检测
+	protected List<String> overrideByColumns  = null									; // 中存在相同数据(根据overrideBy)是否覆盖 true或false会检测数据库null不检测
+	protected Constraint overrideByConstraint = null									; //中存在相同数据(根据Constraint)是否覆盖 true或false会检测数据库null不检测
+	protected List<String> primaryKeys    	  = new ArrayList<>()     					; // 主键
+	protected Boolean unicode 				  = null									; // 插入数据库时是否Unicode编码
+	protected Boolean placeholder			  = true									;
+	protected boolean integrality 			  = true									; // 是否作为一个整体，不可分割，与其他条件合并时以()包围
+	protected List<Run> runs				  = new ArrayList<>()						; // 执行过的命令 包括ddl dml
+	protected KeyAdapter.KEY_CASE kc 		  = null									; //
+	protected boolean execute				  = true  									;
+	protected String datasource				  = null									; // 查询或操作的数据源
+	protected String dest					  = null									; // 查询或操作的目标(表,存储过程, sql等)
+	protected Catalog catalog				  = null									;
+	protected Schema schema					  = null									;
+	protected Table table					  = null									;
+	protected String join					  = null									; // and or must must_not should filter
 	protected Highlight highlight;
 	protected String collapse;
 
@@ -682,7 +683,38 @@ public class DefaultConfigStore implements ConfigStore {
 		chain.addConfig(conf);
 		return this;
 	}
-
+	@Override
+	public LinkedHashMap<String, Config> params(){
+		return params;
+	}
+	/**
+	 * 占位符赋值
+	 * @param swt 遇到空值处理方式
+	 * @param prefix 表别名或XML中查询条件的ID或表名
+	 * @param var XML自定义SQL条件中指定变量赋值或占位符key或列名 在value值为空的情况下 如果以var+开头会生成var is null 如果以++开头当前SQL不执行 这与swt作用一样,不要与swt混用
+	 * @param value 值 可以是集合
+	 * @param overCondition 覆盖相同key并且相同运算符的条件,true在现有条件基础上修改(多个相同key的条件只留下第一个),false:添加新条件
+	 * @param overValue		覆盖相同key并且相同运算符的条件时，是否覆盖条件值,true:删除析来的值 false:原来的值合成新的集合
+	 * @return ConfigStore
+	 */
+	@Override
+	public ConfigStore param(EMPTY_VALUE_SWITCH swt, String prefix, String var, Object value, boolean overCondition, boolean overValue) {
+		String key = var;
+		if(BasicUtil.isNotEmpty(prefix)){
+			key = prefix + "." + var;
+		}
+		key = key.toUpperCase();
+		Config conf = params.get(key);
+		if(null == conf) {
+			conf = new DefaultConfig();
+		}
+		conf.setPrefix(prefix);
+		conf.setVariable(var);
+		conf.setSwt(swt);
+		conf.setValue(value);
+		params.put(key, conf);
+		return this;
+	}
 	@Override
 	public ConfigStore and(EMPTY_VALUE_SWITCH swt, Compare compare, String prefix, String var, Object value, boolean overCondition, boolean overValue) {
 		if(null == compare) {
@@ -1856,6 +1888,9 @@ public class DefaultConfigStore implements ConfigStore {
 			for(Run item:runs) {
 				clone.runs.add(item);
 			}
+		}
+		for(String key:params.keySet()){
+			clone.param(key, params.get(key).clone());
 		}
 
 		clone.having = having;

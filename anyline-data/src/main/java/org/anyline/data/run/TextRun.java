@@ -31,6 +31,7 @@ import org.anyline.util.SQLUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 public class TextRun extends AbstractRun implements Run {
@@ -119,6 +120,36 @@ public class TextRun extends AbstractRun implements Run {
 					//if(!overCondition && !isUse) {
 					if(!isUse) {
 						conditionChain.addCondition(conf.createAutoCondition(conditionChain));
+					}
+				}
+			}
+			LinkedHashMap<String, Config> params = configs.params();
+			for(String key:params.keySet()){
+				Config conf = params.get(key);
+				//SQL主体变量
+				List<Variable> vars = this.getVariables(key);
+				boolean overCondition = conf.isOverCondition();
+				boolean overValue = conf.isOverValue();
+				List<Object> values = conf.getValues();
+				//相同key的查询条件
+				if(overCondition) {
+					List<Condition> cons = getConditions(key);
+					//是否已用来赋值
+					for (Condition con : cons) {
+						if (null != con) {
+							//如果有对应的SQL体变量 设置当前con不作为查询条件拼接
+							//当前条件相就的变量是否赋值过
+							boolean isConVarSetValue = con.isSetValue() || con.isSetValue(key);
+							if (!isConVarSetValue || overValue) {
+								con.setVariableSlave(true);
+								setConditionValue(conf.getSwt(), conf.getCompare(), key, key, values);
+							}
+						}
+					}
+				}
+				for (Variable var : vars) {
+					if(overValue || !var.isSetValue()) {
+						var.setValue(false, values);
 					}
 				}
 			}

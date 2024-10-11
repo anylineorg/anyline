@@ -21,7 +21,9 @@ import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.ConditionChain;
 import org.anyline.data.prepare.auto.init.DefaultAutoConditionChain;
 import org.anyline.data.runtime.DataRuntime;
-import org.anyline.entity.*;
+import org.anyline.entity.Compare;
+import org.anyline.entity.DefaultOrderStore;
+import org.anyline.entity.PageNavi;
 import org.anyline.metadata.Table;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.SQLUtil;
@@ -67,9 +69,6 @@ public class TableRun extends AbstractRun implements Run {
 		if(null != configs) {
 			ConditionChain chain = configs.getConfigChain().createAutoConditionChain();
 			if(null != chain) {
-				//for(Condition condition:chain.getConditions()) {
-				//	addCondition(condition);
-				//}
 				if(this.conditionChain.getConditions().isEmpty()) {
 					//去除最外一层多余()
 					this.conditionChain = chain;
@@ -81,7 +80,7 @@ public class TableRun extends AbstractRun implements Run {
 			PageNavi navi = configs.getPageNavi();
 			if(navi != null) {
 				this.pageNavi = navi; 
-			} 
+			}
 		}
 	}
 

@@ -227,13 +227,21 @@ public class DefaultConfigChain extends DefaultConfig implements ConfigChain {
 		if(null != config) {
 			if(config instanceof ConfigChain){
 				ConfigChain chain = (ConfigChain) config;
-				List<Config> configs = chain.getConfigs();
-				for(Config item:configs){
-					addConfig(item);
+				List<Config> items = chain.getConfigs();
+				//拆分时注意有OR的情况
+				Condition.JOIN join = chain.getJoin();
+				if(items.size() ==1){
+					//只有一个条件的情况 拆开多余的括号
+					Config item = items.get(0);
+					item.setJoin(config.getJoin());
+					this.configs.add(item);
+				}else{
+					this.configs.add(config);
 				}
-			}else {
-				configs.add(config);
+			}else{
+				this.configs.add(config);
 			}
+
 		}
 	} 
 

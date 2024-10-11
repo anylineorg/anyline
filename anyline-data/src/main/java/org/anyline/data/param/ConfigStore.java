@@ -1262,6 +1262,18 @@ public interface ConfigStore extends Cloneable{
 		return and(Compare.NOT_LIKE_SUFFIX, var, value);
 	}
 
+	LinkedHashMap<String, Config> params();
+	/**
+	 * 占位符赋值
+	 * @param swt 遇到空值处理方式
+	 * @param prefix 表别名或XML中查询条件的ID或表名
+	 * @param var XML自定义SQL条件中指定变量赋值或占位符key或列名 在value值为空的情况下 如果以var+开头会生成var is null 如果以++开头当前SQL不执行 这与swt作用一样,不要与swt混用
+	 * @param value 值 可以是集合
+	 * @param overCondition 覆盖相同key并且相同运算符的条件,true在现有条件基础上修改(多个相同key的条件只留下第一个),false:添加新条件
+	 * @param overValue		覆盖相同key并且相同运算符的条件时，是否覆盖条件值,true:删除析来的值 false:原来的值合成新的集合
+	 * @return ConfigStore
+	 */
+	ConfigStore param(EMPTY_VALUE_SWITCH swt, String prefix, String var, Object value, boolean overCondition, boolean overValue);
 	/**
 	 * 用来给占位符或自定义SQL中的参数赋值
 	 * @param swt 遇到空值处理方式
@@ -1271,10 +1283,10 @@ public interface ConfigStore extends Cloneable{
 	 * @return ConfigStore
 	 */
 	default ConfigStore param(EMPTY_VALUE_SWITCH swt, String id, String var, Object value) {
-		return and(swt, Compare.NONE, id, var, value);
+		return param(swt, id, var, value, false, false);
 	}
 	default ConfigStore param(String id, String var, Object value) {
-		return and(EMPTY_VALUE_SWITCH.NONE, Compare.NONE, id, var, value);
+		return param(EMPTY_VALUE_SWITCH.NONE, id, var, value, false, false);
 	}
 
 	/**
@@ -1286,10 +1298,10 @@ public interface ConfigStore extends Cloneable{
 	 * @return ConfigStore
 	 */
 	default ConfigStore param(EMPTY_VALUE_SWITCH swt, String var, Object value) {
-		return and(swt, Compare.NONE, var, value);
+		return param(swt, null, var, value, false, false);
 	}
 	default ConfigStore param(String var, Object value) {
-		return and(EMPTY_VALUE_SWITCH.NONE, Compare.NONE, var, value);
+		return param(EMPTY_VALUE_SWITCH.NONE, var, value);
 	}
 
 	default ConfigStore param(Map<String, Object> params) {
