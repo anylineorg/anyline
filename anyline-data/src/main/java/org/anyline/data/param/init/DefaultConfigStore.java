@@ -46,7 +46,7 @@ public class DefaultConfigStore implements ConfigStore {
 	protected OrderStore orders															; // 排序依据
 	List<AggregationConfig> aggregations = new ArrayList<>()							; // 聚合
 	protected GroupStore groups = new DefaultGroupStore()								; // 分组
-	protected HavingStore having = new DefaultHavingStore()								;
+	protected HavingStore havings = new DefaultHavingStore()							;
 	protected LinkedHashMap<String, Column> columns 		= new LinkedHashMap<>()		; // 查询或插入或更新的列
 	protected LinkedHashMap<String, Column> excludes 		= new LinkedHashMap<>()		; // 不查询或插入或更新的列
 	protected List<Object> values														; // 保存values后续parse用到
@@ -85,6 +85,12 @@ public class DefaultConfigStore implements ConfigStore {
 		row.put("conditions", chain.map(empty));
 		if(null != navi) {
 			row.put("navi", navi.map(empty));
+		}
+		if(null != havings && !havings.isEmpty()){
+			row.put("havings", havings.list(empty));
+		}
+		if(null != groups && !groups.isEmpty()){
+			row.put("groups", groups.list(empty));
 		}
 		return row;
 	}
@@ -1367,7 +1373,7 @@ public class DefaultConfigStore implements ConfigStore {
 		if(null != groups && !groups.isEmpty()) {
 			return false;
 		}
-		if(null != having) {
+		if(null != havings) {
 			return false;
 		}
 		if(null != columns && !columns.isEmpty()) {
@@ -1473,19 +1479,19 @@ public class DefaultConfigStore implements ConfigStore {
 
 	@Override
 	public ConfigStore having(String having) {
-		this.having.add(having);
+		this.havings.add(having);
 		return this;
 	}
 
 	@Override
 	public ConfigStore having(HavingStore having) {
-		this.having = having;
+		this.havings = having;
 		return this;
 	}
 
 	@Override
 	public HavingStore having() {
-		return having;
+		return havings;
 	}
 
 	@Override
@@ -1893,7 +1899,7 @@ public class DefaultConfigStore implements ConfigStore {
 			clone.param(key, params.get(key).clone());
 		}
 
-		clone.having = having;
+		clone.havings = havings;
 		clone.cascade = this.cascade;
 		clone.integrality = this.integrality;
 		clone.execute = this.execute;

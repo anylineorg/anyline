@@ -15,7 +15,7 @@
  */
 
 package org.anyline.entity;
- 
+
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -42,6 +42,17 @@ public interface GroupStore extends Cloneable{
 	String getRunText(String delimiter);
 	void clear();
 	boolean isEmpty();
+	DataRow map(boolean empty);
+	List<DataRow> list(boolean empty);
+	default DataRow map() {
+		return map(false);
+	}
+	default String json(boolean empty) {
+		return map(empty).json();
+	}
+	default String json() {
+		return json(false);
+	}
 	GroupStore clone();
 
 }

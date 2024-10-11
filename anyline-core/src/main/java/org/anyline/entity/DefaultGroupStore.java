@@ -99,6 +99,18 @@ public class DefaultGroupStore implements GroupStore, Serializable {
 		}
 		return true;
 	}
+
+	public DataRow map(boolean empty) {
+		DataRow row = new OriginRow();
+		return row;
+	}
+	public List<DataRow> list(boolean empty){
+		List<DataRow> list = new ArrayList<>();
+		for(Group group:this.groups.values()){
+			list.add(group.map(empty));
+		}
+		return list;
+	}
 	public GroupStore clone() {
 		DefaultGroupStore clone = null;
 		try{
