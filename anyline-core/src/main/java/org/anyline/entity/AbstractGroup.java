@@ -32,7 +32,12 @@ public class AbstractGroup implements Group {
 		if(null != column) {
 			this.column = column.trim(); 
 		} 
-	} 
+	}
+	public DataRow map(boolean empty){
+		DataRow row = new OriginRow();
+		row.put("column", column);
+		return row;
+	}
 	public AbstractGroup clone() {
 		AbstractGroup clone = new AbstractGroup();
 		clone.column = this.column;

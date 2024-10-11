@@ -1643,9 +1643,11 @@ public class Column extends TableAffiliation<Column> implements Serializable {
         if(!BasicUtil.equals(isPrimaryKey(), column.isPrimaryKey())) {
             return false;
         }
-        /*if(!BasicUtil.equals(getPosition(), column.getPosition())) {
-            return false;
-        }*/
+        if(null != table && table.isSort()) {
+            if (!BasicUtil.equals(getPosition(), column.getPosition())) {
+                return false;
+            }
+        }
         return true;
     }
     

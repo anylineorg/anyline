@@ -63,6 +63,17 @@ public class DefaultHavingStore implements HavingStore{
     public boolean isEmpty() {
         return list.isEmpty();
     }
+    public DataRow map(boolean empty) {
+        DataRow row = new OriginRow();
+        return row;
+    }
+    public List<DataRow> list(boolean empty){
+        List<DataRow> list = new ArrayList<>();
+        for(Having having:this.list){
+            list.add(having.map(empty));
+        }
+        return list;
+    }
 
     @Override
     public HavingStore clone() {

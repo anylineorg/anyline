@@ -22,5 +22,15 @@ import java.io.Serializable;
 public interface Group extends Cloneable, Serializable{
 	String getColumn() ;
 	void setColumn(String column) ;
+	DataRow map(boolean empty);
+	default DataRow map() {
+		return map(false);
+	}
+	default String json(boolean empty) {
+		return map(empty).json();
+	}
+	default String json() {
+		return json(false);
+	}
 	Group clone();
 } 

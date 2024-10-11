@@ -3411,12 +3411,15 @@ public class DefaultService<E> implements AnylineService<E> {
                         update = table;
                     }
                     otable.setUpdate(update, false, false);
-                    sort(table);
+                    //sort(table);
+                    if(table.isSort()){
+                        otable.setSort(true);
+                    }
                     result = dao.alter(otable);
                     table.setDdls(otable.ddls());
                     table.setRuns(otable.runs());
                 } else {
-                    sort(table);
+                    //sort(table);
                     result = dao.create(table);
                 }
             }finally {

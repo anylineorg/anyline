@@ -68,4 +68,18 @@ public class Having {
         this.value = value;
         return this;
     }
+    public DataRow map(boolean empty) {
+        DataRow row = new OriginRow();
+        row.put("text", text);
+        return row;
+    }
+    public DataRow map() {
+        return map(false);
+    }
+    public String json(boolean empty) {
+        return map(empty).json();
+    }
+    public String json() {
+        return json(false);
+    }
 }
