@@ -52,6 +52,36 @@ public class ConfigBuilder {
         if(null != navi) {
             configs.setPageNavi(parseNavi(navi));
         }
+        //group
+        //"groups":[{"column":"A"},{"column":"B"}]}
+        //"groups":["A","B"]}
+        List<?> groups = row.getList("groups");
+        if(null != groups){
+            for(Object group:groups){
+                if(group instanceof String){
+                    configs.group((String)group);
+                } else if(group instanceof DataRow){
+                    DataRow r = (DataRow) group;
+                    String c = r.getString("column");
+                    configs.group(c);
+                }
+            }
+        }
+        //having
+        //"havings":[{"text":"COUNT(*) > 1"},{"text":"MIN(PRICE)<100"}]
+        //"havings":["COUNT(*) > 1","MIN(PRICE)<100"]
+        List<?> havings = row.getList("havings");
+        if(null != havings){
+            for(Object having:havings){
+                if(having instanceof String){
+                    configs.having((String)having);
+                } else if(having instanceof DataRow){
+                    DataRow r = (DataRow) having;
+                    String text = r.getString("text");
+                    configs.having(text);
+                }
+            }
+        }
         return configs;
     }
     public static PageNavi parseNavi(DataRow row) {

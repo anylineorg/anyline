@@ -94,6 +94,8 @@ public class DefaultConfigStore implements ConfigStore {
 		}
 		return row;
 	}
+
+
 	public String getRunText(DataRuntime runtime, boolean placeholder, boolean unicode) {
 		return this.getConfigChain().createAutoConditionChain().getRunText(null, runtime, placeholder, unicode);
 	}
