@@ -867,7 +867,11 @@ PUT * /_bulk
                 if(null != gs){
                     LinkedHashMap<String,Group> groups = gs.gets();
                     if(null != groups && ! groups.isEmpty()){
-                        collapse = groups.values().iterator().next().getColumn();
+                        if(groups.size() == 1) {
+                            collapse = groups.values().iterator().next().getColumn();
+                        }else{
+                            //根据多列分组的 先把多列合并
+                        }
                     }
                 }
             }
