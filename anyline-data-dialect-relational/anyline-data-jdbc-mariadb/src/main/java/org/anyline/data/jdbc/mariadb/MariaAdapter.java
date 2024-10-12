@@ -501,7 +501,7 @@ public class MariaAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 	 * String mergeFinalQuery(DataRuntime runtime, Run run)
 	 * RunValue createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, Boolean placeholder, Boolean unicode)
 	 * Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, Boolean placeholder, Boolean unicode)
-	 * StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, Boolean placeholder, Boolean unicode)
+	 * List<RunValue> createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, Boolean placeholder, Boolean unicode)
 	 * [命令执行]
 	 * DataSet select(DataRuntime runtime, String random, boolean system, String table, ConfigStore configs, Run run)
 	 * List<Map<String,Object>> maps(DataRuntime runtime, String random, ConfigStore configs, Run run)
@@ -686,7 +686,7 @@ public class MariaAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 	 * @return builder
 	 */
 	@Override
-	public StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, Boolean placeholder, Boolean unicode) {
+	public List<RunValue> createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, Boolean placeholder, Boolean unicode) {
 		return super.createConditionIn(runtime, builder, compare, value, placeholder, unicode);
 	}
 

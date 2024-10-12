@@ -415,7 +415,7 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
      * -----------------------------------------------------------------------------------------------------------------
      * String mergeFinalQuery(DataRuntime runtime, Run run)
      * StringBuilder createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare)
-     * StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, Boolean placeholder, Boolean unicode)
+     * List<RunValue> createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, Boolean placeholder, Boolean unicode)
      * List<Map<String, Object>> process(DataRuntime runtime, List<Map<String, Object>> list)
      *
      * protected Run fillQueryContent(DataRuntime runtime, XMLRun run)
@@ -529,7 +529,7 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, Boolean placeholder, Boolean unicode) {
+    public List<RunValue> createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, Boolean placeholder, Boolean unicode) {
         if(compare== Compare.NOT_IN) {
             builder.append(" NOT");
         }
@@ -547,7 +547,7 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
         }else{
             builder.append("= ?");
         }
-        return builder;
+        return null;
     }
 
     /**

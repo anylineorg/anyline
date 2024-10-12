@@ -914,7 +914,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
      * String mergeFinalQuery(DataRuntime runtime, Run run)
      * RunValue createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, Boolean placeholder, Boolean unicode)
      * Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, Boolean placeholder, Boolean unicode)
-     * StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, Boolean placeholder, Boolean unicode)
+     * List<RunValue> createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, Boolean placeholder, Boolean unicode)
      * [命令执行]
      * DataSet select(DataRuntime runtime, String random, boolean system, String table, ConfigStore configs, Run run)
      * List<Map<String, Object>> maps(DataRuntime runtime, String random, ConfigStore configs, Run run)
@@ -1212,7 +1212,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
     public List<RunValue> createConditionExists(DataRuntime runtime, StringBuilder builder, Compare compare, RunPrepare prepare, Boolean placeholder, Boolean unicode) {
         List<RunValue> values = new ArrayList<>();
         // EXISTS
-        org.anyline.data.Run run = buildQueryRun(runtime, prepare, new DefaultConfigStore(), placeholder, unicode);
+        Run run = buildQueryRun(runtime, prepare, new DefaultConfigStore(), placeholder, unicode);
         if(null != run){
             String sql = run.getBaseQuery(placeholder);
             sql = BasicUtil.tab(sql);
@@ -1255,75 +1255,77 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
      * @return builder
      */
     @Override
-    public StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, Boolean placeholder, Boolean unicode) {
+    public List<RunValue> createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, Boolean placeholder, Boolean unicode) {
+        RunPrepare prepare = null;
+        if(value instanceof RunPrepare){
+            prepare = (RunPrepare) value;
+        }
+        if(value instanceof Collection){
+            Collection collection = (Collection) value;
+            if(!collection.isEmpty()){
+                Object first = collection.iterator().next();
+                if(first instanceof RunPrepare){
+                    prepare = (RunPrepare) first;
+                }
+            }
+        }
         if(compare == Compare.NOT_IN) {
             builder.append(" NOT");
         }
         builder.append(" IN (");
-        if(value instanceof Collection) {
-            Collection<Object> values = (Collection)value;
-            boolean first = true;
-            for(Object v:values) {
-                if(!first) {
-                    builder.append(", ");
-                }
-                first = false;
-                if(placeholder) {
-                    //builder.append("?");
-                    convert(runtime, builder, value, null, placeholder, unicode, null);
-                }else{
-                    if(v instanceof Number) {
-                        builder.append(v);
+        if(null != prepare) {
+            return createConditionExists(runtime, builder, compare, prepare, placeholder, unicode);
+        } else {
+            if(value instanceof Collection) {
+                Collection<Object> values = (Collection)value;
+                boolean first = true;
+                for(Object v:values) {
+                    if(!first) {
+                        builder.append(", ");
+                    }
+                    first = false;
+                    if(placeholder) {
+                        convert(runtime, builder, value, null, placeholder, unicode, null);
                     }else{
-                        builder.append("'").append(v).append("'");
+                        if(v instanceof Number) {
+                            builder.append(v);
+                        }else{
+                            builder.append("'").append(v).append("'");
+                        }
+                    }
+                }
+                builder.append(")");
+            }else{
+                if(placeholder) {
+                    builder.append(" = ?");
+                }else{
+                    if(value instanceof Number) {
+                        builder.append(value);
+                    }else{
+                        builder.append("'").append(value).append("'");
                     }
                 }
             }
-            builder.append(")");
-        }else{
-            if(placeholder) {
-                builder.append(" = ?");
-            }else{
-                if(value instanceof Number) {
-                    builder.append(value);
-                }else{
-                    builder.append("'").append(value).append("'");
-                }
-            }
-        }
-        return builder;
-    }
-    @Override
-    public List<RunValue> createConditionIn2(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder, boolean unicode) {
-        Collection<Object> values1;
-        Object next;
-        if(value instanceof Collection && (values1 = (Collection) value).size() == 1 && (next = values1.iterator().next()) instanceof RunPrepare) {
-              if(compare == Compare.NOT_IN) {
-                  builder.append(" NOT");
-              }
-              builder.append(" IN (");
-              RunPrepare prepare = (RunPrepare) next;
-              List<RunValue> values = new ArrayList<>();
-            org.anyline.data.Run run = buildQueryRun(runtime, prepare, new DefaultConfigStore(), placeholder, unicode);
-
-            if(null != run){
-                  String sql = run.getBaseQuery(placeholder);
-                  sql = BasicUtil.tab(sql);
-                  List<Object> vs = run.getValues();
-                  for(Object v:vs){
-                      RunValue rv = new RunValue();
-                      rv.setValue(v);
-                      values.add(rv);
-                  }
-                  builder.append(sql).append(")");
-              }
-              return values;
-        } else {
-              createConditionIn(runtime, builder, compare, value, placeholder, unicode);
         }
         return null;
     }
 
+    public List<RunValue> createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, RunPrepare prepare, Boolean placeholder, Boolean unicode) {
+        List<RunValue> values = new ArrayList<>();
+        Run run = buildQueryRun(runtime, prepare, new DefaultConfigStore(), placeholder, unicode);
+        if(null != run){
+            String sql = run.getBaseQuery(placeholder);
+            sql = BasicUtil.tab(sql);
+            List<Object> vs = run.getValues();
+            for(Object v:vs){
+                RunValue rv = new RunValue();
+                rv.setValue(v);
+                values.add(rv);
+            }
+            builder.append(sql).append(")");
+        }
+        return values;
+    }
     /**
      * select [命令执行]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
