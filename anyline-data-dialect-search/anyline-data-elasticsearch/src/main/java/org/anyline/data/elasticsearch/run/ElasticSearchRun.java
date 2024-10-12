@@ -66,7 +66,7 @@ public class ElasticSearchRun extends TableRun implements Run {
         //不要删除换行命令中有要求
         return cmd;
     }
-    public String log(ACTION.DML action, boolean placeholder) {
+    public String log(ACTION.DML action, Boolean placeholder) {
         StringBuilder builder = new StringBuilder();
         List<String> keys = null;
         builder.append("[method:").append(method).append("][endpoint:").append(endpoint).append("]");

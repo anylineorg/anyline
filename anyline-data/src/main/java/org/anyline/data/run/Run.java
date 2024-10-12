@@ -45,7 +45,7 @@ public interface Run extends org.anyline.data.Run{
 	Run setConditionValue(EMPTY_VALUE_SWITCH swt, Compare compare, String prefix, String variable, Object value);
 	void setGroups(GroupStore groups) ;
 	void having(String having);
-	HavingStore having();
+	ConfigStore having();
 	GroupStore getGroups() ;
 	Run group(String group);
  
@@ -137,36 +137,36 @@ public interface Run extends org.anyline.data.Run{
 	Run setUpdateColumns(LinkedHashMap<String, Column> columns);
 	List<String> getUpdateColumns();
 	LinkedHashMap<String, Column> getUpdateColumns(boolean metadata);
-	String getBaseQuery(boolean placeholder) ;
+	String getBaseQuery(Boolean placeholder) ;
 	default String getBaseQuery() {
 		return getBaseQuery(true);
 	}
-	String getFinalQuery(boolean placeholder);
+	String getFinalQuery(Boolean placeholder);
 	default String getFinalQuery() {
 		return getFinalQuery(true);
 	}
 
-	String getTotalQuery(boolean placeholder) ;
+	String getTotalQuery(Boolean placeholder) ;
 	default String getTotalQuery() {
 		return getTotalQuery(true);
 	}
-	String getFinalExists(boolean placeholder);
+	String getFinalExists(Boolean placeholder);
 	default String getFinalExists() {
 		return getFinalExists(true);
 	}
-	String getFinalInsert(boolean placeholder);
+	String getFinalInsert(Boolean placeholder);
 	default String getFinalInsert() {
 		return getFinalInsert(true);
 	}
-	String getFinalDelete(boolean placeholder);
+	String getFinalDelete(Boolean placeholder);
 	default String getFinalDelete() {
 		return getFinalDelete(true);
 	}
-	String getFinalUpdate(boolean placeholder);
+	String getFinalUpdate(Boolean placeholder);
 	default String getFinalUpdate() {
 		return getFinalUpdate(true);
 	}
-	String getFinalExecute(boolean placeholder);
+	String getFinalExecute(Boolean placeholder);
 	default String getFinalExecute() {
 		return getFinalExecute(true);
 	}
@@ -226,7 +226,7 @@ public interface Run extends org.anyline.data.Run{
 
 	String format(String cmd);
 
-	String log(ACTION.DML action, boolean placeholder);
+	String log(ACTION.DML action, Boolean placeholder);
 
 	Run setUnionAll(boolean all);
 	boolean isUnionAll();

@@ -182,8 +182,8 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
      */
     @Override
-    public Run buildInsertRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, List<String> columns) {
-        return super.buildInsertRun(runtime, batch, dest, obj, configs, columns);
+    public Run buildInsertRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, Boolean placeholder, Boolean unicode, List<String> columns) {
+        return super.buildInsertRun(runtime, batch, dest, obj, configs, placeholder, unicode, columns);
     }
 
     /**
@@ -196,7 +196,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
      */
     @Override
-    public void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet set, ConfigStore configs, LinkedHashMap<String, Column> columns) {
+    public void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet set, ConfigStore configs, Boolean placeholder, Boolean unicode, LinkedHashMap<String, Column> columns) {
         StringBuilder builder = run.getBuilder();
 
     }
@@ -211,7 +211,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
      */
     @Override
-    public void fillInsertContent(DataRuntime runtime, Run run, Table dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns) {
+    public void fillInsertContent(DataRuntime runtime, Run run, Table dest, Collection list, ConfigStore configs, Boolean placeholder, Boolean unicode, LinkedHashMap<String, Column> columns) {
 
     }
 
@@ -286,7 +286,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
      */
     @Override
-    protected Run createInsertRun(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns) {
+    protected Run createInsertRun(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, Boolean placeholder, Boolean unicode, List<String> columns) {
         InfluxRuntime ir = (InfluxRuntime)runtime;
         InfluxRun run = new InfluxRun(runtime);
         StringBuilder builder = run.getBuilder();
@@ -368,8 +368,8 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
      */
     @Override
-    protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, List<String> columns) {
-        return createInsertRun(runtime, dest, list, configs, columns);
+    protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, Boolean placeholder, Boolean unicode, List<String> columns) {
+        return createInsertRun(runtime, dest, list, configs, placeholder, unicode, columns);
     }
 
     /**
@@ -470,17 +470,17 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
      */
     @Override
-    public Run buildUpdateRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, List<String> columns) {
-        return super.buildUpdateRun(runtime, batch, dest, obj, configs, columns);
+    public Run buildUpdateRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, Boolean placeholder, Boolean unicode, List<String> columns) {
+        return super.buildUpdateRun(runtime, batch, dest, obj, configs, placeholder, unicode, columns);
     }
 
     @Override
-    public Run buildUpdateRunFromEntity(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, LinkedHashMap<String, Column> columns) {
-        return super.buildUpdateRunFromEntity(runtime, dest, obj, configs, columns);
+    public Run buildUpdateRunFromEntity(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, Boolean placeholder, Boolean unicode, LinkedHashMap<String, Column> columns) {
+        return super.buildUpdateRunFromEntity(runtime, dest, obj, configs, placeholder, unicode, columns);
     }
 
     @Override
-    public Run buildUpdateRunFromDataRow(DataRuntime runtime, Table dest, DataRow row, ConfigStore configs, LinkedHashMap<String,Column> columns) {
+    public Run buildUpdateRunFromDataRow(DataRuntime runtime, Table dest, DataRow row, ConfigStore configs, Boolean placeholder, Boolean unicode, LinkedHashMap<String,Column> columns) {
         //注意columns中可能含 +-号
         TableRun run = new TableRun(runtime, dest);
         run.setOriginType(1);
@@ -498,8 +498,8 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
     }
 
     @Override
-    public Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, LinkedHashMap<String,Column> columns) {
-        return super.buildUpdateRunFromCollection(runtime, batch, dest, list, configs, columns);
+    public Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, Boolean placeholder, Boolean unicode, LinkedHashMap<String,Column> columns) {
+        return super.buildUpdateRunFromCollection(runtime, batch, dest, list, configs, placeholder, unicode, columns);
     }
 
     /**
@@ -723,9 +723,9 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * List<Run> buildQuerySequence(DataRuntime runtime, boolean next, String ... names)
      * Run fillQueryContent(DataRuntime runtime, Run run)
      * String mergeFinalQuery(DataRuntime runtime, Run run)
-     * RunValue createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder, boolean unicode)
-     * Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder, boolean unicode)
-     * StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder, boolean unicode)
+     * RunValue createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, Boolean placeholder, Boolean unicode)
+     * Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, Boolean placeholder, Boolean unicode)
+     * StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, Boolean placeholder, Boolean unicode)
      * [命令执行]
      * DataSet select(DataRuntime runtime, String random, boolean system, String table, ConfigStore configs, Run run)
      * List<Map<String,Object>> maps(DataRuntime runtime, String random, ConfigStore configs, Run run)
@@ -820,8 +820,8 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
      */
     @Override
-    public Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions) {
-        return super.buildQueryRun(runtime, prepare, configs, conditions);
+    public Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, Boolean placeholder, Boolean unicode, String ... conditions) {
+        return super.buildQueryRun(runtime, prepare, configs, placeholder, unicode, conditions);
     }
 
     @Override
@@ -899,17 +899,17 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
      */
     @Override
-    public Run fillQueryContent(DataRuntime runtime, StringBuilder builder, Run run) {
-        return super.fillQueryContent(runtime, builder, run);
+    public Run fillQueryContent(DataRuntime runtime, StringBuilder builder, Run run, Boolean placeholder, Boolean unicode) {
+        return super.fillQueryContent(runtime, builder, run, placeholder, unicode);
     }
 
     @Override
-    protected Run fillQueryContent(DataRuntime runtime, StringBuilder builder, XMLRun run) {
-        return super.fillQueryContent(runtime, builder, run);
+    protected Run fillQueryContent(DataRuntime runtime, StringBuilder builder, XMLRun run, Boolean placeholder, Boolean unicode) {
+        return super.fillQueryContent(runtime, builder, run, placeholder, unicode);
     }
 
     @Override
-    protected Run fillQueryContent(DataRuntime runtime, StringBuilder builder, TableRun run) {
+    protected Run fillQueryContent(DataRuntime runtime, StringBuilder builder, TableRun run, Boolean placeholder, Boolean unicode) {
         InfluxSqlRun result = new InfluxSqlRun(runtime, null);
         Table table = run.getTable();
         String schema = table.getSchemaName();
@@ -924,17 +924,17 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
         }
         table.setSchema((String)null);
         //转换成sql run
-        super.fillQueryContent(runtime, builder, run);
+        super.fillQueryContent(runtime, builder, run, placeholder, unicode);
         result.sql(run.getFinalQuery(false));
         result.setConfigs(run.getConfigs());
-        return fillQueryContent(runtime, result.getBuilder(), result);
+        return fillQueryContent(runtime, result.getBuilder(), result, placeholder, unicode);
     }
 
     @Override
-    protected Run fillQueryContent(DataRuntime runtime, StringBuilder builder, TextRun run) {
+    protected Run fillQueryContent(DataRuntime runtime, StringBuilder builder, TextRun run, Boolean placeholder, Boolean unicode) {
         Run result = run;
         if(run instanceof InfluxSqlRun) {
-            result = fillQueryContent(runtime, builder, (InfluxSqlRun) run);
+            result = fillQueryContent(runtime, builder, (InfluxSqlRun) run, placeholder, unicode);
         }else if(run instanceof InfluxJsonRun) {
             result = fillQueryContent(runtime, builder, (InfluxJsonRun) run);
         }else if(run instanceof InfluxVndRun) {
@@ -1044,8 +1044,8 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
         run.api(api);
         return run;
     }
-    protected Run fillQueryContent(DataRuntime runtime, StringBuilder builder, InfluxSqlRun run) {
-        Run result = super.fillQueryContent(runtime, builder, run);
+    protected Run fillQueryContent(DataRuntime runtime, StringBuilder builder, InfluxSqlRun run, Boolean placeholder, Boolean unicode) {
+        Run result = super.fillQueryContent(runtime, builder, run, placeholder, unicode);
         InfluxRuntime rt = (InfluxRuntime)runtime;
         ConfigStore configs = run.getConfigs();
         String bucket = run.bucket();
@@ -1084,8 +1084,8 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
     }
 
     @Override
-    protected Run fillQueryContent(DataRuntime runtime, TableRun run) {
-        return super.fillQueryContent(runtime, run);
+    protected Run fillQueryContent(DataRuntime runtime, TableRun run, Boolean placeholder, Boolean unicode) {
+        return super.fillQueryContent(runtime, run, placeholder, unicode);
     }
 
     /**
@@ -1130,7 +1130,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @return value 有占位符时返回占位值，没有占位符返回null
      */
     @Override
-    public RunValue createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder, boolean unicode) {
+    public RunValue createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, Boolean placeholder, Boolean unicode) {
         return super.createConditionLike(runtime, builder, compare, value, placeholder, unicode);
     }
 
@@ -1146,12 +1146,12 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @return value
      */
     @Override
-    public Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder, boolean unicode) throws NotSupportException {
+    public Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, Boolean placeholder, Boolean unicode) throws NotSupportException {
         return super.createConditionFindInSet(runtime, builder, column, compare, value, placeholder, unicode);
     }
 
     @Override
-    public Object createConditionJsonContains(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder, boolean unicode) {
+    public Object createConditionJsonContains(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, Boolean placeholder, Boolean unicode) {
         return builder;
     }
 
@@ -1165,7 +1165,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @return builder
      */
     @Override
-    public StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder, boolean unicode) {
+    public StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, Boolean placeholder, Boolean unicode) {
         return super.createConditionIn(runtime, builder, compare, value, placeholder, unicode);
     }
 
@@ -1426,8 +1426,8 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
      */
     @Override
-    public Run buildExecuteRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions) {
-        return super.buildExecuteRun(runtime, prepare, configs, conditions);
+    public Run buildExecuteRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, Boolean placeholder, Boolean unicode, String ... conditions) {
+        return super.buildExecuteRun(runtime, prepare, configs, placeholder, unicode, conditions);
     }
 
     @Override
@@ -1436,13 +1436,13 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
     }
 
     @Override
-    protected void fillExecuteContent(DataRuntime runtime, TextRun run) {
-        super.fillExecuteContent(runtime, run);
+    protected void fillExecuteContent(DataRuntime runtime, TextRun run, Boolean placeholder, Boolean unicode) {
+        super.fillExecuteContent(runtime, run, placeholder, unicode);
     }
 
     @Override
-    protected void fillExecuteContent(DataRuntime runtime, TableRun run) {
-        super.fillExecuteContent(runtime, run);
+    protected void fillExecuteContent(DataRuntime runtime, TableRun run, Boolean placeholder, Boolean unicode) {
+        super.fillExecuteContent(runtime, run, placeholder, unicode);
     }
 
     /**
@@ -1452,8 +1452,8 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
      */
     @Override
-    public void fillExecuteContent(DataRuntime runtime, Run run) {
-        super.fillExecuteContent(runtime, run);
+    public void fillExecuteContent(DataRuntime runtime, Run run, Boolean placeholder, Boolean unicode) {
+        super.fillExecuteContent(runtime, run, placeholder, unicode);
     }
 
     /**
@@ -1618,8 +1618,8 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
      */
     @Override
-    public List<Run> buildDeleteRun(DataRuntime runtime, Table dest, ConfigStore configs, Object obj, String ... columns) {
-        return super.buildDeleteRun(runtime, dest, configs, obj, columns);
+    public List<Run> buildDeleteRun(DataRuntime runtime, Table dest, ConfigStore configs, Object obj, Boolean placeholder, Boolean unicode, String ... columns) {
+        return super.buildDeleteRun(runtime, dest, configs, obj, placeholder, unicode, columns);
     }
 
     /**
@@ -1632,8 +1632,8 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
      */
     @Override
-    public List<Run> buildDeleteRun(DataRuntime runtime, int batch, String table, ConfigStore configs, String key, Object values) {
-        return super.buildDeleteRun(runtime, batch, table, configs, key, values);
+    public List<Run> buildDeleteRun(DataRuntime runtime, int batch, String table, ConfigStore configs, Boolean placeholder, Boolean unicode, String key, Object values) {
+        return super.buildDeleteRun(runtime, batch, table, configs, placeholder, unicode, key, values);
     }
 
     @Override
@@ -1651,8 +1651,8 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
      */
     @Override
-    public List<Run> buildDeleteRunFromTable(DataRuntime runtime, int batch, Table table, ConfigStore configs, String column, Object values) {
-        return super.buildDeleteRunFromTable(runtime, batch, table, configs, column, values);
+    public List<Run> buildDeleteRunFromTable(DataRuntime runtime, int batch, Table table, ConfigStore configs, Boolean placeholder, Boolean unicode, String column, Object values) {
+        return super.buildDeleteRunFromTable(runtime, batch, table, configs, placeholder, unicode, column, values);
     }
 
     /**
@@ -1665,12 +1665,12 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
      */
     @Override
-    public List<Run> buildDeleteRunFromEntity(DataRuntime runtime, Table table, ConfigStore configs, Object obj, String... columns) {
+    public List<Run> buildDeleteRunFromEntity(DataRuntime runtime, Table table, ConfigStore configs, Object obj, Boolean placeholder, Boolean unicode, String... columns) {
         return new ArrayList<>();
     }
 
     @Override
-    public List<Run> buildDeleteRunFromConfig(DataRuntime runtime, ConfigStore configs) {
+    public List<Run> buildDeleteRunFromConfig(DataRuntime runtime, ConfigStore configs, Boolean placeholder, Boolean unicode) {
         List<Run> runs = new ArrayList<>();
         if(configs instanceof InfluxConfigStore) {
             InfluxRuntime rt = (InfluxRuntime)runtime;
@@ -1724,8 +1724,8 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
      */
     @Override
-    public void fillDeleteRunContent(DataRuntime runtime, Run run) {
-        super.fillDeleteRunContent(runtime, run);
+    public void fillDeleteRunContent(DataRuntime runtime, Run run, Boolean placeholder, Boolean unicode) {
+        super.fillDeleteRunContent(runtime, run, placeholder, unicode);
     }
 
     /**
@@ -7420,7 +7420,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @param placeholder 是否启用占位符
      */
     @Override
-    public void formula(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Column metadata, Object value, boolean placeholder, boolean unicode) {
+    public void formula(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Column metadata, Object value, Boolean placeholder, Boolean unicode) {
         super.formula(runtime, builder, column, compare, metadata, value, placeholder, unicode);
     }
 }

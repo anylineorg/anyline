@@ -169,8 +169,8 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
      */
     @Override
-    public Run buildInsertRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, List<String> columns) {
-        return super.buildInsertRun(runtime, batch, dest, obj, configs, columns);
+    public Run buildInsertRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, Boolean placeholder, Boolean unicode, List<String> columns) {
+        return super.buildInsertRun(runtime, batch, dest, obj, configs, placeholder, unicode, columns);
     }
 
     /**
@@ -183,8 +183,8 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
      */
     @Override
-    public void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet set, ConfigStore configs, LinkedHashMap<String, Column> columns) {
-        super.fillInsertContent(runtime, run, dest, set, configs, columns);
+    public void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet set, ConfigStore configs, Boolean placeholder, Boolean unicode, LinkedHashMap<String, Column> columns) {
+        super.fillInsertContent(runtime, run, dest, set, configs, placeholder, unicode, columns);
     }
 
     /**
@@ -197,8 +197,8 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
      */
     @Override
-    public void fillInsertContent(DataRuntime runtime, Run run, Table dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns) {
-        super.fillInsertContent(runtime, run, dest, list, configs, columns);
+    public void fillInsertContent(DataRuntime runtime, Run run, Table dest, Collection list, ConfigStore configs, Boolean placeholder, Boolean unicode, LinkedHashMap<String, Column> columns) {
+        super.fillInsertContent(runtime, run, dest, list, configs, placeholder, unicode, columns);
     }
 
     /**
@@ -271,8 +271,8 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
      */
     @Override
-    protected Run createInsertRun(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns) {
-        return super.createInsertRun(runtime, dest, obj, configs, columns);
+    protected Run createInsertRun(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, Boolean placeholder, Boolean unicode, List<String> columns) {
+        return super.createInsertRun(runtime, dest, obj, configs, placeholder, unicode, columns);
     }
 
     /**
@@ -285,8 +285,8 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
      */
     @Override
-    protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, List<String> columns) {
-        return super.createInsertRunFromCollection(runtime, batch, dest, list, configs, columns);
+    protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, Boolean placeholder, Boolean unicode, List<String> columns) {
+        return super.createInsertRunFromCollection(runtime, batch, dest, list, configs, placeholder, unicode, columns);
     }
 
     /**
@@ -383,23 +383,23 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
      */
     @Override
-    public Run buildUpdateRun(DataRuntime runtime, int batch, String dest, Object obj, ConfigStore configs, List<String> columns) {
-        return super.buildUpdateRun(runtime, batch, dest, obj, configs, columns);
+    public Run buildUpdateRun(DataRuntime runtime, int batch, String dest, Object obj, ConfigStore configs, Boolean placeholder, Boolean unicode, List<String> columns) {
+        return super.buildUpdateRun(runtime, batch, dest, obj, configs, placeholder, unicode, columns);
     }
 
     @Override
-    public Run buildUpdateRunFromEntity(DataRuntime runtime, String dest, Object obj, ConfigStore configs, LinkedHashMap<String, Column> columns) {
-        return super.buildUpdateRunFromEntity(runtime, dest, obj, configs, columns);
+    public Run buildUpdateRunFromEntity(DataRuntime runtime, String dest, Object obj, ConfigStore configs, Boolean placeholder, Boolean unicode, LinkedHashMap<String, Column> columns) {
+        return super.buildUpdateRunFromEntity(runtime, dest, obj, configs, placeholder, unicode, columns);
     }
 
     @Override
-    public Run buildUpdateRunFromDataRow(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, LinkedHashMap<String, Column> columns) {
-        return super.buildUpdateRunFromDataRow(runtime, dest, row, configs, columns);
+    public Run buildUpdateRunFromDataRow(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, Boolean placeholder, Boolean unicode, LinkedHashMap<String, Column> columns) {
+        return super.buildUpdateRunFromDataRow(runtime, dest, row, configs, placeholder, unicode, columns);
     }
 
     @Override
-    public Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns) {
-        return super.buildUpdateRunFromCollection(runtime, batch, dest, list, configs, columns);
+    public Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore configs, Boolean placeholder, Boolean unicode, LinkedHashMap<String, Column> columns) {
+        return super.buildUpdateRunFromCollection(runtime, batch, dest, list, configs, placeholder, unicode, columns);
     }
     /**
      * 多表关联更新
@@ -409,11 +409,11 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return 影响行数
      */
     @Override
-    public Run buildUpdateRun(DataRuntime runtime, RunPrepare prepare, DataRow data, ConfigStore configs, String ... conditions) {
-        return super.buildUpdateRun(runtime, prepare, data, configs, conditions);
+    public Run buildUpdateRun(DataRuntime runtime, RunPrepare prepare, DataRow data, ConfigStore configs, Boolean placeholder, Boolean unicode, String ... conditions) {
+        return super.buildUpdateRun(runtime, prepare, data, configs, placeholder, unicode, conditions);
     }
     @Override
-    public void fillUpdateContent(DataRuntime runtime, TableRun run, StringBuilder builder, DataRow data, ConfigStore configs) {
+    public void fillUpdateContent(DataRuntime runtime, TableRun run, StringBuilder builder, DataRow data, ConfigStore configs, Boolean placeholder, Boolean unicode) {
         TablePrepare prepare = (TablePrepare)run.getPrepare();
         builder.append("UPDATE ");
         name(runtime, builder, prepare.getTable());
@@ -456,7 +456,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
                 run.addValue(rv);
             }
         }
-        run.appendCondition(builder, this, true, true);
+        run.appendCondition(builder, this, true, placeholder, unicode);
     }
 
     /**
@@ -602,9 +602,9 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * List<Run> buildQuerySequence(DataRuntime runtime, boolean next, String ... names)
      * Run fillQueryContent(DataRuntime runtime, Run run)
      * String mergeFinalQuery(DataRuntime runtime, Run run)
-     * RunValue createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder, boolean unicode)
-     * Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder, boolean unicode)
-     * StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder, boolean unicode)
+     * RunValue createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, Boolean placeholder, Boolean unicode)
+     * Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, Boolean placeholder, Boolean unicode)
+     * StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, Boolean placeholder, Boolean unicode)
      * [命令执行]
      * DataSet select(DataRuntime runtime, String random, boolean system, String table, ConfigStore configs, Run run)
      * List<Map<String, Object>> maps(DataRuntime runtime, String random, ConfigStore configs, Run run)
@@ -699,8 +699,8 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
      */
     @Override
-    public Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions) {
-        return super.buildQueryRun(runtime, prepare, configs, conditions);
+    public Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, Boolean placeholder, Boolean unicode, String ... conditions) {
+        return super.buildQueryRun(runtime, prepare, configs, placeholder, unicode, conditions);
     }
 
     /**
@@ -720,23 +720,23 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
      */
     @Override
-    public Run fillQueryContent(DataRuntime runtime, Run run) {
-        return super.fillQueryContent(runtime, run);
+    public Run fillQueryContent(DataRuntime runtime, Run run, Boolean placeholder, Boolean unicode) {
+        return super.fillQueryContent(runtime, run, placeholder, unicode);
     }
 
     @Override
-    protected Run fillQueryContent(DataRuntime runtime, XMLRun run) {
-        return super.fillQueryContent(runtime, run);
+    protected Run fillQueryContent(DataRuntime runtime, XMLRun run, Boolean placeholder, Boolean unicode) {
+        return super.fillQueryContent(runtime, run, placeholder, unicode);
     }
 
     @Override
-    protected Run fillQueryContent(DataRuntime runtime, TextRun run) {
-        return super.fillQueryContent(runtime, run);
+    protected Run fillQueryContent(DataRuntime runtime, TextRun run, Boolean placeholder, Boolean unicode) {
+        return super.fillQueryContent(runtime, run, placeholder, unicode);
     }
 
     @Override
-    protected Run fillQueryContent(DataRuntime runtime, TableRun run) {
-        return super.fillQueryContent(runtime, run);
+    protected Run fillQueryContent(DataRuntime runtime, TableRun run, Boolean placeholder, Boolean unicode) {
+        return super.fillQueryContent(runtime, run, placeholder, unicode);
     }
 
     /**
@@ -762,7 +762,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return value 有占位符时返回占位值，没有占位符返回null
      */
     @Override
-    public RunValue createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder, boolean unicode) {
+    public RunValue createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, Boolean placeholder, Boolean unicode) {
         return super.createConditionLike(runtime, builder, compare, value, placeholder, unicode);
     }
 
@@ -778,7 +778,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return value
      */
     @Override
-    public Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder, boolean unicode) throws NotSupportException {
+    public Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, Boolean placeholder, Boolean unicode) throws NotSupportException {
         List<Object> values = BeanUtil.object2list(value);
         if(values.size() > 1) {
             builder.append("(");
@@ -817,7 +817,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return value
      */
     @Override
-    public Object createConditionJsonContains(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder, boolean unicode) {
+    public Object createConditionJsonContains(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, Boolean placeholder, Boolean unicode) {
         //json_contains(JSON_COLUMN,'"VIP"','$.name')
         List<Object> values = BeanUtil.object2list(value);
         List<Object> returns = new ArrayList<>();
@@ -885,7 +885,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return value
      */
     @Override
-    public Object createConditionJsonContainsPath(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder, boolean unicode) {
+    public Object createConditionJsonContainsPath(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, Boolean placeholder, Boolean unicode) {
         //JSON_CONTAINS_PATH(JSON_COLUMN, 'all', '$.A', '$.D')
         String scope = "one";
         if(compare.getCode() == 76) {
@@ -923,7 +923,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return value
      */
     @Override
-    public Object createConditionJsonSearch(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder, boolean unicode) throws NotSupportException {
+    public Object createConditionJsonSearch(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, Boolean placeholder, Boolean unicode) throws NotSupportException {
         //JSON_SEARCH(JSON_COLUMN, 'one', 'abc') IS NOT NULL
         String scope = "one";
         if(compare.getCode() == 78) {
@@ -959,7 +959,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return builder
      */
     @Override
-    public StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder, boolean unicode) {
+    public StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, Boolean placeholder, Boolean unicode) {
         return super.createConditionIn(runtime, builder, compare, value, placeholder, unicode);
     }
 
@@ -1155,8 +1155,8 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
      */
     @Override
-    public Run buildExecuteRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions) {
-        return super.buildExecuteRun(runtime, prepare, configs, conditions);
+    public Run buildExecuteRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, Boolean placeholder, Boolean unicode, String ... conditions) {
+        return super.buildExecuteRun(runtime, prepare, configs, placeholder, unicode, conditions);
     }
 
     @Override
@@ -1165,13 +1165,13 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     }
 
     @Override
-    protected void fillExecuteContent(DataRuntime runtime, TextRun run) {
-        super.fillExecuteContent(runtime, run);
+    protected void fillExecuteContent(DataRuntime runtime, TextRun run, Boolean placeholder, Boolean unicode) {
+        super.fillExecuteContent(runtime, run, placeholder, unicode);
     }
 
     @Override
-    protected void fillExecuteContent(DataRuntime runtime, TableRun run) {
-        super.fillExecuteContent(runtime, run);
+    protected void fillExecuteContent(DataRuntime runtime, TableRun run, Boolean placeholder, Boolean unicode) {
+        super.fillExecuteContent(runtime, run, placeholder, unicode);
     }
 
     /**
@@ -1181,8 +1181,8 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
      */
     @Override
-    public void fillExecuteContent(DataRuntime runtime, Run run) {
-        super.fillExecuteContent(runtime, run);
+    public void fillExecuteContent(DataRuntime runtime, Run run, Boolean placeholder, Boolean unicode) {
+        super.fillExecuteContent(runtime, run, placeholder, unicode);
     }
 
     /**
@@ -1284,8 +1284,8 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
      */
     @Override
-    public List<Run> buildDeleteRun(DataRuntime runtime, Table dest, ConfigStore configs, Object obj, String ... columns) {
-        return super.buildDeleteRun(runtime, dest, configs, obj, columns);
+    public List<Run> buildDeleteRun(DataRuntime runtime, Table dest, ConfigStore configs, Object obj, Boolean placeholder, Boolean unicode, String ... columns) {
+        return super.buildDeleteRun(runtime, dest, configs, obj, placeholder, unicode, columns);
     }
 
     /**
@@ -1298,8 +1298,8 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
      */
     @Override
-    public List<Run> buildDeleteRun(DataRuntime runtime, int batch, String table, ConfigStore configs, String key, Object values) {
-        return super.buildDeleteRun(runtime, batch, table, configs, key, values);
+    public List<Run> buildDeleteRun(DataRuntime runtime, int batch, String table, ConfigStore configs, Boolean placeholder, Boolean unicode, String key, Object values) {
+        return super.buildDeleteRun(runtime, batch, table, configs, placeholder, unicode, key, values);
     }
 
     @Override
@@ -1317,8 +1317,8 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
      */
     @Override
-    public List<Run> buildDeleteRunFromTable(DataRuntime runtime, int batch, Table table, ConfigStore configs, String column, Object values) {
-        return super.buildDeleteRunFromTable(runtime, batch, table, configs, column, values);
+    public List<Run> buildDeleteRunFromTable(DataRuntime runtime, int batch, Table table, ConfigStore configs, Boolean placeholder, Boolean unicode, String column, Object values) {
+        return super.buildDeleteRunFromTable(runtime, batch, table, configs, placeholder, unicode, column, values);
     }
 
     /**
@@ -1331,8 +1331,8 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
      */
     @Override
-    public List<Run> buildDeleteRunFromEntity(DataRuntime runtime, Table table, ConfigStore configs, Object obj, String... columns) {
-        return super.buildDeleteRunFromEntity(runtime, table, configs, obj, columns);
+    public List<Run> buildDeleteRunFromEntity(DataRuntime runtime, Table table, ConfigStore configs, Object obj, Boolean placeholder, Boolean unicode, String... columns) {
+        return super.buildDeleteRunFromEntity(runtime, table, configs, obj, placeholder, unicode, columns);
     }
 
     /**
@@ -1341,8 +1341,8 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
      */
     @Override
-    public void fillDeleteRunContent(DataRuntime runtime, Run run) {
-        super.fillDeleteRunContent(runtime, run);
+    public void fillDeleteRunContent(DataRuntime runtime, Run run, Boolean placeholder, Boolean unicode) {
+        super.fillDeleteRunContent(runtime, run, placeholder, unicode);
     }
 
     /**

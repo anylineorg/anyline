@@ -90,13 +90,13 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
     }
 
     @Override
-    public Run buildInsertRun(DataRuntime runtime, Table dest, RunPrepare prepare, ConfigStore configs, Object obj, String... conditions) {
+    public Run buildInsertRun(DataRuntime runtime, Table dest, RunPrepare prepare, ConfigStore configs, Object obj,  Boolean placeholder, Boolean unicode, String... conditions) {
         return null;
     }
 
     @Override
-    public Run buildInsertRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, List<String> columns) {
-        return createInsertRun(runtime, dest, obj, configs, columns);
+    public Run buildInsertRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, Boolean placeholder, Boolean unicode, List<String> columns) {
+        return createInsertRun(runtime, dest, obj, configs, placeholder, unicode, columns);
     }
 
 	/**
@@ -109,7 +109,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
      */
 
     @Override
-    protected Run createInsertRun(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns) {
+    protected Run createInsertRun(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, Boolean placeholder, Boolean unicode, List<String> columns) {
         Run run = new MongoRun(runtime, dest);
         PrimaryGenerator generator = checkPrimaryGenerator(type(), dest.getName());
         if(null != generator) {
@@ -134,7 +134,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
      */
 
     @Override
-    protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore confis, List<String> columns) {
+    protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, Boolean placeholder, Boolean unicode, List<String> columns) {
         Run run = new MongoRun(runtime, dest);
         PrimaryGenerator generator = checkPrimaryGenerator(type(), dest.getName());
         if(null != generator) {
@@ -260,7 +260,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
      */
 
     @Override
-    public Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions) {
+    public Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, Boolean placeholder, Boolean unicode, String ... conditions) {
         MongoRun run = null;
         if(prepare instanceof TablePrepare) {
             run = new MongoRun(runtime, prepare.getTableName());
@@ -276,18 +276,18 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
             //为变量赋值
             run.init();
             //构造最终的查询SQL
-            fillQueryContent(runtime, run);
+            fillQueryContent(runtime, run, placeholder, unicode);
         }
         return run;
     }
 
     @Override
-    public Object createConditionJsonContains(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder, boolean unicode) {
+    public Object createConditionJsonContains(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, Boolean placeholder, Boolean unicode) {
         return null;
     }
 
     @Override
-    protected Run fillQueryContent(DataRuntime runtime, TableRun run) {
+    protected Run fillQueryContent(DataRuntime runtime, TableRun run, Boolean placeholder, Boolean unicode) {
         MongoRun r = (MongoRun)run;
         Bson bson = null;
         ConditionChain chain = r.getConditionChain();
@@ -477,7 +477,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
 
     @Override
     public long count(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String... conditions) {
-        Run run = buildQueryRun(runtime, prepare, configs, conditions);
+        Run run = buildQueryRun(runtime, prepare, configs, true, true, conditions);
         return count(runtime, random, run);
     }
 
@@ -572,7 +572,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
     }
 
     @Override
-    public Run buildUpdateRunFromEntity(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, LinkedHashMap<String, Column> columns) {
+    public Run buildUpdateRunFromEntity(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, Boolean placeholder, Boolean unicode, LinkedHashMap<String, Column> columns) {
         MongoRun run = new MongoRun(runtime, dest);
         run.setOriginType(2);
         LinkedHashMap<String, Column> cols = new LinkedHashMap<>();
@@ -655,14 +655,14 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
             }
             run.setConfigStore(configs);
             run.init();
-            run.appendCondition(this, true, true);
+            run.appendCondition(this, true, true, false);
         }
         run.setFilter(parseCondition(null, run.getConditionChain()));
         return run;
     }
 
     @Override
-    public Run buildUpdateRunFromDataRow(DataRuntime runtime, Table dest, DataRow row, ConfigStore configs, LinkedHashMap<String,Column> columns) {
+    public Run buildUpdateRunFromDataRow(DataRuntime runtime, Table dest, DataRow row, ConfigStore configs, Boolean placeholder, Boolean unicode, LinkedHashMap<String,Column> columns) {
         MongoRun run = new MongoRun(runtime, dest);
         run.setOriginType(1);
 
@@ -713,7 +713,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
             }
             run.setConfigStore(configs);
             run.init();
-            run.appendCondition(this, true, true);
+            run.appendCondition(this, true, true, false);
             run.setFilter(parseCondition(null, run.getConditionChain()));
         }
 
@@ -721,12 +721,12 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
     }
 
     @Override
-    public Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns) {
+    public Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, Boolean placeholder, Boolean unicode, LinkedHashMap<String, Column> columns) {
         return null;
     }
 
     @Override
-    public List<Run> buildDeleteRunFromTable(DataRuntime runtime, int batch, String table, ConfigStore configs,String key, Object values) {
+    public List<Run> buildDeleteRunFromTable(DataRuntime runtime, int batch, String table, ConfigStore configs, Boolean placeholder, Boolean unicode, String key, Object values) {
         if(null == key || null == values) {
             return null;
         }
@@ -742,11 +742,11 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
         }else{
             configs.and(key, values);
         }
-        return buildDeleteRun(runtime, table, configs);
+        return buildDeleteRun(runtime, table, configs, false, false);
     }
 
     @Override
-    public List<Run> buildDeleteRunFromEntity(DataRuntime runtime, Table dest, ConfigStore configs, Object obj, String... columns) {
+    public List<Run> buildDeleteRunFromEntity(DataRuntime runtime, Table dest, ConfigStore configs, Object obj, Boolean placeholder, Boolean unicode, String... columns) {
         //没有configs条件的 才根据主键删除
         if(null == configs || configs.isEmptyCondition()) {
             if(null == columns || columns.length == 0) {
@@ -759,7 +759,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
                 configs.and(column, BeanUtil.getFieldValue(obj, column, true));
             }
         }
-        return buildDeleteRun(runtime, dest, configs);
+        return buildDeleteRun(runtime, dest, configs, placeholder, unicode);
     }
 
 /* *****************************************************************************************************************
@@ -774,7 +774,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
      ******************************************************************************************************************/
 
     @Override
-    public List<Run> buildDeleteRun(DataRuntime runtime, Table dest, ConfigStore configs, Object obj, String ... columns) {
+    public List<Run> buildDeleteRun(DataRuntime runtime, Table dest, ConfigStore configs, Object obj, Boolean placeholder, Boolean unicode, String ... columns) {
         List<Run> runs = new ArrayList<>();
         if(null == obj && (null == configs || configs.isEmptyCondition())) {
             return null;
@@ -801,16 +801,16 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
             run.setConfigStore((ConfigStore)obj);
             run.addCondition(columns);
             run.init();
-            fillDeleteRunContent(runtime, run);
+            fillDeleteRunContent(runtime, run, placeholder, unicode);
             runs.add(run);
         }else{
-            runs = buildDeleteRunFromEntity(runtime, dest, configs, obj, columns);
+            runs = buildDeleteRunFromEntity(runtime, dest, configs, obj, placeholder, unicode, columns);
         }
         return runs;
     }
 
     @Override
-    public List<Run> buildDeleteRun(DataRuntime runtime, int batch, Table table, ConfigStore configs, String column, Object values) {
+    public List<Run> buildDeleteRun(DataRuntime runtime, int batch, Table table, ConfigStore configs, Boolean placeholder, Boolean unicode, String column, Object values) {
         return null;
     }
 
@@ -820,12 +820,12 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
     }
 
     @Override
-    public List<Run> buildDeleteRunFromTable(DataRuntime runtime, int batch, Table table, ConfigStore configs, String column, Object values) {
+    public List<Run> buildDeleteRunFromTable(DataRuntime runtime, int batch, Table table, ConfigStore configs, Boolean placeholder, Boolean unicode, String column, Object values) {
         return null;
     }
 
     @Override
-    public List<Run> buildDeleteRun(DataRuntime runtime, Table table, ConfigStore configs) {
+    public List<Run> buildDeleteRun(DataRuntime runtime, Table table, ConfigStore configs, Boolean placeholder, Boolean unicode) {
         List<Run> runs = new ArrayList<>();
         TableRun run = new MongoRun(runtime, table);
         run.setConfigs(configs);
@@ -841,11 +841,11 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
      * */
 
     @Override
-    public void fillDeleteRunContent(DataRuntime runtime, Run run) {
+    public void fillDeleteRunContent(DataRuntime runtime, Run run, Boolean placeholder, Boolean unicode) {
         if(null != run) {
             if(run instanceof TableRun) {
                 TableRun r = (TableRun) run;
-                fillDeleteRunContent(runtime, r);
+                fillDeleteRunContent(runtime, r, placeholder, unicode);
             }
         }
     }

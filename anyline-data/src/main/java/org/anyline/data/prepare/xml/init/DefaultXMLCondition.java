@@ -196,10 +196,10 @@ public class DefaultXMLCondition extends AbstractCondition implements Condition 
 	}
 
 	@Override
-	public String getRunText(int lvl, String prefix, DataRuntime runtime, boolean placeholder, boolean unicode) {
+	public String getRunText(int lvl, String prefix, DataRuntime runtime, Boolean placeholder, Boolean unicode) {
 		return getRunText(lvl, prefix, runtime, placeholder, unicode, text);
 	}
-	public String getRunText(int lvl, String prefix, DataRuntime runtime, boolean placeholder, boolean unicode, String text) {
+	public String getRunText(int lvl, String prefix, DataRuntime runtime, Boolean placeholder, Boolean unicode, String text) {
 		for (VariableBlock block : blocks) {
 			String box = block.box();
 			String body = block.body();
@@ -214,7 +214,7 @@ public class DefaultXMLCondition extends AbstractCondition implements Condition 
 		text = replaceVariable(lvl, prefix, runtime, placeholder, unicode, text);
 		return text;
 	}
-	public String replaceVariable(int lvl, String prefix, DataRuntime runtime, boolean placeholder, boolean unicode, String text) {
+	public String replaceVariable(int lvl, String prefix, DataRuntime runtime, Boolean placeholder, Boolean unicode, String text) {
 		String result = text;
 		runValues = new ArrayList<>();
 		for(Variable var: variables) {

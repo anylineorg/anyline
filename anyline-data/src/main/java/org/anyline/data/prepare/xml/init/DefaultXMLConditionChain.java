@@ -30,7 +30,7 @@ import java.util.List;
 public class DefaultXMLConditionChain extends AbstractConditionChain implements ConditionChain{
 
 	@Override
-	public String getRunText(int lvl, String prefix, DataRuntime runtime, boolean placeholder, boolean unicode) {
+	public String getRunText(int lvl, String prefix, DataRuntime runtime, Boolean placeholder, Boolean unicode) {
 		initRunValue(); 
 		StringBuilder builder = new StringBuilder(); 
 		if(null != conditions) {

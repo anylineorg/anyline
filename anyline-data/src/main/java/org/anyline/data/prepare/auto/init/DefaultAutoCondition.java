@@ -104,7 +104,7 @@ public class DefaultAutoCondition extends AbstractCondition implements AutoCondi
 	 * @return String
 	 */
 	@Override
-	public String getRunText(int lvl, String prefix, DataRuntime runtime, boolean placeholder, boolean unicode) {
+	public String getRunText(int lvl, String prefix, DataRuntime runtime, Boolean placeholder, Boolean unicode) {
 		runValues = new ArrayList<>();
 		String text = "";
 		if(this.variableType == Condition.VARIABLE_PLACEHOLDER_TYPE_NONE) {//没有变量
@@ -139,7 +139,7 @@ public class DefaultAutoCondition extends AbstractCondition implements AutoCondi
 	 * @param placeholder 是否需要占位符
 	 * @return string
 	 */
-	public String getRunText(String prefix, DataRuntime runtime, Object val, Compare compare, boolean placeholder, boolean unicode) {
+	public String getRunText(String prefix, DataRuntime runtime, Object val, Compare compare, Boolean placeholder, Boolean unicode) {
 		StringBuilder builder = new StringBuilder();
 		String delimiterFr = "";
 		String delimiterTo = "";

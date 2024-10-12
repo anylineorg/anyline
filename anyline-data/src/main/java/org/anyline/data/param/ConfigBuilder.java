@@ -70,13 +70,13 @@ public class ConfigBuilder {
         //having
         //"havings":[{"text":"COUNT(*) > 1"},{"text":"MIN(PRICE)<100"}]
         //"havings":["COUNT(*) > 1","MIN(PRICE)<100"]
-        List<?> havings = row.getList("havings");
-        if(null != havings){
-            for(Object having:havings){
-                if(having instanceof String){
-                    configs.having((String)having);
-                } else if(having instanceof DataRow){
-                    DataRow r = (DataRow) having;
+        List<?> having = row.getList("havings");
+        if(null != having){
+            for(Object item:having){
+                if(item instanceof String){
+                    configs.having((String)item);
+                } else if(item instanceof DataRow){
+                    DataRow r = (DataRow) item;
                     String text = r.getString("text");
                     configs.having(text);
                 }
@@ -314,14 +314,14 @@ public class ConfigBuilder {
                 与上级一致
             }]
         }]//end-conditions
-        ,havings:[{                                 //分组过滤条件
+        ,having:[{                                 //分组过滤条件
             join:'and'
             method:'sum'
             table:'hr_employee'
             column:'type_id'
             compare:10
             value:100                               //常量值或变量
-        }]//end-havings
+        }]//end-having
         ,orders:[{                                  //排序
             table:'hr_employee'
             column:'type_id'

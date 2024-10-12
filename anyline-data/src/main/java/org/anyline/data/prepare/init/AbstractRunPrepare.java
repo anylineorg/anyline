@@ -18,17 +18,20 @@ package org.anyline.data.prepare.init;
 
 import org.anyline.data.entity.Join;
 import org.anyline.data.param.ConfigStore;
-import org.anyline.data.prepare.*;
+import org.anyline.data.param.init.DefaultConfigStore;
+import org.anyline.data.prepare.Condition;
+import org.anyline.data.prepare.ConditionChain;
+import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.prepare.auto.init.DefaultAutoCondition;
 import org.anyline.data.prepare.auto.init.DefaultTablePrepare;
 import org.anyline.entity.*;
 import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 import org.anyline.metadata.Column;
 import org.anyline.metadata.Table;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
-import org.anyline.log.Log;
-import org.anyline.log.LogProxy;
 
 import java.util.*;
 
@@ -42,7 +45,7 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 	protected OrderStore orders = new DefaultOrderStore()		; // 排序
 	protected GroupStore groups = new DefaultGroupStore()		; // 分组条件
 	protected List<AggregationConfig> aggregations = new ArrayList<>();
-	protected HavingStore having = new DefaultHavingStore(); // 分组过滤条件
+	protected ConfigStore having = new DefaultConfigStore(); // 分组过滤条件
 
 	protected PageNavi navi										; // 分页
 	protected List<String> primaryKeys     = new ArrayList<>()	; // 主键
@@ -158,13 +161,17 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 	}
 	public RunPrepare having(String having) {
 		if(null == this.having){
-			this.having = new DefaultHavingStore();
+			this.having = new DefaultConfigStore();
 		}
-		this.having.add(new Having(having));
+		this.having.and(having);
 		return this;
 	}
-	public RunPrepare having(HavingStore haves) {
-		this.having = haves;
+	public RunPrepare having(ConfigStore having) {
+		if(null == this.having) {
+			this.having = having;
+		}else{
+			this.having.and(having);
+		}
 		return this;
 	}
 	/** 
@@ -257,7 +264,7 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 	public GroupStore getGroups() {
 		return groups;
 	}
-	public HavingStore having() {
+	public ConfigStore having() {
 		return having;
 	}
 	public OrderStore getOrders() {

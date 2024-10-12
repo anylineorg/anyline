@@ -195,12 +195,12 @@ public interface TypeMetadata {
         }
 
         @Override
-        public Object write(Object value, Object def, boolean placeholder) {
+        public Object write(Object value, Object def, Boolean placeholder) {
             return null;
         }
 
         @Override
-        public Object write(Object value, Object def, boolean array, boolean placeholder) {
+        public Object write(Object value, Object def, boolean array, Boolean placeholder) {
             return null;
         }
         @Override
@@ -311,12 +311,12 @@ public interface TypeMetadata {
         }
 
         @Override
-        public Object write(Object value, Object def, boolean placeholder) {
+        public Object write(Object value, Object def, Boolean placeholder) {
             return value;
         }
 
         @Override
-        public Object write(Object value, Object def, boolean array, boolean placeholder) {
+        public Object write(Object value, Object def, boolean array, Boolean placeholder) {
             return value;
         }
     };
@@ -372,10 +372,10 @@ public interface TypeMetadata {
         return read(value, def, clazz, false);
     }
     Object read(Object value, Object def, Class clazz, boolean array);
-    default Object write(Object value, Object def, boolean placeholder) {
+    default Object write(Object value, Object def, Boolean placeholder) {
         return write(value, def, false, placeholder);
     }
-    Object write(Object value, Object def, boolean array, boolean placeholder);
+    Object write(Object value, Object def, boolean array, Boolean placeholder);
 
     class Refer {
         /**

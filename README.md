@@ -94,7 +94,7 @@ AND FIND_IN_SET(?, CODES)
 LIMIT 5,10 //Generate different SQL statements based on specific database types
 
 //User defined query conditions, low code scenarios generally require more complex query conditions
-ConfigStore confis;
+ConfigStore configs;
 service.query("SSO_USER", configs);
 //ConfigStore provides all SQL operations
 //Sample code and instructions for SQL parameters for multi table, batch submission, custom SQL, and parsing XML definitions

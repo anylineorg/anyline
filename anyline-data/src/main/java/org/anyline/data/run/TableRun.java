@@ -87,7 +87,7 @@ public class TableRun extends AbstractRun implements Run {
 	public void appendOrderStore() {
 		 
 	}
-	public void appendGroup(StringBuilder builder) {
+	public void appendGroup(DataRuntime runtime, StringBuilder builder, Boolean placeholder, Boolean unicode) {
 		if(null != configs) {
 			if (null == groups) {
 				groups = configs.getGroups();
@@ -98,14 +98,17 @@ public class TableRun extends AbstractRun implements Run {
 		}
 
 		if(null != groups) {
-			builder.append(groups.getRunText(delimiterFr+delimiterTo));
+			builder.append("\n").append(groups.getRunText(delimiterFr+delimiterTo));
 		}
 		if(null != having) {
-			builder.append(having.getRunText());
+			String txt = SQLUtil.trim(having.getRunText(runtime, placeholder));
+			if(BasicUtil.isNotEmpty(txt)) {
+				builder.append("\nHAVING ").append(txt);
+			}
 		} 
 	}
-	public void appendGroup() {
-		appendGroup(builder);
+	public void appendGroup(DataRuntime runtime, Boolean placeholder, Boolean unicode) {
+		appendGroup(runtime, builder, placeholder, unicode);
 	}
 
 	public boolean checkValid() {
@@ -126,7 +129,7 @@ public class TableRun extends AbstractRun implements Run {
 	 * @param first 是否首位条件 如果是需要加where
 	 * @param placeholder 是否需要占位符
 	 */
-	public void appendCondition(StringBuilder builder, DriverAdapter adapter, boolean first, boolean placeholder) {
+	public void appendCondition(StringBuilder builder, DriverAdapter adapter, boolean first, Boolean placeholder, Boolean unicode) {
 		if(null == conditionChain) {
 			return; 
 		}
@@ -134,7 +137,7 @@ public class TableRun extends AbstractRun implements Run {
 		if(null != prepare) {
 			alias = prepare.getAlias();
 		}
-		String condition = conditionChain.getRunText(alias, runtime, placeholder, false);
+		String condition = conditionChain.getRunText(alias, runtime, placeholder, unicode);
 		if(!condition.isEmpty()) {
 			emptyCondition = false;
 			if(first) {
@@ -147,8 +150,8 @@ public class TableRun extends AbstractRun implements Run {
 		addValues(values);
 	}
 
-	public void appendCondition(DriverAdapter adapter, boolean first, boolean placeholder) {
-		appendCondition(builder, adapter, first, placeholder);
+	public void appendCondition(DriverAdapter adapter, boolean first, Boolean placeholder, Boolean unicode) {
+		appendCondition(builder, adapter, first, placeholder, unicode);
 	}
 	public void setConfigs(ConfigStore configs) {
 		this.configs = configs;

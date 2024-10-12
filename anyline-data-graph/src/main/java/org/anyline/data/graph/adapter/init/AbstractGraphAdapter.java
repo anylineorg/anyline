@@ -178,7 +178,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
      * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
      */
     @Override
-    public Run buildInsertRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, List<String> columns) {
+    public Run buildInsertRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, Boolean placeholder, Boolean unicode, List<String> columns) {
         Run run = null;
         if(null == obj) {
             return null;
@@ -190,11 +190,11 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
         if(obj instanceof Collection) {
             Collection list = (Collection) obj;
             if(!list.isEmpty()) {
-                run = createInsertRunFromCollection(runtime, batch, dest, list, configs, columns);
+                run = createInsertRunFromCollection(runtime, batch, dest, list, configs, placeholder, unicode, columns);
             }
             run.setRows(list.size());
         }else {
-            run = createInsertRun(runtime, dest, obj, configs, columns);
+            run = createInsertRun(runtime, dest, obj, configs, placeholder, unicode, columns);
             run.setRows(1);
         }
         convert(runtime, configs, run);
@@ -211,8 +211,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
      * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
      */
     @Override
-    public void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet set, ConfigStore configs, LinkedHashMap<String, Column> columns) {
-        super.fillInsertContent(runtime, run, dest, set, configs, columns);
+    public void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet set, ConfigStore configs, Boolean placeholder, Boolean unicode, LinkedHashMap<String, Column> columns) {
+        super.fillInsertContent(runtime, run, dest, set, configs, placeholder, unicode, columns);
     }
 
     /**
@@ -225,7 +225,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
      * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
      */
     @Override
-    public void fillInsertContent(DataRuntime runtime, Run run, Table dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns) {
+    public void fillInsertContent(DataRuntime runtime, Run run, Table dest, Collection list, ConfigStore configs, Boolean placeholder, Boolean unicode, LinkedHashMap<String, Column> columns) {
         StringBuilder builder = run.getBuilder();
         int batch = run.getBatch();
         if(null == builder) {
@@ -235,7 +235,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
         checkName(runtime, null, dest);
         if(list instanceof DataSet) {
             DataSet set = (DataSet) list;
-            this.fillInsertContent(runtime, run, dest, set, configs, columns);
+            this.fillInsertContent(runtime, run, dest, set, configs, placeholder, unicode, columns);
             return;
         }
         PrimaryGenerator generator = checkPrimaryGenerator(type(), dest.getName());
@@ -359,7 +359,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
      * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
      */
     @Override
-    protected Run createInsertRun(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns) {
+    protected Run createInsertRun(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, Boolean placeholder, Boolean unicode, List<String> columns) {
         Run run = new TableRun(runtime, dest);
         // List<Object> values = new ArrayList<Object>();
         StringBuilder builder = new StringBuilder();
@@ -369,8 +369,9 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
         if(null == configs) {
             configs = new DefaultConfigStore();
         }
-        Boolean placeholder = configs.getPlaceholder();
-        Boolean unicode = null;
+        if(null == placeholder) {
+            placeholder = configs.getPlaceholder();
+        }
         if(null == placeholder) {
             placeholder = true;
         }
@@ -388,7 +389,9 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
         }
         if(obj instanceof DataRow) {
             row = (DataRow)obj;
-            unicode = row.getUnicode();
+            if(null == unicode) {
+                unicode = row.getUnicode();
+            }
             if(row.hasPrimaryKeys() && null != generator) {
                 generator.create(row, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), null);
                 //createPrimaryValue(row, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), null);
@@ -490,7 +493,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
      * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
      */
     @Override
-    protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, List<String> columns) {
+    protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, Boolean placeholder, Boolean unicode, List<String> columns) {
         Run run = new TableRun(runtime, dest);
         run.setBatch(batch);
         if(null == list || list.isEmpty()) {
@@ -508,7 +511,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
         }
         run.setInsertColumns(cols);
         run.setVol(cols.size());
-        fillInsertContent(runtime, run, dest, list, configs, cols);
+        fillInsertContent(runtime, run, dest, list, configs, placeholder, unicode, cols);
 
         return run;
     }
@@ -613,37 +616,37 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
      * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
      */
     @Override
-    public Run buildUpdateRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, List<String> columns) {
-        return super.buildUpdateRun(runtime, batch, dest, obj, configs, columns);
+    public Run buildUpdateRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, Boolean placeholder, Boolean unicode, List<String> columns) {
+        return super.buildUpdateRun(runtime, batch, dest, obj, configs, placeholder, unicode, columns);
     }
 
     @Override
-    public Run buildUpdateRunFromEntity(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, LinkedHashMap<String, Column> columns) {
-        return super.buildUpdateRunFromEntity(runtime, dest, obj, configs, columns);
+    public Run buildUpdateRunFromEntity(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, Boolean placeholder, Boolean unicode, LinkedHashMap<String, Column> columns) {
+        return super.buildUpdateRunFromEntity(runtime, dest, obj, configs, placeholder, unicode, columns);
     }
 
     @Override
-    public Run buildUpdateRunFromDataRow(DataRuntime runtime, Table dest, DataRow row, ConfigStore configs, LinkedHashMap<String, Column> columns) {
-        return super.buildUpdateRunFromDataRow(runtime, dest, row, configs, columns);
+    public Run buildUpdateRunFromDataRow(DataRuntime runtime, Table dest, DataRow row, ConfigStore configs, Boolean placeholder, Boolean unicode, LinkedHashMap<String, Column> columns) {
+        return super.buildUpdateRunFromDataRow(runtime, dest, row, configs, placeholder, unicode, columns);
     }
 
     @Override
-    public Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns) {
-        return super.buildUpdateRunFromCollection(runtime, batch, dest, list, configs, columns);
+    public Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, Boolean placeholder, Boolean unicode, LinkedHashMap<String, Column> columns) {
+        return super.buildUpdateRunFromCollection(runtime, batch, dest, list, configs, placeholder, unicode, columns);
     }
 
     @Override
-    public Run buildUpdateRunFromEntity(DataRuntime runtime, String dest, Object obj, ConfigStore configs, LinkedHashMap<String, Column> columns) {
+    public Run buildUpdateRunFromEntity(DataRuntime runtime, String dest, Object obj, ConfigStore configs, Boolean placeholder, Boolean unicode, LinkedHashMap<String, Column> columns) {
         return null;
     }
 
     @Override
-    public Run buildUpdateRunFromDataRow(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, LinkedHashMap<String, Column> columns) {
+    public Run buildUpdateRunFromDataRow(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, Boolean placeholder, Boolean unicode, LinkedHashMap<String, Column> columns) {
         return null;
     }
 
     @Override
-    public Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns) {
+    public Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore configs, Boolean placeholder, Boolean unicode, LinkedHashMap<String, Column> columns) {
         return null;
     }
 
@@ -871,9 +874,9 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
      * List<Run> buildQuerySequence(DataRuntime runtime, boolean next, String ... names)
      * Run fillQueryContent(DataRuntime runtime, Run run)
      * String mergeFinalQuery(DataRuntime runtime, Run run)
-     * RunValue createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder, boolean unicode)
-     * Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder, boolean unicode)
-     * StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder, boolean unicode)
+     * RunValue createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, Boolean placeholder, Boolean unicode)
+     * Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, Boolean placeholder, Boolean unicode)
+     * StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, Boolean placeholder, Boolean unicode)
      * [命令执行]
      * DataSet select(DataRuntime runtime, String random, boolean system, String table, ConfigStore configs, Run run)
      * List<Map<String, Object>> maps(DataRuntime runtime, String random, ConfigStore configs, Run run)
@@ -1031,8 +1034,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
      * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
      */
     @Override
-    public Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions) {
-        return super.buildQueryRun(runtime, prepare, configs, conditions);
+    public Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, Boolean placeholder, Boolean unicode, String ... conditions) {
+        return super.buildQueryRun(runtime, prepare, configs, placeholder, unicode, conditions);
     }
 
     /**
@@ -1052,22 +1055,22 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
      * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
      */
     @Override
-    public Run fillQueryContent(DataRuntime runtime, Run run) {
-        return super.fillQueryContent(runtime, run);
+    public Run fillQueryContent(DataRuntime runtime, Run run, Boolean placeholder, Boolean unicode) {
+        return super.fillQueryContent(runtime, run, placeholder, unicode);
     }
 
     @Override
-    protected Run fillQueryContent(DataRuntime runtime, XMLRun run) {
-        return super.fillQueryContent(runtime, run);
+    protected Run fillQueryContent(DataRuntime runtime, XMLRun run, Boolean placeholder, Boolean unicode) {
+        return super.fillQueryContent(runtime, run, placeholder, unicode);
     }
 
     @Override
-    protected Run fillQueryContent(DataRuntime runtime, TextRun run) {
-        return super.fillQueryContent(runtime, run);
+    protected Run fillQueryContent(DataRuntime runtime, TextRun run, Boolean placeholder, Boolean unicode) {
+        return super.fillQueryContent(runtime, run, placeholder, unicode);
     }
 
     @Override
-    protected Run fillQueryContent(DataRuntime runtime, TableRun run) {
+    protected Run fillQueryContent(DataRuntime runtime, TableRun run,  Boolean placeholder, Boolean unicode) {
         StringBuilder builder = run.getBuilder();
         fillQueryContent(runtime, builder, run);
         //UNION
@@ -1079,7 +1082,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
                     builder.append(" ALL ");
                 }
                 builder.append("\n");
-                fillQueryContent(runtime, builder, union);
+                fillQueryContent(runtime, builder, union, placeholder, unicode);
             }
         }
         run.appendOrderStore();
@@ -1170,8 +1173,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
         //builder.append("\nWHERE 1=1\n\t");
         /*添加查询条件*/
         // appendConfigStore();
-        run.appendCondition(this, true,false);
-        run.appendGroup();
+        run.appendCondition(this, true,false, true);
+        run.appendGroup(runtime, false, true);
         return run;
     }
 
@@ -1198,7 +1201,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
      * @return value 有占位符时返回占位值，没有占位符返回null
      */
     @Override
-    public RunValue createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder, boolean unicode) {
+    public RunValue createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, Boolean placeholder, Boolean unicode) {
         int code = compare.getCode();
         if(code > 100) {
             builder.append(" NOT");
@@ -1236,7 +1239,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
      * @return value
      */
     @Override
-    public Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder, boolean unicode) throws NotSupportException {
+    public Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, Boolean placeholder, Boolean unicode) throws NotSupportException {
         return super.createConditionFindInSet(runtime, builder, column, compare, value, placeholder, unicode);
     }
 
@@ -1250,7 +1253,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
      * @return builder
      */
     @Override
-    public StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder, boolean unicode) {
+    public StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, Boolean placeholder, Boolean unicode) {
         if(compare == Compare.NOT_IN) {
             builder.append(" NOT");
         }
@@ -1580,7 +1583,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
      * @return boolean
      */
     @Override
-    public boolean exists(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
+    public boolean exists(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs,  String ... conditions) {
         boolean result = false;
         if(null == random) {
             random = random(runtime);
@@ -1592,7 +1595,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
         if(swt == ACTION.SWITCH.BREAK) {
             return false;
         }
-        Run run = buildQueryRun(runtime, prepare, configs, conditions);
+        Run run = buildQueryRun(runtime, prepare, configs, true, true, conditions);
         if(!run.isValid()) {
             if(log.isWarnEnabled() && ConfigStore.IS_LOG_SQL(configs)) {
                 log.warn("[valid:false][不具备执行条件][RunPrepare:" + ConfigParser.createSQLSign(false, false, prepare.getTableName(), configs, conditions) + "][thread:" + Thread.currentThread().getId() + "][ds:" + runtime.datasource() + "]");
@@ -1748,8 +1751,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
      * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
      */
     @Override
-    public Run buildExecuteRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions) {
-        return super.buildExecuteRun(runtime, prepare, configs, conditions);
+    public Run buildExecuteRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, Boolean placeholder, Boolean unicode, String ... conditions) {
+        return super.buildExecuteRun(runtime, prepare, configs, placeholder, unicode, conditions);
     }
 
     @Override
@@ -1758,13 +1761,13 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
     }
 
     @Override
-    protected void fillExecuteContent(DataRuntime runtime, TextRun run) {
-        super.fillExecuteContent(runtime, run);
+    protected void fillExecuteContent(DataRuntime runtime, TextRun run, Boolean placeholder, Boolean unicode) {
+        super.fillExecuteContent(runtime, run, placeholder, unicode);
     }
 
     @Override
-    protected void fillExecuteContent(DataRuntime runtime, TableRun run) {
-        super.fillExecuteContent(runtime, run);
+    protected void fillExecuteContent(DataRuntime runtime, TableRun run, Boolean placeholder, Boolean unicode) {
+        super.fillExecuteContent(runtime, run, placeholder, unicode);
     }
 
     /**
@@ -1774,8 +1777,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
      * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
      */
     @Override
-    public void fillExecuteContent(DataRuntime runtime, Run run) {
-        super.fillExecuteContent(runtime, run);
+    public void fillExecuteContent(DataRuntime runtime, Run run, Boolean placeholder, Boolean unicode) {
+        super.fillExecuteContent(runtime, run, placeholder, unicode);
     }
 
     /**
@@ -1943,8 +1946,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
      * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
      */
     @Override
-    public List<Run> buildDeleteRun(DataRuntime runtime, Table dest, ConfigStore configs, Object obj, String ... columns) {
-        return super.buildDeleteRun(runtime, dest, configs, obj, columns);
+    public List<Run> buildDeleteRun(DataRuntime runtime, Table dest, ConfigStore configs, Object obj, Boolean placeholder, Boolean unicode, String ... columns) {
+        return super.buildDeleteRun(runtime, dest, configs, obj, placeholder, unicode, columns);
     }
 
     /**
@@ -1957,8 +1960,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
      * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
      */
     @Override
-    public List<Run> buildDeleteRun(DataRuntime runtime, int batch, Table table, ConfigStore configs, String key, Object values) {
-        return super.buildDeleteRun(runtime, batch, table, configs, key, values);
+    public List<Run> buildDeleteRun(DataRuntime runtime, int batch, Table table, ConfigStore configs, Boolean placeholder, Boolean unicode, String key, Object values) {
+        return super.buildDeleteRun(runtime, batch, table, configs, placeholder, unicode, key, values);
     }
 
     @Override
@@ -1982,7 +1985,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
      * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
      */
     @Override
-    public List<Run> buildDeleteRunFromTable(DataRuntime runtime, int batch, Table table, ConfigStore configs, String key, Object values) {
+    public List<Run> buildDeleteRunFromTable(DataRuntime runtime, int batch, Table table, ConfigStore configs,  Boolean placeholder, Boolean unicode, String key, Object values) {
         List<Run> runs = new ArrayList<>();
         if(null == table || null == key || null == values) {
             return null;
@@ -2053,7 +2056,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
      * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
      */
     @Override
-    public List<Run> buildDeleteRunFromEntity(DataRuntime runtime, Table table, ConfigStore configs, Object obj, String... columns) {
+    public List<Run> buildDeleteRunFromEntity(DataRuntime runtime, Table table, ConfigStore configs, Object obj, Boolean placeholder, Boolean unicode, String... columns) {
         List<Run> runs = new ArrayList<>();
         TableRun run = new TableRun(runtime, table);
         run.setOriginType(2);
@@ -2108,7 +2111,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
      * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
      */
     @Override
-    public void fillDeleteRunContent(DataRuntime runtime, Run run) {
+    public void fillDeleteRunContent(DataRuntime runtime, Run run,  Boolean placeholder, Boolean unicode) {
         if(null != run) {
             if(run instanceof TableRun) {
                 TableRun r = (TableRun) run;
@@ -2150,8 +2153,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 
         /*添加查询条件*/
         // appendConfigStore();
-        run.appendCondition(this, true,false);
-        run.appendGroup();
+        run.appendCondition(this, true, false, true);
+        run.appendGroup(runtime, false, true);
         run.appendOrderStore();
         run.checkValid();
     }
@@ -8086,7 +8089,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param columns          需要插入的列
 	 * @param child          是否在子查询中，子查询中不要用序列
 	 */
-	protected String insertValue(DataRuntime runtime, Run run, Object obj, boolean child, boolean placeholder, boolean alias, boolean scope, LinkedHashMap<String,Column> columns) {
+	protected String insertValue(DataRuntime runtime, Run run, Object obj, boolean child, Boolean placeholder, boolean alias, boolean scope, LinkedHashMap<String,Column> columns) {
 		int batch = run.getBatch();
 		StringBuilder builder = new StringBuilder();
 		if(scope && batch<=1) {

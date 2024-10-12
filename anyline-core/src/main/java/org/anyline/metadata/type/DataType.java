@@ -25,7 +25,7 @@ public interface DataType {
         }
 
         @Override
-        public Object write(Object value, Object def, boolean placeholder) {
+        public Object write(Object value, Object def, Boolean placeholder) {
             return null;
         }
 
@@ -79,7 +79,7 @@ public interface DataType {
      * @param def 默认值
      * @return Object
      */
-    public abstract Object write(Object value, Object def, boolean placeholder);
+    public abstract Object write(Object value, Object def, Boolean placeholder);
 
     public abstract DataType convert(Convert convert);
     public abstract Convert convert(Class clazz);

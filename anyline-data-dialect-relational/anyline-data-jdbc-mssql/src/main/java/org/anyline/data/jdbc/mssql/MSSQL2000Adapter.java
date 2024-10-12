@@ -136,7 +136,7 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter {
      * @param columns 需插入的列
      */
     @Override
-    public void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet set, ConfigStore configs, LinkedHashMap<String, Column> columns) {
+    public void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet set, ConfigStore configs, Boolean placeholder, Boolean unicode, LinkedHashMap<String, Column> columns) {
         //2000及以下
         StringBuilder builder = run.getBuilder();
         if(null == builder) {
@@ -179,7 +179,7 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter {
                 //createPrimaryValue(row, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
             }
             builder.append("\n SELECT ");
-            builder.append(insertValue(runtime, run, row, i==0, true, true, false, false, el, columns));
+            builder.append(insertValue(runtime, run, row, i==0, true, placeholder, false, false, el, columns));
             if(i<dataSize-1) {
                 //多行数据之间的分隔符
                 builder.append("\n UNION ALL ");
@@ -197,7 +197,7 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter {
      * @param columns 需插入的列
      */
     @Override
-    public void fillInsertContent(DataRuntime runtime, Run run, Table dest, Collection list, LinkedHashMap<String, Column> columns) {
+    public void fillInsertContent(DataRuntime runtime, Run run, Table dest, Collection list, Boolean placeholder, Boolean unicode, LinkedHashMap<String, Column> columns) {
         StringBuilder builder = run.getBuilder();
         if(null == builder) {
             builder = new StringBuilder();
@@ -205,7 +205,7 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter {
         }
         if(list instanceof DataSet) {
             DataSet set = (DataSet) list;
-            this.fillInsertContent(runtime, run, dest, set, columns);
+            this.fillInsertContent(runtime, run, dest, set, placeholder, unicode, columns);
             return;
         }
 
@@ -247,7 +247,7 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter {
                     generator.create(obj, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
                     //createPrimaryValue(obj, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, null);
                 }
-            builder.append(insertValue(runtime, run, obj, idx==0,true, true, false, false, el, columns));
+            builder.append(insertValue(runtime, run, obj, idx==0,true, placeholder, false, false, el, columns));
            // }
             if(idx<dataSize-1) {
                 //多行数据之间的分隔符

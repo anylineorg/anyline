@@ -55,8 +55,8 @@ public interface ConfigStore extends Cloneable{
 	default String json() {
 		return json(false);
 	}
-	String getRunText(DataRuntime runtime, boolean placeholder, boolean unicode);
-	default String getRunText(DataRuntime runtime, boolean placeholder) {
+	String getRunText(DataRuntime runtime, Boolean placeholder, Boolean unicode);
+	default String getRunText(DataRuntime runtime, Boolean placeholder) {
 		return getRunText(runtime, placeholder, false);
 	}
 	/**
@@ -1860,15 +1860,15 @@ public interface ConfigStore extends Cloneable{
 	default ConfigStore groups(GroupStore groups){
 		return setGroups(groups);
 	}
-	/**
-	 * 添加分组 过滤条件
-	 * @param having 列名
-	 * @return ConfigStore
-	 */
-	ConfigStore having(String having);
-	ConfigStore having(HavingStore having);
 
-	HavingStore having() ;
+	ConfigStore having(String text);
+	ConfigStore having(Compare compare, String key, Object value);
+	default ConfigStore having(String key, Object value) {
+		return having(Compare.EQUAL, key, value);
+	}
+	ConfigStore having(ConfigStore configs);
+
+	ConfigStore having() ;
 	PageNavi getPageNavi();
 
 	/**

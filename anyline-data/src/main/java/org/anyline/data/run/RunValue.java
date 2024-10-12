@@ -24,7 +24,7 @@ public class RunValue {
     private Column column;
     private String datatype;
 
-    private boolean placeholder = true;
+    private Boolean placeholder = true;
 
     public RunValue() {}
     public RunValue(Column column, Object value) {
@@ -73,7 +73,7 @@ public class RunValue {
         return placeholder;
     }
 
-    public void setPlaceholder(boolean placeholder) {
+    public void setPlaceholder(Boolean placeholder) {
         this.placeholder = placeholder;
     }
 

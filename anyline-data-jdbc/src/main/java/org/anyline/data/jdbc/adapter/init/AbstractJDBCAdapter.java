@@ -217,7 +217,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
             return -1;
         }
 
-        Run run = buildInsertRun(runtime, dest, prepare, configs, obj, conditions);
+        Run run = buildInsertRun(runtime, dest, prepare, configs, obj, true, true, conditions);
         //提前设置好columns,到了adapter中需要手动检测缓存
         if(ConfigStore.IS_AUTO_CHECK_METADATA(configs)) {
             dest.setColumns(columns(runtime, random, false, dest, false));
@@ -259,7 +259,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
      * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
      */
     @Override
-    public Run buildInsertRun(DataRuntime runtime, Table dest, RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions) {
+    public Run buildInsertRun(DataRuntime runtime, Table dest, RunPrepare prepare, ConfigStore configs, Object obj, Boolean placeholder, Boolean unicode, String ... conditions) {
         Run run = new TableRun(runtime, dest);
         StringBuilder builder = run.getBuilder();
         if(BasicUtil.isEmpty(dest)) {
@@ -283,7 +283,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
             builder.append(")");
         }
         builder.append("\n");
-        Run query = buildQueryRun(runtime, prepare, configs, conditions);
+        Run query = buildQueryRun(runtime, prepare, configs, placeholder, unicode, conditions);
         if (query.isValid()) {
             String cmd = query.getFinalQuery();
             builder.append(cmd);
@@ -302,8 +302,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
      * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
      */
     @Override
-    public Run buildInsertRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, List<String> columns) {
-        return super.buildInsertRun(runtime, batch, dest, obj, configs, columns);
+    public Run buildInsertRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, Boolean placeholder, Boolean unicode, List<String> columns) {
+        return super.buildInsertRun(runtime, batch, dest, obj, configs, placeholder, unicode, columns);
     }
 
     /**
@@ -316,7 +316,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
      * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
      */
     @Override
-    public void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet set, ConfigStore configs, LinkedHashMap<String, Column> columns) {
+    public void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet set, ConfigStore configs, Boolean placeholder, Boolean unicode, LinkedHashMap<String, Column> columns) {
         StringBuilder builder = run.getBuilder();
         int batch = run.getBatch();
         if(null == builder) {
@@ -354,7 +354,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
                 }
                 //createPrimaryValue(row, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
             }
-            builder.append(insertValue(runtime, run, row, i==0,true, true, false, true, el, columns));
+            builder.append(insertValue(runtime, run, row, i==0,true, placeholder, false, true, el, columns));
             if(batch <=1) {
                 if (i < dataSize - 1) {
                     //多行数据之间的分隔符
@@ -375,7 +375,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
      * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
      */
     @Override
-    public void fillInsertContent(DataRuntime runtime, Run run, Table dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns) {
+    public void fillInsertContent(DataRuntime runtime, Run run, Table dest, Collection list, ConfigStore configs, Boolean placeholder, Boolean unicode, LinkedHashMap<String, Column> columns) {
         StringBuilder builder = run.getBuilder();
         int batch = run.getBatch();
         if(null == builder) {
@@ -385,7 +385,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
         checkName(runtime, null, dest);
         if(list instanceof DataSet) {
             DataSet set = (DataSet) list;
-            this.fillInsertContent(runtime, run, dest, set, configs, columns);
+            this.fillInsertContent(runtime, run, dest, set, configs, placeholder, unicode, columns);
             return;
         }
         PrimaryGenerator generator = checkPrimaryGenerator(type(), dest.getName());
@@ -422,7 +422,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
                 generator.create(obj, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
                 //createPrimaryValue(obj, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, null);
             }
-            builder.append(insertValue(runtime, run, obj, idx ==0,true, true, false, true, el, columns));
+            builder.append(insertValue(runtime, run, obj, idx ==0,true, placeholder, false, true, el, columns));
             //}
             if(idx<dataSize-1 && batch <= 1) {
                 //多行数据之间的分隔符
@@ -503,7 +503,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
      * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
      */
     @Override
-    protected Run createInsertRun(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns) {
+    protected Run createInsertRun(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, Boolean placeholder, Boolean unicode, List<String> columns) {
         Run run = new TableRun(runtime, dest);
         // List<Object> values = new ArrayList<Object>();
         StringBuilder builder = run.getBuilder();
@@ -515,11 +515,12 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
         }
         checkName(runtime, null, dest);
         PrimaryGenerator generator = checkPrimaryGenerator(type(), dest.getName());
-        Boolean placeholder = configs.getPlaceholder();
+        if(null == placeholder) {
+            placeholder = configs.getPlaceholder();
+        }
         if(null == placeholder) {
             placeholder = true;
         }
-        Boolean unicode = null;
         int type = 1;
         StringBuilder valuesBuilder = new StringBuilder();
         DataRow row = null;
@@ -530,7 +531,9 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
         }
         if(obj instanceof DataRow) {
             row = (DataRow)obj;
-            unicode = row.getUnicode();
+            if(null == unicode) {
+                unicode = row.getUnicode();
+            }
             if(row.hasPrimaryKeys() && null != generator) {
                 generator.create(row, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), null);
                 //createPrimaryValue(row, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), null);
@@ -634,8 +637,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
      * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
      */
     @Override
-    protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, List<String> columns) {
-        return super.createInsertRunFromCollection(runtime, batch, dest, list, configs, columns);
+    protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, Boolean placeholder, Boolean unicode, List<String> columns) {
+        return super.createInsertRunFromCollection(runtime, batch, dest, list, configs, placeholder, unicode, columns);
     }
 
     /**
@@ -732,38 +735,38 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
      * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
      */
     @Override
-    public Run buildUpdateRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, List<String> columns) {
-        return super.buildUpdateRun(runtime, batch, dest, obj, configs, columns);
+    public Run buildUpdateRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, Boolean placeholder, Boolean unicode, List<String> columns) {
+        return super.buildUpdateRun(runtime, batch, dest, obj, configs, placeholder, unicode, columns);
     }
 
     @Override
-    public Run buildUpdateRunFromEntity(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, LinkedHashMap<String, Column> columns) {
-        return super.buildUpdateRunFromEntity(runtime, dest, obj, configs, columns);
+    public Run buildUpdateRunFromEntity(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, Boolean placeholder, Boolean unicode, LinkedHashMap<String, Column> columns) {
+        return super.buildUpdateRunFromEntity(runtime, dest, obj, configs, placeholder, unicode, columns);
     }
 
     @Override
-    public Run buildUpdateRunFromDataRow(DataRuntime runtime, Table dest, DataRow row, ConfigStore configs, LinkedHashMap<String, Column> columns) {
-        return super.buildUpdateRunFromDataRow(runtime, dest, row, configs, columns);
+    public Run buildUpdateRunFromDataRow(DataRuntime runtime, Table dest, DataRow row, ConfigStore configs, Boolean placeholder, Boolean unicode, LinkedHashMap<String, Column> columns) {
+        return super.buildUpdateRunFromDataRow(runtime, dest, row, configs, placeholder, unicode, columns);
     }
 
     @Override
-    public Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns) {
-        return super.buildUpdateRunFromCollection(runtime, batch, dest, list, configs, columns);
+    public Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, Boolean placeholder, Boolean unicode, LinkedHashMap<String, Column> columns) {
+        return super.buildUpdateRunFromCollection(runtime, batch, dest, list, configs, placeholder, unicode, columns);
     }
 
     @Override
-    public Run buildUpdateRunFromEntity(DataRuntime runtime, String dest, Object obj, ConfigStore configs, LinkedHashMap<String, Column> columns) {
-        return super.buildUpdateRunFromEntity(runtime, dest, obj, configs, columns);
+    public Run buildUpdateRunFromEntity(DataRuntime runtime, String dest, Object obj, ConfigStore configs, Boolean placeholder, Boolean unicode, LinkedHashMap<String, Column> columns) {
+        return super.buildUpdateRunFromEntity(runtime, dest, obj, configs, placeholder, unicode, columns);
     }
 
     @Override
-    public Run buildUpdateRunFromDataRow(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, LinkedHashMap<String, Column> columns) {
-        return super.buildUpdateRunFromDataRow(runtime, dest, row, configs, columns);
+    public Run buildUpdateRunFromDataRow(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, Boolean placeholder, Boolean unicode, LinkedHashMap<String, Column> columns) {
+        return super.buildUpdateRunFromDataRow(runtime, dest, row, configs, placeholder, unicode, columns);
     }
 
     @Override
-    public Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns) {
-        return super.buildUpdateRunFromCollection(runtime, batch, dest, list, configs, columns);
+    public Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore configs, Boolean placeholder, Boolean unicode, LinkedHashMap<String, Column> columns) {
+        return super.buildUpdateRunFromCollection(runtime, batch, dest, list, configs, placeholder, unicode, columns);
     }
 
     /**
@@ -909,9 +912,9 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
      * List<Run> buildQuerySequence(DataRuntime runtime, boolean next, String ... names)
      * Run fillQueryContent(DataRuntime runtime, Run run)
      * String mergeFinalQuery(DataRuntime runtime, Run run)
-     * RunValue createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder, boolean unicode)
-     * Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder, boolean unicode)
-     * StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder, boolean unicode)
+     * RunValue createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, Boolean placeholder, Boolean unicode)
+     * Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, Boolean placeholder, Boolean unicode)
+     * StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, Boolean placeholder, Boolean unicode)
      * [命令执行]
      * DataSet select(DataRuntime runtime, String random, boolean system, String table, ConfigStore configs, Run run)
      * List<Map<String, Object>> maps(DataRuntime runtime, String random, ConfigStore configs, Run run)
@@ -1068,8 +1071,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
      * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
      */
     @Override
-    public Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions) {
-        return super.buildQueryRun(runtime, prepare, configs, conditions);
+    public Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, Boolean placeholder, Boolean unicode, String ... conditions) {
+        return super.buildQueryRun(runtime, prepare, configs, placeholder, unicode, conditions);
     }
 
     /**
@@ -1089,29 +1092,29 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
      * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
      */
     @Override
-    public Run fillQueryContent(DataRuntime runtime, Run run) {
-        return super.fillQueryContent(runtime, run);
+    public Run fillQueryContent(DataRuntime runtime, Run run, Boolean placeholder, Boolean unicode) {
+        return super.fillQueryContent(runtime, run, placeholder, unicode);
     }
 
     @Override
-    protected Run fillQueryContent(DataRuntime runtime, XMLRun run) {
-        return super.fillQueryContent(runtime, run);
+    protected Run fillQueryContent(DataRuntime runtime, XMLRun run, Boolean placeholder, Boolean unicode) {
+        return super.fillQueryContent(runtime, run, placeholder, unicode);
     }
 
     @Override
-    protected Run fillQueryContent(DataRuntime runtime, TextRun run) {
-        return super.fillQueryContent(runtime, run);
+    protected Run fillQueryContent(DataRuntime runtime, TextRun run, Boolean placeholder, Boolean unicode) {
+        return super.fillQueryContent(runtime, run, placeholder, unicode);
     }
 
     @Override
-    protected Run fillQueryContent(DataRuntime runtime, StringBuilder builder, TableRun run) {
-        return super.fillQueryContent(runtime, builder, run);
+    protected Run fillQueryContent(DataRuntime runtime, StringBuilder builder, TableRun run, Boolean placeholder, Boolean unicode) {
+        return super.fillQueryContent(runtime, builder, run, placeholder, unicode);
     }
 
     @Override
-    protected Run fillQueryContent(DataRuntime runtime, TableRun run) {
+    protected Run fillQueryContent(DataRuntime runtime, TableRun run, Boolean placeholder, Boolean unicode) {
         StringBuilder builder = run.getBuilder();
-        fillQueryContent(runtime, builder, run);
+        fillQueryContent(runtime, builder, run, placeholder, unicode);
         //UNION
         List<Run> unions = run.getUnions();
         if(null != unions) {
@@ -1121,7 +1124,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
                     builder.append(" ALL ");
                 }
                 builder.append("\n");
-                fillQueryContent(runtime, builder, union);
+                fillQueryContent(runtime, builder, union, placeholder, unicode);
                 run.getRunValues().addAll(union.getRunValues());
             }
         }
@@ -1153,7 +1156,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
      * @return value 有占位符时返回占位值，没有占位符返回null
      */
     @Override
-    public RunValue createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder, boolean unicode) {
+    public RunValue createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, Boolean placeholder, Boolean unicode) {
         RunValue rv = new RunValue();
         int code = compare.getCode();
         if(code > 100) {
@@ -1206,10 +1209,10 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
      * @return value 有占位符时返回占位值，没有占位符返回null
      */
     @Override
-    public List<RunValue> createConditionExists(DataRuntime runtime, StringBuilder builder, Compare compare, RunPrepare prepare, boolean placeholder, boolean unicode) {
+    public List<RunValue> createConditionExists(DataRuntime runtime, StringBuilder builder, Compare compare, RunPrepare prepare, Boolean placeholder, Boolean unicode) {
         List<RunValue> values = new ArrayList<>();
         // EXISTS
-        org.anyline.data.Run run = buildQueryRun(runtime, prepare, new DefaultConfigStore());
+        org.anyline.data.Run run = buildQueryRun(runtime, prepare, new DefaultConfigStore(), placeholder, unicode);
         if(null != run){
             String sql = run.getBaseQuery(placeholder);
             sql = BasicUtil.tab(sql);
@@ -1238,7 +1241,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
      * @return value
      */
     @Override
-    public Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder, boolean unicode) throws NotSupportException {
+    public Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, Boolean placeholder, Boolean unicode) throws NotSupportException {
         return super.createConditionFindInSet(runtime, builder, column, compare, value, placeholder, unicode);
     }
 
@@ -1252,7 +1255,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
      * @return builder
      */
     @Override
-    public StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder, boolean unicode) {
+    public StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, Boolean placeholder, Boolean unicode) {
         if(compare == Compare.NOT_IN) {
             builder.append(" NOT");
         }
@@ -1459,7 +1462,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
         if(swt == ACTION.SWITCH.BREAK) {
             return false;
         }
-        Run run = buildQueryRun(runtime, prepare, configs, conditions);
+        Run run = buildQueryRun(runtime, prepare, configs, true, true, conditions);
         if(!run.isValid()) {
             if(log.isWarnEnabled() &&ConfigStore.IS_LOG_SQL(configs)) {
                 log.warn("[valid:false][不具备执行条件][RunPrepare:" + ConfigParser.createSQLSign(false, false, prepare.getTableName(), configs, conditions) + "][thread:" + Thread.currentThread().getId() + "][ds:" + runtime.datasource() + "]");
@@ -1618,8 +1621,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
      * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
      */
     @Override
-    public Run buildExecuteRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions) {
-        return super.buildExecuteRun(runtime, prepare, configs, conditions);
+    public Run buildExecuteRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, Boolean placeholder, Boolean unicode, String ... conditions) {
+        return super.buildExecuteRun(runtime, prepare, configs, placeholder, unicode, conditions);
     }
 
     @Override
@@ -1628,13 +1631,13 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
     }
 
     @Override
-    protected void fillExecuteContent(DataRuntime runtime, TextRun run) {
-        super.fillExecuteContent(runtime, run);
+    protected void fillExecuteContent(DataRuntime runtime, TextRun run, Boolean placeholder, Boolean unicode) {
+        super.fillExecuteContent(runtime, run, placeholder, unicode);
     }
 
     @Override
-    protected void fillExecuteContent(DataRuntime runtime, TableRun run) {
-        super.fillExecuteContent(runtime, run);
+    protected void fillExecuteContent(DataRuntime runtime, TableRun run, Boolean placeholder, Boolean unicode) {
+        super.fillExecuteContent(runtime, run, placeholder, unicode);
     }
 
     /**
@@ -1644,8 +1647,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
      * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
      */
     @Override
-    public void fillExecuteContent(DataRuntime runtime, Run run) {
-        super.fillExecuteContent(runtime, run);
+    public void fillExecuteContent(DataRuntime runtime, Run run, Boolean placeholder, Boolean unicode) {
+        super.fillExecuteContent(runtime, run, placeholder, unicode);
     }
 
     /**
@@ -1747,8 +1750,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
      * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
      */
     @Override
-    public List<Run> buildDeleteRun(DataRuntime runtime, Table dest, ConfigStore configs, Object obj, String ... columns) {
-        return super.buildDeleteRun(runtime, dest, configs, obj, columns);
+    public List<Run> buildDeleteRun(DataRuntime runtime, Table dest, ConfigStore configs, Object obj, Boolean placeholder, Boolean unicode, String ... columns) {
+        return super.buildDeleteRun(runtime, dest, configs, obj, placeholder, unicode, columns);
     }
 
     /**
@@ -1761,8 +1764,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
      * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
      */
     @Override
-    public List<Run> buildDeleteRun(DataRuntime runtime, int batch, Table table, ConfigStore configs, String key, Object values) {
-        return super.buildDeleteRun(runtime, batch, table, configs, key, values);
+    public List<Run> buildDeleteRun(DataRuntime runtime, int batch, Table table, ConfigStore configs, Boolean placeholder, Boolean unicode, String key, Object values) {
+        return super.buildDeleteRun(runtime, batch, table, configs, placeholder, unicode, key, values);
     }
 
     @Override
@@ -1786,7 +1789,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
      * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
      */
     @Override
-    public List<Run> buildDeleteRunFromTable(DataRuntime runtime, int batch, Table table, ConfigStore configs, String key, Object values) {
+    public List<Run> buildDeleteRunFromTable(DataRuntime runtime, int batch, Table table, ConfigStore configs, Boolean placeholder, Boolean unicode, String key, Object values) {
         List<Run> runs = new ArrayList<>();
         if(null == table && null != configs) {
             table = configs.table();
@@ -1860,7 +1863,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
      * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
      */
     @Override
-    public List<Run> buildDeleteRunFromEntity(DataRuntime runtime, Table table, ConfigStore configs, Object obj, String... columns) {
+    public List<Run> buildDeleteRunFromEntity(DataRuntime runtime, Table table, ConfigStore configs, Object obj, Boolean placeholder, Boolean unicode, String... columns) {
         List<Run> runs = new ArrayList<>();
         TableRun run = new TableRun(runtime, table);
         run.setOriginType(2);
@@ -1909,7 +1912,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
                 throw new CommandUpdateException("删除异常:删除条件为空,delete方法不支持删除整表操作.");
             }
         }else{
-            run.appendCondition(this, true, true);
+            run.appendCondition(this, true, true, true);
         }
         run.setBuilder(builder);
         runs.add(run);
@@ -1922,11 +1925,11 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
      * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
      */
     @Override
-    public void fillDeleteRunContent(DataRuntime runtime, Run run) {
+    public void fillDeleteRunContent(DataRuntime runtime, Run run, Boolean placeholder, Boolean unicode) {
         if(null != run) {
             if(run instanceof TableRun) {
                 TableRun r = (TableRun) run;
-                fillDeleteRunContent(runtime, r);
+                fillDeleteRunContent(runtime, r, placeholder, unicode);
             }
         }
     }
@@ -1935,7 +1938,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
      * delete[命令合成-子流程]<br/>
      * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
      */
-    protected void fillDeleteRunContent(DataRuntime runtime, TableRun run) {
+    protected void fillDeleteRunContent(DataRuntime runtime, TableRun run, Boolean placeholder, Boolean unicode) {
         AutoPrepare prepare =  (AutoPrepare)run.getPrepare();
         StringBuilder builder = run.getBuilder();
         builder.append("DELETE FROM ");
@@ -1964,8 +1967,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 
         /*添加查询条件*/
         // appendConfigStore();
-        run.appendCondition(this, true, true);
-        run.appendGroup();
+        run.appendCondition(this, true, placeholder, unicode);
+        run.appendGroup(runtime, placeholder, unicode);
         run.appendOrderStore();
         run.checkValid();
     }
@@ -2015,7 +2018,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
         String random = random(runtime);
         long fr = System.currentTimeMillis();
         try {
-            Run run = buildQueryRun(runtime, prepare, null, null);
+            Run run = buildQueryRun(runtime, prepare, null, true, true, null);
             String sql = run.getFinalQuery(false);
             columns = actuator.metadata(this, runtime, random, run, comment);
             if (ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
@@ -4901,7 +4904,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
      * @return Object
      */
     @Override
-    public Object convert(DataRuntime runtime, StringBuilder builder, Object value, Column column, boolean placeholder, Boolean unicode, ConfigStore configs) {
+    public Object convert(DataRuntime runtime, StringBuilder builder, Object value, Column column, Boolean placeholder, Boolean unicode, ConfigStore configs) {
         if(placeholder){
             builder.append("?");
         }else{
@@ -9246,7 +9249,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @param child          是否在子查询中，子查询中不要用序列
 	 * @param el          是否检测el格式 ${now()} &gt; now()
 	 */
-	protected String insertValue(DataRuntime runtime, Run run, Object obj, boolean head, boolean child, boolean placeholder, boolean alias, boolean scope, boolean el, LinkedHashMap<String,Column> columns) {
+	protected String insertValue(DataRuntime runtime, Run run, Object obj, boolean head, boolean child, Boolean placeholder, boolean alias, boolean scope, boolean el, LinkedHashMap<String,Column> columns) {
 		boolean batch = run.getBatch() > 1;
 		StringBuilder builder = new StringBuilder();
 		if(scope && (!batch||head)) {

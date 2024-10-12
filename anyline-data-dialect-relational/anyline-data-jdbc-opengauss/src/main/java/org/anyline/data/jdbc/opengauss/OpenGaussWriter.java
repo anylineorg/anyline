@@ -29,7 +29,7 @@ import java.util.Date;
 public enum OpenGaussWriter {
     DateWriter(new Object[]{java.sql.Date.class, LocalDate.class}, new DataWriter() {
         @Override
-        public Object write(Object value, boolean placeholder, boolean unicode, TypeMetadata type) {
+        public Object write(Object value, Boolean placeholder, Boolean unicode, TypeMetadata type) {
             if(!placeholder && null != value) {
                 Date date = (Date) ConvertProxy.convert(value, Date.class, false);
                 value = " to_date( '"+ DateUtil.format(date)+"', 'YYYY-MM-DD')";
@@ -39,7 +39,7 @@ public enum OpenGaussWriter {
     }),
     DateTimeWriter(new Object[]{Timestamp.class, Date.class, LocalDateTime.class}, new DataWriter() {
         @Override
-        public Object write(Object value, boolean placeholder, boolean unicode, TypeMetadata type) {
+        public Object write(Object value, Boolean placeholder, Boolean unicode, TypeMetadata type) {
             if(!placeholder && null != value) {
                 Date date = (Date) ConvertProxy.convert(value, Date.class, false);
                 value = " to_timestamp( '"+ DateUtil.format(date)+"', 'YYYY-MM-DD HH24:MI:SS')";

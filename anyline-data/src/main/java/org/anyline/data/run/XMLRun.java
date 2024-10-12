@@ -287,7 +287,7 @@ public class XMLRun extends TextRun implements Run {
 	} 
 	public void appendGroup() {
 		if(null != groups) {
-			builder.append(groups.getRunText(delimiterFr+delimiterTo));
+			builder.append("\n").append(groups.getRunText(delimiterFr+delimiterTo));
 		} 
 	} 
 	/** 
@@ -301,7 +301,7 @@ public class XMLRun extends TextRun implements Run {
  
 				if(null != test) {
 					Map<String, Object> map = con.getRunValuesMap();
-					Map<String, Object> runtimeValues = new HashMap<String, Object>();
+					Map<String, Object> runtimeValues = new HashMap<>();
 					// 如果是数组只取第0个值 ognl不支持数组
 					for(Map.Entry<String, Object> entry : map.entrySet()) {
 					    String mapKey = entry.getKey();
@@ -341,7 +341,7 @@ public class XMLRun extends TextRun implements Run {
 	/** 
 	 * 拼接查询条件
 	 */
-	public void appendCondition(boolean placeholder) {
+	public void appendCondition(Boolean placeholder) {
 		if(null == conditionChain || !conditionChain.isActive()) {
 			return; 
 		} 

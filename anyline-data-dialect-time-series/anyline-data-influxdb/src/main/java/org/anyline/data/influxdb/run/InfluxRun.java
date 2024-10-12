@@ -127,7 +127,7 @@ public class InfluxRun extends SimpleRun {
         super(runtime, sql);
     }
 
-    public String log(ACTION.DML action, boolean placeholder) {
+    public String log(ACTION.DML action, Boolean placeholder) {
         StringBuilder builder = new StringBuilder();
         List<String> keys = null;
         builder.append("[org:").append(org).append("][bucket:").append(bucket).append("][api:").append(api).append("]");

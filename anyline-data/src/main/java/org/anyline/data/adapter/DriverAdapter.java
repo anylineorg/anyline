@@ -849,7 +849,7 @@ public interface DriverAdapter {
      * @param configs 过滤条件及相关配置
      * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
      */
-    Run buildInsertRun(DataRuntime runtime, Table dest, RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions);
+    Run buildInsertRun(DataRuntime runtime, Table dest, RunPrepare prepare, ConfigStore configs, Object obj, Boolean placeholder, Boolean unicode, String ... conditions);
     /**
      * insert [命令合成]<br/>
      * 填充inset命令内容(创建批量INSERT RunPrepare)
@@ -859,37 +859,37 @@ public interface DriverAdapter {
      * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
      * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
      */
-    Run buildInsertRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, List<String> columns);
-    default Run buildInsertRun(DataRuntime runtime, int batch, Table dest, Object obj, List<String> columns) {
-        return buildInsertRun(runtime, batch, dest, obj, null, columns);
+    Run buildInsertRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, Boolean placeholder, Boolean unicode, List<String> columns);
+    default Run buildInsertRun(DataRuntime runtime, int batch, Table dest, Object obj, Boolean placeholder, Boolean unicode, List<String> columns) {
+        return buildInsertRun(runtime, batch, dest, obj, null, placeholder, unicode, columns);
     }
-    default Run buildInsertRun(DataRuntime runtime, int batch, Table dest, Object obj, String ... columns) {
-        return buildInsertRun(runtime, batch, dest, obj, BeanUtil.array2list(columns));
+    default Run buildInsertRun(DataRuntime runtime, int batch, Table dest, Object obj, Boolean placeholder, Boolean unicode, String ... columns) {
+        return buildInsertRun(runtime, batch, dest, obj, placeholder, unicode, BeanUtil.array2list(columns));
     }
-    default Run buildInsertRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore confgis, String ... columns) {
-        return buildInsertRun(runtime, batch, dest, obj, confgis, BeanUtil.array2list(columns));
+    default Run buildInsertRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore confgis, Boolean placeholder, Boolean unicode, String ... columns) {
+        return buildInsertRun(runtime, batch, dest, obj, confgis, placeholder, unicode, BeanUtil.array2list(columns));
     }
-    default Run buildInsertRun(DataRuntime runtime, int batch, Object obj, String ... columns) {
-        return buildInsertRun(runtime, batch, DataSourceUtil.parseDest(null, obj, null), obj, BeanUtil.array2list(columns));
+    default Run buildInsertRun(DataRuntime runtime, int batch, Object obj, Boolean placeholder, Boolean unicode, String ... columns) {
+        return buildInsertRun(runtime, batch, DataSourceUtil.parseDest(null, obj, null), obj, placeholder, unicode, BeanUtil.array2list(columns));
     }
-    default Run buildInsertRun(DataRuntime runtime, int batch, Object obj, ConfigStore configs, String ... columns) {
-        return buildInsertRun(runtime, batch, DataSourceUtil.parseDest(null, obj, configs), obj, configs, BeanUtil.array2list(columns));
+    default Run buildInsertRun(DataRuntime runtime, int batch, Object obj, ConfigStore configs, Boolean placeholder, Boolean unicode, String ... columns) {
+        return buildInsertRun(runtime, batch, DataSourceUtil.parseDest(null, obj, configs), obj, configs, placeholder, unicode, BeanUtil.array2list(columns));
     }
-    default Run buildInsertRun(DataRuntime runtime, int batch, ConfigStore configs, Object obj, String ... columns) {
-        return buildInsertRun(runtime, batch, DataSourceUtil.parseDest(null, obj, configs), obj, configs, BeanUtil.array2list(columns));
+    default Run buildInsertRun(DataRuntime runtime, int batch, ConfigStore configs, Object obj, Boolean placeholder, Boolean unicode, String ... columns) {
+        return buildInsertRun(runtime, batch, DataSourceUtil.parseDest(null, obj, configs), obj, configs, placeholder, unicode, BeanUtil.array2list(columns));
     }
 
-    default Run buildInsertRun(DataRuntime runtime, int batch, String dest, Object obj, ConfigStore configs, List<String> columns) {
-        return buildInsertRun(runtime, batch, DataSourceUtil.parseDest(dest, obj, configs), obj, configs, columns);
+    default Run buildInsertRun(DataRuntime runtime, int batch, String dest, Object obj, ConfigStore configs, Boolean placeholder, Boolean unicode, List<String> columns) {
+        return buildInsertRun(runtime, batch, DataSourceUtil.parseDest(dest, obj, configs), obj, configs, placeholder, unicode, columns);
     }
-    default Run buildInsertRun(DataRuntime runtime, int batch, String dest, Object obj, List<String> columns) {
-        return buildInsertRun(runtime, batch, dest, obj, null, columns);
+    default Run buildInsertRun(DataRuntime runtime, int batch, String dest, Object obj, Boolean placeholder, Boolean unicode, List<String> columns) {
+        return buildInsertRun(runtime, batch, dest, obj, null, placeholder, unicode, columns);
     }
-    default Run buildInsertRun(DataRuntime runtime, int batch, String dest, Object obj, String ... columns) {
-        return buildInsertRun(runtime, batch, dest, obj, BeanUtil.array2list(columns));
+    default Run buildInsertRun(DataRuntime runtime, int batch, String dest, Object obj, Boolean placeholder, Boolean unicode, String ... columns) {
+        return buildInsertRun(runtime, batch, dest, obj, placeholder, unicode, BeanUtil.array2list(columns));
     }
-    default Run buildInsertRun(DataRuntime runtime, int batch, String dest, Object obj, ConfigStore confgis, String ... columns) {
-        return buildInsertRun(runtime, batch, dest, obj, confgis, BeanUtil.array2list(columns));
+    default Run buildInsertRun(DataRuntime runtime, int batch, String dest, Object obj, ConfigStore confgis, Boolean placeholder, Boolean unicode, String ... columns) {
+        return buildInsertRun(runtime, batch, dest, obj, confgis, placeholder, unicode, BeanUtil.array2list(columns));
     }
     
     /**
@@ -901,9 +901,9 @@ public interface DriverAdapter {
      * @param list 需要插入的数据集合
      * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
      */
-    void fillInsertContent(DataRuntime runtime, Run run, Table dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns);
-    default void fillInsertContent(DataRuntime runtime, Run run, Table dest, Collection list, LinkedHashMap<String, Column> columns) {
-        fillInsertContent(runtime, run, dest, list, null, columns);
+    void fillInsertContent(DataRuntime runtime, Run run, Table dest, Collection list, ConfigStore configs, Boolean placeholder, Boolean unicode, LinkedHashMap<String, Column> columns);
+    default void fillInsertContent(DataRuntime runtime, Run run, Table dest, Collection list, Boolean placeholder, Boolean unicode, LinkedHashMap<String, Column> columns) {
+        fillInsertContent(runtime, run, dest, list, null, placeholder, unicode, columns);
     }
 
     /**
@@ -915,9 +915,9 @@ public interface DriverAdapter {
      * @param set 需要插入的数据集合
      * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
      */
-    void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet set, ConfigStore configs, LinkedHashMap<String, Column> columns);
-    default void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet set, LinkedHashMap<String, Column> columns) {
-        fillInsertContent(runtime, run, dest, set, null, columns);
+    void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet set, ConfigStore configs, Boolean placeholder, Boolean unicode, LinkedHashMap<String, Column> columns);
+    default void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet set, Boolean placeholder, Boolean unicode, LinkedHashMap<String, Column> columns) {
+        fillInsertContent(runtime, run, dest, set, null, placeholder, unicode, columns);
     }
 
     /**
@@ -929,11 +929,11 @@ public interface DriverAdapter {
      * @param list 需要插入的数据集合
      * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
      */
-    default void fillInsertContent(DataRuntime runtime, Run run, String dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns) {
-        fillInsertContent(runtime, run, DataSourceUtil.parseDest(dest, list, configs), list, configs, columns);
+    default void fillInsertContent(DataRuntime runtime, Run run, String dest, Collection list, ConfigStore configs, Boolean placeholder, Boolean unicode, LinkedHashMap<String, Column> columns) {
+        fillInsertContent(runtime, run, DataSourceUtil.parseDest(dest, list, configs), list, configs, placeholder, unicode, columns);
     }
-    default void fillInsertContent(DataRuntime runtime, Run run, String dest, Collection list, LinkedHashMap<String, Column> columns) {
-        fillInsertContent(runtime, run, dest, list, null, columns);
+    default void fillInsertContent(DataRuntime runtime, Run run, String dest, Collection list, Boolean placeholder, Boolean unicode, LinkedHashMap<String, Column> columns) {
+        fillInsertContent(runtime, run, dest, list, null, placeholder, unicode, columns);
     }
 
     /**
@@ -945,11 +945,11 @@ public interface DriverAdapter {
      * @param set 需要插入的数据集合
      * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
      */
-    default void fillInsertContent(DataRuntime runtime, Run run, String dest, DataSet set, ConfigStore configs, LinkedHashMap<String, Column> columns) {
-        fillInsertContent(runtime, run, DataSourceUtil.parseDest(dest, set, configs), set, configs, columns);
+    default void fillInsertContent(DataRuntime runtime, Run run, String dest, DataSet set, ConfigStore configs, Boolean placeholder, Boolean unicode, LinkedHashMap<String, Column> columns) {
+        fillInsertContent(runtime, run, DataSourceUtil.parseDest(dest, set, configs), set, configs, placeholder, unicode, columns);
     }
-    default void fillInsertContent(DataRuntime runtime, Run run, String dest, DataSet set, LinkedHashMap<String, Column> columns) {
-        fillInsertContent(runtime, run, dest, set, null, columns);
+    default void fillInsertContent(DataRuntime runtime, Run run, String dest, DataSet set, Boolean placeholder, Boolean unicode, LinkedHashMap<String, Column> columns) {
+        fillInsertContent(runtime, run, dest, set, null, placeholder, unicode, columns);
     }
 
     /**
@@ -1159,7 +1159,7 @@ public interface DriverAdapter {
      * @param data K-VariableValue 更新值key:需要更新的列 value:通常是关联表的列用VariableValue表示，也可以是常量
      * @return 影响行数
      */
-    Run buildUpdateRun(DataRuntime runtime, RunPrepare prepare, DataRow data, ConfigStore configs, String ... conditions);
+    Run buildUpdateRun(DataRuntime runtime, RunPrepare prepare, DataRow data, ConfigStore configs, Boolean placeholder, Boolean unicode, String ... conditions);
 
     /**
      *
@@ -1167,15 +1167,15 @@ public interface DriverAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
      */
-    void fillUpdateContent(DataRuntime runtime, TableRun run, StringBuilder builder, DataRow data, ConfigStore configs);
+    void fillUpdateContent(DataRuntime runtime, TableRun run, StringBuilder builder, DataRow data, ConfigStore configs, Boolean placeholder, Boolean unicode);
     /**
      *
      * 多表关联更新
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
      */
-    default void fillUpdateContent(DataRuntime runtime, TableRun run, DataRow data, ConfigStore configs) {
-        fillUpdateContent(runtime, run, run.getBuilder(), data, configs);
+    default void fillUpdateContent(DataRuntime runtime, TableRun run, DataRow data, ConfigStore configs, Boolean placeholder, Boolean unicode) {
+        fillUpdateContent(runtime, run, run.getBuilder(), data, configs, placeholder, unicode);
     }
     /**
      * update [命令合成]<br/>
@@ -1200,7 +1200,7 @@ public interface DriverAdapter {
      *        则把执行结果与表结构对比,删除表中没有的列<br/>
      * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
      */
-    Run buildUpdateRun(DataRuntime runtime, int btch, Table dest, Object obj, ConfigStore configs, List<String> columns);
+    Run buildUpdateRun(DataRuntime runtime, int btch, Table dest, Object obj, ConfigStore configs, Boolean placeholder, Boolean unicode, List<String> columns);
 
     /**
      *
@@ -1210,29 +1210,29 @@ public interface DriverAdapter {
      * @return Run
      */
     Run buildUpdateRunLimit(DataRuntime runtime, Run run);
-    default Run buildUpdateRun(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns) {
-        return buildUpdateRun(runtime, 0, dest, obj, configs, columns);
+    default Run buildUpdateRun(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, Boolean placeholder, Boolean unicode, List<String> columns) {
+        return buildUpdateRun(runtime, 0, dest, obj, configs, placeholder, unicode, columns);
     }
-    default Run buildUpdateRun(DataRuntime runtime, Object obj, ConfigStore configs, List<String> columns) {
-        return buildUpdateRun(runtime, DataSourceUtil.parseDest(null, obj, configs), obj, configs, columns);
+    default Run buildUpdateRun(DataRuntime runtime, Object obj, ConfigStore configs, Boolean placeholder, Boolean unicode, List<String> columns) {
+        return buildUpdateRun(runtime, DataSourceUtil.parseDest(null, obj, configs), obj, configs, placeholder, unicode, columns);
     }
-    default Run buildUpdateRun(DataRuntime runtime, Table dest, Object obj, List<String> columns) {
-        return buildUpdateRun(runtime, dest, obj, null, columns);
+    default Run buildUpdateRun(DataRuntime runtime, Table dest, Object obj, Boolean placeholder, Boolean unicode, List<String> columns) {
+        return buildUpdateRun(runtime, dest, obj, null, placeholder, unicode, columns);
     }
-    default Run buildUpdateRun(DataRuntime runtime, Object obj, List<String> columns) {
-        return buildUpdateRun(runtime, DataSourceUtil.parseDest(null, obj, null), obj, null, columns);
+    default Run buildUpdateRun(DataRuntime runtime, Object obj, Boolean placeholder, Boolean unicode, List<String> columns) {
+        return buildUpdateRun(runtime, DataSourceUtil.parseDest(null, obj, null), obj, null, placeholder, unicode, columns);
     }
-    default Run buildUpdateRun(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, String ... columns) {
-        return buildUpdateRun(runtime, dest, obj, configs, BeanUtil.array2list(columns));
+    default Run buildUpdateRun(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, Boolean placeholder, Boolean unicode,  String ... columns) {
+        return buildUpdateRun(runtime, dest, obj, configs, placeholder, unicode, BeanUtil.array2list(columns));
     }
-    default Run buildUpdateRun(DataRuntime runtime, Object obj, ConfigStore configs, String ... columns) {
-        return buildUpdateRun(runtime, DataSourceUtil.parseDest(null, obj, configs), obj, configs, BeanUtil.array2list(columns));
+    default Run buildUpdateRun(DataRuntime runtime, Object obj, ConfigStore configs, Boolean placeholder, Boolean unicode, String ... columns) {
+        return buildUpdateRun(runtime, DataSourceUtil.parseDest(null, obj, configs), obj, configs, placeholder, unicode, BeanUtil.array2list(columns));
     }
-    default Run buildUpdateRun(DataRuntime runtime, Table dest, Object obj, String ... columns) {
-        return buildUpdateRun(runtime, dest, obj, null, BeanUtil.array2list(columns));
+    default Run buildUpdateRun(DataRuntime runtime, Table dest, Object obj, Boolean placeholder, Boolean unicode, String ... columns) {
+        return buildUpdateRun(runtime, dest, obj, null, placeholder, unicode, BeanUtil.array2list(columns));
     }
-    default Run buildUpdateRun(DataRuntime runtime, Object obj, String ... columns) {
-        return buildUpdateRun(runtime, DataSourceUtil.parseDest(null, obj, null), obj, null, BeanUtil.array2list(columns));
+    default Run buildUpdateRun(DataRuntime runtime, Object obj, Boolean placeholder, Boolean unicode, String ... columns) {
+        return buildUpdateRun(runtime, DataSourceUtil.parseDest(null, obj, null), obj, null, placeholder, unicode, BeanUtil.array2list(columns));
     }
 
     /**
@@ -1245,7 +1245,7 @@ public interface DriverAdapter {
      * @param columns 需要插入或更新的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
      * @return Run
      */
-    Run buildUpdateRunFromEntity(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, LinkedHashMap<String, Column> columns);
+    Run buildUpdateRunFromEntity(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, Boolean placeholder, Boolean unicode, LinkedHashMap<String, Column> columns);
 
     /**
      *
@@ -1257,7 +1257,7 @@ public interface DriverAdapter {
      * @param columns 需要插入或更新的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
      * @return Run
      */
-    Run buildUpdateRunFromDataRow(DataRuntime runtime, Table dest, DataRow row, ConfigStore configs, LinkedHashMap<String,Column> columns);
+    Run buildUpdateRunFromDataRow(DataRuntime runtime, Table dest, DataRow row, ConfigStore configs, Boolean placeholder, Boolean unicode, LinkedHashMap<String,Column> columns);
 
     /**
      *
@@ -1269,33 +1269,33 @@ public interface DriverAdapter {
      * @param columns 需要插入或更新的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
      * @return Run
      */
-    Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, LinkedHashMap<String,Column> columns);
+    Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, Boolean placeholder, Boolean unicode, LinkedHashMap<String,Column> columns);
 
-    default Run buildUpdateRun(DataRuntime runtime, int batch, String dest, Object obj, ConfigStore configs, List<String> columns) {
-        return buildUpdateRun(runtime, batch, DataSourceUtil.parseDest(dest, obj, configs), obj, configs, columns);
+    default Run buildUpdateRun(DataRuntime runtime, int batch, String dest, Object obj, ConfigStore configs, Boolean placeholder, Boolean unicode, List<String> columns) {
+        return buildUpdateRun(runtime, batch, DataSourceUtil.parseDest(dest, obj, configs), obj, configs, placeholder, unicode, columns);
     }
-    default Run buildUpdateRun(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns) {
-        return buildUpdateRun(runtime, 0, dest, obj, configs, columns);
+    default Run buildUpdateRun(DataRuntime runtime, String dest, Object obj, ConfigStore configs, Boolean placeholder, Boolean unicode, List<String> columns) {
+        return buildUpdateRun(runtime, 0, dest, obj, configs, placeholder, unicode, columns);
     }
-    default Run buildUpdateRun(DataRuntime runtime, String dest, Object obj, List<String> columns) {
-        return buildUpdateRun(runtime, dest, obj, null, columns);
+    default Run buildUpdateRun(DataRuntime runtime, String dest, Object obj, Boolean placeholder, Boolean unicode, List<String> columns) {
+        return buildUpdateRun(runtime, dest, obj, null, placeholder, unicode, columns);
     }
-    default Run buildUpdateRun(DataRuntime runtime, String dest, Object obj, ConfigStore configs, String ... columns) {
-        return buildUpdateRun(runtime, dest, obj, configs, BeanUtil.array2list(columns));
+    default Run buildUpdateRun(DataRuntime runtime, String dest, Object obj, ConfigStore configs, Boolean placeholder, Boolean unicode, String ... columns) {
+        return buildUpdateRun(runtime, dest, obj, configs, placeholder, unicode, BeanUtil.array2list(columns));
     }
-    default Run buildUpdateRun(DataRuntime runtime, String dest, Object obj, String ... columns) {
-        return buildUpdateRun(runtime, dest, obj, null, BeanUtil.array2list(columns));
+    default Run buildUpdateRun(DataRuntime runtime, String dest, Object obj, Boolean placeholder, Boolean unicode, String ... columns) {
+        return buildUpdateRun(runtime, dest, obj, null, placeholder, unicode, BeanUtil.array2list(columns));
     }
-    default Run buildUpdateRunFromEntity(DataRuntime runtime, String dest, Object obj, ConfigStore configs, LinkedHashMap<String, Column> columns) {
-        return buildUpdateRunFromEntity(runtime, DataSourceUtil.parseDest(dest, obj, configs), obj, configs, columns);
-    }
-
-    default Run buildUpdateRunFromDataRow(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, LinkedHashMap<String,Column> columns) {
-        return buildUpdateRunFromDataRow(runtime, DataSourceUtil.parseDest(dest, row, configs), row, configs, columns);
+    default Run buildUpdateRunFromEntity(DataRuntime runtime, String dest, Object obj, ConfigStore configs, Boolean placeholder, Boolean unicode, LinkedHashMap<String, Column> columns) {
+        return buildUpdateRunFromEntity(runtime, DataSourceUtil.parseDest(dest, obj, configs), obj, configs, placeholder, unicode, columns);
     }
 
-    default Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore configs, LinkedHashMap<String,Column> columns) {
-        return buildUpdateRunFromCollection(runtime, batch, DataSourceUtil.parseDest(dest, list, configs), list, configs, columns);
+    default Run buildUpdateRunFromDataRow(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, Boolean placeholder, Boolean unicode, LinkedHashMap<String,Column> columns) {
+        return buildUpdateRunFromDataRow(runtime, DataSourceUtil.parseDest(dest, row, configs), row, configs, placeholder, unicode, columns);
+    }
+
+    default Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore configs, Boolean placeholder, Boolean unicode, LinkedHashMap<String,Column> columns) {
+        return buildUpdateRunFromCollection(runtime, batch, DataSourceUtil.parseDest(dest, list, configs), list, configs, placeholder, unicode, columns);
     }
 
     /**
@@ -1460,7 +1460,7 @@ public interface DriverAdapter {
      * @param conditions 查询条件 支持k:v k:v::type 以及原生sql形式(包含ORDER、GROUP、HAVING)默认忽略空值条件
      * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
      */
-    Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions);
+    Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, Boolean placeholder, Boolean unicode, String ... conditions);
     default Run initQueryRun(DataRuntime runtime, RunPrepare prepare) {
         Run run = prepare.build(runtime);
         if(null != run && null == run.action()) {
@@ -1507,9 +1507,9 @@ public interface DriverAdapter {
      * 构造查询主体 拼接where group等(不含分页 ORDER)
      * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
      */
-    Run fillQueryContent(DataRuntime runtime, StringBuilder builder,  Run run);
+    Run fillQueryContent(DataRuntime runtime, StringBuilder builder,  Run run, Boolean placeholder, Boolean unicode);
 
-    Run fillQueryContent(DataRuntime runtime, Run run);
+    Run fillQueryContent(DataRuntime runtime, Run run, Boolean placeholder, Boolean unicode);
 
     /**
      * select[命令合成-子流程] <br/>
@@ -1530,7 +1530,7 @@ public interface DriverAdapter {
      * @param value value
      * @return value 有占位符时返回占位值，没有占位符返回null
      */
-    RunValue createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder, boolean unicode);
+    RunValue createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, Boolean placeholder, Boolean unicode);
 
     /**
      * select[命令合成-子流程] <br/>
@@ -1542,7 +1542,7 @@ public interface DriverAdapter {
      * @param prepare RunPrepare
      * @return value 有占位符时返回占位值，没有占位符返回null
      */
-    default List<RunValue> createConditionExists(DataRuntime runtime, StringBuilder builder, Compare compare, RunPrepare prepare, boolean placeholder, boolean unicode) {
+    default List<RunValue> createConditionExists(DataRuntime runtime, StringBuilder builder, Compare compare, RunPrepare prepare, Boolean placeholder, Boolean unicode) {
         return null;
     }
     /**
@@ -1556,7 +1556,7 @@ public interface DriverAdapter {
      * @param value value
      * @return value
      */
-    default Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder, boolean unicode) throws NotSupportException {
+    default Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, Boolean placeholder, Boolean unicode) throws NotSupportException {
         throw new NotSupportException("不支持");
     }
 
@@ -1571,10 +1571,10 @@ public interface DriverAdapter {
      * @param value value
      * @return value
      */
-    default Object createConditionJsonContains(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder, boolean unicode) throws NotSupportException {
+    default Object createConditionJsonContains(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, Boolean placeholder, Boolean unicode) throws NotSupportException {
         throw new NotSupportException("不支持");
     }
-    default Object createConditionJsonContains(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder) throws NotSupportException {
+    default Object createConditionJsonContains(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, Boolean placeholder) throws NotSupportException {
         throw new NotSupportException("不支持");
     }
 
@@ -1589,7 +1589,7 @@ public interface DriverAdapter {
      * @param value value
      * @return value
      */
-    default Object createConditionJsonContainsPath(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder, boolean unicode) throws NotSupportException {
+    default Object createConditionJsonContainsPath(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, Boolean placeholder, Boolean unicode) throws NotSupportException {
         throw new NotSupportException("不支持");
     }
     /**
@@ -1603,7 +1603,7 @@ public interface DriverAdapter {
      * @param value value
      * @return value
      */
-    default Object createConditionJsonSearch(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder, boolean unicode) throws NotSupportException {
+    default Object createConditionJsonSearch(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, Boolean placeholder, Boolean unicode) throws NotSupportException {
         throw new NotSupportException("不支持");
     }
 
@@ -1616,7 +1616,7 @@ public interface DriverAdapter {
      * @param value value
      * @return builder
      */
-    StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder, boolean unicode);
+    StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, Boolean placeholder, Boolean unicode);
 
     /**
      * select [命令执行]<br/>
@@ -1756,14 +1756,14 @@ public interface DriverAdapter {
      * @param conditions 查询条件 支持k:v k:v::type 以及原生sql形式(包含ORDER、GROUP、HAVING)默认忽略空值条件
      * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
      */
-    Run buildExecuteRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions);
+    Run buildExecuteRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, Boolean placeholder, Boolean unicode, String ... conditions);
 
     /**
      * 填充 execute 命令内容
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
      */
-    void fillExecuteContent(DataRuntime runtime, Run run);
+    void fillExecuteContent(DataRuntime runtime, Run run, Boolean placeholder, Boolean unicode);
 
     /**
      * execute [命令执行]<br/>
@@ -1889,16 +1889,16 @@ public interface DriverAdapter {
      * @param columns 删除条件的列或属性，根据columns取obj值并合成删除条件
      * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
      */
-    List<Run> buildDeleteRun(DataRuntime runtime, Table table, ConfigStore configs, Object obj, String ... columns);
-    default List<Run> buildDeleteRun(DataRuntime runtime, String table, ConfigStore configs, Object obj, String ... columns) {
-        return buildDeleteRun(runtime, new Table(table), configs, obj, columns);
+    List<Run> buildDeleteRun(DataRuntime runtime, Table table, ConfigStore configs, Object obj, Boolean placeholder, Boolean unicode,  String ... columns);
+    default List<Run> buildDeleteRun(DataRuntime runtime, String table, ConfigStore configs, Object obj, Boolean placeholder, Boolean unicode, String ... columns) {
+        return buildDeleteRun(runtime, new Table(table), configs, obj, placeholder, unicode, columns);
     }
 
-    default List<Run> buildDeleteRun(DataRuntime runtime, Table table, ConfigStore configs) {
-        return buildDeleteRun(runtime,  table, configs, null, null);
+    default List<Run> buildDeleteRun(DataRuntime runtime, Table table, ConfigStore configs, Boolean placeholder, Boolean unicode) {
+        return buildDeleteRun(runtime,  table, configs, null, placeholder, unicode,  null);
     }
-    default List<Run> buildDeleteRun(DataRuntime runtime, String table, ConfigStore configs) {
-        return buildDeleteRun(runtime,  new Table(table), configs, null, null);
+    default List<Run> buildDeleteRun(DataRuntime runtime, String table, ConfigStore configs, Boolean placeholder, Boolean unicode) {
+        return buildDeleteRun(runtime,  new Table(table), configs, null, placeholder, unicode,  null);
     }
 
     /**
@@ -1910,9 +1910,9 @@ public interface DriverAdapter {
      * @param values values
      * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
      */
-    List<Run> buildDeleteRun(DataRuntime runtime, int batch, Table table, ConfigStore configs, String column, Object values);
-    default List<Run> buildDeleteRun(DataRuntime runtime, int batch, String table, ConfigStore configs, String column, Object values) {
-        return buildDeleteRun(runtime, batch, new Table(table), configs, column, values);
+    List<Run> buildDeleteRun(DataRuntime runtime, int batch, Table table, ConfigStore configs, Boolean placeholder, Boolean unicode, String column, Object values);
+    default List<Run> buildDeleteRun(DataRuntime runtime, int batch, String table, ConfigStore configs, Boolean placeholder, Boolean unicode, String column, Object values) {
+        return buildDeleteRun(runtime, batch, new Table(table), configs, placeholder, unicode, column, values);
     }
 
     /**
@@ -1935,9 +1935,9 @@ public interface DriverAdapter {
      * @param values values
      * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
      */
-    List<Run> buildDeleteRunFromTable(DataRuntime runtime, int batch, Table table, ConfigStore configs, String column, Object values);
-    default List<Run> buildDeleteRunFromTable(DataRuntime runtime, int batch, String table, ConfigStore configs,String column, Object values) {
-        return buildDeleteRunFromTable(runtime, batch, new Table(table), configs, column, values);
+    List<Run> buildDeleteRunFromTable(DataRuntime runtime, int batch, Table table, ConfigStore configs, Boolean placeholder, Boolean unicode, String column, Object values);
+    default List<Run> buildDeleteRunFromTable(DataRuntime runtime, int batch, String table, ConfigStore configs, Boolean placeholder, Boolean unicode, String column, Object values) {
+        return buildDeleteRunFromTable(runtime, batch, new Table(table), configs, placeholder, unicode, column, values);
     }
 
     /**
@@ -1949,15 +1949,15 @@ public interface DriverAdapter {
      * @param columns 删除条件的列或属性，根据columns取obj值并合成删除条件
      * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
      */
-    List<Run> buildDeleteRunFromEntity(DataRuntime runtime, Table table, ConfigStore configs, Object obj, String ... columns);
-    default List<Run> buildDeleteRunFromEntity(DataRuntime runtime, String table, ConfigStore configs, Object obj, String ... columns) {
-        return buildDeleteRunFromEntity(runtime, new Table(table), configs, obj, columns);
+    List<Run> buildDeleteRunFromEntity(DataRuntime runtime, Table table, ConfigStore configs, Object obj, Boolean placeholder, Boolean unicode, String ... columns);
+    default List<Run> buildDeleteRunFromEntity(DataRuntime runtime, String table, ConfigStore configs, Object obj, Boolean placeholder, Boolean unicode, String ... columns) {
+        return buildDeleteRunFromEntity(runtime, new Table(table), configs, obj, placeholder, unicode, columns);
     }
 
-    default List<Run> buildDeleteRunFromConfig(DataRuntime runtime, ConfigStore configs) {
+    default List<Run> buildDeleteRunFromConfig(DataRuntime runtime, ConfigStore configs, Boolean placeholder, Boolean unicode) {
         Table table = configs.table();
         if(null!= table && BasicUtil.isNotEmpty(table.getName())) {
-            return buildDeleteRunFromTable(runtime, 1, table, configs, null, null);
+            return buildDeleteRunFromTable(runtime, 1, table, configs, placeholder, unicode, null, null);
         }
         return null;
     }
@@ -1967,7 +1967,7 @@ public interface DriverAdapter {
      * 构造查询主体 拼接where group等(不含分页 ORDER)
      * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
      */
-    void fillDeleteRunContent(DataRuntime runtime, Run run);
+    void fillDeleteRunContent(DataRuntime runtime, Run run, Boolean placeholder, Boolean unicode);
     /**
      *
      * delete[命令执行]<br/>
@@ -9959,7 +9959,7 @@ public interface DriverAdapter {
      * @param unicode 编码
      * @return Object
      */
-    public Object convert(DataRuntime runtime, StringBuilder builder,  Object value, Column column, boolean placeholder, Boolean unicode, ConfigStore configs);
+    public Object convert(DataRuntime runtime, StringBuilder builder,  Object value, Column column, Boolean placeholder, Boolean unicode, ConfigStore configs);
 	/**
 	 * 参数值 数据类型转换
 	 * 子类先解析(有些同名的类型以子类为准)、失败后再调用默认转换
@@ -10037,7 +10037,7 @@ public interface DriverAdapter {
 	 * @param value value
 	 * @return Object
 	 */
-	Object write(DataRuntime runtime, Column metadata, Object value, boolean placeholder, boolean unicode);
+	Object write(DataRuntime runtime, Column metadata, Object value, Boolean placeholder, Boolean unicode);
     default String unicodeGuide(DataRuntime runtime) {
         return "";
     }
@@ -10131,7 +10131,7 @@ public interface DriverAdapter {
 	 * @param value 值
 	 * @param placeholder 是否启用占位符
 	 */
-	default void formula(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Column metadata, Object value, boolean placeholder, boolean unicode) {
+	default void formula(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Column metadata, Object value, Boolean placeholder, Boolean unicode) {
 		if(!placeholder) {
 			//不用占位 需要引号的在这里加上
 			value = write(runtime, metadata, value, placeholder, unicode);

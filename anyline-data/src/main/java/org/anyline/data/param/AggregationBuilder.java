@@ -33,7 +33,7 @@ public class AggregationBuilder {
     private ConfigStore configs = new DefaultConfigStore();
     private List<AggregationConfig> aggregations = new ArrayList<>();
     private GroupStore groups = new DefaultGroupStore();
-    private HavingStore having = new DefaultHavingStore();
+    private ConfigStore having = new DefaultConfigStore();
     private OrderStore orders = new DefaultOrderStore();
     public AggregationBuilder(AnylineService service) {
         this.service = service;
@@ -54,11 +54,7 @@ public class AggregationBuilder {
     }
 
     public AggregationBuilder having(String having) {
-        this.having.add(having);
-        return this;
-    }
-    public AggregationBuilder having(Having having) {
-        this.having.add(having);
+        this.having.and(having);
         return this;
     }
 

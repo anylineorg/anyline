@@ -683,7 +683,7 @@ public enum Compare {
         return formula;
     }
 
-    public String formula(String column, Object value, boolean placeholder, boolean unicode) {
+    public String formula(String column, Object value, Boolean placeholder, Boolean unicode) {
         //如果不需要占位符，必须在上一步把需要的引号加上
         if(!placeholder) {
             String str = "";
@@ -694,7 +694,7 @@ public enum Compare {
         }
         return formula;
     }
-    public String formula(String column, Object value, boolean placeholder) {
+    public String formula(String column, Object value, Boolean placeholder) {
         return formula(column, value, placeholder, false);
     }
     public String getOperator() {

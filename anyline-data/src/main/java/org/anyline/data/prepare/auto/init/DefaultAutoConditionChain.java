@@ -56,7 +56,7 @@ public class DefaultAutoConditionChain extends AbstractConditionChain implements
 		}
 	}
 	@Override
-	public String getRunText(int lvl, String prefix, DataRuntime runtime, boolean placeholder, boolean unicode) {
+	public String getRunText(int lvl, String prefix, DataRuntime runtime, Boolean placeholder, Boolean unicode) {
 		runValues = new ArrayList<>();
 		int size = conditions.size();
 		int active = 0; //有效条件

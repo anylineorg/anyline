@@ -105,7 +105,7 @@ AND FIND_IN_SET(?, CODES)
 LIMIT 5,10 //根据具体数据库类型
 
 //用户自定义查询条件,低代码等场景一般需要更复杂的查询条件
-ConfigStore confis;
+ConfigStore configs;
 service.query("SSO_USER", configs);
 ConfigStore提供了所有的SQL操作  
 //多表、批量提交、自定义SQL以及解析XML定义的SQL参数示例代码和说明

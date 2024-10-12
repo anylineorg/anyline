@@ -24,6 +24,7 @@ import org.anyline.data.prepare.Variable;
 import org.anyline.data.prepare.auto.AutoCondition;
 import org.anyline.data.prepare.auto.init.DefaultAutoCondition;
 import org.anyline.data.prepare.auto.init.DefaultAutoConditionChain;
+import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
 import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;
 import org.anyline.util.BasicUtil;
@@ -188,29 +189,32 @@ public class TextRun extends AbstractRun implements Run {
 		}
 		return valid;
 	}
-	public void appendGroup() {
+	public void appendGroup(DataRuntime runtime, Boolean placeholder, Boolean unicode) {
 		if(null != configs) {
 			if (null == groups) {
 				groups = configs.getGroups();
 			}
-			if (BasicUtil.isEmpty(having)) {
+			if (having.isEmptyCondition()) {
 				having = configs.having();
 			}
 		}
 
 		if(null != groups) {
-			builder.append(groups.getRunText(delimiterFr+delimiterTo));
+			builder.append("\n").append(groups.getRunText(delimiterFr+delimiterTo));
 		}
 
 		if(null != having) {
-			builder.append(having.getRunText());
+			String txt = SQLUtil.trim(having.getRunText(runtime, placeholder, unicode));
+			if(BasicUtil.isNotEmpty(txt)) {
+				builder.append("\nHAVING ").append(txt);
+			}
 		}
 	}
 
 	/** 
 	 * 拼接查询条件
 	 */
-	public void appendCondition(boolean placeholder) {
+	public void appendCondition(Boolean placeholder, Boolean unicode) {
 		if(null == conditionChain) {
 			return; 
 		} 

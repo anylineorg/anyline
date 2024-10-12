@@ -97,8 +97,8 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
      * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
      */
     @Override
-    public Run buildInsertRun(DataRuntime runtime, int batch, Table dest, Object obj, List<String> columns) {
-        return super.buildInsertRun(runtime, batch, dest, obj, columns);
+    public Run buildInsertRun(DataRuntime runtime, int batch, Table dest, Object obj, Boolean placeholder, Boolean unicode, List<String> columns) {
+        return super.buildInsertRun(runtime, batch, dest, obj, placeholder, unicode, columns);
     }
 
     /**
@@ -111,7 +111,7 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
      * @param columns 需插入的列
      */
     @Override
-    public void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet set, ConfigStore configs, LinkedHashMap<String, Column> columns) {
+    public void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet set, ConfigStore configs, Boolean placeholder, Boolean unicode, LinkedHashMap<String, Column> columns) {
         StringBuilder builder = run.getBuilder();
         if(null == builder) {
             builder = new StringBuilder();
@@ -149,7 +149,7 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
      * @param columns 需插入的列
      */
     @Override
-    public void fillInsertContent(DataRuntime runtime, Run run, Table dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns) {
+    public void fillInsertContent(DataRuntime runtime, Run run, Table dest, Collection list, ConfigStore configs, Boolean placeholder, Boolean unicode, LinkedHashMap<String, Column> columns) {
         StringBuilder builder = run.getBuilder();
         if(null == builder) {
             builder = new StringBuilder();
@@ -157,7 +157,7 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
         }
         if(list instanceof DataSet) {
             DataSet set = (DataSet) list;
-            this.fillInsertContent(runtime, run, dest, set, columns);
+            this.fillInsertContent(runtime, run, dest, set, placeholder, unicode, columns);
             return;
         }
         builder.append("CREATE ");
@@ -188,7 +188,7 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
      * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
      */
     @Override
-    protected Run createInsertRun(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns) {
+    protected Run createInsertRun(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, Boolean placeholder, Boolean unicode, List<String> columns) {
         Run run = new TableRun(runtime, dest);
         run.setPrepare(new DefaultTablePrepare());
         StringBuilder builder = run.getBuilder();
@@ -232,7 +232,7 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
      * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
      */
     @Override
-    protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, List<String> columns) {
+    protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, Boolean placeholder, Boolean unicode, List<String> columns) {
         Run run = new TableRun(runtime, dest);
         if(null == list || list.isEmpty()) {
             throw new CommandException("空数据");
@@ -254,7 +254,7 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
             throw new CommandException("未指定表");
         }
         LinkedHashMap<String, Column> cols = confirmInsertColumns(runtime, dest, first, configs, columns, true);
-        fillInsertContent(runtime, run, dest, list, cols);
+        fillInsertContent(runtime, run, dest, list, placeholder, unicode, cols);
 
         return run;
     }
@@ -415,7 +415,7 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
      * -----------------------------------------------------------------------------------------------------------------
      * String mergeFinalQuery(DataRuntime runtime, Run run)
      * StringBuilder createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare)
-     * StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder, boolean unicode)
+     * StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, Boolean placeholder, Boolean unicode)
      * List<Map<String, Object>> process(DataRuntime runtime, List<Map<String, Object>> list)
      *
      * protected Run fillQueryContent(DataRuntime runtime, XMLRun run)
@@ -503,7 +503,7 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public RunValue createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder, boolean unicode) {
+    public RunValue createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, Boolean placeholder, Boolean unicode) {
         if(compare == Compare.LIKE) {
             builder.append(" CONTAINS ?");
         }else if(compare == Compare.LIKE_PREFIX || compare == Compare.START_WITH) {
@@ -517,7 +517,7 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
     }
 
     @Override
-    public Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder, boolean unicode) throws NotSupportException {
+    public Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, Boolean placeholder, Boolean unicode) throws NotSupportException {
         return null;
     }
 
@@ -529,7 +529,7 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder, boolean unicode) {
+    public StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, Boolean placeholder, Boolean unicode) {
         if(compare== Compare.NOT_IN) {
             builder.append(" NOT");
         }
@@ -692,8 +692,8 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
         }
 
         builder.append(result);
-        run.appendCondition(true);
-        run.appendGroup();
+        run.appendCondition(true, true);
+        run.appendGroup(runtime, true, true);
         // appendOrderStore();
         run.checkValid();
         return run;
@@ -719,8 +719,8 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
         }
         builder.append(") ");
         /*添加查询条件*/
-        run.appendCondition(this, true, true);
-        run.appendGroup();
+        run.appendCondition(this, true, true, true);
+        run.appendGroup(runtime, true, true);
         run.appendOrderStore();
         run.checkValid();
         return run;
@@ -832,7 +832,7 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 
                 run.setConfigStore(configs);
                 run.init();
-                run.appendCondition(this, true, true);
+                run.appendCondition(this, true, true, true);
 
             // run.addValues(values);
         }
@@ -841,7 +841,7 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
     }
 
     @Override
-    public Run buildUpdateRunFromDataRow(DataRuntime runtime, Table dest, DataRow row, ConfigStore configs, LinkedHashMap<String, Column> columns) {
+    public Run buildUpdateRunFromDataRow(DataRuntime runtime, Table dest, DataRow row, ConfigStore configs, Boolean placeholder, Boolean unicode, LinkedHashMap<String, Column> columns) {
         TableRun run = new TableRun(runtime, dest);
         StringBuilder builder = new StringBuilder();
         // List<Object> values = new ArrayList<Object>();
@@ -895,7 +895,7 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
             builder.append(JDBCAdapter.BR);
                 run.setConfigStore(configs);
                 run.init();
-                run.appendCondition(this, true, true);
+                run.appendCondition(this, true, true, true);
             }
             // run.addValues(values);
 
@@ -906,7 +906,7 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
     }
 
     @Override
-    public Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns) {
+    public Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore configs, Boolean placeholder, Boolean unicode, LinkedHashMap<String, Column> columns) {
         return null;
     }
 
@@ -938,14 +938,14 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 
         /*添加查询条件*/
         // appendConfigStore();
-        run.appendCondition(this, true, true);
-        run.appendGroup();
+        run.appendCondition(this, true, true, true);
+        run.appendGroup(runtime, true, true);
         run.appendOrderStore();
         run.checkValid();
     }
 
     @Override
-    public List<Run> buildDeleteRunFromTable(DataRuntime runtime, int batch, String table, ConfigStore configs,String key, Object values) {
+    public List<Run> buildDeleteRunFromTable(DataRuntime runtime, int batch, String table, ConfigStore configs, Boolean placeholder, Boolean unicode, String key, Object values) {
         List<Run> runs = new ArrayList<>();
         if(null == table || null == key || null == values) {
             return null;
@@ -986,7 +986,7 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
     }
 
     @Override
-    public List<Run> buildDeleteRunFromEntity(DataRuntime runtime, Table dest, ConfigStore configs, Object obj, String ... columns) {
+    public List<Run> buildDeleteRunFromEntity(DataRuntime runtime, Table dest, ConfigStore configs, Object obj, Boolean placeholder, Boolean unicode, String ... columns) {
         List<Run> runs = new ArrayList<>();
         TableRun run = new TableRun(runtime, dest);
         run.setOriginType(2);

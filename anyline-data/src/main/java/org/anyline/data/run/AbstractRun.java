@@ -59,7 +59,7 @@ public abstract class AbstractRun implements Run {
 	protected ConfigStore configs = new DefaultConfigStore();
 	protected OrderStore orders = new DefaultOrderStore();
 	protected GroupStore groups = new DefaultGroupStore();
-	protected HavingStore having = new DefaultHavingStore();
+	protected ConfigStore having = new DefaultConfigStore();
 	protected List<Variable> variables = new ArrayList<>();
 	protected List<VariableBlock> blocks = new ArrayList<>();
 
@@ -291,7 +291,7 @@ public abstract class AbstractRun implements Run {
 		if(null != orders) {
 			setOrders(orders);
 		}
-		HavingStore having = prepare.having();
+		ConfigStore having = prepare.having();
 		if(null != having) {
 			this.having = having;
 		}
@@ -471,7 +471,7 @@ public abstract class AbstractRun implements Run {
 				}
 				this.groups.add(groups);
 			}
-			HavingStore having = configs.having();
+			ConfigStore having = configs.having();
 			if(null != having) {
 				this.having = having;
 			}
@@ -497,7 +497,7 @@ public abstract class AbstractRun implements Run {
 					this.groups.add(groups);
 					this.configs.setGroups(this.groups);
 				}
-				HavingStore having = configs.having();
+				ConfigStore having = configs.having();
 				if(null != having && !having.isEmpty()) {
 					this.having = having;
 					this.configs.having(having);
@@ -533,9 +533,9 @@ public abstract class AbstractRun implements Run {
 		this.groups = groups;
 	}
 	public void having(String having) {
-		this.having.add(having);
+		this.having.and(having);
 	}
-	public HavingStore having(){
+	public ConfigStore having(){
 		return having;
 	}
 
@@ -568,7 +568,7 @@ public abstract class AbstractRun implements Run {
 		} 
 	} 
 	@Override 
-	public String getFinalQuery(boolean placeholder) {
+	public String getFinalQuery(Boolean placeholder) {
 		String text = runtime.getAdapter().mergeFinalQuery(runtime, this);
 		if(ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN) {
 			text = SQLUtil.placeholder(text, delimiterFr, delimiterTo);
@@ -580,7 +580,7 @@ public abstract class AbstractRun implements Run {
 		return text;
 	} 
 	@Override 
-	public String getTotalQuery(boolean placeholder) {
+	public String getTotalQuery(Boolean placeholder) {
 		String text = runtime.getAdapter().mergeFinalTotal(runtime, this);
 		if(ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN) {
 			text = SQLUtil.placeholder(text, delimiterFr, delimiterTo);
@@ -592,7 +592,7 @@ public abstract class AbstractRun implements Run {
 		return text;
 	}
 	@Override
-	public String getFinalExists(boolean placeholder) {
+	public String getFinalExists(Boolean placeholder) {
 		String text =  runtime.getAdapter().mergeFinalExists(runtime, this);
 		if(ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN) {
 			text = SQLUtil.placeholder(text, delimiterFr, delimiterTo);
@@ -604,7 +604,7 @@ public abstract class AbstractRun implements Run {
 		return text;
 	}
 	@Override 
-	public String getBaseQuery(boolean placeholder) {
+	public String getBaseQuery(Boolean placeholder) {
 		String text = builder.toString();
 		if(!placeholder) {
 			text = replace(text);
@@ -698,7 +698,7 @@ public abstract class AbstractRun implements Run {
 	}
 
 	@Override
-	public String getFinalDelete(boolean placeholder) {
+	public String getFinalDelete(Boolean placeholder) {
 		if(ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN) {
 			return  SQLUtil.placeholder(builder.toString(), delimiterFr, delimiterTo);
 		}
@@ -710,7 +710,7 @@ public abstract class AbstractRun implements Run {
 		return text;
 	}
 	@Override
-	public String getFinalInsert(boolean placeholder) {
+	public String getFinalInsert(Boolean placeholder) {
 		if(ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN) {
 			return  SQLUtil.placeholder(builder.toString(), delimiterFr, delimiterTo);
 		}
@@ -722,7 +722,7 @@ public abstract class AbstractRun implements Run {
 		return text;
 	}
 	@Override
-	public String getFinalUpdate(boolean placeholder) {
+	public String getFinalUpdate(Boolean placeholder) {
 		if(ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN) {
 			return  SQLUtil.placeholder(builder.toString(), delimiterFr, delimiterTo);
 		}
@@ -750,7 +750,7 @@ public abstract class AbstractRun implements Run {
 	}
 
 	@Override
-	public String getFinalExecute(boolean placeholder) {
+	public String getFinalExecute(Boolean placeholder) {
 		String text = builder.toString();
 		if(ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN) {
 			text = SQLUtil.placeholder(text, delimiterFr, delimiterTo);
@@ -923,7 +923,7 @@ public abstract class AbstractRun implements Run {
 				}else if(up.startsWith("HAVING")) {
 					// 分组过滤
 					String haveStr = condition.substring(up.indexOf("HAVING") + "HAVING".length()).trim();
-					this.having.add(haveStr);
+					this.having.and(haveStr);
 					continue;
 				}
 //				if(up.contains(" OR ") && !(condition.startsWith("(") && condition.endsWith(")"))) {
@@ -1234,7 +1234,7 @@ public abstract class AbstractRun implements Run {
 		}
 		return cmd;
 	}
-	public String log(ACTION.DML action, boolean placeholder) {
+	public String log(ACTION.DML action, Boolean placeholder) {
 		StringBuilder builder = new StringBuilder();
 		List<String> keys = null;
 		builder.append("[cmd:\n");

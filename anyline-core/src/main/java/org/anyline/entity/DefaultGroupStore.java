@@ -78,7 +78,7 @@ public class DefaultGroupStore implements GroupStore, Serializable {
 	public String getRunText(String delimiter) {
 		StringBuilder builder = new StringBuilder(); 
 		if(null != groups && !groups.isEmpty()) {
-			builder.append(" GROUP BY ");
+			builder.append("GROUP BY ");
 			boolean first = true;
 			for(Group group:groups.values()) {
 				if(null == group) {

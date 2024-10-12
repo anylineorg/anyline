@@ -121,12 +121,12 @@ public class AbstractTypeMetadata implements TypeMetadata {
     }
 
     @Override
-    public Object write(Object value, Object def, boolean placeholder) {
+    public Object write(Object value, Object def, Boolean placeholder) {
         return write(value, def, false, placeholder);
     }
 
     @Override
-    public Object write(Object value, Object def, boolean array, boolean placeholder) {
+    public Object write(Object value, Object def, boolean array, Boolean placeholder) {
         if(null != value) {
             if(value.getClass() != compatible) {
                 if(null != transfer) {

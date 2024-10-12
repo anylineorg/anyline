@@ -25,7 +25,6 @@ import org.anyline.data.prepare.Variable;
 import org.anyline.data.prepare.auto.AutoPrepare;
 import org.anyline.data.prepare.init.AbstractRunPrepare;
 import org.anyline.entity.Compare;
-import org.anyline.entity.Order;
 import org.anyline.metadata.Catalog;
 import org.anyline.metadata.Column;
 import org.anyline.metadata.Schema;
@@ -238,7 +237,12 @@ public abstract class DefaultAutoPrepare extends AbstractRunPrepare implements A
 			String schema = null;
 			String name = table.getName();
 			this.groups = table.groups();
-			this.having = table.having();
+			List<String> list = table.having();
+			if(null != list){
+				for(String item:list){
+					this.having.and(item);
+				}
+			}
 			this.aggregations = table.aggregations();
 			if(BasicUtil.isNotEmpty(table.getAlias())) {
 				this.alias = table.getAlias();

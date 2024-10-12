@@ -29,7 +29,7 @@ public enum VoltDBWriter {
 
     TimestampWriter(new Object[]{Date.class, Timestamp.class, LocalDateTime.class, LocalDate.class, "Timestamp"}, new DataWriter() {
         @Override
-        public Object write(Object value, boolean placeholder, boolean unicode, TypeMetadata type) {
+        public Object write(Object value, Boolean placeholder, Boolean unicode, TypeMetadata type) {
             Date date = DateUtil.parse(value);
             if(null != date) {
                 value = date.getTime() * 1000;

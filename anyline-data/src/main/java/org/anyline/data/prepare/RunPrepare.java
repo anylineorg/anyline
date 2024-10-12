@@ -145,7 +145,7 @@ public interface RunPrepare extends Cloneable {
 	RunPrepare group(String ... groups);
 	RunPrepare group(GroupStore groups);
 	RunPrepare having(String having);
-	RunPrepare having(HavingStore having);
+	RunPrepare having(ConfigStore having);
 	void setPageNavi(PageNavi navi); 
 	PageNavi getPageNavi(); 
 	/* ******************************************************************************************************* 
@@ -186,7 +186,7 @@ public interface RunPrepare extends Cloneable {
 	RunPrepare setConditionValue(String condition, String variable, Object value);
 	OrderStore getOrders();
 	GroupStore getGroups();
-	HavingStore having();
+	ConfigStore having();
 	void setOrders(OrderStore orders);
 	int getVersion(); 
 	ConditionChain getConditionChain();

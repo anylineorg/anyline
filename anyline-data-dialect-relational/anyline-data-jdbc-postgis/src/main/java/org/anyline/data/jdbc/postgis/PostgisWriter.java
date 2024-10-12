@@ -32,7 +32,7 @@ import org.postgresql.geometric.PGpoint;
 public enum PostgisWriter {
     PointWriter(new Object[]{Point.class, StandardTypeMetadata.POINT}, new DataWriter() {
         @Override
-        public Object write(Object value, boolean placeholder, boolean unicode, TypeMetadata type) {
+        public Object write(Object value, Boolean placeholder, Boolean unicode, TypeMetadata type) {
             if(value instanceof Point) {
                 Point point = (Point) value;
                 PGpoint pg = PostgresqlGeometryAdapter.convert(point);
@@ -47,7 +47,7 @@ public enum PostgisWriter {
     }),
     LineSegmentWriter(new Object[]{LineSegment.class, StandardTypeMetadata.LSEG}, new DataWriter() {
         @Override
-        public Object write(Object value, boolean placeholder, boolean unicode, TypeMetadata type) {
+        public Object write(Object value, Boolean placeholder, Boolean unicode, TypeMetadata type) {
             if(value instanceof LineSegment) {
                 LineSegment segment = (LineSegment) value;
                 PGlseg pg = PostgresqlGeometryAdapter.convert(segment);
@@ -62,7 +62,7 @@ public enum PostgisWriter {
     }),
     PathWriter(new Object[]{LineString.class, StandardTypeMetadata.PATH}, new DataWriter() {
         @Override
-        public Object write(Object value, boolean placeholder, boolean unicode, TypeMetadata type) {
+        public Object write(Object value, Boolean placeholder, Boolean unicode, TypeMetadata type) {
             if(value instanceof LineString) {
                 LineString string = (LineString) value;
                 PGpath pg = PostgresqlGeometryAdapter.convert(string);
@@ -77,7 +77,7 @@ public enum PostgisWriter {
     }),
     LineWriter(new Object[]{Line.class, StandardTypeMetadata.LINE}, new DataWriter() {
         @Override
-        public Object write(Object value, boolean placeholder, boolean unicode, TypeMetadata type) {
+        public Object write(Object value, Boolean placeholder, Boolean unicode, TypeMetadata type) {
             if(value instanceof Line) {
                 Line line = (Line) value;
                 PGline pg = PostgresqlGeometryAdapter.convert(line);

@@ -46,7 +46,7 @@ public class DefaultConfigStore implements ConfigStore {
 	protected OrderStore orders															; // 排序依据
 	List<AggregationConfig> aggregations = new ArrayList<>()							; // 聚合
 	protected GroupStore groups = new DefaultGroupStore()								; // 分组
-	protected HavingStore havings = new DefaultHavingStore()							;
+	protected ConfigStore having														;
 	protected LinkedHashMap<String, Column> columns 		= new LinkedHashMap<>()		; // 查询或插入或更新的列
 	protected LinkedHashMap<String, Column> excludes 		= new LinkedHashMap<>()		; // 不查询或插入或更新的列
 	protected List<Object> values														; // 保存values后续parse用到
@@ -86,8 +86,8 @@ public class DefaultConfigStore implements ConfigStore {
 		if(null != navi) {
 			row.put("navi", navi.map(empty));
 		}
-		if(null != havings && !havings.isEmpty()){
-			row.put("havings", havings.list(empty));
+		if(null != having && !having.isEmpty()){
+			row.put("havings", having.map(empty));
 		}
 		if(null != groups && !groups.isEmpty()){
 			row.put("groups", groups.list(empty));
@@ -96,10 +96,10 @@ public class DefaultConfigStore implements ConfigStore {
 	}
 
 
-	public String getRunText(DataRuntime runtime, boolean placeholder, boolean unicode) {
+	public String getRunText(DataRuntime runtime, Boolean placeholder, Boolean unicode) {
 		return this.getConfigChain().createAutoConditionChain().getRunText(null, runtime, placeholder, unicode);
 	}
-	public String getRunText(DataRuntime runtime, boolean placeholder) {
+	public String getRunText(DataRuntime runtime, Boolean placeholder) {
 		return this.getConfigChain().createAutoConditionChain().getRunText(null, runtime, placeholder, false);
 	}
 	@Override
@@ -883,7 +883,7 @@ public class DefaultConfigStore implements ConfigStore {
 		if(null != groups) {
 			this.setGroups(groups);
 		}
-		HavingStore having = configs.having();
+		ConfigStore having = configs.having();
 		if(null != having) {
 			this.having(having);
 		}
@@ -1375,7 +1375,7 @@ public class DefaultConfigStore implements ConfigStore {
 		if(null != groups && !groups.isEmpty()) {
 			return false;
 		}
-		if(null != havings) {
+		if(null != having) {
 			return false;
 		}
 		if(null != columns && !columns.isEmpty()) {
@@ -1478,22 +1478,29 @@ public class DefaultConfigStore implements ConfigStore {
 		this.groups = groups;
 		return this; 
 	}
-
 	@Override
-	public ConfigStore having(String having) {
-		this.havings.add(having);
+	public ConfigStore having(String text) {
+		if(null == having){
+			having = new DefaultConfigStore();
+		}
+		having.and(text);
+		return this;
+	}
+	@Override
+	public ConfigStore having(Compare compare, String key, Object value) {
+		having.and(compare, key, value);
 		return this;
 	}
 
 	@Override
-	public ConfigStore having(HavingStore having) {
-		this.havings = having;
+	public ConfigStore having(ConfigStore configs) {
+		this.having = configs;
 		return this;
 	}
 
 	@Override
-	public HavingStore having() {
-		return havings;
+	public ConfigStore having() {
+		return having;
 	}
 
 	@Override
@@ -1901,7 +1908,7 @@ public class DefaultConfigStore implements ConfigStore {
 			clone.param(key, params.get(key).clone());
 		}
 
-		clone.havings = havings;
+		clone.having = having;
 		clone.cascade = this.cascade;
 		clone.integrality = this.integrality;
 		clone.execute = this.execute;

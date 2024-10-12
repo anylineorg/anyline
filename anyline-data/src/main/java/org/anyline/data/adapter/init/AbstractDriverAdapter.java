@@ -401,7 +401,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 dest = partitions.values().iterator().next();
             }
         }
-        Run run = buildInsertRun(runtime, batch, dest, data, configs, columns);
+        Run run = buildInsertRun(runtime, batch, dest, data, configs, true, true, columns);
         //提前设置好columns,到了adapter中需要手动检测缓存
         if(ConfigStore.IS_AUTO_CHECK_METADATA(configs)) {
             dest.setColumns(columns(runtime, random, false, dest, false));
@@ -461,7 +461,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
      */
     @Override
-    public Run buildInsertRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, List<String> columns) {
+    public Run buildInsertRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, Boolean placeholder, Boolean unicode, List<String> columns) {
         Run run = null;
         if(null == obj) {
             return null;
@@ -473,10 +473,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         if(obj instanceof Collection) {
             Collection list = (Collection) obj;
             if(null != list && !list.isEmpty()) {
-                run = createInsertRunFromCollection(runtime, batch, dest, list, configs, columns);
+                run = createInsertRunFromCollection(runtime, batch, dest, list, configs, placeholder, unicode, columns);
             }
         }else {
-            run = createInsertRun(runtime, dest, obj, configs, columns);
+            run = createInsertRun(runtime, dest, obj, configs, placeholder, unicode, columns);
         }
         convert(runtime, configs, run);
         return run;
@@ -492,7 +492,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
      */
     @Override
-    public Run buildInsertRun(DataRuntime runtime, Table dest, RunPrepare prepare, ConfigStore configs, Object obj, String... conditions) {
+    public Run buildInsertRun(DataRuntime runtime, Table dest, RunPrepare prepare, ConfigStore configs, Object obj, Boolean placeholder, Boolean unicode, String... conditions) {
         if(log.isDebugEnabled()) {
             log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 Run buildInsertRun(DataRuntime runtime, Table dest, RunPrepare prepare, ConfigStore configs, Object obj, String... conditions)", 37));
         }
@@ -509,7 +509,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
      */
     @Override
-    public void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet set, ConfigStore configs, LinkedHashMap<String, Column> columns) {
+    public void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet set, ConfigStore configs, Boolean placeholder, Boolean unicode, LinkedHashMap<String, Column> columns) {
         if(log.isDebugEnabled()) {
             log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet set, ConfigStore configs, LinkedHashMap<String, Column> columns)", 37));
         }
@@ -525,7 +525,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
      */
     @Override
-    public void fillInsertContent(DataRuntime runtime, Run run, Table dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns) {
+    public void fillInsertContent(DataRuntime runtime, Run run, Table dest, Collection list, ConfigStore configs, Boolean placeholder, Boolean unicode, LinkedHashMap<String, Column> columns) {
         if(log.isDebugEnabled()) {
             log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 void fillInsertContent(DataRuntime runtime, Run run, Table dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns)", 37));
         }
@@ -743,7 +743,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
      * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
      */
-    protected Run createInsertRun(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns) {
+    protected Run createInsertRun(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, Boolean placeholder, Boolean unicode, List<String> columns) {
         if(log.isDebugEnabled()) {
             log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 Run createInsertRun(DataRuntime runtime, Table dest, Object obj, List<String> columns)", 37));
         }
@@ -759,7 +759,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
      * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
      */
-    protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, List<String> columns) {
+    protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, Boolean placeholder, Boolean unicode, List<String> columns) {
         Run run = new TableRun(runtime, dest);
         run.setBatch(batch);
         if(null == list || list.isEmpty()) {
@@ -783,7 +783,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         }
         run.setInsertColumns(cols);
         run.setVol(cols.size());
-        fillInsertContent(runtime, run, dest, list, configs, cols);
+        fillInsertContent(runtime, run, dest, list, configs, placeholder, unicode, cols);
 
         return run;
     }
@@ -993,7 +993,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             }
         }
 
-        Run run = buildUpdateRun(runtime, batch, dest, data, configs, columns);
+        Run run = buildUpdateRun(runtime, batch, dest, data, configs, true, true, columns);
 
         if(run.isEmptyCondition()) {
             if(log.isWarnEnabled() && ConfigStore.IS_LOG_SQL(configs)) {
@@ -1073,7 +1073,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         }
         long result = -1; 
 
-        Run run = buildUpdateRun(runtime, prepare, data, configs, conditions);
+        Run run = buildUpdateRun(runtime, prepare, data, configs, true, true, conditions);
 
         if(!run.isValid()) {
             if(log.isWarnEnabled() && ConfigStore.IS_LOG_SQL(configs)) {
@@ -1111,16 +1111,16 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @return 影响行数
      */
     @Override
-    public Run buildUpdateRun(DataRuntime runtime, RunPrepare prepare, DataRow data, ConfigStore configs, String ... conditions) {
+    public Run buildUpdateRun(DataRuntime runtime, RunPrepare prepare, DataRow data, ConfigStore configs, Boolean placeholder, Boolean unicode, String ... conditions) {
         Run run = initQueryRun(runtime, prepare);
         init(runtime, run, configs, conditions);
         if(run.checkValid()) {
-            fillUpdateContent(runtime, (TableRun) run, data, configs);
+            fillUpdateContent(runtime, (TableRun) run, data, configs, placeholder, unicode);
         }
         return run;
     }
     @Override
-    public void fillUpdateContent(DataRuntime runtime, TableRun run, StringBuilder builder, DataRow data, ConfigStore configs) {
+    public void fillUpdateContent(DataRuntime runtime, TableRun run, StringBuilder builder, DataRow data, ConfigStore configs, Boolean placeholder, Boolean unicode) {
         if(log.isDebugEnabled()) {
             log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 void fillUpdateContent(DataRuntime runtime, TableRun run, StringBuilder builder, DataRow data, ConfigStore configs)", 37));
         }
@@ -1150,7 +1150,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
      */
     @Override
-    public Run buildUpdateRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, List<String> columns) {
+    public Run buildUpdateRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, Boolean placeholder, Boolean unicode, List<String> columns) {
         Run run = null;
         if(null == obj) {
             return null;
@@ -1169,11 +1169,11 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             obj = new DataRow((Map)obj);
         }
         if(obj instanceof Collection) {
-            run = buildUpdateRunFromCollection(runtime, batch, dest, (Collection)obj, configs, cols);
+            run = buildUpdateRunFromCollection(runtime, batch, dest, (Collection)obj, configs, placeholder, unicode, cols);
         }else if(obj instanceof DataRow) {
-            run = buildUpdateRunFromDataRow(runtime, dest, (DataRow)obj, configs, cols);
+            run = buildUpdateRunFromDataRow(runtime, dest, (DataRow)obj, configs, placeholder, unicode, cols);
         }else{
-            run = buildUpdateRunFromEntity(runtime, dest, obj, configs, cols);
+            run = buildUpdateRunFromEntity(runtime, dest, obj, configs, placeholder, unicode, cols);
         }
         convert(runtime, configs, run);
         buildUpdateRunLimit(runtime, run);
@@ -1203,7 +1203,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @return Run
      */
     @Override
-    public Run buildUpdateRunFromEntity(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, LinkedHashMap<String, Column> columns) {
+    public Run buildUpdateRunFromEntity(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, Boolean placeholder, Boolean unicode, LinkedHashMap<String, Column> columns) {
         TableRun run = new TableRun(runtime, dest);
         run.setOriginType(2);
         StringBuilder builder = run.getBuilder();
@@ -1317,7 +1317,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             //builder.append("\nWHERE 1=1").append(BR_TAB);
             run.setConfigStore(configs);
             run.init();
-            run.appendCondition(this, true, true);
+            run.appendCondition(this, true, placeholder, unicode);
         }
         run.setUpdateColumns(updateColumns);
 
@@ -1335,7 +1335,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @return Run
      */
     @Override
-    public Run buildUpdateRunFromDataRow(DataRuntime runtime, Table dest, DataRow row, ConfigStore configs, LinkedHashMap<String, Column> columns) {
+    public Run buildUpdateRunFromDataRow(DataRuntime runtime, Table dest, DataRow row, ConfigStore configs, Boolean placeholder, Boolean unicode, LinkedHashMap<String, Column> columns) {
         //注意columns中可能含 +-号
         TableRun run = new TableRun(runtime, dest);
         run.setOriginType(1);
@@ -1408,7 +1408,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                     delimiter(builder, key).append(" = ").append(value).append(BR_TAB);
                 }else{
                     delimiter(builder, key).append(" = ");
-                    convert(runtime, builder, value, col, true, false, configs);
+                    convert(runtime, builder, value, col, placeholder, unicode, configs);
                     builder.append(BR_TAB);
                     if("NULL".equals(value)) {
                         value = null;
@@ -1424,7 +1424,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             //builder.append("\nWHERE 1=1").append(BR_TAB);
             run.setConfigStore(configs);
              run.init();
-            run.appendCondition(this, true, true);
+            run.appendCondition(this, true, placeholder, unicode);
         }
         run.setUpdateColumns(updateColumns);
         return run;
@@ -1441,7 +1441,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @return Run
      */
     @Override
-    public Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns) {
+    public Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, Boolean placeholder, Boolean unicode,  LinkedHashMap<String, Column> columns) {
         TableRun run = new TableRun(runtime, dest);
         run.setOriginType(1);
         if (null == list || list.isEmpty()) {
@@ -1517,7 +1517,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 start = false;
                 builder.append(key);
                 builder.append(" = ");
-                convert(runtime, builder, null, col, true, false, configs);
+                convert(runtime, builder, null, col, placeholder, unicode, configs);
             }
             start = true;
             for (String pk : primaryKeys) {
@@ -2136,9 +2136,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * List<Run> buildQuerySequence(DataRuntime runtime, boolean next, String ... names)
      * Run fillQueryContent(DataRuntime runtime, Run run)
      * String mergeFinalQuery(DataRuntime runtime, Run run)
-     * RunValue createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder, boolean unicode)
-     * Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder, boolean unicode)
-     * StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder, boolean unicode)
+     * RunValue createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, Boolean placeholder, Boolean unicode)
+     * Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, Boolean placeholder, Boolean unicode)
+     * StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, Boolean placeholder, Boolean unicode)
      * [命令执行]
      * DataSet select(DataRuntime runtime, String random, boolean system, String table, ConfigStore configs, Run run)
      * List<Map<String, Object>> maps(DataRuntime runtime, String random, ConfigStore configs, Run run)
@@ -2186,7 +2186,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             return new DataSet().setTable(table);
         }
 
-        run = buildQueryRun(runtime, prepare, configs, conditions);
+        run = buildQueryRun(runtime, prepare, configs, true, true, conditions);
 
         if (log.isWarnEnabled() && ConfigStore.IS_LOG_SQL(configs) && !run.isValid()) {
             String tmp = "[valid:false][不具备执行条件]";
@@ -2334,7 +2334,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             }
         }
 
-        run = buildQueryRun(runtime, prepare, configs, conditions);
+        run = buildQueryRun(runtime, prepare, configs, true, true, conditions);
         if (log.isWarnEnabled() && ConfigStore.IS_LOG_SQL(configs) && !run.isValid()) {
             String tmp = "[valid:false][不具备执行条件]";
             tmp += "[RunPrepare:" + ConfigParser.createSQLSign(false, false, clazz.getName(), configs, conditions) + "][thread:" + Thread.currentThread().getId() + "][ds:" + runtime.datasource() + "]";
@@ -2472,7 +2472,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         if(swt == ACTION.SWITCH.BREAK) {
             return new ArrayList<>();
         }
-        run = buildQueryRun(runtime, prepare, configs, conditions);
+        run = buildQueryRun(runtime, prepare, configs, true, true, conditions);
         Long fr = System.currentTimeMillis();
         if (log.isWarnEnabled() && ConfigStore.IS_LOG_SQL(configs) && !run.isValid()) {
             String tmp = "[valid:false][不具备执行条件]";
@@ -2528,7 +2528,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
      */
     @Override
-    public Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions) {
+    public Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, Boolean placeholder, Boolean unicode, String ... conditions) {
         Run run = initQueryRun(runtime, prepare);
         init(runtime, run, configs, conditions);
         /*List<RunPrepare> joins = prepare.getJoins();
@@ -2545,7 +2545,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         }
         if(run.checkValid()) {
             //构造最终的查询SQL
-            run = fillQueryContent(runtime, run);
+            run = fillQueryContent(runtime, run, placeholder, unicode);
         }
 
         return run;
@@ -2679,8 +2679,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
      */
     @Override
-    public Run fillQueryContent(DataRuntime runtime, Run run) {
-        return fillQueryContent(runtime, run.getBuilder(), run);
+    public Run fillQueryContent(DataRuntime runtime, Run run, Boolean placeholder, Boolean unicode) {
+        return fillQueryContent(runtime, run.getBuilder(), run, placeholder, unicode);
     }
 
     /**
@@ -2691,14 +2691,14 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
      */
     @Override
-    public Run fillQueryContent(DataRuntime runtime, StringBuilder builder, Run run) {
+    public Run fillQueryContent(DataRuntime runtime, StringBuilder builder, Run run, Boolean placeholder, Boolean unicode) {
         if(null != run) {
             if(run instanceof TableRun) {
-                run = fillQueryContent(runtime, builder, (TableRun) run);
+                run = fillQueryContent(runtime, builder, (TableRun) run, placeholder, unicode);
             }else if(run instanceof XMLRun) {
-                run = fillQueryContent(runtime, builder, (XMLRun) run);
+                run = fillQueryContent(runtime, builder, (XMLRun) run, placeholder, unicode);
             }else if(run instanceof TextRun) {
-                run = fillQueryContent(runtime, builder, (TextRun) run);
+                run = fillQueryContent(runtime, builder, (TextRun) run, placeholder, unicode);
             }
             convert(runtime, run.getConfigs(), run);
         }
@@ -2711,8 +2711,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param run XMLRun
      */
-    protected Run fillQueryContent(DataRuntime runtime, XMLRun run) {
-        return fillQueryContent(runtime, run.getBuilder(), run);
+    protected Run fillQueryContent(DataRuntime runtime, XMLRun run, Boolean placeholder, Boolean unicode) {
+        return fillQueryContent(runtime, run.getBuilder(), run, placeholder, unicode);
     }
 
 
@@ -2722,7 +2722,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @param builder 有可能合个run合成一个 所以提供一个共用builder
      * @param run TextRun
      */
-    protected Run fillQueryContent(DataRuntime runtime, StringBuilder builder, XMLRun run) {
+    protected Run fillQueryContent(DataRuntime runtime, StringBuilder builder, XMLRun run, Boolean placeholder, Boolean unicode) {
         String text = CommandParser.replaceVariable(runtime, run, run.getVariableBlocks(), run.getVariables(), run.getText());
         run.getBuilder().append(text);
         run.appendCondition(true);
@@ -2737,8 +2737,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param run TextRun
      */
-    protected Run fillQueryContent(DataRuntime runtime, TextRun run) {
-        return fillQueryContent(runtime, run.getBuilder(), run);
+    protected Run fillQueryContent(DataRuntime runtime, TextRun run, Boolean placeholder, Boolean unicode) {
+        return fillQueryContent(runtime, run.getBuilder(), run, placeholder, unicode);
     }
 
     /**
@@ -2747,11 +2747,11 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @param builder 有可能合个run合成一个 所以提供一个共用builder
      * @param run TextRun
      */
-    protected Run fillQueryContent(DataRuntime runtime, StringBuilder builder, TextRun run) {
+    protected Run fillQueryContent(DataRuntime runtime, StringBuilder builder, TextRun run, Boolean placeholder, Boolean unicode) {
         String text = CommandParser.replaceVariable(runtime, run, run.getVariableBlocks(), run.getVariables(), run.getText());
         run.getBuilder().append(text);
-        run.appendCondition(true);
-        run.appendGroup();
+        run.appendCondition(placeholder, unicode);
+        run.appendGroup(runtime, placeholder, unicode);
         // appendOrderStore();
         run.checkValid();
         return run;
@@ -2762,8 +2762,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param run TextRun
      */
-    protected Run fillQueryContent(DataRuntime runtime, TableRun run) {
-        return fillQueryContent(runtime, run.getBuilder(), run);
+    protected Run fillQueryContent(DataRuntime runtime, TableRun run, Boolean placeholder, Boolean unicode) {
+        return fillQueryContent(runtime, run.getBuilder(), run, placeholder, unicode);
     }
 
     /**
@@ -2772,7 +2772,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @param builder 有可能合个run合成一个 所以提供一个共用builder
      * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
      */
-    protected Run fillQueryContent(DataRuntime runtime, StringBuilder builder, TableRun run) {
+    protected Run fillQueryContent(DataRuntime runtime, StringBuilder builder, TableRun run, Boolean placeholder, Boolean unicode) {
         TablePrepare prepare = (TablePrepare)run.getPrepare();
         builder.append("SELECT ");
         if(null != prepare.getDistinct()) {
@@ -2858,11 +2858,11 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         //builder.append("\nWHERE 1=1\n\t");
         /*添加查询条件*/
         // appendConfigStore();
-        run.appendCondition(builder, this, true, true);
-        fillQueryContentGroup(runtime, builder, run);
+        run.appendCondition(builder, this, true, placeholder, unicode);
+        fillQueryContentGroup(runtime, builder, run, placeholder, unicode);
         return run;
     }
-    protected Run fillQueryContentGroup(DataRuntime runtime, StringBuilder builder, TableRun run) {
+    protected Run fillQueryContentGroup(DataRuntime runtime, StringBuilder builder, TableRun run, Boolean placeholder, Boolean unicode) {
         RunPrepare prepare = run.getPrepare();
         ConfigStore configs = run.getConfigs();
         GroupStore groups = run.getGroups();
@@ -2876,7 +2876,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 groups = configs.groups();
             }
         }
-        HavingStore having = run.having();
+        ConfigStore having = run.having();
         if(null == having || having.isEmpty()){
             if(null != configs) {
                 having = configs.having();
@@ -2890,7 +2890,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         }
 
         if(null != having) {
-            builder.append("\n").append(having.getRunText());
+            String txt = SQLUtil.trim(having.getRunText(runtime, placeholder, unicode));
+            if(BasicUtil.isNotEmpty(txt)) {
+                builder.append("\nHAVING ").append(txt);
+            }
         }
         //run.appendGroup(builder);
         return run;
@@ -2906,7 +2909,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      */
     public Run fillMasterTableContent(DataRuntime runtime, StringBuilder builder, TableRun run, RunPrepare prepare) {
         if(prepare instanceof VirtualTablePrepare) {
-            Run fromRun = buildQueryRun(runtime, ((VirtualTablePrepare) prepare).getPrepare(), new DefaultConfigStore());
+            Run fromRun = buildQueryRun(runtime, ((VirtualTablePrepare) prepare).getPrepare(), new DefaultConfigStore(), true, true);
             run.getRunValues().addAll(fromRun.getRunValues());
             String inner = fromRun.getFinalQuery(true);
             inner = BasicUtil.tab(inner);
@@ -2937,7 +2940,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         if(prepare instanceof VirtualTablePrepare) {
             join = ((VirtualTablePrepare) prepare).getPrepare().getJoin();
             builder.append(join.getType().getCode()).append(" ");
-            Run joinRun = buildQueryRun(runtime, ((VirtualTablePrepare) prepare).getPrepare(), new DefaultConfigStore());
+            Run joinRun = buildQueryRun(runtime, ((VirtualTablePrepare) prepare).getPrepare(), new DefaultConfigStore(), true, true);
             run.getRunValues().addAll(joinRun.getRunValues());
             String inner = joinRun.getFinalQuery(true);
             inner = BasicUtil.tab(inner);
@@ -2979,9 +2982,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @return value 有占位符时返回占位值，没有占位符返回null
      */
     @Override
-    public RunValue createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder, boolean unicode) {
+    public RunValue createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, Boolean placeholder, Boolean unicode) {
         if(log.isDebugEnabled()) {
-            log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 RunValue createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder, boolean unicode)", 37));
+            log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 RunValue createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, Boolean placeholder, Boolean unicode)", 37));
         }
         return null;
     }
@@ -2996,9 +2999,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @return builder
      */
     @Override
-    public StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder, boolean unicode) {
+    public StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, Boolean placeholder, Boolean unicode) {
         if(log.isDebugEnabled()) {
-            log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder, boolean unicode)", 37));
+            log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, Boolean placeholder, Boolean unicode)", 37));
         }
         return null;
     }
@@ -3203,7 +3206,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         if(swt == ACTION.SWITCH.BREAK) {
             return -1;
         }
-        run = buildQueryRun(runtime, prepare, configs, conditions);
+        run = buildQueryRun(runtime, prepare, configs,true, true, conditions);
         if(!run.isValid()) {
             if(log.isWarnEnabled() && ConfigStore.IS_LOG_SQL(configs)) {
                 log.warn("[valid:false][不具备执行条件][RunPrepare:" + ConfigParser.createSQLSign(false, false, prepare.getTableName(), configs, conditions) + "][thread:" + Thread.currentThread().getId() + "][ds:" + runtime.datasource() + "]");
@@ -3332,7 +3335,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             return -1;
         }
 
-        Run run = buildExecuteRun(runtime,  prepare, configs, conditions);
+        Run run = buildExecuteRun(runtime,  prepare, configs, true, true, conditions);
         if(!run.isValid()) {
             if(log.isWarnEnabled() && ConfigStore.IS_LOG_SQL(configs)) {
                 log.warn("[valid:false][不具备执行条件][RunPrepare:" + ConfigParser.createSQLSign(false, false, prepare.getTableName(), configs, conditions) + "][thread:" + Thread.currentThread().getId() + "][ds:" + runtime.datasource() + "]");
@@ -3377,7 +3380,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             random = random(runtime);
         }
         prepare.setBatch(batch);
-        Run run = buildExecuteRun(runtime, prepare, configs);
+        Run run = buildExecuteRun(runtime, prepare, configs, true, true);
         if(null != values && !values.isEmpty()) {
             Object first = values.iterator().next();
             if (first instanceof Collection) {
@@ -3442,7 +3445,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             random = random(runtime);
         }
         prepare.setBatch(batch);
-        Run run = buildExecuteRun(runtime, prepare, configs);
+        Run run = buildExecuteRun(runtime, prepare, configs, true, true);
         run.setVol(vol);
         run.setValues(null, values);
         return execute(runtime, random, configs, run);
@@ -3473,7 +3476,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
      */
     @Override
-    public Run buildExecuteRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions) {
+    public Run buildExecuteRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, Boolean placeholder, Boolean unicode, String ... conditions) {
         Run run = null;
         if(prepare instanceof XMLPrepare) {
             run = new XMLRun();
@@ -3492,7 +3495,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             run.init(); //
             //构造最终的执行SQL
             //fillQueryContent(runtime, run);
-            fillExecuteContent(runtime, run);
+            fillExecuteContent(runtime, run, placeholder, unicode);
         }
         return run;
     }
@@ -3515,11 +3518,11 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param run XMLRun
      */
-    protected void fillExecuteContent(DataRuntime runtime, TextRun run) {
+    protected void fillExecuteContent(DataRuntime runtime, TextRun run, Boolean placeholder, Boolean unicode) {
         String text = CommandParser.replaceVariable(runtime, run, run.getVariableBlocks(), run.getVariables(), run.getText());
         run.getBuilder().append(text);
-        run.appendCondition(true);
-        run.appendGroup();
+        run.appendCondition(placeholder, unicode);
+        run.appendGroup(runtime, placeholder, unicode);
         run.checkValid();
     }
 
@@ -3529,7 +3532,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param run XMLRun
      */
-    protected void fillExecuteContent(DataRuntime runtime, TableRun run) {
+    protected void fillExecuteContent(DataRuntime runtime, TableRun run, Boolean placeholder, Boolean unicode) {
         if(log.isDebugEnabled()) {
             log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 fillExecuteContent(DataRuntime runtime, TextRun run)", 37));
         }
@@ -3542,17 +3545,17 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
      */
     @Override
-    public void fillExecuteContent(DataRuntime runtime, Run run) {
+    public void fillExecuteContent(DataRuntime runtime, Run run, Boolean placeholder, Boolean unicode) {
         if(null != run) {
             if(run instanceof TableRun) {
                 TableRun r = (TableRun) run;
-                fillExecuteContent(runtime, r);
+                fillExecuteContent(runtime, r, placeholder, unicode);
             }else if(run instanceof XMLRun) {
                 XMLRun r = (XMLRun) run;
-                fillExecuteContent(runtime, r);
+                fillExecuteContent(runtime, r, placeholder, unicode);
             }else if(run instanceof TextRun) {
                 TextRun r = (TextRun) run;
-                fillExecuteContent(runtime, r);
+                fillExecuteContent(runtime, r, placeholder, unicode);
             }
         }
     }
@@ -3677,7 +3680,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         if(swt == ACTION.SWITCH.BREAK) {
             return -1;
         }
-        List<Run> runs = buildDeleteRun(runtime, batch, table, configs, key, values);
+        List<Run> runs = buildDeleteRun(runtime, batch, table, configs, true, true, key, values);
         for(Run run:runs) {
 
             if(!run.isValid()) {
@@ -3719,7 +3722,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             if(swt == ACTION.SWITCH.BREAK) {
                 return -1;
             }
-            List<Run> runs = buildDeleteRun(runtime, dest, configs, obj, columns);
+            List<Run> runs = buildDeleteRun(runtime, dest, configs, obj, true, true, columns);
             for(Run run:runs) {
                 if(!run.isValid()) {
                     if(log.isWarnEnabled() && ConfigStore.IS_LOG_SQL(configs)) {
@@ -3761,7 +3764,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         if(swt == ACTION.SWITCH.BREAK) {
             return -1;
         }
-        List<Run> runs = buildDeleteRun(runtime, table, configs, conditions);
+        List<Run> runs = buildDeleteRun(runtime, table, configs, null, true, true, conditions);
         for(Run run:runs) {
             if(!run.isValid()) {
                 if(log.isWarnEnabled() && ConfigStore.IS_LOG_SQL(configs)) {
@@ -3804,7 +3807,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
 	 */
 	@Override
-	public List<Run> buildDeleteRun(DataRuntime runtime, Table dest, ConfigStore configs, Object obj, String ... columns) {
+	public List<Run> buildDeleteRun(DataRuntime runtime, Table dest, ConfigStore configs, Object obj, Boolean placeholder, Boolean unicode, String ... columns) {
 		List<Run> runs = new ArrayList<>();
 		if(null == obj && (null == configs || configs.isEmptyCondition())) {
 			return null;
@@ -3812,7 +3815,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		if(obj instanceof Collection) {
 			Collection list = (Collection) obj;
 			for(Object item:list) {
-				runs.addAll(buildDeleteRun(runtime, dest, configs, item, columns));
+				runs.addAll(buildDeleteRun(runtime, dest, configs, item, placeholder, unicode, columns));
 			}
 			return runs;
 		}
@@ -3830,7 +3833,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			}
 		}
 		if(null == dest || BasicUtil.isEmpty(dest.getName())) {
-			runs = buildDeleteRunFromConfig(runtime, configs);
+			runs = buildDeleteRunFromConfig(runtime, configs, placeholder, unicode);
 		}else if(obj instanceof ConfigStore) {
 			Run run = new TableRun(runtime, dest);
 			RunPrepare prepare = new DefaultTablePrepare();
@@ -3839,10 +3842,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			run.setConfigStore((ConfigStore)obj);
 			run.addCondition(columns);
 			run.init();
-			fillDeleteRunContent(runtime, run);
+			fillDeleteRunContent(runtime, run, placeholder, unicode);
 			runs.add(run);
 		}else{
-			runs = buildDeleteRunFromEntity(runtime, dest, configs, obj, columns);
+			runs = buildDeleteRunFromEntity(runtime, dest, configs, obj, placeholder, unicode, columns);
 		}
 		convert(runtime, new DefaultConfigStore(), runs);
 
@@ -3859,8 +3862,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
 	 */
 	@Override
-	public List<Run> buildDeleteRun(DataRuntime runtime, int batch, Table table, ConfigStore configs, String key, Object values) {
-		List<Run> runs = buildDeleteRunFromTable(runtime, batch, table, configs, key, values);
+	public List<Run> buildDeleteRun(DataRuntime runtime, int batch, Table table, ConfigStore configs, Boolean placeholder, Boolean unicode, String key, Object values) {
+		List<Run> runs = buildDeleteRunFromTable(runtime, batch, table, configs, placeholder, unicode, key, values);
 		convert(runtime, new DefaultConfigStore(), runs);
 		return runs;
 	}
@@ -3893,7 +3896,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
 	 */
 	@Override
-	public List<Run> buildDeleteRunFromTable(DataRuntime runtime, int batch, Table table, ConfigStore configs, String column, Object values) {
+	public List<Run> buildDeleteRunFromTable(DataRuntime runtime, int batch, Table table, ConfigStore configs, Boolean placeholder, Boolean unicode, String column, Object values) {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildDeleteRunFromTable(DataRuntime runtime, int batch, String table, ConfigStore configs,String column, Object values)", 37));
 		}
@@ -3910,7 +3913,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
 	 */
 	@Override
-	public List<Run> buildDeleteRunFromEntity(DataRuntime runtime, Table table, ConfigStore configs, Object obj, String... columns) {
+	public List<Run> buildDeleteRunFromEntity(DataRuntime runtime, Table table, ConfigStore configs, Object obj, Boolean placeholder, Boolean unicode, String... columns) {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildDeleteRunFromEntity(DataRuntime runtime, String table, ConfigStore configs, Object obj, String... columns)", 37));
 		}
@@ -3923,7 +3926,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
 	 */
 	@Override
-	public void fillDeleteRunContent(DataRuntime runtime, Run run) {
+	public void fillDeleteRunContent(DataRuntime runtime, Run run, Boolean placeholder, Boolean unicode) {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 void fillDeleteRunContent(DataRuntime runtime, Run run)", 37));
 		}
@@ -4943,7 +4946,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         if(run instanceof SimpleRun) {
             String text = run.getBuilder().toString();
             RunPrepare prepare = new DefaultTextPrepare(text);
-            run = buildQueryRun(runtime, prepare, configs);
+            run = buildQueryRun(runtime, prepare, configs, true, true);
         }
         DataSet set = select(runtime, random, true, (Table)null, configs, run);
         return set;
@@ -18366,7 +18369,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @return Object
      */
     @Override
-    public Object convert(DataRuntime runtime, StringBuilder builder, Object value, Column column, boolean placeholder, Boolean unicode, ConfigStore configs) {
+    public Object convert(DataRuntime runtime, StringBuilder builder, Object value, Column column, Boolean placeholder, Boolean unicode, ConfigStore configs) {
         if(placeholder){
             builder.append("?");
         }else{
@@ -18512,7 +18515,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return Object
 	 */
 	@Override
-	public Object write(DataRuntime runtime, Column metadata, Object value, boolean placeholder, boolean unicode) {
+	public Object write(DataRuntime runtime, Column metadata, Object value, Boolean placeholder, Boolean unicode) {
 		if(null == value || "NULL".equals(value)) {
 			return null;
 		}
@@ -18574,7 +18577,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return write(runtime, value, placeholder, unicode);
 	}
-    private Object write(DataRuntime runtime, Object value, boolean placeholder, boolean unicode) {
+    private Object write(DataRuntime runtime, Object value, Boolean placeholder, Boolean unicode) {
         if(null == value) {
             return null;
         }

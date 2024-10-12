@@ -40,11 +40,11 @@ public interface SystemFunction {
     }
     DatabaseType database();
     META meta();
-    String formula(boolean placeholder, boolean unicode, Object ... args);
+    String formula(Boolean placeholder, Boolean unicode, Object ... args);
     default String formula(Object ... args) {
         return formula(false, false, args);
     }
-    default String formula(boolean placeholder, Object ... args) {
+    default String formula(Boolean placeholder, Object ... args) {
         return formula(placeholder, false, args);
     }
 }

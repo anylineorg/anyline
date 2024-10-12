@@ -22,7 +22,7 @@ import org.anyline.metadata.type.DatabaseType;
 public enum MySQLGenusFunction implements SystemFunction {
     CONCAT(META.CONCAT) {
         @Override
-        public String formula(boolean placeholder, boolean unicode, Object... args) {
+        public String formula(Boolean placeholder, Boolean unicode, Object... args) {
             return "";
         }
     };
