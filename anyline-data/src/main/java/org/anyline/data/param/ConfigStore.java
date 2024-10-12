@@ -739,6 +739,9 @@ public interface ConfigStore extends Cloneable{
 		//这个方法不要删除 否则会NoSuchMethodError: org.anyline.data.param.ConfigStore.in(java/lang/string;java/lang/Object);
 		return and(Compare.IN, var, values);
 	}
+	default ConfigStore in(String var, RunPrepare prepare) {
+		return in(var, (Object) prepare);
+	}
 
 	default ConfigStore likes(String value) {
 		return likes(EMPTY_VALUE_SWITCH.IGNORE, value);
@@ -1180,6 +1183,9 @@ public interface ConfigStore extends Cloneable{
 	default ConfigStore notIn(String var, Object ... values) {
 		List<Object> list = BeanUtil.array2list(values);
 		return and(Compare.NOT_IN, var, list);
+	}
+	default ConfigStore notIn(String var, RunPrepare prepare) {
+		return notIn(var, (Object) prepare);
 	}
 
 	default ConfigStore notLike(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue) {
