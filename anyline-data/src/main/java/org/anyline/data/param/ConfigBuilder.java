@@ -22,6 +22,7 @@ import org.anyline.data.param.init.DefaultConfigChain;
 import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.Condition;
 import org.anyline.entity.*;
+import org.anyline.util.BasicUtil;
 
 import java.util.List;
 
@@ -70,15 +71,20 @@ public class ConfigBuilder {
         //having
         //"havings":[{"text":"COUNT(*) > 1"},{"text":"MIN(PRICE)<100"}]
         //"havings":["COUNT(*) > 1","MIN(PRICE)<100"]
-        List<?> having = row.getList("havings");
-        if(null != having){
-            for(Object item:having){
+        //"havings":[参考condition]
+        List<?> havings = row.getList("havings");
+        if(null != havings){
+            ConfigStore having = new DefaultConfigStore();
+            configs.having(having);
+            for(Object item:havings){
                 if(item instanceof String){
                     configs.having((String)item);
                 } else if(item instanceof DataRow){
                     DataRow r = (DataRow) item;
-                    String text = r.getString("text");
-                    configs.having(text);
+                    Config config =  parseConfig(r);
+                    if(null != config){
+                        having.getConfigChain().addConfig(config);
+                    }
                 }
             }
         }

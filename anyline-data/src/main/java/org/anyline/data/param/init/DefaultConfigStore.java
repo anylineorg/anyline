@@ -87,7 +87,7 @@ public class DefaultConfigStore implements ConfigStore {
 			row.put("navi", navi.map(empty));
 		}
 		if(null != having && !having.isEmpty()){
-			row.put("havings", having.map(empty));
+			row.put("havings", having.map(empty).recursion("conditions", "items"));
 		}
 		if(null != groups && !groups.isEmpty()){
 			row.put("groups", groups.list(empty));
@@ -1495,6 +1495,14 @@ public class DefaultConfigStore implements ConfigStore {
 	@Override
 	public ConfigStore having(ConfigStore configs) {
 		this.having = configs;
+		return this;
+	}
+	@Override
+	public ConfigStore having(Config config) {
+		if(null == having){
+			having = new DefaultConfigStore();
+		}
+		having.getConfigChain().addConfig(config);
 		return this;
 	}
 

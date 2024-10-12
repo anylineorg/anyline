@@ -1873,7 +1873,7 @@ public interface ConfigStore extends Cloneable{
 		return having(Compare.EQUAL, key, value);
 	}
 	ConfigStore having(ConfigStore configs);
-
+	ConfigStore having(Config config);
 	ConfigStore having() ;
 	PageNavi getPageNavi();
 

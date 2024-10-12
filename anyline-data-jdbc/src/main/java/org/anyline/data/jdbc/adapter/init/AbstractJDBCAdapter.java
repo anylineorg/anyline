@@ -1269,15 +1269,20 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
                 }
             }
         }
-        if(compare == Compare.NOT_IN) {
-            builder.append(" NOT");
-        }
-        builder.append(" IN (");
         if(null != prepare) {
-            return createConditionExists(runtime, builder, compare, prepare, placeholder, unicode);
+            return createConditionIn(runtime, builder, compare, prepare, placeholder, unicode);
         } else {
             if(value instanceof Collection) {
                 Collection<Object> values = (Collection)value;
+                if(values.isEmpty()){
+                    return null;
+                }else if(values.size() == 1){
+                    return createConditionIn(runtime, builder, compare, values.iterator().next(), placeholder, unicode);
+                }
+                if(compare == Compare.NOT_IN) {
+                    builder.append(" NOT");
+                }
+                builder.append(" IN (");
                 boolean first = true;
                 for(Object v:values) {
                     if(!first) {
@@ -1314,6 +1319,10 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
         List<RunValue> values = new ArrayList<>();
         Run run = buildQueryRun(runtime, prepare, new DefaultConfigStore(), placeholder, unicode);
         if(null != run){
+            if(compare == Compare.NOT_IN) {
+                builder.append(" NOT");
+            }
+            builder.append(" IN (");
             String sql = run.getBaseQuery(placeholder);
             sql = BasicUtil.tab(sql);
             List<Object> vs = run.getValues();
@@ -1322,7 +1331,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
                 rv.setValue(v);
                 values.add(rv);
             }
-            builder.append(sql).append(")");
+            builder.append(sql).append(")\n");
         }
         return values;
     }
