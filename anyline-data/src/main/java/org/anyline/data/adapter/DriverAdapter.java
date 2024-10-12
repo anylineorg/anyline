@@ -1911,6 +1911,10 @@ public interface DriverAdapter {
         return createConditionIn(runtime, builder, compare, value, true, true);
     }
 
+    default List<RunValue> createConditionIn2(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder, boolean unicode) {
+        return null;
+    }
+
     /**
      * select [命令执行]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端

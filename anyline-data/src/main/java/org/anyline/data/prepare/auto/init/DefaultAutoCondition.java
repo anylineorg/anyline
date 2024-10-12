@@ -290,7 +290,12 @@ public class DefaultAutoCondition extends AbstractCondition implements AutoCondi
 			}else if(compareCode == 80) { 																				// BETWEEN ? AND ?
 				adapter.formula(runtime, builder, column, compare, null, val, placeholder, unicode);
 			}else if(compareCode == 40 || compareCode == 140) {															// IN(?, ?, ?)
-				adapter.createConditionIn(runtime, builder, compare, val, placeholder, unicode);
+				// adapter.createConditionIn(runtime, builder, compare, val, placeholder, unicode);
+				List<RunValue> rvs = adapter.createConditionIn2(runtime, builder, compare, val, placeholder, unicode);
+				if(null != rvs){
+					runValues.addAll(rvs);
+					variableType = Condition.VARIABLE_PLACEHOLDER_TYPE_NONE;
+				}
 			}else if((compareCode >= 50 && compareCode <= 52) 															// LIKE ?
 					|| (compareCode >= 150 && compareCode <= 152)) { 													// NOT LIKE ?
 				RunValue rv = adapter.createConditionLike(runtime, builder, compare, val, placeholder, unicode) ;

@@ -1293,6 +1293,36 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
         }
         return builder;
     }
+    @Override
+    public List<RunValue> createConditionIn2(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder, boolean unicode) {
+        Collection<Object> values1;
+        Object next;
+        if(value instanceof Collection && (values1 = (Collection) value).size() == 1 && (next = values1.iterator().next()) instanceof RunPrepare) {
+              if(compare == Compare.NOT_IN) {
+                  builder.append(" NOT");
+              }
+              builder.append(" IN (");
+              RunPrepare prepare = (RunPrepare) next;
+              List<RunValue> values = new ArrayList<>();
+            org.anyline.data.Run run = buildQueryRun(runtime, prepare, new DefaultConfigStore(), placeholder, unicode);
+
+            if(null != run){
+                  String sql = run.getBaseQuery(placeholder);
+                  sql = BasicUtil.tab(sql);
+                  List<Object> vs = run.getValues();
+                  for(Object v:vs){
+                      RunValue rv = new RunValue();
+                      rv.setValue(v);
+                      values.add(rv);
+                  }
+                  builder.append(sql).append(")");
+              }
+              return values;
+        } else {
+              createConditionIn(runtime, builder, compare, value, placeholder, unicode);
+        }
+        return null;
+    }
 
     /**
      * select [命令执行]<br/>
