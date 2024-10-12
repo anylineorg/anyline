@@ -1304,8 +1304,9 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
               builder.append(" IN (");
               RunPrepare prepare = (RunPrepare) next;
               List<RunValue> values = new ArrayList<>();
-              org.anyline.data.Run run = buildQueryRun(runtime, prepare, new DefaultConfigStore());
-              if(null != run){
+            org.anyline.data.Run run = buildQueryRun(runtime, prepare, new DefaultConfigStore(), placeholder, unicode);
+
+            if(null != run){
                   String sql = run.getBaseQuery(placeholder);
                   sql = BasicUtil.tab(sql);
                   List<Object> vs = run.getValues();

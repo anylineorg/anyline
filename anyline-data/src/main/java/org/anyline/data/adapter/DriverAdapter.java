@@ -1616,7 +1616,8 @@ public interface DriverAdapter {
      * @param value value
      * @return builder
      */
-    StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder, boolean unicode);
+    StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, Boolean placeholder, Boolean unicode);
+
     default List<RunValue> createConditionIn2(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder, boolean unicode) {
         return null;
     }
