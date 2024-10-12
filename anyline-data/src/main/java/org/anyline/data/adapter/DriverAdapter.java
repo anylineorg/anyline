@@ -952,6 +952,120 @@ public interface DriverAdapter {
         fillInsertContent(runtime, run, dest, set, null, placeholder, unicode, columns);
     }
 
+
+
+
+    default Run buildInsertRun(DataRuntime runtime, Table dest, RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions) {
+        return buildInsertRun(runtime, dest, prepare, configs, obj, true, true, conditions);
+    }
+    /**
+     * insert [命令合成]<br/>
+     * 填充inset命令内容(创建批量INSERT RunPrepare)
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+     * @param obj 需要插入的数据
+     * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
+     * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
+     */
+    default Run buildInsertRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, List<String> columns) {
+        return buildInsertRun(runtime, batch, dest, obj, configs, true, true, columns);
+    }
+    default Run buildInsertRun(DataRuntime runtime, int batch, Table dest, Object obj, List<String> columns) {
+        return buildInsertRun(runtime, batch, dest, obj, null, true, true, columns);
+    }
+    default Run buildInsertRun(DataRuntime runtime, int batch, Table dest, Object obj, String ... columns) {
+        return buildInsertRun(runtime, batch, dest, obj, true, true, BeanUtil.array2list(columns));
+    }
+    default Run buildInsertRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore confgis, String ... columns) {
+        return buildInsertRun(runtime, batch, dest, obj, confgis, true, true, BeanUtil.array2list(columns));
+    }
+    default Run buildInsertRun(DataRuntime runtime, int batch, Object obj, String ... columns) {
+        return buildInsertRun(runtime, batch, DataSourceUtil.parseDest(null, obj, null), obj, true, true, BeanUtil.array2list(columns));
+    }
+    default Run buildInsertRun(DataRuntime runtime, int batch, Object obj, ConfigStore configs, String ... columns) {
+        return buildInsertRun(runtime, batch, DataSourceUtil.parseDest(null, obj, configs), obj, configs, true, true, BeanUtil.array2list(columns));
+    }
+    default Run buildInsertRun(DataRuntime runtime, int batch, ConfigStore configs, Object obj, String ... columns) {
+        return buildInsertRun(runtime, batch, DataSourceUtil.parseDest(null, obj, configs), obj, configs, true, true, BeanUtil.array2list(columns));
+    }
+
+    default Run buildInsertRun(DataRuntime runtime, int batch, String dest, Object obj, ConfigStore configs, List<String> columns) {
+        return buildInsertRun(runtime, batch, DataSourceUtil.parseDest(dest, obj, configs), obj, configs, true, true, columns);
+    }
+    default Run buildInsertRun(DataRuntime runtime, int batch, String dest, Object obj, List<String> columns) {
+        return buildInsertRun(runtime, batch, dest, obj, null, true, true, columns);
+    }
+    default Run buildInsertRun(DataRuntime runtime, int batch, String dest, Object obj, String ... columns) {
+        return buildInsertRun(runtime, batch, dest, obj, true, true, BeanUtil.array2list(columns));
+    }
+    default Run buildInsertRun(DataRuntime runtime, int batch, String dest, Object obj, ConfigStore confgis, String ... columns) {
+        return buildInsertRun(runtime, batch, dest, obj, confgis, true, true, BeanUtil.array2list(columns));
+    }
+
+    /**
+     * insert [命令合成-子流程]<br/>
+     * 填充inset命令内容(创建批量INSERT RunPrepare)
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
+     * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+     * @param list 需要插入的数据集合
+     * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
+     */
+    default void fillInsertContent(DataRuntime runtime, Run run, Table dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns) {
+        fillInsertContent(runtime, run, dest, list, configs, true, true, columns);
+    }
+    default void fillInsertContent(DataRuntime runtime, Run run, Table dest, Collection list, LinkedHashMap<String, Column> columns) {
+        fillInsertContent(runtime, run, dest, list, null, true, true, columns);
+    }
+
+    /**
+     * insert [命令合成-子流程]<br/>
+     * 填充inset命令内容(创建批量INSERT RunPrepare)
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
+     * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+     * @param set 需要插入的数据集合
+     * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
+     */
+    default void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet set, ConfigStore configs, LinkedHashMap<String, Column> columns) {
+        fillInsertContent(runtime, run, dest, set, configs, true, true, columns);
+    }
+    default void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet set, LinkedHashMap<String, Column> columns) {
+        fillInsertContent(runtime, run, dest, set, null, true, true, columns);
+    }
+
+    /**
+     * insert [命令合成-子流程]<br/>
+     * 填充inset命令内容(创建批量INSERT RunPrepare)
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
+     * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+     * @param list 需要插入的数据集合
+     * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
+     */
+    default void fillInsertContent(DataRuntime runtime, Run run, String dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns) {
+        fillInsertContent(runtime, run, DataSourceUtil.parseDest(dest, list, configs), list, configs, true, true, columns);
+    }
+    default void fillInsertContent(DataRuntime runtime, Run run, String dest, Collection list, LinkedHashMap<String, Column> columns) {
+        fillInsertContent(runtime, run, dest, list, null, true, true, columns);
+    }
+
+    /**
+     * insert [命令合成-子流程]<br/>
+     * 填充inset命令内容(创建批量INSERT RunPrepare)
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
+     * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+     * @param set 需要插入的数据集合
+     * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
+     */
+    default void fillInsertContent(DataRuntime runtime, Run run, String dest, DataSet set, ConfigStore configs, LinkedHashMap<String, Column> columns) {
+        fillInsertContent(runtime, run, DataSourceUtil.parseDest(dest, set, configs), set, configs, true, true, columns);
+    }
+    default void fillInsertContent(DataRuntime runtime, Run run, String dest, DataSet set, LinkedHashMap<String, Column> columns) {
+        fillInsertContent(runtime, run, dest, set, null, true, true, columns);
+    }
+
     /**
      * 插入子表前 检测并创建子表
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -1299,6 +1413,156 @@ public interface DriverAdapter {
     }
 
     /**
+     * 多表关联更新
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param prepare 一般通过TableBuilder生成
+     * @param data K-VariableValue 更新值key:需要更新的列 value:通常是关联表的列用VariableValue表示，也可以是常量
+     * @return 影响行数
+     */
+    default Run buildUpdateRun(DataRuntime runtime, RunPrepare prepare, DataRow data, ConfigStore configs, String ... conditions){
+        return buildUpdateRun(runtime, prepare, data, configs, true, true, conditions);
+    }
+
+    /**
+     *
+     * 多表关联更新
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
+     */
+    default void fillUpdateContent(DataRuntime runtime, TableRun run, StringBuilder builder, DataRow data, ConfigStore configs) {
+        fillUpdateContent(runtime, run, builder, data, configs, true, true);
+    }
+    /**
+     *
+     * 多表关联更新
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
+     */
+    default void fillUpdateContent(DataRuntime runtime, TableRun run, DataRow data, ConfigStore configs) {
+        fillUpdateContent(runtime, run, run.getBuilder(), data, configs, true, true);
+    }
+    /**
+     * update [命令合成]<br/>
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+     * @param obj Entity或DtaRow
+     * @param configs 更新条件
+     * @param columns 需要插入或更新的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
+     *                列可以加前缀<br/>
+     *                +:表示必须更新<br/>
+     *                -:表示必须不更新<br/>
+     *                ?:根据是否有值<br/>
+     *
+     *        如果没有提供columns,长度为0也算没有提供<br/>
+     *        则解析obj(遍历所有的属性工Key)获取insert列<br/>
+     *
+     *        如果提供了columns则根据columns获取insert列<br/>
+     *
+     *        但是columns中出现了添加前缀列,则解析完columns后,继续解析obj<br/>
+     *
+     *        以上执行完后,如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
+     *        则把执行结果与表结构对比,删除表中没有的列<br/>
+     * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
+     */
+    default Run buildUpdateRun(DataRuntime runtime, int btch, Table dest, Object obj, ConfigStore configs, List<String> columns) {
+        return buildUpdateRun(runtime, btch, dest, obj, configs, true, true, columns);
+    }
+
+    default Run buildUpdateRun(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns) {
+        return buildUpdateRun(runtime, 0, dest, obj, configs, true, true, columns);
+    }
+    default Run buildUpdateRun(DataRuntime runtime, Object obj, ConfigStore configs, List<String> columns) {
+        return buildUpdateRun(runtime, DataSourceUtil.parseDest(null, obj, configs), obj, configs, true, true, columns);
+    }
+    default Run buildUpdateRun(DataRuntime runtime, Table dest, Object obj, List<String> columns) {
+        return buildUpdateRun(runtime, dest, obj, null, true, true, columns);
+    }
+    default Run buildUpdateRun(DataRuntime runtime, Object obj, List<String> columns) {
+        return buildUpdateRun(runtime, DataSourceUtil.parseDest(null, obj, null), obj, null, true, true, columns);
+    }
+    default Run buildUpdateRun(DataRuntime runtime, Table dest, Object obj, ConfigStore configs,  String ... columns) {
+        return buildUpdateRun(runtime, dest, obj, configs, true, true, BeanUtil.array2list(columns));
+    }
+    default Run buildUpdateRun(DataRuntime runtime, Object obj, ConfigStore configs, String ... columns) {
+        return buildUpdateRun(runtime, DataSourceUtil.parseDest(null, obj, configs), obj, configs, true, true, BeanUtil.array2list(columns));
+    }
+    default Run buildUpdateRun(DataRuntime runtime, Table dest, Object obj, String ... columns) {
+        return buildUpdateRun(runtime, dest, obj, null, true, true, BeanUtil.array2list(columns));
+    }
+    default Run buildUpdateRun(DataRuntime runtime, Object obj, String ... columns) {
+        return buildUpdateRun(runtime, DataSourceUtil.parseDest(null, obj, null), obj, null, true, true, BeanUtil.array2list(columns));
+    }
+
+    /**
+     *
+     * update [命令合成]<br/>
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+     * @param obj Entity或DtaRow
+     * @param configs 更新条件
+     * @param columns 需要插入或更新的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
+     * @return Run
+     */
+    default Run buildUpdateRunFromEntity(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, LinkedHashMap<String, Column> columns) {
+        return buildUpdateRunFromEntity(runtime, dest, obj, configs, true, true, columns);
+    }
+
+    /**
+     *
+     * update [命令合成]<br/>
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+     * @param row DtaRow
+     * @param configs 更新条件
+     * @param columns 需要插入或更新的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
+     * @return Run
+     */
+    default Run buildUpdateRunFromDataRow(DataRuntime runtime, Table dest, DataRow row, ConfigStore configs, LinkedHashMap<String,Column> columns) {
+        return buildUpdateRunFromDataRow(runtime, dest, row, configs, true, true, columns);
+    }
+
+    /**
+     *
+     * update [命令合成]<br/>
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+     * @param list Collection
+     * @param configs 更新条件
+     * @param columns 需要插入或更新的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
+     * @return Run
+     */
+    default Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, LinkedHashMap<String,Column> columns) {
+        return buildUpdateRunFromCollection(runtime, batch, dest, list, configs, true, true, columns);
+    }
+
+    default Run buildUpdateRun(DataRuntime runtime, int batch, String dest, Object obj, ConfigStore configs, List<String> columns) {
+        return buildUpdateRun(runtime, batch, DataSourceUtil.parseDest(dest, obj, configs), obj, configs, true, true, columns);
+    }
+    default Run buildUpdateRun(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns) {
+        return buildUpdateRun(runtime, 0, dest, obj, configs, true, true, columns);
+    }
+    default Run buildUpdateRun(DataRuntime runtime, String dest, Object obj, List<String> columns) {
+        return buildUpdateRun(runtime, dest, obj, null, true, true, columns);
+    }
+    default Run buildUpdateRun(DataRuntime runtime, String dest, Object obj, ConfigStore configs, String ... columns) {
+        return buildUpdateRun(runtime, dest, obj, configs, true, true, BeanUtil.array2list(columns));
+    }
+    default Run buildUpdateRun(DataRuntime runtime, String dest, Object obj, String ... columns) {
+        return buildUpdateRun(runtime, dest, obj, null, true, true, BeanUtil.array2list(columns));
+    }
+    default Run buildUpdateRunFromEntity(DataRuntime runtime, String dest, Object obj, ConfigStore configs, LinkedHashMap<String, Column> columns) {
+        return buildUpdateRunFromEntity(runtime, DataSourceUtil.parseDest(dest, obj, configs), obj, configs, true, true, columns);
+    }
+
+    default Run buildUpdateRunFromDataRow(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, LinkedHashMap<String,Column> columns) {
+        return buildUpdateRunFromDataRow(runtime, DataSourceUtil.parseDest(dest, row, configs), row, configs, true, true, columns);
+    }
+
+    default Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore configs, LinkedHashMap<String,Column> columns) {
+        return buildUpdateRunFromCollection(runtime, batch, DataSourceUtil.parseDest(dest, list, configs), list, configs, true, true, columns);
+    }
+
+    /**
      * 确认需要更新的列
      * @param dest 表
      * @param row DataRow
@@ -1461,6 +1725,9 @@ public interface DriverAdapter {
      * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
      */
     Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, Boolean placeholder, Boolean unicode, String ... conditions);
+    default Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions) {
+        return buildQueryRun(runtime, prepare, configs, true, true, conditions);
+    }
     default Run initQueryRun(DataRuntime runtime, RunPrepare prepare) {
         Run run = prepare.build(runtime);
         if(null != run && null == run.action()) {
@@ -1508,8 +1775,14 @@ public interface DriverAdapter {
      * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
      */
     Run fillQueryContent(DataRuntime runtime, StringBuilder builder,  Run run, Boolean placeholder, Boolean unicode);
+    default Run fillQueryContent(DataRuntime runtime, StringBuilder builder,  Run run){
+        return fillQueryContent(runtime, builder, run, true, true);
+    }
 
     Run fillQueryContent(DataRuntime runtime, Run run, Boolean placeholder, Boolean unicode);
+    default Run fillQueryContent(DataRuntime runtime, Run run) {
+        return fillQueryContent(runtime, run, true, true);
+    }
 
     /**
      * select[命令合成-子流程] <br/>
@@ -1531,6 +1804,9 @@ public interface DriverAdapter {
      * @return value 有占位符时返回占位值，没有占位符返回null
      */
     RunValue createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, Boolean placeholder, Boolean unicode);
+    default RunValue createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value) {
+        return createConditionLike(runtime, builder, compare, value, true, true);
+    }
 
     /**
      * select[命令合成-子流程] <br/>
@@ -1545,6 +1821,9 @@ public interface DriverAdapter {
     default List<RunValue> createConditionExists(DataRuntime runtime, StringBuilder builder, Compare compare, RunPrepare prepare, Boolean placeholder, Boolean unicode) {
         return null;
     }
+    default List<RunValue> createConditionExists(DataRuntime runtime, StringBuilder builder, Compare compare, RunPrepare prepare) {
+        return createConditionExists(runtime, builder, compare, prepare, true, true);
+    }
     /**
      * select[命令合成-子流程] <br/>
      * 构造 FIND_IN_SET 查询条件
@@ -1558,6 +1837,9 @@ public interface DriverAdapter {
      */
     default Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, Boolean placeholder, Boolean unicode) throws NotSupportException {
         throw new NotSupportException("不支持");
+    }
+    default Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value) throws NotSupportException {
+        return createConditionFindInSet(runtime, builder, column, compare, value, true, true);
     }
 
     /**
@@ -1574,8 +1856,8 @@ public interface DriverAdapter {
     default Object createConditionJsonContains(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, Boolean placeholder, Boolean unicode) throws NotSupportException {
         throw new NotSupportException("不支持");
     }
-    default Object createConditionJsonContains(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, Boolean placeholder) throws NotSupportException {
-        throw new NotSupportException("不支持");
+    default Object createConditionJsonContains(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value) throws NotSupportException {
+        return createConditionJsonContains(runtime, builder, column, compare, value, true, true);
     }
 
     /**
@@ -1592,6 +1874,10 @@ public interface DriverAdapter {
     default Object createConditionJsonContainsPath(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, Boolean placeholder, Boolean unicode) throws NotSupportException {
         throw new NotSupportException("不支持");
     }
+
+    default Object createConditionJsonContainsPath(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value) throws NotSupportException {
+        return createConditionJsonContainsPath(runtime, builder, column, compare, value, true, true);
+    }
     /**
      * select[命令合成-子流程] <br/>
      * 构造 JSON_SEARCH 查询条件(默认 IS NOT NULL)
@@ -1607,6 +1893,10 @@ public interface DriverAdapter {
         throw new NotSupportException("不支持");
     }
 
+    default Object createConditionJsonSearch(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value) throws NotSupportException {
+        return createConditionJsonSearch(runtime, builder, column, compare, value, true, true);
+    }
+
     /**
      * select[命令合成-子流程] <br/>
      * 构造(NOT) IN 查询条件
@@ -1617,6 +1907,9 @@ public interface DriverAdapter {
      * @return builder
      */
     StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, Boolean placeholder, Boolean unicode);
+    default StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value) {
+        return createConditionIn(runtime, builder, compare, value, true, true);
+    }
 
     /**
      * select [命令执行]<br/>
@@ -1757,6 +2050,9 @@ public interface DriverAdapter {
      * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
      */
     Run buildExecuteRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, Boolean placeholder, Boolean unicode, String ... conditions);
+    default Run buildExecuteRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions){
+        return buildExecuteRun(runtime, prepare, configs, true, true, conditions);
+    }
 
     /**
      * 填充 execute 命令内容
@@ -1764,6 +2060,9 @@ public interface DriverAdapter {
      * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
      */
     void fillExecuteContent(DataRuntime runtime, Run run, Boolean placeholder, Boolean unicode);
+    default void fillExecuteContent(DataRuntime runtime, Run run) {
+        fillExecuteContent(runtime, run, true, true);
+    }
 
     /**
      * execute [命令执行]<br/>
@@ -1968,6 +2267,92 @@ public interface DriverAdapter {
      * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
      */
     void fillDeleteRunContent(DataRuntime runtime, Run run, Boolean placeholder, Boolean unicode);
+
+
+    /**
+     * delete[命令合成]<br/>
+     * 合成 where k1 = v1 and k2 = v2
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param table 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+     * @param obj entity或DataRow
+     * @param columns 删除条件的列或属性，根据columns取obj值并合成删除条件
+     * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
+     */
+    default List<Run> buildDeleteRun(DataRuntime runtime, Table table, ConfigStore configs, Object obj,  String ... columns) {
+        return buildDeleteRun(runtime, table, configs, obj, true, true, columns);
+    }
+    default List<Run> buildDeleteRun(DataRuntime runtime, String table, ConfigStore configs, Object obj, String ... columns) {
+        return buildDeleteRun(runtime, new Table(table), configs, obj, true, true, columns);
+    }
+
+    default List<Run> buildDeleteRun(DataRuntime runtime, Table table, ConfigStore configs) {
+        return buildDeleteRun(runtime,  table, configs, null, true, true,  null);
+    }
+    default List<Run> buildDeleteRun(DataRuntime runtime, String table, ConfigStore configs) {
+        return buildDeleteRun(runtime,  new Table(table), configs, null, true, true,  null);
+    }
+
+    /**
+     * delete[命令合成]<br/>
+     * 合成 where column in (values)
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param table 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+     * @param column 列
+     * @param values values
+     * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
+     */
+    default List<Run> buildDeleteRun(DataRuntime runtime, int batch, Table table, ConfigStore configs, String column, Object values) {
+        return buildDeleteRun(runtime, batch, table, configs, true, true, column, values);
+    }
+    default List<Run> buildDeleteRun(DataRuntime runtime, int batch, String table, ConfigStore configs, String column, Object values) {
+        return buildDeleteRun(runtime, batch, new Table(table), configs, true, true, column, values);
+    }
+
+
+    /**
+     * delete[命令合成-子流程]<br/>
+     * 合成 where column in (values)
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param table 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+     * @param column 列
+     * @param values values
+     * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
+     */
+    default List<Run> buildDeleteRunFromTable(DataRuntime runtime, int batch, Table table, ConfigStore configs, String column, Object values) {
+        return buildDeleteRunFromTable(runtime, batch, table, configs, true, true, column, values);
+    }
+    default List<Run> buildDeleteRunFromTable(DataRuntime runtime, int batch, String table, ConfigStore configs, String column, Object values) {
+        return buildDeleteRunFromTable(runtime, batch, new Table(table), configs, true, true, column, values);
+    }
+
+    /**
+     * delete[命令合成-子流程]<br/>
+     * 合成 where k1 = v1 and k2 = v2
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param table 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源 如果为空 可以根据obj解析
+     * @param obj entity或DataRow
+     * @param columns 删除条件的列或属性，根据columns取obj值并合成删除条件
+     * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
+     */
+    default List<Run> buildDeleteRunFromEntity(DataRuntime runtime, Table table, ConfigStore configs, Object obj, String ... columns) {
+        return buildDeleteRunFromEntity(runtime, table, configs, obj, true, true, columns);
+    }
+    default List<Run> buildDeleteRunFromEntity(DataRuntime runtime, String table, ConfigStore configs, Object obj, String ... columns) {
+        return buildDeleteRunFromEntity(runtime, new Table(table), configs, obj, true, true, columns);
+    }
+
+    default List<Run> buildDeleteRunFromConfig(DataRuntime runtime, ConfigStore configs) {
+        return buildDeleteRunFromConfig(runtime, configs, true, true);
+    }
+
+    /**
+     * delete[命令合成-子流程]<br/>
+     * 构造查询主体 拼接where group等(不含分页 ORDER)
+     * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
+     */
+    default void fillDeleteRunContent(DataRuntime runtime, Run run) {
+        fillDeleteRunContent(runtime, run, true, true);
+    }
     /**
      *
      * delete[命令执行]<br/>
