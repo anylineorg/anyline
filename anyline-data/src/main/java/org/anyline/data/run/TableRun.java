@@ -101,7 +101,7 @@ public class TableRun extends AbstractRun implements Run {
 			builder.append("\n").append(groups.getRunText(delimiterFr+delimiterTo));
 		}
 		if(null != having) {
-			String txt = SQLUtil.trim(having.getRunText(runtime, placeholder));
+			String txt = SQLUtil.trim(having.getRunText(runtime, false, unicode));
 			if(BasicUtil.isNotEmpty(txt)) {
 				builder.append("\nHAVING ").append(txt);
 			}

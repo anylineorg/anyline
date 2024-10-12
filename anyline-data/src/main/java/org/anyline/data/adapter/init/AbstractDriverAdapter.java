@@ -2890,7 +2890,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         }
 
         if(null != having) {
-            String txt = SQLUtil.trim(having.getRunText(runtime, placeholder, unicode));
+            String txt = SQLUtil.trim(having.getRunText(runtime, false, unicode));
             if(BasicUtil.isNotEmpty(txt)) {
                 builder.append("\nHAVING ").append(txt);
             }

@@ -30,12 +30,10 @@ import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.SQLUtil;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
- 
- 
+import java.lang.reflect.Array;
+import java.util.*;
+
+
 /** 
  * 自动生成的参数 
  * @author zh 
@@ -157,6 +155,21 @@ public class DefaultAutoCondition extends AbstractCondition implements AutoCondi
 		if(compareCode == -1) {
 			//只作参数赋值
 			return "";
+		}
+		if(compare.valueCount() == 1){
+			if(null != val){
+				if(val instanceof Collection){
+					Collection collection = (Collection)val;
+					if(!collection.isEmpty()){
+						val = collection.iterator().next();
+					}
+				}else if(val.getClass().isArray()){
+					int len = Array.getLength(val);
+					if(len > 0){
+						val = Array.get(val, 0);
+					}
+				}
+			}
 		}
 		if(empty) {
 			if(swt == EMPTY_VALUE_SWITCH.BREAK || swt == EMPTY_VALUE_SWITCH.IGNORE) {

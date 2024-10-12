@@ -204,7 +204,7 @@ public class TextRun extends AbstractRun implements Run {
 		}
 
 		if(null != having) {
-			String txt = SQLUtil.trim(having.getRunText(runtime, placeholder, unicode));
+			String txt = SQLUtil.trim(having.getRunText(runtime, false, unicode));
 			if(BasicUtil.isNotEmpty(txt)) {
 				builder.append("\nHAVING ").append(txt);
 			}
