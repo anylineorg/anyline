@@ -4530,7 +4530,7 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
         runs.addAll(buildAppendCommentRun(runtime, meta));
         runs.addAll(buildAppendColumnCommentRun(runtime, meta));
         runs.addAll(buildAppendPrimaryRun(runtime, meta));
-        runs.addAll(buildAppendIndexRun(runtime, meta));
+        //runs.addAll(buildAppendIndexRun(runtime, meta));
         return runs;
     }
 
