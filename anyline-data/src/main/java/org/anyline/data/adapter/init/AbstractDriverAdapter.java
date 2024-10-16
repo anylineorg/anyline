@@ -18519,6 +18519,15 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		if(null == value || "NULL".equals(value)) {
 			return null;
 		}
+        if(value instanceof VariableValue){
+            return ((VariableValue)value).value();
+        }
+        if(value instanceof String){
+            String str = value.toString();
+            if(BasicUtil.checkEl(str)) {
+                return str.substring(2, str.length() - 1);
+            }
+        }
 		Object result = null;
 		TypeMetadata columnType = null;
 		DataWriter writer = null;
