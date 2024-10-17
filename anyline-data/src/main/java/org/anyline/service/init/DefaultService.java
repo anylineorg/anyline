@@ -1246,6 +1246,16 @@ public class DefaultService<E> implements AnylineService<E> {
         return result;
     }
 
+
+    /**
+     * RunPrepare执行 通常是用prepare来合成比较复杂的的SQL如CREATE VIEW AS prepare.sql
+     * @param prepares prepares
+     * @return 影响行数
+     */
+    @Override
+    public long execute(List<RunPrepare> prepares, ConfigStore configs) {
+        return dao.execute(prepares, configs);
+    }
     @SuppressWarnings("rawtypes")
 
     @Override

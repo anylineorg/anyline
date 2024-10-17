@@ -2033,6 +2033,7 @@ public interface DriverAdapter {
      * @return 影响行数
      */
     long execute(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) ;
+    long execute(DataRuntime runtime, String random, List<RunPrepare> prepares, ConfigStore configs) ;
 
     long execute(DataRuntime runtime, String random, int batch, ConfigStore configs, RunPrepare prepare, Collection<Object> values) ;
     long execute(DataRuntime runtime, String random, int batch, int vol, ConfigStore configs, RunPrepare prepare, Collection<Object> values) ;

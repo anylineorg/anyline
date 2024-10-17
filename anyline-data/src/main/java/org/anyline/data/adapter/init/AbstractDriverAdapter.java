@@ -3364,6 +3364,49 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         return result;
     }
 
+    @Override
+    public long execute(DataRuntime runtime, String random, List<RunPrepare> prepares, ConfigStore configs) {
+        long result = 0;
+        boolean cmd_success = false;
+        ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
+        if(null == random) {
+            random = random(runtime);
+        }
+        for(RunPrepare prepare:prepares){
+            swt = InterceptorProxy.prepareExecute(runtime, random, prepare, configs);
+            if(swt == ACTION.SWITCH.BREAK) {
+                return -1;
+            }
+
+            Run run = buildExecuteRun(runtime,  prepare, configs, true, true);
+            if(!run.isValid()) {
+                if(log.isWarnEnabled() && ConfigStore.IS_LOG_SQL(configs)) {
+                    log.warn("[valid:false][不具备执行条件][RunPrepare:" + ConfigParser.createSQLSign(false, false, prepare.getTableName(), configs) + "][thread:" + Thread.currentThread().getId() + "][ds:" + runtime.datasource() + "]");
+                }
+                return -1;
+            }
+            long fr = System.currentTimeMillis();
+
+            long millis = -1;
+            swt = InterceptorProxy.beforeExecute(runtime, random, run, configs);
+            if(swt == ACTION.SWITCH.BREAK) {
+                return -1;
+            }
+            if(null != dmListener) {
+                swt = dmListener.beforeExecute(runtime, random, run);
+            }
+            if(swt == ACTION.SWITCH.BREAK) {
+                return -1;
+            }
+            result += execute(runtime, random, configs, run);
+            cmd_success = true;
+            if (null != dmListener) {
+                dmListener.afterExecute(runtime, random, run, cmd_success, result, millis);
+            }
+            InterceptorProxy.afterExecute(runtime, random, run, configs, cmd_success, result, System.currentTimeMillis()-fr);
+        }
+        return result;
+    }
     /**
      * execute [调用入口]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端

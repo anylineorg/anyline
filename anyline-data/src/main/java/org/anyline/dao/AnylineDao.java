@@ -509,6 +509,10 @@ public interface AnylineDao<E>{
 		return execute(runtime(), null, procedure);
 	}
 
+	long execute(DataRuntime runtime, String random, List<RunPrepare> prepares, ConfigStore configs);
+	default long execute(List<RunPrepare> prepares, ConfigStore configs) {
+		return execute(runtime(), null, prepares, configs);
+	}
 	/** 
 	 * 根据存储过程查询 
 	 * @param procedure  procedure

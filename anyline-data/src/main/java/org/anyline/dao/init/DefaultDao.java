@@ -765,6 +765,22 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	}
 
 	@Override
+	public long execute(DataRuntime runtime, String random, List<RunPrepare> prepares, ConfigStore configs) {
+		if(null == runtime) {
+			runtime = runtime();
+		}
+		List<RunPrepare> list = new ArrayList<>();
+		for(RunPrepare prepare:prepares){
+			if(!prepare.disposable()){
+				list.add(prepare.clone());
+			}else{
+				list.add(prepare);
+			}
+		}
+		return runtime.getAdapter().execute(runtime, random, list, configs);
+	}
+
+	@Override
 	public long execute(DataRuntime runtime, String random, int batch, RunPrepare prepare, Collection<Object> values) {
 		if(null == runtime) {
 			runtime = runtime();

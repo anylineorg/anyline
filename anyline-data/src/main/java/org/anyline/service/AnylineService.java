@@ -50,10 +50,7 @@ import java.io.File;
 import java.math.BigDecimal;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public interface AnylineService<E>{
 	AnylineService setDao(AnylineDao dao);
@@ -1581,6 +1578,26 @@ public interface AnylineService<E>{
 	 */
 	long execute(int batch, int vol, String sql, Collection<Object> values);
 
+	/**
+	 * RunPrepare执行 通常是用prepare来合成比较复杂的的SQL如CREATE VIEW AS prepare.sql
+	 * @param prepares prepares
+	 * @param configs ConfigStore其他配置
+	 * @return 影响行数
+	 */
+	long execute(List<RunPrepare> prepares, ConfigStore configs);
+	default long execute(List<RunPrepare> prepares) {
+		return execute(prepares, new DefaultConfigStore());
+	}
+	default long execute(RunPrepare ... prepares) {
+		return execute(new DefaultConfigStore(), prepares);
+	}
+	default long execute(ConfigStore configs, RunPrepare ... prepares) {
+		List<RunPrepare> list = new ArrayList<>();
+		if(null != prepares){
+            list.addAll(Arrays.asList(prepares));
+		}
+		return execute(list, configs);
+	}
 	/** 
 	 * 执行存储过程 
 	 * @param procedure  procedure
