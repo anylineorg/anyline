@@ -723,12 +723,32 @@ public class DefaultConfigStore implements ConfigStore {
 		params.put(key, conf);
 		return this;
 	}
+
+	/**
+	 * 构造查询条件
+	 * @param swt 遇到空值处理方式
+	 * @param prefix 表别名或XML中查询条件的ID或表名
+	 * @param var XML自定义SQL条件中指定变量赋值或占位符key或列名 在value值为空的情况下 如果var以+开头会生成var is null 如果以++开头当前SQL不执行 这与swt作用一样,不要与swt混用 注意会有++a.id的形式
+	 * @param value 值 可以是集合
+	 * @param compare 匹配方式
+	 * @param overCondition 覆盖相同key并且相同运算符的条件,true在现有条件基础上修改(多个相同key的条件只留下第一个),false:添加新条件
+	 * @param overValue		覆盖相同key并且相同运算符的条件时，是否覆盖条件值,true:删除析来的值 false:原来的值合成新的集合
+	 * @return ConfigStore
+	 */
 	@Override
 	public ConfigStore and(EMPTY_VALUE_SWITCH swt, Compare compare, String prefix, String var, Object value, boolean overCondition, boolean overValue) {
 		if(null == compare) {
 			compare = Compare.AUTO;
 			if(null == value) {
 				compare = Compare.EQUAL;
+			}
+		}
+		if(null == swt || EMPTY_VALUE_SWITCH.NONE == swt) {
+			if (var.startsWith("+")) {
+				swt = EMPTY_VALUE_SWITCH.NULL;
+			}
+			if (var.startsWith("++")) {
+				swt = EMPTY_VALUE_SWITCH.BREAK;
 			}
 		}
 
@@ -754,15 +774,22 @@ public class DefaultConfigStore implements ConfigStore {
 				var = var.substring(var.indexOf(".") + 1);
 			}
 		}
-		if(null == swt || EMPTY_VALUE_SWITCH.NONE == swt) {
-			if (null != var) {
-				if (var.startsWith("++")) {
-					swt = EMPTY_VALUE_SWITCH.BREAK;
-					var = var.substring(2);
-				} else if (var.startsWith("+")) {
-					swt = EMPTY_VALUE_SWITCH.NULL;
-					var = var.substring(1);
-				}
+		if (null != var) {
+			if (var.startsWith("++")) {
+				swt = EMPTY_VALUE_SWITCH.BREAK;
+				var = var.substring(2);
+			} else if (var.startsWith("+")) {
+				swt = EMPTY_VALUE_SWITCH.NULL;
+				var = var.substring(1);
+			}
+		}
+		if (null != prefix) {
+			if (prefix.startsWith("++")) {
+				swt = EMPTY_VALUE_SWITCH.BREAK;
+				prefix = prefix.substring(2);
+			} else if (var.startsWith("+")) {
+				swt = EMPTY_VALUE_SWITCH.NULL;
+				prefix = prefix.substring(1);
 			}
 		}
 		//NULL NOT NULL
