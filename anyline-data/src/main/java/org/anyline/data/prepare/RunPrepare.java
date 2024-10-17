@@ -314,12 +314,18 @@ public interface RunPrepare extends Cloneable {
 		return json(false);
 	}
 
-
 	GroupStore groups();
 	RunPrepare aggregation(Aggregation aggregation, String column, String result);
 	RunPrepare aggregation(AggregationConfig ... configs);
 	RunPrepare aggregation(List<AggregationConfig> configs);
 	List<AggregationConfig> aggregations();
+
+	/**
+	 * 利用RunPrepare构造更复杂的SQL
+	 * @param box CREATE VIEW AS ${body} 其中${body}会替换成this.sql
+	 * @return this
+	 */
+	RunPrepare box(String box);
 
 	RunPrepare clone();
 }

@@ -23,6 +23,7 @@ import org.anyline.data.param.ConfigChain;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.Highlight;
 import org.anyline.data.prepare.Condition;
+import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.run.Run;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
@@ -54,6 +55,7 @@ public class DefaultConfigStore implements ConfigStore {
 	protected boolean cascade				  = false									; // 是否开启级联操作(Graph库中用到)
 	protected boolean supportKeyHolder		  = true									; // 是否支持返回自增主键值
 	protected List<String> keyHolders		  = new ArrayList<>()						; // 自增主键值key
+	protected List<RunPrepare> prepares 	  = new ArrayList<>()						; // 执行查询或更新的 前置命令
 
 	protected Boolean override                = null                  					; // 如果数据库中存在相同数据(根据overrideBy)是否覆盖 true或false会检测数据库null不检测
 	protected List<String> overrideByColumns  = null									; // 中存在相同数据(根据overrideBy)是否覆盖 true或false会检测数据库null不检测
@@ -1643,6 +1645,26 @@ public class DefaultConfigStore implements ConfigStore {
 	public LinkedHashMap<String, Column> getColumns() {
 		return columns;
 	}
+
+	/**
+	 * 执行查询或更新前 有前置命令 如创建临时表等
+	 * @param prepares RunPrepare
+	 * @return this
+	 */
+	@Override
+	public ConfigStore prepare(RunPrepare... prepares) {
+		if(null != prepares){
+			for(RunPrepare prepare:prepares){
+				this.prepares.add(prepare);
+			}
+		}
+		return this;
+	}
+	@Override
+	public List<RunPrepare> prepares() {
+		return this.prepares;
+	}
+
 	public ConfigStore excludes(String ... columns) {
 		if(null != columns) {
 			for(String column:columns) {

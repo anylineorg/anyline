@@ -1905,6 +1905,13 @@ public interface ConfigStore extends Cloneable{
 	LinkedHashMap<String, Column> getColumns();
 
 	/**
+	 * 执行查询或更新前 有前置命令 如创建临时表等
+	 * @param prepares RunPrepare
+	 * @return this
+	 */
+	ConfigStore prepare(RunPrepare ... prepares);
+	List<RunPrepare> prepares();
+	/**
 	 * 级联(如删除点相关的边)
 	 * @param cascade  是否开启
 	 * @return ConfigStore

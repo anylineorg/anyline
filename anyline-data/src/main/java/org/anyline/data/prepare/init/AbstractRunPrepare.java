@@ -45,7 +45,8 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 	protected OrderStore orders = new DefaultOrderStore()		; // 排序
 	protected GroupStore groups = new DefaultGroupStore()		; // 分组条件
 	protected List<AggregationConfig> aggregations = new ArrayList<>();
-	protected ConfigStore having = new DefaultConfigStore(); // 分组过滤条件
+	protected ConfigStore having = new DefaultConfigStore()		; // 分组过滤条件
+	protected String box										; // 利用prepare构造更复杂的SQL 如 CREATE VIEW V_USER AS ${body}
 
 	protected PageNavi navi										; // 分页
 	protected List<String> primaryKeys     = new ArrayList<>()	; // 主键
@@ -693,6 +694,10 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 	}
 	public List<AggregationConfig> aggregations() {
 		return this.aggregations;
+	}
+	public RunPrepare box(String box){
+		this.box = box;
+		return this;
 	}
 	public RunPrepare clone() {
 		AbstractRunPrepare clone = null;
