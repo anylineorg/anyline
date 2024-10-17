@@ -3632,18 +3632,39 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
      * 外键关联<br/>
      * 如果要合并条目(如把对应user的全部数据合并到当前集合条目)应该调用join<br/>
      * 如果要把set中的条目作为一个整体放到当前集合条目中应该调用dispatch(如果需要一对多关系调用dispatchs)
-     * @param column 关联列 如 user_id
+     * @param fk 关联列 如 user_id
      * @param set 关联数据集 如 users
-     * @param fk 关联数据集.关联列 如 id
-     * @param relation 关联数据集.关联结果列 如 name
+     * @param pk 关联数据集.关联列 如 id
+     * @param intent 关联数据集.关联结果列 如 name
      * @param alias 关联结果存储列  如 user_name
      * @return this
      */
-    public DataSet foreign(String column, DataSet set, String fk, String relation, String alias){
+    public DataSet foreign(String fk, DataSet set, String pk, String intent, String alias){
         for(DataRow row:rows){
-            DataRow data = set.getRow(fk, row.getString(column));
+            DataRow data = set.getRow(pk, row.getString(fk));
             if(null != data){
-                row.put(alias, data.get(relation));
+                row.put(alias, data.get(intent));
+            }
+        }
+        return this;
+    }
+    /**
+     * 外键关联<br/>
+     * 如果要合并条目(如把对应user的全部数据合并到当前集合条目)应该调用join<br/>
+     * 如果要把set中的条目作为一个整体放到当前集合条目中应该调用dispatch(如果需要一对多关系调用dispatchs)
+     * @param fk 关联列 如 user_id
+     * @param set 关联数据集 如 users
+     * @param pk 关联数据集.关联列 如 id
+     * @param intents 关联数据集.关联结果列 如 name:user_name
+     * @return this
+     */
+    public DataSet foreign(String fk, DataSet set, String pk, Map<String, String> intents){
+        for(DataRow row:rows){
+            DataRow data = set.getRow(pk, row.getString(fk));
+            if(null != data){
+                for(String intent:intents.keySet()) {
+                    row.put(intents.get(intent), data.get(intent));
+                }
             }
         }
         return this;
