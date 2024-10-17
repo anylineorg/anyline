@@ -422,6 +422,17 @@ public class InterceptorProxy {
         }
         return swt;
     }
+    public static SWITCH prepareExecute(DataRuntime runtime, String random, List<RunPrepare> prepares, ConfigStore configs, String ... conditions) {
+        SWITCH swt = SWITCH.CONTINUE;
+        for(ExecuteInterceptor interceptor:executeInterceptors) {
+            swt = interceptor.prepare(runtime, random, prepares, configs, conditions);
+            if(swt == SWITCH.SKIP) {
+                //跳过后续的 prepare
+                return swt;
+            }
+        }
+        return swt;
+    }
     public static SWITCH prepareExecute(DataRuntime runtime, String random, Procedure procedure, ConfigStore configs) {
         SWITCH swt = SWITCH.CONTINUE;
         for(ExecuteInterceptor interceptor:executeInterceptors) {
@@ -445,6 +456,18 @@ public class InterceptorProxy {
         return swt;
     }
 
+    public static SWITCH beforeExecute(DataRuntime runtime, String random, List<Run> runs, ConfigStore configs) {
+        SWITCH swt = SWITCH.CONTINUE;
+        for(ExecuteInterceptor interceptor:executeInterceptors) {
+            swt = interceptor.before(runtime, random, runs, configs);
+            if(swt == SWITCH.SKIP) {
+                //跳过后续的 before
+                return swt;
+            }
+        }
+        return swt;
+    }
+
     public static SWITCH beforeExecute(DataRuntime runtime, String random, Procedure procedure, ConfigStore configs) {
         SWITCH swt = SWITCH.CONTINUE;
         for(ExecuteInterceptor interceptor:executeInterceptors) {
@@ -460,6 +483,17 @@ public class InterceptorProxy {
         SWITCH swt = SWITCH.CONTINUE;
         for(ExecuteInterceptor interceptor:executeInterceptors) {
             swt = interceptor.after(runtime, random, run, configs, success, result, millis);
+            if(swt == SWITCH.SKIP) {
+                //跳过后续的 after
+                return swt;
+            }
+        }
+        return swt;
+    }
+    public static SWITCH afterExecute(DataRuntime runtime, String random, List<Run> runs, ConfigStore configs, boolean success, long result, long millis) {
+        SWITCH swt = SWITCH.CONTINUE;
+        for(ExecuteInterceptor interceptor:executeInterceptors) {
+            swt = interceptor.after(runtime, random, runs, configs, success, result, millis);
             if(swt == SWITCH.SKIP) {
                 //跳过后续的 after
                 return swt;

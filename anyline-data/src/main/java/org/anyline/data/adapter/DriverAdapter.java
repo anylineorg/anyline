@@ -2076,6 +2076,7 @@ public interface DriverAdapter {
      * @return 影响行数
      */
     long execute(DataRuntime runtime, String random, ConfigStore configs, Run run) ;
+    long execute(DataRuntime runtime, String random, ConfigStore configs, List<Run> runs) ;
     /* *****************************************************************************************************************
      *                                                     DELETE
      ******************************************************************************************************************/

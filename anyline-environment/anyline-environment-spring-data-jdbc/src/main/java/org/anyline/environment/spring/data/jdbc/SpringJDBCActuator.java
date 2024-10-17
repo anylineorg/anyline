@@ -101,15 +101,13 @@ public class SpringJDBCActuator implements DriverActuator {
             Connection con = null;
             try {
                 if (adapter.empty(meta.getCatalog()) || adapter.empty(meta.getSchema())) {
-                    con = DataSourceUtils.getConnection(ds);
+                    con = getConnection(adapter, runtime, ds);
                     checkSchema(adapter, runtime, con, meta);
                 }
             } catch (Exception e) {
                 log.warn("[check schema][fail:{}]", e.toString());
             } finally {
-                if (null != con && !DataSourceUtils.isConnectionTransactional(con, ds)) {
-                    DataSourceUtils.releaseConnection(con, ds);
-                }
+                releaseConnection(adapter, runtime, con, ds);
             }
         }else{
             meta.setCatalog(catalog);
@@ -220,7 +218,7 @@ public class SpringJDBCActuator implements DriverActuator {
             boolean keep = handler.keep();
             try {
                 datasource = jdbc.getDataSource();
-                con = DataSourceUtils.getConnection(datasource);
+                con = getConnection(adapter, runtime, datasource);
                 ps = con.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
                 ps.setFetchSize(handler.size());
                 ps.setFetchDirection(ResultSet.FETCH_FORWARD);
@@ -440,7 +438,7 @@ public class SpringJDBCActuator implements DriverActuator {
             boolean keep = handler.keep();
             try {
                 datasource = jdbc.getDataSource();
-                con = DataSourceUtils.getConnection(datasource);
+                con = getConnection(adapter, runtime, datasource);
                 ps = con.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
                 ps.setFetchSize(handler.size());
                 ps.setFetchDirection(ResultSet.FETCH_FORWARD);
@@ -801,6 +799,36 @@ public class SpringJDBCActuator implements DriverActuator {
     }
 
     /**
+     * execute [命令执行]<br/>
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param random 用来标记同一组命令
+     * @param runs 最终待执行的命令和参数(如JDBC环境中的SQL)
+     * @return 影响行数
+     */
+    public long execute(DriverAdapter adapter, DataRuntime runtime, String random, ConfigStore configs, List<Run> runs) throws Exception {
+        long result = -1;
+        JdbcTemplate jdbc = jdbc(runtime);
+        if(null == jdbc) {
+            return result;
+        }
+        for (Run run:runs){
+            int batch = run.getBatch();
+            String sql = run.getFinalExecute();
+            List<Object> values = run.getValues();
+            if(batch>1) {
+                result = batch(jdbc, sql, batch, run.getVol(), values);
+            }else {
+                if (null != values && !values.isEmpty()) {
+                    result = jdbc.update(sql, values.toArray());
+                } else {
+                    result = jdbc.update(sql);
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
      * 根据结果集对象获取列结构,如果有表名应该调用metadata().columns(table);或metadata().table(table).getColumns()
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param run 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
@@ -844,14 +872,12 @@ public class SpringJDBCActuator implements DriverActuator {
                 return null;
             }
             datasource = jdbc.getDataSource();
-            con = DataSourceUtils.getConnection(datasource);
+            con = getConnection(adapter, runtime, datasource);
             product = con.getMetaData().getDatabaseProductName();
         }catch (Exception e) {
             log.warn("[check product][fail:{}]", e.toString());
         }finally {
-            if(null != con && !DataSourceUtils.isConnectionTransactional(con, datasource)) {
-                DataSourceUtils.releaseConnection(con, datasource);
-            }
+            releaseConnection(adapter, runtime, con, datasource);
         }
         return product;
     }
@@ -874,14 +900,12 @@ public class SpringJDBCActuator implements DriverActuator {
                 return null;
             }
             ds = jdbc.getDataSource();
-            con = DataSourceUtils.getConnection(ds);
+            con = getConnection(adapter, runtime, ds);
             version = con.getMetaData().getDatabaseProductVersion();
         }catch (Exception e) {
             log.warn("[check version][fail:{}]", e.toString());
         }finally {
-            if(null != con && !DataSourceUtils.isConnectionTransactional(con, ds)) {
-                DataSourceUtils.releaseConnection(con, ds);
-            }
+            releaseConnection(adapter, runtime, con, ds);
         }
         return version;
     }
@@ -910,7 +934,7 @@ public class SpringJDBCActuator implements DriverActuator {
                 return new LinkedHashMap<>();
             }
             ds = jdbc.getDataSource();
-            con = DataSourceUtils.getConnection(ds);
+            con = getConnection(adapter, runtime, ds);
             DatabaseMetaData dbmd = con.getMetaData();
             String catalogName = null;
             String schemaName = null;
@@ -925,9 +949,7 @@ public class SpringJDBCActuator implements DriverActuator {
             ResultSet set = dbmd.getTables(tmp[0], tmp[1], pattern, tps);
             previous = JDBCUtil.tables(adapter, runtime, create, previous, set);
         }finally {
-            if(null != con && !DataSourceUtils.isConnectionTransactional(con, ds)) {
-                DataSourceUtils.releaseConnection(con, ds);
-            }
+            releaseConnection(adapter, runtime, con, ds);
         }
         return previous;
     }
@@ -956,7 +978,7 @@ public class SpringJDBCActuator implements DriverActuator {
                 return new ArrayList<>();
             }
             ds = jdbc.getDataSource();
-            con = DataSourceUtils.getConnection(ds);
+            con = getConnection(adapter, runtime, ds);
             DatabaseMetaData dbmd = con.getMetaData();
             String catalogName = null;
             String schemaName = null;
@@ -972,9 +994,7 @@ public class SpringJDBCActuator implements DriverActuator {
             ResultSet set = dbmd.getTables(tmp[0], tmp[1], pattern, tps);
             previous = JDBCUtil.tables(adapter, runtime, create, previous, set);
         }finally {
-            if(null != con && !DataSourceUtils.isConnectionTransactional(con, ds)) {
-                DataSourceUtils.releaseConnection(con, ds);
-            }
+            releaseConnection(adapter, runtime, con, ds);
         }
         return previous;
     }
@@ -1003,7 +1023,7 @@ public class SpringJDBCActuator implements DriverActuator {
                 return new LinkedHashMap<>();
             }
             ds = jdbc.getDataSource();
-            con = DataSourceUtils.getConnection(ds);
+            con = getConnection(adapter, runtime, ds);
             DatabaseMetaData dbmd = con.getMetaData();
 
             String catalogName = null;
@@ -1018,9 +1038,7 @@ public class SpringJDBCActuator implements DriverActuator {
             ResultSet set = dbmd.getTables(tmp[0], tmp[1], pattern, new String[]{"VIEW"});
             previous = JDBCUtil.views(adapter, runtime, create, previous, set);
         }finally {
-            if(null != con && !DataSourceUtils.isConnectionTransactional(con, ds)) {
-                DataSourceUtils.releaseConnection(con, ds);
-            }
+            releaseConnection(adapter, runtime, con, ds);
         }
         return previous;
     }
@@ -1077,7 +1095,7 @@ public class SpringJDBCActuator implements DriverActuator {
         DatabaseMetaData metadata = null;
         try {
             ds = jdbc(runtime).getDataSource();
-            con = DataSourceUtils.getConnection(ds);
+            con = getConnection(adapter, runtime, ds);
             metadata = con.getMetaData();
             previous = JDBCUtil.metadata(adapter, runtime, true, previous, metadata, table, pattern);
         } catch (Exception e) {
@@ -1085,9 +1103,7 @@ public class SpringJDBCActuator implements DriverActuator {
                 e.printStackTrace();
             }
         }finally {
-            if (!DataSourceUtils.isConnectionTransactional(con, ds)) {
-                DataSourceUtils.releaseConnection(con, ds);
-            }
+            releaseConnection(adapter, runtime, con, ds);
         }
         return previous;
     }
@@ -1117,7 +1133,7 @@ public class SpringJDBCActuator implements DriverActuator {
         }
         try{
             ds = jdbc.getDataSource();
-            con = DataSourceUtils.getConnection(ds);
+            con = getConnection(adapter, runtime, ds);
             DatabaseMetaData dbmd = con.getMetaData();
             adapter.checkName(runtime, null, table);
             String[] tmp = adapter.correctSchemaFromJDBC(table.getCatalogName(), table.getSchemaName());
@@ -1180,9 +1196,7 @@ public class SpringJDBCActuator implements DriverActuator {
                 columns.put(column.getName().toUpperCase(), column);
             }
         }finally{
-            if(null != con && !DataSourceUtils.isConnectionTransactional(con, ds)) {
-                DataSourceUtils.releaseConnection(con, ds);
-            }
+            releaseConnection(adapter, runtime, con, ds);
         }
         return indexes;
     }

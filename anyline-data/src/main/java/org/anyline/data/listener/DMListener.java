@@ -292,6 +292,7 @@ public interface DMListener {
      * @return SWITCH
      */
     default SWITCH  beforeExecute(DataRuntime runtime, String random, Run run) {return SWITCH.CONTINUE;}
+    default SWITCH  beforeExecute(DataRuntime runtime, String random, List<Run> runs) {return SWITCH.CONTINUE;}
 
     /**
      * 执行SQL之后调用
@@ -305,6 +306,7 @@ public interface DMListener {
      * @return SWITCH
      */
     default SWITCH afterExecute(DataRuntime runtime, String random, Run run, boolean success, long qty, long millis) {return SWITCH.CONTINUE;}
+    default SWITCH afterExecute(DataRuntime runtime, String random, List<Run> runs, boolean success, long qty, long millis) {return SWITCH.CONTINUE;}
 
     /**
      * 执行存储过程之前调用

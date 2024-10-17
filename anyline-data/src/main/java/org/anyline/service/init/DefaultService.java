@@ -1248,8 +1248,10 @@ public class DefaultService<E> implements AnylineService<E> {
 
 
     /**
-     * RunPrepare执行 通常是用prepare来合成比较复杂的的SQL如CREATE VIEW AS prepare.sql
+     * RunPrepare批量执行 主要是为了保持在同一连接内执行<br/>
+     * 通常是用prepare来合成比较复杂的的SQL如CREATE VIEW AS prepare.sql
      * @param prepares prepares
+     * @param configs ConfigStore其他配置
      * @return 影响行数
      */
     @Override

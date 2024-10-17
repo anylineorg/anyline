@@ -718,31 +718,36 @@ public class DefaultJDBCActuator implements DriverActuator {
             return line;
         }
         Connection con = getConnection(adapter, runtime, datasource);
-        PreparedStatement ps = null;
-        //batch insert保持SQL一致,如果不一致应该调用save方法
-        //返回每个SQL的影响行数
         try {
-            con.setAutoCommit(false);
-            ps = con.prepareStatement(sql);
-            for (int r = 1; r <= line; r++) {
-                for(int c=1; c<=vol; c++) {
-                    ps.setObject(c, values.get(vol*r+c-1));
-                }
-                //1."攒"sql
-                ps.addBatch();
-
-                if (r % batch == 0) {
-                    ps.executeBatch();
-                    ps.clearBatch();
-                }
-
-            }
-            con.commit();
+            batch(adapter, runtime, con, sql, batch, vol, values);
         }catch (Exception e) {
-
+            log.error("sql异常", e);
         }finally {
             releaseConnection(adapter, runtime, con, datasource);
         }
+        return line;
+    }
+
+    public long batch(DriverAdapter adapter, DataRuntime runtime, Connection con, String sql, int batch, int vol, List<Object> values) throws Exception{
+        int size = values.size(); //一共多少参数
+        int line = size/vol; //一共多少行
+        PreparedStatement ps = null;
+        //batch insert保持SQL一致,如果不一致应该调用save方法
+        con.setAutoCommit(false);
+        ps = con.prepareStatement(sql);
+        for (int r = 1; r <= line; r++) {
+            for(int c=1; c<=vol; c++) {
+                ps.setObject(c, values.get(vol*r+c-1));
+            }
+            ps.addBatch();
+
+            if (r % batch == 0) {
+                ps.executeBatch();
+                ps.clearBatch();
+            }
+
+        }
+        con.commit();
         return line;
     }
 
@@ -865,6 +870,45 @@ public class DefaultJDBCActuator implements DriverActuator {
             }finally {
                 releaseConnection(adapter, runtime, con, datasource);
             }
+        }
+        return result;
+    }
+
+    /**
+     * execute [命令执行]<br/>
+     * 批量执行主要是为了保持同一个连接内执行
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param random 用来标记同一组命令
+     * @param runs 最终待执行的命令和参数(如JDBC环境中的SQL)
+     * @return 影响行数
+     */
+    public long execute(DriverAdapter adapter, DataRuntime runtime, String random, ConfigStore configs, List<Run> runs) throws Exception {
+        long result = -1;
+        DataSource datasource = datasource(runtime);
+        if(null == datasource) {
+            return -1;
+        }
+        Connection con = getConnection(adapter, runtime, datasource);
+        try {
+            for (Run run : runs) {
+                int batch = run.getBatch();
+                String sql = run.getFinalExecute();
+                List<Object> values = run.getValues();
+                if (batch > 1) {
+                    result = batch(adapter, runtime, con, sql, batch, run.getVol(), values);
+                } else {
+                    PreparedStatement ps = con.prepareStatement(sql);
+                    int idx = 0;
+                    if (null != values) {
+                        for (Object obj : values) {
+                            ps.setObject(++idx, obj);
+                        }
+                    }
+                    result = ps.executeUpdate();
+                }
+            }
+        } finally {
+            releaseConnection(adapter, runtime, con, datasource);
         }
         return result;
     }

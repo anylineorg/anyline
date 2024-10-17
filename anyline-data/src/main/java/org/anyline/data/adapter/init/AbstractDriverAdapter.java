@@ -3372,39 +3372,41 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         if(null == random) {
             random = random(runtime);
         }
-        for(RunPrepare prepare:prepares){
-            swt = InterceptorProxy.prepareExecute(runtime, random, prepare, configs);
-            if(swt == ACTION.SWITCH.BREAK) {
-                return -1;
-            }
+        swt = InterceptorProxy.prepareExecute(runtime, random, prepares, configs);
+        if(swt == ACTION.SWITCH.BREAK) {
+            return -1;
+        }
 
-            Run run = buildExecuteRun(runtime,  prepare, configs, true, true);
+        List<Run> runs = new ArrayList<>();
+        for(RunPrepare prepare:prepares) {
+            Run run = buildExecuteRun(runtime, prepare, configs, true, true);
             if(!run.isValid()) {
                 if(log.isWarnEnabled() && ConfigStore.IS_LOG_SQL(configs)) {
-                    log.warn("[valid:false][不具备执行条件][RunPrepare:" + ConfigParser.createSQLSign(false, false, prepare.getTableName(), configs) + "][thread:" + Thread.currentThread().getId() + "][ds:" + runtime.datasource() + "]");
+                    log.warn("[valid:false][不具备执行条件][RunPrepare:" + ConfigParser.createSQLSign(false, false, run.getTableName(), configs) + "][thread:" + Thread.currentThread().getId() + "][ds:" + runtime.datasource() + "]");
                 }
                 return -1;
             }
-            long fr = System.currentTimeMillis();
-
-            long millis = -1;
-            swt = InterceptorProxy.beforeExecute(runtime, random, run, configs);
-            if(swt == ACTION.SWITCH.BREAK) {
-                return -1;
-            }
-            if(null != dmListener) {
-                swt = dmListener.beforeExecute(runtime, random, run);
-            }
-            if(swt == ACTION.SWITCH.BREAK) {
-                return -1;
-            }
-            result += execute(runtime, random, configs, run);
-            cmd_success = true;
-            if (null != dmListener) {
-                dmListener.afterExecute(runtime, random, run, cmd_success, result, millis);
-            }
-            InterceptorProxy.afterExecute(runtime, random, run, configs, cmd_success, result, System.currentTimeMillis()-fr);
+            runs.add(run);
         }
+        long fr = System.currentTimeMillis();
+        long millis = -1;
+        swt = InterceptorProxy.beforeExecute(runtime, random, runs, configs);
+        if(swt == ACTION.SWITCH.BREAK) {
+            return -1;
+        }
+        if(null != dmListener) {
+            swt = dmListener.beforeExecute(runtime, random, runs);
+        }
+        if(swt == ACTION.SWITCH.BREAK) {
+            return -1;
+        }
+        result += execute(runtime, random, configs, runs);
+        cmd_success = true;
+        if (null != dmListener) {
+            dmListener.afterExecute(runtime, random, runs, cmd_success, result, millis);
+        }
+        InterceptorProxy.afterExecute(runtime, random, runs, configs, cmd_success, result, System.currentTimeMillis()-fr);
+        
         return result;
     }
     /**
@@ -3678,6 +3680,60 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         return result;
     }
 
+    /**
+     * execute [命令执行]<br/>
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param random 用来标记同一组命令
+     * @param runs 最终待执行的命令和参数(如JDBC环境中的SQL)
+     * @return 影响行数
+     */
+    @Override
+    public long execute(DataRuntime runtime, String random, ConfigStore configs, List<Run> runs) {
+        long result = -1;
+        if(null == random) {
+            random = random(runtime);
+        }
+
+        long fr = System.currentTimeMillis();
+        String action = "executes";
+        if(null != configs) {
+            configs.runs(runs);
+        }
+        boolean exe = true;
+        if(null != configs) {
+            exe = configs.execute();
+        }
+        if(!exe) {
+            return -1;
+        }
+        long millis = -1;
+        try{
+            result = actuator.execute(this, runtime, random, configs, runs);
+            millis = System.currentTimeMillis() - fr;
+            long SLOW_SQL_MILLIS = ConfigStore.SLOW_SQL_MILLIS(configs);
+            if(SLOW_SQL_MILLIS > 0 &&ConfigStore.IS_LOG_SLOW_SQL(configs)) {
+                if(millis > SLOW_SQL_MILLIS) {
+                    log.warn("{}[slow cmd][action:{}][执行耗时:{}]", random, action, DateUtil.format(millis));
+                }
+            }
+            if (log.isInfoEnabled() &&ConfigStore.IS_LOG_SQL_TIME(configs)) {
+                String qty = ""+result;
+                log.info("{}[action:{}][执行耗时:{}][影响行数:{}]", random, action, DateUtil.format(millis), LogUtil.format(qty, 34));
+            }
+        }catch(Exception e) {
+            if(ConfigStore.IS_PRINT_EXCEPTION_STACK_TRACE(configs)) {
+                log.error("execute exception:",e);
+            }
+            if(ConfigStore.IS_LOG_SQL_WHEN_ERROR(configs)) {
+                log.error("{}[{}][action:{}]", random, LogUtil.format("命令执行异常:", 33)+e, action);
+            }
+            if(ConfigStore.IS_THROW_SQL_UPDATE_EXCEPTION(configs)) {
+                throw new CommandUpdateException("命令执行异常", e);
+            }
+
+        }
+        return result;
+    }
     /* *****************************************************************************************************************
      *                                                     DELETE
      * -----------------------------------------------------------------------------------------------------------------

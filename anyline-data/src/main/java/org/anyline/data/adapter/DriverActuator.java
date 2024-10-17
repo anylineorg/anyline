@@ -168,6 +168,9 @@ public interface DriverActuator {
      * @return 影响行数
      */
     long execute(DriverAdapter adapter, DataRuntime runtime, String random, ConfigStore configs, Run run) throws Exception;
+    default long execute(DriverAdapter adapter, DataRuntime runtime, String random, ConfigStore configs, List<Run> run) throws Exception {
+        return -1;
+    }
 
     /**
      * 根据结果集对象获取列结构,如果有表名应该调用metadata().columns(table);或metadata().table(table).getColumns()

@@ -24,6 +24,8 @@ import org.anyline.metadata.ACTION;
 import org.anyline.metadata.ACTION.SWITCH;
 import org.anyline.metadata.Procedure;
 
+import java.util.List;
+
 public interface ExecuteInterceptor extends DMInterceptor{
 
     /**
@@ -35,6 +37,7 @@ public interface ExecuteInterceptor extends DMInterceptor{
      * @return RESULT
      */
     default ACTION.SWITCH prepare(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) { return SWITCH.CONTINUE;}
+    default ACTION.SWITCH prepare(DataRuntime runtime, String random, List<RunPrepare> prepares, ConfigStore configs, String ... conditions) { return SWITCH.CONTINUE;}
     default SWITCH prepare(DataRuntime runtime, String random, Procedure procedure, ConfigStore configs) { return SWITCH.CONTINUE;}
 
     /**
@@ -44,6 +47,7 @@ public interface ExecuteInterceptor extends DMInterceptor{
      * @return RESULT
      */
     default SWITCH before(DataRuntime runtime, String random, Run run, ConfigStore configs) { return SWITCH.CONTINUE;}
+    default SWITCH before(DataRuntime runtime, String random, List<Run> runs, ConfigStore configs) { return SWITCH.CONTINUE;}
 
     /**
      * 合计总数之前调用，到这一步SQL已创建完成
@@ -62,6 +66,7 @@ public interface ExecuteInterceptor extends DMInterceptor{
      * @return RESULT
      */
     default SWITCH after(DataRuntime runtime, String random, Run run, ConfigStore configs, boolean success, long result, long millis) { return SWITCH.CONTINUE;}
+    default SWITCH after(DataRuntime runtime, String random, List<Run> runs, ConfigStore configs, boolean success, long result, long millis) { return SWITCH.CONTINUE;}
 
     /**
      * 合计总数之前调用，到这一步SQL已创建完成
