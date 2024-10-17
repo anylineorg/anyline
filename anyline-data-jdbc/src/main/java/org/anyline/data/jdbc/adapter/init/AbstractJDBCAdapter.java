@@ -1302,8 +1302,17 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
                 builder.append(")");
             }else{
                 if(placeholder) {
-                    builder.append(" = ?");
+                    if(compare == Compare.NOT_IN){
+                        builder.append(" != ? ");
+                    }else {
+                        builder.append(" = ? ");
+                    }
                 }else{
+                    if(compare == Compare.NOT_IN){
+                        builder.append(" != ");
+                    }else {
+                        builder.append(" = ");
+                    }
                     if(value instanceof Number) {
                         builder.append(value);
                     }else{

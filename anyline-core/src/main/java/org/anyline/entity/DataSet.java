@@ -3373,7 +3373,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
 
     /**
      * 从items中按相应的key提取数据 存入
-     * dispatch("children",items, "DEPAT_CD")
+     * dispatch("children",items, "DEPT_CD")
      * dispatchs("children",items, "CD:BASE_CD")
      *
      * @param compare   匹配方式 默认=
@@ -3614,7 +3614,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
      * @param keys  关联条件列
      * @return DataSet
      */
-    public DataSet join(DataSet items, List<String>  keys) {
+    public DataSet join(DataSet items, List<String> keys) {
         if (null == items || keys.isEmpty()) {
             return this;
         }
@@ -3628,6 +3628,47 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
         return this;
     }
 
+    /**
+     * 外键关联<br/>
+     * 如果要合并条目(如把对应user的全部数据合并到当前集合条目)应该调用join<br/>
+     * 如果要把set中的条目作为一个整体放到当前集合条目中应该调用dispatch(如果需要一对多关系调用dispatchs)
+     * @param fk 关联列 如 user_id
+     * @param set 关联数据集 如 users
+     * @param pk 关联数据集.关联列 如 id
+     * @param intent 关联数据集.关联结果列 如 name
+     * @param alias 关联结果存储列  如 user_name
+     * @return this
+     */
+    public DataSet foreign(String fk, DataSet set, String pk, String intent, String alias){
+        for(DataRow row:rows){
+            DataRow data = set.getRow(pk, row.getString(fk));
+            if(null != data){
+                row.put(alias, data.get(intent));
+            }
+        }
+        return this;
+    }
+    /**
+     * 外键关联<br/>
+     * 如果要合并条目(如把对应user的全部数据合并到当前集合条目)应该调用join<br/>
+     * 如果要把set中的条目作为一个整体放到当前集合条目中应该调用dispatch(如果需要一对多关系调用dispatchs)
+     * @param fk 关联列 如 user_id
+     * @param set 关联数据集 如 users
+     * @param pk 关联数据集.关联列 如 id
+     * @param intents 关联数据集.关联结果列 如 name:user_name
+     * @return this
+     */
+    public DataSet foreign(String fk, DataSet set, String pk, Map<String, String> intents){
+        for(DataRow row:rows){
+            DataRow data = set.getRow(pk, row.getString(fk));
+            if(null != data){
+                for(String intent:intents.keySet()) {
+                    row.put(intents.get(intent), data.get(intent));
+                }
+            }
+        }
+        return this;
+    }
     /**
      * 全部条目keys合集
      * @return List

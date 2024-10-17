@@ -237,14 +237,14 @@ joins:[
      * SELECT u.NAME AS USER_NAME
      * LEFT JOIN CRM_USER AS U ON M.USER_ID = U.ID
      * LEFT JOIN {table} AS U ON M.{column} = U.{fk}
-     * @param column 当前主表外键列 如 USER_ID
+     * @param fk 当前主表外键列 如 USER_ID
      * @param table 外键关联表 如 user as u
-     * @param fk 外键表主键 如 user.ID
-     * @param relations 查询结果 别名如NAME,USER_NAME u.NAME AS USER_NAME
-     * @param conditions 关联条件
+     * @param pk 外键表主键 如 user.ID
+     * @param intents 查询结果 别名如NAME:USER_NAME
+     * @param conditions 其他关联条件
      * @return this
      */
-    public TableBuilder foreign(String column, Table table, String fk, LinkedHashMap<String, String> relations, String ... conditions){
+    public TableBuilder foreign(String fk, Table table, String pk, LinkedHashMap<String, String> intents, String ... conditions){
         boolean empty = columns.isEmpty();
         String table_alias = table.getAlias();
         if(BasicUtil.isEmpty(table_alias)){
@@ -254,15 +254,15 @@ joins:[
         if(BasicUtil.isEmpty(master_alias)){
             master_alias = prepare.getTableName();
         }
-        for(String relation:relations.keySet()){
-            String col = table_alias + "." + relation + " AS " + relations.get(relation);
+        for(String relation:intents.keySet()){
+            String col = table_alias + "." + relation + " AS " + intents.get(relation);
             columns.put(col.toUpperCase(), new Column(col));
         }
         if(empty){
             columns.put(master_alias+".*", new Column(master_alias+".*"));
         }
         List<String> cons = new ArrayList<>();
-        cons.add(master_alias+"."+column + " = " + table_alias + "." + fk);
+        cons.add(master_alias+"."+fk + " = " + table_alias + "." + pk);
         if(null != conditions) {
             for (String condition:conditions) {
                 cons.add(condition);

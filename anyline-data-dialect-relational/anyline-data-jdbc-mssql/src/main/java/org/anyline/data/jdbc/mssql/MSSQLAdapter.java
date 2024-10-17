@@ -1871,18 +1871,17 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         Run run = new SimpleRun(runtime, configs);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
-        builder.append("SELECT  O.NAME, FT.TABLE_CATALOG, FT.TABLE_SCHEMA, O.TYPE, O.TYPE_DESC, EP.VALUE AS COMMENT \n");
-        builder.append("FROM SYS.OBJECTS O \n");
-        builder.append("LEFT JOIN INFORMATION_SCHEMA.TABLES AS FT ON O.OBJECT_ID = OBJECT_ID(FT.TABLE_CATALOG + '.' + FT.TABLE_SCHEMA + '.' + FT.TABLE_NAME) \n");
-        builder.append("LEFT JOIN SYS.EXTENDED_PROPERTIES EP ON O.OBJECT_ID = EP.MAJOR_ID AND EP.CLASS = 1 AND EP.MINOR_ID = 0 AND EP.NAME = 'MS_Description' \n");
-
+        builder.append("SELECT DB_NAME(DB_ID()) TABLE_CATALOG, O.NAME, FT.NAME TABLE_SCHEMA, O.TYPE, O.TYPE_DESC, EP.VALUE AS COMMENT \n");
+        builder.append("FROM SYS.TABLES O \n");
+        builder.append("LEFT JOIN SYS.EXTENDED_PROPERTIES EP ON O.[OBJECT_ID] = EP.MAJOR_ID AND EP.CLASS = 1 AND EP.MINOR_ID = 0 AND EP.NAME = 'MS_Description' \n");
+        builder.append("LEFT JOIN SYS.SCHEMAS FT ON O.[SCHEMA_ID] = FT.[SCHEMA_ID] \n");
         if((types & 2) == 2) {
             //包含视图
             configs.and("(O.TYPE = 'U' OR O.TYPE='V') \n");
         }else{
             configs.and("O.TYPE", "U");
         }
-        configs.and("FT.TABLE_SCHEMA", query.getSchemaName());
+        configs.and("FT.NAME", query.getSchemaName());
         configs.and(Compare.LIKE_SIMPLE,"O.NAME", query.getName());
         configs.in("O.TYPE_DESC", names(Table.types(types)));
         return runs;

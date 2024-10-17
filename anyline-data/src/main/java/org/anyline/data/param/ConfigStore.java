@@ -410,7 +410,7 @@ public interface ConfigStore extends Cloneable{
 	 * 构造查询条件
 	 * @param swt 遇到空值处理方式
 	 * @param prefix 表别名或XML中查询条件的ID或表名
-	 * @param var XML自定义SQL条件中指定变量赋值或占位符key或列名 在value值为空的情况下 如果以var+开头会生成var is null 如果以++开头当前SQL不执行 这与swt作用一样,不要与swt混用
+	 * @param var XML自定义SQL条件中指定变量赋值或占位符key或列名 在value值为空的情况下 如果var以+开头会生成var is null 如果以++开头当前SQL不执行 这与swt作用一样,不要与swt混用 注意会有++a.id的形式
 	 * @param value 值 可以是集合
 	 * @param compare 匹配方式
 	 * @param overCondition 覆盖相同key并且相同运算符的条件,true在现有条件基础上修改(多个相同key的条件只留下第一个),false:添加新条件
