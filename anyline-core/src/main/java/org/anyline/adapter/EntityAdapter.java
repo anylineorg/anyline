@@ -226,18 +226,16 @@ public interface EntityAdapter {
 
         // 3.属性名转成列名
         if(BasicUtil.isEmpty(name)) {
-            if("camel_".equals(ConfigTable.ENTITY_FIELD_COLUMN_MAP)) {
-                name = BeanUtil.camel_(field.getName());
-            }
-        }
-        // 4.属性名
-        if(BasicUtil.isEmpty(name)) {
             Class c = field.getType();
             //boolean、char、byte、short、int、long、float、double
             if(c == String.class || c == Date.class || ClassUtil.isPrimitiveClass(c)) {
                 name = field.getName();
             }
+            if(null != name && "camel_".equals(ConfigTable.ENTITY_FIELD_COLUMN_MAP)) {
+                name = BeanUtil.camel_(name);
+            }
         }
+
 
         //创建Column
         if(BasicUtil.isNotEmpty(name)) {
