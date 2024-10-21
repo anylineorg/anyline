@@ -489,6 +489,7 @@ public abstract class AbstractRun implements Run {
 			if(null != configs) {
 				this.configs.and(configs);
 				this.configs.params().putAll(configs.params());
+				this.configs.params(configs.values());
 				GroupStore groups = configs.getGroups();
 				if(null != groups) {
 					if(this.groups == null) {
