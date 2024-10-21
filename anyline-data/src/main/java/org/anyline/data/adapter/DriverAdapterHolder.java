@@ -152,21 +152,23 @@ public class DriverAdapterHolder {
 		if(null != defaultAdapter) {
 			return defaultAdapter;
 		}
-		if(adapters.size() == 1) {
-			defaultAdapter = adapters.iterator().next();
-			return defaultAdapter;
-		}else if(adapters.size() == 2) {
-			boolean common = false;
-			for (DriverAdapter adapter:adapters) {
-				if(adapter.getClass().getName().toLowerCase().contains("common")) {
-					common = true;
+		if(ConfigTable.IS_ENABLE_ADAPTER_FAST_MATCH) {
+			if (adapters.size() == 1) {
+				defaultAdapter = adapters.iterator().next();
+				return defaultAdapter;
+			} else if (adapters.size() == 2) {
+				boolean common = false;
+				for (DriverAdapter adapter : adapters) {
+					if (adapter.getClass().getName().toLowerCase().contains("common")) {
+						common = true;
+					}
 				}
-			}
-			if(common) {
-				for (DriverAdapter adapter:adapters) {
-					if(!adapter.getClass().getName().toLowerCase().contains("common")) {
-						defaultAdapter = adapter;
-						return defaultAdapter;
+				if (common) {
+					for (DriverAdapter adapter : adapters) {
+						if (!adapter.getClass().getName().toLowerCase().contains("common")) {
+							defaultAdapter = adapter;
+							return defaultAdapter;
+						}
 					}
 				}
 			}
