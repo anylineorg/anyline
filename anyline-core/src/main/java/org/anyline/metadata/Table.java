@@ -599,6 +599,9 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
     public Column addColumn(String name, String type) {
         return addColumn(name, type, true, null);
     }
+    public Column addColumn(String name, String type, String comment) {
+        return addColumn(name, type, true, null).setComment(comment);
+    }
     public Column addColumn(String name, TypeMetadata type) {
         return addColumn(name, type, true, null);
     }
