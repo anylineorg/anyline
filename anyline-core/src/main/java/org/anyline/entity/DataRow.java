@@ -113,6 +113,19 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         nanoTime = System.currentTimeMillis();
     }
 
+    public DataRow(KEY_CASE keyCase) {
+        parseKeyCase(keyCase);
+        String pk = keyAdapter.key(DEFAULT_PRIMARY_KEY);
+        primaryKeys.clear();
+        if (null != pk) {
+            primaryKeys.add(pk);
+        }
+        createTime = System.currentTimeMillis();
+        nanoTime = System.currentTimeMillis();
+        parseKeyCase(keyCase);
+    }
+
+
     protected void parseKeyCase(KEY_CASE keyCase) {
         if(null == keyCase) {
             keyCase = this.keyCase;
@@ -134,12 +147,6 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         }
 
     }
-
-    public DataRow(KEY_CASE keyCase) {
-        this();
-        parseKeyCase(keyCase);
-    }
-
     public DataRow(String table) {
         this();
         this.setTable(table);
