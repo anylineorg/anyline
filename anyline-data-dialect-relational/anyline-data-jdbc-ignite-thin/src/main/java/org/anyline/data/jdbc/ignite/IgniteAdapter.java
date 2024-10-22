@@ -6234,8 +6234,9 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		}else if(meta.isSpatial()) {
 			//builder.append(" SPATIAL");
 		}
-		builder.append(" INDEX ").append(name)
-				.append(" ON ");//.append(index.getTableName(true));
+		builder.append(" INDEX ");
+        name(runtime, builder, meta);
+        builder.append(" ON ");//.append(index.getTableName(true));
 		Table table = meta.getTable(true);
 		name(runtime, builder, table);
 		builder.append("(");
@@ -6287,7 +6288,8 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		if(meta.isPrimary()) {
 			builder.append(" DROP PRIMARY KEY");
 		}else {
-			builder.append(" DROP INDEX ").append(meta.getName());
+			builder.append(" DROP INDEX ");
+            name(runtime, builder, meta);
 		}
 		return runs;
 	}

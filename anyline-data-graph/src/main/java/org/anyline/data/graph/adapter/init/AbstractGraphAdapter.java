@@ -7379,9 +7379,11 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 		if(meta.isPrimary()) {
 			builder.append("ALTER TABLE ");
 			name(runtime, builder, table);
-			builder.append(" DROP CONSTRAINT ").append(meta.getName());
+			builder.append(" DROP CONSTRAINT ");
+            name(runtime, builder, meta);
 		}else {
-			builder.append("DROP INDEX ").append(meta.getName());
+			builder.append("DROP INDEX ");
+            name(runtime, builder, meta);
 			if (BasicUtil.isNotEmpty(table)) {
 				builder.append(" ON ");
 				name(runtime, builder, table);

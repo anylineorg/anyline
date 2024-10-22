@@ -6896,7 +6896,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
         StringBuilder builder = run.getBuilder();
         builder.append("DROP ").append(keyword(meta)).append(" ");
         checkIndexExists(runtime, builder, true);
-        builder.append(meta.getName());
+        name(runtime, builder, meta);
         return runs;
     }
 
