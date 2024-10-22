@@ -56,6 +56,7 @@ import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
 import org.bson.Document;
 import org.bson.conversions.Bson;
+import org.bson.types.ObjectId;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -361,6 +362,35 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
         }
         return bson;
     }
+    private Object id(Object value){
+        if(value instanceof Collection){
+            Collection list = (Collection)value;
+            List<Object> values = new ArrayList<>();
+            for(Object item:list){
+                values.add(id(item));
+            }
+            return values;
+        }else {
+            if (value instanceof String) {
+                String str = (String)value;
+                if(str.length() == 24){
+                    try {
+                        return new ObjectId(str);
+                    }catch (Exception ignored){}
+                }
+                if (BasicUtil.isNumber(str)) {
+                    try {
+                        return BasicUtil.parseLong(str);
+                    }catch (Exception ignored){}
+                }
+            } else if (value instanceof Date) {
+                return new ObjectId((Date) value);
+            } else if (value instanceof byte[]) {
+                return new ObjectId((byte[]) value);
+            }
+        }
+        return value;
+    }
     private Bson bson(Compare compare, String column, List<Object> values) {
         Bson bson = null;
         if(null != values && !values.isEmpty()) {
@@ -376,6 +406,10 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
                 value = list;
             } else {
                 value = values.get(0);
+            }
+
+            if("_id".equals(column)){
+                value = id(value);
             }
             int cc = compare.getCode();
             if(cc == 10) {                                           //  EQUAL
