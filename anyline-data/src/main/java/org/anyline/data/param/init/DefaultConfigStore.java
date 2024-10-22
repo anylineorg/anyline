@@ -1068,6 +1068,9 @@ public class DefaultConfigStore implements ConfigStore {
 
 	@Override
 	public ConfigStore params(Collection values) {
+		if(null == values){
+			return this;
+		}
 		if(null == this.values) {
 			this.values = new ArrayList<>();
 		}
