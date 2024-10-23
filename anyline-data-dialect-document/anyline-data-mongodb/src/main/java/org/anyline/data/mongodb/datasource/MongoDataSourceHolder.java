@@ -93,7 +93,7 @@ public class MongoDataSourceHolder extends AbstractDataSourceHolder implements D
 
     @Override
     public String runtime(String key, String datasource, boolean override) throws Exception {
-        return null;
+        return datasource;
     }
 
     @Override
