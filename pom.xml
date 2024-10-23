@@ -43,6 +43,7 @@
 		<module>anyline-environment</module>
 		<module>anyline-data-dialect-relational</module>
 		<module>anyline-data-dialect-relational-extends</module>
+		<module>anyline-extends</module>
 		-->
 
 		<module>anyline-data-dialect-document</module>
