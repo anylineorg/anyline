@@ -1074,6 +1074,20 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         return super.count(runtime, random, run);
     }
 
+    /**
+     * 计算字符串在当前数据库中占用字节长度
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param cn 字符串
+     * @param configs 过滤条件及相关配置
+     * @return Run
+     */
+    @Override
+    public Run buildQueryLengthRun(DataRuntime runtime, String cn, ConfigStore configs) {
+        Run run = new SimpleRun(runtime);
+        StringBuilder builder = run.getBuilder();
+        builder.append("SELECT LENGTH('").append(cn).append("') AS CNT");
+        return run;
+    }
     /* *****************************************************************************************************************
      *                                                     EXISTS
      * -----------------------------------------------------------------------------------------------------------------

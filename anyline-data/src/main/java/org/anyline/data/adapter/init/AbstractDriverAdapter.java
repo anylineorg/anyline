@@ -3261,6 +3261,46 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         return -1;
     }
 
+
+    /**
+     * 计算字符串在当前数据库中占用字节长度
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param random 用来标记同一组命令
+     * @param cn 字符串
+     * @param configs 过滤条件及相关配置
+     * @return int
+     */
+    @Override
+    public int length(DataRuntime runtime, String random, String cn, ConfigStore configs) {
+        int count = -1;
+        Long fr = System.currentTimeMillis();
+        Run run = null;
+        if(null == random) {
+            random = random(runtime);
+        }
+
+        run = buildQueryLengthRun(runtime, cn, configs);
+
+        DataSet set = select(runtime, random, true, new Table(), configs, run);
+        if(set.isEmpty()){
+            count = set.getRow(0).getInt( "CNT", -1);
+        }
+        return count;
+    }
+    /**
+     * 计算字符串在当前数据库中占用字节长度
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param cn 字符串
+     * @param configs 过滤条件及相关配置
+     * @return Run
+     */
+    @Override
+    public Run buildQueryLengthRun(DataRuntime runtime, String cn, ConfigStore configs) {
+        if(log.isDebugEnabled()) {
+            log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现  Run buildQueryLengthRun(DataRuntime runtime, String cn, ConfigStore configs)", 37));
+        }
+        return null;
+    }
     /* *****************************************************************************************************************
      *                                                     EXISTS
      * -----------------------------------------------------------------------------------------------------------------

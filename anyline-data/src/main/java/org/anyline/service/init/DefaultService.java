@@ -884,6 +884,11 @@ public class DefaultService<E> implements AnylineService<E> {
         }
         return count;
     }
+
+    @Override
+    public int length(String cn){
+        return dao.length(runtime(), null,cn, null);
+    }
     /* *****************************************************************************************************************
      * 													INSERT
      ******************************************************************************************************************/

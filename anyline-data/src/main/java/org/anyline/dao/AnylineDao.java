@@ -129,6 +129,16 @@ public interface AnylineDao<E>{
 	}
 
 	/**
+	 * 计算字符串在当前数据库中占用字节长度
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param cn 字符串
+	 * @param configs 过滤条件及相关配置
+	 * @return int
+	 */
+	int length(DataRuntime runtime, String random, String cn, ConfigStore configs);
+
+	/**
 	 * 创建查询序列SQL
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令

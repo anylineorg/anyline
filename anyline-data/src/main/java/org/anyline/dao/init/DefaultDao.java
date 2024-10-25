@@ -189,7 +189,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		if(null == runtime) {
 			runtime = runtime();
 		}
-		return runtime.getAdapter().sequence(runtime, null, next, names);
+		return runtime.getAdapter().sequence(runtime, random, next, names);
 
 	}
 
@@ -210,8 +210,22 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		if(null != prepare && !prepare.disposable()){
 			prepare = prepare.clone();
 		}
-		return runtime.getAdapter().count(runtime, null, prepare, configs, conditions);
-
+		return runtime.getAdapter().count(runtime, random, prepare, configs, conditions);
+	}
+	/**
+	 * 计算字符串在当前数据库中占用字节长度
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param cn 字符串
+	 * @param configs 过滤条件及相关配置
+	 * @return int
+	 */
+	@Override
+	public int length(DataRuntime runtime, String random, String cn, ConfigStore configs) {
+		if(null == runtime) {
+			runtime = runtime();
+		}
+		return runtime.getAdapter().length(runtime, null, cn, configs);
 	}
 
 	/**
