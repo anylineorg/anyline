@@ -169,7 +169,7 @@ public class ElasticSearchActuator implements DriverActuator {
                         "Elasticsearch使用Lucen"
                     ],
                     "content": [
-                        "Elasticsearch使用Lucene，并试图通过JSON和Java API提供其所有特性。它支持facetting和percolating，如果新文档与注册查询匹配，这对于通知非常有用。另一个特性称为“网关”，处理索引的长期持久性；例如，在服务器崩溃的情况下，可以从网关恢复索引。Elasticsearch支持实时GET请求，适合作为NoSQL数据存储，但缺少分布式事务。"
+                        "Elasticsearch使用Lucene，"
                     ]
                 },
                 "sort": [

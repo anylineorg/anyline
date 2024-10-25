@@ -247,7 +247,7 @@ public class DefaultConfig implements Config {
 				condition.datatype(datatype);
 				condition.setContainer(chain);
 			}else{
-				if(null != text) {
+				if(BasicUtil.isNotEmpty(text)) {
 					condition = new DefaultAutoCondition(this);
 					condition.setRunText(text);
 					condition.setContainer(chain);
