@@ -299,7 +299,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
         if(null == excludeColumns || excludeColumns.isEmpty()) {
             ConfigStore configs = r.getConfigs();
             if(null != configs) {
-                excludeColumns = configs.columns();
+                excludeColumns = configs.excludes();
             }
         }
         if(null != excludeColumns && !excludeColumns.isEmpty()) {
@@ -313,6 +313,14 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
                 queryColumns = configs.columns();
             }
         }
+        if(null == queryColumns || queryColumns.isEmpty()) {
+            RunPrepare prepare = run.getPrepare();
+            if(null != prepare) {
+                LinkedHashMap<String, Column> columns = prepare.getColumns();
+                queryColumns = Column.names(columns);
+            }
+        }
+
         if(null != queryColumns && !queryColumns.isEmpty()) {
             r.setQueryColumns(queryColumns);
         }
