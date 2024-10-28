@@ -860,7 +860,18 @@ PUT * /_bulk
             //去重 如果没有设置collapse取分组第1列
             String collapse = null;
             if(configs instanceof ElasticSearchConfigStore){
-                collapse = ((ElasticSearchConfigStore)configs).collapse();
+                ElasticSearchConfigStore ecf = ((ElasticSearchConfigStore)configs);
+                collapse = ecf.collapse();
+
+                //trackTotalHits
+                Boolean trackTotalHits = ecf.trackTotalHits();
+                if(null != trackTotalHits){
+                    body.put("track_total_hits", trackTotalHits);
+                }
+                List<Object> afters = ecf.afters();
+                if(null != afters && !afters.isEmpty()){
+                    body.put("search_after", afters);
+                }
             }
             if(BasicUtil.isEmpty(collapse)){
                 GroupStore gs = configs.getGroups();

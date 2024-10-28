@@ -19,8 +19,13 @@ package org.anyline.data.elasticsearch.param;
 import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class ElasticSearchConfigStore extends DefaultConfigStore {
     protected String collapse;
+    protected List<Object> afters;
+    protected Boolean trackTotalHits;
     protected String sql;
     protected RunPrepare prepare;
     protected ElasticSearchRequestBody requestBody;
@@ -41,6 +46,27 @@ public class ElasticSearchConfigStore extends DefaultConfigStore {
     }
     public String collapse(){
         return this.collapse;
+    }
+    public ElasticSearchConfigStore afters(Object ... afters){
+        if(null != afters){
+            this.afters.addAll(Arrays.asList(afters));
+        }
+        return this;
+    }
+    public ElasticSearchConfigStore afters(List<Object> afters){
+        this.afters = afters;
+        return this;
+    }
+    public List<Object> afters(){
+        return this.afters;
+    }
+
+    public ElasticSearchConfigStore trackTotalHits(Boolean trackTotalHits){
+        this.trackTotalHits = trackTotalHits;
+        return this;
+    }
+    public Boolean trackTotalHits(){
+        return this.trackTotalHits;
     }
 
     public ElasticSearchConfigStore sql(String sql){
