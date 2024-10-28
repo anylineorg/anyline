@@ -3282,7 +3282,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         run = buildQueryLengthRun(runtime, cn, configs);
 
         DataSet set = select(runtime, random, true, new Table(), configs, run);
-        if(set.isEmpty()){
+        if(!set.isEmpty()){
             count = set.getRow(0).getInt( "CNT", -1);
         }
         return count;
