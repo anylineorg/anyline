@@ -137,6 +137,7 @@ public class Column extends TableAffiliation<Column> implements Serializable {
     //数字类型:precision,scale 日期:length 时间戳:scale 其他:length
     protected Integer precisionLength             ; // 精确长度 根据数据类型返回precision或length
     protected Integer length                      ; // 长度(注意varchar,date,timestamp,number的区别)
+    protected String lengthUnit = ""              ; // 长度单位如byte char
     protected Integer precision                   ; // 有效位数 整个字段的长度(包含小数部分)  123.45：precision = 5, scale = 2 对于SQL Server 中 varchar(max)设置成 -1 null:表示未设置
     protected Integer scale                       ; // 小数部分的长度
     protected Integer dims                        ; // 维度
@@ -847,6 +848,7 @@ public class Column extends TableAffiliation<Column> implements Serializable {
             result = result.replace("{L}", length+"");
             result = result.replace("{P}", precision+"");
             result = result.replace("{S}", scale+"");
+            result = result.replace("{U}", lengthUnit);
             result = result.replace("(0)", "");
             result = result.replace("(null)","");
         }else if(null != type) {
@@ -856,6 +858,7 @@ public class Column extends TableAffiliation<Column> implements Serializable {
                 result = result.replace("{L}", length + "");
                 result = result.replace("{P}", precision + "");
                 result = result.replace("{S}", scale + "");
+                result = result.replace("{U}", lengthUnit);
                 result = result.replace("(0)", "");
                 result = result.replace("(null)", "");
             }else {
@@ -868,6 +871,9 @@ public class Column extends TableAffiliation<Column> implements Serializable {
                         builder.append("max");
                     } else {
                         builder.append(length);
+                        if(BasicUtil.isNotEmpty(lengthUnit)){
+                            builder.append(" ").append(lengthUnit);
+                        }
                     }
                 } else {
                     if (appendPrecision) {
@@ -1548,6 +1554,22 @@ public class Column extends TableAffiliation<Column> implements Serializable {
             return this;
         }
         this.charset = charset;
+        return this;
+    }
+
+    public String getLengthUnit() {
+        if(getmap && null != update) {
+            return update.lengthUnit;
+        }
+        return lengthUnit;
+    }
+
+    public Column setLengthUnit(String lengthUnit) {
+        if(setmap && null != update) {
+            update.setLengthUnit(lengthUnit);
+            return this;
+        }
+        this.lengthUnit = lengthUnit;
         return this;
     }
 
