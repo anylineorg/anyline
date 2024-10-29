@@ -37,6 +37,9 @@ The core of AnyLine is a runtime oriented metadata dynamic relationship mapping 
 - Compare database structure differences  
 - Generate dynamic SQL and combine dynamic query conditions  
 - Complex result set operations  
+
+A natural low code, dynamic form, and dynamic data source underlying tool  
+
 Adapt to various relational and non relational databases (as well as various domestic niche databases)  
 Commonly used for low-level support in dynamic structural scenarios, appearing as an SQL parsing engine or adapter  
 Such as: data center, visualization, low code, SAAS, custom forms, heterogeneous database migration and synchronization, IoT vehicle networking data processing  
