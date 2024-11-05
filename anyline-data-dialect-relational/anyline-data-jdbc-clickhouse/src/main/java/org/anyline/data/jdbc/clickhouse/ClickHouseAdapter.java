@@ -4962,7 +4962,30 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
      */
     @Override
     public List<Run> buildCreateRun(DataRuntime runtime, View meta) throws Exception {
-        return super.buildCreateRun(runtime, meta);
+        List<Run> runs = new ArrayList<>();
+        Run run = new SimpleRun(runtime);
+        runs.add(run);
+        StringBuilder builder = run.getBuilder();
+        builder.append("CREATE ");
+        if(meta.isMaterialize()){
+            builder.append("MATERIALIZED ");
+        }
+        builder.append("VIEW IF NOT EXISTS");
+        name(runtime, builder, meta);
+        Table target = meta.target();
+        if(null != target && !target.isEmpty()){
+            builder.append(" TO ");
+            name(runtime, builder, target);
+            List<Column> columns = target.columns();
+            if(null != columns && !columns.isEmpty()){
+                builder.append("(");
+                columns(runtime, builder, target);
+                builder.append(")");
+            }
+        }
+        builder.append(" AS \n").append(meta.getDefinition());
+        runs.addAll(buildAppendCommentRun(runtime, meta));
+        return runs;
     }
 
     /**
