@@ -1770,7 +1770,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
     }
 
     public BigDecimal avg(boolean empty, String  ... keys) {
-        return avg(empty, size(), 2, BigDecimal.ROUND_HALF_UP, keys);
+        return avg(empty, 2, BigDecimal.ROUND_HALF_UP, size(), keys);
     }
 
     public BigDecimal avg(String ... keys) {
