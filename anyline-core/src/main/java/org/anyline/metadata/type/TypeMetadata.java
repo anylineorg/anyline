@@ -696,6 +696,9 @@ public interface TypeMetadata {
                         //INTERVAL YEAR(4) TO MONTH(2)
                         precision = BasicUtil.parseInt(fetches.get(0).get(1), null);
                         scale = BasicUtil.parseInt(fetches.get(1).get(1), null);
+                        typeName = typeName.replace(fetches.get(0).get(0), "");
+                        typeName = typeName.replace(fetches.get(1).get(0), "");
+                        typeMetadata = parse(alias, spells, typeName);
                     }else{
                         //varchar(10)
                         //decimal(20)
@@ -718,7 +721,6 @@ public interface TypeMetadata {
                             }
                         }
                     }
-
                 }
             }catch (Exception e) {
                 e.printStackTrace();
