@@ -44,6 +44,7 @@ public class View extends Table<View> implements Serializable {
 
     protected String keyword = "VIEW"            ;
     protected boolean materialize = false        ; //是否物化
+    protected Table target;
 
     public View() {
         this(null);
@@ -58,6 +59,17 @@ public class View extends Table<View> implements Serializable {
         this.catalog = catalog;
         this.schema = schema;
         this.name = name;
+    }
+    public Table target(){
+        return target;
+    }
+    public View target(Table target){
+        this.target = target;
+        return this;
+    }
+    public View target(String target){
+        this.target = new Table(target);
+        return this;
     }
     public String getKeyword() {
         return keyword;
