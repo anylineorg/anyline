@@ -4970,7 +4970,7 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
         if(meta.isMaterialize()){
             builder.append("MATERIALIZED ");
         }
-        builder.append("VIEW IF NOT EXISTS");
+        builder.append("VIEW IF NOT EXISTS ");
         name(runtime, builder, meta);
         Table target = meta.target();
         if(null != target && !target.isEmpty()){
