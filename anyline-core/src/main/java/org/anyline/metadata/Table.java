@@ -643,7 +643,8 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
                     column.primary(true);
                     primaryKey.addColumn(column);
                 } else {
-                    throw new AnylineException("未匹配到" + key + ", 请诜添加到columns");
+                    primaryKey.addColumn(new Column(key)); //查询过程中会有到临时主键
+                    //throw new AnylineException("未匹配到" + key + ", 请诜添加到columns");
                 }
             }
         } else {
