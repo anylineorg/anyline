@@ -9663,10 +9663,22 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		}else{
 			// 分页
 			// 2005 及以上
-			if(BasicUtil.isEmpty(order)) {
-				order = "ORDER BY "+ ConfigTable.DEFAULT_PRIMARY_KEY;
-			}
-			builder.append("SELECT "+cols+" FROM( \n");
+            if(BasicUtil.isEmpty(order)) {
+                RunPrepare prepare = run.getPrepare();
+                if(null != prepare){
+                    Table table = prepare.getTable();
+                    if(null != table){
+                        LinkedHashMap<String, Column> pks = table.getPrimaryKeyColumns();
+                        if(!pks.isEmpty()){
+                            order = "ORDER BY " + BeanUtil.concat(Column.names(pks));
+                        }
+                    }
+                }
+            }
+            if(BasicUtil.isEmpty(order)) {
+                order = "ORDER BY " + ConfigTable.DEFAULT_PRIMARY_KEY;
+            }
+			builder.append("SELECT " + cols + " FROM( \n");
 			builder.append("SELECT _TAB_I.*,ROW_NUMBER() OVER(")
 					.append(order)
 					.append(") AS PAGE_ROW_NUMBER_ \n");

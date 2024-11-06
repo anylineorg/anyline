@@ -1655,7 +1655,9 @@ public class DefaultService<E> implements AnylineService<E> {
         if(null == table) {
             return new SimplePrepare().disposable(true);
         }
-        return createRunPrepare(table.getFullName());
+        RunPrepare prepare = new DefaultTablePrepare(table);
+        prepare.disposable(true);
+        return prepare;
     }
     protected RunPrepare createRunPrepare(String src) {
         RunPrepare prepare = null;
