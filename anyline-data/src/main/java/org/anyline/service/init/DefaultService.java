@@ -1655,8 +1655,14 @@ public class DefaultService<E> implements AnylineService<E> {
         if(null == table) {
             return new SimplePrepare().disposable(true);
         }
-        RunPrepare prepare = new DefaultTablePrepare(table);
-        prepare.disposable(true);
+        String name = table.getName();
+        LinkedHashMap<String, Column> pks = table.getPrimaryKeyColumns();
+        if(!pks.isEmpty()){
+            name += "<" + BeanUtil.concat(Column.names(pks)) + ">";
+        }
+        RunPrepare prepare = createRunPrepare(name);
+        Table tab = prepare.getTable();
+
         return prepare;
     }
     protected RunPrepare createRunPrepare(String src) {
@@ -1677,11 +1683,11 @@ public class DefaultService<E> implements AnylineService<E> {
             src = parsePrimaryKey(src, pks);//解析主键
             prepare = new DefaultTextPrepare(src);
         } else {
-            Table table = DataSourceUtil.parseDest(src, null, null);
-            String id = table.getId();
-            pks = Column.names(table.primarys());
+            Table tab = DataSourceUtil.parseDest(src, null, null);
+            String id = tab.getId();
+            pks = Column.names(tab.primarys());
             DriverAdapter adapter = adapter();
-            src = table.getText();
+            src = tab.getText();
             if(null != adapter) {
                 prepare = adapter.buildRunPrepare(runtime(), src);
             }
@@ -1708,7 +1714,7 @@ public class DefaultService<E> implements AnylineService<E> {
                     //USER
                     //USER(ID,CODE)
                     //USER(ID AS CODE, IFNULL(CODE, ID ) AS CODE)
-                    prepare = new DefaultTablePrepare(table);
+                    prepare = new DefaultTablePrepare(tab);
                     /* 自动生成 */
                     if (ConfigTable.isSQLDebug()) {
                         log.debug("[解析SQL类型] [类型:auto] [src:{}]", src);
