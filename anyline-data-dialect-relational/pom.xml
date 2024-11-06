@@ -17,6 +17,7 @@
 		<module>anyline-data-jdbc-antdb</module>						<!--亚信-->
 		<module>anyline-data-jdbc-access</module>
 		<module>anyline-data-jdbc-arcadedb</module>
+		<module>anyline-data-jdbc-argodb</module>						<!--星环-->
 		<module>anyline-data-jdbc-citus</module>
 		<module>anyline-data-jdbc-clickhouse</module>
 		<module>anyline-data-jdbc-cloudera</module>
@@ -65,7 +66,9 @@
 		<module>anyline-data-jdbc-ymatrix</module>
 		<module>anyline-data-jdbc-yugabyte</module>
 		<module>anyline-data-jdbc-yukon</module>
-    </modules>
+		<module>anyline-data-jdbc-transwarp</module>
+		<module>anyline-data-jdbc-inceptor</module>
+	</modules>
 	<build>
 		<plugins>
 			<plugin>
