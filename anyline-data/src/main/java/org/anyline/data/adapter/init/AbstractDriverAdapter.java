@@ -18398,7 +18398,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		//针对当前表的生成器
 		PrimaryGenerator generator = GeneratorConfig.get(table);
 		if(null != generator) {
-			if(generator != PrimaryGenerator.GENERATOR.DISABLE && generator != PrimaryGenerator.GENERATOR.AUTO) {
+			if(generator != PrimaryGenerator.GENERATOR.AUTO) {
 				return generator;
 			}
 		}
@@ -18411,7 +18411,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				//全局配置
 				if (ConfigTable.PRIMARY_GENERATOR_SNOWFLAKE_ACTIVE) {
 					primaryGenerator = PrimaryGenerator.GENERATOR.SNOWFLAKE;
-				} else if (ConfigTable.PRIMARY_GENERATOR_UUID_ACTIVE) {
+				} else if (ConfigTable.PRIMARY_GENERATOR_RANDOM_ACTIVE) {
 					primaryGenerator = PrimaryGenerator.GENERATOR.RANDOM;
 				} else if (ConfigTable.PRIMARY_GENERATOR_UUID_ACTIVE) {
 					primaryGenerator = PrimaryGenerator.GENERATOR.UUID;
