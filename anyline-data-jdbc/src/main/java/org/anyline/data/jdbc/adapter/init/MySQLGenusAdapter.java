@@ -795,19 +795,17 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
             if(placeholder) {
                 //FIND_IN_SET('1', TYPE_CODES)
                 //FIND_IN_SET(ID, '1,2,3')
-                if(value instanceof VariableValue){
-                    builder.append("FIND_IN_SET(").append(value).append(", ?)");
-                    value = column;
-                }else if(BasicUtil.checkEl(value+"")){
-                    String str = value+"";
-                    String el = str.substring(2, str.length()-1);
-                    builder.append("FIND_IN_SET(").append(el).append(", ?)");
-                    value = column;
+                if(value instanceof String && value.toString().contains(",")){
+                    builder.append("FIND_IN_SET(").append(column).append(", ?)");
                 }else {
                     builder.append("FIND_IN_SET(?, ").append(column).append(")");
                 }
             }else{
-                builder.append("FIND_IN_SET('").append(v).append("', ").append(column).append(")");
+                if(value instanceof String && value.toString().contains(",")){
+                    builder.append("FIND_IN_SET(").append(column).append(", '").append(v).append("')");
+                }else {
+                    builder.append("FIND_IN_SET('").append(v).append("', ").append(column).append(")");
+                }
             }
             first = false;
         }
