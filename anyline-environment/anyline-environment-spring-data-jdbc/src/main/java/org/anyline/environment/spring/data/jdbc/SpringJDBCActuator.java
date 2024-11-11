@@ -254,24 +254,24 @@ public class SpringJDBCActuator implements DriverActuator {
             }
             //end stream handler
         }else {
+            PreparedStatementSetter setter = null;
+            //JDBCUtil.queryTimeout(ps, configs);
             fr = System.currentTimeMillis();
-            if(null != values && !values.isEmpty()) {
-                jdbc.query(sql, values.toArray(), new RowCallbackHandler() {
+                jdbc.query(sql, new PreparedStatementSetter() {
                     @Override
-                    public void processRow(ResultSet rs) throws SQLException {
-                        if(!process[0]) {
-                            mid[0] = System.currentTimeMillis();
-                            process[0] = true;
+                    public void setValues(PreparedStatement ps) throws SQLException {
+                        JDBCUtil.queryTimeout(ps, configs);
+                        if(null != values && !values.isEmpty()){
+                            int idx = 1;
+                            for(Object value:values){
+                                ps.setObject(idx++, value);
+                            }
                         }
-                        DataRow row = JDBCUtil.row(adapter, system, rt, metadatas, configs, rs);
-                        set.add(row);
                     }
-                });
-            }else {
-                jdbc.query(sql, new RowCallbackHandler() {
+                }, new RowCallbackHandler() {
                     @Override
                     public void processRow(ResultSet rs) throws SQLException {
-                        if(!process[0]) {
+                        if (!process[0]) {
                             mid[0] = System.currentTimeMillis();
                             process[0] = true;
                         }
@@ -281,7 +281,7 @@ public class SpringJDBCActuator implements DriverActuator {
                 });
             }
             count[0] = set.size();
-        }
+
         if(!process[0]) {
             mid[0] = System.currentTimeMillis();
         }
