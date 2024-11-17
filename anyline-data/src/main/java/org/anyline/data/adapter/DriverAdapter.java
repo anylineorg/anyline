@@ -2009,7 +2009,6 @@ public interface DriverAdapter {
     /**
      * 计算字符串在当前数据库中占用字节长度
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param random 用来标记同一组命令
      * @param cn 字符串
      * @param configs 过滤条件及相关配置
      * @return Run
@@ -7780,15 +7779,24 @@ public interface DriverAdapter {
 	 * @return StringBuilder
 	 */
 	StringBuilder materialize(DataRuntime runtime, StringBuilder builder, Table meta);
-	/**
-	 * table[命令合成-子流程]<br/>
-	 * 扩展属性
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param builder builder
-	 * @param meta 表
-	 * @return StringBuilder
-	 */
-	StringBuilder property(DataRuntime runtime, StringBuilder builder, Table meta);
+    /**
+     * table[命令合成-子流程]<br/>
+     * 扩展属性
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param builder builder
+     * @param meta 表
+     * @return StringBuilder
+     */
+    StringBuilder property(DataRuntime runtime, StringBuilder builder, Table meta);
+    /**
+     * table[命令合成-子流程]<br/>
+     * 扩展属性
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param builder builder
+     * @param meta 表
+     * @return StringBuilder
+     */
+    StringBuilder option(DataRuntime runtime, StringBuilder builder, Table meta);
 
 	/**
 	 * table[命令合成-子流程]<br/>

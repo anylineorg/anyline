@@ -5498,21 +5498,40 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		return super.materialize(runtime, builder, meta);
 	}
 
-	/**
-	 * table[命令合成-子流程]<br/>
-	 * 扩展属性
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param builder builder
-	 * @param meta 表
-	 * @return StringBuilder
-	 */
-	@Override
-	public StringBuilder property(DataRuntime runtime, StringBuilder builder, Table meta) {
-		if(null != meta.getProperty()) {
-			builder.append(" ").append(meta.getProperty());
-		}
-		return builder;
-	}
+    /**
+     * table[命令合成-子流程]<br/>
+     * 扩展属性
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param builder builder
+     * @param meta 表
+     * @return StringBuilder
+     */
+    @Override
+    public StringBuilder property(DataRuntime runtime, StringBuilder builder, Table meta) {
+        if(null != meta.getProperty()) {
+            builder.append(" ").append(meta.getProperty());
+        }
+        return builder;
+    }
+    /**
+     * table[命令合成-子流程]<br/>
+     * 扩展属性
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param builder builder
+     * @param meta 表
+     * @return StringBuilder
+     */
+    @Override
+    public StringBuilder option(DataRuntime runtime, StringBuilder builder, Table meta) {
+        List<String> options = meta.options();
+        if(null != options && !options.isEmpty()) {
+            builder.append("\n");
+            for (String option : options) {
+                builder.append(option).append("\n");
+            }
+        }
+        return builder;
+    }
 
 	/**
 	 * table[命令合成-子流程]<br/>

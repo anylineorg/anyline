@@ -4792,6 +4792,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         materialize(runtime, builder, meta);
         //扩展属性
         property(runtime, builder, meta);
+        option(runtime, builder, meta);
         //备注
         comment(runtime, builder, meta);
 
