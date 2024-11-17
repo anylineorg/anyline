@@ -129,6 +129,7 @@ public class Metadata<T extends Metadata> {
     protected Object extend                       ; //扩展属性
     protected Date checkSchemaTime                ;
     protected LinkedHashMap<String, Object> property;
+    protected List<String> options = new ArrayList<>(); //其他选项
     protected DataRow metadata = null             ; //驱动返回的全部属性
     protected ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE        ;
 
@@ -461,6 +462,20 @@ public class Metadata<T extends Metadata> {
         }
         update.setName(newName);
         return (T)update;
+    }
+    public List<String> options(){
+        if(getmap && null != update) {
+            return update.options();
+        }
+        return options;
+    }
+    public T addOption(String option){
+        if(setmap && null != update) {
+            addOption(option);
+            return (T)this;
+        }
+        this.options.add(option);
+        return (T)this;
     }
 
     public LinkedHashMap<String, Object> getProperty() {
