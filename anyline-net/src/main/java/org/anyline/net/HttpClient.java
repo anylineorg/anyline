@@ -168,7 +168,7 @@ public class HttpClient {
 		try {
 			long fr = System.currentTimeMillis();
 			if(ConfigTable.IS_HTTP_LOG && log.isWarnEnabled()) {
-				log.debug("[http request][method:{}][url:{}]", method.getMethod(), method.getURI());
+				log.info("[http request][method:{}][url:{}]", method.getMethod(), method.getURI());
 			}
 			if("stream".equals(returnType)) {
 				response = client.execute(method);
@@ -181,7 +181,7 @@ public class HttpClient {
 				result = parseResult(result, response, charset);
 			}
 			if(ConfigTable.IS_HTTP_LOG && log.isWarnEnabled()) {
-				log.debug("[http request][method:{}][status:{}][耗时:{}][url:{}]", method.getMethod(), result.getStatus(), System.currentTimeMillis() - fr, method.getURI());
+				log.info("[http request][method:{}][status:{}][耗时:{}][url:{}]", method.getMethod(), result.getStatus(), System.currentTimeMillis() - fr, method.getURI());
 			}
 		} catch (Exception e) {
 			result = new HttpResponse();
@@ -279,7 +279,7 @@ public class HttpClient {
 				get.removeHeaders("Range");
 				response = client.execute(get);
 				code = response.getStatusLine().getStatusCode();
-				log.debug("[http download][断点设置异常][url:{}]", url);
+				log.info("[http download][断点设置异常][url:{}]", url);
 			}
 			if(code != 200 && code !=206) {
 				// progress.error(url, "", code, "状态异常");
@@ -303,7 +303,7 @@ public class HttpClient {
 				int len = -1;
 				while((len = is.read(buffer) )!= -1) {
 					if(task.getAction() !=1) {
-						log.debug("[http download][break][url:{}]", url);
+						log.info("[http download][break][url:{}]", url);
 						break;
 					}
 					raf.write(buffer, 0, len);
@@ -390,7 +390,7 @@ public class HttpClient {
 			}
 		}
 		if(ConfigTable.IS_HTTP_LOG && log.isWarnEnabled()) {
-			log.debug("[http upload][url:{}]"+fileLog, url);
+			log.info("[http upload][url:{}]"+fileLog, url);
 		}
 
 		HttpEntity entity = builder.build();// 生成 HTTP POST 实体
