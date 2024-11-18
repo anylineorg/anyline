@@ -1284,7 +1284,7 @@ public class XuGuAdapter extends OracleGenusAdapter implements JDBCAdapter {
         Run run = new SimpleRun(runtime);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
-        builder.append("SELECT * FROM SYS_DATABASE");
+        builder.append("SELECT * FROM SYS_CATALOG.SYS_DATABASE");
         return runs;
     }
 
