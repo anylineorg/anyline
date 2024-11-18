@@ -414,7 +414,7 @@ public class ImgUtil {
     	return base64Img(url); 
     } 
     /** 
-     * base64 图片转文件 
+     * base64 转 图片文件
      * @param file  file
      * @param str  str
      * @return boolean
