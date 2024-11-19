@@ -331,6 +331,18 @@ public class ClassUtil {
 		return false;
 	}
 
+	public static boolean hasAnnotation(Field field, String ... annotations) {
+		Annotation[] ans = field.getAnnotations();
+		for(Annotation an:ans) {
+			for(String annotation:annotations) {
+				if(match(an.annotationType().getSimpleName(), annotation)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
 	/**
 	 * 反射类注解的属性值 在不确定具体注解与属性的情况下使用
 	 * 注解名与属性名不区分大小写
