@@ -45,7 +45,7 @@ public enum KingBaseTypeMetadataAlias implements TypeMetadataAlias {
 	DATERANGE                     ("DATERANGE"                      ,StandardTypeMetadata.DATERANGE                     ,   1,   1,   1),
 	DATETIME                      ("DATETIME"                       ,StandardTypeMetadata.DATETIME                      , "DATETIME"                  , "DATETIME({S})"             , null   , null   , null   ,   1,   1,   2),
 	DECIMAL                       ("DECIMAL"                        ,StandardTypeMetadata.DECIMAL                       ,   1,   0,   0),
-	DOUBLE                        ("DOUBLE"                         ,StandardTypeMetadata.DOUBLE                        ,   1,   1,   1),
+	DOUBLE                        ("DOUBLE"                         ,StandardTypeMetadata.DOUBLE_PRECISION             , "DOUBLE PRECISION"          , "DOUBLE PRECISION"          , null   , null   , null   ,   1,   1,   1),
 	DOUBLE_PRECISION              ("DOUBLE PRECISION"               ,StandardTypeMetadata.DOUBLE_PRECISION              , "DOUBLE PRECISION"          , "DOUBLE PRECISION"          , null   , null   , null   ,   1,   1,   1),
 	DSINTERVAL                    ("DSINTERVAL"                     ,StandardTypeMetadata.DSINTERVAL                    ,   1,   1,   1),
 	FLOAT                         ("FLOAT"                          ,StandardTypeMetadata.FLOAT                         ,   1,   2,   1),
