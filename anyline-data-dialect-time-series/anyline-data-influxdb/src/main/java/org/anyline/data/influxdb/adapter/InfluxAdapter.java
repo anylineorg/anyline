@@ -5035,10 +5035,6 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
         return super.property(runtime, builder, meta);
     }
 
-    @Override
-    public StringBuilder option(DataRuntime runtime, StringBuilder builder, Table meta) {
-        return builder;
-    }
 
     /**
      * table[命令合成-子流程]<br/>

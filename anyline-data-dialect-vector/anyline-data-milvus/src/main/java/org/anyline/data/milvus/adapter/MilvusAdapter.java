@@ -6255,6 +6255,7 @@ public class MilvusAdapter extends AbstractDriverAdapter {
         return super.property(runtime, builder, meta);
     }
 
+
     /**
      * table[命令合成-子流程]<br/>
      * 主表设置分区依据(根据哪几列分区)

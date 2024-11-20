@@ -1080,6 +1080,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
         return null;
     }
 
+
     @Override
     public <T extends Metadata> void checkSchema(DataRuntime runtime, T meta) {
 
