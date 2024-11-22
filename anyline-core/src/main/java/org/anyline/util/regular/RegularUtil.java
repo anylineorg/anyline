@@ -716,6 +716,19 @@ public class RegularUtil {
 			return null;
 		}
 	}
+	/**
+	 * 标签体 只能用于双标签结构
+	 * @param txt 全文
+	 * @param name 标签名
+	 * @return String
+	 */
+	public static String fetchTagBody(String txt, String name) {
+		String body = "";
+		String start = "<" + name;
+		String end = "</" + name +">";
+		body = RegularUtil.cut(txt, start, ">", end);
+		return body;
+	}
 
 	public static String cut(String text, String ... tags) {
 		return cut(false, text, tags);
