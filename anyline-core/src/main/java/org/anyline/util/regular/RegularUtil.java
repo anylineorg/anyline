@@ -722,8 +722,9 @@ public class RegularUtil {
 	 * @param txt 全文
 	 * @param name 标签名
 	 * @return String
+	 * @throws Exception 标签结构错误时抛出异常
 	 */
-	public static String fetchTagBody(String txt, String name) {
+	public static String fetchTagBody(String txt, String name) throws Exception{
 		return fetchTagBody(txt, name, false);
 	}
 	/**
@@ -733,29 +734,30 @@ public class RegularUtil {
 	 * @param multiple 是否检测多重标签 如果有多重相同的标签 需要检测
 	 * @param name 标签名
 	 * @return String
+	 * @throws Exception 标签结构错误时抛出异常
 	 */
-	public static String fetchTagBody(String txt, String name, boolean multiple) {
+	public static String fetchTagBody(String txt, String name, boolean multiple) throws Exception {
 		String body = "";
 		String head = "<" + name;
 		String foot = "</" + name +">";
-		if(multiple){
+		if (multiple) {
 			//<if>(A:<if>B:<if>C</if></if>)</if>
 			int begin = txt.indexOf(head);
 			int end = txt.indexOf(foot);
 			int fr = begin;
 			int to = end;
-			while (true){
+			while (true) {
 				String tmp = txt.substring(fr + head.length(), to);
-				if(!tmp.contains(head)){
+				if (!tmp.contains(head)) {
 					break;
 				}
-				fr = txt.indexOf(head, fr+1);
-				to = txt.indexOf(foot, to+1);
+				fr = txt.indexOf(head, fr + 1);
+				to = txt.indexOf(foot, to + 1);
 				end = to;
 			}
 			body = txt.substring(begin + head.length(), end);
 			body = RegularUtil.cut(body, ">", TAG_END);
-		}else {
+		} else {
 			body = RegularUtil.cut(txt, head, ">", foot);
 		}
 		return body;
