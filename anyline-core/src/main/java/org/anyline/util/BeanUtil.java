@@ -4083,4 +4083,35 @@ public class BeanUtil {
 		}
 		return result;
 	}
+
+	/**
+	 * 从map中取值
+	 * @param key key及属性名称  user.dept.name
+	 * @param variables 环境变量
+	 * @return Object
+	 */
+	public static Object value(Map<String, Object> variables, String key){
+		Object data = variables.get(key);
+		if(BasicUtil.checkEl(key)){
+			key = key.substring(2, key.length()-1);
+		}
+		if(null == data) {
+			if (key.contains(".")) {
+				//user.dept.name
+				String[] ks = key.split("\\.");
+				int size = ks.length;
+				if (size > 1) {
+					data = variables.get(ks[0]);
+					for (int i = 1; i < size; i++) {
+						String k = ks[i];
+						if (null == data) {
+							break;
+						}
+						data = BeanUtil.getFieldValue(data, k);
+					}
+				}
+			}
+		}
+		return data;
+	}
 }
