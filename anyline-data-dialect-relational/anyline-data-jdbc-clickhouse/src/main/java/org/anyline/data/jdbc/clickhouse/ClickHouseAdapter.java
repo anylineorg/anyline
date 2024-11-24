@@ -4235,7 +4235,7 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
         runs.add(run);
         StringBuilder builder = run.getBuilder();
         builder.append("CREATE DATABASE IF NOT EXISTS ");
-        name(runtime, builder, meta);
+        delimiter(builder, meta.getName());
         return runs;
     }
 

@@ -7615,7 +7615,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 			builder.append(" SPATIAL");
 		}
 		builder.append(" INDEX ");
-        name(runtime, builder, meta);
+        delimiter(builder, meta.getName(), false);
         builder.append(" ON ");//.append(index.getTableName(true));
 		Table table = meta.getTable(true);
 		name(runtime, builder, table);

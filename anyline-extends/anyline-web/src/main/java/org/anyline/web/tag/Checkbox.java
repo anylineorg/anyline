@@ -40,7 +40,7 @@ public class Checkbox extends BaseBodyTag {
 	private static final long serialVersionUID = 1L; 
 	private String scope; 
 	private Object data; 
-	private String valueKey =ConfigTable.DEFAULT_PRIMARY_KEY; 
+	private String valueKey = ConfigTable.DEFAULT_PRIMARY_KEY;
 	private String textKey = "NM"; 
 	// private Object checked;	//
 	private String property;

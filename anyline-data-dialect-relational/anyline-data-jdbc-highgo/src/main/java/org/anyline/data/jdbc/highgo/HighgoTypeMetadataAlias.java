@@ -54,7 +54,7 @@ public enum HighgoTypeMetadataAlias implements TypeMetadataAlias {
 	SERIAL8                       ("SERIAL8"                        ,StandardTypeMetadata.SERIAL8                       ,   1,   1,   1),
 	SMALLSERIAL                   ("SMALLSERIAL"                    ,StandardTypeMetadata.SMALLSERIAL                   ,   1,   1,   1),
 	TEXT                          ("TEXT"                           ,StandardTypeMetadata.TEXT                          ,   1,   1,   1),
-	TIME                          ("TIME"                           ,StandardTypeMetadata.TIME                          ,   1,   1,   1),
+	TIME                          ("TIME"                           ,StandardTypeMetadata.TIME                          , "TIME"        , "TIME"             , null   , null   , null   ,   1,   1,   1),
 	TIMESTAMP                     ("TIMESTAMP"                      ,StandardTypeMetadata.TIMESTAMP                     , "TIMESTAMP"   , "TIMESTAMP({S})"   , null   , null   , null   ,   1,   1,   2),
 	TIMESTAMP_WITH_LOCAL_ZONE     ("TIMESTAMP WITH LOCAL TIME ZONE" ,StandardTypeMetadata.TIMESTAMP_WITH_LOCAL_ZONE     , "TIMESTAMPTZ" , "TIMESTAMPTZ({S})" , null   , null   , null   ,   1,   2,   1),
 	TIMESTAMP_WITH_ZONE           ("TIMESTAMP WITH TIME ZONE"       ,StandardTypeMetadata.TIMESTAMP_WITH_TIME_ZONE      , "TIMESTAMPTZ" , "TIMESTAMPTZ({S})" , null   , null   , null   ,   1,   1,   2),

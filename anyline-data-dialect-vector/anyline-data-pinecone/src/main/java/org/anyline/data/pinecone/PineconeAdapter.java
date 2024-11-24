@@ -22,6 +22,7 @@ import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.metadata.Column;
 import org.anyline.metadata.Metadata;
+import org.anyline.metadata.Table;
 import org.anyline.metadata.Type;
 import org.anyline.metadata.type.DatabaseType;
 
@@ -63,6 +64,7 @@ public class PineconeAdapter extends AbstractDriverAdapter {
     public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, LinkedHashMap<String, T> columns, Column query) throws Exception {
         return null;
     }
+
 
     @Override
     public String concat(DataRuntime runtime, String... args) {

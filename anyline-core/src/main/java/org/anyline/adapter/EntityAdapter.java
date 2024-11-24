@@ -215,6 +215,9 @@ public interface EntityAdapter {
         }
         String name = null;
         // 2.注解
+       /* if(ClassUtil.hasAnnotation(field,"Transient")){
+            return null;
+        }*/
         if(null == annotations || annotations.length ==0 ) {
             if(BasicUtil.isNotEmpty(ConfigTable.ENTITY_COLUMN_ANNOTATION)) {
                 annotations = ConfigTable.ENTITY_COLUMN_ANNOTATION.split(",");
@@ -572,6 +575,9 @@ public interface EntityAdapter {
             if(null == value) {
                 //根据默认转换规则
                 Column column = column(clazz, field);//列名
+                if(null == column){
+                    continue;
+                }
                 columnName = column.getName();
                 if (null != row) {
                     value = row.get(columnName);

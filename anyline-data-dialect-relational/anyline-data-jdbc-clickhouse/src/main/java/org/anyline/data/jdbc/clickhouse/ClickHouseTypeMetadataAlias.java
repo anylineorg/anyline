@@ -239,7 +239,7 @@ public enum ClickHouseTypeMetadataAlias implements TypeMetadataAlias {
 	SMALLFLOAT                    ("SMALLFLOAT"                     ,StandardTypeMetadata.CLICKHOUSE_FLOAT32        , "Float32"         , "Float32"             , null   , null   , null   ,   1,   1,   1),
 	SMALLINT                      ("SMALLINT"                       ,StandardTypeMetadata.CLICKHOUSE_INT16          , "Int16"           , "Int16"               , null   , null   , null   ,   1,   1,   1),
 	SMALLMONEY                    ("SMALLMONEY"                     ,StandardTypeMetadata.DECIMAL                   , "Decimal"         , "Decimal({P},{S})"    , null   , null   , null   ,   1,   0,   0),
-	SMALLSERIAL                   ("SMALLSERIAL"                    ,StandardTypeMetadata.DECIMAL                   , "Decimal"         , "Decimal({P},{S})"    , null   , null   , null   ,   1,   0,   0),
+	SMALLSERIAL                   ("SMALLSERIAL"                    ,StandardTypeMetadata.CLICKHOUSE_INT16          , "Int16"           , "Int16"               , null   , null   , null   ,   1,   1,   1),
 	SPARSE_VECTOR                 ("sparse_vector"                  ,StandardTypeMetadata.NONE                      ,  -1,  -1,  -1),
 	SQL_DATETIMEOFFSET            ("SQL_DATETIMEOFFSET"             ,StandardTypeMetadata.NONE                      ,  -1,  -1,  -1),
 	SQL_VARIANT                   ("SQL_VARIANT"                    ,StandardTypeMetadata.NONE                      ,  -1,  -1,  -1),
