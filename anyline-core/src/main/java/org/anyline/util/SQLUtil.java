@@ -110,6 +110,10 @@ public class SQLUtil {
 			builder.append(src);
 			return builder ;
 		}
+		if(src.length() == 1) { //有可能是别名
+			builder.append(src);
+			return builder ;
+		}
 		if(src.startsWith("${") && src.endsWith("}")) {
 			String body = RegularUtil.cut(src, "${", "}");
 			builder.append(body);
