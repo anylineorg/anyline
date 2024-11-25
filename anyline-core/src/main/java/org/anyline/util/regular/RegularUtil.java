@@ -16,6 +16,7 @@
 
 package org.anyline.util.regular;
 
+import org.anyline.util.BasicUtil;
 import org.apache.oro.text.regex.*;
 import org.anyline.log.Log;
 import org.anyline.log.LogProxy;
@@ -602,6 +603,57 @@ public class RegularUtil {
 		return result;
 	}
 
+	/**
+	 * 截取标签(只取最外层双标签)
+	 * @param txt 原文
+	 * @return list
+	 */
+	public static List<String> fetchOutPairedTag(String txt){
+		List<String> tags = new ArrayList<>();
+		while (true) {
+			int index = txt.indexOf("<");
+			if (index != -1) {
+				String name = RegularUtil.cut(txt, "<", ">");
+				if(BasicUtil.isEmpty(name)){
+					break;
+				}
+				if (name.contains(" ")) {
+					name = name.split(" ")[0];
+				}
+				String head = "<" + name;
+				String foot = "</" + name + ">";
+				String foot2 = "/>";
+				int begin = txt.indexOf(head);
+				int end = txt.indexOf(foot);
+				int end2 = txt.indexOf(foot2);
+
+				int fr = begin;
+				int to = end;
+				while (true) {
+					if(to < 0){
+						break;
+					}
+					//检测是否有嵌套的同类标签的开头,如果存在:当前foot属性内层标签继续找下一个foot
+					String tmp = txt.substring(fr + head.length(), to);
+					if (!tmp.contains(head)) {
+						break;
+					}
+					fr = txt.indexOf(head, fr + 1);
+					to = txt.indexOf(foot, to + 1);
+					end = to;
+				}
+				if(end < 0){
+					break;
+				}
+				String tag = txt.substring(begin, end + foot.length());
+				tags.add(tag);
+				txt = txt.substring(txt.indexOf(tag)+tag.length());
+			}else{
+				break;
+			}
+		}
+		return tags;
+	}
 	/**
 	 * 提取单标签+双标签
 	 * 不区分大小写
