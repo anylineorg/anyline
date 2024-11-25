@@ -655,6 +655,68 @@ public class RegularUtil {
 		return tags;
 	}
 	/**
+	 * 截取标签(只取最外层双标签+单标签)
+	 * @param txt 原文
+	 * @return list
+	 */
+	public static List<String> fetchOutTag(String txt){
+		List<String> tags = new ArrayList<>();
+		while (true) {
+			int index = txt.indexOf("<");
+			if (index != -1) {
+				String name = RegularUtil.cut(txt, "<", ">");
+				if(BasicUtil.isEmpty(name)){
+					break;
+				}
+				if (name.contains(" ")) {
+					name = name.split(" ")[0];
+				}
+				String head = "<" + name;
+				String foot_d = "</" + name + ">"; //双标签
+				String foot_s = "/>"; // 单标签
+				int begin = txt.indexOf(head);
+				int end_d = txt.indexOf(foot_d);
+				int end_s = txt.indexOf(foot_s); //单标签
+				int end = end_d;
+				String foot = foot_d;
+				boolean paired = true;
+				String chk_s = txt.substring(begin, end_s); //检测是否是单标签(</ 之前没有其他结尾标签)
+				if(!chk_s.contains(">")){
+					end = end_s;
+					foot = foot_s;
+					paired = false;
+				}
+				int fr = begin;
+				int to = end;
+				if(paired) {
+					while (true) {
+						if (to < 0) {
+							break;
+						}
+						System.out.println("chk:" + txt);
+						//如果是双标签 检测是否有嵌套的同类标签的开头,如果存在:当前foot属性内层标签继续找下一个foot
+						String tmp = txt.substring(fr + head.length(), to);
+						if (!tmp.contains(head)) {
+							break;
+						}
+						fr = txt.indexOf(head, fr + 1);
+						to = txt.indexOf(foot_d, to + 1);
+						end = to;
+					}
+				}
+				if(end < 0){
+					break;
+				}
+				String tag = txt.substring(begin, end + foot.length());
+				tags.add(tag);
+				txt = txt.substring(txt.indexOf(tag)+tag.length());
+			}else{
+				break;
+			}
+		}
+		return tags;
+	}
+	/**
 	 * 提取单标签+双标签
 	 * 不区分大小写
 	 * 0:全文 1:开始标签 2:标签name 3:标签体 (单标签时null) 4:结束标签 (单标签时null)
