@@ -46,14 +46,17 @@ public class SQLUtil {
 		if(null == key) {
 			return false;
 		}
+		if(key.length() == 1){
+			return false;
+		}
 		key = key.trim();
 		if((key.contains("(") && key.contains(")"))
-				|| key.contains(" ")
-				|| key.contains("+")
-				|| key.contains("/")
-				|| key.contains(">")
-				|| key.contains("*")
-				|| key.contains("<")) {
+			|| key.contains(" ")
+			|| key.contains("+")
+			|| key.contains("/")
+			|| key.contains(">")
+			|| key.contains("*")
+			|| key.contains("<")) {
 			return false;
 		}
 		if(ConfigTable.IS_SQL_DELIMITER_OPEN || key.contains("-") || (ConfigTable.IS_AUTO_CHECK_KEYWORD && keys.contains(key.toLowerCase()))) {
@@ -147,14 +150,22 @@ public class SQLUtil {
 				int size = cols.length;
 				for(int i=0; i<size; i++) {
 					String col = cols[i];
-					builder.append(delimiterFr).append(col).append(delimiterTo);
+					if(col.length() ==1){
+						builder.append(col);
+					}else {
+						builder.append(delimiterFr).append(col).append(delimiterTo);
+					}
 					//delimiter(builder, col, delimiterFr, delimiterTo, false);
 					if(i < size-1) {
 						builder.append(".");
 					}
 				}
 			} else{
-				builder.append(delimiterFr).append(src).append(delimiterTo);
+				if(src.length() == 1){
+					builder.append(src);
+				}else {
+					builder.append(delimiterFr).append(src).append(delimiterTo);
+				}
 			}
 		} else {
 			if(delimiter) {
@@ -364,4 +375,4 @@ public class SQLUtil {
 		return sql;
 	}
 
-} 
+}
