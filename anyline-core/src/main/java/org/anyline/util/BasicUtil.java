@@ -571,14 +571,14 @@ public class BasicUtil {
 	}
 
 	/**
-	 * 字符串替换
+	 * 根据正则替换
 	 *
 	 * @param src  src
 	 * @param pattern  pattern
-	 * @param replace  replace
+	 * @param replacement  替换成replacement
 	 * @return String
 	 */
-	public static String replace(String src, String pattern, String replace) {
+	public static String replace(String src, String pattern, String replacement) {
 		if (src == null)
 			return null;
 		int s = 0;
@@ -586,10 +586,33 @@ public class BasicUtil {
 		StringBuilder result = new StringBuilder();
 		while ((e = src.indexOf(pattern, s)) >= 0) {
 			result.append(src.substring(s, e));
-			result.append(replace);
+			result.append(replacement);
 			s = e + pattern.length();
 		}
 
+		result.append(src.substring(s));
+		return result.toString();
+	}
+	/**
+	 * 根据正则替换(只替换第1个)
+	 * 通知是因为相同的原文要替换成不同的结果
+	 * 如定义a=1 输出{a} 重定义a=2 输出{a}
+	 * @param src  src
+	 * @param pattern  pattern
+	 * @param replacement  替换成replacement
+	 * @return String
+	 */
+	public static String replaceFirst(String src, String pattern, String replacement) {
+		if (src == null)
+			return null;
+		int s = 0;
+		int e = 0;
+		StringBuilder result = new StringBuilder();
+		if ((e = src.indexOf(pattern, s)) >= 0) {
+			result.append(src.substring(s, e));
+			result.append(replacement);
+			s = e + pattern.length();
+		}
 		result.append(src.substring(s));
 		return result.toString();
 	}
