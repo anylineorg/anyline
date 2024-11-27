@@ -1981,7 +1981,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         Run run = new SimpleRun(runtime, configs);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
-        builder.append("SELECT M.*, obj_description(F.relfilenode,'pg_class')  AS TABLE_COMMENT\n");
+        builder.append("SELECT M.*, coalesce(obj_description(F.oid,'pg_class'), obj_description(F.relfilenode,'pg_class'))  AS TABLE_COMMENT\n");
         builder.append("FROM  INFORMATION_SCHEMA.TABLES AS M\n");
         builder.append("LEFT JOIN pg_namespace AS N ON N.NSPNAME = M.table_schema\n");
         builder.append("LEFT JOIN pg_class AS F ON M.TABLE_NAME = F.relname AND N.oid = F.relnamespace\n");
@@ -2002,7 +2002,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         Run run = new SimpleRun(runtime, configs);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
-        builder.append("SELECT M.*, obj_description(F.relfilenode,'pg_class')  AS TABLE_COMMENT\n");
+        builder.append("SELECT M.*, coalesce(obj_description(F.oid,'pg_class'), obj_description(F.relfilenode,'pg_class'))  AS TABLE_COMMENT\n");
         builder.append("FROM  INFORMATION_SCHEMA.TABLES AS M\n");
         builder.append("LEFT JOIN pg_namespace AS N ON N.NSPNAME = M.table_schema\n");
         builder.append("LEFT JOIN pg_class AS F ON M.TABLE_NAME = F.relname AND N.oid = F.relnamespace\n");
@@ -2698,7 +2698,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         runs.add(run);
         StringBuilder builder = run.getBuilder();
         ConfigStore configs = run.getConfigs();
-        builder.append("SELECT M.*, obj_description(F.relfilenode,'pg_class')  AS TABLE_COMMENT, FM.relname AS MASTER_TABLE_NAME\n");
+        builder.append("SELECT M.*, coalesce(obj_description(F.oid,'pg_class'), obj_description(F.relfilenode,'pg_class'))  AS TABLE_COMMENT, FM.relname AS MASTER_TABLE_NAME\n");
         builder.append("FROM  INFORMATION_SCHEMA.TABLES AS M\n");
         builder.append("LEFT JOIN pg_namespace AS N ON N.NSPNAME = M.table_schema\n");
         builder.append("LEFT JOIN pg_class AS F ON M.TABLE_NAME = F.relname AND N.oid = F.relnamespace\n");
