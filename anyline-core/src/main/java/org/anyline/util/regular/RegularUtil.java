@@ -702,7 +702,6 @@ public class RegularUtil {
 						if (to < 0) {
 							break;
 						}
-						System.out.println("chk:" + txt);
 						//如果是双标签 检测是否有嵌套的同类标签的开头,如果存在:当前foot属性内层标签继续找下一个foot
 						String tmp = txt.substring(fr + head.length(), to);
 						if (!tmp.contains(head)) {
