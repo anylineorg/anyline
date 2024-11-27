@@ -1997,6 +1997,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
     }
     //与上一个方法的区别是 有些库没有区分 是否分区表 的元数据,不清楚的默认调用上一个方法，确认支持的再调用这个方法
     //builder.append("WHERE (I.inhrelid IS NULL  OR F.relpartbound IS NULL)\n"); //过滤分区表(没有继承自其他表或 继承自其他表但是子表不是分区表)
+    //F.relkind = 'r' 可以过滤普通表
     protected List<Run> buildQueryTablesRunWithPartBound(DataRuntime runtime, boolean greedy, Table query, int types, ConfigStore configs) throws Exception {
         List<Run> runs = new ArrayList<>();
         Run run = new SimpleRun(runtime, configs);
