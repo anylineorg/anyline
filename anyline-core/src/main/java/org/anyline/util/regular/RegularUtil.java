@@ -659,6 +659,12 @@ public class RegularUtil {
 	 * @param txt 原文
 	 * @return list
 	 */
+
+	/**
+	 * 截取标签(只取最外层双标签)
+	 * @param txt 原文
+	 * @return list
+	 */
 	public static List<String> fetchOutTag(String txt){
 		List<String> tags = new ArrayList<>();
 		while (true) {
@@ -680,11 +686,14 @@ public class RegularUtil {
 				int end = end_d;
 				String foot = foot_d;
 				boolean paired = true;
-				String chk_s = txt.substring(begin, end_s); //检测是否是单标签(</ 之前没有其他结尾标签)
-				if(!chk_s.contains(">")){
-					end = end_s;
-					foot = foot_s;
-					paired = false;
+				if(end_s != -1) {
+					//检测是否是单标签
+					String chk_s = txt.substring(begin, end_s);
+					if (!chk_s.contains(">")) {
+						end = end_s;
+						foot = foot_s;
+						paired = false;
+					}
 				}
 				int fr = begin;
 				int to = end;
