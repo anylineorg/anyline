@@ -2691,8 +2691,6 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, boolean greedy,  PartitionTable query, int types) throws Exception {
-        Map<String, Tag> tags = query.getTags();
-        String name = query.getName();
         List<Run> runs = new ArrayList<>();
         Run run = new SimpleRun(runtime);
         runs.add(run);
