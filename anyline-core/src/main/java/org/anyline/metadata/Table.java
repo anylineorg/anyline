@@ -282,6 +282,24 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
         this.schema = schema;
         this.name = name;
     }
+    public void resetColumnLength(double rate, String ... types){
+        for(Column column:columns.values()){
+            String type = column.getTypeName();
+            Integer length = column.getLength();
+            if(null != length && length > 0) {
+                int len = (int)(length*rate);
+                if (null != types && types.length>0) {
+                    for (String tp : types) {
+                        if (tp.equalsIgnoreCase(type)) {
+                            column.setLength(len);
+                        }
+                    }
+                }else{
+                    column.setLength(len);
+                }
+            }
+        }
+    }
 
     public Table group(String ... columns) {
         for(String column:columns){
