@@ -21,6 +21,8 @@ import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Projections;
 import com.mongodb.client.model.Updates;
 import com.mongodb.client.result.DeleteResult;
+import com.mongodb.client.result.InsertManyResult;
+import com.mongodb.client.result.InsertOneResult;
 import com.mongodb.client.result.UpdateResult;
 import org.anyline.adapter.EntityAdapter;
 import org.anyline.annotation.Component;
@@ -54,6 +56,7 @@ import org.anyline.proxy.InterceptorProxy;
 import org.anyline.util.*;
 import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
+import org.bson.BsonValue;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
@@ -183,17 +186,32 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
                 List list = (List) value;
                 cons = database.getCollection(run.getTableName(), list.get(0).getClass());
                 cnt = list.size();
-                cons.insertMany(list);
+                InsertManyResult result =  cons.insertMany(list);
+                Map<Integer, BsonValue> ids = result.getInsertedIds();
+                int idx = 0;
+                for(Object item:list){
+                    BeanUtil.setFieldValue(item, "_id", value(ids.get(idx++)));
+                }
             }else if(value instanceof DataSet) {
                 DataSet set = (DataSet)value;
                 cons = database.getCollection(run.getTableName(), ConfigTable.DEFAULT_MONGO_ENTITY_CLASS);
-                cons.insertMany(set.getRows());
+                InsertManyResult result =  cons.insertMany(set.getRows());
                 cnt = set.size();
+                Map<Integer, BsonValue> ids = result.getInsertedIds();
+                int idx = 0;
+                for(DataRow row:set){
+                    row.setPrimaryValue(value(ids.get(idx++)));
+                }
             }else if(value instanceof EntitySet) {
                 List<Object> datas = ((EntitySet)value).getDatas();
                 cons = database.getCollection(run.getTableName(), datas.get(0).getClass());
-                cons.insertMany(datas);
+                InsertManyResult result =  cons.insertMany(datas);
                 cnt = datas.size();
+                Map<Integer, BsonValue> ids = result.getInsertedIds();
+                int idx = 0;
+                for(Object item:datas){
+                    BeanUtil.setFieldValue(item, "_id", value(ids.get(idx++)));
+                }
             }else if(value instanceof Collection) {
                 Collection items = (Collection) value;
                 List<Object> list = new ArrayList<>();
@@ -202,10 +220,16 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
                     cnt ++;
                 }
                 cons = database.getCollection(run.getTableName(), list.get(0).getClass());
-                cons.insertMany(list);
+                InsertManyResult result =  cons.insertMany(list);
+                Map<Integer, BsonValue> ids = result.getInsertedIds();
+                int idx = 0;
+                for(Object item:items){
+                    BeanUtil.setFieldValue(item, "_id", value(ids.get(idx++)));
+                }
             }else{
                 cons = database.getCollection(run.getTableName(), value.getClass());
-                cons.insertOne(value);
+                InsertOneResult result = cons.insertOne(value);
+                BeanUtil.setFieldValue(value, "_id", value(result.getInsertedId()));
                 cnt = 1;
             }
 
@@ -239,7 +263,26 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
         }
         return cnt;
     }
-
+    private Object value(BsonValue value){
+        if(null != value){
+            if(value.isObjectId()){
+                return value.asObjectId().getValue();
+            }else if(value.isString()){
+                return value.asString().getValue();
+            }else if(value.isInt64()){
+                return value.asInt64().getValue();
+            }else if(value.isInt32()){
+                return value.asInt32().getValue();
+            }else if(value.isDecimal128()){
+                return value.asDecimal128().getValue();
+            }else if(value.isNumber()){
+                return value.asNumber().longValue();
+            }else if(value.isNull()){
+                return null;
+            }
+        }
+        return value;
+    }
     /**
      * 过滤掉表结构中不存在的列
      * MONGO不检测
