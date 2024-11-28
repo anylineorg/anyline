@@ -292,6 +292,7 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
                     for (String tp : types) {
                         if (tp.equalsIgnoreCase(type)) {
                             column.setLength(len);
+                            break;
                         }
                     }
                 }else{
