@@ -813,19 +813,29 @@ public class BasicUtil {
 	}
 
 	/**
-	 * 子串出现次数
+	 * char在full中出现次数
 	 *
-	 * @param src  src
+	 * @param full  全文
 	 * @param chr  chr
 	 * @return int
 	 */
-	public static int charCount(String src, String chr) {
+	public static int charCount(String full, String chr) {
 		int count = 0;
 		int idx = -1;
-		if (null == src || null == chr || chr.trim().isEmpty()) {
+		if (null == full || null == chr || chr.trim().isEmpty()) {
 			return 0;
 		}
-		while ((idx = src.indexOf(chr, idx + chr.length())) != -1) {
+		boolean first = true;
+		while (true) {
+			if(first){
+				idx = full.indexOf(chr);
+			}else {
+				idx = full.indexOf(chr, idx + chr.length());
+			}
+			first = false;
+			if(idx == -1){
+				break;
+			}
 			count++;
 		}
 		return count;
