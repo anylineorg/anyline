@@ -4091,55 +4091,33 @@ public class BeanUtil {
 	 * @return Object
 	 */
 	public static Object value(Map<String, Object> variables, String key){
-		Object data = variables.get(key);
 		if(BasicUtil.checkEl(key)){
 			key = key.substring(2, key.length()-1);
 		}
-		if(null == data) {
-			if (key.contains(".")) {
-				//user.dept.name
-				String[] ks = key.split("\\.");
-				int size = ks.length;
-				if (size > 1) {
-					String k = ks[0];
-					if(k.contains("[") && k.contains("]")){
-						String kk = k.substring(0, k.indexOf("["));
-						String ki = k.substring(k.indexOf("[")+1, k.indexOf("]"));
-						data = BeanUtil.getFieldValue(variables, kk);
-						if(null != data){
-							if(data instanceof Collection){
-								Collection cols = (Collection) data;
-								data = cols.toArray()[BasicUtil.parseInt(ki)];
-							}
-						}
-					}else {
-						data = BeanUtil.getFieldValue(variables, k);
-					}
-					for (int i = 1; i < size; i++) {
-						k = ks[i];
-						if (null == data) {
-							break;
-						}
-
-						if("size".equals(k) && data instanceof Collection) {
-							data = ((Collection) data).size();
-							break;
-						}
-						if(k.contains("[") && k.contains("]")){
-							String kk = k.substring(0, k.indexOf("["));
-							String ki = k.substring(k.indexOf("[")+1, k.indexOf("]"));
-							data = BeanUtil.getFieldValue(data, kk);
-							if(null != data){
-								if(data instanceof Collection){
-									Collection cols = (Collection) data;
-									data = cols.toArray()[BasicUtil.parseInt(ki)];
-								}
-							}
-						} else {
-							data = BeanUtil.getFieldValue(data, k);
-						}
+		String[] ks = key.split("\\.");
+		int size = ks.length;
+		Object data = variables;
+		for (int i = 0; i < size; i++) {
+			String k = ks[i];
+			if (null == data) {
+				break;
+			}
+			if("size".equals(k) && data instanceof Collection) {
+				data = ((Collection) data).size();
+				break;
+			}
+			if(k.contains("[") && k.contains("]")){
+				String kk = k.substring(0, k.indexOf("["));
+				String ki = k.substring(k.indexOf("[")+1, k.indexOf("]"));
+				data = BeanUtil.getFieldValue(data, kk);
+				if(null != data){
+					if(data instanceof Collection){
+						Collection cols = (Collection) data;
+						data = cols.toArray()[BasicUtil.parseInt(ki)];
 					}
 				}
+			} else {
+				data = BeanUtil.getFieldValue(data, k);
 			}
 		}
 		return data;
