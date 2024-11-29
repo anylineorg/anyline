@@ -23,7 +23,7 @@ import org.anyline.metadata.type.TypeMetadata;
 public enum MySQLGenusTypeMetadataAlias implements TypeMetadataAlias {
 	BIGINT                        ("BIGINT"                         ,StandardTypeMetadata.BIGINT                        , null       , null            , null                       , "NUMERIC_PRECISION"  , null            ,   1,   1,   1),
 	BINARY                        ("BINARY"                         ,StandardTypeMetadata.BINARY                        ,   0,   1,   1),
-	BIT                           ("BIT"                            ,StandardTypeMetadata.BIT                           ,   1,   1,   1),
+	BIT                           ("BIT"                            ,StandardTypeMetadata.BIT_BOOLEAN                   ,   1,   1,   1),
 	BLOB                          ("BLOB"                           ,StandardTypeMetadata.BLOB                          ,   1,   1,   1),
 	CHAR                          ("CHAR"                           ,StandardTypeMetadata.CHAR                          , null       , null            , "CHARACTER_MAXIMUM_LENGTH" , null                 , null            ,   0,   1,   1),
 	DATE                          ("DATE"                           ,StandardTypeMetadata.DATE                          ,   1,   1,   1),
@@ -72,7 +72,7 @@ public enum MySQLGenusTypeMetadataAlias implements TypeMetadataAlias {
 	BINARY_INTEGER                ("BINARY_INTEGER"                 ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	BIT_VARYING                   ("BIT VARYING"                    ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	BITMAP                        ("BITMAP"                         ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
-	BOOL                          ("BOOL"                           ,StandardTypeMetadata.BIT                           ,   1,   1,   1),
+	BOOL                          ("BOOL"                           ,StandardTypeMetadata.BIT_BOOLEAN                   ,   1,   1,   1),
 	BOOLEAN                       ("BOOLEAN"                        ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	BOX                           ("BOX"                            ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	BOX2D                         ("BOX2D"                          ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),

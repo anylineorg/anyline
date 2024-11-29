@@ -33,7 +33,7 @@ public enum YashanDBTypeMetadataAlias implements TypeMetadataAlias {
 	BINARY_DOUBLE                 ("BINARY_DOUBLE"                  ,StandardTypeMetadata.DOUBLE                   ,   1,   0,   0),
 	BINARY_FLOAT                  ("BINARY_FLOAT"                   ,StandardTypeMetadata.FLOAT                    ,   1,   2,   3),
 	BINARY_INTEGER                ("BINARY_INTEGER"                 ,StandardTypeMetadata.INT                      ,   1,   1,   1),
-	BIT                           ("BIT"                            ,StandardTypeMetadata.BIT                      ,   1,   1,   1),
+	BIT                           ("BIT"                            ,StandardTypeMetadata.BIT_BOOLEAN              ,  -1,  -1,  -1),
 	BIT_VARYING                   ("BIT VARYING"                    ,StandardTypeMetadata.BLOB                     ,   1,   1,   1),
 	BITMAP                        ("BITMAP"                         ,StandardTypeMetadata.BLOB                     ,   1,   1,   1),
 	BLOB                          ("BLOB"                           ,StandardTypeMetadata.BLOB                     ,   1,   1,   1),

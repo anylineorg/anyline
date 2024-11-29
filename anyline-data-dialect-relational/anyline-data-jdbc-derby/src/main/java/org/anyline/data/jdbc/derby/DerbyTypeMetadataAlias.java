@@ -22,7 +22,7 @@ import org.anyline.metadata.type.TypeMetadata;
 
 public enum DerbyTypeMetadataAlias implements TypeMetadataAlias {
 	BIGINT                        ("BIGINT"                         ,StandardTypeMetadata.BIGINT                        ,   1,   1,   1),
-	BIT                           ("BIT"                            ,StandardTypeMetadata.BIT                           ,   1,   1,   1),
+	BIT                           ("BIT"                            ,StandardTypeMetadata.BIT_BOOLEAN                   ,   1,   1,   1),
 	BLOB                          ("BLOB"                           ,StandardTypeMetadata.BLOB                          ,   1,   1,   1),
 	CHAR                          ("CHAR"                           ,StandardTypeMetadata.CHAR                          ,   0,   1,   1),
 	CLOB                          ("CLOB"                           ,StandardTypeMetadata.CLOB                          ,   1,   1,   1),
@@ -49,7 +49,7 @@ public enum DerbyTypeMetadataAlias implements TypeMetadataAlias {
 	BINARY_INTEGER                ("BINARY_INTEGER"                 ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	BIT_VARYING                   ("BIT VARYING"                    ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	BITMAP                        ("BITMAP"                         ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
-	BOOL                          ("BOOL"                           ,StandardTypeMetadata.BIT                           ,   1,   1,   1),
+	BOOL                          ("BOOL"                           ,StandardTypeMetadata.BIT_BOOLEAN                   ,   1,   1,   1),
 	BOOLEAN                       ("BOOLEAN"                        ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	BOX                           ("BOX"                            ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	BOX2D                         ("BOX2D"                          ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),

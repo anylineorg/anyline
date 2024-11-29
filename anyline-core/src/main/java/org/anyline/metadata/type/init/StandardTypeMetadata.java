@@ -248,7 +248,8 @@ public enum StandardTypeMetadata implements TypeMetadata {
      *                                              number-int/long
      *
      * ****************************************************************************************************************/
-    , BIT(CATEGORY.BOOLEAN, "BIT", null, Boolean.class,1, 1, 1, MySQL, MSSQL)
+    , BIT_INT(CATEGORY.INT, "BIT", null, Integer.class,1, 1, 1, MSSQL)
+    , BIT_BOOLEAN(CATEGORY.BOOLEAN, "BIT", null, Boolean.class,1, 1, 1, MySQL)
     , BITMAP(CATEGORY.BYTES, "BITMAP", null, Byte.class,1, 1, 1, Doris)
     , VARBIT(CATEGORY.BOOLEAN, "VARBIT", null, Byte[].class,1, 1, 1, PostgreSQL)
     , SHORT(CATEGORY.INT, "SHORT", null, Short.class,1, 1, 1)

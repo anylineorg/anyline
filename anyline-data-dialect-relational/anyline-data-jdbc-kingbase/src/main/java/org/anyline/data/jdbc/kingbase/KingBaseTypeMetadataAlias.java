@@ -27,7 +27,7 @@ public enum KingBaseTypeMetadataAlias implements TypeMetadataAlias {
 	BINARY_DOUBLE                 ("BINARY_DOUBLE"                  ,StandardTypeMetadata.BINARY_DOUBLE                 ,   1,   0,   0),
 	BINARY_FLOAT                  ("BINARY_FLOAT"                   ,StandardTypeMetadata.BINARY_FLOAT                  ,   1,   0,   0),
 	BINARY_INTEGER                ("BINARY_INTEGER"                 ,StandardTypeMetadata.BINARY_INTEGER                ,   1,   1,   1),
-	BIT                           ("BIT"                            ,StandardTypeMetadata.BIT                           ,   1,   1,   1),
+	BIT                           ("BIT"                            ,StandardTypeMetadata.BIT_BOOLEAN                   ,   1,   1,   1),
 	BIT_VARYING                   ("BIT VARYING"                    ,StandardTypeMetadata.BIT_VARYING                   , "BIT VARYING"               , "BIT VARYING"               , null   , null   , null   ,   1,   1,   1),
 	BLOB                          ("BLOB"                           ,StandardTypeMetadata.BLOB                          ,   1,   1,   1),
 	BOOL                          ("BOOL"                           ,StandardTypeMetadata.BOOL                          ,   1,   1,   1),

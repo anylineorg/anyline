@@ -22,7 +22,7 @@ import org.anyline.metadata.type.TypeMetadata;
 
 public enum PostgresGenusTypeMetadataAlias implements TypeMetadataAlias {
 	BIGSERIAL                     ("BIGSERIAL"                      ,StandardTypeMetadata.BIGSERIAL                     ,   1,   1,   1),
-	BIT                           ("BIT"                            ,StandardTypeMetadata.BIT                           ,   1,   1,   1),
+	BIT                           ("BIT"                            ,StandardTypeMetadata.BIT_BOOLEAN                   ,   1,   1,   1),
 	BOOL                          ("BOOL"                           ,StandardTypeMetadata.BOOL                          ,   1,   1,   1),
 	BYTEA                         ("BYTEA"                          ,StandardTypeMetadata.BYTEA                         ,   1,   1,   1),
 	CHAR                          ("CHAR"                           ,StandardTypeMetadata.CHAR                          ,   0,   1,   1),
@@ -76,7 +76,7 @@ public enum PostgresGenusTypeMetadataAlias implements TypeMetadataAlias {
 	ARRAY                         ("ARRAY"                          ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	BFILE                         ("BFILE"                          ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	BIGINT                        ("BIGINT"                         ,StandardTypeMetadata.INT8                          ,   1,   1,   1),
-	BINARY                        ("BINARY"                         ,StandardTypeMetadata.BIT                           ,   1,   1,   1),
+	BINARY                        ("BINARY"                         ,StandardTypeMetadata.BIT_BOOLEAN                   ,   1,   1,   1),
 	BINARY_DOUBLE                 ("BINARY_DOUBLE"                  ,StandardTypeMetadata.DECIMAL                       ,   1,   0,   0),
 	BINARY_FLOAT                  ("BINARY_FLOAT"                   ,StandardTypeMetadata.FLOAT4                        ,   1,   1,   1),
 	BINARY_INTEGER                ("BINARY_INTEGER"                 ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),

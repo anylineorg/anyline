@@ -23,7 +23,7 @@ import org.anyline.metadata.type.TypeMetadata;
 public enum MSSQLTypeMetadataAlias implements TypeMetadataAlias {
 	BIGINT                        ("BIGINT"                         ,StandardTypeMetadata.BIGINT                        ,   1,   1,   1),
 	BINARY                        ("BINARY"                         ,StandardTypeMetadata.BINARY                        ,   0,   1,   1),
-	BIT                           ("BIT"                            ,StandardTypeMetadata.BIT                           ,   1,   1,   1),
+	BIT                           ("BIT"                            ,StandardTypeMetadata.BIT_BOOLEAN                   ,   1,   1,   1),
 	CHAR                          ("CHAR"                           ,StandardTypeMetadata.CHAR                          ,   0,   1,   1),
 	DATE                          ("DATE"                           ,StandardTypeMetadata.DATE                          ,   1,   1,   1),
 	DATETIME                      ("DATETIME"                       ,StandardTypeMetadata.DATETIME                      , "DATETIME" , "DATETIME({S})" , null   , null   , null   ,   1,   1,   2),
@@ -67,7 +67,7 @@ public enum MSSQLTypeMetadataAlias implements TypeMetadataAlias {
 	BIT_VARYING                   ("BIT VARYING"                    ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	BITMAP                        ("BITMAP"                         ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	BLOB                          ("BLOB"                           ,StandardTypeMetadata.VARBINARY                     ,   0,   1,   1),
-	BOOL                          ("BOOL"                           ,StandardTypeMetadata.BIT                           ,   1,   1,   1),
+	BOOL                          ("BOOL"                           ,StandardTypeMetadata.BIT_INT                       ,   1,   1,   1),
 	BOOLEAN                       ("BOOLEAN"                        ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	BOX                           ("BOX"                            ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	BOX2D                         ("BOX2D"                          ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
