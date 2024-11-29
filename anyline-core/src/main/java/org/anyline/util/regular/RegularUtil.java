@@ -839,49 +839,35 @@ public class RegularUtil {
 		}
 	}
 	/**
-	 * 标签体 只能用于双标签结构
-	 * 注意不能识别嵌套的标签体
+	 * 标签体
 	 * @param txt 全文
 	 * @param name 标签名
 	 * @return String
 	 * @throws Exception 标签结构错误时抛出异常
 	 */
-	public static String fetchTagBody(String txt, String name) throws Exception{
-		return fetchTagBody(txt, name, false);
-	}
-	/**
-	 * 标签体 只能用于双标签结构
-	 * 注意不能识别嵌套的标签体
-	 * @param txt 全文
-	 * @param multiple 是否检测多重标签 如果有多重相同的标签 需要检测
-	 * @param name 标签名
-	 * @return String
-	 * @throws Exception 标签结构错误时抛出异常
-	 */
-	public static String fetchTagBody(String txt, String name, boolean multiple) throws Exception {
+	public static String fetchTagBody(String txt, String name) throws Exception {
 		String body = "";
 		String head = "<" + name;
 		String foot = "</" + name +">";
-		if (multiple) {
-			//<if>(A:<if>B:<if>C</if></if>)</if>
-			int begin = txt.indexOf(head);
-			int end = txt.indexOf(foot);
-			int fr = begin;
-			int to = end;
-			while (true) {
-				String tmp = txt.substring(fr + head.length(), to);
-				if (!tmp.contains(head)) {
-					break;
-				}
-				fr = txt.indexOf(head, fr + 1);
-				to = txt.indexOf(foot, to + 1);
-				end = to;
-			}
-			body = txt.substring(begin + head.length(), end);
-			body = RegularUtil.cut(body, ">", TAG_END);
-		} else {
-			body = RegularUtil.cut(txt, head, ">", foot);
+		//<if>(A:<if>B:<if>C</if></if>)</if>
+		int begin = txt.indexOf(head);
+		int end = txt.indexOf(foot);
+		int fr = begin;
+		int to = end;
+		if(fr > to){
+			return null;
 		}
+		while (true) {
+			String tmp = txt.substring(fr + head.length(), to);
+			if (!tmp.contains(head)) {
+				break;
+			}
+			fr = txt.indexOf(head, fr + 1);
+			to = txt.indexOf(foot, to + 1);
+			end = to;
+		}
+		body = txt.substring(begin + head.length(), end);
+		body = RegularUtil.cut(body, ">", TAG_END);
 		return body;
 	}
 	public static String cut(String text, String ... tags) {
