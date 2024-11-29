@@ -4086,7 +4086,7 @@ public class BeanUtil {
 
 	/**
 	 * 从map中取值
-	 * @param key key及属性名称  user.dept.name
+	 * @param key key及属性名称  user.dept.name list[0].name list.size
 	 * @param variables 环境变量
 	 * @return Object
 	 */
@@ -4101,13 +4101,43 @@ public class BeanUtil {
 				String[] ks = key.split("\\.");
 				int size = ks.length;
 				if (size > 1) {
-					data = variables.get(ks[0]);
+					String k = ks[0];
+					if(k.contains("[") && k.contains("]")){
+						String kk = k.substring(0, k.indexOf("["));
+						String ki = k.substring(k.indexOf("[")+1, k.indexOf("]"));
+						data = BeanUtil.getFieldValue(variables, kk);
+						if(null != data){
+							if(data instanceof Collection){
+								Collection cols = (Collection) data;
+								data = cols.toArray()[BasicUtil.parseInt(ki)];
+							}
+						}
+					}else {
+						data = BeanUtil.getFieldValue(variables, k);
+					}
 					for (int i = 1; i < size; i++) {
-						String k = ks[i];
+						k = ks[i];
 						if (null == data) {
 							break;
 						}
-						data = BeanUtil.getFieldValue(data, k);
+
+						if("size".equals(k) && data instanceof Collection) {
+							data = ((Collection) data).size();
+							break;
+						}
+						if(k.contains("[") && k.contains("]")){
+							String kk = k.substring(0, k.indexOf("["));
+							String ki = k.substring(k.indexOf("[")+1, k.indexOf("]"));
+							data = BeanUtil.getFieldValue(data, kk);
+							if(null != data){
+								if(data instanceof Collection){
+									Collection cols = (Collection) data;
+									data = cols.toArray()[BasicUtil.parseInt(ki)];
+								}
+							}
+						} else {
+							data = BeanUtil.getFieldValue(data, k);
+						}
 					}
 				}
 			}
