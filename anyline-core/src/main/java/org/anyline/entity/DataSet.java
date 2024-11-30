@@ -523,6 +523,21 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
     }
 
     /**
+     * 条目设置下标
+     * @param key 属性
+     * @param start 开始 默认0
+     * @return this
+     */
+    public DataSet setIndex(String key, int start){
+        for(DataRow row:rows){
+            row.put(key, start++);
+        }
+        return this;
+    }
+    public DataSet setIndex(String key){
+        return setIndex(key, 0);
+    }
+    /**
      * 是否有主键
      *
      * @return boolean
