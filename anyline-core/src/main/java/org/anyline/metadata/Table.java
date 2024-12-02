@@ -282,7 +282,14 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
         this.schema = schema;
         this.name = name;
     }
-    public void resetColumnLength(double rate, String ... types){
+
+    /**
+     * 按比例重新设置列长度
+     * @param rate 比例
+     * @param types 数据类型
+     * @return this
+     */
+    public Table resetColumnLength(double rate, String ... types){
         for(Column column:columns.values()){
             String type = column.getTypeName();
             Integer length = column.getLength();
@@ -291,17 +298,16 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
                 if (null != types && types.length>0) {
                     for (String tp : types) {
                         if (tp.equalsIgnoreCase(type)) {
-                            column.setLength(len);
-                            column.setParseLvl(0);
+                            column.resetLength(len);
                             break;
                         }
                     }
                 }else{
-                    column.setLength(len);
-                    column.setParseLvl(0);
+                    column.resetLength(len);
                 }
             }
         }
+        return this;
     }
 
     public Table group(String ... columns) {

@@ -934,6 +934,14 @@ public class Column extends TableAffiliation<Column> implements Serializable {
         }
         return precision;
     }
+    public Column resetLength(Integer length){
+        setLength(length);
+        setParseLvl(0);
+        if(null != originType) {
+            originType = originType.replace("(" + length + "", "(" + length);
+        }
+        return this;
+    }
     public Column setLength(Integer length) {
         if(setmap && null != update) {
             update.setLength(length);
