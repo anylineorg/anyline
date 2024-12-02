@@ -35,7 +35,7 @@ public enum DMTypeMetadataAlias implements TypeMetadataAlias {
 	DATE                          ("DATE"                           ,StandardTypeMetadata.DATE                          ,   1,   1,   1),
 	DATETIME                      ("DATETIME"                       ,StandardTypeMetadata.TIMESTAMP                     , "TIMESTAMP"                      , "TIMESTAMP({S})"                      , null   , null   , null   ,   1,   1,   2),
 	DECIMAL                       ("DECIMAL"                        ,StandardTypeMetadata.DECIMAL                       ,   1,   0,   0),
-	DOUBLE                        ("DOUBLE"                         ,StandardTypeMetadata.DOUBLE                        ,   1,   0,   0),
+	DOUBLE                        ("DOUBLE"                         ,StandardTypeMetadata.NUMERIC                       ,   1,   0,   0),
 	FLOAT                         ("FLOAT"                          ,StandardTypeMetadata.FLOAT                         ,   1,   2,   3),
 	IMAGE                         ("IMAGE"                          ,StandardTypeMetadata.IMAGE                         ,   1,   1,   1),
 	INT                           ("INT"                            ,StandardTypeMetadata.INT                           ,   1,   1,   1),
