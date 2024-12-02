@@ -298,20 +298,12 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
                 if (null != types && types.length>0) {
                     for (String tp : types) {
                         if (tp.equalsIgnoreCase(type)) {
-                            column.setLength(len);
-                            column.setParseLvl(0);
-                            if(null != column.originType) {
-                                column.originType = column.originType.replace("(" + length + "", "(" + len);
-                            }
+                            column.resetLength(len);
                             break;
                         }
                     }
                 }else{
-                    column.setLength(len);
-                    column.setParseLvl(0);
-                    if(null != column.originType) {
-                        column.originType = column.originType.replace("(" + length + "", "(" + len);
-                    }
+                    column.resetLength(len);
                 }
             }
         }
