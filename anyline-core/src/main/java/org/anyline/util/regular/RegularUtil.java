@@ -854,7 +854,7 @@ public class RegularUtil {
 		int end = txt.indexOf(foot);
 		int fr = begin;
 		int to = end;
-		if(fr > to){
+		if(fr > to || fr == -1){
 			return null;
 		}
 		while (true) {
