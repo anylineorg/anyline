@@ -1632,7 +1632,7 @@ public class DefaultService<E> implements AnylineService<E> {
      * @param pks pks
      * @return String
      */
-    protected String parsePrimaryKey(String src, List<String> pks) {
+    public String parsePrimaryKey(String src, List<String> pks) {
         if (src.endsWith(">")) {
             int fr = src.lastIndexOf("<");
             int to = src.lastIndexOf(">");
@@ -1651,7 +1651,7 @@ public class DefaultService<E> implements AnylineService<E> {
         return src;
     }
 
-    protected RunPrepare createRunPrepare(Table table) {
+    public RunPrepare createRunPrepare(Table table) {
         if(null == table) {
             return new SimplePrepare().disposable(true);
         }
@@ -1665,7 +1665,7 @@ public class DefaultService<E> implements AnylineService<E> {
 
         return prepare;
     }
-    protected RunPrepare createRunPrepare(String src) {
+    public RunPrepare createRunPrepare(String src) {
         RunPrepare prepare = null;
         if(BasicUtil.isEmpty(src)) {
             //有些数据库不根据表查询可以为空
