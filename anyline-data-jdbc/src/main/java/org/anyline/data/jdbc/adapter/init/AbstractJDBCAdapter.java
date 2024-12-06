@@ -28,6 +28,7 @@ import org.anyline.data.prepare.auto.AutoPrepare;
 import org.anyline.data.prepare.auto.init.DefaultTextPrepare;
 import org.anyline.data.run.*;
 import org.anyline.data.runtime.DataRuntime;
+import org.anyline.data.transaction.TransactionState;
 import org.anyline.entity.*;
 import org.anyline.entity.authorize.Privilege;
 import org.anyline.entity.authorize.Role;
@@ -44,6 +45,7 @@ import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.proxy.CacheProxy;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.proxy.InterceptorProxy;
+import org.anyline.proxy.TransactionProxy;
 import org.anyline.util.*;
 import org.anyline.util.encrypt.MD5Util;
 import org.anyline.util.regular.RegularUtil;
@@ -9209,13 +9211,13 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		if(null == random) {
 			random = random(runtime);
 		}
-		if(log.isInfoEnabled() &&ConfigStore.IS_LOG_SQL(configs)) {
-			log.info("{}[action:select]{}", random, run.log(action,ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
-		}
 		DataSet set = new DataSet();
 		set.setTable(table);
 		boolean exe = configs.execute();
 		if(!exe) {
+            if(log.isInfoEnabled() &&ConfigStore.IS_LOG_SQL(configs)) {
+                log.info("{}[action:select][跳过执行]{}", random, run.log(action,ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
+            }
 			return set;
 		}
 		//根据这一步中的JDBC结果集检测类型不准确,如:实际POINT 返回 GEOMETRY 如果要求准确 需要开启到自动检测
@@ -9225,11 +9227,25 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		if(!system &&ConfigStore.IS_AUTO_CHECK_METADATA(configs) && null != table) {
 			columns = columns(runtime, random, false, table, false);
 		}
+        TransactionState prepare_state = null;
 		try{
 			final DataRuntime rt = runtime;
 			final boolean[] process = {false};
+            //前置执行
+            List<RunPrepare> prepares = configs.prepares();
+            if(null != prepares && !prepares.isEmpty()){
+                prepare_state = TransactionProxy.start();
+                for(RunPrepare prepare:prepares){
+                    long fr = System.currentTimeMillis();
+                    Run r = buildQueryRun(runtime, prepare, configs, true, true);
+                    log.warn("{}[action:execute][前置命令][执行耗时:{}]{}", random, DateUtil.format(System.currentTimeMillis() - fr), r.log(ACTION.DML.SELECT, ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
+                    actuator.execute(this, runtime, random, configs, r);
+                }
+            }
+            if(log.isInfoEnabled() &&ConfigStore.IS_LOG_SQL(configs)) {
+                log.info("{}[action:select]{}", random, run.log(action,ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
+            }
 			set = actuator.select(this, runtime, random, system, action, table, configs, run, sql, values, columns);
-
 			LinkedHashMap<String,Column> metadatas = set.getMetadatas();
 			if(!system && (null == metadatas || metadatas.isEmpty())&&ConfigStore.IS_CHECK_EMPTY_SET_METADATA(configs)) {
 				metadatas.putAll(metadata(runtime, new DefaultTextPrepare(sql), false));
@@ -9266,8 +9282,15 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 				ex.setValues(values);
 				throw ex;
 			}
-
-		}
+		}finally {
+            if(null != prepare_state){
+                try {
+                    TransactionProxy.commit(prepare_state);
+                }catch (Exception ex){
+                    log.error("前置命令提交异常", ex);
+                }
+            }
+        }
 		return set;
 	}
 

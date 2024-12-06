@@ -1977,6 +1977,8 @@ public interface AnylineService<E>{
 	 */
 	List<Run> ddl(List<MetadataDiffer> differs);
 
+	RunPrepare createRunPrepare(Table table);
+	RunPrepare createRunPrepare(String src);
 	/* *****************************************************************************************************************
 	 *
 	 * 													metadata
