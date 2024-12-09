@@ -30,11 +30,11 @@ public class TableBuilder {
     private String footer = null;
     private String clazz = null;
     private List<String> fields = new ArrayList<>();
-    private List<String> unions = new ArrayList<>();//需要合并字段, 值相同的几行合并(如里相关列合并的情况下才会合并, 如前一列学校合并时, 后一列班级才有可能合并, 班级列名(学校列名, 其他列名))
+    private List<String> merges = new ArrayList<>();//需要合并字段, 值相同的几行合并(如里相关列合并的情况下才会合并, 如前一列学校合并时, 后一列班级才有可能合并, 班级列名(学校列名, 其他列名))
     private Map<String, Map<String, String>> styles = new HashMap<>();
-    private Map<String, String[]> unionRefs = new HashMap<>();
+    private Map<String, String[]> mergeRefs = new HashMap<>();
     private Map<String, Map<String, String>> options = new HashMap<>();   // 外键对应关系
-    private List<String> ignoreUnionValues = new ArrayList<>();         // 不参与合并的值(如一些空值)
+    private List<String> ignoreMergeValues = new ArrayList<>();         // 不参与合并的值(如一些空值)
     private String width = "100%";                                      // 整个表格宽度
     private String widthUnit = "px";                                    // 默认长度单位 px pt cm/厘米
     private String replaceEmpty = "";                                   // 遇到空值替换成
@@ -71,7 +71,7 @@ public class TableBuilder {
      */
     private boolean checkRefMerge(String field, int r, Object prevRow ) {
         boolean merge = true;
-        String[] refs = unionRefs.get(field);
+        String[] refs = mergeRefs.get(field);
         Object data = list[r];
         if(null != refs) {
             for (String ref:refs) {
@@ -87,7 +87,7 @@ public class TableBuilder {
                 if(null == curRefValue) {
                     curRefValue =replaceEmpty;
                 }
-                if(ignoreUnionValues.indexOf(curRefValue) != -1) {
+                if(ignoreMergeValues.indexOf(curRefValue) != -1) {
                     merge = false;
                     break;
                 }
@@ -116,7 +116,7 @@ public class TableBuilder {
         String value = map.get("value");
         map.put("checked", "1");
         int rowspan = 1;
-        if(null != unions && unions.contains(field)) {
+        if(null != merges && merges.contains(field)) {
             // 向上查看相同值
             int rr = r+1;
             Object data = list[r];
@@ -129,7 +129,7 @@ public class TableBuilder {
                 Map<String, String> next = cells[rr][c];
                 Object prevRow = list[rr];
                 String pvalue = next.get("value");
-                if (pvalue.equals(value) && ignoreUnionValues.indexOf(value) == -1) {
+                if (pvalue.equals(value) && ignoreMergeValues.indexOf(value) == -1) {
                     boolean refMerge = checkRefMerge(field, r, prevRow);   // 参考列是否已被合并
                     if (refMerge) {//参考列已合并 或没有参考列
                         map.put("merge", "1");  // 合并
@@ -339,17 +339,17 @@ public class TableBuilder {
     }
     private void parseUnion() {
         List<String> list = new ArrayList<>();
-        for(String union:unions) {
+        for(String union: merges) {
             if(union.contains("(")) {
                 union = union.trim();
                 String[] refs = union.substring(union.indexOf("(")+1, union.length()-1).split(",");
                 union = union.substring(0, union.indexOf("("));
-                unionRefs.put(union, refs);
+                mergeRefs.put(union, refs);
 
             }
             list.add(union);
         }
-        setUnions(list);
+        setMerges(list);
     }
 
     public Collection getDatas() {
@@ -431,22 +431,22 @@ public class TableBuilder {
         return this;
     }
 
-    public List<String> getUnions() {
-        return unions;
+    public List<String> getMerges() {
+        return merges;
     }
 
-    public TableBuilder setUnions(List<String> unions) {
-        this.unions = unions;
+    public TableBuilder setMerges(List<String> merges) {
+        this.merges = merges;
         return this;
     }
 
     public TableBuilder addUnions(String ... fields) {
-        if(null == unions) {
-            unions = new ArrayList<>();
+        if(null == merges) {
+            merges = new ArrayList<>();
         }
         for(String field:fields) {
-            if(!unions.contains(field)) {
-                unions.add(field);
+            if(!merges.contains(field)) {
+                merges.add(field);
             }
         }
         return this;
@@ -625,8 +625,8 @@ public class TableBuilder {
         return this;
     }
 
-    public List<String> getIgnoreUnionValues() {
-        return ignoreUnionValues;
+    public List<String> getIgnoreMergeValues() {
+        return ignoreMergeValues;
     }
 
     /**
@@ -634,8 +634,8 @@ public class TableBuilder {
      * @param values 不参合合并的值, 如空值
      * @return TableBuilder
      */
-    public TableBuilder setIgnoreUnionValues(List<String> values) {
-        this.ignoreUnionValues = values;
+    public TableBuilder setIgnoreMergeValues(List<String> values) {
+        this.ignoreMergeValues = values;
         return this;
     }
 
@@ -647,7 +647,7 @@ public class TableBuilder {
     public TableBuilder addIgnoreUnionValue(String ... values) {
         if(null != values) {
             for(String value:values) {
-                ignoreUnionValues.add(value);
+                ignoreMergeValues.add(value);
             }
         }
         return this;
