@@ -323,6 +323,7 @@ userService.querys(condition(true, "anyline根据约定自动生成的查询条�
   [【参考】](http://doc.anyline.org/s?id=p298pn6e9o1r5gv78acvic1e624c62387f51d08504f16eef5d4dd25719cf7844ce)
 
 - **异构数据库迁移同步**  
+  特别是信创环境，先要根据MySQL/Oracle/PG等的表结构生成国产数据库的表结构，然后再复制数据，这个过程中DDL/DML/数据类型都有差异。
   动态的数据结构可以灵活的适配多种不同的表, 需不需要反复的get/set    
   兼容多种数据库的DDL也可以方便的在不同类型的数据库中执行  
   [【核心代码示例(Mysql到Apache Ignite)】](http://doc.anyline.org/aa/08_3842)  
