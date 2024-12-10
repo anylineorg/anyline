@@ -185,7 +185,7 @@ public class TableBuilder {
         if(BasicUtil.isNotEmpty(width)) {
             table.setWidth(width);
         }
-        parseUnion();
+        parseMerge();
         table.setClazz(clazz);
         table.setHeader(header);
         if(null != header) {
@@ -337,17 +337,17 @@ public class TableBuilder {
         table.offset();
         return table;
     }
-    private void parseUnion() {
+    private void parseMerge() {
         List<String> list = new ArrayList<>();
-        for(String union: merges) {
-            if(union.contains("(")) {
-                union = union.trim();
-                String[] refs = union.substring(union.indexOf("(")+1, union.length()-1).split(",");
-                union = union.substring(0, union.indexOf("("));
-                mergeRefs.put(union, refs);
+        for(String merge: merges) {
+            if(merge.contains("(")) {
+                merge = merge.trim();
+                String[] refs = merge.substring(merge.indexOf("(")+1, merge.length()-1).split(",");
+                merge = merge.substring(0, merge.indexOf("("));
+                mergeRefs.put(merge, refs);
 
             }
-            list.add(union);
+            list.add(merge);
         }
         setMerges(list);
     }
@@ -440,7 +440,7 @@ public class TableBuilder {
         return this;
     }
 
-    public TableBuilder addUnions(String ... fields) {
+    public TableBuilder addMerges(String ... fields) {
         if(null == merges) {
             merges = new ArrayList<>();
         }
@@ -644,7 +644,7 @@ public class TableBuilder {
      * @param values 不参合合并的值, 如空值
      * @return TableBuilder
      */
-    public TableBuilder addIgnoreUnionValue(String ... values) {
+    public TableBuilder addIgnoreMergeValue(String ... values) {
         if(null != values) {
             for(String value:values) {
                 ignoreMergeValues.add(value);
