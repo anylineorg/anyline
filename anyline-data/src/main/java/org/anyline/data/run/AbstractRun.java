@@ -513,6 +513,8 @@ public abstract class AbstractRun implements Run {
 					this.orders = orders;
 					this.configs.setOrders(orders);
 				}
+				this.configs.addStaticValue(configs.getStaticValues());
+				this.configs.params(configs.params());
 			}
 		}
 	}
