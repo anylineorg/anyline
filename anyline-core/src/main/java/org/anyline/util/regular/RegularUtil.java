@@ -688,11 +688,23 @@ public class RegularUtil {
 				boolean paired = true;
 				if(end_s != -1) {
 					//检测是否是单标签
-					String chk_s = txt.substring(begin, end_s);
+					String chk_s = txt.substring(begin, end_s)
+						.replace("\"", "'")
+						.replace("”", "'")
+						.replace("‘", "'");
 					if (!chk_s.contains(">")) {
 						end = end_s;
 						foot = foot_s;
 						paired = false;
+					}else{
+						//<aol:if test='${total>10}' var='if1'/>
+						//或者>在引号内
+						chk_s = chk_s.substring(0, chk_s.lastIndexOf(">"));
+						if(BasicUtil.charCount(chk_s, "'")%2==1){
+							end = end_s;
+							foot = foot_s;
+							paired = false;
+						}
 					}
 				}
 				int fr = begin;
