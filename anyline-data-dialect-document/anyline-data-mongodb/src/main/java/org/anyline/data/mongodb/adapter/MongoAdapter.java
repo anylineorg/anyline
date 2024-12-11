@@ -533,7 +533,8 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
             }
             PageNavi navi = run.getPageNavi();
             if(null != navi) {
-                rows.skip((int)navi.getFirstRow()).limit(navi.getPageRows());
+                long limit = navi.getLastRow() - navi.getFirstRow() + 1;
+                rows.skip((int)navi.getFirstRow()).limit((int)limit);
             }
             for(MongoRow row:rows) {
                 set.add(row);

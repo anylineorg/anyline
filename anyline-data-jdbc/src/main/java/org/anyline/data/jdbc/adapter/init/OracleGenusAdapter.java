@@ -2790,11 +2790,10 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         runs.add(run);
         configs.and(Compare.LIKE_SIMPLE, "M.TABLE_NAME", query.getTableName());
         configs.and("M.OWNER", query.getSchemaName());
-        run.setOrders("M.TABLE_NAME");
+        run.setOrders("M.TABLE_NAME", "M.COLUMN_ID");
         if(null != configs) {
             run.setPageNavi(configs.getPageNavi());
         }
-
         return runs;
     }
 

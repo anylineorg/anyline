@@ -688,11 +688,23 @@ public class RegularUtil {
 				boolean paired = true;
 				if(end_s != -1) {
 					//检测是否是单标签
-					String chk_s = txt.substring(begin, end_s);
+					String chk_s = txt.substring(begin, end_s)
+						.replace("\"", "'")
+						.replace("”", "'")
+						.replace("‘", "'");
 					if (!chk_s.contains(">")) {
 						end = end_s;
 						foot = foot_s;
 						paired = false;
+					}else{
+						//<aol:if test='${total>10}' var='if1'/>
+						//或者>在引号内
+						chk_s = chk_s.substring(0, chk_s.lastIndexOf(">"));
+						if(BasicUtil.charCount(chk_s, "'")%2==1){
+							end = end_s;
+							foot = foot_s;
+							paired = false;
+						}
 					}
 				}
 				int fr = begin;
@@ -838,6 +850,39 @@ public class RegularUtil {
 			return null;
 		}
 	}
+
+	/**
+	 * 标签头,主要用来识别标签属性中有&lt;&gt;的情况
+	 * @param txt 标签全文
+	 * @return head
+	 */
+	public static String fetchTagHead(String txt){
+		String head = "";
+		txt = txt.replace("\"", "'");
+		int fr = txt.indexOf("<");
+		if(fr == -1){
+			return head;
+		}
+		int to = fr;
+		while (true){
+			String stop = ">";
+			int chk = txt.indexOf(stop, to + 1);
+			if(chk == -1){
+				stop = "/>";
+				chk = txt.indexOf(stop, to + 1);
+			}
+			if(chk == -1){
+				return head;
+			}
+			to = chk;
+			String sub = txt.substring(fr, to+stop.length());
+			int cnt = BasicUtil.charCount(sub, "'");
+			if(cnt%2 == 0){
+				return sub;
+			}
+		}
+    }
+
 	/**
 	 * 标签体
 	 * @param txt 全文
