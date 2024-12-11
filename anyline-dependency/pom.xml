@@ -89,7 +89,7 @@
 		<alipay.version>4.16.57.ALL</alipay.version>
 		<druid.version>1.1.8</druid.version>
 		<jsch.version>0.1.55</jsch.version>
-		<apache.struts.version>2.5.30</apache.struts.version>
+		<apache.struts.version>6.4.0</apache.struts.version>
 		<persistence.version>1.0.2</persistence.version>
 		<jpush.client.version>3.5.5</jpush.client.version>
 		<jpush.version>1.1.11</jpush.version>
