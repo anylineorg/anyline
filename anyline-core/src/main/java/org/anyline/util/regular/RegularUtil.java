@@ -838,6 +838,39 @@ public class RegularUtil {
 			return null;
 		}
 	}
+
+	/**
+	 * 标签头,主要用来识别标签属性中有&lt;&gt;的情况
+	 * @param txt 标签全文
+	 * @return head
+	 */
+	public static String fetchTagHead(String txt){
+		String head = "";
+		txt = txt.replace("\"", "'");
+		int fr = txt.indexOf("<");
+		if(fr == -1){
+			return head;
+		}
+		int to = fr;
+		while (true){
+			String stop = ">";
+			int chk = txt.indexOf(stop, to + 1);
+			if(chk == -1){
+				stop = "/>";
+				chk = txt.indexOf(stop, to + 1);
+			}
+			if(chk == -1){
+				return head;
+			}
+			to = chk;
+			String sub = txt.substring(fr, to+stop.length());
+			int cnt = BasicUtil.charCount(sub, "'");
+			if(cnt%2 == 0){
+				return sub;
+			}
+		}
+    }
+
 	/**
 	 * 标签体
 	 * @param txt 全文
