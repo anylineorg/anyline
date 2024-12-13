@@ -841,6 +841,15 @@ public class BasicUtil {
 		return count;
 	}
 
+	/**
+	 * 检测是否完整String 没有拆破"" ''
+	 * 一般是用来判断根据标识符拆分后 前缀有没有不成对的引号用来判断 标记符有没有在引号内
+	 * @param text 一般是前缀
+	 * @return boolean
+	 */
+	public static boolean isFullString(String text){
+		return BasicUtil.charCount(text, "'")%2==0 && BasicUtil.charCount(text, "\"")%2==0;
+	}
 	public static Object fetch(Collection<?> items, String key, Object value) {
 		if (null == items) {
 			return null;
