@@ -784,6 +784,15 @@ public class RegularUtil {
 	}
 
 	/**
+	 * 是否是完整标签 有开始和结束或自闭合
+	 * @param txt tag
+	 * @return boolean
+	 */
+	public static boolean isFullTag(String txt){
+		List<String> tags = fetchOutTag(txt);
+		return !tags.isEmpty();
+	}
+	/**
 	 * 取出所有属性值
 	 * 0全文  1:属性name 2:引号('|") 3:属性值
 	 * fetchAttributeValues(txt, "id");
