@@ -16,16 +16,30 @@
 
 package org.anyline.data.jdbc.oracle;
 
+import oracle.sql.BLOB;
 import oracle.sql.CLOB;
 import org.anyline.adapter.DataReader;
 
 public enum OracleReader {
-    PointReader(new Object[]{CLOB.class}, new DataReader() {
+    ClobReader(new Object[]{CLOB.class}, new DataReader() {
         @Override
         public Object read(Object value) {
             if(value instanceof CLOB) {
                 try {
                     value = ((CLOB) value).stringValue();
+                }catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            return value;
+        }
+    }),
+    BlobReader(new Object[]{BLOB.class}, new DataReader() {
+        @Override
+        public Object read(Object value) {
+            if(value instanceof BLOB) {
+                try {
+                    value = ((BLOB) value).getBytes();
                 }catch (Exception e) {
                     e.printStackTrace();
                 }
