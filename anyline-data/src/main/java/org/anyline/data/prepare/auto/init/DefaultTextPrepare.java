@@ -22,15 +22,22 @@ import org.anyline.data.run.Run;
 import org.anyline.data.run.TextRun;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.DataRow;
+import org.anyline.entity.GroupStore;
 import org.anyline.entity.OriginRow;
+import org.anyline.util.BasicUtil;
 
 public class DefaultTextPrepare extends DefaultAutoPrepare implements TextPrepare {
-
+	private String up;
+	private String order;
+	private String having;
+	private String group;
+	private String where;
 	public DefaultTextPrepare(String text) {
 		super(); 
-		this.text = text; 
+		this.text = text;
 		chain = new DefaultAutoConditionChain();
-	} 
+		split();
+	}
 	public String getText() {
 		return this.text; 
 	}
@@ -40,6 +47,19 @@ public class DefaultTextPrepare extends DefaultAutoPrepare implements TextPrepar
 		TextRun run = new TextRun();
 		run.setPrepare(this);
 		run.setRuntime(runtime);
+		if(null != order){
+			run.setOrders(orders);
+		}
+		if(null != group){
+			GroupStore groups = run.getGroups();
+			groups.add(group);
+		}
+		if(null != having){
+			run.having(having);
+		}
+		if(null != where){
+			run.addCondition(where);
+		}
 		return run;
 	}
 
@@ -56,4 +76,27 @@ public class DefaultTextPrepare extends DefaultAutoPrepare implements TextPrepar
 		return this;
 	}
 
+	private void split(){
+		text = text.replaceAll("\\s{2,}", " ");
+		up = text.toUpperCase();
+		order = split("ORDER BY");
+		having = split("HAVING ");
+		group = split("GROUP BY");
+		where = split("WHERE ");
+	}
+	private String split(String type){
+		int idx = up.lastIndexOf(type);
+		if(idx != -1) {
+			String chk = up.substring(idx);
+			if (BasicUtil.charCount(chk, "(") == BasicUtil.charCount(chk, ")")) {
+				if (BasicUtil.charCount(chk, "'")%2 == 0) {
+					up = up.substring(0, idx);
+					String result = text.substring(idx + type.length());
+					text = text.substring(0, idx);
+					return result;
+				}
+			}
+		}
+		return null;
+	}
 }
