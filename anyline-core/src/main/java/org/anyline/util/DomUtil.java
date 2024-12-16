@@ -91,8 +91,22 @@ public class DomUtil {
     public static List<Element> elements(Element root, List<String> tags) {
         return elements(root, tags, true);
     }
+
+    /**
+     * 根据标签name搜索element
+     * @param root 上级节点
+     * @param tags name 多个以,分隔
+     * @return list
+     */
     public static List<Element> elements(Element root, String tags) {
         return elements(root, tags, true);
+    }
+    public static List<Element> elements(List<Element> roots, String tags) {
+        List<Element> elements = new ArrayList<>();
+        for(Element root:roots){
+            elements.addAll(elements(root, tags));
+        }
+        return elements;
     }
 
     /**
