@@ -3566,7 +3566,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         if(prepare instanceof XMLPrepare) {
             run = new XMLRun();
         }else if(prepare instanceof TextPrepare) {
-            run = new TextRun();
+            run = prepare.build(runtime);
         }
         if(null != run) {
             run.setConfigStore(configs);
