@@ -60,6 +60,9 @@ public interface DataSourceHolder {
 	 * @param holder holder
 	 */
 	static void register(Object check, DataSourceHolder holder) {
+		if(check instanceof String){
+			check = ((String) check).toUpperCase();
+		}
 		instances.put(check, holder);
 	}
 
@@ -100,7 +103,7 @@ public interface DataSourceHolder {
 	 * @return DataSourceHolder
 	 */
 	static DataSourceHolder instance(String check) {
-		DataSourceHolder holder = instances.get(check);
+		DataSourceHolder holder = instances.get(check.toUpperCase());
 		if(null == holder) {
 			try {
 				DataRuntime runtime = RuntimeHolder.runtime(check);
