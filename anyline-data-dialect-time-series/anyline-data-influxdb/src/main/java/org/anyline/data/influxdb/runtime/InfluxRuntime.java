@@ -76,14 +76,6 @@ public class InfluxRuntime extends AbstractRuntime implements DataRuntime {
         return client;
     }
 
-    @Override
-    public void setAdapterKey(String adapter) {
-    }
-
-    @Override
-    public String getAdapterKey() {
-        return null;
-    }
 
     public InfluxRuntime(String key, InfluxDBClient client, DriverAdapter adapter) {
         setKey(key);

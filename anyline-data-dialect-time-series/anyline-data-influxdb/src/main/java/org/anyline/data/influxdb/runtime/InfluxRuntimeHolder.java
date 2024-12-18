@@ -31,7 +31,6 @@ import org.anyline.data.runtime.init.AbstractRuntimeHolder;
 import org.anyline.service.init.DefaultService;
 import org.anyline.util.ConfigTable;
 
-import javax.sql.DataSource;
 import java.util.Map;
 
 public class InfluxRuntimeHolder extends AbstractRuntimeHolder {
@@ -79,7 +78,8 @@ public class InfluxRuntimeHolder extends AbstractRuntimeHolder {
      * @param datasource 数据源bean id
      */
     public DataRuntime reg(String key, String datasource) {
-        return null;
+        InfluxDBClient ds = ConfigTable.environment().getBean(datasource, InfluxDBClient.class);
+        return reg(key, ds, null);
     }
 
     public DataRuntime reg(String key, InfluxDBClient client) {

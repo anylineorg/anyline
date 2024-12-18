@@ -41,6 +41,9 @@ public class InfluxDataSourceHolder extends AbstractDataSourceHolder {
 
 	public InfluxDataSourceHolder() {
 		DataSourceHolder.register(InfluxDBClient.class, this);
+		DataSourceHolder.register("InfluxDB", this);
+		DataSourceHolder.register("Influx", this);
+		DataSourceHolder.register(DatabaseType.InfluxDB, this);
 	}
 
 	public String reg(String key, String prefix) {
@@ -77,7 +80,25 @@ public class InfluxDataSourceHolder extends AbstractDataSourceHolder {
 
 	@Override
 	public String runtime(String key, String datasource, boolean override) throws Exception {
-		return null;
+		if(null != datasource) {
+			DataSourceHolder.check(key, override);
+			DataRuntime runtime = InfluxRuntimeHolder.instance().reg(key, datasource);
+
+			if(null != runtime) {
+				Map<String, Object> param = params.get(key);
+				if(null != param) {
+					runtime.setDriver(param.get("driver") + "");
+					String url = param.get("url") + "";
+					runtime.setUrl(url);
+					String adapter = param.get("adapter")+"";
+					if(BasicUtil.isEmpty(adapter)) {
+						adapter = org.anyline.data.util.DataSourceUtil.parseAdapterKey(url);
+					}
+					runtime.setAdapterKey(adapter);
+				}
+			}
+		}
+		return datasource;
 	}
 
 	@Override
@@ -96,7 +117,7 @@ public class InfluxDataSourceHolder extends AbstractDataSourceHolder {
 			}
 			String adapter = value(prefix, params, "adapter", String.class, null);
 			//只解析Influx系列
-			if(null == adapter || !adapter.startsWith("influx")) {
+			if(null == adapter || !adapter.toLowerCase().contains("influx")) {
 				return null;
 			}
 
@@ -114,6 +135,7 @@ public class InfluxDataSourceHolder extends AbstractDataSourceHolder {
 			if(BasicUtil.isNotEmpty(bucket)) {
 				builder.bucket(bucket);
 			}
+			DataSourceHolder.params.put(key, params);
 			InfluxDBClientOptions options = builder.build();
 			InfluxDBClient client = InfluxDBClientFactory.create(options);
 			InfluxRuntime runtime = (InfluxRuntime)InfluxRuntimeHolder.instance().reg(key, client);
