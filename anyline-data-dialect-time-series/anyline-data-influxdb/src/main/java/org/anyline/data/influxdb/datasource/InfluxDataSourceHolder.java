@@ -126,18 +126,24 @@ public class InfluxDataSourceHolder extends AbstractDataSourceHolder {
 			String bucket = value(prefix, params, "bucket,database", String.class, null);
 			String user = value(prefix, params, "user,username,userName", String.class, null);
 			String password = value(prefix, params, "password", String.class, null);
-			InfluxDBClientOptions.Builder  builder = InfluxDBClientOptions.builder()
-				.url(url)
-				.authenticateToken(token.toCharArray());
-			if(BasicUtil.isNotEmpty(org)) {
-				builder.org(org);
+			InfluxDBClient client = null;
+			if(BasicUtil.isNotEmpty(password)){
+				client = InfluxDBClientFactory.create(url, user, password.toCharArray());
+			}else {
+				InfluxDBClientOptions.Builder builder = InfluxDBClientOptions.builder()
+					.url(url)
+					.authenticateToken(token.toCharArray());
+				if (BasicUtil.isNotEmpty(org)) {
+					builder.org(org);
+				}
+				if (BasicUtil.isNotEmpty(bucket)) {
+					builder.bucket(bucket);
+				}
+				InfluxDBClientOptions options = builder.build();
+				client = InfluxDBClientFactory.create(options);
 			}
-			if(BasicUtil.isNotEmpty(bucket)) {
-				builder.bucket(bucket);
-			}
+
 			DataSourceHolder.params.put(key, params);
-			InfluxDBClientOptions options = builder.build();
-			InfluxDBClient client = InfluxDBClientFactory.create(options);
 			InfluxRuntime runtime = (InfluxRuntime)InfluxRuntimeHolder.instance().reg(key, client);
 			runtime.bucket(bucket);
 			runtime.token(token);
