@@ -27,6 +27,7 @@ import org.anyline.entity.*;
 import org.anyline.exception.NotSupportException;
 import org.anyline.metadata.*;
 import org.anyline.metadata.refer.MetadataFieldRefer;
+import org.anyline.metadata.refer.MetadataReferHolder;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.util.BasicUtil;
@@ -46,6 +47,23 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 		super();
 		delimiterFr = "`";
 		delimiterTo = "`";
+
+		MetadataReferHolder.reg(type(), TypeMetadata.CATEGORY.CHAR, new TypeMetadata.Refer("COLUMN_LENGTH", null, null, 0, 1, 1));
+		MetadataReferHolder.reg(type(), TypeMetadata.CATEGORY.TEXT, new TypeMetadata.Refer("COLUMN_LENGTH", null, null, 1, 1, 1));
+		MetadataReferHolder.reg(type(), TypeMetadata.CATEGORY.BOOLEAN, new TypeMetadata.Refer("COLUMN_LENGTH", null, null, 1,1, 1));
+		MetadataReferHolder.reg(type(), TypeMetadata.CATEGORY.BYTES, new TypeMetadata.Refer("COLUMN_LENGTH", null, null, 0, 1, 1));
+		MetadataReferHolder.reg(type(), TypeMetadata.CATEGORY.BLOB, new TypeMetadata.Refer("COLUMN_LENGTH", null, null, 1,1,1));
+		MetadataReferHolder.reg(type(), TypeMetadata.CATEGORY.INT, new TypeMetadata.Refer("COLUMN_LENGTH", "DATA_PRECISION", null, 1, 1, 1));
+		MetadataReferHolder.reg(type(), TypeMetadata.CATEGORY.FLOAT, new TypeMetadata.Refer("COLUMN_LENGTH", "DATA_PRECISION", "DATA_SCALE", 1, 0, 0));
+		MetadataReferHolder.reg(type(), TypeMetadata.CATEGORY.DATE, new TypeMetadata.Refer("COLUMN_LENGTH", "DATA_PRECISION", "DATA_SCALE", 1, 1, 1));
+		MetadataReferHolder.reg(type(), TypeMetadata.CATEGORY.TIME, new TypeMetadata.Refer("COLUMN_LENGTH", "DATA_PRECISION", "DATA_SCALE", 1, 1, 1));
+		MetadataReferHolder.reg(type(), TypeMetadata.CATEGORY.DATETIME, new TypeMetadata.Refer("COLUMN_LENGTH", "DATA_PRECISION", "DATA_SCALE", 1, 1, 2));
+		MetadataReferHolder.reg(type(), TypeMetadata.CATEGORY.TIMESTAMP, new TypeMetadata.Refer("COLUMN_LENGTH", "DATA_PRECISION", "DATA_SCALE", 1, 1, 2));
+		MetadataReferHolder.reg(type(), TypeMetadata.CATEGORY.INTERVAL, new TypeMetadata.Refer("COLUMN_LENGTH", "DATA_PRECISION", "DATA_SCALE", 1, 2, 2));
+		MetadataReferHolder.reg(type(), TypeMetadata.CATEGORY.COLLECTION, new TypeMetadata.Refer("COLUMN_LENGTH", null, null, 1, 1, 1));
+		MetadataReferHolder.reg(type(), TypeMetadata.CATEGORY.GEOMETRY, new TypeMetadata.Refer("COLUMN_LENGTH", null, null, 1, 1, 1));
+		MetadataReferHolder.reg(type(), TypeMetadata.CATEGORY.OTHER, new TypeMetadata.Refer("COLUMN_LENGTH", null, null, 1, 1, 1));
+
 		for (HiveTypeMetadataAlias alias: HiveTypeMetadataAlias.values()) {
 			reg(alias);
 			alias(alias.name(), alias.standard());
@@ -2266,7 +2284,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		Run run = new SimpleRun(runtime, configs);
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();
-		builder.append("SELECT * FROM SYSTEM.COLUMNS_V");
+		builder.append("SELECT * FROM SYSTEM.COLUMNS_V ORDER BY COLUMN_ID ASC");
 		configs.and(Compare.LIKE_SIMPLE, "TABLE_NAME", query.getTableName());
 		configs.and("DATABASE_NAME", query.getSchemaName());
 
@@ -2303,6 +2321,9 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		refer.map(Column.FIELD_NULLABLE, "NULLABLE");
 		refer.map(Column.FIELD_PRIMARY_CHECK, "UNIQUE_CONSTRAINT");
 		refer.map(Column.FIELD_LENGTH, "COLUMN_LENGTH");
+		refer.map(Column.FIELD_POSITION, "COLUMN_ID");
+		refer.map(Column.FIELD_CATALOG, "");//忽略
+		refer.map(Column.FIELD_COLLATE, "");//忽略
 		return refer;
 	}
 	/**
