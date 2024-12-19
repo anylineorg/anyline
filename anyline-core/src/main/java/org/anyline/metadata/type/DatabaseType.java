@@ -233,7 +233,7 @@ public enum DatabaseType implements Serializable {
         Infinispan            ("Infinispan"                                , DatabaseOrigin.None       , KEY_CASE.SRC   , 900  , null, null                , ""                            ),
         InfiniteGraph         ("InfiniteGraph"                             , DatabaseOrigin.None       , KEY_CASE.SRC   , 722  , null, null                , ""                            ),
         InfinityDB            ("InfinityDB"                                , DatabaseOrigin.None       , KEY_CASE.SRC   , 627  , null, null                , ""                            ),
-        InfluxDB              ("InfluxDB"                                  , DatabaseOrigin.None       , KEY_CASE.SRC   , 971  , null, null                , "jdbc:influxdb://{host}:{port}/{database}"),
+        InfluxDB              ("InfluxDB"                                  , DatabaseOrigin.None       , KEY_CASE.SRC   , 971  , null, null                , ""),
         Infobright            ("Infobright"                                , DatabaseOrigin.None       , KEY_CASE.SRC   , 834  , null, null                , ""                            ),
         Informix              ("Informix"                                  , DatabaseOrigin.None       , KEY_CASE.SRC   , 965  , null, "com.informix.jdbc.IfxDriver", "jdbc:informix-sqli://{host}:{port}/{database}:INFORMIXSERVER={server}"),
         Ingres                ("Ingres"                                    , DatabaseOrigin.None       , KEY_CASE.SRC   , 926  , null, null                , ""                            ),
