@@ -27,6 +27,7 @@ import org.anyline.entity.*;
 import org.anyline.exception.NotSupportException;
 import org.anyline.metadata.*;
 import org.anyline.metadata.refer.MetadataFieldRefer;
+import org.anyline.metadata.refer.MetadataReferHolder;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.util.BasicUtil;
@@ -46,6 +47,23 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 		super();
 		delimiterFr = "`";
 		delimiterTo = "`";
+
+		MetadataReferHolder.reg(type(), TypeMetadata.CATEGORY.CHAR, new TypeMetadata.Refer("COLUMN_LENGTH", null, null, 0, 1, 1));
+		MetadataReferHolder.reg(type(), TypeMetadata.CATEGORY.TEXT, new TypeMetadata.Refer("COLUMN_LENGTH", null, null, 1, 1, 1));
+		MetadataReferHolder.reg(type(), TypeMetadata.CATEGORY.BOOLEAN, new TypeMetadata.Refer("COLUMN_LENGTH", null, null, 1,1, 1));
+		MetadataReferHolder.reg(type(), TypeMetadata.CATEGORY.BYTES, new TypeMetadata.Refer("COLUMN_LENGTH", null, null, 0, 1, 1));
+		MetadataReferHolder.reg(type(), TypeMetadata.CATEGORY.BLOB, new TypeMetadata.Refer("COLUMN_LENGTH", null, null, 1,1,1));
+		MetadataReferHolder.reg(type(), TypeMetadata.CATEGORY.INT, new TypeMetadata.Refer("COLUMN_LENGTH", "DATA_PRECISION", null, 1, 1, 1));
+		MetadataReferHolder.reg(type(), TypeMetadata.CATEGORY.FLOAT, new TypeMetadata.Refer("COLUMN_LENGTH", "DATA_PRECISION", "DATA_SCALE", 1, 0, 0));
+		MetadataReferHolder.reg(type(), TypeMetadata.CATEGORY.DATE, new TypeMetadata.Refer("COLUMN_LENGTH", "DATA_PRECISION", "DATA_SCALE", 1, 1, 1));
+		MetadataReferHolder.reg(type(), TypeMetadata.CATEGORY.TIME, new TypeMetadata.Refer("COLUMN_LENGTH", "DATA_PRECISION", "DATA_SCALE", 1, 1, 1));
+		MetadataReferHolder.reg(type(), TypeMetadata.CATEGORY.DATETIME, new TypeMetadata.Refer("COLUMN_LENGTH", "DATA_PRECISION", "DATA_SCALE", 1, 1, 2));
+		MetadataReferHolder.reg(type(), TypeMetadata.CATEGORY.TIMESTAMP, new TypeMetadata.Refer("COLUMN_LENGTH", "DATA_PRECISION", "DATA_SCALE", 1, 1, 2));
+		MetadataReferHolder.reg(type(), TypeMetadata.CATEGORY.INTERVAL, new TypeMetadata.Refer("COLUMN_LENGTH", "DATA_PRECISION", "DATA_SCALE", 1, 2, 2));
+		MetadataReferHolder.reg(type(), TypeMetadata.CATEGORY.COLLECTION, new TypeMetadata.Refer("COLUMN_LENGTH", null, null, 1, 1, 1));
+		MetadataReferHolder.reg(type(), TypeMetadata.CATEGORY.GEOMETRY, new TypeMetadata.Refer("COLUMN_LENGTH", null, null, 1, 1, 1));
+		MetadataReferHolder.reg(type(), TypeMetadata.CATEGORY.OTHER, new TypeMetadata.Refer("COLUMN_LENGTH", null, null, 1, 1, 1));
+
 		for (HiveTypeMetadataAlias alias: HiveTypeMetadataAlias.values()) {
 			reg(alias);
 			alias(alias.name(), alias.standard());
@@ -57,7 +75,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 			reg(reader.supports(), reader.reader());
 		}
 	}
-	
+
 	private String delimiter;
 
 	/* *****************************************************************************************************************
@@ -503,7 +521,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 * [命令执行]
 	 * DataSet select(DataRuntime runtime, String random, boolean system, String table, ConfigStore configs, Run run)
 	 * List<Map<String, Object>> maps(DataRuntime runtime, String random, ConfigStore configs, Run run)
-	 * Map<String, Object> map(DataRuntime runtime, String random, ConfigStore configs, Run run) 
+	 * Map<String, Object> map(DataRuntime runtime, String random, ConfigStore configs, Run run)
 	 * DataRow sequence(DataRuntime runtime, String random, boolean next, String ... names)
 	 * List<Map<String, Object>> process(DataRuntime runtime, List<Map<String, Object>> list)
 	 ******************************************************************************************************************/
@@ -835,7 +853,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 * Run buildExecuteRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions)
 	 * void fillExecuteContent(DataRuntime runtime, Run run)
 	 * [命令执行]
-	 * long execute(DataRuntime runtime, String random, ConfigStore configs, Run run) 
+	 * long execute(DataRuntime runtime, String random, ConfigStore configs, Run run)
 	 ******************************************************************************************************************/
 
 	/**
@@ -1658,7 +1676,21 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 */
 	@Override
 	public List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Table query, int types, ConfigStore configs) throws Exception {
-		return super.buildQueryTablesRun(runtime, greedy, query, types, configs);
+		List<Run> runs = new ArrayList();
+		Run run = new SimpleRun(runtime, configs);
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
+		builder.append("SELECT * FROM SYSTEM.TABLES_V");
+		configs.and("DATABASE_NAME", query.getSchemaName());
+		configs.and(Compare.LIKE_SIMPLE, "TABLE_NAME", query.getName());
+		//
+//		List<String> tps = this.names(Table.types(types));
+//		if (tps.isEmpty()) {
+//			tps.add("BASE TABLE");
+//		}
+//
+//		configs.in("TABLE_TYPE", tps);
+		return runs;
 	}
 
 	/**
@@ -1668,7 +1700,13 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 */
 	@Override
 	public MetadataFieldRefer initTableFieldRefer() {
-		return super.initTableFieldRefer();
+		MetadataFieldRefer refer = new MetadataFieldRefer(Table.class);
+		refer.map(Table.FIELD_NAME, "TABLE_NAME");
+		refer.map(Table.FIELD_SCHEMA, "DATABASE_NAME");
+		refer.map(Table.FIELD_CREATE_TIME, "CREATE_TIME");
+		refer.map(Table.FIELD_TYPE, "TABLE_TYPE");
+		refer.map(Table.FIELD_COMMENT, "COMMENTSTRING");
+		return refer;
 	}
 	/**
 	 * table[命令合成]<br/>
@@ -2243,12 +2281,13 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 */
 	@Override
 	public List<Run> buildQueryColumnsRun(DataRuntime runtime,  boolean metadata, Column query, ConfigStore configs) throws Exception { List<Run> runs = new ArrayList<>();
-		Table table = query.getTable();
 		Run run = new SimpleRun(runtime, configs);
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();
-		builder.append("desc ");
-		name(runtime, builder, table);
+		builder.append("SELECT * FROM SYSTEM.COLUMNS_V ORDER BY COLUMN_ID ASC");
+		configs.and(Compare.LIKE_SIMPLE, "TABLE_NAME", query.getTableName());
+		configs.and("DATABASE_NAME", query.getSchemaName());
+
 		return runs;
 	}
 
@@ -2273,9 +2312,18 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	@Override
 	public MetadataFieldRefer initColumnFieldRefer() {
 		MetadataFieldRefer refer = new MetadataFieldRefer(Column.class);
-		refer.map(Column.FIELD_NAME, "COL_NAME");
-		refer.map(Column.FIELD_TYPE, "DATA_TYPE");
-		refer.map(Column.FIELD_COMMENT ,"COMMENT");
+		refer.map(Column.FIELD_NAME, "COLUMN_NAME");
+		refer.map(Column.FIELD_TYPE, "COLUMN_TYPE");
+		refer.map(Column.FIELD_TABLE, "TABLE_NAME");
+		refer.map(Column.FIELD_SCHEMA, "DATABASE_NAME");
+		refer.map(Column.FIELD_COMMENT, "COMMENTSTRING");
+		refer.map(Column.FIELD_DEFAULT_VALUE, "DEFAULT_VALUE");
+		refer.map(Column.FIELD_NULLABLE, "NULLABLE");
+		refer.map(Column.FIELD_PRIMARY_CHECK, "UNIQUE_CONSTRAINT");
+		refer.map(Column.FIELD_LENGTH, "COLUMN_LENGTH");
+		refer.map(Column.FIELD_POSITION, "COLUMN_ID");
+		refer.map(Column.FIELD_CATALOG, "");//忽略
+		refer.map(Column.FIELD_COLLATE, "");//忽略
 		return refer;
 	}
 	/**
@@ -3543,7 +3591,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		return super.rename(runtime, origin, name);
 	}
 
-	
+
 
 	/**
 	 * table[命令合成]<br/>
@@ -3906,7 +3954,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		}
 		return builder;
 	}
-	
+
 	/**
 	 * table[命令合成-子流程]<br/>
 	 * 数据模型
