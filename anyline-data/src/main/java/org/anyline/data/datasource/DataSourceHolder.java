@@ -203,20 +203,20 @@ public interface DataSourceHolder {
 	static String reg(String key, Map<String, Object> param, DatabaseType type, boolean override) throws Exception {
 		DataSourceHolder instance = null;
 
-		if(null != type) {
-			instance = instance(type);
-		}
 		if(null == instance) {
-			instance = instance(BeanUtil.value(param, "url", DataSourceKeyMap.maps, String.class, null));
+			instance = instance(BeanUtil.value(param, "adapter", DataSourceKeyMap.maps, String.class, null));
+		}
+		if(null == instance && null != type) {
+			instance = instance(type);
 		}
 		if(null == instance) {
 			instance = instance(BeanUtil.value(param, "driver", DataSourceKeyMap.maps, String.class, null));
 		}
 		if(null == instance) {
-			instance = instance(BeanUtil.value(param, "adapter", DataSourceKeyMap.maps, String.class, null));
+			instance = instance(BeanUtil.value(param, "type", DataSourceKeyMap.maps, String.class, null));
 		}
 		if(null == instance) {
-			instance = instance(BeanUtil.value(param, "type", DataSourceKeyMap.maps, String.class, null));
+			instance = instance(BeanUtil.value(param, "url", DataSourceKeyMap.maps, String.class, null));
 		}
 		if(!param.containsKey("adapter") && null != type){
 			param.put("adapter", type.name());
