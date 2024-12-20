@@ -37,8 +37,13 @@ public class DomUtil {
      * @param tags 标签名(不含namespace)
      * @return Element
      */
-    public static Element element(Element root, List<String> tags) {
+    public static Element element(boolean shelf, Element root, List<String> tags) {
         Element result = null;
+        if(shelf){
+            if (tags.contains(root.getName())) {
+                return root;
+            }
+        }
         Iterator<Element> it = root.elementIterator();
         while(it.hasNext() && null == result) {
             Element e= it.next();
@@ -58,8 +63,8 @@ public class DomUtil {
      * @param tags 标签名(不含namespace)
      * @return Element
      */
-    public static Element element(Element root, String tags) {
-        return element(root, BeanUtil.array2list(tags.split(",")));
+    public static Element element(boolean shelf, Element root, String tags) {
+        return element(shelf, root, BeanUtil.array2list(tags.split(",")));
     }
 
     /**
@@ -69,8 +74,13 @@ public class DomUtil {
      * @param recursion 递归查询子类
      * @return List
      */
-    public static List<Element> elements(Element root, List<String> tags, boolean recursion) {
-        List<Element> list = new ArrayList<Element>();
+    public static List<Element> elements(boolean shelf, Element root, List<String> tags, boolean recursion) {
+        List<Element> list = new ArrayList<>();
+        if(shelf){
+            if (tags.contains(root.getName())) {
+                list.add(root);
+            }
+        }
         Iterator<Element> it = root.elementIterator();
         while(it.hasNext()) {
             Element e= it.next();
@@ -85,11 +95,66 @@ public class DomUtil {
         return list;
     }
 
+    public static List<Element> elements(boolean shelf, Element root, String tags, boolean recursion) {
+        return elements(shelf, root, BeanUtil.array2list(tags.split(",")), recursion);
+    }
+    public static List<Element> elements(boolean shelf, Element root, List<String> tags) {
+        return elements(shelf, root, tags, true);
+    }
+
+    /**
+     * 根据标签name搜索element
+     * @param root 上级节点
+     * @param tags name 多个以,分隔
+     * @return list
+     */
+    public static List<Element> elements(boolean shelf, Element root, String tags) {
+        return elements(shelf, root, tags, true);
+    }
+    public static List<Element> elements(boolean shelf, List<Element> roots, String tags) {
+        List<Element> elements = new ArrayList<>();
+        for(Element root:roots){
+            elements.addAll(elements(shelf, root, tags));
+        }
+        return elements;
+    }
+
+    /**
+     * 根据标签name搜索element
+     * @param root 根节点
+     * @param tags 标签名(不含namespace)
+     * @return Element
+     */
+    public static Element element(Element root, List<String> tags) {
+        return element(false, root, tags);
+    }
+
+    /**
+     * 根据标签name搜索element
+     * @param root 根节点
+     * @param tags 标签名(不含namespace)
+     * @return Element
+     */
+    public static Element element(Element root, String tags) {
+        return element(false, root, tags);
+    }
+
+    /**
+     * 根据标签name搜索element
+     * @param root 根节点
+     * @param tags 标签名(不含namespace)
+     * @param recursion 递归查询子类
+     * @return List
+     */
+    public static List<Element> elements(Element root, List<String> tags, boolean recursion) {
+        return elements(false, root, tags, recursion);
+    }
+
     public static List<Element> elements(Element root, String tags, boolean recursion) {
-        return elements(root, BeanUtil.array2list(tags.split(",")), recursion);
+        return elements(false, root, tags, recursion);
     }
     public static List<Element> elements(Element root, List<String> tags) {
-        return elements(root, tags, true);
+        return elements(false, root, tags);
     }
 
     /**
@@ -99,14 +164,10 @@ public class DomUtil {
      * @return list
      */
     public static List<Element> elements(Element root, String tags) {
-        return elements(root, tags, true);
+        return elements(false, root, tags);
     }
     public static List<Element> elements(List<Element> roots, String tags) {
-        List<Element> elements = new ArrayList<>();
-        for(Element root:roots){
-            elements.addAll(elements(root, tags));
-        }
-        return elements;
+        return elements(false, roots, tags);
     }
 
     /**
