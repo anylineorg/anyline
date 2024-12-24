@@ -803,7 +803,7 @@ public class RegularUtil {
 	public static List<List<String>> fetchAttributeList(String txt, String attribute) {
 		List<List<String>> result = new ArrayList<List<String>>();
 		try{
-			String regx = "(?i)(" + attribute + ")\\s*=\\s*(['\"])([\\s\\S]*?)\\2";
+			String regx = "(?i)[\\s'\"](" + attribute + ")\\s*=\\s*(['\"])([\\s\\S]*?)\\2";
 			result = fetchs(txt, regx);
 		}catch(Exception e) {
 			e.printStackTrace();
@@ -1092,5 +1092,49 @@ public class RegularUtil {
 			}
 		}
 		return false;
+	}
+	/**
+	 * 拆分标签${key}格式占位符
+	 * @param text text
+	 */
+	public static List<String> splitPlaceholder(String text){
+		List<String> list = new ArrayList<>();
+		int fr = 0;
+		while (true){
+			if(text.isEmpty()){
+				break;
+			}
+			int idx = text.indexOf("${", fr);
+			if(idx == -1){
+				list.add(text);
+				break;
+			}
+			if(!text.startsWith("${")){
+				//有前缀
+				String prefix = text.substring(0, idx);
+				if(BasicUtil.isFullString(prefix)){
+					list.add(prefix);
+					text = text.substring(idx);
+					fr = 0;
+				}else{
+					fr = idx +1;
+				}
+			}else{
+				//以${开头
+				idx = text.indexOf("}", idx);
+				if(idx == -1){
+					break;
+				}
+				String head = text.substring(0, idx+1);
+				if(BasicUtil.isFullString(head)){
+					list.add(head);
+					text = text.substring(idx+1);
+					fr = 0;
+				}else{
+					fr = idx +1;
+				}
+			}
+		}
+		return list;
 	}
 }
