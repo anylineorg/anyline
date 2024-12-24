@@ -7845,6 +7845,10 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
     public String value(DataRuntime runtime, Column column, SQL_BUILD_IN_VALUE value) {
         if(value == SQL_BUILD_IN_VALUE.CURRENT_DATETIME) {
             return "now()";
+        }else if(value == SQL_BUILD_IN_VALUE.CURRENT_DATE){
+            return "CURRENT_DATE";
+        }else if(value == SQL_BUILD_IN_VALUE.CURRENT_TIME){
+            return "CURRENT_TIME";
         }
         return null;
     }
