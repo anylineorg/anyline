@@ -353,7 +353,7 @@ public class ConfigParser {
 		Map<String,Object> result = new HashMap<String,Object>();
 		boolean isKeyEncrypt = false;
 		boolean isValueEncrypt = false;
-		if(null != key) {
+		if(null != key && key.length() > 1) {
 			if(key.endsWith("+") || key.endsWith("-")) {
 				String paramEncrypt = key.substring(key.length()-2,key.length()-1);
 				String valueEncrypt = key.substring(key.length()-1);
