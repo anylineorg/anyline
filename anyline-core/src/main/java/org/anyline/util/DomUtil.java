@@ -265,6 +265,20 @@ public class DomUtil {
         }
         return list;
     }
+    public static boolean contains(Element box, Element item){
+        List<Element> elements = box.elements();
+        if(null != elements) {
+            for (Element element : elements) {
+                if (element == item) {
+                    return true;
+                }
+                if (contains(element, item)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
     public static String format(String xml) {
         String result = null;
