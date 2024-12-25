@@ -250,6 +250,9 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 
     /**
      * 数组解析成DataRow
+     * ArrayList list = CollUtil.toList(1, 2, 3, 4);<br/>
+     * DataRow.parseList(list, "A","B","C","D");<br/>
+     * {"A":1, "B":2}<br/>
      * @param row 在此基础上执行, 如果不提供则新创建
      * @param list 数组
      * @param fields 下标对应的属性(字段/key)名称, 如果不输入则以下标作为DataRow的key, 如果属性数量超出list长度, 取null值存入DataRow
