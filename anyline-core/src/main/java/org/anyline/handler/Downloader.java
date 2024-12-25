@@ -17,6 +17,7 @@
 package org.anyline.handler;
 
 import java.io.File;
+import java.util.Map;
 
 public interface Downloader {
     /**
@@ -27,5 +28,11 @@ public interface Downloader {
      */
     default boolean download(String url, File file) {
         return false;
+    }
+    default String post(String url, String body) {
+        return null;
+    }
+    default String get(String url, Map<String, Object> params) {
+        return null;
     }
 }
