@@ -272,7 +272,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
                 for (int i = 0; i < len; i++) {
                     String field = fields[i];
                     Object value = null;
-                    if (i < items.length - 1) {
+                    if (i <= items.length - 1) {
                         value = items[i];
                     }
                     row.put(field, value);
