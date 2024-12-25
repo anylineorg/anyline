@@ -2322,7 +2322,16 @@ public class BeanUtil {
 		}
 		return result;
 	}
-
+	public static Object get(Collection list, int index){
+		int i = 0;
+		for(Object item:list){
+			if(i == index){
+				return item;
+			}
+			i ++;
+		}
+		return null;
+	}
 	/**
 	 * 左补齐
 	 * @param bytes bytes
