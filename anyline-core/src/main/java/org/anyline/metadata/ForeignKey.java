@@ -26,6 +26,8 @@ public class ForeignKey extends Constraint<ForeignKey> implements Serializable {
 
     protected Table reference;
     protected ForeignKey update;
+    protected String onUpdate;
+    protected String onDelete;
 
     public ForeignKey() {}
     public ForeignKey(String name) {
@@ -141,7 +143,23 @@ public class ForeignKey extends Constraint<ForeignKey> implements Serializable {
         return copy;
     }
 
-/* ********************************* field refer ********************************** */
+    public String onUpdate() {
+        return onUpdate;
+    }
+
+    public void onUpdate(String onUpdate) {
+        this.onUpdate = onUpdate;
+    }
+
+    public String onDelete() {
+        return onDelete;
+    }
+
+    public void onDelete(String onDelete) {
+        this.onDelete = onDelete;
+    }
+
+    /* ********************************* field refer ********************************** */
     public static final String FIELD_KEYWORD                            = "KEYWORD";
     public static final String FIELD_REFERENCE_CATALOG                  = "REFERENCE_CATALOG";
     public static final String FIELD_REFERENCE_SCHEMA                   = "REFERENCE_SCHEMA";
@@ -149,4 +167,6 @@ public class ForeignKey extends Constraint<ForeignKey> implements Serializable {
     public static final String FIELD_REFERENCE_COLUMN                   = "REFERENCE_COLUMN";
     public static final String FIELD_COLUMN                             = "COLUMN";
     public static final String FIELD_COLUMN_POSITION                    = "COLUMN_POSITION";
+    public static final String FIELD_COLUMN_ON_UPDATE                   = "ON_UPDATE";
+    public static final String FIELD_COLUMN_ON_DELETE                   = "ON_DELETE";
 }

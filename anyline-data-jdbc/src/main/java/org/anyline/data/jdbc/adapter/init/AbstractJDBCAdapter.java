@@ -7441,7 +7441,14 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 				first = false;
 			}
 			builder.append(")");
-
+            String onDelete = meta.onDelete();
+            if(BasicUtil.isNotEmpty(onDelete)){
+                builder.append(" ON DELETE ").append(onDelete);
+            }
+            String onUpdate = meta.onUpdate();
+            if(BasicUtil.isNotEmpty(onUpdate)){
+                builder.append(" ON UPDATE ").append(onUpdate);
+            }
 		}
 		return runs;
 	}
