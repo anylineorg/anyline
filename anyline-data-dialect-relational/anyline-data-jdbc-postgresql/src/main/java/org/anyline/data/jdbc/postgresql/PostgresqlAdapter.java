@@ -4253,7 +4253,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
      */
     @Override
     public StringBuilder engine(DataRuntime runtime, StringBuilder builder, Table meta) {
-        return super.engine(runtime, builder, meta);
+        return builder;
     }
 
     /**
