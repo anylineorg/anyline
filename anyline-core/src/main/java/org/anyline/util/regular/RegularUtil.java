@@ -654,35 +654,38 @@ public class RegularUtil {
 		}
 		return tags;
 	}
-	/**
-	 * 截取标签(只取最外层双标签+单标签)
-	 * @param txt 原文
-	 * @return list
-	 */
+
+	public static List<String> fetchOutTag(String txt){
+		return fetchOutTag(txt, "");
+	}
 
 	/**
 	 * 截取标签(只取最外层双标签)
 	 * @param txt 原文
 	 * @return list
 	 */
-	public static List<String> fetchOutTag(String txt){
+	public static List<String> fetchOutTag(String txt, String namespace){
+		String prefix = "";
+		if(BasicUtil.isNotEmpty(namespace)){
+			prefix = namespace + ":";
+		}
 		List<String> tags = new ArrayList<>();
 		while (true) {
-			int index = txt.indexOf("<");
+			int index = txt.indexOf("<"+prefix);
 			if (index != -1) {
-				String name = RegularUtil.cut(txt, "<", ">");
+				String name = RegularUtil.cut(txt, "<" + prefix, ">");
 				if(BasicUtil.isEmpty(name)){
 					break;
 				}
 				if (name.contains(" ")) {
 					name = name.split(" ")[0];
 				}
-				String head = "<" + name;
-				String foot_d = "</" + name + ">"; //双标签
+				String head = "<" + prefix + name;
+				String foot_d = "</" + prefix+ name + ">"; //双标签
 				String foot_s = "/>"; // 单标签
 				int begin = txt.indexOf(head);
-				int end_d = txt.indexOf(foot_d);
-				int end_s = txt.indexOf(foot_s); //单标签
+				int end_d = txt.indexOf(foot_d, begin);
+				int end_s = txt.indexOf(foot_s, begin); //单标签
 				int end = end_d;
 				String foot = foot_d;
 				boolean paired = true;
