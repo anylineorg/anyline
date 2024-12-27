@@ -76,6 +76,7 @@ public class ZipUtil {
 			String str = FileUtil.read(in, charset).toString();
 			return str;
 		}catch (Exception e) {
+			log.error("压缩文件读取失败", e);
 			return null;
 		}finally {
 			try {
