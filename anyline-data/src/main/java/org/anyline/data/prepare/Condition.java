@@ -42,6 +42,13 @@ public interface Condition extends Cloneable{
 	int VARIABLE_PLACEHOLDER_TYPE_NONE		= 2			;	// 没有变量
 
 	/**
+	 * 初始文本
+	 * 需要解析 其中可能包含占位符 id = ${id}
+	 * @return String
+	 */
+	String text();
+	void text(String text);
+	/**
 	 * 顺序 按升序排列
 	 * @return double 转认1.0
 	 */

@@ -28,6 +28,7 @@ import org.anyline.data.listener.DDListener;
 import org.anyline.data.listener.DMListener;
 import org.anyline.data.metadata.TypeMetadataAlias;
 import org.anyline.data.param.Config;
+import org.anyline.data.param.ConfigChain;
 import org.anyline.data.param.ConfigParser;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.init.DefaultConfigStore;
@@ -2581,6 +2582,17 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 
             run.addCondition(conditions);
 
+            //解析查询条件中的占位符
+            List<Condition> list = run.getConditionChain().getConditions();
+
+            boolean supportSqlVarPlaceholderRegexExt = ConfigStore.IS_ENABLE_PLACEHOLDER_REGEX_EXT(run.getConfigs()) && runtime.getAdapter().supportSqlVarPlaceholderRegexExt(runtime);
+            for(Condition item:list){
+                String text = item.text();
+                if(null != text) {
+                    List<Variable> vars = CommandParser.parseTextVariable(supportSqlVarPlaceholderRegexExt, text, Compare.EMPTY_VALUE_SWITCH.NULL);
+                    run.addVariable(vars);
+                }
+            }
             if(run.checkValid()) {
                 //为变量赋值 run.condition赋值
                 run.init();
@@ -2595,9 +2607,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                         if (null != orders) {
                             orders.filter(metadatas);
                         }
-                        if(null != prepare) {
-                            prepare.filter(metadatas);
-                        }
+                        prepare.filter(metadatas);
                         ConditionChain chain = run.getConditionChain();
                         if(null != chain) {
                             chain.filter(metadatas);

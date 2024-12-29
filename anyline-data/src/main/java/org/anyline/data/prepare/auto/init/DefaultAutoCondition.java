@@ -92,7 +92,7 @@ public class DefaultAutoCondition extends AbstractCondition implements AutoCondi
 		this.text = text; 
 		this.active = true; 
 		setVariableType(Condition.VARIABLE_PLACEHOLDER_TYPE_NONE); 
-	} 
+	}
 
 	/**
 	 * 运行时文本

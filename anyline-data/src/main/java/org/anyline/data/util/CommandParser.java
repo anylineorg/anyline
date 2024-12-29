@@ -59,13 +59,14 @@ public class CommandParser {
             return;
         }
         parseText(runtime, run, text);
+
     }
 
     /**
      * 解析文本
-     * @param runtime
-     * @param run
-     * @param text
+     * @param runtime runtime
+     * @param run run
+     * @param text text
      */
     public static void parseText(DataRuntime runtime, TextRun run, String text) {
         boolean supportSqlVarPlaceholderRegexExt = ConfigStore.IS_ENABLE_PLACEHOLDER_REGEX_EXT(run.getConfigs()) && runtime.getAdapter().supportSqlVarPlaceholderRegexExt(runtime);

@@ -737,11 +737,13 @@ public abstract class AbstractRun implements Run {
 		return text;
 	}
 
+	@Override
 	public Run addVariable(Variable var) {
 		variables.add(var);
 		return this;
 	}
 
+	@Override
 	public Run addVariable(List<Variable> vars) {
 		variables.addAll(vars);
 		return this;

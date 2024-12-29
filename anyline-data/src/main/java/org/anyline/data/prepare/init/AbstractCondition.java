@@ -102,6 +102,15 @@ public abstract class AbstractCondition implements Condition {
 	}
 
 	@Override
+	public String text() {
+		return text;
+	}
+
+	@Override
+	public void text(String text) {
+		this.text = text;
+	}
+	@Override
 	public Condition setJoin(Condition.JOIN join) {
 		this.join = join; 
 		return this; 

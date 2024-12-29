@@ -166,6 +166,11 @@ public interface Run extends org.anyline.data.Run{
 	default String getFinalUpdate() {
 		return getFinalUpdate(true);
 	}
+
+    Run addVariable(Variable var);
+
+	Run addVariable(List<Variable> vars);
+
 	String getFinalExecute(Boolean placeholder);
 	default String getFinalExecute() {
 		return getFinalExecute(true);
