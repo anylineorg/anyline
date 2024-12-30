@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.anyline.data.prepare.xml.init;
+package org.anyline.data.prepare.text.init;
 
 import org.anyline.data.prepare.Condition;
 import org.anyline.data.prepare.RunPrepare;
@@ -43,17 +43,17 @@ import java.util.Map;
  * @author zh 
  * 
  */ 
-public class DefaultXMLCondition extends AbstractCondition implements Condition {
+public class DefaultTextCondition extends AbstractCondition implements Condition {
 	private String text;
 	protected List<VariableBlock> blocks = new ArrayList<>();
 	 
 	 
-	public DefaultXMLCondition clone() {
-		DefaultXMLCondition clone = null;
+	public DefaultTextCondition clone() {
+		DefaultTextCondition clone = null;
 		try{
-			clone = (DefaultXMLCondition)super.clone();
+			clone = (DefaultTextCondition)super.clone();
 		}catch (Exception e) {
-			clone = new DefaultXMLCondition();
+			clone = new DefaultTextCondition();
 		}
 		clone.text = text;
 		List<Variable> cVariables = new ArrayList<>();
@@ -85,11 +85,14 @@ public class DefaultXMLCondition extends AbstractCondition implements Condition 
 
 		clone.setSwt(swt);
 		return clone; 
-	} 
-	public DefaultXMLCondition() {
+	}
+	public DefaultTextCondition() {
 		join = null;
-	} 
-	public DefaultXMLCondition(String id, String text, boolean isStatic) {
+	}
+	public DefaultTextCondition(String text) {
+		this(null, text, false);
+	}
+	public DefaultTextCondition(String id, String text, boolean isStatic) {
 		join = null;
 		this.id = id; 
 		this.text = text; 
@@ -178,11 +181,6 @@ public class DefaultXMLCondition extends AbstractCondition implements Condition 
 		return null;
 	}
 
- 
-	private void addVariable(Variable variable) {
-		variables.add(variable); 
-	} 
- 
 	public String getId() {
 		return id; 
 	} 

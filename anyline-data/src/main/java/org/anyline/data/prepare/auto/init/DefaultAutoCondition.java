@@ -23,6 +23,7 @@ import org.anyline.data.prepare.auto.AutoCondition;
 import org.anyline.data.prepare.init.AbstractCondition;
 import org.anyline.data.run.RunValue;
 import org.anyline.data.runtime.DataRuntime;
+import org.anyline.data.util.CommandParser;
 import org.anyline.entity.Compare;
 import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;
 import org.anyline.exception.NotSupportException;
@@ -107,24 +108,26 @@ public class DefaultAutoCondition extends AbstractCondition implements AutoCondi
 		String text = "";
 		if(this.variableType == Condition.VARIABLE_PLACEHOLDER_TYPE_NONE) {//没有变量
 			text = this.text; 
+		}else if(this.variableType == Condition.VARIABLE_PLACEHOLDER_TYPE_KEY) {//占位符
+			text = CommandParser.replaceVariable(runtime, getVariableBlocks(), getVariables(), text);
 		}else{
 			String txt = "";
 			//if(BasicUtil.isNotEmpty(true, values) || isRequired()) {
-				txt = getRunText(prefix, runtime, values, compare, placeholder, unicode);
+			txt = getRunText(prefix, runtime, values, compare, placeholder, unicode);
+			if(BasicUtil.isNotEmpty(txt)) {
+				text = txt;
+			}
+			if(BasicUtil.isNotEmpty(true, orValues)) {
+				txt = getRunText(prefix, runtime, orValues, orCompare, placeholder, unicode);
 				if(BasicUtil.isNotEmpty(txt)) {
-					text = txt;
-				}
-				if(BasicUtil.isNotEmpty(true, orValues)) {
-					txt = getRunText(prefix, runtime, orValues, orCompare, placeholder, unicode);
-					if(BasicUtil.isNotEmpty(txt)) {
-						if(BasicUtil.isEmpty(text)) {
-							text = txt;
-						}else{
-							text = "(" + text +" OR " + txt + ")";
-						}
+					if(BasicUtil.isEmpty(text)) {
+						text = txt;
+					}else{
+						text = "(" + text +" OR " + txt + ")";
 					}
 				}
 			}
+		}
 		return text; 
 	}
 
@@ -430,20 +433,6 @@ public class DefaultAutoCondition extends AbstractCondition implements AutoCondi
 		this.orCompare = orCompare;
 		return this;
 	}
-	public String toString() {
-		Map<String, Object> map = new HashMap<>();
-		Condition.JOIN join = getJoin();
-		if(null != join) {
-			map.put("join", join);
-		}
-		if(null != datatype) {
-			map.put("datatype", datatype);
-		}
-		map.put("column", column);
-		map.put("compare", compare.getName());
-		map.put("values", values);
-		return BeanUtil.map2json(map);
-	}
 
 	public String getTable() {
 		return table;
@@ -457,5 +446,26 @@ public class DefaultAutoCondition extends AbstractCondition implements AutoCondi
 	public Condition setRunText(String text) {
 		this.text = text;
 		return this;
+	}
+	public String toString() {
+		if(BasicUtil.isNotEmpty(text)){
+			String result = "text:"+ text;
+			if(null != values){
+				result += " values:" + values;
+			}
+			return result;
+		}
+		Map<String, Object> map = new HashMap<>();
+		Condition.JOIN join = getJoin();
+		if(null != join) {
+			map.put("join", join);
+		}
+		if(null != datatype) {
+			map.put("datatype", datatype);
+		}
+		map.put("column", column);
+		map.put("compare", compare.getName());
+		map.put("values", values);
+		return BeanUtil.map2json(map);
 	}
 }

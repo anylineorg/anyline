@@ -162,9 +162,9 @@ public class DefaultAutoConditionChain extends AbstractConditionChain implements
 		String txt = "[";
 		for(int i=0;i<size; i++) {
 			if(i==0) {
-				txt += conditions.get(i).toString();
+				txt += conditions.get(i);
 			}else{
-				txt += ","+conditions.get(i).toString();
+				txt += ","+conditions.get(i);
 			}
 		}
 		txt += "]";

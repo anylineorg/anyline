@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.anyline.data.prepare.xml;
+package org.anyline.data.prepare.text;
 
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.prepare.Variable;
@@ -25,7 +25,7 @@ import java.util.List;
  * @author zh 
  * 
  */ 
-public interface XMLPrepare extends RunPrepare{
+public interface TextPrepare extends RunPrepare{
 	RunPrepare init() ;
  
 	/** 

@@ -16,10 +16,7 @@
 
 package org.anyline.data.prepare.init;
 
-import org.anyline.data.prepare.Condition;
-import org.anyline.data.prepare.ConditionChain;
-import org.anyline.data.prepare.RunPrepare;
-import org.anyline.data.prepare.Variable;
+import org.anyline.data.prepare.*;
 import org.anyline.data.run.RunValue;
 import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;
 
@@ -53,6 +50,7 @@ public abstract class AbstractCondition implements Condition {
 	protected String text												;	// 静态条件
 	protected String test												;	// 判断条件
 	protected List<Variable> variables	= new ArrayList<>()				;	// 变量
+	protected List<VariableBlock> blocks = new ArrayList<>();
 	protected boolean setValue = false									;   // 是否赋值过
 	//protected boolean apart = false										;   // 是否需要跟前面的条件 隔离，前面所有条件加到()中
 	protected boolean integrality = true								;   // 是否作为一个整体，不可分割，与其他条件合并时以()包围
@@ -222,6 +220,27 @@ public abstract class AbstractCondition implements Condition {
 		isVariableSlave = bol;
 	}
 
+	@Override
+	public Condition addVariable(Variable var) {
+		variables.add(var);
+		return this;
+	}
+
+	@Override
+	public Condition addVariable(List<Variable> vars) {
+		variables.addAll(vars);
+		return this;
+	}
+
+
+	@Override
+	public Condition  addVariableBlock(VariableBlock block){
+		blocks.add(block);
+		return this;
+	}
+	public List<VariableBlock> getVariableBlocks(){
+		return blocks;
+	}
 	@Override
 	public boolean isSetValue() {
 		return setValue;

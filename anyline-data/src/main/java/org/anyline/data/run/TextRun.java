@@ -58,20 +58,21 @@ public class TextRun extends AbstractRun implements Run {
 				for(Condition condition:conditions) {
 					if(null == condition) {
 						continue;
-					} 
-					AutoCondition con = (AutoCondition)condition;
-
-					//如果有对应的SQL体变量 设置当前con不作为查询条件拼接
-					List<Variable> vars = this.getVariables(con.getId());
-					if(!vars.isEmpty()) {
-						//用来给java/xml定义SQL中变量赋值, 本身并不拼接到最终SQL
-						con.setVariableSlave(true);
-						for(Variable var:vars) {
-							var.setValue(false, con.getValues());
+					}
+					if(condition instanceof AutoCondition){
+						AutoCondition auto = (AutoCondition)condition;
+						//如果有对应的SQL体变量 设置当前con不作为查询条件拼接
+						List<Variable> vars = this.getVariables(auto.getId());
+						if(!vars.isEmpty()) {
+							//用来给java/xml定义SQL中变量赋值, 本身并不拼接到最终SQL
+							auto.setVariableSlave(true);
+							for(Variable var:vars) {
+								var.setValue(false, auto.getValues());
+							}
+						} else{
+							//查询条件和SQL体变量赋值
+							setConditionValue(auto.getSwt(), auto.getCompare(), auto.getId(), null, auto.getValues());
 						}
-					} else{
-						//查询条件和SQL体变量赋值
-						setConditionValue(con.getSwt(), con.getCompare(), con.getId(), null, con.getValues());
 					}
 				}
 			} 

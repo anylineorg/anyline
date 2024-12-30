@@ -1740,11 +1740,11 @@ public interface DriverAdapter {
     }
 
     /**
-     * 解析文本中的占位符
+     * 解析文本中的占位符(包含主体和查询条件)
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
      */
-    void parseText(DataRuntime runtime, TextRun run);
+    void parsePlaceholder(DataRuntime runtime, Run run);
 
     /**
      * 是否支持SQL变量占位符扩展格式 :VAR,图数据库不要支持会与表冲突

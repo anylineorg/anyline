@@ -181,6 +181,12 @@ public interface Condition extends Cloneable{
 	 */
 	boolean isVariableSlave();
 	void setVariableSlave(boolean bol);
+
+	Condition addVariable(Variable var);
+
+	Condition addVariable(List<Variable> vars);
+	Condition addVariableBlock(VariableBlock block);
+	List<VariableBlock> getVariableBlocks();
 	boolean isSetValue();
 	boolean isSetValue(String variable);
 	void datatype(String type);

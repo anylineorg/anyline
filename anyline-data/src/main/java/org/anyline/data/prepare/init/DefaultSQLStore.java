@@ -19,8 +19,8 @@ package org.anyline.data.prepare.init;
 import org.anyline.data.prepare.Condition;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.prepare.SQLStore;
-import org.anyline.data.prepare.xml.init.DefaultXMLCondition;
-import org.anyline.data.prepare.xml.init.DefaultXMLPrepare;
+import org.anyline.data.prepare.text.init.DefaultTextCondition;
+import org.anyline.data.prepare.text.init.DefaultTextPrepare;
 import org.anyline.entity.Compare;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
@@ -233,7 +233,7 @@ public class DefaultSQLStore extends SQLStore {
 				String id = element.attributeValue("id");
 				String sqlText = element.getText().trim();
 				sqlText = RegularUtil.removeTag(sqlText);
-				RunPrepare prepare = new DefaultXMLPrepare();
+				RunPrepare prepare = new DefaultTextPrepare();
 				prepare.setText(sqlText);
 				prepare.setId(id);
 
@@ -265,7 +265,7 @@ public class DefaultSQLStore extends SQLStore {
 			String id = sqlElement.attributeValue("id");
 			boolean strict = BasicUtil.parseBoolean(sqlElement.attributeValue("strict"), false);    // 是否严格格式  true:java中不允许添加XML定义之外的临时条件
 			String sqlText = sqlElement.elementText("text").trim();                                    // RunPrepare 文本
-			RunPrepare prepare = new DefaultXMLPrepare();
+			RunPrepare prepare = new DefaultTextPrepare();
 			prepare.setText(sqlText);
 			prepare.setStrict(strict);
 			for (Iterator<?> itrParam = sqlElement.elementIterator("condition"); itrParam.hasNext(); ) {
@@ -341,7 +341,7 @@ public class DefaultSQLStore extends SQLStore {
 			if (!text.toUpperCase().startsWith("AND ") && !text.toUpperCase().startsWith("$") && !text.toUpperCase().startsWith("OR ")) {
 				text = "\nAND " + text;
 			}
-			condition = new DefaultXMLCondition(id, text, isStatic);
+			condition = new DefaultTextCondition(id, text, isStatic);
 			String test = element.attributeValue("test");
 			condition.setTest(test);
 			if (null != prepare) {

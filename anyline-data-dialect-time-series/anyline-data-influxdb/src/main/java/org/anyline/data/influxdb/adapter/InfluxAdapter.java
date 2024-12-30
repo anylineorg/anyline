@@ -869,8 +869,8 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
      */
-    public void parseText(DataRuntime runtime, TextRun run) {
-        super.parseText(runtime, run);
+    public void parsePlaceholder(DataRuntime runtime, Run run) {
+        super.parsePlaceholder(runtime, run);
     }
 
     /**

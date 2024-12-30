@@ -24,7 +24,7 @@ import org.anyline.data.param.ConfigParser;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.ParseResult;
 import org.anyline.data.prepare.*;
-import org.anyline.data.prepare.xml.init.DefaultXMLConditionChain;
+import org.anyline.data.prepare.text.init.DefaultTextConditionChain;
 import org.anyline.entity.*;
 import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;
 import org.anyline.metadata.Column;
@@ -40,7 +40,7 @@ public class XMLRun extends TextRun implements Run {
 	private List<String> staticConditions; 
 	public XMLRun() {
 		this.builder = new StringBuilder();
-		this.conditionChain = new DefaultXMLConditionChain();
+		this.conditionChain = new DefaultTextConditionChain();
 		this.orders = new DefaultOrderStore();
 		this.groups = new DefaultGroupStore();
 	} 
@@ -264,7 +264,7 @@ public class XMLRun extends TextRun implements Run {
 		ConditionChain xmlConditionChain = prepare.getConditionChain();
 		if(null != xmlConditionChain) {
 			if(null == this.conditionChain) {
-				this.conditionChain = new DefaultXMLConditionChain();
+				this.conditionChain = new DefaultTextConditionChain();
 			} 
 			List<Condition> conditions = xmlConditionChain.getConditions(); 
 			if(null != conditions) {

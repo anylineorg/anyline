@@ -47,7 +47,9 @@ public abstract class AbstractConditionChain extends AbstractCondition implement
 	 * @return ConditionChain
 	 */ 
 	public ConditionChain addCondition(Condition condition) {
-		conditions.add(condition); 
+		if(null != condition) {
+			conditions.add(condition);
+		}
 		return this; 
 	}
 

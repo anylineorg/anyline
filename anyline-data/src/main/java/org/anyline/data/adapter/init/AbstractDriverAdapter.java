@@ -28,17 +28,15 @@ import org.anyline.data.listener.DDListener;
 import org.anyline.data.listener.DMListener;
 import org.anyline.data.metadata.TypeMetadataAlias;
 import org.anyline.data.param.Config;
-import org.anyline.data.param.ConfigChain;
 import org.anyline.data.param.ConfigParser;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.*;
 import org.anyline.data.prepare.auto.TablePrepare;
-import org.anyline.data.prepare.auto.TextPrepare;
 import org.anyline.data.prepare.auto.init.DefaultTablePrepare;
 import org.anyline.data.prepare.auto.init.DefaultTextPrepare;
 import org.anyline.data.prepare.auto.init.VirtualTablePrepare;
-import org.anyline.data.prepare.xml.XMLPrepare;
+import org.anyline.data.prepare.text.TextPrepare;
 import org.anyline.data.run.*;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.util.CommandParser;
@@ -2329,7 +2327,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 
         if(BasicUtil.isEmpty(prepare.getDest())) {
             //text xml格式的 不检测表名，避免一下步根据表名检测表结构
-            if(prepare instanceof TextPrepare || prepare instanceof XMLPrepare) {
+            if(prepare instanceof org.anyline.data.prepare.auto.TextPrepare || prepare instanceof TextPrepare) {
             }else {
                 prepare.setDest(EntityAdapterProxy.table(clazz, true));
             }
@@ -2568,9 +2566,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             }
             run.addConfigStore(configs);
             //如果是text类型 将解析文本并抽取出变量
-            if(run instanceof TextRun) {
-                parseText(runtime, (TextRun)run);
-            }
+            parsePlaceholder(runtime, (TextRun)run);
             configs = run.getConfigs();
             //先把configs中的占位值取出
             if(null != configs) {
@@ -2582,17 +2578,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 
             run.addCondition(conditions);
 
-            //解析查询条件中的占位符
-            List<Condition> list = run.getConditionChain().getConditions();
-
-            boolean supportSqlVarPlaceholderRegexExt = ConfigStore.IS_ENABLE_PLACEHOLDER_REGEX_EXT(run.getConfigs()) && runtime.getAdapter().supportSqlVarPlaceholderRegexExt(runtime);
-            for(Condition item:list){
-                String text = item.text();
-                if(null != text) {
-                    List<Variable> vars = CommandParser.parseTextVariable(supportSqlVarPlaceholderRegexExt, text, Compare.EMPTY_VALUE_SWITCH.NULL);
-                    run.addVariable(vars);
-                }
-            }
             if(run.checkValid()) {
                 //为变量赋值 run.condition赋值
                 run.init();
@@ -2627,18 +2612,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
      */
     @Override
-    public void parseText(DataRuntime runtime, TextRun run) {
-        /*run.supportSqlVarPlaceholderRegexExt(supportSqlVarPlaceholderRegexExt(runtime));
-        CommandParser.parseText(runtime, run);*/
-        RunPrepare prepare = run.getPrepare();
-        if(null == prepare) {
-            return;
-        }
-        String text = prepare.getText();
-        if(null == text) {
-            return;
-        }
-        CommandParser.parseText(runtime, run, text);
+    public void parsePlaceholder(DataRuntime runtime, Run run) {
+        CommandParser.parseText(runtime, run);
     }
 
 
@@ -3573,9 +3548,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
     @Override
     public Run buildExecuteRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, Boolean placeholder, Boolean unicode, String ... conditions) {
         Run run = null;
-        if(prepare instanceof XMLPrepare) {
+        if(prepare instanceof TextPrepare) {
             run = new XMLRun();
-        }else if(prepare instanceof TextPrepare) {
+        }else if(prepare instanceof org.anyline.data.prepare.auto.TextPrepare) {
             run = prepare.build(runtime);
         }
         if(null != run) {
@@ -3583,9 +3558,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             run.setBatch(prepare.getBatch());
             run.setRuntime(runtime);
             run.setPrepare(prepare);
-            if(run instanceof TextRun) {
-                parseText(runtime, (TextRun)run);
-            }
+            parsePlaceholder(runtime, (TextRun)run);
             run.addCondition(conditions);
             run.init(); //
             //构造最终的执行SQL

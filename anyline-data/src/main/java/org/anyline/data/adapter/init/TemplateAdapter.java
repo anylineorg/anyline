@@ -800,8 +800,8 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
      * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
      */
     @Override
-    public void parseText(DataRuntime runtime, TextRun run) {
-        super.parseText(runtime, run);
+    public void parsePlaceholder(DataRuntime runtime, Run run) {
+        super.parsePlaceholder(runtime, run);
     }
 
     /**

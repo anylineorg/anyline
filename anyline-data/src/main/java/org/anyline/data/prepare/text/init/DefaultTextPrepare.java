@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.anyline.data.prepare.xml.init;
+package org.anyline.data.prepare.text.init;
 
 import org.anyline.data.param.ConfigParser;
 import org.anyline.data.param.ParseResult;
@@ -22,7 +22,7 @@ import org.anyline.data.prepare.Condition;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.prepare.Variable;
 import org.anyline.data.prepare.init.AbstractRunPrepare;
-import org.anyline.data.prepare.xml.XMLPrepare;
+import org.anyline.data.prepare.text.TextPrepare;
 import org.anyline.data.run.Run;
 import org.anyline.data.run.XMLRun;
 import org.anyline.data.runtime.DataRuntime;
@@ -39,15 +39,15 @@ import org.anyline.util.ConfigTable;
 
 import java.util.ArrayList;
 import java.util.List;
-public class DefaultXMLPrepare extends AbstractRunPrepare implements XMLPrepare {
+public class DefaultTextPrepare extends AbstractRunPrepare implements TextPrepare {
 	/*解析XML*/ 
 	private String id;
 	private boolean strict = true;	// 严格格式, true:不允许添加XML定义之外 的临时查询条件
 	private List<Variable> variables = new ArrayList<>();
 	 
-	public DefaultXMLPrepare() {
+	public DefaultTextPrepare() {
 		super(); 
-		chain = new DefaultXMLConditionChain();
+		chain = new DefaultTextConditionChain();
 	} 
 	public RunPrepare init() {
 		for(Variable variable:variables) {
@@ -150,7 +150,7 @@ public class DefaultXMLPrepare extends AbstractRunPrepare implements XMLPrepare 
 		if(null == condition) {
 			return this; 
 		} 
-		DefaultXMLCondition con = getCondition(condition);
+		DefaultTextCondition con = getCondition(condition);
 		if(null == con) {
 			return this; 
 		} 
@@ -158,13 +158,13 @@ public class DefaultXMLPrepare extends AbstractRunPrepare implements XMLPrepare 
 		con.setValue(variable, value); 
 		return this; 
 	} 
-	private DefaultXMLCondition getCondition(String id) {
+	private DefaultTextCondition getCondition(String id) {
 		if(null == chain) {
 			return null; 
 		} 
 		for(Condition con:chain.getConditions()) {
 			if(BasicUtil.equalsIgnoreCase(id, con.getId())) {
-				return (DefaultXMLCondition)con;
+				return (DefaultTextCondition)con;
 			} 
 		} 
 		return null; 
@@ -375,12 +375,12 @@ public class DefaultXMLPrepare extends AbstractRunPrepare implements XMLPrepare 
 		row.put("text", text);
 		return row;
 	}
-	public DefaultXMLPrepare clone() {
-		DefaultXMLPrepare clone = null;
+	public DefaultTextPrepare clone() {
+		DefaultTextPrepare clone = null;
 		try{
-			clone = (DefaultXMLPrepare)super.clone();
+			clone = (DefaultTextPrepare)super.clone();
 		}catch (Exception e) {
-			clone =new DefaultXMLPrepare();
+			clone =new DefaultTextPrepare();
 		}
 		clone.chain = chain.clone();
 		if(!variables.isEmpty()) {

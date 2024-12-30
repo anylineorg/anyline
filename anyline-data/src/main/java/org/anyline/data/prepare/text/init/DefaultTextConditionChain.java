@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.anyline.data.prepare.xml.init;
+package org.anyline.data.prepare.text.init;
 
 import org.anyline.data.prepare.Condition;
 import org.anyline.data.prepare.ConditionChain;
@@ -27,7 +27,7 @@ import org.anyline.util.regular.RegularUtil;
 
 import java.util.List;
  
-public class DefaultXMLConditionChain extends AbstractConditionChain implements ConditionChain{
+public class DefaultTextConditionChain extends AbstractConditionChain implements ConditionChain{
 
 	@Override
 	public String getRunText(int lvl, String prefix, DataRuntime runtime, Boolean placeholder, Boolean unicode) {

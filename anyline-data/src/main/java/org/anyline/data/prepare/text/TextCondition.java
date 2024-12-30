@@ -14,10 +14,32 @@
  * limitations under the License.
  */
 
-package org.anyline.data.prepare.xml;
+package org.anyline.data.prepare.text;
  
-import org.anyline.data.prepare.ConditionChain;
+import org.anyline.data.prepare.Condition;
+import org.anyline.data.prepare.Variable;
+
+/**
+ * 通过XML定义的参数 
+ * @author zh 
+ * 
+ */ 
+public interface TextCondition extends Condition{
+	 
+	void init();
+	/** 
+	 * 赋值 
+	 * @param variable  variable
+	 * @param values  values
+	 */ 
+	void setValue(String variable, Object values);
+
+	String getId() ;
  
-public interface XMLConditionChain extends ConditionChain{
+	void setId(String id) ;
  
-} 
+	String text() ;
+
+	String getRunText() ;
+	Variable getVariable(String key) ;
+}

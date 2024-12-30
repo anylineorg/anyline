@@ -16,11 +16,8 @@
 
 package org.anyline.data.prepare.auto.init;
 
-import org.anyline.data.param.DefaultPrepare;
 import org.anyline.data.prepare.RunPrepare;
-import org.anyline.data.prepare.Variable;
 import org.anyline.data.prepare.auto.TablePrepare;
-import org.anyline.data.prepare.xml.init.DefaultXMLPrepare;
 import org.anyline.data.run.Run;
 import org.anyline.data.run.TableRun;
 import org.anyline.data.runtime.DataRuntime;
@@ -28,7 +25,6 @@ import org.anyline.entity.DataRow;
 import org.anyline.entity.OriginRow;
 import org.anyline.metadata.Table;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class DefaultTablePrepare extends DefaultAutoPrepare implements TablePrepare {

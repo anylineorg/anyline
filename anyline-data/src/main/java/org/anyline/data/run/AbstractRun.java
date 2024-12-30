@@ -25,6 +25,7 @@ import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.*;
 import org.anyline.data.prepare.auto.init.DefaultAutoCondition;
 import org.anyline.data.prepare.auto.init.DefaultAutoConditionChain;
+import org.anyline.data.prepare.text.init.DefaultTextCondition;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
 import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;
@@ -749,6 +750,7 @@ public abstract class AbstractRun implements Run {
 		return this;
 	}
 
+	@Override
 	public Run addVariableBlock(VariableBlock block) {
 		blocks.add(block);
 		return this;
@@ -973,8 +975,8 @@ public abstract class AbstractRun implements Run {
 						continue;
 					}
 				}
-				//原生SQL
-				Condition con = new DefaultAutoCondition(condition);
+				//原生SQL 有可能带占位符
+				Condition con = new DefaultTextCondition(condition);
 				addCondition(con);
 			}
 		}

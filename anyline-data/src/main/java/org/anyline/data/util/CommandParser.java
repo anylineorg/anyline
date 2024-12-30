@@ -18,23 +18,21 @@ package org.anyline.data.util;
 
 import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.param.ConfigStore;
-import org.anyline.data.prepare.RunPrepare;
-import org.anyline.data.prepare.SyntaxHelper;
-import org.anyline.data.prepare.Variable;
-import org.anyline.data.prepare.VariableBlock;
+import org.anyline.data.prepare.*;
 import org.anyline.data.prepare.init.DefaultVariable;
 import org.anyline.data.prepare.init.DefaultVariableBlock;
+import org.anyline.data.run.Run;
 import org.anyline.data.run.TextRun;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.Compare;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 import org.anyline.metadata.Column;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.SQLUtil;
 import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
-import org.anyline.log.Log;
-import org.anyline.log.LogProxy;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,28 +45,68 @@ public class CommandParser {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
      */
-    public static void parseText(DataRuntime runtime, TextRun run) {
+    public static void parseText(DataRuntime runtime, Run run) {
         /*run.supportSqlVarPlaceholderRegexExt(supportSqlVarPlaceholderRegexExt(runtime));
         CommandParser.parseText(runtime, run);*/
         RunPrepare prepare = run.getPrepare();
         if(null == prepare) {
             return;
         }
-        String text = prepare.getText();
-        if(null == text) {
+        //解析主体
+        parseText(runtime, run, prepare.getText());
+
+        //解析查询条件中的占位符
+        List<Condition> list = run.getConditionChain().getConditions();
+        for(Condition item:list){
+            parseText(runtime, item, item.text(), run.getConfigs());
+        }
+    }
+    public static void parseText(DataRuntime runtime, Condition condition, String text, ConfigStore configs) {
+        if(BasicUtil.isEmpty(text)){
             return;
         }
-        parseText(runtime, run, text);
 
+        boolean supportSqlVarPlaceholderRegexExt = ConfigStore.IS_ENABLE_PLACEHOLDER_REGEX_EXT(configs) && runtime.getAdapter().supportSqlVarPlaceholderRegexExt(runtime);
+        try{
+            //${ AND ID = ::ID}  ${AND CODE=:CODE }
+            List<List<String>> boxes = RegularUtil.fetchs(text, RunPrepare.SQL_VAR_BOX_REGEX, Regular.MATCH_MODE.CONTAIN);
+            if(!boxes.isEmpty()) {
+                String box = boxes.get(0).get(0);
+                String prev = RegularUtil.cut(text, RegularUtil.TAG_BEGIN, box);
+                List<Variable> vars = parseTextVariable(supportSqlVarPlaceholderRegexExt,  prev, Compare.EMPTY_VALUE_SWITCH.NULL);
+                condition.addVariable(vars);
+                if(!vars.isEmpty()){
+                    condition.setVariableType(Condition.VARIABLE_PLACEHOLDER_TYPE_KEY);
+                }
+                VariableBlock block = parseTextVarBox(runtime, configs, text, box);
+                if(null != block) {
+                    condition.addVariableBlock(block);
+                    condition.addVariable(block.variables());
+                }
+                String next = RegularUtil.cut(text, box, RegularUtil.TAG_END);
+                parseText(runtime, condition, next, configs);
+            }else{
+                List<Variable> vars = parseTextVariable(supportSqlVarPlaceholderRegexExt, text, Compare.EMPTY_VALUE_SWITCH.NULL);
+                condition.addVariable(vars);
+                if(!vars.isEmpty()){
+                    condition.setVariableType(Condition.VARIABLE_PLACEHOLDER_TYPE_KEY);
+                }
+            }
+            //解析
+        }catch(Exception e) {
+            e.printStackTrace();
+        }
     }
-
     /**
      * 解析文本
      * @param runtime runtime
      * @param run run
      * @param text text
      */
-    public static void parseText(DataRuntime runtime, TextRun run, String text) {
+    public static void parseText(DataRuntime runtime, Run run, String text) {
+        if(BasicUtil.isEmpty(text)){
+            return;
+        }
         boolean supportSqlVarPlaceholderRegexExt = ConfigStore.IS_ENABLE_PLACEHOLDER_REGEX_EXT(run.getConfigs()) && runtime.getAdapter().supportSqlVarPlaceholderRegexExt(runtime);
         try{
             //${ AND ID = ::ID}  ${AND CODE=:CODE }
@@ -89,7 +127,7 @@ public class CommandParser {
                 List<Variable> vars = parseTextVariable(supportSqlVarPlaceholderRegexExt, text, Compare.EMPTY_VALUE_SWITCH.NULL);
                 run.addVariable(vars);
             }
-
+            //解析
         }catch(Exception e) {
             e.printStackTrace();
         }
@@ -185,7 +223,9 @@ public class CommandParser {
         text = replaceVariable(runtime, run, variables, text);
         return text;
     }
-    private static String replaceVariable(DataRuntime runtime, TextRun run, List<Variable> variables, String text) {
+
+
+    private static String replaceVariable(DataRuntime runtime, Run run, List<Variable> variables, String text) {
         DriverAdapter adapter = runtime.getAdapter();
         boolean supportPlaceholder = adapter.supportPlaceholder();
 
@@ -277,6 +317,119 @@ public class CommandParser {
                         value = varValues.get(0);
                     }
                     adapter.addRunValue(runtime, run, Compare.EQUAL, new Column(var.getKey()), value);
+                }
+            }
+        }
+        return text;
+    }
+
+    public static String replaceVariable(DataRuntime runtime, List<VariableBlock> blocks, List<Variable> variables, String text) {
+        //StringBuilder builder = run.getBuilder();
+        //List<Variable> variables = run.getVariables();
+        //List<VariableBlock> blocks = run.getVariableBlocks();
+        if(null != blocks) {
+            for (VariableBlock block : blocks) {
+                String box = block.box();
+                String body = block.body();
+                boolean active = block.active();
+                if (!active) {
+                    text = text.replace(box, "");
+                    variables.removeAll(block.variables());
+                } else {
+                    text = text.replace(box, body);
+                }
+            }
+        }
+        text = replaceVariable(runtime, variables, text);
+        return text;
+    }
+    private static String replaceVariable(DataRuntime runtime, List<Variable> variables, String text) {
+        DriverAdapter adapter = runtime.getAdapter();
+        boolean supportPlaceholder = adapter.supportPlaceholder();
+
+        if(null != text && supportPlaceholder && null != variables) {
+            for(Variable var:variables) {
+                if(null == var) {
+                    continue;
+                }
+                if(var.getType() == Variable.VAR_TYPE_REPLACE) {
+                    // CD = ::CD
+                    List<Object> values = var.getValues();
+                    String value = null;
+                    if(BasicUtil.isNotEmpty(true, values)) {
+                        if(var.getCompare() == Compare.IN) {
+                            value = BeanUtil.concat(BeanUtil.wrap(values, "'"));
+                        }else {
+                            value = values.get(0).toString();
+                        }
+                    }
+                    if(null != value) {
+                        text = text.replace(var.getFullKey(), value);
+                    }else{
+                        text = text.replace(var.getFullKey(), "NULL");
+                    }
+                }
+            }
+            for(Variable var:variables) {
+                if(null == var) {
+                    continue;
+                }
+                if(var.getType() == Variable.VAR_TYPE_KEY_REPLACE) {
+                    // CD = ':CD'
+                    List<Object> values = var.getValues();
+                    String value = null;
+                    if(BasicUtil.isNotEmpty(true, values)) {
+                        if(var.getCompare() == Compare.IN) {
+                            value = BeanUtil.concat(BeanUtil.wrap(values, "'"));
+                        }else {
+                            value = values.get(0).toString();
+                        }
+                    }
+                    if(null != value) {
+                        text = text.replace(var.getFullKey(), value);
+                    }else{
+                        text = text.replace(var.getFullKey(), "");
+                    }
+                }
+            }
+            for(Variable var:variables) {
+                if(null == var) {
+                    continue;
+                }
+                if(var.getType() == Variable.VAR_TYPE_KEY) {
+                    // CD = :CD
+                    List<Object> varValues = var.getValues();
+                    if(BasicUtil.isNotEmpty(true, varValues)) {
+                        if(var.getCompare() == Compare.IN) {
+                            // 多个值IN
+                            String replaceDst = "";
+                            for(Object tmp:varValues) {
+                                replaceDst += " ?";
+                            }
+                            replaceDst = replaceDst.trim().replace(" ",",");
+                            text = text.replace(var.getFullKey(), replaceDst);
+                        }else{
+                            // 单个值
+                            text = text.replace(var.getFullKey(), "?");
+                        }
+                    }else{
+                        //没有提供参数值
+                        text = text.replace(var.getFullKey(), "NULL");
+                    }
+                }
+            }
+            // 添加其他变量值
+            for(Variable var:variables) {
+                if(null == var) {
+                    continue;
+                }
+                // CD = ?
+                if(var.getType() == Variable.VAR_TYPE_INDEX) {
+                    List<Object> varValues = var.getValues();
+                    Object value = null;
+                    if(BasicUtil.isNotEmpty(true, varValues)) {
+                        value = varValues.get(0);
+                    }
                 }
             }
         }

@@ -171,7 +171,9 @@ public interface Run extends org.anyline.data.Run{
 
 	Run addVariable(List<Variable> vars);
 
-	String getFinalExecute(Boolean placeholder);
+    Run addVariableBlock(VariableBlock block);
+
+    String getFinalExecute(Boolean placeholder);
 	default String getFinalExecute() {
 		return getFinalExecute(true);
 	}
