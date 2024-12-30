@@ -128,11 +128,17 @@ public class TextRun extends AbstractRun implements Run {
 			LinkedHashMap<String, Config> params = configs.params();
 			for(String key:params.keySet()){
 				Config conf = params.get(key);
-				//SQL主体变量
+				//SQL主体变量 + 查询条件变量
 				List<Variable> vars = this.getVariables(key);
 				boolean overCondition = conf.isOverCondition();
 				boolean overValue = conf.isOverValue();
+				//相同key的variable
 				List<Object> values = conf.getValues();
+				for (Variable var : vars) {
+					if(overValue || !var.isSetValue()) {
+						var.setValue(false, values);
+					}
+				}
 				//相同key的查询条件
 				if(overCondition) {
 					List<Condition> cons = getConditions(key);
@@ -147,11 +153,6 @@ public class TextRun extends AbstractRun implements Run {
 								setConditionValue(conf.getSwt(), conf.getCompare(), key, key, values);
 							}
 						}
-					}
-				}
-				for (Variable var : vars) {
-					if(overValue || !var.isSetValue()) {
-						var.setValue(false, values);
 					}
 				}
 			}
@@ -394,11 +395,19 @@ public class TextRun extends AbstractRun implements Run {
 		if(null == key) {
 			return list;
 		}
+		//sql主体变量
 		for(Variable var:variables) {
 			if(null == var) {
 				continue;
 			}
 			if(key.equalsIgnoreCase(var.getKey())) {
+				list.add(var);
+			}
+		}
+		//查询条件变量
+		for(Condition condition:conditionChain.getConditions()){
+			Variable var = condition.getVariable(key);
+			if(null != var){
 				list.add(var);
 			}
 		}

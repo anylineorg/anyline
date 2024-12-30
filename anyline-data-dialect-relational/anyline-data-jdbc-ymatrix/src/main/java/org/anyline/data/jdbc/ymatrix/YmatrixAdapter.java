@@ -784,7 +784,7 @@ public class YmatrixAdapter extends PostgresGenusAdapter {
 	 */
 	@Override
 	public void parsePlaceholder(DataRuntime runtime, Run run) {
-		super.parseText(runtime, run);
+		super.parsePlaceholder(runtime, run);
 	}
 
 	/**

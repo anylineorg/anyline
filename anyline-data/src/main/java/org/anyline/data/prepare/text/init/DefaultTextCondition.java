@@ -93,7 +93,6 @@ public class DefaultTextCondition extends AbstractCondition implements Condition
 		this(null, text, false);
 	}
 	public DefaultTextCondition(String id, String text, boolean isStatic) {
-		join = null;
 		this.id = id; 
 		this.text = text; 
 		setVariableType(Condition.VARIABLE_PLACEHOLDER_TYPE_INDEX); 

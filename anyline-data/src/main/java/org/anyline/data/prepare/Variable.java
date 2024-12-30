@@ -61,5 +61,4 @@ public interface Variable extends Cloneable, Serializable{
 	Compare.EMPTY_VALUE_SWITCH getSwt() ;
 
 	void setSwt(Compare.EMPTY_VALUE_SWITCH swt) ;
-	 
-} 
+}

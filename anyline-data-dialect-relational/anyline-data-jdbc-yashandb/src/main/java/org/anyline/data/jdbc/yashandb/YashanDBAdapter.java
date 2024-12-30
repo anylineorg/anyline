@@ -791,7 +791,7 @@ public class YashanDBAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public void parsePlaceholder(DataRuntime runtime, Run run) {
-		super.parseText(runtime, run);
+		super.parsePlaceholder(runtime, run);
 	}
 
 	/**

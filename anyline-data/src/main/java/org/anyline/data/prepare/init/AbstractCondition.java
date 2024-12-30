@@ -19,6 +19,7 @@ package org.anyline.data.prepare.init;
 import org.anyline.data.prepare.*;
 import org.anyline.data.run.RunValue;
 import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;
+import org.anyline.util.BasicUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -92,7 +93,19 @@ public abstract class AbstractCondition implements Condition {
 	}
 	@Override
 	public boolean isActive() {
-		return active; 
+		if(active){
+			return true;
+		}
+		boolean chk = true;
+		for(Variable var:variables){
+			boolean varActive = false;
+			if(BasicUtil.isNotEmpty(true, var.getValues()) || this.getSwt() == EMPTY_VALUE_SWITCH.NULL || this.getSwt() == EMPTY_VALUE_SWITCH.SRC) {
+				varActive = true;
+			}
+			chk = chk && varActive;
+		}
+		active = chk;
+		return active;
 	}
 	@Override
 	public List<RunValue> getRunValues() {

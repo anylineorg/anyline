@@ -967,7 +967,8 @@ public abstract class AbstractRun implements Run {
 					if(condition.indexOf("'")<idx && condition.indexOf("'", idx+1) > 0) {
 						isTime = true;
 					}
-					if(!isTime) {
+					if(!isTime && !condition.contains(" ")) {
+						//不要有空格
 						// 需要解析的SQL
 						ParseResult parser = ConfigParser.parse(condition, false);
 						Object value = ConfigParser.getValues(parser);
@@ -975,6 +976,7 @@ public abstract class AbstractRun implements Run {
 						continue;
 					}
 				}
+				//1=1 ${AND (ID>:MAX OR ID<:MIN)} AND NAME IS NOT NULL ${AND LVL > :LVL} AND LVL < 20
 				//原生SQL 有可能带占位符
 				Condition con = new DefaultTextCondition(condition);
 				addCondition(con);

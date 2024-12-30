@@ -342,6 +342,7 @@ public class DefaultSQLStore extends SQLStore {
 				text = "\nAND " + text;
 			}
 			condition = new DefaultTextCondition(id, text, isStatic);
+			condition.setJoin(null);
 			String test = element.attributeValue("test");
 			condition.setTest(test);
 			if (null != prepare) {
