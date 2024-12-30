@@ -47,7 +47,7 @@ public class DefaultTextPrepare extends DefaultAutoPrepare implements TextPrepar
 		TextRun run = new TextRun();
 		run.setPrepare(this);
 		run.setRuntime(runtime);
-		if(null != order){
+		if(null != orders){
 			run.setOrders(orders);
 		}
 		if(null != group){
@@ -80,6 +80,9 @@ public class DefaultTextPrepare extends DefaultAutoPrepare implements TextPrepar
 		text = text.replaceAll("\\s{2,}", " ");
 		up = text.toUpperCase();
 		order = split("ORDER BY");
+		if(BasicUtil.isNotEmpty(order)) {
+			orders.add(order);
+		}
 		having = split("HAVING ");
 		group = split("GROUP BY");
 		where = split("WHERE ");
