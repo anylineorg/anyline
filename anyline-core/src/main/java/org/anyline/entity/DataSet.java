@@ -984,41 +984,20 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
         return getRow(DataRow.DEFAULT_PRIMARY_KEY, value);
     }
 
+    public DataSet distinct(boolean extract, String... keys) {
+        return distinct(extract, BeanUtil.array2list(keys));
+    }
+    public DataSet distinct(String... keys) {
+        return distinct(true, BeanUtil.array2list(keys));
+    }
     /**
      * 根据keys去重
      *
+     * @param extract 是否只保留keys列
      * @param keys keys
      * @return DataSet
      */
-    public DataSet distinct(String... keys) {
-        DataSet result = new DataSet();
-        Map<String, String> chks = new LinkedHashMap<>();
-        String ks = "";
-        for(String key:keys) {
-            ks += "${"+key+"}";
-        }
-        if (null != rows) {
-            for (DataRow row:rows) {
-                // 查看result中是否已存在
-                String tag = row.getString(ks);
-                if(chks.containsKey(tag)) {
-                    continue;
-                }
-                result.addRow(row.extract(keys));
-                chks.put(tag, "0");
-                /*
-                以下方式太慢(在有其他运算方式时才用)
-                String[] params = packParam(row, keys);
-                if (result.getRow(params) == null) {
-                    result.addRow(row.extract(keys));
-                }
-                */
-            }
-        }
-        result.copyProperty(this);
-        return result;
-    }
-    public DataSet distinct(List<String> keys) {
+    public DataSet distinct(boolean extract, List<String> keys) {
         DataSet result = new DataSet();
         if (null != rows) {
             for (DataRow row:rows) {
@@ -1026,16 +1005,23 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
                 String[] params = packParam(row, keys);
                 DataRow chk = result.getRow(params);
                 if (chk == null || chk.isEmpty()) {
-                    DataRow tmp = new DataRow();
-                    for (String key : keys) {
-                        tmp.put(key, row.get(key));
-                    }
+                    if(extract){
+                        DataRow tmp = new DataRow(row.keyCase());
+                        for (String key : keys) {
+                            tmp.put(key, row.get(key));
+                        }
                     result.addRow(tmp);
+                    }else{
+                        result.addRow(row);
+                    }
                 }
             }
         }
         result.copyProperty(this);
         return result;
+    }
+    public DataSet distinct(List<String> keys) {
+        return distinct(true, keys);
     }
 
     public DataSet clone() {
