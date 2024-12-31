@@ -841,7 +841,7 @@ public class SequoiaDBAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 	 * @param run TextRun
 	 */
 	@Override
-	protected Run fillQueryContent(DataRuntime runtime, org.anyline.data.run.TextRun run, Boolean placeholder, Boolean unicode) {
+	protected Run fillQueryContent(DataRuntime runtime, TextRun run, Boolean placeholder, Boolean unicode) {
 		return super.fillQueryContent(runtime, run, placeholder, unicode);
 	}
 

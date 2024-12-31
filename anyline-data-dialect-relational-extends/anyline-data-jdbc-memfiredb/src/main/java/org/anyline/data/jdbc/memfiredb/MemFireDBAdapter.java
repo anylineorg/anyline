@@ -783,8 +783,8 @@ public class MemFireDBAdapter extends PostgresGenusAdapter {
 	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
 	 */
 	@Override
-	public void parseText(DataRuntime runtime, org.anyline.data.run.TextRun run) {
-		super.parseText(runtime, run);
+	public void parsePlaceholder(DataRuntime runtime, Run run) {
+		super.parsePlaceholder(runtime, run);
 	}
 
 	/**
@@ -839,7 +839,7 @@ public class MemFireDBAdapter extends PostgresGenusAdapter {
 	 * @param run TextRun
 	 */
 	@Override
-	protected Run fillQueryContent(DataRuntime runtime, org.anyline.data.run.TextRun run, Boolean placeholder, Boolean unicode) {
+	protected Run fillQueryContent(DataRuntime runtime, TextRun run, Boolean placeholder, Boolean unicode) {
 		return super.fillQueryContent(runtime, run, placeholder, unicode);
 	}
 
