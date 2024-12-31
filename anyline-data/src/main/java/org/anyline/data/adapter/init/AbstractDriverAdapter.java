@@ -2566,7 +2566,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             }
             run.addConfigStore(configs);
             //如果是text类型 将解析文本并抽取出变量
-            parsePlaceholder(runtime, (TextRun)run);
+            parsePlaceholder(runtime, run);
             configs = run.getConfigs();
             //先把configs中的占位值取出
             if(null != configs) {
@@ -3558,7 +3558,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             run.setBatch(prepare.getBatch());
             run.setRuntime(runtime);
             run.setPrepare(prepare);
-            parsePlaceholder(runtime, (TextRun)run);
+            parsePlaceholder(runtime, run);
             run.addCondition(conditions);
             run.init(); //
             //构造最终的执行SQL
