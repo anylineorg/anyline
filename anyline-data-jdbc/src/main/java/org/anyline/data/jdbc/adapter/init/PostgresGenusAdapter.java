@@ -3696,10 +3696,13 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         runs.add(run);
         StringBuilder builder = run.getBuilder();
         ConfigStore configs = run.getConfigs();
-        builder.append("SELECT * FROM INFORMATION_SCHEMA.TRIGGERS");
-        configs.and("TRIGGER_SCHEMA", query.getSchemaName());
-        configs.and(Compare.LIKE_SIMPLE, "EVENT_OBJECT_TABLE", query.getTableName());
-        configs.in("EVENT_MANIPULATION", events);
+        builder.append("SELECT M.*,  F.relname AS TABLE_NAME, N.nspname AS SCHEMA_NAME \n" +
+            "FROM pg_trigger AS M \n" +
+            "LEFT JOIN pg_class AS F ON M.tgrelid = F.oid  \n" +
+            "LEFT JOIN pg_namespace AS N ON F.relnamespace = N.oid");
+        configs.and("M.tgname", query.getName());
+        configs.and("N.nspname", query.getSchemaName());
+        configs.and("F.relname", query.getTableName());
         return runs;
     }
 
@@ -3711,12 +3714,9 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
     @Override
     public MetadataFieldRefer initTriggerFieldRefer() {
         MetadataFieldRefer refer = new MetadataFieldRefer(Trigger.class);
-        refer.map(Trigger.FIELD_NAME, "TRIGGER_NAME");
-        refer.map(Trigger.FIELD_CATALOG, "TRIGGER_CATALOG");
-        refer.map(Trigger.FIELD_SCHEMA, "TRIGGER_SCHEMA");
-        refer.map(Trigger.FIELD_TABLE, "EVENT_OBJECT_TABLE");
-        refer.map(Trigger.FIELD_EVENT, "EVENT_MANIPULATION");
-        refer.map(Trigger.FIELD_DEFINITION, "ACTION_STATEMENT");
+        refer.map(Trigger.FIELD_NAME, "TGNAME");
+        refer.map(Trigger.FIELD_TABLE, "TABLE_NAME");
+        refer.map(Trigger.FIELD_SCHEMA, "SCHEMA_NAME");
         return refer;
     }
 
