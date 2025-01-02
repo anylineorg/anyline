@@ -4212,6 +4212,30 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         }
         return null;
     }
+    public DataRow string2json(){
+        for(String key:keySet()){
+            Object data = get(key);
+            if(data instanceof String){
+                String str = (String)data;
+                try {
+                    if (str.startsWith("{") && str.endsWith("}")) {
+                        data = DataRow.parseJson(keyCase, str);
+                    }
+                    if (str.startsWith("[{") && str.endsWith("}]")) {
+                        data = DataSet.parseJson(keyCase, str);
+                    }
+                }catch (Exception ignored){}
+            }else if(data instanceof DataRow){
+                DataRow row = (DataRow) data;
+                row.string2json();
+            }else if(data instanceof DataSet){
+                DataSet set = (DataSet)data;
+                set.string2json();
+            }
+            super.put(key, data);
+        }
+        return this;
+    }
     public String toString() {
         String result = this.getClass().getSimpleName();
         Object pv = getPrimaryValue();
@@ -4309,6 +4333,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         put(tar, result);
         return this;
     }
+
     public class Format implements Serializable{
         /**
          * 根据列名日期格式化,如果失败 默认 ""

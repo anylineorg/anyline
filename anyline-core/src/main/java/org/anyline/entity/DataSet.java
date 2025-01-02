@@ -3048,6 +3048,12 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
         return list;
     }
 
+    public DataSet string2json(){
+        for(DataRow row:rows){
+            row.string2json();
+        }
+        return this;
+    }
     /**
      * rows 列表中的数据格式化成json格式   不同与toJSON
      * map.put("type","list");
