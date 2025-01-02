@@ -4212,7 +4212,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         }
         return null;
     }
-    public DataRow string2json(){
+    public DataRow string2object(){
         for(String key:keySet()){
             Object data = get(key);
             if(data instanceof String){
@@ -4227,10 +4227,10 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
                 }catch (Exception ignored){}
             }else if(data instanceof DataRow){
                 DataRow row = (DataRow) data;
-                row.string2json();
+                row.string2object();
             }else if(data instanceof DataSet){
                 DataSet set = (DataSet)data;
-                set.string2json();
+                set.string2object();
             }
             super.put(key, data);
         }

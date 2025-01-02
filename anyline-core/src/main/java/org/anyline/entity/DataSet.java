@@ -3048,9 +3048,9 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
         return list;
     }
 
-    public DataSet string2json(){
+    public DataSet string2object(){
         for(DataRow row:rows){
-            row.string2json();
+            row.string2object();
         }
         return this;
     }
