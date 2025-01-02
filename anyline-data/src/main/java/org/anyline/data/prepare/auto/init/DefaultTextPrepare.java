@@ -21,9 +21,7 @@ import org.anyline.data.prepare.auto.TextPrepare;
 import org.anyline.data.run.Run;
 import org.anyline.data.run.TextRun;
 import org.anyline.data.runtime.DataRuntime;
-import org.anyline.entity.DataRow;
-import org.anyline.entity.GroupStore;
-import org.anyline.entity.OriginRow;
+import org.anyline.entity.*;
 import org.anyline.util.BasicUtil;
 
 public class DefaultTextPrepare extends DefaultAutoPrepare implements TextPrepare {
@@ -32,6 +30,9 @@ public class DefaultTextPrepare extends DefaultAutoPrepare implements TextPrepar
 	private String having;
 	private String group;
 	private String where;
+	private Integer limit;
+	private Integer offset;
+
 	public DefaultTextPrepare(String text) {
 		super(); 
 		this.text = text;
@@ -60,6 +61,19 @@ public class DefaultTextPrepare extends DefaultAutoPrepare implements TextPrepar
 		if(null != where){
 			run.addCondition(where);
 		}
+		if(null != limit || null != offset){
+			PageNavi navi = run.getPageNavi();
+			if(null == navi){
+				navi = new DefaultPageNavi();
+				run.setPageNavi(navi);
+			}
+			if(null != offset){
+				navi.limit(offset, limit);
+			}else{
+				navi.limit(0, limit);
+			}
+		}
+
 		return run;
 	}
 
@@ -79,6 +93,31 @@ public class DefaultTextPrepare extends DefaultAutoPrepare implements TextPrepar
 	private void split(){
 		text = text.replaceAll("\\s{2,}", " ");
 		up = text.toUpperCase();
+		String page = split("LIMIT");
+		if(BasicUtil.isNotEmpty(page)){
+			page = page.toUpperCase();
+			if(page.contains("OFFSET")){
+				//limit 10 offset 0
+				String[] tmps = page.split("OFFSET");
+				if(tmps.length == 2){
+					limit = BasicUtil.parseInt(tmps[0].trim(), null);
+					offset = BasicUtil.parseInt(tmps[1].trim(), null);
+				}
+			}else{
+				if(page.contains(",")){
+					//limit 0,10
+					String[] tmps = page.split(",");
+					if(tmps.length == 2){
+						offset = BasicUtil.parseInt(tmps[0], null);
+						limit = BasicUtil.parseInt(tmps[1], null);
+					}
+				}else{
+					//limit 10
+					limit = BasicUtil.parseInt(page, null);
+				}
+			}
+
+		}
 		order = split("ORDER BY");
 		if(BasicUtil.isNotEmpty(order)) {
 			orders.add(order);
