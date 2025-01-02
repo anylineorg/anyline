@@ -154,7 +154,10 @@ public abstract class AbstractRun implements Run {
 		}
 
 		if(null != configs) {
-			setPageNavi(configs.getPageNavi());
+			PageNavi navi = configs.getPageNavi();
+			if(null != navi) {
+				setPageNavi(navi);
+			}
 			/*OrderStore orderStore = configStore.getOrders();
 			List<Order> orders = null;
 			if (null != orderStore) {
