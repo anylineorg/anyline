@@ -4743,6 +4743,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
      * @param pks       唯一标识key(如编号,姓名)
      * @param classKeys 分类key(如年度,科目)
      * @param valueKeys 取值key(如分数,等级),如果不指定key则将整行作为value
+     * @param extract   是否删除逻辑主键(pks)之外的其他列
      * @return DataSet
      * 如果指定key
      * 返回结构 [
@@ -4759,8 +4760,8 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
      *      {编号:01,姓名:张三,2010-物理:{分数:100,等级:A}}
      *  ]
      */
-    public DataSet pivot(List<String> pks, List<String> classKeys, List<String> valueKeys) {
-        DataSet result = distinct(pks);
+    public DataSet pivot(boolean extract, List<String> pks, List<String> classKeys, List<String> valueKeys) {
+        DataSet result = distinct(extract, pks);
         DataSet classValues = distinct(classKeys);  // [{年度:2010,科目:数学},{年度:2010,科目:物理},{年度:2011,科目:数学}]
         for (DataRow row : result) {
             for (DataRow classValue : classValues) {
@@ -4800,11 +4801,17 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
         skip(false);
         return result;
     }
-
-    public DataSet pivot(String[] pks, String[] classKeys, String[] valueKeys) {
-        return pivot(BeanUtil.array2list(pks),BeanUtil.array2list(classKeys),BeanUtil.array2list(valueKeys));
+    public DataSet pivot(List<String> pks, List<String> classKeys, List<String> valueKeys) {
+        return pivot(true, pks, classKeys, valueKeys);
     }
 
+    public DataSet pivot(boolean extract, String[] pks, String[] classKeys, String[] valueKeys) {
+        return pivot(extract, BeanUtil.array2list(pks),BeanUtil.array2list(classKeys),BeanUtil.array2list(valueKeys));
+    }
+
+    public DataSet pivot(String[] pks, String[] classKeys, String[] valueKeys) {
+        return pivot(true, pks, classKeys, valueKeys);
+    }
     /**
      * 行转列
      * @param pk       唯一标识key(如姓名)多个key以,分隔如(编号,姓名)
@@ -4814,27 +4821,36 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
      *  表结构(姓名,科目,分数)
      *  返回结构 [{姓名:张三,数学:100,物理:90,英语:80},{姓名:李四,数学:100,物理:90,英语:80}]
      */
-    public DataSet pivot(String pk, String classKey, String valueKey) {
+    public DataSet pivot(boolean extract, String pk, String classKey, String valueKey) {
         List<String> pks = BeanUtil.array2list(pk.trim().split(","));
         List<String> classKeys = BeanUtil.array2list(classKey.trim().split(","));
         List<String> valueKeys = BeanUtil.array2list(valueKey.trim().split(","));
-        return pivot(pks, classKeys, valueKeys);
+        return pivot(extract, pks, classKeys, valueKeys);
     }
-    public DataSet pivot(String pk, String classKey) {
+    public DataSet pivot(String pk, String classKey, String valueKey) {
+        return pivot(true, pk, classKey, valueKey);
+    }
+    public DataSet pivot(boolean extract, String pk, String classKey) {
         List<String> pks = BeanUtil.array2list(pk.trim().split(","));
         List<String> classKeys = BeanUtil.array2list(classKey.trim().split(","));
         List<String> valueKeys = new ArrayList<>();
-        return pivot(pks, classKeys, valueKeys);
+        return pivot(extract, pks, classKeys, valueKeys);
+    }
+    public DataSet pivot(String pk, String classKey) {
+        return pivot(true, pk, classKey);
     }
 
-    public DataSet pivot(List<String> pks, List<String> classKeys, String ... valueKeys) {
+    public DataSet pivot(boolean extract, List<String> pks, List<String> classKeys, String ... valueKeys) {
         List<String> list = new ArrayList<>();
         if(null != valueKeys) {
             for(String item:valueKeys) {
                 list.add(item);
             }
         }
-        return pivot(pks, classKeys, valueKeys);
+        return pivot(extract, pks, classKeys, valueKeys);
+    }
+    public DataSet pivot(List<String> pks, List<String> classKeys, String ... valueKeys) {
+        return pivot(true, pks, classKeys, valueKeys);
     }
 
     /**
