@@ -151,37 +151,40 @@ public class ZipUtil {
 		ZipOutputStream out = new ZipOutputStream(new FileOutputStream(src), charset);
 		int len = -1;
 		byte[] buffer = new byte[1024*8];
-		while (entrys.hasMoreElements()) {
-			ZipEntry entity = entrys.nextElement();
-			String name = entity.getName();
+		try {
+			while (entrys.hasMoreElements()) {
+				ZipEntry entity = entrys.nextElement();
+				String name = entity.getName();
 
-			InputStream is = zip.getInputStream(entity); 		//原文件流
-			out.putNextEntry(new ZipEntry(name));
+				InputStream is = zip.getInputStream(entity);        //原文件流
+				out.putNextEntry(new ZipEntry(name));
 
-			boolean replace = false;							//是否有同名文件需要替换
-			for(String item:items.keySet()){
-				if (item.equals(name)) {
-					//如果有同名文件则替换
-					InputStream in = items.get(item);
-					while ((len = in.read(buffer)) != -1) {
+				boolean replace = false;                            //是否有同名文件需要替换
+				for (String item : items.keySet()) {
+					if (item.equals(name)) {
+						//如果有同名文件则替换
+						InputStream in = items.get(item);
+						while ((len = in.read(buffer)) != -1) {
+							out.write(buffer, 0, len);
+						}
+						in.close();
+						replace = true;
+						break;
+					}
+				}
+				if (!replace) {
+					//如果没有替换则用原文件
+					while ((len = is.read(buffer)) != -1) {
 						out.write(buffer, 0, len);
 					}
-					in.close();
-					replace = true;
-					break;
 				}
+				is.close();
 			}
-			if(!replace){
-				//如果没有替换则用原文件
-				while ((len = is.read(buffer)) != -1) {
-					out.write(buffer, 0, len);
-				}
-			}
-			is.close();
+		}finally {
+			out.close();
+			zip.close();
+			tempFile.delete();
 		}
-		out.close();
-		zip.close();
-		tempFile.delete();
 	}
 	public static void replace(File src, String item, InputStream in) throws Exception {
 		replace(src, item, in, StandardCharsets.UTF_8);
