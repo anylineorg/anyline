@@ -147,13 +147,13 @@ public class ZipUtil {
 		}
 		File tempFile = FileUtil.createTempFile(src);
 		ZipFile zip = new ZipFile(tempFile, charset);
-		Enumeration<? extends ZipEntry> entrys = zip.entries();
-		ZipOutputStream out = new ZipOutputStream(new FileOutputStream(src), charset);
+		Enumeration<? extends ZipEntry> entries = zip.entries();
+		ZipOutputStream out = new ZipOutputStream(Files.newOutputStream(src.toPath()), charset);
 		int len = -1;
 		byte[] buffer = new byte[1024*8];
 		try {
-			while (entrys.hasMoreElements()) {
-				ZipEntry entity = entrys.nextElement();
+			while (entries.hasMoreElements()) {
+				ZipEntry entity = entries.nextElement();
 				String name = entity.getName();
 
 				InputStream is = zip.getInputStream(entity);        //原文件流
