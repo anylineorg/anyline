@@ -4221,8 +4221,10 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
                     if (str.startsWith("{") && str.endsWith("}")) {
                         data = DataRow.parseJson(keyCase, str);
                     }
-                    if (str.startsWith("[{") && str.endsWith("}]")) {
-                        data = DataSet.parseJson(keyCase, str);
+                    if (str.startsWith("[") && str.endsWith("]")) {
+                        if(str.substring(1).trim().startsWith("{")) {
+                            data = DataSet.parseJson(keyCase, str);
+                        }
                     }
                 }catch (Exception ignored){}
             }else if(data instanceof DataRow){
