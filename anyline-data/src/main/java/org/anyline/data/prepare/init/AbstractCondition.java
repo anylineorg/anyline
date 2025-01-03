@@ -96,15 +96,17 @@ public abstract class AbstractCondition implements Condition {
 		if(active){
 			return true;
 		}
-		boolean chk = true;
-		for(Variable var:variables){
-			boolean varActive = false;
-			if(BasicUtil.isNotEmpty(true, var.getValues()) || this.getSwt() == EMPTY_VALUE_SWITCH.NULL || this.getSwt() == EMPTY_VALUE_SWITCH.SRC) {
-				varActive = true;
+		if(null != variables && !variables.isEmpty()) {
+			boolean chk = true;
+			for (Variable var : variables) {
+				boolean varActive = false;
+				if (BasicUtil.isNotEmpty(true, var.getValues()) || this.getSwt() == EMPTY_VALUE_SWITCH.NULL || this.getSwt() == EMPTY_VALUE_SWITCH.SRC) {
+					varActive = true;
+				}
+				chk = chk && varActive;
 			}
-			chk = chk && varActive;
+			active = chk;
 		}
-		active = chk;
 		return active;
 	}
 	@Override
