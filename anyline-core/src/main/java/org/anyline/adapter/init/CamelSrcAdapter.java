@@ -19,19 +19,22 @@ package org.anyline.adapter.init;
 import org.anyline.adapter.KeyAdapter;
 import org.anyline.util.BeanUtil;
 
-public class CamelAdapter implements KeyAdapter {
-    private static KeyAdapter instance = new CamelAdapter();
+/**
+ * 驼峰转下划线
+ */
+public class CamelSrcAdapter implements KeyAdapter {
+    private static KeyAdapter instance = new CamelSrcAdapter();
     @Override
     public String key(String key) {
         if(null != key) {
-            return BeanUtil.Camel(key);
+            return BeanUtil.camel_(key);
         }
         return null;
     }
 
     @Override
     public KEY_CASE getKeyCase() {
-        return KEY_CASE.Camel;
+        return KEY_CASE.CAMEL_SRC;
     }
 
     public static KeyAdapter getInstance() {

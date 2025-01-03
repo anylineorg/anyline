@@ -16,9 +16,7 @@
 
 package org.anyline.adapter;
 
-import org.anyline.adapter.init.LowerKeyAdapter;
-import org.anyline.adapter.init.UpperKeyAdapter;
-import org.anyline.adapter.init.SrcKeyAdapter;
+import org.anyline.adapter.init.*;
 
 import java.io.Serializable;
 
@@ -50,18 +48,33 @@ public interface KeyAdapter extends Serializable {
     public String key(String key);
     public KEY_CASE getKeyCase();
     public static KeyAdapter parse(KEY_CASE keyCase) {
-        KeyAdapter keyAdapter;
+        KeyAdapter adapter;
         switch (keyCase) {
-            case UPPER:
-                keyAdapter = UpperKeyAdapter.getInstance();
+            case UPPER:        //转大写
+                adapter = UpperKeyAdapter.getInstance();
                 break;
-            case LOWER:
-                keyAdapter = LowerKeyAdapter.getInstance();
+            case LOWER:        //转小写
+                adapter = LowerKeyAdapter.getInstance();
+                break;
+            case Camel:        //转大驼峰
+                adapter = UpperCamelAdapter.getInstance();
+                break;
+            case camel:       //转小驼峰
+                adapter = LowerCamelAdapter.getInstance();
+                break;
+            case CAMEL_SRC:   //驼峰转下划线
+                adapter = CamelSrcAdapter.getInstance();
+                break;
+            case CAMEL_LOWER: //驼峰转下划线 转小写
+                adapter = CamelLowerAdapter.getInstance();
+                break;
+            case CAMEL_UPPER: //驼峰转下划线 转大写
+                adapter = CamelUpperAdapter.getInstance();
                 break;
             default:
-                keyAdapter = SrcKeyAdapter.getInstance();
+                adapter = SrcKeyAdapter.getInstance();
         }
-        return keyAdapter;
+        return adapter;
     }
 
 }
