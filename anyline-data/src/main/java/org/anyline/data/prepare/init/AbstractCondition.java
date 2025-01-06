@@ -96,6 +96,9 @@ public abstract class AbstractCondition implements Condition {
 		if(active){
 			return true;
 		}
+		if(null == variables || variables.isEmpty()){
+			active = true;
+		}
 		if(null != variables && !variables.isEmpty()) {
 			boolean chk = true;
 			for (Variable var : variables) {
