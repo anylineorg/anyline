@@ -51,11 +51,16 @@ public class SolonEnvironmentWorker extends DefaultEnvironmentWorker implements 
         });
         context.subWrapsOfType(DataSource.class, bw->{
             try {
-                DataSourceHolder.reg(bw.name(), (DataSource)bw.raw());
+                DataSource ds = bw.raw();
+                DataSourceHolder.reg(bw.name(), ds);
+                if(bw.typed()){
+                    DataSourceHolder.reg("default", ds);
+                }
             }catch (Exception e) {
                 log.error("注册数据源异常", e);
             }
         });
+
     }
 
     public SolonEnvironmentWorker(AppContext context) {
