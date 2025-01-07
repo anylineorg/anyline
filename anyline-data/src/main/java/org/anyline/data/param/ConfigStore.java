@@ -1903,7 +1903,8 @@ public interface ConfigStore extends Cloneable{
 	ConfigStore columns(List<String> columns);
 	List<String> columns();
 	LinkedHashMap<String, Column> getColumns();
-
+	ConfigStore distinct(Boolean distinct);
+	Boolean distinct();
 	/**
 	 * 执行查询或更新前 有前置命令 如创建临时表等
 	 * @param prepares RunPrepare

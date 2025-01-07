@@ -83,7 +83,7 @@ public abstract class AbstractRun implements Run {
 
 	protected ACTION action;
 	protected boolean emptyCondition = true;
-	protected String distinct = "";
+	protected Boolean distinct = false;
 	protected String alias;
 	protected List<Join> joins = new ArrayList<Join>();//关联表
 	protected boolean unionAll = false;
@@ -115,6 +115,12 @@ public abstract class AbstractRun implements Run {
 		return true;
 	}
 
+	public void distinct(Boolean distinct) {
+		this.distinct = distinct;
+	}
+	public Boolean distinct() {
+		return distinct;
+	}
 	@Override
 	public void slice(boolean slice) {
 		this.slice = slice;
@@ -519,6 +525,10 @@ public abstract class AbstractRun implements Run {
 				}
 				this.configs.addStaticValue(configs.getStaticValues());
 				this.configs.params(configs.params());
+				if(null != configs.distinct()) {
+					this.configs.distinct(configs.distinct());
+					this.distinct = configs.distinct();
+				}
 			}
 		}
 	}

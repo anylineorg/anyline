@@ -87,7 +87,8 @@ public interface Run {
     default String getFinalExecute() {
         return getFinalExecute(true);
     }
-
+    void distinct(Boolean distinct);
+    Boolean distinct();
     /**
      * SQL是否支持换行
      * @return boolean

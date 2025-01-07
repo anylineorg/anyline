@@ -3756,21 +3756,29 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
     /**
      * 按keys分组
      *
-     * @param keys keys
+     * @param keys 分组依据列
+     * @param extract 分组结果是否只保留keys列
      * @return DataSet
      */
-    public DataSet group(String field, Compare compare, String... keys) {
-        DataSet groups = distinct(keys);
+    public DataSet group(boolean extract, String field, Compare compare, String... keys) {
+        DataSet groups = distinct(extract, keys);
         groups.dispatchs(compare, field, true, false, this, keys);
         return groups;
     }
 
-    public DataSet group(String... keys) {
-        return group("ITEMS",Compare.EQUAL, keys);
+    public DataSet group(String field, Compare compare, String... keys) {
+        return group(true, field, compare, keys);
+    }
+    public DataSet group(boolean extract, String... keys) {
+        return group(extract, "ITEMS", Compare.EQUAL, keys);
     }
 
+    public DataSet group(String... keys) {
+        return group(true, keys);
+    }
     /**
      * 分组聚合
+     * @param extract 分组结果是否只保留keys列
      * @param items 是否保留条目 如果为空则不保留 否则保留会在每个分组中添加items属性用来保存当前分组中的条件
      * @param alias 聚合结果保存属性 如果不指定则以 factor_agg命名 如 age_avg
      * @param field 计算因子属性 取条目中的factor属性的值参与计算
@@ -3791,12 +3799,12 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
      *      ROUND_UNNECESSARY=7 断言所请求的操作具有准确的结果，因此不需要舍入。如果在产生不精确结果的操作上指定了该舍入模式，则会抛出ArithmeticException异常
      * @return DataSet
      */
-    public DataSet group(String items, String alias, String field, Aggregation agg, int scale, int round, String ... groups) {
+    public DataSet group(boolean extract, String items, String alias, String field, Aggregation agg, int scale, int round, String ... groups) {
         String items_key = "ITEMS";
         if(BasicUtil.isNotEmpty(items)) {
             items_key = items;
         }
-        DataSet gps = group(items_key, Compare.EQUAL, groups);
+        DataSet gps = group(extract, items_key, Compare.EQUAL, groups);
         for(DataRow group:gps) {
             group.put(alias, group.getItems().agg(agg, scale, round, field));
             if(BasicUtil.isEmpty(items)) {
@@ -3806,6 +3814,9 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
         return gps;
     }
 
+    public DataSet group(String items, String alias, String field, Aggregation agg, int scale, int round, String ... groups) {
+        return group(true, items, alias, field, agg, scale, round, groups);
+    }
     /**
      * 同一规则分组后,多次聚合
      * @param items 是否保留条目 如果为空则不保留 否则保留会在每个分组中添加items属性用来保存当前分组中的条件
@@ -3813,12 +3824,12 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
      * @param groups 分组条件 指定属性相同的条目合成一组
      * @return DataSet
      */
-    public DataSet group(String items, List<AggregationConfig> aggs, String ... groups) {
+    public DataSet group(boolean extract, String items, List<AggregationConfig> aggs, String ... groups) {
         String items_key = "ITEMS";
         if(BasicUtil.isNotEmpty(items)) {
             items_key = items;
         }
-        DataSet gps = group(items_key, Compare.EQUAL, groups);
+        DataSet gps = group(extract, items_key, Compare.EQUAL, groups);
         for(DataRow group:gps) {
             for(AggregationConfig config:aggs) {
                 group.put(config.getAlias(), group.getItems().agg(config.getAggregation(), config.getScale(), config.getRound(), config.getField()));
@@ -3829,16 +3840,26 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
         }
         return gps;
     }
+    public DataSet group(String items, List<AggregationConfig> aggs, String ... groups) {
+        return group(true, items, aggs, groups);
+    }
 
-    public DataSet group(String field, Aggregation agg, String ... groups) {
+    public DataSet group(boolean extract, String field, Aggregation agg, String ... groups) {
         String alias = agg.code();
         if(BasicUtil.isNotEmpty(field)) {
             alias = field + "_" + alias;
         }
-        return group(null, alias, field, agg, 0, 0, groups);
+        return group(extract, null, alias, field, agg, 0, 0, groups);
+    }
+
+    public DataSet group(String field, Aggregation agg, String ... groups) {
+        return group(true, field, agg, groups);
+    }
+    public DataSet group(boolean extract, Aggregation agg, String ... fields) {
+        return group(extract, null, agg.code(), null, agg, 0, 0, fields);
     }
     public DataSet group(Aggregation agg, String ... fields) {
-        return group(null, agg.code(), null, agg, 0, 0, fields);
+        return group(true, agg, fields);
     }
     public Object agg(String type, String field) {
         Aggregation agg = Aggregation.valueOf(field);

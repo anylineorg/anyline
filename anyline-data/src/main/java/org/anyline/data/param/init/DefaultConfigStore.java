@@ -48,6 +48,7 @@ public class DefaultConfigStore implements ConfigStore {
 	List<AggregationConfig> aggregations = new ArrayList<>()							; // 聚合
 	protected GroupStore groups = new DefaultGroupStore()								; // 分组
 	protected ConfigStore having														;
+	protected Boolean distinct = false													; //是否去重
 	protected LinkedHashMap<String, Column> columns 		= new LinkedHashMap<>()		; // 查询或插入或更新的列
 	protected LinkedHashMap<String, Column> excludes 		= new LinkedHashMap<>()		; // 不查询或插入或更新的列
 	protected List<Object> values														; // 保存values后续parse用到
@@ -1675,7 +1676,13 @@ public class DefaultConfigStore implements ConfigStore {
 	public LinkedHashMap<String, Column> getColumns() {
 		return columns;
 	}
-
+	public ConfigStore distinct(Boolean distinct) {
+		this.distinct = distinct;
+		return this;
+	}
+	public Boolean distinct() {
+		return distinct;
+	}
 	/**
 	 * 执行查询或更新前 有前置命令 如创建临时表等
 	 * @param prepares RunPrepare
