@@ -2760,7 +2760,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
     protected Run fillQueryContent(DataRuntime runtime, StringBuilder builder, TableRun run, Boolean placeholder, Boolean unicode) {
         TablePrepare prepare = (TablePrepare)run.getPrepare();
         builder.append("SELECT ");
-        if(null != prepare.getDistinct()) {
+        Boolean distinct = run.distinct();
+        if(null != distinct && distinct){
+            builder.append("distinct");
+        } else if(null != prepare.getDistinct()) {
             builder.append(prepare.getDistinct());
         }
         builder.append(BR_TAB);
@@ -5372,7 +5375,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				meta.setSchema(ks[1]);
 				meta.setName(ks[2]);
 			}else{
-				throw new RuntimeException("无法实别schema或catalog(子类未" + this.getClass().getSimpleName() + "实现)");
+				throw new RuntimeException("无法实别schema或catalog(子类" + this.getClass().getSimpleName() + "未实现)");
 			}
 		}
 		return meta;

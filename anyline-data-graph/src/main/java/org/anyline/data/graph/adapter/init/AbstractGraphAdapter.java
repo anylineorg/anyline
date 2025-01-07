@@ -2704,7 +2704,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
                 meta.setSchema(ks[0]);
                 meta.setName(ks[1]);
             }else{
-                throw new RuntimeException("无法实别schema或catalog(子类未" + this.getClass().getSimpleName() + "实现)");
+                throw new RuntimeException("无法实别schema或catalog(子类" + this.getClass().getSimpleName() + "未实现)");
             }
         }
         return meta;
