@@ -13,12 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.anyline.environment.solon;
 
 import org.anyline.adapter.EnvironmentWorker;
 import org.anyline.adapter.init.DefaultEnvironmentWorker;
-import org.anyline.annotation.Component;
 import org.anyline.bean.BeanDefine;
 import org.anyline.util.ClassUtil;
 import org.noear.solon.Solon;
