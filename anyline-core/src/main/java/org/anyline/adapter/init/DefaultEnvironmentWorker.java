@@ -41,30 +41,31 @@ import java.util.jar.JarFile;
 
 public class DefaultEnvironmentWorker implements EnvironmentWorker {
     protected static Log log = LogProxy.get(DefaultEnvironmentWorker.class);
-    private static DefaultEnvironmentWorker instance = null;
     private static final Map<String, Object> factory = new HashMap<>();
+
     public static EnvironmentWorker start(File config) {
-        if(null == instance) {
-            instance = new DefaultEnvironmentWorker();
+        if(null == ConfigTable.environment) {
+            ConfigTable.setEnvironment(new DefaultEnvironmentWorker());
         }
-        ConfigTable.setEnvironment(instance);
+
         if(null != config) {
             ConfigTable.parseEnvironment(FileUtil.read(config, StandardCharsets.UTF_8).toString(), config.getName());
         }
+
         try {
             loadBean();
         }catch (Exception e) {
             e.printStackTrace();
         }
 
-        Map<String, LoadListener> listeners = instance.getBeans(LoadListener.class);
+        Map<String, LoadListener> listeners = ConfigTable.environment().getBeans(LoadListener.class);
         for(LoadListener listener:listeners.values()) {
             listener.start();
         }
         for(LoadListener listener:listeners.values()) {
             listener.after();
         }
-        return instance;
+        return ConfigTable.environment();
     }
     public static EnvironmentWorker start() {
         return start(null);
@@ -186,7 +187,7 @@ public class DefaultEnvironmentWorker implements EnvironmentWorker {
                     }
                     Object bean = c.newInstance();
                     autowired(bean);
-                    instance.reg(beanName, bean);
+                    ConfigTable.environment().regBean(beanName, bean);
                 }
             }catch (Exception e) {
                 e.printStackTrace();
@@ -222,10 +223,10 @@ public class DefaultEnvironmentWorker implements EnvironmentWorker {
                     }
                 }
                 if(BasicUtil.isNotEmpty(beanName)) {
-                    val = instance.getBean(beanName);
+                    val = ConfigTable.environment().getBean(beanName);
                 }else{
                     Class beanClass = field.getType();
-                    val = instance.getBean(beanClass);
+                    val = ConfigTable.environment().getBean(beanClass);
                 }
                 BeanUtil.setFieldValue(object, field, val);
             }
@@ -274,7 +275,7 @@ public class DefaultEnvironmentWorker implements EnvironmentWorker {
             String[] kv = line.split("=");
             if(kv.length == 2) {
                 try {
-                    instance.reg(kv[0], new DefaultBeanDefine(kv[1], false));
+                    ConfigTable.environment().regBean(kv[0], new DefaultBeanDefine(kv[1], false));
                 }catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -328,7 +329,7 @@ public class DefaultEnvironmentWorker implements EnvironmentWorker {
         return bean;
     }
     public Object instance(String name, BeanDefine define) {
-        Object bean = instance.instance(define);
+        Object bean = ConfigTable.environment().instance(define);
         if(null != name) {
             factory.put(name, bean);
         }
