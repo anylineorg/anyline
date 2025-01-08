@@ -26,7 +26,6 @@ import org.noear.solon.core.BeanWrap;
 
 import java.util.Map;
 
-@Component
 public class SolonEnvironmentWorker extends DefaultEnvironmentWorker implements EnvironmentWorker {
     @Override
     public Object get(String key) {
