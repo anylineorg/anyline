@@ -88,7 +88,10 @@ public class DefaultAutoCondition extends AbstractCondition implements AutoCondi
 		if(BasicUtil.isNotEmpty(true, values) || swt == EMPTY_VALUE_SWITCH.NULL || swt == EMPTY_VALUE_SWITCH.SRC) {
 			setActive(true); 
 		} 
-	} 
+	}
+	public boolean isActive(){
+		return active;
+	}
 	public DefaultAutoCondition(String text) {
 		this.text = text; 
 		this.active = true; 
