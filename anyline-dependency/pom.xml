@@ -33,7 +33,7 @@
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<anyline.version>8.7.2-SNAPSHOT</anyline.version>
 
-		<solon.version>2.9.1</solon.version>
+		<solon.version>3.0.5</solon.version>
 		<spring.version>5.3.23</spring.version>
 		<spring-boot.version>2.6.12</spring-boot.version>
 		<vertx.version>4.5.7</vertx.version>
