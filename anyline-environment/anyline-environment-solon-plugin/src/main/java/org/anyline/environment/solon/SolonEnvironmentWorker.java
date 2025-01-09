@@ -20,6 +20,7 @@ import org.anyline.adapter.init.DefaultEnvironmentWorker;
 import org.anyline.bean.BeanDefine;
 import org.anyline.util.ClassUtil;
 import org.noear.solon.Solon;
+import org.noear.solon.core.AppContext;
 import org.noear.solon.core.BeanWrap;
 
 import java.util.Map;
@@ -76,28 +77,29 @@ public class SolonEnvironmentWorker extends DefaultEnvironmentWorker implements 
 
     public boolean reg(String name, Object bean) {
         Object type = bean;
+        AppContext context = Solon.context();
         if (bean instanceof BeanDefine) {
             BeanDefine define = (BeanDefine) bean;
             if (name.endsWith("default")) {
                 define.setPrimary(true);
             }
 
-            BeanWrap bw = Solon.context().wrap(name, instance(null, define), define.isPrimary());
+            BeanWrap bw = context.wrap(name, instance(null, define), define.isPrimary());
             //todo:包装后还要注册
-            Solon.context().putWrap(name, bw);
+            context.putWrap(name, bw);
             if (define.isPrimary()) {
                 //默认形态，则再添加类型注册
-                Solon.context().putWrap(define.getType(), bw);
+                context.putWrap(define.getType(), bw);
             }
-            Solon.context().wrapPublish(bw);
+            context.wrapPublish(bw);
         } else if (bean instanceof Class) {
             Class clazz = (Class) bean;
-            Solon.context().beanMake(clazz);
+            context.beanMake(clazz);
         } else {
-            BeanWrap bw = Solon.context().wrap(name, bean);
+            BeanWrap bw = context.wrap(name, bean);
             //todo:包装后还要注册
-            Solon.context().putWrap(name, bw);
-            Solon.context().wrapPublish(bw);
+            context.putWrap(name, bw);
+            context.wrapPublish(bw);
         }
 
         log.debug("[reg bean][name:{}][instance:{}]", name, type);
