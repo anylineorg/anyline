@@ -1650,18 +1650,24 @@ public class DefaultConfigStore implements ConfigStore {
 	 * @param columns 需要查询的列
 	 * @return ConfigStore
 	 */
-	public ConfigStore columns(String ... columns) {
+	public ConfigStore columns(Boolean distinct, String ... columns) {
 		List<String> list = SQLUtil.columns(columns);
         for(String column:list) {
 			this.columns.put(column.toUpperCase(), new Column(column));
         }
+		if(null != distinct) {
+			this.distinct = distinct;
+		}
 		return this;
 	}
-	public ConfigStore columns(List<String> columns) {
+	public ConfigStore columns(Boolean distinct, List<String> columns) {
 		if(null != columns) {
 			for(String column:columns) {
 				this.columns.put(column.toUpperCase(), new Column(column));
 			}
+		}
+		if(null != distinct) {
+			this.distinct = distinct;
 		}
 		return this;
 	}
