@@ -21,9 +21,10 @@ import org.anyline.data.adapter.DriverAdapterHolder;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.runtime.init.AbstractRuntime;
 import org.anyline.data.util.DataSourceUtil;
-import org.anyline.util.ConfigTable;
 import org.anyline.log.Log;
 import org.anyline.log.LogProxy;
+import org.anyline.util.BasicUtil;
+import org.anyline.util.ConfigTable;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -62,6 +63,9 @@ public class JDBCRuntime extends AbstractRuntime implements DataRuntime {
             url = this.url;
             driver = this.driver;
             keep = true;
+            if(BasicUtil.isEmpty(feature)) {
+                feature = BasicUtil.concat("_", url, driver);
+            }
         }
         if(!keep) {
             connection = true;
@@ -69,7 +73,7 @@ public class JDBCRuntime extends AbstractRuntime implements DataRuntime {
             url = null;
         }
 
-        if(null == feature) {
+        if(BasicUtil.isEmpty(feature)) {
             if(connection || null == driver || null == url) {
                 if (null != processor) {
                     Connection con = null;
