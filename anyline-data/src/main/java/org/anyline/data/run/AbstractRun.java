@@ -119,6 +119,12 @@ public abstract class AbstractRun implements Run {
 		this.distinct = distinct;
 	}
 	public Boolean distinct() {
+		if(null != distinct && distinct){
+			return true;
+		}
+		if(null != configs && null != configs.distinct()){
+			return configs.distinct();
+		}
 		return distinct;
 	}
 	@Override
@@ -527,7 +533,6 @@ public abstract class AbstractRun implements Run {
 				this.configs.params(configs.params());
 				if(null != configs.distinct()) {
 					this.configs.distinct(configs.distinct());
-					this.distinct = configs.distinct();
 				}
 			}
 		}

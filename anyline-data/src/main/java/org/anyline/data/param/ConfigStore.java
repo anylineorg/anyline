@@ -1899,8 +1899,14 @@ public interface ConfigStore extends Cloneable{
 	 * @param columns 需要查询的列
 	 * @return ConfigStore
 	 */
-	ConfigStore columns(String ... columns);
-	ConfigStore columns(List<String> columns);
+	ConfigStore columns(Boolean distinct, String ... columns);
+	default ConfigStore columns(String ... columns) {
+		return columns((Boolean)null, columns);
+	}
+	ConfigStore columns(Boolean distinct, List<String> columns);
+	default ConfigStore columns(List<String> columns) {
+		return columns((Boolean)null, columns);
+	}
 	List<String> columns();
 	LinkedHashMap<String, Column> getColumns();
 	ConfigStore distinct(Boolean distinct);

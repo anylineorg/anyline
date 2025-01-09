@@ -70,7 +70,7 @@ public class AnylineProperty {
     protected boolean printExceptionStackTrace					= ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE			;   
 
     /**
-     * 慢sql, 如果配置了>0的毫秒数, 在sql执行超出时限后会输出日志, 并调用DMListener.slow
+     * 慢sql, 如果配置了大于0的毫秒数, 在sql执行超出时限后会输出日志, 并调用DMListener.slow
      */
     protected long slowSqlMillis								= ConfigTable.SLOW_SQL_MILLIS		    ; 	
     /**
