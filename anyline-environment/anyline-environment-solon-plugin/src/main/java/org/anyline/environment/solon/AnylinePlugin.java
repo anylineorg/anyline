@@ -28,6 +28,7 @@ import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.util.ConfigTable;
 import org.noear.solon.core.AppContext;
 import org.noear.solon.core.Plugin;
+import org.noear.solon.data.tran.DataSourceProxy;
 
 import javax.sql.DataSource;
 import java.util.Hashtable;
@@ -49,7 +50,8 @@ public class AnylinePlugin implements Plugin {
 
         context.subWrapsOfType(DataSource.class, bw -> {
             try {
-                DataSource ds = bw.raw();
+                DataSource ds = new DataSourceProxy(bw.raw()); //todo:使用 DataSourceProxy 对接 solon 事务管理
+
                 DataSourceHolder.reg(bw.name(), ds);
                 if (bw.typed()) {
                     DataSourceHolder.reg("default", ds);

@@ -89,6 +89,7 @@ public class SolonEnvironmentWorker extends DefaultEnvironmentWorker implements 
                 //默认形态，则再添加类型注册
                 Solon.context().putWrap(define.getType(), bw);
             }
+            Solon.context().wrapPublish(bw);
         } else if (bean instanceof Class) {
             Class clazz = (Class) bean;
             Solon.context().beanMake(clazz);
@@ -96,6 +97,7 @@ public class SolonEnvironmentWorker extends DefaultEnvironmentWorker implements 
             BeanWrap bw = Solon.context().wrap(name, bean);
             //todo:包装后还要注册
             Solon.context().putWrap(name, bw);
+            Solon.context().wrapPublish(bw);
         }
 
         log.debug("[reg bean][name:{}][instance:{}]", name, type);
