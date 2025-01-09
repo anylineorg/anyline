@@ -3384,7 +3384,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
      * dispatchs("children",items, "CD:BASE_CD")
      *
      * @param compare   匹配方式 默认=
-     * @param field     默认"ITEMS"
+     * @param field     默认"items"
      * @param unique    是否只分配一次(同一个条目不能分配到多个组中)
      * @param recursion 是否递归 所有子级以相同条件执行dispatchs
      * @param items     items默认this
@@ -3399,7 +3399,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
             throw new RuntimeException("未指定对应关系");
         }
         if (BasicUtil.isEmpty(field)) {
-            field = "ITEMS";
+            field = "items";
         }
         for (DataRow row : rows) {
             if (null == row.get(field)) {
@@ -3408,7 +3408,16 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
                 //避免无限递归
 
                 //引用自己
-                set.remove(row);
+                int index = set.indexOf(row);
+                if(index != -1){
+                    set.remove(row);
+                    DataRow copy = row.clone();
+                    if(index != 0){
+                        set.addRow(index, copy);
+                    }else{
+                        set.add(copy);
+                    }
+                }
                 //检测相互引用
                 DataSet parents = row.getAllParent(field);
 
@@ -3444,7 +3453,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
     }
 
     public DataSet dispatchs(Compare compare, boolean unique, boolean recursion, DataSet items, String... keys) {
-        return dispatchs(compare, "ITEMS", unique, recursion, items, keys);
+        return dispatchs(compare, "items", unique, recursion, items, keys);
     }
 
     public DataSet dispatchs(Compare compare, String field, DataSet items, String... keys) {
@@ -3452,10 +3461,10 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
     }
 
     public DataSet dispatchs(Compare compare, DataSet items, String... keys) {
-        return dispatchs(compare, "ITEMS", items, keys);
+        return dispatchs(compare, "items", items, keys);
     }
     public DataSet dispatchs(Compare compare, boolean unique, boolean recursion, String... keys) {
-        return dispatchs(compare, "ITEMS", unique, recursion, this, keys);
+        return dispatchs(compare, "items", unique, recursion, this, keys);
     }
 
     public DataSet dispatchs(Compare compare, String field, boolean unique, boolean recursion, String... keys) {
@@ -3480,7 +3489,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
             throw new RuntimeException("未指定对应关系");
         }
         if (BasicUtil.isEmpty(field)) {
-            field = "ITEMS";
+            field = "items";
         }
         for (DataRow row : rows) {
             if (null == row.get(field)) {
@@ -3519,16 +3528,16 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
     }
 
     public DataSet dispatchs(boolean unique, boolean recursion, DataSet items, String... keys) {
-        return dispatchs(Compare.EQUAL, "ITEMS", unique, recursion, items, keys);
+        return dispatchs(Compare.EQUAL, "items", unique, recursion, items, keys);
     }
     public DataSet dispatchs(String field, DataSet items, String... keys) {
         return dispatchs(Compare.EQUAL, field,false, false, items, keys);
     }
     public DataSet dispatchs(DataSet items, String... keys) {
-        return dispatchs(Compare.EQUAL, "ITEMS", items, keys);
+        return dispatchs(Compare.EQUAL, "items", items, keys);
     }
     public DataSet dispatchs(boolean unique, boolean recursion, String... keys) {
-        return dispatchs(Compare.EQUAL, "ITEMS", unique, recursion, this, keys);
+        return dispatchs(Compare.EQUAL, "items", unique, recursion, this, keys);
     }
 
     public DataSet dispatchs(String field, boolean unique, boolean recursion, String... keys) {
@@ -3552,7 +3561,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
 
     /**
      * 直接调用dispatchs
-     * @param field     默认"ITEMS"
+     * @param field     默认"items"
      * @param unique    是否只分配一次(同一个条目不能分配到多个组中)
      * @param recursion 是否递归
      * @param items     items
@@ -3770,7 +3779,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
         return group(true, field, compare, keys);
     }
     public DataSet group(boolean extract, String... keys) {
-        return group(extract, "ITEMS", Compare.EQUAL, keys);
+        return group(extract, "items", Compare.EQUAL, keys);
     }
 
     public DataSet group(String... keys) {
@@ -3800,7 +3809,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
      * @return DataSet
      */
     public DataSet group(boolean extract, String items, String alias, String field, Aggregation agg, int scale, int round, String ... groups) {
-        String items_key = "ITEMS";
+        String items_key = "items";
         if(BasicUtil.isNotEmpty(items)) {
             items_key = items;
         }
@@ -3825,7 +3834,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
      * @return DataSet
      */
     public DataSet group(boolean extract, String items, List<AggregationConfig> aggs, String ... groups) {
-        String items_key = "ITEMS";
+        String items_key = "items";
         if(BasicUtil.isNotEmpty(items)) {
             items_key = items;
         }
