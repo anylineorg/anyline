@@ -84,8 +84,9 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
 
     public DataSet(List<Map<String, Object>> list) {
         rows = new ArrayList<>();
-        if (null == list)
+        if (null == list) {
             return;
+        }
         for (Map<String, Object> map : list) {
             DataRow row = new DataRow(map);
             rows.add(row);
@@ -93,8 +94,9 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
     }
     public DataSet(KEY_CASE keyCase, List<Map<String, Object>> list) {
         rows = new ArrayList<>();
-        if (null == list)
+        if (null == list) {
             return;
+        }
         for (Map<String, Object> map : list) {
             DataRow row = new DataRow(keyCase, map);
             rows.add(row);
