@@ -2466,6 +2466,14 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return set;
     }
 
+    public Map<String, Object> map(){
+        Map<String, Object> map = new LinkedHashMap<>();
+        map.putAll(this);
+        return map;
+    }
+    public Map<String, Object> toMap(){
+        return map();
+    }
     /**
      * 转换成json格式
      * @return String
