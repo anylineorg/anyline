@@ -3408,16 +3408,15 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
                 String[] kvs = packParam(row, reverseKey(keys));
                 DataSet set = items.getRows(compare, kvs(kvs));
                 //避免无限递归
-
                 //引用自己
                 int index = set.indexOf(row);
                 if(index != -1){
                     set.remove(row);
                     DataRow copy = row.clone();
-                    if(index != 0){
-                        set.addRow(index, copy);
-                    }else{
+                    if(set.isEmpty()){
                         set.add(copy);
+                    }else{
+                        set.addRow(index, copy);
                     }
                 }
                 //检测相互引用
