@@ -10661,6 +10661,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             //注释
             String comment = getString(row, refer, Index.FIELD_COMMENT);
             meta.setComment(comment);
+            //类型
+            String type = getString(row, refer, Index.FIELD_TYPE);
+            meta.setComment(type);
 		}
 		return meta;
 	}
