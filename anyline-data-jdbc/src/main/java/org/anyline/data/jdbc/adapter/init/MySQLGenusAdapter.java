@@ -3172,13 +3172,15 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public List<Run> buildQueryPrimaryRun(DataRuntime runtime, boolean greedy,  PrimaryKey query) throws Exception {
-        Table table = query.getTable();
+        String table = query.getTableName();
         List<Run> runs = new ArrayList<>();
-        Run run = new SimpleRun(runtime);
-        runs.add(run);
-        StringBuilder builder = run.getBuilder();
-        builder.append("SHOW INDEX FROM ");
-        name(runtime, builder, table);
+        if(BasicUtil.isNotEmpty(table)){s
+            Run run = new SimpleRun(runtime);
+            runs.add(run);
+            StringBuilder builder = run.getBuilder();
+            builder.append("SHOW INDEX FROM ");
+            name(runtime, builder, table);
+        }
         return runs;
     }
 
