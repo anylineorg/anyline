@@ -3427,6 +3427,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         refer.map(Index.FIELD_UNIQUE_CHECK, "NON_UNIQUE");
         refer.map(Index.FIELD_UNIQUE_CHECK_VALUE, "0");
         refer.map(Index.FIELD_CATALOG, "");
+        refer.map(Index.FIELD_COMMENT, "INDEX_COMMENT");
         return refer;
     }
 

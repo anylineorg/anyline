@@ -10657,6 +10657,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			if(null != bol) {
 				meta.setUnique(bol);
 			}
+
+            //注释
+            String comment = getString(row, refer, Index.FIELD_COMMENT);
+            meta.setComment(comment);
 		}
 		return meta;
 	}
