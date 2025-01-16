@@ -23,6 +23,9 @@ import org.anyline.data.run.TextRun;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
 import org.anyline.util.BasicUtil;
+import org.anyline.util.regular.RegularUtil;
+
+import java.util.List;
 
 public class DefaultTextPrepare extends DefaultAutoPrepare implements TextPrepare {
 	private String up;
@@ -122,18 +125,30 @@ public class DefaultTextPrepare extends DefaultAutoPrepare implements TextPrepar
 		if(BasicUtil.isNotEmpty(order)) {
 			orders.add(order);
 		}
-		having = split("HAVING ");
+		having = split("HAVING");
 		group = split("GROUP BY");
-		where = split("WHERE ");
+		where = split("WHERE");
 	}
 	private String split(String type){
-		int idx = up.lastIndexOf(type);
+		String key = null;
+		try {
+			List<String> keys = RegularUtil.fetch(up, "\\s" + type + "\\s");
+			if(keys.size() > 0){
+				key = keys.get(0);
+			}
+		}catch (Exception e){
+
+		}
+		if(null == key){
+			return null;
+		}
+		int idx = up.lastIndexOf(key);
 		if(idx != -1) {
 			String chk = up.substring(idx);
 			if (BasicUtil.charCount(chk, "(") == BasicUtil.charCount(chk, ")")) {
 				if (BasicUtil.charCount(chk, "'")%2 == 0) {
 					up = up.substring(0, idx);
-					String result = text.substring(idx + type.length());
+					String result = text.substring(idx + key.length());
 					text = text.substring(0, idx);
 					return result;
 				}
