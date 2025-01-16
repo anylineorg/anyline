@@ -10663,7 +10663,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             meta.setComment(comment);
             //类型
             String type = getString(row, refer, Index.FIELD_TYPE);
-            meta.setComment(type);
+            meta.setType(type);
 		}
 		return meta;
 	}
