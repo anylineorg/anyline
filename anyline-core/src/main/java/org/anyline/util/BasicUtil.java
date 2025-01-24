@@ -677,7 +677,10 @@ public class BasicUtil {
 	 */
 	public static String compress(String str) {
 		if (null != str) {
-			str = str.replaceAll("\\s{2,}", " ").trim();
+			//str = str.replaceAll("\\s{2,}", " ").trim();
+			//不压缩引号内空格
+			String reg = "\\s+(?=([^']*'[^']*')*[^']*$)";
+			str = str.replaceAll(reg, " ").trim();
 		}
 		return str;
 	}
@@ -691,6 +694,7 @@ public class BasicUtil {
 		}
 		return strs;
 	}
+
 	public static List<String> compress(List<String> strs) {
 		List<String> result = new ArrayList<>();
 		if (null != strs) {
