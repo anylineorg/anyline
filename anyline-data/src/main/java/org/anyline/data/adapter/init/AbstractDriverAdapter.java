@@ -19192,7 +19192,11 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				builder.append(split);
 			}
 			first = false;
-			builder.append(master).append(column).append(" = ").append(data).append(column);
+			builder.append(master);
+            delimiter(builder, column);
+            builder.append(" = ");
+            builder.append(data);
+            delimiter(builder, column);
 		}
 		return builder.toString();
 	}
