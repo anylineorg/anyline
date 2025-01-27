@@ -1047,7 +1047,9 @@ public class BeanUtil {
 			if(v instanceof Collection) {
 				List list = new ArrayList();
 				list.addAll((Collection)v);
-				Collections.sort(list);
+				try {
+					Collections.sort(list);
+				}catch (Exception e){}
 				for(Object item: list) {
 					if(ignoreEmpty && BasicUtil.isEmpty(item)) {
 						continue;
