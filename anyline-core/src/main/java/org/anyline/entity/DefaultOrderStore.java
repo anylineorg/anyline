@@ -26,6 +26,7 @@ import java.util.List;
 public class DefaultOrderStore implements OrderStore{
 	private static final long serialVersionUID = -2129393152486629564L;
 	private LinkedHashMap<String, Order> orders = new LinkedHashMap<>();
+	private String nullSet;
  
 	public DefaultOrderStore() {
 	}
@@ -44,7 +45,12 @@ public class DefaultOrderStore implements OrderStore{
 			orders.put(column.toUpperCase(), order);
 		} 
 	}
-
+	public void nullSet(String set){
+		this.nullSet = nullSet;
+	}
+	public String nullSet(){
+		return this.nullSet;
+	}
 	public void add(Order order) {
 		add(order, true);
 	}
