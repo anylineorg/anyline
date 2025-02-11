@@ -283,11 +283,11 @@ public class DefaultPageNavi implements PageNavi, Serializable, Cloneable {
 		} 
 		return result; 
 	} 
-	public String getOrderText(boolean require) {
+	//public String getOrderText(boolean require) {
 		// return getOrderText(require, null);
-		return null; 
-	} 
-	public String getOrderText(boolean require, OrderStore store, String delimiter) {
+	//	return null;
+//	}
+	/*public String getOrderText(boolean require, OrderStore store, String delimiter) {
 		String result = ""; 
 		if(null == orders) {
 			orders = store; 
@@ -305,7 +305,7 @@ public class DefaultPageNavi implements PageNavi, Serializable, Cloneable {
 			result = "ORDER BY " +ConfigTable.DEFAULT_PRIMARY_KEY; 
 		} 
 		return result; 
-	} 
+	} */
 	/** 
 	 * 设置排序方式 
 	 * @param order  order

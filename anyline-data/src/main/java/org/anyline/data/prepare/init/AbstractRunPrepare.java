@@ -121,13 +121,13 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 		this.orders.add(orders);
 		return this;
 	}
- 
+ /*
 	protected String getOrderText(String delimiter) {
 		if(null != orders) {
 			return orders.getRunText(delimiter);
 		} 
 		return ""; 
-	} 
+	} */
 	/** 
 	 * 添加分组条件, 在之前的基础上添加新分组条件, 有重复条件则覆盖
 	 * @param groups  group

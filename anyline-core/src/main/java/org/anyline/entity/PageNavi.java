@@ -77,7 +77,7 @@ public interface PageNavi extends Serializable, Cloneable{
 	PageNavi addParam(String key, Object value);
 	Object getParams(String key); 
 	Object getParam(String key); 
-	String getOrderText(boolean require); 
+	//String getOrderText(boolean require);
 	// String getOrderText(boolean require, OrderStore store);
 	/** 
 	 * 设置排序方式 
