@@ -1792,7 +1792,9 @@ public interface DriverAdapter {
      * @return String
      */
     String mergeFinalQuery(DataRuntime runtime, Run run);
-
+    default String orderNullSet(OrderStore orders) {
+        return "";
+    }
     /**
      * select[命令合成-子流程] <br/>
      * 构造 LIKE 查询条件

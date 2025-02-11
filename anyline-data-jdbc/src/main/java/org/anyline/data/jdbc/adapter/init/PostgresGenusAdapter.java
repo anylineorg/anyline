@@ -779,6 +779,16 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
     public String mergeFinalQuery(DataRuntime runtime, Run run) {
         return super.pageLimitOffset(runtime, run);
     }
+    @Override
+    public  String orderNullSet(OrderStore orders) {
+        if(null != orders){
+            String set = orders.nullSet();
+            if(BasicUtil.isNotEmpty(set)){
+                return set;
+            }
+        }
+        return "";
+    }
 
     /**
      * select[命令合成-子流程] <br/>

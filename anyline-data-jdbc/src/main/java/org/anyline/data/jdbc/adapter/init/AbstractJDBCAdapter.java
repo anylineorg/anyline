@@ -9486,6 +9486,10 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		if(null != orders) {
 			sql += orders.getRunText(getDelimiterFr() + getDelimiterTo());
 		}
+        String nullSet = orderNullSet(orders);
+        if(BasicUtil.isNotEmpty(nullSet)){
+            sql += " " + nullSet;
+        }
 		PageNavi navi = run.getPageNavi();
 		if(null != navi) {
 			long limit = navi.getLastRow() - navi.getFirstRow() + 1;
@@ -9515,6 +9519,10 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		if(null != orders) {
 			sql += orders.getRunText(getDelimiterFr()+getDelimiterTo());
 		}
+        String nullSet = orderNullSet(orders);
+        if(BasicUtil.isNotEmpty(nullSet)){
+            sql += " " + nullSet;
+        }
 		PageNavi navi = run.getPageNavi();
 		if(null != navi) {
 			long limit = navi.getLastRow() - navi.getFirstRow() + 1;

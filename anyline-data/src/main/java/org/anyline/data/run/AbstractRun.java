@@ -916,6 +916,12 @@ public abstract class AbstractRun implements Run {
 				if(up.startsWith("ORDER BY")) {
 					// 排序条件
 					String orderStr = condition.substring(up.indexOf("ORDER BY") + "ORDER BY".length()).trim();
+					up = orderStr.toUpperCase();
+					if(up.contains(" NULLS ")){
+						String nullSet = orderStr.substring(up.indexOf(" NULLS "));
+						orderStr = orderStr.replace(nullSet, "");
+						this.orders.nullSet(nullSet);
+					}
 					String orders[] = orderStr.split(",");
 					for(String item:orders) {
 						order(item);

@@ -46,7 +46,7 @@ public class DefaultOrderStore implements OrderStore{
 		} 
 	}
 	public void nullSet(String set){
-		this.nullSet = nullSet;
+		this.nullSet = set;
 	}
 	public String nullSet(){
 		return this.nullSet;
