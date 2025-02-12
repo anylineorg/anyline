@@ -1326,6 +1326,7 @@ public interface ConfigStore extends Cloneable{
 	 */
 	ConfigStore params(Object ... values);
 	ConfigStore params(Collection<?> values);
+	ConfigStore params(Map<String, Config> params);
 	/**
 	 * 根据占位符下标赋值
 	 * @return list

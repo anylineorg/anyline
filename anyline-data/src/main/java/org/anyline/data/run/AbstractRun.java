@@ -504,7 +504,7 @@ public abstract class AbstractRun implements Run {
 		}else{
 			if(null != configs) {
 				this.configs.and(configs);
-				this.configs.params().putAll(configs.params());
+				this.configs.params(configs.params());
 				this.configs.params(configs.values());
 				GroupStore groups = configs.getGroups();
 				if(null != groups) {
@@ -530,7 +530,6 @@ public abstract class AbstractRun implements Run {
 					this.configs.setOrders(orders);
 				}
 				this.configs.addStaticValue(configs.getStaticValues());
-				this.configs.params(configs.params());
 				if(null != configs.distinct()) {
 					this.configs.distinct(configs.distinct());
 				}

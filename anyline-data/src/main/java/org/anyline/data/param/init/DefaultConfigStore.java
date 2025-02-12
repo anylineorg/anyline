@@ -1080,6 +1080,13 @@ public class DefaultConfigStore implements ConfigStore {
 	}
 
 	@Override
+	public ConfigStore params(Map<String, Config> params) {
+		if(null != params) {
+			this.params.putAll(params);
+		}
+		return this;
+	}
+	@Override
 	public List<Object> values() {
 		return this.values;
 	}
