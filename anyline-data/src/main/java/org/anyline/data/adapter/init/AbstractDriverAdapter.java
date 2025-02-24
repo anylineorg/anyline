@@ -2897,7 +2897,11 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      */
     public Run fillMasterTableContent(DataRuntime runtime, StringBuilder builder, TableRun run, RunPrepare prepare) {
         if(prepare instanceof VirtualTablePrepare) {
-            Run fromRun = buildQueryRun(runtime, ((VirtualTablePrepare) prepare).getPrepare(), new DefaultConfigStore(), true, true);
+            ConfigStore configs = run.getConfigs();
+            if(null == configs){
+                configs = new DefaultConfigStore();
+            }
+            Run fromRun = buildQueryRun(runtime, ((VirtualTablePrepare) prepare).getPrepare(), configs, true, true);
             run.getRunValues().addAll(fromRun.getRunValues());
             String inner = fromRun.getFinalQuery(true);
             inner = BasicUtil.tab(inner);
