@@ -1377,11 +1377,12 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 cols.remove(pk.toUpperCase());
             }
         }
+        //primaryKeys.addAll(row.getPrimaryKeys()); 时已经检测过一次了
         //不更新默认主键  除非显示指定
-        String defaultPk = DataRow.DEFAULT_PRIMARY_KEY.toUpperCase();
+       /* String defaultPk = DataRow.DEFAULT_PRIMARY_KEY.toUpperCase();
         if(!columns.containsKey(defaultPk) && !columns.containsKey("+"+defaultPk) && !configColumns.containsKey(defaultPk)) {
             cols.remove(DataRow.DEFAULT_PRIMARY_KEY.toUpperCase());
-        }
+        }*/
 
         boolean replaceEmptyNull = row.isReplaceEmptyNull();
 
