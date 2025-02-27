@@ -1866,23 +1866,23 @@ public class DefaultService<E> implements AnylineService<E> {
      */
     public LinkedHashMap<String, Column> metadata(String sql, boolean comment, boolean condition) {
         if(condition) {
-            String up = sql.toUpperCase().replace("\n"," ").replace("\t","");
+            String up = sql.toUpperCase().replaceAll("\\s{2,}"," ");
             String key = " WHERE ";
             boolean split = false;
             if(up.contains(key)) {
-                int idx = sql.lastIndexOf(key);
+                int idx = up.lastIndexOf(key);
                 sql = sql.substring(0, idx) + " WHERE 1=0 AND " + sql.substring(idx + key.length());
                 split = true;
             }else{
                 key = " GROUP ";
                 if(up.contains(key)) {
-                    int idx = sql.lastIndexOf(key);
+                    int idx = up.lastIndexOf(key);
                     sql = sql.substring(0, idx) + " WHERE 1=0 GROUP " + sql.substring(idx + key.length());
                     split = true;
                 }else{
                     key = " ORDER ";
                     if(up.contains(key)) {
-                        int idx = sql.lastIndexOf(key);
+                        int idx = up.lastIndexOf(key);
                         sql = sql.substring(0, idx) + " WHERE 1=0 ORDER " + sql.substring(idx + key.length());
                         split = true;
                     }
