@@ -1261,7 +1261,7 @@ public abstract class AbstractRun implements Run {
 			cmd = cmd.replaceAll("\n ","\n\t")
 					.replaceAll("\n\t\n","\n")
 					.replaceAll("\n{2,}","\n");
-			cmd = BasicUtil.compress(cmd);
+			//cmd = BasicUtil.compress(cmd);
 		}
 		return cmd;
 	}
