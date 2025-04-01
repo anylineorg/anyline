@@ -1010,10 +1010,13 @@ public abstract class AbstractRun implements Run {
 	protected static boolean endWithWhere(String txt) {
 		txt = txt.replaceAll("\\s"," ")
 				.replaceAll("'[\\S\\s]*?'","{}")
-				.replaceAll("\\([^\\(\\)]+?\\)","{}")
-				.replaceAll("\\([^\\(\\)]+?\\)","{}")
-				.replaceAll("\\([^\\(\\)]+?\\)","{}")
-				.toUpperCase();
+				.replaceAll("\\(\\s*\\)","{}");
+		int i = 0;
+		while (i++<10 && txt.contains("(")){
+			txt = txt.replaceAll("\\([^\\(\\)]+?\\)","{}");
+		}
+		txt = txt.toUpperCase();
+
 		if(txt.contains("UNION")) {
 			boolean result = false;
 			int fr = 0;
