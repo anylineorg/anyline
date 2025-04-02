@@ -102,7 +102,9 @@ public class DefaultService<E> implements AnylineService<E> {
         if(null != ps[0]) {
             return ServiceProxy.service(ps[0]).querys(ps[1], configs, obj, conditions);
         }
-        dest = BasicUtil.compress(dest);
+        if(null != dest && dest.length() < 1000) {
+            dest = BasicUtil.compress(dest);
+        }
         conditions = BasicUtil.compress(conditions);
         if(obj instanceof PageNavi) {
             if(null == configs) {
@@ -162,7 +164,9 @@ public class DefaultService<E> implements AnylineService<E> {
             return ServiceProxy.service(ps[0]).maps(ps[1], configs, obj, conditions);
         }
         List<Map<String, Object>> maps = null;
-        dest = BasicUtil.compress(dest);
+        if(null != dest && dest.length() < 1000) {
+            dest = BasicUtil.compress(dest);
+        }
         conditions = BasicUtil.compress(conditions);
         try {
             RunPrepare prepare = createRunPrepare(dest);
@@ -213,7 +217,9 @@ public class DefaultService<E> implements AnylineService<E> {
             return ServiceProxy.service(ps[0]).caches(cache, ps[1], configs, obj, conditions);
         }
         DataSet set = null;
-        dest = BasicUtil.compress(dest);
+        if(null != dest && dest.length() < 1000) {
+            dest = BasicUtil.compress(dest);
+        }
         conditions = BasicUtil.compress(conditions);
         configs = append(configs, obj);
         if (ConfigTable.IS_CACHE_DISABLED) {
@@ -654,7 +660,9 @@ public class DefaultService<E> implements AnylineService<E> {
     @Override
     public boolean removeCache(String channel, String dest, ConfigStore configs, String... conditions) {
         if (null != CacheProxy.provider) {
-            dest = BasicUtil.compress(dest);
+            if(null != dest && dest.length() < 1000) {
+                dest = BasicUtil.compress(dest);
+            }
             conditions = BasicUtil.compress(conditions);
             String key = CacheUtil.createCacheElementKey(true, true, dest, configs, conditions);
             CacheProxy.provider.remove(channel, "SET:" + key);
@@ -737,7 +745,9 @@ public class DefaultService<E> implements AnylineService<E> {
             return ServiceProxy.service(ps[0]).exists(ps[1], configs, obj, conditions);
         }
         boolean result = false;
-        dest = BasicUtil.compress(dest);
+        if(null != dest && dest.length() < 1000) {
+            dest = BasicUtil.compress(dest);
+        }
         conditions = BasicUtil.compress(conditions);
         RunPrepare prepare = createRunPrepare(dest);
         if(null != prepare.getRuntime()) {
@@ -827,7 +837,9 @@ public class DefaultService<E> implements AnylineService<E> {
         long count = -1;
         try {
             // conditions = parseConditions(conditions);
-            dest = BasicUtil.compress(dest);
+            if(null != dest && dest.length() < 1000) {
+                dest = BasicUtil.compress(dest);
+            }
             conditions = BasicUtil.compress(conditions);
             RunPrepare prepare = createRunPrepare(dest);
             if(null != prepare.getRuntime()) {
@@ -1241,7 +1253,9 @@ public class DefaultService<E> implements AnylineService<E> {
             return ServiceProxy.service(ps[0]).execute(ps[1], configs, conditions);
         }
         long result = -1;
-        src = BasicUtil.compress(src);
+        if(null != src && src.length() < 1000) {
+            src = BasicUtil.compress(src);
+        }
         conditions = BasicUtil.compress(conditions);
         RunPrepare prepare = createRunPrepare(src);
         if (null == prepare) {

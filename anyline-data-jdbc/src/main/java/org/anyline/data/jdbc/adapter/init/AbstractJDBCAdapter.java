@@ -1162,7 +1162,6 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
         RunValue rv = new RunValue();
         int code = compare.getCode();
         if(code > 100) {
-            builder.append(" NOT");
             code = code - 100;
         }
         // %A% 50
@@ -1171,31 +1170,32 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
         // NOT %A% 150
         // NOT A%  151
         // NOT %A  152
+        String formula = compare.formula();
         if(null == value) {
             value = "";
         }
         if(placeholder) {
-            if (compare == Compare.LIKE_SIMPLE) {
-                builder.append(" LIKE ?");
-            } else if (code == 50) {
-                builder.append(" LIKE ").append(concat(runtime, "'%'", "?", "'%'"));
-            } else if (code == 51) {
-                builder.append(" LIKE ").append(concat(runtime, "?", "'%'"));
-            } else if (code == 52) {
-                builder.append(" LIKE ").append(concat(runtime, "'%'", "?"));
+            if(compare == Compare.LIKE_SIMPLE) {
+                builder.append(formula).append("?");
+            }else if(code == 50) {
+                builder.append(formula).append(concat(runtime, "'%'","?","'%'"));
+            }else if(code == 51) {
+                builder.append(formula).append(concat(runtime, "?","'%'"));
+            }else if(code == 52) {
+                builder.append(formula).append(concat(runtime, "'%'","?"));
             }
             rv.setValue(value);
         }else{
             value = BeanUtil.first(value);
             rv.setPlaceholder(false);
-            if (compare == Compare.LIKE_SIMPLE) {
-                builder.append(" LIKE '").append(value).append("'");
-            } else if (code == 50) {
-                builder.append(" LIKE '%").append(value).append("%'");
-            } else if (code == 51) {
-                builder.append(" LIKE '").append(value).append("%'");
-            } else if (code == 52) {
-                builder.append(" LIKE '%").append(value).append("'");
+            if(compare == Compare.LIKE_SIMPLE) {
+                builder.append(formula).append("'").append(value).append("'");
+            }else if(code == 50) {
+                builder.append(formula).append("'%").append(value).append("%'");
+            }else if(code == 51) {
+                builder.append(formula).append("'").append(value).append("%'");
+            }else if(code == 52) {
+                builder.append(formula).append("'%").append(value).append("'");
             }
         }
         return rv;
