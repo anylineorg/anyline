@@ -755,6 +755,7 @@ public class WebUtil {
 	 *
 	 * @param obj  obj
 	 * @param mix  mix
+	 * @param fixs  fixs
 	 * @param keys  keys
 	 * @return Object
 	 */
@@ -768,7 +769,13 @@ public class WebUtil {
 			//
 			return DESUtil.encryptValue(obj.toString(),mix);
 		}
-		if (obj instanceof Map) {
+		if(obj instanceof String[]){
+			String[] arrs = (String[])obj;
+			int len = arrs.length;
+			for(int i=0; i<len; i++){
+				arrs[i] = (String)encryptValue(arrs[i], mix, list);
+			}
+		}else if (obj instanceof Map) {
 			obj = encryptValue((Map<String, Object>) obj, mix, fixs, keys);
 		} else if (obj instanceof Collection) {
 			obj = encryptValue((Collection<Object>) obj, mix, fixs, keys);
@@ -855,7 +862,6 @@ public class WebUtil {
 	public static Object encrypt(Object obj, String[] fixs, String... keys) {
 		return encrypt(obj,false, BeanUtil.array2list(fixs, keys));
 	}
-
 	/**
 	 * 解析jsp成html 只能解析当前应用下的jsp文件
 	 * @param request request
