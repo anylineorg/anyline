@@ -780,6 +780,19 @@ PUT * /_bulk
                     DataRow json = OriginRow.parseJson(dsl);
                     json.put("from", navi.getFirstRow());
                     json.put("size", navi.getPageRows());
+                    OrderStore orderStore = configs.getOrders();
+                    if(null!= orderStore) {
+                        LinkedHashMap<String, Order> orders = orderStore.gets();
+                        if(null != orders && !orders.isEmpty()) {
+                            DataSet sorts = new DataSet();
+                            json.put("sort", sorts);
+                            for(Order order:orders.values()) {
+                                DataRow sort = new OriginRow();
+                                sort.put(order.getColumn()).put("order", order.getType().getCode().toLowerCase());
+                                sorts.add(sort);
+                            }
+                        }
+                    }
                     navi.autoCount(false);
                     run.getBuilder().append(json.json());
                     return run;
