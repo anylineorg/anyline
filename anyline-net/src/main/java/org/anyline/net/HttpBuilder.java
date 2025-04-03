@@ -21,6 +21,7 @@ import org.anyline.log.LogProxy;
 import org.anyline.util.BeanUtil;
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.config.Registry;
 import org.apache.http.config.RegistryBuilder;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
@@ -66,10 +67,17 @@ public class HttpBuilder {
                     RegistryBuilder.<ConnectionSocketFactory>create()
                             .register("http", PlainConnectionSocketFactory.INSTANCE)
                             .register("https",ignoreSSL()).build();
-            PoolingHttpClientConnectionManager mananger = new PoolingHttpClientConnectionManager(socketFactoryRegistry);
-            mananger.setMaxTotal(100);
-            mananger.setDefaultMaxPerRoute(20);
-            this.client = HttpClients.custom().setConnectionManager(mananger).build();
+            PoolingHttpClientConnectionManager manager = new PoolingHttpClientConnectionManager(socketFactoryRegistry);
+            manager.setMaxTotal(100);
+            manager.setDefaultMaxPerRoute(20);
+            RequestConfig requestConfig = RequestConfig.custom()
+                    .setSocketTimeout(5000) // 设置读取超时为5000毫秒（5秒）
+                    .setConnectTimeout(5000) // 设置连接超时为5000毫秒（5秒）
+                    .setConnectionRequestTimeout(5000) // 设置从连接池获取连接的等待超时为5000毫秒（5秒）
+                    .build();
+            this.client = HttpClients.custom()
+                    .setConnectionManager(manager)
+                    .setDefaultRequestConfig(requestConfig).build();
         }catch (Exception e) {
             log.error("build http client exception:", e);
         }
