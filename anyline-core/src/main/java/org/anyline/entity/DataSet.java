@@ -920,6 +920,12 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
         }
         return row;
     }
+    public DataRow getFirstRow(){
+        return getRow(0);
+    }
+    public DataRow getLastRow(){
+        return getRow(rows.size()-1);
+    }
 
     public boolean exists(String ... params) {
         DataRow row = getRow(0, params);
