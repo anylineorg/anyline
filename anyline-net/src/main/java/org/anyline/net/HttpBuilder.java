@@ -59,6 +59,8 @@ public class HttpBuilder {
     private DownloadTask task;
     private Map<String, Object> files;    //可以是文件或byte[]
     private String returnType = "text";
+    private static int default_connect_timeout = 72000; // 毫秒
+    private static int default_socket_timeout = 72000;
 
     public HttpClient build() {
         HttpClient client = new HttpClient();
@@ -71,8 +73,8 @@ public class HttpBuilder {
             manager.setMaxTotal(100);
             manager.setDefaultMaxPerRoute(20);
             RequestConfig requestConfig = RequestConfig.custom()
-                    .setSocketTimeout(5000) // 设置读取超时为5000毫秒（5秒）
-                    .setConnectTimeout(5000) // 设置连接超时为5000毫秒（5秒）
+                    .setSocketTimeout(default_socket_timeout) // 设置读取超时为5000毫秒（5秒）
+                    .setConnectTimeout(default_connect_timeout) // 设置连接超时为5000毫秒（5秒）
                     .setConnectionRequestTimeout(5000) // 设置从连接池获取连接的等待超时为5000毫秒（5秒）
                     .build();
             this.client = HttpClients.custom()
