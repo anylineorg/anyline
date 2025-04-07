@@ -24,13 +24,13 @@ import java.util.LinkedHashMap;
 
 public class Index<M extends Index> extends TableAffiliation<M> implements Serializable {
     protected String keyword = "INDEX"           ;
-    protected String type;
+    protected String type         ; //属性类型,如 btree
     protected LinkedHashMap<String, Column> columns = new LinkedHashMap<>();
     protected boolean primary     ; // 是否是主键
     protected boolean cluster     ; // 是否聚簇索引
     protected boolean fulltext    ;
     protected boolean spatial     ;
-    protected boolean approximate ; //索引允许结果反映近似值
+    protected boolean approximate ; // 索引允许结果反映近似值
     protected LinkedHashMap<String, Integer> positions = new LinkedHashMap<>();
     protected LinkedHashMap<String, Order.TYPE> orders = new LinkedHashMap<>();
 
