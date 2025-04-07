@@ -8205,14 +8205,37 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
             return "INSERT INTO ";
         }else{
             if(override) {
-                return "REPLACE INTO ";
+                //return "REPLACE INTO ";
+                return "INSERT INTO ";
             }else{
                 return "INSERT IGNORE INTO ";
             }
         }
     }
     public String insertFoot(ConfigStore configs, LinkedHashMap<String, Column> columns) {
-        return "";
+
+        StringBuilder builder = new StringBuilder();
+        Boolean override = null;
+        if(null != configs) {
+            override = configs.override();
+        }
+        if(null != override){
+            if(override){
+                builder.append(" ON DUPLICATE KEY UPDATE ");
+                boolean first = true;
+                for(Column column:columns.values()) {
+                    if(!first) {
+                        builder.append(", ");
+                    }
+                    first = false;
+                    delimiter(builder, column.getName(), false);
+                    builder.append(" = values(");
+                    delimiter(builder, column.getName(), false);
+                    builder.append(")");
+                }
+            }
+        }
+        return builder.toString();
     }
    
 
