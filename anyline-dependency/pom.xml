@@ -203,6 +203,11 @@
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
+				<artifactId>anyline-tencent-cloud</artifactId>
+				<version>${anyline.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
 				<artifactId>anyline-amap</artifactId>
 				<version>${anyline.version}</version>
 			</dependency>
