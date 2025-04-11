@@ -5591,13 +5591,13 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         runs.add(run);
         StringBuilder builder = run.getBuilder();
         Column update = meta.getUpdate();
-        int nullable = update.isNullable();
-        if(nullable != -1) {
+        Boolean nullable = update.getNullable();
+        if(nullable != null) {
             builder.append("ALTER TABLE ");
             name(runtime, builder, meta.getTable(true)).append(" ALTER COLUMN ");
             delimiter(builder, meta.getName()).append(" ");
             type(runtime, builder, update);
-            if(nullable == 0) {
+            if(!nullable) {
                 builder.append(" NOT");
             }
             builder.append(" NULL");
@@ -5784,13 +5784,13 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
      */
     @Override
     public StringBuilder nullable(DataRuntime runtime, StringBuilder builder, Column meta, ACTION.DDL action) {
-        if(meta.isPrimaryKey() == 1) {
+        if(meta.isPrimaryKey()) {
             builder.append(" NOT NULL");
             return builder;
         }
-        int nullable = meta.isNullable();
-        if(nullable != -1) {
-            if (nullable == 0) {
+        Boolean nullable = meta.getNullable();
+        if(nullable != null) {
+            if (!nullable) {
                 builder.append(" NOT");
             }
             builder.append(" NULL");
@@ -5869,7 +5869,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
      */
     @Override
     public StringBuilder increment(DataRuntime runtime, StringBuilder builder, Column meta) {
-        if(meta.isAutoIncrement() == 1) {
+        if(meta.isAutoIncrement()) {
             builder.append(" IDENTITY(").append(meta.getIncrementSeed()).append(",").append(meta.getIncrementStep()).append(")");
         }
         return builder;

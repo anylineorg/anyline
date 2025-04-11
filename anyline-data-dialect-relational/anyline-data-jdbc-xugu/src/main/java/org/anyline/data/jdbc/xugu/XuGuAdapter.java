@@ -5421,7 +5421,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
      */
     @Override
     public StringBuilder increment(DataRuntime runtime, StringBuilder builder, Column meta) {
-        if(meta.isAutoIncrement() == 1) {
+        if(meta.isAutoIncrement()) {
             builder.append(" AUTO_INCREMENT");
         }
         return builder;

@@ -4853,7 +4853,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	@Override
 	public StringBuilder increment(DataRuntime runtime, StringBuilder builder, Column meta) {
 		//有些版本不支持,通过serial实现递增
-		/*if(meta.isAutoIncrement() == 1) {
+		/*if(meta.isAutoIncrement()) {
 			builder.append(" AUTO_INCREMENT");
 		}*/
 		return super.increment(runtime, builder, meta);

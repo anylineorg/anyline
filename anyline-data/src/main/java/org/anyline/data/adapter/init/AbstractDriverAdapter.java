@@ -9045,7 +9045,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				if (null != columns || !columns.isEmpty()) {
 					boolean exists = false;
 					for(Column column:columns.values()) {
-						if(column.isPrimaryKey() != -1) {
+						if(column.getPrimaryKey() != null) {
 							exists = true;
 							break;
 						}
@@ -9083,10 +9083,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			if(null == column.getPosition() || -1 == column.getPosition()) {
 				column.setPosition(index++);
 			}
-			if(column.isAutoIncrement() != 1) {
+			if(!column.isAutoIncrement()) {
 				column.autoIncrement(false);
 			}
-			if(column.isPrimaryKey() != 1) {
+			if(!column.isPrimaryKey()) {
 				column.setPrimary(false);
 			}
 			if(null == column.getTable() && !greedy) {
@@ -13251,7 +13251,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			if (null != pks) {
 				for (String k : pks.keySet()) {
 					Column auto = columns.get(k.toUpperCase());
-					if (null != auto && auto.isAutoIncrement() == 1) {//原来是自增
+					if (null != auto && auto.isAutoIncrement()) {//原来是自增
 						if (null != npks && !npks.containsKey(auto.getName().toUpperCase())) { //当前不是主键
 							auto.primary(false);
 							//取消自增
@@ -15316,14 +15316,14 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public StringBuilder nullable(DataRuntime runtime, StringBuilder builder, Column meta, ACTION.DDL action) {
-		if(meta.isPrimaryKey() == 1) {
+		if(meta.isPrimaryKey()) {
 			builder.append(" NOT NULL");
 			return builder;
 		}
 		if(null == meta.getDefaultValue()) {
-			int nullable = meta.isNullable();
-			if(nullable != -1) {
-				if (nullable == 0) {
+			Boolean nullable = meta.getNullable();
+			if(nullable != null) {
+				if (!nullable) {
 					builder.append(" NOT");
 				}
 				builder.append(" NULL");
@@ -15362,13 +15362,13 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		Column update = meta.getUpdate();
 		if(null != update) {
 			//自增序列不要默认值nextval('crm_user_id_seq'::regclass)
-			if(update.isAutoIncrement() == 1) {
+			if(update.isAutoIncrement()) {
 				return builder;
 			}
 			def = update.getDefaultValue();
 			defaultCurrentDateTime = update.isDefaultCurrentDateTime();
 		}else {
-			if(meta.isAutoIncrement() == 1) {
+			if(meta.isAutoIncrement()) {
 				return builder;
 			}
 			def = meta.getDefaultValue();

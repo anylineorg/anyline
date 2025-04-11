@@ -6188,8 +6188,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 				}
 			}
 			// 修改非空限制
-			int nullable = meta.isNullable();
-			int unullable = update.isNullable();
+			Boolean nullable = meta.getNullable();
+            Boolean unullable = update.getNullable();
 			if(nullable != unullable) {
 				List<Run> nulls = buildChangeNullableRun(runtime, meta, slice);
 				if(null != nulls) {
@@ -6746,8 +6746,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 				runs.addAll(buildChangeDefaultRun(runtime, meta, slice));
 			}
 			// 修改非空限制
-			int nullable = meta.isNullable();
-			int unullable = update.isNullable();
+			Boolean nullable = meta.getNullable();
+            Boolean unullable = update.getNullable();
 			if(nullable != unullable) {
 				runs.addAll(buildChangeNullableRun(runtime, meta, slice));
 			}
@@ -6758,7 +6758,6 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 				runs.addAll(buildChangeCommentRun(runtime, meta, slice));
 			}
 		}
-
 		return runs;
 	}
 

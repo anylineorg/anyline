@@ -3740,13 +3740,13 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         }
         //默认值约束
         meta.setDefaultConstraint(row.getString("DEFAULT_CONSTRAINT"));
-        if(-1 == meta.isAutoIncrement()) {
+        if(null == meta.getAutoIncrement()) {
             meta.autoIncrement(row.getBoolean("IS_AUTOINCREMENT", null));
         }
-        if(-1 == meta.isAutoIncrement()) {
+        if(null == meta.getAutoIncrement()) {
             meta.autoIncrement(row.getBoolean("IDENTITY", null));
         }
-        if(-1 == meta.isAutoIncrement()) {
+        if(null == meta.getAutoIncrement()) {
             //mysql pg mssql 已合并
             Boolean autoincrement = matchBoolean(row, refer, Column.FIELD_AUTO_INCREMENT_CHECK, Column.FIELD_AUTO_INCREMENT_CHECK_VALUE);
             if(null != autoincrement && autoincrement) {
@@ -3765,7 +3765,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         }
 
         //非空
-        if(-1 == meta.isNullable()) {
+        if(null == meta.getNullable()) {
             try {
                 meta.nullable(getBoolean(row, refer,Column.FIELD_NULLABLE, null));//"IS_NULLABLE","NULLABLE","NULLS"
             }catch (Exception ignored) {}
@@ -3908,10 +3908,10 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
             if(null == tag.getPosition() || -1 == tag.getPosition()) {
                 tag.setPosition(index++);
             }
-            if(tag.isAutoIncrement() != 1) {
+            if(!tag.isAutoIncrement()) {
                 tag.autoIncrement(false);
             }
-            if(tag.isPrimaryKey() != 1) {
+            if(!tag.isPrimaryKey()) {
                 tag.setPrimary(false);
             }
             if(null == tag.getTable() && !greedy) {
@@ -6435,9 +6435,9 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 				}
 			}
 			// 修改非空限制
-			int nullable = meta.isNullable();
-			int unullable = update.isNullable();
-			if(nullable != unullable) {
+			Boolean nullable = meta.getNullable();
+			Boolean u_nullable = update.getNullable();
+			if(nullable != u_nullable) {
 				List<Run> nulls = buildChangeNullableRun(runtime, meta, slice);
 				if(null != nulls) {
 					runs.addAll(nulls);
@@ -6445,8 +6445,8 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 			}
 			// 修改备注
 			String comment = meta.getComment();
-			String ucomment = update.getComment();
-			if(!BasicUtil.equalsIgnoreCase(comment, ucomment)) {
+			String u_comment = update.getComment();
+			if(!BasicUtil.equalsIgnoreCase(comment, u_comment)) {
 				List<Run> cmts = buildChangeCommentRun(runtime, meta, slice);
 				if(null != cmts) {
 					runs.addAll(cmts);
@@ -6996,8 +6996,8 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 				runs.addAll(buildChangeDefaultRun(runtime, meta, slice));
 			}
 			// 修改非空限制
-			int nullable = meta.isNullable();
-			int unullable = update.isNullable();
+			Boolean nullable = meta.getNullable();
+			Boolean unullable = update.getNullable();
 			if(nullable != unullable) {
 				runs.addAll(buildChangeNullableRun(runtime, meta, slice));
 			}

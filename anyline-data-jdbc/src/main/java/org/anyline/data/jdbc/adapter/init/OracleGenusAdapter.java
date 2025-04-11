@@ -6024,16 +6024,16 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         Run run = new SimpleRun(runtime);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
-        int nullable = meta.isNullable();
-        int uNullable = meta.getUpdate().isNullable();
-        if(nullable != -1 && uNullable != -1) {
+        Boolean nullable = meta.getNullable();
+        Boolean uNullable = meta.getUpdate().getNullable();
+        if(nullable != null && uNullable != null) {
             if(nullable == uNullable) {
                 return runs;
             }
             builder.append("ALTER TABLE ");
             name(runtime, builder, meta.getTable(true)).append(" MODIFY ");
             delimiter(builder, meta.getName());
-            if(uNullable == 0) {
+            if(!uNullable) {
                 builder.append(" NOT ");
             }
             builder.append(" NULL");

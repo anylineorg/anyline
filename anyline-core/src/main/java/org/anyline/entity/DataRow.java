@@ -1232,7 +1232,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         LinkedHashMap<String, Column> columns = new LinkedHashMap<>();
         if(null != metadatas) {
             for(Column column:metadatas.values()) {
-                if(column.isPrimaryKey() == 1) {
+                if(column.isPrimaryKey()) {
                     columns.put(column.getName().toUpperCase(), column);
                 }
             }

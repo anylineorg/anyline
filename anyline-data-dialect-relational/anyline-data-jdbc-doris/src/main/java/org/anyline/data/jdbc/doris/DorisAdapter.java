@@ -4314,8 +4314,8 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
             if(null != columns) {
                 for(Column column:columns.values()) {
                     //mysql中要求自增必须在主键上或唯一键上
-                    if(column.isAutoIncrement() == 1) {
-                        if(column.isUnique() != 1) {
+                    if(column.isAutoIncrement()) {
+                        if(!column.isUnique()) {
                             //如果不是唯一就默认成主键
                             column.setPrimary(true);
                         }

@@ -131,9 +131,9 @@ public class Column extends TableAffiliation<Column> implements Serializable {
     protected TypeMetadata typeMetadata           ;
     protected String fullType                     ; //完整类型名称
     protected String finalType                    ; //如果设置了finalType 生成SQL时 name finalType 其他属性
-    protected Boolean ignoreLength          = null; //是否忽略长度
-    protected Boolean ignorePrecision       = null; //是否忽略有效位数
-    protected Boolean ignoreScale           = null; //是否忽略小数位
+    protected int ignoreLength          = -1; //是否忽略长度
+    protected int ignorePrecision       = -1; //是否忽略有效位数
+    protected int ignoreScale           = -1; //是否忽略小数位
     //数字类型:precision,scale 日期:length 时间戳:scale 其他:length
     protected Integer precisionLength             ; // 精确长度 根据数据类型返回precision或length
     protected Integer length                      ; // 长度(注意varchar,date,timestamp,number的区别)
@@ -264,6 +264,9 @@ public class Column extends TableAffiliation<Column> implements Serializable {
     public Boolean getIndex() {
         return index;
     }
+    public boolean isIndex() {
+        return null != index && index;
+    }
 
     public Column setIndex(Boolean index) {
         this.index = index;
@@ -272,6 +275,9 @@ public class Column extends TableAffiliation<Column> implements Serializable {
 
     public Boolean getStore() {
         return store;
+    }
+    public boolean isStore() {
+        return null != store && store;
     }
 
     public Column setStore(Boolean store) {
@@ -547,12 +553,20 @@ public class Column extends TableAffiliation<Column> implements Serializable {
         this.withTimeZone = withTimeZone;
     }
 
-    public int getWithLocalTimeZone() {
+    public Boolean getWithLocalTimeZone() {
         return withLocalTimeZone;
     }
 
+    public boolean setWithLocalTimeZone() {
+        return null != withLocalTimeZone && withLocalTimeZone;
+    }
+
     public void setWithLocalTimeZone(int withLocalTimeZone) {
-        this.withLocalTimeZone = withLocalTimeZone;
+        if(withLocalTimeZone == 0){
+            this.withLocalTimeZone = false;
+        }else if(withLocalTimeZone == 1){
+            this.withLocalTimeZone = true;
+        }
     }
 
     public Column setDateScale(String dateScale) {
@@ -1016,11 +1030,18 @@ public class Column extends TableAffiliation<Column> implements Serializable {
         return this;
     }
 
-    public int isCaseSensitive() {
+    public Boolean getCaseSensitive() {
         if(getmap && null != update) {
-            return update.caseSensitive;
+            return update.getCaseSensitive();
         }
         return caseSensitive;
+    }
+
+    public boolean isCaseSensitive() {
+        if(getmap && null != update) {
+            return update.isCaseSensitive();
+        }
+        return null != caseSensitive && caseSensitive;
     }
 
     public Column setCaseSensitive(int caseSensitive) {
@@ -1028,7 +1049,11 @@ public class Column extends TableAffiliation<Column> implements Serializable {
             update.setCaseSensitive(caseSensitive);
             return this;
         }
-        this.caseSensitive = caseSensitive;
+        if (caseSensitive == 1) {
+            this.caseSensitive = true;
+        }else if (caseSensitive == 0) {
+            this.caseSensitive = false;
+        }
         return this;
     }
     public Column caseSensitive(int caseSensitive) {
@@ -1039,21 +1064,21 @@ public class Column extends TableAffiliation<Column> implements Serializable {
             update.caseSensitive(caseSensitive);
             return this;
         }
-        if(null != caseSensitive) {
-            if(caseSensitive) {
-                this.caseSensitive = 1;
-            }else {
-                this.caseSensitive = 0;
-            }
-        }
+        this.caseSensitive = caseSensitive;
         return this;
     }
 
-    public int isCurrency() {
+    public Boolean getCurrency() {
         if(getmap && null != update) {
             return update.currency;
         }
         return currency;
+    }
+    public boolean isCurrency() {
+        if(getmap && null != update) {
+            return update.isCurrency();
+        }
+        return null != currency && currency;
     }
 
     public Column setCurrency(int currency) {
@@ -1061,7 +1086,12 @@ public class Column extends TableAffiliation<Column> implements Serializable {
             update.setCurrency(currency);
             return this;
         }
-        this.currency = currency;
+        if (currency == 1) {
+            this.currency = true;
+        }else if (currency == 0) {
+            this.currency = false;
+        }
+
         return this;
     }
     public Column currency(int currency) {
@@ -1075,21 +1105,21 @@ public class Column extends TableAffiliation<Column> implements Serializable {
             update.currency(currency);
             return this;
         }
-        if(null != currency) {
-            if(currency) {
-                this.currency = 1;
-            }else{
-                this.currency = 0;
-            }
-        }
+        this.currency = currency;
         return this;
     }
 
-    public int isSigned() {
+    public Boolean getSigned() {
         if(getmap && null != update) {
             return update.signed;
         }
         return signed;
+    }
+    public boolean isSigned() {
+        if(getmap && null != update) {
+            return update.isSigned();
+        }
+        return null != signed && signed;
     }
 
     public Column setSigned(int signed) {
@@ -1097,7 +1127,11 @@ public class Column extends TableAffiliation<Column> implements Serializable {
             update.setSigned(signed);
             return this;
         }
-        this.signed = signed;
+        if (signed == 1) {
+            this.signed = true;
+        }else if (signed == 0) {
+            this.signed = false;
+        }
         return this;
     }
     public Column signed(int signed) {
@@ -1108,13 +1142,7 @@ public class Column extends TableAffiliation<Column> implements Serializable {
             update.setSigned(signed);
             return this;
         }
-        if(null != signed) {
-            if(signed) {
-                this.signed = 1;
-            }else{
-                this.signed = 0;
-            }
-        }
+        this.signed = signed;
         return this;
     }
 
@@ -1151,11 +1179,17 @@ public class Column extends TableAffiliation<Column> implements Serializable {
         return this;
     }
 
-    public int isNullable() {
+    public Boolean getNullable() {
         if(getmap && null != update) {
             return update.nullable;
         }
         return nullable;
+    }
+    public boolean isNullable() {
+        if(getmap && null != update) {
+            return update.isNullable();
+        }
+        return null != nullable && nullable;
     }
 
     public Column setNullable(int nullable) {
@@ -1163,7 +1197,11 @@ public class Column extends TableAffiliation<Column> implements Serializable {
             update.setNullable(nullable);
             return this;
         }
-        this.nullable = nullable;
+        if (nullable == 1) {
+            this.nullable = true;
+        }else if (nullable == 0) {
+            this.nullable = false;
+        }
         return this;
     }
     public Column nullable(int nullable) {
@@ -1177,21 +1215,21 @@ public class Column extends TableAffiliation<Column> implements Serializable {
             update.nullable(nullable);
             return this;
         }
-        if(null != nullable) {
-            if(nullable) {
-                this.nullable = 1;
-            }else{
-                this.nullable = 0;
-            }
-        }
+        this.nullable = nullable;
         return this;
     }
 
-    public int isAutoIncrement() {
+    public Boolean getAutoIncrement() {
         if(getmap && null != update) {
             return update.autoIncrement;
         }
         return autoIncrement;
+    }
+    public Boolean isAutoIncrement() {
+        if(getmap && null != update) {
+            return update.isAutoIncrement();
+        }
+        return null != autoIncrement && autoIncrement;
     }
 
     public Column setAutoIncrement(int autoIncrement) {
@@ -1199,9 +1237,11 @@ public class Column extends TableAffiliation<Column> implements Serializable {
             update.setAutoIncrement(autoIncrement);
             return this;
         }
-        this.autoIncrement = autoIncrement;
         if(autoIncrement == 1) {
             nullable(false);
+            this.autoIncrement = true;
+        }else if (autoIncrement == 0) {
+            this.autoIncrement = false;
         }
         //fullType = null;
         return this;
@@ -1221,12 +1261,10 @@ public class Column extends TableAffiliation<Column> implements Serializable {
         }
         if(null != autoIncrement) {
             if(autoIncrement) {
-                this.autoIncrement = 1;
                 nullable(false);
-            }else{
-                this.autoIncrement = 0;
             }
         }
+        this.autoIncrement = autoIncrement;
         return this;
     }
 
@@ -1247,19 +1285,29 @@ public class Column extends TableAffiliation<Column> implements Serializable {
         return this;
     }
 
-    public int isUnique() {
+    public Boolean getUnique() {
         if(getmap && null != update) {
             return update.unique;
         }
         return unique;
     }
 
+    public boolean isUnique() {
+        if(getmap && null != update) {
+            return update.isUnique();
+        }
+        return null != unique && unique;
+    }
     public Column setUnique(int unique) {
         if(setmap && null != update) {
             update.setUnique(unique);
             return this;
         }
-        this.unique = unique;
+        if (unique == 1) {
+            this.unique = true;
+        }else if (unique == 0) {
+            this.unique = false;
+        }
         return this;
     }
 
@@ -1274,21 +1322,21 @@ public class Column extends TableAffiliation<Column> implements Serializable {
             update.unique(unique);
             return this;
         }
-        if(null != unique) {
-            if(unique) {
-                this.unique = 1;
-            }else{
-                this.unique = 0;
-            }
-        }
+        this.unique = unique;
         return this;
     }
 
-    public int isPrimaryKey() {
+    public Boolean getPrimaryKey() {
         if(getmap && null != update) {
             return update.primary;
         }
         return primary;
+    }
+    public boolean isPrimaryKey() {
+        if(getmap && null != update) {
+            return update.primary;
+        }
+        return null != primary && primary;
     }
 
     public Column setPrimary(int primary) {
@@ -1296,7 +1344,11 @@ public class Column extends TableAffiliation<Column> implements Serializable {
             update.setPrimary(primary);
             return this;
         }
-        this.primary = primary;
+        if (primary == 1) {
+            this.primary = true;
+        }else if (primary == 0) {
+            this.primary = false;
+        }
         return this;
     }
     public Column primary(int primary) {
@@ -1313,14 +1365,7 @@ public class Column extends TableAffiliation<Column> implements Serializable {
             update.primary(primary);
             return this;
         }
-        if(null != primary) {
-            if(primary) {
-                this.primary = 1 ;
-                nullable(false);
-            }else{
-                this.primary = 0 ;
-            }
-        }
+        this.primary = primary;
         return this;
     }
 
@@ -1358,11 +1403,18 @@ public class Column extends TableAffiliation<Column> implements Serializable {
         return this;
     }
 
-    public int isGenerated() {
+    public Boolean getGenerated() {
         if(getmap && null != update) {
             return update.generated;
         }
         return generated;
+    }
+
+    public boolean isGenerated() {
+        if (getmap && null != update) {
+            return update.isGenerated();
+        }
+        return null != generated && generated;
     }
 
     public Column setGenerated(int generated) {
@@ -1370,7 +1422,11 @@ public class Column extends TableAffiliation<Column> implements Serializable {
             update.setGenerated(generated);
             return this;
         }
-        this.generated = generated;
+        if (generated == 1) {
+            this.generated = true;
+        }else if (generated == 0) {
+            this.generated = false;
+        }
         return this;
     }
     public Column generated(int generated) {
@@ -1384,13 +1440,7 @@ public class Column extends TableAffiliation<Column> implements Serializable {
             update.generated(generated);
             return this;
         }
-        if(null != generated) {
-            if(generated) {
-                this.generated = 1;
-            }else{
-                this.generated = 0;
-            }
-        }
+        this.generated = generated;
         return this;
     }
 
@@ -1663,16 +1713,16 @@ public class Column extends TableAffiliation<Column> implements Serializable {
         if(!BasicUtil.equals(BasicUtil.evl(getComment()), BasicUtil.evl(column.getComment()))) {
             return false;
         }
-        if(!BasicUtil.equals(isNullable(), column.isNullable())) {
+        if(!BasicUtil.equals(getNullable(), column.getNullable())) {
             return false;
         }
-        int isAutoIncrement = isAutoIncrement();
-        if(isAutoIncrement == -1){
-            isAutoIncrement = 0;
+        Boolean isAutoIncrement = getAutoIncrement();
+        if(isAutoIncrement == null){
+            isAutoIncrement = false;
         }
-        int colAutoIncrement = column.isAutoIncrement();
-        if(colAutoIncrement == -1){
-            colAutoIncrement = 0;
+        Boolean colAutoIncrement = column.getAutoIncrement();
+        if(colAutoIncrement == null){
+            colAutoIncrement = false;
         }
         if(isAutoIncrement != colAutoIncrement) {
             return false;
@@ -1680,7 +1730,7 @@ public class Column extends TableAffiliation<Column> implements Serializable {
         if(!BasicUtil.equals(getCharset(), column.getCharset(), ignoreCase)) {
             return false;
         }
-        if(!BasicUtil.equals(isPrimaryKey(), column.isPrimaryKey())) {
+        if(!BasicUtil.equals(getPrimaryKey(), column.getPrimaryKey())) {
             return false;
         }
         if(null != table && table.isSort()) {

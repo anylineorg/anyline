@@ -5788,14 +5788,14 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
     @Override
     public StringBuilder nullable(DataRuntime runtime, StringBuilder builder, Column meta, ACTION.DDL action) {
         if(action != ACTION.DDL.COLUMN_ADD) { //添加列时不支持 NULL , NOT NULL
-            if (meta.isPrimaryKey() == 1) {
+            if (meta.isPrimaryKey()) {
                 builder.append(" NOT NULL");
                 return builder;
             }
             if (null == meta.getDefaultValue()) {
-                int nullable = meta.isNullable();
-                if (nullable != -1) {
-                    if (nullable == 0) {
+                Boolean nullable = meta.getNullable();
+                if (nullable != null) {
+                    if (!nullable) {
                         builder.append(" NOT");
                     }
                     builder.append(" NULL");

@@ -6318,7 +6318,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     @Override
     public StringBuilder primary(DataRuntime runtime, StringBuilder builder, Column meta) {
         //不在列上实现了，因为还有其他主键属性需要设置 PRIMARY KEY(ID) USING BTREE
-       /* if(null != meta && meta.isPrimaryKey() == 1) {
+       /* if(null != meta && meta.isPrimaryKey()) {
             Table table = meta.getTable();
             int size = table.getPrimaryKeySize();
             //如果是修改状态 并且 列名没变 并且 主键没变 则忽略
@@ -6344,8 +6344,8 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public StringBuilder unique(DataRuntime runtime, StringBuilder builder, Column meta) {
-        if(meta.isPrimaryKey() != 1) {
-            if(meta.isUnique() == 1) {
+        if(!meta.isPrimaryKey()) {
+            if(!meta.isUnique()) {
                 builder.append(" UNIQUE");
             }
         }
@@ -6362,7 +6362,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public StringBuilder increment(DataRuntime runtime, StringBuilder builder, Column meta) {
-        if(meta.isAutoIncrement() == 1) {
+        if(meta.isAutoIncrement()) {
             builder.append(" AUTO_INCREMENT");
         }
         return builder;

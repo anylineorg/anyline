@@ -5108,14 +5108,14 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 */
 	@Override
 	public StringBuilder nullable(DataRuntime runtime, StringBuilder builder, Column meta, ACTION.DDL action) {
-		if(meta.isPrimaryKey() == 1) {
+		if(meta.isPrimaryKey()) {
 			builder.append(" NOT NULL");
 			return builder;
 		}
 		if(null == meta.getDefaultValue()) {
-			int nullable = meta.isNullable();
-			if(nullable != -1) {
-				if (nullable == 0) {
+			Boolean nullable = meta.getNullable();
+			if(nullable != null) {
+				if (!nullable) {
 					builder.append(" NOT NULL");
 				}
 				//null 忽略

@@ -279,10 +279,10 @@ public class JDBCUtil {
             if(null == column.getPosition()) {
                 column.setPosition(BasicUtil.parseInt(string(keys, "ORDINAL_POSITION", rs), 0));
             }
-            if(-1 == column.isAutoIncrement()) {
+            if(null == column.getAutoIncrement()) {
                 column.autoIncrement(BasicUtil.parseBoolean(string(keys, "IS_AUTOINCREMENT", rs), false));
             }
-            if(-1 == column.isGenerated()) {
+            if(null == column.getGenerated()) {
                 column.generated(BasicUtil.parseBoolean(string(keys, "IS_GENERATEDCOLUMN", rs), false));
             }
             if(null == column.getComment()) {

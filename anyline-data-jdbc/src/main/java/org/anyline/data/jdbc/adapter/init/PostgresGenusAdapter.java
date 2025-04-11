@@ -6077,14 +6077,14 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         Run run = new SimpleRun(runtime);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
-        int nullable = meta.isNullable();
-        int uNullable = meta.getUpdate().isNullable();
-        if(nullable != -1 && uNullable != -1) {
+        Boolean nullable = meta.getNullable();
+        Boolean uNullable = meta.getUpdate().getNullable();
+        if(nullable != null && uNullable != null) {
             if(nullable != uNullable) {
                 builder.append("ALTER TABLE ");
                 name(runtime, builder, meta.getTable(true)).append(" ALTER ");
                 delimiter(builder, meta.getName());
-                if (uNullable == 0) {
+                if (!uNullable) {
                     builder.append(" SET ");
                 } else {
                     builder.append(" DROP ");
@@ -6204,11 +6204,11 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         type = type.toLowerCase();
         //创建并自增时 或 非自增改自增时 用serial 其他情况用int
         boolean serial = false;
-        if(ACTION.DDL.COLUMN_ADD == meta.getAction() && meta.isAutoIncrement() == 1) {
+        if(ACTION.DDL.COLUMN_ADD == meta.getAction() && meta.isAutoIncrement()) {
             serial = true;
         }else {
             Column update = meta.getUpdate();
-            if(null != update && update.isAutoIncrement() !=1 && meta.isAutoIncrement() == 1) {
+            if(null != update && !update.isAutoIncrement() && meta.isAutoIncrement()) {
                 serial = true;
             }
         }

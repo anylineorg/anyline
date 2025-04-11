@@ -5397,11 +5397,11 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
         type = type.toLowerCase();
         //创建并自增时 或 非自增改自增时 用serial 其他情况用int
         boolean serial = false;
-        if(ACTION.DDL.COLUMN_ADD == meta.getAction() && meta.isAutoIncrement() == 1) {
+        if(ACTION.DDL.COLUMN_ADD == meta.getAction() && meta.isAutoIncrement()) {
             serial = true;
         }else {
             Column update = meta.getUpdate();
-            if(null != update && update.isAutoIncrement() !=1 && meta.isAutoIncrement() == 1) {
+            if(null != update && !update.isAutoIncrement() && meta.isAutoIncrement()) {
                 serial = true;
             }
         }

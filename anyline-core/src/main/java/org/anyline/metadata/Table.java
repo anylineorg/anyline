@@ -191,7 +191,7 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
     /**
      * 主键是否需要更新
      */
-    protected int changePrimary = -1             ;
+    protected Boolean changePrimary = null      ;
     /**
      * 物化视图
      */
@@ -560,7 +560,7 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
         for(Map.Entry<String, Column> item:columns.entrySet()) {
             Column column = item.getValue();
             String key = item.getKey();
-            if(column.isPrimaryKey() == 1) {
+            if(column.isPrimaryKey()) {
                 pks.put(key, column);
             }
         }
@@ -568,7 +568,7 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
     }
     public Column primary() {
         for(Column column:columns.values()) {
-            if(column.isPrimaryKey() == 1) {
+            if(column.isPrimaryKey()) {
                 return column;
             }
         }
@@ -737,7 +737,7 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
     public Table createPrimaryKey() {
         if(null == primaryKey && null != columns) {
             for(Column column:columns.values()) {
-                if(column.isPrimaryKey() == 1) {
+                if(column.isPrimaryKey()) {
                     if(null == primaryKey) {
                         primaryKey = new PrimaryKey();
                     }
@@ -995,7 +995,7 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
         }
         if(null == primaryKey) {
             for(Column column: columns.values()) {
-                if(column.isPrimaryKey() ==1) {
+                if(column.isPrimaryKey()) {
                     if(null == primaryKey) {
                         primaryKey = new PrimaryKey();
                         primaryKey.setName("pk_"+getName());
@@ -1021,12 +1021,22 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
         return primaryKey;
     }
 
-    public int getChangePrimary() {
+    public Boolean getChangePrimary() {
         return changePrimary;
     }
+    public boolean isChangePrimary() {
+        return null != changePrimary && changePrimary;
+    }
 
-    public void setChangePrimary(int changePrimary) {
+    public void setChangePrimary(Boolean changePrimary) {
         this.changePrimary = changePrimary;
+    }
+    public void setChangePrimary(int changePrimary) {
+        if(changePrimary == 1){
+            this.changePrimary = true;
+        }else if(changePrimary == 0){
+            this.changePrimary = false;
+        }
     }
 
     public <T extends Index> Table setIndexes(LinkedHashMap<String, T> indexes) {

@@ -577,7 +577,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
         LinkedHashMap<String, Column> columns = new LinkedHashMap<>();
         if(null != metadatas) {
             for(Column column:metadatas.values()) {
-                if(column.isPrimaryKey() == 1) {
+                if(column.isPrimaryKey()) {
                     columns.put(column.getName().toUpperCase(), column);
                 }
             }

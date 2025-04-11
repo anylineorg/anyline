@@ -4717,7 +4717,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 */
 	@Override
 	public StringBuilder nullable(DataRuntime runtime, StringBuilder builder, Column meta, ACTION.DDL action) {
-		if(meta.isAutoIncrement() == 1 || meta.isPrimaryKey() ==1) {
+		if(meta.isAutoIncrement() || meta.isPrimaryKey()) {
 			return builder;
 		}
 		return super.nullable(runtime, builder, meta, action);
@@ -4784,7 +4784,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 */
 	@Override
 	public StringBuilder increment(DataRuntime runtime, StringBuilder builder, Column meta) {
-		if(meta.isAutoIncrement() == 1) {
+		if(meta.isAutoIncrement()) {
 			// builder.append(" NOT NULL PRIMARY KEY KEYGENERATED ALWAYS AS IDENTITY (START WITH ").append(column.getIncrementSeed()).append(",INCREMENT BY ").append(column.getIncrementStep()).append(")");
 			builder.append(" GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)");
 		}
