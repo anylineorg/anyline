@@ -131,9 +131,9 @@ public class Column extends TableAffiliation<Column> implements Serializable {
     protected TypeMetadata typeMetadata           ;
     protected String fullType                     ; //完整类型名称
     protected String finalType                    ; //如果设置了finalType 生成SQL时 name finalType 其他属性
-    protected int ignoreLength               = -1 ; //是否忽略长度
-    protected int ignorePrecision            = -1 ; //是否忽略有效位数
-    protected int ignoreScale                = -1 ; //是否忽略小数位
+    protected Boolean ignoreLength          = null; //是否忽略长度
+    protected Boolean ignorePrecision       = null; //是否忽略有效位数
+    protected Boolean ignoreScale           = null; //是否忽略小数位
     //数字类型:precision,scale 日期:length 时间戳:scale 其他:length
     protected Integer precisionLength             ; // 精确长度 根据数据类型返回precision或length
     protected Integer length                      ; // 长度(注意varchar,date,timestamp,number的区别)
@@ -150,24 +150,24 @@ public class Column extends TableAffiliation<Column> implements Serializable {
     protected JavaType javaType                   ;
     protected String jdbcType                     ; // 有可能与typeName不一致 可能多个typeName对应一个jdbcType 如point>
     protected String dateScale                    ; // 日期类型 精度
-    protected int nullable                   = -1 ; // 是否可以为NULL -1:未配置 1:是(NULL)  0:否(NOT NULL)
-    protected int caseSensitive              = -1 ; // 是否区分大小写
-    protected int currency = -1                   ; // 是否是货币
-    protected int signed = -1                     ; // 是否可以带正负号
-    protected int autoIncrement = -1              ; // 是否自增
-    protected Integer incrementSeed          =  1 ; // 自增起始值
-    protected Integer incrementStep          =  1 ; // 自增增量
-    protected int primary = -1                    ; // 是否主键
+    protected Boolean nullable              = null; // 是否可以为NULL -1:未配置 1:是(NULL)  0:否(NOT NULL)
+    protected Boolean caseSensitive         = null; // 是否区分大小写
+    protected Boolean currency              = null; // 是否是货币
+    protected Boolean signed                = null; // 是否可以带正负号
+    protected Boolean autoIncrement         = null; // 是否自增
+    protected Integer incrementSeed         = null; // 自增起始值
+    protected Integer incrementStep         = null; // 自增增量
+    protected Boolean primary               = null; // 是否主键
     protected String primaryType                  ; // 主键类型 如BTREE
-    protected int unique  = -1                    ; // 是否唯一
-    protected int generated = -1                  ; // 是否generated
+    protected Boolean unique                = null; // 是否唯一
+    protected Boolean generated             = null; // 是否generated
     protected Object defaultValue                 ; // 默认值
     protected String defaultConstraint            ; // 默认约束名
     protected String charset                      ; // 编码
     protected String collate                      ; // 排序编码
     protected Aggregation aggregation             ; //聚合类型
-    protected int withTimeZone                = -1;
-    protected int withLocalTimeZone           = -1;
+    protected Boolean withTimeZone          = null;
+    protected Boolean withLocalTimeZone     = null;
     protected Column reference                    ; // 外键依赖列
     protected Integer srid                        ; // SRID
     protected boolean array                       ; // 是否数组
@@ -529,11 +529,21 @@ public class Column extends TableAffiliation<Column> implements Serializable {
         return dateScale;
     }
 
-    public int getWithTimeZone() {
+    public Boolean getWithTimeZone() {
         return withTimeZone;
+    }
+    public boolean isWithTimeZone() {
+        return null != withLocalTimeZone && withLocalTimeZone;
     }
 
     public void setWithTimeZone(int withTimeZone) {
+        if(withTimeZone == 0){
+            this.withTimeZone = false;
+        }else if(withTimeZone == 1){
+            this.withTimeZone = true;
+        }
+    }
+    public void setWithTimeZone(Boolean withTimeZone) {
         this.withTimeZone = withTimeZone;
     }
 
