@@ -30,6 +30,7 @@ import java.awt.image.*;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Iterator;
 
@@ -302,8 +303,44 @@ public class ImgUtil {
         } catch (Exception e) {
             log.error("cut img exception:", e);
         } 
-    } 
- 
+    }
+
+    /**
+     * 图片合并 竖向
+     * @param target 结果文件
+     * @param format 结果图片文件格式 PNG
+     * @param files 图片文件
+     */
+    public static void merge(File target, String format, File ... files) throws Exception{
+        java.util.List<File> list = new ArrayList<>();
+        for(File file:files){
+            list.add(file);
+        }
+        merge(target, format, list);
+    }
+    public static void merge(File target, String format, java.util.List<File> files) throws Exception{
+        java.util.List<BufferedImage> imgs = new ArrayList<>();
+        int width = 0;
+        int height = 0;
+        for(File file:files){
+            BufferedImage img = ImageIO.read(file);
+            imgs.add(img);
+            width = NumberUtil.max(width, img.getWidth());
+            height += img.getHeight();
+        }
+        BufferedImage combined = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        // 获取Graphics对象进行绘制
+        Graphics g = combined.getGraphics();
+        int x = 0;
+        int y = 0;
+        for(BufferedImage img:imgs){
+            g.drawImage(img, x, y, null);
+            y += img.getHeight();
+        }
+        g.dispose(); // 释放资源
+        // 保存合并后的图片
+        ImageIO.write(combined, format, target);
+    }
     /** 
      * 图像类型转换:GIF&gt;JPG、GIF&gt;PNG、PNG&gt;JPG、PNG&gt;GIF(X)、BMP&gt;PNG 
      * @param src 源图像地址 
