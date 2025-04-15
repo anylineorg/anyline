@@ -31,13 +31,12 @@ import org.anyline.metadata.*;
 import org.anyline.metadata.refer.MetadataFieldRefer;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.metadata.type.TypeMetadata;
+import org.anyline.util.BasicUtil;
+import org.anyline.util.regular.RegularUtil;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 参考 PostgresGenusAdapter
@@ -2199,6 +2198,157 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
      * [结果集封装]<br/>
      * List<String> ddl(DataRuntime runtime, int index, PartitionTable table, List<String> ddls, DataSet set)
      ******************************************************************************************************************/
+
+
+    /**
+     * 表分区方式及分片
+     * @param table 主表
+     * @return Partition
+     */
+    public Table.Partition partition(DataRuntime runtime, String random, Table table) {
+        return super.partition(runtime, random, table);
+    }
+
+    /**
+     * partition table[命令合成]<br/>
+     * 查询表分区方式及分片
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param table 表
+     * @return String
+     */
+    @Override
+    public List<Run> buildQueryTablePartitionRun(DataRuntime runtime, Table table) {
+        List<Run> runs = new ArrayList<>();
+        SimpleRun run = new SimpleRun(runtime);
+        runs.add(run);
+        StringBuilder builder = run.getBuilder();
+        //分区方式
+        builder.append("SELECT N.nspname AS SCHEMA_NAME, F.relname AS TABLE_NAME, M.partstrategy AS PARTITION_TYPE, M.partkey AS PARTITION_COLUMNS \n")
+                .append("FROM pg_partition AS M \n")
+                .append("LEFT JOIN pg_class AS F ON M.parentid = F.oid\n")
+                .append("LEFT JOIN pg_namespace AS N ON F.relnamespace = N.oid");
+        ConfigStore configs = run.getConfigs();
+        configs.and("F.relname", table.getName());
+        configs.and("N.nspname", table.getSchemaName());
+
+        //分区
+        run = new SimpleRun(runtime);
+        runs.add(run);
+        builder = run.getBuilder();
+        builder.append("SELECT N.nspname AS SCHEMA_NAME, F.relname AS TABLE_NAME, M.partstrategy AS PARTITION_TYPE, M.relname AS PARTITION_NAME, M.boundaries AS PARTITION_FOR\n");
+        builder.append("FROM pg_partition AS M \n");
+        builder.append("LEFT JOIN pg_class AS F ON M.parentid = F.oid\n");
+        builder.append("LEFT JOIN pg_namespace AS N ON F.relnamespace = N.oid\n");
+        builder.append("WHERE M.parttype = 'p'\n");
+
+
+        configs = run.getConfigs();
+        configs.and("N.nspname", table.getSchemaName());
+        configs.and("F.relname", table.getName());
+        return runs;
+    }
+
+    /**
+     * partition table[结果集封装]<br/>
+     * 根据查询结果集构造Table
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param index 第几条SQL 对照 buildQueryMasterTablesRun返回顺序
+     * @param create 上一步没有查到的,这一步是否需要新创建
+     * @param meta 上一步查询结果
+     * @param table 表
+     * @param set 查询结果集
+     * @return tables
+     * @throws Exception 异常
+     */
+    @Override
+    public Table.Partition partition(DataRuntime runtime, int index, boolean create, Table.Partition meta, Table table, DataSet set) throws Exception {
+        return super.partition(runtime, index, create, meta, table, set);
+    }
+
+    /**
+     * partition table[结果集封装]<br/>
+     * 根据查询结果集构造Table.Partition
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param index 第几条SQL 对照 buildQueryMasterTablesRun返回顺序
+     * @param create 上一步没有查到的,这一步是否需要新创建
+     * @param meta 上一步查询结果
+     * @param table 表
+     * @param row 查询结果集
+     * @return tables
+     * @throws Exception 异常
+     */
+    @Override
+    public Table.Partition init(DataRuntime runtime, int index, boolean create, Table.Partition meta, Table table, DataRow row) throws Exception {
+        return super.init(runtime, index, create, meta, table, row);
+    }
+
+    /**
+     * partition table[结果集封装]<br/>
+     * 根据查询结果集构造Table.Partition
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param index 第几条SQL 对照 buildQueryMasterTablesRun返回顺序
+     * @param create 上一步没有查到的,这一步是否需要新创建
+     * @param meta 上一步查询结果
+     * @param table 表
+     * @param row 查询结果集
+     * @return tables
+     * @throws Exception 异常
+     */
+    @Override
+    public Table.Partition detail(DataRuntime runtime, int index, boolean create, Table.Partition meta, Table table, DataRow row) throws Exception {
+        if(index == 1) {
+            MetadataFieldRefer refer = refer(runtime, Table.Partition.Slice.class);
+            Table.Partition.Slice slice = new Table.Partition.Slice();
+            slice.setName(getString(row, refer, Table.Partition.Slice.FIELD_NAME));
+            String fors = getString(row, refer, Table.Partition.Slice.FIELD_FOR);
+            fors = fors.replace("'", "").replace("\"", "");
+            Table.Partition.TYPE type = meta.getType();
+            if(type == Table.Partition.TYPE.LIST) {
+                //TODO
+            }else if(type == Table.Partition.TYPE.HASH) {
+                //TODO
+            }else if(type == Table.Partition.TYPE.RANGE) {
+                //VALUES LESS THAN('2021-07-01 00:00:00',100),
+                //{"2021-07-01 00:00:00",100}
+                String[] less = fors.split(",");
+                List<Column> columns = new ArrayList<>();
+                columns.addAll(meta.getColumns().values());
+                int size = less.length;
+                for(int i=0; i<size; i++) {
+                    slice.setLess(columns.get(i).getName(), less[i].trim());
+                }
+            }
+            meta.addSlice(slice);
+        }
+        return meta;
+    }
+
+
+    /**
+     * partition table[结果集封装]<br/>
+     * Table.Partition 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer initTablePartitionFieldRefer() {
+        MetadataFieldRefer refer = new MetadataFieldRefer(Table.Partition.class);
+        refer.map(Table.Partition.FIELD_TYPE, "PARTITION_TYPE");
+        refer.map(Table.Partition.FIELD_COLUMN, "PARTITION_COLUMNS");
+        return refer;
+    }
+
+    /**
+     * partition table[结果集封装]<br/>
+     * Table.Partition.Slice 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer initTablePartitionSliceFieldRefer() {
+        MetadataFieldRefer refer = new MetadataFieldRefer(Table.Partition.Slice.class);
+        refer.map(Table.Partition.Slice.FIELD_NAME, "PARTITION_NAME");
+        refer.map(Table.Partition.Slice.FIELD_FOR, "PARTITION_FOR");
+        return refer;
+    }
     /**
      * partition table[调用入口]<br/>
      * 查询主表
