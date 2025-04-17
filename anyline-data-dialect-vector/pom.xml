@@ -19,6 +19,9 @@
 		<module>anyline-data-weaviate</module>
 		<module>anyline-data-chroma</module>
 		<module>anyline-data-qdrant</module>
+		<module>anyline-data-vald</module>
+		<module>anyline-data-vespa</module>
+		<module>anyline-data-vearch</module>
     </modules>
 	<build>
 		<plugins>
