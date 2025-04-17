@@ -6345,7 +6345,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     @Override
     public StringBuilder unique(DataRuntime runtime, StringBuilder builder, Column meta) {
         if(!meta.isPrimaryKey()) {
-            if(!meta.isUnique()) {
+            if(meta.isUnique()) {
                 builder.append(" UNIQUE");
             }
         }
