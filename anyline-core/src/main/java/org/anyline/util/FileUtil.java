@@ -991,7 +991,7 @@ public class FileUtil {
 			}catch(Exception ignored) {}
 		}
 		if(ConfigTable.IS_DEBUG && log.isWarnEnabled()) {
-			log.info("[save file][file:"+file.getAbsolutePath()+"][耗时:"+(System.currentTimeMillis()-fr)+"]");
+			log.info("[save file][file:"+file.getAbsolutePath()+"][耗时:"+DateUtil.format(System.currentTimeMillis()-fr)+"]");
 		}
         return true;
     }
@@ -1070,7 +1070,7 @@ public class FileUtil {
                 while ((length = is.read(bytes)) != -1) {
                     os.write(bytes, 0, length);
                 }
-                log.info("[合并文件][耗时:"+DateUtil.conversion(System.currentTimeMillis()-fr)+"][file:"+dest.getAbsolutePath()+"][item:"+item.getAbsolutePath()+"]");
+                log.info("[合并文件][耗时:"+DateUtil.format(System.currentTimeMillis()-fr)+"][file:"+dest.getAbsolutePath()+"][item:"+item.getAbsolutePath()+"]");
             }
         }catch (Exception e) {
         	e.printStackTrace();
@@ -1113,7 +1113,7 @@ public class FileUtil {
                 while ((length = is.read(bytes)) != -1) {
                     os.write(bytes, 0, length);
                 }
-                log.info("[合并文件][耗时:"+DateUtil.conversion(System.currentTimeMillis()-fr)+"][file:"+dest.getAbsolutePath()+"][item:"+item.getAbsolutePath()+"]");
+                log.info("[合并文件][耗时:"+DateUtil.format(System.currentTimeMillis()-fr)+"][file:"+dest.getAbsolutePath()+"][item:"+item.getAbsolutePath()+"]");
             }
         }catch (Exception e) {
         	e.printStackTrace();
@@ -1216,7 +1216,7 @@ public class FileUtil {
 		        }
 		        startPosition = endPosition + 1;
 		        endPosition += average;
-		        log.info("[文件分割]["+(i+1)+"/"+count+"][耗时:"+DateUtil.conversion(System.currentTimeMillis()-fr)+"][src:"+file.getAbsolutePath()+"][item:"+item.getAbsolutePath()+"]");
+		        log.info("[文件分割]["+(i+1)+"/"+count+"][耗时:"+DateUtil.format(System.currentTimeMillis()-fr)+"][src:"+file.getAbsolutePath()+"][item:"+item.getAbsolutePath()+"]");
 		    }
 		} catch (Exception e) {
 			e.printStackTrace();

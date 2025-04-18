@@ -18,6 +18,7 @@ package org.anyline.net;
 
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
+import org.anyline.util.DateUtil;
 import org.anyline.util.FileUtil;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -181,7 +182,7 @@ public class HttpClient {
 				result = parseResult(result, response, charset);
 			}
 			if(ConfigTable.IS_HTTP_LOG && log.isWarnEnabled()) {
-				log.info("[http request][method:{}][status:{}][耗时:{}][url:{}]", method.getMethod(), result.getStatus(), System.currentTimeMillis() - fr, method.getURI());
+				log.info("[http request][method:{}][status:{}][耗时:{}][url:{}]", method.getMethod(), result.getStatus(), DateUtil.format(System.currentTimeMillis() - fr), method.getURI());
 			}
 		} catch (Exception e) {
 			result = new HttpResponse();

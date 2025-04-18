@@ -398,7 +398,7 @@ public class ZipUtil {
 				zipout.flush(); 
 				zipout.closeEntry(); 
 				if (ConfigTable.IS_DEBUG) {
-					log.debug("[压缩文件][添加文件][耗时:{}][file:{}]", DateUtil.conversion(System.currentTimeMillis()- fr), item.getAbsolutePath());
+					log.debug("[压缩文件][添加文件][耗时:{}][file:{}]", DateUtil.format(System.currentTimeMillis()- fr), item.getAbsolutePath());
 				} 
 			} 
 			return true; 
@@ -464,7 +464,7 @@ public class ZipUtil {
 				in.close(); 
 				out.close(); 
 				if (ConfigTable.IS_DEBUG) {
-					log.debug("[解压完成][进度:{}/{}][耗时:{}][file:{}]", size, total, DateUtil.conversion(System.currentTimeMillis()- fr), desFile.getAbsolutePath());
+					log.debug("[解压完成][进度:{}/{}][耗时:{}][file:{}]", size, total, DateUtil.format(System.currentTimeMillis()- fr), desFile.getAbsolutePath());
 				} 
 			} 
 			zf.close(); 
@@ -472,7 +472,7 @@ public class ZipUtil {
 			log.error("unzip exception:", e);
 		} 
 		if (ConfigTable.IS_DEBUG) {
-			log.debug("[解压完成][共耗时:{}][dir:{}][size:{}]", DateUtil.conversion(System.currentTimeMillis() - fr), dir.getAbsolutePath(), size);
+			log.debug("[解压完成][共耗时:{}][dir:{}][size:{}]", DateUtil.format(System.currentTimeMillis() - fr), dir.getAbsolutePath(), size);
 		} 
 		return files; 
 	}

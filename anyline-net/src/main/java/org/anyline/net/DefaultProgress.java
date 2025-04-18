@@ -85,7 +85,7 @@ public class DefaultProgress implements DownloadProgress{
 		if(rate - lastLogRate  >= 0.5 || System.currentTimeMillis() - lastLogTime > 1000 * 5 || rate==100) {
 			long time = System.currentTimeMillis() - start; 
 			message = "[进度:"+FileUtil.progress(length, finish)+"]"
-    				+ "[耗时:"+DateUtil.conversion(time)+"/"+DateUtil.conversion(expect)+"("+FileUtil.length(finish*1000/time)+"/s)]"; 
+    				+ "[耗时:"+DateUtil.format(time)+"/"+DateUtil.format(expect)+"("+FileUtil.length(finish*1000/time)+"/s)]";
     		log.info("[文件下载]{}[url:{}][local:{}]", message, url, local.getAbsolutePath());
     		lastLogRate = rate; 
     		lastLogTime = System.currentTimeMillis(); 

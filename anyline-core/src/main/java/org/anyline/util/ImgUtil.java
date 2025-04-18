@@ -145,7 +145,7 @@ public class ImgUtil {
         } catch (IOException e) {
             log.error("scale image exception:", e);
         } 
-        log.info("[压缩图片][耗时:{}][source:{}][target:{}]", (System.currentTimeMillis()-fr), src, tar);
+        log.info("[压缩图片][耗时:{}][source:{}][target:{}]", DateUtil.format(System.currentTimeMillis()-fr), src, tar);
     } 
  
     public static void scale(File src, File tar, String format, int width, int height) {

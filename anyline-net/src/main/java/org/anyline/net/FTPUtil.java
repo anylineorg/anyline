@@ -123,7 +123,7 @@ public class FTPUtil {
 	    } catch (IOException e) {
             log.error("download file exception:", e);
 	    } 
-	    log.debug("[ftp download file][耗时:{}][length:{}][remote:{}][local:{}]", DateUtil.conversion(System.currentTimeMillis()-fr), FileUtil.length(local.length()), remote, local.getAbsolutePath());
+	    log.debug("[ftp download file][耗时:{}][length:{}][remote:{}][local:{}]", DateUtil.format(System.currentTimeMillis()-fr), FileUtil.length(local.length()), remote, local.getAbsolutePath());
 	    return success;   
 	}
 
@@ -280,7 +280,7 @@ public class FTPUtil {
              } catch (IOException ignored) {
              }   
          }  
-        log.debug("[ftp upload file][耗时:{}][length:{}][remote:{}][local:{}]", DateUtil.conversion(System.currentTimeMillis()-fr), FileUtil.length(local.length()), remote, local.getAbsolutePath());
+        log.debug("[ftp upload file][耗时:{}][length:{}][remote:{}][local:{}]", DateUtil.format(System.currentTimeMillis()-fr), FileUtil.length(local.length()), remote, local.getAbsolutePath());
         return result; 
     } 
     public boolean  uploadFile(String remote, File local) {

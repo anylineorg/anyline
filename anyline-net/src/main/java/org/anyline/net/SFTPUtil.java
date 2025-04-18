@@ -110,7 +110,7 @@ public class SFTPUtil {
             SFTPProgressMonitor process = new SFTPProgressMonitor(remotePath, local, length);
             client.get(remotePath, os, process);
             if(ConfigTable.IS_DEBUG && log.isDebugEnabled()) {
-            	log.debug("[文件下载完成][耗时:{}][file:{}]", System.currentTimeMillis()-fr, list.get(0) + list.get(1));
+            	log.debug("[文件下载完成][耗时:{}][file:{}]", DateUtil.format(System.currentTimeMillis()-fr), list.get(0) + list.get(1));
             } 
         } catch (Exception e) {
             throw e;   
@@ -203,7 +203,7 @@ public class SFTPUtil {
         client.cd(remoteDir);   
         client.put(localFile, remoteFile);
         if(ConfigTable.IS_DEBUG && log.isDebugEnabled()) {
-        	log.debug("[文件上传][耗时:{}][local:{}][remote:{}]", DateUtil.conversion(System.currentTimeMillis()-fr), localFile, remoteDir+"/"+remoteFile);
+        	log.debug("[文件上传][耗时:{}][local:{}][remote:{}]", DateUtil.format(System.currentTimeMillis()-fr), localFile, remoteDir+"/"+remoteFile);
         } 
     }   
     public void uploadFile(File localFile, String remoteDir, String remoteFile) throws SftpException {
@@ -365,7 +365,7 @@ class SFTPProgressMonitor implements SftpProgressMonitor {
 			double expect = 0; 
 			if(delay>0 && transfered>0) {
 				expect = length / (transfered/delay); 
-				String total_title = "[文件下载][进度:" + FileUtil.progress(length, transfered) +"][耗时:"+DateUtil.conversion(delay)+"/"+DateUtil.conversion(expect)+"("+FileUtil.length(transfered*1000/delay)+"/s)]";
+				String total_title = "[文件下载][进度:" + FileUtil.progress(length, transfered) +"][耗时:"+DateUtil.format(delay)+"/"+DateUtil.conversion(expect)+"("+FileUtil.length(transfered*1000/delay)+"/s)]";
 				if(null != local) {
 					total_title = "[local:"+local+"]" + total_title; 
 				} 
