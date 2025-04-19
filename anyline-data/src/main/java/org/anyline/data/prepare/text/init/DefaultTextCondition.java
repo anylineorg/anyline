@@ -44,7 +44,6 @@ import java.util.Map;
  * 
  */ 
 public class DefaultTextCondition extends AbstractCondition implements Condition {
-	private String text;
 	protected List<VariableBlock> blocks = new ArrayList<>();
 	 
 	 
@@ -95,9 +94,9 @@ public class DefaultTextCondition extends AbstractCondition implements Condition
 	public DefaultTextCondition(String id, String text, boolean isStatic) {
 		this.id = id; 
 		this.text = text; 
-		setVariableType(Condition.VARIABLE_PLACEHOLDER_TYPE_INDEX); 
 		if(!isStatic) {
 			parseText();
+			setVariableType(Condition.VARIABLE_PLACEHOLDER_TYPE_INDEX);
 		}else{
 			setVariableType(Condition.VARIABLE_PLACEHOLDER_TYPE_NONE);
 		} 

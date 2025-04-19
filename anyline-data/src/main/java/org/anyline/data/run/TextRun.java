@@ -161,7 +161,14 @@ public class TextRun extends AbstractRun implements Run {
 			if(null != values) {
 				int i = 0;
 				int len = values.size();
-				for(Variable var:variables) {
+				List<Variable> vars = this.variables;
+				if(null == vars) {
+					vars = new ArrayList<>();
+				}
+				if(vars.isEmpty()){
+					vars = conditionChain.getVariables();
+				}
+				for(Variable var:vars) {
 					if(i < len) {
 						var.setValue(values.get(i));
 						i++;

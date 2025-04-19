@@ -56,13 +56,17 @@ public class CommandParser {
         parseText(runtime, run, prepare.getText());
 
         //解析查询条件中的占位符
-        List<Condition> list = run.getConditionChain().getConditions();
-        for(Condition item:list){
-            parseText(runtime, item, item.text(), run.getConfigs());
+        List<Condition> conditions = run.getConditionChain().getConditions();
+        for(Condition condition:conditions){
+            parseText(runtime, condition, condition.text(), run.getConfigs());
         }
     }
     public static void parseText(DataRuntime runtime, Condition condition, String text, ConfigStore configs) {
         if(BasicUtil.isEmpty(text)){
+            return;
+        }
+        if(condition.getVariableType() != Condition.VARIABLE_PLACEHOLDER_TYPE_NONE){
+            //解析过一次了
             return;
         }
 
@@ -89,7 +93,12 @@ public class CommandParser {
                 List<Variable> vars = parseTextVariable(supportSqlVarPlaceholderRegexExt, text, Compare.EMPTY_VALUE_SWITCH.NULL);
                 condition.addVariable(vars);
                 if(!vars.isEmpty()){
-                    condition.setVariableType(Condition.VARIABLE_PLACEHOLDER_TYPE_KEY);
+                    if(vars.get(0).getType() == 0){
+                        //第一个按下标就按下标 不能混用
+                        condition.setVariableType(Condition.VARIABLE_PLACEHOLDER_TYPE_INDEX);
+                    } else {
+                        condition.setVariableType(Condition.VARIABLE_PLACEHOLDER_TYPE_KEY);
+                    }
                 }
             }
             //解析

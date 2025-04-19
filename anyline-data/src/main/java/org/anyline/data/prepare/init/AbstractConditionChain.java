@@ -18,6 +18,7 @@ package org.anyline.data.prepare.init;
 
 import org.anyline.data.prepare.Condition;
 import org.anyline.data.prepare.ConditionChain;
+import org.anyline.data.prepare.Variable;
 import org.anyline.data.run.RunValue;
 
 import java.util.ArrayList;
@@ -31,8 +32,18 @@ import java.util.List;
  */ 
 public abstract class AbstractConditionChain extends AbstractCondition implements ConditionChain {
 	protected List<Condition> conditions = new ArrayList<>();
-	protected int joinSize; 
-	 
+	protected int joinSize;
+
+	@Override
+	public List<Variable> getVariables() {
+		List<Variable> variables = new ArrayList<>();
+		if(null != conditions) {
+			for (Condition condition:conditions) {
+				variables.addAll(condition.getVariables());
+			}
+		}
+		return variables;
+	}
 	public void init() {
 		for(Condition condition:conditions) {
 			if(null == condition) {
