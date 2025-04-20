@@ -208,6 +208,12 @@ public abstract class AbstractController {
 					Object value = ConfigParser.getValue(requestValues, parser);
 					row.put(col, value);
 				}
+				if(row.isEmpty(col)){
+					Object val = parser.getDefaultValue();
+					if(BasicUtil.isNotEmpty(val)){
+						row.put(col, val);
+					}
+				}
 				if(parser.isRequired()) {
 					row.addUpdateColumns(parser.getVar());
 				}

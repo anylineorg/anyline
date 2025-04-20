@@ -22,6 +22,7 @@ import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.OriginRow;
 import org.anyline.util.BasicUtil;
+import org.omg.CORBA.BAD_CONTEXT;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -118,7 +119,30 @@ public class ParseResult {
 	}
 	public List<ParseResult> getDefs() {
 		return defs; 
-	} 
+	}
+	public Object getDefaultValue() {
+		for(ParseResult def:defs) {
+			Object val = def.getDefaultValue();
+			if(null != val){
+				return val;
+			}
+			String key = def.getKey();
+			if(BasicUtil.checkEl(key)){
+				val = key.substring(2, key.length()-1);
+			}
+			if(BasicUtil.isNotEmpty(val)){
+				return val;
+			}
+		}
+		Object val = null;
+		if(BasicUtil.checkEl(key)){
+			val = key.substring(2, key.length()-1);
+		}
+		if(BasicUtil.isNotEmpty(val)){
+			return val;
+		}
+		return null;
+	}
 	public void addDef(ParseResult def) {
 		defs.add(def); 
 	} 
