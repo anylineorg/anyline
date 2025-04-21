@@ -933,6 +933,9 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public long execute(DataRuntime runtime, String random, ConfigStore configs, Run run) {
+		if(null != run) {
+			run.supportBr(false);
+		}
 		return super.execute(runtime, random, configs, run);
 	}
 
@@ -3609,7 +3612,6 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 */
 	@Override
 	public List<Run> buildCreateRun(DataRuntime runtime, Table meta) throws Exception {
-
 		List<Run> runs = new ArrayList<>();
 		Run run = new SimpleRun(runtime);
 		runs.add(run);
@@ -3640,6 +3642,8 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		skew(runtime, builder, meta);
 		//
 		store(runtime, builder, meta);
+		//
+		location(runtime, builder, meta);
 		//物化视图
 		materialize(runtime, builder, meta);
 		//扩展属性
@@ -3688,6 +3692,13 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 				}
 			}
 
+		}
+		return builder;
+	}
+	public StringBuilder location(DataRuntime runtime, StringBuilder builder, Table meta) {
+		String location = meta.getLocation();
+		if(BasicUtil.isNotEmpty(location)){
+			builder.append("\nLOCATION '").append(location).append("'");
 		}
 		return builder;
 	}
