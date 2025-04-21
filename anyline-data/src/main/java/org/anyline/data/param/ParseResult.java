@@ -22,8 +22,6 @@ import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.OriginRow;
 import org.anyline.util.BasicUtil;
-import org.omg.CORBA.BAD_CONTEXT;
-
 import java.util.ArrayList;
 import java.util.List;
 
