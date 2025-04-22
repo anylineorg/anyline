@@ -55,6 +55,7 @@ public interface ACTION {
         TABLE_DROP      (CMD.DROP, "表删除"),
         TABLE_RENAME    (CMD.RENAME, "表重命名"),
         TABLE_COMMENT   (CMD.ALTER, "表修改备注"),
+        TABLE_PROPERTY  (CMD.ALTER, "表修改属性"),
 
         VIEW_CREATE   (CMD.CREATE, "视图创建"),
         VIEW_ALTER    (CMD.ALTER, "视图修改"),

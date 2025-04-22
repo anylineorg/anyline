@@ -27,7 +27,6 @@ import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.run.Run;
 import org.anyline.data.run.RunValue;
 import org.anyline.data.run.TableRun;
-import org.anyline.data.run.TextRun;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.util.DataSourceUtil;
 import org.anyline.entity.*;
@@ -7585,7 +7584,7 @@ public interface DriverAdapter {
 
 	/**
 	 * table[命令合成]<br/>
-	 * 修改表
+	 * 修改表 只生成修改表本身属性 不生成关于列及索引的
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 表
 	 * @return sql

@@ -22,6 +22,7 @@ import org.anyline.adapter.EntityAdapter;
 import org.anyline.adapter.KeyAdapter;
 import org.anyline.data.adapter.DriverActuator;
 import org.anyline.data.adapter.DriverAdapter;
+import org.anyline.data.adapter.DriverAdapter.SQL_BUILD_IN_VALUE;
 import org.anyline.data.cache.PageLazyStore;
 import org.anyline.data.entity.Join;
 import org.anyline.data.listener.DDListener;
@@ -31,7 +32,9 @@ import org.anyline.data.param.Config;
 import org.anyline.data.param.ConfigParser;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.init.DefaultConfigStore;
-import org.anyline.data.prepare.*;
+import org.anyline.data.prepare.ConditionChain;
+import org.anyline.data.prepare.RunPrepare;
+import org.anyline.data.prepare.Variable;
 import org.anyline.data.prepare.auto.TablePrepare;
 import org.anyline.data.prepare.auto.init.DefaultTablePrepare;
 import org.anyline.data.prepare.auto.init.DefaultTextPrepare;
@@ -13320,7 +13323,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	@Override
 	public boolean alter(DataRuntime runtime, Table meta) throws Exception {
 		boolean result = true;
-		List<Run> runs = new ArrayList<>();
 		Table update = (Table)meta.getUpdate();
 		//检测表主键(在没有显式设置主键时根据其他条件判断如自增),同时根据主键对象给相关列设置主键标识
 		checkPrimary(runtime, update);
@@ -13343,29 +13345,14 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		if(!result) {
 			return result;
 		}
-		//修改表备注
-		String ucomment = update.getComment();
-		String comment = meta.getComment();
-		if(BasicUtil.isEmpty(ucomment) && BasicUtil.isEmpty(comment)) {
-			//都为空时不更新
-		}else {
-			if (!BasicUtil.equals(comment, ucomment)) {
-				swt = InterceptorProxy.prepare(runtime, random, ACTION.DDL.TABLE_COMMENT, meta);
-				if (swt == ACTION.SWITCH.BREAK) {
-					return false;
-				}
-				if (BasicUtil.isNotEmpty(meta.getComment())) {
-					runs.addAll(buildChangeCommentRun(runtime, update));
-				} else {
-					runs.addAll(buildAddCommentRun(runtime, update));
-				}
-				result = execute(runtime, random, meta, ACTION.DDL.TABLE_COMMENT, runs) && result;
-				if (meta.swt() == ACTION.SWITCH.BREAK) {
-					return result;
-				}
-			}
-		}
 
+        List<Run> runs = buildAlterRun(runtime, meta);;
+        if(!runs.isEmpty()){
+            result = execute(runtime, random, meta, ACTION.DDL.TABLE_PROPERTY, runs) && result;
+            if (meta.swt() == ACTION.SWITCH.BREAK) {
+                return result;
+            }
+        }
 		boolean slice  = slice();
 		List<Run> slices = new ArrayList<>();
 		//List<Run> merges = new ArrayList<>();
@@ -13558,7 +13545,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 
 	/**
 	 * table[命令合成]<br/>
-	 * 修改表
+	 * 修改表 只生成修改表本身属性 不生成关于列及索引的
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 表
 	 * @return sql
@@ -13566,10 +13553,27 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public List<Run> buildAlterRun(DataRuntime runtime, Table meta) throws Exception {
-		if(null != meta && !meta.isEmpty()) {
-			return buildAlterRun(runtime, meta, meta.columns());
-		}
-		return new ArrayList<>();
+        List<Run> runs = new ArrayList<>();
+        Table update = (Table)meta.getUpdate();
+        //修改表备注
+        String ucomment = update.getComment();
+        String comment = meta.getComment();
+        if(BasicUtil.isEmpty(ucomment) && BasicUtil.isEmpty(comment)) {
+            //都为空时不更新
+        }else {
+            if (!BasicUtil.equals(comment, ucomment)) {
+                /*swt = InterceptorProxy.prepare(runtime, random, ACTION.DDL.TABLE_COMMENT, meta);
+                if (swt == ACTION.SWITCH.BREAK) {
+                    return false;
+                }*/
+                if (BasicUtil.isNotEmpty(meta.getComment())) {
+                    runs.addAll(buildChangeCommentRun(runtime, update));
+                } else {
+                    runs.addAll(buildAddCommentRun(runtime, update));
+                }
+            }
+        }
+		return runs;
 	}
 
 	/**
@@ -17607,7 +17611,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         }
         MetadataFieldRefer refer = refer(runtime, Role.class);
         meta.setMetadata(row);
-        meta.setName(getString(row, refer, Role.FIELD_NAME));
+        meta.setName(getString(row, refer, org.anyline.entity.authorize.Role.FIELD_NAME));
         return meta;
 	}
 
@@ -17837,8 +17841,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         }
         MetadataFieldRefer refer = refer(runtime, Procedure.class);
         meta.setMetadata(row);
-        meta.setName(row.getString(refer.maps(User.FIELD_NAME)));
-        meta.setHost(row.getString(refer.maps(User.FIELD_HOST)));
+        meta.setName(row.getString(refer.maps(org.anyline.entity.authorize.User.FIELD_NAME)));
+        meta.setHost(row.getString(refer.maps(org.anyline.entity.authorize.User.FIELD_HOST)));
         return meta;
 	}
 

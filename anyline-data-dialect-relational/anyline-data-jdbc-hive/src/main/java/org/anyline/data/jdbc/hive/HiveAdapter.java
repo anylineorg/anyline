@@ -3739,7 +3739,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	}
 	/**
 	 * table[命令合成]<br/>
-	 * 修改表
+	 * 修改表 只生成修改表本身属性 不生成关于列及索引的
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 表
 	 * @return sql
@@ -3747,7 +3747,24 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 */
 	@Override
 	public List<Run> buildAlterRun(DataRuntime runtime, Table meta) throws Exception {
-		return super.buildAlterRun(runtime, meta);
+		List<Run> runs = super.buildAlterRun(runtime, meta);
+		Table update = (Table)meta.getUpdate();
+		//修改表备注
+		String uv = update.getComment();
+		String ov = meta.getComment();
+		if(BasicUtil.isEmpty(uv) && BasicUtil.isEmpty(ov)) {
+			//都为空时不更新
+		}else {
+			if (!BasicUtil.equals(ov, uv)) {
+				Run run = new SimpleRun(runtime);
+				runs.add(run);
+				StringBuilder builder = run.getBuilder();
+				builder.append("ALTER TABLE ");
+				name(runtime, builder, meta);
+				builder.append("SET LOCATION \"").append(uv).append("\"");
+			}
+		}
+		return runs;
 	}
 
 	/**
