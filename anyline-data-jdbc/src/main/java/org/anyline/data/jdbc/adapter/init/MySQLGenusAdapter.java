@@ -16,13 +16,10 @@
 
 package org.anyline.data.jdbc.adapter.init;
 
-import org.anyline.data.entity.Join;
 import org.anyline.data.jdbc.adapter.init.alias.MySQLGenusTypeMetadataAlias;
 import org.anyline.data.param.ConfigStore;
-import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.prepare.auto.TablePrepare;
-import org.anyline.data.prepare.auto.init.VirtualTablePrepare;
 import org.anyline.data.run.*;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
@@ -30,12 +27,15 @@ import org.anyline.entity.authorize.Privilege;
 import org.anyline.entity.authorize.User;
 import org.anyline.exception.NotSupportException;
 import org.anyline.metadata.*;
-import org.anyline.metadata.refer.*;
+import org.anyline.metadata.refer.MetadataFieldRefer;
+import org.anyline.metadata.refer.MetadataReferHolder;
 import org.anyline.metadata.type.TypeMetadata;
-import org.anyline.util.*;
+import org.anyline.util.BasicUtil;
+import org.anyline.util.BeanUtil;
+import org.anyline.util.ConfigTable;
+import org.anyline.util.LogUtil;
 import org.anyline.util.regular.RegularUtil;
 
-import java.lang.reflect.Array;
 import java.util.*;
 
 public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
@@ -859,7 +859,14 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
                 if(str.startsWith("${") && str.endsWith("}")) {
                     str = str.substring(2, str.length()-1);
                 }else if(!str.startsWith("\"")) {
-                    str = "\""+str+"\"";
+                    //json格式不用引号
+                    if(str.startsWith("{") && str.endsWith("}")) {
+
+                    }else if(str.startsWith("[") && str.endsWith("]")){
+
+                    }else {
+                        str = "\"" + str + "\"";
+                    }
                 }
                 v = str;
             }
