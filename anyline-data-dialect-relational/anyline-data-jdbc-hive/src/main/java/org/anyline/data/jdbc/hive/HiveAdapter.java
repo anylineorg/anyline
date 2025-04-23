@@ -3761,7 +3761,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 				StringBuilder builder = run.getBuilder();
 				builder.append("ALTER TABLE ");
 				name(runtime, builder, meta);
-				builder.append("SET LOCATION \"").append(uv).append("\"");
+				builder.append(" SET LOCATION \"").append(uv).append("\"");
 			}
 		}
 		return runs;
