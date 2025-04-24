@@ -19,10 +19,11 @@ package org.anyline.data.adapter;
 import org.anyline.data.datasource.DataSourceMonitor;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.exception.NotFoundAdapterException;
-import org.anyline.metadata.type.DatabaseType;
-import org.anyline.util.ConfigTable;
 import org.anyline.log.Log;
 import org.anyline.log.LogProxy;
+import org.anyline.metadata.type.DatabaseType;
+import org.anyline.util.BeanUtil;
+import org.anyline.util.ConfigTable;
 
 import java.util.*;
 
@@ -205,7 +206,7 @@ public class DriverAdapterHolder {
 			adapter = after(runtime, runtime.getProcessor(), adapter);
 		}
 		if(null == adapter) {
-			log.error("[检测数据库适配器][检测失败][可用适配器数量:{}][检测其他可用的适配器]", adapters.size());
+			log.error("[检测数据库适配器][检测失败][可用适配器:{}]", BeanUtil.concat(adapters));
 			String title = "检测数据库适配器失败(请参考 http://doc.anyline.org/aa/6f_15195)";
 			throw new NotFoundAdapterException(title);
 		}
