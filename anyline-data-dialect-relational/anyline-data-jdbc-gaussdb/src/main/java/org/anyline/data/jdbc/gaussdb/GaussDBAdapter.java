@@ -18,7 +18,7 @@
 
 package org.anyline.data.jdbc.gaussdb;
 
-import org.anyline.annotation.Component;
+import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.adapter.init.PostgresGenusAdapter;
 import org.anyline.data.param.ConfigStore;
@@ -42,7 +42,7 @@ import java.util.Map;
 /**
  * 参考 PostgresGenusAdapter
  */
-@Component("anyline.data.jdbc.adapter.gaussdb")
+@AnylineComponent("anyline.data.jdbc.adapter.gaussdb")
 public class GaussDBAdapter extends PostgresGenusAdapter implements JDBCAdapter {
     
     public DatabaseType type() {

@@ -16,10 +16,10 @@
 
 package org.anyline.data.jdbc.yidb;
 
-import org.anyline.annotation.Component;
+import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.jdbc.adapter.init.MySQLGenusAdapter;
 import org.anyline.metadata.type.DatabaseType;
-@Component("anyline.data.jdbc.adapter.yidb")
+@AnylineComponent("anyline.data.jdbc.adapter.yidb")
 public class YiDBAdapter extends MySQLGenusAdapter {
     
     public DatabaseType type() {

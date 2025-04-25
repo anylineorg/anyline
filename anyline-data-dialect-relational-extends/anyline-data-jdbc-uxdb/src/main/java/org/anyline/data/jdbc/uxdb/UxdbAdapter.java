@@ -16,10 +16,10 @@
 
 package org.anyline.data.jdbc.uxdb;
 
-import org.anyline.annotation.Component;
+import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.jdbc.adapter.init.PostgresGenusAdapter;
 import org.anyline.metadata.type.DatabaseType;
-@Component("anyline.data.jdbc.adapter.uxdb")
+@AnylineComponent("anyline.data.jdbc.adapter.uxdb")
 public class UxdbAdapter extends PostgresGenusAdapter {
     
     public DatabaseType type() {

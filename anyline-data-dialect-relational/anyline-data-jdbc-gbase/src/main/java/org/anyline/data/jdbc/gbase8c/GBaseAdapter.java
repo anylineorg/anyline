@@ -18,7 +18,7 @@
 
 package org.anyline.data.jdbc.gbase8c;
 
-import org.anyline.annotation.Component;
+import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.adapter.init.PostgresGenusAdapter;
 import org.anyline.data.jdbc.gbase8s.GBaseReader;
@@ -40,7 +40,7 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-@Component("anyline.data.jdbc.adapter.gbase8c")
+@AnylineComponent("anyline.data.jdbc.adapter.gbase8c")
 public class GBaseAdapter extends PostgresGenusAdapter implements JDBCAdapter {
 
 	public DatabaseType type() {

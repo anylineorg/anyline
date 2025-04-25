@@ -25,7 +25,7 @@ import com.mongodb.client.result.InsertManyResult;
 import com.mongodb.client.result.InsertOneResult;
 import com.mongodb.client.result.UpdateResult;
 import org.anyline.adapter.EntityAdapter;
-import org.anyline.annotation.Component;
+import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.adapter.init.AbstractDriverAdapter;
 import org.anyline.data.mongodb.entity.MongoRow;
@@ -64,7 +64,7 @@ import org.bson.types.ObjectId;
 import java.lang.reflect.Field;
 import java.util.*;
 
-@Component("anyline.data.adapter.mongo")
+@AnylineComponent("anyline.data.adapter.mongo")
 public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter {
 
     @Override

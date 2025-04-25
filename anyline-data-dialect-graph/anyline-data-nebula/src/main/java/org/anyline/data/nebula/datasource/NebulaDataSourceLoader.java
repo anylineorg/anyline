@@ -17,7 +17,7 @@
 package org.anyline.data.nebula.datasource;
 
 import com.vesoft.nebula.client.graph.SessionPool;
-import org.anyline.annotation.Component;
+import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.datasource.DataSourceHolder;
 import org.anyline.data.datasource.DataSourceLoader;
 import org.anyline.data.datasource.init.AbstractDataSourceLoader;
@@ -29,7 +29,7 @@ import org.anyline.util.ConfigTable;
 import java.util.ArrayList;
 import java.util.List;
 
-@Component("anyline.environment.data.datasource.loader.nebula")
+@AnylineComponent("anyline.environment.data.datasource.loader.nebula")
 public class NebulaDataSourceLoader extends AbstractDataSourceLoader implements DataSourceLoader {
 
     private final NebulaDataSourceHolder holder = NebulaDataSourceHolder.instance();

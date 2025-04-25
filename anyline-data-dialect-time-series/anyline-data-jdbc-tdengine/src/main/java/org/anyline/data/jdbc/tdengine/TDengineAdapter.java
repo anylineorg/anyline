@@ -16,7 +16,7 @@
 
 package org.anyline.data.jdbc.tdengine;
 
-import org.anyline.annotation.Component;
+import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.adapter.init.AbstractJDBCAdapter;
 import org.anyline.data.param.ConfigStore;
@@ -35,7 +35,7 @@ import org.anyline.util.BasicUtil;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.util.*;
-@Component("anyline.data.jdbc.adapter.tdengine")
+@AnylineComponent("anyline.data.jdbc.adapter.tdengine")
 public class TDengineAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
     
     public DatabaseType type() {

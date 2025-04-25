@@ -16,10 +16,10 @@
 
 package org.anyline.data.jdbc.stardb;
 
-import org.anyline.annotation.Component;
+import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.jdbc.mysql.MySQLAdapter;
 import org.anyline.metadata.type.DatabaseType;
-@Component("anyline.data.jdbc.adapter.startdb")
+@AnylineComponent("anyline.data.jdbc.adapter.startdb")
 public class StarDBAdapter extends MySQLAdapter {
     
     public DatabaseType type() {

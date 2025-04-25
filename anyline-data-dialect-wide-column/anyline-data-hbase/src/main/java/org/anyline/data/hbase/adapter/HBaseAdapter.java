@@ -16,7 +16,7 @@
 
 package org.anyline.data.hbase.adapter;
 
-import org.anyline.annotation.Component;
+import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.adapter.init.AbstractDriverAdapter;
 import org.anyline.data.param.ConfigStore;
@@ -39,7 +39,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-@Component("anyline.data.adapter.hbase")
+@AnylineComponent("anyline.data.adapter.hbase")
 public class HBaseAdapter extends AbstractDriverAdapter implements DriverAdapter {
 
     public DatabaseType type() {

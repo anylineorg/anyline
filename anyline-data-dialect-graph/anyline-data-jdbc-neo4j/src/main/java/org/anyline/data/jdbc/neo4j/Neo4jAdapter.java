@@ -17,7 +17,7 @@
 package org.anyline.data.jdbc.neo4j;
 
 import org.anyline.adapter.EntityAdapter;
-import org.anyline.annotation.Component;
+import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.entity.Join;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.adapter.init.AbstractJDBCAdapter;
@@ -48,7 +48,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.*;
-@Component("anyline.data.jdbc.adapter.neo4j")
+@AnylineComponent("anyline.data.jdbc.adapter.neo4j")
 public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
     
     public DatabaseType type() {

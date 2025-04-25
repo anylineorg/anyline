@@ -18,7 +18,7 @@
 
 package org.anyline.data.jdbc.informix;
 
-import org.anyline.annotation.Component;
+import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.adapter.init.InformixGenusAdapter;
 import org.anyline.data.param.ConfigStore;
@@ -38,7 +38,7 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-@Component("anyline.data.jdbc.adapter.informix")
+@AnylineComponent("anyline.data.jdbc.adapter.informix")
 public class InformixAdapter extends InformixGenusAdapter implements JDBCAdapter {
 	public DatabaseType type() {
 		return DatabaseType.Informix;

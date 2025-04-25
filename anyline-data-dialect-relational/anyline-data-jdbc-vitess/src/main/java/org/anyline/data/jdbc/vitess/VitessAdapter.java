@@ -18,7 +18,7 @@
 
 package org.anyline.data.jdbc.vitess;
 
-import org.anyline.annotation.Component;
+import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.adapter.init.MySQLGenusAdapter;
 import org.anyline.data.param.ConfigStore;
@@ -41,7 +41,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-@Component("anyline.data.jdbc.adapter.vitess")
+@AnylineComponent("anyline.data.jdbc.adapter.vitess")
 public class VitessAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 
 	public DatabaseType type() {

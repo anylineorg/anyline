@@ -16,10 +16,10 @@
 
 package org.anyline.data.jdbc.kundb;
 
-import org.anyline.annotation.Component;
+import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.jdbc.adapter.init.MySQLGenusAdapter;
 import org.anyline.metadata.type.DatabaseType;
-@Component("anyline.data.jdbc.adapter.kundb")
+@AnylineComponent("anyline.data.jdbc.adapter.kundb")
 public class KunDBAdapter extends MySQLGenusAdapter {
     
     public DatabaseType type() {

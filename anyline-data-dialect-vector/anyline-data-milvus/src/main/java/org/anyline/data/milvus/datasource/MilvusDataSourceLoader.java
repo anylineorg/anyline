@@ -17,7 +17,7 @@
 package org.anyline.data.milvus.datasource;
 
 import io.milvus.v2.client.MilvusClientV2;
-import org.anyline.annotation.Component;
+import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.datasource.DataSourceHolder;
 import org.anyline.data.datasource.DataSourceLoader;
 import org.anyline.data.datasource.init.AbstractDataSourceLoader;
@@ -31,7 +31,7 @@ import org.anyline.log.LogProxy;
 import java.util.ArrayList;
 import java.util.List;
 
-@Component("anyline.environment.data.datasource.loader.milvus")
+@AnylineComponent("anyline.environment.data.datasource.loader.milvus")
 public class MilvusDataSourceLoader extends AbstractDataSourceLoader implements DataSourceLoader {
     public static Log log = LogProxy.get(MilvusDataSourceLoader.class);
 

@@ -17,7 +17,7 @@
 package org.anyline.data.nebula.adapter;
 
 import org.anyline.adapter.EntityAdapter;
-import org.anyline.annotation.Component;
+import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.graph.adapter.init.AbstractGraphAdapter;
 import org.anyline.data.param.ConfigStore;
@@ -47,7 +47,7 @@ import org.anyline.util.*;
 
 import java.util.*;
 
-@Component("anyline.data.adapter.nebula")
+@AnylineComponent("anyline.data.adapter.nebula")
 public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter {
     @Override
     public DatabaseType type() {

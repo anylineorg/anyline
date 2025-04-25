@@ -18,7 +18,7 @@
 
 package org.anyline.data.jdbc.xugu;
 
-import org.anyline.annotation.Component;
+import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.adapter.init.OracleGenusAdapter;
 import org.anyline.data.param.ConfigStore;
@@ -35,7 +35,7 @@ import org.anyline.metadata.type.TypeMetadata;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.util.*;
-@Component("anyline.data.jdbc.adapter.xugu")
+@AnylineComponent("anyline.data.jdbc.adapter.xugu")
 public class XuGuAdapter extends OracleGenusAdapter implements JDBCAdapter {
 
     public static boolean IS_GET_SEQUENCE_VALUE_BEFORE_INSERT = false;

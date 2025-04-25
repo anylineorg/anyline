@@ -18,7 +18,7 @@ package org.anyline.data.milvus.datasource;
 
 import io.milvus.v2.client.ConnectConfig;
 import io.milvus.v2.client.MilvusClientV2;
-import org.anyline.annotation.Component;
+import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.datasource.DataSourceHolder;
 import org.anyline.data.datasource.init.AbstractDataSourceHolder;
@@ -32,7 +32,7 @@ import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
 
-@Component("anyline.environment.data.datasource.holder.milvus")
+@AnylineComponent("anyline.environment.data.datasource.holder.milvus")
 public class MilvusDataSourceHolder extends AbstractDataSourceHolder implements DataSourceHolder{
 	private static final MilvusDataSourceHolder instance = new MilvusDataSourceHolder();
 	public static MilvusDataSourceHolder instance() {

@@ -16,7 +16,7 @@
 
 package org.anyline.data.milvus.adapter;
 
-import org.anyline.annotation.Component;
+import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.adapter.init.AbstractDriverAdapter;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
@@ -38,7 +38,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-@Component("anyline.data.adapter.milvus")
+@AnylineComponent("anyline.data.adapter.milvus")
 public class MilvusAdapter extends AbstractDriverAdapter {
 
     public MilvusAdapter() {

@@ -18,7 +18,7 @@
 
 package org.anyline.data.jdbc.h2;
 
-import org.anyline.annotation.Component;
+import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.adapter.init.AbstractJDBCAdapter;
 import org.anyline.data.param.ConfigStore;
@@ -36,7 +36,7 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.util.*;
 
-@Component("anyline.data.jdbc.adapter.h2")
+@AnylineComponent("anyline.data.jdbc.adapter.h2")
 public class H2Adapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	
 	public DatabaseType type() {

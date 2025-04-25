@@ -16,7 +16,7 @@
 
 package org.anyline.data.jdbc.clickhouse;
 
-import org.anyline.annotation.Component;
+import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.adapter.init.MySQLGenusAdapter;
 import org.anyline.data.param.ConfigStore;
@@ -36,7 +36,7 @@ import org.anyline.util.BasicUtil;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.util.*;
-@Component("anyline.data.jdbc.adapter.clickhouse")
+@AnylineComponent("anyline.data.jdbc.adapter.clickhouse")
 public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter {
     public static String DEFAULT_TABLE_ENGINE = "MergeTree()";
     public DatabaseType type() {

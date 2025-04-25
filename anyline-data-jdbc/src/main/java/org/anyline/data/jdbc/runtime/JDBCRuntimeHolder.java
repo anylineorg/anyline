@@ -16,7 +16,7 @@
 
 package org.anyline.data.jdbc.runtime;
 
-import org.anyline.annotation.Component;
+import org.anyline.annotation.AnylineComponent;
 import org.anyline.bean.BeanDefine;
 import org.anyline.bean.init.DefaultBeanDefine;
 import org.anyline.bean.init.DefaultValueReference;
@@ -38,7 +38,7 @@ import javax.sql.DataSource;
 import java.lang.reflect.Method;
 import java.util.Map;
 
-@Component("anyline.environment.data.runtime.holder.jdbc")
+@AnylineComponent("anyline.environment.data.runtime.holder.jdbc")
 public class JDBCRuntimeHolder extends AbstractRuntimeHolder implements RuntimeHolder {
     private static final JDBCRuntimeHolder instance = new JDBCRuntimeHolder();
     public static JDBCRuntimeHolder instance() {

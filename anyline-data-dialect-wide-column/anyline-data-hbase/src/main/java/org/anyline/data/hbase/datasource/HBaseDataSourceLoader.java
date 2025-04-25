@@ -16,7 +16,7 @@
 
 package org.anyline.data.hbase.datasource;
 
-import org.anyline.annotation.Component;
+import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.datasource.DataSourceHolder;
 import org.anyline.data.datasource.DataSourceLoader;
 import org.anyline.data.datasource.init.AbstractDataSourceLoader;
@@ -31,7 +31,7 @@ import org.anyline.log.LogProxy;
 import java.util.ArrayList;
 import java.util.List;
 
-@Component("anyline.environment.data.datasource.loader.hbase")
+@AnylineComponent("anyline.environment.data.datasource.loader.hbase")
 public class HBaseDataSourceLoader extends AbstractDataSourceLoader implements DataSourceLoader {
     public static Log log = LogProxy.get(HBaseDataSourceLoader.class);
 

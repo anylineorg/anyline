@@ -18,7 +18,7 @@
 
 package org.anyline.data.jdbc.mssql;
 
-import org.anyline.annotation.Component;
+import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.adapter.init.AbstractJDBCAdapter;
 import org.anyline.data.param.ConfigStore;
@@ -44,7 +44,7 @@ import java.util.*;
 /**
  * 2005(9.0)及以上版本
  */
-@Component("anyline.data.jdbc.adapter.mssql")
+@AnylineComponent("anyline.data.jdbc.adapter.mssql")
 public class MSSQLAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 
     public DatabaseType type() {

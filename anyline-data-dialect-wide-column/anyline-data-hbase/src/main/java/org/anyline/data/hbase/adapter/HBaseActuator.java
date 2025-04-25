@@ -16,7 +16,7 @@
 
 package org.anyline.data.hbase.adapter;
 
-import org.anyline.annotation.Component;
+import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.adapter.DriverActuator;
 import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.param.ConfigStore;
@@ -34,7 +34,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-@Component("anyline.environment.data.driver.actuator.hbase")
+@AnylineComponent("anyline.environment.data.driver.actuator.hbase")
 public class HBaseActuator implements DriverActuator {
     @Override
     public Class<? extends DriverAdapter> supportAdapterType() {

@@ -16,10 +16,10 @@
 
 package org.anyline.data.jdbc.edb;
 
-import org.anyline.annotation.Component;
+import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.jdbc.adapter.init.PostgresGenusAdapter;
 import org.anyline.metadata.type.DatabaseType;
-@Component("anyline.data.jdbc.adapter.edb")
+@AnylineComponent("anyline.data.jdbc.adapter.edb")
 public class EDBAdapter extends PostgresGenusAdapter {
     
     public DatabaseType type() {

@@ -16,7 +16,7 @@
 
 package org.anyline.data.jdbc.sqlite;
 
-import org.anyline.annotation.Component;
+import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.adapter.init.AbstractJDBCAdapter;
 import org.anyline.data.param.ConfigStore;
@@ -29,13 +29,12 @@ import org.anyline.metadata.*;
 import org.anyline.metadata.refer.MetadataFieldRefer;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.metadata.type.TypeMetadata;
-import org.anyline.util.BasicUtil;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.util.*;
 
-@Component("anyline.data.jdbc.adapter.sqlite")
+@AnylineComponent("anyline.data.jdbc.adapter.sqlite")
 public class SQLiteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 
 	private String delimiter;

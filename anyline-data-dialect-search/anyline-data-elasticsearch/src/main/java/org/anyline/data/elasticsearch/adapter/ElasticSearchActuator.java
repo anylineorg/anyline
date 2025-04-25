@@ -17,7 +17,7 @@
 package org.anyline.data.elasticsearch.adapter;
 
 import org.anyline.adapter.KeyAdapter;
-import org.anyline.annotation.Component;
+import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.adapter.DriverActuator;
 import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.elasticsearch.entity.ElasticSearchRow;
@@ -45,7 +45,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-@Component("anyline.environment.data.driver.actuator.elasticsearch")
+@AnylineComponent("anyline.environment.data.driver.actuator.elasticsearch")
 public class ElasticSearchActuator implements DriverActuator {
     @Override
     public Class<? extends DriverAdapter> supportAdapterType() {

@@ -16,7 +16,7 @@
 
 package org.anyline.data.jdbc.oracle;
 
-import org.anyline.annotation.Component;
+import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.run.Run;
 import org.anyline.data.runtime.DataRuntime;
@@ -27,7 +27,7 @@ import org.anyline.util.regular.RegularUtil;
 /**
  * 11及以下版本
  */
-@Component("anyline.data.jdbc.adapter.oracle11")
+@AnylineComponent("anyline.data.jdbc.adapter.oracle11")
 public class Oracle11Adapter extends OracleAdapter implements JDBCAdapter {
 
     public String version() {

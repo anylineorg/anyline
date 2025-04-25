@@ -17,8 +17,8 @@
 package org.anyline.adapter.init;
 
 import org.anyline.adapter.EntityAdapter;
-import org.anyline.annotation.Component;
+import org.anyline.annotation.AnylineComponent;
 
-@Component("org.anyline.adapter.entity.default")
+@AnylineComponent("org.anyline.adapter.entity.default")
 public class DefaultEntityAdapter implements EntityAdapter{
 }

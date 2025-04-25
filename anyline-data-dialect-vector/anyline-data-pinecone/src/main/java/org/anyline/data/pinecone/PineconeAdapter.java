@@ -16,19 +16,18 @@
 
 package org.anyline.data.pinecone;
 
-import org.anyline.annotation.Component;
+import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.adapter.init.AbstractDriverAdapter;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.metadata.Column;
 import org.anyline.metadata.Metadata;
-import org.anyline.metadata.Table;
 import org.anyline.metadata.Type;
 import org.anyline.metadata.type.DatabaseType;
 
 import java.util.LinkedHashMap;
 
-@Component("anyline.data.adapter.pinecone")
+@AnylineComponent("anyline.data.adapter.pinecone")
 public class PineconeAdapter extends AbstractDriverAdapter {
     @Override
     public DatabaseType type() {

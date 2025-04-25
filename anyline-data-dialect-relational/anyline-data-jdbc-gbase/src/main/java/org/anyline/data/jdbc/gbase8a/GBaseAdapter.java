@@ -18,7 +18,7 @@
 
 package org.anyline.data.jdbc.gbase8a;
 
-import org.anyline.annotation.Component;
+import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.adapter.init.MySQLGenusAdapter;
 import org.anyline.data.param.ConfigStore;
@@ -38,7 +38,7 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-@Component("anyline.data.jdbc.adapter.gbase8a")
+@AnylineComponent("anyline.data.jdbc.adapter.gbase8a")
 public class GBaseAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 
 	public DatabaseType type() {

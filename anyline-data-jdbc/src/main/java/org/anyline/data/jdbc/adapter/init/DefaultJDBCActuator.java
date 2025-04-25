@@ -17,7 +17,7 @@
 package org.anyline.data.jdbc.adapter.init;
 
 import org.anyline.adapter.EntityAdapter;
-import org.anyline.annotation.Component;
+import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.adapter.DriverActuator;
 import org.anyline.data.datasource.ApplicationConnectionHolder;
@@ -46,7 +46,7 @@ import java.sql.*;
 import java.util.Date;
 import java.util.*;
 
-@Component("anyline.environment.data.driver.actuator.jdbc")
+@AnylineComponent("anyline.environment.data.driver.actuator.jdbc")
 public class DefaultJDBCActuator implements DriverActuator {
     private Log log = LogProxy.get(DefaultJDBCActuator.class);
 

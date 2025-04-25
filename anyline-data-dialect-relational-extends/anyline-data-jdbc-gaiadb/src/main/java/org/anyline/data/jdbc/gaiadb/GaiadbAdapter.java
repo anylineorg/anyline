@@ -16,10 +16,10 @@
 
 package org.anyline.data.jdbc.gaiadb;
 
-import org.anyline.annotation.Component;
+import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.jdbc.mysql.MySQLAdapter;
 import org.anyline.metadata.type.DatabaseType;
-@Component("anyline.data.jdbc.adapter.gaiadb")
+@AnylineComponent("anyline.data.jdbc.adapter.gaiadb")
 public class GaiadbAdapter extends MySQLAdapter {
     
     public DatabaseType type() {

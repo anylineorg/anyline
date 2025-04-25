@@ -18,7 +18,7 @@
 
 package org.anyline.data.jdbc.opengauss;
 
-import org.anyline.annotation.Component;
+import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.adapter.init.PostgresGenusAdapter;
 import org.anyline.data.param.ConfigStore;
@@ -31,8 +31,6 @@ import org.anyline.metadata.*;
 import org.anyline.metadata.refer.MetadataFieldRefer;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.metadata.type.TypeMetadata;
-import org.anyline.util.BasicUtil;
-import org.anyline.util.regular.RegularUtil;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -41,7 +39,7 @@ import java.util.*;
 /**
  * 参考 PostgresGenusAdapter
  */
-@Component("anyline.data.jdbc.adapter.opengauss")
+@AnylineComponent("anyline.data.jdbc.adapter.opengauss")
 public class OpenGaussAdapter extends PostgresGenusAdapter implements JDBCAdapter {
     
     public DatabaseType type() {

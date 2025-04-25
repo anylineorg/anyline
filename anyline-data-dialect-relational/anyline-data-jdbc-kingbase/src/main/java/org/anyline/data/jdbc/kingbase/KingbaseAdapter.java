@@ -18,7 +18,7 @@
 
 package org.anyline.data.jdbc.kingbase;
 
-import org.anyline.annotation.Component;
+import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.adapter.init.PostgresGenusAdapter;
 import org.anyline.data.param.ConfigStore;
@@ -36,7 +36,7 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.util.*;
 
-@Component("anyline.data.jdbc.adapter.kingbase")
+@AnylineComponent("anyline.data.jdbc.adapter.kingbase")
 public class KingbaseAdapter extends PostgresGenusAdapter implements JDBCAdapter {
 	
 	public DatabaseType type() {

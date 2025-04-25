@@ -17,7 +17,7 @@
 package org.anyline.data.elasticsearch.adapter;
 
 import org.anyline.adapter.KeyAdapter;
-import org.anyline.annotation.Component;
+import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.adapter.init.AbstractDriverAdapter;
 import org.anyline.data.elasticsearch.metadata.ElasticSearchBuilder;
@@ -51,7 +51,7 @@ import org.elasticsearch.client.RestClient;
 
 import java.util.*;
 
-@Component("anyline.data.jdbc.adapter.elasticsearch")
+@AnylineComponent("anyline.data.jdbc.adapter.elasticsearch")
 public class ElasticSearchAdapter extends AbstractDriverAdapter implements DriverAdapter {
     private static Log log = LogProxy.get(ElasticSearchAdapter.class);
 

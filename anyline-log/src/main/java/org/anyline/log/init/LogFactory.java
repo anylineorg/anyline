@@ -16,13 +16,13 @@
 
 package org.anyline.log.init;
 
-import org.anyline.annotation.Component;
+import org.anyline.annotation.AnylineComponent;
 import org.anyline.log.Log;
 import org.anyline.util.ConfigTable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Component
+@AnylineComponent
 public class LogFactory implements org.anyline.log.LogFactory{
     @Override
     public Log get(Class<?> clazz) {

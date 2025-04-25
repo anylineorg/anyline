@@ -16,7 +16,7 @@
 
 package org.anyline.data.jdbc.oceanbase;
 
-import org.anyline.annotation.Component;
+import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.jdbc.adapter.init.MySQLGenusAdapter;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
@@ -38,7 +38,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-@Component("anyline.data.jdbc.adapter.oceanbase")
+@AnylineComponent("anyline.data.jdbc.adapter.oceanbase")
 public class OceanBaseAdapter extends MySQLGenusAdapter {
 	
 	public DatabaseType type() {

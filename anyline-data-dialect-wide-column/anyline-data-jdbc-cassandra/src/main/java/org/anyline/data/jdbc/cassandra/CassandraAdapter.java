@@ -16,7 +16,7 @@
 
 package org.anyline.data.jdbc.cassandra;
 
-import org.anyline.annotation.Component;
+import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.adapter.init.AbstractJDBCAdapter;
 import org.anyline.data.listener.DDListener;
@@ -31,7 +31,7 @@ import org.anyline.metadata.type.DatabaseType;
 
 import java.util.LinkedHashMap;
 
-@Component("anyline.data.jdbc.adapter.cassandra")
+@AnylineComponent("anyline.data.jdbc.adapter.cassandra")
 public class CassandraAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
     
     public DatabaseType type() {

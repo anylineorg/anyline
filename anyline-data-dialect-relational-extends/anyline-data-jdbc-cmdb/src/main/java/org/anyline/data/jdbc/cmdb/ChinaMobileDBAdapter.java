@@ -16,10 +16,10 @@
 
 package org.anyline.data.jdbc.cmdb;
 
-import org.anyline.annotation.Component;
+import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.jdbc.opengauss.OpenGaussAdapter;
 import org.anyline.metadata.type.DatabaseType;
-@Component("anyline.data.jdbc.adapter.cmdb")
+@AnylineComponent("anyline.data.jdbc.adapter.cmdb")
 public class ChinaMobileDBAdapter extends OpenGaussAdapter {
     
     public DatabaseType type() {

@@ -20,7 +20,7 @@ import com.mongodb.ConnectionString;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
-import org.anyline.annotation.Component;
+import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.adapter.DriverAdapterHolder;
 import org.anyline.data.datasource.DataSourceHolder;
@@ -36,7 +36,7 @@ import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
 
-@Component("anyline.environment.data.datasource.holder.mongo")
+@AnylineComponent("anyline.environment.data.datasource.holder.mongo")
 public class MongoDataSourceHolder extends AbstractDataSourceHolder implements DataSourceHolder {
 
     private static final MongoDataSourceHolder instance = new MongoDataSourceHolder();

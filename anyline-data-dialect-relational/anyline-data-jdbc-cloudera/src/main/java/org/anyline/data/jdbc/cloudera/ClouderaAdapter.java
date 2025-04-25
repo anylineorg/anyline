@@ -16,8 +16,8 @@
 
 package org.anyline.data.jdbc.cloudera;
 
-import org.anyline.annotation.Component;
+import org.anyline.annotation.AnylineComponent;
 
-@Component("anyline.data.jdbc.adapter.cloudera")
+@AnylineComponent("anyline.data.jdbc.adapter.cloudera")
 public class ClouderaAdapter {
 }

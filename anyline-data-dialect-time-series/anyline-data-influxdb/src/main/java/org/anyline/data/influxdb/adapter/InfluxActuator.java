@@ -20,7 +20,7 @@ import com.influxdb.client.InfluxDBClient;
 import com.influxdb.client.WriteApiBlocking;
 import com.influxdb.client.domain.Bucket;
 import com.influxdb.client.write.Point;
-import org.anyline.annotation.Component;
+import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.adapter.DriverActuator;
 import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.influxdb.entity.InfluxPoint;
@@ -43,7 +43,7 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.util.*;
 
-@Component("anyline.environment.data.driver.actuator.influxdb")
+@AnylineComponent("anyline.environment.data.driver.actuator.influxdb")
 public class InfluxActuator implements DriverActuator {
     @Override
     public Class<? extends DriverAdapter> supportAdapterType() {

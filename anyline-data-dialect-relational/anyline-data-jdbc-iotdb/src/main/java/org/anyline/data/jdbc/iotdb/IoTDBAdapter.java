@@ -18,14 +18,14 @@
 
 package org.anyline.data.jdbc.iotdb;
 
-import org.anyline.annotation.Component;
+import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.adapter.init.MySQLGenusAdapter;
 import org.anyline.data.run.Run;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.metadata.Table;
 import org.anyline.metadata.type.DatabaseType;
-@Component("anyline.data.jdbc.adapter.iotdb")
+@AnylineComponent("anyline.data.jdbc.adapter.iotdb")
 public class IoTDBAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 
 	public DatabaseType type() {

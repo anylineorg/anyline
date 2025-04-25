@@ -16,13 +16,13 @@
 
 package org.anyline.log;
 
-import org.anyline.annotation.Component;
+import org.anyline.annotation.AnylineComponent;
 import org.anyline.bean.LoadListener;
 import org.anyline.util.ConfigTable;
 
 import java.util.Map;
 
-@Component("anyline.environment.listener.log")
+@AnylineComponent("anyline.environment.listener.log")
 public class LogLoadListener implements LoadListener {
     @Override
     public void start() {

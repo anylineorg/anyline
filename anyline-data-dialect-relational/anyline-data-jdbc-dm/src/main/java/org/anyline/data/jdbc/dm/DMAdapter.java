@@ -16,7 +16,7 @@
 
 package org.anyline.data.jdbc.dm;
 
-import org.anyline.annotation.Component;
+import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.adapter.init.OracleGenusAdapter;
 import org.anyline.data.param.ConfigStore;
@@ -35,7 +35,7 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.util.*;
 
-@Component("anyline.data.jdbc.adapter.dm")
+@AnylineComponent("anyline.data.jdbc.adapter.dm")
 public class DMAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	
 	public static boolean IS_GET_SEQUENCE_VALUE_BEFORE_INSERT = false;

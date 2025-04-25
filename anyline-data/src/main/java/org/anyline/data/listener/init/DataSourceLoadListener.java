@@ -16,7 +16,7 @@
 
 package org.anyline.data.listener.init;
 
-import org.anyline.annotation.Component;
+import org.anyline.annotation.AnylineComponent;
 import org.anyline.bean.LoadListener;
 import org.anyline.cache.CacheProvider;
 import org.anyline.data.adapter.DriverActuator;
@@ -40,7 +40,7 @@ import org.anyline.log.LogProxy;
 
 import java.util.Map;
 
-@Component("anyline.environment.data.listener.jdbc")
+@AnylineComponent("anyline.environment.data.listener.jdbc")
 public class DataSourceLoadListener implements LoadListener {
     private static Log log = LogProxy.get(DataSourceLoadListener.class);
     @Override

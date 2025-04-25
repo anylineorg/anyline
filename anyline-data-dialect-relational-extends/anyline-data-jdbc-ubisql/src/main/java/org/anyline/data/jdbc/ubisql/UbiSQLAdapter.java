@@ -16,10 +16,10 @@
 
 package org.anyline.data.jdbc.ubisql;
 
-import org.anyline.annotation.Component;
+import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.jdbc.tidb.TiDBAdapter;
 import org.anyline.metadata.type.DatabaseType;
-@Component("anyline.data.jdbc.adapter.ubisql")
+@AnylineComponent("anyline.data.jdbc.adapter.ubisql")
 public class UbiSQLAdapter extends TiDBAdapter {
     
     public DatabaseType type() {

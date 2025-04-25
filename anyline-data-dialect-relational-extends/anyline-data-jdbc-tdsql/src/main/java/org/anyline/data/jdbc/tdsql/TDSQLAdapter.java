@@ -16,10 +16,10 @@
 
 package org.anyline.data.jdbc.tdsql;
 
-import org.anyline.annotation.Component;
+import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.jdbc.adapter.init.MySQLGenusAdapter;
 import org.anyline.metadata.type.DatabaseType;
-@Component("anyline.data.jdbc.adapter.tdsql")
+@AnylineComponent("anyline.data.jdbc.adapter.tdsql")
 public class TDSQLAdapter extends MySQLGenusAdapter {
     
     public DatabaseType type() {

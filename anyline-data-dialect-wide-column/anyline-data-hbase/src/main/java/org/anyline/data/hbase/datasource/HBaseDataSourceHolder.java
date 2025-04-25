@@ -16,7 +16,7 @@
 
 package org.anyline.data.hbase.datasource;
 
-import org.anyline.annotation.Component;
+import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.datasource.DataSourceHolder;
 import org.anyline.data.datasource.init.AbstractDataSourceHolder;
@@ -34,7 +34,7 @@ import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
 
-@Component("anyline.environment.data.datasource.holder.hbase")
+@AnylineComponent("anyline.environment.data.datasource.holder.hbase")
 public class HBaseDataSourceHolder extends AbstractDataSourceHolder implements DataSourceHolder{
 	private static final HBaseDataSourceHolder instance = new HBaseDataSourceHolder();
 	public static HBaseDataSourceHolder instance() {

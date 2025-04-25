@@ -16,7 +16,7 @@
 
 package org.anyline.data.jdbc.mssql;
 
-import org.anyline.annotation.Component;
+import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.run.Run;
@@ -40,7 +40,7 @@ import java.util.List;
 /**
  * 2000(8.0)及以下版本
  */
-@Component("anyline.data.jdbc.adapter.mssql2000")
+@AnylineComponent("anyline.data.jdbc.adapter.mssql2000")
 public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter {
 
     public String version() {return "2000";}

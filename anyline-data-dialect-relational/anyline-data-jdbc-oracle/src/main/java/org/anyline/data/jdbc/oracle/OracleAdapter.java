@@ -18,7 +18,7 @@
 
 package org.anyline.data.jdbc.oracle;
 
-import org.anyline.annotation.Component;
+import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.adapter.init.OracleGenusAdapter;
 import org.anyline.data.jdbc.adapter.init.alias.OracleGenusTypeMetadataAlias;
@@ -46,7 +46,7 @@ import java.util.Map;
 /**
  * 12及以上版本
  */
-@Component("anyline.data.jdbc.adapter.oracle")
+@AnylineComponent("anyline.data.jdbc.adapter.oracle")
 public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter {
     
     public static boolean IS_GET_SEQUENCE_VALUE_BEFORE_INSERT = false;

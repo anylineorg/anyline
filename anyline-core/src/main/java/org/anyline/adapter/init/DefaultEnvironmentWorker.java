@@ -17,8 +17,8 @@
 package org.anyline.adapter.init;
 
 import org.anyline.adapter.EnvironmentWorker;
-import org.anyline.annotation.Autowired;
-import org.anyline.annotation.Component;
+import org.anyline.annotation.AnylineAutowired;
+import org.anyline.annotation.AnylineComponent;
 import org.anyline.bean.BeanDefine;
 import org.anyline.bean.LoadListener;
 import org.anyline.bean.ValueReference;
@@ -167,7 +167,7 @@ public class DefaultEnvironmentWorker implements EnvironmentWorker {
                 }
                 Class<?> c = loader.loadClass(clazz);
                 if(null == component) {
-                    component = loader.loadClass(Component.class.getName());
+                    component = loader.loadClass(AnylineComponent.class.getName());
                 }
                 Annotation annotation = c.getAnnotation(component);
                 if(null != annotation) {
@@ -205,7 +205,7 @@ public class DefaultEnvironmentWorker implements EnvironmentWorker {
         //属性赋值
         List<Field> fields = ClassUtil.getFields(clazz, false, false);
         for(Field field:fields) {
-            Annotation annotation = field.getAnnotation(Autowired.class);
+            Annotation annotation = field.getAnnotation(AnylineAutowired.class);
             if(null != annotation) {
                 Object val = BeanUtil.getFieldValue(object, field);
                 if(null != val) {
@@ -234,7 +234,7 @@ public class DefaultEnvironmentWorker implements EnvironmentWorker {
         //方法赋值
         List<Method> methods = ClassUtil.getMethods(clazz, true);
         for(Method method:methods) {
-            Annotation annotation = method.getAnnotation(Autowired.class);
+            Annotation annotation = method.getAnnotation(AnylineAutowired.class);
             if(null != annotation) {
                 Type[] types = method.getGenericParameterTypes();
                 for(Type type:types) {

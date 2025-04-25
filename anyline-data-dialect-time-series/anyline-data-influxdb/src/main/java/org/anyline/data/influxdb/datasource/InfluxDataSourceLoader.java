@@ -17,7 +17,7 @@
 package org.anyline.data.influxdb.datasource;
 
 import com.influxdb.client.InfluxDBClient;
-import org.anyline.annotation.Component;
+import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.datasource.DataSourceHolder;
 import org.anyline.data.datasource.DataSourceLoader;
 import org.anyline.data.datasource.init.AbstractDataSourceLoader;
@@ -29,7 +29,7 @@ import org.anyline.util.ConfigTable;
 import java.util.ArrayList;
 import java.util.List;
 
-@Component("anyline.environment.data.datasource.loader.influx")
+@AnylineComponent("anyline.environment.data.datasource.loader.influx")
 public class InfluxDataSourceLoader extends AbstractDataSourceLoader implements DataSourceLoader {
 
     private final InfluxDataSourceHolder holder = InfluxDataSourceHolder.instance();

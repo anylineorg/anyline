@@ -16,7 +16,7 @@
 
 package org.anyline.data.jdbc.doris;
 
-import org.anyline.annotation.Component;
+import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.adapter.init.MySQLGenusAdapter;
 import org.anyline.data.param.ConfigStore;
@@ -35,7 +35,7 @@ import org.anyline.util.BasicUtil;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.util.*;
-@Component("anyline.data.jdbc.adapter.doris")
+@AnylineComponent("anyline.data.jdbc.adapter.doris")
 public class DorisAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 
     public DatabaseType type() {

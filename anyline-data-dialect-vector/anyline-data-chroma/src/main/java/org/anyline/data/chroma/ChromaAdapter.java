@@ -16,7 +16,7 @@
 
 package org.anyline.data.chroma;
 
-import org.anyline.annotation.Component;
+import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.adapter.init.AbstractDriverAdapter;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.runtime.DataRuntime;
@@ -27,7 +27,7 @@ import org.anyline.metadata.type.DatabaseType;
 
 import java.util.LinkedHashMap;
 
-@Component("anyline.data.adapter.chroma")
+@AnylineComponent("anyline.data.adapter.chroma")
 public class ChromaAdapter extends AbstractDriverAdapter {
     @Override
     public DatabaseType type() {

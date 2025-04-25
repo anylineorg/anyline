@@ -17,7 +17,7 @@
 package org.anyline.data.influxdb.adapter;
 
 import com.influxdb.client.write.Point;
-import org.anyline.annotation.Component;
+import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.adapter.init.AbstractDriverAdapter;
 import org.anyline.data.influxdb.entity.InfluxRow;
@@ -55,7 +55,7 @@ import org.anyline.util.*;
 
 import java.util.*;
 
-@Component("anyline.data.adapter.influx")
+@AnylineComponent("anyline.data.adapter.influx")
 public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapter {
     @Override
     public DatabaseType type() {

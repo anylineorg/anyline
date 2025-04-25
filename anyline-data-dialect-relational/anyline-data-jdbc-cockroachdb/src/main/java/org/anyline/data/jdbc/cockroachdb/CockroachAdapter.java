@@ -16,8 +16,8 @@
 
 package org.anyline.data.jdbc.cockroachdb;
 
-import org.anyline.annotation.Component;
+import org.anyline.annotation.AnylineComponent;
 
-@Component("anyline.data.jdbc.adapter.cockroach")
+@AnylineComponent("anyline.data.jdbc.adapter.cockroach")
 public class CockroachAdapter {
 }

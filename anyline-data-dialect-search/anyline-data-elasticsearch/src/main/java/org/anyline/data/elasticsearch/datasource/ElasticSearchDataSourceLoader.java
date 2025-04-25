@@ -16,7 +16,7 @@
 
 package org.anyline.data.elasticsearch.datasource;
 
-import org.anyline.annotation.Component;
+import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.datasource.DataSourceHolder;
 import org.anyline.data.datasource.DataSourceLoader;
 import org.anyline.data.datasource.init.AbstractDataSourceLoader;
@@ -30,7 +30,7 @@ import org.elasticsearch.client.RestClient;
 
 import java.util.ArrayList;
 import java.util.List;
-@Component("anyline.environment.data.datasource.loader.elasticsearch")
+@AnylineComponent("anyline.environment.data.datasource.loader.elasticsearch")
 public class ElasticSearchDataSourceLoader extends AbstractDataSourceLoader implements DataSourceLoader {
     public static Log log = LogProxy.get(ElasticSearchDataSourceLoader.class);
 

@@ -21,7 +21,7 @@ import com.vesoft.nebula.client.graph.SessionPool;
 import com.vesoft.nebula.client.graph.data.DateWrapper;
 import com.vesoft.nebula.client.graph.data.ResultSet;
 import com.vesoft.nebula.client.graph.data.ValueWrapper;
-import org.anyline.annotation.Component;
+import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.adapter.DriverActuator;
 import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.nebula.runtime.NebulaRuntime;
@@ -41,7 +41,7 @@ import java.time.LocalDate;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-@Component("anyline.environment.data.driver.actuator.nebula")
+@AnylineComponent("anyline.environment.data.driver.actuator.nebula")
 public class NebulaActuator implements DriverActuator {
     @Override
     public Class<? extends DriverAdapter> supportAdapterType() {

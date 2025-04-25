@@ -18,7 +18,7 @@ package org.anyline.data.mongodb.runtime;
 
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoDatabase;
-import org.anyline.annotation.Component;
+import org.anyline.annotation.AnylineComponent;
 import org.anyline.bean.BeanDefine;
 import org.anyline.bean.init.DefaultBeanDefine;
 import org.anyline.bean.init.DefaultValueReference;
@@ -33,10 +33,9 @@ import org.anyline.data.runtime.init.AbstractRuntimeHolder;
 import org.anyline.service.init.DefaultService;
 import org.anyline.util.ConfigTable;
 
-import javax.sql.DataSource;
 import java.util.Map;
 
-@Component("anyline.environment.data.runtime.holder.mongo")
+@AnylineComponent("anyline.environment.data.runtime.holder.mongo")
 public class MongoRuntimeHolder extends AbstractRuntimeHolder implements RuntimeHolder {
     private static final MongoRuntimeHolder instance = new MongoRuntimeHolder();
     public static MongoRuntimeHolder instance() {

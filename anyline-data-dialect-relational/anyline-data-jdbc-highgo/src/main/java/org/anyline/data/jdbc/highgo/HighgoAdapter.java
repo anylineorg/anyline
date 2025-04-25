@@ -16,7 +16,7 @@
 
 package org.anyline.data.jdbc.highgo;
 
-import org.anyline.annotation.Component;
+import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.adapter.init.PostgresGenusAdapter;
 import org.anyline.data.param.ConfigStore;
@@ -40,7 +40,7 @@ import java.util.Map;
 /**
  * 参考 PostgresGenusAdapter
  */
-@Component("anyline.data.jdbc.adapter.highgo")
+@AnylineComponent("anyline.data.jdbc.adapter.highgo")
 public class HighgoAdapter extends PostgresGenusAdapter implements JDBCAdapter {
 
 	public DatabaseType type() {

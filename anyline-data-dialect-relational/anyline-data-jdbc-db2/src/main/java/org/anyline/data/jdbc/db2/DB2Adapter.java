@@ -16,7 +16,7 @@
 
 package org.anyline.data.jdbc.db2;
 
-import org.anyline.annotation.Component;
+import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.adapter.init.InformixGenusAdapter;
 import org.anyline.data.param.ConfigStore;
@@ -35,7 +35,7 @@ import org.anyline.util.SQLUtil;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.util.*;
-@Component("anyline.data.jdbc.adapter.db2")
+@AnylineComponent("anyline.data.jdbc.adapter.db2")
 public class DB2Adapter extends InformixGenusAdapter implements JDBCAdapter {
 	
 	public DatabaseType type() {

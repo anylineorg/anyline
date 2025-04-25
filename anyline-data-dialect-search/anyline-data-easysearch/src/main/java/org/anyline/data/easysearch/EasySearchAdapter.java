@@ -16,8 +16,8 @@
 
 package org.anyline.data.easysearch;
 
-import org.anyline.annotation.Component;
+import org.anyline.annotation.AnylineComponent;
 
-@Component("anyline.environment.data.driver.actuator.easysearch")
+@AnylineComponent("anyline.environment.data.driver.actuator.easysearch")
 public class EasySearchAdapter {
 }

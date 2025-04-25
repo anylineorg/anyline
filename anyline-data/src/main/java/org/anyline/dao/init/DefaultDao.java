@@ -17,7 +17,7 @@
 package org.anyline.dao.init;
 
 import org.anyline.adapter.PersistenceAdapter;
-import org.anyline.annotation.Component;
+import org.anyline.annotation.AnylineComponent;
 import org.anyline.dao.AnylineDao;
 import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.param.ConfigStore;
@@ -52,7 +52,7 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.util.*;
 
-@Component("anyline.dao")
+@AnylineComponent("anyline.dao")
 public class DefaultDao<E> implements AnylineDao<E> {
 	protected static final Log log = LogProxy.get(DefaultDao.class);
 

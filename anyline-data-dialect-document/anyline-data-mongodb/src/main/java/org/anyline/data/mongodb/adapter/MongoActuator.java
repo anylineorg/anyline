@@ -16,14 +16,13 @@
 
 package org.anyline.data.mongodb.adapter;
 
-import org.anyline.annotation.Component;
+import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.adapter.DriverActuator;
 import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.run.Run;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.DataSet;
-import org.anyline.entity.PageNavi;
 import org.anyline.metadata.*;
 
 import javax.sql.DataSource;
@@ -32,7 +31,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-@Component("anyline.environment.data.driver.actuator.mongo")
+@AnylineComponent("anyline.environment.data.driver.actuator.mongo")
 public class MongoActuator implements DriverActuator {
     @Override
     public Class<? extends DriverAdapter> supportAdapterType() {

@@ -16,7 +16,7 @@
 
 package org.anyline.data.jdbc.xigemadb;
 
-import org.anyline.annotation.Component;
+import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.jdbc.informix.InformixAdapter;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
@@ -38,7 +38,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-@Component("anyline.data.jdbc.adapter.xigemadb")
+@AnylineComponent("anyline.data.jdbc.adapter.xigemadb")
 public class XigemaDBAdapter extends InformixAdapter {
     
     public DatabaseType type() {

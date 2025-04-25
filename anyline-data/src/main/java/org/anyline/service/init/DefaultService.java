@@ -16,8 +16,8 @@
 
 package org.anyline.service.init;
 
-import org.anyline.annotation.Autowired;
-import org.anyline.annotation.Component;
+import org.anyline.annotation.AnylineAutowired;
+import org.anyline.annotation.AnylineComponent;
 import org.anyline.cache.CacheElement;
 import org.anyline.dao.AnylineDao;
 import org.anyline.data.adapter.DriverAdapter;
@@ -58,11 +58,11 @@ import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.util.*;
 
-@Component(value = "anyline.service", index = 10)
+@AnylineComponent(value = "anyline.service", index = 10)
 public class DefaultService<E> implements AnylineService<E> {
     protected final Log log = LogProxy.get(this.getClass());
     private static final ThreadLocal<Map<String,Object>> caches = new ThreadLocal<>();
-    @Autowired
+    @AnylineAutowired
     protected AnylineDao dao;
 
     public String datasource() {

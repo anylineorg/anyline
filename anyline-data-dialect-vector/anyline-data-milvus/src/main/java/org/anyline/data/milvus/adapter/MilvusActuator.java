@@ -20,26 +20,24 @@ import io.milvus.v2.client.MilvusClientV2;
 import io.milvus.v2.service.rbac.request.*;
 import io.milvus.v2.service.rbac.response.DescribeRoleResp;
 import io.milvus.v2.service.rbac.response.DescribeUserResp;
-import org.anyline.annotation.Component;
+import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.adapter.DriverActuator;
 import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.run.Run;
 import org.anyline.data.runtime.DataRuntime;
-import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.authorize.Privilege;
 import org.anyline.entity.authorize.Role;
 import org.anyline.entity.authorize.User;
 import org.anyline.metadata.*;
-import org.anyline.metadata.refer.MetadataFieldRefer;
 import org.anyline.util.BasicUtil;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.util.*;
 
-@Component("anyline.environment.data.driver.actuator.milvus")
+@AnylineComponent("anyline.environment.data.driver.actuator.milvus")
 public class MilvusActuator implements DriverActuator {
     @Override
     public Class<? extends DriverAdapter> supportAdapterType() {

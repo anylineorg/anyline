@@ -16,7 +16,7 @@
 
 package org.anyline.data.elasticsearch.datasource;
 
-import org.anyline.annotation.Component;
+import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.datasource.DataSourceHolder;
 import org.anyline.data.datasource.init.AbstractDataSourceHolder;
@@ -58,7 +58,7 @@ import javax.net.ssl.SSLContext;
 import javax.sql.DataSource;
 import java.util.*;
 
-@Component("anyline.environment.data.datasource.holder.elasticsearch")
+@AnylineComponent("anyline.environment.data.datasource.holder.elasticsearch")
 public class ElasticSearchDataSourceHolder extends AbstractDataSourceHolder implements DataSourceHolder{
 	private static final ElasticSearchDataSourceHolder instance = new ElasticSearchDataSourceHolder();
 	public static ElasticSearchDataSourceHolder instance() {

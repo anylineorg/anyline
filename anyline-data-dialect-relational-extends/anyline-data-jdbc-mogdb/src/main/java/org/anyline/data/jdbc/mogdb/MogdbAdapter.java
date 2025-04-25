@@ -16,10 +16,10 @@
 
 package org.anyline.data.jdbc.mogdb;
 
-import org.anyline.annotation.Component;
+import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.jdbc.opengauss.OpenGaussAdapter;
 import org.anyline.metadata.type.DatabaseType;
-@Component("anyline.data.jdbc.adapter.mogdb")
+@AnylineComponent("anyline.data.jdbc.adapter.mogdb")
 public class MogdbAdapter extends OpenGaussAdapter {
 	
 	public DatabaseType type() {

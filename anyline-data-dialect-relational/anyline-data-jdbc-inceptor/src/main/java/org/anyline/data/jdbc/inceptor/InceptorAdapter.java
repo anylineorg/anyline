@@ -16,7 +16,7 @@
 
 package org.anyline.data.jdbc.inceptor;
 
-import org.anyline.annotation.Component;
+import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.jdbc.transwarp.TranswarpAdapter;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
@@ -40,7 +40,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-@Component("anyline.data.jdbc.adapter.inceptor")
+@AnylineComponent("anyline.data.jdbc.adapter.inceptor")
 public class InceptorAdapter extends TranswarpAdapter {
     public DatabaseType type() {
         return DatabaseType.ArgoDB;

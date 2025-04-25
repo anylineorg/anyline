@@ -16,10 +16,10 @@
 
 package org.anyline.data.jdbc.polardb;
 
-import org.anyline.annotation.Component;
+import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.jdbc.adapter.init.PostgresGenusAdapter;
 import org.anyline.metadata.type.DatabaseType;
-@Component("anyline.data.jdbc.adapter.polardb")
+@AnylineComponent("anyline.data.jdbc.adapter.polardb")
 public class PolarAdapter extends PostgresGenusAdapter {
 	
 	public DatabaseType type() {
