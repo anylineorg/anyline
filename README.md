@@ -30,21 +30,194 @@ any questions, please contact skype: server@anyline.org
 </tr>
 </table>
 
-## Introduction
-The core of AnyLine is a runtime oriented metadata dynamic relationship mapping primarily used for  
-- Dynamically register and switch data sources  
-- Read and write metadata  
-- Compare database structure differences  
-- Generate dynamic SQL and combine dynamic query conditions  
-- Complex result set operations  
 
-A natural low code, dynamic form, and dynamic data source underlying tool  
+markdown
+Copy Code
+# AnyLine MDM: Runtime-Oriented Metadata Dynamic Mapping
 
-Adapt to various relational and non relational databases (as well as various domestic niche databases)  
-Commonly used for low-level support in dynamic structural scenarios, appearing as an SQL parsing engine or adapter  
-Such as: data center, visualization, low code, SAAS, custom forms, heterogeneous database migration and synchronization, IoT vehicle networking data processing  
-Conditions/data structures, crawler data parsing, etc.  
-Reference [[Applicable Scenarios](http://doc.anyline.org/ss/ed_14)】  
+## Core Concept
+AnyLine MDM focuses on &zwnj;**runtime metadata dynamic mapping**&zwnj;, primarily used for operating database structures, reading/writing metadata, and providing underlying support for dynamic scenarios. It often acts as an &zwnj;**SQL synthesis engine**&zwnj; or &zwnj;**adapter**&zwnj; in contexts such as:
+- Data middle platforms
+- Visualized data sources
+- Low-code platforms
+- SaaS applications
+- Custom forms
+- Heterogeneous database migration and synchronization
+- IoT/vehicle network data processing
+- Dynamic forms and query conditions
+- Web crawler data parsing
+
+---
+
+## Core Features
+
+### 1. &zwnj;**Dynamic Data Source Management**&zwnj;
+- Supports runtime dynamic registration, switching, and deregistration of various data sources.
+- Provides &zwnj;**7 data source registration methods**&zwnj; and &zwnj;**3 switching mechanisms**&zwnj;.
+
+### 2. &zwnj;**Database Structure and Metadata Management**&zwnj;
+- Supports dynamic management of database structures (e.g., automatic table creation, field extension).
+- Standardizes metadata collection (data types, comments, constraint rules) for unified governance of data structures and metadata.
+- Enables &zwnj;**table structure difference comparison**&zwnj;, &zwnj;**heterogeneous database structure replication**&zwnj;, and &zwnj;**data synchronization**&zwnj;.
+
+### 3. &zwnj;**Dynamic DDL**&zwnj;
+- Generates cross-database dynamic DDL by comparing metadata, analyzing table structure differences.
+- Supports field type mapping, constraint conversion, indexing, etc., commonly used in database migration and version synchronization.
+
+### 4. &zwnj;**Dynamic Query Conditions**&zwnj;
+- Provides metadata-driven dynamic query solutions for flexible data filtering, sorting, and pagination.
+- Supports multi-layer complex condition combinations and cross-database compatibility.
+- Automatically generates query conditions in formats like JSON, String, or ConfigStore, ideal for low-code platforms to avoid cumbersome judgments, traversals, and format conversions while maintaining high performance and maintainability.
+
+### 5. &zwnj;**Database Compatibility and Adaptation**&zwnj;
+- Unifies database dialects for seamless metadata object compatibility across databases (relational, key-value, time-series, graph, document, columnar, vector, search, spatial, RDF, Event Store, Multivalue, Object).
+- Specifically supports domestic databases.
+
+### 6. &zwnj;**In-Memory Computation for Dynamic Data Structures (DataSet<DataRow>)**&zwnj;
+- Based on a dynamic expression engine and SQL-like filtering, with built-in mathematical formulas, enables one-click aggregation, filtering, pivoting, and other operations on result sets, avoiding cumbersome ORM traversal.
+
+### 7. &zwnj;**Multi-Data Source Transaction Management**&zwnj;
+- Supports arbitrary data source switching while maintaining multiple transaction states and cross-thread transactions.
+
+### 8. &zwnj;**Permission Management**&zwnj;
+- Manages roles, users, and permissions.
+
+---
+
+## Why Use AnyLine Instead of Traditional ORM?
+
+### 1. &zwnj;**Target Scenarios**&zwnj;
+- &zwnj;**AnyLine**&zwnj;: Designed for highly dynamic runtime scenarios, natively supporting runtime uncertainties.
+    - Handles dynamic data source access requests with heterogeneous structures and protocols.
+    - Adapts to real-time changes in metadata (e.g., table structures, field definitions).
+    - Provides dynamic model reconstruction and query adaptation through metadata management and adaptive mapping.
+
+- &zwnj;**Traditional ORM**&zwnj;: Suited for static or relatively stable business scenarios.
+    - Relies on predefined database structures and entity relationships during development.
+    - Ensures system stability with upfront modeling and design.
+
+### 2. &zwnj;**Product Positioning**&zwnj;
+- &zwnj;**AnyLine**&zwnj;: Targets middleware development platforms for building low-code platforms, dynamic query engines, etc.
+    - Empowers end-users to create customized business applications via visual configuration (e.g., dynamic reports, data analysis views).
+
+- &zwnj;**Traditional ORM**&zwnj;: Used for developing end-user business systems (e.g., ERP, CRM, OA).
+    - Maps database tables to object models for object-oriented database operations.
+
+### 3. &zwnj;**Operation Targets**&zwnj;
+- &zwnj;**AnyLine**&zwnj;: Metadata-driven, abstracting data structures and business logic.
+    - Allows dynamic configuration of data models and business rules during early project stages.
+    - Adapts to changing business requirements without a complete object model.
+
+- &zwnj;**Traditional ORM**&zwnj;: Operates on entity classes directly mapped to database tables.
+    - Maps tables to programming language classes, with fields and relationships reflected as class properties and associations.
+
+### 4. &zwnj;**Target Users**&zwnj;
+- &zwnj;**AnyLine**&zwnj;: For system architects and framework developers building highly flexible, extensible systems.
+    - Provides runtime data structure and business rule definition capabilities.
+    - Addresses system reconfiguration challenges due to requirement changes.
+
+- &zwnj;**Traditional ORM**&zwnj;: For application developers building relational database-backed systems.
+    - Simplifies database access and improves development efficiency.
+
+### 5. &zwnj;**User Requirements**&zwnj;
+- &zwnj;**AnyLine**&zwnj;: Requires deeper technical expertise, especially in metadata-driven development and dynamic system design.
+    - Users must understand dynamic data model design and translate business requirements into configurable metadata rules.
+
+- &zwnj;**Traditional ORM**&zwnj;: Easier to learn and use, lowering the database operation threshold for developers.
+
+### 6. &zwnj;**Design Philosophy and Implementation**&zwnj;
+| Aspect                | AnyLine                                                                 | Traditional ORM (e.g., Hibernate)                          |
+|-----------------------|-------------------------------------------------------------------------|-----------------------------------------------------------|
+| &zwnj;**Dynamic vs Static**&zwnj; | Runtime metadata-driven, supports dynamic data source registration.      | Relies on static entity class and database table pre-mapping. |
+| &zwnj;**Metadata vs Object**&zwnj;| Operates on database structures (tables, views, columns) and metadata.    | Operates indirectly via object models (classes/properties). |
+| &zwnj;**Multi-Database**&zwnj;    | Adapts dynamically via metadata engine and SQL dialect conversion.       | Requires hardcoded entity classes and dialect configuration. |
+
+#### &zwnj;**DataSet/DataRow vs Traditional ORM Entity Class**&zwnj;
+| Dimension               | AnyLine (DataSet/DataRow)                                  | Traditional ORM (Entity Class)                          |
+|-------------------------|------------------------------------------------------------|---------------------------------------------------------|
+| &zwnj;**Data Representation**&zwnj; | Dynamic structure (DataRow = row, DataSet = table).         | Static strongly-typed classes (e.g., `User.java`).      |
+| &zwnj;**Flexibility**&zwnj;         | Adapts to table structure changes dynamically.              | Requires code changes for table structure modifications.|
+| &zwnj;**Query Result Handling**&zwnj;| Directly operates on dynamic result sets.                  | Requires DTOs or projection interfaces.                 |
+| &zwnj;**Low-Code Support**&zwnj;    | Suitable for dynamic forms and ad-hoc queries.              | Requires predefined entity classes.                     |
+| &zwnj;**Performance Overhead**&zwnj;| Lightweight, no reflection/proxy generation.                | May incur overhead due to reflection/bytecode enhancement. |
+| &zwnj;**Complex Mapping**&zwnj;     | Manual handling by default (e.g., multi-table JOIN results).| Automatically manages associations (e.g., `@OneToMany`).|
+| &zwnj;**Use Cases**&zwnj;           | Dynamic business scenarios, heterogeneous databases.        | Fixed business models (e.g., ERP, CRM).                 |
+
+---
+
+## How AnyLine Works
+
+### Key Components
+1. &zwnj;**Parsing Layer**&zwnj;: Automatically converts standard SQL syntax into database-specific dialects.
+2. &zwnj;**Metadata Abstraction Layer**&zwnj;: Builds a unified data view to shield structural differences.
+3. &zwnj;**Multi-Protocol Adaptation Layer**&zwnj;: Supports mixed protocols (JDBC/ODBC/REST) for seamless heterogeneous data source access.
+
+### Core Classes
+- &zwnj;**DataSourceHolder**&zwnj;: Manages dynamic data sources.
+- &zwnj;**DataRuntime**&zwnj;: Context environment associating data sources, adapters, connection pools, and services.
+- &zwnj;**DriverAdapter**&zwnj;: Generates commands,屏蔽ing database command differences and data type compatibility.
+- &zwnj;**DriverActuator**&zwnj;: Executes commands.
+- &zwnj;**ServiceProxy**&zwnj;: Manages service-level data source switching.
+- &zwnj;**DataSet/DataRow**&zwnj;: Encapsulates data, performs in-memory computation, and format conversion.
+
+---
+
+## What AnyLine Provides
+
+### Features
+- &zwnj;**Runtime Dynamic Data Source and Structure Support**&zwnj;: Dynamically register/switch data sources and generate SQL for complex queries based on metadata.
+- &zwnj;**Simplified Database Operations**&zwnj;: Provides concise APIs for pagination, CRUD operations, and dynamic query conditions.
+- &zwnj;**Flexible Result Set Processing**&zwnj;: Processes result sets as `Map` types with rich data processing functions (null handling, string manipulation, math calculations).
+- &zwnj;**Multi-Data Source Support**&zwnj;: Manages multiple data sources via simple APIs, enabling focus on business logic.
+- &zwnj;**Reduced Repetitive Work**&zwnj;: Supports user-defined query conditions via configuration dictionaries or low-code platforms.
+- &zwnj;**Multi-Dialect Support**&zwnj;: Supports DML/DDL operations across databases (including domestic and niche databases), reducing syntax familiarity requirements.
+
+### Value
+- &zwnj;**Improved Development Efficiency**&zwnj;: Simplifies database operations and auto-generates SQL, reducing manual effort and errors.
+- &zwnj;**Enhanced Flexibility**&zwnj;: Supports dynamic data sources, structures, and result set processing for diverse needs.
+- &zwnj;**Lower Development Difficulty**&zwnj;: Provides simple APIs and rich functions, eliminating the need to master hundreds of database syntaxes.
+
+### Advantages
+- &zwnj;**Flexibility**&zwnj;: Adapts to runtime requirements with dynamic data sources and structures.
+- &zwnj;**Efficiency**&zwnj;: Simplifies workflows and auto-generates SQL for faster development.
+- &zwnj;**Ease of Use**&zwnj;: Offers concise APIs and rich functions, lowering the learning curve.
+
+# AnyLine and Entity/ORM: Complementary Tools for Different Scenarios
+
+Of course, we are not abandoning Entity or ORM. Different scenarios indeed require different solutions, and the design philosophy of AnyLine is precisely to provide flexibility and extensibility without excluding the use of traditional Entity or ORM.
+
+## AnyLine Complements Rather Than Replaces Entity/ORM
+
+- &zwnj;**Entity/ORM**&zwnj; has advantages such as strong typing, compile-time checking, and high code readability in predictable and fixed scenarios. It is suitable for scenarios with stable business logic and well-defined data structures.
+- &zwnj;**AnyLine**&zwnj; focuses on dynamic and runtime scenarios, such as data middle platforms, multiple data sources, dynamic query conditions, and flexible result set processing, addressing the shortcomings of traditional ORM in these scenarios.
+
+## Scenario Adaptation
+
+- If the business logic is clear and the data structure is fixed (e.g., order systems, user management), using &zwnj;**Entity/ORM**&zwnj; is a more suitable choice.
+- If the business logic is complex and the data sources change dynamically (e.g., data middle platforms, reporting systems, multi-tenant systems), the dynamic capabilities of &zwnj;**AnyLine**&zwnj; can significantly improve development efficiency.
+
+## Entity Usage in AnyLine
+
+- The source code of &zwnj;**AnyLine**&zwnj; indeed uses multiple &zwnj;**Entities**&zwnj; (such as geometric shapes), which shows that &zwnj;**AnyLine**&zwnj; itself does not exclude &zwnj;**Entities**&zwnj; but chooses the most appropriate tool based on the scenario.
+- In &zwnj;**AnyLine**&zwnj;, &zwnj;**Entities**&zwnj; can serve as carriers of fixed data structures, combined with dynamic data sources and query conditions to achieve more flexible business logic.
+
+## How to Choose the Appropriate Tool
+
+### Scenario Differentiation
+
+- Programmers need to have the ability to differentiate scenarios and choose appropriate technical solutions based on business requirements.
+- For fixed scenarios, prioritize the use of &zwnj;**Entity/ORM**&zwnj;; for dynamic scenarios, prioritize the use of &zwnj;**AnyLine**&zwnj;.
+
+### Combined Usage
+
+- In actual projects, &zwnj;**Entity/ORM**&zwnj; and &zwnj;**AnyLine**&zwnj; can be used in combination to leverage their respective advantages.
+- For example, use &zwnj;**Entity/ORM**&zwnj; to handle core business logic and &zwnj;**AnyLine**&zwnj; to handle dynamic queries, multiple data source switching, and other requirements.
+
+### Avoid Over-Design
+
+- Do not force-fit scenarios just to use a certain technology; choose the simplest solution based on actual requirements.
+- The goal of &zwnj;**AnyLine**&zwnj; is to reduce development complexity, not increase it.
+
 
 ##### Data source registration and switching
 Note that the data source here is not a master-slave relationship, but multiple completely unrelated data sources.
