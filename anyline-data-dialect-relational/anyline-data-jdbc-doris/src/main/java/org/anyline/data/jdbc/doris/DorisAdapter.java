@@ -1758,7 +1758,20 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
      */
     @Override
     public List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Table query, int types, ConfigStore configs) throws Exception {
-        return super.buildQueryTablesRun(runtime, greedy, query, types, configs);
+        String catalog = query.getCatalogName();
+        if(BasicUtil.isEmpty(catalog)){
+            return super.buildQueryTablesRun(runtime, greedy, query, types, configs);
+        }
+
+        List<Run> runs = new ArrayList<>();
+        Run run = new SimpleRun(runtime, configs);
+        runs.add(run);
+        StringBuilder builder = run.getBuilder();
+        builder.append("SELECT * FROM ").append(catalog).append(".information_schema.TABLES");
+        configs.and(Compare.LIKE_SIMPLE,"TABLE_NAME", objectName(runtime, query.getName()));
+        configs.and("TABLE_SCHEMA", query.getSchemaName());
+        configs.and("TABLE_CATALOG", catalog);
+        return runs;
     }
 
     /**
