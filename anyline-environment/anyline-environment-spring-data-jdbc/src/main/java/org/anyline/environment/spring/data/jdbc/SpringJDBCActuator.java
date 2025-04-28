@@ -672,6 +672,7 @@ public class SpringJDBCActuator implements DriverActuator {
             return line;
         }
         final int _line = line;
+        int[] types = new int[vol];
         //batch insert保持SQL一致,如果不一致应该调用save方法
         //返回每个SQL的影响行数
         jdbc.batchUpdate(sql,
@@ -679,7 +680,10 @@ public class SpringJDBCActuator implements DriverActuator {
                 public void setValues(PreparedStatement ps, int i) throws SQLException {
                     //i从0开始 参数下标从1开始
                     for(int p=1; p<=vol; p++) {
-                        ps.setObject(p, values.get(vol*i+p-1));
+                        if(types[p-1] == 0){
+                            types[p-1] = ps.getParameterMetaData().getParameterType(p);
+                        }
+                        ps.setObject(p, values.get(vol*i+p-1), types[p-1]);
                     }
                 }
                 public int getBatchSize() {
