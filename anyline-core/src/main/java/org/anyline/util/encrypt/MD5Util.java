@@ -19,43 +19,70 @@
 
 package org.anyline.util.encrypt;
 
-import org.anyline.util.BasicUtil;
-import org.anyline.util.NumberUtil;
 import org.anyline.log.Log;
 import org.anyline.log.LogProxy;
+import org.anyline.util.BasicUtil;
+import org.anyline.util.NumberUtil;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.math.BigInteger;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.HashMap;
 import java.util.Map;
  
 public class MD5Util {
-	private static final Log log = LogProxy.get(MD5Util.class);  
+	private static final Log log = LogProxy.get(MD5Util.class);
 
 	public static String sign(String src) {
-		return sign(src, "UTF-8");
-	} 
-	 
-	public static String sign(String src, String encode) {
+		return sign(src, StandardCharsets.UTF_8);
+	}
+
+	public static String sign(String src, String charset) {
+		return sign(src, Charset.forName(charset));
+	}
+	public static String sign(String src, Charset charset) {
+		return hex(src, charset);
+	}
+	public static String hex(String src, Charset charset) {
 		if(null == src) return ""; 
 		String result = null;
-		 
+
         if (!src.isEmpty()) {
             try{
-
         		MessageDigest md = MessageDigest.getInstance("MD5");
-        		if (BasicUtil.isEmpty(encode))
-        			result = NumberUtil.byte2hex(md.digest(src.getBytes()));
-        		else
-        			result = NumberUtil.byte2hex(md.digest(src.getBytes(encode)));
-        		 
+        		if (BasicUtil.isEmpty(charset)) {
+					result = NumberUtil.byte2hex(md.digest(src.getBytes()));
+				}else {
+					result = NumberUtil.byte2hex(md.digest(src.getBytes(charset)));
+				}
             } catch(Exception ex) {
 				log.error("md5 sign exception:", ex);
             }      
         }
         return result;      
+	}
+	public static byte[] bytes(String src, Charset charset) {
+		if(null == src) {
+			return new byte[0];
+		}
+		MessageDigest md  = null;
+		try{
+			md = MessageDigest.getInstance("MD5");
+			if (BasicUtil.isEmpty(charset)) {
+				return md.digest(src.getBytes());
+			}else {
+				return md.digest(src.getBytes(charset));
+			}
+		}catch (Exception ex) {
+			log.error("md5 sign exception:", ex);
+		}
+		return new byte[0];
+	}
+	public static byte[] bytes(String src) {
+		return bytes(src, StandardCharsets.UTF_8);
 	}
 
 	/** 
