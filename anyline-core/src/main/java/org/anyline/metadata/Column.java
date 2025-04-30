@@ -782,7 +782,7 @@ public class Column extends TableAffiliation<Column> implements Serializable {
     public String getFullType(DatabaseType database) {
         return getFullType(database, null);
     }
-    public String getFullType(DatabaseType database, TypeMetadata.Refer config) {
+    public String getFullType(DatabaseType database, TypeMetadata.Refer refer) {
         if(getmap && null != update) {
             return update.getFullType(database);
         }
@@ -795,11 +795,11 @@ public class Column extends TableAffiliation<Column> implements Serializable {
         String result = null;
         String type = null;
         String formula = null;
-        if(null != config) {
-            ignoreLength = config.ignoreLength();
-            ignorePrecision = config.ignorePrecision();
-            ignoreScale = config.ignoreScale();
-            formula = config.getFormula();
+        if(null != refer) {
+            ignoreLength = refer.ignoreLength();
+            ignorePrecision = refer.ignorePrecision();
+            ignoreScale = refer.ignoreScale();
+            formula = refer.getFormula();
         }else{
             ignoreLength = ignoreLength(database);
             ignorePrecision = ignorePrecision(database);

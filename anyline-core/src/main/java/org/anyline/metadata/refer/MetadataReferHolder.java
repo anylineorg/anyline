@@ -135,14 +135,14 @@ public class MetadataReferHolder {
      * @return config
      */
     public static TypeMetadata.Refer get(DatabaseType database, TypeMetadata type) {
-        TypeMetadata.Refer config = null;
+        TypeMetadata.Refer refer = null;
         if(null != type) {
             LinkedHashMap<TypeMetadata, TypeMetadata.Refer> refers = typeRefers.get(database);
             if (null != refers) {
-                config = refers.get(type);
+                refer = refers.get(type);
             }
         }
-        return config;
+        return refer;
     }
 
     /**
@@ -152,14 +152,14 @@ public class MetadataReferHolder {
      * @return config
      */
     public static TypeMetadata.Refer get(DatabaseType database, String type) {
-        TypeMetadata.Refer config = null;
+        TypeMetadata.Refer refer = null;
         if(null != type) {
             LinkedHashMap<String, TypeMetadata.Refer> refers = typeNameRefers.get(database);
             if (null != refers) {
-                config = refers.get(type.toUpperCase());
+                refer = refers.get(type.toUpperCase());
             }
         }
-        return config;
+        return refer;
     }
 
     /**
@@ -169,20 +169,20 @@ public class MetadataReferHolder {
      * @return config
      */
     public static TypeMetadata.Refer get(DatabaseType database, TypeMetadata.CATEGORY category) {
-        TypeMetadata.Refer config = null;
+        TypeMetadata.Refer refer = null;
         if(null != category) {
             LinkedHashMap<TypeMetadata.CATEGORY, TypeMetadata.Refer> refers = typeCategoryRefers.get(database);
             if (null != refers) {
-                config = refers.get(category);
+                refer = refers.get(category);
             }
         }
-        if(null == config) {
+        if(null == refer) {
             LinkedHashMap<TypeMetadata.CATEGORY, TypeMetadata.Refer> refers = typeCategoryRefers.get(DatabaseType.NONE);
             if (null != refers) {
-                config = refers.get(category);
+                refer = refers.get(category);
             }
         }
-        return config;
+        return refer;
     }
 
     /**
@@ -202,16 +202,16 @@ public class MetadataReferHolder {
 		4.配置类-数据类型大类
 		 */
         //1.配置类 数据类型
-        TypeMetadata.Refer config = MetadataReferHolder.get(database, type);
-        if(null != config) {
-            result = config.ignoreLength();
+        TypeMetadata.Refer refer = MetadataReferHolder.get(database, type);
+        if(null != refer) {
+            result = refer.ignoreLength();
         }
         //2.配置类-数据类型名称
         if(result == -1) {
             //根据数据类型名称
-            config = MetadataReferHolder.get(database, type.getName());
-            if(null != config) {
-                result = config.ignoreLength();
+            refer = MetadataReferHolder.get(database, type.getName());
+            if(null != refer) {
+                result = refer.ignoreLength();
             }
         }
         //3.数据类型自带
@@ -220,9 +220,9 @@ public class MetadataReferHolder {
         }
         //4.配置类-数据类型大类
         if(result ==-1) {
-            config = MetadataReferHolder.get(database, type.getCategory());
-            if(null != config) {
-                result = config.ignoreLength();
+            refer = MetadataReferHolder.get(database, type.getCategory());
+            if(null != refer) {
+                result = refer.ignoreLength();
             }
         }
         return result;
@@ -245,16 +245,16 @@ public class MetadataReferHolder {
 		4.配置类-数据类型大类
 		 */
         //1.配置类 数据类型
-        TypeMetadata.Refer config = MetadataReferHolder.get(database, type);
-        if(null != config) {
-            result = config.ignorePrecision();
+        TypeMetadata.Refer refer = MetadataReferHolder.get(database, type);
+        if(null != refer) {
+            result = refer.ignorePrecision();
         }
         //2.配置类-数据类型名称
         if(result == -1) {
             //根据数据类型名称
-            config = MetadataReferHolder.get(database, type.getName());
-            if(null != config) {
-                result = config.ignorePrecision();
+            refer = MetadataReferHolder.get(database, type.getName());
+            if(null != refer) {
+                result = refer.ignorePrecision();
             }
         }
         //3.数据类型自带
@@ -263,9 +263,9 @@ public class MetadataReferHolder {
         }
         //4.配置类-数据类型大类
         if(result ==-1) {
-            config = MetadataReferHolder.get(database, type.getCategory());
-            if(null != config) {
-                result = config.ignorePrecision();
+            refer = MetadataReferHolder.get(database, type.getCategory());
+            if(null != refer) {
+                result = refer.ignorePrecision();
             }
         }
         return result;
@@ -288,16 +288,16 @@ public class MetadataReferHolder {
 		4.配置类-数据类型大类
 		 */
         //1.配置类 数据类型
-        TypeMetadata.Refer config = MetadataReferHolder.get(database, type);
-        if(null != config) {
-            result = config.ignoreScale();
+        TypeMetadata.Refer refer = MetadataReferHolder.get(database, type);
+        if(null != refer) {
+            result = refer.ignoreScale();
         }
         //2.配置类-数据类型名称
         if(result == -1) {
             //根据数据类型名称
-            config = MetadataReferHolder.get(database, type.getName());
-            if(null != config) {
-                result = config.ignoreScale();
+            refer = MetadataReferHolder.get(database, type.getName());
+            if(null != refer) {
+                result = refer.ignoreScale();
             }
         }
         //3.数据类型自带
@@ -306,9 +306,9 @@ public class MetadataReferHolder {
         }
         //4.配置类-数据类型大类
         if(result ==-1) {
-            config = MetadataReferHolder.get(database, type.getCategory());
-            if(null != config) {
-                result = config.ignoreScale();
+            refer = MetadataReferHolder.get(database, type.getCategory());
+            if(null != refer) {
+                result = refer.ignoreScale();
             }
         }
         return result;
@@ -331,16 +331,16 @@ public class MetadataReferHolder {
 		4.配置类-数据类型大类
 		 */
         //1.配置类 数据类型
-        TypeMetadata.Refer config = MetadataReferHolder.get(database, type);
-        if(null != config) {
-            result = config.getFormula();
+        TypeMetadata.Refer refer = MetadataReferHolder.get(database, type);
+        if(null != refer) {
+            result = refer.getFormula();
         }
         //2.配置类-数据类型名称
         if(null == result) {
             //根据数据类型名称
-            config = MetadataReferHolder.get(database, type.getName());
-            if(null != config) {
-                result = config.getFormula();
+            refer = MetadataReferHolder.get(database, type.getName());
+            if(null != refer) {
+                result = refer.getFormula();
             }
         }
         //3.数据类型自带
@@ -349,9 +349,9 @@ public class MetadataReferHolder {
         }
         //4.配置类-数据类型大类
         if(null == result) {
-            config = MetadataReferHolder.get(database, type.getCategory());
-            if(null != config) {
-                result = config.getFormula();
+            refer = MetadataReferHolder.get(database, type.getCategory());
+            if(null != refer) {
+                result = refer.getFormula();
             }
         }
         return result;
@@ -375,16 +375,16 @@ public class MetadataReferHolder {
 		4.配置类-数据类型大类
 		 */
         //1.配置类 数据类型
-        TypeMetadata.Refer config = MetadataReferHolder.get(database, type);
-        if(null != config) {
-            result = config.getMeta();
+        TypeMetadata.Refer refer = MetadataReferHolder.get(database, type);
+        if(null != refer) {
+            result = refer.getMeta();
         }
         //2.配置类-数据类型名称
         if(null == result) {
             //根据数据类型名称
-            config = MetadataReferHolder.get(database, type.getName());
-            if(null != config) {
-                result = config.getMeta();
+            refer = MetadataReferHolder.get(database, type.getName());
+            if(null != refer) {
+                result = refer.getMeta();
             }
         }
         //3.数据类型自带
@@ -393,9 +393,9 @@ public class MetadataReferHolder {
         }
         //4.配置类-数据类型大类
         if(null == result) {
-            config = MetadataReferHolder.get(database, type.getCategory());
-            if(null != config) {
-                result = config.getMeta();
+            refer = MetadataReferHolder.get(database, type.getCategory());
+            if(null != refer) {
+                result = refer.getMeta();
             }
         }
         return result;

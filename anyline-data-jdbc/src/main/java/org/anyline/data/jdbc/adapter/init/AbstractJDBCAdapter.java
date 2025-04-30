@@ -8307,10 +8307,10 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		Column column = new Column();
 		column.setTypeMetadata(type);
 		TypeMetadata.Refer adapter = dataTypeMetadataRefer(runtime, type);
-		TypeMetadata.Refer config = dataTypeMetadataRefer(runtime, type);
-		int ignoreLength= config.ignoreLength();
-		int ignorePrecision= config.ignorePrecision();
-		int ignoreScale = config.ignoreScale();
+		TypeMetadata.Refer refer = dataTypeMetadataRefer(runtime, type);
+		int ignoreLength= refer.ignoreLength();
+		int ignorePrecision= refer.ignorePrecision();
+		int ignoreScale = refer.ignoreScale();
 		type(runtime, builder, column, type.getName(), ignoreLength, ignorePrecision, ignoreScale);
 		return builder;
 	}

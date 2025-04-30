@@ -35,7 +35,7 @@ public class AbstractTypeMetadata implements TypeMetadata {
     private int ignoreLength;
     private int ignorePrecision;
     private int ignoreScale;
-    private Refer config;
+    private Refer refer;
     public AbstractTypeMetadata(CATEGORY category, String name, Class transfer, Class compatible, int ignoreLength, int ignorePrecision, int ignoreScale, DatabaseType ... dbs) {
         this.category = category;
         this.name = name;
@@ -207,12 +207,12 @@ public class AbstractTypeMetadata implements TypeMetadata {
     }
 
     @Override
-    public Refer config() {
-        if(null == config) {
-            config = new Refer();
-            config.setIgnoreLength(ignoreLength).setIgnorePrecision(ignorePrecision).setIgnoreScale(ignoreScale);
+    public Refer refer() {
+        if(null == refer) {
+            refer = new Refer();
+            refer.setIgnoreLength(ignoreLength).setIgnorePrecision(ignorePrecision).setIgnoreScale(ignoreScale);
         }
-        return config;
+        return refer;
     }
 
 }

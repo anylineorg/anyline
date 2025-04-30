@@ -182,7 +182,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
     public AbstractDriverAdapter() {
         //当前数据库支持的数据类型,子类根据情况覆盖
         for(StandardTypeMetadata type: StandardTypeMetadata.values()) {
-            reg(type, type.config());
+            reg(type, type.refer());
             List<DatabaseType> dbs = type.databaseTypes();
             for(DatabaseType db:dbs) {
                 if(db == this.type()) {
@@ -290,12 +290,12 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * 注册数据类型配置
      * 要从配置项中取出每个属性检测合并,不要整个覆盖
      * @param type 数据类型
-     * @param config 配置项
+     * @param refer 配置项
      * @return Config
      */
     @Override
-    public TypeMetadata.Refer reg(TypeMetadata type, TypeMetadata.Refer config) {
-        return MetadataReferHolder.reg(type(), type, config);
+    public TypeMetadata.Refer reg(TypeMetadata type, TypeMetadata.Refer refer) {
+        return MetadataReferHolder.reg(type(), type, refer);
     }
 
     /**
@@ -306,8 +306,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @return TypeMetadata.Config
      */
     @Override
-    public TypeMetadata.Refer reg(String type, TypeMetadata.Refer config) {
-        return MetadataReferHolder.reg(type(), type, config);
+    public TypeMetadata.Refer reg(String type, TypeMetadata.Refer refer) {
+        return MetadataReferHolder.reg(type(), type, refer);
     }
 
     /* *****************************************************************************************************************
@@ -9402,33 +9402,33 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		 */
 
 		//1.配置类 数据类型
-		TypeMetadata.Refer config = MetadataReferHolder.get(type(), meta);
-		if(null != config) {
-			result = config.getLengthRefer();
+		TypeMetadata.Refer refer = MetadataReferHolder.get(type(), meta);
+		if(null != refer) {
+			result = refer.getLengthRefer();
 		}
 
 		//2.配置类-数据类型名称
 		if(null == result) {
 			//根据数据类型名称
-			config = MetadataReferHolder.get(type(), meta.getName());
-			if(null != config) {
-				result = config.getLengthRefer();
+            refer = MetadataReferHolder.get(type(), meta.getName());
+			if(null != refer) {
+				result = refer.getLengthRefer();
 			}
 		}
 		//3.数据类型自带(length/precision/scale)
 
 		//4.配置类-数据类型大类
 		if(null == result) {
-			config = MetadataReferHolder.get(type(), meta.getCategory());
-			if(null != config) {
-				result = config.getLengthRefer();
+            refer = MetadataReferHolder.get(type(), meta.getCategory());
+			if(null != refer) {
+				result = refer.getLengthRefer();
 			}
 		}
 		//5.具体数据库实现的MetadataAdapter
 		if(null == result) {
             //config = dataTypeMetadataRefer(runtime, meta);
-            if(null != config) {
-                result = config.getLengthRefer();
+            if(null != refer) {
+                result = refer.getLengthRefer();
             }
 
 		}
@@ -9452,33 +9452,33 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		String result = null;
 
 		//1.配置类 数据类型
-		TypeMetadata.Refer config = MetadataReferHolder.get(type(), meta);
-		if(null != config) {
-			result = config.getPrecisionRefer();
+		TypeMetadata.Refer refer = MetadataReferHolder.get(type(), meta);
+		if(null != refer) {
+			result = refer.getPrecisionRefer();
 		}
 
 		//2.配置类-数据类型名称
 		if(null == result) {
 			//根据数据类型名称
-			config = MetadataReferHolder.get(type(), meta.getName());
-			if(null != config) {
-				result = config.getPrecisionRefer();
+            refer = MetadataReferHolder.get(type(), meta.getName());
+			if(null != refer) {
+				result = refer.getPrecisionRefer();
 			}
 		}
 		//3.数据类型自带(length/precision/scale)
 
 		//4.配置类-数据类型大类
 		if(null == result) {
-			config = MetadataReferHolder.get(type(), meta.getCategory());
-			if(null != config) {
-				result = config.getPrecisionRefer();
+            refer = MetadataReferHolder.get(type(), meta.getCategory());
+			if(null != refer) {
+				result = refer.getPrecisionRefer();
 			}
 		}
 		//5.具体数据库实现的MetadataAdapter
 		if(null == result) {
             //config = dataTypeMetadataRefer(runtime, meta);
-            if(null != config) {
-                result = config.getPrecisionRefer();
+            if(null != refer) {
+                result = refer.getPrecisionRefer();
             }
 		}
 		return result;
@@ -9508,33 +9508,33 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		 */
 
 		//1.配置类 数据类型
-		TypeMetadata.Refer config = MetadataReferHolder.get(type(), meta);
-		if(null != config) {
-			result = config.getScaleRefer();
+		TypeMetadata.Refer refer = MetadataReferHolder.get(type(), meta);
+		if(null != refer) {
+			result = refer.getScaleRefer();
 		}
 
 		//2.配置类-数据类型名称
 		if(null == result) {
 			//根据数据类型名称
-			config = MetadataReferHolder.get(type(), meta.getName());
-			if(null != config) {
-				result = config.getScaleRefer();
+            refer = MetadataReferHolder.get(type(), meta.getName());
+			if(null != refer) {
+				result = refer.getScaleRefer();
 			}
 		}
 		//3.数据类型自带(length/precision/scale)
 
 		//4.配置类-数据类型大类
 		if(null == result) {
-			config = MetadataReferHolder.get(type(), meta.getCategory());
-			if(null != config) {
-				result = config.getScaleRefer();
+            refer = MetadataReferHolder.get(type(), meta.getCategory());
+			if(null != refer) {
+				result = refer.getScaleRefer();
 			}
 		}
 		//5.具体数据库实现的MetadataAdapter
 		if(null == result) {
            // config = dataTypeMetadataRefer(runtime, meta);
-            if(null != config) {
-                result = config.getScaleRefer();
+            if(null != refer) {
+                result = refer.getScaleRefer();
             }
 		}
 		return result;
@@ -9565,17 +9565,17 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		 */
 
 		//1.配置类 数据类型
-		TypeMetadata.Refer config = MetadataReferHolder.get(type(), meta);
-		if(null != config) {
-			result = config.ignoreLength();
+		TypeMetadata.Refer refer = MetadataReferHolder.get(type(), meta);
+		if(null != refer) {
+			result = refer.ignoreLength();
 		}
 
 		//2.配置类-数据类型名称
 		if(-1 == result) {
 			//根据数据类型名称
-			config = MetadataReferHolder.get(type(), meta.getName());
-			if(null != config) {
-				result = config.ignoreLength();
+            refer = MetadataReferHolder.get(type(), meta.getName());
+			if(null != refer) {
+				result = refer.ignoreLength();
 			}
 		}
 		//3.数据类型自带(length/precision/scale)
@@ -9584,16 +9584,16 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		//4.配置类-数据类型大类
 		if(-1 == result) {
-			config = MetadataReferHolder.get(type(), meta.getCategory());
-			if(null != config) {
-				result = config.ignoreLength();
+            refer = MetadataReferHolder.get(type(), meta.getCategory());
+			if(null != refer) {
+				result = refer.ignoreLength();
 			}
 		}
 		//5.具体数据库实现的MetadataAdapter
 		if(-1 == result) {
             //config = dataTypeMetadataRefer(runtime, meta);
-            if(null != config) {
-                result = config.ignoreLength();
+            if(null != refer) {
+                result = refer.ignoreLength();
             }
 
 		}
@@ -9625,17 +9625,17 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		 */
 
 		//1.配置类 数据类型
-		TypeMetadata.Refer config = MetadataReferHolder.get(type(), meta);
-		if(null != config) {
-			result = config.ignorePrecision();
+		TypeMetadata.Refer refer = MetadataReferHolder.get(type(), meta);
+		if(null != refer) {
+			result = refer.ignorePrecision();
 		}
 
 		//2.配置类-数据类型名称
 		if(-1 == result) {
 			//根据数据类型名称
-			config = MetadataReferHolder.get(type(), meta.getName());
-			if(null != config) {
-				result = config.ignorePrecision();
+            refer = MetadataReferHolder.get(type(), meta.getName());
+			if(null != refer) {
+				result = refer.ignorePrecision();
 			}
 		}
 		//3.数据类型自带(length/precision/scale)
@@ -9644,16 +9644,16 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		//4.配置类-数据类型大类
 		if(-1 == result) {
-			config = MetadataReferHolder.get(type(), meta.getCategory());
-			if(null != config) {
-				result = config.ignorePrecision();
+            refer = MetadataReferHolder.get(type(), meta.getCategory());
+			if(null != refer) {
+				result = refer.ignorePrecision();
 			}
 		}
 		//5.具体数据库实现的MetadataAdapter
 		if(-1 == result) {
             //config = dataTypeMetadataRefer(runtime, meta);
-            if(null != config) {
-                result = config.ignorePrecision();
+            if(null != refer) {
+                result = refer.ignorePrecision();
             }
 
 		}
@@ -9685,17 +9685,17 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		 */
 
 		//1.配置类 数据类型
-		TypeMetadata.Refer config = MetadataReferHolder.get(type(), meta);
-		if(null != config) {
-			result = config.ignoreScale();
+		TypeMetadata.Refer refer = MetadataReferHolder.get(type(), meta);
+		if(null != refer) {
+			result = refer.ignoreScale();
 		}
 
 		//2.配置类-数据类型名称
 		if(-1 == result) {
 			//根据数据类型名称
-			config = MetadataReferHolder.get(type(), meta.getName());
-			if(null != config) {
-				result = config.ignoreScale();
+            refer = MetadataReferHolder.get(type(), meta.getName());
+			if(null != refer) {
+				result = refer.ignoreScale();
 			}
 		}
 		//3.数据类型自带(length/precision/scale)
@@ -9704,16 +9704,16 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		//4.配置类-数据类型大类
 		if(-1 == result) {
-			config = MetadataReferHolder.get(type(), meta.getCategory());
-			if(null != config) {
-				result = config.ignoreScale();
+            refer = MetadataReferHolder.get(type(), meta.getCategory());
+			if(null != refer) {
+				result = refer.ignoreScale();
 			}
 		}
 		//5.具体数据库实现的MetadataAdapter
 		if(-1 == result) {
             //config = dataTypeMetadataRefer(runtime, meta);
-            if(null != config) {
-                result = config.ignoreScale();
+            if(null != refer) {
+                result = refer.ignoreScale();
             }
 
 		}

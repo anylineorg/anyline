@@ -59,7 +59,7 @@ public interface TypeMetadata {
         private final int ignorePrecision;
 
         private final int ignoreScale;
-        private Refer config;
+        private Refer refer;
         CATEGORY(CATEGORY_GROUP group, int ignoreLength, int ignorePrecision, int ignoreScale) {
             this.group = group;
             this.ignoreLength = ignoreLength;
@@ -70,12 +70,12 @@ public interface TypeMetadata {
             return group;
         }
 
-        public Refer config() {
-            if(null == config) {
-                config = new Refer();
-                config.setIgnoreLength(ignoreLength).setIgnorePrecision(ignorePrecision).setIgnoreScale(ignoreScale);
+        public Refer refer() {
+            if(null == refer) {
+                refer = new Refer();
+                refer.setIgnoreLength(ignoreLength).setIgnorePrecision(ignorePrecision).setIgnoreScale(ignoreScale);
             }
-            return config;
+            return refer;
         }
     }
     default boolean equals(TypeMetadata metadata) {
@@ -204,7 +204,7 @@ public interface TypeMetadata {
             return null;
         }
         @Override
-        public Refer config() {
+        public Refer refer() {
             return new Refer();
         }
     };
@@ -246,7 +246,7 @@ public interface TypeMetadata {
         }
 
         @Override
-        public Refer config() {
+        public Refer refer() {
             return new Refer();
         }
 
@@ -337,7 +337,7 @@ public interface TypeMetadata {
         return false;
     }
     void setArray(boolean array);
-    Refer config();
+    Refer refer();
     /**
      * 写入数据库或查询条件时的类型
      * @return Class

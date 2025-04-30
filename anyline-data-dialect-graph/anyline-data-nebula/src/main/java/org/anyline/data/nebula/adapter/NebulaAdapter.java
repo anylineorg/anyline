@@ -6122,10 +6122,10 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
             typeName = type.getName();
         }
 
-        TypeMetadata.Refer config = dataTypeMetadataRefer(runtime, type);
-        ignoreLength = config.ignoreLength();
-        ignorePrecision = config.ignorePrecision();
-        ignoreScale = config.ignoreScale();
+        TypeMetadata.Refer refer = dataTypeMetadataRefer(runtime, type);
+        ignoreLength = refer.ignoreLength();
+        ignorePrecision = refer.ignorePrecision();
+        ignoreScale = refer.ignoreScale();
         return type(runtime, builder, meta, typeName, ignoreLength, ignorePrecision, ignoreScale);
     }
 

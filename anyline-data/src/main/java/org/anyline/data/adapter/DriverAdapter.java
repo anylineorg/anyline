@@ -234,19 +234,19 @@ public interface DriverAdapter {
      * 要从配置项中取出每个属性检测合并,不要整个覆盖<br/>
      * 数据类型 与 数据类型名称 的区别:如ORACLE_FLOAT,FLOAT 这两个对象的name都是float所以会相互覆盖
      * @param type 数据类型名称
-     * @param config 配置项
+     * @param refer 配置项
      * @return Config
      */
-    TypeMetadata.Refer reg(String type, TypeMetadata.Refer config);
+    TypeMetadata.Refer reg(String type, TypeMetadata.Refer refer);
     /**
      * 注册数据类型配置<br/>
      * 要从配置项中取出每个属性检测合并,不要整个覆盖<br/>
      * 数据类型 与 数据类型名称 的区别:如ORACLE_FLOAT,FLOAT 这两个对象的name都是float所以会相互覆盖
      * @param type 数据类型
-     * @param config 配置项
-     * @return Config
+     * @param refer 配置项
+     * @return refer
      */
-    TypeMetadata.Refer reg(TypeMetadata type, TypeMetadata.Refer config);
+    TypeMetadata.Refer reg(TypeMetadata type, TypeMetadata.Refer refer);
     /**
      * 子类不要覆盖这个方法 用来实现子类跨多层父类直接调用当前方法
      * 验证运行环境与当前适配器是否匹配<br/>
