@@ -2979,8 +2979,26 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     }
 
     public DataRow addAllUpdateColumns() {
+        return addAllUpdateColumns(true);
+    }
+
+    /**
+     * 把所有列标记为更新
+     * @param empty 是否更新空值的列 默认true
+     * @return this
+     */
+    public DataRow addAllUpdateColumns(boolean empty) {
         updateColumns.clear();
-        updateColumns.addAll(keys());
+        List<String> keys = keys();
+        if(empty){
+            updateColumns.addAll(keys);
+        }else{
+            for(String key:keys){
+                if(!this.isEmpty(key)){
+                    updateColumns.add(key);
+                }
+            }
+        }
         ignoreUpdateColumns.clear();
         return this;
     }
