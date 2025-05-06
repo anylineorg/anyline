@@ -290,7 +290,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * 注册数据类型配置
      * 要从配置项中取出每个属性检测合并,不要整个覆盖
      * @param type 数据类型
-     * @param refer 配置项
+     * @param refer 配置项 主要包括数据类型规则以及是否忽略长度、精度
      * @return Config
      */
     @Override

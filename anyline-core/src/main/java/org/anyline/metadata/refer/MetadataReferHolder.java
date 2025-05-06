@@ -60,7 +60,7 @@ public class MetadataReferHolder {
      * 要从配置项中取出每个属性检测合并,不要整个覆盖
      * @param database 数据库类型
      * @param type 数据类型
-     * @param refer 配置项
+     * @param refer 配置项 主要包括数据类型规则以及是否忽略长度、精度
      * @return Config
      */
     public static TypeMetadata.Refer reg(DatabaseType database, TypeMetadata type, TypeMetadata.Refer refer) {
@@ -86,7 +86,7 @@ public class MetadataReferHolder {
      * 要从配置项中取出每个属性检测合并,不要整个覆盖
      * @param database 数据库类型
      * @param type 类型名称或别名
-     * @param refer 配置项
+     * @param refer 配置项 主要包括数据类型规则以及是否忽略长度、精度
      * @return Config
      */
     public static TypeMetadata.Refer reg(DatabaseType database, String type, TypeMetadata.Refer refer) {
@@ -109,7 +109,7 @@ public class MetadataReferHolder {
      * 要从配置项中取出每个属性检测合并,不要整个覆盖
      * @param database 数据库类型
      * @param category 数据类型大类
-     * @param refer 配置项
+     * @param refer 配置项 主要包括数据类型规则以及是否忽略长度、精度
      * @return Config
      */
     public static TypeMetadata.Refer reg(DatabaseType database, TypeMetadata.CATEGORY category, TypeMetadata.Refer refer) {

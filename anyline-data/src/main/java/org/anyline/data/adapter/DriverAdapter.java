@@ -234,7 +234,7 @@ public interface DriverAdapter {
      * 要从配置项中取出每个属性检测合并,不要整个覆盖<br/>
      * 数据类型 与 数据类型名称 的区别:如ORACLE_FLOAT,FLOAT 这两个对象的name都是float所以会相互覆盖
      * @param type 数据类型名称
-     * @param refer 配置项
+     * @param refer 配置项 主要包括数据类型规则以及是否忽略长度、精度
      * @return Config
      */
     TypeMetadata.Refer reg(String type, TypeMetadata.Refer refer);
@@ -243,7 +243,7 @@ public interface DriverAdapter {
      * 要从配置项中取出每个属性检测合并,不要整个覆盖<br/>
      * 数据类型 与 数据类型名称 的区别:如ORACLE_FLOAT,FLOAT 这两个对象的name都是float所以会相互覆盖
      * @param type 数据类型
-     * @param refer 配置项
+     * @param refer 配置项 主要包括数据类型规则以及是否忽略长度、精度
      * @return refer
      */
     TypeMetadata.Refer reg(TypeMetadata type, TypeMetadata.Refer refer);
