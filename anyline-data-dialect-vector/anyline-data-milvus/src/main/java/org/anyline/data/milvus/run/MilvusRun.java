@@ -19,7 +19,11 @@ package org.anyline.data.milvus.run;
 import org.anyline.data.run.Run;
 import org.anyline.data.run.TableRun;
 import org.anyline.data.runtime.DataRuntime;
+import org.anyline.metadata.ACTION;
 import org.anyline.metadata.Table;
+import org.anyline.util.LogUtil;
+
+import java.util.List;
 
 public class MilvusRun extends TableRun implements Run {
 
@@ -39,6 +43,23 @@ public class MilvusRun extends TableRun implements Run {
     public String format(String cmd) {
         //不要删除换行命令中有要求
         return cmd;
+    }
+
+    public String log(ACTION.DML action, Boolean placeholder) {
+        StringBuilder builder = new StringBuilder();
+        List<String> keys = null;
+        if(null != metadata) {
+            builder.append("[").append(metadata.getClass().getSimpleName()).append(":").append(metadata.getName()).append("]");
+        }
+        if(placeholder) {
+            List<Object> values = getValues();
+            if(null!= values && !values.isEmpty()) {
+                builder.append("\n[param:");
+                builder.append(LogUtil.param(keys, getValues()));
+                builder.append("];");
+            }
+        }
+        return builder.toString();
     }
 
     @Override
