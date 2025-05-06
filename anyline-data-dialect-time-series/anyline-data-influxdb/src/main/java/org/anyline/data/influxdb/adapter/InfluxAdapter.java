@@ -4608,6 +4608,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
         }
         boolean result = false;
         String sql = run.getBuilder().toString();
+        run.metadata(meta);
         meta.addDdl(sql);
         if(BasicUtil.isNotEmpty(sql)) {
             if(meta.execute()) {

@@ -2319,7 +2319,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
      * @param previous 上一步查询结果
      * @param set 查询结果集
      * @return LinkedHashMap
-     * @throws Exception
+     * @throws Exception 异常
      */
     @Override
     public <T extends Database> LinkedHashMap<String, T> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Database query, DataSet set) throws Exception {
@@ -4777,6 +4777,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 		}
 		boolean result = false;
 		String sql = run.getFinalUpdate();
+        run.metadata(meta);
 		meta.addDdl(sql);
 		if(BasicUtil.isNotEmpty(sql)) {
 			if(meta.execute()) {

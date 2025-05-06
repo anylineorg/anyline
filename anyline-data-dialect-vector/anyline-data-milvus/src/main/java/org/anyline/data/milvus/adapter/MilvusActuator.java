@@ -17,6 +17,8 @@
 package org.anyline.data.milvus.adapter;
 
 import io.milvus.v2.client.MilvusClientV2;
+import io.milvus.v2.service.database.request.CreateDatabaseReq;
+import io.milvus.v2.service.database.response.ListDatabasesResp;
 import io.milvus.v2.service.rbac.request.*;
 import io.milvus.v2.service.rbac.response.DescribeRoleResp;
 import io.milvus.v2.service.rbac.response.DescribeUserResp;
@@ -109,6 +111,12 @@ public class MilvusActuator implements DriverActuator {
 
     @Override
     public long update(DriverAdapter adapter, DataRuntime runtime, String random, Table dest, Object data, ConfigStore configs, Run run) throws Exception {
+        if(null != run){
+            ACTION aciton = run.action();
+            if(aciton == ACTION.DDL.DATABASE_CREATE){
+                create(runtime, (Database) run.metadata());
+            }
+        }
         return 0;
     }
 
@@ -116,15 +124,27 @@ public class MilvusActuator implements DriverActuator {
     public long execute(DriverAdapter adapter, DataRuntime runtime, String random, ConfigStore configs, Run run) throws Exception {
         return 0;
     }
-
-
-    public <T extends Database> List<T>  databases(DataRuntime runtime, String random, boolean greedy, Database query) {
+    /**
+     * 数据库列表
+     * @param adapter adapter
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @return List
+     */
+    public <T extends Database> List<T> databases(DriverAdapter adapter, DataRuntime runtime, Database query) {
         //https://milvus.io/docs/zh/create-collection.md
         List<T> list = new ArrayList<>();
         MilvusClientV2 client = client(runtime);
-        //client.listDatabases();
+        //注意 旧版本驱动中没有这个方法
+        ListDatabasesResp databases = client.listDatabases();
+        List<String> names = databases.getDatabaseNames();
+        for(String name:names){
+            Database database = new Database(name);
+            list.add((T)database);
+        }
         return list;
     }
+
+
 
     /* *****************************************************************************************************************
      * 													role
@@ -411,5 +431,32 @@ public class MilvusActuator implements DriverActuator {
         return true;
     }
 
+
+
+    /* *****************************************************************************************************************
+     * 													database
+     * -----------------------------------------------------------------------------------------------------------------
+     * boolean create(DataRuntime runtime, Database meta) throws Exception
+     * boolean drop(DataRuntime runtime, Database meta) throws Exception
+     ******************************************************************************************************************/
+    /**
+     * database[调用入口]<br/>
+     * 创建数据库
+     * @param meta 数据库
+     * @return boolean
+     */
+    public boolean create(DataRuntime runtime, Database meta) throws Exception {
+        client(runtime).createDatabase(CreateDatabaseReq.builder().databaseName(meta.getName()).build());
+        return true;
+    }
+    /**
+     * database[调用入口]<br/>
+     * 删除数据库
+     * @param meta 角色
+     * @return boolean
+     */
+    public boolean drop(DataRuntime runtime, Database meta) throws Exception {
+        return true;
+    }
 
 }

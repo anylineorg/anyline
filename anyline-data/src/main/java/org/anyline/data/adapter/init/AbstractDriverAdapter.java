@@ -4472,7 +4472,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @param previous 上一步查询结果
      * @param set      查询结果集
      * @return List
-     * @throws Exception
+     * @throws Exception 异常
      */
     @Override
     public <T extends Database> List<T> databases(DataRuntime runtime, int index, boolean create, List<T> previous, Database query, DataSet set) throws Exception {

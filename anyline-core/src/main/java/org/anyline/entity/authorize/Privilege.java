@@ -26,7 +26,7 @@ public class Privilege extends Metadata<Privilege> {
     protected User user; // 所属用户
     protected Role role;
     private String objectType;
-    private String objectName;
+    private String objectName; //当前权限相关的对象名称
 
     public Privilege() {}
     public Privilege(User user) {

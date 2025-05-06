@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PrivilegeGroup extends Privilege {
-    private List<Privilege> privileges = new ArrayList<>();
+    private final List<Privilege> privileges = new ArrayList<>();
     public List<Privilege> privileges() {
         return privileges;
     }

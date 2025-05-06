@@ -3860,6 +3860,7 @@ PUT * /_bulk
         }
         boolean result = false;
         run.action(action);
+        run.metadata(meta);
         meta.addRun(run);
         if(meta.execute()) {
             try {

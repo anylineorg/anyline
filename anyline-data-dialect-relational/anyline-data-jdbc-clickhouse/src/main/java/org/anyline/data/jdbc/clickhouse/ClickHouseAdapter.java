@@ -1303,7 +1303,7 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
      * @param previous 上一步查询结果
      * @param set 查询结果集
      * @return LinkedHashMap
-     * @throws Exception
+     * @throws Exception 异常
      */
     @Override
     public <T extends Database> LinkedHashMap<String, T> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Database query, DataSet set) throws Exception {
@@ -4233,6 +4233,7 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
         List<Run> runs = new ArrayList<>();
         SimpleRun run = new SimpleRun(runtime);
         runs.add(run);
+        run.metadata(meta);
         StringBuilder builder = run.getBuilder();
         builder.append("CREATE DATABASE IF NOT EXISTS ");
         delimiter(builder, meta.getName());

@@ -18,6 +18,7 @@ package org.anyline.data.milvus.adapter;
 
 import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.adapter.init.AbstractDriverAdapter;
+import org.anyline.data.milvus.run.MilvusRun;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.run.*;
@@ -32,11 +33,9 @@ import org.anyline.metadata.graph.VertexTable;
 import org.anyline.metadata.refer.MetadataFieldRefer;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.metadata.type.TypeMetadata;
+import org.anyline.proxy.CacheProxy;
 
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @AnylineComponent("anyline.data.adapter.milvus")
 public class MilvusAdapter extends AbstractDriverAdapter {
@@ -1506,7 +1505,7 @@ public class MilvusAdapter extends AbstractDriverAdapter {
      */
     @Override
     public <T extends Database> List<T> databases(DataRuntime runtime, String random, boolean greedy, Database query) {
-        return actuator().databases(runtime, random, greedy, query);
+        return super.databases(runtime, random, greedy, query);
     }
 
     /**
@@ -1577,7 +1576,7 @@ public class MilvusAdapter extends AbstractDriverAdapter {
      * @param previous 上一步查询结果
      * @param set 查询结果集
      * @return LinkedHashMap
-     * @throws Exception
+     * @throws Exception 异常
      */
     @Override
     public <T extends Database> LinkedHashMap<String, T> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Database query, DataSet set) throws Exception {
@@ -1593,7 +1592,7 @@ public class MilvusAdapter extends AbstractDriverAdapter {
      * @param previous 上一步查询结果
      * @param set      查询结果集
      * @return List
-     * @throws Exception
+     * @throws Exception 异常
      */
     @Override
     public <T extends Database> List<T> databases(DataRuntime runtime, int index, boolean create, List<T> previous, Database query, DataSet set) throws Exception {
@@ -5145,7 +5144,20 @@ public class MilvusAdapter extends AbstractDriverAdapter {
      */
     @Override
     public boolean execute(DataRuntime runtime, String random, Metadata meta, ACTION.DDL action, Run run) {
-        return super.execute(runtime, random, meta, action, run);
+        if(null == run) {
+            return false;
+        }
+        run.action(action);
+        run.metadata(meta);
+        meta.addRun(run);
+        if(meta.execute()) {
+            try {
+                update(runtime, random, (Table) null, null, null, run);
+            }finally {
+                CacheProxy.clear();
+            }
+        }
+        return true;
     }
 
     /* *****************************************************************************************************************
@@ -5702,7 +5714,12 @@ public class MilvusAdapter extends AbstractDriverAdapter {
      */
     @Override
     public List<Run> buildCreateRun(DataRuntime runtime, Database meta) throws Exception {
-        return super.buildCreateRun(runtime, meta);
+        List<Run> runs = new ArrayList<>();
+        MilvusRun run = new MilvusRun(runtime);
+        runs.add(run);
+        run.metadata(meta);
+        run.action(ACTION.DDL.DATABASE_CREATE);
+        return runs;
     }
 
     /**
@@ -5987,7 +6004,7 @@ public class MilvusAdapter extends AbstractDriverAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param meta 表
      * @return runs
-     * @throws Exception
+     * @throws Exception 异常
      */
     @Override
     public List<Run> buildCreateRun(DataRuntime runtime, Table meta) throws Exception {

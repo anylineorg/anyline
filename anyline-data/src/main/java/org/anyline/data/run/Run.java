@@ -33,6 +33,8 @@ public interface Run extends org.anyline.data.Run{
 	boolean isEmpty();
 	void init();
 	DriverAdapter adapter();
+	Metadata metadata();
+	void metadata(Metadata meta);
 	/** 
 	 * 添加查询条件 
 	 * @param swt 				遇到空值处理方式

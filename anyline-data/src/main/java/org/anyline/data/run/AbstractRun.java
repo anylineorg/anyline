@@ -89,6 +89,7 @@ public abstract class AbstractRun implements Run {
 	protected boolean unionAll = false;
 	protected List<Run> unions = new ArrayList<>();
 	protected boolean slice = false;
+	protected Metadata metadata;
 
 	@Override
 	public boolean isEmptyCondition() {
@@ -100,6 +101,12 @@ public abstract class AbstractRun implements Run {
 			return runtime.getAdapter();
 		}
 		return null;
+	}
+	public Metadata metadata() {
+		return metadata;
+	}
+	public void metadata(Metadata meta) {
+		this.metadata = meta;
 	}
 
 	@Override

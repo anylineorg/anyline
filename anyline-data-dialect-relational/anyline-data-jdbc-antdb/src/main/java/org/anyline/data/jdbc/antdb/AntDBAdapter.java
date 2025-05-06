@@ -1548,7 +1548,7 @@ public class AntDBAdapter extends PostgresGenusAdapter {
      * @param previous 上一步查询结果
      * @param set 查询结果集
      * @return LinkedHashMap
-     * @throws Exception
+     * @throws Exception 异常
      */
     @Override
     public <T extends Database> LinkedHashMap<String, T> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Database query, DataSet set) throws Exception {
@@ -1564,7 +1564,7 @@ public class AntDBAdapter extends PostgresGenusAdapter {
      * @param previous 上一步查询结果
      * @param set      查询结果集
      * @return List
-     * @throws Exception
+     * @throws Exception 异常
      */
     @Override
     public <T extends Database> List<T> databases(DataRuntime runtime, int index, boolean create, List<T> previous, Database query, DataSet set) throws Exception {
@@ -5982,7 +5982,7 @@ public class AntDBAdapter extends PostgresGenusAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param meta 表
      * @return runs
-     * @throws Exception
+     * @throws Exception 异常
      */
     @Override
     public List<Run> buildCreateRun(DataRuntime runtime, Table meta) throws Exception {

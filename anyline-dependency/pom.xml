@@ -970,6 +970,11 @@
 				<version>${milvus-client.version}</version>
 			</dependency>
 			<dependency>
+				<groupId>io.milvus</groupId>
+				<artifactId>milvus-sdk-java-bulkwriter</artifactId>
+				<version>${milvus-client.version}</version>
+			</dependency>
+			<dependency>
 				<groupId>io.pinecone</groupId>
 				<artifactId>pinecone-client</artifactId>
 				<version>${pinecone-client.version}</version>

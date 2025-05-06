@@ -4780,6 +4780,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
         if(null == run) {
             return false;
         }
+        run.metadata(meta);
         boolean result = false;
         String sql = run.getBuilder().toString();
         meta.addDdl(sql);
