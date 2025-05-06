@@ -5758,7 +5758,12 @@ public class MilvusAdapter extends AbstractDriverAdapter {
      */
     @Override
     public List<Run> buildDropRun(DataRuntime runtime, Database meta) throws Exception {
-        return super.buildDropRun(runtime, meta);
+        List<Run> runs = new ArrayList<>();
+        MilvusRun run = new MilvusRun(runtime);
+        runs.add(run);
+        run.metadata(meta);
+        run.action(ACTION.DDL.DATABASE_DROP);
+        return runs;
     }
 
     /**
