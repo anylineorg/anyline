@@ -18,6 +18,7 @@ package org.anyline.data.milvus.adapter;
 
 import io.milvus.v2.client.MilvusClientV2;
 import io.milvus.v2.service.database.request.CreateDatabaseReq;
+import io.milvus.v2.service.database.request.DropDatabaseReq;
 import io.milvus.v2.service.database.response.ListDatabasesResp;
 import io.milvus.v2.service.rbac.request.*;
 import io.milvus.v2.service.rbac.response.DescribeRoleResp;
@@ -111,13 +112,18 @@ public class MilvusActuator implements DriverActuator {
 
     @Override
     public long update(DriverAdapter adapter, DataRuntime runtime, String random, Table dest, Object data, ConfigStore configs, Run run) throws Exception {
+        long result = 0;
         if(null != run){
             ACTION aciton = run.action();
             if(aciton == ACTION.DDL.DATABASE_CREATE){
                 create(runtime, (Database) run.metadata());
+                result = 1;
+            }else if (aciton == ACTION.DDL.DATABASE_DROP){
+                drop(runtime, (Database) run.metadata());
+                result = 1;
             }
         }
-        return 0;
+        return result;
     }
 
     @Override
@@ -446,7 +452,10 @@ public class MilvusActuator implements DriverActuator {
      * @return boolean
      */
     public boolean create(DataRuntime runtime, Database meta) throws Exception {
-        client(runtime).createDatabase(CreateDatabaseReq.builder().databaseName(meta.getName()).build());
+        client(runtime).createDatabase(CreateDatabaseReq.builder()
+                .databaseName(meta.getName())
+                .build()
+        );
         return true;
     }
     /**
@@ -456,6 +465,9 @@ public class MilvusActuator implements DriverActuator {
      * @return boolean
      */
     public boolean drop(DataRuntime runtime, Database meta) throws Exception {
+        client(runtime).dropDatabase(DropDatabaseReq.builder()
+                .databaseName(meta.getName())
+                .build());
         return true;
     }
 
