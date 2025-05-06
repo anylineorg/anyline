@@ -399,14 +399,14 @@ public interface AnylineDao<E>{
 	 * @param columns  columns
 	 * @return int
 	 */
-	long save(DataRuntime runtime, String random, int batch, String dest, Object data, ConfigStore configs, List<String>  columns);
-	default long save(DataRuntime runtime, String random, int batch, String dest, Object data, List<String>  columns) {
+	long save(DataRuntime runtime, String random, int batch, String dest, Object data, ConfigStore configs, List<String> columns);
+	default long save(DataRuntime runtime, String random, int batch, String dest, Object data, List<String> columns) {
 		return save(runtime, random, batch, dest, data, null, columns);
 	}
-	default long save(int batch, String dest, Object data, List<String>  columns) {
+	default long save(int batch, String dest, Object data, List<String> columns) {
 		return save(runtime(), null, batch, dest, data, columns);
 	}
-	default long save(int batch, String dest, Object data, ConfigStore configs, List<String>  columns) {
+	default long save(int batch, String dest, Object data, ConfigStore configs, List<String> columns) {
 		return save(runtime(), null, batch, dest, data, configs, columns);
 	}
 	default long save(int batch, String dest, Object data, String ... columns) {
@@ -421,16 +421,16 @@ public interface AnylineDao<E>{
 	default long save(int batch, Object data, ConfigStore configs, String ... columns) {
 		return save(batch, (String)null, data, configs, BeanUtil.array2list(columns));
 	}
-	default long save(DataRuntime runtime, String random, String dest, Object data, List<String>  columns) {
+	default long save(DataRuntime runtime, String random, String dest, Object data, List<String> columns) {
 		return save(runtime, random, 0, dest, data, columns);
 	}
-	default long save(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, List<String>  columns) {
+	default long save(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, List<String> columns) {
 		return save(runtime, random, 0, dest, data, configs, columns);
 	}
-	default long save(String dest, Object data, List<String>  columns) {
+	default long save(String dest, Object data, List<String> columns) {
 		return save(runtime(), null, 0, dest, data, columns);
 	}
-	default long save(String dest, Object data, ConfigStore confnigs, List<String>  columns) {
+	default long save(String dest, Object data, ConfigStore confnigs, List<String> columns) {
 		return save(runtime(), null, 0, dest, data, confnigs, columns);
 	}
 	default long save(String dest, Object data, String ... columns) {
@@ -445,14 +445,14 @@ public interface AnylineDao<E>{
 	default long save(Object data, ConfigStore configs, String ... columns) {
 		return save(0, (String)null, data, configs, BeanUtil.array2list(columns));
 	}
-	long save(DataRuntime runtime, String random, int batch, Table dest, Object data, ConfigStore configs, List<String>  columns);
-	default long save(DataRuntime runtime, String random, int batch, Table dest, Object data, List<String>  columns) {
+	long save(DataRuntime runtime, String random, int batch, Table dest, Object data, ConfigStore configs, List<String> columns);
+	default long save(DataRuntime runtime, String random, int batch, Table dest, Object data, List<String> columns) {
 		return save(runtime, random, batch, dest, data, null, columns);
 	}
-	default long save(int batch, Table dest, Object data, List<String>  columns) {
+	default long save(int batch, Table dest, Object data, List<String> columns) {
 		return save(runtime(), null, batch, dest, data, columns);
 	}
-	default long save(int batch, Table dest, Object data, ConfigStore configs, List<String>  columns) {
+	default long save(int batch, Table dest, Object data, ConfigStore configs, List<String> columns) {
 		return save(runtime(), null, batch, dest, data, configs, columns);
 	}
 	default long save(int batch, Table dest, Object data, String ... columns) {
@@ -461,16 +461,16 @@ public interface AnylineDao<E>{
 	default long save(int batch, Table dest, Object data, ConfigStore configs, String ... columns) {
 		return save(batch, dest, data, configs, BeanUtil.array2list(columns));
 	}
-	default long save(DataRuntime runtime, String random, Table dest, Object data, List<String>  columns) {
+	default long save(DataRuntime runtime, String random, Table dest, Object data, List<String> columns) {
 		return save(runtime, random, 0, dest, data, columns);
 	}
-	default long save(DataRuntime runtime, String random, Table dest, Object data, ConfigStore configs, List<String>  columns) {
+	default long save(DataRuntime runtime, String random, Table dest, Object data, ConfigStore configs, List<String> columns) {
 		return save(runtime, random, 0, dest, data, configs, columns);
 	}
-	default long save(Table dest, Object data, List<String>  columns) {
+	default long save(Table dest, Object data, List<String> columns) {
 		return save(runtime(), null, 0, dest, data, columns);
 	}
-	default long save(Table dest, Object data, ConfigStore confnigs, List<String>  columns) {
+	default long save(Table dest, Object data, ConfigStore confnigs, List<String> columns) {
 		return save(runtime(), null, 0, dest, data, confnigs, columns);
 	}
 	default long save(Table dest, Object data, String ... columns) {

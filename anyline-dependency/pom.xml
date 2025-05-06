@@ -63,7 +63,7 @@
 		<elasticsearch.version>8.7.0</elasticsearch.version>
 		<mongodb-client.version>5.1.0</mongodb-client.version>
 		<influxdb-client.version>5.0.0</influxdb-client.version>
-		<milvus-client.version>2.4.2</milvus-client.version>
+		<milvus-client.version>2.5.7</milvus-client.version>
 		<pinecone-client.version>2.0.0</pinecone-client.version>
 		<hbase-client.version>2.6.0</hbase-client.version>
 		<jdbc-redshift.version>2.1.0.30</jdbc-redshift.version>

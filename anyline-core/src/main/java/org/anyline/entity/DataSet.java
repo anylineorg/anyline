@@ -1500,7 +1500,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
      * @param keys keys
      * @return DataRow
      */
-    public DataRow avgs(DataRow result, List<String>   keys) {
+    public DataRow avgs(DataRow result, List<String>  keys) {
         if(null == result) {
             result = new DataRow();
         }
@@ -1541,7 +1541,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
      *      ROUND_UNNECESSARY=7 断言所请求的操作具有准确的结果，因此不需要舍入。如果在产生不精确结果的操作上指定了该舍入模式，则会抛出ArithmeticException异常
      * @return DataRow
      */
-    public DataRow avgs(DataRow result, boolean empty, int scale, int round, List<String>  keys) {
+    public DataRow avgs(DataRow result, boolean empty, int scale, int round, List<String> keys) {
         if(null == result) {
             result = new DataRow();
         }
@@ -2645,7 +2645,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
     public DataSet extract(boolean regex, String ... keys) {
         return extract(regex, BeanUtil.array2list(keys));
     }
-    public DataSet extract(boolean regex, List<String>  keys) {
+    public DataSet extract(boolean regex, List<String> keys) {
         DataSet result = new DataSet();
         for(DataRow row:rows) {
             DataRow item = row.extract(regex, keys);
@@ -3363,7 +3363,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
      * @param keys 属性 ID,CODE
      * @return kvs
      */
-    public String[] packParam(DataRow row, List<String>  keys) {
+    public String[] packParam(DataRow row, List<String> keys) {
         if (null == keys || null == row) {
             return null;
         }

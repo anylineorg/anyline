@@ -12867,10 +12867,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
     /* *****************************************************************************************************************
      * 													database
      * -----------------------------------------------------------------------------------------------------------------
-     * boolean create(Database database) throws Exception
-     * boolean alter(Database database) throws Exception
-     * boolean drop(Database database) throws Exception
-     * boolean rename(Database origin, String name) throws Exception
+     * boolean create(DataRuntime runtime, Database meta)) throws Exception
+     * boolean alter(DataRuntime runtime, Database meta) throws Exception
+     * boolean drop(DataRuntime runtime, Database meta) throws Exception
+     * boolean rename(DataRuntime runtime, Database origin, String name) throws Exception
      ******************************************************************************************************************/
 
     /**

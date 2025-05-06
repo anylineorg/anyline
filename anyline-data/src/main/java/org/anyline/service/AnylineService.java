@@ -89,7 +89,7 @@ public interface AnylineService<E>{
 	 * 													DML
 	 *
 	 * =================================================================================================================
-	 * INSERT			: 插入
+	 * INSERT/UPSERT	: 插入
 	 * BATCH INSERT		: 批量插入
 	 * UPDATE			: 更新
 	 * SAVE				: 根据情况插入或更新
@@ -283,6 +283,189 @@ public interface AnylineService<E>{
 	}
 	default long insert(String dest, RunPrepare prepare, long first, long last, String ... conditions) {
 		return insert(dest, prepare, first, last, null, conditions);
+	}
+
+	/* *****************************************************************************************************************
+	 * 													UPSERT
+	 ******************************************************************************************************************/
+
+	/**
+	 * 与insert保持完全一致
+	 * @param batch 批量执行每批最多数量
+	 * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param data entity或list或DataRow或DataSet
+	 * @param columns 需要插入哪些列
+	 * @return 影响行数
+	 */
+	default long upsert(int batch, String dest, Object data, ConfigStore configs, List<String> columns) {
+		return insert(batch, dest, data, configs, columns);
+	}
+	default long upsert(int batch, String dest, Object data, List<String> columns) {
+		return insert(batch, dest, data, columns);
+	}
+	default long upsert(int batch, Object data, String ... columns) {
+		return insert(batch, data, columns);
+	}
+	default long upsert(int batch, Object data, ConfigStore configs, String ... columns) {
+		return insert(batch, data, configs, columns);
+	}
+	default long upsert(int batch, String dest, Object data, String ... columns) {
+		return insert(batch, dest, data, columns);
+	}
+	default long upsert(int batch, String dest, Object data, ConfigStore configs, String ... columns) {
+		return insert(batch, dest, data, configs, columns);
+	}
+	default long upsert(String dest, Object data, List<String> columns) {
+		return insert(dest, data, columns);
+	}
+	default long upsert(String dest, Object data, ConfigStore configs, List<String> columns) {
+		return insert(dest, data, configs, columns);
+	}
+	default long upsert(String dest, Object data, String ... columns) {
+		return insert(dest, data, columns);
+	}
+	default long upsert(String dest, Object data, ConfigStore configs, String ... columns) {
+		return insert(dest, data, configs, columns);
+	}
+	default long upsert(Object data, String ... columns) {
+		return insert(data, columns);
+	}
+	default long upsert(Object data, ConfigStore configs, String ... columns) {
+		return insert(data, configs, columns);
+	}
+
+	default long upsert(int batch, Table dest, Object data, ConfigStore configs, List<String> columns) {
+		return insert(batch, dest, data, configs, columns);
+	}
+	default long upsert(int batch, Table dest, Object data, List<String> columns) {
+		return insert(batch, dest, data, columns);
+	}
+	default long upsert(int batch, Table dest, Object data, String ... columns) {
+		return insert(batch, dest, data, columns);
+	}
+	default long upsert(int batch, Table dest, Object data, ConfigStore configs, String ... columns) {
+		return insert(batch, dest, data, configs, columns);
+	}
+	default long upsert(Table dest, Object data, List<String> columns) {
+		return insert(dest, data, columns);
+	}
+	default long upsert(Table dest, Object data, ConfigStore configs, List<String> columns) {
+		return insert(dest, data, configs, columns);
+	}
+	default long upsert(Table dest, Object data, String ... columns) {
+		return insert(dest, data, columns);
+	}
+	default long upsert(Table dest, Object data, ConfigStore configs, String ... columns) {
+		return insert(dest, data, configs, columns);
+	}
+
+	/* *****************************************************************************************************************
+	 * 													INSERT SELECT
+	 ******************************************************************************************************************/
+	/**
+	 * 与insert保持完全一致
+	 * @param dest 插入表
+	 * @param origin 查询表
+	 * @param configs 查询条件及相关配置
+	 * @param obj 查询条件
+	 * @param conditions 查询条件 支持k:v k:v::type 以及原生sql形式(包含ORDER、GROUP、HAVING)默认忽略空值条件
+	 * @return 影响行数
+	 */
+	default long upsert(Table dest, Table origin, ConfigStore configs, Object obj, String ... conditions) {
+		return insert(dest, origin, configs, obj, conditions);
+	}
+	default long upsert(Table dest, Table origin, Object obj, String ... conditions) {
+		return insert(dest, origin, obj, conditions);
+	}
+	default long upsert(Table dest, Table origin, long first, long last, Object obj, String ... conditions) {
+		return insert(dest, origin, first, last, obj, conditions);
+	}
+	default long upsert(Table dest, Table origin, ConfigStore configs, String ... conditions) {
+		return insert(dest, origin, configs, conditions);
+	}
+	default long upsert(Table dest, Table origin, String ... conditions) {
+		return insert(dest, origin, conditions);
+	}
+	default long upsert(Table dest, Table origin, PageNavi navi, String ... conditions) {
+		return insert(dest, origin, navi, conditions);
+	}
+	default long upsert(Table dest, Table origin, long first, long last, String ... conditions) {
+		return insert(dest, origin, first, last, conditions);
+	}
+
+	default long upsert(String dest, String origin, ConfigStore configs, Object obj, String ... conditions) {
+		return insert(dest, origin, configs, obj, conditions);
+	}
+	default long upsert(String dest, String origin, Object obj, String ... conditions) {
+		return insert(dest, origin, obj, conditions);
+	}
+	default long upsert(String dest, String origin, long first, long last, Object obj, String ... conditions) {
+		return insert(dest, origin, first, last, obj, conditions);
+	}
+	default long upsert(String dest, String origin, ConfigStore configs, String ... conditions) {
+		return insert(dest, origin, configs, conditions);
+	}
+	default long upsert(String dest, String origin, String ... conditions) {
+		return insert(dest, origin, conditions);
+	}
+	default long upsert(String dest, String origin, PageNavi navi, String ... conditions) {
+		return insert(dest, origin, navi, conditions);
+	}
+	default long upsert(String dest, String origin, long first, long last, String ... conditions) {
+		return insert(dest, origin, first, last, conditions);
+	}
+
+	/**
+	 * 保持与insert完全一致
+	 * 复杂的查询先通过TableBuilder构造查询
+	 * @param dest 表 table(c1,c2,c3)需要插入的列可以通过addColumn添加到dest中
+	 * @param prepare 一般通过TableBuilder生成查询
+	 * @return 影响行数
+	 */
+	default long upsert(Table dest, RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions) {
+		return insert(dest, prepare, configs, obj, conditions);
+	}
+	default long upsert(Table dest, RunPrepare prepare, long first, long last, ConfigStore configs, Object obj, String ... conditions) {
+		return insert(dest, prepare, first, last, configs, obj, conditions);
+	}
+	default long upsert(Table dest, RunPrepare prepare, Object obj, String ... conditions) {
+		return insert(dest, prepare, obj, conditions);
+	}
+	default long upsert(Table dest, RunPrepare prepare, long first, long last, Object obj, String ... conditions) {
+		return insert(dest, prepare, first, last, obj, conditions);
+	}
+
+	default long upsert(Table dest, RunPrepare prepare, ConfigStore configs, String ... conditions) {
+		return insert(dest, prepare, configs, conditions);
+	}
+	default long upsert(Table dest, RunPrepare prepare, String ... conditions) {
+		return insert(dest, prepare, conditions);
+	}
+	default long upsert(Table dest, RunPrepare prepare, long first, long last, String ... conditions) {
+		return insert(dest, prepare, first, last, conditions);
+	}
+
+	default long upsert(String dest, RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions) {
+		return insert(dest, prepare, configs, obj, conditions);
+	}
+	default long upsert(String dest, RunPrepare prepare, long first, long last, ConfigStore configs, Object obj, String ... conditions) {
+		return insert(dest, prepare, first, last, configs, obj, conditions);
+	}
+	default long upsert(String dest, RunPrepare prepare, Object obj, String ... conditions) {
+		return insert(dest, prepare, obj, conditions);
+	}
+	default long upsert(String dest, RunPrepare prepare, long first, long last, Object obj, String ... conditions) {
+		return insert(dest, prepare, first, last, obj, conditions);
+	}
+
+	default long upsert(String dest, RunPrepare prepare, ConfigStore configs, String ... conditions) {
+		return insert(dest, prepare, configs, conditions);
+	}
+	default long upsert(String dest, RunPrepare prepare, String ... conditions) {
+		return insert(dest, prepare, conditions);
+	}
+	default long upsert(String dest, RunPrepare prepare, long first, long last, String ... conditions) {
+		return insert(dest, prepare, first, last, conditions);
 	}
 
 	/* *****************************************************************************************************************

@@ -683,7 +683,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @return 影响行数
 	 */
 	@Override
-	public long save(DataRuntime runtime, String random, int batch, Table dest, Object data, ConfigStore configs, List<String>  columns) {
+	public long save(DataRuntime runtime, String random, int batch, Table dest, Object data, ConfigStore configs, List<String> columns) {
 		if(null == runtime) {
 			runtime = runtime();
 		}

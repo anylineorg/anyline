@@ -158,7 +158,7 @@ public class ServiceProxy {
      * 													DML
      *
      * =================================================================================================================
-     * INSERT			: 插入
+     * INSERT/UPSERT    : 插入
      * BATCH INSERT		: 批量插入
      * UPDATE			: 更新
      * SAVE				: 根据情况插入或更新
@@ -174,7 +174,7 @@ public class ServiceProxy {
     /* *****************************************************************************************************************
      * 													INSERT
      ******************************************************************************************************************/
-    public static long insert(int batch, String dest, Object data, List<String>  columns) {
+    public static long insert(int batch, String dest, Object data, List<String> columns) {
         return service.insert(batch, dest, data, columns);
     }
     public static long insert(int batch, String dest, Object data, String ... columns) {
@@ -193,7 +193,7 @@ public class ServiceProxy {
         return service.insert(data, columns);
     }
 
-    public static long insert(int batch, String dest, Object data, ConfigStore configs, List<String>  columns) {
+    public static long insert(int batch, String dest, Object data, ConfigStore configs, List<String> columns) {
         return service.insert(batch, dest, data, configs, columns);
     }
     public static long insert(int batch, String dest, Object data, ConfigStore configs, String ... columns) {
@@ -348,6 +348,182 @@ public class ServiceProxy {
     }
 
     /* *****************************************************************************************************************
+     * 													UPSERT
+     ******************************************************************************************************************/
+    public static long upsert(int batch, String dest, Object data, List<String> columns) {
+        return service.upsert(batch, dest, data, columns);
+    }
+    public static long upsert(int batch, String dest, Object data, String ... columns) {
+        return service.upsert(batch, dest, data, columns);
+    }
+    public static long upsert(int batch, Object data, String ... columns) {
+        return service.upsert(batch, data, columns);
+    }
+    public static long upsert(String dest, Object data, List<String> columns) {
+        return service.upsert(dest, data, columns);
+    }
+    public static long upsert(String dest, Object data, String ... columns) {
+        return service.upsert(dest, data, columns);
+    }
+    public static long upsert(Object data, String ... columns) {
+        return service.upsert(data, columns);
+    }
+
+    public static long upsert(int batch, String dest, Object data, ConfigStore configs, List<String> columns) {
+        return service.upsert(batch, dest, data, configs, columns);
+    }
+    public static long upsert(int batch, String dest, Object data, ConfigStore configs, String ... columns) {
+        return service.upsert(batch, dest, data, configs, columns);
+    }
+    public static long upsert(int batch, Object data, ConfigStore configs, String ... columns) {
+        return service.upsert(batch, data, configs, columns);
+    }
+    public static long upsert(String dest, Object data, ConfigStore configs, List<String> columns) {
+        return service.upsert(dest, data, configs, columns);
+    }
+    public static long upsert(String dest, Object data, ConfigStore configs, String ... columns) {
+        return service.upsert(dest, data, configs, columns);
+    }
+    public static long upsert(Object data, ConfigStore configs, String ... columns) {
+        return service.upsert(data, configs, columns);
+    }
+
+    public static long upsert(int batch, Table dest, Object data, ConfigStore configs, List<String> columns) {
+        return service.upsert(batch, dest, data, configs, columns);
+    }
+    public static long upsert(int batch, Table dest, Object data, List<String> columns) {
+        return upsert(batch, dest, data, null, columns);
+    }
+    public static long upsert(int batch, Table dest, Object data, String ... columns) {
+        return upsert(batch, dest, data, BeanUtil.array2list(columns));
+    }
+    public static long upsert(int batch, Table dest, Object data, ConfigStore configs, String ... columns) {
+        return upsert(batch, dest, data, configs, BeanUtil.array2list(columns));
+    }
+    public static long upsert(Table dest, Object data, List<String> columns) {
+        return upsert(0, dest, data, columns);
+    }
+    public static long upsert(Table dest, Object data, ConfigStore configs, List<String> columns) {
+        return upsert(0, dest, data, configs, columns);
+    }
+    public static long upsert(Table dest, Object data, String ... columns) {
+        return upsert(dest, data, BeanUtil.array2list(columns));
+    }
+    public static long upsert(Table dest, Object data, ConfigStore configs, String ... columns) {
+        return upsert(dest, data, configs, BeanUtil.array2list(columns));
+    }
+
+    /* *****************************************************************************************************************
+     * 													UPSERT SELECT
+     ******************************************************************************************************************/
+    /**
+     * upsert into table select * from table
+     * 与query参数一致
+     * @param dest 插入表
+     * @param origin 查询表
+     * @param configs 查询条件及相关配置
+     * @param obj 查询条件
+     * @param conditions 查询条件 支持k:v k:v::type 以及原生sql形式(包含ORDER、GROUP、HAVING)默认忽略空值条件
+     * @return 影响行数
+     */
+    public static long upsert(Table dest, Table origin, ConfigStore configs, Object obj, String ... conditions) {
+        return service.upsert(dest, origin, configs, obj, conditions);
+    }
+    public static long upsert(Table dest, Table origin, Object obj, String ... conditions) {
+        return service.upsert(dest, origin, obj, conditions);
+    }
+    public static long upsert(Table dest, Table origin, long first, long last, Object obj, String ... conditions) {
+        return service.upsert(dest, origin, first, last, obj, conditions);
+    }
+    public static long upsert(Table dest, Table origin, ConfigStore configs, String ... conditions) {
+        return service.upsert(dest, origin, configs, conditions);
+    }
+    public static long upsert(Table dest, Table origin, String ... conditions) {
+        return service.upsert(dest, origin, conditions);
+    }
+    public static long upsert(Table dest, Table origin, PageNavi navi, String ... conditions) {
+        return service.upsert(dest, origin, navi,  conditions);
+    }
+    public static long upsert(Table dest, Table origin, long first, long last, String ... conditions) {
+        return service.upsert(dest, origin, first, last,  conditions);
+    }
+
+    public static long upsert(String dest, String origin, ConfigStore configs, Object obj, String ... conditions) {
+        return service.upsert(dest, origin, configs, obj, conditions);
+    }
+    public static long upsert(String dest, String origin, Object obj, String ... conditions) {
+        return service.upsert(dest, origin, obj, conditions);
+    }
+    public static long upsert(String dest, String origin, long first, long last, Object obj, String ... conditions) {
+        return service.upsert(dest, origin, first, last, obj, conditions);
+    }
+    public static long upsert(String dest, String origin, ConfigStore configs, String ... conditions) {
+        return service.upsert(dest, origin, configs,  conditions);
+    }
+    public static long upsert(String dest, String origin, String ... conditions) {
+        return service.upsert(dest, origin, conditions);
+    }
+    public static long upsert(String dest, String origin, PageNavi navi, String ... conditions) {
+        return service.upsert(dest, origin, navi, conditions);
+    }
+    public static long upsert(String dest, String origin, long first, long last, String ... conditions) {
+        return service.upsert(dest, origin, first, last, conditions);
+    }
+
+    /**
+     * upsert into table select * from table
+     * 复杂的查询先通过TableBuilder构造查询
+     * @param dest 表 table(c1,c2,c3)需要插入的列可以通过addColumn添加到dest中
+     * @param prepare 一般通过TableBuilder生成查询
+     * @return 影响行数
+     */
+    public static long upsert(Table dest, RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions) {
+        return service.upsert(dest, prepare, configs, obj, conditions);
+    }
+    public static long upsert(Table dest, RunPrepare prepare, long first, long last, ConfigStore configs, Object obj, String ... conditions) {
+        return service.upsert(dest, prepare, first, last, configs, obj, conditions);
+    }
+    public static long upsert(Table dest, RunPrepare prepare, Object obj, String ... conditions) {
+        return service.upsert(dest, prepare,  obj, conditions);
+    }
+    public static long upsert(Table dest, RunPrepare prepare, long first, long last, Object obj, String ... conditions) {
+        return service.upsert(dest, prepare, first, last, obj, conditions);
+    }
+
+    public static long upsert(Table dest, RunPrepare prepare, ConfigStore configs, String ... conditions) {
+        return service.upsert(dest, prepare, configs,  conditions);
+    }
+    public static long upsert(Table dest, RunPrepare prepare, String ... conditions) {
+        return service.upsert(dest, prepare, conditions);
+    }
+    public static long upsert(Table dest, RunPrepare prepare, long first, long last, String ... conditions) {
+        return service.upsert(dest, prepare, first, last,  conditions);
+    }
+
+    public static long upsert(String dest, RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions) {
+        return service.upsert(dest, prepare, configs, obj, conditions);
+    }
+    public static long upsert(String dest, RunPrepare prepare, long first, long last, ConfigStore configs, Object obj, String ... conditions) {
+        return service.upsert(dest, prepare, first, last, configs, obj, conditions);
+    }
+    public static long upsert(String dest, RunPrepare prepare, Object obj, String ... conditions) {
+        return service.upsert(dest, prepare, obj, conditions);
+    }
+    public static long upsert(String dest, RunPrepare prepare, long first, long last, Object obj, String ... conditions) {
+        return service.upsert(dest, prepare, first, last, obj, conditions);
+    }
+
+    public static long upsert(String dest, RunPrepare prepare, ConfigStore configs, String ... conditions) {
+        return service.upsert(dest, prepare, configs, conditions);
+    }
+    public static long upsert(String dest, RunPrepare prepare, String ... conditions) {
+        return service.upsert(dest, prepare,  conditions);
+    }
+    public static long upsert(String dest, RunPrepare prepare, long first, long last, String ... conditions) {
+        return service.upsert(dest, prepare, first, last, conditions);
+    }
+
+    /* *****************************************************************************************************************
      * 													UPDATE
      ******************************************************************************************************************/
 
@@ -446,7 +622,7 @@ public class ServiceProxy {
      * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
      * @return 影响行数
      */
-    public static long save(int batch, String dest, Object data, List<String>  columns) {
+    public static long save(int batch, String dest, Object data, List<String> columns) {
         return service.save(batch, dest, data, columns);
     }
     public static long save(int batch, String dest, Object data, String ... columns) {
@@ -461,7 +637,7 @@ public class ServiceProxy {
     public static long save(Object data, String ... columns) {
         return service.save(data, columns);
     }
-    public static long save(int batch, String dest, Object data, ConfigStore configs, List<String>  columns) {
+    public static long save(int batch, String dest, Object data, ConfigStore configs, List<String> columns) {
         return service.save(batch, dest, data, configs, columns);
     }
     public static long save(int batch, String dest, Object data, ConfigStore configs, String ... columns) {
