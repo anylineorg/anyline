@@ -563,13 +563,13 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
         }
         if(!run.isValid()) {
             if(log.isWarnEnabled() && ConfigStore.IS_LOG_SQL(configs)) {
-                log.warn("[valid:false][action:{}][table:{}][不具备执行条件]", action, run.getTableName());
+                log.warn("[valid:false][action:{}][{}][不具备执行条件]", action, run.metadata());
             }
             return -1;
         }
         String cmd = run.getFinalInsert();
         if(BasicUtil.isEmpty(cmd)) {
-            log.warn("[不具备执行条件][action:{}][table:{}]", action, run.getTable());
+            log.warn("[不具备执行条件][action:{}][{}]", action, run.metadata());
             return -1;
         }
         if(null != configs) {

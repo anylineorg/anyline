@@ -206,7 +206,7 @@ public class DriverAdapterHolder {
 			adapter = after(runtime, runtime.getProcessor(), adapter);
 		}
 		if(null == adapter) {
-			log.error("[检测数据库适配器][检测失败][可用适配器:{}]", BeanUtil.concat(adapters));
+			log.error("[检测数据库适配器][检测失败][version:{}][可用适配器:{}]", ConfigTable.getVersion(), BeanUtil.concat(adapters));
 			String title = "检测数据库适配器失败(请参考 http://doc.anyline.org/aa/6f_15195)";
 			throw new NotFoundAdapterException(title);
 		}

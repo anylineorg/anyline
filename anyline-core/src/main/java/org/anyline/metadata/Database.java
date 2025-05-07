@@ -46,7 +46,7 @@ public class Database extends Metadata<Database> implements Serializable {
     }
 
     public String toString() {
-        return name;
+        return super.toString();
     }
 
     public String getFilePath() {

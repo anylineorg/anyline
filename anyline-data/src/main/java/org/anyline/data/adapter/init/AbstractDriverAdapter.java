@@ -1851,7 +1851,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             if(SLOW_SQL_MILLIS > 0 &&ConfigStore.IS_LOG_SLOW_SQL(configs)) {
                 if(millis > SLOW_SQL_MILLIS) {
                     slow = true;
-                    log.warn("{}[slow cmd][action:{}][{}][执行耗时:{}]{}", random, action, run.getTable(), DateUtil.format(millis), run.log(ACTION.DML.UPDATE,ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
+                    log.warn("{}[slow cmd][action:{}][{}][执行耗时:{}]{}", random, action, run.metadata(), DateUtil.format(millis), run.log(ACTION.DML.UPDATE,ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
                     if(null != dmListener) {
                         dmListener.slow(runtime, random, ACTION.DML.UPDATE, run, run.getFinalUpdate(), values, null, true, result, millis);
                     }
@@ -1862,7 +1862,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 if(batch>1) {
                     qty = "约"+result;
                 }
-                log.info("{}[action:{}][{}][执行耗时:{}][影响行数:{}]", random, action, run.getTable(), DateUtil.format(millis), LogUtil.format(qty, 34));
+                log.info("{}[action:{}][{}][执行耗时:{}][影响行数:{}]", random, action, run.metadata(), DateUtil.format(millis), LogUtil.format(qty, 34));
             }
 
         }catch(Exception e) {

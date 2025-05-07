@@ -62,7 +62,6 @@ public interface DriverActuator {
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param product 上一步查询结果
      * @return product
-     * @throws Exception 异常
      */
     String product(DriverAdapter adapter, DataRuntime runtime, boolean create, String product);
 
@@ -73,7 +72,6 @@ public interface DriverActuator {
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param version 上一步查询结果
      * @return version
-     * @throws Exception 异常
      */
     String version(DriverAdapter adapter, DataRuntime runtime, boolean create, String version);
 
