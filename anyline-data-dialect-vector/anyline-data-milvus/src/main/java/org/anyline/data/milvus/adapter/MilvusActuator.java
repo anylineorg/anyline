@@ -452,10 +452,20 @@ public class MilvusActuator implements DriverActuator {
      * @return boolean
      */
     public boolean create(DataRuntime runtime, Database meta) throws Exception {
-        client(runtime).createDatabase(CreateDatabaseReq.builder()
-                .databaseName(meta.getName())
-                .build()
-        );
+        LinkedHashMap<String, Object> map = meta.getProperty();
+        CreateDatabaseReq.CreateDatabaseReqBuilder<?, ?> builder = CreateDatabaseReq.builder();
+        builder.databaseName(meta.getName());
+        if(null != map && !map.isEmpty()){
+            Map<String, String> pros = new HashMap<>();
+            for(String key:map.keySet()){
+                Object value = map.get(key);
+                if(null != value) {
+                    pros.put(key, value.toString());
+                }
+            }
+            builder.properties(pros);
+        }
+        client(runtime).createDatabase(builder.build());
         return true;
     }
     /**
