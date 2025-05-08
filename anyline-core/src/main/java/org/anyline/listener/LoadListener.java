@@ -14,17 +14,26 @@
  * limitations under the License.
  */
 
-package org.anyline.bean;
+package org.anyline.listener;
 
 public interface LoadListener {
     /**
-     * 1.上下文环境加初始化时(就是有了上下文对象ConfigTable.work)调用一次
+     * 顺序 0
+     */
+    default void before(Object object) {}
+    /**
+     * 顺序 1.上下文环境加初始化时(就是有了上下文对象ConfigTable.work)调用一次
      */
     void start();
     /**
-     * 2.上下文中所有实例完成注入后调用一次
-     * anyline需要等项目中的jdbc/datasource实例完成后 用来创建默认数据源的service
+     * 顺序 2.上下文中所有实例完成注入后调用一次
+     * 需要等项目中的jdbc/datasource实例完成后 用来创建默认数据源的service
      * 以及在DataSourceHolder实例加载完成前就调用了reg产生的缓存数据源 所以需要延迟加载
      */
-    void after();
+    default void finish() {}
+
+    /**
+     * 顺序 3
+     */
+    default void after() {}
 }

@@ -17,7 +17,6 @@
 package org.anyline.data.listener.init;
 
 import org.anyline.annotation.AnylineComponent;
-import org.anyline.bean.LoadListener;
 import org.anyline.cache.CacheProvider;
 import org.anyline.data.adapter.DriverActuator;
 import org.anyline.data.adapter.DriverAdapter;
@@ -27,22 +26,39 @@ import org.anyline.data.datasource.DataSourceMonitor;
 import org.anyline.data.interceptor.*;
 import org.anyline.data.listener.DDListener;
 import org.anyline.data.listener.DMListener;
+import org.anyline.data.listener.DataSourceListener;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.generator.PrimaryGenerator;
+import org.anyline.listener.LoadListener;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 import org.anyline.proxy.CacheProxy;
 import org.anyline.proxy.InterceptorProxy;
 import org.anyline.proxy.ServiceProxy;
 import org.anyline.service.AnylineService;
 import org.anyline.util.ClassUtil;
 import org.anyline.util.ConfigTable;
-import org.anyline.log.Log;
-import org.anyline.log.LogProxy;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @AnylineComponent("anyline.environment.data.listener.jdbc")
 public class DataSourceLoadListener implements LoadListener {
     private static Log log = LogProxy.get(DataSourceLoadListener.class);
+
+    //项目注册事件
+    private List<DataSourceListener> listeners = new ArrayList<>();
+    public void before(Object bean) {
+        if(bean instanceof Map){
+            Map map = (Map) bean;
+            for(Object value:map.values()){
+                if(value instanceof DataSourceListener){
+                    listeners.add((DataSourceListener) value);
+                }
+            }
+        }
+    }
     @Override
     public void start() {
         //缓存
@@ -120,7 +136,7 @@ public class DataSourceLoadListener implements LoadListener {
     }
 
     @Override
-    public void after() {
+    public void finish() {
         if(ConfigTable.environment().containsBean(DataRuntime.ANYLINE_SERVICE_BEAN_PREFIX + "default")) {
             ConfigTable.environment().regAlias(DataRuntime.ANYLINE_SERVICE_BEAN_PREFIX + "default", "anyline.service");
             AnylineService service = ConfigTable.environment().getBean(DataRuntime.ANYLINE_SERVICE_BEAN_PREFIX + "default", AnylineService.class);
@@ -135,4 +151,11 @@ public class DataSourceLoadListener implements LoadListener {
             }
         }
     }
+    @Override
+    public void after(){
+        for(DataSourceListener listener: listeners){
+            listener.after();
+        }
+    }
+
 }

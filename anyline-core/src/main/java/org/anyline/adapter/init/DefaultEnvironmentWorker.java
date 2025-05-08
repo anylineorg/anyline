@@ -20,7 +20,7 @@ import org.anyline.adapter.EnvironmentWorker;
 import org.anyline.annotation.AnylineAutowired;
 import org.anyline.annotation.AnylineComponent;
 import org.anyline.bean.BeanDefine;
-import org.anyline.bean.LoadListener;
+import org.anyline.listener.LoadListener;
 import org.anyline.bean.ValueReference;
 import org.anyline.bean.init.DefaultBeanDefine;
 import org.anyline.log.Log;
@@ -59,8 +59,12 @@ public class DefaultEnvironmentWorker implements EnvironmentWorker {
         }
 
         Map<String, LoadListener> listeners = ConfigTable.environment().getBeans(LoadListener.class);
+
         for(LoadListener listener:listeners.values()) {
             listener.start();
+        }
+        for(LoadListener listener:listeners.values()) {
+            listener.finish();
         }
         for(LoadListener listener:listeners.values()) {
             listener.after();

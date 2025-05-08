@@ -19,7 +19,8 @@ package org.anyline.environment.spring;
 import org.anyline.adapter.EntityAdapter;
 import org.anyline.adapter.init.DefaultEntityAdapter;
 import org.anyline.adapter.init.JavaTypeAdapter;
-import org.anyline.bean.LoadListener;
+import org.anyline.data.listener.DataSourceListener;
+import org.anyline.listener.LoadListener;
 import org.anyline.metadata.type.Convert;
 import org.anyline.metadata.type.DataType;
 import org.anyline.proxy.ConvertProxy;
@@ -31,10 +32,10 @@ import org.springframework.stereotype.Component;
 
 import java.util.Hashtable;
 import java.util.Map;
-
 @Component("anyline.environment.configuration.spring")
 public class SpringAutoConfiguration implements InitializingBean {
     private Map<String, LoadListener> listeners;
+    private Map<String, DataSourceListener> datasource_listeners;
     private boolean loader_start_status = false;
     private boolean loader_after_status = false;
     @Autowired
@@ -44,9 +45,13 @@ public class SpringAutoConfiguration implements InitializingBean {
     }
 
     @Autowired(required = false)
-    public void setListeners(Map<String, LoadListener> listeners) {
+    public void setLoadListeners(Map<String, LoadListener> listeners) {
         this.listeners = listeners;
         loaderStart();
+    }
+    @Autowired(required = false)
+    public void setDataSourceListeners(Map<String, DataSourceListener> listeners) {
+        this.datasource_listeners = listeners;
     }
     //用户自定义数据类型转换器
     @Autowired(required = false)
@@ -87,6 +92,9 @@ public class SpringAutoConfiguration implements InitializingBean {
         if(!loader_start_status && null != listeners && null != ConfigTable.environment) {
             loader_start_status = true;
             for (LoadListener listener : listeners.values()) {
+                listener.before(datasource_listeners);
+            }
+            for (LoadListener listener : listeners.values()) {
                 listener.start();
             }
         }
@@ -96,6 +104,9 @@ public class SpringAutoConfiguration implements InitializingBean {
     public void afterPropertiesSet() {
         if(!loader_after_status && null != listeners && null != ConfigTable.environment) {
             loader_after_status = true;
+            for (LoadListener listener : listeners.values()) {
+                listener.finish();
+            }
             for (LoadListener listener : listeners.values()) {
                 listener.after();
             }

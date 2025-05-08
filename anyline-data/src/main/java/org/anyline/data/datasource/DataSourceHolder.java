@@ -22,6 +22,8 @@ import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.runtime.RuntimeHolder;
 import org.anyline.data.util.DataSourceUtil;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 import org.anyline.metadata.Database;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.proxy.ServiceProxy;
@@ -29,8 +31,6 @@ import org.anyline.service.AnylineService;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ClassUtil;
 import org.anyline.util.ConfigTable;
-import org.anyline.log.Log;
-import org.anyline.log.LogProxy;
 
 import javax.sql.DataSource;
 import java.util.*;

@@ -17,7 +17,7 @@
 package org.anyline.log;
 
 import org.anyline.annotation.AnylineComponent;
-import org.anyline.bean.LoadListener;
+import org.anyline.listener.LoadListener;
 import org.anyline.util.ConfigTable;
 
 import java.util.Map;
@@ -30,9 +30,5 @@ public class LogLoadListener implements LoadListener {
         for(LogFactory item:factors.values()) {
             LogProxy.append(item);
         }
-    }
-
-    @Override
-    public void after() {
     }
 }
