@@ -17,6 +17,11 @@
             <groupId>org.anyline</groupId>
             <artifactId>anyline-data</artifactId>
         </dependency>
+        <dependency>
+            <groupId>io.weaviate</groupId>
+            <artifactId>client</artifactId>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
 </project>
