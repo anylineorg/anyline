@@ -1,0 +1,4 @@
+org.anyline.data.faiss.adapter.FaissActuator
+org.anyline.data.faiss.adapter.FaissAdapter
+org.anyline.data.faiss.datasource.FaissDataSourceLoader
+org.anyline.data.faiss.datasource.FaissDataSourceHolder
