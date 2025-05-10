@@ -51,14 +51,14 @@ public class Trigger extends TableAffiliation<Trigger> implements Serializable {
 
     public TIME getTime() {
         if(getmap && null != update) {
-            return ((Trigger)update).time;
+            return update.time;
         }
         return time;
     }
 
     public Trigger setTime(TIME time) {
         if(setmap && null != update) {
-            ((Trigger)update).time = time;
+            update.time = time;
             return this;
         }
         this.time = time;

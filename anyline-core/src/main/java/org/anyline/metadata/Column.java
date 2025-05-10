@@ -140,7 +140,7 @@ public class Column extends TableAffiliation<Column> implements Serializable {
     protected String lengthUnit = ""              ; // 长度单位如byte char
     protected Integer precision                   ; // 有效位数 整个字段的长度(包含小数部分)  123.45：precision = 5, scale = 2 对于SQL Server 中 varchar(max)设置成 -1 null:表示未设置
     protected Integer scale                       ; // 小数部分的长度
-    protected Integer dims                        ; // 维度
+    protected Integer dimension                   ; // 维度(向量)
 
     protected String className                    ; // 对应的Java数据类型 java.lang.Long
     protected Integer displaySize                 ; // display size
@@ -366,12 +366,12 @@ public class Column extends TableAffiliation<Column> implements Serializable {
         return this;
     }
 
-    public Integer getDims() {
-        return dims;
+    public Integer getDimension() {
+        return dimension;
     }
 
-    public Column setDims(Integer dims) {
-        this.dims = dims;
+    public Column setDimension(Integer dimension) {
+        this.dimension = dimension;
         return this;
     }
 
