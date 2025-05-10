@@ -17,6 +17,11 @@
 package org.anyline.data.milvus.adapter;
 
 import io.milvus.v2.client.MilvusClientV2;
+import io.milvus.v2.common.DataType;
+import io.milvus.v2.service.collection.request.AddFieldReq;
+import io.milvus.v2.service.collection.request.CreateCollectionReq;
+import io.milvus.v2.service.collection.request.DropCollectionReq;
+import io.milvus.v2.service.collection.request.GetLoadStateReq;
 import io.milvus.v2.service.database.request.CreateDatabaseReq;
 import io.milvus.v2.service.database.request.DropDatabaseReq;
 import io.milvus.v2.service.database.response.ListDatabasesResp;
@@ -26,6 +31,8 @@ import io.milvus.v2.service.rbac.response.DescribeUserResp;
 import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.adapter.DriverActuator;
 import org.anyline.data.adapter.DriverAdapter;
+import org.anyline.data.milvus.metadata.MilvusCollection;
+import org.anyline.data.milvus.metadata.MilvusSchema;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.run.Run;
 import org.anyline.data.runtime.DataRuntime;
@@ -121,6 +128,10 @@ public class MilvusActuator implements DriverActuator {
             }else if (aciton == ACTION.DDL.DATABASE_DROP){
                 drop(runtime, (Database) run.metadata());
                 result = 1;
+            }else if(aciton == ACTION.DDL.TABLE_CREATE){
+                create(runtime, (Table)run.metadata());
+            }else if(aciton == ACTION.DDL.TABLE_DROP){
+                drop(runtime, (Table)run.metadata());
             }
         }
         return result;
@@ -471,13 +482,60 @@ public class MilvusActuator implements DriverActuator {
     /**
      * database[调用入口]<br/>
      * 删除数据库
-     * @param meta 角色
+     * @param meta 数据库
      * @return boolean
      */
     public boolean drop(DataRuntime runtime, Database meta) throws Exception {
         client(runtime).dropDatabase(DropDatabaseReq.builder()
                 .databaseName(meta.getName())
                 .build());
+        return true;
+    }
+
+    /* *****************************************************************************************************************
+     * 													table
+     * -----------------------------------------------------------------------------------------------------------------
+     * boolean create(DataRuntime runtime, Table meta) throws Exception
+     * boolean drop(DataRuntime runtime, Table meta) throws Exception
+     ******************************************************************************************************************/
+    /**
+     * database[调用入口]<br/>
+     * 创建Table
+     * @param meta Table
+     * @return boolean
+     */
+    public boolean create(DataRuntime runtime, Table meta) throws Exception {
+        CreateCollectionReq req = CreateCollectionReq.builder()
+                .collectionName(meta.getName())
+                .collectionSchema(schema(runtime, meta))
+                .build();
+        client(runtime).createCollection(req);
+        return true;
+    }
+    private CreateCollectionReq.CollectionSchema schema(DataRuntime runtime, Table table){
+        LinkedHashMap<String, Column> columns = table.getColumns();
+        CreateCollectionReq.CollectionSchema schema = client(runtime).createSchema();
+        for(Column column:columns.values()){
+            schema.addField(AddFieldReq.builder()
+                    .fieldName(column.getName())
+                    .dataType(DataType.Int64)
+                    .isPrimaryKey(column.isPrimaryKey())
+                    .autoID(column.isAutoIncrement())
+                    .build());
+        }
+        return schema;
+    }
+    /**
+     * database[调用入口]<br/>
+     * 删除Table
+     * @param meta Table
+     * @return boolean
+     */
+    public boolean drop(DataRuntime runtime, Table meta) throws Exception {
+        DropCollectionReq req = DropCollectionReq.builder()
+                .collectionName(meta.getName())
+                .build();
+        client(runtime).dropCollection(req);
         return true;
     }
 

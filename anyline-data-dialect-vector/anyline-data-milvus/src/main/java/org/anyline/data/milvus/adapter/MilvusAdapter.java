@@ -6013,7 +6013,12 @@ public class MilvusAdapter extends AbstractDriverAdapter {
      */
     @Override
     public List<Run> buildCreateRun(DataRuntime runtime, Table meta) throws Exception {
-        return super.buildCreateRun(runtime, meta);
+        List<Run> runs = new ArrayList<>();
+        MilvusRun run = new MilvusRun(runtime);
+        runs.add(run);
+        run.metadata(meta);
+        run.action(ACTION.DDL.TABLE_CREATE);
+        return runs;
     }
 
     /**
@@ -6067,7 +6072,12 @@ public class MilvusAdapter extends AbstractDriverAdapter {
      */
     @Override
     public List<Run> buildDropRun(DataRuntime runtime, Table meta) throws Exception {
-        return super.buildDropRun(runtime, meta);
+        List<Run> runs = new ArrayList<>();
+        MilvusRun run = new MilvusRun(runtime);
+        runs.add(run);
+        run.metadata(meta);
+        run.action(ACTION.DDL.TABLE_DROP);
+        return runs;
     }
 
     /**
