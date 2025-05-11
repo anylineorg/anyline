@@ -24,12 +24,10 @@ import org.anyline.entity.*;
 import org.anyline.entity.authorize.Privilege;
 import org.anyline.entity.authorize.Role;
 import org.anyline.entity.authorize.User;
-import org.anyline.entity.generator.PrimaryGenerator;
 import org.anyline.metadata.*;
 import org.anyline.metadata.graph.EdgeTable;
 import org.anyline.metadata.graph.VertexTable;
 import org.anyline.metadata.refer.MetadataFieldRefer;
-import org.anyline.metadata.type.DatabaseType;
 import org.anyline.metadata.type.TypeMetadata;
 
 import java.util.Collection;
