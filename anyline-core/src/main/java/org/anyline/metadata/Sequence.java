@@ -110,7 +110,7 @@ public class Sequence extends Metadata<Sequence> implements Serializable {
     public void setFetchValueBeforeInsert(boolean fetchValueBeforeInsert) {
         this.fetchValueBeforeInsert = fetchValueBeforeInsert;
     }
-    public String getKeyword() {
+    public String keyword() {
         return this.keyword;
     }
 

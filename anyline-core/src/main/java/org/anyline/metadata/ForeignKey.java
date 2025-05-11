@@ -128,7 +128,7 @@ public class ForeignKey extends Constraint<ForeignKey> implements Serializable {
         return this;
     }
 
-    public String getKeyword() {
+    public String keyword() {
         return this.keyword;
     }
     public ForeignKey clone() {

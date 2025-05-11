@@ -1209,7 +1209,7 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
         this.inherit = new Table(setInherit);
         return this;
     }
-    public String getKeyword() {
+    public String keyword() {
         return keyword;
     }
 
@@ -1357,7 +1357,7 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
     }
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append(getKeyword()).append(":");
+        builder.append(keyword()).append(":");
         if(null != catalog && BasicUtil.isNotEmpty(catalog.getName())) {
             builder.append(catalog.getName()).append(".");
         }

@@ -42,7 +42,7 @@ public class EdgeType extends EdgeTable {
     }
 
     @Override
-    public String getKeyword() {
+    public String keyword() {
         return keyword;
     }
 }

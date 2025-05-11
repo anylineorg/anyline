@@ -109,7 +109,7 @@ public class MasterTable extends Table<MasterTable> implements Serializable {
         return table;
     }
 
-    public String getKeyword() {
+    public String keyword() {
         return this.keyword;
     }
     public String toString() {

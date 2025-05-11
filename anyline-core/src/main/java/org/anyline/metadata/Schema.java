@@ -29,7 +29,7 @@ public class Schema extends Metadata<Schema> implements Serializable {
         this.name = name;
     }
     public String toString() {
-        String str = getKeyword()+":";
+        String str = keyword()+":";
         if(null != catalog) {
             str += getCatalogName() + ".";
         }
@@ -56,7 +56,7 @@ public class Schema extends Metadata<Schema> implements Serializable {
         }
         return false;
     }
-    public String getKeyword() {
+    public String keyword() {
         return this.keyword;
     }
 

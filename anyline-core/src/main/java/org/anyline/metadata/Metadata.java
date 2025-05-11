@@ -767,11 +767,11 @@ public class Metadata<T extends Metadata> {
     public ACTION.SWITCH swt() {
         return this.swt;
     }
-    public String getKeyword() {
+    public String keyword() {
         return "object";
     }
     public String toString() {
-        return getKeyword() + ":" + getName();
+        return keyword() + ":" + getName();
     }
 
 /* ********************************* field refer ********************************** */

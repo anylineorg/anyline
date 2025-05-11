@@ -5875,7 +5875,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		Run run = new SimpleRun(runtime);
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();
-		builder.append("DROP ").append(meta.getKeyword()).append(" ");
+		builder.append("DROP ").append(meta.keyword()).append(" ");
 		checkViewExists(runtime,builder, true);
 		name(runtime,builder, meta);
 		return runs;
@@ -6509,7 +6509,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		}else{
 			run.slice(slice);
 		}
-		builder.append(" RENAME ").append(meta.getKeyword()).append(" ");
+		builder.append(" RENAME ").append(meta.keyword()).append(" ");
 		delimiter(builder, meta.getName());
 		builder.append(" ");
 		name(runtime, builder, meta.getUpdate());
@@ -6552,7 +6552,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 */
 	@Override
 	public StringBuilder addColumnGuide(DataRuntime runtime, StringBuilder builder, Column meta) {
-		builder.append(" ADD ").append(meta.getKeyword()).append(" ");
+		builder.append(" ADD ").append(meta.keyword()).append(" ");
 		return builder;
 	}
 
@@ -6567,7 +6567,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 */
 	@Override
 	public StringBuilder dropColumnGuide(DataRuntime runtime, StringBuilder builder, Column meta) {
-		builder.append(" DROP ").append(meta.getKeyword()).append(" ");
+		builder.append(" DROP ").append(meta.keyword()).append(" ");
 		return builder;
 	}
 
@@ -7030,7 +7030,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		Table table = meta.getTable(true);
 		builder.append("ALTER ").append(keyword(table)).append(" ");
 		name(runtime, builder, table);
-		builder.append(" DROP ").append(meta.getKeyword()).append(" ");
+		builder.append(" DROP ").append(meta.keyword()).append(" ");
 		delimiter(builder, meta.getName());
 		return runs;
 	}
@@ -7052,7 +7052,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		Table table = meta.getTable(true);
 		builder.append("ALTER ").append(keyword(table)).append(" ");
 		name(runtime, builder, table);
-		builder.append(" RENAME ").append(meta.getKeyword()).append(" ");
+		builder.append(" RENAME ").append(meta.keyword()).append(" ");
 		delimiter(builder, meta.getName());
 		builder.append(" ");
 		name(runtime, builder, meta.getUpdate());

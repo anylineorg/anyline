@@ -1959,7 +1959,7 @@ public class Column extends TableAffiliation<Column> implements Serializable {
         }
         return builder.toString();
     }
-    public String getKeyword() {
+    public String keyword() {
         return this.keyword;
     }
 

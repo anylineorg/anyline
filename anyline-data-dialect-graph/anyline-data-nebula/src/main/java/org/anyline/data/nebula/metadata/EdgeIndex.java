@@ -35,7 +35,7 @@ public class EdgeIndex extends org.anyline.metadata.graph.EdgeIndex {
     }
 
     @Override
-    public String getKeyword() {
+    public String keyword() {
         return keyword;
     }
 }

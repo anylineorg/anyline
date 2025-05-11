@@ -71,7 +71,7 @@ public class View extends Table<View> implements Serializable {
         this.target = new Table(target);
         return this;
     }
-    public String getKeyword() {
+    public String keyword() {
         return keyword;
     }
 

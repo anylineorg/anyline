@@ -42,7 +42,7 @@ public class Label extends Table<Label> implements Serializable {
         return super.drop();
     }
 
-    public String getKeyword() {
+    public String keyword() {
         return this.keyword;
     }
 

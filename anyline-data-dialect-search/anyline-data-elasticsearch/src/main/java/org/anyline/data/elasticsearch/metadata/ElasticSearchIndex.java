@@ -73,7 +73,7 @@ public class ElasticSearchIndex extends Table {
         }
         return map;
     }
-    public String getKeyword() {
+    public String keyword() {
         return keyword;
     }
 }

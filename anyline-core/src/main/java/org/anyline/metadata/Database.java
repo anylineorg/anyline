@@ -64,7 +64,7 @@ public class Database extends Metadata<Database> implements Serializable {
     public void setLogPath(String logPath) {
         this.logPath = logPath;
     }
-    public String getKeyword() {
+    public String keyword() {
         return this.keyword;
     }
 

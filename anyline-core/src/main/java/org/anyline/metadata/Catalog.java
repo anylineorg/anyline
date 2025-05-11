@@ -29,7 +29,7 @@ public class Catalog extends Metadata<Catalog> implements Serializable {
         this.name = name;
     }
 
-    public String getKeyword() {
+    public String keyword() {
         return this.keyword;
     }
     public boolean equals(Catalog catalog) {

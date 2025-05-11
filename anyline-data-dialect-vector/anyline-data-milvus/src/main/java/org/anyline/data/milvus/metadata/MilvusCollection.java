@@ -7,8 +7,11 @@ import org.anyline.metadata.type.TypeMetadata;
 import java.util.LinkedHashMap;
 
 public class MilvusCollection extends Table<MilvusCollection> {
+    protected String keyword = "collection"            ;
     protected MilvusSchema schema = new MilvusSchema();
-
+    public String keyword(){
+        return this.keyword;
+    }
     public void schema(MilvusSchema schema){
         this.schema = schema;
     }

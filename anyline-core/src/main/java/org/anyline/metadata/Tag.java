@@ -96,7 +96,7 @@ public class Tag extends Column implements Serializable {
         BeanUtil.copyFieldValue(clone, this);
         return clone;
     }
-    public String getKeyword() {
+    public String keyword() {
         return this.keyword;
     }
 

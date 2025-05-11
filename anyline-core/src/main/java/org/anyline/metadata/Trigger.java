@@ -116,7 +116,7 @@ public class Trigger extends TableAffiliation<Trigger> implements Serializable {
         return each;
     }
 
-    public String getKeyword() {
+    public String keyword() {
         return keyword;
     }
     public Trigger clone() {

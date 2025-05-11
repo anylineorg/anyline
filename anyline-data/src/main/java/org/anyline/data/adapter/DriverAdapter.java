@@ -7563,7 +7563,7 @@ public interface DriverAdapter {
 	 * @return String
 	 */
 	default String keyword(Metadata meta) {
-		return meta.getKeyword();
+		return meta.keyword();
 	}
 
 	/**

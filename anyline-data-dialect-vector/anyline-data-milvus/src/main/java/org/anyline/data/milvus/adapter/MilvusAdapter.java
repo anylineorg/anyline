@@ -2303,7 +2303,7 @@ public class MilvusAdapter extends AbstractDriverAdapter {
      */
     @Override
     public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Table query, int types) throws Exception {
-        return super.tables(runtime, create, previous, query, types);
+        return actuator().tables(this, runtime, create, previous, query, types);
     }
 
     /**
@@ -2320,7 +2320,7 @@ public class MilvusAdapter extends AbstractDriverAdapter {
      */
     @Override
     public <T extends Table> List<T> tables(DataRuntime runtime, boolean create, List<T> previous, Table query, int types) throws Exception {
-        return super.tables(runtime, create, previous, query, types);
+        return actuator().tables(this, runtime, create, previous, query, types);
     }
 
     /**

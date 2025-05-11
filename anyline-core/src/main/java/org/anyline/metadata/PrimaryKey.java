@@ -36,7 +36,7 @@ public class PrimaryKey extends Index<PrimaryKey> implements Serializable {
         columns.put(column.getName().toUpperCase(), column);
         return this;
     }
-    public String getKeyword() {
+    public String keyword() {
         return this.keyword;
     }
 

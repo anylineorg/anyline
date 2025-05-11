@@ -36,7 +36,7 @@ public class TagIndex extends VertexIndex {
     }
 
     @Override
-    public String getKeyword() {
+    public String keyword() {
         return keyword;
     }
 }

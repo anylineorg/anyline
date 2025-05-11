@@ -42,7 +42,7 @@ public class Tag extends VertexTable {
     }
 
     @Override
-    public String getKeyword() {
+    public String keyword() {
         return keyword;
     }
 }

@@ -42,7 +42,7 @@ public class InfluxTable extends Table {
     }
 
     @Override
-    public String getKeyword() {
+    public String keyword() {
         return keyword;
     }
 }

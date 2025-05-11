@@ -42,7 +42,7 @@ public class PartitionTable extends Table<PartitionTable> implements Serializabl
         }
         return name;
     }
-    public String getKeyword() {
+    public String keyword() {
         return this.keyword;
     }
 

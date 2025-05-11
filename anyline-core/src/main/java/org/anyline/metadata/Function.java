@@ -45,7 +45,7 @@ public class Function extends Metadata<Function> implements Serializable {
         return this;
     }
 
-    public String getKeyword() {
+    public String keyword() {
         return this.keyword;
     }
 

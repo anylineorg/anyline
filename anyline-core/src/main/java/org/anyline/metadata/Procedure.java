@@ -207,7 +207,7 @@ public class Procedure extends Metadata<Procedure> implements Serializable {
 
 		return copy;
 	}
-	public String getKeyword() {
+	public String keyword() {
 		return this.keyword;
 	}
 

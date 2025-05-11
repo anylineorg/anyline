@@ -236,7 +236,7 @@ public class Index<M extends Index> extends TableAffiliation<M> implements Seria
         }
         return (M)this;
     }
-    public String getKeyword() {
+    public String keyword() {
         return this.keyword;
     }
     public boolean equals(Index index) {

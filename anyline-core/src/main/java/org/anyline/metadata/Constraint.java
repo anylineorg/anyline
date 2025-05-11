@@ -174,7 +174,7 @@ public class Constraint<E extends Constraint> extends TableAffiliation<E> implem
         return orders.get(column.toUpperCase());
     }
 
-    public String getKeyword() {
+    public String keyword() {
         return this.keyword;
     }
     public E clone() {
