@@ -20,6 +20,7 @@ import org.anyline.metadata.refer.MetadataReferHolder;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.metadata.type.JavaType;
 import org.anyline.metadata.type.TypeMetadata;
+import org.anyline.metadata.type.TypeMetadataHolder;
 import org.anyline.util.BasicUtil;
 
 import java.io.Serializable;
@@ -131,9 +132,9 @@ public class Column extends TableAffiliation<Column> implements Serializable {
     protected TypeMetadata typeMetadata           ;
     protected String fullType                     ; //完整类型名称
     protected String finalType                    ; //如果设置了finalType 生成SQL时 name finalType 其他属性
-    protected int ignoreLength          = -1; //是否忽略长度
-    protected int ignorePrecision       = -1; //是否忽略有效位数
-    protected int ignoreScale           = -1; //是否忽略小数位
+    protected int ignoreLength                = -1; //是否忽略长度
+    protected int ignorePrecision             = -1; //是否忽略有效位数
+    protected int ignoreScale                 = -1; //是否忽略小数位
     //数字类型:precision,scale 日期:length 时间戳:scale 其他:length
     protected Integer precisionLength             ; // 精确长度 根据数据类型返回precision或length
     protected Integer length                      ; // 长度(注意varchar,date,timestamp,number的区别)
@@ -760,7 +761,7 @@ public class Column extends TableAffiliation<Column> implements Serializable {
         if(lvl <= parseLvl) {
             return this;
         }
-        TypeMetadata.parse(DatabaseType.NONE, this, null, null);
+        TypeMetadata.parse(databaseType, this, TypeMetadataHolder.gets(databaseType), null);
         return this;
     }
 
@@ -1975,6 +1976,7 @@ public class Column extends TableAffiliation<Column> implements Serializable {
     public static final String FIELD_IGNORE_SCALE                  = "IGNORE_SCALE";
     public static final String FIELD_PRECISION_LENGTH              = "PRECISION_LENGTH";
     public static final String FIELD_LENGTH                        = "LENGTH";
+    public static final String FIELD_OCTET_LENGTH                  = "OCTET_LENGTH";
     public static final String FIELD_PRECISION                     = "PRECISION";
     public static final String FIELD_SCALE                         = "SCALE";
     public static final String FIELD_DIMS                          = "DIMS";

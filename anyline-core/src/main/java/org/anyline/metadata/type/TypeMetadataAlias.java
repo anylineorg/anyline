@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-package org.anyline.data.metadata;
-
-import org.anyline.metadata.type.TypeMetadata;
+package org.anyline.metadata.type;
 
 public interface TypeMetadataAlias {
     default String input() {

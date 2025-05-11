@@ -3786,6 +3786,9 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
             meta.setLength(len);
         }catch (Exception ignored) {}
         try{
+            meta.setOctetLength(getInt(row, refer, Column.FIELD_OCTET_LENGTH, null));
+        }catch (Exception ignored) {}
+        try{
             Integer precision = row.getInt(null, trefer.getPrecisionRefers());
             /*if(null == precision) {
                 precision = row.getInt("NUMERIC_PRECISION","PRECISION","DATA_PRECISION");
@@ -3795,9 +3798,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
                 precision = -1;
             }
             meta.setPrecision(precision);
-        }catch (Exception e) {
-
-        }
+        }catch (Exception ignored) {}
         try {
             Integer scale = row.getInt(null, trefer.getScaleRefers());
             /*if(null == scale) {

@@ -20,7 +20,7 @@ import org.anyline.adapter.DataReader;
 import org.anyline.adapter.DataWriter;
 import org.anyline.data.listener.DDListener;
 import org.anyline.data.listener.DMListener;
-import org.anyline.data.metadata.TypeMetadataAlias;
+import org.anyline.metadata.type.TypeMetadataAlias;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.RunPrepare;

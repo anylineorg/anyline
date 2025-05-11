@@ -54,8 +54,8 @@ public class EntityAdapterProxy {
     //Java类型与sql类型对应
     public static Map<Class, TypeMetadata> types = new HashMap<>();
     static {
-        types.put(int.class, StandardTypeMetadata.INT);
-        types.put(Integer.class, StandardTypeMetadata.INT);
+        types.put(int.class, StandardTypeMetadata.INT32);
+        types.put(Integer.class, StandardTypeMetadata.INT32);
         types.put(long.class, StandardTypeMetadata.BIGINT);
         types.put(Long.class, StandardTypeMetadata.BIGINT);
         types.put(double.class, StandardTypeMetadata.DOUBLE);
@@ -63,8 +63,8 @@ public class EntityAdapterProxy {
         types.put(float.class, StandardTypeMetadata.FLOAT);
         types.put(Float.class, StandardTypeMetadata.FLOAT);
         types.put(BigDecimal.class, StandardTypeMetadata.DECIMAL);
-        types.put(short.class, StandardTypeMetadata.INT);
-        types.put(Short.class, StandardTypeMetadata.INT);
+        types.put(short.class, StandardTypeMetadata.INT16);
+        types.put(Short.class, StandardTypeMetadata.INT16);
         types.put(String.class, StandardTypeMetadata.VARCHAR);
         types.put(Date.class, StandardTypeMetadata.DATETIME);
         types.put(LocalDate.class, StandardTypeMetadata.DATE);

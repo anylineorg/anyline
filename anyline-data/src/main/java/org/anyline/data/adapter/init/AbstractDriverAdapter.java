@@ -27,7 +27,7 @@ import org.anyline.data.cache.PageLazyStore;
 import org.anyline.data.entity.Join;
 import org.anyline.data.listener.DDListener;
 import org.anyline.data.listener.DMListener;
-import org.anyline.data.metadata.TypeMetadataAlias;
+import org.anyline.metadata.type.TypeMetadataAlias;
 import org.anyline.data.param.Config;
 import org.anyline.data.param.ConfigParser;
 import org.anyline.data.param.ConfigStore;
@@ -61,6 +61,7 @@ import org.anyline.metadata.refer.MetadataFieldRefer;
 import org.anyline.metadata.refer.MetadataReferHolder;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.metadata.type.TypeMetadata;
+import org.anyline.metadata.type.TypeMetadataHolder;
 import org.anyline.metadata.type.init.StandardTypeMetadata;
 import org.anyline.proxy.CacheProxy;
 import org.anyline.proxy.ConvertProxy;
@@ -114,7 +115,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 
     protected Map<Class<?>, MetadataFieldRefer> refers = new HashMap<>();
     //根据名称定位数据类型
-    protected LinkedHashMap<String, TypeMetadata> alias = new LinkedHashMap();
+    //protected LinkedHashMap<String, TypeMetadata> alias = new LinkedHashMap();
 
     static {
         for(StandardTypeMetadata type: StandardTypeMetadata.values()) {
@@ -257,7 +258,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 
     @Override
     public LinkedHashMap<String, TypeMetadata> alias() {
-        return alias;
+        return TypeMetadataHolder.gets(type());
     }
 
     /**
@@ -280,9 +281,16 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
     }
     protected void alias(String key, TypeMetadata value) {
         if(null != key && null != value && TypeMetadata.NONE != value) {
-            this.alias.put(key, value);
-            this.alias.put(key.replace("_", " "), value);
-            this.alias.put(key.replace(" ", "_"), value);
+            //this.alias.put(key, value);
+            TypeMetadataHolder.reg(type(), key, value);
+
+            key = key.replace("_", " ");
+            //this.alias.put(key, value);
+            TypeMetadataHolder.reg(type(), key, value);
+
+            key = key.replace(" ", "_");
+            //this.alias.put(key, value);
+            TypeMetadataHolder.reg(type(), key, value);
         }
     }
 
@@ -13153,9 +13161,21 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		checkSchema(runtime, meta);
 		//检测表主键(在没有显式设置主键时根据其他条件判断如自增),同时根据主键对象给相关列设置主键标识
 		checkPrimary(runtime, meta);
+        checkTypeMetadata(runtime, meta);
 		List<Run> runs = buildCreateRun(runtime, meta);
 		return execute(runtime, random, meta, action, runs);
 	}
+    protected void checkTypeMetadata(DataRuntime runtime, Table meta){
+        LinkedHashMap<String, Column> columns = meta.getColumns();
+        LinkedHashMap<String, TypeMetadata> alias = TypeMetadataHolder.gets(type());
+        for(Column column:columns.values()){
+            TypeMetadata tm = column.getTypeMetadata();
+            if(null == tm || tm == TypeMetadata.NONE){
+                TypeMetadata.parse(type(), column, alias, null);
+            }
+        }
+    }
+
 
 	/**
 	 * 检测列的执行命令,all drop alter等
@@ -13326,6 +13346,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		Table update = (Table)meta.getUpdate();
 		//检测表主键(在没有显式设置主键时根据其他条件判断如自增),同时根据主键对象给相关列设置主键标识
 		checkPrimary(runtime, update);
+        checkSchema(runtime, meta);
 		String name = meta.getName();
 		String uname = update.getName();
 		String random = random(runtime);
@@ -18371,6 +18392,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	public TypeMetadata typeMetadata(DataRuntime runtime, Column meta) {
 		TypeMetadata typeMetadata = meta.getTypeMetadata();
 		if(null == typeMetadata || TypeMetadata.NONE == typeMetadata || meta.getParseLvl() < 2 || type() != meta.getDatabaseType()) {
+            LinkedHashMap<String, TypeMetadata> alias = TypeMetadataHolder.gets(type());
 			typeMetadata = TypeMetadata.parse(type(), meta, alias, spells);
 			meta.setDatabaseType(type());
 			meta.setParseLvl(2);
@@ -18441,9 +18463,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return spell
 	 */
 	public TypeMetadata spell(String name) {
-		TypeMetadata typeMetadata = alias.get(name.toUpperCase());
+		TypeMetadata typeMetadata = TypeMetadataHolder.get(type(), name.toUpperCase());
 		if(null == typeMetadata || TypeMetadata.NONE == typeMetadata) {//拼写兼容  下划线空格兼容
-			typeMetadata = alias.get(spells.get(name.toUpperCase()));
+			typeMetadata = TypeMetadataHolder.get(type(), spells.get(name.toUpperCase()));
 		}
 		return typeMetadata;
 	}
@@ -19002,6 +19024,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 String datatype = run.datatype();
                 TypeMetadata tm = null;
                 if (null != datatype) {
+                    LinkedHashMap<String, TypeMetadata> alias = TypeMetadataHolder.gets(type());
                     tm = alias.get(datatype.toUpperCase());
                     if (null == tm) {
                         log.warn("[类型检测失败][datatype:{}]", datatype);

@@ -256,9 +256,12 @@ public enum StandardTypeMetadata implements TypeMetadata {
     , SHORT(CATEGORY.INT, "SHORT", null, Short.class,1, 1, 1)
 
     , BYTE(CATEGORY.INT, "BYTE", null, Short.class,1, 1, 1)
-    , INT2(CATEGORY.INT, "INT2", null, Integer.class,1, 1, 1)
-    , INT8(CATEGORY.INT, "INT", null, Integer.class,1, 1, 1, MySQL, MSSQL, Informix, GBase8S, SinoDB, Derby, Doris)
-    , INT16(CATEGORY.INT, "INT16", null, Integer.class, 1, 1, 1, IoTDB, ClickHouse)
+    // 2字节
+    , INT2(CATEGORY.INT, "INT2", null, Short.class,1, 1, 1)
+    , INT4(CATEGORY.INT, "INT4", null, Short.class,1, 1, 1)
+    // 8位
+    , INT8(CATEGORY.INT, "INT8", null, Short.class,1, 1, 1, MySQL, MSSQL, Informix, GBase8S, SinoDB, Derby, Doris)
+    , INT16(CATEGORY.INT, "INT16", null, Short.class, 1, 1, 1, IoTDB, ClickHouse)
     , INT32(CATEGORY.INT, "INT32", null, Integer.class, 1, 1, 1, IoTDB, ClickHouse)
     , INT64(CATEGORY.INT, "INT64", null, Integer.class, 1, 1, 1, IoTDB, ClickHouse)
     , INT128(CATEGORY.INT, "INT128", null, Integer.class, 1, 1, 1, ClickHouse)
@@ -658,7 +661,10 @@ public enum StandardTypeMetadata implements TypeMetadata {
             return value;
         }
     }
-   , VARBYTE(CATEGORY.BYTES, "VARBYTE", null, byte[].class, 1, 1, 1, MySQL) {
+    , VARBYTE(CATEGORY.BYTES, "VARBYTE", null, byte[].class, 1, 1, 1, MySQL) {
+        public Object write(Object value, Object def, boolean array, Boolean placeholder) {return BLOB.write(value, def, placeholder);}
+    }
+    , BYTES(CATEGORY.BYTES, "BYTES", null, byte[].class, 1, 1, 1, InfluxDB) {
         public Object write(Object value, Object def, boolean array, Boolean placeholder) {return BLOB.write(value, def, placeholder);}
     }
    , LONGBLOB(CATEGORY.BYTES, "LONGBLOB", null, byte[].class, 1, 1, 1, MySQL) {
@@ -738,16 +744,16 @@ public enum StandardTypeMetadata implements TypeMetadata {
      * ****************************************************************************************************************/
 
 
-    , BINARY_VECTOR(CATEGORY.GEOMETRY, "BINARY_VECTOR", null, ArrayList.class, 1, 0, 1, Milvus)
-    , FLOAT_VECTOR(CATEGORY.GEOMETRY, "FLOAT_VECTOR", null, ArrayList.class, 1, 0, 1, Milvus)
-    , FLOAT16_VECTOR(CATEGORY.GEOMETRY, "FLOAT16_VECTOR", null, ArrayList.class, 1, 0, 1, Milvus)
-    , BFLOAT16_VECTOR(CATEGORY.GEOMETRY, "BFLOAT16_VECTOR", null, ArrayList.class, 1, 0, 1, Milvus)
-    , SPARSE_FLOAT_VECTOR(CATEGORY.GEOMETRY, "SPARSE_FLOAT_VECTOR", null, ArrayList.class, 1, 0, 1, Milvus)
-    , GTSVECTOR(CATEGORY.NONE, "GTSVECTOR", null, ArrayList.class, 1, 1, 1, KingBase)
-    , TSVECTOR(CATEGORY.NONE, "TSVECTOR", null, ArrayList.class, 1, 1, 1, PostgreSQL, KingBase)
-    , DENSE_VECTOR(CATEGORY.NONE, "dense_vector", null, ArrayList.class, 1, 1, 1, ElasticSearch)
-    , VECTOR(CATEGORY.NONE, "vector", null, ArrayList.class, 1, 0, 1)
-    , SPARSE_VECTOR(CATEGORY.NONE, "sparse_vector", null, ArrayList.class, 1, 1, 1, ElasticSearch)
+    , BINARY_VECTOR(CATEGORY.VECTOR, "BINARY_VECTOR", null, ArrayList.class, 1, 0, 1, Milvus)
+    , FLOAT_VECTOR(CATEGORY.VECTOR, "FLOAT_VECTOR", null, ArrayList.class, 1, 0, 1, Milvus)
+    , FLOAT16_VECTOR(CATEGORY.VECTOR, "FLOAT16_VECTOR", null, ArrayList.class, 1, 0, 1, Milvus)
+    , BFLOAT16_VECTOR(CATEGORY.VECTOR, "BFLOAT16_VECTOR", null, ArrayList.class, 1, 0, 1, Milvus)
+    , SPARSE_FLOAT_VECTOR(CATEGORY.VECTOR, "SPARSE_FLOAT_VECTOR", null, ArrayList.class, 1, 0, 1, Milvus)
+    , GTSVECTOR(CATEGORY.VECTOR, "GTSVECTOR", null, ArrayList.class, 1, 1, 1, KingBase)
+    , TSVECTOR(CATEGORY.VECTOR, "TSVECTOR", null, ArrayList.class, 1, 1, 1, PostgreSQL, KingBase)
+    , DENSE_VECTOR(CATEGORY.VECTOR, "dense_vector", null, ArrayList.class, 1, 1, 1, ElasticSearch)
+    , VECTOR(CATEGORY.VECTOR, "vector", null, ArrayList.class, 1, 0, 1)
+    , SPARSE_VECTOR(CATEGORY.VECTOR, "sparse_vector", null, ArrayList.class, 1, 1, 1, ElasticSearch)
     /* *****************************************************************************************************************
      *
      *                                              待实现

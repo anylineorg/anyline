@@ -16,7 +16,7 @@
 
 package org.anyline.data.jdbc.maxcompute;
 
-import org.anyline.data.metadata.TypeMetadataAlias;
+import org.anyline.metadata.type.TypeMetadataAlias;
 import org.anyline.metadata.type.init.StandardTypeMetadata;
 import org.anyline.metadata.type.TypeMetadata;
 

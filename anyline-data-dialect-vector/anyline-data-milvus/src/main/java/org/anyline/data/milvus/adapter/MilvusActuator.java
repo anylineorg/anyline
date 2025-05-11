@@ -21,7 +21,6 @@ import io.milvus.v2.common.DataType;
 import io.milvus.v2.service.collection.request.AddFieldReq;
 import io.milvus.v2.service.collection.request.CreateCollectionReq;
 import io.milvus.v2.service.collection.request.DropCollectionReq;
-import io.milvus.v2.service.collection.request.GetLoadStateReq;
 import io.milvus.v2.service.database.request.CreateDatabaseReq;
 import io.milvus.v2.service.database.request.DropDatabaseReq;
 import io.milvus.v2.service.database.response.ListDatabasesResp;
@@ -31,8 +30,6 @@ import io.milvus.v2.service.rbac.response.DescribeUserResp;
 import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.adapter.DriverActuator;
 import org.anyline.data.adapter.DriverAdapter;
-import org.anyline.data.milvus.metadata.MilvusCollection;
-import org.anyline.data.milvus.metadata.MilvusSchema;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.run.Run;
 import org.anyline.data.runtime.DataRuntime;
@@ -41,6 +38,10 @@ import org.anyline.entity.authorize.Privilege;
 import org.anyline.entity.authorize.Role;
 import org.anyline.entity.authorize.User;
 import org.anyline.metadata.*;
+import org.anyline.metadata.refer.MetadataReferHolder;
+import org.anyline.metadata.type.DatabaseType;
+import org.anyline.metadata.type.TypeMetadata;
+import org.anyline.metadata.type.init.StandardTypeMetadata;
 import org.anyline.util.BasicUtil;
 
 import javax.sql.DataSource;
@@ -516,12 +517,29 @@ public class MilvusActuator implements DriverActuator {
         LinkedHashMap<String, Column> columns = table.getColumns();
         CreateCollectionReq.CollectionSchema schema = client(runtime).createSchema();
         for(Column column:columns.values()){
-            schema.addField(AddFieldReq.builder()
-                    .fieldName(column.getName())
-                    .dataType(DataType.Int64)
-                    .isPrimaryKey(column.isPrimaryKey())
-                    .autoID(column.isAutoIncrement())
-                    .build());
+            TypeMetadata type = column.getTypeMetadata();
+            boolean pk = column.isPrimaryKey();
+            if(pk && type.getCategory() == TypeMetadata.CATEGORY.INT){
+                //主键要求int64 或 varchar
+                type = StandardTypeMetadata.INT64;
+            }
+            TypeMetadata.Refer refer = MetadataReferHolder.get(DatabaseType.Milvus, type);
+            AddFieldReq.AddFieldReqBuilder<?, ?> builder = AddFieldReq.builder();
+            DataType dt = DataType.valueOf(refer.getMeta());
+            builder.fieldName(column.getName())
+                    .dataType(dt)
+                    .isPrimaryKey(pk)
+                    .autoID(column.isAutoIncrement());
+            if(refer.ignorePrecision() == 0){
+                //不忽略precision
+                builder.maxLength(column.getLength());
+            }
+            if(type.getCategory() == TypeMetadata.CATEGORY.VECTOR){
+                //向量类型需要设置维度
+                builder.dimension(column.getPrecision());
+            }
+
+            schema.addField(builder.build());
         }
         return schema;
     }

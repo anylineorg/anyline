@@ -615,11 +615,13 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
     }
     public Column addColumn(String name, String type, int precision, int scale) {
         Column column = new Column(name, type, precision, scale);
+        column.setDatabaseType(databaseType);
         addColumn(column);
         return column;
     }
     public Column addColumn(String name, String type, int precision) {
         Column column = new Column(name, type, precision);
+        column.setDatabaseType(databaseType);
         addColumn(column);
         return column;
     }
@@ -634,6 +636,7 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
     }
     public Column addColumn(String name, String type, boolean nullable, Object def) {
         Column column = new Column();
+        column.setDatabaseType(databaseType);
         column.setName(name);
         column.nullable(nullable);
         column.setDefaultValue(def);
@@ -643,6 +646,7 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
     }
     public Column addColumn(String name, TypeMetadata type, boolean nullable, Object def) {
         Column column = new Column();
+        column.setDatabaseType(databaseType);
         column.setName(name);
         column.nullable(nullable);
         column.setDefaultValue(def);

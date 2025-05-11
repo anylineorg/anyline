@@ -42,6 +42,10 @@ public class MilvusAdapter extends AbstractDriverAdapter {
 
     public MilvusAdapter() {
         super();
+        for (MilvusTypeMetadataAlias alias: MilvusTypeMetadataAlias.values()) {
+            reg(alias);
+            alias(alias.name(), alias.standard());
+        }
     }
     @Override
     public DatabaseType type() {

@@ -2944,6 +2944,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         refer.map(Column.FIELD_CATALOG, "");//忽略
         refer.map(Column.FIELD_SCHEMA, "TABLE_SCHEMA");
         refer.map(Column.FIELD_TABLE, "TABLE_NAME");
+        refer.map(Column.FIELD_OCTET_LENGTH, "CHARACTER_OCTET_LENGTH");
         refer.map(Column.FIELD_NULLABLE, "IS_NULLABLE");
         refer.map(Column.FIELD_CHARSET, "CHARACTER_SET_NAME");
         refer.map(Column.FIELD_COLLATE, "COLLATION_NAME");
