@@ -52,6 +52,7 @@ public enum StandardTypeMetadata implements TypeMetadata {
      * byte[]
      * byte[]-file
      * byte[]-geometry
+     * vector
      *
      ******************************************************************************************************************/
 
@@ -255,29 +256,26 @@ public enum StandardTypeMetadata implements TypeMetadata {
     , SHORT(CATEGORY.INT, "SHORT", null, Short.class,1, 1, 1)
 
     , BYTE(CATEGORY.INT, "BYTE", null, Short.class,1, 1, 1)
-    , INT(CATEGORY.INT, "INT", null, Integer.class,1, 1, 1, MySQL, MSSQL, Informix, GBase8S, SinoDB, Derby, Doris)
-    , INT32(CATEGORY.INT, "INT32", null, Integer.class, 1, 1, 1, IoTDB, ClickHouse)
+    , INT8(CATEGORY.INT, "INT", null, Integer.class,1, 1, 1, MySQL, MSSQL, Informix, GBase8S, SinoDB, Derby, Doris)
     , INT16(CATEGORY.INT, "INT16", null, Integer.class, 1, 1, 1, IoTDB, ClickHouse)
+    , INT32(CATEGORY.INT, "INT32", null, Integer.class, 1, 1, 1, IoTDB, ClickHouse)
     , INT64(CATEGORY.INT, "INT64", null, Integer.class, 1, 1, 1, IoTDB, ClickHouse)
     , INT128(CATEGORY.INT, "INT128", null, Integer.class, 1, 1, 1, ClickHouse)
     , INT256(CATEGORY.INT, "INT256", null, Integer.class, 1, 1, 1, ClickHouse)
     , LONG_TEXT(CATEGORY.TEXT, "LONG", null, String.class,1, 1, 1, ORACLE, ElasticSearch) {}
-    , INT2(CATEGORY.INT, "INT2", null, Integer.class,1, 1, 1, PostgreSQL)
-    , INT4(CATEGORY.INT, "INT4", null, Integer.class,1, 1, 1, PostgreSQL)
-    , INT8(CATEGORY.INT, "INT8", null, Long.class,1, 1, 1, PostgreSQL, Informix, GBase8S, SinoDB)
     , BIGINT(CATEGORY.INT, "BIGINT", null, Long.class,1, 1, 1, MySQL, Informix, GBase8S, SinoDB, HANA, Derby, KingBase, Doris)
     , LONG(CATEGORY.INT, "LONG", null, Long.class, 1, 1, 1, ElasticSearch)
     , UNSIGNED_LONG(CATEGORY.INT, "UNSIGNED_LONG", null, Long.class, 1, 1, 1, ElasticSearch)
     , OID(CATEGORY.INT, "OID", null, Long.class, 1, 1, 1, KingBase)
     , LARGEINT(CATEGORY.INT, "LARGEINT", null, Long.class,1, 1, 1, Doris)
     , MEDIUMINT(CATEGORY.INT, "MEDIUMINT", null, Integer.class,1, 1, 1, MySQL)
-    , INTEGER(CATEGORY.INT, "INTEGER", null, Integer.class,1, 1, 1, MySQL, SQLite, HANA, ElasticSearch, Derby, KingBase)
-    , SMALLINT(CATEGORY.INT, "SMALLINT", null, Integer.class,1, 1, 1, MySQL, Informix, GBase8S, SinoDB, HANA, Derby, KingBase, Doris)
-    , TINYINT(CATEGORY.INT, "TINYINT", null, Integer.class,1, 1, 1, MySQL, HANA, KingBase, Doris)
-    , SERIAL(CATEGORY.INT, "SERIAL", INT,  Integer.class, 1, 1, 1, PostgreSQL, Informix, GBase8S, SinoDB)
-    , SERIAL2(CATEGORY.INT, "SERIAL2", SMALLINT, Integer.class,1, 1, 1, PostgreSQL)
-    , SERIAL4(CATEGORY.INT, "SERIAL4", INT, Integer.class,1, 1, 1, PostgreSQL)
-    , SERIAL8(CATEGORY.INT, "SERIAL8", BIGINT, Long.class,1, 1, 1, PostgreSQL, Informix, GBase8S, SinoDB)
+    , INTEGER(CATEGORY.INT, "INTEGER", INT32, Integer.class,1, 1, 1, MySQL, SQLite, HANA, ElasticSearch, Derby, KingBase)
+    , SMALLINT(CATEGORY.INT, "SMALLINT", INT16, Integer.class,1, 1, 1, MySQL, Informix, GBase8S, SinoDB, HANA, Derby, KingBase, Doris)
+    , TINYINT(CATEGORY.INT, "TINYINT", INT8, Integer.class,1, 1, 1, MySQL, HANA, KingBase, Doris)
+    , SERIAL(CATEGORY.INT, "SERIAL", INT32,  Integer.class, 1, 1, 1, PostgreSQL, Informix, GBase8S, SinoDB)
+    , SERIAL2(CATEGORY.INT, "SERIAL2", INT16, Integer.class,1, 1, 1, PostgreSQL)
+    , SERIAL4(CATEGORY.INT, "SERIAL4", INT32, Integer.class,1, 1, 1, PostgreSQL)
+    , SERIAL8(CATEGORY.INT, "SERIAL8", INT64, Long.class,1, 1, 1, PostgreSQL, Informix, GBase8S, SinoDB)
     , SMALLSERIAL(CATEGORY.INT, "SMALLSERIAL", SMALLINT, Integer.class,1, 1, 1, PostgreSQL)
     , BIGSERIAL(CATEGORY.INT, "BIGSERIAL", BIGINT, Long.class,1, 1, 1, PostgreSQL, Informix, GBase8S, SinoDB)
     , BOOLEAN(CATEGORY.BOOLEAN, "BOOLEAN", null, Boolean.class,1, 1, 1, Informix, GBase8S, SinoDB, HANA, ElasticSearch, KingBase)
@@ -385,59 +383,41 @@ public enum StandardTypeMetadata implements TypeMetadata {
    , REAL(CATEGORY.FLOAT, "REAL", DOUBLE, Double.class, 1, 0, 0, MySQL, SQLite, Informix, GBase8S, SinoDB, HANA, Derby, KingBase) {
         public Object write(Object value, Object def, boolean array, Boolean placeholder) {return FLOAT.write(value, def, placeholder);}
     }
-    ,CLICKHOUSE_INT8(CATEGORY.INT, "Int8", INTEGER, Integer.class, 1, 1, 1, ClickHouse) {
-        public Object write(Object value, Object def, boolean array, Boolean placeholder) {return SHORT.write(value, def, placeholder);}
-    }
-    ,CLICKHOUSE_INT16(CATEGORY.INT, "Int16", INTEGER, Integer.class, 1, 1, 1, ClickHouse) {
-        public Object write(Object value, Object def, boolean array, Boolean placeholder) {return TINYINT.write(value, def, placeholder);}
-    }
-    ,CLICKHOUSE_INT32(CATEGORY.INT, "Int32", INTEGER, Integer.class, 1, 1, 1, ClickHouse) {
-        public Object write(Object value, Object def, boolean array, Boolean placeholder) {return SMALLINT.write(value, def, placeholder);}
-    }
-    ,CLICKHOUSE_INT64(CATEGORY.INT, "Int64", INTEGER, Long.class, 1, 1, 1, ClickHouse) {
-        public Object write(Object value, Object def, boolean array, Boolean placeholder) {return BIGINT.write(value, def, placeholder);}
-    }
-    ,CLICKHOUSE_INT128(CATEGORY.INT, "Int128", INTEGER, Long.class, 1, 1, 1, ClickHouse) {
-        public Object write(Object value, Object def, boolean array, Boolean placeholder) {return INTEGER.write(value, def, placeholder);}
-    }
-    ,CLICKHOUSE_INT256(CATEGORY.INT, "Int256", INTEGER, Long.class, 1, 1, 1, ClickHouse) {
-        public Object write(Object value, Object def, boolean array, Boolean placeholder) {return INTEGER.write(value, def, placeholder);}
-    }
 
-    ,CLICKHOUSE_UINT8(CATEGORY.INT, "UInt8", INTEGER, Short.class, 1, 1, 1, ClickHouse) {
+    ,UINT8(CATEGORY.INT, "UInt8", INTEGER, Short.class, 1, 1, 1, ClickHouse) {
         public Object write(Object value, Object def, boolean array, Boolean placeholder) {return INTEGER.write(value, def, placeholder);}
     }
-    ,CLICKHOUSE_UINT16(CATEGORY.INT, "UInt16", INTEGER, Short.class, 1, 1, 1, ClickHouse) {
+    ,UINT16(CATEGORY.INT, "UInt16", INTEGER, Short.class, 1, 1, 1, ClickHouse) {
         public Object write(Object value, Object def, boolean array, Boolean placeholder) {return INTEGER.write(value, def, placeholder);}
     }
-    ,CLICKHOUSE_UINT32(CATEGORY.INT, "UInt32", INTEGER, Integer.class, 1, 1, 1, ClickHouse) {
+    ,UINT32(CATEGORY.INT, "UInt32", INTEGER, Integer.class, 1, 1, 1, ClickHouse) {
         public Object write(Object value, Object def, boolean array, Boolean placeholder) {return INTEGER.write(value, def, placeholder);}
     }
-    ,CLICKHOUSE_UINT64(CATEGORY.INT, "UInt64", INTEGER, Long.class, 1, 1, 1, ClickHouse) {
+    ,UINT64(CATEGORY.INT, "UInt64", INTEGER, Long.class, 1, 1, 1, ClickHouse) {
         public Object write(Object value, Object def, boolean array, Boolean placeholder) {return INTEGER.write(value, def, placeholder);}
     }
-    ,CLICKHOUSE_UINT128(CATEGORY.INT, "UInt128", INTEGER, Long.class, 1, 1, 1, ClickHouse) {
+    ,UINT128(CATEGORY.INT, "UInt128", INTEGER, Long.class, 1, 1, 1, ClickHouse) {
         public Object write(Object value, Object def, boolean array, Boolean placeholder) {return INTEGER.write(value, def, placeholder);}
     }
-    ,CLICKHOUSE_UINT256(CATEGORY.INT, "UInt256", INTEGER, Long.class, 1, 1, 1, ClickHouse) {
+    ,UINT256(CATEGORY.INT, "UInt256", INTEGER, Long.class, 1, 1, 1, ClickHouse) {
         public Object write(Object value, Object def, boolean array, Boolean placeholder) {return INTEGER.write(value, def, placeholder);}
     }
-    ,CLICKHOUSE_FLOAT32(CATEGORY.FLOAT, "Float32", FLOAT, Long.class, 1, 1, 1, ClickHouse) {
+    ,FLOAT32(CATEGORY.FLOAT, "Float32", FLOAT, Long.class, 1, 1, 1, ClickHouse) {
         public Object write(Object value, Object def, boolean array, Boolean placeholder) {return FLOAT.write(value, def, placeholder);}
     }
-    ,CLICKHOUSE_FLOAT64(CATEGORY.FLOAT, "Float64", DOUBLE, Long.class, 1, 1, 1, ClickHouse) {
+    ,FLOAT64(CATEGORY.FLOAT, "Float64", DOUBLE, Long.class, 1, 1, 1, ClickHouse) {
         public Object write(Object value, Object def, boolean array, Boolean placeholder) {return FLOAT.write(value, def, placeholder);}
     }
-    ,CLICKHOUSE_DECIMAL32(CATEGORY.FLOAT, "Decimal32", DECIMAL, BigDecimal.class, 1, 0, 2, ClickHouse) {
+    ,DECIMAL32(CATEGORY.FLOAT, "Decimal32", DECIMAL, BigDecimal.class, 1, 0, 2, ClickHouse) {
         public Object write(Object value, Object def, boolean array, Boolean placeholder) {return FLOAT.write(value, def, placeholder);}
     }
-    ,CLICKHOUSE_DECIMAL64(CATEGORY.FLOAT, "Decimal64", DECIMAL, BigDecimal.class, 1, 0, 2, ClickHouse) {
+    ,DECIMAL64(CATEGORY.FLOAT, "Decimal64", DECIMAL, BigDecimal.class, 1, 0, 2, ClickHouse) {
         public Object write(Object value, Object def, boolean array, Boolean placeholder) {return FLOAT.write(value, def, placeholder);}
     }
-    ,CLICKHOUSE_DECIMAL128(CATEGORY.FLOAT, "Decimal128", DECIMAL, BigDecimal.class, 1, 0, 2, ClickHouse) {
+    ,DECIMAL128(CATEGORY.FLOAT, "Decimal128", DECIMAL, BigDecimal.class, 1, 0, 2, ClickHouse) {
         public Object write(Object value, Object def, boolean array, Boolean placeholder) {return FLOAT.write(value, def, placeholder);}
     }
-    ,CLICKHOUSE_DECIMAL256(CATEGORY.FLOAT, "Decimal256", DECIMAL, BigDecimal.class, 1, 0, 2, ClickHouse) {
+    ,DECIMAL256(CATEGORY.FLOAT, "Decimal256", DECIMAL, BigDecimal.class, 1, 0, 2, ClickHouse) {
         public Object write(Object value, Object def, boolean array, Boolean placeholder) {return FLOAT.write(value, def, placeholder);}
     }
     /* *****************************************************************************************************************
@@ -615,12 +595,12 @@ public enum StandardTypeMetadata implements TypeMetadata {
             return DATE.write(value, def, placeholder);
         }
     }
-    , CLICKHOUSE_DATE32(CATEGORY.DATE, "DATE32", null, java.sql.Date.class, 1, 1, 1, ClickHouse) {
+    , DATE32(CATEGORY.DATE, "DATE32", null, java.sql.Date.class, 1, 1, 1, ClickHouse) {
         public Object write(Object value, Object def, boolean array, Boolean placeholder) {
             return DATE.write(value, def, placeholder);
         }
     }
-    , CLICKHOUSE_DATETIME64(CATEGORY.DATE, "DATETIME64", null, java.sql.Timestamp.class, 1, 1, 1, ClickHouse) {
+    , DATETIME64(CATEGORY.DATE, "DATETIME64", null, java.sql.Timestamp.class, 1, 1, 1, ClickHouse) {
         public Object write(Object value, Object def, boolean array, Boolean placeholder) {
             return DATETIME.write(value, def, placeholder);
         }
@@ -752,6 +732,23 @@ public enum StandardTypeMetadata implements TypeMetadata {
 
     /* *****************************************************************************************************************
      *
+     *                                              vector
+     *
+     * ****************************************************************************************************************/
+
+
+    , BINARY_VECTOR(CATEGORY.GEOMETRY, "BINARY_VECTOR", null, ArrayList.class, 1, 0, 1, Milvus)
+    , FLOAT_VECTOR(CATEGORY.GEOMETRY, "FLOAT_VECTOR", null, ArrayList.class, 1, 0, 1, Milvus)
+    , FLOAT16_VECTOR(CATEGORY.GEOMETRY, "FLOAT16_VECTOR", null, ArrayList.class, 1, 0, 1, Milvus)
+    , BFLOAT16_VECTOR(CATEGORY.GEOMETRY, "BFLOAT16_VECTOR", null, ArrayList.class, 1, 0, 1, Milvus)
+    , SPARSE_FLOAT_VECTOR(CATEGORY.GEOMETRY, "SPARSE_FLOAT_VECTOR", null, ArrayList.class, 1, 0, 1, Milvus)
+    , GTSVECTOR(CATEGORY.NONE, "GTSVECTOR", null, ArrayList.class, 1, 1, 1, KingBase)
+    , TSVECTOR(CATEGORY.NONE, "TSVECTOR", null, ArrayList.class, 1, 1, 1, PostgreSQL, KingBase)
+    , DENSE_VECTOR(CATEGORY.NONE, "dense_vector", null, ArrayList.class, 1, 1, 1, ElasticSearch)
+    , VECTOR(CATEGORY.NONE, "vector", null, ArrayList.class, 1, 0, 1)
+    , SPARSE_VECTOR(CATEGORY.NONE, "sparse_vector", null, ArrayList.class, 1, 1, 1, ElasticSearch)
+    /* *****************************************************************************************************************
+     *
      *                                              待实现
      *
      * ****************************************************************************************************************/
@@ -764,7 +761,6 @@ public enum StandardTypeMetadata implements TypeMetadata {
     , CID(CATEGORY.NONE, "CID", null, null, 1, 1, 1, KingBase)
     , DATERANGE(CATEGORY.NONE, "DATERANGE", null, null, 1, 1, 1, KingBase)
     , DSINTERVAL(CATEGORY.NONE, "DSINTERVAL", null, null, 1, 1, 1, KingBase)
-    , GTSVECTOR(CATEGORY.NONE, "GTSVECTOR", null, null, 1, 1, 1, KingBase)
     , INT4RANGE(CATEGORY.NONE, "INT4RANGE", null, null, 1, 1, 1, KingBase)
     , INT8RANGE(CATEGORY.NONE, "INT8RANGE", null, null, 1, 1, 1, KingBase)
     , JSONPATH(CATEGORY.NONE, "JSONPATH", null, null, 1, 1, 1, KingBase)
@@ -814,7 +810,6 @@ public enum StandardTypeMetadata implements TypeMetadata {
     , SET(CATEGORY.NONE, "SET", null, String.class, 1, 1, 1, MySQL, SinoDB)
     , LIST(CATEGORY.NONE, "LIST", null, String.class, 1, 1, 1, SinoDB)
     , TSQUERY(CATEGORY.NONE, "TSQUERY", null, null, 1, 1, 1, PostgreSQL, KingBase)
-    , TSVECTOR(CATEGORY.NONE, "TSVECTOR", null, null, 1, 1, 1, PostgreSQL, KingBase)
     , PG_SNAPSHOT(CATEGORY.NONE, "PG_SNAPSHOT", null, null, 1, 1, 1, PostgreSQL)
     /**
      * pg
@@ -844,8 +839,6 @@ public enum StandardTypeMetadata implements TypeMetadata {
     , IPV6(CATEGORY.NONE, "IPV6", null, null, 1, 1, 1, ClickHouse)
     , ALIAS(CATEGORY.NONE, "alias", null, null, 1, 1, 1, ElasticSearch)
     , COMPLETION(CATEGORY.NONE, "completion", null, null, 1, 1, 1, ElasticSearch)
-    , DENSE_VECTOR(CATEGORY.NONE, "dense_vector", null, null, 1, 1, 1, ElasticSearch)
-    , VECTOR(CATEGORY.NONE, "vector", null, null, 1, 0, 1)
     , FLATTENED(CATEGORY.NONE, "flattened", null, null, 1, 1, 1, ElasticSearch)
     , JOIN(CATEGORY.NONE, "join", null, null, 1, 1, 1, ElasticSearch)
     , GEO_POINT(CATEGORY.NONE, "geo_point", null, null, 1, 1, 1, ElasticSearch)
@@ -856,7 +849,6 @@ public enum StandardTypeMetadata implements TypeMetadata {
     , RANK_FEATURES(CATEGORY.NONE, "rank_features", null, null, 1, 1, 1, ElasticSearch)
     , RANK_FEATURE(CATEGORY.NONE, "rank_feature", null, null, 1, 1, 1, ElasticSearch)
     , SHAPE(CATEGORY.NONE, "shape", null, null, 1, 1, 1, ElasticSearch)
-    , SPARSE_VECTOR(CATEGORY.NONE, "sparse_vector", null, null, 1, 1, 1, ElasticSearch)
     , TOKEN_COUNT(CATEGORY.NONE, "token_count", null, null, 1, 1, 1, ElasticSearch)
     , VERSION(CATEGORY.NONE, "version", null, null, 1, 1, 1, ElasticSearch)
     , AGGREGATE_METRIC_DOUBLE(CATEGORY.NONE, "aggregate_metric_double", null, null, 1, 1, 1, ElasticSearch)
