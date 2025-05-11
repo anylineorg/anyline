@@ -138,6 +138,7 @@ public class Column extends TableAffiliation<Column> implements Serializable {
     protected Integer precisionLength             ; // 精确长度 根据数据类型返回precision或length
     protected Integer length                      ; // 长度(注意varchar,date,timestamp,number的区别)
     protected String lengthUnit = ""              ; // 长度单位如byte char
+    protected Integer octetLength                 ;
     protected Integer precision                   ; // 有效位数 整个字段的长度(包含小数部分)  123.45：precision = 5, scale = 2 对于SQL Server 中 varchar(max)设置成 -1 null:表示未设置
     protected Integer scale                       ; // 小数部分的长度
     protected Integer dimension                   ; // 维度(向量)
@@ -980,6 +981,20 @@ public class Column extends TableAffiliation<Column> implements Serializable {
         return this;
     }
 
+    public Integer getOctetLength() {
+        if(getmap && null != update) {
+            return update.getOctetLength();
+        }
+        return octetLength;
+    }
+    public Column setOctetLength(Integer length) {
+        if(setmap && null != update) {
+            update.setOctetLength(length);
+            return this;
+        }
+        this.octetLength = length;
+        return this;
+    }
     public Integer getPrecision() {
         if(getmap && null != update) {
             return update.getPrecision();
