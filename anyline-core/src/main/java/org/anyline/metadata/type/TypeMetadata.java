@@ -33,7 +33,7 @@ public interface TypeMetadata {
      * CATEGORY主要是对数据库中数据类型的归类主要用亚区分 length/precision/scale,如text类型不需要length而varchar类型需要
      * CATEGORY_GROUP是对CATEGORY的进一步归类，更接近Java类型
      */
-    enum CATEGORY_GROUP{STRING, NUMBER, BOOLEAN, BYTES, DATETIME, COLLECTION, GEOMETRY, INTERVAL, OTHER, NONE}
+    enum CATEGORY_GROUP{STRING, NUMBER, BOOLEAN, BYTES, DATETIME, COLLECTION, GEOMETRY, INTERVAL, VECTOR, OTHER, NONE}
     //要用来区分 length/precision
     //BLOB不需要长度 BYTES需要长度
     //TIMESTAMP在有些数据库中支持SCALE需要在单独的alias中设置如TIMESTAMP(6)
@@ -52,6 +52,7 @@ public interface TypeMetadata {
         COLLECTION(CATEGORY_GROUP.COLLECTION, 1, 1, 1),
         GEOMETRY(CATEGORY_GROUP.GEOMETRY, 1, 1, 1),
         INTERVAL(CATEGORY_GROUP.INTERVAL, 1, 2, 3),
+        VECTOR(CATEGORY_GROUP.VECTOR, 1, 2, 3),
         OTHER(CATEGORY_GROUP.OTHER, 1, 1, 1),
         NONE(CATEGORY_GROUP.NONE, 1, 1, 1);
         private final CATEGORY_GROUP group;

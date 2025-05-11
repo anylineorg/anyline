@@ -256,6 +256,7 @@ public enum StandardTypeMetadata implements TypeMetadata {
     , SHORT(CATEGORY.INT, "SHORT", null, Short.class,1, 1, 1)
 
     , BYTE(CATEGORY.INT, "BYTE", null, Short.class,1, 1, 1)
+    , INT2(CATEGORY.INT, "INT2", null, Integer.class,1, 1, 1)
     , INT8(CATEGORY.INT, "INT", null, Integer.class,1, 1, 1, MySQL, MSSQL, Informix, GBase8S, SinoDB, Derby, Doris)
     , INT16(CATEGORY.INT, "INT16", null, Integer.class, 1, 1, 1, IoTDB, ClickHouse)
     , INT32(CATEGORY.INT, "INT32", null, Integer.class, 1, 1, 1, IoTDB, ClickHouse)
