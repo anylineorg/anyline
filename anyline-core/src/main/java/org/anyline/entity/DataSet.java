@@ -2205,7 +2205,17 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
     }
 
     public String concat(String key) {
-        return BasicUtil.concat(getStrings(key), ",");
+        return concat(false, key);
+    }
+
+    public String concat(boolean distinct, String key) {
+        List<String> values = null;
+        if(distinct){
+            values = getDistinctStrings(key);
+        }else{
+            values = getStrings(key);
+        }
+        return BasicUtil.concat(values, ",");
     }
 
     /**
