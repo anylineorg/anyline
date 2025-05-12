@@ -26,8 +26,8 @@
 
 
  
-***快速测试请参考[【anyline-simple-clear】](anyline-simple-clear)***
-***详细语法请参考[【anyline-simple】](anyline-simple)***  
+***快速测试请参考[【anyline-simple-clear】](/anyline/anyline-simple-clear)***
+***详细语法请参考[【anyline-simple】](/anyline/anyline-simple)***  
 关于多数据源，请先阅读   
 [【六种方式注册数据源】](http://doc.anyline.org/aa/a9_3451)
 [【三种方式切换数据源】](http://doc.anyline.org/aa/64_3449)
