@@ -24,30 +24,17 @@
 </tr>
 </table>
 
-
- 
-***快速测试请参考[【anyline-simple-clear】](/anyline/anyline-simple-clear)***
-***详细语法请参考[【anyline-simple】](/anyline/anyline-simple)***  
-关于多数据源，请先阅读   
-[【六种方式注册数据源】](http://doc.anyline.org/aa/a9_3451)
-[【三种方式切换数据源】](http://doc.anyline.org/aa/64_3449)
-[【多数据源事务控制】](http://doc.anyline.org/ss/23_1189)  
-低代码平台、数据中台等场景需要生成SQL/操作元数据参考  
-[【JDBCAdapter】](http://doc.anyline.org/ss/01_1193)
-[【返回SQL方言、导出SQL】](http://doc.anyline.org/aa/70_3793)
-[【表结构差异对比及生成DDL】](http://doc.anyline.org/aa/a2_3936)
-[【ConfigStore与JSON互换】](http://doc.anyline.org/aa/73_13975)
-[【service.metadata】](http://doc.anyline.org/ss/22_1174)
-[【SQL.metadata】](http://doc.anyline.org/aa/c1_3847)
-
-
 ## 简介
-AnyLine的核心是一个面向运行时的 元数据动态关系映射  
-可以适配各种关系型与非关系型数据库(及各种国产小众数据库)    
+AnyLine的核心是一个面向运行时的 元数据动态映射   
+适配100+关系/非关系型数据库(及各种国产小众数据库)    
 常用于动态结构场景的底层支持，作为SQL解析引擎或适配器出现  
-如:数据中台、可视化数据源、低代码、SAAS、自定义表单、异构数据库迁移同步、 物联网车联网数据处理、 动态表单、动态查询条件、 爬虫数据解析等。  
-参考【[适用场景](http://doc.anyline.org/ss/ed_14)】  [【‌Overview】](https://deepwiki.com/anylineorg/anyline)
-
+【[说明文档](http://doc.anyline.org)】
+【[快速入门](http://doc.anyline.org/ss/f5_1150)】
+【[适用场景](http://doc.anyline.org/ss/ed_14)】
+【[结构图](https://deepwiki.com/anylineorg/anyline)】
+## 目标：
+依托内置规则+外部插件合成方言转换引擎与元数据映射库   
+以此基础建立跨数据库的通用标准‌，实现异构数据库的统一操作‌  
 ## 核心功能：
 
 - **动态数据源管理**  
