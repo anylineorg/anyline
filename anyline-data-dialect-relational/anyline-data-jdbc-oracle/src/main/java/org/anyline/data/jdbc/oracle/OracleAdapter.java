@@ -80,13 +80,13 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter {
         for(OracleReader reader: OracleReader.values()) {
             reg(reader.supports(), reader.reader());
         }
-        alias.put("BFILE", new AbstractTypeMetadata(TypeMetadata.CATEGORY.BYTES,"BFILE", oracle.sql.BFILE.class, 1, 1, 1, DatabaseType.ORACLE));
-        alias.put("ROWID", new AbstractTypeMetadata(TypeMetadata.CATEGORY.TEXT, "ROWID",  oracle.sql.ROWID.class, 1, 1, 1, DatabaseType.ORACLE));
-        alias.put("UROWID", new AbstractTypeMetadata(TypeMetadata.CATEGORY.TEXT, "UROWID", oracle.sql.ROWID.class, 1, 1, 1, DatabaseType.ORACLE));
-        alias.put("DATE", new AbstractTypeMetadata(TypeMetadata.CATEGORY.DATE, "DATE",java.util.Date.class, java.sql.Timestamp.class, 1, 1, 1, DatabaseType.ORACLE));
-        alias.put("TIMESTAMP", new AbstractTypeMetadata(TypeMetadata.CATEGORY.TIMESTAMP, "TIMESTAMP", java.sql.Timestamp.class, oracle.sql.TIMESTAMP.class, 1, 1, 1, DatabaseType.ORACLE));
-        alias.put("TIMESTAMPTZ", new AbstractTypeMetadata(TypeMetadata.CATEGORY.TIMESTAMP, "TIMESTAMPTZ", java.sql.Timestamp.class, oracle.sql.TIMESTAMPTZ.class, 1, 1, 1, DatabaseType.ORACLE));
-        alias.put("TIMESTAMPLTZ", new AbstractTypeMetadata(TypeMetadata.CATEGORY.TIMESTAMP, "TIMESTAMPLTZ", java.sql.Timestamp.class, oracle.sql.TIMESTAMPLTZ.class, 1, 1, 1, DatabaseType.ORACLE));
+        alias("BFILE", new AbstractTypeMetadata(TypeMetadata.CATEGORY.BYTES,"BFILE", oracle.sql.BFILE.class, 1, 1, 1, DatabaseType.ORACLE));
+        alias("ROWID", new AbstractTypeMetadata(TypeMetadata.CATEGORY.TEXT, "ROWID",  oracle.sql.ROWID.class, 1, 1, 1, DatabaseType.ORACLE));
+        alias("UROWID", new AbstractTypeMetadata(TypeMetadata.CATEGORY.TEXT, "UROWID", oracle.sql.ROWID.class, 1, 1, 1, DatabaseType.ORACLE));
+        alias("DATE", new AbstractTypeMetadata(TypeMetadata.CATEGORY.DATE, "DATE",java.util.Date.class, java.sql.Timestamp.class, 1, 1, 1, DatabaseType.ORACLE));
+        alias("TIMESTAMP", new AbstractTypeMetadata(TypeMetadata.CATEGORY.TIMESTAMP, "TIMESTAMP", java.sql.Timestamp.class, oracle.sql.TIMESTAMP.class, 1, 1, 1, DatabaseType.ORACLE));
+        alias("TIMESTAMPTZ", new AbstractTypeMetadata(TypeMetadata.CATEGORY.TIMESTAMP, "TIMESTAMPTZ", java.sql.Timestamp.class, oracle.sql.TIMESTAMPTZ.class, 1, 1, 1, DatabaseType.ORACLE));
+        alias("TIMESTAMPLTZ", new AbstractTypeMetadata(TypeMetadata.CATEGORY.TIMESTAMP, "TIMESTAMPLTZ", java.sql.Timestamp.class, oracle.sql.TIMESTAMPLTZ.class, 1, 1, 1, DatabaseType.ORACLE));
 
     }
 
