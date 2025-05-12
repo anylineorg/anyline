@@ -25,7 +25,7 @@
 </tr>
 </table>
 
-The core of AnyLine is a runtime-oriented dynamic metadata mapping system that is compatible with over 100 relational and non-relational databases. 
+The core of AnyLine is a runtime-oriented dynamic metadata mapping system that is compatible with over 100 relational and non-relational databases.   
 It is often used as the underlying support for dynamic structure scenarios, appearing as an SQL parsing engine or adapter.  
 【[Document](http://doc.anyline.org)】
 【[Quick Start](http://doc.anyline.org/ss/f5_1150)】
@@ -33,7 +33,7 @@ It is often used as the underlying support for dynamic structure scenarios, appe
 【[Architecture Diagram](https://deepwiki.com/anylineorg/anyline)】
 
 
-## Vision:
+## Vision  
 Relying on a dialect conversion engine and metadata mapping library synthesized by built-in rules and external plugins,  
 we aim to establish a universal standard across databases on this foundation, enabling unified operations on heterogeneous databases.  
 
