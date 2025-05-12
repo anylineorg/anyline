@@ -1,12 +1,7 @@
 [![EN doc](https://img.shields.io/badge/document-English-blue.svg)](README.md)
 [![CN doc](https://img.shields.io/badge/文档-中文版-blue.svg)](README_zh_CN.md)  
 
-Dynamically register and switch data sources during runtime, automatically generate SQL (DDL/DML/DQL), read and write metadata, and compare database structure differences. Adapt to over 100 relational/non relational databases. Commonly used for low-level support in dynamic scenarios, such as data middleware, visualization, low code backend, workflow, custom forms, heterogeneous database migration and synchronization, IoT vehicle data processing, data cleaning, runtime custom reports/query conditions/data structures, crawling insect data parsing, etc  
 
-[【‌System Architecture Overview】](https://deepwiki.com/anylineorg/anyline)    
-***Quick test refer[【anyline-simple-clear】](https://gitee.com/anyline/anyline-simple-clear)***  
-***Syntax refer[【anyline-simple】](https://gitee.com/anyline/anyline-simple)***  
-any questions, please contact skype: server@anyline.org  
 <table style="text-align: center;">
   <tr>
   <td>
@@ -26,14 +21,22 @@ any questions, please contact skype: server@anyline.org
   </td>
   </tr>
   <tr>
-    <td colspan="3">regardless of bugs, doubts, requirements, source code, competitors</td>
+    <td colspan="3">regardless of bugs, doubts, requirements, source code, competitors<br/>any questions, please contact skype: server@anyline.org  </td>
 </tr>
 </table>
 
+The core of AnyLine is a runtime-oriented dynamic metadata mapping system that is compatible with over 100 relational and non-relational databases. 
+It is often used as the underlying support for dynamic structure scenarios, appearing as an SQL parsing engine or adapter.
+【[Document](http://doc.anyline.org)】
+【[Quick Start](http://doc.anyline.org/ss/f5_1150)】
+【[Applicable Scenarios](http://doc.anyline.org/ss/ed_14)】
+【[Architecture Diagram](https://deepwiki.com/anylineorg/anyline)】
 
-markdown
-Copy Code
-# AnyLine MDM: Runtime-Oriented Metadata Dynamic Mapping
+
+## Vision:
+Relying on a dialect conversion engine and metadata mapping library synthesized by built-in rules and external plugins,  
+we aim to establish a universal standard across databases on this foundation, enabling unified operations on heterogeneous databases.  
+
 
 ## Core Concept
 AnyLine MDM focuses on &zwnj;**runtime metadata dynamic mapping**&zwnj;, primarily used for operating database structures, reading/writing metadata, and providing underlying support for dynamic scenarios. It often acts as an &zwnj;**SQL synthesis engine**&zwnj; or &zwnj;**adapter**&zwnj; in contexts such as:

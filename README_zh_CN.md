@@ -32,7 +32,7 @@ AnyLine的核心是一个面向运行时的 元数据动态映射
 【[快速入门](http://doc.anyline.org/ss/f5_1150)】
 【[适用场景](http://doc.anyline.org/ss/ed_14)】
 【[结构图](https://deepwiki.com/anylineorg/anyline)】
-## 目标：
+## 愿景：
 依托内置规则+外部插件合成方言转换引擎与元数据映射库   
 以此基础建立跨数据库的通用标准‌，实现异构数据库的统一操作‌  
 ## 核心功能：
