@@ -52,6 +52,7 @@
 		<module>anyline-data-jdbc-postgresql</module>
 		<module>anyline-data-jdbc-redshift</module>
 		<module>anyline-data-jdbc-rethinkdb</module>
+		<module>anyline-data-jdbc-sadas</module>
 		<module>anyline-data-jdbc-selectdb</module>                		<!--天翼数智-->
 		<module>anyline-data-jdbc-sequoiadb</module>					<!--巨杉-->
 		<module>anyline-data-jdbc-sinodb</module>						<!--星瑞格-->

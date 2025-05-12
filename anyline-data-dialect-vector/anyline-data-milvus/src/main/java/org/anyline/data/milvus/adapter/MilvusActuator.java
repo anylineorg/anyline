@@ -20,7 +20,9 @@ import io.milvus.v2.client.MilvusClientV2;
 import io.milvus.v2.common.DataType;
 import io.milvus.v2.service.collection.request.AddFieldReq;
 import io.milvus.v2.service.collection.request.CreateCollectionReq;
+import io.milvus.v2.service.collection.request.DescribeCollectionReq;
 import io.milvus.v2.service.collection.request.DropCollectionReq;
+import io.milvus.v2.service.collection.response.DescribeCollectionResp;
 import io.milvus.v2.service.collection.response.ListCollectionsResp;
 import io.milvus.v2.service.database.request.CreateDatabaseReq;
 import io.milvus.v2.service.database.request.DropDatabaseReq;
@@ -269,19 +271,54 @@ public class MilvusActuator implements DriverActuator {
         if(null == previous){
             previous = new LinkedHashMap<>();
         }
-        boolean empty = previous.isEmpty();
-        ListCollectionsResp list = client(runtime).listCollections();
-        List<String> names = list.getCollectionNames();
-        for(String name:names){
-            if(empty || !previous.containsKey(name.toUpperCase())){
-                MilvusCollection table = new MilvusCollection();
-                table.setName(name);
-                previous.put(name.toUpperCase(), (T)table);
+        List<String> names = new ArrayList<>();
+        String name = query.getName();
+        MilvusClientV2 client = client(runtime);
+        if(BasicUtil.isNotEmpty(name)){
+            names.add(name);
+        }else {
+            boolean empty = previous.isEmpty();
+            ListCollectionsResp list = client.listCollections();
+            names = list.getCollectionNames();
+            for (String item : names) {
+                if (empty || !previous.containsKey(item.toUpperCase())) {
+                    MilvusCollection table = new MilvusCollection();
+                    table.setName(item);
+                    previous.put(item.toUpperCase(), (T) table);
+                }
+            }
+        }
+        for (T item : previous.values()) {
+            DescribeCollectionReq request = DescribeCollectionReq.builder()
+                    .collectionName(item.getName())
+                    .build();
+            DescribeCollectionResp resp = client.describeCollection(request);
+            List<CreateCollectionReq.FieldSchema> fields = resp.getCollectionSchema().getFieldSchemaList();
+            for(CreateCollectionReq.FieldSchema field : fields){
+                Column column = column(field);
+                item.addColumn(column);
             }
         }
         return previous;
     }
-
+    private Column column(CreateCollectionReq.FieldSchema field){
+        Column column = new Column();
+        column.setName(field.getName());
+        column.setPrimary(field.getIsPrimaryKey());
+        column.setNullable(field.getIsNullable());
+        DataType dt = field.getDataType();
+        column.setType(dt.name());
+        Integer length = field.getMaxLength();
+        if(null != length){
+            column.setLength(length);
+        }
+        Integer dimension = field.getDimension();
+        if(null != dimension){
+            column.setDimension(dimension);
+        }
+        column.setComment(field.getDescription());
+        return column;
+    }
     /**
      * table[结果集封装]<br/>
      * 根据驱动内置方法补充
@@ -297,8 +334,9 @@ public class MilvusActuator implements DriverActuator {
         if(null == previous){
             previous = new ArrayList<>();
         }
+        MilvusClientV2 client = client(runtime);
         boolean empty = previous.isEmpty();
-        ListCollectionsResp list = client(runtime).listCollections();
+        ListCollectionsResp list = client.listCollections();
         List<String> names = list.getCollectionNames();
         for(String name:names){
             boolean append = true;

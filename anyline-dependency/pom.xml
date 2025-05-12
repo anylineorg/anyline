@@ -554,6 +554,11 @@
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
+				<artifactId>anyline-data-jdbc-sadas</artifactId>
+				<version>${anyline.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
 				<artifactId>anyline-data-jdbc-starrocks</artifactId>
 				<version>${anyline.version}</version>
 			</dependency>
@@ -630,6 +635,11 @@
 			<dependency>
 				<groupId>org.anyline</groupId>
 				<artifactId>anyline-data-chroma</artifactId>
+				<version>${anyline.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
+				<artifactId>anyline-data-faiss</artifactId>
 				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
