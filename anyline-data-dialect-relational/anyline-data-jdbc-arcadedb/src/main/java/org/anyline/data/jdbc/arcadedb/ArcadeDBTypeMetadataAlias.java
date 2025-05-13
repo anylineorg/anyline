@@ -104,7 +104,7 @@ public enum ArcadeDBTypeMetadataAlias implements TypeMetadataAlias {
 	HLL                           ("HLL"                            ,StandardTypeMetadata.NONE         ,  -1,  -1,  -1),
 	IMAGE                         ("IMAGE"                          ,StandardTypeMetadata.BINARY       ,   0,   1,   1),
 	INET                          ("INET"                           ,StandardTypeMetadata.NONE         ,  -1,  -1,  -1),
-	INT                           ("INT"                            ,StandardTypeMetadata.INT32        ,   1,   1,   1),
+	INT                           ("INT"                            ,StandardTypeMetadata.INT32        , "INT"  , "INT"  , null   , null   , null   ,   1,   1,   1),
 	INT128                        ("INT128"                         ,StandardTypeMetadata.LONG         ,  -1,  -1,  -1),
 	INT16                         ("INT16"                          ,StandardTypeMetadata.INTEGER      ,   1,   1,   1),
 	INT2                          ("INT2"                           ,StandardTypeMetadata.INTEGER      ,   1,   1,   1),

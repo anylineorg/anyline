@@ -264,7 +264,7 @@ public enum SQLiteTypeMetadataAlias implements TypeMetadataAlias {
 	UINT128                       ("UInt128"                        ,StandardTypeMetadata.INT128                        ,   1,   1,   1),
 	UINT16                        ("UInt16"                         ,StandardTypeMetadata.INT16                         ,   1,   1,   1),
 	UINT256                       ("UInt256"                        ,StandardTypeMetadata.INT256                        ,   1,   1,   1),
-	UINT32                        ("UInt32"                         ,StandardTypeMetadata.INT32                         ,   1,   1,   1),
+	UINT32                        ("UInt32"                         ,StandardTypeMetadata.INT32                         , "INT"  , "INT"  , null   , null   , null   ,   1,   1,   1),
 	UINT64                        ("UInt64"                         ,StandardTypeMetadata.INT64                         ,   1,   1,   1),
 	UINT8                         ("UInt8"                          ,StandardTypeMetadata.INTEGER                       ,   1,   1,   1),
 	UNIQUEIDENTIFIER              ("UNIQUEIDENTIFIER"               ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),

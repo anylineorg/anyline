@@ -119,7 +119,7 @@ public enum SinoDBTypeMetadataAlias implements TypeMetadataAlias {
 	IMAGE                         ("IMAGE"                          ,StandardTypeMetadata.BLOB                          ,   1,   1,   1),
 	INET                          ("INET"                           ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	INT                           ("INT"                            ,StandardTypeMetadata.INT8                          ,   1,   1,   1),
-	INT128                        ("INT128"                         ,StandardTypeMetadata.INT32                         ,   1,   1,   1),
+	INT128                        ("INT128"                         ,StandardTypeMetadata.INT32                         , "INT"      , "INT"           , null   , null   , null   ,   1,   1,   1),
 	INT16                         ("INT16"                          ,StandardTypeMetadata.BIGINT                        ,   1,   1,   1),
 	INT2                          ("INT2"                           ,StandardTypeMetadata.SMALLINT                      ,   1,   1,   1),
 	INT256                        ("INT256"                         ,StandardTypeMetadata.BIGINT                        ,   1,   1,   1),

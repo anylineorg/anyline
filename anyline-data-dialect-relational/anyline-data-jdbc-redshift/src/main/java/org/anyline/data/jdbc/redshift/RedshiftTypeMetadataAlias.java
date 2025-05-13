@@ -105,7 +105,7 @@ public enum RedshiftTypeMetadataAlias implements TypeMetadataAlias {
 	IMAGE                         ("IMAGE"                          ,StandardTypeMetadata.NONE                     ,  -1,  -1,  -1),
 	INET                          ("INET"                           ,StandardTypeMetadata.NONE                     ,  -1,  -1,  -1),
 	INT                           ("INT"                            ,StandardTypeMetadata.INTEGER                  ,   1,   1,   1),
-	INT128                        ("INT128"                         ,StandardTypeMetadata.INT32                    ,   1,   1,   1),
+	INT128                        ("INT128"                         ,StandardTypeMetadata.INT32                    , "INT"  , "INT"  , null   , null   , null   ,   1,   1,   1),
 	INT16                         ("INT16"                          ,StandardTypeMetadata.INTEGER                  ,   1,   1,   1),
 	INT2                          ("INT2"                           ,StandardTypeMetadata.INTEGER                  ,   1,   1,   1),
 	INT256                        ("INT256"                         ,StandardTypeMetadata.INTEGER                  ,   1,   1,   1),
