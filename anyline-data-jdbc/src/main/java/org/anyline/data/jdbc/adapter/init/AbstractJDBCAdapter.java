@@ -9677,10 +9677,10 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 			String desc = order.replace("ASC","<A_ORDER>");
 			desc = desc.replace("DESC","ASC");
 			desc = desc.replace("<A_ORDER>","DESC");
-			builder.append("SELECT "+cols+" FROM (\n ");
+			builder.append("SELECT ").append(cols).append(" FROM (\n ");
 			builder.append("SELECT TOP ").append(rows).append(" * FROM (\n");
 			builder.append("SELECT TOP ").append(navi.getPageRows()*navi.getCurPage()).append(" * ");
-			builder.append(" FROM (" + sql + ") AS T0 ").append(asc).append("\n");
+			builder.append(" FROM (").append(sql).append(") AS T0 ").append(asc).append("\n");
 			builder.append(") AS T1 ").append(desc).append("\n");
 			builder.append(") AS T2").append(asc);
 		}
@@ -9737,76 +9737,76 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
             if(BasicUtil.isEmpty(order)) {
                 order = "ORDER BY " + ConfigTable.DEFAULT_PRIMARY_KEY;
             }
-			builder.append("SELECT " + cols + " FROM( \n");
+			builder.append("SELECT ").append(cols).append(" FROM( \n");
 			builder.append("SELECT _TAB_I.*,ROW_NUMBER() OVER(")
 					.append(order)
 					.append(") AS PAGE_ROW_NUMBER_ \n");
 			builder.append("FROM( \n");
 			builder.append(sql);
 			builder.append(") AS _TAB_I \n");
-			builder.append(") AS _TAB_O WHERE PAGE_ROW_NUMBER_ BETWEEN "+(first+1)+" AND "+(last+1));
+			builder.append(") AS _TAB_O WHERE PAGE_ROW_NUMBER_ BETWEEN ").append(first + 1).append(" AND ").append(last + 1);
 		}
 		return builder.toString();
 	}
 
 	protected String concatFun(DataRuntime runtime, String ... args) {
-		String result = "";
+		StringBuilder result = new StringBuilder();
 		if(null != args && args.length > 0) {
-			result = "concat(";
+			result = new StringBuilder("concat(");
 			int size = args.length;
 			for(int i=0; i<size; i++) {
 				String arg = args[i];
 				if(i>0) {
-					result += ",";
+					result.append(",");
 				}
-				result += arg;
+				result.append(arg);
 			}
-			result += ")";
+			result.append(")");
 		}
-		return result;
+		return result.toString();
 	}
 
 	protected String concatOr(DataRuntime runtime, String ... args) {
-		String result = "";
+		StringBuilder result = new StringBuilder();
 		if(null != args && args.length > 0) {
 			int size = args.length;
 			for(int i=0; i<size; i++) {
 				String arg = args[i];
 				if(i>0) {
-					result += " || ";
+					result.append(" || ");
 				}
-				result += arg;
+				result.append(arg);
 			}
 		}
-		return result;
+		return result.toString();
 	}
 	protected String concatAdd(DataRuntime runtime, String ... args) {
-		String result = "";
+		StringBuilder result = new StringBuilder();
 		if(null != args && args.length > 0) {
 			int size = args.length;
 			for(int i=0; i<size; i++) {
 				String arg = args[i];
 				if(i>0) {
-					result += " + ";
+					result.append(" + ");
 				}
-				result += arg;
+				result.append(arg);
 			}
 		}
-		return result;
+		return result.toString();
 	}
 	protected String concatAnd(DataRuntime runtime, String ... args) {
-		String result = "";
+		StringBuilder result = new StringBuilder();
 		if(null != args && args.length > 0) {
 			int size = args.length;
 			for(int i=0; i<size; i++) {
 				String arg = args[i];
 				if(i>0) {
-					result += " & ";
+					result.append(" & ");
 				}
-				result += arg;
+				result.append(arg);
 			}
 		}
-		return result;
+		return result.toString();
 	}
 
 }
