@@ -5413,7 +5413,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
             }else{
                 meta.setType("SERIAL8");
             }
-        }else if(type.contains("int") || type.contains("long") || type.contains("serial") || type.contains("short")) {
+        }else if(type.contains("int") || type.equals("long") || type.contains("serial") || type.contains("short")) {
             if ("serial4".equals(type) || "int".equals(type) || "integer".equals(type) || "serial2".equals(type) || "smallint".equals(type) || "short".equals(type)) {
                 meta.setType("INT");
             } else if ("serial8".equals(type) || "long".equals(type) || "bigint".equals(type)) {

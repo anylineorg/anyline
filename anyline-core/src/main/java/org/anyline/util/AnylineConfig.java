@@ -352,7 +352,7 @@ public abstract class AnylineConfig {
 				String typeName = type.getTypeName();
 				if (typeName.startsWith("int") || typeName.contains("Integer")) {
 					val = BasicUtil.parseInt(value, 0);
-				}else if (typeName.contains("long") || typeName.contains("Long")) {
+				}else if (typeName.equalsIgnoreCase("Long")) {
 					val = BasicUtil.parseLong(value, 0L);
 				} else if (typeName.contains("double") || typeName.contains("Double")) {
 					val = BasicUtil.parseDouble(value, 0D);

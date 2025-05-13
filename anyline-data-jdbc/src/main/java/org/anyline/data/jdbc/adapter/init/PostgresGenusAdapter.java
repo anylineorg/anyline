@@ -6223,7 +6223,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
             }else{
                 meta.setType("SERIAL8");
             }
-        }else if(type.equals("int") || type.contains("long") || type.contains("serial") || type.contains("short")) {
+        }else if(type.equals("int") || type.equals("long") || type.contains("serial") || type.contains("short")) {
             if ("serial4".equals(type) || "int".equals(type) || "integer".equals(type)) {
                 meta.setType("int4");
             } else if ("serial8".equals(type) || "long".equals(type) || "bigint".equals(type)) {
