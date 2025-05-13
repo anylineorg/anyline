@@ -13,7 +13,7 @@
 
     <artifactId>anyline-data-jdbc-oceanbase</artifactId>
     <packaging>jar</packaging>
-    <name>anyline-data-jdbc-oceanBase</name>
+    <name>anyline-data-jdbc-oceanbase</name>
     <url>http://www.anyline.org/oceanbase</url>
 
     <dependencies>
