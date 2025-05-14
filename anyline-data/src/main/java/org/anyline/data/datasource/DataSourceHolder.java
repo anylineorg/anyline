@@ -103,6 +103,9 @@ public interface DataSourceHolder {
 	 * @return DataSourceHolder
 	 */
 	static DataSourceHolder instance(String check) {
+		if(null == check){
+			return null;
+		}
 		DataSourceHolder holder = instances.get(check.toUpperCase());
 		if(null == holder) {
 			try {
@@ -116,7 +119,10 @@ public interface DataSourceHolder {
 		if(null == holder) {
 			if(check.contains("://")) { // jdbc:postgresql://localhost:35432/simple
 				String[] chks = check.split("://");
-				holder = instances.get(chks[0]); //jdbc:postgresql
+				holder = instances.get(chks[0].toUpperCase()); //jdbc:postgresql
+				if(null == holder){
+					holder = instances.get(chks[0]); //jdbc:postgresql
+				}
 			}
 		}
 		//再提取adapter(数据库类型)
