@@ -5239,9 +5239,9 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
         builder.append(" MODIFY ");
         delimiter(builder, meta.getName());
         String type = update.getTypeName();
-        if(type.contains("(")) {
+        /*if(type.contains("(")) {
             type = type.substring(0,type.indexOf("("));
-        }
+        }*/
         builder.append(" ").append(type);
         return runs;
     }
