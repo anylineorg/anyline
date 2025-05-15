@@ -207,11 +207,7 @@ public interface DataSourceHolder {
 	}
 
 	static String reg(String key, Map<String, Object> param, DatabaseType type, boolean override) throws Exception {
-		DataSourceHolder instance = null;
-
-		if(null == instance) {
-			instance = instance(BeanUtil.value(param, "adapter", DataSourceKeyMap.maps, String.class, null));
-		}
+		DataSourceHolder instance = instance(BeanUtil.value(param, "adapter", DataSourceKeyMap.maps, String.class, null));
 		if(null == instance && null != type) {
 			instance = instance(type);
 		}
@@ -230,7 +226,7 @@ public interface DataSourceHolder {
 		if(null != instance) {
 			return instance.create(key, param, override);
 		}
-		throw new Exception("DataSourceHolder实例异常");
+		throw new Exception("DataSourceHolder实例异常(有可能未添加anyline-data-*依赖)");
 	}
 
 	static DataRuntime reg(String key, Object datasource, String database, DatabaseType type, DriverAdapter adapter, boolean override) throws Exception {
