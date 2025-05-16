@@ -15284,7 +15284,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		meta.ignoreLength(ignoreLength);
 		meta.ignorePrecision(ignorePrecision);
 		meta.ignoreScale(ignoreScale);
-		meta.parseType(2);
+		meta.parseType(2, type());
 		builder.append(meta.getFullType(type()));
 		return builder;
 	}

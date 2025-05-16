@@ -22,7 +22,7 @@ import org.anyline.metadata.type.JavaType;
 import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.metadata.type.TypeMetadataHolder;
 import org.anyline.util.BasicUtil;
-import org.anyline.metadata.type.TypeMetadata.NUMBER_LENGTH_UNIT;
+
 import java.io.Serializable;
 import java.util.*;
 
@@ -130,7 +130,6 @@ public class Column extends TableAffiliation<Column> implements Serializable {
     protected String typeName                     ; // 类型名称 varchar完整类型调用getFullType > varchar(10)
     protected String originType                   ; // 原始类型(未解析,交给具体的adapter解析)
     protected TypeMetadata typeMetadata           ;
-    protected NUMBER_LENGTH_UNIT numberLengthUnit ; // 数字长度类型
     protected String fullType                     ; // 完整类型名称
     protected String finalType                    ; // 如果设置了finalType 生成SQL时 name finalType 其他属性
     protected int ignoreLength                = -1; // 是否忽略长度
@@ -753,16 +752,23 @@ public class Column extends TableAffiliation<Column> implements Serializable {
         this.typeName = typeName;
         if(parse) {
             setOriginType(typeName);
-            parseType(1);
+            parseType(1, databaseType);
         }
         //fullType = null;
         return this;
     }
-    public Column parseType(int lvl) {
+
+    /**
+     *
+     * @param lvl 解析阶段
+     * @param database 新数据库类型
+     * @return Column
+     */
+    public Column parseType(int lvl, DatabaseType database) {
         if(lvl <= parseLvl) {
             return this;
         }
-        TypeMetadata.parse(databaseType, this, TypeMetadataHolder.gets(databaseType), null);
+        TypeMetadata.parse(database, this, TypeMetadataHolder.gets(database), null);
         return this;
     }
 
@@ -962,11 +968,11 @@ public class Column extends TableAffiliation<Column> implements Serializable {
         return precision;
     }
     public Column resetLength(Integer length){
+        if(null != originType) {
+            originType = originType.replace("(" + this.length, "(" + length);
+        }
         setLength(length);
         setParseLvl(0);
-        if(null != originType) {
-            originType = originType.replace("(" + length + "", "(" + length);
-        }
         return this;
     }
     public Column setLength(Integer length) {
@@ -997,13 +1003,7 @@ public class Column extends TableAffiliation<Column> implements Serializable {
         this.octetLength = length;
         return this;
     }
-    public Column setNumberLengthUnit(TypeMetadata.NUMBER_LENGTH_UNIT type) {
-        this.numberLengthUnit = type;
-        return this;
-    }
-    public TypeMetadata.NUMBER_LENGTH_UNIT getNumberLengthUnit() {
-        return numberLengthUnit;
-    }
+
     public Integer getPrecision() {
         if(getmap && null != update) {
             return update.getPrecision();

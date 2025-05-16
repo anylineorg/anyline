@@ -24,6 +24,8 @@ import org.anyline.util.regular.RegularUtil;
 
 import java.lang.reflect.Field;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public interface TypeMetadata {
     /**
@@ -622,7 +624,13 @@ public interface TypeMetadata {
         if(null == meta) {
             return null;
         }
-        NUMBER_LENGTH_UNIT numberLengthUnit = meta.getNumberLengthUnit();
+        NUMBER_LENGTH_UNIT numberLengthUnit = null;
+        DatabaseType srcType = meta.getDatabaseType();
+        if(null != srcType) {
+            numberLengthUnit = srcType.numberLengthUnit();
+        }
+        NUMBER_LENGTH_UNIT targetNumberLengthUnit = database.numberLengthUnit();
+
         boolean array = false;
         String originType = meta.getOriginType();
         if(null == originType) {
@@ -657,7 +665,7 @@ public interface TypeMetadata {
                 typeName = typeName.split(" ")[0];
             }
         }
-        typeMetadata = parse(alias, spells, typeName, numberLengthUnit);
+        typeMetadata = parse(alias, spells, typeName, numberLengthUnit, targetNumberLengthUnit);
 
         /*
         decimal({p}, {S})
@@ -707,7 +715,7 @@ public interface TypeMetadata {
                         scale = BasicUtil.parseInt(fetches.get(1).get(1), null);
                         typeName = typeName.replace(fetches.get(0).get(0), "");
                         typeName = typeName.replace(fetches.get(1).get(0), "");
-                        typeMetadata = parse(alias, spells, typeName, numberLengthUnit);
+                        typeMetadata = parse(alias, spells, typeName, numberLengthUnit, targetNumberLengthUnit);
                     }else{
                         //varchar(10)
                         //decimal(20)
@@ -716,7 +724,7 @@ public interface TypeMetadata {
                         List<String> items = fetches.get(0);
                         typeName = typeName.replace(items.get(0), ""); // TIMESTAMP (6) WITH TIME ZONE > TIMESTAMP WITH TIME ZONE
                         Integer num = BasicUtil.parseInt(items.get(1), null);
-                        typeMetadata = parse(alias, spells, typeName, numberLengthUnit);
+                        typeMetadata = parse(alias, spells, typeName, numberLengthUnit, targetNumberLengthUnit);
                         if(null != typeMetadata) {
                             TypeMetadata.CATEGORY_GROUP group = typeMetadata.getCategoryGroup();
                             if(group == TypeMetadata.CATEGORY_GROUP.NUMBER) {
@@ -745,7 +753,7 @@ public interface TypeMetadata {
                         typeName = typeName.replace(full, "").trim(); // decimal(10,2) > decimal
                         precision = BasicUtil.parseInt(items.get(1), 0);
                         scale = BasicUtil.parseInt(items.get(2), 0);
-                        typeMetadata = parse(alias, spells, typeName, numberLengthUnit);
+                        typeMetadata = parse(alias, spells, typeName, numberLengthUnit, targetNumberLengthUnit);
                     }
                 }catch (Exception e) {
                     e.printStackTrace();
@@ -781,7 +789,7 @@ public interface TypeMetadata {
 			this.className = null;
 		}*/
         if(null == typeMetadata || TypeMetadata.NONE == typeMetadata) {
-            typeMetadata = parse(alias, spells, typeName, numberLengthUnit);
+            typeMetadata = parse(alias, spells, typeName, numberLengthUnit, targetNumberLengthUnit);
         }
         if(null != typeMetadata && TypeMetadata.NONE != typeMetadata) {
             meta.setTypeMetadata(typeMetadata);
@@ -823,48 +831,41 @@ public interface TypeMetadata {
         meta.setDatabaseType(database);
         return typeMetadata;
     }
-    static TypeMetadata parse(LinkedHashMap<String, TypeMetadata> alias, Map<String,String> spells, String name, NUMBER_LENGTH_UNIT numberLengthUnit) {
+
+    /**
+     *
+     * @param alias 别名对应
+     * @param spells 不同拼写对应
+     * @param name 类型名
+     * @param numberLengthUnit 原单位
+     * @param targetNumberLengthUnit 新单位
+     * @return TypeMetadata
+     */
+    static TypeMetadata parse(LinkedHashMap<String, TypeMetadata> alias, Map<String,String> spells, String name, NUMBER_LENGTH_UNIT numberLengthUnit, NUMBER_LENGTH_UNIT targetNumberLengthUnit) {
         if(null == name) {
             return null;
         }
         TypeMetadata type = null;
         name = name.toUpperCase();
-        if(numberLengthUnit == NUMBER_LENGTH_UNIT.BYTE) {
-            if("INT".equals(name)){
-                return StandardTypeMetadata.INT32;
-            }
-            if("BIGINT".equals(name)){
-                return StandardTypeMetadata.INT64;
-            }
-            if("BIGSERIAL".equals(name)){
-                return StandardTypeMetadata.INT64;
-            }
-            if("SERIAL".equals(name)){
-                return StandardTypeMetadata.INT32;
-            }
-            if(name.startsWith("INT")){
-                if("INT2".equals(name)){
-                    return StandardTypeMetadata.INT16;
-                }
-                if("INT4".equals(name)){
-                    return StandardTypeMetadata.INT32;
-                }
-                if("INT8".equals(name)){
-                    return StandardTypeMetadata.INT64;
-                }
-            }
-            if(name.startsWith("SERIAL")){
-                if("SERIAL2".equals(name)){
-                    return StandardTypeMetadata.INT16;
-                }
-                if("SERIAL4".equals(name)){
-                    return StandardTypeMetadata.INT32;
-                }
-                if("SERIAL8".equals(name)){
-                    return StandardTypeMetadata.INT64;
-                }
+        if(null != numberLengthUnit && null != targetNumberLengthUnit && numberLengthUnit != targetNumberLengthUnit){
+            //需要转换
+            //原来有单位，现在也有 并且单位不一样
+            int src_bit = numberLengthUnit.bits;
+            int target_bit = targetNumberLengthUnit.bits;
+            if(name.contains("INT")) {
+                try {
+                    Matcher m = Pattern.compile("INT(\\d+)").matcher(name);
+                    if(m.find()) {
+                        String src = m.group();
+                        int num = Integer.parseInt(m.group(1));
+                        int tar = num*src_bit/target_bit;
+                        String target = src.replace(String.valueOf(num), String.valueOf(tar));
+                        name = name.replace(src, target);
+                    }
+                }catch (Exception ignore){}
             }
         }
+
         if(null != alias) {
             type = alias.get(name);
         }

@@ -2269,6 +2269,100 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
      * List<String> ddl(DataRuntime runtime, int index, PartitionTable table, List<String> ddls, DataSet set)
      ******************************************************************************************************************/
     /**
+     * 表分区方式及分片
+     * @param table 主表
+     * @return Partition
+     */
+    public Table.Partition partition(DataRuntime runtime, String random, Table table) {
+        return super.partition(runtime, random, table);
+    }
+
+    /**
+     * partition table[命令合成]<br/>
+     * 查询表分区方式及分片
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param table 表
+     * @return String
+     */
+    @Override
+    public List<Run> buildQueryTablePartitionRun(DataRuntime runtime, Table table) {
+        List<Run> runs = new ArrayList<>();
+
+        return runs;
+    }
+
+    /**
+     * partition table[结果集封装]<br/>
+     * 根据查询结果集构造Table
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param index 第几条SQL 对照 buildQueryMasterTablesRun返回顺序
+     * @param create 上一步没有查到的,这一步是否需要新创建
+     * @param meta 上一步查询结果
+     * @param table 表
+     * @param set 查询结果集
+     * @return tables
+     * @throws Exception 异常
+     */
+    @Override
+    public Table.Partition partition(DataRuntime runtime, int index, boolean create, Table.Partition meta, Table table, DataSet set) throws Exception {
+        return super.partition(runtime, index, create, meta, table, set);
+    }
+
+    /**
+     * partition table[结果集封装]<br/>
+     * 根据查询结果集构造Table.Partition
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param index 第几条SQL 对照 buildQueryMasterTablesRun返回顺序
+     * @param create 上一步没有查到的,这一步是否需要新创建
+     * @param meta 上一步查询结果
+     * @param table 表
+     * @param row 查询结果集
+     * @return tables
+     * @throws Exception 异常
+     */
+    @Override
+    public Table.Partition init(DataRuntime runtime, int index, boolean create, Table.Partition meta, Table table, DataRow row) throws Exception {
+        return super.init(runtime, index, create, meta, table, row);
+    }
+
+    /**
+     * partition table[结果集封装]<br/>
+     * 根据查询结果集构造Table.Partition
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param index 第几条SQL 对照 buildQueryMasterTablesRun返回顺序
+     * @param create 上一步没有查到的,这一步是否需要新创建
+     * @param meta 上一步查询结果
+     * @param table 表
+     * @param row 查询结果集
+     * @return tables
+     * @throws Exception 异常
+     */
+    @Override
+    public Table.Partition detail(DataRuntime runtime, int index, boolean create, Table.Partition meta, Table table, DataRow row) throws Exception {
+        return super.detail(runtime, index, create, meta, table, row);
+    }
+
+
+    /**
+     * partition table[结果集封装]<br/>
+     * Table.Partition 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer initTablePartitionFieldRefer() {
+        return super.initTablePartitionFieldRefer();
+    }
+
+    /**
+     * partition table[结果集封装]<br/>
+     * Table.Partition.Slice 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer initTablePartitionSliceFieldRefer() {
+        return super.initTablePartitionSliceFieldRefer();
+    }
+    /**
      * partition table[调用入口]<br/>
      * 查询主表
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -4756,7 +4850,8 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
      */
     @Override
     public StringBuilder charset(DataRuntime runtime, StringBuilder builder, Table meta) {
-        return super.charset(runtime, builder, meta);
+        //不需要实现
+        return builder;
     }
 
     /**

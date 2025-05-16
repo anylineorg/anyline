@@ -52,7 +52,6 @@ public class JDBCUtil {
     public static Column column(DriverAdapter adapter, DataRuntime runtime, Column column, ResultSetMetaData rsm, int index) {
         if(null == column) {
             column = new Column();
-            column.setNumberLengthUnit(adapter.numberLengthType());
         }
         String catalog = null;
         String schema = null;

@@ -214,7 +214,7 @@ public enum MySQLGenusTypeMetadataAlias implements TypeMetadataAlias {
 	SCALED_FLOAT                  ("scaled_float"                   ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	SEARCH_AS_YOU_TYPE            ("search_as_you_type"             ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
 	SECONDDATE                    ("SECONDDATE"                     ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1),
-	SERIAL                        ("SERIAL"                         ,StandardTypeMetadata.TINYINT                       ,   1,   1,   1),
+	SERIAL                        ("SERIAL"                         ,StandardTypeMetadata.INT32                         ,   1,   1,   1),
 	SERIAL2                       ("SERIAL2"                        ,StandardTypeMetadata.TINYINT                       ,   1,   1,   1),
 	SERIAL4                       ("SERIAL4"                        ,StandardTypeMetadata.INT32                         , "INT"      , "INT"           , null                       , null                 , null            ,   1,   1,   1),
 	SERIAL8                       ("SERIAL8"                        ,StandardTypeMetadata.BIGINT                        ,   1,   1,   1),
