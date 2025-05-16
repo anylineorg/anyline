@@ -3703,11 +3703,11 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 
         //属性在查询结果中对应的列(通用)
         MetadataFieldRefer refer = refer(runtime, Column.class);
-
         if(null == meta.getPosition()) {
             meta.setPosition(getInt(row, refer, Column.FIELD_POSITION, null));
         }
         meta.setComment(getString(row, refer, Column.FIELD_COMMENT, meta.getComment()));
+        meta.setNumberLengthUnit(numberLengthType());
         String type = getString(row, refer, Column.FIELD_TYPE);
         /*if(null != type) {
             type = type.replace("character varying","VARCHAR");

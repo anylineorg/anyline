@@ -23,10 +23,7 @@ import org.anyline.util.BasicUtil;
 import org.anyline.util.regular.RegularUtil;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public interface TypeMetadata {
     /**
@@ -77,6 +74,16 @@ public interface TypeMetadata {
                 refer.setIgnoreLength(ignoreLength).setIgnorePrecision(ignorePrecision).setIgnoreScale(ignoreScale);
             }
             return refer;
+        }
+    }
+    enum NUMBER_LENGTH_UNIT {
+        BIT(1),BYTE(8);
+        private final int bits;
+        NUMBER_LENGTH_UNIT(int bits){
+            this.bits = bits;
+        }
+        public int bits(){
+            return bits;
         }
     }
     default boolean equals(TypeMetadata metadata) {
@@ -615,6 +622,7 @@ public interface TypeMetadata {
         if(null == meta) {
             return null;
         }
+        NUMBER_LENGTH_UNIT numberLengthUnit = meta.getNumberLengthUnit();
         boolean array = false;
         String originType = meta.getOriginType();
         if(null == originType) {
@@ -649,7 +657,7 @@ public interface TypeMetadata {
                 typeName = typeName.split(" ")[0];
             }
         }
-        typeMetadata = parse(alias, spells, typeName);
+        typeMetadata = parse(alias, spells, typeName, numberLengthUnit);
 
         /*
         decimal({p}, {S})
@@ -699,7 +707,7 @@ public interface TypeMetadata {
                         scale = BasicUtil.parseInt(fetches.get(1).get(1), null);
                         typeName = typeName.replace(fetches.get(0).get(0), "");
                         typeName = typeName.replace(fetches.get(1).get(0), "");
-                        typeMetadata = parse(alias, spells, typeName);
+                        typeMetadata = parse(alias, spells, typeName, numberLengthUnit);
                     }else{
                         //varchar(10)
                         //decimal(20)
@@ -708,7 +716,7 @@ public interface TypeMetadata {
                         List<String> items = fetches.get(0);
                         typeName = typeName.replace(items.get(0), ""); // TIMESTAMP (6) WITH TIME ZONE > TIMESTAMP WITH TIME ZONE
                         Integer num = BasicUtil.parseInt(items.get(1), null);
-                        typeMetadata = parse(alias, spells, typeName);
+                        typeMetadata = parse(alias, spells, typeName, numberLengthUnit);
                         if(null != typeMetadata) {
                             TypeMetadata.CATEGORY_GROUP group = typeMetadata.getCategoryGroup();
                             if(group == TypeMetadata.CATEGORY_GROUP.NUMBER) {
@@ -737,7 +745,7 @@ public interface TypeMetadata {
                         typeName = typeName.replace(full, "").trim(); // decimal(10,2) > decimal
                         precision = BasicUtil.parseInt(items.get(1), 0);
                         scale = BasicUtil.parseInt(items.get(2), 0);
-                        typeMetadata = parse(alias, spells, typeName);
+                        typeMetadata = parse(alias, spells, typeName, numberLengthUnit);
                     }
                 }catch (Exception e) {
                     e.printStackTrace();
@@ -773,7 +781,7 @@ public interface TypeMetadata {
 			this.className = null;
 		}*/
         if(null == typeMetadata || TypeMetadata.NONE == typeMetadata) {
-            typeMetadata = parse(alias, spells, typeName);
+            typeMetadata = parse(alias, spells, typeName, numberLengthUnit);
         }
         if(null != typeMetadata && TypeMetadata.NONE != typeMetadata) {
             meta.setTypeMetadata(typeMetadata);
@@ -815,12 +823,48 @@ public interface TypeMetadata {
         meta.setDatabaseType(database);
         return typeMetadata;
     }
-    static TypeMetadata parse(LinkedHashMap<String, TypeMetadata> alias, Map<String,String> spells, String name) {
+    static TypeMetadata parse(LinkedHashMap<String, TypeMetadata> alias, Map<String,String> spells, String name, NUMBER_LENGTH_UNIT numberLengthUnit) {
         if(null == name) {
             return null;
         }
         TypeMetadata type = null;
         name = name.toUpperCase();
+        if(numberLengthUnit == NUMBER_LENGTH_UNIT.BYTE) {
+            if("INT".equals(name)){
+                return StandardTypeMetadata.INT32;
+            }
+            if("BIGINT".equals(name)){
+                return StandardTypeMetadata.INT64;
+            }
+            if("BIGSERIAL".equals(name)){
+                return StandardTypeMetadata.INT64;
+            }
+            if("SERIAL".equals(name)){
+                return StandardTypeMetadata.INT32;
+            }
+            if(name.startsWith("INT")){
+                if("INT2".equals(name)){
+                    return StandardTypeMetadata.INT16;
+                }
+                if("INT4".equals(name)){
+                    return StandardTypeMetadata.INT32;
+                }
+                if("INT8".equals(name)){
+                    return StandardTypeMetadata.INT64;
+                }
+            }
+            if(name.startsWith("SERIAL")){
+                if("SERIAL2".equals(name)){
+                    return StandardTypeMetadata.INT16;
+                }
+                if("SERIAL4".equals(name)){
+                    return StandardTypeMetadata.INT32;
+                }
+                if("SERIAL8".equals(name)){
+                    return StandardTypeMetadata.INT64;
+                }
+            }
+        }
         if(null != alias) {
             type = alias.get(name);
         }

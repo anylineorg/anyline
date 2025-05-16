@@ -52,6 +52,7 @@ public class JDBCUtil {
     public static Column column(DriverAdapter adapter, DataRuntime runtime, Column column, ResultSetMetaData rsm, int index) {
         if(null == column) {
             column = new Column();
+            column.setNumberLengthUnit(adapter.numberLengthType());
         }
         String catalog = null;
         String schema = null;
@@ -424,7 +425,7 @@ public class JDBCUtil {
                             continue;
                         }
                         Column column = metadatas.get(name);
-                        column = column(adapter, runtime, (Column) column, rsmd, i);
+                        column = column(adapter, runtime, column, rsmd, i);
                         metadatas.put(name.toUpperCase(), column);
                     }
                 }

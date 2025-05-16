@@ -91,6 +91,11 @@ public interface DriverAdapter {
     default String version() {
         return null;
     }
+
+    /**
+     * 支持的全部数据类型
+     * @return map
+     */
     default LinkedHashMap<String, TypeMetadata> types() {
         LinkedHashMap<String, TypeMetadata> types = new LinkedHashMap<>();
         for(TypeMetadata type:alias().values()) {
@@ -101,7 +106,9 @@ public interface DriverAdapter {
     default DatabaseOrigin origin() {
         return type().origin();
     }
-
+    default TypeMetadata.NUMBER_LENGTH_UNIT numberLengthType() {
+        return TypeMetadata.NUMBER_LENGTH_UNIT.BYTE;
+    }
     /**
      * 数据类型别名
      * @return LinkedHashMap
