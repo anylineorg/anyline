@@ -17,6 +17,7 @@
 package org.anyline.metadata;
 
 import org.anyline.entity.Order;
+import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 
 import java.io.Serializable;
@@ -35,7 +36,9 @@ public class Index<M extends Index> extends TableAffiliation<M> implements Seria
     protected LinkedHashMap<String, Order.TYPE> orders = new LinkedHashMap<>();
 
     protected boolean unique;
-    public Index() {}
+    public Index() {
+        setName(BasicUtil.getRandomString(8));
+    }
     public Index(String name) {
         setName(name);
     }

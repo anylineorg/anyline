@@ -258,8 +258,8 @@ public enum StandardTypeMetadata implements TypeMetadata {
     , BYTE(CATEGORY.INT, "BYTE", null, Short.class,1, 1, 1)
     // 2字节
     , INT2(CATEGORY.INT, "INT2", null, Short.class,1, 1, 1)
-    , INT4(CATEGORY.INT, "INT4", null, Short.class,1, 1, 1)
-    // 8位
+    , INT4(CATEGORY.INT, "INT4", null, Integer.class,1, 1, 1)
+    // 8位(注意有些库也表示8字节=64位)
     , INT8(CATEGORY.INT, "INT8", null, Short.class,1, 1, 1, MySQL, MSSQL, Informix, GBase8S, SinoDB, Derby, Doris)
     , INT16(CATEGORY.INT, "INT16", null, Short.class, 1, 1, 1, IoTDB, ClickHouse)
     //int32 经常是对应 INT 如果个别数据库(如ClickHouse)中是INT32 需要在 code_datatype_compat 中修改 SQL_META_CODE

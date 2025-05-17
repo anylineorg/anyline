@@ -163,6 +163,18 @@ public enum Compare {
             return 1;
         }
     },
+    LIKE_SIMPLE_IGNORE_CASE(50, "ilike ",""," ILIKE ") {
+        //不添加通配符
+        public boolean compare(Object value, Object target) {
+            if(null == target || null == value) {
+                return false;
+            }
+            return value.toString().toUpperCase().contains(target.toString().toUpperCase());
+        }
+        public int valueCount() {
+            return 1;
+        }
+    },
     LIKE_PREFIX(51, "like ?%",""," LIKE ") {
         public boolean compare(Object value, Object target) {
             if(null == target || null == value) {

@@ -21,7 +21,7 @@ import org.anyline.metadata.type.init.StandardTypeMetadata;
 import org.anyline.metadata.type.TypeMetadata;
 
 public enum RedshiftTypeMetadataAlias implements TypeMetadataAlias {
-	TIME                          ("TIME"                           ,StandardTypeMetadata.TIME                     , "TIME" , "TIME" , null   , null   , null   ,   1,   1,   1),
+	TIME                          ("TIME"                           ,StandardTypeMetadata.TIME                     , "TIME"     , "TIME"     , null   , null   , null   ,   1,   1,   1),
 	ACLITEM                       ("ACLITEM"                        ,StandardTypeMetadata.NONE                     ,  -1,  -1,  -1),
 	AGG_STATE                     ("AGG_STATE"                      ,StandardTypeMetadata.NONE                     ,  -1,  -1,  -1),
 	AGGREGATE_METRIC_DOUBLE       ("aggregate_metric_double"        ,StandardTypeMetadata.NONE                     ,  -1,  -1,  -1),
@@ -105,7 +105,7 @@ public enum RedshiftTypeMetadataAlias implements TypeMetadataAlias {
 	IMAGE                         ("IMAGE"                          ,StandardTypeMetadata.NONE                     ,  -1,  -1,  -1),
 	INET                          ("INET"                           ,StandardTypeMetadata.NONE                     ,  -1,  -1,  -1),
 	INT                           ("INT"                            ,StandardTypeMetadata.INTEGER                  ,   1,   1,   1),
-	INT128                        ("INT128"                         ,StandardTypeMetadata.INT32                    , "INT"  , "INT"  , null   , null   , null   ,   1,   1,   1),
+	INT128                        ("INT128"                         ,StandardTypeMetadata.INT32                    , "INT"      , "INT"      , null   , null   , null   ,   1,   1,   1),
 	INT16                         ("INT16"                          ,StandardTypeMetadata.INTEGER                  ,   1,   1,   1),
 	INT2                          ("INT2"                           ,StandardTypeMetadata.INTEGER                  ,   1,   1,   1),
 	INT256                        ("INT256"                         ,StandardTypeMetadata.INTEGER                  ,   1,   1,   1),
@@ -155,7 +155,7 @@ public enum RedshiftTypeMetadataAlias implements TypeMetadataAlias {
 	MAP                           ("MAP"                            ,StandardTypeMetadata.NONE                     ,  -1,  -1,  -1),
 	MATCH_ONLY_TEXT               ("match_only_text "               ,StandardTypeMetadata.NONE                     ,  -1,  -1,  -1),
 	MEDIUMBLOB                    ("MEDIUMBLOB"                     ,StandardTypeMetadata.VARBYTE                  ,  -1,  -1,  -1),
-	MEDIUMINT                     ("MEDIUMINT"                      ,StandardTypeMetadata.SMALLINT                 ,   1,   1,   1),
+	MEDIUMINT                     ("MEDIUMINT"                      ,StandardTypeMetadata.INT16                    , "SMALLINT" , "SMALLINT" , null   , null   , null   ,   1,   1,   1),
 	MEDIUMTEXT                    ("MEDIUMTEXT"                     ,StandardTypeMetadata.VARCHAR                  ,   0,   1,   1),
 	MONEY                         ("MONEY"                          ,StandardTypeMetadata.DECIMAL                  ,   1,   0,   0),
 	MULTILINESTRING               ("MULTILINESTRING"                ,StandardTypeMetadata.GEOMETRY                 ,   1,   1,   1),
@@ -263,7 +263,7 @@ public enum RedshiftTypeMetadataAlias implements TypeMetadataAlias {
 	TXID_SNAPSHOT                 ("TXID_SNAPSHOT"                  ,StandardTypeMetadata.NONE                     ,  -1,  -1,  -1),
 	UINT128                       ("UInt128"                        ,StandardTypeMetadata.BIGINT                   ,   1,   1,   1),
 	UINT16                        ("UInt16"                         ,StandardTypeMetadata.SMALLINT                 ,   1,   1,   1),
-	UINT256                       ("UInt256"                        ,StandardTypeMetadata.BIGINT                   ,   1,   1,   1),
+	UINT256                       ("UInt256"                        ,StandardTypeMetadata.INT64                    ,   1,   1,   1),
 	UINT32                        ("UInt32"                         ,StandardTypeMetadata.INTEGER                  ,   1,   1,   1),
 	UINT64                        ("UInt64"                         ,StandardTypeMetadata.BIGINT                   ,   1,   1,   1),
 	UINT8                         ("UInt8"                          ,StandardTypeMetadata.SMALLINT                 ,   1,   1,   1),

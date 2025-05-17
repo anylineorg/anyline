@@ -2286,9 +2286,7 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
      */
     @Override
     public List<Run> buildQueryTablePartitionRun(DataRuntime runtime, Table table) {
-        List<Run> runs = new ArrayList<>();
-
-        return runs;
+        return new ArrayList<>();
     }
 
     /**

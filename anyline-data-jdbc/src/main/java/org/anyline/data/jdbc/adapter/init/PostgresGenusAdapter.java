@@ -1375,7 +1375,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         StringBuilder builder = run.getBuilder();
         ConfigStore configs = run.getConfigs();
         builder.append("SELECT * FROM pg_database WHERE DATISTEMPLATE = FALSE");
-        configs.and(Compare.LIKE_SIMPLE,"datname", query.getName());
+        configs.and(Compare.LIKE_SIMPLE_IGNORE_CASE,"datname", query.getName());
         return runs;
     }
 
@@ -1580,7 +1580,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         StringBuilder builder = run.getBuilder();
         ConfigStore configs = run.getConfigs();
         builder.append("SELECT * FROM pg_stat_database");
-        configs.and(Compare.LIKE_SIMPLE,"datname", query.getName());
+        configs.and(Compare.LIKE_SIMPLE_IGNORE_CASE,"datname", query.getName());
         return runs;
     }
 
@@ -1782,7 +1782,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         StringBuilder builder = run.getBuilder();
         ConfigStore configs = run.getConfigs();
         builder.append("SELECT * FROM information_schema.schemata");
-        configs.and(Compare.LIKE_SIMPLE, "schema_name", query.getName());
+        configs.and(Compare.LIKE_SIMPLE_IGNORE_CASE, "schema_name", query.getName());
         configs.and("catalog_name", query.getCatalogName());
         runs.add(run);
         return runs;
@@ -1958,7 +1958,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         builder.append("LEFT JOIN pg_inherits AS I ON I.inhrelid = F.oid\n");//继承关系
         builder.append("WHERE I.inhrelid IS NULL\n"); //GIS中没有f.relpartbound
         configs.and("M.table_schema", query.getSchemaName());
-        configs.and(Compare.LIKE_SIMPLE,"M.table_name", query.getName());
+        configs.and(Compare.LIKE_SIMPLE_IGNORE_CASE,"M.table_name", query.getName());
         if((types & 2) != 2) {
             //不包含视图
             configs.and("M.TABLE_TYPE != 'VIEW'");
@@ -1980,7 +1980,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         builder.append("LEFT JOIN pg_inherits AS I ON I.inhrelid = F.oid\n");//继承关系
         builder.append("WHERE (I.inhrelid IS NULL  OR F.relpartbound IS NULL)\n"); //过滤分区表(没有继承自其他表或 继承自其他表但是子表不是分区表)
         configs.and("M.table_schema", query.getSchemaName());
-        configs.and(Compare.LIKE_SIMPLE,"M.table_name", query.getName());
+        configs.and(Compare.LIKE_SIMPLE_IGNORE_CASE,"M.table_name", query.getName());
         if((types & 2) != 2) {
             //不包含视图
             configs.and("M.TABLE_TYPE != 'VIEW'");
@@ -2209,7 +2209,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         builder.append("SELECT * FROM information_schema.views");
         configs.and("TABLE_CATALOG", query.getCatalogName());
         configs.and("TABLE_SCHEMA", query.getSchemaName());
-        configs.and(Compare.LIKE_SIMPLE,"TABLE_NAME", query.getName());
+        configs.and(Compare.LIKE_SIMPLE_IGNORE_CASE,"TABLE_NAME", query.getName());
         return runs;
     }
 
@@ -2675,7 +2675,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         builder.append("LEFT JOIN pg_class AS FM ON FM.oid = I.inhparent AND N.oid = FM.relnamespace\n");//主表
         configs.and("FM.relname", query.getMasterName());
         configs.and("M.table_schema", query.getSchemaName());
-        configs.and(Compare.LIKE_SIMPLE,"M.table_name", query.getName());
+        configs.and(Compare.LIKE_SIMPLE_IGNORE_CASE,"M.table_name", query.getName());
         return runs;
     }
 
@@ -2836,7 +2836,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
             builder.append("LEFT JOIN pg_description FD ON FD.OBJOID = FC.OID AND FD.OBJSUBID = M.ORDINAL_POSITION");
             configs.and("M.TABLE_CATALOG", query.getCatalogName());
             configs.and("M.TABLE_SCHEMA", query.getSchemaName());
-            configs.and(Compare.LIKE_SIMPLE,"M.TABLE_NAME", query.getTableName());
+            configs.and(Compare.LIKE_SIMPLE_IGNORE_CASE,"M.TABLE_NAME", query.getTableName());
             configs.order("M.TABLE_NAME");
         }
         return runs;
@@ -3115,7 +3115,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         builder.append("FROM pg_constraint m \n");
         builder.append("LEFT JOIN pg_namespace ns ON m.connamespace = ns.oid \n");
         builder.append("LEFT JOIN pg_class ft ON m.conrelid = ft.oid \n");
-        configs.and(Compare.LIKE_SIMPLE, "ft.relname", query.getTableName());
+        configs.and(Compare.LIKE_SIMPLE_IGNORE_CASE, "ft.relname", query.getTableName());
         configs.and("ns.nspname", query.getSchemaName());
         return runs;
     }
@@ -3216,7 +3216,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         builder.append("JOIN information_schema.key_column_usage AS KCU ON TC.CONSTRAINT_NAME = KCU.CONSTRAINT_NAME\n");
         builder.append("JOIN information_schema.constraint_column_usage AS CCU ON CCU.CONSTRAINT_NAME = TC.CONSTRAINT_NAME\n");
         builder.append("WHERE TC.CONSTRAINT_TYPE = 'FOREIGN KEY'\n");
-        configs.and(Compare.LIKE_SIMPLE, "TC.TABLE_NAME", query.getTableName());
+        configs.and(Compare.LIKE_SIMPLE_IGNORE_CASE, "TC.TABLE_NAME", query.getTableName());
         configs.order("KCU.ORDINAL_POSITION");
         return runs;
     }
@@ -3346,7 +3346,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         StringBuilder builder = run.getBuilder();
         ConfigStore configs = run.getConfigs();
         configs.and("ins.nspname", query.getSchemaName());
-        configs.and(Compare.LIKE_SIMPLE, "c.relname", query.getTableName());
+        configs.and(Compare.LIKE_SIMPLE_IGNORE_CASE, "c.relname", query.getTableName());
         if(BasicUtil.isNotEmpty(name)) {
             configs.and("AND i.indexrelid = '"+name+"'::regclass");
         }
@@ -3977,7 +3977,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
             .append("    LEFT JOIN PG_NAMESPACE N ON N.OID = P.PRONAMESPACE \n")
             .append("WHERE P.PROKIND <> 'a' \n");
         configs.and("AND N.NSPNAME", query.getSchemaName());
-        configs.and(Compare.LIKE_SIMPLE,"AND P.PRONAMEE", query.getName());
+        configs.and(Compare.LIKE_SIMPLE_IGNORE_CASE,"AND P.PRONAMEE", query.getName());
         return runs;
     }
 
@@ -4173,7 +4173,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         builder.append("SELECT * FROM information_schema.sequences");
         configs.and("SEQUENCE_CATALOG", query.getCatalogName());
         configs.and("SEQUENCE_SCHEMA", query.getSchemaName());
-        configs.and(Compare.LIKE_SIMPLE,"SEQUENCE_NAME", query.getName());
+        configs.and(Compare.LIKE_SIMPLE_IGNORE_CASE,"SEQUENCE_NAME", query.getName());
         return runs;
     }
 
@@ -6216,23 +6216,25 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
             if ("int4".equals(type) || "int".equals(type) || "integer".equals(type)) {
                 meta.setType("SERIAL4");
             } else if ("int8".equals(type) || "long".equals(type) || "bigint".equals(type)) {
-                meta.setType("SERIAL8");
+                meta.setType("bigserial");
             } else if ("int2".equals(type) || "smallint".equals(type) || "short".equals(type)) {
                 //9.2.0
-                meta.setType("SERIAL2");
+                meta.setType("smallserial");
             }else{
-                meta.setType("SERIAL8");
+                meta.setType("bigserial");
             }
+            meta.setFullType(null);
         }else if(type.equals("int") || type.equals("long") || type.contains("serial") || type.contains("short")) {
-            if ("serial4".equals(type) || "int".equals(type) || "integer".equals(type)) {
-                meta.setType("int4");
-            } else if ("serial8".equals(type) || "long".equals(type) || "bigint".equals(type)) {
-                meta.setType("int8");
-            } else if ("serial2".equals(type) || "smallint".equals(type) || "short".equals(type)) {
+            if ("serial4".equals(type) || "serial".equals(type) || "int".equals(type) || "integer".equals(type)) {
+                meta.setType("integer");
+            } else if ("serial8".equals(type) || "bigserial".equals(type) || "long".equals(type) || "bigint".equals(type)) {
+                meta.setType("bigint");
+            } else if ("serial2".equals(type) || "smallserial".equals(type) || "smallint".equals(type) || "short".equals(type)) {
                 meta.setType("int2");
             }else{
-                meta.setType("int8");
+                meta.setType("bigint");
             }
+            meta.setFullType(null);
         }
         return super.type(runtime, builder, meta);
     }

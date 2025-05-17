@@ -54,7 +54,7 @@ public class Sequence extends Metadata<Sequence> implements Serializable {
         }
     }
     public Sequence setName(String name) {
-        if(name.contains(".")) {
+        if(null != name && name.contains(".")) {
             String[] tmps = name.split("\\.");
             name = tmps[0];
             if(tmps[1].toUpperCase().contains("NEXT")) {
