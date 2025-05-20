@@ -268,20 +268,24 @@ public class ConfigParser {
 			}
 
 		} else if (key.startsWith("%")) {
-			if (key.endsWith("%")) {
-				if(ignoreCase) {
-					result.setCompare(Compare.LIKE_IGNORE_CASE);
-				}else{
-					result.setCompare(Compare.LIKE);
+			if(key.length() > 1) {
+				if (key.endsWith("%")) {
+					if (ignoreCase) {
+						result.setCompare(Compare.LIKE_IGNORE_CASE);
+					} else {
+						result.setCompare(Compare.LIKE);
+					}
+					key = key.substring(1, key.length() - 1);
+				} else {
+					if (ignoreCase) {
+						result.setCompare(Compare.LIKE_SUFFIX_IGNORE_CASE);
+					} else {
+						result.setCompare(Compare.LIKE_SUFFIX);
+					}
+					key = key.substring(1);
 				}
-				key = key.substring(1, key.length()-1);
-			} else {
-				if(ignoreCase) {
-					result.setCompare(Compare.LIKE_SUFFIX_IGNORE_CASE);
-				}else {
-					result.setCompare(Compare.LIKE_SUFFIX);
-				}
-				key = key.substring(1);
+			}else{
+				key = "";
 			}
 		} else if (key.endsWith("%")) {
 			if(ignoreCase) {
