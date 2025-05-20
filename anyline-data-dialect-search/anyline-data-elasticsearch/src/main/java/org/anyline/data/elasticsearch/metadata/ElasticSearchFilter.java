@@ -118,7 +118,7 @@ public class ElasticSearchFilter {
 
     /**
      * 添加同义词
-     * @param synonym 同义词  ["pc => personal computer", "computer, pc, laptop"]
+     * @param synonym 同义词  ["pc =&gt; personal computer", "computer, pc, laptop"]
      * @return this
      */
     public ElasticSearchFilter addSynonym(String synonym) {

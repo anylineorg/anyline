@@ -1050,8 +1050,10 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
         }
 
         this.indexes = (LinkedHashMap<String, Index>) indexes;
-        for(Index index: indexes.values()) {
-            index.setTable(this);
+        if(null != indexes) {
+            for (Index index : indexes.values()) {
+                index.setTable(this);
+            }
         }
         return this;
     }
@@ -1067,8 +1069,10 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
         if(null == constraints) {
             constraints = new LinkedHashMap<>();
         }
-        constraint.setTable(this);
-        constraints.put(constraint.getName().toUpperCase(), constraint);
+        if(null != constraint) {
+            constraint.setTable(this);
+            constraints.put(constraint.getName().toUpperCase(), constraint);
+        }
         return this;
     }
     public <T extends Constraint> LinkedHashMap<String, T> getConstraints() {
