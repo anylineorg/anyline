@@ -315,6 +315,9 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
      * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
      * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
      * @param set 需要插入的数据集合
+     * @param configs configs
+     * @param placeholder 占位符
+     * @param unicode 编码
      * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
      */
     @Override
