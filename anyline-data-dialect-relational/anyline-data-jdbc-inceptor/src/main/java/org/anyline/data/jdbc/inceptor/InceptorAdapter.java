@@ -137,8 +137,11 @@ public class InceptorAdapter extends TranswarpAdapter {
      * insert [命令合成]<br/>
      * 填充inset命令内容(创建批量INSERT RunPrepare)
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+     * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
      * @param obj 需要插入的数据
+     * @param configs configs
+     * @param placeholder 占位符
+     * @param unicode 编码
      * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
      * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
      */
@@ -180,7 +183,7 @@ public class InceptorAdapter extends TranswarpAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
      * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
-     * @param set 需要插入的数据集合
+     * @param list 需要插入的数据集合
      * @param configs configs
      * @param placeholder 占位符
      * @param unicode 编码
