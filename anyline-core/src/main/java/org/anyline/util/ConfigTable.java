@@ -134,6 +134,7 @@ public class ConfigTable {
 	public static boolean IS_RETURN_EMPTY_STRING_REPLACE_NULL			= false			;  // DataRow.getString返回null时替换成""
 	public static boolean IS_RETURN_EMPTY_INSTANCE_REPLACE_NULL			= false			;	// service.query() DataSet.getRow()返回null时, 是否替换成new DataRow(), new Entity()
 	public static boolean IS_AUTO_CHECK_METADATA						= false			; 	// insert update 时是否自动检测表结构(删除表中不存在的属性,转换数据类型)以及查询条件中的数据类型
+	public static boolean IS_AUTO_CHECK_PARAMETER_METADATA				= false			;	// PreparedStatement.getParameterMetaData
 	public static int METADATA_CACHE_SCOPE								= 9				;   // 0:不缓存 1:当前线程 9:整个应用
 	public static String METADATA_CACHE_KEY								= ""			;	// 表结构缓存key
 	public static int METADATA_CACHE_SECOND								= 3600*24		;	// 表结构缓存时间(-1:表示永不失效)

@@ -5870,7 +5870,15 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
     @Override
     public StringBuilder increment(DataRuntime runtime, StringBuilder builder, Column meta) {
         if(meta.isAutoIncrement()) {
-            builder.append(" IDENTITY(").append(meta.getIncrementSeed()).append(",").append(meta.getIncrementStep()).append(")");
+            Integer seed = meta.getIncrementSeed();
+            Integer step = meta.getIncrementStep();
+            if(null == seed){
+                seed = 1;
+            }
+            if(step == null){
+                step = 1;
+            }
+            builder.append(" IDENTITY(").append(seed).append(",").append(step).append(")");
         }
         return builder;
     }

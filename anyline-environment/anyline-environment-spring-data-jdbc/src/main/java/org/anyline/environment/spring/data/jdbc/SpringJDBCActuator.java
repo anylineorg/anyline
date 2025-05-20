@@ -680,10 +680,15 @@ public class SpringJDBCActuator implements DriverActuator {
                 public void setValues(PreparedStatement ps, int i) throws SQLException {
                     //i从0开始 参数下标从1开始
                     for(int p=1; p<=vol; p++) {
-                        if(types[p-1] == 0){
-                            types[p-1] = ps.getParameterMetaData().getParameterType(p);
+                        if(ConfigTable.IS_AUTO_CHECK_PARAMETER_METADATA) {
+                            //有些数据源会报 java.sql.SQLException: Parameter metadata not available for the given statement
+                            if (types[p - 1] == 0) {
+                                types[p - 1] = ps.getParameterMetaData().getParameterType(p);
+                            }
+                            ps.setObject(p, values.get(vol * i + p - 1), types[p - 1]);
+                        }else{
+                            ps.setObject(p, values.get(vol * i + p - 1));
                         }
-                        ps.setObject(p, values.get(vol*i+p-1), types[p-1]);
                     }
                 }
                 public int getBatchSize() {
