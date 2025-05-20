@@ -264,9 +264,9 @@ public enum StandardTypeMetadata implements TypeMetadata {
     , INT16(CATEGORY.INT, "INT16", null, Short.class, 1, 1, 1, IoTDB, ClickHouse)
     //int32 经常是对应 INT 如果个别数据库(如ClickHouse)中是INT32 需要在 code_datatype_compat 中修改 SQL_META_CODE
     , INT32(CATEGORY.INT, "INT", null, Integer.class, 1, 1, 1, IoTDB, ClickHouse)
-    , INT64(CATEGORY.INT, "INT64", null, Integer.class, 1, 1, 1, IoTDB, ClickHouse)
-    , INT128(CATEGORY.INT, "INT128", null, Integer.class, 1, 1, 1, ClickHouse)
-    , INT256(CATEGORY.INT, "INT256", null, Integer.class, 1, 1, 1, ClickHouse)
+    , INT64(CATEGORY.INT, "INT64", null, Long.class, 1, 1, 1, IoTDB, ClickHouse)
+    , INT128(CATEGORY.INT, "INT128", null, Long.class, 1, 1, 1, ClickHouse)
+    , INT256(CATEGORY.INT, "INT256", null, Long.class, 1, 1, 1, ClickHouse)
     , LONG_TEXT(CATEGORY.TEXT, "LONG", null, String.class,1, 1, 1, ORACLE, ElasticSearch) {}
     , BIGINT(CATEGORY.INT, "BIGINT", null, Long.class,1, 1, 1, MySQL, Informix, GBase8S, SinoDB, HANA, Derby, KingBase, Doris)
     , LONG(CATEGORY.INT, "LONG", null, Long.class, 1, 1, 1, ElasticSearch)

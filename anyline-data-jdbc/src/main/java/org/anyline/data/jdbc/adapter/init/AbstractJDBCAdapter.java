@@ -1481,7 +1481,9 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
     public long count(DataRuntime runtime, String random, Run run) {
         long total = 0;
         DataSet set = select(runtime, random, false, ACTION.DML.COUNT, null, null, run, run.getTotalQuery(), run.getValues());
-        total = set.toUpperKey().getInt(0, "CNT", 0);
+        if(!set.isEmpty()) {
+            total = set.getRow(0).toUpperKey().getLong("CNT", 0L);
+        }
         return total;
     }
 

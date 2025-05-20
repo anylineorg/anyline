@@ -52,6 +52,7 @@ public class JDBCUtil {
     public static Column column(DriverAdapter adapter, DataRuntime runtime, Column column, ResultSetMetaData rsm, int index) {
         if(null == column) {
             column = new Column();
+            column.setDatabaseType(adapter.type());
         }
         String catalog = null;
         String schema = null;
@@ -66,11 +67,7 @@ public class JDBCUtil {
             log.debug("[获取MetaData失败][驱动未实现:getSchemaName]");
         }
         adapter.correctSchemaFromJDBC(runtime, column, catalog, schema);
-        try{
-            column.setClassName(rsm.getColumnClassName(index));
-        }catch (Exception e) {
-            log.debug("[获取MetaData失败][驱动未实现:getColumnClassName]");
-        }
+
         try{
             column.caseSensitive(rsm.isCaseSensitive(index));
         }catch (Exception e) {
@@ -120,6 +117,12 @@ public class JDBCUtil {
             column.setType(rsm.getColumnType(index));
         }catch (Exception e) {
             log.debug("[获取MetaData失败][驱动未实现:getColumnType]");
+        }
+
+        try{
+            column.setClassName(rsm.getColumnClassName(index));
+        }catch (Exception e) {
+            log.debug("[获取MetaData失败][驱动未实现:getColumnClassName]");
         }
         try {
             //不准确 POINT 返回 GEOMETRY

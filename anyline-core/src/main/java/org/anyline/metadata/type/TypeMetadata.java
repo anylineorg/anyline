@@ -665,6 +665,10 @@ public interface TypeMetadata {
                 typeName = typeName.split(" ")[0];
             }
         }
+
+        if("java.lang.Long".equals(meta.getClassName())) {
+            typeName = "BIGINT";
+        }
         typeMetadata = parse(alias, spells, typeName, numberLengthUnit, targetNumberLengthUnit);
 
         /*
