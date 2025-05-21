@@ -53,7 +53,7 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter {
     /**
      * 是查询表时忽略的schema
      */
-    public static String IGNORE_SCHEMAS = "CTXSYS,EXFSYS,WMSYS,MDSYS,SYSTEM,OLAPSYS,SYSMAN,SYS";
+    public static String IGNORE_SCHEMAS = "CTXSYS,EXFSYS,WMSYS,MDSYS,OLAPSYS,SYS"; //,SYSMAN
 
     public DatabaseType type() {
         return DatabaseType.ORACLE; 

@@ -28,7 +28,6 @@ import org.anyline.data.run.*;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
 import org.anyline.entity.generator.PrimaryGenerator;
-import org.anyline.exception.CommandException;
 import org.anyline.exception.NotSupportException;
 import org.anyline.metadata.*;
 import org.anyline.metadata.refer.MetadataFieldRefer;
@@ -2786,13 +2785,15 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
     @Override
     public List<Run> buildQueryColumnsRun(DataRuntime runtime,  boolean metadata, Column query, ConfigStore configs) throws Exception {
         List<Run> runs = new ArrayList<>();
-        Run run = buildQueryColumnsBody(runtime, configs);
-        runs.add(run);
-        configs.and(Compare.LIKE_SIMPLE, "M.TABLE_NAME", query.getTableName());
-        configs.and("M.OWNER", query.getSchemaName());
-        run.setOrders("M.TABLE_NAME", "M.COLUMN_ID");
-        if(null != configs) {
-            run.setPageNavi(configs.getPageNavi());
+        if(!metadata) {
+            Run run = buildQueryColumnsBody(runtime, configs);
+            runs.add(run);
+            configs.and("M.OWNER", query.getSchemaName());
+            configs.and(Compare.LIKE_SIMPLE, "M.TABLE_NAME", query.getTableName());
+            run.setOrders("M.TABLE_NAME", "M.COLUMN_ID");
+            if (null != configs) {
+                run.setPageNavi(configs.getPageNavi());
+            }
         }
         return runs;
     }
