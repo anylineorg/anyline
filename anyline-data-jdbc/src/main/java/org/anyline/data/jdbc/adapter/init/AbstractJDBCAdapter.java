@@ -9440,7 +9440,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		}
 		return builder.toString();
 	}
-	public String getPrimayKey(Object obj) {
+	public String getPrimaryKey(Object obj) {
 		String key = null;
 		if(obj instanceof Collection) {
 			obj = ((Collection)obj).iterator().next();

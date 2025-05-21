@@ -225,7 +225,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
                 start = false;
                 builder.append(key);
             }
-            builder.append(")");
+            builder.append(") VALUES ");
 
             if(row.hasPrimaryKeys() && BasicUtil.isEmpty(row.getPrimaryValue())) {
                 if(null != generator) {

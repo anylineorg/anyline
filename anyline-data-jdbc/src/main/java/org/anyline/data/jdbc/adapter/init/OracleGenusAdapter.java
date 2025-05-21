@@ -468,7 +468,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
             cnt = super.insert(runtime, random, data, configs, run, pks);
         }else{
             //单行的可以返回序列号
-            String pk = getPrimayKey(data);
+            String pk = getPrimaryKey(data);
             if(null != pk) {
                 pks = new String[]{pk};
             }else{
