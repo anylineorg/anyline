@@ -81,7 +81,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
 
     @Override
     public boolean supportSchema() {
-        return true;
+        return false;
     }
 
     /* *****************************************************************************************************************
