@@ -921,9 +921,21 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
         return row;
     }
     public DataRow getFirstRow(){
+        if(rows.isEmpty()){
+            if(ConfigTable.IS_RETURN_EMPTY_INSTANCE_REPLACE_NULL) {
+                return new DataRow();
+            }
+            return null;
+        }
         return getRow(0);
     }
     public DataRow getLastRow(){
+        if(rows.isEmpty()){
+            if(ConfigTable.IS_RETURN_EMPTY_INSTANCE_REPLACE_NULL) {
+                return new DataRow();
+            }
+            return null;
+        }
         return getRow(rows.size()-1);
     }
 
