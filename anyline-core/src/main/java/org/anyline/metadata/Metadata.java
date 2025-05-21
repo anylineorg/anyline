@@ -288,7 +288,10 @@ public class Metadata<T extends Metadata> {
         }
         return catalog.getName();
     }
-
+    public T removeCatalog(){
+        this.catalog = null;
+        return (T)this;
+    }
     public T setCatalog(String catalog) {
         if(BasicUtil.isEmpty(catalog)) {
             this.catalog = null;
@@ -315,6 +318,10 @@ public class Metadata<T extends Metadata> {
         return schema.getName();
     }
 
+    public T removeSchema(){
+        this.schema = null;
+        return (T)this;
+    }
     public T setSchema(String schema) {
         if(null == schema) {
             this.schema = null;

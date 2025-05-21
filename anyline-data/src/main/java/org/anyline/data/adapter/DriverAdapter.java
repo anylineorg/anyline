@@ -5242,15 +5242,15 @@ public interface DriverAdapter {
         }
         int ignoreLength = ignoreLength(runtime, meta);
         if(-1 != ignoreLength) {
-            refer.setIgnoreLength(ignoreLength);
+            refer.ignoreLength(ignoreLength);
         }
         int ignorePrecision = ignorePrecision(runtime, meta);
         if(-1 != ignorePrecision) {
-            refer.setIgnorePrecision(ignorePrecision);
+            refer.ignorePrecision(ignorePrecision);
         }
         int ignoreScale = ignoreScale(runtime, meta);
         if(-1 != ignoreScale) {
-            refer.setIgnoreScale(ignoreScale);
+            refer.ignoreScale(ignoreScale);
         }
         return refer;
     }
@@ -8497,7 +8497,7 @@ public interface DriverAdapter {
 	 * @param ignoreScale 是否忽略小数
 	 * @return StringBuilder
 	 */
-	StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta, String type, int ignoreLength, int ignorePrecision, int ignoreScale);
+	StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta, String type, int ignoreLength, int ignorePrecision, int ignoreScale, int maxLength, int maxPrecision, int maxScale);
 
 	/**
 	 * column[命令合成-子流程]<br/>

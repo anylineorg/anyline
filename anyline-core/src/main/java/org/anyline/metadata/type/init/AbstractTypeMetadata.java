@@ -35,6 +35,9 @@ public class AbstractTypeMetadata implements TypeMetadata {
     private int ignoreLength;
     private int ignorePrecision;
     private int ignoreScale;
+    private int maxLength;
+    private int maxPrecision;
+    private int maxScale;
     private Refer refer;
     public AbstractTypeMetadata(CATEGORY category, String name, Class transfer, Class compatible, int ignoreLength, int ignorePrecision, int ignoreScale, DatabaseType ... dbs) {
         this.category = category;
@@ -187,6 +190,21 @@ public class AbstractTypeMetadata implements TypeMetadata {
     }
 
     @Override
+    public int maxLength() {
+        return maxLength;
+    }
+
+    @Override
+    public int maxPrecision() {
+        return  maxPrecision;
+    }
+
+    @Override
+    public int maxScale() {
+        return maxScale;
+    }
+
+    @Override
     public boolean support() {
         return true;
     }
@@ -210,7 +228,7 @@ public class AbstractTypeMetadata implements TypeMetadata {
     public Refer refer() {
         if(null == refer) {
             refer = new Refer();
-            refer.setIgnoreLength(ignoreLength).setIgnorePrecision(ignorePrecision).setIgnoreScale(ignoreScale);
+            refer.ignoreLength(ignoreLength).ignorePrecision(ignorePrecision).ignoreScale(ignoreScale);
         }
         return refer;
     }

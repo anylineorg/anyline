@@ -63,7 +63,9 @@ public interface DataSourceLoader {
             prefixs = ConfigTable.environment().string(null,head + "-list");
         }
         if(null != prefixs) {
-            for (String prefix : prefixs.split(",")) {
+            log.info("[解析数据源][{}]", prefixs);
+            String[] as = prefixs.split(",");
+            for (String prefix : as) {
                 // 多个数据源
                 try {
                     //返回 datasource的bean id

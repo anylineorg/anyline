@@ -883,6 +883,9 @@ public enum StandardTypeMetadata implements TypeMetadata {
     private final int ignoreLength;
     private final int ignorePrecision;
     private final int ignoreScale;
+    private int maxLength = -1;
+    private int maxPrecision = -1;
+    private int maxScale = -1;
     private boolean array;
     private Refer refer;
     StandardTypeMetadata(CATEGORY category, String name, String formula, TypeMetadata origin, Class transfer, Class compatible, int ignoreLength, int ignorePrecision, int ignoreScale, DatabaseType ... dbs) {
@@ -1021,6 +1024,21 @@ public enum StandardTypeMetadata implements TypeMetadata {
     }
 
     @Override
+    public int maxLength() {
+        return maxLength;
+    }
+
+    @Override
+    public int maxPrecision() {
+        return maxPrecision;
+    }
+
+    @Override
+    public int maxScale() {
+        return maxScale;
+    }
+
+    @Override
     public boolean support() {
         return true;
     }
@@ -1063,7 +1081,7 @@ public enum StandardTypeMetadata implements TypeMetadata {
     public Refer refer() {
         if(null == refer) {
             refer = new Refer();
-            refer.setIgnoreLength(ignoreLength).setIgnorePrecision(ignorePrecision).setIgnoreScale(ignoreScale);
+            refer.ignoreLength(ignoreLength).ignorePrecision(ignorePrecision).ignoreScale(ignoreScale);
         }
         return refer;
     }

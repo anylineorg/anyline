@@ -31,4 +31,9 @@ public class LogLoadListener implements LoadListener {
             LogProxy.append(item);
         }
     }
+    @Override
+    public int index(){
+        //先执行
+        return -1;
+    }
 }

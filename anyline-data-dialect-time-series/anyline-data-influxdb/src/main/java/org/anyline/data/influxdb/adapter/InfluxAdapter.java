@@ -5945,6 +5945,9 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
         int ignoreLength = -1;
         int ignorePrecision = -1;
         int ignoreScale = -1;
+        int maxLength = -1;
+        int maxPrecision = -1;
+        int maxScale = -1;
         String typeName = meta.getTypeName();
         TypeMetadata type = typeMetadata(runtime, meta);
         if(null != type) {
@@ -5957,7 +5960,10 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
         ignoreLength = refer.ignoreLength();
         ignorePrecision = refer.ignorePrecision();
         ignoreScale = refer.ignoreScale();
-        return type(runtime, builder, meta, typeName, ignoreLength, ignorePrecision, ignoreScale);
+        maxLength = refer.maxLength();
+        maxPrecision = refer.maxPrecision();
+        maxScale = refer.maxScale();
+        return type(runtime, builder, meta, typeName, ignoreLength, ignorePrecision, ignoreScale, maxLength, maxPrecision, maxScale);
     }
 
     /**
@@ -5973,8 +5979,8 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @return StringBuilder
      */
     @Override
-    public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta, String type, int ignoreLength, int ignorePrecision, int ignoreScale) {
-        return super.type(runtime, builder, meta, type, ignoreLength, ignorePrecision, ignoreScale);
+    public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta, String type, int ignoreLength, int ignorePrecision, int ignoreScale, int maxLength, int maxPrecision, int maxScale) {
+        return super.type(runtime, builder, meta, type, ignoreLength, ignorePrecision, ignoreScale, maxLength, maxPrecision, maxScale);
     }
 
     /**

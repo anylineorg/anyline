@@ -302,13 +302,142 @@ public class MetadataReferHolder {
         }
         //3.数据类型自带
         if(result ==-1) {
-            result = type.ignorePrecision();
+            result = type.ignoreScale();
         }
         //4.配置类-数据类型大类
         if(result ==-1) {
             refer = MetadataReferHolder.get(database, type.getCategory());
             if(null != refer) {
                 result = refer.ignoreScale();
+            }
+        }
+        return result;
+    }
+
+    /**
+     * @param database 数据库类型
+     * @param type TypeMetadata
+     * @return int
+     */
+    public static int maxLength(DatabaseType database, TypeMetadata type) {
+        if(null == type) {
+            return -1;
+        }
+        int result = -1;
+		/*
+		1.配置类-数据类型
+		2.配置类-数据类型名称
+		3.数据类型自带
+		4.配置类-数据类型大类
+		 */
+        //1.配置类 数据类型
+        TypeMetadata.Refer refer = MetadataReferHolder.get(database, type);
+        if(null != refer) {
+            result = refer.maxLength();
+        }
+        //2.配置类-数据类型名称
+        if(result == -1) {
+            //根据数据类型名称
+            refer = MetadataReferHolder.get(database, type.getName());
+            if(null != refer) {
+                result = refer.maxLength();
+            }
+        }
+        //3.数据类型自带
+        if(result ==-1) {
+            result = type.maxLength();
+        }
+        //4.配置类-数据类型大类
+        if(result ==-1) {
+            refer = MetadataReferHolder.get(database, type.getCategory());
+            if(null != refer) {
+                result = refer.maxLength();
+            }
+        }
+        return result;
+    }
+
+    /**
+     * @param database 数据库类型
+     * @param type TypeMetadata
+     * @return int
+     */
+    public static int maxPrecision(DatabaseType database, TypeMetadata type) {
+        if(null == type) {
+            return -1;
+        }
+        int result = -1;
+		/*
+		1.配置类-数据类型
+		2.配置类-数据类型名称
+		3.数据类型自带
+		4.配置类-数据类型大类
+		 */
+        //1.配置类 数据类型
+        TypeMetadata.Refer refer = MetadataReferHolder.get(database, type);
+        if(null != refer) {
+            result = refer.maxPrecision();
+        }
+        //2.配置类-数据类型名称
+        if(result == -1) {
+            //根据数据类型名称
+            refer = MetadataReferHolder.get(database, type.getName());
+            if(null != refer) {
+                result = refer.maxPrecision();
+            }
+        }
+        //3.数据类型自带
+        if(result ==-1) {
+            result = type.maxPrecision();
+        }
+        //4.配置类-数据类型大类
+        if(result ==-1) {
+            refer = MetadataReferHolder.get(database, type.getCategory());
+            if(null != refer) {
+                result = refer.maxPrecision();
+            }
+        }
+        return result;
+    }
+
+    /**
+     * @param database 数据库类型
+     * @param type TypeMetadata
+     * @return int
+     */
+    public static int maxScale(DatabaseType database, TypeMetadata type) {
+        if(null == type) {
+            return -1;
+        }
+        int result = -1;
+		/*
+		1.配置类-数据类型
+		2.配置类-数据类型名称
+		3.数据类型自带
+		4.配置类-数据类型大类
+		 */
+        //1.配置类 数据类型
+        TypeMetadata.Refer refer = MetadataReferHolder.get(database, type);
+        if(null != refer) {
+            result = refer.maxScale();
+        }
+        //2.配置类-数据类型名称
+        if(result == -1) {
+            //根据数据类型名称
+            refer = MetadataReferHolder.get(database, type.getName());
+            if(null != refer) {
+                result = refer.maxScale();
+            }
+        }
+        //3.数据类型自带
+        if(result ==-1) {
+            result = type.maxScale();
+        }
+        //4.配置类-数据类型大类
+        if(result ==-1) {
+            refer = MetadataReferHolder.get(database, type.getCategory());
+            if(null != refer) {
+                result = refer.maxScale();
             }
         }
         return result;

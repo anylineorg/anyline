@@ -135,6 +135,9 @@ public class Column extends TableAffiliation<Column> implements Serializable {
     protected int ignoreLength                = -1; // 是否忽略长度
     protected int ignorePrecision             = -1; // 是否忽略有效位数
     protected int ignoreScale                 = -1; // 是否忽略小数位
+    protected int maxLength                   = -1;
+    protected int maxPrecision                = -1;
+    protected int maxScale                    = -1;
     //数字类型:precision,scale 日期:length 时间戳:scale 其他:length
     protected Integer precisionLength             ; // 精确长度 根据数据类型返回precision或length
     protected Integer length                      ; // 长度(注意varchar,date,timestamp,number的区别)
@@ -801,6 +804,9 @@ public class Column extends TableAffiliation<Column> implements Serializable {
         int ignoreLength = -1;
         int ignorePrecision = -1;
         int ignoreScale = -1;
+        int maxLength = -1;
+        int maxPrecision = -1;
+        int maxScale = -1;
         String result = null;
         String type = null;
         String formula = null;
@@ -808,11 +814,17 @@ public class Column extends TableAffiliation<Column> implements Serializable {
             ignoreLength = refer.ignoreLength();
             ignorePrecision = refer.ignorePrecision();
             ignoreScale = refer.ignoreScale();
+            maxLength = refer.maxLength();
+            maxPrecision = refer.maxPrecision();
+            maxScale = refer.maxScale();
             formula = refer.getFormula();
         }else{
             ignoreLength = ignoreLength(database);
             ignorePrecision = ignorePrecision(database);
             ignoreScale = ignoreScale(database);
+            maxLength = maxLength(database);
+            maxPrecision = maxPrecision(database);
+            maxScale = maxScale(database);
             formula = formula(database);
         }
         if(null != typeMetadata && typeMetadata != TypeMetadata.NONE && typeMetadata != TypeMetadata.ILLEGAL && database == this.databaseType) {
@@ -872,6 +884,30 @@ public class Column extends TableAffiliation<Column> implements Serializable {
                     }else{
                         appendScale = true;
                     }
+                }
+            }
+        }
+
+        if(maxLength != -1){
+            if(null != length){
+                if(length > maxLength) {
+                    length = maxLength;
+                }
+            }
+        }
+
+        if(maxPrecision != -1){
+            if(null != precision){
+                if(precision > maxPrecision) {
+                    precision = maxPrecision;
+                }
+            }
+        }
+
+        if(maxScale != -1){
+            if(null != scale){
+                if(scale > maxScale) {
+                    scale = maxScale;
                 }
             }
         }
@@ -1869,12 +1905,21 @@ public class Column extends TableAffiliation<Column> implements Serializable {
         this.ignoreLength = ignoreLength;
     }
 
+    public void maxLength(int maxLength) {
+        this.maxLength = maxLength;
+    }
     public void ignorePrecision(int ignorePrecision) {
         this.ignorePrecision = ignorePrecision;
+    }
+    public void maxPrecision(int maxPrecision) {
+        this.maxPrecision = maxPrecision;
     }
 
     public void ignoreScale(int ignoreScale) {
         this.ignoreScale = ignoreScale;
+    }
+    public void maxScale(int maxScale) {
+        this.maxScale = maxScale;
     }
     public int ignoreScale(DatabaseType database) {
         if(null != typeMetadata) {
@@ -1913,6 +1958,23 @@ public class Column extends TableAffiliation<Column> implements Serializable {
         }
     }
 
+    public int maxLength() {
+        if(-1 != maxLength) {
+            return maxLength;
+        }
+        if(null != typeMetadata) {
+            return typeMetadata.maxLength();
+        }
+        return maxLength;
+    }
+    public int maxLength(DatabaseType database) {
+        if(null != typeMetadata) {
+            return MetadataReferHolder.maxLength(database, typeMetadata);
+        }else{
+            return maxLength();
+        }
+    }
+
     /**
      * 是否需要指定精度 主要用来识别能取出精度，但DDL不需要精度的类型
      * 精确判断通过adapter
@@ -1935,6 +1997,25 @@ public class Column extends TableAffiliation<Column> implements Serializable {
             return ignorePrecision();
         }
     }
+
+    public int maxPrecision() {
+        if(-1 != maxPrecision) {
+            return maxPrecision;
+        }
+        if(null != typeMetadata) {
+            return typeMetadata.maxPrecision();
+        }
+        return maxPrecision;
+    }
+
+    public int maxPrecision(DatabaseType database) {
+        if(null != typeMetadata) {
+            return MetadataReferHolder.maxPrecision(database, typeMetadata);
+        }else{
+            return maxPrecision();
+        }
+    }
+
     public String getFinalType() {
         return finalType;
     }
@@ -1958,6 +2039,23 @@ public class Column extends TableAffiliation<Column> implements Serializable {
         }
         return ignoreScale;
     }
+    public int maxScale() {
+        if(-1 != maxScale) {
+            return maxScale;
+        }
+        if(null != typeMetadata) {
+            return typeMetadata.maxScale();
+        }
+        return maxScale;
+    }
+    public int maxScale(DatabaseType database) {
+        if(null != typeMetadata) {
+            return MetadataReferHolder.maxScale(database, typeMetadata);
+        }else{
+            return maxScale();
+        }
+    }
+
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append(name).append(" ");

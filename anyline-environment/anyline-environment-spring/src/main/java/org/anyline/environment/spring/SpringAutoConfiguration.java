@@ -30,11 +30,11 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Hashtable;
-import java.util.Map;
+import java.util.*;
+
 @Component("anyline.environment.configuration.spring")
 public class SpringAutoConfiguration implements InitializingBean {
-    private Map<String, LoadListener> listeners;
+    private LinkedHashMap<String, LoadListener> listeners;
     private Map<String, DataSourceListener> datasource_listeners;
     private boolean loader_start_status = false;
     private boolean loader_after_status = false;
@@ -46,7 +46,18 @@ public class SpringAutoConfiguration implements InitializingBean {
 
     @Autowired(required = false)
     public void setLoadListeners(Map<String, LoadListener> listeners) {
-        this.listeners = listeners;
+        if(null == this.listeners){
+            this.listeners = new LinkedHashMap<>();
+        }
+        this.listeners.putAll(listeners);
+        //排序
+        List<Map.Entry<String, LoadListener>> entries = new ArrayList<>(this.listeners.entrySet());
+
+        Collections.sort(entries, Comparator.comparingInt(
+                entry -> entry.getValue().index()
+        ));
+        this.listeners.clear();
+        entries.forEach(entry -> this.listeners.put(entry.getKey(), entry.getValue()));
         loaderStart();
     }
     @Autowired(required = false)

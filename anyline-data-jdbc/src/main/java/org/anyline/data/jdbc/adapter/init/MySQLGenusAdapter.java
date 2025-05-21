@@ -6261,8 +6261,8 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta, String type, int ignoreLength, int ignorePrecision, int ignoreScale) {
-        return super.type(runtime, builder, meta, type, ignoreLength, ignorePrecision, ignoreScale);
+    public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta, String type, int ignoreLength, int ignorePrecision, int ignoreScale, int maxLength, int maxPrecision, int maxScale) {
+        return super.type(runtime, builder, meta, type, ignoreLength, ignorePrecision, ignoreScale, maxLength, maxPrecision, maxScale);
     }
 
     /**
@@ -8287,6 +8287,14 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     @Override
     public String value(DataRuntime runtime, Column column, SQL_BUILD_IN_VALUE value) {
         if(value == SQL_BUILD_IN_VALUE.CURRENT_DATETIME) {
+            String type = column.getTypeName();
+            if(null != type && type.toUpperCase().contains("TIMESTAMP")){
+                Integer scale = column.getScale();
+                if(null != scale && scale > 0){
+                    return "CURRENT_TIMESTAMP(" + scale + ")";
+                }
+                return "CURRENT_TIMESTAMP";
+            }
             return "now()";
         }
         if(value == SQL_BUILD_IN_VALUE.CURRENT_DATE) {
@@ -8296,6 +8304,14 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
             return "curtime()";
         }
         if(value == SQL_BUILD_IN_VALUE.CURRENT_TIMESTAMP) {
+            String type = column.getTypeName();
+            if(null != type && type.toUpperCase().contains("TIMESTAMP")){
+                Integer scale = column.getScale();
+                if(null != scale && scale > 0){
+                    return "CURRENT_TIMESTAMP(" + scale + ")";
+                }
+                return "CURRENT_TIMESTAMP";
+            }
             return "now()";
         }
         return null;

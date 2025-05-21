@@ -6686,6 +6686,9 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		int ignoreLength = -1;
 		int ignorePrecision = -1;
 		int ignoreScale = -1;
+        int maxLength = -1;
+        int maxPrecision = -1;
+        int maxScale = -1;
 		String typeName = meta.getTypeName();
 		TypeMetadata type = typeMetadata(runtime, meta);
 		if(null != type) {
@@ -6699,7 +6702,11 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		ignoreLength = trefer.ignoreLength();
 		ignorePrecision = trefer.ignorePrecision();
 		ignoreScale = trefer.ignoreScale();
-		return type(runtime, builder, meta, typeName, ignoreLength, ignorePrecision, ignoreScale);
+        maxLength = trefer.maxLength();
+        maxPrecision = trefer.maxPrecision();
+        maxScale = trefer.maxScale();
+
+		return type(runtime, builder, meta, typeName, ignoreLength, ignorePrecision, ignoreScale, maxLength, maxPrecision, maxScale);
 	}
 
 	/**
@@ -6728,8 +6735,8 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta, String type, int ignoreLength, int ignorePrecision, int ignoreScale) {
-		return super.type(runtime, builder, meta, type, ignoreLength, ignorePrecision, ignoreScale);
+	public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta, String type, int ignoreLength, int ignorePrecision, int ignoreScale, int maxLength, int maxPrecision, int maxScale) {
+		return super.type(runtime, builder, meta, type, ignoreLength, ignorePrecision, ignoreScale, maxLength, maxPrecision, maxScale);
 	}
 
 	/**
@@ -8320,7 +8327,10 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		int ignoreLength= refer.ignoreLength();
 		int ignorePrecision= refer.ignorePrecision();
 		int ignoreScale = refer.ignoreScale();
-		type(runtime, builder, column, type.getName(), ignoreLength, ignorePrecision, ignoreScale);
+        int maxLength = refer.maxLength();
+        int maxPrecision = refer.maxPrecision();
+        int maxScale = refer.maxScale();
+		type(runtime, builder, column, type.getName(), ignoreLength, ignorePrecision, ignoreScale, maxLength, maxPrecision, maxScale);
 		return builder;
 	}
 

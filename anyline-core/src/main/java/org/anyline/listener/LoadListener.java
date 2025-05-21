@@ -36,4 +36,8 @@ public interface LoadListener {
      * 顺序 3
      */
     default void after() {}
+
+    default int index() {
+        return 0;
+    }
 }

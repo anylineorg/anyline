@@ -4697,8 +4697,8 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta, String type, int ignoreLength, int ignorePrecision, int ignoreScale) {
-		return super.type(runtime, builder, meta, type, ignoreLength, ignorePrecision, ignoreScale);
+	public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta, String type, int ignoreLength, int ignorePrecision, int ignoreScale, int maxLength, int maxPrecision, int maxScale) {
+		return super.type(runtime, builder, meta, type, ignoreLength, ignorePrecision, ignoreScale, maxLength, maxPrecision, maxScale);
 	}
 
 	/**

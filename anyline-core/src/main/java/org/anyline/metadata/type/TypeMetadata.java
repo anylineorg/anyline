@@ -57,9 +57,20 @@ public interface TypeMetadata {
         private final CATEGORY_GROUP group;
         private final int ignoreLength;
         private final int ignorePrecision;
-
         private final int ignoreScale;
+        private int maxLength = -1;
+        private int maxPrecision = -1;
+        private int maxScale = -1;
         private Refer refer;
+        CATEGORY(CATEGORY_GROUP group, int ignoreLength, int ignorePrecision, int ignoreScale, int maxLength, int maxPrecision, int maxScale) {
+            this.group = group;
+            this.ignoreLength = ignoreLength;
+            this.ignorePrecision = ignorePrecision;
+            this.ignoreScale = ignoreScale;
+            this.maxLength = maxLength;
+            this.maxPrecision = maxPrecision;
+            this.maxScale = maxScale;
+        }
         CATEGORY(CATEGORY_GROUP group, int ignoreLength, int ignorePrecision, int ignoreScale) {
             this.group = group;
             this.ignoreLength = ignoreLength;
@@ -73,7 +84,8 @@ public interface TypeMetadata {
         public Refer refer() {
             if(null == refer) {
                 refer = new Refer();
-                refer.setIgnoreLength(ignoreLength).setIgnorePrecision(ignorePrecision).setIgnoreScale(ignoreScale);
+                refer.ignoreLength(ignoreLength).ignorePrecision(ignorePrecision).ignoreScale(ignoreScale)
+                        .maxLength(maxLength).maxPrecision(maxPrecision).maxScale(maxScale);
             }
             return refer;
         }
@@ -136,6 +148,19 @@ public interface TypeMetadata {
 
         @Override
         public int ignoreScale() {
+            return -1;
+        }
+        @Override
+        public int maxLength() {
+            return -1;
+        }
+        @Override
+        public int maxPrecision() {
+            return -1;
+        }
+
+        @Override
+        public int maxScale() {
             return -1;
         }
 
@@ -244,6 +269,19 @@ public interface TypeMetadata {
         public int ignoreScale() {
             return -1;
         }
+        @Override
+        public int maxLength() {
+            return -1;
+        }
+        @Override
+        public int maxPrecision() {
+            return -1;
+        }
+
+        @Override
+        public int maxScale() {
+            return -1;
+        }
 
         @Override
         public boolean support() {
@@ -339,6 +377,9 @@ public interface TypeMetadata {
     int ignoreLength();
     int ignorePrecision();
     int ignoreScale();
+    int maxLength();
+    int maxPrecision();
+    int maxScale();
     boolean support();
     default String formula() {
         return null;
@@ -405,6 +446,10 @@ public interface TypeMetadata {
         private int ignoreLength = -1;
         private int ignorePrecision = -1;
         private int ignoreScale = -1;
+
+        private int maxLength = -1;
+        private int maxPrecision = -1;
+        private int maxScale = -1;
         /**
          * 读取元数据时 字符类型长度对应的列<br/>
          * 正常情况下只有一列<br/>
@@ -424,7 +469,7 @@ public interface TypeMetadata {
          */
         private String[] scaleRefers;
         public Refer() {}
-        public Refer(String meta, String formula, String lengthRefer, String precisionRefer, String scaleRefer, int ignoreLength, int ignorePrecision, int ignoreScale) {
+        public Refer(String meta, String formula, String lengthRefer, String precisionRefer, String scaleRefer, int ignoreLength, int ignorePrecision, int ignoreScale, int maxLength, int maxPrecision, int maxScale) {
             setMeta(meta);
             setFormula(formula);
             setLengthRefer(lengthRefer);
@@ -433,6 +478,20 @@ public interface TypeMetadata {
             this.ignoreLength = ignoreLength;
             this.ignorePrecision = ignorePrecision;
             this.ignoreScale = ignoreScale;
+            this.maxLength = maxLength;
+            this.maxPrecision = maxPrecision;
+            this.maxScale = maxScale;
+        }
+        public Refer(String lengthRefer, String precisionRefer, String scaleRefer, int ignoreLength, int ignorePrecision, int ignoreScale, int maxLength, int maxPrecision, int maxScale) {
+            setLengthRefer(lengthRefer);
+            setScaleRefer(scaleRefer);
+            setPrecisionRefer(precisionRefer);
+            this.ignoreLength = ignoreLength;
+            this.ignorePrecision = ignorePrecision;
+            this.ignoreScale = ignoreScale;
+            this.maxLength = maxLength;
+            this.maxPrecision = maxPrecision;
+            this.maxScale = maxScale;
         }
         public Refer(String lengthRefer, String precisionRefer, String scaleRefer, int ignoreLength, int ignorePrecision, int ignoreScale) {
             setLengthRefer(lengthRefer);
@@ -457,7 +516,7 @@ public interface TypeMetadata {
             return ignoreLength;
         }
 
-        public Refer setIgnoreLength(int ignoreLength) {
+        public Refer ignoreLength(int ignoreLength) {
             this.ignoreLength = ignoreLength;
             return this;
         }
@@ -466,7 +525,7 @@ public interface TypeMetadata {
             return ignorePrecision;
         }
 
-        public Refer setIgnorePrecision(int ignorePrecision) {
+        public Refer ignorePrecision(int ignorePrecision) {
             this.ignorePrecision = ignorePrecision;
             return this;
         }
@@ -475,7 +534,7 @@ public interface TypeMetadata {
             return ignoreScale;
         }
 
-        public Refer setIgnoreScale(int ignoreScale) {
+        public Refer ignoreScale(int ignoreScale) {
             this.ignoreScale = ignoreScale;
             return this;
         }
@@ -568,6 +627,33 @@ public interface TypeMetadata {
             this.meta = meta;
         }
 
+        public int maxLength() {
+            return maxLength;
+        }
+
+        public Refer maxLength(int maxLength) {
+            this.maxLength = maxLength;
+            return this;
+        }
+
+        public int maxPrecision() {
+            return maxPrecision;
+        }
+
+        public Refer maxPrecision(int maxPrecision) {
+            this.maxPrecision = maxPrecision;
+            return this;
+        }
+
+        public int maxScale() {
+            return maxScale;
+        }
+
+        public Refer maxScale(int maxScale) {
+            this.maxScale = maxScale;
+            return this;
+        }
+
         /**
          * 合并copy的属性(非空并且!=-1的属性)
          * @param copy 复本
@@ -580,6 +666,10 @@ public interface TypeMetadata {
                 int ignoreLength = copy.ignoreLength();
                 int ignorePrecision = copy.ignorePrecision;
                 int ignoreScale = copy.ignoreScale();
+                int maxLength = copy.maxLength;
+                int maxPrecision = copy.maxPrecision;
+                int maxScale = copy.maxScale;
+
                 if(BasicUtil.isNotEmpty(meta)) {
                     this.meta = meta;
                 }
@@ -594,6 +684,16 @@ public interface TypeMetadata {
                 }
                 if(-1 != ignoreScale) {
                     this.ignoreScale = ignoreScale;
+                }
+
+                if(- 1 != maxLength) {
+                    this.maxLength = maxLength;
+                }
+                if(-1 != maxPrecision) {
+                    this.maxPrecision = maxPrecision;
+                }
+                if(-1 != maxScale) {
+                    this.maxScale = maxScale;
                 }
                 String[] lengthRefers = copy.getLengthRefers();;
                 String[] precisionRefers = copy.getPrecisionRefers();
