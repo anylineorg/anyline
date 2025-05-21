@@ -16,8 +16,7 @@
 
 package org.anyline.data.jdbc.oracle;
 
-import oracle.sql.BLOB;
-import oracle.sql.CLOB;
+import oracle.sql.*;
 import org.anyline.adapter.DataReader;
 
 public enum OracleReader {
@@ -40,6 +39,70 @@ public enum OracleReader {
             if(value instanceof BLOB) {
                 try {
                     value = ((BLOB) value).getBytes();
+                }catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            return value;
+        }
+    }),
+    NUMBERReader(new Object[]{NUMBER.class}, new DataReader() {
+        @Override
+        public Object read(Object value) {
+            if(value instanceof NUMBER) {
+                try {
+                    value = ((NUMBER) value).bigDecimalValue();
+                }catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            return value;
+        }
+    }),
+    TimestampReader(new Object[]{TIMESTAMP.class, TIMESTAMPTZ.class, TIMESTAMPLTZ.class}, new DataReader() {
+        @Override
+        public Object read(Object value) {
+            if(value instanceof TIMESTAMP) {
+                try {
+                    value = ((TIMESTAMP) value).timestampValue();
+                }catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }else if(value instanceof TIMESTAMPLTZ) {
+                try {
+                    value = ((TIMESTAMPLTZ) value).timestampValue();
+                }catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }else if(value instanceof TIMESTAMPTZ) {
+                try {
+                    value = ((TIMESTAMPTZ) value).timestampValue();
+                }catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            return value;
+        }
+    }),
+    RAWReader(new Object[]{RAW.class}, new DataReader() {
+        @Override
+        public Object read(Object value) {
+            if(value instanceof RAW) {
+                try {
+                    value = ((RAW) value).stringValue();
+                }catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            return value;
+        }
+    }),
+    ROWIDReader(new Object[]{ROWID.class}, new DataReader() {
+        @Override
+        public Object read(Object value) {
+            if(value instanceof ROWID) {
+                try {
+                    value = ((ROWID) value).stringValue();
                 }catch (Exception e) {
                     e.printStackTrace();
                 }
