@@ -2831,7 +2831,8 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         }else{
             builder.append("SELECT M.*,pg_catalog.format_type ( FA.ATTTYPID, FA.ATTTYPMOD ) AS FULL_TYPE,FD.DESCRIPTION AS COLUMN_COMMENT \n");
             builder.append("FROM information_schema.columns M\n");
-            builder.append("LEFT JOIN pg_class FC ON FC.RELNAME = M.TABLE_NAME\n");
+            builder.append("LEFT JOIN pg_namespace FN ON M.table_schema = FN.nspname\n");
+            builder.append("LEFT JOIN pg_class FC ON FC.RELNAME = M.TABLE_NAME AND FC.relnamespace = FN.oid\n");
             builder.append("LEFT JOIN pg_attribute FA ON FA.ATTNAME = M.COLUMN_NAME AND FA.ATTRELID = FC.OID\n");
             builder.append("LEFT JOIN pg_description FD ON FD.OBJOID = FC.OID AND FD.OBJSUBID = M.ORDINAL_POSITION");
             configs.and("M.TABLE_CATALOG", query.getCatalogName());
@@ -2881,7 +2882,8 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         StringBuilder builder = run.getBuilder();
         builder.append("SELECT M.*,pg_catalog.format_type ( FA.ATTTYPID, FA.ATTTYPMOD ) AS FULL_TYPE,FD.DESCRIPTION AS COLUMN_COMMENT \n");
         builder.append("FROM information_schema.columns M\n");
-        builder.append("LEFT JOIN pg_class FC ON FC.RELNAME = M.TABLE_NAME\n");
+        builder.append("LEFT JOIN pg_namespace FN ON M.table_schema = FN.nspname\n");
+        builder.append("LEFT JOIN pg_class FC ON FC.RELNAME = M.TABLE_NAME AND FC.relnamespace = FN.oid\n");
         builder.append("LEFT JOIN pg_attribute  FA ON FA.ATTNAME = M.COLUMN_NAME AND FA.ATTRELID = FC.OID\n");
         builder.append("LEFT JOIN pg_description FD ON FD.OBJOID = FC.OID AND FD.OBJSUBID = M.ORDINAL_POSITION\n");
         configs.and("M.TABLE_CATALOG", query.getCatalogName());

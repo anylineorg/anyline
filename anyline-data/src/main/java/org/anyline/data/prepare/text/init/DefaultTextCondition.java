@@ -274,9 +274,9 @@ public class DefaultTextCondition extends AbstractCondition implements Condition
 					}
 				}else{
 					result = result.replace(var.getFullKey(), "?");
-					String value = null; 
+					Object value = null;
 					if(BasicUtil.isNotEmpty(true,varValues)) {
-						value = varValues.get(0).toString(); 
+						value = varValues.get(0);
 					} 
 					runValues.add(new RunValue(var.getKey(), value));
 				} 

@@ -27,6 +27,9 @@ import org.anyline.data.util.CommandParser;
 import org.anyline.entity.Compare;
 import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;
 import org.anyline.exception.NotSupportException;
+import org.anyline.metadata.type.TypeMetadata;
+import org.anyline.metadata.type.init.StandardTypeMetadata;
+import org.anyline.proxy.ConvertProxy;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.SQLUtil;
@@ -386,6 +389,18 @@ public class DefaultAutoCondition extends AbstractCondition implements AutoCondi
 			}else{
 				values.add(src); 
 			} 
+		}
+		//类型转换
+		if(BasicUtil.isNotEmpty(datatype)){
+			try {
+				TypeMetadata tm = StandardTypeMetadata.valueOf(datatype.toUpperCase());
+				List<Object> vs = new ArrayList<>();
+				for(Object value:values){
+					Object v = ConvertProxy.convert(value, tm.compatible(), false);
+					vs.add(v);
+				}
+				return vs;
+			}catch (Exception ignore){}
 		}
 		return values; 
 	} 

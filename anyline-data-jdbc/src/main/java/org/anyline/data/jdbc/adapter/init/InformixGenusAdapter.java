@@ -5240,7 +5240,11 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
         }
         builder.append(" MODIFY ");
         delimiter(builder, meta.getName());
-        String type = update.getFullType();
+
+        String type = update.getFinalType();
+        if(BasicUtil.isEmpty(type)) {
+            type = update.getFullType();
+        }
         /*
         String type = update.getTypeName();
         if(type.contains("(")) {
