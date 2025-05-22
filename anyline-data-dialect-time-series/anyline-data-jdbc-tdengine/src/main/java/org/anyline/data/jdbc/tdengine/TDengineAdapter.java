@@ -769,11 +769,12 @@ public class TDengineAdapter extends AbstractJDBCAdapter implements JDBCAdapter 
             if(value instanceof Collection) {
                 value = ((Collection)value).iterator().next();
             }
-            if(compare == Compare.LIKE) {
+            int code = compare.getCode();
+            if(code == 50) {
                 builder.append(" LIKE '%").append(value).append("%'");
-            }else if(compare == Compare.LIKE_PREFIX|| compare == Compare.START_WITH) {
+            }else if(code == 51) {
                 builder.append(" LIKE'").append(value).append("%'");
-            }else if(compare == Compare.LIKE_SUFFIX || compare == Compare.END_WITH) {
+            }else if(code == 52) {
                 builder.append(" LIKE '%").append(value).append("'");
             }
         }
