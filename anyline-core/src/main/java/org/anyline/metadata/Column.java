@@ -128,6 +128,7 @@ public class Column extends TableAffiliation<Column> implements Serializable {
     protected String keyword = "COLUMN"           ;
     protected String originName                   ; // 原名,只有查询时才会区分,添加列时用name即可 SELECT ID AS USER_ID FROM USER; originName=ID, name=USER_ID
     protected String typeName                     ; // 类型名称 varchar完整类型调用getFullType > varchar(10)
+    protected String qualifier                    ; // 数据类型限定符 DATETIME YEAR TO MINUTE(6) 中的YEAR TO MINUTE部分 表达式中以{Q}表示
     protected String originType                   ; // 原始类型(未解析,交给具体的adapter解析)
     protected TypeMetadata typeMetadata           ;
     protected String fullType                     ; // 完整类型名称
@@ -296,6 +297,14 @@ public class Column extends TableAffiliation<Column> implements Serializable {
 
     public Column setAnalyzer(String analyzer) {
         this.analyzer = analyzer;
+        return this;
+    }
+    public String getQualifier() {
+        return qualifier;
+    }
+
+    public Column setQualifier(String qualifier) {
+        this.qualifier = qualifier;
         return this;
     }
 
