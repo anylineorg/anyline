@@ -1215,6 +1215,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
         // NOT %A  152
         if(compare == Compare.LIKE_SIMPLE) {
             builder.append(" LIKE ?");
+        }else if(compare == Compare.LIKE_SIMPLE_IGNORE_CASE) {
+            builder.append(" LIKE ?");
         }else if(code == 50) {
             builder.append(" LIKE ").append(concat(runtime, "'%'","?","'%'"));
         }else if(code == 51) {

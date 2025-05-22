@@ -1183,6 +1183,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
         if(placeholder) {
             if(compare == Compare.LIKE_SIMPLE) {
                 builder.append(formula).append("?");
+            }else if(compare == Compare.LIKE_SIMPLE_IGNORE_CASE) {
+                builder.append(formula).append("?");
             }else if(code == 50) {
                 builder.append(formula).append(concat(runtime, "'%'","?","'%'"));
             }else if(code == 51) {
@@ -1195,6 +1197,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
             value = BeanUtil.first(value);
             rv.setPlaceholder(false);
             if(compare == Compare.LIKE_SIMPLE) {
+                builder.append(formula).append("'").append(value).append("'");
+            }else if(compare == Compare.LIKE_SIMPLE_IGNORE_CASE) {
                 builder.append(formula).append("'").append(value).append("'");
             }else if(code == 50) {
                 builder.append(formula).append("'%").append(value).append("%'");

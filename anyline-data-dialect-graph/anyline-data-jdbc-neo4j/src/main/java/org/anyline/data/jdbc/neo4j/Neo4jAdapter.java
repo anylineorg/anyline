@@ -504,11 +504,12 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
      */
     @Override
     public RunValue createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, Boolean placeholder, Boolean unicode) {
-        if(compare == Compare.LIKE) {
+        int code = compare.getCode();
+        if(code == 50) {
             builder.append(" CONTAINS ?");
-        }else if(compare == Compare.LIKE_PREFIX || compare == Compare.START_WITH) {
+        }else if(code == 51) {
             builder.append(" STARTS WITH ?");
-        }else if(compare == Compare.LIKE_SUFFIX || compare == Compare.END_WITH) {
+        }else if(code == 52) {
             builder.append(" ENDS WITH ?");
         }
         RunValue run = new RunValue();
