@@ -22,22 +22,39 @@ import org.anyline.data.param.init.DefaultConfigChain;
 import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.Condition;
 import org.anyline.entity.*;
-import org.anyline.util.BasicUtil;
 
+import java.util.Collection;
 import java.util.List;
 
 public class ConfigBuilder {
     public static ConfigStore build(String json) {
         DataRow row = DataRow.parseJson(KeyAdapter.KEY_CASE.UPPER, json);
-        ConfigStore configs = parse(row);
-        return configs;
+        return parse(row);
     }
     public static ConfigStore parse(DataRow row) {
         DefaultConfigStore configs = new DefaultConfigStore();
-        DataRow conditions = row.getRow("conditions");
+        Object conditions = row.get("conditions");
         if(null != conditions) {
-            ConfigChain chain = parseConfigChain(conditions);
-            configs.setChain(chain);
+            if(conditions instanceof DataRow) {
+                ConfigChain chain = parseConfigChain((DataRow) conditions);
+                configs.setChain(chain);
+            }else if(conditions instanceof String) {
+                //conditions下直接写了一个查询条件，没有写在items[]属性下
+                configs.and((String)conditions);
+            }else if(conditions instanceof Collection) {
+                //conditions下直接写了多个查询条件，没有写在items[]属性下
+                Collection list = (Collection) conditions;
+                ConfigStore config_child = new DefaultConfigStore();
+                for(Object item:list){
+                    if(item instanceof String){
+                        config_child.and((String)item);
+                    }else if(item instanceof DataRow){
+                        Config config = parseConfig((DataRow) item);
+                        config_child.and(config);
+                    }
+                }
+                configs.and(config_child);
+            }
         }
         DataRow columns = row.getRow("columns");
         if(null != columns) {
