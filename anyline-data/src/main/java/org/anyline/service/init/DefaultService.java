@@ -1676,7 +1676,8 @@ public class DefaultService<E> implements AnylineService<E> {
         }
         RunPrepare prepare = createRunPrepare(name);
         Table tab = prepare.getTable();
-
+        tab.setSchema(table.getSchema());
+        tab.setCatalog(table.getCatalog());
         return prepare;
     }
     public RunPrepare createRunPrepare(String src) {
