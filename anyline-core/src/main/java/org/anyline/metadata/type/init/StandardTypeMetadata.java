@@ -880,7 +880,7 @@ public enum StandardTypeMetadata implements TypeMetadata {
      */
     private String formula;
     private Class transfer                  ; //中间转换类型 转换成其他格式前先转换成transfer类型
-    private final Class compatible          ; //从数据库中读写数据的类型
+    private Class compatible          ; //从数据库中读写数据的类型
     private final int ignoreLength;
     private final int ignorePrecision;
     private final int ignoreScale;
@@ -962,7 +962,9 @@ public enum StandardTypeMetadata implements TypeMetadata {
         }
         return value;
     }
-
+    public void compatible(Class compatible){
+        this.compatible = compatible;
+    }
     @Override
     public Object convert(Object value, Object obj, Field field) {
         return convert(value, field.getType());
