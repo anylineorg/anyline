@@ -131,9 +131,19 @@ public class Select extends BaseBodyTag {
 					builder.append(body);
 				}
 				if (null != items) {
+					boolean first = true;
 					for (Object item : items) {
 						String val = BeanUtil.parseRuntimeValue(item, valueKey, encrypt);
 						String text = BeanUtil.parseRuntimeValue(item, textKey);
+						if(first){
+							if(BasicUtil.isEmpty(text)) {
+								text = BeanUtil.parseRuntimeValue(item, "NAME");
+								if(BasicUtil.isNotEmpty(text)){
+									textKey = "NAME";
+								}
+							}
+						}
+						first = false;
 						builder.append("<option value=\"").append(val).append("\"");
 						if (null != val && null != this.value && val.equals(value.toString())) {
 							builder.append(" selected=\"selected\"");

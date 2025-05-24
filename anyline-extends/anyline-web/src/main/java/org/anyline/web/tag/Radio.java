@@ -123,47 +123,54 @@ public class Radio extends BaseBodyTag{
 				
 				 
 				Collection<Map> items = (Collection<Map>)data;
-				if(null != items) 
-				for(Map item:items) {
-					Object srcValue = BeanUtil.getFieldValue(item, valueKey);
-					Object value = srcValue;
-					if(this.encrypt) {
-						value = DESUtil.encryptValue(value+"");
-					}
-					
-					String id = name +"_"+ value;
-					html.append(itemBorderStartTag);
-					html.append("<input type=\"radio\" value=\"").append(value).append("\" id=\"").append(id).append("\"");
-					if(null != srcValue && null != this.value && srcValue.toString().equals(this.value.toString())) {
-						html.append(" checked=\"checked\""); 
-					}
-					attribute(html);
-					crateExtraData(html,item);
-					html.append("/>");
-					
-					if(BasicUtil.isEmpty(label)) {
-						String labelHtml = "<label for=\""+id+ "\" class=\""+labelClazz+"\">";
-						String labelBody = "";
-						if (textKey.contains("${")) {
-							labelBody = BeanUtil.parseRuntimeValue(item,textKey);
-						} else {
-							Object v = item.get(textKey);
-							if (null != v) {
-								labelBody = v.toString();
+				if(null != items) {
+					boolean first = true;
+					for (Map item : items) {
+						if(first){
+							if(!item.containsKey(textKey) && item.containsKey("NAME")) {
+								textKey = "NAME";
 							}
 						}
-						labelHtml += labelBody +"</label>\n";
-						html.append(labelHtml);
-					}else{//指定label文本
-						String labelHtml = label;
-						if(labelHtml.contains("{") && labelHtml.contains("}")) {
-							labelHtml = BeanUtil.parseRuntimeValue(item,labelHtml.replace("{","${"));
+						Object srcValue = BeanUtil.getFieldValue(item, valueKey);
+						Object value = srcValue;
+						if (this.encrypt) {
+							value = DESUtil.encryptValue(value + "");
 						}
-						html.append(labelHtml);
+
+						String id = name + "_" + value;
+						html.append(itemBorderStartTag);
+						html.append("<input type=\"radio\" value=\"").append(value).append("\" id=\"").append(id).append("\"");
+						if (null != srcValue && null != this.value && srcValue.toString().equals(this.value.toString())) {
+							html.append(" checked=\"checked\"");
+						}
+						attribute(html);
+						crateExtraData(html, item);
+						html.append("/>");
+
+						if (BasicUtil.isEmpty(label)) {
+							String labelHtml = "<label for=\"" + id + "\" class=\"" + labelClazz + "\">";
+							String labelBody = "";
+							if (textKey.contains("${")) {
+								labelBody = BeanUtil.parseRuntimeValue(item, textKey);
+							} else {
+								Object v = item.get(textKey);
+								if (null != v) {
+									labelBody = v.toString();
+								}
+							}
+							labelHtml += labelBody + "</label>\n";
+							html.append(labelHtml);
+						} else {//指定label文本
+							String labelHtml = label;
+							if (labelHtml.contains("{") && labelHtml.contains("}")) {
+								labelHtml = BeanUtil.parseRuntimeValue(item, labelHtml.replace("{", "${"));
+							}
+							html.append(labelHtml);
+						}
+
+						html.append(itemBorderEndTag);
 					}
-					
-					html.append(itemBorderEndTag);
-				} 
+				}
 			} 
 			JspWriter out = pageContext.getOut(); 
 			out.print(html); 

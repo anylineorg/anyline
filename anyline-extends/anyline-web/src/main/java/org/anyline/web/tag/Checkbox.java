@@ -169,55 +169,62 @@ public class Checkbox extends BaseBodyTag {
 
 					html.append(itemBorderEndTag);
 				}
-				
-				 
-				if (null != items) 
+
+				if (null != items) {
+					boolean first = true;
 					for (Map item : items) {
+						if(first){
+							if(!item.containsKey(textKey) && item.containsKey("NAME")) {
+								textKey = "NAME";
+							}
+						}
+						first = false;
 						Object val = item.get(valueKey);
-						if(this.encrypt) {
-							val = DESUtil.encryptValue(val+"");
+						if (this.encrypt) {
+							val = DESUtil.encryptValue(val + "");
 						}
 						String id = this.id;
-						if(BasicUtil.isEmpty(id)) {
-							id = name +"_"+ val; 
+						if (BasicUtil.isEmpty(id)) {
+							id = name + "_" + val;
 						}
 						html.append(itemBorderStartTag);
 						html.append("<input type=\"checkbox\" value=\"").append(val).append("\" id=\"").append(id).append("\"");
 						Object chk = null;
-						if(BasicUtil.isNotEmpty(rely)) {
+						if (BasicUtil.isNotEmpty(rely)) {
 							chk = item.get(rely);
-							if(null != chk) {
+							if (null != chk) {
 								chk = chk.toString().trim();
 							}
-						} 
-						if(checkedValue.equals(chk) || "true".equalsIgnoreCase(chk+"") || "checked".equalsIgnoreCase(chk+"") || checked(chks,item.get(valueKey)) ) {
-							html.append(" checked=\"checked\""); 
+						}
+						if (checkedValue.equals(chk) || "true".equalsIgnoreCase(chk + "") || "checked".equalsIgnoreCase(chk + "") || checked(chks, item.get(valueKey))) {
+							html.append(" checked=\"checked\"");
 						}
 						attribute(html);
-						crateExtraData(html,item);
+						crateExtraData(html, item);
 						html.append("/>");
-						if(BasicUtil.isEmpty(label)) {
-							String labelHtml = "<label for=\""+id+ "\" class=\""+labelClazz+"\">"; 
-							String labelBody = ""; 
+						if (BasicUtil.isEmpty(label)) {
+							String labelHtml = "<label for=\"" + id + "\" class=\"" + labelClazz + "\">";
+							String labelBody = "";
 							if (textKey.contains("{")) {
-								labelBody = BeanUtil.parseRuntimeValue(item,textKey);
+								labelBody = BeanUtil.parseRuntimeValue(item, textKey);
 							} else {
-								Object v = item.get(textKey); 
+								Object v = item.get(textKey);
 								if (null != v) {
-									labelBody = v.toString(); 
-								} 
-							} 
-							labelHtml += labelBody +"</label>\n"; 
+									labelBody = v.toString();
+								}
+							}
+							labelHtml += labelBody + "</label>\n";
 							html.append(labelHtml);
-						}else{//指定label文本
+						} else {//指定label文本
 							String labelHtml = label;
-							if(labelHtml.contains("{") && labelHtml.contains("}")) {
-								labelHtml = BeanUtil.parseRuntimeValue(item,labelHtml.replace("{","${"));
+							if (labelHtml.contains("{") && labelHtml.contains("}")) {
+								labelHtml = BeanUtil.parseRuntimeValue(item, labelHtml.replace("{", "${"));
 							}
 							html.append(labelHtml);
 						}
 						html.append(itemBorderEndTag);
-					} 
+					}
+				}
 			} 
 			JspWriter out = pageContext.getOut(); 
 			out.print(html.toString()); 
