@@ -964,7 +964,9 @@ public enum StandardTypeMetadata implements TypeMetadata {
         }
         return value;
     }
-
+    public void compatible(Class compatible){
+        this.compatible = compatible;
+    }
     @Override
     public Object convert(Object value, Object obj, Field field) {
         return convert(value, field.getType());
