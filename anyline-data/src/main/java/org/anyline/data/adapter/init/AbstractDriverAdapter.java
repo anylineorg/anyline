@@ -1569,9 +1569,11 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 String key = col.getName();
                 Object value = BeanUtil.getFieldValue(item, key, true);
                 //if(null != value && value.toString().startsWith("${") && value.toString().endsWith("}") ) {
-                if(BasicUtil.checkEl(value+"")) {
+                if(value instanceof String && BasicUtil.checkEl(value+"")) {
                     String str = value.toString();
                     value = str.substring(2, str.length()-1);
+                }else if(value instanceof FinalValue){
+                    value = ((FinalValue)value).value();
                 }else{
                     if("NULL".equals(value)) {
                         value = null;
