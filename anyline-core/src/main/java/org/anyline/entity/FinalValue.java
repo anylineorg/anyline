@@ -14,22 +14,23 @@
  * limitations under the License.
  */
 
-package org.anyline.data.jdbc.oscar;
+package org.anyline.entity;
 
-import org.anyline.adapter.DataReader;
-
-public enum OscarReader {
-    ;
-    public Object[] supports() {
-        return supports;
+/**
+ * 最终结果，不需要解析
+ */
+public class FinalValue {
+    private String value;
+    public FinalValue(String value) {
+        this.value = value;
     }
-    public DataReader reader() {
-        return reader;
+    public String value() {
+        return value;
     }
-    private final Object[] supports;
-    private final DataReader reader;
-    OscarReader(Object[] supports, DataReader reader) {
-        this.supports = supports;
-        this.reader = reader;
+    public void value(String value) {
+        this.value = value;
+    }
+    public String toString() {
+        return value;
     }
 }

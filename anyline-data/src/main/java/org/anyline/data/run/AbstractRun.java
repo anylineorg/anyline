@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2023 www.anyline.org
+ * Copyright 2006-2025 www.anyline.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -333,11 +333,19 @@ public abstract class AbstractRun implements Run {
 		List<Object> list = new ArrayList<>();
 		if(null != batchValues) {
 			for(RunValue value:batchValues) {
-				list.add(value.getValue());
+				Object v = value.getValue();
+				if(v instanceof FinalValue){
+					v = ((FinalValue)v).value();
+				}
+				list.add(v);
 			}
 		}else  if(null != values) {
 			for(RunValue value:values) {
-				list.add(value.getValue());
+				Object v = value.getValue();
+				if(v instanceof FinalValue){
+					v = ((FinalValue)v).value();
+				}
+				list.add(v);
 			}
 		}
 		return list;

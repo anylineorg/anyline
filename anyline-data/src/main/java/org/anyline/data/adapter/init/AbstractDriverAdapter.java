@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2023 www.anyline.org
+ * Copyright 2006-2025 www.anyline.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18700,6 +18700,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
         if(value instanceof VariableValue){
             return ((VariableValue)value).value();
+        }else if(value instanceof FinalValue){
+            return ((FinalValue)value).value();
         }
         if(value instanceof String){
             String str = value.toString();
@@ -18781,9 +18783,11 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                     isFun = true;
                 }
             }
-            boolean isOrigin = isNumber || isBoolean || isNull || isFun || value instanceof VariableValue;
+            boolean isOrigin = isNumber || isBoolean || isNull || isFun || value instanceof VariableValue || value instanceof FinalValue ;
             if(value instanceof VariableValue){
                 value = ((VariableValue)value).value();
+            } else if(value instanceof FinalValue){
+                value = ((FinalValue)value).value();
             }
             if (isOrigin) {
                 result = value;
@@ -18796,6 +18800,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         }else{
             if(value instanceof VariableValue) {
                 result = ((VariableValue)value).value();
+            } else if(value instanceof FinalValue) {
+                result = ((FinalValue)value).value();
             }
         }
         return result;
