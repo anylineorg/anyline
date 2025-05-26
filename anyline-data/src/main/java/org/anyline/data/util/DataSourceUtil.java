@@ -69,6 +69,7 @@ public class DataSourceUtil {
             return null;
         }
         Table result = new Table();
+        String up = src.toUpperCase().trim();
         //<sso>pw_user
         if(src.startsWith("<")) {
             int fr = src.indexOf("<");
@@ -88,12 +89,14 @@ public class DataSourceUtil {
                 result.setPrimaryKey(keys);
             }
         }
-        if(src.contains(" ")) {
+        if(src.contains(" ") || up.startsWith("SELECT")) {
             result.setText(src);
         }else if(src.contains(":")) {
             result.setId(src);
         }
-        result.setName(src);
+        if(!up.startsWith("SELECT")) {
+            result.setName(src);
+        }
         return result;
     }
     public static Table parseDest(String dest, Object obj, ConfigStore configs) {

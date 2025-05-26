@@ -1670,14 +1670,19 @@ public class DefaultService<E> implements AnylineService<E> {
             return new SimplePrepare().disposable(true);
         }
         String name = table.getName();
+        if(null == name){
+            name = table.getText();
+        }
         LinkedHashMap<String, Column> pks = table.getPrimaryKeyColumns();
         if(!pks.isEmpty()){
             name += "<" + BeanUtil.concat(Column.names(pks)) + ">";
         }
         RunPrepare prepare = createRunPrepare(name);
         Table tab = prepare.getTable();
-        tab.setSchema(table.getSchema());
-        tab.setCatalog(table.getCatalog());
+        if(null != tab) {
+            tab.setSchema(table.getSchema());
+            tab.setCatalog(table.getCatalog());
+        }
         return prepare;
     }
     public RunPrepare createRunPrepare(String src) {

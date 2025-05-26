@@ -2589,7 +2589,12 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public MetadataFieldRefer initColumnFieldRefer() {
-        return super.initColumnFieldRefer();
+        MetadataFieldRefer refer = super.initColumnFieldRefer();
+        refer.map(Column.FIELD_NAME, "COLUMN_NAME,COLNAME");
+        refer.map(Column.FIELD_TABLE,"TABNAME");
+        refer.map(Column.FIELD_TYPE, "COLTYPE");
+        refer.map(Column.FIELD_POSITION, "COLNO");
+        return refer;
     }
 
     /**
@@ -2606,42 +2611,12 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Table table, Column query, DataSet set) throws Exception {
-        if(null == previous) {
-            previous = new LinkedHashMap<>();
-        }
-        for(DataRow row:set) {
-            String name = row.getString("COLUMN_NAME","COLNAME");
-            T column = previous.get(name.toUpperCase());
-            if(null == column) {
-                column = (T)new Column();
-            }
-            column.setName(name);
-            init(runtime, index, column, query, row);
-            previous.put(name.toUpperCase(), column);
-        }
-        return previous;
+        return super.columns(runtime, index, create, previous, table, query, set);
     }
 
     @Override
     public <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, List<T> previous, Column query, DataSet set) throws Exception {
-        Table table = query.getTable();
-        if(null == previous) {
-            previous = new ArrayList<>();
-        }
-        for(DataRow row:set) {
-            String name = row.getString("COLNAME");
-            T tmp = (T)new Column();
-            tmp.setName(name);
-            init(runtime, index, tmp, query, row);
-            T column = Metadata.match(tmp, previous);
-            if(null == column) {
-                column = (T) new Column();
-                column.setName(name);
-                init(runtime, index, column, query, row);
-                previous.add(column);
-            }
-        }
-        return previous;
+        return super.columns(runtime, index, create, previous, query, set);
     }
 
     /**
@@ -2654,28 +2629,28 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return Column
      * @param <T> Column
      */
-    public <T extends Column> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row) {
-
+    @Override
+    public <T extends Column> T detail(DataRuntime runtime, int index, T meta, Column query, DataRow row) {
         if(null == meta.getPosition()) {
             try {
                 meta.setPosition(row.getInt("COLNO"));
             }catch (Exception ignored) {}
         }
         String type = null;
-        Integer coltype = row.getInt("COLTYPE", null);
-        if(null != coltype) {
-            if(coltype >= 256) {
-                coltype -= 256;
+        Integer col_type = row.getInt("COLTYPE", null);
+        if(null != col_type) {
+            if(col_type >= 256) {
+                col_type -= 256;
                 meta.nullable(false);
             }
-            type = column_types.get(coltype);
+            type = column_types.get(col_type);
             meta.setTypeName(type);
         }
         int len = row.getInt("COLLENGTH",0);
         meta.setLength(len);
         meta.setPrecision(len);
         //DECIMAL 或 money
-        if(coltype == 8 || coltype == 5) {
+        if(col_type == 8 || col_type == 5) {
             int precision = len/256;
             int scale = len%256;
             meta.setPrecision(precision, scale);

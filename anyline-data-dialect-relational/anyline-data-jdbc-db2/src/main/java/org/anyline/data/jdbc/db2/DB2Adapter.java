@@ -2406,7 +2406,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @return Column
 	 * @param <T> Column
 	 */
-	public <T extends Column> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row) {
+	public <T extends Column> T detail(DataRuntime runtime, int index, T meta, Column query, DataRow row) {
 		if(null == meta.getPosition()) {
 			try {
 				meta.setPosition(row.getInt("COLNO"));

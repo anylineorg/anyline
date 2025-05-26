@@ -3729,7 +3729,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
      * @return Column
      * @param <T> Column
      */
-    public <T extends Column> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row) {
+    public <T extends Column> T detail(DataRuntime runtime, int index, T meta, Column query, DataRow row) {
 
         return meta;
     }

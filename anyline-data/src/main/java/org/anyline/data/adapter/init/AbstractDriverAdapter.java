@@ -9386,7 +9386,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	@Override
 	public <T extends Column> T detail(DataRuntime runtime, int index, T meta, Column query, DataRow row) {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Column> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Column> T detail(DataRuntime runtime, int index, T meta, Column query, DataRow row", 37));
 		}
 		return meta;
 	}
@@ -18506,6 +18506,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public StringBuilder name(DataRuntime runtime, StringBuilder builder, Metadata meta) {
+        if(null == meta){
+            return builder;
+        }
 		checkName(runtime, null, meta);
 		String catalog = meta.getCatalogName();
 		String schema = meta.getSchemaName();
