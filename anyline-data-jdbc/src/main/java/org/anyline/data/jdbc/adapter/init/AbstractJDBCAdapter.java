@@ -576,6 +576,11 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
         if(!ConfigStore.IS_AUTO_CHECK_EL_VALUE(configs)){
             el = false;
         }
+        if(obj instanceof DataRow){
+            if(!((DataRow)obj).isAutoCheckElValue()){
+                el = false;
+            }
+        }
 
         String head = insertHead(configs);
         builder.append(head);//.append(parseTable(dest));
