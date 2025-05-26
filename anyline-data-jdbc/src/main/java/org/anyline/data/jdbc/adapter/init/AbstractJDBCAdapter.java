@@ -1006,7 +1006,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
                 log.error("query 异常:", e);
             }
             if(ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION) {
-                CommandQueryException ex = new CommandQueryException("query异常:"+e.toString(), e);
+                CommandQueryException ex = new CommandQueryException("query异常:" + e, e);
                 throw ex;
             }else{
                 if(ConfigTable.IS_LOG_SQL_WHEN_ERROR) {
@@ -1663,7 +1663,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
                 e.printStackTrace();
             }
             if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION) {
-                CommandUpdateException ex = new CommandUpdateException("execute异常:"+e.toString(), e);
+                CommandUpdateException ex = new CommandUpdateException("execute异常:" + e, e);
                 ex.setCmd(sql);
                 throw ex;
             }else{
@@ -9304,10 +9304,10 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 				e.printStackTrace();
 			}
 			if(ConfigStore.IS_LOG_SQL_WHEN_ERROR(configs)) {
-				log.error("{}[{}][action:select]{}", random, LogUtil.format("查询异常:", 33) + e.toString(), run.log(ACTION.DML.SELECT, ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
+				log.error("{}[{}][action:select]{}", random, LogUtil.format("查询异常:", 33) + e, run.log(ACTION.DML.SELECT, ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
 			}
 			if(ConfigStore.IS_THROW_SQL_QUERY_EXCEPTION(configs)) {
-				CommandQueryException ex = new CommandQueryException("query异常:"+e.toString(),e);
+				CommandQueryException ex = new CommandQueryException("query异常:" + e,e);
 				ex.setCmd(sql);
 				ex.setValues(values);
 				throw ex;

@@ -16,7 +16,7 @@
 
 package org.anyline.exception;
 
-public class NotSupportException extends AbstractRuntimeException {
+public class NotSupportException extends AnylineException {
     public NotSupportException() {
         super("not support");
     }

@@ -16,7 +16,7 @@
 
 package org.anyline.exception;
 
-public class NotFoundAdapterException extends AbstractRuntimeException {
+public class NotFoundAdapterException extends AnylineException {
     public NotFoundAdapterException() {
         super("not found adapter");
     }

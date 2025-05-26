@@ -253,7 +253,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
                 log.error("insert 异常:", e);
             }
             if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION) {
-                CommandUpdateException ex = new CommandUpdateException("insert异常:"+e, e);
+                CommandUpdateException ex = new CommandUpdateException("insert异常:" + e, e);
                 throw ex;
             }else{
                 if(ConfigTable.IS_LOG_SQL_WHEN_ERROR) {
@@ -550,7 +550,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
                 log.error("select 异常:", e);
             }
             if(ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION) {
-                CommandQueryException ex = new CommandQueryException("query异常:"+e, e);
+                CommandQueryException ex = new CommandQueryException("query异常:" + e, e);
                 throw ex;
             }else{
                 if(ConfigTable.IS_LOG_SQL_WHEN_ERROR) {

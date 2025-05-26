@@ -179,7 +179,7 @@ public class Downloader {
 		int errorSize = getErrorTaskSize(); 
 		msg += "/"+getSumTotalFormat()+"("+getFinishRate()+"%)]" + "[完成数量:"+getFinishTaskSize(); 
 		if(errorSize>0) {
-			msg += "(异常:"+errorSize+")"; 
+			msg += "(异常:" + errorSize+")"; 
 		} 
 		msg += "/"+getTaskSize()+"]" + "[耗时:"+getExpendFormat()+"/"+getExpectFormat()+"][网速:"+getSpeedFormat()+"]"; 
 		return msg; 

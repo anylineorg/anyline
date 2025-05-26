@@ -100,7 +100,7 @@ public class NumberFormat extends BaseBodyTag implements Cloneable{
 				}else {
 					JspWriter out = pageContext.getOut();
 					if(BasicUtil.isNotEmpty(echo) && null != num) {
-						out.print("<span class='"+echo+"'>"+result+"</span>");
+						out.print("<span class='" + echo+"'>"+result+"</span>");
 					}else {
 						out.print(result);
 					}

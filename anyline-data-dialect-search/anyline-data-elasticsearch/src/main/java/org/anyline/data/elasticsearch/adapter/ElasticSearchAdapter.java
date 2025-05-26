@@ -6521,7 +6521,7 @@ PUT * /_bulk
                 log.error("{}[{}][action:select]{}", random, LogUtil.format("查询异常:", 33) + e, run.log(ACTION.DML.SELECT, ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
             }
             if(ConfigStore.IS_THROW_SQL_QUERY_EXCEPTION(configs)) {
-                CommandQueryException ex = new CommandQueryException("query异常:"+e,e);
+                CommandQueryException ex = new CommandQueryException("query异常:" + e,e);
                 throw ex;
             }
 

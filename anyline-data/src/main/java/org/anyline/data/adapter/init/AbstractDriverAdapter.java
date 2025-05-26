@@ -894,7 +894,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 log.error("{}[{}][action:{}][table:{}]{}", random, LogUtil.format("插入异常:", 33)+e, action, run.getTable(), run.log(ACTION.DML.INSERT,ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
             }
             if(ConfigStore.IS_THROW_SQL_UPDATE_EXCEPTION(configs)) {
-                CommandUpdateException ex = new CommandUpdateException("insert异常:"+e.toString(), e);
+                CommandUpdateException ex = new CommandUpdateException("insert异常:" + e, e);
                 ex.setCmd(cmd);
                 ex.setValues(values);
                 throw ex;
@@ -1883,12 +1883,12 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 log.error("update 异常:", e);
             }
             if (ConfigStore.IS_THROW_SQL_UPDATE_EXCEPTION(configs)) {
-                CommandUpdateException ex = new CommandUpdateException("update异常:" + e.toString(), e);
+                CommandUpdateException ex = new CommandUpdateException("update异常:" + e, e);
                 ex.setValues(values);
                 throw ex;
             }
             if (ConfigStore.IS_LOG_SQL_WHEN_ERROR(configs)) {
-                log.error("{}[{}][action:][{}]{}", random, action, run.getTable(), LogUtil.format("更新异常:", 33) + e.toString(), run.log(ACTION.DML.UPDATE,ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
+                log.error("{}[{}][action:][{}]{}", random, action, run.getTable(), LogUtil.format("更新异常:", 33) + e, run.log(ACTION.DML.UPDATE,ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
             }
 
         }
@@ -2248,7 +2248,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                         dmListener.afterTotal(runtime, random, run, true, total, System.currentTimeMillis() - fr);
                     }
                     if (log.isInfoEnabled() && ConfigStore.IS_LOG_SQL(configs)) {
-                        log.info("[查询记录总数][行数:{}]", total);
+                        log.info("{}[查询记录总数][行数:{}]", random, total);
                     }
                 }
             }
@@ -2388,7 +2388,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 }
             }
             if (log.isInfoEnabled() && ConfigStore.IS_LOG_SQL(configs)) {
-                log.info("[查询记录总数][行数:{}]", total);
+                log.info("{}[查询记录总数][行数:{}]", random, total);
             }
         }
         fr = System.currentTimeMillis();
@@ -3076,10 +3076,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 log.error("maps 异常:", e);
             }
             if(ConfigStore.IS_LOG_SQL_WHEN_ERROR(configs)) {
-                log.error("{}[{}][action:select]{}", random, LogUtil.format("查询异常:", 33) + e.toString(), run.log(ACTION.DML.SELECT,ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
+                log.error("{}[{}][action:select]{}", random, LogUtil.format("查询异常:", 33) + e, run.log(ACTION.DML.SELECT,ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
             }
             if(ConfigStore.IS_THROW_SQL_QUERY_EXCEPTION(configs)) {
-                CommandQueryException ex = new CommandQueryException("query异常:"+e.toString(), e);
+                CommandQueryException ex = new CommandQueryException("query异常:" + e, e);
                 ex.setCmd(sql);
                 ex.setValues(values);
                 throw ex;

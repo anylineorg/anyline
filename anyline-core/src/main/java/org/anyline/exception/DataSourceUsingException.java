@@ -16,12 +16,8 @@
 
 package org.anyline.exception;
 
-public class DataSourceUsingException extends AbstractRuntimeException {
+public class DataSourceUsingException extends AnylineException {
     private String key;
-    private Object datasource;
-    public DataSourceUsingException() {
-
-    }
     public DataSourceUsingException(String key, Object datasource) {
         this.key = key;
         this.datasource = datasource;
@@ -33,13 +29,5 @@ public class DataSourceUsingException extends AbstractRuntimeException {
 
     public void setKey(String key) {
         this.key = key;
-    }
-
-    public Object getDatasource() {
-        return datasource;
-    }
-
-    public void setDatasource(Object datasource) {
-        this.datasource = datasource;
     }
 }

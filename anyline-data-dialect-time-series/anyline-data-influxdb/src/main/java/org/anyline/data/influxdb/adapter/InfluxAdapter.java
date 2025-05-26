@@ -618,13 +618,13 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
                 log.error("update 异常:", e);
             }
             if (ConfigStore.IS_THROW_SQL_UPDATE_EXCEPTION(configs)) {
-                CommandUpdateException ex = new CommandUpdateException("update异常:" + e.toString(), e);
+                CommandUpdateException ex = new CommandUpdateException("update异常:" + e, e);
                 ex.setCmd(cmd);
                 ex.setValues(values);
                 throw ex;
             }
             if (ConfigStore.IS_LOG_SQL_WHEN_ERROR(configs)) {
-                log.error("{}[{}][action:update][table:{}]{}", random, run.getTable(), LogUtil.format("更新异常:", 33) + e.toString(), run.log(ACTION.DML.UPDATE,  ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
+                log.error("{}[{}][action:update][table:{}]{}", random, run.getTable(), LogUtil.format("更新异常:", 33) + e, run.log(ACTION.DML.UPDATE,  ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
             }
 
         }
@@ -1083,7 +1083,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
 
         String api =  "/query?db=" + bucket;
         String encode = HttpUtil.encode(run.sql(),false, true);
-        api += "&q="+encode;
+        api += "&q=" + encode;
         run.api(api);
         return result;
     }
@@ -1242,10 +1242,10 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
                 e.printStackTrace();
             }
             if(ConfigStore.IS_LOG_SQL_WHEN_ERROR(configs)) {
-                log.error("{}[{}][action:select]{}", random, LogUtil.format("查询异常:", 33) + e.toString(), run.log(ACTION.DML.SELECT,  ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
+                log.error("{}[{}][action:select]{}", random, LogUtil.format("查询异常:", 33) + e, run.log(ACTION.DML.SELECT,  ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
             }
             if(ConfigStore.IS_THROW_SQL_QUERY_EXCEPTION(configs)) {
-                CommandQueryException ex = new CommandQueryException("query异常:"+e.toString(),e);
+                CommandQueryException ex = new CommandQueryException("query异常:" + e,e);
                  throw ex;
             }
 
