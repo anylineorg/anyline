@@ -1418,7 +1418,13 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 
         List<String> updateColumns = new ArrayList<>();
         /*构造SQL*/
-
+        boolean check_el = true;
+        if(!ConfigStore.IS_AUTO_CHECK_EL_VALUE(configs)){
+            check_el = false;
+        }
+        if(!row.isAutoCheckElValue()){
+            check_el = false;
+        }
         if(!cols.isEmpty()) {
             builder.append("UPDATE ");
             name(runtime, builder, dest);
@@ -1432,7 +1438,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 }
                 first = false;
                 //if(null != value && value.toString().startsWith("${") && value.toString().endsWith("}") ) {
-                if(value instanceof String && BasicUtil.checkEl(value+"")) {
+                if(value instanceof String && check_el && BasicUtil.checkEl(value+"")) {
                     String str = value.toString();
                     value = str.substring(2, str.length()-1);
                     delimiter(builder, key).append(" = ").append(value).append(BR_TAB);
@@ -1564,12 +1570,17 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         }
         run.setUpdateColumns(updateColumns);
         List<RunValue> values = new ArrayList<>();
+        boolean check_el = true;
+        if(!ConfigStore.IS_AUTO_CHECK_EL_VALUE(configs)){
+            check_el = false;
+        }
+
         for(Object item:list) {
             for(Column col:cols.values()) {
                 String key = col.getName();
                 Object value = BeanUtil.getFieldValue(item, key, true);
                 //if(null != value && value.toString().startsWith("${") && value.toString().endsWith("}") ) {
-                if(value instanceof String && BasicUtil.checkEl(value+"")) {
+                if(check_el && value instanceof String && BasicUtil.checkEl((String)value)) {
                     String str = value.toString();
                     value = str.substring(2, str.length()-1);
                 }else if(value instanceof FinalValue){

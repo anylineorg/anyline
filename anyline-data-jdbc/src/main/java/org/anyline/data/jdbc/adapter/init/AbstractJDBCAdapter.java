@@ -571,7 +571,12 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
         }else{
             replaceEmptyNull = ConfigStore.IS_REPLACE_EMPTY_NULL(configs);
         }
-        boolean el = ConfigStore.IS_AUTO_CHECK_EL_VALUE(configs);
+
+        boolean el = true;
+        if(!ConfigStore.IS_AUTO_CHECK_EL_VALUE(configs)){
+            el = false;
+        }
+
         String head = insertHead(configs);
         builder.append(head);//.append(parseTable(dest));
         name(runtime, builder, dest);

@@ -101,6 +101,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     public boolean skip                                     = false                 ; // 遍历计算时标记
     protected KeyAdapter keyAdapter                         = null                  ; // key格式转换
     protected KEY_CASE keyCase 				                = DEFAULT_KEY_CASE      ; // 列名格式
+    protected boolean autoCheckElValue                      = true                  ; // 检测el value
 
     public DataRow() {
         parseKeyCase(null);
@@ -656,6 +657,14 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
             parent = parent.getParent(key);
         }
         return set;
+    }
+
+    public boolean isAutoCheckElValue() {
+        return autoCheckElValue;
+    }
+
+    public void setAutoCheckElValue(boolean autoCheckElValue) {
+        this.autoCheckElValue = autoCheckElValue;
     }
 
     public Boolean getUnicode() {
