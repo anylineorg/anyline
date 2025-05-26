@@ -1277,10 +1277,24 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                     value = BeanUtil.getFieldValue(obj, key, true);
                 }
                 //if(null != value && value.toString().startsWith("${") && value.toString().endsWith("}")) {
-                if(BasicUtil.checkEl(value+"")) {
+                /*if(value instanceof String && BasicUtil.checkEl(value+"")) {
+                    String str = value.toString();
+                    value = str.substring(2, str.length()-1);
+                    delimiter(builder, key).append(" = ").append(value).append(BR_TAB);
+                } else if(value instanceof VariableValue) {
+                    delimiter(builder, key).append(" = ").append(value).append(BR_TAB);
+                }*/
+
+                if(value instanceof String && BasicUtil.checkEl(value+"")) {
                     String str = value.toString();
                     value = str.substring(2, str.length()-1);
 
+                    if(!first) {
+                        builder.append(", ");
+                    }
+                    delimiter(builder, key).append(" = ").append(value).append(BR_TAB);
+                    first = false;
+                }else if(value instanceof VariableValue){
                     if(!first) {
                         builder.append(", ");
                     }
@@ -1418,11 +1432,13 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 }
                 first = false;
                 //if(null != value && value.toString().startsWith("${") && value.toString().endsWith("}") ) {
-                if(BasicUtil.checkEl(value+"")) {
+                if(value instanceof String && BasicUtil.checkEl(value+"")) {
                     String str = value.toString();
                     value = str.substring(2, str.length()-1);
                     delimiter(builder, key).append(" = ").append(value).append(BR_TAB);
-                }else{
+                } else if(value instanceof VariableValue) {
+                    delimiter(builder, key).append(" = ").append(value).append(BR_TAB);
+                } else {
                     delimiter(builder, key).append(" = ");
                     convert(runtime, builder, value, col, placeholder, unicode, configs);
                     builder.append(BR_TAB);
