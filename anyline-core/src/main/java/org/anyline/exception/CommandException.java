@@ -16,16 +16,8 @@
 
 package org.anyline.exception;
 
-import org.anyline.metadata.type.DatabaseType;
+public class CommandException extends AnylineException {
 
-import java.util.List;
-
-public class CommandException extends RuntimeException {
-	protected DatabaseType database;
-	protected String datasource;
-	protected Exception src;
-	protected String cmd;
-	protected List<Object> values;
 	public CommandException() {
 		super(); 
 	}
@@ -39,46 +31,4 @@ public class CommandException extends RuntimeException {
 		}
 	}
 
-	public DatabaseType getDatabase() {
-		return database;
-	}
-
-	public void setDatabase(DatabaseType database) {
-		this.database = database;
-	}
-
-	public String getDatasource() {
-		return datasource;
-	}
-
-	public void setDatasource(String datasource) {
-		this.datasource = datasource;
-	}
-
-	public Exception getSrc() {
-		return src;
-	}
-
-	public void setSrc(Exception src) {
-		if(null != src) {
-			super.setStackTrace(src.getStackTrace());
-		}
-		this.src = src;
-	}
-
-	public String getCmd() {
-		return cmd;
-	}
-
-	public void setCmd(String cmd) {
-		this.cmd = cmd;
-	}
-
-	public List<Object> getValues() {
-		return values;
-	}
-
-	public void setValues(List<Object> values) {
-		this.values = values;
-	}
 }

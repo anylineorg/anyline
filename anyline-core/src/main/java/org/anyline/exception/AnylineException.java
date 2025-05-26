@@ -16,15 +16,29 @@
 
 package org.anyline.exception;
 
+import org.anyline.metadata.type.DatabaseType;
+
+import java.util.List;
+
 public class AnylineException extends RuntimeException {
     private Exception src;
     private int status;
     private String code;
     private String title;
     private String content;
+    protected DatabaseType database;
+    protected Object datasource;
+
+    protected String cmd;
+    protected List<Object> values;
 
     public AnylineException() {
         super();
+    }
+    public AnylineException(String title, Exception src) {
+        super();
+        this.title = title;
+        this.src = src;
     }
     public AnylineException(int status, String code, String title, String content) {
         super(title);
@@ -92,5 +106,38 @@ public class AnylineException extends RuntimeException {
 
     public void setContent(final String content) {
         this.content = content;
+    }
+
+    public DatabaseType getDatabase() {
+        return database;
+    }
+
+    public void setDatabase(DatabaseType database) {
+        this.database = database;
+    }
+
+    public Object getDatasource() {
+        return datasource;
+    }
+
+    public void setDatasource(Object datasource) {
+        this.datasource = datasource;
+    }
+
+
+    public String getCmd() {
+        return cmd;
+    }
+
+    public void setCmd(String cmd) {
+        this.cmd = cmd;
+    }
+
+    public List<Object> getValues() {
+        return values;
+    }
+
+    public void setValues(List<Object> values) {
+        this.values = values;
     }
 }
