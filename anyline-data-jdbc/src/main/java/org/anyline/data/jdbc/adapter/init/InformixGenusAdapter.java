@@ -183,6 +183,11 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
         if(null == set || set.isEmpty()) {
             return;
         }
+        int batch = run.getBatch();
+        if(batch > 0){
+            super.fillInsertContent(runtime, run, dest, set, configs, placeholder, unicode, columns);
+            return;
+        }
         StringBuilder builder = run.getBuilder();
         DataRow first = set.getRow(0);
         Map<String, String> seqs = new HashMap<>();
@@ -213,13 +218,13 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
         }
         boolean el = ConfigStore.IS_AUTO_CHECK_EL_VALUE(configs);
         boolean head = true;
-        for(DataRow row:set) {
+        for (DataRow row : set) {
             builder.append("INSERT INTO ");
             name(runtime, builder, dest).append(" (");
             boolean start = true;
-            for(Column column:columns.values()) {
+            for (Column column : columns.values()) {
                 String key = column.getName();
-                if(!start) {
+                if (!start) {
                     builder.append(", ");
                 }
                 start = false;
@@ -227,13 +232,13 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
             }
             builder.append(") VALUES ");
 
-            if(row.hasPrimaryKeys() && BasicUtil.isEmpty(row.getPrimaryValue())) {
-                if(null != generator) {
+            if (row.hasPrimaryKeys() && BasicUtil.isEmpty(row.getPrimaryValue())) {
+                if (null != generator) {
                     generator.create(row, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), Column.names(pks), null);
                 }
                 //createPrimaryValue(row, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
             }
-            builder.append(insertValue(runtime, run, row, head,true, false, false,true, el, columns));
+            builder.append(insertValue(runtime, run, row, head, true, false, false, true, el, columns));
             builder.append(";");
             head = false;
         }
