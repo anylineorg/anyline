@@ -6180,7 +6180,21 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public List<Run> buildDropRun(DataRuntime runtime, Index meta) throws Exception {
-        return super.buildDropRun(runtime, meta);
+        List<Run> runs = new ArrayList<>();
+        Run run = new SimpleRun(runtime);
+        runs.add(run);
+        StringBuilder builder = run.getBuilder();
+        Table table = meta.getTable(true);
+        if(meta.isPrimary()) {
+            builder.append("ALTER TABLE ");
+            name(runtime, builder, table);
+            builder.append(" DROP CONSTRAINT ");
+            name(runtime, builder, meta);
+        }else {
+            builder.append("DROP INDEX IF EXISTS ");
+            name(runtime, builder, meta);
+        }
+        return runs;
     }
 
     /**
