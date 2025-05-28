@@ -2135,6 +2135,9 @@ public class DefaultService<E> implements AnylineService<E> {
 
         @Override
         public boolean exists(boolean greedy, Table table) {
+            if(null == table || table.isEmpty()){
+                return false;
+            }
             if (null != table(greedy, table.getCatalog(), table.getSchema(), table.getName(), false)) {
                 return true;
             }
