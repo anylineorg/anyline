@@ -239,51 +239,59 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
         this.name = name;
     }
 
-    public E setName(String name) { if(null != name) {
-        String tmp = name.replaceAll("\\s+", " ");
-        String up = tmp.toUpperCase();
-        if(up.contains(" AS ")){
-            //SSO_USER AS SSO
-            //SSO_USER(ID AS USER_ID) AS SSO
-            if(up.contains(")")){
-                String tmps[] = tmp.split("\\)");
-                if(tmps.length > 1) {
-                    String last = tmps[tmps.length - 1];
-                    if (last.contains(" AS ")) {
-                        int split = last.lastIndexOf(" AS ");
-                        String alias = last.substring(split + 4).trim();
-                        this.setAlias(alias);
-                        name = tmp.substring(0, tmp.length() - alias.length() - 4);
+    public E setName(String name) {
+        if(null != name) {
+            String tmp = name.replaceAll("\\s+", " ");
+            String up = tmp.toUpperCase();
+            if(up.contains(" AS ")){
+                //SSO_USER AS SSO
+                //SSO_USER(ID AS USER_ID) AS SSO
+                //SSO_USER(SUM(QTY) AS QTY) AS SSO
+                //SSO_USER(SUM(QTY) AS QTY)
+                if(up.contains(")")){
+                    //AS 在 )之后 忽略这样的SSO_USER(SUM(QTY) AS QTY)
+                    if(up.lastIndexOf(" AS ") > up.lastIndexOf(")")){
+                        String tmps[] = tmp.split("\\)");
+                        if(tmps.length > 1) {
+                            String last = tmps[tmps.length - 1];
+                            if (last.contains(" AS ")) {
+                                int split = last.lastIndexOf(" AS ");
+                                String alias = last.substring(split + 4).trim();
+                                this.setAlias(alias);
+                                name = tmp.substring(0, tmp.length() - alias.length() - 4);
+                            }
+                        }
+                    }else{
+                        this.name = tmp;
                     }
+                }else {
+                    int split = up.lastIndexOf(" AS ");
+                    name = tmp.substring(0, split).trim();
+                    String alias = tmp.substring(split + 4).trim();
+                    this.setAlias(alias);
                 }
-            }else {
-                int split = up.lastIndexOf(" AS ");
-                name = tmp.substring(0, split).trim();
-                String alias = tmp.substring(split + 4).trim();
-                this.setAlias(alias);
             }
-        }
-        if(name.contains(":") || name.contains(" ")) {
-            //自定义XML或sql
-            this.name = name;
-        }else {
-            if (name.contains(".")) {
-                String[] tmps = name.split("\\.");
-                if (tmps.length == 2) {
-                    this.schema = new Schema(tmps[0]);
-                    this.name = tmps[1];
-                } else if (tmps.length == 3) {
-                    this.catalog = new Catalog(tmps[0]);
-                    this.schema = new Schema(tmps[1]);
-                    this.name = tmps[2];
-                }
-            } else {
+            if(name.contains(":") || name.contains(" ")) {
+                //自定义XML或sql
                 this.name = name;
+            }else {
+                if (name.contains(".")) {
+                    String[] tmps = name.split("\\.");
+                    if (tmps.length == 2) {
+                        this.schema = new Schema(tmps[0]);
+                        this.name = tmps[1];
+                    } else if (tmps.length == 3) {
+                        this.catalog = new Catalog(tmps[0]);
+                        this.schema = new Schema(tmps[1]);
+                        this.name = tmps[2];
+                    }
+                } else {
+                    this.name = name;
+                }
             }
+        }else {
+            this.name = name;
         }
-    }else {
-        this.name = name;
-    }
         return (E)this;
     }
     /**

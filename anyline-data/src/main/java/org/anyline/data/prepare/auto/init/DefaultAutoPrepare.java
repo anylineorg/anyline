@@ -236,6 +236,13 @@ public abstract class DefaultAutoPrepare extends AbstractRunPrepare implements A
 			String catalog = null;
 			String schema = null;
 			String name = table.getName();
+			if(BasicUtil.isEmpty(name)){
+				name = table.getText();
+			}
+			String alias = table.getAlias();
+			if(BasicUtil.isNotEmpty(alias)) {
+				setAlias(alias);
+			}
 			this.groups = table.groups();
 			List<String> list = table.having();
 			if(null != list){
@@ -306,6 +313,7 @@ public abstract class DefaultAutoPrepare extends AbstractRunPrepare implements A
 			if(BasicUtil.isNotEmpty(name)) {
 				table.setName(name);
 			}
+
 		}
 	}
 	private void parseColumn(String sql) {

@@ -94,6 +94,9 @@ public class DataSourceUtil {
         }else if(src.contains(":")) {
             result.setId(src);
         }
+        //show tables
+        //sys_user as m
+        //sys_user  m 不解析
         if(!up.startsWith("SELECT")) {
             result.setName(src);
         }
