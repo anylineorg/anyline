@@ -3408,6 +3408,12 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
         return this;
     }
 
+    public DataSet setAutoCheckElValue(boolean autoCheckElValue) {
+        for(DataRow row:rows) {
+            row.setAutoCheckElValue(autoCheckElValue);
+        }
+        return this;
+    }
     /**
      * 从items中按相应的key提取数据 存入
      * dispatch("children",items, "DEPT_CD")
