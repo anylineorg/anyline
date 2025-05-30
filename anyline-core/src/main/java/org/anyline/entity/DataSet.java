@@ -63,7 +63,8 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
     private long expires                            = -1    ; // 过期时间(毫秒) 从创建时刻计时expires毫秒后过期
     private boolean isFromCache                     = false ; // 是否来自缓存
     private Map<String, Object> tags                = new HashMap<>()       ; // 标签
-    protected DataRow attributes                      = null                  ; // 属性
+    protected DataRow attributes                    = null                  ; // 属性
+    protected boolean autoCheckElValue              = true                  ; // 检测el value
 
     /**
      * 创建索引
@@ -3408,10 +3409,14 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
         return this;
     }
 
+    public boolean isAutoCheckElValue() {
+        return autoCheckElValue;
+    }
     public DataSet setAutoCheckElValue(boolean autoCheckElValue) {
         for(DataRow row:rows) {
             row.setAutoCheckElValue(autoCheckElValue);
         }
+        this.autoCheckElValue = autoCheckElValue;
         return this;
     }
     /**

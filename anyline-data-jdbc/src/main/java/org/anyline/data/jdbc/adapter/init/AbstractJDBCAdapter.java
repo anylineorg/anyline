@@ -350,7 +350,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
         builder.append(")");
         builder.append(" VALUES ");
         int dataSize = set.size();
-        boolean el = ConfigStore.IS_AUTO_CHECK_EL_VALUE(configs);
+        boolean el = ConfigStore.IS_AUTO_CHECK_EL_VALUE(configs) && set.isAutoCheckElValue();
         for(int i=0; i<dataSize; i++) {
             DataRow row = set.getRow(i);
             if(null == row) {
