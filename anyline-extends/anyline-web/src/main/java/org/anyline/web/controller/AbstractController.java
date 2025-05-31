@@ -767,15 +767,20 @@ public abstract class AbstractController {
 			flag = flag.replace("'", "").replace("\"", "");
 		}
 		navi.setFlag(flag);
+
+		//是否显示统计
 		boolean showStat = config.VAR_SHOW_STAT;
 		showStat = BasicUtil.parseBoolean(getParam(request,config.KEY_SHOW_STAT), showStat);
 		navi.setShowStat(showStat);
+
+		//是否显示跳转
 		boolean showJump = config.VAR_SHOW_JUMP;
 		showJump = BasicUtil.parseBoolean(getParam(request,config.KEY_SHOW_JUMP), showJump);
 		navi.setShowJump(showJump);
 
+		//是否显示每页多少条设置
 		boolean showVol = config.VAR_SHOW_VOL;
-		showJump = BasicUtil.parseBoolean(getParam(request,config.KEY_SHOW_VOL), showVol);
+		showVol = BasicUtil.parseBoolean(getParam(request,config.KEY_SHOW_VOL), showVol);
 		navi.setShowVol(showVol);
 
 		navi.setStyle(style);

@@ -62,10 +62,11 @@ public class DefaultPageNavi implements PageNavi, Serializable, Cloneable {
 	protected String method					= "post"	; 
 	protected String style					= ""		; // 样式标记对应anyline-navi.xml中的config.key
  
-	protected boolean showStat = true;
-	protected boolean showJump = true;
-	protected boolean showVol = true; 
-	protected String loadMoreFormat = "";
+	protected boolean showStat 				= true		;
+	protected boolean showJump 				= true		;
+	protected boolean showVol 				= true		;
+	protected String loadMoreFormat 		= ""		;
+	protected Long maxPage					= null		; //最大页数，超出后显示maxPage
 
 	public DefaultPageNavi() {}
 
@@ -413,6 +414,9 @@ public class DefaultPageNavi implements PageNavi, Serializable, Cloneable {
  
 	@Override 
 	public long getCurPage() {
+		if(null != maxPage && curPage > maxPage){
+			return maxPage;
+		}
 		return curPage; 
 	} 
  
@@ -478,7 +482,14 @@ public class DefaultPageNavi implements PageNavi, Serializable, Cloneable {
 	public PageNavi setFlag(String flag) {
 		this.flag = flag; 
 		return this; 
-	} 
+	}
+	public PageNavi setMaxPage(Long page){
+		this.maxPage = page;
+		return this;
+	}
+	public Long getMaxPage(){
+		return maxPage;
+	}
 	public boolean isShowStat() {
 		return showStat; 
 	} 
@@ -630,28 +641,30 @@ public class DefaultPageNavi implements PageNavi, Serializable, Cloneable {
 			// 每页多少条 
 			if(ConfigTable.IS_DEBUG && log.isWarnEnabled()) {
 				log.info("[vol set][enable:{}][vol:{}][sort:{}]", config.VAR_CLIENT_SET_VOL_ENABLE, pageRows, config.CONFIG_PAGE_VAL_SET_SORT);
-			} 
-			if(config.VAR_CLIENT_SET_VOL_ENABLE) {
-				if(config.CONFIG_PAGE_VAL_SET_SORT == 2) {
-					vol.append(config.STYLE_PAGE_VOL.replace("{navi-conf}", configVarKey).replace("{navi-conf-key}", flag));
-				}else{
-					String[] nums = config.VAR_PAGE_VOL_NUMBERS.split(",");
-					String clazz = config.VAR_PAGE_VOL_CLASS; 
-					if(BasicUtil.isEmpty(clazz)) {
-						clazz = "navi-rows-set"; 
-					} 
-					vol.append("<select class='").append(clazz).append("' id='navi_val_set_").append(flag).append("' onchange='_navi_change_vol(").append(configVarKey).append(")'>"); 
-					for(String num:nums) {
-						vol.append("<option value='").append(num).append("' id='navi_val_set_").append(flag).append("_item_").append(num).append("'"); 
-						if(pageRows == BasicUtil.parseInt(num, 0)) {
-							vol.append(" selected=\"selected\""); 
-						} 
-						vol.append(">").append(num).append(" 条/页</option>\n"); 
-					} 
-					vol.append("</select>"); 
-				} 
- 
-			} 
+			}
+			if(isShowVol()){
+				if(config.VAR_CLIENT_SET_VOL_ENABLE) {
+					if(config.CONFIG_PAGE_VAL_SET_SORT == 2) {
+						vol.append(config.STYLE_PAGE_VOL.replace("{navi-conf}", configVarKey).replace("{navi-conf-key}", flag));
+					}else{
+						String[] nums = config.VAR_PAGE_VOL_NUMBERS.split(",");
+						String clazz = config.VAR_PAGE_VOL_CLASS;
+						if(BasicUtil.isEmpty(clazz)) {
+							clazz = "navi-rows-set";
+						}
+						vol.append("<select class='").append(clazz).append("' id='navi_val_set_").append(flag).append("' onchange='_navi_change_vol(").append(configVarKey).append(")'>");
+						for(String num:nums) {
+							vol.append("<option value='").append(num).append("' id='navi_val_set_").append(flag).append("_item_").append(num).append("'");
+							if(pageRows == BasicUtil.parseInt(num, 0)) {
+								vol.append(" selected=\"selected\"");
+							}
+							vol.append(">").append(num).append(" 条/页</option>\n");
+						}
+						vol.append("</select>");
+					}
+
+				}
+			}
 			 
 			// config.VAR_SHOW_INDEX_ELLIPSIS;是否显示下标省略号(不显示第2页或倒数第2页时显示省略号)
 			// 1 .. 3 4 5 6 7 8 .. 10 

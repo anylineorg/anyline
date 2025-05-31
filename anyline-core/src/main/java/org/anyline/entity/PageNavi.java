@@ -186,9 +186,22 @@ public interface PageNavi extends Serializable, Cloneable{
 	 */
 	PageNavi setShowVol(boolean showVol);
 	boolean isShowVol();
-	
+
+	/**
+	 * 是否显示统计
+	 * @param showStat 是否
+	 * @return this
+	 */
 	PageNavi setShowStat(boolean showStat);
 	boolean isShowStat();
+
+	/**
+	 * 设置最大显示页数
+	 * @param page page
+	 * @return this
+	 */
+	PageNavi setMaxPage(Long page);
+	Long getMaxPage();
 	/**
 	 * 样式分组
 	 * @param style style
