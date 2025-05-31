@@ -160,6 +160,7 @@ public class DefaultPageNavi implements PageNavi, Serializable, Cloneable {
 	 */ 
 	public PageNavi calculate() {
 		long totalPage = (totalRow - 1) / pageRows + 1;
+		long curPage = getCurPage();
 		// 当前页是否超出总页数 
 		if(curPage > totalPage) {
 			PageNaviConfig config = PageNaviConfig.getInstance(style);
@@ -190,10 +191,10 @@ public class DefaultPageNavi implements PageNavi, Serializable, Cloneable {
 	 */ 
 	public long getFirstRow() {
 		if(calType == 0) {
-			if(curPage <= 0) {
+			if(getCurPage() <= 0) {
 				return 0; 
 			} 
-			return (curPage-1) * pageRows; 
+			return (getCurPage()-1) * pageRows;
 		}else{
 			return firstRow; 
 		} 
@@ -204,10 +205,10 @@ public class DefaultPageNavi implements PageNavi, Serializable, Cloneable {
 	 */ 
 	public long getLastRow() {
 		if(calType == 0) { //0-按页数 1-按开始结束数
-			if(curPage == 0) {
+			if(getCurPage() == 0) {
 				return pageRows -1; 
 			} 
-			return curPage * pageRows - 1; 
+			return getCurPage() * pageRows - 1;
 		}else{
 			return lastRow; 
 		} 
@@ -487,6 +488,14 @@ public class DefaultPageNavi implements PageNavi, Serializable, Cloneable {
 		this.maxPage = page;
 		return this;
 	}
+	public PageNavi setMaxPage(Integer page){
+		if(null != page){
+			this.maxPage = page.longValue();
+		}else{
+			this.maxPage = null;
+		}
+		return this;
+	}
 	public Long getMaxPage(){
 		return maxPage;
 	}
@@ -546,6 +555,7 @@ public class DefaultPageNavi implements PageNavi, Serializable, Cloneable {
 	 * @return String
 	 */ 
 	public String html(String adapter, String method) {
+		long curPage = getCurPage();
 		PageNaviConfig config = PageNaviConfig.getInstance(style);
 		if(null == config) {
 			config = new PageNaviConfig();
@@ -629,7 +639,7 @@ public class DefaultPageNavi implements PageNavi, Serializable, Cloneable {
 			match = true; 
 		} 
 		if(match) {
-			to = curPage + range/2; 
+			to = curPage + range/2;
 		} 
 		if(totalPage - curPage < range/2) {
 			fr = totalPage - range; 
@@ -782,6 +792,7 @@ public class DefaultPageNavi implements PageNavi, Serializable, Cloneable {
 	 * @param configFlag  configFlag
 	 */ 
 	private void createPageTag(StringBuilder builder, String method, String clazz, String tag, long page, String configFlag) {
+		long curPage = getCurPage();
 		boolean get = false;
 		if("get".equalsIgnoreCase(method)) {
 			get = true;
@@ -898,7 +909,7 @@ public class DefaultPageNavi implements PageNavi, Serializable, Cloneable {
 
 	public DataRow map(boolean empty) {
 		DataRow row = new OriginRow();
-		row.put("page", curPage);
+		row.put("page", getCurPage());
 		row.put("vol", pageRows);
 		row.put("total", totalRow);
 		row.put("auto_count", autoCount);

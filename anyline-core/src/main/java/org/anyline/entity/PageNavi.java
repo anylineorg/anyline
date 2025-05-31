@@ -201,6 +201,7 @@ public interface PageNavi extends Serializable, Cloneable{
 	 * @return this
 	 */
 	PageNavi setMaxPage(Long page);
+	PageNavi setMaxPage(Integer page);
 	Long getMaxPage();
 	/**
 	 * 样式分组
