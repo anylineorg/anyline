@@ -27,6 +27,7 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
+import org.anyline.adapter.KeyAdapter;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.metadata.Column;
@@ -2381,6 +2382,45 @@ public class BeanUtil {
 			}
 		}
 		return map;
+	}
+
+	public static List<Object> string2list(String str){
+		return string2list(null, str);
+	}
+	public static List<Object> string2list(KeyAdapter.KEY_CASE keyCase, String str){
+		List<Object> list = new ArrayList<>();
+		if(null != str){
+			if(str.startsWith("[") && str.endsWith("]")) {
+				str = str.substring(1, str.length()-1);
+				String[] strs = str.split(",");
+				for(String item:strs){
+					item = item.trim();
+					if("null".equals(item)){
+						list.add(null);
+					}else if(item.startsWith("{") && item.endsWith("}")) {
+						list.add(DataRow.parseJson(keyCase, item));
+					}else if(item.startsWith("[") && item.endsWith("]")) {
+						if(item.startsWith("[{")){
+							list.add(DataSet.parseJson(keyCase, item));
+						}else{
+							list.add(string2list(keyCase, item));
+						}
+					}else if(item.startsWith("\"") && item.endsWith("\"")){
+						String v = item.substring(1, item.length()-1);
+						list.add(v);
+					}else if("true".equals(item)){
+						list.add(true);
+					}else if("false".equals(item)){
+						list.add(false);
+					}else if(item.contains(".")){
+						list.add(BasicUtil.parseDecimal(item, null));
+					}else{
+						list.add(BasicUtil.parseLong(item, null));
+					}
+				}
+			}
+		}
+		return list;
 	}
 
 	public static byte[] stream2bytes(InputStream is) throws Exception {

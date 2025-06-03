@@ -4248,6 +4248,11 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         }
         return null;
     }
+
+    /**
+     * 解析string类型属性值
+     * @return this
+     */
     public DataRow string2object(){
         for(String key:keySet()){
             Object data = get(key);
@@ -4259,7 +4264,11 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
                     }
                     if (str.startsWith("[") && str.endsWith("]")) {
                         if(str.substring(1).trim().startsWith("{")) {
+                            //[{},{},{}]
                             data = DataSet.parseJson(keyCase, str);
+                        }else{
+                            //[1,2,3]
+                            data = BeanUtil.string2list(keyCase, str);
                         }
                     }
                 }catch (Exception ignored){}
