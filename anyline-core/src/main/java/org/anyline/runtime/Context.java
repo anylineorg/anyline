@@ -254,57 +254,12 @@ public class Context {
         //内置常量
         String[] tmps = key.split(":");
         if(tmps.length > 1){
-            String var = tmps[1];
-            //当前时间
-            //aov:now:yyyy-MM-dd
-            if(var.equalsIgnoreCase("now") || var.equalsIgnoreCase("date") || var.equalsIgnoreCase("datetime")){
-                if(tmps.length > 2){
-                    String format = tmps[2];
-                    return DateUtil.format(format);
-                }
-                return new Date();
-            }
-            //aov:timestamp
-            //aov:timestamp:10
-            if(var.equalsIgnoreCase("timestamp")){
-                if(tmps.length > 2){
-                    int len = BasicUtil.parseInt(tmps[2], 0);
-                    if(len == 10){
-                        //10位
-                        return System.currentTimeMillis()/1000;
-                    }
-                }
-                return System.currentTimeMillis();
-            }
-            //随机字符
-            if(var.equalsIgnoreCase("random") || var.equalsIgnoreCase("string")){
-                int len = 8;
-                if(tmps.length> 2){
-                    //随机8位
-                    //ao:random:8(默认8位)
-                    len = BasicUtil.parseInt(tmps[2], len);
-                }
-                return BasicUtil.getRandomString(len);
-            }
-            //随机数字
-            if(var.equalsIgnoreCase("number")){
-                if(tmps.length> 3){
-                    //随机8位
-                    //ao:number:0:100
-                    int min = BasicUtil.parseInt(tmps[2], 0);
-                    int max = BasicUtil.parseInt(tmps[3], 0);
-                    return BasicUtil.getRandomNumber(min, max);
-                }
-                int len = 8;
-                if(tmps.length> 2){
-                    //随机8位
-                    //ao:number:8(默认8位)
-                    len = BasicUtil.parseInt(tmps[2], len);
-                }
-                return BasicUtil.getRandomNumberString(len);
-            }
-            if(var.equalsIgnoreCase("uuid")){
-                return UUID.randomUUID().toString();
+            String namespace = tmps[0];
+            String tag = tmps[1];
+            ExpressionActuator actuator = ActuatorHolder.get(tag);
+            if(null != actuator){
+                String tags = key.substring(key.indexOf(":") + 1); //number:8
+                return actuator.run(this, namespace, tags, new LinkedHashMap<>(), null);
             }
         }
         return null;
