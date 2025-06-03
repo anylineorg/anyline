@@ -2392,30 +2392,34 @@ public class BeanUtil {
 		if(null != str){
 			if(str.startsWith("[") && str.endsWith("]")) {
 				str = str.substring(1, str.length()-1);
-				String[] strs = str.split(",");
-				for(String item:strs){
-					item = item.trim();
-					if("null".equals(item)){
-						list.add(null);
-					}else if(item.startsWith("{") && item.endsWith("}")) {
-						list.add(DataRow.parseJson(keyCase, item));
-					}else if(item.startsWith("[") && item.endsWith("]")) {
-						if(item.startsWith("[{")){
-							list.add(DataSet.parseJson(keyCase, item));
-						}else{
-							list.add(string2list(keyCase, item));
+				if(!str.isEmpty()) {
+					String[] strs = str.split(",");
+					for (String item : strs) {
+						item = item.trim();
+						if(item.isEmpty()){
+							list.add("");
+						}if ("null".equals(item)) {
+							list.add(null);
+						} else if (item.startsWith("{") && item.endsWith("}")) {
+							list.add(DataRow.parseJson(keyCase, item));
+						} else if (item.startsWith("[") && item.endsWith("]")) {
+							if (item.startsWith("[{")) {
+								list.add(DataSet.parseJson(keyCase, item));
+							} else {
+								list.add(string2list(keyCase, item));
+							}
+						} else if (item.startsWith("\"") && item.endsWith("\"")) {
+							String v = item.substring(1, item.length() - 1);
+							list.add(v);
+						} else if ("true".equals(item)) {
+							list.add(true);
+						} else if ("false".equals(item)) {
+							list.add(false);
+						} else if (item.contains(".")) {
+							list.add(BasicUtil.parseDecimal(item, null));
+						} else {
+							list.add(BasicUtil.parseLong(item, null));
 						}
-					}else if(item.startsWith("\"") && item.endsWith("\"")){
-						String v = item.substring(1, item.length()-1);
-						list.add(v);
-					}else if("true".equals(item)){
-						list.add(true);
-					}else if("false".equals(item)){
-						list.add(false);
-					}else if(item.contains(".")){
-						list.add(BasicUtil.parseDecimal(item, null));
-					}else{
-						list.add(BasicUtil.parseLong(item, null));
 					}
 				}
 			}
