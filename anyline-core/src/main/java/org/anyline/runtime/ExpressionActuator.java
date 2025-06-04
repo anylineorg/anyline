@@ -8,6 +8,12 @@ public interface ExpressionActuator {
     default String namespace() {
         return "aov";
     }
+    default List<String> namespaces() {
+        List<String> namespaces = new ArrayList<>();
+        namespaces.add(namespace());
+        namespaces.add("alv");
+        return namespaces;
+    }
 
     /**
      * 支持的标签名

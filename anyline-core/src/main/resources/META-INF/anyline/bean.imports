@@ -1,2 +1,8 @@
 anyline.adapter.entity=org.anyline.adapter.init.DefaultEntityAdapter
 anyline.environment.listener.log=org.anyline.log.LogLoadListener
+anyline.environment.listener.actuator=org.anyline.runtime.ActuatorLoadListener
+anyline.actuator.date=org.anyline.runtime.init.DateTimeActuator
+anyline.actuator.number=org.anyline.runtime.init.NumberActuator
+anyline.actuator.random=org.anyline.runtime.init.RandomActuator
+anyline.actuator.timestamp=org.anyline.runtime.init.TimestampActuator
+anyline.actuator.uuid=org.anyline.runtime.init.UUIDActuator

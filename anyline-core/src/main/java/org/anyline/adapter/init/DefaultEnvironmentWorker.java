@@ -158,7 +158,6 @@ public class DefaultEnvironmentWorker implements EnvironmentWorker {
                 //二级jar
             }
         }
-
         //读取所有带注解的类
         List<String> classes = ZipUtil.classes(jar, "org.anyline", false);
         ClassLoader loader = ConfigTable.class.getClassLoader();
@@ -198,7 +197,6 @@ public class DefaultEnvironmentWorker implements EnvironmentWorker {
             }
         }
     }
-
     /**
      * 属性(方法)赋值
      * @param object object

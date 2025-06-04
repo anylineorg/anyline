@@ -256,7 +256,7 @@ public class Context {
         if(tmps.length > 1){
             String namespace = tmps[0];
             String tag = tmps[1];
-            ExpressionActuator actuator = ActuatorHolder.get(tag);
+            ExpressionActuator actuator = ActuatorHolder.get(namespace, tag);
             if(null != actuator){
                 String tags = key.substring(key.indexOf(":") + 1); //number:8
                 return actuator.run(this, namespace, tags, new LinkedHashMap<>(), null);

@@ -1,3 +1,9 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
 org.anyline.adapter.init.DefaultEntityAdapter,\
-org.anyline.log.LogLoadListener
+org.anyline.log.LogLoadListener,\
+org.anyline.runtime.ActuatorLoadListener,\
+org.anyline.runtime.init.DateTimeActuator,\
+org.anyline.runtime.init.NumberActuator,\
+org.anyline.runtime.init.RandomActuator,\
+org.anyline.runtime.init.TimestampActuator,\
+org.anyline.runtime.init.UUIDActuator
