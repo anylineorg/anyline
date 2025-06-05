@@ -3688,9 +3688,6 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         if(null != schema) {
             schema = schema.trim();
         }
-        if(null == meta) {
-            meta = (T)new Column();
-        }
         meta.setCatalog(catalog);
         meta.setSchema(schema);
         if(null != table) {//查询全部表

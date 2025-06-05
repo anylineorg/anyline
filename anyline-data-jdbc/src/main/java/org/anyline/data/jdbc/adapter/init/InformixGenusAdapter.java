@@ -43,6 +43,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
 
     }
     static{
+        //https://help.hcl-software.com/hclinformix/15.0.0/sqr/ids_sqr_025.html?hl=collength
         column_types.put(0, "CHAR");
         column_types.put(1, "SMALLINT");
         column_types.put(2, "INTEGER");
@@ -69,11 +70,12 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
         column_types.put(23, "COLLECTION");
         column_types.put(24, "UDT");
         column_types.put(40, "LVARCHAR");
-        column_types.put(41, "BLOB");
-        column_types.put(42, "CLOB");
-        column_types.put(43, "BOOLEAN");
+        column_types.put(41, "BLOB"); //BLOB, BOOLEAN, CLOB 需要根据具体值判断，不要用这种类型(BOOLEAN时len=1)
+        column_types.put(43, "LVARCHAR");
+        column_types.put(45, "BOOLEAN");
+        column_types.put(53, "BIGSERIAL");
+        column_types.put(4118, "ROW");
     }
-
     @Override
     public boolean supportCatalog() {
         return true;
@@ -2648,17 +2650,33 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
                 col_type -= 256;
                 meta.nullable(false);
             }
-            type = column_types.get(col_type);
+            if(col_type == 41){
+                int ext = row.getInt("EXTENDED_ID",0);
+                if(ext == 5){
+                    type = "BOOLEAN";
+                }else if(ext == 10){
+                    type = "BLOB";
+                }else if(ext == 11){
+                    type = "CLOB";
+                }
+            }else {
+                type = column_types.get(col_type);
+            }
             meta.setTypeName(type);
         }
         int len = row.getInt("COLLENGTH",0);
         meta.setLength(len);
         meta.setPrecision(len);
         //DECIMAL 或 money
-        if(col_type == 8 || col_type == 5) {
-            int precision = len/256;
-            int scale = len%256;
-            meta.setPrecision(precision, scale);
+        if(null != col_type) {
+            if (col_type == 8 || col_type == 5) {
+                int precision = len >> 8;
+                int scale = len & 0xFF;
+                if(scale >= 254) {
+                   scale = -1;
+                }
+                meta.setPrecision(precision, scale);
+            }
         }
 
         if(null == meta.getTypeMetadata()) {
