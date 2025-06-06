@@ -938,7 +938,7 @@ public class FileUtil {
     * @return String
     */
 	public static String md5(File file) {
-		return MD5Util.crypto(file);
+		return MD5Util.hex(file);
 	}
 
     /**
@@ -948,7 +948,7 @@ public class FileUtil {
     * @return Map
     */
     public static Map<String, String> md5(File file, boolean recursion) {
-    	return MD5Util.crypto(file, recursion);
+    	return MD5Util.hex(file, recursion);
     }
 
     /**

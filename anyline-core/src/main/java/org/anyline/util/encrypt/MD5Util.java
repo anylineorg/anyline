@@ -108,13 +108,13 @@ public class MD5Util {
     * @param file  文件
     * @return MD5
     */ 
-    public static String crypto(File file) {
+    public static String hex(File file) {
 	    if (null == file || !file.isFile() || !file.exists()) {
 	    	return null; 
 	    } 
 	    MessageDigest digest = null; 
-	    FileInputStream in=null; 
-	    byte buffer[] = new byte[1024]; 
+	    FileInputStream in = null;
+	    byte[] buffer = new byte[1024];
 	    int len; 
 	    try {
 		    digest = MessageDigest.getInstance("MD5"); 
@@ -124,7 +124,7 @@ public class MD5Util {
 		    } 
 		    in.close(); 
 	    } catch (Exception e) {
-			log.error("crypto file exception:", e);
+			log.error("md5 file exception:", e);
 	    	return null; 
 	    } 
 	    BigInteger bigInt = new BigInteger(1, digest.digest());
@@ -137,24 +137,25 @@ public class MD5Util {
     * @param recursion  true递归子目录中的文件
     * @return Map
     */ 
-    public static Map<String, String> crypto(File file, boolean recursion) {
+    public static Map<String, String> hex(File file, boolean recursion) {
 	    if(null == file || !file.isDirectory() || !file.exists()) {
 	    	return null; 
 	    } 
 	    Map<String, String> map=new HashMap<>();
 	    String md5; 
-	    File files[]=file.listFiles(); 
-	    for(int i=0;i<files.length;i++) {
-	    	File f=files[i]; 
-	    	if(f.isDirectory()&&recursion) {
-	    		map.putAll(crypto(f, recursion));
-	    	} else {
-	    		md5=crypto(f);
-	    		if(md5!=null) {
-	    			map.put(f.getPath(), md5);
-	    		} 
-	    	} 
-	    } 
+	    File[] files =file.listFiles();
+		if(null != files) {
+            for (File f : files) {
+                if (f.isDirectory() && recursion) {
+                    map.putAll(hex(f, recursion));
+                } else {
+                    md5 = hex(f);
+                    if (md5 != null) {
+                        map.put(f.getPath(), md5);
+                    }
+                }
+            }
+		}
 	    return map; 
     }
 
