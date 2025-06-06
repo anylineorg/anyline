@@ -578,6 +578,10 @@ public class FileUtil {
 		if(idx != -1) {
 			name = name.substring(idx+1);
 		}
+		idx = name.indexOf("?");
+		if(idx != -1) {
+			name = name.substring(0, idx);
+		}
 		return name;
 	}
 	public static String getSuffixFileName(String file) {
