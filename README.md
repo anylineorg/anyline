@@ -22,7 +22,7 @@
   </tr>
   <tr>
     <td colspan="3">regardless of bugs, doubts, requirements, source code, competitors<br/>any questions, please contact skype: server@anyline.org  <br/>
-由于客服工作量比较大，测试、入门问题请查说明文档，项目上遇到问题再进群
+
 
 </td>
 </tr>

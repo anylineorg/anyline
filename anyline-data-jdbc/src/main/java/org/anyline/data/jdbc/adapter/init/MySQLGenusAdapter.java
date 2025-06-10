@@ -3264,7 +3264,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         runs.add(run);
         StringBuilder builder = run.getBuilder();
         ConfigStore configs = run.getConfigs();
-        builder.append("SELECT * FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE where REFERENCED_TABLE_NAME IS NOT NULL\n");
+        builder.append("SELECT * FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE REFERENCED_TABLE_NAME IS NOT NULL\n");
         configs.and(Compare.LIKE_SIMPLE, "TABLE_NAME", query.getTableName());
         configs.order("ORDINAL_POSITION");
         return runs;
