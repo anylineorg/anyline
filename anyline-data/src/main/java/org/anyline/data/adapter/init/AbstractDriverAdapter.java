@@ -11018,7 +11018,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         meta.setTable(table);
         meta.setName(name);
         meta.setType(getString(row, refer, Constraint.FIELD_TYPE));
-
+        meta.setMetadata(row);
 		return meta;
 	}
 	/**
@@ -11882,6 +11882,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			meta.setComment(getString(row, refer, Function.FIELD_COMMENT));
 			meta.setDefinition(getString(row, refer, Function.FIELD_DEFINITION));
 		}
+        meta.setMetadata(row);
 		return meta;
 	}
 

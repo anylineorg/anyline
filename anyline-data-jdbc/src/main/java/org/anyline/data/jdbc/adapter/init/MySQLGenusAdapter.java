@@ -8016,7 +8016,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * privilege[结果集封装]<br/>
      * 根据查询结果集构造 Trigger
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
+     * @param index 第几条查询SQL 对照 buildQueryPrivilegesRun 返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param query 查询条件 根据metadata属性
      * @param previous 上一步查询结果
