@@ -3819,7 +3819,13 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         }
         Object result = null;
         if (null != key) {
+            if(super.containsKey(key)) {
+                return super.get(key);
+            }
             key = keyAdapter.key(key);
+            if(super.containsKey(key)) {
+                return super.get(key);
+            }
             if (ignoreCase) {
                 String ignoreKey = key.replace("_","").replace("-","").toUpperCase();
                 String tmp = keymap.get(ignoreKey);
