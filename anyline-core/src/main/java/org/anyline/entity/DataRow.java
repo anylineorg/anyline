@@ -3865,6 +3865,14 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return result;
     }
 
+    public Boolean getIgnoreCase() {
+        return ignoreCase;
+    }
+
+    public void setIgnoreCase(Boolean ignoreCase) {
+        this.ignoreCase = ignoreCase;
+    }
+
     /**
      * 深层取值<br/>
      * 按keys顺序递归取值, 如果其中一层是数组 取第0个，不支持多维数组<br/>
