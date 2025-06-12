@@ -3832,9 +3832,8 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
                 if(null != tmp) {
                     key = tmp;
                 }
+                result = super.get(key);
             }
-            result = super.get(key);
-
         }
         return result;
     }
