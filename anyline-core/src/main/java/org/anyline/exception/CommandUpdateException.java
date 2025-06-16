@@ -24,7 +24,7 @@ public class CommandUpdateException extends CommandException {
 	public CommandUpdateException(String title) {
 		super(title);
 	}
-	public CommandUpdateException(String title, Exception src) {
-		super(title, src);
+	public CommandUpdateException(String title, Exception cause) {
+		super(title, cause);
 	}
 } 

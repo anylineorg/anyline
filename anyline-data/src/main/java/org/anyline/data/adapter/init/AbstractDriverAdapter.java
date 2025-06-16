@@ -10591,7 +10591,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             }
 
             //根据Index构造identity方式
-            String identity = BasicUtil.nvl(catalog, "") + "_" + BasicUtil.nvl(schema, "") + "_" + BasicUtil.nvl(table, "") + "_" + name;
+            String identity = BasicUtil.nvl(catalog, "") + ":" + BasicUtil.nvl(schema, "") + ":" + BasicUtil.nvl(table, "") + ":" + name;
             //根据catalog + schem + table + name 搜索(不同表中name会有重名)
 			T meta = get(previous, identity);
             if(null == meta) {
@@ -10958,18 +10958,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         }
         return previous;
 	}
-/*if(null == Metadata.match(meta, previous)) {
-				previous.add(meta);
-			}
-			detail(runtime, index, meta, query, row);
-
-			Table tab = meta.getTable();
-			if(null != tab) {
-				Table search = tbls.get(tab.getIdentity().toUpperCase());
-				if(null != search) {
-                    search.add(meta);
-				}
-			}*/
 	/**
 	 * constraint[结果集封装]<br/>
 	 * 根据查询结果集构造Constraint

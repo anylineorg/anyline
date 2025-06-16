@@ -21,7 +21,7 @@ import org.anyline.metadata.type.DatabaseType;
 import java.util.List;
 
 public class AnylineException extends RuntimeException {
-    private Exception src;
+    private Exception cause;
     private int status;
     private String code;
     private String title;
@@ -35,10 +35,10 @@ public class AnylineException extends RuntimeException {
     public AnylineException() {
         super();
     }
-    public AnylineException(String title, Exception src) {
-        super();
+    public AnylineException(String title, Exception cause) {
+        super(cause);
         this.title = title;
-        this.src = src;
+        this.cause = cause;
     }
     public AnylineException(int status, String code, String title, String content) {
         super(title);
@@ -76,12 +76,12 @@ public class AnylineException extends RuntimeException {
     public AnylineException(int status) {
         this.status = status;
     }
-    public Exception getSrc() {
-        return this.src;
+    public Exception getCause() {
+        return this.cause;
     }
 
-    public void setSrc(final Exception src) {
-        this.src = src;
+    public void setCause(final Exception cause) {
+        this.cause = cause;
     }
 
     public String getCode() {

@@ -24,7 +24,7 @@ public class CommandQueryException extends CommandException {
 	public CommandQueryException(String title) {
 		super(title);
 	}
-	public CommandQueryException(String title, Exception src) {
-		super(title, src);
+	public CommandQueryException(String title, Exception cause) {
+		super(title, cause);
 	}
 } 

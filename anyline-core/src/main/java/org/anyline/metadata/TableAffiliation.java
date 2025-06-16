@@ -28,7 +28,7 @@ public class TableAffiliation<E extends TableAffiliation> extends Metadata<E> im
 
     public String getIdentity() {
         if(null == identity) {
-            identity = BasicUtil.nvl(getCatalogName(), "") + "_" + BasicUtil.nvl(getSchemaName(), "") + "_" + BasicUtil.nvl(getTableName(false), "") + "_" + BasicUtil.nvl(getName(), "") ;
+            identity = BasicUtil.nvl(getCatalogName(), "") + ":" + BasicUtil.nvl(getSchemaName(), "") + ":" + BasicUtil.nvl(getTableName(false), "") + ":" + BasicUtil.nvl(getName(), "") ;
             identity = identity.toUpperCase();
             //identity = MD5Util.crypto(identity.toUpperCase());
         }

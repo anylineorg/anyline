@@ -143,7 +143,7 @@ public class Metadata<T extends Metadata> {
 
     public String getIdentity() {
         if(null == identity) {
-            identity = BasicUtil.nvl(getCatalogName(), "") + "_" + BasicUtil.nvl(getSchemaName(), "") + "_" + BasicUtil.nvl(getName(), "") ;
+            identity = BasicUtil.nvl(getCatalogName(), "") + ":" + BasicUtil.nvl(getSchemaName(), "") + ":" + BasicUtil.nvl(getName(), "") ;
             identity = identity.toUpperCase();
             //identity = MD5Util.crypto(identity.toUpperCase());
         }

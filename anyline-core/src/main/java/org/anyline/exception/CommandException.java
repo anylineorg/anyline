@@ -24,10 +24,10 @@ public class CommandException extends AnylineException {
 	public CommandException(String title) {
 		super(title);
 	}
-	public CommandException(String title, Exception src) {
-		super(title, src);
-		if(null != src) {
-			super.setStackTrace(src.getStackTrace());
+	public CommandException(String title, Exception cause) {
+		super(title, cause);
+		if(null != cause) {
+			super.setStackTrace(cause.getStackTrace());
 		}
 	}
 

@@ -5456,13 +5456,27 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     @Override
     public List<Run> buildCreateRun(DataRuntime runtime, View meta) throws Exception {
         List<Run> runs = new ArrayList<>();
-        Run run = new SimpleRun(runtime);
-        runs.add(run);
-        StringBuilder builder = run.getBuilder();
-        builder.append("CREATE OR REPLACE VIEW ");
-        name(runtime, builder, meta);
-        builder.append(" AS \n").append(meta.getDefinition());
-        runs.addAll(buildAppendCommentRun(runtime, meta));
+
+        List<String> ddls = meta.getDdls();
+        if(!ddls.isEmpty()){
+            for(String ddl:ddls){
+                if(BasicUtil.isNotEmpty(ddl)){
+                    Run run = new SimpleRun(runtime);
+                    runs.add(run);
+                    StringBuilder builder = run.getBuilder();
+                    builder.append(ddl);
+                }
+            }
+        }
+        if(runs.isEmpty()) {
+            Run run = new SimpleRun(runtime);
+            runs.add(run);
+            StringBuilder builder = run.getBuilder();
+            builder.append("CREATE OR REPLACE VIEW ");
+            name(runtime, builder, meta);
+            builder.append(" AS \n").append(meta.getDefinition());
+            runs.addAll(buildAppendCommentRun(runtime, meta));
+        }
         return runs;
     }
 
