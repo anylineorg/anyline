@@ -1383,6 +1383,11 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
         return builder.toString();
     }
 
+    /**
+     * 只比较catalog, schema, name
+     * @param table table
+     * @return boolean
+     */
     public boolean equals(Table table) {
         return equals(table, true);
     }
@@ -1402,9 +1407,6 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
             if (!schema_equals) {
                 return false;
             }
-        }
-        if(!BasicUtil.equals(BasicUtil.evl(getComment()), BasicUtil.evl(table.getComment()))) {
-            return false;
         }
         boolean name_equals = BasicUtil.equals(this.name, table.getName());
         if(!name_equals) {
