@@ -10579,14 +10579,21 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         MetadataFieldRefer refer = refer(runtime, Index.class);
 		Map<String,Table> tbls = new HashMap<>();
 		for(Table table:tables) {
-			tbls.put(table.getName().toUpperCase(), table);
+			tbls.put(table.getIdentity().toUpperCase(), table);
 		}
 		for(DataRow row:set) {
+            String catalog = getString(row, refer, Index.FIELD_CATALOG);
+            String schema = getString(row, refer, Index.FIELD_SCHEMA);
+            String table = getString(row, refer, Index.FIELD_TABLE);
             String name = getString(row, refer, Index.FIELD_NAME);
             if(null == name) {
                 continue;
             }
-			T meta = search(previous, name);
+
+            //根据Index构造identity方式
+            String identity = BasicUtil.nvl(catalog, "") + "_" + BasicUtil.nvl(schema, "") + "_" + BasicUtil.nvl(table, "") + "_" + name;
+            //根据catalog + schem + table + name 搜索(不同表中name会有重名)
+			T meta = get(previous, identity);
             if(null == meta) {
                 meta = init(runtime, index, meta, query, row);
             }
@@ -10597,11 +10604,12 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				previous.add(meta);
 			}
 			detail(runtime, index, meta, query, row);
-			String tableName = meta.getTableName();
-			if(null != tableName) {
-				Table table = tbls.get(tableName.toUpperCase());
-				if(null != table) {
-					table.add(meta);
+
+			Table tab = meta.getTable();
+			if(null != tab) {
+				Table search = tbls.get(tab.getIdentity().toUpperCase());
+				if(null != search) {
+                    search.add(meta);
 				}
 			}
 		}
@@ -10920,11 +10928,18 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         MetadataFieldRefer refer = refer(runtime, Constraint.class);
         Table table = query.getTable();
         for(DataRow row:set) {
+            String catalog = getString(row, refer, Constraint.FIELD_CATALOG);
+            String schema = getString(row, refer, Constraint.FIELD_SCHEMA);
+            String tab = getString(row, refer, Constraint.FIELD_TABLE);
             String name = getString(row, refer, Constraint.FIELD_NAME);
             if(null == name) {
                 continue;
             }
-            T meta = search(previous, name);
+
+            //根据Index构造identity方式
+            String identity = BasicUtil.nvl(catalog, "") + "_" + BasicUtil.nvl(schema, "") + "_" + BasicUtil.nvl(tab, "") + "_" + name;
+            //根据catalog + schem + table + name 搜索(不同表中name会有重名)
+            T meta = get(previous, identity);
             if(null == meta) {
                 meta = init(runtime, index, meta, query, row);
             }
@@ -10943,7 +10958,18 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         }
         return previous;
 	}
+/*if(null == Metadata.match(meta, previous)) {
+				previous.add(meta);
+			}
+			detail(runtime, index, meta, query, row);
 
+			Table tab = meta.getTable();
+			if(null != tab) {
+				Table search = tbls.get(tab.getIdentity().toUpperCase());
+				if(null != search) {
+                    search.add(meta);
+				}
+			}*/
 	/**
 	 * constraint[结果集封装]<br/>
 	 * 根据查询结果集构造Constraint
@@ -19221,9 +19247,12 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return Metadata.match(list, catalog, name);
 	}
 
-	public <T extends Metadata> T search(List<T> list, String name) {
-		return Metadata.match(list, name);
-	}
+    public <T extends Metadata> T search(List<T> list, String name) {
+        return Metadata.match(list, name);
+    }
+    public <T extends Metadata> T get(List<T> list, String name) {
+        return Metadata.get(list, name);
+    }
 
 	//A.ID,A.COOE,A.NAME
 	protected String concat(String prefix, String split, List<String> columns) {

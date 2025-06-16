@@ -744,9 +744,25 @@ public class Metadata<T extends Metadata> {
         }
         return null;
     }
+
+    /**
+     * 根据名称查询 注意不同表中的索引名称 有可能重复
+     * @param list list
+     * @param name name
+     * @return T
+     * @param <T> metadata
+     */
     public static <T extends Metadata> T match(List<T> list, String name) {
         for(T item:list) {
             if(BasicUtil.equalsIgnoreCase(item.getName(), name)) {
+                return item;
+            }
+        }
+        return null;
+    }
+    public static <T extends Metadata> T get(List<T> list, String identity) {
+        for(T item:list) {
+            if(BasicUtil.equalsIgnoreCase(item.getIdentity(), identity)) {
                 return item;
             }
         }
