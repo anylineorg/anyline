@@ -308,9 +308,13 @@ public class BasicUtil {
 		if (obj == null) {
 			return result;
 		}
-		if (obj instanceof Number)
+		if (obj instanceof Number) {
 			return true;
+		}
 		String str = obj.toString();
+		if(str.matches("-?\\d+(\\.\\d+)?")){
+			return true;
+		}
 		try {
 			Double.parseDouble(str);
 			result = true;
