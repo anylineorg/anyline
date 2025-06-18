@@ -26,22 +26,23 @@ import org.anyline.metadata.type.DataType;
 import org.anyline.proxy.ConvertProxy;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.util.ConfigTable;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
 
 @Component("anyline.environment.configuration.spring")
-public class SpringAutoConfiguration implements InitializingBean {
+public class SpringAutoConfiguration implements ApplicationListener<ContextRefreshedEvent> {
     private LinkedHashMap<String, LoadListener> listeners;
     private Map<String, DataSourceListener> datasource_listeners;
-    private boolean loader_start_status = false;
-    private boolean loader_after_status = false;
+    //private boolean loader_start_status = false;
+    //private boolean loader_after_status = false;
     @Autowired
     public void setWorker(SpringEnvironmentWorker worker) {
         ConfigTable.setEnvironment(worker);
-        loaderStart();
+        //loaderStart();
     }
 
     @Autowired(required = false)
@@ -50,15 +51,6 @@ public class SpringAutoConfiguration implements InitializingBean {
             this.listeners = new LinkedHashMap<>();
         }
         this.listeners.putAll(listeners);
-        //排序
-        List<Map.Entry<String, LoadListener>> entries = new ArrayList<>(this.listeners.entrySet());
-
-        Collections.sort(entries, Comparator.comparingInt(
-                entry -> entry.getValue().index()
-        ));
-        this.listeners.clear();
-        entries.forEach(entry -> this.listeners.put(entry.getKey(), entry.getValue()));
-        loaderStart();
     }
     @Autowired(required = false)
     public void setDataSourceListeners(Map<String, DataSourceListener> listeners) {
@@ -99,28 +91,42 @@ public class SpringAutoConfiguration implements InitializingBean {
         }
         EntityAdapterProxy.setAdapters(adapters);
     }
-    private void loaderStart() {
-        if(!loader_start_status && null != listeners && null != ConfigTable.environment) {
-            loader_start_status = true;
-            for (LoadListener listener : listeners.values()) {
-                listener.before(datasource_listeners);
-            }
-            for (LoadListener listener : listeners.values()) {
-                listener.start();
-            }
-        }
-    }
 
     @Override
-    public void afterPropertiesSet() {
-        if(!loader_after_status && null != listeners && null != ConfigTable.environment) {
-            loader_after_status = true;
-            for (LoadListener listener : listeners.values()) {
-                listener.finish();
-            }
-            for (LoadListener listener : listeners.values()) {
-                listener.after();
-            }
+    public void onApplicationEvent(ContextRefreshedEvent event) {
+        if(event.getApplicationContext().getParent() == null) {
+            //排序
+            List<Map.Entry<String, LoadListener>> entries = new ArrayList<>(this.listeners.entrySet());
+
+            entries.sort(Comparator.comparingInt(
+                    entry -> entry.getValue().index()
+            ));
+            this.listeners.clear();
+            entries.forEach(entry -> this.listeners.put(entry.getKey(), entry.getValue()));
+            loaderStart();
+            loaderAfter();
         }
+    }
+    private void loaderStart() {
+        // if(!loader_start_status && null != listeners && null != ConfigTable.environment) {
+        //      loader_start_status = true;
+        for (LoadListener listener : listeners.values()) {
+            listener.before(datasource_listeners);
+        }
+        for (LoadListener listener : listeners.values()) {
+            listener.start();
+        }
+        //  }
+    }
+    private void loaderAfter() {
+        // if(!loader_after_status && null != listeners && null != ConfigTable.environment) {
+        //     loader_after_status = true;
+        for (LoadListener listener : listeners.values()) {
+            listener.finish();
+        }
+        for (LoadListener listener : listeners.values()) {
+            listener.after();
+        }
+        //}
     }
 }
