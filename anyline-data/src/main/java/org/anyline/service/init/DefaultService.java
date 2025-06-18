@@ -1680,8 +1680,14 @@ public class DefaultService<E> implements AnylineService<E> {
         RunPrepare prepare = createRunPrepare(name);
         Table tab = prepare.getTable();
         if(null != tab) {
-            tab.setSchema(table.getSchema());
-            tab.setCatalog(table.getCatalog());
+            Catalog catalog = table.getCatalog();
+            if(null != catalog && !catalog.isEmpty()){
+                tab.setCatalog(catalog);
+            }
+            Schema schema = table.getSchema();
+            if(null != schema && !schema.isEmpty()){
+                tab.setSchema(schema);
+            }
         }
         return prepare;
     }
