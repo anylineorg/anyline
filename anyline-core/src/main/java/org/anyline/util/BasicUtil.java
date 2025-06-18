@@ -1174,12 +1174,49 @@ public class BasicUtil {
    public static String omit(String src, int left, int right) {
 	   return omit(src, left, right, "*");
    }
-   public static String omit(String src, int left, int right, String ellipsis) {
+
+	/**
+	 *
+	 * @param src 原文
+	 * @param max 每个段最大长度,超出max的拆成多段
+	 * @param left 每段左侧保留原文长度
+	 * @param right 每段右侧保留原文长度
+	 * @param ellipsis 省略符号
+	 * @return string
+	 */
+   public static String omit(String src, int max, int left, int right, String ellipsis) {
 	   String result = "";
 	   if(BasicUtil.isEmpty(src)) {
 		   return result;
 	   }
 	   int length = src.length();
+	   if(length > max) {
+		   List<String> list = new ArrayList<>();
+		   while (null != src && !src.isEmpty()) {
+			   String cut = BasicUtil.cut(src, 0, length);
+			   list.add(cut);
+			   src = BasicUtil.cut(src, length, src.length());
+		   }
+		   StringBuilder builder = new StringBuilder();
+		   for(String item:list){
+			   builder.append(omit(item, left, right, ellipsis));
+		   }
+		   result = builder.toString();
+	   }else{
+		   result = omit(src, left, right, ellipsis);
+	   }
+
+	   return result;
+   }
+	public static String omit(String src, int len, int left, int right) {
+		return omit(src, len, left, right, "*");
+	}
+	public static String omit(String src, int left, int right, String ellipsis) {
+		String result = "";
+		if(BasicUtil.isEmpty(src)) {
+			return result;
+		}
+		int length = src.length();
 		if(left > length) {
 			left = length;
 		}
@@ -1190,7 +1227,7 @@ public class BasicUtil {
 		String r = src.substring(length - right);
 		result = l+BasicUtil.fillRChar("", ellipsis, length-left-right)+r;
 		return result;
-   }
+	}
    public static String escape(String src) {
        return CodeUtil.escape(src);
    }
