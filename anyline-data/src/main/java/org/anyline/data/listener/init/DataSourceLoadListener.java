@@ -138,9 +138,10 @@ public class DataSourceLoadListener implements LoadListener {
     @Override
     public void finish() {
         if(ConfigTable.environment().containsBean(DataRuntime.ANYLINE_SERVICE_BEAN_PREFIX + "default")) {
-            ConfigTable.environment().regAlias(DataRuntime.ANYLINE_SERVICE_BEAN_PREFIX + "default", "anyline.service");
             AnylineService service = ConfigTable.environment().getBean(DataRuntime.ANYLINE_SERVICE_BEAN_PREFIX + "default", AnylineService.class);
+            //ConfigTable.environment().regAlias(DataRuntime.ANYLINE_SERVICE_BEAN_PREFIX + "default", "anyline.service");
             if(null != service) {
+                ConfigTable.environment().regBean("anyline.service", service);
                 ServiceProxy.init(service);
                 Map<String, AnylineService> services = ConfigTable.environment().getBeans(AnylineService.class);
                 for(AnylineService item:services.values()) {

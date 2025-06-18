@@ -65,6 +65,9 @@ public class DefaultService<E> implements AnylineService<E> {
     @AnylineAutowired
     protected AnylineDao dao;
 
+    public DefaultService(){
+
+    }
     public String datasource() {
         return dao.runtime().datasource();
     }
