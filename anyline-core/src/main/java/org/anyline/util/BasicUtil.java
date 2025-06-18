@@ -1193,9 +1193,9 @@ public class BasicUtil {
 	   if(length > max) {
 		   List<String> list = new ArrayList<>();
 		   while (null != src && !src.isEmpty()) {
-			   String cut = BasicUtil.cut(src, 0, length);
+			   String cut = BasicUtil.cut(src, 0, max);
 			   list.add(cut);
-			   src = BasicUtil.cut(src, length, src.length());
+			   src = BasicUtil.cut(src, max, src.length());
 		   }
 		   StringBuilder builder = new StringBuilder();
 		   for(String item:list){
