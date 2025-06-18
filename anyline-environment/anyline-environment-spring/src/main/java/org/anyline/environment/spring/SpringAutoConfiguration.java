@@ -19,7 +19,7 @@ package org.anyline.environment.spring;
 import org.anyline.adapter.EntityAdapter;
 import org.anyline.adapter.init.DefaultEntityAdapter;
 import org.anyline.adapter.init.JavaTypeAdapter;
-import org.anyline.data.listener.DataSourceListener;
+import org.anyline.listener.DataSourceListener;
 import org.anyline.listener.LoadListener;
 import org.anyline.metadata.type.Convert;
 import org.anyline.metadata.type.DataType;
