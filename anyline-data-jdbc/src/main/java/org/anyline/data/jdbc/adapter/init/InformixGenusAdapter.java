@@ -73,7 +73,9 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
         column_types.put(41, "BLOB"); //BLOB, BOOLEAN, CLOB 需要根据具体值判断，不要用这种类型(BOOLEAN时len=1)
         column_types.put(43, "LVARCHAR");
         column_types.put(45, "BOOLEAN");
+        column_types.put(52, "BIGINT");
         column_types.put(53, "BIGSERIAL");
+        column_types.put(2061, "IDSSECURITYLABEL");
         column_types.put(4118, "ROW");
     }
     @Override
