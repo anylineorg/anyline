@@ -1178,27 +1178,27 @@ public class BasicUtil {
 	/**
 	 *
 	 * @param src 原文
-	 * @param max 每个段最大长度,超出max的拆成多段
+	 * @param vol 每个段最大长度,超出 vol 的拆成多段(vol大于1时有效)
 	 * @param left 每段左侧保留原文长度
 	 * @param right 每段右侧保留原文长度
 	 * @param ellipsis 省略符号
 	 * @return string
 	 */
-   public static String omit(String src, int max, int left, int right, String ellipsis) {
+   public static String omit(String src, int vol, int left, int right, String ellipsis) {
 	   String result = "";
 	   if(BasicUtil.isEmpty(src)) {
 		   return result;
 	   }
 	   int length = src.length();
-	   if(length > max) {
+	   if(length > vol && vol > 1) {
 		   List<String> list = new ArrayList<>();
 		   while (null != src && !src.isEmpty()) {
-			   String cut = BasicUtil.cut(src, 0, max);
+			   String cut = BasicUtil.cut(src, 0, vol);
 			   list.add(cut);
-			   if(src.length() > max) {
+			   if(src.length() > vol) {
 				   list.add(ellipsis);//连接处
 			   }
-			   src = BasicUtil.cut(src, max+1, src.length());
+			   src = BasicUtil.cut(src, vol+1, src.length());
 		   }
 		   StringBuilder builder = new StringBuilder();
 		   for(String item:list){
