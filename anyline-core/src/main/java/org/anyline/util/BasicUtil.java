@@ -1233,7 +1233,7 @@ public class BasicUtil {
 		String r = "";
 		if (length > right + left) {
 			r = src.substring(length - right);
-		} else if(right >0){
+		} else if(right >0){ //避免全部明文
 			r = ellipsis + src.substring(length - right + 1);
 		}
 
