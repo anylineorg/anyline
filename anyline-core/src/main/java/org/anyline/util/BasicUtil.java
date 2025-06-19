@@ -1195,7 +1195,10 @@ public class BasicUtil {
 		   while (null != src && !src.isEmpty()) {
 			   String cut = BasicUtil.cut(src, 0, max);
 			   list.add(cut);
-			   src = BasicUtil.cut(src, max, src.length());
+			   if(src.length() > max) {
+				   list.add(ellipsis);//连接处
+			   }
+			   src = BasicUtil.cut(src, max+1, src.length());
 		   }
 		   StringBuilder builder = new StringBuilder();
 		   for(String item:list){
@@ -1216,6 +1219,9 @@ public class BasicUtil {
 		if(BasicUtil.isEmpty(src)) {
 			return result;
 		}
+		if(src.equals(ellipsis)){
+			return src;
+		}
 		int length = src.length();
 		if(left > length) {
 			left = length;
@@ -1224,8 +1230,14 @@ public class BasicUtil {
 			right = length - left;
 		}
 		String l = src.substring(0, left);
-		String r = src.substring(length - right);
-		result = l+BasicUtil.fillRChar("", ellipsis, length-left-right)+r;
+		String r = "";
+		if (length > right + left) {
+			r = src.substring(length - right);
+		} else if(right >0){
+			r = ellipsis + src.substring(length - right + 1);
+		}
+
+		result = l + BasicUtil.fillRChar("", ellipsis, length-left-right) + r;
 		return result;
 	}
    public static String escape(String src) {
