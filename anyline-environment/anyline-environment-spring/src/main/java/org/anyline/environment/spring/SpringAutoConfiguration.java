@@ -37,6 +37,7 @@ import java.util.*;
 public class SpringAutoConfiguration implements ApplicationListener<ContextRefreshedEvent> {
     private LinkedHashMap<String, LoadListener> load_listeners;
     private Map<String, DataSourceListener> datasource_listeners;
+    private boolean context_status = false;
     private boolean loader_start_status = false;
     private boolean loader_after_status = false;
     @Autowired
@@ -94,7 +95,8 @@ public class SpringAutoConfiguration implements ApplicationListener<ContextRefre
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
-        if(!loader_start_status) {
+        if(!context_status) {
+            context_status = true;
             //排序
             List<Map.Entry<String, LoadListener>> entries = new ArrayList<>(this.load_listeners.entrySet());
 
@@ -108,7 +110,7 @@ public class SpringAutoConfiguration implements ApplicationListener<ContextRefre
         }
     }
     private void loaderStart() {
-        if(!loader_start_status && null != load_listeners && null != ConfigTable.environment) {
+        if(!loader_start_status && null != load_listeners && !load_listeners.isEmpty() && null != ConfigTable.environment) {
             loader_start_status = true;
             for (LoadListener listener : load_listeners.values()) {
                 listener.before(datasource_listeners);
@@ -119,7 +121,7 @@ public class SpringAutoConfiguration implements ApplicationListener<ContextRefre
         }
     }
     private void loaderAfter() {
-        if(!loader_after_status && null != load_listeners && null != ConfigTable.environment) {
+        if(!loader_after_status && null != load_listeners && !load_listeners.isEmpty() && null != ConfigTable.environment) {
             loader_after_status = true;
             for (LoadListener listener : load_listeners.values()) {
                 listener.finish();
