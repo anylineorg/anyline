@@ -35,22 +35,22 @@ import java.util.*;
 
 @Component("anyline.environment.configuration.spring")
 public class SpringAutoConfiguration implements ApplicationListener<ContextRefreshedEvent> {
-    private LinkedHashMap<String, LoadListener> listeners;
+    private LinkedHashMap<String, LoadListener> load_listeners;
     private Map<String, DataSourceListener> datasource_listeners;
-    //private boolean loader_start_status = false;
-    //private boolean loader_after_status = false;
+    private boolean loader_start_status = false;
+    private boolean loader_after_status = false;
     @Autowired
     public void setWorker(SpringEnvironmentWorker worker) {
         ConfigTable.setEnvironment(worker);
-        //loaderStart();
+        loaderStart();
     }
 
     @Autowired(required = false)
     public void setLoadListeners(Map<String, LoadListener> listeners) {
-        if(null == this.listeners){
-            this.listeners = new LinkedHashMap<>();
+        if(null == this.load_listeners){
+            this.load_listeners = new LinkedHashMap<>();
         }
-        this.listeners.putAll(listeners);
+        this.load_listeners.putAll(listeners);
     }
     @Autowired(required = false)
     public void setDataSourceListeners(Map<String, DataSourceListener> listeners) {
@@ -94,39 +94,39 @@ public class SpringAutoConfiguration implements ApplicationListener<ContextRefre
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
-        if(event.getApplicationContext().getParent() == null) {
+        if(!loader_start_status) {
             //排序
-            List<Map.Entry<String, LoadListener>> entries = new ArrayList<>(this.listeners.entrySet());
+            List<Map.Entry<String, LoadListener>> entries = new ArrayList<>(this.load_listeners.entrySet());
 
             entries.sort(Comparator.comparingInt(
                     entry -> entry.getValue().index()
             ));
-            this.listeners.clear();
-            entries.forEach(entry -> this.listeners.put(entry.getKey(), entry.getValue()));
+            this.load_listeners.clear();
+            entries.forEach(entry -> this.load_listeners.put(entry.getKey(), entry.getValue()));
             loaderStart();
             loaderAfter();
         }
     }
     private void loaderStart() {
-        // if(!loader_start_status && null != listeners && null != ConfigTable.environment) {
-        //      loader_start_status = true;
-        for (LoadListener listener : listeners.values()) {
-            listener.before(datasource_listeners);
+        if(!loader_start_status && null != load_listeners && null != ConfigTable.environment) {
+            loader_start_status = true;
+            for (LoadListener listener : load_listeners.values()) {
+                listener.before(datasource_listeners);
+            }
+            for (LoadListener listener : load_listeners.values()) {
+                listener.start();
+            }
         }
-        for (LoadListener listener : listeners.values()) {
-            listener.start();
-        }
-        //  }
     }
     private void loaderAfter() {
-        // if(!loader_after_status && null != listeners && null != ConfigTable.environment) {
-        //     loader_after_status = true;
-        for (LoadListener listener : listeners.values()) {
-            listener.finish();
+        if(!loader_after_status && null != load_listeners && null != ConfigTable.environment) {
+            loader_after_status = true;
+            for (LoadListener listener : load_listeners.values()) {
+                listener.finish();
+            }
+            for (LoadListener listener : load_listeners.values()) {
+                listener.after();
+            }
         }
-        for (LoadListener listener : listeners.values()) {
-            listener.after();
-        }
-        //}
     }
 }
