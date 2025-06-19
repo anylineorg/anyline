@@ -5811,7 +5811,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
             DataSet set = new DataSet();
             if (null != values) {
                 for (DataRow row : src) {
-                    Map<String, String> map = value2map(row.get(key));
+                    Map<String, String> map = BeanUtil.value2map(ignoreCase, row.get(key));
                     for(T value:values) {
                         if(null != value) {
                             String k = value.toString();
@@ -5849,7 +5849,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
             DataSet set = new DataSet();
             if (null != values) {
                 for (DataRow row : src) {
-                    Map<String, String> map = value2map(row.get(key));
+                    Map<String, String> map = BeanUtil.value2map(ignoreCase, row.get(key));
                     boolean chk = true;
                     for(T value:values) {
                         if(null == value) {
@@ -5893,58 +5893,6 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
             return findInSetOr(src, key, values);
         }
 
-        /**
-         * 集合转换成map
-         * @param obj a,b,c 或 [a,b,c] 或map
-         * @return
-         */
-        private Map<String, String> value2map(Object obj) {
-            Map<String, String> map = new HashMap<>();
-            if(null == obj) {
-                return map;
-            }
-            if(obj instanceof String) {
-                String[] tmps = obj.toString().split(",");
-                for(String tmp:tmps) {
-                    if(null != tmp) {
-                        String k = tmp.trim();
-                        if(ignoreCase) {
-                            k = k.toUpperCase();
-                        }
-                        map.put(k, null);
-                    }
-                }
-            }else if(obj instanceof Collection) {
-                Collection items = (Collection) obj;
-                for(Object item:items) {
-                    String k = item.toString().trim();
-                    if(ignoreCase) {
-                        k = k.toUpperCase();
-                    }
-                    map.put(k, null);
-                }
-            }else if(obj instanceof Map) {
-                Map maps = (Map)obj;
-                for(Object key:maps.keySet()) {
-                    String k = key.toString().trim();
-                    if(ignoreCase) {
-                        k = k.toUpperCase();
-                    }
-                    map.put(k, null);
-                }
-            }else if(obj.getClass().isArray()) {
-                List<Object> items = BeanUtil.object2list(obj);
-                for(Object item:items) {
-                    String k = item.toString().trim();
-                    if(ignoreCase) {
-                        k = k.toUpperCase();
-                    }
-                    map.put(k, null);
-                }
-            }
-
-            return map;
-        }
         public DataSet isNull(String... keys) {
             return isNull(DataSet.this, keys);
         }

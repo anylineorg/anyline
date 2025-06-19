@@ -1131,7 +1131,42 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     public boolean isNotEmpty(String key) {
         return !isEmpty(key);
     }
+    public boolean findSet(String key, String ... values){
+        return findInSetOr(key, values);
+    }
+    public boolean findInSetOr(String key, String ... values) {
+        Map<String, String> map = BeanUtil.value2map(ignoreCase, get(key));
+        for(String value:values){
+            if(null != value) {
+                if(ignoreCase){
+                    value = value.toUpperCase();
+                }
+                if(map.containsKey(value)){
+                    return true;
+                }
+            }
+        }
 
+        return false;
+    }
+    public boolean findInSetAnd(String key, String ... values) {
+        Map<String, String> map = BeanUtil.value2map(ignoreCase, get(key));
+        if(!map.isEmpty()){
+            for(String value:values){
+                if(null == value){
+                    return false;
+                }
+                if(ignoreCase){
+                    value = value.toUpperCase();
+                }
+                if(!map.containsKey(value)){
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
     /**
      * 添加主键
      * @param applyContainer 是否应用到上级容器 默认false

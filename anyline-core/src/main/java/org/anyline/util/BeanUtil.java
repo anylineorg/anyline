@@ -233,6 +233,57 @@ public class BeanUtil {
 	}
 
 	/**
+	 * 集合转换成map
+	 * @param obj a,b,c 或 [a,b,c] 或map
+	 * @return map
+	 */
+	public static Map<String, String> value2map(boolean ignoreCase, Object obj) {
+		Map<String, String> map = new HashMap<>();
+		if(null == obj) {
+			return map;
+		}
+		if(obj instanceof String) {
+			String[] tmps = obj.toString().split(",");
+			for(String tmp:tmps) {
+				if(null != tmp) {
+					String k = tmp.trim();
+					if(ignoreCase) {
+						k = k.toUpperCase();
+					}
+					map.put(k, null);
+				}
+			}
+		}else if(obj instanceof Collection) {
+			Collection items = (Collection) obj;
+			for(Object item:items) {
+				String k = item.toString().trim();
+				if(ignoreCase) {
+					k = k.toUpperCase();
+				}
+				map.put(k, null);
+			}
+		}else if(obj instanceof Map) {
+			Map maps = (Map)obj;
+			for(Object key:maps.keySet()) {
+				String k = key.toString().trim();
+				if(ignoreCase) {
+					k = k.toUpperCase();
+				}
+				map.put(k, null);
+			}
+		}else if(obj.getClass().isArray()) {
+			List<Object> items = BeanUtil.object2list(obj);
+			for(Object item:items) {
+				String k = item.toString().trim();
+				if(ignoreCase) {
+					k = k.toUpperCase();
+				}
+				map.put(k, null);
+			}
+		}
+		return map;
+	}
+	/**
 	 * 属性赋值
 	 * @param obj 对象 如果给类静态属性赋值, 传null
 	 * @param field 属性
