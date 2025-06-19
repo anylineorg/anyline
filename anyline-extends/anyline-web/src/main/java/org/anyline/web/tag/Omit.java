@@ -15,12 +15,11 @@
  */
 
 package org.anyline.web.tag;
- 
-import java.io.IOException;
-
-import javax.servlet.jsp.JspWriter;
 
 import org.anyline.util.BasicUtil;
+
+import javax.servlet.jsp.JspWriter;
+import java.io.IOException;
  
 public class Omit extends BaseBodyTag {
 	private static final long serialVersionUID = 1L; 
@@ -29,10 +28,11 @@ public class Omit extends BaseBodyTag {
 	private String ellipsis = "*";
 	private Integer max;//最大长度(不小于 right+left+1)
 	private Integer min;//最小长度(不小于 right+left+1)
+	private Integer vol = 0; //个段最大长度,超出 vol 的拆成多段(vol大于1时有效)
 	private String value;
 	 
 	public int doEndTag() {
-		String src = BasicUtil.nvl(value,body,"").toString().trim(); 
+		String src = BasicUtil.nvl(value, body, "").trim();
 		if(BasicUtil.isEmpty(src)) {
 			return EVAL_BODY_INCLUDE; 
 		} 
@@ -40,8 +40,10 @@ public class Omit extends BaseBodyTag {
 		JspWriter writer = null; 
 		String result = ""; 
 		try {
-
 			writer = pageContext.getOut();
+			if(null == vol){
+				vol = 0;
+			}
 			int len = src.length();
 			if(null == max || max < 0 || max>len) {
 				max = len;
@@ -53,10 +55,7 @@ public class Omit extends BaseBodyTag {
 			if(left > len) {
 				left = len;
 			}
-			if(null == left || left<0) {
-				left = 0;
-			}
-			if(null == right || right<0) {
+            if(null == right || right<0) {
 				right = 0;
 			}
 
@@ -66,24 +65,13 @@ public class Omit extends BaseBodyTag {
 			if(min < left+right) {
 				min = left+right+1;
 			}
-
-			int fill = max - left - right;
-			if(fill < 0) {
-				fill = 0;
+ 			if(src.length() > max) {
+				 src = src.substring(0, max);
 			}
-			if(fill + left + right < min) {
-				fill = min - left - right;
+			result = BasicUtil.omit(src, vol, left, right, ellipsis);
+			if(result.length() < min) {
+				result = BasicUtil.fillChar(result, min-result.length());
 			}
-			if(left > max) {
-				left = max;
-			}
-			if(right > max - left) {
-				right = max - left;
-			}
-			String l = src.substring(0,left);
-			String r = src.substring(src.length() - right);
-			
-			result = l+BasicUtil.fillRChar("", ellipsis, fill)+r; 
 			writer.print(result); 
 		} catch (IOException e) {
 			e.printStackTrace(); 
@@ -102,6 +90,7 @@ public class Omit extends BaseBodyTag {
 		right = null;
 		max = null;
 		min = null;
+		vol = 0;
 		ellipsis = "*"; 
 	}
 
@@ -152,5 +141,13 @@ public class Omit extends BaseBodyTag {
 
 	public void setValue(String value) {
 		this.value = value;
+	}
+
+	public Integer getVol() {
+		return vol;
+	}
+
+	public void setVol(Integer vol) {
+		this.vol = vol;
 	}
 }

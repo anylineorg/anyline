@@ -1077,6 +1077,10 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
+			<name>vol</name>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
 			<name>max</name>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>

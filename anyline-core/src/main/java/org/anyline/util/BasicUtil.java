@@ -1211,8 +1211,8 @@ public class BasicUtil {
 
 	   return result;
    }
-	public static String omit(String src, int len, int left, int right) {
-		return omit(src, len, left, right, "*");
+	public static String omit(String src, int vol, int left, int right) {
+		return omit(src, vol, left, right, "*");
 	}
 	public static String omit(String src, int left, int right, String ellipsis) {
 		String result = "";
