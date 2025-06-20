@@ -32,7 +32,7 @@ import org.anyline.log.Log;
 import org.anyline.log.LogProxy; 
  
 public class Downloader {
-	private static Log log = LogProxy.get(Downloader.class); 
+	private static final Log log = LogProxy.get(Downloader.class); 
 	private Map<String, DownloadTask> tasks = new Hashtable<String, DownloadTask>();
 	private int maxParallel = 5		; // 最大并行下载数量 
 	private int curParallel			; // 当前并行下载数量	 

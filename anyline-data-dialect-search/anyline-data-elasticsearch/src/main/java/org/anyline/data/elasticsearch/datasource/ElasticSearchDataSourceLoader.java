@@ -32,7 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 @AnylineComponent("anyline.environment.data.datasource.loader.elasticsearch")
 public class ElasticSearchDataSourceLoader extends AbstractDataSourceLoader implements DataSourceLoader {
-    public static Log log = LogProxy.get(ElasticSearchDataSourceLoader.class);
+    public static final Log log = LogProxy.get(ElasticSearchDataSourceLoader.class);
 
     private final ElasticSearchDataSourceHolder holder = ElasticSearchDataSourceHolder.instance();
 

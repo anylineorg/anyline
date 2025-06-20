@@ -30,7 +30,7 @@ import java.io.FileOutputStream;
 import java.util.*;
  
 public class SFTPUtil {
-	private static Log log = LogProxy.get(SFTPUtil.class);
+	private static final Log log = LogProxy.get(SFTPUtil.class);
     private static Map<String, SFTPUtil> instances = new HashMap<String, SFTPUtil>();
 	private String host; 
 	private int port=22; 
@@ -331,7 +331,7 @@ public class SFTPUtil {
 } 
  
 class SFTPProgressMonitor implements SftpProgressMonitor {
-	private final Log log = LogProxy.get(SFTPProgressMonitor.class); 
+	private static final Log log = LogProxy.get(SFTPProgressMonitor.class);
 	private String remote = ""; 
 	private String local = ""; 
 	private long length;		// 总长度 

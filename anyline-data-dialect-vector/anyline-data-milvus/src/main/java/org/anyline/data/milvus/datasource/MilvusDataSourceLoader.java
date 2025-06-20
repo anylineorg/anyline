@@ -33,7 +33,7 @@ import java.util.List;
 
 @AnylineComponent("anyline.environment.data.datasource.loader.milvus")
 public class MilvusDataSourceLoader extends AbstractDataSourceLoader implements DataSourceLoader {
-    public static Log log = LogProxy.get(MilvusDataSourceLoader.class);
+    public static final Log log = LogProxy.get(MilvusDataSourceLoader.class);
 
     private final MilvusDataSourceHolder holder = MilvusDataSourceHolder.instance();
 

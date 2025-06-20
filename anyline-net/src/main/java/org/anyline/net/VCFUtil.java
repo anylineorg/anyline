@@ -24,7 +24,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 public class VCFUtil {
-    private static Log log = LogProxy.get(VCFUtil.class);
+    private static final Log log = LogProxy.get(VCFUtil.class);
     /**
      * 生成通讯录格式
      * @param mobile 手机号

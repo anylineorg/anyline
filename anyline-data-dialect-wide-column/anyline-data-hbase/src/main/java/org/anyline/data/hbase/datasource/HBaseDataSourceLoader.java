@@ -33,7 +33,7 @@ import java.util.List;
 
 @AnylineComponent("anyline.environment.data.datasource.loader.hbase")
 public class HBaseDataSourceLoader extends AbstractDataSourceLoader implements DataSourceLoader {
-    public static Log log = LogProxy.get(HBaseDataSourceLoader.class);
+    public static final Log log = LogProxy.get(HBaseDataSourceLoader.class);
 
     private final HBaseDataSourceHolder holder = HBaseDataSourceHolder.instance();
 

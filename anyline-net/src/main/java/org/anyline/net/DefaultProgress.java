@@ -24,7 +24,7 @@ import org.anyline.util.FileUtil;
 import java.io.File;
  
 public class DefaultProgress implements DownloadProgress{
-	private Log log = LogProxy.get(DefaultProgress.class);
+	private static final Log log = LogProxy.get(DefaultProgress.class);
 	private String url			; // URL
 	private File local			; // 本地文件
 	private long past			; // 上次已下载长度

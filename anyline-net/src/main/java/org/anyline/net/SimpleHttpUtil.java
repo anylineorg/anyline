@@ -28,7 +28,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
 public class SimpleHttpUtil {
-	private static Log log = LogProxy.get(SimpleHttpUtil.class);
+	private static final Log log = LogProxy.get(SimpleHttpUtil.class);
 	public static String post(String url, String param) {
 		return request(url, "POST", param);
 	} 

@@ -51,7 +51,7 @@ import java.util.*;
 
 @Component("anyline.environment.spring.data.driver.actuator.jdbc")
 public class SpringJDBCActuator implements DriverActuator {
-    private Log log = LogProxy.get(SpringJDBCActuator.class);
+    private static final Log log = LogProxy.get(SpringJDBCActuator.class);
 
     /**
      * 根据类型注入到DriverAdapter中

@@ -23,7 +23,7 @@ import org.anyline.log.LogProxy;
 import java.util.LinkedHashMap;
 
 public class DefaultBeanDefine implements BeanDefine {
-    private static Log log = LogProxy.get(DefaultBeanDefine.class);
+    private static final Log log = LogProxy.get(DefaultBeanDefine.class);
     public DefaultBeanDefine() {}
     public DefaultBeanDefine(Class type) {
         this.type = type;

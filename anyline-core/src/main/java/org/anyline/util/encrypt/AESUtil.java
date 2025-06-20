@@ -33,7 +33,7 @@ import java.security.Key;
 import java.security.SecureRandom;
 
 public class AESUtil {
-	private static Log log = LogProxy.get(AESUtil.class); 
+	private static final Log log = LogProxy.get(AESUtil.class); 
 	private static final String KEY = "AES";
 	public static enum CIPHER{
 		PKCS5			{public String getCode() {return "AES/ECB/PKCS5Padding";}},

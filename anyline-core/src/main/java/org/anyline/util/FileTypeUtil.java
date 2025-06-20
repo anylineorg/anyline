@@ -32,7 +32,7 @@ import java.util.Map.Entry;
  
 public class FileTypeUtil {
 	public final static Map<String, String> FILE_TYPE_MAP = new HashMap<>(); 
-    private static Log log = LogProxy.get(FileTypeUtil.class);
+    private static final Log log = LogProxy.get(FileTypeUtil.class);
 	protected FileTypeUtil() {
 	} 
  

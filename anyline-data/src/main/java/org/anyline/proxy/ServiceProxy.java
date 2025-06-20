@@ -56,7 +56,7 @@ import java.util.List;
 import java.util.Map;
 
 public class ServiceProxy {
-    private static Log log = LogProxy.get(ServiceProxy.class);
+    private static final Log log = LogProxy.get(ServiceProxy.class);
     private static AnylineService service;
     private static AnylineService.DDLService ddl;
     private static AnylineService.MetaDataService metadata;

@@ -36,7 +36,7 @@ import java.sql.Statement;
 import java.util.*;
 
 public class JDBCUtil {
-    private static Log log = LogProxy.get(JDBCUtil.class);
+    private static final Log log = LogProxy.get(JDBCUtil.class);
 
     /**
      *

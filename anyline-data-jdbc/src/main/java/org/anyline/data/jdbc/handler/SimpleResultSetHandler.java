@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.Map;
 
 public class SimpleResultSetHandler implements ResultSetHandler {
-    private static Log log = LogProxy.get(SimpleResultSetHandler.class);
+    private static final Log log = LogProxy.get(SimpleResultSetHandler.class);
     private ConnectionHandler handler;
     private ResultSet result;
     private List<String> keys;

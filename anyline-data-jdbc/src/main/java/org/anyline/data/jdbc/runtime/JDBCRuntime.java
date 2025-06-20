@@ -31,7 +31,7 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 
 public class JDBCRuntime extends AbstractRuntime implements DataRuntime {
-    private static Log log = LogProxy.get(JDBCRuntime.class);
+    private static final Log log = LogProxy.get(JDBCRuntime.class);
     protected DataSource processor;
 
     public JDBCRuntime(String key, DataSource datasource, DriverAdapter adapter) {

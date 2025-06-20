@@ -29,7 +29,7 @@ import java.util.Map;
 
 public class DataSourceUtil {
 
-    public static Log log = LogProxy.get(DataSourceUtil.class);
+    public static final Log log = LogProxy.get(DataSourceUtil.class);
 
     public static final String POOL_TYPE_DEFAULT = "com.zaxxer.hikari.HikariDataSource";
 

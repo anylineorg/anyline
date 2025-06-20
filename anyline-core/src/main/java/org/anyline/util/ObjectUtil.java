@@ -22,7 +22,7 @@ import org.anyline.log.LogProxy;
 import java.io.*;
  
 public class ObjectUtil {
-	private static Log log = LogProxy.get(ObjectUtil.class);
+	private static final Log log = LogProxy.get(ObjectUtil.class);
 	public static byte[] serialize(Object obj) {
 		ObjectOutputStream obi = null; 
 		ByteArrayOutputStream bai = null; 

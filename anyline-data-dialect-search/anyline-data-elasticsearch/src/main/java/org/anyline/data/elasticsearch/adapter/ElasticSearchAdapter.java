@@ -53,7 +53,7 @@ import java.util.*;
 
 @AnylineComponent("anyline.data.jdbc.adapter.elasticsearch")
 public class ElasticSearchAdapter extends AbstractDriverAdapter implements DriverAdapter {
-    private static Log log = LogProxy.get(ElasticSearchAdapter.class);
+    private static final Log log = LogProxy.get(ElasticSearchAdapter.class);
 
     @Override
     public DatabaseType type() {

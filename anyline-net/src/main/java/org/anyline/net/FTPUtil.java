@@ -35,7 +35,7 @@ import java.util.Map;
    
 public class FTPUtil {
        
-    private static Log log = LogProxy.get(FTPUtil.class); 
+    private static final Log log = LogProxy.get(FTPUtil.class); 
     private static Map<String, FTPUtil> instances = new HashMap<String, FTPUtil>();
     private FTPClient client;   
 	private String host; 

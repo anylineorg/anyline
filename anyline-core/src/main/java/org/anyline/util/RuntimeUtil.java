@@ -23,7 +23,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
  
 public class RuntimeUtil {
-	private static Log log = LogProxy.get(RuntimeUtil.class); 
+	private static final Log log = LogProxy.get(RuntimeUtil.class); 
 	 
 	public static String run(String cmd, boolean wait) {
 		String result = ""; 

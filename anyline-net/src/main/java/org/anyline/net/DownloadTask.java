@@ -31,7 +31,7 @@ import java.util.Map;
 import java.util.Map.Entry;
  
 public class DownloadTask {
-	private Log log = LogProxy.get(DownloadTask.class); 
+	private static final Log log = LogProxy.get(DownloadTask.class);
 	private boolean openLog = true; 
 	private String url	; // url
 	private File local	; // 本地文件

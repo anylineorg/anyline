@@ -48,7 +48,7 @@ import java.util.*;
 
 @AnylineComponent("anyline.environment.data.driver.actuator.jdbc")
 public class DefaultJDBCActuator implements DriverActuator {
-    private Log log = LogProxy.get(DefaultJDBCActuator.class);
+    private static final Log log = LogProxy.get(DefaultJDBCActuator.class);
 
     /**
      * 根据类型注入到DriverAdapter中

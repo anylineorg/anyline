@@ -24,7 +24,7 @@ import org.anyline.log.Log;
 import org.anyline.log.LogProxy;
 
 public abstract class AbstractMapClient implements MapClient{
-    private static Log log = LogProxy.get(AbstractMapClient.class);
+    private static final Log log = LogProxy.get(AbstractMapClient.class);
 
     /**
      * 逆地址解析 根据坐标返回详细地址及各级地区编号

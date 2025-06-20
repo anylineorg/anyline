@@ -29,7 +29,7 @@ import org.springframework.jdbc.support.rowset.SqlRowSetMetaData;
 import java.util.LinkedHashMap;
 
 public class SpringJDBCUtil {
-    private static Log log = LogProxy.get(SpringJDBCUtil.class);
+    private static final Log log = LogProxy.get(SpringJDBCUtil.class);
 
     /**
      * column[结果集封装]<br/>(方法4)<br/>

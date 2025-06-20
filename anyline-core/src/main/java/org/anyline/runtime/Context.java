@@ -29,7 +29,7 @@ import java.io.File;
 import java.util.*;
 
 public class Context {
-    protected static Log log = LogProxy.get(Context.class);
+    protected static final Log log = LogProxy.get(Context.class);
     protected Context parent = null;
     /**
      * 文本原样替换，不解析原文中的标签,没有${}的也不要添加

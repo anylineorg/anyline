@@ -38,7 +38,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CommandParser {
-    private Log log = LogProxy.get(CommandParser.class);
+    private static final Log log = LogProxy.get(CommandParser.class);
 
     /**
      * 解析文本中的占位符

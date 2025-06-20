@@ -27,7 +27,7 @@ import java.util.HashSet;
 import java.util.List;
 
 public class SQLUtil {
-	private static Log log = LogProxy.get(SQLUtil.class);
+	private static final Log log = LogProxy.get(SQLUtil.class);
 
 	public static HashSet<String> keys = new HashSet<>();
 	static {

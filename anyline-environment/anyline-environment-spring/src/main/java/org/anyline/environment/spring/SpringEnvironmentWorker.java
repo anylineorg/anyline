@@ -41,7 +41,7 @@ import java.util.*;
 
 @Component("anyline.environment.worker.spring")
 public class SpringEnvironmentWorker extends DefaultEnvironmentWorker implements EnvironmentAware, EnvironmentWorker, ApplicationContextAware {
-    private static Log log = LogProxy.get(SpringEnvironmentWorker.class);
+    private static final Log log = LogProxy.get(SpringEnvironmentWorker.class);
     private Environment environment;
     private static DefaultListableBeanFactory factory;
     public ApplicationContext context;

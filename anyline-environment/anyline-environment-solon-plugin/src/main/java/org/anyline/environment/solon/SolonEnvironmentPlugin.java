@@ -31,7 +31,7 @@ import javax.sql.DataSource;
  * @author noear 2025/1/8 created
  */
 public class SolonEnvironmentPlugin implements Plugin {
-    protected static Log log = LogProxy.get(DefaultEnvironmentWorker.class);
+    protected static final Log log = LogProxy.get(DefaultEnvironmentWorker.class);
 
     @Override
     public void start(AppContext context) throws Throwable {

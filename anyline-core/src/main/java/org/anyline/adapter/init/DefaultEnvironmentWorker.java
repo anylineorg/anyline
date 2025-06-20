@@ -40,7 +40,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 public class DefaultEnvironmentWorker implements EnvironmentWorker {
-    protected static Log log = LogProxy.get(DefaultEnvironmentWorker.class);
+    protected static final Log log = LogProxy.get(DefaultEnvironmentWorker.class);
     private static final Map<String, Object> factory = new HashMap<>();
 
     public static EnvironmentWorker start(File config) {

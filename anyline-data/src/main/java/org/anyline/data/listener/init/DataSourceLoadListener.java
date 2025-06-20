@@ -45,10 +45,10 @@ import java.util.Map;
 
 @AnylineComponent("anyline.environment.data.listener.jdbc")
 public class DataSourceLoadListener implements LoadListener {
-    private static Log log = LogProxy.get(DataSourceLoadListener.class);
+    private static final Log log = LogProxy.get(DataSourceLoadListener.class);
 
     //项目注册事件
-    private List<DataSourceListener> listeners = new ArrayList<>();
+    private final List<DataSourceListener> listeners = new ArrayList<>();
     public void before(Object bean) {
         if(bean instanceof Map){
             Map map = (Map) bean;

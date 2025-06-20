@@ -25,7 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ApplicationConnectionHolder {
-    protected static Log log = LogProxy.get(ApplicationConnectionHolder.class);
+    protected static final Log log = LogProxy.get(ApplicationConnectionHolder.class);
 
     /**
      * 整个应用内有效

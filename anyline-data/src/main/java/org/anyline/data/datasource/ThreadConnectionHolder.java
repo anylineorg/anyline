@@ -25,7 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ThreadConnectionHolder {
-    protected static Log log = LogProxy.get(ThreadConnectionHolder.class);
+    protected static final Log log = LogProxy.get(ThreadConnectionHolder.class);
     /**
      * 线程内有效
      */
