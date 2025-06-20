@@ -724,7 +724,7 @@ public class WebUtil {
 			}
 
 			if(v instanceof String || v instanceof Number || v instanceof Boolean || v instanceof Date) {
-				if(null == fixs || fixs.size() == 0 || fixs.contains(k)) {
+				if(null == fixs || fixs.isEmpty() || fixs.contains(k)) {
 					v = encryptValue(v.toString(), mix);
 				}
 			}else{
@@ -788,7 +788,7 @@ public class WebUtil {
 					continue;
 				}
 				if(v instanceof String || v instanceof Number || v instanceof Boolean || v instanceof Date) {
-					if(null == list || list.size() == 0 || list.contains(k)) {
+					if(null == list || list.isEmpty() || list.contains(k)) {
 						v = encryptValue(v.toString(), mix, list);
 					}
 				} else {

@@ -893,13 +893,10 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
      * @return boolean
      */
     public boolean isEmpty() {
-        boolean result = true;
-        if (null == rows) {
-            result = true;
-        } else if (rows instanceof Collection) {
-            result = ((Collection<?>) rows).isEmpty();
-        }
-        return result;
+        return null == rows || rows.isEmpty();
+    }
+    public boolean isNotEmpty(){
+        return !isEmpty();
     }
 
     /**

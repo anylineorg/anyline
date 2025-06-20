@@ -198,7 +198,7 @@ public abstract class AbstractController {
 			}
 		}
 
-		if (arrays.size() > 0) {
+		if (!arrays.isEmpty()) {
 			Map<String,Object> requestValues = WebUtil.value(request);
 			for (String param : arrays) {
 				ParseResult parser = ConfigParser.parse(param,true);

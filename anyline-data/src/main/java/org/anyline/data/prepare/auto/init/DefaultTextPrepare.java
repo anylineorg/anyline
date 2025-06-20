@@ -133,7 +133,7 @@ public class DefaultTextPrepare extends DefaultAutoPrepare implements TextPrepar
 		String key = null;
 		try {
 			List<String> keys = RegularUtil.fetch(up, "\\s" + type + "\\s");
-			if(keys.size() > 0){
+			if(!keys.isEmpty()){
 				key = keys.get(0);
 			}
 		}catch (Exception e){
