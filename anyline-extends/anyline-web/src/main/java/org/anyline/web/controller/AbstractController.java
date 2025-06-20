@@ -993,7 +993,6 @@ public abstract class AbstractController {
 		}
 		return dir;
 	}
-	
 	/**
 	 *
 	 * @param adapt adapt

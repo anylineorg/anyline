@@ -871,7 +871,7 @@ public class WebUtil {
 	 * @throws ServletException ServletException
 	 * @throws IOException IOException
 	 */
-	public static String parseJsp(HttpServletRequest request, HttpServletResponse response, String jsp) throws ServletException, IOException {
+	public static String render(HttpServletRequest request, HttpServletResponse response, String jsp) throws ServletException, IOException {
 		ByteArrayOutputStream os = new ByteArrayOutputStream();
 		render(request, response, jsp, os, false);
 		String result = os.toString();
@@ -880,7 +880,9 @@ public class WebUtil {
 		}
 		return result;
 	}
-
+	public static String parseJsp(HttpServletRequest request, HttpServletResponse response, String jsp) throws ServletException, IOException {
+		return render(request, response, jsp);
+	}
 	public static void render(HttpServletRequest request, HttpServletResponse response, String jsp, File target) throws ServletException, IOException {
 		render(request, response, jsp, Files.newOutputStream(target.toPath()), true);
 	}

@@ -740,6 +740,19 @@ public class AnylineController extends AbstractController {
     public String navi(HttpServletResponse response, DataSet data, String page) {
         return navi(getRequest(), response, data, page, null);
     }
+
+    public String run(HttpServletRequest request, HttpServletResponse response, String page){
+        String html = "";
+        if(page != null && !page.startsWith("/")) {
+            page = buildDir() + page;
+        }
+        try {
+            html = WebUtil.parseJsp(request, response, page);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return html;
+    }
     /**
      * 上传文件
      * @param dir  dir
