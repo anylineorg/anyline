@@ -2838,7 +2838,9 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
             configs.and("M.TABLE_CATALOG", query.getCatalogName());
             configs.and("M.TABLE_SCHEMA", query.getSchemaName());
             configs.and(Compare.LIKE_SIMPLE_IGNORE_CASE,"M.TABLE_NAME", query.getTableName());
+            configs.order("M.TABLE_SCHEMA");
             configs.order("M.TABLE_NAME");
+            configs.order("M.ORDINAL_POSITION");
         }
         return runs;
     }
@@ -2890,6 +2892,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         configs.and("M.TABLE_SCHEMA", query.getSchemaName());
         configs.in("M.TABLE_NAME", Table.names(tables));
         configs.order("M.TABLE_NAME");
+        configs.order("M.ORDINAL_POSITION");
         return runs;
     }
 
