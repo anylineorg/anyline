@@ -741,13 +741,16 @@ public class AnylineController extends AbstractController {
         return navi(getRequest(), response, data, page, null);
     }
 
-    public String run(HttpServletRequest request, HttpServletResponse response, String page){
+    public String render(String page){
+        return render(getRequest(), getResponse(), page);
+    }
+    public String render(HttpServletRequest request, HttpServletResponse response, String page){
         String html = "";
         if(page != null && !page.startsWith("/")) {
             page = buildDir() + page;
         }
         try {
-            html = WebUtil.parseJsp(request, response, page);
+            html = WebUtil.render(request, response, page);
         }catch (Exception e){
             e.printStackTrace();
         }
