@@ -4439,7 +4439,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
 
     /**
      * table[命令合成-子流程]<br/>
-     * 定义表的主键标识,在创建表的DDL结尾部分(注意不要跟列定义中的主键重复)
+     * 定义表的主键标识,在创建表的DDL结尾部分(注意不要跟列定义中的主键重复) primary(DataRuntime runtime, StringBuilder builder, Column meta) 
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param builder builder
      * @param meta 表
@@ -4454,7 +4454,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
         }else{
             pks = meta.primarys();
         }
-        if(!pks.isEmpty() && pks.size() >1) {//单列主键时在列名上设置
+        if(!pks.isEmpty()) {//单列主键时不要与在列名上设置的标识冲突
             builder.append(",PRIMARY KEY (");
             boolean first = true;
             Column.sort(primary.getPositions(), pks);
@@ -5502,7 +5502,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
 
     /**
      * column[命令合成-子流程]<br/>
-     * 列定义:定义列的主键标识(注意不要跟表定义中的主键重复)
+     * 列定义:定义列的主键标识(注意不要跟表定义中的主键重复) primary(DataRuntime runtime, StringBuilder builder, Table meta)
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param builder builder
      * @param meta 列

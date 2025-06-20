@@ -5407,7 +5407,7 @@ public class VitessAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 
 	/**
 	 * table[命令合成-子流程]<br/>
-	 * 定义表的主键标识,在创建表的DDL结尾部分(注意不要跟列定义中的主键重复)
+	 * 定义表的主键标识,在创建表的DDL结尾部分(注意不要跟列定义中的主键重复) primary(DataRuntime runtime, StringBuilder builder, Column meta) 
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder builder
 	 * @param meta 表
@@ -6546,7 +6546,7 @@ public class VitessAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 
 	/**
 	 * column[命令合成-子流程]<br/>
-	 * 列定义:定义列的主键标识(注意不要跟表定义中的主键重复)
+	 * 列定义:定义列的主键标识(注意不要跟表定义中的主键重复) primary(DataRuntime runtime, StringBuilder builder, Table meta)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder builder
 	 * @param meta 列
