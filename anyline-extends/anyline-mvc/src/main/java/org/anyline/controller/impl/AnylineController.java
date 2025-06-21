@@ -754,12 +754,11 @@ public class AnylineController extends AbstractController {
             page = buildDir() + page;
         }
 
-        String clientType = "web";
-        if (WebUtil.isWap(request)) {
-            clientType = "wap";
-        }
-
         if (null != page) {
+            String clientType = "web";
+            if (WebUtil.isWap(request)) {
+                clientType = "wap";
+            }
             if (adapt) {
                 page = page.replace("/web/", "/" + clientType + "/");
                 page = page.replace("/wap/", "/" + clientType + "/");
