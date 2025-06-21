@@ -744,10 +744,29 @@ public class AnylineController extends AbstractController {
     public String render(String page){
         return render(getRequest(), getResponse(), page);
     }
+
     public String render(HttpServletRequest request, HttpServletResponse response, String page){
+        return render(false, request, response, page);
+    }
+    public String render(boolean adapt, HttpServletRequest request, HttpServletResponse response, String page){
         String html = "";
         if(page != null && !page.startsWith("/")) {
             page = buildDir() + page;
+        }
+
+        String clientType = "web";
+        if (WebUtil.isWap(request)) {
+            clientType = "wap";
+        }
+
+        if (null != page) {
+            if (adapt) {
+                page = page.replace("/web/", "/" + clientType + "/");
+                page = page.replace("/wap/", "/" + clientType + "/");
+            }
+
+            page = page.replace("${client_type}", clientType);
+            page = page.replace("${client}", clientType);
         }
         try {
             html = WebUtil.render(request, response, page);
