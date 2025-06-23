@@ -2699,6 +2699,12 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		return super.buildQueryIndexesRun(runtime, greedy, tables);
 	}
 
+	protected Run buildQueryIndexBody(DataRuntime runtime) {
+		Run run = new SimpleRun(runtime);
+		StringBuilder builder = run.getBuilder();
+		builder.append("SELECT * FROM SYS.INDEX_COLUMNS AS M LEFT JOIN SYS.INDEXES AS F ON M.INDEX_OID = F.INDEX_OID\n");
+		return run;
+	}
 	/**
 	 * Index[结果集封装]<br/>
 	 * Index 属性与结果集对应关系
@@ -2706,7 +2712,15 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 */
 	@Override
 	public MetadataFieldRefer initIndexFieldRefer() {
-		return super.initIndexFieldRefer();
+		MetadataFieldRefer refer = super.initIndexFieldRefer();
+		refer.map(Index.FIELD_SCHEMA, "SCHEMA_NAME");
+		refer.map(Index.FIELD_TYPE, "INDEX_TYPE");
+		refer.map(Index.FIELD_PRIMARY_CHECK, "CONSTRAINT");
+		refer.map(Index.FIELD_PRIMARY_CHECK_VALUE, "PRIMARY KEY");
+		refer.map(Index.FIELD_ORDER_ASC_CHECK, "ASCENDING_ORDER");
+		refer.map(Index.FIELD_ORDER_ASC_CHECK_VALUE, "TRUE");
+		refer.map(Index.FIELD_POSITION, "POSITION");
+		return refer;
 	}
 	/**
 	 * index[结果集封装]<br/>

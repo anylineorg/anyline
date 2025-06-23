@@ -2141,7 +2141,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         runs.add(run);
         StringBuilder builder = run.getBuilder();
         //需要跨schema查询
-        builder.append("SELECT M.OWNER AS TABLE_SCHEMA, M.OBJECT_NAME AS TABLE_NAME, M.OBJECT_TYPE AS TABLE_TYPE, M.CREATED AS CREATE_TIME, M.LAST_DDL_TIME AS UPDATE_TIME, M.TEMPORARY AS IS_TEMPORARY, F.COMMENTS, M.STATUS\n");
+        builder.append("SELECT M.OWNER, M.OBJECT_NAME AS TABLE_NAME, M.OBJECT_TYPE AS TABLE_TYPE, M.CREATED AS CREATE_TIME, M.LAST_DDL_TIME AS UPDATE_TIME, M.TEMPORARY AS IS_TEMPORARY, F.COMMENTS, M.STATUS\n");
         builder.append("FROM ALL_OBJECTS M LEFT JOIN ALL_TAB_COMMENTS F \n");
         builder.append("ON M.OBJECT_NAME = F.TABLE_NAME  AND M.OWNER = F.OWNER AND M.object_type = F.TABLE_TYPE \n");
         configs.and("M.OWNER", query.getSchemaName());
@@ -2165,7 +2165,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         MetadataFieldRefer refer = new MetadataFieldRefer(Table.class);
         refer.map(Table.FIELD_NAME, "TABLE_NAME");
         refer.map(Table.FIELD_TYPE, "TABLE_TYPE");
-        refer.map(Table.FIELD_SCHEMA, "TABLE_SCHEMA");
+        refer.map(Table.FIELD_SCHEMA, "OWNER");
         refer.map(Table.FIELD_COMMENT, "COMMENTS");
         refer.map(Table.FIELD_CREATE_TIME, "CREATE_TIME");
         refer.map(Table.FIELD_UPDATE_TIME, "UPDATE_TIME");
@@ -2185,10 +2185,11 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         List<Run> runs = new ArrayList<>();
         Run run = new SimpleRun(runtime);
         runs.add(run);
+        MetadataFieldRefer refer = refer(runtime, Table.class);
         StringBuilder builder = run.getBuilder();
         ConfigStore configs = run.getConfigs();
         builder.append("SELECT * FROM ALL_TAB_COMMENTS M");
-        configs.and("M.OWNER", query.getSchemaName());
+        configs.and("M." + refer.map(Table.FIELD_SCHEMA), query.getSchemaName());
         configs.and(Compare.LIKE_SIMPLE,"M.TABLE_NAME", query.getName());
         return runs;
     }
@@ -2788,9 +2789,10 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         if(!metadata) {
             Run run = buildQueryColumnsBody(runtime, configs);
             runs.add(run);
-            configs.and("M.OWNER", query.getSchemaName());
+            MetadataFieldRefer refer = refer(runtime, Table.class);
+            configs.and("M." + refer.map(Table.FIELD_SCHEMA), query.getSchemaName());
             configs.and(Compare.LIKE_SIMPLE, "M.TABLE_NAME", query.getTableName());
-            run.setOrders("M.OWNER", "M.TABLE_NAME", "M.COLUMN_ID");
+            run.setOrders("M."+ refer.map(Table.FIELD_SCHEMA), "M.TABLE_NAME", "M.COLUMN_ID");
             run.setPageNavi(configs.getPageNavi());
 
         }
@@ -2811,9 +2813,10 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         List<Run> runs = new ArrayList<>();
         Run run = buildQueryColumnsBody(runtime, configs);
         runs.add(run);
-        configs.and("M.OWNER", schema);
+        MetadataFieldRefer refer = refer(runtime, Table.class);
+        configs.and("M." + refer.map(Table.FIELD_SCHEMA), schema);
         configs.in("M.TABLE_NAME", Table.names(tables));
-        run.setOrders("M.OWNER", "M.TABLE_NAME", "M.COLUMN_ID");
+        run.setOrders("M." + refer.map(Table.FIELD_SCHEMA), "M.TABLE_NAME", "M.COLUMN_ID");
         return runs;
     }
 
@@ -3267,14 +3270,13 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public List<Run> buildQueryIndexesRun(DataRuntime runtime, boolean greedy, Index query) {
-        Table table = query.getTable();
-        String name = query.getName();
         List<Run> runs = new ArrayList<>();
         Run run = buildQueryIndexBody(runtime);
         runs.add(run);
         ConfigStore configs = run.getConfigs();
-        configs.and("M.INDEX_OWNER", query.getSchemaName());
-        configs.and(Compare.LIKE_SIMPLE,"M.TABLE_NAME", query.getTableName());
+        MetadataFieldRefer refer = refer(runtime, Index.class);
+        configs.and("M." + refer.map(Index.FIELD_SCHEMA), query.getSchemaName());
+        configs.and(Compare.LIKE_SIMPLE,"M." +  refer.map(Index.FIELD_TABLE), query.getTableName());
         configs.and(Compare.LIKE_SIMPLE,"M.INDEX_NAME", query.getName());
         return runs;
     }
@@ -3286,11 +3288,12 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         runs.add(run);
         ConfigStore configs = run.getConfigs();
         Table table = null;
+        MetadataFieldRefer refer = refer(runtime, Index.class);
         if(null != tables && !tables.isEmpty()) {
             table = tables.iterator().next();
-            configs.and("M.INDEX_OWNER", table.getSchemaName());
+            configs.and("M." + refer.map(Index.FIELD_SCHEMA), table.getSchemaName());
         }
-        configs.in("M.TABLE_NAME", Table.names(tables));
+        configs.in("M." + refer.map(Index.FIELD_TABLE), Table.names(tables));
         return runs;
     }
     protected Run buildQueryIndexBody(DataRuntime runtime) {

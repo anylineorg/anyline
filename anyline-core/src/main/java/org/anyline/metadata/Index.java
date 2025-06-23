@@ -272,6 +272,8 @@ public class Index<M extends Index> extends TableAffiliation<M> implements Seria
     public static final String FIELD_APPROXIMATE_CHECK_VALUE       = "APPROXIMATE_CHECK_VALUE";
     public static final String FIELD_POSITION                      = "POSITION";
     public static final String FIELD_ORDER                         = "ORDER";
+    public static final String FIELD_ORDER_ASC_CHECK               = "FIELD_ORDER_ASC_CHECK";
+    public static final String FIELD_ORDER_ASC_CHECK_VALUE         = "FIELD_ORDER_ASC_CHECK_VALUE";
     public static final String FIELD_UNIQUE                        = "UNIQUE";
     public static final String FIELD_UNIQUE_CHECK                  = "UNIQUE_CHECK";
     public static final String FIELD_UNIQUE_CHECK_VALUE            = "UNIQUE_CHECK_VALUE";
