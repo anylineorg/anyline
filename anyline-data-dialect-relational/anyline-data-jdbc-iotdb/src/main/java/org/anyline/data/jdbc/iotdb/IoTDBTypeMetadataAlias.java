@@ -54,6 +54,7 @@ public enum IoTDBTypeMetadataAlias implements TypeMetadataAlias {
 	BYTEA                         ("BYTEA"                          ,StandardTypeMetadata.NONE       ,  -1,  -1,  -1,  -1,  -1,  -1),
 	CHAR                          ("CHAR"                           ,StandardTypeMetadata.TEXT       , null       , null            , "CHARACTER_MAXIMUM_LENGTH" , null                 , null            ,   1,   1,   1,  -1,  -1,  -1),
 	CHARACTER                     ("CHARACTER"                      ,StandardTypeMetadata.TEXT       , null       , null            , "CHARACTER_MAXIMUM_LENGTH" , null                 , null            ,   1,   1,   1,  -1,  -1,  -1),
+	CHARACTER_VARYING             ("CHARACTER VARYING"              ,StandardTypeMetadata.VARCHAR    , "VARCHAR"  , "VARCHAR({L})"  , null                       , null                 , null            ,   0,   1,   1,  -1,  -1,  -1),
 	CID                           ("CID"                            ,StandardTypeMetadata.NONE       ,  -1,  -1,  -1,  -1,  -1,  -1),
 	CIDR                          ("CIDR"                           ,StandardTypeMetadata.NONE       ,  -1,  -1,  -1,  -1,  -1,  -1),
 	CIRCLE                        ("CIRCLE"                         ,StandardTypeMetadata.NONE       ,  -1,  -1,  -1,  -1,  -1,  -1),

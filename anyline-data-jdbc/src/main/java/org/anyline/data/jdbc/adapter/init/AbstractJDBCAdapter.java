@@ -3748,11 +3748,15 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         String def = getString(row, refer, Column.FIELD_DEFAULT_VALUE, meta.getDefaultValue()+"");
         def = def.trim();//oracle 会取出\t\n
         if(BasicUtil.isNotEmpty(def)) {
-            while(def.startsWith("(") && def.endsWith(")")) {
-                def = def.substring(1, def.length()-1);
-            }
-            while(def.startsWith("'") && def.endsWith("'")) {
-                def = def.substring(1, def.length()-1);
+            if("NULL".equalsIgnoreCase(def)){
+                def = null;
+            }else {
+                while (def.startsWith("(") && def.endsWith(")")) {
+                    def = def.substring(1, def.length() - 1);
+                }
+                while (def.startsWith("'") && def.endsWith("'")) {
+                    def = def.substring(1, def.length() - 1);
+                }
             }
             meta.setDefaultValue(def);
         }

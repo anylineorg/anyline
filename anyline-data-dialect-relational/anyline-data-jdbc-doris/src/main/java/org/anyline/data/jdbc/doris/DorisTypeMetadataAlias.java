@@ -65,6 +65,7 @@ public enum DorisTypeMetadataAlias implements TypeMetadataAlias {
 	BYTE                          ("BYTE"                           ,StandardTypeMetadata.NONE        ,  -1,  -1,  -1,  -1,  -1,  -1),
 	BYTEA                         ("BYTEA"                          ,StandardTypeMetadata.NONE        ,  -1,  -1,  -1,  -1,  -1,  -1),
 	CHARACTER                     ("CHARACTER"                      ,StandardTypeMetadata.VARCHAR     , null       , null            , "CHARACTER_MAXIMUM_LENGTH" , null                 , null            ,   0,   1,   1,  -1,  -1,  -1),
+	CHARACTER_VARYING             ("CHARACTER VARYING"              ,StandardTypeMetadata.VARCHAR     , "VARCHAR"  , "VARCHAR({L})"  , null                       , null                 , null            ,   0,   1,   1,  -1,  -1,  -1),
 	CID                           ("CID"                            ,StandardTypeMetadata.NONE        ,  -1,  -1,  -1,  -1,  -1,  -1),
 	CIDR                          ("CIDR"                           ,StandardTypeMetadata.NONE        ,  -1,  -1,  -1,  -1,  -1,  -1),
 	CIRCLE                        ("CIRCLE"                         ,StandardTypeMetadata.NONE        ,  -1,  -1,  -1,  -1,  -1,  -1),

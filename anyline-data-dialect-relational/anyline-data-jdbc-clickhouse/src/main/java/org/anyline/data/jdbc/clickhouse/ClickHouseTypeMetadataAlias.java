@@ -86,6 +86,7 @@ public enum ClickHouseTypeMetadataAlias implements TypeMetadataAlias {
 	BYTEA                         ("BYTEA"                          ,StandardTypeMetadata.STRING                    , "String"          , "String"              , null   , null   , null   ,   0,   1,   1,  -1,  -1,  -1),
 	CHAR                          ("CHAR"                           ,StandardTypeMetadata.STRING                    , "String"          , "String"              , null   , null   , null   ,   1,   1,   1,  -1,  -1,  -1),
 	CHARACTER                     ("CHARACTER"                      ,StandardTypeMetadata.VARCHAR                   ,   0,   1,   1,  -1,  -1,  -1),
+	CHARACTER_VARYING             ("CHARACTER VARYING"              ,StandardTypeMetadata.VARCHAR                   , "VARCHAR"         , "VARCHAR({L})"        , null   , null   , null   ,   0,   1,   1,  -1,  -1,  -1),
 	CID                           ("CID"                            ,StandardTypeMetadata.NONE                      ,  -1,  -1,  -1,  -1,  -1,  -1),
 	CIDR                          ("CIDR"                           ,StandardTypeMetadata.NONE                      ,  -1,  -1,  -1,  -1,  -1,  -1),
 	CIRCLE                        ("CIRCLE"                         ,StandardTypeMetadata.NONE                      ,  -1,  -1,  -1,  -1,  -1,  -1),
