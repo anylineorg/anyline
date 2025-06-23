@@ -28,14 +28,14 @@ public enum Compare {
     NONE(-1, null, null, null) {
         @Override
         public int valueCount() {
-            return 1;
+            return 0;
         }
     },
     //根据参数格式判断
     AUTO(0, null, null, null) {
         @Override
         public int valueCount() {
-            return 1;
+            return 0;
         }
     },
     EQUAL(10, "等于","eq"," = ? ") {

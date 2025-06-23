@@ -150,6 +150,7 @@ public class DefaultAutoCondition extends AbstractCondition implements AutoCondi
 		StringBuilder builder = new StringBuilder();
 		String delimiterFr = "";
 		String delimiterTo = "";
+
 		boolean support = true;
 		DriverAdapter adapter = null;
 		if (null != runtime) {
@@ -158,6 +159,20 @@ public class DefaultAutoCondition extends AbstractCondition implements AutoCondi
 		if(null != adapter) {
 			delimiterFr = adapter.getDelimiterFr();
 			delimiterTo = adapter.getDelimiterTo();
+		}
+
+		if(compare == Compare.AUTO) {
+			if(val instanceof Collection) {
+				Collection list = (Collection) val;
+				if(list.size() > 1) {
+					compare = Compare.IN;
+				}
+			}else if(val.getClass().isArray() && Array.getLength(val) > 1) {
+				compare = Compare.IN;
+			}
+		}
+		if(compare == Compare.AUTO) {
+			compare = Compare.EQUAL;
 		}
 		boolean empty = compare.valueCount()>0 && BasicUtil.isEmpty(true, val);
 		int compareCode = compare.getCode();

@@ -109,13 +109,15 @@ public class DefaultService<E> implements AnylineService<E> {
             dest = BasicUtil.compress(dest);
         }
         conditions = BasicUtil.compress(conditions);
-        if(obj instanceof PageNavi) {
-            if(null == configs) {
-                configs = new DefaultConfigStore();
-                configs.setPageNavi((PageNavi) obj);
+        if(null != obj) {
+            if (obj instanceof PageNavi) {
+                if (null == configs) {
+                    configs = new DefaultConfigStore();
+                    configs.setPageNavi((PageNavi) obj);
+                }
+            } else {
+                configs = append(configs, obj);
             }
-        }else {
-            configs = append(configs, obj);
         }
         return queryFromDao(dest, configs, conditions);
     }
