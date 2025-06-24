@@ -116,6 +116,14 @@ public interface DriverAdapter {
     DriverActuator getActuator();
     boolean supportCatalog();
     boolean supportSchema();
+
+    /**
+     * 是否支持空表(没有列)
+     * @return false
+     */
+    default boolean supportEmptyTable(){
+        return false;
+    }
     default boolean supportPlaceholder() {
         return true;
     }

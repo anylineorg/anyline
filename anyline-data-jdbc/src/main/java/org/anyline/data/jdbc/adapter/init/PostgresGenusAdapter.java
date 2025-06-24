@@ -75,6 +75,10 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         return super.supportSchema();
     }
 
+    @Override
+    public boolean supportEmptyTable(){
+        return true;
+    }
     private static Map<Type, String> types = new HashMap<>();
     static {
         types.put(Table.TYPE.NORMAL, "BASE TABLE");

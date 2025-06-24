@@ -5372,7 +5372,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	public StringBuilder body(DataRuntime runtime, StringBuilder builder, Table meta) {
 		LinkedHashMap<String, Column> columns = meta.getColumns();
 		if(null == columns || columns.isEmpty()) {
-			if(BasicUtil.isEmpty(meta.getInherit())) {
+			if(BasicUtil.isEmpty(meta.getInherit()) && !supportEmptyTable()) {
 				//继承表没有列也需要() CREATE TABLE IF NOT EXISTS simple.public.tab_c2() INHERITS(simple.public.tab_parent)
 				//分区表不需要 CREATE TABLE IF NOT EXISTS simple.public.LOG2 PARTITION OF simple.public.log_master FOR VALUES FROM (100) TO (199)
 				return builder;
