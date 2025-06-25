@@ -2794,6 +2794,16 @@ public class SinoDBAdapter extends InformixGenusAdapter implements JDBCAdapter {
 
     /**
      * constraint[结果集封装]<br/>
+     * Constraint 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer initConstraintFieldRefer() {
+        return super.initConstraintFieldRefer();
+    }
+
+    /**
+     * constraint[结果集封装]<br/>
      * 根据查询结果集构造Constraint
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序

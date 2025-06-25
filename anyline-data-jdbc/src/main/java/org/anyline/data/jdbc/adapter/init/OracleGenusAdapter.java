@@ -3527,6 +3527,9 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
             };
 
             String schema = row.getString("OWNER");
+            if(BasicUtil.isEmpty(schema)){
+                schema = row.getString("SCHEMA_NAME");
+            }
             constraint.setSchema(schema);
             if(null == table) {
                 table = new Table(null, schema, row.getString("TABLE_NAME"));

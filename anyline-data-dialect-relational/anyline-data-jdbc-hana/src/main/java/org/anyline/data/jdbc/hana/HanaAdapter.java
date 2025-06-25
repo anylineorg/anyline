@@ -650,7 +650,7 @@ public class HanaAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public String mergeFinalQuery(DataRuntime runtime, Run run) {
-		return super.mergeFinalQuery(runtime, run);
+		return super.pageLimitOffset(runtime, run);
 	}
 
 	/**
@@ -1685,7 +1685,14 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 */
 	@Override
 	public MetadataFieldRefer initTableFieldRefer() {
-		return super.initTableFieldRefer();
+		MetadataFieldRefer refer = super.initTableFieldRefer();
+		refer.map(Table.FIELD_NAME, "TABLE_NAME");
+		refer.map(Table.FIELD_TYPE, "TABLE_TYPE");
+		refer.map(Table.FIELD_SCHEMA, "SCHEMA_NAME");
+		refer.map(Table.FIELD_COMMENT, "COMMENTS");
+		refer.map(Table.FIELD_CREATE_TIME, "CREATE_TIME");
+		refer.map(Table.FIELD_UPDATE_TIME, "UPDATE_TIME");
+		return refer;
 	}
 	/**
 	 * table[命令合成]<br/>
@@ -2294,7 +2301,18 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 */
 	@Override
 	public MetadataFieldRefer initColumnFieldRefer() {
-		return super.initColumnFieldRefer();
+		MetadataFieldRefer refer = super.initColumnFieldRefer();
+		refer.map(Column.FIELD_NAME, "COLUMN_NAME");
+		refer.map(Column.FIELD_SCHEMA, "SCHEMA_NAME");
+		refer.map(Column.FIELD_POSITION, "POSITION");
+		refer.map(Column.FIELD_TYPE, "DATA_TYPE_NAME");
+		refer.map(Column.FIELD_COMMENT, "COMMENTS");
+		refer.map(Column.FIELD_NULLABLE, "IS_NULLABLE");
+		refer.map(Column.FIELD_DEFAULT_VALUE, "DEFAULT_VALUE");
+		refer.map(Column.FIELD_LENGTH, "LENGTH");
+		refer.map(Column.FIELD_PRECISION, "LENGTH");
+		refer.map(Column.FIELD_SCALE, "SCALE");
+		return refer;
 	}
 	/**
 	 * column[结果集封装]<br/>
@@ -2865,7 +2883,27 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 */
 	@Override
 	public List<Run> buildQueryConstraintsRun(DataRuntime runtime, boolean greedy, Constraint query) {
-		return super.buildQueryConstraintsRun(runtime, greedy, query);
+		List<Run> runs = new ArrayList<>();
+		Run run = new SimpleRun(runtime);
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
+		ConfigStore configs = run.getConfigs();
+		builder.append("SELECT * FROM SYS.CONSTRAINTS");
+		configs.and("SCHEMA_NAME", query.getSchemaName());
+		configs.and(Compare.LIKE_SIMPLE, "TABLE_NAME", query.getTableName());
+		return runs;
+	}
+
+	/**
+	 * constraint[结果集封装]<br/>
+	 * Constraint 属性与结果集对应关系
+	 * @return MetadataFieldRefer
+	 */
+	@Override
+	public MetadataFieldRefer initConstraintFieldRefer() {
+		MetadataFieldRefer refer = super.initConstraintFieldRefer();
+		refer.map(Constraint.FIELD_SCHEMA, "SCHEMA_NAME");
+		return refer;
 	}
 
 	/**
