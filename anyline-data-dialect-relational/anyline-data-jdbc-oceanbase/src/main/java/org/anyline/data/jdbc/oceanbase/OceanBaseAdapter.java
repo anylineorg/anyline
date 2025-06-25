@@ -1613,7 +1613,6 @@ public class OceanBaseAdapter extends MySQLGenusAdapter {
 	 * @param product 上一步查询结果
 	 * @param set 查询结果集
 	 * @return product
-	 * @throws Exception 异常
 	 */
 	@Override
 	public String product(DataRuntime runtime, int index, boolean create, String product, DataSet set) {
@@ -1627,7 +1626,6 @@ public class OceanBaseAdapter extends MySQLGenusAdapter {
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param product 上一步查询结果
 	 * @return product
-	 * @throws Exception 异常
 	 */
 	@Override
 	public String product(DataRuntime runtime, boolean create, String product) {
@@ -1642,7 +1640,6 @@ public class OceanBaseAdapter extends MySQLGenusAdapter {
 	 * @param version 上一步查询结果
 	 * @param set 查询结果集
 	 * @return version
-	 * @throws Exception 异常
 	 */
 	@Override
 	public String version(DataRuntime runtime, int index, boolean create, String version, DataSet set) {
@@ -1656,7 +1653,6 @@ public class OceanBaseAdapter extends MySQLGenusAdapter {
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param version 上一步查询结果
 	 * @return version
-	 * @throws Exception 异常
 	 */
 	@Override
 	public String version(DataRuntime runtime, boolean create, String version) {

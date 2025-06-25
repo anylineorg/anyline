@@ -1297,7 +1297,6 @@ public class PostgisAdapter extends PostgresGenusAdapter implements JDBCAdapter 
 	 * @param product 上一步查询结果
 	 * @param set 查询结果集
 	 * @return product
-	 * @throws Exception 异常
 	 */
 	@Override
 	public String product(DataRuntime runtime, int index, boolean create, String product, DataSet set) {
@@ -1311,7 +1310,6 @@ public class PostgisAdapter extends PostgresGenusAdapter implements JDBCAdapter 
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param product 上一步查询结果
 	 * @return product
-	 * @throws Exception 异常
 	 */
 	@Override
 	public String product(DataRuntime runtime, boolean create, String product) {
@@ -1326,7 +1324,6 @@ public class PostgisAdapter extends PostgresGenusAdapter implements JDBCAdapter 
 	 * @param version 上一步查询结果
 	 * @param set 查询结果集
 	 * @return version
-	 * @throws Exception 异常
 	 */
 	@Override
 	public String version(DataRuntime runtime, int index, boolean create, String version, DataSet set) {
@@ -1340,7 +1337,6 @@ public class PostgisAdapter extends PostgresGenusAdapter implements JDBCAdapter 
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param version 上一步查询结果
 	 * @return version
-	 * @throws Exception 异常
 	 */
 	@Override
 	public String version(DataRuntime runtime, boolean create, String version) {
@@ -2337,7 +2333,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * 列基础属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 上一步封装结果
-	 * @param query 查询条件 根据mdtadata属性
+	 * @param query 查询条件 根据metadata属性
 	 * @param row 系统表查询SQL结果集
 	 * @param <T> Column
 	 */

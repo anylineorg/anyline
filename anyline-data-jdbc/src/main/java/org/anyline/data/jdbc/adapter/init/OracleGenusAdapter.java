@@ -2966,7 +2966,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * tag[命令合成]<br/>
      * 查询表上的列
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param query 查询条件 根据mdtadata属性
+     * @param query 查询条件 根据metadata属性
      * @return runs
      */
     @Override
@@ -3515,6 +3515,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         if(null == previous) {
             previous = new LinkedHashMap<>();
         }
+        MetadataFieldRefer refer = refer(runtime, Constraint.class);
+        String schemaColumn = refer.map(Constraint.FIELD_SCHEMA);
         for(DataRow row:set) {
             String name = row.getString("CONSTRAINT_NAME");
             if(null == name) {
@@ -3524,12 +3526,9 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
             if(null == constraint && create) {
                 constraint = (T)new Constraint();
                 previous.put(name.toUpperCase(), constraint);
-            };
-
-            String schema = row.getString("OWNER");
-            if(BasicUtil.isEmpty(schema)){
-                schema = row.getString("SCHEMA_NAME");
             }
+
+            String schema = row.getString(schemaColumn);
             constraint.setSchema(schema);
             if(null == table) {
                 table = new Table(null, schema, row.getString("TABLE_NAME"));

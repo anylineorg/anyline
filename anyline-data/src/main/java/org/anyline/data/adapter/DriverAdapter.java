@@ -5348,7 +5348,7 @@ public interface DriverAdapter {
      * tag[命令合成]<br/>
      * 查询表上的列
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param query 查询条件 根据mdtadata属性
+     * @param query 查询条件 根据metadata属性
      * @return runs
      */
     List<Run> buildQueryTagsRun(DataRuntime runtime, boolean greedy, Tag query) throws Exception;

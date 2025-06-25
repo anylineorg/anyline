@@ -1303,7 +1303,6 @@ public class HanaAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @param product 上一步查询结果
 	 * @param set 查询结果集
 	 * @return product
-	 * @throws Exception 异常
 	 */
 	@Override
 	public String product(DataRuntime runtime, int index, boolean create, String product, DataSet set) {
@@ -1317,7 +1316,6 @@ public class HanaAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param product 上一步查询结果
 	 * @return product
-	 * @throws Exception 异常
 	 */
 	@Override
 	public String product(DataRuntime runtime, boolean create, String product) {
@@ -1332,7 +1330,6 @@ public class HanaAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @param version 上一步查询结果
 	 * @param set 查询结果集
 	 * @return version
-	 * @throws Exception 异常
 	 */
 	@Override
 	public String version(DataRuntime runtime, int index, boolean create, String version, DataSet set) {
@@ -1346,7 +1343,6 @@ public class HanaAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param version 上一步查询结果
 	 * @return version
-	 * @throws Exception 异常
 	 */
 	@Override
 	public String version(DataRuntime runtime, boolean create, String version) {
@@ -1539,7 +1535,14 @@ public class HanaAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public List<Run> buildQuerySchemasRun(DataRuntime runtime, boolean greedy, Schema query) throws Exception {
-		return super.buildQuerySchemasRun(runtime, greedy, query);
+		List<Run> runs = new ArrayList<>();
+		Run run = new SimpleRun(runtime);
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
+		builder.append("SELECT * FROM SYS.SCHEMAS");
+		ConfigStore configs = run.getConfigs();
+		configs.and(Compare.LIKE_SIMPLE,"SCHEMA_NAME", query.getName());
+		return runs;
 	}
 
 	/**
@@ -1549,7 +1552,9 @@ public class HanaAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public MetadataFieldRefer initSchemaFieldRefer() {
-		return super.initSchemaFieldRefer();
+		MetadataFieldRefer refer = super.initSchemaFieldRefer();
+		refer.map(Schema.FIELD_NAME, "SCHEMA_NAME");
+		return refer;
 	}
 	/**
 	 * schema[结果集封装]<br/>
@@ -2388,7 +2393,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * 列基础属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 上一步封装结果
-	 * @param query 查询条件 根据mdtadata属性
+	 * @param query 查询条件 根据metadata属性
 	 * @param row 系统表查询SQL结果集
 	 * @param <T> Column
 	 */
@@ -2574,7 +2579,9 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 */
 	@Override
 	public MetadataFieldRefer initPrimaryKeyFieldRefer() {
-		return super.initPrimaryKeyFieldRefer();
+		MetadataFieldRefer refer = super.initPrimaryKeyFieldRefer();
+		refer.map(PrimaryKey.FIELD_SCHEMA, "SCHEMA_NAME");
+		return refer;
 	}
 	/**
 	 * primary[结构集封装]<br/>
