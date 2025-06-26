@@ -2361,6 +2361,49 @@ public interface ConfigStore extends Cloneable{
 	default boolean IS_CHECK_ALL_UPDATE_COLUMN() {
 		return getBoolean("IS_CHECK_ALL_UPDATE_COLUMN", ConfigTable.IS_CHECK_ALL_UPDATE_COLUMN);
 	}
+
+	default boolean IS_AUTO_OMIT() {
+		return getBoolean("IS_AUTO_OMIT", ConfigTable.IS_AUTO_OMIT);
+	}
+	default String OMIT_COLUMN() {
+		return getString("OMIT_COLUMN", ConfigTable.OMIT_COLUMN);
+	}
+	default ConfigStore OMIT_COLUMN(String value) {
+		return config("OMIT_COLUMN", value);
+	}
+
+
+	default String OMIT_KEYWORD() {
+		return getString("OMIT_KEYWORD", ConfigTable.OMIT_KEYWORD);
+	}
+	default ConfigStore OMIT_KEYWORD(String value) {
+		return config("OMIT_KEYWORD", value);
+	}
+
+	default String OMIT_ELLIPSIS() {
+		return getString("OMIT_ELLIPSIS", ConfigTable.OMIT_ELLIPSIS);
+	}
+
+	default int OMIT_RIGHT() {
+		return getInt("OMIT_RIGHT", ConfigTable.OMIT_RIGHT);
+	}
+	default ConfigStore OMIT_RIGHT(int value) {
+		return config("OMIT_RIGHT", value);
+	}
+
+	default int OMIT_LEFT() {
+		return getInt("OMIT_LEFT", ConfigTable.OMIT_LEFT);
+	}
+	default ConfigStore OMIT_LEFT(int value) {
+		return config("OMIT_LEFT", value);
+	}
+
+	default int OMIT_VOL() {
+		return getInt("OMIT_VOL", ConfigTable.OMIT_VOL);
+	}
+	default ConfigStore OMIT_VOL(int value) {
+		return config("OMIT_VOL", value);
+	}
 	/**
 	 * 关闭所有SQL日志
 	 * @return ConfigStore
@@ -2699,6 +2742,48 @@ public interface ConfigStore extends Cloneable{
 			return configs.IS_CHECK_ALL_UPDATE_COLUMN();
 		}
 		return ConfigTable.IS_CHECK_ALL_UPDATE_COLUMN;
+	}
+	static boolean IS_AUTO_OMIT(ConfigStore configs) {
+		if(null != configs) {
+			return configs.IS_AUTO_OMIT();
+		}
+		return ConfigTable.IS_AUTO_OMIT;
+	}
+	static String OMIT_COLUMN(ConfigStore configs) {
+		if(null != configs) {
+			return configs.OMIT_COLUMN();
+		}
+		return ConfigTable.OMIT_COLUMN;
+	}
+	static String OMIT_KEYWORD(ConfigStore configs) {
+		if(null != configs) {
+			return configs.OMIT_KEYWORD();
+		}
+		return ConfigTable.OMIT_KEYWORD;
+	}
+	static String OMIT_ELLIPSIS(ConfigStore configs) {
+		if(null != configs) {
+			return configs.OMIT_ELLIPSIS();
+		}
+		return ConfigTable.OMIT_ELLIPSIS;
+	}
+	static int OMIT_RIGHT(ConfigStore configs) {
+		if(null != configs) {
+			return configs.OMIT_RIGHT();
+		}
+		return ConfigTable.OMIT_RIGHT;
+	}
+	static int OMIT_LEFT(ConfigStore configs) {
+		if(null != configs) {
+			return configs.OMIT_LEFT();
+		}
+		return ConfigTable.OMIT_LEFT;
+	}
+	static int OMIT_VOL(ConfigStore configs) {
+		if(null != configs) {
+			return configs.OMIT_VOL();
+		}
+		return ConfigTable.OMIT_VOL;
 	}
 } 
  

@@ -4359,6 +4359,50 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
         return this;
     }
 
+
+    public DataSet omit(int left, int right, String ... columns) {
+        return omit("*", left, right, columns);
+    }
+
+    /**
+     *
+     * @param columns 需要执行的列，如果不指定则执行全部列
+     * @param vol 每个段最大长度,超出 vol 的拆成多段(vol大于1时有效)
+     * @param left 每段左侧保留原文长度
+     * @param right 每段右侧保留原文长度
+     * @param ellipsis 省略符号
+     * @return DataSet
+     */
+    public DataSet omit(String ellipsis, int vol, int left, int right, String ... columns) {
+        for(DataRow row:rows){
+            row.omit(ellipsis, vol, left, right, columns);
+        }
+        return this;
+    }
+    public DataSet omit(int vol, int left, int right, String ... columns) {
+        return omit("*", vol, left, right, columns);
+    }
+    public DataSet omit(String ellipsis, int left, int right, String ... columns) {
+        return omit("*", left, right, columns);
+    }
+    public boolean equals(DataRow row, String ... columns) {
+        if(null == row || null == columns || columns.length == 0) {
+            return false;
+        }
+        for(String column:columns) {
+            try {
+                String v1 = getString(column);
+                String v2 = row.getString(column);
+                if(!BasicUtil.equals(v1, v2)) {
+                    return false;
+                }
+            }catch (Exception ignore){
+                return false;
+            }
+        }
+        return true;
+    }
+
     /**
      * NULL &gt; ""
      *

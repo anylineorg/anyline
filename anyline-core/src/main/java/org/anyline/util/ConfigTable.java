@@ -189,6 +189,13 @@ public class ConfigTable {
 	public static int PRIMARY_GENERATOR_TIME_SUFFIX_LENGTH				= 3				;   // 生成主键TIME/TIMESTAMP后缀随机数长度
 	public static String SNOWFLAKE_TWEPOCH								= "2000-01-01"	;	// 雪花算法开始日期
 	public static String GENERATOR_TABLES								= "*"			;   // 主键生成器适用的表
+	public static boolean IS_AUTO_OMIT									= false			;	// 需要脱敏的列 多个以;分隔 注意不是,
+	public static String OMIT_COLUMN									= null			;	// 需要脱敏的列可以是正则 多个以;分隔 注意不是,
+	public static String OMIT_KEYWORD									= null			;	// 需要脱敏的列正则 多个以;分隔
+	public static int OMIT_RIGHT										= 1				;	// 脱敏值 右侧保留位数
+	public static int OMIT_LEFT											= 1				;	// 脱敏值 左侧保留位数
+	public static int OMIT_VOL											= 0				;	// 脱敏值 先拆成不大于VOL长度的串 VOL大于1时有效
+	public static String OMIT_ELLIPSIS									= "*"			;	// 脱敏值 显示符号
 	public final static GeneratorConfig GENERATOR 						= new GeneratorConfig();
 	static{
 		prepare();
@@ -1219,6 +1226,27 @@ public class ConfigTable {
 	}
 	public String GENERATOR_TABLES() {
 		return GENERATOR_TABLES;
+	}
+	public String OMIT_COLUMN() {
+		return OMIT_COLUMN;
+	}
+	public Boolean IS_AUTO_OMIT() {
+		return IS_AUTO_OMIT;
+	}
+	public String OMIT_KEYWORD() {
+		return OMIT_KEYWORD;
+	}
+	public String OMIT_ELLIPSIS() {
+		return OMIT_ELLIPSIS;
+	}
+	public int OMIT_RIGHT() {
+		return OMIT_RIGHT;
+	}
+	public int OMIT_LEFT() {
+		return OMIT_LEFT;
+	}
+	public int OMIT_VOL() {
+		return OMIT_VOL;
 	}
 	public int IGNORE_GRAPH_QUERY_RESULT_TOP_KEY() {
 		return IGNORE_GRAPH_QUERY_RESULT_TOP_KEY;

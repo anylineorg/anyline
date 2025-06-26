@@ -46,6 +46,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.regex.Pattern;
 
 public class DataRow extends LinkedHashMap<String, Object> implements Serializable, AnyData<DataRow> {
     private static final long serialVersionUID = -2098827041540802313L;
@@ -2585,6 +2586,132 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         }
         return this;
     }
+
+    public DataRow omit(int left, int right, String ... columns) {
+        return omit("*", left, right, columns);
+    }
+
+    /**
+     *
+     * @param columns 需要执行的列，如果不指定则执行全部列
+     * @param vol 每个段最大长度,超出 vol 的拆成多段(vol大于1时有效)
+     * @param left 每段左侧保留原文长度
+     * @param right 每段右侧保留原文长度
+     * @param ellipsis 省略符号
+     * @return DataRow
+     */
+    public DataRow omit(String ellipsis, int vol, int left, int right, String ... columns) {
+        List<String> keys = null;
+        //指定列
+        if(null == columns || columns.length == 0){
+            //检测是否包含正则
+            boolean regex = false;
+            for(String column:columns){
+                if(!regex){
+                    if(column.contains(".") || column.contains("\\") || column.contains("?") || column.contains("*") || column.contains("{")){
+                        regex = true;
+                        break;
+                    }
+                }
+            }
+            //如果包含正则，需要把每个正则与每列匹配
+            if(regex){
+                List<String> ks = keys();
+                for(String column:columns){
+                    Pattern pattern = Pattern.compile(column);
+                    for(String k:ks){
+                        Object value = get(k);
+                        if(value instanceof String){
+                            if(pattern.matcher(k).find()) {
+                                String str = (String) value;
+                                this.mapPut(k, BasicUtil.omit(str, vol, left, right, ellipsis));
+                            }
+                        }
+                    }
+                }
+                return this;
+            }else{
+                keys = BeanUtil.array2list(columns);
+            }
+        }
+        if(null == keys) {
+            keys = keys();
+        }
+        for(String key:keys){
+            Object value = get(key);
+            if(value instanceof String){
+                String str = (String)value;
+                this.mapPut(key, BasicUtil.omit(str, vol, left, right, ellipsis));
+            }
+        }
+        return this;
+    }
+
+
+    /**
+     * 内容脱敏
+     * @param columns 需要执行的列，如果不指定则执行全部列
+     * @param vol 每个段最大长度,超出 vol 的拆成多段(vol大于1时有效)
+     * @param left 每段左侧保留原文长度
+     * @param right 每段右侧保留原文长度
+     * @param ellipsis 省略符号
+     * @param keyword 被替换的关键字
+     * @return DataRow
+     */
+    public DataRow omit(String ellipsis, String keyword, int vol, int left, int right, String ... columns) {
+        List<String> keys = null;
+        //指定列
+        if(null == columns || columns.length == 0){
+            //检测是否包含正则
+            boolean regex = false;
+            for(String column:columns){
+                if(!regex){
+                    if(column.contains(".") || column.contains("\\") || column.contains("?") || column.contains("*") || column.contains("{")){
+                        regex = true;
+                        break;
+                    }
+                }
+            }
+            //如果包含正则，需要把每个正则与每列匹配
+            if(regex){
+                List<String> ks = keys();
+                for(String column:columns){
+                    Pattern pattern = Pattern.compile(column);
+                    for(String k:ks){
+                        Object val = get(k);
+                        if(val instanceof String){
+                            if(pattern.matcher(k).find()) {
+                                String str = (String) val;
+                                val = str.replaceAll(keyword, ellipsis);
+                                this.mapPut(k, val);
+                            }
+                        }
+                    }
+                }
+                return this;
+            }else{
+                keys = BeanUtil.array2list(columns);
+            }
+        }
+        if(null == keys) {
+            keys = keys();
+        }
+        for(String key:keys){
+            Object val = get(key);
+            if(val instanceof String){
+                String str = (String)val;
+                val = str.replaceAll(keyword, ellipsis);
+                this.mapPut(key, val);
+            }
+        }
+        return this;
+    }
+    public DataRow omit(int vol, int left, int right, String ... columns) {
+        return omit("*", vol, left, right, columns);
+    }
+    public DataRow omit(String ellipsis, int left, int right, String ... columns) {
+        return omit(ellipsis, 0, left, right, columns);
+    } 
     public boolean equals(DataRow row, String ... columns) {
         if(null == row || null == columns || columns.length == 0) {
             return false;

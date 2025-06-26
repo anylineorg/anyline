@@ -400,6 +400,21 @@ public class JDBCUtil {
                 log.error("[结果集封装][result:fail][msg:{}]", e.toString());
             }
         }
+        if(!system && ConfigStore.IS_AUTO_OMIT(configs)){
+            String omit_column = ConfigStore.OMIT_COLUMN(configs);
+            String omit_keyword = ConfigStore.OMIT_KEYWORD(configs);
+            String omit_ellipsis = ConfigStore.OMIT_ELLIPSIS(configs);
+            int omit_left = ConfigStore.OMIT_LEFT(configs);
+            int omit_right = ConfigStore.OMIT_RIGHT(configs);
+            int omit_vol = ConfigStore.OMIT_VOL(configs);
+            if(null != omit_column){
+                String[] omit_columns = omit_column.split(";");
+                row.omit(omit_ellipsis, omit_vol, omit_left, omit_right, omit_columns);
+                if(null != omit_keyword){
+                    row.omit(omit_ellipsis, omit_keyword, omit_vol, omit_left, omit_right, omit_columns);
+                }
+            }
+        }
         return row;
     }
 
