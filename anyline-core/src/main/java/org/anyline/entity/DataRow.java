@@ -2601,42 +2601,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
      * @return DataRow
      */
     public DataRow omit(String ellipsis, int vol, int left, int right, String ... columns) {
-        List<String> keys = null;
-        //指定列
-        if(null == columns || columns.length == 0){
-            //检测是否包含正则
-            boolean regex = false;
-            for(String column:columns){
-                if(!regex){
-                    if(column.contains(".") || column.contains("\\") || column.contains("?") || column.contains("*") || column.contains("{")){
-                        regex = true;
-                        break;
-                    }
-                }
-            }
-            //如果包含正则，需要把每个正则与每列匹配
-            if(regex){
-                List<String> ks = keys();
-                for(String column:columns){
-                    Pattern pattern = Pattern.compile(column);
-                    for(String k:ks){
-                        Object value = get(k);
-                        if(value instanceof String){
-                            if(pattern.matcher(k).find()) {
-                                String str = (String) value;
-                                this.mapPut(k, BasicUtil.omit(str, vol, left, right, ellipsis));
-                            }
-                        }
-                    }
-                }
-                return this;
-            }else{
-                keys = BeanUtil.array2list(columns);
-            }
-        }
-        if(null == keys) {
-            keys = keys();
-        }
+        List<String> keys = columns(columns);
         for(String key:keys){
             Object value = get(key);
             if(value instanceof String){
@@ -2647,65 +2612,6 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return this;
     }
 
-
-    /**
-     * 内容脱敏
-     * @param columns 需要执行的列，如果不指定则执行全部列
-     * @param vol 每个段最大长度,超出 vol 的拆成多段(vol大于1时有效)
-     * @param left 每段左侧保留原文长度
-     * @param right 每段右侧保留原文长度
-     * @param ellipsis 省略符号
-     * @param keyword 被替换的关键字
-     * @return DataRow
-     */
-    public DataRow omit(String ellipsis, String keyword, int vol, int left, int right, String ... columns) {
-        List<String> keys = null;
-        //指定列
-        if(null == columns || columns.length == 0){
-            //检测是否包含正则
-            boolean regex = false;
-            for(String column:columns){
-                if(!regex){
-                    if(column.contains(".") || column.contains("\\") || column.contains("?") || column.contains("*") || column.contains("{")){
-                        regex = true;
-                        break;
-                    }
-                }
-            }
-            //如果包含正则，需要把每个正则与每列匹配
-            if(regex){
-                List<String> ks = keys();
-                for(String column:columns){
-                    Pattern pattern = Pattern.compile(column);
-                    for(String k:ks){
-                        Object val = get(k);
-                        if(val instanceof String){
-                            if(pattern.matcher(k).find()) {
-                                String str = (String) val;
-                                val = str.replaceAll(keyword, ellipsis);
-                                this.mapPut(k, val);
-                            }
-                        }
-                    }
-                }
-                return this;
-            }else{
-                keys = BeanUtil.array2list(columns);
-            }
-        }
-        if(null == keys) {
-            keys = keys();
-        }
-        for(String key:keys){
-            Object val = get(key);
-            if(val instanceof String){
-                String str = (String)val;
-                val = str.replaceAll(keyword, ellipsis);
-                this.mapPut(key, val);
-            }
-        }
-        return this;
-    }
     public DataRow omit(int vol, int left, int right, String ... columns) {
         return omit("*", vol, left, right, columns);
     }
@@ -3190,12 +3096,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         if (null == data) {
             return this;
         }
-        if (null == keys || keys.length == 0) {
-            return copy(data, data.keys());
-        } else {
-            return copy(data, BeanUtil.array2list(keys));
-        }
-
+        return copy(data, data.columns(keys));
     }
     public DataRow copy(boolean regex, DataRow data, List<String> fixs, String... keys) {
         if (null == data || data.isEmpty()) {
@@ -3225,12 +3126,8 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     }
 
     public DataRow copyIfEmpty(DataRow copy, String... keys) {
-        List<String> cols = null;
-        if(null != keys && keys.length>0) {
-            cols = BeanUtil.array2list(keys);
-        }else{
-            cols = copy.keys();
-        }
+        List<String> cols = copy.columns(keys);
+
         for(String col:cols) {
             if(isEmpty(col)) {
                 put(col, copy.get(col));
@@ -3239,12 +3136,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return this;
     }
     public DataRow copyIfNull(DataRow copy, String... keys) {
-        List<String> cols = null;
-        if(null != keys && keys.length>0) {
-            cols = BeanUtil.array2list(keys);
-        }else{
-            cols = copy.keys();
-        }
+        List<String> cols = copy.columns(keys);
         for(String col:cols) {
             if(isNull(col)) {
                 put(col, copy.get(col));
@@ -3253,12 +3145,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return this;
     }
     public DataRow copyIfNotExists(DataRow copy, String... keys) {
-        List<String> cols = null;
-        if(null != keys && keys.length>0) {
-            cols = BeanUtil.array2list(keys);
-        }else{
-            cols = copy.keys();
-        }
+        List<String> cols = copy.columns(keys);
         for(String col:cols) {
             if(contains(col)) {
                 put(col, copy.get(col));
@@ -3673,12 +3560,8 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
      * @return DataRow
      */
     public DataRow replaceEmpty(String replace, String ... keys) {
-        List<String> ks = null;
-        if(null == keys || keys.length ==0) {
-            ks = keys();
-        }else{
-            ks = BeanUtil.array2list(keys);
-        }
+        List<String> ks = columns(keys);
+
         for(String key:ks) {
             if (isEmpty(key)) {
                 put(key, replace);
@@ -3694,12 +3577,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
      * @return DataRow
      */
     public DataRow replaceNull(String replace, String ... keys) {
-        List<String> ks = null;
-        if(null == keys || keys.length ==0) {
-            ks = keys();
-        }else{
-            ks = BeanUtil.array2list(keys);
-        }
+        List<String> ks = columns(keys);
         for(String key:ks) {
             if (null == get(key)) {
                 put(key, replace);
@@ -3709,12 +3587,8 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     }
 
     public DataRow replaces(String oldChar, String replace, String ... keys) {
-        List<String> ks = null;
-        if(null == keys || keys.length ==0) {
-            ks = keys();
-        }else{
-            ks = BeanUtil.array2list(keys);
-        }
+        List<String> ks = columns(keys);
+
         if (null == replace) {
             replace = "";
         }
@@ -3735,12 +3609,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         }
     }
     public DataRow replaceRegex(String regex, String replace, String ... keys) {
-        List<String> ks = null;
-        if(null == keys || keys.length ==0) {
-            ks = keys();
-        }else{
-            ks = BeanUtil.array2list(keys);
-        }
+        List<String> ks = columns(keys);
         if (null == replace) {
             replace = "";
         }
@@ -3753,6 +3622,54 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return this;
     }
 
+    public DataRow replaceAll(String regex, String replace, String ... keys) {
+        return replaceRegex(regex, replace, keys);
+    }
+
+    /**
+     * 检测匹配列
+     * @param columns 列或正则
+     * @return list
+     */
+    public List<String> columns(String ... columns){
+        List<String> list = null;
+        if(null == columns || columns.length == 0 ||
+                (columns.length == 1 && BasicUtil.isEmpty(columns[0]))
+        ){
+            list = keys();
+        }else {
+            //检测是否包含正则
+            boolean regex = false;
+            for(String column:columns){
+                if(!regex){
+                    if(column.contains(".") || column.contains("\\") || column.contains("?") || column.contains("*") || column.contains("{")){
+                        regex = true;
+                        break;
+                    }
+                }
+            }
+            //如果包含正则，需要把每个正则与每列匹配
+            if(regex){
+                list = new ArrayList<>();
+                List<String> ks = keys();
+                for(String column:columns){
+                    if(column.contains(";")){
+                        list.addAll(columns(column.split(";")));
+                    }else {
+                        Pattern pattern = Pattern.compile(column);
+                        for (String k : ks) {
+                            if (pattern.matcher(k).find()) {
+                                list.add(k);
+                            }
+                        }
+                    }
+                }
+            }else{
+                list = BeanUtil.array2list(columns);
+            }
+        }
+        return list;
+    }
     /**
      * 拼接value
      * @param keys keys
@@ -3906,12 +3823,8 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     }
 
     public DataRow convertString(String... keys) {
-        List<String> list = null;
-        if (null == keys || keys.length == 0) {
-            list = keys();
-        } else {
-            list = BeanUtil.array2list(keys);
-        }
+        List<String> list = columns(keys);
+
         for (String key : list) {
             String v = getString(key);
             if (null != v) {

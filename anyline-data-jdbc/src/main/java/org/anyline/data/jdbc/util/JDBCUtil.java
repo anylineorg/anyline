@@ -400,18 +400,39 @@ public class JDBCUtil {
                 log.error("[结果集封装][result:fail][msg:{}]", e.toString());
             }
         }
-        if(!system && ConfigStore.IS_AUTO_OMIT(configs)){
-            String omit_column = ConfigStore.OMIT_COLUMN(configs);
-            String omit_keyword = ConfigStore.OMIT_KEYWORD(configs);
-            String omit_ellipsis = ConfigStore.OMIT_ELLIPSIS(configs);
-            int omit_left = ConfigStore.OMIT_LEFT(configs);
-            int omit_right = ConfigStore.OMIT_RIGHT(configs);
-            int omit_vol = ConfigStore.OMIT_VOL(configs);
-            if(null != omit_column){
-                String[] omit_columns = omit_column.split(";");
-                row.omit(omit_ellipsis, omit_vol, omit_left, omit_right, omit_columns);
-                if(null != omit_keyword){
-                    row.omit(omit_ellipsis, omit_keyword, omit_vol, omit_left, omit_right, omit_columns);
+        if(!system){
+            boolean auto_mask_omit = ConfigStore.IS_AUTO_MASK_OMIT(configs);
+            String mask_omit_column = ConfigStore.MASK_OMIT_COLUMN(configs);
+            String mask_omit_ellipsis = ConfigStore.MASK_OMIT_ELLIPSIS(configs);
+            int mask_omit_left = ConfigStore.MASK_OMIT_LEFT(configs);
+            int mask_omit_right = ConfigStore.MASK_OMIT_RIGHT(configs);
+            int mask_omit_vol = ConfigStore.MASK_OMIT_VOL(configs);
+            boolean auto_mask_replace = ConfigStore.IS_AUTO_MASK_REPLACE(configs);
+            String mask_replace_column = ConfigStore.MASK_REPLACE_COLUMN(configs);
+            String mask_replace_regex = ConfigStore.MASK_REPLACE_REGEX(configs);
+            String mask_replace_replacement = ConfigStore.MASK_REPLACE_REPLACEMENT(configs);
+            if(auto_mask_omit) {
+                if (mask_omit_left >= 0 && mask_omit_right >= 0) {
+                    row.omit(mask_omit_ellipsis, mask_omit_vol, mask_omit_left, mask_omit_right, mask_omit_column);
+                }
+            }
+            if(auto_mask_replace) {
+                if (BasicUtil.isNotEmpty(mask_replace_regex)) {
+                    String[] mask_replace_regexps = mask_replace_regex.split(";");
+                    if (null == mask_replace_replacement) {
+                        mask_replace_replacement = "";
+                    }
+                    for (String regex : mask_replace_regexps) {
+                        String replacement = mask_replace_replacement;
+                        if (regex.contains(":")) {
+                            String[] tmps = regex.split(":");
+                            regex = tmps[0];
+                            if (tmps.length > 1) {
+                                replacement = tmps[1];
+                            }
+                        }
+                        row.replaceRegex(regex, replacement, mask_replace_column);
+                    }
                 }
             }
         }

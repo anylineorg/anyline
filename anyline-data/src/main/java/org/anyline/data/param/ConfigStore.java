@@ -2362,47 +2362,64 @@ public interface ConfigStore extends Cloneable{
 		return getBoolean("IS_CHECK_ALL_UPDATE_COLUMN", ConfigTable.IS_CHECK_ALL_UPDATE_COLUMN);
 	}
 
-	default boolean IS_AUTO_OMIT() {
-		return getBoolean("IS_AUTO_OMIT", ConfigTable.IS_AUTO_OMIT);
+	default boolean IS_AUTO_MASK_OMIT() {
+		return getBoolean("IS_AUTO_MASK_OMIT", ConfigTable.IS_AUTO_MASK_OMIT);
 	}
-	default String OMIT_COLUMN() {
-		return getString("OMIT_COLUMN", ConfigTable.OMIT_COLUMN);
+	default boolean IS_AUTO_MASK_REPLACE() {
+		return getBoolean("IS_AUTO_MASK_REPLACE", ConfigTable.IS_AUTO_MASK_REPLACE);
 	}
-	default ConfigStore OMIT_COLUMN(String value) {
-		return config("OMIT_COLUMN", value);
+	default String MASK_OMIT_COLUMN() {
+		return getString("MASK_OMIT_COLUMN", ConfigTable.MASK_OMIT_COLUMN);
 	}
-
-
-	default String OMIT_KEYWORD() {
-		return getString("OMIT_KEYWORD", ConfigTable.OMIT_KEYWORD);
-	}
-	default ConfigStore OMIT_KEYWORD(String value) {
-		return config("OMIT_KEYWORD", value);
+	default ConfigStore MASK_OMIT_COLUMN(String value) {
+		return config("MASK_OMIT_COLUMN", value);
 	}
 
-	default String OMIT_ELLIPSIS() {
-		return getString("OMIT_ELLIPSIS", ConfigTable.OMIT_ELLIPSIS);
+
+	default String MASK_REPLACE_COLUMN() {
+		return getString("MASK_REPLACE_COLUMN", ConfigTable.MASK_REPLACE_COLUMN);
+	}
+	default ConfigStore MASK_REPLACE_COLUMN(String value) {
+		return config("MASK_REPLACE_COLUMN", value);
 	}
 
-	default int OMIT_RIGHT() {
-		return getInt("OMIT_RIGHT", ConfigTable.OMIT_RIGHT);
+	default String MASK_REPLACE_REGEX() {
+		return getString("MASK_REPLACE_REGEX", ConfigTable.MASK_REPLACE_REGEX);
 	}
-	default ConfigStore OMIT_RIGHT(int value) {
-		return config("OMIT_RIGHT", value);
-	}
-
-	default int OMIT_LEFT() {
-		return getInt("OMIT_LEFT", ConfigTable.OMIT_LEFT);
-	}
-	default ConfigStore OMIT_LEFT(int value) {
-		return config("OMIT_LEFT", value);
+	default ConfigStore MASK_REPLACE_REGEX(String value) {
+		return config("MASK_REPLACE_REGEX", value);
 	}
 
-	default int OMIT_VOL() {
-		return getInt("OMIT_VOL", ConfigTable.OMIT_VOL);
+	default String MASK_REPLACE_REPLACEMENT() {
+		return getString("MASK_REPLACE_REPLACEMENT", ConfigTable.MASK_REPLACE_REPLACEMENT);
 	}
-	default ConfigStore OMIT_VOL(int value) {
-		return config("OMIT_VOL", value);
+	default ConfigStore MASK_REPLACE_REPLACEMENT(String value) {
+		return config("MASK_REPLACE_REPLACEMENT", value);
+	}
+
+	default String MASK_OMIT_ELLIPSIS() {
+		return getString("MASK_OMIT_ELLIPSIS", ConfigTable.MASK_OMIT_ELLIPSIS);
+	}
+
+	default int MASK_OMIT_RIGHT() {
+		return getInt("MASK_OMIT_RIGHT", ConfigTable.MASK_OMIT_RIGHT);
+	}
+	default ConfigStore MASK_OMIT_RIGHT(int value) {
+		return config("MASK_OMIT_RIGHT", value);
+	}
+
+	default int MASK_OMIT_LEFT() {
+		return getInt("MASK_OMIT_LEFT", ConfigTable.MASK_OMIT_LEFT);
+	}
+	default ConfigStore MASK_OMIT_LEFT(int value) {
+		return config("MASK_OMIT_LEFT", value);
+	}
+
+	default int MASK_OMIT_VOL() {
+		return getInt("MASK_OMIT_VOL", ConfigTable.MASK_OMIT_VOL);
+	}
+	default ConfigStore MASK_OMIT_VOL(int value) {
+		return config("MASK_OMIT_VOL", value);
 	}
 	/**
 	 * 关闭所有SQL日志
@@ -2743,47 +2760,65 @@ public interface ConfigStore extends Cloneable{
 		}
 		return ConfigTable.IS_CHECK_ALL_UPDATE_COLUMN;
 	}
-	static boolean IS_AUTO_OMIT(ConfigStore configs) {
+	static boolean IS_AUTO_MASK_OMIT(ConfigStore configs) {
 		if(null != configs) {
-			return configs.IS_AUTO_OMIT();
+			return configs.IS_AUTO_MASK_OMIT();
 		}
-		return ConfigTable.IS_AUTO_OMIT;
+		return ConfigTable.IS_AUTO_MASK_OMIT;
 	}
-	static String OMIT_COLUMN(ConfigStore configs) {
+	static boolean IS_AUTO_MASK_REPLACE(ConfigStore configs) {
 		if(null != configs) {
-			return configs.OMIT_COLUMN();
+			return configs.IS_AUTO_MASK_REPLACE();
 		}
-		return ConfigTable.OMIT_COLUMN;
+		return ConfigTable.IS_AUTO_MASK_REPLACE;
 	}
-	static String OMIT_KEYWORD(ConfigStore configs) {
+	static String MASK_OMIT_COLUMN(ConfigStore configs) {
 		if(null != configs) {
-			return configs.OMIT_KEYWORD();
+			return configs.MASK_OMIT_COLUMN();
 		}
-		return ConfigTable.OMIT_KEYWORD;
+		return ConfigTable.MASK_OMIT_COLUMN;
 	}
-	static String OMIT_ELLIPSIS(ConfigStore configs) {
+	static String MASK_OMIT_ELLIPSIS(ConfigStore configs) {
 		if(null != configs) {
-			return configs.OMIT_ELLIPSIS();
+			return configs.MASK_OMIT_ELLIPSIS();
 		}
-		return ConfigTable.OMIT_ELLIPSIS;
+		return ConfigTable.MASK_OMIT_ELLIPSIS;
 	}
-	static int OMIT_RIGHT(ConfigStore configs) {
+	static int MASK_OMIT_RIGHT(ConfigStore configs) {
 		if(null != configs) {
-			return configs.OMIT_RIGHT();
+			return configs.MASK_OMIT_RIGHT();
 		}
-		return ConfigTable.OMIT_RIGHT;
+		return ConfigTable.MASK_OMIT_RIGHT;
 	}
-	static int OMIT_LEFT(ConfigStore configs) {
+	static int MASK_OMIT_LEFT(ConfigStore configs) {
 		if(null != configs) {
-			return configs.OMIT_LEFT();
+			return configs.MASK_OMIT_LEFT();
 		}
-		return ConfigTable.OMIT_LEFT;
+		return ConfigTable.MASK_OMIT_LEFT;
 	}
-	static int OMIT_VOL(ConfigStore configs) {
+	static int MASK_OMIT_VOL(ConfigStore configs) {
 		if(null != configs) {
-			return configs.OMIT_VOL();
+			return configs.MASK_OMIT_VOL();
 		}
-		return ConfigTable.OMIT_VOL;
+		return ConfigTable.MASK_OMIT_VOL;
+	}
+	static String MASK_REPLACE_COLUMN(ConfigStore configs) {
+		if(null != configs) {
+			return configs.MASK_REPLACE_COLUMN();
+		}
+		return ConfigTable.MASK_REPLACE_REPLACEMENT;
+	}
+	static String MASK_REPLACE_REGEX(ConfigStore configs) {
+		if(null != configs) {
+			return configs.MASK_REPLACE_REGEX();
+		}
+		return ConfigTable.MASK_REPLACE_REGEX;
+	}
+	static String MASK_REPLACE_REPLACEMENT(ConfigStore configs) {
+		if(null != configs) {
+			return configs.MASK_REPLACE_REPLACEMENT();
+		}
+		return ConfigTable.MASK_REPLACE_REPLACEMENT;
 	}
 } 
  
