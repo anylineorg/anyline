@@ -25,6 +25,7 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
@@ -56,6 +57,9 @@ public class SpringTransactionManage extends DefaultTransactionManage implements
         Object origin = state.getOrigin();
         manager.commit((TransactionStatus)origin);
         TransactionManage.records.remove(state);
+        if(!TransactionManage.records.isEmpty()){
+            TransactionSynchronizationManager.initSynchronization();
+        }
     }
 
     /**
@@ -67,6 +71,9 @@ public class SpringTransactionManage extends DefaultTransactionManage implements
         Object origin = state.getOrigin();
         manager.rollback((TransactionStatus)origin);
         TransactionManage.records.remove(state);
+        if(!TransactionManage.records.isEmpty()){
+            TransactionSynchronizationManager.initSynchronization();
+        }
     }
 
     /**

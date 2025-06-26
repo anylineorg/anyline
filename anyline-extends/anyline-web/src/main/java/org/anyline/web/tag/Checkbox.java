@@ -213,6 +213,9 @@ public class Checkbox extends BaseBodyTag {
 									labelBody = v.toString();
 								}
 							}
+							if(null == labelBody){
+								labelBody = "";
+							}
 							labelHtml += labelBody + "</label>\n";
 							html.append(labelHtml);
 						} else {//指定label文本

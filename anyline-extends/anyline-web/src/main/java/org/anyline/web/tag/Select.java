@@ -143,6 +143,9 @@ public class Select extends BaseBodyTag {
 								}
 							}
 						}
+						if(null == text){
+							text = "";
+						}
 						first = false;
 						builder.append("<option value=\"").append(val).append("\"");
 						if (null != val && null != this.value && val.equals(value.toString())) {
