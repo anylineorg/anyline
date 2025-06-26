@@ -956,6 +956,31 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     }
 
     /**
+     * 外键关联
+     * @param set users
+     * @param foreignKey USER_ID this.get("USER_ID") == user.get("ID")
+     * @param foreignText USER_NAME this.put("USER_NAME", user.get("NAME"))
+     * @param primaryKey ID this.get("USER_ID") == user.get("ID")
+     * @param primaryText NAME user.get("NAME")
+     * @param append USER this.put("USER", user)
+     * @return this
+     */
+    public DataRow foreign(DataSet set, String foreignKey, String foreignText, String primaryKey, String primaryText, String append){
+        DataRow data = set.getRow(primaryKey, getString(foreignKey));
+        if(null != data){
+            put(foreignText, data.getString(primaryText));
+            if(BasicUtil.isNotEmpty(append)){
+                put(append, data);
+            }
+        }
+        return this;
+    }
+    public DataRow foreign(DataSet set, String foreignKey, String foreignText, String primaryKey, String primaryText){
+        return foreign(set, foreignKey, foreignText, primaryKey, primaryText, null);
+    }
+
+
+    /**
      * key转换成小写
      * @param recursion 是否递归
      * @param keys keys

@@ -3701,6 +3701,27 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
         }
         return this;
     }
+
+    /**
+     * 外键关联(码值)
+     * @param set users
+     * @param foreignKey USER_ID this.get("USER_ID") == user.get("ID")
+     * @param foreignText USER_NAME this.put("USER_NAME", user.get("NAME"))
+     * @param primaryKey ID this.get("USER_ID") == user.get("ID")
+     * @param primaryText NAME user.get("NAME")
+     * @param append USER this.put("USER", user)
+     * @return this
+     */
+    public DataSet foreign(DataSet set, String foreignKey, String foreignText, String primaryKey, String primaryText, String append){
+        for(DataRow row:rows){
+            row.foreign(set, foreignKey, foreignText, primaryKey, primaryText, append);
+        }
+        return this;
+    }
+    public DataSet foreign(DataSet set, String foreignKey, String foreignText, String primaryKey, String primaryText){
+        return foreign(set, foreignKey, foreignText, primaryKey, primaryText, null);
+    }
+
     /**
      * 外键关联<br/>
      * 如果要合并条目(如把对应user的全部数据合并到当前集合条目)应该调用join<br/>
