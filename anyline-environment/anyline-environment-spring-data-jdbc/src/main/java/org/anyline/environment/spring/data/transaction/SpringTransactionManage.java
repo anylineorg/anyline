@@ -57,7 +57,7 @@ public class SpringTransactionManage extends DefaultTransactionManage implements
         Object origin = state.getOrigin();
         manager.commit((TransactionStatus)origin);
         TransactionManage.records.remove(state);
-        if(!TransactionManage.records.isEmpty()){
+        if(!TransactionManage.records.isEmpty()  && !TransactionSynchronizationManager.isSynchronizationActive()){
             TransactionSynchronizationManager.initSynchronization();
         }
     }
@@ -71,7 +71,7 @@ public class SpringTransactionManage extends DefaultTransactionManage implements
         Object origin = state.getOrigin();
         manager.rollback((TransactionStatus)origin);
         TransactionManage.records.remove(state);
-        if(!TransactionManage.records.isEmpty()){
+        if(!TransactionManage.records.isEmpty() && !TransactionSynchronizationManager.isSynchronizationActive()){
             TransactionSynchronizationManager.initSynchronization();
         }
     }
