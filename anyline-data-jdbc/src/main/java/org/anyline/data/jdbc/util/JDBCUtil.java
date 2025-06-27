@@ -411,7 +411,7 @@ public class JDBCUtil {
             String mask_replace_column = ConfigStore.MASK_REPLACE_COLUMN(configs);
             String mask_replace_regex = ConfigStore.MASK_REPLACE_REGEX(configs);
             String mask_replace_replacement = ConfigStore.MASK_REPLACE_REPLACEMENT(configs);
-            if(auto_mask_omit) {
+            if(auto_mask_omit && BasicUtil.isNotEmpty("mask_omit_column")) {
                 if (mask_omit_left >= 0 && mask_omit_right >= 0) {
                     row.omit(mask_omit_ellipsis, mask_omit_vol, mask_omit_left, mask_omit_right, mask_omit_column);
                 }
