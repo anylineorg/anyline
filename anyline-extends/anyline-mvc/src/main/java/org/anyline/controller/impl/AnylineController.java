@@ -27,6 +27,7 @@ import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.encrypt.DESUtil;
+import org.anyline.util.regular.RegularUtil;
 import org.anyline.web.controller.AbstractController;
 import org.anyline.web.util.Constant;
 import org.anyline.web.util.Result;
@@ -711,14 +712,24 @@ public class AnylineController extends AbstractController {
             }
 
             if (null != map) {
-                Iterator var4 = map.keySet().iterator();
-
-                while(var4.hasNext()) {
-                    String key = (String)var4.next();
+                for(String key: map.keySet()) {
                     Object value = map.get(key);
                     if (null != value) {
                         page = page.replace("${" + key + "}", value.toString());
                     }
+                }
+            }
+            if(page.contains("${")){
+                List<String> ks = RegularUtil.cuts(page, "${", "}");
+                for(String k:ks){
+                    Object v = request.getAttribute(k);
+                    if(null == v){
+                        v = request.getParameter(k);
+                    }
+                    if(null == v){
+                        v = "";
+                    }
+                    page = page.replace("${" + k + "}", v.toString());
                 }
             }
         }
