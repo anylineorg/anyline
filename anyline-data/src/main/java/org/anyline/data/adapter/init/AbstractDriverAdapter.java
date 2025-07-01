@@ -15234,10 +15234,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		aggregation(runtime, builder, meta);
 		// 编码
 		charset(runtime, builder, meta);
+        // 非空
+        nullable(runtime, builder, meta, action);
 		// 默认值
 		defaultValue(runtime, builder, meta);
-		// 非空
-		nullable(runtime, builder, meta, action);
 		//主键
 		primary(runtime, builder, meta);
 		//唯一索引
