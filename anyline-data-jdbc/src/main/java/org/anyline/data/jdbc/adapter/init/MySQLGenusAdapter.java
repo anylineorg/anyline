@@ -841,10 +841,13 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
             join = " AND ";
         }
         String key = null;
-        if(column.contains(">")) {
+        if(column.contains("->")){
+            //JSON_CONTAINS(JSONSS->>'$.JSON_CODE', '"z"')
+        }else if(column.contains(">")) {
             String[] ks = column.split(">");
             column = ks[0];
             key = ks[1];
+            // JSON_CONTAINS(JSONS, '{"k":"v"}','$.JSON_CODE')
         }
 
         for(Object v:values) {
