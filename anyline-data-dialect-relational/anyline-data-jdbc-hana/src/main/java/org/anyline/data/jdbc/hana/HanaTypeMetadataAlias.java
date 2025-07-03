@@ -35,7 +35,7 @@ public enum HanaTypeMetadataAlias implements TypeMetadataAlias {
 	LONG_TEXT                     ("LONG"                           ,StandardTypeMetadata.LONG_TEXT                  , "BINTEXT"                   , "BINTEXT"                        , null   , null   , null   ,   1,   1,   1,  -1,  -1,  -1),
 	NCLOB                         ("NCLOB"                          ,StandardTypeMetadata.NCLOB                      ,   1,   1,   1,  -1,  -1,  -1),
 	NVARCHAR                      ("NVARCHAR"                       ,StandardTypeMetadata.NVARCHAR                   ,   0,   1,   1,  -1,  -1,  -1),
-	REAL                          ("REAL"                           ,StandardTypeMetadata.REAL                       ,   1,   0,   0,  -1,  -1,  -1),
+	REAL                          ("REAL"                           ,StandardTypeMetadata.REAL                       ,   1,   1,   1,  -1,  -1,  -1),
 	SECONDDATE                    ("SECONDDATE"                     ,StandardTypeMetadata.SECONDDATE                 ,   1,   1,   1,  -1,  -1,  -1),
 	SMALLDECIMAL                  ("SMALLDECIMAL"                   ,StandardTypeMetadata.SMALLDECIMAL               ,   1,   1,   1,  -1,  -1,  -1),
 	SMALLINT                      ("SMALLINT"                       ,StandardTypeMetadata.SMALLINT                   ,   1,   1,   1,  -1,  -1,  -1),
