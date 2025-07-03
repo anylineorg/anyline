@@ -230,8 +230,16 @@ public interface EntityAdapter {
         // 3.属性名转成列名
         if(BasicUtil.isEmpty(name)) {
             Class c = field.getType();
+            String cn = null;
+            if(c.isArray() || ClassUtil.isInSub(c, Collection.class)){
+                c = ClassUtil.getComponentClass(c);
+            }
+            if(null != c) {
+                cn = c.getName();
+            }
+            //只取基础类型，复杂类型有可能是关联表
             //boolean、char、byte、short、int、long、float、double
-            if(c == String.class || c == Date.class || ClassUtil.isPrimitiveClass(c)) {
+            if((null != cn && cn.startsWith("java")) || ClassUtil.isPrimitiveClass(c)) {
                 name = field.getName();
             }
             if(null != name && "camel_".equals(ConfigTable.ENTITY_FIELD_COLUMN_MAP)) {

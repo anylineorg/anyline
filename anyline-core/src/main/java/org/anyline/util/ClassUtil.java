@@ -847,7 +847,10 @@ public class ClassUtil {
 		Type genericSuperclass = clazz.getGenericSuperclass();
 		ParameterizedType pty= (ParameterizedType) genericSuperclass;
 		Type actualTypeArgument = pty.getActualTypeArguments()[0];
-		return (Class)actualTypeArgument;
+		if(actualTypeArgument instanceof Class){
+			return (Class)actualTypeArgument;
+		}
+		return null;
 	}
 	public static Class getComponentClass(Object obj) {
 		if(null == obj) {
