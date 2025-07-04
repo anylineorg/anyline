@@ -1263,7 +1263,9 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
                 if (null != v) {
                     // 与SQL.TYPE保持一致
                     Compare cmp = Compare.EQUAL;
-                    if (v.startsWith("=")) {
+                    if(v.isEmpty()){
+                        cmp = Compare.EMPTY;
+                    }else if (v.startsWith("=")) {
                         v = v.substring(1);
                         cmp = Compare.EQUAL;
                     } else if (v.startsWith(">")) {
@@ -1290,6 +1292,9 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
                     }
                     compareKvs.put(k, v);
                     compares.put(k, cmp);
+                }else{
+                    compareKvs.put(k, v);
+                    compares.put(k, Compare.NULL);
                 }
             }
             kvs = compareKvs;
