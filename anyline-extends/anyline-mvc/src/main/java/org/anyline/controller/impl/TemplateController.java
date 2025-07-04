@@ -60,7 +60,6 @@ public class TemplateController extends AnylineController {
 				}
 			}
 		}
-		content_template = parseVariable(content_template);
 		String clientType = "web";
 		if(WebUtil.isWap(getRequest())) {
 			clientType = "wap";
@@ -81,6 +80,8 @@ public class TemplateController extends AnylineController {
 			content_template = content_template.replace("${client_type}", clientType);
 			content_template = content_template.replace("${client}", clientType);
 		}
+		content_template = parseVariable(getRequest(), content_template);
+		name = parseVariable(getRequest(), name);
 		tv.setViewName(content_template);
 		tv.addObject(TemplateView.ANYLINE_TEMPLATE_CONTENT_PATH, name);
 		return tv;

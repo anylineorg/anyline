@@ -719,19 +719,7 @@ public class AnylineController extends AbstractController {
                     }
                 }
             }
-            if(page.contains("${")){
-                List<String> ks = RegularUtil.cuts(page, "${", "}");
-                for(String k:ks){
-                    Object v = request.getAttribute(k);
-                    if(null == v){
-                        v = request.getParameter(k);
-                    }
-                    if(null == v){
-                        v = "";
-                    }
-                    page = page.replace("${" + k + "}", v.toString());
-                }
-            }
+            page = parseVariable(request, page);
         }
         Map<String,Object> map = super.navi(request, response, data, navi, page, ext);
         return success(map);
@@ -847,11 +835,13 @@ public class AnylineController extends AbstractController {
         if(!result.endsWith("/")) {
             result = result + "/";
         }
-        result = parseVariable(result);
+        result = parseVariable(getRequest(), result);
         return result;
     }
-    protected String parseVariable(String src) {
-        HttpServletRequest request = getRequest();
+    protected String parseVariable(HttpServletRequest request, String src) {
+        if(!src.contains("${")){
+            return src;
+        }
         if(null != request) {
             Map<String,Object> map = (Map<String,Object>)request.getAttribute("anyline_template_variable");
             if(null == map) {
@@ -865,7 +855,21 @@ public class AnylineController extends AbstractController {
                     }
                 }
             }
+            List<String> ks = RegularUtil.cuts(src, "${", "}");
+            for(String k:ks){
+                Object v = request.getAttribute(k);
+                if(null == v){
+                    v = request.getParameter(k);
+                }
+                if(null == v){
+                    v = request.getSession().getAttribute(k);
+                }
+                if(BasicUtil.isNotEmpty(v)){
+                    src = src.replace("${" + k + "}", v.toString());
+                }
+            }
         }
+
         return src;
     }
 
