@@ -74,6 +74,7 @@ public class TemplateController extends AnylineController {
 			name = name.replace("${client_type}", clientType);
 			name = name.replace("${client}", clientType);
 		}
+		String file_dir = ConfigTable.getRoot().replace("/WEB-INF/", "/").replace("/classes/", "/");
 		if(null != content_template) {
 			if(adapt) {
 				content_template = content_template.replace("/web/", "/"+clientType+"/");
@@ -83,16 +84,18 @@ public class TemplateController extends AnylineController {
 			content_template = content_template.replace("${client}", clientType);
 			content_template = parseVariable(getRequest(), content_template);
 			//检测文件是否存在
-			File file = new File(ConfigTable.getWebRoot(), content_template);
+			File file = new File(file_dir, content_template);
 			if(!file.exists()){
 				content_template = content_template.replace("/wap/", "/web/");
+				log.warn("[内容文件检测][file:{}][replace:{}]", file.getAbsolutePath(), content_template);
 			}
 		}
 		name = parseVariable(getRequest(), name);
 		//检测文件是否存在
-		File file = new File(ConfigTable.getWebRoot(), name);
+		File file = new File(file_dir, name);
 		if(!file.exists()){
 			name = name.replace("/wap/", "/web/");
+			log.warn("[模板文件检测][file:{}][replace:{}]", file.getAbsolutePath(), name);
 		}
 		tv.setViewName(content_template);
 		tv.addObject(TemplateView.ANYLINE_TEMPLATE_CONTENT_PATH, name);
