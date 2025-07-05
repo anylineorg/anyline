@@ -22,6 +22,8 @@ import org.anyline.util.ConfigTable;
 import org.anyline.web.util.WebUtil;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.io.File;
+
 
 public class TemplateController extends AnylineController {
 
@@ -79,9 +81,19 @@ public class TemplateController extends AnylineController {
 			}
 			content_template = content_template.replace("${client_type}", clientType);
 			content_template = content_template.replace("${client}", clientType);
+			content_template = parseVariable(getRequest(), content_template);
+			//检测文件是否存在
+			File file = new File(ConfigTable.getWebRoot(), content_template);
+			if(!file.exists()){
+				content_template = content_template.replace("/wap/", "/web/");
+			}
 		}
-		content_template = parseVariable(getRequest(), content_template);
 		name = parseVariable(getRequest(), name);
+		//检测文件是否存在
+		File file = new File(ConfigTable.getWebRoot(), name);
+		if(!file.exists()){
+			name = name.replace("/wap/", "/web/");
+		}
 		tv.setViewName(content_template);
 		tv.addObject(TemplateView.ANYLINE_TEMPLATE_CONTENT_PATH, name);
 		return tv;
