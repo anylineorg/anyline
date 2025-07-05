@@ -49,6 +49,7 @@ public class TemplateController extends AnylineController {
 			// 相对目录
 			name = buildDir() + name;
 		}
+		boolean check_file_exists = true;
 		String content_template = "";
 		if(null != template) {
 			if(!template.endsWith(".jsp")) {
@@ -74,7 +75,10 @@ public class TemplateController extends AnylineController {
 			name = name.replace("${client_type}", clientType);
 			name = name.replace("${client}", clientType);
 		}
-		String file_dir = ConfigTable.getRoot().replace("/WEB-INF/", "/").replace("/classes/", "/");
+		String file_dir = ConfigTable.JSP_DIR;
+		if(BasicUtil.isEmpty(file_dir)){
+			file_dir = ConfigTable.getWebRoot();
+		}
 		if(null != content_template) {
 			if(adapt) {
 				content_template = content_template.replace("/web/", "/"+clientType+"/");

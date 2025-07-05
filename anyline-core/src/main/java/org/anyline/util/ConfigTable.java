@@ -58,6 +58,7 @@ public class ConfigTable {
 
 	// 对应配置文件key 如果集成了spring boot环境则与spring配置文件 anyline.*对应
 	public static String ENVIRONMENT_CONFIG_FILE_NAMES 					= "application.properties,application.yml";   // 配置文件
+	public static String JSP_DIR 										= null;
 	public static Class DEFAULT_JDBC_ENTITY_CLASS						= DataRow.class ;
 	public static Class DEFAULT_MONGO_ENTITY_CLASS						= DataRow.class ;
 	public static Class DEFAULT_ELASTIC_SEARCH_ENTITY_CLASS				= DataRow.class ;
@@ -386,7 +387,7 @@ public class ConfigTable {
 			if(path.indexOf("WEB-INF") > 0) {
 				webRoot = path.substring(0, path.indexOf("WEB-INF")-1);
 			}
-			/*
+
 			if(path.indexOf("!/BOOT-INF") > 0) {
 				webRoot = path.substring(0, path.indexOf("!/BOOT-INF"));
 			}
@@ -395,7 +396,7 @@ public class ConfigTable {
 			}
 			if(path.indexOf("target") > 0) {
 				webRoot = path.substring(0, path.indexOf("target")-1);
-			}*/
+			}
 		}
 		if(null == path) {
 			path = root;
