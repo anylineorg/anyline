@@ -75,7 +75,7 @@ public class TemplateController extends AnylineController {
 			name = name.replace("${client_type}", clientType);
 			name = name.replace("${client}", clientType);
 		}
-		String file_dir = ConfigTable.JSP_DIR;
+		String file_dir = ConfigTable.JSP_DIR; //本地开发环境可能检测不到 需要配置
 		if(BasicUtil.isEmpty(file_dir)){
 			file_dir = ConfigTable.getWebRoot();
 		}
