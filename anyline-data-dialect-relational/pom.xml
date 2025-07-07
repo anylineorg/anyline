@@ -70,6 +70,31 @@
 		<module>anyline-data-jdbc-yukon</module>
 		<module>anyline-data-jdbc-transwarp</module>
 		<module>anyline-data-jdbc-inceptor</module>
+
+
+		<module>anyline-data-jdbc-cmdb</module>				<!--中国移动磐维数据库-->
+		<module>anyline-data-jdbc-cudb</module>				<!--中国联通-->
+		<module>anyline-data-jdbc-hashdata</module>			<!--酷克数据-->
+		<module>anyline-data-jdbc-hotdb</module>			<!--热璞-->
+		<module>anyline-data-jdbc-gaiadb</module>			<!--百度-->
+		<module>anyline-data-jdbc-goldendb</module>			<!--中兴-->
+		<module>anyline-data-jdbc-greatdb</module>			<!--万里数据库-->
+		<module>anyline-data-jdbc-kundb</module>			<!--星环-->
+		<module>anyline-data-jdbc-lightdb</module>			<!--恒生电子-->
+		<module>anyline-data-jdbc-mogdb</module>			<!--云和恩墨-->
+		<module>anyline-data-jdbc-mudb</module>				<!--沐融信息科技-->
+		<module>anyline-data-jdbc-polardb</module>
+		<module>anyline-data-jdbc-questdb</module>
+		<module>anyline-data-jdbc-stardb</module>			<!--京东StarDB-->
+		<module>anyline-data-jdbc-tdsql</module>			<!--腾讯TDSQL PostgreSQL(TBase)-->
+		<module>anyline-data-jdbc-timescale</module>
+		<module>anyline-data-jdbc-ubisql</module>			<!--平安科技-->
+		<module>anyline-data-jdbc-uxdb</module>				<!--优炫数据库-->
+		<module>anyline-data-jdbc-xigemadb</module>			<!--华胜信泰-->
+		<module>anyline-data-jdbc-vastbase</module>			<!--海量数据-->
+		<module>anyline-data-jdbc-yidb</module>
+		<module>anyline-data-jdbc-memfiredb</module>
+
     </modules>
 	<build>
 		<plugins>

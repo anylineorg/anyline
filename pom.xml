@@ -37,9 +37,9 @@
 		<module>anyline-oro</module>
 		<module>anyline-net</module>
 		<module>anyline-environment</module>
-		<module>anyline-data-dialect-relational</module>
-		<module>anyline-data-dialect-relational-extends</module>
 		<module>anyline-extends</module>
+		<!-- dialect按数据库主模型分类 -->
+		<module>anyline-data-dialect-relational</module>
 		<module>anyline-data-dialect-document</module>
 		<module>anyline-data-dialect-event</module>
 		<module>anyline-data-dialect-graph</module>
