@@ -190,10 +190,10 @@
 		<tagclass>org.anyline.web.tag.Replace</tagclass>
 		<bodycontent>JSP</bodycontent>
 		<info>
-			 以separate分隔from,每个条目换成to,如果to中也有separate并且条目长度与from一致则按顺序替换&lt;br&gt;
-			 value = "ABC123"  from = "ABC" to="a" result = "a123"&lt;br&gt;
-			 value = "ABC123" from = "A,B,C"  separate="," to = "a" result = "aaa123"&lt;br&gt;
-			 value = "ABC123" from = "A,B,C"  separate="," to = "a,b,c" result = "abc123"
+			 以separate分隔 target,每个条目换成 replacement ,如果 replacement中也有separate并且条目长度与from一致则按顺序替换&lt;br&gt;
+			 value = "ABC123"  target = "ABC" to="a" result = "a123"&lt;br&gt;
+			 value = "ABC123" target = "A,B,C"  separate="," replacement = "a" result = "aaa123"&lt;br&gt;
+			 value = "ABC123" target = "A,B,C"  separate="," replacement = "a,b,c" result = "abc123"
 		</info>
 		<attribute>
 			<name>value</name>
@@ -201,12 +201,17 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
-			<name>from</name>
+			<name>target</name>
 			<required>true</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
-			<name>to</name>
+			<name>regex</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>replacement</name>
 			<required>true</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
