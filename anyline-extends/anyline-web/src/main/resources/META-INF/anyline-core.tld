@@ -206,11 +206,6 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
-			<name>regex</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
 			<name>replacement</name>
 			<required>true</required>
 			<rtexprvalue>true</rtexprvalue>
