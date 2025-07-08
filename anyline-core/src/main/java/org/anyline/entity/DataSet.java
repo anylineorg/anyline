@@ -1346,9 +1346,17 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
                         if (srcFlag) {
                             v = "${" + v + "}";
                         }
-                        if(!cmp.compare(value, v)) {
-                            chk = false;
-                            break;
+                        int code = cmp.getCode();
+                        if(code == 60 || code == 61 || code == 62) {
+                            if (!cmp.compare(v, value)) {
+                                chk = false;
+                                break;
+                            }
+                        }else {
+                            if (!cmp.compare(value, v)) {
+                                chk = false;
+                                break;
+                            }
                         }
                     }
                 }
