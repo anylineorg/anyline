@@ -5258,6 +5258,64 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
 
     /**
      * table[命令合成-子流程]<br/>
+     * 数据模型
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param builder builder
+     * @param meta 表
+     * @return StringBuilder
+     */
+    @Override
+    public StringBuilder keys(DataRuntime runtime, StringBuilder builder, Table meta) {
+        return super.keys(runtime, builder, meta);
+    }
+
+    /**
+     * table[命令合成-子流程]<br/>
+     * 分桶方式
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param builder builder
+     * @param meta 表
+     * @return StringBuilder
+     */
+    @Override
+    public StringBuilder distribution(DataRuntime runtime, StringBuilder builder, Table meta) {
+        return super.distribution(runtime, builder, meta);
+    }
+
+    /**
+     * table[命令合成-子流程]<br/>
+     * 物化视图
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param builder builder
+     * @param meta 表
+     * @return StringBuilder
+     */
+    @Override
+    public StringBuilder materialize(DataRuntime runtime, StringBuilder builder, Table meta) {
+        return super.materialize(runtime, builder, meta);
+    }
+
+    /**
+     * table[命令合成-子流程]<br/>
+     * 扩展属性
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param builder builder
+     * @param meta 表
+     * @return StringBuilder
+     */
+    @Override
+    public StringBuilder property(DataRuntime runtime, StringBuilder builder, Table meta) {
+        LinkedHashMap<String, Object> property = meta.getProperty();
+        if(null != property) {
+            for(String key:property.keySet()) {
+                builder.append(" ").append(key).append("=").append(property.get(key));
+            }
+        }
+        return builder;
+    }
+
+    /**
+     * table[命令合成-子流程]<br/>
      * 主表设置分区依据(根据哪几列分区)
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param builder builder

@@ -3831,13 +3831,7 @@ public class MySQLAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public StringBuilder property(DataRuntime runtime, StringBuilder builder, Table meta) {
-		LinkedHashMap<String, Object> property = meta.getProperty();
-		if(null != property) {
-			for(String key:property.keySet()) {
-				builder.append(" ").append(key).append("=").append(property.get(key));
-			}
-		}
-		return builder;
+		return super.property(runtime, builder, meta);
 	}
 
 	/**
