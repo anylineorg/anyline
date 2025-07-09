@@ -84,6 +84,18 @@ public interface DriverAdapter {
     }
 
     /**
+     * 优先级<br/>
+     * 内置的adapter经常有实现不完整或有BUG的情况,还有一种情况是内置adapter优先查普通权限的表,但有些项目会用管理员登录可以有更高权限查管理员表能查出更详细数据<br/>
+     * 具体项目中可以实现一个用来覆盖内置adapter<br/>
+     * 实现方式一般是继承原adapter,并把priority返回大于0的整数,只实现需要覆盖的方法<br/>
+     * 流程中在调用adapter时先调用优先级高的实例<br/>
+     * 另一种方式直接调用 DriverAdapterHolder.reg(DatabaseType type, DriverAdapter adapter)
+     * @return int
+     */
+    default int priority(){
+         return 0;
+    }
+    /**
      * 数据库类型
      * @return DatabaseType
      */

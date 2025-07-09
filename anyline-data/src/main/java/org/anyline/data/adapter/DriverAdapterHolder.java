@@ -149,10 +149,10 @@ public class DriverAdapterHolder {
 	 * @return DriverAdapter
 	 */
 	public static DriverAdapter getAdapter(String datasource, DataRuntime runtime) {
-		//项目中只有一个适配器时直接返回
 		if(null != defaultAdapter) {
 			return defaultAdapter;
 		}
+		//环境中只有一个adapter时快速匹配所有数据源(不检测数据库特征)
 		if(ConfigTable.IS_ENABLE_ADAPTER_FAST_MATCH) {
 			if (adapters.size() == 1) {
 				defaultAdapter = adapters.iterator().next();
@@ -180,6 +180,7 @@ public class DriverAdapterHolder {
 			String adapter_key = runtime.getAdapterKey();
 			try {
 				//执行两次匹配, 第一次失败后，会再匹配一次，第二次传入true
+				List<DriverAdapter> list = new ArrayList<>();
 				for (DriverAdapter item:adapters) {
 					if(item.match(runtime, feature, adapter_key, false)) {
 						adapter = item;
