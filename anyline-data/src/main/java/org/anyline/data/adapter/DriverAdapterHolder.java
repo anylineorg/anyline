@@ -179,12 +179,30 @@ public class DriverAdapterHolder {
 			String feature = runtime.getFeature(false);
 			String adapter_key = runtime.getAdapterKey();
 			try {
+				//先检测项目注册adapters再检测内容adapters
 				//执行两次匹配, 第一次失败后，会再匹配一次，第二次传入true
-				List<DriverAdapter> list = new ArrayList<>();
-				for (DriverAdapter item:adapters) {
+				for (DriverAdapter item:user_adapters.values()) {
 					if(item.match(runtime, feature, adapter_key, false)) {
 						adapter = item;
 						break;
+					}
+				}
+				if(null == adapter) {
+					feature = runtime.getFeature(true);
+					for (DriverAdapter item:user_adapters.values()) {
+						if(item.match(runtime, feature, adapter_key, true)) {
+							adapter = item;
+							break;
+						}
+					}
+				}
+
+				if(null == adapter) {
+					for (DriverAdapter item : adapters) {
+						if (item.match(runtime, feature, adapter_key, false)) {
+							adapter = item;
+							break;
+						}
 					}
 				}
 				if(null == adapter) {
