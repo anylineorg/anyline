@@ -857,8 +857,7 @@ public class SpringJDBCActuator implements DriverActuator {
         SqlRowSet rs = jdbc.queryForRowSet(sql);
         try {
             columns = SpringJDBCUtil.columns(adapter, runtime, true, null, null, rs);
-        }catch (Exception e) {
-            e.printStackTrace();
+        }catch (Exception ignore) {
         }
         return columns;
     }
