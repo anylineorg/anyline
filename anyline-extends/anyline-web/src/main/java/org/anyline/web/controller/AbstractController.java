@@ -207,6 +207,7 @@ public abstract class AbstractController {
 				if(!ConfigTable.IS_IGNORE_EMPTY_HTTP_KEY || requestValues.containsKey(key)) {
 					Object value = ConfigParser.getValue(requestValues, parser);
 					row.put(col, value);
+					row.addUpdateColumns(col);
 				}
 				if(row.isEmpty(col)){
 					Object val = parser.getDefaultValue();
