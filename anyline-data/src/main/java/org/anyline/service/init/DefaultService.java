@@ -263,6 +263,7 @@ public class DefaultService<E> implements AnylineService<E> {
         }
         store.setPageNavi(navi);
         DataSet set = querys(dest, store, obj, conditions);
+        store.setPageNavi(null);
         if (null != set && !set.isEmpty()) {
             DataRow row = set.getRow(0);
             return row;
@@ -286,6 +287,7 @@ public class DefaultService<E> implements AnylineService<E> {
         }
         store.setPageNavi(navi);
         DataSet set = querys(dest, store, obj, conditions);
+        store.setPageNavi(null);
         if (null != set && !set.isEmpty()) {
             DataRow row = set.getRow(0);
             return row;
@@ -352,6 +354,7 @@ public class DefaultService<E> implements AnylineService<E> {
         }
         // 调用实际 的方法
         row = query(dest, configs, obj, conditions);
+        configs.setPageNavi(null);
         if (null != row && null != CacheProxy.provider) {
             CacheProxy.provider.put(cache, key, row);
         }
@@ -401,6 +404,7 @@ public class DefaultService<E> implements AnylineService<E> {
         }
         // 调用实际 的方法
         row = query(dest, configs, obj, conditions);
+        configs.setPageNavi(null);
         if (null != row && null != CacheProxy.provider) {
             CacheProxy.provider.put(cache, key, row);
         }
@@ -426,6 +430,7 @@ public class DefaultService<E> implements AnylineService<E> {
         }
         configs.setPageNavi(navi);
         EntitySet<T> list = selects(clazz, configs, entity, conditions);
+        configs.setPageNavi(null);
         if (null != list && !list.isEmpty()) {
             return list.get(0);
         }
@@ -468,6 +473,7 @@ public class DefaultService<E> implements AnylineService<E> {
         }
         configs.setPageNavi(navi);
         EntitySet<T> list = selects(dest, clazz, configs, entity, conditions);
+        configs.setPageNavi(null);
         if (null != list && !list.isEmpty()) {
             return list.get(0);
         }
@@ -492,6 +498,7 @@ public class DefaultService<E> implements AnylineService<E> {
         }
         configs.setPageNavi(navi);
         EntitySet<T> list = selects(dest, clazz, configs, entity, conditions);
+        configs.setPageNavi(null);
         if (null != list && !list.isEmpty()) {
             return list.get(0);
         }
@@ -583,6 +590,7 @@ public class DefaultService<E> implements AnylineService<E> {
         }
         store.setPageNavi(navi);
         DataSet set = querys(prepare, store, obj, conditions);
+        store.setPageNavi(null);
         if (null != set && !set.isEmpty()) {
             DataRow row = set.getRow(0);
             return row;
@@ -643,6 +651,7 @@ public class DefaultService<E> implements AnylineService<E> {
         }
         // 调用实际 的方法
         row = query(table, configs, conditions);
+        configs.setPageNavi(null);
         if (null != row && null != CacheProxy.provider) {
             CacheProxy.provider.put(cache, key, row);
         }
@@ -682,6 +691,7 @@ public class DefaultService<E> implements AnylineService<E> {
             }
             configs.setPageNavi(navi);
             key = CacheUtil.createCacheElementKey(true, true, dest, configs, conditions);
+            configs.setPageNavi(null);
             CacheProxy.provider.remove(channel, "ROW:" + key);
         }
         return true;
@@ -704,6 +714,7 @@ public class DefaultService<E> implements AnylineService<E> {
             }
             configs.setPageNavi(navi);
             key = CacheUtil.createCacheElementKey(true, true, dest, configs, conditions);
+            configs.setPageNavi(null);
             CacheProxy.provider.remove(channel, "ROW:" + key);
         }
         return true;
