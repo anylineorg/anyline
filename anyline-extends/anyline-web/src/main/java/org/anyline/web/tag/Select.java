@@ -158,8 +158,10 @@ public class Select extends BaseBodyTag {
 				builder.append("</select>");
 				html = builder.toString();
 			} 
-			JspWriter out = pageContext.getOut(); 
-			out.print(html); 
+			JspWriter out = pageContext.getOut();
+			if(null != html){
+				out.print(html);
+			}
 		} catch (Exception e) {
 			e.printStackTrace(); 
 		} finally {
