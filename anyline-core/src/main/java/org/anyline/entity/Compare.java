@@ -724,6 +724,7 @@ public enum Compare {
        , BREAK	   //中断执行 整个命令不执行
        , NULL	   //生成 WHERE ID IS NULL
        , SRC	   //原样处理 会生成 WHERE ID = NULL
+       , EXCEPTION //抛出异常
        , NONE	   //根据条件判断 ++或+
     }
 }
