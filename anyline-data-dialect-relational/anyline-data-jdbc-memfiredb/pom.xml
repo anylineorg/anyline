@@ -7,13 +7,13 @@
     <parent>
         <groupId>org.anyline</groupId>
         <artifactId>anyline-dependency</artifactId>
-        <version>8.7.2-SNAPSHOT</version>
+        <version>8.7.2-20250715</version>
         <relativePath>../../anyline-dependency/pom.xml</relativePath>
     </parent>
 
     <artifactId>anyline-data-jdbc-memfiredb</artifactId>
     <packaging>jar</packaging>
-    <name>anyline-data-jdbc-memfiredb</name>
+    <name>anyline data jdbc memfiredb</name>
     <url>http://www.anyline.org/memfiredb</url>
     <description>MemFireDB</description>
     <dependencies>

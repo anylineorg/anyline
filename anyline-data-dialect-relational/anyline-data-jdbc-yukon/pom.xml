@@ -7,13 +7,13 @@
     <parent>
         <groupId>org.anyline</groupId>
         <artifactId>anyline-dependency</artifactId>
-        <version>8.7.2-SNAPSHOT</version>
+        <version>8.7.2-20250715</version>
         <relativePath>../../anyline-dependency/pom.xml</relativePath>
     </parent>
 
     <artifactId>anyline-data-jdbc-yukon</artifactId>
     <packaging>jar</packaging>
-    <name>anyline-data-jdbc-yukon</name>
+    <name>anyline data jdbc yukon</name>
     <url>http://www.anyline.org/yukon</url>
     <description>超图禹贡</description>
     <dependencies>

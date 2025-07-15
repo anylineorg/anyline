@@ -5,14 +5,14 @@
     <parent>
         <groupId>org.anyline</groupId>
         <artifactId>anyline-dependency</artifactId>
-        <version>8.7.2-SNAPSHOT</version>
+        <version>8.7.2-20250715</version>
         <relativePath>../../anyline-dependency/pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>anyline-data-jdbc-cassandra</artifactId>
     <packaging>jar</packaging>
-    <name>anyline-data-jdbc-cassandra</name>
+    <name>anyline data jdbc cassandra</name>
     <url>http://www.anyline.org/cassandra</url>
 
     <dependencies>

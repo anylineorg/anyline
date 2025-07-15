@@ -6,13 +6,13 @@
     <parent>
         <groupId>org.anyline</groupId>
         <artifactId>anyline-dependency</artifactId>
-        <version>8.7.2-SNAPSHOT</version>
+        <version>8.7.2-20250715</version>
         <relativePath>../../anyline-dependency/pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>anyline-data-jdbc-gbase</artifactId>
-    <name>anyline-data-jdbc-gbase</name>
+    <name>anyline data jdbc gbase</name>
     <url>http://www.anyline.org/gbase</url>
     <description>南大通用</description>
     <packaging>jar</packaging>

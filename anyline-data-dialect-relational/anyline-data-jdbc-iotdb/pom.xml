@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.anyline</groupId>
         <artifactId>anyline-dependency</artifactId>
-        <version>8.7.2-SNAPSHOT</version>
+        <version>8.7.2-20250715</version>
         <relativePath>../../anyline-dependency/pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -14,7 +14,7 @@
     <artifactId>anyline-data-jdbc-iotdb</artifactId>
     <description>Apache IoTDB</description>
     <packaging>jar</packaging>
-    <name>anyline-data-jdbc-iotdb</name>
+    <name>anyline data jdbc iotdb</name>
     <url>http://www.anyline.org/iotdb</url>
 
     <dependencies>

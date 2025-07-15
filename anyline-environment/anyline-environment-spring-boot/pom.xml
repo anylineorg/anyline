@@ -7,13 +7,13 @@
     <parent>
         <groupId>org.anyline</groupId>
         <artifactId>anyline-dependency</artifactId>
-        <version>8.7.2-SNAPSHOT</version>
+        <version>8.7.2-20250715</version>
         <relativePath>../../anyline-dependency/pom.xml</relativePath>
     </parent>
 
     <artifactId>anyline-environment-spring-boot</artifactId>
     <packaging>jar</packaging>
-    <name>anyline-environment-spring-boot</name>
+    <name>anyline environment spring boot</name>
     <url>http://www.anyline.org/boot</url>
 
     <dependencies>

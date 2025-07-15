@@ -7,13 +7,13 @@
     <parent>
         <groupId>org.anyline</groupId>
         <artifactId>anyline-dependency</artifactId>
-        <version>8.7.2-SNAPSHOT</version>
+        <version>8.7.2-20250715</version>
         <relativePath>../../anyline-dependency/pom.xml</relativePath>
     </parent>
 
     <artifactId>anyline-data-jdbc-kundb</artifactId>
     <packaging>jar</packaging>
-    <name>anyline-data-jdbc-kundb</name>
+    <name>anyline data jdbc kundb</name>
     <url>http://www.anyline.org/kundb</url>
     <description>星环, 基于MySQL, https://www.transwarp.cn/product/kundb</description>
     <dependencies>

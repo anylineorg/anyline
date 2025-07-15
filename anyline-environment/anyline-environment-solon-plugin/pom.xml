@@ -7,13 +7,13 @@
     <parent>
         <groupId>org.anyline</groupId>
         <artifactId>anyline-dependency</artifactId>
-        <version>8.7.2-SNAPSHOT</version>
+        <version>8.7.2-20250715</version>
         <relativePath>../../anyline-dependency/pom.xml</relativePath>
     </parent>
 
     <artifactId>anyline-environment-solon-plugin</artifactId>
     <packaging>jar</packaging>
-    <name>anyline-environment-solon-plugin</name>
+    <name>anyline environment solon plugin</name>
     <url>http://www.anyline.org/adapter/solon</url>
     <dependencies>
         <dependency>

@@ -5,12 +5,12 @@
 	<parent>
 		<groupId>org.anyline</groupId>
 		<artifactId>anyline-dependency</artifactId>
-		<version>8.7.2-SNAPSHOT</version>
+		<version>8.7.2-20250715</version>
 		<relativePath>../anyline-dependency/pom.xml</relativePath>
 	</parent>
 
 	<artifactId>anyline-data-dialect-object</artifactId>
-	<name>anyline-data-dialect-object</name>
+	<name>anyline data dialect object</name>
 	<packaging>pom</packaging>
 
     <modules>

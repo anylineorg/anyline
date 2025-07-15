@@ -6,12 +6,12 @@
     <parent>
         <groupId>org.anyline</groupId>
         <artifactId>anyline-dependency</artifactId>
-        <version>8.7.2-SNAPSHOT</version>
+        <version>8.7.2-20250715</version>
         <relativePath>../../anyline-dependency/pom.xml</relativePath>
     </parent>
 
     <artifactId>anyline-data-jdbc-h2</artifactId>
-    <name>anyline-data-jdbc-h2</name>
+    <name>anyline data jdbc h2</name>
     <url>http://www.anyline.org/h2</url>
     <packaging>jar</packaging>
 

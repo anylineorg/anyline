@@ -7,13 +7,13 @@
     <parent>
         <groupId>org.anyline</groupId>
         <artifactId>anyline-dependency</artifactId>
-        <version>8.7.2-SNAPSHOT</version>
+        <version>8.7.2-20250715</version>
         <relativePath>../../anyline-dependency/pom.xml</relativePath>
     </parent>
 
     <artifactId>anyline-data-jdbc-ubisql</artifactId>
     <packaging>jar</packaging>
-    <name>anyline-data-jdbc-ubisql</name>
+    <name>anyline data jdbc ubisql</name>
     <url>http://www.anyline.org/ubisql</url>
     <description>平安科技, 基于TiDB</description>
     <dependencies>

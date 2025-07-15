@@ -6,12 +6,12 @@
     <parent>
         <groupId>org.anyline</groupId>
         <artifactId>anyline-dependency</artifactId>
-        <version>8.7.2-SNAPSHOT</version>
+        <version>8.7.2-20250715</version>
         <relativePath>../../anyline-dependency/pom.xml</relativePath>
     </parent>
 
     <artifactId>anyline-data-jdbc-hive</artifactId>
-    <name>anyline-data-jdbc-hive</name>
+    <name>anyline data jdbc hive</name>
     <url>http://www.anyline.org/hive</url>
     <packaging>jar</packaging>
 

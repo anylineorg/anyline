@@ -7,13 +7,13 @@
     <parent>
         <groupId>org.anyline</groupId>
         <artifactId>anyline-dependency</artifactId>
-        <version>8.7.2-SNAPSHOT</version>
+        <version>8.7.2-20250715</version>
         <relativePath>../../anyline-dependency/pom.xml</relativePath>
     </parent>
 
     <artifactId>anyline-data-jdbc-maxdb</artifactId>
     <packaging>jar</packaging>
-    <name>anyline-data-jdbc-maxdb</name>
+    <name>anyline data jdbc maxdb</name>
     <url>http://www.anyline.org/maxdb</url>
     <description>SAP MaxDB https://maxdb.sap.com</description>
 

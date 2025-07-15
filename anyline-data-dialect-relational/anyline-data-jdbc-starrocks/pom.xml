@@ -5,13 +5,13 @@
     <parent>
         <groupId>org.anyline</groupId>
         <artifactId>anyline-dependency</artifactId>
-        <version>8.7.2-SNAPSHOT</version>
+        <version>8.7.2-20250715</version>
         <relativePath>../../anyline-dependency/pom.xml</relativePath>
     </parent>
 
     <artifactId>anyline-data-jdbc-starrocks</artifactId>
     <packaging>jar</packaging>
-    <name>anyline-data-jdbc-starrocks</name>
+    <name>anyline data jdbc starrocks</name>
     <url>http://www.anyline.org/starrocks</url>
 
     <dependencies>

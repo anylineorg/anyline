@@ -7,13 +7,13 @@
     <parent>
         <groupId>org.anyline</groupId>
         <artifactId>anyline-dependency</artifactId>
-        <version>8.7.2-SNAPSHOT</version>
+        <version>8.7.2-20250715</version>
         <relativePath>../../anyline-dependency/pom.xml</relativePath>
     </parent>
 
     <artifactId>anyline-data-jdbc-dm</artifactId>
     <packaging>jar</packaging>
-    <name>anyline-data-jdbc-dm</name>
+    <name>anyline data jdbc dm</name>
     <description>达梦</description>
     <url>http://www.anyline.org/dm</url>
 

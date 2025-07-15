@@ -8,13 +8,13 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	<parent>
 		<groupId>org.anyline</groupId>
 		<artifactId>anyline-dependency-web</artifactId>
-		<version>8.7.2-SNAPSHOT</version>
+		<version>8.7.2-20250715</version>
 		<relativePath>../anyline-dependency-web/pom.xml</relativePath>
 	</parent>
 
 	<artifactId>anyline-mvc</artifactId>
 	<packaging>jar</packaging>
-	<name>anyline-mvc</name>
+	<name>anyline mvc</name>
 	<url>http://www.anyline.org/mvc</url>
 
 	<dependencies>

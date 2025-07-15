@@ -7,13 +7,13 @@
     <parent>
         <groupId>org.anyline</groupId>
         <artifactId>anyline-dependency</artifactId>
-        <version>8.7.2-SNAPSHOT</version>
+        <version>8.7.2-20250715</version>
         <relativePath>../../anyline-dependency/pom.xml</relativePath>
     </parent>
 
     <artifactId>anyline-data-jdbc-cmdb</artifactId>
     <packaging>jar</packaging>
-    <name>anyline-data-jdbc-cmdb</name>
+    <name>anyline data jdbc cmdb</name>
     <url>http://www.anyline.org/cmdb</url>
     <description>中国移动磐维数据库, 基于opengauss</description>
     <dependencies>

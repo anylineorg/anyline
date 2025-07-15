@@ -7,13 +7,13 @@
 	<parent>
 		<groupId>org.anyline</groupId>
 		<artifactId>anyline-dependency-web</artifactId>
-		<version>8.7.2-SNAPSHOT</version>
+		<version>8.7.2-20250715</version>
 		<relativePath>../anyline-dependency-web/pom.xml</relativePath>
 	</parent>
 
 	<artifactId>anyline-web</artifactId>
 	<packaging>jar</packaging>
-	<name>anyline-web</name>
+	<name>anyline web</name>
 	<url>http://www.anyline.org/web</url>
 
 	<dependencies>
