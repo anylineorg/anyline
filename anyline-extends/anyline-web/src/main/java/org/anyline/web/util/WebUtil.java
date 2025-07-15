@@ -764,6 +764,12 @@ public class WebUtil {
 		if (null == obj) {
 			return obj;
 		}
+		if(obj instanceof DataSet && ((DataSet)obj).isFromCache()){
+			return obj;
+		}
+		if(obj instanceof DataRow && ((DataRow)obj).isFromCache()){
+			return obj;
+		}
 		List<String> list = BeanUtil.merge(fixs, keys);
 		if (obj instanceof String || obj instanceof Number || obj instanceof Boolean || obj instanceof Date) {
 			//
