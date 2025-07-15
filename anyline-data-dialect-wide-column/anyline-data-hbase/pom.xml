@@ -11,6 +11,8 @@
     </parent>
 
     <artifactId>anyline-data-hbase</artifactId>
+    <name>anyline data hbase</name>
+    <url>http://www.anyline.org/hbase</url>
 
     <dependencies>
         <dependency>

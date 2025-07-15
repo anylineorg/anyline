@@ -11,6 +11,8 @@
     </parent>
 
     <artifactId>anyline-data-vald</artifactId>
+    <name>anyline data vald</name>
+    <url>http://www.anyline.org/vald</url>
 
     <dependencies>
         <dependency>

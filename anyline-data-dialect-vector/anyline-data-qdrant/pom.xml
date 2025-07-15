@@ -11,6 +11,8 @@
     </parent>
 
     <artifactId>anyline-data-qdrant</artifactId>
+    <name>anyline data qdrant</name>
+    <url>http://www.anyline.org/qdrant</url>
 
     <dependencies>
         <dependency>

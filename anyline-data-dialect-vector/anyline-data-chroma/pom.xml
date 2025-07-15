@@ -11,6 +11,8 @@
     </parent>
 
     <artifactId>anyline-data-chroma</artifactId>
+    <name>anyline data chroma</name>
+    <url>http://www.anyline.org/chroma</url>
 
     <dependencies>
         <dependency>

@@ -11,6 +11,8 @@
     </parent>
 
     <artifactId>anyline-data-pinecone</artifactId>
+    <name>anyline data pinecone</name>
+    <url>http://www.anyline.org/pinecone</url>
     <dependencies>
         <dependency>
             <groupId>org.anyline</groupId>

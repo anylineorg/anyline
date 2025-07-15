@@ -10,8 +10,7 @@
         <relativePath>../../anyline-dependency/pom.xml</relativePath>
     </parent>
     <artifactId>anyline-data-milvus</artifactId>
-    <packaging>jar</packaging>
-    <name>anyline-data-milvus</name>
+    <name>anyline data milvus</name>
     <url>http://www.anyline.org/milvus</url>
     <dependencies>
         <dependency>

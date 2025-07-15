@@ -13,6 +13,7 @@
 
     <artifactId>anyline-oro</artifactId>
     <packaging>jar</packaging>
+    <name>anyline oro</name>
     <description>
         原来的jakarta.oro，2010年9月后不维护了(没bug可改了)
         因为经常下载失败，所以复制过来了

@@ -11,6 +11,8 @@
     </parent>
 
     <artifactId>anyline-data-vespa</artifactId>
+    <name>anyline data vespa</name>
+    <url>http://www.anyline.org/vespa</url>
 
     <dependencies>
         <dependency>

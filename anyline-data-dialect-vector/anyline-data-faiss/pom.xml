@@ -10,8 +10,7 @@
         <relativePath>../../anyline-dependency/pom.xml</relativePath>
     </parent>
     <artifactId>anyline-data-faiss</artifactId>
-    <packaging>jar</packaging>
-    <name>anyline-data-faiss</name>
+    <name>anyline data faiss</name>
     <url>http://www.anyline.org/faiss</url>
     <dependencies>
         <dependency>

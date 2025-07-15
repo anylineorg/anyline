@@ -11,6 +11,8 @@
     </parent>
 
     <artifactId>anyline-data-vearch</artifactId>
+    <name>anyline data vearch</name>
+    <url>http://www.anyline.org/vearch</url>
 
     <dependencies>
         <dependency>

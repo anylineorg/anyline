@@ -11,6 +11,8 @@
     </parent>
 
     <artifactId>anyline-data-weaviate</artifactId>
+    <name>anyline data weaviate</name>
+    <url>http://www.anyline.org/weaviate</url>
 
     <dependencies>
         <dependency>
