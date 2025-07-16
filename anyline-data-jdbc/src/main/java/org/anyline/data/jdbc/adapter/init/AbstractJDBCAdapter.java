@@ -1132,23 +1132,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
     @Override
     protected Run fillQueryContent(DataRuntime runtime, TableRun run, Boolean placeholder, Boolean unicode) {
         StringBuilder builder = run.getBuilder();
-        fillQueryContent(runtime, builder, run, placeholder, unicode);
-        //UNION
-        List<Run> unions = run.getUnions();
-        if(null != unions) {
-            for(Run union:unions) {
-                builder.append("\n UNION ");
-                if(union.isUnionAll()) {
-                    builder.append(" ALL ");
-                }
-                builder.append("\n");
-                fillQueryContent(runtime, builder, union, placeholder, unicode);
-                run.getRunValues().addAll(union.getRunValues());
-            }
-        }
-        run.appendOrderStore();
-        run.checkValid();
-        return run;
+        return fillQueryContent(runtime, builder, run, placeholder, unicode);
     }
 
     /**

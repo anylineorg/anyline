@@ -2894,6 +2894,20 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         // appendConfigStore();
         run.appendCondition(builder, this, true, placeholder, unicode);
         fillQueryContentGroup(runtime, builder, run, placeholder, unicode);
+
+        //UNION
+        List<Run> unions = run.getUnions();
+        if(null != unions) {
+            for(Run union:unions) {
+                builder.append("\n UNION ");
+                if(union.isUnionAll()) {
+                    builder.append(" ALL ");
+                }
+                builder.append("\n");
+                fillQueryContent(runtime, builder, union, placeholder, unicode);
+                run.getRunValues().addAll(union.getRunValues());
+            }
+        }
         return run;
     }
     protected Run fillQueryContentGroup(DataRuntime runtime, StringBuilder builder, TableRun run, Boolean placeholder, Boolean unicode) {
