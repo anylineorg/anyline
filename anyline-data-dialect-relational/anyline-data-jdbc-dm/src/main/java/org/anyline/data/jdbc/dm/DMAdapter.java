@@ -29,7 +29,6 @@ import org.anyline.metadata.*;
 import org.anyline.metadata.refer.MetadataFieldRefer;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.metadata.type.TypeMetadata;
-import org.anyline.util.BasicUtil;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -2736,36 +2735,19 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 */
 	@Override
 	public List<Run> buildQueryIndexesRun(DataRuntime runtime, boolean greedy, Index query) {
-		Table table = query.getTable();
 		String name = query.getName();
 		List<Run> runs = new ArrayList<>();
 		Run run = new SimpleRun(runtime);
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();
-		builder.append("SELECT * FROM dba_ind_columns \n");
-		String schema = table.getSchemaName();
-		String tab = table.getName();
-		boolean has_where = false;
-		StringBuilder condition = new StringBuilder();
-		if(!empty(schema)) {
-			has_where = true;
-			condition.append(" INDEX_OWNER = '").append(schema).append("'\n");
-		}
-		if(BasicUtil.isNotEmpty(tab)) {
-			if(has_where) {
-				condition.append("AND");
-			}
-			condition.append(" TABLE_NAME = '").append(tab).append("'\n");
-		}
-		if(BasicUtil.isNotEmpty(name)) {
-			if(has_where) {
-				condition.append("AND");
-			}
-			condition.append(" INDEX_NAME = '").append(name).append("'\n");
-		}
-		if(has_where) {
-			builder.append(" WHERE ").append(condition);
-		}
+		ConfigStore configs = run.getConfigs();
+		builder.append("SELECT M.*, F.COLUMN_NAME, F.COLUMN_POSITION, F.COLUMN_POSITION, F.DESCEND  FROM dba_indexes AS M LEFT JOIN dba_ind_columns AS F ON M.OWNER = F.INDEX_OWNER AND M.INDEX_NAME = F.INDEX_NAME AND M.TABLE_NAME = F.TABLE_NAME\n");
+		String schemaName = query.getSchemaName();
+		String tableName = query.getTableName();
+		configs.and("M.OWNER", schemaName);
+ 		configs.in("M.TABLE_NAME", tableName);
+		configs.and("M.INDEX_NAME", name);
+
 		return runs;
 	}
 
@@ -2780,11 +2762,11 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();
 		ConfigStore configs = run.getConfigs();
-		builder.append("SELECT * FROM dba_ind_columns");
+		builder.append("SELECT M.*, F.COLUMN_NAME, F.COLUMN_POSITION, F.COLUMN_POSITION, F.DESCEND  FROM dba_indexes AS M LEFT JOIN dba_ind_columns AS F ON M.OWNER = F.INDEX_OWNER AND M.INDEX_NAME = F.INDEX_NAME AND M.TABLE_NAME = F.TABLE_NAME");
 		String schema = table.getSchemaName();
-		configs.and("INDEX_OWNER", schema);
+		configs.and("M.OWNER", schema);
 		List<String> names = Table.names(tables);
-		configs.in("TABLE_NAME", names);
+		configs.in("M.TABLE_NAME", names);
 
 		return runs;
 	}
@@ -2797,12 +2779,14 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	@Override
 	public MetadataFieldRefer initIndexFieldRefer() {
 		MetadataFieldRefer refer = new MetadataFieldRefer(Index.class);
-		refer.map(Index.FIELD_SCHEMA, "INDEX_OWNER");
+		refer.map(Index.FIELD_SCHEMA, "OWNER");
 		refer.map(Index.FIELD_NAME, "INDEX_NAME");
 		refer.map(Index.FIELD_TABLE, "TABLE_NAME");
 		refer.map(Index.FIELD_COLUMN, "COLUMN_NAME");
 		refer.map(Index.FIELD_POSITION, "COLUMN_POSITION");
 		refer.map(Index.FIELD_ORDER, "DESCEND");
+		refer.map(Index.FIELD_UNIQUE_CHECK, "UNIQUENESS");
+		refer.map(Index.FIELD_UNIQUE_CHECK_VALUE, "UNIQUE");
 		return refer;
 	}
 	/**
