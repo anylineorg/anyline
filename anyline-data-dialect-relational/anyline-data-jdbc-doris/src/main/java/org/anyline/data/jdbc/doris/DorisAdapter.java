@@ -6447,10 +6447,10 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	@Override
 	public StringBuilder property(DataRuntime runtime, StringBuilder builder, Index meta) {
 		LinkedHashMap<String, Object> map = meta.getProperty();
-		boolean append = null != map && !map.isEmpty();
-		if(append) {
-			builder.append(" PROPERTIES(");
-		}
+        if(null == map || map.isEmpty()){
+            return builder;
+        }
+        builder.append(" PROPERTIES(");
 		boolean first = true;
 		for(String key:map.keySet()) {
 			Object value = map.get(key);
@@ -6463,10 +6463,8 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 			first = false;
 			builder.append("\"").append(key).append("\" = \"").append(value).append("\"");
 		}
-		if(append) {
-			builder.append(")");
-		}
-		return super.property(runtime, builder, meta);
+        builder.append(")");
+		return builder;
 	}
 
 	/**
