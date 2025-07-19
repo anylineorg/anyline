@@ -1885,22 +1885,33 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         Run run = new SimpleRun(runtime, configs);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
-        builder.append("SELECT DB_NAME(DB_ID()) TABLE_CATALOG, O.NAME, FT.NAME TABLE_SCHEMA, O.TYPE, O.TYPE_DESC, EP.VALUE AS COMMENT \n");
-        builder.append("FROM SYS.TABLES O \n");
-        builder.append("LEFT JOIN SYS.EXTENDED_PROPERTIES EP ON O.[OBJECT_ID] = EP.MAJOR_ID AND EP.CLASS = 1 AND EP.MINOR_ID = 0 AND EP.NAME = 'MS_Description' \n");
-        builder.append("LEFT JOIN SYS.SCHEMAS FT ON O.[SCHEMA_ID] = FT.[SCHEMA_ID] \n");
-        if((types & 2) == 2) {
+        builder.append("SELECT DB_NAME() AS TABLE_CATALOG, O.name AS NAME, SCHEMA_NAME(O.schema_id) AS TABLE_SCHEMA, O.type AS TYPE, O.type_desc AS TYPE_DESC, EP.value AS COMMENT \n");
+        builder.append("FROM sys.objects O \n");
+        builder.append("LEFT JOIN sys.extended_properties EP ON O.object_id = EP.major_id AND EP.class = 1 AND EP.minor_id = 0 AND EP.name = 'MS_Description'\n");
+         if((types & 2) == 2) {
             //包含视图
             configs.and("(O.TYPE = 'U' OR O.TYPE='V') \n");
         }else{
             configs.and("O.TYPE", "U");
         }
-        configs.and("FT.NAME", query.getSchemaName());
+        configs.and("SCHEMA_NAME(O.schema_id)", query.getSchemaName());
         configs.and(Compare.LIKE_SIMPLE,"O.NAME", query.getName());
-        configs.in("O.TYPE_DESC", names(Table.types(types)));
         return runs;
     }
+/*
+*
 
+SELECT
+    DB_NAME() AS TABLE_CATALOG, O.name AS NAME, SCHEMA_NAME(O.schema_id) AS TABLE_SCHEMA, O.type AS TYPE, O.type_desc AS TYPE_DESC, EP.value AS COMMENT
+FROM
+    sys.objects O
+LEFT JOIN
+    sys.extended_properties EP ON O.object_id = EP.major_id
+    AND EP.class = 1 AND EP.minor_id = 0 AND EP.name = 'MS_Description'
+WHERE
+    O.type IN( 'U' ,'V')
+    AND SCHEMA_NAME(O.schema_id) = 'dbo'
+		 */
     /**
      * Table[结果集封装]<br/>
      * Table 属性与结果集对应关系
