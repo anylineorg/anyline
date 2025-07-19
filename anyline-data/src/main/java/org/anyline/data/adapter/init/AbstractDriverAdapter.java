@@ -5559,6 +5559,11 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                         int idx = 0;
                         for (Run run : runs) {
                             if (null != navi) {
+                                long total = navi.getTotalRow();
+                                if(total <= 0) {
+                                    total = count(runtime, random, run);
+                                    navi.setTotalRow(total);
+                                }
                                 run.setPageNavi(navi);
                                 mergeFinalQuery(runtime, run);
                             }

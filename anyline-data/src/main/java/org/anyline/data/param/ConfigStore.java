@@ -1375,8 +1375,8 @@ public interface ConfigStore extends Cloneable{
 	default ConfigStore or(Compare compare, String var, Object value, boolean overCondition, boolean overValue) {
 		return or(EMPTY_VALUE_SWITCH.NONE, compare, null, var, value, overCondition, overValue);
 	}
-	default ConfigStore or(Compare compare, String var, Object value) {
-		return or(EMPTY_VALUE_SWITCH.NONE, compare, var, value);
+	default ConfigStore or(Compare compare, String var, Object ... values) {
+		return or(EMPTY_VALUE_SWITCH.NONE, compare, var, BeanUtil.array2list(values));
 	}
 
 	/**
