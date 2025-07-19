@@ -1885,7 +1885,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         Run run = new SimpleRun(runtime, configs);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
-        builder.append("SELECT DB_NAME() AS TABLE_CATALOG, O.name AS NAME, SCHEMA_NAME(O.schema_id) AS TABLE_SCHEMA, O.type AS TYPE, O.type_desc AS TYPE_DESC, EP.value AS COMMENT \n");
+        builder.append("SELECT O.object_id AS ID, DB_NAME() AS TABLE_CATALOG, O.name AS NAME, SCHEMA_NAME(O.schema_id) AS TABLE_SCHEMA, O.type AS TYPE, O.type_desc AS TYPE_DESC, EP.value AS COMMENT \n");
         builder.append("FROM sys.objects O \n");
         builder.append("LEFT JOIN sys.extended_properties EP ON O.object_id = EP.major_id AND EP.class = 1 AND EP.minor_id = 0 AND EP.name = 'MS_Description'\n");
          if((types & 2) == 2) {

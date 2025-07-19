@@ -1563,7 +1563,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
     @Override
     public long count(DataRuntime runtime, String random, Run run) {
         long total = 0;
-        DataSet set = select(runtime, random, false, ACTION.DML.COUNT, null, null, run, run.getTotalQuery(), run.getValues());
+        DataSet set = select(runtime, random, false, ACTION.DML.COUNT, null, run.getConfigs(), run, run.getTotalQuery(), run.getValues());
         if(!set.isEmpty()) {
             total = set.getRow(0).toUpperKey().getLong("CNT", 0L);
         }

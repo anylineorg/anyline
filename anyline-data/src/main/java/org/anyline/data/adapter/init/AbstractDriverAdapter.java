@@ -679,7 +679,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 }else{
                     value = BeanUtil.getFieldValue(obj, key, true);
                 }
-
+                key = key.toUpperCase();
                 if(null == value) {
                     if(factKeys.contains(key)) {
                         cols.remove(key);
@@ -5561,9 +5561,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                             if (null != navi) {
                                 long total = navi.getTotalRow();
                                 if(total <= 0) {
-                                    total = count(runtime, random, run);
+                                    total = count(runtime, random, new DefaultTextPrepare(run.getFinalQuery(false)), configs);
                                     navi.setTotalRow(total);
                                 }
+
                                 run.setPageNavi(navi);
                                 mergeFinalQuery(runtime, run);
                             }
