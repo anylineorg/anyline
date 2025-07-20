@@ -229,13 +229,8 @@ public interface EntityAdapter {
 
         // 3.属性名转成列名
         if(BasicUtil.isEmpty(name)) {
-            Class c = field.getType();
+            Class c = ClassUtil.getComponentClass(field);
             String cn = null;
-            if(c.isArray()){
-                c = c.getComponentType();
-            }else if(ClassUtil.isInSub(c, Collection.class)){
-                c = ClassUtil.getComponentClass(field.getGenericType());
-            }
             if(null != c) {
                 cn = c.getName();
             }

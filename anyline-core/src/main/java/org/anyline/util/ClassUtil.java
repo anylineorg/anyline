@@ -781,21 +781,9 @@ public class ClassUtil {
 	 * @return Class
 	 */
 	public static Class getComponentClass(Field field) {
-		//数组
-		if(field.getType().isArray()) {
-			return field.getType().getComponentType();
-		}
-		//集合
-		Type gtype = field.getGenericType();
-		if(gtype instanceof ParameterizedType) {
-			ParameterizedType pt = (ParameterizedType) gtype;
-			Type[] args = pt.getActualTypeArguments();
-			if (null != args && args.length > 0 && args[0] instanceof Class) {
-				Class itemClass = (Class) args[0];
-				return itemClass;
-			}
-		}else if(gtype instanceof Class) {
-			return (Class) gtype;
+		Class[] classes = getComponentClasses(field);
+		if(classes.length > 0) {
+			return classes[0];
 		}
 		return null;
 	}
@@ -804,24 +792,35 @@ public class ClassUtil {
 	 * 根据属性获取 集合或数组的泛型类,如果不同Map类型 只返回class[0]
 	 * @param field 属性
 	 * @return Class
+	 *
+	if(obj instanceof ParameterizedType){
+	ParameterizedType pt = (ParameterizedType) obj;
+	Type[] actualTypes = pt.getActualTypeArguments();
+	return actualTypes[0].getClass();
+	}
 	 */
 	public static Class[] getComponentClasses(Field field) {
 		Class[] array = new Class[2];
-		//数组
-		if(field.getType().isArray()) {
-			array[0] = field.getType().getComponentType();
+		if(null == field) {
+			return array;
 		}
-		//集合
+		//数组
+		Class c = field.getType();
 		Type gtype = field.getGenericType();
-		if(gtype instanceof ParameterizedType) {
-			ParameterizedType pt = (ParameterizedType) gtype;
-			Type[] args = pt.getActualTypeArguments();
-			if (null != args) {
-				if(args.length > 0 && args[0] instanceof Class) {
-					array[0] = (Class) args[0];
-				}
-				if(args.length > 1 && args[1] instanceof Class) {
-					array[1] = (Class) args[1];
+		if(c.isArray()) {
+			array[0] = c.getComponentType();
+		}else if(gtype instanceof ParameterizedType){
+			//集合
+			if(gtype instanceof ParameterizedType) {
+				ParameterizedType pt = (ParameterizedType) gtype;
+				Type[] args = pt.getActualTypeArguments();
+				if (null != args) {
+					if(args.length > 0 && args[0] instanceof Class) {
+						array[0] = (Class) args[0];
+					}
+					if(args.length > 1 && args[1] instanceof Class) {
+						array[1] = (Class) args[1];
+					}
 				}
 			}
 		}else if(gtype instanceof Class) {
