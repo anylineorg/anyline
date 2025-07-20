@@ -842,11 +842,11 @@ public class ClassUtil {
 		}
 		//集合
 		Type genericSuperclass = clazz.getGenericSuperclass();
-		ParameterizedType pty= (ParameterizedType) genericSuperclass;
-		if(null != pty) {
+		if(genericSuperclass instanceof ParameterizedType) {
+			ParameterizedType pty = (ParameterizedType) genericSuperclass;
 			Type actualTypeArgument = pty.getActualTypeArguments()[0];
-			if(actualTypeArgument instanceof Class){
-				return (Class)actualTypeArgument;
+			if (actualTypeArgument instanceof Class) {
+				return (Class) actualTypeArgument;
 			}
 		}
 		return null;
