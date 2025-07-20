@@ -231,8 +231,10 @@ public interface EntityAdapter {
         if(BasicUtil.isEmpty(name)) {
             Class c = field.getType();
             String cn = null;
-            if(c.isArray() || ClassUtil.isInSub(c, Collection.class)){
-                c = ClassUtil.getComponentClass(c);
+            if(c.isArray()){
+                c = c.getComponentType();
+            }else if(ClassUtil.isInSub(c, Collection.class)){
+                c = ClassUtil.getComponentClass(field.getGenericType());
             }
             if(null != c) {
                 cn = c.getName();

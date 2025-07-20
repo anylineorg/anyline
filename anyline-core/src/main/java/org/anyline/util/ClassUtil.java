@@ -105,12 +105,10 @@ public class ClassUtil {
 					if (isInSub(c, bases)) {
 						list.add(c);
 					}
-				}catch (NoClassDefFoundError e) {
-				}catch (Exception e) {
+				}catch (Exception ignored) {
 				}
 			}
-		}catch (NoClassDefFoundError e) {
-		}catch(Exception e) {
+		}catch(Exception ignored) {
 		}
 		return list;
 	}
@@ -222,7 +220,7 @@ public class ClassUtil {
 	 *                     类名集合
 	 * @param childPackage 是否遍历子包
 	 * @return 类的完整名称
-	 * @throws UnsupportedEncodingException
+	 * @throws UnsupportedEncodingException UnsupportedEncodingException
 	 */
 	private static List<String> getClassNameListFromFile(String filePath, boolean childPackage) throws UnsupportedEncodingException {
 		List<String> myClassName = new ArrayList<>();
@@ -257,7 +255,7 @@ public class ClassUtil {
 	 * @param jarPath      jar文件路径
 	 * @param childPackage 是否遍历子包
 	 * @return 类的完整名称
-	 * @throws UnsupportedEncodingException
+	 * @throws UnsupportedEncodingException UnsupportedEncodingException
 	 */
 	private static List<String> getClassNameListFromJar(String jarPath, boolean childPackage) throws UnsupportedEncodingException {
 		List<String> names = new ArrayList<>();
@@ -303,7 +301,7 @@ public class ClassUtil {
 	 * @param packagePath  包路径
 	 * @param childPackage 是否遍历子包
 	 * @return 类的完整名称
-	 * @throws UnsupportedEncodingException
+	 * @throws UnsupportedEncodingException UnsupportedEncodingException
 	 */
 	private static List<String> getClassNameListFromJar(URL[] urls, String packagePath, boolean childPackage) throws UnsupportedEncodingException {
 		List<String> names = new ArrayList<>();
@@ -419,7 +417,7 @@ public class ClassUtil {
 					} else {
 						list.add(value);
 					}
-				}catch (Exception e) {
+				}catch (Exception ignore) {
 				}
 			}
 
@@ -657,7 +655,6 @@ public class ClassUtil {
 	 * @param annotations  annotation 支持模糊匹配, 不区分大小写 如 Table*
 	 * @return List
 	 */
-	@SuppressWarnings({"rawtypes","unchecked" })
 	public static List<Field> getFieldsByAnnotation(Class clazz, String ... annotations) {
 		List<Field> list = new ArrayList<Field>();
 		try{
@@ -846,9 +843,11 @@ public class ClassUtil {
 		//集合
 		Type genericSuperclass = clazz.getGenericSuperclass();
 		ParameterizedType pty= (ParameterizedType) genericSuperclass;
-		Type actualTypeArgument = pty.getActualTypeArguments()[0];
-		if(actualTypeArgument instanceof Class){
-			return (Class)actualTypeArgument;
+		if(null != pty) {
+			Type actualTypeArgument = pty.getActualTypeArguments()[0];
+			if(actualTypeArgument instanceof Class){
+				return (Class)actualTypeArgument;
+			}
 		}
 		return null;
 	}
@@ -856,7 +855,13 @@ public class ClassUtil {
 		if(null == obj) {
 			return null;
 		}
-		if(obj instanceof Field) {
+		if(obj instanceof Type){
+			if(obj instanceof ParameterizedType){
+				ParameterizedType pt = (ParameterizedType) obj;
+				Type[] actualTypes = pt.getActualTypeArguments();
+				return actualTypes[0].getClass();
+			}
+		}else if(obj instanceof Field) {
 			return getComponentClass((Field) obj);
 		}else if(obj instanceof Class) {
 			return getComponentClass((Class)obj);
