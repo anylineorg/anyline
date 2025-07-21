@@ -1058,6 +1058,13 @@ public class DefaultConfigStore implements ConfigStore {
 	 */
 	@Override
 	public ConfigStore params(Object... values) {
+		if(null != values && values.length == 1){
+			Object value = values[0];
+			if(value instanceof Map){
+				Map map = (Map)value;
+				return param(map);
+			}
+		}
 		if(null == this.values) {
 			this.values = new ArrayList<>();
 		}
