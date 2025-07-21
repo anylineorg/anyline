@@ -384,6 +384,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         }
         ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
         boolean cmd_success = false;
+        if(null == configs){
+            configs = new DefaultConfigStore();//拦截器中可能需要修改过滤条件
+        }
         swt = InterceptorProxy.prepareInsert(runtime, random, batch, dest, data, configs, columns);
         if(swt == ACTION.SWITCH.BREAK) {
             return -1;
@@ -843,9 +846,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             log.warn("[不具备执行条件][action:{}][table:{}]", action, run.getTable());
             return -1;
         }
-        if(null != configs) {
-            configs.add(run);
+        if(null == configs) {
+            configs = new DefaultConfigStore();
         }
+        configs.add(run);
         List<Object> values = run.getValues();
         long fr = System.currentTimeMillis();
         /*执行SQL*/
@@ -977,6 +981,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         if(null == random) {
             random = random(runtime);
         }
+        if(null == configs){
+            configs = new DefaultConfigStore();//拦截器中可能用到，需要干预更新条件
+        }
         swt = InterceptorProxy.prepareUpdate(runtime, random, batch, dest, data, configs, columns);
         if(swt == ACTION.SWITCH.BREAK) {
             return -1;
@@ -1072,6 +1079,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         boolean cmd_success = false;
         if(null == random) {
             random = random(runtime);
+        }
+        if(null == configs){
+            configs = new DefaultConfigStore();//拦截器中可能需要修改过滤条件
         }
         swt = InterceptorProxy.prepareUpdate(runtime, random, prepare, data, configs);
         if(swt == ACTION.SWITCH.BREAK) {
@@ -2359,6 +2369,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         boolean cmd_success = false;
         PageNavi navi = null;
 
+        if(null == configs){
+            configs = new DefaultConfigStore();//拦截器中可能需要修改过滤条件
+        }
         ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
         if (null != dmListener) {
             swt = dmListener.prepareQuery(runtime, random, prepare, configs, conditions);
@@ -2504,6 +2517,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         Run run = null;
         if(null == random) {
             random = random(runtime);
+        }
+        if(null == configs){
+            configs = new DefaultConfigStore();//拦截器中可能需要修改过滤条件
         }
         //query拦截
         swt = InterceptorProxy.prepareQuery(runtime, random, prepare, configs, conditions);
@@ -3422,6 +3438,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         if(null == random) {
             random = random(runtime);
         }
+        if(null == configs){
+            configs = new DefaultConfigStore();//拦截器中可能需要修改过滤条件
+        }
         swt = InterceptorProxy.prepareExecute(runtime, random, prepare, configs, conditions);
         if(swt == ACTION.SWITCH.BREAK) {
             return -1;
@@ -3463,6 +3482,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
         if(null == random) {
             random = random(runtime);
+        }
+        if(null == configs){
+            configs = new DefaultConfigStore();//拦截器中可能需要修改过滤条件
         }
         swt = InterceptorProxy.prepareExecute(runtime, random, prepares, configs);
         if(swt == ACTION.SWITCH.BREAK) {
@@ -3859,6 +3881,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         if(null == random) {
             random = random(runtime);
         }
+        if(null == configs){
+            configs = new DefaultConfigStore();//拦截器中可能需要修改过滤条件
+        }
         ACTION.SWITCH swt = InterceptorProxy.prepareDelete(runtime, random, batch, table, configs, key, values);
         if(swt == ACTION.SWITCH.BREAK) {
             return -1;
@@ -3901,6 +3926,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
         long size = -1;
         if(null != obj) {
+            if(null == configs){
+                configs = new DefaultConfigStore();//拦截器中可能需要修改过滤条件
+            }
             swt = InterceptorProxy.prepareDelete(runtime, random, 0, dest, obj, configs, columns);
             if(swt == ACTION.SWITCH.BREAK) {
                 return -1;
@@ -3943,6 +3971,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
     public long delete(DataRuntime runtime, String random, Table table, ConfigStore configs, String... conditions) {
         long result = -1;
         ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
+        if(null == configs){
+            configs = new DefaultConfigStore();//拦截器中可能需要修改过滤条件
+        }
         swt = InterceptorProxy.prepareDelete(runtime, random, 0, table, configs, conditions);
         if(swt == ACTION.SWITCH.BREAK) {
             return -1;

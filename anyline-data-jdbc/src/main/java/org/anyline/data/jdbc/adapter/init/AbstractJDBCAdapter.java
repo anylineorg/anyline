@@ -208,6 +208,9 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
         }
         ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
         boolean cmd_success = false;
+        if(null == configs){
+            configs = new DefaultConfigStore();//拦截器中可能需要修改过滤条件
+        }
         swt = InterceptorProxy.prepareInsert(runtime, random, dest, prepare, configs);
         if(swt == ACTION.SWITCH.BREAK) {
             return -1;
@@ -1514,6 +1517,9 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
             random = random(runtime);
         }
         ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
+        if(null == configs){
+            configs = new DefaultConfigStore();//拦截器中可能需要修改过滤条件
+        }
         if (null != dmListener) {
             swt = dmListener.prepareQuery(runtime, random, prepare, configs, conditions);
         }
