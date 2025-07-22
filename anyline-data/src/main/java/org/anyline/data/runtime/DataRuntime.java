@@ -30,6 +30,14 @@ public interface DataRuntime {
     void setAdapter(DriverAdapter adapter);
 
     /**
+     * 是否管理员帐号 影响元数据查询
+     * @return boolean
+     */
+    default boolean admin() {
+        return true;
+    }
+    default void admin(boolean admin){}
+    /**
      * 返回复制源的id(有些数据源是通过自动复制，在注销时会把复制出来的数据源一块注销)
      * @return String
      */
