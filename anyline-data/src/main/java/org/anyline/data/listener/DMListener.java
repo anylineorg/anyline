@@ -18,7 +18,6 @@ package org.anyline.data.listener;
 
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
-import org.anyline.data.prepare.auto.TablePrepare;
 import org.anyline.data.run.Run;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.DataRow;
@@ -175,6 +174,7 @@ public interface DMListener {
      * @param random 用来标记同一组SQL、执行结构、参数等
      * @param prepare 一般通过TableBuilder生成
      * @param data K-VariableValue 更新值key:需要更新的列 value:通常是关联表的列用VariableValue表示，也可以是常量
+     * @param configs 更新条件
      * @return SWITCH 如果返回false 则中断执行
      */
     default SWITCH prepareUpdate(DataRuntime runtime, String random, RunPrepare prepare, DataRow data, ConfigStore configs) {return SWITCH.CONTINUE;}
@@ -244,9 +244,10 @@ public interface DMListener {
      * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
      * @param obj 实体
      * @param columns 需要抛入的列 如果不指定  则根据实体属性解析
+     * @param configs 条件
      * @return SWITCH
      */
-    default SWITCH prepareInsert(DataRuntime runtime, String random, int batch, Table dest, Object obj, List<String> columns) {return SWITCH.CONTINUE;}
+    default SWITCH prepareInsert(DataRuntime runtime, String random, int batch, Table dest, Object obj, ConfigStore configs, List<String> columns) {return SWITCH.CONTINUE;}
     default SWITCH prepareInsert(DataRuntime runtime, String random, Table dest, RunPrepare prepare, ConfigStore configs) {
         return SWITCH.CONTINUE;
     }
@@ -364,10 +365,11 @@ public interface DMListener {
      * @param random 用来标记同一组SQL、执行结构、参数等
      * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
      * @param obj entity或DataRow
-     * @param columns 删除条件的我
+     * @param columns 删除条件的列
+     * @param configs 删除条件
      * @return SWITCH
      */
-    default SWITCH prepareDelete(DataRuntime runtime, String random, int batch, Table dest, Object obj, String ... columns) {return SWITCH.CONTINUE;}
+    default SWITCH prepareDelete(DataRuntime runtime, String random, int batch, Table dest, Object obj, ConfigStore configs, String ... columns) {return SWITCH.CONTINUE;}
 
     /**
      * 创建删除SQL前调用(DataRuntime runtime, String random, 根据条件), 修改删除条件可以在这一步实现<br/>
@@ -379,9 +381,10 @@ public interface DMListener {
      * @param table 表
      * @param key key
      * @param values values
+     * @param configs 删除条件
      * @return SWITCH
      */
-    default SWITCH prepareDelete(DataRuntime runtime, String random, int batch, Table table, String key, Object values) {return SWITCH.CONTINUE;}
+    default SWITCH prepareDelete(DataRuntime runtime, String random, int batch, Table table, ConfigStore configs, String key, Object values) {return SWITCH.CONTINUE;}
 
     /**
      * 执行删除前调用

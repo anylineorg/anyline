@@ -392,7 +392,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             return -1;
         }
         if(null != dmListener) {
-            swt = dmListener.prepareInsert(runtime, random, batch, dest, data, columns);
+            swt = dmListener.prepareInsert(runtime, random, batch, dest, data, configs, columns);
         }
         if(swt == ACTION.SWITCH.BREAK) {
             return -1;
@@ -3889,7 +3889,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             return -1;
         }
         if(null != dmListener) {
-            swt = dmListener.prepareDelete(runtime, random, batch, table, key, values);
+            swt = dmListener.prepareDelete(runtime, random, batch, table, configs, key, values);
         }
         if(swt == ACTION.SWITCH.BREAK) {
             return -1;
@@ -3934,7 +3934,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 return -1;
             }
             if(null != dmListener) {
-                swt = dmListener.prepareDelete(runtime, random, 0, dest, obj, columns);
+                swt = dmListener.prepareDelete(runtime, random, 0, dest, obj, configs, columns);
             }
             if(swt == ACTION.SWITCH.BREAK) {
                 return -1;
@@ -3979,7 +3979,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             return -1;
         }
         if(null != dmListener) {
-            swt = dmListener.prepareDelete(runtime, random, 0, table, configs, conditions);
+            swt = dmListener.prepareDelete(runtime, random, 0, table, null, configs, conditions);
         }
         if(swt == ACTION.SWITCH.BREAK) {
             return -1;
