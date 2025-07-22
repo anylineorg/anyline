@@ -20,15 +20,22 @@ import java.util.LinkedHashMap;
 
 public class TypeMetadataHolder {
     private static final LinkedHashMap<DatabaseType, LinkedHashMap<String, TypeMetadata>> metas = new LinkedHashMap<>();
-    public static void reg(DatabaseType type, String name, TypeMetadata metadata) {
-        LinkedHashMap<String, TypeMetadata> map = metas.computeIfAbsent(type, k -> new LinkedHashMap<>());
-        if(null == map){
-            map = new LinkedHashMap<>();
-            metas.put(type, map);
+
+    public static void reg(DatabaseType type, String name, TypeMetadata metadata, boolean override) {
+        if(null == name){
+            return;
         }
-        map.put(name, metadata);
+        name = name.toUpperCase();
+        LinkedHashMap<String, TypeMetadata> map = metas.computeIfAbsent(type, k -> new LinkedHashMap<>());
+        if(override || !map.containsKey(name)) {
+            map.put(name, metadata);
+        }
     }
     public static TypeMetadata get(DatabaseType type, String name) {
+        if(null == name){
+            return null;
+        }
+        name = name.toUpperCase();
         LinkedHashMap<String, TypeMetadata> map = metas.get(type);
         if(null == map){
             return null;

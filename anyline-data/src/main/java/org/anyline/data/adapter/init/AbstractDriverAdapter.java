@@ -188,8 +188,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             for(DatabaseType db:dbs) {
                 if(db == this.type()) {
                     //column type支持当前db
-                    alias(type.getName(), type);
-                    alias(type.name(), type);
+                    alias(type.getName(), type, false);
+                    alias(type.name(), type, false);
                     break;
                 }
             }
@@ -267,30 +267,33 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @return Config
      */
     @Override
-    public TypeMetadata.Refer reg(TypeMetadataAlias alias) {
+    public TypeMetadata.Refer reg(TypeMetadataAlias alias, boolean override) {
         TypeMetadata standard = alias.standard();
         if(standard == StandardTypeMetadata.NONE) {
             return null;
         }
-        alias(alias.input(), standard);                                        //根据别名
-        alias(standard.getName(), standard);                                        //根据实现SQL数据类型名称
+        alias(alias.input(), standard, override);                                        //根据别名
+        alias(standard.getName(), standard, override);                                        //根据实现SQL数据类型名称
         TypeMetadata.Refer refer = alias.refer();
         reg(alias.input(), refer);
         reg(alias.standard(), refer);
         return refer;
     }
     protected void alias(String key, TypeMetadata value) {
+        alias(key, value, false);
+    }
+    protected void alias(String key, TypeMetadata value, boolean override) {
         if(null != key && null != value && TypeMetadata.NONE != value) {
             //this.alias.put(key, value);
-            TypeMetadataHolder.reg(type(), key, value);
+            TypeMetadataHolder.reg(type(), key, value, override);
 
             key = key.replace("_", " ");
             //this.alias.put(key, value);
-            TypeMetadataHolder.reg(type(), key, value);
+            TypeMetadataHolder.reg(type(), key, value, override);
 
             key = key.replace(" ", "_");
             //this.alias.put(key, value);
-            TypeMetadataHolder.reg(type(), key, value);
+            TypeMetadataHolder.reg(type(), key, value, override);
         }
     }
 

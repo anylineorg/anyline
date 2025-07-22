@@ -251,9 +251,13 @@ public interface DriverAdapter {
     /**
      * 注册数据类型别名(包含对应的标准类型、length/precision/scale等配置)
      * @param alias 数据类型别名
+     * @param override 是否覆盖 根据TypeMetadataAlias配置时默认不要覆盖 明确需要覆盖时才用true
      * @return Config
      */
-    TypeMetadata.Refer reg(TypeMetadataAlias alias);
+    TypeMetadata.Refer reg(TypeMetadataAlias alias, boolean override);
+    default TypeMetadata.Refer reg(TypeMetadataAlias alias) {
+        return reg(alias, false);
+    }
     /**
      * 注册数据类型配置<br/>
      * 要从配置项中取出每个属性检测合并,不要整个覆盖<br/>
