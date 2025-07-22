@@ -30,6 +30,7 @@ import org.anyline.metadata.*;
 import org.anyline.metadata.refer.MetadataFieldRefer;
 import org.anyline.metadata.refer.MetadataReferHolder;
 import org.anyline.metadata.type.TypeMetadata;
+import org.anyline.metadata.type.init.StandardTypeMetadata;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
@@ -63,6 +64,9 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
             alias(alias.name(), alias.standard());
         }
 
+        alias("int2", StandardTypeMetadata.SMALLINT, true);
+        alias("int4", StandardTypeMetadata.INT, true);
+        alias("int8", StandardTypeMetadata.BIGINT, true);
     }
 
     @Override

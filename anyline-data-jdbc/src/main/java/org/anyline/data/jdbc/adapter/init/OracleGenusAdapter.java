@@ -33,7 +33,6 @@ import org.anyline.metadata.*;
 import org.anyline.metadata.refer.MetadataFieldRefer;
 import org.anyline.metadata.refer.MetadataReferHolder;
 import org.anyline.metadata.type.TypeMetadata;
-import org.anyline.metadata.type.init.StandardTypeMetadata;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
@@ -68,10 +67,6 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
             reg(alias);
             alias(alias.name(), alias.standard());
         }
-        alias("int2", StandardTypeMetadata.SMALLINT, true);
-        alias("int4", StandardTypeMetadata.INT, true);
-        alias("int8", StandardTypeMetadata.BIGINT, true);
-
     }
 
     @Override
