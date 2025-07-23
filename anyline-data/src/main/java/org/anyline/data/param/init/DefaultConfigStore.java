@@ -1052,7 +1052,9 @@ public class DefaultConfigStore implements ConfigStore {
 	}
 
 	/**
-	 * 根据占位符下标赋值,注意不需要提供下标,按顺序提供值即可
+	 * 根据占位符下标赋值,注意不需要提供下标,按顺序提供值即可<br/>
+	 * 在批量操作或用?占位时才需要用到,因为没有key只参按下标赋值<br/>
+	 * 大分部情况下调用param()就可以param()可以接收集合类的参数值
 	 * @param values values
 	 * @return this
 	 */
