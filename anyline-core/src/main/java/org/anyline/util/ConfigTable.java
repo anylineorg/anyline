@@ -113,6 +113,7 @@ public class ConfigTable {
 	public static boolean IS_UPPER_KEY 									= true			;	// DataRow是否自动转换成大写
 	public static boolean IS_LOWER_KEY 									= false			;	// DataRow是否自动转换成小写
 	public static boolean IS_KEY_IGNORE_CASE 							= true			;	// DataRow是否忽略大小写
+	public static boolean IS_KEY_IGNORE_SEPARATOR						= false			;	// DataRow是否忽略分隔符号
 	public static boolean IS_THROW_SQL_QUERY_EXCEPTION 					= true			;	// SQL查询异常时是否抛出
 	public static boolean IS_THROW_SQL_UPDATE_EXCEPTION 				= true			;	// 命令执行异常时是否抛出
 	public static boolean IS_UPDATE_NULL_COLUMN							= false			;	// DataRow是否更新nul值的列(针对DataRow)

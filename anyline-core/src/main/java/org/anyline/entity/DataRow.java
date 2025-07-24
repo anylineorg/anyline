@@ -69,6 +69,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     protected boolean insertEmptyColumn           = ConfigTable.IS_INSERT_EMPTY_COLUMN;
     protected boolean replaceEmptyNull            = ConfigTable.IS_REPLACE_EMPTY_NULL;
     protected Boolean ignoreCase                  = ConfigTable.IS_KEY_IGNORE_CASE;
+    protected boolean ignoreSeparator             = ConfigTable.IS_KEY_IGNORE_SEPARATOR;
 
     /*
      * 相当于Class Name 如User/Department
@@ -335,7 +336,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     }
 
     public static DataRow parse(DataRow row, KEY_CASE keyCase, Object obj, String... keys) {
-        if(null != obj && obj instanceof String) {
+        if(obj instanceof String) {
             return parseJson(row, keyCase, (String)obj);
         }
         if(null == row) {
@@ -1702,8 +1703,8 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
             }else{
                 mapPut(key, value);
             }
-            if (ignoreCase) {
-                String ignoreKey = key.replace("_","").replace("-","").toUpperCase();
+            if (ignoreSeparator || ignoreCase) {
+                String ignoreKey = ignoreKey(key);
                 keymap.put(ignoreKey, key);
             }
         }
@@ -3867,22 +3868,17 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     public boolean contains(String key) {
         boolean result = false;
         if(null != key) {
-            key = keyAdapter.key(key);
-            if (ignoreCase) {
-                String ignoreKey = key.replace("_","").replace("-","").toUpperCase();
-                String tmp = keymap.get(ignoreKey);
-                if(null != tmp) {
-                    key = tmp;
-                }
+            if(super.containsKey(key)) {
+                return true;
             }
+            key = ignoreKey(key);
             result = super.containsKey(key);
         }
-
         return result;
     }
 
     /**
-     * 返回第一个存在的key对应的value, key不要求完全匹配根据KEY_CASE有可能不区分大小写<br/>
+     * 返回第一个存在的key对应的value, value有可能是null, key不要求完全匹配根据KEY_CASE有可能不区分大小写<br/>
      * 如果需要取第一个不为null的值调用nvl(String ... keys)<br/>
      * 第一个不为空的值调用evl(String ... keys)
      * @param keys keys
@@ -3894,17 +3890,14 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
             return result;
         }
         for(String key:keys) {
-            if (null != key) {
-                if(keyAdapter.getKeyCase() != KEY_CASE.SRC) {
-                    key = keyAdapter.key(key);
-                    if (ignoreCase) {
-                        String ignoreKey = key.replace("_","").replace("-","").toUpperCase();
-                        String tmp = keymap.get(ignoreKey);
-                        if (null != tmp) {
-                            key = tmp;
-                        }
-                    }
-                }
+            if (null == key) {
+                continue;
+            }
+            if(super.containsKey(key)) {
+                return super.get(key);
+            }
+            if(keyAdapter.getKeyCase() != KEY_CASE.SRC) {
+                key = ignoreKey(key);
                 if(super.containsKey(key)) {
                     return super.get(key);
                 }
@@ -3912,9 +3905,22 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         }
         return result;
     }
-
+    public String ignoreKey(String key) {
+        String ignoreKey = key;
+        if(ignoreSeparator){
+            ignoreKey = ignoreKey.replace("_","").replace("-","");
+        }
+        if(ignoreCase){
+            ignoreKey = ignoreKey.toUpperCase();
+        }
+        String tmp = keymap.get(ignoreKey);
+        if (null != tmp) {
+            key = tmp;
+        }
+        return key;
+    }
     public Object get(String key) {
-        if(keyAdapter.getKeyCase() == KEY_CASE.SRC && !ignoreCase) {
+        if(keyAdapter.getKeyCase() == KEY_CASE.SRC && !ignoreCase && !ignoreSeparator) {
             return super.get(key);
         }
         Object result = null;
@@ -3926,14 +3932,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
             if(super.containsKey(key)) {
                 return super.get(key);
             }
-            if (ignoreCase) {
-                String ignoreKey = key.replace("_","").replace("-","").toUpperCase();
-                String tmp = keymap.get(ignoreKey);
-                if(null != tmp) {
-                    key = tmp;
-                }
-                result = super.get(key);
-            }
+            result = super.get(ignoreKey(key));
         }
         return result;
     }
