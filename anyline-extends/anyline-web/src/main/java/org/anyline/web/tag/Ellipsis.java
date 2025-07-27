@@ -63,12 +63,12 @@ public class Ellipsis extends BaseBodyTag {
 				}else{
 					result += replace;
 					if(label) {
-						result = "<label title=\""+src+"\">" + result + "</label>";
+						result = "<label title=\""+src.replace("\"","")+"\">" + result + "</label>";
 					}
 				} 
 			}else{
 				if(label) {
-					result = "<label title=\""+src+"\">" + src + "</label>";
+					result = "<label title=\""+src.replace("\"","")+"\">" + src + "</label>";
 				}else{
 					result = src;
 				}
