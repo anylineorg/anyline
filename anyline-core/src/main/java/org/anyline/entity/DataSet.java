@@ -5161,49 +5161,51 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
      * @return this
      */
     public DataSet sort(int factor,final String ... keys) {
-        Collections.sort(rows, new Comparator<DataRow>() {
-            public int compare(DataRow r1, DataRow r2) {
-                int result = 0;
-                for (String key : keys) {
-                    TypeMetadata.CATEGORY_GROUP type = null;
-                    Column column = DataSet.this.getMetadata(key);
-                    if(null != column) {
-                        type = column.getTypeMetadata().getCategoryGroup();
-                    }
-                    Object v1 = r1.get(key);
-                    Object v2 = r2.get(key);
-                    if (null == v1) {
-                        if (null == v2) {
-                            continue;
+        synchronized (this){
+            Collections.sort(rows, new Comparator<DataRow>() {
+                public int compare(DataRow r1, DataRow r2) {
+                    int result = 0;
+                    for (String key : keys) {
+                        TypeMetadata.CATEGORY_GROUP type = null;
+                        Column column = DataSet.this.getMetadata(key);
+                        if(null != column) {
+                            type = column.getTypeMetadata().getCategoryGroup();
                         }
-                        return -factor;
-                    } else {
-                        if (null == v2) {
-                            return factor;
-                        }
-                    }
-                    if(type == TypeMetadata.CATEGORY_GROUP.NUMBER) {
-                        BigDecimal num1 = new BigDecimal(v1.toString());
-                        BigDecimal num2 = new BigDecimal(v2.toString());
-                        result = num1.compareTo(num2);
-                    }else if(type == TypeMetadata.CATEGORY_GROUP.DATETIME) {
-                        Date date1 = DateUtil.parse(v1);
-                        Date date2 = DateUtil.parse(v2);
-                        result = date1.compareTo(date2);
-                    }else{
-                        result = v1.toString().compareTo(v2.toString());
-                    }
-                    if(result != 0) {
-                        if (result > 0) {
-                            return factor;
-                        } else {
+                        Object v1 = r1.get(key);
+                        Object v2 = r2.get(key);
+                        if (null == v1) {
+                            if (null == v2) {
+                                continue;
+                            }
                             return -factor;
+                        } else {
+                            if (null == v2) {
+                                return factor;
+                            }
+                        }
+                        if(type == TypeMetadata.CATEGORY_GROUP.NUMBER) {
+                            BigDecimal num1 = new BigDecimal(v1.toString());
+                            BigDecimal num2 = new BigDecimal(v2.toString());
+                            result = num1.compareTo(num2);
+                        }else if(type == TypeMetadata.CATEGORY_GROUP.DATETIME) {
+                            Date date1 = DateUtil.parse(v1);
+                            Date date2 = DateUtil.parse(v2);
+                            result = date1.compareTo(date2);
+                        }else{
+                            result = v1.toString().compareTo(v2.toString());
+                        }
+                        if(result != 0) {
+                            if (result > 0) {
+                                return factor;
+                            } else {
+                                return -factor;
+                            }
                         }
                     }
+                    return result;
                 }
-                return result;
-            }
-        });
+            });
+        }
         return this;
     }
     public DataSet addAllUpdateColumns() {

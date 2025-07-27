@@ -69,7 +69,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     protected boolean insertEmptyColumn           = ConfigTable.IS_INSERT_EMPTY_COLUMN;
     protected boolean replaceEmptyNull            = ConfigTable.IS_REPLACE_EMPTY_NULL;
     protected Boolean ignoreCase                  = ConfigTable.IS_KEY_IGNORE_CASE;
-    protected boolean ignoreSeparator             = ConfigTable.IS_KEY_IGNORE_SEPARATOR;
+    protected Boolean ignoreSeparator             = ConfigTable.IS_KEY_IGNORE_SEPARATOR;
 
     /*
      * 相当于Class Name 如User/Department
@@ -1909,7 +1909,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
             return null;
         }
         Object obj = get(key);
-        if (null != obj && obj instanceof Point) {
+        if (obj instanceof Point) {
             return (Point) obj;
         }
         if(ConfigTable.IS_RETURN_EMPTY_INSTANCE_REPLACE_NULL) {
@@ -3620,7 +3620,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         }
         for (String key : ks) {
             Object value = get(key);
-            if (value != null && value instanceof String) {
+            if (value instanceof String) {
                 put(key, ((String) value).replace(oldChar, replace));
             }
         }
@@ -3641,7 +3641,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         }
         for (String key : ks) {
             Object value = get(key);
-            if (value != null && value instanceof String) {
+            if (value instanceof String) {
                 put(key, ((String) value).replaceAll(regex, replace));
             }
         }
@@ -3804,14 +3804,14 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
                         || v instanceof BigDecimal
                 ) {
                     continue;
-                }else if(v instanceof Date) {
-                    Date date = (Date)v;
-                    result = date.getTime();
                 }else if(v instanceof java.sql.Timestamp) {
                     java.sql.Timestamp timestamp = (java.sql.Timestamp)v;
                     result = timestamp.getTime();
                 }else if(v instanceof java.sql.Date) {
                     Date date = (java.sql.Date)v;
+                    result = date.getTime();
+                }else if(v instanceof Date) {
+                    Date date = (Date)v;
                     result = date.getTime();
                 }else if(v instanceof LocalDateTime) {
                     result = DateUtil.parse((LocalDateTime)v).getTime();
@@ -3850,11 +3850,10 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 
     public DataRow convertString(String... keys) {
         List<String> list = columns(keys);
-
         for (String key : list) {
             String v = getString(key);
             if (null != v) {
-                put(key, v.toString());
+                put(key, v);
             }
         }
         return this;
@@ -3887,26 +3886,27 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     public Object get(String ... keys) {
         Object result = null;
         if(null == keys) {
-            return result;
+            return null;
         }
         for(String key:keys) {
             if (null == key) {
                 continue;
             }
-            if(super.containsKey(key)) {
-                return super.get(key);
-            }
-            if(keyAdapter.getKeyCase() != KEY_CASE.SRC) {
-                key = ignoreKey(key);
+            if(keyAdapter.getKeyCase() == KEY_CASE.SRC && !ignoreCase && !ignoreSeparator) {
                 if(super.containsKey(key)) {
                     return super.get(key);
                 }
+            }
+
+            key = ignoreKey(key);
+            if(super.containsKey(key)) {
+                return super.get(key);
             }
         }
         return result;
     }
     public String ignoreKey(String key) {
-        String ignoreKey = key;
+        String ignoreKey = keyAdapter.key(key);;
         if(ignoreSeparator){
             ignoreKey = ignoreKey.replace("_","").replace("-","");
         }
@@ -3920,18 +3920,14 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return key;
     }
     public Object get(String key) {
+        if(null == key) {
+            return null;
+        }
         if(keyAdapter.getKeyCase() == KEY_CASE.SRC && !ignoreCase && !ignoreSeparator) {
             return super.get(key);
         }
-        Object result = null;
-        if (null != key) {
-            if(super.containsKey(key)) {
-                return super.get(key);
-            }
-            key = keyAdapter.key(key);
-            if(super.containsKey(key)) {
-                return super.get(key);
-            }
+        Object result = super.get(key);
+        if (null == result) {
             result = super.get(ignoreKey(key));
         }
         return result;
@@ -3944,10 +3940,10 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         if(ignoreCase) {
             if (ignores.isEmpty()) {
                 for (String k : keySet()) {
-                    ignores.put(k.toUpperCase().replace("_", "").replace("-", ""), k);
+                    ignores.put(k.toUpperCase(), k);
                 }
             }
-            key = ignores.get(key.toUpperCase().replace("_", "").replace("-", ""));
+            key = ignores.get(key.toUpperCase());
         }
         return super.get(key);
     }
@@ -3970,6 +3966,14 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 
     public void setIgnoreCase(Boolean ignoreCase) {
         this.ignoreCase = ignoreCase;
+    }
+
+    public Boolean getIgnoreSeparator() {
+        return ignoreSeparator;
+    }
+
+    public void stIgnoreSeparator(Boolean ignoreSeparator) {
+        this.ignoreSeparator = ignoreSeparator;
     }
 
     /**
@@ -4450,7 +4454,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         }
         Object value = get(src);
         Date date = null;
-        if(value instanceof String && null != format) {
+        if(value instanceof String) {
             date = DateUtil.parse((String)value, format);
         }else {
             date = DateUtil.parse(value);
