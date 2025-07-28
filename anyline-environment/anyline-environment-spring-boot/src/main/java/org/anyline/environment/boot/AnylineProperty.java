@@ -975,11 +975,20 @@ public class AnylineProperty {
         ConfigTable.PRIMARY_GENERATOR_WORKER_ID = primaryGeneratorWorkerId;
     }
 
+    public void setPrimaryGeneratorWorkerId(int primaryGeneratorWorkerId) {
+        this.primaryGeneratorWorkerId = primaryGeneratorWorkerId;
+        ConfigTable.PRIMARY_GENERATOR_WORKER_ID = primaryGeneratorWorkerId;
+    }
+
     public String getPrimaryGeneratorPrefix() {
         return primaryGeneratorPrefix;
     }
 
     public void setGeneratorPrefix(String primaryGeneratorPrefix) {
+        this.primaryGeneratorPrefix = primaryGeneratorPrefix;
+        ConfigTable.PRIMARY_GENERATOR_PREFIX = primaryGeneratorPrefix;
+    }
+    public void setPrimaryGeneratorPrefix(String primaryGeneratorPrefix) {
         this.primaryGeneratorPrefix = primaryGeneratorPrefix;
         ConfigTable.PRIMARY_GENERATOR_PREFIX = primaryGeneratorPrefix;
     }
@@ -993,11 +1002,20 @@ public class AnylineProperty {
         ConfigTable.PRIMARY_GENERATOR_RANDOM_LENGTH = primaryGeneratorRandomLength;
     }
 
+    public void setPrimaryGeneratorRandomLength(int primaryGeneratorRandomLength) {
+        this.primaryGeneratorRandomLength = primaryGeneratorRandomLength;
+        ConfigTable.PRIMARY_GENERATOR_RANDOM_LENGTH = primaryGeneratorRandomLength;
+    }
+
     public boolean isPrimaryGeneratorUpper() {
         return primaryGeneratorUpper;
     }
 
     public void setGeneratorUpper(boolean primaryGeneratorUpper) {
+        this.primaryGeneratorUpper = primaryGeneratorUpper;
+        ConfigTable.PRIMARY_GENERATOR_UPPER = primaryGeneratorUpper;
+    }
+    public void setPrimaryGeneratorUpper(boolean primaryGeneratorUpper) {
         this.primaryGeneratorUpper = primaryGeneratorUpper;
         ConfigTable.PRIMARY_GENERATOR_UPPER = primaryGeneratorUpper;
     }
@@ -1011,11 +1029,21 @@ public class AnylineProperty {
         ConfigTable.PRIMARY_GENERATOR_LOWER = primaryGeneratorLower;
     }
 
+    public void setPrimaryGeneratorLower(boolean primaryGeneratorLower) {
+        this.primaryGeneratorLower = primaryGeneratorLower;
+        ConfigTable.PRIMARY_GENERATOR_LOWER = primaryGeneratorLower;
+    }
+
     public boolean isPrimaryGeneratorUuidActive() {
         return primaryGeneratorUuidActive;
     }
 
     public void setGeneratorUuidActive(boolean primaryGeneratorUuidActive) {
+        this.primaryGeneratorUuidActive = primaryGeneratorUuidActive;
+        ConfigTable.PRIMARY_GENERATOR_UUID_ACTIVE = primaryGeneratorUuidActive;
+    }
+
+    public void setPrimaryGeneratorUuidActive(boolean primaryGeneratorUuidActive) {
         this.primaryGeneratorUuidActive = primaryGeneratorUuidActive;
         ConfigTable.PRIMARY_GENERATOR_UUID_ACTIVE = primaryGeneratorUuidActive;
     }
@@ -1037,12 +1065,20 @@ public class AnylineProperty {
         this.primaryGeneratorSnowflakeActive = primaryGeneratorSnowflakeActive;
         ConfigTable.PRIMARY_GENERATOR_SNOWFLAKE_ACTIVE = primaryGeneratorSnowflakeActive;
     }
+    public void setPrimaryGeneratorSnowflakeActive(boolean primaryGeneratorSnowflakeActive) {
+        this.primaryGeneratorSnowflakeActive = primaryGeneratorSnowflakeActive;
+        ConfigTable.PRIMARY_GENERATOR_SNOWFLAKE_ACTIVE = primaryGeneratorSnowflakeActive;
+    }
 
     public boolean isPrimaryGeneratorRandomActive() {
         return primaryGeneratorRandomActive;
     }
 
     public void setGeneratorRandomActive(boolean primaryGeneratorRandomActive) {
+        this.primaryGeneratorRandomActive = primaryGeneratorRandomActive;
+        ConfigTable.PRIMARY_GENERATOR_RANDOM_ACTIVE = primaryGeneratorRandomActive;
+    }
+    public void settPrimaryGeneratorRandomActive(boolean primaryGeneratorRandomActive) {
         this.primaryGeneratorRandomActive = primaryGeneratorRandomActive;
         ConfigTable.PRIMARY_GENERATOR_RANDOM_ACTIVE = primaryGeneratorRandomActive;
     }
@@ -1056,11 +1092,21 @@ public class AnylineProperty {
         ConfigTable.PRIMARY_GENERATOR_TIME_FORMAT = primaryGeneratorTimeFormat;
     }
 
+    public void setPrimaryGeneratorTimeFormat(String primaryGeneratorTimeFormat) {
+        this.primaryGeneratorTimeFormat = primaryGeneratorTimeFormat;
+        ConfigTable.PRIMARY_GENERATOR_TIME_FORMAT = primaryGeneratorTimeFormat;
+    }
+
     public int getPrimaryGeneratorTimeSuffixLength() {
         return primaryGeneratorTimeSuffixLength;
     }
 
     public void setGeneratorTimeSuffixLength(int primaryGeneratorTimeSuffixLength) {
+        this.primaryGeneratorTimeSuffixLength = primaryGeneratorTimeSuffixLength;
+        ConfigTable.PRIMARY_GENERATOR_TIME_SUFFIX_LENGTH = primaryGeneratorTimeSuffixLength;
+    }
+
+    public void setPrimaryGeneratorTimeSuffixLength(int primaryGeneratorTimeSuffixLength) {
         this.primaryGeneratorTimeSuffixLength = primaryGeneratorTimeSuffixLength;
         ConfigTable.PRIMARY_GENERATOR_TIME_SUFFIX_LENGTH = primaryGeneratorTimeSuffixLength;
     }
@@ -1074,11 +1120,21 @@ public class AnylineProperty {
         ConfigTable.PRIMARY_GENERATOR_TIMESTAMP_ACTIVE = primaryGeneratorTimestampActive;
     }
 
+    public void setPrimaryGeneratorTimestampActive(boolean primaryGeneratorTimestampActive) {
+        this.primaryGeneratorTimestampActive = primaryGeneratorTimestampActive;
+        ConfigTable.PRIMARY_GENERATOR_TIMESTAMP_ACTIVE = primaryGeneratorTimestampActive;
+    }
+
     public boolean isPrimaryGeneratorTimeActive() {
         return primaryGeneratorTimeActive;
     }
 
     public void setGeneratorTimeActive(boolean primaryGeneratorTimeActive) {
+        this.primaryGeneratorTimeActive = primaryGeneratorTimeActive;
+        ConfigTable.PRIMARY_GENERATOR_TIME_ACTIVE = primaryGeneratorTimeActive;
+    }
+
+    public void setPrimaryGeneratorTimeActive(boolean primaryGeneratorTimeActive) {
         this.primaryGeneratorTimeActive = primaryGeneratorTimeActive;
         ConfigTable.PRIMARY_GENERATOR_TIME_ACTIVE = primaryGeneratorTimeActive;
     }
