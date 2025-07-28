@@ -242,7 +242,7 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
     public E setName(String name) {
         if(null != name) {
             String tmp = name.replaceAll("\\s+", " ");
-            String up = tmp.toUpperCase();
+            String up = tmp.toUpperCase().trim();
             if(up.contains(" AS ")){
                 //SSO_USER AS SSO
                 //SSO_USER(ID AS USER_ID) AS SSO
@@ -267,8 +267,21 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
                 }else {
                     int split = up.lastIndexOf(" AS ");
                     name = tmp.substring(0, split).trim();
-                    String alias = tmp.substring(split + 4).trim();
-                    this.setAlias(alias);
+                    alias = tmp.substring(split + 4).trim();
+                }
+            }else{
+                //SSO_USER SSO
+                //SSO_USER(ID AS USER_ID) SSO
+                //SSO_USER(SUM(QTY) AS QTY) SSO
+                //SSO_USER(SUM(QTY) AS QTY)
+                if(name.contains(" ")){
+                    if(name.contains(")")){
+                        if(!name.endsWith(")")){
+                            alias = name.substring(name.lastIndexOf(")")+1);
+                        }
+                    }else{
+                        alias = name.substring(name.lastIndexOf(" ")+1);
+                    }
                 }
             }
             if(name.contains(":") || name.contains(" ")) {
