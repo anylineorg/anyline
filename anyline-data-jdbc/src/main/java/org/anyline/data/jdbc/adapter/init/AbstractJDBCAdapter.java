@@ -3740,12 +3740,19 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         if(BasicUtil.isNotEmpty(def)) {
             if("NULL".equalsIgnoreCase(def)){
                 def = null;
-            }else {
+            } else {
                 while (def.startsWith("(") && def.endsWith(")")) {
                     def = def.substring(1, def.length() - 1);
                 }
                 while (def.startsWith("'") && def.endsWith("'")) {
                     def = def.substring(1, def.length() - 1);
+                }
+                //'NULL::character varying'::character varying
+                if(def.contains("::")){
+                    def = def.split("::")[0].replace("'", "");
+                    if("NULL".equalsIgnoreCase(def)){
+                        def = null;
+                    }
                 }
             }
             meta.setDefaultValue(def);
