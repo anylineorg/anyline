@@ -104,7 +104,7 @@ public class BeanUtil {
 		result.setSerializationInclusion(include);
 		return result;
 	}
-	public static Object puarseFieldValue(Object value) {
+	public static Object parseFieldValue(Object value) {
 		Object v = value;
 		return v;
 	}
@@ -122,7 +122,7 @@ public class BeanUtil {
 	 * @param field field
 	 * @param value Collection&lt;Map&gt;
 	 * @return Collection&lt;Entity&gt;
-	 * @throws Exception
+	 * @throws Exception Exception
 	 */
 	public static Collection maps2object(Field field, Collection value) throws Exception {
 		Class clazz = field.getType();
@@ -171,7 +171,7 @@ public class BeanUtil {
 	 * 根据field集合条目泛型类转换
 	 * @param value Map&lt;?, Map&gt;
 	 * @return Map&lt;?, Entity&gt;
-	 * @throws Exception
+	 * @throws Exception Exception
 	 */
 	public static Map maps2object(Field field, Map value) throws Exception {
 		Map map = value.getClass().newInstance();
@@ -554,10 +554,8 @@ public class BeanUtil {
 			if(null == f) {
 				try{
 					Method method = obj.getClass().getMethod("set" + field.substring(0,1).toUpperCase() + field.substring(1), value.getClass());
-					if(null != method) {
-						method.invoke(obj, value);
-					}
-				}catch (Exception e) {
+                    method.invoke(obj, value);
+                }catch (Exception e) {
 				}
 			}else {
 				setFieldValue(obj, f, value, alert);
