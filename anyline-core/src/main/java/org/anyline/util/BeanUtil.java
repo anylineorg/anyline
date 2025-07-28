@@ -550,14 +550,16 @@ public class BeanUtil {
 			Map tmp = (Map)obj;
 			tmp.put(field, value);
 		}else{
-			Field f = ClassUtil.getField(obj.getClass(), field, recursion);
+			Field f = ClassUtil.getField(obj.getClass(), field, recursion, true);
 			if(null == f) {
 				try{
+					//根据方法名
 					Method method = obj.getClass().getMethod("set" + field.substring(0,1).toUpperCase() + field.substring(1), value.getClass());
                     method.invoke(obj, value);
                 }catch (Exception e) {
 				}
 			}else {
+				//根据属性名
 				setFieldValue(obj, f, value, alert);
 			}
 
