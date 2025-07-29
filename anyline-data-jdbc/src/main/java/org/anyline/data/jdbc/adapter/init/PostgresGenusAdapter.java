@@ -18,6 +18,7 @@ package org.anyline.data.jdbc.adapter.init;
 
 import org.anyline.data.entity.Join;
 import org.anyline.data.jdbc.adapter.init.alias.PostgresGenusTypeMetadataAlias;
+import org.anyline.data.jdbc.adapter.init.writer.PostgresGenusWriter;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.prepare.auto.TablePrepare;
@@ -67,6 +68,11 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         alias("int2", StandardTypeMetadata.SMALLINT, true);
         alias("int4", StandardTypeMetadata.INT, true);
         alias("int8", StandardTypeMetadata.BIGINT, true);
+
+
+        for(PostgresGenusWriter writer: PostgresGenusWriter.values()) {
+            reg(writer.supports(), writer.writer());
+        }
     }
 
     @Override

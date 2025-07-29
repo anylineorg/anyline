@@ -21,8 +21,6 @@ package org.anyline.data.jdbc.mariadb;
 import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.adapter.init.MySQLGenusAdapter;
-import org.anyline.data.jdbc.adapter.init.reader.MySQLGenusReader;
-import org.anyline.data.jdbc.adapter.init.writer.MySQLGenusWriter;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.run.*;
@@ -52,12 +50,6 @@ public class MariaAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 		super();
 		delimiterFr = "`";
 		delimiterTo = "`";
-		for(MySQLGenusWriter writer: MySQLGenusWriter.values()) {
-			reg(writer.supports(), writer.writer());
-		}
-		for(MySQLGenusReader reader: MySQLGenusReader.values()) {
-			reg(reader.supports(), reader.reader());
-		}
 	}
 	
 	private String delimiter;

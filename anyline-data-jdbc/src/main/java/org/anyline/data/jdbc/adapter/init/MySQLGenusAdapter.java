@@ -17,6 +17,8 @@
 package org.anyline.data.jdbc.adapter.init;
 
 import org.anyline.data.jdbc.adapter.init.alias.MySQLGenusTypeMetadataAlias;
+import org.anyline.data.jdbc.adapter.init.reader.MySQLGenusReader;
+import org.anyline.data.jdbc.adapter.init.writer.MySQLGenusWriter;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.prepare.auto.TablePrepare;
@@ -61,6 +63,12 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
             alias(alias.name(), alias.standard());
         }
 
+        for(MySQLGenusWriter writer: MySQLGenusWriter.values()) {
+            reg(writer.supports(), writer.writer());
+        }
+        for(MySQLGenusReader reader: MySQLGenusReader.values()) {
+            reg(reader.supports(), reader.reader());
+        }
     }
 
     @Override

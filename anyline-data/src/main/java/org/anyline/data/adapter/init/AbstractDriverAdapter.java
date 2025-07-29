@@ -19202,21 +19202,34 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			return value;
 		}
 		String typeName = meta.getName();
-
+        DataWriter writer = null;
 		boolean parseJson = false;
 		if(null != typeName && !(value instanceof String)) {
 			if(typeName.contains("JSON")) {
-				//对象转换成json string
-				value = BeanUtil.object2json(value);
-				parseJson = true;
+                writer = writer(typeName);//先看看有没有针对json定制的writer
+                if(null != writer){
+                    value = writer.write(value, true, false, meta);
+                    parseJson = true;
+                }else {
+                    //对象转换成json string
+                    value = BeanUtil.object2json(value);
+                    parseJson = true;
+                }
 			}else if(typeName.contains("XML")) {
-				value = BeanUtil.object2xml(value);
-				parseJson = true;
+                writer = writer(typeName);
+                if(null != writer){
+                    value = writer.write(value, true, false, meta);
+                    parseJson = true;
+                }else {
+                    value = BeanUtil.object2xml(value);
+                    parseJson = true;
+                }
 			}
 		}
+        //已经解析过JSON格式的就不需要转换了 如已经转换成了String {"ID":1} 下一步不需要再把String转换成其他格式
 		if(!parseJson) {
 			if (null != meta) {
-				DataWriter writer = writer(meta);
+				writer = writer(meta);
 				if(null == writer) {
 					writer = writer(meta.getCategory());
 				}

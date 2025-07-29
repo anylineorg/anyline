@@ -19,8 +19,6 @@ package org.anyline.data.jdbc.maxcompute;
 import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.adapter.init.MySQLGenusAdapter;
-import org.anyline.data.jdbc.adapter.init.reader.MySQLGenusReader;
-import org.anyline.data.jdbc.adapter.init.writer.MySQLGenusWriter;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.run.*;
@@ -55,12 +53,6 @@ public class MaxComputeAdapter extends MySQLGenusAdapter implements JDBCAdapter 
         for(MaxComputeTypeMetadataAlias alias:MaxComputeTypeMetadataAlias.values()) {
             reg(alias);
             alias(alias.name(), alias.standard());
-        }
-        for(MySQLGenusWriter writer: MySQLGenusWriter.values()) {
-            reg(writer.supports(), writer.writer());
-        }
-        for(MySQLGenusReader reader: MySQLGenusReader.values()) {
-            reg(reader.supports(), reader.reader());
         }
     }
 
