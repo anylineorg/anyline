@@ -23,9 +23,10 @@ import org.anyline.metadata.type.DatabaseType;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class Metadata<T extends Metadata> {
+public class Metadata<T extends Metadata> implements Serializable {
 
     public enum TYPE implements Type{
         ALL(32767),
