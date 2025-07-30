@@ -505,6 +505,23 @@ public class SpringJDBCActuator implements DriverActuator {
     /**
      * select [命令执行]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param sql sql
+     * @return map
+     */
+    @Override
+    public
+    Map<String, Object> map(DataRuntime runtime, String sql) throws Exception {
+        Map<String, Object> map = null;
+        JdbcTemplate jdbc = jdbc(runtime);
+        if(null == jdbc) {
+            return new HashMap<>();
+        }
+        map = jdbc.queryForMap(sql);
+        return map;
+    }
+    /**
+     * select [命令执行]<br/>
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
      * @return map

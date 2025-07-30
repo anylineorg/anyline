@@ -66,7 +66,9 @@ public class JDBCUtil {
         }catch (Exception e) {
             log.debug("[获取MetaData失败][驱动未实现:getSchemaName]");
         }
-        adapter.correctSchemaFromJDBC(runtime, column, catalog, schema);
+        if(null != adapter) {
+            adapter.correctSchemaFromJDBC(runtime, column, catalog, schema);
+        }
 
         try{
             column.caseSensitive(rsm.isCaseSensitive(index));
@@ -134,7 +136,9 @@ public class JDBCUtil {
         }catch (Exception e) {
             log.debug("[获取MetaData失败][驱动未实现:getColumnTypeName]");
         }
-        adapter.typeMetadata(runtime, column);
+        if(null != adapter) {
+            adapter.typeMetadata(runtime, column);
+        }
         return column;
     }
 

@@ -27,10 +27,7 @@ import org.anyline.log.LogProxy;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public interface DriverActuator {
     Log log = LogProxy.get(DriverActuator.class);
@@ -112,6 +109,14 @@ public interface DriverActuator {
      */
     List<Map<String, Object>> maps(DriverAdapter adapter, DataRuntime runtime, String random, ConfigStore configs, Run run) throws Exception;
 
+    /**
+     * 定准adapter之前调用
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param sql 最终待执行的命令和参数(如JDBC环境中的SQL)
+     * @return map
+     * @throws Exception Exception
+     */
+    Map<String, Object> map(DataRuntime runtime, String sql) throws Exception ;
     /**
      * select [命令执行]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端

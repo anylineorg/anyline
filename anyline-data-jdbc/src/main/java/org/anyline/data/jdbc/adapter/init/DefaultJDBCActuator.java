@@ -487,11 +487,54 @@ public class DefaultJDBCActuator implements DriverActuator {
     }
 
     /**
+     * 定准adapter之前调用
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param sql sql
+     * @return map
+     * @throws Exception Exception
+     */
+    @Override
+    public Map<String, Object> map(DataRuntime runtime, String sql) throws Exception {
+        Map<String, Object> map = null;
+        DataSource datasource = datasource(runtime);
+        if(null == datasource) {
+            return new HashMap<>();
+        }
+
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            con = getConnection(null, runtime, datasource);
+            ps = con.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+            ps.setFetchDirection(ResultSet.FETCH_FORWARD);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                map = JDBCUtil.map(null, false, runtime, null, null, rs);
+                break;
+            }
+
+        }finally {
+            if(null != rs && !rs.isClosed()) {
+                rs.close();
+            }
+            if(null != ps && !ps.isClosed()) {
+                ps.close();
+            }
+            releaseConnection(null, runtime, con, datasource);
+
+        }
+        return map;
+    }
+
+    /**
      * select [命令执行]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
      * @return map
+     * @throws Exception Exception
      */
     @Override
     public Map<String, Object> map(DriverAdapter adapter, DataRuntime runtime, String random, ConfigStore configs, Run run) throws Exception {

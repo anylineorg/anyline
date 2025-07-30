@@ -82,8 +82,9 @@ public class KingbaseMySQLAdapter extends KingbaseAdapter implements JDBCAdapter
 	 */
 	@Override
 	public boolean match(DataRuntime runtime, String feature, String adapterKey, boolean compensate) {
-		boolean chk = super.match(runtime, feature, adapterKey, compensate);
+		boolean chk = exeMatch(runtime, feature, adapterKey, compensate);
 		if(chk) {
+			feature = feature(runtime);
 			if(null != feature && feature.toLowerCase().contains("mysql")) {
 				return true;
 			}else{

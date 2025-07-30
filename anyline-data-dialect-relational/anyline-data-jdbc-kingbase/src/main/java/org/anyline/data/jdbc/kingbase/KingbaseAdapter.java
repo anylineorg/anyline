@@ -64,10 +64,7 @@ public class KingbaseAdapter extends PostgresGenusAdapter implements JDBCAdapter
 
 	public String feature(DataRuntime runtime) {
 		try {
-			Run run = new SimpleRun(runtime);
-			StringBuilder builder = run.getBuilder();
-			builder.append("show database_mode");
-			Map<String, Object> map = actuator.map(this, runtime, null, null, run);
+			Map<String, Object> map = actuator.map(runtime, "show database_mode");
 			if(null != map) {
 				return map.get("database_mode")+"";
 			}
@@ -90,6 +87,7 @@ public class KingbaseAdapter extends PostgresGenusAdapter implements JDBCAdapter
 		boolean chk = super.match(runtime, feature, adapterKey, compensate);
 		if(chk) {
 			//mysql单独写 pg oracle用默认
+			feature = feature(runtime);
 			if(null != feature && feature.toLowerCase().contains("mysql")) {
 				return false;
 			}else{
