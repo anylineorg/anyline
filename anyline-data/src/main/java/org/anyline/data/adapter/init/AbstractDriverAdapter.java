@@ -22,7 +22,6 @@ import org.anyline.adapter.EntityAdapter;
 import org.anyline.adapter.KeyAdapter;
 import org.anyline.data.adapter.DriverActuator;
 import org.anyline.data.adapter.DriverAdapter;
-import org.anyline.data.adapter.DriverAdapter.SQL_BUILD_IN_VALUE;
 import org.anyline.data.cache.PageLazyStore;
 import org.anyline.data.entity.Join;
 import org.anyline.data.listener.DDListener;
@@ -2868,7 +2867,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                         int split = name.toUpperCase().indexOf(" AS ");
                         String tmp = name.substring(0, split).trim();
                         delimiter(builder, tmp);
-                        builder.append(columnAliasGuidd());
+                        builder.append(columnAliasGuide());
                         tmp = name.substring(split+4).trim();
                         delimiter(builder, tmp);
                     }else if("*".equals(name)) {
@@ -2991,7 +2990,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         }
         String alias = prepare.getAlias();
         if(BasicUtil.isNotEmpty(alias)) {
-            builder.append(tableAliasGuidd());
+            builder.append(tableAliasGuide());
             delimiter(builder, alias);
         }
         return run;
@@ -3022,7 +3021,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         }
         String alias = prepare.getAlias();
         if(BasicUtil.isNotEmpty(alias)) {
-            builder.append(tableAliasGuidd());
+            builder.append(tableAliasGuide());
             delimiter(builder, alias);
         }
         String on = join.getConditions().getRunText(runtime, false);

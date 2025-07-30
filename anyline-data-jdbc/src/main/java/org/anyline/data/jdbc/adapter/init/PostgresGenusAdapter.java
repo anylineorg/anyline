@@ -434,7 +434,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         name(runtime, builder, prepare.getTable());
         String alias = prepare.getAlias();
         if(BasicUtil.isNotEmpty(alias)) {
-            builder.append(tableAliasGuidd());
+            builder.append(tableAliasGuide());
             delimiter(builder, alias);
         }
         builder.append(BR);

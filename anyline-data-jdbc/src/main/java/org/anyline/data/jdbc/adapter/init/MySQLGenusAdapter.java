@@ -82,11 +82,11 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     }
 
     @Override
-    public  String columnAliasGuidd() {
+    public  String columnAliasGuide() {
         return " AS ";
     }
     @Override
-    public  String tableAliasGuidd() {
+    public  String tableAliasGuide() {
         return " AS ";
     }
     private static Map<Type, String> types = new HashMap<>();
@@ -427,7 +427,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         name(runtime, builder, prepare.getTable());
         String alias = prepare.getAlias();
         if(BasicUtil.isNotEmpty(alias)) {
-            builder.append(tableAliasGuidd());
+            builder.append(tableAliasGuide());
             delimiter(builder, alias);
         }
         builder.append(BR);

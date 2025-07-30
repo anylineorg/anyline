@@ -444,7 +444,7 @@ public class MSSQLAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
         builder.append("UPDATE ");
         String alias = prepare.getAlias();
         if(BasicUtil.isNotEmpty(alias)) {
-            builder.append(tableAliasGuidd());
+            builder.append(tableAliasGuide());
             delimiter(builder, alias);
         }else{
             name(runtime, builder, prepare.getTable());
@@ -472,7 +472,7 @@ public class MSSQLAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
         builder.append(BR).append("FROM ");
         name(runtime, builder, prepare.getTable());
         if(BasicUtil.isNotEmpty(alias)) {
-            builder.append(tableAliasGuidd());
+            builder.append(tableAliasGuide());
             delimiter(builder, alias);
         }
         builder.append(BR);

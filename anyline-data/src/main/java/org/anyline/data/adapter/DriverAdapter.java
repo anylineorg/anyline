@@ -139,10 +139,10 @@ public interface DriverAdapter {
     default boolean supportPlaceholder() {
         return true;
     }
-    default String columnAliasGuidd() {
+    default String columnAliasGuide() {
         return " ";
     }
-    default String tableAliasGuidd() {
+    default String tableAliasGuide() {
         return " ";
     }
     void setListener(DDListener listener);

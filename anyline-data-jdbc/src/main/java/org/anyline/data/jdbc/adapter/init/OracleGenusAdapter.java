@@ -601,7 +601,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         String alias = prepare.getAlias();
         String masterName = prepare.getTableName();
         if(BasicUtil.isNotEmpty(alias)) {
-            builder.append(tableAliasGuidd());
+            builder.append(tableAliasGuide());
             delimiter(builder, alias);
             masterName = alias;
         }
