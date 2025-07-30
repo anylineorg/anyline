@@ -1,1 +1,3 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=\org.anyline.data.jdbc.kingbase.KingbaseAdapter
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  org.anyline.data.jdbc.kingbase.KingbaseAdapter,\
+  org.anyline.data.jdbc.kingbase.mysql.KingbaseMySQLAdapter

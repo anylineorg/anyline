@@ -16,11 +16,14 @@
 
  
 
-package org.anyline.data.jdbc.kingbase;
+package org.anyline.data.jdbc.kingbase.mysql;
 
 import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
-import org.anyline.data.jdbc.adapter.init.PostgresGenusAdapter;
+import org.anyline.data.jdbc.kingbase.KingBaseTypeMetadataAlias;
+import org.anyline.data.jdbc.kingbase.KingbaseAdapter;
+import org.anyline.data.jdbc.kingbase.KingbaseReader;
+import org.anyline.data.jdbc.kingbase.KingbaseWriter;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.run.*;
@@ -36,16 +39,19 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.util.*;
 
-@AnylineComponent("anyline.data.jdbc.adapter.kingbase")
-public class KingbaseAdapter extends PostgresGenusAdapter implements JDBCAdapter {
-	
+@AnylineComponent("anyline.data.jdbc.adapter.kingbase.mysql")
+public class KingbaseMySQLAdapter extends KingbaseAdapter implements JDBCAdapter {
+	/*
+	* 字符串连接函数 改成mysql
+	*
+	* */
 	public DatabaseType type() {
 		return DatabaseType.KingBase;
 	}
-	
+
 	private String delimiter;
 
-	public KingbaseAdapter() {
+	public KingbaseMySQLAdapter() {
 		super();
 		delimiterFr = "\"";
 		delimiterTo = "\"";
@@ -63,18 +69,7 @@ public class KingbaseAdapter extends PostgresGenusAdapter implements JDBCAdapter
 	}
 
 	public String feature(DataRuntime runtime) {
-		try {
-			Run run = new SimpleRun(runtime);
-			StringBuilder builder = run.getBuilder();
-			builder.append("show database_mode");
-			Map<String, Object> map = actuator.map(this, runtime, null, null, run);
-			if(null != map) {
-				return map.get("database_mode")+"";
-			}
-		}catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
+		return super.feature(runtime);
 	}
 
 	/**
@@ -89,12 +84,11 @@ public class KingbaseAdapter extends PostgresGenusAdapter implements JDBCAdapter
 	public boolean match(DataRuntime runtime, String feature, String adapterKey, boolean compensate) {
 		boolean chk = super.match(runtime, feature, adapterKey, compensate);
 		if(chk) {
-			//mysql单独写 pg oracle用默认
 			if(null != feature && feature.toLowerCase().contains("mysql")) {
-				return false;
+				return true;
 			}else{
 				log.info("[数据库兼容模式:{}]", feature);
-				return true;
+				return false;
 			}
 		}
 		return chk;
@@ -6274,7 +6268,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 
 	@Override
 	public String concat(DataRuntime runtime, String ... args) {
-		return super.concat(runtime, args);
+		return super.concatFun(runtime, args);
 	}
 
 	/**
