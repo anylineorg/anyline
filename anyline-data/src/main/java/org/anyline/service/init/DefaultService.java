@@ -3849,6 +3849,7 @@ public class DefaultService<E> implements AnylineService<E> {
                 if (null == update) {
                     update = column.clone();
                 }
+                origin.execute(column.execute());
                 origin.setUpdate(update, false, false);
                 String name = origin.getName();
                 try {
@@ -3988,6 +3989,7 @@ public class DefaultService<E> implements AnylineService<E> {
                 if (null == update) {
                     update = tag.clone();
                 }
+                origin.execute(tag.execute());
                 origin.setUpdate(update, false, false);
                 result = dao.alter(table, origin);
                 if (result) {
