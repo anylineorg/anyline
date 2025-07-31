@@ -27,6 +27,7 @@ import java.io.Serializable;
 import java.util.*;
 
 public class Metadata<T extends Metadata> implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     public enum TYPE implements Type{
         ALL(32767),

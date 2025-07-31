@@ -26,6 +26,8 @@ import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.util.CommandParser;
 import org.anyline.entity.Compare;
 import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;
+import org.anyline.entity.FinalValue;
+import org.anyline.entity.VariableValue;
 import org.anyline.exception.NotSupportException;
 import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.metadata.type.init.StandardTypeMetadata;
@@ -142,7 +144,7 @@ public class DefaultAutoCondition extends AbstractCondition implements AutoCondi
 	 * @param prefix 前缀
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param val 值
-	 * @param compare 比较运行符
+	 * @param compare 比较运算符
 	 * @param placeholder 是否需要占位符
 	 * @return string
 	 */
@@ -151,7 +153,7 @@ public class DefaultAutoCondition extends AbstractCondition implements AutoCondi
 		String delimiterFr = "";
 		String delimiterTo = "";
 
-		boolean support = true;
+		boolean support = true; //是否支持当前比较运算符
 		DriverAdapter adapter = null;
 		if (null != runtime) {
 			adapter = runtime.getAdapter();;
@@ -181,19 +183,7 @@ public class DefaultAutoCondition extends AbstractCondition implements AutoCondi
 			return "";
 		}
 		if(compare.valueCount() == 1){
-			if(null != val){
-				if(val instanceof Collection){
-					Collection collection = (Collection)val;
-					if(!collection.isEmpty()){
-						val = collection.iterator().next();
-					}
-				}else if(val.getClass().isArray()){
-					int len = Array.getLength(val);
-					if(len > 0){
-						val = Array.get(val, 0);
-					}
-				}
-			}
+			val = getValue(val);
 		}
 		if(empty) {
 			if(swt == EMPTY_VALUE_SWITCH.BREAK || swt == EMPTY_VALUE_SWITCH.IGNORE) {
@@ -217,6 +207,20 @@ public class DefaultAutoCondition extends AbstractCondition implements AutoCondi
 			}
 		}
 		SQLUtil.delimiter(col_builder, column, delimiterFr, delimiterTo);
+		boolean is_origin = false;
+		if(val instanceof FinalValue){
+			is_origin = false;
+			val = ((FinalValue)val).value();
+		}else if(val instanceof VariableValue){
+			is_origin = true;
+		}else if(val instanceof String){
+			String str = (String)val;
+			if(BasicUtil.checkEl(str)) {
+				is_origin = true;
+				str = str.substring(2, str.length() - 1);
+				val = new VariableValue(str);
+			}
+		}
 		if(compareCode >=60 && compareCode <= 62) {																		// FIND_IN_SET(?, CODES)
 			try {
 				val = adapter.createConditionFindInSet(runtime, builder, col_builder.toString(), compare, val, placeholder, unicode);
@@ -243,120 +247,110 @@ public class DefaultAutoCondition extends AbstractCondition implements AutoCondi
 			}
 		}else{
 			builder.append(col_builder);
-			if(compareCode == 10 || compareCode == 11) {
-				Object v = getValue(val);
-				boolean is_origin = false;
-				String static_value = null;
-				if(v instanceof String) {
-					String str = (String)v;
-					//if(str.startsWith("${") && str.endsWith("}")) {
-					if(BasicUtil.checkEl(str)) {
-						is_origin = true;
-						// formula中再解析
-						// static_value = str.substring(2, str.length() - 1);
-					}
-				}
-				if(is_origin) {
-					//原生SQL值
-					placeholder = false;
-					adapter.formula(runtime, builder, column, Compare.EQUAL, null, v, placeholder, unicode);
-					//builder.append(static_value);
-					this.variableType = Condition.VARIABLE_PLACEHOLDER_TYPE_NONE;
-				}else if("NULL".equals(v)) {
-					placeholder = false;
-					adapter.formula(runtime, builder, column, Compare.NULL, null, null, placeholder, unicode);
-					this.variableType = Condition.VARIABLE_PLACEHOLDER_TYPE_NONE;
-				}else if (empty) {//空值根据swt处理
-					if(swt == EMPTY_VALUE_SWITCH.NULL) {//按NULL处理
-						placeholder = false;
-						adapter.formula(runtime, builder, column, Compare.NULL, null, null, placeholder, unicode);
-						this.variableType = Condition.VARIABLE_PLACEHOLDER_TYPE_NONE;
-					}else if(swt == EMPTY_VALUE_SWITCH.SRC && null == v) {
-						//原样处理
-						placeholder = false;
-						adapter.formula(runtime, builder, column, Compare.NULL, null, null, placeholder, unicode);
-						this.variableType = Condition.VARIABLE_PLACEHOLDER_TYPE_NONE;
-					}else{
-						adapter.formula(runtime, builder, column, compare, null, null, placeholder, unicode);
-					}
-				}else{
-					adapter.formula(runtime, builder, column, compare, null, v, placeholder, unicode);
-				}
-			}else if(compareCode == 20) { 																				// > ?
-				adapter.formula(runtime, builder, column, compare, null, val, placeholder, unicode);
-			}else if(compareCode == 21) { 																				// >= ?
-				adapter.formula(runtime, builder, column, compare, null, val, placeholder, unicode);
-			}else if(compareCode == 30) { 																				// < ?
-				adapter.formula(runtime, builder, column, compare, null, val, placeholder, unicode);
-			}else if(compareCode == 110) { 																				// <> ?
-				Object v = getValue(val);
-				if("NULL".equals(v.toString())) {
-					placeholder = false;
-					adapter.formula(runtime, builder, column, Compare.NOT_NULL, null, null, placeholder, unicode);
-					this.variableType = Condition.VARIABLE_PLACEHOLDER_TYPE_NONE;
-				}else if (empty) {//空值根据swt处理
-					if(swt == EMPTY_VALUE_SWITCH.NULL) {
-						placeholder = false;
-						adapter.formula(runtime, builder, column, Compare.NOT_NULL, null, null, placeholder, unicode);
-						this.variableType = Condition.VARIABLE_PLACEHOLDER_TYPE_NONE;
-					}else if(swt == EMPTY_VALUE_SWITCH.SRC && null == v) {
-						placeholder = false;
-						adapter.formula(runtime, builder, column, Compare.NOT_NULL, null, null, placeholder, unicode);
-						this.variableType = Condition.VARIABLE_PLACEHOLDER_TYPE_NONE;
-					}else{
-						adapter.formula(runtime, builder, column, compare, null, null, placeholder, unicode);
-					}
-				}else{
-					adapter.formula(runtime, builder, column, compare, null, val, placeholder, unicode);
-				}
-			}else if(compareCode == 31) { 																				// <= ?
-				adapter.formula(runtime, builder,  column,compare, null, val, placeholder, unicode);
-			}else if(compareCode == 80) { 																				// BETWEEN ? AND ?
-				adapter.formula(runtime, builder, column, compare, null, val, placeholder, unicode);
-			}else if(compareCode == 40 || compareCode == 140) {															// IN(?, ?, ?)
-				// adapter.createConditionIn(runtime, builder, compare, val, placeholder, unicode);
-				List<RunValue> rvs = adapter.createConditionIn(runtime, builder, compare, val, placeholder, unicode);
-				if(null != rvs){
-					runValues.addAll(rvs);
-					variableType = Condition.VARIABLE_PLACEHOLDER_TYPE_NONE;
-				}
-			}else if((compareCode >= 50 && compareCode <= 52) 															// LIKE ?
-					|| (compareCode >= 150 && compareCode <= 152)) { 													// NOT LIKE ?
-				RunValue rv = adapter.createConditionLike(runtime, builder, compare, val, placeholder, unicode) ;
-				if(rv.isPlaceholder()) {
-					val = rv.getValue();
-				}else{
-					//没有占位符
-					placeholder = false;
-					variableType = Condition.VARIABLE_PLACEHOLDER_TYPE_NONE;
-				}
-			}else if(compareCode == 90) {																				// IS NULL
+			if(is_origin) {
+				//原生SQL值
 				placeholder = false;
-				variableType = Condition.VARIABLE_PLACEHOLDER_TYPE_NONE;
-				adapter.formula(runtime, builder, column, compare, null, null,  placeholder, unicode);
-			}else if(compareCode == 190) {																				// IS NOT NULL
-				adapter.formula(runtime, builder, column, compare, null, null,  placeholder, unicode);
-				placeholder = false;
-				variableType = Condition.VARIABLE_PLACEHOLDER_TYPE_NONE;
-			}else if(compareCode == 91) {																				// IS EMPTY
-				adapter.formula(runtime, builder, column, compare, null, null,  placeholder, unicode);
-				placeholder = false;
-				variableType = Condition.VARIABLE_PLACEHOLDER_TYPE_NONE;
-			}else if(compareCode == 191) {																				// IS NOT EMPTY
-				adapter.formula(runtime, builder, column, compare, null, null,  placeholder, unicode);
-			}else if(compareCode == 92) {																				// EXISTS
-				List<RunValue> rvs = adapter.createConditionExists(runtime, builder, compare, this.prepare(), placeholder, unicode);
-				if(null != rvs){
-					runValues.addAll(rvs);
-				}
-				variableType = Condition.VARIABLE_PLACEHOLDER_TYPE_NONE;
-			}else if(compareCode == 192) {																				// NOT EXISTS
-				List<RunValue> rvs = adapter.createConditionExists(runtime, builder, compare, this.prepare(), placeholder, unicode);
-				if(null != rvs){
-					runValues.addAll(rvs);
-				}
+				adapter.formula(runtime, builder, column, compare, null, val, placeholder, unicode);
+				//builder.append(static_value);
+				this.variableType = Condition.VARIABLE_PLACEHOLDER_TYPE_NONE;
 			}else{
-				adapter.formula(runtime, builder, column, compare, null, null,  placeholder, unicode);
+				if(compareCode == 10 || compareCode == 11) {
+					if("NULL".equals(val)) {
+						placeholder = false;
+						adapter.formula(runtime, builder, column, Compare.NULL, null, null, placeholder, unicode);
+						this.variableType = Condition.VARIABLE_PLACEHOLDER_TYPE_NONE;
+					}else if (empty) {//空值根据swt处理
+						if(swt == EMPTY_VALUE_SWITCH.NULL) {//按NULL处理
+							placeholder = false;
+							adapter.formula(runtime, builder, column, Compare.NULL, null, null, placeholder, unicode);
+							this.variableType = Condition.VARIABLE_PLACEHOLDER_TYPE_NONE;
+						}else if(swt == EMPTY_VALUE_SWITCH.SRC && null == val) {
+							//原样处理
+							placeholder = false;
+							adapter.formula(runtime, builder, column, Compare.NULL, null, null, placeholder, unicode);
+							this.variableType = Condition.VARIABLE_PLACEHOLDER_TYPE_NONE;
+						}else{
+							adapter.formula(runtime, builder, column, compare, null, null, placeholder, unicode);
+						}
+					}else {
+						adapter.formula(runtime, builder, column, compare, null, val, placeholder, unicode);
+					}
+				}else if(compareCode == 20) { 																				// > ?
+					adapter.formula(runtime, builder, column, compare, null, val, placeholder, unicode);
+				}else if(compareCode == 21) { 																				// >= ?
+					adapter.formula(runtime, builder, column, compare, null, val, placeholder, unicode);
+				}else if(compareCode == 30) { 																				// < ?
+					adapter.formula(runtime, builder, column, compare, null, val, placeholder, unicode);
+				}else if(compareCode == 110) { 																				// <> ?
+					Object v = getValue(val);
+					if("NULL".equals(v.toString())) {
+						placeholder = false;
+						adapter.formula(runtime, builder, column, Compare.NOT_NULL, null, null, placeholder, unicode);
+						this.variableType = Condition.VARIABLE_PLACEHOLDER_TYPE_NONE;
+					}else if (empty) {//空值根据swt处理
+						if(swt == EMPTY_VALUE_SWITCH.NULL) {
+							placeholder = false;
+							adapter.formula(runtime, builder, column, Compare.NOT_NULL, null, null, placeholder, unicode);
+							this.variableType = Condition.VARIABLE_PLACEHOLDER_TYPE_NONE;
+						}else if(swt == EMPTY_VALUE_SWITCH.SRC && null == v) {
+							placeholder = false;
+							adapter.formula(runtime, builder, column, Compare.NOT_NULL, null, null, placeholder, unicode);
+							this.variableType = Condition.VARIABLE_PLACEHOLDER_TYPE_NONE;
+						}else{
+							adapter.formula(runtime, builder, column, compare, null, null, placeholder, unicode);
+						}
+					}else{
+						adapter.formula(runtime, builder, column, compare, null, val, placeholder, unicode);
+					}
+				}else if(compareCode == 31) { 																				// <= ?
+					adapter.formula(runtime, builder,  column,compare, null, val, placeholder, unicode);
+				}else if(compareCode == 80) { 																				// BETWEEN ? AND ?
+					adapter.formula(runtime, builder, column, compare, null, val, placeholder, unicode);
+				}else if(compareCode == 40 || compareCode == 140) {															// IN(?, ?, ?)
+					// adapter.createConditionIn(runtime, builder, compare, val, placeholder, unicode);
+					List<RunValue> rvs = adapter.createConditionIn(runtime, builder, compare, val, placeholder, unicode);
+					if(null != rvs){
+						runValues.addAll(rvs);
+						variableType = Condition.VARIABLE_PLACEHOLDER_TYPE_NONE;
+					}
+				}else if((compareCode >= 50 && compareCode <= 52) 															// LIKE ?
+						|| (compareCode >= 150 && compareCode <= 152)) { 													// NOT LIKE ?
+					RunValue rv = adapter.createConditionLike(runtime, builder, compare, val, placeholder, unicode) ;
+					if(rv.isPlaceholder()) {
+						val = rv.getValue();
+					}else{
+						//没有占位符
+						placeholder = false;
+						variableType = Condition.VARIABLE_PLACEHOLDER_TYPE_NONE;
+					}
+				}else if(compareCode == 90) {																				// IS NULL
+					placeholder = false;
+					variableType = Condition.VARIABLE_PLACEHOLDER_TYPE_NONE;
+					adapter.formula(runtime, builder, column, compare, null, null,  placeholder, unicode);
+				}else if(compareCode == 190) {																				// IS NOT NULL
+					adapter.formula(runtime, builder, column, compare, null, null,  placeholder, unicode);
+					placeholder = false;
+					variableType = Condition.VARIABLE_PLACEHOLDER_TYPE_NONE;
+				}else if(compareCode == 91) {																				// IS EMPTY
+					adapter.formula(runtime, builder, column, compare, null, null,  placeholder, unicode);
+					placeholder = false;
+					variableType = Condition.VARIABLE_PLACEHOLDER_TYPE_NONE;
+				}else if(compareCode == 191) {																				// IS NOT EMPTY
+					adapter.formula(runtime, builder, column, compare, null, null,  placeholder, unicode);
+				}else if(compareCode == 92) {																				// EXISTS
+					List<RunValue> rvs = adapter.createConditionExists(runtime, builder, compare, this.prepare(), placeholder, unicode);
+					if(null != rvs){
+						runValues.addAll(rvs);
+					}
+					variableType = Condition.VARIABLE_PLACEHOLDER_TYPE_NONE;
+				}else if(compareCode == 192) {																				// NOT EXISTS
+					List<RunValue> rvs = adapter.createConditionExists(runtime, builder, compare, this.prepare(), placeholder, unicode);
+					if(null != rvs){
+						runValues.addAll(rvs);
+					}
+				}else{
+					adapter.formula(runtime, builder, column, compare, null, null,  placeholder, unicode);
+				}
 			}
 		}
 
@@ -379,21 +373,31 @@ public class DefaultAutoCondition extends AbstractCondition implements AutoCondi
 			}
 		}
 		return builder.toString();
-	} 
+	}
 
-	@SuppressWarnings({"rawtypes" }) 
+	/**
+	 * 如果是集合 提取第一个值 否则原样返回
+	 * @param src 原值
+	 * @return obj
+	 */
 	public Object getValue(Object src) {
-		Object value = null; 
+		Object value = null;
 		if(null != src) {
-			if(src instanceof List) {
-				if(!((List) src).isEmpty()) {
-					value = ((List)src).get(0); 
-				} 
+			if(src instanceof Collection){
+				Collection collection = (Collection)src;
+				if(!collection.isEmpty()){
+					value = collection.iterator().next();
+				}
+			}else if(src.getClass().isArray()){
+				int len = Array.getLength(src);
+				if(len > 0){
+					value = Array.get(src, 0);
+				}
 			}else{
 				value = src; 
 			} 
 		}
-		return value; 
+		return value;
 	} 
 	@SuppressWarnings({"unchecked","rawtypes" })
 	public List<Object> getValues(Object src) {

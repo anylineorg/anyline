@@ -23,6 +23,7 @@ import org.anyline.metadata.Table;
 import java.io.Serializable;
 
 public class GraphTable extends Table<GraphTable> implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     public GraphTable() {
     }

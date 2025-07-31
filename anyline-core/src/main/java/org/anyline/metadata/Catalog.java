@@ -21,6 +21,7 @@ import org.anyline.util.BasicUtil;
 import java.io.Serializable;
 
 public class Catalog extends Metadata<Catalog> implements Serializable {
+    private static final long serialVersionUID = 1L;
     protected String keyword = "CATALOG"           ;
     public Catalog() {
 

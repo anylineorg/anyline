@@ -19,6 +19,7 @@ package org.anyline.metadata;
 import java.io.Serializable;
 
 public class Sequence extends Metadata<Sequence> implements Serializable {
+    private static final long serialVersionUID = 1L;
     protected String keyword = "SEQUENCE";
     private String name;
     private Long min = 0L;

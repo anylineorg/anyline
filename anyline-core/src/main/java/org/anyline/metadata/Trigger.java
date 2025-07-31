@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Trigger extends TableAffiliation<Trigger> implements Serializable {
+    private static final long serialVersionUID = 1L;
     protected String keyword = "TRIGGER";
     public enum EVENT{
         INSERT, DELETE, UPDATE;

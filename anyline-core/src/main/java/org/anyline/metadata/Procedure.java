@@ -25,6 +25,7 @@ import java.util.List;
  
  
 public class Procedure extends Metadata<Procedure> implements Serializable {
+	private static final long serialVersionUID = 1L;
 	protected String keyword = "PROCEDURE"           ;
 	private String returnType;
 	private List<Parameter> parameters = new ArrayList<Parameter>();

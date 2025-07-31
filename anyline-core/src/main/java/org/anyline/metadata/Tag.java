@@ -22,6 +22,7 @@ import org.anyline.util.BeanUtil;
 import java.io.Serializable;
 
 public class Tag extends Column implements Serializable {
+    private static final long serialVersionUID = 1L;
     protected String keyword = "TAG"            ;
     protected Tag update = null;
 

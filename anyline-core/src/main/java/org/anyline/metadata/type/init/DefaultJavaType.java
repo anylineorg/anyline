@@ -17,6 +17,7 @@
 package org.anyline.metadata.type.init;
 
 import org.anyline.entity.DataRow;
+import org.anyline.entity.VariableValue;
 import org.anyline.metadata.type.Convert;
 import org.anyline.metadata.type.ConvertException;
 import org.anyline.metadata.type.DataType;
@@ -59,7 +60,9 @@ public enum DefaultJavaType implements DataType {
             if(null == value) {
                 value = def;
             }
-            if(value instanceof String) {
+            if(value instanceof VariableValue){
+                return ((VariableValue)value).value();
+            }else if(value instanceof String) {
                 String str = (String)value;
                 //if(str.startsWith("${") && str.endsWith("}")) {
                 if(BasicUtil.checkEl(str)) {
@@ -88,6 +91,9 @@ public enum DefaultJavaType implements DataType {
             if(null == value) {
                 value = def;
             }
+            if(value instanceof VariableValue){
+                return ((VariableValue)value).value();
+            }
             Boolean result =  BasicUtil.parseBoolean(value, null);
             if(null != def && null == result) {
                 result =  BasicUtil.parseBoolean(def, null);
@@ -100,6 +106,9 @@ public enum DefaultJavaType implements DataType {
         public Object write(Object value, Object def, Boolean placeholder) {
             if(null == value) {
                 value = def;
+            }
+            if(value instanceof VariableValue){
+                return ((VariableValue)value).value();
             }
             Integer result = BasicUtil.parseInt(value, null);
             if(null == value) {
@@ -127,6 +136,9 @@ public enum DefaultJavaType implements DataType {
             if(null == value) {
                 value = def;
             }
+            if(value instanceof VariableValue){
+                return ((VariableValue)value).value();
+            }
             Float result = BasicUtil.parseFloat(value, null);
             if(null != def && null == result) {
                 result = BasicUtil.parseFloat(def, null);
@@ -153,6 +165,9 @@ public enum DefaultJavaType implements DataType {
             if(null == value) {
                 value = def;
             }
+            if(value instanceof VariableValue){
+                return ((VariableValue)value).value();
+            }
             BigDecimal result =  BasicUtil.parseDecimal(value, null);
             if(null != def && null == result) {
                 result =  BasicUtil.parseDecimal(def, null);
@@ -175,6 +190,10 @@ public enum DefaultJavaType implements DataType {
             return value;
         }
         public Object write(Object value, Object def, Boolean placeholder) {
+
+            if(value instanceof VariableValue){
+                return ((VariableValue)value).value();
+            }
             if(value instanceof Time) {
             }else {
                 Date date = DateUtil.parse(value);
@@ -192,6 +211,9 @@ public enum DefaultJavaType implements DataType {
    , JAVA_SQL_TIMESTAMP("TIMESTAMP", java.sql.Timestamp.class, 1, 1, 1) {
         public Object read(Object value, Object def, Class clazz) {return value;}
         public Object write(Object value, Object def, Boolean placeholder) {
+            if(value instanceof VariableValue){
+                return ((VariableValue)value).value();
+            }
             Date date = DateUtil.parse(value);
             if(null != date) {
                 if(placeholder) {
@@ -206,6 +228,9 @@ public enum DefaultJavaType implements DataType {
    , JAVA_SQL_TIME("TIME", Time.class, 1, 1, 1) {
         public Object read(Object value, Object def, Class clazz) {return value;}
         public Object write(Object value, Object def, Boolean placeholder) {
+            if(value instanceof VariableValue){
+                return ((VariableValue)value).value();
+            }
             Date date = DateUtil.parse(value);
             if(null != date) {
                 if(placeholder) {
@@ -227,6 +252,9 @@ public enum DefaultJavaType implements DataType {
             return value;
         }
         public Object write(Object value, Object def, Boolean placeholder) {
+            if(value instanceof VariableValue){
+                return ((VariableValue)value).value();
+            }
             if(value instanceof Time) {
             }else {
                 Date date = DateUtil.parse(value);
@@ -244,6 +272,9 @@ public enum DefaultJavaType implements DataType {
    , JAVA_LOCAL_DATE("DATE", LocalDate.class, 1, 1, 1) {
         public Object read(Object value, Object def, Class clazz) {return value;}
         public Object write(Object value, Object def, Boolean placeholder) {
+            if(value instanceof VariableValue){
+                return ((VariableValue)value).value();
+            }
             if(value instanceof Time) {
             }else {
                 Date date = DateUtil.parse(value);
@@ -261,6 +292,9 @@ public enum DefaultJavaType implements DataType {
    , JAVA_LOCAL_TIME("TIME", LocalTime.class, 1, 1, 1) {
         public Object read(Object value, Object def, Class clazz) {return value;}
         public Object write(Object value, Object def, Boolean placeholder) {
+            if(value instanceof VariableValue){
+                return ((VariableValue)value).value();
+            }
             if(value instanceof Time) {
             }else {
                 Date date = DateUtil.parse(value);
@@ -278,6 +312,9 @@ public enum DefaultJavaType implements DataType {
    , JAVA_LOCAL_DATE_TIME("DATETIME", LocalDateTime.class, 1, 1, 1) {
         public Object read(Object value, Object def, Class clazz) {return value;}
         public Object write(Object value, Object def, Boolean placeholder) {
+            if(value instanceof VariableValue){
+                return ((VariableValue)value).value();
+            }
             if(value instanceof Time) {
             }else {
                 Date date = DateUtil.parse(value);
@@ -300,7 +337,12 @@ public enum DefaultJavaType implements DataType {
             }
             return value;
         }
-        public Object write(Object value, Object def, Boolean placeholder) {return value;}
+        public Object write(Object value, Object def, Boolean placeholder) {
+            if(value instanceof VariableValue){
+                return ((VariableValue)value).value();
+            }
+            return value;
+        }
     }
    , BYTES("", byte[].class, 0, 1, 1) {
         public Object read(Object value, Object def, Class clazz) {
@@ -318,7 +360,12 @@ public enum DefaultJavaType implements DataType {
             }
             return value;
         }
-        public Object write(Object value, Object def, Boolean placeholder) {return value;}
+        public Object write(Object value, Object def, Boolean placeholder) {
+            if(value instanceof VariableValue){
+                return ((VariableValue)value).value();
+            }
+            return value;
+        }
     }
    , BYTE("", byte.class, 1, 1, 1) {
         public Object read(Object value, Object def, Class clazz) {

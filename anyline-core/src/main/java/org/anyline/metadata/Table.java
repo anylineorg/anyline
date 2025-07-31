@@ -32,6 +32,7 @@ import java.lang.reflect.Array;
 import java.util.*;
 
 public class Table<E extends Table> extends Metadata<E> implements Serializable {
+    private static final long serialVersionUID = 1L;
     public enum TYPE implements Type{
         //继承子表、父表、分区表、主表、点类型、边类型
         NORMAL(1),//包含继承子表
@@ -1684,6 +1685,7 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
      * partition for:分区依据值
      */
     public static class Partition extends TableAffiliation implements Serializable {
+        private static final long serialVersionUID = 1L;
         public enum TYPE{LIST, RANGE, HASH}
         //主表中设置分区
         private List<Slice> slices = new ArrayList<>();
@@ -1842,6 +1844,7 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
          * 分片(分区依据值)
          */
         public static class Slice extends TableAffiliation implements Serializable{
+            private static final long serialVersionUID = 1L;
             private String name;
             private Object min;
             private Object max;

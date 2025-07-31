@@ -17,7 +17,11 @@
 package org.anyline.entity;
 
 
-public class VariableValue {
+import java.io.Serializable;
+
+public class VariableValue implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private String value;
     public VariableValue(String value) {
         this.value = value;

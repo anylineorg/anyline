@@ -18,6 +18,7 @@ package org.anyline.metadata.type.init;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.anyline.adapter.KeyAdapter;
+import org.anyline.entity.VariableValue;
 import org.anyline.proxy.ConvertProxy;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
@@ -65,6 +66,9 @@ public enum StandardTypeMetadata implements TypeMetadata {
         public Object write(Object value, Object def, boolean array, Boolean placeholder) {
             if(null == value) {
                 value = def;
+            }
+            if(value instanceof VariableValue){
+                return ((VariableValue)value).value();
             }
             if(null != value) {
                 String str = value.toString();
@@ -140,6 +144,9 @@ public enum StandardTypeMetadata implements TypeMetadata {
         public Object write(Object value, Object def, boolean array, Boolean placeholder) {
             if(null == value) {
                 value = def;
+            }
+            if(value instanceof VariableValue){
+                return ((VariableValue)value).value();
             }
             if(null != value) {
                 value = java.util.UUID.fromString(value.toString());
@@ -298,6 +305,9 @@ public enum StandardTypeMetadata implements TypeMetadata {
             if(null == value) {
                 value = def;
             }
+            if(value instanceof VariableValue){
+                return ((VariableValue)value).value();
+            }
             BigDecimal result = BasicUtil.parseDecimal(value, null);
             if(null != def && null == result) {
                 result = BasicUtil.parseDecimal(def, null);
@@ -319,6 +329,9 @@ public enum StandardTypeMetadata implements TypeMetadata {
         public Object write(Object value, Object def, boolean array, Boolean placeholder) {
             if(null == value) {
                 value = def;
+            }
+            if(value instanceof VariableValue){
+                return ((VariableValue)value).value();
             }
             Double result = BasicUtil.parseDouble(value, null);
             if(null != def && null == result) {
@@ -342,6 +355,9 @@ public enum StandardTypeMetadata implements TypeMetadata {
         public Object write(Object value, Object def, boolean array, Boolean placeholder) {
             if(null == value) {
                 value = def;
+            }
+            if(value instanceof VariableValue){
+                return ((VariableValue)value).value();
             }
             Float result = BasicUtil.parseFloat(value, null);
             if(null != def && null == result) {
@@ -437,6 +453,9 @@ public enum StandardTypeMetadata implements TypeMetadata {
             if(null == value) {
                 value = def;
             }
+            if(value instanceof VariableValue){
+                return ((VariableValue)value).value();
+            }
             Date date = DateUtil.parse(value);
             if(null == date && null != def) {
                 date = DateUtil.parse(def);
@@ -459,6 +478,9 @@ public enum StandardTypeMetadata implements TypeMetadata {
             if(null == value) {
                 value = def;
             }
+            if(value instanceof VariableValue){
+                return ((VariableValue)value).value();
+            }
             Date date = DateUtil.parse(value);
             if(null == date && null != def) {
                 date = DateUtil.parse(def);
@@ -477,6 +499,9 @@ public enum StandardTypeMetadata implements TypeMetadata {
         public Object write(Object value, Object def, boolean array, Boolean placeholder) {
             if(null == value) {
                 value = def;
+            }
+            if(value instanceof VariableValue){
+                return ((VariableValue)value).value();
             }
             Date date = DateUtil.parse(value);
             if(null == date && null != def) {
@@ -524,6 +549,9 @@ public enum StandardTypeMetadata implements TypeMetadata {
         public Object write(Object value, Object def, boolean array, Boolean placeholder) {
             if(null == value) {
                 value = def;
+            }
+            if(value instanceof VariableValue){
+                return ((VariableValue)value).value();
             }
             Date date = DateUtil.parse(value);
             if(null == date && null != def) {
@@ -644,6 +672,9 @@ public enum StandardTypeMetadata implements TypeMetadata {
             if(null == value) {
                 value = def;
             }
+            if(value instanceof VariableValue){
+                return ((VariableValue)value).value();
+            }
             if(value instanceof byte[]) {
 
             }else {
@@ -705,6 +736,9 @@ public enum StandardTypeMetadata implements TypeMetadata {
         public Object write(Object value, Object def, boolean array, Boolean placeholder) {
             if(null == value) {
                 value = def;
+            }
+            if(value instanceof VariableValue){
+                return ((VariableValue)value).value();
             }
             if(value instanceof byte[]) {
                 return value;
@@ -992,6 +1026,9 @@ public enum StandardTypeMetadata implements TypeMetadata {
     @Override
     public Object write(Object value, Object def, boolean array, Boolean placeholder) {
         if(null != value) {
+            if(value instanceof VariableValue){
+                return ((VariableValue)value).value();
+            }
             if(value.getClass() != compatible) {
                 if (null != transfer) {
                     value = ConvertProxy.convert(value, transfer, array, def);

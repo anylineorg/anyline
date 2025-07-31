@@ -20,6 +20,7 @@ import java.io.Serializable;
 import java.util.LinkedHashMap;
 
 public class PrimaryKey extends Index<PrimaryKey> implements Serializable {
+    private static final long serialVersionUID = 1L;
     protected String keyword = "PrimaryKey";
     public PrimaryKey() {
         primary = true;

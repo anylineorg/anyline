@@ -21,6 +21,7 @@ import org.anyline.util.BasicUtil;
 import java.io.Serializable;
 
 public class Schema extends Metadata<Schema> implements Serializable {
+    private static final long serialVersionUID = 1L;
     protected String keyword = "SCHEMA"           ;
     public Schema() {
 

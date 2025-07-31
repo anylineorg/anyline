@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Function extends Metadata<Function> implements Serializable {
+    private static final long serialVersionUID = 1L;
     protected String keyword = "FUNCTION"           ;
     protected List<Parameter> parameters = new ArrayList<>();
     public Function() {}

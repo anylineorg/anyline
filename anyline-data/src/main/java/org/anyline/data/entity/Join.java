@@ -25,6 +25,7 @@ import java.io.Serializable;
 import java.util.List;
 
 public class Join  implements Serializable {
+    private static final long serialVersionUID = 1L;
     public static enum TYPE{
         INNER               {public String getCode() {return "INNER JOIN";} 	public String getName() {return "内连接";}},
         LEFT				{public String getCode() {return "LEFT JOIN";} 	public String getName() {return "左连接";}},

@@ -21,6 +21,7 @@ import org.anyline.metadata.type.TypeMetadata;
 import java.io.Serializable;
 
 public class Parameter extends Metadata<Parameter> implements Serializable {
+    private static final long serialVersionUID = 1L;
     private boolean input;
     private boolean output;
     protected Integer length                      ;

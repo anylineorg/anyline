@@ -27,6 +27,7 @@ import java.io.Serializable;
 import java.util.*;
 
 public class Column extends TableAffiliation<Column> implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     public static LinkedHashMap<TypeMetadata.CATEGORY, TypeMetadata.Refer> typeCategoryConfigs = new LinkedHashMap<>();
 

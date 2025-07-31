@@ -19,6 +19,7 @@ package org.anyline.metadata;
 import java.io.Serializable;
 import java.util.LinkedHashMap;
 public class ForeignKey extends Constraint<ForeignKey> implements Serializable {
+    private static final long serialVersionUID = 1L;
     protected String keyword = "FOREIGNKEY"           ;
     public boolean isForeign() {
         return true;

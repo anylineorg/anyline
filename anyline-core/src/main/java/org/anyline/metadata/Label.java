@@ -19,6 +19,7 @@ package org.anyline.metadata;
 import java.io.Serializable;
 
 public class Label extends Table<Label> implements Serializable {
+    private static final long serialVersionUID = 1L;
     protected String keyword = "LABEL"            ;
     protected Label update;
 

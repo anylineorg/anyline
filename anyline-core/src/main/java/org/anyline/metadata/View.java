@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class View extends Table<View> implements Serializable {
+    private static final long serialVersionUID = 1L;
     public enum TYPE implements Type{
         NORMAL(2);
         public final int value;

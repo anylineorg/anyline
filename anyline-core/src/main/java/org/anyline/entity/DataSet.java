@@ -6394,6 +6394,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
     }
 
     public class Format implements Serializable{
+        private static final long serialVersionUID = 1L;
         /**
          * 根据列名日期格式化,如果失败 默认 ""
          * @param format 日期格式
@@ -6518,6 +6519,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
     }
 
     public class Parse implements Serializable{
+        private static final long serialVersionUID = 1L;
         /**
          * 根据列名日期格式化,如果失败 默认 ""
          * @param cols 参考格式化的列(属性)如果不指定则不执行(避免传参失败)<br/>

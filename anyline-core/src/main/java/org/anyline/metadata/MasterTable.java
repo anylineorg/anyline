@@ -23,6 +23,7 @@ import java.io.Serializable;
 import java.util.*;
 
 public class MasterTable extends Table<MasterTable> implements Serializable {
+    private static final long serialVersionUID = 1L;
     public enum TYPE implements Type{
         NORMAL(1);
         public final int value;
