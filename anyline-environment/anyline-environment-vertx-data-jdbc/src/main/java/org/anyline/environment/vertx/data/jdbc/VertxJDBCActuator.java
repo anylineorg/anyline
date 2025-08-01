@@ -28,6 +28,7 @@ import org.anyline.metadata.*;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -94,6 +95,17 @@ public class VertxJDBCActuator implements DriverActuator {
         return null;
     }
 
+    /**
+     * select [命令执行]<br/>
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param sql sql
+     * @return map
+     */
+    @Override
+    public
+    Map<String, Object> map(DataRuntime runtime, String sql) throws Exception {
+        return null;
+    }
     @Override
     public Map<String, Object> map(DriverAdapter adapter, DataRuntime runtime, String random, ConfigStore configs, Run run) throws Exception {
         return null;
