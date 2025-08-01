@@ -1794,7 +1794,7 @@ public class Column extends TableAffiliation<Column> implements Serializable {
         if(colAutoIncrement == null){
             colAutoIncrement = false;
         }
-        if(isAutoIncrement != colAutoIncrement) {
+        if(!isAutoIncrement.equals(colAutoIncrement)) {
             return false;
         }
         if(!BasicUtil.equals(getCharset(), column.getCharset(), ignoreCase)) {
