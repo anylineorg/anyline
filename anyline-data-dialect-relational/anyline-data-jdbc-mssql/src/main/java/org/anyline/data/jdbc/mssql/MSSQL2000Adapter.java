@@ -97,10 +97,10 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter {
             last = navi.getLastRow();
         }
         if(first == 0 && null != navi) {
-            // top
             builder.append("SELECT TOP ").append(last+1).append(" "+cols+" FROM(\n");
-            builder.append(sql).append("\n) AS _TAB_O \n");
+            builder.append(sql);
             builder.append(order);
+            builder.append("\n) AS _TAB_O \n");
             return builder.toString();
         }
         if(null == navi) {
