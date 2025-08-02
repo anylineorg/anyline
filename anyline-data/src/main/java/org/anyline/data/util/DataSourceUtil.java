@@ -97,7 +97,7 @@ public class DataSourceUtil {
         //show tables
         //sys_user as m
         //sys_user  m 不解析
-        if(!up.startsWith("SELECT")) {
+        if(!up.startsWith("SELECT") && !BasicUtil.checkEl(up)) {
             result.setName(src);
         }
         return result;
