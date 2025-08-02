@@ -36,6 +36,7 @@ public class Text extends BaseBodyTag{
 	private String selector;
 	private String nvl = null;
 	private String evl = null;
+	private String lang = null;
 	 
 	public int doStartTag() throws JspException {
         return EVAL_BODY_BUFFERED; 
@@ -123,7 +124,16 @@ public class Text extends BaseBodyTag{
 		nvl = null;
 		evl = null;
 		var = null;
+		lang = null;
     }
+
+	public String getLang() {
+		return lang;
+	}
+
+	public void setLang(String lang) {
+		this.lang = lang;
+	}
 
 	public String getVar() {
 		return var;

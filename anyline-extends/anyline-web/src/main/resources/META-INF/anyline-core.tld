@@ -254,6 +254,10 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
+			<name>lang</name>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
 			<name>var</name>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
