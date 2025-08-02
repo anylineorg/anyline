@@ -47,6 +47,11 @@ public class Text extends BaseBodyTag{
 		 }
 		// 输出 
 		JspWriter out = pageContext.getOut();
+		 String p = property;
+		 if(BasicUtil.isNotEmpty(lang)){
+			 p = property + "_" + lang;
+		 }
+
 		try{
 			Object result = null; 
 			if(data instanceof DataSet) {
@@ -61,8 +66,11 @@ public class Text extends BaseBodyTag{
 				if(index<set.size()) {
 					row = set.getRow(index);
 				}
-				if(null != row && null != property) {
-					result = row.getString(property);
+				if(null != row && null != p) {
+					result = row.getString(p);
+					if(BasicUtil.isEmpty(result)){
+						result = row.getString(property);
+					}
 				}
 			}else if(data instanceof List) {
 				@SuppressWarnings("rawtypes")
@@ -74,8 +82,11 @@ public class Text extends BaseBodyTag{
 				if(index<list.size()) {
 					item = list.get(index);
 				}
-				if(null != item && null != property) {
-					result = BeanUtil.getFieldValue(item, property);
+				if(null != item && null != p) {
+					result = BeanUtil.getFieldValue(item, p);
+					if(BasicUtil.isEmpty(result)){
+						result = BeanUtil.getFieldValue(item, property);
+					}
 				}
 			}else if(data instanceof String[]) {
 				String[] list = (String[])data;
@@ -85,8 +96,11 @@ public class Text extends BaseBodyTag{
 				if(index < list.length) {
 					result = list[index];
 				}
-			}else if(null != property) {
-				result = BeanUtil.getFieldValue(data,property);
+			}else if(null != p) {
+				result = BeanUtil.getFieldValue(data, p);
+				if(BasicUtil.isEmpty(result)){
+					result = BeanUtil.getFieldValue(data, property);
+				}
 			}else{
 				result = data;
 			}
