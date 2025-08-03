@@ -9747,13 +9747,13 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 			first = navi.getFirstRow();
 			last = navi.getLastRow();
 		}
-		if(first == 0 && null != navi) {
+		/*if(first == 0 && null != navi) {
 			// top
 			builder.append("SELECT TOP ").append(last+1).append(" "+cols+" FROM(\n");
 			builder.append(sql).append("\n) AS _TAB_O \n");
 			builder.append(order);
 			return builder.toString();
-		}
+		}*/
 		if(null == navi) {
 			builder.append(sql).append("\n").append(order);
 		}else{
