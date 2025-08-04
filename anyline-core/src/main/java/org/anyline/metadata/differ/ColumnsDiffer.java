@@ -19,9 +19,11 @@ package org.anyline.metadata.differ;
 import org.anyline.metadata.Column;
 import org.anyline.metadata.Table;
 
+import java.io.Serializable;
 import java.util.LinkedHashMap;
 
-public class ColumnsDiffer extends AbstractDiffer{
+public class ColumnsDiffer extends AbstractDiffer implements Serializable {
+    private static final long serialVersionUID = 1L;
     private LinkedHashMap<String, Column> adds = new LinkedHashMap<>();
     private LinkedHashMap<String, Column> drops = new LinkedHashMap<>();
     private LinkedHashMap<String, Column> alters = new LinkedHashMap<>();

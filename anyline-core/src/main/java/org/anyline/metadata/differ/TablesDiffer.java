@@ -18,12 +18,14 @@ package org.anyline.metadata.differ;
 
 import org.anyline.metadata.Table;
 
+import java.io.Serializable;
 import java.util.LinkedHashMap;
 
 /**
  * 表或列之间的对比结果
  */
-public class TablesDiffer extends AbstractDiffer {
+public class TablesDiffer extends AbstractDiffer implements Serializable {
+    private static final long serialVersionUID = 1L;
     private LinkedHashMap<String, Table> adds = new LinkedHashMap<>();              // 添加的表
     private LinkedHashMap<String, Table> drops = new LinkedHashMap<>();             // 删除的表
     private LinkedHashMap<String, Table> alters = new LinkedHashMap<>();            // 修改表(只记录修改的表名)

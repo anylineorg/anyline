@@ -18,12 +18,14 @@ package org.anyline.metadata.differ;
 
 import org.anyline.metadata.Procedure;
 
+import java.io.Serializable;
 import java.util.LinkedHashMap;
 
 /**
  * 表或列之间的对比结果
  */
-public class ProceduresDiffer extends AbstractDiffer {
+public class ProceduresDiffer extends AbstractDiffer implements Serializable {
+    private static final long serialVersionUID = 1L;
     private LinkedHashMap<String, Procedure> adds = new LinkedHashMap<>();
     private LinkedHashMap<String, Procedure> drops = new LinkedHashMap<>();
     private LinkedHashMap<String, Procedure> updates = new LinkedHashMap<>();

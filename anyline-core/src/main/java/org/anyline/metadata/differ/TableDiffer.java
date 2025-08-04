@@ -18,10 +18,13 @@ package org.anyline.metadata.differ;
 
 import org.anyline.metadata.Table;
 
+import java.io.Serializable;
+
 /**
  * 表或列之间的对比结果
  */
-public class TableDiffer extends AbstractDiffer {
+public class TableDiffer extends AbstractDiffer implements Serializable {
+    private static final long serialVersionUID = 1L;
     private Table origin;
     private Table dest;
     private ColumnsDiffer columnsDiffer;

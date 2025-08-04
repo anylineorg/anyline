@@ -18,7 +18,10 @@ package org.anyline.metadata.differ;
 
 import org.anyline.metadata.Table;
 
-public abstract class AbstractDiffer implements MetadataDiffer{
+import java.io.Serializable;
+
+public abstract class AbstractDiffer implements MetadataDiffer, Serializable {
+    private static final long serialVersionUID = 1L;
     protected Table direct;
     @Override
     public MetadataDiffer setDirect(DIRECT direct) {

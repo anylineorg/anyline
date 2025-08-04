@@ -18,12 +18,14 @@ package org.anyline.metadata.differ;
 
 import org.anyline.metadata.View;
 
+import java.io.Serializable;
 import java.util.LinkedHashMap;
 
 /**
  * 表或列之间的对比结果
  */
-public class ViewsDiffer extends AbstractDiffer {
+public class ViewsDiffer extends AbstractDiffer implements Serializable {
+    private static final long serialVersionUID = 1L;
     private LinkedHashMap<String, View> adds = new LinkedHashMap<>();
     private LinkedHashMap<String, View> drops = new LinkedHashMap<>();
     private LinkedHashMap<String, View> alters = new LinkedHashMap<>();

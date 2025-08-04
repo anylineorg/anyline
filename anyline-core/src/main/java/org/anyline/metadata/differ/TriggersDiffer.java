@@ -18,12 +18,14 @@ package org.anyline.metadata.differ;
 
 import org.anyline.metadata.Trigger;
 
+import java.io.Serializable;
 import java.util.LinkedHashMap;
 
 /**
  * 表或列之间的对比结果
  */
-public class TriggersDiffer extends AbstractDiffer {
+public class TriggersDiffer extends AbstractDiffer implements Serializable {
+    private static final long serialVersionUID = 1L;
     private LinkedHashMap<String, Trigger> adds = new LinkedHashMap<>();
     private LinkedHashMap<String, Trigger> drops = new LinkedHashMap<>();
     private LinkedHashMap<String, Trigger> alters = new LinkedHashMap<>();

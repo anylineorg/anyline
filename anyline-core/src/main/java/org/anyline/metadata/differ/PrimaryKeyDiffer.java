@@ -19,7 +19,10 @@ package org.anyline.metadata.differ;
 import org.anyline.metadata.PrimaryKey;
 import org.anyline.metadata.Table;
 
-public class PrimaryKeyDiffer extends AbstractDiffer {
+import java.io.Serializable;
+
+public class PrimaryKeyDiffer extends AbstractDiffer implements Serializable {
+    private static final long serialVersionUID = 1L;
     private PrimaryKey add;
     private PrimaryKey drop;
     private PrimaryKey alter;

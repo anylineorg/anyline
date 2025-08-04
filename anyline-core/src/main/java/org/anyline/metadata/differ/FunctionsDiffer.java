@@ -18,6 +18,7 @@ package org.anyline.metadata.differ;
 
 import org.anyline.metadata.Function;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -25,7 +26,8 @@ import java.util.List;
 /**
  * 表或列之间的对比结果
  */
-public class FunctionsDiffer extends AbstractDiffer {
+public class FunctionsDiffer extends AbstractDiffer implements Serializable {
+    private static final long serialVersionUID = 1L;
     private List<Function> adds = new ArrayList<>();
     private List<Function> drops = new ArrayList<>();
     private List<Function> alters = new ArrayList<>();
