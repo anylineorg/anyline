@@ -1745,6 +1745,14 @@ public class Column extends TableAffiliation<Column> implements Serializable {
         if (!BasicUtil.equals(name, column.getName(), ignoreCase)) {
             return false;
         }
+        //是否相同的数据库
+        //不同数据库 的数据类型对比 只对比其对应的标准类型 不细比,避免 int 与int4 不相等
+        boolean sameDataBase = true;
+        DatabaseType db1 = this.getDatabaseType();
+        DatabaseType db2 = column.getDatabaseType();
+        if(null != db1 && null != db2 && !db1.equals(db2)) {
+            sameDataBase = false;
+        }
         TypeMetadata columnTypeMetadata = column.getTypeMetadata();
         TypeMetadata origin = null;
         TypeMetadata columnOrigin = null;
@@ -1754,29 +1762,41 @@ public class Column extends TableAffiliation<Column> implements Serializable {
         if(null != columnTypeMetadata) {
             columnOrigin = columnTypeMetadata.getOrigin();
         }
+        if(sameDataBase){
+            if(!BasicUtil.equals(typeMetadata, columnTypeMetadata, ignoreCase)
+                    && !BasicUtil.equals(typeMetadata, columnOrigin, ignoreCase)
+                    && !BasicUtil.equals(origin, columnTypeMetadata, ignoreCase)
+                    && !BasicUtil.equals(origin, columnOrigin, ignoreCase)
+            ) {
+                return false;
+            }
+        }else{
+            if(null != typeMetadata && null != columnTypeMetadata && !typeMetadata.getCategory().equals(columnTypeMetadata.getCategory())) {
+                return false;
+            }
+        }
+        if(sameDataBase || ((column.ignoreLength() == this.ignoreLength()))){
+            if(null == typeMetadata || TypeMetadata.NONE == typeMetadata || 0 == typeMetadata.ignoreLength()) {
+                if (!BasicUtil.equals(getLength(), column.getLength())) {
+                    return false;
+                }
+            }
+        }
+        if(sameDataBase || ((column.ignorePrecision() == this.ignorePrecision()))) {
+            if (null == typeMetadata || TypeMetadata.NONE == typeMetadata || 0 == typeMetadata.ignorePrecision()) {
+                if (!BasicUtil.equals(getPrecision(), column.getPrecision())) {
+                    return false;
+                }
+            }
+        }
+        if(sameDataBase || ((column.ignoreScale() == this.ignoreScale()))) {
+            if (null == typeMetadata || TypeMetadata.NONE == typeMetadata || 0 == typeMetadata.ignoreScale()) {
+                if (!BasicUtil.equals(getScale(), column.getScale())) {
+                    return false;
+                }
+            }
+        }
 
-        if(!BasicUtil.equals(typeMetadata, columnTypeMetadata, ignoreCase)
-                && !BasicUtil.equals(typeMetadata, columnOrigin, ignoreCase)
-                && !BasicUtil.equals(origin, columnTypeMetadata, ignoreCase)
-                && !BasicUtil.equals(origin, columnOrigin, ignoreCase)
-        ) {
-            return false;
-        }
-        if(null == typeMetadata || TypeMetadata.NONE == typeMetadata || 0 == typeMetadata.ignoreLength()) {
-            if (!BasicUtil.equals(getLength(), column.getLength())) {
-                return false;
-            }
-        }
-        if(null == typeMetadata || TypeMetadata.NONE == typeMetadata || 0 == typeMetadata.ignorePrecision()) {
-            if (!BasicUtil.equals(getPrecision(), column.getPrecision())) {
-                return false;
-            }
-        }
-        if(null == typeMetadata || TypeMetadata.NONE == typeMetadata || 0 == typeMetadata.ignoreScale()) {
-            if (!BasicUtil.equals(getScale(), column.getScale())) {
-                return false;
-            }
-        }
         if(!BasicUtil.equals(getDefaultValue(), column.getDefaultValue())) {
             return false;
         }
@@ -1797,15 +1817,19 @@ public class Column extends TableAffiliation<Column> implements Serializable {
         if(!isAutoIncrement.equals(colAutoIncrement)) {
             return false;
         }
-        if(!BasicUtil.equals(getCharset(), column.getCharset(), ignoreCase)) {
-            return false;
+        if(sameDataBase) {
+            if (!BasicUtil.equals(getCharset(), column.getCharset(), ignoreCase)) {
+                return false;
+            }
         }
         if(!BasicUtil.equals(getPrimaryKey(), column.getPrimaryKey())) {
             return false;
         }
-        if(null != table && table.isSort()) {
-            if (!BasicUtil.equals(getPosition(), column.getPosition())) {
-                return false;
+        if(sameDataBase) {
+            if (null != table && table.isSort()) {
+                if (!BasicUtil.equals(getPosition(), column.getPosition())) {
+                    return false;
+                }
             }
         }
         return true;

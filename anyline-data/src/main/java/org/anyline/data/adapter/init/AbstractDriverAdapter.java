@@ -669,6 +669,12 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             for(String ignore:ignores) {
                 cols.remove(ignore.toUpperCase());
             }
+            if(null != configs){
+                Map<String, Column> excludes = configs.getExcludes();
+                for(String exclude:excludes.keySet()){
+                    cols.remove(exclude.toUpperCase());
+                }
+            }
             if(log.isDebugEnabled()) {
                 log.debug("[confirm insert columns][ignores:{}]", ignores);
             }
@@ -1724,6 +1730,12 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         if(null != ignores) {
             for(String ignore:ignores) {
                 cols.remove(ignore.toUpperCase());
+            }
+        }
+        if(null != configs){
+            Map<String, Column> excludes = configs.getExcludes();
+            for(String exclude:excludes.keySet()){
+                cols.remove(exclude.toUpperCase());
             }
         }
         cols = checkMetadata(runtime, dest, configs, cols);

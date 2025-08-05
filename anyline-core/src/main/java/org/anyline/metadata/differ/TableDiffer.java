@@ -73,10 +73,14 @@ public class TableDiffer extends AbstractDiffer implements Serializable {
             }
         }
         TableDiffer differ = new TableDiffer(origin, dest);
-
+        //列
         differ.setColumnsDiffer(ColumnsDiffer.compare(origin.getColumns(), dest.getColumns(), direct));
+        //主键
         differ.setPrimaryKeyDiffer(PrimaryKeyDiffer.compare(origin.getPrimaryKey(), dest.getPrimaryKey(), direct));
+        //索引
         differ.setIndexesDiffer(IndexesDiffer.compare(origin.getIndexes(), dest.getIndexes(), direct));
+        //其他属性
+
         differ.setDirect(direct);
         return differ;
     }
