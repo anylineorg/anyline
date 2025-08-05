@@ -26,6 +26,7 @@ import org.anyline.metadata.type.DataType;
 import org.anyline.proxy.ConvertProxy;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.util.ConfigTable;
+import org.springframework.beans.factory.SmartInitializingSingleton;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -34,7 +35,7 @@ import org.springframework.stereotype.Component;
 import java.util.*;
 
 @Component("anyline.environment.configuration.spring")
-public class SpringAutoConfiguration implements ApplicationListener<ContextRefreshedEvent> {
+public class SpringAutoConfiguration implements ApplicationListener<ContextRefreshedEvent>, SmartInitializingSingleton {
     private LinkedHashMap<String, LoadListener> load_listeners;
     private Map<String, DataSourceListener> datasource_listeners;
     private boolean context_status = false;
@@ -43,7 +44,7 @@ public class SpringAutoConfiguration implements ApplicationListener<ContextRefre
     @Autowired
     public void setWorker(SpringEnvironmentWorker worker) {
         ConfigTable.setEnvironment(worker);
-        loaderStart();
+        //loaderStart();
     }
 
     @Autowired(required = false)
@@ -95,18 +96,11 @@ public class SpringAutoConfiguration implements ApplicationListener<ContextRefre
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
+        //会有多个上下文  有些bean会在最后个上下文中初始化 这里不好判断哪个是最后一个上下文
         if(!context_status) {
             context_status = true;
-            //排序
-            List<Map.Entry<String, LoadListener>> entries = new ArrayList<>(this.load_listeners.entrySet());
-
-            entries.sort(Comparator.comparingInt(
-                    entry -> entry.getValue().index()
-            ));
-            this.load_listeners.clear();
-            entries.forEach(entry -> this.load_listeners.put(entry.getKey(), entry.getValue()));
-            loaderStart();
-            loaderAfter();
+            //loaderStart();
+            //loaderAfter();
         }
     }
     private void loaderStart() {
@@ -130,5 +124,19 @@ public class SpringAutoConfiguration implements ApplicationListener<ContextRefre
                 listener.after();
             }
         }
+    }
+
+    @Override
+    public void afterSingletonsInstantiated() {
+        //排序
+        List<Map.Entry<String, LoadListener>> entries = new ArrayList<>(this.load_listeners.entrySet());
+
+        entries.sort(Comparator.comparingInt(
+                entry -> entry.getValue().index()
+        ));
+        this.load_listeners.clear();
+        entries.forEach(entry -> this.load_listeners.put(entry.getKey(), entry.getValue()));
+        loaderStart();
+        loaderAfter();
     }
 }
