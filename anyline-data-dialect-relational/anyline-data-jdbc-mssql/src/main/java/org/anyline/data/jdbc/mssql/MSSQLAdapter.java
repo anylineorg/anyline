@@ -4405,18 +4405,20 @@ WHERE
         return super.buildCreateRun(runtime, meta);
     }
 
-    /**
-     * table[命令合成]<br/>
-     * 修改表
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param meta 表
-     * @return sql
-     * @throws Exception 异常
-     */
-    @Override
-    public List<Run> buildAlterRun(DataRuntime runtime, Table meta) throws Exception {
-        return super.buildAlterRun(runtime, meta);
-    }
+    
+	/**
+	 * table[命令合成]<br/>
+	 * 修改表 只生成修改表本身属性 不生成关于列及索引的
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 原表
+	 * @param update 新表
+	 * @return sql
+	 * @throws Exception 异常
+	 */
+	@Override
+	public List<Run> buildAlterRun(DataRuntime runtime, Table meta, Table update) throws Exception {
+		return super.buildAlterRun(runtime, meta, update);
+	}
 
     /**
      * table[命令合成]<br/>

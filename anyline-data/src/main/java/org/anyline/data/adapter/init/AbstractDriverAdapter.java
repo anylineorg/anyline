@@ -13686,27 +13686,43 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	public List<Run> buildAlterRun(DataRuntime runtime, Table meta) throws Exception {
         List<Run> runs = new ArrayList<>();
         Table update = (Table)meta.getUpdate();
-        //修改表备注
-        String ucomment = update.getComment();
-        String comment = meta.getComment();
-        if(BasicUtil.isEmpty(ucomment) && BasicUtil.isEmpty(comment)) {
-            //都为空时不更新
-        }else {
-            if (!BasicUtil.equals(comment, ucomment)) {
-                /*swt = InterceptorProxy.prepare(runtime, random, ACTION.DDL.TABLE_COMMENT, meta);
-                if (swt == ACTION.SWITCH.BREAK) {
-                    return false;
-                }*/
-                if (BasicUtil.isNotEmpty(meta.getComment())) {
-                    runs.addAll(buildChangeCommentRun(runtime, update));
-                } else {
-                    runs.addAll(buildAddCommentRun(runtime, update));
-                }
-            }
+        if(null != update) {
+            runs = buildAlterRun(runtime, meta, update);
         }
 		return runs;
 	}
 
+    /**
+     * table[命令合成]<br/>
+     * 修改表 只生成修改表本身属性 不生成关于列及索引的
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta 原表
+     * @param update 新表
+     * @return sql
+     * @throws Exception 异常
+     */
+    @Override
+    public List<Run> buildAlterRun(DataRuntime runtime, Table meta, Table update) throws Exception {
+        List<Run> runs = new ArrayList<>();
+         if(null != update) {
+            //修改表备注
+            String ucomment = update.getComment();
+            String comment = meta.getComment();
+            if (BasicUtil.isEmpty(ucomment) && BasicUtil.isEmpty(comment)) {
+                //都为空时不更新
+            } else {
+                if (!BasicUtil.equals(comment, ucomment)) {
+                    if (BasicUtil.isNotEmpty(meta.getComment())) {
+                        runs.addAll(buildChangeCommentRun(runtime, update));
+                    } else {
+                        runs.addAll(buildAddCommentRun(runtime, update));
+                    }
+                }
+            }
+            //其他属性
+        }
+        return runs;
+    }
 	/**
 	 * table[命令合成]<br/>
 	 * 修改列

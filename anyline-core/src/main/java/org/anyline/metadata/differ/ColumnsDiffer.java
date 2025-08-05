@@ -41,7 +41,8 @@ public class ColumnsDiffer extends AbstractDiffer implements Serializable {
             dests = new LinkedHashMap<>();
         }
         for(String key:origins.keySet()) {
-            Column origin = origins.get(key);
+            Column origin = origins.get(key).clone();
+            origin.setTable(direct);
             Column dest = dests.get(key);
             if(null == dest) {
                 //新表不存在这一列
@@ -56,7 +57,9 @@ public class ColumnsDiffer extends AbstractDiffer implements Serializable {
         }
         for(String key:dests.keySet()) {
             if(!origins.containsKey(key)) {
-                adds.put(key, dests.get(key));
+                Column dest = dests.get(key);
+                dest.setTable(direct);
+                adds.put(key, dest);
             }
         }
         differ.setDirect(direct);

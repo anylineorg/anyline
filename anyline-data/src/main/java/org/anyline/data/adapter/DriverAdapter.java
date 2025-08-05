@@ -580,9 +580,16 @@ public interface DriverAdapter {
                 Table dest = dif.getDest();
                 Table origin = dif.getOrigin();
                 Table update = origin.clone();
+
                 if(null != update) {
                     update.setUpdate(dest, false, false);
                 }
+                //注释等属性
+                Table copy = dest.clone();
+                copy.setName(origin.getName());
+                list = buildAlterRun(runtime, origin, copy);
+
+
                 ColumnsDiffer columns_dif = dif.getColumnsDiffer();
                 slices.addAll(ddl(runtime, random, columns_dif, false));
 
@@ -7611,15 +7618,25 @@ public interface DriverAdapter {
 	 */
 	List<Run> buildCreateRun(DataRuntime runtime, Table meta) throws Exception;
 
-	/**
-	 * table[命令合成]<br/>
-	 * 修改表 只生成修改表本身属性 不生成关于列及索引的
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param meta 表
-	 * @return sql
-	 * @throws Exception 异常
-	 */
-	List<Run> buildAlterRun(DataRuntime runtime, Table meta) throws Exception;
+    /**
+     * table[命令合成]<br/>
+     * 修改表 只生成修改表本身属性 不生成关于列及索引的
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta 表
+     * @return sql
+     * @throws Exception 异常
+     */
+    List<Run> buildAlterRun(DataRuntime runtime, Table meta) throws Exception;
+    /**
+     * table[命令合成]<br/>
+     * 修改表 只生成修改表本身属性 不生成关于列及索引的
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta 原表
+     * @param update 新表
+     * @return sql
+     * @throws Exception 异常
+     */
+    List<Run> buildAlterRun(DataRuntime runtime, Table meta, Table update) throws Exception;
 
 	/**
 	 * table[命令合成]<br/>
