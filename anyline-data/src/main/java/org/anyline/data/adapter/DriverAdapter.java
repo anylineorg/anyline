@@ -586,6 +586,8 @@ public interface DriverAdapter {
                 }
                 //注释等属性
                 Table copy = dest.clone();
+                copy.setCatalog(origin.getCatalog());
+                copy.setSchema(origin.getSchema());
                 copy.setName(origin.getName());
                 list = buildAlterRun(runtime, origin, copy);
 
