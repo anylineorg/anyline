@@ -6111,7 +6111,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         Boolean nullable = meta.getNullable();
         Boolean uNullable = meta.getUpdate().getNullable();
         if(nullable != null && uNullable != null) {
-            if(nullable != uNullable) {
+            if(!nullable.equals(uNullable)) {
                 builder.append("ALTER TABLE ");
                 name(runtime, builder, meta.getTable(true)).append(" ALTER ");
                 delimiter(builder, meta.getName());

@@ -6206,7 +6206,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 			// 修改非空限制
 			Boolean nullable = meta.getNullable();
             Boolean unullable = update.getNullable();
-			if(nullable != unullable) {
+			if(!BasicUtil.equals(nullable, unullable)) {
 				List<Run> nulls = buildChangeNullableRun(runtime, meta, slice);
 				if(null != nulls) {
 					runs.addAll(nulls);
@@ -6770,7 +6770,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 			// 修改非空限制
 			Boolean nullable = meta.getNullable();
             Boolean unullable = update.getNullable();
-			if(nullable != unullable) {
+            if(!BasicUtil.equals(nullable, unullable)) {
 				runs.addAll(buildChangeNullableRun(runtime, meta, slice));
 			}
 			// 修改备注

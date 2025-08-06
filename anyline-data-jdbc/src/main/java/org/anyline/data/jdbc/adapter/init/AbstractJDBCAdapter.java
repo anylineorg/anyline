@@ -6467,7 +6467,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 			// 修改非空限制
 			Boolean nullable = meta.getNullable();
 			Boolean u_nullable = update.getNullable();
-			if(nullable != u_nullable) {
+            if(!BasicUtil.equals(nullable, u_nullable)) {
 				List<Run> nulls = buildChangeNullableRun(runtime, meta, slice);
 				if(null != nulls) {
 					runs.addAll(nulls);
@@ -7035,7 +7035,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 			// 修改非空限制
 			Boolean nullable = meta.getNullable();
 			Boolean unullable = update.getNullable();
-			if(nullable != unullable) {
+            if(!BasicUtil.equals(nullable, unullable)) {
 				runs.addAll(buildChangeNullableRun(runtime, meta, slice));
 			}
 			// 修改备注
