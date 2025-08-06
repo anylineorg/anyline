@@ -2264,6 +2264,7 @@ public class DruidAdapter extends MySQLGenusAdapter {
      * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据 false:只查当前catalog/schema/database范围内数据
      * @param query 查询条件 根据metadata属性
      * @param types 查询的类型 参考 Table.TYPE 多个类型相加算出总和
+     * @param configs ConfigStore
      * @return String
      * @throws Exception Exception
      */

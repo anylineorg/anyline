@@ -1957,6 +1957,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据 false:只查当前catalog/schema/database范围内数据
      * @param query 查询条件 根据metadata属性
      * @param types 查询的类型 参考 Table.TYPE 多个类型相加算出总和
+     * @param configs configs
      * @return String
      */
     @Override
@@ -1979,9 +1980,17 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         }
         return runs;
     }
-    //与上一个方法的区别是 有些库没有区分 是否分区表 的元数据,不清楚的默认调用上一个方法，确认支持的再调用这个方法
-    //builder.append("WHERE (I.inhrelid IS NULL  OR F.relpartbound IS NULL)\n"); //过滤分区表(没有继承自其他表或 继承自其他表但是子表不是分区表)
-    //F.relkind = 'r' 可以过滤普通表
+    /**
+     * 与上一个方法的区别是 有些库没有区分 是否分区表 的元数据,不清楚的默认调用上一个方法，确认支持的再调用这个方法<br/>
+     * builder.append("WHERE (I.inhrelid IS NULL  OR F.relpartbound IS NULL)\n"); //过滤分区表(没有继承自其他表或 继承自其他表但是子表不是分区表)<br/>
+     * F.relkind = 'r' 可以过滤普通表<br/>
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据 false:只查当前catalog/schema/database范围内数据
+     * @param query 查询条件 根据metadata属性
+     * @param types 查询的类型 参考 Table.TYPE 多个类型相加算出总和
+     * @param configs configs
+     * @return String
+     */
     protected List<Run> buildQueryTablesRunWithPartBound(DataRuntime runtime, boolean greedy, Table query, int types, ConfigStore configs) throws Exception {
         List<Run> runs = new ArrayList<>();
         Run run = new SimpleRun(runtime, configs);
