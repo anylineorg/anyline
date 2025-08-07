@@ -66,6 +66,7 @@ public interface DataSourceLoader {
             log.info("[解析数据源][{}]", prefixs);
             String[] as = prefixs.split(",");
             for (String prefix : as) {
+                prefix = prefix.trim();
                 // 多个数据源
                 try {
                     //返回 datasource的bean id
