@@ -118,15 +118,15 @@ public class SpringJDBCActuator implements DriverActuator {
     public <T extends Metadata> void checkSchema(DriverAdapter adapter, DataRuntime runtime, T meta) {
         if(null != meta) {
             String catalog = meta.getCatalogName();
-            if(null== catalog) {
+            if(BasicUtil.isEmpty(catalog)) {
                 catalog = runtime.getCatalog();
             }
             String schema = meta.getSchemaName();
-            if(null == schema) {
+            if(BasicUtil.isEmpty(schema)) {
                 schema = runtime.getSchema();
             }
 
-            if(null == catalog && null == schema) {
+            if(BasicUtil.isEmpty(catalog) && BasicUtil.isEmpty(schema)) {
                 JdbcTemplate jdbc = jdbc(runtime);
                 if (null == jdbc) {
                     return;
@@ -146,15 +146,15 @@ public class SpringJDBCActuator implements DriverActuator {
             return;
         }
         String catalog = meta.getCatalogName();
-        if(null== catalog) {
+        if(BasicUtil.isEmpty(catalog)) {
             catalog = runtime.getCatalog();
         }
         String schema = meta.getSchemaName();
-        if(null == schema) {
+        if(BasicUtil.isEmpty(schema)) {
             schema = runtime.getSchema();
         }
 
-        if(null == catalog && null == schema) {
+        if(BasicUtil.isEmpty(catalog) && BasicUtil.isEmpty(schema)) {
             try {
                 //这一步 不要 检测是否支持catalog/schema, 因为这一步返回结果有可能是颠倒的 到correctSchemaFromJDBC中再检测
                 if (adapter.empty(meta.getCatalog())) {
