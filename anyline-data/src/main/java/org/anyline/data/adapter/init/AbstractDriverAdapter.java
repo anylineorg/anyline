@@ -295,6 +295,29 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             TypeMetadataHolder.reg(type(), key, value, override);
         }
     }
+    @Override
+    public void clear(TypeMetadataAlias alias){
+        clear(alias.input());
+        TypeMetadata standard = alias.standard();
+        if(standard == StandardTypeMetadata.NONE) {
+            return;
+        }                                  //根据别名
+        clear(standard.getName());
+    }
+    protected void clear(String key) {
+        if(null != key) {
+            //this.alias.put(key, value);
+            TypeMetadataHolder.clear(type(), key);
+
+            key = key.replace("_", " ");
+            //this.alias.put(key, value);
+            TypeMetadataHolder.clear(type(), key);
+
+            key = key.replace(" ", "_");
+            //this.alias.put(key, value);
+            TypeMetadataHolder.clear(type(), key);
+        }
+    }
 
     /**
      * 注册数据类型配置

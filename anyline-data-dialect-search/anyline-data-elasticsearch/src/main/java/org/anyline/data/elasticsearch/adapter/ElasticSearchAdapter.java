@@ -78,6 +78,9 @@ public class ElasticSearchAdapter extends AbstractDriverAdapter implements Drive
     public ElasticSearchAdapter() {
         super();
         for (ElasticSearchTypeMetadataAlias alias : ElasticSearchTypeMetadataAlias.values()) {
+            clear(alias);
+        }
+        for (ElasticSearchTypeMetadataAlias alias : ElasticSearchTypeMetadataAlias.values()) {
             reg(alias);
             alias(alias.name(), alias.standard());
         }

@@ -50,6 +50,9 @@ public class YashanDBAdapter extends OracleGenusAdapter implements JDBCAdapter {
 
 	public YashanDBAdapter() {
 		super();
+		for (YashanDBTypeMetadataAlias alias : YashanDBTypeMetadataAlias.values()) {
+			clear(alias);
+		}
 		for (YashanDBTypeMetadataAlias alias: YashanDBTypeMetadataAlias.values()) {
 			reg(alias);
 			alias(alias.name(), alias.standard());

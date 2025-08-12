@@ -48,11 +48,10 @@ public class HBaseAdapter extends AbstractDriverAdapter implements DriverAdapter
 
     public HBaseAdapter() {
         super();
-        for(HBaseTypeMetadataAlias alias:HBaseTypeMetadataAlias.values()) {
-            reg(alias);
-            alias(alias.name(), alias.standard());
+        for (HBaseTypeMetadataAlias alias : HBaseTypeMetadataAlias.values()) {
+            clear(alias);
         }
-        for (HBaseTypeMetadataAlias alias: HBaseTypeMetadataAlias.values()) {
+        for(HBaseTypeMetadataAlias alias:HBaseTypeMetadataAlias.values()) {
             reg(alias);
             alias(alias.name(), alias.standard());
         }

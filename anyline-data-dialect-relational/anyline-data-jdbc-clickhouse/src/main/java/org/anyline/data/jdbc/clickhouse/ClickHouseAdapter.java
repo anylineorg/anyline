@@ -70,6 +70,10 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
         for(ClickhouseReader reader: ClickhouseReader.values()) {
             reg(reader.supports(), reader.reader());
         }
+        
+        for(ClickHouseTypeMetadataAlias alias:ClickHouseTypeMetadataAlias.values()) {
+            clear(alias);
+        }
         for(ClickHouseTypeMetadataAlias alias:ClickHouseTypeMetadataAlias.values()) {
             reg(alias);
             alias(alias.name(), alias.standard());

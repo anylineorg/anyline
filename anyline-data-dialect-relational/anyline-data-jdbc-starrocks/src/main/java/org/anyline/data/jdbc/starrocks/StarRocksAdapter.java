@@ -49,6 +49,9 @@ public class StarRocksAdapter extends DorisAdapter implements JDBCAdapter {
         super();
         delimiterFr = "`";
         delimiterTo = "`";
+        for (StarRocksTypeMetadataAlias alias : StarRocksTypeMetadataAlias.values()) {
+            clear(alias);
+        }
         for (StarRocksTypeMetadataAlias alias: StarRocksTypeMetadataAlias.values()) {
             reg(alias);
             alias(alias.name(), alias.standard());

@@ -52,6 +52,9 @@ public class DruidAdapter extends MySQLGenusAdapter {
         delimiterFr = "`";
         delimiterTo = "`";
         for(DruidTypeMetadataAlias alias:DruidTypeMetadataAlias.values()) {
+            clear(alias);
+        }
+        for(DruidTypeMetadataAlias alias:DruidTypeMetadataAlias.values()) {
             reg(alias);
             alias(alias.name(), alias.standard());
         }

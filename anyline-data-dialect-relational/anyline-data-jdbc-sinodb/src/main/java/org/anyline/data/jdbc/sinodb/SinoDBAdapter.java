@@ -51,6 +51,9 @@ public class SinoDBAdapter extends InformixGenusAdapter implements JDBCAdapter {
         delimiterFr = "\"";
         delimiterTo = "\"";
         for (SinoDBTypeMetadataAlias alias : SinoDBTypeMetadataAlias.values()) {
+            clear(alias);
+        }
+        for (SinoDBTypeMetadataAlias alias : SinoDBTypeMetadataAlias.values()) {
             reg(alias);
             alias(alias.name(), alias.standard());
         }

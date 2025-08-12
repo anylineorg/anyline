@@ -48,6 +48,9 @@ public class DorisAdapter extends MySQLGenusAdapter implements JDBCAdapter {
         super();
         delimiterFr = "`";
         delimiterTo = "`";
+        for(DorisTypeMetadataAlias alias:DorisTypeMetadataAlias.values()) {
+            clear(alias);
+        }
         for (DorisTypeMetadataAlias alias: DorisTypeMetadataAlias.values()) {
             reg(alias);
             alias(alias.name(), alias.standard());

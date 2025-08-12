@@ -59,6 +59,9 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         MetadataReferHolder.reg(type(), TypeMetadata.CATEGORY.OTHER, new TypeMetadata.Refer("CHARACTER_MAXIMUM_LENGTH", null, null, 1, 1, 1));
 
         for(MySQLGenusTypeMetadataAlias alias:MySQLGenusTypeMetadataAlias.values()) {
+            clear(alias);
+        }
+        for(MySQLGenusTypeMetadataAlias alias:MySQLGenusTypeMetadataAlias.values()) {
             reg(alias);
             alias(alias.name(), alias.standard());
         }

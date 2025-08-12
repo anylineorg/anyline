@@ -51,6 +51,9 @@ public class XuGuAdapter extends OracleGenusAdapter implements JDBCAdapter {
         delimiterFr = "";
         delimiterTo = "";
         for (XuGuTypeMetadataAlias alias : XuGuTypeMetadataAlias.values()) {
+            clear(alias);
+        }
+        for (XuGuTypeMetadataAlias alias : XuGuTypeMetadataAlias.values()) {
             reg(alias);
             alias(alias.name(), alias.standard());
         }

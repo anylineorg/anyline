@@ -46,6 +46,9 @@ public class SelectDBAdapter extends DorisAdapter {
     }
     public SelectDBAdapter() {
         super();
+        for (SelectDBTypeMetadataAlias alias : SelectDBTypeMetadataAlias.values()) {
+            clear(alias);
+        }
         for (SelectDBTypeMetadataAlias alias: SelectDBTypeMetadataAlias.values()) {
             reg(alias);
             alias(alias.name(), alias.standard());

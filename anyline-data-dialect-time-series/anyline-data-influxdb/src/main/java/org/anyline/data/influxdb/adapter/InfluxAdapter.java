@@ -65,6 +65,9 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
         super();
         delimiterFr = "`";
         delimiterTo = "`";
+        for (InfluxDBTypeMetadataAlias alias : InfluxDBTypeMetadataAlias.values()) {
+            clear(alias);
+        }
         for (InfluxDBTypeMetadataAlias alias: InfluxDBTypeMetadataAlias.values()) {
             reg(alias);
             alias(alias.name(), alias.standard());

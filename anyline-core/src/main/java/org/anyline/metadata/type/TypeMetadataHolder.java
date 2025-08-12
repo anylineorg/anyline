@@ -31,6 +31,16 @@ public class TypeMetadataHolder {
             map.put(name, metadata);
         }
     }
+    public static void clear(DatabaseType type, String name) {
+        if(null == name){
+            return;
+        }
+        name = name.toUpperCase();
+        LinkedHashMap<String, TypeMetadata> map = metas.get(type);
+        if(null != map){
+            map.remove(name);
+        }
+    }
     public static TypeMetadata get(DatabaseType type, String name) {
         if(null == name){
             return null;

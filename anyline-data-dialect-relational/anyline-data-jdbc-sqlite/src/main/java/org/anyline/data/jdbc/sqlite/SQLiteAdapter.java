@@ -55,6 +55,9 @@ public class SQLiteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 		super();
 		delimiterFr = "`";
 		delimiterTo = "`";
+		for (SQLiteTypeMetadataAlias alias : SQLiteTypeMetadataAlias.values()) {
+			clear(alias);
+		}
 		for (SQLiteTypeMetadataAlias alias: SQLiteTypeMetadataAlias.values()) {
 			reg(alias);
 			alias(alias.name(), alias.standard());

@@ -45,6 +45,9 @@ public class IgniteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
         super();
         delimiterFr = "`";
         delimiterTo = "`";
+        for (IgniteTypeMetadataAlias alias : IgniteTypeMetadataAlias.values()) {
+            clear(alias);
+        }
         for (IgniteTypeMetadataAlias alias: IgniteTypeMetadataAlias.values()) {
             reg(alias);
             alias(alias.name(), alias.standard());

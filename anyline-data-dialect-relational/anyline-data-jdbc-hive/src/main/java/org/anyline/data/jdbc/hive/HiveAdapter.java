@@ -64,6 +64,9 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 		MetadataReferHolder.reg(type(), TypeMetadata.CATEGORY.GEOMETRY, new TypeMetadata.Refer("COLUMN_LENGTH", null, null, 1, 1, 1));
 		MetadataReferHolder.reg(type(), TypeMetadata.CATEGORY.OTHER, new TypeMetadata.Refer("COLUMN_LENGTH", null, null, 1, 1, 1));
 
+		for (HiveTypeMetadataAlias alias : HiveTypeMetadataAlias.values()) {
+			clear(alias);
+		}
 		for (HiveTypeMetadataAlias alias: HiveTypeMetadataAlias.values()) {
 			reg(alias);
 			alias(alias.name(), alias.standard());

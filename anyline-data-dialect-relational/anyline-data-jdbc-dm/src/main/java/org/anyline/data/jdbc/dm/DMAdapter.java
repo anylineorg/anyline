@@ -49,6 +49,9 @@ public class DMAdapter extends OracleGenusAdapter implements JDBCAdapter {
 		super();
 		delimiterFr = "\"";
 		delimiterTo = "\"";
+		for(DMTypeMetadataAlias alias:DMTypeMetadataAlias.values()) {
+			clear(alias);
+		}
 		for (DMTypeMetadataAlias alias : DMTypeMetadataAlias.values()) {
 			reg(alias);
 			alias(alias.name(), alias.standard());

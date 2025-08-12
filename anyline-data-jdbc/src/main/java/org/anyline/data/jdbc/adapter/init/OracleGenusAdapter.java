@@ -64,6 +64,9 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         MetadataReferHolder.reg(type(), TypeMetadata.CATEGORY.OTHER, new TypeMetadata.Refer("DATA_LENGTH", null, null, 1, 1, 1));
 
         for(OracleGenusTypeMetadataAlias alias: OracleGenusTypeMetadataAlias.values()) {
+            clear(alias);
+        }
+        for(OracleGenusTypeMetadataAlias alias: OracleGenusTypeMetadataAlias.values()) {
             reg(alias);
             alias(alias.name(), alias.standard());
         }

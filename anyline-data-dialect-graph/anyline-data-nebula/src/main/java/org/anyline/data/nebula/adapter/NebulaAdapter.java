@@ -57,6 +57,9 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
         super();
         delimiterFr = "`";
         delimiterTo = "`";
+        for(NebulaTypeMetadataAlias alias:NebulaTypeMetadataAlias.values()) {
+            clear(alias);
+        }
         for (NebulaTypeMetadataAlias alias: NebulaTypeMetadataAlias.values()) {
             reg(alias);
             alias(alias.name(), alias.standard());

@@ -50,6 +50,9 @@ public class MaxComputeAdapter extends MySQLGenusAdapter implements JDBCAdapter 
         super();
         delimiterFr = "`";
         delimiterTo = "`";
+        for (MaxComputeTypeMetadataAlias alias : MaxComputeTypeMetadataAlias.values()) {
+            clear(alias);
+        }
         for(MaxComputeTypeMetadataAlias alias:MaxComputeTypeMetadataAlias.values()) {
             reg(alias);
             alias(alias.name(), alias.standard());

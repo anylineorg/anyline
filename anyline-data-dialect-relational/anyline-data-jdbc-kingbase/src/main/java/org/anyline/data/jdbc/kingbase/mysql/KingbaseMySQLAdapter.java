@@ -56,6 +56,9 @@ public class KingbaseMySQLAdapter extends KingbaseAdapter implements JDBCAdapter
 		delimiterFr = "\"";
 		delimiterTo = "\"";
 		for (KingBaseTypeMetadataAlias alias : KingBaseTypeMetadataAlias.values()) {
+			clear(alias);
+		}
+		for (KingBaseTypeMetadataAlias alias : KingBaseTypeMetadataAlias.values()) {
 			reg(alias);
 			alias(alias.name(), alias.standard());
 		}

@@ -258,6 +258,7 @@ public interface DriverAdapter {
     default TypeMetadata.Refer reg(TypeMetadataAlias alias) {
         return reg(alias, false);
     }
+    void clear(TypeMetadataAlias alias);
     /**
      * 注册数据类型配置<br/>
      * 要从配置项中取出每个属性检测合并,不要整个覆盖<br/>

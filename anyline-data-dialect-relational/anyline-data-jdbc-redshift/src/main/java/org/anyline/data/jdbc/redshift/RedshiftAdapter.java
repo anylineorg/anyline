@@ -50,6 +50,9 @@ public class RedshiftAdapter extends PostgresGenusAdapter implements JDBCAdapter
 
     public RedshiftAdapter() {
         super();
+        for (RedshiftTypeMetadataAlias alias : RedshiftTypeMetadataAlias.values()) {
+            clear(alias);
+        }
         for (RedshiftTypeMetadataAlias alias: RedshiftTypeMetadataAlias.values()) {
             reg(alias);
             alias(alias.name(), alias.standard());

@@ -19,6 +19,7 @@ package org.anyline.data.jdbc.oscar;
 import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.adapter.init.OracleGenusAdapter;
+import org.anyline.data.jdbc.adapter.init.alias.OracleGenusTypeMetadataAlias;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.run.*;
@@ -48,6 +49,9 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 		delimiterFr = "";
 		delimiterTo = "";
 
+		for (OscarTypeMetadataAlias alias : OscarTypeMetadataAlias.values()) {
+			clear(alias);
+		}
 		for (OscarTypeMetadataAlias alias : OscarTypeMetadataAlias.values()) {
 			reg(alias);
 			alias(alias.name(), alias.standard());
