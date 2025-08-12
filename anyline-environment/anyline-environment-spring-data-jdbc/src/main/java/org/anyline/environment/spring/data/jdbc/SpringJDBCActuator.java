@@ -105,7 +105,7 @@ public class SpringJDBCActuator implements DriverActuator {
                     checkSchema(adapter, runtime, con, meta);
                 }
             } catch (Exception e) {
-                log.warn("[check schema][fail:{}]", e.toString());
+                log.warn("[check schema][result:fail]", e);
             } finally {
                 releaseConnection(adapter, runtime, con, ds);
             }
@@ -161,14 +161,14 @@ public class SpringJDBCActuator implements DriverActuator {
                     catalog = con.getCatalog();
                 }
             } catch (Exception e) {
-                log.warn("[check catalog][result:fail][exception:{}]", e.toString());
+                log.warn("[check catalog][result:fail]", e);
             }
             try {
                 if (adapter.empty(meta.getSchema())) {
                     schema = con.getSchema();
                 }
             } catch (Exception e) {
-                log.warn("[check schema][result:fail][exception:{}]", e.toString());
+                log.warn("[check schema][result:fail]", e);
             }
             adapter.correctSchemaFromJDBC(runtime, meta, catalog, schema, true, true);
             meta.setCheckSchemaTime(new Date());
