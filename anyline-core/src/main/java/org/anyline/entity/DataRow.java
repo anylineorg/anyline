@@ -2091,9 +2091,6 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
             if (key.contains("${") && key.contains("}")) {
                 result = BeanUtil.parseFinalValue(this, key);
             } else {
-                if(!contains(key)) {
-                    continue;
-                }
                 Object value = get(key);
                 if (null != value) {
                     if(value instanceof byte[]) {
@@ -2104,6 +2101,9 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
                 }
             }
             break;
+        }
+        if(null == result && ConfigTable.IS_RETURN_EMPTY_STRING_REPLACE_NULL) {
+            result = "";
         }
         return result;
     }
@@ -2119,28 +2119,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     }
     //为方便新人查询实现两次
     public String getString(String key) {
-        if(null == key) {
-            return null;
-        }
-        String result = null;
-        if (key.contains("${") && key.contains("}")) {
-            result = BeanUtil.parseFinalValue(this, key);
-        } else {
-            if(contains(key)) {
-                Object value = get(key);
-                if (null != value) {
-                    if (value instanceof byte[]) {
-                        result = new String((byte[]) value);
-                    } else {
-                        result = value.toString();
-                    }
-                }
-            }
-        }
-        if(null == result && ConfigTable.IS_RETURN_EMPTY_STRING_REPLACE_NULL) {
-            result = "";
-        }
-        return result;
+       return getString(new String[]{key});
     }
 
     /**
@@ -3927,6 +3906,9 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
             return super.get(key);
         }
         Object result = super.get(key);
+        if(null == result){
+            result = super.get(keyAdapter.key(key));
+        }
         if (null == result) {
             result = super.get(ignoreKey(key));
         }
