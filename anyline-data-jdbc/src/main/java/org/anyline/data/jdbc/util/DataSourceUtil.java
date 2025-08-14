@@ -16,12 +16,11 @@
 
 package org.anyline.data.jdbc.util;
 
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
-import org.anyline.log.Log;
-import org.anyline.log.LogProxy;
-import org.anyline.util.ConfigTable;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
@@ -71,7 +70,7 @@ public class DataSourceUtil {
             BeanUtil.setFieldsValue(datasource, map, false);
             return datasource;
         } catch (Exception e) {
-            log.error("[注册数据源失败][version:{}][msg:{}]", ConfigTable.getVersion(), e.toString());
+            log.error("[注册数据源失败]", e);
         }
         return null;
     }
