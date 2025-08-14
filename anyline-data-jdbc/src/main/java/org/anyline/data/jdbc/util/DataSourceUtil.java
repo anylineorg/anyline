@@ -41,7 +41,6 @@ public class DataSourceUtil {
      * 	  user 用户名
      * 	  password 密码
      * @return DataSource
-     * @throws Exception 异常 Exception
      */
     @SuppressWarnings("unchecked")
     public static DataSource build(Map params) {
@@ -83,7 +82,6 @@ public class DataSourceUtil {
      * @param user 用户名
      * @param password 密码
      * @return DataSource
-     * @throws Exception 异常 Exception
      */
     public static DataSource build( String pool, String driver, String url, String user, String password) {
         Map<String, String> param = new HashMap<String, String>();
@@ -102,7 +100,6 @@ public class DataSourceUtil {
      * @param user 用户名
      * @param password 密码
      * @return DataSource
-     * @throws Exception 异常 Exception
      */
     public static DataSource build(DatabaseType type, String url, String user, String password) {
         return build(POOL_TYPE_DEFAULT, type.driver(), url, user, password);
