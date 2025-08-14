@@ -69,6 +69,13 @@ public interface RunPrepare extends Cloneable {
 	String XML_SQL_ID_STYLE = "(\\.|\\S)*\\S+:\\S+";
 
 	/**
+	 * 是否需要解析sql
+	 * @return boolean
+	 */
+	default boolean parse() {
+		return true;
+	}
+	/**
 	 * 是否一次性的(执行过程中可修改，否则应该clone一份，避免影响第二闪使用)
 	 * @return boolean
 	 */

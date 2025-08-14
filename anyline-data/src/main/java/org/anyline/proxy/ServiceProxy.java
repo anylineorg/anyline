@@ -37,6 +37,8 @@ import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.EntitySet;
 import org.anyline.entity.PageNavi;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 import org.anyline.metadata.*;
 import org.anyline.metadata.differ.MetadataDiffer;
 import org.anyline.metadata.type.DatabaseType;
@@ -44,8 +46,6 @@ import org.anyline.service.AnylineService;
 import org.anyline.service.init.DefaultService;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
-import org.anyline.log.Log;
-import org.anyline.log.LogProxy;
 
 import java.io.File;
 import java.nio.charset.Charset;
@@ -819,6 +819,16 @@ public class ServiceProxy {
     public static void querys(Table dest, DataHandler handler, String ... conditions) {
         service.querys(dest, handler, conditions);
     }
+
+    /**
+     * 查询
+     * @param sql sql
+     * @param parse 是否解析sql中的关键字(order group等)及占位符
+     * @return DataSet
+     */
+    public static DataSet querys(String sql, boolean parse){
+        return service.querys(sql, parse);
+    }
     public static void querys(RunPrepare prepare, DataHandler handler, String ... conditions) {
         service.querys(prepare, handler, conditions);
     }
@@ -1022,6 +1032,16 @@ public class ServiceProxy {
     }
     public static void maps(String dest, DataHandler handler, Object obj, String ... conditions) {
         service.maps(dest, handler, obj, conditions);
+    }
+
+    /**
+     * 查询
+     * @param sql sql
+     * @param parse 是否解析sql中的关键字(order group等)及占位符
+     * @return List
+     */
+    public static List<Map<String, Object>> maps(String sql, boolean parse){
+        return service.maps(sql, parse);
     }
     public static void maps(RunPrepare prepare, DataHandler handler, Object obj, String ... conditions) {
         service.maps(prepare, handler, obj, conditions);

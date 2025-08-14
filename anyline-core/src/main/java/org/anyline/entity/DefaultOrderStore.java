@@ -19,9 +19,7 @@ package org.anyline.entity;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.SQLUtil;
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
 
 public class DefaultOrderStore implements OrderStore{
 	private static final long serialVersionUID = -2129393152486629564L;
@@ -85,11 +83,15 @@ public class DefaultOrderStore implements OrderStore{
 		String up = str.toUpperCase().replaceAll("\\s+"," ").trim();
 		if (up.startsWith("ORDER BY")) {
 			str = str.substring(up.indexOf("ORDER BY") + "ORDER BY".length()).trim(); 
-		} 
-		String[] tmps = str.split(","); // 多列排序
-		for (String tmp : tmps) {
-			add(new DefaultOrder(tmp), override);
-		} 
+		}
+		if(str.contains("(")){
+			add(new DefaultOrder(str), override);
+		}else {
+			String[] tmps = str.split(","); // 多列排序
+			for (String tmp : tmps) {
+				add(new DefaultOrder(tmp), override);
+			}
+		}
 	}
 
 	public void add(String str) {

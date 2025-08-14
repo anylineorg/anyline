@@ -27,8 +27,9 @@ import java.util.List;
  */ 
 public interface TextPrepare extends RunPrepare{
 	RunPrepare init() ;
- 
-	/** 
+
+
+	/**
 	 * 设置SQL 主体文本 
 	 * @param text  text
 	 * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值

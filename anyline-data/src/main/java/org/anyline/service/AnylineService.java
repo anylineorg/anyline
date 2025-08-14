@@ -28,6 +28,7 @@ import org.anyline.data.param.ConfigChain;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.RunPrepare;
+import org.anyline.data.prepare.text.init.DefaultTextPrepare;
 import org.anyline.data.run.Run;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.transaction.TransactionDefine;
@@ -849,6 +850,17 @@ public interface AnylineService<E>{
 		configs.handler(handler);
 		return querys(prepare, first, last, configs, conditions);
 	}
+
+	/**
+	 * 查询
+	 * @param sql sql
+	 * @param parse 是否解析sql中的关键字(order group等)及占位符
+	 * @return DataSet
+	 */
+	default DataSet querys(String sql, boolean parse){
+		RunPrepare prepare = new DefaultTextPrepare(sql, parse);
+		return querys(prepare);
+	}
 	DataRow query(RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions);
 	DataRow query(String dest, ConfigStore configs, Object obj, String ... conditions);
 	default DataRow query(ConfigStore configs, Object obj, String ... conditions) {
@@ -1200,6 +1212,16 @@ public interface AnylineService<E>{
 		return maps(prepare, configs, conditions);
 	}
 
+	/**
+	 * 查询
+	 * @param sql sql
+	 * @param parse 是否解析sql中的关键字(order group等)及占位符
+	 * @return List
+	 */
+	default List<Map<String, Object>> maps(String sql, boolean parse){
+		RunPrepare prepare = new DefaultTextPrepare(sql, parse);
+		return maps(prepare);
+	}
 	/**
 	 *
 	 * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等

@@ -44,7 +44,13 @@ public class DefaultTextPrepare extends AbstractRunPrepare implements TextPrepar
 	private String id;
 	private boolean strict = true;	// 严格格式, true:不允许添加XML定义之外 的临时查询条件
 	private List<Variable> variables = new ArrayList<>();
-	 
+
+	public DefaultTextPrepare(String text, boolean parse) {
+		super();
+		chain = new DefaultTextConditionChain();
+		this.text = text;
+		this.parse = parse;
+	}
 	public DefaultTextPrepare() {
 		super(); 
 		chain = new DefaultTextConditionChain();
@@ -73,7 +79,10 @@ public class DefaultTextPrepare extends AbstractRunPrepare implements TextPrepar
 	public RunPrepare setText(String text) {
 		if(null == text) {
 			return this; 
-		} 
+		}
+		if(!parse){
+			return this;
+		}
 		text = text.replaceAll("--.*","");//过滤注释
 		this.text = text; 
 		parseText(); 
@@ -109,6 +118,9 @@ public class DefaultTextPrepare extends AbstractRunPrepare implements TextPrepar
 	 */ 
 	private void parseText() {
 		if(null == text) {
+			return;
+		}
+		if(!parse){
 			return;
 		}
 		List<Variable> vars = CommandParser.parseTextVariable(ConfigTable.IS_ENABLE_PLACEHOLDER_REGEX_EXT, text, Compare.EMPTY_VALUE_SWITCH.NULL);

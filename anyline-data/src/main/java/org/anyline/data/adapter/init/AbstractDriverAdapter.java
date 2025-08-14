@@ -2665,7 +2665,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             }
             run.addConfigStore(configs);
             //如果是text类型 将解析文本并抽取出变量
-            parsePlaceholder(runtime, run);
+            if(prepare.parse()) {
+                parsePlaceholder(runtime, run);
+            }
             configs = run.getConfigs();
             //先把configs中的占位值取出
             if(null != configs) {

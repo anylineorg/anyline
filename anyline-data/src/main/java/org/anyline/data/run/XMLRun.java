@@ -344,9 +344,15 @@ public class XMLRun extends TextRun implements Run {
 	public void appendCondition(Boolean placeholder) {
 		if(null == conditionChain || !conditionChain.isActive()) {
 			return; 
-		} 
-		if(!endWithWhere(builder.toString())) {
-			builder.append(" WHERE 1=1");
+		}
+		boolean parse = true;
+		if(null != prepare){
+			parse = prepare.parse();
+		}
+		if(parse) {
+			if (!endWithWhere(builder.toString())) {
+				builder.append(" WHERE 1=1");
+			}
 		}
 		String condition = conditionChain.getRunText(null, runtime, placeholder, false);
 		if(!condition.isEmpty()) {
@@ -361,9 +367,15 @@ public class XMLRun extends TextRun implements Run {
 //		} 
 	} 
 	public void appendStaticCondition() {
-		if(!endWithWhere(builder.toString())) {
-			builder.append(" WHERE 1=1");
-		} 
+		boolean parse = true;
+		if(null != prepare){
+			parse = prepare.parse();
+		}
+		if(parse) {
+			if(!endWithWhere(builder.toString())) {
+				builder.append(" WHERE 1=1");
+			}
+		}
 		if(null != staticConditions) {
 			for(String con:staticConditions) {
 				builder.append("\nAND ").append(con);

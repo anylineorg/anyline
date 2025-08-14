@@ -69,6 +69,8 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 	protected List<RunPrepare> unions = new ArrayList<>();
 	protected List<RunPrepare> joins = new ArrayList<>();
 
+	protected boolean parse = true; //是需要解析 如果正常SQL在存在关键字 占位符等但不需要解析 可以设置成false
+
 
 	// 运行时参数值
 	protected Vector<Object> runValues;
@@ -87,6 +89,13 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 		} 
 	}
 
+	/**
+	 * 是否需要解析sql
+	 * @return boolean
+	 */
+	public boolean parse() {
+		return parse;
+	}
 	/**
 	 * 添加排序条件, 在之前的基础上添加新排序条件, 有重复条件则覆盖
 	 * @param order  order
