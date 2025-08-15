@@ -5409,11 +5409,11 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta) {
-
         String type = meta.getTypeName();
         if(null == type) {
             type ="";
         }
+        boolean array = meta.isArray();
         type = type.toLowerCase();
         //创建并自增时 或 非自增改自增时 用serial 其他情况用int
         boolean serial = false;
@@ -5442,6 +5442,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
                 meta.setType("INT8");
             }
         }
+        meta.setArray(array);
         return super.type(runtime, builder, meta);
     }
 

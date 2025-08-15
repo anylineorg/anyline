@@ -979,13 +979,14 @@ public class Column extends TableAffiliation<Column> implements Serializable {
                     }
                     builder.append(")");
                 }
-                if (isArray()) {
-                    builder.append("[]");
-                }
                 result = builder.toString();
             }
         }
-
+        if(BasicUtil.isNotEmpty(result)){
+            if (isArray()) {
+                result += "[]";
+            }
+        }
         return result;
     }
 
