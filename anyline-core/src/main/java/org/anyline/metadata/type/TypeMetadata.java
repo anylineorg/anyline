@@ -731,7 +731,7 @@ public interface TypeMetadata {
         }
         NUMBER_LENGTH_UNIT targetNumberLengthUnit = database.numberLengthUnit();
 
-        boolean array = false;
+        boolean array = meta.isArray();
         String originType = meta.getOriginType();
         if(null == originType) {
             return null;
