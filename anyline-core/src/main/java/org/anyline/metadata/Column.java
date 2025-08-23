@@ -126,6 +126,45 @@ public class Column extends TableAffiliation<Column> implements Serializable {
             this.type = type;
         }
     }
+
+    /**
+     * 虚拟列属性
+     */
+    public static class Virtual{
+        public enum TYPE{
+            VIRTUAL,
+            STORED;
+        }
+        private String expr;
+        private TYPE type;
+
+        public Virtual(){
+
+        }
+        public Virtual(String expr){
+            setExpr(expr);
+        }
+        public Virtual(String expr, TYPE type) {
+            this.type = type;
+            this.expr = expr;
+        }
+
+        public TYPE getType() {
+            return type;
+        }
+
+        public void setType(TYPE type) {
+            this.type = type;
+        }
+
+        public String getExpr() {
+            return expr;
+        }
+
+        public void setExpr(String expr) {
+            this.expr = expr;
+        }
+    }
     protected String keyword = "COLUMN"           ;
     protected String originName                   ; // 原名,只有查询时才会区分,添加列时用name即可 SELECT ID AS USER_ID FROM USER; originName=ID, name=USER_ID
     protected String typeName                     ; // 类型名称 varchar完整类型调用getFullType > varchar(10)
@@ -148,6 +187,7 @@ public class Column extends TableAffiliation<Column> implements Serializable {
     protected Integer precision                   ; // 有效位数 整个字段的长度(包含小数部分)  123.45：precision = 5, scale = 2 对于SQL Server 中 varchar(max)设置成 -1 null:表示未设置
     protected Integer scale                       ; // 小数部分的长度
     protected Integer dimension                   ; // 维度(向量)
+    protected Virtual virtual                     ; // 虚拟列
 
     protected String className                    ; // 对应的Java数据类型 java.lang.Long
     protected Integer displaySize                 ; // display size
@@ -379,6 +419,25 @@ public class Column extends TableAffiliation<Column> implements Serializable {
     public Column setEnabled(String enabled) {
         this.enabled = enabled;
         return this;
+    }
+
+    public Virtual getVirtual() {
+        return virtual;
+    }
+
+    public void setVirtual(Virtual virtual) {
+        this.virtual = virtual;
+    }
+
+    public void setVirtual(String expr) {
+        if(BasicUtil.isNotEmpty(expr)){
+            this.virtual = new Virtual(expr);
+        }else{
+            this.virtual = null;
+        }
+    }
+    public void setVirtual(String expr, Virtual.TYPE type) {
+        this.virtual = new Virtual(expr, type);
     }
 
     public Integer getDimension() {

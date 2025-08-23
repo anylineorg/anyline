@@ -6214,6 +6214,19 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
 
     /**
      * column[命令合成-子流程]<br/>
+     * 列定义:虚拟列
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param builder builder
+     * @param meta 列
+     * @return StringBuilder
+     */
+    @Override
+    public StringBuilder virtual(DataRuntime runtime, StringBuilder builder, Column meta) {
+        return super.virtual(runtime, builder, meta);
+    }
+
+    /**
+     * column[命令合成-子流程]<br/>
      * 列定义:默认值
      * @param builder builder
      * @param meta 列

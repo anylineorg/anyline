@@ -6394,6 +6394,27 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
 
     /**
      * column[命令合成-子流程]<br/>
+     * 列定义:虚拟列
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param builder builder
+     * @param meta 列
+     * @return StringBuilder
+     */
+    @Override
+    public StringBuilder virtual(DataRuntime runtime, StringBuilder builder, Column meta) {
+        Column.Virtual virtual = meta.getVirtual();
+        if(null != virtual){
+            builder.append(" GENERATED ALWAYS AS ").append(virtual.getExpr());
+            Column.Virtual.TYPE type = virtual.getType();
+            if(null != type){
+                builder.append(" ").append(type);
+            }
+        }
+        return builder;
+    }
+
+    /**
+     * column[命令合成-子流程]<br/>
      * 列定义:默认值
      * @param builder builder
      * @param meta 列

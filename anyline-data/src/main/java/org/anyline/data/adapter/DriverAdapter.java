@@ -8553,15 +8553,24 @@ public interface DriverAdapter {
 	 */
 	StringBuilder nullable(DataRuntime runtime, StringBuilder builder, Column meta, ACTION.DDL action);
 
-	/**
-	 * column[命令合成-子流程]<br/>
-	 * 定义列:编码
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param builder builder
-	 * @param column 列
-	 * @return StringBuilder
-	 */
-	StringBuilder charset(DataRuntime runtime, StringBuilder builder, Column column);
+    /**
+     * column[命令合成-子流程]<br/>
+     * 定义列:编码
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param builder builder
+     * @param column 列
+     * @return StringBuilder
+     */
+    StringBuilder charset(DataRuntime runtime, StringBuilder builder, Column column);
+    /**
+     * column[命令合成-子流程]<br/>
+     * 定义列:虚拟列
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param builder builder
+     * @param column 列
+     * @return StringBuilder
+     */
+    StringBuilder virtual(DataRuntime runtime, StringBuilder builder, Column column);
 
 	/**
 	 * column[命令合成-子流程]<br/>

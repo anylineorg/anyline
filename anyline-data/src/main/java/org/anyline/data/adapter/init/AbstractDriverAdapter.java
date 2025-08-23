@@ -15340,6 +15340,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		aggregation(runtime, builder, meta);
 		// 编码
 		charset(runtime, builder, meta);
+        //虚拟列
+        virtual(runtime, builder, meta);
         // 非空
         nullable(runtime, builder, meta, action);
 		// 默认值
@@ -15527,6 +15529,21 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return builder;
 	}
+    /**
+     * column[命令合成-子流程]<br/>
+     * 定义列:虚拟列
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param builder builder
+     * @param column 列
+     * @return StringBuilder
+     */
+    @Override
+    public StringBuilder virtual(DataRuntime runtime, StringBuilder builder, Column column) {
+        if(log.isDebugEnabled()) {
+            log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 StringBuilder virtual(DataRuntime runtime, StringBuilder builder, Column column)", 37));
+        }
+        return builder;
+    }
 
 	/**
 	 * column[命令合成-子流程]<br/>
