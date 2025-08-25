@@ -28,6 +28,7 @@
 		<module>anyline-data-jdbc-dm</module>
 		<module>anyline-data-jdbc-doris</module>						<!--Apache Doris-->
 		<module>anyline-data-jdbc-druid</module>						<!--Apache druid-->
+		<module>anyline-data-jdbc-duckdb</module>
 		<module>anyline-data-jdbc-edb</module>
 		<module>anyline-data-jdbc-gbase</module>						<!--南大通用-->
 		<module>anyline-data-jdbc-h2</module>
