@@ -12328,7 +12328,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         if(null == meta) {
             meta = (T)new Sequence();
         }
-        MetadataFieldRefer refer = refer(runtime, Database.class);
+        MetadataFieldRefer refer = refer(runtime, Sequence.class);
         meta.setMetadata(row);
         meta.setName(getString(row, refer, Sequence.FIELD_NAME));
         meta.setCatalog(getString(row, refer, Sequence.FIELD_CATALOG));
@@ -12337,7 +12337,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         meta.setMin(getLong(row, refer, Sequence.FIELD_MIN, null));
         meta.setMax(getLong(row, refer, Sequence.FIELD_MAX, null));
         meta.setIncrement(getInt(row, refer, Sequence.FIELD_INCREMENT, 1));
-        meta.setCache(getInt(row, refer, Sequence.FIELD_CACHE, 0));
+        meta.setCache(getInt(row, refer, Sequence.FIELD_CACHE, null));
         meta.setCycle(getBoolean(row, refer, Sequence.FIELD_CYCLE_CHECK, null));
         return meta;
 	}

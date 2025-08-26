@@ -27,7 +27,7 @@ public class Sequence extends Metadata<Sequence> implements Serializable {
     private boolean next = true;//NEXTVAL  CURRVAL
     private Long start = 1L;
     private int increment = 1;
-    private int cache = 100;
+    private Integer cache = 100;
     private Boolean cycle = false;
     private boolean fetchValueBeforeInsert = false; //在插入前先获取实际值
 
@@ -91,8 +91,12 @@ public class Sequence extends Metadata<Sequence> implements Serializable {
         this.increment = increment;
     }
 
-    public int getCache() {
+    public Integer getCache() {
         return cache;
+    }
+
+    public void setCache(Integer cache) {
+        this.cache = cache;
     }
 
     public void setCache(int cache) {

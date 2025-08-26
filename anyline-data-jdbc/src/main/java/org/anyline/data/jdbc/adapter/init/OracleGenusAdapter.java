@@ -7582,8 +7582,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         if(null != cycle && cycle){
             builder.append(" CYCLE");
         }
-        int cache = meta.getCache();
-        if(cache > 0){
+        Integer cache = meta.getCache();
+        if(null != cache && cache > 0){
             builder.append(" CACHE ").append(cache);
         }
         return runs;
