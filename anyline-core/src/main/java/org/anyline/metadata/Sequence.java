@@ -21,7 +21,6 @@ import java.io.Serializable;
 public class Sequence extends Metadata<Sequence> implements Serializable {
     private static final long serialVersionUID = 1L;
     protected String keyword = "SEQUENCE";
-    private String name;
     private Long min = 0L;
     private Long max;
     private Long last;
@@ -139,7 +138,13 @@ public class Sequence extends Metadata<Sequence> implements Serializable {
         this.last = last;
     }
 
-    public Boolean isCycle() {
+    public boolean isCycle() {
+        if(null == cycle){
+            return false;
+        }
+        return cycle;
+    }
+    public Boolean getCycle() {
         return cycle;
     }
 

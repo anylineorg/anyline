@@ -7559,7 +7559,34 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public List<Run> buildCreateRun(DataRuntime runtime, Sequence meta) throws Exception {
-        return super.buildCreateRun(runtime, meta);
+        List<Run> runs = new ArrayList<>();
+        Run run = new SimpleRun(runtime);
+        runs.add(run);
+        StringBuilder builder = run.getBuilder();
+        builder.append("CREATE SEQUENCE ");
+        name(runtime, builder, meta);
+        Long start = meta.getStart();
+        if(null != start){
+            builder.append(" START WITH ").append(start);
+            builder.append(" INCREMENT BY ").append(meta.getIncrement());
+        }
+        Long max = meta.getMax();
+        if(null != max){
+            builder.append(" MAXVALUE ").append(max);
+        }
+        Long min = meta.getMin();
+        if(null != min){
+            builder.append(" MINVALUE ").append(min);
+        }
+        Boolean cycle = meta.getCycle();
+        if(null != cycle && cycle){
+            builder.append(" CYCLE");
+        }
+        int cache = meta.getCache();
+        if(cache > 0){
+            builder.append(" CACHE ").append(cache);
+        }
+        return runs;
     }
 
     /**
