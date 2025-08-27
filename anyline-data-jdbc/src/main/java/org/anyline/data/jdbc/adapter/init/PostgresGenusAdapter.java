@@ -6015,7 +6015,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         delimiter(builder, meta.getName());
         builder.append(" TYPE ");
         type(runtime, builder, update);
-        String type = update.getTypeName();
+        String type = type(runtime, new StringBuilder(), update).toString();
         if(type.contains("(")) {
             type = type.substring(0,type.indexOf("("));
         }

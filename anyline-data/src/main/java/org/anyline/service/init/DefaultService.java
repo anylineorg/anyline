@@ -3276,8 +3276,8 @@ public class DefaultService<E> implements AnylineService<E> {
                     }
                     exists.setUpdate(update, false, false);
                     result = dao.alter(exists);
-                    meta.setDdls(exists.ddls());
-                    meta.setRuns(exists.runs());
+                    meta.addDdl(exists.ddls());
+                    meta.addRuns(exists.runs());
                 } else {
                     result = dao.create(meta);
                 }
@@ -3344,8 +3344,8 @@ public class DefaultService<E> implements AnylineService<E> {
                     }
                     exists.setUpdate(update, false, false);
                     result = dao.alter(exists);
-                    meta.setDdls(exists.ddls());
-                    meta.setRuns(exists.runs());
+                    meta.addDdl(exists.ddls());
+                    meta.addRuns(exists.runs());
                 } else {
                     result = dao.create(meta);
                 }
@@ -3412,8 +3412,8 @@ public class DefaultService<E> implements AnylineService<E> {
                     }
                     exists.setUpdate(update, false, false);
                     result = dao.alter(exists);
-                    meta.setDdls(exists.ddls());
-                    meta.setRuns(exists.runs());
+                    meta.addDdl(exists.ddls());
+                    meta.addRuns(exists.runs());
                 } else {
                     result = dao.create(meta);
                 }
@@ -3486,8 +3486,8 @@ public class DefaultService<E> implements AnylineService<E> {
                         otable.setSort(true);
                     }
                     result = dao.alter(otable);
-                    table.setDdls(otable.ddls());
-                    table.setRuns(otable.runs());
+                    table.addDdl(otable.ddls());
+                    table.addRuns(otable.runs());
                 } else {
                     //sort(table);
                     result = dao.create(table);

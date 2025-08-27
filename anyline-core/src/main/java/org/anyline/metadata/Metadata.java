@@ -544,8 +544,13 @@ public class Metadata<T extends Metadata> implements Serializable {
         return ddls;
     }
 
-    public void setDdls(List<String> ddl) {
+    public void setDdl(List<String> ddl) {
         this.ddls = ddl;
+    }
+    public void addDdl(List<String> ddls) {
+        for(String ddl:ddls){
+            addDdl(ddl);
+        }
     }
     public void addDdl(String ddl) {
         if(this.ddls == null) {
@@ -593,16 +598,18 @@ public class Metadata<T extends Metadata> implements Serializable {
         return runs;
     }
 
-    public void setRuns(List<Run> run) {
-        this.runs = run;
+    public void addRuns(List<Run> runs) {
+        for(Run run : runs) {
+            addRun(run);
+        }
+    }
+    public void setRuns(List<Run> runs) {
+        this.runs = runs;
     }
     public void addRun(Run run) {
         if(null != origin) {
             origin.addRun(run);
             return;
-        }
-        if(null != update){
-            update.addRun(run);
         }
         if(this.runs == null) {
             this.runs = new ArrayList<>();

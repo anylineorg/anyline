@@ -6202,7 +6202,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 					DataSet set = selectMetadata(runtime, random, run);
 					list = ddl(runtime, idx++, table, list, set);
 				}
-				table.setDdls(list);
+				table.addDdl(list);
 			}else{
 				//数据库不支持的 根据metadata拼装
 				LinkedHashMap<String, Column> columns = table.getColumns();
@@ -6231,7 +6231,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				runs = buildCreateRun(runtime, table);
 				for(Run run:runs) {
 					list.add(run.getFinalUpdate());
-					table.setDdls(list);
+					table.addDdl(list);
 				}
 			}
 			if (ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
@@ -6732,7 +6732,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                     DataSet set = selectMetadata(runtime, random, run);
 					list = ddl(runtime, idx++, vertex, list, set);
 				}
-				vertex.setDdls(list);
+				vertex.addDdl(list);
 			}else{
 				//数据库不支持的 根据metadata拼装
 				LinkedHashMap<String, Column> columns = vertex.getColumns();
@@ -6761,7 +6761,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				runs = buildCreateRun(runtime, vertex);
 				for(Run run:runs) {
 					list.add(run.getFinalUpdate());
-					vertex.setDdls(list);
+					vertex.addDdl(list);
 				}
 			}
 			if (ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
@@ -7339,7 +7339,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                     DataSet set = selectMetadata(runtime, random, run);
 					list = ddl(runtime, idx++, meta, list, set);
 				}
-				meta.setDdls(list);
+				meta.addDdl(list);
 			}else{
 				//数据库不支持的 根据metadata拼装
 				LinkedHashMap<String, Column> columns = meta.getColumns();
@@ -7368,7 +7368,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				runs = buildCreateRun(runtime, meta);
 				for(Run run:runs) {
 					list.add(run.getFinalUpdate());
-					meta.setDdls(list);
+					meta.addDdl(list);
 				}
 			}
 			if (ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
@@ -7936,7 +7936,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                     DataSet set = selectMetadata(runtime, random, run);
 					list = ddl(runtime, idx++, view, list, set);
 				}
-				view.setDdls(list);
+				view.addDdl(list);
 			}else{
 				//数据库不支持的 根据metadata拼装
 				LinkedHashMap<String, Column> columns = view.getColumns();
@@ -7965,7 +7965,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				runs = buildCreateRun(runtime, view);
 				for(Run run:runs) {
 					list.add(run.getFinalUpdate());
-					view.setDdls(list);
+					view.addDdl(list);
 				}
 			}
 			if (ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
@@ -8544,7 +8544,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 					DataSet set = selectMetadata(runtime, random, run);
 					list = ddl(runtime, idx++, meta, list, set);
 				}
-				meta.setDdls(list);
+				meta.addDdl(list);
 			}else{
 				//数据库不支持的 根据metadata拼装
 				LinkedHashMap<String, Column> columns = meta.getColumns();
@@ -8573,7 +8573,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				runs = buildCreateRun(runtime, meta);
 				for(Run run:runs) {
 					list.add(run.getFinalUpdate());
-					meta.setDdls(list);
+					meta.addDdl(list);
 				}
 			}
 			if (ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
@@ -8958,7 +8958,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 					DataSet set = selectMetadata(runtime, random, run);
 					list = ddl(runtime, idx++, table, list, set);
 				}
-				table.setDdls(list);
+				table.addDdl(list);
 			}
 			if (ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
 				log.info("{}[partition table ddl][table:{}][result:{}][执行耗时:{}]", random, table.getName(), list.size(), DateUtil.format(System.currentTimeMillis() - fr));
@@ -11557,7 +11557,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 					list = ddl(runtime, idx++, procedure, list, set);
 				}
 				if(null != list && !list.isEmpty()) {
-					procedure.setDdls(list);
+					procedure.addDdl(list);
 				}
 			}else{
 				//数据库不支持的 根据definition拼装
@@ -11906,7 +11906,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 					list = ddl(runtime, idx++, meta, list, set);
 				}
 				if(null != list && !list.isEmpty()) {
-					meta.setDdls(list);
+					meta.addDdl(list);
 				}
 			}else{
 				//数据库不支持的 根据definition拼装
@@ -12260,7 +12260,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 					list = ddl(runtime, idx++, meta, list, set);
 				}
 				if(null != list && !list.isEmpty()) {
-					meta.setDdls(list);
+					meta.addDdl(list);
 				}
 			}else{
 				//数据库不支持的 根据definition拼装
