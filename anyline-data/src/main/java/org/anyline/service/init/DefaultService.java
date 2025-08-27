@@ -3519,19 +3519,7 @@ public class DefaultService<E> implements AnylineService<E> {
         }
         @Override
         public boolean alter(Table table) throws Exception {
-            CacheProxy.clear();
-            try {
-                Table update = (Table) table.getUpdate();
-                if (null == update) {
-                    update = table;
-                }
-                table = metadata().table(table.getCatalog(), table.getSchema(), table.getName());
-                table.setUpdate(update, false, false);
-                boolean result = dao.alter(table);
-                return result;
-            }finally {
-                CacheProxy.clear();
-            }
+            return save(table);
         }
 
         @Override
