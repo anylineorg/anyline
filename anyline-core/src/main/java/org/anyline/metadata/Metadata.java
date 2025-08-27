@@ -601,6 +601,9 @@ public class Metadata<T extends Metadata> implements Serializable {
             origin.addRun(run);
             return;
         }
+        if(null != update){
+            update.addRun(run);
+        }
         if(this.runs == null) {
             this.runs = new ArrayList<>();
         }
