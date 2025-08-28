@@ -548,8 +548,10 @@ public class Metadata<T extends Metadata> implements Serializable {
         this.ddls = ddl;
     }
     public void addDdl(List<String> ddls) {
-        for(String ddl:ddls){
-            addDdl(ddl);
+        if(null != ddls) {
+            for (String ddl : ddls) {
+                addDdl(ddl);
+            }
         }
     }
     public void addDdl(String ddl) {
@@ -599,8 +601,10 @@ public class Metadata<T extends Metadata> implements Serializable {
     }
 
     public void addRuns(List<Run> runs) {
-        for(Run run : runs) {
-            addRun(run);
+        if(null != runs) {
+            for(Run run : runs) {
+                addRun(run);
+            }
         }
     }
     public void setRuns(List<Run> runs) {
