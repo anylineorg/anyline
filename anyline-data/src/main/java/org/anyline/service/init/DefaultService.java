@@ -3484,6 +3484,7 @@ public class DefaultService<E> implements AnylineService<E> {
                     List<Run> runs = table.getRuns();
                     if(null == runs){
                         runs = new ArrayList<>();
+                        table.setRuns(runs);
                     }
                     otable.setRuns(runs);
                     otable.setUpdate(update, false, false);
