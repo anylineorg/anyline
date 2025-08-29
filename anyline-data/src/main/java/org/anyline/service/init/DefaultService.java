@@ -3480,6 +3480,12 @@ public class DefaultService<E> implements AnylineService<E> {
                     if (null == update) {
                         update = table;
                     }
+                    //把table.runs()返回的list对象，如果为null就new一个，设置为otable的runs对象，最终反馈在同一个list对象上，应该也是可行的
+                    List<Run> runs = table.getRuns();
+                    if(null == runs){
+                        runs = new ArrayList<>();
+                    }
+                    otable.setRuns(runs);
                     otable.setUpdate(update, false, false);
                     //sort(table);
                     if(table.isSort()){
@@ -3487,7 +3493,7 @@ public class DefaultService<E> implements AnylineService<E> {
                     }
                     result = dao.alter(otable);
                     table.addDdl(otable.ddls());
-                    table.addRuns(otable.runs());
+                    //table.addRuns(otable.runs());
                 } else {
                     //sort(table);
                     result = dao.create(table);
