@@ -9639,8 +9639,13 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 			builder.append(sql).append("\n").append(order);
 		}else{
 			// 分页
+            int type = navi.getCalType();
+            long rows = navi.getPageRows();
+            if(type == 1){
+                rows = navi.getLastRow() - first + 1;
+            }
 			builder.append(sql).append("\n").append(order);
-			builder.append(" OFFSET ").append(first).append(" ROWS FETCH NEXT ").append(navi.getPageRows()).append(" ROWS ONLY");
+			builder.append(" OFFSET ").append(first).append(" ROWS FETCH NEXT ").append(rows).append(" ROWS ONLY");
 		}
 		return builder.toString();
 	}
