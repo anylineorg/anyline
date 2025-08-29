@@ -772,6 +772,11 @@ public class Column extends TableAffiliation<Column> implements Serializable {
             update.setType(type);
             return this;
         }
+        this.typeMetadata = null;
+        this.ignorePrecision = -1;
+        this.ignoreLength = -1;
+        this.ignoreScale = -1;
+        this.array = false;
         return setTypeName(type);
     }
 
