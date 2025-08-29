@@ -204,7 +204,12 @@ public abstract class AbstractController {
 				ParseResult parser = ConfigParser.parse(param,true);
 				String col = parser.getVar();
 				String key = parser.getKey();
-				if(!ConfigTable.IS_IGNORE_EMPTY_HTTP_KEY || requestValues.containsKey(key)) {
+				ParseResult or = parser.getOr();
+				String orKey = null;
+				if(null != or){
+					orKey = or.getKey()+"";
+				}
+				if(!ConfigTable.IS_IGNORE_EMPTY_HTTP_KEY || requestValues.containsKey(key) || requestValues.containsKey(orKey)) {
 					Object value = ConfigParser.getValue(requestValues, parser);
 					if("".equals(value)){
 						value = null;

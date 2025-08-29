@@ -405,6 +405,12 @@ public class ConfigParser {
 		}
 		try{
 			String key = parser.getKey();
+
+			ParseResult or = parser.getOr();
+			String orKey = null;
+			if(null != or){
+				orKey = or.getKey();
+			}
 			// String def = parser.getDef();
 			String className = parser.getClazz();
 			String methodName = parser.getMethod();
@@ -456,10 +462,13 @@ public class ConfigParser {
 				}
 			}else{
 				if(Config.FETCH_REQUEST_VALUE_TYPE_SINGLE == fetchValueType) {
-					Object v = getRuntimeValue(values,key,isKeyEncrypt, isValueEncrypt);
+					Object v = getRuntimeValue(values, key, isKeyEncrypt, isValueEncrypt);
+					if(BasicUtil.isEmpty(v) && BasicUtil.isNotEmpty(orKey)){
+						v = getRuntimeValue(values, orKey, isKeyEncrypt, isValueEncrypt);
+					}
 					list.add(v);
 				}else{
-					list = getRuntimeValues(values, key,isKeyEncrypt, isValueEncrypt);
+					list = getRuntimeValues(values, key, isKeyEncrypt, isValueEncrypt);
 				}
 			}
 		}catch(Exception e) {
