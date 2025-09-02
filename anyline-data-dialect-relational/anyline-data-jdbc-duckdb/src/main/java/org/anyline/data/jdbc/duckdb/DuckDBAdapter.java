@@ -645,7 +645,7 @@ public class DuckDBAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public String mergeFinalQuery(DataRuntime runtime, Run run) {
-		return super.pageLimit(runtime, run);
+		return super.pageLimitOffset(runtime, run);
 	}
 
 	/**
