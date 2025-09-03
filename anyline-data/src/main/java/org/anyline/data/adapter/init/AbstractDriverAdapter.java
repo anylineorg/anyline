@@ -7653,10 +7653,12 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				for (Run run : runs) {
 					DataSet set = selectMetadata(runtime, random, run);
 					views = views(runtime, idx++, true, views, catalog, schema, set);
+                    if(null != views){
 					for(View view:views) {
 						String cache_key = CacheProxy.key(runtime, "view_name_map", greedy, catalog, schema, view.getName());
 						CacheProxy.name(cache_key, view.getName());
 					}
+                    }
 					sys = true;
 				}
 			}
@@ -7666,10 +7668,12 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		if(!sys) {
 			try {
 				views = views(runtime, true, views, catalog, schema, null, View.TYPE.NORMAL.value);
-				for(View view:views) {
-					String cache_key = CacheProxy.key(runtime, "view_name_map", greedy, catalog, schema, view.getName());
-					CacheProxy.name(cache_key, view.getName());
-				}
+                if(null != views) {
+                    for (View view : views) {
+                        String cache_key = CacheProxy.key(runtime, "view_name_map", greedy, catalog, schema, view.getName());
+                        CacheProxy.name(cache_key, view.getName());
+                    }
+                }
 			}catch (Exception e) {
 				e.printStackTrace();
 			}

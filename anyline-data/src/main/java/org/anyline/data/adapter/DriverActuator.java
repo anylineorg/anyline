@@ -200,6 +200,9 @@ public interface DriverActuator {
      * @throws Exception 异常
      */
     default <T extends Table> LinkedHashMap<String, T> tables(DriverAdapter adapter, DataRuntime runtime, boolean create,  LinkedHashMap<String, T> previous, Table query, int types) throws Exception {
+        if(null == previous){
+            previous = new LinkedHashMap<>();
+        }
         return previous;
     }
 
@@ -215,6 +218,9 @@ public interface DriverActuator {
      * @throws Exception 异常
      */
     default <T extends Table> List<T> tables(DriverAdapter adapter, DataRuntime runtime, boolean create, List<T> previous, Table query, int types) throws Exception {
+        if(null == previous){
+            previous = new ArrayList<>();
+        }
         return previous;
     }
 
@@ -230,6 +236,9 @@ public interface DriverActuator {
      * @throws Exception 异常
      */
     default <T extends View> LinkedHashMap<String, T> views(DriverAdapter adapter, DataRuntime runtime, boolean create,  LinkedHashMap<String, T> previous, View query, int types) throws Exception {
+        if(null == previous){
+            previous = new LinkedHashMap<>();
+        }
         return previous;
     }
 
@@ -245,6 +254,9 @@ public interface DriverActuator {
      * @throws Exception 异常
      */
     default <T extends Table> List<T> views(DriverAdapter adapter, DataRuntime runtime, boolean create, List<T> previous, View query, int types) throws Exception {
+        if(null == previous){
+            previous = new ArrayList<>();
+        }
         return previous;
     }
 
@@ -260,6 +272,9 @@ public interface DriverActuator {
      * @param <T> Column
      */
     default <T extends Column> LinkedHashMap<String, T> columns(DriverAdapter adapter, DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Table table, String cmd) throws Exception {
+        if(null == previous){
+            previous = new LinkedHashMap<>();
+        }
         return previous;
     }
 
