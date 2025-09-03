@@ -7490,7 +7490,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 navi = configs.getPageNavi();
                 // 根据系统表查询
                 try {
-                    List<Run> runs = buildQueryTablesRun(runtime, greedy, query, types, configs);
+                    List<Run> runs = buildQueryViewsRun(runtime, greedy, query, types, configs);
                     if (null != runs) {
                         int idx = 0;
                         for (Run run : runs) {
