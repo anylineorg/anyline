@@ -5103,7 +5103,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             meta = (T)new Catalog();
         }
         MetadataFieldRefer refer = refer(runtime, Catalog.class);
-        String name = row.getString(refer.maps(Catalog.FIELD_NAME));
+        String name = row.getStringWithoutEmpty(refer.maps(Catalog.FIELD_NAME));
         meta.setMetadata(row);
         meta.setName(name);
         return meta;
@@ -5527,15 +5527,15 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             meta = (T)new Schema();
         }
         MetadataFieldRefer refer = refer(runtime, Schema.class);
-        String _catalog = row.getString(refer.maps(Schema.FIELD_CATALOG));
+        String _catalog = row.getStringWithoutEmpty(refer.maps(Schema.FIELD_CATALOG));
         if(null == _catalog && null != catalog) {
             _catalog = catalog.getName();
         }
-        String name = row.getString(refer.maps(Schema.FIELD_NAME));
+        String name = row.getStringWithoutEmpty(refer.maps(Schema.FIELD_NAME));
         if(null != _catalog) {
             _catalog = _catalog.trim();
         }
-        meta.setUser(row.getString(refer.maps(Schema.FIELD_USER)));
+        meta.setUser(row.getStringWithoutEmpty(refer.maps(Schema.FIELD_USER)));
         meta.setMetadata(row);
         meta.setCatalog(_catalog);
         meta.setName(name);
@@ -18038,8 +18038,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         }
         MetadataFieldRefer refer = refer(runtime, Procedure.class);
         meta.setMetadata(row);
-        meta.setName(row.getString(refer.maps(org.anyline.entity.authorize.User.FIELD_NAME)));
-        meta.setHost(row.getString(refer.maps(org.anyline.entity.authorize.User.FIELD_HOST)));
+        meta.setName(row.getStringWithoutEmpty(refer.maps(org.anyline.entity.authorize.User.FIELD_NAME)));
+        meta.setHost(row.getStringWithoutEmpty(refer.maps(org.anyline.entity.authorize.User.FIELD_HOST)));
         return meta;
 	}
 
@@ -18181,7 +18181,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         }
         MetadataFieldRefer refer = refer(runtime, Procedure.class);
         meta.setMetadata(row);
-        meta.setName(row.getString(refer.maps(Procedure.FIELD_NAME)));
+        meta.setName(row.getStringWithoutEmpty(refer.maps(Procedure.FIELD_NAME)));
         return meta;
 	}
 
@@ -18438,7 +18438,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         String result = null;
         String[] keys = refer.maps(key);
         if(null != keys && keys.length > 0) {
-            result = row.getString(keys);
+            result = row.getStringWithoutEmpty(keys);
         }
         if(null == result) {
             result = def;

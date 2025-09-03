@@ -3661,8 +3661,8 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         Table table = query.getTable();
         //属性在查询结果中对应的列(通用)
         MetadataFieldRefer refer = refer(runtime, Column.class);
-        String catalog = row.getString(refer.maps(Column.FIELD_CATALOG));
-        String schema = row.getString(refer.maps(Column.FIELD_SCHEMA));//"TABLE_SCHEMA","TABSCHEMA","SCHEMA_NAME","OWNER"
+        String catalog = row.getStringWithoutEmpty(refer.maps(Column.FIELD_CATALOG));
+        String schema = row.getStringWithoutEmpty(refer.maps(Column.FIELD_SCHEMA));//"TABLE_SCHEMA","TABSCHEMA","SCHEMA_NAME","OWNER"
         schema = BasicUtil.evl(schema, meta.getSchemaName());
         //如果上一步没有提供table有可能是查所有表的列,column单独创建自己的table对象
         if(null != table) {
@@ -3684,13 +3684,13 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         if(null != table) {//查询全部表
             meta.setTable(table);
         }else {
-            String tableName = row.getString(refer.maps(Column.FIELD_TABLE));
+            String tableName = row.getStringWithoutEmpty(refer.maps(Column.FIELD_TABLE));
             table = new Table(BasicUtil.evl(tableName, meta.getTableName(true), tableName));
             table.setCatalog(catalog);
             table.setSchema(schema);
             meta.setTable(table);
         }
-        String name = row.getString(refer.maps(Column.FIELD_NAME));
+        String name = row.getStringWithoutEmpty(refer.maps(Column.FIELD_NAME));
         meta.setName(name);
         meta.setMetadata(row);
         return meta;
@@ -3727,7 +3727,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         //TODO 子类型  geometry(Polygon,4326) geometry(Polygon) geography(Polygon,4326)
         //TODO CHARACTER VARYING
         if(null != type && type.contains(" ")) {
-           String tmp = row.getString("UDT_NAME","DATA_TYPE","TYPENAME","DATA_TYPE_NAME");
+           String tmp = row.getStringWithoutEmpty("UDT_NAME","DATA_TYPE","TYPENAME","DATA_TYPE_NAME");
            if(null != tmp) {
                type = tmp;
            }

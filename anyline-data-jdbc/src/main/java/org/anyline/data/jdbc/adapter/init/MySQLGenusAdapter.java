@@ -8070,8 +8070,8 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         if(null == meta) {
             meta = (T) new User();
         }
-        meta.setHost(row.getString(refer.maps(User.FIELD_HOST)));
-        meta.setName(row.getString(refer.maps(User.FIELD_NAME)));
+        meta.setHost(row.getStringWithoutEmpty(refer.maps(User.FIELD_HOST)));
+        meta.setName(row.getStringWithoutEmpty(refer.maps(User.FIELD_NAME)));
         return meta;
     }
 
