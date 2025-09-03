@@ -2075,7 +2075,8 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     }
 
     /**
-     * 返回第1个存在的key对应的值, 有可能返回null或""
+     * 返回第1个存在的key(参数key!=null)对应的值, 有可能返回null或""<br/>
+     * 如果要取第1个不为空的值参考getStringWithoutEmpty/getStringWithoutNull
      * @param keys keys
      * @return String
      */
