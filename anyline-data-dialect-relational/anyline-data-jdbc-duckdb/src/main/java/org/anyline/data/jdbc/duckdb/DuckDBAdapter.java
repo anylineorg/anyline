@@ -2264,7 +2264,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		List<Run> runs = new ArrayList<>();
 		Run run = new SimpleRun(runtime);
 		StringBuilder builder = run.getBuilder();
-		builder.append("PRAGMA table_info(").append(table.getName()).append(")");
+		builder.append("DESCRIBE ").append(table.getName());
 		runs.add(run);
 		return runs;
 	}
@@ -2277,10 +2277,10 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	@Override
 	public MetadataFieldRefer initColumnFieldRefer() {
 		MetadataFieldRefer refer = new MetadataFieldRefer(Column.class);
-		refer.map(Column.FIELD_NAME, "NAME");
-		refer.map(Column.FIELD_NULLABLE, "NOTNULL");
-		refer.map(Column.FIELD_TYPE, "TYPE");
-		refer.map(Column.FIELD_DEFAULT_VALUE, "DFLT_VALUE");
+		refer.map(Column.FIELD_NAME, "COLUMN_NAME");
+		refer.map(Column.FIELD_NULLABLE, "NULL");
+		refer.map(Column.FIELD_TYPE, "COLUMN_TYPE");
+		refer.map(Column.FIELD_DEFAULT_VALUE, "DEFAULT");
 		return refer;
 	}
 	/**
@@ -4843,9 +4843,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 */
 	@Override
 	public StringBuilder increment(DataRuntime runtime, StringBuilder builder, Column meta) {
-		if(meta.isAutoIncrement()) {
-			builder.append(" PRIMARY KEY AUTOINCREMENT");
-		}
+		//不支持 需要通过序列
 		return builder;
 	}
 
