@@ -1905,6 +1905,35 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         return super.ddl(runtime, index, table, ddls, set);
     }
 
+
+    /**
+     * table[结果集封装]<br/>
+     * 根据查询结果封装Table基础属性
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param index index
+     * @param meta 上一步封装结果
+     * @param query 查询条件 根据metadata属性
+     * @param row 查询结果集
+     * @return Table
+     * @param <T> Table
+     */
+    public <T extends Table> T init(DataRuntime runtime, int index, T meta, Table query, DataRow row) {
+        return super.init(runtime, index, meta, query, row);
+    }
+
+    /**
+     * table[结果集封装]<br/>
+     * 根据查询结果封装Table更多属性
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta 上一步封装结果
+     * @param row 查询结果集
+     * @return Table
+     */
+    @Override
+    public <T extends Table> T detail(DataRuntime runtime, int index, T meta, Table query, DataRow row) {
+        return super.detail(runtime, index, meta, query, row);
+    } 
+
     /* *****************************************************************************************************************
      *                                                     view
      * -----------------------------------------------------------------------------------------------------------------

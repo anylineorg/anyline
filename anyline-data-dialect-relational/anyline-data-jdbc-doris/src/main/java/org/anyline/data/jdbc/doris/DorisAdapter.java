@@ -31,6 +31,7 @@ import org.anyline.metadata.type.DatabaseType;
 import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.metadata.type.init.StandardTypeMetadata;
 import org.anyline.util.BasicUtil;
+import org.anyline.util.regular.RegularUtil;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -1762,19 +1763,30 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
      */
     @Override
     public List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Table query, int types, ConfigStore configs) throws Exception {
-        String catalog = query.getCatalogName();
-        if(BasicUtil.isEmpty(catalog)){
-            return super.buildQueryTablesRun(runtime, greedy, query, types, configs);
-        }
 
         List<Run> runs = new ArrayList<>();
-        Run run = new SimpleRun(runtime, configs);
-        runs.add(run);
+
+        SimpleRun run = new SimpleRun(runtime);
         StringBuilder builder = run.getBuilder();
-        builder.append("SELECT * FROM ").append(catalog).append(".information_schema.TABLES");
-        configs.and(Compare.LIKE_SIMPLE,"TABLE_NAME", objectName(runtime, query.getName()));
-        configs.and("TABLE_SCHEMA", query.getSchemaName());
-        configs.and("TABLE_CATALOG", catalog);
+        String name = query.getName();
+        if(null != name && !name.contains("*") && !name.contains("%")) {
+            runs.add(run);
+            builder.append("SHOW CREATE TABLE ");
+            name(runtime, builder, query);
+        }
+        String catalog = query.getCatalogName();
+        if(BasicUtil.isEmpty(catalog)){
+            runs.addAll(super.buildQueryTablesRun(runtime, greedy, query, types, configs));
+        }else{
+            run = new SimpleRun(runtime, configs);
+            runs.add(run);
+            builder = run.getBuilder();
+            builder.append("SELECT * FROM ").append(catalog).append(".information_schema.TABLES");
+            configs.and(Compare.LIKE_SIMPLE,"TABLE_NAME", objectName(runtime, query.getName()));
+            configs.and("TABLE_SCHEMA", query.getSchemaName());
+            configs.and("TABLE_CATALOG", catalog);
+        }
+
         return runs;
     }
 
@@ -1959,6 +1971,92 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         }
         return ddls;
     }
+
+    /**
+     * table[结果集封装]<br/>
+     * 根据查询结果封装Table基础属性
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param index index
+     * @param meta 上一步封装结果
+     * @param query 查询条件 根据metadata属性
+     * @param row 查询结果集
+     * @return Table
+     * @param <T> Table
+     */
+    public <T extends Table> T init(DataRuntime runtime, int index, T meta, Table query, DataRow row) {
+        if(row.isNotEmpty("Table")){ //SHOW CREATE TABLE
+            String name = row.getString("Table");
+            return (T)new Table(name);
+        }
+        return super.init(runtime, index, meta, query, row);
+    }
+
+    /**
+     * table[结果集封装]<br/>
+     * 根据查询结果封装Table更多属性
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta 上一步封装结果
+     * @param row 查询结果集
+     * @return Table
+     */
+    @Override
+    public <T extends Table> T detail(DataRuntime runtime, int index, T meta, Table query, DataRow row) {
+        if(row.isNotEmpty("Table")){ //SHOW CREATE TABLE
+            String txt = row.getString("Create Table");
+            if(null != txt) {
+                /*CREATE TABLE `user` (
+                  `id` bigint(20) NULL
+                ) ENGINE=OLAP
+                UNIQUE KEY(`id`)
+                COMMENT 'OLAP'
+                DISTRIBUTED BY HASH(`id`) BUCKETS 1
+                PROPERTIES (
+                "replication_allocation" = "tag.location.default: 1",
+                "is_being_synced" = "false",
+                "storage_format" = "V2",
+                "enable_unique_key_merge_on_write" = "true",
+                "light_schema_change" = "true",
+                "disable_auto_compaction" = "false",
+                "enable_single_replica_compaction" = "false"
+            );*/
+                //分桶
+                String type = RegularUtil.cut(true, txt,  "DISTRIBUTED BY", "(");
+                if(null != type) {
+                    Table.Distribution distribution = new Table.Distribution();
+                    meta.setDistribution(distribution);
+                    type = type.trim();
+                    Table.Distribution.TYPE ty = Table.Distribution.TYPE.valueOf(type.toUpperCase());
+                    distribution.setType(ty);
+                    String[] columns = RegularUtil.cut(true, txt,  "DISTRIBUTED BY", "(", ")").split(",");
+                    for(String column:columns) {
+                        distribution.setColumns(column.replace("`", "").trim());
+                    }
+                    if(ty == Table.Distribution.TYPE.HASH) {
+                        String buckets = RegularUtil.cut(true, txt,  "DISTRIBUTED BY", "BUCKETS", " ", "\n");
+                        if(null != buckets) {
+                            distribution.setBuckets(BasicUtil.parseInt(buckets.trim(), -1));
+                        }
+                    }
+                }
+                //其他属性
+                String ps = RegularUtil.cut(true, txt,  "PROPERTIES (", ");");
+                if(null != ps) {
+                    String[] lines = ps.trim().split("\n");
+                    for(String line:lines){
+                        String[] kv = line.split("=");
+                        if(kv.length == 2) {
+                            String k = kv[0].trim().replace("\"", "");
+                            String v = kv[1].trim().replace("\"", "");
+                            meta.setProperty(k, v);
+                        }
+                    }
+                }
+            }
+            return meta;
+        }else {
+            return super.detail(runtime, index, meta, query, row);
+        }
+    } 
 
     /* *****************************************************************************************************************
      *                                                     view
@@ -2232,6 +2330,106 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
      * [结果集封装]<br/>
      * List<String> ddl(DataRuntime runtime, int index, PartitionTable table, List<String> ddls, DataSet set)
      ******************************************************************************************************************/
+    /**
+     * 表分区方式及分片
+     * @param table 主表
+     * @return Partition
+     */
+    public Table.Partition partition(DataRuntime runtime, String random, Table table) {
+        return super.partition(runtime, random, table);
+    }
+
+    /**
+     * partition table[命令合成]<br/>
+     * 查询表分区方式及分片
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param table 表
+     * @return String
+     */
+    @Override
+    public List<Run> buildQueryTablePartitionRun(DataRuntime runtime, Table table) {
+        List<Run> runs = new ArrayList<>();
+        SimpleRun run = new SimpleRun(runtime);
+        runs.add(run);
+        StringBuilder builder = run.getBuilder();
+        //分区方式
+        builder.append("SHOW CREATE TABLE ");
+        name(runtime, builder, table);
+        return runs;
+    }
+
+    /**
+     * partition table[结果集封装]<br/>
+     * 根据查询结果集构造Table
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param index 第几条SQL 对照 buildQueryMasterTablesRun返回顺序
+     * @param create 上一步没有查到的,这一步是否需要新创建
+     * @param meta 上一步查询结果
+     * @param table 表
+     * @param set 查询结果集
+     * @return tables
+     * @throws Exception 异常
+     */
+    @Override
+    public Table.Partition partition(DataRuntime runtime, int index, boolean create, Table.Partition meta, Table table, DataSet set) throws Exception {
+        return super.partition(runtime, index, create, meta, table, set);
+    }
+
+    /**
+     * partition table[结果集封装]<br/>
+     * 根据查询结果集构造Table.Partition
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param index 第几条SQL 对照 buildQueryMasterTablesRun返回顺序
+     * @param create 上一步没有查到的,这一步是否需要新创建
+     * @param meta 上一步查询结果
+     * @param table 表
+     * @param row 查询结果集
+     * @return tables
+     * @throws Exception 异常
+     */
+    @Override
+    public Table.Partition init(DataRuntime runtime, int index, boolean create, Table.Partition meta, Table table, DataRow row) throws Exception {
+        return super.init(runtime, index, create, meta, table, row);
+    }
+
+    /**
+     * partition table[结果集封装]<br/>
+     * 根据查询结果集构造Table.Partition
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param index 第几条SQL 对照 buildQueryMasterTablesRun返回顺序
+     * @param create 上一步没有查到的,这一步是否需要新创建
+     * @param meta 上一步查询结果
+     * @param table 表
+     * @param row 查询结果集
+     * @return tables
+     * @throws Exception 异常
+     */
+    @Override
+    public Table.Partition detail(DataRuntime runtime, int index, boolean create, Table.Partition meta, Table table, DataRow row) throws Exception {
+        return super.detail(runtime, index, create, meta, table, row);
+    }
+
+
+    /**
+     * partition table[结果集封装]<br/>
+     * Table.Partition 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer initTablePartitionFieldRefer() {
+        return super.initTablePartitionFieldRefer();
+    }
+
+    /**
+     * partition table[结果集封装]<br/>
+     * Table.Partition.Slice 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer initTablePartitionSliceFieldRefer() {
+        return super.initTablePartitionSliceFieldRefer();
+    }
+
     /**
      * partition table[调用入口]<br/>
      * 查询主表
