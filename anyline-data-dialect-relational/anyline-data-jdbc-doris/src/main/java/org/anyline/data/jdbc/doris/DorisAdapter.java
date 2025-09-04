@@ -2069,6 +2069,10 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
                 }
                 meta.setKeys(keys);
                 //其他属性
+                String engine = RegularUtil.cut(true, txt, "ENGINE=", "\n");
+                if(BasicUtil.isNotEmpty(engine)) {
+                    meta.setEngine(engine.trim());
+                }
                 String ps = RegularUtil.cut(true, txt,  "PROPERTIES (", ");");
                 if(null != ps) {
                     String[] lines = ps.trim().split("\n");
