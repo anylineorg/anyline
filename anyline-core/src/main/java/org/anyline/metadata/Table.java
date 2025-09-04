@@ -1623,6 +1623,13 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
             }
             return this;
         }
+        public Distribution addColumn(String column) {
+            if(null == this.columns) {
+                this.columns = new LinkedHashMap<>();
+            }
+            this.columns.put(column.toUpperCase(), new Column(column));
+            return this;
+        }
 
     }
     public static class Cluster extends Distribution {
@@ -1674,6 +1681,13 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
             for (String column:list) {
                 this.columns.put(column.toUpperCase(), new Column(column));
             }
+            return this;
+        }
+        public Key addColumn(String column) {
+            if(null == this.columns) {
+                this.columns = new LinkedHashMap<>();
+            }
+            this.columns.put(column.toUpperCase(), new Column(column));
             return this;
         }
     }

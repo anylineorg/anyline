@@ -2029,7 +2029,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
                     distribution.setType(ty);
                     String[] columns = RegularUtil.cut(true, txt,  "DISTRIBUTED BY", "(", ")").split(",");
                     for(String column:columns) {
-                        distribution.setColumns(column.replace("`", "").trim());
+                        distribution.addColumn(column.replace("`", "").trim());
                     }
                     if(ty == Table.Distribution.TYPE.HASH) {
                         String buckets = RegularUtil.cut(true, txt,  "DISTRIBUTED BY", "BUCKETS", " ", "\n");
@@ -2038,6 +2038,36 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
                         }
                     }
                 }
+                //key
+                List<Table.Key> keys = new ArrayList<>();
+                if(txt.contains("UNIQUE KEY")){
+                    Table.Key key = new Table.Key();
+                    key.setType(Table.Key.TYPE.UNIQUE);
+                    String[] columns = RegularUtil.cut(true, txt,  "UNIQUE KEY", "(", ")").split(",");
+                    for(String column:columns) {
+                        key.addColumn(column.replace("`", "").trim());
+                    }
+                    keys.add(key);
+                }
+                if(txt.contains("DUPLICATE KEY")){
+                    Table.Key key = new Table.Key();
+                    key.setType(Table.Key.TYPE.DUPLICATE);
+                    String[] columns = RegularUtil.cut(true, txt,  "DUPLICATE KEY", "(", ")").split(",");
+                    for(String column:columns) {
+                        key.addColumn(column.replace("`", "").trim());
+                    }
+                    keys.add(key);
+                }
+                if(txt.contains("AGGREGATE KEY")){
+                    Table.Key key = new Table.Key();
+                    key.setType(Table.Key.TYPE.AGGREGATE);
+                    String[] columns = RegularUtil.cut(true, txt,  "AGGREGATE KEY", "(", ")").split(",");
+                    for(String column:columns) {
+                        key.addColumn(column.replace("`", "").trim());
+                    }
+                    keys.add(key);
+                }
+                meta.setKeys(keys);
                 //其他属性
                 String ps = RegularUtil.cut(true, txt,  "PROPERTIES (", ");");
                 if(null != ps) {
