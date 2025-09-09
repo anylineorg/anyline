@@ -92,7 +92,7 @@ public interface DataSourceHolder {
 			}
 		}
 		if(instances.isEmpty()) {
-			log.warn("[没有可用的DataSourceHolder][有可能是上下文没有加载完成 或 pom中没有依赖anyline-environment-* 或 纯Java环境没有启动DefaultEnvironmentWorker.start()]");
+			log.warn("[没有可用的DataSourceHolder][有可能是上下文没有加载完成 或 pom中没有依赖anyline-environment-* 或 spring环境检查有没有spring-boot-configuration-processor 或 纯Java环境没有启动DefaultEnvironmentWorker.start()]");
 		}
 		return holder;
 	}
