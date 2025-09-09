@@ -88,7 +88,8 @@
 		<aliyun.sms.version>2.1.0</aliyun.sms.version>
 		<aliyun.dysmsapi.version>2.0.10</aliyun.dysmsapi.version>
 		<alipay.version>4.16.57.ALL</alipay.version>
-		<druid.version>1.1.8</druid.version>
+		<!--<druid.version>1.1.8</druid.version>-->
+		<druid.version>1.2.27</druid.version>
 		<jsch.version>0.1.55</jsch.version>
 		<apache.struts.version>2.5.30</apache.struts.version>
 		<persistence.version>1.0.2</persistence.version>
