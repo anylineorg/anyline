@@ -16,6 +16,7 @@
 
 package org.anyline.metadata;
 
+import org.anyline.entity.DataSet;
 import org.anyline.entity.PageNavi;
 
 import java.io.Serializable;
@@ -28,10 +29,11 @@ public class Procedure extends Metadata<Procedure> implements Serializable {
 	private static final long serialVersionUID = 1L;
 	protected String keyword = "PROCEDURE"           ;
 	private String returnType;
-	private List<Parameter> parameters = new ArrayList<Parameter>();
-	private List<Parameter> inputs = new ArrayList<Parameter>();
-	private List<Parameter> outputs = new ArrayList<Parameter>();//输出参数, 输入输出参数
+	private List<Parameter> parameters = new ArrayList<>();
+	private List<Parameter> inputs = new ArrayList<>();
+	private List<Parameter> outputs = new ArrayList<>();//输出参数, 输入输出参数
 	private List<Object> result;	// 输出参数结果
+	private List<DataSet> results = new ArrayList<>(); //返回多个结果集的存储过程
 	private boolean hasReturn = false;
 	private PageNavi navi;
 
@@ -56,6 +58,18 @@ public class Procedure extends Metadata<Procedure> implements Serializable {
 			}
 		}
 		return this;
+	}
+
+	/**
+	 * 返回多个结果集的存储过程
+	 * @return List
+	 */
+	public List<DataSet> getResults() {
+		return results;
+	}
+
+	public void setResults(List<DataSet> results) {
+		this.results = results;
 	}
 
 	/**
