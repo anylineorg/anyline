@@ -290,8 +290,6 @@ public class DefaultJDBCActuator implements DriverActuator {
     public DataSet querys(DriverAdapter adapter, DataRuntime runtime, String random, Procedure procedure, PageNavi navi) throws Exception {
         final List<Parameter> inputs = procedure.getInputs();
         final List<Parameter> outputs = procedure.getOutputs();
-        final String rdm = random;
-        final DataRuntime rt = runtime;
         DataSource datasource = datasource(runtime);
         if(null == datasource) {
             return new DataSet();
@@ -379,9 +377,9 @@ public class DefaultJDBCActuator implements DriverActuator {
                 set.setNavi(navi);
                 navi.setDataSize(set.size());
             }
-            set.setDatalink(rt.datasource());
+            set.setDatalink(runtime.datasource());
             if (ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
-                log.info("{}[封装耗时:{}][封装行数:{}]", rdm, DateUtil.format(System.currentTimeMillis() - mid), set.size());
+                log.info("{}[封装耗时:{}][封装行数:{}]", random, DateUtil.format(System.currentTimeMillis() - mid), set.size());
             }
             if (ConfigTable.IS_LOG_QUERY_RESULT && log.isInfoEnabled()) {
                 log.info("{}[查询结果]{}", random, LogUtil.table(set));

@@ -973,6 +973,10 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
         DataSet set = null;
         final List<Parameter> inputs = procedure.getInputs();
         final List<Parameter> outputs = procedure.getOutputs();
+
+        if(null == random) {
+            random = random(runtime);
+        }
         if(ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
             log.info("{}[action:procedure][cmd:\n{}\n][input param:{}]\n[output param:{}]", random, procedure.getName(), LogUtil.param(inputs), LogUtil.param(outputs));
         }

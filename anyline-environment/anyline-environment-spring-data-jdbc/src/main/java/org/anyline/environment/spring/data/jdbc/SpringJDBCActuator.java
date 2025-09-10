@@ -302,8 +302,6 @@ public class SpringJDBCActuator implements DriverActuator {
     public DataSet querys(DriverAdapter adapter, DataRuntime runtime, String random, Procedure procedure, PageNavi navi) throws Exception {
         final List<Parameter> inputs = procedure.getInputs();
         final List<Parameter> outputs = procedure.getOutputs();
-        final String rdm = random;
-        final DataRuntime rt = runtime;
         JdbcTemplate jdbc = jdbc(runtime);
         if(null == jdbc) {
             return new DataSet();
@@ -346,56 +344,71 @@ public class SpringJDBCActuator implements DriverActuator {
         }, new CallableStatementCallback<Object>() {
             public Object doInCallableStatement(CallableStatement cs) throws SQLException, DataAccessException {
                 ResultSet rs = cs.executeQuery();
-                DataSet set = new DataSet();
-                ResultSetMetaData rsmd = rs.getMetaData();
-                int cols = rsmd.getColumnCount();
-                for(int i=1; i<=cols; i++) {
-                    String name = rsmd.getColumnLabel(i);
-                    if(null == name) {
-                        name = rsmd.getColumnName(i);
+                DataSet rtn = null;
+                List<DataSet> sets = new ArrayList<>();
+                procedure.setResults(sets);
+                boolean more = false;
+                do{
+                    DataSet set = new DataSet();
+                    if(null == rtn){
+                        rtn = set;
                     }
-                    set.addHead(name);
-                }
-                long mid = System.currentTimeMillis();
-                int index = 0;
-                long first = -1;
-                long last = -1;
-                if(null != navi) {
-                    first = navi.getFirstRow();
-                    last = navi.getLastRow();
-                }
-                while(rs.next()) {
-                    if(first ==-1 || (index >= first && index <= last)) {
-                        DataRow row = new DataRow();
-                        for(int i=1; i<=cols; i++) {
-                            row.put(false, rsmd.getColumnLabel(i), rs.getObject(i));
+                    sets.add(set);
+                    ResultSetMetaData rsmd = rs.getMetaData();
+                    int cols = rsmd.getColumnCount();
+                    for(int i=1; i<=cols; i++) {
+                        String name = rsmd.getColumnLabel(i);
+                        if(null == name) {
+                            name = rsmd.getColumnName(i);
                         }
-                        set.addRow(row);
+                        set.addHead(name);
                     }
-                    index ++;
-                    if(first != -1) {
-                        if(index > last) {
-                            break;
+                    long mid = System.currentTimeMillis();
+                    int index = 0;
+                    long first = -1;
+                    long last = -1;
+                    if(null != navi) {
+                        first = navi.getFirstRow();
+                        last = navi.getLastRow();
+                    }
+                    while(rs.next()) {
+                        if(first ==-1 || (index >= first && index <= last)) {
+                            DataRow row = new DataRow();
+                            for(int i=1; i<=cols; i++) {
+                                row.put(false, rsmd.getColumnLabel(i), rs.getObject(i));
+                            }
+                            set.addRow(row);
                         }
-                        if(first ==0 && last==0) {// 只取一行
-                            break;
+                        index ++;
+                        if(first != -1) {
+                            if(index > last) {
+                                break;
+                            }
+                            if(first ==0 && last==0) {// 只取一行
+                                break;
+                            }
                         }
                     }
-                }
-                if(null != navi) {
-                    navi.setTotalRow(index);
-                    set.setNavi(navi);
-                    navi.setDataSize(set.size());
-                }
+                    if(null != navi) {
+                        navi.setTotalRow(index);
+                        set.setNavi(navi);
+                        navi.setDataSize(set.size());
+                    }
 
-                set.setDatalink(rt.datasource());
-                if(ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
-                    log.info("{}[封装耗时:{}][封装行数:{}]", rdm, DateUtil.format(System.currentTimeMillis() - mid), set.size());
-                }
-                if(ConfigTable.IS_LOG_QUERY_RESULT && log.isInfoEnabled()) {
-                    log.info("{}[查询结果]{}", rdm, LogUtil.table(set));
-                }
-                return set;
+                    set.setDatalink(runtime.datasource());
+                    if(ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
+                        log.info("{}[封装耗时:{}][封装行数:{}]", random, DateUtil.format(System.currentTimeMillis() - mid), set.size());
+                    }
+                    if(ConfigTable.IS_LOG_QUERY_RESULT && log.isInfoEnabled()) {
+                        log.info("{}[查询结果]{}", random, LogUtil.table(set));
+                    }
+                    rs.close();
+                    more = cs.getMoreResults();
+                    if(more){
+                        rs = cs.getResultSet();
+                    }
+                }while (more);
+                return rtn;
             }
         });
         return set;
