@@ -298,7 +298,7 @@ public interface ConfigStore extends Cloneable{
 		return and(conf);
 	}
 	default ConfigStore exists(RunPrepare prepare) {
-		return exists(EMPTY_VALUE_SWITCH.IGNORE, prepare);
+		return exists(ConfigTable.DEFAULT_EMPTY_VALUE_SWITCH, prepare);
 	}
 	/**
 	 * 构造查询条件
@@ -311,7 +311,7 @@ public interface ConfigStore extends Cloneable{
 		return and(swt, var, value, false, false);
 	}
 	default ConfigStore and(String var, Object value) {
-		return and(EMPTY_VALUE_SWITCH.NONE, var, value);
+		return and(ConfigTable.DEFAULT_EMPTY_VALUE_SWITCH, var, value);
 	}
 
 	/**
@@ -328,7 +328,7 @@ public interface ConfigStore extends Cloneable{
 		return and(swt, compare(value), id, var, value, overCondition, overValue);
 	}
 	default ConfigStore and(String id, String var, Object value, boolean overCondition, boolean overValue) {
-		return and(EMPTY_VALUE_SWITCH.NONE, id, var, value, overCondition, overValue);
+		return and(ConfigTable.DEFAULT_EMPTY_VALUE_SWITCH, id, var, value, overCondition, overValue);
 	}
 
 	/**
@@ -344,7 +344,7 @@ public interface ConfigStore extends Cloneable{
 		return and(swt, (String)null, var, value, overCondition, overValue);
 	}
 	default ConfigStore and(String var, Object value, boolean overCondition, boolean overValue) {
-		return and(EMPTY_VALUE_SWITCH.NONE, var, value, overCondition, overValue);
+		return and(ConfigTable.DEFAULT_EMPTY_VALUE_SWITCH, var, value, overCondition, overValue);
 	}
 
 	/**
@@ -355,7 +355,7 @@ public interface ConfigStore extends Cloneable{
 	 */
 	ConfigStore and(EMPTY_VALUE_SWITCH swt, String text);
 	default ConfigStore and(String text) {
-		return and(EMPTY_VALUE_SWITCH.NONE, text);
+		return and(ConfigTable.DEFAULT_EMPTY_VALUE_SWITCH, text);
 	}
 
 	/**
@@ -370,7 +370,7 @@ public interface ConfigStore extends Cloneable{
 		return and(swt, compare, var, value, false, false);
 	}
 	default ConfigStore and(Compare compare, String var, Object value) {
-		return and(EMPTY_VALUE_SWITCH.NONE, compare, var, value);
+		return and(ConfigTable.DEFAULT_EMPTY_VALUE_SWITCH, compare, var, value);
 	}
 
 	/**
@@ -386,7 +386,7 @@ public interface ConfigStore extends Cloneable{
 		return and(swt, compare, id, var, value, false, false);
 	}
 	default ConfigStore and(Compare compare, String id, String var, Object value) {
-		return and(EMPTY_VALUE_SWITCH.NONE, compare, id, var, value);
+		return and(ConfigTable.DEFAULT_EMPTY_VALUE_SWITCH, compare, id, var, value);
 	}
 
 	/**
@@ -403,7 +403,7 @@ public interface ConfigStore extends Cloneable{
 		return and(swt, compare, null, var, value, overCondition, overValue);
 	}
 	default ConfigStore and(Compare compare, String var, Object value, boolean overCondition, boolean overValue) {
-		return and(EMPTY_VALUE_SWITCH.NONE, compare, var, value, overCondition, overValue);
+		return and(ConfigTable.DEFAULT_EMPTY_VALUE_SWITCH, compare, var, value, overCondition, overValue);
 	}
 
 	/**
@@ -419,7 +419,7 @@ public interface ConfigStore extends Cloneable{
 	 */
 	ConfigStore and(EMPTY_VALUE_SWITCH swt, Compare compare, String prefix, String var, Object value, boolean overCondition, boolean overValue);
 	default ConfigStore and(Compare compare, String id, String var, Object value, boolean overCondition, boolean overValue) {
-		return and(EMPTY_VALUE_SWITCH.NONE, compare, id, var, value, overCondition, overValue);
+		return and(ConfigTable.DEFAULT_EMPTY_VALUE_SWITCH, compare, id, var, value, overCondition, overValue);
 	}
 
 	/**
@@ -436,17 +436,17 @@ public interface ConfigStore extends Cloneable{
 		return and(swt, id, var, value, false, false);
 	}
 	default ConfigStore and(String id, String var, Object value) {
-		return and(EMPTY_VALUE_SWITCH.NONE, id, var, value);
+		return and(ConfigTable.DEFAULT_EMPTY_VALUE_SWITCH, id, var, value);
 	}
 
 	default ConfigStore and(EMPTY_VALUE_SWITCH swt, Compare compare, String col, Object ... values) {
 		return and(swt, compare, col, BeanUtil.array2list(values));
 	}
 	default ConfigStore and(Compare compare, String col, Object ... values) {
-		return and(EMPTY_VALUE_SWITCH.NONE, compare, col, BeanUtil.array2list(values));
+		return and(ConfigTable.DEFAULT_EMPTY_VALUE_SWITCH, compare, col, BeanUtil.array2list(values));
 	}
 	default ConfigStore and(String var, Object ... values) {
-		return and(EMPTY_VALUE_SWITCH.NONE, var, values);
+		return and(ConfigTable.DEFAULT_EMPTY_VALUE_SWITCH, var, values);
 	}
 	default ConfigStore and(EMPTY_VALUE_SWITCH swt, String var, Object ... values) {
 		return and(swt, Compare.AUTO, var, BeanUtil.array2list(values));
@@ -486,7 +486,7 @@ public interface ConfigStore extends Cloneable{
 		return ands(swt, var, value, false, false);
 	}
 	default ConfigStore ands(String var, Object value) {
-		return ands(EMPTY_VALUE_SWITCH.NONE, var, value);
+		return ands(ConfigTable.DEFAULT_EMPTY_VALUE_SWITCH, var, value);
 	}
 
 	/**
@@ -503,7 +503,7 @@ public interface ConfigStore extends Cloneable{
 		return ands(swt, compare(value), id, var, value, overCondition, overValue);
 	}
 	default ConfigStore ands(String id, String var, Object value, boolean overCondition, boolean overValue) {
-		return ands(EMPTY_VALUE_SWITCH.NONE, id, var, value, overCondition, overValue);
+		return ands(ConfigTable.DEFAULT_EMPTY_VALUE_SWITCH, id, var, value, overCondition, overValue);
 	}
 
 	/**
@@ -519,7 +519,7 @@ public interface ConfigStore extends Cloneable{
 		return ands(swt, (String)null, var, value, overCondition, overValue);
 	}
 	default ConfigStore ands(String var, Object value, boolean overCondition, boolean overValue) {
-		return ands(EMPTY_VALUE_SWITCH.NONE, var, value, overCondition, overValue);
+		return ands(ConfigTable.DEFAULT_EMPTY_VALUE_SWITCH, var, value, overCondition, overValue);
 	}
 
 	/**
@@ -530,7 +530,7 @@ public interface ConfigStore extends Cloneable{
 	 */
 	ConfigStore ands(EMPTY_VALUE_SWITCH swt, String text);
 	default ConfigStore ands(String text) {
-		return ands(EMPTY_VALUE_SWITCH.NONE, text);
+		return ands(ConfigTable.DEFAULT_EMPTY_VALUE_SWITCH, text);
 	}
 
 	ConfigStore ands(Config config);
@@ -546,7 +546,7 @@ public interface ConfigStore extends Cloneable{
 		return ands(swt, compare, var, value, false, false);
 	}
 	default ConfigStore ands(Compare compare, String var, Object value) {
-		return ands(EMPTY_VALUE_SWITCH.NONE, compare, var, value);
+		return ands(ConfigTable.DEFAULT_EMPTY_VALUE_SWITCH, compare, var, value);
 	}
 
 	/**
@@ -562,7 +562,7 @@ public interface ConfigStore extends Cloneable{
 		return ands(swt, compare, id, var, value, false, false);
 	}
 	default ConfigStore ands(Compare compare, String id, String var, Object value) {
-		return ands(EMPTY_VALUE_SWITCH.NONE, compare, id, var, value);
+		return ands(ConfigTable.DEFAULT_EMPTY_VALUE_SWITCH, compare, id, var, value);
 	}
 
 	/**
@@ -579,7 +579,7 @@ public interface ConfigStore extends Cloneable{
 		return ands(swt, compare, null, var, value, overCondition, overValue);
 	}
 	default ConfigStore ands(Compare compare, String var, Object value, boolean overCondition, boolean overValue) {
-		return ands(EMPTY_VALUE_SWITCH.NONE, compare, var, value, overCondition, overValue);
+		return ands(ConfigTable.DEFAULT_EMPTY_VALUE_SWITCH, compare, var, value, overCondition, overValue);
 	}
 
 	/**
@@ -595,7 +595,7 @@ public interface ConfigStore extends Cloneable{
 	 */
 	ConfigStore ands(EMPTY_VALUE_SWITCH swt, Compare compare, String id, String var, Object value, boolean overCondition, boolean overValue);
 	default ConfigStore ands(Compare compare, String id, String var, Object value, boolean overCondition, boolean overValue) {
-		return ands(EMPTY_VALUE_SWITCH.NONE, compare, id, var, value, overCondition, overValue);
+		return ands(ConfigTable.DEFAULT_EMPTY_VALUE_SWITCH, compare, id, var, value, overCondition, overValue);
 	}
 
 	/**
@@ -612,7 +612,7 @@ public interface ConfigStore extends Cloneable{
 		return ands(swt, id, var, value, false, false);
 	}
 	default ConfigStore ands(String id, String var, Object value) {
-		return ands(EMPTY_VALUE_SWITCH.NONE, id, var, value);
+		return ands(ConfigTable.DEFAULT_EMPTY_VALUE_SWITCH, id, var, value);
 	}
 
 	default ConfigStore ands(ConfigStore config) {
@@ -623,10 +623,10 @@ public interface ConfigStore extends Cloneable{
 		return ands(swt, compare, col, BeanUtil.array2list(values));
 	}
 	default ConfigStore ands(Compare compare, String col, Object ... values) {
-		return ands(EMPTY_VALUE_SWITCH.NONE, compare, col, BeanUtil.array2list(values));
+		return ands(ConfigTable.DEFAULT_EMPTY_VALUE_SWITCH, compare, col, BeanUtil.array2list(values));
 	}
 	default ConfigStore ands(String var, Object ... values) {
-		return ands(EMPTY_VALUE_SWITCH.NONE, var, values);
+		return ands(ConfigTable.DEFAULT_EMPTY_VALUE_SWITCH, var, values);
 	}
 	default ConfigStore ands(EMPTY_VALUE_SWITCH swt, String var, Object ... values) {
 		return ands(swt, Compare.AUTO, var, BeanUtil.array2list(values));
@@ -744,7 +744,7 @@ public interface ConfigStore extends Cloneable{
 	}
 
 	default ConfigStore likes(String value) {
-		return likes(EMPTY_VALUE_SWITCH.IGNORE, value);
+		return likes(ConfigTable.DEFAULT_EMPTY_VALUE_SWITCH, value);
 	}
 	default ConfigStore likes(EMPTY_VALUE_SWITCH swt, String value) {
 		return and(swt, Compare.LIKES, null, value);
@@ -767,7 +767,7 @@ public interface ConfigStore extends Cloneable{
 
 
 	default ConfigStore likesIgnoreCase(String value) {
-		return likesIgnoreCase(EMPTY_VALUE_SWITCH.IGNORE, value);
+		return likesIgnoreCase(ConfigTable.DEFAULT_EMPTY_VALUE_SWITCH, value);
 	}
 	default ConfigStore likesIgnoreCase(EMPTY_VALUE_SWITCH swt, String value) {
 		return and(swt, Compare.LIKES_IGNORE_CASE, null, value);
@@ -1292,7 +1292,7 @@ public interface ConfigStore extends Cloneable{
 		return param(swt, id, var, value, false, false);
 	}
 	default ConfigStore param(String id, String var, Object value) {
-		return param(EMPTY_VALUE_SWITCH.NONE, id, var, value, false, false);
+		return param(ConfigTable.DEFAULT_EMPTY_VALUE_SWITCH, id, var, value, false, false);
 	}
 
 	/**
@@ -1307,7 +1307,7 @@ public interface ConfigStore extends Cloneable{
 		return param(swt, null, var, value, false, false);
 	}
 	default ConfigStore param(String var, Object value) {
-		return param(EMPTY_VALUE_SWITCH.NONE, var, value);
+		return param(ConfigTable.DEFAULT_EMPTY_VALUE_SWITCH, var, value);
 	}
 
 	default ConfigStore param(Map<String, Object> params) {
@@ -1354,10 +1354,10 @@ public interface ConfigStore extends Cloneable{
 		return or(swt, compare(value), id, var, value, overCondition, overValue);
 	}
 	default ConfigStore or(String id, String var, Object value) {
-		return or(EMPTY_VALUE_SWITCH.NONE, id, var, value);
+		return or(ConfigTable.DEFAULT_EMPTY_VALUE_SWITCH, id, var, value);
 	}
 	default ConfigStore or(String id, String var, Object value, boolean overCondition, boolean overValue) {
-		return or(EMPTY_VALUE_SWITCH.NONE, id, var, value, overCondition, overValue);
+		return or(ConfigTable.DEFAULT_EMPTY_VALUE_SWITCH, id, var, value, overCondition, overValue);
 	}
 	default ConfigStore or(EMPTY_VALUE_SWITCH swt, Compare compare, String id, String var, Object value) {
 		return or(swt, compare, id, var, value, false, false);
@@ -1366,17 +1366,17 @@ public interface ConfigStore extends Cloneable{
 		return or(swt, compare, null, var, value);
 	}
 	default ConfigStore or(Compare compare, String id, String var, Object value, boolean overCondition, boolean overValue) {
-		return or(EMPTY_VALUE_SWITCH.NONE, compare, id, var, value, overCondition, overValue);
+		return or(ConfigTable.DEFAULT_EMPTY_VALUE_SWITCH, compare, id, var, value, overCondition, overValue);
 	}
 
 	default ConfigStore or(Compare compare, String id, String var, Object value) {
-		return or(EMPTY_VALUE_SWITCH.NONE, compare, id, var, value);
+		return or(ConfigTable.DEFAULT_EMPTY_VALUE_SWITCH, compare, id, var, value);
 	}
 	default ConfigStore or(Compare compare, String var, Object value, boolean overCondition, boolean overValue) {
-		return or(EMPTY_VALUE_SWITCH.NONE, compare, null, var, value, overCondition, overValue);
+		return or(ConfigTable.DEFAULT_EMPTY_VALUE_SWITCH, compare, null, var, value, overCondition, overValue);
 	}
 	default ConfigStore or(Compare compare, String var, Object ... values) {
-		return or(EMPTY_VALUE_SWITCH.NONE, compare, var, BeanUtil.array2list(values));
+		return or(ConfigTable.DEFAULT_EMPTY_VALUE_SWITCH, compare, var, BeanUtil.array2list(values));
 	}
 
 	/**
@@ -1396,10 +1396,10 @@ public interface ConfigStore extends Cloneable{
 		return or(swt, compare(value), var, value);
 	}
 	default ConfigStore or(String var, Object value, boolean overCondition, boolean overValue) {
-		return or(EMPTY_VALUE_SWITCH.NONE, var, value, overCondition, overValue);
+		return or(ConfigTable.DEFAULT_EMPTY_VALUE_SWITCH, var, value, overCondition, overValue);
 	}
 	default ConfigStore or(String var, Object value) {
-		return or(EMPTY_VALUE_SWITCH.NONE, var, value);
+		return or(ConfigTable.DEFAULT_EMPTY_VALUE_SWITCH, var, value);
 	}
 
 	/**
@@ -1417,16 +1417,16 @@ public interface ConfigStore extends Cloneable{
 	ConfigStore or(Config config);
 	ConfigStore or(EMPTY_VALUE_SWITCH swt, String text);
 	default ConfigStore or(String text) {
-		return or(EMPTY_VALUE_SWITCH.NONE, text);
+		return or(ConfigTable.DEFAULT_EMPTY_VALUE_SWITCH, text);
 	}
 
 	ConfigStore ors(EMPTY_VALUE_SWITCH swt, String text);
 	default ConfigStore ors(String text) {
-		return ors(EMPTY_VALUE_SWITCH.NONE, text);
+		return ors(ConfigTable.DEFAULT_EMPTY_VALUE_SWITCH, text);
 	}
 	ConfigStore ors(EMPTY_VALUE_SWITCH swt, Config config);
 	default ConfigStore ors(Config config) {
-		return ors(EMPTY_VALUE_SWITCH.NONE, config);
+		return ors(ConfigTable.DEFAULT_EMPTY_VALUE_SWITCH, config);
 	}
 
 	/**
@@ -1457,22 +1457,22 @@ public interface ConfigStore extends Cloneable{
 		return ors(swt, compare, null, var, value);
 	}
 	default ConfigStore ors(Compare compare, String id, String var, Object value, boolean overCondition, boolean overValue) {
-		return ors(EMPTY_VALUE_SWITCH.NONE, compare, id, var, value, overCondition, overValue);
+		return ors(ConfigTable.DEFAULT_EMPTY_VALUE_SWITCH, compare, id, var, value, overCondition, overValue);
 	}
 	default ConfigStore ors(String id, String var, Object value, boolean overCondition, boolean overValue) {
-		return ors(EMPTY_VALUE_SWITCH.NONE, compare(value), id, var, value, overCondition, overValue);
+		return ors(ConfigTable.DEFAULT_EMPTY_VALUE_SWITCH, compare(value), id, var, value, overCondition, overValue);
 	}
 	default ConfigStore ors(String id, String var, Object value) {
-		return ors(EMPTY_VALUE_SWITCH.NONE, compare(value), id, var, value);
+		return ors(ConfigTable.DEFAULT_EMPTY_VALUE_SWITCH, compare(value), id, var, value);
 	}
 	default ConfigStore ors(Compare compare, String id, String var, Object value) {
-		return ors(EMPTY_VALUE_SWITCH.NONE, compare, id, var, value);
+		return ors(ConfigTable.DEFAULT_EMPTY_VALUE_SWITCH, compare, id, var, value);
 	}
 	default ConfigStore ors(Compare compare, String var, Object value, boolean overCondition, boolean overValue) {
-		return ors(EMPTY_VALUE_SWITCH.NONE, compare, null, var, value, overCondition, overValue);
+		return ors(ConfigTable.DEFAULT_EMPTY_VALUE_SWITCH, compare, null, var, value, overCondition, overValue);
 	}
 	default ConfigStore ors(Compare compare, String var, Object value) {
-		return ors(EMPTY_VALUE_SWITCH.NONE, compare, var, value);
+		return ors(ConfigTable.DEFAULT_EMPTY_VALUE_SWITCH, compare, var, value);
 	}
 
 	/**
@@ -1492,10 +1492,10 @@ public interface ConfigStore extends Cloneable{
 		return ors(swt, compare(value), var, value);
 	}
 	default ConfigStore ors(String var, Object value, boolean overCondition, boolean overValue) {
-		return ors(EMPTY_VALUE_SWITCH.NONE, var, value, overCondition, overValue);
+		return ors(ConfigTable.DEFAULT_EMPTY_VALUE_SWITCH, var, value, overCondition, overValue);
 	}
 	default ConfigStore ors(String var, Object value) {
-		return ors(EMPTY_VALUE_SWITCH.NONE, var, value);
+		return ors(ConfigTable.DEFAULT_EMPTY_VALUE_SWITCH, var, value);
 	}
 
 	default ConfigStore condition(String join, EMPTY_VALUE_SWITCH swt, String var, Object value) {

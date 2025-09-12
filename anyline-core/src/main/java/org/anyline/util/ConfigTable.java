@@ -18,14 +18,15 @@ package org.anyline.util;
 
 import org.anyline.adapter.EnvironmentWorker;
 import org.anyline.entity.Compare;
+import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.generator.GeneratorConfig;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
-import org.anyline.log.Log;
-import org.anyline.log.LogProxy;
 
 import java.io.File;
 import java.io.InputStream;
@@ -126,6 +127,7 @@ public class ConfigTable {
 	public static boolean IS_INSERT_EMPTY_FIELD							= false			;	// Entity是否更新空值的属性
 	public static boolean IS_CHECK_ALL_INSERT_COLUMN					= false			;	// 插入集合时是否检测所有条目的列(默认只检测第一行)
 	public static boolean IS_CHECK_ALL_UPDATE_COLUMN					= false			;	// 更新集合时是否检测所有条目的列(默认只检测第一行)
+	public static EMPTY_VALUE_SWITCH DEFAULT_EMPTY_VALUE_SWITCH 		= EMPTY_VALUE_SWITCH.NONE; //ConfigStore方法空值默认处理方式
 	public static String LIST2STRING_FORMAT								= "concat"		;	// List/Array转换成String后的格式 concat:A, B, C json:["A","B","C"]
 	public static boolean IS_REPLACE_EMPTY_NULL							= true			;   // 是否把""替换成null
 	public static boolean IS_SQL_DELIMITER_OPEN 						= false			;	// 是否开启 界定符(注意开启后大部分数据库会区分大小写)
@@ -1272,6 +1274,9 @@ public class ConfigTable {
 	}
 	public int MERGE_GRAPH_QUERY_RESULT_TABLE() {
 		return MERGE_GRAPH_QUERY_RESULT_TABLE;
+	}
+	public EMPTY_VALUE_SWITCH DEFAULT_EMPTY_VALUE_SWITCH(){
+		return DEFAULT_EMPTY_VALUE_SWITCH;
 	}
 
 	public static void closeAllSqlLog() {
