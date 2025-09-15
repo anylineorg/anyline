@@ -724,6 +724,64 @@ public interface ConfigStore extends Cloneable{
 		return and(Compare.IN, var, value, overCondition, overValue);
 	}
 
+
+	default ConfigStore eq(EMPTY_VALUE_SWITCH swt, String id, String var, Object value) {
+		return and(swt, id, var, value, false, false);
+	}
+	default ConfigStore eq(EMPTY_VALUE_SWITCH swt, String var, Object value) {
+		return and(swt, var, value, false, false);
+	}
+	default ConfigStore eq(String id, String var, Object value) {
+		return and(id, var, value, false, false);
+	}
+
+	default ConfigStore gt(EMPTY_VALUE_SWITCH swt, String id, String var, Object value) {
+		return and(swt, Compare.GREAT, id, var, value, false, false);
+	}
+	default ConfigStore gt(EMPTY_VALUE_SWITCH swt, String var, Object value) {
+		return and(swt, Compare.GREAT, var, value, false, false);
+	}
+	default ConfigStore gt(String id, String var, Object value) {
+		return and(Compare.GREAT, id, var, value, false, false);
+	}
+
+	default ConfigStore ge(EMPTY_VALUE_SWITCH swt, String id, String var, Object value) {
+		return and(swt, Compare.GREAT_EQUAL, id, var, value, false, false);
+	}
+	default ConfigStore ge(EMPTY_VALUE_SWITCH swt, String var, Object value) {
+		return and(swt, Compare.GREAT_EQUAL, var, value, false, false);
+	}
+	default ConfigStore ge(String id, String var, Object value) {
+		return and(Compare.GREAT_EQUAL, id, var, value, false, false);
+	}
+	default ConfigStore lt(EMPTY_VALUE_SWITCH swt, String id, String var, Object value) {
+		return and(swt, Compare.LESS, id, var, value, false, false);
+	}
+	default ConfigStore lt(EMPTY_VALUE_SWITCH swt, String var, Object value) {
+		return and(swt, Compare.LESS, var, value, false, false);
+	}
+	default ConfigStore lt(String id, String var, Object value) {
+		return and(Compare.LESS, id, var, value, false, false);
+	}
+
+	default ConfigStore le(EMPTY_VALUE_SWITCH swt, String id, String var, Object value) {
+		return and(swt, Compare.LESS_EQUAL, id, var, value, false, false);
+	}
+	default ConfigStore le(EMPTY_VALUE_SWITCH swt, String var, Object value) {
+		return and(swt, Compare.LESS_EQUAL, var, value, false, false);
+	}
+	default ConfigStore le(String id, String var, Object value) {
+		return and(Compare.LESS_EQUAL, id, var, value, false, false);
+	}
+	default ConfigStore in(EMPTY_VALUE_SWITCH swt, String id, String var, Object value) {
+		return and(swt, Compare.IN, id, var, value, false, false);
+	}
+	default ConfigStore in(EMPTY_VALUE_SWITCH swt, String var, Object value) {
+		return and(swt, Compare.IN, var, value, false, false);
+	}
+	default ConfigStore in(String id, String var, Object value) {
+		return and(Compare.IN, id, var, value, false, false);
+	}
 	/**
 	 * in
 	 * @param var 列
