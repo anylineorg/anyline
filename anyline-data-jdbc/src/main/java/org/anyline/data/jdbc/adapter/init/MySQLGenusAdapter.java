@@ -2091,12 +2091,13 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Table query, int types, ConfigStore configs) throws Exception {
+        MetadataFieldRefer refer = initTableFieldRefer();
         List<Run> runs = new ArrayList<>();
         Run run = new SimpleRun(runtime, configs);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
         builder.append("SELECT * FROM information_schema.TABLES");
-        configs.and("TABLE_SCHEMA", query.getSchemaName());
+        configs.and(refer.map(Table.FIELD_SCHEMA), query.getSchemaName());
         configs.and(Compare.LIKE_SIMPLE,"TABLE_NAME", objectName(runtime, query.getName()));
         List<String> tps = names(Table.types(types));
         if(tps.isEmpty()) {
@@ -2957,6 +2958,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     @Override
     public List<Run> buildQueryColumnsRun(DataRuntime runtime,  boolean metadata, Column query, ConfigStore configs) throws Exception {
         List<Run> runs = new ArrayList<>();
+        MetadataFieldRefer refer = initColumnFieldRefer();
         Table table = query.getTable();
         Run run = new SimpleRun(runtime, configs);
         runs.add(run);
@@ -2968,7 +2970,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         }else{
             builder.append("SELECT * FROM INFORMATION_SCHEMA.COLUMNS");
             //mysql忽略catalog
-            configs.and("TABLE_SCHEMA", query.getSchemaName());
+            configs.and(refer.map(Column.FIELD_SCHEMA), query.getSchemaName());
             configs.and(Compare.LIKE_SIMPLE, "TABLE_NAME", objectName(runtime, query.getTableName()));
             configs.order("TABLE_NAME").order("ORDINAL_POSITION");
         }
