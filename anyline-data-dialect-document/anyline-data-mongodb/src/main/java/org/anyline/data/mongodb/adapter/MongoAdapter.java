@@ -561,6 +561,84 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
         return set;
     }
 
+    /**
+     * select [命令执行]<br/>
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param random 用来标记同一组命令
+     * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
+     * @return maps
+     */
+    @Override
+    public List<Map<String, Object>> maps(DataRuntime runtime, String random, ConfigStore configs, Run run) {
+        List<Map<String, Object>> maps = new ArrayList<>();
+        if(null == random) {
+            random = random(runtime);
+        }
+        if(null != configs) {
+            configs.add(run);
+        }
+        MongoRun r = (MongoRun) run;
+        long fr = System.currentTimeMillis();
+        if(null == random) {
+            random = random(runtime);
+        }
+        try{
+            MongoRuntime rt = (MongoRuntime) runtime;
+            MongoDatabase database = rt.getDatabase();
+            Bson bson = r.getFilter();
+            if(null == bson) {
+                bson = Filters.empty();
+            }
+            if(ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
+                log.info("{}[cmd:select][collection:{}][filter:{}]", random, run.getTableName(), bson);
+            }
+            FindIterable<Document> docs = database.getCollection(run.getTableName()).find(bson);
+            List<Bson> fields = new ArrayList<>();
+            List<String> queryColumns = run.getQueryColumns();
+            //查询的列
+            if(null != queryColumns && !queryColumns.isEmpty()) {
+                fields.add(Projections.include(queryColumns));
+            }
+            //不查询的列
+            List<String> excludeColumn = run.getExcludeColumns();
+            if(null != excludeColumn && !excludeColumn.isEmpty()) {
+                fields.add(Projections.exclude(excludeColumn));
+            }
+            if(!fields.isEmpty()) {
+                docs.projection(Projections.fields(fields));
+            }
+            PageNavi navi = run.getPageNavi();
+            if(null != navi) {
+                long limit = navi.getLastRow() - navi.getFirstRow() + 1;
+                docs.skip((int)navi.getFirstRow()).limit((int)limit);
+            }
+            for(Document doc:docs) {
+               Set<String> keys = doc.keySet();
+               Map<String, Object> map = new HashMap<>();
+               for(String key:keys) {
+                   map.put(key, doc.get(key));
+               }
+               maps.add(map);
+
+            }
+            if(ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
+                log.info("{}[封装耗时:{}][封装行数:{}]", random, DateUtil.format(System.currentTimeMillis() - fr), maps.size());
+            }
+        }catch(Exception e) {
+            if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+                log.error("maps 异常:", e);
+            }
+            if(ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION) {
+                CommandQueryException ex = new CommandQueryException("query异常:" + e, e);
+                throw ex;
+            }else{
+                if(ConfigTable.IS_LOG_SQL_WHEN_ERROR) {
+                    log.error("{}[{}][cmd:maps][collection:{}]", random, LogUtil.format("查询异常:", 33)+e.toString(), run.getTableName());
+                }
+            }
+        }
+        return maps;
+    }
     @Override
     public long count(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String... conditions) {
         Run run = buildQueryRun(runtime, prepare, configs, true, true, conditions);
