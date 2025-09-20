@@ -239,7 +239,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
             if(SLOW_SQL_MILLIS > 0 && ConfigStore.IS_LOG_SLOW_SQL(configs)) {
                 if(millis > SLOW_SQL_MILLIS) {
                     slow = true;
-                    log.warn("{}[slow cmd][action:insert][collection:{}][执行耗时:{}][collection:{}]", random, run.getTableName(), DateUtil.format(millis), collection);
+                    log.warn("{}[{}][action:insert][collection:{}][执行耗时:{}][collection:{}]", random, LogUtil.format("slow cmd", 33), run.getTableName(), DateUtil.format(millis), collection);
                     if(null != dmListener) {
                         dmListener.slow(runtime, random, ACTION.DML.INSERT, run, null, null, null, true, cnt, millis);
                     }
@@ -683,7 +683,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
         if(SLOW_SQL_MILLIS > 0 && ConfigStore.IS_LOG_SLOW_SQL(configs)) {
             if(millis > SLOW_SQL_MILLIS) {
                 slow = true;
-                log.warn("{}[slow cmd][action:update][collection:{}][执行耗时:{}][影响行数:{}]", random, run.getTableName(), DateUtil.format(millis), LogUtil.format(result, 34));
+                log.warn("{}[{}][action:update][collection:{}][执行耗时:{}][影响行数:{}]", random, LogUtil.format("slow cmd", 33), run.getTableName(), DateUtil.format(millis), LogUtil.format(result, 34));
                 if(null != dmListener) {
                     dmListener.slow(runtime, random, ACTION.DML.UPDATE, run, null, null, null, true, result, millis);
                 }

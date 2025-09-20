@@ -33,6 +33,9 @@ public class PageLazyStore {
 	 * @return int
 	 */ 
 	public static long getTotal(String key, long period) {
+		if(null == key) {
+			return 0;
+		}
 		Long fr = lazyTime.get(key);		// 创建时间 
 		long age = -1; 
 		if(null != fr) {
@@ -57,6 +60,9 @@ public class PageLazyStore {
 		return result; 
 	} 
 	public static void setTotal(String key, long total) {
+		if(null == key) {
+			return;
+		}
 		Long old = lazyTotal.get(key);
 		if(null == old || old != total) {
 			// 新计数 或 更新计数 

@@ -6547,9 +6547,9 @@ PUT * /_bulk
             long times = configs.getLastExecuteTime();
             if(SLOW_SQL_MILLIS > 0 && ConfigStore.IS_LOG_SLOW_SQL(configs) && times > SLOW_SQL_MILLIS) {
                 slow = true;
-                log.warn("{}[slow cmd][action:select][执行耗时:{}]{}", random, DateUtil.format(times), run.log(ACTION.DML.SELECT, ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
+                log.warn("{}[{}][action:select][执行耗时:{}]{}", random, LogUtil.format("slow cmd", 33), DateUtil.format(times), run.log(ACTION.DML.SELECT, ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
                 if(null != dmListener) {
-                    dmListener.slow(runtime, random, ACTION.DML.SELECT, null, null, null, null, true, set,times);
+                    dmListener.slow(runtime, random, ACTION.DML.SELECT, run, null, null, null, true, set,times);
                 }
 
             }

@@ -908,7 +908,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             if(SLOW_SQL_MILLIS > 0 && ConfigStore.IS_LOG_SLOW_SQL(configs)) {
                 if(millis > SLOW_SQL_MILLIS) {
                     slow = true;
-                    log.warn("{}[slow cmd][action:{}][table:{}][执行耗时:{}]{}", random, action, run.getTable(), DateUtil.format(millis), run.log(ACTION.DML.INSERT, ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
+                    log.warn("{}[{}][action:{}][table:{}][执行耗时:{}]{}", random, LogUtil.format("slow cmd", 33), action, run.getTable(), DateUtil.format(millis), run.log(ACTION.DML.INSERT, ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
                     if(null != dmListener) {
                         dmListener.slow(runtime, random, ACTION.DML.INSERT, run, cmd, values, null, true, cnt, millis);
                     }
@@ -1940,7 +1940,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             if(SLOW_SQL_MILLIS > 0 &&ConfigStore.IS_LOG_SLOW_SQL(configs)) {
                 if(millis > SLOW_SQL_MILLIS) {
                     slow = true;
-                    log.warn("{}[slow cmd][action:{}][{}][执行耗时:{}]{}", random, action, run.metadata(), DateUtil.format(millis), run.log(ACTION.DML.UPDATE,ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
+                    log.warn("{}[{}][action:{}][{}][执行耗时:{}]{}", random, LogUtil.format("slow cmd", 33), action, run.metadata(), DateUtil.format(millis), run.log(ACTION.DML.UPDATE,ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
                     if(null != dmListener) {
                         dmListener.slow(runtime, random, ACTION.DML.UPDATE, run, run.getFinalUpdate(), values, null, true, result, millis);
                     }
@@ -3233,7 +3233,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         if(SLOW_SQL_MILLIS > 0 &&ConfigStore.IS_LOG_SLOW_SQL(configs)) {
             if(millis > SLOW_SQL_MILLIS) {
                 slow = true;
-                log.warn("{}[slow cmd][action:exists][执行耗时:{}][cmd:\n{}\n]\n[param:{}]", random, DateUtil.format(millis), sql, LogUtil.param(values));
+                log.warn("{}[{}][action:exists][执行耗时:{}][cmd:\n{}\n]\n[param:{}]", random, LogUtil.format("slow cmd", 33), DateUtil.format(millis), sql, LogUtil.param(values));
                 if(null != dmListener) {
                     dmListener.slow(runtime, random, ACTION.DML.EXISTS, run, sql, values, null, true, map, millis);
                 }
@@ -3803,7 +3803,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             if(SLOW_SQL_MILLIS > 0 &&ConfigStore.IS_LOG_SLOW_SQL(configs)) {
                 if(millis > SLOW_SQL_MILLIS) {
                     slow = true;
-                    log.warn("{}[slow cmd][action:{}][执行耗时:{}][cmd:\n{}\n]\n[param:{}]", random, action, DateUtil.format(millis), sql, LogUtil.param(values));
+                    log.warn("{}[{}][action:{}][执行耗时:{}][cmd:\n{}\n]\n[param:{}]", random, LogUtil.format("slow cmd", 33), action, DateUtil.format(millis), sql, LogUtil.param(values));
                     if(null != dmListener) {
                         dmListener.slow(runtime, random, ACTION.DML.EXECUTE, run, sql, values, null, true, result, millis);
                     }
@@ -3864,7 +3864,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             long SLOW_SQL_MILLIS = ConfigStore.SLOW_SQL_MILLIS(configs);
             if(SLOW_SQL_MILLIS > 0 &&ConfigStore.IS_LOG_SLOW_SQL(configs)) {
                 if(millis > SLOW_SQL_MILLIS) {
-                    log.warn("{}[slow cmd][action:{}][执行耗时:{}]", random, action, DateUtil.format(millis));
+                    log.warn("{}[{}][action:{}][执行耗时:{}]", random, LogUtil.format("slow cmd", 33), action, DateUtil.format(millis));
                 }
             }
             if (log.isInfoEnabled() &&ConfigStore.IS_LOG_SQL_TIME(configs)) {

@@ -609,7 +609,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
             if(SLOW_SQL_MILLIS > 0 && ConfigStore.IS_LOG_SLOW_SQL(configs)) {
                 if(millis > SLOW_SQL_MILLIS) {
                     slow = true;
-                    log.warn("{}[slow cmd][action:{}][table:{}][执行耗时:{}]{}", random, action, run.getTable(), DateUtil.format(millis), run.log(ACTION.DML.INSERT,  ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
+                    log.warn("{}[{}][action:{}][table:{}][执行耗时:{}]{}", random, LogUtil.format("slow cmd", 33), action, run.getTable(), DateUtil.format(millis), run.log(ACTION.DML.INSERT,  ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
                     if(null != dmListener) {
                         dmListener.slow(runtime, random, ACTION.DML.INSERT, run, cmd, values, null, true, cnt, millis);
                     }
@@ -926,7 +926,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
             if(SLOW_SQL_MILLIS > 0 && ConfigStore.IS_LOG_SLOW_SQL(configs)) {
                 if(millis > SLOW_SQL_MILLIS) {
                     slow = true;
-                    log.warn("{}[slow cmd][action:{}][table:{}][执行耗时:{}]{}", random, action, run.getTable(), DateUtil.format(millis), run.log(ACTION.DML.UPDATE,  ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
+                    log.warn("{}[{}][action:{}][table:{}][执行耗时:{}]{}", random, LogUtil.format("slow cmd", 33), action, run.getTable(), DateUtil.format(millis), run.log(ACTION.DML.UPDATE,  ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
                     if(null != dmListener) {
                         dmListener.slow(runtime, random, ACTION.DML.UPDATE, run, cmd, values, null, true, result, millis);
                     }
@@ -1344,9 +1344,9 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
             if(SLOW_SQL_MILLIS > 0 && ConfigStore.IS_LOG_SLOW_SQL(configs)) {
                 slow = true;
                 if(time > SLOW_SQL_MILLIS) {
-                    log.warn("{}[slow cmd][action:select][执行耗时:{}]{}", random, DateUtil.format(time), run.log(ACTION.DML.SELECT, ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
+                    log.warn("{}[{}][action:select][执行耗时:{}]{}", random, LogUtil.format("slow cmd", 33), DateUtil.format(time), run.log(ACTION.DML.SELECT, ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
                     if(null != dmListener) {
-                        dmListener.slow(runtime, random, ACTION.DML.SELECT, null, cmd, values, null, true, set,time);
+                        dmListener.slow(runtime, random, ACTION.DML.SELECT, run, cmd, values, null, true, set,time);
                     }
                 }
             }
@@ -1631,7 +1631,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
             if(SLOW_SQL_MILLIS > 0 && ConfigStore.IS_LOG_SLOW_SQL(configs)) {
                 if(millis > SLOW_SQL_MILLIS) {
                     slow = true;
-                    log.warn("{}[slow cmd][action:{}][执行耗时:{}][cmd:\n{}\n]\n[param:{}]", random, action, DateUtil.format(millis), cmd, LogUtil.param(values));
+                    log.warn("{}[{}][action:{}][执行耗时:{}][cmd:\n{}\n]\n[param:{}]", random, LogUtil.format("slow cmd", 33), action, DateUtil.format(millis), cmd, LogUtil.param(values));
                     if(null != dmListener) {
                         dmListener.slow(runtime, random, ACTION.DML.EXECUTE, run, cmd, values, null, true, result, millis);
                     }

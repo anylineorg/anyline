@@ -484,7 +484,10 @@ public class DefaultJDBCActuator implements DriverActuator {
         if(ConfigStore.SLOW_SQL_MILLIS(configs) > 0) {
             if(mid[0]-fr > ConfigStore.SLOW_SQL_MILLIS(configs)) {
                 slow = true;
-                log.warn("{}[slow cmd][action:select][执行耗时:{}]{}", random, DateUtil.format(mid[0]-fr), run.log(ACTION.DML.SELECT,ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
+                if(ConfigTable.CACHE_SLOW_TOTAL_MS > 0 && null != configs){
+                    configs.setTotalLazy(ConfigTable.CACHE_SLOW_TOTAL_MS);
+                }
+                log.warn("{}[{}][action:select][执行耗时:{}]{}", random, LogUtil.format("slow cmd", 33), DateUtil.format(mid[0]-fr), run.log(ACTION.DML.SELECT,ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
                 if(null != adapter.getDMListener()) {
                     adapter.getDMListener().slow(runtime, random, ACTION.DML.SELECT, null, sql, values, null, true, maps, mid[0]-fr);
                 }
@@ -599,7 +602,10 @@ public class DefaultJDBCActuator implements DriverActuator {
         if(ConfigStore.SLOW_SQL_MILLIS(configs) > 0) {
             if(time > ConfigStore.SLOW_SQL_MILLIS(configs)) {
                 slow = true;
-                log.warn("{}[slow cmd][action:select][执行耗时:{}]{}", random, DateUtil.format(time), run.log(ACTION.DML.SELECT,ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
+                if(ConfigTable.CACHE_SLOW_TOTAL_MS > 0 && null != configs){
+                    configs.setTotalLazy(ConfigTable.CACHE_SLOW_TOTAL_MS);
+                }
+                log.warn("{}[{}][action:select][执行耗时:{}]{}", random, LogUtil.format("slow cmd", 33), DateUtil.format(time), run.log(ACTION.DML.SELECT,ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
                 if(null != adapter.getDMListener()) {
                     adapter.getDMListener().slow(runtime, random, ACTION.DML.SELECT, null, sql, values, null, true, map, time);
                 }

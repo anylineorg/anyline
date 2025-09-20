@@ -1525,11 +1525,18 @@ public class DefaultService<E> implements AnylineService<E> {
         String lazyKey = null;
         if (null != configs) {
             navi = configs.getPageNavi();
-            if (null != navi && navi.isLazy()) {
-                lazyKey = CacheUtil.createCacheElementKey(false, false, src, configs, conditions);
-                navi.setLazyKey(lazyKey);
-                long total = PageLazyStore.getTotal(lazyKey, navi.getLazyPeriod());
-                navi.setTotalRow(total);
+            if (null != navi) {
+                if(ConfigTable.CACHE_SLOW_TOTAL_MS > 0){
+                    lazyKey = CacheUtil.createCacheElementKey(false, false, src, configs, conditions);
+                }
+                if(navi.isLazy()) {
+                    if(null == lazyKey) {
+                        lazyKey = CacheUtil.createCacheElementKey(false, false, src, configs, conditions);
+                    }
+                    navi.setLazyKey(lazyKey);
+                    long total = PageLazyStore.getTotal(lazyKey, navi.getLazyPeriod());
+                    navi.setTotalRow(total);
+                }
             }
         }
         return navi;
@@ -1540,11 +1547,18 @@ public class DefaultService<E> implements AnylineService<E> {
         String lazyKey = null;
         if (null != configs) {
             navi = configs.getPageNavi();
-            if (null != navi && navi.isLazy()) {
-                lazyKey = CacheUtil.createCacheElementKey(false, false, src, configs, conditions);
-                navi.setLazyKey(lazyKey);
-                long total = PageLazyStore.getTotal(lazyKey, navi.getLazyPeriod());
-                navi.setTotalRow(total);
+            if (null != navi) {
+                if(ConfigTable.CACHE_SLOW_TOTAL_MS > 0){
+                    lazyKey = CacheUtil.createCacheElementKey(false, false, src, configs, conditions);
+                }
+                if(navi.isLazy()) {
+                    if (null == lazyKey) {
+                        lazyKey = CacheUtil.createCacheElementKey(false, false, src, configs, conditions);
+                    }
+                    navi.setLazyKey(lazyKey);
+                    long total = PageLazyStore.getTotal(lazyKey, navi.getLazyPeriod());
+                    navi.setTotalRow(total);
+                }
             }
         }
         return navi;

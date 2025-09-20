@@ -745,7 +745,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
             if(SLOW_SQL_MILLIS > 0 && ConfigStore.IS_LOG_SLOW_SQL(configs)) {
                 if(millis > SLOW_SQL_MILLIS) {
                     slow = true;
-                    log.warn("{}[slow cmd][action:{}][table:{}][执行耗时:{}]{}", random, action, run.getTable(), DateUtil.format(millis), run.log(ACTION.DML.UPDATE, ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
+                    log.warn("{}[{}][action:{}][table:{}][执行耗时:{}]{}", random, LogUtil.format("slow cmd", 33), action, run.getTable(), DateUtil.format(millis), run.log(ACTION.DML.UPDATE, ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
                     if(null != dmListener) {
                         dmListener.slow(runtime, random, ACTION.DML.UPDATE, run, sql, values, null, true, result, millis);
                     }
@@ -939,8 +939,9 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
             long SLOW_SQL_MILLIS = ConfigTable.SLOW_SQL_MILLIS;
             if(SLOW_SQL_MILLIS > 0 && ConfigTable.IS_LOG_SLOW_SQL) {
                 if(millis > SLOW_SQL_MILLIS) {
-                    log.warn("{}[slow cmd][action:procedure][执行耗时:{}][cmd:\n{}\n][input param:{}]\n[output param:{}]"
+                    log.warn("{}[{}][action:procedure][执行耗时:{}][cmd:\n{}\n][input param:{}]\n[output param:{}]"
                             , random
+                            , LogUtil.format("slow cmd", 33)
                             , DateUtil.format(millis)
                             , procedure.getName()
                             , LogUtil.param(inputs)
@@ -1365,7 +1366,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
             if(ConfigStore.SLOW_SQL_MILLIS(configs) > 0) {
                 if(mid[0]-fr > ConfigStore.SLOW_SQL_MILLIS(configs)) {
                     slow = true;
-                    log.warn("{}[slow cmd][action:select][执行耗时:{}]{}", random, DateUtil.format(mid[0]-fr), run.log(ACTION.DML.SELECT, ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
+                    log.warn("{}[{}][action:select][执行耗时:{}]{}", random, LogUtil.format("slow cmd", 33), DateUtil.format(mid[0]-fr), run.log(ACTION.DML.SELECT, ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
                     if(null != dmListener) {
                         dmListener.slow(runtime, random, ACTION.DML.SELECT, null, sql, values, null, true, maps, mid[0]-fr);
                     }
@@ -1445,7 +1446,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
         if(SLOW_SQL_MILLIS > 0 && ConfigStore.IS_LOG_SLOW_SQL(configs)) {
             if(millis > SLOW_SQL_MILLIS) {
                 slow = true;
-                log.warn("{}[slow cmd][action:exists][执行耗时:{}][cmd:\n{}\n]\n[param:{}]", random, DateUtil.format(millis), sql, LogUtil.param(values));
+                log.warn("{}[{}][action:exists][执行耗时:{}][cmd:\n{}\n]\n[param:{}]", random, LogUtil.format("slow cmd", 33), DateUtil.format(millis), sql, LogUtil.param(values));
                 if(null != dmListener) {
                     dmListener.slow(runtime, random, ACTION.DML.EXISTS, run, sql, values, null, true, map, millis);
                 }
@@ -1714,7 +1715,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
             long SLOW_SQL_MILLIS = ConfigTable.SLOW_SQL_MILLIS;
             if(SLOW_SQL_MILLIS > 0 && ConfigTable.IS_LOG_SLOW_SQL) {
                 if(millis > SLOW_SQL_MILLIS) {
-                    log.warn("{}[slow cmd][action:procedure][执行耗时:{}][cmd:\n{}\n]\n[input param:{}]\n[output param:{}]", random, DateUtil.format(millis), sql, LogUtil.param(inputs), LogUtil.param(list));
+                    log.warn("{}[{}][action:procedure][执行耗时:{}][cmd:\n{}\n]\n[input param:{}]\n[output param:{}]", random, LogUtil.format("slow cmd", 33), DateUtil.format(millis), sql, LogUtil.param(inputs), LogUtil.param(list));
                     if(null != dmListener) {
                         dmListener.slow(runtime, random, ACTION.DML.PROCEDURE, null, sql, inputs, list, true, result, millis);
                     }
@@ -1835,7 +1836,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
             if(SLOW_SQL_MILLIS > 0 && ConfigStore.IS_LOG_SLOW_SQL(configs)) {
                 if(millis > SLOW_SQL_MILLIS) {
                     slow = true;
-                    log.warn("{}[slow cmd][action:{}][执行耗时:{}][cmd:\n{}\n]\n[param:{}]", random, action, DateUtil.format(millis), sql, LogUtil.param(values));
+                    log.warn("{}[{}][action:{}][执行耗时:{}][cmd:\n{}\n]\n[param:{}]", random, LogUtil.format("slow cmd", 33), action, DateUtil.format(millis), sql, LogUtil.param(values));
                     if(null != dmListener) {
                         dmListener.slow(runtime, random, ACTION.DML.EXECUTE, run, sql, values, null, true, result, millis);
                     }

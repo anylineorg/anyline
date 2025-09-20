@@ -78,6 +78,7 @@ public class ConfigTable {
 	public static boolean IS_DISABLED_DEFAULT_LOG						= false			;   // 是否禁用默认日志(anyline-log)
 	public static boolean IS_LOG_SQL									= true			;	// 执行SQL时是否输出日志
 	public static boolean IS_LOG_SLOW_SQL								= true			;	// 执行慢SQL时是否输出日志
+	public static int CACHE_SLOW_TOTAL_MS								= 0				;	// 自动缓存慢SQL的总记录数
 	public static boolean IS_LOG_SQL_TIME								= true			;	// 执行SQL时是否输出耗时日志
 	public static boolean IS_LOG_QUERY_RESULT							= false			;	// 查询结果输出日志
 	public static boolean IS_LOG_QUERY_RESULT_EXCLUDE_METADATA			= true			;	// 查询结果输出日志时 是否过滤元数据查询结果

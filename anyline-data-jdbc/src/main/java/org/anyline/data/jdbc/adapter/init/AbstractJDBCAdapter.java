@@ -1001,8 +1001,9 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
             long SLOW_SQL_MILLIS = ConfigTable.SLOW_SQL_MILLIS;
             if(SLOW_SQL_MILLIS > 0 && ConfigTable.IS_LOG_SLOW_SQL) {
                 if(millis > SLOW_SQL_MILLIS) {
-                    log.warn("{}[slow cmd][action:procedure][执行耗时:{}][cmd:\n{}\n][input param:{}]\n[output param:{}]"
+                    log.warn("{}[{}][action:procedure][执行耗时:{}][cmd:\n{}\n][input param:{}]\n[output param:{}]"
                             , random
+                            , LogUtil.format("slow cmd", 33)
                             , DateUtil.format(millis)
                             , procedure.getName()
                             , LogUtil.param(inputs)
@@ -1648,7 +1649,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
             long SLOW_SQL_MILLIS = ConfigTable.SLOW_SQL_MILLIS;
             if(SLOW_SQL_MILLIS > 0 && ConfigTable.IS_LOG_SLOW_SQL) {
                 if(millis > SLOW_SQL_MILLIS) {
-                    log.warn("{}[slow cmd][action:procedure][执行耗时:{}][cmd:\n{}\n]\n[input param:{}]\n[output param:{}]", random, DateUtil.format(millis), sql, LogUtil.param(inputs), LogUtil.param(list));
+                    log.warn("{}[{}][action:procedure][执行耗时:{}][cmd:\n{}\n]\n[input param:{}]\n[output param:{}]", random, LogUtil.format("slow cmd", 33), DateUtil.format(millis), sql, LogUtil.param(inputs), LogUtil.param(list));
                     if(null != dmListener) {
                         dmListener.slow(runtime, random, ACTION.DML.PROCEDURE, null, sql, inputs, list, true, result, millis);
                     }
@@ -9307,9 +9308,12 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 			long times = configs.getLastExecuteTime();
 			if(SLOW_SQL_MILLIS > 0 && ConfigStore.IS_LOG_SLOW_SQL(configs) && times > SLOW_SQL_MILLIS) {
 				slow = true;
-				log.warn("{}[slow cmd][action:select][执行耗时:{}]{}", random, DateUtil.format(times), run.log(ACTION.DML.SELECT, ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
+                if(ConfigTable.CACHE_SLOW_TOTAL_MS > 0 && null != configs){
+                    configs.setTotalLazy(ConfigTable.CACHE_SLOW_TOTAL_MS);
+                }
+				log.warn("{}[{}][action:select][执行耗时:{}]{}", random, LogUtil.format("slow cmd", 33), DateUtil.format(times), run.log(ACTION.DML.SELECT, ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
 				if(null != dmListener) {
-					dmListener.slow(runtime, random, ACTION.DML.SELECT, null, sql, values, null, true, set,times);
+					dmListener.slow(runtime, random, ACTION.DML.SELECT, run, sql, values, null, true, set,times);
 				}
 
 			}
