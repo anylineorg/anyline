@@ -35,6 +35,7 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 	protected String id; 
 	protected String name; 
 	protected Object value;
+	protected String title;
 	protected Object evl;
 	protected Object nvl;
 	protected String clazz; 
@@ -86,7 +87,10 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 		}
 		if(null != clazz) {
 			builder.append(" class=\"").append(clazz).append("\"");
-		} 
+		}
+		if(null != title) {
+			builder.append(" title=\"").append(title).append("\"");
+		}
 		if(null != style) {
 			builder.append(" style=\"").append(style).append("\"");
 		} 
@@ -95,7 +99,7 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 		} 
 		if(null != onchange) {
 			builder.append(" onchange=\"").append(onchange).append("\"");
-		} 
+		}
 		if(null != onblur) {
 			builder.append(" onblur=\"").append(onblur).append("\"");
 		}
@@ -204,6 +208,7 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 		extraPrefix ="data-";
 		extraData = null;
 		var = null;
+		title = null;
 	} 
 	@Override 
 	protected Object clone() throws CloneNotSupportedException {
@@ -367,5 +372,13 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 
 	public void setVar(String var) {
 		this.var = var;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
 	}
 }
