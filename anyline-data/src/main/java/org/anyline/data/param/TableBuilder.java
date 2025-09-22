@@ -544,12 +544,25 @@ joins:[
     public TableBuilder left(String alias, RunPrepare prepare, String ... conditions) {
         return join(alias, Join.TYPE.LEFT, prepare, new DefaultConfigStore(), conditions);
     }
+    public TableBuilder leftLateral(String alias, RunPrepare prepare, ConfigStore configs, String ... conditions) {
+        return join(alias, Join.TYPE.LEFT_LATERAL, prepare, configs, conditions);
+    }
+    public TableBuilder leftLateral(String alias, RunPrepare prepare, String ... conditions) {
+        return join(alias, Join.TYPE.LEFT_LATERAL, prepare, new DefaultConfigStore(), conditions);
+    }
     public TableBuilder right(String alias, RunPrepare prepare, ConfigStore configs, String ... conditions) {
         return join(alias, Join.TYPE.RIGHT, prepare, configs, conditions);
     }
 
     public TableBuilder right(String alias, RunPrepare prepare, String ... conditions) {
         return join(alias, Join.TYPE.RIGHT, prepare, new DefaultConfigStore(), conditions);
+    }
+    public TableBuilder rightLateral(String alias, RunPrepare prepare, ConfigStore configs, String ... conditions) {
+        return join(alias, Join.TYPE.RIGHT_LATERAL, prepare, configs, conditions);
+    }
+
+    public TableBuilder rightLateral(String alias, RunPrepare prepare, String ... conditions) {
+        return join(alias, Join.TYPE.RIGHT_LATERAL, prepare, new DefaultConfigStore(), conditions);
     }
 
     public TableBuilder full(String alias, RunPrepare prepare, ConfigStore configs, String ... conditions) {
