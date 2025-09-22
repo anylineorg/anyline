@@ -11436,6 +11436,22 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	}
 
     /**
+     * procedure[命令合成]<br/>
+     * 查询存储参数
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param procedure 存储过程
+     * @return List
+     */
+    @Override
+    public List<Run> buildQueryParametersRun(DataRuntime runtime, Procedure procedure) throws Exception {
+        List<Run> runs = new ArrayList<>();
+        if(log.isDebugEnabled()) {
+            log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryParametersRun(DataRuntime runtime, Procedure procedure)", 37));
+        }
+        return runs;
+    }
+
+    /**
      * procedure[结果集封装]<br/>
      * Procedure 属性与结果集对应关系
      * @return MetadataFieldRefer
@@ -11534,7 +11550,23 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
         return previous;
 	}
-
+    /**
+     *
+     * procedure[调用入口]<br/>
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param random 用来标记同一组命令
+     * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
+     * @param query 查询条件 根据metadata属性
+     * @return  LinkedHashMap
+     * @param <T> Procedure
+     */
+    @Override
+    public <T extends Procedure> T procedure(DataRuntime runtime, String random, boolean greedy, Procedure query) {
+        if(log.isDebugEnabled()) {
+            log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Procedure> T procedure(DataRuntime runtime, String random, boolean greedy, Procedure query)", 37));
+        }
+        return null;
+    }
 	/**
 	 *
 	 * procedure[调用入口]<br/>
@@ -11580,7 +11612,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return list;
 	}
 
-	/**
+    /**
 	 * procedure[命令合成]<br/>
 	 * 查询存储DDL
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端

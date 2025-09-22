@@ -6350,6 +6350,7 @@ public interface DriverAdapter {
 		Procedure query = new Procedure();
 		query.setCatalog(catalog);
 		query.setSchema(schema);
+        query.setName(pattern);
 		return procedures(runtime, random, query);
 	}
 	/**
@@ -6428,6 +6429,18 @@ public interface DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	<T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Procedure query) throws Exception;
+
+    /**
+     *
+     * procedure[调用入口]<br/>
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param random 用来标记同一组命令
+     * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
+     * @param query 查询条件 根据metadata属性
+     * @return  LinkedHashMap
+     * @param <T> Procedure
+     */
+    <T extends Procedure> T procedure(DataRuntime runtime, String random, boolean greedy, Procedure query);
 	/**
 	 *
 	 * procedure[调用入口]<br/>
@@ -6437,14 +6450,23 @@ public interface DriverAdapter {
 	 * @return ddl
 	 */
 	List<String> ddl(DataRuntime runtime, String random, Procedure procedure);
-	/**
-	 * procedure[命令合成]<br/>
-	 * 查询存储DDL
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param procedure 存储过程
-	 * @return List
-	 */
-	List<Run> buildQueryDdlRun(DataRuntime runtime, Procedure procedure) throws Exception;
+    /**
+     * procedure[命令合成]<br/>
+     * 查询存储DDL
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param procedure 存储过程
+     * @return List
+     */
+    List<Run> buildQueryDdlRun(DataRuntime runtime, Procedure procedure) throws Exception;
+
+    /**
+     * procedure[命令合成]<br/>
+     * 查询存储参数
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param procedure 存储过程
+     * @return List
+     */
+    List<Run> buildQueryParametersRun(DataRuntime runtime, Procedure procedure) throws Exception;
 	/**
 	 * procedure[结果集封装]<br/>
 	 * 查询 Procedure DDL

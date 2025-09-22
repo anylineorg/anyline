@@ -4626,6 +4626,22 @@ public class MilvusAdapter extends AbstractDriverAdapter {
         return super.procedures(runtime, create, previous, query);
     }
 
+
+    /**
+     *
+     * procedure[调用入口]<br/>
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param random 用来标记同一组命令
+     * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
+     * @param query 查询条件 根据metadata属性
+     * @return  LinkedHashMap
+     * @param <T> Procedure
+     */
+    @Override
+    public <T extends Procedure> T procedure(DataRuntime runtime, String random, boolean greedy, Procedure query) {
+        return super.procedure(runtime, random, greedy, query);
+    }
+    
     /**
      *
      * procedure[调用入口]<br/>

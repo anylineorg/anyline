@@ -173,6 +173,11 @@ public class Column extends TableAffiliation<Column> implements Serializable {
     protected TypeMetadata typeMetadata           ;
     protected String fullType                     ; // 完整类型名称
     protected String finalType                    ; // 如果设置了finalType 生成SQL时 name finalType 其他属性
+    protected Integer type                        ; // 类型
+    protected String childTypeName                ;
+    protected TypeMetadata childTypeMetadata      ; //
+    protected JavaType javaType                   ;
+    protected String jdbcType                     ; // 有可能与typeName不一致 可能多个typeName对应一个jdbcType 如point>
     protected int ignoreLength                = -1; // 是否忽略长度
     protected int ignorePrecision             = -1; // 是否忽略有效位数
     protected int ignoreScale                 = -1; // 是否忽略小数位
@@ -191,11 +196,6 @@ public class Column extends TableAffiliation<Column> implements Serializable {
 
     protected String className                    ; // 对应的Java数据类型 java.lang.Long
     protected Integer displaySize                 ; // display size
-    protected Integer type                        ; // 类型
-    protected String childTypeName                ;
-    protected TypeMetadata childTypeMetadata      ; //
-    protected JavaType javaType                   ;
-    protected String jdbcType                     ; // 有可能与typeName不一致 可能多个typeName对应一个jdbcType 如point>
     protected String dateScale                    ; // 日期类型 精度
     protected Boolean nullable              = null; // 是否可以为NULL -1:未配置 1:是(NULL)  0:否(NOT NULL)
     protected Boolean caseSensitive         = null; // 是否区分大小写

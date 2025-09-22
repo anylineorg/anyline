@@ -3153,11 +3153,11 @@ public class DefaultService<E> implements AnylineService<E> {
         }
         @Override
         public Procedure procedure(boolean greedy, Catalog catalog, Schema schema, String name) {
-            List<Procedure> procedures = procedures(greedy, catalog, schema, name);
-            if(null != procedures && !procedures.isEmpty()) {
-                return procedures.get(0);
+            String[] ps = DataSourceUtil.parseRuntime(name);
+            if(null != ps[0]) {
+                return ServiceProxy.service(ps[0]).metadata().procedure(catalog, schema, ps[0]);
             }
-            return null;
+            return dao.procedure(catalog, schema, name);
         }
 
         @Override

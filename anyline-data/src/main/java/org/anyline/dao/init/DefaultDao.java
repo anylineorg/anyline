@@ -1431,6 +1431,18 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		return runtime.getAdapter().procedures(runtime, random, catalog, schema, name);
 	}
 
+	@Override
+	public <T extends Procedure> T procedure(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String name) {
+		if(null == runtime) {
+			runtime = runtime();
+		}
+		Procedure query = new Procedure();
+		query.setCatalog(catalog);
+		query.setSchema(schema);
+		query.setName(name);
+		return runtime.getAdapter().procedure(runtime, random, greedy, query);
+	}
+
 	/**
 	 * 查询 Procedure 创建SQL
 	 * @param procedure Procedure
