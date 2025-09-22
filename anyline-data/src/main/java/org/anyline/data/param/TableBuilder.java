@@ -443,6 +443,19 @@ joins:[
         return join(Join.TYPE.LEFT, table, new DefaultConfigStore(), conditions);
     }
 
+    public TableBuilder leftLateral(String table, ConfigStore configs, String ... conditions) {
+        return join(Join.TYPE.LEFT_LATERAL, table, configs, conditions);
+    }
+    public TableBuilder leftLateral(String table, String ... conditions) {
+        return join(Join.TYPE.LEFT_LATERAL, table, new DefaultConfigStore(), conditions);
+    }
+
+    public TableBuilder leftLateral(Table table, ConfigStore configs, String ... conditions) {
+        return join(Join.TYPE.LEFT_LATERAL, table, configs, conditions);
+    }
+    public TableBuilder leftLateral(Table table, String ... conditions) {
+        return join(Join.TYPE.LEFT_LATERAL, table, new DefaultConfigStore(), conditions);
+    }
     public TableBuilder right(String table, ConfigStore configs, String ... conditions) {
         return join(Join.TYPE.RIGHT, table, configs, conditions);
     }
@@ -458,6 +471,24 @@ joins:[
     public TableBuilder full(String table, ConfigStore configs, String ... conditions) {
         return join(Join.TYPE.FULL, table, configs, conditions);
     }
+
+
+    public TableBuilder rightLateral(String table, ConfigStore configs, String ... conditions) {
+        return join(Join.TYPE.RIGHT_LATERAL, table, configs, conditions);
+    }
+    public TableBuilder rightLateral(String table, String ... conditions) {
+        return join(Join.TYPE.RIGHT_LATERAL, table, new DefaultConfigStore(), conditions);
+    }
+    public TableBuilder rightLateral(Table table, ConfigStore configs, String ... conditions) {
+        return join(Join.TYPE.RIGHT_LATERAL, table, configs, conditions);
+    }
+    public TableBuilder rightLateral(Table table, String ... conditions) {
+        return join(Join.TYPE.RIGHT_LATERAL, table, new DefaultConfigStore(), conditions);
+    }
+    public TableBuilder fullLateral(String table, ConfigStore configs, String ... conditions) {
+        return join(Join.TYPE.RIGHT_LATERAL, table, configs, conditions);
+    }
+
 
     public TableBuilder full(String table, String ... conditions) {
         return join(Join.TYPE.FULL, table, new DefaultConfigStore(),  conditions);

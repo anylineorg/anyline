@@ -29,7 +29,9 @@ public class Join  implements Serializable {
     public static enum TYPE{
         INNER               {public String getCode() {return "INNER JOIN";} 	public String getName() {return "内连接";}},
         LEFT				{public String getCode() {return "LEFT JOIN";} 	public String getName() {return "左连接";}},
+        LEFT_LATERAL		{public String getCode() {return "LEFT JOIN LATERAL";} 	public String getName() {return "左横向连接";}},
         RIGHT			    {public String getCode() {return "RIGHT JOIN";} 	public String getName() {return "右连接";}},
+        RIGHT_LATERAL	    {public String getCode() {return "RIGHT JOIN LATERAL";} 	public String getName() {return "右横向连接";}},
         FULL				{public String getCode() {return "FULL JOIN";} 	public String getName() {return "全连接";}};
         public abstract String getName();
         public abstract String getCode();
