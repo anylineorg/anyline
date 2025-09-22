@@ -1213,7 +1213,7 @@ PUT * /_bulk
             //如果是text(sql)格式需要生成count(*) as CNT
             TextPrepare tp = (TextPrepare) prepare;
             String sql = tp.getText();
-            sql = SQLUtil.mergeFinalTotal(sql);
+            sql = SQLUtil.mergeFinalTotal(sql, "");
             tp.setText(sql);
         }else{
             if(null == configs){
@@ -1240,7 +1240,7 @@ PUT * /_bulk
     @Override
     public String mergeFinalTotal(DataRuntime runtime, Run run) {
         String base = run.getBuilder().toString();
-        String sql = SQLUtil.mergeFinalTotal(base);
+        String sql = SQLUtil.mergeFinalTotal(base, "");
         return sql;
     }
 
