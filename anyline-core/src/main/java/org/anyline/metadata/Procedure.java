@@ -60,6 +60,14 @@ public class Procedure extends Metadata<Procedure> implements Serializable {
 		return this;
 	}
 
+	public void setInputs(List<Parameter> inputs) {
+		this.inputs = inputs;
+	}
+
+	public void setOutputs(List<Parameter> outputs) {
+		this.outputs = outputs;
+	}
+
 	/**
 	 * 返回多个结果集的存储过程
 	 * @return List

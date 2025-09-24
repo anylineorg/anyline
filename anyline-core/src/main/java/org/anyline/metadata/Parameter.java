@@ -27,10 +27,10 @@ public class Parameter extends Metadata<Parameter> implements Serializable {
     protected Integer length                      ;
     protected Integer precision                   ; // 有效长度(包含小数部分)  123.45：precision = 5, scale = 2 对于SQL Server 中 varchar(max)设置成 -1
     protected Integer scale                       ; // 小数部分的长度
-
+    protected DataType dataType;
     private Object value;
     private TypeMetadata columnType;
-    private Integer type = java.sql.Types.VARCHAR;
+    private Integer type;
 
     public Object getValue() {
         return value;
@@ -40,15 +40,8 @@ public class Parameter extends Metadata<Parameter> implements Serializable {
         this.value = value;
     }
 
-    public Integer getType() {
-        return type;
-    }
-
     public void setType(TypeMetadata type) {
         this.columnType = type;
-    }
-    public void setType(Integer type) {
-        this.type = type;
     }
 
     public boolean isInput() {
@@ -75,6 +68,14 @@ public class Parameter extends Metadata<Parameter> implements Serializable {
         this.columnType = columnType;
     }
 
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
+
     public Integer getLength() {
         return length;
     }
@@ -98,11 +99,15 @@ public class Parameter extends Metadata<Parameter> implements Serializable {
         this.length = length;
     }
 
-    public String toString() {
-        return "{value:"+value+", type:"+type+"}";
+    public DataType getDataType() {
+        return dataType;
     }
 
-/* ********************************* field refer ********************************** */
+    public void setDataType(DataType dataType) {
+        this.dataType = dataType;
+    }
+
+    /* ********************************* field refer ********************************** */
     public static final String FIELD_INPUT                         = "INPUT";
     public static final String FIELD_INPUT_CHECK                   = "INPUT_CHECK";
     public static final String FIELD_INPUT_CHECK_VALUE             = "INPUT_CHECK_VALUE";
@@ -115,4 +120,8 @@ public class Parameter extends Metadata<Parameter> implements Serializable {
     public static final String FIELD_VALUE                         = "VALUE";
     public static final String FIELD_COLUMN_TYPE                   = "COLUMN_TYPE";
     public static final String FIELD_TYPE                          = "TYPE";
+    public static final String FIELD_DATA_TYPE                     = "DATA_TYPE";
+    public static final String FIELD_OCTET_LENGTH                  = "OCTET_LENGTH";
+
+    public static final String FIELD_MODE                          = "MODE";
 }

@@ -3701,6 +3701,76 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         return meta;
     }
 
+    public DataType init(DataRuntime runtime, MetadataFieldRefer refer, DataRow row){
+        DataType meta = null;
+        String type = getString(row, refer, Column.FIELD_TYPE);
+        /*if(null != type) {
+            type = type.replace("character varying","VARCHAR");
+        }*/
+        //FULL_TYPE pg中pg_catalog.format_type合成的
+        //character varying
+        //TODO timestamp without time zone
+        //TODO 子类型  geometry(Polygon,4326) geometry(Polygon) geography(Polygon,4326)
+        //TODO CHARACTER VARYING
+        if(null != type && type.contains(" ")) {
+            String tmp = row.getStringWithoutEmpty("UDT_NAME","DATA_TYPE","TYPENAME","DATA_TYPE_NAME");
+            if(null != tmp) {
+                type = tmp;
+            }
+        }
+        meta.setOriginType(BasicUtil.evl(type, meta.getName()));
+        TypeMetadata typeMetadata = typeMetadata(runtime, meta);
+        //属性在查询结果中对应的列(区分数据类型)
+        TypeMetadata.Refer trefer = dataTypeMetadataRefer(runtime, typeMetadata);
+
+        //oracle中decimal(18,9) data_length == 22 DATA_PRECISION=18
+        try {
+            Integer len = row.getInt(null, trefer.getLengthRefers());
+            /*if(null == len) {
+                len = row.getInt("NUMERIC_PRECISION","PRECISION","DATA_PRECISION");
+                if (null == len || len == 0) {
+                    len = row.getInt("CHARACTER_MAXIMUM_LENGTH","MAX_LENGTH","DATA_LENGTH","LENGTH");
+                }
+            }*/
+            //-1表示设置过了 null可能被precision覆盖(column.getFullType时会判断)
+            if(null == len) {
+                len = -1;
+            }
+            meta.setLength(len);
+        }catch (Exception ignored) {}
+        try{
+            meta.setOctetLength(getInt(row, refer, Column.FIELD_OCTET_LENGTH, null));
+        }catch (Exception ignored) {}
+        try{
+            Integer precision = row.getInt(null, trefer.getPrecisionRefers());
+            /*if(null == precision) {
+                precision = row.getInt("NUMERIC_PRECISION","PRECISION","DATA_PRECISION");
+            }*/
+            //-1表示设置过了 null可能被length覆盖(column.getFullType时会判断)
+            if(null == precision) {
+                precision = -1;
+            }
+            meta.setPrecision(precision);
+        }catch (Exception ignored) {}
+        try {
+            Integer scale = row.getInt(null, trefer.getScaleRefers());
+            /*if(null == scale) {
+                scale = row.getInt("NUMERIC_SCALE", "SCALE", "DATA_SCALE");
+            }*/
+            meta.setScale(scale);
+        }catch (Exception ignored) {}
+
+        if(null == meta.getCharset()) {
+            meta.setCharset(getString(row, refer, Table.FIELD_CHARSET));//"CHARACTER_SET_NAME"
+        }
+        if(null == meta.getCollate()) {
+            meta.setCollate(getString(row, refer, Table.FIELD_COLLATE));//COLLATION_NAME
+        }
+        if(null == meta.getTypeMetadata()) {
+            typeMetadata(runtime, meta);
+        }
+        return meta;
+    }
     /**
      * column[结果集封装]<br/>(方法1)<br/>
      * 列详细属性
@@ -3722,25 +3792,9 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
             meta.setPosition(getInt(row, refer, Column.FIELD_POSITION, null));
         }
         meta.setComment(getString(row, refer, Column.FIELD_COMMENT, meta.getComment()));
-        String type = getString(row, refer, Column.FIELD_TYPE);
-        /*if(null != type) {
-            type = type.replace("character varying","VARCHAR");
-        }*/
-        //FULL_TYPE pg中pg_catalog.format_type合成的
-        //character varying
-        //TODO timestamp without time zone
-        //TODO 子类型  geometry(Polygon,4326) geometry(Polygon) geography(Polygon,4326)
-        //TODO CHARACTER VARYING
-        if(null != type && type.contains(" ")) {
-           String tmp = row.getStringWithoutEmpty("UDT_NAME","DATA_TYPE","TYPENAME","DATA_TYPE_NAME");
-           if(null != tmp) {
-               type = tmp;
-           }
-        }
-        meta.setOriginType(BasicUtil.evl(type, meta.getTypeName()));
-        TypeMetadata typeMetadata = typeMetadata(runtime, meta);
-        //属性在查询结果中对应的列(区分数据类型)
-        TypeMetadata.Refer trefer = dataTypeMetadataRefer(runtime, typeMetadata);
+
+
+        //默认值
         String def = getString(row, refer, Column.FIELD_DEFAULT_VALUE, meta.getDefaultValue()+"");
         def = def.trim();//oracle 会取出\t\n
         if(BasicUtil.isNotEmpty(def)) {
@@ -3795,55 +3849,8 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
                 meta.nullable(getBoolean(row, refer,Column.FIELD_NULLABLE, null));//"IS_NULLABLE","NULLABLE","NULLS"
             }catch (Exception ignored) {}
         }
-        //oracle中decimal(18,9) data_length == 22 DATA_PRECISION=18
-        try {
-            Integer len = row.getInt(null, trefer.getLengthRefers());
-            /*if(null == len) {
-                len = row.getInt("NUMERIC_PRECISION","PRECISION","DATA_PRECISION");
-                if (null == len || len == 0) {
-                    len = row.getInt("CHARACTER_MAXIMUM_LENGTH","MAX_LENGTH","DATA_LENGTH","LENGTH");
-                }
-            }*/
-            //-1表示设置过了 null可能被precision覆盖(column.getFullType时会判断)
-            if(null == len) {
-                len = -1;
-            }
-            meta.setLength(len);
-        }catch (Exception ignored) {}
-        try{
-            meta.setOctetLength(getInt(row, refer, Column.FIELD_OCTET_LENGTH, null));
-        }catch (Exception ignored) {}
-        try{
-            Integer precision = row.getInt(null, trefer.getPrecisionRefers());
-            /*if(null == precision) {
-                precision = row.getInt("NUMERIC_PRECISION","PRECISION","DATA_PRECISION");
-            }*/
-            //-1表示设置过了 null可能被length覆盖(column.getFullType时会判断)
-            if(null == precision) {
-                precision = -1;
-            }
-            meta.setPrecision(precision);
-        }catch (Exception ignored) {}
-        try {
-            Integer scale = row.getInt(null, trefer.getScaleRefers());
-            /*if(null == scale) {
-                scale = row.getInt("NUMERIC_SCALE", "SCALE", "DATA_SCALE");
-            }*/
-            meta.setScale(scale);
-        }catch (Exception ignored) {}
-
-        if(null == meta.getCharset()) {
-            meta.setCharset(getString(row, refer, Table.FIELD_CHARSET));//"CHARACTER_SET_NAME"
-        }
-        if(null == meta.getCollate()) {
-            meta.setCollate(getString(row, refer, Table.FIELD_COLLATE));//COLLATION_NAME
-        }
-        if(null == meta.getTypeMetadata()) {
-            typeMetadata(runtime, meta);
-        }
         return meta;
     }
-    
 
     /* *****************************************************************************************************************
      *                                                     tag
@@ -4527,7 +4534,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		return super.buildQueryProceduresRun(runtime, greedy, query);
 	}
 
-	/**
+    /**
 	 * procedure[结果集封装]<br/>
 	 * 根据查询结果集构造 Trigger
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端

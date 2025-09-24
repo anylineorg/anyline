@@ -4638,7 +4638,7 @@ public class MilvusAdapter extends AbstractDriverAdapter {
      * @param <T> Procedure
      */
     @Override
-    public <T extends Procedure> T procedure(DataRuntime runtime, String random, boolean greedy, Procedure query) {
+    public <T extends Procedure> T procedure(DataRuntime runtime, String random, boolean greedy, Procedure query) throws Exception {
         return super.procedure(runtime, random, greedy, query);
     }
     

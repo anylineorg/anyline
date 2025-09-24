@@ -20,7 +20,6 @@ import org.anyline.adapter.DataReader;
 import org.anyline.adapter.DataWriter;
 import org.anyline.data.listener.DDListener;
 import org.anyline.data.listener.DMListener;
-import org.anyline.metadata.type.TypeMetadataAlias;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.RunPrepare;
@@ -45,6 +44,7 @@ import org.anyline.metadata.refer.MetadataFieldRefer;
 import org.anyline.metadata.type.DatabaseOrigin;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.metadata.type.TypeMetadata;
+import org.anyline.metadata.type.TypeMetadataAlias;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
@@ -4118,7 +4118,7 @@ public interface DriverAdapter {
      */
     default <T extends View> List<T> views(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
         View query = new View(catalog, schema, pattern);
-        return views(runtime, random, greedy, catalog, schema, pattern, types, struct, configs);
+        return views(runtime, random, greedy, query, types, struct, configs);
     }
     default <T extends View> List<T> views(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct) {
         return views(runtime, random, greedy, catalog, schema, pattern, types, struct, null);
@@ -6323,6 +6323,7 @@ public interface DriverAdapter {
 		Procedure query = new Procedure();
 		query.setCatalog(catalog);
 		query.setSchema(schema);
+        query.setName(pattern);
 		return procedures(runtime, random, greedy, query);
 	}
 	/**
@@ -6374,6 +6375,7 @@ public interface DriverAdapter {
 		Procedure query = new Procedure();
 		query.setCatalog(catalog);
 		query.setSchema(schema);
+        query.setName(pattern);
 		return buildQueryProceduresRun(runtime, greedy, query);
 	}
 
@@ -6384,6 +6386,12 @@ public interface DriverAdapter {
      */
     MetadataFieldRefer initProcedureFieldRefer();
 
+    /**
+     * procedure[结果集封装]<br/>
+     * Procedure 或Function 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    MetadataFieldRefer initProcedureParameterFieldRefer();
 	/**
 	 * procedure[结果集封装]<br/>
 	 * 根据查询结果集构造 Procedure
@@ -6439,9 +6447,13 @@ public interface DriverAdapter {
      * @param query 查询条件 根据metadata属性
      * @return  LinkedHashMap
      * @param <T> Procedure
+     * @throws Exception 异常
      */
-    <T extends Procedure> T procedure(DataRuntime runtime, String random, boolean greedy, Procedure query);
-	/**
+    <T extends Procedure> T procedure(DataRuntime runtime, String random, boolean greedy, Procedure query) throws Exception;
+
+    <T extends Parameter> LinkedHashMap<String, T> parameters(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Procedure procedure, DataSet set) throws Exception;
+
+    /**
 	 *
 	 * procedure[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -6525,6 +6537,28 @@ public interface DriverAdapter {
 		meta.setSchema(schema);
 		return detail(runtime, index, meta, catalog, schema, row);
 	}
+
+    /**
+     * procedure[结果集封装]<br/>
+     * 根据查询结果封装存储过程参数,只封装catalog,schema,name等基础属性
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta 上一步封装结果
+     * @param procedure 存储过程
+     * @param row 查询结果集
+     * @return Procedure
+     */
+    <T extends Parameter> T init(DataRuntime runtime, int index, T meta, Procedure procedure, DataRow row);
+
+    /**
+     * procedure[结果集封装]<br/>
+     * 根据查询结果封装存储过程参数,更多属性
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta 上一步封装结果
+     * @param procedure 存储过程
+     * @param row 查询结果集
+     * @return Procedure
+     */
+    <T extends Parameter> T detail(DataRuntime runtime, int index, T meta, Procedure procedure, DataRow row);
 	/* *****************************************************************************************************************
 	 * 													function
 	 ******************************************************************************************************************/
@@ -6608,6 +6642,16 @@ public interface DriverAdapter {
      * @return MetadataFieldRefer
      */
     MetadataFieldRefer initFunctionFieldRefer();
+
+    /**
+     * procedure[结果集封装]<br/>
+     * Procedure 或 Function 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    default MetadataFieldRefer initFunctionParameterFieldRefer() {
+        return initProcedureParameterFieldRefer();
+    }
+
 	/**
 	 * function[结果集封装]<br/>
 	 * 根据查询结果集构造 Function

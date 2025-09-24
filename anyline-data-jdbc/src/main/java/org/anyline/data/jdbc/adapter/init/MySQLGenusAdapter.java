@@ -3904,7 +3904,14 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public List<Run> buildQueryParametersRun(DataRuntime runtime, Procedure procedure) throws Exception {
-        return super.buildQueryParametersRun(runtime, procedure);
+        List<Run> runs = new ArrayList<>();
+        Run run = new SimpleRun(runtime);
+        runs.add(run);
+        StringBuilder builder = run.getBuilder();
+        ConfigStore configs = run.getConfigs();
+        builder.append("SELECT * FROM information_schema.parameters");
+        configs.and("specific_name", procedure.getName());
+        return runs;
     }
 
     /**
@@ -3918,6 +3925,26 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         refer.map(Procedure.FIELD_NAME, "ROUTINE_NAME");
         refer.map(Procedure.FIELD_SCHEMA, "ROUTINE_NAME");
         refer.map(Procedure.FIELD_DEFINITION, "ROUTINE_DEFINITION");
+        return refer;
+    }
+
+    /**
+     * procedure[结果集封装]<br/>
+     * Procedure 或Function 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer initProcedureParameterFieldRefer() {
+        MetadataFieldRefer refer = new MetadataFieldRefer(Procedure.class);
+        refer.map(Parameter.FIELD_NAME, "PARAMETER_NAME");
+        refer.map(Parameter.FIELD_INPUT_CHECK, "PARAMETER_MODE");
+        refer.map(Parameter.FIELD_INPUT_CHECK_VALUE, "IN");
+        refer.map(Parameter.FIELD_OUTPUT_CHECK, "PARAMETER_MODE");
+        refer.map(Parameter.FIELD_OUTPUT_CHECK_VALUE, "OUT");
+        refer.map(Parameter.FIELD_DATA_TYPE, "DATA_TYPE");
+        refer.map(Parameter.FIELD_LENGTH, "CHARACTER_MAXIMUM_LENGTH");
+        refer.map(Parameter.FIELD_PRECISION, "NUMERIC_PRECISION");
+        refer.map(Parameter.FIELD_SCALE, "NUMERIC_SCALE");
         return refer;
     }
 
@@ -3976,7 +4003,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> Procedure
      */
     @Override
-    public <T extends Procedure> T procedure(DataRuntime runtime, String random, boolean greedy, Procedure query) {
+    public <T extends Procedure> T procedure(DataRuntime runtime, String random, boolean greedy, Procedure query) throws Exception {
         return super.procedure(runtime, random, greedy, query);
     }
     

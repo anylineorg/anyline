@@ -11461,6 +11461,15 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         return new MetadataFieldRefer(Procedure.class);
     }
 
+    /**
+     * procedure[结果集封装]<br/>
+     * Procedure 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer initProcedureParameterFieldRefer() {
+        return new MetadataFieldRefer(Parameter.class);
+    }
 	/**
 	 * procedure[结果集封装]<br/>
 	 * 根据查询结果集构造 Trigger
@@ -11559,13 +11568,63 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @param query 查询条件 根据metadata属性
      * @return  LinkedHashMap
      * @param <T> Procedure
+     * @throws Exception 异常
      */
     @Override
-    public <T extends Procedure> T procedure(DataRuntime runtime, String random, boolean greedy, Procedure query) {
-        if(log.isDebugEnabled()) {
-            log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Procedure> T procedure(DataRuntime runtime, String random, boolean greedy, Procedure query)", 37));
+    public <T extends Procedure> T procedure(DataRuntime runtime, String random, boolean greedy, Procedure query) throws Exception {
+        List<T> procedures = procedures(runtime, random, greedy, query);
+        if(procedures.isEmpty()){
+            return null;
         }
-        return null;
+        T procedure = procedures.get(0);
+        List<Run> runs = buildQueryParametersRun(runtime, procedure);
+        LinkedHashMap<String, Parameter> parameters = null;
+        int idx = 0;
+        for(Run run:runs){
+            DataSet set = selectMetadata(runtime, random, run);
+            parameters = parameters(runtime, idx++, true, parameters, procedure, set);
+        }
+        List<Parameter> ins = new ArrayList<>();
+        List<Parameter> outs = new ArrayList<>();
+        for(Parameter parameter:parameters.values()){
+            if(parameter.isOutput()){
+                outs.add(parameter); //out + inout
+            }else{
+                ins.add(parameter);
+            }
+        }
+        procedure.setInputs(ins);
+        procedure.setOutputs(outs);
+        return procedure;
+    }
+
+    /**
+     * procedure[结果集封装]<br/>
+     * 根据查询结果集构造 存储过程参数
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
+     * @param create 上一步没有查到的,这一步是否需要新创建
+     * @param previous 上一步查询结果
+     * @param procedure 存储过程
+     * @param set 查询结果集
+     * @return LinkedHashMap
+     * @throws Exception 异常
+     */
+    @Override
+    public <T extends Parameter> LinkedHashMap<String, T> parameters(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Procedure procedure, DataSet set) throws Exception {
+        if(null == previous) {
+            previous = new LinkedHashMap<>();
+        }
+        for(DataRow row:set) {
+            T meta = null;
+            meta = init(runtime, index, meta, procedure, row);
+            if(null == meta || meta.isEmpty()) {
+                continue;
+            }
+            meta = detail(runtime, index, meta, procedure, row);
+            previous.put(meta.getName().toUpperCase(), meta);
+        }
+        return previous;
     }
 	/**
 	 *
@@ -11683,6 +11742,53 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return meta;
 	}
 
+    /**
+     * procedure[结果集封装]<br/>
+     * 根据查询结果封装存储过程参数,只封装catalog,schema,name等基础属性
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta 上一步封装结果
+     * @param procedure 存储过程
+     * @param row 查询结果集
+     * @return Procedure
+     */
+    @Override
+    public <T extends Parameter> T init(DataRuntime runtime, int index, T meta, Procedure procedure, DataRow row) {
+        MetadataFieldRefer refer = refer(runtime, Parameter.class);
+        String name = getString(row, refer, Parameter.FIELD_NAME);
+        if(BasicUtil.isNotEmpty(name)){
+            if(null == meta){
+                meta = (T)new Parameter();
+            }
+            meta.setName(name);
+        }
+        return meta;
+    }
+
+    /**
+     * procedure[结果集封装]<br/>
+     * 根据查询结果封装存储过程参数,更多属性
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta 上一步封装结果
+     * @param procedure 存储过程
+     * @param row 查询结果集
+     * @return Procedure
+     */
+    @Override
+    public <T extends Parameter> T detail(DataRuntime runtime, int index, T meta, Procedure procedure, DataRow row) {
+        if(null != meta){
+            MetadataFieldRefer refer = refer(runtime, Parameter.class);
+            String name = getString(row, refer, Parameter.FIELD_NAME);
+            String in = getString(row, refer, Parameter.FIELD_INPUT_CHECK);
+            if(null != in && in.contains(Parameter.FIELD_INPUT_CHECK_VALUE)){
+                meta.setInput(true);
+            }
+            String out = getString(row, refer, Parameter.FIELD_OUTPUT_CHECK);
+            if(null != out && out.contains(Parameter.FIELD_OUTPUT_CHECK_VALUE)){
+                meta.setInput(true);
+            }
+        }
+        return meta;
+    }
 	/* *****************************************************************************************************************
 	 * 													function
 	 * -----------------------------------------------------------------------------------------------------------------

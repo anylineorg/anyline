@@ -303,7 +303,7 @@ public class DefaultAutoCondition extends AbstractCondition implements AutoCondi
 						adapter.formula(runtime, builder, column, compare, null, val, placeholder, unicode);
 					}
 				}else if(compareCode == 31) { 																				// <= ?
-					adapter.formula(runtime, builder,  column,compare, null, val, placeholder, unicode);
+					adapter.formula(runtime, builder, column, compare, null, val, placeholder, unicode);
 				}else if(compareCode == 80) { 																				// BETWEEN ? AND ?
 					adapter.formula(runtime, builder, column, compare, null, val, placeholder, unicode);
 				}else if(compareCode == 40 || compareCode == 140) {															// IN(?, ?, ?)

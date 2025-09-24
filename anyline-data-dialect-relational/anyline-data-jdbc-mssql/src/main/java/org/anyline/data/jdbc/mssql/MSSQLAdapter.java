@@ -3409,7 +3409,14 @@ WHERE
      */
     @Override
     public List<Run> buildQueryParametersRun(DataRuntime runtime, Procedure procedure) throws Exception {
-        return super.buildQueryParametersRun(runtime, procedure);
+        List<Run> runs = new ArrayList<>();
+        Run run = new SimpleRun(runtime);
+        runs.add(run);
+        StringBuilder builder = run.getBuilder();
+        ConfigStore configs = run.getConfigs();
+        builder.append("SELECT * FROM information_schema.parameters");
+        configs.and("specific_name", procedure.getName());
+        return runs;
     }
 
     /**
@@ -3468,7 +3475,7 @@ WHERE
      * @param <T> Procedure
      */
     @Override
-    public <T extends Procedure> T procedure(DataRuntime runtime, String random, boolean greedy, Procedure query) {
+    public <T extends Procedure> T procedure(DataRuntime runtime, String random, boolean greedy, Procedure query) throws Exception {
         return super.procedure(runtime, random, greedy, query);
     }
     

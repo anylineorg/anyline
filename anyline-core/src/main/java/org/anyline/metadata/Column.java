@@ -166,37 +166,10 @@ public class Column extends TableAffiliation<Column> implements Serializable {
         }
     }
     protected String keyword = "COLUMN"           ;
-    protected String originName                   ; // 原名,只有查询时才会区分,添加列时用name即可 SELECT ID AS USER_ID FROM USER; originName=ID, name=USER_ID
-    protected String typeName                     ; // 类型名称 varchar完整类型调用getFullType > varchar(10)
-    protected String qualifier                    ; // 数据类型限定符 DATETIME YEAR TO MINUTE(6) 中的YEAR TO MINUTE部分 表达式中以{Q}表示
-    protected String originType                   ; // 原始类型(未解析,交给具体的adapter解析)
-    protected TypeMetadata typeMetadata           ;
-    protected String fullType                     ; // 完整类型名称
-    protected String finalType                    ; // 如果设置了finalType 生成SQL时 name finalType 其他属性
-    protected Integer type                        ; // 类型
-    protected String childTypeName                ;
-    protected TypeMetadata childTypeMetadata      ; //
-    protected JavaType javaType                   ;
-    protected String jdbcType                     ; // 有可能与typeName不一致 可能多个typeName对应一个jdbcType 如point>
-    protected int ignoreLength                = -1; // 是否忽略长度
-    protected int ignorePrecision             = -1; // 是否忽略有效位数
-    protected int ignoreScale                 = -1; // 是否忽略小数位
-    protected int maxLength                   = -1;
-    protected int maxPrecision                = -1;
-    protected int maxScale                    = -1;
-    //数字类型:precision,scale 日期:length 时间戳:scale 其他:length
-    protected Integer precisionLength             ; // 精确长度 根据数据类型返回precision或length
-    protected Integer length                      ; // 长度(注意varchar,date,timestamp,number的区别)
-    protected String lengthUnit = ""              ; // 长度单位如byte char
-    protected Integer octetLength                 ;
-    protected Integer precision                   ; // 有效位数 整个字段的长度(包含小数部分)  123.45：precision = 5, scale = 2 对于SQL Server 中 varchar(max)设置成 -1 null:表示未设置
-    protected Integer scale                       ; // 小数部分的长度
-    protected Integer dimension                   ; // 维度(向量)
+
     protected Virtual virtual                     ; // 虚拟列
 
     protected String className                    ; // 对应的Java数据类型 java.lang.Long
-    protected Integer displaySize                 ; // display size
-    protected String dateScale                    ; // 日期类型 精度
     protected Boolean nullable              = null; // 是否可以为NULL -1:未配置 1:是(NULL)  0:否(NOT NULL)
     protected Boolean caseSensitive         = null; // 是否区分大小写
     protected Boolean currency              = null; // 是否是货币
@@ -216,8 +189,6 @@ public class Column extends TableAffiliation<Column> implements Serializable {
     protected Boolean withTimeZone          = null;
     protected Boolean withLocalTimeZone     = null;
     protected Column reference                    ; // 外键依赖列
-    protected Integer srid                        ; // SRID
-    protected boolean array                       ; // 是否数组
     protected boolean isKey                       ; // doris中用到
 
     protected Integer position                    ; // 在表或索引中的位置, 如果需要在第一列 设置成0
