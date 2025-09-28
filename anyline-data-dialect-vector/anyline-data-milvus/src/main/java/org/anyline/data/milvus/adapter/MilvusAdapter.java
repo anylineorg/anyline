@@ -193,6 +193,7 @@ public class MilvusAdapter extends AbstractDriverAdapter {
     public void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet set, ConfigStore configs, Boolean placeholder, Boolean unicode, LinkedHashMap<String, Column> columns) {
         super.fillInsertContent(runtime, run, dest, set, configs, placeholder, unicode, columns);
     }
+    
     /**
      * insert [命令合成-子流程]<br/>
      * 填充inset命令内容(创建批量INSERT RunPrepare)
@@ -3624,7 +3625,17 @@ public class MilvusAdapter extends AbstractDriverAdapter {
     public MetadataFieldRefer initColumnFieldRefer() {
         return super.initColumnFieldRefer();
     }
-
+    
+    /**
+     * Column[结果集封装]<br/>
+     * 数据类型 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer initDataTypeFieldRefer() {
+        return super.initDataTypeFieldRefer();
+    }
+    
     /**
      * column[结果集封装]<br/>(方法1)<br/>
      * 根据系统表查询SQL获取表结构
@@ -4625,8 +4636,7 @@ public class MilvusAdapter extends AbstractDriverAdapter {
     public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Procedure query) throws Exception {
         return super.procedures(runtime, create, previous, query);
     }
-
-
+    
     /**
      *
      * procedure[调用入口]<br/>
@@ -6317,8 +6327,7 @@ public class MilvusAdapter extends AbstractDriverAdapter {
     public StringBuilder property(DataRuntime runtime, StringBuilder builder, Table meta) {
         return super.property(runtime, builder, meta);
     }
-
-
+    
     /**
      * table[命令合成-子流程]<br/>
      * 主表设置分区依据(根据哪几列分区)
@@ -7303,6 +7312,7 @@ public class MilvusAdapter extends AbstractDriverAdapter {
     public StringBuilder charset(DataRuntime runtime, StringBuilder builder, Column meta) {
         return super.charset(runtime, builder, meta);
     }
+    
     /**
      * column[命令合成-子流程]<br/>
      * 列定义:虚拟列
@@ -9153,8 +9163,7 @@ public class MilvusAdapter extends AbstractDriverAdapter {
     public boolean grant(DataRuntime runtime, User user, Privilege ... privileges)  throws Exception {
         return actuator().grant(runtime, user, privileges);
     }
-
-
+    
     /**
      * privilege[调用入口]<br/>
      * 授权
@@ -9166,8 +9175,7 @@ public class MilvusAdapter extends AbstractDriverAdapter {
     public boolean grant(DataRuntime runtime, User user, Role ... roles)  throws Exception {
         return actuator().grant(runtime, user, roles);
     }
-
-
+    
     /**
      * privilege[调用入口]<br/>
      * 授权
@@ -9191,6 +9199,7 @@ public class MilvusAdapter extends AbstractDriverAdapter {
     public List<Run> buildGrantRun(DataRuntime runtime, User user, Privilege ... privileges) throws Exception {
         return super.buildGrantRun(runtime, user, privileges);
     }
+    
     /**
      * grant[命令合成]<br/>
      * 授权
@@ -9202,6 +9211,7 @@ public class MilvusAdapter extends AbstractDriverAdapter {
     public List<Run> buildGrantRun(DataRuntime runtime, User user, Role ... roles) throws Exception {
         return super.buildGrantRun(runtime, user, roles);
     }
+    
     /**
      * grant[命令合成]<br/>
      * 授权
@@ -9236,6 +9246,7 @@ public class MilvusAdapter extends AbstractDriverAdapter {
     public boolean revoke(DataRuntime runtime, User user, Privilege ... privileges) throws Exception {
         return actuator().revoke(runtime, user, privileges);
     }
+    
     /**
      * revoke[调用入口]<br/>
      * 撤销授权
@@ -9247,6 +9258,7 @@ public class MilvusAdapter extends AbstractDriverAdapter {
     public boolean revoke(DataRuntime runtime, User user, Role ... roles) throws Exception {
         return actuator().revoke(runtime, user, roles);
     }
+    
     /**
      * revoke[调用入口]<br/>
      * 撤销授权

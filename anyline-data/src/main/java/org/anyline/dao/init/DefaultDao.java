@@ -1432,7 +1432,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	}
 
 	@Override
-	public <T extends Procedure> T procedure(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String name) {
+	public <T extends Procedure> T procedure(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String name) throws Exception {
 		if(null == runtime) {
 			runtime = runtime();
 		}

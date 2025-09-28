@@ -4119,20 +4119,20 @@ public interface AnylineService<E>{
 			return procedures(null, null, null);
 		}
 
-		Procedure procedure(boolean greedy, Catalog catalog, Schema schema, String name);
-		default Procedure procedure(boolean greedy, Schema schema, String name) {
+		Procedure procedure(boolean greedy, Catalog catalog, Schema schema, String name) throws Exception;
+		default Procedure procedure(boolean greedy, Schema schema, String name) throws Exception {
 			return procedure(greedy, null, schema, name);
 		}
-		default Procedure procedure(boolean greedy, String name) {
+		default Procedure procedure(boolean greedy, String name) throws Exception {
 			return procedure(greedy, null, null, name);
 		}
-		default Procedure procedure(Catalog catalog, Schema schema, String name) {
+		default Procedure procedure(Catalog catalog, Schema schema, String name) throws Exception {
 			return procedure(false, catalog, schema, name);
 		}
-		default Procedure procedure(Schema schema, String name) {
+		default Procedure procedure(Schema schema, String name) throws Exception {
 			return procedure(false, schema, name);
 		}
-		default Procedure procedure(String name) {
+		default Procedure procedure(String name) throws Exception {
 			return procedure(false, name);
 		}
 		List<String> ddl(Procedure procedure);

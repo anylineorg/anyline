@@ -27,6 +27,7 @@ public interface PropertyCompat {
     default DatabaseType database() {
         return null;
     }
+    
     /**
      * 适用类型 如Table.class
      * @return Class
@@ -34,6 +35,7 @@ public interface PropertyCompat {
     default Class<? extends Metadata> metadata() {
         return Metadata.class;
     }
+    
     /**
      * 属性分组 如 ENGINE
      * @return String
@@ -41,6 +43,7 @@ public interface PropertyCompat {
     default String property() {
         return "default";
     }
+    
     /**
      * 兼容属性名称或别名
      * @return String

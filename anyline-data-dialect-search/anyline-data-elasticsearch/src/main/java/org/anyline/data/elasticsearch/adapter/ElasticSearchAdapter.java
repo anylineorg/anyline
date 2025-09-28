@@ -1020,7 +1020,7 @@ PUT * /_bulk
             int cc = compare.getCode();
             if(cc == 10) {                                            //  EQUAL
                 row.put("term").put(column, value);
-            }else if(cc == 999) {                                    //  Compare.REGEX
+            }else if(cc == 99) {                                    //  Compare.REGEX
                 row.put("regexp").put(column, value);
             }else if(cc == 50) {                                     //  LIKE
                 row.put("wildcard").put(column, "*"+value+"*");
@@ -1062,6 +1062,7 @@ PUT * /_bulk
             }else if(cc == 150) {                                    //  NOT LIKE
             }else if(cc == 151) {                                    //  NOT START_WITH
             }else if(cc == 152) {                                    //  NOT END_WITH
+            }else if(cc == 199) {                                    //  NOT REGEX
             }
 
         }
@@ -2363,8 +2364,7 @@ PUT * /_bulk
     public List<String> ddl(DataRuntime runtime, int index, Table table, List<String> ddls, DataSet set) {
         return super.ddl(runtime, index, table, ddls, set);
     }
-
-
+    
     /**
      * table[结果集封装]<br/>
      * 根据查询结果封装Table基础属性
@@ -3469,8 +3469,7 @@ PUT * /_bulk
     public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Procedure query) throws Exception {
         return super.procedures(runtime, create, previous, query);
     }
-
-
+    
     /**
      *
      * procedure[调用入口]<br/>
@@ -4199,8 +4198,7 @@ PUT * /_bulk
     public StringBuilder comment(DataRuntime runtime, StringBuilder builder, Table meta) {
         return super.comment(runtime, builder, meta);
     }
-
-
+    
     /**
      * table[命令合成-子流程]<br/>
      * 主表设置分区依据(根据哪几列分区)
@@ -5077,6 +5075,7 @@ PUT * /_bulk
     public StringBuilder charset(DataRuntime runtime, StringBuilder builder, Column meta) {
         return super.charset(runtime, builder, meta);
     }
+    
     /**
      * column[命令合成-子流程]<br/>
      * 列定义:虚拟列

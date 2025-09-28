@@ -247,6 +247,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
             head = false;
         }
     }
+    
     /**
      * insert [命令合成-子流程]<br/>
      * 填充inset命令内容(创建批量INSERT RunPrepare)
@@ -2131,8 +2132,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public List<String> ddl(DataRuntime runtime, int index, Table table, List<String> ddls, DataSet set) {
         return super.ddl(runtime, index, table, ddls, set);
     }
-
-
+    
     /**
      * table[结果集封装]<br/>
      * 根据查询结果封装Table基础属性
@@ -2630,8 +2630,19 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
         MetadataFieldRefer refer = super.initColumnFieldRefer();
         refer.map(Column.FIELD_NAME, "COLUMN_NAME,COLNAME");
         refer.map(Column.FIELD_TABLE,"TABNAME");
-        refer.map(Column.FIELD_TYPE, "COLTYPE");
         refer.map(Column.FIELD_POSITION, "COLNO");
+        return refer;
+    }
+
+    /**
+     * Column[结果集封装]<br/>
+     * 数据类型 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer initDataTypeFieldRefer() {
+        MetadataFieldRefer refer = new MetadataFieldRefer(DataTypeDefine.class);
+        refer.map(DataTypeDefine.FIELD_NAME, "COLTYPE");
         return refer;
     }
 
@@ -3372,8 +3383,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Procedure query) throws Exception {
         return super.procedures(runtime, create, previous, query);
     }
-
-
+    
     /**
      *
      * procedure[调用入口]<br/>
@@ -5557,6 +5567,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public StringBuilder charset(DataRuntime runtime, StringBuilder builder, Column meta) {
         return super.charset(runtime, builder, meta);
     }
+    
     /**
      * column[命令合成-子流程]<br/>
      * 列定义:虚拟列

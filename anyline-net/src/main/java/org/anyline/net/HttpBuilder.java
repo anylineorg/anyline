@@ -102,6 +102,7 @@ public class HttpBuilder {
         client.setReturnType(returnType);
         return client;
     }
+    
     /**
      * 绕过验证
      * @return SSLConnectionSocketFactory
@@ -137,6 +138,7 @@ public class HttpBuilder {
         }
         return sslsf;
     }
+    
     /**
      * 解析url 识别出参数k=v&amp;k=v
      * @param url url

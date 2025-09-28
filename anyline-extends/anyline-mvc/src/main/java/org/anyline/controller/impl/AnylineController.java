@@ -604,6 +604,7 @@ public class AnylineController extends AbstractController {
         }
         return rtn.json();
     }
+    
     /**
      *
      * @param msg  msg
@@ -658,6 +659,7 @@ public class AnylineController extends AbstractController {
         Object code = ConfigTable.get("HTTP_SUCCESS_CODE", Integer.valueOf(200));
         return result(code,true, data, null);
     }
+    
     /**
      * AJAX分页时调用
      * 分数数据在服务器生成
@@ -773,6 +775,7 @@ public class AnylineController extends AbstractController {
         }
         return html;
     }
+    
     /**
      * 上传文件
      * @param dir  dir

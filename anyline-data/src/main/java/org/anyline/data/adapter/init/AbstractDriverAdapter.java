@@ -555,6 +555,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet set, ConfigStore configs, LinkedHashMap<String, Column> columns)", 37));
         }
     }
+    
     /**
      * insert [命令合成-子流程]<br/>
      * 填充inset命令内容(创建批量INSERT RunPrepare)
@@ -2800,8 +2801,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
     protected Run fillQueryContent(DataRuntime runtime, XMLRun run, Boolean placeholder, Boolean unicode) {
         return fillQueryContent(runtime, run.getBuilder(), run, placeholder, unicode);
     }
-
-
+    
     /**
      *
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -3066,6 +3066,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         builder.append(" ON ").append(on).append(BR);
         return run;
     }
+    
     /**
      * select[命令合成-子流程] <br/>
      * 合成最终 select 命令 包含分页 排序
@@ -3367,8 +3368,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         }
         return -1;
     }
-
-
+    
     /**
      * 计算字符串在当前数据库中占用字节长度
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -3394,6 +3394,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         }
         return count;
     }
+    
     /**
      * 计算字符串在当前数据库中占用字节长度
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -3562,6 +3563,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         
         return result;
     }
+    
     /**
      * execute [调用入口]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -8785,8 +8787,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         meta.addSlice(slice);
         return meta;
     }
-
-
+    
     /**
      * partition table[结果集封装]<br/>
      * Table.Partition 属性与结果集对应关系
@@ -9357,10 +9358,21 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         refer.map(Column.FIELD_NULLABLE,"IS_NULLABLE,NULLABLE,NULLS");
         refer.map(Column.FIELD_CHARSET, "CHARACTER_SET_NAME");
         refer.map(Column.FIELD_COLLATE, "COLLATION_NAME");
-        refer.map(Column.FIELD_TYPE, "FULL_TYPE,DATA_TYPE,TYPE_NAME,TYPENAME,DATA_TYPE_NAME,UDT_NAME,DATA_TYPE,TYPENAME,DATA_TYPE_NAME");
         refer.map(Column.FIELD_POSITION, "ORDINAL_POSITION,COLNO,POSITION");
         refer.map(Column.FIELD_COMMENT ,"COLUMN_COMMENT,COMMENTS,REMARKS");
         refer.map(Column.FIELD_DEFAULT_VALUE, "COLUMN_DEFAULT,DATA_DEFAULT,DEFAULT,DEFAULT_VALUE,DEFAULT_DEFINITION");
+        return refer;
+    }
+    
+    /**
+     * Column[结果集封装]<br/>
+     * 数据类型 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer initDataTypeFieldRefer() {
+        MetadataFieldRefer refer = new MetadataFieldRefer(DataTypeDefine.class);
+        refer.map(DataTypeDefine.FIELD_NAME, "FULL_TYPE,DATA_TYPE,TYPE_NAME,TYPENAME,DATA_TYPE_NAME,UDT_NAME,DATA_TYPE,TYPENAME,DATA_TYPE_NAME");
         return refer;
     }
 	/**
@@ -12696,6 +12708,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
     public boolean alter(DataRuntime runtime, Catalog meta) throws Exception {
         return false;
     }
+    
     /**
      * catalog[调用入口]<br/>
      * 删除Catalog,执行的命令通过meta.ddls()返回
@@ -12796,6 +12809,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
     public List<Run> buildAppendCommentRun(DataRuntime runtime, Catalog meta) throws Exception {
         return new ArrayList<>();
     }
+    
     /**
      * catalog[命令合成-子流程]<br/>
      * 创建Catalog完成后追加列备注,创建过程能添加备注的不需要实现与comment(DataRuntime runtime, StringBuilder builder, Column meta)二选一实现
@@ -12951,6 +12965,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         List<Run> runs = buildDropRun(runtime, meta);
         return execute(runtime, random, meta, action, runs);
     }
+    
     /**
      * schema[调用入口]<br/>
      * 删除Schema,执行的命令通过meta.ddls()返回
@@ -13043,6 +13058,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
     public List<Run> buildAppendCommentRun(DataRuntime runtime, Schema meta) throws Exception {
         return new ArrayList<>();
     }
+    
     /**
      * schema[命令合成-子流程]<br/>
      * 创建Schema完成后追加列备注,创建过程能添加备注的不需要实现与comment(DataRuntime runtime, StringBuilder builder, Column meta)二选一实现
@@ -13190,6 +13206,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
     public boolean alter(DataRuntime runtime, Database meta) throws Exception {
         return false;
     }
+    
     /**
      * database[调用入口]<br/>
      * 删除Database,执行的命令通过meta.ddls()返回
@@ -13290,6 +13307,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
     public List<Run> buildAppendCommentRun(DataRuntime runtime, Database meta) throws Exception {
         return new ArrayList<>();
     }
+    
     /**
      * database[命令合成-子流程]<br/>
      * 创建Database完成后追加列备注,创建过程能添加备注的不需要实现与comment(DataRuntime runtime, StringBuilder builder, Column meta)二选一实现
@@ -13448,7 +13466,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         for(Column column:columns.values()){
             TypeMetadata tm = column.getTypeMetadata();
             if(null == tm || tm == TypeMetadata.NONE){
-                TypeMetadata.parse(type(), column, alias, null);
+                TypeMetadata.parse(type(), column.type(), alias, null);
             }
         }
     }
@@ -18702,17 +18720,28 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param meta 列
 	 * @return 具体数据库中对应的数据类型
 	 */
-	@Override
-	public TypeMetadata typeMetadata(DataRuntime runtime, Column meta) {
-		TypeMetadata typeMetadata = meta.getTypeMetadata();
-		if(null == typeMetadata || TypeMetadata.NONE == typeMetadata || meta.getParseLvl() < 2 || type() != meta.getDatabaseType()) {
+    @Override
+    public TypeMetadata typeMetadata(DataRuntime runtime, DataTypeDefine meta) {
+        TypeMetadata typeMetadata = meta.getTypeMetadata();
+        if(null == typeMetadata || TypeMetadata.NONE == typeMetadata || meta.getParseLvl() < 2 || type() != meta.database()) {
             LinkedHashMap<String, TypeMetadata> alias = TypeMetadataHolder.gets(type());
-			typeMetadata = TypeMetadata.parse(type(), meta, alias, spells);
-			meta.setDatabaseType(type());
-			meta.setParseLvl(2);
-		}
-		return typeMetadata;
-	}
+            typeMetadata = TypeMetadata.parse(type(), meta, alias, spells);
+            meta.setDatabase(type());
+            meta.setParseLvl(2);
+        }
+        return typeMetadata;
+    }
+    @Override
+    public TypeMetadata typeMetadata(DataRuntime runtime, Column meta) {
+        TypeMetadata typeMetadata = meta.getTypeMetadata();
+        if(null == typeMetadata || TypeMetadata.NONE == typeMetadata || meta.getParseLvl() < 2 || type() != meta.getDatabaseType()) {
+            LinkedHashMap<String, TypeMetadata> alias = TypeMetadataHolder.gets(type());
+            typeMetadata = TypeMetadata.parse(type(), meta.type(), alias, spells);
+            meta.setDatabaseType(type());
+            meta.setParseLvl(2);
+        }
+        return typeMetadata;
+    }
 	/**
 	 * 转换成相应数据库类型<br/>
 	 * 把编码时输入的数据类型如(long)转换成具体数据库中对应的数据类型，如有些数据库中用bigint有些数据库中有long
@@ -18724,8 +18753,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		if(null == type) {
 			return null;
 		}
-		Column tmp = new Column();
-		tmp.setTypeName(type, false);
+		DataTypeDefine tmp = new DataTypeDefine();
+		tmp.setName(type, false);
 		return typeMetadata(runtime, tmp);
 	}
 

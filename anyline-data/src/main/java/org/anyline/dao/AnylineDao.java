@@ -1863,15 +1863,15 @@ public interface AnylineDao<E>{
 		return ddl(runtime(), null, procedure);
 	}
 
-	<T extends Procedure> T procedure(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String name);
-	default <T extends Procedure> T procedure(boolean greedy, Catalog catalog, Schema schema, String name) {
+	<T extends Procedure> T procedure(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String name) throws Exception;
+	default <T extends Procedure> T procedure(boolean greedy, Catalog catalog, Schema schema, String name) throws Exception {
 		return procedure(runtime(), null, greedy, catalog, schema, name);
 	}
 
-	default <T extends Procedure> T procedure(DataRuntime runtime, String random, Catalog catalog, Schema schema, String name) {
+	default <T extends Procedure> T procedure(DataRuntime runtime, String random, Catalog catalog, Schema schema, String name) throws Exception {
 		return procedure(runtime, random, false, catalog, schema, name);
 	}
-	default <T extends Procedure> T procedure(Catalog catalog, Schema schema, String name) {
+	default <T extends Procedure> T procedure(Catalog catalog, Schema schema, String name) throws Exception {
 		return procedure(runtime(), null, catalog, schema, name);
 	}
 	/* *****************************************************************************************************************

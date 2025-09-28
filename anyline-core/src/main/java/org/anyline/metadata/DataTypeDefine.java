@@ -7,19 +7,20 @@ import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.metadata.type.TypeMetadataHolder;
 import org.anyline.util.BasicUtil;
 
-public class DataType {
+public class DataTypeDefine {
     protected DatabaseType database               ; // 数据库类型
     protected String name                         ; // 类型名称 varchar完整类型调用getFullType > varchar(10)
+    protected TypeMetadata metadata               ;
     protected String originName                   ; // 原名,只有查询时才会区分,添加列时用name即可 SELECT ID AS USER_ID FROM USER; originName=ID, name=USER_ID
     protected String qualifier                    ; // 数据类型限定符 DATETIME YEAR TO MINUTE(6) 中的YEAR TO MINUTE部分 表达式中以{Q}表示
     protected String originType                   ; // 原始类型(未解析,交给具体的adapter解析)
-    protected TypeMetadata metadata               ;
     protected String fullType                     ; // 完整类型名称
     protected String finalType                    ; // 如果设置了finalType 生成SQL时 name finalType 其他属性
     protected Integer type                        ; // 类型
-    protected DataType child                      ;
+    protected DataTypeDefine child                      ;
     protected JavaType javaType                   ;
-    protected String jdbcType                     ; // 有可能与typeName不一致 可能多个typeName对应一个jdbcType 如point>
+    protected String jdbcType                     ; // 有可能与typeName不一致 可能多个typeName对应一个jdbcType 如point
+    protected String className                    ; // 对应的Java数据类型 java.lang.Long
 
     protected int ignoreLength                = -1; // 是否忽略长度
     protected int ignorePrecision             = -1; // 是否忽略有效位数
@@ -40,12 +41,27 @@ public class DataType {
     protected Integer srid                        ; // SRID
     protected boolean array                       ; // 是否数组
 
-
-
-    public String getName() {
-        return name;
+    protected int parseLvl                      = 0;// 类型解析级别0:未解析 1:column解析 2:adapter解析
+    public DataTypeDefine() {
     }
-
+    public DataTypeDefine(String name) {
+        setName(name);
+    }
+    public DataTypeDefine(String name, int precision, int scale) {
+        setName(name);
+        setPrecision(precision);
+        setScale(scale);
+    }
+    public DataTypeDefine(String name, int precision) {
+        setName(name);
+        setPrecision(precision);
+    }
+    public DatabaseType database() {
+        return database;
+    }
+    public void setDatabase(DatabaseType database) {
+       this.database = database;
+    }
     public void setName(String name) {
         this.name = name;
     }
@@ -82,19 +98,35 @@ public class DataType {
         this.type = type;
     }
 
-    public DataType getChild() {
-        return child;
+    public int getParseLvl() {
+        return parseLvl;
     }
 
-    public void setChild(DataType child) {
+    public void setParseLvl(int parseLvl) {
+        this.parseLvl = parseLvl;
+    }
+    public DataTypeDefine getChild() {
+        return child;
+    }
+    public String getChildName() {
+        if(null != child){
+            return child.getName();
+        }
+        return null;
+    }
+
+    public void setChild(DataTypeDefine child) {
         this.child = child;
+    }
+    public void setChild(String child) {
+        this.child = new DataTypeDefine(child);
     }
 
     public String getQualifier() {
         return qualifier;
     }
 
-    public DataType setQualifier(String qualifier) {
+    public DataTypeDefine setQualifier(String qualifier) {
         this.qualifier = qualifier;
         return this;
     }
@@ -103,7 +135,7 @@ public class DataType {
         return dimension;
     }
 
-    public DataType setDimension(Integer dimension) {
+    public DataTypeDefine setDimension(Integer dimension) {
         this.dimension = dimension;
         return this;
     }
@@ -112,7 +144,7 @@ public class DataType {
         return dateScale;
     }
 
-    public DataType setDateScale(String dateScale) {
+    public DataTypeDefine setDateScale(String dateScale) {
         this.dateScale = dateScale;
         return this;
     }
@@ -121,106 +153,91 @@ public class DataType {
         return displaySize;
     }
 
-    public DataType setDisplaySize(Integer displaySize) {
+    public DataTypeDefine setDisplaySize(Integer displaySize) {
         this.displaySize = displaySize;
         return this;
     }
 
-
-    /**
-     * 设置数据类型 根据数据库定义的数据类型 实际调用了setTypeName(String)
-     * @param type  数据类型 如 int  varchar(10) decimal(18, 6)
-     * @return DataType
-     */
-    public DataType setType(String type) {
-        this.metadata = null;
-        this.ignorePrecision = -1;
-        this.ignoreLength = -1;
-        this.ignoreScale = -1;
-        this.array = false;
-        return setTypeName(type);
-    }
-
-
-    public String getTypeName() {
-        if(null == typeName) {
+    public String getName() {
+        if(null == name) {
             if(null != metadata && metadata != TypeMetadata.ILLEGAL && metadata != TypeMetadata.NONE) {
-                typeName = metadata.getName();
+                name = metadata.getName();
             }
         }
-        return typeName;
+        return name;
     }
 
     public String getJdbcType() {
         return jdbcType;
     }
 
-    public DataType setJdbcType(String jdbcType) {
+    public DataTypeDefine setJdbcType(String jdbcType) {
         this.jdbcType = jdbcType;
         return this;
     }
-
-    public DataType setTypeName(String typeName) {
-        return setTypeName(typeName, true);
-    }
-
+    
     /**
      * 设置数据类型 根据数据库定义的数据类型
-     * @param typeName 数据类型 如 int  varchar(10) decimal(18, 6)
+     * @param name 数据类型 如 int  varchar(10) decimal(18, 6)
      * @return DataType
      */
-    public DataType setTypeName(String typeName, boolean parse) {
-        if(null == this.typeName || !this.typeName.equalsIgnoreCase(typeName)) {
+    public DataTypeDefine setName(String name, boolean parse) {
+        if(null == this.name || !this.name.equalsIgnoreCase(name)) {
             //修改数据类型的重置解析状态
             parseLvl = 0;
         }
-        this.typeName = typeName;
+
+        this.metadata = null;
+        this.ignorePrecision = -1;
+        this.ignoreLength = -1;
+        this.ignoreScale = -1;
+        this.array = false;
+        this.name = name;
         if(parse) {
-            setOriginType(typeName);
-            parseType(1, databaseType);
+            setOriginType(name);
+            parse(1, database);
         }
         //fullType = null;
         return this;
     }
 
+    public String getClassName() {
+        return className;
+    }
+
+    public DataTypeDefine setClassName(String className) {
+        this.className = className;
+        return this;
+    }
+    
     /**
      *
      * @param lvl 解析阶段
      * @param database 新数据库类型
      * @return DataType
      */
-    public DataType parseType(int lvl, DatabaseType database) {
+    public DataTypeDefine parse(int lvl, DatabaseType database) {
         if(lvl <= parseLvl) {
             return this;
         }
         TypeMetadata.parse(database, this, TypeMetadataHolder.gets(database), null);
         return this;
     }
+ 
 
-    public int getParseLvl() {
-        return parseLvl;
-    }
-
-    public void setParseLvl(int parseLvl) {
-        this.parseLvl = parseLvl;
-    }
-
-    public DataType setFullType(String fullType) {
+    public DataTypeDefine setFullType(String fullType) {
         this.fullType = fullType;
         return this;
     }
     public String getFullType() {
-        return getFullType(databaseType);
+        return getFullType(database);
     }
 
     public String getFullType(DatabaseType database) {
         return getFullType(database, null);
     }
     public String getFullType(DatabaseType database, TypeMetadata.Refer refer) {
-        if(getmap && null != update) {
-            return update.getFullType(database);
-        }
-        if(null != fullType && this.databaseType == database) {
+        if(null != fullType && this.database == database) {
             return fullType;
         }
         int ignoreLength = -1;
@@ -249,10 +266,10 @@ public class DataType {
             maxScale = maxScale(database);
             formula = formula(database);
         }
-        if(null != metadata && metadata != TypeMetadata.NONE && metadata != TypeMetadata.ILLEGAL && database == this.databaseType) {
+        if(null != metadata && metadata != TypeMetadata.NONE && metadata != TypeMetadata.ILLEGAL && database == this.database) {
             type = metadata.getName();
         }else{
-            type = getTypeName();
+            type = getName();
         }
         boolean appendLength = false;
         boolean appendPrecision = false;
@@ -381,11 +398,14 @@ public class DataType {
                     builder.append(")");
                 }
 
-                String child = getChildTypeName();
+                String childName = null;
+                if(null != child){
+                    childName = child.getName();
+                }
                 Integer srid = getSrid();
-                if (null != child) {
+                if (null != childName) {
                     builder.append("(");
-                    builder.append(child);
+                    builder.append(childName);
                     if (null != srid) {
                         builder.append(", ").append(srid);
                     }
@@ -405,9 +425,17 @@ public class DataType {
         return array;
     }
 
-    public DataType setArray(boolean array) {
+    public DataTypeDefine setArray(boolean array) {
         this.array = array;
         return this;
+    }
+
+    public Integer getSrid() {
+        return srid;
+    }
+
+    public void setSrid(Integer srid) {
+        this.srid = srid;
     }
 
     /**
@@ -431,7 +459,7 @@ public class DataType {
         }
         return precision;
     }
-    public DataType resetLength(Integer length){
+    public DataTypeDefine resetLength(Integer length){
         if(null != originType) {
             originType = originType.replace("(" + this.length, "(" + length);
         }
@@ -439,7 +467,7 @@ public class DataType {
         setParseLvl(0);
         return this;
     }
-    public DataType setLength(Integer length) {
+    public DataTypeDefine setLength(Integer length) {
         if(ignoreLength == 1) {
             this.precision = length;
         }else {
@@ -452,7 +480,7 @@ public class DataType {
     public Integer getOctetLength() {
         return octetLength;
     }
-    public DataType setOctetLength(Integer length) {
+    public DataTypeDefine setOctetLength(Integer length) {
         this.octetLength = length;
         return this;
     }
@@ -464,7 +492,7 @@ public class DataType {
         return length;
     }
 
-    public DataType setPrecision(Integer precision) {
+    public DataTypeDefine setPrecision(Integer precision) {
         if(ignorePrecision == 1) {
             this.length = precision;
         }else {
@@ -473,7 +501,7 @@ public class DataType {
         //fullType = null;
         return this;
     }
-    public DataType setPrecision(Integer precision, Integer scale) {
+    public DataTypeDefine setPrecision(Integer precision, Integer scale) {
         this.precision = precision;
         this.scale = scale;
         //fullType = null;
@@ -484,7 +512,7 @@ public class DataType {
         return scale;
     }
 
-    public DataType setScale(Integer scale) {
+    public DataTypeDefine setScale(Integer scale) {
         this.scale = scale;
         //fullType = null;
         return this;
@@ -494,7 +522,7 @@ public class DataType {
         return originName;
     }
 
-    public DataType setOriginName(String originName) {
+    public DataTypeDefine setOriginName(String originName) {
         this.originName = originName;
         return this;
     }
@@ -503,7 +531,7 @@ public class DataType {
         return lengthUnit;
     }
 
-    public DataType setLengthUnit(String lengthUnit) {
+    public DataTypeDefine setLengthUnit(String lengthUnit) {
         this.lengthUnit = lengthUnit;
         return this;
     }
@@ -522,7 +550,7 @@ public class DataType {
         return TypeMetadata.CATEGORY.NONE;
     }
 
-    public DataType setTypeMetadata(TypeMetadata metadata) {
+    public DataTypeDefine setTypeMetadata(TypeMetadata metadata) {
         this.metadata = metadata;
         return this;
     }
@@ -531,7 +559,7 @@ public class DataType {
         return javaType;
     }
 
-    public DataType setJavaType(JavaType javaType) {
+    public DataTypeDefine setJavaType(JavaType javaType) {
         this.javaType = javaType;
         return this;
     }
@@ -681,4 +709,30 @@ public class DataType {
             return maxScale();
         }
     }
+
+    /* ********************************* field refer ********************************** */
+    public static final String FIELD_TYPE_CATEGORY_CONFIG          = "TYPE_CATEGORY_CONFIG";
+    public static final String FIELD_KEYWORD                       = "KEYWORD";
+    public static final String FIELD_NAME                          = "TYPE";
+    public static final String FIELD_ORIGIN_NAME                   = "ORIGIN_NAME";
+    public static final String FIELD_ORIGIN_TYPE                   = "ORIGIN_TYPE";
+    public static final String FIELD_TYPE_METADATA                 = "TYPE_METADATA";
+    public static final String FIELD_FULL_TYPE                     = "FULL_TYPE";
+    public static final String FIELD_FINAL_TYPE                    = "FINAL_TYPE";
+    public static final String FIELD_IGNORE_LENGTH                 = "IGNORE_LENGTH";
+    public static final String FIELD_IGNORE_PRECISION              = "IGNORE_PRECISION";
+    public static final String FIELD_IGNORE_SCALE                  = "IGNORE_SCALE";
+    public static final String FIELD_PRECISION_LENGTH              = "PRECISION_LENGTH";
+    public static final String FIELD_LENGTH                        = "LENGTH";
+    public static final String FIELD_OCTET_LENGTH                  = "OCTET_LENGTH";
+    public static final String FIELD_PRECISION                     = "PRECISION";
+    public static final String FIELD_SCALE                         = "SCALE";
+    public static final String FIELD_DIMS                          = "DIMS";
+    public static final String FIELD_CLASS_NAME                    = "CLASS_NAME";
+    public static final String FIELD_DISPLAY_SIZE                  = "DISPLAY_SIZE";
+    public static final String FIELD_CHILD_TYPE_NAME               = "CHILD_TYPE_NAME";
+    public static final String FIELD_CHILD_TYPE_METADATA           = "CHILD_TYPE_METADATA";
+    public static final String FIELD_JAVA_TYPE                     = "JAVA_TYPE";
+    public static final String FIELD_JDBC_TYPE                     = "JDBC_TYPE";
+    public static final String FIELD_DATE_SCALE                    = "DATE_SCALE";
 }

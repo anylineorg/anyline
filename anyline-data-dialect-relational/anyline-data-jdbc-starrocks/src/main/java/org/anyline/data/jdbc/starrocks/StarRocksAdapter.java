@@ -181,6 +181,7 @@ public class StarRocksAdapter extends DorisAdapter implements JDBCAdapter {
     public void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet set, ConfigStore configs, Boolean placeholder, Boolean unicode, LinkedHashMap<String, Column> columns) {
         super.fillInsertContent(runtime, run, dest, set, configs, placeholder, unicode, columns);
     }
+    
     /**
      * insert [命令合成-子流程]<br/>
      * 填充inset命令内容(创建批量INSERT RunPrepare)
@@ -848,8 +849,7 @@ public class StarRocksAdapter extends DorisAdapter implements JDBCAdapter {
     protected Run fillQueryContent(DataRuntime runtime, XMLRun run, Boolean placeholder, Boolean unicode) {
         return super.fillQueryContent(runtime, run, placeholder, unicode);
     }
-
-
+    
     /**
      * select[命令合成-子流程] <br/>
      * 构造查询主体
@@ -3610,7 +3610,17 @@ public class StarRocksAdapter extends DorisAdapter implements JDBCAdapter {
     public MetadataFieldRefer initColumnFieldRefer() {
         return super.initColumnFieldRefer();
     }
-
+    
+    /**
+     * Column[结果集封装]<br/>
+     * 数据类型 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer initDataTypeFieldRefer() {
+        return super.initDataTypeFieldRefer();
+    }
+    
     /**
      * column[结果集封装]<br/>(方法1)<br/>
      * 根据系统表查询SQL获取表结构
@@ -4636,8 +4646,7 @@ public class StarRocksAdapter extends DorisAdapter implements JDBCAdapter {
     public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Procedure query) throws Exception {
         return super.procedures(runtime, create, previous, query);
     }
-
-
+    
     /**
      *
      * procedure[调用入口]<br/>
@@ -7278,6 +7287,7 @@ public class StarRocksAdapter extends DorisAdapter implements JDBCAdapter {
     public StringBuilder charset(DataRuntime runtime, StringBuilder builder, Column meta) {
         return super.charset(runtime, builder, meta);
     }
+    
     /**
      * column[命令合成-子流程]<br/>
      * 列定义:虚拟列

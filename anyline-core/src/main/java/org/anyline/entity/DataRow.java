@@ -756,13 +756,6 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         }
         return null;
     }
-    public Integer getMetadataType(String column) {
-        Column col = getMetadata(column);
-        if(null != col) {
-            return col.getType();
-        }
-        return null;
-    }
     public String getMetadataFullType(String column) {
         Column col = getMetadata(column);
         if(null != col) {
@@ -979,8 +972,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     public DataRow foreign(DataSet set, String foreignKey, String foreignText, String primaryKey, String primaryText){
         return foreign(set, foreignKey, foreignText, primaryKey, primaryText, null);
     }
-
-
+    
     /**
      * key转换成小写
      * @param recursion 是否递归
@@ -1194,6 +1186,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         }
         return false;
     }
+    
     /**
      * 添加主键
      * @param applyContainer 是否应用到上级容器 默认false
@@ -1790,6 +1783,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         }
         return this;
     }
+    
     /**
      * value 非空时执行
      * @param key key
@@ -2525,6 +2519,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     public Map<String, Object> toMap(){
         return map();
     }
+    
     /**
      * 转换成json格式
      * @return String
@@ -3159,6 +3154,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         }
         return this;
     }
+    
     /**
     /**
      * 抽取指定列, 生成新的DataRow, 新的DataRow只包括指定列的值, 不包含其他附加信息(如来源表)
@@ -3676,6 +3672,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         }
         return list;
     }
+    
     /**
      * 拼接value
      * @param keys keys
@@ -4272,6 +4269,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         }
         return sum;
     }
+    
     /**
      * 多列乘积
      * @param keys keys

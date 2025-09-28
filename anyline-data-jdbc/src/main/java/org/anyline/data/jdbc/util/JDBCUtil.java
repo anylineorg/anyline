@@ -115,11 +115,11 @@ public class JDBCUtil {
         }catch (Exception e) {
             log.debug("[获取MetaData失败][驱动未实现:getTableName]");
         }
-        try {
+/*        try {
             column.setType(rsm.getColumnType(index));
         }catch (Exception e) {
             log.debug("[获取MetaData失败][驱动未实现:getColumnType]");
-        }
+        }*/
 
         try{
             column.setClassName(rsm.getColumnClassName(index));
@@ -214,8 +214,8 @@ public class JDBCUtil {
             }
             column.setComment(remark);
             column.setTable(BasicUtil.evl(string(keys,"TABLE_NAME", set, table.getName()), column.getTableName(true)));
-            column.setType(integer(keys, "DATA_TYPE", set, column.getType()));
-            column.setType(integer(keys, "SQL_DATA_TYPE", set, column.getType()));
+            /*column.setType(integer(keys, "DATA_TYPE", set, column.getType()));
+            column.setType(integer(keys, "SQL_DATA_TYPE", set, column.getType()));*/
             String jdbcType = string(keys, "TYPE_NAME", set, column.getTypeName());
             if(BasicUtil.isEmpty(column.getTypeName())) {
                 //数据库中 有jdbc是支持的类型 如果数据库中有了就不用jdbc的了
@@ -264,12 +264,12 @@ public class JDBCUtil {
             if(null == column.getName()) {
                 column.setName(string(keys, "COLUMN_NAME", rs));
             }
-            if(null == column.getType()) {
+            /*if(null == column.getType()) {
                 column.setType(BasicUtil.parseInt(string(keys, "DATA_TYPE", rs), null));
             }
             if(null == column.getType()) {
                 column.setType(BasicUtil.parseInt(string(keys, "SQL_DATA_TYPE", rs), null));
-            }
+            }*/
             if(null == column.getTypeName()) {
                 String jdbcType = string(keys, "TYPE_NAME", rs);
                 column.setJdbcType(jdbcType);

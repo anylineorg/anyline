@@ -106,6 +106,7 @@ public class CommandParser {
             e.printStackTrace();
         }
     }
+    
     /**
      * 解析文本
      * @param runtime runtime

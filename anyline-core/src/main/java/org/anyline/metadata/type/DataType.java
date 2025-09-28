@@ -17,7 +17,7 @@
 package org.anyline.metadata.type;
 
 public interface DataType {
-    public static DataType ILLEGAL = new DataType() {
+    DataType ILLEGAL = new DataType() {
 
         @Override
         public Object read(Object value, Object def, Class clazz) {
@@ -69,7 +69,7 @@ public interface DataType {
      * @param clazz 目标数据类型(给entity赋值时可以根据class, DataRow赋值时可以指定class，否则按检测metadata类型转换 转换不不了的原样返回)
      * @return Object
      */
-    public abstract Object read(Object value, Object def, Class clazz);
+    Object read(Object value, Object def, Class clazz);
     /**
      * 写入数据库前类型转换<br/>
      * 如果有占位符成数据库可接受的Java数据类型<br/>
@@ -79,21 +79,21 @@ public interface DataType {
      * @param def 默认值
      * @return Object
      */
-    public abstract Object write(Object value, Object def, Boolean placeholder);
+    Object write(Object value, Object def, Boolean placeholder);
 
-    public abstract DataType convert(Convert convert);
-    public abstract Convert convert(Class clazz);
+    DataType convert(Convert convert);
+    Convert convert(Class clazz);
 
-    //public abstract JavaType getJavaType();
+    //JavaType getJavaType();
     // public String getName();
 
     /**
      * 定义列时 数据类型格式
      * @return boolean
      */
-    public abstract int ignoreLength();
-    public abstract int ignorePrecision();
-    public abstract int ignoreScale();
-    public abstract boolean support();
-    public abstract Class supportClass();
+    int ignoreLength();
+    int ignorePrecision();
+    int ignoreScale();
+    boolean support();
+    Class supportClass();
 }

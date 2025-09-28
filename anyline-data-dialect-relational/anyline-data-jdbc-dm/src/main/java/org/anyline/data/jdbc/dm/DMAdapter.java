@@ -2323,7 +2323,6 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		refer.map(Column.FIELD_NULLABLE, "NULLABLE");
 		refer.map(Column.FIELD_CHARSET, "CHARACTER_SET_NAME");
 		refer.map(Column.FIELD_COLLATE, "");//忽略
-		refer.map(Column.FIELD_TYPE, "DATA_TYPE");
 		refer.map(Column.FIELD_POSITION, "COLUMN_ID");
 		refer.map(Column.FIELD_COMMENT, "COLUMN_COMMENT");//SQL组装
 		refer.map(Column.FIELD_DEFAULT_VALUE, "DATA_DEFAULT");
@@ -2333,6 +2332,19 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		refer.map(Column.FIELD_PRIMARY_CHECK_VALUE, "P");
 		return refer;
 	}
+
+	/**
+	 * Column[结果集封装]<br/>
+	 * 数据类型 属性与结果集对应关系
+	 * @return MetadataFieldRefer
+	 */
+	@Override
+	public MetadataFieldRefer initDataTypeFieldRefer() {
+		MetadataFieldRefer refer = new MetadataFieldRefer(DataTypeDefine.class);
+		refer.map(DataTypeDefine.FIELD_NAME, "DATA_TYPE");
+		return refer;
+	}
+
 	/**
 	 * column[结果集封装]<br/>
 	 *  根据查询结果集构造Tag

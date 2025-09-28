@@ -2279,10 +2279,22 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		MetadataFieldRefer refer = new MetadataFieldRefer(Column.class);
 		refer.map(Column.FIELD_NAME, "COLUMN_NAME");
 		refer.map(Column.FIELD_NULLABLE, "NULL");
-		refer.map(Column.FIELD_TYPE, "COLUMN_TYPE");
 		refer.map(Column.FIELD_DEFAULT_VALUE, "DEFAULT");
 		return refer;
 	}
+
+	/**
+	 * Column[结果集封装]<br/>
+	 * 数据类型 属性与结果集对应关系
+	 * @return MetadataFieldRefer
+	 */
+	@Override
+	public MetadataFieldRefer initDataTypeFieldRefer() {
+		MetadataFieldRefer refer = new MetadataFieldRefer(DataTypeDefine.class);
+		refer.map(DataTypeDefine.FIELD_NAME, "COLUMN_TYPE");
+		return refer;
+	}
+
 	/**
 	 * column[命令合成]<br/>(方法1)<br/>
 	 * 查询多个表的列

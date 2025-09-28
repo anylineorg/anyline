@@ -1965,6 +1965,7 @@ WHERE
         refer.map(TableComment.FIELD_VALUE, "TABLE_COMMENT");
         return refer;
     }
+    
     /**
      * table[结果集封装]<br/>
      * 根据查询结果集构造Table
@@ -2104,8 +2105,7 @@ WHERE
     public List<String> ddl(DataRuntime runtime, int index, Table table, List<String> ddls, DataSet set) {
         return super.ddl(runtime, index, table, ddls, set);
     }
-
-
+    
     /**
      * table[结果集封装]<br/>
      * 根据查询结果封装Table基础属性
@@ -2580,11 +2580,22 @@ WHERE
         refer.map(Column.FIELD_TABLE, "TABLE_NAME");
         refer.map(Column.FIELD_CHARSET, "COLLATION_NAME");
         refer.map(Column.FIELD_NULLABLE, "IS_NULLABLE");
-        refer.map(Column.FIELD_TYPE, "TYPE_NAME");
         refer.map(Column.FIELD_POSITION, "COLUMN_ID");
         refer.map(Column.FIELD_COMMENT, "COLUMN_COMMENT");
         refer.map(Column.FIELD_AUTO_INCREMENT_CHECK, "IS_IDENTITY");
         refer.map(Column.FIELD_AUTO_INCREMENT_CHECK_VALUE, "true");
+        return refer;
+    }
+
+    /**
+     * Column[结果集封装]<br/>
+     * 数据类型 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer initDataTypeFieldRefer() {
+        MetadataFieldRefer refer = new MetadataFieldRefer(DataTypeDefine.class);
+        refer.map(DataTypeDefine.FIELD_NAME, "TYPE_NAME");
         return refer;
     }
 
@@ -3462,8 +3473,7 @@ WHERE
     public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Procedure query) throws Exception {
         return super.procedures(runtime, create, previous, query);
     }
-
-
+    
     /**
      *
      * procedure[调用入口]<br/>
@@ -5667,6 +5677,7 @@ WHERE
     public String unicodeGuide(DataRuntime runtime) {
         return "N";
     }
+    
     /**
      * column[命令合成-子流程]<br/>
      * 修改非空限制

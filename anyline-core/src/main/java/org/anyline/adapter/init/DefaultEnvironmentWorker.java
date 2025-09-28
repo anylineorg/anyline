@@ -197,6 +197,7 @@ public class DefaultEnvironmentWorker implements EnvironmentWorker {
             }
         }
     }
+    
     /**
      * 属性(方法)赋值
      * @param object object

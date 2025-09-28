@@ -151,6 +151,7 @@ public class TDengineAdapter extends AbstractJDBCAdapter implements JDBCAdapter 
     public void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet set, ConfigStore configs, Boolean placeholder, Boolean unicode, LinkedHashMap<String, Column> columns) {
         super.fillInsertContent(runtime, run, dest, set, configs, placeholder, unicode, columns);
     }
+    
     /**
      * insert [命令合成-子流程]<br/>
      * 填充inset命令内容(创建批量INSERT RunPrepare)
@@ -2026,8 +2027,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
     public List<String> ddl(DataRuntime runtime, int index, Table table, List<String> ddls, DataSet set) {
         return super.ddl(runtime, index, table, ddls, set);
     }
-
-
+    
     /**
      * table[结果集封装]<br/>
      * 根据查询结果封装Table基础属性
@@ -2654,7 +2654,17 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
     public MetadataFieldRefer initColumnFieldRefer() {
         return super.initColumnFieldRefer();
     }
-
+    
+    /**
+     * Column[结果集封装]<br/>
+     * 数据类型 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer initDataTypeFieldRefer() {
+        return super.initDataTypeFieldRefer();
+    }
+    
     /**
      * column[结果集封装]<br/>
      *  根据查询结果集构造Tag
@@ -3548,8 +3558,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
     public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Procedure query) throws Exception {
         return super.procedures(runtime, create, previous, query);
     }
-
-
+    
     /**
      *
      * procedure[调用入口]<br/>

@@ -232,6 +232,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
         }
         builder.append(insertFoot(configs, columns));
     }
+    
     /**
      * insert [命令合成-子流程]<br/>
      * 填充inset命令内容(创建批量INSERT RunPrepare)
@@ -3168,8 +3169,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
     public List<String> ddl(DataRuntime runtime, int index, EdgeTable meta, List<String> ddls, DataSet set) {
         return super.ddl(runtime, index, meta, ddls, set);
     }
-
-
+    
     /**
      * table[结果集封装]<br/>
      * 根据查询结果封装Table基础属性
@@ -3644,10 +3644,21 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
     public MetadataFieldRefer initColumnFieldRefer() {
         MetadataFieldRefer refer = new MetadataFieldRefer(Column.class);
         refer.map(Column.FIELD_NAME, "Field");
-        refer.map(Column.FIELD_TYPE, "Type");
         refer.map(Column.FIELD_NULLABLE, "Null");
         refer.map(Column.FIELD_DEFAULT_VALUE, "Default");
         refer.map(Column.FIELD_COMMENT, "Comment");
+        return refer;
+    }
+
+    /**
+     * Column[结果集封装]<br/>
+     * 数据类型 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer initDataTypeFieldRefer() {
+        MetadataFieldRefer refer = new MetadataFieldRefer(DataTypeDefine.class);
+        refer.map(DataTypeDefine.FIELD_NAME, "Type");
         return refer;
     }
 
@@ -4203,6 +4214,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
     public MetadataFieldRefer initConstraintFieldRefer() {
         return super.initConstraintFieldRefer();
     }
+    
     /**
      * constraint[结果集封装]<br/>
      * 根据查询结果集构造Constraint
@@ -5270,8 +5282,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
     public StringBuilder property(DataRuntime runtime, StringBuilder builder, Table meta) {
         return super.property(runtime, builder, meta);
     }
-
-
+    
     /**
      * table[命令合成-子流程]<br/>
      * 主表设置分区依据(根据哪几列分区)

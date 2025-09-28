@@ -38,7 +38,7 @@ public class JavaTypeAdapter {
     }
     static {
         //支持的数据类型
-        for(DefaultJavaType type:DefaultJavaType.values()) {
+        for(DefaultJavaType type: DefaultJavaType.values()) {
             Class clazz = type.supportClass();
             reg(clazz, type);
         }

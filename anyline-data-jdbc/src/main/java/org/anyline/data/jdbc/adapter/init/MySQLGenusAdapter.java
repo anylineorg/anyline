@@ -412,6 +412,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore configs, Boolean placeholder, Boolean unicode, LinkedHashMap<String, Column> columns) {
         return super.buildUpdateRunFromCollection(runtime, batch, dest, list, configs, placeholder, unicode, columns);
     }
+    
     /**
      * 多表关联更新
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -2332,8 +2333,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         }
         return ddls;
     }
-
-
+    
     /**
      * table[结果集封装]<br/>
      * 根据查询结果封装Table基础属性
@@ -2793,8 +2793,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         }
         return meta;
     }
-
-
+    
     /**
      * partition table[结果集封装]<br/>
      * Table.Partition 属性与结果集对应关系
@@ -2989,11 +2988,9 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         refer.map(Column.FIELD_CATALOG, "");//忽略
         refer.map(Column.FIELD_SCHEMA, "TABLE_SCHEMA");
         refer.map(Column.FIELD_TABLE, "TABLE_NAME");
-        refer.map(Column.FIELD_OCTET_LENGTH, "CHARACTER_OCTET_LENGTH");
         refer.map(Column.FIELD_NULLABLE, "IS_NULLABLE");
         refer.map(Column.FIELD_CHARSET, "CHARACTER_SET_NAME");
         refer.map(Column.FIELD_COLLATE, "COLLATION_NAME");
-        refer.map(Column.FIELD_TYPE, "COLUMN_TYPE");
         refer.map(Column.FIELD_POSITION, "ORDINAL_POSITION");
         refer.map(Column.FIELD_COMMENT, "COLUMN_COMMENT");
         refer.map(Column.FIELD_DEFAULT_VALUE, "COLUMN_DEFAULT");
@@ -3006,6 +3003,19 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
 
         refer.map(Column.FIELD_PRIMARY_CHECK,"COLUMN_KEY");
         refer.map(Column.FIELD_PRIMARY_CHECK_VALUE,"PRI");
+        return refer;
+    }
+
+    /**
+     * Column[结果集封装]<br/>
+     * 数据类型 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer initDataTypeFieldRefer() {
+        MetadataFieldRefer refer = new MetadataFieldRefer(DataTypeDefine.class);
+        refer.map(DataTypeDefine.FIELD_NAME, "COLUMN_TYPE");
+        refer.map(DataTypeDefine.FIELD_OCTET_LENGTH, "CHARACTER_OCTET_LENGTH");
         return refer;
     }
 

@@ -75,13 +75,7 @@ public class EntitySet<T> implements Collection<T>, Serializable {
         }
         return null;
     }
-    public Integer getMetadataType(String column) {
-        Column col = getMetadata(column);
-        if(null != col) {
-            return col.getType();
-        }
-        return null;
-    }
+
     public String getMetadataFullType(String column) {
         Column col = getMetadata(column);
         if(null != col) {

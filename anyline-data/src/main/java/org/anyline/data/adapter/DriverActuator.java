@@ -119,6 +119,7 @@ public interface DriverActuator {
     default Map<String, Object> map(DataRuntime runtime, String sql) throws Exception {
         return new HashMap<>();
     }
+    
     /**
      * select [命令执行]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端

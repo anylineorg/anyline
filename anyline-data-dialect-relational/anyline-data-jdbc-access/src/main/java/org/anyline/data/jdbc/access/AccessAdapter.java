@@ -178,6 +178,7 @@ public class AccessAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
     public void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet set, ConfigStore configs, Boolean placeholder, Boolean unicode, LinkedHashMap<String, Column> columns) {
         super.fillInsertContent(runtime, run, dest, set, configs, placeholder, unicode, columns);
     }
+    
     /**
      * insert [命令合成-子流程]<br/>
      * 填充inset命令内容(创建批量INSERT RunPrepare)
@@ -3620,6 +3621,18 @@ public class AccessAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
     }
 
     /**
+     * Column[结果集封装]<br/>
+     * 数据类型 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer initDataTypeFieldRefer() {
+        return super.initDataTypeFieldRefer();
+    }
+
+
+
+    /**
      * column[结果集封装]<br/>(方法1)<br/>
      * 根据系统表查询SQL获取表结构
      *  根据查询结果集构造Column
@@ -4644,8 +4657,7 @@ public class AccessAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
     public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Procedure query) throws Exception {
         return super.procedures(runtime, create, previous, query);
     }
-
-
+    
     /**
      *
      * procedure[调用入口]<br/>
@@ -6039,8 +6051,7 @@ public class AccessAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
     public List<Run> buildCreateRun(DataRuntime runtime, Table meta) throws Exception {
         return super.buildCreateRun(runtime, meta);
     }
-
-
+    
     /**
      * table[命令合成]<br/>
      * 修改表 只生成修改表本身属性 不生成关于列及索引的
@@ -7286,6 +7297,7 @@ public class AccessAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
     public StringBuilder charset(DataRuntime runtime, StringBuilder builder, Column meta) {
         return super.charset(runtime, builder, meta);
     }
+    
     /**
      * column[命令合成-子流程]<br/>
      * 列定义:虚拟列

@@ -486,6 +486,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         init(runtime, run, configs);
         run.appendCondition(builder, this, true, placeholder, unicode);
     }
+    
     /**
      * update [命令合成-子流程]<br/>
      * 确认需要更新的列
@@ -1983,6 +1984,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         }
         return runs;
     }
+    
     /**
      * 与上一个方法的区别是 有些库没有区分 是否分区表 的元数据,不清楚的默认调用上一个方法，确认支持的再调用这个方法<br/>
      * builder.append("WHERE (I.inhrelid IS NULL  OR F.relpartbound IS NULL)\n"); //过滤分区表(没有继承自其他表或 继承自其他表但是子表不是分区表)<br/>
@@ -2183,8 +2185,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
     public List<String> ddl(DataRuntime runtime, int index, Table table, List<String> ddls, DataSet set) {
         return super.ddl(runtime, index, table, ddls, set);
     }
-
-
+    
     /**
      * table[结果集封装]<br/>
      * 根据查询结果封装Table基础属性
@@ -2664,8 +2665,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         }
         return meta;
     }
-
-
+    
     /**
      * partition table[结果集封装]<br/>
      * Table.Partition 属性与结果集对应关系
@@ -2914,13 +2914,24 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         refer.map(Column.FIELD_TABLE,  "TABLE_NAME");
         refer.map(Column.FIELD_NULLABLE, "IS_NULLABLE");
 
-        refer.map(Column.FIELD_TYPE,  "UDT_NAME,FULL_TYPE"); //不用DATA_TYPE
         refer.map(Column.FIELD_POSITION, "ORDINAL_POSITION");
         refer.map(Column.FIELD_COMMENT, "COLUMN_COMMENT");//SQL组装
         refer.map(Column.FIELD_DEFAULT_VALUE , "COLUMN_DEFAULT");
 
         refer.map(Column.FIELD_AUTO_INCREMENT_CHECK, "COLUMN_DEFAULT");
         refer.map(Column.FIELD_AUTO_INCREMENT_CHECK_VALUE, ".*nextval.*");
+        return refer;
+    }
+
+    /**
+     * Column[结果集封装]<br/>
+     * 数据类型 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer initDataTypeFieldRefer() {
+        MetadataFieldRefer refer = new MetadataFieldRefer(DataTypeDefine.class);
+        refer.map(DataTypeDefine.FIELD_NAME, "UDT_NAME,FULL_TYPE");//不用DATA_TYPE
         return refer;
     }
 
@@ -3948,8 +3959,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
     public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Procedure query) throws Exception {
         return super.procedures(runtime, create, previous, query);
     }
-
-
+    
     /**
      *
      * procedure[调用入口]<br/>
@@ -6388,6 +6398,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
     public StringBuilder charset(DataRuntime runtime, StringBuilder builder, Column meta) {
         return super.charset(runtime, builder, meta);
     }
+    
     /**
      * column[命令合成-子流程]<br/>
      * 列定义:虚拟列
@@ -7841,8 +7852,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
     public String[] correctSchemaFromJDBC(String catalog, String schema) {
         return super.correctSchemaFromJDBC(catalog, schema);
     }
-
-
+    
     /**
      * column[结果集封装]<br/>(方法1)<br/>
      * 元数据长度列
@@ -7927,8 +7937,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         }
         return builder.toString();
     }
-
-
+    
     /**
      * 内置函数 多种数据库兼容时需要
      * @param value SQL_BUILD_IN_VALUE

@@ -95,6 +95,7 @@ public interface DriverAdapter {
     default int priority(){
          return 0;
     }
+    
     /**
      * 数据库类型
      * @return DatabaseType
@@ -382,6 +383,7 @@ public interface DriverAdapter {
      * @param meta 列
      * @return 具体数据库中对应的数据类型
      */
+    TypeMetadata typeMetadata(DataRuntime runtime, DataTypeDefine meta);
     TypeMetadata typeMetadata(DataRuntime runtime, Column meta);
 
     /**
@@ -996,6 +998,7 @@ public interface DriverAdapter {
     default Run buildInsertRun(DataRuntime runtime, Table dest, RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions) {
         return buildInsertRun(runtime, dest, prepare, configs, obj, true, true, conditions);
     }
+    
     /**
      * insert [命令合成]<br/>
      * 填充inset命令内容(创建批量INSERT RunPrepare)
@@ -1329,6 +1332,7 @@ public interface DriverAdapter {
     default void fillUpdateContent(DataRuntime runtime, TableRun run, DataRow data, ConfigStore configs, Boolean placeholder, Boolean unicode) {
         fillUpdateContent(runtime, run, run.getBuilder(), data, configs, placeholder, unicode);
     }
+    
     /**
      * update [命令合成]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -1470,6 +1474,7 @@ public interface DriverAdapter {
     default void fillUpdateContent(DataRuntime runtime, TableRun run, StringBuilder builder, DataRow data, ConfigStore configs) {
         fillUpdateContent(runtime, run, builder, data, configs, true, true);
     }
+    
     /**
      *
      * 多表关联更新
@@ -1479,6 +1484,7 @@ public interface DriverAdapter {
     default void fillUpdateContent(DataRuntime runtime, TableRun run, DataRow data, ConfigStore configs) {
         fillUpdateContent(runtime, run, run.getBuilder(), data, configs, true, true);
     }
+    
     /**
      * update [命令合成]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -1796,6 +1802,7 @@ public interface DriverAdapter {
     default String compareFormula(DataRuntime runtime, Compare compare) {
         return compare.formula();
     }
+    
     /**
      * select[命令合成]<br/>
      * 创建 select sequence 最终可执行命令
@@ -1833,6 +1840,7 @@ public interface DriverAdapter {
     default String orderNullSet(OrderStore orders) {
         return "";
     }
+    
     /**
      * select[命令合成-子流程] <br/>
      * 构造 LIKE 查询条件
@@ -1864,6 +1872,7 @@ public interface DriverAdapter {
     default List<RunValue> createConditionExists(DataRuntime runtime, StringBuilder builder, Compare compare, RunPrepare prepare) {
         return createConditionExists(runtime, builder, compare, prepare, true, true);
     }
+    
     /**
      * select[命令合成-子流程] <br/>
      * 构造 FIND_IN_SET 查询条件
@@ -1918,6 +1927,7 @@ public interface DriverAdapter {
     default Object createConditionJsonContainsPath(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value) throws NotSupportException {
         return createConditionJsonContainsPath(runtime, builder, column, compare, value, true, true);
     }
+    
     /**
      * select[命令合成-子流程] <br/>
      * 构造 JSON_SEARCH 查询条件(默认 IS NOT NULL)
@@ -2371,8 +2381,7 @@ public interface DriverAdapter {
     default List<Run> buildDeleteRun(DataRuntime runtime, int batch, String table, ConfigStore configs, String column, Object values) {
         return buildDeleteRun(runtime, batch, new Table(table), configs, true, true, column, values);
     }
-
-
+    
     /**
      * delete[命令合成-子流程]<br/>
      * 合成 where column in (values)
@@ -2417,6 +2426,7 @@ public interface DriverAdapter {
     default void fillDeleteRunContent(DataRuntime runtime, Run run) {
         fillDeleteRunContent(runtime, run, true, true);
     }
+    
     /**
      *
      * delete[命令执行]<br/>
@@ -5176,6 +5186,12 @@ public interface DriverAdapter {
      * @return MetadataFieldRefer
      */
     MetadataFieldRefer initColumnFieldRefer();
+    /**
+     * Column[结果集封装]<br/>
+     * 数据类型 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    MetadataFieldRefer initDataTypeFieldRefer();
     /**
      * column[结果集封装]<br/>(方法1)<br/>
      * 根据系统表查询SQL获取表结构

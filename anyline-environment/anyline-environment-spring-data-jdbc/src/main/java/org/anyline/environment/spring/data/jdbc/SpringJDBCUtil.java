@@ -141,11 +141,11 @@ public class SpringJDBCUtil {
             } catch (Exception e) {
                 log.debug("[获取MetaData失败][驱动未实现:getTableName]");
             }
-            try {
+/*            try {
                 column.setType(rsm.getColumnType(index));
             } catch (Exception e) {
                 log.debug("[获取MetaData失败][驱动未实现:getColumnType]");
-            }
+            }*/
             try {
                 String jdbcType = rsm.getColumnTypeName(index);
                 column.setJdbcType(jdbcType);

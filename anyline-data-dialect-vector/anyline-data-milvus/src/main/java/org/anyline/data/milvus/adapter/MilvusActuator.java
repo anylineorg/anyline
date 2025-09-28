@@ -139,6 +139,7 @@ public class MilvusActuator implements DriverActuator {
     public DataSet select(DriverAdapter adapter, DataRuntime runtime, String random, boolean system, ACTION.DML action, Table table, ConfigStore configs, Run run, String cmd, List<Object> values, LinkedHashMap<String,Column> columns) throws Exception {
         return new DataSet();
     }
+    
     /**
      * query procedure [调用入口]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -319,6 +320,7 @@ public class MilvusActuator implements DriverActuator {
         column.setComment(field.getDescription());
         return column;
     }
+    
     /**
      * table[结果集封装]<br/>
      * 根据驱动内置方法补充
@@ -458,6 +460,7 @@ public class MilvusActuator implements DriverActuator {
         client(runtime).createRole(req);
         return true;
     }
+    
     /**
      * role[调用入口]<br/>
      * 删除角色
@@ -523,6 +526,7 @@ public class MilvusActuator implements DriverActuator {
         client(runtime).createUser(req);
         return true;
     }
+    
     /**
      * user[调用入口]<br/>
      * 删除 用户
@@ -699,6 +703,7 @@ public class MilvusActuator implements DriverActuator {
         }
         return true;
     }
+    
     /**
      * revoke[调用入口]<br/>
      * 撤销授权
@@ -752,6 +757,7 @@ public class MilvusActuator implements DriverActuator {
         client(runtime).createDatabase(builder.build());
         return true;
     }
+    
     /**
      * database[调用入口]<br/>
      * 删除数据库
@@ -815,6 +821,7 @@ public class MilvusActuator implements DriverActuator {
         }
         return schema;
     }
+    
     /**
      * database[调用入口]<br/>
      * 删除Table

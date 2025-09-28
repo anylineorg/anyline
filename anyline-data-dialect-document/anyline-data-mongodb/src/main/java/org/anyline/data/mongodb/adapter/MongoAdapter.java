@@ -283,6 +283,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
         }
         return value;
     }
+    
     /**
      * 过滤掉表结构中不存在的列
      * MONGO不检测
@@ -465,7 +466,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
             int cc = compare.getCode();
             if(cc == 10) {                                           //  EQUAL
                 bson = Filters.eq(column, value);
-            }else if(cc == 50 || cc == 999) {                        //  LIKE Compare.REGEX
+            }else if(cc == 50 || cc == 99) {                        //  LIKE Compare.REGEX
                 bson = Filters.regex(column, value.toString());
             }else if(cc == 51) {                                     //  START_WITH
                 bson = Filters.regex(column, "^"+value);

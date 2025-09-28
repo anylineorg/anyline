@@ -189,6 +189,8 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
     protected Skew skew                         ; //
     protected Store store                       ; //
     protected String location                   ;
+    protected String provider                   ;
+    protected Embedding embedding               ;
     /**
      * 主键是否需要更新
      */
@@ -308,6 +310,7 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
         }
         return (E)this;
     }
+    
     /**
      * 按比例重新设置列长度
      * @param rate 比例
@@ -1181,6 +1184,26 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
         }
         this.srid = srid;
         return this;
+    }
+
+    public String getProvider() {
+        return provider;
+    }
+
+    public void setProvider(String provider) {
+        this.provider = provider;
+    }
+
+    public Embedding getEmbedding() {
+        return embedding;
+    }
+
+    public void setEmbedding(Embedding embedding) {
+        this.embedding = embedding;
+    }
+
+    public void setEmbedding(String embedding) {
+        this.embedding = new Embedding(embedding);
     }
 
     public Skew getSkew() {

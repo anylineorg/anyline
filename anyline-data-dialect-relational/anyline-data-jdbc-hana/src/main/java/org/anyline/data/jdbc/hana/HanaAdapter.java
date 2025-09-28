@@ -2313,15 +2313,27 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		refer.map(Column.FIELD_NAME, "COLUMN_NAME");
 		refer.map(Column.FIELD_SCHEMA, "SCHEMA_NAME");
 		refer.map(Column.FIELD_POSITION, "POSITION");
-		refer.map(Column.FIELD_TYPE, "DATA_TYPE_NAME");
 		refer.map(Column.FIELD_COMMENT, "COMMENTS");
 		refer.map(Column.FIELD_NULLABLE, "IS_NULLABLE");
 		refer.map(Column.FIELD_DEFAULT_VALUE, "DEFAULT_VALUE");
-		refer.map(Column.FIELD_LENGTH, "LENGTH");
-		refer.map(Column.FIELD_PRECISION, "LENGTH");
-		refer.map(Column.FIELD_SCALE, "SCALE");
 		return refer;
 	}
+
+	/**
+	 * Column[结果集封装]<br/>
+	 * 数据类型 属性与结果集对应关系
+	 * @return MetadataFieldRefer
+	 */
+	@Override
+	public MetadataFieldRefer initDataTypeFieldRefer() {
+		MetadataFieldRefer refer = new MetadataFieldRefer(DataTypeDefine.class);
+		refer.map(DataTypeDefine.FIELD_NAME, "DATA_TYPE_NAME");
+		refer.map(DataTypeDefine.FIELD_LENGTH, "LENGTH");
+		refer.map(DataTypeDefine.FIELD_PRECISION, "LENGTH");
+		refer.map(DataTypeDefine.FIELD_SCALE, "SCALE");
+		return refer;
+	}
+
 	/**
 	 * column[结果集封装]<br/>
 	 *  根据查询结果集构造Tag

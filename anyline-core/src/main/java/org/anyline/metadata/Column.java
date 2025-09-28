@@ -16,11 +16,9 @@
 
 package org.anyline.metadata;
 
-import org.anyline.metadata.refer.MetadataReferHolder;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.metadata.type.JavaType;
 import org.anyline.metadata.type.TypeMetadata;
-import org.anyline.metadata.type.TypeMetadataHolder;
 import org.anyline.util.BasicUtil;
 
 import java.io.Serializable;
@@ -166,10 +164,8 @@ public class Column extends TableAffiliation<Column> implements Serializable {
         }
     }
     protected String keyword = "COLUMN"           ;
-
+    protected DataTypeDefine type = new DataTypeDefine()      ; // 数据类型
     protected Virtual virtual                     ; // 虚拟列
-
-    protected String className                    ; // 对应的Java数据类型 java.lang.Long
     protected Boolean nullable              = null; // 是否可以为NULL -1:未配置 1:是(NULL)  0:否(NOT NULL)
     protected Boolean caseSensitive         = null; // 是否区分大小写
     protected Boolean currency              = null; // 是否是货币
@@ -225,7 +221,6 @@ public class Column extends TableAffiliation<Column> implements Serializable {
     protected String similarity                 ; // 相似度算法 如l2_norm dot_product cosine max_inner_product
     protected String subObjects;
     protected String termVector;
-    protected int parseLvl                      = 0;// 类型解析级别0:未解析 1:column解析 2:adapter解析
     protected ColumnFamily family;                 ; // 列族
 
     public Column() {
@@ -249,36 +244,32 @@ public class Column extends TableAffiliation<Column> implements Serializable {
     }
     public Column(String name, String type, int precision, int scale) {
         this.name = name;
-        setType(type);
-        this.precision = precision;
-        this.scale = scale;
+        setType(type, precision, scale);
     }
 
     public Column(String name, String type, int precision) {
         this.name = name;
-        setType(type);
-        this.precision = precision;
+        setType(type, precision);
     }
     public Column(Table table, String name, String type, int precision, int scale) {
         setTable(table);
         this.name = name;
-        setType(type);
-        this.precision = precision;
-        this.scale = scale;
+        setType(type, precision, scale);
     }
 
     public Column(Table table, String name, String type, int precision) {
         setTable(table);
         this.name = name;
-        setType(type);
-        this.precision = precision;
+        setType(type, precision);
     }
 
     public Column(String name, String type) {
         this.name = name;
         setType(type);
     }
-
+    public DataTypeDefine type(){
+        return type;
+    }
     public Boolean getIndex() {
         return index;
     }
@@ -312,11 +303,11 @@ public class Column extends TableAffiliation<Column> implements Serializable {
         return this;
     }
     public String getQualifier() {
-        return qualifier;
+        return type.getQualifier();
     }
 
     public Column setQualifier(String qualifier) {
-        this.qualifier = qualifier;
+        type.setQualifier(qualifier);
         return this;
     }
 
@@ -412,11 +403,11 @@ public class Column extends TableAffiliation<Column> implements Serializable {
     }
 
     public Integer getDimension() {
-        return dimension;
+        return type.getDimension();
     }
 
     public Column setDimension(Integer dimension) {
-        this.dimension = dimension;
+        type.setDimension(dimension);
         return this;
     }
 
@@ -565,11 +556,11 @@ public class Column extends TableAffiliation<Column> implements Serializable {
         this.keyword = keyword;
     }
     public boolean isArray() {
-        return array;
+        return type.isArray();
     }
 
     public Column setArray(boolean array) {
-        this.array = array;
+        type.setArray(array);
         return this;
     }
 
@@ -577,7 +568,7 @@ public class Column extends TableAffiliation<Column> implements Serializable {
         if(getmap && null != update) {
             return update.getDateScale();
         }
-        return dateScale;
+        return type.getDateScale();
     }
 
     public Boolean getWithTimeZone() {
@@ -619,7 +610,7 @@ public class Column extends TableAffiliation<Column> implements Serializable {
             update.setDateScale(dateScale);
             return this;
         }
-        this.dateScale = dateScale;
+        type.setDateScale(dateScale);
         return this;
     }
 
@@ -635,7 +626,7 @@ public class Column extends TableAffiliation<Column> implements Serializable {
         if(getmap && null != update) {
             return update.getClassName();
         }
-        return className;
+        return type.getClassName();
     }
 
     public Column setClassName(String className) {
@@ -643,15 +634,15 @@ public class Column extends TableAffiliation<Column> implements Serializable {
             update.setClassName(className);
             return this;
         }
-        this.className = className;
+        type.setClassName(className);
         return this;
     }
 
     public String getChildTypeName() {
-        if(getmap && null != childTypeName) {
+        if(getmap && null != update) {
             return update.getChildTypeName();
         }
-        return childTypeName;
+        return type.getChildName();
     }
 
     public Column setChildTypeName(String childTypeName) {
@@ -659,34 +650,17 @@ public class Column extends TableAffiliation<Column> implements Serializable {
             update.setChildTypeName(childTypeName);
             return this;
         }
-        this.childTypeName = childTypeName;
+        type.setChild(childTypeName);
         return this;
     }
 
-    public TypeMetadata getChildTypeMetadata() {
-        if(getmap && null != update) {
-            return update.childTypeMetadata;
-        }
-        if(array && null != childTypeMetadata) {
-            childTypeMetadata.setArray(array);
-        }
-        return childTypeMetadata;
-    }
 
-    public Column setChildTypeMetadata(TypeMetadata childTypeMetadata) {
-        if(setmap && null != update) {
-            update.setChildTypeMetadata(childTypeMetadata);
-            return this;
-        }
-        this.childTypeMetadata = childTypeMetadata;
-        return this;
-    }
 
     public Integer getDisplaySize() {
         if(getmap && null != update) {
             return update.getDisplaySize();
         }
-        return displaySize;
+        return type.getDisplaySize();
     }
 
     public Column setDisplaySize(Integer displaySize) {
@@ -694,80 +668,65 @@ public class Column extends TableAffiliation<Column> implements Serializable {
             update.setDisplaySize(displaySize);
             return this;
         }
-        this.displaySize = displaySize;
+        type.setDisplaySize(displaySize);
         return this;
     }
-
-    public String getOriginType() {
-        if(null == originType) {
-            return typeName;
-        }
-        return originType;
-    }
-
     public void setOriginType(String originType) {
-        this.originType = originType;
+        type.setOriginType(originType);
     }
 
-    public Integer getType() {
-        if(getmap && null != update) {
-            return update.getType();
-        }
-        return type;
-    }
 
-    /**
-     * 设置数据类型 根据 jdbc定义的类型ID
-     * @param type type
-     * @return Column
-     */
-    public Column setType(Integer type) {
-        if(setmap && null != update) {
-            update.setType(type);
-            return this;
-        }
-        if(this.type != type) {
-            this.className = null;
-        }
-        this.type = type;
-        return this;
-    }
 
     /**
      * 设置数据类型 根据数据库定义的数据类型 实际调用了setTypeName(String)
      * @param type  数据类型 如 int  varchar(10) decimal(18, 6)
      * @return Column
      */
+    public Column setType(String type, int precision, int scale) {
+        if(setmap && null != update) {
+            update.setType(type, precision, scale);
+            return this;
+        }
+        this.type = new DataTypeDefine(type, precision, scale);
+        return this;
+    }
+    public Column setType(String type, int precision) {
+        if(setmap && null != update) {
+            update.setType(type, precision);
+            return this;
+        }
+        this.type = new DataTypeDefine(type, precision);
+        return this;
+    }
     public Column setType(String type) {
         if(setmap && null != update) {
             update.setType(type);
             return this;
         }
-        this.typeMetadata = null;
-        this.ignorePrecision = -1;
-        this.ignoreLength = -1;
-        this.ignoreScale = -1;
-        this.array = false;
-        return setTypeName(type);
+        this.type.setName(type);
+        return this;
+    }
+    public Column setType(DataTypeDefine type) {
+        if(setmap && null != update) {
+            update.setType(type);
+            return this;
+        }
+        this.type = type;
+        return this;
     }
 
     public String getTypeName() {
         if(getmap && null != update) {
             return update.getTypeName();
         }
-        if(null == typeName) {
-            if(null != typeMetadata && typeMetadata != TypeMetadata.ILLEGAL && typeMetadata != TypeMetadata.NONE) {
-                typeName = typeMetadata.getName();
-            }
-        }
-        return typeName;
+        return type.getName();
     }
 
     public String getJdbcType() {
         if(getmap && null != update) {
-            return update.jdbcType;
+            return update.getJdbcType();
         }
-        return jdbcType;
+        return type.getJdbcType();
     }
 
     public Column setJdbcType(String jdbcType) {
@@ -775,7 +734,7 @@ public class Column extends TableAffiliation<Column> implements Serializable {
             update.setJdbcType(jdbcType);
             return this;
         }
-        this.jdbcType = jdbcType;
+        type.setJdbcType(jdbcType);
         return this;
     }
 
@@ -793,16 +752,7 @@ public class Column extends TableAffiliation<Column> implements Serializable {
             update.setTypeName(typeName, parse);
             return this;
         }
-        if(null == this.typeName || !this.typeName.equalsIgnoreCase(typeName)) {
-            //修改数据类型的重置解析状态
-            parseLvl = 0;
-        }
-        this.typeName = typeName;
-        if(parse) {
-            setOriginType(typeName);
-            parseType(1, databaseType);
-        }
-        //fullType = null;
+        type.setName(typeName, parse);
         return this;
     }
 
@@ -813,23 +763,20 @@ public class Column extends TableAffiliation<Column> implements Serializable {
      * @return Column
      */
     public Column parseType(int lvl, DatabaseType database) {
-        if(lvl <= parseLvl) {
-            return this;
-        }
-        TypeMetadata.parse(database, this, TypeMetadataHolder.gets(database), null);
+        type.parse(lvl, database);
         return this;
     }
 
     public int getParseLvl() {
-        return parseLvl;
+        return type.getParseLvl();
     }
 
     public void setParseLvl(int parseLvl) {
-        this.parseLvl = parseLvl;
+        type.setParseLvl(parseLvl);
     }
 
     public Column setFullType(String fullType) {
-        this.fullType = fullType;
+        type.setFullType(fullType);
         return this;
     }
     public String getFullType() {
@@ -843,186 +790,7 @@ public class Column extends TableAffiliation<Column> implements Serializable {
         if(getmap && null != update) {
             return update.getFullType(database);
         }
-        if(null != fullType && this.databaseType == database) {
-            return fullType;
-        }
-        int ignoreLength = -1;
-        int ignorePrecision = -1;
-        int ignoreScale = -1;
-        int maxLength = -1;
-        int maxPrecision = -1;
-        int maxScale = -1;
-        String result = null;
-        String type = null;
-        String formula = null;
-        if(null != refer) {
-            ignoreLength = refer.ignoreLength();
-            ignorePrecision = refer.ignorePrecision();
-            ignoreScale = refer.ignoreScale();
-            maxLength = refer.maxLength();
-            maxPrecision = refer.maxPrecision();
-            maxScale = refer.maxScale();
-            formula = refer.getFormula();
-        }else{
-            ignoreLength = ignoreLength(database);
-            ignorePrecision = ignorePrecision(database);
-            ignoreScale = ignoreScale(database);
-            maxLength = maxLength(database);
-            maxPrecision = maxPrecision(database);
-            maxScale = maxScale(database);
-            formula = formula(database);
-        }
-        if(null != typeMetadata && typeMetadata != TypeMetadata.NONE && typeMetadata != TypeMetadata.ILLEGAL && database == this.databaseType) {
-            type = typeMetadata.getName();
-        }else{
-            type = getTypeName();
-        }
-        boolean appendLength = false;
-        boolean appendPrecision = false;
-        boolean appendScale = false;
-
-        if(ignoreLength != 1) {
-            if(null == length) {
-                //null表示没有设置过,有可能用的precision,复制precision值
-                // -1也表示设置过了不要再用length覆盖
-                if(null != precision && precision != -1) {
-                    length = precision;
-                }
-            }
-            if(null != length) {
-                if(length > 0 || length == -2) { //-2:max
-                    appendLength = true;
-                }
-            }
-        }
-        if(ignorePrecision != 1) {
-            if(null == precision) {
-                //null表示没有设置过,有可能用的length,复制length
-                // -1也表示设置过了不要再用length覆盖
-                if(null != length && length != -1) {
-                    precision = length;
-                }
-            }
-            if(null != precision) {
-                if(precision > 0) {
-                    if(ignorePrecision == 3) {
-                        if(null != scale && scale > 0) {
-                            appendPrecision = true;
-                        }else{
-                            appendPrecision = false;
-                        }
-                    }else{
-                        appendPrecision = true;
-                    }
-                }
-            }
-        }
-        if(ignoreScale != 1) {
-            if(null != scale) {
-                if(scale > 0) {
-                    if(ignoreScale == 3) {
-                        if(null != precision && precision > 0) {
-                            appendScale = true;
-                        }else{
-                            appendScale = false;
-                        }
-                    }else{
-                        appendScale = true;
-                    }
-                }
-            }
-        }
-
-        if(maxLength != -1){
-            if(null != length){
-                if(length > maxLength) {
-                    length = maxLength;
-                }
-            }
-        }
-
-        if(maxPrecision != -1){
-            if(null != precision){
-                if(precision > maxPrecision) {
-                    precision = maxPrecision;
-                }
-            }
-        }
-
-        if(maxScale != -1){
-            if(null != scale){
-                if(scale > maxScale) {
-                    scale = maxScale;
-                }
-            }
-        }
-
-        if(BasicUtil.isNotEmpty(formula)) {
-            result = formula;
-            result = result.replace("{L}", length+"");
-            result = result.replace("{P}", precision+"");
-            result = result.replace("{S}", scale+"");
-            result = result.replace("{U}", lengthUnit);
-            result = result.replace("(0)", "");
-            result = result.replace("(null)","");
-        }else if(null != type) {
-            StringBuilder builder = new StringBuilder();
-            if(type.contains("{")) {
-                result = type;
-                result = result.replace("{L}", length + "");
-                result = result.replace("{P}", precision + "");
-                result = result.replace("{S}", scale + "");
-                result = result.replace("{U}", lengthUnit);
-                result = result.replace("(0)", "");
-                result = result.replace("(null)", "");
-            }else {
-                builder.append(type);
-                if (appendLength || appendPrecision || appendScale) {
-                    builder.append("(");
-                }
-                if (appendLength) {
-                    if (length == -2) {
-                        builder.append("max");
-                    } else {
-                        builder.append(length);
-                        if(BasicUtil.isNotEmpty(lengthUnit)){
-                            builder.append(" ").append(lengthUnit);
-                        }
-                    }
-                } else {
-                    if (appendPrecision) {
-                        builder.append(precision);
-                    }
-                    if (appendScale) {//可能单独出现
-                        if (appendPrecision) {
-                            builder.append(", ");
-                        }
-                        builder.append(scale);
-                    }
-                }
-                if (appendLength || appendPrecision || appendScale) {
-                    builder.append(")");
-                }
-
-                String child = getChildTypeName();
-                Integer srid = getSrid();
-                if (null != child) {
-                    builder.append("(");
-                    builder.append(child);
-                    if (null != srid) {
-                        builder.append(", ").append(srid);
-                    }
-                    builder.append(")");
-                }
-                result = builder.toString();
-            }
-        }
-        if(BasicUtil.isNotEmpty(result)){
-            if (isArray()) {
-                result += "[]";
-            }
-        }
-        return result;
+        return type.getFullType(database, refer);
     }
 
     /**
@@ -1030,28 +798,20 @@ public class Column extends TableAffiliation<Column> implements Serializable {
      * @return Integer
      */
     public Integer getPrecisionLength() {
-        if(null != precisionLength && precisionLength != -1) {
-            return precisionLength;
-        }
-        if(null != precision && precision != -1) {
-            precisionLength = precision;
-        }else{
-            precisionLength = length;
-        }
-        return precisionLength;
+        return type.getPrecisionLength();
     }
     public Integer getLength() {
         if(getmap && null != update) {
             return update.getLength();
         }
-        if(null != length && length != -1) {
-            return length;
-        }
-        return precision;
+        return type.getLength();
     }
     public Column resetLength(Integer length){
+        String originType = type.getOriginType();
+        int len = type.getLength();
         if(null != originType) {
-            originType = originType.replace("(" + this.length, "(" + length);
+            originType = originType.replace("(" + len, "(" + length);
+            type.setOriginType(originType);
         }
         setLength(length);
         setParseLvl(0);
@@ -1062,11 +822,7 @@ public class Column extends TableAffiliation<Column> implements Serializable {
             update.setLength(length);
             return this;
         }
-        if(ignoreLength == 1) {
-            this.precision = length;
-        }else {
-            this.length = length;
-        }
+        type.setLength(length);
         //fullType = null;
         return this;
     }
@@ -1075,14 +831,14 @@ public class Column extends TableAffiliation<Column> implements Serializable {
         if(getmap && null != update) {
             return update.getOctetLength();
         }
-        return octetLength;
+        return type.getOctetLength();
     }
     public Column setOctetLength(Integer length) {
         if(setmap && null != update) {
             update.setOctetLength(length);
             return this;
         }
-        this.octetLength = length;
+        type.setOctetLength(length);
         return this;
     }
 
@@ -1090,10 +846,7 @@ public class Column extends TableAffiliation<Column> implements Serializable {
         if(getmap && null != update) {
             return update.getPrecision();
         }
-        if(null != precision && precision != -1) {
-            return precision;
-        }
-        return length;
+        return type.getPrecision();
     }
 
     public Column setPrecision(Integer precision) {
@@ -1101,12 +854,7 @@ public class Column extends TableAffiliation<Column> implements Serializable {
             update.setPrecision(precision);
             return this;
         }
-        if(ignorePrecision == 1) {
-            this.length = precision;
-        }else {
-            this.precision = precision;
-        }
-        //fullType = null;
+        type.setPrecision(precision);
         return this;
     }
     public Column setPrecision(Integer precision, Integer scale) {
@@ -1114,9 +862,7 @@ public class Column extends TableAffiliation<Column> implements Serializable {
             update.setPrecision(precision, scale);
             return this;
         }
-        this.precision = precision;
-        this.scale = scale;
-        //fullType = null;
+        type.setPrecision(precision, scale);
         return this;
     }
 
@@ -1272,7 +1018,7 @@ public class Column extends TableAffiliation<Column> implements Serializable {
         if(getmap && null != update) {
             return update.getScale();
         }
-        return scale;
+        return type.getScale();
     }
 
     public Column setScale(Integer scale) {
@@ -1280,8 +1026,7 @@ public class Column extends TableAffiliation<Column> implements Serializable {
             update.setScale(scale);
             return this;
         }
-        this.scale = scale;
-        //fullType = null;
+        type.setScale(scale);
         return this;
     }
 
@@ -1694,9 +1439,9 @@ public class Column extends TableAffiliation<Column> implements Serializable {
 
     public String getOriginName() {
         if(getmap && null != update) {
-            return update.originName;
+            return update.getOriginName();
         }
-        return originName;
+        return type.getOriginName();
     }
 
     public Column setOriginName(String originName) {
@@ -1704,7 +1449,7 @@ public class Column extends TableAffiliation<Column> implements Serializable {
             update.setOriginName(originName);
             return this;
         }
-        this.originName = originName;
+        type.setOriginName(originName);
         return this;
     }
 
@@ -1733,9 +1478,9 @@ public class Column extends TableAffiliation<Column> implements Serializable {
 
     public String getLengthUnit() {
         if(getmap && null != update) {
-            return update.lengthUnit;
+            return update.getLengthUnit();
         }
-        return lengthUnit;
+        return type.getLengthUnit();
     }
 
     public Column setLengthUnit(String lengthUnit) {
@@ -1743,7 +1488,7 @@ public class Column extends TableAffiliation<Column> implements Serializable {
             update.setLengthUnit(lengthUnit);
             return this;
         }
-        this.lengthUnit = lengthUnit;
+        type.setLengthUnit(lengthUnit);
         return this;
     }
 
@@ -1792,6 +1537,7 @@ public class Column extends TableAffiliation<Column> implements Serializable {
         TypeMetadata columnTypeMetadata = column.getTypeMetadata();
         TypeMetadata origin = null;
         TypeMetadata columnOrigin = null;
+        TypeMetadata typeMetadata = getTypeMetadata();
         if(null != typeMetadata) {
             origin = typeMetadata.getOrigin();
         }
@@ -1870,22 +1616,16 @@ public class Column extends TableAffiliation<Column> implements Serializable {
         }
         return true;
     }
-    
+
     public TypeMetadata getTypeMetadata() {
         if(getmap && null != update) {
-            return update.typeMetadata;
+            return update.getTypeMetadata();
         }
-        if(array && null != typeMetadata) {
-            typeMetadata.setArray(array);
-        }
-        return typeMetadata;
+        return type.getTypeMetadata();
     }
 
     public TypeMetadata.CATEGORY getTypeCategory() {
-        if(null != typeMetadata) {
-            return typeMetadata.getCategory();
-        }
-        return TypeMetadata.CATEGORY.NONE;
+        return type.getTypeCategory();
     }
 
     public Column setTypeMetadata(TypeMetadata typeMetadata) {
@@ -1893,7 +1633,7 @@ public class Column extends TableAffiliation<Column> implements Serializable {
             update.setTypeMetadata(typeMetadata);
             return this;
         }
-        this.typeMetadata = typeMetadata;
+        type.setTypeMetadata(typeMetadata);
         return this;
     }
 
@@ -1913,12 +1653,12 @@ public class Column extends TableAffiliation<Column> implements Serializable {
         }
         return update;
     }
-    
+
     public JavaType getJavaType() {
         if(getmap && null != update) {
-            return update.javaType;
+            return update.getJavaType();
         }
-        return javaType;
+        return type.getJavaType();
     }
 
     public Column setJavaType(JavaType javaType) {
@@ -1926,15 +1666,15 @@ public class Column extends TableAffiliation<Column> implements Serializable {
             update.setJavaType(javaType);
             return this;
         }
-        this.javaType = javaType;
+        type.setJavaType(javaType);
         return this;
     }
 
     public Integer getSrid() {
         if(getmap && null != update) {
-            return update.srid;
+            return update.getSrid();
         }
-        return srid;
+        return type.getSrid();
     }
 
     public Column setSrid(Integer srid) {
@@ -1942,7 +1682,7 @@ public class Column extends TableAffiliation<Column> implements Serializable {
             update.setSrid(srid);
             return this;
         }
-        this.srid = srid;
+        type.setSrid(srid);
         return this;
     }
 
@@ -1972,77 +1712,49 @@ public class Column extends TableAffiliation<Column> implements Serializable {
     }
 
     public void ignoreLength(int ignoreLength) {
-        this.ignoreLength = ignoreLength;
+        type.ignoreLength(ignoreLength);
     }
 
     public void maxLength(int maxLength) {
-        this.maxLength = maxLength;
+        type.maxLength(maxLength);
     }
     public void ignorePrecision(int ignorePrecision) {
-        this.ignorePrecision = ignorePrecision;
+        type.ignorePrecision();
     }
     public void maxPrecision(int maxPrecision) {
-        this.maxPrecision = maxPrecision;
+        type.maxPrecision(maxPrecision);
     }
 
     public void ignoreScale(int ignoreScale) {
-        this.ignoreScale = ignoreScale;
+        type.ignoreScale(ignoreScale);
     }
     public void maxScale(int maxScale) {
-        this.maxScale = maxScale;
+        type.maxScale(maxScale);
     }
     public int ignoreScale(DatabaseType database) {
-        if(null != typeMetadata) {
-            return MetadataReferHolder.ignoreScale(database, typeMetadata);
-        }else{
-            return ignoreScale();
-        }
+        return type.ignoreScale(database);
     }
     public String formula(DatabaseType database) {
-        if(null != typeMetadata) {
-            return MetadataReferHolder.formula(database, typeMetadata);
-        }else{
-            return null;
-        }
+            return type.formula(database);
     }
-
+    
     /**
      * 是否需要指定精度 主要用来识别能取出精度，但DDL不需要精度的类型
      * 精确判断通过adapter
      * @return boolean
      */
     public int ignoreLength() {
-        if(-1 != ignoreLength) {
-            return ignoreLength;
-        }
-        if(null != typeMetadata) {
-            return typeMetadata.ignoreLength();
-        }
-        return ignoreLength;
+        return type.ignoreLength();
     }
     public int ignoreLength(DatabaseType database) {
-        if(null != typeMetadata) {
-            return MetadataReferHolder.ignoreLength(database, typeMetadata);
-        }else{
-            return ignoreLength();
-        }
+        return type.ignoreLength(database);
     }
 
     public int maxLength() {
-        if(-1 != maxLength) {
-            return maxLength;
-        }
-        if(null != typeMetadata) {
-            return typeMetadata.maxLength();
-        }
-        return maxLength;
+        return type.maxLength();
     }
     public int maxLength(DatabaseType database) {
-        if(null != typeMetadata) {
-            return MetadataReferHolder.maxLength(database, typeMetadata);
-        }else{
-            return maxLength();
-        }
+        return type.maxLength(database);
     }
 
     /**
@@ -2051,47 +1763,27 @@ public class Column extends TableAffiliation<Column> implements Serializable {
      * @return boolean
      */
     public int ignorePrecision() {
-        if(-1 != ignorePrecision) {
-            return ignorePrecision;
-        }
-        if(null != typeMetadata) {
-            return typeMetadata.ignorePrecision();
-        }
-        return ignorePrecision;
+        return type.ignorePrecision();
     }
 
     public int ignorePrecision(DatabaseType database) {
-        if(null != typeMetadata) {
-            return MetadataReferHolder.ignorePrecision(database, typeMetadata);
-        }else{
-            return ignorePrecision();
-        }
+        return type.ignorePrecision(database);
     }
 
     public int maxPrecision() {
-        if(-1 != maxPrecision) {
-            return maxPrecision;
-        }
-        if(null != typeMetadata) {
-            return typeMetadata.maxPrecision();
-        }
-        return maxPrecision;
+        return type.maxPrecision();
     }
 
     public int maxPrecision(DatabaseType database) {
-        if(null != typeMetadata) {
-            return MetadataReferHolder.maxPrecision(database, typeMetadata);
-        }else{
-            return maxPrecision();
-        }
+        return type.maxPrecision(database);
     }
 
     public String getFinalType() {
-        return finalType;
+        return type.getFinalType();
     }
 
     public Column setFinalType(String finalType) {
-        this.finalType = finalType;
+        type.setFinalType(finalType);
         return this;
     }
 
@@ -2101,29 +1793,13 @@ public class Column extends TableAffiliation<Column> implements Serializable {
      * @return boolean
      */
     public int ignoreScale() {
-        if(-1 != ignoreScale) {
-            return ignoreScale;
-        }
-        if(null != typeMetadata) {
-            return typeMetadata.ignoreScale();
-        }
-        return ignoreScale;
+        return type.ignoreScale();
     }
     public int maxScale() {
-        if(-1 != maxScale) {
-            return maxScale;
-        }
-        if(null != typeMetadata) {
-            return typeMetadata.maxScale();
-        }
-        return maxScale;
+        return type.maxScale();
     }
     public int maxScale(DatabaseType database) {
-        if(null != typeMetadata) {
-            return MetadataReferHolder.maxScale(database, typeMetadata);
-        }else{
-            return maxScale();
-        }
+        return type.maxScale(database);
     }
 
     public String toString() {
@@ -2142,23 +1818,9 @@ public class Column extends TableAffiliation<Column> implements Serializable {
 /* ********************************* field refer ********************************** */
     public static final String FIELD_TYPE_CATEGORY_CONFIG          = "TYPE_CATEGORY_CONFIG";
     public static final String FIELD_KEYWORD                       = "KEYWORD";
-    public static final String FIELD_ORIGIN_NAME                   = "ORIGIN_NAME";
-    public static final String FIELD_ORIGIN_TYPE                   = "ORIGIN_TYPE";
-    public static final String FIELD_TYPE_METADATA                 = "TYPE_METADATA";
-    public static final String FIELD_FULL_TYPE                     = "FULL_TYPE";
-    public static final String FIELD_FINAL_TYPE                    = "FINAL_TYPE";
-    public static final String FIELD_IGNORE_LENGTH                 = "IGNORE_LENGTH";
-    public static final String FIELD_IGNORE_PRECISION              = "IGNORE_PRECISION";
-    public static final String FIELD_IGNORE_SCALE                  = "IGNORE_SCALE";
-    public static final String FIELD_PRECISION_LENGTH              = "PRECISION_LENGTH";
-    public static final String FIELD_LENGTH                        = "LENGTH";
-    public static final String FIELD_OCTET_LENGTH                  = "OCTET_LENGTH";
-    public static final String FIELD_PRECISION                     = "PRECISION";
-    public static final String FIELD_SCALE                         = "SCALE";
     public static final String FIELD_DIMS                          = "DIMS";
     public static final String FIELD_CLASS_NAME                    = "CLASS_NAME";
     public static final String FIELD_DISPLAY_SIZE                  = "DISPLAY_SIZE";
-    public static final String FIELD_TYPE                          = "TYPE";
     public static final String FIELD_CHILD_TYPE_NAME               = "CHILD_TYPE_NAME";
     public static final String FIELD_CHILD_TYPE_METADATA           = "CHILD_TYPE_METADATA";
     public static final String FIELD_JAVA_TYPE                     = "JAVA_TYPE";

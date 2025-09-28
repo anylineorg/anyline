@@ -2279,13 +2279,25 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	public MetadataFieldRefer initColumnFieldRefer() {
 		MetadataFieldRefer refer = new MetadataFieldRefer(Column.class);
 		refer.map(Column.FIELD_NAME, "FIELD");
-		refer.map(Column.FIELD_TYPE, "TYPE");
 		refer.map(Column.FIELD_NULLABLE, "NULL");
 		refer.map(Column.FIELD_DEFAULT_VALUE, "DEFAULT");
 		refer.map(Column.FIELD_PRIMARY_CHECK, "KEY");
 		refer.map(Column.FIELD_PRIMARY_CHECK_VALUE, "PRI");
 		return refer;
 	}
+
+	/**
+	 * Column[结果集封装]<br/>
+	 * 数据类型 属性与结果集对应关系
+	 * @return MetadataFieldRefer
+	 */
+	@Override
+	public MetadataFieldRefer initDataTypeFieldRefer() {
+		MetadataFieldRefer refer = new MetadataFieldRefer(DataTypeDefine.class);
+		refer.map(DataTypeDefine.FIELD_NAME, "TYPE");
+		return refer;
+	}
+
 	/**
 	 * column[结果集封装]<br/>
 	 *  根据查询结果集构造Tag

@@ -206,6 +206,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
         StringBuilder builder = run.getBuilder();
 
     }
+    
     /**
      * insert [命令合成-子流程]<br/>
      * 填充inset命令内容(创建批量INSERT RunPrepare)
@@ -2991,8 +2992,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
     public List<String> ddl(DataRuntime runtime, int index, EdgeTable meta, List<String> ddls, DataSet set) {
         return super.ddl(runtime, index, meta, ddls, set);
     }
-
-
+    
     /**
      * table[结果集封装]<br/>
      * 根据查询结果封装Table基础属性
@@ -3452,7 +3452,17 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
     public MetadataFieldRefer initColumnFieldRefer() {
         return super.initColumnFieldRefer();
     }
-
+    
+    /**
+     * Column[结果集封装]<br/>
+     * 数据类型 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer initDataTypeFieldRefer() {
+        return super.initDataTypeFieldRefer();
+    }
+    
     /**
      * column[结果集封装]<br/>
      *  根据查询结果集构造Tag
@@ -5097,8 +5107,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
     public StringBuilder property(DataRuntime runtime, StringBuilder builder, Table meta) {
         return super.property(runtime, builder, meta);
     }
-
-
+    
     /**
      * table[命令合成-子流程]<br/>
      * 主表设置分区依据(根据哪几列分区)
@@ -6078,6 +6087,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
     public StringBuilder charset(DataRuntime runtime, StringBuilder builder, Column meta) {
         return super.charset(runtime, builder, meta);
     }
+    
     /**
      * column[命令合成-子流程]<br/>
      * 列定义:虚拟列

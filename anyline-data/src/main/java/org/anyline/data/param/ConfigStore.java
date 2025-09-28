@@ -1009,6 +1009,23 @@ public interface ConfigStore extends Cloneable{
 		return and(Compare.REGEX, var, value);
 	}
 
+	default ConfigStore notRegex(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue) {
+		return and(swt, Compare.NOT_REGEX, id, var, value, overCondition, overValue);
+	}
+	default ConfigStore notRegex(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue) {
+		return and(swt, Compare.NOT_REGEX, var, value, overCondition, overValue);
+	}
+	default ConfigStore notRegex(String id, String var, Object value, boolean overCondition, boolean overValue) {
+		return and(Compare.NOT_REGEX, id, var, value, overCondition, overValue);
+	}
+	default ConfigStore notRegex(String var, Object value, boolean overCondition, boolean overValue) {
+		return and(Compare.NOT_REGEX, var, value, overCondition, overValue);
+	}
+	default ConfigStore notRegex(String var, Object value) {
+		return and(Compare.NOT_REGEX, var, value);
+	}
+
+
 	default ConfigStore findInSet(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(swt, Compare.FIND_IN_SET, id, var, value, overCondition, overValue);
 	}

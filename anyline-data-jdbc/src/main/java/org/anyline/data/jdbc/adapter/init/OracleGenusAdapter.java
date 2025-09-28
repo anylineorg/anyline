@@ -715,6 +715,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
     public long update(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, Run run) {
         return super.update(runtime, random, dest, data, configs, run);
     }
+    
     /**
      * save [调用入口]<br/>
      * <br/>
@@ -2336,8 +2337,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
     public List<String> ddl(DataRuntime runtime, int index, Table table, List<String> ddls, DataSet set) {
         return super.ddl(runtime, index, table, ddls, set);
     }
-
-
+    
     /**
      * table[结果集封装]<br/>
      * 根据查询结果封装Table基础属性
@@ -2880,7 +2880,6 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         refer.map(Column.FIELD_NULLABLE, "NULLABLE");
         refer.map(Column.FIELD_CHARSET, "");//忽略
         refer.map(Column.FIELD_COLLATE, "");//忽略
-        refer.map(Column.FIELD_TYPE, "DATA_TYPE");
         refer.map(Column.FIELD_POSITION, "COLUMN_ID");
         refer.map(Column.FIELD_COMMENT, "COLUMN_COMMENT");//SQL组装
         refer.map(Column.FIELD_DEFAULT_VALUE, "DATA_DEFAULT");
@@ -2889,6 +2888,18 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         return refer;
     }
 
+    /**
+     * Column[结果集封装]<br/>
+     * 数据类型 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer initDataTypeFieldRefer() {
+        MetadataFieldRefer refer = new MetadataFieldRefer(DataTypeDefine.class);
+        refer.map(DataTypeDefine.FIELD_NAME, "DATA_TYPE");
+        return refer;
+    }
+    
     /**
      * column[结果集封装]<br/>
      *  根据查询结果集构造Tag
@@ -3792,8 +3803,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
     public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Procedure query) throws Exception {
         return super.procedures(runtime, create, previous, query);
     }
-
-
+    
     /**
      *
      * procedure[调用入口]<br/>

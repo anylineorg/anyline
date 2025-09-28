@@ -2000,8 +2000,7 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
         }
         return ddls;
     }
-
-
+    
     /**
      * table[结果集封装]<br/>
      * 根据查询结果封装Table基础属性
@@ -2373,8 +2372,7 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
     public Table.Partition detail(DataRuntime runtime, int index, boolean create, Table.Partition meta, Table table, DataRow row) throws Exception {
         return super.detail(runtime, index, create, meta, table, row);
     }
-
-
+    
     /**
      * partition table[结果集封装]<br/>
      * Table.Partition 属性与结果集对应关系
@@ -2394,6 +2392,7 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
     public MetadataFieldRefer initTablePartitionSliceFieldRefer() {
         return super.initTablePartitionSliceFieldRefer();
     }
+    
     /**
      * partition table[调用入口]<br/>
      * 查询主表
@@ -2582,7 +2581,6 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
         refer.map(Column.FIELD_NULLABLE, "IS_NULLABLE"); //init之前设置一下标记
        //refer.map(Column.FIELD_CHARSET, "CHARACTER_SET_NAME");
        //refer.map(Column.FIELD_COLLATE, "COLLATION_NAME");
-        refer.map(Column.FIELD_TYPE, "type");
         refer.map(Column.FIELD_POSITION, "position");
         refer.map(Column.FIELD_COMMENT, "comment");
         refer.map(Column.FIELD_DEFAULT_VALUE, "default_expression");
@@ -2595,6 +2593,18 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
 
         refer.map(Column.FIELD_PRIMARY_CHECK,"is_in_primary_key");
         refer.map(Column.FIELD_PRIMARY_CHECK_VALUE,"1");
+        return refer;
+    }
+
+    /**
+     * Column[结果集封装]<br/>
+     * 数据类型 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer initDataTypeFieldRefer() {
+        MetadataFieldRefer refer = new MetadataFieldRefer(DataTypeDefine.class);
+        refer.map(DataTypeDefine.FIELD_NAME, "Type");
         return refer;
     }
 
@@ -2679,10 +2689,10 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
      */
     @Override
     public <T extends Column> T init(DataRuntime runtime, int index, T meta, Column query, DataRow row) {
-        String type = row.getString(Column.FIELD_TYPE);
+        String type = row.getString(DataTypeDefine.FIELD_NAME);
         if(null != type && type.contains("Nullable(")) {
             type = type.substring(9, type.length()-1);
-            row.put(Column.FIELD_TYPE, type);
+            row.put(DataTypeDefine.FIELD_NAME, type);
             row.put("IS_NULLABLE", true);
         }
         return super.init(runtime, index, meta, query, row);
@@ -3395,8 +3405,7 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
     public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Procedure query) throws Exception {
         return super.procedures(runtime, create, previous, query);
     }
-
-
+    
     /**
      *
      * procedure[调用入口]<br/>
@@ -5975,6 +5984,7 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
     public StringBuilder charset(DataRuntime runtime, StringBuilder builder, Column meta) {
         return super.charset(runtime, builder, meta);
     }
+    
     /**
      * column[命令合成-子流程]<br/>
      * 列定义:虚拟列

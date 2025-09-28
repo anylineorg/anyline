@@ -341,6 +341,7 @@ public class ImgUtil {
         // 保存合并后的图片
         ImageIO.write(combined, format, target);
     }
+    
     /** 
      * 图像类型转换:GIF&gt;JPG、GIF&gt;PNG、PNG&gt;JPG、PNG&gt;GIF(X)、BMP&gt;PNG 
      * @param src 源图像地址 

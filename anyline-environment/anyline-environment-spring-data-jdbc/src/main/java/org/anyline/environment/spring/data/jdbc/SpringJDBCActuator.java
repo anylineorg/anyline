@@ -535,6 +535,7 @@ public class SpringJDBCActuator implements DriverActuator {
         map = jdbc.queryForMap(sql);
         return map;
     }
+    
     /**
      * select [命令执行]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端

@@ -2281,11 +2281,9 @@ public class IoTDBAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 		refer.map(Column.FIELD_CATALOG, "");//忽略
 		refer.map(Column.FIELD_SCHEMA, "DATABASE");
 		refer.map(Column.FIELD_TABLE, "TABLE_NAME");
-		refer.map(Column.FIELD_OCTET_LENGTH, "");
 		refer.map(Column.FIELD_NULLABLE, "");
 		refer.map(Column.FIELD_CHARSET, "");
 		refer.map(Column.FIELD_COLLATE, "");
-		refer.map(Column.FIELD_TYPE, "datatype");
 		refer.map(Column.FIELD_POSITION, "");
 		refer.map(Column.FIELD_COMMENT, "COMMENT");
 		refer.map(Column.FIELD_DEFAULT_VALUE, "");
@@ -2300,6 +2298,20 @@ public class IoTDBAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 		refer.map(Column.FIELD_PRIMARY_CHECK_VALUE,"");
 		return refer;
 	}
+
+	/**
+	 * Column[结果集封装]<br/>
+	 * 数据类型 属性与结果集对应关系
+	 * @return MetadataFieldRefer
+	 */
+	@Override
+	public MetadataFieldRefer initDataTypeFieldRefer() {
+		MetadataFieldRefer refer = new MetadataFieldRefer(DataTypeDefine.class);
+		refer.map(DataTypeDefine.FIELD_NAME, "datatype");
+		refer.map(DataTypeDefine.FIELD_OCTET_LENGTH, "");
+		return refer;
+	}
+
 	/**
 	 * column[命令合成]<br/>(方法1)<br/>
 	 * 查询多个表的列

@@ -2442,8 +2442,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
     public Table.Partition detail(DataRuntime runtime, int index, boolean create, Table.Partition meta, Table table, DataRow row) throws Exception {
         return super.detail(runtime, index, create, meta, table, row);
     }
-
-
+    
     /**
      * partition table[结果集封装]<br/>
      * Table.Partition 属性与结果集对应关系
@@ -2627,7 +2626,17 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
     public MetadataFieldRefer initColumnFieldRefer() {
         return super.initColumnFieldRefer();
     }
-
+    
+    /**
+     * Column[结果集封装]<br/>
+     * 数据类型 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer initDataTypeFieldRefer() {
+        return super.initDataTypeFieldRefer();
+    }
+    
     /**
      * column[结果集封装]<br/>
      *  根据查询结果集构造Tag
@@ -3434,8 +3443,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
     public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Procedure query) throws Exception {
         return super.procedures(runtime, create, previous, query);
     }
-
-
+    
     /**
      *
      * procedure[调用入口]<br/>

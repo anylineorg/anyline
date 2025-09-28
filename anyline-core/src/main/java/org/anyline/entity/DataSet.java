@@ -299,13 +299,6 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
         }
         return null;
     }
-    public Integer getMetadataType(String column) {
-        Column col = getMetadata(column);
-        if(null != col) {
-            return col.getType();
-        }
-        return null;
-    }
     public String getMetadataFullType(String column) {
         Column col = getMetadata(column);
         if(null != col) {
@@ -540,6 +533,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
     public DataSet setIndex(String key){
         return setIndex(key, 0);
     }
+    
     /**
      * 是否有主键
      *
@@ -1008,6 +1002,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
     public DataSet distinct(String... keys) {
         return distinct(true, BeanUtil.array2list(keys));
     }
+    
     /**
      * 根据keys去重
      *
@@ -1877,6 +1872,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
     public BigDecimal wac(String factor, String key) {
         return wac(2, BigDecimal.ROUND_HALF_UP, factor, key);
     }
+    
     /**
      * 多列的乘积
      * @param target 结果存放位置
@@ -1898,6 +1894,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
     public void multiply(String ... keys) {
         multiply(null, true, keys);
     }
+    
     /**
      * 中位数
      *
@@ -3095,6 +3092,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
         }
         return this;
     }
+    
     /**
      * rows 列表中的数据格式化成json格式   不同与toJSON
      * map.put("type","list");
@@ -3429,6 +3427,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
         this.autoCheckElValue = autoCheckElValue;
         return this;
     }
+    
     /**
      * 从items中按相应的key提取数据 存入
      * dispatch("children",items, "DEPT_CD")
@@ -3756,6 +3755,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
         }
         return this;
     }
+    
     /**
      * 全部条目keys合集
      * @return List
@@ -3856,6 +3856,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
     public DataSet group(String... keys) {
         return group(true, keys);
     }
+    
     /**
      * 分组聚合
      * @param extract 分组结果是否只保留keys列
@@ -3897,6 +3898,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
     public DataSet group(String items, String alias, String field, Aggregation agg, int scale, int round, String ... groups) {
         return group(true, items, alias, field, agg, scale, round, groups);
     }
+    
     /**
      * 同一规则分组后,多次聚合
      * @param items 是否保留条目 如果为空则不保留 否则保留会在每个分组中添加items属性用来保存当前分组中的条件
@@ -4957,6 +4959,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
     public DataSet pivot(String[] pks, String[] classKeys, String[] valueKeys) {
         return pivot(true, pks, classKeys, valueKeys);
     }
+    
     /**
      * 行转列
      * @param pk       唯一标识key(如姓名)多个key以,分隔如(编号,姓名)

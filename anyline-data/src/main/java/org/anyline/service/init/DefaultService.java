@@ -1280,8 +1280,7 @@ public class DefaultService<E> implements AnylineService<E> {
         result = dao.execute(prepare, configs, conditions);
         return result;
     }
-
-
+    
     /**
      * RunPrepare批量执行 主要是为了保持在同一连接内执行<br/>
      * 通常是用prepare来合成比较复杂的的SQL如CREATE VIEW AS prepare.sql
@@ -3152,7 +3151,7 @@ public class DefaultService<E> implements AnylineService<E> {
             return dao.procedures(catalog, schema, name);
         }
         @Override
-        public Procedure procedure(boolean greedy, Catalog catalog, Schema schema, String name) {
+        public Procedure procedure(boolean greedy, Catalog catalog, Schema schema, String name) throws Exception {
             String[] ps = DataSourceUtil.parseRuntime(name);
             if(null != ps[0]) {
                 return ServiceProxy.service(ps[0]).metadata().procedure(catalog, schema, ps[0]);

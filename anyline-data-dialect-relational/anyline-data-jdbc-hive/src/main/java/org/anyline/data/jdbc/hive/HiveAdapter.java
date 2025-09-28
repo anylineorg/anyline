@@ -2315,19 +2315,31 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	public MetadataFieldRefer initColumnFieldRefer() {
 		MetadataFieldRefer refer = new MetadataFieldRefer(Column.class);
 		refer.map(Column.FIELD_NAME, "COLUMN_NAME");
-		refer.map(Column.FIELD_TYPE, "COLUMN_TYPE");
 		refer.map(Column.FIELD_TABLE, "TABLE_NAME");
 		refer.map(Column.FIELD_SCHEMA, "DATABASE_NAME");
 		refer.map(Column.FIELD_COMMENT, "COMMENTSTRING");
 		refer.map(Column.FIELD_DEFAULT_VALUE, "DEFAULT_VALUE");
 		refer.map(Column.FIELD_NULLABLE, "NULLABLE");
 		refer.map(Column.FIELD_PRIMARY_CHECK, "UNIQUE_CONSTRAINT");
-		refer.map(Column.FIELD_LENGTH, "COLUMN_LENGTH");
 		refer.map(Column.FIELD_POSITION, "COLUMN_ID");
 		refer.map(Column.FIELD_CATALOG, "");//忽略
 		refer.map(Column.FIELD_COLLATE, "");//忽略
 		return refer;
 	}
+
+	/**
+	 * Column[结果集封装]<br/>
+	 * 数据类型 属性与结果集对应关系
+	 * @return MetadataFieldRefer
+	 */
+	@Override
+	public MetadataFieldRefer initDataTypeFieldRefer() {
+		MetadataFieldRefer refer = new MetadataFieldRefer(DataTypeDefine.class);
+		refer.map(DataTypeDefine.FIELD_NAME, "COLUMN_TYPE");
+		refer.map(DataTypeDefine.FIELD_LENGTH, "COLUMN_LENGTH");
+		return refer;
+	}
+
 	/**
 	 * column[结果集封装]<br/>
 	 *  根据查询结果集构造Tag

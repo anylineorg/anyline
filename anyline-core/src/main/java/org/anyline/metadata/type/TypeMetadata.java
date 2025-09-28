@@ -16,7 +16,7 @@
 
 package org.anyline.metadata.type;
 
-import org.anyline.metadata.Column;
+import org.anyline.metadata.DataTypeDefine;
 import org.anyline.metadata.refer.MetadataReferHolder;
 import org.anyline.metadata.type.init.StandardTypeMetadata;
 import org.anyline.util.BasicUtil;
@@ -720,12 +720,12 @@ public interface TypeMetadata {
      * @param spells 拼写兼容
      * @return TypeMetadata
      */
-    static TypeMetadata parse(DatabaseType database, Column meta, LinkedHashMap<String, TypeMetadata> alias, Map<String,String> spells) {
+    static TypeMetadata parse(DatabaseType database, DataTypeDefine meta, LinkedHashMap<String, TypeMetadata> alias, Map<String,String> spells) {
         if(null == meta) {
             return null;
         }
         NUMBER_LENGTH_UNIT numberLengthUnit = null;
-        DatabaseType srcType = meta.getDatabaseType();
+        DatabaseType srcType = meta.database();
         if(null != srcType) {
             numberLengthUnit = srcType.numberLengthUnit();
         }
@@ -739,7 +739,7 @@ public interface TypeMetadata {
         String typeName = originType;
         String up = typeName.toUpperCase();
         TypeMetadata typeMetadata = meta.getTypeMetadata();
-        if(null != typeMetadata && TypeMetadata.NONE != typeMetadata && meta.getParseLvl() >=2 && meta.getDatabaseType() == database) {
+        if(null != typeMetadata && TypeMetadata.NONE != typeMetadata && meta.getParseLvl() >=2 && meta.database() == database) {
             return typeMetadata;
         }
         Integer length = meta.getLength();
@@ -759,7 +759,6 @@ public interface TypeMetadata {
         typeName = typeName.trim().replace("'", "");
 
         if (typeName.toUpperCase().contains("IDENTITY")) {
-            meta.autoIncrement(true);
             if (typeName.contains(" ")) {
                 // TYPE_NAME=int identity
                 typeName = typeName.split(" ")[0];
@@ -875,7 +874,7 @@ public interface TypeMetadata {
                         precision = BasicUtil.parseInt(lens[0], null);
                         scale = BasicUtil.parseInt(lens[1], null);
                     } else {
-                        meta.setChildTypeName(lens[0]);
+                        meta.setChild(lens[0]);
                         meta.setSrid(BasicUtil.parseInt(lens[1], null));
                     }
                 } else {
@@ -883,7 +882,7 @@ public interface TypeMetadata {
                     if (BasicUtil.isNumber(tmp)) {
                         precision = BasicUtil.parseInt(tmp, null);
                     } else {
-                        meta.setChildTypeName(tmp);
+                        meta.setChild(tmp);
                     }
                 }
                 typeName = typeName.substring(0, typeName.indexOf("("));
@@ -897,7 +896,7 @@ public interface TypeMetadata {
         }
         if(null != typeMetadata && TypeMetadata.NONE != typeMetadata) {
             meta.setTypeMetadata(typeMetadata);
-            meta.setTypeName(typeMetadata.getName(), false);
+            meta.setName(typeMetadata.getName(), false);
         }else{
             //没有对应的类型原们输出
             meta.setFullType(originType);
@@ -932,7 +931,7 @@ public interface TypeMetadata {
         if(null != database && database != DatabaseType.NONE) {
             meta.setParseLvl(2);
         }
-        meta.setDatabaseType(database);
+        meta.setDatabase(database);
         return typeMetadata;
     }
 

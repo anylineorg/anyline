@@ -30,8 +30,8 @@ public class Tag extends Column implements Serializable {
     }
     public Tag(String name, String type, Object value) {
         this.name = name;
-        this.typeName = type;
         this.value = value;
+        setType(type);
     }
     public Tag(String name, Object value) {
         this.name = name;
@@ -79,7 +79,9 @@ public class Tag extends Column implements Serializable {
 
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append(name).append(" ").append(typeName);
+        builder.append(name).append(" ").append(getTypeName());
+        Integer precision = getPrecision();
+        Integer scale = getScale();
         if(null != precision && precision > 0) {
             builder.append("(").append(precision);
             if(null != scale && scale > 0) {

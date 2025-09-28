@@ -497,6 +497,22 @@ public enum Compare {
             return 0;
         }
     },
+    //正则表达式，注意不是每个数据库都支持
+    REGEX(99, "正则","not regex"," NOT REGEXP ?") {
+        public boolean compare(Object value, Object target) {
+            if(null == target || null == value) {
+                return false;
+            }
+            if(value instanceof Collection) {
+                Collection col = (Collection)value;
+                return col.contains(target);
+            }
+            return false;
+        }
+        public int valueCount() {
+            return 1;
+        }
+    },
     NOT_EQUAL(110, "不等于","nin"," != ? ") {
         public boolean compare(Object value, Object target) {
             if(null == target || null == value) {
@@ -647,7 +663,7 @@ public enum Compare {
         }
     },
     //正则表达式，注意不是每个数据库都支持
-    REGEX(999, "正则","regex"," REGEXP ?") {
+    NOT_REGEX(199, "正则","regex"," REGEXP ?") {
         public boolean compare(Object value, Object target) {
             if(null == target || null == value) {
                 return false;

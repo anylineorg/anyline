@@ -137,6 +137,7 @@ public class LogUtil {
     public static String table(DataSet set) {
         return table(set, set.keys(), true, ConfigTable.LOG_QUERY_RESULT_ROWS, ConfigTable.LOG_QUERY_RESULT_TABLE_MAX_WIDTH);
     }
+    
     /**
      * 表格日志格式化
      * @param set 数据源
@@ -392,8 +393,7 @@ public class LogUtil {
         }
         return cnt;
     }
-
-
+    
     /**
      *
      * @param src 原文

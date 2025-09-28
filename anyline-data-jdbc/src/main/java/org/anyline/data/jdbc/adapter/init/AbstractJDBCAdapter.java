@@ -40,6 +40,7 @@ import org.anyline.exception.CommandUpdateException;
 import org.anyline.exception.NotSupportException;
 import org.anyline.metadata.*;
 import org.anyline.metadata.refer.MetadataFieldRefer;
+import org.anyline.metadata.DataTypeDefine;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.proxy.CacheProxy;
@@ -1212,6 +1213,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
         }
         return rv;
     }
+    
     /**
      * select[命令合成-子流程] <br/>
      * 构造 [not] exists 查询条件
@@ -1243,6 +1245,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
         }
         return values;
     }
+    
     /**
      * select[命令合成-子流程] <br/>
      * 构造 FIND_IN_SET 查询条件
@@ -1358,6 +1361,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
         }
         return values;
     }
+    
     /**
      * select [命令执行]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -3596,7 +3600,17 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
     public MetadataFieldRefer initColumnFieldRefer() {
         return super.initColumnFieldRefer();
     }
-
+    
+    /**
+     * Column[结果集封装]<br/>
+     * 数据类型 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer initDataTypeFieldRefer() {
+        return super.initDataTypeFieldRefer();
+    }
+    
     /**
      * column[命令合成]<br/>(方法1)<br/>
      * 查询多个表的列
@@ -3701,9 +3715,9 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         return meta;
     }
 
-    public DataType init(DataRuntime runtime, MetadataFieldRefer refer, DataRow row){
-        DataType meta = null;
-        String type = getString(row, refer, Column.FIELD_TYPE);
+    public DataTypeDefine type(DataRuntime runtime, MetadataFieldRefer refer, DataRow row){
+        DataTypeDefine meta = new DataTypeDefine();
+        String type = getString(row, refer, DataTypeDefine.FIELD_NAME);
         /*if(null != type) {
             type = type.replace("character varying","VARCHAR");
         }*/
@@ -3739,7 +3753,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
             meta.setLength(len);
         }catch (Exception ignored) {}
         try{
-            meta.setOctetLength(getInt(row, refer, Column.FIELD_OCTET_LENGTH, null));
+            meta.setOctetLength(getInt(row, refer, DataTypeDefine.FIELD_OCTET_LENGTH, null));
         }catch (Exception ignored) {}
         try{
             Integer precision = row.getInt(null, trefer.getPrecisionRefers());
@@ -3760,17 +3774,12 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
             meta.setScale(scale);
         }catch (Exception ignored) {}
 
-        if(null == meta.getCharset()) {
-            meta.setCharset(getString(row, refer, Table.FIELD_CHARSET));//"CHARACTER_SET_NAME"
-        }
-        if(null == meta.getCollate()) {
-            meta.setCollate(getString(row, refer, Table.FIELD_COLLATE));//COLLATION_NAME
-        }
         if(null == meta.getTypeMetadata()) {
             typeMetadata(runtime, meta);
         }
         return meta;
     }
+    
     /**
      * column[结果集封装]<br/>(方法1)<br/>
      * 列详细属性
@@ -3832,7 +3841,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
                 meta.autoIncrement(true);
             }
         }
-
+        meta.setType(type(runtime, refer(runtime, DataTypeDefine.class), row));
         meta.setObjectId(getLong(row, refer, Column.FIELD_OBJECT_ID, null));
         //主键 mysql已合并
         Boolean primary = matchBoolean(row, refer, Column.FIELD_PRIMARY_CHECK, Column.FIELD_PRIMARY_CHECK_VALUE);
@@ -3848,6 +3857,12 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
             try {
                 meta.nullable(getBoolean(row, refer,Column.FIELD_NULLABLE, null));//"IS_NULLABLE","NULLABLE","NULLS"
             }catch (Exception ignored) {}
+        }
+        if(null == meta.getCharset()) {
+            meta.setCharset(getString(row, refer, Table.FIELD_CHARSET));//"CHARACTER_SET_NAME"
+        }
+        if(null == meta.getCollate()) {
+            meta.setCollate(getString(row, refer, Table.FIELD_COLLATE));//COLLATION_NAME
         }
         return meta;
     }
@@ -5558,6 +5573,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         }
         return builder;
     }
+    
     /**
      * table[命令合成-子流程]<br/>
      * 扩展属性
@@ -8744,6 +8760,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
     public List<Run> buildCreateRun(DataRuntime runtime, Role role) throws Exception {
         return super.buildCreateRun(runtime, role);
     }
+    
     /**
      * role[命令合成]<br/>
      * 角色重命名
@@ -8899,6 +8916,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
     public List<Run> buildCreateRun(DataRuntime runtime, User user) throws Exception {
         return super.buildCreateRun(runtime, user);
     }
+    
     /**
      * user[命令合成]<br/>
      * 用户重命名
@@ -8942,6 +8960,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
     public MetadataFieldRefer initUserFieldRefer() {
         return super.initUserFieldRefer();
     }
+    
     /**
      * user[结果集封装]<br/>
      * 根据查询结果集构造 user

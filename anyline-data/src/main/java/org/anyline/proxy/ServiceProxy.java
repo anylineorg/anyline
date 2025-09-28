@@ -1114,6 +1114,7 @@ public class ServiceProxy {
     public static AggregationBuilder aggregation(RunPrepare table){
         return service.aggregation(table);
     }
+    
     /**
      * 列名转找成参数名 可以给condition()提供参数用来接收前端参数
      * @param table 表
@@ -1356,6 +1357,7 @@ public class ServiceProxy {
     public static DataRow cache(Table dest, String ... conditions) {
         return cache(null, dest, null, null, conditions);
     }
+    
     /**
      * 删除缓存 参数保持与查询参数完全一致
      * @param channel 		channel

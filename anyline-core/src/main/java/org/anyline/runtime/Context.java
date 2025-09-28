@@ -51,8 +51,7 @@ public class Context {
     public LinkedHashMap<String, Object> variables(){
         return variables;
     }
-
-
+    
     /**
      * 设置占位符替换值 在调用save时执行替换<br/>
      * 注意如果不解析的话 不会添加自动${}符号 按原文替换,是替换整个文件的纯文件，包括标签名在内
@@ -239,8 +238,7 @@ public class Context {
         }
         return data;
     }
-
-
+    
     /**
      * 当前时间 ${aov:now}
      * 随机8位字符${aov:random:8} ${aov:string:8}
@@ -264,6 +262,7 @@ public class Context {
         }
         return null;
     }
+    
     /**
      * 替换占位符
      * @param text 原文
