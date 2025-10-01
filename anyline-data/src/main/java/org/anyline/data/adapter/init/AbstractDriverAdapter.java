@@ -9269,7 +9269,12 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		//根据系统表查询
 		try {
-			List<Run> runs = buildQueryColumnsRun(runtime, false, tables, query, configs);
+            List<Table> list = new ArrayList<>();
+            if(tables.size()<20){
+                //数量太多的 不用in 先全部查出来 再分配给表
+                list.addAll(tables);
+            }
+			List<Run> runs = buildQueryColumnsRun(runtime, false, list, query, configs);
 			if (null != runs) {
 				int idx = 0;
 				for (Run run: runs) {
@@ -10342,7 +10347,12 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		//根据系统表查询
 		try {
-			List<Run> runs = buildQueryIndexesRun(runtime, greedy, tables);
+            List<Table> tabs = new ArrayList<>();
+            if(tables.size()<20){
+                //数量太多的 不用in 先全部查出来 再分配给表
+                tabs.addAll(tables);
+            }
+			List<Run> runs = buildQueryIndexesRun(runtime, greedy, tabs);
 			if (null != runs) {
 				int idx = 0;
 				for (Run run: runs) {
