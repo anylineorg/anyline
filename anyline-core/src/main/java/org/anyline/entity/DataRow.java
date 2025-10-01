@@ -1750,7 +1750,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return row;
     }
     public DataSet puts(String key) {
-        DataSet set = new DataSet();
+        DataSet set = new DataSet(keyCase);
         put(key, set);
         return set;
     }

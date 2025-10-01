@@ -65,6 +65,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
     private Map<String, Object> tags                = new HashMap<>()       ; // 标签
     protected DataRow attributes                    = null                  ; // 属性
     protected boolean autoCheckElValue              = true                  ; // 检测el value
+    protected KEY_CASE keyCase 				        = KEY_CASE.CONFIG       ; // 列名格式
 
     /**
      * 创建索引
@@ -79,6 +80,11 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
     }
 
     public DataSet() {
+        rows = new ArrayList<>();
+        createTime = System.currentTimeMillis();
+    }
+    public DataSet(KEY_CASE kc) {
+        this.keyCase = kc;
         rows = new ArrayList<>();
         createTime = System.currentTimeMillis();
     }
@@ -4456,7 +4462,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
         return row;
     }
     public DataRow add() {
-        DataRow row = new DataRow();
+        DataRow row = new DataRow(keyCase);
         add(row);
         return row;
     }

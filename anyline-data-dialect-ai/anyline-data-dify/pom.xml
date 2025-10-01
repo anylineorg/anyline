@@ -8,7 +8,7 @@
         <groupId>org.anyline</groupId>
         <artifactId>anyline-dependency</artifactId>
         <version>8.7.2-SNAPSHOT</version>
-        <relativePath>../anyline-dependency/pom.xml</relativePath>
+        <relativePath>../../anyline-dependency/pom.xml</relativePath>
     </parent>
 
     <artifactId>anyline-data-dify</artifactId>

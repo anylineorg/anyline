@@ -5,7 +5,9 @@ import org.anyline.metadata.Embedding;
 import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.UUID;
 
 public class Document implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -21,7 +23,7 @@ public class Document implements Serializable {
     private Embedding embedding;
     private INDEXING_TECHNIQUE technique;
     private ProcessRule rule;
-    private List<Metadata> metadatas = new ArrayList<Metadata>();
+    private LinkedHashMap<String, Metadata> metadatas = new LinkedHashMap<>();
 
     public String getId() {
         return id;
@@ -95,11 +97,27 @@ public class Document implements Serializable {
         this.rule = rule;
     }
 
-    public List<Metadata> getMetadatas() {
+    public LinkedHashMap<String, Metadata> getMetadatas() {
         return metadatas;
     }
 
-    public void setMetadatas(List<Metadata> metadatas) {
+    public void setMetadatas(LinkedHashMap<String, Metadata> metadatas) {
         this.metadatas = metadatas;
+    }
+    public Document addMetadata(String name, Object value){
+        return addMetadata(new Metadata(name, value));
+    }
+    public Document addMetadata(String id, String name, Object value){
+        return addMetadata(new Metadata(id, name, value));
+    }
+    public Document addMetadata(Metadata metadata){
+        if(null == metadata.getId()){
+            metadata.setId(UUID.randomUUID().toString());
+        }
+        metadatas.put(metadata.getName().toUpperCase(), metadata);
+        return this;
+    }
+    public Metadata getMetadata(String name){
+        return metadatas.get(name.toUpperCase());
     }
 }

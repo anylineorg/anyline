@@ -40,6 +40,7 @@
 		<module>anyline-extends</module>
 		<!-- dialect按数据库主模型分类 -->
 		<module>anyline-data-dialect-relational</module>
+		<module>anyline-data-dialect-ai</module>
 		<module>anyline-data-dialect-document</module>
 		<module>anyline-data-dialect-event</module>
 		<module>anyline-data-dialect-graph</module>
@@ -51,7 +52,6 @@
 		<module>anyline-data-dialect-time-series</module>
 		<module>anyline-data-dialect-vector</module>
 		<module>anyline-data-dialect-wide-column</module>
-        <module>anyline-data-dify</module>
     </modules>
 	<build>
 		<plugins>
