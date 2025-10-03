@@ -2,52 +2,40 @@ package org.anyline.data.dify.entity;
 
 import org.anyline.entity.DataRow;
 import org.anyline.entity.OriginRow;
+import org.anyline.metadata.Column;
 import org.anyline.util.BeanUtil;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
 
-public class Metadata implements Serializable {
+public class Metadata extends Column implements Serializable {
     private static final long serialVersionUID = 1L;
-    private String id;
-    private String name;
-    private Object value;
-    private String type = null;
+    private String type;
 
     public Metadata(){}
-    public Metadata(String name, Object value){
+
+    /**
+     * 知识库添加元数据定义时用到
+     * @param name 名称
+     * @param type 类型 string number datetime
+     */
+    public Metadata(String name, String type){
         this.name = name;
-        this.value = value;
+        this.type = type;
     }
+
+    /**
+     * 文档添加元数据值时用到
+     * @param id 与知识库添加元数据定义时返回的id保持一致
+     * @param name 名称
+     * @param value 值
+     */
     public Metadata(String id, String name, Object value){
         this.id = id;
         this.name = name;
         this.value = value;
     }
-    public String getId() {
-        return id;
-    }
 
-    public void setId(String id) {
-        this.id = id;
-    }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Object getValue() {
-        return value;
-    }
-
-    public void setValue(Object value) {
-        this.value = value;
-    }
     public DataRow map(){
         return map(true);
     }
@@ -70,7 +58,8 @@ public class Metadata implements Serializable {
         return type;
     }
 
-    public void setType(String type) {
+    public Column setType(String type) {
         this.type = type;
+        return this;
     }
 }
