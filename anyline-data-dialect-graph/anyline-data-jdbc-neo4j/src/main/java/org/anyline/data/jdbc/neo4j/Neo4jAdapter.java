@@ -80,7 +80,7 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
      *                                                     INSERT
      * -----------------------------------------------------------------------------------------------------------------
      * Run buildInsertRun(DataRuntime runtime, String dest, Object obj, LinkedHashMap<String, Column> columns)
-     * void createInsertContent(DataRuntime runtime, Run run, String dest, DataSet set, LinkedHashMap<String, Column> columns)
+     * void createInsertContent(DataRuntime runtime, Run run, String dest, DataSet<DataRow> set, LinkedHashMap<String, Column> columns)
      * void createInsertContent(DataRuntime runtime, Run run, String dest, Collection list, LinkedHashMap<String, Column> columns)
      *
      * protected Run createInsertRun(DataRuntime runtime, String dest, Object obj, LinkedHashMap<String, Column> columns)
@@ -111,7 +111,7 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
      * @param columns 需插入的列
      */
     @Override
-    public void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet set, ConfigStore configs, Boolean placeholder, Boolean unicode, LinkedHashMap<String, Column> columns) {
+    public void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet<DataRow> set, ConfigStore configs, Boolean placeholder, Boolean unicode, LinkedHashMap<String, Column> columns) {
         StringBuilder builder = run.getBuilder();
         if(null == builder) {
             builder = new StringBuilder();
@@ -156,7 +156,7 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
             run.setBuilder(builder);
         }
         if(list instanceof DataSet) {
-            DataSet set = (DataSet) list;
+            DataSet<DataRow> set = (DataSet) list;
             this.fillInsertContent(runtime, run, dest, set, placeholder, unicode, columns);
             return;
         }
@@ -239,7 +239,7 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
         }
         Object first = null;
         if(list instanceof DataSet) {
-            DataSet set = (DataSet)list;
+            DataSet<DataRow> set = (DataSet)list;
             first = set.getRow(0);
             if(BasicUtil.isEmpty(dest)) {
                 dest = configs.table();

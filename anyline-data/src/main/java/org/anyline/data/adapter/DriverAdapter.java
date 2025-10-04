@@ -955,8 +955,8 @@ public interface DriverAdapter {
      * @param set 需要插入的数据集合
      * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
      */
-    void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet set, ConfigStore configs, Boolean placeholder, Boolean unicode, LinkedHashMap<String, Column> columns);
-    default void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet set, Boolean placeholder, Boolean unicode, LinkedHashMap<String, Column> columns) {
+    void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet<DataRow> set, ConfigStore configs, Boolean placeholder, Boolean unicode, LinkedHashMap<String, Column> columns);
+    default void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet<DataRow> set, Boolean placeholder, Boolean unicode, LinkedHashMap<String, Column> columns) {
         fillInsertContent(runtime, run, dest, set, null, placeholder, unicode, columns);
     }
 
@@ -985,10 +985,10 @@ public interface DriverAdapter {
      * @param set 需要插入的数据集合
      * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
      */
-    default void fillInsertContent(DataRuntime runtime, Run run, String dest, DataSet set, ConfigStore configs, Boolean placeholder, Boolean unicode, LinkedHashMap<String, Column> columns) {
+    default void fillInsertContent(DataRuntime runtime, Run run, String dest, DataSet<DataRow> set, ConfigStore configs, Boolean placeholder, Boolean unicode, LinkedHashMap<String, Column> columns) {
         fillInsertContent(runtime, run, DataSourceUtil.parseDest(dest, set, configs), set, configs, placeholder, unicode, columns);
     }
-    default void fillInsertContent(DataRuntime runtime, Run run, String dest, DataSet set, Boolean placeholder, Boolean unicode, LinkedHashMap<String, Column> columns) {
+    default void fillInsertContent(DataRuntime runtime, Run run, String dest, DataSet<DataRow> set, Boolean placeholder, Boolean unicode, LinkedHashMap<String, Column> columns) {
         fillInsertContent(runtime, run, dest, set, null, placeholder, unicode, columns);
     }
 
@@ -1068,10 +1068,10 @@ public interface DriverAdapter {
      * @param set 需要插入的数据集合
      * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
      */
-    default void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet set, ConfigStore configs, LinkedHashMap<String, Column> columns) {
+    default void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet<DataRow> set, ConfigStore configs, LinkedHashMap<String, Column> columns) {
         fillInsertContent(runtime, run, dest, set, configs, true, true, columns);
     }
-    default void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet set, LinkedHashMap<String, Column> columns) {
+    default void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet<DataRow> set, LinkedHashMap<String, Column> columns) {
         fillInsertContent(runtime, run, dest, set, null, true, true, columns);
     }
 
@@ -1100,10 +1100,10 @@ public interface DriverAdapter {
      * @param set 需要插入的数据集合
      * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
      */
-    default void fillInsertContent(DataRuntime runtime, Run run, String dest, DataSet set, ConfigStore configs, LinkedHashMap<String, Column> columns) {
+    default void fillInsertContent(DataRuntime runtime, Run run, String dest, DataSet<DataRow> set, ConfigStore configs, LinkedHashMap<String, Column> columns) {
         fillInsertContent(runtime, run, DataSourceUtil.parseDest(dest, set, configs), set, configs, true, true, columns);
     }
-    default void fillInsertContent(DataRuntime runtime, Run run, String dest, DataSet set, LinkedHashMap<String, Column> columns) {
+    default void fillInsertContent(DataRuntime runtime, Run run, String dest, DataSet<DataRow> set, LinkedHashMap<String, Column> columns) {
         fillInsertContent(runtime, run, dest, set, null, true, true, columns);
     }
 
@@ -2664,7 +2664,7 @@ public interface DriverAdapter {
      * @return product
      * @throws Exception 异常
      */
-    String product(DataRuntime runtime, int index, boolean create, String product, DataSet set);
+    String product(DataRuntime runtime, int index, boolean create, String product, DataSet<DataRow> set);
     /**
      * database[结果集封装]<br/>
      * 根据JDBC内置接口 product
@@ -2685,7 +2685,7 @@ public interface DriverAdapter {
      * @return version
      * @throws Exception 异常
      */
-    String version(DataRuntime runtime, int index, boolean create, String version, DataSet set);
+    String version(DataRuntime runtime, int index, boolean create, String version, DataSet<DataRow> set);
     /**
      * database[结果集封装]<br/>
      * 根据JDBC内置接口 version
@@ -2707,8 +2707,8 @@ public interface DriverAdapter {
      * @return databases
      * @throws Exception 异常
      */
-    <T extends Database> LinkedHashMap<String, T> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Database query, DataSet set) throws Exception;
-    <T extends Database> List<T> databases(DataRuntime runtime, int index, boolean create, List<T> previous, Database query, DataSet set) throws Exception;
+    <T extends Database> LinkedHashMap<String, T> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Database query, DataSet<DataRow> set) throws Exception;
+    <T extends Database> List<T> databases(DataRuntime runtime, int index, boolean create, List<T> previous, Database query, DataSet<DataRow> set) throws Exception;
 
     /**
      * database[结果集封装]<br/>
@@ -2721,7 +2721,7 @@ public interface DriverAdapter {
      * @return database
      * @throws Exception 异常
      */
-    Database database(DataRuntime runtime, int index, boolean create, Database meta, DataSet set) throws Exception;
+    Database database(DataRuntime runtime, int index, boolean create, Database meta, DataSet<DataRow> set) throws Exception;
     /**
      * database[结果集封装]<br/>
      * 当前database 根据驱动内置接口补充
@@ -2839,8 +2839,8 @@ public interface DriverAdapter {
      * @return catalogs
      * @throws Exception 异常
      */
-    <T extends Catalog> LinkedHashMap<String, T> catalogs(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Catalog query, DataSet set) throws Exception;
-    <T extends Catalog> List<T> catalogs(DataRuntime runtime, int index, boolean create, List<T> previous, Catalog query, DataSet set) throws Exception;
+    <T extends Catalog> LinkedHashMap<String, T> catalogs(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Catalog query, DataSet<DataRow> set) throws Exception;
+    <T extends Catalog> List<T> catalogs(DataRuntime runtime, int index, boolean create, List<T> previous, Catalog query, DataSet<DataRow> set) throws Exception;
 
     /**
      * catalog[结果集封装]<br/>
@@ -2875,7 +2875,7 @@ public interface DriverAdapter {
      * @return Catalog
      * @throws Exception 异常
      */
-    Catalog catalog(DataRuntime runtime, int index, boolean create, Catalog meta, DataSet set) throws Exception;
+    Catalog catalog(DataRuntime runtime, int index, boolean create, Catalog meta, DataSet<DataRow> set) throws Exception;
     /**
      * catalog[结果集封装]<br/>
      * 当前catalog 根据驱动内置接口补充
@@ -3018,7 +3018,7 @@ public interface DriverAdapter {
      * @return schemas
      * @throws Exception 异常
      */
-    <T extends Schema> LinkedHashMap<String, T> schemas(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Schema query, DataSet set) throws Exception;
+    <T extends Schema> LinkedHashMap<String, T> schemas(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Schema query, DataSet<DataRow> set) throws Exception;
 
     /**
      * schema[结果集封装]<br/>
@@ -3031,13 +3031,13 @@ public interface DriverAdapter {
      * @return schemas
      * @throws Exception 异常
      */
-    default <T extends Schema> LinkedHashMap<String, T> schemas(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Catalog catalog, DataSet set) throws Exception {
+    default <T extends Schema> LinkedHashMap<String, T> schemas(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Catalog catalog, DataSet<DataRow> set) throws Exception {
         Schema query = new Schema();
         query.setCatalog(catalog);
         return schemas(runtime, index, create, previous, query, set);
     }
-    <T extends Schema> List<T> schemas(DataRuntime runtime, int index, boolean create, List<T> previous, Schema query, DataSet set) throws Exception;
-    default <T extends Schema> List<T> schemas(DataRuntime runtime, int index, boolean create, List<T> previous, Catalog catalog, DataSet set) throws Exception {
+    <T extends Schema> List<T> schemas(DataRuntime runtime, int index, boolean create, List<T> previous, Schema query, DataSet<DataRow> set) throws Exception;
+    default <T extends Schema> List<T> schemas(DataRuntime runtime, int index, boolean create, List<T> previous, Catalog catalog, DataSet<DataRow> set) throws Exception {
         Schema query = new Schema();
         query.setCatalog(catalog);
         return schemas(runtime, index, create, previous, query, set);
@@ -3075,7 +3075,7 @@ public interface DriverAdapter {
      * @return schema
      * @throws Exception 异常
      */
-    Schema schema(DataRuntime runtime, int index, boolean create, Schema meta, DataSet set) throws Exception;
+    Schema schema(DataRuntime runtime, int index, boolean create, Schema meta, DataSet<DataRow> set) throws Exception;
     /**
      * schema[结果集封装]<br/>
      * 当前schema 根据驱动内置接口补充
@@ -3256,7 +3256,7 @@ public interface DriverAdapter {
      * @return tables
      * @throws Exception 异常
      */
-    <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Table query, DataSet set) throws Exception;
+    <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Table query, DataSet<DataRow> set) throws Exception;
     /**
      * table[结果集封装]<br/>
      * 根据查询结果集构造Table
@@ -3270,14 +3270,14 @@ public interface DriverAdapter {
      * @return tables
      * @throws Exception 异常
      */
-    default <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Catalog catalog, Schema schema, DataSet set) throws Exception {
+    default <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Catalog catalog, Schema schema, DataSet<DataRow> set) throws Exception {
         Table query = new Table();
         query.setCatalog(catalog);
         query.setSchema(schema);
         return tables(runtime, index, create, previous, query, set);
     }
-    <T extends Table> List<T> tables(DataRuntime runtime, int index, boolean create, List<T> previous, Table query, DataSet set) throws Exception;
-    default <T extends Table> List<T> tables(DataRuntime runtime, int index, boolean create, List<T> previous, Catalog catalog, Schema schema, DataSet set) throws Exception {
+    <T extends Table> List<T> tables(DataRuntime runtime, int index, boolean create, List<T> previous, Table query, DataSet<DataRow> set) throws Exception;
+    default <T extends Table> List<T> tables(DataRuntime runtime, int index, boolean create, List<T> previous, Catalog catalog, Schema schema, DataSet<DataRow> set) throws Exception {
         Table query = new Table();
         query.setCatalog(catalog);
         query.setSchema(schema);
@@ -3356,7 +3356,7 @@ public interface DriverAdapter {
      * @return tables
      * @throws Exception 异常
      */
-    <T extends Table> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Table query, DataSet set) throws Exception;
+    <T extends Table> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Table query, DataSet<DataRow> set) throws Exception;
 
     /**
      * table[结果集封装]<br/>
@@ -3371,14 +3371,14 @@ public interface DriverAdapter {
      * @return tables
      * @throws Exception 异常
      */
-    default <T extends Table> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Catalog catalog, Schema schema, DataSet set) throws Exception {
+    default <T extends Table> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Catalog catalog, Schema schema, DataSet<DataRow> set) throws Exception {
         Table query = new Table();
         query.setCatalog(catalog);
         query.setSchema(schema);
         return comments(runtime, index, create, previous, query, set);
     }
-    <T extends Table> List<T> comments(DataRuntime runtime, int index, boolean create, List<T> previous, Table query, DataSet set) throws Exception;
-    default <T extends Table> List<T> comments(DataRuntime runtime, int index, boolean create, List<T> previous, Catalog catalog, Schema schema, DataSet set) throws Exception {
+    <T extends Table> List<T> comments(DataRuntime runtime, int index, boolean create, List<T> previous, Table query, DataSet<DataRow> set) throws Exception;
+    default <T extends Table> List<T> comments(DataRuntime runtime, int index, boolean create, List<T> previous, Catalog catalog, Schema schema, DataSet<DataRow> set) throws Exception {
         Table query = new Table();
         query.setCatalog(catalog);
         query.setSchema(schema);
@@ -3414,7 +3414,7 @@ public interface DriverAdapter {
      * @param set sql执行的结果集
      * @return List
      */
-    List<String> ddl(DataRuntime runtime, int index, Table table, List<String> ddls, DataSet set);
+    List<String> ddl(DataRuntime runtime, int index, Table table, List<String> ddls, DataSet<DataRow> set);
 
     /**
      * table[结果集封装]<br/>
@@ -3610,7 +3610,7 @@ public interface DriverAdapter {
      * @return vertexs
      * @throws Exception 异常
      */
-    <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, VertexTable query, DataSet set) throws Exception;
+    <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, VertexTable query, DataSet<DataRow> set) throws Exception;
     /**
      * vertex[结果集封装]<br/>
      *  根据查询结果集构造VertexTable
@@ -3624,14 +3624,14 @@ public interface DriverAdapter {
      * @return vertexs
      * @throws Exception 异常
      */
-    default <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Catalog catalog, Schema schema, DataSet set) throws Exception {
+    default <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Catalog catalog, Schema schema, DataSet<DataRow> set) throws Exception {
         VertexTable query = new VertexTable();
         query.setCatalog(catalog);
         query.setSchema(schema);
         return vertexs(runtime, index, create, previous, query, set);
     }
-    <T extends VertexTable> List<T> vertexs(DataRuntime runtime, int index, boolean create, List<T> previous, VertexTable query, DataSet set) throws Exception;
-    default <T extends VertexTable> List<T> vertexs(DataRuntime runtime, int index, boolean create, List<T> previous, Catalog catalog, Schema schema, DataSet set) throws Exception {
+    <T extends VertexTable> List<T> vertexs(DataRuntime runtime, int index, boolean create, List<T> previous, VertexTable query, DataSet<DataRow> set) throws Exception;
+    default <T extends VertexTable> List<T> vertexs(DataRuntime runtime, int index, boolean create, List<T> previous, Catalog catalog, Schema schema, DataSet<DataRow> set) throws Exception {
         VertexTable query = new VertexTable();
         query.setCatalog(catalog);
         query.setSchema(schema);
@@ -3728,7 +3728,7 @@ public interface DriverAdapter {
      * @param set sql执行的结果集
      * @return List
      */
-    List<String> ddl(DataRuntime runtime, int index, VertexTable vertex, List<String> ddls, DataSet set);
+    List<String> ddl(DataRuntime runtime, int index, VertexTable vertex, List<String> ddls, DataSet<DataRow> set);
 
     /**
      * vertex[结果集封装]<br/>
@@ -3925,7 +3925,7 @@ public interface DriverAdapter {
      * @return edges
      * @throws Exception 异常
      */
-    <T extends EdgeTable> LinkedHashMap<String, T> edges(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, EdgeTable query, DataSet set) throws Exception;
+    <T extends EdgeTable> LinkedHashMap<String, T> edges(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, EdgeTable query, DataSet<DataRow> set) throws Exception;
     /**
      * edge[结果集封装]<br/>
      *  根据查询结果集构造EdgeTable
@@ -3939,14 +3939,14 @@ public interface DriverAdapter {
      * @return edges
      * @throws Exception 异常
      */
-    default <T extends EdgeTable> LinkedHashMap<String, T> edges(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Catalog catalog, Schema schema, DataSet set) throws Exception {
+    default <T extends EdgeTable> LinkedHashMap<String, T> edges(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Catalog catalog, Schema schema, DataSet<DataRow> set) throws Exception {
         EdgeTable query = new EdgeTable();
         query.setCatalog(catalog);
         query.setSchema(schema);
         return edges(runtime, index, create, previous, query, set);
     }
-    <T extends EdgeTable> List<T> edges(DataRuntime runtime, int index, boolean create, List<T> previous, EdgeTable query, DataSet set) throws Exception;
-    default <T extends EdgeTable> List<T> edges(DataRuntime runtime, int index, boolean create, List<T> previous, Catalog catalog, Schema schema, DataSet set) throws Exception {
+    <T extends EdgeTable> List<T> edges(DataRuntime runtime, int index, boolean create, List<T> previous, EdgeTable query, DataSet<DataRow> set) throws Exception;
+    default <T extends EdgeTable> List<T> edges(DataRuntime runtime, int index, boolean create, List<T> previous, Catalog catalog, Schema schema, DataSet<DataRow> set) throws Exception {
         EdgeTable query = new EdgeTable();
         query.setCatalog(catalog);
         query.setSchema(schema);
@@ -4043,7 +4043,7 @@ public interface DriverAdapter {
      * @param set sql执行的结果集
      * @return List
      */
-    List<String> ddl(DataRuntime runtime, int index, EdgeTable edge, List<String> ddls, DataSet set);
+    List<String> ddl(DataRuntime runtime, int index, EdgeTable edge, List<String> ddls, DataSet<DataRow> set);
 
     /**
      * edge[结果集封装]<br/>
@@ -4241,7 +4241,7 @@ public interface DriverAdapter {
      * @return views
      * @throws Exception 异常
      */
-    <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, View query, DataSet set) throws Exception;
+    <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, View query, DataSet<DataRow> set) throws Exception;
     /**
      * view[结果集封装]<br/>
      *  根据查询结果集构造View
@@ -4255,14 +4255,14 @@ public interface DriverAdapter {
      * @return views
      * @throws Exception 异常
      */
-    default <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Catalog catalog, Schema schema, DataSet set) throws Exception {
+    default <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Catalog catalog, Schema schema, DataSet<DataRow> set) throws Exception {
         View query = new View();
         query.setCatalog(catalog);
         query.setSchema(schema);
         return views(runtime, index, create, previous, query ,set);
     }
-    <T extends View> List<T> views(DataRuntime runtime, int index, boolean create, List<T> previous, View query, DataSet set) throws Exception;
-    default <T extends View> List<T> views(DataRuntime runtime, int index, boolean create, List<T> previous, Catalog catalog, Schema schema, DataSet set) throws Exception {
+    <T extends View> List<T> views(DataRuntime runtime, int index, boolean create, List<T> previous, View query, DataSet<DataRow> set) throws Exception;
+    default <T extends View> List<T> views(DataRuntime runtime, int index, boolean create, List<T> previous, Catalog catalog, Schema schema, DataSet<DataRow> set) throws Exception {
         View query = new View();
         query.setCatalog(catalog);
         query.setSchema(schema);
@@ -4358,7 +4358,7 @@ public interface DriverAdapter {
      * @param set sql执行的结果集
      * @return List
      */
-    List<String> ddl(DataRuntime runtime, int index, View view, List<String> ddls, DataSet set);
+    List<String> ddl(DataRuntime runtime, int index, View view, List<String> ddls, DataSet<DataRow> set);
 
     /**
      * view[结果集封装]<br/>
@@ -4555,7 +4555,7 @@ public interface DriverAdapter {
      * @return masters
      * @throws Exception 异常
      */
-    <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, MasterTable query, DataSet set) throws Exception;
+    <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, MasterTable query, DataSet<DataRow> set) throws Exception;
     /**
      * master[结果集封装]<br/>
      *  根据查询结果集构造MasterTable
@@ -4569,14 +4569,14 @@ public interface DriverAdapter {
      * @return masters
      * @throws Exception 异常
      */
-    default <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Catalog catalog, Schema schema, DataSet set) throws Exception {
+    default <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Catalog catalog, Schema schema, DataSet<DataRow> set) throws Exception {
         MasterTable query = new MasterTable();
         query.setCatalog(catalog);
         query.setSchema(schema);
         return masters(runtime, index, create, previous, query, set);
     }
-    <T extends MasterTable> List<T> masters(DataRuntime runtime, int index, boolean create, List<T> previous, MasterTable query, DataSet set) throws Exception;
-    default <T extends MasterTable> List<T> masters(DataRuntime runtime, int index, boolean create, List<T> previous, Catalog catalog, Schema schema, DataSet set) throws Exception {
+    <T extends MasterTable> List<T> masters(DataRuntime runtime, int index, boolean create, List<T> previous, MasterTable query, DataSet<DataRow> set) throws Exception;
+    default <T extends MasterTable> List<T> masters(DataRuntime runtime, int index, boolean create, List<T> previous, Catalog catalog, Schema schema, DataSet<DataRow> set) throws Exception {
         MasterTable query = new MasterTable();
         query.setCatalog(catalog);
         query.setSchema(schema);
@@ -4673,7 +4673,7 @@ public interface DriverAdapter {
      * @param set sql执行的结果集
      * @return List
      */
-    List<String> ddl(DataRuntime runtime, int index, MasterTable master, List<String> ddls, DataSet set);
+    List<String> ddl(DataRuntime runtime, int index, MasterTable master, List<String> ddls, DataSet<DataRow> set);
 
     /**
      * master[结果集封装]<br/>
@@ -4757,7 +4757,7 @@ public interface DriverAdapter {
      * @return tables
      * @throws Exception 异常
      */
-    Table.Partition partition(DataRuntime runtime, int index, boolean create, Table.Partition meta, Table table, DataSet set) throws Exception;
+    Table.Partition partition(DataRuntime runtime, int index, boolean create, Table.Partition meta, Table table, DataSet<DataRow> set) throws Exception;
 
     /**
      * partition table[结果集封装]<br/>
@@ -4966,7 +4966,7 @@ public interface DriverAdapter {
      * @return tables
      * @throws Exception 异常
      */
-    <T extends PartitionTable> LinkedHashMap<String, T> partitions(DataRuntime runtime, int total, int index, boolean create, LinkedHashMap<String, T> tables, PartitionTable query, DataSet set) throws Exception;
+    <T extends PartitionTable> LinkedHashMap<String, T> partitions(DataRuntime runtime, int total, int index, boolean create, LinkedHashMap<String, T> tables, PartitionTable query, DataSet<DataRow> set) throws Exception;
 
     /**
      * partition table[结果集封装]<br/>
@@ -4982,7 +4982,7 @@ public interface DriverAdapter {
      * @return tables
      * @throws Exception 异常
      */
-    default <T extends PartitionTable> LinkedHashMap<String, T> partitions(DataRuntime runtime, int total, int index, boolean create, MasterTable master, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set) throws Exception {
+    default <T extends PartitionTable> LinkedHashMap<String, T> partitions(DataRuntime runtime, int total, int index, boolean create, MasterTable master, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet<DataRow> set) throws Exception {
         PartitionTable query = new PartitionTable();
         query.setMaster(master);
         query.setCatalog(catalog);
@@ -5046,7 +5046,7 @@ public interface DriverAdapter {
      * @param set sql执行的结果集
      * @return List
      */
-    List<String> ddl(DataRuntime runtime, int index, PartitionTable table, List<String> ddls, DataSet set);
+    List<String> ddl(DataRuntime runtime, int index, PartitionTable table, List<String> ddls, DataSet<DataRow> set);
 
     /**
      * partition table[结果集封装]<br/>
@@ -5204,7 +5204,7 @@ public interface DriverAdapter {
      * @return columns
      * @throws Exception 异常
      */
-    <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Table table, Column query, DataSet set) throws Exception;
+    <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Table table, Column query, DataSet<DataRow> set) throws Exception;
 
     /**
      * column[结果集封装]<br/>(方法1)<br/>
@@ -5218,7 +5218,7 @@ public interface DriverAdapter {
      * @return columns
      * @throws Exception 异常
      */
-    <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, List<T> previous, Column query, DataSet set) throws Exception;
+    <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, List<T> previous, Column query, DataSet<DataRow> set) throws Exception;
 
     /**
      * column[结果集封装]<br/>
@@ -5242,7 +5242,7 @@ public interface DriverAdapter {
      * @return columns
      * @throws Exception 异常
      */
-    <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, List<T> previous, Collection<? extends Table> tables, Column query, DataSet set) throws Exception;
+    <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, List<T> previous, Collection<? extends Table> tables, Column query, DataSet<DataRow> set) throws Exception;
 
     /**
      * column[结果集封装]<br/>(方法1)<br/>
@@ -5412,7 +5412,7 @@ public interface DriverAdapter {
      * @return tags
      * @throws Exception 异常
      */
-    <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Tag query, DataSet set) throws Exception;
+    <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Tag query, DataSet<DataRow> set) throws Exception;
 
     /**
      *
@@ -5514,7 +5514,7 @@ public interface DriverAdapter {
      * @param set sql查询结果
      * @throws Exception 异常
      */
-    <T extends PrimaryKey> T init(DataRuntime runtime, int index, T meta, PrimaryKey query, DataSet set) throws Exception;
+    <T extends PrimaryKey> T init(DataRuntime runtime, int index, T meta, PrimaryKey query, DataSet<DataRow> set) throws Exception;
     /**
      * primary[结构集封装]<br/>
      * 根据查询结果集构造PrimaryKey基础属性
@@ -5525,7 +5525,7 @@ public interface DriverAdapter {
      * @param set sql查询结果
      * @throws Exception 异常
      */
-    default <T extends PrimaryKey> T init(DataRuntime runtime, int index, T meta, Table table, DataSet set) throws Exception {
+    default <T extends PrimaryKey> T init(DataRuntime runtime, int index, T meta, Table table, DataSet<DataRow> set) throws Exception {
         PrimaryKey query = new PrimaryKey();
         query.setTable(table);
         return init(runtime, index, meta, query, set);
@@ -5541,7 +5541,7 @@ public interface DriverAdapter {
      * @param set sql查询结果
      * @throws Exception 异常
      */
-    <T extends PrimaryKey> T detail(DataRuntime runtime, int index, T meta, PrimaryKey query, DataSet set) throws Exception;
+    <T extends PrimaryKey> T detail(DataRuntime runtime, int index, T meta, PrimaryKey query, DataSet<DataRow> set) throws Exception;
 
     /**
      * primary[结构集封装]<br/>
@@ -5553,7 +5553,7 @@ public interface DriverAdapter {
      * @param set sql查询结果
      * @throws Exception 异常
      */
-    default <T extends PrimaryKey> T detail(DataRuntime runtime, int index, T meta, Table table, DataSet set) throws Exception {
+    default <T extends PrimaryKey> T detail(DataRuntime runtime, int index, T meta, Table table, DataSet<DataRow> set) throws Exception {
         PrimaryKey query = new PrimaryKey();
         query.setTable(table);
         return detail(runtime, index, meta, query, set);
@@ -5647,7 +5647,7 @@ public interface DriverAdapter {
      * @param set sql查询结果
      * @throws Exception 异常
      */
-    <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, int index, LinkedHashMap<String, T> previous, ForeignKey query, DataSet set) throws Exception;
+    <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, int index, LinkedHashMap<String, T> previous, ForeignKey query, DataSet<DataRow> set) throws Exception;
     /**
      * foreign[结构集封装]<br/>
      *  根据查询结果集构造PrimaryKey
@@ -5658,7 +5658,7 @@ public interface DriverAdapter {
      * @param set sql查询结果
      * @throws Exception 异常
      */
-    default <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, int index, Table table, LinkedHashMap<String, T> previous, DataSet set) throws Exception {
+    default <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, int index, Table table, LinkedHashMap<String, T> previous, DataSet<DataRow> set) throws Exception {
         ForeignKey query = new ForeignKey();
         query.setTable(table);
         return foreigns(runtime, index, previous, query, set);
@@ -5821,7 +5821,7 @@ public interface DriverAdapter {
      * @return indexes indexes
      * @throws Exception 异常
      */
-    <T extends Index> LinkedHashMap<String, T> indexes(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Index query, DataSet set) throws Exception;
+    <T extends Index> LinkedHashMap<String, T> indexes(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Index query, DataSet<DataRow> set) throws Exception;
     /**
      * index[结果集封装]<br/>
      *  根据查询结果集构造Index
@@ -5834,18 +5834,18 @@ public interface DriverAdapter {
      * @return indexes indexes
      * @throws Exception 异常
      */
-    default <T extends Index> LinkedHashMap<String, T> indexes(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> previous, DataSet set) throws Exception {
+    default <T extends Index> LinkedHashMap<String, T> indexes(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> previous, DataSet<DataRow> set) throws Exception {
         Index query = new Index();
         query.setTable(table);
         return indexes(runtime, index, create, previous, query, set);
     }
-    <T extends Index> List<T> indexes(DataRuntime runtime, int index, boolean create, List<T> previous, Index query, DataSet set) throws Exception;
-    default <T extends Index> List<T> indexes(DataRuntime runtime, int index, boolean create, Table table, List<T> previous, DataSet set) throws Exception {
+    <T extends Index> List<T> indexes(DataRuntime runtime, int index, boolean create, List<T> previous, Index query, DataSet<DataRow> set) throws Exception;
+    default <T extends Index> List<T> indexes(DataRuntime runtime, int index, boolean create, Table table, List<T> previous, DataSet<DataRow> set) throws Exception {
         Index query = new Index();
         query.setTable(table);
         return indexes(runtime, index, create, previous, query, set);
     }
-    <T extends Index> List<T> indexes(DataRuntime runtime, int index, boolean create, Collection<? extends Table> tables, List<T> previous, Index query, DataSet set) throws Exception;
+    <T extends Index> List<T> indexes(DataRuntime runtime, int index, boolean create, Collection<? extends Table> tables, List<T> previous, Index query, DataSet<DataRow> set) throws Exception;
 
     /**
      * index[结果集封装]<br/>
@@ -6065,7 +6065,7 @@ public interface DriverAdapter {
      * @return constraints constraints
      * @throws Exception 异常
      */
-    <T extends Constraint> List<T> constraints(DataRuntime runtime, int index, boolean create, List<T> previous, Constraint query, DataSet set) throws Exception;
+    <T extends Constraint> List<T> constraints(DataRuntime runtime, int index, boolean create, List<T> previous, Constraint query, DataSet<DataRow> set) throws Exception;
     /**
      * constraint[结果集封装]<br/>
      *  根据查询结果集构造Constraint
@@ -6078,7 +6078,7 @@ public interface DriverAdapter {
 	 * @return constraints constraints
 	 * @throws Exception 异常
 	 */
-	default <T extends Constraint> List<T> constraints(DataRuntime runtime, int index, boolean create, Table table, List<T> previous, DataSet set) throws Exception {
+	default <T extends Constraint> List<T> constraints(DataRuntime runtime, int index, boolean create, Table table, List<T> previous, DataSet<DataRow> set) throws Exception {
 		Constraint query = new Constraint();
 		query.setTable(table);
 		return constraints(runtime, index, create, previous, query, set);
@@ -6096,7 +6096,7 @@ public interface DriverAdapter {
 	 * @return constraints constraints
 	 * @throws Exception 异常
 	 */
-	<T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Constraint query, DataSet set) throws Exception;
+	<T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Constraint query, DataSet<DataRow> set) throws Exception;
 	/**
 	 * constraint[结果集封装]<br/>
 	 *  根据查询结果集构造Constraint
@@ -6109,7 +6109,7 @@ public interface DriverAdapter {
 	 * @return constraints constraints
 	 * @throws Exception 异常
 	 */
-	default <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, Column> columns, LinkedHashMap<String, T> previous, DataSet set) throws Exception {
+	default <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, Column> columns, LinkedHashMap<String, T> previous, DataSet<DataRow> set) throws Exception {
 		Constraint query = new Constraint();
 		query.setTable(table);
 		query.setColumns(columns);
@@ -6239,7 +6239,7 @@ public interface DriverAdapter {
 	 * @return LinkedHashMap
 	 * @throws Exception 异常
 	 */
-	<T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Trigger query, DataSet set) throws Exception;
+	<T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Trigger query, DataSet<DataRow> set) throws Exception;
 	/**
 	 * trigger[结果集封装]<br/>
 	 * 根据查询结果集构造 Trigger
@@ -6252,7 +6252,7 @@ public interface DriverAdapter {
 	 * @return LinkedHashMap
 	 * @throws Exception 异常
 	 */
-	default <T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> previous, DataSet set) throws Exception {
+	default <T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> previous, DataSet<DataRow> set) throws Exception {
 		Trigger query = new Trigger();
 		query.setTable(table);
 		return triggers(runtime, index, create, previous, query, set);
@@ -6419,7 +6419,7 @@ public interface DriverAdapter {
 	 * @return LinkedHashMap
 	 * @throws Exception 异常
 	 */
-	<T extends Procedure> List<T> procedures(DataRuntime runtime, int index, boolean create, List<T> previous, Procedure query, DataSet set) throws Exception;
+	<T extends Procedure> List<T> procedures(DataRuntime runtime, int index, boolean create, List<T> previous, Procedure query, DataSet<DataRow> set) throws Exception;
 	/**
 	 * procedure[结果集封装]<br/>
 	 * 根据查询结果集构造 Procedure
@@ -6431,7 +6431,7 @@ public interface DriverAdapter {
 	 * @return LinkedHashMap
 	 * @throws Exception 异常
 	 */
-	<T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Procedure query, DataSet set) throws Exception;
+	<T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Procedure query, DataSet<DataRow> set) throws Exception;
 
 	/**
 	 * procedure[结果集封装]<br/>
@@ -6467,7 +6467,7 @@ public interface DriverAdapter {
      */
     <T extends Procedure> T procedure(DataRuntime runtime, String random, boolean greedy, Procedure query) throws Exception;
 
-    <T extends Parameter> LinkedHashMap<String, T> parameters(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Procedure procedure, DataSet set) throws Exception;
+    <T extends Parameter> LinkedHashMap<String, T> parameters(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Procedure procedure, DataSet<DataRow> set) throws Exception;
 
     /**
 	 *
@@ -6504,7 +6504,7 @@ public interface DriverAdapter {
 	 * @param set 查询结果集
 	 * @return List
 	 */
-	List<String> ddl(DataRuntime runtime, int index, Procedure meta, List<String> ddls, DataSet set);
+	List<String> ddl(DataRuntime runtime, int index, Procedure meta, List<String> ddls, DataSet<DataRow> set);
 
 	/**
 	 * procedure[结果集封装]<br/>
@@ -6679,7 +6679,7 @@ public interface DriverAdapter {
 	 * @return LinkedHashMap
 	 * @throws Exception 异常
 	 */
-	<T extends Function> List<T> functions(DataRuntime runtime, int index, boolean create, List<T> previous, Function query, DataSet set) throws Exception;
+	<T extends Function> List<T> functions(DataRuntime runtime, int index, boolean create, List<T> previous, Function query, DataSet<DataRow> set) throws Exception;
 	/**
 	 * function[结果集封装]<br/>
 	 * 根据查询结果集构造 Function
@@ -6691,7 +6691,7 @@ public interface DriverAdapter {
 	 * @return LinkedHashMap
 	 * @throws Exception 异常
 	 */
-	default <T extends Function> List<T> functions(DataRuntime runtime, int index, boolean create, List<T> previous, Catalog catalog, Schema schema, DataSet set) throws Exception {
+	default <T extends Function> List<T> functions(DataRuntime runtime, int index, boolean create, List<T> previous, Catalog catalog, Schema schema, DataSet<DataRow> set) throws Exception {
 		Function query = new Function(catalog, schema, null);
 		return functions(runtime, index, create, previous, query, set);
 	}
@@ -6707,7 +6707,7 @@ public interface DriverAdapter {
 	 * @return LinkedHashMap
 	 * @throws Exception 异常
 	 */
-	<T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Function query, DataSet set) throws Exception;
+	<T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Function query, DataSet<DataRow> set) throws Exception;
 
 	/**
 	 * function[结果集封装]<br/>
@@ -6720,7 +6720,7 @@ public interface DriverAdapter {
 	 * @return LinkedHashMap
 	 * @throws Exception 异常
 	 */
-	default <T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Catalog catalog, Schema schema, DataSet set) throws Exception {
+	default <T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Catalog catalog, Schema schema, DataSet<DataRow> set) throws Exception {
 		Function query = new Function(catalog, schema, null);
 		return functions(runtime, index, create, previous, query, set);
 	}
@@ -6772,7 +6772,7 @@ public interface DriverAdapter {
 	 * @param set 查询结果集
 	 * @return List
 	 */
-	List<String> ddl(DataRuntime runtime, int index, Function meta, List<String> ddls, DataSet set);
+	List<String> ddl(DataRuntime runtime, int index, Function meta, List<String> ddls, DataSet<DataRow> set);
 
 	/**
 	 * function[结果集封装]<br/>
@@ -6910,7 +6910,7 @@ public interface DriverAdapter {
 	 * @return LinkedHashMap
 	 * @throws Exception 异常
 	 */
-	<T extends Sequence> List<T> sequences(DataRuntime runtime, int index, boolean create, List<T> previous, Sequence query, DataSet set) throws Exception;
+	<T extends Sequence> List<T> sequences(DataRuntime runtime, int index, boolean create, List<T> previous, Sequence query, DataSet<DataRow> set) throws Exception;
 
 	/**
 	 * sequence[结果集封装]<br/>
@@ -6923,7 +6923,7 @@ public interface DriverAdapter {
 	 * @return LinkedHashMap
 	 * @throws Exception 异常
 	 */
-	<T extends Sequence> LinkedHashMap<String, T> sequences(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Sequence query, DataSet set) throws Exception;
+	<T extends Sequence> LinkedHashMap<String, T> sequences(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Sequence query, DataSet<DataRow> set) throws Exception;
 
 	/**
 	 * sequence[结果集封装]<br/>
@@ -6972,7 +6972,7 @@ public interface DriverAdapter {
 	 * @param set 查询结果集
 	 * @return List
 	 */
-	List<String> ddl(DataRuntime runtime, int index, Sequence meta, List<String> ddls, DataSet set);
+	List<String> ddl(DataRuntime runtime, int index, Sequence meta, List<String> ddls, DataSet<DataRow> set);
 
 	/**
 	 * sequence[结果集封装]<br/>
@@ -9777,7 +9777,7 @@ public interface DriverAdapter {
 	 * boolean delete(DataRuntime runtime, Role role) throws Exception
 	 * <T extends Role> List<T> roles(Catalog catalog, Schema schema, String pattern) throws Exception
 	 * List<Run> buildQueryRolesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) throws Exception
-	 * <T extends Role> List<T> roles(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, List<T> roles, DataSet set) throws Exception
+	 * <T extends Role> List<T> roles(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, List<T> roles, DataSet<DataRow> set) throws Exception
 	 * <T extends Role> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row)
 	 * <T extends Role> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row)
 	 ******************************************************************************************************************/
@@ -9907,7 +9907,7 @@ public interface DriverAdapter {
 	 * @return List
 	 * @throws Exception 异常
 	 */
-	<T extends Role> List<T> roles(DataRuntime runtime, int index, boolean create, List<T> previous, Role query, DataSet set) throws Exception;
+	<T extends Role> List<T> roles(DataRuntime runtime, int index, boolean create, List<T> previous, Role query, DataSet<DataRow> set) throws Exception;
 	/**
 	 * role[结果集封装]<br/>
 	 * 根据查询结果集构造 role
@@ -9921,7 +9921,7 @@ public interface DriverAdapter {
 	 * @return List
 	 * @throws Exception 异常
 	 */
-	default <T extends Role> List<T> roles(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, List<T> previous, DataSet set) throws Exception {
+	default <T extends Role> List<T> roles(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, List<T> previous, DataSet<DataRow> set) throws Exception {
 		return roles(runtime, index, create, previous, new Role(catalog, schema, null), set);
 	}
 
@@ -9977,7 +9977,7 @@ public interface DriverAdapter {
 	 * boolean drop(DataRuntime runtime, User user) throws Exception
 	 * List<User> users(Catalog catalog, Schema schema, String pattern) throws Exception
 	 * List<Run> buildQueryUsersRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) throws Exception
-	 * <T extends User> List<T> users(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, List<T> users, DataSet set) throws Exception
+	 * <T extends User> List<T> users(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, List<T> users, DataSet<DataRow> set) throws Exception
 	 * <T extends User> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row)
 	 * <T extends User> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row)
 	 ******************************************************************************************************************/
@@ -10139,7 +10139,7 @@ public interface DriverAdapter {
 	 * @return List
 	 * @throws Exception 异常
 	 */
-	<T extends User> List<T> users(DataRuntime runtime, int index, boolean create, List<T> previous, User query, DataSet set) throws Exception;
+	<T extends User> List<T> users(DataRuntime runtime, int index, boolean create, List<T> previous, User query, DataSet<DataRow> set) throws Exception;
 	/**
 	 * user[结果集封装]<br/>
 	 * 根据查询结果集构造 user
@@ -10153,7 +10153,7 @@ public interface DriverAdapter {
 	 * @return List
 	 * @throws Exception 异常
 	 */
-	default <T extends User> List<T> users(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, List<T> previous, DataSet set) throws Exception {
+	default <T extends User> List<T> users(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, List<T> previous, DataSet<DataRow> set) throws Exception {
 		return users(runtime, index, create, previous,  new User(catalog, schema, null), set);
 	}
 
@@ -10206,7 +10206,7 @@ public interface DriverAdapter {
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * <T extends Privilege> List<T> privileges(DataRuntime runtime, User user)
 	 * List<Run> buildQueryPrivilegesRun(DataRuntime runtime, User user) throws Exception
-	 * <T extends Privilege> List<T> privileges(DataRuntime runtime, int index, boolean create, User user, List<T> privileges, DataSet set) throws Exception
+	 * <T extends Privilege> List<T> privileges(DataRuntime runtime, int index, boolean create, User user, List<T> privileges, DataSet<DataRow> set) throws Exception
 	 * <T extends Privilege> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, User user, DataRow row)
 	 * <T extends Privilege> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row)
 	 * Privilege.MetadataAdapter privilegeMetadataAdapter(DataRuntime runtime)
@@ -10278,7 +10278,7 @@ public interface DriverAdapter {
 	 * @return List
 	 * @throws Exception 异常
 	 */
-	<T extends Privilege> List<T> privileges(DataRuntime runtime, int index, boolean create, List<T> previous, Privilege query, DataSet set) throws Exception;
+	<T extends Privilege> List<T> privileges(DataRuntime runtime, int index, boolean create, List<T> previous, Privilege query, DataSet<DataRow> set) throws Exception;
 
 	/**
 	 * privilege[结果集封装]<br/>
@@ -10292,7 +10292,7 @@ public interface DriverAdapter {
 	 * @return List
 	 * @throws Exception 异常
 	 */
-	default <T extends Privilege> List<T> privileges(DataRuntime runtime, int index, boolean create, List<T> previous, User user, DataSet set) throws Exception {
+	default <T extends Privilege> List<T> privileges(DataRuntime runtime, int index, boolean create, List<T> previous, User user, DataSet<DataRow> set) throws Exception {
 		return privileges(runtime, index, create, previous, new Privilege(user), set);
 	}
 

@@ -366,7 +366,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * long insert(DataRuntime runtime, String random, int batch, Table dest, Object data, ConfigStore configs, List<String> columns)
      * [命令合成]
      * public Run buildInsertRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, List<String> columns)
-     * public void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet set, ConfigStore configs, LinkedHashMap<String, Column> columns)
+     * public void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet<DataRow> set, ConfigStore configs, LinkedHashMap<String, Column> columns)
      * public void fillInsertContent(DataRuntime runtime, Run run, Table dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns)
      * public LinkedHashMap<String, Column> confirmInsertColumns(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns, boolean batch)
      * public String batchInsertSeparator()
@@ -423,7 +423,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             return -1;
         }
         if(data instanceof DataSet) {
-            DataSet set = (DataSet)data;
+            DataSet<DataRow> set = (DataSet)data;
             Map<String, Object> tags = set.getTags();
             if(null != tags && !tags.isEmpty()) {
                 LinkedHashMap<String, PartitionTable> partitions = partitions(runtime, random, false, new MasterTable(dest), tags, null);
@@ -550,9 +550,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
      */
     @Override
-    public void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet set, ConfigStore configs, Boolean placeholder, Boolean unicode, LinkedHashMap<String, Column> columns) {
+    public void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet<DataRow> set, ConfigStore configs, Boolean placeholder, Boolean unicode, LinkedHashMap<String, Column> columns) {
         if(log.isDebugEnabled()) {
-            log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet set, ConfigStore configs, LinkedHashMap<String, Column> columns)", 37));
+            log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet<DataRow> set, ConfigStore configs, LinkedHashMap<String, Column> columns)", 37));
         }
     }
     
@@ -2254,7 +2254,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
     @Override
     public DataSet querys(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
         Table table = null;
-        DataSet set = null;
+        DataSet<DataRow> set = null;
         Long fr = 0L;
         boolean cmd_success = false;
         Run run = null;
@@ -2521,7 +2521,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         if(null != configs) {
             configs.entityClass(clazz);
         }
-        DataSet rows = select(runtime, random, false, table, configs, run);
+        DataSet<DataRow> rows = select(runtime, random, false, table, configs, run);
         for(DataRow row:rows) {
             T entity = null;
             if(EntityAdapterProxy.hasAdapter(clazz)) {
@@ -3388,7 +3388,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 
         run = buildQueryLengthRun(runtime, cn, configs);
 
-        DataSet set = select(runtime, random, true, new Table(), configs, run);
+        DataSet<DataRow> set = select(runtime, random, true, new Table(), configs, run);
         if(!set.isEmpty()){
             count = set.getRow(0).getInt( "CNT", -1);
         }
@@ -4275,20 +4275,20 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * List<Run> buildQueryVersionRun(DataRuntime runtime, boolean greedy, String name)
 	 * List<Run> buildQueryDatabaseRun(DataRuntime runtime)
 	 * [结果集封装]<br/>
-	 * LinkedHashMap<String, Database> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Database> databases, Catalog catalog, Schema schema, DataSet set)
-	 * List<Database> databases(DataRuntime runtime, int index, boolean create, List<Database> databases, Catalog catalog, Schema schema, DataSet set)
-	 * Database database(DataRuntime runtime, boolean create, Database dataase, DataSet set)
+	 * LinkedHashMap<String, Database> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Database> databases, Catalog catalog, Schema schema, DataSet<DataRow> set)
+	 * List<Database> databases(DataRuntime runtime, int index, boolean create, List<Database> databases, Catalog catalog, Schema schema, DataSet<DataRow> set)
+	 * Database database(DataRuntime runtime, boolean create, Database dataase, DataSet<DataRow> set)
 	 * Database database(DataRuntime runtime, boolean create, Database dataase)
-	 * String product(DataRuntime runtime, boolean create, Database product, DataSet set)
+	 * String product(DataRuntime runtime, boolean create, Database product, DataSet<DataRow> set)
 	 * String product(DataRuntime runtime, boolean create, String product)
-	 * String version(DataRuntime runtime, int index, boolean create, String version, DataSet set)
+	 * String version(DataRuntime runtime, int index, boolean create, String version, DataSet<DataRow> set)
 	 * String version(DataRuntime runtime, boolean create, String version)
-	 * Catalog catalog(DataRuntime runtime, boolean create, Catalog catalog, DataSet set)
+	 * Catalog catalog(DataRuntime runtime, boolean create, Catalog catalog, DataSet<DataRow> set)
 	 * Catalog catalog(DataRuntime runtime, boolean create, Catalog catalog)
-	 * Schema schema(DataRuntime runtime, boolean create, Schema schema, DataSet set)
+	 * Schema schema(DataRuntime runtime, boolean create, Schema schema, DataSet<DataRow> set)
 	 * Schema schema(DataRuntime runtime, boolean create, Schema schema)
 	 * Database database(DataRuntime runtime, boolean create, Database dataase)
-	 * String product(DataRuntime runtime, int index, boolean create, String product, DataSet set)
+	 * String product(DataRuntime runtime, int index, boolean create, String product, DataSet<DataRow> set)
 	 * String product(DataRuntime runtime, boolean create, String product)
 	 ******************************************************************************************************************/
 	/**
@@ -4327,7 +4327,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				if (null != runs) {
 					int idx = 0;
 					for(Run run:runs) {
-						DataSet set = selectMetadata(runtime, random, run);
+						DataSet<DataRow> set = selectMetadata(runtime, random, run);
 						product = product(runtime, idx++, true, product, set);
 					}
 				}
@@ -4375,7 +4375,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				if (null != runs) {
 					int idx = 0;
 					for(Run run:runs) {
-                        DataSet set = selectMetadata(runtime, random, run);
+                        DataSet<DataRow> set = selectMetadata(runtime, random, run);
 						version = version(runtime, idx++, true, version, set);
 					}
 				}
@@ -4428,7 +4428,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				if(null != runs) {
 					int idx = 0;
 					for(Run run:runs) {
-						DataSet set = selectMetadata(runtime, random, run);
+						DataSet<DataRow> set = selectMetadata(runtime, random, run);
 						databases = databases(runtime, idx++, true, databases, query, set);
 					}
 				}
@@ -4477,7 +4477,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				if(null != runs) {
 					int idx = 0;
 					for(Run run:runs) {
-						DataSet set = selectMetadata(runtime, random, run);
+						DataSet<DataRow> set = selectMetadata(runtime, random, run);
 						databases = databases(runtime, idx++, true, databases, query, set);
 					}
 				}
@@ -4575,7 +4575,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception
 	 */
 	@Override
-	public <T extends Database> LinkedHashMap<String, T> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Database query, DataSet set) throws Exception {
+	public <T extends Database> LinkedHashMap<String, T> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Database query, DataSet<DataRow> set) throws Exception {
         if(null == previous) {
             previous = new LinkedHashMap<>();
         }
@@ -4603,7 +4603,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends Database> List<T> databases(DataRuntime runtime, int index, boolean create, List<T> previous, Database query, DataSet set) throws Exception {
+    public <T extends Database> List<T> databases(DataRuntime runtime, int index, boolean create, List<T> previous, Database query, DataSet<DataRow> set) throws Exception {
         if (null == previous) {
             previous = new ArrayList<>();
         }
@@ -4631,9 +4631,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public Database database(DataRuntime runtime, int index, boolean create, Database meta, DataSet set) throws Exception {
+	public Database database(DataRuntime runtime, int index, boolean create, Database meta, DataSet<DataRow> set) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 Database database(DataRuntime runtime, int index, boolean create, Database meta, DataSet set)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 Database database(DataRuntime runtime, int index, boolean create, Database meta, DataSet<DataRow> set)", 37));
 		}
 		return null;
 	}
@@ -4665,9 +4665,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return product
 	 */
 	@Override
-	public String product(DataRuntime runtime, int index, boolean create, String product, DataSet set) {
+	public String product(DataRuntime runtime, int index, boolean create, String product, DataSet<DataRow> set) {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 String product(DataRuntime runtime, int index, boolean create, String product, DataSet set)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 String product(DataRuntime runtime, int index, boolean create, String product, DataSet<DataRow> set)", 37));
 		}
 		return null;
 	}
@@ -4698,9 +4698,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return version
 	 */
 	@Override
-	public String version(DataRuntime runtime, int index, boolean create, String version, DataSet set) {
+	public String version(DataRuntime runtime, int index, boolean create, String version, DataSet<DataRow> set) {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 String version(DataRuntime runtime, int index, boolean create, String version, DataSet set)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 String version(DataRuntime runtime, int index, boolean create, String version, DataSet<DataRow> set)", 37));
 		}
 		return null;
 	}
@@ -4765,12 +4765,12 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * [命令合成]
 	 * List<Run> buildQueryCatalogsRun(DataRuntime runtime, boolean greedy, String name)
 	 * [结果集封装]<br/>
-	 * LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Catalog> catalogs, DataSet set)
-	 * List<Catalog> catalogs(DataRuntime runtime, int index, boolean create, List<Catalog> catalogs, DataSet set)
+	 * LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Catalog> catalogs, DataSet<DataRow> set)
+	 * List<Catalog> catalogs(DataRuntime runtime, int index, boolean create, List<Catalog> catalogs, DataSet<DataRow> set)
 	 * LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, boolean create, LinkedHashMap<String, Catalog> catalogs)
 	 * List<Catalog> catalogs(DataRuntime runtime, boolean create, List<Catalog> catalogs)
 	 *
-	 * Catalog catalog(DataRuntime runtime, int index, boolean create, Catalog catalog, DataSet set)
+	 * Catalog catalog(DataRuntime runtime, int index, boolean create, Catalog catalog, DataSet<DataRow> set)
 	 * Catalog catalog(DataRuntime runtime, int index, boolean create, Catalog catalog)
 	 ******************************************************************************************************************/
 
@@ -4795,7 +4795,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				if(null != runs) {
 					int idx = 0;
 					for(Run run:runs) {
-						DataSet set = selectMetadata(runtime, random, run);
+						DataSet<DataRow> set = selectMetadata(runtime, random, run);
 						catalog = catalog(runtime, idx++, true, catalog, set);
 					}
 				}
@@ -4850,7 +4850,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				if(null != runs) {
 					int idx = 0;
 					for(Run run:runs) {
-						DataSet set = selectMetadata(runtime, random, run);
+						DataSet<DataRow> set = selectMetadata(runtime, random, run);
 						catalogs = catalogs(runtime, idx++, true, catalogs, query, set);
 					}
 				}
@@ -4898,7 +4898,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				if(null != runs) {
 					int idx = 0;
 					for(Run run:runs) {
-						DataSet set = selectMetadata(runtime, random, run);
+						DataSet<DataRow> set = selectMetadata(runtime, random, run);
 						catalogs = catalogs(runtime, idx++, true, catalogs, query, set);
 					}
 				}
@@ -4975,7 +4975,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Catalog> LinkedHashMap<String, T> catalogs(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Catalog query, DataSet set) throws Exception {
+	public <T extends Catalog> LinkedHashMap<String, T> catalogs(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Catalog query, DataSet<DataRow> set) throws Exception {
         Catalog catalog = query.getCatalog();
         Schema schema = query.getSchema();
         if(null == previous) {
@@ -5004,7 +5004,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Catalog> List<T> catalogs(DataRuntime runtime, int index, boolean create, List<T> previous, Catalog query, DataSet set) throws Exception {
+	public <T extends Catalog> List<T> catalogs(DataRuntime runtime, int index, boolean create, List<T> previous, Catalog query, DataSet<DataRow> set) throws Exception {
         if(null == previous) {
             previous = new ArrayList<>();
         }
@@ -5066,9 +5066,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public Catalog catalog(DataRuntime runtime, int index, boolean create, Catalog meta, DataSet set) throws Exception {
+	public Catalog catalog(DataRuntime runtime, int index, boolean create, Catalog meta, DataSet<DataRow> set) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 Catalog catalog(DataRuntime runtime, int index, boolean create, Catalog meta, DataSet set)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 Catalog catalog(DataRuntime runtime, int index, boolean create, Catalog meta, DataSet<DataRow> set)", 37));
 		}
 		return null;
 	}
@@ -5132,9 +5132,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * [命令合成]
 	 * List<Run> buildQuerySchemasRun(DataRuntime runtime, boolean greedy, Catalog catalog, String name)
 	 * [结果集封装]<br/>
-	 * LinkedHashMap<String, Schema> schemas(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Schema> schemas, Catalog catalog, Schema schema, DataSet set)
-	 * List<Schema> schemas(DataRuntime runtime, int index, boolean create, List<Schema> schemas, Catalog catalog, Schema schema, DataSet set)
-	 * Schema schema(DataRuntime runtime, int index, boolean create, Schema schema, DataSet set)
+	 * LinkedHashMap<String, Schema> schemas(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Schema> schemas, Catalog catalog, Schema schema, DataSet<DataRow> set)
+	 * List<Schema> schemas(DataRuntime runtime, int index, boolean create, List<Schema> schemas, Catalog catalog, Schema schema, DataSet<DataRow> set)
+	 * Schema schema(DataRuntime runtime, int index, boolean create, Schema schema, DataSet<DataRow> set)
 	 * Schema schema(DataRuntime runtime, int index, boolean create, Schema schema)
 	 ******************************************************************************************************************/
 
@@ -5159,7 +5159,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				if(null != runs) {
 					int idx = 0;
 					for(Run run:runs) {
-						DataSet set = selectMetadata(runtime, random, run);
+						DataSet<DataRow> set = selectMetadata(runtime, random, run);
 						schema = schema(runtime, idx++, true, schema, set);
 					}
 				}
@@ -5205,7 +5205,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             RunPrepare prepare = new DefaultTextPrepare(text);
             run = buildQueryRun(runtime, prepare, configs, true, true);
         }
-        DataSet set = select(runtime, random, true, (Table)null, configs, run);
+        DataSet<DataRow> set = select(runtime, random, true, (Table)null, configs, run);
         return set;
     }
 	/**
@@ -5229,7 +5229,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				if(null != runs) {
 					int idx = 0;
 					for(Run run:runs) {
-						DataSet set = selectMetadata(runtime, random, run);
+						DataSet<DataRow> set = selectMetadata(runtime, random, run);
 						schemas = schemas(runtime, idx++, true, schemas, query, set);
 					}
 				}
@@ -5277,7 +5277,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				if(null != runs) {
 					int idx = 0;
 					for(Run run:runs) {
-						DataSet set = selectMetadata(runtime, random, run);
+						DataSet<DataRow> set = selectMetadata(runtime, random, run);
 						schemas = schemas(runtime, idx++, true, schemas, query, set);
 					}
 				}
@@ -5354,7 +5354,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Schema> LinkedHashMap<String, T> schemas(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Schema query, DataSet set) throws Exception {
+	public <T extends Schema> LinkedHashMap<String, T> schemas(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Schema query, DataSet<DataRow> set) throws Exception {
         Catalog catalog = query.getCatalog();
         Schema schema = query.getSchema();
         if(null == previous) {
@@ -5383,7 +5383,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Schema> List<T> schemas(DataRuntime runtime, int index, boolean create, List<T> previous, Schema query, DataSet set) throws Exception {
+	public <T extends Schema> List<T> schemas(DataRuntime runtime, int index, boolean create, List<T> previous, Schema query, DataSet<DataRow> set) throws Exception {
         if(null == previous) {
             previous = new ArrayList<>();
         }
@@ -5445,9 +5445,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public Schema schema(DataRuntime runtime, int index, boolean create, Schema meta, DataSet set) throws Exception {
+	public Schema schema(DataRuntime runtime, int index, boolean create, Schema meta, DataSet<DataRow> set) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 Schema schema(DataRuntime runtime, int index, boolean create, Schema meta, DataSet set)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 Schema schema(DataRuntime runtime, int index, boolean create, Schema meta, DataSet<DataRow> set)", 37));
 		}
 		return null;
 	}
@@ -5566,17 +5566,17 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs)
 	 * List<Run> buildQueryTablesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types)
 	 * [结果集封装]<br/>
-	 * <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set)
-	 * <T extends Table> List<T> tables(DataRuntime runtime, int index, boolean create, List<T> tables, Catalog catalog, Schema schema, DataSet set)
+	 * <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet<DataRow> set)
+	 * <T extends Table> List<T> tables(DataRuntime runtime, int index, boolean create, List<T> tables, Catalog catalog, Schema schema, DataSet<DataRow> set)
 	 * <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, String pattern, int types)
 	 * <T extends Table> List<T> tables(DataRuntime runtime, boolean create, List<T> tables, Catalog catalog, Schema schema, String pattern, int types)
-	 * <T extends Table> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set)
+	 * <T extends Table> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet<DataRow> set)
 	 * [调用入口]
 	 * List<String> ddl(DataRuntime runtime, String random, Table table, boolean init)
 	 * [命令合成]
 	 * List<Run> buildQueryDdlRun(DataRuntime runtime, Table table)
 	 * [结果集封装]<br/>
-	 * List<String> ddl(DataRuntime runtime, int index, Table table, List<String> ddls, DataSet set)
+	 * List<String> ddl(DataRuntime runtime, int index, Table table, List<String> ddls, DataSet<DataRow> set)
 	 ******************************************************************************************************************/
 	/**
 	 *
@@ -5640,7 +5640,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                                 run.setPageNavi(navi);
                                 mergeFinalQuery(runtime, run);
                             }
-                            DataSet set = selectMetadata(runtime, random, run);
+                            DataSet<DataRow> set = selectMetadata(runtime, random, run);
                             list = tables(runtime, idx++, true, list, catalog, schema, set);
                             if (null != navi) {
                                 //分页只查一次
@@ -5696,7 +5696,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                                     run.setPageNavi(navi);
                                     //mergeFinalQuery(runtime, run);
                                 }
-                                DataSet set = selectMetadata(runtime, random, run);
+                                DataSet<DataRow> set = selectMetadata(runtime, random, run);
                                 list = comments(runtime, idx++, true, list, catalog, schema, set);
                                 if (null != navi) {
                                     break;
@@ -5797,7 +5797,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				if (null != runs && !runs.isEmpty()) {
 					int idx = 0;
 					for (Run run : runs) {
-						DataSet set = selectMetadata(runtime, random, run);
+						DataSet<DataRow> set = selectMetadata(runtime, random, run);
 						tables = tables(runtime, idx++, true, tables, catalog, schema, set);
 						for(Table table:tables) {
 							String cache_key = CacheProxy.key(runtime, "table_name_map", greedy, catalog, schema, table.getName());
@@ -5918,7 +5918,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Table query, DataSet set) throws Exception {
+	public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Table query, DataSet<DataRow> set) throws Exception {
         Catalog catalog = query.getCatalog();
         Schema schema = query.getSchema();
         if(null == previous) {
@@ -5949,7 +5949,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Table> List<T> tables(DataRuntime runtime, int index, boolean create, List<T> previous, Table query, DataSet set) throws Exception {
+	public <T extends Table> List<T> tables(DataRuntime runtime, int index, boolean create, List<T> previous, Table query, DataSet<DataRow> set) throws Exception {
 		if(null == previous) {
 			previous = new ArrayList<>();
 		}
@@ -6104,7 +6104,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Table> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Table query, DataSet set) throws Exception {
+	public <T extends Table> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Table query, DataSet<DataRow> set) throws Exception {
         if(null == previous) {
             previous = new LinkedHashMap<>();
         }
@@ -6138,7 +6138,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Table> List<T> comments(DataRuntime runtime, int index, boolean create, List<T> previous, Table query, DataSet set) throws Exception {
+	public <T extends Table> List<T> comments(DataRuntime runtime, int index, boolean create, List<T> previous, Table query, DataSet<DataRow> set) throws Exception {
         Catalog catalog = query.getCatalog();
         Schema schema = query.getSchema();
         if(null == previous) {
@@ -6201,7 +6201,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				int idx = 0;
 				for (Run run : runs) {
 					//不要传table,这里的table用来查询表结构
-					DataSet set = selectMetadata(runtime, random, run);
+					DataSet<DataRow> set = selectMetadata(runtime, random, run);
 					list = ddl(runtime, idx++, table, list, set);
 				}
 				table.addDdl(list);
@@ -6275,12 +6275,12 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<String> ddl(DataRuntime runtime, int index, Table table, List<String> ddls, DataSet set) {
+	public List<String> ddl(DataRuntime runtime, int index, Table table, List<String> ddls, DataSet<DataRow> set) {
 		if(null == ddls) {
 			ddls = new ArrayList<>();
 		}
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<String> ddl(DataRuntime runtime, int index, Table table, List<String> ddls, DataSet set)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<String> ddl(DataRuntime runtime, int index, Table table, List<String> ddls, DataSet<DataRow> set)", 37));
 		}
 		return ddls;
 	}
@@ -6295,17 +6295,17 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * List<Run> buildQueryVertexsRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs)
 	 * List<Run> buildQueryVertexsCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types)
 	 * [结果集封装]<br/>
-	 * <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> vertexs, Catalog catalog, Schema schema, DataSet set)
-	 * <T extends VertexTable> List<T> vertexs(DataRuntime runtime, int index, boolean create, List<T> vertexs, Catalog catalog, Schema schema, DataSet set)
+	 * <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> vertexs, Catalog catalog, Schema schema, DataSet<DataRow> set)
+	 * <T extends VertexTable> List<T> vertexs(DataRuntime runtime, int index, boolean create, List<T> vertexs, Catalog catalog, Schema schema, DataSet<DataRow> set)
 	 * <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, boolean create, LinkedHashMap<String, T> vertexs, Catalog catalog, Schema schema, String pattern, int types)
 	 * <T extends VertexTable> List<T> vertexs(DataRuntime runtime, boolean create, List<T> vertexs, Catalog catalog, Schema schema, String pattern, int types)
-	 * <T extends VertexTable> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> vertexs, Catalog catalog, Schema schema, DataSet set)
+	 * <T extends VertexTable> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> vertexs, Catalog catalog, Schema schema, DataSet<DataRow> set)
 	 * [调用入口]
 	 * List<String> ddl(DataRuntime runtime, String random, VertexTable vertex, boolean init)
 	 * [命令合成]
 	 * List<Run> buildQueryDdlRun(DataRuntime runtime, VertexTable vertex)
 	 * [结果集封装]<br/>
-	 * List<String> ddl(DataRuntime runtime, int index, VertexTable vertex, List<String> ddls, DataSet set)
+	 * List<String> ddl(DataRuntime runtime, int index, VertexTable vertex, List<String> ddls, DataSet<DataRow> set)
 	 ******************************************************************************************************************/
 	/**
 	 *
@@ -6363,7 +6363,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                                 run.setPageNavi(navi);
                                 mergeFinalQuery(runtime, run);
                             }
-                            DataSet set = selectMetadata(runtime, random, run);
+                            DataSet<DataRow> set = selectMetadata(runtime, random, run);
                             list = vertexs(runtime, idx++, true, list, catalog, schema, set);
                             if (null != navi) {
                                 //分页只查一次
@@ -6419,7 +6419,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                                     run.setPageNavi(navi);
                                     //mergeFinalQuery(runtime, run);
                                 }
-                                DataSet set = selectMetadata(runtime, random, run);
+                                DataSet<DataRow> set = selectMetadata(runtime, random, run);
                                 list = comments(runtime, idx++, true, list, catalog, schema, set);
                                 if (null != navi) {
                                     break;
@@ -6517,7 +6517,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			if (null != runs && !runs.isEmpty()) {
 				int idx = 0;
 				for (Run run : runs) {
-					DataSet set = selectMetadata(runtime, random, run);
+					DataSet<DataRow> set = selectMetadata(runtime, random, run);
 					vertexs = vertexs(runtime, idx++, true, vertexs, catalog, schema, set);
 					for(VertexTable vertex:vertexs) {
 						String cache_key = CacheProxy.key(runtime, "vertex", greedy, catalog, schema, vertex.getName());
@@ -6619,7 +6619,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, VertexTable query, DataSet set) throws Exception {
+	public <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, VertexTable query, DataSet<DataRow> set) throws Exception {
         if(null == previous) {
             previous = new LinkedHashMap<>();
         }
@@ -6648,7 +6648,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends VertexTable> List<T> vertexs(DataRuntime runtime, int index, boolean create, List<T> previous, VertexTable query, DataSet set) throws Exception {
+	public <T extends VertexTable> List<T> vertexs(DataRuntime runtime, int index, boolean create, List<T> previous, VertexTable query, DataSet<DataRow> set) throws Exception {
         if(null == previous) {
             previous = new ArrayList<>();
         }
@@ -6731,7 +6731,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				//直接查询DDL
 				int idx = 0;
 				for (Run run : runs) {
-                    DataSet set = selectMetadata(runtime, random, run);
+                    DataSet<DataRow> set = selectMetadata(runtime, random, run);
 					list = ddl(runtime, idx++, vertex, list, set);
 				}
 				vertex.addDdl(list);
@@ -6805,12 +6805,12 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<String> ddl(DataRuntime runtime, int index, VertexTable vertex, List<String> ddls, DataSet set) {
+	public List<String> ddl(DataRuntime runtime, int index, VertexTable vertex, List<String> ddls, DataSet<DataRow> set) {
 		if(null == ddls) {
 			ddls = new ArrayList<>();
 		}
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<String> ddl(DataRuntime runtime, int index, VertexTable vertex, List<String> ddls, DataSet set)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<String> ddl(DataRuntime runtime, int index, VertexTable vertex, List<String> ddls, DataSet<DataRow> set)", 37));
 		}
 		return ddls;
 	}
@@ -6864,17 +6864,17 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * List<Run> buildQueryEdgesRun(DataRuntime runtime, boolean greedy, EdgeTable query, int types, ConfigStore configs)
 	 * List<Run> buildQueryEdgesCommentRun(DataRuntime runtime, EdgeTable query, int types)
 	 * [结果集封装]<br/>
-	 * <T extends EdgeTable> LinkedHashMap<String, T> edges(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> edges, Catalog catalog, Schema schema, DataSet set)
-	 * <T extends EdgeTable> List<T> edges(DataRuntime runtime, int index, boolean create, List<T> edges, Catalog catalog, Schema schema, DataSet set)
+	 * <T extends EdgeTable> LinkedHashMap<String, T> edges(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> edges, Catalog catalog, Schema schema, DataSet<DataRow> set)
+	 * <T extends EdgeTable> List<T> edges(DataRuntime runtime, int index, boolean create, List<T> edges, Catalog catalog, Schema schema, DataSet<DataRow> set)
 	 * <T extends EdgeTable> LinkedHashMap<String, T> edges(DataRuntime runtime, boolean create, LinkedHashMap<String, T> edges, EdgeTable query, int types)
 	 * <T extends EdgeTable> List<T> edges(DataRuntime runtime, boolean create, List<T> edges, EdgeTable query, int types)
-	 * <T extends EdgeTable> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> edges, Catalog catalog, Schema schema, DataSet set)
+	 * <T extends EdgeTable> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> edges, Catalog catalog, Schema schema, DataSet<DataRow> set)
 	 * [调用入口]
 	 * List<String> ddl(DataRuntime runtime, String random, EdgeTable meta, boolean init)
 	 * [命令合成]
 	 * List<Run> buildQueryDdlRun(DataRuntime runtime, EdgeTable meta)
 	 * [结果集封装]<br/>
-	 * List<String> ddl(DataRuntime runtime, int index, EdgeTable meta, List<String> ddls, DataSet set)
+	 * List<String> ddl(DataRuntime runtime, int index, EdgeTable meta, List<String> ddls, DataSet<DataRow> set)
 	 ******************************************************************************************************************/
 	/**
 	 *
@@ -6933,7 +6933,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                                 run.setPageNavi(navi);
                                 mergeFinalQuery(runtime, run);
                             }
-                            DataSet set = selectMetadata(runtime, random, run);
+                            DataSet<DataRow> set = selectMetadata(runtime, random, run);
                             list = edges(runtime, idx++, true, list, catalog, schema, set);
                             if (null != navi) {
                                 //分页只查一次
@@ -6989,7 +6989,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                                     run.setPageNavi(navi);
                                     //mergeFinalQuery(runtime, run);
                                 }
-                                DataSet set = selectMetadata(runtime, random, run);
+                                DataSet<DataRow> set = selectMetadata(runtime, random, run);
                                 list = comments(runtime, idx++, true, list, catalog, schema, set);
                                 if (null != navi) {
                                     break;
@@ -7087,7 +7087,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			if (null != runs && !runs.isEmpty()) {
 				int idx = 0;
 				for (Run run : runs) {
-					DataSet set = selectMetadata(runtime, random, run);
+					DataSet<DataRow> set = selectMetadata(runtime, random, run);
 					edges = edges(runtime, idx++, true, edges, catalog, schema, set);
 					for(EdgeTable item:edges) {
 						String cache_key = CacheProxy.key(runtime, "edge", greedy, catalog, schema, item.getName());
@@ -7189,7 +7189,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends EdgeTable> LinkedHashMap<String, T> edges(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, EdgeTable query, DataSet set) throws Exception {
+	public <T extends EdgeTable> LinkedHashMap<String, T> edges(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, EdgeTable query, DataSet<DataRow> set) throws Exception {
         if(null == previous) {
             previous = new LinkedHashMap<>();
         }
@@ -7218,7 +7218,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends EdgeTable> List<T> edges(DataRuntime runtime, int index, boolean create, List<T> previous, EdgeTable query, DataSet set) throws Exception {
+	public <T extends EdgeTable> List<T> edges(DataRuntime runtime, int index, boolean create, List<T> previous, EdgeTable query, DataSet<DataRow> set) throws Exception {
         if (null == previous) {
             previous = new ArrayList<>();
         }
@@ -7338,7 +7338,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				//直接查询DDL
 				int idx = 0;
 				for (Run run : runs) {
-                    DataSet set = selectMetadata(runtime, random, run);
+                    DataSet<DataRow> set = selectMetadata(runtime, random, run);
 					list = ddl(runtime, idx++, meta, list, set);
 				}
 				meta.addDdl(list);
@@ -7412,12 +7412,12 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<String> ddl(DataRuntime runtime, int index, EdgeTable meta, List<String> ddls, DataSet set) {
+	public List<String> ddl(DataRuntime runtime, int index, EdgeTable meta, List<String> ddls, DataSet<DataRow> set) {
 		if(null == ddls) {
 			ddls = new ArrayList<>();
 		}
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<String> ddl(DataRuntime runtime, int index, EdgeTable meta, List<String> ddls, DataSet set)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<String> ddl(DataRuntime runtime, int index, EdgeTable meta, List<String> ddls, DataSet<DataRow> set)", 37));
 		}
 		return ddls;
 	}
@@ -7432,17 +7432,17 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * List<Run> buildQueryViewsRun(DataRuntime runtime, boolean greedy, View query, int types, ConfigStore configs)
 	 * List<Run> buildQueryViewsCommentRun(DataRuntime runtime, View query, int types)
 	 * [结果集封装]<br/>
-	 * <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> views, Catalog catalog, Schema schema, DataSet set)
-	 * <T extends View> List<T> views(DataRuntime runtime, int index, boolean create, List<T> views, Catalog catalog, Schema schema, DataSet set)
+	 * <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> views, Catalog catalog, Schema schema, DataSet<DataRow> set)
+	 * <T extends View> List<T> views(DataRuntime runtime, int index, boolean create, List<T> views, Catalog catalog, Schema schema, DataSet<DataRow> set)
 	 * <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, boolean create, LinkedHashMap<String, T> views, View query, int types)
 	 * <T extends View> List<T> views(DataRuntime runtime, boolean create, List<T> views, View query, int types)
-	 * <T extends View> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> views, Catalog catalog, Schema schema, DataSet set)
+	 * <T extends View> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> views, Catalog catalog, Schema schema, DataSet<DataRow> set)
 	 * [调用入口]
 	 * List<String> ddl(DataRuntime runtime, String random, View view, boolean init)
 	 * [命令合成]
 	 * List<Run> buildQueryDdlRun(DataRuntime runtime, View view)
 	 * [结果集封装]<br/>
-	 * List<String> ddl(DataRuntime runtime, int index, View view, List<String> ddls, DataSet set)
+	 * List<String> ddl(DataRuntime runtime, int index, View view, List<String> ddls, DataSet<DataRow> set)
 	 ******************************************************************************************************************/
 	/**
 	 *
@@ -7500,7 +7500,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                                 run.setPageNavi(navi);
                                 mergeFinalQuery(runtime, run);
                             }
-                            DataSet set = selectMetadata(runtime, random, run);
+                            DataSet<DataRow> set = selectMetadata(runtime, random, run);
                             list = views(runtime, idx++, true, list, catalog, schema, set);
                             if (null != navi) {
                                 //分页只查一次
@@ -7556,7 +7556,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                                     run.setPageNavi(navi);
                                     //mergeFinalQuery(runtime, run);
                                 }
-                                DataSet set = selectMetadata(runtime, random, run);
+                                DataSet<DataRow> set = selectMetadata(runtime, random, run);
                                 list = comments(runtime, idx++, true, list, catalog, schema, set);
                                 if (null != navi) {
                                     break;
@@ -7653,7 +7653,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			if (null != runs && !runs.isEmpty()) {
 				int idx = 0;
 				for (Run run : runs) {
-					DataSet set = selectMetadata(runtime, random, run);
+					DataSet<DataRow> set = selectMetadata(runtime, random, run);
 					views = views(runtime, idx++, true, views, catalog, schema, set);
                     if(null != views){
 					for(View view:views) {
@@ -7767,7 +7767,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, View query, DataSet set) throws Exception {
+	public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, View query, DataSet<DataRow> set) throws Exception {
         if(null == previous) {
             previous = new LinkedHashMap<>();
         }
@@ -7796,7 +7796,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends View> List<T> views(DataRuntime runtime, int index, boolean create, List<T> previous, View query, DataSet set) throws Exception {
+	public <T extends View> List<T> views(DataRuntime runtime, int index, boolean create, List<T> previous, View query, DataSet<DataRow> set) throws Exception {
         if (null == previous) {
             previous = new ArrayList<>();
         }
@@ -7939,7 +7939,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				//直接查询DDL
 				int idx = 0;
 				for (Run run : runs) {
-                    DataSet set = selectMetadata(runtime, random, run);
+                    DataSet<DataRow> set = selectMetadata(runtime, random, run);
 					list = ddl(runtime, idx++, view, list, set);
 				}
 				view.addDdl(list);
@@ -8013,12 +8013,12 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<String> ddl(DataRuntime runtime, int index, View view, List<String> ddls, DataSet set) {
+	public List<String> ddl(DataRuntime runtime, int index, View view, List<String> ddls, DataSet<DataRow> set) {
 		if(null == ddls) {
 			ddls = new ArrayList<>();
 		}
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<String> ddl(DataRuntime runtime, int index, View view, List<String> ddls, DataSet set)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<String> ddl(DataRuntime runtime, int index, View view, List<String> ddls, DataSet<DataRow> set)", 37));
 		}
 		return ddls;
 	}
@@ -8033,17 +8033,17 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * List<Run> buildQueryMasterTablesRun(DataRuntime runtime, boolean greedy, MasterTable query, int types, ConfigStore configs)
 	 * List<Run> buildQueryMasterTablesCommentRun(DataRuntime runtime, MasterTable query, int types)
 	 * [结果集封装]<br/>
-	 * <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> masters, Catalog catalog, Schema schema, DataSet set)
-	 * <T extends MasterTable> List<T> masters(DataRuntime runtime, int index, boolean create, List<T> masters, Catalog catalog, Schema schema, DataSet set)
+	 * <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> masters, Catalog catalog, Schema schema, DataSet<DataRow> set)
+	 * <T extends MasterTable> List<T> masters(DataRuntime runtime, int index, boolean create, List<T> masters, Catalog catalog, Schema schema, DataSet<DataRow> set)
 	 * <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, boolean create, LinkedHashMap<String, T> masters, MasterTable query, int types)
 	 * <T extends MasterTable> List<T> masters(DataRuntime runtime, boolean create, List<T> masters, MasterTable query, int types)
-	 * <T extends MasterTable> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> masters, Catalog catalog, Schema schema, DataSet set)
+	 * <T extends MasterTable> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> masters, Catalog catalog, Schema schema, DataSet<DataRow> set)
 	 * [调用入口]
 	 * List<String> ddl(DataRuntime runtime, String random, MasterTable master, boolean init)
 	 * [命令合成]
 	 * List<Run> buildQueryDdlRun(DataRuntime runtime, MasterTable master)
 	 * [结果集封装]<br/>
-	 * List<String> ddl(DataRuntime runtime, int index, MasterTable master, List<String> ddls, DataSet set)
+	 * List<String> ddl(DataRuntime runtime, int index, MasterTable master, List<String> ddls, DataSet<DataRow> set)
 	 ******************************************************************************************************************/
 	/**
 	 *
@@ -8117,7 +8117,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                                 run.setPageNavi(navi);
                                 mergeFinalQuery(runtime, run);
                             }
-                            DataSet set = selectMetadata(runtime, random, run);
+                            DataSet<DataRow> set = selectMetadata(runtime, random, run);
                             list = masters(runtime, idx++, true, list, catalog, schema, set);
                             if (null != navi) {
                                 //分页只查一次
@@ -8173,7 +8173,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                                     run.setPageNavi(navi);
                                     //mergeFinalQuery(runtime, run);
                                 }
-                                DataSet set = selectMetadata(runtime, random, run);
+                                DataSet<DataRow> set = selectMetadata(runtime, random, run);
                                 list = comments(runtime, idx++, true, list, catalog, schema, set);
                                 if (null != navi) {
                                     break;
@@ -8272,7 +8272,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			if (null != runs && !runs.isEmpty()) {
 				int idx = 0;
 				for (Run run : runs) {
-					DataSet set = selectMetadata(runtime, random, run);
+					DataSet<DataRow> set = selectMetadata(runtime, random, run);
 					masters = masters(runtime, idx++, true, masters, catalog, schema, set);
 					for(MasterTable master:masters) {
 						String cache_key = CacheProxy.key(runtime, "master", greedy, catalog, schema, master.getName());
@@ -8373,7 +8373,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, MasterTable query, DataSet set) throws Exception {
+	public <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, MasterTable query, DataSet<DataRow> set) throws Exception {
         if(null == previous) {
             previous = new LinkedHashMap<>();
         }
@@ -8402,7 +8402,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends MasterTable> List<T> masters(DataRuntime runtime, int index, boolean create, List<T> previous, MasterTable query, DataSet set) throws Exception {
+	public <T extends MasterTable> List<T> masters(DataRuntime runtime, int index, boolean create, List<T> previous, MasterTable query, DataSet<DataRow> set) throws Exception {
         Catalog catalog = query.getCatalog();
         Schema schema = query.getSchema();
         if(null == previous) {
@@ -8547,7 +8547,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				int idx = 0;
 				for (Run run : runs) {
 					//不要传master,这里的master用来查询表结构
-					DataSet set = selectMetadata(runtime, random, run);
+					DataSet<DataRow> set = selectMetadata(runtime, random, run);
 					list = ddl(runtime, idx++, meta, list, set);
 				}
 				meta.addDdl(list);
@@ -8621,12 +8621,12 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<String> ddl(DataRuntime runtime, int index, MasterTable master, List<String> ddls, DataSet set) {
+	public List<String> ddl(DataRuntime runtime, int index, MasterTable master, List<String> ddls, DataSet<DataRow> set) {
 		if(null == ddls) {
 			ddls = new ArrayList<>();
 		}
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<String> ddl(DataRuntime runtime, int index, MasterTable master, List<String> ddls, DataSet set)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<String> ddl(DataRuntime runtime, int index, MasterTable master, List<String> ddls, DataSet<DataRow> set)", 37));
 		}
 		return ddls;
 	}
@@ -8641,14 +8641,14 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, boolean greedy,  Table master, Map<String, Tag> tags, String pattern)
 	 * List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, boolean greedy,  Table master, Map<String, Tag> tags)
 	 * [结果集封装]<br/>
-	 * <T extends PartitionTable> LinkedHashMap<String, T> partitions(DataRuntime runtime, int total, int index, boolean create, MasterTable master, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set)
+	 * <T extends PartitionTable> LinkedHashMap<String, T> partitions(DataRuntime runtime, int total, int index, boolean create, MasterTable master, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet<DataRow> set)
 	 * <T extends PartitionTable> LinkedHashMap<String,T> partitions(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, MasterTable master)
 	 * [调用入口]
 	 * List<String> ddl(DataRuntime runtime, String random, PartitionTable table)
 	 * [命令合成]
 	 * List<Run> buildQueryDdlRun(DataRuntime runtime, PartitionTable table)
 	 * [结果集封装]<br/>
-	 * List<String> ddl(DataRuntime runtime, int index, PartitionTable table, List<String> ddls, DataSet set)
+	 * List<String> ddl(DataRuntime runtime, int index, PartitionTable table, List<String> ddls, DataSet<DataRow> set)
 	 ******************************************************************************************************************/
     /**
      * 表分区方式及分片
@@ -8669,7 +8669,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 if(null != runs) {
                     int idx = 0;
                     for(Run run:runs) {
-                        DataSet set = selectMetadata(runtime, random, run);
+                        DataSet<DataRow> set = selectMetadata(runtime, random, run);
                         partition = partition(runtime, idx++, true, partition, table, set);
                     }
                 }
@@ -8718,7 +8718,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @throws Exception 异常
      */
     @Override
-    public Table.Partition partition(DataRuntime runtime, int index, boolean create, Table.Partition meta, Table table, DataSet set) throws Exception {
+    public Table.Partition partition(DataRuntime runtime, int index, boolean create, Table.Partition meta, Table table, DataSet<DataRow> set) throws Exception {
         for(DataRow row:set) {
             if(null == meta) {
                meta = init(runtime, index, create, meta, table, row);
@@ -8839,7 +8839,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 					int idx = 0;
 					int total = runs.size();
 					for(Run run:runs) {
-						DataSet set = selectMetadata(runtime, random, run);
+						DataSet<DataRow> set = selectMetadata(runtime, random, run);
 						tables = partitions(runtime, total, idx++, true, master, tables, master.getCatalog(), master.getSchema(), set);
 					}
 				}
@@ -8904,7 +8904,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends PartitionTable> LinkedHashMap<String, T> partitions(DataRuntime runtime, int total, int index, boolean create, LinkedHashMap<String, T> previous, PartitionTable query, DataSet set) throws Exception {
+	public <T extends PartitionTable> LinkedHashMap<String, T> partitions(DataRuntime runtime, int total, int index, boolean create, LinkedHashMap<String, T> previous, PartitionTable query, DataSet<DataRow> set) throws Exception {
         if(null == previous) {
             previous = new LinkedHashMap<>();
         }
@@ -8960,7 +8960,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			if (null != runs) {
 				int idx = 0;
 				for (Run run : runs) {
-					DataSet set = selectMetadata(runtime, random, run);
+					DataSet<DataRow> set = selectMetadata(runtime, random, run);
 					list = ddl(runtime, idx++, table, list, set);
 				}
 				table.addDdl(list);
@@ -9004,12 +9004,12 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<String> ddl(DataRuntime runtime, int index, PartitionTable table, List<String> ddls, DataSet set) {
+	public List<String> ddl(DataRuntime runtime, int index, PartitionTable table, List<String> ddls, DataSet<DataRow> set) {
 		if(null == ddls) {
 			ddls = new ArrayList<>();
 		}
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<String> ddl(DataRuntime runtime, int index, PartitionTable table, List<String> ddls, DataSet set)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<String> ddl(DataRuntime runtime, int index, PartitionTable table, List<String> ddls, DataSet<DataRow> set)", 37));
 		}
 		return ddls;
 	}
@@ -9063,8 +9063,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * [命令合成]
 	 * List<Run> buildQueryColumnsRun(DataRuntime runtime, Table table, boolean metadata) throws Exception;
 	 * [结果集封装]<br/>
-	 * <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Table table, Column query, DataSet set) throws Exception;
-	 * <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, List<T> previous, Column query, DataSet set) throws Exception;
+	 * <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Table table, Column query, DataSet<DataRow> set) throws Exception;
+	 * <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, List<T> previous, Column query, DataSet<DataRow> set) throws Exception;
 	 * <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, LinkedHashMap<String, T> columns, Table table, String pattern) throws Exception;
 	 ******************************************************************************************************************/
 
@@ -9114,7 +9114,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				if (null != runs) {
 					int idx = 0;
 					for (Run run: runs) {
-						DataSet set = selectMetadata(runtime, random, run);
+						DataSet<DataRow> set = selectMetadata(runtime, random, run);
 						columns = columns(runtime, idx, true, columns, table, query, set);
 						idx++;
 					}
@@ -9278,7 +9278,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			if (null != runs) {
 				int idx = 0;
 				for (Run run: runs) {
-					DataSet set = selectMetadata(runtime, random, run);
+					DataSet<DataRow> set = selectMetadata(runtime, random, run);
 					columns = columns(runtime, idx, true, columns, query, set);
 					idx++;
 				}
@@ -9394,7 +9394,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Table table, Column query, DataSet set) throws Exception {
+	public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Table table, Column query, DataSet<DataRow> set) throws Exception {
         if(null == previous) {
             previous = new LinkedHashMap<>();
         }
@@ -9424,7 +9424,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, List<T> previous, Column query, DataSet set) throws Exception {
+	public <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, List<T> previous, Column query, DataSet<DataRow> set) throws Exception {
         Table table = query.getTable();
         if(null == previous) {
             previous = new ArrayList<>();
@@ -9467,7 +9467,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create,  List<T> previous, Collection<? extends Table> tables, Column query, DataSet set) throws Exception {
+	public <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create,  List<T> previous, Collection<? extends Table> tables, Column query, DataSet<DataRow> set) throws Exception {
         if(null == previous) {
             previous = new ArrayList<>();
         }
@@ -9877,7 +9877,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * [命令合成]
 	 * List<Run> buildQueryTagsRun(DataRuntime runtime, boolean greedy, Tag query)
 	 * [结果集封装]<br/>
-	 * <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Tag query, DataSet set)
+	 * <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Tag query, DataSet<DataRow> set)
 	 * <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tags, Table table, String pattern)
 	 ******************************************************************************************************************/
 
@@ -9936,7 +9936,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Tag query, DataSet set) throws Exception {
+	public <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Tag query, DataSet<DataRow> set) throws Exception {
         if(null == previous) {
             previous = new LinkedHashMap<>();
         }
@@ -10018,7 +10018,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * [命令合成]
 	 * List<Run> buildQueryPrimaryRun(DataRuntime runtime, boolean greedy,  Table table) throws Exception
 	 * [结构集封装]
-	 * <T extends PrimaryKey> T init(DataRuntime runtime, int index, T primary, Table table, DataSet set)
+	 * <T extends PrimaryKey> T init(DataRuntime runtime, int index, T primary, Table table, DataSet<DataRow> set)
 	 * PrimaryKey primary(DataRuntime runtime, Table table)
 	 ******************************************************************************************************************/
 	/**
@@ -10044,7 +10044,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			if(null != runs) {
 				int idx = 0;
 				for(Run run:runs) {
-					DataSet set = selectMetadata(runtime, random, run);
+					DataSet<DataRow> set = selectMetadata(runtime, random, run);
 					primary = init(runtime, idx, primary, query, set);
 					primary = detail(runtime, idx, primary, query, set);
 					idx ++;
@@ -10094,7 +10094,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends PrimaryKey> T init(DataRuntime runtime, int index, T meta, PrimaryKey query, DataSet set) throws Exception {
+	public <T extends PrimaryKey> T init(DataRuntime runtime, int index, T meta, PrimaryKey query, DataSet<DataRow> set) throws Exception {
         Table table = query.getTable();
         MetadataFieldRefer refer = refer(runtime, PrimaryKey.class);
         for(DataRow row:set) {
@@ -10138,9 +10138,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends PrimaryKey> T detail(DataRuntime runtime, int index, T meta, PrimaryKey query, DataSet set) throws Exception {
+	public <T extends PrimaryKey> T detail(DataRuntime runtime, int index, T meta, PrimaryKey query, DataSet<DataRow> set) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends PrimaryKey> T detail(DataRuntime runtime, int index, T meta, PrimaryKey query, DataSet set)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends PrimaryKey> T detail(DataRuntime runtime, int index, T meta, PrimaryKey query, DataSet<DataRow> set)", 37));
 		}
 		return meta;
 	}
@@ -10168,7 +10168,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * [命令合成]
 	 * List<Run> buildQueryForeignsRun(DataRuntime runtime, boolean greedy,  Table table) throws Exception;
 	 * [结构集封装]
-	 * <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, int index, Table table, LinkedHashMap<String, T> foreigns, DataSet set) throws Exception;
+	 * <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, int index, Table table, LinkedHashMap<String, T> foreigns, DataSet<DataRow> set) throws Exception;
 	 ******************************************************************************************************************/
 
 	/**
@@ -10195,7 +10195,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			if(null != runs) {
 				int idx = 0;
 				for(Run run:runs) {
-					DataSet set = selectMetadata(runtime, random, run);
+					DataSet<DataRow> set = selectMetadata(runtime, random, run);
 					foreigns = foreigns(runtime, idx, table, foreigns, set);
 					idx++;
 				}
@@ -10244,7 +10244,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, int index, LinkedHashMap<String, T> previous, ForeignKey query, DataSet set) throws Exception {
+	public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, int index, LinkedHashMap<String, T> previous, ForeignKey query, DataSet<DataRow> set) throws Exception {
         if(null == previous) {
             previous = new LinkedHashMap<>();
         }
@@ -10324,8 +10324,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * [命令合成]
 	 * List<Run> buildQueryIndexesRun(DataRuntime runtime, boolean greedy,  Table table, String name)
 	 * [结果集封装]<br/>
-	 * <T extends Index> List<T> indexes(DataRuntime runtime, int index, boolean create, Table table, List<T> indexes, DataSet set)
-	 * <T extends Index> LinkedHashMap<String, T> indexes(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> indexes, DataSet set)
+	 * <T extends Index> List<T> indexes(DataRuntime runtime, int index, boolean create, Table table, List<T> indexes, DataSet<DataRow> set)
+	 * <T extends Index> LinkedHashMap<String, T> indexes(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> indexes, DataSet<DataRow> set)
 	 * <T extends Index> List< T> indexes(DataRuntime runtime, boolean create, List<T> indexes, Table table, boolean unique, boolean approximate)
 	 * <T extends Index> LinkedHashMap<String, T> indexes(DataRuntime runtime, boolean create, LinkedHashMap<String, T> indexes, Table table, boolean unique, boolean approximate)
 	 ******************************************************************************************************************/
@@ -10356,7 +10356,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			if (null != runs) {
 				int idx = 0;
 				for (Run run: runs) {
-					DataSet set = selectMetadata(runtime, random, run);
+					DataSet<DataRow> set = selectMetadata(runtime, random, run);
                     list = indexes(runtime, idx, true, tables, list, new Index(), set);
 					idx++;
 				}
@@ -10421,7 +10421,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		if(null != runs) {
 			int idx = 0;
 			for(Run run:runs) {
-				DataSet set = selectMetadata(runtime, random, run);
+				DataSet<DataRow> set = selectMetadata(runtime, random, run);
 				try {
                     list = indexes(runtime, idx, true, table, list, set);
 				}catch (Exception e) {
@@ -10478,7 +10478,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		if(null != runs) {
 			int idx = 0;
 			for(Run run:runs) {
-				DataSet set = selectMetadata(runtime, random, run);
+				DataSet<DataRow> set = selectMetadata(runtime, random, run);
 				try {
                     map = indexes(runtime, idx, true, table, map, set);
 				}catch (Exception e) {
@@ -10596,7 +10596,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Index> LinkedHashMap<String, T> indexes(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Index query, DataSet set) throws Exception {
+	public <T extends Index> LinkedHashMap<String, T> indexes(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Index query, DataSet<DataRow> set) throws Exception {
 		Table table = query.getTable();
 		if(null == previous) {
             previous = new LinkedHashMap<>();
@@ -10640,7 +10640,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Index> List<T> indexes(DataRuntime runtime, int index, boolean create, List<T> previous, Index query, DataSet set) throws Exception {
+	public <T extends Index> List<T> indexes(DataRuntime runtime, int index, boolean create, List<T> previous, Index query, DataSet<DataRow> set) throws Exception {
 		Table table = query.getTable();
 		if(null == previous) {
             previous = new ArrayList<>();
@@ -10684,7 +10684,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Index> List<T> indexes(DataRuntime runtime, int index, boolean create, Collection<? extends Table> tables, List<T> previous, Index query, DataSet set) throws Exception {
+	public <T extends Index> List<T> indexes(DataRuntime runtime, int index, boolean create, Collection<? extends Table> tables, List<T> previous, Index query, DataSet<DataRow> set) throws Exception {
 		if(null == previous) {
 			previous = new ArrayList<>();
 		}
@@ -10889,8 +10889,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * [命令合成]
 	 * List<Run> buildQueryConstraintsRun(DataRuntime runtime, boolean greedy, Table table, Column column, String pattern) ;
 	 * [结果集封装]<br/>
-	 * <T extends Constraint> List<T> constraints(DataRuntime runtime, int index, boolean create, Table table, List<T> constraints, DataSet set) throws Exception;
-	 * <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, int index, boolean create, Table table, Column column, LinkedHashMap<String, T> constraints, DataSet set) throws Exception;
+	 * <T extends Constraint> List<T> constraints(DataRuntime runtime, int index, boolean create, Table table, List<T> constraints, DataSet<DataRow> set) throws Exception;
+	 * <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, int index, boolean create, Table table, Column column, LinkedHashMap<String, T> constraints, DataSet<DataRow> set) throws Exception;
 	 ******************************************************************************************************************/
 	/**
 	 *
@@ -10919,7 +10919,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 if(null != runs) {
                     int idx = 0;
                     for(Run run:runs) {
-                        DataSet set = selectMetadata(runtime, random, run);
+                        DataSet<DataRow> set = selectMetadata(runtime, random, run);
                         list = constraints(runtime, idx++, true, list, query, set);
                     }
                 }
@@ -10966,7 +10966,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 if(null != runs) {
                     int idx = 0;
                     for(Run run:runs) {
-                        DataSet set = selectMetadata(runtime, random, run);
+                        DataSet<DataRow> set = selectMetadata(runtime, random, run);
                         map = constraints(runtime, idx++, true, map, query, set);
                     }
                 }
@@ -11033,7 +11033,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Constraint> List<T> constraints(DataRuntime runtime, int index, boolean create, List<T> previous, Constraint query, DataSet set) throws Exception {
+	public <T extends Constraint> List<T> constraints(DataRuntime runtime, int index, boolean create, List<T> previous, Constraint query, DataSet<DataRow> set) throws Exception {
         if(null == previous) {
             previous = new ArrayList<>();
         }
@@ -11083,7 +11083,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, int index, boolean create,  LinkedHashMap<String, T> previous,  Constraint query, DataSet set) throws Exception {
+	public <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, int index, boolean create,  LinkedHashMap<String, T> previous,  Constraint query, DataSet<DataRow> set) throws Exception {
         Table table = query.getTable();
         if(null == previous) {
             previous = new LinkedHashMap<>();
@@ -11170,7 +11170,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * [命令合成]
 	 * List<Run> buildQueryTriggersRun(DataRuntime runtime, boolean greedy, Table table, List<Trigger.EVENT> events)
 	 * [结果集封装]<br/>
-	 * <T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> triggers, DataSet set)
+	 * <T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> triggers, DataSet<DataRow> set)
 	 ******************************************************************************************************************/
 	/**
 	 *
@@ -11200,7 +11200,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 if(null != runs) {
                     int idx = 0;
                     for(Run run:runs) {
-                        DataSet set = selectMetadata(runtime, random, run);
+                        DataSet<DataRow> set = selectMetadata(runtime, random, run);
                         map = triggers(runtime, idx++, true, map, query, set);
                     }
                 }
@@ -11262,7 +11262,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Trigger query, DataSet set) throws Exception {
+	public <T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Trigger query, DataSet<DataRow> set) throws Exception {
         if(null == previous) {
             previous = new LinkedHashMap<>();
         }
@@ -11334,8 +11334,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * [命令合成]
 	 * List<Run> buildQueryProceduresRun(DataRuntime runtime, boolean greedy, Procedure query) ;
 	 * [结果集封装]<br/>
-	 * <T extends Procedure> List<T> procedures(DataRuntime runtime, int index, boolean create, List<T> procedures, DataSet set) throws Exception;
-	 * <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> procedures, DataSet set) throws Exception;
+	 * <T extends Procedure> List<T> procedures(DataRuntime runtime, int index, boolean create, List<T> procedures, DataSet<DataRow> set) throws Exception;
+	 * <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> procedures, DataSet<DataRow> set) throws Exception;
 	 * <T extends Procedure> List<T> procedures(DataRuntime runtime, boolean create, List<T> procedures)
 	 * <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, boolean create, LinkedHashMap<String, T> procedures) throws Exception;
 	 * [调用入口]
@@ -11343,7 +11343,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * [命令合成]
 	 * List<Run> buildQueryDdlRun(DataRuntime runtime, Procedure procedure) throws Exception;
 	 * [结果集封装]<br/>
-	 * List<String> ddl(DataRuntime runtime, int index, Procedure procedure, List<String> ddls, DataSet set);
+	 * List<String> ddl(DataRuntime runtime, int index, Procedure procedure, List<String> ddls, DataSet<DataRow> set);
 	 ******************************************************************************************************************/
 	/**
 	 *
@@ -11372,7 +11372,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 if(null != runs) {
                     int idx = 0;
                     for(Run run:runs) {
-                        DataSet set = selectMetadata(runtime, random, run);
+                        DataSet<DataRow> set = selectMetadata(runtime, random, run);
                         list = procedures(runtime, idx++, true, list, query, set);
                     }
                 }
@@ -11419,7 +11419,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 if(null != runs) {
                     int idx = 0;
                     for(Run run:runs) {
-                        DataSet set = selectMetadata(runtime, random, run);
+                        DataSet<DataRow> set = selectMetadata(runtime, random, run);
                         map = procedures(runtime, idx++, true, map, query, set);
                     }
                 }
@@ -11504,7 +11504,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Procedure> List<T> procedures(DataRuntime runtime, int index, boolean create, List<T> previous, Procedure query, DataSet set) throws Exception {
+	public <T extends Procedure> List<T> procedures(DataRuntime runtime, int index, boolean create, List<T> previous, Procedure query, DataSet<DataRow> set) throws Exception {
         if (null == previous) {
             previous = new ArrayList<>();
         }
@@ -11532,7 +11532,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Procedure query, DataSet set) throws Exception {
+	public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Procedure query, DataSet<DataRow> set) throws Exception {
         if(null == previous) {
             previous = new LinkedHashMap<>();
         }
@@ -11560,7 +11560,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	@Override
 	public <T extends Procedure> List<T> procedures(DataRuntime runtime, boolean create, List<T> previous, Procedure query) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Procedure> List<T> procedures(DataRuntime runtime, int index, boolean create, List<T> procedures, DataSet set)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Procedure> List<T> procedures(DataRuntime runtime, int index, boolean create, List<T> procedures, DataSet<DataRow> set)", 37));
 		}
         return previous;
 	}
@@ -11577,7 +11577,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	@Override
 	public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Procedure query) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> procedures, DataSet set)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> procedures, DataSet<DataRow> set)", 37));
 		}
         return previous;
 	}
@@ -11603,7 +11603,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         LinkedHashMap<String, Parameter> parameters = null;
         int idx = 0;
         for(Run run:runs){
-            DataSet set = selectMetadata(runtime, random, run);
+            DataSet<DataRow> set = selectMetadata(runtime, random, run);
             parameters = parameters(runtime, idx++, true, parameters, procedure, set);
         }
         List<Parameter> ins = new ArrayList<>();
@@ -11633,7 +11633,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends Parameter> LinkedHashMap<String, T> parameters(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Procedure procedure, DataSet set) throws Exception {
+    public <T extends Parameter> LinkedHashMap<String, T> parameters(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Procedure procedure, DataSet<DataRow> set) throws Exception {
         if(null == previous) {
             previous = new LinkedHashMap<>();
         }
@@ -11670,7 +11670,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				int idx = 0;
 				for (Run run : runs) {
 					//不要传table,这里的table用来查询表结构
-					DataSet set = selectMetadata(runtime, random, run);
+					DataSet<DataRow> set = selectMetadata(runtime, random, run);
 					list = ddl(runtime, idx++, procedure, list, set);
 				}
 				if(null != list && !list.isEmpty()) {
@@ -11719,9 +11719,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<String> ddl(DataRuntime runtime, int index, Procedure procedure, List<String> ddls, DataSet set) {
+	public List<String> ddl(DataRuntime runtime, int index, Procedure procedure, List<String> ddls, DataSet<DataRow> set) {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> List<String> ddl(DataRuntime runtime, int index, Procedure procedure, List<String> ddls, DataSet set)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> List<String> ddl(DataRuntime runtime, int index, Procedure procedure, List<String> ddls, DataSet<DataRow> set)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -11820,8 +11820,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * [命令合成]
 	 * List<Run> buildQueryFunctionsRun(DataRuntime runtime, boolean greedy, Function query) ;
 	 * [结果集封装]<br/>
-	 * <T extends Function> List<T> functions(DataRuntime runtime, int index, boolean create, List<T> functions, Catalog catalog, Schema schema, DataSet set) throws Exception;
-	 * <T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> functions, Catalog catalog, Schema schema, DataSet set) throws Exception;
+	 * <T extends Function> List<T> functions(DataRuntime runtime, int index, boolean create, List<T> functions, Catalog catalog, Schema schema, DataSet<DataRow> set) throws Exception;
+	 * <T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> functions, Catalog catalog, Schema schema, DataSet<DataRow> set) throws Exception;
 	 * <T extends Function> List<T> functions(DataRuntime runtime, boolean create, List<T> functions)
 	 * <T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, boolean create, LinkedHashMap<String, T> functions)
 	 * [调用入口]
@@ -11829,7 +11829,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * [命令合成]
 	 * List<Run> buildQueryDdlRun(DataRuntime runtime, Function function) throws Exception;
 	 * [结果集封装]<br/>
-	 * List<String> ddl(DataRuntime runtime, int index, Function function, List<String> ddls, DataSet set)
+	 * List<String> ddl(DataRuntime runtime, int index, Function function, List<String> ddls, DataSet<DataRow> set)
 	 ******************************************************************************************************************/
 	/**
 	 *
@@ -11858,7 +11858,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 if(null != runs) {
                     int idx = 0;
                     for(Run run:runs) {
-                        DataSet set = selectMetadata(runtime, random, run);
+                        DataSet<DataRow> set = selectMetadata(runtime, random, run);
                         list = functions(runtime, idx++, true, list, query, set);
                     }
                 }
@@ -11905,7 +11905,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 if(null != runs) {
                     int idx = 0;
                     for(Run run:runs) {
-                        DataSet set = selectMetadata(runtime, random, run);
+                        DataSet<DataRow> set = selectMetadata(runtime, random, run);
                         map = functions(runtime, idx++, true, map, query, set);
                     }
                 }
@@ -11966,7 +11966,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Function> List<T> functions(DataRuntime runtime, int index, boolean create, List<T> previous, Function query, DataSet set) throws Exception {
+	public <T extends Function> List<T> functions(DataRuntime runtime, int index, boolean create, List<T> previous, Function query, DataSet<DataRow> set) throws Exception {
         if (null == previous) {
             previous = new ArrayList<>();
         }
@@ -11994,7 +11994,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Function query, DataSet set) throws Exception {
+	public <T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Function query, DataSet<DataRow> set) throws Exception {
         if(null == previous) {
             previous = new LinkedHashMap<>();
         }
@@ -12066,7 +12066,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				int idx = 0;
 				for (Run run : runs) {
 					//不要传table,这里的table用来查询表结构
-					DataSet set = selectMetadata(runtime, random, run);
+					DataSet<DataRow> set = selectMetadata(runtime, random, run);
 					list = ddl(runtime, idx++, meta, list, set);
 				}
 				if(null != list && !list.isEmpty()) {
@@ -12114,12 +12114,12 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<String> ddl(DataRuntime runtime, int index, Function function, List<String> ddls, DataSet set) {
+	public List<String> ddl(DataRuntime runtime, int index, Function function, List<String> ddls, DataSet<DataRow> set) {
 		if(null == ddls) {
 			ddls = new ArrayList<>();
 		}
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<String> ddl(DataRuntime runtime, int index, Function function, List<String> ddls, DataSet set)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<String> ddl(DataRuntime runtime, int index, Function function, List<String> ddls, DataSet<DataRow> set)", 37));
 		}
 		return ddls;
 	}
@@ -12175,8 +12175,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * [命令合成]
 	 * List<Run> buildQuerySequencesRun(DataRuntime runtime, boolean greedy, Sequence query) ;
 	 * [结果集封装]<br/>
-	 * <T extends Sequence> List<T> sequences(DataRuntime runtime, int index, boolean create, List<T> sequences, DataSet set) throws Exception;
-	 * <T extends Sequence> LinkedHashMap<String, T> sequences(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> sequences, DataSet set) throws Exception;
+	 * <T extends Sequence> List<T> sequences(DataRuntime runtime, int index, boolean create, List<T> sequences, DataSet<DataRow> set) throws Exception;
+	 * <T extends Sequence> LinkedHashMap<String, T> sequences(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> sequences, DataSet<DataRow> set) throws Exception;
 	 * <T extends Sequence> List<T> sequences(DataRuntime runtime, boolean create, List<T> sequences)
 	 * <T extends Sequence> LinkedHashMap<String, T> sequences(DataRuntime runtime, boolean create, LinkedHashMap<String, T> sequences)
 	 * [调用入口]
@@ -12184,7 +12184,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * [命令合成]
 	 * List<Run> buildQueryDdlRun(DataRuntime runtime, Sequence sequence) throws Exception;
 	 * [结果集封装]<br/>
-	 * List<String> ddl(DataRuntime runtime, int index, Sequence sequence, List<String> ddls, DataSet set)
+	 * List<String> ddl(DataRuntime runtime, int index, Sequence sequence, List<String> ddls, DataSet<DataRow> set)
 	 ******************************************************************************************************************/
 	/**
 	 *
@@ -12213,7 +12213,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				if(null != runs) {
 					int idx = 0;
 					for(Run run:runs) {
-						DataSet set = selectMetadata(runtime, random, run);
+						DataSet<DataRow> set = selectMetadata(runtime, random, run);
                         list = sequences(runtime, idx++, true, list, query, set);
 					}
 				}
@@ -12260,7 +12260,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				if(null != runs) {
 					int idx = 0;
 					for(Run run:runs) {
-						DataSet set = selectMetadata(runtime, random, run);
+						DataSet<DataRow> set = selectMetadata(runtime, random, run);
                         maps = sequences(runtime, idx++, true, maps, new Sequence(), set);
 					}
 				}
@@ -12320,7 +12320,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Sequence> List<T> sequences(DataRuntime runtime, int index, boolean create, List<T> previous, Sequence query, DataSet set) throws Exception {
+	public <T extends Sequence> List<T> sequences(DataRuntime runtime, int index, boolean create, List<T> previous, Sequence query, DataSet<DataRow> set) throws Exception {
         if (null == previous) {
             previous = new ArrayList<>();
         }
@@ -12348,7 +12348,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Sequence> LinkedHashMap<String, T> sequences(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Sequence query, DataSet set) throws Exception {
+	public <T extends Sequence> LinkedHashMap<String, T> sequences(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Sequence query, DataSet<DataRow> set) throws Exception {
         if(null == previous) {
             previous = new LinkedHashMap<>();
         }
@@ -12420,7 +12420,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				int idx = 0;
 				for (Run run : runs) {
 					//不要传table,这里的table用来查询表结构
-					DataSet set = selectMetadata(runtime, random, run);
+					DataSet<DataRow> set = selectMetadata(runtime, random, run);
 					list = ddl(runtime, idx++, meta, list, set);
 				}
 				if(null != list && !list.isEmpty()) {
@@ -12468,12 +12468,12 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<String> ddl(DataRuntime runtime, int index, Sequence sequence, List<String> ddls, DataSet set) {
+	public List<String> ddl(DataRuntime runtime, int index, Sequence sequence, List<String> ddls, DataSet<DataRow> set) {
 		if(null == ddls) {
 			ddls = new ArrayList<>();
 		}
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<String> ddl(DataRuntime runtime, int index, Sequence sequence, List<String> ddls, DataSet set)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<String> ddl(DataRuntime runtime, int index, Sequence sequence, List<String> ddls, DataSet<DataRow> set)", 37));
 		}
 		return ddls;
 	}
@@ -17769,7 +17769,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * boolean delete(DataRuntime runtime, Role role) throws Exception
 	 * <T extends Role> List<T> roles(Catalog catalog, Schema schema, String pattern) throws Exception
 	 * List<Run> buildQueryRolesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) throws Exception
-	 * <T extends Role> List<T> roles(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, List<T> roles, DataSet set) throws Exception
+	 * <T extends Role> List<T> roles(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, List<T> roles, DataSet<DataRow> set) throws Exception
 	 * <T extends Role> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row)
 	 * <T extends Role> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row)
 	 ******************************************************************************************************************/
@@ -17840,7 +17840,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 if(null != runs) {
                     int idx = 0;
                     for(Run run:runs) {
-                        DataSet set = selectMetadata(runtime, random, run);
+                        DataSet<DataRow> set = selectMetadata(runtime, random, run);
                         list = roles(runtime, idx++, true, list, query, set);
                     }
                 }
@@ -17942,7 +17942,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Role> List<T> roles(DataRuntime runtime, int index, boolean create, List<T> previous, Role query, DataSet set) throws Exception {
+	public <T extends Role> List<T> roles(DataRuntime runtime, int index, boolean create, List<T> previous, Role query, DataSet<DataRow> set) throws Exception {
         if (null == previous) {
             previous = new ArrayList<>();
         }
@@ -17999,7 +17999,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * boolean drop(DataRuntime runtime, User user) throws Exception
 	 * List<User> users(Catalog catalog, Schema schema, String pattern) throws Exception
 	 * List<Run> buildQueryUsersRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) throws Exception
-	 * <T extends User> List<T> users(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, List<T> users, DataSet set) throws Exception
+	 * <T extends User> List<T> users(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, List<T> users, DataSet<DataRow> set) throws Exception
 	 * <T extends User> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row)
 	 * <T extends User> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row)
 	 ******************************************************************************************************************/
@@ -18073,7 +18073,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 if(null != runs) {
                     int idx = 0;
                     for(Run run:runs) {
-                        DataSet set = selectMetadata(runtime, random, run);
+                        DataSet<DataRow> set = selectMetadata(runtime, random, run);
                         list = users(runtime, idx++, true, list, query, set);
                     }
                 }
@@ -18175,7 +18175,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends User> List<T> users(DataRuntime runtime, int index, boolean create, List<T> previous, User query, DataSet set) throws Exception {
+	public <T extends User> List<T> users(DataRuntime runtime, int index, boolean create, List<T> previous, User query, DataSet<DataRow> set) throws Exception {
 		if(null == previous) {
 			previous = new ArrayList<>();
 		}
@@ -18227,7 +18227,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * <T extends Privilege> List<T> privileges(DataRuntime runtime, User user)
 	 * List<Run> buildQueryPrivilegesRun(DataRuntime runtime, User user) throws Exception
-	 * <T extends Privilege> List<T> privileges(DataRuntime runtime, int index, boolean create, User user, List<T> privileges, DataSet set) throws Exception
+	 * <T extends Privilege> List<T> privileges(DataRuntime runtime, int index, boolean create, User user, List<T> privileges, DataSet<DataRow> set) throws Exception
 	 * <T extends Privilege> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, User user, DataRow row)
 	 * <T extends Privilege> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row)
 	 * Privilege.MetadataAdapter privilegeMetadataAdapter(DataRuntime runtime)
@@ -18257,7 +18257,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				if(null != runs) {
 					int idx = 0;
 					for(Run run:runs) {
-						DataSet set = selectMetadata(runtime, random, run);
+						DataSet<DataRow> set = selectMetadata(runtime, random, run);
                         list = privileges(runtime, idx++, true, list, query, set);
 					}
 				}
@@ -18318,7 +18318,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Privilege> List<T> privileges(DataRuntime runtime, int index, boolean create,  List<T> previous, Privilege query, DataSet set) throws Exception {
+	public <T extends Privilege> List<T> privileges(DataRuntime runtime, int index, boolean create,  List<T> previous, Privilege query, DataSet<DataRow> set) throws Exception {
 		if(null == previous) {
 			previous = new ArrayList<>();
 		}

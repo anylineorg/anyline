@@ -77,7 +77,7 @@ public class SelectDBAdapter extends DorisAdapter {
      * long insert(DataRuntime runtime, String random, int batch, Table dest, Object data, ConfigStore configs, List<String> columns)
      * [命令合成]
      * public Run buildInsertRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, List<String> columns)
-     * public void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet set, ConfigStore configs, LinkedHashMap<String, Column> columns)
+     * public void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet<DataRow> set, ConfigStore configs, LinkedHashMap<String, Column> columns)
      * public void fillInsertContent(DataRuntime runtime, Run run, Table dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns)
      * public LinkedHashMap<String, Column> confirmInsertColumns(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns, boolean batch)
      * public String batchInsertSeparator()
@@ -175,7 +175,7 @@ public class SelectDBAdapter extends DorisAdapter {
      * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
      */
     @Override
-    public void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet set, ConfigStore configs, Boolean placeholder, Boolean unicode, LinkedHashMap<String, Column> columns) {
+    public void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet<DataRow> set, ConfigStore configs, Boolean placeholder, Boolean unicode, LinkedHashMap<String, Column> columns) {
         super.fillInsertContent(runtime, run, dest, set, configs, placeholder, unicode, columns);
     }
     
@@ -1426,20 +1426,20 @@ public class SelectDBAdapter extends DorisAdapter {
      * List<Run> buildQueryVersionRun(DataRuntime runtime, boolean greedy, String name)
      * List<Run> buildQueryDatabaseRun(DataRuntime runtime)
      * [结果集封装]<br/>
-     * LinkedHashMap<String, Database> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Database> databases, Catalog catalog, Schema schema, DataSet set)
-     * List<Database> databases(DataRuntime runtime, int index, boolean create, List<Database> databases, Catalog catalog, Schema schema, DataSet set)
-     * Database database(DataRuntime runtime, boolean create, Database dataase, DataSet set)
+     * LinkedHashMap<String, Database> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Database> databases, Catalog catalog, Schema schema, DataSet<DataRow> set)
+     * List<Database> databases(DataRuntime runtime, int index, boolean create, List<Database> databases, Catalog catalog, Schema schema, DataSet<DataRow> set)
+     * Database database(DataRuntime runtime, boolean create, Database dataase, DataSet<DataRow> set)
      * Database database(DataRuntime runtime, boolean create, Database dataase)
-     * String product(DataRuntime runtime, boolean create, Database product, DataSet set)
+     * String product(DataRuntime runtime, boolean create, Database product, DataSet<DataRow> set)
      * String product(DataRuntime runtime, boolean create, String product)
-     * String version(DataRuntime runtime, int index, boolean create, String version, DataSet set)
+     * String version(DataRuntime runtime, int index, boolean create, String version, DataSet<DataRow> set)
      * String version(DataRuntime runtime, boolean create, String version)
-     * Catalog catalog(DataRuntime runtime, boolean create, Catalog catalog, DataSet set)
+     * Catalog catalog(DataRuntime runtime, boolean create, Catalog catalog, DataSet<DataRow> set)
      * Catalog catalog(DataRuntime runtime, boolean create, Catalog catalog)
-     * Schema schema(DataRuntime runtime, boolean create, Schema schema, DataSet set)
+     * Schema schema(DataRuntime runtime, boolean create, Schema schema, DataSet<DataRow> set)
      * Schema schema(DataRuntime runtime, boolean create, Schema schema)
      * Database database(DataRuntime runtime, boolean create, Database dataase)
-     * String product(DataRuntime runtime, int index, boolean create, String product, DataSet set)
+     * String product(DataRuntime runtime, int index, boolean create, String product, DataSet<DataRow> set)
      * String product(DataRuntime runtime, boolean create, String product)
      ******************************************************************************************************************/
     /**
@@ -1562,7 +1562,7 @@ public class SelectDBAdapter extends DorisAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends Database> LinkedHashMap<String, T> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Database query, DataSet set) throws Exception {
+    public <T extends Database> LinkedHashMap<String, T> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Database query, DataSet<DataRow> set) throws Exception {
         return super.databases(runtime, index, create, previous, query, set);
     }
 
@@ -1578,7 +1578,7 @@ public class SelectDBAdapter extends DorisAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends Database> List<T> databases(DataRuntime runtime, int index, boolean create, List<T> previous, Database query, DataSet set) throws Exception {
+    public <T extends Database> List<T> databases(DataRuntime runtime, int index, boolean create, List<T> previous, Database query, DataSet<DataRow> set) throws Exception {
         return super.databases(runtime, index, create, previous, query, set);
     }
 
@@ -1594,7 +1594,7 @@ public class SelectDBAdapter extends DorisAdapter {
      * @throws Exception 异常
      */
     @Override
-    public Database database(DataRuntime runtime, int index, boolean create, Database meta, DataSet set) throws Exception {
+    public Database database(DataRuntime runtime, int index, boolean create, Database meta, DataSet<DataRow> set) throws Exception {
         return super.database(runtime, index, create, meta, set);
     }
 
@@ -1623,7 +1623,7 @@ public class SelectDBAdapter extends DorisAdapter {
      * @throws Exception 异常
      */
     @Override
-    public String product(DataRuntime runtime, int index, boolean create, String product, DataSet set) {
+    public String product(DataRuntime runtime, int index, boolean create, String product, DataSet<DataRow> set) {
         return super.product(runtime, index, create, product, set);
     }
 
@@ -1652,7 +1652,7 @@ public class SelectDBAdapter extends DorisAdapter {
      * @throws Exception 异常
      */
     @Override
-    public String version(DataRuntime runtime, int index, boolean create, String version, DataSet set) {
+    public String version(DataRuntime runtime, int index, boolean create, String version, DataSet<DataRow> set) {
         return super.version(runtime, index, create, version, set);
     }
 
@@ -1706,12 +1706,12 @@ public class SelectDBAdapter extends DorisAdapter {
      * [命令合成]
      * List<Run> buildQueryCatalogsRun(DataRuntime runtime, boolean greedy, String name)
      * [结果集封装]<br/>
-     * LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Catalog> catalogs, DataSet set)
-     * List<Catalog> catalogs(DataRuntime runtime, int index, boolean create, List<Catalog> catalogs, DataSet set)
+     * LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Catalog> catalogs, DataSet<DataRow> set)
+     * List<Catalog> catalogs(DataRuntime runtime, int index, boolean create, List<Catalog> catalogs, DataSet<DataRow> set)
      * LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, boolean create, LinkedHashMap<String, Catalog> catalogs)
      * List<Catalog> catalogs(DataRuntime runtime, boolean create, List<Catalog> catalogs)
      *
-     * Catalog catalog(DataRuntime runtime, int index, boolean create, Catalog catalog, DataSet set)
+     * Catalog catalog(DataRuntime runtime, int index, boolean create, Catalog catalog, DataSet<DataRow> set)
      * Catalog catalog(DataRuntime runtime, int index, boolean create, Catalog catalog)
      ******************************************************************************************************************/
 
@@ -1799,7 +1799,7 @@ public class SelectDBAdapter extends DorisAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends Catalog> LinkedHashMap<String, T> catalogs(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Catalog query, DataSet set) throws Exception {
+    public <T extends Catalog> LinkedHashMap<String, T> catalogs(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Catalog query, DataSet<DataRow> set) throws Exception {
         return super.catalogs(runtime, index, create, previous, query, set);
     }
 
@@ -1815,7 +1815,7 @@ public class SelectDBAdapter extends DorisAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends Catalog> List<T> catalogs(DataRuntime runtime, int index, boolean create, List<T> previous, Catalog query, DataSet set) throws Exception {
+    public <T extends Catalog> List<T> catalogs(DataRuntime runtime, int index, boolean create, List<T> previous, Catalog query, DataSet<DataRow> set) throws Exception {
         return super.catalogs(runtime, index, create, previous, query, set);
     }
 
@@ -1859,7 +1859,7 @@ public class SelectDBAdapter extends DorisAdapter {
      * @throws Exception 异常
      */
     @Override
-    public Catalog catalog(DataRuntime runtime, int index, boolean create, Catalog meta, DataSet set) throws Exception {
+    public Catalog catalog(DataRuntime runtime, int index, boolean create, Catalog meta, DataSet<DataRow> set) throws Exception {
         return super.catalog(runtime, index, create, meta, set);
     }
 
@@ -1913,9 +1913,9 @@ public class SelectDBAdapter extends DorisAdapter {
      * [命令合成]
      * List<Run> buildQuerySchemasRun(DataRuntime runtime, boolean greedy, Catalog catalog, String name)
      * [结果集封装]<br/>
-     * LinkedHashMap<String, Schema> schemas(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Schema> schemas, Catalog catalog, Schema schema, DataSet set)
-     * List<Schema> schemas(DataRuntime runtime, int index, boolean create, List<Schema> schemas, Catalog catalog, Schema schema, DataSet set)
-     * Schema schema(DataRuntime runtime, int index, boolean create, Schema schema, DataSet set)
+     * LinkedHashMap<String, Schema> schemas(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Schema> schemas, Catalog catalog, Schema schema, DataSet<DataRow> set)
+     * List<Schema> schemas(DataRuntime runtime, int index, boolean create, List<Schema> schemas, Catalog catalog, Schema schema, DataSet<DataRow> set)
+     * Schema schema(DataRuntime runtime, int index, boolean create, Schema schema, DataSet<DataRow> set)
      * Schema schema(DataRuntime runtime, int index, boolean create, Schema schema)
      ******************************************************************************************************************/
 
@@ -2003,7 +2003,7 @@ public class SelectDBAdapter extends DorisAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends Schema> LinkedHashMap<String, T> schemas(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Schema query, DataSet set) throws Exception {
+    public <T extends Schema> LinkedHashMap<String, T> schemas(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Schema query, DataSet<DataRow> set) throws Exception {
         return super.schemas(runtime, index, create, previous, query, set);
     }
 
@@ -2019,7 +2019,7 @@ public class SelectDBAdapter extends DorisAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends Schema> List<T> schemas(DataRuntime runtime, int index, boolean create, List<T> previous, Schema query, DataSet set) throws Exception {
+    public <T extends Schema> List<T> schemas(DataRuntime runtime, int index, boolean create, List<T> previous, Schema query, DataSet<DataRow> set) throws Exception {
         return super.schemas(runtime, index, create, previous, query, set);
     }
 
@@ -2063,7 +2063,7 @@ public class SelectDBAdapter extends DorisAdapter {
      * @throws Exception 异常
      */
     @Override
-    public Schema schema(DataRuntime runtime, int index, boolean create, Schema meta, DataSet set) throws Exception {
+    public Schema schema(DataRuntime runtime, int index, boolean create, Schema meta, DataSet<DataRow> set) throws Exception {
         return super.schema(runtime, index, create, meta, set);
     }
 
@@ -2145,17 +2145,17 @@ public class SelectDBAdapter extends DorisAdapter {
      * List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs)
      * List<Run> buildQueryTablesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types)
      * [结果集封装]<br/>
-     * <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set)
-     * <T extends Table> List<T> tables(DataRuntime runtime, int index, boolean create, List<T> tables, Catalog catalog, Schema schema, DataSet set)
+     * <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet<DataRow> set)
+     * <T extends Table> List<T> tables(DataRuntime runtime, int index, boolean create, List<T> tables, Catalog catalog, Schema schema, DataSet<DataRow> set)
      * <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, String pattern, int types)
      * <T extends Table> List<T> tables(DataRuntime runtime, boolean create, List<T> tables, Catalog catalog, Schema schema, String pattern, int types)
-     * <T extends Table> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set)
+     * <T extends Table> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet<DataRow> set)
      * [调用入口]
      * List<String> ddl(DataRuntime runtime, String random, Table table, boolean init)
      * [命令合成]
      * List<Run> buildQueryDdlRun(DataRuntime runtime, Table table)
      * [结果集封装]<br/>
-     * List<String> ddl(DataRuntime runtime, int index, Table table, List<String> ddls, DataSet set)
+     * List<String> ddl(DataRuntime runtime, int index, Table table, List<String> ddls, DataSet<DataRow> set)
      ******************************************************************************************************************/
     /**
      *
@@ -2261,7 +2261,7 @@ public class SelectDBAdapter extends DorisAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Table query, DataSet set) throws Exception {
+    public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Table query, DataSet<DataRow> set) throws Exception {
         return super.tables(runtime, index, create, previous, query, set);
     }
 
@@ -2278,7 +2278,7 @@ public class SelectDBAdapter extends DorisAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends Table> List<T> tables(DataRuntime runtime, int index, boolean create, List<T> previous, Table query, DataSet set) throws Exception {
+    public <T extends Table> List<T> tables(DataRuntime runtime, int index, boolean create, List<T> previous, Table query, DataSet<DataRow> set) throws Exception {
         return super.tables(runtime, index, create, previous, query, set);
     }
 
@@ -2357,7 +2357,7 @@ public class SelectDBAdapter extends DorisAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends Table> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Table query, DataSet set) throws Exception {
+    public <T extends Table> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Table query, DataSet<DataRow> set) throws Exception {
         return super.comments(runtime, index, create, previous, query, set);
     }
 
@@ -2374,7 +2374,7 @@ public class SelectDBAdapter extends DorisAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends Table> List<T> comments(DataRuntime runtime, int index, boolean create, List<T> previous, Table query, DataSet set) throws Exception {
+    public <T extends Table> List<T> comments(DataRuntime runtime, int index, boolean create, List<T> previous, Table query, DataSet<DataRow> set) throws Exception {
         return super.comments(runtime, index, create, previous, query, set);
     }
 
@@ -2414,7 +2414,7 @@ public class SelectDBAdapter extends DorisAdapter {
      * @return List
      */
     @Override
-    public List<String> ddl(DataRuntime runtime, int index, Table table, List<String> ddls, DataSet set) {
+    public List<String> ddl(DataRuntime runtime, int index, Table table, List<String> ddls, DataSet<DataRow> set) {
         return super.ddl(runtime, index, table, ddls, set);
     }
 
@@ -2428,17 +2428,17 @@ public class SelectDBAdapter extends DorisAdapter {
      * List<Run> buildQueryVertexsRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs)
      * List<Run> buildQueryVertexsCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types)
      * [结果集封装]<br/>
-     * <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> vertexs, Catalog catalog, Schema schema, DataSet set)
-     * <T extends VertexTable> List<T> vertexs(DataRuntime runtime, int index, boolean create, List<T> vertexs, Catalog catalog, Schema schema, DataSet set)
+     * <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> vertexs, Catalog catalog, Schema schema, DataSet<DataRow> set)
+     * <T extends VertexTable> List<T> vertexs(DataRuntime runtime, int index, boolean create, List<T> vertexs, Catalog catalog, Schema schema, DataSet<DataRow> set)
      * <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, boolean create, LinkedHashMap<String, T> vertexs, Catalog catalog, Schema schema, String pattern, int types)
      * <T extends VertexTable> List<T> vertexs(DataRuntime runtime, boolean create, List<T> vertexs, Catalog catalog, Schema schema, String pattern, int types)
-     * <T extends VertexTable> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> vertexs, Catalog catalog, Schema schema, DataSet set)
+     * <T extends VertexTable> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> vertexs, Catalog catalog, Schema schema, DataSet<DataRow> set)
      * [调用入口]
      * List<String> ddl(DataRuntime runtime, String random, VertexTable vertex, boolean init)
      * [命令合成]
      * List<Run> buildQueryDdlRun(DataRuntime runtime, VertexTable vertex)
      * [结果集封装]<br/>
-     * List<String> ddl(DataRuntime runtime, int index, VertexTable vertex, List<String> ddls, DataSet set)
+     * List<String> ddl(DataRuntime runtime, int index, VertexTable vertex, List<String> ddls, DataSet<DataRow> set)
      ******************************************************************************************************************/
     /**
      *
@@ -2533,7 +2533,7 @@ public class SelectDBAdapter extends DorisAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, VertexTable query, DataSet set) throws Exception {
+    public <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, VertexTable query, DataSet<DataRow> set) throws Exception {
         return super.vertexs(runtime, index, create, previous, query, set);
     }
 
@@ -2550,7 +2550,7 @@ public class SelectDBAdapter extends DorisAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends VertexTable> List<T> vertexs(DataRuntime runtime, int index, boolean create, List<T> previous, VertexTable query, DataSet set) throws Exception {
+    public <T extends VertexTable> List<T> vertexs(DataRuntime runtime, int index, boolean create, List<T> previous, VertexTable query, DataSet<DataRow> set) throws Exception {
         return super.vertexs(runtime, index, create, previous, query, set);
     }
 
@@ -2623,7 +2623,7 @@ public class SelectDBAdapter extends DorisAdapter {
      * @return List
      */
     @Override
-    public List<String> ddl(DataRuntime runtime, int index, VertexTable vertex, List<String> ddls, DataSet set) {
+    public List<String> ddl(DataRuntime runtime, int index, VertexTable vertex, List<String> ddls, DataSet<DataRow> set) {
         return super.ddl(runtime, index, vertex, ddls, set);
     }
 
@@ -2666,17 +2666,17 @@ public class SelectDBAdapter extends DorisAdapter {
      * List<Run> buildQueryEdgesRun(DataRuntime runtime, boolean greedy, EdgeTable query, int types, ConfigStore configs)
      * List<Run> buildQueryEdgesCommentRun(DataRuntime runtime, EdgeTable query, int types)
      * [结果集封装]<br/>
-     * <T extends EdgeTable> LinkedHashMap<String, T> edges(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> edges, Catalog catalog, Schema schema, DataSet set)
-     * <T extends EdgeTable> List<T> edges(DataRuntime runtime, int index, boolean create, List<T> edges, Catalog catalog, Schema schema, DataSet set)
+     * <T extends EdgeTable> LinkedHashMap<String, T> edges(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> edges, Catalog catalog, Schema schema, DataSet<DataRow> set)
+     * <T extends EdgeTable> List<T> edges(DataRuntime runtime, int index, boolean create, List<T> edges, Catalog catalog, Schema schema, DataSet<DataRow> set)
      * <T extends EdgeTable> LinkedHashMap<String, T> edges(DataRuntime runtime, boolean create, LinkedHashMap<String, T> edges, EdgeTable query, int types)
      * <T extends EdgeTable> List<T> edges(DataRuntime runtime, boolean create, List<T> edges, EdgeTable query, int types)
-     * <T extends EdgeTable> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> edges, Catalog catalog, Schema schema, DataSet set)
+     * <T extends EdgeTable> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> edges, Catalog catalog, Schema schema, DataSet<DataRow> set)
      * [调用入口]
      * List<String> ddl(DataRuntime runtime, String random, EdgeTable meta, boolean init)
      * [命令合成]
      * List<Run> buildQueryDdlRun(DataRuntime runtime, EdgeTable meta)
      * [结果集封装]<br/>
-     * List<String> ddl(DataRuntime runtime, int index, EdgeTable meta, List<String> ddls, DataSet set)
+     * List<String> ddl(DataRuntime runtime, int index, EdgeTable meta, List<String> ddls, DataSet<DataRow> set)
      ******************************************************************************************************************/
     /**
      *
@@ -2771,7 +2771,7 @@ public class SelectDBAdapter extends DorisAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends EdgeTable> LinkedHashMap<String, T> edges(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, EdgeTable query, DataSet set) throws Exception {
+    public <T extends EdgeTable> LinkedHashMap<String, T> edges(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, EdgeTable query, DataSet<DataRow> set) throws Exception {
         return super.edges(runtime, index, create, previous, query, set);
     }
 
@@ -2788,7 +2788,7 @@ public class SelectDBAdapter extends DorisAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends EdgeTable> List<T> edges(DataRuntime runtime, int index, boolean create, List<T> previous, EdgeTable query, DataSet set) throws Exception {
+    public <T extends EdgeTable> List<T> edges(DataRuntime runtime, int index, boolean create, List<T> previous, EdgeTable query, DataSet<DataRow> set) throws Exception {
         return super.edges(runtime, index, create, previous, query, set);
     }
 
@@ -2890,7 +2890,7 @@ public class SelectDBAdapter extends DorisAdapter {
      * @return List
      */
     @Override
-    public List<String> ddl(DataRuntime runtime, int index, EdgeTable meta, List<String> ddls, DataSet set) {
+    public List<String> ddl(DataRuntime runtime, int index, EdgeTable meta, List<String> ddls, DataSet<DataRow> set) {
         return super.ddl(runtime, index, meta, ddls, set);
     }
 
@@ -2904,17 +2904,17 @@ public class SelectDBAdapter extends DorisAdapter {
      * List<Run> buildQueryViewsRun(DataRuntime runtime, boolean greedy, View query, int types, ConfigStore configs)
      * List<Run> buildQueryViewsCommentRun(DataRuntime runtime, View query, int types)
      * [结果集封装]<br/>
-     * <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> views, Catalog catalog, Schema schema, DataSet set)
-     * <T extends View> List<T> views(DataRuntime runtime, int index, boolean create, List<T> views, Catalog catalog, Schema schema, DataSet set)
+     * <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> views, Catalog catalog, Schema schema, DataSet<DataRow> set)
+     * <T extends View> List<T> views(DataRuntime runtime, int index, boolean create, List<T> views, Catalog catalog, Schema schema, DataSet<DataRow> set)
      * <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, boolean create, LinkedHashMap<String, T> views, View query, int types)
      * <T extends View> List<T> views(DataRuntime runtime, boolean create, List<T> views, View query, int types)
-     * <T extends View> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> views, Catalog catalog, Schema schema, DataSet set)
+     * <T extends View> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> views, Catalog catalog, Schema schema, DataSet<DataRow> set)
      * [调用入口]
      * List<String> ddl(DataRuntime runtime, String random, View view, boolean init)
      * [命令合成]
      * List<Run> buildQueryDdlRun(DataRuntime runtime, View view)
      * [结果集封装]<br/>
-     * List<String> ddl(DataRuntime runtime, int index, View view, List<String> ddls, DataSet set)
+     * List<String> ddl(DataRuntime runtime, int index, View view, List<String> ddls, DataSet<DataRow> set)
      ******************************************************************************************************************/
     /**
      *
@@ -3009,7 +3009,7 @@ public class SelectDBAdapter extends DorisAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, View query, DataSet set) throws Exception {
+    public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, View query, DataSet<DataRow> set) throws Exception {
         return super.views(runtime, index, create, previous, query, set);
     }
 
@@ -3026,7 +3026,7 @@ public class SelectDBAdapter extends DorisAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends View> List<T> views(DataRuntime runtime, int index, boolean create, List<T> previous, View query, DataSet set) throws Exception {
+    public <T extends View> List<T> views(DataRuntime runtime, int index, boolean create, List<T> previous, View query, DataSet<DataRow> set) throws Exception {
         return super.views(runtime, index, create, previous, query, set);
     }
 
@@ -3128,7 +3128,7 @@ public class SelectDBAdapter extends DorisAdapter {
      * @return List
      */
     @Override
-    public List<String> ddl(DataRuntime runtime, int index, View view, List<String> ddls, DataSet set) {
+    public List<String> ddl(DataRuntime runtime, int index, View view, List<String> ddls, DataSet<DataRow> set) {
         return super.ddl(runtime, index, view, ddls, set);
     }
 
@@ -3142,17 +3142,17 @@ public class SelectDBAdapter extends DorisAdapter {
      * List<Run> buildQueryMasterTablesRun(DataRuntime runtime, boolean greedy, MasterTable query, int types, ConfigStore configs)
      * List<Run> buildQueryMasterTablesCommentRun(DataRuntime runtime, MasterTable query, int types)
      * [结果集封装]<br/>
-     * <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> masters, Catalog catalog, Schema schema, DataSet set)
-     * <T extends MasterTable> List<T> masters(DataRuntime runtime, int index, boolean create, List<T> masters, Catalog catalog, Schema schema, DataSet set)
+     * <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> masters, Catalog catalog, Schema schema, DataSet<DataRow> set)
+     * <T extends MasterTable> List<T> masters(DataRuntime runtime, int index, boolean create, List<T> masters, Catalog catalog, Schema schema, DataSet<DataRow> set)
      * <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, boolean create, LinkedHashMap<String, T> masters, MasterTable query, int types)
      * <T extends MasterTable> List<T> masters(DataRuntime runtime, boolean create, List<T> masters, MasterTable query, int types)
-     * <T extends MasterTable> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> masters, Catalog catalog, Schema schema, DataSet set)
+     * <T extends MasterTable> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> masters, Catalog catalog, Schema schema, DataSet<DataRow> set)
      * [调用入口]
      * List<String> ddl(DataRuntime runtime, String random, MasterTable master, boolean init)
      * [命令合成]
      * List<Run> buildQueryDdlRun(DataRuntime runtime, MasterTable master)
      * [结果集封装]<br/>
-     * List<String> ddl(DataRuntime runtime, int index, MasterTable master, List<String> ddls, DataSet set)
+     * List<String> ddl(DataRuntime runtime, int index, MasterTable master, List<String> ddls, DataSet<DataRow> set)
      ******************************************************************************************************************/
     /**
      *
@@ -3247,7 +3247,7 @@ public class SelectDBAdapter extends DorisAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, MasterTable query, DataSet set) throws Exception {
+    public <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, MasterTable query, DataSet<DataRow> set) throws Exception {
         return super.masters(runtime, index, create, previous, query, set);
     }
 
@@ -3264,7 +3264,7 @@ public class SelectDBAdapter extends DorisAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends MasterTable> List<T> masters(DataRuntime runtime, int index, boolean create, List<T> previous, MasterTable query, DataSet set) throws Exception {
+    public <T extends MasterTable> List<T> masters(DataRuntime runtime, int index, boolean create, List<T> previous, MasterTable query, DataSet<DataRow> set) throws Exception {
         return super.masters(runtime, index, create, previous, query, set);
     }
 
@@ -3366,7 +3366,7 @@ public class SelectDBAdapter extends DorisAdapter {
      * @return List
      */
     @Override
-    public List<String> ddl(DataRuntime runtime, int index, MasterTable master, List<String> ddls, DataSet set) {
+    public List<String> ddl(DataRuntime runtime, int index, MasterTable master, List<String> ddls, DataSet<DataRow> set) {
         return super.ddl(runtime, index, master, ddls, set);
     }
 
@@ -3380,14 +3380,14 @@ public class SelectDBAdapter extends DorisAdapter {
      * List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, boolean greedy,  Table master, Map<String, Tag> tags, String pattern)
      * List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, boolean greedy,  Table master, Map<String, Tag> tags)
      * [结果集封装]<br/>
-     * <T extends PartitionTable> LinkedHashMap<String, T> partitions(DataRuntime runtime, int total, int index, boolean create, MasterTable master, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set)
+     * <T extends PartitionTable> LinkedHashMap<String, T> partitions(DataRuntime runtime, int total, int index, boolean create, MasterTable master, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet<DataRow> set)
      * <T extends PartitionTable> LinkedHashMap<String,T> partitions(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, MasterTable master)
      * [调用入口]
      * List<String> ddl(DataRuntime runtime, String random, PartitionTable table)
      * [命令合成]
      * List<Run> buildQueryDdlRun(DataRuntime runtime, PartitionTable table)
      * [结果集封装]<br/>
-     * List<String> ddl(DataRuntime runtime, int index, PartitionTable table, List<String> ddls, DataSet set)
+     * List<String> ddl(DataRuntime runtime, int index, PartitionTable table, List<String> ddls, DataSet<DataRow> set)
      ******************************************************************************************************************/
     /**
      * partition table[调用入口]<br/>
@@ -3441,7 +3441,7 @@ public class SelectDBAdapter extends DorisAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends PartitionTable> LinkedHashMap<String, T> partitions(DataRuntime runtime, int total, int index, boolean create, LinkedHashMap<String, T> previous, PartitionTable query, DataSet set) throws Exception {
+    public <T extends PartitionTable> LinkedHashMap<String, T> partitions(DataRuntime runtime, int total, int index, boolean create, LinkedHashMap<String, T> previous, PartitionTable query, DataSet<DataRow> set) throws Exception {
         return super.partitions(runtime, total, index, create, previous, query, set);
     }
 
@@ -3494,7 +3494,7 @@ public class SelectDBAdapter extends DorisAdapter {
      * @return List
      */
     @Override
-    public List<String> ddl(DataRuntime runtime, int index, PartitionTable table, List<String> ddls, DataSet set) {
+    public List<String> ddl(DataRuntime runtime, int index, PartitionTable table, List<String> ddls, DataSet<DataRow> set) {
         return super.ddl(runtime, index, table, ddls, set);
     }
 
@@ -3534,8 +3534,8 @@ public class SelectDBAdapter extends DorisAdapter {
      * [命令合成]
      * List<Run> buildQueryColumnsRun(DataRuntime runtime, Table table, boolean metadata) throws Exception;
      * [结果集封装]<br/>
-     * <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Table table, Column query, DataSet set) throws Exception;
-     * <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, List<T> previous, Column query, DataSet set) throws Exception;
+     * <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Table table, Column query, DataSet<DataRow> set) throws Exception;
+     * <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, List<T> previous, Column query, DataSet<DataRow> set) throws Exception;
      * <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, LinkedHashMap<String, T> columns, Table table, String pattern) throws Exception;
      ******************************************************************************************************************/
 
@@ -3632,7 +3632,7 @@ public class SelectDBAdapter extends DorisAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Table table, Column query, DataSet set) throws Exception {
+    public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Table table, Column query, DataSet<DataRow> set) throws Exception {
         return super.columns(runtime, index, create, previous, table, query, set);
     }
 
@@ -3650,7 +3650,7 @@ public class SelectDBAdapter extends DorisAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, List<T> previous, Column query, DataSet set) throws Exception {
+    public <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, List<T> previous, Column query, DataSet<DataRow> set) throws Exception {
         return super.columns(runtime, index, create, previous, query, set);
     }
 
@@ -3682,7 +3682,7 @@ public class SelectDBAdapter extends DorisAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create,  List<T> previous, Collection<? extends Table> tables, Column query, DataSet set) throws Exception {
+    public <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create,  List<T> previous, Collection<? extends Table> tables, Column query, DataSet<DataRow> set) throws Exception {
         return super.columns(runtime, index, create, previous, tables, query, set);
     }
 
@@ -3807,7 +3807,7 @@ public class SelectDBAdapter extends DorisAdapter {
      * [命令合成]
      * List<Run> buildQueryTagsRun(DataRuntime runtime, boolean greedy, Tag query)
      * [结果集封装]<br/>
-     * <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Tag query, DataSet set)
+     * <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Tag query, DataSet<DataRow> set)
      * <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tags, Table table, String pattern)
      ******************************************************************************************************************/
 
@@ -3860,7 +3860,7 @@ public class SelectDBAdapter extends DorisAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Tag query, DataSet set) throws Exception {
+    public <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Tag query, DataSet<DataRow> set) throws Exception {
         return super.tags(runtime, index, create, previous, query, set);
     }
 
@@ -3916,7 +3916,7 @@ public class SelectDBAdapter extends DorisAdapter {
      * [命令合成]
      * List<Run> buildQueryPrimaryRun(DataRuntime runtime, boolean greedy,  Table table) throws Exception
      * [结构集封装]
-     * <T extends PrimaryKey> T init(DataRuntime runtime, int index, T primary, Table table, DataSet set)
+     * <T extends PrimaryKey> T init(DataRuntime runtime, int index, T primary, Table table, DataSet<DataRow> set)
      * PrimaryKey primary(DataRuntime runtime, Table table)
      ******************************************************************************************************************/
     /**
@@ -3964,7 +3964,7 @@ public class SelectDBAdapter extends DorisAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends PrimaryKey> T init(DataRuntime runtime, int index, T meta, PrimaryKey query, DataSet set) throws Exception {
+    public <T extends PrimaryKey> T init(DataRuntime runtime, int index, T meta, PrimaryKey query, DataSet<DataRow> set) throws Exception {
         return super.init(runtime, index, meta, query, set);
     }
 
@@ -3977,7 +3977,7 @@ public class SelectDBAdapter extends DorisAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends PrimaryKey> T detail(DataRuntime runtime, int index, T meta, PrimaryKey query, DataSet set) throws Exception {
+    public <T extends PrimaryKey> T detail(DataRuntime runtime, int index, T meta, PrimaryKey query, DataSet<DataRow> set) throws Exception {
         return super.detail(runtime, index, meta, query, set);
     }
 
@@ -4001,7 +4001,7 @@ public class SelectDBAdapter extends DorisAdapter {
      * [命令合成]
      * List<Run> buildQueryForeignsRun(DataRuntime runtime, boolean greedy,  Table table) throws Exception;
      * [结构集封装]
-     * <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, int index, Table table, LinkedHashMap<String, T> foreigns, DataSet set) throws Exception;
+     * <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, int index, Table table, LinkedHashMap<String, T> foreigns, DataSet<DataRow> set) throws Exception;
      ******************************************************************************************************************/
 
     /**
@@ -4051,7 +4051,7 @@ public class SelectDBAdapter extends DorisAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, int index, LinkedHashMap<String, T> previous, ForeignKey query, DataSet set) throws Exception {
+    public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, int index, LinkedHashMap<String, T> previous, ForeignKey query, DataSet<DataRow> set) throws Exception {
         return super.foreigns(runtime, index, previous, query, set);
     }
 
@@ -4094,8 +4094,8 @@ public class SelectDBAdapter extends DorisAdapter {
      * [命令合成]
      * List<Run> buildQueryIndexesRun(DataRuntime runtime, boolean greedy,  Table table, String name)
      * [结果集封装]<br/>
-     * <T extends Index> List<T> indexes(DataRuntime runtime, int index, boolean create, Table table, List<T> indexes, DataSet set)
-     * <T extends Index> LinkedHashMap<String, T> indexes(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> indexes, DataSet set)
+     * <T extends Index> List<T> indexes(DataRuntime runtime, int index, boolean create, Table table, List<T> indexes, DataSet<DataRow> set)
+     * <T extends Index> LinkedHashMap<String, T> indexes(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> indexes, DataSet<DataRow> set)
      * <T extends Index> List< T> indexes(DataRuntime runtime, boolean create, List<T> indexes, Table table, boolean unique, boolean approximate)
      * <T extends Index> LinkedHashMap<String, T> indexes(DataRuntime runtime, boolean create, LinkedHashMap<String, T> indexes, Table table, boolean unique, boolean approximate)
      ******************************************************************************************************************/
@@ -4190,7 +4190,7 @@ public class SelectDBAdapter extends DorisAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends Index> LinkedHashMap<String, T> indexes(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Index query, DataSet set) throws Exception {
+    public <T extends Index> LinkedHashMap<String, T> indexes(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Index query, DataSet<DataRow> set) throws Exception {
         return super.indexes(runtime, index, create, previous, query, set);
     }
 
@@ -4207,7 +4207,7 @@ public class SelectDBAdapter extends DorisAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends Index> List<T> indexes(DataRuntime runtime, int index, boolean create, List<T> previous, Index query, DataSet set) throws Exception {
+    public <T extends Index> List<T> indexes(DataRuntime runtime, int index, boolean create, List<T> previous, Index query, DataSet<DataRow> set) throws Exception {
         return super.indexes(runtime, index, create, previous, query, set);
     }
 
@@ -4224,7 +4224,7 @@ public class SelectDBAdapter extends DorisAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends Index> List<T> indexes(DataRuntime runtime, int index, boolean create, Collection<? extends Table> tables, List<T> previous, Index query, DataSet set) throws Exception {
+    public <T extends Index> List<T> indexes(DataRuntime runtime, int index, boolean create, Collection<? extends Table> tables, List<T> previous, Index query, DataSet<DataRow> set) throws Exception {
         return super.indexes(runtime, index, create, tables, previous, query, set);
     }
 
@@ -4295,8 +4295,8 @@ public class SelectDBAdapter extends DorisAdapter {
      * [命令合成]
      * List<Run> buildQueryConstraintsRun(DataRuntime runtime, boolean greedy, Table table, Column column, String pattern) ;
      * [结果集封装]<br/>
-     * <T extends Constraint> List<T> constraints(DataRuntime runtime, int index, boolean create, Table table, List<T> constraints, DataSet set) throws Exception;
-     * <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, int index, boolean create, Table table, Column column, LinkedHashMap<String, T> constraints, DataSet set) throws Exception;
+     * <T extends Constraint> List<T> constraints(DataRuntime runtime, int index, boolean create, Table table, List<T> constraints, DataSet<DataRow> set) throws Exception;
+     * <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, int index, boolean create, Table table, Column column, LinkedHashMap<String, T> constraints, DataSet<DataRow> set) throws Exception;
      ******************************************************************************************************************/
     /**
      *
@@ -4362,7 +4362,7 @@ public class SelectDBAdapter extends DorisAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends Constraint> List<T> constraints(DataRuntime runtime, int index, boolean create, List<T> previous, Constraint query, DataSet set) throws Exception {
+    public <T extends Constraint> List<T> constraints(DataRuntime runtime, int index, boolean create, List<T> previous, Constraint query, DataSet<DataRow> set) throws Exception {
         return super.constraints(runtime, index, create, previous, query, set);
     }
 
@@ -4379,7 +4379,7 @@ public class SelectDBAdapter extends DorisAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, int index, boolean create,  LinkedHashMap<String, T> previous,  Constraint query, DataSet set) throws Exception {
+    public <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, int index, boolean create,  LinkedHashMap<String, T> previous,  Constraint query, DataSet<DataRow> set) throws Exception {
         return super.constraints(runtime, index, create, previous, query, set);
     }
 
@@ -4418,7 +4418,7 @@ public class SelectDBAdapter extends DorisAdapter {
      * [命令合成]
      * List<Run> buildQueryTriggersRun(DataRuntime runtime, boolean greedy, Table table, List<Trigger.EVENT> events)
      * [结果集封装]<br/>
-     * <T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> triggers, DataSet set)
+     * <T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> triggers, DataSet<DataRow> set)
      ******************************************************************************************************************/
     /**
      *
@@ -4470,7 +4470,7 @@ public class SelectDBAdapter extends DorisAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Trigger query, DataSet set) throws Exception {
+    public <T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Trigger query, DataSet<DataRow> set) throws Exception {
         return super.triggers(runtime, index, create, previous, query, set);
     }
 
@@ -4510,8 +4510,8 @@ public class SelectDBAdapter extends DorisAdapter {
      * [命令合成]
      * List<Run> buildQueryProceduresRun(DataRuntime runtime, boolean greedy, Procedure query) ;
      * [结果集封装]<br/>
-     * <T extends Procedure> List<T> procedures(DataRuntime runtime, int index, boolean create, List<T> procedures, DataSet set) throws Exception;
-     * <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> procedures, DataSet set) throws Exception;
+     * <T extends Procedure> List<T> procedures(DataRuntime runtime, int index, boolean create, List<T> procedures, DataSet<DataRow> set) throws Exception;
+     * <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> procedures, DataSet<DataRow> set) throws Exception;
      * <T extends Procedure> List<T> procedures(DataRuntime runtime, boolean create, List<T> procedures)
      * <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, boolean create, LinkedHashMap<String, T> procedures) throws Exception;
      * [调用入口]
@@ -4519,7 +4519,7 @@ public class SelectDBAdapter extends DorisAdapter {
      * [命令合成]
      * List<Run> buildQueryDdlRun(DataRuntime runtime, Procedure procedure) throws Exception;
      * [结果集封装]<br/>
-     * List<String> ddl(DataRuntime runtime, int index, Procedure procedure, List<String> ddls, DataSet set);
+     * List<String> ddl(DataRuntime runtime, int index, Procedure procedure, List<String> ddls, DataSet<DataRow> set);
      ******************************************************************************************************************/
     /**
      *
@@ -4596,7 +4596,7 @@ public class SelectDBAdapter extends DorisAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends Procedure> List<T> procedures(DataRuntime runtime, int index, boolean create, List<T> previous, Procedure query, DataSet set) throws Exception {
+    public <T extends Procedure> List<T> procedures(DataRuntime runtime, int index, boolean create, List<T> previous, Procedure query, DataSet<DataRow> set) throws Exception {
         return super.procedures(runtime, index, create, previous, query, set);
     }
 
@@ -4612,7 +4612,7 @@ public class SelectDBAdapter extends DorisAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Procedure query, DataSet set) throws Exception {
+    public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Procedure query, DataSet<DataRow> set) throws Exception {
         return super.procedures(runtime, index, create, previous, query, set);
     }
 
@@ -4694,7 +4694,7 @@ public class SelectDBAdapter extends DorisAdapter {
      * @return List
      */
     @Override
-    public List<String> ddl(DataRuntime runtime, int index, Procedure procedure, List<String> ddls, DataSet set) {
+    public List<String> ddl(DataRuntime runtime, int index, Procedure procedure, List<String> ddls, DataSet<DataRow> set) {
         return super.ddl(runtime, index, procedure, ddls, set);
     }
 
@@ -4734,8 +4734,8 @@ public class SelectDBAdapter extends DorisAdapter {
      * [命令合成]
      * List<Run> buildQueryFunctionsRun(DataRuntime runtime, boolean greedy, Function query) ;
      * [结果集封装]<br/>
-     * <T extends Function> List<T> functions(DataRuntime runtime, int index, boolean create, List<T> functions, Catalog catalog, Schema schema, DataSet set) throws Exception;
-     * <T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> functions, Catalog catalog, Schema schema, DataSet set) throws Exception;
+     * <T extends Function> List<T> functions(DataRuntime runtime, int index, boolean create, List<T> functions, Catalog catalog, Schema schema, DataSet<DataRow> set) throws Exception;
+     * <T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> functions, Catalog catalog, Schema schema, DataSet<DataRow> set) throws Exception;
      * <T extends Function> List<T> functions(DataRuntime runtime, boolean create, List<T> functions)
      * <T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, boolean create, LinkedHashMap<String, T> functions)
      * [调用入口]
@@ -4743,7 +4743,7 @@ public class SelectDBAdapter extends DorisAdapter {
      * [命令合成]
      * List<Run> buildQueryDdlRun(DataRuntime runtime, Function function) throws Exception;
      * [结果集封装]<br/>
-     * List<String> ddl(DataRuntime runtime, int index, Function function, List<String> ddls, DataSet set)
+     * List<String> ddl(DataRuntime runtime, int index, Function function, List<String> ddls, DataSet<DataRow> set)
      ******************************************************************************************************************/
     /**
      *
@@ -4808,7 +4808,7 @@ public class SelectDBAdapter extends DorisAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends Function> List<T> functions(DataRuntime runtime, int index, boolean create, List<T> previous, Function query, DataSet set) throws Exception {
+    public <T extends Function> List<T> functions(DataRuntime runtime, int index, boolean create, List<T> previous, Function query, DataSet<DataRow> set) throws Exception {
         return super.functions(runtime, index, create, previous, query, set);
     }
 
@@ -4824,7 +4824,7 @@ public class SelectDBAdapter extends DorisAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Function query, DataSet set) throws Exception {
+    public <T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Function query, DataSet<DataRow> set) throws Exception {
         return super.functions(runtime, index, create, previous, query, set);
     }
 
@@ -4891,7 +4891,7 @@ public class SelectDBAdapter extends DorisAdapter {
      * @return List
      */
     @Override
-    public List<String> ddl(DataRuntime runtime, int index, Function function, List<String> ddls, DataSet set) {
+    public List<String> ddl(DataRuntime runtime, int index, Function function, List<String> ddls, DataSet<DataRow> set) {
         return super.ddl(runtime, index, function, ddls, set);
     }
 
@@ -4931,8 +4931,8 @@ public class SelectDBAdapter extends DorisAdapter {
      * [命令合成]
      * List<Run> buildQuerySequencesRun(DataRuntime runtime, boolean greedy, Sequence query) ;
      * [结果集封装]<br/>
-     * <T extends Sequence> List<T> sequences(DataRuntime runtime, int index, boolean create, List<T> sequences, DataSet set) throws Exception;
-     * <T extends Sequence> LinkedHashMap<String, T> sequences(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> sequences, DataSet set) throws Exception;
+     * <T extends Sequence> List<T> sequences(DataRuntime runtime, int index, boolean create, List<T> sequences, DataSet<DataRow> set) throws Exception;
+     * <T extends Sequence> LinkedHashMap<String, T> sequences(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> sequences, DataSet<DataRow> set) throws Exception;
      * <T extends Sequence> List<T> sequences(DataRuntime runtime, boolean create, List<T> sequences)
      * <T extends Sequence> LinkedHashMap<String, T> sequences(DataRuntime runtime, boolean create, LinkedHashMap<String, T> sequences)
      * [调用入口]
@@ -4940,7 +4940,7 @@ public class SelectDBAdapter extends DorisAdapter {
      * [命令合成]
      * List<Run> buildQueryDdlRun(DataRuntime runtime, Sequence sequence) throws Exception;
      * [结果集封装]<br/>
-     * List<String> ddl(DataRuntime runtime, int index, Sequence sequence, List<String> ddls, DataSet set)
+     * List<String> ddl(DataRuntime runtime, int index, Sequence sequence, List<String> ddls, DataSet<DataRow> set)
      ******************************************************************************************************************/
     /**
      *
@@ -5005,7 +5005,7 @@ public class SelectDBAdapter extends DorisAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends Sequence> List<T> sequences(DataRuntime runtime, int index, boolean create, List<T> previous, Sequence query, DataSet set) throws Exception {
+    public <T extends Sequence> List<T> sequences(DataRuntime runtime, int index, boolean create, List<T> previous, Sequence query, DataSet<DataRow> set) throws Exception {
         return super.sequences(runtime, index, create, previous, query, set);
     }
 
@@ -5021,7 +5021,7 @@ public class SelectDBAdapter extends DorisAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends Sequence> LinkedHashMap<String, T> sequences(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Sequence query, DataSet set) throws Exception {
+    public <T extends Sequence> LinkedHashMap<String, T> sequences(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Sequence query, DataSet<DataRow> set) throws Exception {
         return super.sequences(runtime, index, create, previous, query, set);
     }
 
@@ -5088,7 +5088,7 @@ public class SelectDBAdapter extends DorisAdapter {
      * @return List
      */
     @Override
-    public List<String> ddl(DataRuntime runtime, int index, Sequence sequence, List<String> ddls, DataSet set) {
+    public List<String> ddl(DataRuntime runtime, int index, Sequence sequence, List<String> ddls, DataSet<DataRow> set) {
         return super.ddl(runtime, index, sequence, ddls, set);
     }
 
@@ -8716,7 +8716,7 @@ public class SelectDBAdapter extends DorisAdapter {
      * boolean delete(DataRuntime runtime, Role role) throws Exception
      * <T extends Role> List<T> roles(Catalog catalog, Schema schema, String pattern) throws Exception
      * List<Run> buildQueryRolesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) throws Exception
-     * <T extends Role> List<T> roles(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, List<T> roles, DataSet set) throws Exception
+     * <T extends Role> List<T> roles(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, List<T> roles, DataSet<DataRow> set) throws Exception
      * <T extends Role> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row)
      * <T extends Role> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row)
      ******************************************************************************************************************/
@@ -8833,7 +8833,7 @@ public class SelectDBAdapter extends DorisAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends Role> List<T> roles(DataRuntime runtime, int index, boolean create, List<T> previous, Role query, DataSet set) throws Exception {
+    public <T extends Role> List<T> roles(DataRuntime runtime, int index, boolean create, List<T> previous, Role query, DataSet<DataRow> set) throws Exception {
         return super.roles(runtime, index, create, previous, query, set);
     }
 
@@ -8872,7 +8872,7 @@ public class SelectDBAdapter extends DorisAdapter {
      * boolean drop(DataRuntime runtime, User user) throws Exception
      * List<User> users(Catalog catalog, Schema schema, String pattern) throws Exception
      * List<Run> buildQueryUsersRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) throws Exception
-     * <T extends User> List<T> users(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, List<T> users, DataSet set) throws Exception
+     * <T extends User> List<T> users(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, List<T> users, DataSet<DataRow> set) throws Exception
      * <T extends User> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row)
      * <T extends User> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row)
      ******************************************************************************************************************/
@@ -8990,7 +8990,7 @@ public class SelectDBAdapter extends DorisAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends User> List<T> users(DataRuntime runtime, int index, boolean create, List<T> previous, User query, DataSet set) throws Exception {
+    public <T extends User> List<T> users(DataRuntime runtime, int index, boolean create, List<T> previous, User query, DataSet<DataRow> set) throws Exception {
         return super.users(runtime, index, create, previous, query, set);
     }
 
@@ -9026,7 +9026,7 @@ public class SelectDBAdapter extends DorisAdapter {
      * -----------------------------------------------------------------------------------------------------------------
      * <T extends Privilege> List<T> privileges(DataRuntime runtime, User user)
      * List<Run> buildQueryPrivilegesRun(DataRuntime runtime, User user) throws Exception
-     * <T extends Privilege> List<T> privileges(DataRuntime runtime, int index, boolean create, User user, List<T> privileges, DataSet set) throws Exception
+     * <T extends Privilege> List<T> privileges(DataRuntime runtime, int index, boolean create, User user, List<T> privileges, DataSet<DataRow> set) throws Exception
      * <T extends Privilege> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, User user, DataRow row)
      * <T extends Privilege> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row)
      * Privilege.MetadataAdapter privilegeMetadataAdapter(DataRuntime runtime)
@@ -9077,7 +9077,7 @@ public class SelectDBAdapter extends DorisAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends Privilege> List<T> privileges(DataRuntime runtime, int index, boolean create,  List<T> previous, Privilege query, DataSet set) throws Exception {
+    public <T extends Privilege> List<T> privileges(DataRuntime runtime, int index, boolean create,  List<T> previous, Privilege query, DataSet<DataRow> set) throws Exception {
         return super.privileges(runtime, index, create, previous, query, set);
     }
 

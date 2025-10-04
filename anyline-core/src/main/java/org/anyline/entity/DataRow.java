@@ -1540,8 +1540,8 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         if (null != obj) {
             return (DataSet) obj;
         }
-        DataSet set = new DataSet();
-        DataSet childs = getSet(key);
+        DataSet<DataRow> set = new DataSet();
+        DataSet<DataRow> childs = getSet(key);
         for(DataRow child:childs) {
             set.add(child);
             set.addAll(child.getAllChild(key));

@@ -1082,7 +1082,7 @@ public class DefaultService<E> implements AnylineService<E> {
             return ServiceProxy.service(ps[0]).save(batch, dest, data, configs, columns);
         }
         if(data instanceof DataSet) {
-            DataSet set = (DataSet) data;
+            DataSet<DataRow> set = (DataSet) data;
             long cnt = 0;
             DataSet inserts = new DataSet();
             DataSet updates = new DataSet();

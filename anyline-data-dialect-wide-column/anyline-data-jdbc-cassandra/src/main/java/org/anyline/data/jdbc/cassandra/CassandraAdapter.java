@@ -23,6 +23,7 @@ import org.anyline.data.listener.DDListener;
 import org.anyline.data.listener.DMListener;
 import org.anyline.data.run.Run;
 import org.anyline.data.runtime.DataRuntime;
+import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.OrderStore;
 import org.anyline.entity.PageNavi;
@@ -85,7 +86,7 @@ public class CassandraAdapter extends AbstractJDBCAdapter implements JDBCAdapter
     }
 
     @Override
-    public <T extends Database> LinkedHashMap<String, T> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Database query, DataSet set) throws Exception {
+    public <T extends Database> LinkedHashMap<String, T> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Database query, DataSet<DataRow> set) throws Exception {
         return null;
     }
 

@@ -100,7 +100,7 @@ public class DefaultDDListener implements DDListener {
                 prepare.setDest(table.getName());
                 ConfigStore configs = new DefaultConfigStore();
                 configs.setPageNavi(navi);
-                DataSet set = runtime.getAdapter().querys(runtime, null, prepare, configs);
+                DataSet<DataRow> set = runtime.getAdapter().querys(runtime, null, prepare, configs);
                 if(set.isEmpty()) {
                     break;
                 }

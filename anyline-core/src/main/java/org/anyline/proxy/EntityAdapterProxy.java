@@ -376,7 +376,7 @@ public class EntityAdapterProxy {
         return entity;
     }
 
-    public static <T> EntitySet<T> entitys(Class<T> clazz, DataSet set, LinkedHashMap columns) {
+    public static <T> EntitySet<T> entitys(Class<T> clazz, DataSet<DataRow> set, LinkedHashMap columns) {
         EntitySet<T> entitys = new EntitySet<>();
         if(null != set) {
             for(DataRow row:set) {

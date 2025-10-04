@@ -82,7 +82,7 @@ public class TableBuilder {
         if(BasicUtil.isNotEmpty(distinct)) {
             builder.prepare.setDistinct(true);
         }
-        DataSet joins = row.getSet("joins");
+        DataSet<DataRow> joins = row.getSet("joins");
         if(null != joins) {
             for (DataRow item : joins) {
                 Object item_table = item.getString("table");

@@ -193,7 +193,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
                     BeanUtil.setFieldValue(item, "_id", value(ids.get(idx++)));
                 }
             }else if(value instanceof DataSet) {
-                DataSet set = (DataSet)value;
+                DataSet<DataRow> set = (DataSet)value;
                 cons = database.getCollection(run.getTableName(), ConfigTable.DEFAULT_MONGO_ENTITY_CLASS);
                 InsertManyResult result =  cons.insertMany(set.getRows());
                 cnt = set.size();
@@ -506,7 +506,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
         if(null == random) {
             random = random(runtime);
         }
-        DataSet set = new DataSet();
+        DataSet<DataRow> set = new DataSet();
         try{
             MongoRuntime rt = (MongoRuntime) runtime;
             MongoDatabase database = rt.getDatabase();

@@ -50,7 +50,7 @@ public class ConfigTable {
 	protected static Hashtable<String, Object> configs = new Hashtable<>()	;
 	protected static long lastLoadTime 					= 0					;	// 最后一次加载时间
 	protected static int reload 						= 0					;	// 重新加载间隔
-	protected static final String version 				= "8.7.2-SNAPSHOT"	;	// 版本号
+	protected static final String version 				= "8.7.3-SNAPSHOT"	;	// 版本号
 	protected static final String minVersion 			= "000"				;	// 版本号
 	protected static boolean isLoading 					= false				;	// 是否加载配置文件中
 	private static boolean listener_running 			= false				;	// 监听是否启动
@@ -112,7 +112,7 @@ public class ConfigTable {
 	public static boolean IS_AUTO_CONVERT_BYTES							= true			;   // 否将数据库中与Java bytes[]对应的类型自动转换如Point > double[](返回DataRow时受此开关景程)
 	public static boolean IS_AUTO_SPLIT_ARRAY							= true			;	// 更新数据库时，是把自动把数组/集合类型拆分
 	public static boolean IS_METADATA_IGNORE_CASE						= true			;   // 查询元数据时忽略大小写
-	public static boolean IS_UPPER_KEY 									= true			;	// DataRow是否自动转换成大写
+	public static boolean IS_UPPER_KEY 									= false			;	// DataRow是否自动转换成大写
 	public static boolean IS_LOWER_KEY 									= false			;	// DataRow是否自动转换成小写
 	public static boolean IS_KEY_IGNORE_CASE 							= true			;	// DataRow是否忽略大小写
 	public static boolean IS_KEY_IGNORE_SEPARATOR						= false			;	// DataRow是否忽略分隔符号
@@ -148,7 +148,7 @@ public class ConfigTable {
 	public static boolean IS_DISABLED_DEFAULT_ENTITY_ADAPTER			= false			; 	// 禁用默认的entity adapter
 	public static boolean IS_REMOVE_EMPTY_HTTP_KEY						= true			;   // DataRow row = entity("ID:id") 如果参数(如request)中未提供id参数时, row中是否清空ID属性
 	public static boolean IS_CACHE_DISABLED								= false			; 	// 是否禁用查询缓存
-	public static String DEFAULT_PRIMARY_KEY							= "ID"			;	// 默认主键
+	public static String DEFAULT_PRIMARY_KEY							= "id"			;	// 默认主键
 	public static boolean IS_OPEN_TRANSACTION_MANAGER 					= true			;	// 是否需要提供事务管理器, 会为每个数据源生成相应的事务管理器
 	public static boolean IS_OPEN_PRIMARY_TRANSACTION_MANAGER 			= false			;	// 是否需要设置一个主事务管理器, 多数据源时为注解事务指定一个事务管理器
 	public static String ALTER_COLUMN_TYPE_SUFFIX						= "___"			;	// ORACLE系修改数据类型过程中，需要中间列，这里指定中间列名称的后缀

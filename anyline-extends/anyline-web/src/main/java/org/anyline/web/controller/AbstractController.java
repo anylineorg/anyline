@@ -346,7 +346,7 @@ public abstract class AbstractController {
 
 		if (!arrays.isEmpty()) {
 			// raw [json]格式
-			DataSet list = WebUtil.values(request);
+			DataSet<DataRow> list = WebUtil.values(request);
 			if(!list.isEmpty()) {
 				for(DataRow item:list) {
 					DataRow row = new DataRow();

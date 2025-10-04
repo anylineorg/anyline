@@ -148,7 +148,7 @@ public class ConfigBuilder {
             chain.setJoin(Condition.JOIN.valueOf(join.trim().toUpperCase()));
         }
         chain.setText(row.getString("text"));
-        DataSet items = row.getSet("items");
+        DataSet<DataRow> items = row.getSet("items");
         if(null != items) {
             for(DataRow item:items) {
                 Config config = parseConfig(item);

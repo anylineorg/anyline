@@ -172,7 +172,7 @@ public abstract class AnylineConfig {
 		return config;
 	}
 
-	public static Hashtable<String, AnylineConfig> parse(Class<? extends AnylineConfig> T, String column, DataSet set, Hashtable<String, AnylineConfig> instances, String... compatibles) {
+	public static Hashtable<String, AnylineConfig> parse(Class<? extends AnylineConfig> T, String column, DataSet<DataRow> set, Hashtable<String, AnylineConfig> instances, String... compatibles) {
 		for (DataRow row : set) {
 			String key = row.getString(column);
 			parse(T, key, row, instances, compatibles);

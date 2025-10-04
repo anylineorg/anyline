@@ -137,7 +137,7 @@ public class ElasticSearchActuator implements DriverActuator {
                 }
                 navi.setTotalRow(total);
                 set.setNavi(navi);
-                DataSet hits = hits_.getSet("hits");
+                DataSet<DataRow> hits = hits_.getSet("hits");
                 for(DataRow hit:hits) {
                     ElasticSearchRow row = new ElasticSearchRow();
                     row.setScore(hit.getDouble("_score", 0));

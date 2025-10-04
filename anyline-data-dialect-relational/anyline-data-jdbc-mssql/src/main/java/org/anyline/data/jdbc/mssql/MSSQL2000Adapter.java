@@ -136,7 +136,7 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter {
      * @param columns 需插入的列
      */
     @Override
-    public void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet set, ConfigStore configs, Boolean placeholder, Boolean unicode, LinkedHashMap<String, Column> columns) {
+    public void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet<DataRow> set, ConfigStore configs, Boolean placeholder, Boolean unicode, LinkedHashMap<String, Column> columns) {
         //2000及以下
         StringBuilder builder = run.getBuilder();
         if(null == builder) {
@@ -204,7 +204,7 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter {
             run.setBuilder(builder);
         }
         if(list instanceof DataSet) {
-            DataSet set = (DataSet) list;
+            DataSet<DataRow> set = (DataSet) list;
             this.fillInsertContent(runtime, run, dest, set, placeholder, unicode, columns);
             return;
         }

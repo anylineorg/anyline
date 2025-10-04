@@ -147,7 +147,7 @@ public class LogUtil {
      * @param width 表格宽度(中文占2个宽度)(根据分辨率)
      * @return table
      */
-    public static String table(DataSet set, List<String> keys, boolean color, int rows, int width) {
+    public static String table(DataSet<DataRow> set, List<String> keys, boolean color, int rows, int width) {
         StringBuilder result = new StringBuilder();
         int limit_width = width; //每行限制宽度
         int col_max_width = ConfigTable.LOG_QUERY_RESULT_CUT_WIDTH; //截断后最宽可保留多少 如果不设置会因为整行内容太宽 以及limit_width限制 按比例截断造成 内容太短
