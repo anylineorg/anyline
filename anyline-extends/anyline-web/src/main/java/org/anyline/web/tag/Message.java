@@ -34,7 +34,7 @@ public class Message extends BodyTagSupport{
  
 	 public int doEndTag() throws JspException {
 		HttpServletRequest request = (HttpServletRequest)pageContext.getRequest(); 
-		DataSet messages = null; 
+		DataSet<DataRow> messages = null; 
 		String message = ""; 
 		try{
 			if("servlet".equals(scope) || "application".equalsIgnoreCase(scope)) {

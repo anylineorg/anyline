@@ -55,7 +55,7 @@ public class Text extends BaseBodyTag{
 		try{
 			Object result = null; 
 			if(data instanceof DataSet) {
-				DataSet set = (DataSet)data;
+				DataSet<DataRow> set = (DataSet)data;
 				DataRow row = null;
 				if(BasicUtil.isNotEmpty(selector)) {
 					set = set.getRows(selector.split(","));

@@ -134,7 +134,7 @@ public class LogUtil {
     }
 
 
-    public static String table(DataSet set) {
+    public static String table(DataSet<DataRow> set) {
         return table(set, set.keys(), true, ConfigTable.LOG_QUERY_RESULT_ROWS, ConfigTable.LOG_QUERY_RESULT_TABLE_MAX_WIDTH);
     }
     

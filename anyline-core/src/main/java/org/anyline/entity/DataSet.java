@@ -110,7 +110,7 @@ public class DataSet<E extends DataRow> implements Collection<E>, Serializable, 
             rows.add(row);
         }
     }
-    public static DataSet build(Collection<?> list, String ... fields) {
+    public static DataSet<DataRow> build(Collection<?> list, String ... fields) {
         return parse(list, fields);
     }
 
@@ -127,7 +127,7 @@ public class DataSet<E extends DataRow> implements Collection<E>, Serializable, 
      *
      * @return DataSet
      */
-    public static DataSet parse(Collection<?> list, String ... fields) {
+    public static DataSet<DataRow> parse(Collection<?> list, String ... fields) {
         DataSet<DataRow> set = new DataSet();
         if (null != list) {
             for (Object obj : list) {

@@ -121,7 +121,6 @@ public class MongoRuntimeHolder extends AbstractRuntimeHolder implements Runtime
         return runtime;
     }
     public boolean destroy(String key) {
-
         int close = 0;
         DataSourceMonitor monitor = DriverAdapterHolder.getMonitor();
         if(null != monitor) {

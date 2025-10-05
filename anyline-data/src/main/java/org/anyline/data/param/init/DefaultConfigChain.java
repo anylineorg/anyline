@@ -62,7 +62,7 @@ public class DefaultConfigChain extends DefaultConfig implements ConfigChain {
 			row.put("join", join);
 		}
 		if((null != configs && !configs.isEmpty()) || empty) {
-			DataSet set = new DataSet();
+			DataSet<DataRow> set = new DataSet();
 			for (Config config : configs) {
 				set.add(config.map(empty));
 			}

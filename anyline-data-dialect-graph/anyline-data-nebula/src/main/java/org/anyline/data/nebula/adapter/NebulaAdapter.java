@@ -1047,8 +1047,8 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
      *                                                     QUERY
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
-     * DataSet querys(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
-     * DataSet querys(DataRuntime runtime, String random, Procedure procedure, PageNavi navi)
+     * DataSet<DataRow> querys(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
+     * DataSet<DataRow> querys(DataRuntime runtime, String random, Procedure procedure, PageNavi navi)
      * <T> EntitySet<T> selects(DataRuntime runtime, String random, RunPrepare prepare, Class<T> clazz, ConfigStore configs, String... conditions)
      * List<Map<String,Object>> maps(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
      * [命令合成]
@@ -1060,7 +1060,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
      * Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, Boolean placeholder, Boolean unicode)
      * List<RunValue> createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, Boolean placeholder, Boolean unicode)
      * [命令执行]
-     * DataSet select(DataRuntime runtime, String random, boolean system, String table, ConfigStore configs, Run run)
+     * DataSet<DataRow> select(DataRuntime runtime, String random, boolean system, String table, ConfigStore configs, Run run)
      * List<Map<String,Object>> maps(DataRuntime runtime, String random, ConfigStore configs, Run run)
      * Map<String,Object> map(DataRuntime runtime, String random, ConfigStore configs, Run run) 
      * DataRow sequence(DataRuntime runtime, String random, boolean next, String ... names)
@@ -1079,7 +1079,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
      * @return DataSet
      */
     @Override
-    public DataSet querys(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
+    public DataSet<DataRow> querys(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
         return super.querys(runtime, random, prepare, configs, conditions);
     }
 
@@ -1092,7 +1092,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
      * @return DataSet
      */
     @Override
-    public DataSet querys(DataRuntime runtime, String random, Procedure procedure, PageNavi navi) {
+    public DataSet<DataRow> querys(DataRuntime runtime, String random, Procedure procedure, PageNavi navi) {
         return super.querys(runtime, random, procedure, navi);
     }
 
@@ -1283,7 +1283,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
      * @return DataSet
      */
     @Override
-    public DataSet select(DataRuntime runtime, String random, boolean system, Table table, ConfigStore configs, Run run) {
+    public DataSet<DataRow> select(DataRuntime runtime, String random, boolean system, Table table, ConfigStore configs, Run run) {
         if(run instanceof ProcedureRun) {
             ProcedureRun pr = (ProcedureRun)run;
             return querys(runtime, random, pr.getProcedure(), configs.getPageNavi());
@@ -1296,7 +1296,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
         return select(runtime, random, system, ACTION.DML.SELECT, table, configs, run, cmd, values);
     }
 
-    protected DataSet select(DataRuntime runtime, String random, boolean system, ACTION.DML action, Table table, ConfigStore configs, Run run, String cmd, List<Object> values) {
+    protected DataSet<DataRow> select(DataRuntime runtime, String random, boolean system, ACTION.DML action, Table table, ConfigStore configs, Run run, String cmd, List<Object> values) {
         if(BasicUtil.isEmpty(cmd)) {
             if(ConfigStore.IS_THROW_SQL_QUERY_EXCEPTION(configs)) {
                 throw new CommandQueryException("未指定命令");

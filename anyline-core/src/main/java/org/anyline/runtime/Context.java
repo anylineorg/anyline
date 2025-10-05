@@ -221,7 +221,7 @@ public class Context {
                     }
 
                     if(v instanceof DataSet){
-                        DataSet set = (DataSet)v;
+                        DataSet<DataRow> set = (DataSet)v;
                         set.string2object();
                         v = set.getRows();
                     }else if(v instanceof DataRow){

@@ -149,10 +149,10 @@ public class Result {
         map.put("response_id", response_id);
         map.put("sign", sign);
 
-        if (data instanceof DataSet || data instanceof EntitySet) {
+        if (data instanceof DataSet<DataRow> || data instanceof EntitySet) {
             dataType = "list";
             if(data instanceof DataSet) {
-                DataSet set = (DataSet) data;
+                DataSet<DataRow> set = (DataSet) data;
                 data = set.getRows();
                 if(null == navi) {
                     navi = set.getNavi();

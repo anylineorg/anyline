@@ -19,11 +19,12 @@ package org.anyline.data.adapter;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.run.Run;
 import org.anyline.data.runtime.DataRuntime;
+import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.PageNavi;
-import org.anyline.metadata.*;
 import org.anyline.log.Log;
 import org.anyline.log.LogProxy;
+import org.anyline.metadata.*;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -87,7 +88,7 @@ public interface DriverActuator {
     default List<Schema> schemas(DriverAdapter adapter, DataRuntime runtime) {
         return new ArrayList<>();
     }
-    DataSet select(DriverAdapter adapter, DataRuntime runtime, String random, boolean system, ACTION.DML action, Table table, ConfigStore configs, Run run, String cmd, List<Object> values, LinkedHashMap<String,Column> columns) throws Exception;
+    DataSet<? extends DataRow> select(DriverAdapter adapter, DataRuntime runtime, String random, boolean system, ACTION.DML action, Table table, ConfigStore configs, Run run, String cmd, List<Object> values, LinkedHashMap<String,Column> columns) throws Exception;
     /**
      * query procedure [调用入口]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -96,7 +97,7 @@ public interface DriverActuator {
      * @param navi 分页
      * @return DataSet
      */
-    default DataSet querys(DriverAdapter adapter, DataRuntime runtime, String random, Procedure procedure, PageNavi navi) throws Exception {
+    default DataSet<DataRow> querys(DriverAdapter adapter, DataRuntime runtime, String random, Procedure procedure, PageNavi navi) throws Exception {
         return null;
     }
 
@@ -134,7 +135,7 @@ public interface DriverActuator {
      * @param adapter DriverAdapter
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
-     * @param data 插入数量
+     * @param data 待插入数据
      * @param configs ConfigStore
      * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
      * @param generatedKey 执行insert后返回自增主键的key

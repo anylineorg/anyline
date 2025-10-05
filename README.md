@@ -141,7 +141,7 @@ AnyLine MDM focuses on &zwnj;**runtime metadata dynamic mapping**&zwnj;, primari
 #### &zwnj;**DataSet/DataRow vs Traditional ORM Entity Class**&zwnj;
 | Dimension               | AnyLine (DataSet/DataRow)                                  | Traditional ORM (Entity Class)                          |
 |-------------------------|------------------------------------------------------------|---------------------------------------------------------|
-| &zwnj;**Data Representation**&zwnj; | Dynamic structure (DataRow = row, DataSet = table).         | Static strongly-typed classes (e.g., `User.java`).      |
+| &zwnj;**Data Representation**&zwnj; | Dynamic structure (DataRow = row, DataSet<DataRow> = table).         | Static strongly-typed classes (e.g., `User.java`).      |
 | &zwnj;**Flexibility**&zwnj;         | Adapts to table structure changes dynamically.              | Requires code changes for table structure modifications.|
 | &zwnj;**Query Result Handling**&zwnj;| Directly operates on dynamic result sets.                  | Requires DTOs or projection interfaces.                 |
 | &zwnj;**Low-Code Support**&zwnj;    | Suitable for dynamic forms and ad-hoc queries.              | Requires predefined entity classes.                     |
@@ -238,7 +238,7 @@ DataSourceHolder.reg("ds_sso", pool, driver, url, user, password);
 DataSourceHolder.reg("ds_sso", Map<String, Object> params); //Corresponding properties of the connection pool k-v
 
 //Query the SSO_USER table of the ds_Sso data source
-DataSet set = ServiceProxy.service("ds_sso").querys("SSO_USER");
+DataSet<DataRow> set = ServiceProxy.service("ds_sso").querys("SSO_USER");
 ```
 From static configuration file data source (if it is a Spring environment, it can be in Spring format)
 ```properties

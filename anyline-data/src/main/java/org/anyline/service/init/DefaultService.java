@@ -100,7 +100,7 @@ public class DefaultService<E> implements AnylineService<E> {
      * @return DataSet
      */
     @Override
-    public DataSet querys(String dest, ConfigStore configs, Object obj, String... conditions) {
+    public DataSet<DataRow> querys(String dest, ConfigStore configs, Object obj, String... conditions) {
         String[] ps = DataSourceUtil.parseRuntime(dest);
         if(null != ps[0]) {
             return ServiceProxy.service(ps[0]).querys(ps[1], configs, obj, conditions);
@@ -123,7 +123,7 @@ public class DefaultService<E> implements AnylineService<E> {
     }
 
     @Override
-    public DataSet querys(Table dest, ConfigStore configs, Object obj, String... conditions) {
+    public DataSet<DataRow> querys(Table dest, ConfigStore configs, Object obj, String... conditions) {
         return queryFromDao(new DefaultTablePrepare(dest), configs, conditions);
     }
 
@@ -216,12 +216,12 @@ public class DefaultService<E> implements AnylineService<E> {
     }
 
     @Override
-    public DataSet caches(String cache, String dest, ConfigStore configs, Object obj, String... conditions) {
+    public DataSet<DataRow> caches(String cache, String dest, ConfigStore configs, Object obj, String... conditions) {
         String[] ps = DataSourceUtil.parseRuntime(dest);
         if(null != ps[0]) {
             return ServiceProxy.service(ps[0]).caches(cache, ps[1], configs, obj, conditions);
         }
-        DataSet set = null;
+        DataSet<DataRow> set = null;
         if(null != dest && dest.length() < 1000) {
             dest = BasicUtil.compress(dest);
         }
@@ -236,12 +236,12 @@ public class DefaultService<E> implements AnylineService<E> {
     }
 
     @Override
-    public DataSet caches(String cache, Table dest, ConfigStore configs, Object obj, String... conditions) {
+    public DataSet<DataRow> caches(String cache, Table dest, ConfigStore configs, Object obj, String... conditions) {
         String[] ps = DataSourceUtil.parseRuntime(dest);
         if(null != ps[0]) {
             return ServiceProxy.service(ps[0]).caches(cache, ps[1], configs, obj, conditions);
         }
-        DataSet set = null;
+        DataSet<DataRow> set = null;
         conditions = BasicUtil.compress(conditions);
         configs = append(configs, obj);
         if (ConfigTable.IS_CACHE_DISABLED) {
@@ -262,7 +262,7 @@ public class DefaultService<E> implements AnylineService<E> {
             store = new DefaultConfigStore();
         }
         store.setPageNavi(navi);
-        DataSet set = querys(dest, store, obj, conditions);
+        DataSet<DataRow> set = querys(dest, store, obj, conditions);
         store.setPageNavi(null);
         if (null != set && !set.isEmpty()) {
             DataRow row = set.getRow(0);
@@ -286,7 +286,7 @@ public class DefaultService<E> implements AnylineService<E> {
             store = new DefaultConfigStore();
         }
         store.setPageNavi(navi);
-        DataSet set = querys(dest, store, obj, conditions);
+        DataSet<DataRow> set = querys(dest, store, obj, conditions);
         store.setPageNavi(null);
         if (null != set && !set.isEmpty()) {
             DataRow row = set.getRow(0);
@@ -555,16 +555,16 @@ public class DefaultService<E> implements AnylineService<E> {
      */
 
     @Override
-    public DataSet querys(RunPrepare prepare, ConfigStore configs, Object obj, String... conditions) {
+    public DataSet<DataRow> querys(RunPrepare prepare, ConfigStore configs, Object obj, String... conditions) {
         conditions = BasicUtil.compress(conditions);
-        DataSet set = queryFromDao(prepare, append(configs, obj), conditions);
+        DataSet<DataRow> set = queryFromDao(prepare, append(configs, obj), conditions);
         return set;
 
     }
 
     @Override
-    public DataSet caches(String cache, RunPrepare table, ConfigStore configs, Object obj, String... conditions) {
-        DataSet set = null;
+    public DataSet<DataRow> caches(String cache, RunPrepare table, ConfigStore configs, Object obj, String... conditions) {
+        DataSet<DataRow> set = null;
         conditions = BasicUtil.compress(conditions);
         if (null == cache) {
             set = querys(table, configs, obj, conditions);
@@ -589,7 +589,7 @@ public class DefaultService<E> implements AnylineService<E> {
             store = new DefaultConfigStore();
         }
         store.setPageNavi(navi);
-        DataSet set = querys(prepare, store, obj, conditions);
+        DataSet<DataRow> set = querys(prepare, store, obj, conditions);
         store.setPageNavi(null);
         if (null != set && !set.isEmpty()) {
             DataRow row = set.getRow(0);
@@ -1084,8 +1084,8 @@ public class DefaultService<E> implements AnylineService<E> {
         if(data instanceof DataSet) {
             DataSet<DataRow> set = (DataSet) data;
             long cnt = 0;
-            DataSet inserts = new DataSet();
-            DataSet updates = new DataSet();
+            DataSet<DataRow> inserts = new DataSet();
+            DataSet<DataRow> updates = new DataSet();
             for(DataRow row:set) {
                 Boolean override = row.getOverride();
                 if(null == override) {
@@ -1214,8 +1214,8 @@ public class DefaultService<E> implements AnylineService<E> {
      */
 
     @Override
-    public DataSet querys(Procedure procedure, PageNavi navi, String... inputs) {
-        DataSet set = null;
+    public DataSet<DataRow> querys(Procedure procedure, PageNavi navi, String... inputs) {
+        DataSet<DataRow> set = null;
         try {
             if (null != inputs) {
                 for (String input : inputs) {
@@ -1235,7 +1235,7 @@ public class DefaultService<E> implements AnylineService<E> {
 
     @Override
     public DataRow query(Procedure procedure, String... inputs) {
-        DataSet set = querys(procedure, 0, 0, inputs);
+        DataSet<DataRow> set = querys(procedure, 0, 0, inputs);
         if (!set.isEmpty()) {
             return set.getRow(0);
         }
@@ -1295,12 +1295,12 @@ public class DefaultService<E> implements AnylineService<E> {
     @SuppressWarnings("rawtypes")
 
     @Override
-    public long delete(String dest, DataSet set, String... columns) {
+    public long delete(String dest, DataSet<DataRow> set, String... columns) {
         return delete(DataSourceUtil.parseDest(dest, set, null), set, columns);
     }
 
     @Override
-    public long delete(Table dest, DataSet set, String... columns) {
+    public long delete(Table dest, DataSet<DataRow> set, String... columns) {
         long cnt = 0;
         int size = set.size();
         for (int i = 0; i < size; i++) {
@@ -1563,8 +1563,8 @@ public class DefaultService<E> implements AnylineService<E> {
         return navi;
     }
 
-    protected DataSet queryFromDao(RunPrepare prepare, ConfigStore configs, String... conditions) {
-        DataSet set = null;
+    protected DataSet<DataRow> queryFromDao(RunPrepare prepare, ConfigStore configs, String... conditions) {
+        DataSet<DataRow> set = null;
         if (ConfigTable.isSQLDebug()) {
             log.debug("[解析SQL][dest:{}]", prepare.getText());
         }
@@ -1581,11 +1581,11 @@ public class DefaultService<E> implements AnylineService<E> {
         return set;
     }
 
-    protected DataSet queryFromDao(String dest, ConfigStore configs, String... conditions) {
+    protected DataSet<DataRow> queryFromDao(String dest, ConfigStore configs, String... conditions) {
        return queryFromDao(DataSourceUtil.parseDest(dest, null, configs), configs, conditions);
     }
-    protected DataSet queryFromDao(Table dest, ConfigStore configs, String... conditions) {
-        DataSet set = null;
+    protected DataSet<DataRow> queryFromDao(Table dest, ConfigStore configs, String... conditions) {
+        DataSet<DataRow> set = null;
         if (ConfigTable.isSQLDebug()) {
             log.debug("[解析SQL][dest:{}]", dest);
         }
@@ -1795,15 +1795,15 @@ public class DefaultService<E> implements AnylineService<E> {
         return prepare;
     }
 
-    protected DataSet queryFromCache(String cache, String dest, ConfigStore configs, String... conditions) {
+    protected DataSet<DataRow> queryFromCache(String cache, String dest, ConfigStore configs, String... conditions) {
         return queryFromCache(cache, DataSourceUtil.parseDest(dest,configs), configs, conditions);
     }
 
-    protected DataSet queryFromCache(String cache, Table dest, ConfigStore configs, String... conditions) {
+    protected DataSet<DataRow> queryFromCache(String cache, Table dest, ConfigStore configs, String... conditions) {
         if (ConfigTable.IS_DEBUG && log.isWarnEnabled()) {
             log.debug("[cache from][cache:{}][dest:{}]", cache, dest);
         }
-        DataSet set = null;
+        DataSet<DataRow> set = null;
         String key = "SET:";
         String condition_key = CacheUtil.createCacheElementKey(true, true, dest, configs, conditions);
         if(null == cache) {
@@ -1857,7 +1857,7 @@ public class DefaultService<E> implements AnylineService<E> {
                         @Override
                         public void run() {
                             CacheUtil.start(_key, _max / 10);
-                            DataSet newSet = queryFromDao(dest, configs, conditions);
+                            DataSet<DataRow> newSet = queryFromDao(dest, configs, conditions);
                             CacheProxy.provider.put(_cache, _key, newSet);
                             CacheUtil.stop(_key, _max / 10);
                         }

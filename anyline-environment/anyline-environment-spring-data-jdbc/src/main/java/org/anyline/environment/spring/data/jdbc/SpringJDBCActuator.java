@@ -183,8 +183,8 @@ public class SpringJDBCActuator implements DriverActuator {
     }
 
     @Override
-    public DataSet select(DriverAdapter adapter, DataRuntime runtime, String random, boolean system, ACTION.DML action, Table table, ConfigStore configs, Run run, String sql, List<Object> values, LinkedHashMap<String,Column> columns) throws Exception {
-        DataSet set = new DataSet();
+    public DataSet<DataRow> select(DriverAdapter adapter, DataRuntime runtime, String random, boolean system, ACTION.DML action, Table table, ConfigStore configs, Run run, String sql, List<Object> values, LinkedHashMap<String,Column> columns) throws Exception {
+        DataSet<DataRow> set = new DataSet();
         long fr = System.currentTimeMillis();
         final DataRuntime rt = runtime;
         final long[] mid = {System.currentTimeMillis()};
@@ -299,14 +299,14 @@ public class SpringJDBCActuator implements DriverActuator {
      * @return DataSet
      */
     @Override
-    public DataSet querys(DriverAdapter adapter, DataRuntime runtime, String random, Procedure procedure, PageNavi navi) throws Exception {
+    public DataSet<DataRow> querys(DriverAdapter adapter, DataRuntime runtime, String random, Procedure procedure, PageNavi navi) throws Exception {
         final List<Parameter> inputs = procedure.getInputs();
         final List<Parameter> outputs = procedure.getOutputs();
         JdbcTemplate jdbc = jdbc(runtime);
         if(null == jdbc) {
             return new DataSet();
         }
-        DataSet set = (DataSet) jdbc.execute(new CallableStatementCreator() {
+        DataSet<DataRow> set = (DataSet) jdbc.execute(new CallableStatementCreator() {
             public CallableStatement createCallableStatement(Connection conn) throws SQLException {
                 String sql = "{call " +procedure.getName()+"(";
                 final int sizeIn = inputs.size();
@@ -344,12 +344,12 @@ public class SpringJDBCActuator implements DriverActuator {
         }, new CallableStatementCallback<Object>() {
             public Object doInCallableStatement(CallableStatement cs) throws SQLException, DataAccessException {
                 ResultSet rs = cs.executeQuery();
-                DataSet rtn = null;
+                DataSet<DataRow> rtn = null;
                 List<DataSet> sets = new ArrayList<>();
                 procedure.setResults(sets);
                 boolean more = false;
                 do{
-                    DataSet set = new DataSet();
+                    DataSet<DataRow> set = new DataSet();
                     if(null == rtn){
                         rtn = set;
                     }

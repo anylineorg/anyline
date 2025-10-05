@@ -621,8 +621,8 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      *                                                     QUERY
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
-     * DataSet querys(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
-     * DataSet querys(DataRuntime runtime, String random, Procedure procedure, PageNavi navi)
+     * DataSet<DataRow> querys(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
+     * DataSet<DataRow> querys(DataRuntime runtime, String random, Procedure procedure, PageNavi navi)
      * <T> EntitySet<T> selects(DataRuntime runtime, String random, RunPrepare prepare, Class<T> clazz, ConfigStore configs, String... conditions)
      * List<Map<String, Object>> maps(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
      * [命令合成]
@@ -634,7 +634,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, Boolean placeholder, Boolean unicode)
      * List<RunValue> createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, Boolean placeholder, Boolean unicode)
      * [命令执行]
-     * DataSet select(DataRuntime runtime, String random, boolean system, String table, ConfigStore configs, Run run)
+     * DataSet<DataRow> select(DataRuntime runtime, String random, boolean system, String table, ConfigStore configs, Run run)
      * List<Map<String, Object>> maps(DataRuntime runtime, String random, ConfigStore configs, Run run)
      * Map<String, Object> map(DataRuntime runtime, String random, ConfigStore configs, Run run)
      * DataRow sequence(DataRuntime runtime, String random, boolean next, String ... names)
@@ -653,7 +653,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return DataSet
      */
     @Override
-    public DataSet querys(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
+    public DataSet<DataRow> querys(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
         return super.querys(runtime, random, prepare, configs, conditions);
     }
 
@@ -666,7 +666,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return DataSet
      */
     @Override
-    public DataSet querys(DataRuntime runtime, String random, Procedure procedure, PageNavi navi) {
+    public DataSet<DataRow> querys(DataRuntime runtime, String random, Procedure procedure, PageNavi navi) {
         return super.querys(runtime, random, procedure, navi);
     }
 
@@ -863,7 +863,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return DataSet
      */
     @Override
-    public DataSet select(DataRuntime runtime, String random, boolean system, Table table, ConfigStore configs, Run run) {
+    public DataSet<DataRow> select(DataRuntime runtime, String random, boolean system, Table table, ConfigStore configs, Run run) {
         return super.select(runtime, random, system, table, configs, run);
     }
 

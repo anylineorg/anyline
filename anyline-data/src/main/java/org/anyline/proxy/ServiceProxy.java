@@ -703,19 +703,19 @@ public class ServiceProxy {
      *
      * @return DataSet
      */
-    public static DataSet querys(String dest, ConfigStore configs, Object obj, String ... conditions) {
+    public static DataSet<DataRow> querys(String dest, ConfigStore configs, Object obj, String ... conditions) {
         return service.querys(dest, configs, obj, conditions);
     }
-    public static DataSet querys(ConfigStore configs, Object obj, String ... conditions) {
+    public static DataSet<DataRow> querys(ConfigStore configs, Object obj, String ... conditions) {
         return service.querys(configs, obj, conditions);
     }
-    public static DataSet querys(ConfigStore configs, String ... conditions) {
+    public static DataSet<DataRow> querys(ConfigStore configs, String ... conditions) {
         return service.querys(configs, conditions);
     }
-    public static DataSet querys(DataSet set, ConfigStore configs) {
+    public static DataSet<DataRow> querys(DataSet<DataRow> set, ConfigStore configs) {
         return service.querys(set, configs);
     }
-    public static DataSet querys(String dest, Object obj, String ... conditions) {
+    public static DataSet<DataRow> querys(String dest, Object obj, String ... conditions) {
         return service.querys(dest, obj, conditions);
     }
     public static void querys(String dest, DataHandler handler, Object obj, String ... conditions) {
@@ -724,7 +724,7 @@ public class ServiceProxy {
     public static void querys(RunPrepare prepare, DataHandler handler, Object obj, String ... conditions) {
         service.querys(prepare, handler, obj, conditions);
     }
-    public static DataSet querys(String dest, PageNavi navi, Object obj, String ... conditions) {
+    public static DataSet<DataRow> querys(String dest, PageNavi navi, Object obj, String ... conditions) {
         return service.querys(dest, navi, obj, conditions);
     }
 
@@ -737,7 +737,7 @@ public class ServiceProxy {
      * @param conditions 查询条件 支持k:v k:v::type 以及原生sql形式(包含ORDER、GROUP、HAVING)默认忽略空值条件
      * @return DataSet
      */
-    public static DataSet querys(String dest, long first, long last, Object obj, String ... conditions) {
+    public static DataSet<DataRow> querys(String dest, long first, long last, Object obj, String ... conditions) {
         return service.querys(dest, first, last, obj, conditions);
     }
     public static DataRow query(String dest, ConfigStore configs, Object obj, String ... conditions) {
@@ -753,16 +753,16 @@ public class ServiceProxy {
         return service.query(dest, obj, conditions);
     }
 
-    public static DataSet querys(String dest, ConfigStore configs, String ... conditions) {
+    public static DataSet<DataRow> querys(String dest, ConfigStore configs, String ... conditions) {
         return service.querys(dest, configs, conditions);
     }
-    public static DataSet querys(String dest, String ... conditions) {
+    public static DataSet<DataRow> querys(String dest, String ... conditions) {
         return service.querys(dest, conditions);
     }
     public static void querys(String dest, DataHandler handler, String ... conditions) {
         service.querys(dest, handler, conditions);
     }
-    public static DataSet querys(String dest, PageNavi navi, String ... conditions) {
+    public static DataSet<DataRow> querys(String dest, PageNavi navi, String ... conditions) {
         return service.querys(dest, navi, conditions);
     }
 
@@ -774,23 +774,23 @@ public class ServiceProxy {
      * @param conditions 查询条件 支持k:v k:v::type 以及原生sql形式(包含ORDER、GROUP、HAVING)默认忽略空值条件
      * @return DataSet
      */
-    public static DataSet querys(String dest, long first, long last, String ... conditions) {
+    public static DataSet<DataRow> querys(String dest, long first, long last, String ... conditions) {
         return service.querys(dest, first, last, conditions);
     }
 
-    public static DataSet querys(Table dest, ConfigStore configs, Object obj, String ... conditions) {
+    public static DataSet<DataRow> querys(Table dest, ConfigStore configs, Object obj, String ... conditions) {
         return service.querys(dest, configs, obj, conditions);
     }
-    public static DataSet querys(Table dest, long first, long last, ConfigStore configs, Object obj, String ... conditions) {
+    public static DataSet<DataRow> querys(Table dest, long first, long last, ConfigStore configs, Object obj, String ... conditions) {
         return service.querys(dest, first, last, configs, obj, conditions);
     }
-    public static DataSet querys(Table dest, Object obj, String ... conditions) {
+    public static DataSet<DataRow> querys(Table dest, Object obj, String ... conditions) {
         return service.querys(dest, obj, conditions);
     }
     public static void querys(Table dest, DataHandler handler, Object obj, String ... conditions) {
         service.querys(dest, handler, obj, conditions);
     }
-    public static DataSet querys(Table dest, PageNavi navi, Object obj, String ... conditions) {
+    public static DataSet<DataRow> querys(Table dest, PageNavi navi, Object obj, String ... conditions) {
         return service.querys(dest, navi, obj, conditions);
     }
 
@@ -803,17 +803,17 @@ public class ServiceProxy {
      * @param conditions 查询条件 支持k:v k:v::type 以及原生sql形式(包含ORDER、GROUP、HAVING)默认忽略空值条件
      * @return DataSet
      */
-    public static DataSet querys(Table dest, long first, long last, Object obj, String ... conditions) {
+    public static DataSet<DataRow> querys(Table dest, long first, long last, Object obj, String ... conditions) {
         return service.querys(dest, first, last, obj, conditions);
     }
 
-    public static DataSet querys(Table dest, ConfigStore configs, String ... conditions) {
+    public static DataSet<DataRow> querys(Table dest, ConfigStore configs, String ... conditions) {
         return service.querys(dest, configs, conditions);
     }
-    public static DataSet querys(Table dest, long first, long last, ConfigStore configs, String ... conditions) {
+    public static DataSet<DataRow> querys(Table dest, long first, long last, ConfigStore configs, String ... conditions) {
         return service.querys(dest, first, last, configs, conditions);
     }
-    public static DataSet querys(Table dest, String ... conditions) {
+    public static DataSet<DataRow> querys(Table dest, String ... conditions) {
         return service.querys(dest, conditions);
     }
     public static void querys(Table dest, DataHandler handler, String ... conditions) {
@@ -826,22 +826,22 @@ public class ServiceProxy {
      * @param parse 是否解析sql中的关键字(order group等)及占位符
      * @return DataSet
      */
-    public static DataSet querys(String sql, boolean parse){
+    public static DataSet<DataRow> querys(String sql, boolean parse){
         return service.querys(sql, parse);
     }
     public static void querys(RunPrepare prepare, DataHandler handler, String ... conditions) {
         service.querys(prepare, handler, conditions);
     }
-    public static DataSet querys(Table dest, PageNavi navi, String ... conditions) {
+    public static DataSet<DataRow> querys(Table dest, PageNavi navi, String ... conditions) {
         return service.querys(dest, navi, conditions);
     }
-    public static DataSet querys(Table dest, long first, long last, String ... conditions) {
+    public static DataSet<DataRow> querys(Table dest, long first, long last, String ... conditions) {
         return service.querys(dest, first, last, conditions);
     }
-    public static DataSet querys(Table dest, DataHandler handler, long first, long last, String ... conditions) {
+    public static DataSet<DataRow> querys(Table dest, DataHandler handler, long first, long last, String ... conditions) {
         return service.querys(dest, handler, first, last, conditions);
     }
-    public static DataSet querys(RunPrepare prepare, DataHandler handler, long first, long last, String ... conditions) {
+    public static DataSet<DataRow> querys(RunPrepare prepare, DataHandler handler, long first, long last, String ... conditions) {
         return service.querys(prepare, handler, first, last, conditions);
     }
 
@@ -1133,29 +1133,29 @@ public class ServiceProxy {
      * @param conditions 查询条件 支持k:v k:v::type 以及原生sql形式(包含ORDER、GROUP、HAVING)默认忽略空值条件
      * @return DataSet
      */
-    public static DataSet caches(String cache, String dest, ConfigStore configs, Object obj, String ... conditions) {
+    public static DataSet<DataRow> caches(String cache, String dest, ConfigStore configs, Object obj, String ... conditions) {
         return service.caches(cache, dest, configs, obj, conditions);
     }
-    public static DataSet caches(String cache, String dest, long first, long last, ConfigStore configs, Object obj, String ... conditions) {
+    public static DataSet<DataRow> caches(String cache, String dest, long first, long last, ConfigStore configs, Object obj, String ... conditions) {
         return service.caches(cache, dest, first, last, configs, obj, conditions);
     }
-    public static DataSet caches(String cache, String dest, Object obj, String ... conditions) {
+    public static DataSet<DataRow> caches(String cache, String dest, Object obj, String ... conditions) {
         return service.caches(cache, dest, obj, conditions);
     }
-    public static DataSet caches(String cache, String dest, long first, long last, Object obj, String ... conditions) {
+    public static DataSet<DataRow> caches(String cache, String dest, long first, long last, Object obj, String ... conditions) {
         return service.caches(cache, dest, first, last, obj, conditions);
     }
 
-    public static DataSet caches(String cache, Table dest, ConfigStore configs, Object obj, String ... conditions) {
+    public static DataSet<DataRow> caches(String cache, Table dest, ConfigStore configs, Object obj, String ... conditions) {
         return service.caches(cache, dest, configs, obj, conditions);
     }
-    public static DataSet caches(String cache, Table dest, long first, long last, ConfigStore configs, Object obj, String ... conditions) {
+    public static DataSet<DataRow> caches(String cache, Table dest, long first, long last, ConfigStore configs, Object obj, String ... conditions) {
         return service.caches(cache, dest, first, last, configs, obj, conditions);
     }
-    public static DataSet caches(String cache, Table dest, Object obj, String ... conditions) {
+    public static DataSet<DataRow> caches(String cache, Table dest, Object obj, String ... conditions) {
         return service.caches(cache, dest, obj, conditions);
     }
-    public static DataSet caches(String cache, Table dest, long first, long last, Object obj, String ... conditions) {
+    public static DataSet<DataRow> caches(String cache, Table dest, long first, long last, Object obj, String ... conditions) {
         return service.caches(cache, dest, first, last, obj, conditions);
     }
 
@@ -1166,13 +1166,13 @@ public class ServiceProxy {
         return service.cache(cache, dest, obj, conditions);
     }
 
-    public static DataSet caches(String cache, String dest, ConfigStore configs, String ... conditions) {
+    public static DataSet<DataRow> caches(String cache, String dest, ConfigStore configs, String ... conditions) {
         return service.caches(cache, dest, configs, conditions);
     }
-    public static DataSet caches(String cache, String dest, String ... conditions) {
+    public static DataSet<DataRow> caches(String cache, String dest, String ... conditions) {
         return service.caches(cache, dest, conditions);
     }
-    public static DataSet caches(String cache, String dest, long first, long last, String ... conditions) {
+    public static DataSet<DataRow> caches(String cache, String dest, long first, long last, String ... conditions) {
         return service.caches(cache, dest, first, last, conditions);
     }
     public static DataRow cache(String cache, String dest, ConfigStore configs, String ... conditions) {
@@ -1188,16 +1188,16 @@ public class ServiceProxy {
     public static DataRow cache(String cache, Table dest, Object obj, String ... conditions) {
         return service.cache(cache, dest, obj, conditions);
     }
-    public static DataSet caches(String cache, Table dest, ConfigStore configs, String ... conditions) {
+    public static DataSet<DataRow> caches(String cache, Table dest, ConfigStore configs, String ... conditions) {
         return service.caches(cache, dest, configs, conditions);
     }
-    public static DataSet caches(String cache, Table dest, long first, long last, ConfigStore configs, String ... conditions) {
+    public static DataSet<DataRow> caches(String cache, Table dest, long first, long last, ConfigStore configs, String ... conditions) {
         return service.caches(cache, dest, first, last, configs, conditions);
     }
-    public static DataSet caches(String cache, Table dest, String ... conditions) {
+    public static DataSet<DataRow> caches(String cache, Table dest, String ... conditions) {
         return service.caches(cache, dest, conditions);
     }
-    public static DataSet caches(String cache, Table dest, long first, long last, String ... conditions) {
+    public static DataSet<DataRow> caches(String cache, Table dest, long first, long last, String ... conditions) {
         return service.caches(cache, dest, first, last, conditions);
     }
     public static DataRow cache(String cache, Table dest, ConfigStore configs, String ... conditions) {
@@ -1208,16 +1208,16 @@ public class ServiceProxy {
     }
 
     /*多表查询, 左右连接时使用*/
-    public static DataSet querys(RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions) {
+    public static DataSet<DataRow> querys(RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions) {
         return service.querys(prepare, configs, obj, conditions);
     }
-    public static DataSet querys(RunPrepare prepare, Object obj, String ... conditions) {
+    public static DataSet<DataRow> querys(RunPrepare prepare, Object obj, String ... conditions) {
         return service.querys(prepare, obj, conditions);
     }
     public static void querys(RunPrepare prepare, StreamHandler handler, Object obj, String ... conditions) {
         service.querys(prepare, handler, obj, conditions);
     }
-    public static DataSet querys(RunPrepare prepare, long first, long last, Object obj, String ... conditions) {
+    public static DataSet<DataRow> querys(RunPrepare prepare, long first, long last, Object obj, String ... conditions) {
         return service.querys(prepare, first, last, obj, conditions);
     }
     public static DataRow query(RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions) {
@@ -1227,16 +1227,16 @@ public class ServiceProxy {
         return service.query(prepare, obj, conditions);
     }
 
-    public static DataSet querys(RunPrepare prepare, ConfigStore configs, String ... conditions) {
+    public static DataSet<DataRow> querys(RunPrepare prepare, ConfigStore configs, String ... conditions) {
         return service.querys(prepare, configs, conditions);
     }
-    public static DataSet querys(RunPrepare prepare, String ... conditions) {
+    public static DataSet<DataRow> querys(RunPrepare prepare, String ... conditions) {
         return service.querys(prepare, conditions);
     }
     public static void querys(RunPrepare prepare, StreamHandler handler, String ... conditions) {
         service.querys(prepare, handler, conditions);
     }
-    public static DataSet querys(RunPrepare prepare, long first, long last, String ... conditions) {
+    public static DataSet<DataRow> querys(RunPrepare prepare, long first, long last, String ... conditions) {
         return service.querys(prepare, first, last, conditions);
     }
     public static DataRow query(RunPrepare prepare, ConfigStore configs, String ... conditions) {
@@ -1249,13 +1249,13 @@ public class ServiceProxy {
         service.query(prepare, handler, conditions);
     }
 
-    public static DataSet caches(String cache, RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions) {
+    public static DataSet<DataRow> caches(String cache, RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions) {
         return service.caches(cache, prepare, configs, obj, conditions);
     }
-    public static DataSet caches(String cache, RunPrepare prepare, Object obj, String ... conditions) {
+    public static DataSet<DataRow> caches(String cache, RunPrepare prepare, Object obj, String ... conditions) {
         return service.caches(cache, prepare, obj, conditions);
     }
-    public static DataSet caches(String cache, RunPrepare prepare, long first, long last, Object obj, String ... conditions) {
+    public static DataSet<DataRow> caches(String cache, RunPrepare prepare, long first, long last, Object obj, String ... conditions) {
         return service.caches(cache, prepare, first, last, obj, conditions);
     }
     public static DataRow cache(String cache, RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions) {
@@ -1264,13 +1264,13 @@ public class ServiceProxy {
     public static DataRow cache(String cache, RunPrepare prepare, Object obj, String ... conditions) {
         return service.cache(cache, prepare, obj, conditions);
     }
-    public static DataSet caches(String cache, RunPrepare prepare, ConfigStore configs, String ... conditions) {
+    public static DataSet<DataRow> caches(String cache, RunPrepare prepare, ConfigStore configs, String ... conditions) {
         return service.caches(cache, prepare, configs, conditions);
     }
-    public static DataSet caches(String cache, RunPrepare prepare, String ... conditions) {
+    public static DataSet<DataRow> caches(String cache, RunPrepare prepare, String ... conditions) {
         return service.caches(cache, prepare, conditions);
     }
-    public static DataSet caches(String cache, RunPrepare prepare, long first, long last, String ... conditions) {
+    public static DataSet<DataRow> caches(String cache, RunPrepare prepare, long first, long last, String ... conditions) {
         return service.caches(cache, prepare, first, last, conditions);
     }
     public static DataRow cache(String cache, RunPrepare prepare, ConfigStore configs, String ... conditions) {
@@ -1280,29 +1280,29 @@ public class ServiceProxy {
         return service.cache(cache, prepare, conditions);
     }
 
-    public static DataSet caches(String dest, ConfigStore configs, Object obj, String ... conditions) {
+    public static DataSet<DataRow> caches(String dest, ConfigStore configs, Object obj, String ... conditions) {
         return caches(null, dest, configs, obj, conditions);
     }
-    public static DataSet caches(String dest, long first, long last, ConfigStore configs, Object obj, String ... conditions) {
+    public static DataSet<DataRow> caches(String dest, long first, long last, ConfigStore configs, Object obj, String ... conditions) {
         return caches(null, dest, first, last, configs, obj, conditions);
     }
-    public static DataSet caches(String dest, Object obj, String ... conditions) {
+    public static DataSet<DataRow> caches(String dest, Object obj, String ... conditions) {
         return caches(null, dest, null, obj, conditions);
     }
-    public static DataSet caches(String dest, long first, long last, Object obj, String ... conditions) {
+    public static DataSet<DataRow> caches(String dest, long first, long last, Object obj, String ... conditions) {
         return caches(null, dest, first, last,obj, conditions);
     }
 
-    public static DataSet caches(Table dest, ConfigStore configs, Object obj, String ... conditions) {
+    public static DataSet<DataRow> caches(Table dest, ConfigStore configs, Object obj, String ... conditions) {
         return caches(null, dest, configs, obj, conditions);
     }
-    public static DataSet caches(Table dest, long first, long last, ConfigStore configs, Object obj, String ... conditions) {
+    public static DataSet<DataRow> caches(Table dest, long first, long last, ConfigStore configs, Object obj, String ... conditions) {
         return caches(null, dest, first, last, configs, obj, conditions);
     }
-    public static DataSet caches(Table dest, Object obj, String ... conditions) {
+    public static DataSet<DataRow> caches(Table dest, Object obj, String ... conditions) {
         return caches(null, dest, null, obj, conditions);
     }
-    public static DataSet caches(Table dest, long first, long last, Object obj, String ... conditions) {
+    public static DataSet<DataRow> caches(Table dest, long first, long last, Object obj, String ... conditions) {
         ConfigStore configs = new DefaultConfigStore(first, last);
         return caches(null, dest, configs, obj, conditions);
     }
@@ -1320,13 +1320,13 @@ public class ServiceProxy {
     public static DataRow cache(String dest, Object obj, String ... conditions) {
         return cache(null, dest, null, obj, conditions);
     }
-    public static DataSet caches(String dest, ConfigStore configs, String ... conditions) {
+    public static DataSet<DataRow> caches(String dest, ConfigStore configs, String ... conditions) {
         return caches(null, dest, configs, (Object) null, conditions);
     }
-    public static DataSet caches(String dest, long first, long last, ConfigStore configs, String ... conditions) {
+    public static DataSet<DataRow> caches(String dest, long first, long last, ConfigStore configs, String ... conditions) {
         return caches(null, dest, first, last, configs, conditions);
     }
-    public static DataSet caches(String dest, long first, long last, String ... conditions) {
+    public static DataSet<DataRow> caches(String dest, long first, long last, String ... conditions) {
         return caches(null, dest, first, last, null, conditions);
     }
     public static DataRow cache(String dest, ConfigStore configs, String ... conditions) {
@@ -1339,16 +1339,16 @@ public class ServiceProxy {
     public static DataRow cache(Table dest, Object obj, String ... conditions) {
         return cache(null, dest, null, obj, conditions);
     }
-    public static DataSet caches(Table dest, ConfigStore configs, String ... conditions) {
+    public static DataSet<DataRow> caches(Table dest, ConfigStore configs, String ... conditions) {
         return caches(null, dest, configs, (Object) null, conditions);
     }
-    public static DataSet caches(Table dest, long first, long last, ConfigStore configs, String ... conditions) {
+    public static DataSet<DataRow> caches(Table dest, long first, long last, ConfigStore configs, String ... conditions) {
         return caches(null, dest, first, last, configs, conditions);
     }
-    public static DataSet caches(Table dest, String ... conditions) {
+    public static DataSet<DataRow> caches(Table dest, String ... conditions) {
         return caches(null, dest, null, null, conditions);
     }
-    public static DataSet caches(Table dest, long first, long last, String ... conditions) {
+    public static DataSet<DataRow> caches(Table dest, long first, long last, String ... conditions) {
         return caches(null, dest, first, last, null, conditions);
     }
     public static DataRow cache(Table dest, ConfigStore configs, String ... conditions) {
@@ -1567,19 +1567,19 @@ public class ServiceProxy {
      * @param inputs  inputs
      * @return DataSet
      */
-    public static DataSet querysProcedure(String procedure, long first, long last, String ... inputs) {
+    public static DataSet<DataRow> querysProcedure(String procedure, long first, long last, String ... inputs) {
         return service.querysProcedure(procedure, first, last, inputs);
     }
-    public static DataSet querysProcedure(String procedure, PageNavi navi, String ... inputs) {
+    public static DataSet<DataRow> querysProcedure(String procedure, PageNavi navi, String ... inputs) {
         return service.querysProcedure(procedure, navi, inputs);
     }
-    public static DataSet querysProcedure(String procedure, String ... inputs) {
+    public static DataSet<DataRow> querysProcedure(String procedure, String ... inputs) {
         return service.querysProcedure(procedure, inputs);
     }
-    public static DataSet querys(Procedure procedure, long first, long last, String ... inputs) {
+    public static DataSet<DataRow> querys(Procedure procedure, long first, long last, String ... inputs) {
         return service.querys(procedure, first, last, inputs);
     }
-    public static DataSet querys(Procedure procedure, PageNavi navi, String ... inputs) {
+    public static DataSet<DataRow> querys(Procedure procedure, PageNavi navi, String ... inputs) {
         return service.querys(procedure, navi, inputs);
     }
 
@@ -1620,13 +1620,13 @@ public class ServiceProxy {
      * @param columns 生成删除条件的列, 如果不设置则根据主键删除
      * @return 影响行数
      */
-    public static long delete(String dest, DataSet set, String ... columns) {
+    public static long delete(String dest, DataSet<DataRow> set, String ... columns) {
         return service.delete(dest, set, columns);
     }
-    public static long delete(Table dest, DataSet set, String ... columns) {
+    public static long delete(Table dest, DataSet<DataRow> set, String ... columns) {
         return service.delete(dest, set, columns);
     }
-    public static long delete(DataSet set, String ... columns) {
+    public static long delete(DataSet<DataRow> set, String ... columns) {
         return service.delete(set, columns);
     }
     public static long delete(String dest, DataRow row, String ... columns) {

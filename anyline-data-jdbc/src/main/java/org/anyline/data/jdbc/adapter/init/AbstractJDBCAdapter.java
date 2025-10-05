@@ -925,8 +925,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
      *                                                     QUERY
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
-     * DataSet querys(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
-     * DataSet querys(DataRuntime runtime, String random, Procedure procedure, PageNavi navi)
+     * DataSet<DataRow> querys(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
+     * DataSet<DataRow> querys(DataRuntime runtime, String random, Procedure procedure, PageNavi navi)
      * <T> EntitySet<T> selects(DataRuntime runtime, String random, RunPrepare prepare, Class<T> clazz, ConfigStore configs, String... conditions)
      * List<Map<String, Object>> maps(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
      * [命令合成]
@@ -938,7 +938,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
      * Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, Boolean placeholder, Boolean unicode)
      * List<RunValue> createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, Boolean placeholder, Boolean unicode)
      * [命令执行]
-     * DataSet select(DataRuntime runtime, String random, boolean system, String table, ConfigStore configs, Run run)
+     * DataSet<DataRow> select(DataRuntime runtime, String random, boolean system, String table, ConfigStore configs, Run run)
      * List<Map<String, Object>> maps(DataRuntime runtime, String random, ConfigStore configs, Run run)
      * Map<String, Object> map(DataRuntime runtime, String random, ConfigStore configs, Run run) 
      * DataRow sequence(DataRuntime runtime, String random, boolean next, String ... names)
@@ -957,7 +957,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
      * @return DataSet
      */
     @Override
-    public DataSet querys(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
+    public DataSet<DataRow> querys(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
         return super.querys(runtime, random, prepare, configs, conditions);
     }
 
@@ -970,7 +970,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
      * @return DataSet
      */
     @Override
-    public DataSet querys(DataRuntime runtime, String random, Procedure procedure, PageNavi navi) {
+    public DataSet<DataRow> querys(DataRuntime runtime, String random, Procedure procedure, PageNavi navi) {
         DataSet<DataRow> set = null;
         final List<Parameter> inputs = procedure.getInputs();
         final List<Parameter> outputs = procedure.getOutputs();
@@ -1372,7 +1372,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
      * @return DataSet
      */
     @Override
-    public DataSet select(DataRuntime runtime, String random, boolean system, Table table, ConfigStore configs, Run run) {
+    public DataSet<DataRow> select(DataRuntime runtime, String random, boolean system, Table table, ConfigStore configs, Run run) {
         if(run instanceof ProcedureRun) {
             ProcedureRun pr = (ProcedureRun)run;
             return querys(runtime, random, pr.getProcedure(), configs.getPageNavi());
@@ -1496,7 +1496,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
     @Override
     public long count(DataRuntime runtime, String random, Run run) {
         long total = 0;
-        DataSet<DataRow> set = select(runtime, random, false, ACTION.DML.COUNT, null, run.getConfigs(), run, run.getTotalQuery(), run.getValues());
+        DataSet<? extends DataRow> set = select(runtime, random, false, ACTION.DML.COUNT, null, run.getConfigs(), run, run.getTotalQuery(), run.getValues());
         if(!set.isEmpty()) {
             total = set.getRow(0).toUpperKey().getLong("CNT", 0L);
         }
@@ -9274,7 +9274,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 *
 	 **********************************************************************************************************************/
 
-	protected DataSet select(DataRuntime runtime, String random, boolean system, ACTION.DML action, Table table, ConfigStore configs, Run run, String sql, List<Object> values) {
+	protected DataSet<? extends DataRow> select(DataRuntime runtime, String random, boolean system, ACTION.DML action, Table table, ConfigStore configs, Run run, String sql, List<Object> values) {
 		if(null == configs) {
 			configs = new DefaultConfigStore();
 		}
@@ -9290,7 +9290,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		if(null == random) {
 			random = random(runtime);
 		}
-		DataSet<DataRow> set = new DataSet();
+		DataSet<? extends DataRow> set = new DataSet();
 		set.setTable(table);
 		boolean exe = configs.execute();
 		if(!exe) {

@@ -114,7 +114,7 @@ public class DataSourceUtil {
             DataRow row = (DataRow)obj;
             table = parseDest(row.getDest(), configs);
         }else if(obj instanceof DataSet) {
-            DataSet set = (DataSet)obj;
+            DataSet<DataRow> set = (DataSet)obj;
             if(!set.isEmpty()) {
                 table = parseDest(set.getRow(0).getDest(), configs);
             }

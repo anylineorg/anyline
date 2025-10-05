@@ -19,7 +19,6 @@ package org.anyline.util;
 import org.anyline.adapter.EnvironmentWorker;
 import org.anyline.entity.Compare;
 import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;
-import org.anyline.entity.DataRow;
 import org.anyline.entity.generator.GeneratorConfig;
 import org.anyline.log.Log;
 import org.anyline.log.LogProxy;
@@ -60,10 +59,6 @@ public class ConfigTable {
 	// 对应配置文件key 如果集成了spring boot环境则与spring配置文件 anyline.*对应
 	public static String ENVIRONMENT_CONFIG_FILE_NAMES 					= "application.properties,application.yml";   // 配置文件
 	public static String JSP_DIR 										= null; //本地开发环境可能检测不到 需要配置
-	public static Class DEFAULT_JDBC_ENTITY_CLASS						= DataRow.class ;
-	public static Class DEFAULT_MONGO_ENTITY_CLASS						= DataRow.class ;
-	public static Class DEFAULT_ELASTIC_SEARCH_ENTITY_CLASS				= DataRow.class ;
-	public static Class DEFAULT_NEO4J_ENTITY_CLASS						= DataRow.class ;
 	public static boolean IS_DEBUG 										= true			;	// DEBUG状态会输出更多日志
 	/**
 	 * 同一个数据源是否保持相同的adapter

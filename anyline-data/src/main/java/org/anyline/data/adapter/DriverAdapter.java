@@ -1725,7 +1725,7 @@ public interface DriverAdapter {
      * @param conditions 查询条件 支持k:v k:v::type 以及原生sql形式(包含ORDER、GROUP、HAVING)默认忽略空值条件
      * @return DataSet
      */
-    DataSet querys(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions);
+    DataSet<DataRow> querys(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions);
     /**
      * query procedure [调用入口]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -1734,7 +1734,7 @@ public interface DriverAdapter {
      * @param navi 分页
      * @return DataSet
      */
-    DataSet querys(DataRuntime runtime, String random, Procedure procedure, PageNavi navi);
+    DataSet<DataRow> querys(DataRuntime runtime, String random, Procedure procedure, PageNavi navi);
 
     /**
      * query [调用入口]<br/>
@@ -1973,8 +1973,8 @@ public interface DriverAdapter {
      * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
      * @return DataSet
      */
-    DataSet select(DataRuntime runtime, String random, boolean system, Table table, ConfigStore configs, Run run);
-    default DataSet select(DataRuntime runtime, String random, boolean system, String table, ConfigStore configs, Run run) {
+    DataSet<DataRow> select(DataRuntime runtime, String random, boolean system, Table table, ConfigStore configs, Run run);
+    default DataSet<DataRow> select(DataRuntime runtime, String random, boolean system, String table, ConfigStore configs, Run run) {
         return select(runtime, random, system, new Table(table), configs, run);
     }
 

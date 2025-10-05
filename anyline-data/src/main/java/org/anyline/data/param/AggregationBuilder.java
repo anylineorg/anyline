@@ -86,7 +86,7 @@ public class AggregationBuilder {
         this.configs = configs;
         return this;
     }
-    public DataSet querys(){
+    public DataSet<DataRow> querys(){
         if(null == prepare && null != table){
             prepare = new DefaultTablePrepare(table);
         }

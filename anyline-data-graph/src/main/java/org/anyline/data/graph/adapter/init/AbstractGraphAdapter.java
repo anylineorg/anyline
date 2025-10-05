@@ -865,8 +865,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
      *                                                     QUERY
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
-     * DataSet querys(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
-     * DataSet querys(DataRuntime runtime, String random, Procedure procedure, PageNavi navi)
+     * DataSet<DataRow> querys(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
+     * DataSet<DataRow> querys(DataRuntime runtime, String random, Procedure procedure, PageNavi navi)
      * <T> EntitySet<T> selects(DataRuntime runtime, String random, RunPrepare prepare, Class<T> clazz, ConfigStore configs, String... conditions)
      * List<Map<String, Object>> maps(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
      * [命令合成]
@@ -878,7 +878,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
      * Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, Boolean placeholder, Boolean unicode)
      * List<RunValue> createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, Boolean placeholder, Boolean unicode)
      * [命令执行]
-     * DataSet select(DataRuntime runtime, String random, boolean system, String table, ConfigStore configs, Run run)
+     * DataSet<DataRow> select(DataRuntime runtime, String random, boolean system, String table, ConfigStore configs, Run run)
      * List<Map<String, Object>> maps(DataRuntime runtime, String random, ConfigStore configs, Run run)
      * Map<String, Object> map(DataRuntime runtime, String random, ConfigStore configs, Run run) 
      * DataRow sequence(DataRuntime runtime, String random, boolean next, String ... names)
@@ -897,7 +897,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
      * @return DataSet
      */
     @Override
-    public DataSet querys(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
+    public DataSet<DataRow> querys(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
         return super.querys(runtime, random, prepare, configs, conditions);
     }
 
@@ -910,7 +910,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
      * @return DataSet
      */
     @Override
-    public DataSet querys(DataRuntime runtime, String random, Procedure procedure, PageNavi navi) {
+    public DataSet<DataRow> querys(DataRuntime runtime, String random, Procedure procedure, PageNavi navi) {
         DataSet<DataRow> set = null;
         final List<Parameter> inputs = procedure.getInputs();
         final List<Parameter> outputs = procedure.getOutputs();
@@ -1287,7 +1287,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
      * @return DataSet
      */
     @Override
-    public DataSet select(DataRuntime runtime, String random, boolean system, Table table, ConfigStore configs, Run run) {
+    public DataSet<DataRow> select(DataRuntime runtime, String random, boolean system, Table table, ConfigStore configs, Run run) {
         if(run instanceof ProcedureRun) {
             ProcedureRun pr = (ProcedureRun)run;
             return querys(runtime, random, pr.getProcedure(), configs.getPageNavi());
@@ -8122,7 +8122,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 		return runs;
 	}
 
-	protected DataSet select(DataRuntime runtime, String random, boolean system, ACTION.DML action, Table table, ConfigStore configs, Run run, String sql, List<Object> values) {
+	protected DataSet<DataRow> select(DataRuntime runtime, String random, boolean system, ACTION.DML action, Table table, ConfigStore configs, Run run, String sql, List<Object> values) {
 
 		return new DataSet();
 	}

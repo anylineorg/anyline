@@ -106,7 +106,7 @@ public interface DMListener {
      * @param millis 执行耗时
      * @return SWITCH
      */
-    default SWITCH afterQuery(DataRuntime runtime, String random, Run run, boolean success, DataSet set, long millis) {return SWITCH.CONTINUE;}
+    default SWITCH afterQuery(DataRuntime runtime, String random, Run run, boolean success, DataSet<DataRow> set, long millis) {return SWITCH.CONTINUE;}
 
     /**
      * count之前调用
@@ -354,7 +354,7 @@ public interface DMListener {
      * @param millis 执行耗时
      * @return SWITCH
      */
-    default SWITCH afterQuery(DataRuntime runtime, String random, Procedure procedure, boolean success, DataSet set, long millis) {return SWITCH.CONTINUE;}
+    default SWITCH afterQuery(DataRuntime runtime, String random, Procedure procedure, boolean success, DataSet<DataRow> set, long millis) {return SWITCH.CONTINUE;}
 
     /**
      * 创建删除SQL前调用(DataRuntime runtime, String random, 根据Entity/DataRow), 修改删除条件可以在这一步实现<br/>

@@ -251,63 +251,63 @@ public class AnylineController extends AbstractController {
         return entity(getRequest(), KEY_CASE.CONFIG, null, false, false, fixs, params);
     }
 
-    public DataSet entitys(KEY_CASE keyCase, boolean keyEncrypt, boolean valueEncrypt, String... params) {
+    public DataSet<DataRow> entitys(KEY_CASE keyCase, boolean keyEncrypt, boolean valueEncrypt, String... params) {
         return entitys(getRequest(),keyCase, keyEncrypt, valueEncrypt, params);
     }
-    public DataSet entitys(KEY_CASE keyCase, boolean keyEncrypt, boolean valueEncrypt, String[] fixs, String... params) {
+    public DataSet<DataRow> entitys(KEY_CASE keyCase, boolean keyEncrypt, boolean valueEncrypt, String[] fixs, String... params) {
         return entitys(getRequest(),keyCase, keyEncrypt, valueEncrypt, fixs, params);
     }
-    public DataSet entitys(KEY_CASE keyCase, boolean keyEncrypt, boolean valueEncrypt, List<String> fixs, String... params) {
+    public DataSet<DataRow> entitys(KEY_CASE keyCase, boolean keyEncrypt, boolean valueEncrypt, List<String> fixs, String... params) {
         return entitys(getRequest(),keyCase, keyEncrypt, valueEncrypt, fixs, params);
     }
 
-    public DataSet entitys(boolean keyEncrypt, boolean valueEncrypt, String... params) {
+    public DataSet<DataRow> entitys(boolean keyEncrypt, boolean valueEncrypt, String... params) {
         return entitys(getRequest(), KEY_CASE.CONFIG, keyEncrypt, valueEncrypt, params);
     }
-    public DataSet entitys(boolean keyEncrypt, boolean valueEncrypt, String[] fixs, String... params) {
+    public DataSet<DataRow> entitys(boolean keyEncrypt, boolean valueEncrypt, String[] fixs, String... params) {
         return entitys(getRequest(), KEY_CASE.CONFIG, keyEncrypt, valueEncrypt, fixs, params);
     }
-    public DataSet entitys(boolean keyEncrypt, boolean valueEncrypt, List<String> fixs, String... params) {
+    public DataSet<DataRow> entitys(boolean keyEncrypt, boolean valueEncrypt, List<String> fixs, String... params) {
         return entitys(getRequest(), KEY_CASE.CONFIG, keyEncrypt, valueEncrypt, fixs, params);
     }
-    public DataSet entitys(KEY_CASE keyCase, boolean keyEncrypt, String... params) {
+    public DataSet<DataRow> entitys(KEY_CASE keyCase, boolean keyEncrypt, String... params) {
         return entitys(getRequest(),keyCase, keyEncrypt, false, params);
     }
-    public DataSet entitys(KEY_CASE keyCase, boolean keyEncrypt, String[] fixs, String... params) {
+    public DataSet<DataRow> entitys(KEY_CASE keyCase, boolean keyEncrypt, String[] fixs, String... params) {
         return entitys(getRequest(),keyCase, keyEncrypt, false, fixs, params);
     }
-    public DataSet entitys(KEY_CASE keyCase, boolean keyEncrypt, List<String> fixs, String... params) {
+    public DataSet<DataRow> entitys(KEY_CASE keyCase, boolean keyEncrypt, List<String> fixs, String... params) {
         return entitys(getRequest(),keyCase, keyEncrypt, false, fixs, params);
     }
-    public DataSet entitys(boolean keyEncrypt, String... params) {
+    public DataSet<DataRow> entitys(boolean keyEncrypt, String... params) {
         return entitys(getRequest(), KEY_CASE.CONFIG, keyEncrypt, false, params);
     }
-    public DataSet entitys(boolean keyEncrypt, String[] fixs, String... params) {
+    public DataSet<DataRow> entitys(boolean keyEncrypt, String[] fixs, String... params) {
         return entitys(getRequest(), KEY_CASE.CONFIG, keyEncrypt, false, fixs, params);
     }
-    public DataSet entitys(boolean keyEncrypt, List<String> fixs, String... params) {
+    public DataSet<DataRow> entitys(boolean keyEncrypt, List<String> fixs, String... params) {
         return entitys(getRequest(), KEY_CASE.CONFIG, keyEncrypt, false, fixs, params);
     }
 
-    public DataSet entitys(KEY_CASE keyCase, String... params) {
+    public DataSet<DataRow> entitys(KEY_CASE keyCase, String... params) {
         return entitys(getRequest(),keyCase, false, false, params);
     }
-    public DataSet entitys(KEY_CASE keyCase, String[] fixs, String... params) {
+    public DataSet<DataRow> entitys(KEY_CASE keyCase, String[] fixs, String... params) {
         return entitys(getRequest(),keyCase, false, false, fixs, params);
     }
-    public DataSet entitys(KEY_CASE keyCase, List<String> fixs, String... params) {
+    public DataSet<DataRow> entitys(KEY_CASE keyCase, List<String> fixs, String... params) {
         return entitys(getRequest(),keyCase, false, false, fixs, params);
     }
-    public DataSet entitys(String... params) {
+    public DataSet<DataRow> entitys(String... params) {
         return entitys(getRequest(), KEY_CASE.CONFIG, false, false, params);
     }
-    public DataSet entitys(String[] fixs, String... params) {
+    public DataSet<DataRow> entitys(String[] fixs, String... params) {
         return entitys(getRequest(), KEY_CASE.CONFIG, false, false, fixs, params);
     }
-    public DataSet entitys(List<String> fixs, String... params) {
+    public DataSet<DataRow> entitys(List<String> fixs, String... params) {
         return entitys(getRequest(), KEY_CASE.CONFIG, false, false, fixs, params);
     } 
-    public DataSet entitys(RunPrepare prepare) {
+    public DataSet<DataRow> entitys(RunPrepare prepare) {
         List<String> metadatas = service.columns(prepare.getTable());
         List<String> params = EntityAdapterProxy.column2param(metadatas);
         return entitys(getRequest(), null, false, false, params);
@@ -581,7 +581,7 @@ public class AnylineController extends AbstractController {
      */
     public String result(Object code, boolean result, Object data, String message) {
         HttpServletRequest request = getRequest();
-        DataSet messages = (DataSet) request.getAttribute(Constant.REQUEST_ATTR_MESSAGE);
+        DataSet<DataRow> messages = (DataSet) request.getAttribute(Constant.REQUEST_ATTR_MESSAGE);
         message = BasicUtil.nvl(message, "");
         if (null != messages) {
             for (int i = 0; i < messages.size(); i++) {
@@ -671,7 +671,7 @@ public class AnylineController extends AbstractController {
      * @param ext	扩展数据	  ext	扩展数据
      * @return String
      */
-    public String navi(boolean adapt, HttpServletRequest request, HttpServletResponse response, DataSet data, String page, Object ext) {
+    public String navi(boolean adapt, HttpServletRequest request, HttpServletResponse response, DataSet<DataRow> data, String page, Object ext) {
 
         if(null == request) {
             request = getRequest();
@@ -726,19 +726,19 @@ public class AnylineController extends AbstractController {
         Map<String,Object> map = super.navi(request, response, data, navi, page, ext);
         return success(map);
     }
-    public String navi(HttpServletRequest request, HttpServletResponse response, DataSet data, String page, Object ext) {
+    public String navi(HttpServletRequest request, HttpServletResponse response, DataSet<DataRow> data, String page, Object ext) {
         return navi(false,request, response, data, page, ext);
     }
-    public String navi(HttpServletRequest request, HttpServletResponse response, DataSet data, String page) {
+    public String navi(HttpServletRequest request, HttpServletResponse response, DataSet<DataRow> data, String page) {
         return navi(request, response, data, page ,null);
     }
-    public String navi(boolean adapt, HttpServletRequest request, HttpServletResponse response, DataSet data, String page) {
+    public String navi(boolean adapt, HttpServletRequest request, HttpServletResponse response, DataSet<DataRow> data, String page) {
         return navi(adapt,request, response, data, page ,null);
     }
     public String navi(HttpServletResponse response, String page) {
         return navi(null, response, null, page, null);
     }
-    public String navi(HttpServletResponse response, DataSet data, String page) {
+    public String navi(HttpServletResponse response, DataSet<DataRow> data, String page) {
         return navi(getRequest(), response, data, page, null);
     }
 

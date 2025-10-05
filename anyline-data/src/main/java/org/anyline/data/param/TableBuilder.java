@@ -172,7 +172,7 @@ joins:[
             }
         }
         if(null != joins && !joins.isEmpty()) {
-            DataSet set = new DataSet();
+            DataSet<DataRow> set = new DataSet();
             for(RunPrepare item:joins) {
                 set.add(item.map(empty, true));
             }

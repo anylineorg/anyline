@@ -115,7 +115,7 @@ public class MongoActuator implements DriverActuator {
     public List<Schema> schemas(DriverAdapter adapter, DataRuntime runtime) {
         return new ArrayList<>();
     }
-    public DataSet select(DriverAdapter adapter, DataRuntime runtime, String random, boolean system, ACTION.DML action, Table table, ConfigStore configs, Run run, String cmd, List<Object> values, LinkedHashMap<String,Column> columns) throws Exception {
+    public DataSet<DataRow> select(DriverAdapter adapter, DataRuntime runtime, String random, boolean system, ACTION.DML action, Table table, ConfigStore configs, Run run, String cmd, List<Object> values, LinkedHashMap<String,Column> columns) throws Exception {
         return new DataSet();
     }
     
@@ -127,7 +127,7 @@ public class MongoActuator implements DriverActuator {
      * @param navi 分页
      * @return DataSet
      */
-    public DataSet querys(DriverAdapter adapter, DataRuntime runtime, String random, Procedure procedure, PageNavi navi) throws Exception {
+    public DataSet<DataRow> querys(DriverAdapter adapter, DataRuntime runtime, String random, Procedure procedure, PageNavi navi) throws Exception {
         return new DataSet();
     }
 
@@ -158,7 +158,7 @@ public class MongoActuator implements DriverActuator {
      * @param adapter DriverAdapter
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
-     * @param data 插入数量
+     * @param data 待插入数据
      * @param configs ConfigStore
      * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
      * @param generatedKey 执行insert后返回自增主键的key

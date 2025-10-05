@@ -408,8 +408,8 @@ public class EntityAdapterProxy {
         }
         return row;
     }
-    public static DataSet set(EntitySet entitys, String ... keys) {
-        DataSet set = new DataSet();
+    public static DataSet<DataRow> set(EntitySet entitys, String ... keys) {
+        DataSet<DataRow> set = new DataSet();
         if(null != entitys) {
             for(Object obj:entitys) {
                 DataRow row = row(obj, keys);

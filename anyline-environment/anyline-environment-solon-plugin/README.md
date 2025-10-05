@@ -47,7 +47,7 @@ DataSourceHolder.reg("ds_sso", pool, driver, url, user, password);
 DataSourceHolder.reg("ds_sso", Map<String, Object> params); //对应连接池的属性k-v
 
 //查询ds_sso数据源的SSO_USER表
-DataSet set = ServiceProxy.service("ds_sso").querys("SSO_USER");
+DataSet<DataRow> set = ServiceProxy.service("ds_sso").querys("SSO_USER");
 ```
 来自静态配置文件数据源(或者自定义一个前缀)
 ```yaml
@@ -147,7 +147,7 @@ TransactionProxy.rollback(state);
 结果集的过滤、求和、多级树、平均值、行列转换、分组、方差等各种聚合操作等可以通过DataSet自带的方法实现  
 有些情况下从数据库中查出结果集后还需要经过多次过滤，用来避免多次查询给数据库造成不必要的压力  
 DataSet类似sql的查询  
-DataSet result = set.select.equals("AGE","20")的方式调用
+DataSet<DataRow> result = set.select.equals("AGE","20")的方式调用
 
 **具体可参考：**  
 [源码](https://gitee.com/anyline/anyline)  

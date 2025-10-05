@@ -194,7 +194,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
                 }
             }else if(value instanceof DataSet) {
                 DataSet<DataRow> set = (DataSet)value;
-                cons = database.getCollection(run.getTableName(), ConfigTable.DEFAULT_MONGO_ENTITY_CLASS);
+                cons = database.getCollection(run.getTableName(), MongoRow.class);
                 InsertManyResult result =  cons.insertMany(set.getRows());
                 cnt = set.size();
                 Map<Integer, BsonValue> ids = result.getInsertedIds();
@@ -500,7 +500,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
     }
 
     @Override
-    public DataSet select(DataRuntime runtime, String random, boolean system, Table table, ConfigStore configs, Run run) {
+    public DataSet<DataRow> select(DataRuntime runtime, String random, boolean system, Table table, ConfigStore configs, Run run) {
         MongoRun r = (MongoRun) run;
         long fr = System.currentTimeMillis();
         if(null == random) {

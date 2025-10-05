@@ -142,7 +142,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @return DataSet
 	 */
 	@Override
-	public DataSet querys(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
+	public DataSet<DataRow> querys(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
 		if(null == runtime) {
 			runtime = runtime();
 		}
@@ -309,7 +309,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		if(dependency <= 0) {
 			return result;
 		}
-		if(obj instanceof DataSet || obj instanceof DataRow || obj instanceof Map) {
+		if(obj instanceof DataSet<DataRow> || obj instanceof DataRow || obj instanceof Map) {
 			return result;
 		}
 		if(obj instanceof EntitySet) {
@@ -335,7 +335,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					if(null == fv) {
 						continue;
 					}
-					DataSet set = new DataSet();
+					DataSet<DataRow> set = new DataSet();
 					Collection fvs = new ArrayList();
 					if (null == join.dependencyTable) {
 						//只通过中间表查主键 List<Long> departmentIds
@@ -396,7 +396,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		if(dependency <= 0) {
 			return result;
 		}
-		if(obj instanceof DataSet || obj instanceof DataRow || obj instanceof Map) {
+		if(obj instanceof DataSet<DataRow> || obj instanceof DataRow || obj instanceof Map) {
 			return result;
 		}
 		if(obj instanceof EntitySet) {
@@ -495,7 +495,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 						if (null == join.dependencyTable) {
 							//只通过中间表查主键 List<Long> departmentIds
 							//SELECT * FROM HR_EMPLOYEE_DEPARTMENT WHERE EMPLOYEE_ID = ?
-							DataSet items = runtime.getAdapter().querys(runtime, random, new DefaultTablePrepare(join.joinTable), new DefaultConfigStore(), "++" + join.joinColumn + ":" + primaryValueMap.get(pk.toUpperCase()));
+							DataSet<DataRow> items = runtime.getAdapter().querys(runtime, random, new DefaultTablePrepare(join.joinTable), new DefaultConfigStore(), "++" + join.joinColumn + ":" + primaryValueMap.get(pk.toUpperCase()));
 							List<String> ids = items.getStrings(join.inverseJoinColumn);
 							BeanUtil.setFieldValue(entity, field, ids);
 						} else {
@@ -523,9 +523,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 						//SELECT * FROM HR_EMPLOYEE_DEPARTMENT WHERE EMPLOYEE_ID IN(?, ?, ?)
 						ConfigStore conditions = new DefaultConfigStore();
 						conditions.and(join.joinColumn, pvs);
-						DataSet allItems = runtime.getAdapter().querys(runtime, random, new DefaultTablePrepare(join.joinTable), conditions);
+						DataSet<DataRow> allItems = runtime.getAdapter().querys(runtime, random, new DefaultTablePrepare(join.joinTable), conditions);
 						for(T entity:set) {
-							DataSet items = allItems.getRows(join.joinColumn, idmap.get(entity)+"");
+							DataSet<DataRow> items = allItems.getRows(join.joinColumn, idmap.get(entity)+"");
 							List<String> ids = items.getStrings(join.inverseJoinColumn);
 							BeanUtil.setFieldValue(entity, field, ids);
 						}
@@ -535,9 +535,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 						ConfigStore conditions = new DefaultConfigStore();
 						conditions.param("JOIN_PVS", pvs);
 						String sql = "SELECT M.*, F."+join.joinColumn+" FK_"+join.joinColumn+" FROM " + join.dependencyTable + " M RIGHT JOIN "+join.joinTable+" F ON M." + join.dependencyPk + " = "+join.inverseJoinColumn +" WHERE "+join.joinColumn+" IN(#{JOIN_PVS})";
-						DataSet alls = runtime.getAdapter().querys(runtime, random, new DefaultTextPrepare(sql), conditions);
+						DataSet<DataRow> alls = runtime.getAdapter().querys(runtime, random, new DefaultTextPrepare(sql), conditions);
 						for(T entity:set) {
-							DataSet items = alls.getRows("FK_"+join.joinColumn, idmap.get(entity)+"");
+							DataSet<DataRow> items = alls.getRows("FK_"+join.joinColumn, idmap.get(entity)+"");
 							BeanUtil.setFieldValue(entity, field, items.entity(join.itemClass));
 						}
 					}
@@ -750,7 +750,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
 	 * @return DataSet
 	 */
-	protected DataSet select(DataRuntime runtime, String random, boolean system, String table, ConfigStore configs, Run run) {
+	protected DataSet<DataRow> select(DataRuntime runtime, String random, boolean system, String table, ConfigStore configs, Run run) {
 		if(null == runtime) {
 			runtime = runtime();
 		}
@@ -837,7 +837,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @return DataSet
 	 */
 	@Override
-	public DataSet querys(DataRuntime runtime, String random, Procedure procedure, PageNavi navi) {
+	public DataSet<DataRow> querys(DataRuntime runtime, String random, Procedure procedure, PageNavi navi) {
 		if(null == runtime) {
 			runtime = runtime();
 		}
@@ -1345,7 +1345,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * 													foreign
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * List<Run> buildQueryForeignsRun(DataRuntime runtime, boolean greedy,  Table table) throws Exception
-	 * <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, int index, Table table, LinkedHashMap<String, T> foreigns, DataSet set) throws Exception
+	 * <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, int index, Table table, LinkedHashMap<String, T> foreigns, DataSet<DataRow> set) throws Exception
 	 ******************************************************************************************************************/
 	@Override
 	public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, String random, boolean greedy, Table table) {

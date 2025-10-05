@@ -114,7 +114,7 @@ public class EntitySet<T> implements Collection<T>, Serializable {
         return datas.get(index);
     }
 
-    public DataSet set(String ... keys) {
+    public DataSet<DataRow> set(String ... keys) {
         return EntityAdapterProxy.set(this, keys);
     }
 

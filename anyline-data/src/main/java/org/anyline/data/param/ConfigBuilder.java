@@ -120,7 +120,7 @@ public class ConfigBuilder {
     }
     public static Config parseConfig(DataRow row) {
         Config config = null;
-        DataSet items = row.getSet("items");
+        DataSet<DataRow> items = row.getSet("items");
         if(null != items && !items.isEmpty()) {
             config = parseConfigChain(row);
         }else {

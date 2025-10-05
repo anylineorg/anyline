@@ -79,7 +79,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     protected String category                               = null                  ; // 分类
     protected LinkedHashMap<String, Column> metadatas       = null                  ; // 数据类型相关(需要开启ConfigTable.IS_AUTO_CHECK_METADATA)
     protected LinkedHashMap<String, Object> origin          = new LinkedHashMap<>() ; // 从数据库中查询的未处理的原始数据
-    protected transient DataSet container                   = null                  ; // 包含当前对象的容器
+    protected transient DataSet<DataRow> container                   = null                  ; // 包含当前对象的容器
     protected transient Map<String, DataSet> containers     = new HashMap<>()       ; // 包含当前对象的容器s
     protected transient Map<String, DataRow> parents        = new Hashtable<>()     ; // 上级
     protected List<String> primaryKeys                      = new ArrayList<>()     ; // 主键
@@ -571,7 +571,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
                     row.put(childKey, childRow);
                 } else {
                     if (childStore instanceof DataRow) {
-                        DataSet childSet = new DataSet();
+                        DataSet<DataRow> childSet = new DataSet();
                         childSet.add((DataRow) childStore);
                         childSet.add(childRow);
                         row.put(childKey, childSet);
@@ -637,11 +637,11 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     public static DataRow parseArray(String... kvs) {
         return parseArray((DataRow)null, kvs);
     }
-    public DataRow setContainer(String key, DataSet container) {
+    public DataRow setContainer(String key, DataSet<DataRow> container) {
         containers.put(key, container);
         return this;
     }
-    public DataSet getContainer(String key) {
+    public DataSet<DataRow> getContainer(String key) {
         return containers.get(key);
     }
     public DataRow setParent(String key, DataRow parent) {
@@ -651,8 +651,8 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     public DataRow getParent(String key) {
         return parents.get(key);
     }
-    public DataSet getAllParent(String key) {
-        DataSet set = new DataSet();
+    public DataSet<DataRow> getAllParent(String key) {
+        DataSet<DataRow> set = new DataSet();
         DataRow parent = this.getParent(key);
         while (null != parent) {
             set.add(parent);
@@ -936,7 +936,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
      * 默认子集
      * @return DataSet
      */
-    public DataSet getItems() {
+    public DataSet<DataRow> getItems() {
         Object items = get(KEY_ITEMS);
         if (items instanceof DataSet) {
             return (DataSet) items;
@@ -959,7 +959,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
      * @param append USER this.put("USER", user)
      * @return this
      */
-    public DataRow foreign(DataSet set, String foreignKey, String foreignText, String primaryKey, String primaryText, String append){
+    public DataRow foreign(DataSet<DataRow> set, String foreignKey, String foreignText, String primaryKey, String primaryText, String append){
         DataRow data = set.getRow(primaryKey, getString(foreignKey));
         if(null != data){
             put(foreignText, data.getString(primaryText));
@@ -969,7 +969,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         }
         return this;
     }
-    public DataRow foreign(DataSet set, String foreignKey, String foreignText, String primaryKey, String primaryText){
+    public DataRow foreign(DataSet<DataRow> set, String foreignKey, String foreignText, String primaryKey, String primaryText){
         return foreign(set, foreignKey, foreignText, primaryKey, primaryText, null);
     }
     
@@ -1535,7 +1535,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     public List<Object> getAllParent() {
         return getAllParent(KEY_PARENT);
     }*/
-    public DataSet getAllChild(String key) {
+    public DataSet<DataRow> getAllChild(String key) {
         Object obj = get(KEY_ALL_CHILDREN);
         if (null != obj) {
             return (DataSet) obj;
@@ -1749,8 +1749,8 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         put(key, row);
         return row;
     }
-    public DataSet puts(String key) {
-        DataSet set = new DataSet(keyCase);
+    public DataSet<DataRow> puts(String key) {
+        DataSet<DataRow> set = new DataSet(keyCase);
         put(key, set);
         return set;
     }
@@ -1934,8 +1934,8 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         }
         return result;
     }
-    public DataSet getSet(String key) {
-        DataSet set = null;
+    public DataSet<DataRow> getSet(String key) {
+        DataSet<DataRow> set = null;
         if (null != key) {
             Object obj = get(key);
             if (null != obj) {
@@ -2500,8 +2500,8 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
      * @param value 原map中的value存放位置
      * @return DataSet
      */
-    public DataSet toSet(String key, String value) {
-        DataSet set = new DataSet();
+    public DataSet<DataRow> toSet(String key, String value) {
+        DataSet<DataRow> set = new DataSet();
         for(String k:keySet()) {
             DataRow row = new DataRow(keyCase);
             row.put(key, k);
@@ -2661,11 +2661,11 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
      * 包含当前对象的容器
      * @return DataSet
      */
-    public DataSet getContainer() {
+    public DataSet<DataRow> getContainer() {
         return container;
     }
 
-    public DataRow setContainer(DataSet container) {
+    public DataRow setContainer(DataSet<DataRow> container) {
         this.container = container;
         return this;
     }
@@ -2674,7 +2674,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         if (null != catalog) {
             return catalog;
         } else {
-            DataSet container = getContainer();
+            DataSet<DataRow> container = getContainer();
             if (null != container) {
                 return container.getCatalog();
             } else {
@@ -2687,7 +2687,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         if (null != catalog) {
             return catalog.getName();
         } else {
-            DataSet container = getContainer();
+            DataSet<DataRow> container = getContainer();
             if (null != container) {
                 return container.getCatalogName();
             } else {
@@ -2714,7 +2714,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         if (null != schema) {
             return schema;
         } else {
-            DataSet container = getContainer();
+            DataSet<DataRow> container = getContainer();
             if (null != container) {
                 return container.getSchema();
             } else {
@@ -2727,7 +2727,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         if (null != schema) {
             return schema.getName();
         } else {
-            DataSet container = getContainer();
+            DataSet<DataRow> container = getContainer();
             if (null != container) {
                 return container.getSchemaName();
             } else {
@@ -2758,7 +2758,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         if (null != tables && !tables.isEmpty()) {
             return tables.values().iterator().next();
         } else if(checkContainer) {
-            DataSet container = getContainer();
+            DataSet<DataRow> container = getContainer();
             if (null != container) {
                 return container.getTable(false);
             } else {
@@ -2815,7 +2815,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         if (null != tables && !tables.isEmpty()) {
             return tables;
         } else if(checkContainer) {
-            DataSet container = getContainer();
+            DataSet<DataRow> container = getContainer();
             if (null != container) {
                 return container.getTables(false);
             } else {
@@ -4373,7 +4373,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
                 DataRow row = (DataRow) data;
                 row.string2object();
             }else if(data instanceof DataSet){
-                DataSet set = (DataSet)data;
+                DataSet<DataRow> set = (DataSet)data;
                 set.string2object();
             }
             super.put(key, data);

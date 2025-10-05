@@ -81,8 +81,8 @@ public interface AnylineDao<E>{
 	 * @param conditions 查询条件 支持k:v k:v::type 以及原生sql形式(包含ORDER、GROUP、HAVING)默认忽略空值条件
 	 * @return mpas
 	 */
-	DataSet querys(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions);
-	default DataSet querys(RunPrepare prepare, ConfigStore configs, String ... conditions) {
+	DataSet<DataRow> querys(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions);
+	default DataSet<DataRow> querys(RunPrepare prepare, ConfigStore configs, String ... conditions) {
 		return querys(runtime(), null, prepare, configs, conditions);
 	}
 
@@ -528,8 +528,8 @@ public interface AnylineDao<E>{
 	 * @param procedure  procedure
 	 * @return DataSet
 	 */
-	DataSet querys(DataRuntime runtime, String random, Procedure procedure, PageNavi navi);
-	default DataSet querys(Procedure procedure, PageNavi navi) {
+	DataSet<DataRow> querys(DataRuntime runtime, String random, Procedure procedure, PageNavi navi);
+	default DataSet<DataRow> querys(Procedure procedure, PageNavi navi) {
 		return querys(runtime(), null, procedure, navi);
 	}
 	default long delete(DataRuntime runtime, String random, String dest, ConfigStore configs, Object obj, String ... columns) {
@@ -1752,7 +1752,7 @@ public interface AnylineDao<E>{
 	 * 													foreign
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * List<Run> buildQueryForeignsRun(Table table) throws Exception
-	 * <T extends ForeignKey> LinkedHashMap<String, T> foreigns(int index, Table table, LinkedHashMap<String, T> foreigns, DataSet set) throws Exception
+	 * <T extends ForeignKey> LinkedHashMap<String, T> foreigns(int index, Table table, LinkedHashMap<String, T> foreigns, DataSet<DataRow> set) throws Exception
 	 ******************************************************************************************************************/
 	<T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, String random, boolean greedy, Table table);
 	default <T extends ForeignKey> LinkedHashMap<String, T> foreigns(boolean greedy, Table table) {

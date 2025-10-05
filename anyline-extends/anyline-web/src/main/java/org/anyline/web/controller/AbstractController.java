@@ -331,8 +331,8 @@ public abstract class AbstractController {
 		return entity(request, KEY_CASE.CONFIG, null, false, false, BeanUtil.array2list(fixs, params));
 	}
 
-	public DataSet entitys(HttpServletRequest request, KEY_CASE keyCase, boolean keyEncrypt, boolean valueEncrypt, List<String> fixs, String ... params) {
-		DataSet set = new DataSet();
+	public DataSet<DataRow> entitys(HttpServletRequest request, KEY_CASE keyCase, boolean keyEncrypt, boolean valueEncrypt, List<String> fixs, String ... params) {
+		DataSet<DataRow> set = new DataSet();
 		List<String> arrays = BeanUtil.merge(fixs, params);
 
 		if(arrays.size() == 1) {
@@ -411,47 +411,47 @@ public abstract class AbstractController {
 		return set;
 	}
 
-	public DataSet entitys(HttpServletRequest request, KEY_CASE keyCase, boolean keyEncrypt, boolean valueEncrypt, String... params) {
+	public DataSet<DataRow> entitys(HttpServletRequest request, KEY_CASE keyCase, boolean keyEncrypt, boolean valueEncrypt, String... params) {
 		return entitys(request, keyCase, keyEncrypt, valueEncrypt, BeanUtil.array2list(params));
 	}
 	
-	public DataSet entitys(HttpServletRequest request, KEY_CASE keyCase, boolean keyEncrypt, boolean valueEncrypt, String[] fixs, String... params) {
+	public DataSet<DataRow> entitys(HttpServletRequest request, KEY_CASE keyCase, boolean keyEncrypt, boolean valueEncrypt, String[] fixs, String... params) {
 		return entitys(request, keyCase, keyEncrypt, valueEncrypt, BeanUtil.array2list(fixs, params));
 	}
 	
-	public DataSet entitys(HttpServletRequest request, boolean keyEncrypt, boolean valueEncrypt, String... params) {
+	public DataSet<DataRow> entitys(HttpServletRequest request, boolean keyEncrypt, boolean valueEncrypt, String... params) {
 		return entitys(request, KEY_CASE.CONFIG, keyEncrypt, valueEncrypt, BeanUtil.array2list(params));
 	}
 	
-	public DataSet entitys(HttpServletRequest request, KEY_CASE keyCase, boolean keyEncrypt, String... params) {
+	public DataSet<DataRow> entitys(HttpServletRequest request, KEY_CASE keyCase, boolean keyEncrypt, String... params) {
 		return entitys(request,keyCase,keyEncrypt, false, BeanUtil.array2list(params));
 	}
 	
-	public DataSet entitys(HttpServletRequest request, KEY_CASE keyCase, boolean keyEncrypt, String[] fixs, String... params) {
+	public DataSet<DataRow> entitys(HttpServletRequest request, KEY_CASE keyCase, boolean keyEncrypt, String[] fixs, String... params) {
 		return entitys(request,keyCase,keyEncrypt, false, BeanUtil.array2list(fixs, params));
 	}
 	
-	public DataSet entitys(HttpServletRequest request, boolean keyEncrypt, String... params) {
+	public DataSet<DataRow> entitys(HttpServletRequest request, boolean keyEncrypt, String... params) {
 		return entitys(request, KEY_CASE.CONFIG,keyEncrypt, false, BeanUtil.array2list(params));
 	}
 	
-	public DataSet entitys(HttpServletRequest request, boolean keyEncrypt, String[] fixs, String... params) {
+	public DataSet<DataRow> entitys(HttpServletRequest request, boolean keyEncrypt, String[] fixs, String... params) {
 		return entitys(request, KEY_CASE.CONFIG,keyEncrypt, false, BeanUtil.array2list(fixs, params));
 	}
 	
-	public DataSet entitys(HttpServletRequest request, KEY_CASE keyCase, String... params) {
+	public DataSet<DataRow> entitys(HttpServletRequest request, KEY_CASE keyCase, String... params) {
 		return entitys(request, keyCase, false, false, BeanUtil.array2list(params));
 	}
 	
-	public DataSet entitys(HttpServletRequest request, KEY_CASE keyCase, String[] fixs, String... params) {
+	public DataSet<DataRow> entitys(HttpServletRequest request, KEY_CASE keyCase, String[] fixs, String... params) {
 		return entitys(request, keyCase, false, false, BeanUtil.array2list(fixs, params));
 	}
 	
-	public DataSet entitys(HttpServletRequest request, String... params) {
+	public DataSet<DataRow> entitys(HttpServletRequest request, String... params) {
 		return entitys(request, KEY_CASE.CONFIG, false, false, BeanUtil.array2list(params));
 	}
 	
-	public DataSet entitys(HttpServletRequest request, String[] fixs, String... params) {
+	public DataSet<DataRow> entitys(HttpServletRequest request, String[] fixs, String... params) {
 		return entitys(request, KEY_CASE.CONFIG, false, false, BeanUtil.array2list(fixs, params));
 	}
 	
@@ -897,7 +897,7 @@ public abstract class AbstractController {
 	 * @param type   消息类别
 	 */
 	protected void setRequestMessage(HttpServletRequest request, String key, Object value, String type) {
-		DataSet messages = null;
+		DataSet<DataRow> messages = null;
 		messages = (DataSet) request.getAttribute(Constant.REQUEST_ATTR_MESSAGE);
 		if (null == messages) {
 			messages = new DataSet();
@@ -930,7 +930,7 @@ public abstract class AbstractController {
 	}
 
 	protected void setSessionMessage(HttpSession session, String key, Object value, String type) {
-		DataSet messages = null;
+		DataSet<DataRow> messages = null;
 		messages = (DataSet) session.getAttribute(Constant.SESSION_ATTR_MESSAGE);
 		if (null == messages) {
 			messages = new DataSet();

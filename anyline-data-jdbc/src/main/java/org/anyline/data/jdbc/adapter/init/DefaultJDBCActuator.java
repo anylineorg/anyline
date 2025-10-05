@@ -189,8 +189,8 @@ public class DefaultJDBCActuator implements DriverActuator {
     }
 
     @Override
-    public DataSet select(DriverAdapter adapter, DataRuntime runtime, String random, boolean system, ACTION.DML action, Table table, ConfigStore configs, Run run, String sql, List<Object> values, LinkedHashMap<String,Column> columns) throws Exception {
-        DataSet set = new DataSet();
+    public DataSet<DataRow> select(DriverAdapter adapter, DataRuntime runtime, String random, boolean system, ACTION.DML action, Table table, ConfigStore configs, Run run, String sql, List<Object> values, LinkedHashMap<String,Column> columns) throws Exception {
+        DataSet<DataRow> set = new DataSet();
         long fr = System.currentTimeMillis();
         final DataRuntime rt = runtime;
         final long[] mid = {System.currentTimeMillis()};
@@ -287,7 +287,7 @@ public class DefaultJDBCActuator implements DriverActuator {
      * @return DataSet
      */
     @Override
-    public DataSet querys(DriverAdapter adapter, DataRuntime runtime, String random, Procedure procedure, PageNavi navi) throws Exception {
+    public DataSet<DataRow> querys(DriverAdapter adapter, DataRuntime runtime, String random, Procedure procedure, PageNavi navi) throws Exception {
         final List<Parameter> inputs = procedure.getInputs();
         final List<Parameter> outputs = procedure.getOutputs();
         DataSource datasource = datasource(runtime);
@@ -328,10 +328,10 @@ public class DefaultJDBCActuator implements DriverActuator {
         JDBCUtil.queryTimeout(cs, null);
         List<DataSet> sets = new ArrayList<>();
         ResultSet rs = cs.executeQuery();
-        DataSet rtn = null;
+        DataSet<DataRow> rtn = null;
         boolean more = false;
         do {
-            DataSet set = new DataSet();
+            DataSet<DataRow> set = new DataSet();
             if(null == rtn){
                 //有多个结果集的返回第一个
                 rtn = set;

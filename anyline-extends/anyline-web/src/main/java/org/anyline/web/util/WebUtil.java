@@ -156,8 +156,8 @@ public class WebUtil {
 		return (request.getHeader("Referer") != null);
 	}
 
-	public static DataSet values(HttpServletRequest request) {
-		DataSet set = new DataSet();
+	public static DataSet<DataRow> values(HttpServletRequest request) {
+		DataSet<DataRow> set = new DataSet();
 		if(null == request) {
 			return set;
 		}
@@ -764,7 +764,7 @@ public class WebUtil {
 		if (null == obj) {
 			return obj;
 		}
-		if(obj instanceof DataSet && ((DataSet)obj).isFromCache()){
+		if(obj instanceof DataSet<DataRow> && ((DataSet)obj).isFromCache()){
 			return obj;
 		}
 		if(obj instanceof DataRow && ((DataRow)obj).isFromCache()){
