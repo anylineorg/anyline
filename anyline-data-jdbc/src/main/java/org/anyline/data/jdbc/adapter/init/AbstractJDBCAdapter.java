@@ -1496,7 +1496,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
     @Override
     public long count(DataRuntime runtime, String random, Run run) {
         long total = 0;
-        DataSet<? extends DataRow> set = select(runtime, random, false, ACTION.DML.COUNT, null, run.getConfigs(), run, run.getTotalQuery(), run.getValues());
+        DataSet<DataRow> set = select(runtime, random, false, ACTION.DML.COUNT, null, run.getConfigs(), run, run.getTotalQuery(), run.getValues());
         if(!set.isEmpty()) {
             total = set.getRow(0).toUpperKey().getLong("CNT", 0L);
         }
@@ -9274,7 +9274,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 *
 	 **********************************************************************************************************************/
 
-	protected DataSet<? extends DataRow> select(DataRuntime runtime, String random, boolean system, ACTION.DML action, Table table, ConfigStore configs, Run run, String sql, List<Object> values) {
+	protected DataSet<DataRow> select(DataRuntime runtime, String random, boolean system, ACTION.DML action, Table table, ConfigStore configs, Run run, String sql, List<Object> values) {
 		if(null == configs) {
 			configs = new DefaultConfigStore();
 		}
@@ -9290,7 +9290,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		if(null == random) {
 			random = random(runtime);
 		}
-		DataSet<? extends DataRow> set = new DataSet();
+		DataSet<DataRow> set = new DataSet();
 		set.setTable(table);
 		boolean exe = configs.execute();
 		if(!exe) {

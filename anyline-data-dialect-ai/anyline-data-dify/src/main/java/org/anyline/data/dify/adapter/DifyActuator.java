@@ -101,8 +101,8 @@ public class DifyActuator implements DriverActuator {
         return null;
     }
     @Override
-    public DataSet<? extends DataRow>  select(DriverAdapter adapter, DataRuntime runtime, String random, boolean system, ACTION.DML action, Table table, ConfigStore configs, Run run, String cmd, List<Object> values, LinkedHashMap<String, Column> columns) throws Exception {
-        DataSet<Document> set = new DataSet();
+    public DataSet<DataRow>  select(DriverAdapter adapter, DataRuntime runtime, String random, boolean system, ACTION.DML action, Table table, ConfigStore configs, Run run, String cmd, List<Object> values, LinkedHashMap<String, Column> columns) throws Exception {
+        DataSet<DataRow> set = new DataSet();
         long fr = System.currentTimeMillis();
         DifyRun r = (DifyRun)run;
         String url = "/datasets/" + table.getId() + "/documents";
@@ -124,26 +124,6 @@ public class DifyActuator implements DriverActuator {
                     doc.setId(data.getString("id"));
                     doc.setName(data.getString("name"));
                     set.add(doc);
-                    /*      "id": "3c90c3cc-0d44-4b50-8888-8dd25736052a",
-                      "position": 123,
-                      "data_source_type": "<string>",
-                      "data_source_info": {},
-                      "dataset_process_rule_id": "3c90c3cc-0d44-4b50-8888-8dd25736052a",
-                      "name": "<string>",
-                      "created_from": "<string>",
-                      "created_by": "3c90c3cc-0d44-4b50-8888-8dd25736052a",
-                      "created_at": 123,
-                      "tokens": 123,
-                      "indexing_status": "<string>",
-                      "error": "<string>",
-                      "enabled": true,
-                      "disabled_at": 123,
-                      "disabled_by": "3c90c3cc-0d44-4b50-8888-8dd25736052a",
-                      "archived": true,
-                      "display_status": "<string>",
-                      "word_count": 123,
-                      "hit_count": 123,
-                      "doc_form": "<string>"*/
                 }
             }
         }
@@ -167,29 +147,31 @@ public class DifyActuator implements DriverActuator {
         DifyRuntime rt = (DifyRuntime)runtime;
         DifyRun r = (DifyRun)run;
         Table table = r.getTable();
-        Document document = r.getDocument();
-        Map<String, Object> params = new HashMap<>();
-        params.put("indexing_technique", "high_quality");
-        Map<String, String> rule = new HashMap<>();
-        rule.put("mode", "automatic");
-        params.put("process_rule", rule);
-        File file = document.getFile();
-        DataRow row = null;
-        if(null != file){
-            String url = "/datasets/"+table.getId()+"/document/create-by-file";
-            row = upload(rt, url, document, params);
-        }else {
-            params.put("name", document.getName());
-            String url = "/datasets/"+table.getId()+"/document/create-by-text";
-            params.put("text", document.getText());
-            row = post(rt, url, params);
+        List<Document> documents = r.getDocuments();
+        for(Document document:documents){
+            Map<String, Object> params = new HashMap<>();
+            params.put("indexing_technique", "high_quality");
+            Map<String, String> rule = new HashMap<>();
+            rule.put("mode", "automatic");
+            params.put("process_rule", rule);
+            File file = document.getFile();
+            DataRow row = null;
+            if(null != file){
+                String url = "/datasets/"+table.getId()+"/document/create-by-file";
+                row = upload(rt, url, document, params);
+            }else {
+                params.put("name", document.getName());
+                String url = "/datasets/"+table.getId()+"/document/create-by-text";
+                params.put("text", document.getText());
+                row = post(rt, url, params);
+            }
+            DataRow doc = row.getRow("DOCUMENT");
+            if(null != doc){
+                document.setId(doc.getString("ID"));
+            }
+            //元数据
+            setMetadata(rt, table, document);
         }
-        DataRow doc = row.getRow("DOCUMENT");
-        if(null != doc){
-            document.setId(doc.getString("ID"));
-        }
-        //元数据
-        setMetadata(rt, table, document);
         return cnt;
     }
 

@@ -79,7 +79,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     protected String category                               = null                  ; // 分类
     protected LinkedHashMap<String, Column> metadatas       = null                  ; // 数据类型相关(需要开启ConfigTable.IS_AUTO_CHECK_METADATA)
     protected LinkedHashMap<String, Object> origin          = new LinkedHashMap<>() ; // 从数据库中查询的未处理的原始数据
-    protected transient DataSet<DataRow> container                   = null                  ; // 包含当前对象的容器
+    protected transient DataSet container                   = null                  ; // 包含当前对象的容器
     protected transient Map<String, DataSet> containers     = new HashMap<>()       ; // 包含当前对象的容器s
     protected transient Map<String, DataRow> parents        = new Hashtable<>()     ; // 上级
     protected List<String> primaryKeys                      = new ArrayList<>()     ; // 主键
@@ -2665,7 +2665,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return container;
     }
 
-    public DataRow setContainer(DataSet<DataRow> container) {
+    public DataRow setContainer(DataSet container) {
         this.container = container;
         return this;
     }

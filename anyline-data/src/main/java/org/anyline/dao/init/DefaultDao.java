@@ -309,7 +309,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		if(dependency <= 0) {
 			return result;
 		}
-		if(obj instanceof DataSet<DataRow> || obj instanceof DataRow || obj instanceof Map) {
+		if(obj instanceof DataSet || obj instanceof DataRow || obj instanceof Map) {
 			return result;
 		}
 		if(obj instanceof EntitySet) {
@@ -396,7 +396,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		if(dependency <= 0) {
 			return result;
 		}
-		if(obj instanceof DataSet<DataRow> || obj instanceof DataRow || obj instanceof Map) {
+		if(obj instanceof DataSet || obj instanceof DataRow || obj instanceof Map) {
 			return result;
 		}
 		if(obj instanceof EntitySet) {

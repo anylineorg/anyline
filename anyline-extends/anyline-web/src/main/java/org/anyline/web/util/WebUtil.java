@@ -764,7 +764,7 @@ public class WebUtil {
 		if (null == obj) {
 			return obj;
 		}
-		if(obj instanceof DataSet<DataRow> && ((DataSet)obj).isFromCache()){
+		if(obj instanceof DataSet && ((DataSet)obj).isFromCache()){
 			return obj;
 		}
 		if(obj instanceof DataRow && ((DataRow)obj).isFromCache()){

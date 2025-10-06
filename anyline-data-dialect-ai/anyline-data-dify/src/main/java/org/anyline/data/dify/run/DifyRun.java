@@ -25,12 +25,13 @@ import org.anyline.entity.PageNavi;
 import org.anyline.metadata.Table;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class DifyRun extends TableRun implements Run {
 
     protected Table table;
-    protected Document document;
+    protected List<Document> documents;
     protected DifyClient client;
     protected String keyword;
     protected PageNavi navi;
@@ -66,12 +67,12 @@ public class DifyRun extends TableRun implements Run {
         this.table = table;
     }
 
-    public Document getDocument() {
-        return document;
+    public List<Document> getDocuments() {
+        return documents;
     }
 
-    public void setDocument(Document document) {
-        this.document = document;
+    public void setDocuments(List<Document> documents) {
+        this.documents = documents;
     }
 
     public Map<String, Object> getQueryParams() {

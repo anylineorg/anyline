@@ -1975,7 +1975,7 @@ public class DataSet<E extends DataRow> implements Collection<E>, Serializable, 
      */
     public DataSet<E> sum(String result, String items, String field, Compare compare, String ... conditions) {
         for(DataRow row:rows) {
-            DataSet<E> set = row.getSet(items);
+            DataSet<DataRow> set = row.getSet(items);
             if(null != conditions && conditions.length>0) {
                 set = set.getRows(compare, conditions);
             }
@@ -1986,7 +1986,7 @@ public class DataSet<E extends DataRow> implements Collection<E>, Serializable, 
 
     public DataSet<E> avg(String result, String items, int scale, int round, String field, Compare compare, String ... conditions) {
         for(DataRow row:rows) {
-            DataSet<E> set = row.getSet(items);
+            DataSet<DataRow> set = row.getSet(items);
             if(null != conditions && conditions.length>0) {
                 set = set.getRows(compare, conditions);
             }
@@ -1997,7 +1997,7 @@ public class DataSet<E extends DataRow> implements Collection<E>, Serializable, 
 
     public DataSet<E> var(String result, String items, int scale, int round, String field, Compare compare, String ... conditions) {
         for(DataRow row:rows) {
-            DataSet<E> set = row.getSet(items);
+            DataSet<DataRow> set = row.getSet(items);
             if(null != conditions && conditions.length>0) {
                 set = set.getRows(compare, conditions);
             }
@@ -2007,7 +2007,7 @@ public class DataSet<E extends DataRow> implements Collection<E>, Serializable, 
     }
     public DataSet<E> min(String result, String items, String field, Compare compare, String ... conditions) {
         for(DataRow row:rows) {
-            DataSet<E> set = row.getSet(items);
+            DataSet<DataRow> set = row.getSet(items);
             if(null != conditions && conditions.length>0) {
                 set = set.getRows(compare, conditions);
             }
@@ -2017,7 +2017,7 @@ public class DataSet<E extends DataRow> implements Collection<E>, Serializable, 
     }
     public DataSet<E> max(String result, String items, String field, Compare compare, String ... conditions) {
         for(DataRow row:rows) {
-            DataSet<E> set = row.getSet(items);
+            DataSet<DataRow> set = row.getSet(items);
             if(null != conditions && conditions.length>0) {
                 set = set.getRows(compare, conditions);
             }
@@ -2027,7 +2027,7 @@ public class DataSet<E extends DataRow> implements Collection<E>, Serializable, 
     }
     public DataSet<E> count(String result, String items, boolean empty, String field, Compare compare, String ... conditions) {
         for(DataRow row:rows) {
-            DataSet<E> set = row.getSet(items);
+            DataSet<DataRow> set = row.getSet(items);
             if(null != conditions && conditions.length>0) {
                 set = set.getRows(compare, conditions);
             }
@@ -2037,7 +2037,7 @@ public class DataSet<E extends DataRow> implements Collection<E>, Serializable, 
     }
     public DataSet<E> vara(String result, String items, int scale, int round, String field, Compare compare, String ... conditions) {
         for(DataRow row:rows) {
-            DataSet<E> set = row.getSet(items);
+            DataSet<DataRow> set = row.getSet(items);
             if(null != conditions && conditions.length>0) {
                 set = set.getRows(compare, conditions);
             }
@@ -2048,7 +2048,7 @@ public class DataSet<E extends DataRow> implements Collection<E>, Serializable, 
 
     public DataSet<E> varp(String result, String items, int scale, int round, String field, Compare compare, String ... conditions) {
         for(DataRow row:rows) {
-            DataSet<E> set = row.getSet(items);
+            DataSet<DataRow> set = row.getSet(items);
             if(null != conditions && conditions.length>0) {
                 set = set.getRows(compare, conditions);
             }
@@ -2059,7 +2059,7 @@ public class DataSet<E extends DataRow> implements Collection<E>, Serializable, 
 
     public DataSet<E> varpa(String result, String items, int scale, int round, String field, Compare compare, String ... conditions) {
         for(DataRow row:rows) {
-            DataSet<E> set = row.getSet(items);
+            DataSet<DataRow> set = row.getSet(items);
             if(null != conditions && conditions.length>0) {
                 set = set.getRows(compare, conditions);
             }
@@ -2069,7 +2069,7 @@ public class DataSet<E extends DataRow> implements Collection<E>, Serializable, 
     }
     public DataSet<E> stdev(String result, String items, int scale, int round, String field, Compare compare, String ... conditions) {
         for(DataRow row:rows) {
-            DataSet<E> set = row.getSet(items);
+            DataSet<DataRow> set = row.getSet(items);
             if(null != conditions && conditions.length>0) {
                 set = set.getRows(compare, conditions);
             }
@@ -2080,7 +2080,7 @@ public class DataSet<E extends DataRow> implements Collection<E>, Serializable, 
 
     public DataSet<E> stdeva(String result, String items, int scale, int round, String field, Compare compare, String ... conditions) {
         for(DataRow row:rows) {
-            DataSet<E> set = row.getSet(items);
+            DataSet<DataRow> set = row.getSet(items);
             if(null != conditions && conditions.length>0) {
                 set = set.getRows(compare, conditions);
             }
@@ -2091,7 +2091,7 @@ public class DataSet<E extends DataRow> implements Collection<E>, Serializable, 
 
     public DataSet<E> stdevp(String result, String items, int scale, int round, String field, Compare compare, String ... conditions) {
         for(DataRow row:rows) {
-            DataSet<E> set = row.getSet(items);
+            DataSet<DataRow> set = row.getSet(items);
             if(null != conditions && conditions.length>0) {
                 set = set.getRows(compare, conditions);
             }
@@ -2102,7 +2102,7 @@ public class DataSet<E extends DataRow> implements Collection<E>, Serializable, 
 
     public DataSet<E> stdevpa(String result, String items, int scale, int round, String field, Compare compare, String ... conditions) {
         for(DataRow row:rows) {
-            DataSet<E> set = row.getSet(items);
+            DataSet<DataRow> set = row.getSet(items);
             if(null != conditions && conditions.length>0) {
                 set = set.getRows(compare, conditions);
             }
@@ -2113,7 +2113,7 @@ public class DataSet<E extends DataRow> implements Collection<E>, Serializable, 
 
     public DataSet<E> agg(Aggregation agg, String result, String items, int scale, int round, String field, Compare compare, String ... conditions) {
         for(DataRow row:rows) {
-            DataSet<E> set = row.getSet(items);
+            DataSet<DataRow> set = row.getSet(items);
             if(null != conditions && conditions.length>0) {
                 set = set.getRows(compare, conditions);
             }
@@ -2379,7 +2379,7 @@ public class DataSet<E extends DataRow> implements Collection<E>, Serializable, 
     public List<DataSet> getSets(String key) {
         List<DataSet> list = new ArrayList<DataSet>();
         for (DataRow row : rows) {
-            DataSet<E> set = row.getSet(key);
+            DataSet<DataRow> set = row.getSet(key);
             if (null != set) {
                 list.add(set);
             }
@@ -3474,10 +3474,10 @@ public class DataSet<E extends DataRow> implements Collection<E>, Serializable, 
                     }
                 }
                 //检测相互引用
-                DataSet<E>  parents = row.getAllParent(field);
+                DataSet<DataRow> parents = row.getAllParent(field);
 
                 int size = set.size();
-                for(E parent:parents) {
+                for(DataRow parent:parents) {
                     for(int i=0; i<size; i++) {
                         DataRow chk = set.getRow(i);
                         if(parent == chk) {
@@ -3730,13 +3730,13 @@ public class DataSet<E extends DataRow> implements Collection<E>, Serializable, 
      * @param append USER this.put("USER", user)
      * @return this
      */
-    public DataSet<E> foreign(DataSet<E> set, String foreignKey, String foreignText, String primaryKey, String primaryText, String append){
+    public DataSet<E> foreign(DataSet<DataRow> set, String foreignKey, String foreignText, String primaryKey, String primaryText, String append){
         for(DataRow row:rows){
             row.foreign(set, foreignKey, foreignText, primaryKey, primaryText, append);
         }
         return this;
     }
-    public DataSet<E> foreign(DataSet<E> set, String foreignKey, String foreignText, String primaryKey, String primaryText){
+    public DataSet<E> foreign(DataSet<DataRow> set, String foreignKey, String foreignText, String primaryKey, String primaryText){
         return foreign(set, foreignKey, foreignText, primaryKey, primaryText, null);
     }
 

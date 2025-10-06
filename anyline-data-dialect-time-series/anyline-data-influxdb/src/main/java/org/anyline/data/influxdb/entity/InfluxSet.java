@@ -16,9 +16,10 @@
 
 package org.anyline.data.influxdb.entity;
 
+import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 
-public class InfluxSet extends DataSet<DataRow> {
+public class InfluxSet<E extends DataRow> extends DataSet<E> {
     private String measurement;
     private String time;
     private String time_format;

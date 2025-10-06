@@ -21,7 +21,9 @@ import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.adapter.init.AbstractDriverAdapter;
 import org.anyline.data.dify.datasource.DifyClient;
+import org.anyline.data.dify.entity.Document;
 import org.anyline.data.dify.run.DifyRun;
+import org.anyline.data.param.Config;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.Highlight;
 import org.anyline.data.param.init.DefaultConfigStore;
@@ -44,8 +46,6 @@ import org.anyline.net.HttpResponse;
 import org.anyline.proxy.CacheProxy;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.util.*;
-
-import javax.xml.ws.Response;
 import java.util.*;
 
 @AnylineComponent("anyline.data.jdbc.adapter.Dify")
@@ -278,7 +278,6 @@ public class DifyAdapter extends AbstractDriverAdapter implements DriverAdapter 
     protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, Boolean placeholder, Boolean unicode, List<String> columns) {
         DifyRun run = new DifyRun(runtime, dest);
         run.action(ACTION.DML.INSERT);
-        run.setMethod("POST");
         String endpoint = null;
         String index_name = null;
         if(null != dest) {
@@ -289,37 +288,13 @@ public class DifyAdapter extends AbstractDriverAdapter implements DriverAdapter 
         }else{
             endpoint = "*/_bulk";
         }
-        run.setEndpoint(endpoint);
-        StringBuilder builder = run.getBuilder();
+        List<Document> docs = new ArrayList<>();
         for(Object item:list) {
-            String item_index_name = null;
-            Object pv = null;
-            if(item instanceof DataRow) {
-                DataRow row = (DataRow)item;
-                item_index_name = row.getTableName();
-                pv = row.getPrimaryValue();
-            }else{
-                item_index_name = EntityAdapterProxy.table(item.getClass(), true);
-                pv = EntityAdapterProxy.primaryValue(item, true);
+            if(item instanceof Document){
+                docs.add((Document) item);
             }
-            if(BasicUtil.isEmpty(item_index_name)) {
-                item_index_name = index_name;
-            }
-            Map<String, Object> head = new HashMap<>();
-            Map<String, Object> head_property = new HashMap<>();
-            //{"index":{"_index":"index_user", "_id":"10011"}}
-            head.put("index", head_property);
-            if(BasicUtil.isNotEmpty(item_index_name)) {
-                head_property.put("_index", item_index_name);
-            }
-            if(BasicUtil.isNotEmpty(pv)) {
-                head_property.put("_id", pv);
-            }
-            Map<String, Object> map = BeanUtil.object2map(item);
-            map.remove("_id");
-            builder.append(BeanUtil.map2json(head)).append("\n");
-            builder.append(BeanUtil.map2json(map)).append("\n");
         }
+        run.setDocuments(docs);
 
         return run;
     }
@@ -682,99 +657,18 @@ public class DifyAdapter extends AbstractDriverAdapter implements DriverAdapter 
     @Override
     public Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs,  Boolean placeholder, Boolean unicode, String ... conditions) {
         DifyRun run = new DifyRun(runtime, prepare.getTableName());
-        run.setMethod("POST");
-        String endpoint = null;
-        String index_name = prepare.getTableName();
-        if(BasicUtil.isNotEmpty(index_name)) {
-            endpoint = "/" + index_name + "/_search";
-        }else{
-            endpoint = "/*/_search";
-        }
-        run.setEndpoint(endpoint);
-        run.setPrepare(prepare);
-        run.setConfigStore(configs);
-        run.addCondition(conditions);
-
         PageNavi navi = configs.getPageNavi();
-        String sql = null;
-        List<Object> sql_params = new ArrayList<>();
-        if(configs instanceof DifyConfigStore){
-            //如果指定了body
-            DifyRequestBody rb = null;
-            DifyConfigStore esc = (DifyConfigStore)configs;
-            rb = esc.getRequestBody();
-            if(null != rb) {
-                run.getBuilder().append(rb.getJson());
-                return run;
-            }
-            //如果指定了SQL
-            sql = esc.sql();
-            RunPrepare rp = esc.prepare();
-            //如果指定了RunPrepare
-            if(BasicUtil.isEmpty(sql) && null != rp){
-                Run sql_run = super.buildQueryRun(runtime, rp, new DefaultConfigStore(), placeholder, unicode);
-                sql = sql_run.getFinalQuery(true);
-                List<RunValue> sql_run_values = sql_run.getRunValues();
-                for(RunValue rv:sql_run_values){
-                    sql_params.add(rv.getValue());
+        run.setTable(prepare.getTable());
+        run.setNavi(navi);
+        Config config = configs.getConfig("keyword");
+        if(null != config){
+            List<Object> values = config.getValues();
+            if(null != values && !values.isEmpty()){
+                Object value = values.get(0);
+                if(null != value){
+                    run.setKeyword(value.toString());
                 }
             }
-        }
-        if(prepare instanceof TextPrepare){
-            //service.querys("select * from ... ");
-            Run tr = super.buildQueryRun(runtime, prepare, configs, placeholder, unicode, conditions);
-            sql = tr.getFinalQuery(true);
-            List<RunValue> sql_run_values = tr.getRunValues();
-            for(RunValue rv:sql_run_values){
-                sql_params.add(rv.getValue());
-            }
-        }
-        if(BasicUtil.isNotEmpty(sql)){
-            if(null != navi){
-                //如果设置了分页，先转成DSL 因为SQL不支持OFFSET + LIMIT
-                //不单独计算总行数,查询结果中有
-                //navi.autoCount(false);
-                try {
-                    String dsl = ((DifyActuator) actuator).dsl(this, runtime, null, sql);
-                    DataRow json = OriginRow.parseJson(dsl);
-                    json.put("from", navi.getFirstRow());
-                    json.put("size", navi.getPageRows());
-                    OrderStore orderStore = configs.getOrders();
-                    if(null!= orderStore) {
-                        LinkedHashMap<String, Order> orders = orderStore.gets();
-                        if(null != orders && !orders.isEmpty()) {
-                            DataSet<DataRow> sorts = new DataSet();
-                            json.put("sort", sorts);
-                            for(Order order:orders.values()) {
-                                DataRow sort = new OriginRow();
-                                sort.put(order.getColumn()).put("order", order.getType().getCode().toLowerCase());
-                                sorts.add(sort);
-                            }
-                        }
-                    }
-                    navi.autoCount(false);
-                    run.getBuilder().append(json.json());
-                    return run;
-                }catch (Exception e){
-                    log.error("SQL转DSL失败", e);
-                }
-            }
-            endpoint = "/_sql?format=json";
-            run.setEndpoint(endpoint);
-            DataRow body = new OriginRow();
-            body.put("query", sql);
-            if(!sql_params.isEmpty()){
-                body.put("params", sql_params);
-            }
-            run.getBuilder().append(body.getJson());
-            return run;
-        }
-
-        if(run.checkValid()) {
-            //为变量赋值
-            run.init();
-            //构造最终的查询
-            fillQueryContent(runtime, run, placeholder, unicode);
         }
         return run;
     }
@@ -812,217 +706,8 @@ public class DifyAdapter extends AbstractDriverAdapter implements DriverAdapter 
 
     @Override
     protected Run fillQueryContent(DataRuntime runtime, TableRun run,  Boolean placeholder, Boolean unicode) {
-        DifyRun r = (DifyRun)run;
-        ConditionChain chain = r.getConditionChain();
-
-        ConfigStore configs = run.getConfigs();
-        DifyRequestBody request = new DifyRequestBody();
-        DataRow body = new OriginRow();
-        if(null != configs) {
-            configs.autoCount(false); //不需要单独计算总行数
-            PageNavi navi = configs.getPageNavi();
-            if(null != navi) {
-                body.put("from", navi.getFirstRow());
-                body.put("size", navi.getPageRows());
-            }
-            List<String> columns = configs.columns();
-            if(null != columns && !columns.isEmpty()) {
-                body.put("_source", columns);
-            }
-            //去重 如果没有设置collapse取分组第1列
-            String collapse = null;
-            if(configs instanceof DifyConfigStore){
-                DifyConfigStore ecf = ((DifyConfigStore)configs);
-                collapse = ecf.collapse();
-
-                //trackTotalHits
-                Boolean trackTotalHits = ecf.trackTotalHits();
-                if(null != trackTotalHits){
-                    body.put("track_total_hits", trackTotalHits);
-                }
-                List<Object> afters = ecf.afters();
-                if(null != afters && !afters.isEmpty()){
-                    body.put("search_after", afters);
-                }
-            }
-            if(BasicUtil.isEmpty(collapse)){
-                GroupStore gs = configs.getGroups();
-                if(null != gs){
-                    LinkedHashMap<String,Group> groups = gs.gets();
-                    if(null != groups && ! groups.isEmpty()){
-                        if(groups.size() == 1) {
-                            collapse = groups.values().iterator().next().getColumn();
-                        }else{
-                            //根据多列分组的 先把多列合并
-                        }
-                    }
-                }
-            }
-            if(BasicUtil.isNotEmpty(collapse)){
-                body.put("collapse").put("field", collapse);
-            }
-            Highlight highlight = configs.getHighlight();
-            if(null != highlight) {
-                LinkedHashMap<String, Highlight> fields = highlight.getFields();
-                LinkedHashMap<String, Map> fields_map = new LinkedHashMap<>();
-                Map map = BeanUtil.object2map(highlight);
-                BeanUtil.clearEmpty(map, true);
-                for(String field:fields.keySet()) {
-                    //field有空的情况也需要保留
-                    Highlight field_highlight = fields.get(field);
-                    Map field_map = BeanUtil.object2map(field_highlight);
-                    BeanUtil.clearEmpty(field_map, true);
-                    fields_map.put(field,field_map);
-                }
-                if(!fields_map.isEmpty()) {
-                    map.put("fields",fields_map);
-                }
-                body.put("highlight", map);
-            }
-        }
-
-        DataRow query = new OriginRow();
-        query = parseCondition(query, chain);
-        if(!query.isEmpty()) {
-            body.put("query", query);
-        }
-        OrderStore orderStore = configs.getOrders();
-        if(null!= orderStore) {
-            LinkedHashMap<String, Order> orders = orderStore.gets();
-            if(null != orders && !orders.isEmpty()) {
-                DataSet<DataRow> sorts = new DataSet();
-                body.put("sort", sorts);
-                for(Order order:orders.values()) {
-                    DataRow sort = new OriginRow();
-                    sort.put(order.getColumn()).put("order", order.getType().getCode().toLowerCase());
-                    sorts.add(sort);
-                }
-            }
-        }
-        if(!body.isEmpty()) {
-            request.setJson(body.json());
-            r.getBuilder().append(body.json());
-        }
-
-        return r;
+        return run;
     }
-    private DataRow parseCondition(DataRow base, Condition condition) {
-        DataRow row = null;
-        if(condition instanceof ConditionChain) {
-            ConditionChain chain = (ConditionChain)condition;
-            List<Condition> conditions = chain.getConditions();
-            if(null != conditions && !conditions.isEmpty()) {
-                if(conditions.size() ==1) {//只有一个条件
-                    row = parseCondition(base, conditions.get(0));
-                }else {
-                    row = base;
-                    DataRow bool = new OriginRow();
-                    DataSet<DataRow> set = null;
-                    Condition.JOIN join = chain.getJoin();
-                    String joinCode = null;
-                    if(null == join || Condition.JOIN.AND == join) { //默认就是AND
-                        Condition second = conditions.get(1);
-                        join = second.getJoin();
-                    }
-                    if (Condition.JOIN.OR == join) {
-                        joinCode ="should";
-                    } else if(Condition.JOIN.AND == join) {
-                        joinCode = "must";
-                    }else if (Condition.JOIN.FILTER == join){
-                        joinCode = "filter";
-                    }
-                    set = new DataSet();
-                    for (Condition item : conditions) {
-                        DataRow con = parseCondition(new OriginRow(), item);
-                        if(null != con && !con.isEmpty()) {
-                            set.add(con);
-                        }
-                    }
-                    if(!set.isEmpty()){
-                        bool.put(joinCode, set);
-                    }
-                    if(!bool.isEmpty()){
-                        base.put("bool", bool);
-                    }
-                }
-            }
-        }else{
-            if(condition instanceof AutoCondition) {
-                AutoCondition auto = (AutoCondition)condition;
-                //List<RunValue> values = condition.getRunValues();
-                List<Object> values = auto.getValues();
-                String column = condition.getId();
-                row = filter(auto.getCompare(), column, values);
-            }
-        }
-        if(null == row){
-            row = new OriginRow();
-        }
-        return row;
-    }
-    private DataRow filter(Compare compare, String column, List<Object> values) {
-        DataRow row = new OriginRow();
-        if(null != values && !values.isEmpty()) {
-            Object value = null;
-            if (compare.valueCount() > 1) {
-                List<Object> list = new ArrayList<>();
-                list.addAll(values);
-                value = list;
-            } else {
-                value = values.get(0);
-            }
-            int cc = compare.getCode();
-            if(cc == 10) {                                            //  EQUAL
-                row.put("term").put(column, value);
-            }else if(cc == 99) {                                    //  Compare.REGEX
-                row.put("regexp").put(column, value);
-            }else if(cc == 50) {                                     //  LIKE
-                row.put("wildcard").put(column, "*"+value+"*");
-            }else if(cc == 51) {                                     //  START_WITH
-                row.put("wildcard").put(column, value+"*");
-            }else if(cc == 52) {                                     //  END_WITH
-                row.put("wildcard").put(column, "*"+value);
-            }else if(cc == 55) {                                     //  MATCH
-                if(column.contains(",")) {
-                    String[] cols = column.split(",");
-                    row.put("multi_match")
-                        .set("query", value)
-                        .set("fields", cols);
-                }else{
-                    row.put("match").put(column, value);
-                }
-            }else if(cc == 56) {                                     //  MATCH_PHRASE
-                row.put("match_phrase").put(column, value);
-            }else if(cc == 57) {                                     //  MATCH_PHRASE_PREFIX
-                row.put("match_phrase_prefix").put(column, value);
-            }else if(cc == 20) {                                     //  GREAT
-                row.put("range").put(column).set("gt", value);
-            }else if(cc == 21) {                                     //  GREAT_EQUAL
-                row.put("range").put(column).set("gte", value);
-            }else if(cc == 30) {                                     //  LESS
-                row.put("range").put(column).set("lt", value);
-            }else if(cc == 31) {                                     //  LESS_EQUAL
-                row.put("range").put(column).set("lte", value);
-            }else if(cc == 40) {                                     //  IN
-                row.put("terms").put(column, value);
-            }else if(cc == 80) {                                     //  BETWEEN
-                if(values.size() > 1) {
-                    row.put("range").put(column)
-                        .set("gte", values.get(0))
-                        .set("lte",values.get(1));
-                }
-            }else if(cc == 110) {                                    //  NOT EQUAL
-            }else if(cc == 140) {                                    //  NOT IN
-            }else if(cc == 150) {                                    //  NOT LIKE
-            }else if(cc == 151) {                                    //  NOT START_WITH
-            }else if(cc == 152) {                                    //  NOT END_WITH
-            }else if(cc == 199) {                                    //  NOT REGEX
-            }
-
-        }
-        return row;
-    }
-
     /**
      * select[命令合成-子流程] <br/>
      * 合成最终 select 命令 包含分页 排序
@@ -1436,29 +1121,39 @@ public class DifyAdapter extends AbstractDriverAdapter implements DriverAdapter 
         DifyRun run = new DifyRun(runtime, dest);
         run.setTable(dest);
         run.action(ACTION.DML.DELETE);
+        List<Document> docs = new ArrayList<>();
         if(obj instanceof Collection) {
             Collection list = (Collection) obj;
-            run.setMethod("POST");
-            run.setEndpoint(dest.getName() + "/_bulk");
             StringBuilder builder = run.getBuilder();
             for(Object item:list) {
+                if(item instanceof Document){
+                    docs.add((Document) item);
+                    continue;
+                }
+                Document doc = new Document();
                 Object pv = null;
                 if(obj instanceof DataRow) {
                     pv = ((DataRow)obj).getPrimaryValue();
                 }else{
                     pv = EntityAdapterProxy.primaryValue(item, true);
                 }
-                builder.append("{\"delete\":{\"_id\":\"").append(pv).append("\"}}\n");
+                if(null != pv) {
+                    doc.setId(pv.toString());
+                    docs.add(doc);
+                }
             }
         }else{
-            run.setMethod("DELETE");
             Object pv = null;
             if(obj instanceof DataRow) {
                 pv = ((DataRow)obj).getPrimaryValue();
             }else{
                 pv = EntityAdapterProxy.primaryValue(obj, true);
             }
-            run.setEndpoint(dest.getName() + "/_doc/" + pv);
+            Document doc = new Document();
+            if(null != pv) {
+                doc.setId(pv.toString());
+                docs.add(doc);
+            }
         }
         runs.add(run);
         return runs;
@@ -2160,11 +1855,6 @@ public class DifyAdapter extends AbstractDriverAdapter implements DriverAdapter 
     @Override
     public List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Table query, int types, ConfigStore configs) throws Exception {
         List<Run> runs = new ArrayList<>();
-        DifyRun run = new DifyRun(runtime);
-        run.action(ACTION.DML.SELECT);
-        run.setMethod("GET");
-        run.setEndpoint("_cat/indices");
-        runs.add(run);
         return runs;
     }
 
@@ -2332,10 +2022,6 @@ public class DifyAdapter extends AbstractDriverAdapter implements DriverAdapter 
      */
     @Override
     public <T extends Table> T init(DataRuntime runtime, int index, T meta, Table query, DataRow row) {
-        if(null == meta) {
-            meta = (T) new DifyIndex();
-        }
-        meta.setName(row.getString("2"));
         return meta;
     }
 
@@ -2751,32 +2437,7 @@ public class DifyAdapter extends AbstractDriverAdapter implements DriverAdapter 
     public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Table table, Column query, boolean primary, ConfigStore configs) {
         LinkedHashMap<String, T> columns = new LinkedHashMap<>();
         DifyClient client = client(runtime);
-        String method = "GET";
-        String endpoint = table.getName();
-        Request request = new Request(
-                method,
-                endpoint);
-        HttpResponse response = exe(runtime, request);
-        if(response.getStatus() == 200 ||  response.getStatus() == 201) {
-            String txt =response.getText();
-            DataRow row = DataRow.parseJson(KeyAdapter.KEY_CASE.SRC, txt);
-            DataRow fields = (DataRow)row.recursion(table.getName(),"mappings","properties");
-            if(null != fields) {
-                List<String> keys = fields.keys();
-                for(String key:keys) {
-                    DataRow ps = fields.getRow(key);
-                    if(null != ps) {
-                        T column = (T)new Column(key);
-                        column.setType(ps.getString("type"));
-                        column.setStore(ps.getBoolean("store", null));
-                        column.setAnalyzer(ps.getString("analyzer"));
-                        column.setSearchAnalyzer(ps.getString("search_analyzer"));
-                        columns.put(key.toUpperCase(), column);
-                    }
-
-                }
-            }
-        }
+        //
         return columns;
     }
 
@@ -3986,17 +3647,7 @@ public class DifyAdapter extends AbstractDriverAdapter implements DriverAdapter 
         DifyRun run = new DifyRun(runtime, meta);
         run.setTable(meta);
         run.action(ACTION.DDL.TABLE_CREATE);
-        run.setMethod("PUT");
-        run.setEndpoint("/"+meta.getName());
-        run.setTable(meta);
         runs.add(run);
-        LinkedHashMap<String, Column> columns = meta.getColumns();
-        for(Column column:columns.values()) {
-            typeMetadata(runtime, column);
-        }
-        LinkedHashMap<String, Object> map = DifyBuilder.build(meta);
-        String json = BeanUtil.map2json(map);
-        run.getBuilder().append(json);
         return runs;
     }
 
@@ -4057,8 +3708,6 @@ public class DifyAdapter extends AbstractDriverAdapter implements DriverAdapter 
         DifyRun run = new DifyRun(runtime, meta);
         run.setTable(meta);
         run.action(ACTION.DDL.TABLE_DROP);
-        run.setMethod("DELETE");
-        run.setEndpoint("/"+meta.getName());
         runs.add(run);
         return runs;
     }
@@ -6277,13 +5926,6 @@ public class DifyAdapter extends AbstractDriverAdapter implements DriverAdapter 
 
     /**
      *
-     PUT index_user/_bulk<br/>
-     {"index":{"_index":"index_user","_id":"10011"}}<br/>
-     {"id":1001, "name":"a b","age":20}<br/>
-     {"index":{"_index":"index_user","_id":"10012"}}<br/>
-     {"id":1002, "name":"b c","age":20}<br/>
-     {"index":{"_index":"index_user","_id":"10013"}}<br/>
-     {"id":1003, "name":"c d","age":30}
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param table 表(索引)
      * @param list list
@@ -6291,40 +5933,10 @@ public class DifyAdapter extends AbstractDriverAdapter implements DriverAdapter 
      */
     public boolean inserts(DataRuntime runtime, String table, Collection list) {
         boolean result = false;
-        String pk = "_id";
-        String method = "PUT";
-        String endpoint = table+"/_bulk";
-        String body = null;
-        StringBuilder builder = new StringBuilder();
-        for(Object entity:list) {
-            Object _id = BeanUtil.getFieldValue(entity, pk, true);
-            if (null == _id) {
-                pk = "id";
-                _id = BeanUtil.getFieldValue(entity, pk, true);
-            }
-            builder.append("{\"index\":{\"_index\":\"").append(table).append("\", \"_id\":\"").append(_id).append("\"}}\n");
-            builder.append(BeanUtil.object2json(entity)).append("\n");
-        }
-        Request request = new Request(
-                method,
-                endpoint);
-        body = BeanUtil.object2json(builder.toString());
-        request.setJsonEntity(body);
-        HttpResponse response = exe(runtime, request);
-        if(response.getStatus() == 200 ||  response.getStatus() == 201) {
-            result = true;
-        }
         return result;
     }
 
     /**
-     *PUT index_user/_bulk<br/>
-     * {"index":{"_index":"index_user","_id":"10011"}}<br/>
-     * {"id":1001, "name":"a b","age":20}<br/>
-     * {"index":{"_index":"index_user","_id":"10012"}}<br/>
-     * {"id":1002, "name":"b c","age":20}<br/>
-     * {"index":{"_index":"index_user","_id":"10013"}}<br/>
-     * {"id":1003, "name":"c d","age":30}<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param table 表(索引)
      * @param set 数据集合
@@ -6332,200 +5944,10 @@ public class DifyAdapter extends AbstractDriverAdapter implements DriverAdapter 
      */
     public boolean insert(DataRuntime runtime, String table, DataSet<DataRow> set) {
         boolean result = false;
-        String method = "PUT";
-        String endpoint = "*/_bulk";
-        String body = null;
-        StringBuilder builder = new StringBuilder();
-        for(DataRow row:set) {
-            String pk = "_id";
-            Object _id = BeanUtil.getFieldValue(row, pk, true);
-            if (null == _id) {
-                pk = "id";
-                _id = BeanUtil.getFieldValue(row, pk, true);
-            }
-            row.remove("_id");
-            builder.append("{\"index\":{\"_index\":\"").append(table).append("\", \"_id\":\"").append(_id).append("\"}}\n");
-            builder.append(row.toJSON()).append("\n");
-        }
-        Request request = new Request(
-                method,
-                endpoint);
-        body = builder.toString();
-        request.setJsonEntity(body);
-        HttpResponse response = exe(runtime, request);
         return result;
     }
     public boolean insert(DataRuntime runtime, String table, DataRow entity) {
         boolean result = false;
-        String pk = "_id";
-        String method = "POST";
-        String endpoint = null;
-        String body = null;
-        //一般需要设置用于索引的主键 如法规id = l100 问答id = q100
-        Object _id = BeanUtil.getFieldValue(entity, pk, true);
-        if (null == _id) {
-            pk = "id";
-            _id = BeanUtil.getFieldValue(entity, pk, true);
-        }
-        endpoint = table + "/_doc/";
-        if (BasicUtil.isNotEmpty(_id)) {
-            method = "PUT";
-            endpoint += _id;
-        }
-        entity.remove("_id");
-        Request request = new Request(
-                method,
-                endpoint);
-        body = BeanUtil.object2json(entity);
-        request.setJsonEntity(body);
-        HttpResponse response = exe(runtime, request);
-        if(BasicUtil.isEmpty(_id)) {
-            DataRow row = DataRow.parse(response.getText());
-            _id = row.getString(pk);
-            if(BasicUtil.isNotEmpty(_id)) {
-                BeanUtil.setFieldValue(entity, pk, _id);
-            }
-        }
         return result;
-    }
-    private HttpResponse exe(DataRuntime runtime, Request request) {
-        HttpResponse result = new HttpResponse();
-        DifyClient client = client(runtime);
-        try {
-            Response response = client.performRequest(request);
-            int status = response.getStatusLine().getStatusCode();
-            result.setStatus(status);
-            //{"_index":"index_user","_id":"102","_version":3,"result":"updated","_shards":{"total":2,"successful":2,"failed":0},"_seq_no":9,"_primary_term":1}
-            String content = FileUtil.read(response.getEntity().getContent()).toString();
-            result.setText(content);
-            log.info("[status:{}]", status);
-        }catch (Exception e) {
-            log.error("执行异常:", e);
-        }
-        return result;
-    }
-    public DataRow get(DataRuntime runtime, String table, String id) {
-        DataRow result = null;
-        String method = "GET";
-        String endpoint = "/"+table+"/_doc/"+id;
-        Request request = new Request(
-                method,
-                endpoint);
-        HttpResponse response = exe(runtime, request);
-        if(response.getStatus() == 200) {
-            String txt = response.getText();
-            DataRow row = DataRow.parseJson(txt);
-            result = row.getRow("_source");
-        }
-        return result;
-    }
-    public DataSet<DataRow> search(DataRuntime runtime, String table, DataRow body, PageNavi page) {
-        DataSet<DataRow> set = null;
-        if(null != page) {
-            body.put("from", page.getFirstRow());
-            body.put("size", page.getPageRows());
-        }
-        String method = "POST";
-        String endpoint = table+"/_search";
-        Request request = new Request(
-                method,
-                endpoint);
-        String json = body.toLowerKey(true).toJSON();
-        log.warn("[search][body:{}]", body);
-        request.setJsonEntity(json);
-        HttpResponse response = exe(runtime, request);
-        if(response.getStatus() == 200) {
-            String txt = response.getText();
-            DataRow row = DataRow.parseJson(txt);
-            Object total = row.recursion("hits","total","value");
-            if(null == page) {
-                page = new DefaultPageNavi();
-            }
-            page.setTotalRow(BasicUtil.parseInt(total,0));
-            set = new DataSet();
-            set.setNavi(page);
-            DataSet<DataRow> hits = row.getRow("hits").getSet("hits");
-            for(DataRow hit:hits) {
-                DataRow item = hit.getRow("_source");
-                item.put("_id", hit.get("_id"));
-                DataRow highlight = hit.getRow("highlight");
-                if(null != highlight) {
-                    for(String key:highlight.keySet()) {
-                        List vals = highlight.getList(key);
-                        if(null != vals && !vals.isEmpty()) {
-                            item.put(key, vals.get(0));
-                        }
-                    }
-                }
-                set.add(item);
-            }
-
-        }
-        return set;
-    }
-    
-
-    public DataSet<DataRow> select(DataRuntime runtime, String random, boolean system, Table table, ConfigStore configs, DifyRun run) {
-        if(null == configs) {
-            configs = new DefaultConfigStore();
-        }
-        configs.add(run);
-        if(null == random) {
-            random = random(runtime);
-        }
-        if(log.isInfoEnabled() &&ConfigStore.IS_LOG_SQL(configs)) {
-            String body = run.getFinalQuery();
-            log.info("{}[action:select][method:{}][endpoint:{}][body:{}]", random, run.getMethod(), run.getEndpoint(), body);
-        }
-        DataSet<DataRow> set = new DataSet();
-        set.setTable(table);
-        boolean exe = configs.execute();
-        if(!exe) {
-            return set;
-        }
-        LinkedHashMap<String,Column> columns = new LinkedHashMap<>();
-        if(!system &&ConfigStore.IS_AUTO_CHECK_METADATA(configs) && null != table) {
-            columns = columns(runtime, random, false, table, false);
-        }
-        try{
-            set = actuator.select(this, runtime, random, system, ACTION.DML.SELECT, table, configs, run, null, null, columns);
-
-            LinkedHashMap<String,Column> metadatas = set.getMetadatas();
-            if(!system && (null == metadatas || metadatas.isEmpty())&&ConfigStore.IS_CHECK_EMPTY_SET_METADATA(configs)) {
-
-            }
-            boolean slow = false;
-            long SLOW_SQL_MILLIS = ConfigStore.SLOW_SQL_MILLIS(configs);
-            long times = configs.getLastExecuteTime();
-            if(SLOW_SQL_MILLIS > 0 && ConfigStore.IS_LOG_SLOW_SQL(configs) && times > SLOW_SQL_MILLIS) {
-                slow = true;
-                log.warn("{}[{}][action:select][执行耗时:{}]{}", random, LogUtil.format("slow cmd", 33), DateUtil.format(times), run.log(ACTION.DML.SELECT, ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
-                if(null != dmListener) {
-                    dmListener.slow(runtime, random, ACTION.DML.SELECT, run, null, null, null, true, set,times);
-                }
-
-            }
-            if(!slow && log.isInfoEnabled() && ConfigStore.IS_LOG_SQL_TIME(configs)) {
-                log.info("{}[action:select][执行耗时:{}]", random, DateUtil.format(times));
-                log.info("{}[action:select][封装耗时:{}][封装行数:{}]", random, DateUtil.format(configs.getLastPackageTime()), set.size());
-            }
-            if((!system || !ConfigStore.IS_LOG_QUERY_RESULT_EXCLUDE_METADATA(configs)) && ConfigStore.IS_LOG_QUERY_RESULT(configs) && log.isInfoEnabled()) {
-                log.info("{}[查询结果]{}", random, LogUtil.table(set));
-            }
-            set.setDatalink(runtime.datasource());
-        }catch(Exception e) {
-            if(ConfigStore.IS_PRINT_EXCEPTION_STACK_TRACE(configs)) {
-                e.printStackTrace();
-            }
-            if(ConfigStore.IS_LOG_SQL_WHEN_ERROR(configs)) {
-                log.error("{}[{}][action:select]{}", random, LogUtil.format("查询异常:", 33) + e, run.log(ACTION.DML.SELECT, ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
-            }
-            if(ConfigStore.IS_THROW_SQL_QUERY_EXCEPTION(configs)) {
-                CommandQueryException ex = new CommandQueryException("query异常:" + e,e);
-                throw ex;
-            }
-
-        }
-        return set;
     }
 }
