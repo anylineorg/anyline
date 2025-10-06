@@ -29,10 +29,7 @@ import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.OriginRow;
 import org.anyline.entity.PageNavi;
-import org.anyline.metadata.ACTION;
-import org.anyline.metadata.Column;
-import org.anyline.metadata.Metadata;
-import org.anyline.metadata.Table;
+import org.anyline.metadata.*;
 import org.anyline.net.HttpResponse;
 import org.anyline.net.HttpUtil;
 import org.anyline.util.BeanUtil;
@@ -295,6 +292,52 @@ public class DifyActuator implements DriverActuator {
         List<Document> documents = new ArrayList<>();
         documents.add(document);
         return setMetadata(runtime, table, documents);
+    }
+
+    /**
+     * table[结果集封装]<br/>
+     * 根据驱动内置方法补充
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param create 上一步没有查到的,这一步是否需要新创建
+     * @param previous 上一步查询结果
+     * @param query 查询条件 根据metadata属性
+     * @param types 查询的类型 参考 Table.TYPE 多个类型相加算出总和
+     * @return tables
+     * @throws Exception 异常
+     */
+    @Override
+    public <T extends Table> List<T> tables(DriverAdapter adapter, DataRuntime runtime, boolean create, List<T> previous, Table query, int types) throws Exception {
+        if(null == previous){
+            previous = new ArrayList<>();
+        }
+        Map<String, Object> params = new HashMap<>();
+        if(null != query){
+            params.put("keyword", query.getName());
+        }
+        String url = "/datasets";
+        DataRow row = get((DifyRuntime) runtime, url, params);
+        DataSet<DataRow> set = row.getSet("data");
+        if(null != set){
+            for(DataRow item:set){
+                Table table = new Table();
+                String name = item.getString("name");
+                table.setName(name);
+                table.setId(item.getString("id"));
+                table.setProvider(item.getString("PROVIDER"));
+                table.setEmbedding(new Embedding(item.getString("EMBEDDING_MODEL"), item.getString("EMBEDDING_MODEL_PROVIDER")));
+                DataSet<DataRow>  metas = item.getSet("DOC_METADATA");
+                for(DataRow meta:metas){
+                    org.anyline.data.dify.entity.Metadata metadata = new org.anyline.data.dify.entity.Metadata();
+                    metadata.setType(meta.getString("TYPE"));
+                    metadata.setName(meta.getString("NAME"));
+                    metadata.setId(meta.getString("ID"));
+                    table.addColumn(metadata);
+                }
+                previous.add((T)table);
+
+            }
+        }
+        return previous;
     }
     public DataRow post(DifyRuntime runtime, String url, Map<String, Object> params) throws Exception{
         url = HttpUtil.mergePath(runtime.client().getHost(), url);

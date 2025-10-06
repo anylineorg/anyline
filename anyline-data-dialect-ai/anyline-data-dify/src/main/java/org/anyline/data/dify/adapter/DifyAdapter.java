@@ -1932,7 +1932,7 @@ public class DifyAdapter extends AbstractDriverAdapter implements DriverAdapter 
      */
     @Override
     public <T extends Table> List<T> tables(DataRuntime runtime, boolean create, List<T> previous, Table query, int types) throws Exception {
-        return super.tables(runtime, create, previous, query, types);
+        return actuator.tables(this, runtime, create, previous, query, types);
     }
 
     /**
