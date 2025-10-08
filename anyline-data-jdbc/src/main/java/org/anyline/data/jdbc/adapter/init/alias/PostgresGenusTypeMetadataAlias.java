@@ -182,7 +182,6 @@ public enum PostgresGenusTypeMetadataAlias implements TypeMetadataAlias {
 	MACADDR8                      ("MACADDR8"                       ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1,  -1,  -1,  -1),
 	MAP                           ("MAP"                            ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1,  -1,  -1,  -1),
 	MATCH_ONLY_TEXT               ("match_only_text"                ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1,  -1,  -1,  -1),
-	MATCH_ONLY_TEXT               ("match_only_text "               ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1,  -1,  -1,  -1),
 	MEDIUMBLOB                    ("MEDIUMBLOB"                     ,StandardTypeMetadata.BYTEA                         ,   1,   1,   1,  -1,  -1,  -1),
 	MEDIUMINT                     ("MEDIUMINT"                      ,StandardTypeMetadata.INT16                         ,   1,   1,   1,  -1,  -1,  -1),
 	MEDIUMTEXT                    ("MEDIUMTEXT"                     ,StandardTypeMetadata.TEXT                          ,   1,   1,   1,  -1,  -1,  -1),

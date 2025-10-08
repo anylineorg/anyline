@@ -168,7 +168,6 @@ public enum ElasticSearchTypeMetadataAlias implements TypeMetadataAlias {
 	MACADDR                       ("MACADDR"                        ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1,  -1,  -1,  -1),
 	MACADDR8                      ("MACADDR8"                       ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1,  -1,  -1,  -1),
 	MAP                           ("MAP"                            ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1,  -1,  -1,  -1),
-	MATCH_ONLY_TEXT               ("match_only_text "               ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1,  -1,  -1,  -1),
 	MEDIUMBLOB                    ("MEDIUMBLOB"                     ,StandardTypeMetadata.BINARY                        , "binary"        , "binary"        , null   , null   , null   ,   0,   1,   1,  -1,  -1,  -1),
 	MEDIUMINT                     ("MEDIUMINT"                      ,StandardTypeMetadata.DOUBLE                        , "double"        , "double"        , null   , null   , null   ,   1,   0,   0,  -1,  -1,  -1),
 	MEDIUMTEXT                    ("MEDIUMTEXT"                     ,StandardTypeMetadata.TEXT                          , "text"          , "text"          , null   , null   , null   ,   1,   1,   1,  -1,  -1,  -1),

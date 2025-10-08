@@ -154,7 +154,6 @@ public enum DifyTypeMetadataAlias implements TypeMetadataAlias {
 	MACADDR                       ("MACADDR"                        ,StandardTypeMetadata.NONE     ,   1,   1,   1,  -1,  -1,  -1),
 	MACADDR8                      ("MACADDR8"                       ,StandardTypeMetadata.NONE     ,   1,   1,   1,  -1,  -1,  -1),
 	MAP                           ("MAP"                            ,StandardTypeMetadata.NONE     ,   1,   1,   1,  -1,  -1,  -1),
-	MATCH_ONLY_TEXT               ("match_only_text "               ,StandardTypeMetadata.NONE     ,   1,   1,   1,  -1,  -1,  -1),
 	MEDIUMBLOB                    ("MEDIUMBLOB"                     ,StandardTypeMetadata.NONE     ,   1,   1,   1,  -1,  -1,  -1),
 	MEDIUMINT                     ("MEDIUMINT"                      ,StandardTypeMetadata.NUMBER   , "number" , "number" , null   , null   , null   ,   1,   1,   1,  -1,  -1,  -1),
 	MEDIUMTEXT                    ("MEDIUMTEXT"                     ,StandardTypeMetadata.STRING   , "string" , "string" , null   , null   , null   ,   1,   1,   1,  -1,  -1,  -1),

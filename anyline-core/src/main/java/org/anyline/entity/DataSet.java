@@ -5178,7 +5178,10 @@ public class DataSet<E extends DataRow> implements Collection<E>, Serializable, 
                         TypeMetadata.CATEGORY_GROUP type = null;
                         Column column = DataSet.this.getMetadata(key);
                         if(null != column) {
-                            type = column.getTypeMetadata().getCategoryGroup();
+                            TypeMetadata tm = column.getTypeMetadata();
+                            if(null != tm) {
+                                type = tm.getCategoryGroup();
+                            }
                         }
                         Object v1 = r1.get(key);
                         Object v2 = r2.get(key);

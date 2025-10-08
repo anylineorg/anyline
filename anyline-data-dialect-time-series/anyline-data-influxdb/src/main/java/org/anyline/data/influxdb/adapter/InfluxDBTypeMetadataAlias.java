@@ -155,7 +155,6 @@ public enum InfluxDBTypeMetadataAlias implements TypeMetadataAlias {
 	MACADDR8                      ("MACADDR8"                       ,StandardTypeMetadata.ILLEGAL                       ,  -1,  -1,  -1,  -1,  -1,  -1),
 	MAP                           ("MAP"                            ,StandardTypeMetadata.ILLEGAL                       ,  -1,  -1,  -1,  -1,  -1,  -1),
 	MATCH_ONLY_TEXT               ("match_only_text"                ,StandardTypeMetadata.ILLEGAL                       ,  -1,  -1,  -1,  -1,  -1,  -1),
-	MATCH_ONLY_TEXT               ("match_only_text "               ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1,  -1,  -1,  -1),
 	MEDIUMBLOB                    ("MEDIUMBLOB"                     ,StandardTypeMetadata.BYTES                         , "Bytes"    , "Bytes"        , null   , null   , null   ,  -1,  -1,  -1,  -1,  -1,  -1),
 	MEDIUMINT                     ("MEDIUMINT"                      ,StandardTypeMetadata.INTEGER                       , "Integer"  , "Integer"      , null   , null   , null   ,   1,   1,   1,  -1,  -1,  -1),
 	MEDIUMTEXT                    ("MEDIUMTEXT"                     ,StandardTypeMetadata.STRING                        , "String"   , "String"       , null   , null   , null   ,   1,   1,   1,  -1,  -1,  -1),
