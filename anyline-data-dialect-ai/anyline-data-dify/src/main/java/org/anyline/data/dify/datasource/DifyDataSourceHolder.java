@@ -107,12 +107,12 @@ public class DifyDataSourceHolder extends AbstractDataSourceHolder implements Da
 			//只注册DifyDataSource类型
 			return null;
 		}
-		String secret = value(prefix, params, "secret", String.class, null);
+		String secret = value(prefix, params, "secret,password,key", String.class, null);
 		if(null == secret) {
 			return null;
 		}
 		try {
-			DifyClient client = new DifyClient(url, key);
+			DifyClient client = new DifyClient(url, secret);
 			DifyRuntimeHolder.instance().reg(key, client);
 		} catch (Exception e) {
 			log.error("[注册数据源失败][type:Dify][key:{}][msg:{}]", key, e.toString());

@@ -159,6 +159,7 @@ public enum HiveTypeMetadataAlias implements TypeMetadataAlias {
 	MACADDR8                      ("MACADDR8"                       ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1,  -1,  -1,  -1),
 	MAP                           ("MAP"                            ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1,  -1,  -1,  -1),
 	MATCH_ONLY_TEXT               ("match_only_text"                ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1,  -1,  -1,  -1),
+	MATCH_ONLY_TEXT               ("match_only_text "               ,StandardTypeMetadata.NONE                          ,  -1,  -1,  -1,  -1,  -1,  -1),
 	MEDIUMBLOB                    ("MEDIUMBLOB"                     ,StandardTypeMetadata.BINARY                        ,   1,   1,   1,  -1,  -1,  -1),
 	MEDIUMINT                     ("MEDIUMINT"                      ,StandardTypeMetadata.SMALLINT                      ,   1,   1,   1,  -1,  -1,  -1),
 	MEDIUMTEXT                    ("MEDIUMTEXT"                     ,StandardTypeMetadata.STRING                        ,   1,   1,   1,  -1,  -1,  -1),

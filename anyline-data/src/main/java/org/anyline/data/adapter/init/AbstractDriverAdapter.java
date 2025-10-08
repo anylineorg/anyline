@@ -2354,9 +2354,11 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         } else {
             set = new DataSet().setTable(table);
         }
-
+        if(null == set.getNavi()){
+            //查询内容可能设置过了(如dify) 这里的navi有可能是空，不要覆盖
+            set.setNavi(navi);
+        }
         set.setDest(prepare.getDest());
-        set.setNavi(navi);
         if (null != navi && navi.isLazy()) {
             navi.setDataSize(set.size());
             PageLazyStore.setTotal(navi.getLazyKey(), navi.getTotalRow());

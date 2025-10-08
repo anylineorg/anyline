@@ -584,6 +584,9 @@ public class DefaultPageNavi implements PageNavi, Serializable, Cloneable {
 				params = config.KEY_PAGE_ROWS + "=" + pageRows;
 			}
 			if(null != params) {
+				if(null == baseLink) {
+					baseLink = "";
+				}
 				if (baseLink.contains("?")) {
 					baseLink += "&" + params;
 				} else {

@@ -25,10 +25,7 @@ import org.anyline.data.dify.runtime.DifyRuntime;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.run.Run;
 import org.anyline.data.runtime.DataRuntime;
-import org.anyline.entity.DataRow;
-import org.anyline.entity.DataSet;
-import org.anyline.entity.OriginRow;
-import org.anyline.entity.PageNavi;
+import org.anyline.entity.*;
 import org.anyline.metadata.*;
 import org.anyline.net.HttpResponse;
 import org.anyline.net.HttpUtil;
@@ -36,11 +33,14 @@ import org.anyline.util.BeanUtil;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
@@ -104,22 +104,33 @@ public class DifyActuator implements DriverActuator {
         DifyRun r = (DifyRun)run;
         String url = "/datasets/" + table.getId() + "/documents";
         Map<String, Object> params = r.getQueryParams();
-        DataRow row = post((DifyRuntime) runtime, url, params);
+        DataRow row = get((DifyRuntime) runtime, url, params);
         configs.setLastExecuteTime(System.currentTimeMillis() - fr);
         fr = System.currentTimeMillis();
         PageNavi navi = r.getNavi();
+        if(null == navi){
+            navi = new DefaultPageNavi();
+        }
         set.setNavi(navi);
         if(null != row){
             int total = row.getInt("total", 0);
-            if(null != navi){
-                navi.setTotalRow(total);
-            }
+            navi.setTotalRow(total);
+            navi.setPageRows(row.getInt("limit", 20));
             DataSet<DataRow> datas = row.getSet("data");
             if(null != datas){
                 for(DataRow data:datas){
                     Document doc = new Document();
                     doc.setId(data.getString("id"));
                     doc.setName(data.getString("name"));
+                    doc.setPosition(data.getInt("position", 0));
+                    doc.setError(data.getString("error"));
+                    doc.setCreated_from(data.getString("created_from"));
+                    doc.setCreateTime(data.getLong(("created_at")));
+                    doc.setToken_count(data.getInt("tokens", 0));
+                    doc.setIndexing_status(data.getString("indexing_status"));
+                    doc.setWord_count(data.getInt("word_count", 0));
+                    doc.setHit_count(data.getInt("hit_count", 0));
+                    doc.setEnabled(data.getBoolean("enabled", false));
                     set.add(doc);
                 }
             }
@@ -180,9 +191,45 @@ public class DifyActuator implements DriverActuator {
 
     @Override
     public long execute(DriverAdapter adapter, DataRuntime runtime, String random, ConfigStore configs, Run run) throws Exception {
-        return -1;
+        long count = 0;
+        ACTION action = run.action();
+        DifyRun r = (DifyRun)run;
+        DifyRuntime rt = (DifyRuntime)runtime;
+        List<Document> documents = r.getDocuments();
+        if(action == ACTION.DML.DELETE){
+            for(Document document:documents){
+                count += delete(rt, r.getTable(), document);
+            }
+        }
+        return count;
     }
 
+    public int delete(DifyRuntime runtime, Table table, Document document) throws Exception {
+        String url = "/datasets/"+table.getId()+"/documents/"+document.getId();
+        url = HttpUtil.mergePath(runtime.client().getHost(), url);
+        CloseableHttpClient httpClient = HttpClients.createDefault();
+        HttpDelete delete = new HttpDelete(url);
+        delete.setHeader("Authorization", "Bearer " + runtime.client().getSecret());
+        try (CloseableHttpResponse response = httpClient.execute(delete)) {
+            // 获取响应状态码
+            int statusCode = response.getStatusLine().getStatusCode();
+            if(statusCode != 200){
+                return 0;
+            }
+            // 获取响应体内容（如果需要）
+            String responseBody = EntityUtils.toString(response.getEntity());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
+        } finally {
+            try {
+                httpClient.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return 1;
+    }
     /**
      * 根据文件 创建知识库文档
      * @param url url
@@ -339,6 +386,7 @@ public class DifyActuator implements DriverActuator {
         }
         return previous;
     }
+
     public DataRow post(DifyRuntime runtime, String url, Map<String, Object> params) throws Exception{
         url = HttpUtil.mergePath(runtime.client().getHost(), url);
         Map<String, String> header = header(runtime);

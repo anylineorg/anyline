@@ -156,6 +156,7 @@ public enum RedshiftTypeMetadataAlias implements TypeMetadataAlias {
 	MACADDR8                      ("MACADDR8"                       ,StandardTypeMetadata.NONE                     ,  -1,  -1,  -1,  -1,  -1,  -1),
 	MAP                           ("MAP"                            ,StandardTypeMetadata.NONE                     ,  -1,  -1,  -1,  -1,  -1,  -1),
 	MATCH_ONLY_TEXT               ("match_only_text"                ,StandardTypeMetadata.NONE                     ,  -1,  -1,  -1,  -1,  -1,  -1),
+	MATCH_ONLY_TEXT               ("match_only_text "               ,StandardTypeMetadata.NONE                     ,  -1,  -1,  -1,  -1,  -1,  -1),
 	MEDIUMBLOB                    ("MEDIUMBLOB"                     ,StandardTypeMetadata.VARBYTE                  ,  -1,  -1,  -1,  -1,  -1,  -1),
 	MEDIUMINT                     ("MEDIUMINT"                      ,StandardTypeMetadata.INT16                    , "SMALLINT" , "SMALLINT"     , null   , null   , null   ,   1,   1,   1,  -1,  -1,  -1),
 	MEDIUMTEXT                    ("MEDIUMTEXT"                     ,StandardTypeMetadata.VARCHAR                  ,   0,   1,   1,  -1,  -1,  -1),

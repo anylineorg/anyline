@@ -16,7 +16,6 @@
 
 package org.anyline.data.dify.adapter;
 
-import org.anyline.adapter.KeyAdapter;
 import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.adapter.init.AbstractDriverAdapter;
@@ -25,27 +24,23 @@ import org.anyline.data.dify.entity.Document;
 import org.anyline.data.dify.run.DifyRun;
 import org.anyline.data.param.Config;
 import org.anyline.data.param.ConfigStore;
-import org.anyline.data.param.Highlight;
 import org.anyline.data.param.init.DefaultConfigStore;
-import org.anyline.data.prepare.Condition;
-import org.anyline.data.prepare.ConditionChain;
 import org.anyline.data.prepare.RunPrepare;
-import org.anyline.data.prepare.auto.AutoCondition;
 import org.anyline.data.prepare.auto.TextPrepare;
 import org.anyline.data.run.*;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
-import org.anyline.exception.CommandQueryException;
 import org.anyline.exception.NotSupportException;
 import org.anyline.log.Log;
 import org.anyline.log.LogProxy;
 import org.anyline.metadata.*;
 import org.anyline.metadata.refer.MetadataFieldRefer;
 import org.anyline.metadata.type.DatabaseType;
-import org.anyline.net.HttpResponse;
 import org.anyline.proxy.CacheProxy;
 import org.anyline.proxy.EntityAdapterProxy;
-import org.anyline.util.*;
+import org.anyline.util.BasicUtil;
+import org.anyline.util.SQLUtil;
+
 import java.util.*;
 
 @AnylineComponent("anyline.data.jdbc.adapter.Dify")
@@ -776,7 +771,11 @@ public class DifyAdapter extends AbstractDriverAdapter implements DriverAdapter 
      */
     @Override
     public DataSet<DataRow> select(DataRuntime runtime, String random, boolean system, Table table, ConfigStore configs, Run run) {
-        return select(runtime, random, system, table, configs, (DifyRun) run);
+        try {
+            return actuator.select(this, runtime, random, system, ACTION.DML.SELECT, table, configs, run, null, null, null);
+        }catch (Exception e){
+            return new DataSet<>();
+        }
     }
 
     /**
@@ -892,18 +891,8 @@ public class DifyAdapter extends AbstractDriverAdapter implements DriverAdapter 
      */
     @Override
     public long count(DataRuntime runtime, String random, Run run) {
-        long total = 0;
-        DifyRun r = (DifyRun)run;
-        DataSet<DataRow> set = select(runtime, random, false, (Table)null, run.getConfigs(), r);
-        if(null != r.getText()){
-            //sql格式 select count(*) as CNT
-            if(!set.isEmpty()){
-                total = set.getRow(0).getLong("CNT", 0);
-            }
-        }else {
-            total = set.total();
-        }
-        return total;
+        //查询时会自带总行数
+        return 1;
     }
 
     /* *****************************************************************************************************************
@@ -1155,6 +1144,7 @@ public class DifyAdapter extends AbstractDriverAdapter implements DriverAdapter 
                 docs.add(doc);
             }
         }
+        run.setDocuments(docs);
         runs.add(run);
         return runs;
     }
