@@ -22,10 +22,14 @@
   </tr>
   <tr>
     <td colspan="3">regardless of bugs, doubts, requirements, source code, competitors<br/>any questions, please contact skype: server@anyline.org  <br/>
-
-
-</td>
-</tr>
+  </td>
+  <tr>
+    <td colspan="3">
+    群里有几千个技术经理架构师，负责技术规划和底层框架实现的(非CURD)<br/>   
+    【低代码、中台、工作流】【物联网、银行、信创、政务】居多<br>
+    有明确需求的 HR 请联系管理员
+    </td>
+  </tr>
 </table>
 
 The core of AnyLine is a runtime-oriented dynamic metadata mapping system that is compatible with over 100 relational and non-relational databases.   
