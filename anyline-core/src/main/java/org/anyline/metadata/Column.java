@@ -164,7 +164,7 @@ public class Column extends TableAffiliation<Column> implements Serializable {
         }
     }
     protected String keyword = "COLUMN"           ;
-    protected DataTypeDefine type = new DataTypeDefine()      ; // 数据类型
+    protected DataTypeDefine type                 ; // 数据类型
     protected Virtual virtual                     ; // 虚拟列
     protected Boolean nullable              = null; // 是否可以为NULL -1:未配置 1:是(NULL)  0:否(NOT NULL)
     protected Boolean caseSensitive         = null; // 是否区分大小写
@@ -224,25 +224,30 @@ public class Column extends TableAffiliation<Column> implements Serializable {
     protected ColumnFamily family;                 ; // 列族
 
     public Column() {
+        this.type = new DataTypeDefine();
     }
     public Column(Table table, String name, String type) {
+        this.type = new DataTypeDefine();
         setTable(table);
         setName(name);
         setType(type);
     }
     public Column(String name) {
+        this.type = new DataTypeDefine();
         setName(name);
     }
     public Column(Schema schema, String table, String name) {
         this(null, schema, table, name);
     }
     public Column(Catalog catalog, Schema schema, String table, String name) {
+        this.type = new DataTypeDefine();
         setCatalog(catalog);
         setSchema(schema);
         setName(name);
         setTable(table);
     }
     public Column(String name, String type, int precision, int scale) {
+        this.type = new DataTypeDefine();
         this.name = name;
         setType(type, precision, scale);
     }
@@ -252,20 +257,29 @@ public class Column extends TableAffiliation<Column> implements Serializable {
         setType(type, precision);
     }
     public Column(Table table, String name, String type, int precision, int scale) {
+        this.type = new DataTypeDefine();
         setTable(table);
         this.name = name;
         setType(type, precision, scale);
     }
 
     public Column(Table table, String name, String type, int precision) {
+        this.type = new DataTypeDefine();
         setTable(table);
         this.name = name;
         setType(type, precision);
     }
 
     public Column(String name, String type) {
+        this.type = new DataTypeDefine();
         this.name = name;
         setType(type);
+    }
+
+    @Override
+    public void setDatabaseType(DatabaseType databaseType) {
+        this.databaseType = databaseType;
+        this.type.setDatabase(databaseType);
     }
     public DataTypeDefine type(){
         return type;
@@ -703,7 +717,7 @@ public class Column extends TableAffiliation<Column> implements Serializable {
             update.setType(type);
             return this;
         }
-        this.type.setName(type);
+        this.type.setName(type, true);
         return this;
     }
     public Column setType(DataTypeDefine type) {

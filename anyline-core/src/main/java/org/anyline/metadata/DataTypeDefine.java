@@ -45,15 +45,15 @@ public class DataTypeDefine {
     public DataTypeDefine() {
     }
     public DataTypeDefine(String name) {
-        setName(name);
+        setName(name, true);
     }
     public DataTypeDefine(String name, int precision, int scale) {
-        setName(name);
+        setName(name, true);
         setPrecision(precision);
         setScale(scale);
     }
     public DataTypeDefine(String name, int precision) {
-        setName(name);
+        setName(name, true);
         setPrecision(precision);
     }
     public DatabaseType database() {
@@ -61,9 +61,6 @@ public class DataTypeDefine {
     }
     public void setDatabase(DatabaseType database) {
        this.database = database;
-    }
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getOriginType() {
@@ -187,13 +184,13 @@ public class DataTypeDefine {
             parseLvl = 0;
         }
 
-        this.metadata = null;
         this.ignorePrecision = -1;
         this.ignoreLength = -1;
         this.ignoreScale = -1;
         this.array = false;
         this.name = name;
         if(parse) {
+            this.metadata = null;
             setOriginType(name);
             parse(1, database);
         }
@@ -220,7 +217,7 @@ public class DataTypeDefine {
         if(lvl <= parseLvl) {
             return this;
         }
-        TypeMetadata.parse(database, this, TypeMetadataHolder.gets(database), null);
+        this.metadata = TypeMetadata.parse(database, this, TypeMetadataHolder.gets(database), null);
         return this;
     }
  

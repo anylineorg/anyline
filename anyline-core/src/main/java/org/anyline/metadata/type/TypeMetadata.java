@@ -729,7 +729,10 @@ public interface TypeMetadata {
         if(null != srcType) {
             numberLengthUnit = srcType.numberLengthUnit();
         }
-        NUMBER_LENGTH_UNIT targetNumberLengthUnit = database.numberLengthUnit();
+        NUMBER_LENGTH_UNIT targetNumberLengthUnit = null;
+        if(null != database) {
+            targetNumberLengthUnit = database.numberLengthUnit();
+        }
 
         boolean array = meta.isArray();
         String originType = meta.getOriginType();
