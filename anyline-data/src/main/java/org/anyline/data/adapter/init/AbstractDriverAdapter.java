@@ -10893,7 +10893,15 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			//是否唯一
 			chks = refer.maps(Index.FIELD_UNIQUE_CHECK);
 			vals = refer.maps(Index.FIELD_UNIQUE_CHECK_VALUE);
-			bol = matchBoolean(row, chks, vals);
+            if(null != vals && vals.length > 0){
+                bol = matchBoolean(row, chks, vals);
+            }else{
+                vals = refer.maps(Index.FIELD_UNIQUE_CHECK_OPPOSE_VALUE);
+                bol = matchBoolean(row, chks, vals);
+                if(null != bol){
+                    bol = !bol;
+                }
+            }
 			if(null != bol) {
 				meta.setUnique(bol);
 			}

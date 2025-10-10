@@ -3386,6 +3386,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         refer.map(Index.FIELD_COLUMN, "COLUMN_EXPRESSION,COLUMN_NAME");
         refer.map(Index.FIELD_ORDER, "DESCEND");
         refer.map(Index.FIELD_POSITION, "COLUMN_POSITION");
+        refer.map(Index.FIELD_UNIQUE_CHECK_OPPOSE_VALUE, "NONUNIQUE");
         return refer;
     }
 

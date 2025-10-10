@@ -278,4 +278,6 @@ public class Index<M extends Index> extends TableAffiliation<M> implements Seria
     public static final String FIELD_UNIQUE                        = "UNIQUE";
     public static final String FIELD_UNIQUE_CHECK                  = "UNIQUE_CHECK";
     public static final String FIELD_UNIQUE_CHECK_VALUE            = "UNIQUE_CHECK_VALUE";
+    public static final String FIELD_UNIQUE_CHECK_OPPOSE_VALUE     = "FIELD_UNIQUE_CHECK_OPPOSE_VALUE";
+
 }
