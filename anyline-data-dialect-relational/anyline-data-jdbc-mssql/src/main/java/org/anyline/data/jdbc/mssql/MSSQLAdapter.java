@@ -2178,7 +2178,16 @@ WHERE
      */
     @Override
     public List<Run> buildQueryViewsRun(DataRuntime runtime, boolean greedy, View query, int types, ConfigStore configs) throws Exception {
-        return super.buildQueryViewsRun(runtime, greedy, query, types, configs);
+        List<Run> runs = new ArrayList<>();
+        Run run = new SimpleRun(runtime, configs);
+        runs.add(run);
+        StringBuilder builder = run.getBuilder();
+        builder.append("SELECT * FROM INFORMATION_SCHEMA.VIEWS");
+        String pattern = query.getName();
+        if(BasicUtil.isNotEmpty(objectName(runtime, pattern))) {
+            configs.and(Compare.LIKE_SIMPLE,"TABLE_NAME", pattern);
+        }
+        return runs;
     }
 
     /**

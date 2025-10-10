@@ -1201,7 +1201,7 @@ public class DefaultJDBCActuator implements DriverActuator {
      * @throws Exception 异常
      */
     @Override
-    public <T extends Table> List<T> views(DriverAdapter adapter, DataRuntime runtime, boolean create, List<T> previous, View query, int types) throws Exception {
+    public <T extends View> List<T> views(DriverAdapter adapter, DataRuntime runtime, boolean create, List<T> previous, View query, int types) throws Exception {
 
         return previous;
     }

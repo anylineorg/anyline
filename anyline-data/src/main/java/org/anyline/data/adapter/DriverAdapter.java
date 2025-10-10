@@ -5188,6 +5188,12 @@ public interface DriverAdapter {
     MetadataFieldRefer initColumnFieldRefer();
     /**
      * Column[结果集封装]<br/>
+     * Column 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    MetadataFieldRefer initViewColumnFieldRefer();
+    /**
+     * Column[结果集封装]<br/>
      * 数据类型 属性与结果集对应关系
      * @return MetadataFieldRefer
      */

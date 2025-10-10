@@ -255,7 +255,7 @@ public interface DriverActuator {
      * @return tables
      * @throws Exception 异常
      */
-    default <T extends Table> List<T> views(DriverAdapter adapter, DataRuntime runtime, boolean create, List<T> previous, View query, int types) throws Exception {
+    default <T extends View> List<T> views(DriverAdapter adapter, DataRuntime runtime, boolean create, List<T> previous, View query, int types) throws Exception {
         if(null == previous){
             previous = new ArrayList<>();
         }

@@ -9370,7 +9370,16 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         refer.map(Column.FIELD_DEFAULT_VALUE, "COLUMN_DEFAULT,DATA_DEFAULT,DEFAULT,DEFAULT_VALUE,DEFAULT_DEFINITION");
         return refer;
     }
-    
+
+    /**
+     * Column[结果集封装]<br/>
+     * Column 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer initViewColumnFieldRefer() {
+        return initColumnFieldRefer();
+    }
     /**
      * Column[结果集封装]<br/>
      * 数据类型 属性与结果集对应关系

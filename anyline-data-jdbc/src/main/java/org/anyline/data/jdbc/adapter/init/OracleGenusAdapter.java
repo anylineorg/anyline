@@ -1975,7 +1975,17 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public List<Run> buildQuerySchemasRun(DataRuntime runtime, boolean greedy, Schema query) throws Exception {
-        return super.buildQuerySchemasRun(runtime, greedy, query);
+        List<Run> runs = new ArrayList<>();
+        Run run = new SimpleRun(runtime);
+        runs.add(run);
+        StringBuilder builder = run.getBuilder();
+        builder.append("SELECT DISTINCT owner FROM all_objects");
+        if(null != query) {
+            String name = query.getName();
+            ConfigStore configs = run.getConfigs();
+            configs.and(Compare.LIKE_SIMPLE, "owner", name);
+        }
+        return runs;
     }
 
     /**
@@ -1985,7 +1995,9 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public MetadataFieldRefer initSchemaFieldRefer() {
-        return super.initSchemaFieldRefer();
+        MetadataFieldRefer refer = super.initSchemaFieldRefer();
+        refer.map(Schema.FIELD_NAME, "OWNER");
+        return refer;
     }
 
     /**
@@ -2825,7 +2837,6 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
             configs.and(Compare.LIKE_SIMPLE, "M.TABLE_NAME", query.getTableName());
             run.setOrders("M."+ refer.map(Table.FIELD_SCHEMA), "M.TABLE_NAME", "M.COLUMN_ID");
             run.setPageNavi(configs.getPageNavi());
-
         }
         return runs;
     }

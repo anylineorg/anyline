@@ -276,7 +276,7 @@ public class MongoActuator implements DriverActuator {
      * @return tables
      * @throws Exception 异常
      */
-    public <T extends Table> List<T> views(DriverAdapter adapter, DataRuntime runtime, boolean create, List<T> previous, View query, int types) throws Exception {
+    public <T extends View> List<T> views(DriverAdapter adapter, DataRuntime runtime, boolean create, List<T> previous, View query, int types) throws Exception {
         return previous;
     }
 
