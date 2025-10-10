@@ -602,6 +602,12 @@ public interface AnylineDao<E>{
 		return truncate(runtime(), null, table);
 	}
 
+	/**
+	 * 当前用户角色
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return roles
+	 */
+	<T extends Role> LinkedHashMap<String, T> roles(DataRuntime runtime) throws Exception;
 	/* *****************************************************************************************************************
 	 *
 	 * 													metadata

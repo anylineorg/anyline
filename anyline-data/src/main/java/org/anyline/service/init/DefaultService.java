@@ -1952,6 +1952,20 @@ public class DefaultService<E> implements AnylineService<E> {
         return metadata;
     }
 
+
+    /**
+     * 当前用户角色
+     * @return roles
+     */
+    @Override
+    public <T extends Role> LinkedHashMap<String, T> roles() throws Exception{
+        DataRuntime runtime = runtime();
+        LinkedHashMap<String, Role> roles = runtime.roles();
+        if(null == roles) {
+            roles = dao.roles(runtime);
+        }
+        return (LinkedHashMap)roles;
+    }
     @Override
     public List<String> tables(Catalog catalog, Schema schema, String name, int types) {
         LinkedHashMap<String, Table> tables = metadata.tables(catalog, schema, name, types);

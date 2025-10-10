@@ -1991,6 +1991,11 @@ public interface AnylineService<E>{
 	long truncate(String table);
 	long truncate(Table table);
 
+	/**
+	 * 当前用户角色
+	 * @return roles
+	 */
+	<T extends Role> LinkedHashMap<String, T> roles() throws Exception;
 	/* *****************************************************************************************************************
 	 * 													METADATA
 	 ******************************************************************************************************************/

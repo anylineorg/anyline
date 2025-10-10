@@ -20,7 +20,11 @@ import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.adapter.DriverAdapterHolder;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.runtime.RuntimeHolder;
+import org.anyline.entity.authorize.Role;
 import org.anyline.util.ConfigTable;
+
+import java.util.LinkedHashMap;
+import java.util.List;
 
 public class AbstractRuntime implements DataRuntime {
     /**
@@ -50,7 +54,41 @@ public class AbstractRuntime implements DataRuntime {
     protected String catalog;
     protected String schema;
     protected RuntimeHolder holder;
+    protected LinkedHashMap<String, Role> roles;
 
+    @Override
+    public LinkedHashMap<String, Role> roles(){
+        if(null == roles && null != adapter){
+            try {
+                roles = adapter.roles(this, null);
+            }catch (Exception ignore){
+                roles = new LinkedHashMap<>();
+            }
+        }
+        return roles;
+    }
+    @Override
+    public void roles(LinkedHashMap<String, Role> roles){
+        this.roles = roles;
+    }
+    @Override
+    public void roles(List<Role> roles){
+        if(null == this.roles){
+            this.roles = new LinkedHashMap<>();
+        }
+        for(Role role : roles){
+            this.roles.put(role.getName().toUpperCase(), role);
+        }
+    }
+    @Override
+    public void roles(Role ... roles){
+        if(null == this.roles){
+            this.roles = new LinkedHashMap<>();
+        }
+        for(Role role : roles){
+            this.roles.put(role.getName().toUpperCase(), role);
+        }
+    }
     @Override
     public String origin() {
         return origin;

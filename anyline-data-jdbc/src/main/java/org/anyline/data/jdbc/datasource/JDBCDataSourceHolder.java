@@ -29,6 +29,7 @@ import org.anyline.data.jdbc.util.DataSourceUtil;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.transaction.TransactionManage;
 import org.anyline.data.transaction.init.DefaultTransactionManage;
+import org.anyline.entity.authorize.Role;
 import org.anyline.metadata.type.Convert;
 import org.anyline.metadata.type.ConvertException;
 import org.anyline.metadata.type.DatabaseType;
@@ -39,7 +40,9 @@ import org.anyline.util.ConfigTable;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 @AnylineComponent("anyline.environment.data.datasource.holder.jdbc")
 public class JDBCDataSourceHolder extends AbstractDataSourceHolder implements DataSourceHolder {
@@ -185,6 +188,20 @@ public class JDBCDataSourceHolder extends AbstractDataSourceHolder implements Da
                         adapter = org.anyline.data.util.DataSourceUtil.parseAdapterKey(url);
                     }
                     runtime.setAdapterKey(adapter);
+
+                    String role = param.get("role")+"";
+                    if(BasicUtil.isEmpty(role)) {
+                        role = org.anyline.data.util.DataSourceUtil.parseRole(url);
+                    }
+                    if(BasicUtil.isEmpty(role)) {
+                        String[] roles = role.split(",");
+                        List<Role> list = new ArrayList<>();
+                        for(String item:roles){
+                            list.add(new Role(item));;
+                        }
+                        runtime.roles(list);
+                    }
+
                     String catalog = param.get("catalog")+"";
                     if(BasicUtil.isEmpty(catalog)) {
                         catalog = org.anyline.data.util.DataSourceUtil.parseCatalog(url);

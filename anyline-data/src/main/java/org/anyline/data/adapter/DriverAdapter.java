@@ -2437,6 +2437,20 @@ public interface DriverAdapter {
      * @return 影响行数
      */
     long delete(DataRuntime runtime, String random, ConfigStore configs, Run run);
+
+    /**
+     * 当前用户角色<br/>
+     * 查询角色
+     * @return List
+     */
+    <T extends Role> LinkedHashMap<String, T> roles(DataRuntime runtime, String random) throws Exception;
+
+    /**
+     * 查询当前用户角色 注意返回结构要与元数据查询中的MetadataFieldRefer对应
+     * @return List
+     */
+    List<Run> buildQueryRolesRun(DataRuntime runtime) throws Exception;
+
     /* *****************************************************************************************************************
      *
      *                                                     metadata

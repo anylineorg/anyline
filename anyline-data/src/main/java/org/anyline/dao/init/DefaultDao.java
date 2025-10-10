@@ -893,6 +893,17 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		return runtime.getAdapter().truncate(runtime, random, table);
 	}
 
+	/**
+	 * 当前用户角色
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return roles
+	 */
+	@Override
+	public <T extends Role> LinkedHashMap<String, T> roles(DataRuntime runtime) throws Exception {
+		LinkedHashMap<String, T> roles = runtime.getAdapter().roles(runtime, null);
+		runtime.roles((LinkedHashMap)roles);
+		return roles;
+	}
 	/* *****************************************************************************************************************
 	 *
 	 * 													metadata

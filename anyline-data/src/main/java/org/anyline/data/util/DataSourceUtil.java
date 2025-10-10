@@ -144,6 +144,19 @@ public class DataSourceUtil {
     public static String parseSchema(String url) {
         return parseParamValue(url, "schema");
     }
+    public static String parseRole(String url) {
+        String role = parseParamValue(url, "user_role");
+        if(BasicUtil.isEmpty(role)){
+            role = parseParamValue(url, "userRole");
+        }
+        if(BasicUtil.isEmpty(role)){
+            role = parseParamValue(url, "user-role");
+        }
+        if(BasicUtil.isEmpty(role)){
+            role = parseParamValue(url, "role");
+        }
+        return role;
+    }
     public static String parseParamValue(String url, String key) {
         String value = null;
         if(null != url && url.contains(key)) {

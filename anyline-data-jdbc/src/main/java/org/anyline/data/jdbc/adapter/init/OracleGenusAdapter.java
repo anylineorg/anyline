@@ -27,6 +27,9 @@ import org.anyline.data.prepare.auto.init.VirtualTablePrepare;
 import org.anyline.data.run.*;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
+import org.anyline.entity.authorize.Privilege;
+import org.anyline.entity.authorize.Role;
+import org.anyline.entity.authorize.User;
 import org.anyline.entity.generator.PrimaryGenerator;
 import org.anyline.exception.NotSupportException;
 import org.anyline.metadata.*;
@@ -34,10 +37,7 @@ import org.anyline.metadata.refer.MetadataFieldRefer;
 import org.anyline.metadata.refer.MetadataReferHolder;
 import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.proxy.EntityAdapterProxy;
-import org.anyline.util.BasicUtil;
-import org.anyline.util.BeanUtil;
-import org.anyline.util.ConfigTable;
-import org.anyline.util.SQLUtil;
+import org.anyline.util.*;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -1443,6 +1443,19 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         return super.delete(runtime, random, configs, run);
     }
 
+    /**
+     * 查询当前用户角色 注意返回结构要与元数据查询中的MetadataFieldRefer对应
+     * @return List
+     */
+    @Override
+    public List<Run> buildQueryRolesRun(DataRuntime runtime) throws Exception {
+        List<Run> runs = new ArrayList<>();
+        Run run = new SimpleRun(runtime);
+        runs.add(run);
+        StringBuilder builder = run.getBuilder();
+        builder.append("SELECT * FROM session_roles");
+        return runs;
+    }
     /* *****************************************************************************************************************
      *
      *                                                     metadata
@@ -7704,6 +7717,609 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         return super.buildRenameRun(runtime, meta);
     }
 
+    /* *****************************************************************************************************************
+     *
+     * 													Authorize
+     *
+     * =================================================================================================================
+     * role			: 角色
+     * user			: 用户
+     * grant		: 授权
+     * privilege	: 权限
+     ******************************************************************************************************************/
+
+    /**
+     * 执行命令
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param random 用来标记同一组命令
+     * @param meta Metadata(表,列等)
+     * @param action 执行命令
+     * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
+     * @return boolean
+     */
+    @Override
+    public boolean execute(DataRuntime runtime, String random, Metadata meta, ACTION.Authorize action, Run run) {
+        return super.execute(runtime, random, meta, action, run);
+    }
+
+    /* *****************************************************************************************************************
+     * 													role
+     * -----------------------------------------------------------------------------------------------------------------
+     * boolean create(DataRuntime runtime, Role role) throws Exception
+     * boolean rename(DataRuntime runtime, Role origin, Role update) throws Exception;
+     * boolean delete(DataRuntime runtime, Role role) throws Exception
+     * <T extends Role> List<T> roles(Catalog catalog, Schema schema, String pattern) throws Exception
+     * List<Run> buildQueryRolesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) throws Exception
+     * <T extends Role> List<T> roles(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, List<T> roles, DataSet<DataRow> set) throws Exception
+     * <T extends Role> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row)
+     * <T extends Role> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row)
+     ******************************************************************************************************************/
+
+    /**
+     * role[调用入口]<br/>
+     * 创建角色
+     * @param role 角色
+     * @return boolean
+     */
+    @Override
+    public boolean create(DataRuntime runtime, Role role) throws Exception {
+        return super.create(runtime, role);
+    }
+
+    /**
+     * role[调用入口]<br/>
+     * 角色重命名
+     * @param origin 原名
+     * @param update 新名
+     * @return boolean
+     */
+    @Override
+    public boolean rename(DataRuntime runtime, Role origin, Role update) throws Exception {
+        return super.rename(runtime, origin, update);
+    }
+
+    /**
+     * role[调用入口]<br/>
+     * 删除角色
+     * @param role 角色
+     * @return boolean
+     */
+    @Override
+    public boolean drop(DataRuntime runtime, Role role) throws Exception {
+        return super.drop(runtime, role);
+    }
+
+    /**
+     * role[调用入口]<br/>
+     * 查询角色
+     * @param query 查询条件 根据metadata属性
+     * @return List
+     */
+    @Override
+    public <T extends Role> List<T> roles(DataRuntime runtime, String random, boolean greedy, Role query) throws Exception {
+        return super.roles(runtime, random, greedy, query);
+    }
+
+    /**
+     * role[命令合成]<br/>
+     * 创建角色
+     * @param role 角色
+     * @return List
+     */
+    @Override
+    public List<Run> buildCreateRun(DataRuntime runtime, Role role) throws Exception {
+        return super.buildCreateRun(runtime, role);
+    }
+
+    /**
+     * role[命令合成]<br/>
+     * 角色重命名
+     * @param origin 原名
+     * @param update 新名
+     * @return List
+     */
+    @Override
+    public List<Run> buildRenameRun(DataRuntime runtime, Role origin, Role update) throws Exception {
+        return super.buildRenameRun(runtime, origin, update);
+    }
+
+    /**
+     * role[命令合成]<br/>
+     * 删除角色
+     * @param role 角色
+     * @return List
+     */
+    @Override
+    public List<Run> buildDropRun(DataRuntime runtime, Role role) throws Exception {
+        return super.buildDropRun(runtime, role);
+    }
+
+    /**
+     * role[命令合成]<br/>
+     * 查询角色
+     * @param query 查询条件 根据metadata属性
+     * @return List
+     */
+    @Override
+    public List<Run> buildQueryRolesRun(DataRuntime runtime, boolean greedy, Role query) throws Exception {
+        return super.buildQueryRolesRun(runtime, greedy, query);
+    }
+
+    /**
+     * role[结果集封装]<br/>
+     * Role 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer initRoleFieldRefer() {
+        MetadataFieldRefer refer = new MetadataFieldRefer(Role.class);
+        refer.map(Role.FIELD_NAME, "ROLE");
+        return refer;
+    }
+
+    /**
+     * role[结果集封装]<br/>
+     * 根据查询结果集构造 role
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param index 第几条查询SQL 对照 buildQueryRolessRun 返回顺序
+     * @param query 查询条件 根据metadata属性
+     * @param previous 上一步查询结果
+     * @param set 查询结果集
+     * @return List
+     * @throws Exception 异常
+     */
+    @Override
+    public <T extends Role> List<T> roles(DataRuntime runtime, int index, boolean create, List<T> previous, Role query, DataSet<DataRow> set) throws Exception {
+        return super.roles(runtime, index, create, previous, query, set);
+    }
+
+    /**
+     * role[结果集封装]<br/>
+     * 根据查询结果封装 role 对象,只封装catalog,schema,name等基础属性
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta 上一步封装结果
+     * @param query 查询条件 根据metadata属性
+     * @param row 查询结果集
+     * @return Role
+     */
+    @Override
+    public <T extends Role> T init(DataRuntime runtime, int index, T meta, Role query, DataRow row) {
+        return super.init(runtime, index, meta, query, row);
+    }
+
+    /**
+     * role[结果集封装]<br/>
+     * 根据查询结果封装 role 对象,更多属性
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta 上一步封装结果
+     * @param row 查询结果集
+     * @return Role
+     */
+    @Override
+    public <T extends Role> T detail(DataRuntime runtime, int index, T meta, Role query, DataRow row) {
+        return super.detail(runtime, index, meta, query, row);
+    }
+
+    /* *****************************************************************************************************************
+     * 													user
+     * -----------------------------------------------------------------------------------------------------------------
+     * boolean create(DataRuntime runtime, User user) throws Exception
+     * boolean rename(DataRuntime runtime, User origin, User update) throws Exception;
+     * boolean drop(DataRuntime runtime, User user) throws Exception
+     * List<User> users(Catalog catalog, Schema schema, String pattern) throws Exception
+     * List<Run> buildQueryUsersRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) throws Exception
+     * <T extends User> List<T> users(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, List<T> users, DataSet<DataRow> set) throws Exception
+     * <T extends User> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row)
+     * <T extends User> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row)
+     ******************************************************************************************************************/
+
+    /**
+     * user[调用入口]<br/>
+     * 创建用户
+     * @param user 用户
+     * @return boolean
+     */
+    @Override
+    public boolean create(DataRuntime runtime, User user) throws Exception {
+        return super.create(runtime, user);
+    }
+
+    /**
+     * user[调用入口]<br/>
+     * 用户重命名
+     * @param origin 原名
+     * @param update 新名
+     * @return boolean
+     */
+    @Override
+    public boolean rename(DataRuntime runtime, User origin, User update) throws Exception {
+        return super.rename(runtime, origin, update);
+    }
+
+    /**
+     * user[调用入口]<br/>
+     * 删除用户
+     * @param user 用户
+     * @return boolean
+     */
+    @Override
+    public boolean drop(DataRuntime runtime, User user) throws Exception {
+        return super.drop(runtime, user);
+    }
+
+    /**
+     * user[调用入口]<br/>
+     * 查询用户
+     * @param query 查询条件 根据metadata属性
+     * @return List
+     */
+    @Override
+    public <T extends User> List<T> users(DataRuntime runtime, String random, boolean greedy, User query) throws Exception {
+        return super.users(runtime, random, greedy, query);
+    }
+
+    /**
+     * user[命令合成]<br/>
+     * 创建用户
+     * @param user 用户
+     * @return List
+     */
+    @Override
+    public List<Run> buildCreateRun(DataRuntime runtime, User user) throws Exception {
+        return super.buildCreateRun(runtime, user);
+    }
+
+    /**
+     * user[命令合成]<br/>
+     * 用户重命名
+     * @param origin 原名
+     * @param update 新名
+     * @return List
+     */
+    @Override
+    public List<Run> buildRenameRun(DataRuntime runtime, User origin, User update) throws Exception {
+        return super.buildRenameRun(runtime, origin, update);
+    }
+
+    /**
+     * user[命令合成]<br/>
+     * 删除用户
+     * @param user 用户
+     * @return List
+     */
+    @Override
+    public List<Run> buildDropRun(DataRuntime runtime, User user) throws Exception {
+        return super.buildDropRun(runtime, user);
+    }
+
+    /**
+     * user[命令合成]<br/>
+     * 查询用户
+     * @param query 查询条件 根据metadata属性
+     * @return List
+     */
+    @Override
+    public List<Run> buildQueryUsersRun(DataRuntime runtime, boolean greedy, User query) throws Exception {
+        return super.buildQueryUsersRun(runtime, greedy, query);
+    }
+
+    /**
+     * User[结果集封装]<br/>
+     * User 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer initUserFieldRefer() {
+        return super.initUserFieldRefer();
+    }
+
+    /**
+     * user[结果集封装]<br/>
+     * 根据查询结果集构造 user
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param index 第几条查询SQL 对照 buildQueryUserssRun 返回顺序
+     * @param create 上一步没有查到的,这一步是否需要新创建
+     * @param query 查询条件 根据metadata属性
+     * @param previous 上一步查询结果
+     * @param set 查询结果集
+     * @return List
+     * @throws Exception 异常
+     */
+    @Override
+    public <T extends User> List<T> users(DataRuntime runtime, int index, boolean create, List<T> previous, User query, DataSet<DataRow> set) throws Exception {
+        return super.users(runtime, index, create, previous, query, set);
+    }
+
+    /**
+     * user[结果集封装]<br/>
+     * 根据查询结果封装 user 对象,只封装catalog,schema,name等基础属性
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta 上一步封装结果
+     * @param query 查询条件 根据metadata属性
+     * @param row 查询结果集
+     * @return User
+     */
+    @Override
+    public <T extends User> T init(DataRuntime runtime, int index, T meta, User query, DataRow row) {
+        return super.init(runtime, index, meta, query, row);
+    }
+
+    /**
+     * user[结果集封装]<br/>
+     * 根据查询结果封装 user 对象,更多属性
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta 上一步封装结果
+     * @param row 查询结果集
+     * @return User
+     */
+    @Override
+    public <T extends User> T detail(DataRuntime runtime, int index, T meta, User query, DataRow row) {
+        return super.detail(runtime, index, meta, query, row);
+    }
+
+    /* *****************************************************************************************************************
+     * 													privilege
+     * -----------------------------------------------------------------------------------------------------------------
+     * <T extends Privilege> List<T> privileges(DataRuntime runtime, User user)
+     * List<Run> buildQueryPrivilegesRun(DataRuntime runtime, User user) throws Exception
+     * <T extends Privilege> List<T> privileges(DataRuntime runtime, int index, boolean create, User user, List<T> privileges, DataSet<DataRow> set) throws Exception
+     * <T extends Privilege> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, User user, DataRow row)
+     * <T extends Privilege> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row)
+     * Privilege.MetadataAdapter privilegeMetadataAdapter(DataRuntime runtime)
+     ******************************************************************************************************************/
+
+    /**
+     * privilege[调用入口]<br/>
+     * 查询用户权限
+     * @param query 查询条件 根据metadata属性
+     * @return List
+     */
+    @Override
+    public <T extends Privilege> List<T> privileges(DataRuntime runtime, String random, boolean greedy, Privilege query) throws Exception {
+        return super.privileges(runtime, random, greedy, query);
+    }
+
+    /**
+     * privilege[命令合成]<br/>
+     * 查询用户权限
+     * @param query 查询条件 根据metadata属性
+     * @return List
+     */
+    @Override
+    public List<Run> buildQueryPrivilegesRun(DataRuntime runtime, boolean regreedy, Privilege query) throws Exception {
+        return super.buildQueryPrivilegesRun(runtime, regreedy, query);
+    }
+
+    /**
+     * privilege[结果集封装]<br/>
+     * Privilege 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer initPrivilegeFieldRefer() {
+        return super.initPrivilegeFieldRefer();
+    }
+
+    /**
+     * privilege[结果集封装]<br/>
+     * 根据查询结果集构造 Trigger
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
+     * @param create 上一步没有查到的,这一步是否需要新创建
+     * @param query 查询条件 根据metadata属性
+     * @param previous 上一步查询结果
+     * @param set 查询结果集
+     * @return List
+     * @throws Exception 异常
+     */
+    @Override
+    public <T extends Privilege> List<T> privileges(DataRuntime runtime, int index, boolean create,  List<T> previous, Privilege query, DataSet<DataRow> set) throws Exception {
+        return super.privileges(runtime, index, create, previous, query, set);
+    }
+
+    /**
+     * privilege[结果集封装]<br/>
+     * 根据查询结果封装Privilege对象,只封装catalog,schema,name等基础属性
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta 上一步封装结果
+     * @param query 查询条件 根据metadata属性
+     * @param row 查询结果集
+     * @return Privilege
+     */
+    @Override
+    public <T extends Privilege> T init(DataRuntime runtime, int index, T meta, Privilege query, DataRow row) {
+        return super.init(runtime, index, meta, query, row);
+    }
+
+    /**
+     * privilege[结果集封装]<br/>
+     * 根据查询结果封装Privilege对象,更多属性
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta 上一步封装结果
+     * @param row 查询结果集
+     * @return Privilege
+     */
+    @Override
+    public <T extends Privilege> T detail(DataRuntime runtime, int index, T meta, Privilege query, DataRow row) {
+        return super.detail(runtime, index, meta, query, row);
+    }
+
+    /* *****************************************************************************************************************
+     * 													grant
+     * -----------------------------------------------------------------------------------------------------------------
+     * boolean grant(DataRuntime runtime, User user, Privilege ... privileges) throws Exception
+     * boolean grant(DataRuntime runtime, User user, Role ... roles) throws Exception
+     * boolean grant(DataRuntime runtime, Role role, Privilege ... privileges) throws Exception
+     * List<Run> buildGrantRun(DataRuntime runtime, User user, Privilege ... privileges) throws Exception
+     * List<Run> buildGrantRun(DataRuntime runtime, User user, Role ... roles) throws Exception
+     * List<Run> buildGrantRun(DataRuntime runtime, Role role, Privilege ... privileges) throws Exception
+     ******************************************************************************************************************/
+
+    /**
+     * grant[调用入口]<br/>
+     * 授权
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param user 用户
+     * @param privileges 权限
+     * @return boolean
+     */
+    @Override
+    public boolean grant(DataRuntime runtime, User user, Privilege ... privileges)  throws Exception {
+        return super.grant(runtime, user, privileges);
+    }
+
+    /**
+     * grant[调用入口]<br/>
+     * 授权
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param user 用户
+     * @param roles 角色
+     * @return boolean
+     */
+    @Override
+    public boolean grant(DataRuntime runtime, User user, Role ... roles)  throws Exception {
+        return super.grant(runtime, user, roles);
+    }
+
+    /**
+     * grant[调用入口]<br/>
+     * 授权
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param role 角色
+     * @param privileges 权限
+     * @return boolean
+     */
+    @Override
+    public boolean grant(DataRuntime runtime, Role role, Privilege ... privileges)  throws Exception {
+        return super.grant(runtime, role, privileges);
+    }
+
+    /**
+     * grant[命令合成]<br/>
+     * 授权
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param user 用户
+     * @param privileges 权限
+     * @return List
+     */
+    @Override
+    public List<Run> buildGrantRun(DataRuntime runtime, User user, Privilege ... privileges) throws Exception {
+        return super.buildGrantRun(runtime, user, privileges);
+    }
+
+    /**
+     * grant[命令合成]<br/>
+     * 授权
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param user 用户
+     * @param roles 角色
+     * @return List
+     */
+    @Override
+    public List<Run> buildGrantRun(DataRuntime runtime, User user, Role ... roles) throws Exception {
+        return super.buildGrantRun(runtime, user, roles);
+    }
+
+    /**
+     * grant[命令合成]<br/>
+     * 授权
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param role 角色
+     * @param privileges 权限
+     * @return List
+     */
+    @Override
+    public List<Run> buildGrantRun(DataRuntime runtime, Role role, Privilege ... privileges) throws Exception {
+        return super.buildGrantRun(runtime, role, privileges);
+    }
+
+    /* *****************************************************************************************************************
+     * 													revoke
+     * -----------------------------------------------------------------------------------------------------------------
+     * boolean revoke(DataRuntime runtime, User user, Privilege ... privileges) throws Exception
+     * boolean revoke(DataRuntime runtime, User user, Role ... roles) throws Exception
+     * boolean revoke(DataRuntime runtime, Role role, Privilege ... privileges) throws Exception
+     * List<Run> buildRevokeRun(DataRuntime runtime, User user, Privilege ... privileges) throws Exception
+     * List<Run> buildRevokeRun(DataRuntime runtime, User user, Role ... roles) throws Exception
+     * List<Run> buildRevokeRun(DataRuntime runtime, Role role, Privilege ... privileges) throws Exception
+     ******************************************************************************************************************/
+    /**
+     * grant[调用入口]<br/>
+     * 撤销授权
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param user 用户
+     * @param privileges 权限
+     * @return boolean
+     */
+    @Override
+    public boolean revoke(DataRuntime runtime, User user, Privilege ... privileges) throws Exception {
+        return super.revoke(runtime, user, privileges);
+    }
+
+    /**
+     * grant[调用入口]<br/>
+     * 撤销授权
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param user 用户
+     * @param roles 角色
+     * @return boolean
+     */
+    @Override
+    public boolean revoke(DataRuntime runtime, User user, Role ... roles) throws Exception {
+        return super.revoke(runtime, user, roles);
+    }
+
+    /**
+     * grant[调用入口]<br/>
+     * 撤销授权
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param role 角色
+     * @param privileges 权限
+     * @return boolean
+     */
+    @Override
+    public boolean revoke(DataRuntime runtime, Role role, Privilege ... privileges) throws Exception {
+        return super.revoke(runtime, role, privileges);
+    }
+
+    /**
+     * grant[命令合成]<br/>
+     * 撤销授权
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param user 用户
+     * @param privileges 权限
+     * @return List
+     */
+    @Override
+    public List<Run> buildRevokeRun(DataRuntime runtime, User user, Privilege ... privileges) throws Exception {
+        return super.buildRevokeRun(runtime, user, privileges);
+    }
+
+    /**
+     * grant[命令合成]<br/>
+     * 撤销授权
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param user 用户
+     * @param roles 角色
+     * @return List
+     */
+    @Override
+    public List<Run> buildRevokeRun(DataRuntime runtime, User user, Role ... roles) throws Exception {
+        return super.buildRevokeRun(runtime, user, roles);
+    }
+
+    /**
+     * grant[命令合成]<br/>
+     * 撤销授权
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param role 角色
+     * @param privileges 权限
+     * @return List
+     */
+    @Override
+    public List<Run> buildRevokeRun(DataRuntime runtime, Role role, Privilege ... privileges) throws Exception {
+        return super.buildRevokeRun(runtime, role, privileges);
+    }
     /* *****************************************************************************************************************
      *
      *                                                         JDBC

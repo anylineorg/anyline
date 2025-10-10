@@ -4235,6 +4235,65 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return result;
 	}
 
+    /**
+     * 当前用户角色<br/>
+     * 查询角色
+     * @return List
+     */
+    @Override
+    public <T extends Role> LinkedHashMap<String, T> roles(DataRuntime runtime, String random) throws Exception {
+        if(null == random) {
+            random = random(runtime);
+        }
+        LinkedHashMap<String, T> roles = new LinkedHashMap<>();
+        try{
+            long fr = System.currentTimeMillis();
+            // 根据系统表查询
+            try{
+                List<Run> runs = buildQueryRolesRun(runtime);
+                if (null != runs) {
+                    int idx = 0;
+                    for(Run run:runs) {
+                        DataSet<DataRow> set = selectMetadata(runtime, random, run);
+                        List<Role> list = roles(runtime, idx, true, null, null, null, set);
+                        for(Role role:list){
+                            roles.put(role.getName().toUpperCase(), (T)role);
+                        }
+                    }
+                }
+            }catch (Exception e) {
+                if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+                    e.printStackTrace();
+                }else if (ConfigTable.IS_LOG_SQL && log.isWarnEnabled()) {
+                    log.warn("{}[user roles][{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), e.toString());
+                }
+            }
+
+            if (ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
+                log.info("{}[user roles][result:{}][执行耗时:{}]", random, roles.size(), DateUtil.format(System.currentTimeMillis() - fr));
+            }
+        }catch (Exception e) {
+            if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+                e.printStackTrace();
+            }else{
+                log.error("[user roles][result:fail][msg:{}]", e.toString());
+            }
+        }
+        return roles;
+    }
+
+    /**
+     * 查询当前用户角色 注意返回结构要与元数据查询中的MetadataFieldRefer对应
+     * @return List
+     */
+    @Override
+    public List<Run> buildQueryRolesRun(DataRuntime runtime) throws Exception {
+        List<Run> runs = new ArrayList<>();
+        if(log.isDebugEnabled()) {
+            log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryRolesRun(DataRuntime runtime)", 37));
+        }
+        return runs;
+    }
 	/* *****************************************************************************************************************
 	 *
 	 * 													metadata
