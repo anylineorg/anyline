@@ -2246,7 +2246,18 @@ public class DefaultService<E> implements AnylineService<E> {
             if(Metadata.check(struct, Metadata.TYPE.INDEX)) {
                 LinkedHashMap<String, Index> indexes = table.getIndexes();
                 if(null == indexes || indexes.isEmpty()) {
-                    table.setIndexes(indexes(table));
+                    indexes = indexes(table);
+                    table.setIndexes(indexes);
+                    PrimaryKey pk = table.getPrimaryKey();
+                    if(null != pk){
+                        String pkn = pk.getName();
+                        if(null != pkn) {
+                            Index index = indexes.get(pkn.toUpperCase());
+                            if(null != index){
+                                index.setPrimary(true);
+                            }
+                        }
+                    }
                 }
             }
             //约束

@@ -1992,11 +1992,12 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         Run run = new SimpleRun(runtime);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
-        builder.append("SELECT DISTINCT owner FROM all_objects");
+        //builder.append("SELECT DISTINCT owner FROM all_objects"); //群里测试发现这样比下面慢
+        builder.append("SELECT * FROM all_users WHERE username IN (SELECT DISTINCT owner FROM all_objects)");
         if(null != query) {
             String name = query.getName();
             ConfigStore configs = run.getConfigs();
-            configs.and(Compare.LIKE_SIMPLE, "owner", name);
+            configs.and(Compare.LIKE_SIMPLE, "USERNAME", name);
         }
         return runs;
     }
@@ -2009,7 +2010,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
     @Override
     public MetadataFieldRefer initSchemaFieldRefer() {
         MetadataFieldRefer refer = super.initSchemaFieldRefer();
-        refer.map(Schema.FIELD_NAME, "OWNER");
+        refer.map(Schema.FIELD_NAME, "USERNAME");
         return refer;
     }
 
@@ -3365,7 +3366,9 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
     protected Run buildQueryIndexBody(DataRuntime runtime) {
         Run run = new SimpleRun(runtime);
         StringBuilder builder = run.getBuilder();
-        builder.append("SELECT M.*, F.COLUMN_EXPRESSION FROM ALL_IND_COLUMNS M\n");
+        builder.append("SELECT I.*, M.DESCEND, M.COLUMN_POSITION, F.COLUMN_EXPRESSION FROM ALL_IND_COLUMNS M\n");
+        builder.append("LEFT JOIN ALL_INDEXES I\n");
+        builder.append("ON M.INDEX_OWNER = I.OWNER AND M.INDEX_NAME = I.INDEX_NAME\n");
         builder.append("LEFT JOIN ALL_IND_EXPRESSIONS F\n");
         builder.append("ON M.INDEX_OWNER = F.INDEX_OWNER AND M.INDEX_NAME = F.INDEX_NAME AND M.COLUMN_POSITION = F.COLUMN_POSITION\n");
         return run;
