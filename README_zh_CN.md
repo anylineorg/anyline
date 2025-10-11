@@ -240,7 +240,7 @@ AnyLine 则专注于 ‌动态、运行时‌ 的场景，如数据中台、多�
 默认的service已经提供了大部分的数据库操作功能。  
 操作过程大致如下:
 ```
-DataSet<DataRow> set = service.querys("HR_USER(ID, NM)", 
+DataSet<DataRow> set = service.querys("hr_usr(ID, NM)", 
     condition(true, "anyline根据约定自动生成的=, in, like等查询条件"));  
 ```
 这里的查询条件不再需要各种配置, 各种if else foreach标签  

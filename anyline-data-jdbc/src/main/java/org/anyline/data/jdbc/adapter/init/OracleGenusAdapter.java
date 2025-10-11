@@ -2884,7 +2884,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
             "LEFT JOIN ALL_COL_COMMENTS F ON M.TABLE_NAME = F.TABLE_NAME AND M.COLUMN_NAME = F.COLUMN_NAME AND M.OWNER = F.OWNER\n" +
             //主键
             "LEFT JOIN (\n" +
-            "\tSELECT P.*, PC.COLUMN_NAME FROM USER_CONSTRAINTS P, USER_CONS_COLUMNS PC \n" +
+            "\tSELECT P.*, PC.COLUMN_NAME FROM ALL_CONSTRAINTS P, ALL_CONS_COLUMNS PC \n" +
             "\tWHERE P.CONSTRAINT_NAME = PC.CONSTRAINT_NAME  AND P.CONSTRAINT_TYPE = 'P'\n" +
             ")   FP ON M.OWNER = FP.OWNER AND M.TABLE_NAME = FP.TABLE_NAME AND M.COLUMN_NAME = FP.COLUMN_NAME");
         return run;
@@ -3111,7 +3111,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         runs.add(run);
         StringBuilder builder = run.getBuilder();
         ConfigStore configs = run.getConfigs();
-        builder.append("SELECT COL.* FROM USER_CONSTRAINTS CON, USER_CONS_COLUMNS COL\n");
+        builder.append("SELECT COL.* FROM ALL_CONSTRAINTS CON, ALL_CONS_COLUMNS COL\n");
         builder.append("WHERE CON.CONSTRAINT_NAME = COL.CONSTRAINT_NAME\n");
         builder.append("AND CON.CONSTRAINT_TYPE = 'P'\n");
         configs.and(Compare.LIKE_SIMPLE, "COL.TABLE_NAME", query.getTableName());
@@ -3211,10 +3211,10 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         StringBuilder builder = run.getBuilder();
         ConfigStore configs = run.getConfigs();
         builder.append("SELECT UC.CONSTRAINT_NAME, UC.TABLE_NAME, KCU.COLUMN_NAME, UC.R_CONSTRAINT_NAME, RC.TABLE_NAME AS REFERENCED_TABLE_NAME, RCC.COLUMN_NAME AS REFERENCED_COLUMN_NAME, RCC.POSITION AS ORDINAL_POSITION\n");
-        builder.append("FROM USER_CONSTRAINTS UC \n");
-        builder.append("JOIN USER_CONS_COLUMNS KCU ON UC.CONSTRAINT_NAME = KCU.CONSTRAINT_NAME \n");
-        builder.append("JOIN USER_CONSTRAINTS RC ON UC.R_CONSTRAINT_NAME = RC.CONSTRAINT_NAME \n");
-        builder.append("JOIN USER_CONS_COLUMNS RCC ON RC.CONSTRAINT_NAME = RCC.CONSTRAINT_NAME AND KCU.POSITION = RCC.POSITION");
+        builder.append("FROM ALL_CONSTRAINTS UC \n");
+        builder.append("JOIN ALL_CONS_COLUMNS KCU ON UC.CONSTRAINT_NAME = KCU.CONSTRAINT_NAME \n");
+        builder.append("JOIN ALL_CONSTRAINTS RC ON UC.R_CONSTRAINT_NAME = RC.CONSTRAINT_NAME \n");
+        builder.append("JOIN ALL_CONS_COLUMNS RCC ON RC.CONSTRAINT_NAME = RCC.CONSTRAINT_NAME AND KCU.POSITION = RCC.POSITION");
         configs.and("UC.OWNER", query.getSchemaName());
         configs.and(Compare.LIKE_SIMPLE, "UC.TABLE_NAME", query.getTableName());
         return runs;
@@ -3389,6 +3389,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         refer.map(Index.FIELD_COLUMN, "COLUMN_EXPRESSION,COLUMN_NAME");
         refer.map(Index.FIELD_ORDER, "DESCEND");
         refer.map(Index.FIELD_POSITION, "COLUMN_POSITION");
+        refer.map(Index.FIELD_UNIQUE_CHECK, "UNIQUENESS");
         refer.map(Index.FIELD_UNIQUE_CHECK_OPPOSE_VALUE, "NONUNIQUE");
         return refer;
     }
@@ -3544,7 +3545,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         runs.add(run);
         StringBuilder builder = run.getBuilder();
         ConfigStore configs = run.getConfigs();
-        builder.append("SELECT * FROM USER_CONSTRAINTS");
+        builder.append("SELECT * FROM ALL_CONSTRAINTS");
         configs.and("OWNER", query.getSchemaName());
         configs.and(Compare.LIKE_SIMPLE, "TABLE_NAME", query.getTableName());
         return runs;
@@ -3659,7 +3660,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         List<Trigger.EVENT> events = query.getEvents();
         StringBuilder builder = run.getBuilder();
         ConfigStore configs = run.getConfigs();
-        builder.append("SELECT * FROM USER_TRIGGERS");
+        builder.append("SELECT * FROM ALL_TRIGGERS");
         configs.and("TABLE_OWNER", query.getSchemaName());
         configs.and(Compare.LIKE_SIMPLE, "TABLE_NAME", query.getTableName());
         configs.in("TRIGGERING_EVENT", events);
@@ -5165,7 +5166,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
 
     /**
      * table[命令合成-子流程]<br/>
-     * 子表执行分区依据(分区依据值)如CREATE TABLE hr_user_fi PARTITION OF hr_user FOR VALUES IN ('FI')
+     * 子表执行分区依据(分区依据值)如CREATE TABLE hr_usr_fi PARTITION OF hr_usr FOR VALUES IN ('FI')
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param builder builder
      * @param meta 表
@@ -5249,7 +5250,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
     /**
      * table[命令合成-子流程]<br/>
      * 子表执行分区依据(相关主表及分区值)
-     * 如CREATE TABLE hr_user_fi PARTITION OF hr_user FOR VALUES IN ('FI')
+     * 如CREATE TABLE hr_usr_fi PARTITION OF hr_usr FOR VALUES IN ('FI')
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param builder builder
      * @param meta 表

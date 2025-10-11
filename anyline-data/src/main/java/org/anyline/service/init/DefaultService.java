@@ -1778,7 +1778,7 @@ public class DefaultService<E> implements AnylineService<E> {
                     //(null != chk && (chk.matches("^[a-z]+\\s+.+") || chk.startsWith("from(")))
                     //SELECT * FROM SSO_USER
                     //其他格式在adapter先解析出来 不要等到这一步 会跟SQL混淆
-                    //MATCH (e:CRM_USER:HR_USER) RETURN e
+                    //MATCH (e:CRM_USER:hr_usr) RETURN e
                     //from(bucket: "test") |> range(start: 0) |> filter(fn: (r) => r._measurement == "device_test")
                     prepare = new DefaultTextPrepare(src);
                     if (ConfigTable.isSQLDebug()) {

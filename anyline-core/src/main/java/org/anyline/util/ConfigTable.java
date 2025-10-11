@@ -167,8 +167,8 @@ public class ConfigTable {
 	public static int IGNORE_GRAPH_QUERY_RESULT_TOP_KEY					= 0				;   // 是否忽略查询结果中顶层的key,可能返回多个结果集(0-不忽略 1-忽略 2-如果1个结果集则忽略 多个则保留)
 	public static int IGNORE_GRAPH_QUERY_RESULT_TABLE 					= 0				;   // 是否忽略查询结果中的表名,数据可能存在于多个表中(0-不忽略 CRM_USER.id 1-忽略 id 2-如果1个表则忽略 多个表则保留)
 	public static int MERGE_GRAPH_QUERY_RESULT_TABLE 					= 0				;	// 是否合并查询结果中的表,合并后会少一层表名被合并到key中(如果不忽略表名)(0-不合并 1-合并 2-如果1个表则合并 多个表则不合并)
-	// 0{"HR_USER":{"name":"n22","id":22},"CRM_USER":{"name":"n22","id":22}}
-	// 1{"HR_USER.name":"n22","HR_USER.id":22,"CRM_USER.name":"n22","CRM_USER.id":22}}
+	// 0{"hr_usr":{"name":"n22","id":22},"CRM_USER":{"name":"n22","id":22}}
+	// 1{"hr_usr.name":"n22","hr_usr.id":22,"CRM_USER.name":"n22","CRM_USER.id":22}}
 	public static String HTTP_PARAM_KEY_CASE							= "camel"		;	// http参数格式 camel:小驼峰 Camel:大驼峰 lower:小写 upper:大写  service.column2param会把 USER_NAME 转成userName
 	public static String MIX_DEFAULT_SEED								= "al"			;   // MixUti.mix默认seed
 	public static String EL_ATTRIBUTE_PREFIX							= "al"			;

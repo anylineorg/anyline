@@ -182,7 +182,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     }
     /*
     {
-        "table":"hr_user",                                  //表
+        "table":"hr_usr",                                  //表
         "data":{"id":1, "code":"A","name":"ZH","age":20},   //数据
         "key":["id"],                                       //主键
         "generator":"UUID"                                  //主键生成器
@@ -196,7 +196,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
                 ,"data":{"name","财务部"}
                 ,"join":"LEADER_ID"                          //部门负责人ID 用主表.主键赋值, 关联表中与当前表关联的外键,如果多个用数组 与外层key顺序保持一致
             },{
-                "table":"hr_user_role",                     //用户角色
+                "table":"hr_usr_role",                     //用户角色
                 ...与外层类似
                 ,"data":{"ROLE_ID":1}            //还需要出现角色表？ 以及角色表其他属性？
                 ,"join":"USER_ID"                //用户ID 用主表.主键赋值, 主表中与当前表关联的外键,如果多个用数组 与外层key顺序保持一致

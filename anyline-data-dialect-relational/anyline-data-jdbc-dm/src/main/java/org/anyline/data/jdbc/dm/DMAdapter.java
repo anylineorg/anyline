@@ -2278,12 +2278,12 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		builder.append("SELECT M.*, F.COMMENTS AS COLUMN_COMMENT, C.INFO1, C.INFO2,FP.CONSTRAINT_TYPE AS IS_PRIMARY\n" +
 			"FROM ALL_TAB_COLUMNS M \n" +
 			//自增
-			"LEFT JOIN USER_COL_COMMENTS F ON M.TABLE_NAME = F.TABLE_NAME AND M.COLUMN_NAME = F.COLUMN_NAME AND M.OWNER = F.OWNER\n" +
-			"LEFT JOIN user_objects O ON M.TABLE_NAME = O.OBJECT_NAME  AND O.OBJECT_TYPE = 'TABLE'\n" +  //管理员可用 dba_objects 需要AND M.OWNER = O.OWNER 条件
+			"LEFT JOIN ALL_COL_COMMENTS F ON M.TABLE_NAME = F.TABLE_NAME AND M.COLUMN_NAME = F.COLUMN_NAME AND M.OWNER = F.OWNER\n" +
+			"LEFT JOIN all_objects O ON M.TABLE_NAME = O.OBJECT_NAME  AND O.OBJECT_TYPE = 'TABLE'\n" +  //管理员可用 dba_objects 需要AND M.OWNER = O.OWNER 条件
 			//主键
 			"LEFT JOIN syscolumns C ON C.ID = O.OBJECT_ID AND C.NAME = M.COLUMN_NAME\n" +
 			"LEFT JOIN (\n" +
-			"\tSELECT P.*, PC.COLUMN_NAME FROM USER_CONSTRAINTS P, USER_CONS_COLUMNS PC \n" +
+			"\tSELECT P.*, PC.COLUMN_NAME FROM ALL_CONSTRAINTS P, ALL_CONS_COLUMNS PC \n" +
 			"\tWHERE P.CONSTRAINT_NAME = PC.CONSTRAINT_NAME  AND P.CONSTRAINT_TYPE = 'P'\n" +
 			")   FP ON M.OWNER = FP.OWNER AND M.TABLE_NAME = FP.TABLE_NAME AND M.COLUMN_NAME = FP.COLUMN_NAME\n");
 		//不要从 ALL_COL_COMMENTS 中查
@@ -3959,7 +3959,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	/**
 	 * table[命令合成-子流程]<br/>
 	 * 子表执行分区依据(相关主表)<br/>
-	 * 如CREATE TABLE hr_user_fi PARTITION OF hr_user FOR VALUES IN ('FI')
+	 * 如CREATE TABLE hr_usr_fi PARTITION OF hr_usr FOR VALUES IN ('FI')
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder builder
 	 * @param meta 表
@@ -3973,7 +3973,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 
 	/**
 	 * table[命令合成-子流程]<br/>
-	 * 子表执行分区依据(分区依据值)如CREATE TABLE hr_user_fi PARTITION OF hr_user FOR VALUES IN ('FI')
+	 * 子表执行分区依据(分区依据值)如CREATE TABLE hr_usr_fi PARTITION OF hr_usr FOR VALUES IN ('FI')
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder builder
 	 * @param meta 表

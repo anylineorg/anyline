@@ -108,7 +108,7 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
     /**
      * 分区
      * partition by :分区方式(LIST, RANGE, HASH)及 依据列   PARTITION BY RANGE(ID)
-     * partition of :主表 PARTITION OF HR_USER FOR VALUES IN ('FI')
+     * partition of :主表 PARTITION OF hr_usr FOR VALUES IN ('FI')
      * partition for:分区依据值
      */
     protected Partition partition ;

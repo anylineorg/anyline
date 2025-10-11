@@ -5369,7 +5369,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	/**
 	 * table[命令合成-子流程]<br/>
 	 * 子表执行分区依据(相关主表)<br/>
-	 * 如CREATE TABLE hr_user_fi PARTITION OF hr_user FOR VALUES IN ('FI')
+	 * 如CREATE TABLE hr_usr_fi PARTITION OF hr_usr FOR VALUES IN ('FI')
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder builder
 	 * @param meta 表
@@ -5380,7 +5380,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	public StringBuilder partitionOf(DataRuntime runtime, StringBuilder builder, Table meta) throws Exception {
 		//CREATE TABLE partition_name2 PARTITION OF main_table_name FOR VALUES FROM (100) TO (199);
 		//CREATE TABLE emp_0 PARTITION OF emp FOR VALUES WITH (MODULUS 3,REMAINDER 0);
-		//CREATE TABLE hr_user_1 PARTITION OF hr_user FOR VALUES IN ('HR');
+		//CREATE TABLE hr_usr_1 PARTITION OF hr_usr FOR VALUES IN ('HR');
 		Table master = meta.getMaster();
 		if(null == master) {
 			return builder;
@@ -5395,7 +5395,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 
 	/**
 	 * table[命令合成-子流程]<br/>
-	 * 子表执行分区依据(分区依据值)如CREATE TABLE hr_user_fi PARTITION OF hr_user FOR VALUES IN ('FI')
+	 * 子表执行分区依据(分区依据值)如CREATE TABLE hr_usr_fi PARTITION OF hr_usr FOR VALUES IN ('FI')
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder builder
 	 * @param meta 表

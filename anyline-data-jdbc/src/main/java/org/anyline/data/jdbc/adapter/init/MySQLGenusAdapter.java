@@ -5448,7 +5448,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     /**
      * table[命令合成-子流程]<br/>
      * 子表执行分区依据(相关主表及分区值)
-     * 如CREATE TABLE hr_user_fi PARTITION OF hr_user FOR VALUES IN ('FI')
+     * 如CREATE TABLE hr_usr_fi PARTITION OF hr_usr FOR VALUES IN ('FI')
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param builder builder
      * @param meta 表
@@ -5462,7 +5462,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
 
     /**
      * table[命令合成-子流程]<br/>
-     * 子表执行分区依据(分区依据值)如CREATE TABLE hr_user_fi PARTITION OF hr_user FOR VALUES IN ('FI')
+     * 子表执行分区依据(分区依据值)如CREATE TABLE hr_usr_fi PARTITION OF hr_usr FOR VALUES IN ('FI')
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param builder builder
      * @param meta 表
@@ -6207,7 +6207,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     /**
      * column[命令合成]<br/>
      * 修改列
-     * 修改列 ALTER TABLE   HR_USER CHANGE UPT_TIME UPT_TIME datetime   DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP  comment '修改时间' AFTER ID;
+     * 修改列 ALTER TABLE   hr_usr CHANGE UPT_TIME UPT_TIME datetime   DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP  comment '修改时间' AFTER ID;
      * 有可能生成多条SQL
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param meta 列

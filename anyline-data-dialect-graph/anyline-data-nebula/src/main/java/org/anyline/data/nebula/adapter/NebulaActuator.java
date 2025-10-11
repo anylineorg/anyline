@@ -120,8 +120,8 @@ public class NebulaActuator implements DriverActuator {
         int IGNORE_GRAPH_QUERY_RESULT_TABLE = ConfigStore.IGNORE_GRAPH_QUERY_RESULT_TABLE(configs);
         /*
          * 是否合并查询结果中的表,合并后会少一层表名被合并到key中(如果不忽略表名)
-         * 0-不合并 {"HR_USER":{"name":"n22","id":22},"CRM_USER":{"name":"n22","id":22}}
-         * 1-合并  {"HR_USER.name":"n22","HR_USER.id":22,"CRM_USER.name":"n22","CRM_USER.id":22}}
+         * 0-不合并 {"hr_usr":{"name":"n22","id":22},"CRM_USER":{"name":"n22","id":22}}
+         * 1-合并  {"hr_usr.name":"n22","hr_usr.id":22,"CRM_USER.name":"n22","CRM_USER.id":22}}
          * 2-如果1个表则合并 多个表则不合并
          */
         int MERGE_GRAPH_QUERY_RESULT_TABLE = ConfigStore.MERGE_GRAPH_QUERY_RESULT_TABLE(configs);
