@@ -5309,7 +5309,9 @@ public class DataSet<E extends DataRow> implements Collection<E>, Serializable, 
     public DataRow random() {
         DataRow row = null;
         int size = size();
-        if (size > 0) {
+        if(size == 1){
+            row = getRow(0);
+        }else if (size > 1) {
             row = getRow(BasicUtil.getRandomNumber(0, size - 1));
         }
         return row;
