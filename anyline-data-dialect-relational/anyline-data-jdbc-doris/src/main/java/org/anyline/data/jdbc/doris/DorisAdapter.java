@@ -1785,6 +1785,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
             configs.and(Compare.LIKE_SIMPLE,"TABLE_NAME", objectName(runtime, query.getName()));
             configs.and("TABLE_SCHEMA", query.getSchemaName());
             configs.and("TABLE_CATALOG", catalog);
+            configs.order("TABLE_NAME");
         }
 
         return runs;
