@@ -88,6 +88,23 @@ public interface DriverActuator {
     default List<Schema> schemas(DriverAdapter adapter, DataRuntime runtime) {
         return new ArrayList<>();
     }
+
+    /**
+     * 查询
+     * @param adapter adapter
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param random 用来标记同一组命令
+     * @param system 是否系统表
+     * @param table 表
+     * @param configs 过滤条件及相关配置
+     * @param action 执行命令
+     * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
+     * @param cmd 命令
+     * @param values 列对应的值
+     * @param columns 需要查询的列
+     * @return DataSet
+     * @throws Exception Exception
+     */
     DataSet<DataRow> select(DriverAdapter adapter, DataRuntime runtime, String random, boolean system, ACTION.DML action, Table table, ConfigStore configs, Run run, String cmd, List<Object> values, LinkedHashMap<String,Column> columns) throws Exception;
     /**
      * query procedure [调用入口]<br/>

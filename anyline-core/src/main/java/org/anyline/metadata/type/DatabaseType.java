@@ -102,6 +102,7 @@ public enum DatabaseType implements Serializable {
         CouchDB               ("CouchDB"                                   , DatabaseOrigin.None       , KEY_CASE.SRC   , NUMBER_LENGTH_UNIT.BYTE, 953  , null, null                , ""                            ),
         CovenantSQL           ("CovenantSQL"                               , DatabaseOrigin.None       , KEY_CASE.SRC   , NUMBER_LENGTH_UNIT.BYTE, 592  , null, null                , ""                            ),
         Coveo                 ("Coveo"                                     , DatabaseOrigin.None       , KEY_CASE.SRC   , NUMBER_LENGTH_UNIT.BYTE, 876  , null, null                , ""                            ),
+        Coze                 ("Coze"                                     , DatabaseOrigin.None       , KEY_CASE.SRC   , NUMBER_LENGTH_UNIT.BYTE, 876  , null, null                , ""                            ),
         Crase                 ("Crase"                                     , DatabaseOrigin.None       , KEY_CASE.SRC   , NUMBER_LENGTH_UNIT.BYTE, 0    , null, null                , ""                            ),
         CrateDB               ("CrateDB"                                   , DatabaseOrigin.None       , KEY_CASE.SRC   , NUMBER_LENGTH_UNIT.BYTE, 768  , null, null                , ""                            ),
         CrispI                ("CrispI"                                    , DatabaseOrigin.None       , KEY_CASE.SRC   , NUMBER_LENGTH_UNIT.BYTE, 0    , null, null                , ""                            ),
