@@ -233,6 +233,12 @@ public class DefaultAutoCondition extends AbstractCondition implements AutoCondi
 			}catch (NotSupportException ignored) {
 				support = false;
 			}
+		}else if(compareCode == 73) {																// JSON_CONTAINS_PATH_OR
+			try {
+				val = adapter.createConditionJsonOverlaps(runtime, builder, col_builder.toString(), compare, val, placeholder, unicode);
+			}catch (NotSupportException ignored) {
+				support = false;
+			}
 		}else if(compareCode == 75 || compareCode == 76) {																// JSON_CONTAINS_PATH_OR
 			try {
 				val = adapter.createConditionJsonContainsPath(runtime, builder, col_builder.toString(), compare, val, placeholder, unicode);

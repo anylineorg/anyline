@@ -1927,6 +1927,24 @@ public interface DriverAdapter {
     default Object createConditionJsonContainsPath(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value) throws NotSupportException {
         return createConditionJsonContainsPath(runtime, builder, column, compare, value, true, true);
     }
+    /**
+     * select[命令合成-子流程] <br/>
+     * 构造 JSON_OVERLAPS 查询条件
+     * 如果不需要占位符 返回null  否则原样返回value
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param builder builder
+     * @param column 列
+     * @param compare 比较方式 默认 equal 多个值默认 in
+     * @param value value
+     * @return value
+     */
+    default Object createConditionJsonOverlaps(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, Boolean placeholder, Boolean unicode) throws NotSupportException {
+        throw new NotSupportException("不支持");
+    }
+
+    default Object createConditionJsonOverlaps(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value) throws NotSupportException {
+        return createConditionJsonOverlaps(runtime, builder, column, compare, value, true, true);
+    }
     
     /**
      * select[命令合成-子流程] <br/>

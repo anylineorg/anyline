@@ -394,6 +394,11 @@ public enum Compare {
             return 9;
         }
     },
+    JSON_OVERLAPS(73, "json_overlaps", "", " JSON_OVERLAPS ") {
+        public int valueCount() {
+            return 9;
+        }
+    },
     JSON_CONTAINS_PATH_OR(75, "json_contains_path", "", " JSON_CONTAINS_PATH ") {
         //ONE 包含1个即可
         public int valueCount() {

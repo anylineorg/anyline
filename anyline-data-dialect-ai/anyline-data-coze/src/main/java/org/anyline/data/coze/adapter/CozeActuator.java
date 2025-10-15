@@ -29,10 +29,7 @@ import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.DefaultPageNavi;
 import org.anyline.entity.PageNavi;
-import org.anyline.metadata.ACTION;
-import org.anyline.metadata.Column;
-import org.anyline.metadata.Metadata;
-import org.anyline.metadata.Table;
+import org.anyline.metadata.*;
 import org.anyline.net.HttpResponse;
 import org.anyline.net.HttpUtil;
 import org.anyline.util.BeanUtil;
@@ -217,11 +214,15 @@ public class CozeActuator implements DriverActuator {
         ACTION action = run.action();
         CozeRun r = (CozeRun)run;
         CozeRuntime rt = (CozeRuntime)runtime;
-        List<Document> documents = r.getDocuments();
         if(action == ACTION.DML.DELETE){
+            List<Document> documents = r.getDocuments();
             for(Document document:documents){
                 count += delete(rt, r.getTable(), document);
             }
+        }else if(action == ACTION.DDL.TABLE_CREATE){
+            Table table = r.getTable();
+            create(rt, table);
+            count ++;
         }
         return count;
     }
@@ -249,6 +250,40 @@ public class CozeActuator implements DriverActuator {
      */
     public DataRow upload(CozeRuntime runtime, String url, Document document, Map<String, Object> params) throws Exception {
        return null;
+    }
+
+    /**
+     * 创建知识库
+     * @param table
+     * @return
+     * @throws Exception
+     */
+    public Table create(CozeRuntime runtime, Table table) throws Exception{
+        String name = table.getName();
+        String api = runtime.client().getHost() + "/v1/datasets";
+        Map<String, String> headers = header(runtime);
+        Map<String, Object> body = new HashMap<>();
+        Schema schema = table.getSchema();
+        if(null != schema) {
+            body.put("space_id", schema.getId());
+        }
+        body.put("name", name);
+        body.put("format_type", 0);
+        String json = BeanUtil.map2json(body);
+        HttpResponse response = HttpUtil.post(headers, api,"UTF-8", new StringEntity(json, "UTF-8"));
+        int status = response.getStatus();
+        if(status != 200){
+            throw new Exception("创建知识库http状态异常:" + status);
+        }
+        String text = response.getText();
+        DataRow row = DataRow.parseJson(text);
+        int code = row.getInt("code");
+        if(code != 0){
+            throw new Exception(row.getString("msg"));
+        }
+        table.setId(row.getRow("data").getString("dataset_id"));
+        table.setName(name);
+        return table;
     }
 
     /**
