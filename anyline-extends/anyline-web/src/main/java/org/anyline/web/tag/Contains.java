@@ -15,22 +15,15 @@
  */
 
 package org.anyline.web.tag;
- 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+
+import org.anyline.util.BasicUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
-
-import org.anyline.util.BasicUtil;
-import org.anyline.util.BeanUtil;
-import org.anyline.util.ClassUtil;
-import org.anyline.util.NumberUtil;
-import org.anyline.log.Log;
-import org.anyline.log.LogProxy;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
  
 public class Contains extends BaseBodyTag {
 	private static final long serialVersionUID = 1L; 
@@ -55,14 +48,6 @@ public class Contains extends BaseBodyTag {
 				if(data instanceof String) {
 					if(data.toString().endsWith("}")) {
 						data = data.toString().replace("{", "").replace("}", "");
-					}else{
-						if("servlet".equals(scope) || "application".equalsIgnoreCase(scope)) {
-							data = request.getSession().getServletContext().getAttribute(data.toString());
-						}else if("session".equals(scope)) {
-							data = request.getSession().getAttribute(data.toString());
-						}else{
-							data = request.getAttribute(data.toString());
-						}
 					}
 				}
 				if(data instanceof String) {
