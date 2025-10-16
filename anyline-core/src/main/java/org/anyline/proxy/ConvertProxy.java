@@ -122,13 +122,20 @@ public class ConvertProxy {
             if(target == String.class) {
                 if(value instanceof Collection) {
                     //集合<基础类型> > String
-                    Collection col = (Collection) value;
-                    Class component = ClassUtil.getComponentClass(value);
-                    if(ClassUtil.isPrimitiveClass(component) || component == String.class) {
-                        if("concat".equalsIgnoreCase(ConfigTable.LIST2STRING_FORMAT)) {
-                            return BeanUtil.concat(col);
-                        }else if("json".equalsIgnoreCase(ConfigTable.LIST2STRING_FORMAT)) {
-                            return BeanUtil.object2json(col);
+                    //如果是JsonArray对象，不要提取条目，应该toString后整个保存到数据库
+
+                    String cn = value.getClass().getName().toUpperCase();
+                    if(cn.contains("JSON") || cn.contains("BSON")) {
+                        return value.toString();
+                    }else{
+                        Collection col = (Collection) value;
+                        Class component = ClassUtil.getComponentClass(value);
+                        if(ClassUtil.isPrimitiveClass(component) || component == String.class) {
+                            if("concat".equalsIgnoreCase(ConfigTable.LIST2STRING_FORMAT)) {
+                                return BeanUtil.concat(col);
+                            }else if("json".equalsIgnoreCase(ConfigTable.LIST2STRING_FORMAT)) {
+                                return BeanUtil.object2json(col);
+                            }
                         }
                     }
                 }else if(value.getClass().isArray()) {

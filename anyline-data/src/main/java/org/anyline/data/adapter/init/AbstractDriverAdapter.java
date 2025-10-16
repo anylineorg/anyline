@@ -220,6 +220,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         reg(initEdgeFieldRefer());
         reg(initVertexFieldRefer());
         reg(initColumnFieldRefer());
+        reg(initDataTypeFieldRefer());
         reg(initTagFieldRefer());
         reg(initViewFieldRefer());
         reg(initPrimaryKeyFieldRefer());

@@ -418,22 +418,25 @@ public abstract class AbstractRun implements Run {
 							}
 						}
 					}else if(obj instanceof Collection && !json) {
-						Collection list = (Collection)obj;
-						for(Object item:list) {
-							RunValue rv = new RunValue(column, item);
-							addValues(rv);
-							rvs.add(rv);
-							if(Compare.EQUAL == compare) {
-								break;
+						//如果是JsonArray对象，不要提取条目，应该toString后整个保存到数据库
+						String clazz = obj.getClass().getName().toUpperCase();
+						if(!clazz.contains("JSON") && !clazz.contains("BSON")) {
+							Collection list = (Collection)obj;
+							for(Object item:list) {
+								RunValue rv = new RunValue(column, item);
+								addValues(rv);
+								rvs.add(rv);
+								if(Compare.EQUAL == compare) {
+									break;
+								}
+							}
+							//不要在最后添加new RunValue(column, obj); obj有可能是个数据库不支持的类型
+							if(list.isEmpty()) {
+								RunValue rv = new RunValue(column, null);
+								addValues(rv);
+								rvs.add(rv);
 							}
 						}
-						//不要在最后添加new RunValue(column, obj); obj有可能是个数据库不支持的类型
-						if(list.isEmpty()) {
-							RunValue rv = new RunValue(column, null);
-							addValues(rv);
-							rvs.add(rv);
-						}
-
 					}
 				}
 			}
