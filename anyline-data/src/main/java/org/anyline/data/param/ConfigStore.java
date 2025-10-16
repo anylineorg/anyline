@@ -1156,6 +1156,23 @@ public interface ConfigStore extends Cloneable{
 		return and(Compare.JSON_CONTAINS_PATH_AND, var, value);
 	}
 
+	default ConfigStore jsonOverlaps(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue) {
+		return and(swt, Compare.JSON_OVERLAPS, id, var, value, overCondition, overValue);
+	}
+	default ConfigStore jsonOverlaps(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue) {
+		return and(swt, Compare.JSON_OVERLAPS, var, value, overCondition, overValue);
+	}
+	default ConfigStore jsonOverlaps(String id, String var, Object value, boolean overCondition, boolean overValue) {
+		return and(Compare.JSON_OVERLAPS, id, var, value, overCondition, overValue);
+	}
+	default ConfigStore jsonOverlaps(String var, Object value, boolean overCondition, boolean overValue) {
+		return and(Compare.JSON_OVERLAPS, var, value, overCondition, overValue);
+	}
+	default ConfigStore jsonOverlaps(String var, Object value) {
+		return and(Compare.JSON_OVERLAPS, var, value);
+	}
+
+
 	default ConfigStore jsonSearch(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(swt, Compare.JSON_SEARCH, id, var, value, overCondition, overValue);
 	}

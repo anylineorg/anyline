@@ -19177,7 +19177,12 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		if(null != writer) {
 			result = writer.write(value, placeholder, unicode, columnType);
-		}
+		} else {
+            //没有定义writer 如果需要转成String直接调用toString方法
+            if(null != value && null != columnType && columnType.getCategoryGroup() == TypeMetadata.CATEGORY_GROUP.STRING){
+                value = value.toString();
+            }
+        }
 		if(null != result) {
             return write(runtime, result, placeholder, unicode);
 		}

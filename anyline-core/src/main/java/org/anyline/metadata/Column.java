@@ -688,7 +688,9 @@ public class Column extends TableAffiliation<Column> implements Serializable {
     public void setOriginType(String originType) {
         type.setOriginType(originType);
     }
-
+    public String getOriginType() {
+        return type.getOriginType();
+    }
 
 
     /**
