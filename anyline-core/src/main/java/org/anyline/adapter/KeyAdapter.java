@@ -21,7 +21,7 @@ import org.anyline.adapter.init.*;
 import java.io.Serializable;
 
 public interface KeyAdapter extends Serializable {
-    public static enum KEY_CASE{
+    enum KEY_CASE{
         CONFIG                {public String getCode() {return "CONFIG";}             public String getName() {return "按配置文件";}},
         SRC                    {public String getCode() {return "SRC";}             public String getName() {return "不转换";}},
         UPPER                {public String getCode() {return "UPPER";}             public String getName() {return "强制大写";} public String convert(String value) {if(null == value) return null; else return value.toUpperCase();}},
@@ -45,9 +45,9 @@ public interface KeyAdapter extends Serializable {
             return value;
         }
     }
-    public String key(String key);
-    public KEY_CASE getKeyCase();
-    public static KeyAdapter parse(KEY_CASE keyCase) {
+    String key(String key);
+    KEY_CASE getKeyCase();
+    static KeyAdapter parse(KEY_CASE keyCase) {
         KeyAdapter adapter;
         switch (keyCase) {
             case UPPER:        //转大写
