@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <parent>
+        <groupId>org.anyline</groupId>
+        <artifactId>anyline-dependency</artifactId>
+        <version>8.7.3-SNAPSHOT</version>
+        <relativePath>../../anyline-dependency/pom.xml</relativePath>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>anyline-data-jdbc-neo4j</artifactId>
+    <packaging>jar</packaging>
+    <name>anyline data jdbc neo4j</name>
+    <url>http://www.anyline.org/neo4j</url>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.anyline</groupId>
+            <artifactId>anyline-data-graph</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.neo4j.driver</groupId>
+            <artifactId>neo4j-java-driver</artifactId>
+            <version>5.28.10</version>
+            <scope>provided</scope>
+        </dependency>
+
+    </dependencies>
+</project>

@@ -16,6 +16,7 @@
     <modules>
 		<module>anyline-data-nebula</module>
 		<module>anyline-data-jdbc-neo4j</module>
+		<module>anyline-data-neo4j</module>
         <module>anyline-data-tugraph</module>
     </modules>
 	<build>

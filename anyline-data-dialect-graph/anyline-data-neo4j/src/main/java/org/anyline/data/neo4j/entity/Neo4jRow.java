@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.anyline.data.jdbc.neo4j.entity;
+package org.anyline.data.neo4j.entity;
 
 import org.anyline.entity.graph.GraphRow;
 import org.anyline.util.BasicUtil;

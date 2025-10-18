@@ -125,7 +125,11 @@ public class CommandParser {
                 String box = boxes.get(0).get(0);
                 String prev = RegularUtil.cut(text, RegularUtil.TAG_BEGIN, box);
                 List<Variable> vars = parseTextVariable(supportSqlVarPlaceholderRegexExt,  prev, Compare.EMPTY_VALUE_SWITCH.NULL);
-                run.addVariable(vars);
+                for(Variable var:vars){
+                    if(!"null".equals(var.getKey())) {  // "code":null
+                        run.addVariable(var);
+                    }
+                }
                 VariableBlock block = parseTextVarBox(runtime, run.getConfigs(), text, box);
                 if(null != block) {
                     run.addVariableBlock(block);
@@ -135,7 +139,11 @@ public class CommandParser {
                 parseText(runtime, run, next);
             }else{
                 List<Variable> vars = parseTextVariable(supportSqlVarPlaceholderRegexExt, text, Compare.EMPTY_VALUE_SWITCH.NULL);
-                run.addVariable(vars);
+                for(Variable var:vars){
+                    if(!"null".equals(var.getKey())) {  // "code":null
+                        run.addVariable(var);
+                    }
+                }
             }
             //解析
         }catch(Exception e) {

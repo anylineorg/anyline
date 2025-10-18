@@ -48,18 +48,19 @@
 		<jdbc-postgis.version>1.3.3</jdbc-postgis.version>
 		<jdbc-highgo.version>6.2.3</jdbc-highgo.version>
 		<jdbc-mariadb.version>2.4.4</jdbc-mariadb.version>
-		<jdbc-clickhouse.veriosn>0.4.6</jdbc-clickhouse.veriosn>
-		<jdbc-dm.veriosn>8.1.1.49</jdbc-dm.veriosn>
-		<jdbc-sqlite.veriosn>3.36.0.3</jdbc-sqlite.veriosn>
-		<jdbc-neo4j.veriosn>4.0.0</jdbc-neo4j.veriosn>
-		<jdbc-nebula.veriosn>3.3.0</jdbc-nebula.veriosn>
-		<data-nebula.veriosn>3.8.0</data-nebula.veriosn>
+		<jdbc-clickhouse.version>0.4.6</jdbc-clickhouse.version>
+		<jdbc-dm.version>8.1.1.49</jdbc-dm.version>
+		<jdbc-sqlite.version>3.36.0.3</jdbc-sqlite.version>
+		<jdbc-neo4j.version>4.0.0</jdbc-neo4j.version>
+		<jdbc-nebula.version>3.3.0</jdbc-nebula.version>
+		<data-nebula.version>3.8.0</data-nebula.version>
 		<jdbc-tdengine.version>3.0.0</jdbc-tdengine.version>
 		<jdbc-jcouchdb.version>1.0.1-1</jdbc-jcouchdb.version>
 		<jdbc-informix.version>4.50.10</jdbc-informix.version>
 		<jdbc-iotdb.version>1.1.1</jdbc-iotdb.version>
 		<jdbc-voltdb.version>13.0.0</jdbc-voltdb.version>
 		<jdbc-odps.version>3.6.0</jdbc-odps.version>
+		<driver-neo4j.version>6.0</driver-neo4j.version>
 		<elasticsearch.version>8.7.0</elasticsearch.version>
 		<mongodb-client.version>5.1.0</mongodb-client.version>
 		<influxdb-client.version>5.0.0</influxdb-client.version>
@@ -480,6 +481,11 @@
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
+				<artifactId>anyline-data-neo4j</artifactId>
+				<version>${anyline.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
 				<artifactId>anyline-data-jdbc-nebula</artifactId>
 				<version>${anyline.version}</version>
 			</dependency>
@@ -892,7 +898,7 @@
 			<dependency>
 				<groupId>com.dameng</groupId>
 				<artifactId>Dm8JdbcDriver18</artifactId>
-				<version>${jdbc-dm.veriosn}</version>
+				<version>${jdbc-dm.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.highgo</groupId>
@@ -917,17 +923,22 @@
 			<dependency>
 				<groupId>org.neo4j</groupId>
 				<artifactId>neo4j-jdbc-driver</artifactId>
-				<version>${jdbc-neo4j.veriosn}</version>
+				<version>${jdbc-neo4j.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.neo4j.driver</groupId>
+				<artifactId>neo4j-java-driver</artifactId>
+				<version>${driver-neo4j.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.nebula-contrib</groupId>
 				<artifactId>nebula-jdbc</artifactId>
-				<version>${jdbc-nebula.veriosn}</version>
+				<version>${jdbc-nebula.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.vesoft</groupId>
 				<artifactId>client</artifactId>
-				<version>${data-nebula.veriosn}</version>
+				<version>${data-nebula.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>mysql</groupId>
@@ -1286,12 +1297,12 @@
 			<dependency>
 				<groupId>com.clickhouse</groupId>
 				<artifactId>clickhouse-jdbc</artifactId>
-				<version>${jdbc-clickhouse.veriosn}</version>
+				<version>${jdbc-clickhouse.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.xerial</groupId>
 				<artifactId>sqlite-jdbc</artifactId>
-				<version>${jdbc-sqlite.veriosn}</version>
+				<version>${jdbc-sqlite.version}</version>
 			</dependency>
 			<!--JDK17+-->
 			<dependency>
