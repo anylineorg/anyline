@@ -193,7 +193,7 @@ public class JDBCDataSourceHolder extends AbstractDataSourceHolder implements Da
                     if(BasicUtil.isEmpty(role)) {
                         role = org.anyline.data.util.DataSourceUtil.parseRole(url);
                     }
-                    if(BasicUtil.isEmpty(role)) {
+                    if(BasicUtil.isNotEmpty(role)) {
                         String[] roles = role.split(",");
                         List<Role> list = new ArrayList<>();
                         for(String item:roles){

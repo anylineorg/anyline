@@ -2619,7 +2619,8 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
                     String[] nums = columns.split(" ");
                     for(String num:nums) {
                         for(Column col:cols.values()) {
-                            if(num.equals(col.getPosition())) {
+                            Integer pos = col.getPosition();
+                            if(null != pos && num.equals(String.valueOf(pos))) {
                                 meta.addColumn(col);
                                 break;
                             }
