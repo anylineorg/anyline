@@ -11,9 +11,9 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>anyline-data-jdbc-neo4j</artifactId>
+    <artifactId>anyline-data-neo4j</artifactId>
     <packaging>jar</packaging>
-    <name>anyline data jdbc neo4j</name>
+    <name>anyline data neo4j</name>
     <url>http://www.anyline.org/neo4j</url>
 
     <dependencies>
@@ -24,7 +24,7 @@
         <dependency>
             <groupId>org.neo4j.driver</groupId>
             <artifactId>neo4j-java-driver</artifactId>
-            <version>5.28.10</version>
+            <version>4.4.16</version>
             <scope>provided</scope>
         </dependency>
 
