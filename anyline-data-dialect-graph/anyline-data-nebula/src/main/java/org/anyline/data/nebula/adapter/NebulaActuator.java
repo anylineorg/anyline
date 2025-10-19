@@ -16,7 +16,6 @@
 
 package org.anyline.data.nebula.adapter;
 
-import com.vesoft.nebula.Vertex;
 import com.vesoft.nebula.client.graph.SessionPool;
 import com.vesoft.nebula.client.graph.data.DateWrapper;
 import com.vesoft.nebula.client.graph.data.ResultSet;
@@ -31,7 +30,7 @@ import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.graph.GraphRow;
-import org.anyline.entity.graph.VertexRow;
+import org.anyline.entity.graph.Vertex;
 import org.anyline.exception.CommandUpdateException;
 import org.anyline.metadata.*;
 
@@ -147,12 +146,12 @@ public class NebulaActuator implements DriverActuator {
                 if (wrapper.isVertex()) {//点
                     DataRow row = null;
                     if (IGNORE_GRAPH_QUERY_RESULT_TOP_KEY == 0) { //是否忽略查询结果中顶层的key
-                        row = new VertexRow();
+                        row = new Vertex();
                         top.put(col, row);
                     } else {
                         row = top;
                     }
-                    Vertex vertex = value.getVVal();
+                    com.vesoft.nebula.Vertex vertex = value.getVVal();
                     Object vid = vertex.vid.getFieldValue();
                     if (vid instanceof byte[]) {
                         vid = new String((byte[]) vid);
@@ -174,7 +173,7 @@ public class NebulaActuator implements DriverActuator {
                         if (MERGE_GRAPH_QUERY_RESULT_TABLE == 1) {
                             tag_row = row;
                         } else {
-                            tag_row = new VertexRow();
+                            tag_row = new Vertex();
                             tag_row.addTable(src_table);
                             row.put(tag_name, tag_row);
                         }

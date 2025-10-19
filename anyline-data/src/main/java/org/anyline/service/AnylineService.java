@@ -299,64 +299,94 @@ public interface AnylineService<E>{
 	 * @return 影响行数
 	 */
 	default long upsert(int batch, String dest, Object data, ConfigStore configs, List<String> columns) {
+		configs.override(true);
 		return insert(batch, dest, data, configs, columns);
 	}
 	default long upsert(int batch, String dest, Object data, List<String> columns) {
-		return insert(batch, dest, data, columns);
+		ConfigStore configs = new DefaultConfigStore();
+		configs.override(true);
+		return insert(batch, dest, data, configs, columns);
 	}
 	default long upsert(int batch, Object data, String ... columns) {
-		return insert(batch, data, columns);
+		ConfigStore configs = new DefaultConfigStore();
+		configs.override(true);
+		return insert(batch, data, configs, columns);
 	}
 	default long upsert(int batch, Object data, ConfigStore configs, String ... columns) {
+		configs.override(true);
 		return insert(batch, data, configs, columns);
 	}
 	default long upsert(int batch, String dest, Object data, String ... columns) {
-		return insert(batch, dest, data, columns);
+		ConfigStore configs = new DefaultConfigStore();
+		configs.override(true);
+		return insert(batch, dest, data, configs, columns);
 	}
 	default long upsert(int batch, String dest, Object data, ConfigStore configs, String ... columns) {
+		configs.override(true);
 		return insert(batch, dest, data, configs, columns);
 	}
 	default long upsert(String dest, Object data, List<String> columns) {
-		return insert(dest, data, columns);
+		ConfigStore configs = new DefaultConfigStore();
+		configs.override(true);
+		return insert(dest, data, configs, columns);
 	}
 	default long upsert(String dest, Object data, ConfigStore configs, List<String> columns) {
+		configs.override(true);
 		return insert(dest, data, configs, columns);
 	}
 	default long upsert(String dest, Object data, String ... columns) {
-		return insert(dest, data, columns);
+		ConfigStore configs = new DefaultConfigStore();
+		configs.override(true);
+		return insert(dest, data, configs, columns);
 	}
 	default long upsert(String dest, Object data, ConfigStore configs, String ... columns) {
+		configs.override(true);
 		return insert(dest, data, configs, columns);
 	}
 	default long upsert(Object data, String ... columns) {
-		return insert(data, columns);
+		ConfigStore configs = new DefaultConfigStore();
+		configs.override(true);
+		return insert(data, configs, columns);
 	}
 	default long upsert(Object data, ConfigStore configs, String ... columns) {
+		configs.override(true);
 		return insert(data, configs, columns);
 	}
 
 	default long upsert(int batch, Table dest, Object data, ConfigStore configs, List<String> columns) {
+		configs.override(true);
 		return insert(batch, dest, data, configs, columns);
 	}
 	default long upsert(int batch, Table dest, Object data, List<String> columns) {
-		return insert(batch, dest, data, columns);
+		ConfigStore configs = new DefaultConfigStore();
+		configs.override(true);
+		return insert(batch, dest, data, configs, columns);
 	}
 	default long upsert(int batch, Table dest, Object data, String ... columns) {
-		return insert(batch, dest, data, columns);
+		ConfigStore configs = new DefaultConfigStore();
+		configs.override(true);
+		return insert(batch, dest, data, configs, columns);
 	}
 	default long upsert(int batch, Table dest, Object data, ConfigStore configs, String ... columns) {
+		configs.override(true);
 		return insert(batch, dest, data, configs, columns);
 	}
 	default long upsert(Table dest, Object data, List<String> columns) {
-		return insert(dest, data, columns);
+		ConfigStore configs = new DefaultConfigStore();
+		configs.override(true);
+		return insert(dest, data, configs, columns);
 	}
 	default long upsert(Table dest, Object data, ConfigStore configs, List<String> columns) {
+		configs.override(true);
 		return insert(dest, data, configs, columns);
 	}
 	default long upsert(Table dest, Object data, String ... columns) {
-		return insert(dest, data, columns);
+		ConfigStore configs = new DefaultConfigStore();
+		configs.override(true);
+		return insert(dest, data, configs, columns);
 	}
 	default long upsert(Table dest, Object data, ConfigStore configs, String ... columns) {
+		configs.override(true);
 		return insert(dest, data, configs, columns);
 	}
 
@@ -373,6 +403,7 @@ public interface AnylineService<E>{
 	 * @return 影响行数
 	 */
 	default long upsert(Table dest, Table origin, ConfigStore configs, Object obj, String ... conditions) {
+		configs.override(true);
 		return insert(dest, origin, configs, obj, conditions);
 	}
 	default long upsert(Table dest, Table origin, Object obj, String ... conditions) {

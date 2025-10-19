@@ -28,8 +28,8 @@ import org.anyline.data.run.*;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
 import org.anyline.entity.generator.PrimaryGenerator;
-import org.anyline.entity.graph.EdgeRow;
-import org.anyline.entity.graph.VertexRow;
+import org.anyline.entity.graph.Edge;
+import org.anyline.entity.graph.Vertex;
 import org.anyline.exception.CommandException;
 import org.anyline.exception.CommandQueryException;
 import org.anyline.exception.CommandUpdateException;
@@ -648,9 +648,9 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
         if(null != configs) {
             override = configs.override();
         }
-        if(table instanceof VertexTable || value instanceof VertexRow) {
+        if(table instanceof VertexTable || value instanceof Vertex) {
             builder.append("VERTEX ");
-        }else if(table instanceof EdgeTable || value instanceof EdgeRow) {
+        }else if(table instanceof EdgeTable || value instanceof Edge) {
             builder.append("EDGE ");
         }
         //如果数据存在 则不覆盖
@@ -666,9 +666,9 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
         if(null != configs) {
             override = configs.override();
         }
-        if(table instanceof VertexTable || value instanceof VertexRow) {
+        if(table instanceof VertexTable || value instanceof Vertex) {
             builder.append("VERTEX ");
-        }else if(table instanceof EdgeTable || value instanceof EdgeRow) {
+        }else if(table instanceof EdgeTable || value instanceof Edge) {
             builder.append("EDGE ");
         }
         builder.append("ON ");
@@ -680,17 +680,17 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
     public String deleteHead(DataRuntime runtime, ConfigStore configs, Table table, Object value) {
         StringBuilder builder = new StringBuilder();
         builder.append("DELETE ");
-        if(table instanceof VertexTable || value instanceof VertexRow) {
+        if(table instanceof VertexTable || value instanceof Vertex) {
             builder.append("VERTEX ");
-        }else if(table instanceof EdgeTable || value instanceof EdgeRow) {
+        }else if(table instanceof EdgeTable || value instanceof Edge) {
             builder.append("EDGE ");
         }
         builder.append(" \"").append(EntityAdapter.getPrimaryValue(value)).append("\" ");
         if(null != configs && configs.cascade()) {
             builder.append("WITH ");
-            if(table instanceof VertexTable || value instanceof VertexRow) {
+            if(table instanceof VertexTable || value instanceof Vertex) {
                 builder.append("EDGE");
-            }else if(table instanceof EdgeTable || value instanceof EdgeRow) {
+            }else if(table instanceof EdgeTable || value instanceof Edge) {
                 builder.append("VERTEX");
             }
         }
