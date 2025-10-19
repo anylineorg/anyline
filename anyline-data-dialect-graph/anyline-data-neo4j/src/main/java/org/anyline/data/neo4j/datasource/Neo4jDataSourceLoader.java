@@ -29,7 +29,7 @@ import org.neo4j.driver.Driver;
 import java.util.ArrayList;
 import java.util.List;
 
-@AnylineComponent("anyline.environment.data.datasource.loader.Neo4j")
+@AnylineComponent("anyline.environment.data.datasource.loader.neo4j")
 public class Neo4jDataSourceLoader extends AbstractDataSourceLoader implements DataSourceLoader {
 
     private final Neo4jDataSourceHolder holder = Neo4jDataSourceHolder.instance();

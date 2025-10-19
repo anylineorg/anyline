@@ -30,22 +30,21 @@ import org.anyline.metadata.ACTION;
 import org.anyline.metadata.Column;
 import org.anyline.metadata.Metadata;
 import org.anyline.metadata.Table;
-import org.neo4j.driver.Driver;
-import org.neo4j.driver.Record;
-import org.neo4j.driver.Result;
-import org.neo4j.driver.Session;
+import org.anyline.util.BeanUtil;
+import org.neo4j.driver.*;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-@AnylineComponent("anyline.environment.data.driver.actuator.nebula")
+@AnylineComponent("anyline.environment.data.driver.actuator.neo4j")
 public class Neo4jActuator implements DriverActuator {
     @Override
     public Class<? extends DriverAdapter> supportAdapterType() {
-        return main.java.org.anyline.data.neo4j.adapter.Neo4jAdapter.class;
+        return org.anyline.data.neo4j.adapter.Neo4jAdapter.class;
     }
     protected Driver driver(DataRuntime runtime) {
         return ((Neo4jRuntime)runtime).driver();
@@ -99,11 +98,8 @@ public class Neo4jActuator implements DriverActuator {
         DataSet<DataRow> set = new DataSet();
         final LinkedHashMap<String, Column> metadatas = new LinkedHashMap<>();
         set.setMetadata(metadatas);
-        try (Session session = driver(runtime).session()){
-
-        }
-
-        Result rs = session(runtime).run(cmd);
+        Session session = session(runtime);
+        Result rs = session.run(cmd);
         while (rs.hasNext()) {
             Neo4jRow row = new Neo4jRow();
             set.addRow(row);
@@ -113,6 +109,7 @@ public class Neo4jActuator implements DriverActuator {
                 row.put(key, record.get(key));
             }
         }
+        session.close();
         return set;
     }
 
@@ -130,7 +127,32 @@ public class Neo4jActuator implements DriverActuator {
     public long insert(DriverAdapter adapter, DataRuntime runtime, String random, Object data, ConfigStore configs, Run run, String generatedKey, String[] pks) throws Exception {
         Session session = session(runtime);
         String cmd = run.getFinalInsert();
-        session.writeTransaction(tx -> tx.run(cmd));
+        try (Transaction tx = session.beginTransaction()) {
+            Result result = tx.run(cmd);
+            Record record = result.single();
+            int size = record.size();
+            if(size > 0) {
+                if (data instanceof Collection) {
+                    Collection list = (Collection) data;
+                    int idx = 0;
+                    for (Object item : list) {
+                        Value value = record.get(idx ++);
+                        if (null != value) {
+                            Long id = value.asLong();
+                            BeanUtil.setFieldValue(item, "id", id);
+                        }
+                    }
+                } else {
+                    Value value = record.get(0);
+                    if (null != value) {
+                        Long id = value.asLong();
+                        BeanUtil.setFieldValue(data, "id", id);
+                    }
+                }
+            }
+            tx.commit();
+        }
+        session.close();
         return 0;
     }
 
@@ -140,6 +162,7 @@ public class Neo4jActuator implements DriverActuator {
         String cmd = run.getBuilder().toString();
         session.writeTransaction(tx -> tx.run(cmd));
         //不返回影响行数
+        session.close();
         return 0;
     }
 
@@ -148,6 +171,7 @@ public class Neo4jActuator implements DriverActuator {
         String cmd = run.getFinalExecute();
         Session session = session(runtime);
         session.run(cmd);
+        session.close();
         return 0;
     }
 }

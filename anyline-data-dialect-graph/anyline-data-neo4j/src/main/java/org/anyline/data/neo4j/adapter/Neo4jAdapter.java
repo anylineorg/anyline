@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package main.java.org.anyline.data.neo4j.adapter;
+package org.anyline.data.neo4j.adapter;
 
 import org.anyline.adapter.EntityAdapter;
 import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.graph.adapter.init.AbstractGraphAdapter;
 import org.anyline.data.neo4j.adapter.Neo4jTypeMetadataAlias;
+import org.anyline.data.neo4j.entity.Neo4jRow;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.RunPrepare;
@@ -208,13 +209,13 @@ public class Neo4jAdapter extends AbstractGraphAdapter implements DriverAdapter 
             pks = set.getRow(0).getPrimaryColumns();
             columns.putAll(pks);
         }
-        //INSERT VERTEX t2 (name, age) VALUES "13":("n3", 12), "14":("n4", 8);
-        builder.append(insertHead(configs, dest, set.getRow(0)));
-        name(runtime, builder, dest);//.append(parseTable(dest));
-        builder.append("(");
-        delimiter(builder, Column.names(columns));
-        builder.append(") VALUES ");
+        /*CREATE (n:Person {name: 'Alice'})
+        CREATE (m:Person {name: 'Bob'})
+        RETURN id(n) AS aliceId, id(m) AS bobId
+        */
         int dataSize = set.size();
+        StringBuilder foot = new StringBuilder();
+        foot.append("RETURN ");
         for(int i=0; i<dataSize; i++) {
             DataRow row = set.getRow(i);
             if(null == row) {
@@ -224,17 +225,15 @@ public class Neo4jAdapter extends AbstractGraphAdapter implements DriverAdapter 
                 if(null != generator) {
                     generator.create(row, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), BeanUtil.getMapKeys(pks), null);
                 }
-                //createPrimaryValue(row, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
             }
-            builder.append(insertValue(runtime, run, row, true, true, false, true, columns));
-            if(batch <=1) {
-                if (i < dataSize - 1) {
-                    //多行数据之间的分隔符
-                    builder.append(batchInsertSeparator());
-                }
+            builder.append("CREATE (n").append(i).append(":").append(dest.getName()).append(" ");
+            builder.append(json(row)).append(")\n");
+            if(i > 0){
+                foot.append(",");
             }
+            foot.append(" id(n").append(i).append(") AS id").append(i);
         }
-        builder.append(insertFoot(configs, columns));
+        builder.append(foot);
     }
 
     /**
@@ -269,15 +268,11 @@ public class Neo4jAdapter extends AbstractGraphAdapter implements DriverAdapter 
         if(null != generator) {
             columns.putAll(EntityAdapterProxy.primaryKeys(entity.getClass()));
         }
-        Object first = list.iterator().next();
-        //INSERT VERTEX t2 (name, age) VALUES "13":("n3", 12), "14":("n4", 8);
-        builder.append(insertHead(configs, dest, first));
-        name(runtime, builder, dest);// .append(parseTable(dest));
-        builder.append("(");
-        delimiter(builder, Column.names(columns));
-        builder.append(") VALUES ");
         int dataSize = list.size();
         int idx = 0;
+
+        StringBuilder foot = new StringBuilder();
+        foot.append("RETURN ");
         for(Object obj:list) {
             boolean create = EntityAdapterProxy.createPrimaryValue(obj, Column.names(columns));
             if(!create && null != generator) {
@@ -288,9 +283,33 @@ public class Neo4jAdapter extends AbstractGraphAdapter implements DriverAdapter 
                 //多行数据之间的分隔符
                 builder.append(batchInsertSeparator());
             }
+            if(null == obj) {
+                continue;
+            }
+
+            builder.append("CREATE (n").append(idx).append(":").append(dest.getName()).append(" ");
+            builder.append(json(obj)).append(")\n");
+            if(idx > 0){
+                foot.append(",");
+            }
+            foot.append(" id(n").append(idx).append(") AS id").append(idx);
             idx ++;
         }
-        builder.append(insertFoot(configs, columns));
+        builder.append(foot);
+    }
+    private String json(Object obj){
+        Neo4jRow neo4jRow = null;
+        if(obj instanceof Neo4jRow){
+            neo4jRow = (Neo4jRow) obj;
+        }else if(obj instanceof DataRow){
+            neo4jRow = new Neo4jRow((DataRow) obj);
+        }else if(obj instanceof Map){
+            neo4jRow = new Neo4jRow(new DataRow((Map)obj));
+        }else {
+            DataRow row = new DataRow(BeanUtil.object2map(obj));
+            neo4jRow = new Neo4jRow(row);
+        }
+        return neo4jRow.json();
     }
 
     /**
@@ -307,7 +326,6 @@ public class Neo4jAdapter extends AbstractGraphAdapter implements DriverAdapter 
      * @param child          是否在子查询中，子查询中不要用序列
      */
     protected String insertValue(DataRuntime runtime, Run run, Object obj, boolean child, Boolean placeholder, boolean alias, boolean scope, LinkedHashMap<String,Column> columns) {
-        //INSERT VERTEX t2 (name, age) VALUES "13":("n3", 12), "14":("n4", 8);
         int batch = run.getBatch();
         StringBuilder builder = new StringBuilder();
         Object pv = EntityAdapter.getPrimaryValue(obj);
@@ -482,52 +500,7 @@ public class Neo4jAdapter extends AbstractGraphAdapter implements DriverAdapter 
         }else{
             replaceEmptyNull = ConfigStore.IS_REPLACE_EMPTY_NULL(configs);
         }
-        //INSERT VERTEX t2 (name, age) VALUES "11":("n4", 15);
-        builder.append(insertHead(configs, dest, obj));
-        name(runtime, builder, dest);
-        builder.append("(");
-        delimiter(builder, Column.names(cols));
-        builder.append(")");
-        Object pv = EntityAdapter.getPrimaryValue(obj);
-        builder.append(" VALUES '").append(pv).append("':");
-        builder.append("(");
-        List<String> insertColumns = new ArrayList<>();
-        boolean first = true;
-        for(Column column:cols.values()) {
-            if(!first) {
-                builder.append(", ");
-            }
-            first = false;
-            String key = column.getName();
-            Object value = null;
-            if(!(obj instanceof Map) && EntityAdapterProxy.hasAdapter(obj.getClass())) {
-                value = BeanUtil.getFieldValue(obj, EntityAdapterProxy.field(obj.getClass(), key));
-            }else{
-                value = BeanUtil.getFieldValue(obj, key, true);
-            }
-
-            String str = null;
-            if(value instanceof String) {
-                str = (String)value;
-            }
-
-            //if (str.startsWith("${") && str.endsWith("}")) {
-            if (BasicUtil.checkEl(str)) {
-                value = str.substring(2, str.length()-1);
-                builder.append(value);
-            }else if(value instanceof SQL_BUILD_IN_VALUE) {
-                //内置函数值
-                value = value(runtime, null, (SQL_BUILD_IN_VALUE)value);
-                builder.append(value);
-            }else{
-                insertColumns.add(key);
-                //format(valuesBuilder, value);
-                builder.append(write(runtime, null, value, false, false));
-            }
-        }
-        builder.append(")");
-        builder.append(insertFoot(configs, cols));
-        run.setInsertColumns(insertColumns);
+        builder.append("CREATE (n:").append(dest.getName()).append(" ").append(json(obj)).append(")").append(" RETURN id(n) AS id");
         return run;
     }
 
@@ -645,24 +618,6 @@ public class Neo4jAdapter extends AbstractGraphAdapter implements DriverAdapter 
         return cnt;
     }
 
-    public String insertHead(ConfigStore configs, Table table, Object value) {
-        StringBuilder builder = new StringBuilder();
-        builder.append("INSERT ");
-        Boolean override = null;
-        if(null != configs) {
-            override = configs.override();
-        }
-        if(table instanceof VertexTable || value instanceof VertexRow) {
-            builder.append("VERTEX ");
-        }else if(table instanceof EdgeTable || value instanceof EdgeRow) {
-            builder.append("EDGE ");
-        }
-        //如果数据存在 则不覆盖
-        if(null != override && !override) {
-            builder.append("IF NOT EXISTS ");
-        }
-        return builder.toString();
-    }
     public String updateHead(DataRuntime runtime, ConfigStore configs, Table table, Object value) {
         StringBuilder builder = new StringBuilder();
         builder.append("UPDATE ");
@@ -1771,7 +1726,11 @@ public class Neo4jAdapter extends AbstractGraphAdapter implements DriverAdapter 
 
     @Override
     public List<Run> buildTruncateRun(DataRuntime runtime, String table) {
-        return super.buildTruncateRun(runtime, table);
+        List<Run> runs = new ArrayList<>();
+        SimpleRun run = new SimpleRun(runtime);
+        StringBuilder builder = run.getBuilder();
+        builder.append("MATCH (n:").append(table).append(") DETACH DELETE n");
+        return runs;
     }
 
     /**

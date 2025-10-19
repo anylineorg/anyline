@@ -16,6 +16,7 @@
 
 package org.anyline.data.neo4j.entity;
 
+import org.anyline.entity.DataRow;
 import org.anyline.entity.graph.GraphRow;
 import org.anyline.util.BasicUtil;
 
@@ -26,6 +27,9 @@ public class Neo4jRow extends GraphRow {
         primaryKeys.add("id");
         createTime = System.currentTimeMillis();
         nanoTime = System.currentTimeMillis();
+    }
+    public Neo4jRow(DataRow row) {
+        this.putAll(row);
     }
 
     /**
@@ -42,8 +46,8 @@ public class Neo4jRow extends GraphRow {
                 builder.append(",");
             }
             first = false;
-            builder.append(key).append(":");
             Object value = get(key);
+            builder.append(key).append(":");
             if(null == value){
                 builder.append("null");
             }else if(value instanceof String){

@@ -23,6 +23,7 @@ import org.anyline.dao.init.DefaultDao;
 import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.adapter.DriverAdapterHolder;
 import org.anyline.data.datasource.DataSourceMonitor;
+import org.anyline.data.neo4j.adapter.Neo4jAdapter;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.runtime.RuntimeHolder;
 import org.anyline.data.runtime.init.AbstractRuntimeHolder;
@@ -93,7 +94,7 @@ public class Neo4jRuntimeHolder extends AbstractRuntimeHolder {
      * @param driver driver
      * @param adapter adapter 可以为空 第一次执行时补齐
      */
-    public Neo4jRuntime reg(String datasource, Driver driver, main.java.org.anyline.data.neo4j.adapter.Neo4jAdapter adapter) {
+    public Neo4jRuntime reg(String datasource, Driver driver, Neo4jAdapter adapter) {
         log.debug("[create neo4j runtime][key:{}]", datasource);
         Neo4jRuntime runtime = new Neo4jRuntime(datasource, driver, adapter);
         if(runtimes.containsKey(datasource)) {
