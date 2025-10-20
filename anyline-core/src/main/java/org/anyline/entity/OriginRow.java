@@ -21,7 +21,9 @@ import org.anyline.util.BasicUtil;
 import org.anyline.log.Log;
 import org.anyline.log.LogProxy;
 
-public class OriginRow extends DataRow {
+import java.io.Serializable;
+
+public class OriginRow extends DataRow implements Serializable {
     private static final long serialVersionUID = -2098827041540802316L;
     private static final Log log = LogProxy.get(OriginRow.class);
     protected KEY_CASE keyCase 				        = KEY_CASE.SRC      ; // 列名格式

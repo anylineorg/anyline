@@ -19,7 +19,11 @@ package org.anyline.entity.graph;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.OriginRow;
 
-public class GraphRow extends OriginRow {
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+public class GraphRow extends OriginRow implements Serializable {
     private Object pv;
     public GraphRow() {}
     public Object getPrimaryValue() {
@@ -30,5 +34,26 @@ public class GraphRow extends OriginRow {
     public DataRow setPrimaryValue(Object value) {
         pv = value;
         return this;
+    }
+    protected List<DataRow> nodes = new ArrayList<>();
+
+    public String name() {
+        return getTableName();
+    }
+
+    public List<DataRow> nodes() {
+        return nodes;
+    }
+
+    public void nodes(List<DataRow> nodes) {
+        this.nodes = nodes;
+    }
+    public void nodes(DataRow ... nodes) {
+        for (DataRow node : nodes) {
+            this.nodes.add(node);
+        }
+    }
+    public DataRow attributes() {
+        return attributes;
     }
 }

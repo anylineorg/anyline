@@ -16,5 +16,15 @@
 
 package org.anyline.entity.graph;
 
+import org.anyline.entity.DataRow;
+
+import java.util.List;
+
+/**
+ * 边/关系
+ */
 public interface Edge {
+    String name();
+    List<DataRow> nodes();
+    DataRow attributes();
 }

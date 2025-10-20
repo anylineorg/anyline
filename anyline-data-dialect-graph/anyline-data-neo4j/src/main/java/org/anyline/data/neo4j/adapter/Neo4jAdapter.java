@@ -21,6 +21,8 @@ import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.graph.adapter.init.AbstractGraphAdapter;
 import org.anyline.data.neo4j.entity.Neo4jRow;
+import org.anyline.data.param.Config;
+import org.anyline.data.param.ConfigChain;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.RunPrepare;
@@ -210,7 +212,7 @@ public class Neo4jAdapter extends AbstractGraphAdapter implements DriverAdapter 
         }
         /*CREATE (n:Person {name: 'Alice'})
         CREATE (m:Person {name: 'Bob'})
-        RETURN id(n) AS aliceId, id(m) AS bobId
+        RETURN id(n) AS pk1, id(m) AS pk2
         */
         int dataSize = set.size();
         StringBuilder foot = new StringBuilder();
@@ -230,7 +232,7 @@ public class Neo4jAdapter extends AbstractGraphAdapter implements DriverAdapter 
             if(i > 0){
                 foot.append(",");
             }
-            foot.append(" id(n").append(i).append(") AS id").append(i);
+            foot.append(" id(n").append(i).append(") AS pk").append(i);
         }
         builder.append(foot);
     }
@@ -291,7 +293,7 @@ public class Neo4jAdapter extends AbstractGraphAdapter implements DriverAdapter 
             if(idx > 0){
                 foot.append(",");
             }
-            foot.append(" id(n").append(idx).append(") AS id").append(idx);
+            foot.append(" id(n").append(idx).append(") AS pk").append(idx);
             idx ++;
         }
         builder.append(foot);
@@ -310,17 +312,19 @@ public class Neo4jAdapter extends AbstractGraphAdapter implements DriverAdapter 
         }
         return neo4jRow.json();
     }
-    private Neo4jRow data(Object obj){
+    private Neo4jRow neo4j(Object obj){
         Neo4jRow neo4jRow = null;
-        if(obj instanceof Neo4jRow){
-            neo4jRow = (Neo4jRow) obj;
-        }else if(obj instanceof DataRow){
-            neo4jRow = new Neo4jRow((DataRow) obj);
-        }else if(obj instanceof Map){
-            neo4jRow = new Neo4jRow(new DataRow((Map)obj));
-        }else {
-            DataRow row = new DataRow(BeanUtil.object2map(obj));
-            neo4jRow = new Neo4jRow(row);
+        if(null != obj) {
+            if (obj instanceof Neo4jRow) {
+                neo4jRow = (Neo4jRow) obj;
+            } else if (obj instanceof DataRow) {
+                neo4jRow = new Neo4jRow((DataRow) obj);
+            } else if (obj instanceof Map) {
+                neo4jRow = new Neo4jRow(new DataRow((Map) obj));
+            } else {
+                DataRow row = new DataRow(BeanUtil.object2map(obj));
+                neo4jRow = new Neo4jRow(row);
+            }
         }
         return neo4jRow;
     }
@@ -471,6 +475,34 @@ public class Neo4jAdapter extends AbstractGraphAdapter implements DriverAdapter 
         Run run = new TableRun(runtime, dest);
         // List<Object> values = new ArrayList<Object>();
         StringBuilder builder = run.getBuilder();
+        //关系
+        if(obj instanceof Edge){
+           Edge edge = (Edge) obj;
+           List<DataRow> nodes = edge.nodes();
+           if(nodes.size() > 1) {
+               Neo4jRow a = neo4j(nodes.get(0));
+               Neo4jRow b = neo4j(nodes.get(1));
+               String table = a.getTableName();
+               if(BasicUtil.isEmpty(table) && null != dest){
+                   table = dest.getName();
+               }
+               builder.append("MATCH (a:").append(table).append(a.json(a.getPrimaryKeys())).append(")");
+               table = b.getTableName();
+               if(BasicUtil.isEmpty(table) && null != dest){
+                   table = dest.getName();
+               }
+               Neo4jRow attributes = neo4j(edge.attributes());
+               builder.append(", (b:").append(table).append(b.json(b.getPrimaryKeys())).append(")\n");
+               builder.append("CREATE (a)-[r:").append(edge.name()).append(attributes.json()).append("]->(b) RETURN id(r) AS pk");
+           }
+            /*MATCH (a:Person {name: 'Alice'}), (b:Person {name: 'Bob'})
+            CREATE (a)-[r:FRIEND {since: $since}]->(b)
+            CREATE (a)-[:FRIENDS]->(b)
+            */
+            return run;
+        }
+
+        //节点
         if(BasicUtil.isEmpty(dest)) {
             throw new CommandException("未指定表");
         }
@@ -515,20 +547,20 @@ public class Neo4jAdapter extends AbstractGraphAdapter implements DriverAdapter 
         }
         Boolean override = configs.override();
         if(null != override){
-            Neo4jRow data = data(obj);
+            Neo4jRow data = neo4j(obj);
             builder.append("MERGE (n:").append(dest.getName()).append(data.json(data.getPrimaryKey())).append(")\n");
             builder.append("ON CREATE SET ").append(data.setValue("n", data.keys()));
             if(override){
                 builder.append("\nON MATCH SET ").append(data.setValue("n", data.keys()));
             }
-            builder.append("\nRETURN id(n) AS id");
+            builder.append("\nRETURN id(n) AS pk");
 /*
                 MERGE (n:User{age: 20})
                 ON CREATE SET  n.age = 20
                 ON MATCH SET n.age = 20
                 RETURN n*/
         }else{
-            builder.append("CREATE (n:").append(dest.getName()).append(" ").append(json(obj)).append(")").append(" RETURN id(n) AS id");
+            builder.append("CREATE (n:").append(dest.getName()).append(" ").append(json(obj)).append(")").append(" RETURN id(n) AS pk");
         }
         return run;
     }
@@ -667,21 +699,27 @@ public class Neo4jAdapter extends AbstractGraphAdapter implements DriverAdapter 
 
     public String deleteHead(DataRuntime runtime, ConfigStore configs, Table table, Object value) {
         StringBuilder builder = new StringBuilder();
-        builder.append("DELETE ");
-        if(table instanceof VertexTable || value instanceof Vertex) {
-            builder.append("VERTEX ");
-        }else if(table instanceof EdgeTable || value instanceof Edge) {
-            builder.append("EDGE ");
-        }
-        builder.append(" \"").append(EntityAdapter.getPrimaryValue(value)).append("\" ");
-        if(null != configs && configs.cascade()) {
-            builder.append("WITH ");
-            if(table instanceof VertexTable || value instanceof Vertex) {
-                builder.append("EDGE");
-            }else if(table instanceof EdgeTable || value instanceof Edge) {
-                builder.append("VERTEX");
+        Neo4jRow neo = neo4j(value);
+        if(null == neo && null != configs){
+            neo = new Neo4jRow();
+            ConfigChain chain = configs.getConfigChain();
+            List<Config> list = chain.getConfigs();
+            for(Config c : list){
+                neo.put(c.getVariable(), c.getValue());
             }
+            builder.append("MATCH (n:").append(table.getName()).append(" ").append(neo.json(neo.getPrimaryKeys())).append(") DELETE n");
         }
+        if(neo.isEmpty()){
+            return null;
+        }
+        if(table instanceof VertexTable || value instanceof Vertex) {
+            //删除节点
+            //MATCH (p:User {id: 1}) DELETE p
+            builder.append("MATCH (n:").append(table.getName()).append(" ").append(neo.json(neo.getPrimaryKeys())).append(") DELETE n");
+        }else if(table instanceof EdgeTable || value instanceof Edge) {
+
+        }
+
         return builder.toString();
     }
     public String insertFoot(ConfigStore configs, LinkedHashMap<String, Column> columns) {

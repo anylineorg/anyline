@@ -129,24 +129,24 @@ public class Neo4jActuator implements DriverActuator {
         String cmd = run.getFinalInsert();
         try (Transaction tx = session.beginTransaction()) {
             Result result = tx.run(cmd);
-            Record record = result.single();
-            int size = record.size();
-            if(size > 0) {
-                if (data instanceof Collection) {
-                    Collection list = (Collection) data;
-                    int idx = 0;
-                    for (Object item : list) {
-                        Value value = record.get(idx ++);
-                        if (null != value) {
-                            Long id = value.asLong();
-                            BeanUtil.setFieldValue(item, "id", id);
+            if(result.hasNext()) {
+                Record record = result.single();
+                int size = record.size();
+                if(size > 0) {
+                    if (data instanceof Collection) {
+                        Collection list = (Collection) data;
+                        int idx = 0;
+                        List<String> keys = record.keys();
+                        for (Object item : list) {
+                            String key = keys.get(idx);
+                            Object value = value(record.get(idx));
+                            set(item, key, value);
+                            idx++;
                         }
-                    }
-                } else {
-                    Value value = record.get(0);
-                    if (null != value) {
-                        Long id = value.asLong();
-                        BeanUtil.setFieldValue(data, "id", id);
+                    } else {
+                        String key = record.keys().get(0);
+                        Object value = value(record.get(0));
+                        set(data, key, value);
                     }
                 }
             }
@@ -154,6 +154,38 @@ public class Neo4jActuator implements DriverActuator {
         }
         session.close();
         return 0;
+    }
+    private void set(Object data, String key, Object value) {
+        if(data instanceof DataRow && key.startsWith("pk")) {
+            DataRow row = (DataRow) data;
+            row.setPrimaryValue(value);
+        }else{
+            BeanUtil.setFieldValue(data, key, value);
+        }
+    }
+    private Object value(Value value){
+        if(null == value){
+            return null;
+        }
+        if(value.type().name().equals("INTEGER")){
+            return value.asInt();
+        }
+        if(value.type().name().equals("LONG")){
+            return value.asLong();
+        }
+        if(value.type().name().equals("DOUBLE")){
+            return value.asDouble();
+        }
+        if(value.type().name().equals("BOOLEAN")){
+            return value.asBoolean();
+        }
+        if(value.type().name().equals("STRING")){
+            return value.asString();
+        }
+        if(value.type().name().equals("MAP")){
+            return value.asMap();
+        }
+        return value.asList();
     }
 
     @Override

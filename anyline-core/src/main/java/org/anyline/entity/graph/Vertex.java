@@ -16,5 +16,8 @@
 
 package org.anyline.entity.graph;
 
+/**
+ * 顶点/实体
+ */
 public interface Vertex {
 }

@@ -35,7 +35,14 @@ public interface Config extends Cloneable {
 	static int FETCH_REQUEST_VALUE_TYPE_MULTIPLE = 2;	// 数组
 
 	void setValue(Map<String,Object> values); 
-	List<Object> getValues() ; 
+	List<Object> getValues() ;
+	default Object getValue(){
+		List<Object> values = getValues();
+		if(!values.isEmpty()){
+			return values.get(0);
+		}
+		return null;
+	}
 	List<Object> getOrValues() ; 
 	void addValue(Object value);
 	void setValue(Object value);
@@ -84,7 +91,11 @@ public interface Config extends Cloneable {
 
 	void setVariable(String variable) ;
 
-	String getKey() ;//参数key
+	/**
+	 * 参数key 一个条件中可能有多个占位
+	 * @return String
+	 */
+	String getKey() ;
 
 	void setKey(String key) ;
 
