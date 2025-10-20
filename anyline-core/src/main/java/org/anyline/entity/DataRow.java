@@ -61,7 +61,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     public static String DEFAULT_PRIMARY_KEY    = ConfigTable.DEFAULT_PRIMARY_KEY;
 
     protected Boolean override                    = null                  ; //如果数据库中存在相同数据(根据主键判断)是否覆盖 true或false会检测数据库null不检测
-    protected Boolean overrideSync                = null                  ; //检测到相同数据后，是否从数据库中同步到当前DataRow中不有赋值的其他列
+    protected Boolean overrideSync                = null                  ; //检测到相同数据后，是否从数据库中同步到当前DataRow中没有赋值的其他列
     protected Boolean unicode                     = null                  ; //插入数据库时是否Unicode编码
     protected boolean updateNullColumn            = ConfigTable.IS_UPDATE_NULL_COLUMN;
     protected boolean updateEmptyColumn           = ConfigTable.IS_UPDATE_EMPTY_COLUMN;
@@ -83,6 +83,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     protected transient Map<String, DataSet> containers     = new HashMap<>()       ; // 包含当前对象的容器s
     protected transient Map<String, DataRow> parents        = new Hashtable<>()     ; // 上级
     protected List<String> primaryKeys                      = new ArrayList<>()     ; // 主键
+    protected List<String> filterKeys                       = new ArrayList<>()     ; // 过滤keys 用来生成查询(过滤)条件, 如果没值再根据主键，部分数据库如(图库)有单独的主键值，但实际经常根据业务主键过滤(更新/删除等操作)
     protected List<String> updateColumns                    = new ArrayList<>()     ; // 需要参与update insert操作
     protected List<String> ignoreUpdateColumns              = new ArrayList<>()     ; // 不参与update insert操作
     protected String datalink                               = null                  ; // 超链接
@@ -859,10 +860,6 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         if(null != isNew && isNew) {
             return true;
         }
-        /*String pk = getPrimaryKey();
-        String pv = getString(pk);
-        return (null == pv || (null == isNew) || isNew || BasicUtil.isEmpty(pv));*/
-
         boolean fullPv = true; //主键值是否都有
         List<String> ks = getPrimaryKeys();
         for(String k:ks) {
@@ -1203,11 +1200,24 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         }
         return this;
     }
+    public DataRow addFilterKey(boolean applyContainer, String... keys) {
+        if (null != keys) {
+            List<String> list = new ArrayList<>();
+            for (String key : keys) {
+                list.add(key);
+            }
+            return addFilterKey(applyContainer, list);
+        }
+        return this;
+    }
 
     public DataRow addPrimaryKey(String... pks) {
         return addPrimaryKey(false, pks);
     }
 
+    public DataRow addFilterKey(String... pks) {
+        return addFilterKey(false, pks);
+    }
     public DataRow addPrimaryKey(boolean applyContainer, Collection<String> pks) {
         if (BasicUtil.isEmpty(pks)) {
             return this;
@@ -1233,6 +1243,30 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return this;
     }
 
+    public DataRow addFilterKey(boolean applyContainer, Collection<String> keys) {
+        if (BasicUtil.isEmpty(keys)) {
+            return this;
+        }
+
+        /*没有处于容器中时, 设置自身主键*/
+        if (null == filterKeys) {
+            filterKeys = new ArrayList<>();
+        }
+        for (String item : keys) {
+            if (BasicUtil.isEmpty(item)) {
+                continue;
+            }
+            item = keyAdapter.key(item);
+            if (!filterKeys.contains(item)) {
+                filterKeys.add(item);
+            }
+        }
+        /*设置容器主键*/
+        if (hasContainer() && applyContainer) {
+            getContainer().setFilterKey(false, filterKeys);
+        }
+        return this;
+    }
     public DataRow setPrimaryKey(boolean applyContainer, String... pks) {
         if (null != pks) {
             List<String> list = new ArrayList<>();
@@ -1244,8 +1278,21 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return this;
     }
 
+    public DataRow setFilterKey(boolean applyContainer, String... pks) {
+        if (null != pks) {
+            List<String> list = new ArrayList<>();
+            for (String pk : pks) {
+                list.add(pk);
+            }
+            return setFilterKey(applyContainer, list);
+        }
+        return this;
+    }
     public DataRow setPrimaryKey(String... pks) {
         return setPrimaryKey(false, pks);
+    }
+    public DataRow setFilterKey(String... pks) {
+        return setFilterKey(false, pks);
     }
 
     /**
@@ -1270,9 +1317,28 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         }
         return addPrimaryKey(applyContainer, pks);
     }
+    public DataRow setFilterKey(boolean applyContainer, Collection<String> pks) {
+        if (BasicUtil.isEmpty(pks)) {
+            return this;
+        }
+        /*设置容器主键*/
+        if (hasContainer() && applyContainer) {
+            getContainer().setFilterKey(pks);
+        }
+
+        if (null == this.filterKeys) {
+            this.filterKeys = new ArrayList<>();
+        } else {
+            this.filterKeys.clear();
+        }
+        return addFilterKey(applyContainer, pks);
+    }
 
     public DataRow setPrimaryKey(Collection<String> pks) {
         return setPrimaryKey(false, pks);
+    }
+    public DataRow setFilterKey(Collection<String> pks) {
+        return setFilterKey(false, pks);
     }
 
     public Column getPrimaryColumn() {
@@ -1292,6 +1358,23 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         }
         return column;
     }
+    public Column getFilterColumn() {
+        LinkedHashMap<String, Column> columns = getFilterColumns();
+        if(!columns.isEmpty()) {
+            return columns.values().iterator().next();
+        }
+        String key = getFilterKey();
+        if(null == key) {
+            key = DataRow.DEFAULT_PRIMARY_KEY;
+        }
+        Column column = null;
+        if(null != metadatas) {
+            column = metadatas.get(key.toUpperCase());
+        }else{
+            column = new Column(key);
+        }
+        return column;
+    }
     public LinkedHashMap<String, Column> getPrimaryColumns() {
         LinkedHashMap<String, Column> columns = new LinkedHashMap<>();
         if(null != metadatas) {
@@ -1303,6 +1386,25 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         }
         if(columns.isEmpty()) {
             List<String> pks = getPrimaryKeys();
+            if(null != pks) {
+                for(String pk:pks) {
+                    Column column = null;
+                    if(null != metadatas) {
+                        column = metadatas.get(pk.toUpperCase());
+                    }
+                    if(null == column) {
+                        column = new Column(pk);
+                    }
+                    columns.put(pk.toUpperCase(), column);
+                }
+            }
+        }
+        return columns;
+    }
+    public LinkedHashMap<String, Column> getFilterColumns() {
+        LinkedHashMap<String, Column> columns = new LinkedHashMap<>();
+        if(columns.isEmpty()) {
+            List<String> pks = getFilterKeys();
             if(null != pks) {
                 for(String pk:pks) {
                     Column column = null;
@@ -1346,8 +1448,30 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 
     }
 
+    public List<String> getFilterKeys() {
+        /*有主键直接返回*/
+        if (hasSelfFilterKeys()) {
+            return filterKeys;
+        }
+
+        /*处于容器中并且容器有主键, 返回容器主键*/
+        if (hasContainer() && getContainer().hasFilterKeys()) {
+            return getContainer().getFilterKeys();
+        }
+
+        return null;
+
+    }
     public String getPrimaryKey() {
         List<String> keys = getPrimaryKeys();
+        if (null != keys && !keys.isEmpty()) {
+            return keys.get(0);
+        }
+        return null;
+    }
+
+    public String getFilterKey() {
+        List<String> keys = getFilterKeys();
         if (null != keys && !keys.isEmpty()) {
             return keys.get(0);
         }
@@ -1369,8 +1493,26 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return values;
     }
 
+    public List<Object> getFilterValues() {
+        List<Object> values = new ArrayList<Object>();
+        List<String> keys = getFilterKeys();
+        if (null != keys) {
+            for (String key : keys) {
+                values.add(get(key));
+            }
+        }
+        return values;
+    }
+
     public Object getPrimaryValue() {
         String key = getPrimaryKey();
+        if (null != key) {
+            return get(key);
+        }
+        return null;
+    }
+    public Object getFilterValue() {
+        String key = getFilterKey();
         if (null != key) {
             return get(key);
         }
@@ -1384,6 +1526,13 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return this;
     }
 
+    public DataRow setFilterValue(Object value) {
+        String key = getFilterKey();
+        if (null != key) {
+            put(key, value);
+        }
+        return this;
+    }
     /**
      * 是否有主键
      * @return boolean
@@ -1400,6 +1549,15 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         }
         return false;
     }
+    public boolean hasFilterKeys() {
+        if (hasSelfFilterKeys()) {
+            return true;
+        }
+        if (null != getContainer()) {
+            return getContainer().hasFilterKeys();
+        }
+        return false;
+    }
 
     /**
      * 自身是否有主键
@@ -1407,6 +1565,13 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
      */
     public boolean hasSelfPrimaryKeys() {
         if (null != primaryKeys && !primaryKeys.isEmpty()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    public boolean hasSelfFilterKeys() {
+        if (null != filterKeys && !filterKeys.isEmpty()) {
             return true;
         } else {
             return false;
@@ -1829,7 +1994,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 
     public DataRow attr(String key, Object value) {
         if(null == attributes) {
-            attributes = new DataRow(keyCase);
+            attributes = new DataRow(KEY_CASE.SRC);
         }
         attributes.put(key, value);
         return this;
@@ -1837,7 +2002,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 
     public DataRow setAttribute(String key, Object value) {
         if(null == attributes) {
-            attributes = new DataRow(keyCase);
+            attributes = new DataRow(KEY_CASE.SRC);
         }
         attributes.put(key, value);
         return this;
@@ -1845,21 +2010,21 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 
     public Object attr(String key) {
         if(null == attributes) {
-            attributes = new DataRow(keyCase);
+            attributes = new DataRow(KEY_CASE.SRC);
         }
         return attributes.get(key);
     }
 
     public Object getAttribute(String key) {
         if(null == attributes) {
-            attributes = new DataRow(keyCase);
+            attributes = new DataRow(KEY_CASE.SRC);
         }
         return attributes.get(key);
     }
 
     public DataRow getAttributes() {
         if(null == attributes) {
-            attributes = new DataRow(keyCase);
+            attributes = new DataRow(KEY_CASE.SRC);
         }
         return attributes;
     }
@@ -2903,6 +3068,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         }
         clone.container = this.container;
         clone.primaryKeys = this.primaryKeys;
+        clone.filterKeys = this.filterKeys;
         clone.datasource = this.datasource;
         clone.schema = this.schema;
         clone.tables = this.tables;

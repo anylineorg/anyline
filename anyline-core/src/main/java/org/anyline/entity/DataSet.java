@@ -55,6 +55,7 @@ public class DataSet<E extends DataRow> implements Collection<E>, Serializable, 
     private List<String> head                       = null  ; // 表头
     private List<E> rows                            = null  ; // 数据
     private List<String> primaryKeys                = null  ; // 主键
+    private List<String> filterKeys                 = null  ; // 过滤键
     private String datalink                         = null  ; // 数据连接
     private String dataSource                       = null  ; // 数据源(表|视图|XML定义SQL)
     private Catalog catalog                         = null  ;
@@ -452,9 +453,23 @@ public class DataSet<E extends DataRow> implements Collection<E>, Serializable, 
         }
         return this;
     }
+    public DataSet<E> addFilterKey(boolean applyItem, String... pks) {
+        if (null != pks) {
+            List<String> list = new ArrayList<>();
+            for (String pk : pks) {
+                list.add(pk);
+            }
+            addFilterKey(applyItem, list);
+        }
+        return this;
+    }
 
     public DataSet<E> addPrimaryKey(String... pks) {
         return addPrimaryKey(true, pks);
+    }
+
+    public DataSet<E> addFilterKey(String... pks) {
+        return addFilterKey(true, pks);
     }
 
     public DataSet<E> addPrimaryKey(boolean applyItem, Collection<String> pks) {
@@ -480,9 +495,37 @@ public class DataSet<E extends DataRow> implements Collection<E>, Serializable, 
         }
         return this;
     }
+    public DataSet<E> addFilterKey(boolean applyItem, Collection<String> pks) {
+        if (null == filterKeys) {
+            filterKeys = new ArrayList<>();
+        }
+        if (null == pks) {
+            return this;
+        }
+        for (String pk : pks) {
+            if (BasicUtil.isEmpty(pk)) {
+                continue;
+            }
+            pk = key(pk);
+            if (!filterKeys.contains(pk)) {
+                filterKeys.add(pk);
+            }
+        }
+        if (applyItem) {
+            for (DataRow row : rows) {
+                row.setFilterKey(false, filterKeys);
+            }
+        }
+        return this;
+    }
 
     public DataSet<E> addPrimaryKey(Collection<String> pks) {
         return addPrimaryKey(true, pks);
+    }
+
+
+    public DataSet<E> addFilterKey(Collection<String> pks) {
+        return addFilterKey(true, pks);
     }
 
     /**
@@ -502,9 +545,22 @@ public class DataSet<E extends DataRow> implements Collection<E>, Serializable, 
         }
         return this;
     }
+    public DataSet<E> setFilterKey(boolean applyItem, String... pks) {
+        if (null != pks) {
+            List<String> list = new ArrayList<>();
+            for (String pk : pks) {
+                list.add(pk);
+            }
+            setFilterKey(applyItem, list);
+        }
+        return this;
+    }
 
     public DataSet<E> setPrimaryKey(String... pks) {
         return setPrimaryKey(true, pks);
+    }
+    public DataSet<E> setFilterKey(String... pks) {
+        return setFilterKey(true, pks);
     }
 
     public DataSet<E> setPrimaryKey(boolean applyItem, Collection<String> pks) {
@@ -515,9 +571,20 @@ public class DataSet<E extends DataRow> implements Collection<E>, Serializable, 
         addPrimaryKey(applyItem, pks);
         return this;
     }
+    public DataSet<E> setFilterKey(boolean applyItem, Collection<String> pks) {
+        if (null == pks) {
+            return this;
+        }
+        this.filterKeys = new ArrayList<>();
+        addFilterKey(applyItem, pks);
+        return this;
+    }
 
     public DataSet<E> setPrimaryKey(Collection<String> pks) {
         return setPrimaryKey(true, pks);
+    }
+    public DataSet<E> setFilterKey(Collection<String> pks) {
+        return setFilterKey(true, pks);
     }
 
     public DataSet<E> set(int index, E item) {
@@ -553,6 +620,13 @@ public class DataSet<E extends DataRow> implements Collection<E>, Serializable, 
             return false;
         }
     }
+    public boolean hasFilterKeys() {
+        if (null != filterKeys && !filterKeys.isEmpty()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     public Column getPrimaryColumn() {
         LinkedHashMap<String, Column> columns = getPrimaryColumns();
@@ -561,6 +635,28 @@ public class DataSet<E extends DataRow> implements Collection<E>, Serializable, 
         }
         String pk = null;
         List<String> pks = getPrimaryKeys();
+        if(!pks.isEmpty()) {
+            pk = pks.get(0);
+        }
+        if(null == pk) {
+            pk = DataRow.DEFAULT_PRIMARY_KEY;
+        }
+        Column column = null;
+        if(null != metadatas) {
+            column = metadatas.get(pk.toUpperCase());
+        }else{
+            column = new Column(pk);
+        }
+        return column;
+    }
+
+    public Column getFilterColumn() {
+        LinkedHashMap<String, Column> columns = getFilterColumns();
+        if(!columns.isEmpty()) {
+            return columns.values().iterator().next();
+        }
+        String pk = null;
+        List<String> pks = getFilterKeys();
         if(!pks.isEmpty()) {
             pk = pks.get(0);
         }
@@ -602,6 +698,25 @@ public class DataSet<E extends DataRow> implements Collection<E>, Serializable, 
         return columns;
     }
 
+    public LinkedHashMap<String, Column> getFilterColumns() {
+        LinkedHashMap<String, Column> columns = new LinkedHashMap<>();
+        if(columns.isEmpty()) {
+            List<String> pks = getFilterKeys();
+            if(null != pks) {
+                for(String pk:pks) {
+                    Column column = null;
+                    if(null != metadatas) {
+                        column = metadatas.get(pk.toUpperCase());
+                    }
+                    if(null == column) {
+                        column = new Column(pk);
+                    }
+                    columns.put(pk.toUpperCase(), column);
+                }
+            }
+        }
+        return columns;
+    }
     /**
      * 提取主键
      *
@@ -612,6 +727,13 @@ public class DataSet<E extends DataRow> implements Collection<E>, Serializable, 
             primaryKeys = new ArrayList<>();
         }
         return primaryKeys;
+    }
+
+    public List<String> getFilterKeys() {
+        if (null == filterKeys) {
+            filterKeys = new ArrayList<>();
+        }
+        return filterKeys;
     }
 
     public DataSet<E> tag(String key, Object value) {
@@ -1071,6 +1193,7 @@ public class DataSet<E extends DataRow> implements Collection<E>, Serializable, 
             to.navi = from.navi;
             to.head = from.head;
             to.primaryKeys = from.primaryKeys;
+            to.filterKeys = from.filterKeys;
             to.dataSource = from.dataSource;
             to.datalink = from.datalink;
             to.schema = from.schema;
