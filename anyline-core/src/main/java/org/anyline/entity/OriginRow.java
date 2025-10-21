@@ -84,7 +84,11 @@ public class OriginRow extends DataRow implements Serializable {
         return this;
     }
     public Object get(String key) {
-        return mapGet(key);
+        if(!ignoreCase && !ignoreSeparator){
+            return mapGet(key);
+        }else{
+            return super.get(key);
+        }
     }
     public static DataRow parseJson(String json){
         return DataRow.parseJson(KEY_CASE.SRC, json);
