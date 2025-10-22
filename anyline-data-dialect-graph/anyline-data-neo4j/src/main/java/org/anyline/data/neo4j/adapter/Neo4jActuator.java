@@ -19,7 +19,9 @@ package org.anyline.data.neo4j.adapter;
 import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.adapter.DriverActuator;
 import org.anyline.data.adapter.DriverAdapter;
+import org.anyline.data.neo4j.entity.Neo4jEdge;
 import org.anyline.data.neo4j.entity.Neo4jRow;
+import org.anyline.data.neo4j.entity.Neo4jVertex;
 import org.anyline.data.neo4j.runtime.Neo4jRuntime;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.run.Run;
@@ -32,13 +34,12 @@ import org.anyline.metadata.Metadata;
 import org.anyline.metadata.Table;
 import org.anyline.util.BeanUtil;
 import org.neo4j.driver.*;
+import org.neo4j.driver.types.Node;
+import org.neo4j.driver.types.Relationship;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @AnylineComponent("anyline.environment.data.driver.actuator.neo4j")
 public class Neo4jActuator implements DriverActuator {
@@ -106,11 +107,67 @@ public class Neo4jActuator implements DriverActuator {
             Record record = rs.next();
             List<String> keys = record.keys();
             for(String key : keys) {
-                row.put(key, record.get(key));
+                Value value = record.get(key);
+                String type = value.type().name();
+
+                Object val = null;
+                if("NODE".equals(type)) {
+                    val = vertex(value.asNode());
+                }else if("RELATIONSHIP".equals(type)){
+                    val = edge(value.asRelationship());
+                }else {
+                    val = value(value);
+                }
+                row.put(key, val);
             }
         }
         session.close();
         return set;
+    }
+    private Neo4jVertex vertex(Node node){
+        Neo4jVertex vertex = new Neo4jVertex();
+        for(String key : node.keys()) {
+            Value value = node.get(key);
+            String type = value.type().name();
+            Object val = null;
+            if("NODE".equals(type)) {
+                val = vertex(value.asNode());
+            }else if("RELATIONSHIP".equals(type)){
+                val = edge(value.asRelationship());
+            }else {
+                val = value(value);
+            }
+            vertex.put(key, val);
+        }
+        vertex.setPrimaryValue(node.id());
+        List<Table> tables = new ArrayList<>();;
+        for(String label : node.labels()) {
+            tables.add(new Table(label));
+        }
+        vertex.setTables(tables);
+        return vertex;
+    }
+    protected Neo4jEdge edge(Relationship relationship){
+        Neo4jEdge edge = new Neo4jEdge();
+        for(String key : relationship.keys()) {
+            Value value = relationship.get(key);
+            String type = value.type().name();
+            Object val = null;
+            if("NODE".equals(type)) {
+                val = vertex(value.asNode());
+            }else if("RELATIONSHIP".equals(type)){
+                val = edge(value.asRelationship());
+            }else {
+                val = value(value);
+            }
+            edge.put(key, val);
+        }
+        String type = relationship.type();
+        edge.setTable(type);
+        edge.setPrimaryValue(relationship.id());
+        Long start = relationship.startNodeId();
+        Long end = relationship.endNodeId();
+        return edge;
     }
 
     @Override
