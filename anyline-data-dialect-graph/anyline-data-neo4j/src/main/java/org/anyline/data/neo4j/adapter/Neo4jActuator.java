@@ -140,13 +140,13 @@ public class Neo4jActuator implements DriverActuator {
                         for (Object item : list) {
                             String key = keys.get(idx);
                             Object value = value(record.get(idx));
-                            set(item, key, value);
+                            set(runtime, random, item, key, value);
                             idx++;
                         }
                     } else {
                         String key = record.keys().get(0);
                         Object value = value(record.get(0));
-                        set(data, key, value);
+                        set(runtime, random, data, key, value);
                     }
                 }
             }
@@ -155,10 +155,11 @@ public class Neo4jActuator implements DriverActuator {
         session.close();
         return 0;
     }
-    private void set(Object data, String key, Object value) {
+    private void set(DataRuntime runtime, String random, Object data, String key, Object value) {
         if(data instanceof DataRow && key.startsWith("pk")) {
             DataRow row = (DataRow) data;
             row.setPrimaryValue(value);
+            log.info("{}[生成主键:{}]", random, value);
         }else{
             BeanUtil.setFieldValue(data, key, value);
         }

@@ -493,9 +493,27 @@ public class Neo4jAdapter extends AbstractGraphAdapter implements DriverAdapter 
                }
                Neo4jRow attributes = neo4j(edge.attributes());
                builder.append(", (b:").append(table).append(b.json(b.getPrimaryKeys())).append(")\n");
-               builder.append("CREATE (a)-[r:").append(edge.name()).append(attributes.json()).append("]->(b) RETURN id(r) AS pk");
+
+               Boolean override = configs.override();
+               if(null == override) {
+                   builder.append("CREATE (a)-[r:").append(edge.name()).append(attributes.json()).append("]-(b) RETURN id(r) AS pk\n");
+               }else{
+                   builder.append("MERGE (a)-[r:").append(edge.name()).append(attributes.json()).append("]-(b)\n");
+                   builder.append("ON CREATE SET ").append(attributes.setValue("r", attributes.keys())).append("\n");
+                   if(override) {
+                       builder.append("ON MATCH SET ").append(attributes.setValue("r", attributes.keys())).append("\n");
+                   }
+                   builder.append("RETURN id(r) AS pk");
+               }
            }
-            /*MATCH (a:Person {name: 'Alice'}), (b:Person {name: 'Bob'})
+            /*
+            MATCH (p1:Person {name: '张三'}), (p2:Person {name: '李四'})
+            MERGE (p1)-[r:KNOWS]->(p2)
+            ON CREATE SET r.since = 2023, r.level = 'acquaintance'
+            ON MATCH SET r.level = 'close friend', r.lastMet = date()
+
+
+            MATCH (a:Person {name: 'Alice'}), (b:Person {name: 'Bob'})
             CREATE (a)-[r:FRIEND {since: $since}]->(b)
             CREATE (a)-[:FRIENDS]->(b)
             */
@@ -709,15 +727,27 @@ public class Neo4jAdapter extends AbstractGraphAdapter implements DriverAdapter 
             }
             builder.append("MATCH (n:").append(table.getName()).append(" ").append(neo.json(neo.getPrimaryKeys())).append(") DELETE n");
         }
-        if(neo.isEmpty()){
-            return null;
-        }
         if(table instanceof VertexTable || value instanceof Vertex) {
+            if(neo.isEmpty()){
+                return null;
+            }
             //删除节点
             //MATCH (p:User {id: 1}) DELETE p
             builder.append("MATCH (n:").append(table.getName()).append(" ").append(neo.json(neo.getPrimaryKeys())).append(") DELETE n");
-        }else if(table instanceof EdgeTable || value instanceof Edge) {
+        }else if(value instanceof Edge) {
+            //删除关系
+            Edge edge = (Edge) value;
+            List<DataRow> nodes = edge.nodes();
+            if(nodes.size() > 1) {
+                Neo4jRow a = neo4j(nodes.get(0));
+                Neo4jRow b = neo4j(nodes.get(1));
 
+                builder.append("MATCH (a:").append(a.getTableName()).append(a.json(a.getPrimaryKeys())).append(")");
+                Neo4jRow attributes = neo4j(edge.attributes());
+                builder.append("-[r:").append(table.getName()).append(attributes.json()).append("]-");
+                builder.append("(b:").append(b.getTableName()).append(b.json(b.getPrimaryKeys())).append(")\n");
+                builder.append("DELETE r");
+            }
         }
 
         return builder.toString();
