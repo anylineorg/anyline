@@ -15751,7 +15751,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			builder.append(" NOT NULL");
 			return builder;
 		}
-		if(null == meta.getDefaultValue()) {
+		//if(null == meta.getDefaultValue()) { //默认值 不影响非空
 			Boolean nullable = meta.getNullable();
 			if(nullable != null) {
 				if (!nullable) {
@@ -15759,7 +15759,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				}
 				builder.append(" NULL");
 			}
-		}
+		//}
 		return builder;
 	}
 
