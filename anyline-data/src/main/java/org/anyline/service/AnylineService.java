@@ -4395,6 +4395,9 @@ public interface AnylineService<E>{
 		 ******************************************************************************************************************/
 
 		boolean add(PrimaryKey meta) throws Exception;
+		default boolean create(PrimaryKey meta) throws Exception {
+			return add(meta);
+		}
 		boolean alter(PrimaryKey meta) throws Exception;
 		boolean drop(PrimaryKey meta) throws Exception;
 		boolean rename(PrimaryKey origin, String name) throws Exception;
@@ -4412,6 +4415,9 @@ public interface AnylineService<E>{
 		 ******************************************************************************************************************/
 
 		boolean add(Index meta) throws Exception;
+		default boolean create(Index meta) throws Exception {
+			return add(meta);
+		}
 		boolean alter(Index meta) throws Exception;
 		boolean drop(Index meta) throws Exception;
 		boolean rename(Index origin, String name) throws Exception;
@@ -4426,6 +4432,9 @@ public interface AnylineService<E>{
 		 * @throws Exception 异常 Exception
 		 */
 		boolean add(Constraint meta) throws Exception;
+		default boolean create(Constraint meta) throws Exception {
+			return add(meta);
+		}
 		boolean alter(Constraint meta) throws Exception;
 		boolean drop(Constraint meta) throws Exception;
 		boolean rename(Constraint origin, String name) throws Exception;

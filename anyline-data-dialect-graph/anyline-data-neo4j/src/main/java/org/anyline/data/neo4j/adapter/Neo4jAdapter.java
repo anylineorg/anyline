@@ -491,7 +491,7 @@ public class Neo4jAdapter extends AbstractGraphAdapter implements DriverAdapter 
                if(BasicUtil.isEmpty(table) && null != dest){
                    table = dest.getName();
                }
-               Neo4jRow attributes = neo4j(edge.attributes());
+               Neo4jRow attributes = neo4j(edge);
                builder.append(", (b:").append(table).append(b.json(b.getPrimaryKeys())).append(")\n");
 
                Boolean override = configs.override();
@@ -743,7 +743,7 @@ public class Neo4jAdapter extends AbstractGraphAdapter implements DriverAdapter 
                 Neo4jRow b = neo4j(nodes.get(1));
 
                 builder.append("MATCH (a:").append(a.getTableName()).append(a.json(a.getPrimaryKeys())).append(")");
-                Neo4jRow attributes = neo4j(edge.attributes());
+                Neo4jRow attributes = neo4j(edge);
                 builder.append("-[r:").append(table.getName()).append(attributes.json()).append("]-");
                 builder.append("(b:").append(b.getTableName()).append(b.json(b.getPrimaryKeys())).append(")\n");
                 builder.append("DELETE r");
@@ -7015,11 +7015,26 @@ public class Neo4jAdapter extends AbstractGraphAdapter implements DriverAdapter 
     @Override
     public List<Run> buildAddRun(DataRuntime runtime, Index meta) throws Exception {
         Table table = meta.getTable();
-        //忽略属性
-        if(table instanceof GraphTable) {
-            meta.getColumns().clear();
+        List<Run> runs = new ArrayList<>();
+        Run run = new SimpleRun(runtime);
+        runs.add(run);
+        StringBuilder builder = run.getBuilder();
+
+        if(table instanceof Label) {
+            //节点
+            builder.append("CREATE INDEX FOR (n:").append(table.getName()).append(") ON (");
+            LinkedHashMap<String, Column> columns = meta.getColumns();
+            boolean first = true;
+            for(Column column:columns.values()) {
+                if(!first){
+                    builder.append(", ");
+                }
+                first = true;
+                builder.append("n.").append(column.getName());
+            }
+            builder.append(")");
         }
-        return super.buildAddRun(runtime, meta);
+        return runs;
     }
 
     /**

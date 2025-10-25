@@ -23,7 +23,11 @@ import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.metadata.type.TypeMetadataHolder;
 import org.anyline.util.BasicUtil;
 
-public class DataTypeDefine {
+import java.io.Serializable;
+
+public class DataTypeDefine implements Serializable {
+    private static final long serialVersionUID = 1L;
+    
     protected DatabaseType database               ; // 数据库类型
     protected String name                         ; // 类型名称 varchar完整类型调用getFullType > varchar(10)
     protected TypeMetadata metadata               ;

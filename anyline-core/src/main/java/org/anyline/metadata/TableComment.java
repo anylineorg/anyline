@@ -16,6 +16,10 @@
 
 package org.anyline.metadata;
 
-public class TableComment extends TableAffiliation{
+import java.io.Serializable;
+
+public class TableComment extends TableAffiliation  implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     public static final String FIELD_VALUE = "VALUE";
 }
