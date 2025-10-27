@@ -179,6 +179,15 @@ public class DriverAdapterHolder {
 			String feature = runtime.getFeature(false);
 			String adapter_key = runtime.getAdapterKey();
 			try {
+				//先根据用户指定
+				for (DriverAdapter item:user_adapters.values()) {
+					String id = item.id();
+					if(id.equalsIgnoreCase(adapter_key)) {
+						adapter = item;
+						break;
+					}
+				}
+
 				//先检测项目注册adapters再检测内容adapters
 				//执行两次匹配, 第一次失败后，会再匹配一次，第二次传入true
 				for (DriverAdapter item:user_adapters.values()) {

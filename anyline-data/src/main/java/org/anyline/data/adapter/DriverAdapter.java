@@ -95,7 +95,15 @@ public interface DriverAdapter {
     default int priority(){
          return 0;
     }
-    
+
+    /**
+     * 用来根据指定标识明确指定用哪个adapter
+     * adapter={id}
+     * @return
+     */
+    default String id() {
+        return type().name();
+    }
     /**
      * 数据库类型
      * @return DatabaseType

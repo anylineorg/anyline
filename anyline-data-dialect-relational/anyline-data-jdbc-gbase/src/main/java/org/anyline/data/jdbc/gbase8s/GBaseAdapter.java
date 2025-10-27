@@ -66,6 +66,9 @@ public class GBaseAdapter extends InformixGenusAdapter implements JDBCAdapter {
 		}
 	}
 
+	public String id(){
+		return "gbase.informix";
+	}
 	/* *****************************************************************************************************************
 	 *
 	 * 													DML
@@ -2251,6 +2254,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	public List<Run> buildQueryColumnsRun(DataRuntime runtime, boolean metadata, Collection<? extends Table> tables, Column query, ConfigStore configs) throws Exception {
 		return super.buildQueryColumnsRun(runtime, metadata, tables, query, configs);
 	}
+
 	/**
 	 * Column[结果集封装]<br/>
 	 * Column 属性与结果集对应关系
@@ -2260,6 +2264,20 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	public MetadataFieldRefer initColumnFieldRefer() {
 		return super.initColumnFieldRefer();
 	}
+
+	/**
+	 * Column[结果集封装]<br/>
+	 * 数据类型 属性与结果集对应关系
+	 * @return MetadataFieldRefer
+	 */
+	@Override
+	public MetadataFieldRefer initDataTypeFieldRefer() {
+		MetadataFieldRefer refer = new MetadataFieldRefer(DataTypeDefine.class);
+		refer.map(DataTypeDefine.FIELD_NAME, "COLUMN_TYPE,DATA_TYPE");
+		refer.map(DataTypeDefine.FIELD_OCTET_LENGTH, "CHARACTER_OCTET_LENGTH");
+		return refer;
+	}
+
 	/**
 	 * column[结果集封装]<br/>
 	 *  根据查询结果集构造Tag

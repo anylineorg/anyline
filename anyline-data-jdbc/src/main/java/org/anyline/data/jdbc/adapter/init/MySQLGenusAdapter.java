@@ -3037,7 +3037,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     @Override
     public MetadataFieldRefer initDataTypeFieldRefer() {
         MetadataFieldRefer refer = new MetadataFieldRefer(DataTypeDefine.class);
-        refer.map(DataTypeDefine.FIELD_NAME, "COLUMN_TYPE");
+        refer.map(DataTypeDefine.FIELD_NAME, "COLUMN_TYPE,DATA_TYPE"); //gbase里有data_type
         refer.map(DataTypeDefine.FIELD_OCTET_LENGTH, "CHARACTER_OCTET_LENGTH");
         return refer;
     }
