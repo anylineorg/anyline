@@ -160,9 +160,10 @@ public class DriverAdapterHolder {
 			} else if (adapters.size() == 2) {
 				boolean common = false;
 				for (DriverAdapter adapter : adapters) {
-					if (adapter.getClass().getName().toLowerCase().contains("common")) {
-						common = true;
-					}
+                    if (adapter.getClass().getName().toLowerCase().contains("common")) {
+                        common = true;
+                        break;
+                    }
 				}
 				if (common) {
 					for (DriverAdapter adapter : adapters) {
