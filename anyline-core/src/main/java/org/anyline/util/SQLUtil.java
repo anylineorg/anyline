@@ -78,7 +78,7 @@ public class SQLUtil {
 		String delimiterFr = "";
 		String delimiterTo = "";
 		delimiter = delimiter.replaceAll("\\s", "");
-		if(delimiter.length() == 0) {
+		if(delimiter.isEmpty()) {
 			builder.append(src);
 			return builder;
 		}else if(delimiter.length() ==1) {
