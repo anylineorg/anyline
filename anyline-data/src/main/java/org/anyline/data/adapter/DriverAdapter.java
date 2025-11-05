@@ -1990,6 +1990,23 @@ public interface DriverAdapter {
         return createConditionIn(runtime, builder, compare, value, true, true);
     }
 
+
+    /**
+     * select[命令合成-子流程] <br/>
+     * 构造(NOT) IN 查询条件
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param builder builder
+     * @param compare 比较方式 默认 equal 多个值默认 in
+     * @param value value
+     * @return builder
+     */
+    default List<RunValue> createConditionEmpty(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, Boolean placeholder, Boolean unicode) {
+        return null;
+    }
+    default List<RunValue> createConditionEmpty(DataRuntime runtime, StringBuilder builder, Compare compare, Object value) {
+        return createConditionEmpty(runtime, builder, compare, value, true, true);
+    }
+
     /**
      * select [命令执行]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
