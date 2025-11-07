@@ -54,9 +54,9 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 
     //public static String KEY_PARENT             = "PARENT"              ; // 上级
     //public static String KEY_ALL_PARENT         = "ALL_PARENT"          ; // 所有上级
-    public static String KEY_CHILDREN           = "CHILDREN"            ; // 子级
-    public static String KEY_ALL_CHILDREN       = "ALL_CHILDREN"        ; // 所有子级
-    public static String KEY_ITEMS              = "ITEMS"               ; // items
+    public static String KEY_CHILDREN           = "children"            ; // 子级
+    public static String KEY_ALL_CHILDREN       = "all_children"        ; // 所有子级
+    public static String KEY_ITEMS              = "items"               ; // items
     public static KEY_CASE DEFAULT_KEY_CASE     = KEY_CASE.CONFIG       ; // key case
     public static String DEFAULT_PRIMARY_KEY    = ConfigTable.DEFAULT_PRIMARY_KEY;
 

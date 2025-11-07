@@ -3563,7 +3563,7 @@ public class DataSet<E extends DataRow> implements Collection<E>, Serializable, 
      * dispatchs("children",items, "CD:BASE_CD")
      *
      * @param compare   匹配方式 默认=
-     * @param field     默认"items"
+     * @param field     默认DataRow.KEY_ITEMS
      * @param unique    是否只分配一次(同一个条目不能分配到多个组中)
      * @param recursion 是否递归 所有子级以相同条件执行dispatchs
      * @param items     items默认this
@@ -3631,7 +3631,7 @@ public class DataSet<E extends DataRow> implements Collection<E>, Serializable, 
     }
 
     public DataSet<E> dispatchs(Compare compare, boolean unique, boolean recursion, DataSet<E> items, String... keys) {
-        return dispatchs(compare, "items", unique, recursion, items, keys);
+        return dispatchs(compare, DataRow.KEY_ITEMS, unique, recursion, items, keys);
     }
 
     public DataSet<E> dispatchs(Compare compare, String field, DataSet<E> items, String... keys) {
@@ -3639,10 +3639,10 @@ public class DataSet<E extends DataRow> implements Collection<E>, Serializable, 
     }
 
     public DataSet<E> dispatchs(Compare compare, DataSet<E> items, String... keys) {
-        return dispatchs(compare, "items", items, keys);
+        return dispatchs(compare, DataRow.KEY_ITEMS, items, keys);
     }
     public DataSet<E> dispatchs(Compare compare, boolean unique, boolean recursion, String... keys) {
-        return dispatchs(compare, "items", unique, recursion, this, keys);
+        return dispatchs(compare, DataRow.KEY_ITEMS, unique, recursion, this, keys);
     }
 
     public DataSet<E> dispatchs(Compare compare, String field, boolean unique, boolean recursion, String... keys) {
@@ -3706,16 +3706,16 @@ public class DataSet<E extends DataRow> implements Collection<E>, Serializable, 
     }
 
     public DataSet<E> dispatchs(boolean unique, boolean recursion, DataSet<E> items, String... keys) {
-        return dispatchs(Compare.EQUAL, "items", unique, recursion, items, keys);
+        return dispatchs(Compare.EQUAL, DataRow.KEY_ITEMS, unique, recursion, items, keys);
     }
     public DataSet<E> dispatchs(String field, DataSet<E> items, String... keys) {
         return dispatchs(Compare.EQUAL, field,false, false, items, keys);
     }
     public DataSet<E> dispatchs(DataSet<E> items, String... keys) {
-        return dispatchs(Compare.EQUAL, "items", items, keys);
+        return dispatchs(Compare.EQUAL, DataRow.KEY_ITEMS, items, keys);
     }
     public DataSet<E> dispatchs(boolean unique, boolean recursion, String... keys) {
-        return dispatchs(Compare.EQUAL, "items", unique, recursion, this, keys);
+        return dispatchs(Compare.EQUAL, DataRow.KEY_ITEMS, unique, recursion, this, keys);
     }
 
     public DataSet<E> dispatchs(String field, boolean unique, boolean recursion, String... keys) {
@@ -3979,7 +3979,7 @@ public class DataSet<E extends DataRow> implements Collection<E>, Serializable, 
         return group(true, field, compare, keys);
     }
     public DataSet<E> group(boolean extract, String... keys) {
-        return group(extract, "items", Compare.EQUAL, keys);
+        return group(extract, DataRow.KEY_ITEMS, Compare.EQUAL, keys);
     }
 
     public DataSet<E> group(String... keys) {
@@ -4010,7 +4010,7 @@ public class DataSet<E extends DataRow> implements Collection<E>, Serializable, 
      * @return DataSet
      */
     public DataSet<E> group(boolean extract, String items, String alias, String field, Aggregation agg, int scale, int round, String ... groups) {
-        String items_key = "items";
+        String items_key = DataRow.KEY_ITEMS;
         if(BasicUtil.isNotEmpty(items)) {
             items_key = items;
         }
@@ -4036,7 +4036,7 @@ public class DataSet<E extends DataRow> implements Collection<E>, Serializable, 
      * @return DataSet
      */
     public DataSet<E> group(boolean extract, String items, List<AggregationConfig> aggs, String ... groups) {
-        String items_key = "items";
+        String items_key = DataRow.KEY_ITEMS;
         if(BasicUtil.isNotEmpty(items)) {
             items_key = items;
         }
