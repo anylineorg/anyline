@@ -1713,7 +1713,8 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 */
 	@Override
 	public List<Run> buildQueryTablesCommentRun(DataRuntime runtime, Table query, int types) throws Exception {
-		return super.buildQueryTablesCommentRun(runtime, query, types);
+		//没有上级的ALL_TAB_COMMENTS
+		return new ArrayList<>();
 	}
 
 	/**
