@@ -5825,6 +5825,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		if(meta instanceof Tag) {
 			String comment = meta.getComment();
 			if (BasicUtil.isNotEmpty(comment)) {
+                comment = comment.replace("'", "''");
 				builder.append(" COMMENT '").append(comment).append("'");
 			}
 			return builder;

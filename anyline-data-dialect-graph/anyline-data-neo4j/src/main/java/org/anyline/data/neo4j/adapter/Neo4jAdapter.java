@@ -6415,6 +6415,7 @@ public class Neo4jAdapter extends AbstractGraphAdapter implements DriverAdapter 
         // <prop_name> <data_type> [NULL | NOT NULL] [DEFAULT <default_value>] [COMMENT '<comment>']
         String comment = meta.getComment();
         if(BasicUtil.isNotEmpty(comment)) {
+            comment = comment.replace("'", "''");
             builder.append(" COMMENT '").append(comment).append("'");
         }
         return builder;

@@ -5381,6 +5381,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         if(null != meta) {
             String comment = meta.getComment();
             if(BasicUtil.isNotEmpty(comment)) {
+                comment = comment.replace("'", "''");
                 builder.append("\nCOMMENT '").append(comment).append("'");
             }
         }
@@ -6665,6 +6666,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public StringBuilder comment(DataRuntime runtime, StringBuilder builder, Column meta) {
         String comment = meta.getComment();
         if(BasicUtil.isNotEmpty(comment)) {
+            comment = comment.replace("'", "''");
             builder.append(" COMMENT '").append(comment).append("'");
         }
         return builder;
@@ -7355,6 +7357,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public StringBuilder comment(DataRuntime runtime, StringBuilder builder, Index meta) {
         String comment = meta.getComment();
         if(BasicUtil.isNotEmpty(comment)) {
+            comment = comment.replace("'", "''");
             builder.append(" COMMENT '").append(comment).append("'");
         };
         return builder;

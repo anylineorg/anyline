@@ -5251,6 +5251,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         List<Run> runs = new ArrayList<>();
         String comment = meta.getComment();
         if(BasicUtil.isNotEmpty(comment)) {
+            comment = comment.replace("'", "''");
             Run run = new SimpleRun(runtime);
             runs.add(run);
             StringBuilder builder = run.getBuilder();
@@ -6250,6 +6251,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
             comment = meta.getComment();
         }
         if(BasicUtil.isNotEmpty(comment)) {
+            comment = comment.replace("'", "''");
             Run run = new SimpleRun(runtime);
             runs.add(run);
             StringBuilder builder = run.getBuilder();

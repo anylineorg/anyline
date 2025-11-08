@@ -5009,6 +5009,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         for(Column column:columns.values()) {
             String comment = column.getComment();
             if(BasicUtil.isNotEmpty(comment)) {
+                comment = comment.replace("'", "''");
                 Run run = new SimpleRun(runtime);
                 runs.add(run);
                 StringBuilder builder = run.getBuilder();
@@ -6165,6 +6166,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
             comment = meta.getComment();
         }
         if(BasicUtil.isNotEmpty(comment)) {
+            comment = comment.replace("'", "''");
             Run run = new SimpleRun(runtime);
             runs.add(run);
             StringBuilder builder = run.getBuilder();
@@ -6561,6 +6563,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         StringBuilder builder = run.getBuilder();
         String comment = meta.getComment();
         if(BasicUtil.isNotEmpty(comment)) {
+            comment = comment.replace("'", "''");
             builder.append("COMMENT ON TABLE ");
             name(runtime, builder, meta);
             builder.append(" IS '").append(comment).append("'");

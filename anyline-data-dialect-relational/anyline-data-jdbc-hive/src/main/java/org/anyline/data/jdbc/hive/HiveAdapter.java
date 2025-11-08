@@ -3999,6 +3999,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	public StringBuilder comment(DataRuntime runtime, StringBuilder builder, Table meta) {
 		String comment = meta.getComment();
 		if(BasicUtil.isNotEmpty(comment)) {
+			comment = comment.replace("'", "''");
 			builder.append(" COMMENT '").append(comment).append("'");
 		}
 		return builder;
@@ -5280,6 +5281,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	public StringBuilder comment(DataRuntime runtime, StringBuilder builder, Column meta) {
 		String comment = meta.getComment();
 		if(BasicUtil.isNotEmpty(comment)) {
+			comment = comment.replace("'", "''");
 			builder.append(" COMMENT '").append(comment).append("'");
 		}
 		return builder;

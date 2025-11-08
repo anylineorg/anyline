@@ -298,6 +298,7 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter {
         List<Run> runs = new ArrayList<>();
         String comment = table.getComment();
         if(BasicUtil.isNotEmpty(comment)) {
+            comment = comment.replace("'", "''");
             Run run = new SimpleRun(runtime);
             runs.add(run);
             StringBuilder builder = run.getBuilder();
@@ -318,6 +319,7 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter {
         List<Run> runs = new ArrayList<>();
         String comment = table.getComment();
         if(BasicUtil.isNotEmpty(comment)) {
+            comment = comment.replace("'", "''");
             Run run = new SimpleRun(runtime);
             runs.add(run);
             StringBuilder builder = run.getBuilder();
@@ -343,6 +345,7 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter {
         List<Run> runs = new ArrayList<>();
         String comment = column.getComment();
         if(BasicUtil.isNotEmpty(comment)) {
+            comment = comment.replace("'", "''");
             Run run = new SimpleRun(runtime);
             runs.add(run);
             StringBuilder builder = run.getBuilder();
@@ -389,6 +392,7 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter {
             comment = column.getComment();
         }
         if(BasicUtil.isNotEmpty(comment)) {
+            comment = comment.replace("'", "''");
             Run run = new SimpleRun(runtime);
             runs.add(run);
             StringBuilder builder = run.getBuilder();
