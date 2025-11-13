@@ -32,6 +32,7 @@ import org.anyline.metadata.refer.MetadataReferHolder;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.util.BasicUtil;
+import org.anyline.util.ConfigTable;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -7412,7 +7413,14 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
 	 */
 	@Override
     public <T extends Metadata> void correctSchemaFromJDBC(DataRuntime runtime, T meta, String catalog, String schema, boolean overrideRuntime, boolean overrideMeta) {
-        super.correctSchemaFromJDBC(runtime, meta, catalog, schema, overrideRuntime, overrideMeta);
+        if (overrideMeta || empty(meta.getSchema())) {
+            meta.setSchema(schema);
+        }
+        if (overrideRuntime || BasicUtil.isEmpty(runtime.getSchema())) {
+            if(ConfigTable.KEEP_ADAPTER == 1) {
+                runtime.setSchema(schema);
+            }
+        }
     }
 
 	/**
@@ -7436,7 +7444,8 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
 	 */
 	@Override
 	public String[] correctSchemaFromJDBC(String catalog, String schema) {
-		return super.correctSchemaFromJDBC(catalog, schema);
+        return new String[]{catalog, schema};
+		//return super.correctSchemaFromJDBC(catalog, schema);
 	}
 
 	public String insertHead(ConfigStore configs) {
