@@ -762,3 +762,5 @@ TransactionProxy.rollback(state);
 <a style="display:inline-block;" href="https://reldb.org/"><img alt="reldb" src="https://gitee.com/anyline/service/raw/master/db/reldb.webp" width="100"/>reldb</a>
 <a style="display:inline-block;" href="https://www.iri.com/products/voracity/"><img alt="Voracity" src="https://gitee.com/anyline/service/raw/master/db/voracity.png" width="100"/>Voracity</a>
 <a style="display:inline-block;" href="https://zeromq.org/"><img alt="ZeroMQ" src="https://gitee.com/anyline/service/raw/master/db/zeromq.gif" width="100"/>ZeroMQ</a>
+<a style="display:inline-block;" href="#"><img alt="Dify" src="http://cdn.anyline.org/img/logo/dify.svg" width="100"/>Dify</a>
+<a style="display:inline-block;" href="#"><img alt="Coze" src="http://cdn.anyline.org/img/logo/coze.svg" width="100"/>Coze</a>
