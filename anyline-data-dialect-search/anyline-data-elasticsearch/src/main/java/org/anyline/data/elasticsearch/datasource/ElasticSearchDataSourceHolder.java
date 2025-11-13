@@ -194,7 +194,7 @@ public class ElasticSearchDataSourceHolder extends AbstractDataSourceHolder impl
 							httpSyncClientBuilder.setDefaultHeaders(headers);
 							// 设置长连接策略
 							httpSyncClientBuilder.setKeepAliveStrategy(connectionKeepAliveStrategy(null, value(prefix, params, "keepAliveTime", Integer.class, 10) ));
-							httpSyncClientBuilder.disableAuthCaching();
+							//httpSyncClientBuilder.disableAuthCaching();
 						} catch (IOReactorException e) {
 							log.error("ES的Http异步连接池配置错误", e);
 						}
