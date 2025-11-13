@@ -218,7 +218,10 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
     public Table() {
     }
     public Table(String name) {
-       setName(name);
+        setName(name);
+    }
+    public Table(String name, boolean parse) {
+        setName(name, parse);
     }
 
     public Table(String schema, String table) {
@@ -241,9 +244,18 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
         this.schema = schema;
         this.name = name;
     }
+    public E setName(String name){
+        return setName(name, true);
+    }
 
-    public E setName(String name) {
-        if(null != name) {
+    /**
+     *
+     * @param name 表名
+     * @param parse 是否解析表名,有些表名中带.会跟catalog.schema.table格式混淆
+     * @return this
+     */
+    public E setName(String name, boolean parse) {
+        if(null != name && parse) {
             String tmp = name.replaceAll("\\s+", " ");
             String up = tmp.toUpperCase().trim();
             if(up.contains(" AS ")){
