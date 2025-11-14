@@ -6506,7 +6506,13 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 			String comment = meta.getComment();
 			String u_comment = update.getComment();
 			if(!BasicUtil.equalsIgnoreCase(comment, u_comment)) {
-				List<Run> cmts = buildChangeCommentRun(runtime, meta, slice);
+                List<Run> cmts = null;
+                if(BasicUtil.isEmpty(comment)) {
+                    cmts = buildAppendCommentRun(runtime, meta, slice);
+                }else{
+                    cmts = buildChangeCommentRun(runtime, meta, slice);
+                }
+
 				if(null != cmts) {
 					runs.addAll(cmts);
 				}
