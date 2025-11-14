@@ -1,1 +1,2 @@
 org.anyline.data.jdbc.oscar.OscarAdapter
+org.anyline.data.jdbc.oscar.KStoreAdapter
