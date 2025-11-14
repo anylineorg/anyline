@@ -94,6 +94,10 @@ public class DefaultTextPrepare extends DefaultAutoPrepare implements TextPrepar
 	}
 
 	private void split(){
+		if(text.contains(";")){
+			//可能是多个SQL 不解析
+			return;
+		}
 		text = text.replaceAll("\\s{2,}", " ");
 		up = text.toUpperCase();
 		String page = split("LIMIT");
