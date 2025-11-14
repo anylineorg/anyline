@@ -32,10 +32,7 @@ import org.anyline.metadata.type.TypeMetadata;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @AnylineComponent("anyline.data.jdbc.adapter.kstore")
 public class KStoreAdapter extends OracleGenusAdapter implements JDBCAdapter {
@@ -1555,7 +1552,17 @@ public class KStoreAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public List<Run> buildQuerySchemasRun(DataRuntime runtime, boolean greedy, Schema query) throws Exception {
-		return super.buildQuerySchemasRun(runtime, greedy, query);
+		List<Run> runs = new ArrayList<>();
+		Run run = new SimpleRun(runtime);
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
+		builder.append("SELECT DISTINCT owner FROM ALL_ALL_TABLES");
+		if(null != query) {
+			String name = query.getName();
+			ConfigStore configs = run.getConfigs();
+			configs.and(Compare.LIKE_SIMPLE, "USERNAME", name);
+		}
+		return runs;
 	}
 
 	/**
@@ -1684,7 +1691,25 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 */
 	@Override
 	public List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Table query, int types, ConfigStore configs) throws Exception {
-		return super.buildQueryTablesRun(runtime, greedy, query, types, configs);
+		/*
+        ALL_ALL_TABLES：当前登录用户可见的所有表
+        */
+		List<Run> runs = new ArrayList<>();
+		Run run = new SimpleRun(runtime, configs);
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
+		//需要跨schema查询
+		builder.append("SELECT M.OWNER, M.TABLE_NAME AS TABLE_NAME, M.TABLE_TYPE AS TABLE_TYPE, NOW() AS CREATE_TIME, NOW() AS UPDATE_TIME, M.TEMPORARY AS IS_TEMPORARY, F.REMARKS, M.STATUS\n");
+		builder.append("FROM ALL_ALL_TABLES M LEFT JOIN ALL_TAB_COMMENTS F \n");
+		builder.append("ON M.TABLE_NAME = F.TABLE_NAME AND M.OWNER = F.TABLE_SCHEM \n");
+		configs.and("M.OWNER", query.getSchemaName());
+		List<String> tps = names(Table.types(types));
+		if(tps.isEmpty()) {
+			tps.add("TABLE");
+			tps.add("VIEW");
+		}
+		configs.in("M.OBJECT_TYPE", tps);
+		return runs;
 	}
 
 	/**
