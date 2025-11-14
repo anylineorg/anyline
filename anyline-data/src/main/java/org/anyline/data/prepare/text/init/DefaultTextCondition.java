@@ -242,12 +242,12 @@ public class DefaultTextCondition extends AbstractCondition implements Condition
 			if(var.getType() == Variable.VAR_TYPE_KEY_REPLACE) {
 				// CD = ':CD' CD = '::CD'
 				List<Object> values = var.getValues(); 
-				String value = null; 
+				Object value = null;
 				if(BasicUtil.isNotEmpty(true,values)) {
-					value = (String)values.get(0); 
+					value = values.get(0);
 				} 
 				if(null != value) {
-					result = result.replace(var.getFullKey(), value);
+					result = result.replace(var.getFullKey(), value.toString());
 				}else{
 					result = result.replace(var.getFullKey(), "");
 				} 
@@ -290,9 +290,9 @@ public class DefaultTextCondition extends AbstractCondition implements Condition
 			} 
 			if(var.getType() == Variable.VAR_TYPE_INDEX) {
 				List<Object> values = var.getValues(); 
-				String value = null; 
+				Object value = null;
 				if(BasicUtil.isNotEmpty(true,values)) {
-					value = (String)values.get(0); 
+					value = values.get(0);
 				} 
 				runValues.add(new RunValue((String)null, value));
 			} 

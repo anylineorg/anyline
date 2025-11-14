@@ -279,7 +279,8 @@ public abstract class DefaultAutoPrepare extends AbstractRunPrepare implements A
 				parseColumn(colStr);
 				name = name.substring(0, name.indexOf("("));
 			}
-			if(null != name && name.contains(".")) {
+			//table.setName已经解析过,有可能带.带不需要拆分
+			/*if(null != name && name.contains(".")) {
 				String[] tbs = name.split("\\.");
 				if(tbs.length == 2) {
 					schema = tbs[0];
@@ -289,7 +290,7 @@ public abstract class DefaultAutoPrepare extends AbstractRunPrepare implements A
 					schema = tbs[1];
 					name = tbs[2];
 				}
-			}
+			}*/
 			if(name.contains(" ")) {
 				String[] tmps = name.split(" ");
 				if(tmps[0].contains("(")) {
@@ -311,7 +312,7 @@ public abstract class DefaultAutoPrepare extends AbstractRunPrepare implements A
 				table.setAlias(alias);
 			}
 			if(BasicUtil.isNotEmpty(name)) {
-				table.setName(name);
+				table.setName(name, false);
 			}
 
 		}
