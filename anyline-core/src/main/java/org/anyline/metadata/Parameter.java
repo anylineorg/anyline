@@ -27,7 +27,7 @@ public class Parameter extends Metadata<Parameter> implements Serializable {
     protected Integer length                      ;
     protected Integer precision                   ; // 有效长度(包含小数部分)  123.45：precision = 5, scale = 2 对于SQL Server 中 varchar(max)设置成 -1
     protected Integer scale                       ; // 小数部分的长度
-    protected DataTypeDefine dataType;
+    protected DataTypeDefine dataType             ; // 数据类型定义
     private Object value;
     private TypeMetadata columnType;
     private Integer type;
