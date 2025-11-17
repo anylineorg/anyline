@@ -30,7 +30,7 @@ public enum MySQLGenusFunction implements SystemFunction {
     AES_DECRYPT(META.AES_DECRYPT, "AES_DECRYPT"),
     AES_ENCRYPT(META.AES_ENCRYPT, "AES_ENCRYPT"),
     ANY_VALUE(META.ANY_VALUE, "ANY_VALUE"),
-    ASCII(META.ASCII, "ASCII"),
+    ASCII(META.HEAD_ASCII, "ASCII"),
     ASIN(META.ASIN, "ASIN"),
     asynchronous_connection_failover_add_managed(META.ASYNCHRONOUS_CONNECTION_FAILOVER_ADD_MANAGED, "asynchronous_connection_failover_add_managed"),
     asynchronous_connection_failover_add_source(META.ASYNCHRONOUS_CONNECTION_FAILOVER_ADD_SOURCE, "asynchronous_connection_failover_add_source"),
