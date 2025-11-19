@@ -162,20 +162,29 @@ public class TextRun extends AbstractRun implements Run {
 				int i = 0;
 				int len = values.size();
 				List<Variable> vars = this.variables;
-				if(null == vars) {
-					vars = new ArrayList<>();
-				}
-				if(vars.isEmpty()){
-					vars = conditionChain.getVariables();
-				}
-				for(Variable var:vars) {
-					if(i < len) {
-						var.setValue(values.get(i));
-						i++;
-					}else {
-						break;
+				if(null != vars) {
+					for(Variable var:vars) {
+						if(i < len) {
+							var.setValue(values.get(i));
+							i++;
+						}else {
+							break;
+						}
 					}
 				}
+				//会有从body中拆分出来的条件，也需要赋值
+				vars = conditionChain.getVariables();
+				if(null != vars) {
+					for(Variable var:vars) {
+						if(i < len) {
+							var.setValue(values.get(i));
+							i++;
+						}else {
+							break;
+						}
+					}
+				}
+
 			}
 			this.add(configs.getOrders());
 
