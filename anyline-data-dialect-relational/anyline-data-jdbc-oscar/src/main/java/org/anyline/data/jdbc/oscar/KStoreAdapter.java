@@ -651,7 +651,7 @@ public class KStoreAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public String mergeFinalQuery(DataRuntime runtime, Run run) {
-		return super.pageLimit(runtime, run);
+		return super.pageLimitOffset(runtime, run);
 	}
 
 	/**
