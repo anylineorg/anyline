@@ -1862,8 +1862,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
                 mapPut(key, value);
             }
             if (ignoreSeparator || ignoreCase) {
-                String ignoreKey = ignoreKey(key);
-                keymap.put(ignoreKey, key);
+                putIgnoreKey(key);
             }
         }
         return this;
@@ -4013,7 +4012,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
             if(super.containsKey(key)) {
                 return true;
             }
-            key = ignoreKey(key);
+            key = getIgnoreKey(key);
             result = super.containsKey(key);
         }
         return result;
@@ -4041,14 +4040,14 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
                 }
             }
 
-            key = ignoreKey(key);
+            key = getIgnoreKey(key);
             if(super.containsKey(key)) {
                 return super.get(key);
             }
         }
         return result;
     }
-    public String ignoreKey(String key) {
+    public String getIgnoreKey(String key) {
         String ignoreKey = keyAdapter.key(key);;
         if(ignoreSeparator){
             ignoreKey = ignoreKey.replace("_","").replace("-","");
@@ -4062,6 +4061,16 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         }
         return key;
     }
+    public void putIgnoreKey(String key) {
+        String ignoreKey = keyAdapter.key(key);;
+        if(ignoreSeparator){
+            ignoreKey = ignoreKey.replace("_","").replace("-","");
+        }
+        if(ignoreCase){
+            ignoreKey = ignoreKey.toUpperCase();
+        }
+        keymap.put(ignoreKey, key);
+    }
     public Object get(String key) {
         if(null == key) {
             return null;
@@ -4074,7 +4083,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
             result = super.get(keyAdapter.key(key));
         }
         if (null == result) {
-            result = super.get(ignoreKey(key));
+            result = super.get(getIgnoreKey(key));
         }
         return result;
     }
