@@ -6295,9 +6295,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				runs = buildCreateRun(runtime, table);
 				for(Run run:runs) {
 					list.add(run.getFinalUpdate());
-					table.addDdl(list);
 				}
-			}
+                table.addDdl(list);
+            }
 			if (ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
 				log.info("{}[table ddl][table:{}][result:{}][执行耗时:{}]", random, table.getName(), list.size(), DateUtil.format(System.currentTimeMillis() - fr));
 			}
