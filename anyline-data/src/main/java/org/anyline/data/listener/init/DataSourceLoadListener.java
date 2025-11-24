@@ -43,7 +43,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-@AnylineComponent("anyline.environment.data.listener.jdbc")
+@AnylineComponent("anyline.environment.data.listener.datasource")
 public class DataSourceLoadListener implements LoadListener {
     private static final Log log = LogProxy.get(DataSourceLoadListener.class);
 
@@ -76,11 +76,18 @@ public class DataSourceLoadListener implements LoadListener {
         PrimaryGenerator primaryGenerator = ConfigTable.environment().getBean(PrimaryGenerator.class);
         DMListener dmListener = ConfigTable.environment().getBean(DMListener.class);
         DDListener ddListener = ConfigTable.environment().getBean(DDListener.class);
+        //适配器
         Map<String, DriverAdapter> adapters = ConfigTable.environment().getBeans(DriverAdapter.class);
+        //执行器
         Map<String, DriverActuator> actuators = ConfigTable.environment().getBeans(DriverActuator.class);
+
+        //数据源加载器
         Map<String, DataSourceLoader> loaders =ConfigTable.environment().getBeans(DataSourceLoader.class);
+        //数据源监听器
         DataSourceMonitor monitor = ConfigTable.environment().getBean(DataSourceMonitor.class);
         DriverAdapterHolder.setMonitor(monitor);
+
+
         //数据库操作适配器
         if(null != adapters) {
             DriverAdapterHolder.setAdapters(adapters);
