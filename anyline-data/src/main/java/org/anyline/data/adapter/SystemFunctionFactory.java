@@ -59,4 +59,8 @@ public class SystemFunctionFactory {
         }
         return function;
     }
+
+    public static Map<Object, Map<SystemFunction.META, SystemFunction>> functions(){
+        return functions;
+    }
 }
