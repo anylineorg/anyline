@@ -124,5 +124,5 @@ public interface DateFormatPattern {
         }
     }
     META meta();
-    String formula();
+    String define();
 }

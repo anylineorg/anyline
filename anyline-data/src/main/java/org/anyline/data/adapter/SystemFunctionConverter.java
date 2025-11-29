@@ -16,8 +16,10 @@
 
 package org.anyline.data.adapter;
 
+import org.anyline.metadata.Metadata;
 import org.anyline.metadata.type.DatabaseType;
 
-public interface SystemFunctionParser {
-    String convert(DatabaseType origin,DatabaseType target, String cmd);
+public interface SystemFunctionConverter {
+    String convert(DatabaseType origin, DatabaseType target, String cmd);
+    void convert(DatabaseType origin, DatabaseType target, Metadata metadata);
 }

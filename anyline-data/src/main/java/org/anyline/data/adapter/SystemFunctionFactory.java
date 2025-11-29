@@ -29,29 +29,36 @@ public class SystemFunctionFactory {
     private static final Log log = LogProxy.get(SystemFunctionFactory.class);
 
     //DatabaseOrigin || DatabaseType
-    protected static Map<Object, Map<SystemFunction.META, SystemFunction>> functions = new HashMap<>();
-
+    protected static Map<Object, Map<SystemFunction.META, SystemFunction>> metas = new HashMap<>();
+    protected static Map<Object, Map<String, SystemFunction>> names = new HashMap<>();
 
     //DatabaseOrigin || DatabaseType
     public static void reg(Object type, SystemFunction function) {
         SystemFunction.META meta = function.meta();
-        Map<SystemFunction.META, SystemFunction> maps = functions.get(type);
-        if(null == maps) {
-            maps = new HashMap<>();
-            functions.put(type, maps);
+        Map<SystemFunction.META, SystemFunction> meta_maps = metas.get(type);
+        if(null == meta_maps) {
+            meta_maps = new HashMap<>();
+            metas.put(type, meta_maps);
         }
-        maps.put(meta, function);
+        meta_maps.put(meta, function);
+        Map<String, SystemFunction> name_maps = names.get(type);
+        if(null == name_maps) {
+            name_maps = new HashMap<>();
+            names.put(type, name_maps);
+        }
+        name_maps.put(function.define(), function);
+
     }
     public static SystemFunction function(DatabaseType type, SystemFunction.META meta) {
         SystemFunction function = null;
-        Map<SystemFunction.META, SystemFunction> maps = functions.get(type);
+        Map<SystemFunction.META, SystemFunction> maps = metas.get(type);
         if(null != maps) {
             function = maps.get(meta);
         }
         if(null == function) {
             DatabaseOrigin origin = type.origin();
             if(null != origin) {
-                maps = functions.get(origin);
+                maps = metas.get(origin);
                 if(null != maps) {
                     function = maps.get(meta);
                 }
@@ -60,7 +67,63 @@ public class SystemFunctionFactory {
         return function;
     }
 
-    public static Map<Object, Map<SystemFunction.META, SystemFunction>> functions(){
-        return functions;
+    /**
+     * 根据name 定位函数
+     * @param type 数据库类型
+     * @param name 名称
+     * @return SystemFunction
+     */
+    public static SystemFunction function(DatabaseType type, String name) {
+        SystemFunction function = null;
+        Map<String, SystemFunction> maps = names.get(type);
+        if(null != maps) {
+            function = maps.get(name);
+            if(null == function) {
+                function = maps.get(name.toUpperCase());
+            }
+        }
+        if(null == function) {
+            DatabaseOrigin origin = type.origin();
+            if(null != origin) {
+                maps = names.get(origin);
+                if(null != maps) {
+                    function = maps.get(name);
+                    if(null == function) {
+                        function = maps.get(name.toUpperCase());
+                    }
+                }
+            }
+        }
+        return function;
+    }
+
+    public static Map<Object, Map<SystemFunction.META, SystemFunction>> metas(){
+        return metas;
+    }
+
+    public static Map<SystemFunction.META, SystemFunction> metas(DatabaseType type){
+        Map<SystemFunction.META, SystemFunction> maps = metas.get(type);
+        if(null == maps || maps.isEmpty()) {
+            DatabaseOrigin origin = type.origin();
+            if(null != origin) {
+                maps = metas.get(origin);
+            }
+        }
+        return maps;
+    }
+
+    public static Map<Object, Map<String, SystemFunction>> names(){
+        return names;
+    }
+
+    public static Map<String, SystemFunction> names(DatabaseType type){
+        Map<String, SystemFunction> maps = names.get(type);
+        if(null == maps || maps.isEmpty()) {
+            DatabaseOrigin origin = type.origin();
+            if(null != origin) {
+                maps = names.get(origin);
+            }
+        }
+        return maps;
     }
 }

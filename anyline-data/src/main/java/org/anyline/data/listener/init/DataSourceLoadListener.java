@@ -18,9 +18,7 @@ package org.anyline.data.listener.init;
 
 import org.anyline.annotation.AnylineComponent;
 import org.anyline.cache.CacheProvider;
-import org.anyline.data.adapter.DriverActuator;
-import org.anyline.data.adapter.DriverAdapter;
-import org.anyline.data.adapter.DriverAdapterHolder;
+import org.anyline.data.adapter.*;
 import org.anyline.data.datasource.DataSourceLoader;
 import org.anyline.data.datasource.DataSourceMonitor;
 import org.anyline.data.interceptor.*;
@@ -87,6 +85,8 @@ public class DataSourceLoadListener implements LoadListener {
         DataSourceMonitor monitor = ConfigTable.environment().getBean(DataSourceMonitor.class);
         DriverAdapterHolder.setMonitor(monitor);
 
+        //系统函数解析器
+        Map<String, SystemFunctionConverter> parsers = ConfigTable.environment().getBeans(SystemFunctionConverter.class);
 
         //数据库操作适配器
         if(null != adapters) {
@@ -138,6 +138,12 @@ public class DataSourceLoadListener implements LoadListener {
                 if(null == adapter.getActuator()) {
                     log.warn("[not found actuator][adapter:{}]", adapter);
                 }
+            }
+        }
+
+        if(null != parsers){
+            for(SystemFunctionConverter parser:parsers.values()) {
+                SystemFunctionConverterProxy.reg(parser);
             }
         }
     }

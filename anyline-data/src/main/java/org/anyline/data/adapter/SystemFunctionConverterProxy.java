@@ -18,22 +18,28 @@ package org.anyline.data.adapter;
 
 import org.anyline.log.Log;
 import org.anyline.log.LogProxy;
+import org.anyline.metadata.Metadata;
 import org.anyline.metadata.type.DatabaseType;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SystemFunctionParserProxy {
-    private static final Log log = LogProxy.get(SystemFunctionParserProxy.class);
-    private static List<SystemFunctionParser> parsers = new ArrayList();
+public class SystemFunctionConverterProxy {
+    private static final Log log = LogProxy.get(SystemFunctionConverterProxy.class);
+    private static List<SystemFunctionConverter> parsers = new ArrayList();
 
-    public static void reg(SystemFunctionParser parser) {
+    public static void reg(SystemFunctionConverter parser) {
         parsers.add(parser);
     }
     public static String convert(DatabaseType origin, DatabaseType target, String cmd) {
-        for (SystemFunctionParser parser : parsers) {
+        for (SystemFunctionConverter parser : parsers) {
             cmd = parser.convert(origin, target, cmd);
         }
         return cmd;
+    }
+    public static void convert(DatabaseType origin, DatabaseType target, Metadata metadata) {
+        for (SystemFunctionConverter parser : parsers) {
+             parser.convert(origin, target, metadata);
+        }
     }
 }

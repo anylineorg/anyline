@@ -22,31 +22,38 @@ import org.anyline.metadata.DateFormatPattern;
 import org.anyline.metadata.type.DatabaseOrigin;
 import org.anyline.metadata.type.DatabaseType;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class DateFormatPatternFactory {
     private static final Log log = LogProxy.get(DateFormatPatternFactory.class);
 
     //DatabaseOrigin || DatabaseType
-    protected static Map<Object, Map<DateFormatPattern.META, DateFormatPattern>> metas = new HashMap<>();
-    protected static Map<Object, Map<String, DateFormatPattern>> names = new HashMap<>();
+    protected static Map<Object, Map<DateFormatPattern.META, DateFormatPattern>> metas = new LinkedHashMap<>();
+    protected static Map<Object, Map<String, DateFormatPattern>> names = new LinkedHashMap<>();
 
     //DatabaseOrigin || DatabaseType
     public static void reg(Object type, DateFormatPattern pattern) {
+        reg(type, pattern, true);
+    }
+    public static void reg(Object type, DateFormatPattern pattern, boolean overwrite) {
         DateFormatPattern.META meta = pattern.meta();
         Map<DateFormatPattern.META, DateFormatPattern> meta_maps = metas.get(type);
         if(null == meta_maps) {
-            meta_maps = new HashMap<>();
+            meta_maps = new LinkedHashMap<>();
             metas.put(type, meta_maps);
         }
-        meta_maps.put(meta, pattern);
+        if(overwrite || !meta_maps.containsKey(meta)){
+            meta_maps.put(meta, pattern);
+        }
         Map<String, DateFormatPattern> name_maps = names.get(type);
         if(null == name_maps) {
-            name_maps = new HashMap<>();
+            name_maps = new LinkedHashMap<>();
             names.put(type, name_maps);
         }
-        name_maps.put(pattern.define(), pattern);
+        if(overwrite || !name_maps.containsKey(pattern.define())){
+            name_maps.put(pattern.define(), pattern);
+        }
 
     }
     public static DateFormatPattern pattern(DatabaseType type, DateFormatPattern.META meta) {
