@@ -494,6 +494,14 @@ public class Metadata<T extends Metadata> implements Serializable {
         return property;
     }
 
+    public Object getProperty(String key) {
+        LinkedHashMap<String, Object> map = getProperty();
+        if(null != map){
+            return map.get(key);
+        }
+        return null;
+    }
+
     public T setProperty(String key, Object value) {
         if(getmap && null != update) {
             return (T)update.setProperty(key, value);
