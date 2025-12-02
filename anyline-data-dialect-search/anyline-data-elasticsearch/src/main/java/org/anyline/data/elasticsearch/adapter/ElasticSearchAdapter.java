@@ -2799,6 +2799,10 @@ PUT * /_bulk
         RestClient client = client(runtime);
         String method = "GET";
         String endpoint = table.getName();
+        Object type = table.getProperty("include_type_name");
+        if(BasicUtil.isNotEmpty(type)){
+            endpoint += "?include_type_name="+type;
+        }
         Request request = new Request(
                 method,
                 endpoint);
