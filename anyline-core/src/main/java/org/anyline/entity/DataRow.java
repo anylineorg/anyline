@@ -1810,6 +1810,9 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     }
     protected void mapPut(String key, Object value) {
         super.put(key, value);
+        if (ignoreSeparator || ignoreCase) {
+            putIgnoreKey(key);
+        }
     }
     protected Object mapGet(String key) {
         return super.get(key);
@@ -1860,9 +1863,6 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
                 }
             }else{
                 mapPut(key, value);
-            }
-            if (ignoreSeparator || ignoreCase) {
-                putIgnoreKey(key);
             }
         }
         return this;
