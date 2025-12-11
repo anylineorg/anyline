@@ -15835,7 +15835,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			SQL_BUILD_IN_VALUE val = checkDefaultBuildInValue(runtime, def);
 			if(null != val) {
 				def = val;
-			}
+			}else{
+                //
+            }
 			if(def instanceof SQL_BUILD_IN_VALUE) {
 				String value = value(runtime, meta, (SQL_BUILD_IN_VALUE)def);
 				if(null != value) {
