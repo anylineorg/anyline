@@ -20,6 +20,7 @@ import org.anyline.adapter.PersistenceAdapter;
 import org.anyline.annotation.AnylineComponent;
 import org.anyline.dao.AnylineDao;
 import org.anyline.data.adapter.DriverAdapter;
+import org.anyline.data.adapter.SystemFunctionConverterProxy;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.RunPrepare;
@@ -33,6 +34,8 @@ import org.anyline.entity.*;
 import org.anyline.entity.authorize.Privilege;
 import org.anyline.entity.authorize.Role;
 import org.anyline.entity.authorize.User;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 import org.anyline.metadata.*;
 import org.anyline.metadata.differ.MetadataDiffer;
 import org.anyline.metadata.graph.EdgeTable;
@@ -45,8 +48,6 @@ import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ClassUtil;
 import org.anyline.util.ConfigTable;
-import org.anyline.log.Log;
-import org.anyline.log.LogProxy;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
@@ -1691,7 +1692,13 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public boolean create(Table meta) throws Exception {
 		DataRuntime runtime = runtime();
-		return runtime.getAdapter().create(runtime, meta);
+		DriverAdapter adapter = runtime.getAdapter();
+		DatabaseType type = meta.getDatabaseType();
+		DatabaseType dt = adapter.type();
+		if(null != dt && null != type && type != dt){
+			SystemFunctionConverterProxy.convert(type, dt, meta);
+		}
+		return adapter.create(runtime, meta);
 	}
 
 	@Override
