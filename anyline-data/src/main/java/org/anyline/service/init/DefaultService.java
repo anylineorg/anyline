@@ -1706,7 +1706,8 @@ public class DefaultService<E> implements AnylineService<E> {
         if(!pks.isEmpty()){
             name += "<" + BeanUtil.concat(Column.names(pks)) + ">";
         }
-        RunPrepare prepare = createRunPrepare(name);
+        RunPrepare prepare = new DefaultTablePrepare(table);
+        prepare.disposable(true);
         Table tab = prepare.getTable();
         if(null != tab) {
             Catalog catalog = table.getCatalog();
@@ -3535,7 +3536,7 @@ public class DefaultService<E> implements AnylineService<E> {
                     //table.addRuns(otable.runs());
                 } else {
                     //sort(table);
-                    result = dao.create(table);
+                    result = create(table);
                 }
             }finally {
                 CacheProxy.clear();
@@ -3548,11 +3549,16 @@ public class DefaultService<E> implements AnylineService<E> {
             sort(table);
             return dao.create(table);
         }
+
+        /**
+         * 列排序
+         * @param table 表
+         */
         protected void sort(Table table) {
             LinkedHashMap<String, Column> columns = table.getColumns();
             boolean sort = false;
             for(Column column:columns.values()) {
-                //只要有一个带 位置属性的列就排序
+                //只要有一个带位置属性的列就排序
                 if(null != column.getPosition()) {
                     sort = true;
                     break;
