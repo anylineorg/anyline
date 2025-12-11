@@ -3199,12 +3199,13 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         StringBuilder builder = run.getBuilder();
         ConfigStore configs = run.getConfigs();
         //test_pk_pkey    | p    | {2,1}    |     PRIMARY KEY (id, name)
-        builder.append("SELECT  m.conname, pg_get_constraintdef(m.oid, true) AS define\n");
+        builder.append("SELECT m.conname, pg_get_constraintdef(m.oid, true) AS define\n");
         builder.append("FROM pg_constraint m \n");
         builder.append("LEFT JOIN pg_namespace ns ON m.connamespace = ns.oid \n");
         builder.append("LEFT JOIN pg_class ft ON m.conrelid = ft.oid \n");
         configs.and(Compare.LIKE_SIMPLE_IGNORE_CASE, "ft.relname", query.getTableName());
         configs.and("ns.nspname", query.getSchemaName());
+        configs.and("m.contype", "p");
         return runs;
     }
 
@@ -6417,7 +6418,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
     public StringBuilder charset(DataRuntime runtime, StringBuilder builder, Column meta) {
         return super.charset(runtime, builder, meta);
     }
-    
+
     /**
      * column[命令合成-子流程]<br/>
      * 列定义:虚拟列
@@ -6428,7 +6429,15 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public StringBuilder virtual(DataRuntime runtime, StringBuilder builder, Column meta) {
-        return super.virtual(runtime, builder, meta);
+        Column.Virtual virtual = meta.getVirtual();
+        if(null != virtual){
+            builder.append(" GENERATED ALWAYS AS ").append(virtual.getExpr());
+            Column.Virtual.TYPE type = virtual.getType();
+            if(null != type){
+                builder.append(" ").append(type);
+            }
+        }
+        return builder;
     }
 
     /**
