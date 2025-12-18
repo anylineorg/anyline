@@ -6276,7 +6276,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 
 	@Override
 	public String concat(DataRuntime runtime, String ... args) {
-		return super.concatFun(runtime, args);
+		return super.concatOr(runtime, args);
 	}
 
 	/**
