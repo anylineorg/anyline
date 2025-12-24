@@ -16,12 +16,12 @@
 
 package org.anyline.environment.boot.datasource;
 
-import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 
+//不要继承org.springframework.boot.autoconfigure.jdbc.DataSourceProperties; boot4中没有
 //不要加载 有些类没有
 //@Configuration("anyline.environment.boot.datasource")
 //@ConfigurationProperties(prefix = "anyline.datasource")
-public class DataSourceProperty extends DataSourceProperties {
+public class DataSourceProperty {
     private volatile String adapter;
     private volatile String driver;
     private volatile String catalog;
