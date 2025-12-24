@@ -1699,14 +1699,17 @@ public class DefaultService<E> implements AnylineService<E> {
             return new SimplePrepare().disposable(true);
         }
         String name = table.getName();
-        if(null == name){
-            name = table.getText();
-        }
+        String text = table.getText();
         LinkedHashMap<String, Column> pks = table.getPrimaryKeyColumns();
-        if(!pks.isEmpty()){
-            name += "<" + BeanUtil.concat(Column.names(pks)) + ">";
+        if(!pks.isEmpty() && BasicUtil.isNotEmpty(name)){
+            text = name + "<" + BeanUtil.concat(Column.names(pks)) + ">";
         }
-        RunPrepare prepare = new DefaultTablePrepare(table);
+        RunPrepare prepare = null;
+        if(BasicUtil.isNotEmpty(text)){
+            prepare = createRunPrepare(text);
+        }else{
+            prepare = new DefaultTablePrepare(table);
+        }
         prepare.disposable(true);
         Table tab = prepare.getTable();
         if(null != tab) {
