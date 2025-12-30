@@ -2279,9 +2279,9 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         runs.add(run);
         StringBuilder builder = run.getBuilder();
         builder.append("SELECT * FROM information_schema.views");
-        configs.and("TABLE_CATALOG", query.getCatalogName());
-        configs.and("TABLE_SCHEMA", query.getSchemaName());
-        configs.and(Compare.LIKE_SIMPLE_IGNORE_CASE,"TABLE_NAME", query.getName());
+        configs.and("table_catalog", query.getCatalogName());
+        configs.and("table_schema", query.getSchemaName());
+        configs.and(Compare.LIKE_SIMPLE_IGNORE_CASE,"table_name", query.getName());
         return runs;
     }
 
@@ -2904,15 +2904,15 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
             builder.append("SELECT M.*,pg_catalog.format_type ( FA.ATTTYPID, FA.ATTTYPMOD ) AS FULL_TYPE,FD.DESCRIPTION AS COLUMN_COMMENT \n");
             builder.append("FROM information_schema.columns M\n");
             builder.append("LEFT JOIN pg_namespace FN ON M.table_schema = FN.nspname\n");
-            builder.append("LEFT JOIN pg_class FC ON FC.RELNAME = M.TABLE_NAME AND FC.relnamespace = FN.oid\n");
-            builder.append("LEFT JOIN pg_attribute FA ON FA.ATTNAME = M.COLUMN_NAME AND FA.ATTRELID = FC.OID\n");
-            builder.append("LEFT JOIN pg_description FD ON FD.OBJOID = FC.OID AND FD.OBJSUBID = M.ORDINAL_POSITION");
-            configs.and("M.TABLE_CATALOG", query.getCatalogName());
-            configs.and("M.TABLE_SCHEMA", query.getSchemaName());
-            configs.and(Compare.LIKE_SIMPLE_IGNORE_CASE,"M.TABLE_NAME", query.getTableName());
-            configs.order("M.TABLE_SCHEMA");
-            configs.order("M.TABLE_NAME");
-            configs.order("M.ORDINAL_POSITION");
+            builder.append("LEFT JOIN pg_class FC ON FC.relname = M.table_name AND FC.relnamespace = FN.oid\n");
+            builder.append("LEFT JOIN pg_attribute FA ON FA.attname = M.column_name AND FA.attrelid = FC.oid\n");
+            builder.append("LEFT JOIN pg_description FD ON FD.objoid = FC.oid AND FD.objsubid = M.ordinal_position");
+            configs.and("M.table_catalog", query.getCatalogName());
+            configs.and("M.table_schema", query.getSchemaName());
+            configs.and(Compare.LIKE_SIMPLE_IGNORE_CASE,"M.table_name", query.getTableName());
+            configs.order("M.table_schema");
+            configs.order("M.table_name");
+            configs.order("M.ordinal_position");
         }
         return runs;
     }
@@ -2968,14 +2968,14 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         builder.append("SELECT M.*,pg_catalog.format_type ( FA.ATTTYPID, FA.ATTTYPMOD ) AS FULL_TYPE,FD.DESCRIPTION AS COLUMN_COMMENT \n");
         builder.append("FROM information_schema.columns M\n");
         builder.append("LEFT JOIN pg_namespace FN ON M.table_schema = FN.nspname\n");
-        builder.append("LEFT JOIN pg_class FC ON FC.RELNAME = M.TABLE_NAME AND FC.relnamespace = FN.oid\n");
-        builder.append("LEFT JOIN pg_attribute  FA ON FA.ATTNAME = M.COLUMN_NAME AND FA.ATTRELID = FC.OID\n");
-        builder.append("LEFT JOIN pg_description FD ON FD.OBJOID = FC.OID AND FD.OBJSUBID = M.ORDINAL_POSITION\n");
-        configs.and("M.TABLE_CATALOG", query.getCatalogName());
-        configs.and("M.TABLE_SCHEMA", query.getSchemaName());
-        configs.in("M.TABLE_NAME", Table.names(tables));
-        configs.order("M.TABLE_NAME");
-        configs.order("M.ORDINAL_POSITION");
+        builder.append("LEFT JOIN pg_class FC ON FC.relname = M.table_name AND FC.relnamespace = FN.oid\n");
+        builder.append("LEFT JOIN pg_attribute  FA ON FA.attname = M.column_name AND FA.attrelid = FC.oid\n");
+        builder.append("LEFT JOIN pg_description FD ON FD.objoid = FC.oid AND FD.objsubid = M.ordinal_position\n");
+        configs.and("M.table_catalog", query.getCatalogName());
+        configs.and("M.table_schema", query.getSchemaName());
+        configs.in("M.table_name", Table.names(tables));
+        configs.order("M.table_name");
+        configs.order("M.ordinal_position");
         return runs;
     }
 
