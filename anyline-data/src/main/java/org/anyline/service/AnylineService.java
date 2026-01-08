@@ -756,7 +756,13 @@ public interface AnylineService<E>{
 	 * @return DataSet
 	 */
 	default DataSet<DataRow> querys(String dest, long first, long last, Object obj, String ... conditions) {
-		ConfigStore configs = new DefaultConfigStore(first, last);
+		ConfigStore configs = null;
+		if(obj instanceof ConfigStore) {
+			configs = (ConfigStore)obj;
+			configs.scope(first, last);
+		} else {
+			configs = new DefaultConfigStore(first, last);
+		}
 		return querys(dest, configs, obj, conditions);
 	}
 

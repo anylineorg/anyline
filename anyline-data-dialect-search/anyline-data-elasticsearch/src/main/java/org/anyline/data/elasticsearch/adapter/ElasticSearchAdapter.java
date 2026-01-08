@@ -783,8 +783,7 @@ PUT * /_bulk
                 try {
                     String dsl = ((ElasticSearchActuator) actuator).dsl(this, runtime, null, sql);
                     DataRow json = OriginRow.parseJson(dsl);
-                    json.put("from", navi.getFirstRow());
-                    json.put("size", navi.getPageRows());
+                    page(json, navi);
                     OrderStore orderStore = configs.getOrders();
                     if(null!= orderStore) {
                         LinkedHashMap<String, Order> orders = orderStore.gets();
@@ -824,7 +823,6 @@ PUT * /_bulk
         }
         return run;
     }
-
     /**
      * 查询序列cur 或 next value
      * @param next  是否生成返回下一个序列 false:cur true:next
@@ -868,8 +866,7 @@ PUT * /_bulk
             configs.autoCount(false); //不需要单独计算总行数
             PageNavi navi = configs.getPageNavi();
             if(null != navi) {
-                body.put("from", navi.getFirstRow());
-                body.put("size", navi.getPageRows());
+                page(body, navi);
             }
             List<String> columns = configs.columns();
             if(null != columns && !columns.isEmpty()) {
@@ -6472,8 +6469,7 @@ PUT * /_bulk
     public DataSet<DataRow> search(DataRuntime runtime, String table, DataRow body, PageNavi page) {
         DataSet<DataRow> set = null;
         if(null != page) {
-            body.put("from", page.getFirstRow());
-            body.put("size", page.getPageRows());
+            page(body, page);
         }
         String method = "POST";
         String endpoint = table+"/_search";
@@ -6605,5 +6601,18 @@ PUT * /_bulk
 
         }
         return set;
+    }
+    private void page(DataRow body, PageNavi navi){
+        if(null != navi) {
+            long first = navi.getFirstRow();
+            long last = navi.getLastRow();
+            long rows = navi.getPageRows();
+            int type = navi.getCalType();
+            if (type == 1) {
+                rows = last - first + 1;
+            }
+            body.put("from", first);
+            body.put("size", rows);
+        }
     }
 }

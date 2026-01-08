@@ -1883,6 +1883,9 @@ public class DefaultService<E> implements AnylineService<E> {
         if (null == configs) {
             configs = new DefaultConfigStore();
         }
+        if(configs == entity){
+            return configs;
+        }
         if (null != entity) {
             if (entity instanceof Map) {
                 Map map = (Map) entity;
