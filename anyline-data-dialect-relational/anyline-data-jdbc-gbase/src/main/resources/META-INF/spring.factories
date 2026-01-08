@@ -1,1 +1,4 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=\org.anyline.data.jdbc.gbase8a.GBaseAdapter,\org.anyline.data.jdbc.gbase8c.GBaseAdapter,\org.anyline.data.jdbc.gbase8s.GBaseAdapter
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+org.anyline.data.jdbc.gbase8a.GBaseAdapter,\
+org.anyline.data.jdbc.gbase8c.GBaseAdapter,\
+org.anyline.data.jdbc.gbase8s.GBaseAdapter
