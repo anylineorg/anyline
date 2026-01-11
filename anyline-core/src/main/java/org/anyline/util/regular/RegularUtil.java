@@ -494,21 +494,20 @@ public class RegularUtil {
 		if(null == src) {
 			return src;
 		}
-		String reg = null;
 		if(null != attributes && attributes.length > 0) {
-			for(String attribute:attributes) {
-				reg = attribute + "\\s*=\\s*\"[\\s\\S]*\"";
-				src = src.replaceAll(reg, "");
-				reg = attribute + "\\s*=\\s*\'[\\s\\S]*\'";
-				src = src.replaceAll(reg, "");
-				src = src.replaceAll("\\s+>",">");
+			for (String attr : attributes) {
+				// 构造正则表达式匹配特定属性及其值（包括引号）
+				String regex = "\\s+" + java.util.regex.Pattern.quote(attr) + "\\s*=\\s*\"[^\"]*\"";
+				src = src.replaceAll(regex, "");
+				// 处理单引号情况
+				regex = "\\s+" + java.util.regex.Pattern.quote(attr) + "\\s*=\\s*'[^']*'";
+				src = src.replaceAll(regex, "");
+				// 处理无引号情况（简单处理）
+				regex = "\\s+" + java.util.regex.Pattern.quote(attr) + "\\s*=\\s*[^\\s>]*";
+				src = src.replaceAll(regex, "");
 			}
 		}else{
-			reg = "\\S+?\\s*?=\\s*?\"[\\s\\S]*?\"";
-			src = src.replaceAll(reg, "");
-			reg = "\\S+?\\s*?=\\s*?\'[\\s\\S]*?\'";
-			src = src.replaceAll(reg, "");
-			src = src.replaceAll("\\s+?>",">");
+			src = src.replaceAll("<([a-zA-Z][a-zA-Z0-9]*)[^>]*>", "<$1>");
 		}
 		return src;
 	}
