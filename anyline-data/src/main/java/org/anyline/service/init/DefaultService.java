@@ -1698,6 +1698,10 @@ public class DefaultService<E> implements AnylineService<E> {
         if(null == table) {
             return new SimplePrepare().disposable(true);
         }
+        String id = table.getId();
+        if (null != id && RegularUtil.match(id, RunPrepare.XML_SQL_ID_STYLE)) {
+            return createRunPrepare(id);
+        }
         String name = table.getName();
         String text = table.getText();
         LinkedHashMap<String, Column> pks = table.getPrimaryKeyColumns();
