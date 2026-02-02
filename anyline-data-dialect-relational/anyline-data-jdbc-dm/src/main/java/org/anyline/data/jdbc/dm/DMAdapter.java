@@ -2278,7 +2278,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		builder.append("SELECT M.*, F.COMMENTS AS COLUMN_COMMENT, C.INFO1, C.INFO2,FP.CONSTRAINT_TYPE AS IS_PRIMARY\n" +
 			"FROM ALL_TAB_COLUMNS M \n" +
 			//自增
-			"LEFT JOIN ALL_COL_COMMENTS F ON M.TABLE_NAME = F.TABLE_NAME AND M.COLUMN_NAME = F.COLUMN_NAME AND M.OWNER = F.SCHEMA_NAME\n" +
+			"LEFT JOIN ALL_COL_COMMENTS F ON M.TABLE_NAME = F.TABLE_NAME AND M.COLUMN_NAME = F.COLUMN_NAME AND M.OWNER = F.SCHEMA_NAME\n" + //column.owner 对 comment.schema
 			"LEFT JOIN all_objects O ON M.TABLE_NAME = O.OBJECT_NAME  AND O.OBJECT_TYPE = 'TABLE'\n" +  //管理员可用 dba_objects 需要AND M.OWNER = O.OWNER 条件
 			//主键
 			"LEFT JOIN syscolumns C ON C.ID = O.OBJECT_ID AND C.NAME = M.COLUMN_NAME\n" +
