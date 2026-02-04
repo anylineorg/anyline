@@ -38,6 +38,7 @@ public class Navi extends BodyTagSupport{
 	private String body				;	// 返回内容显示容器class或id(如果body与page分开)
 	private String cur				;   // 当前页
 	private String page				;	// 返回内容显示容器class或id(如果body与page分开)
+	private String status = "loading";	// 状态提示
 	private String bodyContainer	;	// 如果body与page分开(兼容上一版本)
 	private String naviContainer	;	// 如果body与page分开(兼容上一版本)
 	private String adapter = "ajax"	;	// 分页方式 ajax | html
@@ -127,6 +128,9 @@ public class Navi extends BodyTagSupport{
 			if(BasicUtil.isNotEmpty(page)) {
 				builder.append("page:'" ).append(page).append("',");
 				builder.append("naviContainer:'" ).append(page).append("',");
+			}
+			if(BasicUtil.isNotEmpty(status)) {
+				builder.append("status:'" ).append(status).append("',");
 			}
 			if(BasicUtil.isNotEmpty(callback)) {
 				builder.append("callback:" ).append(callback).append(",");
@@ -245,6 +249,7 @@ public class Navi extends BodyTagSupport{
 		callback 		= null	;	// 回调函数
 		body			= null	;
 		page			= null	;
+		status 			= ".loading"  ;
 		bodyContainer 	= null	;	// 如果body与page分开
 		naviContainer 	= null	;	// 如果body与page分开
 		empty 			= null	;	// 空数据显示内容
@@ -450,4 +455,12 @@ public class Navi extends BodyTagSupport{
 	public void setDelay(int delay) {
         this.delay = delay;
     }
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
 }
