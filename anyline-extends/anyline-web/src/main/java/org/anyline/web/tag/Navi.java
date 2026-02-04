@@ -38,7 +38,7 @@ public class Navi extends BodyTagSupport{
 	private String body				;	// 返回内容显示容器class或id(如果body与page分开)
 	private String cur				;   // 当前页
 	private String page				;	// 返回内容显示容器class或id(如果body与page分开)
-	private String status = "loading";	// 状态提示
+	private String status			;	// 状态提示
 	private String bodyContainer	;	// 如果body与page分开(兼容上一版本)
 	private String naviContainer	;	// 如果body与page分开(兼容上一版本)
 	private String adapter = "ajax"	;	// 分页方式 ajax | html
@@ -249,7 +249,7 @@ public class Navi extends BodyTagSupport{
 		callback 		= null	;	// 回调函数
 		body			= null	;
 		page			= null	;
-		status 			= ".loading"  ;
+		status 			= null  ;
 		bodyContainer 	= null	;	// 如果body与page分开
 		naviContainer 	= null	;	// 如果body与page分开
 		empty 			= null	;	// 空数据显示内容
