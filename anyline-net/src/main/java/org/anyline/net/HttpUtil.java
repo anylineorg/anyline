@@ -36,8 +36,6 @@ import org.anyline.log.Log;
 import org.anyline.log.LogProxy;
 
 import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -52,7 +50,7 @@ public class HttpUtil {
 	private static final Log log = LogProxy.get(HttpUtil.class);
 
 	private static CloseableHttpClient default_client;
-	private static CloseableHttpClient default_ssl_client;
+	private static volatile CloseableHttpClient default_ssl_client;
 	private static RequestConfig default_request_config;
 	private static int default_connect_timeout = 72000; // 毫秒
 	private static int default_socket_timeout = 72000;
@@ -681,35 +679,45 @@ public class HttpUtil {
 	public static CloseableHttpClient defaultSSLClient() {
 		return defaultSSLClient(default_user_agent);
 	}
+
+	/**
+	 * 返回默认的 SSL HttpClient 单例，使用系统默认信任库验证服务端证书。
+	 * 线程安全；仅首次调用时使用传入的 userAgent，后续调用忽略参数。
+	 *
+	 * @param userAgent 仅首次创建时生效
+	 * @return 单例 CloseableHttpClient，创建失败时返回 null
+	 */
 	public static CloseableHttpClient defaultSSLClient(String userAgent) {
-		try {
-			if(null != default_ssl_client) {
-				return default_ssl_client;
-			}
-			HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
-			httpClientBuilder.setUserAgent(userAgent);
-			httpClientBuilder.setMaxConnTotal(10000);
-			httpClientBuilder.setMaxConnPerRoute(1000);
-
-			httpClientBuilder.evictIdleConnections((long) 15, TimeUnit.SECONDS);
-			SocketConfig.Builder socketConfigBuilder = SocketConfig.custom();
-			socketConfigBuilder.setTcpNoDelay(true);
-			httpClientBuilder.setDefaultSocketConfig(socketConfigBuilder.build());
-			RequestConfig.Builder requestConfigBuilder = RequestConfig.custom();
-			requestConfigBuilder.setConnectTimeout(default_connect_timeout);
-			requestConfigBuilder.setSocketTimeout(default_socket_timeout);
-			httpClientBuilder.setDefaultRequestConfig(requestConfigBuilder.build());
-			SSLContext ctx = SSLContext.getInstance("TLS");
-			X509TrustManager tm = new SimpleX509TrustManager(null);
-			ctx.init(null, new TrustManager[]{tm}, null);
-			httpClientBuilder.setSslcontext(ctx);
-			httpClientBuilder.setConnectionManagerShared(true);
-			default_ssl_client = httpClientBuilder.build();
-
-		} catch (Exception e) {
-
+		CloseableHttpClient client = default_ssl_client;
+		if (client != null) {
+			return client;
 		}
-		return default_ssl_client;
+		synchronized (HttpUtil.class) {
+			client = default_ssl_client;
+			if (client != null) {
+				return client;
+			}
+			try {
+				SSLContext sslContext = SSLContexts.createDefault();
+				HttpClientBuilder builder = HttpClientBuilder.create();
+				builder.setUserAgent(BasicUtil.isEmpty(userAgent) ? default_user_agent : userAgent);
+				builder.setMaxConnTotal(10000);
+				builder.setMaxConnPerRoute(1000);
+				builder.evictIdleConnections(15L, TimeUnit.SECONDS);
+				builder.setDefaultSocketConfig(SocketConfig.custom().setTcpNoDelay(true).build());
+				builder.setDefaultRequestConfig(RequestConfig.custom()
+						.setConnectTimeout(default_connect_timeout)
+						.setSocketTimeout(default_socket_timeout)
+						.build());
+				builder.setSSLContext(sslContext);
+				builder.setConnectionManagerShared(true);
+				default_ssl_client = builder.build();
+				return default_ssl_client;
+			} catch (Exception e) {
+				log.error("create default SSL HttpClient failed", e);
+				return null;
+			}
+		}
 	}
 
 	/**
