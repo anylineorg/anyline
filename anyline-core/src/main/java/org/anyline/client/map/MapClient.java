@@ -19,6 +19,8 @@ package org.anyline.client.map;
 import org.anyline.entity.Coordinate;
 import org.anyline.entity.SRS;
 
+import java.util.List;
+
 public interface MapClient {
 
     /**
@@ -84,4 +86,14 @@ public interface MapClient {
 
     Coordinate regeo(String lng, String lat);
 
+    /**
+     * 附近poi
+     * @param lng 经度
+     * @param lat 经度
+     * @param radius 半径
+     * @param category 类别
+     * @param keyword 关键定
+     * @return List
+     */
+    List<Coordinate> poi(double lng, double lat, int radius, String category, String keyword);
 }

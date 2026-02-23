@@ -23,6 +23,8 @@ import org.anyline.util.LogUtil;
 import org.anyline.log.Log;
 import org.anyline.log.LogProxy;
 
+import java.util.List;
+
 public abstract class AbstractMapClient implements MapClient{
     private static final Log log = LogProxy.get(AbstractMapClient.class);
 
@@ -114,4 +116,19 @@ public abstract class AbstractMapClient implements MapClient{
         return regeo(point[0], point[1]);
     }
 
+    /**
+     * 附近poi
+     * @param lng 经度
+     * @param lat 经度
+     * @param radius 半径
+     * @param category 类别
+     * @param keyword 关键定
+     * @return List
+     */
+    public List<Coordinate> poi(double lng, double lat, int radius, String category, String keyword) {
+        if(log.isDebugEnabled()) {
+            log.debug(LogUtil.format("子类(" + this.getClass().getName() + ")未实现 poi(double lng, double lat, int radius, String category, String keyword)", 37));
+        }
+        return null;
+    }
 }

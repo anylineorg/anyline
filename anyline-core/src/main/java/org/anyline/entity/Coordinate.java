@@ -23,6 +23,7 @@ import org.anyline.util.GISUtil;
 import java.util.List;
 
 public class Coordinate {
+	private String title					; // 标题(POI标题)
 	private Point point						; // 坐标点[lng, lat][经度, 纬度]
 	private Point center 					; // 最小级别行政区中心坐标点[lng, lat][经度, 纬度]
 	private SRS srs							; // 坐标系
@@ -306,6 +307,14 @@ public class Coordinate {
 
 	public void setAccuracy(int accuracy) {
 		this.accuracy = accuracy;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
 	}
 
 	public Coordinate correct() {
