@@ -23,6 +23,7 @@ import org.anyline.util.GISUtil;
 import java.util.List;
 
 public class Coordinate {
+	private String id						; // id
 	private String title					; // 标题(POI标题)
 	private Point point						; // 坐标点[lng, lat][经度, 纬度]
 	private Point center 					; // 最小级别行政区中心坐标点[lng, lat][经度, 纬度]
@@ -94,6 +95,15 @@ public class Coordinate {
 			}
 		}
 	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
 	public String getProvinceName() {
 		return this.provinceName;
 	}
