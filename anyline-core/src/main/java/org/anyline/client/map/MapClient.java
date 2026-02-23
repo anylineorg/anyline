@@ -18,6 +18,7 @@ package org.anyline.client.map;
 
 import org.anyline.entity.Coordinate;
 import org.anyline.entity.SRS;
+import org.anyline.entity.geometry.Point;
 
 import java.util.List;
 
@@ -95,5 +96,23 @@ public interface MapClient {
      * @param keyword 关键定
      * @return List
      */
-    List<Coordinate> poi(double lng, double lat, int radius, String category, String keyword);
+    List<Coordinate> poi(Double lng, Double lat, int radius, String category, String keyword);
+
+    /**
+     * 附近poi
+     * @param city 城市
+     * @param category 类别
+     * @param keyword 关键定
+     * @return List
+     */
+    List<Coordinate> poi(String city, String category, String keyword);
+
+    /**
+     * 范围内 poi
+     * @param points 多边形
+     * @param category 类别
+     * @param keyword 关键定
+     * @return List
+     */
+    List<Coordinate> poi(List<Point> points, String category, String keyword);
 }

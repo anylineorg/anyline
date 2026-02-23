@@ -18,6 +18,7 @@ package org.anyline.client.map;
 
 import org.anyline.entity.Coordinate;
 import org.anyline.entity.SRS;
+import org.anyline.entity.geometry.Point;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.LogUtil;
 import org.anyline.log.Log;
@@ -125,9 +126,37 @@ public abstract class AbstractMapClient implements MapClient{
      * @param keyword 关键定
      * @return List
      */
-    public List<Coordinate> poi(double lng, double lat, int radius, String category, String keyword) {
+    public List<Coordinate> poi(Double lng, Double lat, int radius, String category, String keyword) {
         if(log.isDebugEnabled()) {
-            log.debug(LogUtil.format("子类(" + this.getClass().getName() + ")未实现 poi(double lng, double lat, int radius, String category, String keyword)", 37));
+            log.debug(LogUtil.format("子类(" + this.getClass().getName() + ")未实现 poi(Double lng, Double lat, int radius, String category, String keyword)", 37));
+        }
+        return null;
+    }
+
+    /**
+     * 附近poi
+     * @param city 城市
+     * @param category 类别
+     * @param keyword 关键定
+     * @return List
+     */
+    public List<Coordinate> poi(String city, String category, String keyword) {
+        if(log.isDebugEnabled()) {
+            log.debug(LogUtil.format("子类(" + this.getClass().getName() + ")未实现 List<Coordinate> poi(String city, String category, String keyword)", 37));
+        }
+        return null;
+    }
+
+    /**
+     * 范围内 poi
+     * @param points 多边形
+     * @param category 类别
+     * @param keyword 关键定
+     * @return List
+     */
+    public List<Coordinate> poi(List<Point> points, String category, String keyword) {
+        if(log.isDebugEnabled()) {
+            log.debug(LogUtil.format("子类(" + this.getClass().getName() + ")未实现 List<Coordinate> poi(List<Point> points, String category, String keyword)", 37));
         }
         return null;
     }

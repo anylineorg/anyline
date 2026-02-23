@@ -28,6 +28,8 @@ public class Coordinate {
 	private Point point						; // 坐标点[lng, lat][经度, 纬度]
 	private Point center 					; // 最小级别行政区中心坐标点[lng, lat][经度, 纬度]
 	private SRS srs							; // 坐标系
+	private String poiCategoryCode			;
+	private String poiCategoryName			;
 	private String provinceCode				; // 省编号
 	private String provinceName				; // 省中文名
 	private String cityCode					; // 市编号
@@ -102,6 +104,22 @@ public class Coordinate {
 
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	public String getPoiCategoryCode() {
+		return poiCategoryCode;
+	}
+
+	public void setPoiCategoryCode(String poiCategoryCode) {
+		this.poiCategoryCode = poiCategoryCode;
+	}
+
+	public String getPoiCategoryName() {
+		return poiCategoryName;
+	}
+
+	public void setPoiCategoryName(String poiCategoryName) {
+		this.poiCategoryName = poiCategoryName;
 	}
 
 	public String getProvinceName() {
