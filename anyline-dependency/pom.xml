@@ -57,7 +57,7 @@
 		<jdbc-tdengine.version>3.0.0</jdbc-tdengine.version>
 		<jdbc-jcouchdb.version>1.0.1-1</jdbc-jcouchdb.version>
 		<jdbc-informix.version>4.50.10</jdbc-informix.version>
-		<jdbc-iotdb.version>1.1.1</jdbc-iotdb.version>
+		<jdbc-iotdb.version>1.3.4</jdbc-iotdb.version>
 		<jdbc-voltdb.version>13.0.0</jdbc-voltdb.version>
 		<jdbc-odps.version>3.6.0</jdbc-odps.version>
 		<driver-neo4j.version>6.0</driver-neo4j.version>
