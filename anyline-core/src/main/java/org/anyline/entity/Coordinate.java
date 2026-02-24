@@ -52,6 +52,7 @@ public class Coordinate {
 	private int accuracy					; // 解析精度级别
 	private boolean direct = false			; // 是否直辖市
 	private boolean correct = false			; //
+	private DataRow metadata				;
 
 	public Coordinate(String location) {
 		if(BasicUtil.isNotEmpty(location)) {
@@ -96,6 +97,20 @@ public class Coordinate {
 				point = new Point(BasicUtil.parseDouble(tmps[0], null), BasicUtil.parseDouble(tmps[1], null));
 			}
 		}
+	}
+
+	public DataRow getMetadata() {
+		return metadata;
+	}
+
+	public void setMetadata(DataRow metadata) {
+		this.metadata = metadata;
+	}
+	public Object getMetadata(String key) {
+		if(null != metadata) {
+			return metadata.get(key);
+		}
+		return null;
 	}
 
 	public String getId() {
