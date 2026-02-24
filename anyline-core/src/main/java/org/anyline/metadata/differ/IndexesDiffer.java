@@ -50,7 +50,7 @@ public class IndexesDiffer extends AbstractDiffer implements Serializable {
                 continue;
             }
             if(null == dest) {
-                drops.put(key, origins.get(origin));
+                drops.put(key, origin);
             }else {
                 if(!origin.equals(dest)) {
                     if(!origin.isPrimary()) {
