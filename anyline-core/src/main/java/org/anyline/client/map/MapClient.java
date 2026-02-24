@@ -88,7 +88,7 @@ public interface MapClient {
     Coordinate regeo(String lng, String lat);
 
     /**
-     * 附近poi
+     * 附近 poi
      * @param lng 经度
      * @param lat 经度
      * @param radius 半径
@@ -97,9 +97,12 @@ public interface MapClient {
      * @return List
      */
     List<Coordinate> poi(Double lng, Double lat, int radius, String category, String keyword);
+    default List<Coordinate> poi(Double lng, Double lat, int radius, String category) {
+        return poi(lng, lat, radius, category, null);
+    }
 
     /**
-     * 附近poi
+     * 城市内 poi
      * @param city 城市
      * @param category 类别
      * @param keyword 关键定
@@ -108,11 +111,15 @@ public interface MapClient {
     List<Coordinate> poi(String city, String category, String keyword);
 
     /**
-     * 范围内 poi
+     * 多边形范围内 poi(如果是两个点，按左下+右上的矩形搜索)
      * @param points 多边形
      * @param category 类别
      * @param keyword 关键定
      * @return List
      */
     List<Coordinate> poi(List<Point> points, String category, String keyword);
+
+    default List<Coordinate> poi(List<Point> points, String category) {
+        return poi(points, category, null);
+    }
 }
