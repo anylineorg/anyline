@@ -2259,8 +2259,6 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		return super.columns(runtime, random, greedy, table, query, primary, configs);
 	}
 
-	
-
 	/**
 	 * column[命令合成]<br/>
 	 * 查询表上的列
@@ -2361,6 +2359,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Table table, Column query, DataSet<DataRow> set) throws Exception {
 		return super.columns(runtime, index, create, previous, table, query, set);
 	}
+
 	@Override
 	public <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, List<T> previous, Column query, DataSet<DataRow> set) throws Exception {
 		return super.columns(runtime, index, create, previous, query, set);
