@@ -19,6 +19,9 @@ package org.anyline.entity.geometry;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 多边形由多个环组成,因为有可能带孔
+ */
 public class Polygon extends Geometry{
     private List<Ring> rings = new ArrayList<>();
     public Polygon add(Ring ring) {

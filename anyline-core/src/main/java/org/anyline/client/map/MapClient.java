@@ -19,6 +19,7 @@ package org.anyline.client.map;
 import org.anyline.entity.Coordinate;
 import org.anyline.entity.SRS;
 import org.anyline.entity.geometry.Point;
+import org.anyline.entity.geometry.Ring;
 
 import java.util.List;
 
@@ -122,4 +123,11 @@ public interface MapClient {
     default List<Coordinate> poi(List<Point> points, String category) {
         return poi(points, category, null);
     }
+
+    /**
+     * 轮廓
+     * @param keyword 地区 如青岛/3702
+     * @return List 如果有飞地返回多个多边形
+     */
+    List<Ring> outline(String keyword);
 }

@@ -28,6 +28,7 @@ public class Coordinate {
 	private Point point						; // 坐标点[lng, lat][经度, 纬度]
 	private Point center 					; // 最小级别行政区中心坐标点[lng, lat][经度, 纬度]
 	private SRS srs							; // 坐标系
+	private String tel						; // 电话
 	private String poiCategoryCode			;
 	private String poiCategoryName			;
 	private String provinceCode				; // 省编号
@@ -97,6 +98,14 @@ public class Coordinate {
 				point = new Point(BasicUtil.parseDouble(tmps[0], null), BasicUtil.parseDouble(tmps[1], null));
 			}
 		}
+	}
+
+	public String getTel() {
+		return tel;
+	}
+
+	public void setTel(String tel) {
+		this.tel = tel;
 	}
 
 	public DataRow getMetadata() {

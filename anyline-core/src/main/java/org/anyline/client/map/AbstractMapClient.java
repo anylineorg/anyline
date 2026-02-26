@@ -19,10 +19,11 @@ package org.anyline.client.map;
 import org.anyline.entity.Coordinate;
 import org.anyline.entity.SRS;
 import org.anyline.entity.geometry.Point;
-import org.anyline.util.BasicUtil;
-import org.anyline.util.LogUtil;
+import org.anyline.entity.geometry.Ring;
 import org.anyline.log.Log;
 import org.anyline.log.LogProxy;
+import org.anyline.util.BasicUtil;
+import org.anyline.util.LogUtil;
 
 import java.util.List;
 
@@ -157,6 +158,18 @@ public abstract class AbstractMapClient implements MapClient{
     public List<Coordinate> poi(List<Point> points, String category, String keyword) {
         if(log.isDebugEnabled()) {
             log.debug(LogUtil.format("子类(" + this.getClass().getName() + ")未实现 List<Coordinate> poi(List<Point> points, String category, String keyword)", 37));
+        }
+        return null;
+    }
+
+    /**
+     * 轮廓
+     * @param keyword 地区 如青岛/3702
+     * @return List
+     */
+    public List<Ring> outline(String keyword) {
+        if(log.isDebugEnabled()) {
+            log.debug(LogUtil.format("子类(" + this.getClass().getName() + ")未实现 List<List<Point>> outline(String keyword)", 37));
         }
         return null;
     }
