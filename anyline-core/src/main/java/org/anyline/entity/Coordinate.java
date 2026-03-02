@@ -15,12 +15,14 @@
  */
 
 package org.anyline.entity;
- 
+
 import org.anyline.entity.geometry.Point;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.GISUtil;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Coordinate {
 	private String id						; // id
@@ -54,6 +56,7 @@ public class Coordinate {
 	private boolean direct = false			; // 是否直辖市
 	private boolean correct = false			; //
 	private DataRow metadata				;
+	private Map<String, Object> params		; //调用接口参数
 
 	public Coordinate(String location) {
 		if(BasicUtil.isNotEmpty(location)) {
@@ -98,6 +101,26 @@ public class Coordinate {
 				point = new Point(BasicUtil.parseDouble(tmps[0], null), BasicUtil.parseDouble(tmps[1], null));
 			}
 		}
+	}
+
+	public Map<String, Object> getParams() {
+		return params;
+	}
+	public Object getParam(String key) {
+		if(null != params){
+			return params.get(key);
+		}
+		return null;
+	}
+
+	public void setParams(Map<String, Object> params) {
+		this.params = params;
+	}
+	public void setParam(String key, Object value) {
+		if(null == params){
+			params = new HashMap<>();
+		}
+		params.put(key, value);
 	}
 
 	public String getTel() {
