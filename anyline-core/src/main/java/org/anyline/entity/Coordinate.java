@@ -57,6 +57,7 @@ public class Coordinate {
 	private boolean correct = false			; //
 	private DataRow metadata				;
 	private Map<String, Object> params		; //调用接口参数
+	List<Coordinate> pois = null			; //附近poi
 
 	public Coordinate(String location) {
 		if(BasicUtil.isNotEmpty(location)) {
@@ -101,6 +102,14 @@ public class Coordinate {
 				point = new Point(BasicUtil.parseDouble(tmps[0], null), BasicUtil.parseDouble(tmps[1], null));
 			}
 		}
+	}
+
+	public List<Coordinate> getPois() {
+		return pois;
+	}
+
+	public void setPois(List<Coordinate> pois) {
+		this.pois = pois;
 	}
 
 	public Map<String, Object> getParams() {
@@ -284,9 +293,6 @@ public class Coordinate {
 	public void setAddress(String address) {
 		this.address = address;
 	}
-	public String toString() {
-		return "["+point.x()+","+point.y()+"]";
-	}
 
 	public SRS getSrs() {
 		return srs;
@@ -392,6 +398,12 @@ public class Coordinate {
 		this.title = title;
 	}
 
+	public String toString() {
+		if(null != point) {
+			return "[" + point.x() + "," + point.y() + "]";
+		}
+		return "[]";
+	}
 	public Coordinate correct() {
 		if(correct) {
 			return this;
