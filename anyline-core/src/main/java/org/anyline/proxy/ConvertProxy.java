@@ -190,6 +190,10 @@ public class ConvertProxy {
                     }
                 }
             }
+            if(!success && target == String.class && null != value) {
+                result = value.toString();
+                success = true;
+            }
             if(!success && warn) {
                 log.warn("[{}][origin:{}][target:{}][value:{}]", LogUtil.format("convert定位失败", 31), ClassUtil.type(clazz), ClassUtil.type(target), value);
                 if(ConfigTable.IS_THROW_CONVERT_EXCEPTION) {

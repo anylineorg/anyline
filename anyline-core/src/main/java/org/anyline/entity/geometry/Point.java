@@ -53,7 +53,7 @@ public class Point extends Geometry{
     }
 
     public Double getLat(){
-        return x;
+        return y;
     }
     public Double x() {
         return x;
@@ -68,7 +68,7 @@ public class Point extends Geometry{
     }
 
     public Double getLng(){
-        return y;
+        return x;
     }
     public void y(Double y) {
         this.y = y;
