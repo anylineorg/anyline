@@ -24,7 +24,11 @@ import org.anyline.entity.geometry.Ring;
 import java.util.List;
 
 public interface MapClient {
-
+    /**
+     * 额度是否受限了
+     * @return boolean
+     */
+    boolean limit();
     /**
      * 通过IP地址获取其当前所在地理位置
      * @param ip ip
