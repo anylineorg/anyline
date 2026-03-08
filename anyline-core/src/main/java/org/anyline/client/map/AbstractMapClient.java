@@ -23,12 +23,23 @@ import org.anyline.entity.geometry.Ring;
 import org.anyline.log.Log;
 import org.anyline.log.LogProxy;
 import org.anyline.util.BasicUtil;
+import org.anyline.util.DateUtil;
 import org.anyline.util.LogUtil;
 
 import java.util.List;
 
 public abstract class AbstractMapClient implements MapClient{
     private static final Log log = LogProxy.get(AbstractMapClient.class);
+
+    protected String last_limit = null;
+    /**
+     * 当天额度是否受限了
+     * @return boolean
+     */
+    @Override
+    public boolean limit() {
+        return null != last_limit && DateUtil.format("yyyy-MM-dd").equals(last_limit);
+    }
 
     /**
      * 逆地址解析 根据坐标返回详细地址及各级地区编号
