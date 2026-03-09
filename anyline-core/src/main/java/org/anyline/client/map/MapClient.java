@@ -107,13 +107,13 @@ public interface MapClient {
     }
 
     /**
-     * 城市内 poi
-     * @param city 城市
+     * 行政区 poi
+     * @param district 行政区 一般支持到区县级
      * @param category 类别
      * @param keyword 关键定
      * @return List
      */
-    List<Coordinate> poi(String city, String category, String keyword);
+    List<Coordinate> poi(String district, String category, String keyword);
 
     /**
      * 多边形范围内 poi(如果是两个点，按左下+右上的矩形搜索)

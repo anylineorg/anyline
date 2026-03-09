@@ -1052,7 +1052,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 
         if(run.isEmptyCondition()) {
             if(log.isWarnEnabled() && ConfigStore.IS_LOG_SQL(configs)) {
-                log.warn("[valid:false][没有更新条件][dest:"+dest+"]");
+                log.warn("[valid:false][没有更新条件][dest:{}][data:{}]", dest, data);
             }
             return -1;
         }
@@ -1063,7 +1063,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         }
         if(!run.isValid()) {
             if(log.isWarnEnabled() && ConfigStore.IS_LOG_SQL(configs)) {
-                log.warn("[valid:false][不具备执行条件][dest:"+dest+"]");
+                log.warn("[valid:false][不具备执行条件][dest:{}][data:{}]", dest, data);
             }
             return -1;
         }
