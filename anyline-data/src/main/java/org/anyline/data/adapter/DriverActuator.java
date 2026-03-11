@@ -298,7 +298,7 @@ public interface DriverActuator {
     }
 
     /**
-     * 根方法(3)根据根据驱动内置元数据接口补充表结构
+     * 根方法(3)根据驱动内置元数据接口补充表结构
      * @param adapter DriverAdapter
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param create 上一步没有查到的,这一步是否需要新创建

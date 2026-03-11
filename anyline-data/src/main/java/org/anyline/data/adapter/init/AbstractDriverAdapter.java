@@ -8984,7 +8984,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 
 	/**
 	 * partition table[结果集封装]<br/>
-	 * 根据根据驱动内置接口
+	 * 根据驱动内置接口
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param query 查询条件 根据metadata属性
@@ -9226,7 +9226,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				log.info("{}[columns][catalog:{}][schema:{}][table:{}][total:{}][根据metadata解析:{}][根据系统表查询:{}][根据驱动内置接口补充:{}][执行耗时:{}]", random, catalog, schema, table, qty_total, qty_metadata, qty_dialect, qty_jdbc, DateUtil.format(System.currentTimeMillis() - fr));
 			}
 
-			// 方法(3)根据根据驱动内置接口补充
+			// 方法(3)根据驱动内置接口补充
 			if (null == columns || columns.isEmpty()) {
 				columns = actuator.metadata(this, runtime, true, columns, query);
 
@@ -9236,7 +9236,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				}
 			}
 			if (ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-				log.info("{}[columns][catalog:{}][schema:{}][table:{}][total:{}][根据metadata解析:{}][根据系统表查询:{}][根据根据驱动内置接口补充:{}][执行耗时:{}]", random, catalog, schema, table, qty_total, qty_metadata, qty_dialect, qty_jdbc, DateUtil.format(System.currentTimeMillis() - fr));
+				log.info("{}[columns][catalog:{}][schema:{}][table:{}][total:{}][根据metadata解析:{}][根据系统表查询:{}][根据驱动内置接口补充:{}][执行耗时:{}]", random, catalog, schema, table, qty_total, qty_metadata, qty_dialect, qty_jdbc, DateUtil.format(System.currentTimeMillis() - fr));
 			}
 			//检测主键
 			if(ConfigTable.IS_METADATA_AUTO_CHECK_COLUMN_PRIMARY) {

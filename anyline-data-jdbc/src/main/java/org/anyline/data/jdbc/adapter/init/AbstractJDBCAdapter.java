@@ -3450,7 +3450,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 
     /**
      * partition table[结果集封装]<br/>
-     * 根据根据驱动内置接口
+     * 根据驱动内置接口
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param query 查询条件 根据metadata属性
@@ -3936,7 +3936,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
             }
 
             if (ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-                log.info("{}[tags][catalog:{}][schema:{}][table:{}][total:{}][根据metadata解析:{}][根据系统表查询:{}][根据根据驱动内置接口补充:{}][执行耗时:{}]", random, catalog, schema, table, qty_total, qty_metadata, qty_dialect, qty_jdbc, DateUtil.format(System.currentTimeMillis() - fr));
+                log.info("{}[tags][catalog:{}][schema:{}][table:{}][total:{}][根据metadata解析:{}][根据系统表查询:{}][根据驱动内置接口补充:{}][执行耗时:{}]", random, catalog, schema, table, qty_total, qty_metadata, qty_dialect, qty_jdbc, DateUtil.format(System.currentTimeMillis() - fr));
             }
         }catch (Exception e) {
             if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
