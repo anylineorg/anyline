@@ -24,18 +24,32 @@ import org.anyline.entity.geometry.Ring;
 import java.util.List;
 
 public interface MapClient {
+    enum METHOD{
+        GEO("地理编码"),
+        RE_GEO("逆地理编码"),
+        SEARCH("搜索"),
+        IP("IP定位"),
+        OUTLINE("边界线");
+        final String title;
+        METHOD(String title) {
+            this.title = title;
+        }
+        public String title() {
+            return title;
+        }
+    }
     /**
      * 额度是否受限了
      * @return boolean
      */
-    boolean limit(String api);
+    boolean limit(METHOD method);
 
     /**
      * 设置受限日期
-     * @param api 接口
+     * @param method 接口
      * @param ymd 检测到受限的日期
      */
-    void limit(String api, String ymd);
+    void limit(METHOD method, String ymd);
     /**
      * 通过IP地址获取其当前所在地理位置
      * @param ip ip

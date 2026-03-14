@@ -33,25 +33,25 @@ import java.util.Map;
 public abstract class AbstractMapClient implements MapClient{
     private static final Log log = LogProxy.get(AbstractMapClient.class);
 
-    protected Map<String, String> last_limits = new HashMap<>();
+    protected Map<METHOD, String> last_limits = new HashMap<>();
     /**
      * 当天额度是否受限了
      * @return boolean
      */
     @Override
-    public boolean limit(String api) {
-        String last_limit = last_limits.get(api);
+    public boolean limit(METHOD method) {
+        String last_limit = last_limits.get(method);
         return null != last_limit && DateUtil.format("yyyy-MM-dd").equals(last_limit);
     }
 
     /**
      * 设置受限日期
-     * @param api 接口
+     * @param method 接口
      * @param ymd 检测到受限的日期
      */
     @Override
-    public void limit(String api, String ymd) {
-        last_limits.put(api, ymd);
+    public void limit(METHOD method, String ymd) {
+        last_limits.put(method, ymd);
     }
 
     /**
