@@ -28,7 +28,14 @@ public interface MapClient {
      * 额度是否受限了
      * @return boolean
      */
-    boolean limit();
+    boolean limit(String api);
+
+    /**
+     * 设置受限日期
+     * @param api 接口
+     * @param ymd 检测到受限的日期
+     */
+    void limit(String api, String ymd);
     /**
      * 通过IP地址获取其当前所在地理位置
      * @param ip ip

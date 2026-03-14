@@ -26,19 +26,32 @@ import org.anyline.util.BasicUtil;
 import org.anyline.util.DateUtil;
 import org.anyline.util.LogUtil;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public abstract class AbstractMapClient implements MapClient{
     private static final Log log = LogProxy.get(AbstractMapClient.class);
 
-    protected String last_limit = null;
+    protected Map<String, String> last_limits = new HashMap<>();
     /**
      * 当天额度是否受限了
      * @return boolean
      */
     @Override
-    public boolean limit() {
+    public boolean limit(String api) {
+        String last_limit = last_limits.get(api);
         return null != last_limit && DateUtil.format("yyyy-MM-dd").equals(last_limit);
+    }
+
+    /**
+     * 设置受限日期
+     * @param api 接口
+     * @param ymd 检测到受限的日期
+     */
+    @Override
+    public void limit(String api, String ymd) {
+        last_limits.put(api, ymd);
     }
 
     /**
