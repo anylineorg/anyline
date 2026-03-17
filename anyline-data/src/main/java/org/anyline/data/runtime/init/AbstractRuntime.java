@@ -120,7 +120,7 @@ public class AbstractRuntime implements DataRuntime {
     }
 
     @Override
-    public String getVersion() {
+    public String getVersion() throws Exception {
         return null;
     }
 

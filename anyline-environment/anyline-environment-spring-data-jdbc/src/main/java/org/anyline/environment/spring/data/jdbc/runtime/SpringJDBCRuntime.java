@@ -155,7 +155,8 @@ public class SpringJDBCRuntime extends JDBCRuntime implements DataRuntime {
         return feature;
     }
 
-    public String getVersion() {
+    @Override
+    public String getVersion() throws Exception{
         if(null == version) {
             JdbcTemplate jdbc = jdbc();
             if(null != jdbc) {
@@ -166,9 +167,7 @@ public class SpringJDBCRuntime extends JDBCRuntime implements DataRuntime {
                     con = DataSourceUtils.getConnection(datasource);
                     DatabaseMetaData meta = con.getMetaData();
                     version = meta.getDatabaseProductVersion();
-                }catch (Exception e) {
-                    e.printStackTrace();
-                }finally {
+                } finally {
                     if(null != con && !DataSourceUtils.isConnectionTransactional(con, datasource)) {
                         DataSourceUtils.releaseConnection(con, datasource);
                     }

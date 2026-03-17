@@ -95,7 +95,13 @@ public class MSSQLAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
     public boolean match(DataRuntime runtime, String feature, String adapterKey, boolean compensate) {
         boolean chk = super.match(runtime, feature, adapterKey, compensate);
         if(chk) {
-            String version = runtime.getVersion();
+            String version = null;
+            try {
+                version = runtime.getVersion();
+            }catch (Exception e){
+                e.printStackTrace();
+                return false;
+            }
             if (null != version && version.contains(".")) {
                 version = version.split("\\.")[0];
                 double v = BasicUtil.parseDouble(version, 0d);

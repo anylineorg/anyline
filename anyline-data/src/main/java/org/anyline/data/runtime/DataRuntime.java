@@ -72,7 +72,7 @@ public interface DataRuntime {
      * 返回数据库版本
      * @return String
      */
-    String getVersion();
+    String getVersion() throws Exception;
 
     void setVersion(String version) ;
     void setDriver(String driver);

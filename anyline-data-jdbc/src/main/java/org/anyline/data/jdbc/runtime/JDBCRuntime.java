@@ -116,7 +116,8 @@ public class JDBCRuntime extends AbstractRuntime implements DataRuntime {
         return feature;
     }
 
-    public String getVersion() {
+    @Override
+    public String getVersion() throws Exception{
         if(null == version) {
             if(null != processor) {
                 Connection con = null;
@@ -124,9 +125,7 @@ public class JDBCRuntime extends AbstractRuntime implements DataRuntime {
                     con = processor.getConnection();
                     DatabaseMetaData meta = con.getMetaData();
                     version = meta.getDatabaseProductVersion();
-                }catch (Exception e) {
-                    log.error("获取数据源版本 异常:", e);
-                }finally {
+                } finally {
                     try {
                         con.close();
                     }catch (Exception e) {
