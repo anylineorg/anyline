@@ -87,31 +87,30 @@ public class TimeDelay extends BaseBodyTag implements Cloneable{
 	}
 	public static int precision(long milliseconds){
 		// 定义各时间单位对应的毫秒数阈值
-		long secondThreshold = 60 * 60 * 1000L;           // 60分钟
-		long minuteThreshold = 24 * 60 * 60 * 1000L;      // 24小时
-		long hourThreshold = 7 * 24 * 60 * 60 * 1000L;    // 7天
-		long dayThreshold = 30 * 24 * 60 * 60 * 1000L;    // 30天(约1个月)
-		long monthThreshold = 365 * 24 * 60 * 60 * 1000L; // 365天(约1年)
+		long second_threshold =                     60 * 60 * 1000L ; // 60分钟
+		long minute_threshold =                24 * 60 * 60 * 1000L ; // 24小时
+		long hour_threshold   =            7 * 24 * 60 * 60 * 1000L ; // 7天
+		long day_threshold    =      12 * 30 * 24 * 60 * 60 * 1000L ; // 12月
+		long month_threshold  = 10 * 12 * 30 * 24 * 60 * 60 * 1000L ; // 10年
 
 		// 根据毫秒数大小决定显示精度
-		if (milliseconds < secondThreshold) {
+		if (milliseconds < second_threshold) {
 			// 小于1分钟，显示到秒
 			return 1;
-		} else if (milliseconds < minuteThreshold) {
+		} else if (milliseconds < minute_threshold) {
 			// 小于1小时，显示到分钟
 			return 2;
-		} else if (milliseconds < hourThreshold) {
+		} else if (milliseconds < hour_threshold) {
 			// 小于7天，显示到小时
 			return 3;
-		} else if (milliseconds < dayThreshold) {
-			// 小于30天，显示到天
+		} else if (milliseconds < day_threshold) {
+			// 小于365天，显示到天
 			return 4;
-		} else if (milliseconds < monthThreshold) {
-			// 小于1年，显示到天
-			return 4;
+		} else if (milliseconds < month_threshold) {
+			// 小于10年，显示到月
+			return 5;
 		} else {
-			// 大于等于1年，显示到天
-			return 4;
+			return 6;
 		}
 	}
 	/**
@@ -157,21 +156,21 @@ public class TimeDelay extends BaseBodyTag implements Cloneable{
 				if (years > 0) sb.append(years).append("年");
 				if (months > 0) sb.append(months).append("月");
 				if (days > 0) sb.append(days).append("天");
-				sb.append(hours).append("小时");
+				sb.append(hours).append("时");
 				break;
 			case 2: // 分钟 (显示年月天小时分钟)
 				if (years > 0) sb.append(years).append("年");
 				if (months > 0) sb.append(months).append("月");
 				if (days > 0) sb.append(days).append("天");
-				if (hours > 0) sb.append(hours).append("小时");
-				sb.append(minutes).append("分钟");
+				if (hours > 0) sb.append(hours).append("时");
+				sb.append(minutes).append("分");
 				break;
 			case 1: // 秒 (显示年月天小时分钟秒)
 				if (years > 0) sb.append(years).append("年");
 				if (months > 0) sb.append(months).append("月");
 				if (days > 0) sb.append(days).append("天");
-				if (hours > 0) sb.append(hours).append("小时");
-				if (minutes > 0) sb.append(minutes).append("分钟");
+				if (hours > 0) sb.append(hours).append("时");
+				if (minutes > 0) sb.append(minutes).append("分");
 				sb.append(seconds).append("秒");
 				break;
 			default:
