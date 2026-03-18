@@ -68,6 +68,10 @@ public class DataSet<E extends DataRow> implements Collection<E>, Serializable, 
     protected DataRow attributes                    = null                  ; // 属性
     protected boolean autoCheckElValue              = true                  ; // 检测el value
     protected KEY_CASE keyCase 				        = KEY_CASE.CONFIG       ; // 列名格式
+
+    // ===== 索引加速 select.equals =====
+    private Map<String, Map<String, List<E>>> indexes = null;
+    private int indexedSize = -1; // 建索引时的行数，用于检测数据变化
  
     /**
      * 创建索引
@@ -78,6 +82,20 @@ public class DataSet<E extends DataRow> implements Collection<E>, Serializable, 
      * crateIndex("ID:ASC");
      */
     public DataSet<E> creatIndex(String key) {
+        if(null == key) return this;
+        if(indexes == null) {
+            indexes = new HashMap<>();
+        }
+        Map<String, List<E>> idx = new HashMap<>();
+        for(E row : rows) {
+            Object val = row.get(key);
+            if(val != null) {
+                String k = val.toString().toLowerCase();
+                idx.computeIfAbsent(k, x -> new ArrayList<>()).add(row);
+            }
+        }
+        indexes.put(key.toLowerCase(), idx);
+        indexedSize = rows.size();
         return this;
     }
 
@@ -1377,6 +1395,36 @@ public class DataSet<E extends DataRow> implements Collection<E>, Serializable, 
         if(rows.isEmpty()) {
             return set;
         }
+        // ===== 索引加速：单键等值查询 =====
+        if(begin == 0 && kvs != null && kvs.size() == 1 && rows.size() > 50
+                && (compare == null || compare == Compare.EQUAL || compare == Compare.AUTO)) {
+            Map.Entry<String, String> entry = kvs.entrySet().iterator().next();
+            String key = entry.getKey();
+            String value = entry.getValue();
+            if(value != null && !value.isEmpty()
+                    && !value.startsWith("%") && !value.startsWith(">") && !value.startsWith("<") && !value.startsWith("=")) {
+                if(indexes != null && indexedSize != rows.size()) {
+                    indexes = null;
+                }
+                if(indexes == null || !indexes.containsKey(key.toLowerCase())) {
+                    creatIndex(key);
+                }
+                Map<String, List<E>> idx = indexes.get(key.toLowerCase());
+                if(idx != null) {
+                    List<E> matches = idx.get(value.toLowerCase());
+                    if(matches != null) {
+                        int count = 0;
+                        for(E row : matches) {
+                            if(qty > 0 && count >= qty) break;
+                            set.add(row);
+                            count++;
+                        }
+                    }
+                    return set;
+                }
+            }
+        }
+        // ===== 原始逻辑 =====
         String srcFlagTag = "srcFlag"; // 参数含有{}的 在kvs中根据key值+tag 放入一个新的键值对
 
         Map<String, Compare> compares = new HashMap<>();
@@ -5644,8 +5692,32 @@ public class DataSet<E extends DataRow> implements Collection<E>, Serializable, 
         }
 
         private DataSet<E>  equals(DataSet<E>  src, String key, Object value) {
-            DataSet<E>  set = new DataSet();
             value = BeanUtil.first(value);
+            // ===== 索引加速：大数据集自动建索引 =====
+            if(value != null && ignoreCase && ignoreNull && src.rows != null && src.rows.size() > 50) {
+                // 数据变化时重建索引
+                if(src.indexes != null && src.indexedSize != src.rows.size()) {
+                    src.indexes = null;
+                }
+                if(src.indexes == null || !src.indexes.containsKey(key.toLowerCase())) {
+                    src.creatIndex(key);
+                }
+                Map<String, List<E>> idx = src.indexes.get(key.toLowerCase());
+                if(idx != null) {
+                    DataSet<E> set = new DataSet<>();
+                    String lookupKey = value.toString().toLowerCase();
+                    List<E> matches = idx.get(lookupKey);
+                    if(matches != null) {
+                        for(E row : matches) {
+                            set.add(row);
+                        }
+                    }
+                    set.copyProperty(src);
+                    return set;
+                }
+            }
+            // ===== 原始线性扫描 =====
+            DataSet<E>  set = new DataSet();
             Object tmpValue;
             for (E row : src) {
                 tmpValue = row.get(key);
