@@ -769,8 +769,11 @@ public class DefaultConfigStore implements ConfigStore {
 			compare = Compare.EQUAL;
 		}
 		int compareCode = compare.getCode();
-		if(null == prefix && null != var && var.contains(".")
-			&& !var.contains(">") // JSON_COLUMN>$.A
+		if(null == prefix
+				&& null != var
+				&& var.contains(".")
+				&& !var.contains("(") // SCHEMA_NAME(T.ID)
+				&& !var.contains(">") // JSON_COLUMN>$.A
 		) {
 			if(compare != Compare.MATCH && compare != MATCH_PHRASE) { //MATCH不要拆分 有可能是 column.keyword
 				prefix = var.substring(0, var.indexOf("."));
