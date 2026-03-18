@@ -81,15 +81,21 @@ public class Concat extends BaseBodyTag{
 					 }
 				 }
 				 String html ="";
-				 Collection list = (Collection)data;
-				 for(Object item:list) {
-					 String val = BeanUtil.parseRuntimeValue(item, property, encrypt);
-					 if(BasicUtil.isNotEmpty(val)) {
-					 	if("".equals(html)) {
-					 		html = val;
-						}else{
-					 		html = html + split + val;
-						}
+				 if(null != data) {
+					 if (data instanceof Collection) {
+						 Collection list = (Collection) data;
+						 for (Object item : list) {
+							 String val = BeanUtil.parseRuntimeValue(item, property, encrypt);
+							 if (BasicUtil.isNotEmpty(val)) {
+								 if ("".equals(html)) {
+									 html = val;
+								 } else {
+									 html = html + split + val;
+								 }
+							 }
+						 }
+					 } else {
+						 html = data.toString();
 					 }
 				 }
 				 JspWriter out = pageContext.getOut();
