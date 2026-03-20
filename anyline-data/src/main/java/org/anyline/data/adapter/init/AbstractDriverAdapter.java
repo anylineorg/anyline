@@ -6501,12 +6501,13 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 if (ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
                     log.info("{}[vertexs][catalog:{}][schema:{}][pattern:{}][type:{}][result:{}][执行耗时:{}]", random, catalog, schema, origin, types, list.size(), DateUtil.format(System.currentTimeMillis() - fr));
                 }
+                origin = query.getName(greedy);
                 if (BasicUtil.isNotEmpty(origin)) {
                     origin = origin.replace("%", ".*");
                     //有表名的，根据表名过滤出符合条件的
                     List<T> tmp = new ArrayList<>();
                     for (T item : list) {
-                        String name = item.getName(greedy) + "";
+                        String name = item.getName(greedy && origin.contains(".")) + "";
                         if (RegularUtil.match(name.toUpperCase(), origin.toUpperCase(), Regular.MATCH_MODE.MATCH)) {
                             if (equals(catalog, item.getCatalog()) && equals(schema, item.getSchema())) {
                                 tmp.add(item);
@@ -7071,12 +7072,13 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 if (ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
                     log.info("{}[edges][catalog:{}][schema:{}][pattern:{}][type:{}][result:{}][执行耗时:{}]", random, catalog, schema, origin, types, list.size(), DateUtil.format(System.currentTimeMillis() - fr));
                 }
+                origin = query.getName(greedy);
                 if (BasicUtil.isNotEmpty(origin)) {
                     origin = origin.replace("%", ".*");
                     //有表名的，根据表名过滤出符合条件的
                     List<T> tmp = new ArrayList<>();
                     for (T item : list) {
-                        String name = item.getName(greedy) + "";
+                        String name = item.getName(greedy && origin.contains(".")) + "";
                         if (RegularUtil.match(name.toUpperCase(), origin.toUpperCase(), Regular.MATCH_MODE.MATCH)) {
                             if (equals(catalog, item.getCatalog()) && equals(schema, item.getSchema())) {
                                 tmp.add(item);
@@ -7638,12 +7640,13 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 if (ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
                     log.info("{}[views][catalog:{}][schema:{}][pattern:{}][type:{}][result:{}][执行耗时:{}]", random, catalog, schema, origin, types, list.size(), DateUtil.format(System.currentTimeMillis() - fr));
                 }
+                origin = query.getName(greedy);
                 if (BasicUtil.isNotEmpty(origin)) {
                     origin = origin.replace("%", ".*");
                     //有表名的，根据表名过滤出符合条件的
                     List<T> tmp = new ArrayList<>();
                     for (T item : list) {
-                        String name = item.getName(greedy) + "";
+                        String name = item.getName(greedy && origin.contains(".")) + "";
                         if (RegularUtil.match(name.toUpperCase(), origin.toUpperCase(), Regular.MATCH_MODE.MATCH)) {
                             if (equals(catalog, item.getCatalog()) && equals(schema, item.getSchema())) {
                                 tmp.add(item);
@@ -8255,12 +8258,13 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 if (ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
                     log.info("{}[masters][catalog:{}][schema:{}][pattern:{}][type:{}][result:{}][执行耗时:{}]", random, catalog, schema, origin, types, list.size(), DateUtil.format(System.currentTimeMillis() - fr));
                 }
+                origin = query.getName(greedy);
                 if (BasicUtil.isNotEmpty(origin)) {
                     origin = origin.replace("%", ".*");
                     //有表名的，根据表名过滤出符合条件的
                     List<T> tmp = new ArrayList<>();
                     for (T item : list) {
-                        String name = item.getName(greedy) + "";
+                        String name = item.getName(greedy && origin.contains(".")) + "";
                         if (RegularUtil.match(name.toUpperCase(), origin.toUpperCase(), Regular.MATCH_MODE.MATCH)) {
                             if (equals(catalog, item.getCatalog()) && equals(schema, item.getSchema())) {
                                 tmp.add(item);

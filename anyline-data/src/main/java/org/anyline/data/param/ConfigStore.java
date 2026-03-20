@@ -247,6 +247,14 @@ public interface ConfigStore extends Cloneable{
 	 */
 	ConfigStore override(Boolean override, String ... columns);
 	ConfigStore override(Boolean override, Constraint constraint);
+
+	/**
+	 * 快速查询 查询结果以数组结构返回 速度快 占用空间少，但不能忽略大不写，不能二次计算
+	 * @param lite 是否
+	 * @return this
+	 */
+	ConfigStore lite(boolean lite);
+	boolean lite();
 	/**
 	 * 添加主键
 	 * @param pks pks

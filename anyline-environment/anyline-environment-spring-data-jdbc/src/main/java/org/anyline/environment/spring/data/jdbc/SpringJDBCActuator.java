@@ -275,6 +275,11 @@ public class SpringJDBCActuator implements DriverActuator {
                             mid[0] = System.currentTimeMillis();
                             process[0] = true;
                         }
+                        if(configs.lite() && null == set.getMetadataIndex()) {
+                            //查询结果以数组结构返回 速度快 占用空间少，但不能忽略大不写，不能二次计算
+                            Map<String, Integer> metadataIndex = JDBCUtil.metadataIndex(rs);
+                            set.setMetadataIndex(metadataIndex);
+                        }
                         DataRow row = JDBCUtil.row(adapter, system, rt, metadatas, configs, rs);
                         set.add(row);
                     }

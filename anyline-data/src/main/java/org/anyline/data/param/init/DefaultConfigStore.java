@@ -58,6 +58,7 @@ public class DefaultConfigStore implements ConfigStore {
 	protected List<String> keyHolders		  = new ArrayList<>()						; // 自增主键值key
 	protected List<RunPrepare> prepares 	  = new ArrayList<>()						; // 执行查询或更新的 前置命令
 
+	protected Boolean lite					  = false									; // 查询结果以数组结构返回 速度快 占用空间少，但不能忽略大不写，不能二次计算
 	protected Boolean override                = null                  					; // 如果数据库中存在相同数据(根据overrideBy)是否覆盖 true或false会检测数据库null不检测
 	protected List<String> overrideByColumns  = null									; // 中存在相同数据(根据overrideBy)是否覆盖 true或false会检测数据库null不检测
 	protected Constraint overrideByConstraint = null									; //中存在相同数据(根据Constraint)是否覆盖 true或false会检测数据库null不检测
@@ -453,6 +454,20 @@ public class DefaultConfigStore implements ConfigStore {
 		return this;
 	}
 
+	/**
+	 * 快速查询 查询结果以数组结构返回 速度快 占用空间少，但不能忽略大不写，不能二次计算
+	 * @param lite 是否
+	 * @return this
+	 */
+	@Override
+	public ConfigStore lite(boolean lite) {
+		this.lite = lite;
+		return this;
+	}
+	@Override
+	public boolean lite() {
+		return lite;
+	}
 	@Override
 	public DataHandler handler() {
 		return handler;

@@ -251,6 +251,11 @@ public class DefaultJDBCActuator implements DriverActuator {
                     }
                 }
             }else{
+                if(configs.lite()) {
+                    //查询结果以数组结构返回 速度快 占用空间少，但不能忽略大不写，不能二次计算
+                    Map<String, Integer> metadataIndex = JDBCUtil.metadataIndex(rs);
+                    set.setMetadataIndex(metadataIndex);
+                }
                 while (rs.next()) {
                     count[0] ++;
                     DataRow row = JDBCUtil.row(adapter, system, rt, metadatas, configs, rs);

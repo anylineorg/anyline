@@ -22,6 +22,7 @@ import org.anyline.data.handler.*;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.DataRow;
+import org.anyline.entity.LiteRow;
 import org.anyline.entity.OriginRow;
 import org.anyline.metadata.*;
 import org.anyline.util.BasicUtil;
@@ -29,10 +30,7 @@ import org.anyline.util.ConfigTable;
 import org.anyline.log.Log;
 import org.anyline.log.LogProxy;
 
-import java.sql.DatabaseMetaData;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.*;
 
 public class JDBCUtil {
@@ -308,17 +306,44 @@ public class JDBCUtil {
         return column;
     }
 
-    /**
-     * query[结果集封装-子流程]
-     * 封装查询结果行,在外层遍历中修改rs下标
-     * @param system 系统表不检测列属性
-     * @param runtime  runtime
-     * @param metadatas metadatas
-     * @param rs jdbc返回结果
-     * @return DataRow
-     */
-    public static DataRow row(DriverAdapter adapter, boolean system, DataRuntime runtime, LinkedHashMap<String, Column> metadatas, ConfigStore configs, ResultSet rs) {
+    public static Map<String, Integer> metadataIndex(ResultSet rs) throws SQLException {
+        Map<String, Integer> metadata = new HashMap<>();
+        ResultSetMetaData rsmd = rs.getMetaData();
+        int qty = rsmd.getColumnCount();
+        for (int i = 1; i <= qty; i++) {
+            String name = rsmd.getColumnLabel(i);
+            if(null == name) {
+                name = rsmd.getColumnName(i);
+            }
+            metadata.put(name, i-1);
+        }
+        return metadata;
+    }
+    public static DataRow row(ResultSet rs, int length) throws SQLException {
+        Object[] values = new Object[length];
+        for (int i = 1; i <= length; i++) {
+            Object value = rs.getObject(i);
+            values[i-1] = value;
+        }
+        return new LiteRow(values);
+    }
+
+        /**
+         * query[结果集封装-子流程]
+         * 封装查询结果行,在外层遍历中修改rs下标
+         * @param system 系统表不检测列属性
+         * @param runtime  runtime
+         * @param metadatas metadatas
+         * @param rs jdbc返回结果
+         * @return DataRow
+         */
+    public static DataRow row(DriverAdapter adapter, boolean system, DataRuntime runtime, LinkedHashMap<String, Column> metadatas, ConfigStore configs, ResultSet rs) throws SQLException {
         DataRow row = null;
+        if(configs.lite()){
+            ResultSetMetaData rsmd = rs.getMetaData();
+            int qty = rsmd.getColumnCount();
+            return row(rs, qty);
+        }
         KeyAdapter.KEY_CASE kc = null;
         Map<String, Column> excludes = new HashMap<>();
         if(null != configs) {
