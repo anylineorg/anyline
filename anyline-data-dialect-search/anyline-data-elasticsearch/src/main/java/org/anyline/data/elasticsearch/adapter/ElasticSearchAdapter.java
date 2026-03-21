@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2025 www.anyline.org
+ * Copyright 2006-2026 www.anyline.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -618,8 +618,8 @@ PUT * /_bulk
      *                                                     QUERY
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
-     * DataSet<DataRow> querys(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
-     * DataSet<DataRow> querys(DataRuntime runtime, String random, Procedure procedure, PageNavi navi)
+     * DataSet<DataRow> queries(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
+     * DataSet<DataRow> queries(DataRuntime runtime, String random, Procedure procedure, PageNavi navi)
      * <T> EntitySet<T> selects(DataRuntime runtime, String random, RunPrepare prepare, Class<T> clazz, ConfigStore configs, String... conditions)
      * List<Map<String,Object>> maps(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
      * [命令合成]
@@ -650,8 +650,8 @@ PUT * /_bulk
      * @return DataSet
      */
     @Override
-    public DataSet<DataRow> querys(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
-        return super.querys(runtime, random, prepare, configs, conditions);
+    public DataSet<DataRow> queries(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
+        return super.queries(runtime, random, prepare, configs, conditions);
     }
 
     /**
@@ -663,8 +663,8 @@ PUT * /_bulk
      * @return DataSet
      */
     @Override
-    public DataSet<DataRow> querys(DataRuntime runtime, String random, Procedure procedure, PageNavi navi) {
-        return super.querys(runtime, random, procedure, navi);
+    public DataSet<DataRow> queries(DataRuntime runtime, String random, Procedure procedure, PageNavi navi) {
+        return super.queries(runtime, random, procedure, navi);
     }
 
     /**
@@ -767,7 +767,7 @@ PUT * /_bulk
             }
         }
         if(prepare instanceof TextPrepare){
-            //service.querys("select * from ... ");
+            //service.queries("select * from ... ");
             Run tr = super.buildQueryRun(runtime, prepare, configs, placeholder, unicode, conditions);
             sql = tr.getFinalQuery(true);
             List<RunValue> sql_run_values = tr.getRunValues();

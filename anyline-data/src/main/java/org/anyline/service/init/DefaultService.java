@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2025 www.anyline.org
+ * Copyright 2006-2026 www.anyline.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -100,7 +100,7 @@ public class DefaultService<E> implements AnylineService<E> {
      * @return DataSet
      */
     @Override
-    public DataSet<DataRow> querys(String dest, ConfigStore configs, Object obj, String... conditions) {
+    public DataSet<DataRow> queries(String dest, ConfigStore configs, Object obj, String... conditions) {
         String[] ps = DataSourceUtil.parseRuntime(dest);
         if(null != ps[0]) {
             return ServiceProxy.service(ps[0]).querys(ps[1], configs, obj, conditions);
@@ -123,7 +123,7 @@ public class DefaultService<E> implements AnylineService<E> {
     }
 
     @Override
-    public DataSet<DataRow> querys(Table dest, ConfigStore configs, Object obj, String... conditions) {
+    public DataSet<DataRow> queries(Table dest, ConfigStore configs, Object obj, String... conditions) {
         return queryFromDao(new DefaultTablePrepare(dest), configs, conditions);
     }
 
@@ -228,7 +228,7 @@ public class DefaultService<E> implements AnylineService<E> {
         conditions = BasicUtil.compress(conditions);
         configs = append(configs, obj);
         if (ConfigTable.IS_CACHE_DISABLED) {
-            set = querys(dest, configs, conditions);
+            set = queries(dest, configs, conditions);
         } else {
             set = queryFromCache(cache, dest, configs, conditions);
         }
@@ -245,7 +245,7 @@ public class DefaultService<E> implements AnylineService<E> {
         conditions = BasicUtil.compress(conditions);
         configs = append(configs, obj);
         if (ConfigTable.IS_CACHE_DISABLED) {
-            set = querys(dest, configs, conditions);
+            set = queries(dest, configs, conditions);
         } else {
             set = queryFromCache(cache, dest, configs, conditions);
         }
@@ -262,7 +262,7 @@ public class DefaultService<E> implements AnylineService<E> {
             store = new DefaultConfigStore();
         }
         store.setPageNavi(navi);
-        DataSet<DataRow> set = querys(dest, store, obj, conditions);
+        DataSet<DataRow> set = queries(dest, store, obj, conditions);
         store.setPageNavi(null);
         if (null != set && !set.isEmpty()) {
             DataRow row = set.getRow(0);
@@ -286,7 +286,7 @@ public class DefaultService<E> implements AnylineService<E> {
             store = new DefaultConfigStore();
         }
         store.setPageNavi(navi);
-        DataSet<DataRow> set = querys(dest, store, obj, conditions);
+        DataSet<DataRow> set = queries(dest, store, obj, conditions);
         store.setPageNavi(null);
         if (null != set && !set.isEmpty()) {
             DataRow row = set.getRow(0);
@@ -555,7 +555,7 @@ public class DefaultService<E> implements AnylineService<E> {
      */
 
     @Override
-    public DataSet<DataRow> querys(RunPrepare prepare, ConfigStore configs, Object obj, String... conditions) {
+    public DataSet<DataRow> queries(RunPrepare prepare, ConfigStore configs, Object obj, String... conditions) {
         conditions = BasicUtil.compress(conditions);
         DataSet<DataRow> set = queryFromDao(prepare, append(configs, obj), conditions);
         return set;
@@ -567,13 +567,13 @@ public class DefaultService<E> implements AnylineService<E> {
         DataSet<DataRow> set = null;
         conditions = BasicUtil.compress(conditions);
         if (null == cache) {
-            set = querys(table, configs, obj, conditions);
+            set = queries(table, configs, obj, conditions);
         } else {
             if (null != CacheProxy.provider) {
                 //TODO
                 //set = queryFromCache(cache, table, configs, conditions);
             } else {
-                set = querys(table, configs, obj, conditions);
+                set = queries(table, configs, obj, conditions);
             }
         }
         return set;
@@ -589,7 +589,7 @@ public class DefaultService<E> implements AnylineService<E> {
             store = new DefaultConfigStore();
         }
         store.setPageNavi(navi);
-        DataSet<DataRow> set = querys(prepare, store, obj, conditions);
+        DataSet<DataRow> set = queries(prepare, store, obj, conditions);
         store.setPageNavi(null);
         if (null != set && !set.isEmpty()) {
             DataRow row = set.getRow(0);
@@ -1214,7 +1214,7 @@ public class DefaultService<E> implements AnylineService<E> {
      */
 
     @Override
-    public DataSet<DataRow> querys(Procedure procedure, PageNavi navi, String... inputs) {
+    public DataSet<DataRow> queries(Procedure procedure, PageNavi navi, String... inputs) {
         DataSet<DataRow> set = null;
         try {
             if (null != inputs) {
@@ -1222,7 +1222,7 @@ public class DefaultService<E> implements AnylineService<E> {
                     procedure.addInput(input);
                 }
             }
-            set = dao.querys(procedure, navi);
+            set = dao.queries(procedure, navi);
         } catch (Exception e) {
             set = new DataSet();
             set.setException(e);
@@ -1235,7 +1235,7 @@ public class DefaultService<E> implements AnylineService<E> {
 
     @Override
     public DataRow query(Procedure procedure, String... inputs) {
-        DataSet<DataRow> set = querys(procedure, 0, 0, inputs);
+        DataSet<DataRow> set = queries(procedure, 0, 0, inputs);
         if (!set.isEmpty()) {
             return set.getRow(0);
         }
@@ -1280,7 +1280,7 @@ public class DefaultService<E> implements AnylineService<E> {
         result = dao.execute(prepare, configs, conditions);
         return result;
     }
-    
+
     /**
      * RunPrepare批量执行 主要是为了保持在同一连接内执行<br/>
      * 通常是用prepare来合成比较复杂的的SQL如CREATE VIEW AS prepare.sql
@@ -1570,7 +1570,7 @@ public class DefaultService<E> implements AnylineService<E> {
         }
         try {
             setPageLazy(prepare.getText(), configs, conditions);
-            set = dao.querys(prepare, configs, conditions);
+            set = dao.queries(prepare, configs, conditions);
         } catch (Exception e) {
             set = new DataSet();
             set.setException(e);
@@ -1593,7 +1593,7 @@ public class DefaultService<E> implements AnylineService<E> {
             setPageLazy(dest, configs, conditions);
             RunPrepare prepare = createRunPrepare(dest);
 
-            set = dao.querys(prepare, configs, conditions);
+            set = dao.queries(prepare, configs, conditions);
 
         } catch (Exception e) {
             set = new DataSet();

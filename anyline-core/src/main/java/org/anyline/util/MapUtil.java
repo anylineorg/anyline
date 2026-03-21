@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2025 www.anyline.org
+ * Copyright 2006-2026 www.anyline.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -204,7 +204,7 @@ public class MapUtil {
 		return copy(src, copy, BeanUtil.getMapKeys(copy));
 	}
 	public static Map<String, Object> query(Collection<Map<String, Object>> datas, Map<String, Object> kvs) {
-		List<Map<String, Object>> list = querys(datas, 0, 1, kvs);
+		List<Map<String, Object>> list = queries(datas, 0, 1, kvs);
 		if(!list.isEmpty()) {
 			return list.get(0);
 		}
@@ -212,14 +212,20 @@ public class MapUtil {
 	}
 
 	public static List<Map<String, Object>> querys(Collection<Map<String, Object>> datas, int begin, String... params) {
-		return querys(datas, begin, 0, params);
+		return queries(datas, begin, 0, params);
 	}
 
+	public static List<Map<String, Object>> queries(Collection<Map<String, Object>> datas, int begin, String... params) {
+		return queries(datas, begin, 0, params);
+	}
 	public static List<Map<String, Object>> querys(Collection<Map<String, Object>> datas, String... params) {
-		return querys(datas, 0, params);
+		return queries(datas, 0, params);
 	}
 
-	public static List<Map<String, Object>> querys(Collection<Map<String, Object>> datas, int begin, int qty, String... params) {
+	public static List<Map<String, Object>> queries(Collection<Map<String, Object>> datas, String... params) {
+		return queries(datas, 0, params);
+	}
+	public static List<Map<String, Object>> queries(Collection<Map<String, Object>> datas, int begin, int qty, String... params) {
 		Map<String, Object> kvs = new LinkedHashMap<>();
 		int len = params.length;
 		int i = 0;
@@ -262,7 +268,10 @@ public class MapUtil {
 		return querys(datas, begin, qty, kvs);
 	}
 
-	public static List<Map<String, Object>> querys(Collection<Map<String, Object>> datas, int begin, int qty, Map<String, Object> kvs) {
+	public static List<Map<String, Object>> querys(Collection<Map<String, Object>> datas, int begin, int qty, String... params) {
+		return queries(datas, begin, qty, params);
+	}
+	public static List<Map<String, Object>> queries(Collection<Map<String, Object>> datas, int begin, int qty, Map<String, Object> kvs) {
 		List<Map<String, Object>> set = new ArrayList<>();
 		for (Map<String, Object> row:datas) {
 			if(row.containsKey("_tmp_skip")) {
@@ -302,6 +311,10 @@ public class MapUtil {
 			}
 		}//end for rows
 		return set;
+	}
+
+	public static List<Map<String, Object>> querys(Collection<Map<String, Object>> datas, int begin, int qty, Map<String, Object> kvs) {
+		return queries(datas, begin, qty, kvs);
 	}
 	private static String concatValue(Map<String, Object> row, String split) {
 		StringBuilder builder = new StringBuilder();

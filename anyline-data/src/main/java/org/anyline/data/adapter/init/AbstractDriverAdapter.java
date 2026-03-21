@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2025 www.anyline.org
+ * Copyright 2006-2026 www.anyline.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -2069,7 +2069,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 for(String k:pvs.keySet()) {
                     stores.and(k, pvs.get(k));
                 }
-                DataSet<DataRow> exists = querys(runtime, random, prepare, stores);
+                DataSet<DataRow> exists = queries(runtime, random, prepare, stores);
                 if(!exists.isEmpty()) {
                     if(override) {
                         long result = update(runtime, random, dest, data, configs, columns);
@@ -2221,8 +2221,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      *                                                     QUERY
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
-     * DataSet<DataRow> querys(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
-     * DataSet<DataRow> querys(DataRuntime runtime, String random, Procedure procedure, PageNavi navi)
+     * DataSet<DataRow> queries(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
+     * DataSet<DataRow> queries(DataRuntime runtime, String random, Procedure procedure, PageNavi navi)
      * <T> EntitySet<T> selects(DataRuntime runtime, String random, RunPrepare prepare, Class<T> clazz, ConfigStore configs, String... conditions)
      * List<Map<String, Object>> maps(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
      * [命令合成]
@@ -2253,7 +2253,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @return DataSet
      */
     @Override
-    public DataSet<DataRow> querys(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
+    public DataSet<DataRow> queries(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
         Table table = null;
         DataSet<DataRow> set = null;
         Long fr = 0L;
@@ -2381,9 +2381,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @return DataSet
      */
     @Override
-    public DataSet<DataRow> querys(DataRuntime runtime, String random, Procedure procedure, PageNavi navi) {
+    public DataSet<DataRow> queries(DataRuntime runtime, String random, Procedure procedure, PageNavi navi) {
         if(log.isDebugEnabled()) {
-            log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 DataSet<DataRow> querys(DataRuntime runtime, String random, Procedure procedure, PageNavi navi)", 37));
+            log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 DataSet<DataRow> queries(DataRuntime runtime, String random, Procedure procedure, PageNavi navi)", 37));
         }
         return new DataSet();
     }

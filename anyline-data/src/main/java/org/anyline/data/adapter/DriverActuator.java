@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2025 www.anyline.org
+ * Copyright 2006-2026 www.anyline.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -114,8 +114,11 @@ public interface DriverActuator {
      * @param navi 分页
      * @return DataSet
      */
-    default DataSet<DataRow> querys(DriverAdapter adapter, DataRuntime runtime, String random, Procedure procedure, PageNavi navi) throws Exception {
+    default DataSet<DataRow> queries(DriverAdapter adapter, DataRuntime runtime, String random, Procedure procedure, PageNavi navi) throws Exception {
         return null;
+    }
+    default DataSet<DataRow> querys(DriverAdapter adapter, DataRuntime runtime, String random, Procedure procedure, PageNavi navi) throws Exception {
+        return queries(adapter, runtime, random, procedure, navi);
     }
 
     /**

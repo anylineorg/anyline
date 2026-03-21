@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2025 www.anyline.org
+ * Copyright 2006-2026 www.anyline.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -100,7 +100,7 @@ public class DefaultDDListener implements DDListener {
                 prepare.setDest(table.getName());
                 ConfigStore configs = new DefaultConfigStore();
                 configs.setPageNavi(navi);
-                DataSet<DataRow> set = runtime.getAdapter().querys(runtime, null, prepare, configs);
+                DataSet<DataRow> set = runtime.getAdapter().queries(runtime, null, prepare, configs);
                 if(set.isEmpty()) {
                     break;
                 }

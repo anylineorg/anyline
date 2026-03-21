@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2025 www.anyline.org
+ * Copyright 2006-2026 www.anyline.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -121,7 +121,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
 	 * @param configs 过滤条件及相关配置
 	 * @param conditions 查询条件 支持k:v k:v::type 以及原生sql形式(包含ORDER、GROUP、HAVING)默认忽略空值条件
-	 * @return mpas
+	 * @return maps
 	 */
 	@Override
 	public List<Map<String, Object>> maps(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
@@ -136,21 +136,21 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 	/**
 	 * 查询<br/>
-	 * 注意:如果设置了自动还原, querys会自动还原数据源(dao内部执行过程中不要调用除非是一些重载), 而select不会
+	 * 注意:如果设置了自动还原, queries会自动还原数据源(dao内部执行过程中不要调用除非是一些重载), 而select不会
 	 * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
 	 * @param configs 过滤条件及相关配置
 	 * @param conditions 查询条件 支持k:v k:v::type 以及原生sql形式(包含ORDER、GROUP、HAVING)默认忽略空值条件
 	 * @return DataSet
 	 */
 	@Override
-	public DataSet<DataRow> querys(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
+	public DataSet<DataRow> queries(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
 		if(null == runtime) {
 			runtime = runtime();
 		}
 		if(null != prepare && !prepare.disposable()){
 			prepare = prepare.clone();
 		}
-		return runtime.getAdapter().querys(runtime, null, prepare, configs, conditions);
+		return runtime.getAdapter().queries(runtime, null, prepare, configs, conditions);
 
 	}
 
@@ -496,7 +496,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 						if (null == join.dependencyTable) {
 							//只通过中间表查主键 List<Long> departmentIds
 							//SELECT * FROM HR_EMPLOYEE_DEPARTMENT WHERE EMPLOYEE_ID = ?
-							DataSet<DataRow> items = runtime.getAdapter().querys(runtime, random, new DefaultTablePrepare(join.joinTable), new DefaultConfigStore(), "++" + join.joinColumn + ":" + primaryValueMap.get(pk.toUpperCase()));
+							DataSet<DataRow> items = runtime.getAdapter().queries(runtime, random, new DefaultTablePrepare(join.joinTable), new DefaultConfigStore(), "++" + join.joinColumn + ":" + primaryValueMap.get(pk.toUpperCase()));
 							List<String> ids = items.getStrings(join.inverseJoinColumn);
 							BeanUtil.setFieldValue(entity, field, ids);
 						} else {
@@ -524,7 +524,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 						//SELECT * FROM HR_EMPLOYEE_DEPARTMENT WHERE EMPLOYEE_ID IN(?, ?, ?)
 						ConfigStore conditions = new DefaultConfigStore();
 						conditions.and(join.joinColumn, pvs);
-						DataSet<DataRow> allItems = runtime.getAdapter().querys(runtime, random, new DefaultTablePrepare(join.joinTable), conditions);
+						DataSet<DataRow> allItems = runtime.getAdapter().queries(runtime, random, new DefaultTablePrepare(join.joinTable), conditions);
 						for(T entity:set) {
 							DataSet<DataRow> items = allItems.getRows(join.joinColumn, idmap.get(entity)+"");
 							List<String> ids = items.getStrings(join.inverseJoinColumn);
@@ -536,7 +536,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 						ConfigStore conditions = new DefaultConfigStore();
 						conditions.param("JOIN_PVS", pvs);
 						String sql = "SELECT M.*, F."+join.joinColumn+" FK_"+join.joinColumn+" FROM " + join.dependencyTable + " M RIGHT JOIN "+join.joinTable+" F ON M." + join.dependencyPk + " = "+join.inverseJoinColumn +" WHERE "+join.joinColumn+" IN(#{JOIN_PVS})";
-						DataSet<DataRow> alls = runtime.getAdapter().querys(runtime, random, new DefaultTextPrepare(sql), conditions);
+						DataSet<DataRow> alls = runtime.getAdapter().queries(runtime, random, new DefaultTextPrepare(sql), conditions);
 						for(T entity:set) {
 							DataSet<DataRow> items = alls.getRows("FK_"+join.joinColumn, idmap.get(entity)+"");
 							BeanUtil.setFieldValue(entity, field, items.entity(join.itemClass));
@@ -838,11 +838,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @return DataSet
 	 */
 	@Override
-	public DataSet<DataRow> querys(DataRuntime runtime, String random, Procedure procedure, PageNavi navi) {
+	public DataSet<DataRow> queries(DataRuntime runtime, String random, Procedure procedure, PageNavi navi) {
 		if(null == runtime) {
 			runtime = runtime();
 		}
-		return runtime.getAdapter().querys(runtime, random, procedure, navi);
+		return runtime.getAdapter().queries(runtime, random, procedure, navi);
 	}
 
 	/**

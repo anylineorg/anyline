@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2025 www.anyline.org
+ * Copyright 2006-2026 www.anyline.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -3657,22 +3657,29 @@ public class BeanUtil {
 		return copy(into, copy, getMapKeys(copy));
 	}
 	public static <T> T query(Collection<T> datas, Map<String,Object> kvs) {
-		List<T> list = querys(datas,0,1, kvs);
+		List<T> list = queries(datas,0,1, kvs);
 		if(!list.isEmpty()) {
 			return list.get(0);
 		}
 		return null;
 	}
 
+	public static <T> List<T> queries(Collection<T> datas, int begin, String... params) {
+		return queries(datas,begin, 0, params);
+	}
+
 	public static <T> List<T> querys(Collection<T> datas, int begin, String... params) {
-		return querys(datas,begin, 0, params);
+		return queries(datas,begin, 0, params);
 	}
 
+	public static <T> List<T> queries(Collection<T> datas, String... params) {
+		return queries(datas,0, params);
+	}
 	public static <T> List<T> querys(Collection<T> datas, String... params) {
-		return querys(datas,0, params);
+		return queries(datas,0, params);
 	}
 
-	public static <T> List<T> querys(Collection<T> datas, int begin, int qty, String... params) {
+	public static <T> List<T> queries(Collection<T> datas, int begin, int qty, String... params) {
 		Map<String, Object> kvs = new LinkedHashMap<>();
 		int len = params.length;
 		int i = 0;
@@ -3714,8 +3721,10 @@ public class BeanUtil {
 		}
 		return querys(datas, begin, qty, kvs);
 	}
-
-	public static <T> List<T> querys(Collection<T> datas, int begin, int qty, Map<String, Object> kvs) {
+	public static <T> List<T> querys(Collection<T> datas, int begin, int qty, String... params) {
+		return queries(datas, begin, qty, params);
+	}
+	public static <T> List<T> queries(Collection<T> datas, int begin, int qty, Map<String, Object> kvs) {
 		List<T> set = new ArrayList<>();
 		String srcFlagTag = "srcFlag"; // 参数含有{}的 在kvs中根据key值+tag 放入一个新的键值对
 		BigDecimal d1;
@@ -3769,6 +3778,9 @@ public class BeanUtil {
 			}
 		}//end for rows
 		return set;
+	}
+	public static <T> List<T> querys(Collection<T> datas, int begin, int qty, Map<String, Object> kvs) {
+		return queries(datas, begin, qty, kvs);
 	}
 	private static String concatValue(Map<String,Object> row, String split) {
 		StringBuilder builder = new StringBuilder();

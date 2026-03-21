@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2025 www.anyline.org
+ * Copyright 2006-2026 www.anyline.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -79,11 +79,17 @@ public interface AnylineDao<E>{
 	 * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
 	 * @param configs 过滤条件及相关配置
 	 * @param conditions 查询条件 支持k:v k:v::type 以及原生sql形式(包含ORDER、GROUP、HAVING)默认忽略空值条件
-	 * @return mpas
+	 * @return maps
 	 */
-	DataSet<DataRow> querys(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions);
+	DataSet<DataRow> queries(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions);
+	default DataSet<DataRow> queries(RunPrepare prepare, ConfigStore configs, String ... conditions) {
+		return queries(runtime(), null, prepare, configs, conditions);
+	}
+	default DataSet<DataRow> querys(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
+		return queries(runtime, random, prepare, configs, conditions);
+	}
 	default DataSet<DataRow> querys(RunPrepare prepare, ConfigStore configs, String ... conditions) {
-		return querys(runtime(), null, prepare, configs, conditions);
+		return queries(runtime(), null, prepare, configs, conditions);
 	}
 
 	/**
@@ -93,7 +99,7 @@ public interface AnylineDao<E>{
 	 * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
 	 * @param configs 过滤条件及相关配置
 	 * @param conditions 查询条件 支持k:v k:v::type 以及原生sql形式(包含ORDER、GROUP、HAVING)默认忽略空值条件
-	 * @return mpas
+	 * @return maps
 	 */
 	<T> EntitySet<T> selects(DataRuntime runtime, String random, RunPrepare prepare, Class<T> clazz, ConfigStore configs, String ... conditions);
 	default <T> EntitySet<T> selects(RunPrepare prepare, Class<T> clazz, ConfigStore configs, String ... conditions) {
@@ -107,7 +113,7 @@ public interface AnylineDao<E>{
 	 * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
 	 * @param configs 过滤条件及相关配置
 	 * @param conditions 查询条件 支持k:v k:v::type 以及原生sql形式(包含ORDER、GROUP、HAVING)默认忽略空值条件
-	 * @return mpas
+	 * @return maps
 	 */
 	List<Map<String, Object>> maps(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions);
 	default List<Map<String, Object>> maps(RunPrepare prepare, ConfigStore configs, String ... conditions) {
@@ -528,9 +534,9 @@ public interface AnylineDao<E>{
 	 * @param procedure  procedure
 	 * @return DataSet
 	 */
-	DataSet<DataRow> querys(DataRuntime runtime, String random, Procedure procedure, PageNavi navi);
-	default DataSet<DataRow> querys(Procedure procedure, PageNavi navi) {
-		return querys(runtime(), null, procedure, navi);
+	DataSet<DataRow> queries(DataRuntime runtime, String random, Procedure procedure, PageNavi navi);
+	default DataSet<DataRow> queries(Procedure procedure, PageNavi navi) {
+		return queries(runtime(), null, procedure, navi);
 	}
 	default long delete(DataRuntime runtime, String random, String dest, ConfigStore configs, Object obj, String ... columns) {
 		return delete(runtime, random, DataSourceUtil.parseDest(dest, null, configs), configs, obj, columns);

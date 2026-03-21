@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2025 www.anyline.org
+ * Copyright 2006-2026 www.anyline.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -924,8 +924,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
      *                                                     QUERY
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
-     * DataSet<DataRow> querys(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
-     * DataSet<DataRow> querys(DataRuntime runtime, String random, Procedure procedure, PageNavi navi)
+     * DataSet<DataRow> queries(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
+     * DataSet<DataRow> queries(DataRuntime runtime, String random, Procedure procedure, PageNavi navi)
      * <T> EntitySet<T> selects(DataRuntime runtime, String random, RunPrepare prepare, Class<T> clazz, ConfigStore configs, String... conditions)
      * List<Map<String, Object>> maps(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
      * [命令合成]
@@ -956,8 +956,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
      * @return DataSet
      */
     @Override
-    public DataSet<DataRow> querys(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
-        return super.querys(runtime, random, prepare, configs, conditions);
+    public DataSet<DataRow> queries(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
+        return super.queries(runtime, random, prepare, configs, conditions);
     }
 
     /**
@@ -969,7 +969,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
      * @return DataSet
      */
     @Override
-    public DataSet<DataRow> querys(DataRuntime runtime, String random, Procedure procedure, PageNavi navi) {
+    public DataSet<DataRow> queries(DataRuntime runtime, String random, Procedure procedure, PageNavi navi) {
         DataSet<DataRow> set = null;
         final List<Parameter> inputs = procedure.getInputs();
         final List<Parameter> outputs = procedure.getOutputs();
@@ -995,7 +995,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
                 dmListener.beforeQuery(runtime, random, procedure);
             }
             long fr = System.currentTimeMillis();
-            set = actuator.querys(this, runtime, random, procedure, navi);
+            set = actuator.queries(this, runtime, random, procedure, navi);
             millis = System.currentTimeMillis() - fr;
             boolean slow = false;
             long SLOW_SQL_MILLIS = ConfigTable.SLOW_SQL_MILLIS;
@@ -1374,7 +1374,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
     public DataSet<DataRow> select(DataRuntime runtime, String random, boolean system, Table table, ConfigStore configs, Run run) {
         if(run instanceof ProcedureRun) {
             ProcedureRun pr = (ProcedureRun)run;
-            return querys(runtime, random, pr.getProcedure(), configs.getPageNavi());
+            return queries(runtime, random, pr.getProcedure(), configs.getPageNavi());
         }
         String cmd = mergeFinalQuery(runtime, run);//run.getFinalQuery();
         if(BasicUtil.isEmpty(cmd)) {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2025 www.anyline.org
+ * Copyright 2006-2026 www.anyline.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,9 +22,6 @@ public class LiteRow extends DataRow implements Serializable {
     private static final long serialVersionUID = -2098827041540802313L;
     private Object[] values = null;
     private LiteRow() {}
-    public LiteRow(int length) {
-        values = new Object[length];
-    }
     public LiteRow(Object[] values) {
         this.values = values;
     }
@@ -55,5 +52,29 @@ public class LiteRow extends DataRow implements Serializable {
             return values[index];
         }
         return null;
+    }
+    @Override
+    public String getString(String key) {
+        return getString(new String[]{key});
+    }
+    public String getString(String ... keys) {
+        if(null == keys) {
+            return null;
+        }
+        String result = null;
+        for(String key:keys) {
+            if (null == key) {
+                continue;
+            }
+            Object value = get(key);
+            if (null != value) {
+                if(value instanceof byte[]) {
+                    result = new String((byte[])value);
+                }else {
+                    result = value.toString();
+                }
+            }
+        }
+        return result;
     }
 }

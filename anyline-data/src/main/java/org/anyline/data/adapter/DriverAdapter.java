@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2025 www.anyline.org
+ * Copyright 2006-2026 www.anyline.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -1733,7 +1733,10 @@ public interface DriverAdapter {
      * @param conditions 查询条件 支持k:v k:v::type 以及原生sql形式(包含ORDER、GROUP、HAVING)默认忽略空值条件
      * @return DataSet
      */
-    DataSet<DataRow> querys(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions);
+    DataSet<DataRow> queries(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions);
+    default DataSet<DataRow> querys(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
+        return queries(runtime, random, prepare, configs, conditions);
+    }
     /**
      * query procedure [调用入口]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -1742,7 +1745,10 @@ public interface DriverAdapter {
      * @param navi 分页
      * @return DataSet
      */
-    DataSet<DataRow> querys(DataRuntime runtime, String random, Procedure procedure, PageNavi navi);
+    DataSet<DataRow> queries(DataRuntime runtime, String random, Procedure procedure, PageNavi navi);
+    default DataSet<DataRow> querys(DataRuntime runtime, String random, Procedure procedure, PageNavi navi) {
+        return queries(runtime, random, procedure, navi);
+    }
 
     /**
      * query [调用入口]<br/>

@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2025 www.anyline.org
+ * Copyright 2006-2026 www.anyline.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -66,24 +66,31 @@ public class MilvusActuator implements DriverActuator {
      * 支持相同DriverAdapter的worker只有一个生效，以优先级最高的为准
      * @return int
      */
+    @Override
     public int priority() {
         return 0;
     }
+    @Override
     public DataSource getDataSource(DriverAdapter adapter, DataRuntime runtime) {
         return null;
     }
+    @Override
     public Connection getConnection(DriverAdapter adapter, DataRuntime runtime, DataSource datasource) {
         return null;
     }
+    @Override
     public void releaseConnection(DriverAdapter adapter, DataRuntime runtime, Connection connection, DataSource datasource) {
 
     }
+    @Override
     public <T extends Metadata> void checkSchema(DriverAdapter adapter, DataRuntime runtime, DataSource datasource, T meta) {
 
     }
+    @Override
     public <T extends Metadata> void checkSchema(DriverAdapter adapter, DataRuntime runtime, T meta) {
 
     }
+    @Override
     public <T extends Metadata> void checkSchema(DriverAdapter adapter, DataRuntime runtime, Connection con, T meta) {
 
     }
@@ -96,6 +103,7 @@ public class MilvusActuator implements DriverActuator {
      * @param product 上一步查询结果
      * @return product
      */
+    @Override
     public String product(DriverAdapter adapter, DataRuntime runtime, boolean create, String product) {
         return null;
     }
@@ -108,6 +116,7 @@ public class MilvusActuator implements DriverActuator {
      * @param version 上一步查询结果
      * @return version
      */
+    @Override
     public String version(DriverAdapter adapter, DataRuntime runtime, boolean create, String version) {
         return null;
     }
@@ -118,6 +127,7 @@ public class MilvusActuator implements DriverActuator {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @return List
      */
+    @Override
     public <T extends Database> List<T> databases(DriverAdapter adapter, DataRuntime runtime, Database query) {
         //https://milvus.io/docs/zh/create-collection.md
         List<T> list = new ArrayList<>();
@@ -131,12 +141,17 @@ public class MilvusActuator implements DriverActuator {
         }
         return list;
     }
+    @Override
     public List<Catalog> catalogs(DriverAdapter adapter, DataRuntime runtime) {
         return new ArrayList<>();
     }
+
+    @Override
     public List<Schema> schemas(DriverAdapter adapter, DataRuntime runtime) {
         return new ArrayList<>();
     }
+
+    @Override
     public DataSet<DataRow> select(DriverAdapter adapter, DataRuntime runtime, String random, boolean system, ACTION.DML action, Table table, ConfigStore configs, Run run, String cmd, List<Object> values, LinkedHashMap<String,Column> columns) throws Exception {
         return new DataSet();
     }
@@ -149,7 +164,8 @@ public class MilvusActuator implements DriverActuator {
      * @param navi 分页
      * @return DataSet
      */
-    public DataSet<DataRow> querys(DriverAdapter adapter, DataRuntime runtime, String random, Procedure procedure, PageNavi navi) throws Exception {
+    @Override
+    public DataSet<DataRow> queries(DriverAdapter adapter, DataRuntime runtime, String random, Procedure procedure, PageNavi navi) throws Exception {
         return new DataSet();
     }
 
@@ -160,6 +176,7 @@ public class MilvusActuator implements DriverActuator {
      * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
      * @return maps
      */
+    @Override
     public List<Map<String, Object>> maps(DriverAdapter adapter, DataRuntime runtime, String random, ConfigStore configs, Run run) throws Exception {
         return new ArrayList<>();
     }
@@ -171,6 +188,7 @@ public class MilvusActuator implements DriverActuator {
      * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
      * @return map
      */
+    @Override
     public Map<String, Object> map(DriverAdapter adapter, DataRuntime runtime, String random, ConfigStore configs, Run run) throws Exception {
         return new HashMap<>();
     }
@@ -188,6 +206,7 @@ public class MilvusActuator implements DriverActuator {
      * @return long
      * @throws Exception Exception
      */
+    @Override
     public long insert(DriverAdapter adapter, DataRuntime runtime, String random, Object data, ConfigStore configs, Run run, String generatedKey, String[] pks) throws Exception {
         return -1;
     }
@@ -229,6 +248,7 @@ public class MilvusActuator implements DriverActuator {
      * @param random  random
      * @return 输出参数
      */
+    @Override
     public List<Object> execute(DriverAdapter adapter, DataRuntime runtime, String random, Procedure procedure, String sql, List<Parameter> inputs, List<Parameter> outputs) throws Exception {
         return new ArrayList<>();
     }
@@ -240,9 +260,11 @@ public class MilvusActuator implements DriverActuator {
      * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
      * @return 影响行数
      */
+    @Override
     public long execute(DriverAdapter adapter, DataRuntime runtime, String random, ConfigStore configs, Run run) throws Exception {
         return -1;
     }
+    @Override
     public long execute(DriverAdapter adapter, DataRuntime runtime, String random, ConfigStore configs, List<Run> run) throws Exception {
         return -1;
     }
@@ -254,6 +276,7 @@ public class MilvusActuator implements DriverActuator {
      * @param comment 是否需要查询列注释
      * @return LinkedHashMap
      */
+    @Override
     public LinkedHashMap<String, Column> metadata(DriverAdapter adapter, DataRuntime runtime, String random, Run run, boolean comment) {
         return new LinkedHashMap<>();
     }
@@ -269,6 +292,7 @@ public class MilvusActuator implements DriverActuator {
      * @return tables
      * @throws Exception 异常
      */
+    @Override
     public <T extends Table> LinkedHashMap<String, T> tables(DriverAdapter adapter, DataRuntime runtime, boolean create,  LinkedHashMap<String, T> previous, Table query, int types) throws Exception {
         if(null == previous){
             previous = new LinkedHashMap<>();
@@ -333,6 +357,7 @@ public class MilvusActuator implements DriverActuator {
      * @return tables
      * @throws Exception 异常
      */
+    @Override
     public <T extends Table> List<T> tables(DriverAdapter adapter, DataRuntime runtime, boolean create, List<T> previous, Table query, int types) throws Exception {
         if(null == previous){
             previous = new ArrayList<>();
@@ -373,6 +398,7 @@ public class MilvusActuator implements DriverActuator {
      * @return tables
      * @throws Exception 异常
      */
+    @Override
     public <T extends View> LinkedHashMap<String, T> views(DriverAdapter adapter, DataRuntime runtime, boolean create,  LinkedHashMap<String, T> previous, View query, int types) throws Exception {
         return previous;
     }
@@ -388,6 +414,7 @@ public class MilvusActuator implements DriverActuator {
      * @return tables
      * @throws Exception 异常
      */
+    @Override
     public <T extends View> List<T> views(DriverAdapter adapter, DataRuntime runtime, boolean create, List<T> previous, View query, int types) throws Exception {
         return previous;
     }
@@ -403,6 +430,7 @@ public class MilvusActuator implements DriverActuator {
      * @return columns
      * @param <T> Column
      */
+    @Override
     public <T extends Column> LinkedHashMap<String, T> columns(DriverAdapter adapter, DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Table table, String cmd) throws Exception {
         return previous;
     }
@@ -417,6 +445,7 @@ public class MilvusActuator implements DriverActuator {
      * @return columns
      * @param <T> Column
      */
+    @Override
     public <T extends Column> LinkedHashMap<String, T> metadata(DriverAdapter adapter, DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Column query) throws Exception {
         return new LinkedHashMap<>();
     }
@@ -430,6 +459,7 @@ public class MilvusActuator implements DriverActuator {
      * @param previous 上一步查询结果
      * @throws Exception 异常
      */
+    @Override
     public <T extends Index> LinkedHashMap<String, T> indexes(DriverAdapter adapter, DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Index query) throws Exception {
         return new LinkedHashMap<>();
     }

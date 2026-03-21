@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2025 www.anyline.org
+ * Copyright 2006-2026 www.anyline.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -703,29 +703,57 @@ public class ServiceProxy {
      *
      * @return DataSet
      */
+
+
+    public static DataSet<DataRow> queries(String dest, ConfigStore configs, Object obj, String ... conditions) {
+        return service.queries(dest, configs, obj, conditions);
+    }
+    public static DataSet<DataRow> queries(ConfigStore configs, Object obj, String ... conditions) {
+        return service.queries(configs, obj, conditions);
+    }
+    public static DataSet<DataRow> queries(ConfigStore configs, String ... conditions) {
+        return service.queries(configs, conditions);
+    }
+    public static DataSet<DataRow> queries(DataSet<DataRow> set, ConfigStore configs) {
+        return service.queries(set, configs);
+    }
+    public static DataSet<DataRow> queries(String dest, Object obj, String ... conditions) {
+        return service.queries(dest, obj, conditions);
+    }
+    public static void queries(String dest, DataHandler handler, Object obj, String ... conditions) {
+        service.queries(dest, handler, obj, conditions);
+    }
+    public static void queries(RunPrepare prepare, DataHandler handler, Object obj, String ... conditions) {
+        service.queries(prepare, handler, obj, conditions);
+    }
+    public static DataSet<DataRow> queries(String dest, PageNavi navi, Object obj, String ... conditions) {
+        return service.queries(dest, navi, obj, conditions);
+    }
+
+
     public static DataSet<DataRow> querys(String dest, ConfigStore configs, Object obj, String ... conditions) {
-        return service.querys(dest, configs, obj, conditions);
+        return service.queries(dest, configs, obj, conditions);
     }
     public static DataSet<DataRow> querys(ConfigStore configs, Object obj, String ... conditions) {
-        return service.querys(configs, obj, conditions);
+        return service.queries(configs, obj, conditions);
     }
     public static DataSet<DataRow> querys(ConfigStore configs, String ... conditions) {
-        return service.querys(configs, conditions);
+        return service.queries(configs, conditions);
     }
     public static DataSet<DataRow> querys(DataSet<DataRow> set, ConfigStore configs) {
-        return service.querys(set, configs);
+        return service.queries(set, configs);
     }
     public static DataSet<DataRow> querys(String dest, Object obj, String ... conditions) {
-        return service.querys(dest, obj, conditions);
+        return service.queries(dest, obj, conditions);
     }
     public static void querys(String dest, DataHandler handler, Object obj, String ... conditions) {
-        service.querys(dest, handler, obj, conditions);
+        service.queries(dest, handler, obj, conditions);
     }
     public static void querys(RunPrepare prepare, DataHandler handler, Object obj, String ... conditions) {
-        service.querys(prepare, handler, obj, conditions);
+        service.queries(prepare, handler, obj, conditions);
     }
     public static DataSet<DataRow> querys(String dest, PageNavi navi, Object obj, String ... conditions) {
-        return service.querys(dest, navi, obj, conditions);
+        return service.queries(dest, navi, obj, conditions);
     }
 
     /**
@@ -737,8 +765,11 @@ public class ServiceProxy {
      * @param conditions 查询条件 支持k:v k:v::type 以及原生sql形式(包含ORDER、GROUP、HAVING)默认忽略空值条件
      * @return DataSet
      */
+    public static DataSet<DataRow> queries(String dest, long first, long last, Object obj, String ... conditions) {
+        return service.queries(dest, first, last, obj, conditions);
+    }
     public static DataSet<DataRow> querys(String dest, long first, long last, Object obj, String ... conditions) {
-        return service.querys(dest, first, last, obj, conditions);
+        return service.queries(dest, first, last, obj, conditions);
     }
     public static DataRow query(String dest, ConfigStore configs, Object obj, String ... conditions) {
         return service.query(dest, configs, obj, conditions);
@@ -754,18 +785,30 @@ public class ServiceProxy {
     }
 
     public static DataSet<DataRow> querys(String dest, ConfigStore configs, String ... conditions) {
-        return service.querys(dest, configs, conditions);
+        return service.queries(dest, configs, conditions);
     }
     public static DataSet<DataRow> querys(String dest, String ... conditions) {
-        return service.querys(dest, conditions);
+        return service.queries(dest, conditions);
     }
     public static void querys(String dest, DataHandler handler, String ... conditions) {
-        service.querys(dest, handler, conditions);
+        service.queries(dest, handler, conditions);
     }
     public static DataSet<DataRow> querys(String dest, PageNavi navi, String ... conditions) {
-        return service.querys(dest, navi, conditions);
+        return service.queries(dest, navi, conditions);
     }
 
+    public static DataSet<DataRow> queries(String dest, ConfigStore configs, String ... conditions) {
+        return service.queries(dest, configs, conditions);
+    }
+    public static DataSet<DataRow> queries(String dest, String ... conditions) {
+        return service.queries(dest, conditions);
+    }
+    public static void queries(String dest, DataHandler handler, String ... conditions) {
+        service.queries(dest, handler, conditions);
+    }
+    public static DataSet<DataRow> queries(String dest, PageNavi navi, String ... conditions) {
+        return service.queries(dest, navi, conditions);
+    }
     /**
      * 按条件查询
      * @param dest 			查询或操作的目标(表、存储过程、SQL等)
@@ -775,25 +818,44 @@ public class ServiceProxy {
      * @return DataSet
      */
     public static DataSet<DataRow> querys(String dest, long first, long last, String ... conditions) {
-        return service.querys(dest, first, last, conditions);
+        return service.queries(dest, first, last, conditions);
     }
 
     public static DataSet<DataRow> querys(Table dest, ConfigStore configs, Object obj, String ... conditions) {
-        return service.querys(dest, configs, obj, conditions);
+        return service.queries(dest, configs, obj, conditions);
     }
     public static DataSet<DataRow> querys(Table dest, long first, long last, ConfigStore configs, Object obj, String ... conditions) {
-        return service.querys(dest, first, last, configs, obj, conditions);
+        return service.queries(dest, first, last, configs, obj, conditions);
     }
     public static DataSet<DataRow> querys(Table dest, Object obj, String ... conditions) {
-        return service.querys(dest, obj, conditions);
+        return service.queries(dest, obj, conditions);
     }
     public static void querys(Table dest, DataHandler handler, Object obj, String ... conditions) {
-        service.querys(dest, handler, obj, conditions);
+        service.queries(dest, handler, obj, conditions);
     }
     public static DataSet<DataRow> querys(Table dest, PageNavi navi, Object obj, String ... conditions) {
-        return service.querys(dest, navi, obj, conditions);
+        return service.queries(dest, navi, obj, conditions);
     }
 
+    public static DataSet<DataRow> queries(String dest, long first, long last, String ... conditions) {
+        return service.queries(dest, first, last, conditions);
+    }
+
+    public static DataSet<DataRow> queries(Table dest, ConfigStore configs, Object obj, String ... conditions) {
+        return service.queries(dest, configs, obj, conditions);
+    }
+    public static DataSet<DataRow> queries(Table dest, long first, long last, ConfigStore configs, Object obj, String ... conditions) {
+        return service.queries(dest, first, last, configs, obj, conditions);
+    }
+    public static DataSet<DataRow> queries(Table dest, Object obj, String ... conditions) {
+        return service.queries(dest, obj, conditions);
+    }
+    public static void queries(Table dest, DataHandler handler, Object obj, String ... conditions) {
+        service.queries(dest, handler, obj, conditions);
+    }
+    public static DataSet<DataRow> queries(Table dest, PageNavi navi, Object obj, String ... conditions) {
+        return service.queries(dest, navi, obj, conditions);
+    }
     /**
      * 按条件查询
      * @param dest 			数据源(表或自定义SQL或SELECT语句)
@@ -803,21 +865,38 @@ public class ServiceProxy {
      * @param conditions 查询条件 支持k:v k:v::type 以及原生sql形式(包含ORDER、GROUP、HAVING)默认忽略空值条件
      * @return DataSet
      */
+    public static DataSet<DataRow> queries(Table dest, long first, long last, Object obj, String ... conditions) {
+        return service.queries(dest, first, last, obj, conditions);
+    }
+
+    public static DataSet<DataRow> queries(Table dest, ConfigStore configs, String ... conditions) {
+        return service.queries(dest, configs, conditions);
+    }
+    public static DataSet<DataRow> queries(Table dest, long first, long last, ConfigStore configs, String ... conditions) {
+        return service.queries(dest, first, last, configs, conditions);
+    }
+    public static DataSet<DataRow> queries(Table dest, String ... conditions) {
+        return service.queries(dest, conditions);
+    }
+    public static void queries(Table dest, DataHandler handler, String ... conditions) {
+        service.queries(dest, handler, conditions);
+    }
+
     public static DataSet<DataRow> querys(Table dest, long first, long last, Object obj, String ... conditions) {
-        return service.querys(dest, first, last, obj, conditions);
+        return service.queries(dest, first, last, obj, conditions);
     }
 
     public static DataSet<DataRow> querys(Table dest, ConfigStore configs, String ... conditions) {
-        return service.querys(dest, configs, conditions);
+        return service.queries(dest, configs, conditions);
     }
     public static DataSet<DataRow> querys(Table dest, long first, long last, ConfigStore configs, String ... conditions) {
-        return service.querys(dest, first, last, configs, conditions);
+        return service.queries(dest, first, last, configs, conditions);
     }
     public static DataSet<DataRow> querys(Table dest, String ... conditions) {
-        return service.querys(dest, conditions);
+        return service.queries(dest, conditions);
     }
     public static void querys(Table dest, DataHandler handler, String ... conditions) {
-        service.querys(dest, handler, conditions);
+        service.queries(dest, handler, conditions);
     }
 
     /**
@@ -826,23 +905,42 @@ public class ServiceProxy {
      * @param parse 是否解析sql中的关键字(order group等)及占位符
      * @return DataSet
      */
+    public static DataSet<DataRow> queries(String sql, boolean parse){
+        return service.queries(sql, parse);
+    }
+    public static void queries(RunPrepare prepare, DataHandler handler, String ... conditions) {
+        service.queries(prepare, handler, conditions);
+    }
+    public static DataSet<DataRow> queries(Table dest, PageNavi navi, String ... conditions) {
+        return service.queries(dest, navi, conditions);
+    }
+    public static DataSet<DataRow> queries(Table dest, long first, long last, String ... conditions) {
+        return service.queries(dest, first, last, conditions);
+    }
+    public static DataSet<DataRow> queries(Table dest, DataHandler handler, long first, long last, String ... conditions) {
+        return service.queries(dest, handler, first, last, conditions);
+    }
+    public static DataSet<DataRow> queries(RunPrepare prepare, DataHandler handler, long first, long last, String ... conditions) {
+        return service.queries(prepare, handler, first, last, conditions);
+    }
+
     public static DataSet<DataRow> querys(String sql, boolean parse){
-        return service.querys(sql, parse);
+        return service.queries(sql, parse);
     }
     public static void querys(RunPrepare prepare, DataHandler handler, String ... conditions) {
-        service.querys(prepare, handler, conditions);
+        service.queries(prepare, handler, conditions);
     }
     public static DataSet<DataRow> querys(Table dest, PageNavi navi, String ... conditions) {
-        return service.querys(dest, navi, conditions);
+        return service.queries(dest, navi, conditions);
     }
     public static DataSet<DataRow> querys(Table dest, long first, long last, String ... conditions) {
-        return service.querys(dest, first, last, conditions);
+        return service.queries(dest, first, last, conditions);
     }
     public static DataSet<DataRow> querys(Table dest, DataHandler handler, long first, long last, String ... conditions) {
-        return service.querys(dest, handler, first, last, conditions);
+        return service.queries(dest, handler, first, last, conditions);
     }
     public static DataSet<DataRow> querys(RunPrepare prepare, DataHandler handler, long first, long last, String ... conditions) {
-        return service.querys(prepare, handler, first, last, conditions);
+        return service.queries(prepare, handler, first, last, conditions);
     }
 
     public static DataRow query(String dest, ConfigStore configs, String ... conditions) {
@@ -1208,17 +1306,29 @@ public class ServiceProxy {
     }
 
     /*多表查询, 左右连接时使用*/
+    public static DataSet<DataRow> queries(RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions) {
+        return service.queries(prepare, configs, obj, conditions);
+    }
+    public static DataSet<DataRow> queries(RunPrepare prepare, Object obj, String ... conditions) {
+        return service.queries(prepare, obj, conditions);
+    }
+    public static void queries(RunPrepare prepare, StreamHandler handler, Object obj, String ... conditions) {
+        service.queries(prepare, handler, obj, conditions);
+    }
+    public static DataSet<DataRow> queries(RunPrepare prepare, long first, long last, Object obj, String ... conditions) {
+        return service.queries(prepare, first, last, obj, conditions);
+    }
     public static DataSet<DataRow> querys(RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions) {
-        return service.querys(prepare, configs, obj, conditions);
+        return service.queries(prepare, configs, obj, conditions);
     }
     public static DataSet<DataRow> querys(RunPrepare prepare, Object obj, String ... conditions) {
-        return service.querys(prepare, obj, conditions);
+        return service.queries(prepare, obj, conditions);
     }
     public static void querys(RunPrepare prepare, StreamHandler handler, Object obj, String ... conditions) {
-        service.querys(prepare, handler, obj, conditions);
+        service.queries(prepare, handler, obj, conditions);
     }
     public static DataSet<DataRow> querys(RunPrepare prepare, long first, long last, Object obj, String ... conditions) {
-        return service.querys(prepare, first, last, obj, conditions);
+        return service.queries(prepare, first, last, obj, conditions);
     }
     public static DataRow query(RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions) {
         return service.query(prepare, configs, obj, conditions);
@@ -1227,17 +1337,30 @@ public class ServiceProxy {
         return service.query(prepare, obj, conditions);
     }
 
+    public static DataSet<DataRow> queries(RunPrepare prepare, ConfigStore configs, String ... conditions) {
+        return service.queries(prepare, configs, conditions);
+    }
+    public static DataSet<DataRow> queries(RunPrepare prepare, String ... conditions) {
+        return service.queries(prepare, conditions);
+    }
+    public static void queries(RunPrepare prepare, StreamHandler handler, String ... conditions) {
+        service.queries(prepare, handler, conditions);
+    }
+    public static DataSet<DataRow> queries(RunPrepare prepare, long first, long last, String ... conditions) {
+        return service.queries(prepare, first, last, conditions);
+    }
+
     public static DataSet<DataRow> querys(RunPrepare prepare, ConfigStore configs, String ... conditions) {
-        return service.querys(prepare, configs, conditions);
+        return service.queries(prepare, configs, conditions);
     }
     public static DataSet<DataRow> querys(RunPrepare prepare, String ... conditions) {
-        return service.querys(prepare, conditions);
+        return service.queries(prepare, conditions);
     }
     public static void querys(RunPrepare prepare, StreamHandler handler, String ... conditions) {
-        service.querys(prepare, handler, conditions);
+        service.queries(prepare, handler, conditions);
     }
     public static DataSet<DataRow> querys(RunPrepare prepare, long first, long last, String ... conditions) {
-        return service.querys(prepare, first, last, conditions);
+        return service.queries(prepare, first, last, conditions);
     }
     public static DataRow query(RunPrepare prepare, ConfigStore configs, String ... conditions) {
         return service.query(prepare, configs, conditions);
@@ -1567,22 +1690,37 @@ public class ServiceProxy {
      * @param inputs  inputs
      * @return DataSet
      */
-    public static DataSet<DataRow> querysProcedure(String procedure, long first, long last, String ... inputs) {
-        return service.querysProcedure(procedure, first, last, inputs);
+    public static DataSet<DataRow> queriesProcedure(String procedure, long first, long last, String ... inputs) {
+        return service.queriesProcedure(procedure, first, last, inputs);
     }
-    public static DataSet<DataRow> querysProcedure(String procedure, PageNavi navi, String ... inputs) {
-        return service.querysProcedure(procedure, navi, inputs);
+    public static DataSet<DataRow> queriesProcedure(String procedure, PageNavi navi, String ... inputs) {
+        return service.queriesProcedure(procedure, navi, inputs);
     }
-    public static DataSet<DataRow> querysProcedure(String procedure, String ... inputs) {
-        return service.querysProcedure(procedure, inputs);
+    public static DataSet<DataRow> queriesProcedure(String procedure, String ... inputs) {
+        return service.queriesProcedure(procedure, inputs);
     }
-    public static DataSet<DataRow> querys(Procedure procedure, long first, long last, String ... inputs) {
-        return service.querys(procedure, first, last, inputs);
+    public static DataSet<DataRow> queries(Procedure procedure, long first, long last, String ... inputs) {
+        return service.queries(procedure, first, last, inputs);
     }
-    public static DataSet<DataRow> querys(Procedure procedure, PageNavi navi, String ... inputs) {
-        return service.querys(procedure, navi, inputs);
+    public static DataSet<DataRow> queries(Procedure procedure, PageNavi navi, String ... inputs) {
+        return service.queries(procedure, navi, inputs);
     }
 
+    public static DataSet<DataRow> querysProcedure(String procedure, long first, long last, String ... inputs) {
+        return service.queriesProcedure(procedure, first, last, inputs);
+    }
+    public static DataSet<DataRow> querysProcedure(String procedure, PageNavi navi, String ... inputs) {
+        return service.queriesProcedure(procedure, navi, inputs);
+    }
+    public static DataSet<DataRow> querysProcedure(String procedure, String ... inputs) {
+        return service.queriesProcedure(procedure, inputs);
+    }
+    public static DataSet<DataRow> querys(Procedure procedure, long first, long last, String ... inputs) {
+        return service.queries(procedure, first, last, inputs);
+    }
+    public static DataSet<DataRow> querys(Procedure procedure, PageNavi navi, String ... inputs) {
+        return service.queries(procedure, navi, inputs);
+    }
     public static DataRow queryProcedure(String procedure, String ... inputs) {
         return service.queryProcedure(procedure, inputs);
     }

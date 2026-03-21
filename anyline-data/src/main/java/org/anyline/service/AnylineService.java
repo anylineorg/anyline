@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2025 www.anyline.org
+ * Copyright 2006-2026 www.anyline.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -680,7 +680,8 @@ public interface AnylineService<E>{
 	 * 			
 	 * @return DataSet
 	 */
-	DataSet<DataRow> querys(String dest, ConfigStore configs, Object obj, String ... conditions);
+
+	DataSet<DataRow> queries(String dest, ConfigStore configs, Object obj, String ... conditions);
 	/**
 	 * 有些数据库 不根据表查询 不需要提供表
 	 * @param configs		根据http等上下文构造查询条件
@@ -688,11 +689,11 @@ public interface AnylineService<E>{
 	 * @param conditions 查询条件 支持k:v k:v::type 以及原生sql形式(包含ORDER、GROUP、HAVING)默认忽略空值条件
 	 * @return DataSet
 	 */
-	default DataSet<DataRow> querys(ConfigStore configs, Object obj, String ... conditions) {
-		return querys((String)null, configs, obj, conditions);
+	default DataSet<DataRow> queries(ConfigStore configs, Object obj, String ... conditions) {
+		return queries((String)null, configs, obj, conditions);
 	}
-	default DataSet<DataRow> querys(ConfigStore configs, String ... conditions) {
-		return querys((String)null, configs, null, conditions);
+	default DataSet<DataRow> queries(ConfigStore configs, String ... conditions) {
+		return queries((String)null, configs, null, conditions);
 	}
 	/**
 	 * 根据ConfigStore查询条件 过滤DataSet条目
@@ -700,7 +701,7 @@ public interface AnylineService<E>{
 	 * @param configs 包含查询条件
 	 * @return DataSet
 	 */
-	default DataSet<DataRow> querys(DataSet<DataRow> set, ConfigStore configs) {
+	default DataSet<DataRow> queries(DataSet<DataRow> set, ConfigStore configs) {
 		if(null != configs) {
 			ConfigChain chain = configs.getConfigChain();
 			if(null != chain) {
@@ -718,32 +719,32 @@ public interface AnylineService<E>{
 		}
 		return set;
 	}
-	default DataSet<DataRow> querys(String dest, long first, long last, ConfigStore configs, Object obj, String ... conditions) {
+	default DataSet<DataRow> queries(String dest, long first, long last, ConfigStore configs, Object obj, String ... conditions) {
 		DefaultPageNavi navi = new DefaultPageNavi();
 		if(null == configs) {
 			configs = new DefaultConfigStore();
 		}
 		navi.scope(first, last);
 		configs.setPageNavi(navi);
-		return querys(dest, configs, obj, conditions);
+		return queries(dest, configs, obj, conditions);
 	}
-	default DataSet<DataRow> querys(String dest, Object obj, String ... conditions) {
-		return querys(dest, new DefaultConfigStore(), obj, conditions);
+	default DataSet<DataRow> queries(String dest, Object obj, String ... conditions) {
+		return queries(dest, new DefaultConfigStore(), obj, conditions);
 	}
-	default void querys(String dest, DataHandler handler, Object obj, String ... conditions) {
+	default void queries(String dest, DataHandler handler, Object obj, String ... conditions) {
 		ConfigStore configs = new DefaultConfigStore();
 		configs.handler(handler);
-		querys(dest, configs, obj, conditions);
+		queries(dest, configs, obj, conditions);
 	}
-	default void querys(RunPrepare prepare, DataHandler handler, Object obj, String ... conditions) {
+	default void queries(RunPrepare prepare, DataHandler handler, Object obj, String ... conditions) {
 		ConfigStore configs = new DefaultConfigStore();
 		configs.handler(handler);
-		querys(prepare, configs, obj, conditions);
+		queries(prepare, configs, obj, conditions);
 	}
-	default DataSet<DataRow> querys(String dest, PageNavi navi, Object obj, String ... conditions) {
+	default DataSet<DataRow> queries(String dest, PageNavi navi, Object obj, String ... conditions) {
 		ConfigStore configs = new DefaultConfigStore();
 		configs.setPageNavi(navi);
-		return querys(dest, configs, obj, conditions);
+		return queries(dest, configs, obj, conditions);
 	}
 
 	/**
@@ -755,7 +756,7 @@ public interface AnylineService<E>{
 	 * @param conditions 查询条件 支持k:v k:v::type 以及原生sql形式(包含ORDER、GROUP、HAVING)默认忽略空值条件
 	 * @return DataSet
 	 */
-	default DataSet<DataRow> querys(String dest, long first, long last, Object obj, String ... conditions) {
+	default DataSet<DataRow> queries(String dest, long first, long last, Object obj, String ... conditions) {
 		ConfigStore configs = null;
 		if(obj instanceof ConfigStore) {
 			configs = (ConfigStore)obj;
@@ -763,67 +764,224 @@ public interface AnylineService<E>{
 		} else {
 			configs = new DefaultConfigStore(first, last);
 		}
-		return querys(dest, configs, obj, conditions);
+		return queries(dest, configs, obj, conditions);
+	}
+
+	default DataSet<DataRow> queries(String dest, ConfigStore configs, String ... conditions) {
+		return queries(dest, configs, null, conditions);
+	}
+	default DataSet<DataRow> queries(String dest, long first, long last, ConfigStore configs, String ... conditions) {
+		DefaultPageNavi navi = new DefaultPageNavi();
+		if(null == configs) {
+			configs = new DefaultConfigStore();
+		}
+		navi.scope(first, last);
+		configs.setPageNavi(navi);
+		return queries(dest, configs, conditions);
+	}
+	default DataSet<DataRow> queries(String dest, String ... conditions) {
+		return queries(dest, (Object) null, conditions);
+	}
+	default void queries(String dest, DataHandler handler, String ... conditions) {
+		ConfigStore configs = new DefaultConfigStore();
+		configs.handler(handler);
+		queries(dest, configs, conditions);
+	}
+
+	default DataSet<DataRow> queries(String dest, PageNavi navi, String ... conditions) {
+		return queries(dest, navi, null, conditions);
+	}
+	default DataSet<DataRow> queries(String dest, long first, long last, String ... conditions) {
+		return queries(dest, first, last, null, conditions);
+	}
+	default DataSet<DataRow> queries(String dest, DataHandler handler, long first, long last, String ... conditions) {
+		DefaultPageNavi navi = new DefaultPageNavi();
+		ConfigStore configs = new DefaultConfigStore();
+		navi.scope(first, last);
+		configs.setPageNavi(navi);
+		configs.handler(handler);
+		return queries(dest, first, last, configs, conditions);
+	}
+
+	DataSet<DataRow> queries(Table dest, ConfigStore configs, Object obj, String ... conditions);
+	default DataSet<DataRow> queries(Table dest, long first, long last, ConfigStore configs, Object obj, String ... conditions) {
+		DefaultPageNavi navi = new DefaultPageNavi();
+		if(null == configs) {
+			configs = new DefaultConfigStore();
+		}
+		navi.scope(first, last);
+		configs.setPageNavi(navi);
+		return queries(dest, configs, obj, conditions);
+	}
+	default DataSet<DataRow> queries(Table dest, Object obj, String ... conditions) {
+		return queries(dest, new DefaultConfigStore(), obj, conditions);
+	}
+	default void queries(Table dest, DataHandler handler, Object obj, String ... conditions) {
+		ConfigStore configs = new DefaultConfigStore();
+		configs.handler(handler);
+		queries(dest, configs, obj, conditions);
+	}
+	default DataSet<DataRow> queries(Table dest, PageNavi navi, Object obj, String ... conditions) {
+		ConfigStore configs = new DefaultConfigStore();
+		configs.setPageNavi(navi);
+		return queries(dest, configs, obj, conditions);
+	}
+
+	/**
+	 * 按条件查询
+	 * @param dest 			数据源(表或自定义SQL或SELECT语句)
+	 * @param obj			根据obj的field/value构造查询条件(支侍Map和Object)(查询条件只支持 =和in)
+	 * @param first 起 下标从0开始
+	 * @param last 止
+	 * @param conditions 查询条件 支持k:v k:v::type 以及原生sql形式(包含ORDER、GROUP、HAVING)默认忽略空值条件
+	 * @return DataSet
+	 */
+	default DataSet<DataRow> queries(Table dest, long first, long last, Object obj, String ... conditions) {
+		ConfigStore configs = new DefaultConfigStore(first, last);
+		return queries(dest, configs, obj, conditions);
+	}
+
+	default DataSet<DataRow> queries(Table dest, ConfigStore configs, String ... conditions) {
+		return queries(dest, configs, null, conditions);
+	}
+	default DataSet<DataRow> queries(Table dest, long first, long last, ConfigStore configs, String ... conditions) {
+		DefaultPageNavi navi = new DefaultPageNavi();
+		if(null == configs) {
+			configs = new DefaultConfigStore();
+		}
+		navi.scope(first, last);
+		configs.setPageNavi(navi);
+		return queries(dest, configs, conditions);
+	}
+	default DataSet<DataRow> queries(Table dest, String ... conditions) {
+		return queries(dest, (Object) null, conditions);
+	}
+	default void queries(Table dest, DataHandler handler, String ... conditions) {
+		ConfigStore configs = new DefaultConfigStore();
+		configs.handler(handler);
+		queries(dest, configs, conditions);
+	}
+	default void queries(RunPrepare prepare, DataHandler handler, String ... conditions) {
+		ConfigStore configs = new DefaultConfigStore();
+		configs.handler(handler);
+		queries(prepare, configs, conditions);
+	}
+	default DataSet<DataRow> queries(Table dest, PageNavi navi, String ... conditions) {
+		return queries(dest, navi, null, conditions);
+	}
+	default DataSet<DataRow> queries(Table dest, long first, long last, String ... conditions) {
+		return queries(dest, first, last, null, conditions);
+	}
+	default DataSet<DataRow> queries(Table dest, DataHandler handler, long first, long last, String ... conditions) {
+		DefaultPageNavi navi = new DefaultPageNavi();
+		ConfigStore configs = new DefaultConfigStore();
+		navi.scope(first, last);
+		configs.setPageNavi(navi);
+		configs.handler(handler);
+		return queries(dest, first, last, configs, conditions);
+	}
+	default DataSet<DataRow> queries(RunPrepare prepare, DataHandler handler, long first, long last, String ... conditions) {
+		DefaultPageNavi navi = new DefaultPageNavi();
+		ConfigStore configs = new DefaultConfigStore();
+		navi.scope(first, last);
+		configs.setPageNavi(navi);
+		configs.handler(handler);
+		return queries(prepare, first, last, configs, conditions);
+	}
+
+	/**
+	 * 查询
+	 * @param sql sql
+	 * @param parse 是否解析sql中的关键字(order group等)及占位符
+	 * @return DataSet
+	 */
+	default DataSet<DataRow> queries(String sql, boolean parse){
+		RunPrepare prepare = new DefaultTextPrepare(sql, parse);
+		return queries(prepare);
+	}
+
+	//别名
+	default DataSet<DataRow> querys(String dest, ConfigStore configs, Object obj, String ... conditions) {
+		return queries(dest, configs, obj, conditions);
+	}
+	/**
+	 * 有些数据库 不根据表查询 不需要提供表
+	 * @param configs		根据http等上下文构造查询条件
+	 * @param obj			根据obj的field/value构造查询条件
+	 * @param conditions 查询条件 支持k:v k:v::type 以及原生sql形式(包含ORDER、GROUP、HAVING)默认忽略空值条件
+	 * @return DataSet
+	 */
+	default DataSet<DataRow> querys(ConfigStore configs, Object obj, String ... conditions) {
+		return queries(configs, obj, conditions);
+	}
+	default DataSet<DataRow> querys(ConfigStore configs, String ... conditions) {
+		return queries(configs, conditions);
+	}
+	/**
+	 * 根据ConfigStore查询条件 过滤DataSet条目
+	 * @param set DataSet
+	 * @param configs 包含查询条件
+	 * @return DataSet
+	 */
+	default DataSet<DataRow> querys(DataSet<DataRow> set, ConfigStore configs) {
+		return queries(set, configs);
+	}
+	default DataSet<DataRow> querys(String dest, long first, long last, ConfigStore configs, Object obj, String ... conditions) {
+		return queries(dest, first, last, configs, obj, conditions);
+	}
+	default DataSet<DataRow> querys(String dest, Object obj, String ... conditions) {
+		return queries(dest, obj, conditions);
+	}
+	default void querys(String dest, DataHandler handler, Object obj, String ... conditions) {
+		queries(dest, handler, obj, conditions);
+	}
+	default void querys(RunPrepare prepare, DataHandler handler, Object obj, String ... conditions) {
+		queries(prepare, handler, obj, conditions);
+	}
+	default DataSet<DataRow> querys(String dest, PageNavi navi, Object obj, String ... conditions) {
+		return queries(dest, navi, obj, conditions);
+	}
+	default DataSet<DataRow> querys(String dest, long first, long last, Object obj, String ... conditions) {
+		return queries(dest, first, last, obj, conditions);
 	}
 
 	default DataSet<DataRow> querys(String dest, ConfigStore configs, String ... conditions) {
-		return querys(dest, configs, null, conditions);
+		return queries(dest, configs, conditions);
 	}
 	default DataSet<DataRow> querys(String dest, long first, long last, ConfigStore configs, String ... conditions) {
-		DefaultPageNavi navi = new DefaultPageNavi();
-		if(null == configs) {
-			configs = new DefaultConfigStore();
-		}
-		navi.scope(first, last);
-		configs.setPageNavi(navi);
-		return querys(dest, configs, conditions);
+		return queries(dest, first, last, configs, conditions);
 	}
 	default DataSet<DataRow> querys(String dest, String ... conditions) {
-		return querys(dest, (Object) null, conditions);
+		return queries(dest, conditions);
 	}
 	default void querys(String dest, DataHandler handler, String ... conditions) {
-		ConfigStore configs = new DefaultConfigStore();
-		configs.handler(handler);
-		querys(dest, configs, conditions);
+		queries(dest, handler, conditions);
 	}
 
 	default DataSet<DataRow> querys(String dest, PageNavi navi, String ... conditions) {
-		return querys(dest, navi, null, conditions);
+		return queries(dest, navi, conditions);
 	}
 	default DataSet<DataRow> querys(String dest, long first, long last, String ... conditions) {
-		return querys(dest, first, last, null, conditions);
+		return queries(dest, first, last,  conditions);
 	}
 	default DataSet<DataRow> querys(String dest, DataHandler handler, long first, long last, String ... conditions) {
-		DefaultPageNavi navi = new DefaultPageNavi();
-		ConfigStore configs = new DefaultConfigStore();
-		navi.scope(first, last);
-		configs.setPageNavi(navi);
-		configs.handler(handler);
-		return querys(dest, first, last, configs, conditions);
+		return queries(dest, handler, first, last, conditions);
 	}
 
-	DataSet<DataRow> querys(Table dest, ConfigStore configs, Object obj, String ... conditions);
+	default DataSet<DataRow> querys(Table dest, ConfigStore configs, Object obj, String ... conditions) {
+		return queries(dest, configs, obj, conditions);
+	}
 	default DataSet<DataRow> querys(Table dest, long first, long last, ConfigStore configs, Object obj, String ... conditions) {
-		DefaultPageNavi navi = new DefaultPageNavi();
-		if(null == configs) {
-			configs = new DefaultConfigStore();
-		}
-		navi.scope(first, last);
-		configs.setPageNavi(navi);
-		return querys(dest, configs, obj, conditions);
+		return queries(dest, first, last, configs, obj, conditions);
 	}
 	default DataSet<DataRow> querys(Table dest, Object obj, String ... conditions) {
-		return querys(dest, new DefaultConfigStore(), obj, conditions);
+		return queries(dest, obj, conditions);
 	}
 	default void querys(Table dest, DataHandler handler, Object obj, String ... conditions) {
-		ConfigStore configs = new DefaultConfigStore();
-		configs.handler(handler);
-		querys(dest, configs, obj, conditions);
+		queries(dest, handler, obj, conditions);
 	}
 	default DataSet<DataRow> querys(Table dest, PageNavi navi, Object obj, String ... conditions) {
-		ConfigStore configs = new DefaultConfigStore();
-		configs.setPageNavi(navi);
-		return querys(dest, configs, obj, conditions);
+		return queries(dest, navi, obj, conditions);
 	}
 
 	/**
@@ -836,56 +994,35 @@ public interface AnylineService<E>{
 	 * @return DataSet
 	 */
 	default DataSet<DataRow> querys(Table dest, long first, long last, Object obj, String ... conditions) {
-		ConfigStore configs = new DefaultConfigStore(first, last);
-		return querys(dest, configs, obj, conditions);
+		return queries(dest, first, last, obj, conditions);
 	}
 
 	default DataSet<DataRow> querys(Table dest, ConfigStore configs, String ... conditions) {
-		return querys(dest, configs, null, conditions);
+		return queries(dest, configs, conditions);
 	}
 	default DataSet<DataRow> querys(Table dest, long first, long last, ConfigStore configs, String ... conditions) {
-		DefaultPageNavi navi = new DefaultPageNavi();
-		if(null == configs) {
-			configs = new DefaultConfigStore();
-		}
-		navi.scope(first, last);
-		configs.setPageNavi(navi);
-		return querys(dest, configs, conditions);
+		return queries(dest, first, last, configs, conditions);
 	}
 	default DataSet<DataRow> querys(Table dest, String ... conditions) {
-		return querys(dest, (Object) null, conditions);
+		return queries(dest, conditions);
 	}
 	default void querys(Table dest, DataHandler handler, String ... conditions) {
-		ConfigStore configs = new DefaultConfigStore();
-		configs.handler(handler);
-		querys(dest, configs, conditions);
+		queries(dest, handler, conditions);
 	}
 	default void querys(RunPrepare prepare, DataHandler handler, String ... conditions) {
-		ConfigStore configs = new DefaultConfigStore();
-		configs.handler(handler);
-		querys(prepare, configs, conditions);
+		queries(prepare, handler, conditions);
 	}
 	default DataSet<DataRow> querys(Table dest, PageNavi navi, String ... conditions) {
-		return querys(dest, navi, null, conditions);
+		return queries(dest, navi,  conditions);
 	}
 	default DataSet<DataRow> querys(Table dest, long first, long last, String ... conditions) {
-		return querys(dest, first, last, null, conditions);
+		return queries(dest, first, last, conditions);
 	}
 	default DataSet<DataRow> querys(Table dest, DataHandler handler, long first, long last, String ... conditions) {
-		DefaultPageNavi navi = new DefaultPageNavi();
-		ConfigStore configs = new DefaultConfigStore();
-		navi.scope(first, last);
-		configs.setPageNavi(navi);
-		configs.handler(handler);
-		return querys(dest, first, last, configs, conditions);
+		return queries(dest, handler, first, last, conditions);
 	}
 	default DataSet<DataRow> querys(RunPrepare prepare, DataHandler handler, long first, long last, String ... conditions) {
-		DefaultPageNavi navi = new DefaultPageNavi();
-		ConfigStore configs = new DefaultConfigStore();
-		navi.scope(first, last);
-		configs.setPageNavi(navi);
-		configs.handler(handler);
-		return querys(prepare, first, last, configs, conditions);
+		return queries(prepare, handler, first, last, conditions);
 	}
 
 	/**
@@ -895,9 +1032,10 @@ public interface AnylineService<E>{
 	 * @return DataSet
 	 */
 	default DataSet<DataRow> querys(String sql, boolean parse){
-		RunPrepare prepare = new DefaultTextPrepare(sql, parse);
-		return querys(prepare);
+		return queries(sql, parse);
 	}
+
+
 	DataRow query(RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions);
 	DataRow query(String dest, ConfigStore configs, Object obj, String ... conditions);
 	default DataRow query(ConfigStore configs, Object obj, String ... conditions) {
@@ -1129,7 +1267,7 @@ public interface AnylineService<E>{
 		return gets(new DefaultConfigStore().setPageNavi(navi), conditions);
 	}
 
-	// 与DataSet<DataRow> querys(String dest, String ... conditions);  签名冲突
+	// 与DataSet<DataRow> queries(String dest, String ... conditions);  签名冲突
 	default EntitySet<E> gets(String ... conditions) {
 		return gets(new DefaultConfigStore(), conditions);
 	}
@@ -1283,7 +1421,7 @@ public interface AnylineService<E>{
 	default void maps(RunPrepare prepare, StreamHandler handler, Object obj, String ... conditions) {
 		ConfigStore configs = new DefaultConfigStore();
 		configs.handler(handler);
-		querys(prepare, configs, obj, conditions);
+		queries(prepare, configs, obj, conditions);
 	}
 	default List<Map<String, Object>> maps(RunPrepare prepare, long first, long last, Object obj, String ... conditions) {
 		ConfigStore configs = new DefaultConfigStore(first, last);
@@ -1523,42 +1661,73 @@ public interface AnylineService<E>{
 	 * @param conditions 查询条件 支持k:v k:v::type 以及原生sql形式(包含ORDER、GROUP、HAVING)默认忽略空值条件
 	 * @return DataSet
 	 */
-	DataSet<DataRow> querys(RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions);
-	default DataSet<DataRow> querys(RunPrepare prepare, long first, long last, ConfigStore configs, Object obj, String ... conditions) {
+
+	DataSet<DataRow> queries(RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions);
+	default DataSet<DataRow> queries(RunPrepare prepare, long first, long last, ConfigStore configs, Object obj, String ... conditions) {
 		DefaultPageNavi navi = new DefaultPageNavi();
 		if(null == configs) {
 			configs = new DefaultConfigStore();
 		}
 		navi.scope(first, last);
 		configs.setPageNavi(navi);
-		return querys(prepare, configs, obj, conditions);
+		return queries(prepare, configs, obj, conditions);
 	}
-	default DataSet<DataRow> querys(RunPrepare prepare, Object obj, String ... conditions) {
-		return querys(prepare, new DefaultConfigStore(), obj, conditions);
+	default DataSet<DataRow> queries(RunPrepare prepare, Object obj, String ... conditions) {
+		return queries(prepare, new DefaultConfigStore(), obj, conditions);
 	}
-	default void querys(RunPrepare prepare, StreamHandler handler, Object obj, String ... conditions) {
+	default void queries(RunPrepare prepare, StreamHandler handler, Object obj, String ... conditions) {
 		ConfigStore configs = new DefaultConfigStore();
 		configs.handler(handler);
-		querys(prepare, configs, obj, conditions);
+		queries(prepare, configs, obj, conditions);
+	}
+	default DataSet<DataRow> queries(RunPrepare prepare, long first, long last, Object obj, String ... conditions) {
+		ConfigStore configs = new DefaultConfigStore(first, last);
+		return queries(prepare, configs, obj, conditions);
+	}
+
+	default DataSet<DataRow> queries(RunPrepare prepare, ConfigStore configs, String ... conditions) {
+		return queries(prepare, configs, null, conditions);
+	}
+	default DataSet<DataRow> queries(RunPrepare prepare, String ... conditions) {
+		return queries(prepare, new DefaultConfigStore(), null, conditions);
+	}
+	default void queries(RunPrepare prepare, StreamHandler handler, String ... conditions) {
+		ConfigStore configs = new DefaultConfigStore();
+		configs.handler(handler);
+		queries(prepare, configs, null, conditions);
+	}
+	default DataSet<DataRow> queries(RunPrepare prepare, long first, long last, String ... conditions) {
+		return queries(prepare, first, last, null, conditions);
+	}
+
+	//别名
+	default DataSet<DataRow> querys(RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions) {
+		return queries(prepare, configs, obj, conditions);
+	}
+	default DataSet<DataRow> querys(RunPrepare prepare, long first, long last, ConfigStore configs, Object obj, String ... conditions) {
+		return queries(prepare, first, last, configs, obj, conditions);
+	}
+	default DataSet<DataRow> querys(RunPrepare prepare, Object obj, String ... conditions) {
+		return queries(prepare, obj, conditions);
+	}
+	default void querys(RunPrepare prepare, StreamHandler handler, Object obj, String ... conditions) {
+		queries(prepare, handler, obj, conditions);
 	}
 	default DataSet<DataRow> querys(RunPrepare prepare, long first, long last, Object obj, String ... conditions) {
-		ConfigStore configs = new DefaultConfigStore(first, last);
-		return querys(prepare, configs, obj, conditions);
+		return queries(prepare, first, last, obj, conditions);
 	}
 
 	default DataSet<DataRow> querys(RunPrepare prepare, ConfigStore configs, String ... conditions) {
-		return querys(prepare, configs, null, conditions);
+		return queries(prepare, configs,  conditions);
 	}
 	default DataSet<DataRow> querys(RunPrepare prepare, String ... conditions) {
-		return querys(prepare, new DefaultConfigStore(), null, conditions);
+		return queries(prepare, conditions);
 	}
 	default void querys(RunPrepare prepare, StreamHandler handler, String ... conditions) {
-		ConfigStore configs = new DefaultConfigStore();
-		configs.handler(handler);
-		querys(prepare, configs, null, conditions);
+		queries(prepare, handler, conditions);
 	}
 	default DataSet<DataRow> querys(RunPrepare prepare, long first, long last, String ... conditions) {
-		return querys(prepare, first, last, null, conditions);
+		return queries(prepare, first, last, conditions);
 	}
 
 	/**
@@ -1873,7 +2042,10 @@ public interface AnylineService<E>{
 	 * @param inputs 输入参数
 	 * @return DataSet
 	 */
-	DataSet<DataRow> querys(Procedure procedure, PageNavi navi, String ... inputs);
+	DataSet<DataRow> queries(Procedure procedure, PageNavi navi, String ... inputs);
+	default DataSet<DataRow> querys(Procedure procedure, PageNavi navi, String ... inputs) {
+		return queries(procedure, navi, inputs);
+	}
 	/** 
 	 * 根据存储过程查询 
 	 * @param procedure  procedure
@@ -1882,12 +2054,12 @@ public interface AnylineService<E>{
 	 * @param inputs  inputs
 	 * @return DataSet
 	 */
-	default DataSet<DataRow> querysProcedure(String procedure, long first, long last, String ... inputs) {
+	default DataSet<DataRow> queriesProcedure(String procedure, long first, long last, String ... inputs) {
 		PageNavi navi = new DefaultPageNavi();
 		navi.scope(first, last);
-		return querysProcedure(procedure, navi, inputs);
+		return queriesProcedure(procedure, navi, inputs);
 	}
-	default DataSet<DataRow> querysProcedure(String procedure, PageNavi navi, String ... inputs) {
+	default DataSet<DataRow> queriesProcedure(String procedure, PageNavi navi, String ... inputs) {
 		Procedure proc = new Procedure();
 		proc.setName(procedure);
 		if (null != inputs) {
@@ -1895,19 +2067,37 @@ public interface AnylineService<E>{
 				proc.addInput(input);
 			}
 		}
-		return querys(proc, navi);
+		return  queries(proc, navi);
 	}
-	default DataSet<DataRow> querysProcedure(String procedure, String ... inputs) {
-		return querysProcedure(procedure, null, inputs);
+	default DataSet<DataRow> queriesProcedure(String procedure, String ... inputs) {
+		return queriesProcedure(procedure, null, inputs);
 	}
-	default DataSet<DataRow> querys(Procedure procedure, String ... inputs) {
-		return querys(procedure, null, inputs);
+	default DataSet<DataRow> queries(Procedure procedure, String ... inputs) {
+		return  queries(procedure, null, inputs);
 	}
-	default DataSet<DataRow> querys(Procedure procedure, long first, long last, String ... inputs) {
+	default DataSet<DataRow> queries(Procedure procedure, long first, long last, String ... inputs) {
 		PageNavi navi = new DefaultPageNavi();
 		navi.scope(first, last);
-		return querys(procedure, navi, inputs);
+		return  queries(procedure, navi, inputs);
 	}
+
+
+	default DataSet<DataRow> querysProcedure(String procedure, long first, long last, String ... inputs) {
+		return queriesProcedure(procedure, first, last, inputs);
+	}
+	default DataSet<DataRow> querysProcedure(String procedure, PageNavi navi, String ... inputs) {
+		return queriesProcedure(procedure, navi, inputs);
+	}
+	default DataSet<DataRow> querysProcedure(String procedure, String ... inputs) {
+		return queriesProcedure(procedure, inputs);
+	}
+	default DataSet<DataRow> querys(Procedure procedure, String ... inputs) {
+		return  queries(procedure, inputs);
+	}
+	default DataSet<DataRow> querys(Procedure procedure, long first, long last, String ... inputs) {
+		return  queries(procedure, first, last, inputs);
+	}
+
 
 	default DataRow queryProcedure(String procedure, String ... inputs) {
 		Procedure proc = new Procedure();
