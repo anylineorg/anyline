@@ -454,6 +454,13 @@ public class ConfigTable {
 			}
 		}else{
 			// classpath根目录
+			if(classpath.contains("test-classes")){
+				File dir = new File(classpath.replace("test-classes", "classes"));
+				for(String item:items) {
+					String txt = FileUtil.read(new File(dir, item), StandardCharsets.UTF_8).toString();
+					parseEnvironment(txt, item);
+				}
+			}
 			File dir = new File(classpath);
 			for(String item:items) {
 				String txt = FileUtil.read(new File(dir, item), StandardCharsets.UTF_8).toString();
@@ -624,6 +631,10 @@ public class ConfigTable {
 				loadConfig(new File(root, flag+"-config.xml"));
 			}else{
 				// classpath根目录
+				if(classpath.contains("test-classes")){
+					File dir = new File(classpath.replace("test-classes", "classes"));
+					loadConfigDir(dir, flag);
+				}
 				File dir = new File(classpath);
 				loadConfigDir(dir, flag);
 			}
