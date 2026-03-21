@@ -3294,6 +3294,17 @@ public class DataSet<E extends DataRow> implements Collection<E>, Serializable, 
         map.put("result", result);
         map.put("message", message);
         map.put("rows", rows);
+        if(!rows.isEmpty()){
+            DataRow first = rows.get(0);
+            if(first instanceof LiteRow){
+                List<Object> list = new ArrayList<>();
+                for(DataRow row:rows){
+                    list.add(((LiteRow)row).datas());
+                }
+                map.put("rows", list);
+                map.put("keys", first.keys());
+            }
+        }
         map.put("success", result);
         if(null != navi) {
             Map<String,Object> navi_ = new HashMap<>();
@@ -3312,6 +3323,16 @@ public class DataSet<E extends DataRow> implements Collection<E>, Serializable, 
      * @return String
      */
     public String toJson() {
+        if(!rows.isEmpty()){
+            DataRow first = rows.get(0);
+            if(first instanceof LiteRow){
+                List<Object> list = new ArrayList<>();
+                for(DataRow row:rows){
+                    list.add(((LiteRow)row).datas());
+                }
+                return BeanUtil.object2json(list);
+            }
+        }
         return BeanUtil.object2json(this);
     }
 

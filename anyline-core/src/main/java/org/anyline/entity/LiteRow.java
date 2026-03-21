@@ -17,6 +17,8 @@
 package org.anyline.entity;
 
 import java.io.Serializable;
+import java.util.Map;
+import java.util.Set;
 
 public class LiteRow extends DataRow implements Serializable {
     private static final long serialVersionUID = -2098827041540802313L;
@@ -29,9 +31,24 @@ public class LiteRow extends DataRow implements Serializable {
         int index = -1;
         DataSet container = getContainer();
         if(null != container){
-            container.getMetadatas();
+            Map<String, Integer> map = container.getMetadataIndex();
+            if(map.containsKey(key)){
+                index = map.get(key);
+            }
         }
         return index;
+    }
+    public Object[] datas(){
+        return values;
+    }
+    @Override
+    public Set keySet() {
+        DataSet container = getContainer();
+        if(null != container){
+            Map<String, Integer> map = container.getMetadataIndex();
+            return map.keySet();
+        }
+        return null;
     }
     public Object put(String key, Object value) {
         int index = index(key);
