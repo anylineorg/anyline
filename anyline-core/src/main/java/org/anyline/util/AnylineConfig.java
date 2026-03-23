@@ -66,21 +66,29 @@ public abstract class AnylineConfig {
 				log.info("[加载配置文件][type:jar][file:{}]", fileName);
 				if (FileUtil.getPathType(AnylineConfig.class) == 0) {
 					// 遍历jar
-					JarFile jar = new JarFile(System.getProperty("java.class.path"));
-					Enumeration<JarEntry> entries = jar.entries();
-					while (entries.hasMoreElements()) {
-						JarEntry entry = entries.nextElement();
-						String name = entry.getName();
-						if (name.endsWith(fileName)) {
-							in = jar.getInputStream(entry);
-							parse(clazz, in, instances, compatibles);
-							configSize++;
+					try {
+						JarFile jar = new JarFile(System.getProperty("java.class.path"));
+						Enumeration<JarEntry> entries = jar.entries();
+						while (entries.hasMoreElements()) {
+							JarEntry entry = entries.nextElement();
+							String name = entry.getName();
+							if (name.endsWith(fileName)) {
+								in = jar.getInputStream(entry);
+								parse(clazz, in, instances, compatibles);
+								configSize++;
+							}
 						}
+					}catch (Exception ignore) {
+						log.info("[忽略配置文件][type:jar][file:{}]", fileName);
 					}
 				} else {
-					in = ConfigTable.class.getClassLoader().getResourceAsStream("/" + fileName);
-					String txt = FileUtil.read(in, StandardCharsets.UTF_8).toString();
-					parse(txt);
+					try {
+						in = ConfigTable.class.getClassLoader().getResourceAsStream("/" + fileName);
+						String txt = FileUtil.read(in, StandardCharsets.UTF_8).toString();
+						parse(txt);
+					}catch (Exception ignore) {
+						log.info("[忽略配置文件][type:jar][file:{}]", fileName);
+					}
 				}
 				// 加载同目录下config目录
 				File dir = new File(FileUtil.merge(ConfigTable.getRoot(), "config"));
