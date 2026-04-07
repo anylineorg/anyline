@@ -3,7 +3,7 @@
 
 <table style="text-align: center;">
 <td colspan="3">
-  <a href="https://www.ipwo.net/?ref=giteeanyline"><img src="https://cdn.anyline.org/img/tmp/ipwo.png" width="450"/></a>
+  <a href="https://www.ipwo.net/?ref=giteeanyline"><img src="https://cdn.anyline.org/img/tmp/ipwo.png" width="520"/></a>
 </td>
   <tr>
   <td>
