@@ -3,11 +3,6 @@
 
 
 <table style="text-align: center;">
-<tr>
-<td colspan="3">
-  <a href="https://www.ipwo.net/?ref=giteeanyline"><img src="https://cdn.anyline.org/img/tmp/ipwo.png" width="520"/></a>
-</td>
-</tr>
   <tr>
   <td>
     <a href="https://qm.qq.com/q/M5ub6mqS0o"><img src="https://cdn.anyline.org/img/user/alq.png" width="150"/></a> 
