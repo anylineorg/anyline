@@ -2081,7 +2081,7 @@ public class ArcadeDBAdapter extends MySQLGenusAdapter {
      * @return LinkedHashMap
      */
     @Override
-    public LinkedHashMap<String,Column> metadata(DataRuntime runtime, RunPrepare prepare, boolean comment) {
+    public LinkedHashMap<String,Column> metadata(DataRuntime runtime, RunPrepare prepare, boolean comment) throws Exception{
         return super.metadata(runtime, prepare, comment);
     }
 
@@ -9120,7 +9120,7 @@ public class ArcadeDBAdapter extends MySQLGenusAdapter {
      * @return boolean
      */
     @Override
-    public boolean grant(DataRuntime runtime, User user, Privilege ... privileges)  throws Exception {
+    public boolean grant(DataRuntime runtime, User user, Privilege ... privileges) throws Exception {
         return super.grant(runtime, user, privileges);
     }
 
@@ -9133,7 +9133,7 @@ public class ArcadeDBAdapter extends MySQLGenusAdapter {
      * @return boolean
      */
     @Override
-    public boolean grant(DataRuntime runtime, User user, Role ... roles)  throws Exception {
+    public boolean grant(DataRuntime runtime, User user, Role ... roles) throws Exception {
         return super.grant(runtime, user, roles);
     }
 
@@ -9146,7 +9146,7 @@ public class ArcadeDBAdapter extends MySQLGenusAdapter {
      * @return boolean
      */
     @Override
-    public boolean grant(DataRuntime runtime, Role role, Privilege ... privileges)  throws Exception {
+    public boolean grant(DataRuntime runtime, Role role, Privilege ... privileges) throws Exception {
         return super.grant(runtime, role, privileges);
     }
 

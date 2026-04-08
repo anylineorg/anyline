@@ -60,7 +60,7 @@ public class TransactionProxy {
      * 	 * @param datasource 数据源
      * 更多参数调用start(String datasource, TransactionDefine define)
      */
-    public static TransactionState start(String datasource)  throws SQLException {
+    public static TransactionState start(String datasource) throws SQLException {
         return start(datasource, TransactionDefine.PROPAGATION_REQUIRED);
     }
 

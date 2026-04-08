@@ -1931,10 +1931,10 @@ public class ServiceProxy {
      * @param condition 是否需要拼接查询条件, 如果需要会拼接where 1=0 条件(默认不添加，通常情况下SQL自带查询条件，给参数赋值NULL达到相同的效果)
      * @return LinkedHashMap
      */
-    public static LinkedHashMap<String, Column> metadata(String sql, boolean comment, boolean condition) {
+    public static LinkedHashMap<String, Column> metadata(String sql, boolean comment, boolean condition) throws Exception{
         return service.metadata(sql, comment,condition);
     }
-    public static  LinkedHashMap<String, Column> metadata(String sql) {
+    public static  LinkedHashMap<String, Column> metadata(String sql) throws Exception {
         return metadata(sql, false, false);
     }
 

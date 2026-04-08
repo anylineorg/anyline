@@ -2365,8 +2365,8 @@ public interface AnylineService<E>{
 	 * @param condition 是否需要拼接查询条件, 如果需要会拼接where 1=0 条件(默认不添加，通常情况下SQL自带查询条件，给参数赋值NULL达到相同的效果)
 	 * @return LinkedHashMap
 	 */
-	LinkedHashMap<String, Column> metadata(String sql, boolean comment, boolean condition);
-	default LinkedHashMap<String, Column> metadata(String sql) {
+	LinkedHashMap<String, Column> metadata(String sql, boolean comment, boolean condition) throws Exception;
+	default LinkedHashMap<String, Column> metadata(String sql) throws Exception {
 		return metadata(sql, false, false);
 	}
 	ConfigStore condition();

@@ -8172,7 +8172,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return boolean
      */
     @Override
-    public boolean grant(DataRuntime runtime, User user, Privilege ... privileges)  throws Exception {
+    public boolean grant(DataRuntime runtime, User user, Privilege ... privileges) throws Exception {
         return super.grant(runtime, user, privileges);
     }
 
@@ -8185,7 +8185,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return boolean
      */
     @Override
-    public boolean grant(DataRuntime runtime, User user, Role ... roles)  throws Exception {
+    public boolean grant(DataRuntime runtime, User user, Role ... roles) throws Exception {
         return super.grant(runtime, user, roles);
     }
 
@@ -8198,7 +8198,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return boolean
      */
     @Override
-    public boolean grant(DataRuntime runtime, Role role, Privilege ... privileges)  throws Exception {
+    public boolean grant(DataRuntime runtime, Role role, Privilege ... privileges) throws Exception {
         return super.grant(runtime, role, privileges);
     }
 

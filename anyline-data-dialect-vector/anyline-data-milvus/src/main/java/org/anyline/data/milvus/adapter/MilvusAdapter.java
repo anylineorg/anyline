@@ -9144,7 +9144,7 @@ public class MilvusAdapter extends AbstractDriverAdapter {
     /* *****************************************************************************************************************
      * 													grant
      * -----------------------------------------------------------------------------------------------------------------
-     * boolean grant(DataRuntime runtime, User user, Privilege ... privileges)  throws Exception
+     * boolean grant(DataRuntime runtime, User user, Privilege ... privileges) throws Exception
      * boolean grant(DataRuntime runtime, User user, Role ... roles) throws Exception
      * boolean grant(DataRuntime runtime, Role role, Privilege ... privileges) throws Exception
      * List<Run> buildGrantRun(DataRuntime runtime, User user, Privilege ... privileges) throws Exception
@@ -9160,7 +9160,7 @@ public class MilvusAdapter extends AbstractDriverAdapter {
      * @return boolean
      */
     @Override
-    public boolean grant(DataRuntime runtime, User user, Privilege ... privileges)  throws Exception {
+    public boolean grant(DataRuntime runtime, User user, Privilege ... privileges) throws Exception {
         return actuator().grant(runtime, user, privileges);
     }
     
@@ -9172,7 +9172,7 @@ public class MilvusAdapter extends AbstractDriverAdapter {
      * @return boolean
      */
     @Override
-    public boolean grant(DataRuntime runtime, User user, Role ... roles)  throws Exception {
+    public boolean grant(DataRuntime runtime, User user, Role ... roles) throws Exception {
         return actuator().grant(runtime, user, roles);
     }
     
@@ -9184,7 +9184,7 @@ public class MilvusAdapter extends AbstractDriverAdapter {
      * @return boolean
      */
     @Override
-    public boolean grant(DataRuntime runtime, Role role, Privilege ... privileges)  throws Exception {
+    public boolean grant(DataRuntime runtime, Role role, Privilege ... privileges) throws Exception {
         return actuator().grant(runtime, role, privileges);
     }
 
@@ -9227,7 +9227,7 @@ public class MilvusAdapter extends AbstractDriverAdapter {
     /* *****************************************************************************************************************
      * 													revoke
      * -----------------------------------------------------------------------------------------------------------------
-     * boolean revoke(DataRuntime runtime, User user, Privilege ... privileges)  throws Exception
+     * boolean revoke(DataRuntime runtime, User user, Privilege ... privileges) throws Exception
      * boolean revoke(DataRuntime runtime, User user, Role ... roles) throws Exception
      * boolean revoke(DataRuntime runtime, Role role, Privilege ... privileges) throws Exception
      * List<Run> buildRevokeRun(DataRuntime runtime, User user, Privilege ... privileges) throws Exception

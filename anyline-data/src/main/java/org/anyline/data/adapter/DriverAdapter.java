@@ -2606,7 +2606,7 @@ public interface DriverAdapter {
      * @param comment 是否需要查询列注释
      * @return LinkedHashMap
      */
-    LinkedHashMap<String,Column> metadata(DataRuntime runtime, RunPrepare prepare, boolean comment);
+    LinkedHashMap<String,Column> metadata(DataRuntime runtime, RunPrepare prepare, boolean comment) throws Exception;
 
     /**
      * 检测name,name中可能包含catalog.schema.name<br/>
@@ -9647,7 +9647,7 @@ public interface DriverAdapter {
 	 * boolean create(DataRuntime runtime, Function meta) throws Exception
 	 * boolean alter(DataRuntime runtime, Function meta) throws Exception
 	 * boolean drop(DataRuntime runtime, Function meta) throws Exception
-	 * boolean rename(DataRuntime runtime, Function origin, String name)  throws Exception
+	 * boolean rename(DataRuntime runtime, Function origin, String name) throws Exception
 	 ******************************************************************************************************************/
 
 	/**
@@ -9734,7 +9734,7 @@ public interface DriverAdapter {
 	 * boolean create(DataRuntime runtime, Sequence meta) throws Exception
 	 * boolean alter(DataRuntime runtime, Sequence meta) throws Exception
 	 * boolean drop(DataRuntime runtime, Sequence meta) throws Exception
-	 * boolean rename(DataRuntime runtime, Sequence origin, String name)  throws Exception
+	 * boolean rename(DataRuntime runtime, Sequence origin, String name) throws Exception
 	 ******************************************************************************************************************/
 
 	/**
@@ -10086,7 +10086,7 @@ public interface DriverAdapter {
 	 * @param update 新名
 	 * @return boolean
 	 */
-	default boolean rename(DataRuntime runtime, String origin, String update)  throws Exception {
+	default boolean rename(DataRuntime runtime, String origin, String update) throws Exception {
 		return rename(runtime, new User(origin), new User(update));
 	}
 
@@ -10103,7 +10103,7 @@ public interface DriverAdapter {
 	 * @param user 用户名
 	 * @return boolean
 	 */
-	default boolean drop(DataRuntime runtime, String user)  throws Exception {
+	default boolean drop(DataRuntime runtime, String user) throws Exception {
 		return drop(runtime, new User(user));
 	}
 
@@ -10427,7 +10427,7 @@ public interface DriverAdapter {
      * @param privileges 权限
      * @return boolean
      */
-    boolean grant(DataRuntime runtime, User user, Privilege ... privileges)  throws Exception;
+    boolean grant(DataRuntime runtime, User user, Privilege ... privileges) throws Exception;
     /**
      * grant[调用入口]<br/>
      * 授权
@@ -10436,7 +10436,7 @@ public interface DriverAdapter {
      * @param privileges 权限
      * @return boolean
      */
-    boolean grant(DataRuntime runtime, Role role, Privilege ... privileges)  throws Exception;
+    boolean grant(DataRuntime runtime, Role role, Privilege ... privileges) throws Exception;
     /**
      * grant[调用入口]<br/>
      * 授权
@@ -10445,7 +10445,7 @@ public interface DriverAdapter {
      * @param roles 角色
      * @return boolean
      */
-    boolean grant(DataRuntime runtime, User user, Role ... roles)  throws Exception;
+    boolean grant(DataRuntime runtime, User user, Role ... roles) throws Exception;
 	/**
 	 * grant[调用入口]<br/>
 	 * 授权

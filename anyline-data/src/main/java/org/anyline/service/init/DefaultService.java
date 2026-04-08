@@ -1930,7 +1930,7 @@ public class DefaultService<E> implements AnylineService<E> {
      * @param condition 是否需要拼接查询条件, 如果需要会拼接where 1=0 条件
      * @return LinkedHashMap
      */
-    public LinkedHashMap<String, Column> metadata(String sql, boolean comment, boolean condition) {
+    public LinkedHashMap<String, Column> metadata(String sql, boolean comment, boolean condition) throws Exception{
         if(condition) {
             String up = sql.toUpperCase().replaceAll("\\s{2,}"," ");
             String key = " WHERE ";
@@ -4483,7 +4483,7 @@ public class DefaultService<E> implements AnylineService<E> {
         /* *****************************************************************************************************************
          * 													privilege
          * -----------------------------------------------------------------------------------------------------------------
-         * List<Privilege> privileges(Privilege query)  throws Exception
+         * List<Privilege> privileges(Privilege query) throws Exception
          ******************************************************************************************************************/
         /**
          * 查询用户权限

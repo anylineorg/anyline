@@ -2085,73 +2085,68 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
      * @param comment 是否需要查询列注释
      * @return LinkedHashMap
      */
-    public LinkedHashMap<String,Column> metadata(DataRuntime runtime, RunPrepare prepare, boolean comment) {
+    public LinkedHashMap<String,Column> metadata(DataRuntime runtime, RunPrepare prepare, boolean comment) throws Exception {
         LinkedHashMap<String,Column> columns = null;
         String random = random(runtime);
         long fr = System.currentTimeMillis();
-        try {
-            Run run = buildQueryRun(runtime, prepare, null, true, true, null);
-            String sql = run.getFinalQuery(false);
-            columns = actuator.metadata(this, runtime, random, run, comment);
-            if (ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-                log.info("{}[action:metadata][执行耗时:{}]", random, DateUtil.format(System.currentTimeMillis() - fr));
+        Run run = buildQueryRun(runtime, prepare, null, true, true, null);
+        String sql = run.getFinalQuery(false);
+        columns = actuator.metadata(this, runtime, random, run, comment);
+        if (ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
+            log.info("{}[action:metadata][执行耗时:{}]", random, DateUtil.format(System.currentTimeMillis() - fr));
+        }
+        if(comment) {
+            Map<String,Table> tables = new HashMap<>();
+            for(Column column:columns.values()) {
+                Table table = column.getTable(false);
+                if(null != table && BasicUtil.isNotEmpty(table.getName()) && !tables.containsKey(table.getIdentity())) {
+                    tables.put(table.getIdentity(), table);
+                }
             }
-            if(comment) {
-                Map<String,Table> tables = new HashMap<>();
-                for(Column column:columns.values()) {
-                    Table table = column.getTable(false);
-                    if(null != table && BasicUtil.isNotEmpty(table.getName()) && !tables.containsKey(table.getIdentity())) {
-                        tables.put(table.getIdentity(), table);
-                    }
+            //提取所有表名和列名的别名
+            //解析一层
+            String col_sql = sql.toUpperCase().split("FROM")[0];
+            List<String> chks = RegularUtil.fetch(col_sql,"\\S+\\s+AS\\s+\\S+");
+            for(String col:chks) {
+                String[] tmps =col.split("AS");
+                String original = tmps[0];
+                String label = tmps[1];
+                if(original.contains(".")) {
+                    String[] names = original.split("\\.");
+                    String table = names[1];
+                    original = names[1];
                 }
-                //提取所有表名和列名的别名
-                //解析一层
-                String col_sql = sql.toUpperCase().split("FROM")[0];
-                List<String> chks = RegularUtil.fetch(col_sql,"\\S+\\s+AS\\s+\\S+");
-                for(String col:chks) {
-                    String[] tmps =col.split("AS");
-                    String original = tmps[0];
-                    String label = tmps[1];
-                    if(original.contains(".")) {
-                        String[] names = original.split("\\.");
-                        String table = names[1];
-                        original = names[1];
-                    }
-                    original = original.trim();
-                    label = label.trim();
-                    Column column = columns.get(label);
-                    if(null != column) {
-                        column.setOriginName(original);
-                    }
+                original = original.trim();
+                label = label.trim();
+                Column column = columns.get(label);
+                if(null != column) {
+                    column.setOriginName(original);
                 }
-                //TODO JDBC没有返回列.表名的 解析SQL确认表与列的关系
-                //mssql 列元数据中 不返回 表名
-                if(tables.isEmpty()) {
-                    List<String> tmps = RegularUtil.fetch(sql, "(\\s+FROM\\s+\\S+)|(\\s+JOIN\\s+\\S+)");
-                    for(String tmp:tmps) {
-                        String name = tmp.trim().split("\\s+")[1].trim();
-                        tables.put(name.toUpperCase(), new Table(name));
-                    }
+            }
+            //TODO JDBC没有返回列.表名的 解析SQL确认表与列的关系
+            //mssql 列元数据中 不返回 表名
+            if(tables.isEmpty()) {
+                List<String> tmps = RegularUtil.fetch(sql, "(\\s+FROM\\s+\\S+)|(\\s+JOIN\\s+\\S+)");
+                for(String tmp:tmps) {
+                    String name = tmp.trim().split("\\s+")[1].trim();
+                    tables.put(name.toUpperCase(), new Table(name));
                 }
-                for(Table table:tables.values()) {
-                    LinkedHashMap<String,Column> ccols = columns(runtime, random, false, table, false);
-                    for(Column ccol:ccols.values()) {
-                        String name = ccol.getName();
-                        for(Column column:columns.values()) {
-                            if(column.getTableName(false).equals(ccol.getTableName(false))) {
-                                String label = column.getName();
-                                String original = column.getOriginName();
-                                if(name.equalsIgnoreCase(label) || name.equalsIgnoreCase(original)) {
-                                    column.setComment(ccol.getComment());
-                                }
+            }
+            for(Table table:tables.values()) {
+                LinkedHashMap<String,Column> ccols = columns(runtime, random, false, table, false);
+                for(Column ccol:ccols.values()) {
+                    String name = ccol.getName();
+                    for(Column column:columns.values()) {
+                        if(column.getTableName(false).equals(ccol.getTableName(false))) {
+                            String label = column.getName();
+                            String original = column.getOriginName();
+                            if(name.equalsIgnoreCase(label) || name.equalsIgnoreCase(original)) {
+                                column.setComment(ccol.getComment());
                             }
                         }
                     }
                 }
             }
-        }catch(Exception e) {
-            columns = new LinkedHashMap<>();
-            e.printStackTrace();
         }
         log.info("{}[action:metadata][封装耗时:{}][封装行数:{}]", random, DateUtil.format(System.currentTimeMillis() - fr), LogUtil.format(columns.size(), 34));
         return columns;
@@ -9117,7 +9112,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
      * @return boolean
      */
     @Override
-    public boolean grant(DataRuntime runtime, User user, Privilege ... privileges)  throws Exception {
+    public boolean grant(DataRuntime runtime, User user, Privilege ... privileges) throws Exception {
         return super.grant(runtime, user, privileges);
     }
 
@@ -9130,7 +9125,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
      * @return boolean
      */
     @Override
-    public boolean grant(DataRuntime runtime, User user, Role ... roles)  throws Exception {
+    public boolean grant(DataRuntime runtime, User user, Role ... roles) throws Exception {
         return super.grant(runtime, user, roles);
     }
 
@@ -9143,7 +9138,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
      * @return boolean
      */
     @Override
-    public boolean grant(DataRuntime runtime, Role role, Privilege ... privileges)  throws Exception {
+    public boolean grant(DataRuntime runtime, Role role, Privilege ... privileges) throws Exception {
         return super.grant(runtime, role, privileges);
     }
 

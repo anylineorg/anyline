@@ -2349,7 +2349,11 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 }
                 set = new DataSet().setTable(table);
                 if(ConfigStore.IS_CHECK_EMPTY_SET_METADATA(configs)) {
-                    set.setMetadata(metadata(runtime, prepare, false));
+                    try {
+                        set.setMetadata(metadata(runtime, prepare, false));
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
                 }
             }
         } else {
@@ -5539,7 +5543,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @return LinkedHashMap
      */
     @Override
-    public LinkedHashMap<String,Column> metadata(DataRuntime runtime, RunPrepare prepare, boolean comment) {
+    public LinkedHashMap<String,Column> metadata(DataRuntime runtime, RunPrepare prepare, boolean comment) throws Exception {
         if(log.isDebugEnabled()) {
             log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 LinkedHashMap<String,Column> metadata(DataRuntime runtime, RunPrepare prepare, boolean comment)", 37));
         }
@@ -18470,7 +18474,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return boolean
 	 */
 	@Override
-	public boolean grant(DataRuntime runtime, User user, Privilege ... privileges)  throws Exception {
+	public boolean grant(DataRuntime runtime, User user, Privilege ... privileges) throws Exception {
 		String random = random(runtime);
 		ACTION.Authorize action = ACTION.Authorize.GRANT;
 		List<Run> runs = buildGrantRun(runtime, user, privileges);
@@ -18486,7 +18490,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @return boolean
      */
     @Override
-    public boolean grant(DataRuntime runtime, User user, Role ... roles)  throws Exception {
+    public boolean grant(DataRuntime runtime, User user, Role ... roles) throws Exception {
         String random = random(runtime);
         ACTION.Authorize action = ACTION.Authorize.GRANT;
         List<Run> runs = buildGrantRun(runtime, user, roles);
@@ -18502,7 +18506,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @return boolean
      */
     @Override
-    public boolean grant(DataRuntime runtime, Role role, Privilege ... privileges)  throws Exception {
+    public boolean grant(DataRuntime runtime, Role role, Privilege ... privileges) throws Exception {
         String random = random(runtime);
         ACTION.Authorize action = ACTION.Authorize.GRANT;
         List<Run> runs = buildGrantRun(runtime, role, privileges);

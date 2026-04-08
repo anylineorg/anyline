@@ -633,7 +633,7 @@ public class MilvusActuator implements DriverActuator {
     /* *****************************************************************************************************************
      * 													grant
      * -----------------------------------------------------------------------------------------------------------------
-     * boolean grant(DataRuntime runtime, User user, Privilege ... privileges)  throws Exception
+     * boolean grant(DataRuntime runtime, User user, Privilege ... privileges) throws Exception
      * boolean grant(DataRuntime runtime, User user, Role ... roles) throws Exception
      * boolean grant(DataRuntime runtime, Role role, Privilege ... privileges) throws Exception
      ******************************************************************************************************************/
@@ -646,7 +646,7 @@ public class MilvusActuator implements DriverActuator {
      * @return boolean
      */
 
-    public boolean grant(DataRuntime runtime, User user, Privilege ... privileges)  throws Exception {
+    public boolean grant(DataRuntime runtime, User user, Privilege ... privileges) throws Exception {
         //没有实现 可以通过 给角色授权 给用户赋角色
         return true;
     }
@@ -659,7 +659,7 @@ public class MilvusActuator implements DriverActuator {
      * @return boolean
      */
 
-    public boolean grant(DataRuntime runtime, User user, Role ... roles)  throws Exception {
+    public boolean grant(DataRuntime runtime, User user, Role ... roles) throws Exception {
         for(Role role:roles) {
             client(runtime).grantRole(GrantRoleReq.builder()
                     .roleName(role.getName())
@@ -678,7 +678,7 @@ public class MilvusActuator implements DriverActuator {
      * @return boolean
      */
 
-    public boolean grant(DataRuntime runtime, Role role, Privilege ... privileges)  throws Exception {
+    public boolean grant(DataRuntime runtime, Role role, Privilege ... privileges) throws Exception {
         for(Privilege privilege:privileges) {
             GrantPrivilegeReq.GrantPrivilegeReqBuilder build = GrantPrivilegeReq.builder();
             build.roleName(role.getName());
@@ -698,7 +698,7 @@ public class MilvusActuator implements DriverActuator {
     /* *****************************************************************************************************************
      * 													revoke
      * -----------------------------------------------------------------------------------------------------------------
-     * boolean revoke(DataRuntime runtime, User user, Privilege ... privileges)  throws Exception
+     * boolean revoke(DataRuntime runtime, User user, Privilege ... privileges) throws Exception
      * boolean revoke(DataRuntime runtime, User user, Role ... roles) throws Exception
      * boolean revoke(DataRuntime runtime, Role role, Privilege ... privileges) throws Exception
      ******************************************************************************************************************/

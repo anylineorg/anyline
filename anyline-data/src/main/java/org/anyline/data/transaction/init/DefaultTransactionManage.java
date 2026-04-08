@@ -43,7 +43,7 @@ public class DefaultTransactionManage implements TransactionManage {
     }
 
     @Override
-    public TransactionState start(TransactionDefine define)  throws SQLException {
+    public TransactionState start(TransactionDefine define) throws SQLException {
         Connection con = null;
         String name = define.getName();
         TransactionDefine.MODE mode = define.getMode();

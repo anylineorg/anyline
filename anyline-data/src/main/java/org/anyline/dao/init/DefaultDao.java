@@ -958,7 +958,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @param prepare RunPrepare
 	 * @return LinkedHashMap
 	 */
-	public LinkedHashMap<String, Column> metadata(RunPrepare prepare, boolean comment) {
+	public LinkedHashMap<String, Column> metadata(RunPrepare prepare, boolean comment) throws Exception{
 		DataRuntime runtime = runtime();
 		if(null != prepare && !prepare.disposable()){
 			prepare = prepare.clone();
@@ -2115,7 +2115,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * boolean create(Function meta) throws Exception
 	 * boolean alter(Function meta) throws Exception
 	 * boolean drop(Function meta) throws Exception
-	 * boolean rename(Function origin, String name)  throws Exception
+	 * boolean rename(Function origin, String name) throws Exception
 	 ******************************************************************************************************************/
 	@Override
 	public boolean create(Function meta) throws Exception {
@@ -2145,7 +2145,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * boolean create(Sequence meta) throws Exception
 	 * boolean alter(Sequence meta) throws Exception
 	 * boolean drop(Sequence meta) throws Exception
-	 * boolean rename(Sequence origin, String name)  throws Exception
+	 * boolean rename(Sequence origin, String name) throws Exception
 	 ******************************************************************************************************************/
 	@Override
 	public boolean create(Sequence meta) throws Exception {

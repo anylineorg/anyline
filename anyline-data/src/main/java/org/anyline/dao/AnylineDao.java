@@ -640,7 +640,7 @@ public interface AnylineDao<E>{
 	 * @param comment 是否需要注释
 	 * @return LinkedHashMap
 	 */
-	LinkedHashMap<String, Column> metadata(RunPrepare prepare, boolean comment);
+	LinkedHashMap<String, Column> metadata(RunPrepare prepare, boolean comment) throws Exception;
 	/* *****************************************************************************************************************
 	 * 													database
 	 ******************************************************************************************************************/

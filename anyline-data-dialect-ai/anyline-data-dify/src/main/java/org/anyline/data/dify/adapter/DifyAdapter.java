@@ -2463,7 +2463,7 @@ public class DifyAdapter extends AbstractDriverAdapter implements DriverAdapter 
      * @throws Exception 异常
      */
     @Override
-    public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Column query)  throws Exception {
+    public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Column query) throws Exception {
         return previous;
     }
 
