@@ -23,7 +23,9 @@
 
 #### 云服务赞助商
 江苏美迅网络科技有限公司  
-[IP领域专业服务,覆盖全球200+国家与地区](http://www.anyline.org/iw)
+[IP领域专业服务,覆盖全球200+国家与地区](http://www.anyline.org/iw)  
+[有效保护账号，防封问题戳这里注册可得充裕流量使用](http://www.anyline.org/iw)
+
 
 ## 简介
 AnyLine的核心是一个面向运行时的 元数据动态映射   
