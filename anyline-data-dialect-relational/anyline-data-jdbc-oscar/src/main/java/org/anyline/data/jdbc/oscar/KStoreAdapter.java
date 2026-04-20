@@ -1560,7 +1560,7 @@ public class KStoreAdapter extends OracleGenusAdapter implements JDBCAdapter {
 		if(null != query) {
 			String name = query.getName();
 			ConfigStore configs = run.getConfigs();
-			configs.and(Compare.LIKE_SIMPLE, "USERNAME", name);
+			configs.and(Compare.LIKE_SIMPLE, "owner", name);
 		}
 		return runs;
 	}
@@ -1572,7 +1572,9 @@ public class KStoreAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public MetadataFieldRefer initSchemaFieldRefer() {
-		return super.initSchemaFieldRefer();
+		MetadataFieldRefer refer = super.initSchemaFieldRefer();
+		refer.map(Schema.FIELD_NAME, "owner");
+		return refer;
 	}
 	/**
 	 * schema[结果集封装]<br/>
