@@ -1556,11 +1556,11 @@ public class KStoreAdapter extends OracleGenusAdapter implements JDBCAdapter {
 		Run run = new SimpleRun(runtime);
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();
-		builder.append("SELECT DISTINCT owner FROM ALL_ALL_TABLES");
+		builder.append("SELECT DISTINCT owner AS USERNAME FROM ALL_ALL_TABLES");
 		if(null != query) {
 			String name = query.getName();
 			ConfigStore configs = run.getConfigs();
-			configs.and(Compare.LIKE_SIMPLE, "USERNAME", name);
+			configs.and(Compare.LIKE_SIMPLE, "OWNER", name);
 		}
 		return runs;
 	}
