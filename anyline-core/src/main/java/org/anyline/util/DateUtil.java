@@ -1916,7 +1916,10 @@ public class DateUtil {
 		return result;
 	}
 	public static java.sql.Timestamp sqlTimestamp(Date date) {
-		java.sql.Timestamp result = new Timestamp(date.getTime());
+		java.sql.Timestamp result = null;
+		if(null != date) {
+			result = new Timestamp(date.getTime());
+		}
 		return result;
 	}
 	public static java.sql.Date sqlDate(LocalDate date) {
