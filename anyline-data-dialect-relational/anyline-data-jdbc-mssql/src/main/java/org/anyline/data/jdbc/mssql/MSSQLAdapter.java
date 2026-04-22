@@ -1732,7 +1732,15 @@ public class MSSQLAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
      */
     @Override
     public List<Run> buildQuerySchemasRun(DataRuntime runtime, boolean greedy, Schema query) throws Exception {
-        return super.buildQuerySchemasRun(runtime, greedy, query);
+        List<Run> runs = new ArrayList<>();
+        SimpleRun run = new SimpleRun(runtime);
+        StringBuilder builder = run.getBuilder();
+        ConfigStore configs = run.getConfigs();
+        builder.append("SELECT * FROM information_schema.schemata");
+        configs.and(Compare.LIKE_SIMPLE_IGNORE_CASE, "schema_name", query.getName());
+        configs.and("catalog_name", query.getCatalogName());
+        runs.add(run);
+        return runs;
     }
 
     /**
@@ -1742,7 +1750,10 @@ public class MSSQLAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
      */
     @Override
     public MetadataFieldRefer initSchemaFieldRefer() {
-        return super.initSchemaFieldRefer();
+        MetadataFieldRefer refer = new MetadataFieldRefer(Schema.class);
+        refer.map(Schema.FIELD_NAME, "schema_name");
+        refer.map(Schema.FIELD_CATALOG, "catalog_name");
+        return refer;
     }
 
     /**
