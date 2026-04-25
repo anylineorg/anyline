@@ -63,8 +63,8 @@
 	<property key="BATCH_INSERT_SLEEP_MILLIS">1000</property>
 
 	<!-- 模板文件目录 -->
-	<property key="TEMPLET_FILE_PATH_WEB">/WEB-INF/web/home/template/default.jsp</property>
-	<property key="TEMPLET_FILE_PATH_WAP">/WEB-INF/def/wap/common/templet.jsp</property>
+	<property key="TEMPLATE_FILE_PATH_WEB">/WEB-INF/web/home/template/default.jsp</property>
+	<property key="TEMPLATE_FILE_PATH_WAP">/WEB-INF/def/wap/common/template.jsp</property>
 	<!-- fail文件路径 -->
 	<property key="FAIL_FILE_PATH">/WEB-INF/def/web/common/error/fail.jsp</property>
 	<!-- error文件路径 -->
@@ -125,4 +125,5 @@
 	<property key="IS_AUTO_CHECK_METADATA">false</property>
 	<!-- DDL执行时 是否自动删除定义中不存在的列 -->
 	<property key="IS_DDL_AUTO_DROP_COLUMN">false</property>
+	<property key="LICENSE"></property>
 </properties>

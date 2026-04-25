@@ -22,6 +22,7 @@ import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;
 import org.anyline.entity.generator.GeneratorConfig;
 import org.anyline.log.Log;
 import org.anyline.log.LogProxy;
+import org.anyline.util.encrypt.RSAUtil;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
@@ -33,6 +34,7 @@ import java.lang.reflect.Field;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
+import java.time.Year;
 import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -199,6 +201,13 @@ public class ConfigTable {
 	public static String MASK_REPLACE_COLUMN							= null			;	// 需要脱敏的列可以是正则 多个以;分隔 注意不是,
 	public static String MASK_REPLACE_REGEX								= null			;	// 需要脱敏的列正则 多个以;分隔
 	public static String MASK_REPLACE_REPLACEMENT						= null			;	// 需要脱敏的列正则 多个以;分隔
+	public static String LICENSE										= null			;
+	public static String LICENSE_USER									= null			;
+	public static String LICENSE_EXP									= null			;
+	public static boolean IS_HIDE_LICENSE								= false			;
+	public static int LICENSE_SCOPE										= 0				;
+	public static int LICENSE_LVL										= 0				;
+	private static String PRIVATE_KEY = "MIICdQIBADANBgkqhkiG9w0BAQEFAASCAl8wggJbAgEAAoGBAKPA3U9iNeaoSc6rRup54T_XsiGeAwQWEEGcJ9IFkS9c8mEQxoKvakyzCCArlInhk6rY77YkqT-IZuTk10G89oYyjXrpAj1hY5vGe2rn9HrtBB7TIhhKNWRd2jtjwHYpqZkbHONlPYKDeoNO-b9jVhdSbCT_0wpY1p_7-M6XfHqPAgMBAAECgYBP9DharUpCIANBnJFYpT_dCzUXgu5YDWnMjzFGM5-q74gM6sLyRjHx1yxtgLnbBMA0GA4a8hWNRs1uj2mm2FvJbBCbZswOa_5x8UM2l3mEw1FZZQyYg90ge7XtRCb6xfQE9vWcGBe6t_2RZr8YcmIlzp-161AHwLTtEmXq-3JqYQJBANmJHH06NsTq1yjdfqt6avshXq1dzPVCHlnUBMr3Zma0wZ_rFq4ne-8xLfYUI-Snhqr1E-AgLooRWg5jJcaITzECQQDAtURByMzTM9istkz8Wpp4cvUXCdPyzE87ugsG3es3iaewGoS9Q34c_AQN3-TIA_NARhO3OUtXXpNiRr3vGHW_AkB965BCLOBnPEkvrocUW9hxZe-YCyQJFCzdco0TsAHmkdtC5qJKTTDAVId2WlIsmYyqiRLoObi20zR9_4ZuVZkBAkAxAKcHt2DmP-PUH1M6RGvNPyY1ookjz3JCdM-DAoFikP10GXoxim0SP79kK8_IUMDVUjyHNemDoQgHUIfRub2PAkAJLF31Ml-5hJ3fjmICKxzIUfrzNaXYoWBjx_i939iRdXlwK7--KJx7M3Z40eQDqmgsP9L7xQ9ay3yO3dY8O0Vo";
 	public final static GeneratorConfig GENERATOR 						= new GeneratorConfig();
 	static{
 		prepare();
@@ -208,9 +217,10 @@ public class ConfigTable {
 			log.error("load environment exception:", e);
 		}
 		init();
+		license();
 	}
 	public ConfigTable() {
-		debug();
+		license();
 	}
 
 	public static void setEnvironment(EnvironmentWorker environment) {
@@ -719,11 +729,24 @@ public class ConfigTable {
 	public static void map2field() {
 		Field[] fields = ConfigTable.class.getDeclaredFields();
 		for(Field field:fields) {
-			String name = field.getName();
-			if(configs.containsKey(name)) {
-				BeanUtil.setFieldValue(null, field, configs.get(name));
+			String name = field.getName().toUpperCase();
+			if(map2field(field, name)){
+				continue;
 			}
+			name = "ANYLINE." + name;
+			if(map2field(field, name)) {
+				continue;
+			}
+			name = name.replace("_", "-");
+			map2field(field, name);
 		}
+	}
+	protected static boolean map2field(Field field, String key){
+		if(configs.containsKey(key)) {
+			BeanUtil.setFieldValue(null, field, configs.get(key));
+			return true;
+		}
+		return false;
 	}
 	protected static void loadConfig(File file) {
 		try{
@@ -858,19 +881,36 @@ public class ConfigTable {
 			line = "*"+BasicUtil.fillChar("", chr, fillLeft) + src +BasicUtil.fillChar("", chr, fillRight) +"*";
 		}else{
 			int fill = len - src.length() - 2;
-			line = "*" + src + BasicUtil.fillChar("", chr, fill)+"";
+			line = "*" + src + BasicUtil.fillChar("", chr, fill);
 		}
 		System.out.println(line);
 	}
+	private static void decrypt(){
+		if(null == LICENSE){
+			LICENSE = getString("anyline.license");
+		}
+		if(null != LICENSE) {
+			try {
+				String src = RSAUtil.decrypt(LICENSE, PRIVATE_KEY);
+				String[] ks = src.split(":");
+				LICENSE_SCOPE = BasicUtil.parseInt(ks[2], LICENSE_SCOPE);
+				LICENSE_LVL = BasicUtil.parseInt(ks[3], LICENSE_LVL);
+				if (LICENSE_SCOPE > 1) {
+					if (BasicUtil.isEmpty(LICENSE_USER)) {
+						LICENSE_USER = ks[0];
+					}
+				} else {
+					LICENSE_USER = ks[0];
+				}
+				LICENSE_EXP = ks[1];
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
 
-	protected static void debug() {
-		if(!IS_DEBUG) {
-			return;
-		}
-		if(IS_LOG) {
-			return;
-		}
-		IS_LOG = true;
+	protected static void license() {
+		decrypt();
 		try{
 			String time = null;
 			String version = ConfigTable.version;
@@ -900,24 +940,42 @@ public class ConfigTable {
 			}
 
 			System.out.println();
-			line("","*", 0, true);
-			line("Anyline Core [" + version + "]"," ", 0, true);
-			line("http://doc.anyline.org "," ", 0, true);
-			line(""," ", 0, true);
-			if(null != time && time.startsWith("2")) {
-				line("Last Modified " + "[" + time +"] "," ", 0, true);
-			}else{
-				line("MinVersion " +  "[" + minVersion + "]"," ", 0, true);
+
+			if(LICENSE_LVL <= 1 || !IS_HIDE_LICENSE) {
+				line("","*", 0, true);
+				line("Anyline Core [" + version + "]"," ", 0, true);
+				//line("社区开源版", " ", 0, true);
+				line("http://doc.anyline.org "," ", 0, true);
+				line(""," ", 0, true);
+				line("Copyright © " + Year.now().getValue() + " DeepBit Co.,Ltd. All rights reserved.", " ", 0, true);
+				if(null != time && time.startsWith("2")) {
+					line("Last Modified " + "[" + time +"] "," ", 0, true);
+				}else{
+					line("MinVersion " +  "[" + minVersion + "]"," ", 0, true);
+				}
+				line(""," ", 0, true);
+				line("","*", 0, true);
+				//line("","*", 0, true);
+				if(null != project) {
+				//	line(" project root > " + project, "", 0, false);
+				}
+				//line("","*", 0, true);
+				//license
 			}
-			line(""," ", 0, true);
-			line("","*", 0, true);
-			//line("","*", 0, true);
-			if(null != project) {
-			//	line(" project root > " + project, "", 0, false);
+
+			if(LICENSE_LVL < 1 || !IS_HIDE_LICENSE) {
+				if(BasicUtil.isEmpty(LICENSE_USER)) {
+					System.out.println("[开源社区版] 授权期限:长期");
+				}else{
+					System.out.print("[企业授权版]");
+					System.out.print(" 授权用户:" + LICENSE_USER);
+					if("1".equals(LICENSE_EXP)){
+						System.out.println(" 授权期限:长期");
+					}else {
+						System.out.println(" 授权期限:" + LICENSE_EXP);
+					}
+				}
 			}
-			//line(" debug status > anyline-config.xml:<property key=\"DEBUG\">boolean</property>","", 0, false);
-			//line(" =================== 生产环境请务必修改密钥文件key.xml ========================","", 0, false);
-			//line("","*", 0, true);
 			System.out.println();
 		}catch(Exception e) {
 			e.printStackTrace();
