@@ -6147,9 +6147,12 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
         // 数据类型
         type(runtime, builder, meta);
         // 非空
-        nullable(runtime, builder, meta, action);
+        //nullable(runtime, builder, meta, action);
         // 默认值
-        defaultValue(runtime, builder, meta);
+        //defaultValue(runtime, builder, meta);
+        //有些数据库对这两个属性有顺序要求
+        nullDefault(runtime, builder, meta, action);
+
         // 备注
         comment(runtime, builder, meta);
 

@@ -8732,6 +8732,19 @@ public interface DriverAdapter {
 	 */
 	StringBuilder defaultValue(DataRuntime runtime, StringBuilder builder, Column column);
 
+    /**
+     * column[命令合成-子流程]<br/>
+     * 定义列:非空与默认值，有些数据库对这两个顺序有要求所以在这个方法中修改顺序
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param builder builder
+     * @param meta 列
+     * @return StringBuilder
+     */
+    default StringBuilder nullDefault(DataRuntime runtime, StringBuilder builder, Column meta, ACTION.DDL action) {
+        nullable(runtime, builder, meta, action);
+        defaultValue(runtime, builder, meta);
+        return builder;
+    }
 	/**
 	 * column[命令合成-子流程]<br/>
 	 * 定义列的主键标识(注意不要跟表定义中的主键重复)

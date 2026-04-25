@@ -15600,10 +15600,15 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		charset(runtime, builder, meta);
         //虚拟列
         virtual(runtime, builder, meta);
+
         // 非空
-        nullable(runtime, builder, meta, action);
+        //nullable(runtime, builder, meta, action);
 		// 默认值
-		defaultValue(runtime, builder, meta);
+		//defaultValue(runtime, builder, meta);
+
+        //有些数据库(oracle)对这两个属性有顺序要求
+        nullDefault(runtime, builder, meta, action);
+
 		//主键
 		primary(runtime, builder, meta);
 		//唯一索引

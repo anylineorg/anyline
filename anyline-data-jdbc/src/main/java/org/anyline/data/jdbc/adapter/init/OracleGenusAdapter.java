@@ -6226,6 +6226,20 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
 
     /**
      * column[命令合成-子流程]<br/>
+     * 定义列:非空与默认值，有些数据库对这两个顺序有要求所以在这个方法中修改顺序
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param builder builder
+     * @param meta 列
+     * @return StringBuilder
+     */
+    @Override
+    public StringBuilder nullDefault(DataRuntime runtime, StringBuilder builder, Column meta, ACTION.DDL action) {
+        defaultValue(runtime, builder, meta);
+        nullable(runtime, builder, meta, action);
+        return builder;
+    }
+    /**
+     * column[命令合成-子流程]<br/>
      * 列定义:创建或删除列之前  检测表是否存在
      * IF NOT EXISTS
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
