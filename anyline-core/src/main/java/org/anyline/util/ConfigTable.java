@@ -202,6 +202,7 @@ public class ConfigTable {
 	public static String MASK_REPLACE_REGEX								= null			;	// 需要脱敏的列正则 多个以;分隔
 	public static String MASK_REPLACE_REPLACEMENT						= null			;	// 需要脱敏的列正则 多个以;分隔
 	public static String LICENSE										= null			;
+	public static String LICENSE_VERSION_TYPE							= null			;
 	public static String LICENSE_USER									= null			;
 	public static String LICENSE_EXP									= null			;
 	public static boolean IS_HIDE_LICENSE								= false			;
@@ -217,9 +218,6 @@ public class ConfigTable {
 			log.error("load environment exception:", e);
 		}
 		init();
-		license();
-	}
-	public ConfigTable() {
 		license();
 	}
 
@@ -893,19 +891,30 @@ public class ConfigTable {
 			try {
 				String src = RSAUtil.decrypt(LICENSE, PRIVATE_KEY);
 				String[] ks = src.split(":");
-				LICENSE_SCOPE = BasicUtil.parseInt(ks[2], LICENSE_SCOPE);
-				LICENSE_LVL = BasicUtil.parseInt(ks[3], LICENSE_LVL);
+				LICENSE_VERSION_TYPE = ks[0];
+				LICENSE_SCOPE = BasicUtil.parseInt(ks[3], LICENSE_SCOPE);
+				LICENSE_LVL = BasicUtil.parseInt(ks[4], LICENSE_LVL);
 				if (LICENSE_SCOPE > 1) {
 					if (BasicUtil.isEmpty(LICENSE_USER)) {
-						LICENSE_USER = ks[0];
+						LICENSE_USER = ks[1];
 					}
 				} else {
-					LICENSE_USER = ks[0];
+					LICENSE_USER = ks[1];
 				}
-				LICENSE_EXP = ks[1];
-			} catch (Exception e) {
-				e.printStackTrace();
+				LICENSE_EXP = ks[2];
+			} catch (Exception ignore) {
+				LICENSE_VERSION_TYPE = "开源社区版"	;
+				LICENSE_USER		 = null	;
+				LICENSE_EXP			 = null	;
+				LICENSE_LVL 		 = 0;
+				LICENSE_SCOPE 		 = 1;
 			}
+		}else{
+			LICENSE_VERSION_TYPE = "开源社区版"	;
+			LICENSE_USER		 = null	;
+			LICENSE_EXP			 = null	;
+			LICENSE_LVL 		 = 0;
+			LICENSE_SCOPE 		 = 1;
 		}
 	}
 
@@ -940,10 +949,10 @@ public class ConfigTable {
 			}
 
 			System.out.println();
-
-			if(LICENSE_LVL <= 1 || !IS_HIDE_LICENSE) {
+			boolean exp = !"1".equals(LICENSE_EXP) && null != LICENSE_EXP && DateUtil.diff(DateUtil.DATE_PART_DATE, LICENSE_EXP) > 7;
+			if(LICENSE_LVL <= 1 || !IS_HIDE_LICENSE || exp) {
 				line("","*", 0, true);
-				line("Anyline Core [" + version + "]"," ", 0, true);
+				line("AnyLine Core [" + version + "]"," ", 0, true);
 				//line("社区开源版", " ", 0, true);
 				line("http://doc.anyline.org "," ", 0, true);
 				line(""," ", 0, true);
@@ -963,20 +972,21 @@ public class ConfigTable {
 				//license
 			}
 
-			if(LICENSE_LVL < 1 || !IS_HIDE_LICENSE) {
+			if(LICENSE_LVL < 1 || !IS_HIDE_LICENSE || exp) {
+				System.out.print("[" + LICENSE_VERSION_TYPE + "]");
 				if(BasicUtil.isEmpty(LICENSE_USER)) {
-					System.out.println("[开源社区版] 授权期限:长期");
+					System.out.print(" 授权期限:长期");
 				}else{
-					System.out.print("[企业授权版]");
 					System.out.print(" 授权用户:" + LICENSE_USER);
+					System.out.print(" 授权期限:");
 					if("1".equals(LICENSE_EXP)){
-						System.out.println(" 授权期限:长期");
+						System.out.print("长期");
 					}else {
-						System.out.println(" 授权期限:" + LICENSE_EXP);
+						System.out.print(LICENSE_EXP);
 					}
 				}
 			}
-			System.out.println();
+			System.out.println("\n");
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
