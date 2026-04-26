@@ -376,6 +376,7 @@ public class DataTypeDefine implements Serializable {
             result = result.replace("{U}", lengthUnit);
             result = result.replace("(0)", "");
             result = result.replace("(null)","");
+            result = result.replace(" )", ")");
         }else if(null != type) {
             StringBuilder builder = new StringBuilder();
             if(type.contains("{")) {
@@ -386,6 +387,7 @@ public class DataTypeDefine implements Serializable {
                 result = result.replace("{U}", lengthUnit);
                 result = result.replace("(0)", "");
                 result = result.replace("(null)", "");
+                result = result.replace(" )", ")");
             }else {
                 builder.append(type);
                 if (appendLength || appendPrecision || appendScale) {

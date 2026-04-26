@@ -126,4 +126,6 @@
 	<!-- DDL执行时 是否自动删除定义中不存在的列 -->
 	<property key="IS_DDL_AUTO_DROP_COLUMN">false</property>
 	<property key="LICENSE"></property>
+	<property key="LICENSE_USER"></property>
+	<property key="IS_HIDE_LICENSE"></property>
 </properties>

@@ -208,8 +208,7 @@ public class ConfigTable {
 	public static boolean IS_HIDE_LICENSE								= false			;
 	public static int LICENSE_SCOPE										= 0				;
 	public static int LICENSE_LVL										= 0				;
-	private static String PRIVATE_KEY = "MIICdQIBADANBgkqhkiG9w0BAQEFAASCAl8wggJbAgEAAoGBAKPA3U9iNeaoSc6rRup54T_XsiGeAwQWEEGcJ9IFkS9c8mEQxoKvakyzCCArlInhk6rY77YkqT-IZuTk10G89oYyjXrpAj1hY5vGe2rn9HrtBB7TIhhKNWRd2jtjwHYpqZkbHONlPYKDeoNO-b9jVhdSbCT_0wpY1p_7-M6XfHqPAgMBAAECgYBP9DharUpCIANBnJFYpT_dCzUXgu5YDWnMjzFGM5-q74gM6sLyRjHx1yxtgLnbBMA0GA4a8hWNRs1uj2mm2FvJbBCbZswOa_5x8UM2l3mEw1FZZQyYg90ge7XtRCb6xfQE9vWcGBe6t_2RZr8YcmIlzp-161AHwLTtEmXq-3JqYQJBANmJHH06NsTq1yjdfqt6avshXq1dzPVCHlnUBMr3Zma0wZ_rFq4ne-8xLfYUI-Snhqr1E-AgLooRWg5jJcaITzECQQDAtURByMzTM9istkz8Wpp4cvUXCdPyzE87ugsG3es3iaewGoS9Q34c_AQN3-TIA_NARhO3OUtXXpNiRr3vGHW_AkB965BCLOBnPEkvrocUW9hxZe-YCyQJFCzdco0TsAHmkdtC5qJKTTDAVId2WlIsmYyqiRLoObi20zR9_4ZuVZkBAkAxAKcHt2DmP-PUH1M6RGvNPyY1ookjz3JCdM-DAoFikP10GXoxim0SP79kK8_IUMDVUjyHNemDoQgHUIfRub2PAkAJLF31Ml-5hJ3fjmICKxzIUfrzNaXYoWBjx_i939iRdXlwK7--KJx7M3Z40eQDqmgsP9L7xQ9ay3yO3dY8O0Vo";
-	public final static GeneratorConfig GENERATOR 						= new GeneratorConfig();
+    public final static GeneratorConfig GENERATOR 						= new GeneratorConfig();
 	static{
 		prepare();
 		try {
@@ -889,7 +888,8 @@ public class ConfigTable {
 		}
 		if(null != LICENSE) {
 			try {
-				String src = RSAUtil.decrypt(LICENSE, PRIVATE_KEY);
+                String PRIVATE_KEY = "MIICdQIBADANBgkqhkiG9w0BAQEFAASCAl8wggJbAgEAAoGBAKPA3U9iNeaoSc6rRup54T_XsiGeAwQWEEGcJ9IFkS9c8mEQxoKvakyzCCArlInhk6rY77YkqT-IZuTk10G89oYyjXrpAj1hY5vGe2rn9HrtBB7TIhhKNWRd2jtjwHYpqZkbHONlPYKDeoNO-b9jVhdSbCT_0wpY1p_7-M6XfHqPAgMBAAECgYBP9DharUpCIANBnJFYpT_dCzUXgu5YDWnMjzFGM5-q74gM6sLyRjHx1yxtgLnbBMA0GA4a8hWNRs1uj2mm2FvJbBCbZswOa_5x8UM2l3mEw1FZZQyYg90ge7XtRCb6xfQE9vWcGBe6t_2RZr8YcmIlzp-161AHwLTtEmXq-3JqYQJBANmJHH06NsTq1yjdfqt6avshXq1dzPVCHlnUBMr3Zma0wZ_rFq4ne-8xLfYUI-Snhqr1E-AgLooRWg5jJcaITzECQQDAtURByMzTM9istkz8Wpp4cvUXCdPyzE87ugsG3es3iaewGoS9Q34c_AQN3-TIA_NARhO3OUtXXpNiRr3vGHW_AkB965BCLOBnPEkvrocUW9hxZe-YCyQJFCzdco0TsAHmkdtC5qJKTTDAVId2WlIsmYyqiRLoObi20zR9_4ZuVZkBAkAxAKcHt2DmP-PUH1M6RGvNPyY1ookjz3JCdM-DAoFikP10GXoxim0SP79kK8_IUMDVUjyHNemDoQgHUIfRub2PAkAJLF31Ml-5hJ3fjmICKxzIUfrzNaXYoWBjx_i939iRdXlwK7--KJx7M3Z40eQDqmgsP9L7xQ9ay3yO3dY8O0Vo";
+                String src = RSAUtil.decrypt(LICENSE, PRIVATE_KEY);
 				String[] ks = src.split(":");
 				LICENSE_VERSION_TYPE = ks[0];
 				LICENSE_SCOPE = BasicUtil.parseInt(ks[3], LICENSE_SCOPE);
