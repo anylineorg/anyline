@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2026 www.anyline.org
+ * Copyright 2006-2026 DeepBit Co.,Ltd. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+
 package org.anyline.net;
  
  
@@ -21,4 +22,4 @@ public interface DownloadListener {
 	public void finish(DownloadTask task); 
 	public void error(DownloadTask task); 
 	public void start(DownloadTask task); 
-} 
+}

@@ -8,12 +8,6 @@
 	<name>anyline</name>
 
 	<url>http://www.anyline.org</url>
-	<licenses>
-		<license>
-			<name>The Apache License, Version 2.0</name>
-			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-		</license>
-	</licenses>
 	<developers>
 		<developer>
 			<name>AnyLine</name>
@@ -22,11 +16,19 @@
 			<organizationUrl>http://www.anyline.org</organizationUrl>
 		</developer>
 	</developers>
+
+	<licenses>
+		<license>
+			<name>The Apache License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+		</license>
+	</licenses>
 	<scm>
 		<connection>scm:git:git://github.com/anylineorg/anyline.git</connection>
 		<developerConnection>scm:git:ssh://github.com:anylineorg/anyline.git</developerConnection>
 		<url>https://github.com/anylineorg/anyline</url>
 	</scm>
+
     <modules>
 		<module>anyline-dependency</module>
 		<module>anyline-core</module>

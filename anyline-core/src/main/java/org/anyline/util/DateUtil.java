@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2026 www.anyline.org
+ * Copyright 2006-2026 DeepBit Co.,Ltd. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 
 package org.anyline.util;
 
@@ -29,6 +30,7 @@ public class DateUtil {
 	private static int MaxDate;// 一月最大天数
 
 	public static final String FORMAT_FULL = "yyyy-MM-dd HH:mm:ss.SSS";
+	public static final String FORMAT_MS = "yyyy-MM-dd HH:mm:ss.SSSSSS";
 	public static final String FORMAT_DATE_TIME = "yyyy-MM-dd HH:mm:ss";
 	public static final String FORMAT_DATE = "yyyy-MM-dd";
 	public static final String FORMAT_TIME = "HH:mm:ss";
@@ -918,7 +920,7 @@ public class DateUtil {
 	 */
 	public static Date parse(String date, String format) throws RuntimeException {
 		DateTimeFormatter formatter = null;
-		if(null != format || format.length()==0) {
+		if(null != format && !format.isEmpty()) {
 			formatter = DateTimeFormatter.ofPattern(format);
 		}else{
 			formatter = DateTimeFormatter.ISO_LOCAL_TIME;
@@ -1067,7 +1069,12 @@ public class DateUtil {
 			format = FORMAT_DATE_TIME;
 		}else{
 			String[] tmp = str.split("\\.");
-			str = tmp[0] + "." + BasicUtil.fillChar(tmp[1], 3);
+			if(tmp[1].length() > 3){
+				format = FORMAT_MS;
+				str = tmp[0] + "." + BasicUtil.fillChar(tmp[1], 6);
+			}else {
+				str = tmp[0] + "." + BasicUtil.fillChar(tmp[1], 3);
+			}
 		}
 
 		if (!str.contains(":")) {
@@ -1847,7 +1854,7 @@ public class DateUtil {
 	}
 	public static ZonedDateTime zonedDateTime(Date date) {
 		ZoneId zone = ZoneId.systemDefault();
-        return date.toInstant().atZone(zone);
+		return date.toInstant().atZone(zone);
 	}
 	public static LocalTime localTime(Date date, ZoneId zone) {
 		if(null == date) {
@@ -1876,7 +1883,7 @@ public class DateUtil {
 	}
 
 	public static LocalDateTime localDateTime(Long timestamp, ZoneId zone) {
-			return localDateTime(parse(timestamp), zone);
+		return localDateTime(parse(timestamp), zone);
 	}
 	public static LocalDateTime localDateTime(Long timestamp) {
 		return localDateTime(parse(timestamp), ZoneId.systemDefault());

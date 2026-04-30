@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2026 www.anyline.org
+ * Copyright 2006-2026 DeepBit Co.,Ltd. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 
 package org.anyline.util;
 
@@ -206,9 +207,11 @@ public class ConfigTable {
 	public static String LICENSE_USER									= null			;
 	public static String LICENSE_EXP									= null			;
 	public static boolean IS_HIDE_LICENSE								= false			;
+	public static String LICENSE_PROJECT								= null			;
 	public static int LICENSE_SCOPE										= 0				;
-	public static int LICENSE_LVL										= 0				;
-    public final static GeneratorConfig GENERATOR 						= new GeneratorConfig();
+	public static int LICENSE_C1										= 0				;
+	public static int LICENSE_C2										= 0				;
+	public final static GeneratorConfig GENERATOR 						= new GeneratorConfig();
 	static{
 		prepare();
 		try {
@@ -217,7 +220,7 @@ public class ConfigTable {
 			log.error("load environment exception:", e);
 		}
 		init();
-		license();
+		version();
 	}
 
 	public static void setEnvironment(EnvironmentWorker environment) {
@@ -273,9 +276,7 @@ public class ConfigTable {
 			loadConfig(file);
 		}
 	}
-	public static String version() {
-		return version + "-" + minVersion;
-	}
+
 	public static Hashtable<String, Object> getConfigs() {
 		return configs;
 	}
@@ -888,37 +889,46 @@ public class ConfigTable {
 		}
 		if(null != LICENSE) {
 			try {
-                String PRIVATE_KEY = "MIICdQIBADANBgkqhkiG9w0BAQEFAASCAl8wggJbAgEAAoGBAKPA3U9iNeaoSc6rRup54T_XsiGeAwQWEEGcJ9IFkS9c8mEQxoKvakyzCCArlInhk6rY77YkqT-IZuTk10G89oYyjXrpAj1hY5vGe2rn9HrtBB7TIhhKNWRd2jtjwHYpqZkbHONlPYKDeoNO-b9jVhdSbCT_0wpY1p_7-M6XfHqPAgMBAAECgYBP9DharUpCIANBnJFYpT_dCzUXgu5YDWnMjzFGM5-q74gM6sLyRjHx1yxtgLnbBMA0GA4a8hWNRs1uj2mm2FvJbBCbZswOa_5x8UM2l3mEw1FZZQyYg90ge7XtRCb6xfQE9vWcGBe6t_2RZr8YcmIlzp-161AHwLTtEmXq-3JqYQJBANmJHH06NsTq1yjdfqt6avshXq1dzPVCHlnUBMr3Zma0wZ_rFq4ne-8xLfYUI-Snhqr1E-AgLooRWg5jJcaITzECQQDAtURByMzTM9istkz8Wpp4cvUXCdPyzE87ugsG3es3iaewGoS9Q34c_AQN3-TIA_NARhO3OUtXXpNiRr3vGHW_AkB965BCLOBnPEkvrocUW9hxZe-YCyQJFCzdco0TsAHmkdtC5qJKTTDAVId2WlIsmYyqiRLoObi20zR9_4ZuVZkBAkAxAKcHt2DmP-PUH1M6RGvNPyY1ookjz3JCdM-DAoFikP10GXoxim0SP79kK8_IUMDVUjyHNemDoQgHUIfRub2PAkAJLF31Ml-5hJ3fjmICKxzIUfrzNaXYoWBjx_i939iRdXlwK7--KJx7M3Z40eQDqmgsP9L7xQ9ay3yO3dY8O0Vo";
-                String src = RSAUtil.decrypt(LICENSE, PRIVATE_KEY);
+				String PRIVATE_KEY = "MIICdQIBADANBgkqhkiG9w0BAQEFAASCAl8wggJbAgEAAoGBAKPA3U9iNeaoSc6rRup54T_XsiGeAwQWEEGcJ9IFkS9c8mEQxoKvakyzCCArlInhk6rY77YkqT-IZuTk10G89oYyjXrpAj1hY5vGe2rn9HrtBB7TIhhKNWRd2jtjwHYpqZkbHONlPYKDeoNO-b9jVhdSbCT_0wpY1p_7-M6XfHqPAgMBAAECgYBP9DharUpCIANBnJFYpT_dCzUXgu5YDWnMjzFGM5-q74gM6sLyRjHx1yxtgLnbBMA0GA4a8hWNRs1uj2mm2FvJbBCbZswOa_5x8UM2l3mEw1FZZQyYg90ge7XtRCb6xfQE9vWcGBe6t_2RZr8YcmIlzp-161AHwLTtEmXq-3JqYQJBANmJHH06NsTq1yjdfqt6avshXq1dzPVCHlnUBMr3Zma0wZ_rFq4ne-8xLfYUI-Snhqr1E-AgLooRWg5jJcaITzECQQDAtURByMzTM9istkz8Wpp4cvUXCdPyzE87ugsG3es3iaewGoS9Q34c_AQN3-TIA_NARhO3OUtXXpNiRr3vGHW_AkB965BCLOBnPEkvrocUW9hxZe-YCyQJFCzdco0TsAHmkdtC5qJKTTDAVId2WlIsmYyqiRLoObi20zR9_4ZuVZkBAkAxAKcHt2DmP-PUH1M6RGvNPyY1ookjz3JCdM-DAoFikP10GXoxim0SP79kK8_IUMDVUjyHNemDoQgHUIfRub2PAkAJLF31Ml-5hJ3fjmICKxzIUfrzNaXYoWBjx_i939iRdXlwK7--KJx7M3Z40eQDqmgsP9L7xQ9ay3yO3dY8O0Vo";
+				String src = RSAUtil.decrypt(LICENSE, PRIVATE_KEY);
 				String[] ks = src.split(":");
 				LICENSE_VERSION_TYPE = ks[0];
-				LICENSE_SCOPE = BasicUtil.parseInt(ks[3], LICENSE_SCOPE);
-				LICENSE_LVL = BasicUtil.parseInt(ks[4], LICENSE_LVL);
-				if (LICENSE_SCOPE > 1) {
+				LICENSE_SCOPE = BasicUtil.parseInt(ks[4], LICENSE_SCOPE);
+				LICENSE_C1 = BasicUtil.parseInt(ks[5], 0);
+				LICENSE_C2 = BasicUtil.parseInt(ks[6], 0);
+				if (LICENSE_C1 > 0) {
 					if (BasicUtil.isEmpty(LICENSE_USER)) {
 						LICENSE_USER = ks[1];
 					}
 				} else {
 					LICENSE_USER = ks[1];
 				}
-				LICENSE_EXP = ks[2];
+				if (LICENSE_C2 > 0) {
+					if (BasicUtil.isEmpty(LICENSE_PROJECT)) {
+						LICENSE_PROJECT = ks[2];
+					}
+				} else {
+					LICENSE_PROJECT = ks[2];
+				}
+				LICENSE_EXP = ks[3];
 			} catch (Exception ignore) {
-				LICENSE_VERSION_TYPE = "开源社区版"	;
+				LICENSE_VERSION_TYPE = "版本异常"	;
 				LICENSE_USER		 = null	;
 				LICENSE_EXP			 = null	;
-				LICENSE_LVL 		 = 0;
 				LICENSE_SCOPE 		 = 1;
+				LICENSE_C1 		 	 = 0;
+				LICENSE_C2 		 	 = 0;
 			}
 		}else{
-			LICENSE_VERSION_TYPE = "开源社区版"	;
+			LICENSE_VERSION_TYPE = "版本异常"	;
 			LICENSE_USER		 = null	;
 			LICENSE_EXP			 = null	;
-			LICENSE_LVL 		 = 0;
 			LICENSE_SCOPE 		 = 1;
+			LICENSE_C1 		 	 = 0;
+			LICENSE_C2 		 	 = 0;
 		}
 	}
-
-	protected static void license() {
+	protected static void version() {
 		decrypt();
 		try{
 			String time = null;
@@ -944,17 +954,15 @@ public class ConfigTable {
 					file = new File(anylineJarPath);
 				}catch (Exception ignored) {}
 				time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINESE).format(new Date(file.lastModified()));
-			}catch(Exception e) {
-
-			}
+			}catch(Exception ignore) {}
 
 			System.out.println();
 			boolean exp = !"1".equals(LICENSE_EXP) && null != LICENSE_EXP && DateUtil.diff(DateUtil.DATE_PART_DATE, LICENSE_EXP) > 7;
-			if(LICENSE_LVL <= 1 || !IS_HIDE_LICENSE || exp) {
+			if(LICENSE_SCOPE != 9 || !IS_HIDE_LICENSE || exp) {
 				line("","*", 0, true);
 				line("AnyLine Core [" + version + "]"," ", 0, true);
-				//line("社区开源版", " ", 0, true);
-				line("http://doc.anyline.org "," ", 0, true);
+				line("Apache License 2.0", " ", 0, true);
+				line("https://doc.anyline.org "," ", 0, true);
 				line(""," ", 0, true);
 				line("Copyright © " + Year.now().getValue() + " DeepBit Co.,Ltd. All rights reserved.", " ", 0, true);
 				if(null != time && time.startsWith("2")) {
@@ -964,34 +972,45 @@ public class ConfigTable {
 				}
 				line(""," ", 0, true);
 				line("","*", 0, true);
-				//line("","*", 0, true);
 				if(null != project) {
-				//	line(" project root > " + project, "", 0, false);
-				}
-				//line("","*", 0, true);
-				//license
-			}
-
-			if(LICENSE_LVL < 1 || !IS_HIDE_LICENSE || exp) {
-				System.out.print("[" + LICENSE_VERSION_TYPE + "]");
-				if(BasicUtil.isEmpty(LICENSE_USER)) {
-					System.out.print(" 授权期限:长期");
-				}else{
-					System.out.print(" 授权用户:" + LICENSE_USER);
-					System.out.print(" 授权期限:");
-					if("1".equals(LICENSE_EXP)){
-						System.out.print("长期");
-					}else {
-						System.out.print(LICENSE_EXP);
-					}
+					//line(" project root > " + project, "", 0, false);
 				}
 			}
+			license();
 			System.out.println("\n");
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
 	}
 
+	protected static void license() {
+		if(version.startsWith("8")){
+			System.out.println("【开源社区版】授权期限:长期");
+			return;
+		}
+		boolean exp = !"1".equals(LICENSE_EXP) && null != LICENSE_EXP && DateUtil.diff(DateUtil.DATE_PART_DATE, LICENSE_EXP) > 7;
+		if(LICENSE_SCOPE != 9 || !IS_HIDE_LICENSE || exp) {
+			System.out.print("[" + LICENSE_VERSION_TYPE + "]");
+			if(BasicUtil.isEmpty(LICENSE_USER) || exp) {
+				System.out.println("\nLICENSE注册(doc.anyline.org)");
+			}
+			if(BasicUtil.isNotEmpty(LICENSE_USER)) {
+				System.out.print(" 授权范围:" + LICENSE_USER);
+				if(BasicUtil.isNotEmpty(LICENSE_PROJECT)){
+					System.out.print("-" + LICENSE_PROJECT);
+				}
+				System.out.print(" 授权期限:");
+				if("1".equals(LICENSE_EXP)){
+					System.out.print("长期");
+				}else {
+					System.out.print(LICENSE_EXP);
+				}
+			}
+		}
+		if(BasicUtil.isEmpty(LICENSE_USER)) {
+			environment = null;
+		}
+	}
 	public static void setUpperKey(boolean bol) {
 		IS_UPPER_KEY = bol;
 	}

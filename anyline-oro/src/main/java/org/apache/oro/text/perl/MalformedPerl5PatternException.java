@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2026 www.anyline.org
+ * Copyright 2006-2026 DeepBit Co.,Ltd. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 
 /*
  * $Id: MalformedPerl5PatternException.java,v 1.7 2003/11/07 20:16:25 dfs Exp $
@@ -114,4 +115,3 @@ public final class MalformedPerl5PatternException
   }
 
 }
-

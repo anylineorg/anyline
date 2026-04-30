@@ -1,5 +1,3 @@
-
-
 org.anyline.environment.boot.AnylineProperty
 org.anyline.environment.boot.alipay.AliPayProperty
 org.anyline.environment.boot.aliyun.OSSProperty
