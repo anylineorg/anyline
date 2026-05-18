@@ -15,12 +15,13 @@
  */
 
 
-package org.anyline.web.tag; 
- 
+package org.anyline.web.tag;
+
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.encrypt.DESUtil;
+import org.anyline.web.util.WebUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -245,8 +246,10 @@ public class Checkbox extends BaseBodyTag {
 	private boolean checked(Collection<?> chks, Object value) {
 		if(null != chks) {
 			for(Object chk:chks) {
-				if(null != chk && null != value && chk.toString().equals(value.toString())) {
-					return true;
+				if(null != chk && null != value) {
+					if(chk.toString().equals(value.toString()) || chk.equals(WebUtil.decrypt(value.toString()))) {
+						return true;
+					}
 				}
 			}
 		}

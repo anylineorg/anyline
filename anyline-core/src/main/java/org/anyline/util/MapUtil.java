@@ -204,29 +204,23 @@ public class MapUtil {
 	public static Map<String, Object> copy(Map<String, Object> src, Map<String, Object> copy) {
 		return copy(src, copy, BeanUtil.getMapKeys(copy));
 	}
-	public static Map<String, Object> query(Collection<Map<String, Object>> datas, Map<String, Object> kvs) {
-		List<Map<String, Object>> list = queries(datas, 0, 1, kvs);
+	public static Map<String, Object> select(Collection<Map<String, Object>> datas, Map<String, Object> kvs) {
+		List<Map<String, Object>> list = selects(datas, 0, 1, kvs);
 		if(!list.isEmpty()) {
 			return list.get(0);
 		}
 		return null;
 	}
 
-	public static List<Map<String, Object>> querys(Collection<Map<String, Object>> datas, int begin, String... params) {
-		return queries(datas, begin, 0, params);
+	public static List<Map<String, Object>> selects(Collection<Map<String, Object>> datas, int begin, String... params) {
+		return selects(datas, begin, 0, params);
 	}
 
-	public static List<Map<String, Object>> queries(Collection<Map<String, Object>> datas, int begin, String... params) {
-		return queries(datas, begin, 0, params);
-	}
-	public static List<Map<String, Object>> querys(Collection<Map<String, Object>> datas, String... params) {
-		return queries(datas, 0, params);
+	public static List<Map<String, Object>> selects(Collection<Map<String, Object>> datas, String... params) {
+		return selects(datas, 0, params);
 	}
 
-	public static List<Map<String, Object>> queries(Collection<Map<String, Object>> datas, String... params) {
-		return queries(datas, 0, params);
-	}
-	public static List<Map<String, Object>> queries(Collection<Map<String, Object>> datas, int begin, int qty, String... params) {
+	public static List<Map<String, Object>> selects(Collection<Map<String, Object>> datas, int begin, int qty, String... params) {
 		Map<String, Object> kvs = new LinkedHashMap<>();
 		int len = params.length;
 		int i = 0;
@@ -266,13 +260,10 @@ public class MapUtil {
 			}
 			i++;
 		}
-		return querys(datas, begin, qty, kvs);
+		return selects(datas, begin, qty, kvs);
 	}
 
-	public static List<Map<String, Object>> querys(Collection<Map<String, Object>> datas, int begin, int qty, String... params) {
-		return queries(datas, begin, qty, params);
-	}
-	public static List<Map<String, Object>> queries(Collection<Map<String, Object>> datas, int begin, int qty, Map<String, Object> kvs) {
+	public static List<Map<String, Object>> selects(Collection<Map<String, Object>> datas, int begin, int qty, Map<String, Object> kvs) {
 		List<Map<String, Object>> set = new ArrayList<>();
 		for (Map<String, Object> row:datas) {
 			if(row.containsKey("_tmp_skip")) {
@@ -314,9 +305,6 @@ public class MapUtil {
 		return set;
 	}
 
-	public static List<Map<String, Object>> querys(Collection<Map<String, Object>> datas, int begin, int qty, Map<String, Object> kvs) {
-		return queries(datas, begin, qty, kvs);
-	}
 	private static String concatValue(Map<String, Object> row, String split) {
 		StringBuilder builder = new StringBuilder();
 		List<String> keys = BeanUtil.getMapKeys(row);
@@ -360,7 +348,7 @@ public class MapUtil {
 				Map<String, Object> params = new LinkedHashMap<>();
 				copy(params, row, pks);
 				copy(params, classValue);
-				Map<String, Object> valueRow = query(datas, params);
+				Map<String, Object> valueRow = select(datas, params);
 				if(null != valueRow) {
 					valueRow.put("_tmp_skip","1");
 				}

@@ -69,7 +69,7 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
      * =================================================================================================================
      * INSERT            : 插入
      * UPDATE            : 更新
-     * QUERY            : 查询(RunPrepare/XML/TABLE/VIEW/PROCEDURE)
+     * SELECT            : 查询(RunPrepare/XML/TABLE/VIEW/PROCEDURE)
      * EXISTS            : 是否存在
      * COUNT            : 统计
      * EXECUTE            : 执行(原生SQL及存储过程)
@@ -414,14 +414,14 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
     /* *****************************************************************************************************************
      *                                                     QUERY
      * -----------------------------------------------------------------------------------------------------------------
-     * String mergeFinalQuery(DataRuntime runtime, Run run)
+     * String mergeFinalSelect(DataRuntime runtime, Run run)
      * StringBuilder createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare)
      * List<RunValue> createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, Boolean placeholder, Boolean unicode)
      * List<Map<String, Object>> process(DataRuntime runtime, List<Map<String, Object>> list)
      *
-     * protected Run fillQueryContent(DataRuntime runtime, XMLRun run)
-     * protected Run fillQueryContent(DataRuntime runtime, TextRun run)
-     * protected Run fillQueryContent(DataRuntime runtime, TableRun run)
+     * protected Run fillSelectContent(DataRuntime runtime, XMLRun run)
+     * protected Run fillSelectContent(DataRuntime runtime, TextRun run)
+     * protected Run fillSelectContent(DataRuntime runtime, TableRun run)
      ******************************************************************************************************************/
 
     /**
@@ -430,14 +430,14 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
      * @return String
      */
     @Override
-    public String mergeFinalQuery(DataRuntime runtime, Run run) {
+    public String mergeFinalSelect(DataRuntime runtime, Run run) {
         if(!(run instanceof TableRun)) {
-            return run.getBaseQuery();
+            return run.getBaseSelect();
         }
         StringBuilder builder = new StringBuilder();
         RunPrepare prepare = run.getPrepare();
-        builder.append(run.getBaseQuery());
-        String cols = run.getQueryColumn();
+        builder.append(run.getBaseSelect());
+        String cols = run.getSelectColumn();
         String alias = run.getPrepare().getAlias();
         OrderStore orders = run.getOrders();
         if(null != orders) {
@@ -600,7 +600,7 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
      * 生成基础查询主体
      * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
      */
-    protected Run fillQueryContent(DataRuntime runtime, XMLRun run) {
+    protected Run fillSelectContent(DataRuntime runtime, XMLRun run) {
         return run;
     }
 
@@ -608,7 +608,7 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
      * 生成基础查询主体
      * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
      */
-    protected Run fillQueryContent(DataRuntime runtime, TextRun run) {
+    protected Run fillSelectContent(DataRuntime runtime, TextRun run) {
         StringBuilder builder = run.getBuilder();
         RunPrepare prepare = run.getPrepare();
         List<Variable> variables = run.getVariables();
@@ -705,7 +705,7 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
      * 生成基础查询主体
      * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
      */
-    protected Run fillQueryContent(DataRuntime runtime, TableRun run) {
+    protected Run fillSelectContent(DataRuntime runtime, TableRun run) {
         StringBuilder builder = run.getBuilder();
         RunPrepare prepare =  run.getPrepare();
         String alias = prepare.getAlias();
@@ -741,7 +741,7 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
      */
     @Override
     public String mergeFinalTotal(DataRuntime runtime, Run run) {
-        String sql = run.getBaseQuery() + " RETURN COUNT("+run.getPrepare().getAlias()+") AS CNT";
+        String sql = run.getBaseSelect() + " RETURN COUNT("+run.getPrepare().getAlias()+") AS CNT";
         return sql;
     }
 
@@ -752,7 +752,7 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
      ******************************************************************************************************************/
     @Override
     public String mergeFinalExists(DataRuntime runtime, Run run) {
-        String sql = run.getBaseQuery() + " RETURN COUNT("+run.getPrepare().getAlias()+") > 0  AS IS_EXISTS";
+        String sql = run.getBaseSelect() + " RETURN COUNT("+run.getPrepare().getAlias()+") > 0  AS IS_EXISTS";
         return sql;
     }
 

@@ -106,7 +106,7 @@ public class ElasticSearchActuator implements DriverActuator {
         return dsl;
     }
     @Override
-    public DataSet<DataRow> select(DriverAdapter adapter, DataRuntime runtime, String random, boolean system, ACTION.DML action, Table table, ConfigStore configs, Run run, String cmd, List<Object> values, LinkedHashMap<String, Column> columns) throws Exception {
+    public DataSet<DataRow> query(DriverAdapter adapter, DataRuntime runtime, String random, boolean system, ACTION.DML action, Table table, ConfigStore configs, Run run, String cmd, List<Object> values, LinkedHashMap<String, Column> columns) throws Exception {
         DataSet<DataRow> set = new DataSet();
         if(null == columns){
             columns = new LinkedHashMap<>();
@@ -119,7 +119,7 @@ public class ElasticSearchActuator implements DriverActuator {
         Request request = new Request(
                 method,
                 endpoint);
-        String body = run.getFinalQuery();
+        String body = run.getFinalSelect();
         if(BasicUtil.isNotEmpty(body)) {
             request.setJsonEntity(body);
         }

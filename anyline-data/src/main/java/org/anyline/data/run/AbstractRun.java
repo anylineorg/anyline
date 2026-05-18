@@ -608,8 +608,8 @@ public abstract class AbstractRun implements Run {
 		} 
 	} 
 	@Override 
-	public String getFinalQuery(Boolean placeholder) {
-		String text = runtime.getAdapter().mergeFinalQuery(runtime, this);
+	public String getFinalSelect(Boolean placeholder) {
+		String text = runtime.getAdapter().mergeFinalSelect(runtime, this);
 		if(ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN) {
 			text = SQLUtil.placeholder(text, delimiterFr, delimiterTo);
 		}
@@ -620,7 +620,7 @@ public abstract class AbstractRun implements Run {
 		return text;
 	} 
 	@Override 
-	public String getTotalQuery(Boolean placeholder) {
+	public String getTotalSelect(Boolean placeholder) {
 		String text = runtime.getAdapter().mergeFinalTotal(runtime, this);
 		if(ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN) {
 			text = SQLUtil.placeholder(text, delimiterFr, delimiterTo);
@@ -644,7 +644,7 @@ public abstract class AbstractRun implements Run {
 		return text;
 	}
 	@Override 
-	public String getBaseQuery(Boolean placeholder) {
+	public String getBaseSelect(Boolean placeholder) {
 		String text = builder.toString();
 		if(!placeholder) {
 			text = replace(text);
@@ -1140,7 +1140,7 @@ public abstract class AbstractRun implements Run {
 	}
 
 	@Override
-	public Run setQueryColumns(String... columns) {
+	public Run setSelectColumns(String... columns) {
 		if(null != columns) {
 			this.queryColumns = BeanUtil.array2list(columns);
 		}
@@ -1148,13 +1148,13 @@ public abstract class AbstractRun implements Run {
 	}
 
 	@Override
-	public Run setQueryColumns(List<String> columns) {
+	public Run setSelectColumns(List<String> columns) {
 		this.queryColumns = columns;
 		return this;
 	}
 
 	@Override
-	public List<String> getQueryColumns() {
+	public List<String> getSelectColumns() {
 		return this.queryColumns;
 	}
 
@@ -1222,7 +1222,7 @@ public abstract class AbstractRun implements Run {
 	 * @return String
 	 */
 	@Override
-	public String getQueryColumn() {
+	public String getSelectColumn() {
 		String result = "*";
 		if(null != prepare) {
 			List<String> cols = prepare.getFetchKeys();
@@ -1292,9 +1292,9 @@ public abstract class AbstractRun implements Run {
 		List<String> keys = null;
 		builder.append("[cmd:\n");
 		if(action == ACTION.DML.SELECT) {
-			builder.append(getFinalQuery(placeholder));
+			builder.append(getFinalSelect(placeholder));
 		}else if(action == ACTION.DML.COUNT) {
-			builder.append(getTotalQuery(placeholder));
+			builder.append(getTotalSelect(placeholder));
 		}else if(action == ACTION.DML.UPDATE) {
 			keys = getUpdateColumns();
 			builder.append(getFinalUpdate(placeholder));

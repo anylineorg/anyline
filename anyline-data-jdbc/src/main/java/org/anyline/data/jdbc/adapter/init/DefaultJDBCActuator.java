@@ -190,7 +190,7 @@ public class DefaultJDBCActuator implements DriverActuator {
     }
 
     @Override
-    public DataSet<DataRow> select(DriverAdapter adapter, DataRuntime runtime, String random, boolean system, ACTION.DML action, Table table, ConfigStore configs, Run run, String sql, List<Object> values, LinkedHashMap<String,Column> columns) throws Exception {
+    public DataSet<DataRow> query(DriverAdapter adapter, DataRuntime runtime, String random, boolean system, ACTION.DML action, Table table, ConfigStore configs, Run run, String sql, List<Object> values, LinkedHashMap<String,Column> columns) throws Exception {
         DataSet<DataRow> set = new DataSet();
         long fr = System.currentTimeMillis();
         final DataRuntime rt = runtime;
@@ -293,7 +293,7 @@ public class DefaultJDBCActuator implements DriverActuator {
      * @return DataSet
      */
     @Override
-    public DataSet<DataRow> queries(DriverAdapter adapter, DataRuntime runtime, String random, Procedure procedure, PageNavi navi) throws Exception {
+    public DataSet<DataRow> selects(DriverAdapter adapter, DataRuntime runtime, String random, Procedure procedure, PageNavi navi) throws Exception {
         final List<Parameter> inputs = procedure.getInputs();
         final List<Parameter> outputs = procedure.getOutputs();
         DataSource datasource = datasource(runtime);
@@ -411,7 +411,7 @@ public class DefaultJDBCActuator implements DriverActuator {
     @Override
     public List<Map<String, Object>> maps(DriverAdapter adapter, DataRuntime runtime, String random, ConfigStore configs, Run run) throws Exception {
         List<Map<String, Object>> maps = new ArrayList<>();
-        String sql = run.getFinalQuery();
+        String sql = run.getFinalSelect();
         List<Object> values = run.getValues();
         DataSource datasource = datasource(runtime);
         if(null == datasource) {
@@ -991,7 +991,7 @@ public class DefaultJDBCActuator implements DriverActuator {
     public LinkedHashMap<String, Column> metadata(DriverAdapter adapter, DataRuntime runtime, String random, Run run, boolean comment) {
         LinkedHashMap<String, Column> columns = null;
         DataSource datasource = datasource(runtime);
-        String sql = run.getFinalQuery(false);
+        String sql = run.getFinalSelect(false);
         if (ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
             log.info("{}[action:metadata][cmd:\n{}\n]", random, sql);
         }

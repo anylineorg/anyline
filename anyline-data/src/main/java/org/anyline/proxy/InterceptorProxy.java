@@ -37,16 +37,16 @@ import java.util.*;
 public class InterceptorProxy {
 
     private static final Map<ACTION.DDL, List<DDInterceptor>> dds = new HashMap<>();
-    private static final List<QueryInterceptor> queryInterceptors = new ArrayList<>();
+    private static final List<SelectInterceptor> SELECT_INTERCEPTORS = new ArrayList<>();
     private static final List<CountInterceptor> countInterceptors = new ArrayList<>();
     private static final List<UpdateInterceptor> updateInterceptors = new ArrayList<>();
     private static final List<InsertInterceptor> insertInterceptors = new ArrayList<>();
     private static final List<DeleteInterceptor> deleteInterceptors = new ArrayList<>();
     private static final List<ExecuteInterceptor> executeInterceptors = new ArrayList<>();
 
-    public static void setQueryInterceptors(Map<String, QueryInterceptor> interceptors) {
-        queryInterceptors.addAll(interceptors.values());
-        JDBCInterceptor.sort(queryInterceptors);
+    public static void setSelectInterceptors(Map<String, SelectInterceptor> interceptors) {
+        SELECT_INTERCEPTORS.addAll(interceptors.values());
+        JDBCInterceptor.sort(SELECT_INTERCEPTORS);
     }
 
     public static void setCountInterceptors(Map<String, CountInterceptor> interceptors) {
@@ -114,9 +114,9 @@ public class InterceptorProxy {
      *                                  DML
      *
      * ****************************************************************************************************************/
-    public static SWITCH prepareQuery(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
+    public static SWITCH prepareSelect(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
         SWITCH swt = SWITCH.CONTINUE;
-        for(QueryInterceptor interceptor:queryInterceptors) {
+        for(SelectInterceptor interceptor: SELECT_INTERCEPTORS) {
             swt = interceptor.prepare(runtime, random, prepare, configs, conditions);
             if(swt == SWITCH.SKIP) {
                 //跳过后续的 prepare
@@ -125,9 +125,9 @@ public class InterceptorProxy {
         }
         return swt;
     }
-    public static SWITCH prepareQuery(DataRuntime runtime, String random, Procedure procedure, PageNavi navi) {
+    public static SWITCH prepareSelect(DataRuntime runtime, String random, Procedure procedure, PageNavi navi) {
         SWITCH swt = SWITCH.CONTINUE;
-        for(QueryInterceptor interceptor:queryInterceptors) {
+        for(SelectInterceptor interceptor: SELECT_INTERCEPTORS) {
             swt = interceptor.prepare(runtime, random, procedure, navi);
             if(swt == SWITCH.SKIP) {
                 //跳过后续的 prepare
@@ -136,9 +136,9 @@ public class InterceptorProxy {
         }
         return swt;
     }
-    public static SWITCH beforeQuery(DataRuntime runtime, String random, Run run, PageNavi navi) {
+    public static SWITCH beforeSelect(DataRuntime runtime, String random, Run run, PageNavi navi) {
         SWITCH swt = SWITCH.CONTINUE;
-        for(QueryInterceptor interceptor:queryInterceptors) {
+        for(SelectInterceptor interceptor: SELECT_INTERCEPTORS) {
             swt = interceptor.before(runtime, random, run, new DefaultConfigStore().setPageNavi(navi));
             if(swt == SWITCH.SKIP) {
                 //跳过后续的 before
@@ -147,9 +147,9 @@ public class InterceptorProxy {
         }
         return swt;
     }
-    public static SWITCH beforeQuery(DataRuntime runtime, String random, Procedure procedure, PageNavi navi) {
+    public static SWITCH beforeSelect(DataRuntime runtime, String random, Procedure procedure, PageNavi navi) {
         SWITCH swt = SWITCH.CONTINUE;
-        for(QueryInterceptor interceptor:queryInterceptors) {
+        for(SelectInterceptor interceptor: SELECT_INTERCEPTORS) {
             swt = interceptor.before(runtime, random, procedure, new DefaultConfigStore().setPageNavi(navi));
             if(swt == SWITCH.SKIP) {
                 //跳过后续的 before
@@ -158,9 +158,9 @@ public class InterceptorProxy {
         }
         return swt;
     }
-    public static SWITCH afterQuery(DataRuntime runtime, String random, Run run, boolean exe, Object result, PageNavi navi, long millis) {
+    public static SWITCH afterSelect(DataRuntime runtime, String random, Run run, boolean exe, Object result, PageNavi navi, long millis) {
         SWITCH swt = SWITCH.CONTINUE;
-        for(QueryInterceptor interceptor:queryInterceptors) {
+        for(SelectInterceptor interceptor: SELECT_INTERCEPTORS) {
             swt = interceptor.after(runtime, random, run, exe, result, new DefaultConfigStore().setPageNavi(navi), millis);
             if(swt == SWITCH.SKIP) {
                 //跳过后续的 after
@@ -170,9 +170,9 @@ public class InterceptorProxy {
         return swt;
     }
 
-    public static SWITCH afterQuery(DataRuntime runtime, String random, Procedure procedure, ConfigStore configs, boolean success, Object result, long millis) {
+    public static SWITCH afterSelect(DataRuntime runtime, String random, Procedure procedure, ConfigStore configs, boolean success, Object result, long millis) {
         SWITCH swt = SWITCH.CONTINUE;
-        for(QueryInterceptor interceptor:queryInterceptors) {
+        for(SelectInterceptor interceptor: SELECT_INTERCEPTORS) {
             swt = interceptor.after(runtime, random, procedure, configs, success, result, millis);
             if(swt == SWITCH.SKIP) {
                 //跳过后续的 after

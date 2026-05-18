@@ -81,7 +81,7 @@ public class Oracle11Adapter extends OracleAdapter implements JDBCAdapter {
     }
 
     @Override
-    public String mergeFinalQuery(DataRuntime runtime, Run run) {
+    public String mergeFinalSelect(DataRuntime runtime, Run run) {
         return super.pageRowNum(runtime, run);
     }
 }

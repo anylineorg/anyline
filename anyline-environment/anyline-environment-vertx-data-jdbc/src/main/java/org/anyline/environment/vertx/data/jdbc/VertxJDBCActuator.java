@@ -83,12 +83,12 @@ public class VertxJDBCActuator implements DriverActuator {
     }
 
     @Override
-    public DataSet<DataRow> select(DriverAdapter adapter, DataRuntime runtime, String random, boolean system, ACTION.DML action, Table table, ConfigStore configs, Run run, String sql, List<Object> values, LinkedHashMap<String, Column> columns) throws Exception {
+    public DataSet<DataRow> query(DriverAdapter adapter, DataRuntime runtime, String random, boolean system, ACTION.DML action, Table table, ConfigStore configs, Run run, String sql, List<Object> values, LinkedHashMap<String, Column> columns) throws Exception {
         return null;
     }
 
     @Override
-    public DataSet<DataRow> queries(DriverAdapter adapter, DataRuntime runtime, String random, Procedure procedure, PageNavi navi) throws Exception {
+    public DataSet<DataRow> selects(DriverAdapter adapter, DataRuntime runtime, String random, Procedure procedure, PageNavi navi) throws Exception {
         return null;
     }
 

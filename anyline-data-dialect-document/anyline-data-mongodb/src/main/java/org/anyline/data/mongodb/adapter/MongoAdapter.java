@@ -20,6 +20,7 @@ package org.anyline.data.mongodb.adapter;
 import com.mongodb.client.*;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Projections;
+import com.mongodb.client.model.Sorts;
 import com.mongodb.client.model.Updates;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.InsertManyResult;
@@ -46,7 +47,7 @@ import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.util.DataSourceUtil;
 import org.anyline.entity.*;
 import org.anyline.entity.generator.PrimaryGenerator;
-import org.anyline.exception.CommandQueryException;
+import org.anyline.exception.CommandSelectException;
 import org.anyline.exception.CommandUpdateException;
 import org.anyline.metadata.*;
 import org.anyline.metadata.refer.MetadataFieldRefer;
@@ -306,7 +307,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
      */
 
     @Override
-    public Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, Boolean placeholder, Boolean unicode, String ... conditions) {
+    public Run buildSelectRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, Boolean placeholder, Boolean unicode, String ... conditions) {
         MongoRun run = null;
         if(prepare instanceof TablePrepare) {
             run = new MongoRun(runtime, prepare.getTableName());
@@ -322,7 +323,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
             //为变量赋值
             run.init();
             //构造最终的查询SQL
-            fillQueryContent(runtime, run, placeholder, unicode);
+            fillSelectContent(runtime, run, placeholder, unicode);
         }
         return run;
     }
@@ -333,7 +334,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
     }
 
     @Override
-    protected Run fillQueryContent(DataRuntime runtime, TableRun run, Boolean placeholder, Boolean unicode) {
+    protected Run fillSelectContent(DataRuntime runtime, TableRun run, Boolean placeholder, Boolean unicode) {
         MongoRun r = (MongoRun)run;
         Bson bson = null;
         ConditionChain chain = r.getConditionChain();
@@ -351,7 +352,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
             r.setExcludeColumns(excludeColumns);
         }
 
-        List<String> queryColumns = r.getQueryColumns();
+        List<String> queryColumns = r.getSelectColumns();
         if(null == queryColumns || queryColumns.isEmpty()) {
             ConfigStore configs = r.getConfigs();
             if(null != configs) {
@@ -367,7 +368,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
         }
 
         if(null != queryColumns && !queryColumns.isEmpty()) {
-            r.setQueryColumns(queryColumns);
+            r.setSelectColumns(queryColumns);
         }
         return r;
     }
@@ -501,7 +502,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
     }
 
     @Override
-    public DataSet<DataRow> select(DataRuntime runtime, String random, boolean system, Table table, ConfigStore configs, Run run) {
+    public DataSet<DataRow> query(DataRuntime runtime, String random, boolean system, Table table, ConfigStore configs, Run run) {
         MongoRun r = (MongoRun) run;
         long fr = System.currentTimeMillis();
         if(null == random) {
@@ -519,8 +520,22 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
                 log.info("{}[cmd:select][collection:{}][filter:{}]", random, run.getTableName(), bson);
             }
             FindIterable<MongoRow> rows = database.getCollection(run.getTableName(), MongoRow.class).find(bson);
+            //order
+            OrderStore orders = run.getOrders();
+            if(null != orders && ! orders.isEmpty()){
+                LinkedHashMap<String,Order> ods = orders.gets();
+                List<Bson> sorts = new ArrayList<>();
+                for(Order od:ods.values()){
+                    if(Order.TYPE.DESC == od.getType()){
+                        sorts.add(Sorts.descending(od.getColumn()));
+                    }else{
+                        sorts.add(Sorts.ascending(od.getColumn()));
+                    }
+                }
+                rows.sort(Sorts.orderBy(sorts));
+            }
             List<Bson> fields = new ArrayList<>();
-            List<String> queryColumns = run.getQueryColumns();
+            List<String> queryColumns = run.getSelectColumns();
             //查询的列
             if(null != queryColumns && !queryColumns.isEmpty()) {
                 fields.add(Projections.include(queryColumns));
@@ -552,7 +567,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
                 log.error("select 异常:", e);
             }
             if(ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION) {
-                CommandQueryException ex = new CommandQueryException("query异常:" + e, e);
+                CommandSelectException ex = new CommandSelectException("query异常:" + e, e);
                 throw ex;
             }else{
                 if(ConfigTable.IS_LOG_SQL_WHEN_ERROR) {
@@ -595,8 +610,23 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
                 log.info("{}[cmd:select][collection:{}][filter:{}]", random, run.getTableName(), bson);
             }
             FindIterable<Document> docs = database.getCollection(run.getTableName()).find(bson);
+            //order
+            OrderStore orders = run.getOrders();
+            if(null != orders && ! orders.isEmpty()){
+                LinkedHashMap<String,Order> ods = orders.gets();
+                List<Bson> sorts = new ArrayList<>();
+                for(Order od:ods.values()){
+                    if(Order.TYPE.DESC == od.getType()){
+                        sorts.add(Sorts.descending(od.getColumn()));
+                    }else{
+                        sorts.add(Sorts.ascending(od.getColumn()));
+                    }
+                }
+                docs.sort(Sorts.orderBy(sorts));
+            }
             List<Bson> fields = new ArrayList<>();
-            List<String> queryColumns = run.getQueryColumns();
+            List<String> queryColumns = run.getSelectColumns();
+
             //查询的列
             if(null != queryColumns && !queryColumns.isEmpty()) {
                 fields.add(Projections.include(queryColumns));
@@ -631,7 +661,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
                 log.error("maps 异常:", e);
             }
             if(ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION) {
-                CommandQueryException ex = new CommandQueryException("query异常:" + e, e);
+                CommandSelectException ex = new CommandSelectException("query异常:" + e, e);
                 throw ex;
             }else{
                 if(ConfigTable.IS_LOG_SQL_WHEN_ERROR) {
@@ -643,7 +673,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
     }
     @Override
     public long count(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String... conditions) {
-        Run run = buildQueryRun(runtime, prepare, configs, true, true, conditions);
+        Run run = buildSelectRun(runtime, prepare, configs, true, true, conditions);
         return count(runtime, random, run);
     }
 
@@ -1076,7 +1106,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
      * @throws Exception Exception
      */
     @Override
-    public List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Table query, int types, ConfigStore configs) throws Exception {
+    public List<Run> buildSelectTablesRun(DataRuntime runtime, boolean greedy, Table query, int types, ConfigStore configs) throws Exception {
         return new ArrayList<>();
     }
 
@@ -1201,7 +1231,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
     }
 
     @Override
-    public List<Run> buildQueryConstraintsRun(DataRuntime runtime, boolean greedy, Constraint query) {
+    public List<Run> buildSelectConstraintsRun(DataRuntime runtime, boolean greedy, Constraint query) {
         return null;
     }
 

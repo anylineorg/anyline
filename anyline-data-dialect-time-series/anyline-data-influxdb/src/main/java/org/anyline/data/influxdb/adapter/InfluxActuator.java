@@ -112,7 +112,7 @@ public class InfluxActuator implements DriverActuator {
     }
 
     @Override
-    public DataSet<DataRow> select(DriverAdapter adapter, DataRuntime runtime, String random, boolean system, ACTION.DML action, Table table, ConfigStore configs, Run run, String cmd, List<Object> values, LinkedHashMap<String, Column> columns) throws Exception {
+    public DataSet<DataRow> query(DriverAdapter adapter, DataRuntime runtime, String random, boolean system, ACTION.DML action, Table table, ConfigStore configs, Run run, String cmd, List<Object> values, LinkedHashMap<String, Column> columns) throws Exception {
         InfluxSet set = new InfluxSet();
         InfluxRuntime rt = (InfluxRuntime)runtime;
         InfluxRun r = (InfluxRun)run;

@@ -87,7 +87,7 @@ public class AggregationBuilder {
         this.configs = configs;
         return this;
     }
-    public DataSet<DataRow> querys(){
+    public DataSet<DataRow> selects(){
         if(null == prepare && null != table){
             prepare = new DefaultTablePrepare(table);
         }
@@ -102,11 +102,11 @@ public class AggregationBuilder {
                 prepare.having(having);
             }
             prepare.aggregation(aggregations);
-            return service.querys(prepare, configs);
+            return service.selects(prepare, configs);
         }
         throw new RuntimeException("未提供Table或RunPrepare");
     }
-    public DataRow query(){
+    public DataRow select(){
 
         if(null == prepare && null != table){
             prepare = new DefaultTablePrepare(table);
@@ -122,7 +122,7 @@ public class AggregationBuilder {
                 prepare.having(having);
             }
             prepare.aggregation(aggregations);
-            return service.query(prepare, configs);
+            return service.select(prepare, configs);
         }
         throw new RuntimeException("未提供Table或RunPrepare");
     }

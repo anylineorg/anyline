@@ -72,7 +72,7 @@ public class Sum extends BaseBodyTag {
 				}
 				Collection items = (Collection) data;
 				if(BasicUtil.isNotEmpty(selector) && data instanceof DataSet) {
-					items = BeanUtil.select(items,selector.split(","));
+					items = BeanUtil.selects(items,selector.split(","));
 				}
 
 				BigDecimal sum = new BigDecimal(0);

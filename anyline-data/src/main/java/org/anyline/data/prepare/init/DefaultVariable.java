@@ -15,10 +15,6 @@
  */
 
 
-/**
- * V2.0 
- */ 
-
 package org.anyline.data.prepare.init;
 
 import org.anyline.data.prepare.Variable;

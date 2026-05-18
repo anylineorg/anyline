@@ -61,7 +61,7 @@ public class Set extends BaseBodyTag {
 				if(data instanceof Collection) {
 					Collection items = (Collection) data; 
 					if(BasicUtil.isNotEmpty(selector)) {
-						items = BeanUtil.select(items,selector.split(","));
+						items = BeanUtil.selects(items,selector.split(","));
 					} 
 					if(index != null) {
 						int i = 0; 

@@ -52,7 +52,7 @@ import org.anyline.entity.generator.GeneratorConfig;
 import org.anyline.entity.generator.PrimaryGenerator;
 import org.anyline.exception.AnylineException;
 import org.anyline.exception.CommandException;
-import org.anyline.exception.CommandQueryException;
+import org.anyline.exception.CommandSelectException;
 import org.anyline.exception.CommandUpdateException;
 import org.anyline.metadata.*;
 import org.anyline.metadata.graph.EdgeTable;
@@ -353,7 +353,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * INSERT            : 插入
      * UPDATE            : 更新
      * SAVE                : 根据情况插入或更新
-     * QUERY            : 查询(RunPrepare/XML/TABLE/VIEW/PROCEDURE)
+     * SELECT            : 查询(RunPrepare/XML/TABLE/VIEW/PROCEDURE)
      * EXISTS            : 是否存在
      * COUNT            : 统计
      * EXECUTE            : 执行(原生SQL及存储过程)
@@ -1171,7 +1171,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      */
     @Override
     public Run buildUpdateRun(DataRuntime runtime, RunPrepare prepare, DataRow data, ConfigStore configs, Boolean placeholder, Boolean unicode, String ... conditions) {
-        Run run = initQueryRun(runtime, prepare);
+        Run run = initSelectRun(runtime, prepare);
         init(runtime, run, configs, conditions);
         if(run.checkValid()) {
             fillUpdateContent(runtime, (TableRun) run, data, configs, placeholder, unicode);
@@ -2070,7 +2070,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 for(String k:pvs.keySet()) {
                     stores.and(k, pvs.get(k));
                 }
-                DataSet<DataRow> exists = queries(runtime, random, prepare, stores);
+                DataSet<DataRow> exists = selects(runtime, random, prepare, stores);
                 if(!exists.isEmpty()) {
                     if(override) {
                         long result = update(runtime, random, dest, data, configs, columns);
@@ -2222,20 +2222,20 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      *                                                     QUERY
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
-     * DataSet<DataRow> queries(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
-     * DataSet<DataRow> queries(DataRuntime runtime, String random, Procedure procedure, PageNavi navi)
-     * <T> EntitySet<T> selects(DataRuntime runtime, String random, RunPrepare prepare, Class<T> clazz, ConfigStore configs, String... conditions)
+     * DataSet<DataRow> selects(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
+     * DataSet<DataRow> selects(DataRuntime runtime, String random, Procedure procedure, PageNavi navi)
+     * <T> EntitySet<T> queries(DataRuntime runtime, String random, RunPrepare prepare, Class<T> clazz, ConfigStore configs, String... conditions)
      * List<Map<String, Object>> maps(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
      * [命令合成]
-     * Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions)
-     * List<Run> buildQuerySequence(DataRuntime runtime, boolean next, String ... names)
-     * Run fillQueryContent(DataRuntime runtime, Run run)
-     * String mergeFinalQuery(DataRuntime runtime, Run run)
+     * Run buildSelectRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions)
+     * List<Run> buildSelectSequence(DataRuntime runtime, boolean next, String ... names)
+     * Run fillSelectContent(DataRuntime runtime, Run run)
+     * String mergeFinalSelect(DataRuntime runtime, Run run)
      * RunValue createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, Boolean placeholder, Boolean unicode)
      * Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, Boolean placeholder, Boolean unicode)
      * List<RunValue> createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, Boolean placeholder, Boolean unicode)
      * [命令执行]
-     * DataSet<DataRow> select(DataRuntime runtime, String random, boolean system, String table, ConfigStore configs, Run run)
+     * DataSet<DataRow> query(DataRuntime runtime, String random, boolean system, String table, ConfigStore configs, Run run)
      * List<Map<String, Object>> maps(DataRuntime runtime, String random, ConfigStore configs, Run run)
      * Map<String, Object> map(DataRuntime runtime, String random, ConfigStore configs, Run run)
      * DataRow sequence(DataRuntime runtime, String random, boolean next, String ... names)
@@ -2254,7 +2254,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @return DataSet
      */
     @Override
-    public DataSet<DataRow> queries(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
+    public DataSet<DataRow> selects(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
         Table table = null;
         DataSet<DataRow> set = null;
         Long fr = 0L;
@@ -2270,18 +2270,18 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         }
         ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
         if (null != dmListener) {
-            swt = dmListener.prepareQuery(runtime, random, prepare, configs, conditions);
+            swt = dmListener.prepareSelect(runtime, random, prepare, configs, conditions);
         }
         if(swt == ACTION.SWITCH.BREAK) {
             return new DataSet().setTable(table);
         }
         //query拦截
-        swt = InterceptorProxy.prepareQuery(runtime, random, prepare, configs, conditions);
+        swt = InterceptorProxy.prepareSelect(runtime, random, prepare, configs, conditions);
         if(swt == ACTION.SWITCH.BREAK) {
             return new DataSet().setTable(table);
         }
 
-        run = buildQueryRun(runtime, prepare, configs, true, true, conditions);
+        run = buildSelectRun(runtime, prepare, configs, true, true, conditions);
 
         if (log.isWarnEnabled() && ConfigStore.IS_LOG_SQL(configs) && !run.isValid()) {
             String tmp = "[valid:false][不具备执行条件]";
@@ -2336,13 +2336,13 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         if (run.isValid()) {
             if(null == navi || total > 0 || !autoCount) {
                 if(null != dmListener) {
-                    dmListener.beforeQuery(runtime, random, run, total);
+                    dmListener.beforeSelect(runtime, random, run, total);
                 }
-                swt = InterceptorProxy.beforeQuery(runtime, random, run, navi);
+                swt = InterceptorProxy.beforeSelect(runtime, random, run, navi);
                 if(swt == ACTION.SWITCH.BREAK) {
                     return new DataSet().setTable(table);
                 }
-                set = select(runtime, random, false, table, configs, run);
+                set = query(runtime, random, false, table, configs, run);
                 cmd_success = true;
             }else{
                 if(null != configs) {
@@ -2371,9 +2371,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         }
 
         if(null != dmListener) {
-            dmListener.afterQuery(runtime, random, run, cmd_success, set, System.currentTimeMillis() - fr);
+            dmListener.afterSelect(runtime, random, run, cmd_success, set, System.currentTimeMillis() - fr);
         }
-        InterceptorProxy.afterQuery(runtime, random, run, cmd_success, set, navi, System.currentTimeMillis() - fr);
+        InterceptorProxy.afterSelect(runtime, random, run, cmd_success, set, navi, System.currentTimeMillis() - fr);
         return set;
     }
 
@@ -2386,9 +2386,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @return DataSet
      */
     @Override
-    public DataSet<DataRow> queries(DataRuntime runtime, String random, Procedure procedure, PageNavi navi) {
+    public DataSet<DataRow> selects(DataRuntime runtime, String random, Procedure procedure, PageNavi navi) {
         if(log.isDebugEnabled()) {
-            log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 DataSet<DataRow> queries(DataRuntime runtime, String random, Procedure procedure, PageNavi navi)", 37));
+            log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 DataSet<DataRow> selects(DataRuntime runtime, String random, Procedure procedure, PageNavi navi)", 37));
         }
         return new DataSet();
     }
@@ -2405,7 +2405,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @param <T> Entity
      */
     @Override
-    public <T> EntitySet<T> selects(DataRuntime runtime, String random, RunPrepare prepare, Class<T> clazz, ConfigStore configs, String ... conditions) {
+    public <T> EntitySet<T> queries(DataRuntime runtime, String random, RunPrepare prepare, Class<T> clazz, ConfigStore configs, String ... conditions) {
         if(null == prepare) {
             prepare = new DefaultTablePrepare();
         }
@@ -2420,12 +2420,12 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         }
         ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
         if (null != dmListener) {
-            swt = dmListener.prepareQuery(runtime, random, prepare, configs, conditions);
+            swt = dmListener.prepareSelect(runtime, random, prepare, configs, conditions);
         }
         if(swt == ACTION.SWITCH.BREAK) {
             return new EntitySet();
         }
-        swt = InterceptorProxy.prepareQuery(runtime, random, prepare, configs, conditions);
+        swt = InterceptorProxy.prepareSelect(runtime, random, prepare, configs, conditions);
         if(swt == ACTION.SWITCH.BREAK) {
             return new EntitySet();
         }
@@ -2438,7 +2438,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             }
         }
 
-        run = buildQueryRun(runtime, prepare, configs, true, true, conditions);
+        run = buildSelectRun(runtime, prepare, configs, true, true, conditions);
         if (log.isWarnEnabled() && ConfigStore.IS_LOG_SQL(configs) && !run.isValid()) {
             String tmp = "[valid:false][不具备执行条件]";
             tmp += "[RunPrepare:" + ConfigParser.createSQLSign(false, false, clazz.getName(), configs, conditions) + "][thread:" + Thread.currentThread().getId() + "][ds:" + runtime.datasource() + "]";
@@ -2482,15 +2482,15 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         fr = System.currentTimeMillis();
         if (run.isValid()) {
             if(null == navi || !autoCount || total > 0) {
-                swt = InterceptorProxy.beforeQuery(runtime, random, run, navi);
+                swt = InterceptorProxy.beforeSelect(runtime, random, run, navi);
                 if(swt == ACTION.SWITCH.BREAK) {
                     return new EntitySet();
                 }
                 if (null != dmListener) {
-                    dmListener.beforeQuery(runtime, random, run, total);
+                    dmListener.beforeSelect(runtime, random, run, total);
                 }
                 fr = System.currentTimeMillis();
-                list = select(runtime, random, clazz, run.getTable(), configs, run);
+                list = query(runtime, random, clazz, run.getTable(), configs, run);
                 cmd_success = false;
             }else{
                 list = new EntitySet<>();
@@ -2504,9 +2504,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         }
 
         if (null != dmListener) {
-            dmListener.afterQuery(runtime, random, run, cmd_success, list, System.currentTimeMillis() - fr);
+            dmListener.afterSelect(runtime, random, run, cmd_success, list, System.currentTimeMillis() - fr);
         }
-        InterceptorProxy.afterQuery(runtime, random, run, cmd_success, list, navi, System.currentTimeMillis() - fr);
+        InterceptorProxy.afterSelect(runtime, random, run, cmd_success, list, navi, System.currentTimeMillis() - fr);
         return list;
     }
 
@@ -2521,7 +2521,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @param <T> entity.class
      *
      */
-    protected <T> EntitySet<T> select(DataRuntime runtime, String random, Class<T> clazz, Table table, ConfigStore configs, Run run) {
+    protected <T> EntitySet<T> query(DataRuntime runtime, String random, Class<T> clazz, Table table, ConfigStore configs, Run run) {
         EntitySet<T> set = new EntitySet<>();
         if(null == random) {
             random = random(runtime);
@@ -2529,7 +2529,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         if(null != configs) {
             configs.entityClass(clazz);
         }
-        DataSet<DataRow> rows = select(runtime, random, false, table, configs, run);
+        DataSet<DataRow> rows = query(runtime, random, false, table, configs, run);
         for(DataRow row:rows) {
             T entity = null;
             if(EntityAdapterProxy.hasAdapter(clazz)) {
@@ -2568,18 +2568,18 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             configs = new DefaultConfigStore();//拦截器中可能需要修改过滤条件
         }
         //query拦截
-        swt = InterceptorProxy.prepareQuery(runtime, random, prepare, configs, conditions);
+        swt = InterceptorProxy.prepareSelect(runtime, random, prepare, configs, conditions);
         if(swt == ACTION.SWITCH.BREAK) {
             return new ArrayList<>();
         }
 
         if (null != dmListener) {
-            swt = dmListener.prepareQuery(runtime, random, prepare, configs, conditions);
+            swt = dmListener.prepareSelect(runtime, random, prepare, configs, conditions);
         }
         if(swt == ACTION.SWITCH.BREAK) {
             return new ArrayList<>();
         }
-        run = buildQueryRun(runtime, prepare, configs, true, true, conditions);
+        run = buildSelectRun(runtime, prepare, configs, true, true, conditions);
         Long fr = System.currentTimeMillis();
         if (log.isWarnEnabled() && ConfigStore.IS_LOG_SQL(configs) && !run.isValid()) {
             String tmp = "[valid:false][不具备执行条件]";
@@ -2593,12 +2593,12 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             log.warn(tmp);
         }
         if (run.isValid()) {
-            swt = InterceptorProxy.beforeQuery(runtime, random, run, null);
+            swt = InterceptorProxy.beforeSelect(runtime, random, run, null);
             if(swt == ACTION.SWITCH.BREAK) {
                 return new ArrayList<>();
             }
             if (null != dmListener) {
-                dmListener.beforeQuery(runtime, random, run, -1);
+                dmListener.beforeSelect(runtime, random, run, -1);
             }
             if(null != configs) {
                 PageNavi navi = configs.getPageNavi();
@@ -2619,9 +2619,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         }
 
         if (null != dmListener) {
-            dmListener.afterQuery(runtime, random, run, cmd_success, maps, System.currentTimeMillis() - fr);
+            dmListener.afterSelect(runtime, random, run, cmd_success, maps, System.currentTimeMillis() - fr);
         }
-        InterceptorProxy.afterQuery(runtime, random, run, cmd_success, maps, null, System.currentTimeMillis() - fr);
+        InterceptorProxy.afterSelect(runtime, random, run, cmd_success, maps, null, System.currentTimeMillis() - fr);
         return maps;
     }
 
@@ -2635,13 +2635,13 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
      */
     @Override
-    public Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, Boolean placeholder, Boolean unicode, String ... conditions) {
-        Run run = initQueryRun(runtime, prepare);
+    public Run buildSelectRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, Boolean placeholder, Boolean unicode, String ... conditions) {
+        Run run = initSelectRun(runtime, prepare);
         init(runtime, run, configs, conditions);
         /*List<RunPrepare> joins = prepare.getJoins();
         if(null != joins) {
             for(RunPrepare join:joins) {
-                buildQueryRun(runtime, join, new DefaultConfigStore());
+                buildSelectRun(runtime, join, new DefaultConfigStore());
             }
         }*/
         List<Run> unions = run.getUnions();
@@ -2652,7 +2652,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         }
         if(run.checkValid()) {
             //构造最终的查询SQL
-            run = fillQueryContent(runtime, run, placeholder, unicode);
+            run = fillSelectContent(runtime, run, placeholder, unicode);
         }
 
         return run;
@@ -2761,9 +2761,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @return String
      */
     @Override
-    public List<Run> buildQuerySequence(DataRuntime runtime, boolean next, String ... names) {
+    public List<Run> buildSelectSequence(DataRuntime runtime, boolean next, String ... names) {
         if(log.isDebugEnabled()) {
-            log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQuerySequence(DataRuntime runtime, boolean next, String ... names)", 37));
+            log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildSelectSequence(DataRuntime runtime, boolean next, String ... names)", 37));
         }
         return new ArrayList<>();
     }
@@ -2774,8 +2774,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
      */
     @Override
-    public Run fillQueryContent(DataRuntime runtime, Run run, Boolean placeholder, Boolean unicode) {
-        return fillQueryContent(runtime, run.getBuilder(), run, placeholder, unicode);
+    public Run fillSelectContent(DataRuntime runtime, Run run, Boolean placeholder, Boolean unicode) {
+        return fillSelectContent(runtime, run.getBuilder(), run, placeholder, unicode);
     }
 
     /**
@@ -2786,14 +2786,14 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
      */
     @Override
-    public Run fillQueryContent(DataRuntime runtime, StringBuilder builder, Run run, Boolean placeholder, Boolean unicode) {
+    public Run fillSelectContent(DataRuntime runtime, StringBuilder builder, Run run, Boolean placeholder, Boolean unicode) {
         if(null != run) {
             if(run instanceof TableRun) {
-                run = fillQueryContent(runtime, builder, (TableRun) run, placeholder, unicode);
+                run = fillSelectContent(runtime, builder, (TableRun) run, placeholder, unicode);
             }else if(run instanceof XMLRun) {
-                run = fillQueryContent(runtime, builder, (XMLRun) run, placeholder, unicode);
+                run = fillSelectContent(runtime, builder, (XMLRun) run, placeholder, unicode);
             }else if(run instanceof TextRun) {
-                run = fillQueryContent(runtime, builder, (TextRun) run, placeholder, unicode);
+                run = fillSelectContent(runtime, builder, (TextRun) run, placeholder, unicode);
             }
             convert(runtime, run.getConfigs(), run);
         }
@@ -2806,8 +2806,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param run XMLRun
      */
-    protected Run fillQueryContent(DataRuntime runtime, XMLRun run, Boolean placeholder, Boolean unicode) {
-        return fillQueryContent(runtime, run.getBuilder(), run, placeholder, unicode);
+    protected Run fillSelectContent(DataRuntime runtime, XMLRun run, Boolean placeholder, Boolean unicode) {
+        return fillSelectContent(runtime, run.getBuilder(), run, placeholder, unicode);
     }
     
     /**
@@ -2816,7 +2816,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @param builder 有可能合个run合成一个 所以提供一个共用builder
      * @param run TextRun
      */
-    protected Run fillQueryContent(DataRuntime runtime, StringBuilder builder, XMLRun run, Boolean placeholder, Boolean unicode) {
+    protected Run fillSelectContent(DataRuntime runtime, StringBuilder builder, XMLRun run, Boolean placeholder, Boolean unicode) {
         String text = CommandParser.replaceVariable(runtime, run, run.getVariableBlocks(), run.getVariables(), run.getText());
         run.getBuilder().append(text);
         run.appendCondition(true);
@@ -2831,8 +2831,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param run TextRun
      */
-    protected Run fillQueryContent(DataRuntime runtime, TextRun run, Boolean placeholder, Boolean unicode) {
-        return fillQueryContent(runtime, run.getBuilder(), run, placeholder, unicode);
+    protected Run fillSelectContent(DataRuntime runtime, TextRun run, Boolean placeholder, Boolean unicode) {
+        return fillSelectContent(runtime, run.getBuilder(), run, placeholder, unicode);
     }
 
     /**
@@ -2841,7 +2841,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @param builder 有可能合个run合成一个 所以提供一个共用builder
      * @param run TextRun
      */
-    protected Run fillQueryContent(DataRuntime runtime, StringBuilder builder, TextRun run, Boolean placeholder, Boolean unicode) {
+    protected Run fillSelectContent(DataRuntime runtime, StringBuilder builder, TextRun run, Boolean placeholder, Boolean unicode) {
         String text = CommandParser.replaceVariable(runtime, run, run.getVariableBlocks(), run.getVariables(), run.getText());
         run.getBuilder().append(text);
         run.appendCondition(placeholder, unicode);
@@ -2856,8 +2856,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param run TextRun
      */
-    protected Run fillQueryContent(DataRuntime runtime, TableRun run, Boolean placeholder, Boolean unicode) {
-        return fillQueryContent(runtime, run.getBuilder(), run, placeholder, unicode);
+    protected Run fillSelectContent(DataRuntime runtime, TableRun run, Boolean placeholder, Boolean unicode) {
+        return fillSelectContent(runtime, run.getBuilder(), run, placeholder, unicode);
     }
 
     /**
@@ -2866,7 +2866,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @param builder 有可能合个run合成一个 所以提供一个共用builder
      * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
      */
-    protected Run fillQueryContent(DataRuntime runtime, StringBuilder builder, TableRun run, Boolean placeholder, Boolean unicode) {
+    protected Run fillSelectContent(DataRuntime runtime, StringBuilder builder, TableRun run, Boolean placeholder, Boolean unicode) {
         TablePrepare prepare = (TablePrepare)run.getPrepare();
         builder.append("SELECT ");
         Boolean distinct = run.distinct();
@@ -2956,7 +2956,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         /*添加查询条件*/
         // appendConfigStore();
         run.appendCondition(builder, this, true, placeholder, unicode);
-        fillQueryContentGroup(runtime, builder, run, placeholder, unicode);
+        fillSelectContentGroup(runtime, builder, run, placeholder, unicode);
 
         //UNION
         List<Run> unions = run.getUnions();
@@ -2967,13 +2967,13 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                     builder.append(" ALL ");
                 }
                 builder.append("\n");
-                fillQueryContent(runtime, builder, union, placeholder, unicode);
+                fillSelectContent(runtime, builder, union, placeholder, unicode);
                 run.getRunValues().addAll(union.getRunValues());
             }
         }
         return run;
     }
-    protected Run fillQueryContentGroup(DataRuntime runtime, StringBuilder builder, TableRun run, Boolean placeholder, Boolean unicode) {
+    protected Run fillSelectContentGroup(DataRuntime runtime, StringBuilder builder, TableRun run, Boolean placeholder, Boolean unicode) {
         RunPrepare prepare = run.getPrepare();
         ConfigStore configs = run.getConfigs();
         GroupStore groups = run.getGroups();
@@ -3024,9 +3024,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             if(null == configs){
                 configs = new DefaultConfigStore();
             }
-            Run fromRun = buildQueryRun(runtime, ((VirtualTablePrepare) prepare).getPrepare(), configs, true, true);
+            Run fromRun = buildSelectRun(runtime, ((VirtualTablePrepare) prepare).getPrepare(), configs, true, true);
             run.getRunValues().addAll(fromRun.getRunValues());
-            String inner = fromRun.getFinalQuery(true);
+            String inner = fromRun.getFinalSelect(true);
             inner = BasicUtil.tab(inner);
             builder.append("(\n").append(inner).append("\n)");
         } else {
@@ -3055,9 +3055,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         if(prepare instanceof VirtualTablePrepare) {
             join = ((VirtualTablePrepare) prepare).getPrepare().getJoin();
             builder.append(join.getType().getCode()).append(" ");
-            Run joinRun = buildQueryRun(runtime, ((VirtualTablePrepare) prepare).getPrepare(), new DefaultConfigStore(), true, true);
+            Run joinRun = buildSelectRun(runtime, ((VirtualTablePrepare) prepare).getPrepare(), new DefaultConfigStore(), true, true);
             run.getRunValues().addAll(joinRun.getRunValues());
-            String inner = joinRun.getFinalQuery(true);
+            String inner = joinRun.getFinalSelect(true);
             inner = BasicUtil.tab(inner);
             builder.append("(").append(BR).append(inner).append(BR).append(")");
         }else {
@@ -3083,8 +3083,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @return String
      */
     @Override
-    public String mergeFinalQuery(DataRuntime runtime, Run run) {
-        return run.getBaseQuery();
+    public String mergeFinalSelect(DataRuntime runtime, Run run) {
+        return run.getBaseSelect();
     }
 
     /**
@@ -3132,9 +3132,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @return DataSet
      */
     @Override
-    public DataSet<DataRow> select(DataRuntime runtime, String random, boolean system, Table table, ConfigStore configs, Run run) {
+    public DataSet<DataRow> query(DataRuntime runtime, String random, boolean system, Table table, ConfigStore configs, Run run) {
         if(log.isDebugEnabled()) {
-            log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 DataSet<DataRow> select(DataRuntime runtime, String random, boolean system, String table, ConfigStore configs, Run run)", 37));
+            log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 DataSet<DataRow> query(DataRuntime runtime, String random, boolean system, String table, ConfigStore configs, Run run)", 37));
         }
         return new DataSet().setTable(table);
     }
@@ -3155,11 +3155,11 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         if(null != configs) {
             configs.add(run);
         }
-        String sql = run.getFinalQuery();
+        String sql = run.getFinalSelect();
         List<Object> values = run.getValues();
         if(BasicUtil.isEmpty(sql)) {
             if(ConfigStore.IS_THROW_SQL_QUERY_EXCEPTION(configs)) {
-                throw new CommandQueryException("未指定命令");
+                throw new CommandSelectException("未指定命令");
             }else{
                 log.error("未指定命令");
                 return new ArrayList<>();
@@ -3186,7 +3186,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 log.error("{}[{}][action:select]{}", random, LogUtil.format("查询异常:", 33) + e, run.log(ACTION.DML.SELECT,ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
             }
             if(ConfigStore.IS_THROW_SQL_QUERY_EXCEPTION(configs)) {
-                CommandQueryException ex = new CommandQueryException("query异常:" + e, e);
+                CommandSelectException ex = new CommandSelectException("query异常:" + e, e);
                 ex.setCmd(sql);
                 ex.setValues(values);
                 throw ex;
@@ -3226,7 +3226,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             map = actuator.map(this, runtime, random, configs, run);
         }catch (Exception e) {
             if(ConfigStore.IS_THROW_SQL_QUERY_EXCEPTION(configs)) {
-                throw new CommandQueryException("查询异常", e);
+                throw new CommandSelectException("查询异常", e);
             }
             if (ConfigStore.IS_LOG_SQL_WHEN_ERROR(configs)) {
                 if(ConfigStore.IS_PRINT_EXCEPTION_STACK_TRACE(configs)) {
@@ -3317,12 +3317,12 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             return -1;
         }
         if (null != dmListener) {
-            swt = dmListener.prepareQuery(runtime, random, prepare, configs, conditions);
+            swt = dmListener.prepareSelect(runtime, random, prepare, configs, conditions);
         }
         if(swt == ACTION.SWITCH.BREAK) {
             return -1;
         }
-        run = buildQueryRun(runtime, prepare, configs,true, true, conditions);
+        run = buildSelectRun(runtime, prepare, configs,true, true, conditions);
         if(!run.isValid()) {
             if(log.isWarnEnabled() && ConfigStore.IS_LOG_SQL(configs)) {
                 log.warn("[valid:false][不具备执行条件][RunPrepare:" + ConfigParser.createSQLSign(false, false, prepare.getTableName(), configs, conditions) + "][thread:" + Thread.currentThread().getId() + "][ds:" + runtime.datasource() + "]");
@@ -3394,9 +3394,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             random = random(runtime);
         }
 
-        run = buildQueryLengthRun(runtime, cn, configs);
+        run = buildSelectLengthRun(runtime, cn, configs);
 
-        DataSet<DataRow> set = select(runtime, random, true, new Table(), configs, run);
+        DataSet<DataRow> set = query(runtime, random, true, new Table(), configs, run);
         if(!set.isEmpty()){
             count = set.getRow(0).getInt( "CNT", -1);
         }
@@ -3411,9 +3411,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @return Run
      */
     @Override
-    public Run buildQueryLengthRun(DataRuntime runtime, String cn, ConfigStore configs) {
+    public Run buildSelectLengthRun(DataRuntime runtime, String cn, ConfigStore configs) {
         if(log.isDebugEnabled()) {
-            log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现  Run buildQueryLengthRun(DataRuntime runtime, String cn, ConfigStore configs)", 37));
+            log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现  Run buildSelectLengthRun(DataRuntime runtime, String cn, ConfigStore configs)", 37));
         }
         return null;
     }
@@ -3700,7 +3700,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             run.addCondition(conditions);
             run.init(); //
             //构造最终的执行SQL
-            //fillQueryContent(runtime, run);
+            //fillSelectContent(runtime, run);
             fillExecuteContent(runtime, run, placeholder, unicode);
         }
         return run;
@@ -4256,7 +4256,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             long fr = System.currentTimeMillis();
             // 根据系统表查询
             try{
-                List<Run> runs = buildQueryRolesRun(runtime);
+                List<Run> runs = buildSelectRolesRun(runtime);
                 if (null != runs) {
                     int idx = 0;
                     for(Run run:runs) {
@@ -4293,10 +4293,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @return List
      */
     @Override
-    public List<Run> buildQueryRolesRun(DataRuntime runtime) throws Exception {
+    public List<Run> buildSelectRolesRun(DataRuntime runtime) throws Exception {
         List<Run> runs = new ArrayList<>();
         if(log.isDebugEnabled()) {
-            log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryRolesRun(DataRuntime runtime)", 37));
+            log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildSelectRolesRun(DataRuntime runtime)", 37));
         }
         return runs;
     }
@@ -4334,13 +4334,13 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * String String product(DataRuntime runtime, String random);
 	 * String String version(DataRuntime runtime, String random);
 	 * [命令合成]
-	 * List<Run> buildQueryProductRun(DataRuntime runtime)
-	 * List<Run> buildQueryVersionRun(DataRuntime runtime)
-	 * List<Run> buildQueryDatabasesRun(DataRuntime runtime, boolean greedy, String name)
-	 * List<Run> buildQueryDatabaseRun(DataRuntime runtime, boolean greedy, String name)
-	 * List<Run> buildQueryProductRun(DataRuntime runtime, boolean greedy, String name)
-	 * List<Run> buildQueryVersionRun(DataRuntime runtime, boolean greedy, String name)
-	 * List<Run> buildQueryDatabaseRun(DataRuntime runtime)
+	 * List<Run> buildSelectProductRun(DataRuntime runtime)
+	 * List<Run> buildSelectVersionRun(DataRuntime runtime)
+	 * List<Run> buildSelectDatabasesRun(DataRuntime runtime, boolean greedy, String name)
+	 * List<Run> buildSelectDatabaseRun(DataRuntime runtime, boolean greedy, String name)
+	 * List<Run> buildSelectProductRun(DataRuntime runtime, boolean greedy, String name)
+	 * List<Run> buildSelectVersionRun(DataRuntime runtime, boolean greedy, String name)
+	 * List<Run> buildSelectDatabaseRun(DataRuntime runtime)
 	 * [结果集封装]<br/>
 	 * LinkedHashMap<String, Database> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Database> databases, Catalog catalog, Schema schema, DataSet<DataRow> set)
 	 * List<Database> databases(DataRuntime runtime, int index, boolean create, List<Database> databases, Catalog catalog, Schema schema, DataSet<DataRow> set)
@@ -4390,7 +4390,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			long fr = System.currentTimeMillis();
 			// 根据系统表查询
 			try{
-				List<Run> runs = buildQueryProductRun(runtime);
+				List<Run> runs = buildSelectProductRun(runtime);
 				if (null != runs) {
 					int idx = 0;
 					for(Run run:runs) {
@@ -4438,7 +4438,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			long fr = System.currentTimeMillis();
 			// 根据系统表查询
 			try{
-				List<Run> runs = buildQueryProductRun(runtime);
+				List<Run> runs = buildSelectProductRun(runtime);
 				if (null != runs) {
 					int idx = 0;
 					for(Run run:runs) {
@@ -4491,7 +4491,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 if(!greedy) {
                     checkSchema(runtime, query);
                 }
-				List<Run> runs = buildQueryDatabasesRun(runtime, greedy, name);
+				List<Run> runs = buildSelectDatabasesRun(runtime, greedy, name);
 				if(null != runs) {
 					int idx = 0;
 					for(Run run:runs) {
@@ -4540,7 +4540,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			long fr = System.currentTimeMillis();
 			// 根据系统表查询
 			try{
-				List<Run> runs = buildQueryDatabasesRun(runtime, false, name);
+				List<Run> runs = buildSelectDatabasesRun(runtime, false, name);
 				if(null != runs) {
 					int idx = 0;
 					for(Run run:runs) {
@@ -4582,9 +4582,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public List<Run> buildQueryProductRun(DataRuntime runtime) throws Exception {
+	public List<Run> buildSelectProductRun(DataRuntime runtime) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryProductRun(DataRuntime runtime)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildSelectProductRun(DataRuntime runtime)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -4597,9 +4597,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public List<Run> buildQueryVersionRun(DataRuntime runtime) throws Exception {
+	public List<Run> buildSelectVersionRun(DataRuntime runtime) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryVersionRun(DataRuntime runtime)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildSelectVersionRun(DataRuntime runtime)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -4614,9 +4614,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public List<Run> buildQueryDatabasesRun(DataRuntime runtime, boolean greedy, Database query) throws Exception {
+	public List<Run> buildSelectDatabasesRun(DataRuntime runtime, boolean greedy, Database query) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryDatabasesRun(DataRuntime runtime, boolean greedy, Database query)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildSelectDatabasesRun(DataRuntime runtime, boolean greedy, Database query)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -4634,7 +4634,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	/**
 	 * database[结果集封装]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
+	 * @param index 第几条SQL 对照 buildSelectDatabaseRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
@@ -4662,7 +4662,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * database[结果集封装]<br/>
      *
      * @param runtime  运行环境主要包含驱动适配器 数据源或客户端
-     * @param index    第几条SQL 对照 buildQueryDatabaseRun 返回顺序
+     * @param index    第几条SQL 对照 buildSelectDatabaseRun 返回顺序
      * @param create   上一步没有查到的,这一步是否需要新创建
      * @param previous 上一步查询结果
      * @param set      查询结果集
@@ -4690,7 +4690,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * database[结果集封装]<br/>
 	 * 当前database 根据查询结果集
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
+	 * @param index 第几条SQL 对照 buildSelectDatabaseRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param meta 上一步查询结果
 	 * @param set 查询结果集
@@ -4830,7 +4830,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * <T extends Catalog> LinkedHashMap<String, T> catalogs(DataRuntime runtime, String random, String name)
 	 * <T extends Catalog> List<T> catalogs(DataRuntime runtime, String random, boolean greedy, String name)
 	 * [命令合成]
-	 * List<Run> buildQueryCatalogsRun(DataRuntime runtime, boolean greedy, String name)
+	 * List<Run> buildSelectCatalogsRun(DataRuntime runtime, boolean greedy, String name)
 	 * [结果集封装]<br/>
 	 * LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Catalog> catalogs, DataSet<DataRow> set)
 	 * List<Catalog> catalogs(DataRuntime runtime, int index, boolean create, List<Catalog> catalogs, DataSet<DataRow> set)
@@ -4858,7 +4858,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			long fr = System.currentTimeMillis();
 			//根据系统表查询
 			try{
-				List<Run> runs = buildQueryCatalogRun(runtime, random);
+				List<Run> runs = buildSelectCatalogRun(runtime, random);
 				if(null != runs) {
 					int idx = 0;
 					for(Run run:runs) {
@@ -4913,7 +4913,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			long fr = System.currentTimeMillis();
 			// 根据系统表查询
 			try{
-				List<Run> runs = buildQueryCatalogsRun(runtime, false, query);
+				List<Run> runs = buildSelectCatalogsRun(runtime, false, query);
 				if(null != runs) {
 					int idx = 0;
 					for(Run run:runs) {
@@ -4961,7 +4961,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 if(!greedy) {
                     checkSchema(runtime, query);
                 }
-				List<Run> runs = buildQueryCatalogsRun(runtime, greedy, query);
+				List<Run> runs = buildSelectCatalogsRun(runtime, greedy, query);
 				if(null != runs) {
 					int idx = 0;
 					for(Run run:runs) {
@@ -4997,9 +4997,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public List<Run> buildQueryCatalogRun(DataRuntime runtime, String random) throws Exception {
+	public List<Run> buildSelectCatalogRun(DataRuntime runtime, String random) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryCatalogRun(DataRuntime runtime, String random)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildSelectCatalogRun(DataRuntime runtime, String random)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -5014,9 +5014,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public List<Run> buildQueryCatalogsRun(DataRuntime runtime, boolean greedy, Catalog query) throws Exception {
+	public List<Run> buildSelectCatalogsRun(DataRuntime runtime, boolean greedy, Catalog query) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryCatalogsRun(DataRuntime runtime, boolean greedy, Catalog query)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildSelectCatalogsRun(DataRuntime runtime, boolean greedy, Catalog query)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -5034,7 +5034,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * catalog[结果集封装]<br/>
 	 * 根据查询结果集构造 Database
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
+	 * @param index 第几条SQL 对照 buildSelectDatabaseRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
@@ -5063,7 +5063,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * catalog[结果集封装]<br/>
 	 * 根据查询结果集构造 Database
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
+	 * @param index 第几条SQL 对照 buildSelectDatabaseRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
@@ -5125,7 +5125,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * catalog[结果集封装]<br/>
 	 * 当前catalog 根据查询结果集
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
+	 * @param index 第几条SQL 对照 buildSelectDatabaseRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param meta 上一步查询结果
 	 * @param set 查询结果集
@@ -5197,7 +5197,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * <T extends Schema> LinkedHashMap<String, T> schemas(DataRuntime runtime, String random, Catalog catalog, String name)
 	 * <T extends Schema> List<T> schemas(DataRuntime runtime, String random, boolean greedy, Catalog catalog, String name)
 	 * [命令合成]
-	 * List<Run> buildQuerySchemasRun(DataRuntime runtime, boolean greedy, Catalog catalog, String name)
+	 * List<Run> buildSelectSchemasRun(DataRuntime runtime, boolean greedy, Catalog catalog, String name)
 	 * [结果集封装]<br/>
 	 * LinkedHashMap<String, Schema> schemas(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Schema> schemas, Catalog catalog, Schema schema, DataSet<DataRow> set)
 	 * List<Schema> schemas(DataRuntime runtime, int index, boolean create, List<Schema> schemas, Catalog catalog, Schema schema, DataSet<DataRow> set)
@@ -5222,7 +5222,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			long fr = System.currentTimeMillis();
 			//根据系统表查询
 			try{
-				List<Run> runs = buildQuerySchemaRun(runtime, random);
+				List<Run> runs = buildSelectSchemaRun(runtime, random);
 				if(null != runs) {
 					int idx = 0;
 					for(Run run:runs) {
@@ -5270,9 +5270,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         if(run instanceof SimpleRun) {
             String text = run.getBuilder().toString();
             RunPrepare prepare = new DefaultTextPrepare(text);
-            run = buildQueryRun(runtime, prepare, configs, true, true);
+            run = buildSelectRun(runtime, prepare, configs, true, true);
         }
-        DataSet<DataRow> set = select(runtime, random, true, (Table)null, configs, run);
+        DataSet<DataRow> set = query(runtime, random, true, (Table)null, configs, run);
         return set;
     }
 	/**
@@ -5292,7 +5292,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			long fr = System.currentTimeMillis();
 			// 根据系统表查询
 			try{
-				List<Run> runs = buildQuerySchemasRun(runtime, false, query);
+				List<Run> runs = buildSelectSchemasRun(runtime, false, query);
 				if(null != runs) {
 					int idx = 0;
 					for(Run run:runs) {
@@ -5340,7 +5340,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 if(!greedy) {
                     checkSchema(runtime, query);
                 }
-				List<Run> runs = buildQuerySchemasRun(runtime, greedy, query);
+				List<Run> runs = buildSelectSchemasRun(runtime, greedy, query);
 				if(null != runs) {
 					int idx = 0;
 					for(Run run:runs) {
@@ -5376,9 +5376,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public List<Run> buildQuerySchemaRun(DataRuntime runtime, String random) throws Exception {
+	public List<Run> buildSelectSchemaRun(DataRuntime runtime, String random) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQuerySchemaRun(DataRuntime runtime, String random)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildSelectSchemaRun(DataRuntime runtime, String random)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -5393,9 +5393,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public List<Run> buildQuerySchemasRun(DataRuntime runtime, boolean greedy, Schema query) throws Exception {
+	public List<Run> buildSelectSchemasRun(DataRuntime runtime, boolean greedy, Schema query) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQuerySchemasRun(DataRuntime runtime, boolean greedy, Schema query)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildSelectSchemasRun(DataRuntime runtime, boolean greedy, Schema query)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -5413,7 +5413,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * schema[结果集封装]<br/>
 	 * 根据查询结果集构造 Schema
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
+	 * @param index 第几条SQL 对照 buildSelectDatabaseRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
@@ -5442,7 +5442,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * schema[结果集封装]<br/>
 	 * 根据查询结果集构造 Schema
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
+	 * @param index 第几条SQL 对照 buildSelectDatabaseRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
@@ -5504,7 +5504,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * schema[结果集封装]<br/>
 	 * 当前schema 根据查询结果集
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照 buildQuerySchemaRun 返回顺序
+	 * @param index 第几条SQL 对照 buildSelectSchemaRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param meta 上一步查询结果
 	 * @param set 查询结果集
@@ -5630,8 +5630,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, boolean struct)
 	 * <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, String types, boolean struct)
 	 * [命令合成]
-	 * List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs)
-	 * List<Run> buildQueryTablesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types)
+	 * List<Run> buildSelectTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs)
+	 * List<Run> buildSelectTablesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types)
 	 * [结果集封装]<br/>
 	 * <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet<DataRow> set)
 	 * <T extends Table> List<T> tables(DataRuntime runtime, int index, boolean create, List<T> tables, Catalog catalog, Schema schema, DataSet<DataRow> set)
@@ -5641,7 +5641,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * [调用入口]
 	 * List<String> ddl(DataRuntime runtime, String random, Table table, boolean init)
 	 * [命令合成]
-	 * List<Run> buildQueryDdlRun(DataRuntime runtime, Table table)
+	 * List<Run> buildSelectDdlRun(DataRuntime runtime, Table table)
 	 * [结果集封装]<br/>
 	 * List<String> ddl(DataRuntime runtime, int index, Table table, List<String> ddls, DataSet<DataRow> set)
 	 ******************************************************************************************************************/
@@ -5693,19 +5693,19 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 navi = configs.getPageNavi();
                 // 根据系统表查询
                 try {
-                    List<Run> runs = buildQueryTablesRun(runtime, greedy, query, types, configs);
+                    List<Run> runs = buildSelectTablesRun(runtime, greedy, query, types, configs);
                     if (null != runs) {
                         int idx = 0;
                         for (Run run : runs) {
                             if (null != navi) {
                                 long total = navi.getTotalRow();
                                 if(total <= 0) {
-                                    total = count(runtime, random, new DefaultTextPrepare(run.getFinalQuery(false)), configs);
+                                    total = count(runtime, random, new DefaultTextPrepare(run.getFinalSelect(false)), configs);
                                     navi.setTotalRow(total);
                                 }
 
                                 run.setPageNavi(navi);
-                                mergeFinalQuery(runtime, run);
+                                mergeFinalSelect(runtime, run);
                             }
                             DataSet<DataRow> set = selectMetadata(runtime, random, run);
                             list = tables(runtime, idx++, true, list, catalog, schema, set);
@@ -5755,13 +5755,13 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 //表备注
                 if (!comment) {
                     try {
-                        List<Run> runs = buildQueryTablesCommentRun(runtime, catalog, schema, origin, types);
+                        List<Run> runs = buildSelectTablesCommentRun(runtime, catalog, schema, origin, types);
                         if (null != runs) {
                             int idx = 0;
                             for (Run run : runs) {
                                 if (null != navi) {
                                     run.setPageNavi(navi);
-                                    //mergeFinalQuery(runtime, run);
+                                    //mergeFinalSelect(runtime, run);
                                 }
                                 DataSet<DataRow> set = selectMetadata(runtime, random, run);
                                 list = comments(runtime, idx++, true, list, catalog, schema, set);
@@ -5861,7 +5861,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			}
 			try {
 				//缓存 不需要configs条件及分页
-				List<Run> runs = buildQueryTablesRun(runtime, greedy, catalog, schema, null, Table.TYPE.NORMAL.value, new DefaultConfigStore());
+				List<Run> runs = buildSelectTablesRun(runtime, greedy, catalog, schema, null, Table.TYPE.NORMAL.value, new DefaultConfigStore());
 				if (null != runs && !runs.isEmpty()) {
 					int idx = 0;
 					for (Run run : runs) {
@@ -5920,9 +5920,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception Exception
 	 */
 	@Override
-	public List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Table query, int types, ConfigStore configs) throws Exception {
+	public List<Run> buildSelectTablesRun(DataRuntime runtime, boolean greedy, Table query, int types, ConfigStore configs) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryTablesRun(DataRuntime runtime, Table query, String pattern, int types)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildSelectTablesRun(DataRuntime runtime, Table query, String pattern, int types)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -5966,9 +5966,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception Exception
 	 */
 	@Override
-	public List<Run> buildQueryTablesCommentRun(DataRuntime runtime, Table query, int types) throws Exception {
+	public List<Run> buildSelectTablesCommentRun(DataRuntime runtime, Table query, int types) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryTablesCommentRun(DataRuntime runtime, Table query, int types)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildSelectTablesCommentRun(DataRuntime runtime, Table query, int types)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -5977,7 +5977,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * table[结果集封装]<br/>
 	 * 根据查询结果集构造Table
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照buildQueryTablesRun返回顺序
+	 * @param index 第几条SQL 对照buildSelectTablesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
      * @param query 查询条件 根据metadata属性
 	 * @param previous 上一步查询结果
@@ -6008,7 +6008,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * table[结果集封装]<br/>
 	 * 根据查询结果集构造Table
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照buildQueryTablesRun返回顺序
+	 * @param index 第几条SQL 对照buildSelectTablesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
      * @param query 查询条件 根据metadata属性
 	 * @param previous 上一步查询结果
@@ -6163,7 +6163,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * table[结果集封装]<br/>
 	 * 表备注
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照buildQueryTablesRun返回顺序
+	 * @param index 第几条SQL 对照buildSelectTablesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
      * @param query 查询条件 根据metadata属性
 	 * @param previous 上一步查询结果
@@ -6197,7 +6197,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * table[结果集封装]<br/>
 	 * 表备注
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照buildQueryTablesRun返回顺序
+	 * @param index 第几条SQL 对照buildSelectTablesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param query 查询条件 根据metadata属性
 	 * @param previous 上一步查询结果
@@ -6263,7 +6263,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		try {
 			long fr = System.currentTimeMillis();
-			List<Run> runs = buildQueryDdlRun(runtime, table);
+			List<Run> runs = buildSelectDdlRun(runtime, table);
 			if (null != runs && !runs.isEmpty()) {
 				//直接查询DDL
 				int idx = 0;
@@ -6325,10 +6325,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<Run> buildQueryDdlRun(DataRuntime runtime, Table table) throws Exception {
+	public List<Run> buildSelectDdlRun(DataRuntime runtime, Table table) throws Exception {
 		//有支持直接查询DDL的在子类中实现
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryDdlRun(DataRuntime runtime, Table table)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildSelectDdlRun(DataRuntime runtime, Table table)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -6337,7 +6337,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * table[结果集封装]<br/>
 	 * 查询表DDL
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照 buildQueryDdlRun 返回顺序
+	 * @param index 第几条SQL 对照 buildSelectDdlRun 返回顺序
 	 * @param table 表
 	 * @param set sql执行的结果集
 	 * @return List
@@ -6360,8 +6360,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * <T extends VertexTable> List<T> vertexs(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, boolean struct)
 	 * <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, String types, boolean struct)
 	 * [命令合成]
-	 * List<Run> buildQueryVertexsRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs)
-	 * List<Run> buildQueryVertexsCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types)
+	 * List<Run> buildSelectVertexsRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs)
+	 * List<Run> buildSelectVertexsCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types)
 	 * [结果集封装]<br/>
 	 * <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> vertexs, Catalog catalog, Schema schema, DataSet<DataRow> set)
 	 * <T extends VertexTable> List<T> vertexs(DataRuntime runtime, int index, boolean create, List<T> vertexs, Catalog catalog, Schema schema, DataSet<DataRow> set)
@@ -6371,7 +6371,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * [调用入口]
 	 * List<String> ddl(DataRuntime runtime, String random, VertexTable vertex, boolean init)
 	 * [命令合成]
-	 * List<Run> buildQueryDdlRun(DataRuntime runtime, VertexTable vertex)
+	 * List<Run> buildSelectDdlRun(DataRuntime runtime, VertexTable vertex)
 	 * [结果集封装]<br/>
 	 * List<String> ddl(DataRuntime runtime, int index, VertexTable vertex, List<String> ddls, DataSet<DataRow> set)
 	 ******************************************************************************************************************/
@@ -6423,13 +6423,13 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 navi = configs.getPageNavi();
                 // 根据系统表查询
                 try {
-                    List<Run> runs = buildQueryTablesRun(runtime, greedy, query, types, configs);
+                    List<Run> runs = buildSelectTablesRun(runtime, greedy, query, types, configs);
                     if (null != runs) {
                         int idx = 0;
                         for (Run run : runs) {
                             if (null != navi) {
                                 run.setPageNavi(navi);
-                                mergeFinalQuery(runtime, run);
+                                mergeFinalSelect(runtime, run);
                             }
                             DataSet<DataRow> set = selectMetadata(runtime, random, run);
                             list = vertexs(runtime, idx++, true, list, catalog, schema, set);
@@ -6479,13 +6479,13 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 //表备注
                 if (!comment) {
                     try {
-                        List<Run> runs = buildQueryTablesCommentRun(runtime, catalog, schema, origin, types);
+                        List<Run> runs = buildSelectTablesCommentRun(runtime, catalog, schema, origin, types);
                         if (null != runs) {
                             int idx = 0;
                             for (Run run : runs) {
                                 if (null != navi) {
                                     run.setPageNavi(navi);
-                                    //mergeFinalQuery(runtime, run);
+                                    //mergeFinalSelect(runtime, run);
                                 }
                                 DataSet<DataRow> set = selectMetadata(runtime, random, run);
                                 list = comments(runtime, idx++, true, list, catalog, schema, set);
@@ -6582,7 +6582,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		try {
 			//缓存 不需要configs条件及分页
-			List<Run> runs =buildQueryVertexsRun(runtime, greedy, catalog, schema, null, VertexTable.TYPE.NORMAL.value, new DefaultConfigStore());
+			List<Run> runs =buildSelectVertexsRun(runtime, greedy, catalog, schema, null, VertexTable.TYPE.NORMAL.value, new DefaultConfigStore());
 			if (null != runs && !runs.isEmpty()) {
 				int idx = 0;
 				for (Run run : runs) {
@@ -6641,9 +6641,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception Exception
 	 */
 	@Override
-	public List<Run> buildQueryVertexsRun(DataRuntime runtime, boolean greedy, VertexTable query, int types, ConfigStore configs) throws Exception {
+	public List<Run> buildSelectVertexsRun(DataRuntime runtime, boolean greedy, VertexTable query, int types, ConfigStore configs) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryVertexsRun(DataRuntime runtime, VertexTable query, int types)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildSelectVertexsRun(DataRuntime runtime, VertexTable query, int types)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -6668,9 +6668,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception Exception
 	 */
 	@Override
-	public List<Run> buildQueryVertexsCommentRun(DataRuntime runtime, VertexTable query, int types) throws Exception {
+	public List<Run> buildSelectVertexsCommentRun(DataRuntime runtime, VertexTable query, int types) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryVertexsCommentRun(DataRuntime runtime, VertexTable query, int types)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildSelectVertexsCommentRun(DataRuntime runtime, VertexTable query, int types)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -6679,7 +6679,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * vertex[结果集封装]<br/>
 	 *  根据查询结果集构造VertexTable
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照buildQueryVertexsRun返回顺序
+	 * @param index 第几条SQL 对照buildSelectVertexsRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
      * @param query 查询条件 根据metadata属性
 	 * @param previous 上一步查询结果
@@ -6708,7 +6708,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * vertex[结果集封装]<br/>
 	 *  根据查询结果集构造VertexTable
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照buildQueryVertexsRun返回顺序
+	 * @param index 第几条SQL 对照buildSelectVertexsRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
      * @param query 查询条件 根据metadata属性
 	 * @param previous 上一步查询结果
@@ -6795,7 +6795,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		try {
 			long fr = System.currentTimeMillis();
-			List<Run> runs = buildQueryDdlRun(runtime, vertex);
+			List<Run> runs = buildSelectDdlRun(runtime, vertex);
 			if (null != runs && !runs.isEmpty()) {
 				//直接查询DDL
 				int idx = 0;
@@ -6856,10 +6856,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<Run> buildQueryDdlRun(DataRuntime runtime, VertexTable vertex) throws Exception {
+	public List<Run> buildSelectDdlRun(DataRuntime runtime, VertexTable vertex) throws Exception {
 		//有支持直接查询DDL的在子类中实现
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryDdlRun(DataRuntime runtime, VertexTable vertex)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildSelectDdlRun(DataRuntime runtime, VertexTable vertex)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -6868,7 +6868,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * vertex[结果集封装]<br/>
 	 * 查询表DDL
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照 buildQueryDdlRun 返回顺序
+	 * @param index 第几条SQL 对照 buildSelectDdlRun 返回顺序
 	 * @param vertex 表
 	 * @param set sql执行的结果集
 	 * @return List
@@ -6930,8 +6930,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * <T extends EdgeTable> List<T> edges(DataRuntime runtime, String random, boolean greedy, EdgeTable query, int types, boolean struct)
 	 * <T extends EdgeTable> LinkedHashMap<String, T> edges(DataRuntime runtime, String random, EdgeTable query, String types, boolean struct)
 	 * [命令合成]
-	 * List<Run> buildQueryEdgesRun(DataRuntime runtime, boolean greedy, EdgeTable query, int types, ConfigStore configs)
-	 * List<Run> buildQueryEdgesCommentRun(DataRuntime runtime, EdgeTable query, int types)
+	 * List<Run> buildSelectEdgesRun(DataRuntime runtime, boolean greedy, EdgeTable query, int types, ConfigStore configs)
+	 * List<Run> buildSelectEdgesCommentRun(DataRuntime runtime, EdgeTable query, int types)
 	 * [结果集封装]<br/>
 	 * <T extends EdgeTable> LinkedHashMap<String, T> edges(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> edges, Catalog catalog, Schema schema, DataSet<DataRow> set)
 	 * <T extends EdgeTable> List<T> edges(DataRuntime runtime, int index, boolean create, List<T> edges, Catalog catalog, Schema schema, DataSet<DataRow> set)
@@ -6941,7 +6941,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * [调用入口]
 	 * List<String> ddl(DataRuntime runtime, String random, EdgeTable meta, boolean init)
 	 * [命令合成]
-	 * List<Run> buildQueryDdlRun(DataRuntime runtime, EdgeTable meta)
+	 * List<Run> buildSelectDdlRun(DataRuntime runtime, EdgeTable meta)
 	 * [结果集封装]<br/>
 	 * List<String> ddl(DataRuntime runtime, int index, EdgeTable meta, List<String> ddls, DataSet<DataRow> set)
 	 ******************************************************************************************************************/
@@ -6994,13 +6994,13 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 navi = configs.getPageNavi();
                 // 根据系统表查询
                 try {
-                    List<Run> runs = buildQueryTablesRun(runtime, greedy, query, types, configs);
+                    List<Run> runs = buildSelectTablesRun(runtime, greedy, query, types, configs);
                     if (null != runs) {
                         int idx = 0;
                         for (Run run : runs) {
                             if (null != navi) {
                                 run.setPageNavi(navi);
-                                mergeFinalQuery(runtime, run);
+                                mergeFinalSelect(runtime, run);
                             }
                             DataSet<DataRow> set = selectMetadata(runtime, random, run);
                             list = edges(runtime, idx++, true, list, catalog, schema, set);
@@ -7050,13 +7050,13 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 //表备注
                 if (!comment) {
                     try {
-                        List<Run> runs = buildQueryTablesCommentRun(runtime, catalog, schema, origin, types);
+                        List<Run> runs = buildSelectTablesCommentRun(runtime, catalog, schema, origin, types);
                         if (null != runs) {
                             int idx = 0;
                             for (Run run : runs) {
                                 if (null != navi) {
                                     run.setPageNavi(navi);
-                                    //mergeFinalQuery(runtime, run);
+                                    //mergeFinalSelect(runtime, run);
                                 }
                                 DataSet<DataRow> set = selectMetadata(runtime, random, run);
                                 list = comments(runtime, idx++, true, list, catalog, schema, set);
@@ -7153,7 +7153,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		try {
 			//缓存 不需要configs条件及分页
-			List<Run> runs =buildQueryEdgesRun(runtime, greedy, catalog, schema, null, EdgeTable.TYPE.NORMAL.value, new DefaultConfigStore());
+			List<Run> runs =buildSelectEdgesRun(runtime, greedy, catalog, schema, null, EdgeTable.TYPE.NORMAL.value, new DefaultConfigStore());
 			if (null != runs && !runs.isEmpty()) {
 				int idx = 0;
 				for (Run run : runs) {
@@ -7212,9 +7212,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception Exception
 	 */
 	@Override
-	public List<Run> buildQueryEdgesRun(DataRuntime runtime, boolean greedy, EdgeTable query, int types, ConfigStore configs) throws Exception {
+	public List<Run> buildSelectEdgesRun(DataRuntime runtime, boolean greedy, EdgeTable query, int types, ConfigStore configs) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryEdgesRun(DataRuntime runtime, EdgeTable query, int types)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildSelectEdgesRun(DataRuntime runtime, EdgeTable query, int types)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -7239,9 +7239,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception Exception
 	 */
 	@Override
-	public List<Run> buildQueryEdgesCommentRun(DataRuntime runtime, EdgeTable query, int types) throws Exception {
+	public List<Run> buildSelectEdgesCommentRun(DataRuntime runtime, EdgeTable query, int types) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryEdgesCommentRun(DataRuntime runtime, EdgeTable query, int types)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildSelectEdgesCommentRun(DataRuntime runtime, EdgeTable query, int types)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -7250,7 +7250,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * edge[结果集封装]<br/>
 	 *  根据查询结果集构造EdgeTable
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照buildQueryEdgesRun返回顺序
+	 * @param index 第几条SQL 对照buildSelectEdgesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
      * @param query 查询条件 根据metadata属性
 	 * @param previous 上一步查询结果
@@ -7279,7 +7279,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * edge[结果集封装]<br/>
 	 *  根据查询结果集构造EdgeTable
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照buildQueryEdgesRun返回顺序
+	 * @param index 第几条SQL 对照buildSelectEdgesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
      * @param query 查询条件 根据metadata属性
 	 * @param previous 上一步查询结果
@@ -7403,7 +7403,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		try {
 			long fr = System.currentTimeMillis();
-			List<Run> runs = buildQueryDdlRun(runtime, meta);
+			List<Run> runs = buildSelectDdlRun(runtime, meta);
 			if (null != runs && !runs.isEmpty()) {
 				//直接查询DDL
 				int idx = 0;
@@ -7464,10 +7464,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<Run> buildQueryDdlRun(DataRuntime runtime, EdgeTable meta) throws Exception {
+	public List<Run> buildSelectDdlRun(DataRuntime runtime, EdgeTable meta) throws Exception {
 		//有支持直接查询DDL的在子类中实现
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryDdlRun(DataRuntime runtime, EdgeTable meta)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildSelectDdlRun(DataRuntime runtime, EdgeTable meta)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -7476,7 +7476,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * edge[结果集封装]<br/>
 	 * 查询表DDL
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照 buildQueryDdlRun 返回顺序
+	 * @param index 第几条SQL 对照 buildSelectDdlRun 返回顺序
 	 * @param meta 表
 	 * @param set sql执行的结果集
 	 * @return List
@@ -7499,8 +7499,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * <T extends View> List<T> views(DataRuntime runtime, String random, boolean greedy, View query, int types, boolean struct)
 	 * <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, View query, String types, boolean struct)
 	 * [命令合成]
-	 * List<Run> buildQueryViewsRun(DataRuntime runtime, boolean greedy, View query, int types, ConfigStore configs)
-	 * List<Run> buildQueryViewsCommentRun(DataRuntime runtime, View query, int types)
+	 * List<Run> buildSelectViewsRun(DataRuntime runtime, boolean greedy, View query, int types, ConfigStore configs)
+	 * List<Run> buildSelectViewsCommentRun(DataRuntime runtime, View query, int types)
 	 * [结果集封装]<br/>
 	 * <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> views, Catalog catalog, Schema schema, DataSet<DataRow> set)
 	 * <T extends View> List<T> views(DataRuntime runtime, int index, boolean create, List<T> views, Catalog catalog, Schema schema, DataSet<DataRow> set)
@@ -7510,7 +7510,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * [调用入口]
 	 * List<String> ddl(DataRuntime runtime, String random, View view, boolean init)
 	 * [命令合成]
-	 * List<Run> buildQueryDdlRun(DataRuntime runtime, View view)
+	 * List<Run> buildSelectDdlRun(DataRuntime runtime, View view)
 	 * [结果集封装]<br/>
 	 * List<String> ddl(DataRuntime runtime, int index, View view, List<String> ddls, DataSet<DataRow> set)
 	 ******************************************************************************************************************/
@@ -7562,13 +7562,13 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 navi = configs.getPageNavi();
                 // 根据系统表查询
                 try {
-                    List<Run> runs = buildQueryViewsRun(runtime, greedy, query, types, configs);
+                    List<Run> runs = buildSelectViewsRun(runtime, greedy, query, types, configs);
                     if (null != runs) {
                         int idx = 0;
                         for (Run run : runs) {
                             if (null != navi) {
                                 run.setPageNavi(navi);
-                                mergeFinalQuery(runtime, run);
+                                mergeFinalSelect(runtime, run);
                             }
                             DataSet<DataRow> set = selectMetadata(runtime, random, run);
                             list = views(runtime, idx++, true, list, catalog, schema, set);
@@ -7618,13 +7618,13 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 //表备注
                 if (!comment) {
                     try {
-                        List<Run> runs = buildQueryTablesCommentRun(runtime, catalog, schema, origin, types);
+                        List<Run> runs = buildSelectTablesCommentRun(runtime, catalog, schema, origin, types);
                         if (null != runs) {
                             int idx = 0;
                             for (Run run : runs) {
                                 if (null != navi) {
                                     run.setPageNavi(navi);
-                                    //mergeFinalQuery(runtime, run);
+                                    //mergeFinalSelect(runtime, run);
                                 }
                                 DataSet<DataRow> set = selectMetadata(runtime, random, run);
                                 list = comments(runtime, idx++, true, list, catalog, schema, set);
@@ -7720,7 +7720,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		try {
 			//缓存 不需要configs条件及分页
-			List<Run> runs =buildQueryViewsRun(runtime, greedy, catalog, schema, null, View.TYPE.NORMAL.value, new DefaultConfigStore());
+			List<Run> runs =buildSelectViewsRun(runtime, greedy, catalog, schema, null, View.TYPE.NORMAL.value, new DefaultConfigStore());
 			if (null != runs && !runs.isEmpty()) {
 				int idx = 0;
 				for (Run run : runs) {
@@ -7788,9 +7788,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception Exception
 	 */
 	@Override
-	public List<Run> buildQueryViewsRun(DataRuntime runtime, boolean greedy, View query, int types, ConfigStore configs) throws Exception {
+	public List<Run> buildSelectViewsRun(DataRuntime runtime, boolean greedy, View query, int types, ConfigStore configs) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryViewsRun(DataRuntime runtime, View query, int types)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildSelectViewsRun(DataRuntime runtime, View query, int types)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -7818,9 +7818,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception Exception
 	 */
 	@Override
-	public List<Run> buildQueryViewsCommentRun(DataRuntime runtime, View query, int types) throws Exception {
+	public List<Run> buildSelectViewsCommentRun(DataRuntime runtime, View query, int types) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryViewsCommentRun(DataRuntime runtime, View query, int types)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildSelectViewsCommentRun(DataRuntime runtime, View query, int types)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -7829,7 +7829,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * view[结果集封装]<br/>
 	 *  根据查询结果集构造View
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照buildQueryViewsRun返回顺序
+	 * @param index 第几条SQL 对照buildSelectViewsRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param query 查询条件 根据metadata属性
 	 * @param previous 上一步查询结果
@@ -7858,7 +7858,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * view[结果集封装]<br/>
 	 *  根据查询结果集构造View
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照buildQueryViewsRun返回顺序
+	 * @param index 第几条SQL 对照buildSelectViewsRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
      * @param query 查询条件 根据metadata属性
 	 * @param previous 上一步查询结果
@@ -8005,7 +8005,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		try {
 			long fr = System.currentTimeMillis();
-			List<Run> runs = buildQueryDdlRun(runtime, view);
+			List<Run> runs = buildSelectDdlRun(runtime, view);
 			if (null != runs && !runs.isEmpty()) {
 				//直接查询DDL
 				int idx = 0;
@@ -8066,10 +8066,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<Run> buildQueryDdlRun(DataRuntime runtime, View view) throws Exception {
+	public List<Run> buildSelectDdlRun(DataRuntime runtime, View view) throws Exception {
 		//有支持直接查询DDL的在子类中实现
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryDdlRun(DataRuntime runtime, View view)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildSelectDdlRun(DataRuntime runtime, View view)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -8078,7 +8078,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * view[结果集封装]<br/>
 	 * 查询视图DDL
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照 buildQueryDdlRun 返回顺序
+	 * @param index 第几条SQL 对照 buildSelectDdlRun 返回顺序
 	 * @param view 视图
 	 * @param set sql执行的结果集
 	 * @return List
@@ -8101,8 +8101,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * <T extends MasterTable> List<T> masters(DataRuntime runtime, String random, boolean greedy, MasterTable query, int types, boolean struct)
 	 * <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, String random, MasterTable query, String types, boolean struct)
 	 * [命令合成]
-	 * List<Run> buildQueryMasterTablesRun(DataRuntime runtime, boolean greedy, MasterTable query, int types, ConfigStore configs)
-	 * List<Run> buildQueryMasterTablesCommentRun(DataRuntime runtime, MasterTable query, int types)
+	 * List<Run> buildSelectMasterTablesRun(DataRuntime runtime, boolean greedy, MasterTable query, int types, ConfigStore configs)
+	 * List<Run> buildSelectMasterTablesCommentRun(DataRuntime runtime, MasterTable query, int types)
 	 * [结果集封装]<br/>
 	 * <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> masters, Catalog catalog, Schema schema, DataSet<DataRow> set)
 	 * <T extends MasterTable> List<T> masters(DataRuntime runtime, int index, boolean create, List<T> masters, Catalog catalog, Schema schema, DataSet<DataRow> set)
@@ -8112,7 +8112,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * [调用入口]
 	 * List<String> ddl(DataRuntime runtime, String random, MasterTable master, boolean init)
 	 * [命令合成]
-	 * List<Run> buildQueryDdlRun(DataRuntime runtime, MasterTable master)
+	 * List<Run> buildSelectDdlRun(DataRuntime runtime, MasterTable master)
 	 * [结果集封装]<br/>
 	 * List<String> ddl(DataRuntime runtime, int index, MasterTable master, List<String> ddls, DataSet<DataRow> set)
 	 ******************************************************************************************************************/
@@ -8180,13 +8180,13 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 navi = configs.getPageNavi();
                 // 根据系统表查询
                 try {
-                    List<Run> runs = buildQueryMasterTablesRun(runtime, greedy, catalog, schema, origin, types, configs);
+                    List<Run> runs = buildSelectMasterTablesRun(runtime, greedy, catalog, schema, origin, types, configs);
                     if (null != runs) {
                         int idx = 0;
                         for (Run run : runs) {
                             if (null != navi) {
                                 run.setPageNavi(navi);
-                                mergeFinalQuery(runtime, run);
+                                mergeFinalSelect(runtime, run);
                             }
                             DataSet<DataRow> set = selectMetadata(runtime, random, run);
                             list = masters(runtime, idx++, true, list, catalog, schema, set);
@@ -8236,13 +8236,13 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 //表备注
                 if (!comment) {
                     try {
-                        List<Run> runs = buildQueryMasterTablesCommentRun(runtime, catalog, schema, origin, types);
+                        List<Run> runs = buildSelectMasterTablesCommentRun(runtime, catalog, schema, origin, types);
                         if (null != runs) {
                             int idx = 0;
                             for (Run run : runs) {
                                 if (null != navi) {
                                     run.setPageNavi(navi);
-                                    //mergeFinalQuery(runtime, run);
+                                    //mergeFinalSelect(runtime, run);
                                 }
                                 DataSet<DataRow> set = selectMetadata(runtime, random, run);
                                 list = comments(runtime, idx++, true, list, catalog, schema, set);
@@ -8340,7 +8340,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		try {
 			//缓存 不需要configs条件及分页
-			List<Run> runs =buildQueryMasterTablesRun(runtime, greedy, catalog, schema, null, MasterTable.TYPE.NORMAL.value, new DefaultConfigStore());
+			List<Run> runs =buildSelectMasterTablesRun(runtime, greedy, catalog, schema, null, MasterTable.TYPE.NORMAL.value, new DefaultConfigStore());
 			if (null != runs && !runs.isEmpty()) {
 				int idx = 0;
 				for (Run run : runs) {
@@ -8399,9 +8399,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception Exception
 	 */
 	@Override
-	public List<Run> buildQueryMasterTablesRun(DataRuntime runtime, boolean greedy, MasterTable query, int types, ConfigStore configs) throws Exception {
+	public List<Run> buildSelectMasterTablesRun(DataRuntime runtime, boolean greedy, MasterTable query, int types, ConfigStore configs) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryMasterTablesRun(DataRuntime runtime, MasterTable query, int types)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildSelectMasterTablesRun(DataRuntime runtime, MasterTable query, int types)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -8425,9 +8425,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception Exception
 	 */
 	@Override
-	public List<Run> buildQueryMasterTablesCommentRun(DataRuntime runtime, MasterTable query, int types) throws Exception {
+	public List<Run> buildSelectMasterTablesCommentRun(DataRuntime runtime, MasterTable query, int types) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryMasterTablesCommentRun(DataRuntime runtime, MasterTable query, int types)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildSelectMasterTablesCommentRun(DataRuntime runtime, MasterTable query, int types)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -8436,7 +8436,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * master[结果集封装]<br/>
 	 *  根据查询结果集构造MasterTable
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照buildQueryMasterTablesRun返回顺序
+	 * @param index 第几条SQL 对照buildSelectMasterTablesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
      * @param query 查询条件 根据metadata属性
 	 * @param previous 上一步查询结果
@@ -8465,7 +8465,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * master[结果集封装]<br/>
 	 *  根据查询结果集构造MasterTable
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照buildQueryMasterTablesRun返回顺序
+	 * @param index 第几条SQL 对照buildSelectMasterTablesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
      * @param query 查询条件 根据metadata属性
 	 * @param previous 上一步查询结果
@@ -8613,7 +8613,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		try {
 			long fr = System.currentTimeMillis();
-			List<Run> runs = buildQueryDdlRun(runtime, meta);
+			List<Run> runs = buildSelectDdlRun(runtime, meta);
 			if (null != runs && !runs.isEmpty()) {
 				//直接查询DDL
 				int idx = 0;
@@ -8675,10 +8675,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<Run> buildQueryDdlRun(DataRuntime runtime, MasterTable master) throws Exception {
+	public List<Run> buildSelectDdlRun(DataRuntime runtime, MasterTable master) throws Exception {
 		//有支持直接查询DDL的在子类中实现
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryDdlRun(DataRuntime runtime, MasterTable master)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildSelectDdlRun(DataRuntime runtime, MasterTable master)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -8687,7 +8687,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * master[结果集封装]<br/>
 	 * 查询表DDL
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照 buildQueryDdlRun 返回顺序
+	 * @param index 第几条SQL 对照 buildSelectDdlRun 返回顺序
 	 * @param master 表
 	 * @param set sql执行的结果集
 	 * @return List
@@ -8709,16 +8709,16 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * [调用入口]
 	 * <T extends PartitionTable> LinkedHashMap<String,T> partitions(DataRuntime runtime, String random, boolean greedy, MasterTable master, Map<String, Object> tags, String pattern)
 	 * [命令合成]
-	 * List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, boolean greedy,  PartitionTable query, int types)
-	 * List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, boolean greedy,  Table master, Map<String, Tag> tags, String pattern)
-	 * List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, boolean greedy,  Table master, Map<String, Tag> tags)
+	 * List<Run> buildSelectPartitionTablesRun(DataRuntime runtime, boolean greedy,  PartitionTable query, int types)
+	 * List<Run> buildSelectPartitionTablesRun(DataRuntime runtime, boolean greedy,  Table master, Map<String, Tag> tags, String pattern)
+	 * List<Run> buildSelectPartitionTablesRun(DataRuntime runtime, boolean greedy,  Table master, Map<String, Tag> tags)
 	 * [结果集封装]<br/>
 	 * <T extends PartitionTable> LinkedHashMap<String, T> partitions(DataRuntime runtime, int total, int index, boolean create, MasterTable master, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet<DataRow> set)
 	 * <T extends PartitionTable> LinkedHashMap<String,T> partitions(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, MasterTable master)
 	 * [调用入口]
 	 * List<String> ddl(DataRuntime runtime, String random, PartitionTable table)
 	 * [命令合成]
-	 * List<Run> buildQueryDdlRun(DataRuntime runtime, PartitionTable table)
+	 * List<Run> buildSelectDdlRun(DataRuntime runtime, PartitionTable table)
 	 * [结果集封装]<br/>
 	 * List<String> ddl(DataRuntime runtime, int index, PartitionTable table, List<String> ddls, DataSet<DataRow> set)
 	 ******************************************************************************************************************/
@@ -8737,7 +8737,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             long fr = System.currentTimeMillis();
             // 根据系统表查询
             try{
-                List<Run> runs = buildQueryTablePartitionRun(runtime, table);
+                List<Run> runs = buildSelectTablePartitionRun(runtime, table);
                 if(null != runs) {
                     int idx = 0;
                     for(Run run:runs) {
@@ -8773,7 +8773,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @return String
      */
     @Override
-    public List<Run> buildQueryTablePartitionRun(DataRuntime runtime, Table table) {
+    public List<Run> buildSelectTablePartitionRun(DataRuntime runtime, Table table) {
         return new ArrayList<>();
     }
 
@@ -8781,7 +8781,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * partition table[结果集封装]<br/>
      * 根据查询结果集构造Table
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条SQL 对照 buildQueryMasterTablesRun返回顺序
+     * @param index 第几条SQL 对照 buildSelectMasterTablesRun返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param meta 上一步查询结果
      * @param table 表
@@ -8807,7 +8807,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * partition table[结果集封装]<br/>
      * 根据查询结果集构造Table.Partition
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条SQL 对照 buildQueryMasterTablesRun返回顺序
+     * @param index 第几条SQL 对照 buildSelectMasterTablesRun返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param meta 上一步查询结果
      * @param table 表
@@ -8843,7 +8843,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * partition table[结果集封装]<br/>
      * 根据查询结果集构造Table.Partition
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条SQL 对照 buildQueryMasterTablesRun返回顺序
+     * @param index 第几条SQL 对照 buildSelectMasterTablesRun返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param meta 上一步查询结果
      * @param table 表
@@ -8906,7 +8906,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			long fr = System.currentTimeMillis();
 			// 根据系统表查询
 			try{
-				List<Run> runs = buildQueryPartitionTablesRun(runtime, greedy, query);
+				List<Run> runs = buildSelectPartitionTablesRun(runtime, greedy, query);
 				if(null != runs) {
 					int idx = 0;
 					int total = runs.size();
@@ -8945,9 +8945,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, boolean greedy,  PartitionTable query, int types) throws Exception {
+	public List<Run> buildSelectPartitionTablesRun(DataRuntime runtime, boolean greedy,  PartitionTable query, int types) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, boolean greedy,  PartitionTable query, int types)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildSelectPartitionTablesRun(DataRuntime runtime, boolean greedy,  PartitionTable query, int types)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -8967,7 +8967,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 根据查询结果集构造Table
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param total 合计SQL数量
-	 * @param index 第几条SQL 对照 buildQueryMasterTablesRun返回顺序
+	 * @param index 第几条SQL 对照 buildSelectMasterTablesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param query 查询条件 根据metadata属性
 	 * @param previous 上一步查询结果
@@ -9028,7 +9028,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		try {
 			long fr = System.currentTimeMillis();
-			List<Run> runs = buildQueryDdlRun(runtime, table);
+			List<Run> runs = buildSelectDdlRun(runtime, table);
 			if (null != runs) {
 				int idx = 0;
 				for (Run run : runs) {
@@ -9058,10 +9058,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<Run> buildQueryDdlRun(DataRuntime runtime, PartitionTable table) throws Exception {
+	public List<Run> buildSelectDdlRun(DataRuntime runtime, PartitionTable table) throws Exception {
 		List<Run> runs = new ArrayList<>();
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryDdlRun(DataRuntime runtime, PartitionTable table)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildSelectDdlRun(DataRuntime runtime, PartitionTable table)", 37));
 		}
 		return runs;
 	}
@@ -9070,7 +9070,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * partition table[结果集封装]<br/>
 	 * 查询 MasterTable DDL
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照 buildQueryDdlRun 返回顺序
+	 * @param index 第几条SQL 对照 buildSelectDdlRun 返回顺序
 	 * @param table MasterTable
 	 * @param set sql执行的结果集
 	 * @return List
@@ -9133,7 +9133,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Table table, boolean primary);
 	 * <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String table);
 	 * [命令合成]
-	 * List<Run> buildQueryColumnsRun(DataRuntime runtime, Table table, boolean metadata) throws Exception;
+	 * List<Run> buildSelectColumnsRun(DataRuntime runtime, Table table, boolean metadata) throws Exception;
 	 * [结果集封装]<br/>
 	 * <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Table table, Column query, DataSet<DataRow> set) throws Exception;
 	 * <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, List<T> previous, Column query, DataSet<DataRow> set) throws Exception;
@@ -9182,7 +9182,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 
 			// 1.优先根据系统表查询
 			try {
-				List<Run> runs = buildQueryColumnsRun(runtime,  false, query, configs);
+				List<Run> runs = buildSelectColumnsRun(runtime,  false, query, configs);
 				if (null != runs) {
 					int idx = 0;
 					for (Run run: runs) {
@@ -9209,10 +9209,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			// 再根据metadata解析 SELECT * FROM T WHERE 1=0
 			if (null == columns || columns.isEmpty()) {
 				try {
-					List<Run> runs = buildQueryColumnsRun(runtime, true, query, configs);
+					List<Run> runs = buildSelectColumnsRun(runtime, true, query, configs);
 					if (null != runs) {
 						for (Run run  : runs) {
-							String sql = run.getFinalQuery();
+							String sql = run.getFinalSelect();
 							if(BasicUtil.isNotEmpty(sql)) {
 								columns = actuator.columns(this, runtime, true, columns, table, sql);
 							}
@@ -9346,7 +9346,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 //数量太多的 不用in 先全部查出来 再分配给表
                 list.addAll(tables);
             }
-			List<Run> runs = buildQueryColumnsRun(runtime, false, list, query, configs);
+			List<Run> runs = buildSelectColumnsRun(runtime, false, list, query, configs);
 			if (null != runs) {
 				int idx = 0;
 				for (Run run: runs) {
@@ -9396,9 +9396,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return runs
 	 */
 	@Override
-	public List<Run> buildQueryColumnsRun(DataRuntime runtime,  boolean metadata, Column query, ConfigStore configs) throws Exception {
+	public List<Run> buildSelectColumnsRun(DataRuntime runtime,  boolean metadata, Column query, ConfigStore configs) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryColumnsRun(DataRuntime runtime, Table table, boolean metadata)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildSelectColumnsRun(DataRuntime runtime, Table table, boolean metadata)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -9413,9 +9413,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return runs
 	 */
 	@Override
-	public List<Run> buildQueryColumnsRun(DataRuntime runtime, boolean metadata, Collection<? extends Table> tables, Column query, ConfigStore configs) throws Exception {
+	public List<Run> buildSelectColumnsRun(DataRuntime runtime, boolean metadata, Collection<? extends Table> tables, Column query, ConfigStore configs) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryColumnsRun(DataRuntime runtime, Catalog catalog, Schema schema, Collection<? extends Table> tables, boolean metadata)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildSelectColumnsRun(DataRuntime runtime, Catalog catalog, Schema schema, Collection<? extends Table> tables, boolean metadata)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -9466,7 +9466,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 根据系统表查询SQL获取表结构
 	 *  根据查询结果集构造Column
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照 buildQueryColumnsRun返回顺序
+	 * @param index 第几条SQL 对照 buildSelectColumnsRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
 	 * @param previous 上一步查询结果
@@ -9496,7 +9496,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 根据系统表查询SQL获取表结构
 	 *  根据查询结果集构造Column
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照 buildQueryColumnsRun返回顺序
+	 * @param index 第几条SQL 对照 buildSelectColumnsRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param query 查询条件 根据metadata属性
 	 * @param previous 上一步查询结果
@@ -9539,7 +9539,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 根据系统表查询SQL获取表结构
 	 * 根据查询结果集构造Column,并分配到各自的表中
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照 buildQueryColumnsRun返回顺序
+	 * @param index 第几条SQL 对照 buildSelectColumnsRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param tables 表
 	 * @param previous 上一步查询结果
@@ -9956,7 +9956,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * [调用入口]
 	 * <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, String random, boolean greedy, Table table, Tag query)
 	 * [命令合成]
-	 * List<Run> buildQueryTagsRun(DataRuntime runtime, boolean greedy, Tag query)
+	 * List<Run> buildSelectTagsRun(DataRuntime runtime, boolean greedy, Tag query)
 	 * [结果集封装]<br/>
 	 * <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Tag query, DataSet<DataRow> set)
 	 * <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tags, Table table, String pattern)
@@ -9988,9 +9988,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return runs
 	 */
 	@Override
-	public List<Run> buildQueryTagsRun(DataRuntime runtime, boolean greedy, Tag query) throws Exception {
+	public List<Run> buildSelectTagsRun(DataRuntime runtime, boolean greedy, Tag query) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryTagsRun(DataRuntime runtime, boolean greedy, Tag query)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildSelectTagsRun(DataRuntime runtime, boolean greedy, Tag query)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -10009,7 +10009,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * tag[结果集封装]<br/>
 	 *  根据查询结果集构造Tag
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条查询SQL 对照 buildQueryTagsRun返回顺序
+	 * @param index 第几条查询SQL 对照 buildSelectTagsRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
@@ -10097,7 +10097,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * [调用入口]
 	 * PrimaryKey primary(DataRuntime runtime, String random, boolean greedy, Table table)
 	 * [命令合成]
-	 * List<Run> buildQueryPrimaryRun(DataRuntime runtime, boolean greedy,  Table table) throws Exception
+	 * List<Run> buildSelectPrimaryRun(DataRuntime runtime, boolean greedy,  Table table) throws Exception
 	 * [结构集封装]
 	 * <T extends PrimaryKey> T init(DataRuntime runtime, int index, T primary, Table table, DataSet<DataRow> set)
 	 * PrimaryKey primary(DataRuntime runtime, Table table)
@@ -10121,7 +10121,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             if(!greedy) {
                 checkSchema(runtime, query);
             }
-			List<Run> runs = buildQueryPrimaryRun(runtime, greedy, query);
+			List<Run> runs = buildSelectPrimaryRun(runtime, greedy, query);
 			if(null != runs) {
 				int idx = 0;
 				for(Run run:runs) {
@@ -10150,9 +10150,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return runs
 	 */
 	@Override
-	public List<Run> buildQueryPrimaryRun(DataRuntime runtime, boolean greedy,  PrimaryKey query) throws Exception {
+	public List<Run> buildSelectPrimaryRun(DataRuntime runtime, boolean greedy,  PrimaryKey query) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryPrimaryRun(DataRuntime runtime, boolean greedy,  Table table)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildSelectPrimaryRun(DataRuntime runtime, boolean greedy,  Table table)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -10192,7 +10192,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             }
             String col = getString(row, refer, PrimaryKey.FIELD_COLUMN);
             if(BasicUtil.isEmpty(col)) {
-                throw new Exception("主键相关列名异常,请检查buildQueryPrimaryRun与primaryMetadataColumn");
+                throw new Exception("主键相关列名异常,请检查buildSelectPrimaryRun与primaryMetadataColumn");
             }
             Column column = meta.getColumn(col);
             if(null == column) {
@@ -10247,7 +10247,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * [调用入口]
 	 * <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, String random, boolean greedy, Table table);
 	 * [命令合成]
-	 * List<Run> buildQueryForeignsRun(DataRuntime runtime, boolean greedy,  Table table) throws Exception;
+	 * List<Run> buildSelectForeignsRun(DataRuntime runtime, boolean greedy,  Table table) throws Exception;
 	 * [结构集封装]
 	 * <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, int index, Table table, LinkedHashMap<String, T> foreigns, DataSet<DataRow> set) throws Exception;
 	 ******************************************************************************************************************/
@@ -10272,7 +10272,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             if(!greedy) {
                 checkSchema(runtime, query);
             }
-			List<Run> runs = buildQueryForeignsRun(runtime, greedy, query);
+			List<Run> runs = buildSelectForeignsRun(runtime, greedy, query);
 			if(null != runs) {
 				int idx = 0;
 				for(Run run:runs) {
@@ -10297,9 +10297,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return runs
 	 */
 	@Override
-	public List<Run> buildQueryForeignsRun(DataRuntime runtime, boolean greedy,  ForeignKey query) throws Exception {
+	public List<Run> buildSelectForeignsRun(DataRuntime runtime, boolean greedy,  ForeignKey query) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryForeignsRun(DataRuntime runtime, boolean greedy,  ForeignKey query)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildSelectForeignsRun(DataRuntime runtime, boolean greedy,  ForeignKey query)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -10318,7 +10318,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * foreign[结构集封装]<br/>
 	 *  根据查询结果集构造PrimaryKey
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条查询SQL 对照 buildQueryForeignsRun 返回顺序
+	 * @param index 第几条查询SQL 对照 buildSelectForeignsRun 返回顺序
 	 * @param query 查询条件 根据metadata属性
 	 * @param previous 上一步查询结果
 	 * @param set sql查询结果
@@ -10345,7 +10345,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * foreign[结构集封装]<br/>
 	 * 根据查询结果集构造ForeignKey基础属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条查询SQL 对照 buildQueryIndexesRun 返回顺序
+	 * @param index 第几条查询SQL 对照 buildSelectIndexesRun 返回顺序
 	 * @param meta 上一步封装结果
      * @param query 查询条件 根据metadata属性
 	 * @param row sql查询结果
@@ -10382,7 +10382,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * foreign[结构集封装]<br/>
 	 * 根据查询结果集构造ForeignKey更多属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条查询SQL 对照 buildQueryIndexesRun 返回顺序
+	 * @param index 第几条查询SQL 对照 buildSelectIndexesRun 返回顺序
 	 * @param meta 上一步封装结果
      * @param query 查询条件 根据metadata属性
 	 * @param row sql查询结果
@@ -10403,7 +10403,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * <T extends Index> List<T> indexes(DataRuntime runtime, String random, boolean greedy, Table table, String pattern)
 	 * <T extends Index> LinkedHashMap<String, T> indexes(DataRuntime runtime, String random, Table table, String pattern)
 	 * [命令合成]
-	 * List<Run> buildQueryIndexesRun(DataRuntime runtime, boolean greedy,  Table table, String name)
+	 * List<Run> buildSelectIndexesRun(DataRuntime runtime, boolean greedy,  Table table, String name)
 	 * [结果集封装]<br/>
 	 * <T extends Index> List<T> indexes(DataRuntime runtime, int index, boolean create, Table table, List<T> indexes, DataSet<DataRow> set)
 	 * <T extends Index> LinkedHashMap<String, T> indexes(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> indexes, DataSet<DataRow> set)
@@ -10433,7 +10433,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 //数量太多的 不用in 先全部查出来 再分配给表
                 tabs.addAll(tables);
             }
-			List<Run> runs = buildQueryIndexesRun(runtime, greedy, tabs);
+			List<Run> runs = buildSelectIndexesRun(runtime, greedy, tabs);
 			if (null != runs) {
 				int idx = 0;
 				for (Run run: runs) {
@@ -10498,7 +10498,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         if(!greedy) {
             checkSchema(runtime, query);
         }
-		List<Run> runs = buildQueryIndexesRun(runtime, greedy, query);
+		List<Run> runs = buildSelectIndexesRun(runtime, greedy, query);
 		if(null != runs) {
 			int idx = 0;
 			for(Run run:runs) {
@@ -10554,7 +10554,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 
 		checkSchema(runtime, query);
 
-		List<Run> runs = buildQueryIndexesRun(runtime, false, query);
+		List<Run> runs = buildSelectIndexesRun(runtime, false, query);
 
 		if(null != runs) {
 			int idx = 0;
@@ -10627,9 +10627,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return runs
 	 */
 	@Override
-	public List<Run> buildQueryIndexesRun(DataRuntime runtime, boolean greedy, Index query) {
+	public List<Run> buildSelectIndexesRun(DataRuntime runtime, boolean greedy, Index query) {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryIndexesRun(DataRuntime runtime, boolean greedy,  Index query)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildSelectIndexesRun(DataRuntime runtime, boolean greedy,  Index query)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -10641,9 +10641,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return runs
 	 */
 	@Override
-	public List<Run> buildQueryIndexesRun(DataRuntime runtime, boolean greedy,  Collection<? extends Table> tables) {
+	public List<Run> buildSelectIndexesRun(DataRuntime runtime, boolean greedy,  Collection<? extends Table> tables) {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryIndexesRun(DataRuntime runtime, boolean greedy,  Collection<? extends Table> tables)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildSelectIndexesRun(DataRuntime runtime, boolean greedy,  Collection<? extends Table> tables)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -10668,7 +10668,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * index[结果集封装]<br/>
 	 *  根据查询结果集构造Index
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条查询SQL 对照 buildQueryIndexesRun 返回顺序
+	 * @param index 第几条查询SQL 对照 buildSelectIndexesRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
      * @param query 查询条件 根据metadata属性
 	 * @param previous 上一步查询结果
@@ -10712,7 +10712,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * index[结果集封装]<br/>
 	 *  根据查询结果集构造Index
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条查询SQL 对照 buildQueryIndexesRun 返回顺序
+	 * @param index 第几条查询SQL 对照 buildSelectIndexesRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
      * @param query 查询条件 根据metadata属性
 	 * @param previous 上一步查询结果
@@ -10756,7 +10756,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * index[结果集封装]<br/>
 	 *  根据查询结果集构造Index
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条查询SQL 对照 buildQueryIndexesRun 返回顺序
+	 * @param index 第几条查询SQL 对照 buildSelectIndexesRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param tables 表
 	 * @param previous 上一步查询结果
@@ -10852,7 +10852,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * index[结构集封装]<br/>
 	 * 根据查询结果集构造index基础属性(name,table,schema,catalog)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条查询SQL 对照 buildQueryIndexesRun 返回顺序
+	 * @param index 第几条查询SQL 对照 buildSelectIndexesRun 返回顺序
 	 * @param meta 上一步封装结果
 	 * @param query 查询条件 根据metadata属性
 	 * @param row sql查询结果
@@ -10931,7 +10931,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * index[结构集封装]<br/>
 	 * 根据查询结果集构造index更多属性(column,order, position)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条查询SQL 对照 buildQueryIndexesRun 返回顺序
+	 * @param index 第几条查询SQL 对照 buildSelectIndexesRun 返回顺序
 	 * @param meta 上一步封装结果
 	 * @param query 查询条件 根据metadata属性
 	 * @param row sql查询结果
@@ -10976,7 +10976,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * <T extends Constraint> List<T> constraints(DataRuntime runtime, String random, boolean greedy, Table table, String pattern);
 	 * <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, String random, Table table, Column column, String pattern);
 	 * [命令合成]
-	 * List<Run> buildQueryConstraintsRun(DataRuntime runtime, boolean greedy, Table table, Column column, String pattern) ;
+	 * List<Run> buildSelectConstraintsRun(DataRuntime runtime, boolean greedy, Table table, Column column, String pattern) ;
 	 * [结果集封装]<br/>
 	 * <T extends Constraint> List<T> constraints(DataRuntime runtime, int index, boolean create, Table table, List<T> constraints, DataSet<DataRow> set) throws Exception;
 	 * <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, int index, boolean create, Table table, Column column, LinkedHashMap<String, T> constraints, DataSet<DataRow> set) throws Exception;
@@ -11004,7 +11004,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 if(!greedy) {
                     checkSchema(runtime, query);
                 }
-                List<Run> runs = buildQueryConstraintsRun(runtime, greedy, query);
+                List<Run> runs = buildSelectConstraintsRun(runtime, greedy, query);
                 if(null != runs) {
                     int idx = 0;
                     for(Run run:runs) {
@@ -11051,7 +11051,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             long fr = System.currentTimeMillis();
             // 根据系统表查询
             try{
-                List<Run> runs = buildQueryConstraintsRun(runtime, false, query);
+                List<Run> runs = buildSelectConstraintsRun(runtime, false, query);
                 if(null != runs) {
                     int idx = 0;
                     for(Run run:runs) {
@@ -11087,9 +11087,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return runs
 	 */
 	@Override
-	public List<Run> buildQueryConstraintsRun(DataRuntime runtime, boolean greedy, Constraint query) {
+	public List<Run> buildSelectConstraintsRun(DataRuntime runtime, boolean greedy, Constraint query) {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryConstraintsRun(DataRuntime runtime, boolean greedy, Constraint query)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildSelectConstraintsRun(DataRuntime runtime, boolean greedy, Constraint query)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -11113,7 +11113,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * constraint[结果集封装]<br/>
 	 * 根据查询结果集构造Constraint
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
+	 * @param index 第几条查询SQL 对照 buildSelectConstraintsRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param query 查询条件 根据metadata属性
 	 * @param previous 上一步查询结果
@@ -11163,7 +11163,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * constraint[结果集封装]<br/>
 	 * 根据查询结果集构造Constraint
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
+	 * @param index 第几条查询SQL 对照 buildSelectConstraintsRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
      * @param query 查询条件 根据metadata属性
 	 * @param previous 上一步查询结果
@@ -11257,7 +11257,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * [调用入口]
 	 * <T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, String random, boolean greedy, Table table, List<Trigger.EVENT> events)
 	 * [命令合成]
-	 * List<Run> buildQueryTriggersRun(DataRuntime runtime, boolean greedy, Table table, List<Trigger.EVENT> events)
+	 * List<Run> buildSelectTriggersRun(DataRuntime runtime, boolean greedy, Table table, List<Trigger.EVENT> events)
 	 * [结果集封装]<br/>
 	 * <T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> triggers, DataSet<DataRow> set)
 	 ******************************************************************************************************************/
@@ -11285,7 +11285,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 if(!greedy) {
                     checkSchema(runtime, query);
                 }
-                List<Run> runs = buildQueryTriggersRun(runtime, greedy, query);
+                List<Run> runs = buildSelectTriggersRun(runtime, greedy, query);
                 if(null != runs) {
                     int idx = 0;
                     for(Run run:runs) {
@@ -11321,9 +11321,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return runs
 	 */
 	@Override
-	public List<Run> buildQueryTriggersRun(DataRuntime runtime, boolean greedy, Trigger query) {
+	public List<Run> buildSelectTriggersRun(DataRuntime runtime, boolean greedy, Trigger query) {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 buildQueryTriggersRun(DataRuntime runtime, boolean greedy, Trigger query)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 buildSelectTriggersRun(DataRuntime runtime, boolean greedy, Trigger query)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -11342,7 +11342,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * trigger[结果集封装]<br/>
 	 * 根据查询结果集构造 Trigger
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
+	 * @param index 第几条查询SQL 对照 buildSelectConstraintsRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
      * @param query 查询条件 根据metadata属性
 	 * @param previous 上一步查询结果
@@ -11421,7 +11421,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * <T extends Procedure> List<T> procedures(DataRuntime runtime, String random, boolean greedy, Procedure query);
 	 * <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, String random, Procedure query);
 	 * [命令合成]
-	 * List<Run> buildQueryProceduresRun(DataRuntime runtime, boolean greedy, Procedure query) ;
+	 * List<Run> buildSelectProceduresRun(DataRuntime runtime, boolean greedy, Procedure query) ;
 	 * [结果集封装]<br/>
 	 * <T extends Procedure> List<T> procedures(DataRuntime runtime, int index, boolean create, List<T> procedures, DataSet<DataRow> set) throws Exception;
 	 * <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> procedures, DataSet<DataRow> set) throws Exception;
@@ -11430,7 +11430,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * [调用入口]
 	 * List<String> ddl(DataRuntime runtime, String random, Procedure procedure);
 	 * [命令合成]
-	 * List<Run> buildQueryDdlRun(DataRuntime runtime, Procedure procedure) throws Exception;
+	 * List<Run> buildSelectDdlRun(DataRuntime runtime, Procedure procedure) throws Exception;
 	 * [结果集封装]<br/>
 	 * List<String> ddl(DataRuntime runtime, int index, Procedure procedure, List<String> ddls, DataSet<DataRow> set);
 	 ******************************************************************************************************************/
@@ -11457,7 +11457,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 if(!greedy) {
                     checkSchema(runtime, query);
                 }
-                List<Run> runs = buildQueryProceduresRun(runtime, greedy, query);
+                List<Run> runs = buildSelectProceduresRun(runtime, greedy, query);
                 if(null != runs) {
                     int idx = 0;
                     for(Run run:runs) {
@@ -11504,7 +11504,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             long fr = System.currentTimeMillis();
             // 根据系统表查询
             try{
-                List<Run> runs = buildQueryProceduresRun(runtime, false, query);
+                List<Run> runs = buildSelectProceduresRun(runtime, false, query);
                 if(null != runs) {
                     int idx = 0;
                     for(Run run:runs) {
@@ -11539,9 +11539,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @param query 查询条件 根据metadata属性
 	 * @return runs
 	 */
-	public List<Run> buildQueryProceduresRun(DataRuntime runtime, boolean greedy, Procedure query) {
+	public List<Run> buildSelectProceduresRun(DataRuntime runtime, boolean greedy, Procedure query) {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryProceduresRun(DataRuntime runtime, boolean greedy, Procedure query)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildSelectProceduresRun(DataRuntime runtime, boolean greedy, Procedure query)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -11554,10 +11554,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @return List
      */
     @Override
-    public List<Run> buildQueryParametersRun(DataRuntime runtime, Procedure procedure) throws Exception {
+    public List<Run> buildSelectParametersRun(DataRuntime runtime, Procedure procedure) throws Exception {
         List<Run> runs = new ArrayList<>();
         if(log.isDebugEnabled()) {
-            log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryParametersRun(DataRuntime runtime, Procedure procedure)", 37));
+            log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildSelectParametersRun(DataRuntime runtime, Procedure procedure)", 37));
         }
         return runs;
     }
@@ -11585,7 +11585,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * procedure[结果集封装]<br/>
 	 * 根据查询结果集构造 Trigger
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
+	 * @param index 第几条查询SQL 对照 buildSelectConstraintsRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
@@ -11613,7 +11613,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * procedure[结果集封装]<br/>
 	 * 根据查询结果集构造 Trigger
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
+	 * @param index 第几条查询SQL 对照 buildSelectConstraintsRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
@@ -11688,7 +11688,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             return null;
         }
         T procedure = procedures.get(0);
-        List<Run> runs = buildQueryParametersRun(runtime, procedure);
+        List<Run> runs = buildSelectParametersRun(runtime, procedure);
         LinkedHashMap<String, Parameter> parameters = null;
         int idx = 0;
         for(Run run:runs){
@@ -11713,7 +11713,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * procedure[结果集封装]<br/>
      * 根据查询结果集构造 存储过程参数
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
+     * @param index 第几条查询SQL 对照 buildSelectConstraintsRun 返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param previous 上一步查询结果
      * @param procedure 存储过程
@@ -11753,7 +11753,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		try {
 			long fr = System.currentTimeMillis();
-			List<Run> runs = buildQueryDdlRun(runtime, procedure);
+			List<Run> runs = buildSelectDdlRun(runtime, procedure);
 			if (null != runs && !runs.isEmpty()) {
 				//直接查询DDL
 				int idx = 0;
@@ -11790,10 +11790,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<Run> buildQueryDdlRun(DataRuntime runtime, Procedure procedure) throws Exception {
+	public List<Run> buildSelectDdlRun(DataRuntime runtime, Procedure procedure) throws Exception {
 		List<Run> runs = new ArrayList<>();
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryDdlRun(DataRuntime runtime, Procedure procedure)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildSelectDdlRun(DataRuntime runtime, Procedure procedure)", 37));
 		}
 		return runs;
 	}
@@ -11802,7 +11802,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * procedure[结果集封装]<br/>
 	 * 查询 Procedure DDL
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照 buildQueryDdlRun 返回顺序
+	 * @param index 第几条SQL 对照 buildSelectDdlRun 返回顺序
 	 * @param procedure Procedure
 	 * @param set 查询结果集
 	 * @return List
@@ -11907,7 +11907,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * <T extends Function> List<T> functions(DataRuntime runtime, String random, boolean greedy, Function query);
 	 * <T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, String random, Function query);
 	 * [命令合成]
-	 * List<Run> buildQueryFunctionsRun(DataRuntime runtime, boolean greedy, Function query) ;
+	 * List<Run> buildSelectFunctionsRun(DataRuntime runtime, boolean greedy, Function query) ;
 	 * [结果集封装]<br/>
 	 * <T extends Function> List<T> functions(DataRuntime runtime, int index, boolean create, List<T> functions, Catalog catalog, Schema schema, DataSet<DataRow> set) throws Exception;
 	 * <T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> functions, Catalog catalog, Schema schema, DataSet<DataRow> set) throws Exception;
@@ -11916,7 +11916,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * [调用入口]
 	 * List<String> ddl(DataRuntime runtime, String random, Function function);
 	 * [命令合成]
-	 * List<Run> buildQueryDdlRun(DataRuntime runtime, Function function) throws Exception;
+	 * List<Run> buildSelectDdlRun(DataRuntime runtime, Function function) throws Exception;
 	 * [结果集封装]<br/>
 	 * List<String> ddl(DataRuntime runtime, int index, Function function, List<String> ddls, DataSet<DataRow> set)
 	 ******************************************************************************************************************/
@@ -11943,7 +11943,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 if(!greedy) {
                     checkSchema(runtime, query);
                 }
-                List<Run> runs = buildQueryFunctionsRun(runtime, greedy, query);
+                List<Run> runs = buildSelectFunctionsRun(runtime, greedy, query);
                 if(null != runs) {
                     int idx = 0;
                     for(Run run:runs) {
@@ -11990,7 +11990,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             long fr = System.currentTimeMillis();
             // 根据系统表查询
             try{
-                List<Run> runs = buildQueryFunctionsRun(runtime, false, query);
+                List<Run> runs = buildSelectFunctionsRun(runtime, false, query);
                 if(null != runs) {
                     int idx = 0;
                     for(Run run:runs) {
@@ -12026,9 +12026,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return runs
 	 */
 	@Override
-	public List<Run> buildQueryFunctionsRun(DataRuntime runtime, boolean greedy, Function query) {
+	public List<Run> buildSelectFunctionsRun(DataRuntime runtime, boolean greedy, Function query) {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryFunctionsRun(DataRuntime runtime, boolean greedy, Function query)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildSelectFunctionsRun(DataRuntime runtime, boolean greedy, Function query)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -12047,7 +12047,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * function[结果集封装]<br/>
 	 * 根据查询结果集构造 Function
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
+	 * @param index 第几条查询SQL 对照 buildSelectConstraintsRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
@@ -12075,7 +12075,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * function[结果集封装]<br/>
 	 * 根据查询结果集构造 Function
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
+	 * @param index 第几条查询SQL 对照 buildSelectConstraintsRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
@@ -12149,7 +12149,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		try {
 			long fr = System.currentTimeMillis();
-			List<Run> runs = buildQueryDdlRun(runtime, meta);
+			List<Run> runs = buildSelectDdlRun(runtime, meta);
 			if (null != runs && !runs.isEmpty()) {
 				//直接查询DDL
 				int idx = 0;
@@ -12185,10 +12185,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<Run> buildQueryDdlRun(DataRuntime runtime, Function meta) throws Exception {
+	public List<Run> buildSelectDdlRun(DataRuntime runtime, Function meta) throws Exception {
 		List<Run> runs = new ArrayList<>();
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryDdlRun(DataRuntime runtime, Function meta)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildSelectDdlRun(DataRuntime runtime, Function meta)", 37));
 		}
 		return runs;
 	}
@@ -12197,7 +12197,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * function[结果集封装]<br/>
 	 * 查询 Function DDL
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照 buildQueryDdlRun 返回顺序
+	 * @param index 第几条SQL 对照 buildSelectDdlRun 返回顺序
 	 * @param function Function
 	 * @param set 查询结果集
 	 * @return List
@@ -12262,7 +12262,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * <T extends Sequence> List<T> sequences(DataRuntime runtime, String random, boolean greedy, Sequence query);
 	 * <T extends Sequence> LinkedHashMap<String, T> sequences(DataRuntime runtime, String random, Sequence query);
 	 * [命令合成]
-	 * List<Run> buildQuerySequencesRun(DataRuntime runtime, boolean greedy, Sequence query) ;
+	 * List<Run> buildSelectSequencesRun(DataRuntime runtime, boolean greedy, Sequence query) ;
 	 * [结果集封装]<br/>
 	 * <T extends Sequence> List<T> sequences(DataRuntime runtime, int index, boolean create, List<T> sequences, DataSet<DataRow> set) throws Exception;
 	 * <T extends Sequence> LinkedHashMap<String, T> sequences(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> sequences, DataSet<DataRow> set) throws Exception;
@@ -12271,7 +12271,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * [调用入口]
 	 * List<String> ddl(DataRuntime runtime, String random, Sequence sequence);
 	 * [命令合成]
-	 * List<Run> buildQueryDdlRun(DataRuntime runtime, Sequence sequence) throws Exception;
+	 * List<Run> buildSelectDdlRun(DataRuntime runtime, Sequence sequence) throws Exception;
 	 * [结果集封装]<br/>
 	 * List<String> ddl(DataRuntime runtime, int index, Sequence sequence, List<String> ddls, DataSet<DataRow> set)
 	 ******************************************************************************************************************/
@@ -12298,7 +12298,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 if(!greedy) {
                     checkSchema(runtime, query);
                 }
-				List<Run> runs = buildQuerySequencesRun(runtime, greedy, query);
+				List<Run> runs = buildSelectSequencesRun(runtime, greedy, query);
 				if(null != runs) {
 					int idx = 0;
 					for(Run run:runs) {
@@ -12345,7 +12345,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			long fr = System.currentTimeMillis();
 			// 根据系统表查询
 			try{
-				List<Run> runs = buildQuerySequencesRun(runtime, false, query);
+				List<Run> runs = buildSelectSequencesRun(runtime, false, query);
 				if(null != runs) {
 					int idx = 0;
 					for(Run run:runs) {
@@ -12381,9 +12381,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return runs
 	 */
 	@Override
-	public List<Run> buildQuerySequencesRun(DataRuntime runtime, boolean greedy, Sequence query) {
+	public List<Run> buildSelectSequencesRun(DataRuntime runtime, boolean greedy, Sequence query) {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQuerySequencesRun(DataRuntime runtime, boolean greedy, Sequence query)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildSelectSequencesRun(DataRuntime runtime, boolean greedy, Sequence query)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -12401,7 +12401,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * sequence[结果集封装]<br/>
 	 * 根据查询结果集构造 Sequence
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
+	 * @param index 第几条查询SQL 对照 buildSelectConstraintsRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
@@ -12429,7 +12429,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * sequence[结果集封装]<br/>
 	 * 根据查询结果集构造 Sequence
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
+	 * @param index 第几条查询SQL 对照 buildSelectConstraintsRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
@@ -12503,7 +12503,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		try {
 			long fr = System.currentTimeMillis();
-			List<Run> runs = buildQueryDdlRun(runtime, meta);
+			List<Run> runs = buildSelectDdlRun(runtime, meta);
 			if (null != runs && !runs.isEmpty()) {
 				//直接查询DDL
 				int idx = 0;
@@ -12539,10 +12539,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<Run> buildQueryDdlRun(DataRuntime runtime, Sequence meta) throws Exception {
+	public List<Run> buildSelectDdlRun(DataRuntime runtime, Sequence meta) throws Exception {
 		List<Run> runs = new ArrayList<>();
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryDdlRun(DataRuntime runtime, Sequence meta)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildSelectDdlRun(DataRuntime runtime, Sequence meta)", 37));
 		}
 		return runs;
 	}
@@ -12551,7 +12551,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * sequence[结果集封装]<br/>
 	 * 查询 Sequence DDL
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照 buildQueryDdlRun 返回顺序
+	 * @param index 第几条SQL 对照 buildSelectDdlRun 返回顺序
 	 * @param sequence Sequence
 	 * @param set 查询结果集
 	 * @return List
@@ -17864,7 +17864,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * boolean rename(DataRuntime runtime, Role origin, Role update) throws Exception;
 	 * boolean delete(DataRuntime runtime, Role role) throws Exception
 	 * <T extends Role> List<T> roles(Catalog catalog, Schema schema, String pattern) throws Exception
-	 * List<Run> buildQueryRolesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) throws Exception
+	 * List<Run> buildSelectRolesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) throws Exception
 	 * <T extends Role> List<T> roles(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, List<T> roles, DataSet<DataRow> set) throws Exception
 	 * <T extends Role> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row)
 	 * <T extends Role> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row)
@@ -17932,7 +17932,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 if(!greedy) {
                     checkSchema(runtime, query);
                 }
-                List<Run> runs = buildQueryRolesRun(runtime, greedy, query);
+                List<Run> runs = buildSelectRolesRun(runtime, greedy, query);
                 if(null != runs) {
                     int idx = 0;
                     for(Run run:runs) {
@@ -18009,9 +18009,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<Run> buildQueryRolesRun(DataRuntime runtime, boolean greedy, Role query) throws Exception {
+	public List<Run> buildSelectRolesRun(DataRuntime runtime, boolean greedy, Role query) throws Exception {
         if(log.isDebugEnabled()) {
-            log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryRolesRun(DataRuntime runtime, boolean greedy, Role query)", 37));
+            log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildSelectRolesRun(DataRuntime runtime, boolean greedy, Role query)", 37));
         }
 		return new ArrayList<>();
 	}
@@ -18030,7 +18030,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * role[结果集封装]<br/>
 	 * 根据查询结果集构造 role
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条查询SQL 对照 buildQueryRolessRun 返回顺序
+	 * @param index 第几条查询SQL 对照 buildSelectRolessRun 返回顺序
 	 * @param query 查询条件 根据metadata属性
 	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
@@ -18094,7 +18094,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * boolean rename(DataRuntime runtime, User origin, User update) throws Exception;
 	 * boolean drop(DataRuntime runtime, User user) throws Exception
 	 * List<User> users(Catalog catalog, Schema schema, String pattern) throws Exception
-	 * List<Run> buildQueryUsersRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) throws Exception
+	 * List<Run> buildSelectUsersRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) throws Exception
 	 * <T extends User> List<T> users(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, List<T> users, DataSet<DataRow> set) throws Exception
 	 * <T extends User> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row)
 	 * <T extends User> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row)
@@ -18165,7 +18165,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 if(!greedy) {
                     checkSchema(runtime, query);
                 }
-                List<Run> runs = buildQueryUsersRun(runtime, greedy, query);
+                List<Run> runs = buildSelectUsersRun(runtime, greedy, query);
                 if(null != runs) {
                     int idx = 0;
                     for(Run run:runs) {
@@ -18242,9 +18242,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<Run> buildQueryUsersRun(DataRuntime runtime, boolean greedy, User query) throws Exception {
+	public List<Run> buildSelectUsersRun(DataRuntime runtime, boolean greedy, User query) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryUsersRun(DataRuntime runtime, User query)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildSelectUsersRun(DataRuntime runtime, User query)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -18262,7 +18262,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * user[结果集封装]<br/>
 	 * 根据查询结果集构造 user
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条查询SQL 对照 buildQueryUserssRun 返回顺序
+	 * @param index 第几条查询SQL 对照 buildSelectUserssRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param query 查询条件 根据metadata属性
 	 * @param previous 上一步查询结果
@@ -18322,7 +18322,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 													privilege
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * <T extends Privilege> List<T> privileges(DataRuntime runtime, User user)
-	 * List<Run> buildQueryPrivilegesRun(DataRuntime runtime, User user) throws Exception
+	 * List<Run> buildSelectPrivilegesRun(DataRuntime runtime, User user) throws Exception
 	 * <T extends Privilege> List<T> privileges(DataRuntime runtime, int index, boolean create, User user, List<T> privileges, DataSet<DataRow> set) throws Exception
 	 * <T extends Privilege> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, User user, DataRow row)
 	 * <T extends Privilege> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row)
@@ -18349,7 +18349,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 if(!greedy) {
                     checkSchema(runtime, query);
                 }
-				List<Run> runs = buildQueryPrivilegesRun(runtime, greedy, query);
+				List<Run> runs = buildSelectPrivilegesRun(runtime, greedy, query);
 				if(null != runs) {
 					int idx = 0;
 					for(Run run:runs) {
@@ -18384,9 +18384,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<Run> buildQueryPrivilegesRun(DataRuntime runtime, boolean regreedy, Privilege query) throws Exception {
+	public List<Run> buildSelectPrivilegesRun(DataRuntime runtime, boolean regreedy, Privilege query) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryPrivilegesRun(DataRuntime runtime, Privilege query)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildSelectPrivilegesRun(DataRuntime runtime, Privilege query)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -18405,7 +18405,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * privilege[结果集封装]<br/>
 	 * 根据查询结果集构造 Trigger
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
+	 * @param index 第几条查询SQL 对照 buildSelectConstraintsRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param query 查询条件 根据metadata属性
 	 * @param previous 上一步查询结果

@@ -142,11 +142,11 @@ public class Highlight {
         this.fragment_size = fragment_size;
     }
 
-    public String getHighlight_query() {
+    public String getHighlight_select() {
         return highlight_query;
     }
 
-    public void setHighlight_query(String highlight_query) {
+    public void setHighlight_select(String highlight_query) {
         this.highlight_query = highlight_query;
     }
 

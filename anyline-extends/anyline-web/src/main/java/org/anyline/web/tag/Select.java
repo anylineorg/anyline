@@ -87,7 +87,7 @@ public class Select extends BaseBodyTag {
 		} 
 		Collection items = (Collection) data;
 		if(BasicUtil.isNotEmpty(selector) && data instanceof Collection) {
-			items = BeanUtil.select(items,selector.split(","));
+			items = BeanUtil.selects(items,selector.split(","));
 		}
 		try {
 			if ("text".equals(type)) {
@@ -161,7 +161,11 @@ public class Select extends BaseBodyTag {
 			} 
 			JspWriter out = pageContext.getOut();
 			if(null != html){
-				out.print(html);
+				if(BasicUtil.isNotEmpty(var)) {
+					pageContext.getRequest().setAttribute(var, html);
+				}else{
+					out.print(html);
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace(); 

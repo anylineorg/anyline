@@ -73,9 +73,9 @@ public class ElasticSearchRun extends TableRun implements Run {
         builder.append("[method:").append(method).append("][endpoint:").append(endpoint).append("]");
         String cmd = null;
         if(action == ACTION.DML.SELECT) {
-            cmd = getFinalQuery(placeholder);
+            cmd = getFinalSelect(placeholder);
         }else if(action == ACTION.DML.COUNT) {
-            cmd = getTotalQuery(placeholder);
+            cmd = getTotalSelect(placeholder);
         }else if(action == ACTION.DML.UPDATE) {
             keys = getUpdateColumns();
             cmd = getFinalUpdate(placeholder);

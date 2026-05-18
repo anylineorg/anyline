@@ -87,11 +87,11 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter {
      * @return String
      */
     @Override
-    public String mergeFinalQuery(DataRuntime runtime, Run run) {
+    public String mergeFinalSelect(DataRuntime runtime, Run run) {
         StringBuilder builder = new StringBuilder();
-        String cols = run.getQueryColumn();
+        String cols = run.getSelectColumn();
         PageNavi navi = run.getPageNavi();
-        String sql = run.getBaseQuery();
+        String sql = run.getBaseSelect();
         OrderStore orders = run.getOrders();
         long first = 0;
         long last = 0;
@@ -272,7 +272,7 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter {
      * @return String
      */
     @Override
-    public List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Table query, int types, ConfigStore configs) throws Exception {
+    public List<Run> buildSelectTablesRun(DataRuntime runtime, boolean greedy, Table query, int types, ConfigStore configs) throws Exception {
         List<Run> runs = new ArrayList<>();
         Run run = new SimpleRun(runtime, configs);
         runs.add(run);

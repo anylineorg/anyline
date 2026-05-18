@@ -144,14 +144,14 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @return DataSet
 	 */
 	@Override
-	public DataSet<DataRow> queries(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
+	public DataSet<DataRow> selects(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
 		if(null == runtime) {
 			runtime = runtime();
 		}
 		if(null != prepare && !prepare.disposable()){
 			prepare = prepare.clone();
 		}
-		return runtime.getAdapter().queries(runtime, null, prepare, configs, conditions);
+		return runtime.getAdapter().selects(runtime, null, prepare, configs, conditions);
 
 	}
 
@@ -163,18 +163,18 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @return DataSet
 	 */
 	@Override
-	public <T> EntitySet<T> selects(DataRuntime runtime, String random, RunPrepare prepare, Class<T> clazz, ConfigStore configs, String... conditions) {
+	public <T> EntitySet<T> queries(DataRuntime runtime, String random, RunPrepare prepare, Class<T> clazz, ConfigStore configs, String... conditions) {
 		if(null == runtime) {
 			runtime = runtime();
 		}
 		if(prepare != null && !prepare.disposable()){
 			prepare = prepare.clone();
 		}
-		EntitySet set = runtime.getAdapter().selects(runtime, null, prepare, clazz, configs, conditions);
+		EntitySet set = runtime.getAdapter().queries(runtime, null, prepare, clazz, configs, conditions);
 		int dependency = ConfigTable.ENTITY_FIELD_SELECT_DEPENDENCY;
 		if(dependency > 0) {
-			checkMany2ManyDependencyQuery(runtime, random, set, dependency);
-			checkOne2ManyDependencyQuery(runtime, random, set, dependency);
+			checkMany2ManyDependencySelect(runtime, random, set, dependency);
+			checkOne2ManyDependencySelect(runtime, random, set, dependency);
 		}
 		return set;
 	}
@@ -473,7 +473,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		return result;
 	}
 
-	protected <T> void checkMany2ManyDependencyQuery(DataRuntime runtime, String random, EntitySet<T> set, int dependency) {
+	protected <T> void checkMany2ManyDependencySelect(DataRuntime runtime, String random, EntitySet<T> set, int dependency) {
 		//ManyToMany
 		if(set.isEmpty() || dependency <= 0) {
 			return;
@@ -497,7 +497,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 						if (null == join.dependencyTable) {
 							//只通过中间表查主键 List<Long> departmentIds
 							//SELECT * FROM HR_EMPLOYEE_DEPARTMENT WHERE EMPLOYEE_ID = ?
-							DataSet<DataRow> items = runtime.getAdapter().queries(runtime, random, new DefaultTablePrepare(join.joinTable), new DefaultConfigStore(), "++" + join.joinColumn + ":" + primaryValueMap.get(pk.toUpperCase()));
+							DataSet<DataRow> items = runtime.getAdapter().selects(runtime, random, new DefaultTablePrepare(join.joinTable), new DefaultConfigStore(), "++" + join.joinColumn + ":" + primaryValueMap.get(pk.toUpperCase()));
 							List<String> ids = items.getStrings(join.inverseJoinColumn);
 							BeanUtil.setFieldValue(entity, field, ids);
 						} else {
@@ -506,7 +506,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 							String sql = "SELECT * FROM " + join.dependencyTable + " WHERE " + join.dependencyPk + " IN (SELECT " + join.inverseJoinColumn + " FROM " + join.joinTable + " WHERE " + join.joinColumn + "= #{JOIN_VALUE}" + ")";
 							ConfigStore configs = new DefaultConfigStore();
 							configs.param("JOIN_VALUE", primaryValueMap.get(pk.toUpperCase()));
-							EntitySet<T> dependencys = runtime.getAdapter().selects(runtime, random, new DefaultTextPrepare(sql), join.itemClass, configs);
+							EntitySet<T> dependencys = runtime.getAdapter().queries(runtime, random, new DefaultTextPrepare(sql), join.itemClass, configs);
 							BeanUtil.setFieldValue(entity, field, dependencys);
 						}
 					}
@@ -525,7 +525,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 						//SELECT * FROM HR_EMPLOYEE_DEPARTMENT WHERE EMPLOYEE_ID IN(?, ?, ?)
 						ConfigStore conditions = new DefaultConfigStore();
 						conditions.and(join.joinColumn, pvs);
-						DataSet<DataRow> allItems = runtime.getAdapter().queries(runtime, random, new DefaultTablePrepare(join.joinTable), conditions);
+						DataSet<DataRow> allItems = runtime.getAdapter().selects(runtime, random, new DefaultTablePrepare(join.joinTable), conditions);
 						for(T entity:set) {
 							DataSet<DataRow> items = allItems.getRows(join.joinColumn, idmap.get(entity)+"");
 							List<String> ids = items.getStrings(join.inverseJoinColumn);
@@ -537,7 +537,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 						ConfigStore conditions = new DefaultConfigStore();
 						conditions.param("JOIN_PVS", pvs);
 						String sql = "SELECT M.*, F."+join.joinColumn+" FK_"+join.joinColumn+" FROM " + join.dependencyTable + " M RIGHT JOIN "+join.joinTable+" F ON M." + join.dependencyPk + " = "+join.inverseJoinColumn +" WHERE "+join.joinColumn+" IN(#{JOIN_PVS})";
-						DataSet<DataRow> alls = runtime.getAdapter().queries(runtime, random, new DefaultTextPrepare(sql), conditions);
+						DataSet<DataRow> alls = runtime.getAdapter().selects(runtime, random, new DefaultTextPrepare(sql), conditions);
 						for(T entity:set) {
 							DataSet<DataRow> items = alls.getRows("FK_"+join.joinColumn, idmap.get(entity)+"");
 							BeanUtil.setFieldValue(entity, field, items.entity(join.itemClass));
@@ -614,7 +614,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		return result;
 	}
-	protected <T> void checkOne2ManyDependencyQuery(DataRuntime runtime, String random, EntitySet<T> set, int dependency) {
+	protected <T> void checkOne2ManyDependencySelect(DataRuntime runtime, String random, EntitySet<T> set, int dependency) {
 		//OneToMany
 		if(set.isEmpty() || dependency <= 0) {
 			return;
@@ -640,7 +640,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 						//SELECT * FROM HR_ATTENDANCE_RECORD WHERE EMPLOYEE_ID = ?)
 						List<Object> params = new ArrayList<>();
 						params.add(primaryValueMap.get(pk.toUpperCase()));
-						EntitySet<T> dependencys = runtime.getAdapter().selects(runtime, random, null, join.dependencyClass, new DefaultConfigStore().and(join.joinColumn, pv));
+						EntitySet<T> dependencys = runtime.getAdapter().queries(runtime, random, null, join.dependencyClass, new DefaultConfigStore().and(join.joinColumn, pv));
 						BeanUtil.setFieldValue(entity, field, dependencys);
 					}
 				}else if(Compare.IN == compare) {
@@ -657,7 +657,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					//SELECT M.*, F.EMPLOYEE_ID FROM hr_department AS M RIGHT JOIN hr_employee_department AS F ON M.ID = F.DEPARTMENT_ID WHERE F.EMPLOYEE_ID IN (1, 2)
 					ConfigStore conditions = new DefaultConfigStore();
 					conditions.and(join.joinColumn, pvs);
-					EntitySet<T> alls = runtime.getAdapter().selects(runtime, random, null, join.dependencyClass, conditions);
+					EntitySet<T> alls = runtime.getAdapter().queries(runtime, random, null, join.dependencyClass, conditions);
 					for(T entity:set) {
 						EntitySet items = alls.gets(join.joinField, idmap.get(entity));
 						BeanUtil.setFieldValue(entity, field, items);
@@ -752,11 +752,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
 	 * @return DataSet
 	 */
-	protected DataSet<DataRow> select(DataRuntime runtime, String random, boolean system, String table, ConfigStore configs, Run run) {
+	protected DataSet<DataRow> query(DataRuntime runtime, String random, boolean system, String table, ConfigStore configs, Run run) {
 		if(null == runtime) {
 			runtime = runtime();
 		}
-		return runtime.getAdapter().select(runtime, random, system, table, configs, run);
+		return runtime.getAdapter().query(runtime, random, system, table, configs, run);
 	}
 
 	/**
@@ -839,11 +839,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @return DataSet
 	 */
 	@Override
-	public DataSet<DataRow> queries(DataRuntime runtime, String random, Procedure procedure, PageNavi navi) {
+	public DataSet<DataRow> selects(DataRuntime runtime, String random, Procedure procedure, PageNavi navi) {
 		if(null == runtime) {
 			runtime = runtime();
 		}
-		return runtime.getAdapter().queries(runtime, random, procedure, navi);
+		return runtime.getAdapter().selects(runtime, random, procedure, navi);
 	}
 
 	/**
@@ -1357,7 +1357,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	/* *****************************************************************************************************************
 	 * 													foreign
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<Run> buildQueryForeignsRun(DataRuntime runtime, boolean greedy,  Table table) throws Exception
+	 * List<Run> buildSelectForeignsRun(DataRuntime runtime, boolean greedy,  Table table) throws Exception
 	 * <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, int index, Table table, LinkedHashMap<String, T> foreigns, DataSet<DataRow> set) throws Exception
 	 ******************************************************************************************************************/
 	@Override

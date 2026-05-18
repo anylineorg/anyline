@@ -198,7 +198,7 @@ joins:[
     public String json() {
         return json(false);
     }
-    public TableBuilder select(String ... columns) {
+    public TableBuilder query(String ... columns) {
         return columns(columns);
     }
     public static TableBuilder init() {

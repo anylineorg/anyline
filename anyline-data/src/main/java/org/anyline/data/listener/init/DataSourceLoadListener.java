@@ -64,7 +64,7 @@ public class DataSourceLoadListener implements LoadListener {
         CacheProvider provider = ConfigTable.environment().getBean(CacheProvider.class);
         CacheProxy.init(provider);
         //注入拦截器
-        InterceptorProxy.setQueryInterceptors(ConfigTable.environment().getBeans(QueryInterceptor.class));
+        InterceptorProxy.setSelectInterceptors(ConfigTable.environment().getBeans(SelectInterceptor.class));
         InterceptorProxy.setCountInterceptors(ConfigTable.environment().getBeans(CountInterceptor.class));
         InterceptorProxy.setUpdateInterceptors(ConfigTable.environment().getBeans(UpdateInterceptor.class));
         InterceptorProxy.setInsertInterceptors(ConfigTable.environment().getBeans(InsertInterceptor.class));

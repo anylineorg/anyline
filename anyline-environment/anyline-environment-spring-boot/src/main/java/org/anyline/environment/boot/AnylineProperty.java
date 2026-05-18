@@ -15,22 +15,6 @@
  */
 
 
-/*
- * Copyright 2006-2026 www.anyline.org
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http:
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, 
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package org.anyline.environment.boot;
 
 import org.anyline.environment.boot.datasource.DataSourceProperty;
@@ -148,7 +132,7 @@ public class AnylineProperty {
     /**
      * sql查询异常时是否抛出
      */
-    protected boolean throwSqlQueryException 					= ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION			;
+    protected boolean throwSqlSelectException 					= ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION			;
     /**
      * 命令执行异常时是否抛出
      */
@@ -231,7 +215,7 @@ public class AnylineProperty {
     protected String sqlDelimiterPlaceholder					= "`"		    ;   
     protected boolean returnEmptyStringReplaceNull               = false         ;
     /**
-     * service.query() dataset.getRow()返回null时, 是否替换成new DataRow(), new entity()
+     * service.select() dataset.getRow()返回null时, 是否替换成new DataRow(), new entity()
      */
     protected boolean returnEmptyInstanceReplaceNull			= false			;	
     /**
@@ -587,13 +571,13 @@ public class AnylineProperty {
         ConfigTable.IS_KEY_IGNORE_CASE = keyIgnoreCase;
     }
 
-    public boolean isThrowSqlQueryException() {
-        return throwSqlQueryException;
+    public boolean isThrowSqlSelectException() {
+        return throwSqlSelectException;
     }
 
-    public void setThrowSqlQueryException(boolean throwSqlQueryException) {
-        this.throwSqlQueryException = throwSqlQueryException;
-        ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION = throwSqlQueryException;
+    public void setThrowSqlSelectException(boolean throwSqlSelectException) {
+        this.throwSqlSelectException = throwSqlSelectException;
+        ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION = throwSqlSelectException;
     }
 
     public int getEntityFieldSelectDependency() {

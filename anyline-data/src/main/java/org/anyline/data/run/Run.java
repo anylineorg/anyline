@@ -140,18 +140,18 @@ public interface Run extends org.anyline.data.Run{
 	Run setUpdateColumns(LinkedHashMap<String, Column> columns);
 	List<String> getUpdateColumns();
 	LinkedHashMap<String, Column> getUpdateColumns(boolean metadata);
-	String getBaseQuery(Boolean placeholder) ;
-	default String getBaseQuery() {
-		return getBaseQuery(true);
+	String getBaseSelect(Boolean placeholder) ;
+	default String getBaseSelect() {
+		return getBaseSelect(true);
 	}
-	String getFinalQuery(Boolean placeholder);
-	default String getFinalQuery() {
-		return getFinalQuery(true);
+	String getFinalSelect(Boolean placeholder);
+	default String getFinalSelect() {
+		return getFinalSelect(true);
 	}
 
-	String getTotalQuery(Boolean placeholder) ;
-	default String getTotalQuery() {
-		return getTotalQuery(true);
+	String getTotalSelect(Boolean placeholder) ;
+	default String getTotalSelect() {
+		return getTotalSelect(true);
 	}
 	String getFinalExists(Boolean placeholder);
 	default String getFinalExists() {
@@ -194,7 +194,7 @@ public interface Run extends org.anyline.data.Run{
 	List<Object> getValues() ;
 	PageNavi getPageNavi() ; 
 	void setPageNavi(PageNavi pageNavi) ;
-	String getQueryColumn();
+	String getSelectColumn();
 
 	EMPTY_VALUE_SWITCH getStrict();
 
@@ -212,9 +212,9 @@ public interface Run extends org.anyline.data.Run{
 	Variable getVariable(String var);
 	List<Variable> getVariables();
 
-	Run setQueryColumns(String ... columns);
-	Run setQueryColumns(List<String> columns);
-	List<String> getQueryColumns();
+	Run setSelectColumns(String ... columns);
+	Run setSelectColumns(List<String> columns);
+	List<String> getSelectColumns();
 
 	List<String> getExcludeColumns();
 	Run setExcludeColumns(List<String> excludeColumn);

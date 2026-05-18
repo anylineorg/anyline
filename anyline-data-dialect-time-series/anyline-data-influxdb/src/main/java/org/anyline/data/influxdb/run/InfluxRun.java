@@ -136,7 +136,7 @@ public class InfluxRun extends SimpleRun {
         if(action == ACTION.DML.SELECT) {
             cmd = body;
         }else if(action == ACTION.DML.COUNT) {
-            cmd = getTotalQuery(placeholder);
+            cmd = getTotalSelect(placeholder);
         }else if(action == ACTION.DML.UPDATE) {
             cmd = body;
         }else if(action == ACTION.DML.INSERT) {

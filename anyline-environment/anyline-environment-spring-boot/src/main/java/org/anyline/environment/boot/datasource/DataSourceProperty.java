@@ -355,11 +355,11 @@ public class DataSourceProperty {
         this.connectionInitSql = connectionInitSql;
     }
 
-    public String getConnectionTestQuery() {
+    public String getConnectionTestSelect() {
         return connectionTestQuery;
     }
 
-    public void setConnectionTestQuery(String connectionTestQuery) {
+    public void setConnectionTestSelect(String connectionTestQuery) {
         this.connectionTestQuery = connectionTestQuery;
     }
 

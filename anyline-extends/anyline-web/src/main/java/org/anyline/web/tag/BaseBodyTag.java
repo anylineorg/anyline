@@ -52,8 +52,9 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 	protected Object extraData;
 	protected String itemExtra;
 	protected String var;
-	protected boolean encrypt;	// 是否加密 
-	
+	protected boolean encrypt;	// 是否需要加密value
+    protected boolean decrypt;  // 是否需要解密value
+
 	 
 	public String getItemExtra() {
 		return itemExtra;
@@ -206,6 +207,7 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 		itemExtra = null;
 		readonly = null;
 		encrypt = false;
+		decrypt = false;
 		extraPrefix ="data-";
 		extraData = null;
 		var = null;
@@ -325,6 +327,15 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 	public void setEncrypt(boolean encrypt) {
 		this.encrypt = encrypt;
 	}
+
+	public boolean isDecrypt() {
+		return decrypt;
+	}
+
+	public void setDecrypt(boolean decrypt) {
+		this.decrypt = decrypt;
+	}
+
 	public String getReadonly() {
 		return readonly;
 	}

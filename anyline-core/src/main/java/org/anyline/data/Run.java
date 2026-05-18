@@ -55,18 +55,18 @@ public interface Run {
     LinkedHashMap<String, Column> getInsertColumns(boolean metadata);
     List<String> getUpdateColumns();
     LinkedHashMap<String, Column> getUpdateColumns(boolean metadata);
-    String getBaseQuery(Boolean placeholder) ;
-    default String getBaseQuery() {
-        return getBaseQuery(true);
+    String getBaseSelect(Boolean placeholder) ;
+    default String getBaseSelect() {
+        return getBaseSelect(true);
     }
-    String getFinalQuery(Boolean placeholder);
-    default String getFinalQuery() {
-        return getFinalQuery(true);
+    String getFinalSelect(Boolean placeholder);
+    default String getFinalSelect() {
+        return getFinalSelect(true);
     }
 
-    String getTotalQuery(Boolean placeholder) ;
-    default String getTotalQuery() {
-        return getTotalQuery(true);
+    String getTotalSelect(Boolean placeholder) ;
+    default String getTotalSelect() {
+        return getTotalSelect(true);
     }
     String getFinalExists(Boolean placeholder);
     default String getFinalExists() {
@@ -102,7 +102,7 @@ public interface Run {
     List<Object> getValues() ;
     PageNavi getPageNavi() ;
     void setPageNavi(PageNavi pageNavi) ;
-    String getQueryColumn();
+    String getSelectColumn();
 
     Compare.EMPTY_VALUE_SWITCH getStrict();
 
@@ -118,7 +118,7 @@ public interface Run {
     boolean isSetValue(String condition, String variable);
     boolean isSetValue(String variable);
 
-    List<String> getQueryColumns();
+    List<String> getSelectColumns();
 
     List<String> getExcludeColumns();
 

@@ -1,1 +1,2 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=org.anyline.data.jdbc.adapter.init.CommonJDBCAdapter
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+org.anyline.data.jdbc.adapter.init.CommonJDBCAdapter

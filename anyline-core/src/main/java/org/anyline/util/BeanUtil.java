@@ -769,78 +769,6 @@ public class BeanUtil {
 		return result;
 	}
 
-	/**
-	 * 参考 DataSet.getRows
-	 * @param list  list
-	 * @param params  params
-	 * @return Collection
-	 */
-	public static Collection<?> select(Collection<?> list, String ... params) {
-		if(null == list || null == params || params.length==0) {
-			return list;
-		}
-		if(list instanceof DataSet) {
-			return ((DataSet)list).getRows(params);
-		}
-		Map<String, String> kvs = new LinkedHashMap<String, String>();
-		int len = params.length;
-		int i = 0;
-		while(i<len) {
-			String p1 = params[i];
-			if(BasicUtil.isEmpty(p1)) {
-				i++;
-				continue;
-			}else if(p1.contains(":")) {
-				String ks[] = parseKeyValue(p1);
-				kvs.put(ks[0], ks[1]);
-				i++;
-				continue;
-			}else{
-				if(i+1<len) {
-					String p2 = params[i+1];
-					if(BasicUtil.isEmpty(p2) || !p2.contains(":")) {
-						kvs.put(p1, p2);
-						i+=2;
-						continue;
-					}else{
-						String ks[] = parseKeyValue(p2);
-						kvs.put(ks[0], ks[1]);
-						i+=2;
-						continue;
-					}
-				}
-
-			}
-			i++;
-		}
-
-		Object[] items = list.toArray();
-		int size = list.size();
-		for(i=size-1; i>=0; i--) {
-			Object obj = items[i];
-			boolean chk = true;//对比结果
-			for(String k : kvs.keySet()) {
-				String v = kvs.get(k);
-				Object value = getFieldValue(obj, k);
-
-				if(null == v) {
-					if(null != value) {
-						chk = false;
-						break;
-					}
-				}else{
-					if(!v.equals(value+"")) {
-						chk = false;
-						break;
-					}
-				}
-			}
-			if(!chk) {
-				list.remove(obj);
-			}
-		}
-		return list;
-	}
 
 	/**
 	 * @param params key1, value1, key2:value2, key3, value3
@@ -3657,34 +3585,26 @@ public class BeanUtil {
 	public static Map<String,Object> copy(Map<String,Object> into, Map<String,Object> copy) {
 		return copy(into, copy, getMapKeys(copy));
 	}
-	public static <T> T query(Collection<T> datas, Map<String,Object> kvs) {
-		List<T> list = queries(datas,0,1, kvs);
+
+	public static <T> T select(Collection<T> datas, Map<String,Object> kvs) {
+		List<T> list = selects(datas,0,1, kvs);
 		if(!list.isEmpty()) {
 			return list.get(0);
 		}
 		return null;
 	}
 
-	public static <T> List<T> queries(Collection<T> datas, int begin, String... params) {
-		return queries(datas,begin, 0, params);
+	public static <T> List<T> selects(Collection<T> datas, int begin, String... params) {
+		return selects(datas,begin, 0, params);
 	}
-
-	public static <T> List<T> querys(Collection<T> datas, int begin, String... params) {
-		return queries(datas,begin, 0, params);
+	public static <T> List<T> selects(Collection<T> datas, String... params) {
+		return selects(datas,0, params);
 	}
-
-	public static <T> List<T> queries(Collection<T> datas, String... params) {
-		return queries(datas,0, params);
-	}
-	public static <T> List<T> querys(Collection<T> datas, String... params) {
-		return queries(datas,0, params);
-	}
-
-	public static <T> List<T> queries(Collection<T> datas, int begin, int qty, String... params) {
+	private static final String SRC_FLAG_TAG = "srcFlag";// 参数含有{}的 在kvs中根据key值+tag 放入一个新的键值对
+	public static <T> List<T> selects(Collection<T> datas, int begin, int qty, String... params) {
 		Map<String, Object> kvs = new LinkedHashMap<>();
 		int len = params.length;
 		int i = 0;
-		String srcFlagTag = "srcFlag"; // 参数含有{}的 在kvs中根据key值+tag 放入一个新的键值对
 		while (i < len) {
 			String p1 = params[i];
 			if (BasicUtil.isEmpty(p1)) {
@@ -3702,11 +3622,10 @@ public class BeanUtil {
 						kvs.put(p1, p2);
 						i += 2;
 						continue;
-					//} else if (p2.startsWith("${") && p2.endsWith("}")) {
 					} else if (BasicUtil.checkEl(p2)) {
 						p2 = p2.substring(2, p2.length() - 1);
 						kvs.put(p1, p2);
-						kvs.put(p1 + srcFlagTag, "true");
+						kvs.put(p1 + SRC_FLAG_TAG, "true");
 						i += 2;
 						continue;
 					} else {
@@ -3720,31 +3639,29 @@ public class BeanUtil {
 			}
 			i++;
 		}
-		return querys(datas, begin, qty, kvs);
+		return selects(datas, begin, qty, kvs);
 	}
-	public static <T> List<T> querys(Collection<T> datas, int begin, int qty, String... params) {
-		return queries(datas, begin, qty, params);
-	}
-	public static <T> List<T> queries(Collection<T> datas, int begin, int qty, Map<String, Object> kvs) {
+
+	public static <T> List<T> selects(Collection<T> datas, int begin, int qty, Map<String, Object> kvs) {
 		List<T> set = new ArrayList<>();
-		String srcFlagTag = "srcFlag"; // 参数含有{}的 在kvs中根据key值+tag 放入一个新的键值对
-		BigDecimal d1;
-		BigDecimal d2;
 		for (T row:datas) {
 			boolean chk = true;//对比结果
 			for (String k : kvs.keySet()) {
 				boolean srcFlag = false;
-				if (k.endsWith(srcFlagTag)) {
+				if (k.endsWith(SRC_FLAG_TAG)) {
 					continue;
 				} else {
-					String srcFlagValue = kvs.get(k + srcFlagTag)+"";
+					String srcFlagValue = kvs.get(k + SRC_FLAG_TAG)+"";
 					if (BasicUtil.isNotEmpty(srcFlagValue)) {
 						srcFlag = true;
 					}
 				}
-				String v = kvs.get(k)+"";
+				String v = null;
+				Object obj = kvs.get(k);
+				if(null != obj){
+					v = obj.toString();
+				}
 				Object value = getFieldValue(row,k);
-
 				if (null == v) {
 					if (null != value) {
 						chk = false;
@@ -3779,9 +3696,6 @@ public class BeanUtil {
 			}
 		}//end for rows
 		return set;
-	}
-	public static <T> List<T> querys(Collection<T> datas, int begin, int qty, Map<String, Object> kvs) {
-		return queries(datas, begin, qty, kvs);
 	}
 	private static String concatValue(Map<String,Object> row, String split) {
 		StringBuilder builder = new StringBuilder();
@@ -3827,7 +3741,7 @@ public class BeanUtil {
 				Map<String,Object> params = new LinkedHashMap<>();
 				copy(params, row, pks);
 				copy(params, classValue);
-				T valueRow = query(datas,params);
+				T valueRow = select(datas,params);
 				String finalKey = concatValue(classValue,"-");//2010-数学
 				if(null != valueKeys && !valueKeys.isEmpty()) {
 					if(valueKeys.size() == 1) {

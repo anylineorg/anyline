@@ -105,7 +105,7 @@ public abstract class TemplateActuator implements DriverActuator {
     public List<Schema> schemas(DriverAdapter adapter, DataRuntime runtime) {
         return new ArrayList<>();
     }
-    public DataSet<DataRow> select(DriverAdapter adapter, DataRuntime runtime, String random, boolean system, ACTION.DML action, Table table, ConfigStore configs, Run run, String cmd, List<Object> values, LinkedHashMap<String,Column> columns) throws Exception {
+    public DataSet<DataRow> query(DriverAdapter adapter, DataRuntime runtime, String random, boolean system, ACTION.DML action, Table table, ConfigStore configs, Run run, String cmd, List<Object> values, LinkedHashMap<String,Column> columns) throws Exception {
         return new DataSet();
     }
     
@@ -117,7 +117,7 @@ public abstract class TemplateActuator implements DriverActuator {
      * @param navi 分页
      * @return DataSet
      */
-    public DataSet<DataRow> queries(DriverAdapter adapter, DataRuntime runtime, String random, Procedure procedure, PageNavi navi) throws Exception {
+    public DataSet<DataRow> selects(DriverAdapter adapter, DataRuntime runtime, String random, Procedure procedure, PageNavi navi) throws Exception {
         return new DataSet();
     }
 

@@ -182,7 +182,7 @@ public class Column extends TableAffiliation<Column> implements Serializable {
     protected String defaultConstraint            ; // 默认约束名
     protected String charset                      ; // 编码
     protected String collate                      ; // 排序编码
-    protected Aggregation aggregation             ; //聚合类型
+    protected Aggregation aggregation             ; // 聚合类型
     protected Boolean withTimeZone          = null;
     protected Boolean withLocalTimeZone     = null;
     protected Column reference                    ; // 外键依赖列

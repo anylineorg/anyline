@@ -674,10 +674,10 @@ public abstract class ComponentTag extends BaseBodyTag{
 	public void setOncontextmenu(String oncontextmenu) {
 		this.oncontextmenu = oncontextmenu; 
 	} 
-	public String getOncontrolselect() {
+	public String getOncontrolquery() {
 		return oncontrolselect; 
 	} 
-	public void setOncontrolselect(String oncontrolselect) {
+	public void setOncontrolquery(String oncontrolselect) {
 		this.oncontrolselect = oncontrolselect; 
 	} 
 	public String getOncut() {
@@ -902,10 +902,10 @@ public abstract class ComponentTag extends BaseBodyTag{
 	public void setOnresizestart(String onresizestart) {
 		this.onresizestart = onresizestart; 
 	} 
-	public String getOnselect() {
+	public String getOnquery() {
 		return onselect; 
 	} 
-	public void setOnselect(String onselect) {
+	public void setOnquery(String onselect) {
 		this.onselect = onselect; 
 	} 
 	public String getOnselectstart() {

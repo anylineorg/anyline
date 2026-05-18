@@ -706,56 +706,31 @@ public class ServiceProxy {
      */
 
 
-    public static DataSet<DataRow> queries(String dest, ConfigStore configs, Object obj, String ... conditions) {
-        return service.queries(dest, configs, obj, conditions);
+    public static DataSet<DataRow> selects(String dest, ConfigStore configs, Object obj, String ... conditions) {
+        return service.selects(dest, configs, obj, conditions);
     }
-    public static DataSet<DataRow> queries(ConfigStore configs, Object obj, String ... conditions) {
-        return service.queries(configs, obj, conditions);
+    public static DataSet<DataRow> selects(ConfigStore configs, Object obj, String ... conditions) {
+        return service.selects(configs, obj, conditions);
     }
-    public static DataSet<DataRow> queries(ConfigStore configs, String ... conditions) {
-        return service.queries(configs, conditions);
+    public static DataSet<DataRow> selects(ConfigStore configs, String ... conditions) {
+        return service.selects(configs, conditions);
     }
-    public static DataSet<DataRow> queries(DataSet<DataRow> set, ConfigStore configs) {
-        return service.queries(set, configs);
+    public static DataSet<DataRow> selects(DataSet<DataRow> set, ConfigStore configs) {
+        return service.selects(set, configs);
     }
-    public static DataSet<DataRow> queries(String dest, Object obj, String ... conditions) {
-        return service.queries(dest, obj, conditions);
+    public static DataSet<DataRow> selects(String dest, Object obj, String ... conditions) {
+        return service.selects(dest, obj, conditions);
     }
-    public static void queries(String dest, DataHandler handler, Object obj, String ... conditions) {
-        service.queries(dest, handler, obj, conditions);
+    public static void selects(String dest, DataHandler handler, Object obj, String ... conditions) {
+        service.selects(dest, handler, obj, conditions);
     }
-    public static void queries(RunPrepare prepare, DataHandler handler, Object obj, String ... conditions) {
-        service.queries(prepare, handler, obj, conditions);
+    public static void selects(RunPrepare prepare, DataHandler handler, Object obj, String ... conditions) {
+        service.selects(prepare, handler, obj, conditions);
     }
-    public static DataSet<DataRow> queries(String dest, PageNavi navi, Object obj, String ... conditions) {
-        return service.queries(dest, navi, obj, conditions);
+    public static DataSet<DataRow> selects(String dest, PageNavi navi, Object obj, String ... conditions) {
+        return service.selects(dest, navi, obj, conditions);
     }
 
-
-    public static DataSet<DataRow> querys(String dest, ConfigStore configs, Object obj, String ... conditions) {
-        return service.queries(dest, configs, obj, conditions);
-    }
-    public static DataSet<DataRow> querys(ConfigStore configs, Object obj, String ... conditions) {
-        return service.queries(configs, obj, conditions);
-    }
-    public static DataSet<DataRow> querys(ConfigStore configs, String ... conditions) {
-        return service.queries(configs, conditions);
-    }
-    public static DataSet<DataRow> querys(DataSet<DataRow> set, ConfigStore configs) {
-        return service.queries(set, configs);
-    }
-    public static DataSet<DataRow> querys(String dest, Object obj, String ... conditions) {
-        return service.queries(dest, obj, conditions);
-    }
-    public static void querys(String dest, DataHandler handler, Object obj, String ... conditions) {
-        service.queries(dest, handler, obj, conditions);
-    }
-    public static void querys(RunPrepare prepare, DataHandler handler, Object obj, String ... conditions) {
-        service.queries(prepare, handler, obj, conditions);
-    }
-    public static DataSet<DataRow> querys(String dest, PageNavi navi, Object obj, String ... conditions) {
-        return service.queries(dest, navi, obj, conditions);
-    }
 
     /**
      * 按条件查询
@@ -766,50 +741,36 @@ public class ServiceProxy {
      * @param conditions 查询条件 支持k:v k:v::type 以及原生sql形式(包含ORDER、GROUP、HAVING)默认忽略空值条件
      * @return DataSet
      */
-    public static DataSet<DataRow> queries(String dest, long first, long last, Object obj, String ... conditions) {
-        return service.queries(dest, first, last, obj, conditions);
-    }
-    public static DataSet<DataRow> querys(String dest, long first, long last, Object obj, String ... conditions) {
-        return service.queries(dest, first, last, obj, conditions);
-    }
-    public static DataRow query(String dest, ConfigStore configs, Object obj, String ... conditions) {
-        return service.query(dest, configs, obj, conditions);
-    }
-    public static DataRow query(ConfigStore configs, Object obj, String ... conditions) {
-        return service.query(configs, obj, conditions);
-    }
-    public static DataRow query(ConfigStore configs, String ... conditions) {
-        return service.query(configs, conditions);
-    }
-    public static DataRow query(String dest, Object obj, String ... conditions) {
-        return service.query(dest, obj, conditions);
+    public static DataSet<DataRow> selects(String dest, long first, long last, Object obj, String ... conditions) {
+        return service.selects(dest, first, last, obj, conditions);
     }
 
-    public static DataSet<DataRow> querys(String dest, ConfigStore configs, String ... conditions) {
-        return service.queries(dest, configs, conditions);
+    public static DataRow select(String dest, ConfigStore configs, Object obj, String ... conditions) {
+        return service.select(dest, configs, obj, conditions);
     }
-    public static DataSet<DataRow> querys(String dest, String ... conditions) {
-        return service.queries(dest, conditions);
+    public static DataRow select(ConfigStore configs, Object obj, String ... conditions) {
+        return service.select(configs, obj, conditions);
     }
-    public static void querys(String dest, DataHandler handler, String ... conditions) {
-        service.queries(dest, handler, conditions);
+    public static DataRow select(ConfigStore configs, String ... conditions) {
+        return service.select(configs, conditions);
     }
-    public static DataSet<DataRow> querys(String dest, PageNavi navi, String ... conditions) {
-        return service.queries(dest, navi, conditions);
+    public static DataRow select(String dest, Object obj, String ... conditions) {
+        return service.select(dest, obj, conditions);
     }
 
-    public static DataSet<DataRow> queries(String dest, ConfigStore configs, String ... conditions) {
-        return service.queries(dest, configs, conditions);
+    public static DataSet<DataRow> selects(String dest, ConfigStore configs, String ... conditions) {
+        return service.selects(dest, configs, conditions);
     }
-    public static DataSet<DataRow> queries(String dest, String ... conditions) {
-        return service.queries(dest, conditions);
+    public static DataSet<DataRow> selects(String dest, String ... conditions) {
+        return service.selects(dest, conditions);
     }
-    public static void queries(String dest, DataHandler handler, String ... conditions) {
-        service.queries(dest, handler, conditions);
+    public static void selects(String dest, DataHandler handler, String ... conditions) {
+        service.selects(dest, handler, conditions);
     }
-    public static DataSet<DataRow> queries(String dest, PageNavi navi, String ... conditions) {
-        return service.queries(dest, navi, conditions);
+    public static DataSet<DataRow> selects(String dest, PageNavi navi, String ... conditions) {
+        return service.selects(dest, navi, conditions);
     }
+
     /**
      * 按条件查询
      * @param dest 			查询或操作的目标(表、存储过程、SQL等)
@@ -818,45 +779,26 @@ public class ServiceProxy {
      * @param conditions 查询条件 支持k:v k:v::type 以及原生sql形式(包含ORDER、GROUP、HAVING)默认忽略空值条件
      * @return DataSet
      */
-    public static DataSet<DataRow> querys(String dest, long first, long last, String ... conditions) {
-        return service.queries(dest, first, last, conditions);
+    public static DataSet<DataRow> selects(String dest, long first, long last, String ... conditions) {
+        return service.selects(dest, first, last, conditions);
     }
 
-    public static DataSet<DataRow> querys(Table dest, ConfigStore configs, Object obj, String ... conditions) {
-        return service.queries(dest, configs, obj, conditions);
+    public static DataSet<DataRow> selects(Table dest, ConfigStore configs, Object obj, String ... conditions) {
+        return service.selects(dest, configs, obj, conditions);
     }
-    public static DataSet<DataRow> querys(Table dest, long first, long last, ConfigStore configs, Object obj, String ... conditions) {
-        return service.queries(dest, first, last, configs, obj, conditions);
+    public static DataSet<DataRow> selects(Table dest, long first, long last, ConfigStore configs, Object obj, String ... conditions) {
+        return service.selects(dest, first, last, configs, obj, conditions);
     }
-    public static DataSet<DataRow> querys(Table dest, Object obj, String ... conditions) {
-        return service.queries(dest, obj, conditions);
+    public static DataSet<DataRow> selects(Table dest, Object obj, String ... conditions) {
+        return service.selects(dest, obj, conditions);
     }
-    public static void querys(Table dest, DataHandler handler, Object obj, String ... conditions) {
-        service.queries(dest, handler, obj, conditions);
+    public static void selects(Table dest, DataHandler handler, Object obj, String ... conditions) {
+        service.selects(dest, handler, obj, conditions);
     }
-    public static DataSet<DataRow> querys(Table dest, PageNavi navi, Object obj, String ... conditions) {
-        return service.queries(dest, navi, obj, conditions);
-    }
-
-    public static DataSet<DataRow> queries(String dest, long first, long last, String ... conditions) {
-        return service.queries(dest, first, last, conditions);
+    public static DataSet<DataRow> selects(Table dest, PageNavi navi, Object obj, String ... conditions) {
+        return service.selects(dest, navi, obj, conditions);
     }
 
-    public static DataSet<DataRow> queries(Table dest, ConfigStore configs, Object obj, String ... conditions) {
-        return service.queries(dest, configs, obj, conditions);
-    }
-    public static DataSet<DataRow> queries(Table dest, long first, long last, ConfigStore configs, Object obj, String ... conditions) {
-        return service.queries(dest, first, last, configs, obj, conditions);
-    }
-    public static DataSet<DataRow> queries(Table dest, Object obj, String ... conditions) {
-        return service.queries(dest, obj, conditions);
-    }
-    public static void queries(Table dest, DataHandler handler, Object obj, String ... conditions) {
-        service.queries(dest, handler, obj, conditions);
-    }
-    public static DataSet<DataRow> queries(Table dest, PageNavi navi, Object obj, String ... conditions) {
-        return service.queries(dest, navi, obj, conditions);
-    }
     /**
      * 按条件查询
      * @param dest 			数据源(表或自定义SQL或SELECT语句)
@@ -866,38 +808,21 @@ public class ServiceProxy {
      * @param conditions 查询条件 支持k:v k:v::type 以及原生sql形式(包含ORDER、GROUP、HAVING)默认忽略空值条件
      * @return DataSet
      */
-    public static DataSet<DataRow> queries(Table dest, long first, long last, Object obj, String ... conditions) {
-        return service.queries(dest, first, last, obj, conditions);
+    public static DataSet<DataRow> selects(Table dest, long first, long last, Object obj, String ... conditions) {
+        return service.selects(dest, first, last, obj, conditions);
     }
 
-    public static DataSet<DataRow> queries(Table dest, ConfigStore configs, String ... conditions) {
-        return service.queries(dest, configs, conditions);
+    public static DataSet<DataRow> selects(Table dest, ConfigStore configs, String ... conditions) {
+        return service.selects(dest, configs, conditions);
     }
-    public static DataSet<DataRow> queries(Table dest, long first, long last, ConfigStore configs, String ... conditions) {
-        return service.queries(dest, first, last, configs, conditions);
+    public static DataSet<DataRow> selects(Table dest, long first, long last, ConfigStore configs, String ... conditions) {
+        return service.selects(dest, first, last, configs, conditions);
     }
-    public static DataSet<DataRow> queries(Table dest, String ... conditions) {
-        return service.queries(dest, conditions);
+    public static DataSet<DataRow> selects(Table dest, String ... conditions) {
+        return service.selects(dest, conditions);
     }
-    public static void queries(Table dest, DataHandler handler, String ... conditions) {
-        service.queries(dest, handler, conditions);
-    }
-
-    public static DataSet<DataRow> querys(Table dest, long first, long last, Object obj, String ... conditions) {
-        return service.queries(dest, first, last, obj, conditions);
-    }
-
-    public static DataSet<DataRow> querys(Table dest, ConfigStore configs, String ... conditions) {
-        return service.queries(dest, configs, conditions);
-    }
-    public static DataSet<DataRow> querys(Table dest, long first, long last, ConfigStore configs, String ... conditions) {
-        return service.queries(dest, first, last, configs, conditions);
-    }
-    public static DataSet<DataRow> querys(Table dest, String ... conditions) {
-        return service.queries(dest, conditions);
-    }
-    public static void querys(Table dest, DataHandler handler, String ... conditions) {
-        service.queries(dest, handler, conditions);
+    public static void selects(Table dest, DataHandler handler, String ... conditions) {
+        service.selects(dest, handler, conditions);
     }
 
     /**
@@ -906,154 +831,135 @@ public class ServiceProxy {
      * @param parse 是否解析sql中的关键字(order group等)及占位符
      * @return DataSet
      */
-    public static DataSet<DataRow> queries(String sql, boolean parse){
-        return service.queries(sql, parse);
+    public static DataSet<DataRow> selects(String sql, boolean parse){
+        return service.selects(sql, parse);
     }
-    public static void queries(RunPrepare prepare, DataHandler handler, String ... conditions) {
-        service.queries(prepare, handler, conditions);
+    public static void selects(RunPrepare prepare, DataHandler handler, String ... conditions) {
+        service.selects(prepare, handler, conditions);
     }
-    public static DataSet<DataRow> queries(Table dest, PageNavi navi, String ... conditions) {
-        return service.queries(dest, navi, conditions);
+    public static DataSet<DataRow> selects(Table dest, PageNavi navi, String ... conditions) {
+        return service.selects(dest, navi, conditions);
     }
-    public static DataSet<DataRow> queries(Table dest, long first, long last, String ... conditions) {
-        return service.queries(dest, first, last, conditions);
+    public static DataSet<DataRow> selects(Table dest, long first, long last, String ... conditions) {
+        return service.selects(dest, first, last, conditions);
     }
-    public static DataSet<DataRow> queries(Table dest, DataHandler handler, long first, long last, String ... conditions) {
-        return service.queries(dest, handler, first, last, conditions);
+    public static DataSet<DataRow> selects(Table dest, DataHandler handler, long first, long last, String ... conditions) {
+        return service.selects(dest, handler, first, last, conditions);
     }
-    public static DataSet<DataRow> queries(RunPrepare prepare, DataHandler handler, long first, long last, String ... conditions) {
-        return service.queries(prepare, handler, first, last, conditions);
-    }
-
-    public static DataSet<DataRow> querys(String sql, boolean parse){
-        return service.queries(sql, parse);
-    }
-    public static void querys(RunPrepare prepare, DataHandler handler, String ... conditions) {
-        service.queries(prepare, handler, conditions);
-    }
-    public static DataSet<DataRow> querys(Table dest, PageNavi navi, String ... conditions) {
-        return service.queries(dest, navi, conditions);
-    }
-    public static DataSet<DataRow> querys(Table dest, long first, long last, String ... conditions) {
-        return service.queries(dest, first, last, conditions);
-    }
-    public static DataSet<DataRow> querys(Table dest, DataHandler handler, long first, long last, String ... conditions) {
-        return service.queries(dest, handler, first, last, conditions);
-    }
-    public static DataSet<DataRow> querys(RunPrepare prepare, DataHandler handler, long first, long last, String ... conditions) {
-        return service.queries(prepare, handler, first, last, conditions);
+    public static DataSet<DataRow> selects(RunPrepare prepare, DataHandler handler, long first, long last, String ... conditions) {
+        return service.selects(prepare, handler, first, last, conditions);
     }
 
-    public static DataRow query(String dest, ConfigStore configs, String ... conditions) {
-        return service.query(dest, configs, conditions);
+    public static DataRow select(String dest, ConfigStore configs, String ... conditions) {
+        return service.select(dest, configs, conditions);
     }
-    public static DataRow query(String dest, String ... conditions) {
-        return service.query(dest, conditions);
+    public static DataRow select(String dest, String ... conditions) {
+        return service.select(dest, conditions);
     }
-    public static DataRow query(Table dest, ConfigStore configs, Object obj, String ... conditions) {
-        return service.query(dest, configs, obj, conditions);
+    public static DataRow select(Table dest, ConfigStore configs, Object obj, String ... conditions) {
+        return service.select(dest, configs, obj, conditions);
     }
-    public static DataRow query(Table dest, Object obj, String ... conditions) {
-        return service.query(dest, obj, conditions);
+    public static DataRow select(Table dest, Object obj, String ... conditions) {
+        return service.select(dest, obj, conditions);
     }
-    public static DataRow query(Table dest, ConfigStore configs, String ... conditions) {
-        return service.query(dest, configs, conditions);
+    public static DataRow select(Table dest, ConfigStore configs, String ... conditions) {
+        return service.select(dest, configs, conditions);
     }
-    public static DataRow query(Table dest, String ... conditions) {
-        return service.query(dest, conditions);
-    }
-
-    public static <T> EntitySet<T> selects(String dest, Class<T> clazz, ConfigStore configs, T entity, String ... conditions) {
-        return service.selects(dest, clazz, configs, entity, conditions);
-    }
-    public static <T> EntitySet<T> selects(String dest, Class<T> clazz, PageNavi navi, T entity, String ... conditions) {
-        return service.selects(dest, clazz, navi, entity, conditions);
-    }
-    public static <T> EntitySet<T> selects(String dest, Class<T> clazz, T entity, String ... conditions) {
-        return service.selects(dest, clazz, entity, conditions);
-    }
-    public static <T> EntitySet<T> selects(String dest, Class<T> clazz, EntityHandler<T> handler, T entity, String ... conditions) {
-        return service.selects(dest, clazz, handler, entity, conditions);
-    }
-    public static <T> EntitySet<T> selects(String dest, Class<T> clazz, long first, long last, T entity, String ... conditions) {
-        return service.selects(dest, clazz, first, last, entity, conditions);
-    }
-    public static <T> T select(String dest, Class<T> clazz, ConfigStore configs, T entity, String ... conditions) {
-        return (T)service.select(dest, clazz, configs, entity, conditions);
-    }
-    public static <T> T select(String dest, Class<T> clazz, T entity, String ... conditions) {
-        return (T)service.selects(dest, clazz, entity, conditions);
-    }
-    public static <T> T select(String dest, Class<T> clazz, EntityHandler<T> handler, T entity, String ... conditions) {
-        return (T)service.selects(dest, clazz, handler, entity, conditions);
+    public static DataRow select(Table dest, String ... conditions) {
+        return service.select(dest, conditions);
     }
 
-    public static <T> EntitySet<T> selects(String dest, Class<T> clazz, ConfigStore configs, String ... conditions) {
-        return service.selects(dest, clazz, configs, conditions);
+    public static <T> EntitySet<T> queries(String dest, Class<T> clazz, ConfigStore configs, T entity, String ... conditions) {
+        return service.queries(dest, clazz, configs, entity, conditions);
     }
-    public static <T> EntitySet<T> selects(String dest, Class<T> clazz, PageNavi navi, String ... conditions) {
-        return service.selects(dest, clazz, navi, conditions);
+    public static <T> EntitySet<T> queries(String dest, Class<T> clazz, PageNavi navi, T entity, String ... conditions) {
+        return service.queries(dest, clazz, navi, entity, conditions);
     }
-    public static <T> EntitySet<T> selects(String dest, Class<T> clazz, String ... conditions) {
-        return service.selects(dest, clazz, conditions);
+    public static <T> EntitySet<T> queries(String dest, Class<T> clazz, T entity, String ... conditions) {
+        return service.queries(dest, clazz, entity, conditions);
     }
-    public static <T> EntitySet<T> selects(String dest, Class<T> clazz, EntityHandler<T> handler, String ... conditions) {
-        return service.selects(dest, clazz, handler, conditions);
+    public static <T> EntitySet<T> queries(String dest, Class<T> clazz, EntityHandler<T> handler, T entity, String ... conditions) {
+        return service.queries(dest, clazz, handler, entity, conditions);
     }
-    public static <T> EntitySet<T> selects(String dest, Class<T> clazz, long first, long last, String ... conditions) {
-        return service.selects(dest, clazz, first, last, conditions);
+    public static <T> EntitySet<T> queries(String dest, Class<T> clazz, long first, long last, T entity, String ... conditions) {
+        return service.queries(dest, clazz, first, last, entity, conditions);
     }
-
-    public static <T> EntitySet<T> selects(Table dest, Class<T> clazz, ConfigStore configs, T entity, String ... conditions) {
-        return service.selects(dest, clazz, configs, entity, conditions);
+    public static <T> T query(String dest, Class<T> clazz, ConfigStore configs, T entity, String ... conditions) {
+        return (T)service.query(dest, clazz, configs, entity, conditions);
     }
-    public static <T> EntitySet<T> selects(Table dest, Class<T> clazz, PageNavi navi, T entity, String ... conditions) {
-        return service.selects(dest, clazz, navi, entity, conditions);
+    public static <T> T query(String dest, Class<T> clazz, T entity, String ... conditions) {
+        return (T)service.queries(dest, clazz, entity, conditions);
     }
-    public static <T> EntitySet<T> selects(Table dest, Class<T> clazz, T entity, String ... conditions) {
-        return service.selects(dest, clazz, entity, conditions);
-    }
-    public static <T> EntitySet<T> selects(Table dest, Class<T> clazz, EntityHandler<T> handler, T entity, String ... conditions) {
-        return service.selects(dest, clazz, handler, entity, conditions);
-    }
-    public static <T> EntitySet<T> selects(Table dest, Class<T> clazz, long first, long last, T entity, String ... conditions) {
-        return service.selects(dest, clazz, first, last, entity, conditions);
+    public static <T> T query(String dest, Class<T> clazz, EntityHandler<T> handler, T entity, String ... conditions) {
+        return (T)service.queries(dest, clazz, handler, entity, conditions);
     }
 
-    public static <T> EntitySet<T> selects(Table dest, Class<T> clazz, ConfigStore configs, String ... conditions) {
-        return service.selects(dest, clazz, configs, conditions);
+    public static <T> EntitySet<T> queries(String dest, Class<T> clazz, ConfigStore configs, String ... conditions) {
+        return service.queries(dest, clazz, configs, conditions);
     }
-    public static <T> EntitySet<T> selects(Table dest, Class<T> clazz, PageNavi navi, String ... conditions) {
-        return service.selects(dest, clazz, navi, conditions);
+    public static <T> EntitySet<T> queries(String dest, Class<T> clazz, PageNavi navi, String ... conditions) {
+        return service.queries(dest, clazz, navi, conditions);
     }
-    public static <T> EntitySet<T> selects(Table dest, Class<T> clazz, String ... conditions) {
-        return service.selects(dest, clazz, conditions);
+    public static <T> EntitySet<T> queries(String dest, Class<T> clazz, String ... conditions) {
+        return service.queries(dest, clazz, conditions);
     }
-    public static <T> EntitySet<T> selects(Table dest, Class<T> clazz, EntityHandler<T> handler, String ... conditions) {
-        return service.selects(dest, clazz, handler, conditions);
+    public static <T> EntitySet<T> queries(String dest, Class<T> clazz, EntityHandler<T> handler, String ... conditions) {
+        return service.queries(dest, clazz, handler, conditions);
     }
-    public static <T> EntitySet<T> selects(Table dest, Class<T> clazz, long first, long last, String ... conditions) {
-        return service.selects(dest, clazz, first, last, conditions);
-    }
-
-    public static <T> T select(String dest, Class<T> clazz, ConfigStore configs, String ... conditions) {
-        return (T)service.select(dest, clazz, configs, conditions);
-    }
-    public static <T> T select(String dest, Class<T> clazz, String ... conditions) {
-        return (T)service.select(dest, clazz, conditions);
+    public static <T> EntitySet<T> queries(String dest, Class<T> clazz, long first, long last, String ... conditions) {
+        return service.queries(dest, clazz, first, last, conditions);
     }
 
-    public static <T> T select(Table dest, Class<T> clazz, ConfigStore configs, T entity, String ... conditions) {
-        return (T)service.select(dest, clazz, configs, entity, conditions);
+    public static <T> EntitySet<T> queries(Table dest, Class<T> clazz, ConfigStore configs, T entity, String ... conditions) {
+        return service.queries(dest, clazz, configs, entity, conditions);
     }
-    public static <T> T select(Table dest, Class<T> clazz, T entity, String ... conditions) {
-        return (T)service.select(dest, clazz, entity, conditions);
+    public static <T> EntitySet<T> queries(Table dest, Class<T> clazz, PageNavi navi, T entity, String ... conditions) {
+        return service.queries(dest, clazz, navi, entity, conditions);
     }
-    public static <T> T select(Table dest, Class<T> clazz, ConfigStore configs, String ... conditions) {
-        return (T)service.select(dest, clazz, configs, conditions);
+    public static <T> EntitySet<T> queries(Table dest, Class<T> clazz, T entity, String ... conditions) {
+        return service.queries(dest, clazz, entity, conditions);
     }
-    public static <T> T select(Table dest, Class<T> clazz, String ... conditions) {
-        return (T)service.select(dest, clazz, conditions);
+    public static <T> EntitySet<T> queries(Table dest, Class<T> clazz, EntityHandler<T> handler, T entity, String ... conditions) {
+        return service.queries(dest, clazz, handler, entity, conditions);
+    }
+    public static <T> EntitySet<T> queries(Table dest, Class<T> clazz, long first, long last, T entity, String ... conditions) {
+        return service.queries(dest, clazz, first, last, entity, conditions);
+    }
+
+    public static <T> EntitySet<T> queries(Table dest, Class<T> clazz, ConfigStore configs, String ... conditions) {
+        return service.queries(dest, clazz, configs, conditions);
+    }
+    public static <T> EntitySet<T> queries(Table dest, Class<T> clazz, PageNavi navi, String ... conditions) {
+        return service.queries(dest, clazz, navi, conditions);
+    }
+    public static <T> EntitySet<T> queries(Table dest, Class<T> clazz, String ... conditions) {
+        return service.queries(dest, clazz, conditions);
+    }
+    public static <T> EntitySet<T> queries(Table dest, Class<T> clazz, EntityHandler<T> handler, String ... conditions) {
+        return service.queries(dest, clazz, handler, conditions);
+    }
+    public static <T> EntitySet<T> queries(Table dest, Class<T> clazz, long first, long last, String ... conditions) {
+        return service.queries(dest, clazz, first, last, conditions);
+    }
+
+    public static <T> T query(String dest, Class<T> clazz, ConfigStore configs, String ... conditions) {
+        return (T)service.query(dest, clazz, configs, conditions);
+    }
+    public static <T> T query(String dest, Class<T> clazz, String ... conditions) {
+        return (T)service.query(dest, clazz, conditions);
+    }
+
+    public static <T> T query(Table dest, Class<T> clazz, ConfigStore configs, T entity, String ... conditions) {
+        return (T)service.query(dest, clazz, configs, entity, conditions);
+    }
+    public static <T> T query(Table dest, Class<T> clazz, T entity, String ... conditions) {
+        return (T)service.query(dest, clazz, entity, conditions);
+    }
+    public static <T> T query(Table dest, Class<T> clazz, ConfigStore configs, String ... conditions) {
+        return (T)service.query(dest, clazz, configs, conditions);
+    }
+    public static <T> T query(Table dest, Class<T> clazz, String ... conditions) {
+        return (T)service.query(dest, clazz, conditions);
     }
 
     /**
@@ -1065,48 +971,48 @@ public class ServiceProxy {
      * @return EntitySet
      * @param <T> T
      */
-    public static <T> EntitySet<T> selects(Class<T> clazz, ConfigStore configs, T entity, String ... conditions) {
-        return service.selects(clazz, configs, entity, conditions);
+    public static <T> EntitySet<T> queries(Class<T> clazz, ConfigStore configs, T entity, String ... conditions) {
+        return service.queries(clazz, configs, entity, conditions);
     }
-    public static <T> EntitySet<T> selects(Class<T> clazz, PageNavi navi, T entity, String ... conditions) {
-        return service.selects(clazz, navi, entity, conditions);
+    public static <T> EntitySet<T> queries(Class<T> clazz, PageNavi navi, T entity, String ... conditions) {
+        return service.queries(clazz, navi, entity, conditions);
     }
-    public static <T> EntitySet<T> selects(Class<T> clazz, T entity, String ... conditions) {
-        return service.selects(clazz, entity, conditions);
+    public static <T> EntitySet<T> queries(Class<T> clazz, T entity, String ... conditions) {
+        return service.queries(clazz, entity, conditions);
     }
-    public static <T> EntitySet<T> selects(Class<T> clazz, EntityHandler<T> handler, T entity, String ... conditions) {
-        return service.selects(clazz, handler, entity, conditions);
+    public static <T> EntitySet<T> queries(Class<T> clazz, EntityHandler<T> handler, T entity, String ... conditions) {
+        return service.queries(clazz, handler, entity, conditions);
     }
-    public static <T> EntitySet<T> selects(Class<T> clazz, long first, long last, T entity, String ... conditions) {
-        return service.selects(clazz, first, last, entity, conditions);
+    public static <T> EntitySet<T> queries(Class<T> clazz, long first, long last, T entity, String ... conditions) {
+        return service.queries(clazz, first, last, entity, conditions);
     }
-    public static <T> T select(Class<T> clazz, ConfigStore configs, T entity, String ... conditions) {
-        return (T)service.select(clazz, configs, entity, conditions);
+    public static <T> T query(Class<T> clazz, ConfigStore configs, T entity, String ... conditions) {
+        return (T)service.query(clazz, configs, entity, conditions);
     }
-    public static <T> T select(Class<T> clazz, T entity, String ... conditions) {
-        return (T)service.select(clazz, entity, conditions);
+    public static <T> T query(Class<T> clazz, T entity, String ... conditions) {
+        return (T)service.query(clazz, entity, conditions);
     }
 
-    public static <T> EntitySet<T> selects(Class<T> clazz, ConfigStore configs, String ... conditions) {
-        return service.selects(clazz, configs, conditions);
+    public static <T> EntitySet<T> queries(Class<T> clazz, ConfigStore configs, String ... conditions) {
+        return service.queries(clazz, configs, conditions);
     }
-    public static <T> EntitySet<T> selects(Class<T> clazz, PageNavi navi, String ... conditions) {
-        return service.selects(clazz, navi, conditions);
+    public static <T> EntitySet<T> queries(Class<T> clazz, PageNavi navi, String ... conditions) {
+        return service.queries(clazz, navi, conditions);
     }
-    public static <T> EntitySet<T> selects(Class<T> clazz, String ... conditions) {
-        return service.selects(clazz, conditions);
+    public static <T> EntitySet<T> queries(Class<T> clazz, String ... conditions) {
+        return service.queries(clazz, conditions);
     }
-    public static <T> EntitySet<T> selects(Class<T> clazz, EntityHandler<T> handler, String ... conditions) {
-        return service.selects(clazz, handler, conditions);
+    public static <T> EntitySet<T> queries(Class<T> clazz, EntityHandler<T> handler, String ... conditions) {
+        return service.queries(clazz, handler, conditions);
     }
-    public static <T> EntitySet<T> selects(Class<T> clazz, long first, long last, String ... conditions) {
-        return service.selects(clazz, first, last, conditions);
+    public static <T> EntitySet<T> queries(Class<T> clazz, long first, long last, String ... conditions) {
+        return service.queries(clazz, first, last, conditions);
     }
-    public static <T> T select(Class<T> clazz, ConfigStore configs, String ... conditions) {
-        return (T)service.select(clazz, configs, conditions);
+    public static <T> T query(Class<T> clazz, ConfigStore configs, String ... conditions) {
+        return (T)service.query(clazz, configs, conditions);
     }
-    public static <T> T select(Class<T> clazz, String ... conditions) {
-        return (T)service.select(clazz, conditions);
+    public static <T> T query(Class<T> clazz, String ... conditions) {
+        return (T)service.query(clazz, conditions);
     }
 
     /**
@@ -1307,70 +1213,47 @@ public class ServiceProxy {
     }
 
     /*多表查询, 左右连接时使用*/
-    public static DataSet<DataRow> queries(RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions) {
-        return service.queries(prepare, configs, obj, conditions);
+    public static DataSet<DataRow> selects(RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions) {
+        return service.selects(prepare, configs, obj, conditions);
     }
-    public static DataSet<DataRow> queries(RunPrepare prepare, Object obj, String ... conditions) {
-        return service.queries(prepare, obj, conditions);
+    public static DataSet<DataRow> selects(RunPrepare prepare, Object obj, String ... conditions) {
+        return service.selects(prepare, obj, conditions);
     }
-    public static void queries(RunPrepare prepare, StreamHandler handler, Object obj, String ... conditions) {
-        service.queries(prepare, handler, obj, conditions);
+    public static void selects(RunPrepare prepare, StreamHandler handler, Object obj, String ... conditions) {
+        service.selects(prepare, handler, obj, conditions);
     }
-    public static DataSet<DataRow> queries(RunPrepare prepare, long first, long last, Object obj, String ... conditions) {
-        return service.queries(prepare, first, last, obj, conditions);
-    }
-    public static DataSet<DataRow> querys(RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions) {
-        return service.queries(prepare, configs, obj, conditions);
-    }
-    public static DataSet<DataRow> querys(RunPrepare prepare, Object obj, String ... conditions) {
-        return service.queries(prepare, obj, conditions);
-    }
-    public static void querys(RunPrepare prepare, StreamHandler handler, Object obj, String ... conditions) {
-        service.queries(prepare, handler, obj, conditions);
-    }
-    public static DataSet<DataRow> querys(RunPrepare prepare, long first, long last, Object obj, String ... conditions) {
-        return service.queries(prepare, first, last, obj, conditions);
-    }
-    public static DataRow query(RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions) {
-        return service.query(prepare, configs, obj, conditions);
-    }
-    public static DataRow query(RunPrepare prepare, Object obj, String ... conditions) {
-        return service.query(prepare, obj, conditions);
+    public static DataSet<DataRow> selects(RunPrepare prepare, long first, long last, Object obj, String ... conditions) {
+        return service.selects(prepare, first, last, obj, conditions);
     }
 
-    public static DataSet<DataRow> queries(RunPrepare prepare, ConfigStore configs, String ... conditions) {
-        return service.queries(prepare, configs, conditions);
+    public static DataRow select(RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions) {
+        return service.select(prepare, configs, obj, conditions);
     }
-    public static DataSet<DataRow> queries(RunPrepare prepare, String ... conditions) {
-        return service.queries(prepare, conditions);
-    }
-    public static void queries(RunPrepare prepare, StreamHandler handler, String ... conditions) {
-        service.queries(prepare, handler, conditions);
-    }
-    public static DataSet<DataRow> queries(RunPrepare prepare, long first, long last, String ... conditions) {
-        return service.queries(prepare, first, last, conditions);
+    public static DataRow select(RunPrepare prepare, Object obj, String ... conditions) {
+        return service.select(prepare, obj, conditions);
     }
 
-    public static DataSet<DataRow> querys(RunPrepare prepare, ConfigStore configs, String ... conditions) {
-        return service.queries(prepare, configs, conditions);
+    public static DataSet<DataRow> selects(RunPrepare prepare, ConfigStore configs, String ... conditions) {
+        return service.selects(prepare, configs, conditions);
     }
-    public static DataSet<DataRow> querys(RunPrepare prepare, String ... conditions) {
-        return service.queries(prepare, conditions);
+    public static DataSet<DataRow> selects(RunPrepare prepare, String ... conditions) {
+        return service.selects(prepare, conditions);
     }
-    public static void querys(RunPrepare prepare, StreamHandler handler, String ... conditions) {
-        service.queries(prepare, handler, conditions);
+    public static void selects(RunPrepare prepare, StreamHandler handler, String ... conditions) {
+        service.selects(prepare, handler, conditions);
     }
-    public static DataSet<DataRow> querys(RunPrepare prepare, long first, long last, String ... conditions) {
-        return service.queries(prepare, first, last, conditions);
+    public static DataSet<DataRow> selects(RunPrepare prepare, long first, long last, String ... conditions) {
+        return service.selects(prepare, first, last, conditions);
     }
-    public static DataRow query(RunPrepare prepare, ConfigStore configs, String ... conditions) {
-        return service.query(prepare, configs, conditions);
+
+    public static DataRow select(RunPrepare prepare, ConfigStore configs, String ... conditions) {
+        return service.select(prepare, configs, conditions);
     }
-    public static DataRow query(RunPrepare prepare, String ... conditions) {
-        return service.query(prepare, conditions);
+    public static DataRow select(RunPrepare prepare, String ... conditions) {
+        return service.select(prepare, conditions);
     }
-    public static void query(RunPrepare prepare, StreamHandler handler, String ... conditions) {
-        service.query(prepare, handler, conditions);
+    public static void select(RunPrepare prepare, StreamHandler handler, String ... conditions) {
+        service.select(prepare, handler, conditions);
     }
 
     public static DataSet<DataRow> caches(String cache, RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions) {
@@ -1691,43 +1574,28 @@ public class ServiceProxy {
      * @param inputs  inputs
      * @return DataSet
      */
-    public static DataSet<DataRow> queriesProcedure(String procedure, long first, long last, String ... inputs) {
-        return service.queriesProcedure(procedure, first, last, inputs);
+    public static DataSet<DataRow> selectsProcedure(String procedure, long first, long last, String ... inputs) {
+        return service.selectsProcedure(procedure, first, last, inputs);
     }
-    public static DataSet<DataRow> queriesProcedure(String procedure, PageNavi navi, String ... inputs) {
-        return service.queriesProcedure(procedure, navi, inputs);
+    public static DataSet<DataRow> selectsProcedure(String procedure, PageNavi navi, String ... inputs) {
+        return service.selectsProcedure(procedure, navi, inputs);
     }
-    public static DataSet<DataRow> queriesProcedure(String procedure, String ... inputs) {
-        return service.queriesProcedure(procedure, inputs);
+    public static DataSet<DataRow> selectsProcedure(String procedure, String ... inputs) {
+        return service.selectsProcedure(procedure, inputs);
     }
-    public static DataSet<DataRow> queries(Procedure procedure, long first, long last, String ... inputs) {
-        return service.queries(procedure, first, last, inputs);
+    public static DataSet<DataRow> selects(Procedure procedure, long first, long last, String ... inputs) {
+        return service.selects(procedure, first, last, inputs);
     }
-    public static DataSet<DataRow> queries(Procedure procedure, PageNavi navi, String ... inputs) {
-        return service.queries(procedure, navi, inputs);
+    public static DataSet<DataRow> selects(Procedure procedure, PageNavi navi, String ... inputs) {
+        return service.selects(procedure, navi, inputs);
     }
 
-    public static DataSet<DataRow> querysProcedure(String procedure, long first, long last, String ... inputs) {
-        return service.queriesProcedure(procedure, first, last, inputs);
-    }
-    public static DataSet<DataRow> querysProcedure(String procedure, PageNavi navi, String ... inputs) {
-        return service.queriesProcedure(procedure, navi, inputs);
-    }
-    public static DataSet<DataRow> querysProcedure(String procedure, String ... inputs) {
-        return service.queriesProcedure(procedure, inputs);
-    }
-    public static DataSet<DataRow> querys(Procedure procedure, long first, long last, String ... inputs) {
-        return service.queries(procedure, first, last, inputs);
-    }
-    public static DataSet<DataRow> querys(Procedure procedure, PageNavi navi, String ... inputs) {
-        return service.queries(procedure, navi, inputs);
-    }
     public static DataRow queryProcedure(String procedure, String ... inputs) {
         return service.queryProcedure(procedure, inputs);
     }
 
-    public static DataRow query(Procedure procedure, String ... inputs) {
-        return service.query(procedure, inputs);
+    public static DataRow select(Procedure procedure, String ... inputs) {
+        return service.select(procedure, inputs);
     }
 
     /* *****************************************************************************************************************

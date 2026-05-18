@@ -82,15 +82,9 @@ public interface AnylineDao<E>{
 	 * @param conditions 查询条件 支持k:v k:v::type 以及原生sql形式(包含ORDER、GROUP、HAVING)默认忽略空值条件
 	 * @return maps
 	 */
-	DataSet<DataRow> queries(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions);
-	default DataSet<DataRow> queries(RunPrepare prepare, ConfigStore configs, String ... conditions) {
-		return queries(runtime(), null, prepare, configs, conditions);
-	}
-	default DataSet<DataRow> querys(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
-		return queries(runtime, random, prepare, configs, conditions);
-	}
-	default DataSet<DataRow> querys(RunPrepare prepare, ConfigStore configs, String ... conditions) {
-		return queries(runtime(), null, prepare, configs, conditions);
+	DataSet<DataRow> selects(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions);
+	default DataSet<DataRow> selects(RunPrepare prepare, ConfigStore configs, String ... conditions) {
+		return selects(runtime(), null, prepare, configs, conditions);
 	}
 
 	/**
@@ -102,9 +96,9 @@ public interface AnylineDao<E>{
 	 * @param conditions 查询条件 支持k:v k:v::type 以及原生sql形式(包含ORDER、GROUP、HAVING)默认忽略空值条件
 	 * @return maps
 	 */
-	<T> EntitySet<T> selects(DataRuntime runtime, String random, RunPrepare prepare, Class<T> clazz, ConfigStore configs, String ... conditions);
-	default <T> EntitySet<T> selects(RunPrepare prepare, Class<T> clazz, ConfigStore configs, String ... conditions) {
-		return selects(runtime(), null, prepare, clazz, configs, conditions);
+	<T> EntitySet<T> queries(DataRuntime runtime, String random, RunPrepare prepare, Class<T> clazz, ConfigStore configs, String ... conditions);
+	default <T> EntitySet<T> queries(RunPrepare prepare, Class<T> clazz, ConfigStore configs, String ... conditions) {
+		return queries(runtime(), null, prepare, clazz, configs, conditions);
 	}
 
 	/**
@@ -535,9 +529,9 @@ public interface AnylineDao<E>{
 	 * @param procedure  procedure
 	 * @return DataSet
 	 */
-	DataSet<DataRow> queries(DataRuntime runtime, String random, Procedure procedure, PageNavi navi);
-	default DataSet<DataRow> queries(Procedure procedure, PageNavi navi) {
-		return queries(runtime(), null, procedure, navi);
+	DataSet<DataRow> selects(DataRuntime runtime, String random, Procedure procedure, PageNavi navi);
+	default DataSet<DataRow> selects(Procedure procedure, PageNavi navi) {
+		return selects(runtime(), null, procedure, navi);
 	}
 	default long delete(DataRuntime runtime, String random, String dest, ConfigStore configs, Object obj, String ... columns) {
 		return delete(runtime, random, DataSourceUtil.parseDest(dest, null, configs), configs, obj, columns);
@@ -1764,7 +1758,7 @@ public interface AnylineDao<E>{
 	/* *****************************************************************************************************************
 	 * 													foreign
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<Run> buildQueryForeignsRun(Table table) throws Exception
+	 * List<Run> buildSelectForeignsRun(Table table) throws Exception
 	 * <T extends ForeignKey> LinkedHashMap<String, T> foreigns(int index, Table table, LinkedHashMap<String, T> foreigns, DataSet<DataRow> set) throws Exception
 	 ******************************************************************************************************************/
 	<T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, String random, boolean greedy, Table table);

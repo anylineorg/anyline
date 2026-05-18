@@ -579,15 +579,15 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 	}
 
 	@Override
-	public RunPrepare setQueryColumns(String... columns) {
+	public RunPrepare setSelectColumns(String... columns) {
 		if(null != columns) {
-			setQueryColumns(BeanUtil.array2list(columns));
+			setSelectColumns(BeanUtil.array2list(columns));
 		}
 		return this;
 	}
 
 	@Override
-	public RunPrepare setQueryColumns(List<String> columns) {
+	public RunPrepare setSelectColumns(List<String> columns) {
 		this.columns = new LinkedHashMap<>();
 		for(String column:columns) {
 			this.columns.put(column.toUpperCase(), new Column(column));

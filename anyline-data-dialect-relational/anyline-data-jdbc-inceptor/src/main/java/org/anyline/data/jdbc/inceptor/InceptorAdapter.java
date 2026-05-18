@@ -62,7 +62,7 @@ public class InceptorAdapter extends TranswarpAdapter {
      * INSERT            : 插入
      * UPDATE            : 更新
      * SAVE                : 根据情况插入或更新
-     * QUERY            : 查询(RunPrepare/XML/TABLE/VIEW/PROCEDURE)
+     * SELECT            : 查询(RunPrepare/XML/TABLE/VIEW/PROCEDURE)
      * EXISTS            : 是否存在
      * COUNT            : 统计
      * EXECUTE            : 执行(原生SQL及存储过程)
@@ -688,20 +688,20 @@ public class InceptorAdapter extends TranswarpAdapter {
      *                                                     QUERY
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
-     * DataSet<DataRow> queries(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
-     * DataSet<DataRow> queries(DataRuntime runtime, String random, Procedure procedure, PageNavi navi)
-     * <T> EntitySet<T> selects(DataRuntime runtime, String random, RunPrepare prepare, Class<T> clazz, ConfigStore configs, String... conditions)
+     * DataSet<DataRow> selects(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
+     * DataSet<DataRow> selects(DataRuntime runtime, String random, Procedure procedure, PageNavi navi)
+     * <T> EntitySet<T> queries(DataRuntime runtime, String random, RunPrepare prepare, Class<T> clazz, ConfigStore configs, String... conditions)
      * List<Map<String, Object>> maps(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
      * [命令合成]
-     * Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions)
-     * List<Run> buildQuerySequence(DataRuntime runtime, boolean next, String ... names)
-     * Run fillQueryContent(DataRuntime runtime, Run run)
-     * String mergeFinalQuery(DataRuntime runtime, Run run)
+     * Run buildSelectRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions)
+     * List<Run> buildSelectSequence(DataRuntime runtime, boolean next, String ... names)
+     * Run fillSelectContent(DataRuntime runtime, Run run)
+     * String mergeFinalSelect(DataRuntime runtime, Run run)
      * RunValue createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, Boolean placeholder, Boolean unicode)
      * Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, Boolean placeholder, Boolean unicode)
      * List<RunValue> createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, Boolean placeholder, Boolean unicode)
      * [命令执行]
-     * DataSet<DataRow> select(DataRuntime runtime, String random, boolean system, String table, ConfigStore configs, Run run)
+     * DataSet<DataRow> query(DataRuntime runtime, String random, boolean system, String table, ConfigStore configs, Run run)
      * List<Map<String, Object>> maps(DataRuntime runtime, String random, ConfigStore configs, Run run)
      * Map<String, Object> map(DataRuntime runtime, String random, ConfigStore configs, Run run)
      * DataRow sequence(DataRuntime runtime, String random, boolean next, String ... names)
@@ -720,8 +720,8 @@ public class InceptorAdapter extends TranswarpAdapter {
      * @return DataSet
      */
     @Override
-    public DataSet<DataRow> queries(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
-        return super.queries(runtime, random, prepare, configs, conditions);
+    public DataSet<DataRow> selects(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
+        return super.selects(runtime, random, prepare, configs, conditions);
     }
 
     /**
@@ -733,8 +733,8 @@ public class InceptorAdapter extends TranswarpAdapter {
      * @return DataSet
      */
     @Override
-    public DataSet<DataRow> queries(DataRuntime runtime, String random, Procedure procedure, PageNavi navi) {
-        return super.queries(runtime, random, procedure, navi);
+    public DataSet<DataRow> selects(DataRuntime runtime, String random, Procedure procedure, PageNavi navi) {
+        return super.selects(runtime, random, procedure, navi);
     }
 
     /**
@@ -749,8 +749,8 @@ public class InceptorAdapter extends TranswarpAdapter {
      * @param <T> Entity
      */
     @Override
-    public <T> EntitySet<T> selects(DataRuntime runtime, String random, RunPrepare prepare, Class<T> clazz, ConfigStore configs, String ... conditions) {
-        return super.selects(runtime, random, prepare, clazz, configs, conditions);
+    public <T> EntitySet<T> queries(DataRuntime runtime, String random, RunPrepare prepare, Class<T> clazz, ConfigStore configs, String ... conditions) {
+        return super.queries(runtime, random, prepare, clazz, configs, conditions);
     }
 
     /**
@@ -765,8 +765,8 @@ public class InceptorAdapter extends TranswarpAdapter {
      *
      */
     @Override
-    protected <T> EntitySet<T> select(DataRuntime runtime, String random, Class<T> clazz, Table table, ConfigStore configs, Run run) {
-        return super.select(runtime, random, clazz, table, configs, run);
+    protected <T> EntitySet<T> query(DataRuntime runtime, String random, Class<T> clazz, Table table, ConfigStore configs, Run run) {
+        return super.query(runtime, random, clazz, table, configs, run);
     }
 
     /**
@@ -795,8 +795,8 @@ public class InceptorAdapter extends TranswarpAdapter {
      * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
      */
     @Override
-    public Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, Boolean placeholder, Boolean unicode, String ... conditions) {
-        return super.buildQueryRun(runtime, prepare, configs, placeholder, unicode, conditions);
+    public Run buildSelectRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, Boolean placeholder, Boolean unicode, String ... conditions) {
+        return super.buildSelectRun(runtime, prepare, configs, placeholder, unicode, conditions);
     }
 
     /**
@@ -829,8 +829,8 @@ public class InceptorAdapter extends TranswarpAdapter {
      * @return String
      */
     @Override
-    public List<Run> buildQuerySequence(DataRuntime runtime, boolean next, String ... names) {
-        return super.buildQuerySequence(runtime, next, names);
+    public List<Run> buildSelectSequence(DataRuntime runtime, boolean next, String ... names) {
+        return super.buildSelectSequence(runtime, next, names);
     }
 
     /**
@@ -839,8 +839,8 @@ public class InceptorAdapter extends TranswarpAdapter {
      * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
      */
     @Override
-    public Run fillQueryContent(DataRuntime runtime, Run run, Boolean placeholder, Boolean unicode) {
-        return super.fillQueryContent(runtime, run, placeholder, unicode);
+    public Run fillSelectContent(DataRuntime runtime, Run run, Boolean placeholder, Boolean unicode) {
+        return super.fillSelectContent(runtime, run, placeholder, unicode);
     }
 
     /**
@@ -851,8 +851,8 @@ public class InceptorAdapter extends TranswarpAdapter {
      * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
      */
     @Override
-    public Run fillQueryContent(DataRuntime runtime, StringBuilder builder, Run run, Boolean placeholder, Boolean unicode) {
-        return super.fillQueryContent(runtime, builder, run, placeholder, unicode);
+    public Run fillSelectContent(DataRuntime runtime, StringBuilder builder, Run run, Boolean placeholder, Boolean unicode) {
+        return super.fillSelectContent(runtime, builder, run, placeholder, unicode);
     }
 
     /**
@@ -862,8 +862,8 @@ public class InceptorAdapter extends TranswarpAdapter {
      * @param run XMLRun
      */
     @Override
-    protected Run fillQueryContent(DataRuntime runtime, XMLRun run, Boolean placeholder, Boolean unicode) {
-        return super.fillQueryContent(runtime, run, placeholder, unicode);
+    protected Run fillSelectContent(DataRuntime runtime, XMLRun run, Boolean placeholder, Boolean unicode) {
+        return super.fillSelectContent(runtime, run, placeholder, unicode);
     }
 
     /**
@@ -873,8 +873,8 @@ public class InceptorAdapter extends TranswarpAdapter {
      * @param run TextRun
      */
     @Override
-    protected Run fillQueryContent(DataRuntime runtime, StringBuilder builder, XMLRun run, Boolean placeholder, Boolean unicode) {
-        return super.fillQueryContent(runtime, builder, run, placeholder, unicode);
+    protected Run fillSelectContent(DataRuntime runtime, StringBuilder builder, XMLRun run, Boolean placeholder, Boolean unicode) {
+        return super.fillSelectContent(runtime, builder, run, placeholder, unicode);
     }
 
     /**
@@ -884,8 +884,8 @@ public class InceptorAdapter extends TranswarpAdapter {
      * @param run TextRun
      */
     @Override
-    protected Run fillQueryContent(DataRuntime runtime, TextRun run, Boolean placeholder, Boolean unicode) {
-        return super.fillQueryContent(runtime, run, placeholder, unicode);
+    protected Run fillSelectContent(DataRuntime runtime, TextRun run, Boolean placeholder, Boolean unicode) {
+        return super.fillSelectContent(runtime, run, placeholder, unicode);
     }
 
     /**
@@ -895,8 +895,8 @@ public class InceptorAdapter extends TranswarpAdapter {
      * @param run TextRun
      */
     @Override
-    protected Run fillQueryContent(DataRuntime runtime, StringBuilder builder, TextRun run, Boolean placeholder, Boolean unicode) {
-        return super.fillQueryContent(runtime, builder, run, placeholder, unicode);
+    protected Run fillSelectContent(DataRuntime runtime, StringBuilder builder, TextRun run, Boolean placeholder, Boolean unicode) {
+        return super.fillSelectContent(runtime, builder, run, placeholder, unicode);
     }
 
     /**
@@ -905,8 +905,8 @@ public class InceptorAdapter extends TranswarpAdapter {
      * @param run TextRun
      */
     @Override
-    protected Run fillQueryContent(DataRuntime runtime, TableRun run, Boolean placeholder, Boolean unicode) {
-        return super.fillQueryContent(runtime, run, placeholder, unicode);
+    protected Run fillSelectContent(DataRuntime runtime, TableRun run, Boolean placeholder, Boolean unicode) {
+        return super.fillSelectContent(runtime, run, placeholder, unicode);
     }
 
     /**
@@ -916,8 +916,8 @@ public class InceptorAdapter extends TranswarpAdapter {
      * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
      */
     @Override
-    protected Run fillQueryContent(DataRuntime runtime, StringBuilder builder, TableRun run, Boolean placeholder, Boolean unicode) {
-        return super.fillQueryContent(runtime, builder, run, placeholder, unicode);
+    protected Run fillSelectContent(DataRuntime runtime, StringBuilder builder, TableRun run, Boolean placeholder, Boolean unicode) {
+        return super.fillSelectContent(runtime, builder, run, placeholder, unicode);
     }
 
     /**
@@ -954,8 +954,8 @@ public class InceptorAdapter extends TranswarpAdapter {
      * @return String
      */
     @Override
-    public String mergeFinalQuery(DataRuntime runtime, Run run) {
-        return super.mergeFinalQuery(runtime, run);
+    public String mergeFinalSelect(DataRuntime runtime, Run run) {
+        return super.mergeFinalSelect(runtime, run);
     }
 
     /**
@@ -997,8 +997,8 @@ public class InceptorAdapter extends TranswarpAdapter {
      * @return DataSet
      */
     @Override
-    public DataSet<DataRow> select(DataRuntime runtime, String random, boolean system, Table table, ConfigStore configs, Run run) {
-        return super.select(runtime, random, system, table, configs, run);
+    public DataSet<DataRow> query(DataRuntime runtime, String random, boolean system, Table table, ConfigStore configs, Run run) {
+        return super.query(runtime, random, system, table, configs, run);
     }
 
     /**
@@ -1473,13 +1473,13 @@ public class InceptorAdapter extends TranswarpAdapter {
      * String String product(DataRuntime runtime, String random);
      * String String version(DataRuntime runtime, String random);
      * [命令合成]
-     * List<Run> buildQueryProductRun(DataRuntime runtime)
-     * List<Run> buildQueryVersionRun(DataRuntime runtime)
-     * List<Run> buildQueryDatabasesRun(DataRuntime runtime, boolean greedy, String name)
-     * List<Run> buildQueryDatabaseRun(DataRuntime runtime, boolean greedy, String name)
-     * List<Run> buildQueryProductRun(DataRuntime runtime, boolean greedy, String name)
-     * List<Run> buildQueryVersionRun(DataRuntime runtime, boolean greedy, String name)
-     * List<Run> buildQueryDatabaseRun(DataRuntime runtime)
+     * List<Run> buildSelectProductRun(DataRuntime runtime)
+     * List<Run> buildSelectVersionRun(DataRuntime runtime)
+     * List<Run> buildSelectDatabasesRun(DataRuntime runtime, boolean greedy, String name)
+     * List<Run> buildSelectDatabaseRun(DataRuntime runtime, boolean greedy, String name)
+     * List<Run> buildSelectProductRun(DataRuntime runtime, boolean greedy, String name)
+     * List<Run> buildSelectVersionRun(DataRuntime runtime, boolean greedy, String name)
+     * List<Run> buildSelectDatabaseRun(DataRuntime runtime)
      * [结果集封装]<br/>
      * LinkedHashMap<String, Database> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Database> databases, Catalog catalog, Schema schema, DataSet<DataRow> set)
      * List<Database> databases(DataRuntime runtime, int index, boolean create, List<Database> databases, Catalog catalog, Schema schema, DataSet<DataRow> set)
@@ -1566,8 +1566,8 @@ public class InceptorAdapter extends TranswarpAdapter {
      * @throws Exception 异常
      */
     @Override
-    public List<Run> buildQueryProductRun(DataRuntime runtime) throws Exception {
-        return super.buildQueryProductRun(runtime);
+    public List<Run> buildSelectProductRun(DataRuntime runtime) throws Exception {
+        return super.buildSelectProductRun(runtime);
     }
 
     /**
@@ -1578,8 +1578,8 @@ public class InceptorAdapter extends TranswarpAdapter {
      * @throws Exception 异常
      */
     @Override
-    public List<Run> buildQueryVersionRun(DataRuntime runtime) throws Exception {
-        return super.buildQueryVersionRun(runtime);
+    public List<Run> buildSelectVersionRun(DataRuntime runtime) throws Exception {
+        return super.buildSelectVersionRun(runtime);
     }
 
     /**
@@ -1592,8 +1592,8 @@ public class InceptorAdapter extends TranswarpAdapter {
      * @throws Exception 异常
      */
     @Override
-    public List<Run> buildQueryDatabasesRun(DataRuntime runtime, boolean greedy, Database query) throws Exception {
-        return super.buildQueryDatabasesRun(runtime, greedy, query);
+    public List<Run> buildSelectDatabasesRun(DataRuntime runtime, boolean greedy, Database query) throws Exception {
+        return super.buildSelectDatabasesRun(runtime, greedy, query);
     }
 
     /**
@@ -1609,7 +1609,7 @@ public class InceptorAdapter extends TranswarpAdapter {
     /**
      * database[结果集封装]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
+     * @param index 第几条SQL 对照 buildSelectDatabaseRun 返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param previous 上一步查询结果
      * @param set 查询结果集
@@ -1625,7 +1625,7 @@ public class InceptorAdapter extends TranswarpAdapter {
      * database[结果集封装]<br/>
      *
      * @param runtime  运行环境主要包含驱动适配器 数据源或客户端
-     * @param index    第几条SQL 对照 buildQueryDatabaseRun 返回顺序
+     * @param index    第几条SQL 对照 buildSelectDatabaseRun 返回顺序
      * @param create   上一步没有查到的,这一步是否需要新创建
      * @param previous 上一步查询结果
      * @param set      查询结果集
@@ -1641,7 +1641,7 @@ public class InceptorAdapter extends TranswarpAdapter {
      * database[结果集封装]<br/>
      * 当前database 根据查询结果集
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
+     * @param index 第几条SQL 对照 buildSelectDatabaseRun 返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param meta 上一步查询结果
      * @param set 查询结果集
@@ -1759,7 +1759,7 @@ public class InceptorAdapter extends TranswarpAdapter {
      * <T extends Catalog> LinkedHashMap<String, T> catalogs(DataRuntime runtime, String random, String name)
      * <T extends Catalog> List<T> catalogs(DataRuntime runtime, String random, boolean greedy, String name)
      * [命令合成]
-     * List<Run> buildQueryCatalogsRun(DataRuntime runtime, boolean greedy, String name)
+     * List<Run> buildSelectCatalogsRun(DataRuntime runtime, boolean greedy, String name)
      * [结果集封装]<br/>
      * LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Catalog> catalogs, DataSet<DataRow> set)
      * List<Catalog> catalogs(DataRuntime runtime, int index, boolean create, List<Catalog> catalogs, DataSet<DataRow> set)
@@ -1814,8 +1814,8 @@ public class InceptorAdapter extends TranswarpAdapter {
      * @throws Exception 异常
      */
     @Override
-    public List<Run> buildQueryCatalogRun(DataRuntime runtime, String random) throws Exception {
-        return super.buildQueryCatalogRun(runtime, random);
+    public List<Run> buildSelectCatalogRun(DataRuntime runtime, String random) throws Exception {
+        return super.buildSelectCatalogRun(runtime, random);
     }
 
     /**
@@ -1828,8 +1828,8 @@ public class InceptorAdapter extends TranswarpAdapter {
      * @throws Exception 异常
      */
     @Override
-    public List<Run> buildQueryCatalogsRun(DataRuntime runtime, boolean greedy, Catalog query) throws Exception {
-        return super.buildQueryCatalogsRun(runtime, greedy, query);
+    public List<Run> buildSelectCatalogsRun(DataRuntime runtime, boolean greedy, Catalog query) throws Exception {
+        return super.buildSelectCatalogsRun(runtime, greedy, query);
     }
 
     /**
@@ -1846,7 +1846,7 @@ public class InceptorAdapter extends TranswarpAdapter {
      * catalog[结果集封装]<br/>
      * 根据查询结果集构造 Database
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
+     * @param index 第几条SQL 对照 buildSelectDatabaseRun 返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param previous 上一步查询结果
      * @param set 查询结果集
@@ -1862,7 +1862,7 @@ public class InceptorAdapter extends TranswarpAdapter {
      * catalog[结果集封装]<br/>
      * 根据查询结果集构造 Database
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
+     * @param index 第几条SQL 对照 buildSelectDatabaseRun 返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param previous 上一步查询结果
      * @param set 查询结果集
@@ -1906,7 +1906,7 @@ public class InceptorAdapter extends TranswarpAdapter {
      * catalog[结果集封装]<br/>
      * 当前catalog 根据查询结果集
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
+     * @param index 第几条SQL 对照 buildSelectDatabaseRun 返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param meta 上一步查询结果
      * @param set 查询结果集
@@ -1966,7 +1966,7 @@ public class InceptorAdapter extends TranswarpAdapter {
      * <T extends Schema> LinkedHashMap<String, T> schemas(DataRuntime runtime, String random, Catalog catalog, String name)
      * <T extends Schema> List<T> schemas(DataRuntime runtime, String random, boolean greedy, Catalog catalog, String name)
      * [命令合成]
-     * List<Run> buildQuerySchemasRun(DataRuntime runtime, boolean greedy, Catalog catalog, String name)
+     * List<Run> buildSelectSchemasRun(DataRuntime runtime, boolean greedy, Catalog catalog, String name)
      * [结果集封装]<br/>
      * LinkedHashMap<String, Schema> schemas(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Schema> schemas, Catalog catalog, Schema schema, DataSet<DataRow> set)
      * List<Schema> schemas(DataRuntime runtime, int index, boolean create, List<Schema> schemas, Catalog catalog, Schema schema, DataSet<DataRow> set)
@@ -2018,8 +2018,8 @@ public class InceptorAdapter extends TranswarpAdapter {
      * @throws Exception 异常
      */
     @Override
-    public List<Run> buildQuerySchemaRun(DataRuntime runtime, String random) throws Exception {
-        return super.buildQuerySchemaRun(runtime, random);
+    public List<Run> buildSelectSchemaRun(DataRuntime runtime, String random) throws Exception {
+        return super.buildSelectSchemaRun(runtime, random);
     }
 
     /**
@@ -2032,8 +2032,8 @@ public class InceptorAdapter extends TranswarpAdapter {
      * @throws Exception 异常
      */
     @Override
-    public List<Run> buildQuerySchemasRun(DataRuntime runtime, boolean greedy, Schema query) throws Exception {
-        return super.buildQuerySchemasRun(runtime, greedy, query);
+    public List<Run> buildSelectSchemasRun(DataRuntime runtime, boolean greedy, Schema query) throws Exception {
+        return super.buildSelectSchemasRun(runtime, greedy, query);
     }
 
     /**
@@ -2050,7 +2050,7 @@ public class InceptorAdapter extends TranswarpAdapter {
      * schema[结果集封装]<br/>
      * 根据查询结果集构造 Schema
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
+     * @param index 第几条SQL 对照 buildSelectDatabaseRun 返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param previous 上一步查询结果
      * @param set 查询结果集
@@ -2066,7 +2066,7 @@ public class InceptorAdapter extends TranswarpAdapter {
      * schema[结果集封装]<br/>
      * 根据查询结果集构造 Schema
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
+     * @param index 第几条SQL 对照 buildSelectDatabaseRun 返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param previous 上一步查询结果
      * @param set 查询结果集
@@ -2110,7 +2110,7 @@ public class InceptorAdapter extends TranswarpAdapter {
      * schema[结果集封装]<br/>
      * 当前schema 根据查询结果集
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条SQL 对照 buildQuerySchemaRun 返回顺序
+     * @param index 第几条SQL 对照 buildSelectSchemaRun 返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param meta 上一步查询结果
      * @param set 查询结果集
@@ -2197,8 +2197,8 @@ public class InceptorAdapter extends TranswarpAdapter {
      * <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, boolean struct)
      * <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, String types, boolean struct)
      * [命令合成]
-     * List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs)
-     * List<Run> buildQueryTablesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types)
+     * List<Run> buildSelectTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs)
+     * List<Run> buildSelectTablesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types)
      * [结果集封装]<br/>
      * <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet<DataRow> set)
      * <T extends Table> List<T> tables(DataRuntime runtime, int index, boolean create, List<T> tables, Catalog catalog, Schema schema, DataSet<DataRow> set)
@@ -2208,7 +2208,7 @@ public class InceptorAdapter extends TranswarpAdapter {
      * [调用入口]
      * List<String> ddl(DataRuntime runtime, String random, Table table, boolean init)
      * [命令合成]
-     * List<Run> buildQueryDdlRun(DataRuntime runtime, Table table)
+     * List<Run> buildSelectDdlRun(DataRuntime runtime, Table table)
      * [结果集封装]<br/>
      * List<String> ddl(DataRuntime runtime, int index, Table table, List<String> ddls, DataSet<DataRow> set)
      ******************************************************************************************************************/
@@ -2265,8 +2265,8 @@ public class InceptorAdapter extends TranswarpAdapter {
      * @throws Exception Exception
      */
     @Override
-    public List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Table query, int types, ConfigStore configs) throws Exception {
-        return super.buildQueryTablesRun(runtime, greedy, query, types, configs);
+    public List<Run> buildSelectTablesRun(DataRuntime runtime, boolean greedy, Table query, int types, ConfigStore configs) throws Exception {
+        return super.buildSelectTablesRun(runtime, greedy, query, types, configs);
     }
 
     /**
@@ -2299,15 +2299,15 @@ public class InceptorAdapter extends TranswarpAdapter {
      * @throws Exception Exception
      */
     @Override
-    public List<Run> buildQueryTablesCommentRun(DataRuntime runtime, Table query, int types) throws Exception {
-        return super.buildQueryTablesCommentRun(runtime, query, types);
+    public List<Run> buildSelectTablesCommentRun(DataRuntime runtime, Table query, int types) throws Exception {
+        return super.buildSelectTablesCommentRun(runtime, query, types);
     }
 
     /**
      * table[结果集封装]<br/>
      * 根据查询结果集构造Table
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条SQL 对照buildQueryTablesRun返回顺序
+     * @param index 第几条SQL 对照buildSelectTablesRun返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param query 查询条件 根据metadata属性
      * @param previous 上一步查询结果
@@ -2324,7 +2324,7 @@ public class InceptorAdapter extends TranswarpAdapter {
      * table[结果集封装]<br/>
      * 根据查询结果集构造Table
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条SQL 对照buildQueryTablesRun返回顺序
+     * @param index 第几条SQL 对照buildSelectTablesRun返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param query 查询条件 根据metadata属性
      * @param previous 上一步查询结果
@@ -2403,7 +2403,7 @@ public class InceptorAdapter extends TranswarpAdapter {
      * table[结果集封装]<br/>
      * 表备注
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条SQL 对照buildQueryTablesRun返回顺序
+     * @param index 第几条SQL 对照buildSelectTablesRun返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param query 查询条件 根据metadata属性
      * @param previous 上一步查询结果
@@ -2420,7 +2420,7 @@ public class InceptorAdapter extends TranswarpAdapter {
      * table[结果集封装]<br/>
      * 表备注
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条SQL 对照buildQueryTablesRun返回顺序
+     * @param index 第几条SQL 对照buildSelectTablesRun返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param query 查询条件 根据metadata属性
      * @param previous 上一步查询结果
@@ -2455,15 +2455,15 @@ public class InceptorAdapter extends TranswarpAdapter {
      * @return List
      */
     @Override
-    public List<Run> buildQueryDdlRun(DataRuntime runtime, Table table) throws Exception {
-        return super.buildQueryDdlRun(runtime, table);
+    public List<Run> buildSelectDdlRun(DataRuntime runtime, Table table) throws Exception {
+        return super.buildSelectDdlRun(runtime, table);
     }
 
     /**
      * table[结果集封装]<br/>
      * 查询表DDL
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条SQL 对照 buildQueryDdlRun 返回顺序
+     * @param index 第几条SQL 对照 buildSelectDdlRun 返回顺序
      * @param table 表
      * @param set sql执行的结果集
      * @return List
@@ -2480,8 +2480,8 @@ public class InceptorAdapter extends TranswarpAdapter {
      * <T extends VertexTable> List<T> vertexs(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, boolean struct)
      * <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, String types, boolean struct)
      * [命令合成]
-     * List<Run> buildQueryVertexsRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs)
-     * List<Run> buildQueryVertexsCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types)
+     * List<Run> buildSelectVertexsRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs)
+     * List<Run> buildSelectVertexsCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types)
      * [结果集封装]<br/>
      * <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> vertexs, Catalog catalog, Schema schema, DataSet<DataRow> set)
      * <T extends VertexTable> List<T> vertexs(DataRuntime runtime, int index, boolean create, List<T> vertexs, Catalog catalog, Schema schema, DataSet<DataRow> set)
@@ -2491,7 +2491,7 @@ public class InceptorAdapter extends TranswarpAdapter {
      * [调用入口]
      * List<String> ddl(DataRuntime runtime, String random, VertexTable vertex, boolean init)
      * [命令合成]
-     * List<Run> buildQueryDdlRun(DataRuntime runtime, VertexTable vertex)
+     * List<Run> buildSelectDdlRun(DataRuntime runtime, VertexTable vertex)
      * [结果集封装]<br/>
      * List<String> ddl(DataRuntime runtime, int index, VertexTable vertex, List<String> ddls, DataSet<DataRow> set)
      ******************************************************************************************************************/
@@ -2547,8 +2547,8 @@ public class InceptorAdapter extends TranswarpAdapter {
      * @throws Exception Exception
      */
     @Override
-    public List<Run> buildQueryVertexsRun(DataRuntime runtime, boolean greedy, VertexTable query, int types, ConfigStore configs) throws Exception {
-        return super.buildQueryVertexsRun(runtime, greedy, query, types, configs);
+    public List<Run> buildSelectVertexsRun(DataRuntime runtime, boolean greedy, VertexTable query, int types, ConfigStore configs) throws Exception {
+        return super.buildSelectVertexsRun(runtime, greedy, query, types, configs);
     }
 
     /**
@@ -2571,15 +2571,15 @@ public class InceptorAdapter extends TranswarpAdapter {
      * @throws Exception Exception
      */
     @Override
-    public List<Run> buildQueryVertexsCommentRun(DataRuntime runtime, VertexTable query, int types) throws Exception {
-        return super.buildQueryVertexsCommentRun(runtime, query, types);
+    public List<Run> buildSelectVertexsCommentRun(DataRuntime runtime, VertexTable query, int types) throws Exception {
+        return super.buildSelectVertexsCommentRun(runtime, query, types);
     }
 
     /**
      * vertex[结果集封装]<br/>
      *  根据查询结果集构造VertexTable
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条SQL 对照buildQueryVertexsRun返回顺序
+     * @param index 第几条SQL 对照buildSelectVertexsRun返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param query 查询条件 根据metadata属性
      * @param previous 上一步查询结果
@@ -2596,7 +2596,7 @@ public class InceptorAdapter extends TranswarpAdapter {
      * vertex[结果集封装]<br/>
      *  根据查询结果集构造VertexTable
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条SQL 对照buildQueryVertexsRun返回顺序
+     * @param index 第几条SQL 对照buildSelectVertexsRun返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param query 查询条件 根据metadata属性
      * @param previous 上一步查询结果
@@ -2664,15 +2664,15 @@ public class InceptorAdapter extends TranswarpAdapter {
      * @return List
      */
     @Override
-    public List<Run> buildQueryDdlRun(DataRuntime runtime, VertexTable vertex) throws Exception {
-        return super.buildQueryDdlRun(runtime, vertex);
+    public List<Run> buildSelectDdlRun(DataRuntime runtime, VertexTable vertex) throws Exception {
+        return super.buildSelectDdlRun(runtime, vertex);
     }
 
     /**
      * vertex[结果集封装]<br/>
      * 查询表DDL
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条SQL 对照 buildQueryDdlRun 返回顺序
+     * @param index 第几条SQL 对照 buildSelectDdlRun 返回顺序
      * @param vertex 表
      * @param set sql执行的结果集
      * @return List
@@ -2718,8 +2718,8 @@ public class InceptorAdapter extends TranswarpAdapter {
      * <T extends EdgeTable> List<T> edges(DataRuntime runtime, String random, boolean greedy, EdgeTable query, int types, boolean struct)
      * <T extends EdgeTable> LinkedHashMap<String, T> edges(DataRuntime runtime, String random, EdgeTable query, String types, boolean struct)
      * [命令合成]
-     * List<Run> buildQueryEdgesRun(DataRuntime runtime, boolean greedy, EdgeTable query, int types, ConfigStore configs)
-     * List<Run> buildQueryEdgesCommentRun(DataRuntime runtime, EdgeTable query, int types)
+     * List<Run> buildSelectEdgesRun(DataRuntime runtime, boolean greedy, EdgeTable query, int types, ConfigStore configs)
+     * List<Run> buildSelectEdgesCommentRun(DataRuntime runtime, EdgeTable query, int types)
      * [结果集封装]<br/>
      * <T extends EdgeTable> LinkedHashMap<String, T> edges(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> edges, Catalog catalog, Schema schema, DataSet<DataRow> set)
      * <T extends EdgeTable> List<T> edges(DataRuntime runtime, int index, boolean create, List<T> edges, Catalog catalog, Schema schema, DataSet<DataRow> set)
@@ -2729,7 +2729,7 @@ public class InceptorAdapter extends TranswarpAdapter {
      * [调用入口]
      * List<String> ddl(DataRuntime runtime, String random, EdgeTable meta, boolean init)
      * [命令合成]
-     * List<Run> buildQueryDdlRun(DataRuntime runtime, EdgeTable meta)
+     * List<Run> buildSelectDdlRun(DataRuntime runtime, EdgeTable meta)
      * [结果集封装]<br/>
      * List<String> ddl(DataRuntime runtime, int index, EdgeTable meta, List<String> ddls, DataSet<DataRow> set)
      ******************************************************************************************************************/
@@ -2785,8 +2785,8 @@ public class InceptorAdapter extends TranswarpAdapter {
      * @throws Exception Exception
      */
     @Override
-    public List<Run> buildQueryEdgesRun(DataRuntime runtime, boolean greedy, EdgeTable query, int types, ConfigStore configs) throws Exception {
-        return super.buildQueryEdgesRun(runtime, greedy, query, types, configs);
+    public List<Run> buildSelectEdgesRun(DataRuntime runtime, boolean greedy, EdgeTable query, int types, ConfigStore configs) throws Exception {
+        return super.buildSelectEdgesRun(runtime, greedy, query, types, configs);
     }
 
     /**
@@ -2809,15 +2809,15 @@ public class InceptorAdapter extends TranswarpAdapter {
      * @throws Exception Exception
      */
     @Override
-    public List<Run> buildQueryEdgesCommentRun(DataRuntime runtime, EdgeTable query, int types) throws Exception {
-        return super.buildQueryEdgesCommentRun(runtime, query, types);
+    public List<Run> buildSelectEdgesCommentRun(DataRuntime runtime, EdgeTable query, int types) throws Exception {
+        return super.buildSelectEdgesCommentRun(runtime, query, types);
     }
 
     /**
      * edge[结果集封装]<br/>
      *  根据查询结果集构造EdgeTable
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条SQL 对照buildQueryEdgesRun返回顺序
+     * @param index 第几条SQL 对照buildSelectEdgesRun返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param query 查询条件 根据metadata属性
      * @param previous 上一步查询结果
@@ -2834,7 +2834,7 @@ public class InceptorAdapter extends TranswarpAdapter {
      * edge[结果集封装]<br/>
      *  根据查询结果集构造EdgeTable
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条SQL 对照buildQueryEdgesRun返回顺序
+     * @param index 第几条SQL 对照buildSelectEdgesRun返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param query 查询条件 根据metadata属性
      * @param previous 上一步查询结果
@@ -2931,15 +2931,15 @@ public class InceptorAdapter extends TranswarpAdapter {
      * @return List
      */
     @Override
-    public List<Run> buildQueryDdlRun(DataRuntime runtime, EdgeTable meta) throws Exception {
-        return super.buildQueryDdlRun(runtime, meta);
+    public List<Run> buildSelectDdlRun(DataRuntime runtime, EdgeTable meta) throws Exception {
+        return super.buildSelectDdlRun(runtime, meta);
     }
 
     /**
      * edge[结果集封装]<br/>
      * 查询表DDL
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条SQL 对照 buildQueryDdlRun 返回顺序
+     * @param index 第几条SQL 对照 buildSelectDdlRun 返回顺序
      * @param meta 表
      * @param set sql执行的结果集
      * @return List
@@ -2956,8 +2956,8 @@ public class InceptorAdapter extends TranswarpAdapter {
      * <T extends View> List<T> views(DataRuntime runtime, String random, boolean greedy, View query, int types, boolean struct)
      * <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, View query, String types, boolean struct)
      * [命令合成]
-     * List<Run> buildQueryViewsRun(DataRuntime runtime, boolean greedy, View query, int types, ConfigStore configs)
-     * List<Run> buildQueryViewsCommentRun(DataRuntime runtime, View query, int types)
+     * List<Run> buildSelectViewsRun(DataRuntime runtime, boolean greedy, View query, int types, ConfigStore configs)
+     * List<Run> buildSelectViewsCommentRun(DataRuntime runtime, View query, int types)
      * [结果集封装]<br/>
      * <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> views, Catalog catalog, Schema schema, DataSet<DataRow> set)
      * <T extends View> List<T> views(DataRuntime runtime, int index, boolean create, List<T> views, Catalog catalog, Schema schema, DataSet<DataRow> set)
@@ -2967,7 +2967,7 @@ public class InceptorAdapter extends TranswarpAdapter {
      * [调用入口]
      * List<String> ddl(DataRuntime runtime, String random, View view, boolean init)
      * [命令合成]
-     * List<Run> buildQueryDdlRun(DataRuntime runtime, View view)
+     * List<Run> buildSelectDdlRun(DataRuntime runtime, View view)
      * [结果集封装]<br/>
      * List<String> ddl(DataRuntime runtime, int index, View view, List<String> ddls, DataSet<DataRow> set)
      ******************************************************************************************************************/
@@ -3023,8 +3023,8 @@ public class InceptorAdapter extends TranswarpAdapter {
      * @throws Exception Exception
      */
     @Override
-    public List<Run> buildQueryViewsRun(DataRuntime runtime, boolean greedy, View query, int types, ConfigStore configs) throws Exception {
-        return super.buildQueryViewsRun(runtime, greedy, query, types, configs);
+    public List<Run> buildSelectViewsRun(DataRuntime runtime, boolean greedy, View query, int types, ConfigStore configs) throws Exception {
+        return super.buildSelectViewsRun(runtime, greedy, query, types, configs);
     }
 
     /**
@@ -3047,15 +3047,15 @@ public class InceptorAdapter extends TranswarpAdapter {
      * @throws Exception Exception
      */
     @Override
-    public List<Run> buildQueryViewsCommentRun(DataRuntime runtime, View query, int types) throws Exception {
-        return super.buildQueryViewsCommentRun(runtime, query, types);
+    public List<Run> buildSelectViewsCommentRun(DataRuntime runtime, View query, int types) throws Exception {
+        return super.buildSelectViewsCommentRun(runtime, query, types);
     }
 
     /**
      * view[结果集封装]<br/>
      *  根据查询结果集构造View
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条SQL 对照buildQueryViewsRun返回顺序
+     * @param index 第几条SQL 对照buildSelectViewsRun返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param query 查询条件 根据metadata属性
      * @param previous 上一步查询结果
@@ -3072,7 +3072,7 @@ public class InceptorAdapter extends TranswarpAdapter {
      * view[结果集封装]<br/>
      *  根据查询结果集构造View
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条SQL 对照buildQueryViewsRun返回顺序
+     * @param index 第几条SQL 对照buildSelectViewsRun返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param query 查询条件 根据metadata属性
      * @param previous 上一步查询结果
@@ -3169,15 +3169,15 @@ public class InceptorAdapter extends TranswarpAdapter {
      * @return List
      */
     @Override
-    public List<Run> buildQueryDdlRun(DataRuntime runtime, View view) throws Exception {
-        return super.buildQueryDdlRun(runtime, view);
+    public List<Run> buildSelectDdlRun(DataRuntime runtime, View view) throws Exception {
+        return super.buildSelectDdlRun(runtime, view);
     }
 
     /**
      * view[结果集封装]<br/>
      * 查询视图DDL
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条SQL 对照 buildQueryDdlRun 返回顺序
+     * @param index 第几条SQL 对照 buildSelectDdlRun 返回顺序
      * @param view 视图
      * @param set sql执行的结果集
      * @return List
@@ -3194,8 +3194,8 @@ public class InceptorAdapter extends TranswarpAdapter {
      * <T extends MasterTable> List<T> masters(DataRuntime runtime, String random, boolean greedy, MasterTable query, int types, boolean struct)
      * <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, String random, MasterTable query, String types, boolean struct)
      * [命令合成]
-     * List<Run> buildQueryMasterTablesRun(DataRuntime runtime, boolean greedy, MasterTable query, int types, ConfigStore configs)
-     * List<Run> buildQueryMasterTablesCommentRun(DataRuntime runtime, MasterTable query, int types)
+     * List<Run> buildSelectMasterTablesRun(DataRuntime runtime, boolean greedy, MasterTable query, int types, ConfigStore configs)
+     * List<Run> buildSelectMasterTablesCommentRun(DataRuntime runtime, MasterTable query, int types)
      * [结果集封装]<br/>
      * <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> masters, Catalog catalog, Schema schema, DataSet<DataRow> set)
      * <T extends MasterTable> List<T> masters(DataRuntime runtime, int index, boolean create, List<T> masters, Catalog catalog, Schema schema, DataSet<DataRow> set)
@@ -3205,7 +3205,7 @@ public class InceptorAdapter extends TranswarpAdapter {
      * [调用入口]
      * List<String> ddl(DataRuntime runtime, String random, MasterTable master, boolean init)
      * [命令合成]
-     * List<Run> buildQueryDdlRun(DataRuntime runtime, MasterTable master)
+     * List<Run> buildSelectDdlRun(DataRuntime runtime, MasterTable master)
      * [结果集封装]<br/>
      * List<String> ddl(DataRuntime runtime, int index, MasterTable master, List<String> ddls, DataSet<DataRow> set)
      ******************************************************************************************************************/
@@ -3261,8 +3261,8 @@ public class InceptorAdapter extends TranswarpAdapter {
      * @throws Exception Exception
      */
     @Override
-    public List<Run> buildQueryMasterTablesRun(DataRuntime runtime, boolean greedy, MasterTable query, int types, ConfigStore configs) throws Exception {
-        return super.buildQueryMasterTablesRun(runtime, greedy, query, types, configs);
+    public List<Run> buildSelectMasterTablesRun(DataRuntime runtime, boolean greedy, MasterTable query, int types, ConfigStore configs) throws Exception {
+        return super.buildSelectMasterTablesRun(runtime, greedy, query, types, configs);
     }
 
     /**
@@ -3285,15 +3285,15 @@ public class InceptorAdapter extends TranswarpAdapter {
      * @throws Exception Exception
      */
     @Override
-    public List<Run> buildQueryMasterTablesCommentRun(DataRuntime runtime, MasterTable query, int types) throws Exception {
-        return super.buildQueryMasterTablesCommentRun(runtime, query, types);
+    public List<Run> buildSelectMasterTablesCommentRun(DataRuntime runtime, MasterTable query, int types) throws Exception {
+        return super.buildSelectMasterTablesCommentRun(runtime, query, types);
     }
 
     /**
      * master[结果集封装]<br/>
      *  根据查询结果集构造MasterTable
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条SQL 对照buildQueryMasterTablesRun返回顺序
+     * @param index 第几条SQL 对照buildSelectMasterTablesRun返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param query 查询条件 根据metadata属性
      * @param previous 上一步查询结果
@@ -3310,7 +3310,7 @@ public class InceptorAdapter extends TranswarpAdapter {
      * master[结果集封装]<br/>
      *  根据查询结果集构造MasterTable
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条SQL 对照buildQueryMasterTablesRun返回顺序
+     * @param index 第几条SQL 对照buildSelectMasterTablesRun返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param query 查询条件 根据metadata属性
      * @param previous 上一步查询结果
@@ -3407,15 +3407,15 @@ public class InceptorAdapter extends TranswarpAdapter {
      * @return List
      */
     @Override
-    public List<Run> buildQueryDdlRun(DataRuntime runtime, MasterTable master) throws Exception {
-        return super.buildQueryDdlRun(runtime, master);
+    public List<Run> buildSelectDdlRun(DataRuntime runtime, MasterTable master) throws Exception {
+        return super.buildSelectDdlRun(runtime, master);
     }
 
     /**
      * master[结果集封装]<br/>
      * 查询表DDL
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条SQL 对照 buildQueryDdlRun 返回顺序
+     * @param index 第几条SQL 对照 buildSelectDdlRun 返回顺序
      * @param master 表
      * @param set sql执行的结果集
      * @return List
@@ -3431,16 +3431,16 @@ public class InceptorAdapter extends TranswarpAdapter {
      * [调用入口]
      * <T extends PartitionTable> LinkedHashMap<String,T> partitions(DataRuntime runtime, String random, boolean greedy, MasterTable master, Map<String, Object> tags, String pattern)
      * [命令合成]
-     * List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, boolean greedy,  PartitionTable query, int types)
-     * List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, boolean greedy,  Table master, Map<String, Tag> tags, String pattern)
-     * List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, boolean greedy,  Table master, Map<String, Tag> tags)
+     * List<Run> buildSelectPartitionTablesRun(DataRuntime runtime, boolean greedy,  PartitionTable query, int types)
+     * List<Run> buildSelectPartitionTablesRun(DataRuntime runtime, boolean greedy,  Table master, Map<String, Tag> tags, String pattern)
+     * List<Run> buildSelectPartitionTablesRun(DataRuntime runtime, boolean greedy,  Table master, Map<String, Tag> tags)
      * [结果集封装]<br/>
      * <T extends PartitionTable> LinkedHashMap<String, T> partitions(DataRuntime runtime, int total, int index, boolean create, MasterTable master, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet<DataRow> set)
      * <T extends PartitionTable> LinkedHashMap<String,T> partitions(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, MasterTable master)
      * [调用入口]
      * List<String> ddl(DataRuntime runtime, String random, PartitionTable table)
      * [命令合成]
-     * List<Run> buildQueryDdlRun(DataRuntime runtime, PartitionTable table)
+     * List<Run> buildSelectDdlRun(DataRuntime runtime, PartitionTable table)
      * [结果集封装]<br/>
      * List<String> ddl(DataRuntime runtime, int index, PartitionTable table, List<String> ddls, DataSet<DataRow> set)
      ******************************************************************************************************************/
@@ -3462,15 +3462,15 @@ public class InceptorAdapter extends TranswarpAdapter {
      * @return String
      */
     @Override
-    public List<Run> buildQueryTablePartitionRun(DataRuntime runtime, Table table) {
-        return super.buildQueryTablePartitionRun(runtime, table);
+    public List<Run> buildSelectTablePartitionRun(DataRuntime runtime, Table table) {
+        return super.buildSelectTablePartitionRun(runtime, table);
     }
 
     /**
      * partition table[结果集封装]<br/>
      * 根据查询结果集构造Table
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条SQL 对照 buildQueryMasterTablesRun返回顺序
+     * @param index 第几条SQL 对照 buildSelectMasterTablesRun返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param meta 上一步查询结果
      * @param table 表
@@ -3487,7 +3487,7 @@ public class InceptorAdapter extends TranswarpAdapter {
      * partition table[结果集封装]<br/>
      * 根据查询结果集构造Table.Partition
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条SQL 对照 buildQueryMasterTablesRun返回顺序
+     * @param index 第几条SQL 对照 buildSelectMasterTablesRun返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param meta 上一步查询结果
      * @param table 表
@@ -3504,7 +3504,7 @@ public class InceptorAdapter extends TranswarpAdapter {
      * partition table[结果集封装]<br/>
      * 根据查询结果集构造Table.Partition
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条SQL 对照 buildQueryMasterTablesRun返回顺序
+     * @param index 第几条SQL 对照 buildSelectMasterTablesRun返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param meta 上一步查询结果
      * @param table 表
@@ -3561,8 +3561,8 @@ public class InceptorAdapter extends TranswarpAdapter {
      * @return String
      */
     @Override
-    public List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, boolean greedy,  PartitionTable query, int types) throws Exception {
-        return super.buildQueryPartitionTablesRun(runtime, greedy, query, types);
+    public List<Run> buildSelectPartitionTablesRun(DataRuntime runtime, boolean greedy,  PartitionTable query, int types) throws Exception {
+        return super.buildSelectPartitionTablesRun(runtime, greedy, query, types);
     }
 
     /**
@@ -3580,7 +3580,7 @@ public class InceptorAdapter extends TranswarpAdapter {
      * 根据查询结果集构造Table
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param total 合计SQL数量
-     * @param index 第几条SQL 对照 buildQueryMasterTablesRun返回顺序
+     * @param index 第几条SQL 对照 buildSelectMasterTablesRun返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param query 查询条件 根据metadata属性
      * @param previous 上一步查询结果
@@ -3628,15 +3628,15 @@ public class InceptorAdapter extends TranswarpAdapter {
      * @return List
      */
     @Override
-    public List<Run> buildQueryDdlRun(DataRuntime runtime, PartitionTable table) throws Exception {
-        return super.buildQueryDdlRun(runtime, table);
+    public List<Run> buildSelectDdlRun(DataRuntime runtime, PartitionTable table) throws Exception {
+        return super.buildSelectDdlRun(runtime, table);
     }
 
     /**
      * partition table[结果集封装]<br/>
      * 查询 MasterTable DDL
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条SQL 对照 buildQueryDdlRun 返回顺序
+     * @param index 第几条SQL 对照 buildSelectDdlRun 返回顺序
      * @param table MasterTable
      * @param set sql执行的结果集
      * @return List
@@ -3680,7 +3680,7 @@ public class InceptorAdapter extends TranswarpAdapter {
      * <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Table table, boolean primary);
      * <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String table);
      * [命令合成]
-     * List<Run> buildQueryColumnsRun(DataRuntime runtime, Table table, boolean metadata) throws Exception;
+     * List<Run> buildSelectColumnsRun(DataRuntime runtime, Table table, boolean metadata) throws Exception;
      * [结果集封装]<br/>
      * <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Table table, Column query, DataSet<DataRow> set) throws Exception;
      * <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, List<T> previous, Column query, DataSet<DataRow> set) throws Exception;
@@ -3728,8 +3728,8 @@ public class InceptorAdapter extends TranswarpAdapter {
      * @return runs
      */
     @Override
-    public List<Run> buildQueryColumnsRun(DataRuntime runtime,  boolean metadata, Column query, ConfigStore configs) throws Exception {
-        return super.buildQueryColumnsRun(runtime, metadata, query, configs);
+    public List<Run> buildSelectColumnsRun(DataRuntime runtime,  boolean metadata, Column query, ConfigStore configs) throws Exception {
+        return super.buildSelectColumnsRun(runtime, metadata, query, configs);
     }
 
     /**
@@ -3742,8 +3742,8 @@ public class InceptorAdapter extends TranswarpAdapter {
      * @return runs
      */
     @Override
-    public List<Run> buildQueryColumnsRun(DataRuntime runtime, boolean metadata, Collection<? extends Table> tables, Column query, ConfigStore configs) throws Exception {
-        return super.buildQueryColumnsRun(runtime, metadata, tables, query, configs);
+    public List<Run> buildSelectColumnsRun(DataRuntime runtime, boolean metadata, Collection<? extends Table> tables, Column query, ConfigStore configs) throws Exception {
+        return super.buildSelectColumnsRun(runtime, metadata, tables, query, configs);
     }
 
     /**
@@ -3771,7 +3771,7 @@ public class InceptorAdapter extends TranswarpAdapter {
      * 根据系统表查询SQL获取表结构
      *  根据查询结果集构造Column
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条SQL 对照 buildQueryColumnsRun返回顺序
+     * @param index 第几条SQL 对照 buildSelectColumnsRun返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param table 表
      * @param previous 上一步查询结果
@@ -3789,7 +3789,7 @@ public class InceptorAdapter extends TranswarpAdapter {
      * 根据系统表查询SQL获取表结构
      *  根据查询结果集构造Column
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条SQL 对照 buildQueryColumnsRun返回顺序
+     * @param index 第几条SQL 对照 buildSelectColumnsRun返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param query 查询条件 根据metadata属性
      * @param previous 上一步查询结果
@@ -3821,7 +3821,7 @@ public class InceptorAdapter extends TranswarpAdapter {
      * 根据系统表查询SQL获取表结构
      * 根据查询结果集构造Column,并分配到各自的表中
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条SQL 对照 buildQueryColumnsRun返回顺序
+     * @param index 第几条SQL 对照 buildSelectColumnsRun返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param tables 表
      * @param previous 上一步查询结果
@@ -3953,7 +3953,7 @@ public class InceptorAdapter extends TranswarpAdapter {
      * [调用入口]
      * <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, String random, boolean greedy, Table table, Tag query)
      * [命令合成]
-     * List<Run> buildQueryTagsRun(DataRuntime runtime, boolean greedy, Tag query)
+     * List<Run> buildSelectTagsRun(DataRuntime runtime, boolean greedy, Tag query)
      * [结果集封装]<br/>
      * <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Tag query, DataSet<DataRow> set)
      * <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tags, Table table, String pattern)
@@ -3982,8 +3982,8 @@ public class InceptorAdapter extends TranswarpAdapter {
      * @return runs
      */
     @Override
-    public List<Run> buildQueryTagsRun(DataRuntime runtime, boolean greedy, Tag query) throws Exception {
-        return super.buildQueryTagsRun(runtime, greedy, query);
+    public List<Run> buildSelectTagsRun(DataRuntime runtime, boolean greedy, Tag query) throws Exception {
+        return super.buildSelectTagsRun(runtime, greedy, query);
     }
 
     /**
@@ -4000,7 +4000,7 @@ public class InceptorAdapter extends TranswarpAdapter {
      * tag[结果集封装]<br/>
      *  根据查询结果集构造Tag
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条查询SQL 对照 buildQueryTagsRun返回顺序
+     * @param index 第几条查询SQL 对照 buildSelectTagsRun返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param previous 上一步查询结果
      * @param set 查询结果集
@@ -4062,7 +4062,7 @@ public class InceptorAdapter extends TranswarpAdapter {
      * [调用入口]
      * PrimaryKey primary(DataRuntime runtime, String random, boolean greedy, Table table)
      * [命令合成]
-     * List<Run> buildQueryPrimaryRun(DataRuntime runtime, boolean greedy,  Table table) throws Exception
+     * List<Run> buildSelectPrimaryRun(DataRuntime runtime, boolean greedy,  Table table) throws Exception
      * [结构集封装]
      * <T extends PrimaryKey> T init(DataRuntime runtime, int index, T primary, Table table, DataSet<DataRow> set)
      * PrimaryKey primary(DataRuntime runtime, Table table)
@@ -4089,8 +4089,8 @@ public class InceptorAdapter extends TranswarpAdapter {
      * @return runs
      */
     @Override
-    public List<Run> buildQueryPrimaryRun(DataRuntime runtime, boolean greedy,  PrimaryKey query) throws Exception {
-        return super.buildQueryPrimaryRun(runtime, greedy, query);
+    public List<Run> buildSelectPrimaryRun(DataRuntime runtime, boolean greedy,  PrimaryKey query) throws Exception {
+        return super.buildSelectPrimaryRun(runtime, greedy, query);
     }
 
     /**
@@ -4147,7 +4147,7 @@ public class InceptorAdapter extends TranswarpAdapter {
      * [调用入口]
      * <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, String random, boolean greedy, Table table);
      * [命令合成]
-     * List<Run> buildQueryForeignsRun(DataRuntime runtime, boolean greedy,  Table table) throws Exception;
+     * List<Run> buildSelectForeignsRun(DataRuntime runtime, boolean greedy,  Table table) throws Exception;
      * [结构集封装]
      * <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, int index, Table table, LinkedHashMap<String, T> foreigns, DataSet<DataRow> set) throws Exception;
      ******************************************************************************************************************/
@@ -4174,8 +4174,8 @@ public class InceptorAdapter extends TranswarpAdapter {
      * @return runs
      */
     @Override
-    public List<Run> buildQueryForeignsRun(DataRuntime runtime, boolean greedy,  ForeignKey query) throws Exception {
-        return super.buildQueryForeignsRun(runtime, greedy, query);
+    public List<Run> buildSelectForeignsRun(DataRuntime runtime, boolean greedy,  ForeignKey query) throws Exception {
+        return super.buildSelectForeignsRun(runtime, greedy, query);
     }
 
     /**
@@ -4192,7 +4192,7 @@ public class InceptorAdapter extends TranswarpAdapter {
      * foreign[结构集封装]<br/>
      *  根据查询结果集构造PrimaryKey
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条查询SQL 对照 buildQueryForeignsRun 返回顺序
+     * @param index 第几条查询SQL 对照 buildSelectForeignsRun 返回顺序
      * @param query 查询条件 根据metadata属性
      * @param previous 上一步查询结果
      * @param set sql查询结果
@@ -4207,7 +4207,7 @@ public class InceptorAdapter extends TranswarpAdapter {
      * foreign[结构集封装]<br/>
      * 根据查询结果集构造ForeignKey基础属性
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条查询SQL 对照 buildQueryIndexesRun 返回顺序
+     * @param index 第几条查询SQL 对照 buildSelectIndexesRun 返回顺序
      * @param meta 上一步封装结果
      * @param query 查询条件 根据metadata属性
      * @param row sql查询结果
@@ -4222,7 +4222,7 @@ public class InceptorAdapter extends TranswarpAdapter {
      * foreign[结构集封装]<br/>
      * 根据查询结果集构造ForeignKey更多属性
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条查询SQL 对照 buildQueryIndexesRun 返回顺序
+     * @param index 第几条查询SQL 对照 buildSelectIndexesRun 返回顺序
      * @param meta 上一步封装结果
      * @param query 查询条件 根据metadata属性
      * @param row sql查询结果
@@ -4240,7 +4240,7 @@ public class InceptorAdapter extends TranswarpAdapter {
      * <T extends Index> List<T> indexes(DataRuntime runtime, String random, boolean greedy, Table table, String pattern)
      * <T extends Index> LinkedHashMap<String, T> indexes(DataRuntime runtime, String random, Table table, String pattern)
      * [命令合成]
-     * List<Run> buildQueryIndexesRun(DataRuntime runtime, boolean greedy,  Table table, String name)
+     * List<Run> buildSelectIndexesRun(DataRuntime runtime, boolean greedy,  Table table, String name)
      * [结果集封装]<br/>
      * <T extends Index> List<T> indexes(DataRuntime runtime, int index, boolean create, Table table, List<T> indexes, DataSet<DataRow> set)
      * <T extends Index> LinkedHashMap<String, T> indexes(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> indexes, DataSet<DataRow> set)
@@ -4299,8 +4299,8 @@ public class InceptorAdapter extends TranswarpAdapter {
      * @return runs
      */
     @Override
-    public List<Run> buildQueryIndexesRun(DataRuntime runtime, boolean greedy, Index query) {
-        return super.buildQueryIndexesRun(runtime, greedy, query);
+    public List<Run> buildSelectIndexesRun(DataRuntime runtime, boolean greedy, Index query) {
+        return super.buildSelectIndexesRun(runtime, greedy, query);
     }
 
     /**
@@ -4311,8 +4311,8 @@ public class InceptorAdapter extends TranswarpAdapter {
      * @return runs
      */
     @Override
-    public List<Run> buildQueryIndexesRun(DataRuntime runtime, boolean greedy,  Collection<? extends Table> tables) {
-        return super.buildQueryIndexesRun(runtime, greedy, tables);
+    public List<Run> buildSelectIndexesRun(DataRuntime runtime, boolean greedy,  Collection<? extends Table> tables) {
+        return super.buildSelectIndexesRun(runtime, greedy, tables);
     }
 
     /**
@@ -4329,7 +4329,7 @@ public class InceptorAdapter extends TranswarpAdapter {
      * index[结果集封装]<br/>
      *  根据查询结果集构造Index
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条查询SQL 对照 buildQueryIndexesRun 返回顺序
+     * @param index 第几条查询SQL 对照 buildSelectIndexesRun 返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param query 查询条件 根据metadata属性
      * @param previous 上一步查询结果
@@ -4346,7 +4346,7 @@ public class InceptorAdapter extends TranswarpAdapter {
      * index[结果集封装]<br/>
      *  根据查询结果集构造Index
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条查询SQL 对照 buildQueryIndexesRun 返回顺序
+     * @param index 第几条查询SQL 对照 buildSelectIndexesRun 返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param query 查询条件 根据metadata属性
      * @param previous 上一步查询结果
@@ -4363,7 +4363,7 @@ public class InceptorAdapter extends TranswarpAdapter {
      * index[结果集封装]<br/>
      *  根据查询结果集构造Index
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条查询SQL 对照 buildQueryIndexesRun 返回顺序
+     * @param index 第几条查询SQL 对照 buildSelectIndexesRun 返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param tables 表
      * @param previous 上一步查询结果
@@ -4408,7 +4408,7 @@ public class InceptorAdapter extends TranswarpAdapter {
      * index[结构集封装]<br/>
      * 根据查询结果集构造index基础属性(name,table,schema,catalog)
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条查询SQL 对照 buildQueryIndexesRun 返回顺序
+     * @param index 第几条查询SQL 对照 buildSelectIndexesRun 返回顺序
      * @param meta 上一步封装结果
      * @param query 查询条件 根据metadata属性
      * @param row sql查询结果
@@ -4423,7 +4423,7 @@ public class InceptorAdapter extends TranswarpAdapter {
      * index[结构集封装]<br/>
      * 根据查询结果集构造index更多属性(column,order, position)
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条查询SQL 对照 buildQueryIndexesRun 返回顺序
+     * @param index 第几条查询SQL 对照 buildSelectIndexesRun 返回顺序
      * @param meta 上一步封装结果
      * @param query 查询条件 根据metadata属性
      * @param row sql查询结果
@@ -4441,7 +4441,7 @@ public class InceptorAdapter extends TranswarpAdapter {
      * <T extends Constraint> List<T> constraints(DataRuntime runtime, String random, boolean greedy, Table table, String pattern);
      * <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, String random, Table table, Column column, String pattern);
      * [命令合成]
-     * List<Run> buildQueryConstraintsRun(DataRuntime runtime, boolean greedy, Table table, Column column, String pattern) ;
+     * List<Run> buildSelectConstraintsRun(DataRuntime runtime, boolean greedy, Table table, Column column, String pattern) ;
      * [结果集封装]<br/>
      * <T extends Constraint> List<T> constraints(DataRuntime runtime, int index, boolean create, Table table, List<T> constraints, DataSet<DataRow> set) throws Exception;
      * <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, int index, boolean create, Table table, Column column, LinkedHashMap<String, T> constraints, DataSet<DataRow> set) throws Exception;
@@ -4483,8 +4483,8 @@ public class InceptorAdapter extends TranswarpAdapter {
      * @return runs
      */
     @Override
-    public List<Run> buildQueryConstraintsRun(DataRuntime runtime, boolean greedy, Constraint query) {
-        return super.buildQueryConstraintsRun(runtime, greedy, query);
+    public List<Run> buildSelectConstraintsRun(DataRuntime runtime, boolean greedy, Constraint query) {
+        return super.buildSelectConstraintsRun(runtime, greedy, query);
     }
 
     /**
@@ -4501,7 +4501,7 @@ public class InceptorAdapter extends TranswarpAdapter {
      * constraint[结果集封装]<br/>
      * 根据查询结果集构造Constraint
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
+     * @param index 第几条查询SQL 对照 buildSelectConstraintsRun 返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param query 查询条件 根据metadata属性
      * @param previous 上一步查询结果
@@ -4518,7 +4518,7 @@ public class InceptorAdapter extends TranswarpAdapter {
      * constraint[结果集封装]<br/>
      * 根据查询结果集构造Constraint
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
+     * @param index 第几条查询SQL 对照 buildSelectConstraintsRun 返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param query 查询条件 根据metadata属性
      * @param previous 上一步查询结果
@@ -4564,7 +4564,7 @@ public class InceptorAdapter extends TranswarpAdapter {
      * [调用入口]
      * <T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, String random, boolean greedy, Table table, List<Trigger.EVENT> events)
      * [命令合成]
-     * List<Run> buildQueryTriggersRun(DataRuntime runtime, boolean greedy, Table table, List<Trigger.EVENT> events)
+     * List<Run> buildSelectTriggersRun(DataRuntime runtime, boolean greedy, Table table, List<Trigger.EVENT> events)
      * [结果集封装]<br/>
      * <T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> triggers, DataSet<DataRow> set)
      ******************************************************************************************************************/
@@ -4591,8 +4591,8 @@ public class InceptorAdapter extends TranswarpAdapter {
      * @return runs
      */
     @Override
-    public List<Run> buildQueryTriggersRun(DataRuntime runtime, boolean greedy, Trigger query) {
-        return super.buildQueryTriggersRun(runtime, greedy, query);
+    public List<Run> buildSelectTriggersRun(DataRuntime runtime, boolean greedy, Trigger query) {
+        return super.buildSelectTriggersRun(runtime, greedy, query);
     }
 
     /**
@@ -4609,7 +4609,7 @@ public class InceptorAdapter extends TranswarpAdapter {
      * trigger[结果集封装]<br/>
      * 根据查询结果集构造 Trigger
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
+     * @param index 第几条查询SQL 对照 buildSelectConstraintsRun 返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param query 查询条件 根据metadata属性
      * @param previous 上一步查询结果
@@ -4656,7 +4656,7 @@ public class InceptorAdapter extends TranswarpAdapter {
      * <T extends Procedure> List<T> procedures(DataRuntime runtime, String random, boolean greedy, Procedure query);
      * <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, String random, Procedure query);
      * [命令合成]
-     * List<Run> buildQueryProceduresRun(DataRuntime runtime, boolean greedy, Procedure query) ;
+     * List<Run> buildSelectProceduresRun(DataRuntime runtime, boolean greedy, Procedure query) ;
      * [结果集封装]<br/>
      * <T extends Procedure> List<T> procedures(DataRuntime runtime, int index, boolean create, List<T> procedures, DataSet<DataRow> set) throws Exception;
      * <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> procedures, DataSet<DataRow> set) throws Exception;
@@ -4665,7 +4665,7 @@ public class InceptorAdapter extends TranswarpAdapter {
      * [调用入口]
      * List<String> ddl(DataRuntime runtime, String random, Procedure procedure);
      * [命令合成]
-     * List<Run> buildQueryDdlRun(DataRuntime runtime, Procedure procedure) throws Exception;
+     * List<Run> buildSelectDdlRun(DataRuntime runtime, Procedure procedure) throws Exception;
      * [结果集封装]<br/>
      * List<String> ddl(DataRuntime runtime, int index, Procedure procedure, List<String> ddls, DataSet<DataRow> set);
      ******************************************************************************************************************/
@@ -4706,8 +4706,8 @@ public class InceptorAdapter extends TranswarpAdapter {
      * @return runs
      */
     @Override
-    public List<Run> buildQueryProceduresRun(DataRuntime runtime, boolean greedy, Procedure query) {
-        return super.buildQueryProceduresRun(runtime, greedy, query);
+    public List<Run> buildSelectProceduresRun(DataRuntime runtime, boolean greedy, Procedure query) {
+        return super.buildSelectProceduresRun(runtime, greedy, query);
     }
 
     /**
@@ -4718,8 +4718,8 @@ public class InceptorAdapter extends TranswarpAdapter {
      * @return List
      */
     @Override
-    public List<Run> buildQueryParametersRun(DataRuntime runtime, Procedure procedure) throws Exception {
-        return super.buildQueryParametersRun(runtime, procedure);
+    public List<Run> buildSelectParametersRun(DataRuntime runtime, Procedure procedure) throws Exception {
+        return super.buildSelectParametersRun(runtime, procedure);
     }
 
     /**
@@ -4736,7 +4736,7 @@ public class InceptorAdapter extends TranswarpAdapter {
      * procedure[结果集封装]<br/>
      * 根据查询结果集构造 Trigger
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
+     * @param index 第几条查询SQL 对照 buildSelectConstraintsRun 返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param previous 上一步查询结果
      * @param set 查询结果集
@@ -4752,7 +4752,7 @@ public class InceptorAdapter extends TranswarpAdapter {
      * procedure[结果集封装]<br/>
      * 根据查询结果集构造 Trigger
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
+     * @param index 第几条查询SQL 对照 buildSelectConstraintsRun 返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param previous 上一步查询结果
      * @param set 查询结果集
@@ -4828,15 +4828,15 @@ public class InceptorAdapter extends TranswarpAdapter {
      * @return List
      */
     @Override
-    public List<Run> buildQueryDdlRun(DataRuntime runtime, Procedure procedure) throws Exception {
-        return super.buildQueryDdlRun(runtime, procedure);
+    public List<Run> buildSelectDdlRun(DataRuntime runtime, Procedure procedure) throws Exception {
+        return super.buildSelectDdlRun(runtime, procedure);
     }
 
     /**
      * procedure[结果集封装]<br/>
      * 查询 Procedure DDL
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条SQL 对照 buildQueryDdlRun 返回顺序
+     * @param index 第几条SQL 对照 buildSelectDdlRun 返回顺序
      * @param procedure Procedure
      * @param set 查询结果集
      * @return List
@@ -4880,7 +4880,7 @@ public class InceptorAdapter extends TranswarpAdapter {
      * <T extends Function> List<T> functions(DataRuntime runtime, String random, boolean greedy, Function query);
      * <T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, String random, Function query);
      * [命令合成]
-     * List<Run> buildQueryFunctionsRun(DataRuntime runtime, boolean greedy, Function query) ;
+     * List<Run> buildSelectFunctionsRun(DataRuntime runtime, boolean greedy, Function query) ;
      * [结果集封装]<br/>
      * <T extends Function> List<T> functions(DataRuntime runtime, int index, boolean create, List<T> functions, Catalog catalog, Schema schema, DataSet<DataRow> set) throws Exception;
      * <T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> functions, Catalog catalog, Schema schema, DataSet<DataRow> set) throws Exception;
@@ -4889,7 +4889,7 @@ public class InceptorAdapter extends TranswarpAdapter {
      * [调用入口]
      * List<String> ddl(DataRuntime runtime, String random, Function function);
      * [命令合成]
-     * List<Run> buildQueryDdlRun(DataRuntime runtime, Function function) throws Exception;
+     * List<Run> buildSelectDdlRun(DataRuntime runtime, Function function) throws Exception;
      * [结果集封装]<br/>
      * List<String> ddl(DataRuntime runtime, int index, Function function, List<String> ddls, DataSet<DataRow> set)
      ******************************************************************************************************************/
@@ -4930,8 +4930,8 @@ public class InceptorAdapter extends TranswarpAdapter {
      * @return runs
      */
     @Override
-    public List<Run> buildQueryFunctionsRun(DataRuntime runtime, boolean greedy, Function query) {
-        return super.buildQueryFunctionsRun(runtime, greedy, query);
+    public List<Run> buildSelectFunctionsRun(DataRuntime runtime, boolean greedy, Function query) {
+        return super.buildSelectFunctionsRun(runtime, greedy, query);
     }
 
     /**
@@ -4948,7 +4948,7 @@ public class InceptorAdapter extends TranswarpAdapter {
      * function[结果集封装]<br/>
      * 根据查询结果集构造 Function
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
+     * @param index 第几条查询SQL 对照 buildSelectConstraintsRun 返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param previous 上一步查询结果
      * @param set 查询结果集
@@ -4964,7 +4964,7 @@ public class InceptorAdapter extends TranswarpAdapter {
      * function[结果集封装]<br/>
      * 根据查询结果集构造 Function
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
+     * @param index 第几条查询SQL 对照 buildSelectConstraintsRun 返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param previous 上一步查询结果
      * @param set 查询结果集
@@ -5025,15 +5025,15 @@ public class InceptorAdapter extends TranswarpAdapter {
      * @return List
      */
     @Override
-    public List<Run> buildQueryDdlRun(DataRuntime runtime, Function meta) throws Exception {
-        return super.buildQueryDdlRun(runtime, meta);
+    public List<Run> buildSelectDdlRun(DataRuntime runtime, Function meta) throws Exception {
+        return super.buildSelectDdlRun(runtime, meta);
     }
 
     /**
      * function[结果集封装]<br/>
      * 查询 Function DDL
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条SQL 对照 buildQueryDdlRun 返回顺序
+     * @param index 第几条SQL 对照 buildSelectDdlRun 返回顺序
      * @param function Function
      * @param set 查询结果集
      * @return List
@@ -5077,7 +5077,7 @@ public class InceptorAdapter extends TranswarpAdapter {
      * <T extends Sequence> List<T> sequences(DataRuntime runtime, String random, boolean greedy, Sequence query);
      * <T extends Sequence> LinkedHashMap<String, T> sequences(DataRuntime runtime, String random, Sequence query);
      * [命令合成]
-     * List<Run> buildQuerySequencesRun(DataRuntime runtime, boolean greedy, Sequence query) ;
+     * List<Run> buildSelectSequencesRun(DataRuntime runtime, boolean greedy, Sequence query) ;
      * [结果集封装]<br/>
      * <T extends Sequence> List<T> sequences(DataRuntime runtime, int index, boolean create, List<T> sequences, DataSet<DataRow> set) throws Exception;
      * <T extends Sequence> LinkedHashMap<String, T> sequences(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> sequences, DataSet<DataRow> set) throws Exception;
@@ -5086,7 +5086,7 @@ public class InceptorAdapter extends TranswarpAdapter {
      * [调用入口]
      * List<String> ddl(DataRuntime runtime, String random, Sequence sequence);
      * [命令合成]
-     * List<Run> buildQueryDdlRun(DataRuntime runtime, Sequence sequence) throws Exception;
+     * List<Run> buildSelectDdlRun(DataRuntime runtime, Sequence sequence) throws Exception;
      * [结果集封装]<br/>
      * List<String> ddl(DataRuntime runtime, int index, Sequence sequence, List<String> ddls, DataSet<DataRow> set)
      ******************************************************************************************************************/
@@ -5127,8 +5127,8 @@ public class InceptorAdapter extends TranswarpAdapter {
      * @return runs
      */
     @Override
-    public List<Run> buildQuerySequencesRun(DataRuntime runtime, boolean greedy, Sequence query) {
-        return super.buildQuerySequencesRun(runtime, greedy, query);
+    public List<Run> buildSelectSequencesRun(DataRuntime runtime, boolean greedy, Sequence query) {
+        return super.buildSelectSequencesRun(runtime, greedy, query);
     }
 
     /**
@@ -5145,7 +5145,7 @@ public class InceptorAdapter extends TranswarpAdapter {
      * sequence[结果集封装]<br/>
      * 根据查询结果集构造 Sequence
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
+     * @param index 第几条查询SQL 对照 buildSelectConstraintsRun 返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param previous 上一步查询结果
      * @param set 查询结果集
@@ -5161,7 +5161,7 @@ public class InceptorAdapter extends TranswarpAdapter {
      * sequence[结果集封装]<br/>
      * 根据查询结果集构造 Sequence
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
+     * @param index 第几条查询SQL 对照 buildSelectConstraintsRun 返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param previous 上一步查询结果
      * @param set 查询结果集
@@ -5222,15 +5222,15 @@ public class InceptorAdapter extends TranswarpAdapter {
      * @return List
      */
     @Override
-    public List<Run> buildQueryDdlRun(DataRuntime runtime, Sequence meta) throws Exception {
-        return super.buildQueryDdlRun(runtime, meta);
+    public List<Run> buildSelectDdlRun(DataRuntime runtime, Sequence meta) throws Exception {
+        return super.buildSelectDdlRun(runtime, meta);
     }
 
     /**
      * sequence[结果集封装]<br/>
      * 查询 Sequence DDL
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条SQL 对照 buildQueryDdlRun 返回顺序
+     * @param index 第几条SQL 对照 buildSelectDdlRun 返回顺序
      * @param sequence Sequence
      * @param set 查询结果集
      * @return List
@@ -8863,7 +8863,7 @@ public class InceptorAdapter extends TranswarpAdapter {
      * boolean rename(DataRuntime runtime, Role origin, Role update) throws Exception;
      * boolean delete(DataRuntime runtime, Role role) throws Exception
      * <T extends Role> List<T> roles(Catalog catalog, Schema schema, String pattern) throws Exception
-     * List<Run> buildQueryRolesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) throws Exception
+     * List<Run> buildSelectRolesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) throws Exception
      * <T extends Role> List<T> roles(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, List<T> roles, DataSet<DataRow> set) throws Exception
      * <T extends Role> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row)
      * <T extends Role> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row)
@@ -8955,8 +8955,8 @@ public class InceptorAdapter extends TranswarpAdapter {
      * @return List
      */
     @Override
-    public List<Run> buildQueryRolesRun(DataRuntime runtime, boolean greedy, Role query) throws Exception {
-        return super.buildQueryRolesRun(runtime, greedy, query);
+    public List<Run> buildSelectRolesRun(DataRuntime runtime, boolean greedy, Role query) throws Exception {
+        return super.buildSelectRolesRun(runtime, greedy, query);
     }
 
     /**
@@ -8973,7 +8973,7 @@ public class InceptorAdapter extends TranswarpAdapter {
      * role[结果集封装]<br/>
      * 根据查询结果集构造 role
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条查询SQL 对照 buildQueryRolessRun 返回顺序
+     * @param index 第几条查询SQL 对照 buildSelectRolessRun 返回顺序
      * @param query 查询条件 根据metadata属性
      * @param previous 上一步查询结果
      * @param set 查询结果集
@@ -9019,7 +9019,7 @@ public class InceptorAdapter extends TranswarpAdapter {
      * boolean rename(DataRuntime runtime, User origin, User update) throws Exception;
      * boolean drop(DataRuntime runtime, User user) throws Exception
      * List<User> users(Catalog catalog, Schema schema, String pattern) throws Exception
-     * List<Run> buildQueryUsersRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) throws Exception
+     * List<Run> buildSelectUsersRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) throws Exception
      * <T extends User> List<T> users(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, List<T> users, DataSet<DataRow> set) throws Exception
      * <T extends User> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row)
      * <T extends User> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row)
@@ -9111,8 +9111,8 @@ public class InceptorAdapter extends TranswarpAdapter {
      * @return List
      */
     @Override
-    public List<Run> buildQueryUsersRun(DataRuntime runtime, boolean greedy, User query) throws Exception {
-        return super.buildQueryUsersRun(runtime, greedy, query);
+    public List<Run> buildSelectUsersRun(DataRuntime runtime, boolean greedy, User query) throws Exception {
+        return super.buildSelectUsersRun(runtime, greedy, query);
     }
 
     /**
@@ -9129,7 +9129,7 @@ public class InceptorAdapter extends TranswarpAdapter {
      * user[结果集封装]<br/>
      * 根据查询结果集构造 user
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条查询SQL 对照 buildQueryUserssRun 返回顺序
+     * @param index 第几条查询SQL 对照 buildSelectUserssRun 返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param query 查询条件 根据metadata属性
      * @param previous 上一步查询结果
@@ -9173,7 +9173,7 @@ public class InceptorAdapter extends TranswarpAdapter {
      * 													privilege
      * -----------------------------------------------------------------------------------------------------------------
      * <T extends Privilege> List<T> privileges(DataRuntime runtime, User user)
-     * List<Run> buildQueryPrivilegesRun(DataRuntime runtime, User user) throws Exception
+     * List<Run> buildSelectPrivilegesRun(DataRuntime runtime, User user) throws Exception
      * <T extends Privilege> List<T> privileges(DataRuntime runtime, int index, boolean create, User user, List<T> privileges, DataSet<DataRow> set) throws Exception
      * <T extends Privilege> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, User user, DataRow row)
      * <T extends Privilege> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row)
@@ -9198,8 +9198,8 @@ public class InceptorAdapter extends TranswarpAdapter {
      * @return List
      */
     @Override
-    public List<Run> buildQueryPrivilegesRun(DataRuntime runtime, boolean regreedy, Privilege query) throws Exception {
-        return super.buildQueryPrivilegesRun(runtime, regreedy, query);
+    public List<Run> buildSelectPrivilegesRun(DataRuntime runtime, boolean regreedy, Privilege query) throws Exception {
+        return super.buildSelectPrivilegesRun(runtime, regreedy, query);
     }
 
     /**
@@ -9216,7 +9216,7 @@ public class InceptorAdapter extends TranswarpAdapter {
      * privilege[结果集封装]<br/>
      * 根据查询结果集构造 Trigger
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
+     * @param index 第几条查询SQL 对照 buildSelectConstraintsRun 返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param query 查询条件 根据metadata属性
      * @param previous 上一步查询结果

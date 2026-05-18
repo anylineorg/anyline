@@ -63,9 +63,9 @@ public class CassandraAdapter extends AbstractJDBCAdapter implements JDBCAdapter
      *
      * ****************************************************************************************************/
     @Override
-    public String mergeFinalQuery(DataRuntime runtime, Run run) {
-        String sql = run.getBaseQuery();
-        String cols = run.getQueryColumn();
+    public String mergeFinalSelect(DataRuntime runtime, Run run) {
+        String sql = run.getBaseSelect();
+        String cols = run.getSelectColumn();
         if(!"*".equals(cols)) {
             String reg = "(?i)^select[\\s\\S]+from";
             sql = sql.replaceAll(reg, "SELECT "+cols+" FROM ");

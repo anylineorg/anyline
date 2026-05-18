@@ -42,7 +42,7 @@ public class SimpleRun extends TextRun implements Run {
         this.builder.append(sql);
         this.configs = new DefaultConfigStore();
     }
-    public String getFinalQuery() {
+    public String getFinalSelect() {
         return builder.toString();
     }
 
