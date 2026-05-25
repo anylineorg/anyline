@@ -6903,7 +6903,15 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public List<Run> buildDropRun(DataRuntime runtime, ForeignKey meta) throws Exception {
-        return super.buildDropRun(runtime, meta);
+        List<Run> runs = new ArrayList<>();
+        SimpleRun run = new SimpleRun(runtime);
+        runs.add(run);
+        StringBuilder builder = run.getBuilder();
+        builder.append("ALTER TABLE ");
+        name(runtime, builder, meta.getTable(true));
+        builder.append(" DROP CONSTRAINT ");
+        builder.append(meta.getName());
+        return runs;
     }
 
     /**
