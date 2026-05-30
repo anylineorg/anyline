@@ -256,8 +256,22 @@ public class DefaultConfigChain extends DefaultConfig implements ConfigChain {
 		}
 		return values;
 	} 
-	public List<Config> getConfigs() {
-		return configs; 
+	public List<Config> getConfigs(boolean recursion) {
+		if(!recursion){
+			return configs;
+		}
+		List<Config> list = new ArrayList<>();
+		if(null != configs){
+			for (Config config: configs){
+				if(config instanceof ConfigChain){
+					ConfigChain chain = (ConfigChain)config;
+					list.addAll(chain.getConfigs(true));
+				}else{
+					list.add(config);
+				}
+			}
+		}
+		return list;
 	} 
 	public ConditionChain createAutoConditionChain() {
 		ConditionChain chain = new DefaultAutoConditionChain();

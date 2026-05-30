@@ -36,7 +36,6 @@
 		<module>anyline-data</module>
 		<module>anyline-data-jdbc</module>
 		<module>anyline-data-graph</module>
-		<module>anyline-oro</module>
 		<module>anyline-net</module>
 		<module>anyline-environment</module>
 		<module>anyline-extends</module>

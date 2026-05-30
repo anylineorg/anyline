@@ -2731,7 +2731,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         if(null == table || null == configs) {
             return;
         }
-        List<Config> list = configs.getConfigChain().getConfigs();
+        List<Config> list = configs.getConfigChain().getConfigs(true);
         for(Config config:list) {
             if(config.getCompare() == Compare.LIKES) {
                 LinkedHashMap<String, Column> colums = columns(runtime, null, false, table, false);
@@ -17876,14 +17876,18 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param role 角色
 	 * @return boolean
 	 */
-	@Override
-	public boolean create(DataRuntime runtime, Role role) throws Exception {
-		String random = random(runtime);
-		ACTION.Authorize action = ACTION.Authorize.ROLE_CREATE;
-		List<Run> runs = buildCreateRun(runtime, role);
-		return execute(runtime, random, role, action, runs);
-	}
+    @Override
+    public boolean create(DataRuntime runtime, Role role) throws Exception {
+        String random = random(runtime);
+        ACTION.Authorize action = ACTION.Authorize.ROLE_CREATE;
+        List<Run> runs = buildCreateRun(runtime, role);
+        return execute(runtime, random, role, action, runs);
+    }
 
+    @Override
+    public boolean create(DataRuntime runtime, List<Role> roles) throws Exception {
+        return false;
+    }
 	/**
 	 * role[调用入口]<br/>
 	 * 角色重命名

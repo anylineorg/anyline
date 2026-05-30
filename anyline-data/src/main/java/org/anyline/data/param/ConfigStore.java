@@ -1997,8 +1997,8 @@ public interface ConfigStore extends Cloneable{
 	boolean isValid();
 
 	/**
-	 * 设置城要查询的列
-	 * @param columns 需要查询的列
+	 * 设置需要查询或更新的列
+	 * @param columns 需要查询或更新的列
 	 * @return ConfigStore
 	 */
 	ConfigStore columns(Boolean distinct, String ... columns);
@@ -2009,6 +2009,11 @@ public interface ConfigStore extends Cloneable{
 	default ConfigStore columns(List<String> columns) {
 		return columns((Boolean)null, columns);
 	}
+
+	/**
+	 * 需要查询或更新的列
+	 * @return
+	 */
 	List<String> columns();
 	LinkedHashMap<String, Column> getColumns();
 	ConfigStore distinct(Boolean distinct);

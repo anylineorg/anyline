@@ -18,7 +18,7 @@
 package org.anyline.util.regular;
 
 import org.anyline.util.BasicUtil;
-import org.apache.oro.text.regex.*;
+
 import org.anyline.log.Log;
 import org.anyline.log.LogProxy;
 
@@ -34,7 +34,6 @@ public class RegularUtil {
 	public static Regular regularContain 		= new RegularContain();			// 包含匹配模式
 
 	private static final Map<Regular.MATCH_MODE, Regular> regularList = new HashMap<Regular.MATCH_MODE, Regular>();
-	public static final String REGEX_VARIABLE = "${(\\w+)}";		// 变量{ID}
 
 	public static final String TAG_BEGIN = "${begin}";
 	public static final String TAG_END = "${end}";
@@ -145,14 +144,11 @@ public class RegularUtil {
 	public static int indexOf(String src, String regx, int begin) {
 		int idx = -1;
 		try{
-			PatternCompiler patternCompiler = new Perl5Compiler();
-			Pattern pattern = patternCompiler.compile(regx, Perl5Compiler.CASE_INSENSITIVE_MASK);
-			PatternMatcher matcher = new Perl5Matcher();
-			PatternMatcherInput input = new PatternMatcherInput(src);
+			java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(regx, java.util.regex.Pattern.CASE_INSENSITIVE);
+			java.util.regex.Matcher matcher = pattern.matcher(src);
 
-			while(matcher.contains(input, pattern)) {
-				MatchResult matchResult = matcher.getMatch();
-				int tmp = matchResult.beginOffset(0);
+			while(matcher.find()) {
+				int tmp = matcher.start();
 				if(tmp >= begin) {//匹配位置从begin开始
 					idx = tmp;
 					break;
@@ -692,9 +688,9 @@ public class RegularUtil {
 				if(end_s != -1) {
 					//检测是否是单标签
 					String chk_s = txt.substring(begin, end_s)
-						.replace("\"", "'")
-						.replace("”", "'")
-						.replace("‘", "'");
+							.replace("\"", "'")
+							.replace("”", "'")
+							.replace("‘", "'");
 					if (!chk_s.contains(">")) {
 						end = end_s;
 						foot = foot_s;
@@ -893,7 +889,7 @@ public class RegularUtil {
 				return sub;
 			}
 		}
-    }
+	}
 
 	/**
 	 * 标签体

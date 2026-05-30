@@ -46,8 +46,8 @@ public class Select extends BaseBodyTag {
  
 	public void setHead(String head) {
 		this.head = head; 
-	} 
- 
+	}
+
 	@SuppressWarnings({"rawtypes", "unchecked" })
 	public int doEndTag() throws JspException {
 		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest(); 
@@ -71,19 +71,7 @@ public class Select extends BaseBodyTag {
 			} 
 		} 
 		if (data instanceof String) {
-			String items[] = data.toString().split(","); 
-			List list = new ArrayList(); 
-			for (String item : items) {
-				Map map = new HashMap(); 
-				String ks[] = BeanUtil.parseKeyValue(item); 
-				map.put(valueKey, ks[0]); 
-				map.put(textKey, ks[1]); 
-				if(ks.length>2) {
-					map.put("CHK", ks[2]); 
-				} 
-				list.add(map); 
-			} 
-			data = list; 
+			data = string2maps(data.toString());
 		} 
 		Collection items = (Collection) data;
 		if(BasicUtil.isNotEmpty(selector) && data instanceof Collection) {

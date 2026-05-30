@@ -20,6 +20,7 @@ import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.log.Log;
 import org.anyline.log.LogProxy;
+import org.anyline.util.ConfigTable;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.BodyContent;
@@ -285,6 +286,22 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 //		}
 		this.value = value;
 	}
+
+	protected List<Map> string2maps(String data){
+		String items[] = data.toString().split(",");
+		List list = new ArrayList();
+		for (String item : items) {
+			Map map = new HashMap();
+			String ks[] = BeanUtil.parseKeyValue(item);
+			map.put(ConfigTable.DEFAULT_PRIMARY_KEY, ks[0]);
+			map.put("NM", ks[1]);
+			if(ks.length>2) {
+				map.put("CHK", ks[2]);
+			}
+			list.add(map);
+		}
+		return list;
+	}
 	public String getClazz() {
 		return clazz; 
 	} 
@@ -393,4 +410,5 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 	public void setTitle(String title) {
 		this.title = title;
 	}
+
 }

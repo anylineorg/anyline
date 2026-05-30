@@ -56,7 +56,8 @@ public class XMLRun extends TextRun implements Run {
 
 	public void init() {
 		if(null != configs) {
-			for(Config conf: configs.getConfigChain().getConfigs()) {
+			List<Config> list = configs.getConfigChain().getConfigs(true);
+			for(Config conf: list) {
 				setConditionValue(conf.getSwt(), conf.getCompare(), conf.getPrefix(), conf.getVariable(), conf.getValues());
 			} 
 			LinkedHashMap<String, Config> params = configs.params();
@@ -395,7 +396,7 @@ public class XMLRun extends TextRun implements Run {
 	public Variable getVariable(String key) {
 		if(null != variables) {
 			for(Variable v:variables) {
-				if(null == v) {
+				if(null == v || null == v.getKey()) {
 					continue; 
 				} 
 				if(v.getKey().equalsIgnoreCase(key)) {
@@ -410,7 +411,7 @@ public class XMLRun extends TextRun implements Run {
 		List<Variable> vars = new ArrayList<Variable>();
 		if(null != variables) {
 			for(Variable v:variables) {
-				if(null == v) {
+				if(null == v || null == v.getKey()) {
 					continue; 
 				} 
 				if(v.getKey().equalsIgnoreCase(key)) {

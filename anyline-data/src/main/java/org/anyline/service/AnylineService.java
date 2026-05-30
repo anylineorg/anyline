@@ -109,10 +109,35 @@ public interface AnylineService<E>{
 	 ******************************************************************************************************************/
 	/**
 	 * 插入数据
-	 * @param batch 批量执行每批最多数量
+	 * @param batch 批量执行每批最多数量,大于1时批量执行
 	 * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param data entity或list或DataRow或DataSet
-	 * @param columns 需要插入哪些列
+	 * @param configs 插入过程中的配置项，如是否插入空值<br/>
+	 *              IS_UPDATE_NULL_COLUMN:DataRow是否更新nul值的列(针对DataRow)<br/>
+	 * 				IS_UPDATE_EMPTY_COLUMN:DataRow是否更新空值的列<br/>
+	 * 				IS_INSERT_NULL_COLUMN:DataRow是否插入nul值的列<br/>
+	 * 				IS_INSERT_EMPTY_COLUMN:DataRow是否插入空值的列<br/>
+	 * 				IS_UPDATE_NULL_FIELD:Entity是否更新nul值的属性(针对Entity)<br/>
+	 * 				IS_UPDATE_EMPTY_FIELD:Entity是否更新空值的属性<br/>
+	 * 				IS_INSERT_NULL_FIELD:Entity是否更新nul值的属性<br/>
+	 * 				IS_INSERT_EMPTY_FIELD:Entity是否更新空值的属性<br/>
+	 * 				IS_CHECK_ALL_INSERT_COLUMN:插入集合时是否检测所有条目的列(默认只检测第一行)<br/>
+	 * 				IS_CHECK_ALL_UPDATE_COLUMN:更新集合时是否检测所有条目的列(默认只检测第一行)
+	 * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
+	 *                列可以加前缀<br/>
+	 *                +:表示必须插入<br/>
+	 *                -:表示必须不插入<br/>
+	 *                ?:根据是否有值<br/>
+	 *
+	 *        如果没有提供columns,长度为0也算没有提供<br/>
+	 *        则解析obj(遍历所有的属性工Key)获取insert列<br/>
+	 *
+	 *        如果提供了columns则根据columns获取insert列<br/>
+	 *
+	 *        但是columns中出现了添加前缀列,则解析完columns后,继续解析obj<br/>
+	 *
+	 *        以上执行完后,如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
+	 *        则把执行结果与表结构对比,删除表中没有的列<br/>
 	 * @return 影响行数
 	 */
 	long insert(int batch, String dest, Object data, ConfigStore configs, List<String> columns);
@@ -4534,6 +4559,7 @@ public interface AnylineService<E>{
 		 * @return boolean
 		 */
 		boolean create(Role role) throws Exception;
+		boolean create(List<Role> roles) throws Exception;
 
 		/**
 		 * 查询角色

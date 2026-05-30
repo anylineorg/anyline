@@ -38,7 +38,10 @@ public interface ConfigChain extends Config{
 	ConfigChain removeConfig(String prefix, String  var);
 	ConfigChain removeConfig(String prefix, String var, Compare type);
 	void setValue(Map<String,Object> values);
-	List<Config> getConfigs();
+	List<Config> getConfigs(boolean recursion);
+	default List<Config> getConfigs(){
+		return getConfigs(false);
+	}
 	ConditionChain createAutoConditionChain();
 
 	ConfigChain clone();

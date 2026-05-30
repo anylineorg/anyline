@@ -173,6 +173,10 @@ public class ImgUtil {
 		ImageReader reader = null; 
 		ImageInputStream iis = null; 
 	    try {
+            File dir = tar.getParentFile();
+            if(null != dir && !dir.exists()) {
+                dir.mkdirs();
+            }
 	    	String format = "JPEG"; 
 	    	if(src.getName().toLowerCase().endsWith("png")) {
 	    		format = "PNG"; 

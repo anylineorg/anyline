@@ -2815,7 +2815,7 @@ public class BeanUtil {
 		if(BasicUtil.isNotEmpty(key)) {
 			if(key.contains("${")) {
 				try{
-					List<String> ks =RegularUtil.fetch(key, "\\${\\w+\\}", Regular.MATCH_MODE.CONTAIN, 0);
+					List<String> ks =RegularUtil.fetch(key, "\\$\\{\\w+\\}", Regular.MATCH_MODE.CONTAIN, 0);
 					for(String k:ks) {
 						Object v = getFieldValue(obj, k.replace("${","").replace("}",""));
 						if(null == v) {

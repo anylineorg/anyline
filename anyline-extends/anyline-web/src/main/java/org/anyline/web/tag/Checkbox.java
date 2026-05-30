@@ -86,22 +86,10 @@ public class Checkbox extends BaseBodyTag {
 							data = request.getAttribute(data.toString()); 
 						} 
 					} 
-				} 
+				}
 				if (data instanceof String) {
-					String items[] = data.toString().split(","); 
-					List list = new ArrayList(); 
-					for (String item : items) {
-						Map map = new HashMap(); 
-						String ks[] = BeanUtil.parseKeyValue(item); 
-						map.put(valueKey, ks[0]);
-						map.put(textKey, ks[1]);
-						if(ks.length>2) {
-							map.put("CHK", ks[2]);
-						} 
-						list.add(map); 
-					} 
-					data = list; 
-				} 
+					data = string2maps(data.toString());
+				}
 				// 选中值
 				if (null != this.value) {
 					if(!(this.value instanceof String || this.value instanceof Collection)) {

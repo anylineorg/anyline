@@ -61,8 +61,8 @@ public interface RunPrepare extends Cloneable {
 	// NM LIKE '%#{NM}%'
 	// NM IN(${NM})
 	// NM IN(#{NM})
-	String SQL_VAR_PLACEHOLDER_REGEX = "([^\\s\\$#]+)\\s*\\(?(\\s*[\\$|#]*{\\w+})(\\+|\\s|'|\\)|%)?";
-
+	//String SQL_VAR_PLACEHOLDER_REGEX = "([^\\s\\$#]+)\\s*\\(?(\\s*[\\$|#]*{\\w+})(\\+|\\s|'|\\)|%)?";
+	String SQL_VAR_PLACEHOLDER_REGEX = "([^\\s\\$#]+)\\s*\\(?(\\s*[\\$|#]*\\{\\w+\\})(\\+|\\s|'|\\)|%)?";
 	// ${ AND ID = ::ID}  ${AND CODE=:CODE }
 	String SQL_VAR_BOX_REGEX = "\\$\\{.+?:.+?\\}";
 

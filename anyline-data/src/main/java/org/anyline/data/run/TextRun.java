@@ -80,7 +80,7 @@ public class TextRun extends AbstractRun implements Run {
 		}
 		//configStore解析与Table不一样, txt需要检测sql体中有没有需要赋值的占位符，所以不能全部用来生成新条件
 		if(null != configs) {
-			List<Config> confs = configs.getConfigChain().getConfigs();
+			List<Config> confs = configs.getConfigChain().getConfigs(true);
 			for(Config conf:confs) {
 				//是否覆盖相同var key的条件
 				boolean overCondition = conf.isOverCondition();

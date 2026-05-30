@@ -1557,11 +1557,11 @@ public class KStoreAdapter extends OracleGenusAdapter implements JDBCAdapter {
 		Run run = new SimpleRun(runtime);
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();
-		builder.append("SELECT DISTINCT TABLE_TYPE_OWNER AS USERNAME FROM ALL_ALL_TABLES");
+		builder.append("SELECT DISTINCT owner AS USERNAME FROM ALL_ALL_TABLES");
 		if(null != query) {
 			String name = query.getName();
 			ConfigStore configs = run.getConfigs();
-			configs.and(Compare.LIKE_SIMPLE, "TABLE_TYPE_OWNER", name);
+			configs.and(Compare.LIKE_SIMPLE, "OWNER", name);
 		}
 		return runs;
 	}
@@ -1700,10 +1700,10 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();
 		//需要跨schema查询
-		builder.append("SELECT M.TABLE_TYPE_OWNER, M.TABLE_NAME AS TABLE_NAME, M.TABLE_TYPE AS TABLE_TYPE, NOW() AS CREATE_TIME, NOW() AS UPDATE_TIME, M.TEMPORARY AS IS_TEMPORARY, F.REMARKS AS COMMENTS, M.STATUS\n");
+		builder.append("SELECT M.OWNER, M.TABLE_NAME AS TABLE_NAME, M.TABLE_TYPE AS TABLE_TYPE, NOW() AS CREATE_TIME, NOW() AS UPDATE_TIME, M.TEMPORARY AS IS_TEMPORARY, F.REMARKS AS COMMENTS, M.STATUS\n");
 		builder.append("FROM ALL_ALL_TABLES M LEFT JOIN ALL_TAB_COMMENTS F \n");
-		builder.append("ON M.TABLE_NAME = F.TABLE_NAME AND M.TABLE_TYPE_OWNER = F.TABLE_SCHEM \n");
-		configs.and("M.TABLE_TYPE_OWNER", query.getSchemaName());
+		builder.append("ON M.TABLE_NAME = F.TABLE_NAME AND M.OWNER = F.TABLE_SCHEM \n");
+		configs.and("M.OWNER", query.getSchemaName());
 		return runs;
 	}
 
@@ -2290,9 +2290,10 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		if(!metadata) {
 			Run run = buildSelectColumnsBody(runtime, configs);
 			runs.add(run);
-			configs.and("M.TABLE_SCHEM", query.getSchemaName());
+			MetadataFieldRefer refer = refer(runtime, Table.class);
+			configs.and("M." + refer.map(Table.FIELD_SCHEMA), query.getSchemaName());
 			configs.and(Compare.LIKE_SIMPLE, "M.TABLE_NAME", query.getTableName());
-			run.setOrders("M.TABLE_SCHEM", "M.TABLE_NAME", "M.ORDINAL_POSITION");
+			run.setOrders("M."+ refer.map(Table.FIELD_SCHEMA), "M.TABLE_NAME", "M.COLUMN_ID");
 			run.setPageNavi(configs.getPageNavi());
 		}
 		return runs;
@@ -2305,20 +2306,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 */
 	@Override
 	public MetadataFieldRefer initColumnFieldRefer() {
-		MetadataFieldRefer refer = new MetadataFieldRefer(Column.class);
-		refer.map(Column.FIELD_NAME, "COLUMN_NAME");
-		refer.map(Column.FIELD_CATALOG, "");//忽略
-		refer.map(Column.FIELD_SCHEMA, "OWNER");
-		refer.map(Column.FIELD_TABLE, "TABLE_NAME");
-		refer.map(Column.FIELD_NULLABLE, "IS_NULLABLE");
-		refer.map(Column.FIELD_CHARSET, "");//忽略
-		refer.map(Column.FIELD_COLLATE, "");//忽略
-		refer.map(Column.FIELD_POSITION, "ORDINAL_POSITION");
-		refer.map(Column.FIELD_COMMENT, "COLUMN_COMMENT");//SQL组装
-		refer.map(Column.FIELD_DEFAULT_VALUE, "DATA_DEFAULT");
-		refer.map(Column.FIELD_PRIMARY_CHECK, "IS_PRIMARY");
-		refer.map(Column.FIELD_PRIMARY_CHECK_VALUE, "P");
-		return refer;
+		return super.initColumnFieldRefer();
 	}
 	/**
 	 * column[命令合成]<br/>(方法1)<br/>
@@ -2335,9 +2323,10 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		List<Run> runs = new ArrayList<>();
 		Run run = buildSelectColumnsBody(runtime, configs);
 		runs.add(run);
-		configs.and("M.TABLE_SCHEM", schema);
+		MetadataFieldRefer refer = refer(runtime, Table.class);
+		configs.and("M." + refer.map(Table.FIELD_SCHEMA), schema);
 		configs.in("M.TABLE_NAME", Table.names(tables));
-		run.setOrders("M.TABLE_SCHEM", "M.TABLE_NAME", "M.ORDINAL_POSITION");
+		run.setOrders("M." + refer.map(Table.FIELD_SCHEMA), "M.TABLE_NAME", "M.COLUMN_ID");
 		return runs;
 	}
 
@@ -2345,7 +2334,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		Run run = new SimpleRun(runtime, configs);
 		StringBuilder builder = run.getBuilder();
 		builder.append("SELECT M.*, F.REMARKS AS COLUMN_COMMENT , FP.CONSTRAINT_TYPE\n" +
-				"FROM (SELECT TABLE_SCHEM,TABLE_NAME,COLUMN_NAME,TYPE_NAME,COLUMN_SIZE AS DATA_LENGTH,COLUMN_DEF AS DATA_DEFAULT,IS_NULLABLE,ORDINAL_POSITION FROM V_SYS_COLUMNS WHERE ORDINAL_POSITION>0 ) M \n" +
+				"FROM ALL_TAB_COLUMNS M \n" +
 				"LEFT JOIN ALL_COL_COMMENTS F ON M.TABLE_NAME = F.TABLE_NAME AND M.COLUMN_NAME = F.COLUMN_NAME\n" +
 				//主键
 				"LEFT JOIN (\n" +

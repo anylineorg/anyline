@@ -2129,6 +2129,7 @@ public interface AnylineDao<E>{
 	 * @return boolean
 	 */
 	boolean create(Role role) throws Exception;
+	boolean create(List<Role> roles) throws Exception;
 
 	/**
 	 * 查询角色

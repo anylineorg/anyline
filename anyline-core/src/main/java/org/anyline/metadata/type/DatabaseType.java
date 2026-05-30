@@ -164,6 +164,7 @@ public enum DatabaseType implements Serializable {
         FileMaker             ("FileMaker"                                 , DatabaseOrigin.None       , KEY_CASE.SRC   , NUMBER_LENGTH_UNIT.BYTE, 978  , null, "com.filemaker.jdbc.Driver", "jdbc:filemaker://{host}:{port};{database}"),
         Firebase              ("Firebase Realtime Database"                , DatabaseOrigin.None       , KEY_CASE.SRC   , NUMBER_LENGTH_UNIT.BYTE, 961  , null, null                , ""                            ),
         Firebird              ("Firebird"                                  , DatabaseOrigin.None       , KEY_CASE.SRC   , NUMBER_LENGTH_UNIT.BYTE, 968  , null, "org.firebirdsql.jdbc.FBDriver", "jdbc:firebirdsql://{host}:{port:3050}/{database}"),
+        Faiss                 ("Faiss"                                     , DatabaseOrigin.None       , KEY_CASE.SRC   , NUMBER_LENGTH_UNIT.BYTE, 968  , null, null, null),
         Firebolt              ("Firebolt"                                  , DatabaseOrigin.None       , KEY_CASE.SRC   , NUMBER_LENGTH_UNIT.BYTE, 865  , null, null                , "jdbc:firebolt:{database}"    ),
         Flink                 ("Apache Flink"                              , DatabaseOrigin.None       , KEY_CASE.SRC   , NUMBER_LENGTH_UNIT.BYTE, 954  , null, null                , ""                            ),
         FlockDB               ("FlockDB"                                   , DatabaseOrigin.None       , KEY_CASE.SRC   , NUMBER_LENGTH_UNIT.BYTE, 692  , null, null                , ""                            ),

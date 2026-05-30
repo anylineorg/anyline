@@ -2199,6 +2199,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		DataRuntime runtime = runtime();
 		return runtime.getAdapter().create(runtime, role);
 	}
+	@Override
+	public boolean create(List<Role> roles) throws Exception {
+		DataRuntime runtime = runtime();
+		return runtime.getAdapter().create(runtime, roles);
+	}
 
 	/**
 	 * 查询角色

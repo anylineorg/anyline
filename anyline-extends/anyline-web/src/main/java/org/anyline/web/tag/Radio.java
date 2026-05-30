@@ -40,7 +40,7 @@ public class Radio extends BaseBodyTag{
 	private String borderClazz = "al-radio-item-border";
 	private String labelClazz = "al-radio-item-label";
 	private String label = "";//label标签体,如果未定义label则生成默认label标签体{textKey} 
- 
+
 	@SuppressWarnings({"rawtypes", "unchecked" })
 	public int doEndTag() throws JspException {
 		HttpServletRequest request = (HttpServletRequest)pageContext.getRequest(); 
@@ -67,18 +67,10 @@ public class Radio extends BaseBodyTag{
 							data = request.getAttribute(data.toString()); 
 						} 
 					} 
-				} 
-				if(data instanceof String) {
-					String items[] = data.toString().split(","); 
-					List list = new ArrayList(); 
-					for(String item:items) {
-						Map map = new HashMap(); 
-						String ks[] = BeanUtil.parseKeyValue(item); 
-						map.put(valueKey, ks[0]); 
-						map.put(textKey, ks[1]); 
-						list.add(map); 
-					} 
-					data = list; 
+				}
+
+				if (data instanceof String) {
+					data = string2maps(data.toString());
 				}
 
 				// 条目边框

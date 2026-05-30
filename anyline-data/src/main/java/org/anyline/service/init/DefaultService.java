@@ -4401,6 +4401,10 @@ public class DefaultService<E> implements AnylineService<E> {
         public boolean create(Role role) throws Exception {
             return dao.create(role);
         }
+        @Override
+        public boolean create(List<Role> roles) throws Exception {
+            return dao.create(roles);
+        }
 
         /**
          * 查询角色

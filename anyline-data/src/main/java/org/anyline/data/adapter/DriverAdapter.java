@@ -9867,7 +9867,8 @@ public interface DriverAdapter {
 	 * @param role 角色
 	 * @return boolean
 	 */
-	boolean create(DataRuntime runtime, Role role) throws Exception;
+    boolean create(DataRuntime runtime, Role role) throws Exception;
+    boolean create(DataRuntime runtime, List<Role> roles) throws Exception;
 
 	/**
 	 * role[调用入口]<br/>

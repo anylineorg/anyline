@@ -16,129 +16,130 @@
 
 
 package org.anyline.util.regular;
- 
+
 import org.anyline.util.ConfigTable;
-import org.apache.oro.text.regex.*;
 import org.anyline.log.Log;
 import org.anyline.log.LogProxy;
 
 import java.util.ArrayList;
 import java.util.List;
- 
- 
-/** 
- * 前缀匹配模式 
- * 
- */ 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+
+/**
+ * 前缀匹配模式
+ *
+ */
 public class RegularMatchPrefix implements Regular{
 
-	private static final Log log = LogProxy.get(RegularMatchPrefix.class); 
-	private static PatternCompiler patternCompiler = new Perl5Compiler(); 
-	/** 
-	 * 配置状态 
+	private static final Log log = LogProxy.get(RegularMatchPrefix.class);
+
+	/**
+	 * 匹配状态
 	 * @param src  src
 	 * @param regx  regx
 	 * @return boolean
-	 */ 
+	 */
 	public boolean match(String src, String regx) {
-		boolean result = false; 
+		boolean result = false;
 		try{
-			Pattern pattern = patternCompiler.compile(regx, Perl5Compiler.DEFAULT_MASK);
-			PatternMatcher matcher = new Perl5Matcher(); 
-			result = matcher.matchesPrefix(src, pattern);
+			Pattern pattern = Pattern.compile(regx);
+			Matcher matcher = pattern.matcher(src);
+			result = matcher.lookingAt();
 		}catch(Exception e) {
 			result = false;
 			log.error("[match error][src:{}][regx:{}]", src, regx);
 			e.printStackTrace();
-		} 
-		return result; 
+		}
+		return result;
 	}
 
-	/** 
-	 * 提取子串 
+	/**
+	 * 提取子串
 	 * @param src	输入字符串  src	输入字符串
 	 * @param regx	表达式  regx	表达式
 	 * @return List
-	 */ 
+	 */
 	public List<List<String>> fetchs(String src, String regx) {
-		List<List<String>> list = new ArrayList<List<String>>(); 
+		List<List<String>> list = new ArrayList<List<String>>();
 		try{
-			Pattern pattern = patternCompiler.compile(regx, Perl5Compiler.CASE_INSENSITIVE_MASK);
-			PatternMatcher matcher = new Perl5Matcher(); 
-			PatternMatcherInput input = new PatternMatcherInput(src); 
-			while(matcher.matchesPrefix(input, pattern)) {
-				MatchResult matchResult = matcher.getMatch(); 
-				int groups = matchResult.groups(); 
+			Pattern pattern = Pattern.compile(regx, Pattern.CASE_INSENSITIVE);
+			Matcher matcher = pattern.matcher(src);
+			while(matcher.lookingAt()) {
 				List<String> item = new ArrayList<>();
-				for(int i=0; i<=groups; i++) {
-					item.add(matchResult.group(i)); 
-				} 
-				list.add(item); 
-			} 
+				for(int i=0; i<=matcher.groupCount(); i++) {
+					item.add(matcher.group(i));
+				}
+				list.add(item);
+				// lookingAt 不自动推进位置，需要手动截断已匹配部分
+				src = src.substring(matcher.end());
+				matcher = pattern.matcher(src);
+			}
 		}catch(Exception e) {
 			if(ConfigTable.IS_DEBUG && log.isWarnEnabled()) {
 				e.printStackTrace();
-			} 
-		} 
-		return list; 
-	} 
-	/** 
-	 * 提取子串 
+			}
+		}
+		return list;
+	}
+	/**
+	 * 提取子串
 	 * @param src		输入字符串  src		输入字符串
-	 * @param regx		表达式  regx		表达式
-	 * @param idx		指定提取位置  idx		指定提取位置
+	 * @param regx		表达式  regx	表达式
+	 * @param idx		指定提取位置  idx	指定提取位置
 	 * @return List
-	 */ 
+	 */
 	public List<String> fetch(String src, String regx, int idx) {
 		List<String> list = new ArrayList<>();
-		 
 		try{
-			Pattern pattern = patternCompiler.compile(regx, Perl5Compiler.CASE_INSENSITIVE_MASK);
-			PatternMatcher matcher = new Perl5Matcher(); 
-			PatternMatcherInput input = new PatternMatcherInput(src); 
-			while(matcher.matchesPrefix(input, pattern)) {
-				MatchResult matchResult = matcher.getMatch(); 
-				list.add(matchResult.group(idx)); 
-			} 
+			Pattern pattern = Pattern.compile(regx, Pattern.CASE_INSENSITIVE);
+			Matcher matcher = pattern.matcher(src);
+			while(matcher.lookingAt()) {
+				list.add(matcher.group(idx));
+				// lookingAt 不自动推进位置，需要手动截断已匹配部分
+				src = src.substring(matcher.end());
+				matcher = pattern.matcher(src);
+			}
 		}catch(Exception e) {
 			if(ConfigTable.IS_DEBUG && log.isWarnEnabled()) {
 				e.printStackTrace();
-			} 
-		} 
-		return list; 
-	} 
+			}
+		}
+		return list;
+	}
 	public List<String> fetch(String src, String regx) throws Exception {
 		return fetch(src, regx, 0);
 	}
 
-	/** 
-	 * 过滤 保留匹配项 
+	/**
+	 * 过滤 保留匹配项
 	 * @param src  src
 	 * @param regx  regx
 	 * @return List
-	 */ 
+	 */
 	public List<String> pick(List<String> src, String regx) {
 		List<String> list = new ArrayList<>();
 		for(String item : src) {
 			if(match(item, regx)) {
 				list.add(item);
-			} 
-		} 
-		return list; 
-	} 
-	/** 
-	 * 过滤 删除匹配项 
+			}
+		}
+		return list;
+	}
+	/**
+	 * 过滤 删除匹配项
 	 * @param src  src
 	 * @param regx  regx
 	 * @return List
-	 */ 
+	 */
 	public List<String> wipe(List<String> src, String regx) {
 		List<String> list = new ArrayList<>();
 		for(String item : src) {
 			if(!match(item, regx)) {
 				list.add(item);
-			} 
-		} 
-		return list; 
-	} 
+			}
+		}
+		return list;
+	}
 }

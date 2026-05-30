@@ -18,108 +18,108 @@
 package org.anyline.util.regular;
 
 import java.util.List;
- 
+
 public interface Regular {
 	enum FILTER_TYPE{WIPE, PICK};//过滤方式 WIPE:删除匹配项|PICK:保留匹配项
 	enum MATCH_MODE{MATCH, PREFIX, CONTAIN};//匹配方式 MATCH:完全匹配 PREFIX:前缀匹配 CONTAIN:包含匹配
 	enum PATTERN{
-		/**   
-		* 匹配email地址 
-		* 格式: XXX@XXX.XXX.XX   
-		* 匹配 : foo@bar.com 或 foobar@foobar.com.au 
-		* 不匹配: foo@bar 或 $$$@bar.com   
-		*/   
+		/**
+		 * 匹配email地址
+		 * 格式: XXX@XXX.XXX.XX
+		 * 匹配 : foo@bar.com 或 foobar@foobar.com.au
+		 * 不匹配: foo@bar 或 $$$@bar.com
+		 */
 		EAMIL{
 			public String getName() {return "邮箱";}
-			public String getCode() {return "(?:\\w[-._\\w]*\\w@\\w[-._\\w]*\\w\\.\\w{2, 3}$)";}
+			public String getCode() {return "(?:\\w[-._\\w]*\\w@\\w[-._\\w]*\\w\\.\\w{2,3}$)";}
 		}
-		/**   
-		* 匹配图象 
-		* 格式: /相对路径/文件名.后缀 (后缀为gif, dmp, png)
-		* 匹配 : /forum/head_icon/admini2005111_ff.gif 或 admini2005111.dmp
-		* 不匹配: c:/admins4512.gif   
-		*/
+		/**
+		 * 匹配图象
+		 * 格式: /相对路径/文件名.后缀 (后缀为gif, dmp, png)
+		 * 匹配 : /forum/head_icon/admini2005111_ff.gif 或 admini2005111.dmp
+		 * 不匹配: c:/admins4512.gif
+		 */
 		, IMG{
 			public String getName() {return "图片";}
-			public String getCode() {return "^(/{0, 1}\\w) {1,}\\.(gif|dmp|png|jpg|ico)$|^\\w{1,}\\.(gif|dmp|png|jpg|ico)$";}
+			public String getCode() {return "^(/{0,1}\\w) {1,}\\.(gif|dmp|png|jpg|ico)$|^\\w{1,}\\.(gif|dmp|png|jpg|ico)$";}
 		}
-		/**   
-		* 匹配匹配并提取url 
-		* 格式: XXXX://XXX.XXX.XXX.XX/XXX.XXX?XXX=XXX   
-		* 匹配 : http://www.anyline.org 或news://www
-		* 提取(MatchResult matchResult=matcher.getMatch()):   
-		*              matchResult.group(0)= http://www.anyline.org:8080/index.html?login=true   
-		*              matchResult.group(1) = http   
-		*              matchResult.group(2) = www.anyline.org   
-		*              matchResult.group(3) = :8080   
-		*              matchResult.group(4) = /index.html?login=true   
-		* 不匹配: c:\window   
-		*/   
+		/**
+		 * 匹配匹配并提取url
+		 * 格式: XXXX://XXX.XXX.XXX.XX/XXX.XXX?XXX=XXX
+		 * 匹配 : http://www.anyline.org 或news://www
+		 * 提取(MatchResult matchResult=matcher.getMatch()):
+		 *              matchResult.group(0)= http://www.anyline.org:8080/index.html?login=true
+		 *              matchResult.group(1) = http
+		 *              matchResult.group(2) = www.anyline.org
+		 *              matchResult.group(3) = :8080
+		 *              matchResult.group(4) = /index.html?login=true
+		 * 不匹配: c:\window
+		 */
 		, URL{
 			public String getName() {return "url";}
 			public String getCode() {return "(\\w+)://([^/:]+)(:\\d*)?([^#\\s]*)";}
 		}
-		/**   
-		* 匹配并提取http 
-		* 格式: http://XXX.XXX.XXX.XX/XXX.XXX?XXX=XXX 或 ftp://XXX.XXX.XXX 或 https://XXX   
-		* 匹配 : http://www.anyline.org:8080/index.html?login=true
-		* 提取(MatchResult matchResult=matcher.getMatch()):   
-		*              matchResult.group(0)= http://www.anyline.org:8080/index.html?login=true   
-		*              matchResult.group(1) = http   
-		*              matchResult.group(2) = www.anyline.org   
-		*              matchResult.group(3) = :8080   
-		*              matchResult.group(4) = /index.html?login=true   
-		* 不匹配: news://www   
-		*/   
+		/**
+		 * 匹配并提取http
+		 * 格式: http://XXX.XXX.XXX.XX/XXX.XXX?XXX=XXX 或 ftp://XXX.XXX.XXX 或 https://XXX
+		 * 匹配 : http://www.anyline.org:8080/index.html?login=true
+		 * 提取(MatchResult matchResult=matcher.getMatch()):
+		 *              matchResult.group(0)= http://www.anyline.org:8080/index.html?login=true
+		 *              matchResult.group(1) = http
+		 *              matchResult.group(2) = www.anyline.org
+		 *              matchResult.group(3) = :8080
+		 *              matchResult.group(4) = /index.html?login=true
+		 * 不匹配: news://www
+		 */
 		, HTTP_FTP{
 			public String getName() {return "http|https|ftp";}
 			public String getCode() {return "(http|https|ftp)://([^/:]+)(:\\d*)?([^#\\s]*)";}
 		}
-		/**   
-		* 匹配日期 
-		* 格式(首位不为0): XXXX-XX-XX 或 XXXX XX XX 或 XXXX-X-X  
-		* 范围:1900--2099 
-		* 匹配 : 2005-04-04 
-		* 不匹配: 01-01-01   
-		*/
+		/**
+		 * 匹配日期
+		 * 格式(首位不为0): XXXX-XX-XX 或 XXXX XX XX 或 XXXX-X-X
+		 * 范围:1900--2099
+		 * 匹配 : 2005-04-04
+		 * 不匹配: 01-01-01
+		 */
 		, DATE{
 			public String getName() {return "日期";}
 			public String getCode() {return "^(?:(?!0000)[0-9]{4}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-8])|(?:0[13-9]|1[0-2])-(?:29|30)|(?:0[13578]|1[02])-31)|(?:[0-9]{2}(?:0[48]|[2468][048]|[13579][26])|(?:0[48]|[2468][048]|[13579][26])00)-02-29)$";}
 		}
 		/**
-		 * 时间   20:20 | 20:20:20  | 20:20:20.999 
+		 * 时间   20:20 | 20:20:20  | 20:20:20.999
 		 */
 		, TIME{
 			public String getName() {return "时间";}
-			public String getCode() {return "(20|21|22|23|[0-1]\\d):[0-5]\\d(:[0-5]\\d(.\\d{1, 3})?)?";}
+			public String getCode() {return "(20|21|22|23|[0-1]\\d):[0-5]\\d(:[0-5]\\d(.\\d{1,3})?)?";}
 		}
 		/**
-		 * 2010-10-10 |2010-10-10 20:20 | 2010-10-10 20:20:20  |2010-10-10 20:20:20.999 | 20:20 | 20:20:20  | 20:20:20.999 
+		 * 2010-10-10 |2010-10-10 20:20 | 2010-10-10 20:20:20  |2010-10-10 20:20:20.999 | 20:20 | 20:20:20  | 20:20:20.999
 		 */
 		, DATE_TIME{
 			public String getName() {return "日期或日期时间或时间";}
 			public String getCode() {return "^((?:(?!0000)[0-9]{4}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-8])|(?:0[13-9]|1[0-2])-(?:29|30)|(?:0[13578]|1[02])-31)|(?:[0-9]{2}(?:0[48]|[2468][048]|[13579][26])|(?:0[48]|[2468][048]|[13579][26])00)-02-29))?(\\s)?((20|21|22|23|[0-1]\\d):[0-5]\\d(:[0-5]\\d(.\\d{1, 3})?)?)?$";}
 		}
-		/**   
-		* 匹配电话 
-		* 格式为: 0XXX-XXXXXX(10-13位首位必须为0) 或0XXX XXXXXXX(10-13位首位必须为0) 或 
-		* (0XXX)XXXXXXXX(11-14位首位必须为0) 或 XXXXXXXX(6-8位首位不为0) 或   
-		* XXXXXXXXXXX(11位首位不为0) 
-		* 匹配 : 0371-123456 或 (0371)1234567 或 (0371)12345678 或 010-123456 或   
-		* 010-12345678 或 12345678912 
-		* 不匹配: 1111-134355 或 0123456789   
-		*/   
+		/**
+		 * 匹配电话
+		 * 格式为: 0XXX-XXXXXX(10-13位首位必须为0) 或0XXX XXXXXXX(10-13位首位必须为0) 或
+		 * (0XXX)XXXXXXXX(11-14位首位必须为0) 或 XXXXXXXX(6-8位首位不为0) 或
+		 * XXXXXXXXXXX(11位首位不为0)
+		 * 匹配 : 0371-123456 或 (0371)1234567 或 (0371)12345678 或 010-123456 或
+		 * 010-12345678 或 12345678912
+		 * 不匹配: 1111-134355 或 0123456789
+		 */
 		, PHONE{
 			public String getName() {return "电话";}
-			public String getCode() {return "^(?:0[0-9]{2, 3}[-\\s]{1}|\\(0[0-9]{2, 4}\\))[0-9]{6, 8}$|^[1-9]{1}[0-9]{5, 7}$|^[1-9]{1}[0-9]{10}$";}
-		}  
-		/**   
-		* 匹配身份证 
-		* 格式为: XXXXXXXXXX(10位) 或 XXXXXXXXXXXXX(13位) 或 XXXXXXXXXXXXXXX(15位) 或   
-		* XXXXXXXXXXXXXXXXXX(18位) 
-		* 匹配 : 0123456789123  
-		* 不匹配: 0123456    
-		*/  
+			public String getCode() {return "^(?:0[0-9]{2,3}[-\\s]{1}|\\(0[0-9]{2,4}\\))[0-9]{6,8}$|^[1-9]{1}[0-9]{5,7}$|^[1-9]{1}[0-9]{10}$";}
+		}
+		/**
+		 * 匹配身份证
+		 * 格式为: XXXXXXXXXX(10位) 或 XXXXXXXXXXXXX(13位) 或 XXXXXXXXXXXXXXX(15位) 或
+		 * XXXXXXXXXXXXXXXXXX(18位)
+		 * 匹配 : 0123456789123
+		 * 不匹配: 0123456
+		 */
 		, ID_CARD{
 			public String getName() {return "身份证";}
 			public String getCode() {return "^[1-9]\\d{5}(18|19|([23]\\d))\\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\\d{3}[0-9Xx]$)|(^[1-9]\\d{5}\\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\\d{2}$";}
@@ -128,9 +128,9 @@ public interface Regular {
 			public String getName() {return "邮编代码";}
 			public String getCode() {return "^[0-9]{6}$";}
 		}
-		/**   
-		* 不包括特殊字符的匹配 (字符串中不包括符号 数学次方号^ 单引号' 双引号" 分号; 逗号, 帽号: 数学减号- 右尖括号> 左尖括号<  反斜杠\ 即空格, 制表符, 回车符等 )
-		*/ 
+		/**
+		 * 不包括特殊字符的匹配 (字符串中不包括符号 数学次方号^ 单引号' 双引号" 分号; 逗号, 帽号: 数学减号- 右尖括号> 左尖括号<  反斜杠\ 即空格, 制表符, 回车符等 )
+		 */
 		, NONE_SPECIAL_CHAR{
 			public String getName() {return "不包括特殊字符";}
 			public String getCode() {return "^[^'\"\\;, :-<>\\s].+$";}
@@ -235,32 +235,32 @@ public interface Regular {
 		;
 		public abstract String getName();
 		public abstract String getCode();
-	};   
+	};
 
-	/** 
-	* 匹配状态 
-	* @param src  src
-	* @param regx  regx
-	* @return boolean
-	*/ 
+	/**
+	 * 匹配状态
+	 * @param src  src
+	 * @param regx  regx
+	 * @return boolean
+	 */
 	boolean match(String src, String regx);
- 
-	/** 
-	* 提取子串 
-	* @param src	输入字符串  src	输入字符串
-	* @param regx	表达式  regx	表达式
-	* @return List
+
+	/**
+	 * 提取子串
+	 * @param src	输入字符串  src	输入字符串
+	 * @param regx	表达式  regx	表达式
+	 * @return List
 	 * @throws Exception 异常 Exception
-	*/ 
+	 */
 	List<List<String>> fetchs(String src, String regx) throws Exception;
-	/** 
-	* 提取子串 
-	* @param src		输入字符串  src		输入字符串
-	* @param regx		表达式  regx		表达式
-	* @param idx		指定提取位置  idx		指定提取位置
-	* @return List
+	/**
+	 * 提取子串
+	 * @param src		输入字符串  src		输入字符串
+	 * @param regx		表达式  regx	表达式
+	 * @param idx		指定提取位置  idx	指定提取位置
+	 * @return List
 	 * @throws Exception 异常 Exception
-	*/ 
+	 */
 	List<String> fetch(String src, String regx, int idx) throws Exception;
 	/**
 	 * 默认返回第0个(整串)
@@ -270,19 +270,19 @@ public interface Regular {
 	 * @throws Exception 异常 异常
 	 */
 	List<String> fetch(String src, String regx) throws Exception;
-	/** 
-	* 过滤  仅保留匹配项 
-	* @param src  src
-	* @param regx  regx
-	* @return List
-	*/
+	/**
+	 * 过滤  仅保留匹配项
+	 * @param src  src
+	 * @param regx  regx
+	 * @return List
+	 */
 	List<String> pick(List<String> src, String regx);
-	/** 
-	* 过滤 删除匹配项 
-	* @param src  src
-	* @param regx  regx
-	* @return List
-	*/
+	/**
+	 * 过滤 删除匹配项
+	 * @param src  src
+	 * @param regx  regx
+	 * @return List
+	 */
 	List<String> wipe(List<String> src, String regx);
- 
+
 }
