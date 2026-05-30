@@ -27,6 +27,8 @@ import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.zip.ZipEntry;
@@ -291,10 +293,10 @@ public class FileUtil {
 	 *
 	 * @param content 写入内容
 	 * @param file 文件
-	 * @param encode 编码
+	 * @param charset 编码
 	 * @param append 是否追加
 	 */
-	public static void write(String content, File file, Charset encode, boolean append) {
+	public static void write(String content, File file, Charset charset, boolean append) {
 		if(null == file) {
 			return;
 		}
@@ -302,27 +304,19 @@ public class FileUtil {
 		if(null != dir && !dir.exists()) {
 			dir.mkdirs();
 		}
-		FileOutputStream fos = null;
-		OutputStreamWriter osw = null;
 		try {
-			fos = new FileOutputStream(file, append);
-			osw = new OutputStreamWriter(fos, encode);
-			if(append) {
-				osw.append(content);
+			if(!append){
+				Files.write(Paths.get(file.getAbsolutePath()),
+						content.getBytes(charset),
+						StandardOpenOption.CREATE,
+						StandardOpenOption.TRUNCATE_EXISTING);
 			}else{
-				osw.write(content);
+				Files.write(Paths.get(file.getAbsolutePath()),
+						content.getBytes(charset),
+						StandardOpenOption.APPEND);
 			}
-			osw.flush();
 		} catch (Exception e) {
 			log.error("write file exception:", e);
-		}finally{
-			try{
-                assert osw != null;
-                osw.close();
-				fos.close();
-			}catch(Exception e) {
-				log.error("close stream exception:", e);
-			}
 		}
 	}
 
