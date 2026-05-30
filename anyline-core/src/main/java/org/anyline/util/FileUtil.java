@@ -25,6 +25,8 @@ import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.zip.ZipEntry;
@@ -117,51 +119,25 @@ public class FileUtil {
 
 	/**
 	 * 读取输入流
-	 * @param input  input
-	 * @param encode  encode
+	 * @param input  输入流
+	 * @param charset 文件编码
 	 * @return StringBuffer
 	 */
-	public static StringBuffer read(InputStream input, Charset encode) {
-		StringBuffer buffer = new StringBuffer();
-		if(null == input) {
-			return buffer;
-		}
-		int BUFFER_SIZE = 1024 * 80;
-		BufferedInputStream in = null ;
-         try  {
-        	 if(input.available() <=0) {
-        		 return buffer;
-        	 }
-        	 if(BUFFER_SIZE>input.available()) {
-        		 BUFFER_SIZE = input.available();
-        	 }
-             in = new BufferedInputStream(input, BUFFER_SIZE);
-             input.available();
-             byte [] by = new byte [BUFFER_SIZE];
-             int size = 0;
-             while ((size=in.read(by)) != -1 ) {
-            	if(null == encode) {
-            		buffer.append(new String(by, 0, size));
-            	}
-            	else{
-            		buffer.append(new String(by, 0, size, encode));
-            	}
-            }
-         }catch(Exception ex) {
-			 log.error("read stream exception:", ex);
-         } finally  {
-                try{
-                	if(null != in) {
-                		in.close();
-                	}
-                	if(null != input) {
-                		input.close();
-                	}
-                }catch(Exception e) {
-					log.error("close stream exception:", e);
-                }
-        }
+	public static StringBuilder read(InputStream input, Charset charset) throws IOException {
+		StringBuilder buffer = new StringBuilder();
+		// 固定缓冲区大小，移除对 available() 的依赖
+		final int BUFFER_SIZE = 1024 * 8;
 
+		try (BufferedInputStream bis = new BufferedInputStream(input);
+			 InputStreamReader reader = new InputStreamReader(bis, charset)) {
+			char[] bufferArray = new char[BUFFER_SIZE];
+			int charsRead;
+			while ((charsRead = reader.read(bufferArray)) != -1) {
+				buffer.append(bufferArray, 0, charsRead);
+			}
+		}
+		// 注意：这里没有关闭传入的 `input` 参数，由调用者负责。
+		// try-with-resources 会自动关闭 `bis` 和 `reader`。
 		return buffer;
 	}
 
@@ -266,17 +242,17 @@ public class FileUtil {
 	/**
 	 * 读取文件
 	 * @param file  file
-	 * @param encode  encode
+	 * @param charset  文件编码
 	 * @return StringBuffer
 	 */
-	public static StringBuffer read(File file, Charset encode) {
-		StringBuffer buffer = new StringBuffer();
+	public static String read(File file, Charset charset) {
+		String buffer = null;
 		if(null != file && file.exists()) {
 			try{
 				if(file.getAbsolutePath().contains(".jar!")) {
 					buffer = readJar(file.getAbsolutePath());
 				}else {
-					buffer = read(new FileInputStream(file), encode);
+					buffer = new String(Files.readAllBytes(file.toPath()), charset);
 				}
 			}catch(Exception e) {
 				log.error("read file exception:", e);
@@ -284,20 +260,20 @@ public class FileUtil {
 		}
 		return buffer;
 	}
-	public static StringBuffer read(File file, String encode) {
+	public static String read(File file, String encode) {
 		return read(file, Charset.forName(encode));
 	}
 
-	public static StringBuffer readJar(String path )throws IOException {
+	public static String readJar(String path )throws IOException {
 		InputStream in=FileUtil.class.getResourceAsStream(path);
 		Reader f = new InputStreamReader(in);
 		BufferedReader fb = new BufferedReader(f);
-		StringBuffer builder = new StringBuffer();
+		StringBuilder builder = new StringBuilder();
 		String s = "";
 		while((s = fb.readLine()) != null) {
 			builder.append(s);
 		}
-		return builder;
+		return builder.toString();
 	}
 	public static StringBuffer read(File file) {
 		StringBuffer buffer = new StringBuffer();
