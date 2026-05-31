@@ -519,3 +519,81 @@ GROUP BY TYPE_CODE, LVL HAVING MAX(ID) > 10
 WHERE (HRS.HR_ID > 3 AND HRS.HR_CODE = ?)
 
 ```
+
+## 8 通过存储过程查询
+//存储过程定义
+```sql
+CREATE PROCEDURE USER_REG (
+    IN _account         varchar(10)  ,
+    IN _password        vachar(50)   ,
+    INOUT _status_      int          ,
+    OUT id_             varchar(50)  ,
+    OUT msg_            varchar(50)     
+)
+```
+```java
+Procedure proc = new ProcedureImpl("USER_REG");
+//输入参数
+proc.addInput("root"); //输入参数值
+proc.addInput("000000");
+
+
+//注册输出参数,根据输出参数个数调用
+proc.regOutput("1"); //如果参数既是输入又是输出,需要调用regOutput同时指定默认值
+proc.regOutput();
+proc.regOutput();
+
+//有返回值的存储过程,在执行之前调用一次
+proc.regReturn();
+
+
+//执行存储过程 这里只接收存储过程是否执行成功,并不接收执行存储过程返回结果,执行结果需要接收输出参数结果
+boolean rtn = service.executeProcedure(proc);
+
+//接收输出参数与返回值，result中先保存返回值，再依次保存输出参数
+List<Object> list = proc.getResult();
+
+
+//查询存储过程
+DataSet set = service.queryProcedure(proc);
+//也可以同时指定输入参数值
+DataSet set = service.queryProcedure(proc, "1","2");
+```
+如果通过query接收存储过程的结果集，需在在过程中返回结果集而不是返回一个值  
+以SQL Server为例
+应该是这样：
+```sql
+ALTER PROCEDURE [dbo].[PRO_TEST]
+@a int
+        AS
+BEGIN
+SELECT * FROM ABM120T
+END
+``` 
+//而不是这样：
+//这样返回的应该通过execute(Procedure proc)执行,然后通过proc.getResult()获取返回值
+```sql
+ALTER PROCEDURE [dbo].[PRO_TEST]
+@a int
+        AS
+BEGIN
+RETURN 0;
+END
+```
+
+
+//返回多个结果集的存储过程
+```sql
+CREATE PROCEDURE PP AS BEGIN
+SELECT * FROM CRM_USER;
+SELECT * FROM hr_user;
+END;
+```
+```java
+Procedure proc = new Procedure("PP");
+DataSet set = ServiceProxy.service("mssql").querys(proc);
+//有多个结果集的返回第一个
+System.out.println(set);
+//更多结果集通过proc.getResults()
+System.out.println(proc.getResults().size());
+```
