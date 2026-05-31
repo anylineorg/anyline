@@ -5,7 +5,11 @@
 查询对象信息通过service.metadata()或ServiceProxy.metadata()执行
 如:service.metadata().tables()
 注意有些方法返回Map<String,Metadata>有些方法返回List<Metadata>  
-是因为贪婪模式下多个库中会有重名的对象，返回以对象表作为key的Map会被覆盖，所以返回List
+是因为贪婪模式下多个库中会有重名的对象，返回以对象表作为key的Map会被覆盖，所以返回List    
+针对每个对象通常提供3组方法:    
+1.根据名称查询单个对象  
+2.根据条件查询多个对象返回List或Map  
+3.根据名称检测对象是否存在  
 
 ## 1 数据库对象
 父类:zz   
@@ -1725,4 +1729,138 @@ LinkedHashMap<String, Column> metadata(String sql, boolean comment, boolean cond
 default LinkedHashMap<String, Column> metadata(String sql) throws Exception {
     return metadata(sql, false, false);
 }
+```
+
+## 3 差异对比
+对比数据库(表、列)之间的差异及成生DDL
+### 3.1 注意事项:
+#### 3.1.1 生成的SQL并不能真实还原数据库修改过程，最大的障碍在于不能捕获名称的修改过程以及先后，会导致:  
+1) 实际操作的是alter,但生成的是drop+add  
+2) 有依赖关系的操作如索引与名，自境与主键等，执行顺序不对会造成冲突  
+#### 3.1.2 默认不比较catalog与schema  
+### 3.2 对比结果
+对比结果以Differ结构返回
+#### 3.2.1 TablesDiffer
+两个数据库表列表之间的差别，就是用一个A库所有的表与B库所有的表对比  
+先分别查出A B两个库中的所有表  
+LinkedHashMap<String, Table> as= serviceA.metadata().tables();  
+LinkedHashMap<String, Table> bs= serviceB.metadata().tables();  
+然后调用TablesDiffer静态方法  
+public static TablesDiffer compare(LinkedHashMap<String, Table> as, LinkedHashMap<String, Table> bs)  
+返回的结果中同B库相对于A库的表删除了哪几个、添加了哪几个、更新了哪几个  
+#### 3.2.2 TableDiffer
+两个表之间的差别  
+表之间对比会有好几分部内容对应了几个属性，如  
+1）ColumnsDiffer:两个表列之间的差别  
+2）IndexsDiffer:两个表之间索引的差别  
+先查出每个表的元数据，直接调用Table.compare对比  
+Table a = service.metadata().table("a")  
+Table b = service.metadata().table("b")  
+TableDiffer differ = a.compare(b);  
+或者  
+TableDiffer differ = TableDiffer.compare(a, b);  
+
+### 3.3 示例
+```java
+LinkedHashMap<String, Table> as = ServiceProxy.metadata().tables(1, true);
+LinkedHashMap<String, Table> bs = ServiceProxy.service("pg").metadata().tables(1, true);
+//对比过程 默认忽略catalog, schema
+TablesDiffer differ = TablesDiffer.compare(as, bs);
+ 
+System.out.println("===================================== DDL ================================================");
+//设置生成的SQL在源库还是目标库上执行
+differ.setDirect(MetadataDiffer.DIRECT.ORIGIN);
+List<Run> runs = ServiceProxy.ddl(differ);
+for(Run run:runs){
+    System.out.println(run.getFinalExecute()+";\n");
+}
+```
+以下在实际应用中不需要，只是为了说明详细过程
+```java
+LinkedHashMap<String, Table> adds =  differ.getAdds();
+System.out.println("原表"+as);
+System.out.println("表表"+bs);
+//由a > b
+System.out.println("++++++++++++++++++++++++++++++++++++++++++添加表++++++++++++++++++++++++++++++++++++++");
+for(Table item:adds.values()){
+    System.out.println(item);
+}
+LinkedHashMap<String, Table> alters = differ.getAlters();
+System.out.println("///////////////////////////////////////////修改表/////////////////////////////////////");
+for(Table item:alters.values()){
+    System.out.println(item);
+}
+ 
+LinkedHashMap<String, TableDiffer> differs = differ.getDiffers();
+for(TableDiffer dif:differs.values()){
+    System.out.println("修改表:"+dif.getOrigin() +" > "+dif.getDest());
+    ColumnsDiffer columnsDiffer = dif.getColumnsDiffer();
+    for(Column column:columnsDiffer.getAdds().values()){
+        System.out.println("+添加列:"+column);
+    }
+    for(Column column:columnsDiffer.getAlters().values()){
+        System.out.println("/修改列:"+column+" > "+column.getUpdate());
+    }
+    for(Column column:columnsDiffer.getDrops().values()){
+        System.out.println("-删除列:"+column);
+    }
+ 
+}
+LinkedHashMap<String, Table> drops = differ.getDrops();
+System.out.println("---------------------------------------------删除表----------------------------------------");
+for(Table item:drops.values()){
+    System.out.println(""+item);
+}
+```
+生成的日志大概如下
+```
+原表{A=TABLE:simple.a, A2=TABLE:simple.a2, B=TABLE:simple.b, C=TABLE:simple.c}
+表表{A=TABLE:simple.public.a, B=TABLE:simple.public.b, D=TABLE:simple.public.d}
+++++++++++++++++++++++++++++++++++++++++++添加表++++++++++++++++++++++++++++++++++++++
+TABLE:simple.public.d
+///////////////////////////////////////////修改表/////////////////////////////////////
+TABLE:simple.a
+TABLE:simple.b
+修改表:TABLE:simple.a > TABLE:simple.public.a
++添加列:id INT8 default nextval('bs_array_id_seq'::regclass)
++添加列:array_int INT8[]
++添加列:array_ints INT4[]
++添加列:array_char VARCHAR[]
+/修改列:cc DECIMAL(10) > cc VARCHAR[]
+-删除列:CODE DOUBLE(100,2)
+-删除列:d DECIMAL(10)
+修改表:TABLE:simple.b > TABLE:simple.public.b
++添加列:name VARCHAR(20)
+/修改列:ID INT > id INT4
+/修改列:CODE INT > code VARCHAR(20)
+---------------------------------------------删除表----------------------------------------
+TABLE:simple.a2
+TABLE:simple.c
+===================================== DDL ================================================
+CREATE TABLE IF NOT EXISTS simple.public.d(
+    id INT AUTO_INCREMENT COMMENT '主键'
+    ,code VARCHAR(10) NULL COMMENT '编号'
+    ,price NUMERIC(22,1) NULL
+    ,salary NUMERIC NULL
+    ,salary1 NUMERIC(10) NULL COMMENT '工资1'
+    ,salary2 NUMERIC(10,2) NULL COMMENT '工资2'
+    ,types VARCHAR(100) NULL);
+ 
+ALTER TABLE simple.a
+ADD COLUMN id BIGINT COMMENT '主键'
+,ADD COLUMN array_int BIGINT[] NULL
+,ADD COLUMN array_ints INT[] NULL
+,ADD COLUMN array_char VARCHAR[] NULL
+,MODIFY cc VARCHAR[] NULL
+,DROP COLUMN CODE
+,DROP COLUMN d;
+ 
+ALTER TABLE simple.b
+ADD COLUMN name VARCHAR(20) NOT NULL
+,MODIFY ID INT NOT NULL
+,MODIFY CODE VARCHAR(20) NOT NULL;
+ 
+DROP TABLE IF EXISTS simple.a2;
+ 
+DROP TABLE IF EXISTS simple.c;
 ```
