@@ -4,18 +4,25 @@
 本文档涵盖通过 condition()方法解析http参数生成DQL查询条件，condition()方法返回ConfigStore对象    
 http参数支持get/post/raw-json格式  
 其中get参数格式支持:code=0&code=1或code=0,1  
-condition(true)表示需要分页 condition(10)表示分页并显式指定一页10行    
-AnylineController中提供了condition()  
+condition(true)表示需要分页 condition(10)表示分页并显式指定一页10行
+AnylineController中提供了condition()
 
-[]表示数组  
-[CODES]:cd表示数据库中CODES是数组形式如1,2,3 查询时需要FIND_IN_SET函数 FIND_IN_SET('1', CODES)    
-CODE:[cd]表示request参数中cd是数组形式查询需要IN函数 CODE IN(1,2,3)  
-"+"开头表示必须条件，如果没有值传则生成CODE IS NULL的条件(仅"="时有效，其他IN,>时，当前条件忽略)  
-“++”开头时，如果没有传值则整个SQL不执行，返回长度为零的DataSet    
+
+
+## 约定符号说明
+"[http参数]"中的[]表示数组   
+如CODE:[cd]表示request参数中cd是数组形式查询需要IN函数 CODE IN(1,2,3)    
+"[数据库列表]:http参数"中的[]表示数据库中CODES是数组形式如1,2,3 查询时需要FIND_IN_SET函数 FIND_IN_SET('1', CODES)      
+"+"开头表示必须条件，如果没有值传则生成CODE IS NULL的条件(仅"="时有效，其他IN,>时，当前条件忽略)    
+“++”开头时，如果没有传值则整个SQL不执行，返回长度为零的DataSet  
+"+"结尾表示参数值加过密码   
+“++”结尾表示参数值和参数key都加过密码  
+~表示约、忽略大小写，对PG系有效，其他数据库与LIKE等效, 如"CODE:~%code%"  
 
 具体效果参考 http://doc.anyline.org/cft
 
 ## 约定格式
+condition方法的参数格式一般是以 数据库列表:http参数名 的格式提供
 ### 1 常用方式
 ```java
 service.selects("CRM_USER", condition("TYPE_ID:type"))

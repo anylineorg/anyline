@@ -1,4 +1,4 @@
-# DML操作
+# DQL操作
 
 ## 概述
 本文档涵盖通过 Anyline 进行的DQL操作。所有操作通过注入的 `AnylineService` 实例或 `ServiceProxy` 调用。
@@ -73,7 +73,7 @@ SELECT DISTINCT TYPE_ID FROM HR_USER
 ```
 ## 4.2 多列去重 
 ```java
-service.select("HR_USER(DISTINCT TYPE_ID, TYPE_NAME)")
+service.selects("HR_USER(DISTINCT TYPE_ID, TYPE_NAME)")
 
 //生成对应SQL:
 SELECT DISTINCT TYPE_ID, TYPE_NAME FROM HR_USER
@@ -162,8 +162,8 @@ AND SALARY >= ?
 ```
 ### 5.5.3 约定JSON格式
 在低代码等自定义查询条件的解析过程比较麻烦，可以按ConfigStore约定的格式提交一个JSON实现ConfigStore的自动解析
-完整的JSON格式参考  http://doc.anyline.org/aa/73_13975  
-多表关联的JSON格式参考  http://doc.anyline.org/aa/a3_14036  
+完整的JSON格式参考【[完整JSON](http://doc.anyline.org/aa/73_13975)】    
+多表关联的JSON格式参考【[多表关联](http://doc.anyline.org/aa/a3_14036)】    
 ```java
 ConfigStore configs = ConfigBuilder.build(json);
 ServiceProxy.select("表名", configs);
@@ -469,7 +469,7 @@ LEFT JOIN (
 
 ```
 
-### 7.8 子查询过滤条件
+### 7.9 子查询过滤条件
 ```java
  //子查询
 ConfigStore configs = new DefaultConfigStore();
