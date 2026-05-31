@@ -315,10 +315,58 @@ service.selects("SELECT * FROM CRM_USER WHERE 1=1 ${AND (ID>:MAX OR ID<:MIN)} AN
 service.select("HR_USER(TYPE_ID, MAX(AGE) AS MAX_AGE, MIN(AGE) AS MIN_AGE)", "GROUP BY TYPE_ID", "ORDER BY ID", "HAVING COUNT(*) > 1");
 ```
 
-## 6 TableBuilder RunPrepare
-多表关联时可以通过 TableBuilder 合成 RunPrepare
+## 6 分页
+### 6.1 ConfigStore封装分页参数
+```java
 
-### 6.1 指定查询列名
+ConfigStore configs = new DefaultConfigStore();
+configs.page(1, 100); //第1页 每页100行
+service.selects("HR_USER", configs);
+
+//ConfigStore提供了以下分页方式
+
+/**
+ * 设置分页
+ * @param page 第page页 下标从1开始
+ * @param rows 每页rows行
+ * @return ConfigStore
+ */
+ConfigStore page(long page, int rows);
+
+/**
+ * 起止行 下标从0开始
+ * @param offset 指定第一个返回记录行的偏移量（即从哪一行开始返回） 初始行的偏移量为0
+ * @param rows 返回具体行数
+ * @return ConfigStore
+ */
+ConfigStore limit(long offset, int rows);
+
+/**
+ * 起止行 下标从0开始
+ * @param first 起
+ * @param last 止
+ * @return ConfigStore
+ */
+ConfigStore scope(long first, long last);
+```
+### 6.2 condition()合成ConfigStore
+web环境通用用condition(true)或condition(10)生成带分页的ConfigStore
+true:表示分页  
+10:表示每页10行  
+当前第几页以及其他参数在classpath/anyline-navi.xml中有定义  
+```java
+ConfigStore configs = condition(true, "CODE:code", 其他查询条件);
+service.selects("HR_USER", configs);
+```
+### 6.3 service.selects()直接提供起止行数
+```java
+//查询0到9行 即前10行，下标从0开始
+service.selects("HR_USER", 0, 9, "TYPE_ID:1", 其他参数);
+
+```
+## 7 TableBuilder RunPrepare
+多表关联时可以通过 TableBuilder 合成 RunPrepare
+### 7.1 指定查询列名
 ```java
 //表名(列,列)
 RunPrepare prepare = TableBuilder.init("FI_USER(ID AS USER_ID, CODE)").build();
@@ -328,7 +376,7 @@ ServiceProxy.selects(prepare);
 SELECT  ID AS USER_ID, CODE FROM FI_USER
 ```
 
-### 6.2 ConfigStore指定查询列名 附带带查询条件
+### 7.2 ConfigStore指定查询列名 附带带查询条件
 ```java
 RunPrepare prepare = TableBuilder.init("FI_USER").build();
 service.selects(prepare, new DefaultConfigStore().columns("id,code") , "ID > 0");
@@ -337,7 +385,7 @@ service.selects(prepare, new DefaultConfigStore().columns("id,code") , "ID > 0")
 SELECT  id, code FROM FI_USER WHERE ID > 0
 ```
 
-### 6.3 表别名
+### 7.3 表别名
 ```java
 //表名(列,列) AS 表别名
 RunPrepare prepare = TableBuilder.init("FI_USER(ID AS USER_ID, CODE) AS M").build();
@@ -347,7 +395,7 @@ ServiceProxy.selects(prepare);
 SELECT  ID AS USER_ID, CODE FROM FI_USER AS M
 ```
 
-### 6.4 多表关联
+### 7.4 多表关联
 ```java
 RunPrepare prepare = TableBuilder.init("FI_USER AS FI").left("HR_USER AS HR", "FI.ID = HR.ID").build();
 ServiceProxy.selects(prepare);
@@ -357,7 +405,7 @@ SELECT *
 FROM FI_USER AS FI
 LEFT JOIN HR_USER AS HR ON FI.ID = HR.ID
 ```
-### 6.5 多表关联指定查询列
+### 7.5 多表关联指定查询列
 可以在表名后指定
 ```java
 RunPrepare prepare = TableBuilder.init("FI_USER(FI.ID AS FI_ID, HR.ID AS HR_ID) AS FI")
@@ -371,7 +419,7 @@ FI.ID AS FI_ID, HR.ID AS HR_ID
 FROM FI_USER AS FI
 LEFT JOIN HR_USER AS HR ON FI.ID = HR.ID
 ```
-### 6.6 多表关联带查询条件
+### 7.6 多表关联带查询条件
 ```java
 RunPrepare prepare = TableBuilder.init("FI_USER(FI.ID AS FI_ID, HR.ID AS HR_ID) AS FI")
     .left("HR_USER AS HR", "FI.ID = HR.ID")
@@ -386,7 +434,7 @@ LEFT JOIN HR_USER AS HR ON FI.ID = HR.ID
 WHERE FI.ID = ?
 
 ```
-### 6.7 columns()方法单独指定列
+### 7.7 columns()方法单独指定列
 ```java
 RunPrepare prepare = TableBuilder.init("FI_USER AS FI")
         .left("HR_USER AS HR", "FI.ID = HR.ID")
@@ -401,7 +449,7 @@ FROM FI_USER AS FI
 LEFT JOIN HR_USER AS HR ON FI.ID = HR.ID
 ```
 
-### 6.8 子查询
+### 7.8 子查询
 ```java
 RunPrepare inner_hr = TableBuilder.init("HR_USER(ID AS HR_ID, CODE AS HR_CODE) AS HR").build();
 RunPrepare master = TableBuilder.init("FI_USER(M.ID AS FI_ID, HRS.HR_CODE) AS M")   //()内指定的是最外层的查询列名，放在主表名容易误解，可以addColumns()单独指定
@@ -421,7 +469,7 @@ LEFT JOIN (
 
 ```
 
-### 6.8 子查询过滤条件
+### 7.8 子查询过滤条件
 ```java
  //子查询
 ConfigStore configs = new DefaultConfigStore();
