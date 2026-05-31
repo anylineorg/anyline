@@ -358,6 +358,16 @@ service.execute("DELETE FROM CRM_USER WHERE ID = ::ID", "ID:2");
 //生成对应SQL:
 DELETE FROM CRM_USER WHERE ID = 2
 ```
+### 4.7 原生SQL中的空值条件
+原生SQL中如果需要忽略空值部分，可以用${}划分出边界
+```java
+service.execute("DELETE FROM CRM_USER WHERE 1=1 ${AND (ID>:MAX OR ID<:MIN)} AND NAME IS NOT NULL ${AND LVL > :LVL} AND LVL < 20", configs);
+//${AND (ID>:MAX OR ID<:MIN)} 和 ${AND LVL > :LVL} 部分为动态条件
+//如果 MAX 或 MIN 有一个参数为空 最终执行SQL时会把这${AND (ID>:MAX OR ID<:MIN)}部分删除执行
+//如果 LVL参数为空 最终执行SQL时会把这${AND LVL > :LVL}部分删除执行
+```
+
+
 ## 5 upsert 插入前先判断记录是否已存在，不存在则插入，存在则覆盖或忽略  
 不同的数据库判断机制不同   
 对于MySQL,PostgreSQL,Oracle等AnyLine都是一样的操作，但不同的数据库有不同的要求，    

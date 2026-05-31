@@ -17,7 +17,8 @@ AnyLine 是一个元数据驱动的动态数据管理框架，核心能力是通
 - [权限](references/authorize.md)：用户、角色、权限的查询、创建、删除
 - [元数据](references/metadata.md)：表、列、视图、索引、约束、主外键、存储过程、函数、触发器等数据库对象信息查询
 - [DDL](references/ddl.md)：表、列、视图、索引、约束、主外键、存储过程、函数、触发器等数据库对象创建、修改、删除
-- [DML与DQL](references/dml.md)：插入、更新、删除相关操作
-- [DML与DQL](references/dql.md)：查询相关操作
+- [DML](references/dml.md)：插入、更新、删除相关操作
+- [DQL](references/dql.md)：查询相关操作
+- [condition](references/condition.md)：自动封装http参考合成查询条件
 - [DataSet](references/dataset.md)：DataSet结果集聚合、分组、过滤等计算
 - [DataRow](references/datarow.md)：DataRow相关方法 
