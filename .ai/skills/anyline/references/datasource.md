@@ -265,3 +265,48 @@ public class MyBatisDataSourceMonitor implements DataSourceMonitor {
     }
 }
 ```
+
+## 2 数据源切换
+8.7.2之后就没有切换数据源了，实际上是切换的整个运行时环境，service,adapter,jdbc等一整套的全切换  
+### 2.1 切换service
+通过ServiceProxy返回数据源对应的service
+```java
+AnylineService crmService = ServiceProxy.service("crm"); //返回crm数据源对应的service
+AnylineService defService = ServiceProxy.service() //返回默认默认数据源对应的service
+再通过返回的crmService操作crm数据库
+通过defService操作默认的simple数据库
+```
+### 2.2 临时切换
+有些场景中，只需要从另一个数据源临时读取一部分数据，大部分操作还在主数据库中
+```java
+service.select("<crm>USER"); //在表名前添加数据源名称
+//这种方式切换只针对当前查询有效, 查询完成后会切换回原来的数据源(不一定是默认数据源)
+```
+### 2.3 DataSourceHolder 切换
+DataSourceHolder.setDataSource("crm")切换数据源,再调用service.select等方法操作相应的数据库
+切换完成后,数据源会一直操持在crm
+如果线程共享的话，不要用这种方式，（如springmvc会默认开启线程池）
+注意：这个方式在8.7.2及之后的版本中取消了，原因参考【[为什么取消了DynamicDataSource/ThreadLocal切换数据源的方式](http://doc.anyline.org/aa/d5_3883)】
+## 3 数据源验证
+数据源注册完成后，并没有执行连接，可以通过以下方式确认连接可用性
+### 3.1 validity
+返回数据源是否可用，即使不可用也不会抛出异常
+```java
+boolean result = DataSourceHolder.validity("数据源key");
+```
+### 3.2 hit
+返回数据源是否可用，如果数据源不可用，会抛出异常
+```java
+boolean result = DataSourceHolder.hit("数据源key");
+```
+### 3.3 service.validity
+service本身也提供了验证当前数据源是否可用的方式
+```java
+boolean result = service.validity("数据源key");
+```
+
+## 4 数据源注销
+```java
+DataSourceHolder.destroy("数据源key");
+```
+
