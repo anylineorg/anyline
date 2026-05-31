@@ -2300,6 +2300,12 @@ public interface ConfigStore extends Cloneable{
 		return config("IS_CHECK_EMPTY_SET_METADATA", value);
 	}
 
+	default String DEFAULT_PRIMARY_KEY(){
+		return getString("DEFAULT_PRIMARY_KEY", ConfigTable.DEFAULT_PRIMARY_KEY);
+	}
+	default ConfigStore DEFAULT_PRIMARY_KEY(String value){
+		return config("DEFAULT_PRIMARY_KEY", value);
+	}
 	/**
 	 * 慢SQL判断标准(ms)
 	 * @return long
@@ -2723,7 +2729,12 @@ public interface ConfigStore extends Cloneable{
 		}
 		return ConfigTable.SLOW_SQL_MILLIS;
 	}
-
+	static String DEFAULT_PRIMARY_KEY(ConfigStore configs) {
+		if(null != configs) {
+			return configs.DEFAULT_PRIMARY_KEY();
+		}
+		return ConfigTable.DEFAULT_PRIMARY_KEY;
+	}
 	/**
 	 * 是否抛出查询异常
 	 * @param configs ConfigStore
