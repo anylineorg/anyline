@@ -20,7 +20,7 @@
   </td>
   </tr>
 </table>
-
+预置的 AI 智能体技能定义位于 ./.ai/skills/anyline/SKILL.md
 
 
 # AnyLine MDM
