@@ -11,8 +11,7 @@
 2.根据条件查询多个对象返回List或Map  
 3.根据名称检测对象是否存在  
 
-## 1 数据库对象
-父类:zz   
+## 1 数据库对象 
 表:class Table<E extends Table> extends Metadata<E>   
 视图:class View extends Table<View>  
 图库表父类:class GraphTable extends Table<GraphTable>  
