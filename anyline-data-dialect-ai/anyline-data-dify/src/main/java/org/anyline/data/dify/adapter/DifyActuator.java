@@ -21,6 +21,7 @@ import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.adapter.DriverActuator;
 import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.dify.entity.Document;
+import org.anyline.data.dify.entity.Segment;
 import org.anyline.data.dify.run.DifyRun;
 import org.anyline.data.dify.runtime.DifyRuntime;
 import org.anyline.data.param.ConfigStore;
@@ -103,36 +104,66 @@ public class DifyActuator implements DriverActuator {
         DataSet<DataRow> set = new DataSet();
         long fr = System.currentTimeMillis();
         DifyRun r = (DifyRun)run;
-        String url = "/datasets/" + table.getId() + "/documents";
-        Map<String, Object> params = r.getQueryParams();
-        DataRow row = get((DifyRuntime) runtime, url, params);
-        configs.setLastExecuteTime(System.currentTimeMillis() - fr);
-        fr = System.currentTimeMillis();
-        PageNavi navi = r.getNavi();
-        if(null == navi){
-            navi = new DefaultPageNavi();
-        }
-        set.setNavi(navi);
-        if(null != row){
-            int total = row.getInt("total", 0);
-            navi.setTotalRow(total);
-            navi.setPageRows(row.getInt("limit", 20));
-            DataSet<DataRow> datas = row.getSet("data");
-            if(null != datas){
-                for(DataRow data:datas){
-                    Document doc = new Document();
-                    doc.setId(data.getString("id"));
-                    doc.setName(data.getString("name"));
-                    doc.setPosition(data.getInt("position", 0));
-                    doc.setError(data.getString("error"));
-                    doc.setCreated_from(data.getString("created_from"));
-                    doc.setCreateTime(data.getLong(("created_at")));
-                    doc.setToken_count(data.getInt("tokens", 0));
-                    doc.setIndexing_status(data.getString("indexing_status"));
-                    doc.setWord_count(data.getInt("word_count", 0));
-                    doc.setHit_count(data.getInt("hit_count", 0));
-                    doc.setEnabled(data.getBoolean("enabled", false));
-                    set.add(doc);
+        String query = r.getQuery();
+        if(null != query){
+             String url = "/datasets/" + table.getId() + "/retrieve";
+             Map<String, Object> params = r.getParams();
+             params.put("query", query);
+             DataRow row = post((DifyRuntime) runtime, url, params);
+            configs.setLastExecuteTime(System.currentTimeMillis() - fr);
+            fr = System.currentTimeMillis();
+            if(null != row){
+                DataSet<DataRow> records = row.getSet("records");
+                if(null != records){
+                    for(DataRow record:records){
+                        DataRow item = record.getRow("segment");
+                        if(null != item){
+                            Segment segment = new Segment();
+                            segment.putAll(item);
+                            segment.setScore(record.getDouble("score"));
+                            DataRow docRow = item.getRow("document");
+                            if(null != docRow){
+                                Document doc = new Document();
+                                doc.putAll(docRow);
+                                segment.setDocument(doc);
+                            }
+                            set.add(segment);
+                        }
+                    }
+                }
+            }
+        }else {
+            String url = "/datasets/" + table.getId() + "/documents";
+            Map<String, Object> params = r.getQueryParams();
+            DataRow row = get((DifyRuntime) runtime, url, params);
+            configs.setLastExecuteTime(System.currentTimeMillis() - fr);
+            fr = System.currentTimeMillis();
+            PageNavi navi = r.getNavi();
+            if (null == navi) {
+                navi = new DefaultPageNavi();
+            }
+            set.setNavi(navi);
+            if (null != row) {
+                int total = row.getInt("total", 0);
+                navi.setTotalRow(total);
+                navi.setPageRows(row.getInt("limit", 20));
+                DataSet<DataRow> datas = row.getSet("data");
+                if (null != datas) {
+                    for (DataRow data : datas) {
+                        Document doc = new Document();
+                        doc.setId(data.getString("id"));
+                        doc.setName(data.getString("name"));
+                        doc.setPosition(data.getInt("position", 0));
+                        doc.setError(data.getString("error"));
+                        doc.setCreated_from(data.getString("created_from"));
+                        doc.setCreateTime(data.getLong(("created_at")));
+                        doc.setToken_count(data.getInt("tokens", 0));
+                        doc.setIndexing_status(data.getString("indexing_status"));
+                        doc.setWord_count(data.getInt("word_count", 0));
+                        doc.setHit_count(data.getInt("hit_count", 0));
+                        doc.setEnabled(data.getBoolean("enabled", false));
+                        set.add(doc);
+                    }
                 }
             }
         }

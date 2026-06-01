@@ -666,6 +666,16 @@ public class DifyAdapter extends AbstractDriverAdapter implements DriverAdapter 
                 }
             }
         }
+        config = configs.getConfig("query");
+        if(null != config){
+            List<Object> values = config.getValues();
+            if(null != values && !values.isEmpty()){
+                Object value = values.get(0);
+                if(null != value){
+                    run.setQuery(value.toString());
+                }
+            }
+        }
         return run;
     }
 
