@@ -310,3 +310,48 @@ boolean result = service.validity("数据源key");
 DataSourceHolder.destroy("数据源key");
 ```
 
+## 5 异构数据源数据迁移
+异构数据源迁移，大概过程就3步，其他细节就看具体情况了  
+1.在目标库创建表结构  
+2.从源库中查出数据  
+3.插入到目标库  
+以下是从Mysql到Apache Ignite的示例  
+```java
+//复制mysql表结构到ignite
+public static void init(String table) throws Exception{
+    //检测一下ignite中有没有这个表
+    Table tab = ServiceProxy.service("ignite").metadata().table(table, false);
+    if(null != tab){
+        ServiceProxy.service("ignite").ddl().drop(tab);
+    }
+    //获取mysql表结构
+    tab = ServiceProxy.service("data").metadata().table(table, true);
+    //根据情况修改一下库名模式名，以及一些默认值约束等,能满足业务需求即可，再讲究一点的话把不需要的列都删除(修改完后注册查询删除时需要明确指定一下列名)
+    tab.setSchema("PUBLIC");
+    tab.getColumn("REG_TIME").setDefaultValue(null);
+    tab.getColumn("UPT_TIME").setDefaultValue(null);
+    //创建ignite表
+    ServiceProxy.service("ignite").ddl().create(tab);
+}
+//复制mysql数据到ignite
+public static void load(String table){
+    Long max = 0L;
+    //检测最后一条数据
+    DataRow last = ServiceProxy.service("ignite").select(table, "ORDER BY ID DESC");
+    if(null != last){
+        max = last.getLong("ID", 0);
+    }
+    while (true){
+        //从mysql中查出数据 这里不要用DataSet 太慢
+        List<Map> list = ServiceProxy.service("data").maps(table,0,999, "ID>"+max);
+        if(list.isEmpty()){
+            break;
+        }
+        //插入到ignite 一般需要修改一下默认日志(不显示日志)要不然日志太多
+        //override表示重复数据不覆盖(忽略|跳过)
+        ConfigStore configs = new DefaultConfigStore().IS_LOG_SQL(false).IS_LOG_SQL_PARAM(false).override(false);
+        ServiceProxy.service("ignite").insert(table, list, configs );
+        max = BasicUtil.parseLong(list.get(list.size()-1).get("ID"), 0L);
+    }
+}
+```

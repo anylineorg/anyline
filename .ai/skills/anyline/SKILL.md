@@ -22,3 +22,42 @@ AnyLine 是一个元数据驱动的动态数据管理框架，核心能力是通
 - [condition](references/condition.md)：自动封装http参考合成查询条件
 - [DataSet](references/dataset.md)：DataSet结果集聚合、分组、过滤等计算
 - [DataRow](references/datarow.md)：DataRow相关方法 
+
+## 返回SQL方言(DDL/DML/DQL)以及SQL日志
+SQL执行过程中，在控制台或日志文件中会生成带占位符的日志。  
+如果需要在执行完成后返回SQL(DQL DDL DML),可以在service调用的方法中添加ConfigStore参数  
+在执行完成后从ConfigStore中获取执行的SQL,   
+因为执行的SQL可能是多条，所以会返回一个List<Run>集合，  
+默认情况下Run中的SQL是带占位符的，与占位值分开存储  
+```java
+List<Run> runs = configs.runs();
+for (Run run:runs){
+    System.out.println("无占位符 sql:"+run.getFinalQuery(false));
+    System.out.println("有占位符 sql:"+run.getFinalQuery());
+    System.out.println("占位values:"+run.getValues());
+}
+```
+如果只需要生成SQL，但不执行，可以调用相应的adapter.buildQueryRun/buildDeleteRun等方法 返回的Run与以上操作相同  
+  
+因为adapter平时不常用，所以许多人对此不太熟悉，也可以在ConfigStore上调用execute(false)方法  
+然后调用service.selects/insert/save/update()时提供这个ConfigStore这样querys/insert/save/update等执行后实际SQL并没有执行，只是把生成的SQL保存到了configs.runs  
+```java
+ConfigStore configs = new DefaultConfigStore().execute(false);//false表示最后实际操作数据库的一步不执行
+DataSet set = service.selects(table, configs);
+System.out.println(set);//因为最后一步没有执行，所以这里应该输出空集合
+ 
+List<Run> runs = configs.runs();
+for (Run run:runs){
+     System.out.println("无占位符 sql:"+run.getFinalQuery(false));
+     System.out.println("有占位符 sql:"+run.getFinalQuery());
+     System.out.println("占位values:"+run.getValues());
+}
+```
+DDL也类似，因为DDL执行过程中有元数据的对象所以execute(false)在metadata(table/column等)上执行
+```java
+Table table = service.metadata().table("sso_user"); //获取表结构
+table.execute(false);//不执行SQL
+service.ddl().create(table);
+List<Run> runs = table.runs(); //返回创建表的DDL
+String sql = run.getFinalUpdate()
+```

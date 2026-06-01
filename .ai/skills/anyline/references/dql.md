@@ -597,3 +597,101 @@ System.out.println(set);
 //更多结果集通过proc.getResults()
 System.out.println(proc.getResults().size());
 ```
+
+## 9 流式查询
+默认情况下查询数据会把符合条件的数据一次性读到内存中，但是在大数据处理时会比较耗时甚至内存溢出。在这种情况下可以启用流式查询。返回一个迭代器。在迭代器中执行业务处理。  
+handler支持4种形式(4个StreamHanlder实现类),按性能排序ResultSet(ResultSetHanlder)>Map(MapHanlder)>DataRow(DataRowHanlder)>Entity(EntityHanlder<T>)  
+其中ResultSet最快，但是需要自己取ResultSet中数据，其他3种会提前封装好再遍历调用hanlder.read方法  
+hanlder可以通过size(int)方式设置一次读取数据  
+后3种如果返回false可以中断ResultSet遍历  
+ResultSet常用操作  
+获取元数据:ResultSetMetaData rsmd = set.getMetaData()  
+获取列数:int cols = rsmd.getColumnCount();  
+根据下标获取列名:String head = rsmd.getColumnName(1); //下标从1开始  
+根据下标获取值:set.getObject(1) //下标从1开始 先调用set.next()再获取  
+ResultSet封装成DataRow/DataSet参考DefaultJDBCAdapter.row(boolean system, DataRuntime runtime, LinkedHashMap<String, Column> metadatas, ResultSet rs)  
+注意：设置了StreamHanlder后查询的方法是没有返回值的,read方法如果返回false则会中断遍历(但基于spring-jdbc的环境不支持，返回true false都会遍历完)  
+```java
+    @Test
+    public void maps(){
+        MapHandler handler = new MapHandler() {
+            @Override
+            public boolean read(Map<String, Object> map) {
+                System.out.println(map);
+                return true;
+            }
+        };
+        service.maps("CRM_USER", handler);        
+         
+        //或者放到 ConfigStore中
+        ConfigStore configs = new DefaultConfigStore();
+        configs.stream(handler); //8.7.2及之后 换成 config.handler(handler);//为了与非阻塞模式统一
+        configs.and("CODE IS NOT NULL"); service.maps("CRM_USER", configs, "ID:>1");
+    }
+ 
+ 
+ 
+    @Test
+    public void row(){
+        DataRowHandler handler = new DataRowHandler() {
+            @Override
+            public boolean read(DataRow row) {
+                System.out.println(row);
+                return true;
+            }
+        };
+        service.selects("CRM_USER", handler);
+    }
+    @Test
+    public void entity(){
+        EntityHandler<User> handler = new EntityHandler<User>() {
+            @Override
+            public boolean read(User user) {
+                System.out.println(BeanUtil.object2json(user));
+                return true;
+            }
+ 
+        };
+        service.selects("CRM_USER", User.class, handler);
+    }
+    @Test
+    public void resultSet(){
+        ResultSetHandler handler = new ResultSetHandler() {
+            @Override
+            public long read(ResultSet set) {
+                long count = 0;
+               try{
+                   ResultSetMetaData rsmd = set.getMetaData();
+                   //列数
+                   int cols = rsmd.getColumnCount();
+                   //第1列 下标从1开始
+                   String head = rsmd.getColumnName(1);
+                   while (set.next()){
+                       System.out.println(set.getObject(1));
+                       count ++;
+                   }
+               }catch (Exception e){
+                   e.printStackTrace();
+               }
+                return count;
+            }
+        };
+        service.selects("CRM_USER", handler);
+    }
+//如果不习惯接口方式，可以用SimpleResultSetHandler ，这样就不用实现接口了，直接row()或map()接收数据就可以了
+    @Test
+    public void simple() throws Exception{
+        SimpleResultSetHandler handler = new SimpleResultSetHandler();
+        service.maps("CRM_USER", handler, "ID:>1");
+        while (true) {
+            LinkedHashMap map = handler.map();
+            if (null == map) {//空表示读到最后一行了
+                break;
+            }
+            System.out.println(map);
+        }
+        //如果中途break了要调用handler.close()释放连接
+        //如果一直读取到最后，读到map ==null了handler.close()会自动调用
+        handler.close();
+    }
+```
