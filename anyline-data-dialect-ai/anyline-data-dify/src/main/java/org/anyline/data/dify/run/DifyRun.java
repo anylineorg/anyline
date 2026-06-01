@@ -35,6 +35,7 @@ public class DifyRun extends TableRun implements Run {
     protected List<Document> documents;
     protected DifyClient client;
     protected String keyword;
+    protected String query;
     protected PageNavi navi;
     protected Map<String, Object> params = new HashMap<>();
 
@@ -110,6 +111,14 @@ public class DifyRun extends TableRun implements Run {
 
     public void setKeyword(String keyword) {
         this.keyword = keyword;
+    }
+
+    public String getQuery() {
+        return query;
+    }
+
+    public void setQuery(String query) {
+        this.query = query;
     }
 
     public PageNavi getNavi() {
