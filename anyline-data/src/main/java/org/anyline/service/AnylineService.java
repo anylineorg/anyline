@@ -2630,7 +2630,7 @@ public interface AnylineService<E>{
 		}
 
 		/**
-		 * 表的创建SQL
+		 * 表的创建DDL
 		 * @param table table
 		 * @param init 是否还原初始状态 默认false
 		 * @return ddl
@@ -2895,7 +2895,7 @@ public interface AnylineService<E>{
 		}
 
 		/**
-		 * 视图的创建SQL
+		 * 视图的创建DDL
 		 * @param view view
 		 * @param init 是否还原初始状态 默认false
 		 * @return ddl
@@ -3156,7 +3156,7 @@ public interface AnylineService<E>{
 		}
 
 		/**
-		 * 表的创建SQL
+		 * 表的创建DDL
 		 * @param master master
 		 * @param init 是否还原初始状态 默认false
 		 * @return ddl
@@ -3283,6 +3283,11 @@ public interface AnylineService<E>{
 			return partition(false, new MasterTable(master), name);
 		}
 
+		/**
+		 * 分区表的创建DDL
+		 * @param table table
+		 * @return ddl
+		 */
 		List<String> ddl(PartitionTable table);
 		/* *************************************************************************************************************
 		 * 													VertexTable
@@ -3535,7 +3540,7 @@ public interface AnylineService<E>{
 		}
 
 		/**
-		 * 表的创建SQL
+		 * 表的创建DDL
 		 * @param vertex vertex
 		 * @param init 是否还原初始状态 默认false
 		 * @return ddl
@@ -3795,7 +3800,7 @@ public interface AnylineService<E>{
 		}
 
 		/**
-		 * 表的创建SQL
+		 * 表的创建DDL
 		 * @param edge edge
 		 * @param init 是否还原初始状态 默认false
 		 * @return ddl
@@ -4209,6 +4214,11 @@ public interface AnylineService<E>{
 		default Procedure procedure(String name) throws Exception {
 			return procedure(false, name);
 		}
+		/**
+		 * 存储过程的创建DDL
+		 * @param procedure 存储过程
+		 * @return ddl
+		 */
 		List<String> ddl(Procedure procedure);
 
 		/* *****************************************************************************************************************
@@ -4252,6 +4262,12 @@ public interface AnylineService<E>{
 		default Function function(String name) {
 			return function(false, name);
 		}
+
+		/**
+		 * 函数的创建DDL
+		 * @param function 函数
+		 * @return ddl
+		 */
 		List<String> ddl(Function function);
 
 		/* *****************************************************************************************************************
@@ -4295,6 +4311,12 @@ public interface AnylineService<E>{
 		default Sequence sequence(String name) {
 			return sequence(false, name);
 		}
+
+		/**
+		 * 序列的创建DDL
+		 * @param sequence 序列
+		 * @return ddl
+		 */
 		List<String> ddl(Sequence sequence);
 	}
 
@@ -4320,7 +4342,7 @@ public interface AnylineService<E>{
 
 	interface DDLService{
 		/**
-		 * 解析DDL
+		 * 解析DDL生成元数据对象
 		 * @param type Metadata类型
 		 * @param ddl ddl
 		 * @param configs 其他配置
@@ -4335,20 +4357,91 @@ public interface AnylineService<E>{
 		/* *****************************************************************************************************************
 		 * 													catalog
 		 ******************************************************************************************************************/
+
+		/**
+		 * 创建或修改catalog
+		 * @param meta catalog
+		 * @return boolean
+		 * @throws Exception 异常
+		 */
 		boolean save(Catalog meta) throws Exception;
+
+		/**
+		 * 创建catalog
+		 * @param meta catalog
+		 * @return boolean
+		 * @throws Exception 异常
+		 */
 		boolean create(Catalog meta) throws Exception;
+
+		/**
+		 * 修改catalog
+		 * @param meta catalog
+		 * @return boolean
+		 * @throws Exception 异常
+		 */
 		boolean alter(Catalog meta) throws Exception;
+
+		/**
+		 * 删除catalog
+		 * @param meta catalog
+		 * @return boolean
+		 * @throws Exception 异常
+		 */
 		boolean drop(Catalog meta) throws Exception;
+
+		/**
+		 * 重命名catalog
+		 * @param origin catalog
+		 * @param name 新名称
+		 * @return boolean
+		 * @throws Exception 异常
+		 */
 		boolean rename(Catalog origin, String name) throws Exception;
 
 		/* *****************************************************************************************************************
 		 * 													schema
 		 ******************************************************************************************************************/
 
-		boolean save(Schema schema) throws Exception;
-		boolean create(Schema schema) throws Exception;
-		boolean alter(Schema schema) throws Exception;
-		boolean drop(Schema schema) throws Exception;
+		/**
+		 * 创建或修改schema
+		 * @param meta schema
+		 * @return boolean
+		 * @throws Exception 异常
+		 */
+		boolean save(Schema meta) throws Exception;
+
+		/**
+		 * 创建schema
+		 * @param meta schema
+		 * @return boolean
+		 * @throws Exception 异常
+		 */
+		boolean create(Schema meta) throws Exception;
+
+		/**
+		 * 修改schema
+		 * @param meta schema
+		 * @return boolean
+		 * @throws Exception 异常
+		 */
+		boolean alter(Schema meta) throws Exception;
+
+		/**
+		 * 删除schema
+		 * @param meta schema
+		 * @return boolean
+		 * @throws Exception 异常
+		 */
+		boolean drop(Schema meta) throws Exception;
+
+		/**
+		 * 重命名schema
+		 * @param origin schema
+		 * @param name 新名称
+		 * @return boolean
+		 * @throws Exception 异常
+		 */
 		boolean rename(Schema origin, String name) throws Exception;
 
 
@@ -4356,66 +4449,269 @@ public interface AnylineService<E>{
 		 * 													database
 		 ******************************************************************************************************************/
 
-		boolean save(Database database) throws Exception;
-		boolean create(Database database) throws Exception;
-		boolean alter(Database database) throws Exception;
-		boolean drop(Database database) throws Exception;
+		/**
+		 * 创建或修改数据库
+		 * @param meta 数据库
+		 * @return boolean
+		 * @throws Exception 异常
+		 */
+		boolean save(Database meta) throws Exception;
+
+		/**
+		 * 创建或修改数据库
+		 * @param meta 数据库
+		 * @return boolean
+		 * @throws Exception 异常
+		 */
+		boolean create(Database meta) throws Exception;
+
+		/**
+		 * 创建或修改数据库
+		 * @param meta 数据库
+		 * @return boolean
+		 * @throws Exception 异常
+		 */
+		boolean alter(Database meta) throws Exception;
+
+		/**
+		 * 创建或修改数据库
+		 * @param meta 数据库
+		 * @return boolean
+		 * @throws Exception 异常
+		 */
+		boolean drop(Database meta) throws Exception;
+
+		/**
+		 * 重命名数据库
+		 * @param origin 数据库
+		 * @param name 新名称
+		 * @return boolean
+		 * @throws Exception 异常
+		 */
 		boolean rename(Database origin, String name) throws Exception;
 
 
 		/* *****************************************************************************************************************
 		 * 													table
 		 ******************************************************************************************************************/
+
+		/**
+		 * 创建或修改表
+		 * @param meta 表
+		 * @return boolean
+		 * @throws Exception 异常
+		 */
 		boolean save(Table meta) throws Exception;
+
+		/**
+		 * 创建表
+		 * @param meta 表
+		 * @return boolean
+		 * @throws Exception 异常
+		 */
 		boolean create(Table meta) throws Exception;
+
+		/**
+		 * 修改表
+		 * @param meta 表
+		 * @return boolean
+		 * @throws Exception 异常
+		 */
 		boolean alter(Table meta) throws Exception;
+
+		/**
+		 * 删除表
+		 * @param meta 表
+		 * @return boolean
+		 * @throws Exception 异常
+		 */
 		boolean drop(Table meta) throws Exception;
+
+		/**
+		 * 重命名表
+		 * @param origin 表
+		 * @param name 新名称
+		 * @return boolean
+		 * @throws Exception 异常
+		 */
 		boolean rename(Table origin, String name) throws Exception;
 
 		/* *****************************************************************************************************************
 		 * 													view
 		 ******************************************************************************************************************/
 
+		/**
+		 * 创建或修改视图
+		 * @param meta 视图
+		 * @return boolean
+		 * @throws Exception 异常
+		 */
 		boolean save(View meta) throws Exception;
+
+		/**
+		 * 创建视图
+		 * @param meta 视图
+		 * @return boolean
+		 * @throws Exception 异常
+		 */
 		boolean create(View meta) throws Exception;
+
+		/**
+		 * 修改视图
+		 * @param meta 视图
+		 * @return boolean
+		 * @throws Exception 异常
+		 */
 		boolean alter(View meta) throws Exception;
+
+		/**
+		 * 删除视图
+		 * @param meta 视图
+		 * @return boolean
+		 * @throws Exception 异常
+		 */
 		boolean drop(View meta) throws Exception;
+
+		/**
+		 * 创建或修改视图
+		 * @param origin 视图
+		 * @param name 新名称
+		 * @return boolean
+		 * @throws Exception 异常
+		 */
 		boolean rename(View origin, String name) throws Exception;
 
 		/* *****************************************************************************************************************
 		 * 													master table
 		 ******************************************************************************************************************/
 
+		/**
+		 * 创建或修改主表
+		 * @param meta 主表
+		 * @return boolean
+		 * @throws Exception 异常
+		 */
 		boolean save(MasterTable meta) throws Exception;
+
+		/**
+		 * 创建主表
+		 * @param meta 主表
+		 * @return boolean
+		 * @throws Exception 异常
+		 */
 		boolean create(MasterTable meta) throws Exception;
+
+		/**
+		 * 修改主表
+		 * @param meta 主表
+		 * @return boolean
+		 * @throws Exception 异常
+		 */
 		boolean alter(MasterTable meta) throws Exception;
+
+		/**
+		 * 删除主表
+		 * @param meta 主表
+		 * @return boolean
+		 * @throws Exception 异常
+		 */
 		boolean drop(MasterTable meta) throws Exception;
+
+		/**
+		 * 重命名主表
+		 * @param origin 主表
+		 * @param name 新名称
+		 * @return boolean
+		 * @throws Exception 异常
+		 */
 		boolean rename(MasterTable origin, String name) throws Exception;
 
 		/* *****************************************************************************************************************
 		 * 													partition table
 		 ******************************************************************************************************************/
 
+		/**
+		 * 创建或修改分区表
+		 * @param meta 分区表
+		 * @return boolean
+		 * @throws Exception 异常
+		 */
 		boolean save(PartitionTable meta) throws Exception;
+
+		/**
+		 * 创建分区表
+		 * @param meta 分区表
+		 * @return boolean
+		 * @throws Exception 异常
+		 */
 		boolean create(PartitionTable meta) throws Exception;
+
+		/**
+		 * 修改分区表
+		 * @param meta 分区表
+		 * @return boolean
+		 * @throws Exception 异常
+		 */
 		boolean alter(PartitionTable meta) throws Exception;
+
+		/**
+		 * 删除分区表
+		 * @param meta 分区表
+		 * @return boolean
+		 * @throws Exception 异常
+		 */
 		boolean drop(PartitionTable meta) throws Exception;
+
+		/**
+		 * 重命名分区表
+		 * @param origin 分区表
+		 * @param name 新名称
+		 * @return boolean
+		 * @throws Exception 异常
+		 */
 		boolean rename(PartitionTable origin, String name) throws Exception;
 
 		/* *****************************************************************************************************************
 		 * 													column
 		 ******************************************************************************************************************/
 		/**
-		 * 修改列  名称 数据类型 位置 默认值
+		 * 修改列  名称 数据类型 位置 默认值 等属性
 		 * 执行save前先调用column.update()设置修改后的属性
 		 * column.update().setName().setDefaultValue().setAfter()....
 		 * @param meta 列
 		 * @throws Exception 异常 SQL异常
 		 */
 		boolean save(Column meta) throws Exception;
+
+		/**
+		 * 添加列
+		 * @param meta 列
+		 * @return boolean
+		 * @throws Exception 异常
+		 */
 		boolean add(Column meta) throws Exception;
+
+		/**
+		 * 修改列
+		 * @param meta 列
+		 * @return boolean
+		 * @throws Exception 异常
+		 */
 		boolean alter(Column meta) throws Exception;
+		/**
+		 * 删除列
+		 * @param meta 列
+		 * @return boolean
+		 * @throws Exception 异常
+		 */
 		boolean drop(Column meta) throws Exception;
+		/**
+		 * 添加列
+		 * @param origin 列
+		 * @param name 新名称
+		 * @return boolean
+		 * @throws Exception 异常
+		 */
 		boolean rename(Column origin, String name) throws Exception;
 
 		/* *****************************************************************************************************************
@@ -4432,104 +4728,319 @@ public interface AnylineService<E>{
 		 * 													primary
 		 ******************************************************************************************************************/
 
+		/**
+		 * 添加主键
+		 * @param meta 主键
+		 * @return boolean
+		 * @throws Exception 异常
+		 */
 		boolean add(PrimaryKey meta) throws Exception;
+
+		/**
+		 * 创建主键
+		 * @param meta 主键
+		 * @return boolean
+		 * @throws Exception 异常
+		 */
 		default boolean create(PrimaryKey meta) throws Exception {
 			return add(meta);
 		}
+
+		/**
+		 * 修改主键
+		 * @param meta 主键
+		 * @return boolean
+		 * @throws Exception 异常
+		 */
 		boolean alter(PrimaryKey meta) throws Exception;
+
+		/**
+		 * 删除主键
+		 * @param meta 主键
+		 * @return boolean
+		 * @throws Exception 异常
+		 */
 		boolean drop(PrimaryKey meta) throws Exception;
+
+		/**
+		 * 重命名主键
+		 * @param origin 主键
+		 * @param name 新名称
+		 * @return boolean
+		 * @throws Exception 异常
+		 */
 		boolean rename(PrimaryKey origin, String name) throws Exception;
 		/* *****************************************************************************************************************
 		 * 													foreign
 		 ******************************************************************************************************************/
 
+		/**
+		 * 添加外键
+		 * @param meta 外键
+		 * @return boolean
+		 * @throws Exception 异常
+		 */
 		boolean add(ForeignKey meta) throws Exception;
+
+		/**
+		 * 修改外键
+		 * @param meta 外键
+		 * @return boolean
+		 * @throws Exception 异常
+		 */
 		boolean alter(ForeignKey meta) throws Exception;
+
+		/**
+		 * 删除外键
+		 * @param meta 外键
+		 * @return boolean
+		 * @throws Exception 异常
+		 */
 		boolean drop(ForeignKey meta) throws Exception;
-		boolean rename(ForeignKey meta, String name) throws Exception;
+
+		/**
+		 * 重命名外键
+		 * @param origin 外键
+		 * @param name 新名称
+		 * @return boolean
+		 * @throws Exception 异常
+		 */
+		boolean rename(ForeignKey origin, String name) throws Exception;
 
 		/* *****************************************************************************************************************
 		 * 													index
 		 ******************************************************************************************************************/
 
+		/**
+		 * 添加索引
+		 * @param meta 索引
+		 * @return boolean
+		 * @throws Exception 异常
+		 */
 		boolean add(Index meta) throws Exception;
+
+		/**
+		 * 创建索引
+		 * @param meta 索引
+		 * @return boolean
+		 * @throws Exception 异常
+		 */
 		default boolean create(Index meta) throws Exception {
 			return add(meta);
 		}
+
+		/**
+		 * 修改索引
+		 * @param meta 索引
+		 * @return boolean
+		 * @throws Exception 异常
+		 */
 		boolean alter(Index meta) throws Exception;
+
+		/**
+		 * 删除索引
+		 * @param meta 索引
+		 * @return boolean
+		 * @throws Exception 异常
+		 */
 		boolean drop(Index meta) throws Exception;
+
+		/**
+		 * 重命名索引
+		 * @param origin 索引
+		 * @param name 新名称
+		 * @return boolean
+		 * @throws Exception 异常
+		 */
 		boolean rename(Index origin, String name) throws Exception;
 
 		/* *****************************************************************************************************************
 		 * 													constraint
 		 ******************************************************************************************************************/
 		/**
-		 * 修改约束
+		 * 添加约束
 		 * @param meta 约束
 		 * @return boolean
 		 * @throws Exception 异常 Exception
 		 */
 		boolean add(Constraint meta) throws Exception;
+
+		/**
+		 * 创建约束
+		 * @param meta 约束
+		 * @return boolean
+		 * @throws Exception 异常 Exception
+		 */
 		default boolean create(Constraint meta) throws Exception {
 			return add(meta);
 		}
+
+		/**
+		 * 修改约束
+		 * @param meta 约束
+		 * @return boolean
+		 * @throws Exception 异常 Exception
+		 */
 		boolean alter(Constraint meta) throws Exception;
+
+		/**
+		 * 添加约束
+		 * @param meta 约束
+		 * @return boolean
+		 * @throws Exception 异常 Exception
+		 */
 		boolean drop(Constraint meta) throws Exception;
+
+		/**
+		 * 添加约束
+		 * @param origin 约束
+		 * @param name 新名称
+		 * @return boolean
+		 * @throws Exception 异常 Exception
+		 */
 		boolean rename(Constraint origin, String name) throws Exception;
 
 		/* *****************************************************************************************************************
 		 * 													trigger
 		 ******************************************************************************************************************/
 		/**
-		 * 触发器
+		 * 创建触发器
 		 * @param meta 触发器
 		 * @return trigger
 		 * @throws Exception 异常 Exception
 		 */
 		boolean create(Trigger meta) throws Exception;
+
+		/**
+		 * 修改触发器
+		 * @param meta 触发器
+		 * @return trigger
+		 * @throws Exception 异常 Exception
+		 */
 		boolean alter(Trigger meta) throws Exception;
+
+		/**
+		 * 删除触发器
+		 * @param meta 触发器
+		 * @return trigger
+		 * @throws Exception 异常 Exception
+		 */
 		boolean drop(Trigger meta) throws Exception;
+
+		/**
+		 * 触发器
+		 * @param origin 触发器
+		 * @param name 新名称
+		 * @return trigger
+		 * @throws Exception 异常 Exception
+		 */
 		boolean rename(Trigger origin, String name) throws Exception;
 
 		/* *****************************************************************************************************************
 		 * 													procedure
 		 ******************************************************************************************************************/
 		/**
-		 * 存储过程
+		 * 创建存储过程
 		 * @param meta 存储过程
 		 * @return boolean
 		 * @throws Exception 异常 Exception
 		 */
 		boolean create(Procedure meta) throws Exception;
+
+		/**
+		 * 修改存储过程
+		 * @param meta 存储过程
+		 * @return boolean
+		 * @throws Exception 异常 Exception
+		 */
 		boolean alter(Procedure meta) throws Exception;
+
+		/**
+		 * 删除存储过程
+		 * @param meta 存储过程
+		 * @return boolean
+		 * @throws Exception 异常 Exception
+		 */
 		boolean drop(Procedure meta) throws Exception;
+
+		/**
+		 * 重命名存储过程
+		 * @param origin 存储过程
+		 * @param name 新名称
+		 * @return boolean
+		 * @throws Exception 异常 Exception
+		 */
 		boolean rename(Procedure origin, String name) throws Exception;
 
 		/* *****************************************************************************************************************
 		 * 													function
 		 ******************************************************************************************************************/
 		/**
-		 * 函数
+		 * 创建函数
 		 * @param meta 函数
 		 * @return boolean
 		 * @throws Exception 异常 Exception
 		 */
 		boolean create(Function meta) throws Exception;
+
+		/**
+		 * 修改函数
+		 * @param meta 函数
+		 * @return boolean
+		 * @throws Exception 异常 Exception
+		 */
 		boolean alter(Function meta) throws Exception;
+
+		/**
+		 * 删除函数
+		 * @param meta 函数
+		 * @return boolean
+		 * @throws Exception 异常 Exception
+		 */
 		boolean drop(Function meta) throws Exception;
+
+		/**
+		 * 重命名函数
+		 * @param origin 函数
+		 * @param name 新名称
+		 * @return boolean
+		 * @throws Exception 异常 Exception
+		 */
 		boolean rename(Function origin, String name) throws Exception;
 		/* *****************************************************************************************************************
 		 * 													sequence
 		 ******************************************************************************************************************/
 		/**
-		 * 函数
+		 * 创建序列
 		 * @param meta 序列
 		 * @return boolean
 		 * @throws Exception 异常 Exception
 		 */
 		boolean create(Sequence meta) throws Exception;
+
+		/**
+		 * 修改序列
+		 * @param meta 序列
+		 * @return boolean
+		 * @throws Exception 异常 Exception
+		 */
 		boolean alter(Sequence meta) throws Exception;
+
+		/**
+		 * 删除序列
+		 * @param meta 序列
+		 * @return boolean
+		 * @throws Exception 异常 Exception
+		 */
 		boolean drop(Sequence meta) throws Exception;
+
+		/**
+		 * 重命名序列
+		 * @param origin 序列
+		 * @param name 新名称
+		 * @return boolean
+		 * @throws Exception 异常 Exception
+		 */
 		boolean rename(Sequence origin, String name) throws Exception;
 	}
 
@@ -4559,6 +5070,11 @@ public interface AnylineService<E>{
 		 * @return boolean
 		 */
 		boolean create(Role role) throws Exception;
+		/**
+		 * 创建多个角色
+		 * @param roles 角色列表
+		 * @return boolean
+		 */
 		boolean create(List<Role> roles) throws Exception;
 
 		/**

@@ -1541,6 +1541,7 @@ default Trigger trigger(String name) {
 }
 ```
 ### 2.11 存储过程
+参考以下接口声明
 ```java
 <T extends Procedure> List<T> procedures(boolean greedy, Catalog catalog, Schema schema, String name);
 default <T extends Procedure> List<T> procedures(boolean greedy, Schema schema, String name) {
@@ -1580,9 +1581,15 @@ default Procedure procedure(Schema schema, String name) throws Exception {
 default Procedure procedure(String name) throws Exception {
     return procedure(false, name);
 }
+/**
+ * 存储过程的创建DDL
+ * @param procedure 存储过程
+ * @return ddl
+ */
 List<String> ddl(Procedure procedure);
 ```
 ### 2.12 函数
+参考以下接口声明
 ```java
 <T extends Function> List<T> functions(boolean greedy, Catalog catalog, Schema schema, String name);
 default <T extends Function> List<T> functions(boolean greedy, Schema schema, String name) {
@@ -1621,9 +1628,16 @@ default Function function(Schema schema, String name) {
 default Function function(String name) {
     return function(false, name);
 }
+
+/**
+ * 函数的创建DDL
+ * @param function 函数
+ * @return ddl
+ */
 List<String> ddl(Function function);
 ```
 ### 2.13 序列
+参考以下接口声明
 ```java
 <T extends Sequence> List<T> sequences(boolean greedy, Catalog catalog, Schema schema, String name);
 default <T extends Sequence> List<T> sequences(boolean greedy, Schema schema, String name) {

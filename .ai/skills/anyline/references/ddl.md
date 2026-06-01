@@ -5,8 +5,414 @@
 ## 1 数据库对象
 参考 metadata.md中的 数据库对象 章节
 ## 2 对象操作
-### 2.1 表及附加对象
-#### 2.1.1 创建表
+### 2.1 catalog
+参考以下接口声明
+```java
+/**
+ * 创建或修改catalog
+ * @param meta catalog
+ * @return boolean
+ * @throws Exception 异常
+ */
+boolean save(Catalog meta) throws Exception;
+
+/**
+ * 创建catalog
+ * @param meta catalog
+ * @return boolean
+ * @throws Exception 异常
+ */
+boolean create(Catalog meta) throws Exception;
+
+/**
+ * 修改catalog
+ * @param meta catalog
+ * @return boolean
+ * @throws Exception 异常
+ */
+boolean alter(Catalog meta) throws Exception;
+
+/**
+ * 删除catalog
+ * @param meta catalog
+ * @return boolean
+ * @throws Exception 异常
+ */
+boolean drop(Catalog meta) throws Exception;
+
+/**
+ * 重命名catalog
+ * @param origin catalog
+ * @param name 新名称
+ * @return boolean
+ * @throws Exception 异常
+ */
+boolean rename(Catalog origin, String name) throws Exception;
+```
+
+### 2.2 schema
+参考以下接口声明
+```java
+/**
+* 创建或修改schema
+* @param meta schema
+* @return boolean
+* @throws Exception 异常
+*/
+boolean save(Schema meta) throws Exception;
+
+/**
+* 创建schema
+* @param meta schema
+* @return boolean
+* @throws Exception 异常
+*/
+boolean create(Schema meta) throws Exception;
+
+/**
+* 修改schema
+* @param meta schema
+* @return boolean
+* @throws Exception 异常
+*/
+boolean alter(Schema meta) throws Exception;
+
+/**
+* 删除schema
+* @param meta schema
+* @return boolean
+* @throws Exception 异常
+*/
+boolean drop(Schema meta) throws Exception;
+
+/**
+* 重命名schema
+* @param origin schema
+* @param name 新名称
+* @return boolean
+* @throws Exception 异常
+*/
+boolean rename(Schema origin, String name) throws Exception;
+```
+
+### 2.3 database
+参考以下接口声明
+```java
+/**
+ * 创建或修改数据库
+ * @param meta 数据库
+ * @return boolean
+ * @throws Exception 异常
+ */
+boolean save(Database meta) throws Exception;
+
+/**
+ * 创建或修改数据库
+ * @param meta 数据库
+ * @return boolean
+ * @throws Exception 异常
+ */
+boolean create(Database meta) throws Exception;
+
+/**
+ * 创建或修改数据库
+ * @param meta 数据库
+ * @return boolean
+ * @throws Exception 异常
+ */
+boolean alter(Database meta) throws Exception;
+
+/**
+ * 创建或修改数据库
+ * @param meta 数据库
+ * @return boolean
+ * @throws Exception 异常
+ */
+boolean drop(Database meta) throws Exception;
+
+/**
+ * 重命名数据库
+ * @param origin 数据库
+ * @param name 新名称
+ * @return boolean
+ * @throws Exception 异常
+ */
+boolean rename(Database origin, String name) throws Exception;
+```
+ 
+
+### 2.4 表及附加对象
+参考以下接口声明
+```java
+/**
+ * 创建表
+ * @param meta 表
+ * @return boolean
+ * @throws Exception SQL异常
+ */
+boolean create(Table meta) throws Exception;
+
+/**
+ * 修改表
+ * @param meta 表
+ * @return boolean
+ * @throws Exception SQL异常
+ */
+boolean alter(Table meta) throws Exception;
+
+/**
+ * 删除表
+ * @param meta 表
+ * @return boolean
+ * @throws Exception SQL异常
+ */
+boolean drop(Table meta) throws Exception;
+
+/**
+ * 重命名表
+ * @param origin 表
+ * @param name 新名称
+ * @return boolean
+ * @throws Exception SQL异常
+ */
+boolean rename(Table origin, String name) throws Exception;
+
+/**
+ * 修改列  名称 数据类型 位置 默认值 等属性
+ * 执行save前先调用column.update()设置修改后的属性
+ * column.update().setName().setDefaultValue().setAfter()....
+ * @param meta 列
+ * @throws Exception 异常 SQL异常
+ */
+boolean save(Column meta) throws Exception;
+
+/**
+ * 添加列
+ * @param meta 列
+ * @return boolean
+ * @throws Exception SQL异常
+ */
+boolean add(Column meta) throws Exception;
+
+/**
+ * 修改列
+ * @param meta 列
+ * @return boolean
+ * @throws Exception SQL异常
+ */
+boolean alter(Column meta) throws Exception;
+/**
+ * 删除列
+ * @param meta 列
+ * @return boolean
+ * @throws Exception SQL异常
+ */
+boolean drop(Column meta) throws Exception;
+/**
+ * 添加列
+ * @param origin 列
+ * @param name 新名称
+ * @return boolean
+ * @throws Exception SQL异常
+ */
+boolean rename(Column origin, String name) throws Exception;
+
+/**
+ * 添加主键
+ * @param meta 主键
+ * @return boolean
+ * @throws Exception 异常
+ */
+boolean add(PrimaryKey meta) throws Exception;
+
+/**
+ * 创建主键
+ * @param meta 主键
+ * @return boolean
+ * @throws Exception 异常
+ */
+default boolean create(PrimaryKey meta) throws Exception {
+    return add(meta);
+}
+
+/**
+ * 修改主键
+ * @param meta 主键
+ * @return boolean
+ * @throws Exception 异常
+ */
+boolean alter(PrimaryKey meta) throws Exception;
+
+/**
+ * 删除主键
+ * @param meta 主键
+ * @return boolean
+ * @throws Exception 异常
+ */
+boolean drop(PrimaryKey meta) throws Exception;
+
+/**
+ * 重命名主键
+ * @param origin 主键
+ * @param name 新名称
+ * @return boolean
+ * @throws Exception 异常
+ */
+boolean rename(PrimaryKey origin, String name) throws Exception;
+
+/**
+ * 添加外键
+ * @param meta 外键
+ * @return boolean
+ * @throws Exception 异常
+ */
+boolean add(ForeignKey meta) throws Exception;
+
+/**
+ * 修改外键
+ * @param meta 外键
+ * @return boolean
+ * @throws Exception 异常
+ */
+boolean alter(ForeignKey meta) throws Exception;
+
+/**
+ * 删除外键
+ * @param meta 外键
+ * @return boolean
+ * @throws Exception 异常
+ */
+boolean drop(ForeignKey meta) throws Exception;
+
+/**
+ * 重命名外键
+ * @param origin 外键
+ * @param name 新名称
+ * @return boolean
+ * @throws Exception 异常
+ */
+boolean rename(ForeignKey origin, String name) throws Exception;
+
+/**
+ * 添加索引
+ * @param meta 索引
+ * @return boolean
+ * @throws Exception 异常
+ */
+boolean add(Index meta) throws Exception;
+
+/**
+ * 创建索引
+ * @param meta 索引
+ * @return boolean
+ * @throws Exception 异常
+ */
+default boolean create(Index meta) throws Exception {
+    return add(meta);
+}
+
+/**
+ * 修改索引
+ * @param meta 索引
+ * @return boolean
+ * @throws Exception 异常
+ */
+boolean alter(Index meta) throws Exception;
+
+/**
+ * 删除索引
+ * @param meta 索引
+ * @return boolean
+ * @throws Exception 异常
+ */
+boolean drop(Index meta) throws Exception;
+
+/**
+ * 重命名索引
+ * @param origin 索引
+ * @param name 新名称
+ * @return boolean
+ * @throws Exception 异常
+ */
+boolean rename(Index origin, String name) throws Exception;
+
+/**
+ * 添加约束
+ * @param meta 约束
+ * @return boolean
+ * @throws Exception 异常 Exception
+ */
+boolean add(Constraint meta) throws Exception;
+
+/**
+ * 创建约束
+ * @param meta 约束
+ * @return boolean
+ * @throws Exception 异常 Exception
+ */
+default boolean create(Constraint meta) throws Exception {
+    return add(meta);
+}
+
+/**
+ * 修改约束
+ * @param meta 约束
+ * @return boolean
+ * @throws Exception 异常 Exception
+ */
+boolean alter(Constraint meta) throws Exception;
+
+/**
+ * 添加约束
+ * @param meta 约束
+ * @return boolean
+ * @throws Exception 异常 Exception
+ */
+boolean drop(Constraint meta) throws Exception;
+
+/**
+ * 添加约束
+ * @param origin 约束
+ * @param name 新名称
+ * @return boolean
+ * @throws Exception 异常 Exception
+ */
+boolean rename(Constraint origin, String name) throws Exception;
+/**
+ * 创建触发器
+ * @param meta 触发器
+ * @return trigger
+ * @throws Exception 异常 Exception
+ */
+boolean create(Trigger meta) throws Exception;
+
+/**
+ * 修改触发器
+ * @param meta 触发器
+ * @return trigger
+ * @throws Exception 异常 Exception
+ */
+boolean alter(Trigger meta) throws Exception;
+
+/**
+ * 删除触发器
+ * @param meta 触发器
+ * @return trigger
+ * @throws Exception 异常 Exception
+ */
+boolean drop(Trigger meta) throws Exception;
+
+/**
+ * 触发器
+ * @param origin 触发器
+ * @param name 新名称
+ * @return trigger
+ * @throws Exception 异常 Exception
+ */
+boolean rename(Trigger origin, String name) throws Exception;
+```
+
+#### 2.4.1 创建表
 ```java
 String name = "crm_user";
 Table table = service.metadata().table(name);
@@ -32,7 +438,7 @@ table.addColumn("UPDATE_BY", "bigint").setComment("更新人");
 table.addColumn("UPDATE_TIME", "datetime").setComment("更新时间");
 service.ddl().create(tab);
 ```
-#### 2.1.2 修改表
+#### 2.4.2 修改表
 修改表通常是先读取表结构，在读取结果的基础上修改列、索引等属性。  
 也可以在new Table()在基础上修改属性
 修改完成后调用 alter(Table)或save(Table)方法  方法内部会再次读取数据库中原表结构与传入的Table对比，根据对比结构生成SQL
@@ -98,7 +504,7 @@ index.setTable(table);
 service.ddl().add(index);
 ```
 
-##### 2.1.2.1 修改列 
+##### 2.4.2.1 修改列 
 ```java
 table = new Table();
 table.setName("c_test");
@@ -186,7 +592,7 @@ Table tab = new Table("c_test");
 tab.addColumn("ID", "int");
 service.ddl().save(tab);
 ```
-##### 2.1.2.2 修改列排序
+##### 2.4.2.2 修改列排序
 ```java
 table = new Table(name);
 table.addColumn("C2","INT").setPosition(2);
@@ -210,7 +616,7 @@ for(Column c:columns.values()){
     System.out.println(c.getName());
 }
 ```
-##### 2.1.2.3 修改数据类型
+##### 2.4.2.3 修改数据类型
 ```java
 table = new Table(name);
 table.addColumn("ID", "int");
@@ -220,7 +626,7 @@ table = ServiceProxy.metadata().table(name);
 table.getColumn("CODE").setType("varchar(50)");
 ServiceProxy.ddl().save(table);
 ```
-##### 2.1.2.4 删除列
+##### 2.4.2.4 删除列
 默认情况下如果传入的table对象中的列比数据库中的列少，不会直接执行删除，除非在列上调用了delete()或drop()方法  
 主要是为了在new Table()基础上修改属性时，table对象中只包含了需要修改的几个列时，避免删除其他不需要修改的列
 ```java
@@ -230,7 +636,7 @@ columns.get("NAME").delete(); //删除列
 columns.get("O_NAME").delete();
 service.ddl().alter(table);
 ```
-##### 2.1.2.5 修改主键
+##### 2.4.2.5 修改主键
 ```java
 table = new Table(name);
 table.addColumn("ID", "INT").setAutoIncrement(true).setPrimary(true, "BTREE");
@@ -246,14 +652,14 @@ table.setPrimaryKey(pk);
 service.ddl().save(table);
 ```
 
-##### 2.1.2.6 自增列
+##### 2.4.2.6 自增列
 ```java
 table = new Table(name);
 table.addColumn("ID", "INT").setPrimary(true);
 table.addColumn("CODE", "int").setAutoIncrement(true).setUnique(true);
 service.ddl().alter(table);
 ```
-##### 2.1.2.7  创建,删除索引
+##### 2.4.2.7  创建,删除索引
 ```java
 Table tab = service.metadata().table("tab_index");
 if(null != tab){
@@ -290,7 +696,7 @@ if(null == idx){
     service.ddl().add(idx);
 }
 ```
-##### 2.1.2.8  表及列的编码格式
+##### 2.4.2.8  表及列的编码格式
 ```java
  table = new Table("table_char");
 table.setComment("表备注");
@@ -301,7 +707,7 @@ table.setCharset("utf8mb4");
 table.setCollate("utf8mb4_0900_ai_ci");
 service.ddl().save(table);
 ```
-##### 2.1.2.9  外键
+##### 2.4.2.9  外键
 ```java
  //创建组合主键
 ta = new Table("TAB_A");
@@ -347,7 +753,7 @@ if(null != foreign) {
     }
 }
 ```
-##### 2.1.2.10 触发器
+##### 2.4.2.10 触发器
 ```java
 Table tb = service.metadata().table("TAB_USER", false);
 if(null != tb){
@@ -377,7 +783,93 @@ if(null != trigger){
 }
 ```
 
-### 2.2 分区表
+### 2.5 主表及分区表
+参考以下接口声明
+```java
+/**
+ * 创建或修改主表
+ * @param meta 主表
+ * @return boolean
+ * @throws Exception 异常
+ */
+boolean save(MasterTable meta) throws Exception;
+
+/**
+ * 创建主表
+ * @param meta 主表
+ * @return boolean
+ * @throws Exception 异常
+ */
+boolean create(MasterTable meta) throws Exception;
+
+/**
+ * 修改主表
+ * @param meta 主表
+ * @return boolean
+ * @throws Exception 异常
+ */
+boolean alter(MasterTable meta) throws Exception;
+
+/**
+ * 删除主表
+ * @param meta 主表
+ * @return boolean
+ * @throws Exception 异常
+ */
+boolean drop(MasterTable meta) throws Exception;
+
+/**
+ * 重命名主表
+ * @param origin 主表
+ * @param name 新名称
+ * @return boolean
+ * @throws Exception 异常
+ */
+boolean rename(MasterTable origin, String name) throws Exception;
+
+/**
+ * 创建或修改分区表
+ * @param meta 分区表
+ * @return boolean
+ * @throws Exception 异常
+ */
+boolean save(PartitionTable meta) throws Exception;
+
+/**
+ * 创建分区表
+ * @param meta 分区表
+ * @return boolean
+ * @throws Exception 异常
+ */
+boolean create(PartitionTable meta) throws Exception;
+
+/**
+ * 修改分区表
+ * @param meta 分区表
+ * @return boolean
+ * @throws Exception 异常
+ */
+boolean alter(PartitionTable meta) throws Exception;
+
+/**
+ * 删除分区表
+ * @param meta 分区表
+ * @return boolean
+ * @throws Exception 异常
+ */
+boolean drop(PartitionTable meta) throws Exception;
+
+/**
+ * 重命名分区表
+ * @param origin 分区表
+ * @param name 新名称
+ * @return boolean
+ * @throws Exception 异常
+ */
+boolean rename(PartitionTable origin, String name) throws Exception;
+```
+#### 2.5.1 主表及分区表示例
+
 ```java
 /**
  * 分区
@@ -483,19 +975,63 @@ public Table head() throws Exception{
     return table;
 }
 ```
-### 2.3 视图
-### 2.3.1 创建视图
+### 2.6 视图
+参考以下接口声明
+```java
+/**
+ * 创建或修改视图
+ * @param meta 视图
+ * @return boolean
+ * @throws Exception SQL异常
+ */
+boolean save(View meta) throws Exception;
+
+/**
+ * 创建视图
+ * @param meta 视图
+ * @return boolean
+ * @throws Exception SQL异常
+ */
+boolean create(View meta) throws Exception;
+
+/**
+ * 修改视图
+ * @param meta 视图
+ * @return boolean
+ * @throws Exception SQL异常
+ */
+boolean alter(View meta) throws Exception;
+
+/**
+ * 删除视图
+ * @param meta 视图
+ * @return boolean
+ * @throws Exception SQL异常
+ */
+boolean drop(View meta) throws Exception;
+
+/**
+ * 创建或修改视图
+ * @param origin 视图
+ * @param name 新名称
+ * @return boolean
+ * @throws Exception SQL异常
+ */
+boolean rename(View origin, String name) throws Exception;
+```
+#### 2.6.1 示例
+##### 2.6.1.1 创建视图
 ```java
 View view = new View("V_CRM_USER");
 view.setDefinition("SELECT * FROM CRM_USER WHERE ID > 0");
 service.ddl().create(view);
 ```
-### 2.3.2 读取视图定义
+##### 2.6.1.2 读取视图定义
 ```java
 View view = service.metadata().view("v_hr_department");
 System.out.println(view.getDefinition());
 ```
-### 2.3.3 物化视图
+### 2.7 物化视图
 ```java
 View view1 = new View("v1");
 view1.addColumn(new Column("ID"));
@@ -508,4 +1044,152 @@ view2.addColumn(new Column("NAME"));
 view2.addColumn(new Column("CODE"));
 table.addMaterializes(view1).addMaterializes(view2);
 service.ddl().create(table);
+```
+
+### 2.8 存储过程
+参考以下接口声明
+```java
+/**
+ * 创建存储过程
+ * @param meta 存储过程
+ * @return boolean
+ * @throws Exception 异常 Exception
+ */
+boolean create(Procedure meta) throws Exception;
+
+/**
+ * 修改存储过程
+ * @param meta 存储过程
+ * @return boolean
+ * @throws Exception 异常 Exception
+ */
+boolean alter(Procedure meta) throws Exception;
+
+/**
+ * 删除存储过程
+ * @param meta 存储过程
+ * @return boolean
+ * @throws Exception 异常 Exception
+ */
+boolean drop(Procedure meta) throws Exception;
+
+/**
+ * 重命名存储过程
+ * @param origin 存储过程
+ * @param name 新名称
+ * @return boolean
+ * @throws Exception 异常 Exception
+ */
+boolean rename(Procedure origin, String name) throws Exception;
+
+```
+### 2.9 函数
+参考以下接口声明
+```java
+/**
+ * 创建函数
+ * @param meta 函数
+ * @return boolean
+ * @throws Exception 异常 Exception
+ */
+boolean create(Function meta) throws Exception;
+
+/**
+ * 修改函数
+ * @param meta 函数
+ * @return boolean
+ * @throws Exception 异常 Exception
+ */
+boolean alter(Function meta) throws Exception;
+
+/**
+ * 删除函数
+ * @param meta 函数
+ * @return boolean
+ * @throws Exception 异常 Exception
+ */
+boolean drop(Function meta) throws Exception;
+
+/**
+ * 重命名函数
+ * @param origin 函数
+ * @param name 新名称
+ * @return boolean
+ * @throws Exception 异常 Exception
+ */
+boolean rename(Function origin, String name) throws Exception;
+```
+
+### 2.10 序列
+参考以下接口声明
+```java
+/**
+ * 创建序列
+ * @param meta 序列
+ * @return boolean
+ * @throws Exception 异常 Exception
+ */
+boolean create(Sequence meta) throws Exception;
+
+/**
+ * 修改序列
+ * @param meta 序列
+ * @return boolean
+ * @throws Exception 异常 Exception
+ */
+boolean alter(Sequence meta) throws Exception;
+
+/**
+ * 删除序列
+ * @param meta 序列
+ * @return boolean
+ * @throws Exception 异常 Exception
+ */
+boolean drop(Sequence meta) throws Exception;
+
+/**
+ * 重命名序列
+ * @param origin 序列
+ * @param name 新名称
+ * @return boolean
+ * @throws Exception 异常 Exception
+ */
+boolean rename(Sequence origin, String name) throws Exception;
+```
+### 2.11 触发器
+参考以下接口声明
+```java
+/**
+ * 创建触发器
+ * @param meta 触发器
+ * @return trigger
+ * @throws Exception 异常 Exception
+ */
+boolean create(Trigger meta) throws Exception;
+
+/**
+ * 修改触发器
+ * @param meta 触发器
+ * @return trigger
+ * @throws Exception 异常 Exception
+ */
+boolean alter(Trigger meta) throws Exception;
+
+/**
+ * 删除触发器
+ * @param meta 触发器
+ * @return trigger
+ * @throws Exception 异常 Exception
+ */
+boolean drop(Trigger meta) throws Exception;
+
+/**
+ * 触发器
+ * @param origin 触发器
+ * @param name 新名称
+ * @return trigger
+ * @throws Exception 异常 Exception
+ */
+boolean rename(Trigger origin, String name) throws Exception;
+
 ```
