@@ -484,3 +484,28 @@ public Table head() throws Exception{
 }
 ```
 ### 2.3 视图
+### 2.3.1 创建视图
+```java
+View view = new View("V_CRM_USER");
+view.setDefinition("SELECT * FROM CRM_USER WHERE ID > 0");
+service.ddl().create(view);
+```
+### 2.3.2 读取视图定义
+```java
+View view = service.metadata().view("v_hr_department");
+System.out.println(view.getDefinition());
+```
+### 2.3.3 物化视图
+```java
+View view1 = new View("v1");
+view1.addColumn(new Column("ID"));
+view1.addColumn(new Column("NAME"));
+view1.addColumn(new Column("CODE"));
+View view2 = new View("v2");
+view2.addColumn(new Column("ID"));
+view2.addColumn(new Column("DATA_VERSION"));
+view2.addColumn(new Column("NAME"));
+view2.addColumn(new Column("CODE"));
+table.addMaterializes(view1).addMaterializes(view2);
+service.ddl().create(table);
+```
