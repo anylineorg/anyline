@@ -1,7 +1,7 @@
 # DataSet 操作
 
 ## 概述
-DataSet是Anyline的核心数据结果集对象，继承自`ArrayList<E>`（E通常为DataRow），提供丰富的数据处理、聚合、分组等能力。
+DataSet是Anyline的核心数据结果集对象，提供丰富的数据处理、聚合、分组等能力。以及通过AnylineService实现根据条件对DataSet的查询及删除操作
 
 ## 1 基本操作
 
@@ -559,3 +559,91 @@ set.sort(Comparator.comparingInt(row -> row.getInt("SCORE")).reversed());
 | ROUND_HALF_DOWN | 5 | 五舍六入 |
 | ROUND_HALF_EVEN | 6 | 银行家舍入法（四舍六入五留双） |
 | ROUND_UNNECESSARY | 7 | 断言结果精确，否则抛异常 |
+
+
+## 16 通过 AnylineService 操作 DataSet
+
+通过 `AnylineService` 可以使用 `ConfigStore` 条件对 DataSet 进行查询过滤和删除过滤操作。
+
+### 16.1 条件查询（selects）
+
+根据 ConfigStore 条件过滤 DataSet，返回匹配条件的条目：
+
+```java
+
+// 创建数据源
+DataSet<DataRow> set = new DataSet<>();
+// 假设 set 中有数据...
+
+// 创建查询条件
+ConfigStore configs = new DefaultConfigStore();
+configs.and("STATUS", 1)           // STATUS = 1
+       .and("AGE", Compare.GREAT, 18);  // AGE > 18
+
+// 方式一：使用 ServiceProxy 静态方法
+DataSet<DataRow> result = ServiceProxy.selects(set, configs);
+
+// 结果包含匹配条件的行
+for(DataRow row : result) {
+    System.out.println(row.getString("NAME"));
+}
+```
+
+### 16.2 条件删除（delete）
+
+根据 ConfigStore 条件过滤 DataSet，**不修改原 DataSet**，返回不匹配条件的条目（即"删除"匹配条件后的剩余条目）：
+
+```java
+
+// 创建数据源
+DataSet<DataRow> original = new DataSet<>();
+// 假设 original 中有数据...
+
+// 创建删除条件：删除 STATUS=0 且 AGE>18 的记录
+ConfigStore configs = new DefaultConfigStore();
+configs.and("STATUS", 0)           // STATUS = 0
+       .and("AGE", Compare.GREAT, 18);  // AGE > 18
+
+// 执行删除（不修改原DataSet）
+DataSet<DataRow> result = ServiceProxy.delete(original, configs);
+
+// original 保持不变
+// result 包含不匹配删除条件的条目
+```
+
+### 16.3 ConfigStore 条件构建
+
+`ConfigStore` 支持多种条件构建方式：
+
+```java
+ConfigStore configs = new DefaultConfigStore();
+
+// 等值条件
+configs.and("ID", 100);
+configs.eq("STATUS", 1);
+
+// 比较条件
+configs.and("AGE", Compare.GREAT, 18);      // AGE > 18
+configs.and("SALARY", Compare.LESS_EQUAL, 10000);  // SALARY <= 10000
+configs.ge("CREATE_TIME", "2024-01-01");   // CREATE_TIME >= '2024-01-01'
+
+// IN 条件
+configs.in("STATUS", 1, 2, 3);
+configs.in("DEPT", Arrays.asList("研发部", "市场部"));
+
+// 模糊匹配
+configs.like("NAME", "%张%");
+configs.startWith("CODE", "DEPT_");
+
+// 组合条件
+configs.and("STATUS", 1)
+       .and("AGE", Compare.GREAT, 18)
+       .and("DEPT", "研发部");
+```
+
+### 16.4 注意事项
+
+1. **不修改原 DataSet**：`selects()` 和 `delete()` 方法都不会修改传入的 DataSet，而是返回新的 DataSet
+2. **条件组合**：多个条件之间使用 AND 逻辑连接
+3. **分页支持**：`selects()` 方法支持通过 `configs.setPageNavi(navi)` 设置分页
+4. **空条件处理**：如果 ConfigStore 为空或没有条件，`selects()` 返回原 DataSet，`delete()` 也返回原 DataSet
