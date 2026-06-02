@@ -83,7 +83,7 @@ public class DataSet<E extends DataRow> implements Collection<E>, Serializable, 
      * crateIndex("ID");
      * crateIndex("ID:ASC");
      */
-    public DataSet<E> creatIndex(String key) {
+    public DataSet<E> createIndex(String key) {
         if(null == key) return this;
         if(indexes == null) {
             indexes = new HashMap<>();
@@ -1416,7 +1416,7 @@ public class DataSet<E extends DataRow> implements Collection<E>, Serializable, 
                     indexes = null;
                 }
                 if(indexes == null || !indexes.containsKey(key.toLowerCase())) {
-                    creatIndex(key);
+                    createIndex(key);
                 }
                 Map<String, List<E>> idx = indexes.get(key.toLowerCase());
                 if(idx != null) {
@@ -5730,7 +5730,7 @@ public class DataSet<E extends DataRow> implements Collection<E>, Serializable, 
                     src.indexes = null;
                 }
                 if(src.indexes == null || !src.indexes.containsKey(key.toLowerCase())) {
-                    src.creatIndex(key);
+                    src.createIndex(key);
                 }
                 Map<String, List<E>> idx = src.indexes.get(key.toLowerCase());
                 if(idx != null) {
