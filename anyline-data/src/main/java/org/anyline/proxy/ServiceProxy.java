@@ -1716,6 +1716,15 @@ public class ServiceProxy {
     public static <T> long deletes(int batch, Table table, String key, T ... values) {
         return service.deletes(batch, table, key, values);
     }
+    /**
+     * 根据ConfigStore条件删除DataSet中匹配的条目,不删除原DataSet,实际是把不需要删除的条目集合返回
+     * @param set DataSet
+     * @param configs 包含删除条件
+     * @return DataSet<DataRow> 删除条目后的新DataSet
+     */
+    public static DataSet<DataRow> delete(DataSet<DataRow> set, ConfigStore configs) {
+        return service.delete(set, configs);
+    }
 
     /* *****************************************************************************************************************
      * 													METADATA

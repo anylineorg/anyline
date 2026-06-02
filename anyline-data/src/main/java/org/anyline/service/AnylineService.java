@@ -745,6 +745,7 @@ public interface AnylineService<E>{
 		}
 		return set;
 	}
+
 	default DataSet<DataRow> selects(String dest, long first, long last, ConfigStore configs, Object obj, String ... conditions) {
 		DefaultPageNavi navi = new DefaultPageNavi();
 		if(null == configs) {
@@ -2059,6 +2060,23 @@ public interface AnylineService<E>{
 	}
 	long truncate(String table);
 	long truncate(Table table);
+
+	/**
+	 *  根据ConfigStore条件删除DataSet中匹配的条目,不删除原DataSet,实际是把不需要删除的条目集合返回
+	 * @param set DataSet
+	 * @param configs 包含删除条件
+	 * @return 删除条目后的新集合
+	 */
+	default DataSet<DataRow> delete(DataSet<DataRow> set, ConfigStore configs) {
+		DataSet<DataRow> result = new DataSet<>();
+		DataSet<DataRow> deletes = selects(set, configs);
+		for (DataRow row:set){
+			if(!deletes.contains(row)) {
+				result.add(row);
+			}
+		}
+		return result;
+	}
 
 	/**
 	 * 当前用户角色
