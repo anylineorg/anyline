@@ -30,50 +30,38 @@
 
 ![License](https://img.shields.io/badge/License-Apache%202.0-blue)
 ![Maven Central](https://img.shields.io/badge/Maven%20Central-org.anyline:anyline--core-green)
-![JDK](https://img.shields.io/badge/JDK-1.8%2B-orange)
+![JDK](https://img.shields.io/badge/JDK-8--25-orange)
 
 核心是一个面向运行时的 元数据动态映射库    
 适配100+关系/非关系型数据库(及各种国产小众数据库)  
 经常作为SQL解析引擎或适配器，用于解决高度动态化场景下异构数据库的统一操作与动态数据源管理问题
 
 > 在传统 ORM 难以胜任的、表结构和数据源未知甚至随时变化的环境中  
-AnyLine 能够运行时动态注册、切换多种异构数据源，自动感知并适配不同数据库的元数据结构差异，
+AnyLine 支持运行时动态注册、切换多种异构数据源，自动感知并适配不同数据库的元数据结构差异，
 生成兼容各数据库方言的DDL/DML/DQL指令，从而为数据中台、低代码平台、SAAS 系统、自定义表单及异构数据库迁移同步等场景提供底层支撑，
 屏蔽数据库差异、实现一次编写多库运行
 
 ---
 
+## 设计初衷
+**应对未知领域的不确定性**  
+在设计/开发阶段无法预知未来的数据结构、接入的数据源类型以及业务数据需求变动的背景下   
+通过元数据驱动、动态适配等方式赋予系统应对未知的能力，让系统不必在开发阶段预一切也能适应各类不确定性变化。
+
 ## 设计思想
-面向未知领域，由元数据驱动的动态建模
-## 实现目标
-建立跨数据库通用标准，实现异构数据库统一操作
-## 实现机制
-通过内置规则与外部插件合成方言转换引擎与元数据映射库
-## 设计原则
-> 面向动态，面向元数据，基于运行时
-
-### 极简
-
-源于极简的用户直觉，通过极致设计实现调用流程的简单自然，让操作体验符合用户直觉甚至能被"猜中"，达到所(猜)想即所得。
-
-源于直觉不止于直觉：不盲从面向对象编程习惯，在元数据驱动的动态场景中**重新定义习惯**。
-
-### 动态
-
-摆脱静态属性束缚，实现高度灵活性与可扩展性。
-
+**面向动态，面向运行时，基于元数据**
 - **运行时**：那只猫在运行时才能确定，编程时不确定
-
 - **动态**：那只猫是会动的，甚至会变，有时会变成狗
-
 - **元数据**：为应对诸多的不确定性，用更多维度的元数据将不确定性转化为确定性
+## 设计原则
+**极简、多元**  
+- 源于极简的用户直觉，操作体验高度契合开发者编程习惯，甚至能被“猜中”，达到所想即所得。 但不止于直觉：不盲从面向对象习惯，在元数据驱动的动态场景中，重新定义操作未知数据的习惯。   
+- 构建基于Java的多元技术生态，Spring ≠ Java，借鉴之应用之不要局限于。全面覆盖Vert.x、Quarkus、Solon 等各类非Spring运行环境。
 
-### 多元
 
-Spring ≠ Java，借鉴之应用之不要局限于。
-
-以元数据动态映射为核心构建多元共生技术生态——打破框架边界，不止深度适配 Spring，更全面覆盖纯 Java、Vert.x、Quarkus、Solon 等 Java 领域各类运行环境。
-
+## 实现机制
+通过内置规则与外部插件合成方言转换引擎与元数据映射库  
+建立跨数据库的通用标准‌，实现异构数据库的统一操作‌
 ---
 
 ## 核心功能与特征
@@ -200,7 +188,7 @@ Spring ≠ Java，借鉴之应用之不要局限于。
 | 官网            | [www.anyline.org](http://anyline.org)                                                     |
 | 文档            | [doc.anyline.org](http://doc.anyline.org)                                                 |
 | 快速入门指南        | [anyline.org/start](http://doc.anyline.org/ss/f5_1150)                                    |
-| 架构图           | [anyline.org/architecture](hhttps://deepwiki.com/anylineorg/anyline)                               |
+| 架构图           | [anyline.org/architecture](https://deepwiki.com/anylineorg/anyline)                               |
 | GitHub        | [github.com/anyline](https://github.com/anylineorg/anyline)                               |
 | Gitee         | [gitee.com/anyline](https://gitee.com/anyline)                                            |
 | Maven Central | [search.maven.org - anyline](https://mvnrepository.com/artifact/org.anyline/anyline-core) |
@@ -329,6 +317,6 @@ EntitySet<User> = service.queries(User.class,
 //无论是否分页都返回相同的数据结构，而不需要根据是否分页实现两个接口返回不同的数据结构
 
 //也可以这样(如果真要这样就不要用anyline了, 还是用MyBatis, Hibernate之类吧)
-public class UserService extends AnylinseService<User> 
+public class UserService extends AnylineService<User> 
 userService.queries(condition(true, "anyline根据约定自动生成的查询条件")); 
 ```
