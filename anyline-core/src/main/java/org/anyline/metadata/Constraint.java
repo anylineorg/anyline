@@ -34,7 +34,7 @@ public class Constraint<E extends Constraint> extends TableAffiliation<E> implem
     protected LinkedHashMap<String, Integer> positions = new LinkedHashMap<>();
     protected LinkedHashMap<String, Order.TYPE> orders = new LinkedHashMap<>();
     public Constraint() {
-        setName(BasicUtil.getRandomString(8));
+        setName(BasicUtil.getRandomUpperString(8));
     }
 
     public Constraint(String name) {

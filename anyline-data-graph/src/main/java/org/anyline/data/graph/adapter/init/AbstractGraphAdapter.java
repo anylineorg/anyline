@@ -7433,7 +7433,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
             name(runtime, builder, meta);
 		}else {
 			builder.append("DROP INDEX ");
-            name(runtime, builder, meta);
+            //name(runtime, builder, meta);
+            delimiter(builder, meta.getName());
 			if (BasicUtil.isNotEmpty(table)) {
 				builder.append(" ON ");
 				name(runtime, builder, table);

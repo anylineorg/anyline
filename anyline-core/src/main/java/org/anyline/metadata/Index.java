@@ -39,7 +39,7 @@ public class Index<M extends Index> extends TableAffiliation<M> implements Seria
 
     protected boolean unique;
     public Index() {
-        setName(BasicUtil.getRandomString(8));
+        setName(BasicUtil.getRandomUpperString(8));
     }
     public Index(String name) {
         setName(name);

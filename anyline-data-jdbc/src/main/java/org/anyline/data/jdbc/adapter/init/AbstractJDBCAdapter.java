@@ -7756,10 +7756,12 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 			builder.append("ALTER TABLE ");
 			name(runtime, builder, table);
 			builder.append(" DROP CONSTRAINT ");
-            name(runtime, builder, meta);
+            //name(runtime, builder, meta);
+            delimiter(builder, meta.getName());
 		}else {
 			builder.append("DROP INDEX ");
-            name(runtime, builder, meta);
+            //name(runtime, builder, meta);
+            delimiter(builder, meta.getName());
 			if (BasicUtil.isNotEmpty(table)) {
 				builder.append(" ON ");
 				name(runtime, builder, table);
