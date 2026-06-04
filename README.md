@@ -32,9 +32,9 @@ and generates DDL/DML/DQL instructions compatible with each database dialect —
   <td><a href="http://www.anyline.org/ss/9f_17"><img src="https://cdn.anyline.org/img/user/alv.png" width="130"></a></td>
   </tr>
   <tr>
-  <td><b>QQ Group</b><br/>86020680</td>
-  <td><b>WeChat Group</b></td>
-  <td><b>Expired / Full</b><br/>Contact admin</td>
+  <td>QQ群86020680</td>
+  <td>微信群</td>
+  <td>过期或满员联系管理员</td>
   </tr>
 </table>
 

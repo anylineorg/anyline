@@ -30,9 +30,9 @@ AnyLine 支持运行时动态注册、切换多种异构数据源，自动感知
   <td><a href="http://www.anyline.org/ss/9f_17"><img src="https://cdn.anyline.org/img/user/alv.png" width="130"></a></td>
   </tr>
   <tr>
-  <td><b>QQ 群</b><br/>86020680</td>
-  <td><b>微信群</b></td>
-  <td><b>过期/满员</b><br/>联系管理员</td>
+  <td>QQ群86020680</td>
+  <td>微信群</td>
+  <td>过期或满员联系管理员</td>
   </tr>
 </table>
 
