@@ -44,8 +44,7 @@ The preset AI agent SKILL definition is located at <code>./.ai/skills/anyline/SK
 
 **Addressing the uncertainty of unknown domains**
 
-When it is impossible to predict future data structures, data source types to be connected, and changes in business data requirements during the design/development phase, AnyLine empowers systems with the ability to handle the unknown through metadata-driven dynamic adaptation — enabling systems to adapt to various uncertain changes at runtime without having to predefine everything during development.
-
+Break away from the linear paradigm of "requirement upfront, fixed design, and code-to-implementation". Against the backdrop that data structures and data source types cannot be predicted in advance, we decouple the "volatile description layer from the stable execution layer" via metadata-driven architecture and dynamic adaptation mechanisms. This endows the system with the capability to respond to unknowns, enabling the system to adapt to all kinds of uncertain changes without presetting every scenario during the development phase.
 <br>
 
 ## Design Principles
