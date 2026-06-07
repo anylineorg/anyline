@@ -3307,7 +3307,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         builder.append("JOIN information_schema.constraint_column_usage AS CCU ON CCU.constraint_name = TC.constraint_name\n");
         builder.append("WHERE TC.constraint_type = 'FOREIGN KEY'\n");
         configs.and(Compare.LIKE_SIMPLE_IGNORE_CASE, "TC.table_name", query.getTableName());
-        configs.order("KCU.ORDINAL_POSITION");
+        configs.order("KCU.ordinal_position");
         return runs;
     }
 
