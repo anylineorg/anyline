@@ -200,7 +200,9 @@ public class DefaultAutoCondition extends AbstractCondition implements AutoCondi
 		StringBuilder col_builder = new StringBuilder();
 		if(null != column && !column.contains(".")) {
 			if(BasicUtil.isNotEmpty(prefix)) {
-				SQLUtil.delimiter(col_builder, prefix, delimiterFr, delimiterTo).append(".");
+				//前缀可能是表别名 不加引号
+				//SQLUtil.delimiter(col_builder, prefix, delimiterFr, delimiterTo).append(".");
+				col_builder.append(prefix).append(".");
 			}else {
 				if (BasicUtil.isNotEmpty(table)) {
 					SQLUtil.delimiter(col_builder, table, delimiterFr, delimiterTo).append(".");

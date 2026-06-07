@@ -151,7 +151,7 @@ public class SQLUtil {
 				int size = cols.length;
 				for(int i=0; i<size; i++) {
 					String col = cols[i];
-					if(col.length() ==1){
+					if(i == 0 || col.length() ==1 ){ //表别名不加
 						builder.append(col);
 					}else {
 						builder.append(delimiterFr).append(col).append(delimiterTo);
@@ -161,7 +161,7 @@ public class SQLUtil {
 						builder.append(".");
 					}
 				}
-			} else{
+			} else {
 				if(src.length() == 1){
 					builder.append(src);
 				}else {
