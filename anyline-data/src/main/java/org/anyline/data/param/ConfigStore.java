@@ -1945,7 +1945,13 @@ public interface ConfigStore extends Cloneable{
 	 */
 	ConfigStore order(String order);
 	OrderStore getOrders() ;
-	ConfigStore setOrders(OrderStore orders) ; 
+	ConfigStore setOrders(OrderStore orders) ;
+    default ConfigStore remove(Order order){
+		if(null != order){
+				getOrders().remove(order.getColumn());
+		}
+		return this;
+	}
 	/** 
 	 * 添加分组 
 	 * @param column 列名

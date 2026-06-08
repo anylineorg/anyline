@@ -45,6 +45,7 @@ public interface OrderStore extends Cloneable, Serializable{
 	Order get(String order);
 	String getRunText(String delimiter);
 	void clear();
+	void remove(String col);
 	boolean isEmpty();
 	void nullSet(String set);
 	String nullSet();

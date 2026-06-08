@@ -121,10 +121,15 @@ public class DefaultOrderStore implements OrderStore{
 			} 
 		} 
 		return builder.toString(); 
-	} 
- 
+	}
+
 	public void clear() {
-		orders.clear(); 
+		orders.clear();
+	}
+	public void remove(String col) {
+		if(null != col){
+			orders.remove(col.toUpperCase());
+		}
 	}
 	public LinkedHashMap<String, Order> gets() {
 		return this.orders;
