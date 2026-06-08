@@ -1948,7 +1948,7 @@ public interface ConfigStore extends Cloneable{
 	ConfigStore setOrders(OrderStore orders) ;
     default ConfigStore remove(Order order){
 		if(null != order){
-				getOrders().remove(order.getColumn());
+			getOrders().remove(order.getColumn());
 		}
 		return this;
 	}
