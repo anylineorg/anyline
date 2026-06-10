@@ -18,6 +18,7 @@
 		<module>anyline-data-faiss</module>
 		<module>anyline-data-milvus</module>
 		<module>anyline-data-pinecone</module>
+		<module>anyline-data-jdbc-pgvector</module>
 		<module>anyline-data-weaviate</module>
 		<module>anyline-data-qdrant</module>
 		<module>anyline-data-vald</module>
