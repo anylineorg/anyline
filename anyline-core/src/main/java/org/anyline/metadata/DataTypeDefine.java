@@ -292,6 +292,7 @@ public class DataTypeDefine implements Serializable {
         boolean appendLength = false;
         boolean appendPrecision = false;
         boolean appendScale = false;
+        boolean appendDimension= false;
 
         if(ignoreLength != 1) {
             if(null == length) {
@@ -344,6 +345,16 @@ public class DataTypeDefine implements Serializable {
                 }
             }
         }
+        if(null != dimension){
+            if(dimension > 0){
+                appendDimension = true;
+            }
+        }
+        if(appendDimension){
+            appendLength = false;
+            appendPrecision = false;
+            appendScale = false;
+        }
 
         if(maxLength != -1){
             if(null != length){
@@ -374,9 +385,11 @@ public class DataTypeDefine implements Serializable {
             result = result.replace("{L}", length+"");
             result = result.replace("{P}", precision+"");
             result = result.replace("{S}", scale+"");
+            result = result.replace("{D}", dimension+"");
             result = result.replace("{U}", lengthUnit);
             result = result.replace("(0)", "");
             result = result.replace("(null)","");
+            result = result.replace("(-1)","");
             result = result.replace(" )", ")");
         }else if(null != type) {
             StringBuilder builder = new StringBuilder();
@@ -385,16 +398,20 @@ public class DataTypeDefine implements Serializable {
                 result = result.replace("{L}", length + "");
                 result = result.replace("{P}", precision + "");
                 result = result.replace("{S}", scale + "");
+                result = result.replace("{D}", dimension+"");
                 result = result.replace("{U}", lengthUnit);
                 result = result.replace("(0)", "");
                 result = result.replace("(null)", "");
+                result = result.replace("(-1)", "");
                 result = result.replace(" )", ")");
             }else {
                 builder.append(type);
-                if (appendLength || appendPrecision || appendScale) {
+                if (appendLength || appendPrecision || appendScale || appendDimension) {
                     builder.append("(");
                 }
-                if (appendLength) {
+                if(appendDimension){
+                    builder.append(dimension);
+                } else if (appendLength) {
                     if (length == -2) {
                         builder.append("max");
                     } else {
@@ -414,7 +431,7 @@ public class DataTypeDefine implements Serializable {
                         builder.append(scale);
                     }
                 }
-                if (appendLength || appendPrecision || appendScale) {
+                if (appendLength || appendPrecision || appendScale || appendDimension) {
                     builder.append(")");
                 }
 
@@ -747,7 +764,7 @@ public class DataTypeDefine implements Serializable {
     public static final String FIELD_OCTET_LENGTH                  = "OCTET_LENGTH";
     public static final String FIELD_PRECISION                     = "PRECISION";
     public static final String FIELD_SCALE                         = "SCALE";
-    public static final String FIELD_DIMS                          = "DIMS";
+    public static final String FIELD_DIMENSION                     = "DIMENSION";
     public static final String FIELD_CLASS_NAME                    = "CLASS_NAME";
     public static final String FIELD_DISPLAY_SIZE                  = "DISPLAY_SIZE";
     public static final String FIELD_CHILD_TYPE_NAME               = "CHILD_TYPE_NAME";

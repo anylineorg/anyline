@@ -3769,6 +3769,13 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
             meta.setScale(scale);
         }catch (Exception ignored) {}
 
+        //维度
+        try {
+            Integer dimension = row.getInt(refer.map(DataTypeDefine.FIELD_DIMENSION), null);
+            meta.setDimension(dimension);
+        }catch (Exception ignored) {}
+
+
         if(null == meta.getTypeMetadata()) {
             typeMetadata(runtime, meta);
         }

@@ -2902,7 +2902,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
             name(runtime, builder, query.getTable());
             builder.append(" WHERE 1=0");
         }else{
-            builder.append("SELECT M.*,pg_catalog.format_type ( FA.atttypid, FA.atttypmod ) AS FULL_TYPE,FD.description AS COLUMN_COMMENT \n");
+            builder.append("SELECT M.*, FA.atttypmod, pg_catalog.format_type ( FA.atttypid, FA.atttypmod ) AS FULL_TYPE, FD.description AS COLUMN_COMMENT \n");
             builder.append("FROM information_schema.columns M\n");
             builder.append("LEFT JOIN pg_namespace FN ON M.table_schema = FN.nspname\n");
             builder.append("LEFT JOIN pg_class FC ON FC.relname = M.table_name AND FC.relnamespace = FN.oid\n");
@@ -2966,7 +2966,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         Run run = new SimpleRun(runtime, configs);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
-        builder.append("SELECT M.*,pg_catalog.format_type ( FA.atttypid, FA.atttypmod ) AS FULL_TYPE,FD.description AS COLUMN_COMMENT \n");
+        builder.append("SELECT M.*, FA.atttypmod, pg_catalog.format_type ( FA.atttypid, FA.atttypmod ) AS FULL_TYPE, FD.description AS COLUMN_COMMENT \n");
         builder.append("FROM information_schema.columns M\n");
         builder.append("LEFT JOIN pg_namespace FN ON M.table_schema = FN.nspname\n");
         builder.append("LEFT JOIN pg_class FC ON FC.relname = M.table_name AND FC.relnamespace = FN.oid\n");
