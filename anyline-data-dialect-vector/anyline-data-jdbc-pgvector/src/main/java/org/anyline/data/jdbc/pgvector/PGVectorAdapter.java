@@ -20,7 +20,7 @@ package org.anyline.data.jdbc.pgvector;
 import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
-import org.anyline.data.jdbc.adapter.init.PostgresGenusAdapter;
+import org.anyline.data.jdbc.postgresql.PostgresqlAdapter;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.run.*;
@@ -42,26 +42,16 @@ import java.util.List;
 import java.util.Map;
 
 @AnylineComponent("anyline.data.jdbc.adapter.pgvector")
-public class PgVectorAdapter extends PostgresGenusAdapter implements JDBCAdapter {
+public class PGVectorAdapter extends PostgresqlAdapter implements JDBCAdapter {
 
 	public DatabaseType type() {
-		return DatabaseType.PostGIS;
+		return DatabaseType.PGVector;
 	}
 
 	private String delimiter;
 
-	public PgVectorAdapter() {
+	public PGVectorAdapter() {
 		super();
-		delimiterFr = "\"";
-		delimiterTo = "\"";
-		PostgisConvert.reg();
-		for(PostgisWriter writer: PostgisWriter.values()) {
-			reg(writer.supports(), writer.writer());
-		}
-		for(PostgisReader reader: PostgisReader.values()) {
-			reg(reader.supports(), reader.reader());
-		}
-
 	}
 
 	/* *****************************************************************************************************************

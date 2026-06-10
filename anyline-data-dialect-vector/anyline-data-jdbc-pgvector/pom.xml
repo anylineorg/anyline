@@ -10,7 +10,6 @@
         <relativePath>../../anyline-dependency/pom.xml</relativePath>
     </parent>
 
-
     <artifactId>anyline-data-jdbc-pgvector</artifactId>
     <packaging>jar</packaging>
     <name>anyline data pgvector</name>
@@ -27,4 +26,5 @@
             <artifactId>anyline-data-jdbc-postgresql</artifactId>
         </dependency>
     </dependencies>
+
 </project>
