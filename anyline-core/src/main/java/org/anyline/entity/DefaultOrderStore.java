@@ -85,7 +85,8 @@ public class DefaultOrderStore implements OrderStore{
 		if (up.startsWith("ORDER BY")) {
 			str = str.substring(up.indexOf("ORDER BY") + "ORDER BY".length()).trim(); 
 		}
-		if(str.contains("(")){
+		//order by embedding <-> '[3,1,2]'
+		if(str.contains("(") || str.contains("'")){
 			add(new DefaultOrder(str), override);
 		}else {
 			String[] tmps = str.split(","); // 多列排序

@@ -940,14 +940,24 @@ public abstract class AbstractRun implements Run {
 						orderStr = orderStr.replace(nullSet, "");
 						this.orders.nullSet(nullSet);
 					}
-					String orders[] = orderStr.split(",");
-					for(String item:orders) {
-						order(item);
+					//order by embedding <-> '[3,1,2]'
+					if(orderStr.contains("(") || orderStr.contains("'")){
 						if(null != configs) {
-							configs.order(item);
+							configs.order(orderStr);
 						}
 						if(null != this.orders) {
-							this.orders.add(item);
+							this.orders.add(orderStr);
+						}
+					}else{
+						String orders[] = orderStr.split(",");
+						for(String item:orders) {
+							order(item);
+							if(null != configs) {
+								configs.order(item);
+							}
+							if(null != this.orders) {
+								this.orders.add(item);
+							}
 						}
 					}
 					continue;
