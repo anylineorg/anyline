@@ -1871,7 +1871,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         MetadataFieldRefer refer = new MetadataFieldRefer(Table.class);
         refer.map(Table.FIELD_NAME, "TABLE_NAME");
         refer.map(Table.FIELD_CATALOG, "DB_NAME");
-        refer.map(Table.FIELD_COMMENT, "TABLE_COMMENT");
+        refer.map(Table.FIELD_COMMENT, "EXT_TABLE_COMMENT,TABLE_COMMENT");
         return refer;
     }
 
@@ -2255,7 +2255,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         MetadataFieldRefer refer = new MetadataFieldRefer(MasterTable.class);
         refer.map(MasterTable.FIELD_NAME, "STABLE_NAME");
         refer.map(MasterTable.FIELD_CATALOG, "DB_NAME");
-        refer.map(MasterTable.FIELD_COMMENT, "TABLE_COMMENT");
+        refer.map(MasterTable.FIELD_COMMENT, "EXT_TABLE_COMMENT,TABLE_COMMENT");
         return refer;
     }
 

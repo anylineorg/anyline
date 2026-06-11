@@ -1987,7 +1987,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         Run run = new SimpleRun(runtime, configs);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
-        builder.append("SELECT M.*, coalesce(obj_description(F.oid,'pg_class'), obj_description(F.relfilenode,'pg_class'))  AS TABLE_COMMENT\n");
+        builder.append("SELECT M.*, coalesce(obj_description(F.oid,'pg_class'), obj_description(F.relfilenode,'pg_class'))  AS EXT_TABLE_COMMENT\n");
         builder.append("FROM  information_schema.tables AS M\n");
         builder.append("LEFT JOIN pg_namespace AS N ON N.nspname = M.table_schema\n");
         builder.append("LEFT JOIN pg_class AS F ON M.table_name = F.relname AND N.oid = F.relnamespace\n");
@@ -2018,7 +2018,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         Run run = new SimpleRun(runtime, configs);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
-        builder.append("SELECT M.*, coalesce(obj_description(F.oid,'pg_class'), obj_description(F.relfilenode,'pg_class'))  AS TABLE_COMMENT\n");
+        builder.append("SELECT M.*, coalesce(obj_description(F.oid,'pg_class'), obj_description(F.relfilenode,'pg_class')) AS EXT_TABLE_COMMENT\n");
         builder.append("FROM  information_schema.tables AS M\n");
         builder.append("LEFT JOIN pg_namespace AS N ON N.nspname = M.table_schema\n");
         builder.append("LEFT JOIN pg_class AS F ON M.table_name = F.relname AND N.oid = F.relnamespace\n");
@@ -2045,7 +2045,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         refer.map(Table.FIELD_CATALOG, "TABLE_CATALOG");
         refer.map(Table.FIELD_SCHEMA, "TABLE_SCHEMA");
         refer.map(Table.FIELD_TYPE, "TABLE_TYPE");
-        refer.map(Table.FIELD_COMMENT, "TABLE_COMMENT");
+        refer.map(Table.FIELD_COMMENT, "EXT_TABLE_COMMENT,TABLE_COMMENT");
         return refer;
     }
 
@@ -2740,7 +2740,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         runs.add(run);
         StringBuilder builder = run.getBuilder();
         ConfigStore configs = run.getConfigs();
-        builder.append("SELECT M.*, coalesce(obj_description(F.oid,'pg_class'), obj_description(F.relfilenode,'pg_class'))  AS TABLE_COMMENT, FM.relname AS MASTER_TABLE_NAME\n");
+        builder.append("SELECT M.*, coalesce(obj_description(F.oid,'pg_class'), obj_description(F.relfilenode,'pg_class'))  AS EXT_TABLE_COMMENT, FM.relname AS MASTER_TABLE_NAME\n");
         builder.append("FROM  information_schema.tables AS M\n");
         builder.append("LEFT JOIN pg_namespace AS N ON N.nspname = M.table_schema\n");
         builder.append("LEFT JOIN pg_class AS F ON M.table_name = F.relname AND N.oid = F.relnamespace\n");
@@ -2761,7 +2761,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
     public MetadataFieldRefer initPartitionTableFieldRefer() {
         MetadataFieldRefer refer = new MetadataFieldRefer(PartitionTable.class);
         refer.map(PartitionTable.FIELD_NAME, "TABLE_NAME");
-        refer.map(PartitionTable.FIELD_COMMENT, "TABLE_COMMENT");
+        refer.map(PartitionTable.FIELD_COMMENT, "EXT_TABLE_COMMENT,TABLE_COMMENT");
         refer.map(PartitionTable.FIELD_CATALOG, "TABLE_CATALOG");
         refer.map(PartitionTable.FIELD_SCHEMA, "TABLE_SCHEMA");
         refer.map(PartitionTable.FIELD_TYPE, "TABLE_TYPE");

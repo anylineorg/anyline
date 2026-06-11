@@ -1959,7 +1959,7 @@ WHERE
         runs.add(run);
         StringBuilder builder = run.getBuilder();
         ConfigStore configs = run.getConfigs();
-        builder.append("SELECT TBS.NAME AS TABLE_NAME,DS.VALUE AS TABLE_COMMENT\n");
+        builder.append("SELECT TBS.NAME AS TABLE_NAME,DS.VALUE AS EXT_TABLE_COMMENT\n");
         builder.append("FROM SYS.EXTENDED_PROPERTIES DS\n");
         builder.append("LEFT JOIN SYS.SYSOBJECTS TBS ON DS.MAJOR_ID=TBS.ID \n");
         builder.append("WHERE  DS.MINOR_ID=0 \n");
@@ -1978,7 +1978,7 @@ WHERE
     public MetadataFieldRefer initTableCommentFieldRefer() {
         MetadataFieldRefer refer = new MetadataFieldRefer(TableComment.class);
         refer.map(TableComment.FIELD_TABLE, "TABLE_NAME");
-        refer.map(TableComment.FIELD_VALUE, "TABLE_COMMENT");
+        refer.map(TableComment.FIELD_VALUE, "EXT_TABLE_COMMENT,TABLE_COMMENT");
         return refer;
     }
     

@@ -5950,7 +5950,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
     @Override
     public MetadataFieldRefer initTableCommentFieldRefer() {
         MetadataFieldRefer refer = new MetadataFieldRefer(TableComment.class);
-        refer.map(TableComment.FIELD_VALUE, "TABLE_COMMENT");
+        refer.map(TableComment.FIELD_VALUE, "EXT_TABLE_COMMENT,TABLE_COMMENT");
         refer.map(TableComment.FIELD_TABLE,  "TABLE_NAME");
         refer.map(TableComment.FIELD_CATALOG, "TABLE_CATALOG");
         refer.map(TableComment.FIELD_SCHEMA, "TABLE_SCHEMA");

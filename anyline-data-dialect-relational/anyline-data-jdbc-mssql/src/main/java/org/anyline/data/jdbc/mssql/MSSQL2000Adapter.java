@@ -277,7 +277,7 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter {
         Run run = new SimpleRun(runtime, configs);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
-        builder.append("SELECT M.*, SCHEMA_NAME(M.SCHEMA_ID) AS TABLE_SCHEMA, F.VALUE AS TABLE_COMMENT FROM SYS.TABLES AS M \n");
+        builder.append("SELECT M.*, SCHEMA_NAME(M.SCHEMA_ID) AS TABLE_SCHEMA, F.VALUE AS EXT_TABLE_COMMENT FROM SYS.TABLES AS M \n");
         builder.append("LEFT JOIN SYS.EXTENDED_PROPERTIES AS F ON M.OBJECT_ID = F.MAJOR_ID AND F.MINOR_ID=0 \n");
         configs.and("SCHEMA_NAME(M.SCHEMA_ID)", query.getSchemaName());
         configs.and(Compare.LIKE_SIMPLE,"M.NAM", query.getName());
