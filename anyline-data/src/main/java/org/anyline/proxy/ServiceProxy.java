@@ -1590,8 +1590,8 @@ public class ServiceProxy {
         return service.selects(procedure, navi, inputs);
     }
 
-    public static DataRow queryProcedure(String procedure, String ... inputs) {
-        return service.queryProcedure(procedure, inputs);
+    public static DataRow selectProcedure(String procedure, String ... inputs) {
+        return service.selectProcedure(procedure, inputs);
     }
 
     public static DataRow select(Procedure procedure, String ... inputs) {

@@ -1942,7 +1942,7 @@ public interface AnylineService<E>{
 	}
 
 
-	default DataRow queryProcedure(String procedure, String ... inputs) {
+	default DataRow selectProcedure(String procedure, String ... inputs) {
 		Procedure proc = new Procedure();
 		proc.setName(procedure);
 		return select(proc, inputs);

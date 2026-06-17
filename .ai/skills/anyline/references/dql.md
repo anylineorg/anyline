@@ -555,9 +555,9 @@ List<Object> list = proc.getResult();
 
 
 //查询存储过程
-DataSet set = service.queryProcedure(proc);
+DataSet set = service.selectProcedure(proc);
 //也可以同时指定输入参数值
-DataSet set = service.queryProcedure(proc, "1","2");
+DataSet set = service.selectProcedure(proc, "1","2");
 ```
 如果通过query接收存储过程的结果集，需在在过程中返回结果集而不是返回一个值  
 以SQL Server为例
