@@ -1,2 +1,4 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+org.anyline.data.jdbc.function.init.SystemFunctionHolder,\
+org.anyline.data.jdbc.function.init.DefaultFunctionConverter,\
 org.anyline.data.jdbc.adapter.init.CommonJDBCAdapter

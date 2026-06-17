@@ -3898,7 +3898,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		delimiter(builder, meta.getName());
 		String user = meta.getUserName();
 		if(BasicUtil.isNotEmpty(user)){
-			builder.append("AUTHORIZATION ").append(user);
+			builder.append(" AUTHORIZATION ").append(user);
 		}
 		return runs;
 	}
@@ -3943,7 +3943,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		Run run = new SimpleRun(runtime);
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();
-		builder.append("DROP ").append(keyword(meta)).append(" ");
+		builder.append("DROP ").append(keyword(meta));
 		builder.append(" IF EXISTS ");
 		delimiter(builder, meta.getName());
 		builder.append(" CASCADE");

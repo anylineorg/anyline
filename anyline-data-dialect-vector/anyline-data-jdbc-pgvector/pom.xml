@@ -17,6 +17,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>com.pgvector</groupId>
             <artifactId>pgvector</artifactId>
             <scope>provided</scope>

@@ -13075,7 +13075,14 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      */
     @Override
     public boolean drop(DataRuntime runtime, Schema meta) throws Exception {
-        return false;
+        ACTION.DDL action = ACTION.DDL.SCHEMA_DROP;
+        String random = random(runtime);
+        ACTION.SWITCH swt = InterceptorProxy.prepare(runtime, random, action, meta);
+        if(swt == ACTION.SWITCH.BREAK) {
+            return false;
+        }
+        List<Run> runs = buildDropRun(runtime, meta);
+        return execute(runtime, random, meta, action, runs);
     }
 
     /**
