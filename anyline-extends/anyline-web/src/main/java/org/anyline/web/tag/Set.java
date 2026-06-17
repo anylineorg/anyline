@@ -16,19 +16,16 @@
 
 
 package org.anyline.web.tag;
- 
-import java.util.Collection;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.tagext.Tag;
 
 import org.anyline.entity.DataSet;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
-import org.anyline.log.Log;
-import org.anyline.log.LogProxy;
- 
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.tagext.Tag;
+import java.util.Collection;
+
 public class Set extends BaseBodyTag {
 	private static final long serialVersionUID = 1L; 
 	private String scope; 
@@ -61,7 +58,12 @@ public class Set extends BaseBodyTag {
 				if(data instanceof Collection) {
 					Collection items = (Collection) data; 
 					if(BasicUtil.isNotEmpty(selector)) {
-						items = BeanUtil.selects(items,selector.split(","));
+						if(items instanceof DataSet){
+							DataSet set = (DataSet)items;
+							items = set.getRows(selector.split(","));
+						} else {
+							items = BeanUtil.selects(items, selector.split(","));
+						}
 					} 
 					if(index != null) {
 						int i = 0; 
