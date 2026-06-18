@@ -277,3 +277,156 @@ TransactionManage.reg("custom_ds", customManager);
 // 获取已注册的事务管理器
 TransactionManage manager = TransactionManage.instance("custom_ds");
 ```
+
+## 6 Spring 事务配合
+
+AnyLine 事务可以与 Spring 的声明式事务配合使用，根据场景选择合适的事务管理方式。
+
+### 6.1 Spring 声明式事务（推荐）
+
+在 Spring 环境中，推荐使用 `@Transactional` 注解管理事务：
+
+```java
+@Service
+public class UserService {
+    
+    @Autowired
+    private AnylineService service;
+    
+    // Spring 声明式事务
+    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_COMMITTED)
+    public void saveUser(DataRow user) {
+        service.insert("USER", user);
+        service.insert("USER_LOG", createLog(user));
+    }
+    
+    // 嵌套事务
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void saveLog(DataRow log) {
+        service.insert("USER_LOG", log);
+    }
+}
+```
+
+### 6.2 AnyLine 编程式事务与 Spring 事务配合
+
+当需要在 Spring 事务内部使用 AnyLine 编程式事务时：
+
+```java
+@Service
+public class OrderService {
+    
+    @Autowired
+    private AnylineService service;
+    
+    // Spring 事务
+    @Transactional
+    public void processOrder(DataRow order) {
+        // Spring 管理的事务中执行
+        service.insert("ORDER", order);
+        
+        // 需要独立事务的操作（不受外部事务影响）
+        TransactionManage manager = TransactionManage.instance("default");
+        TransactionDefine define = new DefaultTransactionDefine();
+        define.setPropagationBehavior(TransactionDefine.PROPAGATION_REQUIRES_NEW);
+        
+        TransactionState state = manager.start(define);
+        try {
+            // 独立事务中执行，外部事务回滚不影响此操作
+            service.insert("ORDER_LOG", createLog(order));
+            manager.commit(state);
+        } catch (Exception e) {
+            manager.rollback(state);
+            // 日志记录失败不影响主流程
+        }
+        
+        // 继续在 Spring 事务中执行
+        service.update("INVENTORY", reduceStock(order));
+    }
+}
+```
+
+### 6.3 多数据源事务
+
+对于多数据源场景，Spring 事务需要指定数据源：
+
+```java
+@Service
+public class MultiDsService {
+    
+    @Autowired
+    @Qualifier("crmService")
+    private AnylineService crmService;
+    
+    @Autowired
+    @Qualifier("hrService")
+    private AnylineService hrService;
+    
+    // CRM 数据源事务
+    @Transactional(value = "crmTransactionManager", propagation = Propagation.REQUIRED)
+    public void saveCrmData(DataRow data) {
+        crmService.insert("CRM_CUSTOMER", data);
+    }
+    
+    // HR 数据源事务
+    @Transactional(value = "hrTransactionManager", propagation = Propagation.REQUIRED)
+    public void saveHrData(DataRow data) {
+        hrService.insert("HR_EMPLOYEE", data);
+    }
+    
+    // 跨数据源事务（需要分布式事务或手动管理）
+    public void saveBoth(DataRow crmData, DataRow hrData) {
+        // 使用 AnyLine 编程式事务分别管理
+        TransactionManage crmManager = TransactionManage.instance("crm");
+        TransactionManage hrManager = TransactionManage.instance("hr");
+        
+        TransactionState crmState = crmManager.start();
+        TransactionState hrState = hrManager.start();
+        
+        try {
+            crmService.insert("CRM_CUSTOMER", crmData);
+            hrService.insert("HR_EMPLOYEE", hrData);
+            
+            crmManager.commit(crmState);
+            hrManager.commit(hrState);
+        } catch (Exception e) {
+            crmManager.rollback(crmState);
+            hrManager.rollback(hrState);
+            throw e;
+        }
+    }
+}
+```
+
+### 6.4 事务配置建议
+
+| 场景 | 推荐方式 |
+|------|----------|
+| 单数据源简单事务 | Spring `@Transactional` |
+| 单数据源复杂事务（需要保存点） | AnyLine 编程式事务 |
+| 多数据源独立事务 | Spring 多事务管理器 |
+| 多数据源关联事务 | AnyLine 编程式事务 + 手动管理 |
+| 跨线程事务 | AnyLine APPLICATION 模式事务 |
+
+### 6.5 注意事项
+
+1. **临时数据源不支持 Spring 事务**：通过 `ServiceProxy.temporary()` 创建的临时数据源不支持 `@Transactional` 注解，需使用 AnyLine 编程式事务
+2. **事务传播**：AnyLine 编程式事务与 Spring 事务是独立的，不会自动传播
+3. **连接释放**：确保事务完成后正确提交或回滚，避免连接泄漏
+4. **超时设置**：长时间事务应设置超时时间，避免占用连接过久
+
+```java
+// 临时数据源事务示例
+DataSource tempDs = DataSourceUtil.build(url, username, password);
+AnylineService tempService = ServiceProxy.temporary(tempDs);
+
+// 必须使用 AnyLine 编程式事务
+TransactionManage manager = TransactionManage.instance(tempService.runtime());
+TransactionState state = manager.start();
+try {
+    tempService.insert("TEMP_TABLE", data);
+    manager.commit(state);
+} catch (Exception e) {
+    manager.rollback(state);
+}
+```
