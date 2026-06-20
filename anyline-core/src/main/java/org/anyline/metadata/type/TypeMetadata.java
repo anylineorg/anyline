@@ -1,17 +1,13 @@
 /*
  * Copyright 2006-2026 DeepBit Co.,Ltd. All rights reserved.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * This software is proprietary and confidential to DeepBit Co.,Ltd.
+ * Unauthorized reproduction, modification, distribution, or use of this software
+ * in any form is strictly prohibited.
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * This product is derived from an open-source project licensed under the Apache License, Version 2.0.
+ * Portions of this software are subject to the terms and conditions of the Apache License, Version 2.0,
+ * a copy of which can be found at http://www.apache.org/licenses/LICENSE-2.0.
  */
 
 
@@ -151,16 +147,6 @@ public interface TypeMetadata {
         public int ignoreScale() {
             return -1;
         }
-
-        @Override
-        public int supportTimeZone() {
-            return -1;
-        }
-
-        @Override
-        public int supportLocalTimeZone() {
-            return -1;
-        }
         @Override
         public int maxLength() {
             return -1;
@@ -280,17 +266,6 @@ public interface TypeMetadata {
         public int ignoreScale() {
             return -1;
         }
-
-        @Override
-        public int supportTimeZone() {
-            return -1;
-        }
-
-        @Override
-        public int supportLocalTimeZone() {
-            return -1;
-        }
-
         @Override
         public int maxLength() {
             return -1;
@@ -402,8 +377,6 @@ public interface TypeMetadata {
     int maxLength();
     int maxPrecision();
     int maxScale();
-    int supportTimeZone();
-    int supportLocalTimeZone();
     boolean support();
     default String formula() {
         return null;
@@ -496,6 +469,21 @@ public interface TypeMetadata {
          */
         private String[] scaleRefers;
         public Refer() {}
+        public Refer(String meta, String formula, String lengthRefer, String precisionRefer, String scaleRefer, int ignoreLength, int ignorePrecision, int ignoreScale, int maxLength, int maxPrecision, int maxScale, int supportTimeZone, int supportLocalTimeZone) {
+            setMeta(meta);
+            setFormula(formula);
+            setLengthRefer(lengthRefer);
+            setScaleRefer(scaleRefer);
+            setPrecisionRefer(precisionRefer);
+            this.ignoreLength = ignoreLength;
+            this.ignorePrecision = ignorePrecision;
+            this.ignoreScale = ignoreScale;
+            this.supportTimeZone = supportTimeZone;
+            this.supportLocalTimeZone = supportLocalTimeZone;
+            this.maxLength = maxLength;
+            this.maxPrecision = maxPrecision;
+            this.maxScale = maxScale;
+        }
         public Refer(String meta, String formula, String lengthRefer, String precisionRefer, String scaleRefer, int ignoreLength, int ignorePrecision, int ignoreScale, int maxLength, int maxPrecision, int maxScale) {
             setMeta(meta);
             setFormula(formula);
@@ -566,11 +554,22 @@ public interface TypeMetadata {
             return this;
         }
 
-        public int supportTimeZone(){
+        public int supportTimeZone() {
             return supportTimeZone;
         }
-        public int supportLocalTimeZone(){
+
+        public Refer supportTimeZone(int supportTimeZone) {
+            this.supportTimeZone = supportTimeZone;
+            return this;
+        }
+
+        public int supportLocalTimeZone() {
             return supportLocalTimeZone;
+        }
+
+        public Refer supportLocalTimeZone(int supportLocalTimeZone) {
+            this.supportLocalTimeZone = supportLocalTimeZone;
+            return this;
         }
 
         public String[] getLengthRefers() {
@@ -700,10 +699,6 @@ public interface TypeMetadata {
                 int ignoreLength = copy.ignoreLength();
                 int ignorePrecision = copy.ignorePrecision;
                 int ignoreScale = copy.ignoreScale();
-
-                int supportTimeZone = copy.supportTimeZone;
-                int supportLocalTimeZone = copy.supportLocalTimeZone;
-
                 int maxLength = copy.maxLength;
                 int maxPrecision = copy.maxPrecision;
                 int maxScale = copy.maxScale;
@@ -722,13 +717,6 @@ public interface TypeMetadata {
                 }
                 if(-1 != ignoreScale) {
                     this.ignoreScale = ignoreScale;
-                }
-
-                if(-1 == supportTimeZone){
-                    this.supportTimeZone = supportTimeZone;
-                }
-                if(-1 == supportLocalTimeZone){
-                    this.supportLocalTimeZone = supportLocalTimeZone;
                 }
 
                 if(- 1 != maxLength) {
@@ -784,7 +772,6 @@ public interface TypeMetadata {
         if(null == originType) {
             return null;
         }
-
         String typeName = originType;
         String up = typeName.toUpperCase();
         TypeMetadata typeMetadata = meta.getTypeMetadata();
@@ -896,20 +883,20 @@ public interface TypeMetadata {
             }
         }
         if(null == typeMetadata || TypeMetadata.NONE == typeMetadata) {
-                try{
-                    //decimal(10,2)
-                    List<List<String>> fetchs = RegularUtil.fetchs(up, "\\((\\d+)\\s*,\\s*(\\d)\\)");
-                    if(!fetchs.isEmpty()) {
-                        List<String> items = fetchs.get(0);
-                        String full = items.get(0);//(6,2)
-                        typeName = typeName.replace(full, "").trim(); // decimal(10,2) > decimal
-                        precision = BasicUtil.parseInt(items.get(1), 0);
-                        scale = BasicUtil.parseInt(items.get(2), 0);
-                        typeMetadata = parse(alias, spells, typeName, numberLengthUnit, targetNumberLengthUnit);
-                    }
-                }catch (Exception e) {
-                    e.printStackTrace();
+            try{
+                //decimal(10,2)
+                List<List<String>> fetchs = RegularUtil.fetchs(up, "\\((\\d+)\\s*,\\s*(\\d)\\)");
+                if(!fetchs.isEmpty()) {
+                    List<String> items = fetchs.get(0);
+                    String full = items.get(0);//(6,2)
+                    typeName = typeName.replace(full, "").trim(); // decimal(10,2) > decimal
+                    precision = BasicUtil.parseInt(items.get(1), 0);
+                    scale = BasicUtil.parseInt(items.get(2), 0);
+                    typeMetadata = parse(alias, spells, typeName, numberLengthUnit, targetNumberLengthUnit);
                 }
+            }catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         if(null == typeMetadata || TypeMetadata.NONE == typeMetadata) {
             //geometry(Polygon)
@@ -981,7 +968,6 @@ public interface TypeMetadata {
             meta.setParseLvl(2);
         }
         meta.setDatabase(database);
-
         return typeMetadata;
     }
 
