@@ -1064,6 +1064,16 @@ public enum StandardTypeMetadata implements TypeMetadata {
     }
 
     @Override
+    public int supportTimeZone() {
+        return -1;
+    }
+
+    @Override
+    public int supportLocalTimeZone() {
+        return -1;
+    }
+
+    @Override
     public int maxLength() {
         return maxLength;
     }

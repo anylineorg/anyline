@@ -46,6 +46,9 @@ public class DataTypeDefine implements Serializable {
     protected int ignoreLength                = -1; // 是否忽略长度
     protected int ignorePrecision             = -1; // 是否忽略有效位数
     protected int ignoreScale                 = -1; // 是否忽略小数位
+    protected int supportTimeZone             = -1; // 是否支持时区
+    protected int supportLocalTimeZone        = -1; // 是否支持本地时区
+
     protected int maxLength                   = -1;
     protected int maxPrecision                = -1;
     protected int maxScale                    = -1;
@@ -57,6 +60,7 @@ public class DataTypeDefine implements Serializable {
     protected Integer precision                   ; // 有效位数 整个字段的长度(包含小数部分)  123.45：precision = 5, scale = 2 对于SQL Server 中 varchar(max)设置成 -1 null:表示未设置
     protected Integer scale                       ; // 小数部分的长度
     protected Integer dimension                   ; // 维度(向量)
+    protected Integer timeZone                    ; // 0:空 1:带时区 2:带本地时区
     protected Integer displaySize                 ; // display size
     protected String dateScale                    ; // 日期类型 精度
     protected Integer srid                        ; // SRID
@@ -239,6 +243,25 @@ public class DataTypeDefine implements Serializable {
             return this;
         }
         this.metadata = TypeMetadata.parse(database, this, TypeMetadataHolder.gets(database), null);
+
+        //时区
+        TypeMetadata.CATEGORY_GROUP cg = this.getTypeCategoryGroup();
+        if(cg == TypeMetadata.CATEGORY_GROUP.DATETIME){
+            Integer tz = 0;
+            String up = this.originType.toUpperCase();
+            if(!up.contains(" WITHOUT ")){
+                if(up.contains(" WITH LOCAL")){
+                    tz = 2;
+                }else if(up.contains(" WITH TIME")){
+                    tz = 1;
+                }else if(up.endsWith("LTZ")){
+                    tz = 2;
+                }else if(up.endsWith("TZ")){
+                    tz = 1;
+                }
+            }
+            this.timeZone(tz);
+        }
         return this;
     }
  
@@ -261,6 +284,10 @@ public class DataTypeDefine implements Serializable {
         int ignoreLength = -1;
         int ignorePrecision = -1;
         int ignoreScale = -1;
+
+        int supportTimeZone = -1;
+        int supportLocalTimeZone = -1;
+
         int maxLength = -1;
         int maxPrecision = -1;
         int maxScale = -1;
@@ -271,6 +298,10 @@ public class DataTypeDefine implements Serializable {
             ignoreLength = refer.ignoreLength();
             ignorePrecision = refer.ignorePrecision();
             ignoreScale = refer.ignoreScale();
+
+            supportTimeZone = refer.supportTimeZone();
+            supportLocalTimeZone = refer.supportLocalTimeZone();
+
             maxLength = refer.maxLength();
             maxPrecision = refer.maxPrecision();
             maxScale = refer.maxScale();
@@ -586,6 +617,15 @@ public class DataTypeDefine implements Serializable {
         }
         return TypeMetadata.CATEGORY.NONE;
     }
+    public TypeMetadata.CATEGORY_GROUP getTypeCategoryGroup() {
+        if(null != metadata) {
+            TypeMetadata.CATEGORY cat = getTypeCategory();
+            if(null != cat){
+                return cat.group();
+            }
+        }
+        return TypeMetadata.CATEGORY_GROUP.NONE;
+    }
 
     public DataTypeDefine setTypeMetadata(TypeMetadata metadata) {
         this.metadata = metadata;
@@ -628,6 +668,22 @@ public class DataTypeDefine implements Serializable {
             return ignoreScale();
         }
     }
+    public int supportTimeZone(DatabaseType database) {
+        if(null != metadata) {
+            return MetadataReferHolder.supportTimeZone(database, metadata);
+        }else{
+            return supportTimeZone();
+        }
+    }
+    public int supportLocalTimeZone(DatabaseType database) {
+        if(null != metadata) {
+            return MetadataReferHolder.supportLocalTimeZone(database, metadata);
+        }else{
+            return supportLocalTimeZone();
+        }
+    }
+
+
     public String formula(DatabaseType database) {
         if(null != metadata) {
             return MetadataReferHolder.formula(database, metadata);
@@ -730,6 +786,27 @@ public class DataTypeDefine implements Serializable {
         }
         return ignoreScale;
     }
+
+    public int supportTimeZone() {
+        if(-1 != supportTimeZone) {
+            return supportTimeZone;
+        }
+        if(null != metadata) {
+            return metadata.supportTimeZone();
+        }
+        return supportTimeZone;
+    }
+
+    public int supportLocalTimeZone() {
+        if(-1 != supportLocalTimeZone) {
+            return supportLocalTimeZone;
+        }
+        if(null != metadata) {
+            return metadata.supportLocalTimeZone();
+        }
+        return supportLocalTimeZone;
+    }
+
     public int maxScale() {
         if(-1 != maxScale) {
             return maxScale;
@@ -745,6 +822,12 @@ public class DataTypeDefine implements Serializable {
         }else{
             return maxScale();
         }
+    }
+    public Integer timeZone(){
+        return timeZone;
+    }
+    public void timeZone(Integer timeZone){
+        this.timeZone = timeZone;
     }
 
     /* ********************************* field refer ********************************** */

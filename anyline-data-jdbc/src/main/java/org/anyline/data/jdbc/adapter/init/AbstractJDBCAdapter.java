@@ -3727,7 +3727,8 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
                 type = tmp;
             }
         }
-        meta.setOriginType(BasicUtil.evl(type, meta.getName()));
+        String originType = BasicUtil.evl(type, meta.getName());
+        meta.setOriginType(originType);
         TypeMetadata typeMetadata = typeMetadata(runtime, meta);
         //属性在查询结果中对应的列(区分数据类型)
         TypeMetadata.Refer trefer = dataTypeMetadataRefer(runtime, typeMetadata);
@@ -3778,6 +3779,25 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 
         if(null == meta.getTypeMetadata()) {
             typeMetadata(runtime, meta);
+        }
+
+        //时区
+        TypeMetadata.CATEGORY_GROUP cg = meta.getTypeCategoryGroup();
+        if(cg == TypeMetadata.CATEGORY_GROUP.DATETIME){
+            String up = originType.toUpperCase();
+            Integer tz = 0;
+            if(!up.contains(" WITHOUT ")){
+                if(up.contains(" WITH LOCAL")){
+                    tz = 2;
+                }else if(up.contains(" WITH TIME")){
+                    tz = 1;
+                }else if(up.endsWith("LTZ")){
+                    tz = 2;
+                }else if(up.endsWith("TZ")){
+                    tz = 1;
+                }
+            }
+            meta.timeZone(tz);
         }
         return meta;
     }

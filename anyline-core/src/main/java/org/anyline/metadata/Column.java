@@ -183,8 +183,6 @@ public class Column extends TableAffiliation<Column> implements Serializable {
     protected String charset                      ; // 编码
     protected String collate                      ; // 排序编码
     protected Aggregation aggregation             ; // 聚合类型
-    protected Boolean withTimeZone          = null;
-    protected Boolean withLocalTimeZone     = null;
     protected Column reference                    ; // 外键依赖列
     protected boolean isKey                       ; // doris中用到
 
@@ -584,40 +582,6 @@ public class Column extends TableAffiliation<Column> implements Serializable {
             return update.getDateScale();
         }
         return type.getDateScale();
-    }
-
-    public Boolean getWithTimeZone() {
-        return withTimeZone;
-    }
-    public boolean isWithTimeZone() {
-        return null != withLocalTimeZone && withLocalTimeZone;
-    }
-
-    public void setWithTimeZone(int withTimeZone) {
-        if(withTimeZone == 0){
-            this.withTimeZone = false;
-        }else if(withTimeZone == 1){
-            this.withTimeZone = true;
-        }
-    }
-    public void setWithTimeZone(Boolean withTimeZone) {
-        this.withTimeZone = withTimeZone;
-    }
-
-    public Boolean getWithLocalTimeZone() {
-        return withLocalTimeZone;
-    }
-
-    public boolean setWithLocalTimeZone() {
-        return null != withLocalTimeZone && withLocalTimeZone;
-    }
-
-    public void setWithLocalTimeZone(int withLocalTimeZone) {
-        if(withLocalTimeZone == 0){
-            this.withLocalTimeZone = false;
-        }else if(withLocalTimeZone == 1){
-            this.withLocalTimeZone = true;
-        }
     }
 
     public Column setDateScale(String dateScale) {

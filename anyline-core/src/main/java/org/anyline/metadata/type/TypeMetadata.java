@@ -151,6 +151,16 @@ public interface TypeMetadata {
         public int ignoreScale() {
             return -1;
         }
+
+        @Override
+        public int supportTimeZone() {
+            return -1;
+        }
+
+        @Override
+        public int supportLocalTimeZone() {
+            return -1;
+        }
         @Override
         public int maxLength() {
             return -1;
@@ -270,6 +280,17 @@ public interface TypeMetadata {
         public int ignoreScale() {
             return -1;
         }
+
+        @Override
+        public int supportTimeZone() {
+            return -1;
+        }
+
+        @Override
+        public int supportLocalTimeZone() {
+            return -1;
+        }
+
         @Override
         public int maxLength() {
             return -1;
@@ -381,6 +402,8 @@ public interface TypeMetadata {
     int maxLength();
     int maxPrecision();
     int maxScale();
+    int supportTimeZone();
+    int supportLocalTimeZone();
     boolean support();
     default String formula() {
         return null;
@@ -447,6 +470,9 @@ public interface TypeMetadata {
         private int ignoreLength = -1;
         private int ignorePrecision = -1;
         private int ignoreScale = -1;
+
+        private int supportTimeZone = -1;
+        private int supportLocalTimeZone = -1;
 
         private int maxLength = -1;
         private int maxPrecision = -1;
@@ -538,6 +564,13 @@ public interface TypeMetadata {
         public Refer ignoreScale(int ignoreScale) {
             this.ignoreScale = ignoreScale;
             return this;
+        }
+
+        public int supportTimeZone(){
+            return supportTimeZone;
+        }
+        public int supportLocalTimeZone(){
+            return supportLocalTimeZone;
         }
 
         public String[] getLengthRefers() {
@@ -667,6 +700,10 @@ public interface TypeMetadata {
                 int ignoreLength = copy.ignoreLength();
                 int ignorePrecision = copy.ignorePrecision;
                 int ignoreScale = copy.ignoreScale();
+
+                int supportTimeZone = copy.supportTimeZone;
+                int supportLocalTimeZone = copy.supportLocalTimeZone;
+
                 int maxLength = copy.maxLength;
                 int maxPrecision = copy.maxPrecision;
                 int maxScale = copy.maxScale;
@@ -685,6 +722,13 @@ public interface TypeMetadata {
                 }
                 if(-1 != ignoreScale) {
                     this.ignoreScale = ignoreScale;
+                }
+
+                if(-1 == supportTimeZone){
+                    this.supportTimeZone = supportTimeZone;
+                }
+                if(-1 == supportLocalTimeZone){
+                    this.supportLocalTimeZone = supportLocalTimeZone;
                 }
 
                 if(- 1 != maxLength) {
@@ -740,6 +784,7 @@ public interface TypeMetadata {
         if(null == originType) {
             return null;
         }
+
         String typeName = originType;
         String up = typeName.toUpperCase();
         TypeMetadata typeMetadata = meta.getTypeMetadata();
@@ -936,6 +981,7 @@ public interface TypeMetadata {
             meta.setParseLvl(2);
         }
         meta.setDatabase(database);
+
         return typeMetadata;
     }
 

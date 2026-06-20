@@ -388,7 +388,6 @@ public enum MySQLGenusTypeMetadataAlias implements TypeMetadataAlias {
 			if(-1 != ignoreScale) {
 				refer.ignoreScale(ignoreScale);
 			}
-			}
 			if(-1 != maxLength) {
 				refer.maxLength(maxLength);
 			}
@@ -398,6 +397,7 @@ public enum MySQLGenusTypeMetadataAlias implements TypeMetadataAlias {
 			if(-1 != maxScale) {
 				refer.maxScale(maxScale);
 			}
+		}
 		return refer;
 	}
 }

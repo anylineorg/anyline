@@ -273,6 +273,7 @@ public class MetadataReferHolder {
     }
 
     /**
+     * 是否忽略scale
      * @param database 数据库类型
      * @param type TypeMetadata
      * @return int
@@ -315,6 +316,93 @@ public class MetadataReferHolder {
         return result;
     }
 
+    /**
+     * 是否支持时区
+     * @param database 数据库类型
+     * @param type TypeMetadata
+     * @return int
+     */
+    public static int supportTimeZone(DatabaseType database, TypeMetadata type) {
+        if(null == type) {
+            return -1;
+        }
+        int result = -1;
+		/*
+		1.配置类-数据类型
+		2.配置类-数据类型名称
+		3.数据类型自带
+		4.配置类-数据类型大类
+		 */
+        //1.配置类 数据类型
+        TypeMetadata.Refer refer = MetadataReferHolder.get(database, type);
+        if(null != refer) {
+            result = refer.supportTimeZone();
+        }
+        //2.配置类-数据类型名称
+        if(result == -1) {
+            //根据数据类型名称
+            refer = MetadataReferHolder.get(database, type.getName());
+            if(null != refer) {
+                result = refer.supportTimeZone();
+            }
+        }
+        //3.数据类型自带
+        if(result ==-1) {
+            result = type.supportTimeZone();
+        }
+        //4.配置类-数据类型大类
+        if(result ==-1) {
+            refer = MetadataReferHolder.get(database, type.getCategory());
+            if(null != refer) {
+                result = refer.supportTimeZone();
+            }
+        }
+        return result;
+    }
+
+    /**
+     * 是否支持本地时区
+     * @param database 数据库类型
+     * @param type TypeMetadata
+     * @return int
+     */
+    public static int supportLocalTimeZone(DatabaseType database, TypeMetadata type) {
+        if(null == type) {
+            return -1;
+        }
+        int result = -1;
+		/*
+		1.配置类-数据类型
+		2.配置类-数据类型名称
+		3.数据类型自带
+		4.配置类-数据类型大类
+		 */
+        //1.配置类 数据类型
+        TypeMetadata.Refer refer = MetadataReferHolder.get(database, type);
+        if(null != refer) {
+            result = refer.supportLocalTimeZone();
+        }
+        //2.配置类-数据类型名称
+        if(result == -1) {
+            //根据数据类型名称
+            refer = MetadataReferHolder.get(database, type.getName());
+            if(null != refer) {
+                result = refer.supportLocalTimeZone();
+            }
+        }
+        //3.数据类型自带
+        if(result ==-1) {
+            result = type.supportLocalTimeZone();
+        }
+        //4.配置类-数据类型大类
+        if(result ==-1) {
+            refer = MetadataReferHolder.get(database, type.getCategory());
+            if(null != refer) {
+                result = refer.supportLocalTimeZone();
+            }
+        }
+        return result;
+    }
     /**
      * @param database 数据库类型
      * @param type TypeMetadata
