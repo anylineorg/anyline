@@ -3784,19 +3784,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         //时区
         TypeMetadata.CATEGORY_GROUP cg = meta.getTypeCategoryGroup();
         if(cg == TypeMetadata.CATEGORY_GROUP.DATETIME){
-            String up = originType.toUpperCase();
-            Integer tz = 0;
-            if(!up.contains(" WITHOUT ")){
-                if(up.contains(" WITH LOCAL")){
-                    tz = 2;
-                }else if(up.contains(" WITH TIME")){
-                    tz = 1;
-                }else if(up.endsWith("LTZ")){
-                    tz = 2;
-                }else if(up.endsWith("TZ")){
-                    tz = 1;
-                }
-            }
+            Integer tz = SQLUtil.supportTimeZone(originType);
             meta.timeZone(tz);
         }
         return meta;

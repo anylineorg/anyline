@@ -23,6 +23,7 @@ import org.anyline.metadata.type.JavaType;
 import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.metadata.type.TypeMetadataHolder;
 import org.anyline.util.BasicUtil;
+import org.anyline.util.SQLUtil;
 
 import java.io.Serializable;
 
@@ -247,19 +248,7 @@ public class DataTypeDefine implements Serializable {
         //时区
         TypeMetadata.CATEGORY_GROUP cg = this.getTypeCategoryGroup();
         if(cg == TypeMetadata.CATEGORY_GROUP.DATETIME){
-            Integer tz = 0;
-            String up = this.originType.toUpperCase();
-            if(!up.contains(" WITHOUT ")){
-                if(up.contains(" WITH LOCAL")){
-                    tz = 2;
-                }else if(up.contains(" WITH TIME")){
-                    tz = 1;
-                }else if(up.endsWith("LTZ")){
-                    tz = 2;
-                }else if(up.endsWith("TZ")){
-                    tz = 1;
-                }
-            }
+            Integer tz = SQLUtil.supportTimeZone(originType);
             this.timeZone(tz);
         }
         return this;
