@@ -87,7 +87,7 @@ public interface DDListener {
     default SWITCH beforeCreate(DataRuntime runtime, String random, Table table, List<Run> runs) {return SWITCH.CONTINUE;}
     default SWITCH afterCreate(DataRuntime runtime, String random, Table table, List<Run> runs, boolean result, long millis) {return SWITCH.CONTINUE;}
 
-    default SWITCH prepareAlter(DataRuntime runtime, String random, Table table) {return SWITCH.CONTINUE;}
+    default SWITCH parepareAlter(DataRuntime runtime, String random, Table table) {return SWITCH.CONTINUE;}
     default SWITCH beforeAlter(DataRuntime runtime, String random, Table table, List<Run> runs) {return SWITCH.CONTINUE;}
     default SWITCH beforeAlter(DataRuntime runtime, String random, Table table, Collection<Column> columns) {return SWITCH.CONTINUE;}
     default SWITCH afterAlter(DataRuntime runtime, String random, Table table, List<Run> runs, boolean result, long millis) {return SWITCH.CONTINUE;}
