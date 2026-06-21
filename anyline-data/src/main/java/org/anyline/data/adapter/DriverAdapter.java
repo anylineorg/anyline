@@ -8689,7 +8689,7 @@ public interface DriverAdapter {
 	 * @param ignoreScale 是否忽略小数
 	 * @return StringBuilder
 	 */
-	StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta, String type, int ignoreLength, int ignorePrecision, int ignoreScale, int maxLength, int maxPrecision, int maxScale);
+	StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta, String type, int ignoreLength, int ignorePrecision, int ignoreScale, int maxLength, int maxPrecision, int maxScale, int supportTimeZone, int supportLocalTimeZone);
 
 	/**
 	 * column[命令合成-子流程]<br/>

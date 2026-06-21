@@ -58,7 +58,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         MetadataReferHolder.reg(type(), TypeMetadata.CATEGORY.FLOAT, new TypeMetadata.Refer("CHARACTER_MAXIMUM_LENGTH", "NUMERIC_PRECISION", "NUMERIC_SCALE", 1, 0, 0));
         MetadataReferHolder.reg(type(), TypeMetadata.CATEGORY.DATE, new TypeMetadata.Refer("CHARACTER_MAXIMUM_LENGTH", null, "DATETIME_PRECISION", 1, 1, 1));
         MetadataReferHolder.reg(type(), TypeMetadata.CATEGORY.TIME, new TypeMetadata.Refer("CHARACTER_MAXIMUM_LENGTH", null, "DATETIME_PRECISION", 1, 1, 2));
-        MetadataReferHolder.reg(type(), TypeMetadata.CATEGORY.DATETIME, new TypeMetadata.Refer("CHARACTER_MAXIMUM_LENGTH", null, "DATETIME_PRECISION", 1, 1, 2));
+        MetadataReferHolder.reg(type(), TypeMetadata.CATEGORY.DATETIME, new TypeMetadata.Refer("CHARACTER_MAXIMUM_LENGTH", null, "DATETIME_PRECISION", 1, 1, 2, 1, 0));
         MetadataReferHolder.reg(type(), TypeMetadata.CATEGORY.TIMESTAMP, new TypeMetadata.Refer("CHARACTER_MAXIMUM_LENGTH", null, "DATETIME_PRECISION", 1, 1, 2));
         MetadataReferHolder.reg(type(), TypeMetadata.CATEGORY.COLLECTION, new TypeMetadata.Refer("CHARACTER_MAXIMUM_LENGTH", null, null, 1, 1, 1));
         MetadataReferHolder.reg(type(), TypeMetadata.CATEGORY.GEOMETRY, new TypeMetadata.Refer("CHARACTER_MAXIMUM_LENGTH", null, null, 1, 1, 1));
@@ -6408,8 +6408,8 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta, String type, int ignoreLength, int ignorePrecision, int ignoreScale, int maxLength, int maxPrecision, int maxScale) {
-        return super.type(runtime, builder, meta, type, ignoreLength, ignorePrecision, ignoreScale, maxLength, maxPrecision, maxScale);
+    public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta, String type, int ignoreLength, int ignorePrecision, int ignoreScale, int maxLength, int maxPrecision, int maxScale, int supportTimeZone, int supportLocalTimeZone) {
+        return super.type(runtime, builder, meta, type, ignoreLength, ignorePrecision, ignoreScale, maxLength, maxPrecision, maxScale, supportTimeZone, supportLocalTimeZone);
     }
 
     /**

@@ -6245,6 +6245,7 @@ public class Neo4jAdapter extends AbstractGraphAdapter implements DriverAdapter 
      */
     @Override
     public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta) {
+
         if(null == builder) {
             builder = new StringBuilder();
         }
@@ -6254,6 +6255,8 @@ public class Neo4jAdapter extends AbstractGraphAdapter implements DriverAdapter 
         int maxLength = -1;
         int maxPrecision = -1;
         int maxScale = -1;
+        int supportTimeZone = -1;
+        int supportLocalTimeZone = -1;
         String typeName = meta.getTypeName();
         TypeMetadata type = typeMetadata(runtime, meta);
         if(null != type) {
@@ -6270,7 +6273,9 @@ public class Neo4jAdapter extends AbstractGraphAdapter implements DriverAdapter 
         maxLength = refer.maxLength();
         maxPrecision = refer.maxPrecision();
         maxScale = refer.maxScale();
-        return type(runtime, builder, meta, typeName, ignoreLength, ignorePrecision, ignoreScale, maxLength, maxPrecision, maxScale);
+        supportTimeZone = refer.supportTimeZone();
+        supportLocalTimeZone = refer.supportLocalTimeZone();
+        return type(runtime, builder, meta, typeName, ignoreLength, ignorePrecision, ignoreScale, maxLength, maxPrecision, maxScale, supportTimeZone, supportLocalTimeZone);
     }
 
     /**
@@ -6286,8 +6291,8 @@ public class Neo4jAdapter extends AbstractGraphAdapter implements DriverAdapter 
      * @return StringBuilder
      */
     @Override
-    public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta, String type, int ignoreLength, int ignorePrecision, int ignoreScale, int maxLength, int maxPrecision, int maxScale) {
-        return super.type(runtime, builder, meta, type, ignoreLength, ignorePrecision, ignoreScale, maxLength, maxPrecision, maxScale);
+    public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta, String type, int ignoreLength, int ignorePrecision, int ignoreScale, int maxLength, int maxPrecision, int maxScale, int supportTimeZone, int supportLocalTimeZone) {
+        return super.type(runtime, builder, meta, type, ignoreLength, ignorePrecision, ignoreScale, maxLength, maxPrecision, maxScale, supportTimeZone, supportLocalTimeZone);
     }
 
     /**

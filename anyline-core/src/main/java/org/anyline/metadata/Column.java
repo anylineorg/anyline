@@ -1011,6 +1011,23 @@ public class Column extends TableAffiliation<Column> implements Serializable {
         return this;
     }
 
+    /**
+     * 时区
+     * @param timeZone 1:TIME ZONE 2:LOCAL TIME ZONE
+     * @return this
+     */
+    public Column setTimeZone(Integer timeZone) {
+        if(setmap && null != update) {
+            update.setTimeZone(timeZone);
+            return this;
+        }
+        type.timeZone(timeZone);
+        return this;
+    }
+    public Column timeZone(Integer timeZone) {
+        return setTimeZone(timeZone);
+    }
+
     public Boolean getNullable() {
         if(getmap && null != update) {
             return update.nullable;
@@ -1738,6 +1755,12 @@ public class Column extends TableAffiliation<Column> implements Serializable {
         return type.maxLength(database);
     }
 
+    public void supportTimeZone(Integer supportTimeZone){
+        type.supportTimeZone(supportTimeZone);
+    }
+    public void supportLocalTimeZone(Integer supportLocalTimeZone){
+        type.supportLocalTimeZone(supportLocalTimeZone);
+    }
     /**
      * 是否需要指定精度 主要用来识别能取出精度，但DDL不需要精度的类型
      * 精确判断通过adapter
@@ -1827,7 +1850,6 @@ public class Column extends TableAffiliation<Column> implements Serializable {
     public static final String FIELD_CHARSET                       = "CHARSET";
     public static final String FIELD_COLLATE                       = "COLLATE";
     public static final String FIELD_AGGREGATION                   = "AGGREGATION";
-    public static final String FIELD_WITH_TIME_ZONE                = "WITH_TIME_ZONE";
     public static final String FIELD_WITH_LOCAL_TIME_ZONE          = "WITH_LOCAL_TIME_ZONE";
     public static final String FIELD_SRID                          = "SRID";
     public static final String FIELD_ARRAY                         = "ARRAY";

@@ -375,17 +375,22 @@ public class SQLUtil {
 		sql = sql.replaceAll("WHERE\\s*1=1\\s*AND","WHERE ");
 		return sql;
 	}
-	public static int supportTimeZone(String type){
+	public static int timeZone(String type){
 		Integer tz = 0;
 		String up = type.toUpperCase();
-		if(!up.contains(" WITHOUT ")){
+		/*TIMESTAMPTZ
+		TIME TZ UNCONSTRAINED
+		TIMESTAMP_NTZ
+		TIMETZ
+		*/
+		if(!up.contains(" WITHOUT ") && !up.contains("NTZ")){
 			if(up.contains(" WITH LOCAL")){
 				tz = 2;
 			}else if(up.contains(" WITH TIME")){
 				tz = 1;
-			}else if(up.endsWith("LTZ")){
+			}else if(up.contains("LTZ")){
 				tz = 2;
-			}else if(up.endsWith("TZ")){
+			}else if(up.contains("TZ")){
 				tz = 1;
 			}
 		}

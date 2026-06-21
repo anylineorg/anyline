@@ -36,10 +36,28 @@ public class AbstractTypeMetadata implements TypeMetadata {
     private int ignoreLength;
     private int ignorePrecision;
     private int ignoreScale;
+    private int supportTimeZone;
+    private int supportLocalTimeZone;
     private int maxLength;
     private int maxPrecision;
     private int maxScale;
     private Refer refer;
+    public AbstractTypeMetadata(CATEGORY category, String name, Class transfer, Class compatible, int ignoreLength, int ignorePrecision, int ignoreScale, int supportTimeZone, int supportLocalTimeZone, DatabaseType ... dbs) {
+        this.category = category;
+        this.name = name;
+        if(null != dbs) {
+            for (DatabaseType db:dbs) {
+                this.dbs.add(db);
+            }
+        }
+        this.transfer = transfer;
+        this.compatible = compatible;
+        this.ignoreLength = ignoreLength;
+        this.ignorePrecision = ignorePrecision;
+        this.ignoreScale = ignoreScale;
+        this.supportTimeZone = supportTimeZone;
+        this.supportLocalTimeZone = supportLocalTimeZone;
+    }
     public AbstractTypeMetadata(CATEGORY category, String name, Class transfer, Class compatible, int ignoreLength, int ignorePrecision, int ignoreScale, DatabaseType ... dbs) {
         this.category = category;
         this.name = name;
@@ -53,6 +71,21 @@ public class AbstractTypeMetadata implements TypeMetadata {
         this.ignoreLength = ignoreLength;
         this.ignorePrecision = ignorePrecision;
         this.ignoreScale = ignoreScale;
+    }
+    public AbstractTypeMetadata(CATEGORY category, String name, Class compatible, int ignoreLength, int ignorePrecision, int ignoreScale, int supportTimeZone, int supportLocalTimeZone, DatabaseType ... dbs) {
+        this.category = category;
+        this.name = name;
+        if(null != dbs) {
+            for (DatabaseType db:dbs) {
+                this.dbs.add(db);
+            }
+        }
+        this.compatible = compatible;
+        this.ignoreLength = ignoreLength;
+        this.ignorePrecision = ignorePrecision;
+        this.ignoreScale = ignoreScale;
+        this.supportTimeZone = supportTimeZone;
+        this.supportLocalTimeZone = supportLocalTimeZone;
     }
     public AbstractTypeMetadata(CATEGORY category, String name, Class compatible, int ignoreLength, int ignorePrecision, int ignoreScale, DatabaseType ... dbs) {
         this.category = category;
@@ -188,6 +221,16 @@ public class AbstractTypeMetadata implements TypeMetadata {
     @Override
     public int ignoreScale() {
         return ignoreScale;
+    }
+
+    @Override
+    public int supportTimeZone() {
+        return supportTimeZone;
+    }
+
+    @Override
+    public int supportLocalTimeZone() {
+        return supportLocalTimeZone;
     }
 
     @Override

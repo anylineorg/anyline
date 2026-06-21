@@ -3784,7 +3784,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         //时区
         TypeMetadata.CATEGORY_GROUP cg = meta.getTypeCategoryGroup();
         if(cg == TypeMetadata.CATEGORY_GROUP.DATETIME){
-            Integer tz = SQLUtil.supportTimeZone(originType);
+            Integer tz = SQLUtil.timeZone(originType);
             meta.timeZone(tz);
         }
         return meta;
@@ -6752,6 +6752,8 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		int ignoreLength = -1;
 		int ignorePrecision = -1;
 		int ignoreScale = -1;
+        int supportTimeZone = -1;
+        int supportLocalTimeZone = -1;
         int maxLength = -1;
         int maxPrecision = -1;
         int maxScale = -1;
@@ -6768,11 +6770,13 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		ignoreLength = trefer.ignoreLength();
 		ignorePrecision = trefer.ignorePrecision();
 		ignoreScale = trefer.ignoreScale();
+        supportTimeZone = trefer.supportTimeZone();
+        supportLocalTimeZone = trefer.supportLocalTimeZone();
         maxLength = trefer.maxLength();
         maxPrecision = trefer.maxPrecision();
         maxScale = trefer.maxScale();
 
-		return type(runtime, builder, meta, typeName, ignoreLength, ignorePrecision, ignoreScale, maxLength, maxPrecision, maxScale);
+		return type(runtime, builder, meta, typeName, ignoreLength, ignorePrecision, ignoreScale, maxLength, maxPrecision, maxScale, supportTimeZone, supportLocalTimeZone);
 	}
 
 	/**
@@ -6801,8 +6805,8 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta, String type, int ignoreLength, int ignorePrecision, int ignoreScale, int maxLength, int maxPrecision, int maxScale) {
-		return super.type(runtime, builder, meta, type, ignoreLength, ignorePrecision, ignoreScale, maxLength, maxPrecision, maxScale);
+	public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta, String type, int ignoreLength, int ignorePrecision, int ignoreScale, int maxLength, int maxPrecision, int maxScale, int supportTimeZone, int supportLocalTimeZone) {
+		return super.type(runtime, builder, meta, type, ignoreLength, ignorePrecision, ignoreScale, maxLength, maxPrecision, maxScale, supportTimeZone, supportLocalTimeZone);
 	}
 
 	/**
@@ -8398,7 +8402,9 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
         int maxLength = refer.maxLength();
         int maxPrecision = refer.maxPrecision();
         int maxScale = refer.maxScale();
-		type(runtime, builder, column, type.getName(), ignoreLength, ignorePrecision, ignoreScale, maxLength, maxPrecision, maxScale);
+        int supportTimeZone = refer.supportTimeZone();
+        int supportLocalTimeZone = refer.supportLocalTimeZone();
+		type(runtime, builder, column, type.getName(), ignoreLength, ignorePrecision, ignoreScale, maxLength, maxPrecision, maxScale, supportTimeZone, supportLocalTimeZone);
 		return builder;
 	}
 

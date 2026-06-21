@@ -248,7 +248,7 @@ public class DataTypeDefine implements Serializable {
         //时区
         TypeMetadata.CATEGORY_GROUP cg = this.getTypeCategoryGroup();
         if(cg == TypeMetadata.CATEGORY_GROUP.DATETIME){
-            Integer tz = SQLUtil.supportTimeZone(originType);
+            Integer tz = SQLUtil.timeZone(originType);
             this.timeZone(tz);
         }
         return this;
@@ -302,6 +302,8 @@ public class DataTypeDefine implements Serializable {
             maxLength = maxLength(database);
             maxPrecision = maxPrecision(database);
             maxScale = maxScale(database);
+            supportTimeZone = supportTimeZone(database);
+            supportLocalTimeZone = supportLocalTimeZone(database);
             formula = formula(database);
         }
         if(null != metadata && metadata != TypeMetadata.NONE && metadata != TypeMetadata.ILLEGAL && database == this.database) {
@@ -400,6 +402,22 @@ public class DataTypeDefine implements Serializable {
             }
         }
 
+
+        //timeZone null|0:空 1:带时区 2:带本地时区
+        String tz = "";
+        if (null != timeZone) {
+            if(2 == timeZone){
+                if(supportLocalTimeZone == 1){
+                    tz = " WITH LOCAL TIME ZONE";
+                }else if(supportTimeZone == 1){
+                    tz = " WITH TIME ZONE";
+                }
+            }else if(1 == timeZone){
+                if(supportTimeZone == 1){
+                    tz = " WITH TIME ZONE";
+                }
+            }
+        }
         if(BasicUtil.isNotEmpty(formula)) {
             result = formula;
             result = result.replace("{L}", length+"");
@@ -407,6 +425,8 @@ public class DataTypeDefine implements Serializable {
             result = result.replace("{S}", scale+"");
             result = result.replace("{D}", dimension+"");
             result = result.replace("{U}", lengthUnit);
+            result = result.replace("{Z}", tz);
+
             result = result.replace("(0)", "");
             result = result.replace("(null)","");
             result = result.replace("(-1)","");
@@ -420,6 +440,8 @@ public class DataTypeDefine implements Serializable {
                 result = result.replace("{S}", scale + "");
                 result = result.replace("{D}", dimension+"");
                 result = result.replace("{U}", lengthUnit);
+                result = result.replace("{Z}", tz);
+
                 result = result.replace("(0)", "");
                 result = result.replace("(null)", "");
                 result = result.replace("(-1)", "");
@@ -468,7 +490,13 @@ public class DataTypeDefine implements Serializable {
                     }
                     builder.append(")");
                 }
+                if(getTypeCategoryGroup() == TypeMetadata.CATEGORY_GROUP.DATETIME && !type.toUpperCase().contains("TZ")){
+                    builder.append(tz);
+                }
                 result = builder.toString();
+            }
+            if(getTypeCategoryGroup() == TypeMetadata.CATEGORY_GROUP.DATETIME){
+                //时区
             }
         }
         if(BasicUtil.isNotEmpty(result)){
@@ -476,6 +504,7 @@ public class DataTypeDefine implements Serializable {
                 result += "[]";
             }
         }
+        result = result.trim();
         return result;
     }
     public boolean isArray() {
@@ -663,6 +692,12 @@ public class DataTypeDefine implements Serializable {
         }else{
             return supportTimeZone();
         }
+    }
+    public void supportTimeZone(Integer supportTimeZone) {
+        this.supportTimeZone = supportTimeZone;
+    }
+    public void supportLocalTimeZone(Integer supportLocalTimeZone) {
+        this.supportLocalTimeZone = supportLocalTimeZone;
     }
     public int supportLocalTimeZone(DatabaseType database) {
         if(null != metadata) {

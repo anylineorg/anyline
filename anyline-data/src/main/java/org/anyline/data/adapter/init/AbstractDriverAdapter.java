@@ -15696,7 +15696,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta, String type, int ignoreLength, int ignorePrecision, int ignoreScale, int maxLength, int maxPrecision, int maxScale) {
+	public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta, String type, int ignoreLength, int ignorePrecision, int ignoreScale, int maxLength, int maxPrecision, int maxScale, int supportTimeZone, int supportLocalTimeZone) {
 		if(null == builder) {
 			builder = new StringBuilder();
 		}
@@ -15711,6 +15711,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         meta.maxLength(maxLength);
         meta.maxPrecision(maxPrecision);
         meta.maxScale(maxScale);
+        meta.supportTimeZone(supportTimeZone);
+        meta.supportLocalTimeZone(supportLocalTimeZone);
 
 		meta.parseType(2, type());
 		builder.append(meta.getFullType(type()));

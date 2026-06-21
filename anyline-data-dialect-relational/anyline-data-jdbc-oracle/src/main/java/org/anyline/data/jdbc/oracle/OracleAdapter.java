@@ -86,9 +86,9 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter {
         alias("ROWID", new AbstractTypeMetadata(TypeMetadata.CATEGORY.TEXT, "ROWID",  oracle.sql.ROWID.class, 1, 1, 1, DatabaseType.ORACLE));
         alias("UROWID", new AbstractTypeMetadata(TypeMetadata.CATEGORY.TEXT, "UROWID", oracle.sql.ROWID.class, 1, 1, 1, DatabaseType.ORACLE));
         alias("DATE", new AbstractTypeMetadata(TypeMetadata.CATEGORY.DATE, "DATE",java.util.Date.class, java.sql.Timestamp.class, 1, 1, 1, DatabaseType.ORACLE));
-        alias("TIMESTAMP", new AbstractTypeMetadata(TypeMetadata.CATEGORY.TIMESTAMP, "TIMESTAMP", java.sql.Timestamp.class, oracle.sql.TIMESTAMP.class, 1, 1, 1, DatabaseType.ORACLE));
-        alias("TIMESTAMPTZ", new AbstractTypeMetadata(TypeMetadata.CATEGORY.TIMESTAMP, "TIMESTAMPTZ", java.sql.Timestamp.class, oracle.sql.TIMESTAMPTZ.class, 1, 1, 1, DatabaseType.ORACLE));
-        alias("TIMESTAMPLTZ", new AbstractTypeMetadata(TypeMetadata.CATEGORY.TIMESTAMP, "TIMESTAMPLTZ", java.sql.Timestamp.class, oracle.sql.TIMESTAMPLTZ.class, 1, 1, 1, DatabaseType.ORACLE));
+        alias("TIMESTAMP", new AbstractTypeMetadata(TypeMetadata.CATEGORY.TIMESTAMP, "TIMESTAMP", java.sql.Timestamp.class, oracle.sql.TIMESTAMP.class, 1, 1, 1, 1, 1, DatabaseType.ORACLE));
+        alias("TIMESTAMPTZ", new AbstractTypeMetadata(TypeMetadata.CATEGORY.TIMESTAMP, "TIMESTAMPTZ", java.sql.Timestamp.class, oracle.sql.TIMESTAMPTZ.class, 1, 1, 1, 1, 1, DatabaseType.ORACLE));
+        alias("TIMESTAMPLTZ", new AbstractTypeMetadata(TypeMetadata.CATEGORY.TIMESTAMP, "TIMESTAMPLTZ", java.sql.Timestamp.class, oracle.sql.TIMESTAMPLTZ.class, 1, 1, 1, 1,1, DatabaseType.ORACLE));
 
     }
 
@@ -5448,8 +5448,8 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
      * @return StringBuilder
      */
     @Override
-    public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta, String type, int ignoreLength, int ignorePrecision, int ignoreScale, int maxLength, int maxPrecision, int maxScale) {
-        return super.type(runtime, builder, meta, type, ignoreLength, ignorePrecision, ignoreScale, maxLength, maxPrecision, maxScale);
+    public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta, String type, int ignoreLength, int ignorePrecision, int ignoreScale, int maxLength, int maxPrecision, int maxScale, int supportTimeZone, int supportLocalTimeZone) {
+        return super.type(runtime, builder, meta, type, ignoreLength, ignorePrecision, ignoreScale, maxLength, maxPrecision, maxScale, supportTimeZone, supportLocalTimeZone);
     }
 
     /**

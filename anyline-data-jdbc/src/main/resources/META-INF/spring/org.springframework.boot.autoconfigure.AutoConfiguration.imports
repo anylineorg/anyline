@@ -1,3 +1,1 @@
 org.anyline.data.jdbc.adapter.init.CommonJDBCAdapter
-org.anyline.data.jdbc.function.init.SystemFunctionHolder
-org.anyline.data.jdbc.function.init.DefaultFunctionConverter

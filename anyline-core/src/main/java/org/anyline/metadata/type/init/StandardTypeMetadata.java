@@ -526,9 +526,6 @@ public enum StandardTypeMetadata implements TypeMetadata {
     , DATETIME2(CATEGORY.DATETIME, "DATETIME2", null, java.sql.Timestamp.class, 1, 1, 1, MSSQL) {
         public Object write(Object value, Object def, boolean array, Boolean placeholder) {return DATETIME.write(value, def, placeholder);}
     }
-    , DATETIME_WITH_TIME_ZONE(CATEGORY.DATETIME, "DATETIME WITH TIME ZONE", "DATETIME({S}) WITH TIME ZONE", null, java.sql.Timestamp.class, 1, 1, 2, DM) {
-        public Object write(Object value, Object def, boolean array, Boolean placeholder) {return DATETIME.write(value, def, placeholder);}
-    }
 
     /**
      * MSSQL<br/>
@@ -570,16 +567,6 @@ public enum StandardTypeMetadata implements TypeMetadata {
             return value;
         }
     }
-    , TIME_WITH_TIME_ZONE(CATEGORY.TIME, "TIME WITH TIME ZONE","TIME({S}) WITH TIME ZONE", null, java.sql.Time.class, 1, 1, 2, DM, KingBase) {
-        public Object write(Object value, Object def, boolean array, Boolean placeholder) {
-            return TIME.write(value, def, placeholder);
-        }
-    }
-    , TIME_WITH_ZONE(CATEGORY.TIME, "TIME WITH TIME ZONE","TIME({S}) WITH TIME ZONE", null, java.sql.Time.class, 1, 1, 2, DM, KingBase) {
-        public Object write(Object value, Object def, boolean array, Boolean placeholder) {
-            return TIME.write(value, def, placeholder);
-        }
-    }
     , TIMEZ(CATEGORY.TIME, "TIMEZ", null, java.sql.Time.class, 1, 1, 1, PostgreSQL) {
         public Object write(Object value, Object def, boolean array, Boolean placeholder) {
             return TIME.write(value, def, placeholder);
@@ -590,27 +577,7 @@ public enum StandardTypeMetadata implements TypeMetadata {
             return TIME.write(value, def, placeholder);
         }
     }
-   , TIMESTAMP(CATEGORY.TIMESTAMP, "TIMESTAMP", "TIMESTAMP({S})", null, java.sql.Timestamp.class, 1, 1, 2, MySQL, PostgreSQL, ORACLE, HANA, Derby) {
-        public Object write(Object value, Object def, boolean array, Boolean placeholder) {
-            return DATETIME.write(value, def, placeholder);
-        }
-    }
-    , TIMESTAMP_WITH_TIME_ZONE(CATEGORY.TIMESTAMP,  "TIMESTAMP WITH TIME ZONE", "TIMESTAMP({S}) WITH TIME ZONE", null, java.sql.Timestamp.class, 1, 1, 2, PostgreSQL, KingBase) {
-        public Object write(Object value, Object def, boolean array, Boolean placeholder) {
-            return DATETIME.write(value, def, placeholder);
-        }
-    }
-    , TIMESTAMP_WITH_ZONE(CATEGORY.TIMESTAMP, "TIMESTAMP WITH TIME ZONE", "TIMESTAMP({S}) WITH TIME ZONE", null, java.sql.Timestamp.class, 1, 1, 2, PostgreSQL, KingBase) {
-        public Object write(Object value, Object def, boolean array, Boolean placeholder) {
-            return DATETIME.write(value, def, placeholder);
-        }
-    }
-    , TIMESTAMP_WITH_LOCAL_ZONE(CATEGORY.TIMESTAMP, "TIMESTAMP WITH LOCAL TIME ZONE", "TIMESTAMP({S}) WITH LOCAL TIME ZONE", null, java.sql.Timestamp.class, 1, 1, 2, PostgreSQL) {
-        public Object write(Object value, Object def, boolean array, Boolean placeholder) {
-            return DATETIME.write(value, def, placeholder);
-        }
-    }
-    , TIMESTAMP_WITH_LOCAL_TIME_ZONE(CATEGORY.TIMESTAMP, "TIMESTAMP WITH LOCAL TIME ZONE","TIMESTAMP({S}) WITH LOCAL TIME ZONE", null, java.sql.Timestamp.class, 1, 1, 2, PostgreSQL) {
+   , TIMESTAMP(CATEGORY.TIMESTAMP, "TIMESTAMP", "TIMESTAMP({S}) {Z}", null, java.sql.Timestamp.class, 1, 1, 2, MySQL, PostgreSQL, ORACLE, HANA, Derby) {
         public Object write(Object value, Object def, boolean array, Boolean placeholder) {
             return DATETIME.write(value, def, placeholder);
         }
@@ -830,10 +797,8 @@ public enum StandardTypeMetadata implements TypeMetadata {
     , SIMPLE_INTEGER(CATEGORY.NONE, "SIMPLE_INTEGER", null, null, 1, 1, 1, KingBase)
     , SIMPLE_FLOAT(CATEGORY.NONE, "SIMPLE_FLOAT", null, null, 1, 1, 1, KingBase)
     , TID(CATEGORY.NONE, "TID", null, null, 1, 1, 1, KingBase)
-    , TIME_WITHOUT_TIME_ZONE(CATEGORY.NONE, "TIME WITHOUT TIME ZONE", null, null, 1, 1, 1, KingBase)
     , TIME_TZ_UNCONSTRAINED(CATEGORY.NONE, "TIME TZ UNCONSTRAINED", null, null, 1, 1, 1, KingBase)
     , TIME_UNCONSTRAINED(CATEGORY.NONE, "TIME_UNCONSTRAINED", null, null, 1, 1, 1, KingBase)
-    , TIMESTAMP_WITHOUT_TIME_ZONE(CATEGORY.NONE, "TIMESTAMP WITHOUT TIME ZONE", null, null, 1, 1, 1, KingBase)
     , TSRANGE(CATEGORY.NONE, "TSRANGE", null, null, 1, 1, 1, KingBase)
     , TSTZRANGE(CATEGORY.NONE, "TSTZRANGE", null, null, 1, 1, 1, KingBase)
     , VARCHARBYTE(CATEGORY.NONE, "VARCHARBYTE", null, null, 1, 1, 1, KingBase)

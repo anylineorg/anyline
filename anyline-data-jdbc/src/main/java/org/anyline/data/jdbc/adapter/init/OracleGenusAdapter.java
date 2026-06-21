@@ -58,7 +58,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         MetadataReferHolder.reg(type(), TypeMetadata.CATEGORY.DATE, new TypeMetadata.Refer("DATA_LENGTH", "DATA_PRECISION", "DATA_SCALE", 1, 1, 1));
         MetadataReferHolder.reg(type(), TypeMetadata.CATEGORY.TIME, new TypeMetadata.Refer("DATA_LENGTH", "DATA_PRECISION", "DATA_SCALE", 1, 1, 1));
         MetadataReferHolder.reg(type(), TypeMetadata.CATEGORY.DATETIME, new TypeMetadata.Refer("DATA_LENGTH", "DATA_PRECISION", "DATA_SCALE", 1, 1, 2));
-        MetadataReferHolder.reg(type(), TypeMetadata.CATEGORY.TIMESTAMP, new TypeMetadata.Refer("DATA_LENGTH", "DATA_PRECISION", "DATA_SCALE", 1, 1, 2));
+        MetadataReferHolder.reg(type(), TypeMetadata.CATEGORY.TIMESTAMP, new TypeMetadata.Refer("DATA_LENGTH", "DATA_PRECISION", "DATA_SCALE", 1, 1, 2, 1, 1));
         MetadataReferHolder.reg(type(), TypeMetadata.CATEGORY.INTERVAL, new TypeMetadata.Refer("DATA_LENGTH", "DATA_PRECISION", "DATA_SCALE", 1, 2, 2));
         MetadataReferHolder.reg(type(), TypeMetadata.CATEGORY.COLLECTION, new TypeMetadata.Refer("DATA_LENGTH", null, null, 1, 1, 1));
         MetadataReferHolder.reg(type(), TypeMetadata.CATEGORY.GEOMETRY, new TypeMetadata.Refer("DATA_LENGTH", null, null, 1, 1, 1));
@@ -6278,8 +6278,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta, String type, int ignoreLength, int ignorePrecision, int ignoreScale, int maxLength, int maxPrecision, int maxScale) {
-        return super.type(runtime, builder, meta, type, ignoreLength, ignorePrecision, ignoreScale, maxLength, maxPrecision, maxScale);
+    public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta, String type, int ignoreLength, int ignorePrecision, int ignoreScale, int maxLength, int maxPrecision, int maxScale, int supportTimeZone, int supportLocalTimeZone) {
+        return super.type(runtime, builder, meta, type, ignoreLength, ignorePrecision, ignoreScale, maxLength, maxPrecision, maxScale, supportTimeZone, supportLocalTimeZone);
     }
 
     /**
