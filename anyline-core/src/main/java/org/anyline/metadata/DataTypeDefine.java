@@ -504,7 +504,9 @@ public class DataTypeDefine implements Serializable {
                 result += "[]";
             }
         }
-        result = result.trim();
+        if(null != result) {
+            result = result.trim();
+        }
         return result;
     }
     public boolean isArray() {
