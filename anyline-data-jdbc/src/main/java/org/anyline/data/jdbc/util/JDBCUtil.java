@@ -185,6 +185,9 @@ public class JDBCUtil {
                 columnCatalog = columnCatalog.trim();
             }
             String columnSchema = string(keys,"TABLE_SCHEM", set, null);
+            if(null == columnSchema){
+                columnSchema = string(keys,"TABLE_SCHEMA", set, null);
+            }
             if(null != columnSchema) {
                 columnSchema = columnSchema.trim();
             }

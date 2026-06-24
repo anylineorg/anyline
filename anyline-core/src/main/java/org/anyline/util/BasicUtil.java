@@ -17,6 +17,7 @@
 
 package org.anyline.util;
 
+import org.anyline.metadata.Metadata;
 import org.anyline.util.regular.RegularUtil;
 
 import java.lang.reflect.Array;
@@ -160,10 +161,21 @@ public class BasicUtil {
 			if(null == obj2) {
 				return false;
 			}else {
+				String obj1_str = obj1.toString();
+				String obj2_str = obj2.toString();
+				if(obj1 instanceof Metadata){
+					//直接toString会生成keyword:name格式
+					obj1_str = ((Metadata)obj1).getName();
+				}
+
+				if(obj2 instanceof Metadata){
+					obj2_str = ((Metadata)obj2).getName();
+				}
+
 				if(ignoreCase) {
-					return obj1.toString().equalsIgnoreCase(obj2.toString());
+					return obj1_str.equalsIgnoreCase(obj2_str);
 				}else {
-					return obj1.toString().equals(obj2.toString());
+					return obj1_str.equals(obj2_str);
 				}
 			}
 		}
