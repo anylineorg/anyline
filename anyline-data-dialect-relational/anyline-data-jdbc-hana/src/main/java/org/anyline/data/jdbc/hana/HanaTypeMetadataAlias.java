@@ -15,8 +15,6 @@
  */
 
 
-
-
 package org.anyline.data.jdbc.hana;
 
 import org.anyline.metadata.type.TypeMetadataAlias;

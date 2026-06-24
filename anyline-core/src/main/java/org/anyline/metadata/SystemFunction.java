@@ -154,11 +154,12 @@ public interface SystemFunction {
          * </ul>
          */
         enum META {
-                ABS("绝对值", Category.MATH, null),
+                ILLEGAL("不支持", Category.OTHER, null),
+                ABS("绝对值", Category.MATH, null, "value"),
                 ACL_DEFAULT("构造一个数组，该数组为属于具有 OID ownerId 的角色的类型类型对象的默认访问权限", Category.PRIVILEGE, DatabaseType.PostgreSQL),
                 ACL_EXPLODE("将数组作为一组行返回。如果被授权者是伪角色 PUBLIC，则在被授权者列中用零表示", Category.PRIVILEGE, DatabaseType.PostgreSQL),
-                ACOS("弧余弦", Category.MATH, null),
-                ACOSD("反余弦,结果为度数", Category.MATH, null),
+                ACOS("弧余弦", Category.MATH, null, "value"),
+                ACOSD("反余弦,结果为度数", Category.MATH, null, "value"),
                 ACOSH("反双曲余弦", Category.MATH, null),
                 ADD_DATE("添加日期", Category.DATE_TIME, null),
                 ADD_MONTHS("添加月份", Category.DATE_TIME, null),
@@ -197,18 +198,18 @@ public interface SystemFunction {
                 APPROX_SUM("表达式的近似和", Category.AGGREGATE, DatabaseType.ORACLE),
                 AREA("计算面积", Category.SPATIAL, null),
                 ARRAY_AGG("从非空输入值返回任意值", Category.ARRAY, null),
-                ARRAY_APPEND("将元素附加到数组的末尾", Category.ARRAY, DatabaseType.PostgreSQL),
-                ARRAY_CAT("连接两个数组", Category.ARRAY, DatabaseType.PostgreSQL),
+                ARRAY_APPEND("将元素附加到数组的末尾", Category.ARRAY, DatabaseType.PostgreSQL, "array,value"),
+                ARRAY_CAT("连接两个数组", Category.ARRAY, DatabaseType.PostgreSQL, "array1,array2"),
                 ARRAY_DIMS("数组维度的文本表示形式", Category.ARRAY, DatabaseType.PostgreSQL),
                 ARRAY_FILL("一个数组，其中填充了给定值的副本", Category.ARRAY, DatabaseType.PostgreSQL),
                 ARRAY_LENGTH("请求的数组维度的长度", Category.ARRAY, DatabaseType.PostgreSQL),
                 ARRAY_LOWER("请求的数组维度的下限", Category.ARRAY, DatabaseType.PostgreSQL),
                 ARRAY_NDIMS("数组的维度数", Category.ARRAY, DatabaseType.PostgreSQL),
-                ARRAY_POSITION("数组中第二个参数首次出现的下标", Category.ARRAY, DatabaseType.PostgreSQL),
+                ARRAY_POSITION("数组中第二个参数首次出现的下标", Category.ARRAY, DatabaseType.PostgreSQL, "array,value"),
                 ARRAY_POSITIONS("第一个参数中第二个参数所有出现的下标数组", Category.ARRAY, DatabaseType.PostgreSQL),
-                ARRAY_PREPEND("在数组开头前加一个元素", Category.ARRAY, DatabaseType.PostgreSQL),
-                ARRAY_REMOVE("从数组中移除所有等于给定值的元素", Category.ARRAY, DatabaseType.PostgreSQL),
-                ARRAY_REPLACE("将等于第二个参数的每个数组元素替换为第三个参数", Category.ARRAY, DatabaseType.PostgreSQL),
+                ARRAY_PREPEND("在数组开头前加一个元素", Category.ARRAY, DatabaseType.PostgreSQL, "value,array"),
+                ARRAY_REMOVE("从数组中移除所有等于给定值的元素", Category.ARRAY, DatabaseType.PostgreSQL, "array,value"),
+                ARRAY_REPLACE("将等于第二个参数的每个数组元素替换为第三个参数", Category.ARRAY, DatabaseType.PostgreSQL, "array,old,new"),
                 ARRAY_REVERSE("将数组的第一维度反转", Category.ARRAY, DatabaseType.PostgreSQL),
                 ARRAY_SAMPLE("一个由 N 个元素组成的数组，从数组中随机选择", Category.ARRAY, DatabaseType.PostgreSQL),
                 ARRAY_SHUFFLE("随机打乱数组的第一个维度", Category.ARRAY, DatabaseType.PostgreSQL),
@@ -219,7 +220,7 @@ public interface SystemFunction {
                 ARRAY_UPPER("请求的数组维度的上限", Category.ARRAY, DatabaseType.PostgreSQL),
                 AS_TABLESPACE_PRIVILEGE("用户是否具有表空间权限", Category.PRIVILEGE, DatabaseType.PostgreSQL),
                 ASCII("第一个字符的ASCII值", Category.STRING, null),
-                ASIN("弧正弦", Category.MATH, null),
+                ASIN("弧正弦", Category.MATH, null, "value"),
                 ASIND("逆正弦，结果为度数", Category.MATH, null),
                 ASINH("逆双曲正弦", Category.MATH, null),
                 ASYNCHRONOUS_CONNECTION_FAILOVER_ADD_MANAGED("将组成员源服务器配置信息添加到 复制通道源列表", Category.REPLICATION, DatabaseType.MySQL),
@@ -227,8 +228,8 @@ public interface SystemFunction {
                 ASYNCHRONOUS_CONNECTION_FAILOVER_DELETE_MANAGED("从复制通道源列表中删除托管组", Category.REPLICATION, DatabaseType.MySQL),
                 ASYNCHRONOUS_CONNECTION_FAILOVER_DELETE_SOURCE("从复制通道源列表中删除源服务器", Category.REPLICATION, DatabaseType.MySQL),
                 ASYNCHRONOUS_CONNECTION_FAILOVER_RESET("删除与异步组复制相关的所有设置 故障转移", Category.REPLICATION, DatabaseType.MySQL),
-                ATAN("圆弧切线", Category.MATH, null),
-                ATAN2("两个参数的圆弧切线", Category.MATH, null),
+                ATAN("圆弧切线", Category.MATH, null, "value"),
+                ATAN2("两个参数的圆弧切线", Category.MATH, null, "y,x"),
                 ATAN2D("反正切，结果为度数", Category.MATH, null),
                 ATAND("反正切，结果以度数为单位", Category.MATH, null),
                 ATANH("反双曲正切", Category.MATH, null),
@@ -245,11 +246,11 @@ public interface SystemFunction {
                 BINARY("包含数字二进制表示的字符串", Category.TYPE_CAST, null),
                 BINARY_TO_UUID("二进制 UUID 转换为字符串", Category.UUID, null),
                 BINCHAR("", Category.TYPE_CAST, null),
-                BIT_AND("按位 AND", Category.BIT_OP, null),
+                BIT_AND("按位 AND", Category.BIT_OP, null, "value1,value2"),
                 BIT_COUNT("位数", Category.BIT_OP, null),
                 BIT_LENGTH("长度(以BIT为单位)", Category.BIT_OP, null),
-                BIT_OR("按位或", Category.BIT_OP, null),
-                BIT_XOR("按位异或", Category.BIT_OP, null),
+                BIT_OR("按位或", Category.BIT_OP, null, "value1,value2"),
+                BIT_XOR("按位异或", Category.BIT_OP, null, "value1,value2"),
                 BLOCKING_PIDS("阻止具有指定进程 ID 的服务器进程获取锁的会话的进程 ID 数组", Category.LOCK, DatabaseType.PostgreSQL),
                 BOOL_AND("", Category.AGGREGATE, null),
                 BOOL_OR("", Category.AGGREGATE, null),
@@ -267,12 +268,12 @@ public interface SystemFunction {
                 CAN_ACCESS_VIEW("", Category.LABEL_SECURITY, null),
                 CANCEL_BACKEND("取消其后端进程具有指定进程 ID 的会话的当前查询", Category.SYSTEM, DatabaseType.PostgreSQL),
                 CARDINALITY("数组中的元素总数", Category.ARRAY, null),
-                CASE("CASE WHEN", Category.CONDITIONAL, null),
+                CASE("CASE WHEN", Category.CONDITIONAL, null, "condition,true_value,false_value"),
                 CASE_FOLD("C根据排序规则执行输入字符串的大小写折叠", Category.STRING, DatabaseType.PostgreSQL),
                 CAST("值强制转换为特定类型", Category.TYPE_CAST, null),
                 CBRT("立方根", Category.MATH, null),
-                CEIL("不小于参数的最小整数值", Category.MATH, null),
-                CEILING("不小于参数的最小整数值", Category.MATH, null),
+                CEIL("不小于参数的最小整数值", Category.MATH, null, "value"),
+                CEILING("不小于参数的最小整数值", Category.MATH, null, "value"),
                 CENTER("中心点", Category.SPATIAL, null),
                 CENTER_POINT("中心点", Category.SPATIAL, null),
                 CHAR("int转字符", Category.STRING, null),
@@ -291,7 +292,7 @@ public interface SystemFunction {
                 CLUSTER_ID("选择中每一行的最高概率簇的标识符", Category.DATA_MINING, DatabaseType.ORACLE),
                 CLUSTER_PROBABILITY("选择中每一行的概率", Category.DATA_MINING, DatabaseType.ORACLE),
                 CLUSTER_SET("返回每行的簇ID和概率对", Category.DATA_MINING, DatabaseType.ORACLE),
-                COALESCE("第一个非空值,支持多个参数", Category.NULL_HANDLE, null),
+                COALESCE("第一个非空值,支持多个参数", Category.NULL_HANDLE, null, "value1,value2"),
                 COERCIBILITY("字符串参数的排序规则强制性值", Category.STRING, null),
                 COL_DESCRIPTION("列注释", Category.CATALOG, DatabaseType.PostgreSQL),
                 COLLATION("字符串参数的排序规则", Category.STRING, null),
@@ -303,8 +304,8 @@ public interface SystemFunction {
                 COLUMN_TOAST_CHUNK_ID("显示磁盘上的 TOASTED 值", Category.SYSTEM, DatabaseType.PostgreSQL),
                 COMPOSE("将 Unicode 规范组合应用于给定的字符串参数的结果", Category.STRING, null),
                 COMPRESS("以二进制字符串的形式", Category.COMPRESS, null),
-                CONCAT("串联字符串", Category.STRING, null),
-                CONCAT_WS("用分隔符连接字符串", Category.STRING, null),
+                CONCAT("串联字符串", Category.STRING, null, "string1,string2"),
+                CONCAT_WS("用分隔符连接字符串", Category.STRING, null, "separator,string1,string2"),
                 CONF_LOAD_TIME("服务器配置文件最后一次加载的时间", Category.SYSTEM, DatabaseType.PostgreSQL),
                 CONNECTION_ID("当前连接ID", Category.SYSTEM, DatabaseType.MySQL),
                 CONTROL_CHECKPOINT("有关当前检查点状态的信息", Category.SYSTEM, DatabaseType.PostgreSQL),
@@ -326,10 +327,10 @@ public interface SystemFunction {
                 CORR("计算相关系数", Category.AGGREGATE, null),
                 CORR_K("计算肯德尔的 tau-b 相关系数", Category.AGGREGATE, null),
                 CORR_S("计算斯皮尔曼的ρ相关系数", Category.AGGREGATE, null),
-                COS("余弦", Category.MATH, null),
+                COS("余弦", Category.MATH, null, "value"),
                 COSD("参数的元素的余弦,以度为单位", Category.MATH, null),
                 COSH("双曲余弦", Category.MATH, null),
-                COT("余切", Category.MATH, null),
+                COT("余切", Category.MATH, null, "value"),
                 COTD("余切函数，以度为单位的参数", Category.MATH, null),
                 COUNT("行数计数", Category.AGGREGATE, null),
                 COUNT_NOT_NULL("非空参数的数量", Category.NULL_HANDLE, null),
@@ -380,17 +381,17 @@ public interface SystemFunction {
                 DATABASE_TO_XML_AND_XML_SCHEMA("DATABASE_TO_XML_AND_XMLSCHEMA", Category.XML, DatabaseType.PostgreSQL),
                 DATABASE_TO_XML_SCHEMA("DATABASE_TO_XMLSCHEMA", Category.XML, DatabaseType.PostgreSQL),
                 DATE("提取日期或日期时间表达式的日期部分", Category.DATE_TIME, null),
-                DATE_ADD("将时间值（间隔）添加到日期值", Category.DATE_TIME, null),
+                DATE_ADD("将时间值（间隔）添加到日期值", Category.DATE_TIME, null, "date,interval,unit"),
                 DATE_BIN("输入到与指定原点对齐的指定区间", Category.DATE_TIME, null),
-                DATE_DIFF("时间差", Category.DATE_TIME, null),
-                DATE_FORMAT("按指定格式设置日期", Category.DATE_TIME, null),
+                DATE_DIFF("时间差", Category.DATE_TIME, null, "unit,start,end"),
+                DATE_FORMAT("按指定格式设置日期", Category.DATE_TIME, null, "value,format"),
                 DATE_LARGER("最大日期", Category.DATE_TIME, null),
                 DATE_MI("计算两个 DATE 值相差的天数", Category.DATE_TIME, DatabaseType.ORACLE),
                 DATE_MII("将指定的日期减去指定的天数", Category.DATE_TIME, DatabaseType.ORACLE),
                 DATE_PART("获取给定日期的指定子域值", Category.DATE_TIME, null),
                 DATE_PLI("将指定的日期增加指定的天数", Category.DATE_TIME, DatabaseType.ORACLE),
                 DATE_SMALLER("最小日期", Category.DATE_TIME, null),
-                DATE_SUB("从日期中减去时间值", Category.DATE_TIME, null),
+                DATE_SUB("从日期中减去时间值", Category.DATE_TIME, null, "date,interval,unit"),
                 DATE_TRUNCATE("给定一个日期，截断成指定的精度", Category.DATE_TIME, null),
                 DAY_NAME("工作日的名称", Category.DATE_TIME, null),
                 DAY_OF_MONTH("月份中的某一天", Category.DATE_TIME, null),
@@ -398,10 +399,10 @@ public interface SystemFunction {
                 DAY_OF_WEEK_ISO("工作日索引", Category.DATE_TIME, null),
                 DAY_OF_YEAR("一年中的某一天", Category.DATE_TIME, null),
                 DAYS("得到指定日期与 0001 年 1 月 1 日的天数差值", Category.DATE_TIME, null),
-                DECODE("将指定的字符串以特定的解码规则解码", Category.CONDITIONAL, DatabaseType.ORACLE),
+                DECODE("将指定的字符串以特定的解码规则解码", Category.CONDITIONAL, DatabaseType.ORACLE, "value,search,result"),
                 DECOMPOSE("将一个 Unicode 分解应用于给定的参数的结果", Category.STRING, null),
                 DEFAULT("表列的默认值", Category.SYSTEM, null),
-                DEGREES("弧度转换为度数", Category.MATH, null),
+                DEGREES("弧度转换为度数", Category.MATH, null, "value"),
                 DENSE_RANK("分区内当前行的排名", Category.AGGREGATE, null),
                 DEPTH("条件指定的路径中具有相同相关变量的级别数", Category.DATA_MINING, DatabaseType.ORACLE),
                 DEREF("参数expr的对象引用", Category.CATALOG, DatabaseType.ORACLE),
@@ -420,7 +421,7 @@ public interface SystemFunction {
                 DST_CONVERT("指定的日期时间表达式指定错误处理方式", Category.DATE_TIME, DatabaseType.ORACLE),
                 DST_ERROR("解析为一个 TIMESTAMP WITH TIME ZONE 值 并指示新的日期时间值是否会导致时区数据出错", Category.DATE_TIME, DatabaseType.ORACLE),
                 DUMP("包含数据类型代码、字节长度和expr内部表示的值", Category.SYSTEM, DatabaseType.ORACLE),
-                ELT("参数列表中指定位置的字符串", Category.STRING, DatabaseType.MySQL),
+                ELT("参数列表中指定位置的字符串", Category.STRING, DatabaseType.MySQL, "index,string"),
                 EMPTY_BLOB("对 BLOB 定位符进行初始化", Category.SYSTEM, DatabaseType.ORACLE),
                 EMPTY_CLOB("对 CLOB 定位符进行初始化", Category.SYSTEM, DatabaseType.ORACLE),
                 ENABLE_POLICY("修改一个安全策略的可用状态", Category.LABEL_SECURITY, null),
@@ -438,10 +439,10 @@ public interface SystemFunction {
                 EVERY("", Category.AGGREGATE, null),
                 EXISTS("查询结果是否包含任何行", Category.CONDITIONAL, null),
                 EXISTS_NODE("通过指定路径遍历XML文档是否会得到任何节点", Category.XML, DatabaseType.ORACLE),
-                EXP("自然对数的底数e的指定次幂", Category.MATH, null),
+                EXP("自然对数的底数e的指定次幂", Category.MATH, null, "value"),
                 EXPORT_SET("将整数转换为由指定字符串分隔的二进制位表示", Category.STRING, DatabaseType.MySQL),
                 EXPORT_SNAPSHOT("保存事务的当前快照并返回标识快照的字符串", Category.REPLICATION, DatabaseType.PostgreSQL),
-                EXTRACT("获取子域", Category.DATE_TIME, null),
+                EXTRACT("获取子域", Category.DATE_TIME, null, "field,source"),
                 EXTRACT_DATE_PART("提取日期的一部分", Category.DATE_TIME, null),
                 EXTRACT_VALUE("使用 XPath 表示法从 XML 字符串中提取值", Category.XML, null),
                 FACTORIAL("阶乘", Category.MATH, null),
@@ -450,12 +451,12 @@ public interface SystemFunction {
                 FEATURE_ID("选择中每一行最高值特征的标识符", Category.DATA_MINING, DatabaseType.ORACLE),
                 FEATURE_SET("所选中每一行的一组要素 ID 和要素值对", Category.DATA_MINING, DatabaseType.ORACLE),
                 FEATURE_VALUE("所选中每一行的要素值", Category.DATA_MINING, DatabaseType.ORACLE),
-                FIELD("一个值(value)在给定列表(val1, val2, ...)中第一次出现的索引", Category.STRING, DatabaseType.MySQL),
+                FIELD("一个值(value)在给定列表(val1, val2, ...)中第一次出现的索引", Category.STRING, DatabaseType.MySQL, "string,value"),
                 FILE_NODE_RELATION("给定表空间 OID 和存储它的文件节点", Category.CATALOG, DatabaseType.PostgreSQL),
                 FIND_IN_SET("第二个参数中第一个参数的索引", Category.STRING, DatabaseType.MySQL),
                 FIRST_ROW("第一行", Category.AGGREGATE, null),
                 FIRST_VALUE("第一行的参数值", Category.AGGREGATE, null),
-                FLOOR("不大于参数的最大整数值", Category.MATH, null),
+                FLOOR("不大于参数的最大整数值", Category.MATH, null, "value"),
                 FORMAT("格式化为指定小数位数的数字", Category.STRING, null),
                 FORMAT_BYTES("将字节计数转换为带单位的值", Category.SYSTEM, DatabaseType.PostgreSQL),
                 FORMAT_PICO_TIME("将以皮秒为单位的时间转换为带单位的值", Category.SYSTEM, DatabaseType.PostgreSQL),
@@ -504,7 +505,7 @@ public interface SystemFunction {
                 GET_WAL_RESOURCE_MANAGERS("系统中当前加载的 WAL 资源管理器", Category.REPLICATION, DatabaseType.PostgreSQL),
                 GET_WAL_SUMMARIZER_STATE("有关WAL摘要器进度的信息", Category.REPLICATION, DatabaseType.PostgreSQL),
                 GIN_CLEAN_PENDING_LIST("通过将指定 GIN 索引中的条目批量移动到主 GIN 数据结构来清理指定 GIN 索引的“待处理”列表", Category.SYSTEM, DatabaseType.PostgreSQL),
-                GREATEST("最大参数", Category.CONDITIONAL, null),
+                GREATEST("最大参数", Category.CONDITIONAL, null, "value1,value2"),
                 GROUP_CONCAT("串联分组字符串", Category.STRING, null),
                 GROUP_ID("", Category.AGGREGATE, DatabaseType.ORACLE),
                 GROUP_REPLICATION_DISABLE_MEMBER_ACTION("禁用指定事件的成员作", Category.REPLICATION, DatabaseType.MySQL),
@@ -542,11 +543,11 @@ public interface SystemFunction {
                 ICU_VERSION("ICU库版", Category.ENCODING, DatabaseType.PostgreSQL),
                 IDENTIFY_OBJECT("包含足够信息的行，以唯一标识由目录 OID、对象 OID 和子对象 ID 指定的数据库对象", Category.CATALOG, DatabaseType.PostgreSQL),
                 IDENTIFY_OBJECT_AS_ADDRESS("以唯一标识由目录 OID、对象 OID 和子对象 ID 指定的数据库对象", Category.CATALOG, DatabaseType.PostgreSQL),
-                IF("IF", Category.CONDITIONAL, null),
-                IF_ELSE("", Category.CONDITIONAL, null),
+                IF("IF", Category.CONDITIONAL, null, "condition,true_value,false_value"),
+                IF_ELSE("", Category.CONDITIONAL, null, "condition,true_value,false_value"),
                 IF_EQUAL_NULL_ELSE_FIRST("如果相等返回NULL否则返回第一个", Category.NULL_HANDLE, null),
                 IF_NULL_C("是否NULL", Category.NULL_HANDLE, null),
-                IF_NULL_TERNARY("参数1为空时返回参数2否则返回参数3", Category.NULL_HANDLE, null),
+                IF_NULL_TERNARY("参数1为空时返回参数2否则返回参数3", Category.NULL_HANDLE, null, "value,not_null,null"),
                 IMPORT_SYSTEM_COLLATIONS("根据它在作系统中找到的所有区域设置将排序规则添加到系统目录中", Category.ENCODING, DatabaseType.PostgreSQL),
                 IN("值是否在一组值中", Category.CONDITIONAL, null),
                 INDEX_AM_HAS_PROPERTY("测试索引访问方法是否具有命名属性", Category.CATALOG, DatabaseType.PostgreSQL),
@@ -563,10 +564,10 @@ public interface SystemFunction {
                 INNER_BOX("内接框", Category.SPATIAL, null),
                 INPUT_ERROR_INFO("测试给定字符串是否是指定数据类型的有效输入", Category.STRING, null),
                 INPUT_IS_VALID("测试给定字符串是否是指定数据类型的有效输入", Category.STRING, null),
-                INSERT("在指定位置插入子字符串", Category.STRING, DatabaseType.MySQL),
+                INSERT("在指定位置插入子字符串", Category.STRING, DatabaseType.MySQL, "string,position,length,newstring"),
                 INSERT_TEXT("用一个字符串替换另一个字符串中指定位置指定长度的子串", Category.STRING, DatabaseType.MySQL),
                 INSERT_TEXT_C("从指定的位置，删除指定的长度，再加入指定的字符串", Category.STRING, null),
-                INSTR("第一次出现的子字符串的索引", Category.STRING, null),
+                INSTR("第一次出现的子字符串的索引", Category.STRING, null, "string,substring"),
                 INTERNAL_AUTO_INCREMENT("", Category.SYSTEM, DatabaseType.MySQL),
                 INTERNAL_AVG_ROW_LENGTH("", Category.SYSTEM, DatabaseType.MySQL),
                 INTERNAL_CHECK_TIME("", Category.SYSTEM, DatabaseType.MySQL),
@@ -694,7 +695,7 @@ public interface SystemFunction {
                 JSONB_EACH_TEXT("JSONB_EACH_TEXT", Category.JSON, DatabaseType.PostgreSQL),
                 JSONB_EXTRACT_PATH("JSONB_EXTRACT_PATH", Category.JSON, DatabaseType.PostgreSQL),
                 JSONB_EXTRACT_PATH_TEXT("JSONB_EXTRACT_PATH_TEXT", Category.JSON, DatabaseType.PostgreSQL),
-                JSONB_INSERT("JSONB_INSERT", Category.JSON, DatabaseType.PostgreSQL),
+                JSONB_INSERT("JSONB_INSERT", Category.JSON, DatabaseType.PostgreSQL, "json,path,value"),
                 JSONB_OBJECT("JSONB_OBJECT", Category.JSON, DatabaseType.PostgreSQL),
                 JSONB_OBJECT_AGG("将所有键/值对收集到 JSON 对象中", Category.JSON, DatabaseType.PostgreSQL),
                 JSONB_OBJECT_AGG_STRICT("将所有键/值对收集到 JSON 对象中", Category.JSON, DatabaseType.PostgreSQL),
@@ -715,7 +716,7 @@ public interface SystemFunction {
                 JSONB_POPULATE_RECORD_VALID("JSONB_POPULATE_RECORD_VALID ", Category.JSON, DatabaseType.PostgreSQL),
                 JSONB_POPULATE_RECORDSET("JSONB_POPULATE_RECORDSET", Category.JSON, DatabaseType.PostgreSQL),
                 JSONB_PRETTY("JSONB_PRETTY", Category.JSON, DatabaseType.PostgreSQL),
-                JSONB_SET("JSONB_SET", Category.JSON, DatabaseType.PostgreSQL),
+                JSONB_SET("JSONB_SET", Category.JSON, DatabaseType.PostgreSQL, "json,path,value"),
                 JSONB_SET_LAX("JSONB_SET_LAX", Category.JSON, DatabaseType.PostgreSQL),
                 JSONB_STRIP_NULLS("JSONB_STRIP_NULLS", Category.JSON, DatabaseType.PostgreSQL),
                 JSONB_TO_RECORD("JSONB_TO_RECORD", Category.JSON, DatabaseType.PostgreSQL),
@@ -737,31 +738,31 @@ public interface SystemFunction {
                 LAST_XACT_REPLAY_TIMESTAMP("恢复期间重放的最后一个事务的时间戳", Category.SYSTEM, DatabaseType.PostgreSQL),
                 LCM("最小公倍数", Category.MATH, null),
                 LEAD("分区中当前行前导行的参数值", Category.AGGREGATE, null),
-                LEAST("最小参数", Category.CONDITIONAL, null),
-                LEFT("指定的最左边的字符数", Category.STRING, null),
-                LENGTH("字符串以字节为单位的长度", Category.STRING, null),
+                LEAST("最小参数", Category.CONDITIONAL, null, "value1,value2"),
+                LEFT("指定的最左边的字符数", Category.STRING, null, "string,length"),
+                LENGTH("字符串以字节为单位的长度", Category.STRING, null, "string"),
                 LGAMMA("伽马函数绝对值的自然对数", Category.MATH, null),
                 LIKE("LIKE匹配", Category.STRING, null),
                 LINE_STRING_TO_MULTI_LINE_STRING("根据 LineString 值构建 MultiLineString", Category.SPATIAL, null),
                 LINE_STRING_TO_POLYGON("从 LineString 参数构造多边形", Category.SPATIAL, null),
-                LIST_AGG("", Category.STRING, null),
+                LIST_AGG("", Category.STRING, null, "string,delimiter"),
                 LISTENING_CHANNELS("当前会话正在侦听的异步通知通道的一组名", Category.SYSTEM, DatabaseType.PostgreSQL),
-                LN("参数的自然对数", Category.MATH, null),
+                LN("参数的自然对数", Category.MATH, null, "value"),
                 LNNVL("条件取反", Category.CONDITIONAL, DatabaseType.ORACLE),
                 LOAD_FILE("加载命名文件", Category.SYSTEM, DatabaseType.PostgreSQL),
                 LOCAL_TIME("", Category.DATE_TIME, null),
                 LOCAL_TIMESTAMP("", Category.DATE_TIME, null),
-                LOCATE("第一次出现的子字符串的位置", Category.STRING, DatabaseType.MySQL),
-                LOG("自然对数", Category.MATH, null),
+                LOCATE("第一次出现的子字符串的位置", Category.STRING, DatabaseType.MySQL, "substring,string"),
+                LOG("自然对数", Category.MATH, null, "value"),
                 LOG_BACKEND_MEMORY_CONTEXTS("请求日志后端的内存上下文，并指定进程ID", Category.SYSTEM, DatabaseType.PostgreSQL),
                 LOG_STANDBY_SNAPSHOT("拍摄正在运行的事务的快照并将其写入 WAL", Category.SYSTEM, DatabaseType.PostgreSQL),
-                LOG10("以 10 为底的对数", Category.MATH, null),
-                LOG2("以 2 为底的对数", Category.MATH, null),
+                LOG10("以 10 为底的对数", Category.MATH, null, "value"),
+                LOG2("以 2 为底的对数", Category.MATH, null, "value"),
                 LOGICAL_SLOT_GET_BINARY_CHANGES("", Category.REPLICATION, DatabaseType.PostgreSQL),
                 LOGICAL_SLOT_GET_CHANGES("槽中的更改，从最后使用更改的点开始", Category.REPLICATION, DatabaseType.PostgreSQL),
                 LOGICAL_SLOT_PEEK_BINARY_CHANGES("", Category.REPLICATION, DatabaseType.PostgreSQL),
                 LOGICAL_SLOT_PEEK_CHANGES("", Category.REPLICATION, DatabaseType.PostgreSQL),
-                LOWER("小写", Category.STRING, null),
+                LOWER("小写", Category.STRING, null, "string"),
                 LOWER_INC("范围的下限是否包含", Category.RANGE, DatabaseType.PostgreSQL),
                 LOWER_INF("范围是否有下限", Category.RANGE, DatabaseType.PostgreSQL),
                 LOWER_LIMIT("取字符串与其最近的下限", Category.RANGE, null),
@@ -807,7 +808,7 @@ public interface SystemFunction {
                 MIN("最小值", Category.AGGREGATE, null),
                 MIN_SCALE("精确表示所提供值所需的最小刻度", Category.MATH, null),
                 MINUTE("分钟", Category.DATE_TIME, null),
-                MOD("余数", Category.MATH, null),
+                MOD("余数", Category.MATH, null, "dividend,divisor"),
                 MODE("计算一个值与一组值之和的比值", Category.OTHER, null),
                 MONTH("月份", Category.DATE_TIME, null),
                 MONTH_NAME("月份名称", Category.DATE_TIME, null),
@@ -837,12 +838,12 @@ public interface SystemFunction {
                 NOW("当前日期和时间", Category.DATE_TIME, null),
                 NTH_VALUE("第 N 行的参数值", Category.AGGREGATE, null),
                 NTILE("其分区中当前行的存储桶号", Category.AGGREGATE, null),
-                NULLIF("如果expr1 = expr2 成立，那么返回值为NULL", Category.NULL_HANDLE, null),
+                NULLIF("如果expr1 = expr2 成立，那么返回值为NULL", Category.NULL_HANDLE, null, "expr1,expr2"),
                 NUM_NODE("词位加上运算符的数量", Category.FULLTEXT, DatabaseType.PostgreSQL),
                 NUMA_AVAILABLE("服务器已使用 NUMA 支持进行编译", Category.SYSTEM, DatabaseType.PostgreSQL),
                 NUMBER_TO_DS_INTERVAL("将数值转换成 INTERVAL DAY TO SECOND 类型", Category.TYPE_CAST, DatabaseType.ORACLE),
                 NUMBER_TO_YM_INTERVAL("将数值转换成 INTERVAL YEAR TO MONTH 类型", Category.TYPE_CAST, DatabaseType.ORACLE),
-                NVL("第一个非空值,支持两个参数", Category.CONDITIONAL, null),
+                NVL("第一个非空值,支持两个参数", Category.CONDITIONAL, null, "value,replacement"),
                 OBJ_DESCRIPTION("获得对象的描述信息", Category.CATALOG, DatabaseType.PostgreSQL),
                 OCT("包含数字的八进制表示的字符串", Category.TYPE_CAST, DatabaseType.MySQL),
                 OCTET_LENGTH("字节数", Category.STRING, null),
@@ -869,10 +870,10 @@ public interface SystemFunction {
                 POINT_TO_LINE_STRING("从点值构造 LineString", Category.SPATIAL, null),
                 POINT_TO_MULTI_POINT("根据 Point 值构造 MultiPoint", Category.SPATIAL, null),
                 POLYGON_TO_MULTI_POLYGON("从多边形值构造多边形集合", Category.SPATIAL, null),
-                POSITION("LOCATE", Category.STRING, null),
+                POSITION("LOCATE", Category.STRING, null, "substring,string"),
                 POSTMASTER_START_TIME("服务器启动的时间", Category.SYSTEM, DatabaseType.PostgreSQL),
-                POW("幂", Category.MATH, null),
-                POWER("幂", Category.MATH, null),
+                POW("幂", Category.MATH, null, "base,exponent"),
+                POWER("幂", Category.MATH, null, "base,exponent"),
                 POWER_MULTIS_ET("一个包含输入嵌套表所有非空子集的嵌套表", Category.CATALOG, DatabaseType.ORACLE),
                 POWER_MULTIS_ET_BY_CARDINALITY("接收一个嵌套表和一个基数作为输入，返回一个包含所有非空子集的嵌套表嵌套表", Category.CATALOG, DatabaseType.ORACLE),
                 PREDICTION("所选内容中每一行的预测", Category.DATA_MINING, DatabaseType.ORACLE),
@@ -918,15 +919,15 @@ public interface SystemFunction {
                 REF_TO_HEX("将参数expr转换为包含其十六进制等价项的字符值", Category.TYPE_CAST, DatabaseType.ORACLE),
                 REGEXP("字符串是否与正则表达式匹配", Category.REGEX, null),
                 REGEXP_COUNT("正则表达式模式匹配的次数", Category.REGEX, null),
-                REGEXP_INSTR("正则表达式模式在字符串中的位置", Category.REGEX, null),
+                REGEXP_INSTR("正则表达式模式在字符串中的位置", Category.REGEX, null, "string,pattern,position,occurrence,return_option,match_parameter,subexpr"),
                 REGEXP_LIKE("字符串是否与正则表达式匹配", Category.REGEX, null),
                 REGEXP_MATCH("正则表达式模式与字符串的第一个匹配项内的子字符串", Category.REGEX, DatabaseType.PostgreSQL),
                 REGEXP_MATCHES("正则表达式模式与字符串的所有匹配项内的子字符串", Category.REGEX, DatabaseType.PostgreSQL),
                 REGEXP_POSITION("子字符串匹配正则表达式的起始索引", Category.REGEX, null),
-                REGEXP_REPLACE("替换与正则表达式匹配的子字符串", Category.REGEX, null),
+                REGEXP_REPLACE("替换与正则表达式匹配的子字符串", Category.REGEX, null, "string,pattern,replacement,position,occurrence,match_parameter"),
                 REGEXP_SPLIT_TO_ARRAY("正则表达式作为分隔符拆分字符串，生成结果数组", Category.REGEX, DatabaseType.PostgreSQL),
                 REGEXP_SPLIT_TO_TABLE("正则表达式作为分隔符拆分字符串，生成一组结果集", Category.REGEX, DatabaseType.PostgreSQL),
-                REGEXP_SUBSTR("子字符串匹配正则表达式", Category.REGEX, null),
+                REGEXP_SUBSTR("子字符串匹配正则表达式", Category.REGEX, null, "string,pattern,position,occurrence,match_parameter,subexpr"),
                 REGR_AVGX("计算自变量 的平均值", Category.AGGREGATE, null),
                 REGR_AVGY("计算因变量 的平均值", Category.AGGREGATE, null),
                 REGR_COUNT("计算两个输入都为非空的行数", Category.AGGREGATE, null),
@@ -949,7 +950,7 @@ public interface SystemFunction {
                 REMOVE_TABLE_CONTROL("移除表级控制", Category.LABEL_SECURITY, null),
                 REMOVE_TABLE_POLICY("取消应用策略到表", Category.LABEL_SECURITY, null),
                 REPEAT("重复字符串指定次数", Category.STRING, null),
-                REPLACE("替换指定字符串的出现次数", Category.STRING, null),
+                REPLACE("替换指定字符串的出现次数", Category.STRING, null, "string,search,replace"),
                 REPLICATION_ORIGIN_ADVANCE("将给定节点的复制进度设置为给定位置", Category.REPLICATION, DatabaseType.PostgreSQL),
                 REPLICATION_ORIGIN_CREATE("使用给定的外部名称创建复制源，并返回分配给它的内部 ID", Category.REPLICATION, DatabaseType.PostgreSQL),
                 REPLICATION_ORIGIN_DROP("删除以前创建的复制源", Category.REPLICATION, DatabaseType.PostgreSQL),
@@ -966,11 +967,11 @@ public interface SystemFunction {
                 RESTORE_ATTRIBUTE_STATS("创建或更新列级统计信息", Category.SYSTEM, DatabaseType.PostgreSQL),
                 RESTORE_RELATION_STATS("更新表级统计信息", Category.SYSTEM, DatabaseType.PostgreSQL),
                 REVERSE("反转字符串中的字符", Category.STRING, null),
-                RIGHT("指定的最右边的字符数", Category.STRING, null),
+                RIGHT("指定的最右边的字符数", Category.STRING, null, "string,length"),
                 RLIKE("字符串是否与正则表达式匹配", Category.REGEX, null),
                 ROLES_GRAPHML("表示内存角色子图的 GraphML", Category.OTHER, DatabaseType.PostgreSQL),
                 ROTATE_LOGFILE("提示日志文件管理器立即切换到新的输出文件", Category.SYSTEM, DatabaseType.PostgreSQL),
-                ROUND("四舍五入", Category.MATH, null),
+                ROUND("四舍五入", Category.MATH, null, "value,precision"),
                 ROW_COUNT("更新的行数", Category.SYSTEM, null),
                 ROW_ID_TO_CHAR("rowid 值转为 VARCHAR2 类型", Category.TYPE_CAST, DatabaseType.ORACLE),
                 ROW_ID_TO_NCHAR("rowid 值转为 VARCHAR2 类型", Category.TYPE_CAST, DatabaseType.ORACLE),
@@ -1009,7 +1010,7 @@ public interface SystemFunction {
                 SHA512("计算二进制字符串的 SHA-512 哈希值", Category.CRYPTO, null),
                 SHOW_BINLOG_EVENTS("获得指定 Binlog 文件的详细内容", Category.REPLICATION, DatabaseType.MySQL),
                 SIGN("符号", Category.MATH, null),
-                SIN("正弦", Category.MATH, null),
+                SIN("正弦", Category.MATH, null, "value"),
                 SIND("正弦,以度为单位的参数", Category.MATH, null),
                 SINH("双曲正弦", Category.MATH, null),
                 SIZE_BYTES("将可读格式的大小转换为字节", Category.SYSTEM, null),
@@ -1027,7 +1028,7 @@ public interface SystemFunction {
                 SPACE("指定空格数的字符串", Category.STRING, null),
                 SPLIT_PART("以给定的字符串为分隔符，来分隔另一个字符串，并取出指定的分隔部分", Category.STRING, DatabaseType.PostgreSQL),
                 SPLIT_WAL_FILE_NAME("从 WAL 文件名中提取序列号和时间线 ID", Category.REPLICATION, DatabaseType.PostgreSQL),
-                SQRT("平方根", Category.MATH, null),
+                SQRT("平方根", Category.MATH, null, "value"),
                 ST_AREA("多边形或多多边形区域", Category.SPATIAL, null),
                 ST_BUFFER("与几何给定距离内的点的几何", Category.SPATIAL, null),
                 ST_BUFFER_STRATEGY("生成ST_BUFFER的策略选项", Category.SPATIAL, null),
@@ -1133,14 +1134,14 @@ public interface SystemFunction {
                 STRCMP("比较两个字符串", Category.STRING, null),
                 STRING_AGG("将非空输入值连接成字符串", Category.STRING, null),
                 STRING_FORMAT("根据格式字符串格式化的输出", Category.STRING, null),
-                STRING_POSITION("确定二个 TEXT 串在第一个 TEXT 串中第一次出现的位置", Category.STRING, null),
+                STRING_POSITION("确定二个 TEXT 串在第一个 TEXT 串中第一次出现的位置", Category.STRING, null, "string,substring"),
                 STRING_TO_BINARY("字符串转换为二进制字符串", Category.TYPE_CAST, DatabaseType.MySQL),
                 STRING_TO_TABLE("在出现分隔符时拆分字符串，并将结果字段作为一组行返回", Category.STRING, DatabaseType.PostgreSQL),
                 SUB_TIME("TIME1减去TIME2后的时间", Category.DATE_TIME, null),
-                SUBSTR("从指定的位置开始，截取定长子串", Category.STRING, null),
+                SUBSTR("从指定的位置开始，截取定长子串", Category.STRING, null, "string,start,length"),
                 SUBSTR_BIT("从指定的位置开始，按字节截取子串", Category.STRING, null),
                 SUBSTRING("SUBSTRING", Category.STRING, null),
-                SUBSTRING_INDEX("从指定数量之前的字符串  子字符串分隔符的出现次数", Category.STRING, DatabaseType.MySQL),
+                SUBSTRING_INDEX("从指定数量之前的字符串  子字符串分隔符的出现次数", Category.STRING, DatabaseType.MySQL, "string,delimiter,count"),
                 SUM("合计", Category.AGGREGATE, null),
                 SUPPRESS_REDUNDANT_UPDATES_TRIGGER("禁止执行不执行任何作的更新作", Category.SYSTEM, DatabaseType.PostgreSQL),
                 SWITCH_WAL("强制服务器切换到新的预写日志文件", Category.REPLICATION, DatabaseType.PostgreSQL),
@@ -1178,7 +1179,7 @@ public interface SystemFunction {
                 TABLESPACE_DATABASES("在指定表空间中存储对象的数据库的 OID 集", Category.SYSTEM, DatabaseType.PostgreSQL),
                 TABLESPACE_LOCATION("此表空间所在的文件系统路径", Category.SYSTEM, DatabaseType.PostgreSQL),
                 TABLESPACE_SIZE("计算具有指定名称或 OID 的表空间中使用的总磁盘空间", Category.SYSTEM, DatabaseType.PostgreSQL),
-                TAN("切线", Category.MATH, null),
+                TAN("切线", Category.MATH, null, "value"),
                 TAND("切线 以度为单位的参数", Category.MATH, null),
                 TANH("双曲正切", Category.MATH, null),
                 TERMINATE_BACKEND("终止其后端进程具有指定进程 ID 的会话", Category.SYSTEM, DatabaseType.PostgreSQL),
@@ -1207,8 +1208,8 @@ public interface SystemFunction {
                 TO_BINARY_DOUBLE("将给定的表达式转换为双精度浮点数", Category.TYPE_CAST, DatabaseType.ORACLE),
                 TO_BINARY_FLOAT("将给定的表达式转换为浮点数", Category.TYPE_CAST, DatabaseType.ORACLE),
                 TO_BLOB("值转换为 BLOB 值", Category.TYPE_CAST, DatabaseType.ORACLE),
-                TO_CHAR("CHAR", Category.TYPE_CAST, null),
-                TO_DATE("将一个文本类型的 TIMESTAMP 类型数据，转换成 DATE 类型", Category.TYPE_CAST, null),
+                TO_CHAR("CHAR", Category.TYPE_CAST, null, "value,format"),
+                TO_DATE("将一个文本类型的 TIMESTAMP 类型数据，转换成 DATE 类型", Category.TYPE_CAST, null, "string,format"),
                 TO_DAY_SECOND_INTERVAL("换为 INTERVAL DAY TO SECOND 数据类型的值", Category.TYPE_CAST, DatabaseType.ORACLE),
                 TO_DAYS("转换为天数", Category.TYPE_CAST, DatabaseType.MySQL),
                 TO_DECIMAL("转换成 NUMERIC 类型", Category.TYPE_CAST, null),
@@ -1219,7 +1220,7 @@ public interface SystemFunction {
                 TO_MULTI_BYTE("单字节字符转换为相应的多字节字符", Category.TYPE_CAST, DatabaseType.ORACLE),
                 TO_NCHAR("转换为国家字符集", Category.TYPE_CAST, DatabaseType.ORACLE),
                 TO_NCLOB("值转换为 NCLOB 值", Category.TYPE_CAST, DatabaseType.ORACLE),
-                TO_NUMBER("转换成 NUMERIC 类型", Category.TYPE_CAST, null),
+                TO_NUMBER("转换成 NUMERIC 类型", Category.TYPE_CAST, null, "string,format"),
                 TO_PATH("", Category.TYPE_CAST, null),
                 TO_POLYGON("转换成多边形", Category.TYPE_CAST, null),
                 TO_REG_CLASS("将文本关系名称转换为其 OID", Category.CATALOG, DatabaseType.PostgreSQL),
@@ -1234,7 +1235,7 @@ public interface SystemFunction {
                 TO_REG_TYPE_MOD("解析文本字符串，从中提取潜在的类型名称，并翻译其类型修饰符", Category.CATALOG, DatabaseType.PostgreSQL),
                 TO_SECONDS("转换为秒", Category.TYPE_CAST, DatabaseType.MySQL),
                 TO_SINGLE_BYTE("多字节字符转换为相应的单字节字符", Category.TYPE_CAST, DatabaseType.ORACLE),
-                TO_TIMESTAMP("", Category.TYPE_CAST, null),
+                TO_TIMESTAMP("", Category.TYPE_CAST, null, "string,format"),
                 TO_TIMESTAMP_TZ("", Category.TYPE_CAST, null),
                 TO_TS_QUERY("根据指定或默认配置规范化单词", Category.FULLTEXT, DatabaseType.PostgreSQL),
                 TO_TS_VECTOR("将 JSON 文档中的每个字符串值转换为 ，根据指定或默认配置对单词进行规范化", Category.FULLTEXT, DatabaseType.PostgreSQL),
@@ -1247,7 +1248,7 @@ public interface SystemFunction {
                 TRIM("删除前导和尾随空格", Category.STRING, null),
                 TRIM_ARRAY("通过删除最后 N 个元素来修剪数组", Category.ARRAY, DatabaseType.PostgreSQL),
                 TRIM_SCALE("删除尾随零", Category.MATH, null),
-                TRUNC("截断到指定的小数位数", Category.MATH, null),
+                TRUNC("截断到指定的小数位数", Category.MATH, null, "value,precision"),
                 TRUNCATE("截断到指定的小数位数", Category.MATH, null),
                 TRY_ADVISORY_LOCK("获得独占的会话级咨询锁", Category.LOCK, DatabaseType.PostgreSQL),
                 TRY_ADVISORY_LOCK_SHARED("共享会话级的咨询锁", Category.LOCK, DatabaseType.PostgreSQL),
@@ -1285,7 +1286,7 @@ public interface SystemFunction {
                 UNIX_TIMESTAMP("UNIX 时间戳", Category.DATE_TIME, null),
                 UNNEST("将 a 扩展为一组行，每个词位一个", Category.ARRAY, null),
                 UPDATE_XML("替换XML片段", Category.XML, null),
-                UPPER("大写", Category.STRING, null),
+                UPPER("大写", Category.STRING, null, "string"),
                 UPPER_INC("该范围的上限是否包含", Category.RANGE, DatabaseType.PostgreSQL),
                 UPPER_INF("范围是否有上限", Category.RANGE, DatabaseType.PostgreSQL),
                 UPPER_LIMIT("取字符串与其最近的上限", Category.STRING, null),
@@ -1360,6 +1361,7 @@ public interface SystemFunction {
                         this.category = category;
                         this.database = database;
                         this.synonym = null;
+                        this.params = null;
                 }
 
                 META(String title, Category category, DatabaseType database, META synonym) {
@@ -1367,12 +1369,22 @@ public interface SystemFunction {
                         this.category = category;
                         this.database = database;
                         this.synonym = synonym;
+                        this.params = null;
+                }
+
+                META(String title, Category category, DatabaseType database, String params) {
+                        this.title = title;
+                        this.category = category;
+                        this.database = database;
+                        this.synonym = null;
+                        this.params = params;
                 }
 
                 private final String title;
                 private final Category category;
                 private final DatabaseType database;
                 private final META synonym;
+                private final String params;
 
                 public String title() {
                         return title;
@@ -1394,6 +1406,32 @@ public interface SystemFunction {
                         return database;
                 }
 
+                /**
+                 * 获取该函数可用的参数名称列表（逗号分隔）
+                 * @return 参数名称列表字符串
+                 */
+                public String params() {
+                        return params;
+                }
+
+                /**
+                 * 检查参数名称是否在该函数允许的参数列表中
+                 * @param paramName 参数名称
+                 * @return 是否允许使用该参数
+                 */
+                public boolean isValidParam(String paramName) {
+                        if (params == null || paramName == null) {
+                                return false;
+                        }
+                        String[] allowedParams = params.split(",");
+                        for (String param : allowedParams) {
+                                if (param.trim().equals(paramName)) {
+                                        return true;
+                                }
+                        }
+                        return false;
+                }
+
         }
 
         /**
@@ -1410,13 +1448,114 @@ public interface SystemFunction {
         void params(List<String> params);
 
         /**
+         * 获取本数据库中函数的参数顺序（语义名称列表）
+         * <p>
+         * 例如：SUBSTRING(str, pos, len) 返回 ["string", "position", "length"]
+         * <p>
+         * 各数据库实现可覆盖此方法以指定本数据库的参数顺序
+         * <p>
+         * 默认实现会从 formulaDefine() 中自动提取参数顺序
+         * @return 参数名称列表，如果返回null则表示参数顺序与标准顺序一致无需重排
+         */
+        default List<String> paramOrder(){
+                // 从 formulaDefine() 中自动提取参数顺序
+                String formula = formulaDefine();
+                if (formula != null && formula.contains("${")) {
+                        return extractPlaceholders(formula);
+                }
+                return null;
+        };
+
+        /**
+         * 根据目标数据库的参数顺序重新排序参数
+         * <p>
+         * 将源顺序的参数列表转换为目标数据库需要的顺序
+         * @param sourceOrder 源数据库的参数顺序定义（语义名称列表）
+         * @param params 要重排的参数列表（按源数据库顺序排列）
+         * @return 重排后的参数列表（按本数据库顺序排列）
+         */
+        default List<String> reorderParams(List<String> sourceOrder, List<String> params){
+                if (null == sourceOrder || null == params || params.isEmpty()) {
+                        return params;
+                }
+                List<String> targetOrder = this.paramOrder();
+                if (null == targetOrder || targetOrder.isEmpty()) {
+                        return params;
+                }
+                // 如果顺序相同，直接返回
+                if (sourceOrder.equals(targetOrder)) {
+                        return params;
+                }
+                // 构建参数索引映射
+                java.util.Map<String, String> paramMap = new java.util.LinkedHashMap<>();
+                for (int i = 0; i < sourceOrder.size() && i < params.size(); i++) {
+                        paramMap.put(sourceOrder.get(i), params.get(i));
+                }
+                // 按目标顺序重新排列参数
+                List<String> result = new java.util.ArrayList<>();
+                for (String key : targetOrder) {
+                        String param = paramMap.get(key);
+                        if (param != null) {
+                                result.add(param);
+                        }
+                }
+                // 添加未映射的额外参数
+                for (int i = sourceOrder.size(); i < params.size(); i++) {
+                        result.add(params.get(i));
+                }
+                return result;
+        };
+
+        /**
          * 转换后格式 包含参数
+         * <p>
+         * 如果 formulaDefine 包含 ${paramName} 占位符，则替换为实际参数值
+         * 例如：POSITION(${substring} IN ${string}) 替换为 POSITION('B' IN 'ABC')
+         * 占位符名称按出现顺序自动提取，无需单独定义 paramOrder
+         * <p>
+         * 只有在 META.params() 中定义的参数名称才能使用
+         * <p>
+         * 如果 formulaDefine 返回 null，则使用默认格式 define(param1, param2, ...)
          * @return 转换后格式
          */
         default String formula() {
+                List<String> params = params();
+                
+                // 如果 formulaDefine 包含 ${} 占位符，进行参数替换
+                String formulaDef = formulaDefine();
+                if (formulaDef != null && formulaDef.contains("${")) {
+                        String result = formulaDef;
+                        if (null != params) {
+                                // 从 formulaDefine 中提取所有占位符名称（按出现顺序）
+                                java.util.List<String> placeholders = extractPlaceholders(formulaDef);
+                                // 验证参数名称是否在 META.params() 中定义
+                                META meta = meta();
+                                for (String placeholder : placeholders) {
+                                        if (!meta.isValidParam(placeholder)) {
+                                                // 参数名称未在 META 中定义，使用默认格式
+                                                return defaultFormula(params);
+                                        }
+                                }
+                                for (int i = 0; i < placeholders.size() && i < params.size(); i++) {
+                                        String placeholder = "${" + placeholders.get(i) + "}";
+                                        result = result.replace(placeholder, params.get(i));
+                                }
+                        }
+                        return result;
+                }
+                
+                // 默认格式：define(param1, param2, ...)
+                return defaultFormula(params);
+        }
+        
+        /**
+         * 默认格式：define(param1, param2, ...)
+         * @param params 参数列表
+         * @return 格式化字符串
+         */
+        default String defaultFormula(List<String> params) {
                 StringBuilder formula = new StringBuilder();
                 formula.append(define()).append("(");
-                List<String> params = params();
                 if(null != params) {
                         boolean first = true;
                         for(String param : params) {
@@ -1430,6 +1569,25 @@ public interface SystemFunction {
                 formula.append(")");
                 return formula.toString();
         }
+        
+        /**
+         * 从 define 中提取所有 ${paramName} 占位符名称（按出现顺序）
+         * @param define 函数定义字符串
+         * @return 占位符名称列表
+         */
+        static java.util.List<String> extractPlaceholders(String define) {
+                java.util.List<String> placeholders = new java.util.ArrayList<>();
+                if (define == null) {
+                        return placeholders;
+                }
+                // 匹配 ${paramName} 格式的占位符
+                java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("\\$\\{(\\w+)\\}");
+                java.util.regex.Matcher matcher = pattern.matcher(define);
+                while (matcher.find()) {
+                        placeholders.add(matcher.group(1));
+                }
+                return placeholders;
+        }
 
         META meta();
 
@@ -1438,5 +1596,16 @@ public interface SystemFunction {
          * @return String
          */
         String define();
+        
+        /**
+         * 带参数占位符的完整格式
+         * <p>
+         * 例如：POSITION(${substring} IN ${string})
+         * 如果返回 null，则使用默认格式 define(param1, param2, ...)
+         * @return 带占位符的格式字符串
+         */
+        default String formulaDefine() {
+                return null;
+        }
 
 }

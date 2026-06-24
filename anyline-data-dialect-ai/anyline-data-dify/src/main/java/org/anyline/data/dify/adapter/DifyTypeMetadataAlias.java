@@ -15,8 +15,6 @@
  */
 
 
-
-
 package org.anyline.data.dify.adapter;
 
 import org.anyline.metadata.type.TypeMetadataAlias;

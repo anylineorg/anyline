@@ -15,8 +15,6 @@
  */
 
 
-
-
 package org.anyline.data.jdbc.highgo;
 
 import org.anyline.metadata.type.TypeMetadataAlias;

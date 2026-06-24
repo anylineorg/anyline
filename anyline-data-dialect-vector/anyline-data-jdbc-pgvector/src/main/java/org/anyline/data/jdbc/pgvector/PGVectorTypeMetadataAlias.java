@@ -15,8 +15,6 @@
  */
 
 
-
-
 package org.anyline.data.jdbc.pgvector;
 
 import org.anyline.metadata.type.TypeMetadataAlias;

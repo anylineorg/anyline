@@ -15,8 +15,6 @@
  */
 
 
-
-
 package org.anyline.data.jdbc.db2;
 
 import org.anyline.metadata.type.TypeMetadataAlias;

@@ -15,8 +15,6 @@
  */
 
 
-
-
 package org.anyline.data.neo4j.adapter;
 
 import org.anyline.metadata.type.TypeMetadataAlias;

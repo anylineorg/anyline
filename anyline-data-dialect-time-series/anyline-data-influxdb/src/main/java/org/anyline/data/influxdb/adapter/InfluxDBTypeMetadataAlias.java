@@ -15,8 +15,6 @@
  */
 
 
-
-
 package org.anyline.data.influxdb.adapter;
 
 import org.anyline.metadata.type.TypeMetadataAlias;

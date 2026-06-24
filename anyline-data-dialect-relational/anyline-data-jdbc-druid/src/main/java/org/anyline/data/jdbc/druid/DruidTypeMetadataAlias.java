@@ -15,8 +15,6 @@
  */
 
 
-
-
 package org.anyline.data.jdbc.druid;
 
 import org.anyline.metadata.type.TypeMetadataAlias;

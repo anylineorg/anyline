@@ -15,8 +15,6 @@
  */
 
 
-
-
 package org.anyline.data.nebula.adapter;
 
 import org.anyline.metadata.type.TypeMetadataAlias;

@@ -15,8 +15,6 @@
  */
 
 
-
-
 package org.anyline.data.jdbc.h2;
 
 import org.anyline.metadata.type.TypeMetadataAlias;

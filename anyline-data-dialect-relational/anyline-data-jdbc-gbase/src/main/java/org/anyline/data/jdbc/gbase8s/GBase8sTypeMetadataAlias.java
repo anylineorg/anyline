@@ -15,8 +15,6 @@
  */
 
 
-
-
 package org.anyline.data.jdbc.gbase8s;
 
 import org.anyline.metadata.type.TypeMetadataAlias;

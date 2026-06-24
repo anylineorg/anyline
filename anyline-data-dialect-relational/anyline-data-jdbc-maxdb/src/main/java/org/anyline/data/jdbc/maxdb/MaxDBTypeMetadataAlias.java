@@ -15,8 +15,6 @@
  */
 
 
-
-
 package org.anyline.data.jdbc.maxdb;
 
 import org.anyline.metadata.type.TypeMetadataAlias;

@@ -15,8 +15,6 @@
  */
 
 
-
-
 package org.anyline.data.jdbc.xugu;
 
 import org.anyline.metadata.type.TypeMetadataAlias;
