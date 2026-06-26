@@ -3770,7 +3770,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 */
 	@Override
 	public List<Run> buildAlterRun(DataRuntime runtime, Table meta, Table update) throws Exception {
-		List<Run> runs = super.buildAlterRun(runtime, meta);
+		List<Run> runs = super.buildAlterRun(runtime, meta, update);
 		//修改表备注
 		String uv = update.getComment();
 		String ov = meta.getComment();
