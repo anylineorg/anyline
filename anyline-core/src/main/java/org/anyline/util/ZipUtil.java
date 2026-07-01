@@ -87,6 +87,7 @@ public class ZipUtil {
 			}
 		}
 	}
+	@SuppressWarnings("resource")
 	public static InputStream read(File zip, String item) {
 		InputStream in = null;
 		ZipFile _zip = null;
@@ -97,9 +98,16 @@ public class ZipUtil {
 		try {
 			_zip = new ZipFile(zip);
 			ZipEntry _item = _zip.getEntry(item);
+			if (null == _item) {
+				_zip.close();
+				return null;
+			}
 			in = _zip.getInputStream(_item);
+			// 调用方负责在使用完 InputStream 后关闭它（从而释放 ZipFile）
 			return in;
 		} catch (Exception e) {
+			log.error("read zip exception:", e);
+			try { if (_zip != null) _zip.close(); } catch (Exception ignored) {}
 			return null;
 		}
 	}
@@ -152,10 +160,16 @@ public class ZipUtil {
 		ZipOutputStream out = new ZipOutputStream(Files.newOutputStream(src.toPath()), charset);
 		int len = -1;
 		byte[] buffer = new byte[1024*8];
+		Set<String> processedItems = new HashSet<>();
 		try {
 			while (entries.hasMoreElements()) {
 				ZipEntry entity = entries.nextElement();
 				String name = entity.getName();
+
+				if (entity.isDirectory()) {
+					out.putNextEntry(new ZipEntry(name));
+					continue;
+				}
 
 				InputStream is = zip.getInputStream(entity);        //原文件流
 				out.putNextEntry(new ZipEntry(name));
@@ -170,6 +184,7 @@ public class ZipUtil {
 						}
 						in.close();
 						replace = true;
+						processedItems.add(item);
 						break;
 					}
 				}
@@ -180,6 +195,17 @@ public class ZipUtil {
 					}
 				}
 				is.close();
+			}
+			//添加新文件（不在原ZIP中的文件）
+			for (String item : items.keySet()) {
+				if (!processedItems.contains(item)) {
+					InputStream in = items.get(item);
+					out.putNextEntry(new ZipEntry(item));
+					while ((len = in.read(buffer)) != -1) {
+						out.write(buffer, 0, len);
+					}
+					in.close();
+				}
 			}
 		}finally {
 			out.close();

@@ -78,14 +78,14 @@ public class DomUtil {
     public static List<Element> elements(boolean shelf, Element root, List<String> tags, boolean recursion) {
         List<Element> list = new ArrayList<>();
         if(shelf){
-            if (tags.contains(root.getName())) {
+            if (tags.contains(root.getName()) || tags.contains(root.getQName().getName())) {
                 list.add(root);
             }
         }
         Iterator<Element> it = root.elementIterator();
         while(it.hasNext()) {
-            Element e= it.next();
-            if (tags.contains(e.getName())) {
+            Element e = it.next();
+            if (tags.contains(e.getName()) || tags.contains(e.getQName().getName())) {
                 list.add(e);
             }
             if(recursion) {

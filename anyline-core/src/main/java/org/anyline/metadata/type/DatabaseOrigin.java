@@ -18,5 +18,5 @@
 package org.anyline.metadata.type;
 
 public enum DatabaseOrigin {
-    None, MySQL, Postgres, Oracle
+    None, MySQL, Postgres, Oracle, MSSQL
 }

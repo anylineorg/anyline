@@ -26,14 +26,27 @@ import org.anyline.metadata.type.DatabaseType;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * 系统函数工厂
+ * <p>
+ * 维护两个查找维度：
+ * <ul>
+ *   <li><b>metas</b> — 按 DatabaseType → META → SystemFunction，用于 META 级跨库映射</li>
+ *   <li><b>names</b> — 按 DatabaseType → 函数名 → SystemFunction，用于名称级查找和 ILLEGAL 检测</li>
+ * </ul>
+ * 查找策略：先在具体 DatabaseType 中查找，未命中则回退到 DatabaseOrigin
+ */
 public class SystemFunctionFactory {
     private static final Log log = LogProxy.get(SystemFunctionFactory.class);
 
-    //DatabaseOrigin || DatabaseType
     protected static Map<Object, Map<SystemFunction.META, SystemFunction>> metas = new HashMap<>();
     protected static Map<Object, Map<String, SystemFunction>> names = new HashMap<>();
 
-    //DatabaseOrigin || DatabaseType
+    /**
+     * 注册函数定义（同时注册到 metas 和 names 两个 Map）
+     * @param type     DatabaseOrigin 或 DatabaseType
+     * @param function 函数定义
+     */
     public static void reg(Object type, SystemFunction function) {
         SystemFunction.META meta = function.meta();
         Map<SystemFunction.META, SystemFunction> meta_maps = metas.get(type);
@@ -47,9 +60,15 @@ public class SystemFunctionFactory {
             name_maps = new HashMap<>();
             names.put(type, name_maps);
         }
-        name_maps.put(function.define(), function);
+        name_maps.put(function.title(), function);
 
     }
+    /**
+     * 按 META 查找函数（先查 type，未命中回退到 type.origin()）
+     * @param type 数据库类型
+     * @param meta 统一函数元数据标识
+     * @return 函数定义，未找到返回 null
+     */
     public static SystemFunction function(DatabaseType type, SystemFunction.META meta) {
         SystemFunction function = null;
         Map<SystemFunction.META, SystemFunction> maps = metas.get(type);
@@ -69,10 +88,10 @@ public class SystemFunctionFactory {
     }
 
     /**
-     * 根据name 定位函数
+     * 按函数名查找（先查原名，再查大写，未命中回退到 type.origin()）
      * @param type 数据库类型
-     * @param name 名称
-     * @return SystemFunction
+     * @param name 函数名称（SQL 中使用的名称）
+     * @return 函数定义，未找到返回 null
      */
     public static SystemFunction function(DatabaseType type, String name) {
         SystemFunction function = null;

@@ -1029,86 +1029,86 @@ public interface SystemFunction {
                 SPLIT_PART("以给定的字符串为分隔符，来分隔另一个字符串，并取出指定的分隔部分", Category.STRING, DatabaseType.PostgreSQL),
                 SPLIT_WAL_FILE_NAME("从 WAL 文件名中提取序列号和时间线 ID", Category.REPLICATION, DatabaseType.PostgreSQL),
                 SQRT("平方根", Category.MATH, null, "value"),
-                ST_AREA("多边形或多多边形区域", Category.SPATIAL, null),
-                ST_BUFFER("与几何给定距离内的点的几何", Category.SPATIAL, null),
-                ST_BUFFER_STRATEGY("生成ST_BUFFER的策略选项", Category.SPATIAL, null),
-                ST_CENTROID("质心作为点", Category.SPATIAL, null),
-                ST_COLLECT("将空间值聚合到集合中", Category.SPATIAL, null),
-                ST_CONTAINS("一个几何是否包含另一个几何", Category.SPATIAL, null),
-                ST_CONVEX_HULL("几何凸包", Category.SPATIAL, null),
-                ST_CROSSES("一个几何体是否与另一个几何体交叉", Category.SPATIAL, null),
-                ST_DIFFERENCE("两个几何形状的点设置差异", Category.SPATIAL, null),
-                ST_DIMENSION("几何尺寸", Category.SPATIAL, null),
-                ST_DISJOINT("一个几何是否与另一个几何不相交", Category.SPATIAL, null),
-                ST_DISTANCE("一个几何体与另一个几何体的距离", Category.SPATIAL, null),
-                ST_DISTANCE_SPHERE("两个几何形状之间的地球上最小距离", Category.SPATIAL, null),
-                ST_END_POINT("LINESTRING的终点", Category.SPATIAL, null),
-                ST_ENVELOPE("几何的MBR", Category.SPATIAL, null),
-                ST_EQUALS("一个几何是否等于另一个几何", Category.SPATIAL, null),
-                ST_EXTERIOR_RING("多边形的外环", Category.SPATIAL, null),
-                ST_FRECHET_DISTANCE("一个几何体与另一个几何体的离散FRÉCHET距离", Category.SPATIAL, null),
-                ST_GEOMETRY_COLLECTION_FROM_TEXT("从WKT几何集合", Category.SPATIAL, null),
-                ST_GEOMETRY_COLLECTION_FROM_WKB("从WKB几何集合", Category.SPATIAL, null),
-                ST_GEOMETRY_FROM_GEO_JSON("从GEOJSON对象生成几何图形", Category.SPATIAL, null),
-                ST_GEOMETRY_FROM_TEXT("从WKT几何", Category.SPATIAL, null),
-                ST_GEOMETRY_FROM_WKB("从WKB几何", Category.SPATIAL, null),
-                ST_GEOMETRY_HASH("生成地理哈希值", Category.SPATIAL, null),
-                ST_GEOMETRY_N("从几何集合中第N个几何", Category.SPATIAL, null),
-                ST_GEOMETRY_TYPE("几何类型的名称", Category.SPATIAL, null),
-                ST_HAUSDORFF_DISTANCE("一个几何与另一个几何的离散豪斯多夫距离", Category.SPATIAL, null),
-                ST_INTERIOR_RING_N("多边形的第N个内环", Category.SPATIAL, null),
-                ST_INTERSECTION("点集两个几何的交点", Category.SPATIAL, null),
-                ST_INTERSECTS("一个几何体是否与另一个几何体相交", Category.SPATIAL, null),
-                ST_IS_CLOSED("几何体是否封闭且简单", Category.SPATIAL, null),
-                ST_IS_EMPTY("几何是否为空", Category.SPATIAL, null),
-                ST_IS_OPEN("几何体是否开放", Category.SPATIAL, null),
-                ST_IS_SIMPLE("几何形状是否简单", Category.SPATIAL, null),
-                ST_IS_VALID("几何是否有效", Category.SPATIAL, null),
-                ST_LAT_FROM_GEO_HASH("从GEOHASH值纬度", Category.SPATIAL, null),
-                ST_LATITUDE("点的纬度", Category.SPATIAL, null),
-                ST_LENGTH("LINESTRING的长度", Category.SPATIAL, null),
-                ST_LINE_INTERPOLATE_POINT("沿LINESTRING指向给定百分比", Category.SPATIAL, null),
-                ST_LINE_INTERPOLATE_POINTS("沿LINESTRING指向给定百分比的", Category.SPATIAL, null),
-                ST_LINE_STRING_FROM_TEXT("从WKT构造LINESTRING", Category.SPATIAL, null),
-                ST_LINE_STRING_FROM_WKB("从WKB构造LINESTRING", Category.SPATIAL, null),
-                ST_LONG_FROM_GEO_HASH("从GEOHASH值经度", Category.SPATIAL, null),
-                ST_LONGITUDE("点的经度", Category.SPATIAL, null),
-                ST_MAKE_ENVELOPE("围绕两点的矩形", Category.SPATIAL, null),
-                ST_MULTI_LINE_STRING_FROM_TEXT("从WKT构造MULTILINESTRING", Category.SPATIAL, null),
-                ST_MULTI_LINE_STRING_FROM_WKB("从WKB构造MULTILINESTRING", Category.SPATIAL, null),
-                ST_MULTI_POINT_FROM_TEXT("从WKT构造MULTIPOINT", Category.SPATIAL, null),
-                ST_MULTI_POINT_FROM_WKB("从WKB构造MULTIPOINT", Category.SPATIAL, null),
-                ST_MULTI_POLYGON_FROM_TEXT("从WKT构造多多边形", Category.SPATIAL, null),
-                ST_MULTI_POLYGON_FROM_WKB("从WKB构造多多边形", Category.SPATIAL, null),
-                ST_NUM_GEOMETRIES("几何集合中的几何数", Category.SPATIAL, null),
-                ST_NUM_INTERIOR_RINGS("多边形中的内环数", Category.SPATIAL, null),
-                ST_NUM_POINTS("LINESTRING中的点数", Category.SPATIAL, null),
-                ST_OVERLAPS("一个几何体是否与另一个几何体重叠", Category.SPATIAL, null),
-                ST_PATH_CLOSE("将路径转换为封闭形式", Category.SPATIAL, null),
-                ST_PATH_OPEN("将路径转换为开放形式", Category.SPATIAL, null),
-                ST_POINT_AT_DISTANCE("沿LINESTRING给定距离的点", Category.SPATIAL, null),
-                ST_POINT_COUNT("点数量", Category.SPATIAL, null),
-                ST_POINT_FROM_GEO_HASH("将地理哈希值转换为POINT值", Category.SPATIAL, null),
-                ST_POINT_FROM_TEXT("从WKT构造点", Category.SPATIAL, null),
-                ST_POINT_FROM_WKB("从WKB构造点", Category.SPATIAL, null),
-                ST_POINT_N("从LINESTRING第N个点", Category.SPATIAL, null),
-                ST_POLYGON_FROM_TEXT("从WKT构造多边形", Category.SPATIAL, null),
-                ST_POLYGON_FROM_WKB("从WKB构造多边形", Category.SPATIAL, null),
-                ST_SIMPLIFY("简化的几何", Category.SPATIAL, null),
-                ST_SRID("几何的空间参考系统ID", Category.SPATIAL, null),
-                ST_START_POINT("LINESTRING的起点", Category.SPATIAL, null),
-                ST_SWAP_XY("交换X/Y坐标的参数", Category.SPATIAL, null),
-                ST_SYM_DIFFERENCE("点集两个几何的对称差值", Category.SPATIAL, null),
-                ST_TO_GEO_JSON("从几何图形生成GEO JSON对象", Category.SPATIAL, null),
-                ST_TO_WKB("从内部几何格式转换为WKB", Category.SPATIAL, null),
-                ST_TO_WKT("从内部几何格式转换为WKT", Category.SPATIAL, null),
-                ST_TOUCHES("一个几何体是否接触另一个几何体", Category.SPATIAL, null),
-                ST_TRANSFORM("变换几何坐标", Category.SPATIAL, null),
-                ST_UNION("点集两个几何的并集", Category.SPATIAL, null),
-                ST_VALIDATE("已验证的几何图形", Category.SPATIAL, null),
-                ST_WITHIN("一个几何是否在另一个几何中", Category.SPATIAL, null),
-                ST_X("点的X坐标", Category.SPATIAL, null),
-                ST_Y("点的Y坐标", Category.SPATIAL, null),
+                ST_AREA("多边形或多多边形区域", Category.SPATIAL, null, "geometry"),
+                ST_BUFFER("与几何给定距离内的点的几何", Category.SPATIAL, null, "geometry,distance"),
+                ST_BUFFER_STRATEGY("生成ST_BUFFER的策略选项", Category.SPATIAL, null, "geometry,strategy"),
+                ST_CENTROID("质心作为点", Category.SPATIAL, null, "geometry"),
+                ST_COLLECT("将空间值聚合到集合中", Category.SPATIAL, null, "geometry1,geometry2"),
+                ST_CONTAINS("一个几何是否包含另一个几何", Category.SPATIAL, null, "geometry1,geometry2"),
+                ST_CONVEX_HULL("几何凸包", Category.SPATIAL, null, "geometry"),
+                ST_CROSSES("一个几何体是否与另一个几何体交叉", Category.SPATIAL, null, "geometry1,geometry2"),
+                ST_DIFFERENCE("两个几何形状的点设置差异", Category.SPATIAL, null, "geometry1,geometry2"),
+                ST_DIMENSION("几何尺寸", Category.SPATIAL, null, "geometry"),
+                ST_DISJOINT("一个几何是否与另一个几何不相交", Category.SPATIAL, null, "geometry1,geometry2"),
+                ST_DISTANCE("一个几何体与另一个几何体的距离", Category.SPATIAL, null, "geometry1,geometry2"),
+                ST_DISTANCE_SPHERE("两个几何形状之间的地球上最小距离", Category.SPATIAL, null, "geometry1,geometry2"),
+                ST_END_POINT("LINESTRING的终点", Category.SPATIAL, null, "geometry"),
+                ST_ENVELOPE("几何的MBR", Category.SPATIAL, null, "geometry"),
+                ST_EQUALS("一个几何是否等于另一个几何", Category.SPATIAL, null, "geometry1,geometry2"),
+                ST_EXTERIOR_RING("多边形的外环", Category.SPATIAL, null, "geometry"),
+                ST_FRECHET_DISTANCE("一个几何体与另一个几何体的离散FRÉCHET距离", Category.SPATIAL, null, "geometry1,geometry2"),
+                ST_GEOMETRY_COLLECTION_FROM_TEXT("从WKT几何集合", Category.SPATIAL, null, "wkt"),
+                ST_GEOMETRY_COLLECTION_FROM_WKB("从WKB几何集合", Category.SPATIAL, null, "wkb"),
+                ST_GEOMETRY_FROM_GEO_JSON("从GEOJSON对象生成几何图形", Category.SPATIAL, null, "geojson"),
+                ST_GEOMETRY_FROM_TEXT("从WKT几何", Category.SPATIAL, null, "wkt"),
+                ST_GEOMETRY_FROM_WKB("从WKB几何", Category.SPATIAL, null, "wkb"),
+                ST_GEOMETRY_HASH("生成地理哈希值", Category.SPATIAL, null, "hash"),
+                ST_GEOMETRY_N("从几何集合中第N个几何", Category.SPATIAL, null, "geometry,n"),
+                ST_GEOMETRY_TYPE("几何类型的名称", Category.SPATIAL, null, "geometry"),
+                ST_HAUSDORFF_DISTANCE("一个几何与另一个几何的离散豪斯多夫距离", Category.SPATIAL, null, "geometry1,geometry2"),
+                ST_INTERIOR_RING_N("多边形的第N个内环", Category.SPATIAL, null, "geometry,n"),
+                ST_INTERSECTION("点集两个几何的交点", Category.SPATIAL, null, "geometry1,geometry2"),
+                ST_INTERSECTS("一个几何体是否与另一个几何体相交", Category.SPATIAL, null, "geometry1,geometry2"),
+                ST_IS_CLOSED("几何体是否封闭且简单", Category.SPATIAL, null, "geometry"),
+                ST_IS_EMPTY("几何是否为空", Category.SPATIAL, null, "geometry"),
+                ST_IS_OPEN("几何体是否开放", Category.SPATIAL, null, "geometry"),
+                ST_IS_SIMPLE("几何形状是否简单", Category.SPATIAL, null, "geometry"),
+                ST_IS_VALID("几何是否有效", Category.SPATIAL, null, "geometry"),
+                ST_LAT_FROM_GEO_HASH("从GEOHASH值纬度", Category.SPATIAL, null, "hash"),
+                ST_LATITUDE("点的纬度", Category.SPATIAL, null, "point"),
+                ST_LENGTH("LINESTRING的长度", Category.SPATIAL, null, "geometry"),
+                ST_LINE_INTERPOLATE_POINT("沿LINESTRING指向给定百分比", Category.SPATIAL, null, "geometry,fraction"),
+                ST_LINE_INTERPOLATE_POINTS("沿LINESTRING指向给定百分比的", Category.SPATIAL, null, "geometry,fraction"),
+                ST_LINE_STRING_FROM_TEXT("从WKT构造LINESTRING", Category.SPATIAL, null, "wkt"),
+                ST_LINE_STRING_FROM_WKB("从WKB构造LINESTRING", Category.SPATIAL, null, "wkb"),
+                ST_LONG_FROM_GEO_HASH("从GEOHASH值经度", Category.SPATIAL, null, "hash"),
+                ST_LONGITUDE("点的经度", Category.SPATIAL, null, "point"),
+                ST_MAKE_ENVELOPE("围绕两点的矩形", Category.SPATIAL, null, "x,y"),
+                ST_MULTI_LINE_STRING_FROM_TEXT("从WKT构造MULTILINESTRING", Category.SPATIAL, null, "wkt"),
+                ST_MULTI_LINE_STRING_FROM_WKB("从WKB构造MULTILINESTRING", Category.SPATIAL, null, "wkb"),
+                ST_MULTI_POINT_FROM_TEXT("从WKT构造MULTIPOINT", Category.SPATIAL, null, "wkt"),
+                ST_MULTI_POINT_FROM_WKB("从WKB构造MULTIPOINT", Category.SPATIAL, null, "wkb"),
+                ST_MULTI_POLYGON_FROM_TEXT("从WKT构造多多边形", Category.SPATIAL, null, "wkt"),
+                ST_MULTI_POLYGON_FROM_WKB("从WKB构造多多边形", Category.SPATIAL, null, "wkb"),
+                ST_NUM_GEOMETRIES("几何集合中的几何数", Category.SPATIAL, null, "geometry"),
+                ST_NUM_INTERIOR_RINGS("多边形中的内环数", Category.SPATIAL, null, "geometry"),
+                ST_NUM_POINTS("LINESTRING中的点数", Category.SPATIAL, null, "geometry"),
+                ST_OVERLAPS("一个几何体是否与另一个几何体重叠", Category.SPATIAL, null, "geometry1,geometry2"),
+                ST_PATH_CLOSE("将路径转换为封闭形式", Category.SPATIAL, null, "geometry"),
+                ST_PATH_OPEN("将路径转换为开放形式", Category.SPATIAL, null, "geometry"),
+                ST_POINT_AT_DISTANCE("沿LINESTRING给定距离的点", Category.SPATIAL, null, "geometry,distance"),
+                ST_POINT_COUNT("点数量", Category.SPATIAL, null, "geometry"),
+                ST_POINT_FROM_GEO_HASH("将地理哈希值转换为POINT值", Category.SPATIAL, null, "hash"),
+                ST_POINT_FROM_TEXT("从WKT构造点", Category.SPATIAL, null, "wkt"),
+                ST_POINT_FROM_WKB("从WKB构造点", Category.SPATIAL, null, "wkb"),
+                ST_POINT_N("从LINESTRING第N个点", Category.SPATIAL, null, "geometry,n"),
+                ST_POLYGON_FROM_TEXT("从WKT构造多边形", Category.SPATIAL, null, "wkt"),
+                ST_POLYGON_FROM_WKB("从WKB构造多边形", Category.SPATIAL, null, "wkb"),
+                ST_SIMPLIFY("简化的几何", Category.SPATIAL, null, "geometry,tolerance"),
+                ST_SRID("几何的空间参考系统ID", Category.SPATIAL, null, "geometry"),
+                ST_START_POINT("LINESTRING的起点", Category.SPATIAL, null, "geometry"),
+                ST_SWAP_XY("交换X/Y坐标的参数", Category.SPATIAL, null, "geometry"),
+                ST_SYM_DIFFERENCE("点集两个几何的对称差值", Category.SPATIAL, null, "geometry1,geometry2"),
+                ST_TO_GEO_JSON("从几何图形生成GEO JSON对象", Category.SPATIAL, null, "geometry"),
+                ST_TO_WKB("从内部几何格式转换为WKB", Category.SPATIAL, null, "geometry"),
+                ST_TO_WKT("从内部几何格式转换为WKT", Category.SPATIAL, null, "geometry"),
+                ST_TOUCHES("一个几何体是否接触另一个几何体", Category.SPATIAL, null, "geometry1,geometry2"),
+                ST_TRANSFORM("变换几何坐标", Category.SPATIAL, null, "geometry,srid"),
+                ST_UNION("点集两个几何的并集", Category.SPATIAL, null, "geometry1,geometry2"),
+                ST_VALIDATE("已验证的几何图形", Category.SPATIAL, null, "geometry"),
+                ST_WITHIN("一个几何是否在另一个几何中", Category.SPATIAL, null, "geometry1,geometry2"),
+                ST_X("点的X坐标", Category.SPATIAL, null, "point"),
+                ST_Y("点的Y坐标", Category.SPATIAL, null, "point"),
                 STANDARD_HASH("计算给定表达式哈希值", Category.CRYPTO, DatabaseType.ORACLE),
                 STARTS_WITH("是否字符串以前缀开头", Category.STRING, null),
                 STATEMENT_DIGEST("计算语句摘要哈希值", Category.SYSTEM, DatabaseType.MySQL),
@@ -1382,6 +1382,11 @@ public interface SystemFunction {
 
                 private final String title;
                 private final Category category;
+                /**
+                 * 数据库独有标记
+                 * null  → 跨库兼容（所有数据库都支持）
+                 * 非 null → 仅此数据库支持
+                 */
                 private final DatabaseType database;
                 private final META synonym;
                 private final String params;
@@ -1398,40 +1403,51 @@ public interface SystemFunction {
                         return category;
                 }
 
-                /**
-                 * 数据库独有标记
-                 * @return null=需跨数据库兼容映射; DatabaseType.PostgreSQL/DatabaseType.ORACLE/DatabaseType.MySQL=该数据库独有无需兼容
-                 */
-                public DatabaseType database() {
-                        return database;
-                }
+        /**
+         * 数据库独有标记
+         * @return null=需跨数据库兼容映射; 非null=仅该数据库支持
+         */
+        public DatabaseType database() {
+                return database;
+        }
 
-                /**
-                 * 获取该函数可用的参数名称列表（逗号分隔）
-                 * @return 参数名称列表字符串
-                 */
-                public String params() {
-                        return params;
+        /**
+         * 判断指定数据库是否支持此 META 对应的函数
+         * @param type 目标数据库类型
+         * @return true=支持; false=不支持（dbExclusive 不为 null 且不等于 type）
+         */
+        public boolean supportedBy(DatabaseType type) {
+                if (database == null) {
+                        return true; // null → 跨库，所有都支持
                 }
+                return database == type;
+        }
 
-                /**
-                 * 检查参数名称是否在该函数允许的参数列表中
-                 * @param paramName 参数名称
-                 * @return 是否允许使用该参数
-                 */
-                public boolean isValidParam(String paramName) {
-                        if (params == null || paramName == null) {
-                                return false;
-                        }
-                        String[] allowedParams = params.split(",");
-                        for (String param : allowedParams) {
-                                if (param.trim().equals(paramName)) {
-                                        return true;
-                                }
-                        }
+        /**
+         * 获取该函数可用的参数名称列表（逗号分隔）
+         * @return 参数名称列表字符串
+         */
+        public String params() {
+                return params;
+        }
+
+        /**
+         * 检查参数名称是否在该函数允许的参数列表中
+         * @param paramName 参数名称
+         * @return 是否允许使用该参数
+         */
+        public boolean isValidParam(String paramName) {
+                if (params == null || paramName == null) {
                         return false;
                 }
-
+                String[] allowedParams = params.split(",");
+                for (String param : allowedParams) {
+                        if (param.trim().equals(paramName)) {
+                                return true;
+                        }
+                }
+                return false;
+        }
         }
 
         /**
@@ -1441,11 +1457,20 @@ public interface SystemFunction {
         DatabaseType database();
 
         /**
-         * 参数,注意参数有可能是个函数
+         * 实参,注意参数有可能是个函数
          * @return list
          */
         List<String> params();
         void params(List<String> params);
+
+        /**
+         * 当前数据库是否支持此函数
+         * @return true=支持(默认); false=不支持
+         */
+        default boolean supported() {
+                return true;
+        }
+        void supported(boolean supported);
 
         /**
          * 获取本数据库中函数的参数顺序（语义名称列表）
@@ -1457,9 +1482,9 @@ public interface SystemFunction {
          * 默认实现会从 formulaDefine() 中自动提取参数顺序
          * @return 参数名称列表，如果返回null则表示参数顺序与标准顺序一致无需重排
          */
-        default List<String> paramOrder(){
+        default List<String> orders(){
                 // 从 formulaDefine() 中自动提取参数顺序
-                String formula = formulaDefine();
+                String formula = formula();
                 if (formula != null && formula.contains("${")) {
                         return extractPlaceholders(formula);
                 }
@@ -1478,7 +1503,7 @@ public interface SystemFunction {
                 if (null == sourceOrder || null == params || params.isEmpty()) {
                         return params;
                 }
-                List<String> targetOrder = this.paramOrder();
+                List<String> targetOrder = this.orders();
                 if (null == targetOrder || targetOrder.isEmpty()) {
                         return params;
                 }
@@ -1518,11 +1543,11 @@ public interface SystemFunction {
          * 如果 formulaDefine 返回 null，则使用默认格式 define(param1, param2, ...)
          * @return 转换后格式
          */
-        default String formula() {
+        default String parse() {
                 List<String> params = params();
                 
                 // 如果 formulaDefine 包含 ${} 占位符，进行参数替换
-                String formulaDef = formulaDefine();
+                String formulaDef = formula();
                 if (formulaDef != null && formulaDef.contains("${")) {
                         String result = formulaDef;
                         if (null != params) {
@@ -1533,7 +1558,7 @@ public interface SystemFunction {
                                 for (String placeholder : placeholders) {
                                         if (!meta.isValidParam(placeholder)) {
                                                 // 参数名称未在 META 中定义，使用默认格式
-                                                return defaultFormula(params);
+                                                return parse(params);
                                         }
                                 }
                                 for (int i = 0; i < placeholders.size() && i < params.size(); i++) {
@@ -1545,7 +1570,7 @@ public interface SystemFunction {
                 }
                 
                 // 默认格式：define(param1, param2, ...)
-                return defaultFormula(params);
+                return parse(params);
         }
         
         /**
@@ -1553,9 +1578,9 @@ public interface SystemFunction {
          * @param params 参数列表
          * @return 格式化字符串
          */
-        default String defaultFormula(List<String> params) {
+        default String parse(List<String> params) {
                 StringBuilder formula = new StringBuilder();
-                formula.append(define()).append("(");
+                formula.append(title()).append("(");
                 if(null != params) {
                         boolean first = true;
                         for(String param : params) {
@@ -1595,16 +1620,16 @@ public interface SystemFunction {
          * 函数名 不包含参数
          * @return String
          */
-        String define();
+        String title();
         
         /**
          * 带参数占位符的完整格式
          * <p>
          * 例如：POSITION(${substring} IN ${string})
-         * 如果返回 null，则使用默认格式 define(param1, param2, ...)
+         * 如果返回 null，则使用默认格式 title(param1, param2, ...)
          * @return 带占位符的格式字符串
          */
-        default String formulaDefine() {
+        default String formula() {
                 return null;
         }
 
