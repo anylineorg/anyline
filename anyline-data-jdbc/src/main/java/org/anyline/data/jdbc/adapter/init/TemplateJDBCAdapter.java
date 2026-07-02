@@ -58,7 +58,7 @@ public abstract class TemplateJDBCAdapter extends AbstractJDBCAdapter {
      * 1.添加TypeMetadataAlias
      * 2.如果有类型转换需要添加writer reader
      * 3.放开以上注释
-     * 4.复制TemplateAdapter到这里
+     * 4.复制 TemplateAdapter 到这里
      *
      *  ***************************************************************************************************************/
 

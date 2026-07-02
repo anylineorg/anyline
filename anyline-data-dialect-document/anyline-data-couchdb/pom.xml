@@ -11,21 +11,9 @@
         <relativePath>../../anyline-dependency/pom.xml</relativePath>
     </parent>
 
-    <artifactId>anyline-data-jdbc-couchdb</artifactId>
+    <artifactId>anyline-data-couchdb</artifactId>
     <packaging>jar</packaging>
-    <name>anyline data jdbc couchdb</name>
+    <name>anyline data couchdb</name>
     <url>http://www.anyline.org/couchdb</url>
 
-    <dependencies>
-        <dependency>
-            <groupId>com.google.code.jcouchdb</groupId>
-            <artifactId>jcouchdb</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.anyline</groupId>
-            <artifactId>anyline-data-jdbc</artifactId>
-        </dependency>
-
-    </dependencies>
 </project>

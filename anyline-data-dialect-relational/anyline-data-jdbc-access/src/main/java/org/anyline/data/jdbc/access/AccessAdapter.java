@@ -35,6 +35,8 @@ import org.anyline.metadata.refer.MetadataFieldRefer;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.metadata.type.TypeMetadata;
 
+import javax.sql.DataSource;
+import java.sql.Connection;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -52,8 +54,6 @@ public class AccessAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
         delimiterFr = "";
         delimiterTo = "";
     }
-
-    private String delimiter;
 
     /* *****************************************************************************************************************
      *
@@ -179,7 +179,7 @@ public class AccessAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
     public void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet<DataRow> set, ConfigStore configs, Boolean placeholder, Boolean unicode, LinkedHashMap<String, Column> columns) {
         super.fillInsertContent(runtime, run, dest, set, configs, placeholder, unicode, columns);
     }
-    
+
     /**
      * insert [命令合成-子流程]<br/>
      * 填充inset命令内容(创建批量INSERT RunPrepare)
@@ -387,6 +387,30 @@ public class AccessAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
     @Override
     public long update(DataRuntime runtime, String random, int batch, Table dest, Object data, ConfigStore configs, List<String> columns) {
         return super.update(runtime, random, batch, dest, data, configs, columns);
+    }
+
+    /**
+     * 多表关联更新
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param prepare 一般通过TableBuilder生成
+     * @param data K-VariableValue 更新值key:需要更新的列 value:通常是关联表的列用VariableValue表示，也可以是常量
+     * @return 影响行数
+     */
+    @Override
+    public long update(DataRuntime runtime, String random, RunPrepare prepare, DataRow data, ConfigStore configs, String ... conditions) {
+        return super.update(runtime, random, prepare, data, configs, conditions);
+    }
+
+    /**
+     * 多表关联更新
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param prepare 一般通过TableBuilder生成
+     * @param data K-VariableValue 更新值key:需要更新的列 value:通常是关联表的列用VariableValue表示，也可以是常量
+     * @return 影响行数
+     */
+    @Override
+    public Run buildUpdateRun(DataRuntime runtime, RunPrepare prepare, DataRow data, ConfigStore configs, Boolean placeholder, Boolean unicode, String ... conditions) {
+        return super.buildUpdateRun(runtime, prepare, data, configs, placeholder, unicode, conditions);
     }
 
     /**
@@ -619,11 +643,6 @@ public class AccessAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
         return super.checkOverride(obj, configs);
     }
 
-    @Override
-    protected Boolean checkOverrideSync(Object obj, ConfigStore configs) {
-        return super.checkOverrideSync(obj, configs);
-    }
-
     /**
      * 检测主键值
      * @param obj Object
@@ -852,7 +871,7 @@ public class AccessAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
      *
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param builder 有可能合个run合成一个 所以提供一个共用builder
-     * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
+     * @param run TextRun
      */
     @Override
     protected Run fillSelectContent(DataRuntime runtime, StringBuilder builder, XMLRun run, Boolean placeholder, Boolean unicode) {
@@ -900,6 +919,32 @@ public class AccessAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
     @Override
     protected Run fillSelectContent(DataRuntime runtime, StringBuilder builder, TableRun run, Boolean placeholder, Boolean unicode) {
         return super.fillSelectContent(runtime, builder, run, placeholder, unicode);
+    }
+
+    /**
+     * 主表
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param builder 有可能合个run合成一个 所以提供一个共用builder
+     * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
+     * @param prepare TablePrepare
+     * @return Run
+     */
+    @Override
+    public Run fillMasterTableContent(DataRuntime runtime, StringBuilder builder, TableRun run, RunPrepare prepare) {
+        return super.fillMasterTableContent(runtime, builder, run, prepare);
+    }
+
+    /**
+     * 关联表
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param builder 有可能合个run合成一个 所以提供一个共用builder
+     * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
+     * @param prepare TablePrepare
+     * @return Run
+     */
+    @Override
+    public Run fillJoinTableContent(DataRuntime runtime, StringBuilder builder, TableRun run, RunPrepare prepare) {
+        return super.fillJoinTableContent(runtime, builder, run, prepare);
     }
 
     /**
@@ -1226,8 +1271,6 @@ public class AccessAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
     public long execute(DataRuntime runtime, String random, ConfigStore configs, Run run) {
         return super.execute(runtime, random, configs, run);
     }
-
-    
 
     /* *****************************************************************************************************************
      *                                                     DELETE
@@ -3403,6 +3446,99 @@ public class AccessAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
      * List<String> ddl(DataRuntime runtime, int index, PartitionTable table, List<String> ddls, DataSet<DataRow> set)
      ******************************************************************************************************************/
     /**
+     * 表分区方式及分片
+     * @param table 主表
+     * @return Partition
+     */
+    @Override
+    public Table.Partition partition(DataRuntime runtime, String random, Table table) {
+        return super.partition(runtime, random, table);
+    }
+
+    /**
+     * partition table[命令合成]<br/>
+     * 查询表分区方式及分片
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param table 表
+     * @return String
+     */
+    @Override
+    public List<Run> buildSelectTablePartitionRun(DataRuntime runtime, Table table) {
+        return super.buildSelectTablePartitionRun(runtime, table);
+    }
+
+    /**
+     * partition table[结果集封装]<br/>
+     * 根据查询结果集构造Table
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param index 第几条SQL 对照 buildSelectMasterTablesRun返回顺序
+     * @param create 上一步没有查到的,这一步是否需要新创建
+     * @param meta 上一步查询结果
+     * @param table 表
+     * @param set 查询结果集
+     * @return tables
+     * @throws Exception 异常
+     */
+    @Override
+    public Table.Partition partition(DataRuntime runtime, int index, boolean create, Table.Partition meta, Table table, DataSet<DataRow> set) throws Exception {
+        return super.partition(runtime, index, create, meta, table, set);
+    }
+
+    /**
+     * partition table[结果集封装]<br/>
+     * 根据查询结果集构造Table.Partition
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param index 第几条SQL 对照 buildSelectMasterTablesRun返回顺序
+     * @param create 上一步没有查到的,这一步是否需要新创建
+     * @param meta 上一步查询结果
+     * @param table 表
+     * @param row 查询结果集
+     * @return tables
+     * @throws Exception 异常
+     */
+    @Override
+    public Table.Partition init(DataRuntime runtime, int index, boolean create, Table.Partition meta, Table table, DataRow row) throws Exception {
+        return super.init(runtime, index, create, meta, table, row);
+    }
+
+    /**
+     * partition table[结果集封装]<br/>
+     * 根据查询结果集构造Table.Partition
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param index 第几条SQL 对照 buildSelectMasterTablesRun返回顺序
+     * @param create 上一步没有查到的,这一步是否需要新创建
+     * @param meta 上一步查询结果
+     * @param table 表
+     * @param row 查询结果集
+     * @return tables
+     * @throws Exception 异常
+     */
+    @Override
+    public Table.Partition detail(DataRuntime runtime, int index, boolean create, Table.Partition meta, Table table, DataRow row) throws Exception {
+        return super.detail(runtime, index, create, meta, table, row);
+    }
+
+    /**
+     * partition table[结果集封装]<br/>
+     * Table.Partition 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer initTablePartitionFieldRefer() {
+        return super.initTablePartitionFieldRefer();
+    }
+
+    /**
+     * partition table[结果集封装]<br/>
+     * Table.Partition.Slice 属性与结果集对应关系
+     * @return MetadataFieldRefer
+     */
+    @Override
+    public MetadataFieldRefer initTablePartitionSliceFieldRefer() {
+        return super.initTablePartitionSliceFieldRefer();
+    }
+
+    /**
      * partition table[调用入口]<br/>
      * 查询主表
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -3630,8 +3766,6 @@ public class AccessAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
     public MetadataFieldRefer initDataTypeFieldRefer() {
         return super.initDataTypeFieldRefer();
     }
-
-
 
     /**
      * column[结果集封装]<br/>(方法1)<br/>
@@ -4658,7 +4792,7 @@ public class AccessAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
     public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Procedure query) throws Exception {
         return super.procedures(runtime, create, previous, query);
     }
-    
+
     /**
      *
      * procedure[调用入口]<br/>
@@ -4673,7 +4807,7 @@ public class AccessAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
     public <T extends Procedure> T procedure(DataRuntime runtime, String random, boolean greedy, Procedure query) throws Exception {
         return super.procedure(runtime, random, greedy, query);
     }
-    
+
     /**
      *
      * procedure[调用入口]<br/>
@@ -5688,7 +5822,6 @@ public class AccessAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
         return super.execute(runtime, random, meta, action, runs);
     }
 
-    
     /* *****************************************************************************************************************
      * 													database
      * -----------------------------------------------------------------------------------------------------------------
@@ -5922,6 +6055,7 @@ public class AccessAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
         return super.property(runtime, builder, meta);
     }
 
+
     /* *****************************************************************************************************************
      * 													table
      * -----------------------------------------------------------------------------------------------------------------
@@ -6052,7 +6186,8 @@ public class AccessAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
     public List<Run> buildCreateRun(DataRuntime runtime, Table meta) throws Exception {
         return super.buildCreateRun(runtime, meta);
     }
-    
+
+
     /**
      * table[命令合成]<br/>
      * 修改表 只生成修改表本身属性 不生成关于列及索引的
@@ -6174,7 +6309,7 @@ public class AccessAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 
     /**
      * table[命令合成-子流程]<br/>
-     * 定义表的主键标识,在创建表的DDL结尾部分(注意不要跟列定义中的主键重复) primary(DataRuntime runtime, StringBuilder builder, Column meta) 
+     * 定义表的主键标识,在创建表的DDL结尾部分(注意不要跟列定义中的主键重复) primary(DataRuntime runtime, StringBuilder builder, Column meta)
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param builder builder
      * @param meta 表
@@ -7298,7 +7433,7 @@ public class AccessAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
     public StringBuilder charset(DataRuntime runtime, StringBuilder builder, Column meta) {
         return super.charset(runtime, builder, meta);
     }
-    
+
     /**
      * column[命令合成-子流程]<br/>
      * 列定义:虚拟列
@@ -9298,4 +9433,94 @@ public class AccessAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
     public List<Run> buildRevokeRun(DataRuntime runtime, Role role, Privilege ... privileges) throws Exception {
         return super.buildRevokeRun(runtime, role, privileges);
     }
+    /* *****************************************************************************************************************
+     *
+     *                                                         JDBC
+     *
+     *  ***************************************************************************************************************/
+
+    @Override
+    public <T extends Metadata> void checkSchema(DataRuntime runtime, DataSource datasource, T meta) {
+        super.checkSchema(runtime, datasource, meta);
+    }
+
+    @Override
+    public <T extends Metadata> void checkSchema(DataRuntime runtime, Connection con, T meta) {
+        super.checkSchema(runtime, con, meta);
+    }
+
+    /**
+     * 根据运行环境识别 catalog与schema
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta Metadata
+     * @param <T> Metadata
+     */
+    @Override
+    public <T extends Metadata> void checkSchema(DataRuntime runtime, T meta) {
+        super.checkSchema(runtime, meta);
+    }
+
+    /**
+     * 识别根据jdbc返回的catalog与schema, 部分数据库(如mysql)系统表与jdbc标准可能不一致根据实际情况处理<br/>
+     * 注意一定不要处理从SQL中返回的，应该在SQL中处理好
+     * @param meta Metadata
+     * @param catalog 对于MySQL, 则对应相应的数据库, 对于Oracle来说, 则是对应相应的数据库实例, 可以不填, 也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
+     * @param schema 可以理解为数据库的登录名, 而对于Oracle也可以理解成对该数据库操作的所有者的登录名。对于Oracle要特别注意, 其登陆名必须是大写, 不然的话是无法获取到相应的数据, 而MySQL则不做强制要求。
+     * @param overrideMeta 如果meta中有值，是否覆盖
+     * @param overrideRuntime 如果runtime中有值，是否覆盖，注意结果集中可能跨多个schema，所以一般不要覆盖runtime,从con获取的可以覆盖ResultSet中获取的不要覆盖
+     * @param <T> Metadata
+     */
+    @Override
+    public <T extends Metadata> void correctSchemaFromJDBC(DataRuntime runtime, T meta, String catalog, String schema, boolean overrideRuntime, boolean overrideMeta) {
+        super.correctSchemaFromJDBC(runtime, meta, catalog, schema, overrideRuntime, overrideMeta);
+    }
+
+    /**
+     * 在调用jdbc接口前处理业务中的catalog, schema, 部分数据库(如mysql)业务系统与dbc标准可能不一致根据实际情况处理<br/>
+     * @param catalog 对于MySQL, 则对应相应的数据库, 对于Oracle来说, 则是对应相应的数据库实例, 可以不填, 也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
+     * @param schema 可以理解为数据库的登录名, 而对于Oracle也可以理解成对该数据库操作的所有者的登录名。对于Oracle要特别注意, 其登陆名必须是大写, 不然的话是无法获取到相应的数据, 而MySQL则不做强制要求。
+     * @return String[]
+     */
+    @Override
+    public String[] correctSchemaFromJDBC(String catalog, String schema) {
+        return super.correctSchemaFromJDBC(catalog, schema);
+    }
+
+    public String insertFoot(ConfigStore configs, LinkedHashMap<String, Column> columns) {
+        return super.insertFoot(configs, columns);
+    }
+
+    /**
+     * 内置函数 多种数据库兼容时需要
+     * @param value SQL_BUILD_IN_VALUE
+     * @return String
+     */
+    @Override
+    public String value(DataRuntime runtime, Column column, SQL_BUILD_IN_VALUE value) {
+        return super.value(runtime, column, value);
+    }
+
+    /**
+     * 拼接字符串
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param args args
+     * @return String
+     */
+    @Override
+    public String concat(DataRuntime runtime, String... args) {
+        return super.concat(runtime, args);
+    }
+
+    /**
+     * 伪表
+     * @return String
+     */
+    protected String dummy() {
+        return super.dummy();
+    }
+    /* *****************************************************************************************************************
+     *
+     *                                                         具体数据库
+     *
+     *  ***************************************************************************************************************/
 }

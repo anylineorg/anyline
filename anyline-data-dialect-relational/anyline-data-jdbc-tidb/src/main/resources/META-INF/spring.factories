@@ -1,1 +1,1 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=org.anyline.data.jdbc.tidb.MariaAdapter
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=org.anyline.data.jdbc.tidb.TiDBAdapter

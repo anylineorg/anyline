@@ -44,6 +44,7 @@ public class HyperAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
         return DatabaseType.HyperSQL;
     } 
     public HyperAdapter() {
+        super();
         delimiterFr = "";
         delimiterTo = "";
     }

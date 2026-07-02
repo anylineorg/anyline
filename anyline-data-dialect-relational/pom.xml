@@ -22,7 +22,6 @@
 		<module>anyline-data-jdbc-clickhouse</module>
 		<module>anyline-data-jdbc-cloudera</module>
 		<module>anyline-data-jdbc-cockroachdb</module>
-		<module>anyline-data-jdbc-couchdb</module>
 		<module>anyline-data-jdbc-db2</module>
 		<module>anyline-data-jdbc-derby</module>
 		<module>anyline-data-jdbc-dm</module>
