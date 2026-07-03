@@ -67,8 +67,9 @@ public class ColumnsDiffer extends AbstractDiffer implements Serializable {
             }
         }
         for(String key:dests.keySet()) {
-            if(!origins.containsKey(key)) {
-                Column dest = dests.get(key);
+            Column dest = dests.get(key);
+            String id = dest.getId();
+            if(!origins.containsKey(key) && (null != id_map && !id_map.containsKey(id))) {
                 dest.setTable(direct);
                 adds.put(key, dest);
             }
