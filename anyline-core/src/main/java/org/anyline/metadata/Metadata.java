@@ -259,6 +259,13 @@ public class Metadata<T extends Metadata> implements Serializable {
         }
     }
 
+    public static <T extends Metadata> LinkedHashMap<String, T> name2id(LinkedHashMap<String, T> metas){
+        LinkedHashMap<String, T> map = new LinkedHashMap<>();
+        for (T meta:metas.values()){
+            map.put(meta.getId(), meta);
+        }
+        return map;
+    }
     public boolean isEmpty() {
         if(null == name || name.trim().isEmpty()) {
             return true;

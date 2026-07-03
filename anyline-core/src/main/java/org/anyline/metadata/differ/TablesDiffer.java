@@ -15,9 +15,12 @@
  */
 
 
+
 package org.anyline.metadata.differ;
 
+import org.anyline.metadata.Metadata;
 import org.anyline.metadata.Table;
+import org.anyline.util.BasicUtil;
 
 import java.io.Serializable;
 import java.util.LinkedHashMap;
@@ -64,9 +67,17 @@ public class TablesDiffer extends AbstractDiffer implements Serializable {
         if(null == dests) {
             dests = new LinkedHashMap<>();
         }
+        LinkedHashMap<String, Table> id_map = null;
         for(String key:origins.keySet()) {
             Table origin = origins.get(key);
             Table dest = dests.get(key);
+            String id = origin.getId();
+            if(BasicUtil.isNotEmpty(id)){
+                if(null == id_map){
+                    id_map = Metadata.name2id(dests);
+                }
+                dest = id_map.get(id);
+            }
             if(null == dest) {
                 //新表不存在
                 drops.put(key, origin);

@@ -18,7 +18,9 @@
 package org.anyline.metadata.differ;
 
 import org.anyline.metadata.Column;
+import org.anyline.metadata.Metadata;
 import org.anyline.metadata.Table;
+import org.anyline.util.BasicUtil;
 
 import java.io.Serializable;
 import java.util.LinkedHashMap;
@@ -41,10 +43,18 @@ public class ColumnsDiffer extends AbstractDiffer implements Serializable {
         if(null == dests) {
             dests = new LinkedHashMap<>();
         }
+        LinkedHashMap<String, Column> id_map = null;
         for(String key:origins.keySet()) {
             Column origin = origins.get(key).clone();
-            origin.setTable(direct);
             Column dest = dests.get(key);
+            String id = origin.getId();
+            if(BasicUtil.isNotEmpty(id)){
+                if(null == id_map){
+                    id_map = Metadata.name2id(dests);
+                }
+                dest = id_map.get(id);
+            }
+            origin.setTable(direct);
             if(null == dest) {
                 //新表不存在这一列
                 drops.put(key, origin);
@@ -69,6 +79,7 @@ public class ColumnsDiffer extends AbstractDiffer implements Serializable {
         differ.setAlters(alters);
         return differ;
     }
+
 
     public boolean isEmpty() {
         return adds.isEmpty() && drops.isEmpty() && alters.isEmpty();
