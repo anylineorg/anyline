@@ -92,7 +92,9 @@ public class TablesDiffer extends AbstractDiffer implements Serializable {
             }
         }
         for(String key:dests.keySet()) {
-            if(!origins.containsKey(key)) {
+            Table dest = dests.get(key);
+            String id = dest.getId();
+            if(!origins.containsKey(key) && (null != id_map && !id_map.containsKey(id))) {
                 adds.put(key, dests.get(key));
             }
         }

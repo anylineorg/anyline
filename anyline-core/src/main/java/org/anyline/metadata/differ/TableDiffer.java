@@ -62,6 +62,15 @@ public class TableDiffer extends AbstractDiffer implements Serializable {
         return true;
     }
 
+    public static TableDiffer compare(Table origin, Table dest) {
+        Table direct = null;
+        if(null != origin) {
+            direct = origin;
+        }else{
+            direct = dest;
+        }
+        return compare(origin, dest, direct);
+    }
     public static TableDiffer compare(Table origin, Table dest, Table direct) {
         if(null == dest) {
             dest = new Table();
