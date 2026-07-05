@@ -197,7 +197,7 @@ public class MySQLGeometryAdapter {
         头部（Header）：
             SRID
             字节顺序（Endian）：表示二进制数据的字节顺序，通常为大端序（Big Endian）或小端序（Little Endian）。
-            类型标识符（Type Identifier）：标识几何对象的类型，对于多边形（Polygon）来说，它的值是十六进制的0103。
+            类型界定符（Type Identifier）：标识几何对象的类型，对于多边形（Polygon）来说，它的值是十六进制的0103。
             环的数量（Number of Rings）：表示多边形中环的数量，包括外部环和内部环（孔）。
         外部环（Exterior Ring）：
             点的数量（Number of Points）：表示构成外部环的点的数量。

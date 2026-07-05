@@ -18,6 +18,7 @@
 package org.anyline.data.jdbc.adapter.init;
 
 import org.anyline.adapter.KeyAdapter;
+import org.anyline.data.adapter.Parser;
 import org.anyline.data.adapter.init.AbstractDriverAdapter;
 import org.anyline.data.entity.Join;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
@@ -42,6 +43,7 @@ import org.anyline.exception.NotSupportException;
 import org.anyline.metadata.*;
 import org.anyline.metadata.refer.MetadataFieldRefer;
 import org.anyline.metadata.type.DatabaseType;
+import org.anyline.data.adapter.ParserFactory;
 import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.proxy.CacheProxy;
 import org.anyline.proxy.EntityAdapterProxy;
@@ -62,6 +64,15 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 
     public AbstractJDBCAdapter() {
         super();
+    }
+
+    @Override
+    public <T extends Metadata> T parse(DataRuntime runtime, Class<T> type, String ddl, ConfigStore configs) {
+        Parser parser = ParserFactory.parser(type());
+        if (parser != null) {
+            return (T) parser.parse(ddl);
+        }
+        return null;
     }
 
     @Override

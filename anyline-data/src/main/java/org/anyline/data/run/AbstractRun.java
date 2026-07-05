@@ -32,7 +32,9 @@ import org.anyline.entity.*;
 import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;
 import org.anyline.log.Log;
 import org.anyline.log.LogProxy;
+import org.anyline.data.adapter.SystemFunctionConverterProxy;
 import org.anyline.metadata.*;
+import org.anyline.metadata.type.DatabaseType;
 import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.util.*;
 import org.anyline.util.regular.RegularUtil;
@@ -81,6 +83,7 @@ public abstract class AbstractRun implements Run {
 	protected DataRuntime runtime;
 	protected String delimiterFr;
 	protected String delimiterTo;
+	protected DatabaseType functionOrigin; // 函数来源数据库类型，设置后自动转换函数调用
 
 	protected ACTION action;
 	protected boolean emptyCondition = true;
@@ -617,7 +620,7 @@ public abstract class AbstractRun implements Run {
 			text = replace(text);
 		}
 		text = format(text);
-		return text;
+		return convertFunction(text);
 	} 
 	@Override 
 	public String getTotalSelect(Boolean placeholder) {
@@ -629,7 +632,7 @@ public abstract class AbstractRun implements Run {
 			text = replace(text);
 		}
 		text = format(text);
-		return text;
+		return convertFunction(text);
 	}
 	@Override
 	public String getFinalExists(Boolean placeholder) {
@@ -752,26 +755,26 @@ public abstract class AbstractRun implements Run {
 	@Override
 	public String getFinalInsert(Boolean placeholder) {
 		if(ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN) {
-			return  SQLUtil.placeholder(builder.toString(), delimiterFr, delimiterTo);
+			return  convertFunction(SQLUtil.placeholder(builder.toString(), delimiterFr, delimiterTo));
 		}
 		String text = builder.toString();
 		if(!placeholder) {
 			text = replace(text);
 		}
 		text = format(text);
-		return text;
+		return convertFunction(text);
 	}
 	@Override
 	public String getFinalUpdate(Boolean placeholder) {
 		if(ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN) {
-			return  SQLUtil.placeholder(builder.toString(), delimiterFr, delimiterTo);
+			return  convertFunction(SQLUtil.placeholder(builder.toString(), delimiterFr, delimiterTo));
 		}
 		String text = builder.toString();
 		if(!placeholder) {
 			text = replace(text);
 		}
 		text = format(text);
-		return text;
+		return convertFunction(text);
 	}
 
 	@Override
@@ -792,6 +795,36 @@ public abstract class AbstractRun implements Run {
 		return this;
 	}
 
+	/**
+	 * 设置函数的来源数据库类型，当 target 与来源类型不同时自动转换 SQL 中的函数调用
+	 * @param origin 函数定义来源数据库类型
+	 */
+	public void setFunctionOrigin(DatabaseType origin) {
+		this.functionOrigin = origin;
+	}
+	public DatabaseType getFunctionOrigin() {
+		return functionOrigin;
+	}
+
+	/**
+	 * 跨数据库函数转换，在 SQL 发送到 JDBC 前统一处理
+	 */
+	public String convertFunction(String sql) {
+		if(null == functionOrigin || null == runtime || null == runtime.getAdapter()) {
+			return sql;
+		}
+		DatabaseType target = runtime.getAdapter().type();
+		if(null == target || functionOrigin == target) {
+			return sql;
+		}
+		try {
+			return SystemFunctionConverterProxy.convert(functionOrigin, target, sql);
+		} catch (Exception e) {
+			log.warn("function convert failed, return original sql: {}", e.getMessage());
+			return sql;
+		}
+	}
+
 	@Override
 	public String getFinalExecute(Boolean placeholder) {
 		String text = builder.toString();
@@ -805,7 +838,7 @@ public abstract class AbstractRun implements Run {
 		if(!supportBr()) {
 			text = text.replace("\r\n"," ").replace("\n"," ");
 		}
-		return text;
+		return convertFunction(text);
 	}
 
 	public boolean supportBr() {

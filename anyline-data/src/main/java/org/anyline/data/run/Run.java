@@ -24,6 +24,7 @@ import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
 import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;
 import org.anyline.metadata.*;
+import org.anyline.metadata.type.DatabaseType;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -251,5 +252,19 @@ public interface Run extends org.anyline.data.Run{
 		return union(run, true);
 	}
 	List<Run> getUnions();
+
+	/**
+	 * 设置 SQL 中函数定义的来源数据库类型，用于跨数据库自动转换函数
+	 * @param origin 来源数据库类型，null 表示不转换
+	 */
+	void setFunctionOrigin(DatabaseType origin);
+	DatabaseType getFunctionOrigin();
+
+	/**
+	 * 跨数据库函数转换，在 SQL 发送到 JDBC 前统一处理
+	 * @param sql 原始 SQL
+	 * @return 转换后的 SQL（若无需转换则返回原值）
+	 */
+	String convertFunction(String sql);
 
 }

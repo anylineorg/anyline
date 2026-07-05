@@ -15,7 +15,6 @@
  */
 
 
-
 package org.anyline.metadata.differ;
 
 import org.anyline.metadata.Metadata;

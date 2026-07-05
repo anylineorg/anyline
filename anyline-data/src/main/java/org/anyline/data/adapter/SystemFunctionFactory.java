@@ -22,8 +22,11 @@ import org.anyline.log.LogProxy;
 import org.anyline.metadata.SystemFunction;
 import org.anyline.metadata.type.DatabaseOrigin;
 import org.anyline.metadata.type.DatabaseType;
+import org.anyline.util.BasicUtil;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 /**
@@ -41,6 +44,7 @@ public class SystemFunctionFactory {
 
     protected static Map<Object, Map<SystemFunction.META, SystemFunction>> metas = new HashMap<>();
     protected static Map<Object, Map<String, SystemFunction>> names = new HashMap<>();
+    protected static Map<Object, HashSet<String>> illegals = new HashMap<>();
 
     /**
      * 注册函数定义（同时注册到 metas 和 names 两个 Map）
@@ -49,19 +53,27 @@ public class SystemFunctionFactory {
      */
     public static void reg(Object type, SystemFunction function) {
         SystemFunction.META meta = function.meta();
-        Map<SystemFunction.META, SystemFunction> meta_maps = metas.get(type);
-        if(null == meta_maps) {
-            meta_maps = new HashMap<>();
-            metas.put(type, meta_maps);
-        }
+        Map<SystemFunction.META, SystemFunction> meta_maps = metas.computeIfAbsent(type, k -> new HashMap<>());
         meta_maps.put(meta, function);
-        Map<String, SystemFunction> name_maps = names.get(type);
-        if(null == name_maps) {
-            name_maps = new HashMap<>();
-            names.put(type, name_maps);
-        }
+        Map<String, SystemFunction> name_maps = names.computeIfAbsent(type, k -> new HashMap<>());
         name_maps.put(function.title(), function);
+    }
 
+    /**
+     * 明确不支持的函数
+     * @param type DatabaseOrigin 或 DatabaseType
+     * @param functions 函数名称
+     */
+    public static void illegal(Object type, String functions){
+        HashSet<String> set = illegals.computeIfAbsent(type, k -> new HashSet<>());
+        if(BasicUtil.isEmpty(functions)){
+            return;
+        }
+        if(functions.contains(",")){
+            set.addAll(Arrays.asList(functions.split(",")));
+        }else {
+            set.add(functions);
+        }
     }
     /**
      * 按 META 查找函数（先查 type，未命中回退到 type.origin()）
