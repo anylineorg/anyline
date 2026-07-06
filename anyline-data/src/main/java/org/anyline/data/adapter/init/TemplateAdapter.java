@@ -7201,6 +7201,11 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
         return super.addColumnGuide(runtime, builder, meta);
     }
 
+    @Override
+    public StringBuilder addColumnClose(DataRuntime runtime, StringBuilder builder, Column meta) {
+        return super.addColumnClose(runtime, builder, meta);
+    }
+
     /**
      * column[命令合成-子流程]<br/>
      * 删除列引导<br/>

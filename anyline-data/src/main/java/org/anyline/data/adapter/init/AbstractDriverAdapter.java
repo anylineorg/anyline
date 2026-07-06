@@ -15486,6 +15486,11 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return builder;
 	}
 
+    @Override
+    public StringBuilder addColumnClose(DataRuntime runtime, StringBuilder builder, Column meta) {
+        return builder;
+    }
+
 	/**
 	 * column[命令合成-子流程]<br/>
 	 * 删除列引导<br/>

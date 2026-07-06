@@ -20,7 +20,7 @@ package org.anyline.data.jdbc.cloudera;
 import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
-import org.anyline.data.jdbc.adapter.init.AbstractJDBCAdapter;
+import org.anyline.data.jdbc.adapter.init.ImpalaGenusAdapter;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.run.*;
@@ -44,7 +44,7 @@ import java.util.List;
 import java.util.Map;
 
 @AnylineComponent("anyline.data.jdbc.adapter.cloudera")
-public class ClouderaAdapter extends AbstractJDBCAdapter implements DriverAdapter{
+public class ClouderaAdapter extends ImpalaGenusAdapter implements DriverAdapter{
     public DatabaseType type() {
         return DatabaseType.Cloudera;
     }

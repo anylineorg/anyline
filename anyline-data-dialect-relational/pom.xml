@@ -38,6 +38,7 @@
 		<module>anyline-data-jdbc-hyper</module>
 		<module>anyline-data-jdbc-informix</module>
 		<module>anyline-data-jdbc-ignite-thin</module>					<!--Apache Ignite-->
+		<module>anyline-data-jdbc-impala</module>						<!--Apache Impala-->
 		<module>anyline-data-jdbc-iotdb</module>						<!--Apache IoTDB-->
 		<module>anyline-data-jdbc-kingbase</module>						<!--人大金仓(oracle)-->
 		<module>anyline-data-jdbc-mariadb</module>

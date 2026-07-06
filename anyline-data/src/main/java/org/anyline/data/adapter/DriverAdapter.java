@@ -8537,13 +8537,11 @@ public interface DriverAdapter {
 	 * alter table sso_user [add column] type_code int
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder StringBuilder
-	 * @param column 列
+	 * @param meta 列
 	 * @return String
 	 */
-    StringBuilder addColumnGuide(DataRuntime runtime, StringBuilder builder, Column column);
-    default StringBuilder addColumnClose(DataRuntime runtime, StringBuilder builder, Column column) {
-        return builder;
-    }
+    StringBuilder addColumnGuide(DataRuntime runtime, StringBuilder builder, Column meta);
+    StringBuilder addColumnClose(DataRuntime runtime, StringBuilder builder, Column meta);
 
 	/**
 	 * column[命令合成-子流程]<br/>
@@ -8551,10 +8549,10 @@ public interface DriverAdapter {
 	 * alter table sso_user [drop column] type_code
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder StringBuilder
-	 * @param column 列
+	 * @param meta 列
 	 * @return String
 	 */
-	StringBuilder dropColumnGuide(DataRuntime runtime, StringBuilder builder, Column column);
+	StringBuilder dropColumnGuide(DataRuntime runtime, StringBuilder builder, Column meta);
 
 	/**
 	 * column[命令合成-子流程]<br/>
