@@ -1399,8 +1399,14 @@ public class DuckDBAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public List<Run> buildSelectCatalogsRun(DataRuntime runtime, boolean greedy, Catalog query) throws Exception {
-		//TOTO 待实现
-		return new ArrayList<>();
+		List<Run> runs = new ArrayList<>();
+		SimpleRun run = new SimpleRun(runtime);
+		StringBuilder builder = run.getBuilder();
+		ConfigStore configs = run.getConfigs();
+		builder.append("SELECT distinct catalog_name FROM information_schema.schemata");
+		configs.and(Compare.LIKE_SIMPLE_IGNORE_CASE, "catalog_name", query.getName());
+		runs.add(run);
+		return runs;
 	}
 
 	/**
@@ -1410,7 +1416,9 @@ public class DuckDBAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public MetadataFieldRefer initCatalogFieldRefer() {
-		return super.initCatalogFieldRefer();
+		MetadataFieldRefer refer = new MetadataFieldRefer(Schema.class);
+		refer.map(Schema.FIELD_NAME, "catalog_name");
+		return refer;
 	}
 	/**
 	 * catalog[结果集封装]<br/>
@@ -1535,8 +1543,15 @@ public class DuckDBAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public List<Run> buildSelectSchemasRun(DataRuntime runtime, boolean greedy, Schema query) throws Exception {
-		//TOTO 待实现
-		return new ArrayList<>();
+		List<Run> runs = new ArrayList<>();
+		SimpleRun run = new SimpleRun(runtime);
+		StringBuilder builder = run.getBuilder();
+		ConfigStore configs = run.getConfigs();
+		builder.append("SELECT * FROM information_schema.schemata");
+		configs.and(Compare.LIKE_SIMPLE_IGNORE_CASE, "schema_name", query.getName());
+		configs.and("catalog_name", query.getCatalogName());
+		runs.add(run);
+		return runs;
 	}
 
 	/**
@@ -1546,7 +1561,10 @@ public class DuckDBAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public MetadataFieldRefer initSchemaFieldRefer() {
-		return super.initSchemaFieldRefer();
+		MetadataFieldRefer refer = new MetadataFieldRefer(Schema.class);
+		refer.map(Schema.FIELD_NAME, "schema_name");
+		refer.map(Schema.FIELD_CATALOG, "catalog_name");
+		return refer;
 	}
 	/**
 	 * schema[结果集封装]<br/>
