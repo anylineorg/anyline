@@ -42,8 +42,18 @@ public class Context {
      * 与replaces不同的是values中可以包含复杂结构
      */
     protected LinkedHashMap<String, Object> variables = new LinkedHashMap<>();
+    /**
+     * 预定义标签
+     */
+    private Map<String, String> predefines = new HashMap<>();
+    public String ref(String id){
+        return predefines.get(id);
+    }
+    public void predefine(String id, String value){
+        predefines.put(id, value);
+    }
 
-    public LinkedHashMap<String, String> replaces(){
+    public LinkedHashMap<String, String> htmls(){
         return htmls;
     }
     public LinkedHashMap<String, String> texts(){
@@ -51,6 +61,12 @@ public class Context {
     }
     public LinkedHashMap<String, Object> variables(){
         return variables;
+    }
+    public LinkedHashMap<String, String> replaces(){
+        LinkedHashMap<String, String> replaces = new LinkedHashMap<>();
+        replaces.putAll(texts);
+        replaces.putAll(htmls);
+        return replaces;
     }
     
     /**
