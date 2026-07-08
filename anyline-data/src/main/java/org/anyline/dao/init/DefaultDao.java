@@ -1076,15 +1076,15 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	/* *****************************************************************************************************************
 	 * 													vertex
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * LinkedHashMap<String, VertexTable> vertexs(Catalog catalog, Schema schema, String name, int types)
-	 * LinkedHashMap<String, VertexTable> vertexs(Schema schema, String name, int types)
-	 * LinkedHashMap<String, VertexTable> vertexs(String name, int types)
-	 * LinkedHashMap<String, VertexTable> vertexs(int types)
-	 * LinkedHashMap<String, VertexTable> vertexs()
+	 * LinkedHashMap<String, VertexTable> vertexes(Catalog catalog, Schema schema, String name, int types)
+	 * LinkedHashMap<String, VertexTable> vertexes(Schema schema, String name, int types)
+	 * LinkedHashMap<String, VertexTable> vertexes(String name, int types)
+	 * LinkedHashMap<String, VertexTable> vertexes(int types)
+	 * LinkedHashMap<String, VertexTable> vertexes()
 	 ******************************************************************************************************************/
 
 	/**
-	 * vertexs
+	 * vertexes
 	 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
 	 * @param query 查询条件 根据metadata属性
 	 * @param types 查询的类型 参考 Table.TYPE 多个类型相加算出总和
@@ -1092,19 +1092,19 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @return List
 	 */
 	@Override
-	public <T extends VertexTable> List<T> vertexs(DataRuntime runtime, String random, boolean greedy, VertexTable query, int types, int struct, ConfigStore configs) {
+	public <T extends VertexTable> List<T> vertexes(DataRuntime runtime, String random, boolean greedy, VertexTable query, int types, int struct, ConfigStore configs) {
 		if(null == runtime) {
 			runtime = runtime();
 		}
-		return runtime.getAdapter().vertexs(runtime, random, greedy, query, types, struct, configs);
+		return runtime.getAdapter().vertexes(runtime, random, greedy, query, types, struct, configs);
 	}
 
 	@Override
-	public <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, String random, VertexTable quer, int types, int struct, ConfigStore configs) {
+	public <T extends VertexTable> LinkedHashMap<String, T> vertexes(DataRuntime runtime, String random, VertexTable quer, int types, int struct, ConfigStore configs) {
 		if(null == runtime) {
 			runtime = runtime();
 		}
-		return runtime.getAdapter().vertexs(runtime, random, quer, types, struct, configs);
+		return runtime.getAdapter().vertexes(runtime, random, quer, types, struct, configs);
 	}
 	/* *****************************************************************************************************************
 	 * 													edge

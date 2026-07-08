@@ -32,6 +32,7 @@ import java.util.*;
 public class Context {
     protected static final Log log = LogProxy.get(Context.class);
     protected Context parent = null;
+    protected Object root;
     /**
      * 文本原样替换，不解析原文中的标签,没有${}的也不要添加
      */
@@ -42,6 +43,13 @@ public class Context {
      * 与replaces不同的是values中可以包含复杂结构
      */
     protected LinkedHashMap<String, Object> variables = new LinkedHashMap<>();
+
+    public void root(Object root){
+        this.root = root;
+    }
+    public Object root(){
+        return root;
+    }
     /**
      * 预定义标签
      */
@@ -49,6 +57,7 @@ public class Context {
     public String ref(String id){
         return predefines.get(id);
     }
+
     public void predefine(String id, String value){
         predefines.put(id, value);
     }
@@ -318,6 +327,7 @@ public class Context {
         clone.variables.putAll(variables);
         clone.placeholderDefault = placeholderDefault;
         clone.parent = this;
+        clone.predefines = predefines;
         return clone;
     }
 }

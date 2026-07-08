@@ -2425,7 +2425,7 @@ public interface ConfigStore extends Cloneable{
 	}
 
 	default int SQL_QUERY_TIMEOUT() {
-		return getInt("SQL_QUERY_TIMEOUT", ConfigTable.SQL_QUERY_TIMEOUT);
+		return getInt("SQL_QUERY_TIMEOUT", ConfigTable.SQL_SELECT_TIMEOUT);
 	}
 	default ConfigStore SQL_QUERY_TIMEOUT(int s) {
 		return config("SQL_QUERY_TIMEOUT", s);
@@ -2833,7 +2833,7 @@ public interface ConfigStore extends Cloneable{
 		if(null != configs) {
 			return configs.SQL_QUERY_TIMEOUT();
 		}
-		return ConfigTable.SQL_QUERY_TIMEOUT;
+		return ConfigTable.SQL_SELECT_TIMEOUT;
 	}
 	static int SQL_UPDATE_TIMEOUT(ConfigStore configs) {
 		if(null != configs) {

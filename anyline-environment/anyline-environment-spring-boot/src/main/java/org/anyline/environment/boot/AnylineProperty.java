@@ -766,7 +766,7 @@ public class AnylineProperty {
 
     public void setSqlQueryTimeout(int sqlQueryTimeout) {
         this.sqlQueryTimeout = sqlQueryTimeout;
-        ConfigTable.SQL_QUERY_TIMEOUT = sqlQueryTimeout;
+        ConfigTable.SQL_SELECT_TIMEOUT = sqlQueryTimeout;
     }
 
     public int getSqlUpdateTimeout() {

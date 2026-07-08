@@ -148,7 +148,7 @@ public class CacheProxy {
         List<T> tables = (List<T>)caches().get(cache);
         return tables;
     }
-    public static  <T extends VertexTable> List<T> vertexs(String cache) {
+    public static  <T extends VertexTable> List<T> vertexes(String cache) {
         List<T> tables = (List<T>)caches().get(cache);
         return tables;
     }
@@ -158,8 +158,8 @@ public class CacheProxy {
     public static  <T extends MasterTable> void masters(String cache, List<T> masters) {
         caches().put(cache, masters);
     }
-    public static  <T extends VertexTable> void vertexs(String cache, List<T> vertexs) {
-        caches().put(cache, vertexs);
+    public static  <T extends VertexTable> void vertexes(String cache, List<T> vertexes) {
+        caches().put(cache, vertexes);
     }
     public static  <T extends EdgeTable> void edges(String cache, List<T> edges) {
         caches().put(cache, edges);

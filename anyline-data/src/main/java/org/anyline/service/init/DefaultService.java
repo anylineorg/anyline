@@ -2331,11 +2331,11 @@ public class DefaultService<E> implements AnylineService<E> {
          * 													vertex
          * -----------------------------------------------------------------------------------------------------------------
          * boolean exists(VertexTable vertex)
-         * LinkedHashMap<String, VertexTable> vertexs(Catalog catalog, Schema schema, String name, int types)
-         * LinkedHashMap<String, VertexTable> vertexs(Schema schema, String name, int types)
-         * LinkedHashMap<String, VertexTable> vertexs(String name, int types)
-         * LinkedHashMap<String, VertexTable> vertexs(int types)
-         * LinkedHashMap<String, VertexTable> vertexs()
+         * LinkedHashMap<String, VertexTable> vertexes(Catalog catalog, Schema schema, String name, int types)
+         * LinkedHashMap<String, VertexTable> vertexes(Schema schema, String name, int types)
+         * LinkedHashMap<String, VertexTable> vertexes(String name, int types)
+         * LinkedHashMap<String, VertexTable> vertexes(int types)
+         * LinkedHashMap<String, VertexTable> vertexes()
          * VertexTable vertex(Catalog catalog, Schema schema, String name)
          * VertexTable vertex(Schema schema, String name)
          * VertexTable vertex(String name)
@@ -2350,23 +2350,23 @@ public class DefaultService<E> implements AnylineService<E> {
         }
 
         @Override
-        public <T extends VertexTable> List<T> vertexs(boolean greedy, VertexTable query, int types, int struct, ConfigStore configs) {
+        public <T extends VertexTable> List<T> vertexes(boolean greedy, VertexTable query, int types, int struct, ConfigStore configs) {
             String[] ps = DataSourceUtil.parseRuntime(query);
             if(null != ps[0]) {
                 query.setName(ps[1]);
-                return ServiceProxy.service(ps[0]).metadata().vertexs(greedy, query, types, struct, configs);
+                return ServiceProxy.service(ps[0]).metadata().vertexes(greedy, query, types, struct, configs);
             }
-            return dao.vertexs(greedy, query, types, struct, configs);
+            return dao.vertexes(greedy, query, types, struct, configs);
         }
 
         @Override
-        public <T extends VertexTable> LinkedHashMap<String, T> vertexs(VertexTable query, int types, int struct, ConfigStore configs) {
+        public <T extends VertexTable> LinkedHashMap<String, T> vertexes(VertexTable query, int types, int struct, ConfigStore configs) {
             String[] ps = DataSourceUtil.parseRuntime(query);
             if(null != ps[0]) {
                 query.setName(ps[1]);
-                return ServiceProxy.service(ps[0]).metadata().vertexs(query, types, struct, configs);
+                return ServiceProxy.service(ps[0]).metadata().vertexes(query, types, struct, configs);
             }
-            return dao.vertexs(query, types, struct, configs);
+            return dao.vertexes(query, types, struct, configs);
         }
 
         private void struct(VertexTable vertex, int struct) {
@@ -2418,9 +2418,9 @@ public class DefaultService<E> implements AnylineService<E> {
         @Override
         public VertexTable vertex(boolean greedy, VertexTable query, int struct) {
             VertexTable vertex = null;
-            List<VertexTable> vertexs = vertexs(greedy, query, VertexTable.TYPE.NORMAL.value, 0, null);
-            if (!vertexs.isEmpty()) {
-                vertex = vertexs.get(0);
+            List<VertexTable> vertexes = vertexes(greedy, query, VertexTable.TYPE.NORMAL.value, 0, null);
+            if (!vertexes.isEmpty()) {
+                vertex = vertexes.get(0);
                 if(null != vertex && struct>0) {
                     struct(vertex, struct);
                 }
@@ -2430,9 +2430,9 @@ public class DefaultService<E> implements AnylineService<E> {
         @Override
         public VertexTable vertex(VertexTable query, int struct) {
             VertexTable vertex = null;
-            LinkedHashMap<String, VertexTable> vertexs = vertexs(query, VertexTable.TYPE.NORMAL.value, 0, null);
-            if (!vertexs.isEmpty()) {
-                vertex = vertexs.values().iterator().next();
+            LinkedHashMap<String, VertexTable> vertexes = vertexes(query, VertexTable.TYPE.NORMAL.value, 0, null);
+            if (!vertexes.isEmpty()) {
+                vertex = vertexes.values().iterator().next();
                 if(null != vertex && struct > 0) {
                     struct(vertex, struct);
                 }

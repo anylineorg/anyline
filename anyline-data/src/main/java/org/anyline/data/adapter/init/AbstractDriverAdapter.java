@@ -6357,17 +6357,17 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 													vertex
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * [调用入口]
-	 * <T extends VertexTable> List<T> vertexs(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, boolean struct)
-	 * <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, String types, boolean struct)
+	 * <T extends VertexTable> List<T> vertexes(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, boolean struct)
+	 * <T extends VertexTable> LinkedHashMap<String, T> vertexes(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, String types, boolean struct)
 	 * [命令合成]
-	 * List<Run> buildSelectVertexsRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs)
-	 * List<Run> buildSelectVertexsCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types)
+	 * List<Run> buildSelectVertexesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs)
+	 * List<Run> buildSelectVertexCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types)
 	 * [结果集封装]<br/>
-	 * <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> vertexs, Catalog catalog, Schema schema, DataSet<DataRow> set)
-	 * <T extends VertexTable> List<T> vertexs(DataRuntime runtime, int index, boolean create, List<T> vertexs, Catalog catalog, Schema schema, DataSet<DataRow> set)
-	 * <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, boolean create, LinkedHashMap<String, T> vertexs, Catalog catalog, Schema schema, String pattern, int types)
-	 * <T extends VertexTable> List<T> vertexs(DataRuntime runtime, boolean create, List<T> vertexs, Catalog catalog, Schema schema, String pattern, int types)
-	 * <T extends VertexTable> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> vertexs, Catalog catalog, Schema schema, DataSet<DataRow> set)
+	 * <T extends VertexTable> LinkedHashMap<String, T> vertexes(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> vertexes, Catalog catalog, Schema schema, DataSet<DataRow> set)
+	 * <T extends VertexTable> List<T> vertexes(DataRuntime runtime, int index, boolean create, List<T> vertexes, Catalog catalog, Schema schema, DataSet<DataRow> set)
+	 * <T extends VertexTable> LinkedHashMap<String, T> vertexes(DataRuntime runtime, boolean create, LinkedHashMap<String, T> vertexes, Catalog catalog, Schema schema, String pattern, int types)
+	 * <T extends VertexTable> List<T> vertexes(DataRuntime runtime, boolean create, List<T> vertexes, Catalog catalog, Schema schema, String pattern, int types)
+	 * <T extends VertexTable> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> vertexes, Catalog catalog, Schema schema, DataSet<DataRow> set)
 	 * [调用入口]
 	 * List<String> ddl(DataRuntime runtime, String random, VertexTable vertex, boolean init)
 	 * [命令合成]
@@ -6388,7 +6388,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param <T> VertexTable
 	 */
 	@Override
-	public <T extends VertexTable> List<T> vertexs(DataRuntime runtime, String random, boolean greedy, VertexTable query, int types, int struct, ConfigStore configs) {
+	public <T extends VertexTable> List<T> vertexes(DataRuntime runtime, String random, boolean greedy, VertexTable query, int types, int struct, ConfigStore configs) {
         List<T> list = new ArrayList<>();
         if(null == random) {
             random = random(runtime);
@@ -6401,8 +6401,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             Catalog catalog = query.getCatalog();
             Schema schema = query.getSchema();
             String pattern = query.getName();
-            String caches_key = CacheProxy.key(runtime, "vertexs", greedy, catalog, schema, pattern, types, configs);
-            list = CacheProxy.vertexs(caches_key);
+            String caches_key = CacheProxy.key(runtime, "vertexes", greedy, catalog, schema, pattern, types, configs);
+            list = CacheProxy.vertexes(caches_key);
             if(null == list || list.isEmpty()) {
                 String cache_key = CacheProxy.key(runtime, "vertex_name_map", greedy, catalog, schema, pattern);
                 String origin = CacheProxy.name(cache_key);
@@ -6432,7 +6432,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                                 mergeFinalSelect(runtime, run);
                             }
                             DataSet<DataRow> set = selectMetadata(runtime, random, run);
-                            list = vertexs(runtime, idx++, true, list, catalog, schema, set);
+                            list = vertexes(runtime, idx++, true, list, catalog, schema, set);
                             if (null != navi) {
                                 //分页只查一次
                                 break;
@@ -6443,14 +6443,14 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                     if (ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
                         e.printStackTrace();
                     } else if (ConfigTable.IS_LOG_SQL && log.isWarnEnabled()) {
-                        log.warn("{}[vertexs][{}][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, origin, e.toString());
+                        log.warn("{}[vertexes][{}][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, origin, e.toString());
                     }
                 }
 
                 // 根据系统表查询失败后根据驱动内置接口补充
                 if(null == list || list.isEmpty()) {
                     try {
-                        list = vertexs(runtime, true, list, catalog, schema, origin, types);
+                        list = vertexes(runtime, true, list, catalog, schema, origin, types);
                         //删除跨库表，JDBC驱动内置接口补充可能会返回跨库表
                         if (!greedy) {
                             int size = list.size();
@@ -6465,7 +6465,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                         if (ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
                             e.printStackTrace();
                         } else {
-                            log.warn("{}[vertexs][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据驱动内置接口补充失败", 33), catalog, schema, origin, e.toString());
+                            log.warn("{}[vertexes][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据驱动内置接口补充失败", 33), catalog, schema, origin, e.toString());
                         }
                     }
                 }
@@ -6499,12 +6499,12 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                         if (ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
                             e.printStackTrace();
                         } else if (ConfigTable.IS_LOG_SQL && log.isWarnEnabled()) {
-                            log.info("{}[vertexs][{}][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, origin, e.toString());
+                            log.info("{}[vertexes][{}][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, origin, e.toString());
                         }
                     }
                 }
                 if (ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
-                    log.info("{}[vertexs][catalog:{}][schema:{}][pattern:{}][type:{}][result:{}][执行耗时:{}]", random, catalog, schema, origin, types, list.size(), DateUtil.format(System.currentTimeMillis() - fr));
+                    log.info("{}[vertexes][catalog:{}][schema:{}][pattern:{}][type:{}][result:{}][执行耗时:{}]", random, catalog, schema, origin, types, list.size(), DateUtil.format(System.currentTimeMillis() - fr));
                 }
                 origin = query.getName(greedy);
                 if (BasicUtil.isNotEmpty(origin)) {
@@ -6547,12 +6547,12 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                     }
                 }
             }
-            CacheProxy.vertexs(caches_key, list);
+            CacheProxy.vertexes(caches_key, list);
         }catch (Exception e) {
             if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
                 e.printStackTrace();
             }else{
-                log.error("[vertexs][result:fail][msg:{}]", e.toString());
+                log.error("[vertexes][result:fail][msg:{}]", e.toString());
             }
         }
         return list;
@@ -6572,7 +6572,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			random = random(runtime);
 		}
 		DriverAdapter adapter = runtime.getAdapter();
-		List<VertexTable> vertexs = null;
+		List<VertexTable> vertexes = null;
 		boolean sys = false; //根据系统表查询
         Catalog catalog = query.getCatalog();
         Schema schema = query.getSchema();
@@ -6582,13 +6582,13 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		try {
 			//缓存 不需要configs条件及分页
-			List<Run> runs =buildSelectVertexsRun(runtime, greedy, catalog, schema, null, VertexTable.TYPE.NORMAL.value, new DefaultConfigStore());
+			List<Run> runs =buildSelectVertexesRun(runtime, greedy, catalog, schema, null, VertexTable.TYPE.NORMAL.value, new DefaultConfigStore());
 			if (null != runs && !runs.isEmpty()) {
 				int idx = 0;
 				for (Run run : runs) {
 					DataSet<DataRow> set = selectMetadata(runtime, random, run);
-					vertexs = vertexs(runtime, idx++, true, vertexs, catalog, schema, set);
-					for(VertexTable vertex:vertexs) {
+					vertexes = vertexes(runtime, idx++, true, vertexes, catalog, schema, set);
+					for(VertexTable vertex:vertexes) {
 						String cache_key = CacheProxy.key(runtime, "vertex", greedy, catalog, schema, vertex.getName());
 						CacheProxy.name(cache_key, vertex.getName());
 					}
@@ -6600,8 +6600,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		if(!sys) {
 			try {
-				vertexs = vertexs(runtime, true, vertexs, catalog, schema, null, VertexTable.TYPE.NORMAL.value);
-				for(VertexTable vertex:vertexs) {
+				vertexes = vertexes(runtime, true, vertexes, catalog, schema, null, VertexTable.TYPE.NORMAL.value);
+				for(VertexTable vertex:vertexes) {
 					String cache_key = CacheProxy.key(runtime, "vertex", greedy, catalog, schema, vertex.getName());
 					CacheProxy.name(cache_key, vertex.getName());
 				}
@@ -6621,13 +6621,13 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @param query 查询条件 根据metadata属性
 	 */
 	@Override
-	public <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, String random, VertexTable query, int types, int struct, ConfigStore configs) {
-		LinkedHashMap<String, T> vertexs = new LinkedHashMap<>();
-		List<T> list = vertexs(runtime, random, false, query, types, struct, configs);
+	public <T extends VertexTable> LinkedHashMap<String, T> vertexes(DataRuntime runtime, String random, VertexTable query, int types, int struct, ConfigStore configs) {
+		LinkedHashMap<String, T> vertexes = new LinkedHashMap<>();
+		List<T> list = vertexes(runtime, random, false, query, types, struct, configs);
 		for(T vertex:list) {
-			vertexs.put(vertex.getName().toUpperCase(), vertex);
+			vertexes.put(vertex.getName().toUpperCase(), vertex);
 		}
-		return vertexs;
+		return vertexes;
 	}
 
 	/**
@@ -6641,9 +6641,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception Exception
 	 */
 	@Override
-	public List<Run> buildSelectVertexsRun(DataRuntime runtime, boolean greedy, VertexTable query, int types, ConfigStore configs) throws Exception {
+	public List<Run> buildSelectVertexesRun(DataRuntime runtime, boolean greedy, VertexTable query, int types, ConfigStore configs) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildSelectVertexsRun(DataRuntime runtime, VertexTable query, int types)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildSelectVertexesRun(DataRuntime runtime, VertexTable query, int types)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -6668,9 +6668,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception Exception
 	 */
 	@Override
-	public List<Run> buildSelectVertexsCommentRun(DataRuntime runtime, VertexTable query, int types) throws Exception {
+	public List<Run> buildSelectVertexCommentRun(DataRuntime runtime, VertexTable query, int types) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildSelectVertexsCommentRun(DataRuntime runtime, VertexTable query, int types)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildSelectVertexCommentRun(DataRuntime runtime, VertexTable query, int types)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -6679,16 +6679,16 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * vertex[结果集封装]<br/>
 	 *  根据查询结果集构造VertexTable
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照buildSelectVertexsRun返回顺序
+	 * @param index 第几条SQL 对照buildSelectVertexesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
      * @param query 查询条件 根据metadata属性
 	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
-	 * @return vertexs
+	 * @return vertexes
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, VertexTable query, DataSet<DataRow> set) throws Exception {
+	public <T extends VertexTable> LinkedHashMap<String, T> vertexes(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, VertexTable query, DataSet<DataRow> set) throws Exception {
         if(null == previous) {
             previous = new LinkedHashMap<>();
         }
@@ -6708,16 +6708,16 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * vertex[结果集封装]<br/>
 	 *  根据查询结果集构造VertexTable
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照buildSelectVertexsRun返回顺序
+	 * @param index 第几条SQL 对照buildSelectVertexesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
      * @param query 查询条件 根据metadata属性
 	 * @param previous 上一步查询结果
 	 * @param set 查询结果集
-	 * @return vertexs
+	 * @return vertexes
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends VertexTable> List<T> vertexs(DataRuntime runtime, int index, boolean create, List<T> previous, VertexTable query, DataSet<DataRow> set) throws Exception {
+	public <T extends VertexTable> List<T> vertexes(DataRuntime runtime, int index, boolean create, List<T> previous, VertexTable query, DataSet<DataRow> set) throws Exception {
         if(null == previous) {
             previous = new ArrayList<>();
         }
@@ -6741,13 +6741,13 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param previous 上一步查询结果
      * @param query 查询条件 根据metadata属性
 	 * @param types 查询的类型 参考 Table.TYPE 多个类型相加算出总和
-	 * @return vertexs
+	 * @return vertexes
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, VertexTable query, int types) throws Exception {
+	public <T extends VertexTable> LinkedHashMap<String, T> vertexes(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, VertexTable query, int types) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, boolean create, LinkedHashMap<String, T> vertexs, VertexTable query, int types)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends VertexTable> LinkedHashMap<String, T> vertexes(DataRuntime runtime, boolean create, LinkedHashMap<String, T> vertexes, VertexTable query, int types)", 37));
 		}
 		if(null == previous) {
             previous = new LinkedHashMap<>();
@@ -6763,14 +6763,14 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param previous 上一步查询结果
      * @param query 查询条件 根据metadata属性
 	 * @param types 查询的类型 参考 Table.TYPE 多个类型相加算出总和
-	 * @return vertexs
+	 * @return vertexes
 	 * @throws Exception 异常
 	 * @param <T> VertexTable
 	 */
 	@Override
-	public <T extends VertexTable> List<T> vertexs(DataRuntime runtime, boolean create, List<T> previous, VertexTable query, int types) throws Exception {
+	public <T extends VertexTable> List<T> vertexes(DataRuntime runtime, boolean create, List<T> previous, VertexTable query, int types) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends VertexTable> List<T> vertexs(DataRuntime runtime, boolean create, List<T> vertexs, VertexTable query, int types)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends VertexTable> List<T> vertexes(DataRuntime runtime, boolean create, List<T> vertexes, VertexTable query, int types)", 37));
 		}
 		if(null == previous) {
             previous = new ArrayList<>();

@@ -1687,11 +1687,10 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 		Run run = new SimpleRun(runtime, configs);
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();
-		builder.append("SELECT * FROM sqlite_master WHERE type='table'");
-		configs.and(Compare.LIKE_SIMPLE,"name", query.getName());
+		builder.append("SELECT * FROM information_schema.tables WHERE table_type='BASE TABLE'");
+		configs.and(Compare.LIKE_SIMPLE,"table_name", query.getName());
 		return runs;
 	}
-
 	/**
 	 * Table[结果集封装]<br/>
 	 * Table 属性与结果集对应关系
@@ -1700,7 +1699,9 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	@Override
 	public MetadataFieldRefer initTableFieldRefer() {
 		MetadataFieldRefer refer = new MetadataFieldRefer(Table.class);
-		refer.map(Table.FIELD_NAME, "NAME");
+		refer.map(Table.FIELD_NAME, "TABLE_NAME");
+		refer.map(Table.FIELD_SCHEMA, "TABLE_SCHEMA");
+		refer.map(Table.FIELD_CATALOG, "TABLE_CATALOG");
 		return refer;
 	}
 	/**

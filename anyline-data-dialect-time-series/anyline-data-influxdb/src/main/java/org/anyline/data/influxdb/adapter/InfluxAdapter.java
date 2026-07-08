@@ -2582,17 +2582,17 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      *                                                     VertexTable
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
-     * <T extends VertexTable> List<T> vertexs(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, boolean struct)
-     * <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, String types, boolean struct)
+     * <T extends VertexTable> List<T> vertexes(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, boolean struct)
+     * <T extends VertexTable> LinkedHashMap<String, T> vertexes(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, String types, boolean struct)
      * [命令合成]
-     * List<Run> buildSelectVertexsRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types)
-     * List<Run> buildSelectVertexsCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types)
+     * List<Run> buildSelectVertexesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types)
+     * List<Run> buildSelectVertexCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types)
      * [结果集封装]<br/>
-     * <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> vertexs, Catalog catalog, Schema schema, DataSet<DataRow> set)
-     * <T extends VertexTable> List<T> vertexs(DataRuntime runtime, int index, boolean create, List<T> vertexs, Catalog catalog, Schema schema, DataSet<DataRow> set)
-     * <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, boolean create, LinkedHashMap<String, T> vertexs, Catalog catalog, Schema schema, String pattern, int types)
-     * <T extends VertexTable> List<T> vertexs(DataRuntime runtime, boolean create, List<T> vertexs, Catalog catalog, Schema schema, String pattern, int types)
-     * <T extends VertexTable> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> vertexs, Catalog catalog, Schema schema, DataSet<DataRow> set)
+     * <T extends VertexTable> LinkedHashMap<String, T> vertexes(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> vertexes, Catalog catalog, Schema schema, DataSet<DataRow> set)
+     * <T extends VertexTable> List<T> vertexes(DataRuntime runtime, int index, boolean create, List<T> vertexes, Catalog catalog, Schema schema, DataSet<DataRow> set)
+     * <T extends VertexTable> LinkedHashMap<String, T> vertexes(DataRuntime runtime, boolean create, LinkedHashMap<String, T> vertexes, Catalog catalog, Schema schema, String pattern, int types)
+     * <T extends VertexTable> List<T> vertexes(DataRuntime runtime, boolean create, List<T> vertexes, Catalog catalog, Schema schema, String pattern, int types)
+     * <T extends VertexTable> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> vertexes, Catalog catalog, Schema schema, DataSet<DataRow> set)
      * [调用入口]
      * List<String> ddl(DataRuntime runtime, String random, VertexTable vertex, boolean init)
      * [命令合成]
@@ -2614,12 +2614,12 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @param <T> VertexTable
      */
     @Override
-    public <T extends VertexTable> List<T> vertexs(DataRuntime runtime, String random, boolean greedy, VertexTable query, int types, int struct, ConfigStore configs) {
-        return super.vertexs(runtime, random, greedy, query, types, struct, configs);
+    public <T extends VertexTable> List<T> vertexes(DataRuntime runtime, String random, boolean greedy, VertexTable query, int types, int struct, ConfigStore configs) {
+        return super.vertexes(runtime, random, greedy, query, types, struct, configs);
     }
 
-    public <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, String random, VertexTable query, int types, int struct, ConfigStore configs) {
-        return super.vertexs(runtime, random, query, types, struct, configs);
+    public <T extends VertexTable> LinkedHashMap<String, T> vertexes(DataRuntime runtime, String random, VertexTable query, int types, int struct, ConfigStore configs) {
+        return super.vertexes(runtime, random, query, types, struct, configs);
     }
 
     /**
@@ -2633,8 +2633,8 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @throws Exception Exception
      */
     @Override
-    public List<Run> buildSelectVertexsRun(DataRuntime runtime, boolean greedy, VertexTable query, int types, ConfigStore configs) throws Exception {
-        return super.buildSelectVertexsRun(runtime, greedy, query, types, configs);
+    public List<Run> buildSelectVertexesRun(DataRuntime runtime, boolean greedy, VertexTable query, int types, ConfigStore configs) throws Exception {
+        return super.buildSelectVertexesRun(runtime, greedy, query, types, configs);
     }
 
     /**
@@ -2646,24 +2646,24 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @return String
      * @throws Exception Exception
      */
-    public List<Run> buildSelectVertexsCommentRun(DataRuntime runtime, VertexTable query, int types) throws Exception {
-        return super.buildSelectVertexsCommentRun(runtime, query, types);
+    public List<Run> buildSelectVertexCommentRun(DataRuntime runtime, VertexTable query, int types) throws Exception {
+        return super.buildSelectVertexCommentRun(runtime, query, types);
     }
 
     /**
      * vertex[结果集封装]<br/>
      *  根据查询结果集构造VertexTable
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条SQL 对照buildSelectVertexsRun返回顺序
+     * @param index 第几条SQL 对照buildSelectVertexesRun返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param query 查询条件 根据metadata属性
      * @param previous 上一步查询结果
      * @param set 查询结果集
-     * @return vertexs
+     * @return vertexes
      * @throws Exception 异常
      */
     @Override
-    public <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, VertexTable query, DataSet<DataRow> set) throws Exception {
+    public <T extends VertexTable> LinkedHashMap<String, T> vertexes(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, VertexTable query, DataSet<DataRow> set) throws Exception {
         return previous;
     }
 
@@ -2671,16 +2671,16 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * vertex[结果集封装]<br/>
      *  根据查询结果集构造VertexTable
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条SQL 对照buildSelectVertexsRun返回顺序
+     * @param index 第几条SQL 对照buildSelectVertexesRun返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param query 查询条件 根据metadata属性
      * @param previous 上一步查询结果
      * @param set 查询结果集
-     * @return vertexs
+     * @return vertexes
      * @throws Exception 异常
      */
     @Override
-    public <T extends VertexTable> List<T> vertexs(DataRuntime runtime, int index, boolean create, List<T> previous, VertexTable query, DataSet<DataRow> set) throws Exception {
+    public <T extends VertexTable> List<T> vertexes(DataRuntime runtime, int index, boolean create, List<T> previous, VertexTable query, DataSet<DataRow> set) throws Exception {
         return previous;
     }
 
@@ -2692,12 +2692,12 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @param previous 上一步查询结果
      * @param query 查询条件 根据metadata属性
      * @param types 查询的类型 参考 Table.TYPE 多个类型相加算出总和
-     * @return vertexs
+     * @return vertexes
      * @throws Exception 异常
      */
     @Override
-    public <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, VertexTable query, int types) throws Exception {
-        return super.vertexs(runtime, create, previous, query, types);
+    public <T extends VertexTable> LinkedHashMap<String, T> vertexes(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, VertexTable query, int types) throws Exception {
+        return super.vertexes(runtime, create, previous, query, types);
     }
 
     /**
@@ -2708,13 +2708,13 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @param previous 上一步查询结果
      * @param query 查询条件 根据metadata属性
      * @param types 查询的类型 参考 Table.TYPE 多个类型相加算出总和
-     * @return vertexs
+     * @return vertexes
      * @throws Exception 异常
      * @param <T> VertexTable
      */
     @Override
-    public <T extends VertexTable> List<T> vertexs(DataRuntime runtime, boolean create, List<T> previous, VertexTable query, int types) throws Exception {
-        return super.vertexs(runtime, create, previous, query, types);
+    public <T extends VertexTable> List<T> vertexes(DataRuntime runtime, boolean create, List<T> previous, VertexTable query, int types) throws Exception {
+        return super.vertexes(runtime, create, previous, query, types);
     }
 
     /**

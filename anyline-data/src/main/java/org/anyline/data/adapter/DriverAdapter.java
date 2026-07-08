@@ -3541,7 +3541,7 @@ public interface DriverAdapter {
      * @return List
      * @param <T> VertexTable
      */
-    <T extends VertexTable> List<T> vertexs(DataRuntime runtime, String random, boolean greedy, VertexTable query, int types, int struct, ConfigStore configs);
+    <T extends VertexTable> List<T> vertexes(DataRuntime runtime, String random, boolean greedy, VertexTable query, int types, int struct, ConfigStore configs);
     /**
      * vertex[调用入口]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -3555,46 +3555,46 @@ public interface DriverAdapter {
      * @return List
      * @param <T> VertexTable
      */
-    default <T extends VertexTable> List<T> vertexs(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
+    default <T extends VertexTable> List<T> vertexes(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
         VertexTable query = new VertexTable(catalog, schema, pattern);
-        return vertexs(runtime, random, greedy, query, types, struct, configs);
+        return vertexes(runtime, random, greedy, query, types, struct, configs);
     }
-    default <T extends VertexTable> List<T> vertexs(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct) {
-        return vertexs(runtime, random, greedy, catalog, schema, pattern, types, struct, null);
+    default <T extends VertexTable> List<T> vertexes(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct) {
+        return vertexes(runtime, random, greedy, catalog, schema, pattern, types, struct, null);
     }
-    default <T extends VertexTable> List<T> vertexs(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, boolean struct, ConfigStore configs) {
+    default <T extends VertexTable> List<T> vertexes(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, boolean struct, ConfigStore configs) {
         int structs = 0;
         if(struct) {
             structs = Metadata.TYPE.ALL.value();
         }
-        return vertexs(runtime, random, greedy, catalog, schema, pattern, types, structs, configs);
+        return vertexes(runtime, random, greedy, catalog, schema, pattern, types, structs, configs);
     }
-    default <T extends VertexTable> List<T> vertexs(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, boolean struct) {
-        return vertexs(runtime, random, greedy, catalog, schema, pattern, types, struct, null);
+    default <T extends VertexTable> List<T> vertexes(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, boolean struct) {
+        return vertexes(runtime, random, greedy, catalog, schema, pattern, types, struct, null);
     }
-    default <T extends VertexTable> List<T> vertexs(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types) {
-        return vertexs(runtime, random, greedy, catalog, schema, pattern, types, false);
+    default <T extends VertexTable> List<T> vertexes(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types) {
+        return vertexes(runtime, random, greedy, catalog, schema, pattern, types, false);
     }
-    <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, String random, VertexTable query, int types, int struct, ConfigStore configs);
-    default <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
+    <T extends VertexTable> LinkedHashMap<String, T> vertexes(DataRuntime runtime, String random, VertexTable query, int types, int struct, ConfigStore configs);
+    default <T extends VertexTable> LinkedHashMap<String, T> vertexes(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
         VertexTable query = new VertexTable(catalog, schema, pattern);
-        return vertexs(runtime, random, query, types, struct, configs);
+        return vertexes(runtime, random, query, types, struct, configs);
     }
-    default <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct) {
-        return vertexs(runtime, random, catalog, schema, pattern, types, struct, null);
+    default <T extends VertexTable> LinkedHashMap<String, T> vertexes(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct) {
+        return vertexes(runtime, random, catalog, schema, pattern, types, struct, null);
     }
-    default <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, boolean struct, ConfigStore configs) {
+    default <T extends VertexTable> LinkedHashMap<String, T> vertexes(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, boolean struct, ConfigStore configs) {
         int structs = 0;
         if(struct) {
             structs = Metadata.TYPE.ALL.value();
         }
-        return vertexs(runtime, random, catalog, schema, pattern, types, structs, configs);
+        return vertexes(runtime, random, catalog, schema, pattern, types, structs, configs);
     }
-    default <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, boolean struct) {
-        return vertexs(runtime, random, catalog, schema, pattern, types, struct, null);
+    default <T extends VertexTable> LinkedHashMap<String, T> vertexes(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, boolean struct) {
+        return vertexes(runtime, random, catalog, schema, pattern, types, struct, null);
     }
-    default <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types) {
-        return vertexs(runtime, random, catalog, schema, pattern, types, false);
+    default <T extends VertexTable> LinkedHashMap<String, T> vertexes(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types) {
+        return vertexes(runtime, random, catalog, schema, pattern, types, false);
     }
 
     /**
@@ -3607,7 +3607,7 @@ public interface DriverAdapter {
      * @return String
      * @throws Exception Exception
      */
-    List<Run> buildSelectVertexsRun(DataRuntime runtime, boolean greedy, VertexTable query, int types, ConfigStore configs) throws Exception;
+    List<Run> buildSelectVertexesRun(DataRuntime runtime, boolean greedy, VertexTable query, int types, ConfigStore configs) throws Exception;
     /**
      * vertex[命令合成]<br/>
      * 查询表,不是查表中的数据
@@ -3620,9 +3620,9 @@ public interface DriverAdapter {
      * @return String
      * @throws Exception Exception
      */
-    default List<Run> buildSelectVertexsRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs) throws Exception {
+    default List<Run> buildSelectVertexesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs) throws Exception {
         VertexTable query = new VertexTable(catalog, schema, pattern);
-        return buildSelectVertexsRun(runtime, greedy, query, types, configs);
+        return buildSelectVertexesRun(runtime, greedy, query, types, configs);
     }
 
     /**
@@ -3641,7 +3641,7 @@ public interface DriverAdapter {
      * @return String
      * @throws Exception Exception
      */
-    List<Run> buildSelectVertexsCommentRun(DataRuntime runtime, VertexTable query, int types) throws Exception;
+    List<Run> buildSelectVertexCommentRun(DataRuntime runtime, VertexTable query, int types) throws Exception;
     /**
      * vertex[命令合成]<br/>
      * 查询表备注
@@ -3653,49 +3653,49 @@ public interface DriverAdapter {
      * @return String
      * @throws Exception Exception
      */
-    default List<Run> buildSelectVertexsCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
+    default List<Run> buildSelectVertexCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
         VertexTable query = new VertexTable(catalog, schema, pattern);
-        return buildSelectVertexsCommentRun(runtime, query, types);
+        return buildSelectVertexCommentRun(runtime, query, types);
     }
 
     /**
      * vertex[结果集封装]<br/>
      *  根据查询结果集构造VertexTable
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条SQL 对照buildSelectVertexsRun返回顺序
+     * @param index 第几条SQL 对照buildSelectVertexesRun返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param query 查询条件 根据metadata属性
      * @param previous 上一步查询结果
      * @param set 查询结果集
-     * @return vertexs
+     * @return vertexes
      * @throws Exception 异常
      */
-    <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, VertexTable query, DataSet<DataRow> set) throws Exception;
+    <T extends VertexTable> LinkedHashMap<String, T> vertexes(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, VertexTable query, DataSet<DataRow> set) throws Exception;
     /**
      * vertex[结果集封装]<br/>
      *  根据查询结果集构造VertexTable
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条SQL 对照buildSelectVertexsRun返回顺序
+     * @param index 第几条SQL 对照buildSelectVertexesRun返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param catalog 对于MySQL, 则对应相应的数据库, 对于Oracle来说, 则是对应相应的数据库实例, 可以不填, 也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
      * @param schema 可以理解为数据库的登录名, 而对于Oracle也可以理解成对该数据库操作的所有者的登录名。对于Oracle要特别注意, 其登陆名必须是大写, 不然的话是无法获取到相应的数据, 而MySQL则不做强制要求。
      * @param previous 上一步查询结果
      * @param set 查询结果集
-     * @return vertexs
+     * @return vertexes
      * @throws Exception 异常
      */
-    default <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Catalog catalog, Schema schema, DataSet<DataRow> set) throws Exception {
+    default <T extends VertexTable> LinkedHashMap<String, T> vertexes(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Catalog catalog, Schema schema, DataSet<DataRow> set) throws Exception {
         VertexTable query = new VertexTable();
         query.setCatalog(catalog);
         query.setSchema(schema);
-        return vertexs(runtime, index, create, previous, query, set);
+        return vertexes(runtime, index, create, previous, query, set);
     }
-    <T extends VertexTable> List<T> vertexs(DataRuntime runtime, int index, boolean create, List<T> previous, VertexTable query, DataSet<DataRow> set) throws Exception;
-    default <T extends VertexTable> List<T> vertexs(DataRuntime runtime, int index, boolean create, List<T> previous, Catalog catalog, Schema schema, DataSet<DataRow> set) throws Exception {
+    <T extends VertexTable> List<T> vertexes(DataRuntime runtime, int index, boolean create, List<T> previous, VertexTable query, DataSet<DataRow> set) throws Exception;
+    default <T extends VertexTable> List<T> vertexes(DataRuntime runtime, int index, boolean create, List<T> previous, Catalog catalog, Schema schema, DataSet<DataRow> set) throws Exception {
         VertexTable query = new VertexTable();
         query.setCatalog(catalog);
         query.setSchema(schema);
-        return vertexs(runtime, index, create, previous, query, set);
+        return vertexes(runtime, index, create, previous, query, set);
     }
 
     /**
@@ -3706,10 +3706,10 @@ public interface DriverAdapter {
      * @param previous 上一步查询结果
      * @param query 查询条件 根据metadata属性
      * @param types 查询的类型 参考 Table.TYPE 多个类型相加算出总和
-     * @return vertexs
+     * @return vertexes
      * @throws Exception 异常
      */
-    <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, VertexTable query, int types) throws Exception;
+    <T extends VertexTable> LinkedHashMap<String, T> vertexes(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, VertexTable query, int types) throws Exception;
 
     /**
      * vertex[结果集封装]<br/>
@@ -3721,12 +3721,12 @@ public interface DriverAdapter {
      * @param schema 可以理解为数据库的登录名, 而对于Oracle也可以理解成对该数据库操作的所有者的登录名。对于Oracle要特别注意, 其登陆名必须是大写, 不然的话是无法获取到相应的数据, 而MySQL则不做强制要求。
      * @param pattern 名称统配符或正则
      * @param types 查询的类型 参考 Table.TYPE 多个类型相加算出总和
-     * @return vertexs
+     * @return vertexes
      * @throws Exception 异常
      */
-    default <T extends VertexTable> LinkedHashMap<String, T> vertexs(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
+    default <T extends VertexTable> LinkedHashMap<String, T> vertexes(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
         VertexTable query = new VertexTable(catalog, schema, pattern);
-        return vertexs(runtime, create, previous, query, types);
+        return vertexes(runtime, create, previous, query, types);
     }
 
     /**
@@ -3737,10 +3737,10 @@ public interface DriverAdapter {
      * @param previous 上一步查询结果
      * @param query 查询条件 根据metadata属性
      * @param types 查询的类型 参考 Table.TYPE 多个类型相加算出总和
-     * @return vertexs
+     * @return vertexes
      * @throws Exception 异常
      */
-    <T extends VertexTable> List<T> vertexs(DataRuntime runtime, boolean create, List<T> previous, VertexTable query, int types) throws Exception;
+    <T extends VertexTable> List<T> vertexes(DataRuntime runtime, boolean create, List<T> previous, VertexTable query, int types) throws Exception;
     /**
      * vertex[结果集封装]<br/>
      * 根据驱动内置方法补充
@@ -3751,12 +3751,12 @@ public interface DriverAdapter {
      * @param schema 可以理解为数据库的登录名, 而对于Oracle也可以理解成对该数据库操作的所有者的登录名。对于Oracle要特别注意, 其登陆名必须是大写, 不然的话是无法获取到相应的数据, 而MySQL则不做强制要求。
      * @param pattern 名称统配符或正则
      * @param types 查询的类型 参考 Table.TYPE 多个类型相加算出总和
-     * @return vertexs
+     * @return vertexes
      * @throws Exception 异常
      */
-    default <T extends VertexTable> List<T> vertexs(DataRuntime runtime, boolean create, List<T> previous, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
+    default <T extends VertexTable> List<T> vertexes(DataRuntime runtime, boolean create, List<T> previous, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
         VertexTable query = new VertexTable(catalog, schema, pattern);
-        return vertexs(runtime, create, previous, query, types);
+        return vertexes(runtime, create, previous, query, types);
     }
 
     /**

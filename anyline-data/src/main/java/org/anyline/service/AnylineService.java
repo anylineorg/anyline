@@ -3322,154 +3322,154 @@ public interface AnylineService<E>{
 			return exists(false, vertex);
 		}
 		/**
-		 * vertexs
+		 * vertexes
 		 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
 		 * @param query 查询条件 根据metadata属性
 		 * @param types 查询的类型 参考 Table.TYPE 多个类型相加算出总和
 		 * @param struct 查询的属性 参考Metadata.TYPE 多个属性相加算出总和
-		 * @return vertexs
+		 * @return vertexes
 		 */
-		<T extends VertexTable> List<T> vertexs(boolean greedy, VertexTable query, int types, int struct, ConfigStore configs);
+		<T extends VertexTable> List<T> vertexes(boolean greedy, VertexTable query, int types, int struct, ConfigStore configs);
 		/**
-		 * vertexs
+		 * vertexes
 		 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
 		 * @param catalog 对于MySQL, 则对应相应的数据库, 对于Oracle来说, 则是对应相应的数据库实例, 可以不填, 也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
 		 * @param schema 可以理解为数据库的登录名, 而对于Oracle也可以理解成对该数据库操作的所有者的登录名。对于Oracle要特别注意, 其登陆名必须是大写, 不然的话是无法获取到相应的数据, 而MySQL则不做强制要求。
 		 * @param name 一般情况下如果要获取所有的表的话, 可以直接设置为null, 如果设置为特定的表名称, 则返回该表的具体信息。
 		 * @param types 查询的类型 参考 Table.TYPE 多个类型相加算出总和
 		 * @param struct 查询的属性 参考Metadata.TYPE 多个属性相加算出总和
-		 * @return vertexs
+		 * @return vertexes
 		 */
-		default <T extends VertexTable> List<T> vertexs(boolean greedy, Catalog catalog, Schema schema, String name, int types, int struct, ConfigStore configs) {
+		default <T extends VertexTable> List<T> vertexes(boolean greedy, Catalog catalog, Schema schema, String name, int types, int struct, ConfigStore configs) {
 			VertexTable query = new VertexTable(catalog, schema, name);
-			return vertexs(greedy, query, types, struct, configs);
+			return vertexes(greedy, query, types, struct, configs);
 		}
-		default <T extends VertexTable> List<T> vertexs(boolean greedy, Catalog catalog, Schema schema, String name, int types, int struct) {
-			return vertexs(greedy, catalog, schema, name, types, struct, null);
+		default <T extends VertexTable> List<T> vertexes(boolean greedy, Catalog catalog, Schema schema, String name, int types, int struct) {
+			return vertexes(greedy, catalog, schema, name, types, struct, null);
 		}
-		default <T extends VertexTable> List<T> vertexs(boolean greedy, Catalog catalog, Schema schema, String name, int types, boolean struct, ConfigStore configs) {
+		default <T extends VertexTable> List<T> vertexes(boolean greedy, Catalog catalog, Schema schema, String name, int types, boolean struct, ConfigStore configs) {
 			int structs = 0;
 			if(struct) {
 				structs = Metadata.TYPE.ALL.value();
 			}
-			return vertexs(greedy, catalog, schema, name, types, structs, configs);
+			return vertexes(greedy, catalog, schema, name, types, structs, configs);
 		}
-		default <T extends VertexTable> List<T> vertexs(boolean greedy, Catalog catalog, Schema schema, String name, int types, boolean struct) {
-			return vertexs(greedy, catalog, schema, name, types, struct, null);
+		default <T extends VertexTable> List<T> vertexes(boolean greedy, Catalog catalog, Schema schema, String name, int types, boolean struct) {
+			return vertexes(greedy, catalog, schema, name, types, struct, null);
 		}
-		default <T extends VertexTable> List<T> vertexs(boolean greedy, Schema schema, String name, int types, int struct) {
-			return vertexs(greedy, null, schema, name, types, struct);
+		default <T extends VertexTable> List<T> vertexes(boolean greedy, Schema schema, String name, int types, int struct) {
+			return vertexes(greedy, null, schema, name, types, struct);
 		}
-		default <T extends VertexTable> List<T> vertexs(boolean greedy, Schema schema, String name, int types, boolean struct) {
-			return vertexs(greedy, null, schema, name, types, struct);
+		default <T extends VertexTable> List<T> vertexes(boolean greedy, Schema schema, String name, int types, boolean struct) {
+			return vertexes(greedy, null, schema, name, types, struct);
 		}
-		default <T extends VertexTable> List<T> vertexs(boolean greedy, String name, int types, boolean struct) {
-			return vertexs(greedy, null, null, name, types, struct);
+		default <T extends VertexTable> List<T> vertexes(boolean greedy, String name, int types, boolean struct) {
+			return vertexes(greedy, null, null, name, types, struct);
 		}
-		default <T extends VertexTable> List<T> vertexs(boolean greedy, String name, int types, int struct) {
-			return vertexs(greedy, null, null, name, types, struct);
+		default <T extends VertexTable> List<T> vertexes(boolean greedy, String name, int types, int struct) {
+			return vertexes(greedy, null, null, name, types, struct);
 		}
-		default <T extends VertexTable> List<T> vertexs(boolean greedy, int types, int struct) {
-			return vertexs(greedy, null, types, struct);
+		default <T extends VertexTable> List<T> vertexes(boolean greedy, int types, int struct) {
+			return vertexes(greedy, null, types, struct);
 		}
-		default <T extends VertexTable> List<T> vertexs(boolean greedy, int types, boolean struct) {
-			return vertexs(greedy, null, types, struct);
+		default <T extends VertexTable> List<T> vertexes(boolean greedy, int types, boolean struct) {
+			return vertexes(greedy, null, types, struct);
 		}
-		default <T extends VertexTable> List<T> vertexs(boolean greedy, boolean struct) {
-			return vertexs(greedy, VertexTable.TYPE.NORMAL.value, struct);
+		default <T extends VertexTable> List<T> vertexes(boolean greedy, boolean struct) {
+			return vertexes(greedy, VertexTable.TYPE.NORMAL.value, struct);
 		}
 
-		<T extends VertexTable> LinkedHashMap<String, T> vertexs(VertexTable query, int types, int struct, ConfigStore configs);
-		default <T extends VertexTable> LinkedHashMap<String, T> vertexs(Catalog catalog, Schema schema, String name, int types, int struct, ConfigStore configs) {
+		<T extends VertexTable> LinkedHashMap<String, T> vertexes(VertexTable query, int types, int struct, ConfigStore configs);
+		default <T extends VertexTable> LinkedHashMap<String, T> vertexes(Catalog catalog, Schema schema, String name, int types, int struct, ConfigStore configs) {
 			VertexTable query = new VertexTable(catalog, schema, name);
-			return vertexs(query, types, struct, configs);
+			return vertexes(query, types, struct, configs);
 		}
-		default <T extends VertexTable> LinkedHashMap<String, T> vertexs(Catalog catalog, Schema schema, String name, int types, int struct) {
-			return vertexs(catalog, schema, name, types, struct, null);
+		default <T extends VertexTable> LinkedHashMap<String, T> vertexes(Catalog catalog, Schema schema, String name, int types, int struct) {
+			return vertexes(catalog, schema, name, types, struct, null);
 		}
-		default <T extends VertexTable> LinkedHashMap<String, T> vertexs(Catalog catalog, Schema schema, String name, int types, boolean struct, ConfigStore configs) {
+		default <T extends VertexTable> LinkedHashMap<String, T> vertexes(Catalog catalog, Schema schema, String name, int types, boolean struct, ConfigStore configs) {
 			int structs = 0;
 			if(struct) {
 				structs = Metadata.TYPE.ALL.value();
 			}
-			return vertexs(catalog, schema, name, types, structs, configs);
+			return vertexes(catalog, schema, name, types, structs, configs);
 		}
-		default <T extends VertexTable> LinkedHashMap<String, T> vertexs(Catalog catalog, Schema schema, String name, int types, boolean struct) {
-			return vertexs(catalog, schema, name, types, struct, null);
-		}
-
-		default <T extends VertexTable> LinkedHashMap<String, T> vertexs(Schema schema, String name, int types, int struct) {
-			return vertexs(null, schema, name, types, struct);
-		}
-		default <T extends VertexTable> LinkedHashMap<String, T> vertexs(Schema schema, String name, int types, boolean struct) {
-			return vertexs(null, schema, name, types, struct);
-		}
-		default <T extends VertexTable> LinkedHashMap<String, T> vertexs(String name, int types, int struct) {
-			return vertexs(null, null, name, types, struct);
-		}
-		default <T extends VertexTable> LinkedHashMap<String, T> vertexs(String name, int types, boolean struct) {
-			return vertexs(null, null, name, types, struct);
-		}
-		default <T extends VertexTable> LinkedHashMap<String, T> vertexs(int types, int struct) {
-			return vertexs(null, types, struct);
-		}
-		default <T extends VertexTable> LinkedHashMap<String, T> vertexs(int types, boolean struct) {
-			return vertexs(null, types, struct);
-		}
-		default <T extends VertexTable> LinkedHashMap<String, T> vertexs() {
-			return vertexs( VertexTable.TYPE.NORMAL.value, false);
+		default <T extends VertexTable> LinkedHashMap<String, T> vertexes(Catalog catalog, Schema schema, String name, int types, boolean struct) {
+			return vertexes(catalog, schema, name, types, struct, null);
 		}
 
-		default <T extends VertexTable> LinkedHashMap<String, T> vertexs(int types, int struct, ConfigStore configs) {
-			return vertexs(null, null, null, types, struct, configs);
+		default <T extends VertexTable> LinkedHashMap<String, T> vertexes(Schema schema, String name, int types, int struct) {
+			return vertexes(null, schema, name, types, struct);
 		}
-		default <T extends VertexTable> LinkedHashMap<String, T> vertexs(int types, boolean struct, ConfigStore configs) {
-			return vertexs(null, null, null,  types, struct, configs);
+		default <T extends VertexTable> LinkedHashMap<String, T> vertexes(Schema schema, String name, int types, boolean struct) {
+			return vertexes(null, schema, name, types, struct);
 		}
-		default <T extends VertexTable> LinkedHashMap<String, T> vertexs(ConfigStore configs) {
-			return vertexs(VertexTable.TYPE.NORMAL.value, false, configs);
+		default <T extends VertexTable> LinkedHashMap<String, T> vertexes(String name, int types, int struct) {
+			return vertexes(null, null, name, types, struct);
 		}
-
-		default <T extends VertexTable> List<T> vertexs(boolean greedy, Catalog catalog, Schema schema, String name, int types, ConfigStore configs) {
-			return vertexs(greedy, catalog, schema, name, types, false, configs);
+		default <T extends VertexTable> LinkedHashMap<String, T> vertexes(String name, int types, boolean struct) {
+			return vertexes(null, null, name, types, struct);
 		}
-		default <T extends VertexTable> List<T> vertexs(boolean greedy, Catalog catalog, Schema schema, String name, int types) {
-			return vertexs(greedy, catalog, schema, name, types, false);
+		default <T extends VertexTable> LinkedHashMap<String, T> vertexes(int types, int struct) {
+			return vertexes(null, types, struct);
 		}
-		default <T extends VertexTable> List<T> vertexs(boolean greedy, Schema schema, String name, int types) {
-			return vertexs(greedy, null, schema, name, types, false);
+		default <T extends VertexTable> LinkedHashMap<String, T> vertexes(int types, boolean struct) {
+			return vertexes(null, types, struct);
 		}
-		default <T extends VertexTable> List<T> vertexs(boolean greedy, String name, int types) {
-			return vertexs(greedy, null, null, name, types, false);
-		}
-		default <T extends VertexTable> List<T> vertexs(boolean greedy, int types) {
-			return vertexs(greedy, null, types, false);
-		}
-		default <T extends VertexTable> List<T> vertexs(boolean greedy) {
-			return vertexs(greedy, VertexTable.TYPE.NORMAL.value, false);
-		}
-		default <T extends VertexTable> List<T> vertexs(boolean greedy, int types, ConfigStore configs) {
-			return vertexs(greedy, null, null, null, types, configs);
-		}
-		default <T extends VertexTable> List<T> vertexs(boolean greedy, ConfigStore configs) {
-			return vertexs(greedy, null, null, null, VertexTable.TYPE.NORMAL.value, configs);
+		default <T extends VertexTable> LinkedHashMap<String, T> vertexes() {
+			return vertexes( VertexTable.TYPE.NORMAL.value, false);
 		}
 
-		default <T extends VertexTable> LinkedHashMap<String, T> vertexs(Catalog catalog, Schema schema, String name, int types) {
-			return vertexs(catalog, schema, name, types, false);
+		default <T extends VertexTable> LinkedHashMap<String, T> vertexes(int types, int struct, ConfigStore configs) {
+			return vertexes(null, null, null, types, struct, configs);
+		}
+		default <T extends VertexTable> LinkedHashMap<String, T> vertexes(int types, boolean struct, ConfigStore configs) {
+			return vertexes(null, null, null,  types, struct, configs);
+		}
+		default <T extends VertexTable> LinkedHashMap<String, T> vertexes(ConfigStore configs) {
+			return vertexes(VertexTable.TYPE.NORMAL.value, false, configs);
 		}
 
-		default <T extends VertexTable> LinkedHashMap<String, T> vertexs(Schema schema, String name, int types) {
-			return vertexs(null, schema, name, types, false);
+		default <T extends VertexTable> List<T> vertexes(boolean greedy, Catalog catalog, Schema schema, String name, int types, ConfigStore configs) {
+			return vertexes(greedy, catalog, schema, name, types, false, configs);
 		}
-		default <T extends VertexTable> LinkedHashMap<String, T> vertexs(String name, int types) {
-			return vertexs(null, null, name, types, false);
+		default <T extends VertexTable> List<T> vertexes(boolean greedy, Catalog catalog, Schema schema, String name, int types) {
+			return vertexes(greedy, catalog, schema, name, types, false);
 		}
-		default <T extends VertexTable> LinkedHashMap<String, T> vertexs(int types) {
-			return vertexs(null, types, false);
+		default <T extends VertexTable> List<T> vertexes(boolean greedy, Schema schema, String name, int types) {
+			return vertexes(greedy, null, schema, name, types, false);
 		}
-		default <T extends VertexTable> LinkedHashMap<String, T> vertexs(int types, ConfigStore configs) {
-			return vertexs(null,null,null, types, false, configs);
+		default <T extends VertexTable> List<T> vertexes(boolean greedy, String name, int types) {
+			return vertexes(greedy, null, null, name, types, false);
+		}
+		default <T extends VertexTable> List<T> vertexes(boolean greedy, int types) {
+			return vertexes(greedy, null, types, false);
+		}
+		default <T extends VertexTable> List<T> vertexes(boolean greedy) {
+			return vertexes(greedy, VertexTable.TYPE.NORMAL.value, false);
+		}
+		default <T extends VertexTable> List<T> vertexes(boolean greedy, int types, ConfigStore configs) {
+			return vertexes(greedy, null, null, null, types, configs);
+		}
+		default <T extends VertexTable> List<T> vertexes(boolean greedy, ConfigStore configs) {
+			return vertexes(greedy, null, null, null, VertexTable.TYPE.NORMAL.value, configs);
+		}
+
+		default <T extends VertexTable> LinkedHashMap<String, T> vertexes(Catalog catalog, Schema schema, String name, int types) {
+			return vertexes(catalog, schema, name, types, false);
+		}
+
+		default <T extends VertexTable> LinkedHashMap<String, T> vertexes(Schema schema, String name, int types) {
+			return vertexes(null, schema, name, types, false);
+		}
+		default <T extends VertexTable> LinkedHashMap<String, T> vertexes(String name, int types) {
+			return vertexes(null, null, name, types, false);
+		}
+		default <T extends VertexTable> LinkedHashMap<String, T> vertexes(int types) {
+			return vertexes(null, types, false);
+		}
+		default <T extends VertexTable> LinkedHashMap<String, T> vertexes(int types, ConfigStore configs) {
+			return vertexes(null,null,null, types, false, configs);
 		}
 
 		/**
