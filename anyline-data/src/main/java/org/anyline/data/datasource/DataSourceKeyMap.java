@@ -31,6 +31,17 @@ public class DataSourceKeyMap {
         reg("validationTimeout","validationTimeoutMs","validation-timeout","validation-timeout-ms");
         reg("validationTimeout","validationTimeoutMs","validation-timeout","validation-timeout-ms");
         reg("transactionIsolationName","transactionIsolation","transaction-isolation-name","transaction-isolation");
+
+        reg("database","db");                                                                   // 数据库名
+        reg("maxConnections","max-connections","max-connections-per-host");                     // 每主机最大连接数
+        reg("connectionTtl","connection-ttl","connection-ttl-ms","connectionTtlMs");            // 连接存活时间(毫秒)
+        reg("keepAliveInterval","keep-alive-interval","keep-alive-interval-seconds");           // VST保活间隔(秒)
+        reg("useSsl","use-ssl","ssl");                                                          // 是否启用SSL
+        reg("verifyHost","verify-host");                                                        // 主机名验证
+        reg("acquireHostList","acquire-host-list");                                             // 自动发现集群主机
+        reg("acquireHostListInterval","acquire-host-list-interval");                            // 主机列表刷新间隔(毫秒)
+        reg("loadBalancingStrategy","load-balancing-strategy");                                 // 负载均衡策略
+        reg("configFile","config-file");                                                        // ArangoDB原生配置文件
     }
     public static HashSet<String> alias(String key) {
         return maps.get(key);
