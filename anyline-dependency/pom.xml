@@ -66,6 +66,7 @@
 		<driver-neo4j.version>6.0</driver-neo4j.version>
 		<elasticsearch.version>8.7.0</elasticsearch.version>
 		<mongodb-client.version>5.1.0</mongodb-client.version>
+		<arangodb-client.version>7.26.0</arangodb-client.version>
 		<influxdb-client.version>5.0.0</influxdb-client.version>
 		<milvus-client.version>2.5.7</milvus-client.version>
 		<weaviate-client.version>5.2.1</weaviate-client.version>
@@ -674,6 +675,11 @@
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
+				<artifactId>anyline-data-arango</artifactId>
+				<version>${anyline.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
 				<artifactId>anyline-data-elasticsearch</artifactId>
 				<version>${anyline.version}</version>
 			</dependency>
@@ -984,7 +990,11 @@
 				<artifactId>mongodb-driver-core</artifactId>
 				<version>${mongodb-client.version}</version>
 			</dependency>
-
+			<dependency>
+				<groupId>com.arangodb</groupId>
+				<artifactId>arangodb-java-driver</artifactId>
+				<version>${arangodb-client.version}</version>
+			</dependency>
 			<dependency>
 				<groupId>org.voltdb</groupId>
 				<artifactId>voltdbclient</artifactId>

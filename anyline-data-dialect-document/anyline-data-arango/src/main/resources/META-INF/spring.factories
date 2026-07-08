@@ -1,0 +1,6 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+org.anyline.data.arango.adapter.ArangoAdapter,\
+org.anyline.data.arango.datasource.ArangoDataSourceLoader,\
+org.anyline.data.arango.datasource.ArangoDataSourceHolder,\
+org.anyline.data.arango.runtime.ArangoRuntimeHolder,\
+org.anyline.data.arango.adapter.ArangoActuator

@@ -14,6 +14,7 @@
 	<packaging>pom</packaging>
 
     <modules>
+		<module>anyline-data-arango</module>
 		<module>anyline-data-mongodb</module>
 		<module>anyline-data-couchdb</module>
     </modules>
