@@ -15857,7 +15857,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				def = SQL_BUILD_IN_VALUE.CURRENT_DATETIME;
 			}
 		}
-		if(null != def) {
+		if(null != def && !"".equals(def)) {
 			String str = def.toString().trim();
 			builder.append(" DEFAULT ");
 			//boolean isCharColumn = isCharColumn(runtime, column);

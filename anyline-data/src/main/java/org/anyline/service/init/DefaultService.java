@@ -3538,7 +3538,7 @@ public class DefaultService<E> implements AnylineService<E> {
                     }
                     otable.setRuns(runs);
                     otable.setUpdate(update, false, false);
-                    //sort(table);
+                    sort(table);
                     if(table.isSort()){
                         otable.setSort(true);
                     }
@@ -3546,7 +3546,7 @@ public class DefaultService<E> implements AnylineService<E> {
                     table.addDdl(otable.ddls());
                     //table.addRuns(otable.runs());
                 } else {
-                    //sort(table);
+                    sort(table);
                     result = create(table);
                 }
             }finally {

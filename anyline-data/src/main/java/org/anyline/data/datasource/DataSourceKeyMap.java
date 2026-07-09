@@ -32,6 +32,7 @@ public class DataSourceKeyMap {
         reg("validationTimeout","validationTimeoutMs","validation-timeout","validation-timeout-ms");
         reg("transactionIsolationName","transactionIsolation","transaction-isolation-name","transaction-isolation");
 
+        // ArangoDB 数据源配置键别名
         reg("database","db");                                                                   // 数据库名
         reg("maxConnections","max-connections","max-connections-per-host");                     // 每主机最大连接数
         reg("connectionTtl","connection-ttl","connection-ttl-ms","connectionTtlMs");            // 连接存活时间(毫秒)

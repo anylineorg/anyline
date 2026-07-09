@@ -5949,7 +5949,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 				def = SQL_BUILD_IN_VALUE.CURRENT_DATETIME;
 			}
 		}
-		if(null != def) {
+		if(null != def && !"".equals(def)) {
 			String str = def.toString().trim();
 			builder.append(" DEFAULT ");
 			//boolean isCharColumn = isCharColumn(runtime, column);
