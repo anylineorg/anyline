@@ -30,6 +30,7 @@ import org.anyline.data.arango.runtime.ArangoRuntimeHolder;
 import org.anyline.data.datasource.DataSourceHolder;
 import org.anyline.data.datasource.init.AbstractDataSourceHolder;
 import org.anyline.data.runtime.DataRuntime;
+import org.anyline.data.util.DataSourceUtil;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
@@ -38,7 +39,7 @@ import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
 
-@AnylineComponent("anyline.environment.data.datasource.holder.arango")
+@AnylineComponent("anyline.environment.spring.data.datasource.holder.arango")
 public class ArangoDataSourceHolder extends AbstractDataSourceHolder implements DataSourceHolder {
 
     private static final ArangoDataSourceHolder instance = new ArangoDataSourceHolder();
@@ -237,18 +238,28 @@ public class ArangoDataSourceHolder extends AbstractDataSourceHolder implements 
                 }
             }
 
-            // 5c. 主机列表 — 支持逗号分隔多主机
+            // 5c. 主机列表 — 支持逗号分隔多主机，支持 http:// 前缀
             if(BasicUtil.isNotEmpty(host)) {
                 String[] hosts = host.split(",");
                 for(String h : hosts) {
                     h = h.trim();
                     if(h.isEmpty()) continue;
-                    if(h.contains(":")) {
-                        String[] parts = h.split(":");
-                        builder.host(parts[0].trim(), Integer.parseInt(parts[1].trim()));
-                    } else {
-                        builder.host(h, port);
+                    String cleanHost = h;
+                    int portVal = port;
+                    if(cleanHost.startsWith("http://")) {
+                        cleanHost = cleanHost.substring(7);
+                    } else if(cleanHost.startsWith("https://")) {
+                        cleanHost = cleanHost.substring(8);
                     }
+                    if(cleanHost.contains(":")) {
+                        int lastColon = cleanHost.lastIndexOf(":");
+                        try {
+                            portVal = Integer.parseInt(cleanHost.substring(lastColon + 1).trim());
+                            cleanHost = cleanHost.substring(0, lastColon).trim();
+                        } catch(NumberFormatException e) {
+                        }
+                    }
+                    builder.host(cleanHost, portVal);
                 }
             }
 
@@ -299,13 +310,19 @@ public class ArangoDataSourceHolder extends AbstractDataSourceHolder implements 
                     log.warn("[arango 不支持的负载均衡策略][strategy:{}][支持:NONE,ROUND_ROBIN,ONE_RANDOM]", loadBalancingStrategy);
                 }
             }
-
             // 5i. 构建
             ArangoDB client = builder.build();
             DataSourceHolder.params.put(key, params);
             ArangoDatabase db = client.db(database);
-            ArangoRuntimeHolder.instance().reg(key, client, db);
+            DataRuntime runtime = ArangoRuntimeHolder.instance().reg(key, client, db);
 
+
+            String adapterKey = value(prefix, params, "adapter", String.class, null);
+            if(BasicUtil.isNotEmpty(adapterKey)) {
+                runtime.setAdapterKey(adapterKey);
+            } else {
+                runtime.setAdapterKey(DataSourceUtil.parseAdapterKey(host));
+            }
         } catch (Exception e) {
             log.error("[注入数据源失败][type:arango][key:{}][msg:{}]", key, e.toString());
             log.error("注入数据源 异常:", e);

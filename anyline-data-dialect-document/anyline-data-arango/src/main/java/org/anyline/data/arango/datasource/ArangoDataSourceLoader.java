@@ -29,7 +29,7 @@ import org.anyline.util.ConfigTable;
 
 import java.util.ArrayList;
 import java.util.List;
-@AnylineComponent("anyline.environment.data.datasource.loader.arango")
+@AnylineComponent("anyline.environment.spring.data.datasource.loader.arango")
 public class ArangoDataSourceLoader extends AbstractDataSourceLoader implements DataSourceLoader {
 
     private final ArangoDataSourceHolder holder = ArangoDataSourceHolder.instance();
@@ -66,20 +66,14 @@ public class ArangoDataSourceLoader extends AbstractDataSourceLoader implements 
 
             //有不支持通过connection返回获取连接信息的驱动，所以从配置文件中获取
             if(null != runtime) {
-                String url = ConfigTable.environment().string( "spring.datasource.,anyline.datasource.", "url,uri");
+                String url = ConfigTable.environment().string( "spring.datasource.,anyline.datasource.", "url,uri,host,hosts");
                 runtime.setUrl(url);
                 if (BasicUtil.isNotEmpty(url)) {
                     runtime.setAdapterKey(DataSourceUtil.parseAdapterKey(url));
                 }else{
-                    // ArangoDB 可能通过 host+port 配置(无传统URL), 检测 adapter 配置或根据数据源类型推断
                     String adapterKey = ConfigTable.environment().string("spring.datasource.,anyline.datasource.", "adapter");
                     if(BasicUtil.isNotEmpty(adapterKey)) {
                         runtime.setAdapterKey(adapterKey);
-                    }else{
-                        String host = ConfigTable.environment().string("spring.datasource.,anyline.datasource.", "host");
-                        if(BasicUtil.isNotEmpty(host)) {
-                            runtime.setAdapterKey("arango");
-                        }
                     }
                 }
             }
