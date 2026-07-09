@@ -68,13 +68,12 @@ public class MongoDataSourceLoader extends AbstractDataSourceLoader implements D
             if(null != runtime) {
                 String url = ConfigTable.environment().string( "spring.datasource.,anyline.datasource.", "url,uri");
                 runtime.setUrl(url);
-                if (BasicUtil.isNotEmpty(url)) {
+
+                String adapterKey = ConfigTable.environment().string("spring.datasource.,anyline.datasource.", "adapter");
+                if(BasicUtil.isNotEmpty(adapterKey)) {
+                    runtime.setAdapterKey(adapterKey);
+                } else {
                     runtime.setAdapterKey(DataSourceUtil.parseAdapterKey(url));
-                }else{
-                    String adapterKey = ConfigTable.environment().string("spring.datasource.,anyline.datasource.", "adapter");
-                    if(BasicUtil.isNotEmpty(adapterKey)) {
-                        runtime.setAdapterKey(adapterKey);
-                    }
                 }
             }
         }else{
