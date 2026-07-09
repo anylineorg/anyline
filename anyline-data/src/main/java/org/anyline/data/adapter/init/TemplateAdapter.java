@@ -1446,6 +1446,61 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
      * function         : 函数
      ******************************************************************************************************************/
 
+    /**
+     * 元数据[结构集封装-依据]<br/>
+     * 读取元数据结果集的依据(元数据属性与数据库列的对应关系)
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param type Table Column等元数据类
+     * @return MetadataRefer
+     */
+    @Override
+    public MetadataFieldRefer refer(DataRuntime runtime, Class<?> type) {
+        return super.refer(runtime, type);
+    }
+
+    @Override
+    public void reg(MetadataFieldRefer refer) {
+        super.reg(refer);
+    }
+
+    /**
+     * 根据运行环境识别 catalog与schema
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta Metadata
+     * @param <T> Metadata
+     */
+    @Override
+    public <T extends Metadata> void checkSchema(DataRuntime runtime, T meta) {
+        actuator.checkSchema(this, runtime, meta);
+    }
+
+
+    /**
+     * 根据结果集对象获取列结构,如果有表名应该调用metadata().columns(table);或metadata().table(table).getColumns()
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
+     * @param comment 是否需要查询列注释
+     * @return LinkedHashMap
+     */
+    @Override
+    public LinkedHashMap<String,Column> metadata(DataRuntime runtime, RunPrepare prepare, boolean comment) throws Exception{
+        return super.metadata(runtime, prepare, comment);
+    }
+
+    /**
+     * 检测name,name中可能包含catalog.schema.name<br/>
+     * 如果有一项或三项，在父类中解析<br/>
+     * 如果只有两项，需要根据不同数据库区分出最前一项是catalog还是schema，如果区分不出来的抛出异常
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param random 用来标记同一组命令
+     * @param meta 表,视图等
+     * @return T
+     * @throws Exception 如果区分不出来的抛出异常
+     */
+    @Override
+    public <T extends Metadata> T checkName(DataRuntime runtime, String random, T meta) throws RuntimeException {
+        return super.checkName(runtime, random, meta);
+    }
     /* *****************************************************************************************************************
      * 													database
      * -----------------------------------------------------------------------------------------------------------------
@@ -2121,33 +2176,6 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
     @Override
     public Schema schema(DataRuntime runtime, boolean create, Schema meta) throws Exception {
         return super.schema(runtime, create, meta);
-    }
-
-    /**
-     * 根据结果集对象获取列结构,如果有表名应该调用metadata().columns(table);或metadata().table(table).getColumns()
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
-     * @param comment 是否需要查询列注释
-     * @return LinkedHashMap
-     */
-    @Override
-    public LinkedHashMap<String,Column> metadata(DataRuntime runtime, RunPrepare prepare, boolean comment) throws Exception{
-        return super.metadata(runtime, prepare, comment);
-    }
-
-    /**
-     * 检测name,name中可能包含catalog.schema.name<br/>
-     * 如果有一项或三项，在父类中解析<br/>
-     * 如果只有两项，需要根据不同数据库区分出最前一项是catalog还是schema，如果区分不出来的抛出异常
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param random 用来标记同一组命令
-     * @param meta 表,视图等
-     * @return T
-     * @throws Exception 如果区分不出来的抛出异常
-     */
-    @Override
-    public <T extends Metadata> T checkName(DataRuntime runtime, String random, T meta) throws RuntimeException {
-        return super.checkName(runtime, random, meta);
     }
 
     /**
