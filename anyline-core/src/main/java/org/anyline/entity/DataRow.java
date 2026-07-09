@@ -165,9 +165,9 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         this(keyCase);
         parseMap(null, map);
     }
-    public DataRow(LinkedHashMap columns, Map<String, Object> map) {
+    public DataRow(LinkedHashMap metadatas, Map<String, Object> map) {
         this();
-        parseMap(columns, map);
+        parseMap(metadatas, map);
     }
 
     /**
@@ -210,8 +210,8 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     public static DataRow build(String json) {
         return build(null, json);
     }
-    public DataRow parseMap(LinkedHashMap columns, Map<String, Object> map) {
-        setMetadata(columns);
+    public DataRow parseMap(LinkedHashMap metadatas, Map<String, Object> map) {
+        setMetadata(metadatas);
         Set<Map.Entry<String, Object>> set = map.entrySet();
         for (Map.Entry<String, Object> entity : set) {
             Object value = entity.getValue();
@@ -325,8 +325,8 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     public static DataRow parse(Object obj, String... keys) {
         return parse((DataRow)null, obj, keys);
     }
-    public static DataRow parse(KEY_CASE keyCase, String txt, String... keys) {
-        return parse((DataRow)null, keyCase, txt, keys);
+    public static DataRow parse(KEY_CASE keyCase, String json, String... keys) {
+        return parse((DataRow)null, keyCase, json, keys);
     }
 
     public static DataRow build(DataRow row, Object obj, String... keys) {
@@ -740,6 +740,12 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         }
         return result;
     }
+
+    /**
+     * 返回column对应的元数据信息
+     * @param column 列
+     * @return Column
+     */
     public Column getMetadata(String column) {
         LinkedHashMap<String, Column> metadatas = getMetadatas();
         if(null == metadatas) {
@@ -1707,8 +1713,8 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
             return (DataSet) obj;
         }
         DataSet<DataRow> set = new DataSet();
-        DataSet<DataRow> childs = getSet(key);
-        for(DataRow child:childs) {
+        DataSet<DataRow> children = getSet(key);
+        for(DataRow child:children) {
             set.add(child);
             set.addAll(child.getAllChild(key));
         }
@@ -1775,7 +1781,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     }
 
     /**
-     * 是否有指定的key
+     * 是否有指定的key对应的value且不为null
      * @param key key
      * @return boolean
      */
@@ -2553,15 +2559,6 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         }
     }
 
-    public String getDecimal(String key, String format) {
-        BigDecimal result = getDecimal(key);
-        return NumberUtil.format(result, format);
-    }
-
-    public String getDecimal(int index, String format) {
-        return getDecimal(key(index), format);
-    }
-
     public String getDecimal(String key, double def, String format) {
         return getDecimal(key, new BigDecimal(def), format);
     }
@@ -2609,14 +2606,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     }
 
     public Date getDate(int index, String def) throws Exception {
-        return getDate(key(index), def);
-    }
-    public Date getDate(String key, String def) throws Exception {
-        try {
-            return getDate(key);
-        } catch (Exception e) {
-            return DateUtil.parse(def);
-        }
+        return getDate(key(index), DateUtil.parse(def));
     }
 
     public Date getDate(String ... keys) throws Exception {
@@ -3302,6 +3292,13 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         }
         return this;
     }
+
+    /**
+     * 复制指定列(只有this.key对应的value为null时才复制)
+     * @param copy 被复制数据
+     * @param keys 指定列
+     * @return this
+     */
     public DataRow copyIfNull(DataRow copy, String... keys) {
         List<String> cols = copy.columns(keys);
         for(String col:cols) {
@@ -3636,20 +3633,6 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return changeKey(key, target, true);
     }
 
-    /**
-     * 替换所有空值
-     * @param value value
-     * @return DataRow
-     */
-    public DataRow replaceEmpty(String value) {
-        List<String> keys = keys();
-        for (String key : keys) {
-            if (isEmpty(key)) {
-                put(KEY_CASE.SRC, key, value);
-            }
-        }
-        return this;
-    }
 
     /**
      * 所有String类型的值执行trim
@@ -3676,7 +3659,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     }
 
     /**
-     * 多个空白压缩成一个空格
+     * 把每一列的值中的多个空白压缩成一个空格
      * @return DataRow
      */
     public DataRow compress() {
@@ -3723,16 +3706,16 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 
     /**
      * 替换所有空值
-     * @param keys keys
-     * @param replace replace
+     * @param keys 需要替换的key可以包含正则
+     * @param value 替换结果
      * @return DataRow
      */
-    public DataRow replaceEmpty(String replace, String ... keys) {
+    public DataRow replaceEmpty(String value, String ... keys) {
         List<String> ks = columns(keys);
 
         for(String key:ks) {
             if (isEmpty(key)) {
-                put(key, replace);
+                put(KEY_CASE.SRC, key, value);
             }
         }
         return this;
@@ -3754,7 +3737,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return this;
     }
 
-    public DataRow replaces(String oldChar, String replace, String ... keys) {
+    public DataRow replaces(String tar, String replace, String ... keys) {
         List<String> ks = columns(keys);
 
         if (null == replace) {
@@ -3763,17 +3746,17 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         for (String key : ks) {
             Object value = get(key);
             if (value instanceof String) {
-                put(key, ((String) value).replace(oldChar, replace));
+                put(key, ((String) value).replace(tar, replace));
             }
         }
         return this;
     }
 
-    public DataRow replaces(boolean regex, String oldChar, String replace, String ... keys) {
+    public DataRow replaces(boolean regex, String tar, String replace, String ... keys) {
         if(regex) {
-            return replaceRegex(oldChar, replace, keys);
+            return replaceRegex(tar, replace, keys);
         }else{
-            return replaces(oldChar, replace, keys);
+            return replaces(tar, replace, keys);
         }
     }
     public DataRow replaceRegex(String regex, String replace, String ... keys) {
@@ -3795,7 +3778,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     }
 
     /**
-     * 检测匹配列
+     * 返回与column匹配的列
      * @param columns 列或正则
      * @return list
      */
@@ -3840,25 +3823,25 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     }
     
     /**
-     * 拼接value
+     * 拼接 value
      * @param keys keys
      * @return String
      */
     public String join(String... keys) {
-        String result = "";
+        StringBuilder result = new StringBuilder();
         if (null != keys) {
             for (String key : keys) {
                 String val = getString(key);
                 if (BasicUtil.isNotEmpty(val)) {
-                    if (result.isEmpty()) {
-                        result = val;
+                    if (result.length() == 0) {
+                        result = new StringBuilder(val);
                     } else {
-                        result += "," + val;
+                        result.append(",").append(val);
                     }
                 }
             }
         }
-        return result;
+        return result.toString();
     }
     public DataRow convertDate(String ... keys) {
         Date def = null;
@@ -4734,7 +4717,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         }
         /**
          * 格式化所有日期类型列(类型或列名中出现date关键字)
-         * @param greedy false:只检查JAVA和SQL数据类型, true:在以上基础上检测列名
+         * @param greedy false:只检查JAVA和SQL数据类型, true:在以上基础上检测包含DATE的列名
          * @param format 日期格式
          * @param def 默认值
          * @return DataRow
@@ -4819,7 +4802,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         }
         /**
          * 根据数据类型数字格式化,如果失败 默认 ""<br/>
-         * 如set.format.number("##.00", Date.class);
+         * 如set.format.number("##.00", Integer.class);
          * @param format 数字格式
          * @param classes 数据类型(包括java和sql类型;不区分大小写),不指定则不执行(避免传参失败)<br/>
          *             如果需要根据列名确定参与格式化的列参考number(format, cols)<br/>
