@@ -23,11 +23,11 @@ import org.anyline.adapter.EntityAdapter;
 import org.anyline.adapter.KeyAdapter;
 import org.anyline.data.adapter.DriverActuator;
 import org.anyline.data.adapter.DriverAdapter;
+import org.anyline.data.adapter.SystemFunctionConverterProxy;
 import org.anyline.data.cache.PageLazyStore;
 import org.anyline.data.entity.Join;
 import org.anyline.data.listener.DDListener;
 import org.anyline.data.listener.DMListener;
-import org.anyline.metadata.type.TypeMetadataAlias;
 import org.anyline.data.param.Config;
 import org.anyline.data.param.ConfigParser;
 import org.anyline.data.param.ConfigStore;
@@ -61,6 +61,7 @@ import org.anyline.metadata.refer.MetadataFieldRefer;
 import org.anyline.metadata.refer.MetadataReferHolder;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.metadata.type.TypeMetadata;
+import org.anyline.metadata.type.TypeMetadataAlias;
 import org.anyline.metadata.type.TypeMetadataHolder;
 import org.anyline.metadata.type.init.StandardTypeMetadata;
 import org.anyline.proxy.CacheProxy;
@@ -15861,6 +15862,11 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			String str = def.toString().trim();
 			builder.append(" DEFAULT ");
 			//boolean isCharColumn = isCharColumn(runtime, column);
+            DatabaseType origin = meta.getDatabaseType();
+            if(null == origin){
+                origin = ConfigTable.DEFAULT_DIALECT_DATABASE;
+            }
+            def = SystemFunctionConverterProxy.convert(origin, runtime.getAdapter().type(), str);
 			SQL_BUILD_IN_VALUE val = checkDefaultBuildInValue(runtime, def);
 			if(null != val) {
 				def = val;
@@ -15879,7 +15885,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			}else {
 				//nextval('crm_user_id_seq'::regclass)
 				//DEFAULT NULL::timestamp with time zone,
-				if(null != def && def.toString().contains("::")) {
+				if(def.toString().contains("::")) {
 					def = def.toString().split("::")[0];
 				}
 				def = write(runtime, meta, def, false, false);
@@ -19273,7 +19279,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	/**
 	 * 从数据库中读取数据<br/>
 	 * 先由子类根据metadata.typeName(CHAR,INT)定位到具体的数据库类型ColumnType<br/>
-	 * 如果定位成功由CoumnType根据class转换(class可不提供)<br/>
+	 * 如果定位成功由ColumnType根据class转换(class可不提供)<br/>
 	 * 如果没有定位到ColumnType再根据className(String,BigDecimal)定位到JavaType<br/>
 	 * 如果定位失败或转换失败(返回null)再由父类转换<br/>
 	 * 如果没有提供metadata和class则根据value.class<br/>

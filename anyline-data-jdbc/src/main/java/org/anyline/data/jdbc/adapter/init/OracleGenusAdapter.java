@@ -8460,8 +8460,12 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     public String value(DataRuntime runtime, Column column, SQL_BUILD_IN_VALUE value) {
-        if(value == SQL_BUILD_IN_VALUE.CURRENT_DATETIME) {
+        if(value == SQL_BUILD_IN_VALUE.CURRENT_DATETIME
+            || value == SQL_BUILD_IN_VALUE.CURRENT_TIMESTAMP) {
             return "sysdate";
+        }
+        if(value == SQL_BUILD_IN_VALUE.CURRENT_DATE) {
+            return "CURRENT_DATE";
         }
         return null;
     }

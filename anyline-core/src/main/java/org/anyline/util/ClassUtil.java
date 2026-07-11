@@ -937,4 +937,485 @@ public class ClassUtil {
 		}
 		return null;
 	}
+
+	/**
+	 * 获取方法的完整信息，包括方法名、返回类型和参数列表
+	 * @param method 目标方法
+	 * @return 包含方法信息的Map，结构为: {"methodName": "方法名", "returnType": "返回类型", "parameters": [{"type": "参数类型", "name": "参数名"}, ...]}
+	 */
+	public static Map<String, Object> getMethodInfo(Method method) {
+		Map<String, Object> info = new LinkedHashMap<>();
+		if(null == method) {
+			return info;
+		}
+		info.put("methodName", method.getName());
+		info.put("returnType", getTypeName(method.getGenericReturnType()));
+		List<Map<String, Object>> params = new ArrayList<>();
+		Type[] paramTypes = method.getGenericParameterTypes();
+		String[] paramNames = getParameterNames(method);
+		Parameter[] parameters = method.getParameters();
+		for(int i=0; i<paramTypes.length; i++) {
+			Map<String, Object> param = new LinkedHashMap<>();
+			String typeName = getTypeName(paramTypes[i]);
+			if(parameters[i].isVarArgs() && typeName.endsWith("[]")) {
+				typeName = typeName.substring(0, typeName.length() - 2) + "...";
+			}
+			param.put("type", typeName);
+			if(i < paramNames.length && null != paramNames[i]) {
+				param.put("name", paramNames[i]);
+			} else {
+				param.put("name", "arg" + i);
+			}
+			params.add(param);
+		}
+		info.put("parameters", params);
+		return info;
+	}
+
+	/**
+	 * 获取方法签名（带返回值）
+	 * @param method 目标方法
+	 * @return 方法签名字符串，格式: 返回类型 方法名(参数类型1 参数名1, 参数类型2 参数名2, ...)
+	 */
+	public static String getMethodSignature(Method method) {
+		return getMethodSignature(method, true);
+	}
+
+	/**
+	 * 获取方法签名
+	 * @param method 目标方法
+	 * @param withReturnType 是否包含返回类型
+	 * @return 方法签名字符串，格式: [返回类型 ]方法名(参数类型1 参数名1, 参数类型2 参数名2, ...)
+	 */
+	public static String getMethodSignature(Method method, boolean withReturnType) {
+		if(null == method) {
+			return "";
+		}
+		StringBuilder sb = new StringBuilder();
+		if(withReturnType) {
+			sb.append(getTypeName(method.getGenericReturnType()));
+			sb.append(" ");
+		}
+		sb.append(method.getName());
+		sb.append("(");
+		Type[] paramTypes = method.getGenericParameterTypes();
+		String[] paramNames = getParameterNames(method);
+		Parameter[] parameters = method.getParameters();
+		for(int i=0; i<paramTypes.length; i++) {
+			if(i > 0) {
+				sb.append(", ");
+			}
+			String typeName = getTypeName(paramTypes[i]);
+			if(parameters[i].isVarArgs() && typeName.endsWith("[]")) {
+				typeName = typeName.substring(0, typeName.length() - 2) + "...";
+			}
+			sb.append(typeName);
+			String name = null;
+			if(i < paramNames.length) {
+				name = paramNames[i];
+			}
+			if(BasicUtil.isEmpty(name)) {
+				name = "arg" + i;
+			}
+			sb.append(" ").append(name);
+		}
+		sb.append(")");
+		return sb.toString();
+	}
+
+
+	/**
+	 * 获取方法的返回类型字符串
+	 * @param method 目标方法
+	 * @return 返回类型字符串，支持泛型，如: java.util.List<java.lang.String>
+	 */
+	public static String getMethodReturnType(Method method) {
+		if(null == method) {
+			return "";
+		}
+		return getTypeName(method.getGenericReturnType());
+	}
+
+	/**
+	 * 获取方法的参数名数组，根据JDK版本自动选择最优实现
+	 * @param method 目标方法
+	 * @return 参数名数组，若无法获取真实名称则返回 arg0, arg1, ...
+	 */
+	public static String[] getParameterNames(Method method) {
+		if(null == method) {
+			return new String[0];
+		}
+		if(isJava9OrLater()) {
+			return getParameterNamesJava9(method);
+		} else {
+			return getParameterNamesJava8(method);
+		}
+	}
+
+	/**
+	 * 判断当前JDK版本是否为9及以上
+	 * @return true表示JDK 9+，false表示JDK 8及以下
+	 */
+	private static boolean isJava9OrLater() {
+		try {
+			String version = System.getProperty("java.version");
+			if(BasicUtil.isEmpty(version)) {
+				return false;
+			}
+			if(version.startsWith("1.")) {
+				int v = Integer.parseInt(version.substring(2, 3));
+				return v >= 9;
+			}
+			int v = Integer.parseInt(version.split("\\.")[0]);
+			return v >= 9;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	/**
+	 * Java 9+ 参数名获取实现，直接使用反射API
+	 * @param method 目标方法
+	 * @return 参数名数组
+	 */
+	private static String[] getParameterNamesJava9(Method method) {
+		Parameter[] parameters = method.getParameters();
+		String[] names = new String[parameters.length];
+		for(int i=0; i<parameters.length; i++) {
+			String name = parameters[i].getName();
+			if(BasicUtil.isEmpty(name) || name.startsWith("arg")) {
+				name = "arg" + i;
+			}
+			names[i] = name;
+		}
+		return names;
+	}
+
+	/**
+	 * Java 8 参数名获取实现，优先反射，失败则解析字节码
+	 * @param method 目标方法
+	 * @return 参数名数组
+	 */
+	private static String[] getParameterNamesJava8(Method method) {
+		Parameter[] parameters = method.getParameters();
+		String[] names = new String[parameters.length];
+		boolean hasRealNames = false;
+		for(int i=0; i<parameters.length; i++) {
+			names[i] = parameters[i].getName();
+			if(!names[i].startsWith("arg")) {
+				hasRealNames = true;
+			}
+		}
+		if(hasRealNames) {
+			return names;
+		}
+		String[] bytecodeNames = getParameterNamesFromBytecode(method);
+		if(bytecodeNames.length == parameters.length) {
+			boolean bytecodeHasReal = false;
+			for(String name : bytecodeNames) {
+				if(BasicUtil.isNotEmpty(name) && !name.startsWith("arg")) {
+					bytecodeHasReal = true;
+					break;
+				}
+			}
+			if(bytecodeHasReal) {
+				return bytecodeNames;
+			}
+		}
+		return names;
+	}
+
+	/**
+	 * 从字节码文件中读取参数名
+	 * @param method 目标方法
+	 * @return 参数名数组，读取失败返回空数组
+	 */
+	private static String[] getParameterNamesFromBytecode(Method method) {
+		try {
+			Class<?> clazz = method.getDeclaringClass();
+			String className = clazz.getName().replace('.', '/') + ".class";
+			java.io.InputStream is = clazz.getClassLoader().getResourceAsStream(className);
+			if(null == is) {
+				return new String[0];
+			}
+			java.io.ByteArrayOutputStream baos = new java.io.ByteArrayOutputStream();
+			byte[] buffer = new byte[4096];
+			int len;
+			while((len = is.read(buffer)) != -1) {
+				baos.write(buffer, 0, len);
+			}
+			is.close();
+			return parseParameterNames(baos.toByteArray(), method);
+		} catch (Exception e) {
+			return new String[0];
+		}
+	}
+
+	/**
+	 * 解析class字节码获取参数名
+	 * @param classBytes class文件字节数组
+	 * @param method 目标方法
+	 * @return 参数名数组，解析失败返回空数组
+	 */
+	private static String[] parseParameterNames(byte[] classBytes, Method method) {
+		try {
+			int magic = (classBytes[0] & 0xFF) << 24 | (classBytes[1] & 0xFF) << 16 | (classBytes[2] & 0xFF) << 8 | (classBytes[3] & 0xFF);
+			if(magic != 0xCAFEBABE) {
+				return new String[0];
+			}
+			int constantPoolCount = (classBytes[8] & 0xFF) << 8 | (classBytes[9] & 0xFF);
+			int[] cpInfo = new int[constantPoolCount];
+			int pos = 10;
+			for(int i=1; i<constantPoolCount; i++) {
+				int tag = classBytes[pos] & 0xFF;
+				cpInfo[i] = pos;
+				switch(tag) {
+					case 1:
+						while(classBytes[pos++] != 0);
+						break;
+					case 3: case 4: case 9: case 10: case 11: case 12:
+						pos += 4;
+						break;
+					case 5: case 6:
+						pos += 8;
+						break;
+					case 7: case 8:
+						pos += 2;
+						break;
+					case 15:
+						pos += 3;
+						break;
+					case 16:
+						pos += 2;
+						break;
+					case 18:
+						pos += 4;
+						break;
+					default:
+						pos++;
+						break;
+				}
+			}
+			pos += 6;
+			int interfacesCount = (classBytes[pos] & 0xFF) << 8 | (classBytes[pos+1] & 0xFF);
+			pos += 2 + interfacesCount * 2;
+			int fieldsCount = (classBytes[pos] & 0xFF) << 8 | (classBytes[pos+1] & 0xFF);
+			pos += 2;
+			for(int i=0; i<fieldsCount; i++) {
+				pos += 6;
+				int attrCount = (classBytes[pos] & 0xFF) << 8 | (classBytes[pos+1] & 0xFF);
+				pos += 2;
+				for(int j=0; j<attrCount; j++) {
+					pos += 2;
+					int attrLen = (classBytes[pos] & 0xFF) << 24 | (classBytes[pos+1] & 0xFF) << 16 | (classBytes[pos+2] & 0xFF) << 8 | (classBytes[pos+3] & 0xFF);
+					pos += 4 + attrLen;
+				}
+			}
+			int methodsCount = (classBytes[pos] & 0xFF) << 8 | (classBytes[pos+1] & 0xFF);
+			pos += 2;
+			String methodName = method.getName();
+			Class<?>[] paramTypes = method.getParameterTypes();
+			for(int i=0; i<methodsCount; i++) {
+				pos += 2;
+				int nameIdx = (classBytes[pos] & 0xFF) << 8 | (classBytes[pos+1] & 0xFF);
+				pos += 2;
+				int descIdx = (classBytes[pos] & 0xFF) << 8 | (classBytes[pos+1] & 0xFF);
+				pos += 2;
+				String name = getUtf8(classBytes, cpInfo, nameIdx);
+				String desc = getUtf8(classBytes, cpInfo, descIdx);
+				if(!name.equals(methodName)) {
+					int attrCount = (classBytes[pos] & 0xFF) << 8 | (classBytes[pos+1] & 0xFF);
+					pos += 2;
+					for(int j=0; j<attrCount; j++) {
+						pos += 2;
+						int attrLen = (classBytes[pos] & 0xFF) << 24 | (classBytes[pos+1] & 0xFF) << 16 | (classBytes[pos+2] & 0xFF) << 8 | (classBytes[pos+3] & 0xFF);
+						pos += 4 + attrLen;
+					}
+					continue;
+				}
+				if(!matchesDescriptor(desc, paramTypes)) {
+					int attrCount = (classBytes[pos] & 0xFF) << 8 | (classBytes[pos+1] & 0xFF);
+					pos += 2;
+					for(int j=0; j<attrCount; j++) {
+						pos += 2;
+						int attrLen = (classBytes[pos] & 0xFF) << 24 | (classBytes[pos+1] & 0xFF) << 16 | (classBytes[pos+2] & 0xFF) << 8 | (classBytes[pos+3] & 0xFF);
+						pos += 4 + attrLen;
+					}
+					continue;
+				}
+				int attrCount = (classBytes[pos] & 0xFF) << 8 | (classBytes[pos+1] & 0xFF);
+				pos += 2;
+				for(int j=0; j<attrCount; j++) {
+					int attrNameIdx = (classBytes[pos] & 0xFF) << 8 | (classBytes[pos+1] & 0xFF);
+					pos += 2;
+					String attrName = getUtf8(classBytes, cpInfo, attrNameIdx);
+					if("LocalVariableTable".equals(attrName)) {
+						int attrLen = (classBytes[pos] & 0xFF) << 24 | (classBytes[pos+1] & 0xFF) << 16 | (classBytes[pos+2] & 0xFF) << 8 | (classBytes[pos+3] & 0xFF);
+						pos += 4;
+						int localVarCount = (classBytes[pos] & 0xFF) << 8 | (classBytes[pos+1] & 0xFF);
+						pos += 2;
+						String[] names = new String[paramTypes.length];
+						int slot = Modifier.isStatic(method.getModifiers()) ? 0 : 1;
+						for(int k=0; k<localVarCount; k++) {
+							pos += 4;
+							int nameIdx2 = (classBytes[pos] & 0xFF) << 8 | (classBytes[pos+1] & 0xFF);
+							pos += 2;
+							pos += 2;
+							int slotIdx = (classBytes[pos] & 0xFF) << 8 | (classBytes[pos+1] & 0xFF);
+							pos += 2;
+							if(slotIdx >= slot && slotIdx < slot + paramTypes.length) {
+								names[slotIdx - slot] = getUtf8(classBytes, cpInfo, nameIdx2);
+							}
+						}
+						return names;
+					} else {
+						int attrLen = (classBytes[pos] & 0xFF) << 24 | (classBytes[pos+1] & 0xFF) << 16 | (classBytes[pos+2] & 0xFF) << 8 | (classBytes[pos+3] & 0xFF);
+						pos += 4 + attrLen;
+					}
+				}
+			}
+		} catch (Exception e) {
+		}
+		return new String[0];
+	}
+
+	/**
+	 * 从常量池中读取UTF-8字符串
+	 * @param classBytes class文件字节数组
+	 * @param cpInfo 常量池位置数组
+	 * @param idx 常量池索引
+	 * @return 字符串，读取失败返回空字符串
+	 */
+	private static String getUtf8(byte[] classBytes, int[] cpInfo, int idx) {
+		if(idx <= 0 || idx >= cpInfo.length) {
+			return "";
+		}
+		int pos = cpInfo[idx];
+		if((classBytes[pos] & 0xFF) != 1) {
+			return "";
+		}
+		int len = (classBytes[pos+1] & 0xFF) << 8 | (classBytes[pos+2] & 0xFF);
+		byte[] bytes = new byte[len];
+		System.arraycopy(classBytes, pos+3, bytes, 0, len);
+		try {
+			return new String(bytes, "UTF-8");
+		} catch (Exception e) {
+			return "";
+		}
+	}
+
+	/**
+	 * 判断方法描述符是否匹配参数类型
+	 * @param desc 方法描述符，如: (Ljava/lang/String;I)V
+	 * @param paramTypes 参数类型数组
+	 * @return true表示匹配
+	 */
+	private static boolean matchesDescriptor(String desc, Class<?>[] paramTypes) {
+		if(!desc.startsWith("(")) {
+			return false;
+		}
+		int pos = 1;
+		for(Class<?> pt : paramTypes) {
+			String sig = getTypeSignature(pt);
+			if(!desc.startsWith(sig, pos)) {
+				return false;
+			}
+			pos += sig.length();
+		}
+		return desc.charAt(pos) == ')';
+	}
+
+	/**
+	 * 获取类的JVM类型签名
+	 * @param clazz 目标类
+	 * @return 类型签名，如: I(int), Z(boolean), Ljava/lang/String;(String), [I(int[])
+	 */
+	private static String getTypeSignature(Class<?> clazz) {
+		if(clazz.isPrimitive()) {
+			if(clazz == boolean.class) return "Z";
+			if(clazz == byte.class) return "B";
+			if(clazz == char.class) return "C";
+			if(clazz == short.class) return "S";
+			if(clazz == int.class) return "I";
+			if(clazz == long.class) return "J";
+			if(clazz == float.class) return "F";
+			if(clazz == double.class) return "D";
+			return "V";
+		}
+		if(clazz.isArray()) {
+			return "[" + getTypeSignature(clazz.getComponentType());
+		}
+		return "L" + clazz.getName().replace('.', '/') + ";";
+	}
+
+	/**
+	 * 获取Type的字符串表示，支持泛型
+	 * @param type 目标类型
+	 * @return 类型字符串，如: java.util.List<java.lang.String>, java.lang.String[]
+	 */
+	private static String getTypeName(Type type) {
+		if(null == type) {
+			return "void";
+		}
+		if(type instanceof Class) {
+			Class<?> clazz = (Class<?>) type;
+			if(clazz.isArray()) {
+				return getTypeName(clazz.getComponentType()) + "[]";
+			}
+			if(clazz.isPrimitive()) {
+				if(clazz == boolean.class) return "boolean";
+				if(clazz == byte.class) return "byte";
+				if(clazz == char.class) return "char";
+				if(clazz == short.class) return "short";
+				if(clazz == int.class) return "int";
+				if(clazz == long.class) return "long";
+				if(clazz == float.class) return "float";
+				if(clazz == double.class) return "double";
+				return clazz.getSimpleName();
+			}
+			if(clazz == Void.TYPE) {
+				return "void";
+			}
+			return clazz.getSimpleName();
+		}
+		if(type instanceof ParameterizedType) {
+			ParameterizedType pt = (ParameterizedType) type;
+			Type rawType = pt.getRawType();
+			Type[] typeArgs = pt.getActualTypeArguments();
+			StringBuilder sb = new StringBuilder();
+			sb.append(getTypeName(rawType));
+			sb.append("<");
+			for(int i=0; i<typeArgs.length; i++) {
+				if(i > 0) {
+					sb.append(", ");
+				}
+				sb.append(getTypeName(typeArgs[i]));
+			}
+			sb.append(">");
+			return sb.toString();
+		}
+		if(type instanceof GenericArrayType) {
+			GenericArrayType gat = (GenericArrayType) type;
+			return getTypeName(gat.getGenericComponentType()) + "[]";
+		}
+		if(type instanceof WildcardType) {
+			WildcardType wt = (WildcardType) type;
+			StringBuilder sb = new StringBuilder();
+			sb.append("?");
+			Type[] upperBounds = wt.getUpperBounds();
+			if(upperBounds != null && upperBounds.length > 0 && !Object.class.equals(upperBounds[0])) {
+				sb.append(" extends ").append(getTypeName(upperBounds[0]));
+			}
+			Type[] lowerBounds = wt.getLowerBounds();
+			if(lowerBounds != null && lowerBounds.length > 0) {
+				sb.append(" super ").append(getTypeName(lowerBounds[0]));
+			}
+			return sb.toString();
+		}
+		if(type instanceof TypeVariable) {
+			TypeVariable<?> tv = (TypeVariable<?>) type;
+			return tv.getName();
+		}
+		return type.toString();
+	}
 }

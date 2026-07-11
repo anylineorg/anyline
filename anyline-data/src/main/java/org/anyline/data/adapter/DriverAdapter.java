@@ -8963,15 +8963,33 @@ public interface DriverAdapter {
 		SQL_BUILD_IN_VALUE result = null;
 		if(null != def) {
 			String chk = def.toString().toUpperCase().trim();
-			if("CURRENT_TIMESTAMP".equals(chk)
-				|| "CURRENT TIMESTAMP".equals(chk)
-				|| "SYSDATE".equals(chk)
-				|| "NOW()".equals(chk)
-				|| "NOW".equals(chk)
-				|| "SYSTIMESTAMP".equals(chk)
-				|| "GETDATE()".equals(chk)
-				|| chk.contains("DATETIME(")
+			// 去掉末尾的 () 做统一比对（NOW() → NOW,  SYSDATE() → SYSDATE）
+			String bare = chk.endsWith("()") ? chk.substring(0, chk.length() - 2) : chk;
+
+			// 时间戳类：SYSDATE / NOW / CURRENT_TIMESTAMP / GETDATE 等 → CURRENT_TIMESTAMP
+			if("CURRENT_TIMESTAMP".equals(bare)
+				|| "CURRENT TIMESTAMP".equals(bare) // Oracle 写法
+				|| "SYSDATE".equals(bare)
+				|| "SYSTIMESTAMP".equals(bare)
+				|| "NOW".equals(bare)
+				|| "GETDATE".equals(bare)
 				) {
+				result = SQL_BUILD_IN_VALUE.CURRENT_TIMESTAMP;
+			}
+			// 日期类
+			else if("CURRENT_DATE".equals(bare)
+				|| "CURDATE".equals(bare)
+				) {
+				result = SQL_BUILD_IN_VALUE.CURRENT_DATE;
+			}
+			// 时间类
+			else if("CURRENT_TIME".equals(bare)
+				|| "CURTIME".equals(bare)
+				) {
+				result = SQL_BUILD_IN_VALUE.CURRENT_TIME;
+			}
+			// 日期时间类（Hive 等使用 DATETIME('now')）
+			else if(bare.startsWith("DATETIME(")) {
 				result = SQL_BUILD_IN_VALUE.CURRENT_DATETIME;
 			}
 		}

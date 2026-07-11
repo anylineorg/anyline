@@ -23,19 +23,17 @@ import ognl.Ognl;
 import ognl.OgnlContext;
 import org.anyline.adapter.KeyAdapter.KEY_CASE;
 import org.anyline.entity.geometry.Point;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 import org.anyline.metadata.Catalog;
 import org.anyline.metadata.Column;
 import org.anyline.metadata.Schema;
 import org.anyline.metadata.Table;
 import org.anyline.metadata.type.TypeMetadata;
-import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.util.*;
 import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
-import org.anyline.log.Log;
-import org.anyline.log.LogProxy;
 
-import javax.xml.crypto.Data;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.*;
@@ -572,11 +570,11 @@ public class DataSet<E extends DataRow> implements Collection<E>, Serializable, 
         }
         return this;
     }
-    public DataSet<E> setFilterKey(boolean applyItem, String... pks) {
-        if (null != pks) {
+    public DataSet<E> setFilterKey(boolean applyItem, String... keys) {
+        if (null != keys) {
             List<String> list = new ArrayList<>();
-            for (String pk : pks) {
-                list.add(pk);
+            for (String key : keys) {
+                list.add(key);
             }
             setFilterKey(applyItem, list);
         }
@@ -1087,8 +1085,8 @@ public class DataSet<E extends DataRow> implements Collection<E>, Serializable, 
         return getRow(rows.size()-1);
     }
 
-    public boolean exists(String ... params) {
-        DataRow row = getRow(0, params);
+    public boolean exists(String ... kvs) {
+        DataRow row = getRow(0, kvs);
         return row != null;
     }
     public DataRow getRow(Compare compare, String... params) {
@@ -1112,8 +1110,8 @@ public class DataSet<E extends DataRow> implements Collection<E>, Serializable, 
         return getRow(Compare.EQUAL, params);
     }
 
-    public DataRow getRow(Compare compare, int begin, String... params) {
-        DataSet<E> set = getRows(compare, begin, 1, params);
+    public DataRow getRow(Compare compare, int begin, String... kvs) {
+        DataSet<E> set = getRows(compare, begin, 1, kvs);
         if (!set.isEmpty()) {
             return set.getRow(0);
         }
@@ -1129,8 +1127,8 @@ public class DataSet<E extends DataRow> implements Collection<E>, Serializable, 
     public DataSet<E> getRows(Compare compare, Map<String, String> kvs) {
         return getRows(compare, 0, -1, kvs);
     }
-    public DataRow getRow(int begin, String... params) {
-        return getRow(Compare.EQUAL, begin, params);
+    public DataRow getRow(int begin, String... kvs) {
+        return getRow(Compare.EQUAL, begin, kvs);
     }
     public DataRow getRow(Compare compare, int begin, DataRow params) {
         DataSet<E> set = getRows(compare, begin, 1, params);
@@ -1162,7 +1160,7 @@ public class DataSet<E extends DataRow> implements Collection<E>, Serializable, 
     /**
      * 根据keys去重
      *
-     * @param extract 是否只保留keys列
+     * @param extract 是否只留keys列
      * @param keys keys
      * @return DataSet
      */
@@ -1373,8 +1371,8 @@ public class DataSet<E extends DataRow> implements Collection<E>, Serializable, 
     public DataSet<E> getRows(PageNavi navi, String ... params) {
         return getRows((int)navi.getFirstRow(), (int)navi.getLastRow(), params);
     }
-    public DataSet<E> getRows(Compare compare, int begin, int qty, String... params) {
-        return getRows(compare, begin, qty, kvs(params));
+    public DataSet<E> getRows(Compare compare, int begin, int qty, String... kvs) {
+        return getRows(compare, begin, qty, kvs(kvs));
     }
     public DataSet<E> getRows(Compare compare, int begin, int qty, DataRow kvs) {
         Map<String, String> map = new HashMap<String, String>();
@@ -3474,9 +3472,7 @@ public class DataSet<E extends DataRow> implements Collection<E>, Serializable, 
         }
         return null;
     }
-    public <T> EntitySet<T> entitys(Class<T> clazz) {
-        return null;
-    }
+
     public DataSet<E> setDest(String dest) {
         if (null == dest) {
             return this;
@@ -3569,7 +3565,7 @@ public class DataSet<E extends DataRow> implements Collection<E>, Serializable, 
     }
 
     /**
-     * 是否包含这一行
+     * 是否包含这一行(根据keys列值判断)
      *
      * @param row  row
      * @param keys keys
@@ -3636,7 +3632,7 @@ public class DataSet<E extends DataRow> implements Collection<E>, Serializable, 
     }
     
     /**
-     * 从items中按相应的key提取数据 存入
+     * 从items中按相应的key提取数据 存入field
      * dispatch("children",items, "DEPT_CD")
      * dispatchs("children",items, "CD:BASE_CD")
      *

@@ -34,6 +34,7 @@ import org.anyline.metadata.type.TypeMetadata;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.util.*;
+
 @AnylineComponent("anyline.data.jdbc.adapter.xugu")
 public class XuGuAdapter extends OracleGenusAdapter implements JDBCAdapter {
 
@@ -647,13 +648,37 @@ public class XuGuAdapter extends OracleGenusAdapter implements JDBCAdapter {
 
     /**
      * 查询序列cur 或 next value
+     * <p>
+     * XuguDB基于PostgreSQL，使用PostgreSQL序列语法：
+     * - currval('sequence') 获取当前值
+     * - nextval('sequence') 获取下一个值
      * @param next  是否生成返回下一个序列 false:cur true:next
      * @param names 序列名
      * @return String
      */
     @Override
     public List<Run> buildSelectSequence(DataRuntime runtime, boolean next, String ... names) {
-        return super.buildSelectSequence(runtime, next, names);
+        List<Run> runs = new ArrayList<>();
+        Run run = new SimpleRun(runtime);
+        runs.add(run);
+        StringBuilder builder = run.getBuilder();
+        String key = "currval";
+        if(next) {
+            key = "nextval";
+        }
+        if(null != names && names.length>0) {
+            builder.append("SELECT ");
+            boolean first = true;
+            for (String name : names) {
+                if(!first) {
+                    builder.append(", ");
+                }
+                first = false;
+                builder.append(key).append("('").append(name).append("') AS ");
+                delimiter(builder,name);
+            }
+        }
+        return runs;
     }
 
     /**
@@ -684,13 +709,15 @@ public class XuGuAdapter extends OracleGenusAdapter implements JDBCAdapter {
     /**
      * select[命令合成-子流程] <br/>
      * 合成最终 select 命令 包含分页 排序
+     * <p>
+     * XuguDB基于PostgreSQL，使用PostgreSQL分页语法：LIMIT ... OFFSET ...
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
      * @return String
      */
     @Override
     public String mergeFinalSelect(DataRuntime runtime, Run run) {
-        return super.mergeFinalSelect(runtime, run);
+        return super.pageLimitOffset(runtime, run);
     }
 
     /**

@@ -83,7 +83,7 @@ public abstract class AbstractRun implements Run {
 	protected DataRuntime runtime;
 	protected String delimiterFr;
 	protected String delimiterTo;
-	protected DatabaseType functionOrigin; // 函数来源数据库类型，设置后自动转换函数调用
+	protected DatabaseType functionOrigin = ConfigTable.DEFAULT_DIALECT_DATABASE; // 函数来源数据库类型，设置后自动转换函数调用
 
 	protected ACTION action;
 	protected boolean emptyCondition = true;

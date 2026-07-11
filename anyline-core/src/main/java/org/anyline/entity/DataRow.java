@@ -1285,10 +1285,10 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return this;
     }
 
-    public DataRow setFilterKey(boolean applyContainer, String... pks) {
-        if (null != pks) {
+    public DataRow setFilterKey(boolean applyContainer, String... keys) {
+        if (null != keys) {
             List<String> list = new ArrayList<>();
-            for (String pk : pks) {
+            for (String pk : keys) {
                 list.add(pk);
             }
             return setFilterKey(applyContainer, list);

@@ -91,13 +91,13 @@ public enum StandardTypeMetadata implements TypeMetadata {
             return value;
         }
     }
-   , NCHAR(CATEGORY.CHAR, "NCHAR", null, String.class, 0, 1, 1, ORACLE, MSSQL, Informix, GBase8S, SinoDB) {
+   , NCHAR(CATEGORY.CHAR, "NCHAR", null, String.class, 0, 1, 1, Oracle, MSSQL, Informix, GBase8S, SinoDB) {
         public Object write(Object value, Object def, boolean array, Boolean placeholder) {return CHAR.write(value, def, placeholder);}
     }
-   , CLOB(CATEGORY.TEXT, "CLOB", null, String.class,1, 1, 1, ORACLE, Informix, GBase8S, SinoDB, Derby, KingBase) {
+   , CLOB(CATEGORY.TEXT, "CLOB", null, String.class,1, 1, 1, Oracle, Informix, GBase8S, SinoDB, Derby, KingBase) {
         public Object write(Object value, Object def, boolean array, Boolean placeholder) {return CHAR.write(value, def, placeholder);}
     }
-   , NCLOB(CATEGORY.TEXT, "NCLOB", null, String.class,1, 1, 1, ORACLE, HANA) {
+   , NCLOB(CATEGORY.TEXT, "NCLOB", null, String.class,1, 1, 1, Oracle, HANA) {
         public Object write(Object value, Object def, boolean array, Boolean placeholder) {return CHAR.write(value, def, placeholder);}
     }
     , NVARCHAR(CATEGORY.CHAR, "NVARCHAR", null, String.class, 0, 1, 1, MSSQL, Informix, GBase8S, SinoDB, HANA, KingBase) {
@@ -106,7 +106,7 @@ public enum StandardTypeMetadata implements TypeMetadata {
     , LVARCHAR(CATEGORY.CHAR, "LVARCHAR", null, String.class, 0, 1, 1, Informix, GBase8S, SinoDB, SinoDB) {
         public Object write(Object value, Object def, boolean array, Boolean placeholder) {return CHAR.write(value, def, placeholder);}
     }
-   , NVARCHAR2(CATEGORY.CHAR, "NVARCHAR2", NVARCHAR, String.class, 0, 1, 1, ORACLE) {
+   , NVARCHAR2(CATEGORY.CHAR, "NVARCHAR2", NVARCHAR, String.class, 0, 1, 1, Oracle) {
         public Object write(Object value, Object def, boolean array, Boolean placeholder) {return CHAR.write(value, def, placeholder);}
     }
    , LONGTEXT(CATEGORY.TEXT, "LONGTEXT", null, String.class,1, 1, 1, MySQL) {
@@ -132,10 +132,10 @@ public enum StandardTypeMetadata implements TypeMetadata {
     /**
      * Informix(长度不超过 255 )
      */
-   , VARCHAR(CATEGORY.CHAR, "VARCHAR", null, String.class, 0, 1, 1, MySQL, PostgreSQL, ORACLE, Informix, GBase8S, SinoDB, HANA, Derby, KingBase, Doris) {
+   , VARCHAR(CATEGORY.CHAR, "VARCHAR", null, String.class, 0, 1, 1, MySQL, PostgreSQL, Oracle, Informix, GBase8S, SinoDB, HANA, Derby, KingBase, Doris) {
         public Object write(Object value, Object def, boolean array, Boolean placeholder) {return CHAR.write(value, def, placeholder);}
     }
-   , VARCHAR2(CATEGORY.CHAR, "VARCHAR2", VARCHAR, String.class, 0, 1, 1, ORACLE, KingBase, DM, oscar) {
+   , VARCHAR2(CATEGORY.CHAR, "VARCHAR2", VARCHAR, String.class, 0, 1, 1, Oracle, KingBase, DM, oscar) {
         public Object write(Object value, Object def, boolean array, Boolean placeholder) {return CHAR.write(value, def, placeholder);}
     }
    , SYSNAME(CATEGORY.TEXT, "SYSNAME", null, String.class,1, 1, 1, MSSQL) {
@@ -276,7 +276,7 @@ public enum StandardTypeMetadata implements TypeMetadata {
     , INT64(CATEGORY.INT, "INT64", null, Long.class, 1, 1, 1, IoTDB, ClickHouse)
     , INT128(CATEGORY.INT, "INT128", null, Long.class, 1, 1, 1, ClickHouse)
     , INT256(CATEGORY.INT, "INT256", null, Long.class, 1, 1, 1, ClickHouse)
-    , LONG_TEXT(CATEGORY.TEXT, "LONG", null, String.class,1, 1, 1, ORACLE, ElasticSearch) {}
+    , LONG_TEXT(CATEGORY.TEXT, "LONG", null, String.class,1, 1, 1, Oracle, ElasticSearch) {}
     , BIGINT(CATEGORY.INT, "BIGINT", null, Long.class,1, 1, 1, MySQL, Informix, GBase8S, SinoDB, HANA, Derby, KingBase, Doris)
     , LONG(CATEGORY.INT, "LONG", null, Long.class, 1, 1, 1, ElasticSearch)
     , UNSIGNED_LONG(CATEGORY.INT, "UNSIGNED_LONG", null, Long.class, 1, 1, 1, ElasticSearch)
@@ -301,7 +301,7 @@ public enum StandardTypeMetadata implements TypeMetadata {
      *                                              number-double/float
      *
      * ****************************************************************************************************************/
-    , DECIMAL(CATEGORY.FLOAT, "DECIMAL", null, BigDecimal.class, 1, 0, 0, MySQL, PostgreSQL, ORACLE, Informix, GBase8S, SinoDB, HANA, Derby, Doris) {
+    , DECIMAL(CATEGORY.FLOAT, "DECIMAL", null, BigDecimal.class, 1, 0, 0, MySQL, PostgreSQL, Oracle, Informix, GBase8S, SinoDB, HANA, Derby, Doris) {
         public Object write(Object value, Object def, boolean array, Boolean placeholder) {
             if(null == value) {
                 value = def;
@@ -385,10 +385,10 @@ public enum StandardTypeMetadata implements TypeMetadata {
     , DECFLOAT(CATEGORY.FLOAT, "DECFLOAT", null, Double.class, 1, 2, 1, H2) {
         public Object write(Object value, Object def, boolean array, Boolean placeholder) {return DOUBLE.write(value, def, placeholder);}
     }
-   , BINARY_DOUBLE(CATEGORY.FLOAT, "BINARY_DOUBLE", null, Double.class, 1, 0, 0, ORACLE) {
+   , BINARY_DOUBLE(CATEGORY.FLOAT, "BINARY_DOUBLE", null, Double.class, 1, 0, 0, Oracle) {
         public Object write(Object value, Object def, boolean array, Boolean placeholder) {return DOUBLE.write(value, def, placeholder);}
     }
-   , BINARY_FLOAT(CATEGORY.FLOAT, "BINARY_FLOAT", null, Float.class, 1, 0, 0, ORACLE) {
+   , BINARY_FLOAT(CATEGORY.FLOAT, "BINARY_FLOAT", null, Float.class, 1, 0, 0, Oracle) {
         public Object write(Object value, Object def, boolean array, Boolean placeholder) {return DOUBLE.write(value, def, placeholder);}
     }
    , MONEY(CATEGORY.FLOAT, "MONEY", null, BigDecimal.class, 1, 1, 1, PostgreSQL, Informix, GBase8S, SinoDB, KingBase) {
@@ -400,7 +400,7 @@ public enum StandardTypeMetadata implements TypeMetadata {
    , NUMERIC(CATEGORY.FLOAT, "NUMERIC", null, BigDecimal.class, 1, 0, 0, MySQL, SQLite, Informix, GBase8S, SinoDB, KingBase) {
         public Object write(Object value, Object def, boolean array, Boolean placeholder) {return DECIMAL.write(value, def, placeholder);}
     }
-   , NUMBER(CATEGORY.FLOAT, "NUMBER", null, BigDecimal.class, 1, 2, 2, ORACLE) {
+   , NUMBER(CATEGORY.FLOAT, "NUMBER", null, BigDecimal.class, 1, 2, 2, Oracle) {
         public Object write(Object value, Object def, boolean array, Boolean placeholder) {return DECIMAL.write(value, def, placeholder);}
     }
    , REAL(CATEGORY.FLOAT, "REAL", DOUBLE, Double.class, 1, 0, 0, MySQL, SQLite, Informix, GBase8S, SinoDB, HANA, Derby, KingBase) {
@@ -577,7 +577,7 @@ public enum StandardTypeMetadata implements TypeMetadata {
             return TIME.write(value, def, placeholder);
         }
     }
-   , TIMESTAMP(CATEGORY.TIMESTAMP, "TIMESTAMP", "TIMESTAMP({S}) {Z}", null, java.sql.Timestamp.class, 1, 1, 2, MySQL, PostgreSQL, ORACLE, HANA, Derby) {
+   , TIMESTAMP(CATEGORY.TIMESTAMP, "TIMESTAMP", "TIMESTAMP({S}) {Z}", null, java.sql.Timestamp.class, 1, 1, 2, MySQL, PostgreSQL, Oracle, HANA, Derby) {
         public Object write(Object value, Object def, boolean array, Boolean placeholder) {
             return DATETIME.write(value, def, placeholder);
         }
@@ -607,19 +607,19 @@ public enum StandardTypeMetadata implements TypeMetadata {
             return DATETIME.write(value, def, placeholder);
         }
     }
-    , INTERVAL_DAY(CATEGORY.INTERVAL, "INTERVAL DAY", null, null, 1, 2, 2, ORACLE, KingBase)
-    , INTERVAL_DAY_HOUR(CATEGORY.INTERVAL, "INTERVAL DAY TO HOUR", "INTERVAL DAY({P}) TO HOUR({S})", null, null, 1, 2, 2, ORACLE, KingBase)
-    , INTERVAL_DAY_MINUTE(CATEGORY.INTERVAL, "INTERVAL DAY TO MINUTE","INTERVAL DAY({P}) TO MINUTE({S})", null, null, 1, 2, 2, ORACLE, KingBase)
-    , INTERVAL_DAY_SECOND(CATEGORY.INTERVAL, "INTERVAL DAY TO SECOND", "INTERVAL DAY({P}) TO SECOND({S})", null, null, 1, 2, 2, ORACLE, KingBase)
-    , INTERVAL_HOUR(CATEGORY.INTERVAL, "INTERVAL HOUR", "INTERVAL HOUR({P})", null, null, 1, 2, 1, ORACLE, KingBase)
-    , INTERVAL_HOUR_MINUTE(CATEGORY.INTERVAL, "INTERVAL HOUR TO MINUTE", "INTERVAL HOUR({P}) TO MINUTE({S})", null, null, 1, 2, 2, ORACLE, KingBase)
-    , INTERVAL_HOUR_SECOND(CATEGORY.INTERVAL, "INTERVAL HOUR TO SECOND", "INTERVAL HOUR({P}) TO SECOND({S})", null, null, 1, 2, 2, ORACLE, KingBase)
-    , INTERVAL_MINUTE(CATEGORY.INTERVAL, "INTERVAL MINUTE", "INTERVAL MINUTE({P})", null, null, 1, 2, 1, ORACLE, KingBase)
-    , INTERVAL_MINUTE_SECOND(CATEGORY.INTERVAL, "INTERVAL MINUTE TO SECOND", "INTERVAL MINUTE({P}) TO SECOND({S})", null, null, 1, 2, 2, ORACLE, KingBase)
-    , INTERVAL_MONTH(CATEGORY.INTERVAL, "INTERVAL MONTH", "INTERVAL MONTH({P})", null, null, 1, 2, 1, ORACLE, KingBase)
-    , INTERVAL_SECOND(CATEGORY.INTERVAL, "INTERVAL SECOND", "INTERVAL SECOND({P})", null, null, 1, 2, 1, ORACLE, KingBase)
-    , INTERVAL_YEAR(CATEGORY.INTERVAL, "INTERVAL YEAR", "INTERVAL YEAR({P})", null, null, 1, 2, 1, ORACLE, KingBase)
-    , INTERVAL_YEAR_MONTH(CATEGORY.INTERVAL, "INTERVAL YEAR TO MONTH", "INTERVAL YEAR({P}) TO MONTH({S})",null, null, 1, 2, 2, ORACLE, KingBase)
+    , INTERVAL_DAY(CATEGORY.INTERVAL, "INTERVAL DAY", null, null, 1, 2, 2, Oracle, KingBase)
+    , INTERVAL_DAY_HOUR(CATEGORY.INTERVAL, "INTERVAL DAY TO HOUR", "INTERVAL DAY({P}) TO HOUR({S})", null, null, 1, 2, 2, Oracle, KingBase)
+    , INTERVAL_DAY_MINUTE(CATEGORY.INTERVAL, "INTERVAL DAY TO MINUTE","INTERVAL DAY({P}) TO MINUTE({S})", null, null, 1, 2, 2, Oracle, KingBase)
+    , INTERVAL_DAY_SECOND(CATEGORY.INTERVAL, "INTERVAL DAY TO SECOND", "INTERVAL DAY({P}) TO SECOND({S})", null, null, 1, 2, 2, Oracle, KingBase)
+    , INTERVAL_HOUR(CATEGORY.INTERVAL, "INTERVAL HOUR", "INTERVAL HOUR({P})", null, null, 1, 2, 1, Oracle, KingBase)
+    , INTERVAL_HOUR_MINUTE(CATEGORY.INTERVAL, "INTERVAL HOUR TO MINUTE", "INTERVAL HOUR({P}) TO MINUTE({S})", null, null, 1, 2, 2, Oracle, KingBase)
+    , INTERVAL_HOUR_SECOND(CATEGORY.INTERVAL, "INTERVAL HOUR TO SECOND", "INTERVAL HOUR({P}) TO SECOND({S})", null, null, 1, 2, 2, Oracle, KingBase)
+    , INTERVAL_MINUTE(CATEGORY.INTERVAL, "INTERVAL MINUTE", "INTERVAL MINUTE({P})", null, null, 1, 2, 1, Oracle, KingBase)
+    , INTERVAL_MINUTE_SECOND(CATEGORY.INTERVAL, "INTERVAL MINUTE TO SECOND", "INTERVAL MINUTE({P}) TO SECOND({S})", null, null, 1, 2, 2, Oracle, KingBase)
+    , INTERVAL_MONTH(CATEGORY.INTERVAL, "INTERVAL MONTH", "INTERVAL MONTH({P})", null, null, 1, 2, 1, Oracle, KingBase)
+    , INTERVAL_SECOND(CATEGORY.INTERVAL, "INTERVAL SECOND", "INTERVAL SECOND({P})", null, null, 1, 2, 1, Oracle, KingBase)
+    , INTERVAL_YEAR(CATEGORY.INTERVAL, "INTERVAL YEAR", "INTERVAL YEAR({P})", null, null, 1, 2, 1, Oracle, KingBase)
+    , INTERVAL_YEAR_MONTH(CATEGORY.INTERVAL, "INTERVAL YEAR TO MONTH", "INTERVAL YEAR({P}) TO MONTH({S})",null, null, 1, 2, 2, Oracle, KingBase)
     , DURATION(CATEGORY.INTERVAL, "DURATION", null, null, 1, 1, 1, Nebula)
 
     /* *****************************************************************************************************************
@@ -627,7 +627,7 @@ public enum StandardTypeMetadata implements TypeMetadata {
      *                                              byte[]
      *
      * ****************************************************************************************************************/
-   , BLOB(CATEGORY.BLOB, "BLOB", null, byte[].class, 1, 1, 1, MySQL, ORACLE, SQLite, Informix, GBase8S, SinoDB, HANA, Derby, KingBase) {
+   , BLOB(CATEGORY.BLOB, "BLOB", null, byte[].class, 1, 1, 1, MySQL, Oracle, SQLite, Informix, GBase8S, SinoDB, HANA, Derby, KingBase) {
         public Object read(Object value, Object def, Class clazz) {
             if(clazz == byte[].class) {
 
@@ -688,7 +688,7 @@ public enum StandardTypeMetadata implements TypeMetadata {
      *
      * ****************************************************************************************************************/
    , IMAGE(CATEGORY.BYTES, "IMAGE", null, byte[].class, 1, 1, 1, MSSQL, DM)
-   , BFILE(CATEGORY.BYTES, "BFILE", null, byte[].class, 1, 1, 1, ORACLE, KingBase, DM)
+   , BFILE(CATEGORY.BYTES, "BFILE", null, byte[].class, 1, 1, 1, Oracle, KingBase, DM)
     /* *****************************************************************************************************************
      *
      *                                              byte[]-geometry
@@ -812,9 +812,9 @@ public enum StandardTypeMetadata implements TypeMetadata {
     , MACADDR(CATEGORY.NONE, "MACADDR", null, null, 1, 1, 1, PostgreSQL, KingBase)
     , MULTISET(CATEGORY.NONE, "MULTISET", null, String.class, 1, 1, 1, SinoDB)
     , JAVA_OBJECT(CATEGORY.NONE, "JAVA_OBJECT", null, String.class, 1, 1, 1, H2)
-    , RAW(CATEGORY.NONE, "RAW", null, byte[].class, 1, 1, 1, ORACLE)
+    , RAW(CATEGORY.NONE, "RAW", null, byte[].class, 1, 1, 1, Oracle)
     , ROW(CATEGORY.NONE, "ROW", null, null, 1, 1, 1, H2)
-    , ROWID(CATEGORY.NONE, "ROWID", null, null, 1, 1, 1, ORACLE)
+    , ROWID(CATEGORY.NONE, "ROWID", null, null, 1, 1, 1, Oracle)
     , SYS_REFCURSOR(CATEGORY.NONE, "SYS_REFCURSOR", null, null, 1, 1, 1, XuGu)
     , SET(CATEGORY.NONE, "SET", null, String.class, 1, 1, 1, MySQL, SinoDB)
     , LIST(CATEGORY.NONE, "LIST", null, String.class, 1, 1, 1, SinoDB)
@@ -825,7 +825,7 @@ public enum StandardTypeMetadata implements TypeMetadata {
      * 弃用 换成pg_snapshot
      */
    , TXID_SNAPSHOT(CATEGORY.NONE, "TXID_SNAPSHOT", null, null, 1, 1, 1, PostgreSQL, KingBase)
-   , UROWID(CATEGORY.NONE, "UROWID", null, null, 1, 1, 1, ORACLE)
+   , UROWID(CATEGORY.NONE, "UROWID", null, null, 1, 1, 1, Oracle)
    , SQL_VARIANT(CATEGORY.NONE, "SQL_VARIANT", null, null, 1, 1, 1, MSSQL)
 
    , KEYWORD(CATEGORY.NONE, "KEYWORD", null, null, 1, 1, 1, ElasticSearch)

@@ -4872,7 +4872,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         Run run = new SimpleRun(runtime);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
-        builder.append("CREATE SCHEMA ");
+        builder.append("CREATE SCHEMA IF NOT EXISTS ");
         name(runtime, builder, meta);
         String owner = meta.getUserName();
         if(BasicUtil.isNotEmpty(owner)){
