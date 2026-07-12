@@ -32,7 +32,7 @@ import org.anyline.entity.*;
 import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;
 import org.anyline.log.Log;
 import org.anyline.log.LogProxy;
-import org.anyline.data.adapter.SystemFunctionConverterProxy;
+import org.anyline.data.adapter.function.SystemFunctionConverterProxy;
 import org.anyline.metadata.*;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.metadata.type.TypeMetadata;

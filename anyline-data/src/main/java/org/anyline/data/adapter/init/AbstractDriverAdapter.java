@@ -23,7 +23,7 @@ import org.anyline.adapter.EntityAdapter;
 import org.anyline.adapter.KeyAdapter;
 import org.anyline.data.adapter.DriverActuator;
 import org.anyline.data.adapter.DriverAdapter;
-import org.anyline.data.adapter.SystemFunctionConverterProxy;
+import org.anyline.data.adapter.function.SystemFunctionConverterProxy;
 import org.anyline.data.cache.PageLazyStore;
 import org.anyline.data.entity.Join;
 import org.anyline.data.listener.DDListener;
