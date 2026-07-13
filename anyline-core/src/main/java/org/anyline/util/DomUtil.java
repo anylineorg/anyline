@@ -77,6 +77,9 @@ public class DomUtil {
      */
     public static List<Element> elements(boolean shelf, Element root, List<String> tags, boolean recursion) {
         List<Element> list = new ArrayList<>();
+        if(null == root){
+            return list;
+        }
         if(shelf){
             if (tags.contains(root.getName()) || tags.contains(root.getQName().getName())) {
                 list.add(root);
@@ -115,7 +118,9 @@ public class DomUtil {
     public static List<Element> elements(boolean shelf, List<Element> roots, String tags) {
         List<Element> elements = new ArrayList<>();
         for(Element root:roots){
-            elements.addAll(elements(shelf, root, tags));
+            if(null != root){
+                elements.addAll(elements(shelf, root, tags));
+            }
         }
         return elements;
     }
