@@ -248,10 +248,12 @@ public class Context {
 
                     if(v instanceof DataSet){
                         DataSet<DataRow> set = (DataSet)v;
+                        //把DataSet中string类型解析成object
                         set.string2object();
                         v = set.getRows();
                     }else if(v instanceof DataRow){
-                        ((DataRow)v).string2object();
+                        //把DataRow中string类型解析成object
+                       ((DataRow)v).string2object();
                     }
                     map.put(k, v);
                 }
@@ -322,6 +324,7 @@ public class Context {
     }
     public Context clone(){
         Context clone = new Context();
+        clone.root = root;
         clone.htmls.putAll(htmls);
         clone.texts.putAll(texts);
         clone.variables.putAll(variables);
