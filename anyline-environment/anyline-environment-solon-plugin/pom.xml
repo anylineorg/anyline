@@ -22,7 +22,7 @@
         </dependency>
         <dependency>
             <groupId>org.noear</groupId>
-            <artifactId>solon.data</artifactId>
+            <artifactId>solon-data</artifactId>
             <version>${solon.version}</version>
         </dependency>
     </dependencies>
